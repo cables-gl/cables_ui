@@ -1,0 +1,173 @@
+<html>
+<head>
+    <title>hund23</title>
+    <link rel="stylesheet" type="text/css" href="css/ui.css">
+</head>
+<body>
+
+
+
+
+    <script type="text/javascript" src="js/libs.min.js"></script>
+    <script type="text/javascript" src="js/cables.min.js"></script> 
+    <script type="text/javascript" src="js/cablesui.min.js"></script> 
+
+    <canvas id="glcanvas" width="640" height="360"></canvas>
+<script id="entry-template" type="text/x-handlebars-template">
+  <div class="entry">
+    <h1>{{title}}</h1>
+    <div class="body">
+      {{body}}
+    </div>
+  </div>
+</script>
+
+
+
+<div id="statusbar"></div>
+<div id="meta"></div>
+<div id="options" class="panel"></div>
+
+<div id="menubar">
+    <a onclick="localStorage['holo']=ui.scene.serialize();" class="button">save localstorage</a>
+    <a onclick="ui.scene.clear();ui.scene.deSerialize(localStorage['holo']);" class="button">load localstorage</a>
+    
+    <a onclick="ui.exportDialog();" class="button">export</a>
+    <a onclick="ui.importDialog();" class="button">import</a>
+
+
+    <a onclick="ui.scene.clear();" class="button">clear</a>
+</div>
+
+<div id="modalbg"></div>
+<div id="modalcontent"></div>
+
+
+
+<script id="op_select" type="text/x-handlebars-template">
+    
+<div class="opsearch">
+<h2>selct op</h2>
+
+<input id="opsearch"/>
+
+<br/><br/>
+<style id="search_style"></style>
+
+  {{#each ops}}
+
+    <div class="searchable" data-index="{{lowercasename}}">
+        <a onclick="ui.scene.addOp('{{name}}');ui.closeModal();" >{{name}}</a>
+    </div>
+
+
+  {{/each}}
+
+
+</div>
+
+</script>
+
+
+
+<script id="params_op_head" type="text/x-handlebars-template">
+
+    <div class="">
+        <h2>{{op.name}}</h2>
+        [{{op.objName}}]
+
+        <br/>
+        <br/>
+
+            <span class="button" onclick="ui.updateOpParams('{{op.id}}')">refresh</span>
+        
+        <br/>
+        <br/>
+
+  
+    </div>
+
+<table>
+
+</script>
+
+
+
+<script id="params_op_foot" type="text/x-handlebars-template">
+
+</table>
+
+<div>
+    <br/>
+    <br/>
+    <span class="button warn" onclick="if(confirm('delete ?'))ui.scene.deleteOp('{{op.id}}')">delete</span>
+    <br/>
+    <br/>
+</div>
+
+</script>
+
+
+
+<script id="params_ports_head" type="text/x-handlebars-template">
+    
+<tr>
+<th colspan="11">
+<div class="panelhead">{{title}}:</div>
+</th>
+</tr>
+
+</script>
+
+<script id="params_port" type="text/x-handlebars-template">
+
+<tr>
+    <td class="port portType_{{ port.type }}">
+        {{port.name}}
+    </td>
+
+    <td>
+        {{#if isInput}}
+            {{#if port.links}}
+                    <span class="value">{{port.val}}</span>
+                {{else}}
+                    <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+            {{/if}}
+        {{else}}
+            <span class="value">{{port.val}}</span>
+        {{/if}}
+    </td>
+
+    <td>
+        {{#if port.links}}
+            <a class="button" id="portdelete_{{ dirStr }}_{{ portnum }}" >unlink</a>
+            {{port.links.length}}x
+        {{/if}}
+    </td>
+</tr>
+
+</script>
+
+
+
+<script id="timeline_controler" type="text/x-handlebars-template">
+
+
+<br/>
+<a class="button" onclick="ui.scene.timer.togglePlay();">play / pause</a>
+<br/>
+<br/>
+<br/>
+<a class="button" onclick="ui.scene.timer.setOffset(-4);">rew</a>
+<a class="button" onclick="ui.scene.timer.setOffset(4);">fwd</a>
+<br/>
+<br/>
+<br/>
+
+
+
+</script>
+
+
+    </body>
+</html>

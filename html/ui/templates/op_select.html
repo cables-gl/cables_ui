@@ -1,0 +1,25 @@
+
+
+<script id="op_select" type="text/x-handlebars-template">
+    
+<div class="opsearch">
+<h2>selct op</h2>
+
+<input id="opsearch"/>
+
+<br/><br/>
+<style id="search_style"></style>
+
+  {{#each ops}}
+
+    <div class="searchable" data-index="{{lowercasename}}">
+        <a onclick="ui.scene.addOp('{{name}}');ui.closeModal();" >{{name}}</a>
+    </div>
+
+
+  {{/each}}
+
+
+</div>
+
+</script>

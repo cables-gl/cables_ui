@@ -1,0 +1,40 @@
+
+
+<script id="params_ports_head" type="text/x-handlebars-template">
+    
+<tr>
+<th colspan="11">
+<div class="panelhead">{{title}}:</div>
+</th>
+</tr>
+
+</script>
+
+<script id="params_port" type="text/x-handlebars-template">
+
+<tr>
+    <td class="port portType_{{ port.type }}">
+        {{port.name}}
+    </td>
+
+    <td>
+        {{#if isInput}}
+            {{#if port.links}}
+                    <span class="value">{{port.val}}</span>
+                {{else}}
+                    <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+            {{/if}}
+        {{else}}
+            <span class="value">{{port.val}}</span>
+        {{/if}}
+    </td>
+
+    <td>
+        {{#if port.links}}
+            <a class="button" id="portdelete_{{ dirStr }}_{{ portnum }}" >unlink</a>
+            {{port.links.length}}x
+        {{/if}}
+    </td>
+</tr>
+
+</script>

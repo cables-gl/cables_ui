@@ -1,0 +1,19 @@
+
+
+<div id="statusbar"></div>
+<div id="meta"></div>
+<div id="options" class="panel"></div>
+
+<div id="menubar">
+    <a onclick="localStorage['holo']=ui.scene.serialize();" class="button">save localstorage</a>
+    <a onclick="ui.scene.clear();ui.scene.deSerialize(localStorage['holo']);" class="button">load localstorage</a>
+    
+    <a onclick="ui.exportDialog();" class="button">export</a>
+    <a onclick="ui.importDialog();" class="button">import</a>
+
+
+    <a onclick="ui.scene.clear();" class="button">clear</a>
+</div>
+
+<div id="modalbg"></div>
+<div id="modalcontent"></div>

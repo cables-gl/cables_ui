@@ -1,0 +1,38 @@
+
+
+<script id="params_op_head" type="text/x-handlebars-template">
+
+    <div class="">
+        <h2>{{op.name}}</h2>
+        [{{op.objName}}]
+
+        <br/>
+        <br/>
+
+            <span class="button" onclick="ui.updateOpParams('{{op.id}}')">refresh</span>
+        
+        <br/>
+        <br/>
+
+  
+    </div>
+
+<table>
+
+</script>
+
+
+
+<script id="params_op_foot" type="text/x-handlebars-template">
+
+</table>
+
+<div>
+    <br/>
+    <br/>
+    <span class="button warn" onclick="if(confirm('delete ?'))ui.scene.deleteOp('{{op.id}}')">delete</span>
+    <br/>
+    <br/>
+</div>
+
+</script>
