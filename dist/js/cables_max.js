@@ -1,6 +1,6 @@
+var CGL=CGL || {};
 
-
-function Mesh(geom)
+CGL.Mesh=function(geom)
 {
     var bufTexCoords=-1;
     var bufTexCoordsIndizes=-1;
@@ -71,16 +71,16 @@ function Mesh(geom)
 
     };
 
-}
+};
 
-function Geometry()
+CGL.Geometry=function()
 {
     this.faceVertCount=3;
     this.vertices=[];
     this.verticesIndices=[];
     this.texCoords=[];
     this.texCoordsIndices=[];
-}
+};
 
 parseOBJ = function(buff)
 {
@@ -92,7 +92,7 @@ parseOBJ = function(buff)
         return s;
     };
 
-    var geom = new Geometry();
+    var geom = new CGL.Geometry();
     geom.groups = {};
     
     // geom.texCoords   = [];
@@ -169,13 +169,15 @@ parseOBJ = function(buff)
     cg.to = geom.verticesIndices.length;
     
     return geom;
-}
+};
 
 
 
+var CGL=CGL || {};
 
+// ---------------------------------------------------------------------------
 
-var Uniform=function(_shader,_type,_name,_value)
+CGL.Uniform=function(_shader,_type,_name,_value)
 {
     var self=this;
     var loc=-1;
@@ -204,8 +206,7 @@ var Uniform=function(_shader,_type,_name,_value)
         if(loc==-1)
         {
             loc=gl.getUniformLocation(shader.getProgram(), name);
-            if(loc==-1)         console.log('texture loc unknown!!');
-                    
+            if(loc==-1) console.log('texture loc unknown!!');
         }
 
         gl.uniform1i(loc, value);
@@ -216,8 +217,6 @@ var Uniform=function(_shader,_type,_name,_value)
         self.needsUpdate=true;
         value=v;
     };
-
-
 
     if(type=='f')
     {
@@ -232,46 +231,11 @@ var Uniform=function(_shader,_type,_name,_value)
     }
 
     this.setValue(_value);
-
 };
 
 // ---------------------------------------------------------------------------
 
-var Texture=function()
-{
-    var self=this;
-    this.tex = gl.createTexture();
-    this.loaded=false;
-
-    this.initTexture=function(img)
-    {
-        gl.bindTexture(gl.TEXTURE_2D, self.tex);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-        self.loaded=true;
-    };
-
-};
-
-Texture.load=function(url)
-{
-    var texture=new Texture();
-    var image = new Image();
-    image.onload = function ()
-    {
-        texture.initTexture(image);
-    };
-    image.src = url;
-    return texture;
-};
-
-
-// ---------------------------------------------------------------------------
-
-var glShader=function()
+CGL.Shader=function()
 {
     var self=this;
     var program=-1;
@@ -321,8 +285,6 @@ var glShader=function()
 
     var projMatrixUniform=-1;
     var mvMatrixUniform=-1;
-    // var attribSizeVertex=-1;
-    // var attribSizeTexCoords=-1;
 
     var attrTexCoords = -1;
     var attrVertexPos = -1;
@@ -330,21 +292,10 @@ var glShader=function()
     this.getAttrTexCoords=function(){return attrTexCoords;};
     this.getAttrVertexPos=function(){return attrVertexPos;};
 
-    // this.setAttributeTexCoord=function(size)
-    // {
-    //     attribSizeTexCoords=size;
-    // };
-
-    // this.setAttributeVertex=function(size)
-    // {
-    //     attribSizeVertex=size;
-    // };
 
     this.bind=function()
     {
-        // if(attribSizeVertex==-1)return;
-
-        if(program==-1) program=glUtils.createProgram(self.srcVert,self.srcFrag);
+        if(program==-1) program=createProgram(self.srcVert,self.srcFrag);
 
         if(mvMatrixUniform==-1)
         {
@@ -355,7 +306,6 @@ var glShader=function()
             mvMatrixUniform = gl.getUniformLocation(program, "mvMatrix");
         }
 
-
         GL.useProgram(program);
 
         for(var i in uniforms)
@@ -363,14 +313,10 @@ var glShader=function()
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
-
-
         GL.enableVertexAttribArray(program.vertexPosAttrib);
 
         gl.uniformMatrix4fv(projMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(mvMatrixUniform, false, mvMatrix);
-
-
     };
 
     this.getProgram=function()
@@ -378,49 +324,77 @@ var glShader=function()
         return program;
     };
 
-};
 
-var glUtils={};
-
-glUtils.createShader =function(str, type)
-{
-    var shader = gl.createShader(type);
-    gl.shaderSource(shader, str);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+    createShader =function(str, type)
     {
-        console.log('compile status: ');
+        var shader = gl.createShader(type);
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+        {
+            console.log('compile status: ');
 
-        if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
-        if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
-        
-        throw gl.getShaderInfoLog(shader);
-    }
-    return shader;
-};
+            if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
+            if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
+            
+            throw gl.getShaderInfoLog(shader);
+        }
+        return shader;
+    };
 
-glUtils.createProgram=function(vstr, fstr)
-{
-    var program = gl.createProgram();
-    var vshader = glUtils.createShader(vstr, gl.VERTEX_SHADER);
-    var fshader = glUtils.createShader(fstr, gl.FRAGMENT_SHADER);
-    gl.attachShader(program, vshader);
-    gl.attachShader(program, fshader);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+    createProgram=function(vstr, fstr)
     {
-        throw gl.getProgramInfoLog(program);
-    }
-    return program;
+        var program = gl.createProgram();
+        var vshader = createShader(vstr, gl.VERTEX_SHADER);
+        var fshader = createShader(fstr, gl.FRAGMENT_SHADER);
+        gl.attachShader(program, vshader);
+        gl.attachShader(program, fshader);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+        {
+            throw gl.getProgramInfoLog(program);
+        }
+        return program;
+    };
+
+
+
 };
 
 
+var CGL=CGL || {};
 
+CGL.Texture=function()
+{
+    var self=this;
+    this.tex = gl.createTexture();
+    this.loaded=false;
 
+    this.initTexture=function(img)
+    {
+        gl.bindTexture(gl.TEXTURE_2D, self.tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        self.loaded=true;
+    };
+};
 
+CGL.Texture.load=function(url)
+{
+    var texture=new CGL.Texture();
+    var image = new Image();
+    image.onload = function ()
+    {
+        texture.initTexture(image);
+    };
+    image.src = url;
+    return texture;
+};
 
-
-
+// ---------------------------------------------------------------------------
 
 
 var PORT_DIR_IN=0;
@@ -1032,7 +1006,7 @@ Ops.Gl.Renderer = function()
     Op.apply(this, arguments);
     var self=this;
 
-    var simpleShader=new glShader();
+    var simpleShader=new CGL.Shader();
  
 
     this.name='WebGL Renderer';
@@ -1177,7 +1151,7 @@ Ops.Gl.Meshes.ObjMesh = function()
         var r=parseOBJ(response);
         console.log(r);
         
-        self.mesh=new Mesh(r);
+        self.mesh=new CGL.Mesh(r);
     });
 
 
@@ -1312,7 +1286,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
 
-    this.texture=Texture.load('assets/remo_diffuse.jpg');
+    this.texture=CGL.Texture.load('assets/remo_diffuse.jpg');
 
 
     this.doRender=function()
@@ -1350,10 +1324,10 @@ Ops.Gl.Shader.BasicMaterial = function()
         '}\n';
 
 
-    var shader=new glShader();
+    var shader=new CGL.Shader();
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
-    this.textureUniform=new Uniform(shader,'t','texture',this.texture);
+    this.textureUniform=new CGL.Uniform(shader,'t','texture',this.texture);
 
 
     this.doRender();
@@ -1361,7 +1335,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.r=this.addInPort(new Port(this,"r"));
     this.r.onValueChanged=function()
     {
-        if(!self.r.uniform) self.r.uniform=new Uniform(shader,'f','r',self.r.val);
+        if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.val);
         else self.r.uniform.setValue(self.r.val);
 
         // shader.bind();
@@ -1372,7 +1346,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.g=this.addInPort(new Port(this,"g"));
     this.g.onValueChanged=function()
     {
-        if(!self.g.uniform) self.g.uniform=new Uniform(shader,'f','g',self.g.val);
+        if(!self.g.uniform) self.g.uniform=new CGL.Uniform(shader,'f','g',self.g.val);
         else self.g.uniform.setValue(self.g.val);
 
         // shader.bind();
@@ -1383,7 +1357,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.b=this.addInPort(new Port(this,"b"));
     this.b.onValueChanged=function()
     {
-        if(!self.b.uniform) self.b.uniform=new Uniform(shader,'f','b',self.b.val);
+        if(!self.b.uniform) self.b.uniform=new CGL.Uniform(shader,'f','b',self.b.val);
         else self.b.uniform.setValue(self.b.val);
 
         // shader.bind();
@@ -1394,7 +1368,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.a=this.addInPort(new Port(this,"a"));
     this.a.onValueChanged=function()
     {
-        if(!self.a.uniform) self.a.uniform=new Uniform(shader,'f','a',self.a.val);
+        if(!self.a.uniform) self.a.uniform=new CGL.Uniform(shader,'f','a',self.a.val);
         else self.a.uniform.setValue(self.a.val);
 
         // shader.bind();
@@ -1447,7 +1421,7 @@ Ops.Gl.Shader.Schwurbel = function()
         'gl_FragColor = vec4( c,c,c,1.0);\n'+
         '}\n';
 
-    var shader=new glShader();
+    var shader=new CGL.Shader();
     shader.compile(shader.getDefaultVertexShader(),srcFrag);
 
     this.doRender();
@@ -1500,7 +1474,7 @@ Ops.Gl.Shader.Noise = function()
         '}\n';
 
 
-    var shader=new glShader();
+    var shader=new CGL.Shader();
     shader.compile(shader.getDefaultVertexShader(),srcFrag);
 
     this.doRender();
@@ -1511,130 +1485,6 @@ Ops.Gl.Shader.Noise.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-
-Ops.Gl.Cube = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='Cube';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-
-
-    this.render.onTriggered=function()
-    {
-        GL.bindBuffer(gl.ARRAY_BUFFER, this.cubeVerticesBuffer);
-        GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, self.cubeVerticesIndexBuffer);
-        // setMatrixUniforms();
-        GL.drawElements(GL.TRIANGLES, 36, GL.UNSIGNED_SHORT, 0);
-    };
-
-    this.cubeVerticesIndexBuffer=null;
-    this.cubeVerticesBuffer=null;
-    // this.cubeVerticesColorBuffer=null;
-
-    this.init=function()
-    {
-        var vertices = [
-            // Front face
-            -1.0, -1.0,  1.0,
-             1.0, -1.0,  1.0,
-             1.0,  1.0,  1.0,
-            -1.0,  1.0,  1.0,
-            
-            // Back face
-            -1.0, -1.0, -1.0,
-            -1.0,  1.0, -1.0,
-             1.0,  1.0, -1.0,
-             1.0, -1.0, -1.0,
-            
-            // Top face
-            -1.0,  1.0, -1.0,
-            -1.0,  1.0,  1.0,
-             1.0,  1.0,  1.0,
-             1.0,  1.0, -1.0,
-            
-            // Bottom face
-            -1.0, -1.0, -1.0,
-             1.0, -1.0, -1.0,
-             1.0, -1.0,  1.0,
-            -1.0, -1.0,  1.0,
-            
-            // Right face
-             1.0, -1.0, -1.0,
-             1.0,  1.0, -1.0,
-             1.0,  1.0,  1.0,
-             1.0, -1.0,  1.0,
-            
-            // Left face
-            -1.0, -1.0, -1.0,
-            -1.0, -1.0,  1.0,
-            -1.0,  1.0,  1.0,
-            -1.0,  1.0, -1.0
-          ];
-
-  this.cubeVerticesBuffer = GL.createBuffer();
-  
-  GL.bindBuffer(GL.ARRAY_BUFFER, this.cubeVerticesBuffer);
-
-  GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(vertices), GL.STATIC_DRAW);
-
-        // var colors = [
-        //     [1.0,  1.0,  1.0,  1.0],    // Front face: white
-        //     [1.0,  0.0,  0.0,  1.0],    // Back face: red
-        //     [0.0,  1.0,  0.0,  1.0],    // Top face: green
-        //     [0.0,  0.0,  1.0,  1.0],    // Bottom face: blue
-        //     [1.0,  1.0,  0.0,  1.0],    // Right face: yellow
-        //     [1.0,  0.0,  1.0,  1.0]     // Left face: purple
-        //   ];
-
-        // var generatedColors = [];
-
-        // for (j=0; j<6; j++)
-        // {
-        //     var c = colors[j];
-        //     for (var i=0; i<4; i++)
-        //     {
-        //       generatedColors = generatedColors.concat(c);
-        //     }
-        // }
-
-        // cubeVerticesColorBuffer = GL.createBuffer();
-        // GL.bindBuffer(GL.ARRAY_BUFFER, cubeVerticesColorBuffer);
-        // GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(generatedColors), GL.STATIC_DRAW);
-
-        this.cubeVerticesIndexBuffer = GL.createBuffer();
-
-        // console.log(this.cubeVerticesIndexBuffer);
-                
-        GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.cubeVerticesIndexBuffer);
-
-        // This array defines each face as two triangles, using the
-        // indices into the vertex array to specify each triangle's
-        // position.
-
-        var cubeVertexIndices = [
-        0,  1,  2,      0,  2,  3,    // front
-        4,  5,  6,      4,  6,  7,    // back
-        8,  9,  10,     8,  10, 11,   // top
-        12, 13, 14,     12, 14, 15,   // bottom
-        16, 17, 18,     16, 18, 19,   // right
-        20, 21, 22,     20, 22, 23    // left
-        ];
-
-        // Now send the element array to GL
-
-        GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), GL.STATIC_DRAW);
-    };
-
-    this.init();
-
-};
-
-Ops.Gl.Cube.prototype = new Op();
-
-
-// --------------------------------------------------------------------------
 
 Ops.Gl.Matrix={};
 

@@ -1,6 +1,6 @@
+var CGL=CGL || {};
 
-
-function Mesh(geom)
+CGL.Mesh=function(geom)
 {
     var bufTexCoords=-1;
     var bufTexCoordsIndizes=-1;
@@ -71,16 +71,16 @@ function Mesh(geom)
 
     };
 
-}
+};
 
-function Geometry()
+CGL.Geometry=function()
 {
     this.faceVertCount=3;
     this.vertices=[];
     this.verticesIndices=[];
     this.texCoords=[];
     this.texCoordsIndices=[];
-}
+};
 
 parseOBJ = function(buff)
 {
@@ -92,7 +92,7 @@ parseOBJ = function(buff)
         return s;
     };
 
-    var geom = new Geometry();
+    var geom = new CGL.Geometry();
     geom.groups = {};
     
     // geom.texCoords   = [];
@@ -169,6 +169,6 @@ parseOBJ = function(buff)
     cg.to = geom.verticesIndices.length;
     
     return geom;
-}
+};
 
 

@@ -1,6 +1,8 @@
+var CGL=CGL || {};
 
+// ---------------------------------------------------------------------------
 
-var Uniform=function(_shader,_type,_name,_value)
+CGL.Uniform=function(_shader,_type,_name,_value)
 {
     var self=this;
     var loc=-1;
@@ -29,8 +31,7 @@ var Uniform=function(_shader,_type,_name,_value)
         if(loc==-1)
         {
             loc=gl.getUniformLocation(shader.getProgram(), name);
-            if(loc==-1)         console.log('texture loc unknown!!');
-                    
+            if(loc==-1) console.log('texture loc unknown!!');
         }
 
         gl.uniform1i(loc, value);
@@ -41,8 +42,6 @@ var Uniform=function(_shader,_type,_name,_value)
         self.needsUpdate=true;
         value=v;
     };
-
-
 
     if(type=='f')
     {
@@ -57,46 +56,11 @@ var Uniform=function(_shader,_type,_name,_value)
     }
 
     this.setValue(_value);
-
 };
 
 // ---------------------------------------------------------------------------
 
-var Texture=function()
-{
-    var self=this;
-    this.tex = gl.createTexture();
-    this.loaded=false;
-
-    this.initTexture=function(img)
-    {
-        gl.bindTexture(gl.TEXTURE_2D, self.tex);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-        self.loaded=true;
-    };
-
-};
-
-Texture.load=function(url)
-{
-    var texture=new Texture();
-    var image = new Image();
-    image.onload = function ()
-    {
-        texture.initTexture(image);
-    };
-    image.src = url;
-    return texture;
-};
-
-
-// ---------------------------------------------------------------------------
-
-var glShader=function()
+CGL.Shader=function()
 {
     var self=this;
     var program=-1;
@@ -146,8 +110,6 @@ var glShader=function()
 
     var projMatrixUniform=-1;
     var mvMatrixUniform=-1;
-    // var attribSizeVertex=-1;
-    // var attribSizeTexCoords=-1;
 
     var attrTexCoords = -1;
     var attrVertexPos = -1;
@@ -155,21 +117,10 @@ var glShader=function()
     this.getAttrTexCoords=function(){return attrTexCoords;};
     this.getAttrVertexPos=function(){return attrVertexPos;};
 
-    // this.setAttributeTexCoord=function(size)
-    // {
-    //     attribSizeTexCoords=size;
-    // };
-
-    // this.setAttributeVertex=function(size)
-    // {
-    //     attribSizeVertex=size;
-    // };
 
     this.bind=function()
     {
-        // if(attribSizeVertex==-1)return;
-
-        if(program==-1) program=glUtils.createProgram(self.srcVert,self.srcFrag);
+        if(program==-1) program=createProgram(self.srcVert,self.srcFrag);
 
         if(mvMatrixUniform==-1)
         {
@@ -180,7 +131,6 @@ var glShader=function()
             mvMatrixUniform = gl.getUniformLocation(program, "mvMatrix");
         }
 
-
         GL.useProgram(program);
 
         for(var i in uniforms)
@@ -188,14 +138,10 @@ var glShader=function()
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
-
-
         GL.enableVertexAttribArray(program.vertexPosAttrib);
 
         gl.uniformMatrix4fv(projMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(mvMatrixUniform, false, mvMatrix);
-
-
     };
 
     this.getProgram=function()
@@ -203,46 +149,40 @@ var glShader=function()
         return program;
     };
 
-};
 
-var glUtils={};
-
-glUtils.createShader =function(str, type)
-{
-    var shader = gl.createShader(type);
-    gl.shaderSource(shader, str);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+    createShader =function(str, type)
     {
-        console.log('compile status: ');
+        var shader = gl.createShader(type);
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+        {
+            console.log('compile status: ');
 
-        if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
-        if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
-        
-        throw gl.getShaderInfoLog(shader);
-    }
-    return shader;
-};
+            if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
+            if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
+            
+            throw gl.getShaderInfoLog(shader);
+        }
+        return shader;
+    };
 
-glUtils.createProgram=function(vstr, fstr)
-{
-    var program = gl.createProgram();
-    var vshader = glUtils.createShader(vstr, gl.VERTEX_SHADER);
-    var fshader = glUtils.createShader(fstr, gl.FRAGMENT_SHADER);
-    gl.attachShader(program, vshader);
-    gl.attachShader(program, fshader);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+    createProgram=function(vstr, fstr)
     {
-        throw gl.getProgramInfoLog(program);
-    }
-    return program;
+        var program = gl.createProgram();
+        var vshader = createShader(vstr, gl.VERTEX_SHADER);
+        var fshader = createShader(fstr, gl.FRAGMENT_SHADER);
+        gl.attachShader(program, vshader);
+        gl.attachShader(program, fshader);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+        {
+            throw gl.getProgramInfoLog(program);
+        }
+        return program;
+    };
+
+
+
 };
-
-
-
-
-
-
-
 
