@@ -514,7 +514,7 @@ var HOLO=
                 ui.showExample(params.index);
             });
 
-            router.start();
+            router.start('/');
         };
 
         this.show=function(_scene)

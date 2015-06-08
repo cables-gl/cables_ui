@@ -1,42 +1,86 @@
 
 
-
-
 function Mesh(geom)
 {
+    var bufTexCoords=-1;
+    var bufTexCoordsIndizes=-1;
+
+    var bufVertices = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertices), gl.STATIC_DRAW);
+    bufVertices.itemSize = 3;
+    bufVertices.numItems = geom.vertices.length/3;
+
+
+    var bufVerticesIndizes = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), gl.STATIC_DRAW);
+    bufVerticesIndizes.itemSize = 1;
+    bufVerticesIndizes.numItems = geom.verticesIndices.length;
+
+    if(geom.texCoords.length>0)
+    {
+        console.log('found texcoords!');
+                
+        bufTexCoords = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), gl.STATIC_DRAW);
+        bufTexCoords.itemSize = 2;
+        bufTexCoords.numItems = geom.texCoords.length/bufTexCoords.itemSize;
+
+        // bufTexCoordsIndizes = gl.createBuffer();
+        // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufTexCoordsIndizes);
+
+        // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufTexCoordsIndizes), gl.STATIC_DRAW);
+        // bufTexCoordsIndizes.itemSize = 1;
+        // bufTexCoordsIndizes.numItems = geom.texCoordsIndices.length;
+    }
+
+    console.log('geom.vertices.length '+geom.vertices.length);
+    console.log('bufTexCoordsIndizes.numItems '+bufTexCoordsIndizes.numItems);
+    console.log('bufTexCoords.numItems '+bufTexCoords.numItems);
+
+    console.log('bufVertices.numItems '+bufVertices.numItems);
+    console.log('bufVerticesIndizes.numItems '+bufVerticesIndizes.numItems);
+
 
 
     this.render=function(shader)
     {
-        shader.setAttributeVertex( self.bufVertices.itemSize);
+        // shader.setAttributeVertex( bufVertices.itemSize);
+        // shader.setAttributeTexCoord( bufTexCoordsIndizes.itemSize);
         shader.bind();
-        gl.bindBuffer(gl.ARRAY_BUFFER, self.bufVertices);
 
-        gl.drawArrays(gl.POINTS, 0, self.bufVertices.numItems);
+
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
+        gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, gl.FLOAT, false, 0, 0);
+
+        // gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        if(bufTexCoordsIndizes.itemSize!=-1)
+        {
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
+            gl.vertexAttribPointer(shader.getAttrTexCoords(),bufTexCoords.itemSize, gl.FLOAT, false, 0, 0);
+        }
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
+        gl.drawElements(gl.TRIANGLES, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
+
+        // gl.drawArrays(gl.POINTS, 0, bufVertices.numItems);
 
     };
 
-
-    self.bufVertices = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, self.bufVertices);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertices), gl.STATIC_DRAW);
-    self.bufVertices.itemSize = geom.faceVertCount;
-    self.bufVertices.numItems = geom.vertices.length/geom.faceVertCount;
-
 }
-
 
 function Geometry()
 {
     this.faceVertCount=3;
     this.vertices=[];
     this.verticesIndices=[];
-
+    this.texCoords=[];
+    this.texCoordsIndices=[];
 }
-
-
-
-
 
 parseOBJ = function(buff)
 {
@@ -51,11 +95,10 @@ parseOBJ = function(buff)
     var geom = new Geometry();
     geom.groups = {};
     
-    geom.c_uvt   = [];
+    // geom.texCoords   = [];
     geom.c_norms = [];
     
-    geom.i_verts = [];
-    geom.i_uvt   = [];
+    // geom.texCoordsIndices   = [];
     geom.i_norms = [];
     
     var cg = {from: 0, to:0};   // current group
@@ -71,8 +114,8 @@ parseOBJ = function(buff)
         var cds = line.split(" ");
         if(cds[0] == "g")
         {
-            cg.to = geom.i_verts.length;
-            if(geom.groups[cds[1]] == null) geom.groups[cds[1]] = {from:geom.i_verts.length, to:0};
+            cg.to = geom.verticesIndices.length;
+            if(geom.groups[cds[1]] == null) geom.groups[cds[1]] = {from:geom.verticesIndices.length, to:0};
             cg = geom.groups[cds[1]];
         }
         if(cds[0] == "v")
@@ -86,7 +129,7 @@ parseOBJ = function(buff)
         {
             var x = parseFloat(cds[1]);
             var y = 1-parseFloat(cds[2]);
-            geom.c_uvt.push(x,y);
+            geom.texCoords.push(x,y);
         }
         if(cds[0] == "vn")
         {
@@ -102,13 +145,13 @@ parseOBJ = function(buff)
             var ui0 = parseInt(v0a[1])-1, ui1 = parseInt(v1a[1])-1, ui2 = parseInt(v2a[1])-1;
             var ni0 = parseInt(v0a[2])-1, ni1 = parseInt(v1a[2])-1, ni2 = parseInt(v2a[2])-1;
             
-            var vlen = geom.vertices.length/3, ulen = geom.c_uvt.length/2, nlen = geom.c_norms.length/3;
+            var vlen = geom.vertices.length/3, ulen = geom.texCoords.length/2, nlen = geom.c_norms.length/3;
             if(vi0<0) vi0 = vlen + vi0+1; if(vi1<0) vi1 = vlen + vi1+1; if(vi2<0) vi2 = vlen + vi2+1;
             if(ui0<0) ui0 = ulen + ui0+1; if(ui1<0) ui1 = ulen + ui1+1; if(ui2<0) ui2 = ulen + ui2+1;
             if(ni0<0) ni0 = nlen + ni0+1; if(ni1<0) ni1 = nlen + ni1+1; if(ni2<0) ni2 = nlen + ni2+1;
             
-            geom.i_verts.push(vi0, vi1, vi2);  //cg.i_verts.push(vi0, vi1, vi2)
-            geom.i_uvt  .push(ui0, ui1, ui2);  //cg.i_uvt  .push(ui0, ui1, ui2);
+            geom.verticesIndices.push(vi0, vi1, vi2);  //cg.verticesIndices.push(vi0, vi1, vi2)
+            geom.texCoordsIndices  .push(ui0, ui1, ui2);  //cg.texCoordsIndices  .push(ui0, ui1, ui2);
             geom.i_norms.push(ni0, ni1, ni2);  //cg.i_norms.push(ni0, ni1, ni2);
             if(cds.length == 5)
             {
@@ -117,13 +160,13 @@ parseOBJ = function(buff)
                 if(vi3<0) vi3 = vlen + vi3+1;
                 if(ui3<0) ui3 = ulen + ui3+1;
                 if(ni3<0) ni3 = nlen + ni3+1;
-                geom.i_verts.push(vi0, vi2, vi3);  //cg.i_verts.push(vi0, vi2, vi3);
-                geom.i_uvt  .push(ui0, ui2, ui3);  //cg.i_uvt  .push(ui0, ui2, ui3);
+                geom.verticesIndices.push(vi0, vi2, vi3);  //cg.verticesIndices.push(vi0, vi2, vi3);
+                geom.texCoordsIndices  .push(ui0, ui2, ui3);  //cg.texCoordsIndices  .push(ui0, ui2, ui3);
                 geom.i_norms.push(ni0, ni2, ni3);  //cg.i_norms.push(ni0, ni2, ni3);
             }
         }
     }
-    cg.to = geom.i_verts.length;
+    cg.to = geom.verticesIndices.length;
     
     return geom;
 }
@@ -132,20 +175,124 @@ parseOBJ = function(buff)
 
 
 
+var Uniform=function(_shader,_type,_name,_value)
+{
+    var self=this;
+    var loc=-1;
+    var name=_name;
+    var type=_type;
+    var value=0;
+    var shader=_shader;
+    this.needsUpdate=true;
 
+    shader.addUniform(this);
+
+    this.updateValueF=function()
+    {
+        if(loc==-1) loc=gl.getUniformLocation(shader.getProgram(), name);
+        gl.uniform1f(loc, value);
+    };
+
+    this.setValueF=function(v)
+    {
+        self.needsUpdate=true;
+        value=v;
+    };
+
+    this.updateValueT=function()
+    {
+        if(loc==-1)
+        {
+            loc=gl.getUniformLocation(shader.getProgram(), name);
+            if(loc==-1)         console.log('texture loc unknown!!');
+                    
+        }
+
+        gl.uniform1i(loc, value);
+    };
+
+    this.setValueT=function(v)
+    {
+        self.needsUpdate=true;
+        value=v;
+    };
+
+
+
+    if(type=='f')
+    {
+        this.setValue=this.setValueF;
+        this.updateValue=this.updateValueF;
+    }
+
+    if(type=='t')
+    {
+        this.setValue=this.setValueT;
+        this.updateValue=this.updateValueT;
+    }
+
+    this.setValue(_value);
+
+};
+
+// ---------------------------------------------------------------------------
+
+var Texture=function()
+{
+    var self=this;
+    this.tex = gl.createTexture();
+    this.loaded=false;
+
+    this.initTexture=function(img)
+    {
+        gl.bindTexture(gl.TEXTURE_2D, self.tex);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        self.loaded=true;
+    };
+
+};
+
+Texture.load=function(url)
+{
+    var texture=new Texture();
+    var image = new Image();
+    image.onload = function ()
+    {
+        texture.initTexture(image);
+    };
+    image.src = url;
+    return texture;
+};
+
+
+// ---------------------------------------------------------------------------
 
 var glShader=function()
 {
+    var self=this;
     var program=-1;
+    var uniforms=[];
+
+    this.addUniform=function(uni)
+    {
+        uniforms.push(uni);
+    };
 
     this.getDefaultVertexShader=function()
     {
         return ''+
         'attribute vec3 vPosition;\n'+
+        'attribute vec2 attrTexCoord;\n'+
+        'varying vec2 texCoord;\n'+
         'uniform mat4 projMatrix;\n'+
         'uniform mat4 mvMatrix;\n'+
         'void main()\n'+
         '{\n'+
+        '   texCoord=attrTexCoord;\n'+
         '   gl_PointSize=3.0;\n'+
         '   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);\n'+
         '}\n';
@@ -162,38 +309,68 @@ var glShader=function()
         '}\n';
     };
 
-    this.compile=function(srcVert,srcFrag)
+    this.srcVert=this.getDefaultVertexShader();
+    this.srcFrag=this.getDefaultFragmentShader();
+
+    this.setSource=function(srcVert,srcFrag)
     {
-        program=glUtils.createProgram(srcVert,srcFrag);
-        console.log('compiled!');
+        this.srcVert=srcVert;
+        this.srcFrag=srcFrag;
+        // console.log('compiled!');
     };
 
     var projMatrixUniform=-1;
     var mvMatrixUniform=-1;
-    var vertexAttributeSize=-1;
+    // var attribSizeVertex=-1;
+    // var attribSizeTexCoords=-1;
 
-    this.setAttributeVertex=function(size)
-    {
-        vertexAttributeSize=size;
-    };
+    var attrTexCoords = -1;
+    var attrVertexPos = -1;
+
+    this.getAttrTexCoords=function(){return attrTexCoords;};
+    this.getAttrVertexPos=function(){return attrVertexPos;};
+
+    // this.setAttributeTexCoord=function(size)
+    // {
+    //     attribSizeTexCoords=size;
+    // };
+
+    // this.setAttributeVertex=function(size)
+    // {
+    //     attribSizeVertex=size;
+    // };
 
     this.bind=function()
     {
-        if(program==-1) this.compile(this.getDefaultVertexShader(),this.getDefaultFragmentShader());
+        // if(attribSizeVertex==-1)return;
+
+        if(program==-1) program=glUtils.createProgram(self.srcVert,self.srcFrag);
+
         if(mvMatrixUniform==-1)
         {
-            program.vertexPosAttrib = GL.getAttribLocation(program, 'vPosition');
+            attrTexCoords = GL.getAttribLocation(program, 'attrTexCoord');
+            attrVertexPos = GL.getAttribLocation(program, 'vPosition');
+
             projMatrixUniform = gl.getUniformLocation(program, "projMatrix");
             mvMatrixUniform = gl.getUniformLocation(program, "mvMatrix");
         }
 
+
         GL.useProgram(program);
+
+        for(var i in uniforms)
+        {
+            if(uniforms[i].needsUpdate)uniforms[i].updateValue();
+        }
+
+
+
         GL.enableVertexAttribArray(program.vertexPosAttrib);
 
         gl.uniformMatrix4fv(projMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(mvMatrixUniform, false, mvMatrix);
 
-        gl.vertexAttribPointer(program.vertexPosAttrib,vertexAttributeSize, gl.FLOAT, false, 0, 0);
+
     };
 
     this.getProgram=function()
@@ -203,13 +380,7 @@ var glShader=function()
 
 };
 
-
-
 var glUtils={};
-
-
-
-
 
 glUtils.createShader =function(str, type)
 {
@@ -223,7 +394,6 @@ glUtils.createShader =function(str, type)
         if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
         if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
         
-                
         throw gl.getShaderInfoLog(shader);
     }
     return shader;
@@ -237,7 +407,8 @@ glUtils.createProgram=function(vstr, fstr)
     gl.attachShader(program, vshader);
     gl.attachShader(program, fshader);
     gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+    {
         throw gl.getProgramInfoLog(program);
     }
     return program;
@@ -847,6 +1018,7 @@ function ajaxRequest(url, callback)
 
 //http://k3d.ivank.net/K3D.js
 //http://fhtr.blogspot.de/2009/12/3d-models-and-parsing-binary-data-with.html
+//https://github.com/gpjt/webgl-lessons/blob/master/lesson05/index.html
 
 Ops.Gl={};
 var GL=null;
@@ -946,7 +1118,9 @@ Ops.Gl.Meshes.Rectangle = function()
 
     this.render.onTriggered=function()
     {
-        currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+        // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
         currentShader.bind();
         gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
@@ -1004,11 +1178,7 @@ Ops.Gl.Meshes.ObjMesh = function()
         console.log(r);
         
         self.mesh=new Mesh(r);
-        
-
-
     });
-
 
 
 
@@ -1034,7 +1204,8 @@ Ops.Gl.Meshes.Plotter = function()
 
     this.render.onTriggered=function()
     {
-        currentShader.setAttributeVertex( self.buffer.itemSize);
+        // currentShader.setAttributeVertex( self.buffer.itemSize);
+        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.buffer.itemSize, gl.FLOAT, false, 0, 0);
         currentShader.bind();
         gl.bindBuffer(gl.ARRAY_BUFFER, self.buffer);
         gl.drawArrays(gl.LINE_STRIP, 0, self.buffer.numItems);
@@ -1098,7 +1269,11 @@ Ops.Gl.Meshes.Triangle = function()
 
     this.render.onTriggered=function()
     {
-        currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+        // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+        // gl.vertexAttribPointer(shader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+
         currentShader.bind();
         gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
@@ -1136,15 +1311,31 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
+
+    this.texture=Texture.load('assets/remo_diffuse.jpg');
+
+
     this.doRender=function()
     {
         currentShader=shader;
+
+        gl.activeTexture(gl.TEXTURE0);
+
+        if(self.texture.loaded===true)
+        {
+            gl.bindTexture(gl.TEXTURE_2D, self.texture.tex);
+
+            
+        }
+
 
         self.trigger.call();
     };
 
     var srcFrag=''+
         'precision mediump float;\n'+
+        'varying vec2 texCoord;\n'+
+        'uniform sampler2D texture;\n'+
         'uniform float r;\n'+
         'uniform float g;\n'+
         'uniform float b;\n'+
@@ -1152,45 +1343,63 @@ Ops.Gl.Shader.BasicMaterial = function()
         '\n'+
         'void main()\n'+
         '{\n'+
+
+        '   float rr=texture2D(texture,texCoord).r;\n'+
+
         '   gl_FragColor = vec4(r,g,b,a);\n'+
         '}\n';
 
 
     var shader=new glShader();
-    shader.compile(shader.getDefaultVertexShader(),srcFrag);
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+    this.textureUniform=new Uniform(shader,'t','texture',this.texture);
+
 
     this.doRender();
 
     this.r=this.addInPort(new Port(this,"r"));
     this.r.onValueChanged=function()
     {
-        shader.bind();
-        if(!self.r.uniLoc) self.r.uniLoc=gl.getUniformLocation(shader.getProgram(), "r");
-        gl.uniform1f(self.r.uniLoc, self.r.val);
+        if(!self.r.uniform) self.r.uniform=new Uniform(shader,'f','r',self.r.val);
+        else self.r.uniform.setValue(self.r.val);
+
+        // shader.bind();
+        // if(!self.r.uniLoc) self.r.uniLoc=gl.getUniformLocation(shader.getProgram(), "r");
+        // gl.uniform1f(self.r.uniLoc, self.r.val);
     };
 
     this.g=this.addInPort(new Port(this,"g"));
     this.g.onValueChanged=function()
     {
-        shader.bind();
-        if(!self.g.uniLoc) self.g.uniLoc=gl.getUniformLocation(shader.getProgram(), "g");
-        gl.uniform1f(self.g.uniLoc, self.g.val);
+        if(!self.g.uniform) self.g.uniform=new Uniform(shader,'f','g',self.g.val);
+        else self.g.uniform.setValue(self.g.val);
+
+        // shader.bind();
+        // if(!self.g.uniLoc) self.g.uniLoc=gl.getUniformLocation(shader.getProgram(), "g");
+        // gl.uniform1f(self.g.uniLoc, self.g.val);
     };
 
     this.b=this.addInPort(new Port(this,"b"));
     this.b.onValueChanged=function()
     {
-        shader.bind();
-        if(!self.b.uniLoc) self.b.uniLoc=gl.getUniformLocation(shader.getProgram(), "b");
-        gl.uniform1f(self.b.uniLoc, self.b.val);
+        if(!self.b.uniform) self.b.uniform=new Uniform(shader,'f','b',self.b.val);
+        else self.b.uniform.setValue(self.b.val);
+
+        // shader.bind();
+        // if(!self.b.uniLoc) self.b.uniLoc=gl.getUniformLocation(shader.getProgram(), "b");
+        // gl.uniform1f(self.b.uniLoc, self.b.val);
     };
 
     this.a=this.addInPort(new Port(this,"a"));
     this.a.onValueChanged=function()
     {
-        shader.bind();
-        if(!self.a.uniLoc) self.a.uniLoc=gl.getUniformLocation(shader.getProgram(), "a");
-        gl.uniform1f(self.a.uniLoc, self.a.val);
+        if(!self.a.uniform) self.a.uniform=new Uniform(shader,'f','a',self.a.val);
+        else self.a.uniform.setValue(self.a.val);
+
+        // shader.bind();
+        // if(!self.a.uniLoc) self.a.uniLoc=gl.getUniformLocation(shader.getProgram(), "a");
+        // gl.uniform1f(self.a.uniLoc, self.a.val);
     };
 
     this.r.val=Math.random();

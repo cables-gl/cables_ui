@@ -1,5 +1,6 @@
 //http://k3d.ivank.net/K3D.js
 //http://fhtr.blogspot.de/2009/12/3d-models-and-parsing-binary-data-with.html
+//https://github.com/gpjt/webgl-lessons/blob/master/lesson05/index.html
 
 Ops.Gl={};
 var GL=null;
@@ -99,7 +100,9 @@ Ops.Gl.Meshes.Rectangle = function()
 
     this.render.onTriggered=function()
     {
-        currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+        // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
         currentShader.bind();
         gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
@@ -157,11 +160,7 @@ Ops.Gl.Meshes.ObjMesh = function()
         console.log(r);
         
         self.mesh=new Mesh(r);
-        
-
-
     });
-
 
 
 
@@ -187,7 +186,8 @@ Ops.Gl.Meshes.Plotter = function()
 
     this.render.onTriggered=function()
     {
-        currentShader.setAttributeVertex( self.buffer.itemSize);
+        // currentShader.setAttributeVertex( self.buffer.itemSize);
+        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.buffer.itemSize, gl.FLOAT, false, 0, 0);
         currentShader.bind();
         gl.bindBuffer(gl.ARRAY_BUFFER, self.buffer);
         gl.drawArrays(gl.LINE_STRIP, 0, self.buffer.numItems);
@@ -251,7 +251,11 @@ Ops.Gl.Meshes.Triangle = function()
 
     this.render.onTriggered=function()
     {
-        currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+        // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+        // gl.vertexAttribPointer(shader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+
         currentShader.bind();
         gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
@@ -289,15 +293,31 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
+
+    this.texture=Texture.load('assets/remo_diffuse.jpg');
+
+
     this.doRender=function()
     {
         currentShader=shader;
+
+        gl.activeTexture(gl.TEXTURE0);
+
+        if(self.texture.loaded===true)
+        {
+            gl.bindTexture(gl.TEXTURE_2D, self.texture.tex);
+
+            
+        }
+
 
         self.trigger.call();
     };
 
     var srcFrag=''+
         'precision mediump float;\n'+
+        'varying vec2 texCoord;\n'+
+        'uniform sampler2D texture;\n'+
         'uniform float r;\n'+
         'uniform float g;\n'+
         'uniform float b;\n'+
@@ -305,45 +325,63 @@ Ops.Gl.Shader.BasicMaterial = function()
         '\n'+
         'void main()\n'+
         '{\n'+
+
+        '   float rr=texture2D(texture,texCoord).r;\n'+
+
         '   gl_FragColor = vec4(r,g,b,a);\n'+
         '}\n';
 
 
     var shader=new glShader();
-    shader.compile(shader.getDefaultVertexShader(),srcFrag);
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+    this.textureUniform=new Uniform(shader,'t','texture',this.texture);
+
 
     this.doRender();
 
     this.r=this.addInPort(new Port(this,"r"));
     this.r.onValueChanged=function()
     {
-        shader.bind();
-        if(!self.r.uniLoc) self.r.uniLoc=gl.getUniformLocation(shader.getProgram(), "r");
-        gl.uniform1f(self.r.uniLoc, self.r.val);
+        if(!self.r.uniform) self.r.uniform=new Uniform(shader,'f','r',self.r.val);
+        else self.r.uniform.setValue(self.r.val);
+
+        // shader.bind();
+        // if(!self.r.uniLoc) self.r.uniLoc=gl.getUniformLocation(shader.getProgram(), "r");
+        // gl.uniform1f(self.r.uniLoc, self.r.val);
     };
 
     this.g=this.addInPort(new Port(this,"g"));
     this.g.onValueChanged=function()
     {
-        shader.bind();
-        if(!self.g.uniLoc) self.g.uniLoc=gl.getUniformLocation(shader.getProgram(), "g");
-        gl.uniform1f(self.g.uniLoc, self.g.val);
+        if(!self.g.uniform) self.g.uniform=new Uniform(shader,'f','g',self.g.val);
+        else self.g.uniform.setValue(self.g.val);
+
+        // shader.bind();
+        // if(!self.g.uniLoc) self.g.uniLoc=gl.getUniformLocation(shader.getProgram(), "g");
+        // gl.uniform1f(self.g.uniLoc, self.g.val);
     };
 
     this.b=this.addInPort(new Port(this,"b"));
     this.b.onValueChanged=function()
     {
-        shader.bind();
-        if(!self.b.uniLoc) self.b.uniLoc=gl.getUniformLocation(shader.getProgram(), "b");
-        gl.uniform1f(self.b.uniLoc, self.b.val);
+        if(!self.b.uniform) self.b.uniform=new Uniform(shader,'f','b',self.b.val);
+        else self.b.uniform.setValue(self.b.val);
+
+        // shader.bind();
+        // if(!self.b.uniLoc) self.b.uniLoc=gl.getUniformLocation(shader.getProgram(), "b");
+        // gl.uniform1f(self.b.uniLoc, self.b.val);
     };
 
     this.a=this.addInPort(new Port(this,"a"));
     this.a.onValueChanged=function()
     {
-        shader.bind();
-        if(!self.a.uniLoc) self.a.uniLoc=gl.getUniformLocation(shader.getProgram(), "a");
-        gl.uniform1f(self.a.uniLoc, self.a.val);
+        if(!self.a.uniform) self.a.uniform=new Uniform(shader,'f','a',self.a.val);
+        else self.a.uniform.setValue(self.a.val);
+
+        // shader.bind();
+        // if(!self.a.uniLoc) self.a.uniLoc=gl.getUniformLocation(shader.getProgram(), "a");
+        // gl.uniform1f(self.a.uniLoc, self.a.val);
     };
 
     this.r.val=Math.random();
