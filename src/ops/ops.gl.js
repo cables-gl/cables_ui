@@ -27,7 +27,7 @@ Ops.Gl.Renderer = function()
     this.onAnimFrame=function(time)
     {
         currentShader=simpleShader;
-
+gl.enable(gl.DEPTH_TEST);
         GL.clearColor(0,0,0,1);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         gl.viewport(0,0,640,360);
@@ -152,11 +152,30 @@ Ops.Gl.Meshes.ObjMesh = function()
     };
 
 
-    ajaxRequest('assets/43_ChinUpperRaise.obj',function(response)
+    ajaxRequest('assets/skull.obj',function(response)
     {
         console.log(response);
                 
         var r=parseOBJ(response);
+
+unwrap = function(ind, crd, cpi)   
+{
+    var ncrd = new Array(Math.floor(ind.length/3)*cpi);
+    for(var i=0; i<ind.length; i++)
+    {
+        for(var j=0; j<cpi; j++)
+        {
+            ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
+        }
+    }
+    return ncrd;
+};
+
+var l=r.verticesIndices.length;
+        r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
+        r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
+        r.verticesIndices = [];
+        for(var i=0; i<l; i++) r.verticesIndices.push(i);
         console.log(r);
         
         self.mesh=new CGL.Mesh(r);
@@ -167,6 +186,123 @@ Ops.Gl.Meshes.ObjMesh = function()
 };
 
 Ops.Gl.Meshes.ObjMesh.prototype = new Op();
+
+
+
+
+
+// ----------------------------------------------------------------
+
+
+Ops.Gl.Meshes.Cube = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Cube';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.mesh=null;
+
+    this.render.onTriggered=function()
+    {
+        if(self.mesh!==null)
+        {
+            self.mesh.render(currentShader);
+        }
+
+        self.trigger.call();
+    };
+
+
+    var geom=new CGL.Geometry();
+
+            geom.vertices = [
+            // Front face
+            -1.0, -1.0,  1.0,
+             1.0, -1.0,  1.0,
+             1.0,  1.0,  1.0,
+            -1.0,  1.0,  1.0,
+            // Back face
+            -1.0, -1.0, -1.0,
+            -1.0,  1.0, -1.0,
+             1.0,  1.0, -1.0,
+             1.0, -1.0, -1.0,
+            // Top face
+            -1.0,  1.0, -1.0,
+            -1.0,  1.0,  1.0,
+             1.0,  1.0,  1.0,
+             1.0,  1.0, -1.0,
+            // Bottom face
+            -1.0, -1.0, -1.0,
+             1.0, -1.0, -1.0,
+             1.0, -1.0,  1.0,
+            -1.0, -1.0,  1.0,
+            // Right face
+             1.0, -1.0, -1.0,
+             1.0,  1.0, -1.0,
+             1.0,  1.0,  1.0,
+             1.0, -1.0,  1.0,
+            // Left face
+            -1.0, -1.0, -1.0,
+            -1.0, -1.0,  1.0,
+            -1.0,  1.0,  1.0,
+            -1.0,  1.0, -1.0,
+        ];
+
+        geom.texCoords = [
+          // Front face
+          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
+          // Back face
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
+          0.0, 0.0,
+          // Top face
+          0.0, 1.0,
+          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          // Bottom face
+          1.0, 1.0,
+          0.0, 1.0,
+          0.0, 0.0,
+          1.0, 0.0,
+          // Right face
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
+          0.0, 0.0,
+          // Left face
+          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
+        ];
+
+        geom.verticesIndices = [
+            0, 1, 2,      0, 2, 3,    // Front face
+            4, 5, 6,      4, 6, 7,    // Back face
+            8, 9, 10,     8, 10, 11,  // Top face
+            12, 13, 14,   12, 14, 15, // Bottom face
+            16, 17, 18,   16, 18, 19, // Right face
+            20, 21, 22,   20, 22, 23  // Left face
+        ];
+
+
+
+    this.mesh=new CGL.Mesh(geom);
+
+
+
+};
+
+Ops.Gl.Meshes.Cube.prototype = new Op();
+
 
 
 
@@ -294,7 +430,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
 
-    this.texture=CGL.Texture.load('assets/remo_diffuse.jpg');
+    this.texture=CGL.Texture.load('assets/skull.png');
 
 
     this.doRender=function()
@@ -302,22 +438,15 @@ Ops.Gl.Shader.BasicMaterial = function()
         currentShader=shader;
 
         gl.activeTexture(gl.TEXTURE0);
-
-        if(self.texture.loaded===true)
-        {
-            gl.bindTexture(gl.TEXTURE_2D, self.texture.tex);
-
-            
-        }
-
+        gl.bindTexture(gl.TEXTURE_2D, self.texture.tex);
 
         self.trigger.call();
     };
 
     var srcFrag=''+
-        'precision mediump float;\n'+
+        'precision highp float;\n'+
         'varying vec2 texCoord;\n'+
-        'uniform sampler2D texture;\n'+
+        'uniform sampler2D tex;\n'+
         'uniform float r;\n'+
         'uniform float g;\n'+
         'uniform float b;\n'+
@@ -326,16 +455,15 @@ Ops.Gl.Shader.BasicMaterial = function()
         'void main()\n'+
         '{\n'+
 
-        '   float rr=texture2D(texture,texCoord).r;\n'+
-
-        '   gl_FragColor = vec4(r,g,b,a);\n'+
+        '   vec3 col=texture2D(tex,texCoord).rgb;\n'+
+        '   gl_FragColor = vec4(col,a);\n'+
         '}\n';
 
 
     var shader=new CGL.Shader();
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
-    this.textureUniform=new CGL.Uniform(shader,'t','texture',this.texture);
+    this.textureUniform=new CGL.Uniform(shader,'t','tex',0);
 
 
     this.doRender();

@@ -18,23 +18,32 @@ var examples=
         },
         {
             "title":"obj mesh",
-            "src":{"ops":[{"name":"WebGL Renderer","objName":"Ops.Gl.Renderer","id":"de493ddd-ea53-4698-87fc-d96c32872dd0","uiAttribs":{"translate":{"x":159,"y":29}},"portsIn":[],"portsOut":[{"name":"trigger","value":null}]},{"name":"OBJ Mesh","objName":"Ops.Gl.Meshes.ObjMesh","id":"4d6985e0-814a-42e2-8347-831ca7793c27","uiAttribs":{"translate":{"x":258,"y":330}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"4d6985e0-814a-42e2-8347-831ca7793c27","objOut":"7a83d96e-b2af-4370-88a4-821b0503cdc3"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"7a83d96e-b2af-4370-88a4-821b0503cdc3","uiAttribs":{"translate":{"x":214,"y":217}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"7a83d96e-b2af-4370-88a4-821b0503cdc3","objOut":"3085deda-2ea7-4f35-ab3f-f5bdc35a8213"}]},{"name":"posX","value":0},{"name":"posY","value":0},{"name":"posZ","value":"-223"},{"name":"scaleX","value":1},{"name":"scaleY","value":1},{"name":"scaleZ","value":1},{"name":"rotX","value":0},{"name":"rotY","value":166.2000060081482,"links":[{"portIn":"rotY","portOut":"result","objIn":"7a83d96e-b2af-4370-88a4-821b0503cdc3","objOut":"ca2ff7af-54a9-4891-9ebd-097d23933cc4"}]},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"RelativeTime","objName":"Ops.Anim.RelativeTime","id":"8ba0bb62-410d-4199-8ead-d8b89a0f2de0","uiAttribs":{"translate":{"x":412,"y":66}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"8ba0bb62-410d-4199-8ead-d8b89a0f2de0","objOut":"de493ddd-ea53-4698-87fc-d96c32872dd0"}]}],"portsOut":[{"name":"result","value":3.324000120162964}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"ca2ff7af-54a9-4891-9ebd-097d23933cc4","uiAttribs":{"translate":{"x":369,"y":130}},"portsIn":[{"name":"number1","value":3.324000120162964,"links":[{"portIn":"number1","portOut":"result","objIn":"ca2ff7af-54a9-4891-9ebd-097d23933cc4","objOut":"8ba0bb62-410d-4199-8ead-d8b89a0f2de0"}]},{"name":"number2","value":"50"}],"portsOut":[{"name":"result","value":166.2000060081482}]},{"name":"BasicMaterial","objName":"Ops.Gl.Shader.BasicMaterial","id":"3085deda-2ea7-4f35-ab3f-f5bdc35a8213","uiAttribs":{"translate":{"x":168,"y":119}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"3085deda-2ea7-4f35-ab3f-f5bdc35a8213","objOut":"de493ddd-ea53-4698-87fc-d96c32872dd0"}]},{"name":"r","value":0.470756561961025},{"name":"g","value":0.8225311778951436},{"name":"b","value":"1"},{"name":"a","value":"0.3"}],"portsOut":[{"name":"trigger","value":null}]}]}
+            "src":{"ops":[{"name":"WebGL Renderer","objName":"Ops.Gl.Renderer","id":"636c08ce-ca21-42a5-bb78-adb0a878974b","uiAttribs":{"translate":{"x":159,"y":29}},"portsIn":[],"portsOut":[{"name":"trigger","value":null}]},{"name":"OBJ Mesh","objName":"Ops.Gl.Meshes.ObjMesh","id":"c09e67d7-15ed-4368-a22c-e3a6ba2a83cc","uiAttribs":{"translate":{"x":258,"y":330}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"c09e67d7-15ed-4368-a22c-e3a6ba2a83cc","objOut":"aa8f8b99-dd58-4ab9-876e-ea557f74d5cc"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"aa8f8b99-dd58-4ab9-876e-ea557f74d5cc","uiAttribs":{"translate":{"x":214,"y":217}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"aa8f8b99-dd58-4ab9-876e-ea557f74d5cc","objOut":"7c9dbfc5-0e4b-4291-bc4a-d52510147075"}]},{"name":"posX","value":0},{"name":"posY","value":"-20"},{"name":"posZ","value":"-223"},{"name":"scaleX","value":1},{"name":"scaleY","value":1},{"name":"scaleZ","value":1},{"name":"rotX","value":0},{"name":"rotY","value":1266.2500023841858,"links":[{"portIn":"rotY","portOut":"result","objIn":"aa8f8b99-dd58-4ab9-876e-ea557f74d5cc","objOut":"208f18e5-a4f8-416c-acaf-5fb1141f38b6"}]},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"RelativeTime","objName":"Ops.Anim.RelativeTime","id":"60d43c12-7422-4442-909b-684ea71dd43b","uiAttribs":{"translate":{"x":412,"y":66}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"60d43c12-7422-4442-909b-684ea71dd43b","objOut":"636c08ce-ca21-42a5-bb78-adb0a878974b"}]}],"portsOut":[{"name":"result","value":25.325000047683716}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"208f18e5-a4f8-416c-acaf-5fb1141f38b6","uiAttribs":{"translate":{"x":369,"y":130}},"portsIn":[{"name":"number1","value":25.325000047683716,"links":[{"portIn":"number1","portOut":"result","objIn":"208f18e5-a4f8-416c-acaf-5fb1141f38b6","objOut":"60d43c12-7422-4442-909b-684ea71dd43b"}]},{"name":"number2","value":"50"}],"portsOut":[{"name":"result","value":1266.2500023841858}]},{"name":"BasicMaterial","objName":"Ops.Gl.Shader.BasicMaterial","id":"7c9dbfc5-0e4b-4291-bc4a-d52510147075","uiAttribs":{"translate":{"x":168,"y":119}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"7c9dbfc5-0e4b-4291-bc4a-d52510147075","objOut":"636c08ce-ca21-42a5-bb78-adb0a878974b"}]},{"name":"r","value":0.470756561961025},{"name":"g","value":0.8225311778951436},{"name":"b","value":"1"},{"name":"a","value":"1"}],"portsOut":[{"name":"trigger","value":null}]}]}
         }
 
     ]
 ;
+var CABLES=CABLES || {};
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
+
+    // window.onerror = function(message, url, lineNumber)
+    // {
+    //     console.error(message);
+    //     alert('error: '+JSON.stringify(message)+'\n'+url+'\nline:'+lineNumber);
+    //     return true;
+    // };
+
+
     var scene=new Scene();
-    ui=new HOLO.Ui();
+    ui=new CABLES.Ui();
     ui.show(scene);
-
-
-    
 });
 
 // --------------------------------
+
+
 
 var uiConfig=
 {
@@ -56,7 +65,6 @@ function getPortColor(type)
 }
 
 var r;
-
 var selectedEndPort=null;
 
 
@@ -140,14 +148,14 @@ function UiLink(port1, port2)
             toY+=uiConfig.portSize;
         }
 
-cp1X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
-cp2X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
+        cp1X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
+        cp2X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
 
 
-var difx=Math.min(fromX,toX)+Math.abs(toX-fromX);
+        var difx=Math.min(fromX,toX)+Math.abs(toX-fromX);
 
-cp1X=fromX-0;
-cp2X=toX+0;
+        cp1X=fromX-0;
+        cp2X=toX+0;
 
 
 
@@ -410,19 +418,33 @@ var line;
     };
 
 
-var HOLO=
-{
-    Ui:function()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    CABLES.Ui=function()
     {
         var self=this;
         this.ops=[];
         this.scene=null;
-
-
-
-
-
-
 
         this.setLayout=function()
         {
@@ -491,7 +513,6 @@ var HOLO=
 
         this.addOpList=function(val,parentname)
         {
-        
             if (Object.prototype.toString.call(val) === '[object Object]')
             {
                 for (var propertyName in val)
@@ -510,12 +531,10 @@ var HOLO=
                         html+='<br/>';
                         $('#meta').append(html);
                         
-                        
                         found=this.addOpList(val[propertyName],parentname+propertyName+'.');
                     }
                 }
             }
-
         };
 
         this.setUpRouting=function()
@@ -545,7 +564,6 @@ var HOLO=
         this.show=function(_scene)
         {
             this.scene=_scene;
-            
 
             $('#meta').append(getHandleBarHtml('timeline_controler'),{});
             $('#meta').append();
@@ -558,7 +576,6 @@ var HOLO=
                 $('#meta').append(html);
             }
 
-
             $('#meta').append('<br/><br/>Ops:<br/>');
             this.addOpList(Ops,'');
             r= Raphael(0, 0, 640, 480);
@@ -567,7 +584,6 @@ var HOLO=
 
                 var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
                 self.showModal(html);
-
 
                 $('#opsearch').focus();
                 $('#opsearch').on('input',function(e)
@@ -579,7 +595,6 @@ var HOLO=
                     else
                         $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
                 });
-
 
                 // self.showOptionsScene();
             });
@@ -601,7 +616,6 @@ var HOLO=
 
         this.bindScene=function(scene)
         {
-
             scene.onUnLink=function(p1,p2)
             {
                 for(var i in self.ops)
@@ -678,12 +692,8 @@ var HOLO=
                         uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
                     }
                 }
-
             };
         };
-
-
-
 
         this.closeModal=function()
         {
@@ -699,7 +709,6 @@ var HOLO=
             $('#modalcontent').show();
             $('#modalbg').show();
         };
-
 
         this.importDialog=function()
         {
@@ -719,9 +728,7 @@ var HOLO=
             html+='<textarea id="serialized"></textarea>';
             self.showModal(html);
             $('#serialized').val(self.scene.serialize());
-
         };
-
 
         this.updateOpParams=function(id)
         {
@@ -801,16 +808,9 @@ var HOLO=
                 })(ipii);
 
             }
-
-            
-
         };
 
+    };
 
 
-
-
-    }
-
-};
 

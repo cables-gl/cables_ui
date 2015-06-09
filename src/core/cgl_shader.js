@@ -34,7 +34,10 @@ CGL.Uniform=function(_shader,_type,_name,_value)
             if(loc==-1) console.log('texture loc unknown!!');
         }
 
-        gl.uniform1i(loc, value);
+        // console.log('value.tex',value.tex);
+        
+
+        gl.uniform1i(loc, 0);
     };
 
     this.setValueT=function(v)
@@ -82,7 +85,7 @@ CGL.Shader=function()
         'void main()\n'+
         '{\n'+
         '   texCoord=attrTexCoord;\n'+
-        '   gl_PointSize=3.0;\n'+
+        // '   gl_PointSize=3.0;\n'+
         '   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);\n'+
         '}\n';
     };
@@ -124,8 +127,8 @@ CGL.Shader=function()
 
         if(mvMatrixUniform==-1)
         {
-            attrTexCoords = GL.getAttribLocation(program, 'attrTexCoord');
-            attrVertexPos = GL.getAttribLocation(program, 'vPosition');
+            attrTexCoords = gl.getAttribLocation(program, 'attrTexCoord');
+            attrVertexPos = gl.getAttribLocation(program, 'vPosition');
 
             projMatrixUniform = gl.getUniformLocation(program, "projMatrix");
             mvMatrixUniform = gl.getUniformLocation(program, "mvMatrix");
@@ -138,7 +141,8 @@ CGL.Shader=function()
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
-        GL.enableVertexAttribArray(program.vertexPosAttrib);
+        // GL.enableVertexAttribArray(program.vertexPosAttrib);
+        // GL.enableVertexAttribArray(program.vertexPosAttrib);
 
         gl.uniformMatrix4fv(projMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(mvMatrixUniform, false, mvMatrix);

@@ -1,15 +1,24 @@
+var CABLES=CABLES || {};
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
+
+    // window.onerror = function(message, url, lineNumber)
+    // {
+    //     console.error(message);
+    //     alert('error: '+JSON.stringify(message)+'\n'+url+'\nline:'+lineNumber);
+    //     return true;
+    // };
+
+
     var scene=new Scene();
-    ui=new HOLO.Ui();
+    ui=new CABLES.Ui();
     ui.show(scene);
-
-
-    
 });
 
 // --------------------------------
+
+
 
 var uiConfig=
 {
@@ -31,7 +40,6 @@ function getPortColor(type)
 }
 
 var r;
-
 var selectedEndPort=null;
 
 
@@ -115,14 +123,14 @@ function UiLink(port1, port2)
             toY+=uiConfig.portSize;
         }
 
-cp1X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
-cp2X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
+        cp1X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
+        cp2X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
 
 
-var difx=Math.min(fromX,toX)+Math.abs(toX-fromX);
+        var difx=Math.min(fromX,toX)+Math.abs(toX-fromX);
 
-cp1X=fromX-0;
-cp2X=toX+0;
+        cp1X=fromX-0;
+        cp2X=toX+0;
 
 
 
@@ -385,19 +393,33 @@ var line;
     };
 
 
-var HOLO=
-{
-    Ui:function()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    CABLES.Ui=function()
     {
         var self=this;
         this.ops=[];
         this.scene=null;
-
-
-
-
-
-
 
         this.setLayout=function()
         {
@@ -466,7 +488,6 @@ var HOLO=
 
         this.addOpList=function(val,parentname)
         {
-        
             if (Object.prototype.toString.call(val) === '[object Object]')
             {
                 for (var propertyName in val)
@@ -485,12 +506,10 @@ var HOLO=
                         html+='<br/>';
                         $('#meta').append(html);
                         
-                        
                         found=this.addOpList(val[propertyName],parentname+propertyName+'.');
                     }
                 }
             }
-
         };
 
         this.setUpRouting=function()
@@ -520,7 +539,6 @@ var HOLO=
         this.show=function(_scene)
         {
             this.scene=_scene;
-            
 
             $('#meta').append(getHandleBarHtml('timeline_controler'),{});
             $('#meta').append();
@@ -533,7 +551,6 @@ var HOLO=
                 $('#meta').append(html);
             }
 
-
             $('#meta').append('<br/><br/>Ops:<br/>');
             this.addOpList(Ops,'');
             r= Raphael(0, 0, 640, 480);
@@ -542,7 +559,6 @@ var HOLO=
 
                 var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
                 self.showModal(html);
-
 
                 $('#opsearch').focus();
                 $('#opsearch').on('input',function(e)
@@ -554,7 +570,6 @@ var HOLO=
                     else
                         $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
                 });
-
 
                 // self.showOptionsScene();
             });
@@ -576,7 +591,6 @@ var HOLO=
 
         this.bindScene=function(scene)
         {
-
             scene.onUnLink=function(p1,p2)
             {
                 for(var i in self.ops)
@@ -653,12 +667,8 @@ var HOLO=
                         uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
                     }
                 }
-
             };
         };
-
-
-
 
         this.closeModal=function()
         {
@@ -674,7 +684,6 @@ var HOLO=
             $('#modalcontent').show();
             $('#modalbg').show();
         };
-
 
         this.importDialog=function()
         {
@@ -694,9 +703,7 @@ var HOLO=
             html+='<textarea id="serialized"></textarea>';
             self.showModal(html);
             $('#serialized').val(self.scene.serialize());
-
         };
-
 
         this.updateOpParams=function(id)
         {
@@ -776,16 +783,9 @@ var HOLO=
                 })(ipii);
 
             }
-
-            
-
         };
 
+    };
 
 
-
-
-    }
-
-};
 

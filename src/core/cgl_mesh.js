@@ -3,7 +3,7 @@ var CGL=CGL || {};
 CGL.Mesh=function(geom)
 {
     var bufTexCoords=-1;
-    var bufTexCoordsIndizes=-1;
+    // var bufTexCoordsIndizes=-1;
 
     var bufVertices = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
@@ -20,8 +20,9 @@ CGL.Mesh=function(geom)
 
     if(geom.texCoords.length>0)
     {
-        console.log('found texcoords!');
-                
+        console.log('found texcoords!'+geom.texCoords.length);
+        console.log('geom.texCoords',geom.texCoords);
+
         bufTexCoords = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), gl.STATIC_DRAW);
@@ -37,8 +38,8 @@ CGL.Mesh=function(geom)
     }
 
     console.log('geom.vertices.length '+geom.vertices.length);
-    console.log('bufTexCoordsIndizes.numItems '+bufTexCoordsIndizes.numItems);
-    console.log('bufTexCoords.numItems '+bufTexCoords.numItems);
+    // console.log('bufTexCoordsIndizes.numItems '+bufTexCoordsIndizes.numItems);
+    // console.log('bufTexCoords.numItems '+bufTexCoords.numItems);
 
     console.log('bufVertices.numItems '+bufVertices.numItems);
     console.log('bufVerticesIndizes.numItems '+bufVerticesIndizes.numItems);
@@ -47,19 +48,26 @@ CGL.Mesh=function(geom)
 
     this.render=function(shader)
     {
+
         // shader.setAttributeVertex( bufVertices.itemSize);
         // shader.setAttributeTexCoord( bufTexCoordsIndizes.itemSize);
         shader.bind();
 
 
+        GL.enableVertexAttribArray(shader.getAttrVertexPos());
+        GL.enableVertexAttribArray(shader.getAttrTexCoords());
 
         gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
         gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, gl.FLOAT, false, 0, 0);
 
+
         // gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        if(bufTexCoordsIndizes.itemSize!=-1)
+        if(bufTexCoords!=-1)
         {
+            // console.log('texcoords'+shader.getAttrTexCoords());
+            // console.log('texcoords'+shader.getAttrVertexPos());
+                    
             gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
             gl.vertexAttribPointer(shader.getAttrTexCoords(),bufTexCoords.itemSize, gl.FLOAT, false, 0, 0);
         }
