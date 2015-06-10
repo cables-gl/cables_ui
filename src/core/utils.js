@@ -23,5 +23,6 @@ function ajaxRequest(url, callback)
     request.send();
 }
 
+String.prototype.endl = function(){return this+'\n';};
 
 

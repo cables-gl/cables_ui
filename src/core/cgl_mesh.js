@@ -20,8 +20,6 @@ CGL.Mesh=function(geom)
 
     if(geom.texCoords.length>0)
     {
-        console.log('found texcoords!'+geom.texCoords.length);
-        console.log('geom.texCoords',geom.texCoords);
 
         bufTexCoords = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
@@ -37,13 +35,6 @@ CGL.Mesh=function(geom)
         // bufTexCoordsIndizes.numItems = geom.texCoordsIndices.length;
     }
 
-    console.log('geom.vertices.length '+geom.vertices.length);
-    // console.log('bufTexCoordsIndizes.numItems '+bufTexCoordsIndizes.numItems);
-    // console.log('bufTexCoords.numItems '+bufTexCoords.numItems);
-
-    console.log('bufVertices.numItems '+bufVertices.numItems);
-    console.log('bufVerticesIndizes.numItems '+bufVerticesIndizes.numItems);
-
 
 
     this.render=function(shader)
@@ -55,7 +46,7 @@ CGL.Mesh=function(geom)
 
 
         GL.enableVertexAttribArray(shader.getAttrVertexPos());
-        GL.enableVertexAttribArray(shader.getAttrTexCoords());
+        if(bufTexCoords!=-1) GL.enableVertexAttribArray(shader.getAttrTexCoords());
 
         gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
         gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, gl.FLOAT, false, 0, 0);
@@ -65,9 +56,6 @@ CGL.Mesh=function(geom)
 
         if(bufTexCoords!=-1)
         {
-            // console.log('texcoords'+shader.getAttrTexCoords());
-            // console.log('texcoords'+shader.getAttrVertexPos());
-                    
             gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
             gl.vertexAttribPointer(shader.getAttrTexCoords(),bufTexCoords.itemSize, gl.FLOAT, false, 0, 0);
         }

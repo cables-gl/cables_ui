@@ -210,7 +210,7 @@ Ops.Gl.Meshes.ObjMesh = function()
                 
         var r=parseOBJ(response);
 
-unwrap = function(ind, crd, cpi)   
+unwrap = function(ind, crd, cpi)
 {
     var ncrd = new Array(Math.floor(ind.length/3)*cpi);
     for(var i=0; i<ind.length; i++)
@@ -228,7 +228,7 @@ var l=r.verticesIndices.length;
         r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
         r.verticesIndices = [];
         for(var i=0; i<l; i++) r.verticesIndices.push(i);
-        console.log(r);
+
         
         self.mesh=new CGL.Mesh(r);
     });
@@ -441,26 +441,30 @@ Ops.Gl.Meshes.Triangle = function()
     {
         // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
         // gl.vertexAttribPointer(shader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        // gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 
-        currentShader.bind();
-        gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
+        // currentShader.bind();
+        self.mesh.render(currentShader);
+        // gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
+        // gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
 
         self.trigger.call();
     };
 
-    this.squareVertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVertexPositionBuffer);
-    this.vertices = [
+
+    var geom=new CGL.Geometry();
+    geom.vertices = [
          0.0,  1.0,  0.0,
         -1.0,  -1.0,  0.0,
          1.0, -1.0,  0.0
     ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-    this.squareVertexPositionBuffer.itemSize = 3;
-    this.squareVertexPositionBuffer.numItems = 3;
+
+    geom.verticesIndices = [
+        0, 1, 2
+    ];
+    this.mesh=new CGL.Mesh(geom);
+
 
 
 };
@@ -498,8 +502,10 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     var srcFrag=''+
         'precision highp float;\n'+
-        'varying vec2 texCoord;\n'+
-        'uniform sampler2D tex;\n'+
+        '#ifdef HAS_TEXTURES\n'+
+        '  varying vec2 texCoord;\n'+
+        '  uniform sampler2D tex;\n'+
+        '#endif\n'+
         'uniform float r;\n'+
         'uniform float g;\n'+
         'uniform float b;\n'+
@@ -507,9 +513,12 @@ Ops.Gl.Shader.BasicMaterial = function()
         '\n'+
         'void main()\n'+
         '{\n'+
-
-        '   vec3 col=texture2D(tex,texCoord).rgb;\n'+
-        '   gl_FragColor = vec4(col,a);\n'+
+        'vec4 col=vec4(r,g,b,a);\n'+
+        '#ifdef HAS_TEXTURES\n'+
+        '   col=texture2D(tex,texCoord);\n'+
+        '#endif\n'+
+        'gl_FragColor = col;\n'+
+        
         '}\n';
 
 
@@ -558,6 +567,8 @@ Ops.Gl.Shader.BasicMaterial = function()
     {
         if(self.texture.val)
         {
+                    console.log('TEXTURE ADDED');
+                    
             self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
         }
         else

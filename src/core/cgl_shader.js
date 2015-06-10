@@ -14,6 +14,8 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     shader.addUniform(this);
 
+    this.getType=function() {return type;};
+
     this.updateValueF=function()
     {
         if(loc==-1) loc=gl.getUniformLocation(shader.getProgram(), name);
@@ -66,12 +68,16 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 CGL.Shader=function()
 {
     var self=this;
-    var program=-1;
+    var program=false;
     var uniforms=[];
+    var needsRecompile=true;
 
     this.addUniform=function(uni)
     {
         uniforms.push(uni);
+        needsRecompile=true;
+                console.log('added unioform');
+                
     };
 
     this.getDefaultVertexShader=function()
@@ -120,10 +126,52 @@ CGL.Shader=function()
     this.getAttrTexCoords=function(){return attrTexCoords;};
     this.getAttrVertexPos=function(){return attrVertexPos;};
 
+    this.hasTextureUniforms=function()
+    {
+                
+        for(var i in uniforms)
+        {
+            console.log('tt '+uniforms[i].getType());
+                      
+            if(uniforms[i].getType()=='t') return true;
+        }
+        return false;
+    };
+
+    this.compile=function()
+    {
+        var defines='';
+        if(self.hasTextureUniforms()) defines+='#define HAS_TEXTURES'.endl();
+
+        console.log('has textures'+self.hasTextureUniforms());
+        
+
+        var vs=defines+self.srcVert;
+        var fs=defines+self.srcFrag;
+
+        console.log(defines);
+        
+
+        if(!program)
+        {
+            console.log('create shaderprogram');
+                    
+            program=createProgram(vs,fs, program);
+        }
+        else
+        {
+            console.log('compile shaders...');
+
+            createShader(vs, gl.VERTEX_SHADER, self.vshader );
+            createShader(fs, gl.VERTEX_SHADER, self.fshader );
+        }
+
+        needsRecompile=false;
+    };
 
     this.bind=function()
     {
-        if(program==-1) program=createProgram(self.srcVert,self.srcFrag);
+        if(!program || needsRecompile) self.compile();
 
         if(mvMatrixUniform==-1)
         {
@@ -151,9 +199,9 @@ CGL.Shader=function()
     };
 
 
-    createShader =function(str, type)
+    createShader =function(str, type,_shader)
     {
-        var shader = gl.createShader(type);
+        var shader = _shader || gl.createShader(type);
         gl.shaderSource(shader, str);
         gl.compileShader(shader);
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
@@ -171,10 +219,10 @@ CGL.Shader=function()
     createProgram=function(vstr, fstr)
     {
         var program = gl.createProgram();
-        var vshader = createShader(vstr, gl.VERTEX_SHADER);
-        var fshader = createShader(fstr, gl.FRAGMENT_SHADER);
-        gl.attachShader(program, vshader);
-        gl.attachShader(program, fshader);
+        self.vshader = createShader(vstr, gl.VERTEX_SHADER);
+        self.fshader = createShader(fstr, gl.FRAGMENT_SHADER);
+        gl.attachShader(program, self.vshader);
+        gl.attachShader(program, self.fshader);
         gl.linkProgram(program);
         if (!gl.getProgramParameter(program, gl.LINK_STATUS))
         {
