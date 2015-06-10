@@ -6,6 +6,7 @@ body
     background-color: #333;
     overflow: hidden;
     font-family: arial;
+
 }
 
 *
@@ -16,6 +17,13 @@ body
     -moz-user-select: none;     /* Firefox all */
     -ms-user-select: none;      /* IE 10+ */
 }
+
+div,td
+{
+    font-size: 13px;
+}
+
+
 
 a
 {
@@ -105,6 +113,7 @@ textarea
 
 #modalcontent
 {
+    border-radius: 10px;
     width:auto;
     height:auto;
     position: absolute;
@@ -136,7 +145,8 @@ textarea
     {
         background-color: #888;
         border-radius: 4px;
-        padding:3px;
+        padding:0px;
+        padding-left:4px;
         border:1px solid #aaa;
         margin-bottom: 3px;
     }
@@ -229,6 +239,26 @@ textarea
     width:640px;
     height:400px;
     overflow: auto;
+
+    input
+    {
+        font-size: 20px;
+        padding:10px;
+        width:100%;
+        border:none;
+    }
+
+    .searchresult
+    {
+        border-bottom: 1px solid #888;
+        font-size: 14px;
+        padding:5px;
+    }
+
+    .selected
+    {
+        background-color: #888;
+    }
 }
 
 

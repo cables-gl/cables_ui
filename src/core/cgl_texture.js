@@ -8,6 +8,12 @@ CGL.Texture=function()
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([111, 111, 111, 255]));
     gl.bindTexture(gl.TEXTURE_2D, null);
 
+    this.bind=function(slot)
+    {
+        gl.activeTexture(gl.TEXTURE0+slot);
+        gl.bindTexture(gl.TEXTURE_2D, self.tex);
+    };
+
     this.initTexture=function(img)
     {
         gl.bindTexture(gl.TEXTURE_2D, self.tex);

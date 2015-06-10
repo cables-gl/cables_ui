@@ -6,6 +6,8 @@ Ops.Gl={};
 var GL=null;
 var GL=null;
 
+var currentShader=null;
+
 var mvMatrix = mat4.create();
 var pMatrix = mat4.create();
 
@@ -27,11 +29,11 @@ Ops.Gl.Renderer = function()
     this.onAnimFrame=function(time)
     {
         currentShader=simpleShader;
-gl.enable(gl.DEPTH_TEST);
+        gl.enable(gl.DEPTH_TEST);
         GL.clearColor(0,0,0,1);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
-        gl.viewport(0,0,640,360);
-        mat4.perspective(pMatrix,45, 800 / 480, 0.01, 1100.0);
+        gl.viewport(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
+        mat4.perspective(pMatrix,45, self.canvas.clientWidth/self.canvas.clientHeight, 0.01, 1100.0);
         mat4.identity(mvMatrix);
         mat4.translate(mvMatrix,mvMatrix, initTranslate);
 
@@ -81,9 +83,59 @@ Ops.Gl.ClearColor = function()
 Ops.Gl.ClearColor.prototype = new Op();
 
 
-var currentShader=null;
+
 
 // --------------------------------------------------------------------------
+
+
+Ops.Gl.ClearDepth = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='ClearDepth';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.render.onTriggered=function()
+    {
+        GL.clear(GL.DEPTH_BUFFER_BIT);
+        self.trigger.call();
+    };
+};
+
+Ops.Gl.ClearDepth.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+
+    
+Ops.Gl.Texture = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='texture';
+    this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
+    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    
+    this.filename.onValueChanged=function()
+    {
+        console.log('load texture...');
+        self.tex=CGL.Texture.load(self.filename.val);
+        self.textureOut.val=self.tex.tex;
+    };
+
+    this.filename.val='assets/skull.png';
+    // this.filename.onValueChanged();
+    // this.textureOut.val=this.tex.tex;
+};
+
+Ops.Gl.Texture.prototype = new Op();
+
+
+// --------------------------------------------------------------------------
+
 
 Ops.Gl.Meshes={};
 
@@ -427,18 +479,19 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     this.name='BasicMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-
-    this.texture=CGL.Texture.load('assets/skull.png');
 
 
     this.doRender=function()
     {
         currentShader=shader;
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, self.texture.tex);
+        if(self.texture.val)
+        {
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, self.texture.val);
+        }
 
         self.trigger.call();
     };
@@ -463,20 +516,14 @@ Ops.Gl.Shader.BasicMaterial = function()
     var shader=new CGL.Shader();
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
-    this.textureUniform=new CGL.Uniform(shader,'t','tex',0);
 
 
-    this.doRender();
 
     this.r=this.addInPort(new Port(this,"r"));
     this.r.onValueChanged=function()
     {
         if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.val);
         else self.r.uniform.setValue(self.r.val);
-
-        // shader.bind();
-        // if(!self.r.uniLoc) self.r.uniLoc=gl.getUniformLocation(shader.getProgram(), "r");
-        // gl.uniform1f(self.r.uniLoc, self.r.val);
     };
 
     this.g=this.addInPort(new Port(this,"g"));
@@ -484,10 +531,6 @@ Ops.Gl.Shader.BasicMaterial = function()
     {
         if(!self.g.uniform) self.g.uniform=new CGL.Uniform(shader,'f','g',self.g.val);
         else self.g.uniform.setValue(self.g.val);
-
-        // shader.bind();
-        // if(!self.g.uniLoc) self.g.uniLoc=gl.getUniformLocation(shader.getProgram(), "g");
-        // gl.uniform1f(self.g.uniLoc, self.g.val);
     };
 
     this.b=this.addInPort(new Port(this,"b"));
@@ -495,10 +538,6 @@ Ops.Gl.Shader.BasicMaterial = function()
     {
         if(!self.b.uniform) self.b.uniform=new CGL.Uniform(shader,'f','b',self.b.val);
         else self.b.uniform.setValue(self.b.val);
-
-        // shader.bind();
-        // if(!self.b.uniLoc) self.b.uniLoc=gl.getUniformLocation(shader.getProgram(), "b");
-        // gl.uniform1f(self.b.uniLoc, self.b.val);
     };
 
     this.a=this.addInPort(new Port(this,"a"));
@@ -506,10 +545,6 @@ Ops.Gl.Shader.BasicMaterial = function()
     {
         if(!self.a.uniform) self.a.uniform=new CGL.Uniform(shader,'f','a',self.a.val);
         else self.a.uniform.setValue(self.a.val);
-
-        // shader.bind();
-        // if(!self.a.uniLoc) self.a.uniLoc=gl.getUniformLocation(shader.getProgram(), "a");
-        // gl.uniform1f(self.a.uniLoc, self.a.val);
     };
 
     this.r.val=Math.random();
@@ -518,6 +553,19 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.a.val=1.0;
 
     this.render.onTriggered=this.doRender;
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.texture.onValueChanged=function()
+    {
+        if(self.texture.val)
+        {
+            self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
+        }
+        else
+        {
+        }
+    };
+
+    this.doRender();
 };
 
 Ops.Gl.Shader.BasicMaterial.prototype = new Op();
@@ -657,6 +705,60 @@ Ops.Gl.Matrix.Translate.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
+Ops.Gl.Matrix.Scale = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var DEG2RAD = 3.14159/180.0;
+    this.name='scale';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.scale=this.addInPort(new Port(this,"scale"));
+    
+    var vScale=vec3.create();
+    var oldMatrix = mat4.create();
+    var transMatrix = mat4.create();
+    mat4.identity(transMatrix);
+
+    var doScale=false;
+
+    this.render.onTriggered=function()
+    {
+        mat4.copy(oldMatrix, mvMatrix);
+
+        mat4.multiply(mvMatrix,mvMatrix,transMatrix);
+
+        self.trigger.call();
+
+        mat4.copy(mvMatrix,oldMatrix);
+    };
+
+    var updateMatrix=function()
+    {
+        mat4.identity(transMatrix);
+        mat4.scale(transMatrix,transMatrix, vScale);
+    };
+
+    this.scaleChanged=function()
+    {
+        doScale=false;
+        //if(self.scaleX.val!==0.0 || self.scaleY.val!==0.0 || self.scaleZ.val!==0.0)doScale=true;
+        vec3.set(vScale, self.scale.val,self.scale.val,self.scale.val);
+        updateMatrix();
+    };
+
+    this.scale.onValueChanged=this.scaleChanged;
+
+    this.scale.val=1.0;
+
+    updateMatrix();
+};
+
+Ops.Gl.Matrix.Scale.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
 
 Ops.Gl.Matrix.Transform = function()
 {
@@ -759,7 +861,7 @@ Ops.Gl.Matrix.Transform = function()
     updateMatrix();
 };
 
-Ops.Gl.Matrix.Translate.prototype = new Op();
+Ops.Gl.Matrix.Transform.prototype = new Op();
 
 
 

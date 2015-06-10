@@ -36,7 +36,9 @@ var uiConfig=
 function getPortColor(type)
 {
     if(type==OP_PORT_TYPE_VALUE) return '#ea6638';
-    else return '#6c9fde';
+    else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
+    else if(type==OP_PORT_TYPE_TEXTURE)  return '#26a92a';
+    else return '#c6c6c6';
 }
 
 var r;
@@ -294,8 +296,9 @@ var line;
             }
 
         },
-        PortUp = function ()
+        PortUp = function (event)
         {
+                   
             if(selectedEndPort!==null && Link.canLink(selectedEndPort.thePort,this.thePort))
             {
                 var link=ui.scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , this.op, this.thePort.getName());
@@ -305,8 +308,10 @@ var line;
             }
             else
             {
-                console.log('endport nonono');
+
+                        console.log('event',event);
                         
+                ui.showOpSelect(event.offsetX,event.offsetY);
             }
 
             if(line && line.thisLine)line.thisLine.remove();
@@ -420,6 +425,26 @@ var line;
         var self=this;
         this.ops=[];
         this.scene=null;
+        var rendererIsZoomed=false;
+
+
+        var mouseX=0;
+        var mouseY=0;
+
+        $(document).keydown(function(e)
+        {
+
+            switch(e.which)
+            {
+                case 27:
+        console.log('HUR');
+        
+                    if(rendererIsZoomed)self.toggleRendererZoom();
+
+                    ui.closeModal();
+                break;
+            }
+        });
 
         this.setLayout=function()
         {
@@ -536,6 +561,26 @@ var line;
             router.start('/');
         };
 
+        this.showOpSelect=function(x,y)
+        {
+            mouseX=x;
+            mouseY=y;
+            var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
+            self.showModal(html);
+
+            $('#opsearch').focus();
+            $('#opsearch').on('input',function(e)
+            {
+                var searchFor= $('#opsearch').val();
+
+                if(!searchFor)
+                    $('#search_style').html('.searchable:{display:block;}');
+                else
+                    $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
+            });
+
+        };
+
         this.show=function(_scene)
         {
             this.scene=_scene;
@@ -554,23 +599,9 @@ var line;
             $('#meta').append('<br/><br/>Ops:<br/>');
             this.addOpList(Ops,'');
             r= Raphael(0, 0, 640, 480);
-            $('svg').bind( "dblclick", function()
+            $('svg').bind( "dblclick", function(event)
             {
-
-                var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
-                self.showModal(html);
-
-                $('#opsearch').focus();
-                $('#opsearch').on('input',function(e)
-                {
-                    var searchFor= $('#opsearch').val();
-
-                    if(!searchFor)
-                        $('#search_style').html('.searchable:{display:block;}');
-                    else
-                        $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
-                });
-
+                self.showOpSelect(event.offsetX,event.offsetY);
                 // self.showOptionsScene();
             });
 
@@ -582,6 +613,8 @@ var line;
             this.setLayout();
             this.setUpRouting();
         };
+
+
 
         this.showExample=function(which)
         {
@@ -647,7 +680,7 @@ var line;
 
             scene.onAdd=function(op)
             {
-                var uiOp=new OpUi(0, 0, 100, 30, op.name);
+                var uiOp=new OpUi(mouseX, mouseY, 100, 30, op.name);
                 uiOp.op=op;
                 self.ops.push(uiOp);
                 
@@ -668,6 +701,23 @@ var line;
                     }
                 }
             };
+        };
+
+        this.toggleRendererZoom=function()
+        {
+            if(rendererIsZoomed)
+            {
+                rendererIsZoomed=false;
+                $('#glcanvas').attr('width',640);
+                $('#glcanvas').attr('height',360);
+            }
+            else
+            {
+                rendererIsZoomed=true;
+                $('#glcanvas').attr('width',window.innerWidth);
+                $('#glcanvas').attr('height',window.innerHeight);
+                $('#glcanvas').css('z-index',9999);
+            }
         };
 
         this.closeModal=function()

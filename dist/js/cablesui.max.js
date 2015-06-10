@@ -18,7 +18,7 @@ var examples=
         },
         {
             "title":"obj mesh",
-            "src":{"ops":[{"name":"WebGL Renderer","objName":"Ops.Gl.Renderer","id":"636c08ce-ca21-42a5-bb78-adb0a878974b","uiAttribs":{"translate":{"x":159,"y":29}},"portsIn":[],"portsOut":[{"name":"trigger","value":null}]},{"name":"OBJ Mesh","objName":"Ops.Gl.Meshes.ObjMesh","id":"c09e67d7-15ed-4368-a22c-e3a6ba2a83cc","uiAttribs":{"translate":{"x":258,"y":330}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"c09e67d7-15ed-4368-a22c-e3a6ba2a83cc","objOut":"aa8f8b99-dd58-4ab9-876e-ea557f74d5cc"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"aa8f8b99-dd58-4ab9-876e-ea557f74d5cc","uiAttribs":{"translate":{"x":214,"y":217}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"aa8f8b99-dd58-4ab9-876e-ea557f74d5cc","objOut":"7c9dbfc5-0e4b-4291-bc4a-d52510147075"}]},{"name":"posX","value":0},{"name":"posY","value":"-20"},{"name":"posZ","value":"-223"},{"name":"scaleX","value":1},{"name":"scaleY","value":1},{"name":"scaleZ","value":1},{"name":"rotX","value":0},{"name":"rotY","value":1266.2500023841858,"links":[{"portIn":"rotY","portOut":"result","objIn":"aa8f8b99-dd58-4ab9-876e-ea557f74d5cc","objOut":"208f18e5-a4f8-416c-acaf-5fb1141f38b6"}]},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"RelativeTime","objName":"Ops.Anim.RelativeTime","id":"60d43c12-7422-4442-909b-684ea71dd43b","uiAttribs":{"translate":{"x":412,"y":66}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"60d43c12-7422-4442-909b-684ea71dd43b","objOut":"636c08ce-ca21-42a5-bb78-adb0a878974b"}]}],"portsOut":[{"name":"result","value":25.325000047683716}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"208f18e5-a4f8-416c-acaf-5fb1141f38b6","uiAttribs":{"translate":{"x":369,"y":130}},"portsIn":[{"name":"number1","value":25.325000047683716,"links":[{"portIn":"number1","portOut":"result","objIn":"208f18e5-a4f8-416c-acaf-5fb1141f38b6","objOut":"60d43c12-7422-4442-909b-684ea71dd43b"}]},{"name":"number2","value":"50"}],"portsOut":[{"name":"result","value":1266.2500023841858}]},{"name":"BasicMaterial","objName":"Ops.Gl.Shader.BasicMaterial","id":"7c9dbfc5-0e4b-4291-bc4a-d52510147075","uiAttribs":{"translate":{"x":168,"y":119}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"7c9dbfc5-0e4b-4291-bc4a-d52510147075","objOut":"636c08ce-ca21-42a5-bb78-adb0a878974b"}]},{"name":"r","value":0.470756561961025},{"name":"g","value":0.8225311778951436},{"name":"b","value":"1"},{"name":"a","value":"1"}],"portsOut":[{"name":"trigger","value":null}]}]}
+            "src":{"ops":[{"name":"WebGL Renderer","objName":"Ops.Gl.Renderer","id":"abd9d026-8735-4791-a589-99a79792783c","uiAttribs":{"translate":{"x":159,"y":29}},"portsIn":[],"portsOut":[{"name":"trigger","value":null}]},{"name":"OBJ Mesh","objName":"Ops.Gl.Meshes.ObjMesh","id":"1f98711a-4dc3-4e33-9968-b4fb9cc1ee6a","uiAttribs":{"translate":{"x":172,"y":382}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"1f98711a-4dc3-4e33-9968-b4fb9cc1ee6a","objOut":"b8e66c7b-7eb4-49cb-be13-8406f8853b16"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"b8e66c7b-7eb4-49cb-be13-8406f8853b16","uiAttribs":{"translate":{"x":150,"y":271}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"b8e66c7b-7eb4-49cb-be13-8406f8853b16","objOut":"1a4ba91e-fd04-44b1-a253-544adfb583a0"}]},{"name":"posX","value":0},{"name":"posY","value":"-20"},{"name":"posZ","value":"-223"},{"name":"scaleX","value":1},{"name":"scaleY","value":1},{"name":"scaleZ","value":1},{"name":"rotX","value":0},{"name":"rotY","value":958.4000110626221,"links":[{"portIn":"rotY","portOut":"result","objIn":"b8e66c7b-7eb4-49cb-be13-8406f8853b16","objOut":"65a083b1-9eb6-41d4-bdcc-3cd0642a7a3b"}]},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"RelativeTime","objName":"Ops.Anim.RelativeTime","id":"3b3644ad-93c9-41db-9945-32b622e62a43","uiAttribs":{"translate":{"x":379,"y":96}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"3b3644ad-93c9-41db-9945-32b622e62a43","objOut":"abd9d026-8735-4791-a589-99a79792783c"}]}],"portsOut":[{"name":"result","value":19.16800022125244}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"65a083b1-9eb6-41d4-bdcc-3cd0642a7a3b","uiAttribs":{"translate":{"x":318,"y":211}},"portsIn":[{"name":"number1","value":19.16800022125244,"links":[{"portIn":"number1","portOut":"result","objIn":"65a083b1-9eb6-41d4-bdcc-3cd0642a7a3b","objOut":"3b3644ad-93c9-41db-9945-32b622e62a43"}]},{"name":"number2","value":"50"}],"portsOut":[{"name":"result","value":958.4000110626221}]},{"name":"BasicMaterial","objName":"Ops.Gl.Shader.BasicMaterial","id":"1a4ba91e-fd04-44b1-a253-544adfb583a0","uiAttribs":{"translate":{"x":110,"y":187}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"1a4ba91e-fd04-44b1-a253-544adfb583a0","objOut":"abd9d026-8735-4791-a589-99a79792783c"}]},{"name":"r","value":0.470756561961025},{"name":"g","value":0.8225311778951436},{"name":"b","value":"1"},{"name":"a","value":1},{"name":"texture","value":{},"links":[{"portIn":"texture","portOut":"texture","objIn":"1a4ba91e-fd04-44b1-a253-544adfb583a0","objOut":"699bc89d-d1e3-4a5e-bd16-63673c1d58f0"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"texture","objName":"Ops.Gl.Texture","id":"699bc89d-d1e3-4a5e-bd16-63673c1d58f0","uiAttribs":{"translate":{"x":211,"y":83}},"portsIn":[{"name":"file","value":"assets/skull.png"}],"portsOut":[{"name":"texture","value":{}}]}]}
         }
 
     ]
@@ -61,7 +61,9 @@ var uiConfig=
 function getPortColor(type)
 {
     if(type==OP_PORT_TYPE_VALUE) return '#ea6638';
-    else return '#6c9fde';
+    else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
+    else if(type==OP_PORT_TYPE_TEXTURE)  return '#26a92a';
+    else return '#c6c6c6';
 }
 
 var r;
@@ -319,8 +321,9 @@ var line;
             }
 
         },
-        PortUp = function ()
+        PortUp = function (event)
         {
+                   
             if(selectedEndPort!==null && Link.canLink(selectedEndPort.thePort,this.thePort))
             {
                 var link=ui.scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , this.op, this.thePort.getName());
@@ -330,8 +333,10 @@ var line;
             }
             else
             {
-                console.log('endport nonono');
+
+                        console.log('event',event);
                         
+                ui.showOpSelect(event.offsetX,event.offsetY);
             }
 
             if(line && line.thisLine)line.thisLine.remove();
@@ -445,6 +450,26 @@ var line;
         var self=this;
         this.ops=[];
         this.scene=null;
+        var rendererIsZoomed=false;
+
+
+        var mouseX=0;
+        var mouseY=0;
+
+        $(document).keydown(function(e)
+        {
+
+            switch(e.which)
+            {
+                case 27:
+        console.log('HUR');
+        
+                    if(rendererIsZoomed)self.toggleRendererZoom();
+
+                    ui.closeModal();
+                break;
+            }
+        });
 
         this.setLayout=function()
         {
@@ -561,6 +586,26 @@ var line;
             router.start('/');
         };
 
+        this.showOpSelect=function(x,y)
+        {
+            mouseX=x;
+            mouseY=y;
+            var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
+            self.showModal(html);
+
+            $('#opsearch').focus();
+            $('#opsearch').on('input',function(e)
+            {
+                var searchFor= $('#opsearch').val();
+
+                if(!searchFor)
+                    $('#search_style').html('.searchable:{display:block;}');
+                else
+                    $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
+            });
+
+        };
+
         this.show=function(_scene)
         {
             this.scene=_scene;
@@ -579,23 +624,9 @@ var line;
             $('#meta').append('<br/><br/>Ops:<br/>');
             this.addOpList(Ops,'');
             r= Raphael(0, 0, 640, 480);
-            $('svg').bind( "dblclick", function()
+            $('svg').bind( "dblclick", function(event)
             {
-
-                var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
-                self.showModal(html);
-
-                $('#opsearch').focus();
-                $('#opsearch').on('input',function(e)
-                {
-                    var searchFor= $('#opsearch').val();
-
-                    if(!searchFor)
-                        $('#search_style').html('.searchable:{display:block;}');
-                    else
-                        $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
-                });
-
+                self.showOpSelect(event.offsetX,event.offsetY);
                 // self.showOptionsScene();
             });
 
@@ -607,6 +638,8 @@ var line;
             this.setLayout();
             this.setUpRouting();
         };
+
+
 
         this.showExample=function(which)
         {
@@ -672,7 +705,7 @@ var line;
 
             scene.onAdd=function(op)
             {
-                var uiOp=new OpUi(0, 0, 100, 30, op.name);
+                var uiOp=new OpUi(mouseX, mouseY, 100, 30, op.name);
                 uiOp.op=op;
                 self.ops.push(uiOp);
                 
@@ -693,6 +726,23 @@ var line;
                     }
                 }
             };
+        };
+
+        this.toggleRendererZoom=function()
+        {
+            if(rendererIsZoomed)
+            {
+                rendererIsZoomed=false;
+                $('#glcanvas').attr('width',640);
+                $('#glcanvas').attr('height',360);
+            }
+            else
+            {
+                rendererIsZoomed=true;
+                $('#glcanvas').attr('width',window.innerWidth);
+                $('#glcanvas').attr('height',window.innerHeight);
+                $('#glcanvas').css('z-index',9999);
+            }
         };
 
         this.closeModal=function()

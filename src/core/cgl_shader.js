@@ -141,9 +141,6 @@ CGL.Shader=function()
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
-        // GL.enableVertexAttribArray(program.vertexPosAttrib);
-        // GL.enableVertexAttribArray(program.vertexPosAttrib);
-
         gl.uniformMatrix4fv(projMatrixUniform, false, pMatrix);
         gl.uniformMatrix4fv(mvMatrixUniform, false, mvMatrix);
     };

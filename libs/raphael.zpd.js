@@ -184,7 +184,7 @@ RaphaelZPD = function(raphaelPaper, o) {
      * Handle mouse move event.
      */
     me.handleMouseWheel = function(evt) {
-        return;
+        // return;
         if (!me.opts.zoom) return;
 
         if (evt.preventDefault)

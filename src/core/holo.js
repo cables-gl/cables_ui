@@ -4,6 +4,7 @@ var PORT_DIR_OUT=1;
 
 var OP_PORT_TYPE_VALUE =0;
 var OP_PORT_TYPE_FUNCTION =1;
+var OP_PORT_TYPE_TEXTURE =2;
 
 var Ops = {};
 
@@ -175,6 +176,7 @@ var Port=function(parent,name,type)
     {
         if(this.type==OP_PORT_TYPE_VALUE)return 'value';
         if(this.type==OP_PORT_TYPE_FUNCTION)return 'function';
+        if(this.type==OP_PORT_TYPE_TEXTURE)return 'texture';
     };
 
     this.getSerialized=function()
@@ -182,7 +184,6 @@ var Port=function(parent,name,type)
         var obj={};
         obj.name=this.getName();
         obj.value=this.value;
-
 
         if(this.direction==PORT_DIR_IN && this.links.length>0)
         {
@@ -434,13 +435,13 @@ var Scene = function()
             for(var ipi in obj.ops[iop].portsIn)
             {
                 var port=op.getPortByName(obj.ops[iop].portsIn[ipi].name);
-                if(port)port.val=obj.ops[iop].portsIn[ipi].value;
+                if(port && port.type!=OP_PORT_TYPE_TEXTURE)port.val=obj.ops[iop].portsIn[ipi].value;
             }
 
             for(var ipo in obj.ops[iop].portsOut)
             {
                 var port2=op.getPortByName(obj.ops[iop].portsOut[ipo].name);
-                if(port2)port2.val=obj.ops[iop].portsOut[ipo].value;
+                if(port2&& port2.type!=OP_PORT_TYPE_TEXTURE)port2.val=obj.ops[iop].portsOut[ipo].value;
             }
 
 
