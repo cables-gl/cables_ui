@@ -15,6 +15,9 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     shader.addUniform(this);
 
     this.getType=function() {return type;};
+    this.getName=function() {return name;};
+
+    this.resetLoc=function() { loc=-1;};
 
     this.updateValueF=function()
     {
@@ -35,9 +38,6 @@ CGL.Uniform=function(_shader,_type,_name,_value)
             loc=gl.getUniformLocation(shader.getProgram(), name);
             if(loc==-1) console.log('texture loc unknown!!');
         }
-
-        // console.log('value.tex',value.tex);
-        
 
         gl.uniform1i(loc, 0);
     };
@@ -72,12 +72,26 @@ CGL.Shader=function()
     var uniforms=[];
     var needsRecompile=true;
 
+    this.removeUniform=function(name)
+    {
+        console.log('before: '+uniforms.length);
+        for(var i in uniforms)
+        {
+            if(uniforms[i].getName()==name)
+            {
+                uniforms.splice(i,1);
+                break;
+            }
+        }
+        needsRecompile=true;
+        console.log(uniforms.length);
+                
+    };
+
     this.addUniform=function(uni)
     {
         uniforms.push(uni);
         needsRecompile=true;
-                console.log('added unioform');
-                
     };
 
     this.getDefaultVertexShader=function()
@@ -114,7 +128,6 @@ CGL.Shader=function()
     {
         this.srcVert=srcVert;
         this.srcFrag=srcFrag;
-        // console.log('compiled!');
     };
 
     var projMatrixUniform=-1;
@@ -128,11 +141,8 @@ CGL.Shader=function()
 
     this.hasTextureUniforms=function()
     {
-                
         for(var i in uniforms)
         {
-            console.log('tt '+uniforms[i].getType());
-                      
             if(uniforms[i].getType()=='t') return true;
         }
         return false;
@@ -143,14 +153,12 @@ CGL.Shader=function()
         var defines='';
         if(self.hasTextureUniforms()) defines+='#define HAS_TEXTURES'.endl();
 
-        console.log('has textures'+self.hasTextureUniforms());
+        console.log('shader compile...');
+        console.log('has textures: '+self.hasTextureUniforms() );
         
 
         var vs=defines+self.srcVert;
         var fs=defines+self.srcFrag;
-
-        console.log(defines);
-        
 
         if(!program)
         {
@@ -160,10 +168,16 @@ CGL.Shader=function()
         }
         else
         {
-            console.log('compile shaders...');
+            console.log('recompile shaders...');
 
-            createShader(vs, gl.VERTEX_SHADER, self.vshader );
-            createShader(fs, gl.VERTEX_SHADER, self.fshader );
+            self.vshader=createShader(vs, gl.VERTEX_SHADER, self.vshader );
+            self.fshader=createShader(fs, gl.VERTEX_SHADER, self.fshader );
+            linkProgram(program);
+            mvMatrixUniform=-1;
+
+            for(var i in uniforms)uniforms[i].resetLoc();
+            
+
         }
 
         needsRecompile=false;
@@ -216,11 +230,8 @@ CGL.Shader=function()
         return shader;
     };
 
-    createProgram=function(vstr, fstr)
+    linkProgram=function(program)
     {
-        var program = gl.createProgram();
-        self.vshader = createShader(vstr, gl.VERTEX_SHADER);
-        self.fshader = createShader(fstr, gl.FRAGMENT_SHADER);
         gl.attachShader(program, self.vshader);
         gl.attachShader(program, self.fshader);
         gl.linkProgram(program);
@@ -228,6 +239,16 @@ CGL.Shader=function()
         {
             throw gl.getProgramInfoLog(program);
         }
+
+    };
+
+    createProgram=function(vstr, fstr)
+    {
+        var program = gl.createProgram();
+        self.vshader = createShader(vstr, gl.VERTEX_SHADER);
+        self.fshader = createShader(fstr, gl.FRAGMENT_SHADER);
+
+        linkProgram(program);
         return program;
     };
 

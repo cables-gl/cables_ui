@@ -150,29 +150,56 @@ Ops.Gl.Meshes.Rectangle = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
+    // this.render.onTriggered=function()
+    // {
+    //     // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
+    //     gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    //     currentShader.bind();
+    //     gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
+    //     gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
+
+    //     self.trigger.call();
+    // };
+
+    // this.squareVertexPositionBuffer = gl.createBuffer();
+    // gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVertexPositionBuffer);
+    // this.vertices = [
+
+    // ];
+    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+    // this.squareVertexPositionBuffer.itemSize = 3;
+    // this.squareVertexPositionBuffer.numItems = 4;
+
+
     this.render.onTriggered=function()
     {
-        // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
-        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-        currentShader.bind();
-        gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
-
+        self.mesh.render(currentShader);
         self.trigger.call();
     };
 
-    this.squareVertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVertexPositionBuffer);
-    this.vertices = [
+    var geom=new CGL.Geometry();
+    geom.vertices = [
          1.0,  1.0,  0.0,
         -1.0,  1.0,  0.0,
          1.0, -1.0,  0.0,
         -1.0, -1.0,  0.0
     ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-    this.squareVertexPositionBuffer.itemSize = 3;
-    this.squareVertexPositionBuffer.numItems = 4;
+
+    geom.texCoords = [
+         1.0, 1.0,
+         0.0, 1.0,
+         1.0, 0.0,
+         0.0, 0.0
+    ];
+
+    geom.verticesIndices = [
+        0, 1, 2,
+        3, 1, 2
+    ];
+    this.mesh=new CGL.Mesh(geom);
+
+
 };
 
 Ops.Gl.Meshes.Rectangle.prototype = new Op();
@@ -439,19 +466,9 @@ Ops.Gl.Meshes.Triangle = function()
 
     this.render.onTriggered=function()
     {
-        // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
-        // gl.vertexAttribPointer(shader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        // gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-
-        // currentShader.bind();
         self.mesh.render(currentShader);
-        // gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
-        // gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
-
         self.trigger.call();
     };
-
 
     var geom=new CGL.Geometry();
     geom.vertices = [
@@ -464,9 +481,6 @@ Ops.Gl.Meshes.Triangle = function()
         0, 1, 2
     ];
     this.mesh=new CGL.Mesh(geom);
-
-
-
 };
 
 Ops.Gl.Meshes.Triangle.prototype = new Op();
@@ -567,12 +581,12 @@ Ops.Gl.Shader.BasicMaterial = function()
     {
         if(self.texture.val)
         {
-                    console.log('TEXTURE ADDED');
-                    
+            console.log('TEXTURE ADDED');
             self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
         }
         else
         {
+            shader.removeUniform('tex');
         }
     };
 

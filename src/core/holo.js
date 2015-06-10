@@ -110,6 +110,7 @@ var Port=function(parent,name,type)
     this.value=null;
     this.name=name;
     this.type=type || OP_PORT_TYPE_VALUE;
+    var valueBeforeLink=null;
 
     this.__defineGetter__("val", function()
     {
@@ -145,6 +146,7 @@ var Port=function(parent,name,type)
 
     this.addLink=function(l)
     {
+        valueBeforeLink=self.value;
         this.links.push(l);
     };
 
@@ -210,6 +212,7 @@ var Port=function(parent,name,type)
         {
             if(this.links[i]==link)this.links.splice( i, 1 );
         }
+        self.setValue(valueBeforeLink);
     };
 };
 

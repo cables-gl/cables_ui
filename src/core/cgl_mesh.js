@@ -20,39 +20,24 @@ CGL.Mesh=function(geom)
 
     if(geom.texCoords.length>0)
     {
-
         bufTexCoords = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), gl.STATIC_DRAW);
         bufTexCoords.itemSize = 2;
         bufTexCoords.numItems = geom.texCoords.length/bufTexCoords.itemSize;
-
-        // bufTexCoordsIndizes = gl.createBuffer();
-        // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufTexCoordsIndizes);
-
-        // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufTexCoordsIndizes), gl.STATIC_DRAW);
-        // bufTexCoordsIndizes.itemSize = 1;
-        // bufTexCoordsIndizes.numItems = geom.texCoordsIndices.length;
     }
 
 
 
     this.render=function(shader)
     {
-
-        // shader.setAttributeVertex( bufVertices.itemSize);
-        // shader.setAttributeTexCoord( bufTexCoordsIndizes.itemSize);
         shader.bind();
-
 
         GL.enableVertexAttribArray(shader.getAttrVertexPos());
         if(bufTexCoords!=-1) GL.enableVertexAttribArray(shader.getAttrTexCoords());
 
         gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
         gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, gl.FLOAT, false, 0, 0);
-
-
-        // gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
         if(bufTexCoords!=-1)
         {
@@ -62,9 +47,6 @@ CGL.Mesh=function(geom)
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
         gl.drawElements(gl.TRIANGLES, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
-
-        // gl.drawArrays(gl.POINTS, 0, bufVertices.numItems);
-
     };
 
 };
