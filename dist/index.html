@@ -35,8 +35,7 @@
     <a onclick="ui.exportDialog();" class="button">export</a>
     <a onclick="ui.importDialog();" class="button">import</a>
 
-
-    <a onclick="ui.scene.clear();" class="button">clear</a>
+    <a onclick="ui.scene.clear();" class="button" style="float:right;">clear</a>
 
 
     <a onclick="ui.toggleRendererZoom();" class="button">big</a>
@@ -235,17 +234,15 @@ $( ".searchresult:first" ).addClass( "selected" );
 
 <script id="timeline_controler" type="text/x-handlebars-template">
 
+<div id="timeline">
+    <a class="button" onclick="ui.scene.timer.setOffset(-4);">rew</a>
 
-<br/>
-<a class="button" onclick="ui.scene.timer.togglePlay();">play / pause</a>
-<br/>
-<br/>
-<br/>
-<a class="button" onclick="ui.scene.timer.setOffset(-4);">rew</a>
-<a class="button" onclick="ui.scene.timer.setOffset(4);">fwd</a>
-<br/>
-<br/>
-<br/>
+    <a class="button" onclick="ui.scene.timer.togglePlay();">play / pause</a>
+
+    <a class="button" onclick="ui.scene.timer.setOffset(4);">fwd</a>
+
+    <br/><br/>
+</div>
 
 
 

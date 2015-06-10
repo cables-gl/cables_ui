@@ -511,31 +511,6 @@ var line;
             return ops;
         };
 
-        this.addOpList=function(val,parentname)
-        {
-            if (Object.prototype.toString.call(val) === '[object Object]')
-            {
-                for (var propertyName in val)
-                {
-                    if (val.hasOwnProperty(propertyName))
-                    {
-                        var html='';
-                        var opname='Ops.'+ parentname + propertyName + '';
-
-                        var isFunction=false;
-                        if(eval('typeof('+opname+')')=="function") isFunction=true;
-
-                        if(isFunction)html+='<a onclick="ui.scene.addOp(\''+opname+'\',{})">&nbsp;';
-                        html+='Ops.'+parentname + propertyName +'';
-                        if(isFunction)html+='&nbsp;</a>';
-                        html+='<br/>';
-                        $('#meta').append(html);
-                        
-                        found=this.addOpList(val[propertyName],parentname+propertyName+'.');
-                    }
-                }
-            }
-        };
 
         this.setUpRouting=function()
         {
@@ -588,16 +563,19 @@ var line;
             $('#meta').append(getHandleBarHtml('timeline_controler'),{});
             $('#meta').append();
 
-            $('#meta').append('Examples:<br/>');
+            var html='<div><h2>Examples</h2>';
             for(var example in examples)
             {
-                var html='';
+                
                 html+='<a href="#/example/'+example+'">'+examples[example].title+'</a><br/>';
-                $('#meta').append(html);
-            }
 
-            $('#meta').append('<br/><br/>Ops:<br/>');
-            this.addOpList(Ops,'');
+                
+            }
+            html+='</div>';
+            $('#meta').append(html);
+
+            // ----
+
             r= Raphael(0, 0, 640, 480);
             $('svg').bind( "dblclick", function(event)
             {
