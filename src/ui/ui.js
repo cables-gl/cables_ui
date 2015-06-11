@@ -152,7 +152,7 @@ function UiLink(port1, port2)
     this.thisLine.attr(
     {
         "stroke": getPortColor(port1.thePort.type),
-        "stroke-width": 2
+        "stroke-width": 3
     });
 
     this.thisLine.hover(function ()
@@ -265,8 +265,9 @@ var line;
             ui.showOpParams(that.op);
         };
 
-        var PortDrag = function ()
+        var PortDrag = function (event)
         {
+
             if(!line)
             {
                 this.startx=this.matrix.e+this.attrs.x;
@@ -308,10 +309,8 @@ var line;
             }
             else
             {
-
-                        console.log('event',event);
-                        
-                ui.showOpSelect(event.offsetX,event.offsetY);
+                console.log('event',event);
+                ui.showOpSelect(event.offsetX,event.offsetY,this.op,this.thePort);
             }
 
             if(line && line.thisLine)line.thisLine.remove();
@@ -428,8 +427,10 @@ var line;
         var rendererIsZoomed=false;
 
 
-        var mouseX=0;
-        var mouseY=0;
+        var mouseNewOPX=0;
+        var mouseNewOPY=0;
+        var linkNewOpTo=null;
+        var linkNewOpToPort=null;
 
         $(document).keydown(function(e)
         {
@@ -536,10 +537,13 @@ var line;
             router.start('/');
         };
 
-        this.showOpSelect=function(x,y)
+        this.showOpSelect=function(x,y,linkOp,linkPort)
         {
-            mouseX=x;
-            mouseY=y;
+            // console.log('starting Port:',linkStartPort);
+            linkNewOpToPort=linkPort;
+            linkNewOpToOp=linkOp;
+            mouseNewOPX=x;
+            mouseNewOPY=y;
             var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
             self.showModal(html);
 
@@ -658,7 +662,7 @@ var line;
 
             scene.onAdd=function(op)
             {
-                var uiOp=new OpUi(mouseX, mouseY, 100, 30, op.name);
+                var uiOp=new OpUi(mouseNewOPX, mouseNewOPY, 100, 30, op.name);
                 uiOp.op=op;
                 self.ops.push(uiOp);
                 
@@ -678,8 +682,30 @@ var line;
                         uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
                     }
                 }
-            };
-        };
+
+                if(linkNewOpToPort)
+                {
+                    var foundPort=op.findFittingPort(linkNewOpToPort);
+
+                    if(foundPort)
+                    {
+                        var link=ui.scene.link(
+                            linkNewOpToOp,
+                            linkNewOpToPort.getName(),
+                            op,
+                            foundPort.getName());
+                    }
+                }
+
+                linkNewOpToOp=null;
+                linkNewOpToPort=null;
+
+                mouseNewOPX=0;
+                mouseNewOPY=0;
+                
+                ui.showOpParams(op);
+          };
+      };
 
         this.toggleRendererZoom=function()
         {

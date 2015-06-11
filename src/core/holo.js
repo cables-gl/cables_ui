@@ -67,6 +67,23 @@ var Op = function()
             if(this.portsOut[ipo].getName()==name)return this.portsOut[ipo];
     };
 
+    this.findFittingPort=function(otherPort)
+    {
+        for(var ipo in this.portsOut)
+        {
+            console.log('.');
+            if(Link.canLink(otherPort,this.portsOut[ipo]))return this.portsOut[ipo];
+        }
+    
+        for(var ipi in this.portsIn)
+        {
+            console.log('.');
+            if(Link.canLink(otherPort,this.portsIn[ipi]))return this.portsIn[ipi];
+        }
+
+    };
+
+
     this.getSerialized=function()
     {
         var op={};
@@ -282,11 +299,11 @@ var Link = function(scene)
 
 Link.canLinkText=function(p1,p2)
 {
+    if(!p1)return 'can not link: port 1 invalid';
+    if(!p2)return 'can not link: port 2 invalid';
     if(p1.direction==PORT_DIR_IN && p1.links.length>0)return 'input port already busy';
     if(p2.direction==PORT_DIR_IN && p2.links.length>0)return 'input port already busy';
     if(p1.isLinkedTo(p2))return 'ports already linked';
-    if(!p1)return 'can not link: port 1 invalid';
-    if(!p2)return 'can not link: port 2 invalid';
     if(p1.direction==p2.direction)return 'can not link: same direction';
     if(p1.type!=p2.type)return 'can not link: different type';
     if(p1.parent==p2.parent)return 'can not link: same op';
@@ -295,12 +312,11 @@ Link.canLinkText=function(p1,p2)
 
 Link.canLink=function(p1,p2)
 {
-
+    if(!p1)return false;
+    if(!p2)return false;
     if(p1.direction==PORT_DIR_IN && p1.links.length>0)return false;
     if(p2.direction==PORT_DIR_IN && p2.links.length>0)return false;
     if(p1.isLinkedTo(p2))return false;
-    if(!p1)return false;
-    if(!p2)return false;
     if(p1.direction==p2.direction)return false;
     if(p1.type!=p2.type)return false;
     if(p1.parent==p2.parent)return false;

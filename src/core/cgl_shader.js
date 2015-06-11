@@ -232,8 +232,6 @@ CGL.Shader=function()
 
     linkProgram=function(program)
     {
-        gl.attachShader(program, self.vshader);
-        gl.attachShader(program, self.fshader);
         gl.linkProgram(program);
         if (!gl.getProgramParameter(program, gl.LINK_STATUS))
         {
@@ -247,6 +245,8 @@ CGL.Shader=function()
         var program = gl.createProgram();
         self.vshader = createShader(vstr, gl.VERTEX_SHADER);
         self.fshader = createShader(fstr, gl.FRAGMENT_SHADER);
+        gl.attachShader(program, self.vshader);
+        gl.attachShader(program, self.fshader);
 
         linkProgram(program);
         return program;
