@@ -108,6 +108,33 @@ Ops.Gl.ClearDepth.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
+    
+Ops.Gl.TextureEmpty = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='texture empty';
+    this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
+    this.height=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
+
+    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.tex=new CGL.Texture();
+    
+    var sizeChanged=function()
+    {
+        self.tex.setSize(self.width.val,self.height.val);
+        self.textureOut.val=self.tex.tex;
+    };
+
+    this.width.onValueChanged=sizeChanged;
+    this.height.onValueChanged=sizeChanged;
+
+};
+
+Ops.Gl.TextureEmpty.prototype = new Op();
+
+// --------------------------------------------------------------------------
 
     
 Ops.Gl.Texture = function()
@@ -533,9 +560,9 @@ Ops.Gl.Shader.BasicMaterial = function()
         'vec4 col=vec4(r,g,b,a);\n'+
         '#ifdef HAS_TEXTURES\n'+
         '   col=texture2D(tex,texCoord);\n'+
+        'col.a*=a;'.endl()+
         '#endif\n'+
         'gl_FragColor = col;\n'+
-        
         '}\n';
 
 
