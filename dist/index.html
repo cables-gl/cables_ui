@@ -193,6 +193,29 @@ $( ".searchresult:first" ).addClass( "selected" );
     <br/>
 </div>
 
+<script>
+    $("input").bind("mousewheel", function(event, delta) 
+    {
+        var val=parseFloat(this.value);
+        var add=1;
+        if(Math.abs(val)<2) add=0.1;
+            else if(Math.abs(val)<100) add=1;
+                else add=10;
+
+        if (delta > 0)
+        {
+            this.value = val + add;
+        }
+        else
+        {
+                this.value = val - add;
+        }
+
+         $(this).trigger('input');
+        return false;
+     });
+</script>
+
 </script>
 
 

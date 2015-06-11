@@ -1580,6 +1580,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     this.doRender=function()
     {
+        var oldShader=currentShader;
         currentShader=shader;
 
         if(self.texture.val)
@@ -1589,6 +1590,8 @@ Ops.Gl.Shader.BasicMaterial = function()
         }
 
         self.trigger.call();
+
+        currentShader=oldShader;
     };
 
     var srcFrag=''+
