@@ -240,12 +240,12 @@ $( ".searchresult:first" ).addClass( "selected" );
     <td>
         {{#if isInput}}
             {{#if port.links}}
-                    <span class="value">{{port.val}}</span>
+                    <span class="value watchPortValue_{{ port.watchId }}">{{port.val}}</span>
                 {{else}}
                     <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}"/>
             {{/if}}
         {{else}}
-            <span class="value">{{port.val}}</span>
+            <span class="value watchPortValue_{{ port.watchId }}" >{{port.val}}</span>
         {{/if}}
     </td>
 

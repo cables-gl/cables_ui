@@ -133,7 +133,9 @@ td.port {
     border-left: 4px solid #6c9fde; }
   .panel
 .value {
-    font-family: monospace; }
+    font-family: monospace;
+    width: 140px;
+    display: block; }
   .panel
 table {
     width: 100%;

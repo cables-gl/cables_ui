@@ -631,6 +631,7 @@ var Port=function(parent,name,type)
         this.setValue(v);
     });
 
+    this.isLinked=function(){ return this.links.length>0; };
     this.onValueChanged=function(){};
     this.onTriggered=function(){};
 

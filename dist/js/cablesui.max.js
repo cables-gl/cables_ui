@@ -450,6 +450,7 @@ var line;
         this.ops=[];
         this.scene=null;
         var rendererIsZoomed=false;
+        var watchPorts=[];
 
 
         var mouseNewOPX=0;
@@ -799,6 +800,7 @@ var line;
 
         this.showOpParams=function(op)
         {
+            watchPorts=[];
 
             var html = getHandleBarHtml('params_op_head',{op: op});
 
@@ -809,6 +811,12 @@ var line;
 
             for(var i in op.portsIn)
             {
+                if(op.portsIn[i].isLinked())
+                {
+                    op.portsIn[i].watchId='in_'+i;
+                    watchPorts.push(op.portsIn[i]);
+                }
+
                 html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true } );
             }
 
@@ -816,6 +824,13 @@ var line;
 
             for(var i2 in op.portsOut)
             {
+
+                if(op.portsOut[i2].isLinked())
+                {
+                    op.portsOut[i2].watchId='out_'+i2;
+                    watchPorts.push(op.portsOut[i2]);
+                }
+
                 html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false } );
             }
 
@@ -826,8 +841,12 @@ var line;
             $('#options').html(html);
 
 
+           
+
             for(var ipo in op.portsOut)
             {
+
+
                 (function (index)
                 {
                     $('#portdelete_out_'+index).on('click',function(e)
@@ -838,8 +857,13 @@ var line;
                 })(ipo);
             }
 
+
+
+
             for(var ipi in op.portsIn)
             {
+                
+
                 (function (index)
                 {
                     $('#portdelete_in_'+index).on('click',function(e)
@@ -862,7 +886,29 @@ var line;
                 })(ipii);
 
             }
+
+
+
+
+
         };
+
+
+
+    function doWatchPorts()
+    {
+        for(var i in watchPorts)
+        {
+            var id='.watchPortValue_'+watchPorts[i].watchId;
+            $(id).html( watchPorts[i].val );
+        }
+
+        setTimeout( doWatchPorts,333);
+    }
+    doWatchPorts();
+
+
+
 
     };
 
