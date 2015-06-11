@@ -457,10 +457,10 @@ var line;
             var rendererHeight=360;
 
             $('svg').css('height',window.innerHeight-statusBarHeight-menubarHeight);
-            $('svg').css('width',window.innerWidth-rendererWidth);
+            $('svg').css('width',window.innerWidth-rendererWidth-2);
             $('svg').css('top',menubarHeight);
             
-            $('#options').css('left',window.innerWidth-rendererWidth+1);
+            $('#options').css('left',window.innerWidth-rendererWidth);
             $('#options').css('top',rendererHeight);
             $('#options').css('width',optionsWidth);
             $('#options').css('height',window.innerHeight-rendererHeight-statusBarHeight);
@@ -588,7 +588,7 @@ var line;
                 // self.showOptionsScene();
             });
 
-            // var zpd = new RaphaelZPD(r, { zoom: true, pan: true, drag: true });
+            var zpd = new RaphaelZPD(r, { zoom: true, pan: true, drag: true });
             this.bindScene(self.scene);
 
             window.addEventListener( 'resize', this.setLayout, false );
@@ -878,7 +878,7 @@ var line;
             $(id).html( watchPorts[i].val );
         }
 
-        setTimeout( doWatchPorts,333);
+        setTimeout( doWatchPorts,100);
     }
     doWatchPorts();
 

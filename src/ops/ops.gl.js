@@ -70,6 +70,9 @@ Ops.Gl.ClearColor = function()
     this.g=this.addInPort(new Port(this,"g"));
     this.b=this.addInPort(new Port(this,"b"));
 
+    this.r.val=0.3;
+    this.g.val=0.3;
+    this.b.val=0.3;
     this.render.onTriggered=function()
     {
         GL.clearColor(self.r.val,self.g.val,self.b.val,1);
@@ -764,7 +767,7 @@ Ops.Gl.Matrix.Scale = function()
 {
     Op.apply(this, arguments);
     var self=this;
-    var DEG2RAD = 3.14159/180.0;
+
     this.name='scale';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -819,7 +822,6 @@ Ops.Gl.Matrix.Transform = function()
 {
     Op.apply(this, arguments);
     var self=this;
-    var DEG2RAD = 3.14159/180.0;
     this.name='transform';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -861,9 +863,9 @@ Ops.Gl.Matrix.Transform = function()
         mat4.identity(transMatrix);
         if(doTranslate)mat4.translate(transMatrix,transMatrix, vPos);
 
-        if(self.rotX.val!==0)mat4.rotateX(transMatrix,transMatrix, self.rotX.val*DEG2RAD);
-        if(self.rotY.val!==0)mat4.rotateY(transMatrix,transMatrix, self.rotY.val*DEG2RAD);
-        if(self.rotZ.val!==0)mat4.rotateZ(transMatrix,transMatrix, self.rotZ.val*DEG2RAD);
+        if(self.rotX.val!==0)mat4.rotateX(transMatrix,transMatrix, self.rotX.val*CGL.DEG2RAD);
+        if(self.rotY.val!==0)mat4.rotateY(transMatrix,transMatrix, self.rotY.val*CGL.DEG2RAD);
+        if(self.rotZ.val!==0)mat4.rotateZ(transMatrix,transMatrix, self.rotZ.val*CGL.DEG2RAD);
 
         if(doScale)mat4.scale(transMatrix,transMatrix, vScale);
     };
@@ -920,5 +922,81 @@ Ops.Gl.Matrix.Transform.prototype = new Op();
 
 
 
+// ----------------------------------------------------
+
+
+Ops.RandomCluster = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='random cluster';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.num=this.addInPort(new Port(this,"num"));
+    this.size=this.addInPort(new Port(this,"size"));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION)) ;
+    this.idx=this.addOutPort(new Port(this,"index")) ;
+    this.rnd=this.addOutPort(new Port(this,"rnd")) ;
+    this.randoms=[];
+    this.randomsRot=[];
+    this.randomsFloats=[];
+
+    var transVec=vec3.create();
+    var oldMatrix = mat4.create();
+
+    this.exe.onTriggered=function()
+    {
+        mat4.copy(oldMatrix, mvMatrix);
+
+        for(var i=0;i<self.randoms.length;i++)
+        {
+            mat4.translate(mvMatrix,mvMatrix, self.randoms[i]);
+
+            mat4.rotateX(mvMatrix,mvMatrix, self.randomsRot[i][0]);
+            mat4.rotateY(mvMatrix,mvMatrix, self.randomsRot[i][1]);
+            mat4.rotateZ(mvMatrix,mvMatrix, self.randomsRot[i][2]);
+
+            self.idx.val=i;
+            self.rnd.val=self.randomsFloats[i];
+
+            self.trigger.call();
+            mat4.copy(mvMatrix,oldMatrix);
+
+        }
+
+
+    };
+
+    function reset()
+    {
+        self.randoms=[];
+        self.randomsRot=[];
+        self.randomsFloats=[];
+
+        for(var i=0;i<self.num.val;i++)
+        {
+            self.randomsFloats.push(Math.random());
+            self.randoms.push(vec3.fromValues(
+                (Math.random()-0.5)*self.size.val,
+                (Math.random()-0.5)*self.size.val,
+                (Math.random()-0.5)*self.size.val
+                ));
+            self.randomsRot.push(vec3.fromValues(
+                Math.random()*360*CGL.DEG2RAD,
+                Math.random()*360*CGL.DEG2RAD,
+                Math.random()*360*CGL.DEG2RAD
+                ));
+        }
+    }
+
+    this.num.onValueChanged=reset;
+    this.size.onValueChanged=reset;
+
+    this.num.val=100;
+
+
+};
+Ops.RandomCluster.prototype = new Op();
 
 
