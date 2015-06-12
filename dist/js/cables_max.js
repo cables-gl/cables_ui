@@ -666,6 +666,18 @@ var Port=function(parent,name,type)
         this.links.push(l);
     };
 
+    this.removeLinkTo=function(p2)
+    {
+        for(var i in this.links)
+        {
+            if(this.links[i].portIn==p2 || this.links[i].portOut==p2)
+            {
+                this.links[i].remove();
+            }
+        }
+
+    };
+
     this.isLinkedTo=function(p2)
     {
         for(var i in this.links)
@@ -2746,6 +2758,9 @@ Ops.Math.Sum = function()
 
     this.number1.onValueChanged=this.exec;
     this.number2.onValueChanged=this.exec;
+
+    this.number1.val=1;
+    this.number2.val=1;
 };
 
 Ops.Math.Sum.prototype = new Op();
@@ -2771,6 +2786,9 @@ Ops.Math.Multiply = function()
 
     this.number1.onValueChanged=this.exec;
     this.number2.onValueChanged=this.exec;
+
+    this.number1.val=1;
+    this.number2.val=2;
 
 };
 

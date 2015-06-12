@@ -218,6 +218,9 @@ Ops.Math.Sum = function()
 
     this.number1.onValueChanged=this.exec;
     this.number2.onValueChanged=this.exec;
+
+    this.number1.val=1;
+    this.number2.val=1;
 };
 
 Ops.Math.Sum.prototype = new Op();
@@ -243,6 +246,9 @@ Ops.Math.Multiply = function()
 
     this.number1.onValueChanged=this.exec;
     this.number2.onValueChanged=this.exec;
+
+    this.number1.val=1;
+    this.number2.val=2;
 
 };
 

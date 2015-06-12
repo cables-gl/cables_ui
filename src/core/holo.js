@@ -169,6 +169,18 @@ var Port=function(parent,name,type)
         this.links.push(l);
     };
 
+    this.removeLinkTo=function(p2)
+    {
+        for(var i in this.links)
+        {
+            if(this.links[i].portIn==p2 || this.links[i].portOut==p2)
+            {
+                this.links[i].remove();
+            }
+        }
+
+    };
+
     this.isLinkedTo=function(p2)
     {
         for(var i in this.links)

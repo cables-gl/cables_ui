@@ -10,6 +10,14 @@ document.addEventListener("DOMContentLoaded", function(event)
     //     return true;
     // };
 
+            $(document).bind("contextmenu", function(e)
+            {
+                // if(e.stopPropagation) e.stopPropagation();
+                if(e.preventDefault) e.preventDefault();
+                // e.cancelBubble = false;
+            });
+
+
 
     var scene=new Scene();
     ui=new CABLES.Ui();
@@ -108,7 +116,7 @@ function UiLink(port1, port2)
 
     this.showAddButton=function()
     {
-        if(!addCircle)
+        if(addCircle===null)
         {
             addCircle = r.circle(middlePosX,middlePosY, uiConfig.portSize*0.74).attr(
             {
@@ -117,10 +125,25 @@ function UiLink(port1, port2)
                 "fill-opacity": 1,
             });
 
-            addCircle.click(function(e)
+            addCircle.drag(function(){},function(){},function(event)
             {
-                ui.showOpSelect(event.offsetX,event.offsetY,null,null,self);
+                if(self.p1!==null)
+                {
+                    if(event.which==3)
+                    {
+                        self.p1.thePort.removeLinkTo( self.p2.thePort );
+                    }
+                    else
+                    {
+                                console.log('show showOpSelect');
+                                
+                        ui.showOpSelect(event.offsetX,event.offsetY,null,null,self);
+                    }
+                }
+
             });
+
+
         }
         else
         {
@@ -129,6 +152,7 @@ function UiLink(port1, port2)
                 cy:middlePosY
             });
         }
+
 
     };
 
@@ -260,8 +284,22 @@ var line;
 
         this.removeDeadLinks=function()
         {
-            for(var j in self.links)
-                if(self.links[j].p1===null)self.links.splice(j,1);
+            var found=true;
+
+            while(found)
+            {
+                found=false;
+                for(var j in self.links)
+                {
+                    if(self.links[j].p1===null)
+                    {
+                        self.links.splice(j,1);
+                        found=true;
+                    }
+                    
+                }
+                
+            }
 
         };
 
@@ -819,19 +857,23 @@ var line;
                     var foundPort1=op.findFittingPort(port1);
                     var foundPort2=op.findFittingPort(port2);
 
-                    ui.scene.link(
-                        op,
-                        foundPort1.getName(),
-                        op1,
-                        port1.getName()
-                        );
+                    if(foundPort2 && foundPort1)
+                    {
+                        ui.scene.link(
+                            op,
+                            foundPort1.getName(),
+                            op1,
+                            port1.getName()
+                            );
 
-                    ui.scene.link(
-                        op,
-                        foundPort2.getName(),
-                        op2,
-                        port2.getName()
-                        );
+                        ui.scene.link(
+                            op,
+                            foundPort2.getName(),
+                            op2,
+                            port2.getName()
+                            );
+                        
+                    }
                     
                             
                 }
