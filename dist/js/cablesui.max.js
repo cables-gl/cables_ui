@@ -59,7 +59,10 @@ var uiConfig=
     colorLinkInvalid:'#f00',
     colorOpBg:'#fff',
     colorPort:'#6c9fde',
-    colorPortHover:'#f00'
+    colorPortHover:'#f00',
+
+    watchValuesInterval:100,
+    rendererSizes:[{w:640,h:360},{w:800,h:480},{w:0,h:0}]
 };
 
 function getPortColor(type)
@@ -456,7 +459,7 @@ var line;
         var rendererSize=1;
         var watchPorts=[];
 
-        var rendererSizes=[{w:640,h:360},{w:800,h:480},{w:0,h:0}];
+        
 
 
 
@@ -471,7 +474,7 @@ var line;
             switch(e.which)
             {
                 case 27:
-                    self.cycleRendererSize();
+                    if(rendererSize==uiConfig.rendererSizes.length-1)self.cycleRendererSize();
                     ui.closeModal();
                 break;
             }
@@ -482,8 +485,8 @@ var line;
             var statusBarHeight=20;
             var menubarHeight=30;
             var optionsWidth=360;
-            var rendererWidth=rendererSizes[rendererSize].w;
-            var rendererHeight=rendererSizes[rendererSize].h;
+            var rendererWidth=uiConfig.rendererSizes[rendererSize].w;
+            var rendererHeight=uiConfig.rendererSizes[rendererSize].h;
 
             $('svg').css('height',window.innerHeight-statusBarHeight-menubarHeight);
             $('svg').css('width',window.innerWidth-rendererWidth-2);
@@ -503,7 +506,7 @@ var line;
             $('#menubar').css('width',window.innerWidth-rendererWidth);
             $('#menubar').css('height',menubarHeight);
 
-            if(rendererSizes[rendererSize].w===0)
+            if(uiConfig.rendererSizes[rendererSize].w===0)
             {
                 $('#glcanvas').attr('width',window.innerWidth);
                 $('#glcanvas').attr('height',window.innerHeight);
@@ -511,8 +514,8 @@ var line;
             }
             else
             {
-                $('#glcanvas').attr('width',rendererSizes[rendererSize].w);
-                $('#glcanvas').attr('height',rendererSizes[rendererSize].h);
+                $('#glcanvas').attr('width',uiConfig.rendererSizes[rendererSize].w);
+                $('#glcanvas').attr('height',uiConfig.rendererSizes[rendererSize].h);
             }
 
         };
@@ -753,7 +756,7 @@ var line;
         this.cycleRendererSize=function()
         {
             rendererSize++;
-            if(rendererSize>rendererSizes.length-1)rendererSize=0;
+            if(rendererSize>uiConfig.rendererSizes.length-1)rendererSize=0;
 
             self.setLayout();
         };
@@ -832,8 +835,7 @@ var line;
 
             for(var i2 in op.portsOut)
             {
-
-                if(op.portsOut[i2].isLinked())
+                if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
                 {
                     op.portsOut[i2].watchId='out_'+i2;
                     watchPorts.push(op.portsOut[i2]);
@@ -895,25 +897,20 @@ var line;
 
             }
 
-
-
-
-
         };
 
 
-
-    function doWatchPorts()
-    {
-        for(var i in watchPorts)
+        function doWatchPorts()
         {
-            var id='.watchPortValue_'+watchPorts[i].watchId;
-            $(id).html( watchPorts[i].val );
-        }
+            for(var i in watchPorts)
+            {
+                var id='.watchPortValue_'+watchPorts[i].watchId;
+                $(id).html( watchPorts[i].val );
+            }
 
-        setTimeout( doWatchPorts,100);
-    }
-    doWatchPorts();
+            if(uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,uiConfig.watchValuesInterval);
+        }
+        doWatchPorts();
 
 
 

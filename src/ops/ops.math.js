@@ -1,3 +1,6 @@
+
+// TODO: CLAMP!
+
 Ops.Math={};
 
 
@@ -21,6 +24,70 @@ Ops.Math.Random = function()
 Ops.Math.Random.prototype = new Op();
 
 // ---------------------------------------------------------------------------
+
+  
+
+
+Ops.Math.Clamp = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='Clamp';
+    this.val=this.addInPort(new Port(this,"val"));
+    this.min=this.addInPort(new Port(this,"min"));
+    this.max=this.addInPort(new Port(this,"max"));
+    this.result=this.addOutPort(new Port(this,"result"));
+
+    function clamp()
+    {
+      self.result.val= Math.min(Math.max(self.val.val, self.min.val), self.max.val);
+    }
+
+    this.min.val=0;
+    this.max.val=1;
+
+    this.val.onValueChanged=clamp;
+    this.min.onValueChanged=clamp;
+    this.max.onValueChanged=clamp;
+
+    this.val.val=0.5;
+};
+
+Ops.Math.Clamp.prototype = new Op();
+// ---------------------------------------------------------------------------
+
+
+Ops.Math.SmoothStep = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='SmoothStep';
+    this.val=this.addInPort(new Port(this,"val"));
+    this.min=this.addInPort(new Port(this,"min"));
+    this.max=this.addInPort(new Port(this,"max"));
+    this.result=this.addOutPort(new Port(this,"result"));
+
+    function smoothstep ()
+    {
+      var x = Math.max(0,Math.min(1,(self.val.val-self.min.val)/(self.max.val-self.min.val)));
+      self.result.val=x*x*(3-2*x);
+    }
+
+    this.min.val=0;
+    this.max.val=1;
+    
+    this.val.onValueChanged=smoothstep;
+    this.min.onValueChanged=smoothstep;
+    this.max.onValueChanged=smoothstep;
+
+    this.val.val=0.5;
+};
+
+Ops.Math.SmoothStep.prototype = new Op();
+
+// ----------------------------------------------------------------------------
 
 
 
