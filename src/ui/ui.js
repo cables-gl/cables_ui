@@ -227,6 +227,9 @@ var line;
             this.oprect.remove();
         };
 
+
+
+
         var dragger = function()
         {
           this.group = this.getGroup();
@@ -265,12 +268,15 @@ var line;
 
         this.oprect.node.onclick = function ()
         {
+            ui.selectedOp=that.op;
             ui.showOpParams(that.op);
         };
 
-        var PortDrag = function (event)
-        {
 
+
+        var PortDrag = function (x,y,event)
+        {
+        
             if(!line)
             {
                 this.startx=this.matrix.e+this.attrs.x;
@@ -302,7 +308,15 @@ var line;
         },
         PortUp = function (event)
         {
-                   
+            if(event.which==3)
+            {
+                // var otherPort=this.thePort.links[0].portIn;
+                // if(otherPort==this.thePort) otherPort=this.thePort.links[0].portOut;
+
+                this.thePort.removeLinks();
+                return;
+            }
+
             if(selectedEndPort!==null && Link.canLink(selectedEndPort.thePort,this.thePort))
             {
                 var link=ui.scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , this.op, this.thePort.getName());
@@ -312,7 +326,6 @@ var line;
             }
             else
             {
-                console.log('event',event);
                 ui.showOpSelect(event.offsetX,event.offsetY,this.op,this.thePort);
             }
 
@@ -393,6 +406,15 @@ var line;
 
             port.drag(PortMove,PortDrag,PortUp);
 
+
+            $(port.node).bind("contextmenu", function(e)
+            {
+                console.log('noyesmaybe');
+                if(e.stopPropagation) e.stopPropagation();
+                if(e.preventDefault) e.preventDefault();
+                e.cancelBubble = false;
+            });
+
             if(inout=='out') this.portsOut.push(port);
                 else this.portsIn.push(port);
         };
@@ -427,12 +449,8 @@ var line;
         var self=this;
         this.ops=[];
         this.scene=null;
-        var rendererSize=1;
+        var rendererSize=0;
         var watchPorts=[];
-
-        
-
-
 
         var mouseNewOPX=0;
         var mouseNewOPY=0;
@@ -441,12 +459,33 @@ var line;
 
         $(document).keydown(function(e)
         {
-
             switch(e.which)
             {
+                case 46: case 8:
+
+                    ui.scene.deleteOp( ui.selectedOp.id );
+
+                    if(e.stopPropagation) e.stopPropagation();
+                    if(e.preventDefault) e.preventDefault();
+
+                break;
                 case 27:
-                    if(rendererSize==uiConfig.rendererSizes.length-1)self.cycleRendererSize();
-                    ui.closeModal();
+
+                    if(rendererSize==uiConfig.rendererSizes.length-1)
+                    {
+                        self.cycleRendererSize();
+                    }
+                    else
+                    if( $('#modalcontent').is(':visible') )
+                    {
+                        ui.closeModal();
+                    }
+                    else
+                    {
+                        ui.showOpSelect();
+                    }
+
+                    
                 break;
             }
         });
@@ -598,13 +637,9 @@ var line;
             // ----
 
             r= Raphael(0, 0, 640, 480);
-            $('svg').bind( "dblclick", function(event)
-            {
-                self.showOpSelect(event.offsetX,event.offsetY);
-                // self.showOptionsScene();
-            });
 
-            var zpd = new RaphaelZPD(r, { zoom: true, pan: true, drag: true });
+
+            var zpd = new RaphaelZPD(r, { zoom: false, pan: true, drag: false });
             this.bindScene(self.scene);
 
             window.addEventListener( 'resize', this.setLayout, false );

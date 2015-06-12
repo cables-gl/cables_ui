@@ -13669,11 +13669,9 @@ RaphaelZPD = function(raphaelPaper, o) {
      */
     me.handleMouseDown = function(evt)
     {
-        if(evt.buttons==1)
+        if(evt.which==1 || evt.which==3)
             {
-             
-                     console.log('jajaja');
-                     
+
                 return;
             }
         if (evt.preventDefault)

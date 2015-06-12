@@ -26,7 +26,7 @@ var examples=
         },
         {
             "title":"leap motion",
-            "src":{"ops":[{"name":"LeapMotion","objName":"Ops.Gl.LeapMotion","id":"6f439b4a-d174-4056-9483-4586d98b1904","uiAttribs":{"translate":{"x":388,"y":39}},"portsIn":[],"portsOut":[{"name":"translationX","value":-22.455},{"name":"translationY","value":-14.9171},{"name":"translationZ","value":125.423},{"name":"finger0X","value":31.8598},{"name":"finger0Y","value":70.683},{"name":"finger0Z","value":164.733}]},{"name":"WebGL Renderer","objName":"Ops.Gl.Renderer","id":"afb9f578-f092-4bd9-a0da-ffbe10c14534","uiAttribs":{"translate":{"x":147,"y":128}},"portsIn":[],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"b32a170a-bb3f-4d52-80d8-bf3ba532cf9f","uiAttribs":{"translate":{"x":231,"y":379}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"b32a170a-bb3f-4d52-80d8-bf3ba532cf9f","objOut":"afb9f578-f092-4bd9-a0da-ffbe10c14534"}]},{"name":"posX","value":-0.22455,"links":[{"portIn":"posX","portOut":"result","objIn":"b32a170a-bb3f-4d52-80d8-bf3ba532cf9f","objOut":"ea3bdbd0-f59c-4db5-8a28-9f8e37a075fb"}]},{"name":"posY","value":-0.149171,"links":[{"portIn":"posY","portOut":"result","objIn":"b32a170a-bb3f-4d52-80d8-bf3ba532cf9f","objOut":"327ae981-c5cf-4f56-bd91-7c4b4086db82"}]},{"name":"posZ","value":1.25423,"links":[{"portIn":"posZ","portOut":"result","objIn":"b32a170a-bb3f-4d52-80d8-bf3ba532cf9f","objOut":"7074cb0b-36e8-4380-90fd-49e1890369ee"}]},{"name":"scaleX","value":"0.30000000000000016"},{"name":"scaleY","value":"0.30000000000000016"},{"name":"scaleZ","value":"0.20000000000000015"},{"name":"rotX","value":0},{"name":"rotY","value":0},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"Cube","objName":"Ops.Gl.Meshes.Cube","id":"5559db58-dcec-4513-8301-219994bbb2d7","uiAttribs":{"translate":{"x":232,"y":522}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"5559db58-dcec-4513-8301-219994bbb2d7","objOut":"b32a170a-bb3f-4d52-80d8-bf3ba532cf9f"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"327ae981-c5cf-4f56-bd91-7c4b4086db82","uiAttribs":{"translate":{"x":429,"y":227}},"portsIn":[{"name":"number1","value":-14.9171,"links":[{"portIn":"number1","portOut":"translationY","objIn":"327ae981-c5cf-4f56-bd91-7c4b4086db82","objOut":"6f439b4a-d174-4056-9483-4586d98b1904"}]},{"name":"number2","value":"0.01"}],"portsOut":[{"name":"result","value":-0.149171}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"ea3bdbd0-f59c-4db5-8a28-9f8e37a075fb","uiAttribs":{"translate":{"x":394,"y":189}},"portsIn":[{"name":"number1","value":-22.455,"links":[{"portIn":"number1","portOut":"translationX","objIn":"ea3bdbd0-f59c-4db5-8a28-9f8e37a075fb","objOut":"6f439b4a-d174-4056-9483-4586d98b1904"}]},{"name":"number2","value":"0.01"}],"portsOut":[{"name":"result","value":-0.22455}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"7074cb0b-36e8-4380-90fd-49e1890369ee","uiAttribs":{"translate":{"x":353,"y":146}},"portsIn":[{"name":"number1","value":125.423,"links":[{"portIn":"number1","portOut":"translationZ","objIn":"7074cb0b-36e8-4380-90fd-49e1890369ee","objOut":"6f439b4a-d174-4056-9483-4586d98b1904"}]},{"name":"number2","value":"0.01"}],"portsOut":[{"name":"result","value":1.25423}]}]}
+            "src":{"ops":[{"name":"LeapMotion","objName":"Ops.Gl.LeapMotion","id":"17dfd585-27ac-465c-bbad-cde0208a1ff4","uiAttribs":{"translate":{"x":393,"y":36}},"portsIn":[],"portsOut":[{"name":"translationX","value":145.222},{"name":"translationY","value":-77.296},{"name":"translationZ","value":21.3614},{"name":"finger0X","value":173.484},{"name":"finger0Y","value":154.246},{"name":"finger0Z","value":8.58886}]},{"name":"WebGL Renderer","objName":"Ops.Gl.Renderer","id":"0606fda7-e8ed-499b-8a22-d1fe8a3c11bc","uiAttribs":{"translate":{"x":134,"y":171}},"portsIn":[],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"55877a4c-5674-4e5d-ac99-0832df3c2524","uiAttribs":{"translate":{"x":132,"y":360}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"55877a4c-5674-4e5d-ac99-0832df3c2524","objOut":"0606fda7-e8ed-499b-8a22-d1fe8a3c11bc"}]},{"name":"posX","value":1.45222,"links":[{"portIn":"posX","portOut":"result","objIn":"55877a4c-5674-4e5d-ac99-0832df3c2524","objOut":"704da168-46a4-4e52-8749-ffa0c3ccdcd4"}]},{"name":"posY","value":-0.7729600000000001,"links":[{"portIn":"posY","portOut":"result","objIn":"55877a4c-5674-4e5d-ac99-0832df3c2524","objOut":"1e278ed8-dfe5-400d-90e5-dff84d4cfde5"}]},{"name":"posZ","value":0.213614,"links":[{"portIn":"posZ","portOut":"result","objIn":"55877a4c-5674-4e5d-ac99-0832df3c2524","objOut":"a24e340b-f6d1-4f3d-a972-2bfeda86c888"}]},{"name":"scaleX","value":"0.30000000000000016"},{"name":"scaleY","value":"0.30000000000000016"},{"name":"scaleZ","value":"0.20000000000000015"},{"name":"rotX","value":0},{"name":"rotY","value":0},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"Cube","objName":"Ops.Gl.Meshes.Cube","id":"6ab051f7-24b4-4948-81a9-95fd93accbe7","uiAttribs":{"translate":{"x":132,"y":438}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"6ab051f7-24b4-4948-81a9-95fd93accbe7","objOut":"55877a4c-5674-4e5d-ac99-0832df3c2524"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"1e278ed8-dfe5-400d-90e5-dff84d4cfde5","uiAttribs":{"translate":{"x":346,"y":165}},"portsIn":[{"name":"number1","value":-77.296,"links":[{"portIn":"number1","portOut":"translationY","objIn":"1e278ed8-dfe5-400d-90e5-dff84d4cfde5","objOut":"17dfd585-27ac-465c-bbad-cde0208a1ff4"}]},{"name":"number2","value":"0.01"}],"portsOut":[{"name":"result","value":-0.7729600000000001}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"704da168-46a4-4e52-8749-ffa0c3ccdcd4","uiAttribs":{"translate":{"x":316,"y":121}},"portsIn":[{"name":"number1","value":145.222,"links":[{"portIn":"number1","portOut":"translationX","objIn":"704da168-46a4-4e52-8749-ffa0c3ccdcd4","objOut":"17dfd585-27ac-465c-bbad-cde0208a1ff4"}]},{"name":"number2","value":"0.01"}],"portsOut":[{"name":"result","value":1.45222}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"a24e340b-f6d1-4f3d-a972-2bfeda86c888","uiAttribs":{"translate":{"x":371,"y":206}},"portsIn":[{"name":"number1","value":21.3614,"links":[{"portIn":"number1","portOut":"translationZ","objIn":"a24e340b-f6d1-4f3d-a972-2bfeda86c888","objOut":"17dfd585-27ac-465c-bbad-cde0208a1ff4"}]},{"name":"number2","value":"0.01"}],"portsOut":[{"name":"result","value":0.213614}]}]}
         }
 
 
@@ -263,6 +263,9 @@ var line;
             this.oprect.remove();
         };
 
+
+
+
         var dragger = function()
         {
           this.group = this.getGroup();
@@ -301,12 +304,15 @@ var line;
 
         this.oprect.node.onclick = function ()
         {
+            ui.selectedOp=that.op;
             ui.showOpParams(that.op);
         };
 
-        var PortDrag = function (event)
-        {
 
+
+        var PortDrag = function (x,y,event)
+        {
+        
             if(!line)
             {
                 this.startx=this.matrix.e+this.attrs.x;
@@ -338,7 +344,15 @@ var line;
         },
         PortUp = function (event)
         {
-                   
+            if(event.which==3)
+            {
+                // var otherPort=this.thePort.links[0].portIn;
+                // if(otherPort==this.thePort) otherPort=this.thePort.links[0].portOut;
+
+                this.thePort.removeLinks();
+                return;
+            }
+
             if(selectedEndPort!==null && Link.canLink(selectedEndPort.thePort,this.thePort))
             {
                 var link=ui.scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , this.op, this.thePort.getName());
@@ -348,7 +362,6 @@ var line;
             }
             else
             {
-                console.log('event',event);
                 ui.showOpSelect(event.offsetX,event.offsetY,this.op,this.thePort);
             }
 
@@ -429,6 +442,15 @@ var line;
 
             port.drag(PortMove,PortDrag,PortUp);
 
+
+            $(port.node).bind("contextmenu", function(e)
+            {
+                console.log('noyesmaybe');
+                if(e.stopPropagation) e.stopPropagation();
+                if(e.preventDefault) e.preventDefault();
+                e.cancelBubble = false;
+            });
+
             if(inout=='out') this.portsOut.push(port);
                 else this.portsIn.push(port);
         };
@@ -463,12 +485,8 @@ var line;
         var self=this;
         this.ops=[];
         this.scene=null;
-        var rendererSize=1;
+        var rendererSize=0;
         var watchPorts=[];
-
-        
-
-
 
         var mouseNewOPX=0;
         var mouseNewOPY=0;
@@ -477,12 +495,33 @@ var line;
 
         $(document).keydown(function(e)
         {
-
             switch(e.which)
             {
+                case 46: case 8:
+
+                    ui.scene.deleteOp( ui.selectedOp.id );
+
+                    if(e.stopPropagation) e.stopPropagation();
+                    if(e.preventDefault) e.preventDefault();
+
+                break;
                 case 27:
-                    if(rendererSize==uiConfig.rendererSizes.length-1)self.cycleRendererSize();
-                    ui.closeModal();
+
+                    if(rendererSize==uiConfig.rendererSizes.length-1)
+                    {
+                        self.cycleRendererSize();
+                    }
+                    else
+                    if( $('#modalcontent').is(':visible') )
+                    {
+                        ui.closeModal();
+                    }
+                    else
+                    {
+                        ui.showOpSelect();
+                    }
+
+                    
                 break;
             }
         });
@@ -634,13 +673,9 @@ var line;
             // ----
 
             r= Raphael(0, 0, 640, 480);
-            $('svg').bind( "dblclick", function(event)
-            {
-                self.showOpSelect(event.offsetX,event.offsetY);
-                // self.showOptionsScene();
-            });
 
-            var zpd = new RaphaelZPD(r, { zoom: true, pan: true, drag: true });
+
+            var zpd = new RaphaelZPD(r, { zoom: false, pan: true, drag: false });
             this.bindScene(self.scene);
 
             window.addEventListener( 'resize', this.setLayout, false );
