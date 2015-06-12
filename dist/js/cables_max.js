@@ -1168,6 +1168,59 @@ Ops.Gl.Renderer.prototype = new Op();
 
 
 
+
+// --------------------------------------------------------------------------
+
+
+
+Ops.Gl.LeapMotion = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='LeapMotion';
+
+    this.transX=this.addOutPort(new Port(this,"translationX"));
+    this.transY=this.addOutPort(new Port(this,"translationY"));
+    this.transZ=this.addOutPort(new Port(this,"translationZ"));
+
+    this.finger0X=this.addOutPort(new Port(this,"finger0X"));
+    this.finger0Y=this.addOutPort(new Port(this,"finger0Y"));
+    this.finger0Z=this.addOutPort(new Port(this,"finger0Z"));
+
+
+
+
+
+
+    Leap.loop(function (frame)
+    {
+        // console.log(frame);
+
+        self.transX.val=frame._translation[0];
+        self.transY.val=frame._translation[1];
+        self.transZ.val=frame._translation[2];
+
+        if(frame.fingers.length>0)
+        {
+            self.finger0X.val=frame.fingers[0].tipPosition[0];
+            self.finger0Y.val=frame.fingers[0].tipPosition[1];
+            self.finger0Z.val=frame.fingers[0].tipPosition[2];
+
+        }
+
+    });
+
+
+
+};
+
+Ops.Gl.LeapMotion.prototype = new Op();
+
+
+
+
+
 // --------------------------------------------------------------------------
 
 
@@ -2115,6 +2168,9 @@ Ops.RandomCluster.prototype = new Op();
 
 
 
+
+
+
 // https://github.com/automat/foam-gl
 // http://howlerjs.com/
 //http://learningwebgl.com/lessons/lesson01/index.html
@@ -2497,9 +2553,6 @@ Ops.Math.Random.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
-  
-
-
 Ops.Math.Clamp = function()
 {
     var self=this;
@@ -2513,7 +2566,7 @@ Ops.Math.Clamp = function()
 
     function clamp()
     {
-      self.result.val= Math.min(Math.max(self.val.val, self.min.val), self.max.val);
+        self.result.val= Math.min(Math.max(self.val.val, self.min.val), self.max.val);
     }
 
     this.min.val=0;
@@ -2527,6 +2580,7 @@ Ops.Math.Clamp = function()
 };
 
 Ops.Math.Clamp.prototype = new Op();
+
 // ---------------------------------------------------------------------------
 
 
@@ -2543,8 +2597,8 @@ Ops.Math.SmoothStep = function()
 
     function smoothstep ()
     {
-      var x = Math.max(0,Math.min(1,(self.val.val-self.min.val)/(self.max.val-self.min.val)));
-      self.result.val=x*x*(3-2*x);
+        var x = Math.max(0,Math.min(1,(self.val.val-self.min.val)/(self.max.val-self.min.val)));
+        self.result.val=x*x*(3-2*x);
     }
 
     this.min.val=0;
@@ -2560,8 +2614,6 @@ Ops.Math.SmoothStep = function()
 Ops.Math.SmoothStep.prototype = new Op();
 
 // ----------------------------------------------------------------------------
-
-
 
 
 Ops.Math.MapRange = function()
@@ -2775,6 +2827,8 @@ Ops.Math.Compare.IsEven = function()
 Ops.Math.Compare.IsEven.prototype = new Op();
 
 
+// --------------------------------------------------------------------------
+
 
 Ops.Math.Compare.Greater = function()
 {
@@ -2798,8 +2852,7 @@ Ops.Math.Compare.Greater = function()
 Ops.Math.Compare.Greater.prototype = new Op();
 
 
-
-
+// --------------------------------------------------------------------------
 
 
 Ops.Math.Compare.Between = function()
@@ -2831,7 +2884,7 @@ Ops.Math.Compare.Between = function()
 };
 Ops.Math.Compare.Between.prototype = new Op();
 
-
+// --------------------------------------------------------------------------
 
 
 Ops.Math.Compare.Lesser = function()

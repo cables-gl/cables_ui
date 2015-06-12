@@ -734,6 +734,9 @@ var line;
 
         this.closeModal=function()
         {
+            mouseNewOPX=0;
+            mouseNewOPY=0;
+
             $('#modalcontent').html('');
             $('#modalcontent').hide();
             $('#modalbg').hide();

@@ -25,9 +25,6 @@ Ops.Math.Random.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
-  
-
-
 Ops.Math.Clamp = function()
 {
     var self=this;
@@ -41,7 +38,7 @@ Ops.Math.Clamp = function()
 
     function clamp()
     {
-      self.result.val= Math.min(Math.max(self.val.val, self.min.val), self.max.val);
+        self.result.val= Math.min(Math.max(self.val.val, self.min.val), self.max.val);
     }
 
     this.min.val=0;
@@ -55,6 +52,7 @@ Ops.Math.Clamp = function()
 };
 
 Ops.Math.Clamp.prototype = new Op();
+
 // ---------------------------------------------------------------------------
 
 
@@ -71,8 +69,8 @@ Ops.Math.SmoothStep = function()
 
     function smoothstep ()
     {
-      var x = Math.max(0,Math.min(1,(self.val.val-self.min.val)/(self.max.val-self.min.val)));
-      self.result.val=x*x*(3-2*x);
+        var x = Math.max(0,Math.min(1,(self.val.val-self.min.val)/(self.max.val-self.min.val)));
+        self.result.val=x*x*(3-2*x);
     }
 
     this.min.val=0;
@@ -88,8 +86,6 @@ Ops.Math.SmoothStep = function()
 Ops.Math.SmoothStep.prototype = new Op();
 
 // ----------------------------------------------------------------------------
-
-
 
 
 Ops.Math.MapRange = function()
@@ -303,6 +299,8 @@ Ops.Math.Compare.IsEven = function()
 Ops.Math.Compare.IsEven.prototype = new Op();
 
 
+// --------------------------------------------------------------------------
+
 
 Ops.Math.Compare.Greater = function()
 {
@@ -326,8 +324,7 @@ Ops.Math.Compare.Greater = function()
 Ops.Math.Compare.Greater.prototype = new Op();
 
 
-
-
+// --------------------------------------------------------------------------
 
 
 Ops.Math.Compare.Between = function()
@@ -359,7 +356,7 @@ Ops.Math.Compare.Between = function()
 };
 Ops.Math.Compare.Between.prototype = new Op();
 
-
+// --------------------------------------------------------------------------
 
 
 Ops.Math.Compare.Lesser = function()
