@@ -62,7 +62,7 @@ var uiConfig=
     portPadding:2,
 
     colorLink:'#fff',
-    colorLinkHover:'#00f',
+    colorLinkHover:'#fff',
     colorLinkInvalid:'#f00',
     colorOpBg:'#fff',
     colorPort:'#6c9fde',
@@ -131,6 +131,42 @@ function UiLink(port1, port2)
     this.p2=port2;
     // todo check if port1 is out / port2 is in...
 
+    var middlePosX=30;
+    var middlePosY=30;
+
+    var addCircle=null;
+
+    this.hideAddButton=function()
+    {
+        if(addCircle)addCircle.remove();
+        addCircle=null;
+    };
+
+    this.showAddButton=function()
+    {
+        if(!addCircle)
+        {
+            addCircle = r.circle(middlePosX,middlePosY, uiConfig.portSize*0.74).attr(
+            {
+                fill: getPortColor(self.p1.thePort.getType() ),
+                "stroke-width": 0,
+                "fill-opacity": 1,
+            });
+
+            addCircle.click(function(e)
+            {
+                ui.showOpSelect(event.offsetX,event.offsetY,null,null,self);
+            });
+        }
+        else
+        {
+            addCircle.attr({
+                cx:middlePosX,
+                cy:middlePosY
+            });
+        }
+
+    };
 
     this.getPath = function()
     {
@@ -143,6 +179,9 @@ function UiLink(port1, port2)
         var toX=port2.matrix.e+port2.attrs.x+uiConfig.portSize/2;
         var toY=port2.matrix.f+port2.attrs.y;
 
+        middlePosX=0.5*(fromX+toX);
+        middlePosY=0.5*(fromY+toY);
+
         var cp1X=0;
         var cp1Y=0;
 
@@ -150,8 +189,6 @@ function UiLink(port1, port2)
         var cp2Y=0;
 
         cp1Y=Math.min(fromY,toY)+(Math.max(fromY,toY)-Math.min(fromY,toY))/2;
-        
-
         cp2Y=Math.min(fromY,toY)+(Math.max(fromY,toY)-Math.min(fromY,toY))/2;
 
 
@@ -174,13 +211,6 @@ function UiLink(port1, port2)
         cp2X=toX+0;
 
 
-
-
-
-
-
-
-
         // return "M "+fromX+" "+fromY+" L" + cpX + " " + cpY;
 
         return "M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
@@ -191,7 +221,7 @@ function UiLink(port1, port2)
     this.thisLine.attr(
     {
         "stroke": getPortColor(port1.thePort.type),
-        "stroke-width": 3
+        "stroke-width": 2
     });
 
     this.thisLine.hover(function ()
@@ -210,6 +240,7 @@ function UiLink(port1, port2)
     this.redraw = function()
     {
         this.thisLine.attr("path", this.getPath());
+        this.showAddButton();
     };
 }
 
@@ -251,7 +282,7 @@ var line;
 
     var OpUi=function(x,y,w,h,txt)
     {
-        var that=this;
+        var self=this;
         this.links=[];
         this.portsIn=[];
         this.portsOut=[];
@@ -263,8 +294,25 @@ var line;
             this.oprect.remove();
         };
 
+        this.removeDeadLinks=function()
+        {
+            for(var j in self.links)
+                if(self.links[j].p1===null)self.links.splice(j,1);
 
+        };
 
+        this.showAddButtons=function()
+        {
+            self.removeDeadLinks();
+            for(var j in self.links) self.links[j].showAddButton();
+
+        };
+
+        this.hideAddButtons=function()
+        {
+            self.removeDeadLinks();
+            for(var j in self.links) self.links[j].hideAddButton();
+        };
 
         var dragger = function()
         {
@@ -283,14 +331,14 @@ var line;
             this.previousDx = dx;
             this.previousDy = dy;
 
-            if(!that.op.uiAttribs)that.op.uiAttribs={};
-            that.op.uiAttribs.translate={x:that.oprect.matrix.e,y:that.oprect.matrix.f};
+            if(!self.op.uiAttribs)self.op.uiAttribs={};
+            self.op.uiAttribs.translate={x:self.oprect.matrix.e,y:self.oprect.matrix.f};
 
                    
                         
-            for(var j in that.links)
+            for(var j in self.links)
             {
-                that.links[j].redraw();
+                self.links[j].redraw();
             }
 
         },
@@ -302,10 +350,16 @@ var line;
 
         this.oprect=r.OpRect(x,y,w,h, txt).drag(move, dragger, up);
 
+
+        this.oprect.node.onmousedown = function ()
+        {
+            self.showAddButtons();
+            ui.setSelectedOp(self);
+            ui.showOpParams(self.op);
+        };
+        
         this.oprect.node.onclick = function ()
         {
-            ui.selectedOp=that.op;
-            ui.showOpParams(that.op);
         };
 
 
@@ -358,7 +412,7 @@ var line;
                 var link=ui.scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , this.op, this.thePort.getName());
                 var thelink=new UiLink(selectedEndPort,this);
                 selectedEndPort.opUi.links.push(thelink);
-                that.links.push(thelink);
+                self.links.push(thelink);
             }
             else
             {
@@ -391,13 +445,13 @@ var line;
             this.oprect.getGroup().push(port);
 
             port.direction=inout;
-            port.op=that.op;
-            port.opUi=that;
+            port.op=self.op;
+            port.opUi=self;
 
             port.portIndex=portIndex;
             var thePort;
-            if(inout=='out') thePort=that.op.portsOut[portIndex];
-            else thePort=that.op.portsIn[portIndex];
+            if(inout=='out') thePort=self.op.portsOut[portIndex];
+            else thePort=self.op.portsIn[portIndex];
 
             port.thePort=thePort;
             port.attr({fill:getPortColor(thePort.type)});
@@ -492,6 +546,8 @@ var line;
         var mouseNewOPY=0;
         var linkNewOpTo=null;
         var linkNewOpToPort=null;
+        var linkNewLink=null;
+        var selectedOp=null;
 
         $(document).keydown(function(e)
         {
@@ -499,8 +555,11 @@ var line;
             {
                 case 46: case 8:
 
-                    ui.scene.deleteOp( ui.selectedOp.id );
-
+                    if(selectedOp)
+                    {
+                        ui.scene.deleteOp( selectedOp.op.id );
+                    }
+        
                     if(e.stopPropagation) e.stopPropagation();
                     if(e.preventDefault) e.preventDefault();
 
@@ -629,9 +688,10 @@ var line;
             router.start('/');
         };
 
-        this.showOpSelect=function(x,y,linkOp,linkPort)
+        this.showOpSelect=function(x,y,linkOp,linkPort,link)
         {
             // console.log('starting Port:',linkStartPort);
+            linkNewLink=link;
             linkNewOpToPort=linkPort;
             linkNewOpToOp=linkOp;
             mouseNewOPX=x;
@@ -698,14 +758,17 @@ var line;
             {
                 for(var i in self.ops)
                 {
+                    self.ops[i].removeDeadLinks();
 
                     for(var j in self.ops[i].links)
                     {
-                                
                         if(
                             (self.ops[i].links[j].p1.thePort==p1 && self.ops[i].links[j].p2.thePort==p2) ||
                             (self.ops[i].links[j].p1.thePort==p2 && self.ops[i].links[j].p2.thePort==p1))
                             {
+                                self.ops[i].links[j].hideAddButton();
+                                self.ops[i].links[j].p1=null;
+                                self.ops[i].links[j].p2=null;
                                 self.ops[i].links[j].remove();
                             }
                     }
@@ -742,6 +805,7 @@ var line;
                 {
                     if(self.ops[i].op==op)
                     {
+                        self.ops[i].hideAddButtons();
                         self.ops[i].remove();
                         self.ops.splice( i, 1 );
                     }
@@ -771,6 +835,43 @@ var line;
                     }
                 }
 
+                if(linkNewLink)
+                {
+                    var op1=linkNewLink.p1.op;
+                    var port1=linkNewLink.p1.thePort;
+                    var op2=linkNewLink.p2.op;
+                    var port2=linkNewLink.p2.thePort;
+
+                    for(var il in port1.links)
+                    {
+                        if(
+                            port1.links[il].portIn==port1 && port1.links[il].portOut==port2 ||
+                            port1.links[il].portOut==port1 && port1.links[il].portIn==port2)
+                            {
+                                port1.links[il].remove();
+                            }
+                    }
+
+                    var foundPort1=op.findFittingPort(port1);
+                    var foundPort2=op.findFittingPort(port2);
+
+                    ui.scene.link(
+                        op,
+                        foundPort1.getName(),
+                        op1,
+                        port1.getName()
+                        );
+
+                    ui.scene.link(
+                        op,
+                        foundPort2.getName(),
+                        op2,
+                        port2.getName()
+                        );
+                    
+                            
+                }
+                else
                 if(linkNewOpToPort)
                 {
                     var foundPort=op.findFittingPort(linkNewOpToPort);
@@ -786,6 +887,7 @@ var line;
                 }
 
                 linkNewOpToOp=null;
+                linkNewLink=null;
                 linkNewOpToPort=null;
 
                 mouseNewOPX=0;
@@ -794,6 +896,14 @@ var line;
                 ui.showOpParams(op);
           };
       };
+
+        this.setSelectedOp=function(uiop)
+        {
+            if(selectedOp)selectedOp.hideAddButtons();
+                    
+            selectedOp=uiop;
+            selectedOp.showAddButtons();
+        };
 
         this.cycleRendererSize=function()
         {
