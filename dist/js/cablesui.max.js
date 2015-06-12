@@ -22,7 +22,7 @@ var examples=
         },
         {
             "title":"stupid cubes",
-            "src":{"ops":[{"name":"WebGL Renderer","objName":"Ops.Gl.Renderer","id":"8118a478-a47f-4208-9cd8-5287b94c116f","uiAttribs":{"translate":{"x":224,"y":84}},"portsIn":[],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"f5d0ad60-cfb5-4e83-9b39-b3e7627c3116","uiAttribs":{"translate":{"x":408,"y":248}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"f5d0ad60-cfb5-4e83-9b39-b3e7627c3116","objOut":"5e581ea9-45de-48fc-b04b-b12a459da5fd"}]},{"name":"posX","value":"0.20000000000000004"},{"name":"posY","value":0},{"name":"posZ","value":0},{"name":"scaleX","value":1},{"name":"scaleY","value":1},{"name":"scaleZ","value":1},{"name":"rotX","value":0},{"name":"rotY","value":61.13799571990967,"links":[{"portIn":"rotY","portOut":"result","objIn":"f5d0ad60-cfb5-4e83-9b39-b3e7627c3116","objOut":"3bb8b78e-b9cf-4a66-a873-c2e72c86baf6"}]},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"BasicMaterial","objName":"Ops.Gl.Shader.BasicMaterial","id":"49ae1ba7-2ca0-496b-be61-ccbbbf22a03c","uiAttribs":{"translate":{"x":421,"y":311}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"49ae1ba7-2ca0-496b-be61-ccbbbf22a03c","objOut":"f5d0ad60-cfb5-4e83-9b39-b3e7627c3116"}]},{"name":"r","value":"1.2000000000000002"},{"name":"g","value":"0.30000000000000016"},{"name":"b","value":"0.30000000000000016"},{"name":"a","value":1},{"name":"texture","value":null}],"portsOut":[{"name":"trigger","value":null}]},{"name":"Cube","objName":"Ops.Gl.Meshes.Cube","id":"d33e55a4-f105-491e-adaa-de18dca165a3","uiAttribs":{"translate":{"x":350,"y":653}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"d33e55a4-f105-491e-adaa-de18dca165a3","objOut":"b810363b-aa4c-4250-9c35-19cd2e78ea50"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"2776f1bc-59fe-47ff-9f0c-88c15c5d7a66","uiAttribs":{"translate":{"x":316,"y":449}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"2776f1bc-59fe-47ff-9f0c-88c15c5d7a66","objOut":"4c6b80ff-d9b7-48b2-9bed-7c8810b99edd"}]},{"name":"posX","value":0},{"name":"posY","value":0},{"name":"posZ","value":"0.4"},{"name":"scaleX","value":"0.10000000000000014"},{"name":"scaleY","value":"0.10000000000000014"},{"name":"scaleZ","value":"0.10000000000000014"},{"name":"rotX","value":0},{"name":"rotY","value":0},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"random cluster","objName":"Ops.RandomCluster","id":"4c6b80ff-d9b7-48b2-9bed-7c8810b99edd","uiAttribs":{"translate":{"x":418,"y":369}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"4c6b80ff-d9b7-48b2-9bed-7c8810b99edd","objOut":"49ae1ba7-2ca0-496b-be61-ccbbbf22a03c"}]},{"name":"num","value":"111"},{"name":"size","value":"2"}],"portsOut":[{"name":"trigger","value":null},{"name":"index","value":110},{"name":"rnd","value":0.8563499178271741}]},{"name":"RelativeTime","objName":"Ops.Anim.RelativeTime","id":"8bec9050-e4c0-4661-bacf-d38b0c18b7d6","uiAttribs":{"translate":{"x":440,"y":45}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"8bec9050-e4c0-4661-bacf-d38b0c18b7d6","objOut":"8118a478-a47f-4208-9cd8-5287b94c116f"}]}],"portsOut":[{"name":"result","value":2.7789998054504395}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"3bb8b78e-b9cf-4a66-a873-c2e72c86baf6","uiAttribs":{"translate":{"x":549,"y":185}},"portsIn":[{"name":"number1","value":2.7789998054504395,"links":[{"portIn":"number1","portOut":"result","objIn":"3bb8b78e-b9cf-4a66-a873-c2e72c86baf6","objOut":"8bec9050-e4c0-4661-bacf-d38b0c18b7d6"}]},{"name":"number2","value":"22"}],"portsOut":[{"name":"result","value":61.13799571990967}]},{"name":"BasicMaterial","objName":"Ops.Gl.Shader.BasicMaterial","id":"b810363b-aa4c-4250-9c35-19cd2e78ea50","uiAttribs":{"translate":{"x":417,"y":543}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"b810363b-aa4c-4250-9c35-19cd2e78ea50","objOut":"2776f1bc-59fe-47ff-9f0c-88c15c5d7a66"}]},{"name":"r","value":0.7892753561027348},{"name":"g","value":0.8563499178271741,"links":[{"portIn":"g","portOut":"rnd","objIn":"b810363b-aa4c-4250-9c35-19cd2e78ea50","objOut":"4c6b80ff-d9b7-48b2-9bed-7c8810b99edd"}]},{"name":"b","value":1.1,"links":[{"portIn":"b","portOut":"result","objIn":"b810363b-aa4c-4250-9c35-19cd2e78ea50","objOut":"b0a4ecb0-3206-4ec6-b92c-42369b61b768"}]},{"name":"a","value":"0.6000000000000001"},{"name":"texture","value":null}],"portsOut":[{"name":"trigger","value":null}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"b0a4ecb0-3206-4ec6-b92c-42369b61b768","uiAttribs":{"translate":{"x":510,"y":460}},"portsIn":[{"name":"number1","value":110,"links":[{"portIn":"number1","portOut":"index","objIn":"b0a4ecb0-3206-4ec6-b92c-42369b61b768","objOut":"4c6b80ff-d9b7-48b2-9bed-7c8810b99edd"}]},{"name":"number2","value":"0.01"}],"portsOut":[{"name":"result","value":1.1}]},{"name":"ClearColor","objName":"Ops.Gl.ClearColor","id":"5e581ea9-45de-48fc-b04b-b12a459da5fd","uiAttribs":{"translate":{"x":310,"y":162}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"5e581ea9-45de-48fc-b04b-b12a459da5fd","objOut":"8118a478-a47f-4208-9cd8-5287b94c116f"}]},{"name":"r","value":"0.0"},{"name":"g","value":"0.23"},{"name":"b","value":"0.2"}],"portsOut":[{"name":"trigger","value":null}]}]}
+            "src":{"ops":[{"name":"WebGL Renderer","objName":"Ops.Gl.Renderer","id":"b55a747a-a227-41be-a6c4-da221051cd1e","uiAttribs":{"translate":{"x":317,"y":47}},"portsIn":[],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"84bc0678-2c99-4585-a412-e0faf59dc80b","uiAttribs":{"translate":{"x":408,"y":248}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"84bc0678-2c99-4585-a412-e0faf59dc80b","objOut":"50dff18f-831e-4e88-a287-212195903195"}]},{"name":"posX","value":"0.20000000000000004"},{"name":"posY","value":0},{"name":"posZ","value":0},{"name":"scaleX","value":1},{"name":"scaleY","value":1},{"name":"scaleZ","value":1},{"name":"rotX","value":0},{"name":"rotY","value":2708.508001804352,"links":[{"portIn":"rotY","portOut":"result","objIn":"84bc0678-2c99-4585-a412-e0faf59dc80b","objOut":"7e824d25-ef5a-4c8f-94b6-9ebf3500ff30"}]},{"name":"rotZ","value":0}],"portsOut":[{"name":"trigger","value":null}]},{"name":"BasicMaterial","objName":"Ops.Gl.Shader.BasicMaterial","id":"a560e405-fc3a-47e6-954a-2e6aa2f1cd17","uiAttribs":{"translate":{"x":421,"y":311}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"a560e405-fc3a-47e6-954a-2e6aa2f1cd17","objOut":"84bc0678-2c99-4585-a412-e0faf59dc80b"}]},{"name":"r","value":"1.6000000000000005"},{"name":"g","value":"0.30000000000000016"},{"name":"b","value":"0.30000000000000016"},{"name":"a","value":1},{"name":"texture","value":null}],"portsOut":[{"name":"trigger","value":null}]},{"name":"Cube","objName":"Ops.Gl.Meshes.Cube","id":"ecda7a66-b473-4e45-8506-6f74e7604be1","uiAttribs":{"translate":{"x":454,"y":632}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"ecda7a66-b473-4e45-8506-6f74e7604be1","objOut":"9549291e-f660-48b8-9ffa-997eebec2000"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"transform","objName":"Ops.Gl.Matrix.Transform","id":"8881d03b-635f-4e3b-8f8d-d1434e6dc0da","uiAttribs":{"translate":{"x":424,"y":472}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"8881d03b-635f-4e3b-8f8d-d1434e6dc0da","objOut":"2ea32b54-6a85-4a66-9cac-dccd1ef8af05"}]},{"name":"posX","value":0.9769739636664628,"links":[{"portIn":"posX","portOut":"result","objIn":"8881d03b-635f-4e3b-8f8d-d1434e6dc0da","objOut":"c7646e57-4485-4c2f-bbf6-dabb6123d6aa"}]},{"name":"posY","value":0},{"name":"posZ","value":"0.4"},{"name":"scaleX","value":"0.10000000000000014"},{"name":"scaleY","value":"0.10000000000000014"},{"name":"scaleZ","value":"0.10000000000000014"},{"name":"rotX","value":0},{"name":"rotY","value":0},{"name":"rotZ","value":2708.508001804352,"links":[{"portIn":"rotZ","portOut":"result","objIn":"8881d03b-635f-4e3b-8f8d-d1434e6dc0da","objOut":"7e824d25-ef5a-4c8f-94b6-9ebf3500ff30"}]}],"portsOut":[{"name":"trigger","value":null}]},{"name":"random cluster","objName":"Ops.RandomCluster","id":"2ea32b54-6a85-4a66-9cac-dccd1ef8af05","uiAttribs":{"translate":{"x":431,"y":371}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"2ea32b54-6a85-4a66-9cac-dccd1ef8af05","objOut":"a560e405-fc3a-47e6-954a-2e6aa2f1cd17"}]},{"name":"num","value":"111"},{"name":"size","value":"2"}],"portsOut":[{"name":"trigger","value":null},{"name":"index","value":110},{"name":"rnd","value":0.9261729470454156}]},{"name":"RelativeTime","objName":"Ops.Anim.RelativeTime","id":"7c421ed4-1a58-41b4-8828-863bd476440e","uiAttribs":{"translate":{"x":471,"y":97}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"7c421ed4-1a58-41b4-8828-863bd476440e","objOut":"b55a747a-a227-41be-a6c4-da221051cd1e"}]}],"portsOut":[{"name":"result","value":123.11400008201599}]},{"name":"multiply","objName":"Ops.Math.Multiply","id":"7e824d25-ef5a-4c8f-94b6-9ebf3500ff30","uiAttribs":{"translate":{"x":549,"y":185}},"portsIn":[{"name":"number1","value":123.11400008201599,"links":[{"portIn":"number1","portOut":"result","objIn":"7e824d25-ef5a-4c8f-94b6-9ebf3500ff30","objOut":"7c421ed4-1a58-41b4-8828-863bd476440e"}]},{"name":"number2","value":"22"}],"portsOut":[{"name":"result","value":2708.508001804352}]},{"name":"BasicMaterial","objName":"Ops.Gl.Shader.BasicMaterial","id":"9549291e-f660-48b8-9ffa-997eebec2000","uiAttribs":{"translate":{"x":447,"y":550}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"9549291e-f660-48b8-9ffa-997eebec2000","objOut":"8881d03b-635f-4e3b-8f8d-d1434e6dc0da"}]},{"name":"r","value":"0.5"},{"name":"g","value":0.9261729470454156,"links":[{"portIn":"g","portOut":"rnd","objIn":"9549291e-f660-48b8-9ffa-997eebec2000","objOut":"2ea32b54-6a85-4a66-9cac-dccd1ef8af05"}]},{"name":"b","value":"1"},{"name":"a","value":"0.9"},{"name":"texture","value":null}],"portsOut":[{"name":"trigger","value":null}]},{"name":"ClearColor","objName":"Ops.Gl.ClearColor","id":"50dff18f-831e-4e88-a287-212195903195","uiAttribs":{"translate":{"x":310,"y":162}},"portsIn":[{"name":"render","value":null,"links":[{"portIn":"render","portOut":"trigger","objIn":"50dff18f-831e-4e88-a287-212195903195","objOut":"b55a747a-a227-41be-a6c4-da221051cd1e"}]},{"name":"r","value":"0.2"},{"name":"g","value":"0.23"},{"name":"b","value":"0.4"}],"portsOut":[{"name":"trigger","value":null}]},{"name":"SinusAnim","objName":"Ops.Anim.SinusAnim","id":"c7646e57-4485-4c2f-bbf6-dabb6123d6aa","uiAttribs":{"translate":{"x":-37,"y":164}},"portsIn":[{"name":"exe","value":null,"links":[{"portIn":"exe","portOut":"trigger","objIn":"c7646e57-4485-4c2f-bbf6-dabb6123d6aa","objOut":"50dff18f-831e-4e88-a287-212195903195"}]}],"portsOut":[{"name":"result","value":0.9769739636664628}]}]}
         }
 
     ]
@@ -453,8 +453,11 @@ var line;
         var self=this;
         this.ops=[];
         this.scene=null;
-        var rendererIsZoomed=false;
+        var rendererSize=1;
         var watchPorts=[];
+
+        var rendererSizes=[{w:640,h:360},{w:800,h:480},{w:0,h:0}];
+
 
 
         var mouseNewOPX=0;
@@ -468,10 +471,7 @@ var line;
             switch(e.which)
             {
                 case 27:
-        console.log('HUR');
-        
-                    if(rendererIsZoomed)self.toggleRendererZoom();
-
+                    self.cycleRendererSize();
                     ui.closeModal();
                 break;
             }
@@ -482,8 +482,8 @@ var line;
             var statusBarHeight=20;
             var menubarHeight=30;
             var optionsWidth=360;
-            var rendererWidth=640;
-            var rendererHeight=360;
+            var rendererWidth=rendererSizes[rendererSize].w;
+            var rendererHeight=rendererSizes[rendererSize].h;
 
             $('svg').css('height',window.innerHeight-statusBarHeight-menubarHeight);
             $('svg').css('width',window.innerWidth-rendererWidth-2);
@@ -502,6 +502,19 @@ var line;
             $('#menubar').css('top',0);
             $('#menubar').css('width',window.innerWidth-rendererWidth);
             $('#menubar').css('height',menubarHeight);
+
+            if(rendererSizes[rendererSize].w===0)
+            {
+                $('#glcanvas').attr('width',window.innerWidth);
+                $('#glcanvas').attr('height',window.innerHeight);
+                $('#glcanvas').css('z-index',9999);
+            }
+            else
+            {
+                $('#glcanvas').attr('width',rendererSizes[rendererSize].w);
+                $('#glcanvas').attr('height',rendererSizes[rendererSize].h);
+            }
+
         };
 
 
@@ -737,21 +750,12 @@ var line;
           };
       };
 
-        this.toggleRendererZoom=function()
+        this.cycleRendererSize=function()
         {
-            if(rendererIsZoomed)
-            {
-                rendererIsZoomed=false;
-                $('#glcanvas').attr('width',640);
-                $('#glcanvas').attr('height',360);
-            }
-            else
-            {
-                rendererIsZoomed=true;
-                $('#glcanvas').attr('width',window.innerWidth);
-                $('#glcanvas').attr('height',window.innerHeight);
-                $('#glcanvas').css('z-index',9999);
-            }
+            rendererSize++;
+            if(rendererSize>rendererSizes.length-1)rendererSize=0;
+
+            self.setLayout();
         };
 
         this.closeModal=function()

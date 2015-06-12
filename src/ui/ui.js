@@ -424,8 +424,11 @@ var line;
         var self=this;
         this.ops=[];
         this.scene=null;
-        var rendererIsZoomed=false;
+        var rendererSize=1;
         var watchPorts=[];
+
+        var rendererSizes=[{w:640,h:360},{w:800,h:480},{w:0,h:0}];
+
 
 
         var mouseNewOPX=0;
@@ -439,10 +442,7 @@ var line;
             switch(e.which)
             {
                 case 27:
-        console.log('HUR');
-        
-                    if(rendererIsZoomed)self.toggleRendererZoom();
-
+                    self.cycleRendererSize();
                     ui.closeModal();
                 break;
             }
@@ -453,8 +453,8 @@ var line;
             var statusBarHeight=20;
             var menubarHeight=30;
             var optionsWidth=360;
-            var rendererWidth=640;
-            var rendererHeight=360;
+            var rendererWidth=rendererSizes[rendererSize].w;
+            var rendererHeight=rendererSizes[rendererSize].h;
 
             $('svg').css('height',window.innerHeight-statusBarHeight-menubarHeight);
             $('svg').css('width',window.innerWidth-rendererWidth-2);
@@ -473,6 +473,19 @@ var line;
             $('#menubar').css('top',0);
             $('#menubar').css('width',window.innerWidth-rendererWidth);
             $('#menubar').css('height',menubarHeight);
+
+            if(rendererSizes[rendererSize].w===0)
+            {
+                $('#glcanvas').attr('width',window.innerWidth);
+                $('#glcanvas').attr('height',window.innerHeight);
+                $('#glcanvas').css('z-index',9999);
+            }
+            else
+            {
+                $('#glcanvas').attr('width',rendererSizes[rendererSize].w);
+                $('#glcanvas').attr('height',rendererSizes[rendererSize].h);
+            }
+
         };
 
 
@@ -708,21 +721,12 @@ var line;
           };
       };
 
-        this.toggleRendererZoom=function()
+        this.cycleRendererSize=function()
         {
-            if(rendererIsZoomed)
-            {
-                rendererIsZoomed=false;
-                $('#glcanvas').attr('width',640);
-                $('#glcanvas').attr('height',360);
-            }
-            else
-            {
-                rendererIsZoomed=true;
-                $('#glcanvas').attr('width',window.innerWidth);
-                $('#glcanvas').attr('height',window.innerHeight);
-                $('#glcanvas').css('z-index',9999);
-            }
+            rendererSize++;
+            if(rendererSize>rendererSizes.length-1)rendererSize=0;
+
+            self.setLayout();
         };
 
         this.closeModal=function()
