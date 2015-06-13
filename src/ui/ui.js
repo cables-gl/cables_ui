@@ -561,6 +561,16 @@ var line;
             {
                 case 46: case 8:
 
+
+
+                    if ($("input").is(":focus")) 
+                    {
+                        return;
+                    }
+
+
+        
+
                     if(selectedOp)
                     {
                         ui.scene.deleteOp( selectedOp.op.id,true );

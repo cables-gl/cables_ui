@@ -3,7 +3,8 @@
 //http://fhtr.blogspot.de/2009/12/3d-models-and-parsing-binary-data-with.html
 //https://github.com/gpjt/webgl-lessons/blob/master/lesson05/index.html
 
-Ops.Gl={};
+Ops.Gl=Ops.Gl || {};
+
 var GL=null;
 
 Ops.Gl.Renderer = function()
@@ -11,7 +12,7 @@ Ops.Gl.Renderer = function()
     Op.apply(this, arguments);
     var self=this;
 
-    this.name='WebGL Renderer';
+    this.name='render';
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
@@ -161,6 +162,9 @@ Ops.Gl.TextureEmpty = function()
     this.width.onValueChanged=sizeChanged;
     this.height.onValueChanged=sizeChanged;
 
+    this.width.val=8;
+    this.height.val=8;
+
 };
 
 Ops.Gl.TextureEmpty.prototype = new Op();
@@ -255,14 +259,11 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         mat4.identity(cgl.mvMatrix);
 
         self.mesh.render(cgl.getShader());
-
         self.trigger.call();
 
         cgl.popPMatrix();
         cgl.popMvMatrix();
 
-        self.mesh.render(cgl.getShader());
-        self.trigger.call();
     };
 
     var geom=new CGL.Geometry();
@@ -1057,6 +1058,102 @@ Ops.RandomCluster = function()
 };
 
 Ops.RandomCluster.prototype = new Op();
+
+
+
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Render2Texture = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='render to texture';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var rttFramebuffer;
+    var texture=new CGL.Texture();
+
+this.width=this.addInPort(new Port(this,"texture width"));
+this.height=this.addInPort(new Port(this,"texture width"));
+this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+
+
+    this.width.val=1024;
+    this.height.val=1024;
+
+
+    texture.setSize(this.width.val,this.height.val);
+
+    rttFramebuffer = GL.createFramebuffer();
+    GL.bindFramebuffer(GL.FRAMEBUFFER, rttFramebuffer);
+    // rttFramebuffer.width = this.width.val;
+    // rttFramebuffer.height = this.height.val;
+
+
+    // rttTexture = GL.createTexture();
+    // GL.bindTexture(GL.TEXTURE_2D, rttTexture);
+    // GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+    // GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR_MIPMAP_NEAREST);
+    // GL.generateMipmap(GL.TEXTURE_2D);
+    // GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, rttFramebuffer.width, rttFramebuffer.height, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
+
+    var renderbuffer = GL.createRenderbuffer();
+    GL.bindRenderbuffer(GL.RENDERBUFFER, renderbuffer);
+    GL.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, this.width.val,this.height.val);
+    GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture.tex, 0);
+    GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderbuffer);
+    GL.bindTexture(GL.TEXTURE_2D, null);
+    GL.bindRenderbuffer(GL.RENDERBUFFER, null);
+    GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+
+    // var sizeChanged=function()
+    // {
+    //     texture.setSize(self.width.val,self.height.val);
+    //     self.tex.val=self.tex.tex;
+    // };
+
+    // this.width.onValueChanged=sizeChanged;
+    // this.height.onValueChanged=sizeChanged;
+    // sizeChanged();
+
+    self.tex.val=texture.tex;
+
+
+    this.render.onTriggered=function()
+    {
+        cgl.pushMvMatrix();
+
+        GL.bindFramebuffer(GL.FRAMEBUFFER, rttFramebuffer);
+        
+        cgl.pushPMatrix();
+        gl.viewport(0, 0, 1920,1080);
+        mat4.perspective(cgl.pMatrix,45, self.width.val/self.height.val, 0.01, 1100.0);
+
+
+        self.trigger.call();
+
+        cgl.popPMatrix();
+        
+        GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+        
+        cgl.popMvMatrix();
+        gl.viewport(0, 0, 640,360);
+    };
+
+
+};
+
+Ops.Gl.Render2Texture.prototype = new Op();
+
+
+
+
+
 
 
 
