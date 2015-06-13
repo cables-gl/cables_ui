@@ -203,8 +203,8 @@ CGL.Shader=function()
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
-        gl.uniformMatrix4fv(projMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(mvMatrixUniform, false, mvMatrix);
+        gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
+        gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
     };
 
     this.getProgram=function()

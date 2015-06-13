@@ -127,6 +127,12 @@ function UiLink(port1, port2)
                 "fill-opacity": 1,
             });
 
+            addCircle.hover(function ()
+            {
+                setStatusText('left click: insert op / right click: delete link');
+            });
+
+
             addCircle.drag(function(){},function(){},function(event)
             {
                 if(self.p1!==null)

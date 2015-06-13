@@ -420,8 +420,8 @@ CGL.Shader=function()
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
-        gl.uniformMatrix4fv(projMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(mvMatrixUniform, false, mvMatrix);
+        gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
+        gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
     };
 
     this.getProgram=function()
@@ -472,6 +472,97 @@ CGL.Shader=function()
 
 
 };
+
+
+
+var CGL=CGL || {};
+
+CGL.State=function()
+{
+    var self=this;
+    var mvMatrixStack=[];
+    var pMatrixStack=[];
+    var shaderStack=[];
+
+    this.pMatrix=mat4.create();
+    this.mvMatrix=mat4.create();
+
+    mat4.identity(self.mvMatrix);
+
+    var simpleShader=new CGL.Shader();
+    var currentShader=simpleShader;
+
+
+    this.beginFrame=function()
+    {
+        self.pushShader(simpleShader);
+    };
+
+    this.endFrame=function()
+    {
+        self.popShader();
+        if(mvMatrixStack.length>0) console.warn('mvmatrix stack length !=0 at end of rendering...');
+        if(pMatrixStack.length>0) console.warn('pmatrix stack length !=0 at end of rendering...');
+        if(shaderStack.length>0) console.warn('shaderStack length !=0 at end of rendering...');
+    };
+
+    // shader stack
+
+    this.getShader=function()
+    {
+        return currentShader;
+    };
+
+    this.pushShader=function(shader)
+    {
+        shaderStack.push(shader);
+        currentShader=shader;
+    };
+
+    this.popShader=function()
+    {
+        if(shaderStack.length===0) throw "Invalid movelview popMatrix!";
+        currentShader = shaderStack.pop();
+    };
+
+
+    // modelview matrix stack
+
+    this.pushMvMatrix=function()
+    {
+        var copy = mat4.create();
+        mat4.copy(copy,self.mvMatrix);
+        mvMatrixStack.push(copy);
+    };
+
+    this.popMvMatrix=function()
+    {
+        if(mvMatrixStack.length===0) throw "Invalid movelview popMatrix!";
+        self.mvMatrix = mvMatrixStack.pop();
+    };
+
+    // projection matrix stack
+
+    this.pushPMatrix=function()
+    {
+        var copy = mat4.create();
+        mat4.copy(copy,self.pMatrix);
+        pMatrixStack.push(copy);
+    };
+
+    this.popPMatrix=function()
+    {
+        if(pMatrixStack.length===0) throw "Invalid projection popMatrix!";
+        self.pMatrix = pMatrixStack.pop();
+    };
+
+
+
+
+
+};
+
+cgl=new CGL.State();
 
 
 var CGL=CGL || {};
@@ -1222,26 +1313,18 @@ String.prototype.endl = function(){return this+'\n';};
 
 
 
+
 //http://k3d.ivank.net/K3D.js
 //http://fhtr.blogspot.de/2009/12/3d-models-and-parsing-binary-data-with.html
 //https://github.com/gpjt/webgl-lessons/blob/master/lesson05/index.html
 
 Ops.Gl={};
 var GL=null;
-var GL=null;
-
-var currentShader=null;
-
-var mvMatrix = mat4.create();
-var pMatrix = mat4.create();
 
 Ops.Gl.Renderer = function()
 {
     Op.apply(this, arguments);
     var self=this;
-
-    var simpleShader=new CGL.Shader();
- 
 
     this.name='WebGL Renderer';
 
@@ -1252,19 +1335,28 @@ Ops.Gl.Renderer = function()
 
     this.onAnimFrame=function(time)
     {
-        currentShader=simpleShader;
         gl.enable(gl.DEPTH_TEST);
         GL.clearColor(0,0,0,1);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         gl.viewport(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
-        mat4.perspective(pMatrix,45, self.canvas.clientWidth/self.canvas.clientHeight, 0.01, 1100.0);
-        mat4.identity(mvMatrix);
-        mat4.translate(mvMatrix,mvMatrix, initTranslate);
+        mat4.perspective(cgl.pMatrix,45, self.canvas.clientWidth/self.canvas.clientHeight, 0.01, 1100.0);
+
+        cgl.pushPMatrix();
+        cgl.pushMvMatrix();
+
+        mat4.identity(cgl.mvMatrix);
+        mat4.translate(cgl.mvMatrix,cgl.mvMatrix, initTranslate);
 
         GL.enable(GL.BLEND);
         GL.blendFunc(GL.SRC_ALPHA,GL.ONE_MINUS_SRC_ALPHA);
 
+        cgl.beginFrame();
+
         self.trigger.call();
+
+        cgl.popMvMatrix();
+        cgl.popPMatrix();
+        cgl.endFrame();
     };
 
     this.canvas = document.getElementById("glcanvas");
@@ -1275,13 +1367,7 @@ Ops.Gl.Renderer = function()
 
 Ops.Gl.Renderer.prototype = new Op();
 
-
-
-
-
 // --------------------------------------------------------------------------
-
-
 
 Ops.Gl.LeapMotion = function()
 {
@@ -1298,15 +1384,8 @@ Ops.Gl.LeapMotion = function()
     this.finger0Y=this.addOutPort(new Port(this,"finger0Y"));
     this.finger0Z=this.addOutPort(new Port(this,"finger0Z"));
 
-
-
-
-
-
     Leap.loop(function (frame)
     {
-        // console.log(frame);
-
         self.transX.val=frame._translation[0];
         self.transY.val=frame._translation[1];
         self.transZ.val=frame._translation[2];
@@ -1316,23 +1395,13 @@ Ops.Gl.LeapMotion = function()
             self.finger0X.val=frame.fingers[0].tipPosition[0];
             self.finger0Y.val=frame.fingers[0].tipPosition[1];
             self.finger0Z.val=frame.fingers[0].tipPosition[2];
-
         }
-
     });
-
-
-
 };
 
 Ops.Gl.LeapMotion.prototype = new Op();
 
-
-
-
-
 // --------------------------------------------------------------------------
-
 
 Ops.Gl.ClearColor = function()
 {
@@ -1361,9 +1430,6 @@ Ops.Gl.ClearColor = function()
 };
 
 Ops.Gl.ClearColor.prototype = new Op();
-
-
-
 
 // --------------------------------------------------------------------------
 
@@ -1434,8 +1500,6 @@ Ops.Gl.Texture = function()
     };
 
     this.filename.val='assets/skull.png';
-    // this.filename.onValueChanged();
-    // this.textureOut.val=this.tex.tex;
 };
 
 Ops.Gl.Texture.prototype = new Op();
@@ -1445,8 +1509,6 @@ Ops.Gl.Texture.prototype = new Op();
 
 
 Ops.Gl.Meshes={};
-
-
 
 Ops.Gl.Meshes.Rectangle = function()
 {
@@ -1459,7 +1521,7 @@ Ops.Gl.Meshes.Rectangle = function()
 
     this.render.onTriggered=function()
     {
-        self.mesh.render(currentShader);
+        self.mesh.render(cgl.getShader());
         self.trigger.call();
     };
 
@@ -1488,9 +1550,62 @@ Ops.Gl.Meshes.Rectangle = function()
 
 Ops.Gl.Meshes.Rectangle.prototype = new Op();
 
-
 // --------------------------------------------------------------------------
 
+Ops.Gl.Meshes.FullscreenRectangle = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='fullscreen rectangle';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.render.onTriggered=function()
+    {
+        cgl.pushPMatrix();
+        mat4.identity(cgl.pMatrix);
+
+        cgl.pushMvMatrix();
+        mat4.identity(cgl.mvMatrix);
+
+        self.mesh.render(cgl.getShader());
+
+        self.trigger.call();
+
+        cgl.popPMatrix();
+        cgl.popMvMatrix();
+
+        self.mesh.render(cgl.getShader());
+        self.trigger.call();
+    };
+
+    var geom=new CGL.Geometry();
+    geom.vertices = [
+         1.0,  1.0,  0.0,
+        -1.0,  1.0,  0.0,
+         1.0, -1.0,  0.0,
+        -1.0, -1.0,  0.0
+    ];
+
+    geom.texCoords = [
+         1.0, 1.0,
+         0.0, 1.0,
+         1.0, 0.0,
+         0.0, 0.0
+    ];
+
+    geom.verticesIndices = [
+        0, 1, 2,
+        3, 1, 2
+    ];
+    this.mesh=new CGL.Mesh(geom);
+
+};
+
+Ops.Gl.Meshes.FullscreenRectangle.prototype = new Op();
+
+// --------------------------------------------------------------------------
 
 Ops.Gl.Meshes.Circle = function()
 {
@@ -1508,10 +1623,9 @@ Ops.Gl.Meshes.Circle = function()
 
     this.render.onTriggered=function()
     {
-        mesh.render(currentShader);
+        mesh.render(cgl.getShader());
         self.trigger.call();
     };
-
 
     this.segments.val=20;
     this.radius.val=1;
@@ -1526,8 +1640,6 @@ Ops.Gl.Meshes.Circle = function()
         var oldPosX=0;
         var oldPosY=0;
 
-        // geom->texCoords.push_back(new Vec2f( 0.5,0.5 ));
-
         for (var i=0; i <= self.segments.val*self.percent.val; i++)
         {
             var degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
@@ -1539,15 +1651,6 @@ Ops.Gl.Meshes.Circle = function()
                         [oldPosX,oldPosY,0],
                         [0,0,0]
             );
-
-            // tmesh->normals.push_back(new Vec3f(1,1,1));
-            // tmesh->normals.push_back(new Vec3f(1,1,1));
-            // tmesh->normals.push_back(new Vec3f(1,1,1));
-
-            // tmesh->texCoords.push_back(new Vec2f( 0.5f*(1+oldPosX/radius),  0.5f*(1.0f+oldPosY/radius)));
-            // tmesh->texCoords.push_back(new Vec2f( 0.5f*(1+posx/radius),     0.5f*(1.0f+posy/radius)));
-
-            // tmesh->texFaces.push_back(new Vec3i(0,tmesh->texCoords.size()-2,tmesh->texCoords.size()-1));
 
             oldPosX=posx;
             oldPosY=posy;
@@ -1563,12 +1666,7 @@ Ops.Gl.Meshes.Circle = function()
 
 Ops.Gl.Meshes.Circle.prototype = new Op();
 
-
 // --------------------------------------------------------------------------
-
-
-
-
 
 Ops.Gl.Meshes.ObjMesh = function()
 {
@@ -1583,10 +1681,7 @@ Ops.Gl.Meshes.ObjMesh = function()
 
     this.render.onTriggered=function()
     {
-        if(self.mesh)
-        {
-            self.mesh.render(currentShader);
-        }
+        if(self.mesh) self.mesh.render(cgl.getShader());
 
         self.trigger.call();
     };
@@ -1598,41 +1693,32 @@ Ops.Gl.Meshes.ObjMesh = function()
                 
         var r=parseOBJ(response);
 
-unwrap = function(ind, crd, cpi)
-{
-    var ncrd = new Array(Math.floor(ind.length/3)*cpi);
-    for(var i=0; i<ind.length; i++)
+    unwrap = function(ind, crd, cpi)
     {
-        for(var j=0; j<cpi; j++)
+        var ncrd = new Array(Math.floor(ind.length/3)*cpi);
+        for(var i=0; i<ind.length; i++)
         {
-            ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
+            for(var j=0; j<cpi; j++)
+            {
+                ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
+            }
         }
-    }
-    return ncrd;
-};
+        return ncrd;
+    };
 
-var l=r.verticesIndices.length;
+    var l=r.verticesIndices.length;
         r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
         r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
         r.verticesIndices = [];
         for(var i=0; i<l; i++) r.verticesIndices.push(i);
-
         
         self.mesh=new CGL.Mesh(r);
     });
-
-
-
 };
 
 Ops.Gl.Meshes.ObjMesh.prototype = new Op();
 
-
-
-
-
 // ----------------------------------------------------------------
-
 
 Ops.Gl.Meshes.Cube = function()
 {
@@ -1647,14 +1733,9 @@ Ops.Gl.Meshes.Cube = function()
 
     this.render.onTriggered=function()
     {
-        if(self.mesh!==null)
-        {
-            self.mesh.render(currentShader);
-        }
-
+        if(self.mesh!==null) self.mesh.render(cgl.getShader());
         self.trigger.call();
     };
-
 
     var geom=new CGL.Geometry();
 
@@ -1733,22 +1814,12 @@ Ops.Gl.Meshes.Cube = function()
             20, 21, 22,   20, 22, 23  // Left face
         ];
 
-
-
     this.mesh=new CGL.Mesh(geom);
-
-
-
 };
 
 Ops.Gl.Meshes.Cube.prototype = new Op();
 
-
-
-
-
 // ----------------------------------------------------------------
-
 
 Ops.Gl.Meshes.Plotter = function()
 {
@@ -1762,9 +1833,8 @@ Ops.Gl.Meshes.Plotter = function()
 
     this.render.onTriggered=function()
     {
-        // currentShader.setAttributeVertex( self.buffer.itemSize);
-        gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.buffer.itemSize, gl.FLOAT, false, 0, 0);
-        currentShader.bind();
+        gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),self.buffer.itemSize, gl.FLOAT, false, 0, 0);
+        cgl.getShader().bind();
         gl.bindBuffer(gl.ARRAY_BUFFER, self.buffer);
         gl.drawArrays(gl.LINE_STRIP, 0, self.buffer.numItems);
 
@@ -1807,12 +1877,9 @@ Ops.Gl.Meshes.Plotter = function()
 
         bufferData();
     };
-
-
 };
 
 Ops.Gl.Meshes.Plotter.prototype = new Op();
-
 
 // ----------------------------------------------------------------
 
@@ -1827,7 +1894,7 @@ Ops.Gl.Meshes.Triangle = function()
 
     this.render.onTriggered=function()
     {
-        self.mesh.render(currentShader);
+        self.mesh.render(cgl.getShader());
         self.trigger.call();
     };
 
@@ -1848,7 +1915,6 @@ Ops.Gl.Meshes.Triangle.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-
 Ops.Gl.Shader={};
 
 Ops.Gl.Shader.BasicMaterial = function()
@@ -1858,14 +1924,11 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     this.name='BasicMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
 
     this.doRender=function()
     {
-        var oldShader=currentShader;
-        currentShader=shader;
+        cgl.pushShader(shader);
 
         if(self.texture.val)
         {
@@ -1875,7 +1938,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
         self.trigger.call();
 
-        currentShader=oldShader;
+        cgl.popShader();
     };
 
     var srcFrag=''+
@@ -1902,9 +1965,6 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     var shader=new CGL.Shader();
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
-
-
-
 
     this.r=this.addInPort(new Port(this,"r"));
     this.r.onValueChanged=function()
@@ -1973,13 +2033,16 @@ Ops.Gl.Shader.Schwurbel = function()
 
     this.doRender=function()
     {
-        currentShader=shader;
+        cgl.pushShader(shader);
+
         if(!self.timer.uniLoc)
         {
             shader.bind();
             self.timer.uniLoc=gl.getUniformLocation(shader.getProgram(), "time");
         }
         gl.uniform1f(self.timer.uniLoc, self.timer.val);
+
+        cgl.popShader(shader);
 
         self.trigger.call();
     };
@@ -2019,6 +2082,7 @@ Ops.Gl.Shader.Noise = function()
 
     this.doRender=function()
     {
+        cgl.pushShader(shader);
         if(timeUniform==-1)
         {
             timeStart=Date.now();
@@ -2027,7 +2091,7 @@ Ops.Gl.Shader.Noise = function()
         }
 
         gl.uniform1f(timeUniform, (Date.now()-timeStart)/1000);
-        currentShader=shader;
+        cgl.popShader();
 
         self.trigger.call();
     };
@@ -2058,9 +2122,7 @@ Ops.Gl.Shader.Noise.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-
 Ops.Gl.Matrix={};
-
 
 Ops.Gl.Matrix.Translate = function()
 {
@@ -2083,11 +2145,11 @@ Ops.Gl.Matrix.Translate = function()
     this.render.onTriggered=function()
     {
         vec3.set(vec, self.x.val,self.y.val,self.z.val);
-
-        mat4.translate(mvMatrix,mvMatrix, vec);
+        cgl.pushMvMatrix();
+        mat4.translate(cgl.mvMatrix,cgl.mvMatrix, vec);
         self.trigger.call();
+        cgl.popMvMatrix();
     };
-
 };
 
 Ops.Gl.Matrix.Translate.prototype = new Op();
@@ -2106,7 +2168,6 @@ Ops.Gl.Matrix.Scale = function()
     this.scale=this.addInPort(new Port(this,"scale"));
     
     var vScale=vec3.create();
-    var oldMatrix = mat4.create();
     var transMatrix = mat4.create();
     mat4.identity(transMatrix);
 
@@ -2114,13 +2175,10 @@ Ops.Gl.Matrix.Scale = function()
 
     this.render.onTriggered=function()
     {
-        mat4.copy(oldMatrix, mvMatrix);
-
+        cgl.pushMvMatrix();
         mat4.multiply(mvMatrix,mvMatrix,transMatrix);
-
         self.trigger.call();
-
-        mat4.copy(mvMatrix,oldMatrix);
+        cgl.popMvMatrix();
     };
 
     var updateMatrix=function()
@@ -2132,22 +2190,18 @@ Ops.Gl.Matrix.Scale = function()
     this.scaleChanged=function()
     {
         doScale=false;
-        //if(self.scaleX.val!==0.0 || self.scaleY.val!==0.0 || self.scaleZ.val!==0.0)doScale=true;
         vec3.set(vScale, self.scale.val,self.scale.val,self.scale.val);
         updateMatrix();
     };
 
     this.scale.onValueChanged=this.scaleChanged;
-
     this.scale.val=1.0;
-
     updateMatrix();
 };
 
 Ops.Gl.Matrix.Scale.prototype = new Op();
 
 // --------------------------------------------------------------------------
-
 
 Ops.Gl.Matrix.Transform = function()
 {
@@ -2171,7 +2225,6 @@ Ops.Gl.Matrix.Transform = function()
     
     var vPos=vec3.create();
     var vScale=vec3.create();
-    var oldMatrix = mat4.create();
     var transMatrix = mat4.create();
     mat4.identity(transMatrix);
 
@@ -2180,13 +2233,10 @@ Ops.Gl.Matrix.Transform = function()
 
     this.render.onTriggered=function()
     {
-        mat4.copy(oldMatrix, mvMatrix);
-
-        mat4.multiply(mvMatrix,mvMatrix,transMatrix);
-
+        cgl.pushMvMatrix();
+        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
         self.trigger.call();
-
-        mat4.copy(mvMatrix,oldMatrix);
+        cgl.popMvMatrix();
     };
 
     var updateMatrix=function()
@@ -2251,10 +2301,7 @@ Ops.Gl.Matrix.Transform = function()
 
 Ops.Gl.Matrix.Transform.prototype = new Op();
 
-
-
 // ----------------------------------------------------
-
 
 Ops.RandomCluster = function()
 {
@@ -2274,29 +2321,26 @@ Ops.RandomCluster = function()
     this.randomsFloats=[];
 
     var transVec=vec3.create();
-    var oldMatrix = mat4.create();
 
     this.exe.onTriggered=function()
     {
-        mat4.copy(oldMatrix, mvMatrix);
-
         for(var i=0;i<self.randoms.length;i++)
         {
-            mat4.translate(mvMatrix,mvMatrix, self.randoms[i]);
+            cgl.pushMvMatrix();
 
-            mat4.rotateX(mvMatrix,mvMatrix, self.randomsRot[i][0]);
-            mat4.rotateY(mvMatrix,mvMatrix, self.randomsRot[i][1]);
-            mat4.rotateZ(mvMatrix,mvMatrix, self.randomsRot[i][2]);
+            mat4.translate(cgl.mvMatrix,cgl.mvMatrix, self.randoms[i]);
+
+            mat4.rotateX(cgl.mvMatrix,cgl.mvMatrix, self.randomsRot[i][0]);
+            mat4.rotateY(cgl.mvMatrix,cgl.mvMatrix, self.randomsRot[i][1]);
+            mat4.rotateZ(cgl.mvMatrix,cgl.mvMatrix, self.randomsRot[i][2]);
 
             self.idx.val=i;
             self.rnd.val=self.randomsFloats[i];
 
             self.trigger.call();
-            mat4.copy(mvMatrix,oldMatrix);
 
+            cgl.popMvMatrix();
         }
-
-
     };
 
     function reset()
@@ -2325,9 +2369,8 @@ Ops.RandomCluster = function()
     this.size.onValueChanged=reset;
 
     this.num.val=100;
-
-
 };
+
 Ops.RandomCluster.prototype = new Op();
 
 
@@ -3103,4 +3146,21 @@ Ops.Math.Compare.Equals = function()
 };
 
 Ops.Math.Compare.Equals.prototype = new Op();
+
+
+
+
+// Ops.Ui.Comment = function()
+// {
+//     var self=this;
+//     Op.apply(this, arguments);
+
+//     this.name='Comment';
+//     this.title=this.addInPort(new Port(this,"title"));
+//     this.text=this.addInPort(new Port(this,"text"));
+
+
+// };
+
+// Ops.Ui.Comment.prototype = new Op();
 
