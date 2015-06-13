@@ -8,30 +8,35 @@ var CGL=CGL ||
 CGL.Mesh=function(geom)
 {
     var bufTexCoords=-1;
-    // var bufTexCoordsIndizes=-1;
-
     var bufVertices = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertices), gl.STATIC_DRAW);
-    bufVertices.itemSize = 3;
-    bufVertices.numItems = geom.vertices.length/3;
-
-
     var bufVerticesIndizes = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), gl.STATIC_DRAW);
-    bufVerticesIndizes.itemSize = 1;
-    bufVerticesIndizes.numItems = geom.verticesIndices.length;
 
-    if(geom.texCoords.length>0)
+    this.setGeom=function(geom)
     {
-        bufTexCoords = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), gl.STATIC_DRAW);
-        bufTexCoords.itemSize = 2;
-        bufTexCoords.numItems = geom.texCoords.length/bufTexCoords.itemSize;
-    }
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertices), gl.STATIC_DRAW);
+        bufVertices.itemSize = 3;
+        bufVertices.numItems = geom.vertices.length/3;
 
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), gl.STATIC_DRAW);
+        bufVerticesIndizes.itemSize = 1;
+        bufVerticesIndizes.numItems = geom.verticesIndices.length;
+
+        if(geom.texCoords.length>0)
+        {
+            if(bufTexCoords==-1)bufTexCoords = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), gl.STATIC_DRAW);
+            bufTexCoords.itemSize = 2;
+            bufTexCoords.numItems = geom.texCoords.length/bufTexCoords.itemSize;
+        }
+
+    };
+
+    this.setGeom(geom);
 
 
     this.render=function(shader)
@@ -63,6 +68,60 @@ CGL.Geometry=function()
     this.verticesIndices=[];
     this.texCoords=[];
     this.texCoordsIndices=[];
+
+    this.clear=function()
+    {
+        this.vertices.length=0;
+        this.verticesIndices.length=0;
+        this.texCoords.length=0;
+        this.texCoordsIndices.length=0;
+    };
+
+    this.addFace=function(a,b,c)
+    {
+        var face=[-1,-1,-1];
+
+        for(var iv=0;iv<this.vertices;iv+=3)
+        {
+            if( this.vertices[iv+0]==a[0] &&
+                this.vertices[iv+1]==a[1] &&
+                this.vertices[iv+2]==a[2]) face[0]=iv/3;
+
+            if( this.vertices[iv+0]==b[0] &&
+                this.vertices[iv+1]==b[1] &&
+                this.vertices[iv+2]==b[2]) face[1]=iv/3;
+
+            if( this.vertices[iv+0]==c[0] &&
+                this.vertices[iv+1]==c[1] &&
+                this.vertices[iv+2]==c[2]) face[2]=iv/3;
+        }
+
+        if(face[0]==-1)
+        {
+            this.vertices.push(a[0],a[1],a[2]);
+            face[0]=(this.vertices.length-1)/3;
+        }
+
+        if(face[1]==-1)
+        {
+            this.vertices.push(b[0],b[1],b[2]);
+            face[1]=(this.vertices.length-1)/3;
+        }
+
+        if(face[2]==-1)
+        {
+            this.vertices.push(c[0],c[1],c[2]);
+            face[2]=(this.vertices.length-1)/3;
+        }
+
+        this.verticesIndices.push(face[0]);
+        this.verticesIndices.push(face[1]);
+        this.verticesIndices.push(face[2]);
+
+    };
+
+
+
 };
 
 parseOBJ = function(buff)

@@ -112,11 +112,11 @@ $( ".searchresult:first" ).addClass( "selected" );
     $('#opsearch').keydown(function(e) 
     {
 
-        switch(e.which) {
+        switch(e.which)
+        {
             case 13:
             var opname=$('.selected').data('opname');
 
-            console.log('del;!');
             ui.scene.addOp(opname);
             ui.closeModal();
 

@@ -233,28 +233,6 @@ Ops.Gl.Meshes.Rectangle = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    // this.render.onTriggered=function()
-    // {
-    //     // currentShader.setAttributeVertex( self.squareVertexPositionBuffer.itemSize);
-    //     gl.vertexAttribPointer(currentShader.getAttrVertexPos(),self.squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-    //     currentShader.bind();
-    //     gl.bindBuffer(gl.ARRAY_BUFFER, self.squareVertexPositionBuffer);
-    //     gl.drawArrays(gl.TRIANGLE_STRIP, 0, self.squareVertexPositionBuffer.numItems);
-
-    //     self.trigger.call();
-    // };
-
-    // this.squareVertexPositionBuffer = gl.createBuffer();
-    // gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVertexPositionBuffer);
-    // this.vertices = [
-
-    // ];
-    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-    // this.squareVertexPositionBuffer.itemSize = 3;
-    // this.squareVertexPositionBuffer.numItems = 4;
-
-
     this.render.onTriggered=function()
     {
         self.mesh.render(currentShader);
@@ -282,11 +260,87 @@ Ops.Gl.Meshes.Rectangle = function()
     ];
     this.mesh=new CGL.Mesh(geom);
 
-
 };
 
 Ops.Gl.Meshes.Rectangle.prototype = new Op();
 
+
+// --------------------------------------------------------------------------
+
+
+Ops.Gl.Meshes.Circle = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Circle';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+
+    this.segments=this.addInPort(new Port(this,"segments"));
+    this.radius=this.addInPort(new Port(this,"radius"));
+    this.percent=this.addInPort(new Port(this,"percent"));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.render.onTriggered=function()
+    {
+        mesh.render(currentShader);
+        self.trigger.call();
+    };
+
+
+    this.segments.val=20;
+    this.radius.val=1;
+    this.percent.val=1;
+
+    var geom=new CGL.Geometry();
+    var mesh=new CGL.Mesh(geom);
+
+    function calc()
+    {
+        geom.clear();
+        var oldPosX=0;
+        var oldPosY=0;
+
+        // geom->texCoords.push_back(new Vec2f( 0.5,0.5 ));
+
+        for (var i=0; i <= self.segments.val*self.percent.val; i++)
+        {
+            var degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
+            var posx=Math.cos(degInRad)*self.radius.val;
+            var posy=Math.sin(degInRad)*self.radius.val;
+
+            geom.addFace(
+                        [posx,posy,0],
+                        [oldPosX,oldPosY,0],
+                        [0,0,0]
+            );
+
+            // tmesh->normals.push_back(new Vec3f(1,1,1));
+            // tmesh->normals.push_back(new Vec3f(1,1,1));
+            // tmesh->normals.push_back(new Vec3f(1,1,1));
+
+            // tmesh->texCoords.push_back(new Vec2f( 0.5f*(1+oldPosX/radius),  0.5f*(1.0f+oldPosY/radius)));
+            // tmesh->texCoords.push_back(new Vec2f( 0.5f*(1+posx/radius),     0.5f*(1.0f+posy/radius)));
+
+            // tmesh->texFaces.push_back(new Vec3i(0,tmesh->texCoords.size()-2,tmesh->texCoords.size()-1));
+
+            oldPosX=posx;
+            oldPosY=posy;
+        }
+
+        mesh.setGeom(geom);
+    }
+
+    this.segments.onValueChanged=calc;
+    this.radius.onValueChanged=calc;
+    this.percent.onValueChanged=calc;
+};
+
+Ops.Gl.Meshes.Circle.prototype = new Op();
+
+
+// --------------------------------------------------------------------------
 
 
 

@@ -118,6 +118,8 @@ function UiLink(port1, port2)
     {
         if(addCircle===null)
         {
+            // addCircle = r.rect(middlePosX,middlePosY, uiConfig.portSize, uiConfig.portSize).attr(
+
             addCircle = r.circle(middlePosX,middlePosY, uiConfig.portSize*0.74).attr(
             {
                 fill: getPortColor(self.p1.thePort.getType() ),
@@ -579,7 +581,7 @@ var line;
                     }
                     else
                     {
-                        ui.showOpSelect();
+                        ui.showOpSelect(20,20);
                     }
 
                     
@@ -839,6 +841,8 @@ var line;
 
                 if(linkNewLink)
                 {
+                    console.log('add into link...');
+
                     var op1=linkNewLink.p1.op;
                     var port1=linkNewLink.p1.thePort;
                     var op2=linkNewLink.p2.op;
