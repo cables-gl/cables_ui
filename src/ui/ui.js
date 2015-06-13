@@ -279,7 +279,6 @@ var line;
 
         this.remove=function()
         {
-
             this.oprect.getGroup().remove();
             this.oprect.remove();
         };
@@ -298,18 +297,14 @@ var line;
                         self.links.splice(j,1);
                         found=true;
                     }
-                    
                 }
-                
             }
-
         };
 
         this.showAddButtons=function()
         {
             self.removeDeadLinks();
             for(var j in self.links) self.links[j].showAddButton();
-
         };
 
         this.hideAddButtons=function()
@@ -324,7 +319,6 @@ var line;
 
           this.previousDx = 0;
           this.previousDy = 0;
-
         },
         move = function (dx, dy)
         {
@@ -336,10 +330,12 @@ var line;
             this.previousDy = dy;
 
             if(!self.op.uiAttribs)self.op.uiAttribs={};
-            self.op.uiAttribs.translate={x:self.oprect.matrix.e,y:self.oprect.matrix.f};
+            self.op.uiAttribs.translate=
+            {
+                x:self.oprect.matrix.e,
+                y:self.oprect.matrix.f
+            };
 
-                   
-                        
             for(var j in self.links)
             {
                 self.links[j].redraw();
@@ -561,7 +557,7 @@ var line;
 
                     if(selectedOp)
                     {
-                        ui.scene.deleteOp( selectedOp.op.id );
+                        ui.scene.deleteOp( selectedOp.op.id,true );
                     }
         
                     if(e.stopPropagation) e.stopPropagation();

@@ -819,6 +819,12 @@ var Link = function(scene)
             this.portIn.val=this.portOut.val;
     };
 
+    this.getOtherPort=function(p)
+    {
+        if(p==this.portIn)return this.portOut;
+        return this.portIn;
+    };
+
     this.remove=function()
     {
         this.portIn.removeLink(this);
@@ -928,17 +934,50 @@ var Scene = function()
         return op;
     };
 
-    this.deleteOp=function(opid)
+    this.deleteOp=function(opid,tryRelink)
     {
+
         for(var i in this.ops)
         {
             if(this.ops[i].id==opid)
             {
-                this.ops[i].removeLinks();
-                this.onDelete(this.ops[i]);
-                this.ops.splice( i, 1 );
+                var op=this.ops[i];
+                var reLinkP1=null;
+                var reLinkP2=null;
+
+                if(op)
+                {
+                    if(tryRelink)
+                    {
+                        if(this.ops[i].portsIn[0].isLinked() && this.ops[i].portsOut[0].isLinked())
+                        {
+                            if(this.ops[i].portsIn[0].getType()==this.ops[i].portsOut[0].getType())
+                            {
+                                reLinkP1=this.ops[i].portsIn[0].links[0].getOtherPort(this.ops[i].portsIn[0]);
+                                reLinkP2=this.ops[i].portsOut[0].links[0].getOtherPort(this.ops[i].portsOut[0]);
+                            }
+                        }
+                    }
+
+                    this.ops[i].removeLinks();
+                    this.onDelete(this.ops[i]);
+                    this.ops.splice( i, 1 );
+
+                    if(reLinkP1!==null && reLinkP2!==null)
+                    {
+                        self.link(
+                            reLinkP1.parent,
+                            reLinkP1.getName(),
+                            reLinkP2.parent,
+                            reLinkP2.getName()
+                            );
+                    }
+                }
             }
+
         }
+
+
     };
 
     this.exec=function()
