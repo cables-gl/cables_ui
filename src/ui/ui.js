@@ -560,16 +560,7 @@ var line;
             switch(e.which)
             {
                 case 46: case 8:
-
-
-
-                    if ($("input").is(":focus")) 
-                    {
-                        return;
-                    }
-
-
-        
+                    if ($("input").is(":focus")) return;
 
                     if(selectedOp)
                     {

@@ -21,11 +21,14 @@ Ops.Gl.Renderer = function()
 
     this.onAnimFrame=function(time)
     {
+        cgl.canvasWidth=self.canvas.clientWidth;
+        cgl.canvasHeight=self.canvas.clientHeight;
+
         gl.enable(gl.DEPTH_TEST);
         GL.clearColor(0,0,0,1);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         gl.viewport(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
-        mat4.perspective(cgl.pMatrix,45, self.canvas.clientWidth/self.canvas.clientHeight, 0.01, 1100.0);
+        mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
 
         cgl.pushPMatrix();
         cgl.pushMvMatrix();
@@ -1142,7 +1145,7 @@ this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
         GL.bindFramebuffer(GL.FRAMEBUFFER, null);
         
         cgl.popMvMatrix();
-        gl.viewport(0, 0, 640,360);
+        gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
     };
 
 
