@@ -146,7 +146,7 @@ var Port=function(parent,name,type)
 
     this.setValue=function(v)
     {
-        if(v!=this.value)
+        if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE)
         {
             this.value=v;
             this.onValueChanged();

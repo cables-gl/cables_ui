@@ -74,18 +74,14 @@ CGL.Shader=function()
 
     this.removeUniform=function(name)
     {
-        console.log('before: '+uniforms.length);
         for(var i in uniforms)
         {
             if(uniforms[i].getName()==name)
             {
                 uniforms.splice(i,1);
-                break;
             }
         }
         needsRecompile=true;
-        console.log(uniforms.length);
-                
     };
 
     this.addUniform=function(uni)
@@ -155,7 +151,6 @@ CGL.Shader=function()
 
         console.log('shader compile...');
         console.log('has textures: '+self.hasTextureUniforms() );
-        
 
         var vs=defines+self.srcVert;
         var fs=defines+self.srcFrag;
@@ -171,13 +166,11 @@ CGL.Shader=function()
             console.log('recompile shaders...');
 
             self.vshader=createShader(vs, gl.VERTEX_SHADER, self.vshader );
-            self.fshader=createShader(fs, gl.VERTEX_SHADER, self.fshader );
+            self.fshader=createShader(fs, gl.FRAGMENT_SHADER, self.fshader );
             linkProgram(program);
             mvMatrixUniform=-1;
 
             for(var i in uniforms)uniforms[i].resetLoc();
-            
-
         }
 
         needsRecompile=false;
@@ -225,7 +218,10 @@ CGL.Shader=function()
             if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
             if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
             
-            throw gl.getShaderInfoLog(shader);
+                    console.log('HURRR',str);
+                    
+
+            console.log( gl.getShaderInfoLog(shader) );
         }
         return shader;
     };

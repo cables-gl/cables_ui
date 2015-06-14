@@ -4,6 +4,8 @@ CGL.Texture=function()
 {
     var self=this;
     this.tex = gl.createTexture();
+    this.width=0;
+    this.height=0;
 
     // gl.bindTexture(gl.TEXTURE_2D, this.tex);
     // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([111, 111, 111, 255]));
@@ -17,6 +19,9 @@ CGL.Texture=function()
 
     this.setSize=function(w,h)
     {
+        self.width=w;
+        self.height=h;
+
         gl.bindTexture(gl.TEXTURE_2D, self.tex);
         
         var arr=[];
@@ -44,6 +49,10 @@ CGL.Texture=function()
 
     this.initTexture=function(img)
     {
+        self.width=img.width;
+        self.height=img.height;
+
+
         gl.bindTexture(gl.TEXTURE_2D, self.tex);
         // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.image);
@@ -62,15 +71,15 @@ CGL.Texture=function()
     this.setSize(8,8);
 };
 
-CGL.Texture.load=function(url)
+CGL.Texture.load=function(url,finishedCallback)
 {
     var texture=new CGL.Texture();
     texture.image = new Image();
     texture.image.onload = function ()
     {
         console.log(texture.image);
-                
         texture.initTexture(texture.image);
+        finishedCallback();
     };
     texture.image.src = url;
     return texture;
