@@ -25,17 +25,18 @@ CGL.Texture=function()
         gl.bindTexture(gl.TEXTURE_2D, self.tex);
         
         var arr=[];
-        for(var x=0;x<w;x++)
-        {
-            for(var y=0;y<h;y++)
-            {
-                // var index=x+y*w;
-                arr.push( parseInt( (x/w)*255,10) );
-                arr.push(0);
-                arr.push( parseInt((y/w)*255,10));
-                arr.push(255);
-            }
-        }
+        arr.length=w*h*4;
+        // for(var x=0;x<w;x++)
+        // {
+        //     for(var y=0;y<h;y++)
+        //     {
+        //         // var index=x+y*w;
+        //         arr.push( parseInt( (x/w)*255,10) );
+        //         arr.push(0);
+        //         arr.push( parseInt((y/w)*255,10));
+        //         arr.push(255);
+        //     }
+        // }
         var uarr=new Uint8Array(arr);
 
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
