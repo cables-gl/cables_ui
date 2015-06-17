@@ -382,9 +382,11 @@ CGL.Shader=function()
         {
             console.log('recompile shaders...');
 
-            self.vshader=createShader(vs, gl.VERTEX_SHADER, self.vshader );
-            self.fshader=createShader(fs, gl.FRAGMENT_SHADER, self.fshader );
-            linkProgram(program);
+            // self.vshader=createShader(vs, gl.VERTEX_SHADER, self.vshader );
+            // self.fshader=createShader(fs, gl.FRAGMENT_SHADER, self.fshader );
+            // linkProgram(program);
+            program=createProgram(vs,fs, program);
+            
             mvMatrixUniform=-1;
 
             for(var i in uniforms)uniforms[i].resetLoc();
@@ -690,7 +692,7 @@ CGL.TextureEffect=function()
 
     this.startEffect=function()
     {
-        // switched=false;
+        switched=false;
     };
 
     this.setSourceTexture=function(tex)
@@ -2162,10 +2164,13 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     this.render.onTriggered=this.doRender;
     this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.textureUniform=null;
+
     this.texture.onValueChanged=function()
     {
         if(self.texture.val)
         {
+            if(self.textureUniform!==null)return;
             console.log('TEXTURE ADDED');
             shader.removeUniform('tex');
             self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
@@ -2174,6 +2179,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         {
             console.log('TEXTURE REMOVED');
             shader.removeUniform('tex');
+            self.textureUniform=null;
         }
     };
 
@@ -2618,7 +2624,7 @@ Ops.Gl.TextureEffects.TextureEffect = function()
     this.name='texture effect';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE));
-    this.texOut2=this.addOutPort(new Port(this,"texture_out2",OP_PORT_TYPE_TEXTURE));
+    // this.texOut2=this.addOutPort(new Port(this,"texture_out2",OP_PORT_TYPE_TEXTURE));
 
     this.tex=this.addInPort(new Port(this,"texture_in",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -2639,7 +2645,7 @@ Ops.Gl.TextureEffects.TextureEffect = function()
 
         effect.setSourceTexture(self.tex.val);
         self.texOut.val=cgl.currentTextureEffect.getCurrentSourceTexture();
-        self.texOut2.val=cgl.currentTextureEffect.getCurrentTargetTexture();
+        // self.texOut2.val=cgl.currentTextureEffect.getCurrentTargetTexture();
 
 
         // console.log('in tex width',self.tex.val.width);
@@ -2659,6 +2665,8 @@ effect.startEffect();
         
         self.trigger.call();
 
+
+self.texOut.val=cgl.currentTextureEffect.getCurrentSourceTexture();
 
 
         // cgl.pushMvMatrix();
@@ -2689,12 +2697,12 @@ Ops.Gl.TextureEffects.TextureEffect.prototype = new Op();
 
 // ---------------------------------------------------------------------------------------------
 
-Ops.Gl.TextureEffects.Vignette = function()
+Ops.Gl.TextureEffects.Desaturate = function()
 {
     Op.apply(this, arguments);
     var self=this;
 
-    this.name='Vignette';
+    this.name='Desaturate';
 
     this.amount=this.addInPort(new Port(this,"amount"));
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -2747,18 +2755,98 @@ Ops.Gl.TextureEffects.Vignette = function()
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
-
-
-
         cgl.currentTextureEffect.finish();
-
         cgl.setPreviousShader();
 
         self.trigger.call();
     };
 };
 
-Ops.Gl.TextureEffects.Vignette.prototype = new Op();
+Ops.Gl.TextureEffects.Desaturate.prototype = new Op();
+
+
+
+// ---------------------------------------------------------------------------------------------
+
+Ops.Gl.TextureEffects.RgbMultiply = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='RgbMultiply';
+
+    this.r=this.addInPort(new Port(this,"r"));
+    this.g=this.addInPort(new Port(this,"g"));
+    this.b=this.addInPort(new Port(this,"b"));
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var shader=new CGL.Shader();
+
+    var srcFrag=''+
+        'precision highp float;'.endl()+
+        '#ifdef HAS_TEXTURES'.endl()+
+        '  varying vec2 texCoord;'.endl()+
+        '  uniform sampler2D tex;'.endl()+
+        '#endif'.endl()+
+        'uniform float r;'.endl()+
+        'uniform float g;'.endl()+
+        'uniform float b;'.endl()+
+        ''.endl()+
+
+        'void main()'.endl()+
+        '{'.endl()+
+        '   vec4 col=vec4(1.0,0.0,0.0,1.0);'.endl()+
+        '   #ifdef HAS_TEXTURES'.endl()+
+        '       col=texture2D(tex,texCoord);'.endl()+
+        '       col.r*=r;'.endl()+
+        '       col.g*=g;'.endl()+
+        '       col.b*=b;'.endl()+
+        '   #endif'.endl()+
+        '   gl_FragColor = col;'.endl()+
+        '}\n';
+
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+    var textureUniform=new CGL.Uniform(shader,'t','tex',0);
+    var uniformR=new CGL.Uniform(shader,'f','r',1.0);
+    var uniformG=new CGL.Uniform(shader,'f','g',1.0);
+    var uniformB=new CGL.Uniform(shader,'f','b',1.0);
+
+
+    this.r.onValueChanged=function()
+    {
+        uniformR.setValue(self.r.val);
+    };
+
+    this.g.onValueChanged=function()
+    {
+        uniformG.setValue(self.g.val);
+    };
+
+    this.b.onValueChanged=function()
+    {
+        uniformB.setValue(self.b.val);
+    };
+
+    this.render.onTriggered=function()
+    {
+        if(!cgl.currentTextureEffect)return;
+        
+        cgl.setShader(shader);
+
+        cgl.currentTextureEffect.bind();
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+
+        cgl.currentTextureEffect.finish();
+        cgl.setPreviousShader();
+
+        self.trigger.call();
+    };
+};
+
+Ops.Gl.TextureEffects.RgbMultiply.prototype = new Op();
 
 
 

@@ -165,9 +165,11 @@ CGL.Shader=function()
         {
             console.log('recompile shaders...');
 
-            self.vshader=createShader(vs, gl.VERTEX_SHADER, self.vshader );
-            self.fshader=createShader(fs, gl.FRAGMENT_SHADER, self.fshader );
-            linkProgram(program);
+            // self.vshader=createShader(vs, gl.VERTEX_SHADER, self.vshader );
+            // self.fshader=createShader(fs, gl.FRAGMENT_SHADER, self.fshader );
+            // linkProgram(program);
+            program=createProgram(vs,fs, program);
+            
             mvMatrixUniform=-1;
 
             for(var i in uniforms)uniforms[i].resetLoc();

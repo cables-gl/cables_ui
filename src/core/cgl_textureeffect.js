@@ -36,7 +36,7 @@ CGL.TextureEffect=function()
 
     this.startEffect=function()
     {
-        // switched=false;
+        switched=false;
     };
 
     this.setSourceTexture=function(tex)
