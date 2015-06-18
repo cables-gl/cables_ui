@@ -220,6 +220,8 @@ CGL.Shader=function()
             if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
             if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
             
+            console.warn( gl.getShaderInfoLog(shader) );
+
             var lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
             for(var i in lines)
             {
@@ -227,7 +229,7 @@ CGL.Shader=function()
                 console.log(j+': ',lines[i]);
             }
 
-            console.log( gl.getShaderInfoLog(shader) );
+            console.warn( gl.getShaderInfoLog(shader) );
         }
         return shader;
     };

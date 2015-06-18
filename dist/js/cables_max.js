@@ -437,6 +437,8 @@ CGL.Shader=function()
             if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
             if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
             
+            console.warn( gl.getShaderInfoLog(shader) );
+
             var lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
             for(var i in lines)
             {
@@ -444,7 +446,7 @@ CGL.Shader=function()
                 console.log(j+': ',lines[i]);
             }
 
-            console.log( gl.getShaderInfoLog(shader) );
+            console.warn( gl.getShaderInfoLog(shader) );
         }
         return shader;
     };
@@ -702,7 +704,6 @@ CGL.TextureEffect=function()
 
     this.setSourceTexture=function(tex)
     {
-
         if(tex===null)
         {
             textureSource=new CGL.Texture();
@@ -716,7 +717,6 @@ CGL.TextureEffect=function()
         
         textureTarget.setSize(textureSource.width,textureSource.height);
 
-
         GL.bindFramebuffer(GL.FRAMEBUFFER, frameBuf);
 
         GL.bindRenderbuffer(GL.RENDERBUFFER, renderbuffer);
@@ -727,13 +727,10 @@ CGL.TextureEffect=function()
         GL.bindRenderbuffer(GL.RENDERBUFFER, null);
         GL.bindFramebuffer(GL.FRAMEBUFFER, null);
 
-
         console.log(
             self.getCurrentTargetTexture().height,
             self.getCurrentSourceTexture().height
             );
-
-        // textures[1]=tex;
     };
 
 
@@ -1471,7 +1468,7 @@ String.prototype.endl = function(){return this+'\n';};
 Ops.Gl=Ops.Gl || {};
 Ops.Gl.TextureEffects=Ops.Gl.TextureEffects || {};
 
-
+// ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.TextureEffect = function()
 {
@@ -1486,15 +1483,12 @@ Ops.Gl.TextureEffects.TextureEffect = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var ready=false;
-
     var effect=new CGL.TextureEffect();
 
     cgl.currentTextureEffect=effect;
 
     this.tex.onValueChanged=function()
     {
-        console.log('texture in changed!');
-
         effect.setSourceTexture(self.tex.val);
         self.texOut.val=cgl.currentTextureEffect.getCurrentSourceTexture();
         ready=true;
@@ -1507,16 +1501,12 @@ Ops.Gl.TextureEffects.TextureEffect = function()
         cgl.currentTextureEffect=effect;
 
         effect.startEffect();
-
         self.trigger.call();
-
         self.texOut.val=cgl.currentTextureEffect.getCurrentSourceTexture();
-
     };
 };
 
 Ops.Gl.TextureEffects.TextureEffect.prototype = new Op();
-
 
 // ---------------------------------------------------------------------------------------------
 
@@ -1538,7 +1528,7 @@ Ops.Gl.TextureEffects.Invert = function()
         .endl()+'  uniform sampler2D tex;'
         .endl()+'#endif'
         .endl()+''
-
+        .endl()+''
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
@@ -1572,9 +1562,6 @@ Ops.Gl.TextureEffects.Invert = function()
 
 Ops.Gl.TextureEffects.Invert.prototype = new Op();
 
-
-
-
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Desaturate = function()
@@ -1590,30 +1577,30 @@ Ops.Gl.TextureEffects.Desaturate = function()
 
     var shader=new CGL.Shader();
 
-    var srcFrag=''+
-        'precision highp float;'.endl()+
-        '#ifdef HAS_TEXTURES'.endl()+
-        '  varying vec2 texCoord;'.endl()+
-        '  uniform sampler2D tex;'.endl()+
-        '#endif'.endl()+
-        'uniform float amount;'.endl()+
-        ''.endl()+
-
-        'vec3 desaturate(vec3 color, float amount)'.endl()+
-        '{'.endl()+
-            'vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), color));'.endl()+
-            'return vec3(mix(color, gray, amount));'.endl()+
-        '}'.endl()+
-
-        'void main()'.endl()+
-        '{'.endl()+
-        '   vec4 col=vec4(1.0,0.0,0.0,1.0);'.endl()+
-        '   #ifdef HAS_TEXTURES'.endl()+
-        '       col=texture2D(tex,texCoord);'.endl()+
-        '       col.rgb=desaturate(col.rgb,amount);'.endl()+
-        '   #endif'.endl()+
-        '   gl_FragColor = col;'.endl()+
-        '}\n';
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'#ifdef HAS_TEXTURES'
+        .endl()+'  varying vec2 texCoord;'
+        .endl()+'  uniform sampler2D tex;'
+        .endl()+'#endif'
+        .endl()+'uniform float amount;'
+        .endl()+''
+        .endl()+''
+        .endl()+'vec3 desaturate(vec3 color, float amount)'
+        .endl()+'{'
+        .endl()+'   vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), color));'
+        .endl()+'   return vec3(mix(color, gray, amount));'
+        .endl()+'}'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
+        .endl()+'   #ifdef HAS_TEXTURES'
+        .endl()+'       col=texture2D(tex,texCoord);'
+        .endl()+'       col.rgb=desaturate(col.rgb,amount);'
+        .endl()+'   #endif'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
 
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
@@ -1643,8 +1630,6 @@ Ops.Gl.TextureEffects.Desaturate = function()
 
 Ops.Gl.TextureEffects.Desaturate.prototype = new Op();
 
-
-
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.RgbMultiply = function()
@@ -1662,28 +1647,28 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
 
     var shader=new CGL.Shader();
 
-    var srcFrag=''+
-        'precision highp float;'.endl()+
-        '#ifdef HAS_TEXTURES'.endl()+
-        '  varying vec2 texCoord;'.endl()+
-        '  uniform sampler2D tex;'.endl()+
-        '#endif'.endl()+
-        'uniform float r;'.endl()+
-        'uniform float g;'.endl()+
-        'uniform float b;'.endl()+
-        ''.endl()+
-
-        'void main()'.endl()+
-        '{'.endl()+
-        '   vec4 col=vec4(1.0,0.0,0.0,1.0);'.endl()+
-        '   #ifdef HAS_TEXTURES'.endl()+
-        '       col=texture2D(tex,texCoord);'.endl()+
-        '       col.r*=r;'.endl()+
-        '       col.g*=g;'.endl()+
-        '       col.b*=b;'.endl()+
-        '   #endif'.endl()+
-        '   gl_FragColor = col;'.endl()+
-        '}\n';
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'#ifdef HAS_TEXTURES'
+        .endl()+'  varying vec2 texCoord;'
+        .endl()+'  uniform sampler2D tex;'
+        .endl()+'#endif'
+        .endl()+'uniform float r;'
+        .endl()+'uniform float g;'
+        .endl()+'uniform float b;'
+        .endl()+''
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
+        .endl()+'   #ifdef HAS_TEXTURES'
+        .endl()+'       col=texture2D(tex,texCoord);'
+        .endl()+'       col.r*=r;'
+        .endl()+'       col.g*=g;'
+        .endl()+'       col.b*=b;'
+        .endl()+'   #endif'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
 
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
@@ -1726,9 +1711,6 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
 
 Ops.Gl.TextureEffects.RgbMultiply.prototype = new Op();
 
-
-
-
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Vignette = function()
@@ -1745,26 +1727,26 @@ Ops.Gl.TextureEffects.Vignette = function()
 
     var shader=new CGL.Shader();
 
-    var srcFrag=''+
-        'precision highp float;'.endl()+
-        '#ifdef HAS_TEXTURES'.endl()+
-        '  varying vec2 texCoord;'.endl()+
-        '  uniform sampler2D tex;'.endl()+
-        '#endif'.endl()+
-        'uniform float lensRadius1;'.endl()+
-        'uniform float lensRadius2;'.endl()+
-        ''.endl()+
-
-        'void main()'.endl()+
-        '{'.endl()+
-        '   vec4 col=vec4(1.0,0.0,0.0,1.0);'.endl()+
-        '   #ifdef HAS_TEXTURES'.endl()+
-        '       col=texture2D(tex,texCoord);'.endl()+
-        '       float dist = distance(texCoord, vec2(0.5,0.5));'.endl()+
-        '       col.rgb *= smoothstep(lensRadius1, lensRadius2, dist);'.endl()+
-        '   #endif'.endl()+
-        '   gl_FragColor = col;'.endl()+
-        '}\n';
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'#ifdef HAS_TEXTURES'
+        .endl()+'  varying vec2 texCoord;'
+        .endl()+'  uniform sampler2D tex;'
+        .endl()+'#endif'
+        .endl()+'uniform float lensRadius1;'
+        .endl()+'uniform float lensRadius2;'
+        .endl()+''
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
+        .endl()+'   #ifdef HAS_TEXTURES'
+        .endl()+'       col=texture2D(tex,texCoord);'
+        .endl()+'       float dist = distance(texCoord, vec2(0.5,0.5));'
+        .endl()+'       col.rgb *= smoothstep(lensRadius1, lensRadius2, dist);'
+        .endl()+'   #endif'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
 
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
@@ -1803,11 +1785,6 @@ Ops.Gl.TextureEffects.Vignette = function()
 
 Ops.Gl.TextureEffects.Vignette.prototype = new Op();
 
-
-
-// ---------------------------------------------------------------------------------------------
-
-
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Blur = function()
@@ -1818,7 +1795,6 @@ Ops.Gl.TextureEffects.Blur = function()
     this.name='Blur';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
 
     var shader=new CGL.Shader();
 
@@ -1831,7 +1807,6 @@ Ops.Gl.TextureEffects.Blur = function()
         .endl()+'  uniform float dirY;'
         .endl()+'#endif'
         .endl()+''
-
         .endl()+'vec4 blur9(sampler2D texture, vec2 uv, vec2 red, vec2 dir)'
         .endl()+'{'
         .endl()+'   vec4 color = vec4(0.0);'
@@ -1844,12 +1819,12 @@ Ops.Gl.TextureEffects.Blur = function()
         .endl()+'   color += texture2D(texture, uv - (offset2 / red)) * 0.0702702703;'
         .endl()+'   return color;'
         .endl()+'}'
-
+        .endl()+''
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
-        .endl()+ '       col=blur9(tex,texCoord,vec2(512.0,512.0),vec2(dirX,dirY));'
+        .endl()+'       col=blur9(tex,texCoord,vec2(512.0,512.0),vec2(dirX,dirY));'
         // .endl()+ '       col=blur9(tex,texCoord,vec2(512.0,512.0),vec2(dirX*1.4,dirY*1.4));'
         .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
@@ -2697,9 +2672,9 @@ Ops.Gl.Render2Texture.prototype = new Op();
 
 
 
-
 Ops.Gl.Meshes=Ops.Gl.Meshes || {};
 
+// --------------------------------------------------------------------------
 
 Ops.Gl.Meshes.Triangle = function()
 {
@@ -2753,12 +2728,10 @@ Ops.Gl.Meshes.Rectangle = function()
     };
 
     var geom=new CGL.Geometry();
-    
     this.mesh=null;
 
     function rebuild()
     {
-        
         geom.vertices = [
              self.width.val/2,  self.height.val/2,  0.0,
             -self.width.val/2,  self.height.val/2,  0.0,
@@ -2786,8 +2759,6 @@ Ops.Gl.Meshes.Rectangle = function()
 
     this.width.onValueChanged=rebuild;
     this.height.onValueChanged=rebuild;
-
-
 };
 
 Ops.Gl.Meshes.Rectangle.prototype = new Op();
@@ -2839,7 +2810,6 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         3, 1, 2
     ];
     this.mesh=new CGL.Mesh(geom);
-
 };
 
 Ops.Gl.Meshes.FullscreenRectangle.prototype = new Op();
@@ -2893,8 +2863,6 @@ Ops.Gl.Meshes.Circle = function()
 
             geom.texCoords.push(0,0,0,0,0,0);
 
-            
-
             oldPosX=posx;
             oldPosY=posy;
         }
@@ -2928,7 +2896,6 @@ Ops.Gl.Meshes.ObjMesh = function()
 
         self.trigger.call();
     };
-
 
     ajaxRequest('assets/skull.obj',function(response)
     {

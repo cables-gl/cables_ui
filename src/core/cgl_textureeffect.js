@@ -41,7 +41,6 @@ CGL.TextureEffect=function()
 
     this.setSourceTexture=function(tex)
     {
-
         if(tex===null)
         {
             textureSource=new CGL.Texture();
@@ -55,7 +54,6 @@ CGL.TextureEffect=function()
         
         textureTarget.setSize(textureSource.width,textureSource.height);
 
-
         GL.bindFramebuffer(GL.FRAMEBUFFER, frameBuf);
 
         GL.bindRenderbuffer(GL.RENDERBUFFER, renderbuffer);
@@ -66,13 +64,10 @@ CGL.TextureEffect=function()
         GL.bindRenderbuffer(GL.RENDERBUFFER, null);
         GL.bindFramebuffer(GL.FRAMEBUFFER, null);
 
-
         console.log(
             self.getCurrentTargetTexture().height,
             self.getCurrentSourceTexture().height
             );
-
-        // textures[1]=tex;
     };
 
 
