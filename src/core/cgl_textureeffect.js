@@ -117,8 +117,6 @@ CGL.TextureEffect=function()
 
         GL.clearColor(0,1,0,1);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
-
-
     };
 
     this.finish=function()
@@ -138,11 +136,5 @@ CGL.TextureEffect=function()
         switched=!switched;
 
     };
-
-
-
-
-
-
 
 };

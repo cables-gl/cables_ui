@@ -841,6 +841,19 @@ var line;
                         uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
                     }
                 }
+                else
+                {
+
+    // var bnds = r.getBoundingClientRect();
+    //         console.log('bnds',bnds);
+            
+    // var fx = (event.clientX - bnds.left)/bnds.width * rect.attrs.width
+    // var fy = (event.clientY - bnds.top)/bnds.height * rect.attrs.height
+
+                    op.uiAttribs={};
+                    op.uiAttribs.translate={x:mouseNewOPX,y:mouseNewOPY};
+
+                }
 
                 if(linkNewLink)
                 {

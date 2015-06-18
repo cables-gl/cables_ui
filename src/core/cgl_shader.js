@@ -220,8 +220,12 @@ CGL.Shader=function()
             if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
             if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
             
-                    console.log('HURRR',str);
-                    
+            var lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
+            for(var i in lines)
+            {
+                var j=parseInt(i,10)+1;
+                console.log(j+': ',lines[i]);
+            }
 
             console.log( gl.getShaderInfoLog(shader) );
         }
