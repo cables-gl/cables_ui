@@ -10,6 +10,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var sourcemaps = require('gulp-sourcemaps');
+var gutil = require('gulp-util');
 
 
 gulp.task('lint', function()
@@ -52,7 +53,9 @@ gulp.task('scripts_ui', function()
         .pipe(rename('cablesui.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
+.on('error', gutil.log)
         .pipe(gulp.dest('dist/js'));
+
 });
 
 

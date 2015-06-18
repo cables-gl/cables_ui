@@ -143,7 +143,7 @@ function UiLink(port1, port2)
                     }
                     else
                     {
-                                console.log('show showOpSelect');
+                        console.log('show showOpSelect');
                                 
                         ui.showOpSelect(event.offsetX,event.offsetY,null,null,self);
                     }
@@ -379,10 +379,22 @@ var line;
                 this.starty=this.matrix.f+this.attrs.y;
             }
         },
-        PortMove = function(dx, dy)
+        PortMove = function(dx, dy,a,b,event)
         {
+            // console.log(c);
+        
+        
+
             if(!line) line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portSize/2, r);
-                else line.updateEnd(this.startx+dx,this.starty+dy);
+            else
+            {
+                // line.updateEnd(this.startx+dx,this.starty+dy);
+                line.updateEnd(
+                    ui.getCanvasCoords(event.offsetX,event.offsetY).x,
+                    ui.getCanvasCoords(event.offsetX,event.offsetY).y
+                    // this.startx+dx,this.starty+dy
+                    );
+            }
 
             if(selectedEndPort===null) setStatusText('select a port to link...');
             else
@@ -630,6 +642,7 @@ var line;
                 $('#glcanvas').attr('height',uiConfig.rendererSizes[rendererSize].h);
             }
 
+
         };
 
 
@@ -719,6 +732,21 @@ var line;
 
         };
 
+
+        var viewBox={x:0,y:0,w:1100,h:1010};
+        var panX=-1;
+        var panY=-1;
+
+        this.updateViewBox=function()
+        {
+            r.setViewBox(
+                viewBox.x,
+                viewBox.y,
+                viewBox.w,
+                viewBox.h
+                );
+        };
+
         this.show=function(_scene)
         {
             this.scene=_scene;
@@ -739,25 +767,75 @@ var line;
 
             // ----
 
+
+
             r= Raphael(0, 0, 640, 480);
+            // r.setAttribute('preserveAspectRatio', 'none');
 
 
-            var zpd = new RaphaelZPD(r, { zoom: false, pan: true, drag: false });
+
+            // var zpd = new RaphaelZPD(r, { zoom: false, pan: true, drag: false });
             this.bindScene(self.scene);
 
             window.addEventListener( 'resize', this.setLayout, false );
 
             this.setLayout();
             this.setUpRouting();
+
+
+            viewBox={x:0,y:0,w:$('svg').width(),h:$('svg').height()};
+            self.updateViewBox();
+
+            $("svg").bind("mousewheel", function (event,delta,nbr)
+            {
+
+                if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
+                {
+                    viewBox.w-=delta;
+                    viewBox.h-=delta;
+                }
+
+                self.updateViewBox();
+            });
+
+            $("svg").bind("mouseup", function (event)
+            {
+                panX=-1;
+                panY=-1;
+            });
+
+            $("svg").bind("mousemove", function (event)
+            {
+
+                    console.log('event'+event.whichchro);
+                                
+                if(event.which==2 || event.which==3)
+                {
+                    console.log('move');
+                    viewBox.x+=panX-event.offsetX;
+                    viewBox.y+=panY-event.offsetY;
+
+                            console.log(viewBox);
+                            
+
+                    self.updateViewBox();
+                }
+        
+                panX=event.offsetX;
+                panY=event.offsetY;
+            });
+
         };
-
-
 
         this.showExample=function(which)
         {
             self.scene.clear();
             self.scene.deSerialize(examples[which].src);
         };
+
+
+                
+// document.getElementById()node.addEventListener( 'mousewheel', onMouseWheel, false );
 
         this.bindScene=function(scene)
         {
@@ -892,10 +970,7 @@ var line;
                             op2,
                             port2.getName()
                             );
-                        
                     }
-                    
-                            
                 }
                 else
                 if(linkNewOpToPort)
@@ -935,6 +1010,7 @@ var line;
         {
             rendererSize++;
             if(rendererSize>uiConfig.rendererSizes.length-1)rendererSize=0;
+
 
             self.setLayout();
         };
@@ -1092,6 +1168,86 @@ var line;
             if(uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,uiConfig.watchValuesInterval);
         }
         doWatchPorts();
+
+
+this.getCanvasCoords=function(mx,my)
+{
+    // get bounding rect of the paper
+    // var bnds = event.target.getBoundingClientRect();
+
+    // adjust mouse x/y
+    // var mx = event.clientX - bnds.left;
+    // var my = event.clientY - bnds.top;
+
+
+
+if($('svg')[0].attributes[6].name!='viewBox')        console.err('tis aint no viewbox attr');
+var vb=$('svg')[0].attributes[6].value.split(' '); // this will break
+
+var asp=$('svg')[0].attributes[7].value; // this will break
+
+        console.log('asp '+asp);
+        
+
+    // console.log('vg ',vb);
+
+        // console.log( vb[2] , viewBox.w );
+        // console.log( vb[3] , viewBox.h );
+        
+
+        // console.log('mx'+mx);
+
+
+        var w=$('svg').width();
+        var h=$('svg').height();
+
+var mulx=1;
+var muly=1;
+
+        if(w>h)
+        {
+                    console.log('1');
+                    
+mulx=parseInt(vb[2],10);
+muly=h * parseInt(vb[2],10)/w;
+
+        }
+        else
+        {
+            console.log('2');
+mulx=w * parseInt(vb[3],10)/h;
+muly=parseInt(vb[3],10);
+
+
+        }
+
+
+        console.log('mul '+mulx+'  '+muly);
+        
+        
+        
+
+        
+    // divide x/y by the bounding w/h to get location %s and apply factor by actual paper w/h
+    var fx = (( mx / $('svg').width()  ) * mulx )  + parseInt(vb[0],10);
+    var fy = (( my / $('svg').height() ) * muly ) + parseInt(vb[1],10);
+
+
+        // console.log(  mx / $('svg').width()  );
+        
+
+    // cleanup output
+    // fx = Number(fx).toPrecision(3);
+    // fy = Number(fy).toPrecision(3);
+
+    // $('#here').text('x: ' + fx + ', y: ' + fy);
+    var res={x:fx,y:fy};
+            // console.log(res);
+            // console.log(viewBox);
+            
+    return res;
+};
+
 
 
 
