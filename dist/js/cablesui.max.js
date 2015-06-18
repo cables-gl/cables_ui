@@ -308,11 +308,12 @@ var line;
     {
         var background = this.rect(x, y, w, h).attr({
             fill: uiConfig.colorOpBg,
-            stroke: "#000",
-            "stroke-width": 0
+            stroke: "#000"
         });
+        
 
-        var label = this.text(x+w/2,y+h/2, text);
+
+        var label = this.text(x+w/2,y+h/2-1, text);
         var layer = this.rect(x, y, w, h).attr({
             fill: "#ccc",
             "fill-opacity": 0,
@@ -322,9 +323,15 @@ var line;
 
         var group = this.set();
         group.push(background, label, layer);
+            
+//         console.log(group);
+        
+// group.attrs.width.width=23233;
+//         console.log(this.oprect);
 
 
         layer.setGroup(group);
+        layer.bgRect=background;
         return layer;
     };
 
@@ -381,6 +388,10 @@ var line;
         },
         move = function (dx, dy)
         {
+
+            if(event.which==3)return;
+            if(event.which==2)return;
+
             var txGroup = dx-this.previousDx;
             var tyGroup = dy-this.previousDy;
 
@@ -400,6 +411,7 @@ var line;
                 self.links[j].redraw();
             }
 
+
         },
         up = function ()
         {
@@ -407,7 +419,13 @@ var line;
         };
 
 
+
+var width=w;
+
         this.oprect=r.OpRect(x,y,w,h, txt).drag(move, dragger, up);
+
+
+        
 
 
         this.oprect.node.onmousedown = function ()
@@ -435,7 +453,8 @@ var line;
         PortMove = function(dx, dy,a,b,event)
         {
             // console.log(c);
-        
+            if(event.which==3)return;
+            if(event.which==2)return;
         
 
             if(!line) line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portSize/2, r);
@@ -498,13 +517,19 @@ var line;
         {
             var yp=0;
             var inout=_inout;
-            if(inout=='out') yp=20;
+            if(inout=='out') yp=24;
 
             var portIndex=this.portsIn.length;
             if(inout=='out') portIndex=this.portsOut.length;
 
-            var xpos=x+(uiConfig.portSize+uiConfig.portPadding)*portIndex;
+            var w=(uiConfig.portSize+uiConfig.portPadding)*portIndex;
+            var xpos=x+w;
             var ypos=y+yp;
+
+            if(self.oprect.bgRect.attrs.width<w+uiConfig.portSize)
+            {
+                self.oprect.bgRect.attr({width:w+uiConfig.portSize});
+            }
 
             var port = r.rect(xpos,ypos, uiConfig.portSize, uiConfig.portSize).attr({
             // var port = r.circle(x+(uiConfig.portSize+uiConfig.portPadding)*portIndex,y+yp, uiConfig.portSize/2).attr({
@@ -543,7 +568,8 @@ var line;
                     'stroke-width':1,
 
                 });
-                
+
+
                 var statusText='Port: ';
 
                 
@@ -860,7 +886,6 @@ var line;
             $("svg").bind("mousemove", function (event)
             {
 
-                    console.log('event'+event.whichchro);
                                 
                 if(event.which==2 || event.which==3)
                 {
@@ -952,7 +977,7 @@ var line;
 
             scene.onAdd=function(op)
             {
-                var uiOp=new OpUi(mouseNewOPX, mouseNewOPY, 100, 30, op.name);
+                var uiOp=new OpUi(mouseNewOPX, mouseNewOPY, 100, 34, op.name);
                 uiOp.op=op;
                 self.ops.push(uiOp);
                 
