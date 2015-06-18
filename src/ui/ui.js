@@ -740,8 +740,8 @@ var width=w;
             linkNewLink=link;
             linkNewOpToPort=linkPort;
             linkNewOpToOp=linkOp;
-            mouseNewOPX=x;
-            mouseNewOPY=y;
+            mouseNewOPX=ui.getCanvasCoords(x,y).x;
+            mouseNewOPY=ui.getCanvasCoords(x,y).y;
             var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
             self.showModal(html);
 
@@ -836,12 +836,8 @@ var width=w;
                                 
                 if(event.which==2 || event.which==3)
                 {
-                    console.log('move');
                     viewBox.x+=panX-event.offsetX;
                     viewBox.y+=panY-event.offsetY;
-
-                            console.log(viewBox);
-                            
 
                     self.updateViewBox();
                 }
@@ -1197,79 +1193,32 @@ var width=w;
 
 this.getCanvasCoords=function(mx,my)
 {
-    // get bounding rect of the paper
-    // var bnds = event.target.getBoundingClientRect();
-
-    // adjust mouse x/y
-    // var mx = event.clientX - bnds.left;
-    // var my = event.clientY - bnds.top;
+    if($('svg')[0].attributes[6].name!='viewBox')        console.err('tis aint no viewbox attr');
+    var vb=$('svg')[0].attributes[6].value.split(' '); // this will break
+    var asp=$('svg')[0].attributes[7].value; // this will break
 
 
+    var w=$('svg').width();
+    var h=$('svg').height();
 
-if($('svg')[0].attributes[6].name!='viewBox')        console.err('tis aint no viewbox attr');
-var vb=$('svg')[0].attributes[6].value.split(' '); // this will break
+    var mulx=1;
+    var muly=1;
 
-var asp=$('svg')[0].attributes[7].value; // this will break
-
-        console.log('asp '+asp);
+    if(w>h) // FUCK THIS SHIT
+    {
+        mulx=parseInt(vb[2],10);
+        muly=h * parseInt(vb[2],10)/w;
+    }
+    else
+    {
+        mulx=w * parseInt(vb[3],10)/h;
+        muly=parseInt(vb[3],10);
+    }
         
-
-    // console.log('vg ',vb);
-
-        // console.log( vb[2] , viewBox.w );
-        // console.log( vb[3] , viewBox.h );
-        
-
-        // console.log('mx'+mx);
-
-
-        var w=$('svg').width();
-        var h=$('svg').height();
-
-var mulx=1;
-var muly=1;
-
-        if(w>h)
-        {
-                    console.log('1');
-                    
-mulx=parseInt(vb[2],10);
-muly=h * parseInt(vb[2],10)/w;
-
-        }
-        else
-        {
-            console.log('2');
-mulx=w * parseInt(vb[3],10)/h;
-muly=parseInt(vb[3],10);
-
-
-        }
-
-
-        console.log('mul '+mulx+'  '+muly);
-        
-        
-        
-
-        
-    // divide x/y by the bounding w/h to get location %s and apply factor by actual paper w/h
     var fx = (( mx / $('svg').width()  ) * mulx )  + parseInt(vb[0],10);
     var fy = (( my / $('svg').height() ) * muly ) + parseInt(vb[1],10);
 
-
-        // console.log(  mx / $('svg').width()  );
-        
-
-    // cleanup output
-    // fx = Number(fx).toPrecision(3);
-    // fy = Number(fy).toPrecision(3);
-
-    // $('#here').text('x: ' + fx + ', y: ' + fy);
     var res={x:fx,y:fy};
-            // console.log(res);
-            // console.log(viewBox);
-            
     return res;
 };
 
