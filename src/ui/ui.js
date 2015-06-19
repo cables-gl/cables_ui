@@ -1,4 +1,12 @@
+
 var CABLES=CABLES || {};
+
+
+Handlebars.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+});
+
+
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
@@ -326,6 +334,11 @@ var line;
             for(var j in self.links) self.links[j].hideAddButton();
         };
 
+        var startMoveX=-1;
+        var startMoveY=-1;
+        var olsPosX=0;
+        var olsPosY=0;
+
         var dragger = function()
         {
           this.group = this.getGroup();
@@ -333,35 +346,62 @@ var line;
           this.previousDx = 0;
           this.previousDy = 0;
         },
-        move = function (dx, dy)
+        move = function (dx, dy,a,b,event)
         {
+
 
             if(event.which==3)return;
             if(event.which==2)return;
 
-            var txGroup = dx-this.previousDx;
-            var tyGroup = dy-this.previousDy;
+            console.log('event',event);
 
-            this.group.translate(txGroup,tyGroup);
-            this.previousDx = dx;
-            this.previousDy = dy;
+            var pos=ui.getCanvasCoords(event.offsetX,event.offsetY);
 
-            if(!self.op.uiAttribs)self.op.uiAttribs={};
-            self.op.uiAttribs.translate=
+            if(!self.op.uiAttribs)
+                {
+                    self.op.uiAttribs={};
+                    self.op.uiAttribs.translate={x:pos.x,y:pos.y};
+                }
+
+            // dx=ui.getCanvasCoords(dx,dy).x;
+            // dy=ui.getCanvasCoords(dx,dy).y;
+
+
+            // var txGroup = dx-this.previousDx;
+            // var tyGroup = dy-this.previousDy;
+
+
+            if(startMoveX==-1)
             {
-                x:self.oprect.matrix.e,
-                y:self.oprect.matrix.f
-            };
+                startMoveX=pos.x-self.op.uiAttribs.translate.x;
+                startMoveY=pos.y-self.op.uiAttribs.translate.y;
+            }
+
+            pos.x=pos.x-startMoveX;
+            pos.y=pos.y-startMoveY;
+
+
+        console.log('thi',this.group);
+        
+            this.group.transform('t'+pos.x+','+pos.y);
+            // this.group.translate(pos.x,pos.y);
+            // this.previousDx = dx;
+            // this.previousDy = dy;
+
+
 
             for(var j in self.links)
             {
                 self.links[j].redraw();
             }
 
+            self.op.uiAttribs.translate={x:pos.x,y:pos.y};
 
         },
         up = function ()
         {
+            startMoveX=-1;
+            startMoveY=-1;
 
         };
 
@@ -814,7 +854,6 @@ var width=w;
 
             $("svg").bind("mousewheel", function (event,delta,nbr)
             {
-
                 if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
                 {
                     viewBox.w-=delta;
@@ -826,24 +865,24 @@ var width=w;
 
             $("svg").bind("mouseup", function (event)
             {
-                panX=-1;
-                panY=-1;
+                panX=0;
+                panY=0;
             });
 
             $("svg").bind("mousemove", function (event)
             {
-
-                                
                 if(event.which==2 || event.which==3)
                 {
-                    viewBox.x+=panX-event.offsetX;
-                    viewBox.y+=panY-event.offsetY;
+                            console.log(event);
+                            
+                    viewBox.x+=panX-ui.getCanvasCoords(event.offsetX,event.offsetY).x;
+                    viewBox.y+=panY-ui.getCanvasCoords(event.offsetX,event.offsetY).y;
 
                     self.updateViewBox();
                 }
         
-                panX=event.offsetX;
-                panY=event.offsetY;
+                panX=ui.getCanvasCoords(event.offsetX,event.offsetY).x;
+                panY=ui.getCanvasCoords(event.offsetX,event.offsetY).y;
             });
 
         };
@@ -1016,6 +1055,7 @@ var width=w;
                 mouseNewOPY=0;
                 
                 ui.showOpParams(op);
+                ui.setSelectedOp(uiOp);
           };
       };
 
@@ -1193,6 +1233,12 @@ var width=w;
 
 this.getCanvasCoords=function(mx,my)
 {
+        
+    if(!$('svg')[0].attributes[6])
+    {
+        console.log('no viewbox attr!');
+        return {x:0,y:0};
+    }
     if($('svg')[0].attributes[6].name!='viewBox')        console.err('tis aint no viewbox attr');
     var vb=$('svg')[0].attributes[6].value.split(' '); // this will break
     var asp=$('svg')[0].attributes[7].value; // this will break
@@ -1214,10 +1260,14 @@ this.getCanvasCoords=function(mx,my)
         mulx=w * parseInt(vb[3],10)/h;
         muly=parseInt(vb[3],10);
     }
-        
-    var fx = (( mx / $('svg').width()  ) * mulx )  + parseInt(vb[0],10);
-    var fy = (( my / $('svg').height() ) * muly ) + parseInt(vb[1],10);
+    
+    var fx = 0;
+    var fy = 0;
+    if(mx!==0) fx = (( mx / $('svg').width()  ) * mulx )  + parseInt(vb[0],10);
+    if(my!==0) fy = (( my / $('svg').height() ) * muly ) + parseInt(vb[1],10);
 
+    // if(isNaN(fx))fx=0;
+    // if(isNaN(fy))fy=0;
     var res={x:fx,y:fy};
     return res;
 };

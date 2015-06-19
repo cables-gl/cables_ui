@@ -2717,7 +2717,7 @@ Ops.Gl.Meshes.Rectangle = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.width=this.addInPort(new Port(this,"width"));
-    this.height=this.addInPort(new Port(this,"width"));
+    this.height=this.addInPort(new Port(this,"height"));
     this.width.val=1.0;
     this.height.val=1.0;
 
@@ -2873,6 +2873,7 @@ Ops.Gl.Meshes.Circle = function()
     this.segments.onValueChanged=calc;
     this.radius.onValueChanged=calc;
     this.percent.onValueChanged=calc;
+    calc();
 };
 
 Ops.Gl.Meshes.Circle.prototype = new Op();
