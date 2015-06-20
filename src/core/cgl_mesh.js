@@ -8,6 +8,7 @@ var CGL=CGL ||
 CGL.Mesh=function(geom)
 {
     var bufTexCoords=-1;
+    var bufVertexNormals=-1;
     var bufVertices = gl.createBuffer();
     var bufVerticesIndizes = gl.createBuffer();
 
@@ -24,6 +25,21 @@ CGL.Mesh=function(geom)
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), gl.STATIC_DRAW);
         bufVerticesIndizes.itemSize = 1;
         bufVerticesIndizes.numItems = geom.verticesIndices.length;
+
+
+
+
+        if(geom.vertexNormals.length>0)
+        {
+            if(bufVertexNormals==-1)bufVertexNormals = gl.createBuffer();
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexNormals);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertexNormals), gl.STATIC_DRAW);
+            bufVertexNormals.itemSize = 3;
+            bufVertexNormals.numItems = geom.vertexNormals.length/bufVertexNormals.itemSize;
+console.log('bufVertexNormals.'+bufVertexNormals.numItems);
+                    
+        }
 
         if(geom.texCoords.length>0)
         {
@@ -44,10 +60,17 @@ CGL.Mesh=function(geom)
         shader.bind();
 
         GL.enableVertexAttribArray(shader.getAttrVertexPos());
+        if(bufVertexNormals!=-1) GL.enableVertexAttribArray(shader.getAttrVertexNormals());
         if(bufTexCoords!=-1) GL.enableVertexAttribArray(shader.getAttrTexCoords());
 
         gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
         gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, gl.FLOAT, false, 0, 0);
+
+        if(bufVertexNormals!=-1)
+        {
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexNormals);
+            gl.vertexAttribPointer(shader.getAttrVertexNormals(),bufVertexNormals.itemSize, gl.FLOAT, false, 0, 0);
+        }
 
         if(bufTexCoords!=-1)
         {
@@ -68,6 +91,7 @@ CGL.Geometry=function()
     this.verticesIndices=[];
     this.texCoords=[];
     this.texCoordsIndices=[];
+    this.vertexNormals=[];
 
     this.clear=function()
     {
@@ -136,13 +160,10 @@ parseOBJ = function(buff)
 
     var geom = new CGL.Geometry();
     geom.groups = {};
-    
-    // geom.texCoords   = [];
-    geom.c_norms = [];
-    
-    // geom.texCoordsIndices   = [];
-    geom.i_norms = [];
-    
+
+    geom.vertexNormals = [];
+    geom.vertexNormalIndices = [];
+
     var cg = {from: 0, to:0};   // current group
     var off = 0;
     var a = new Uint8Array(buff);
@@ -178,7 +199,7 @@ parseOBJ = function(buff)
             var x = parseFloat(cds[1]);
             var y = parseFloat(cds[2]);
             var z = parseFloat(cds[3]);
-            geom.c_norms.push(x,y,z);
+            geom.vertexNormals.push(x,y,z);
         }
         if(cds[0] == "f")
         {
@@ -187,14 +208,14 @@ parseOBJ = function(buff)
             var ui0 = parseInt(v0a[1])-1, ui1 = parseInt(v1a[1])-1, ui2 = parseInt(v2a[1])-1;
             var ni0 = parseInt(v0a[2])-1, ni1 = parseInt(v1a[2])-1, ni2 = parseInt(v2a[2])-1;
             
-            var vlen = geom.vertices.length/3, ulen = geom.texCoords.length/2, nlen = geom.c_norms.length/3;
+            var vlen = geom.vertices.length/3, ulen = geom.texCoords.length/2, nlen = geom.vertexNormals.length/3;
             if(vi0<0) vi0 = vlen + vi0+1; if(vi1<0) vi1 = vlen + vi1+1; if(vi2<0) vi2 = vlen + vi2+1;
             if(ui0<0) ui0 = ulen + ui0+1; if(ui1<0) ui1 = ulen + ui1+1; if(ui2<0) ui2 = ulen + ui2+1;
             if(ni0<0) ni0 = nlen + ni0+1; if(ni1<0) ni1 = nlen + ni1+1; if(ni2<0) ni2 = nlen + ni2+1;
             
             geom.verticesIndices.push(vi0, vi1, vi2);  //cg.verticesIndices.push(vi0, vi1, vi2)
             geom.texCoordsIndices  .push(ui0, ui1, ui2);  //cg.texCoordsIndices  .push(ui0, ui1, ui2);
-            geom.i_norms.push(ni0, ni1, ni2);  //cg.i_norms.push(ni0, ni1, ni2);
+            geom.vertexNormalIndices.push(ni0, ni1, ni2);  //cg.vertexNormalIndices.push(ni0, ni1, ni2);
             if(cds.length == 5)
             {
                 var v3a = cds[4].split("/");
@@ -204,7 +225,7 @@ parseOBJ = function(buff)
                 if(ni3<0) ni3 = nlen + ni3+1;
                 geom.verticesIndices.push(vi0, vi2, vi3);  //cg.verticesIndices.push(vi0, vi2, vi3);
                 geom.texCoordsIndices  .push(ui0, ui2, ui3);  //cg.texCoordsIndices  .push(ui0, ui2, ui3);
-                geom.i_norms.push(ni0, ni2, ni3);  //cg.i_norms.push(ni0, ni2, ni3);
+                geom.vertexNormalIndices.push(ni0, ni2, ni3);  //cg.vertexNormalIndices.push(ni0, ni2, ni3);
             }
         }
     }

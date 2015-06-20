@@ -872,8 +872,6 @@ this.oprect.getGroup().transform('t'+x+','+y);
             {
                 if(event.which==2 || event.which==3)
                 {
-                            console.log(event);
-                            
                     viewBox.x+=panX-ui.getCanvasCoords(event.offsetX,event.offsetY).x;
                     viewBox.y+=panY-ui.getCanvasCoords(event.offsetX,event.offsetY).y;
 

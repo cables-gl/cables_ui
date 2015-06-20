@@ -95,12 +95,15 @@ CGL.Shader=function()
         return ''+
         'attribute vec3 vPosition;\n'+
         'attribute vec2 attrTexCoord;\n'+
+        'attribute vec3 attrVertNormal;\n'+
         'varying vec2 texCoord;\n'+
+        'varying vec3 norm;\n'+
         'uniform mat4 projMatrix;\n'+
         'uniform mat4 mvMatrix;\n'+
         'void main()\n'+
         '{\n'+
         '   texCoord=attrTexCoord;\n'+
+        '   norm=attrVertNormal;\n'+
         // '   gl_PointSize=3.0;\n'+
         '   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);\n'+
         '}\n';
@@ -110,10 +113,12 @@ CGL.Shader=function()
     {
         return ''+
         'precision mediump float;\n'+
+        'varying vec3 norm;'+
         'void main()\n'+
         '{\n'+
 
         '   gl_FragColor = vec4(0.5,0.5,0.5,1.0);\n'+
+        // '   gl_FragColor = vec4(norm.x,norm.y,1.0,1.0);\n'+
         '}\n';
     };
 
@@ -130,8 +135,10 @@ CGL.Shader=function()
     var mvMatrixUniform=-1;
 
     var attrTexCoords = -1;
+    var attrVertexNormals = -1;
     var attrVertexPos = -1;
 
+    this.getAttrVertexNormals=function(){return attrVertexNormals;};
     this.getAttrTexCoords=function(){return attrTexCoords;};
     this.getAttrVertexPos=function(){return attrVertexPos;};
 
@@ -184,6 +191,7 @@ CGL.Shader=function()
 
         if(mvMatrixUniform==-1)
         {
+            attrVertexNormals = gl.getAttribLocation(program, 'attrVertNormal');
             attrTexCoords = gl.getAttribLocation(program, 'attrTexCoord');
             attrVertexPos = gl.getAttribLocation(program, 'vPosition');
 

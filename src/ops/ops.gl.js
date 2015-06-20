@@ -342,6 +342,52 @@ Ops.Gl.Shader.BasicMaterial = function()
 
 Ops.Gl.Shader.BasicMaterial.prototype = new Op();
 
+
+
+
+// --------------------------------------------------------------------------
+
+
+Ops.Gl.Shader.ShowNormalsMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='ShowNormalsMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
+
+        self.trigger.call();
+
+        cgl.setPreviousShader();
+    };
+
+    var srcFrag=''+
+        'precision highp float;\n'+
+        'varying vec3 norm;\n'+
+        '\n'+
+        'void main()\n'+
+        '{\n'+
+        'vec4 col=vec4(norm.x,norm.y,norm.z,1.0);\n'+
+        'gl_FragColor = col;\n'+
+        '}\n';
+
+
+    var shader=new CGL.Shader();
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+    this.render.onTriggered=this.doRender;
+
+    this.doRender();
+};
+
+Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
+
+
 // --------------------------------------------------------------------------
 
 Ops.Gl.Shader.Schwurbel = function()
@@ -499,7 +545,7 @@ Ops.Gl.Matrix.Scale = function()
     this.render.onTriggered=function()
     {
         cgl.pushMvMatrix();
-        mat4.multiply(mvMatrix,mvMatrix,transMatrix);
+        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
         self.trigger.call();
         cgl.popMvMatrix();
     };

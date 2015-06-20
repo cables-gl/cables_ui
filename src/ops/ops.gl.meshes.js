@@ -79,8 +79,6 @@ Ops.Gl.Meshes.Rectangle = function()
         ];
         if(!self.mesh) self.mesh=new CGL.Mesh(geom);
         self.mesh.setGeom(geom);
-        console.log('builkd geo');
-        
     }
     rebuild();
 
@@ -231,24 +229,25 @@ Ops.Gl.Meshes.ObjMesh = function()
                 
         var r=parseOBJ(response);
 
-    unwrap = function(ind, crd, cpi)
-    {
-        var ncrd = new Array(Math.floor(ind.length/3)*cpi);
-        for(var i=0; i<ind.length; i++)
+        unwrap = function(ind, crd, cpi)
         {
-            for(var j=0; j<cpi; j++)
+            var ncrd = new Array(Math.floor(ind.length/3)*cpi);
+            for(var i=0; i<ind.length; i++)
             {
-                ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
+                for(var j=0; j<cpi; j++)
+                {
+                    ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
+                }
             }
-        }
-        return ncrd;
-    };
+            return ncrd;
+        };
 
-    var l=r.verticesIndices.length;
-        r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
-        r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
-        r.verticesIndices = [];
-        for(var i=0; i<l; i++) r.verticesIndices.push(i);
+        var l=r.verticesIndices.length;
+            r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
+            r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
+            r.vertexNormals = unwrap(r.vertexNormalIndices  , r.vertexNormals  , 3);
+            r.verticesIndices = [];
+            for(var i=0; i<l; i++) r.verticesIndices.push(i);
         
         self.mesh=new CGL.Mesh(r);
     });
@@ -277,37 +276,37 @@ Ops.Gl.Meshes.Cube = function()
 
     var geom=new CGL.Geometry();
 
-            geom.vertices = [
-            // Front face
-            -1.0, -1.0,  1.0,
-             1.0, -1.0,  1.0,
-             1.0,  1.0,  1.0,
-            -1.0,  1.0,  1.0,
-            // Back face
-            -1.0, -1.0, -1.0,
-            -1.0,  1.0, -1.0,
-             1.0,  1.0, -1.0,
-             1.0, -1.0, -1.0,
-            // Top face
-            -1.0,  1.0, -1.0,
-            -1.0,  1.0,  1.0,
-             1.0,  1.0,  1.0,
-             1.0,  1.0, -1.0,
-            // Bottom face
-            -1.0, -1.0, -1.0,
-             1.0, -1.0, -1.0,
-             1.0, -1.0,  1.0,
-            -1.0, -1.0,  1.0,
-            // Right face
-             1.0, -1.0, -1.0,
-             1.0,  1.0, -1.0,
-             1.0,  1.0,  1.0,
-             1.0, -1.0,  1.0,
-            // Left face
-            -1.0, -1.0, -1.0,
-            -1.0, -1.0,  1.0,
-            -1.0,  1.0,  1.0,
-            -1.0,  1.0, -1.0,
+        geom.vertices = [
+          // Front face
+          -1.0, -1.0,  1.0,
+           1.0, -1.0,  1.0,
+           1.0,  1.0,  1.0,
+          -1.0,  1.0,  1.0,
+          // Back face
+          -1.0, -1.0, -1.0,
+          -1.0,  1.0, -1.0,
+           1.0,  1.0, -1.0,
+           1.0, -1.0, -1.0,
+          // Top face
+          -1.0,  1.0, -1.0,
+          -1.0,  1.0,  1.0,
+           1.0,  1.0,  1.0,
+           1.0,  1.0, -1.0,
+          // Bottom face
+          -1.0, -1.0, -1.0,
+           1.0, -1.0, -1.0,
+           1.0, -1.0,  1.0,
+          -1.0, -1.0,  1.0,
+          // Right face
+           1.0, -1.0, -1.0,
+           1.0,  1.0, -1.0,
+           1.0,  1.0,  1.0,
+           1.0, -1.0,  1.0,
+          // Left face
+          -1.0, -1.0, -1.0,
+          -1.0, -1.0,  1.0,
+          -1.0,  1.0,  1.0,
+          -1.0,  1.0, -1.0,
         ];
 
         geom.texCoords = [
@@ -342,6 +341,45 @@ Ops.Gl.Meshes.Cube = function()
           1.0, 1.0,
           0.0, 1.0,
         ];
+
+        geom.vertexNormals = [
+            // Front face
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+
+            // Back face
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+
+            // Top face
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+
+            // Bottom face
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+
+            // Right face
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+
+            // Left face
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0
+        ];
+
 
         geom.verticesIndices = [
             0, 1, 2,      0, 2, 3,    // Front face

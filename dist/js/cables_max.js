@@ -8,6 +8,7 @@ var CGL=CGL ||
 CGL.Mesh=function(geom)
 {
     var bufTexCoords=-1;
+    var bufVertexNormals=-1;
     var bufVertices = gl.createBuffer();
     var bufVerticesIndizes = gl.createBuffer();
 
@@ -24,6 +25,21 @@ CGL.Mesh=function(geom)
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), gl.STATIC_DRAW);
         bufVerticesIndizes.itemSize = 1;
         bufVerticesIndizes.numItems = geom.verticesIndices.length;
+
+
+
+
+        if(geom.vertexNormals.length>0)
+        {
+            if(bufVertexNormals==-1)bufVertexNormals = gl.createBuffer();
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexNormals);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertexNormals), gl.STATIC_DRAW);
+            bufVertexNormals.itemSize = 3;
+            bufVertexNormals.numItems = geom.vertexNormals.length/bufVertexNormals.itemSize;
+console.log('bufVertexNormals.'+bufVertexNormals.numItems);
+                    
+        }
 
         if(geom.texCoords.length>0)
         {
@@ -44,10 +60,17 @@ CGL.Mesh=function(geom)
         shader.bind();
 
         GL.enableVertexAttribArray(shader.getAttrVertexPos());
+        if(bufVertexNormals!=-1) GL.enableVertexAttribArray(shader.getAttrVertexNormals());
         if(bufTexCoords!=-1) GL.enableVertexAttribArray(shader.getAttrTexCoords());
 
         gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
         gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, gl.FLOAT, false, 0, 0);
+
+        if(bufVertexNormals!=-1)
+        {
+            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexNormals);
+            gl.vertexAttribPointer(shader.getAttrVertexNormals(),bufVertexNormals.itemSize, gl.FLOAT, false, 0, 0);
+        }
 
         if(bufTexCoords!=-1)
         {
@@ -68,6 +91,7 @@ CGL.Geometry=function()
     this.verticesIndices=[];
     this.texCoords=[];
     this.texCoordsIndices=[];
+    this.vertexNormals=[];
 
     this.clear=function()
     {
@@ -136,13 +160,10 @@ parseOBJ = function(buff)
 
     var geom = new CGL.Geometry();
     geom.groups = {};
-    
-    // geom.texCoords   = [];
-    geom.c_norms = [];
-    
-    // geom.texCoordsIndices   = [];
-    geom.i_norms = [];
-    
+
+    geom.vertexNormals = [];
+    geom.vertexNormalIndices = [];
+
     var cg = {from: 0, to:0};   // current group
     var off = 0;
     var a = new Uint8Array(buff);
@@ -178,7 +199,7 @@ parseOBJ = function(buff)
             var x = parseFloat(cds[1]);
             var y = parseFloat(cds[2]);
             var z = parseFloat(cds[3]);
-            geom.c_norms.push(x,y,z);
+            geom.vertexNormals.push(x,y,z);
         }
         if(cds[0] == "f")
         {
@@ -187,14 +208,14 @@ parseOBJ = function(buff)
             var ui0 = parseInt(v0a[1])-1, ui1 = parseInt(v1a[1])-1, ui2 = parseInt(v2a[1])-1;
             var ni0 = parseInt(v0a[2])-1, ni1 = parseInt(v1a[2])-1, ni2 = parseInt(v2a[2])-1;
             
-            var vlen = geom.vertices.length/3, ulen = geom.texCoords.length/2, nlen = geom.c_norms.length/3;
+            var vlen = geom.vertices.length/3, ulen = geom.texCoords.length/2, nlen = geom.vertexNormals.length/3;
             if(vi0<0) vi0 = vlen + vi0+1; if(vi1<0) vi1 = vlen + vi1+1; if(vi2<0) vi2 = vlen + vi2+1;
             if(ui0<0) ui0 = ulen + ui0+1; if(ui1<0) ui1 = ulen + ui1+1; if(ui2<0) ui2 = ulen + ui2+1;
             if(ni0<0) ni0 = nlen + ni0+1; if(ni1<0) ni1 = nlen + ni1+1; if(ni2<0) ni2 = nlen + ni2+1;
             
             geom.verticesIndices.push(vi0, vi1, vi2);  //cg.verticesIndices.push(vi0, vi1, vi2)
             geom.texCoordsIndices  .push(ui0, ui1, ui2);  //cg.texCoordsIndices  .push(ui0, ui1, ui2);
-            geom.i_norms.push(ni0, ni1, ni2);  //cg.i_norms.push(ni0, ni1, ni2);
+            geom.vertexNormalIndices.push(ni0, ni1, ni2);  //cg.vertexNormalIndices.push(ni0, ni1, ni2);
             if(cds.length == 5)
             {
                 var v3a = cds[4].split("/");
@@ -204,7 +225,7 @@ parseOBJ = function(buff)
                 if(ni3<0) ni3 = nlen + ni3+1;
                 geom.verticesIndices.push(vi0, vi2, vi3);  //cg.verticesIndices.push(vi0, vi2, vi3);
                 geom.texCoordsIndices  .push(ui0, ui2, ui3);  //cg.texCoordsIndices  .push(ui0, ui2, ui3);
-                geom.i_norms.push(ni0, ni2, ni3);  //cg.i_norms.push(ni0, ni2, ni3);
+                geom.vertexNormalIndices.push(ni0, ni2, ni3);  //cg.vertexNormalIndices.push(ni0, ni2, ni3);
             }
         }
     }
@@ -312,12 +333,15 @@ CGL.Shader=function()
         return ''+
         'attribute vec3 vPosition;\n'+
         'attribute vec2 attrTexCoord;\n'+
+        'attribute vec3 attrVertNormal;\n'+
         'varying vec2 texCoord;\n'+
+        'varying vec3 norm;\n'+
         'uniform mat4 projMatrix;\n'+
         'uniform mat4 mvMatrix;\n'+
         'void main()\n'+
         '{\n'+
         '   texCoord=attrTexCoord;\n'+
+        '   norm=attrVertNormal;\n'+
         // '   gl_PointSize=3.0;\n'+
         '   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);\n'+
         '}\n';
@@ -327,10 +351,12 @@ CGL.Shader=function()
     {
         return ''+
         'precision mediump float;\n'+
+        'varying vec3 norm;'+
         'void main()\n'+
         '{\n'+
 
         '   gl_FragColor = vec4(0.5,0.5,0.5,1.0);\n'+
+        // '   gl_FragColor = vec4(norm.x,norm.y,1.0,1.0);\n'+
         '}\n';
     };
 
@@ -347,8 +373,10 @@ CGL.Shader=function()
     var mvMatrixUniform=-1;
 
     var attrTexCoords = -1;
+    var attrVertexNormals = -1;
     var attrVertexPos = -1;
 
+    this.getAttrVertexNormals=function(){return attrVertexNormals;};
     this.getAttrTexCoords=function(){return attrTexCoords;};
     this.getAttrVertexPos=function(){return attrVertexPos;};
 
@@ -401,6 +429,7 @@ CGL.Shader=function()
 
         if(mvMatrixUniform==-1)
         {
+            attrVertexNormals = gl.getAttribLocation(program, 'attrVertNormal');
             attrTexCoords = gl.getAttribLocation(program, 'attrTexCoord');
             attrVertexPos = gl.getAttribLocation(program, 'vPosition');
 
@@ -2311,6 +2340,52 @@ Ops.Gl.Shader.BasicMaterial = function()
 
 Ops.Gl.Shader.BasicMaterial.prototype = new Op();
 
+
+
+
+// --------------------------------------------------------------------------
+
+
+Ops.Gl.Shader.ShowNormalsMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='ShowNormalsMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
+
+        self.trigger.call();
+
+        cgl.setPreviousShader();
+    };
+
+    var srcFrag=''+
+        'precision highp float;\n'+
+        'varying vec3 norm;\n'+
+        '\n'+
+        'void main()\n'+
+        '{\n'+
+        'vec4 col=vec4(norm.x,norm.y,norm.z,1.0);\n'+
+        'gl_FragColor = col;\n'+
+        '}\n';
+
+
+    var shader=new CGL.Shader();
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+    this.render.onTriggered=this.doRender;
+
+    this.doRender();
+};
+
+Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
+
+
 // --------------------------------------------------------------------------
 
 Ops.Gl.Shader.Schwurbel = function()
@@ -2468,7 +2543,7 @@ Ops.Gl.Matrix.Scale = function()
     this.render.onTriggered=function()
     {
         cgl.pushMvMatrix();
-        mat4.multiply(mvMatrix,mvMatrix,transMatrix);
+        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
         self.trigger.call();
         cgl.popMvMatrix();
     };
@@ -2814,8 +2889,6 @@ Ops.Gl.Meshes.Rectangle = function()
         ];
         if(!self.mesh) self.mesh=new CGL.Mesh(geom);
         self.mesh.setGeom(geom);
-        console.log('builkd geo');
-        
     }
     rebuild();
 
@@ -2966,24 +3039,25 @@ Ops.Gl.Meshes.ObjMesh = function()
                 
         var r=parseOBJ(response);
 
-    unwrap = function(ind, crd, cpi)
-    {
-        var ncrd = new Array(Math.floor(ind.length/3)*cpi);
-        for(var i=0; i<ind.length; i++)
+        unwrap = function(ind, crd, cpi)
         {
-            for(var j=0; j<cpi; j++)
+            var ncrd = new Array(Math.floor(ind.length/3)*cpi);
+            for(var i=0; i<ind.length; i++)
             {
-                ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
+                for(var j=0; j<cpi; j++)
+                {
+                    ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
+                }
             }
-        }
-        return ncrd;
-    };
+            return ncrd;
+        };
 
-    var l=r.verticesIndices.length;
-        r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
-        r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
-        r.verticesIndices = [];
-        for(var i=0; i<l; i++) r.verticesIndices.push(i);
+        var l=r.verticesIndices.length;
+            r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
+            r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
+            r.vertexNormals = unwrap(r.vertexNormalIndices  , r.vertexNormals  , 3);
+            r.verticesIndices = [];
+            for(var i=0; i<l; i++) r.verticesIndices.push(i);
         
         self.mesh=new CGL.Mesh(r);
     });
@@ -3012,37 +3086,37 @@ Ops.Gl.Meshes.Cube = function()
 
     var geom=new CGL.Geometry();
 
-            geom.vertices = [
-            // Front face
-            -1.0, -1.0,  1.0,
-             1.0, -1.0,  1.0,
-             1.0,  1.0,  1.0,
-            -1.0,  1.0,  1.0,
-            // Back face
-            -1.0, -1.0, -1.0,
-            -1.0,  1.0, -1.0,
-             1.0,  1.0, -1.0,
-             1.0, -1.0, -1.0,
-            // Top face
-            -1.0,  1.0, -1.0,
-            -1.0,  1.0,  1.0,
-             1.0,  1.0,  1.0,
-             1.0,  1.0, -1.0,
-            // Bottom face
-            -1.0, -1.0, -1.0,
-             1.0, -1.0, -1.0,
-             1.0, -1.0,  1.0,
-            -1.0, -1.0,  1.0,
-            // Right face
-             1.0, -1.0, -1.0,
-             1.0,  1.0, -1.0,
-             1.0,  1.0,  1.0,
-             1.0, -1.0,  1.0,
-            // Left face
-            -1.0, -1.0, -1.0,
-            -1.0, -1.0,  1.0,
-            -1.0,  1.0,  1.0,
-            -1.0,  1.0, -1.0,
+        geom.vertices = [
+          // Front face
+          -1.0, -1.0,  1.0,
+           1.0, -1.0,  1.0,
+           1.0,  1.0,  1.0,
+          -1.0,  1.0,  1.0,
+          // Back face
+          -1.0, -1.0, -1.0,
+          -1.0,  1.0, -1.0,
+           1.0,  1.0, -1.0,
+           1.0, -1.0, -1.0,
+          // Top face
+          -1.0,  1.0, -1.0,
+          -1.0,  1.0,  1.0,
+           1.0,  1.0,  1.0,
+           1.0,  1.0, -1.0,
+          // Bottom face
+          -1.0, -1.0, -1.0,
+           1.0, -1.0, -1.0,
+           1.0, -1.0,  1.0,
+          -1.0, -1.0,  1.0,
+          // Right face
+           1.0, -1.0, -1.0,
+           1.0,  1.0, -1.0,
+           1.0,  1.0,  1.0,
+           1.0, -1.0,  1.0,
+          // Left face
+          -1.0, -1.0, -1.0,
+          -1.0, -1.0,  1.0,
+          -1.0,  1.0,  1.0,
+          -1.0,  1.0, -1.0,
         ];
 
         geom.texCoords = [
@@ -3077,6 +3151,45 @@ Ops.Gl.Meshes.Cube = function()
           1.0, 1.0,
           0.0, 1.0,
         ];
+
+        geom.vertexNormals = [
+            // Front face
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+
+            // Back face
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+
+            // Top face
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+
+            // Bottom face
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+
+            // Right face
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+
+            // Left face
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0
+        ];
+
 
         geom.verticesIndices = [
             0, 1, 2,      0, 2, 3,    // Front face
@@ -3406,13 +3519,17 @@ Ops.Json.jsonValue = function()
     Op.apply(this, arguments);
 
     this.name='jsonValue';
-    this.data=this.addInPort(new Port(this,"data"),OP_PORT_TYPE_OBJECT);
+
+    this.data=this.addInPort(new Port(this,"data",OP_PORT_TYPE_TEXTURE ));
     this.key=this.addInPort(new Port(this,"key"));
     this.result=this.addOutPort(new Port(this,"result"));
 
     this.data.onValueChanged=function()
     {
-        self.result.val=self.data.val[self.key.val];
+        if(self.data.val && self.data.val.hasOwnProperty(self.key.val))
+        {
+            self.result.val=self.data.val[self.key.val];
+        }
     };
 
 };
@@ -3420,6 +3537,7 @@ Ops.Json.jsonValue = function()
 Ops.Json.jsonValue.prototype = new Op();
 
 // -------------------------------------------------------------
+
 
 
 // TODO: CLAMP!
@@ -3846,10 +3964,10 @@ Ops.Net.Websocket = function()
 
     this.name='Websocket';
     this.url=this.addInPort(new Port(this,"url"));
-    this.result=this.addOutPort(new Port(this,"result"), OP_PORT_TYPE_OBJECT);
+    this.result=this.addOutPort(new Port(this,"result", OP_PORT_TYPE_OBJECT));
     this.connected=this.addOutPort(new Port(this,"connected"));
 
-    var connection;
+    var connection=null;
     var timeout=null;
     var connectedTo='';
 
@@ -3859,6 +3977,7 @@ Ops.Net.Websocket = function()
         {
             connect();
         }
+        timeout=setTimeout(checkConnection,1000);
     }
 
     function connect()
@@ -3875,6 +3994,7 @@ Ops.Net.Websocket = function()
 
         try
         {
+            if(connection!=null)connection.close();
             connection = new WebSocket(self.url.val);
         }catch (e)
         {
@@ -3885,13 +4005,11 @@ Ops.Net.Websocket = function()
         connection.onerror = function (message)
         {
             self.connected.val=false;
-            timeout=setTimeout(checkConnection,1000);
         };
 
         connection.onclose = function (message)
         {
             self.connected.val=false;
-            timeout=setTimeout(checkConnection,1000);
         };
 
         connection.onopen = function (message)
@@ -3913,12 +4031,12 @@ Ops.Net.Websocket = function()
             }
         };
 
-        clearTimeout(timeout);
-        timeout=setTimeout(checkConnection,1000);
+        
+        
     }
 
     this.url.onValueChanged=connect;
-    
+    timeout=setTimeout(checkConnection,1000);
 
     this.url.val='ws://127.0.0.1:1337';
 };
@@ -3926,29 +4044,6 @@ Ops.Net.Websocket = function()
 Ops.Net.Websocket.prototype = new Op();
 
 // -------------------------------------------------------------
-
-Ops.Json=Ops.Json || {};
-
-
-Ops.Json.jsonValue = function()
-{
-    var self=this;
-    Op.apply(this, arguments);
-
-    this.name='jsonValue';
-    this.data=this.addInPort(new Port(this,"data"),OP_PORT_TYPE_OBJECT);
-    this.key=this.addInPort(new Port(this,"key"));
-    this.result=this.addOutPort(new Port(this,"result"));
-
-    this.data.onValueChanged=function()
-    {
-        self.result.val=self.data.val[self.key.val];
-    };
-
-};
-
-Ops.Json.jsonValue.prototype = new Op();
-
 
 
 
