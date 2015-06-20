@@ -34,7 +34,6 @@ Ops.Net.Websocket = function()
          if (!window.WebSocket)
             console.error('Sorry, but your browser doesn\'t support WebSockets.');
 
-        console.log('websocket connecting...');
 
         try
         {
@@ -44,16 +43,17 @@ Ops.Net.Websocket = function()
             console.log('could not connect to',self.url.val);
         }
 
-        console.log(connection);
         
         connection.onerror = function (message)
         {
             self.connected.val=false;
+            timeout=setTimeout(checkConnection,1000);
         };
 
         connection.onclose = function (message)
         {
             self.connected.val=false;
+            timeout=setTimeout(checkConnection,1000);
         };
 
         connection.onopen = function (message)

@@ -56,7 +56,7 @@ function getPortColor(type)
 {
     if(type==OP_PORT_TYPE_VALUE) return '#ea6638';
     else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
-    else if(type==OP_PORT_TYPE_TEXTURE)  return '#26a92a';
+    else if(type==OP_PORT_TYPE_OBJECT)  return '#26a92a';
     else return '#c6c6c6';
 }
 
@@ -261,15 +261,13 @@ var line;
 
     Raphael.fn.OpRect = function (x, y, w, h, text)
     {
-        var background = this.rect(x, y, w, h).attr({
+        var background = this.rect(0, 0, w, h).attr({
             fill: uiConfig.colorOpBg,
             stroke: "#000"
         });
-        
 
-
-        var label = this.text(x+w/2,y+h/2-1, text);
-        var layer = this.rect(x, y, w, h).attr({
+        var label = this.text(0+w/2,0+h/2-1, text);
+        var layer = this.rect(0, 0, w, h).attr({
             fill: "#ccc",
             "fill-opacity": 0,
             "stroke-opacity": 0,
@@ -278,7 +276,10 @@ var line;
 
         var group = this.set();
         group.push(background, label, layer);
-            
+
+        group.transform('t'+x+','+y);
+
+
 //         console.log(group);
         
 // group.attrs.width.width=23233;
@@ -348,8 +349,6 @@ var line;
         },
         move = function (dx, dy,a,b,event)
         {
-
-
             if(event.which==3)return;
             if(event.which==2)return;
 
@@ -357,10 +356,10 @@ var line;
             var pos=ui.getCanvasCoords(event.offsetX,event.offsetY);
 
             if(!self.op.uiAttribs)
-                {
-                    self.op.uiAttribs={};
-                    self.op.uiAttribs.translate={x:pos.x,y:pos.y};
-                }
+            {
+                self.op.uiAttribs={};
+                self.op.uiAttribs.translate={x:pos.x,y:pos.y};
+            }
 
             // dx=ui.getCanvasCoords(dx,dy).x;
             // dy=ui.getCanvasCoords(dx,dy).y;
@@ -508,8 +507,8 @@ var width=w;
             if(inout=='out') portIndex=this.portsOut.length;
 
             var w=(uiConfig.portSize+uiConfig.portPadding)*portIndex;
-            var xpos=x+w;
-            var ypos=y+yp;
+            var xpos=0+w;
+            var ypos=0+yp;
 
             if(self.oprect.bgRect.attrs.width<w+uiConfig.portSize)
             {
@@ -589,6 +588,8 @@ var width=w;
 
             if(inout=='out') this.portsOut.push(port);
                 else this.portsIn.push(port);
+
+this.oprect.getGroup().transform('t'+x+','+y);
         };
 
     };
