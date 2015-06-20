@@ -4,6 +4,7 @@ var PORT_DIR_OUT=1;
 
 var OP_PORT_TYPE_VALUE =0;
 var OP_PORT_TYPE_FUNCTION =1;
+var OP_PORT_TYPE_OBJECT =2;
 var OP_PORT_TYPE_TEXTURE =2;
 
 var Ops = {};

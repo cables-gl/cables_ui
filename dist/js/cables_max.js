@@ -802,6 +802,7 @@ var PORT_DIR_OUT=1;
 
 var OP_PORT_TYPE_VALUE =0;
 var OP_PORT_TYPE_FUNCTION =1;
+var OP_PORT_TYPE_OBJECT =2;
 var OP_PORT_TYPE_TEXTURE =2;
 
 var Ops = {};
@@ -1465,6 +1466,100 @@ String.prototype.endl = function(){return this+'\n';};
 
 
 
+
+Ops.Devices= Ops.Devices || {};
+
+Ops.Devices.GamePad = function()
+{
+    Op.apply(this, arguments);
+
+    this.name='GamePad';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.numPads=this.addOutPort(new Port(this,"numPads"));
+    this.axis1=this.addOutPort(new Port(this,"axis1"));
+    this.axis2=this.addOutPort(new Port(this,"axis2"));
+    this.axis3=this.addOutPort(new Port(this,"axis3"));
+    this.axis4=this.addOutPort(new Port(this,"axis4"));
+    this.button0=this.addOutPort(new Port(this,"button0"));
+    this.button1=this.addOutPort(new Port(this,"button1"));
+    this.button2=this.addOutPort(new Port(this,"button2"));
+    this.button3=this.addOutPort(new Port(this,"button3"));
+    this.button4=this.addOutPort(new Port(this,"button4"));
+
+    var self=this;
+    var startTime=Date.now()/1000.0;
+
+    this.exe.onTriggered=function()
+    {
+        var gamePads=navigator.getGamepads();
+        var count=0;
+
+        for(var gp in gamePads)
+        {
+            if(gamePads[gp].axes)
+            {
+                self.axis1.val=gamePads[gp].axes[0];
+                self.axis2.val=gamePads[gp].axes[1];
+                self.axis3.val=gamePads[gp].axes[2];
+                self.axis4.val=gamePads[gp].axes[3];
+
+                self.button0.val=gamePads[gp].buttons[0].pressed;
+                self.button0.val=gamePads[gp].buttons[1].pressed;
+                self.button2.val=gamePads[gp].buttons[2].pressed;
+                self.button3.val=gamePads[gp].buttons[3].pressed;
+                self.button4.val=gamePads[gp].buttons[4].pressed;
+
+                count++;
+            }
+        }
+
+        self.numPads.val=count;
+    };
+
+    this.exe.onTriggered();
+
+};
+
+Ops.Devices.GamePad.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+
+Ops.Devices.LeapMotion = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='LeapMotion';
+
+    this.transX=this.addOutPort(new Port(this,"translationX"));
+    this.transY=this.addOutPort(new Port(this,"translationY"));
+    this.transZ=this.addOutPort(new Port(this,"translationZ"));
+
+    this.finger0X=this.addOutPort(new Port(this,"finger0X"));
+    this.finger0Y=this.addOutPort(new Port(this,"finger0Y"));
+    this.finger0Z=this.addOutPort(new Port(this,"finger0Z"));
+
+    Leap.loop(function (frame)
+    {
+        self.transX.val=frame._translation[0];
+        self.transY.val=frame._translation[1];
+        self.transZ.val=frame._translation[2];
+
+        if(frame.fingers.length>0)
+        {
+            self.finger0X.val=frame.fingers[0].tipPosition[0];
+            self.finger0Y.val=frame.fingers[0].tipPosition[1];
+            self.finger0Z.val=frame.fingers[0].tipPosition[2];
+        }
+    });
+};
+
+Ops.Devices.LeapMotion.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+
 Ops.Gl=Ops.Gl || {};
 Ops.Gl.TextureEffects=Ops.Gl.TextureEffects || {};
 
@@ -1933,39 +2028,6 @@ Ops.Gl.Renderer.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-Ops.Gl.LeapMotion = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='LeapMotion';
-
-    this.transX=this.addOutPort(new Port(this,"translationX"));
-    this.transY=this.addOutPort(new Port(this,"translationY"));
-    this.transZ=this.addOutPort(new Port(this,"translationZ"));
-
-    this.finger0X=this.addOutPort(new Port(this,"finger0X"));
-    this.finger0Y=this.addOutPort(new Port(this,"finger0Y"));
-    this.finger0Z=this.addOutPort(new Port(this,"finger0Z"));
-
-    Leap.loop(function (frame)
-    {
-        self.transX.val=frame._translation[0];
-        self.transY.val=frame._translation[1];
-        self.transZ.val=frame._translation[2];
-
-        if(frame.fingers.length>0)
-        {
-            self.finger0X.val=frame.fingers[0].tipPosition[0];
-            self.finger0Y.val=frame.fingers[0].tipPosition[1];
-            self.finger0Z.val=frame.fingers[0].tipPosition[2];
-        }
-    });
-};
-
-Ops.Gl.LeapMotion.prototype = new Op();
-
-// --------------------------------------------------------------------------
 
 Ops.Gl.ClearColor = function()
 {
@@ -3332,66 +3394,37 @@ Ops.Anim.RelativeTime.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
-Ops.Input={};
 
-Ops.Input.GamePad = function()
+
+
+Ops.Json=Ops.Json || {};
+
+
+Ops.Json.jsonValue = function()
 {
+    var self=this;
     Op.apply(this, arguments);
 
-    this.name='GamePad';
-    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-    this.numPads=this.addOutPort(new Port(this,"numPads"));
-    this.axis1=this.addOutPort(new Port(this,"axis1"));
-    this.axis2=this.addOutPort(new Port(this,"axis2"));
-    this.axis3=this.addOutPort(new Port(this,"axis3"));
-    this.axis4=this.addOutPort(new Port(this,"axis4"));
-    this.button0=this.addOutPort(new Port(this,"button0"));
-    this.button1=this.addOutPort(new Port(this,"button1"));
-    this.button2=this.addOutPort(new Port(this,"button2"));
-    this.button3=this.addOutPort(new Port(this,"button3"));
-    this.button4=this.addOutPort(new Port(this,"button4"));
+    this.name='jsonValue';
+    this.data=this.addInPort(new Port(this,"data"),OP_PORT_TYPE_OBJECT);
+    this.key=this.addInPort(new Port(this,"key"));
+    this.result=this.addOutPort(new Port(this,"result"));
 
-    var self=this;
-    var startTime=Date.now()/1000.0;
-
-    this.exe.onTriggered=function()
+    this.data.onValueChanged=function()
     {
-        var gamePads=navigator.getGamepads();
-        var count=0;
-
-        for(var gp in gamePads)
-        {
-            if(gamePads[gp].axes)
-            {
-                self.axis1.val=gamePads[gp].axes[0];
-                self.axis2.val=gamePads[gp].axes[1];
-                self.axis3.val=gamePads[gp].axes[2];
-                self.axis4.val=gamePads[gp].axes[3];
-
-                self.button0.val=gamePads[gp].buttons[0].pressed;
-                self.button0.val=gamePads[gp].buttons[1].pressed;
-                self.button2.val=gamePads[gp].buttons[2].pressed;
-                self.button3.val=gamePads[gp].buttons[3].pressed;
-                self.button4.val=gamePads[gp].buttons[4].pressed;
-
-                count++;
-            }
-        }
-
-        self.numPads.val=count;
+        self.result.val=self.data.val[self.key.val];
     };
-
-    this.exe.onTriggered();
 
 };
 
-Ops.Input.GamePad.prototype = new Op();
+Ops.Json.jsonValue.prototype = new Op();
 
+// -------------------------------------------------------------
 
 
 // TODO: CLAMP!
 
-Ops.Math={};
+Ops.Math=Ops.Math || {};
 
 
 Ops.Math.Random = function()
@@ -3804,6 +3837,105 @@ Ops.Math.Compare.Equals.prototype = new Op();
 
 
 
+Ops.Net=Ops.Net || {};
+
+Ops.Net.Websocket = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='Websocket';
+    this.url=this.addInPort(new Port(this,"url"));
+    this.result=this.addOutPort(new Port(this,"result"), OP_PORT_TYPE_OBJECT);
+    this.connected=this.addOutPort(new Port(this,"connected"));
+
+    function checkConnection()
+    {
+        if(self.connected.val===false)
+        {
+            self.url.onValueChanged();
+            setTimeout(checkConnection,500);
+        }
+        else
+        {
+            setTimeout(checkConnection,2000);
+        }
+    }
+
+    function connect()
+    {
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+     
+         if (!window.WebSocket)
+            console.error('Sorry, but your browser doesn\'t support WebSockets.');
+
+        console.log('websocket connecting...');
+
+        var connection = new WebSocket(self.url.val);
+
+        connection.onerror = function (message)
+        {
+            self.connected.val=false;
+        };
+
+        connection.onclose = function (message)
+        {
+            self.connected.val=false;
+        };
+
+        connection.onopen = function (message)
+        {
+            self.connected.val=true;
+        };
+
+        connection.onmessage = function (message)
+        {
+            try
+            {
+                var json = JSON.parse(message.data);
+                self.result.val=json;
+                        
+            } catch (e) {
+                console.log('This doesn\'t look like a valid JSON: ', message.data);
+                return;
+            }
+        };
+    }
+
+    this.url.onValueChanged=connect;
+    setTimeout(checkConnection,1000);
+
+    this.url.val='ws://127.0.0.1:1337';
+};
+
+Ops.Net.Websocket.prototype = new Op();
+
+// -------------------------------------------------------------
+
+Ops.Json=Ops.Json || {};
+
+
+Ops.Json.jsonValue = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='jsonValue';
+    this.data=this.addInPort(new Port(this,"data"),OP_PORT_TYPE_OBJECT);
+    this.key=this.addInPort(new Port(this,"key"));
+    this.result=this.addOutPort(new Port(this,"result"));
+
+    this.data.onValueChanged=function()
+    {
+        self.result.val=self.data.val[self.key.val];
+    };
+
+};
+
+Ops.Json.jsonValue.prototype = new Op();
+
+
+
 
 // Ops.Ui.Comment = function()
 // {
@@ -3818,4 +3950,79 @@ Ops.Math.Compare.Equals.prototype = new Op();
 // };
 
 // Ops.Ui.Comment.prototype = new Op();
+
+
+
+Ops.Net=Ops.Net || {};
+
+Ops.Net.Websocket = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='Websocket';
+    this.url=this.addInPort(new Port(this,"url"));
+    this.result=this.addOutPort(new Port(this,"result"), OP_PORT_TYPE_OBJECT);
+    this.connected=this.addOutPort(new Port(this,"connected"));
+
+    function checkConnection()
+    {
+        if(self.connected.val===false)
+        {
+            self.url.onValueChanged();
+            setTimeout(checkConnection,500);
+        }
+        else
+        {
+            setTimeout(checkConnection,2000);
+        }
+    }
+
+    function connect()
+    {
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+     
+         if (!window.WebSocket)
+            console.error('Sorry, but your browser doesn\'t support WebSockets.');
+
+        console.log('websocket connecting...');
+
+        var connection = new WebSocket(self.url.val);
+
+        connection.onerror = function (message)
+        {
+            self.connected.val=false;
+        };
+
+        connection.onclose = function (message)
+        {
+            self.connected.val=false;
+        };
+
+        connection.onopen = function (message)
+        {
+            self.connected.val=true;
+        };
+
+        connection.onmessage = function (message)
+        {
+            try
+            {
+                var json = JSON.parse(message.data);
+                self.result.val=json;
+                        
+            } catch (e) {
+                console.log('This doesn\'t look like a valid JSON: ', message.data);
+                return;
+            }
+        };
+    }
+
+    this.url.onValueChanged=connect;
+    setTimeout(checkConnection,1000);
+
+    this.url.val='ws://127.0.0.1:1337';
+};
+
+Ops.Net.Websocket.prototype = new Op();
 

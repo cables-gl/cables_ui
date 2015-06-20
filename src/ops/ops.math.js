@@ -1,7 +1,7 @@
 
 // TODO: CLAMP!
 
-Ops.Math={};
+Ops.Math=Ops.Math || {};
 
 
 Ops.Math.Random = function()

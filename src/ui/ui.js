@@ -353,7 +353,6 @@ var line;
             if(event.which==3)return;
             if(event.which==2)return;
 
-            console.log('event',event);
 
             var pos=ui.getCanvasCoords(event.offsetX,event.offsetY);
 
@@ -381,7 +380,6 @@ var line;
             pos.y=pos.y-startMoveY;
 
 
-        console.log('thi',this.group);
         
             this.group.transform('t'+pos.x+','+pos.y);
             // this.group.translate(pos.x,pos.y);
