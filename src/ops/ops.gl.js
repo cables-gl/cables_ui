@@ -107,6 +107,36 @@ Ops.Gl.ClearDepth = function()
 
 Ops.Gl.ClearDepth.prototype = new Op();
 
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Wireframe = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Wireframe';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.lineWidth=this.addInPort(new Port(this,"lineWidth"));
+
+    this.render.onTriggered=function()
+    {
+        cgl.wireframe=true;
+        gl.lineWidth(self.lineWidth.val);
+        self.trigger.call();
+        cgl.wireframe=false;
+
+    };
+
+    this.lineWidth.val=2;
+};
+
+Ops.Gl.Wireframe.prototype = new Op();
+
+
 // --------------------------------------------------------------------------
 
     
@@ -231,164 +261,7 @@ Ops.Gl.Meshes.Plotter.prototype = new Op();
 // ----------------------------------------------------------------
 
 
-Ops.Gl.Shader={};
-
-Ops.Gl.Shader.BasicMaterial = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='BasicMaterial';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.doRender=function()
-    {
-        cgl.setShader(shader);
-
-        if(self.texture.val)
-        {
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, self.texture.val.tex);
-        }
-
-        self.trigger.call();
-
-        cgl.setPreviousShader();
-    };
-
-    var srcFrag=''+
-        'precision highp float;\n'+
-        '#ifdef HAS_TEXTURES\n'+
-        '  varying vec2 texCoord;\n'+
-        '  uniform sampler2D tex;\n'+
-        '#endif\n'+
-        'uniform float r;\n'+
-        'uniform float g;\n'+
-        'uniform float b;\n'+
-        'uniform float a;\n'+
-        '\n'+
-        'void main()\n'+
-        '{\n'+
-        'vec4 col=vec4(r,g,b,a);\n'+
-        '#ifdef HAS_TEXTURES\n'+
-        '   col=texture2D(tex,texCoord);\n'+
-        'col.a*=a;'.endl()+
-        '#endif\n'+
-        'gl_FragColor = col;\n'+
-        '}\n';
-
-
-    var shader=new CGL.Shader();
-    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
-
-    this.r=this.addInPort(new Port(this,"r"));
-    this.r.onValueChanged=function()
-    {
-        if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.val);
-        else self.r.uniform.setValue(self.r.val);
-    };
-
-    this.g=this.addInPort(new Port(this,"g"));
-    this.g.onValueChanged=function()
-    {
-        if(!self.g.uniform) self.g.uniform=new CGL.Uniform(shader,'f','g',self.g.val);
-        else self.g.uniform.setValue(self.g.val);
-    };
-
-    this.b=this.addInPort(new Port(this,"b"));
-    this.b.onValueChanged=function()
-    {
-        if(!self.b.uniform) self.b.uniform=new CGL.Uniform(shader,'f','b',self.b.val);
-        else self.b.uniform.setValue(self.b.val);
-    };
-
-    this.a=this.addInPort(new Port(this,"a"));
-    this.a.onValueChanged=function()
-    {
-        if(!self.a.uniform) self.a.uniform=new CGL.Uniform(shader,'f','a',self.a.val);
-        else self.a.uniform.setValue(self.a.val);
-    };
-
-    this.r.val=Math.random();
-    this.g.val=Math.random();
-    this.b.val=Math.random();
-    this.a.val=1.0;
-
-
-    this.render.onTriggered=this.doRender;
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
-    this.textureUniform=null;
-
-    this.texture.onValueChanged=function()
-    {
-        if(self.texture.val)
-        {
-            if(self.textureUniform!==null)return;
-            console.log('TEXTURE ADDED');
-            shader.removeUniform('tex');
-            self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
-        }
-        else
-        {
-            console.log('TEXTURE REMOVED');
-            shader.removeUniform('tex');
-            self.textureUniform=null;
-        }
-    };
-
-    this.doRender();
-};
-
-Ops.Gl.Shader.BasicMaterial.prototype = new Op();
-
-
-
-
-// --------------------------------------------------------------------------
-
-
-Ops.Gl.Shader.ShowNormalsMaterial = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='ShowNormalsMaterial';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.doRender=function()
-    {
-        cgl.setShader(shader);
-
-        self.trigger.call();
-
-        cgl.setPreviousShader();
-    };
-
-    var srcFrag=''+
-        'precision highp float;\n'+
-        'varying vec3 norm;\n'+
-        '\n'+
-        'void main()\n'+
-        '{\n'+
-        'vec4 col=vec4(norm.x,norm.y,norm.z,1.0);\n'+
-        'gl_FragColor = col;\n'+
-        '}\n';
-
-
-    var shader=new CGL.Shader();
-    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
-
-    this.render.onTriggered=this.doRender;
-
-    this.doRender();
-};
-
-Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
-
-
-// --------------------------------------------------------------------------
+Ops.Gl.Shader= Ops.Gl.Shader || {};
 
 Ops.Gl.Shader.Schwurbel = function()
 {

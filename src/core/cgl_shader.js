@@ -39,7 +39,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
             if(loc==-1) console.log('texture loc unknown!!');
         }
 
-        gl.uniform1i(loc, 0);
+        gl.uniform1i(loc, value);
     };
 
     this.setValueT=function(v)
@@ -70,7 +70,37 @@ CGL.Shader=function()
     var self=this;
     var program=false;
     var uniforms=[];
+    var defines=[];
     var needsRecompile=true;
+
+
+
+    this.define=function(name,value)
+    {
+        if(!value)value='';
+        for(var i in defines)
+        {
+            if(defines[i][0]==name)
+            {
+                defines[i][1]=value;
+                return;
+            }
+        }
+        defines.push([name,value]);
+    };
+
+    this.removeDefine=function(name,value)
+    {
+        for(var i in defines)
+        {
+            if(defines[i][0]==name)
+            {
+                defines.splice(i,1);
+                return;
+            }
+        }
+    };
+
 
     this.removeUniform=function(name)
     {
@@ -153,14 +183,20 @@ CGL.Shader=function()
 
     this.compile=function()
     {
-        var defines='';
-        if(self.hasTextureUniforms()) defines+='#define HAS_TEXTURES'.endl();
+        var definesStr='';
+
+        for(var i in defines)
+        {
+            definesStr+='#define '+defines[i][0]+' '+defines[i][1]+''.endl();
+        }
+
+        if(self.hasTextureUniforms()) definesStr+='#define HAS_TEXTURES'.endl();
 
         console.log('shader compile...');
         console.log('has textures: '+self.hasTextureUniforms() );
 
-        var vs=defines+self.srcVert;
-        var fs=defines+self.srcFrag;
+        var vs=definesStr+self.srcVert;
+        var fs=definesStr+self.srcFrag;
 
         if(!program)
         {
@@ -188,6 +224,9 @@ CGL.Shader=function()
     this.bind=function()
     {
         if(!program || needsRecompile) self.compile();
+
+       
+
 
         if(mvMatrixUniform==-1)
         {

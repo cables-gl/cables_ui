@@ -57,6 +57,7 @@ console.log('bufVertexNormals.'+bufVertexNormals.numItems);
 
     this.render=function(shader)
     {
+        if(!shader) return;
         shader.bind();
 
         GL.enableVertexAttribArray(shader.getAttrVertexPos());
@@ -79,7 +80,11 @@ console.log('bufVertexNormals.'+bufVertexNormals.numItems);
         }
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
-        gl.drawElements(gl.TRIANGLES, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
+
+        var what=gl.TRIANGLES;
+        if(cgl.wireframe)what=gl.LINES;
+
+        gl.drawElements(what, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
     };
 
 };

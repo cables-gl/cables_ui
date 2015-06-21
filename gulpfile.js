@@ -74,7 +74,7 @@ gulp.task('sass', function() {
 
 
 gulp.task('watch', function() {
-    gulp.watch('src/**/*.js', ['lint','scripts_core','scripts_ui']);
+    gulp.watch('src/**/*.js', ['scripts_core','scripts_ui']);
     gulp.watch('scss/*.scss', ['sass']);
     gulp.watch('html/**/*.html', ['html_ui']);
 });

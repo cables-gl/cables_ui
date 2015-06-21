@@ -20,6 +20,7 @@ CGL.State=function()
     this.canvasWidth=640;
     this.canvasHeight=360;
 
+    this.wireframe=false;
 
 
     this.beginFrame=function()

@@ -57,6 +57,7 @@ console.log('bufVertexNormals.'+bufVertexNormals.numItems);
 
     this.render=function(shader)
     {
+        if(!shader) return;
         shader.bind();
 
         GL.enableVertexAttribArray(shader.getAttrVertexPos());
@@ -79,7 +80,11 @@ console.log('bufVertexNormals.'+bufVertexNormals.numItems);
         }
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
-        gl.drawElements(gl.TRIANGLES, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
+
+        var what=gl.TRIANGLES;
+        if(cgl.wireframe)what=gl.LINES;
+
+        gl.drawElements(what, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
     };
 
 };
@@ -277,7 +282,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
             if(loc==-1) console.log('texture loc unknown!!');
         }
 
-        gl.uniform1i(loc, 0);
+        gl.uniform1i(loc, value);
     };
 
     this.setValueT=function(v)
@@ -308,7 +313,37 @@ CGL.Shader=function()
     var self=this;
     var program=false;
     var uniforms=[];
+    var defines=[];
     var needsRecompile=true;
+
+
+
+    this.define=function(name,value)
+    {
+        if(!value)value='';
+        for(var i in defines)
+        {
+            if(defines[i][0]==name)
+            {
+                defines[i][1]=value;
+                return;
+            }
+        }
+        defines.push([name,value]);
+    };
+
+    this.removeDefine=function(name,value)
+    {
+        for(var i in defines)
+        {
+            if(defines[i][0]==name)
+            {
+                defines.splice(i,1);
+                return;
+            }
+        }
+    };
+
 
     this.removeUniform=function(name)
     {
@@ -391,14 +426,20 @@ CGL.Shader=function()
 
     this.compile=function()
     {
-        var defines='';
-        if(self.hasTextureUniforms()) defines+='#define HAS_TEXTURES'.endl();
+        var definesStr='';
+
+        for(var i in defines)
+        {
+            definesStr+='#define '+defines[i][0]+' '+defines[i][1]+''.endl();
+        }
+
+        if(self.hasTextureUniforms()) definesStr+='#define HAS_TEXTURES'.endl();
 
         console.log('shader compile...');
         console.log('has textures: '+self.hasTextureUniforms() );
 
-        var vs=defines+self.srcVert;
-        var fs=defines+self.srcFrag;
+        var vs=definesStr+self.srcVert;
+        var fs=definesStr+self.srcFrag;
 
         if(!program)
         {
@@ -426,6 +467,9 @@ CGL.Shader=function()
     this.bind=function()
     {
         if(!program || needsRecompile) self.compile();
+
+       
+
 
         if(mvMatrixUniform==-1)
         {
@@ -529,6 +573,7 @@ CGL.State=function()
     this.canvasWidth=640;
     this.canvasHeight=360;
 
+    this.wireframe=false;
 
 
     this.beginFrame=function()
@@ -613,11 +658,11 @@ CGL.Texture=function()
     // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([111, 111, 111, 255]));
     // gl.bindTexture(gl.TEXTURE_2D, null);
 
-    this.bind=function(slot)
-    {
-        gl.activeTexture(gl.TEXTURE0+slot);
-        gl.bindTexture(gl.TEXTURE_2D, self.tex);
-    };
+    // this.bind=function(slot)
+    // {
+    //     gl.activeTexture(gl.TEXTURE0+slot);
+    //     gl.bindTexture(gl.TEXTURE_2D, self.tex);
+    // };
 
     this.setSize=function(w,h)
     {
@@ -2105,6 +2150,36 @@ Ops.Gl.ClearDepth = function()
 
 Ops.Gl.ClearDepth.prototype = new Op();
 
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Wireframe = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Wireframe';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.lineWidth=this.addInPort(new Port(this,"lineWidth"));
+
+    this.render.onTriggered=function()
+    {
+        cgl.wireframe=true;
+        gl.lineWidth(self.lineWidth.val);
+        self.trigger.call();
+        cgl.wireframe=false;
+
+    };
+
+    this.lineWidth.val=2;
+};
+
+Ops.Gl.Wireframe.prototype = new Op();
+
+
 // --------------------------------------------------------------------------
 
     
@@ -2229,164 +2304,7 @@ Ops.Gl.Meshes.Plotter.prototype = new Op();
 // ----------------------------------------------------------------
 
 
-Ops.Gl.Shader={};
-
-Ops.Gl.Shader.BasicMaterial = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='BasicMaterial';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.doRender=function()
-    {
-        cgl.setShader(shader);
-
-        if(self.texture.val)
-        {
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, self.texture.val.tex);
-        }
-
-        self.trigger.call();
-
-        cgl.setPreviousShader();
-    };
-
-    var srcFrag=''+
-        'precision highp float;\n'+
-        '#ifdef HAS_TEXTURES\n'+
-        '  varying vec2 texCoord;\n'+
-        '  uniform sampler2D tex;\n'+
-        '#endif\n'+
-        'uniform float r;\n'+
-        'uniform float g;\n'+
-        'uniform float b;\n'+
-        'uniform float a;\n'+
-        '\n'+
-        'void main()\n'+
-        '{\n'+
-        'vec4 col=vec4(r,g,b,a);\n'+
-        '#ifdef HAS_TEXTURES\n'+
-        '   col=texture2D(tex,texCoord);\n'+
-        'col.a*=a;'.endl()+
-        '#endif\n'+
-        'gl_FragColor = col;\n'+
-        '}\n';
-
-
-    var shader=new CGL.Shader();
-    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
-
-    this.r=this.addInPort(new Port(this,"r"));
-    this.r.onValueChanged=function()
-    {
-        if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.val);
-        else self.r.uniform.setValue(self.r.val);
-    };
-
-    this.g=this.addInPort(new Port(this,"g"));
-    this.g.onValueChanged=function()
-    {
-        if(!self.g.uniform) self.g.uniform=new CGL.Uniform(shader,'f','g',self.g.val);
-        else self.g.uniform.setValue(self.g.val);
-    };
-
-    this.b=this.addInPort(new Port(this,"b"));
-    this.b.onValueChanged=function()
-    {
-        if(!self.b.uniform) self.b.uniform=new CGL.Uniform(shader,'f','b',self.b.val);
-        else self.b.uniform.setValue(self.b.val);
-    };
-
-    this.a=this.addInPort(new Port(this,"a"));
-    this.a.onValueChanged=function()
-    {
-        if(!self.a.uniform) self.a.uniform=new CGL.Uniform(shader,'f','a',self.a.val);
-        else self.a.uniform.setValue(self.a.val);
-    };
-
-    this.r.val=Math.random();
-    this.g.val=Math.random();
-    this.b.val=Math.random();
-    this.a.val=1.0;
-
-
-    this.render.onTriggered=this.doRender;
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
-    this.textureUniform=null;
-
-    this.texture.onValueChanged=function()
-    {
-        if(self.texture.val)
-        {
-            if(self.textureUniform!==null)return;
-            console.log('TEXTURE ADDED');
-            shader.removeUniform('tex');
-            self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
-        }
-        else
-        {
-            console.log('TEXTURE REMOVED');
-            shader.removeUniform('tex');
-            self.textureUniform=null;
-        }
-    };
-
-    this.doRender();
-};
-
-Ops.Gl.Shader.BasicMaterial.prototype = new Op();
-
-
-
-
-// --------------------------------------------------------------------------
-
-
-Ops.Gl.Shader.ShowNormalsMaterial = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='ShowNormalsMaterial';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.doRender=function()
-    {
-        cgl.setShader(shader);
-
-        self.trigger.call();
-
-        cgl.setPreviousShader();
-    };
-
-    var srcFrag=''+
-        'precision highp float;\n'+
-        'varying vec3 norm;\n'+
-        '\n'+
-        'void main()\n'+
-        '{\n'+
-        'vec4 col=vec4(norm.x,norm.y,norm.z,1.0);\n'+
-        'gl_FragColor = col;\n'+
-        '}\n';
-
-
-    var shader=new CGL.Shader();
-    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
-
-    this.render.onTriggered=this.doRender;
-
-    this.doRender();
-};
-
-Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
-
-
-// --------------------------------------------------------------------------
+Ops.Gl.Shader= Ops.Gl.Shader || {};
 
 Ops.Gl.Shader.Schwurbel = function()
 {
@@ -2806,6 +2724,214 @@ Ops.Gl.Render2Texture = function()
 };
 
 Ops.Gl.Render2Texture.prototype = new Op();
+
+
+
+Ops.Gl.Shader= Ops.Gl.Shader || {};
+
+// --------------------------------------------------------------------------
+
+
+Ops.Gl.Shader.ShowNormalsMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='ShowNormalsMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
+        self.trigger.call();
+        cgl.setPreviousShader();
+    };
+
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'varying vec3 norm;'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(norm.x,norm.y,norm.z,1.0);'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
+
+
+    var shader=new CGL.Shader();
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+    this.render.onTriggered=this.doRender;
+    this.doRender();
+};
+
+Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+
+
+
+Ops.Gl.Shader.BasicMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='BasicMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
+
+        if(self.texture.val)
+        {
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, self.texture.val.tex);
+        }
+
+        if(self.textureOpacity.val)
+        {
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, self.textureOpacity.val.tex);
+        }
+
+        self.trigger.call();
+
+
+        cgl.setPreviousShader();
+    };
+
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'#ifdef HAS_TEXTURES'
+        .endl()+'   varying vec2 texCoord;'
+        .endl()+'   #ifdef HAS_TEXTURE_DIFFUSE'
+        .endl()+'       uniform sampler2D tex;'
+        .endl()+'   #endif'
+        .endl()+'   #ifdef HAS_TEXTURE_OPACITY'
+        .endl()+'       uniform sampler2D texOpacity;'
+        .endl()+'   #endif'
+        .endl()+'#endif'
+        .endl()+'uniform float r;'
+        .endl()+'uniform float g;'
+        .endl()+'uniform float b;'
+        .endl()+'uniform float a;'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(r,g,b,a);'
+        .endl()+'   #ifdef HAS_TEXTURES'
+        .endl()+'      #ifdef HAS_TEXTURE_DIFFUSE'
+        .endl()+'           col=texture2D(tex,texCoord);'
+        .endl()+'       #endif'
+        .endl()+'      #ifdef HAS_TEXTURE_OPACITY'
+        .endl()+'           col.a*=texture2D(texOpacity,texCoord).g;'
+        .endl()+'       #endif'
+        .endl()+'       col.a*=a;'
+        .endl()+'   #endif'
+        .endl()+'gl_FragColor = col;'
+        .endl()+'}';
+
+
+    var shader=new CGL.Shader();
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+    this.r=this.addInPort(new Port(this,"r"));
+    this.r.onValueChanged=function()
+    {
+        if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.val);
+        else self.r.uniform.setValue(self.r.val);
+    };
+
+    this.g=this.addInPort(new Port(this,"g"));
+    this.g.onValueChanged=function()
+    {
+        if(!self.g.uniform) self.g.uniform=new CGL.Uniform(shader,'f','g',self.g.val);
+        else self.g.uniform.setValue(self.g.val);
+    };
+
+    this.b=this.addInPort(new Port(this,"b"));
+    this.b.onValueChanged=function()
+    {
+        if(!self.b.uniform) self.b.uniform=new CGL.Uniform(shader,'f','b',self.b.val);
+        else self.b.uniform.setValue(self.b.val);
+    };
+
+    this.a=this.addInPort(new Port(this,"a"));
+    this.a.onValueChanged=function()
+    {
+        if(!self.a.uniform) self.a.uniform=new CGL.Uniform(shader,'f','a',self.a.val);
+        else self.a.uniform.setValue(self.a.val);
+    };
+
+    this.r.val=Math.random();
+    this.g.val=Math.random();
+    this.b.val=Math.random();
+    this.a.val=1.0;
+
+
+    this.render.onTriggered=this.doRender;
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.textureUniform=null;
+
+    this.texture.onValueChanged=function()
+    {
+        if(self.texture.val)
+        {
+            if(self.textureUniform!==null)return;
+            console.log('TEXTURE ADDED');
+            shader.removeUniform('tex');
+            shader.define('HAS_TEXTURE_DIFFUSE');
+            self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
+        }
+        else
+        {
+            console.log('TEXTURE REMOVED');
+            shader.removeUniform('tex');
+            shader.removeDefine('HAS_TEXTURE_DIFFUSE');
+            self.textureUniform=null;
+        }
+    };
+
+
+
+    this.textureOpacity=this.addInPort(new Port(this,"textureOpacity",OP_PORT_TYPE_TEXTURE));
+    this.textureOpacityUniform=null;
+
+    this.textureOpacity.onValueChanged=function()
+    {
+        if(self.textureOpacity.val)
+        {
+            if(self.textureOpacityUniform!==null)return;
+            console.log('TEXTURE OPACITY ADDED');
+            shader.removeUniform('texOpacity');
+            shader.define('HAS_TEXTURE_OPACITY');
+            self.textureOpacityUniform=new CGL.Uniform(shader,'t','texOpacity',1);
+        }
+        else
+        {
+            console.log('TEXTURE OPACITY REMOVED');
+            shader.removeUniform('texOpacity');
+            shader.removeDefine('HAS_TEXTURE_OPACITY');
+            self.textureOpacityUniform=null;
+        }
+    };
+
+
+
+    this.doRender();
+};
+
+Ops.Gl.Shader.BasicMaterial.prototype = new Op();
+
+
+
+
+
+// --------------------------------------------------------------------------
 
 
 
@@ -3505,7 +3631,79 @@ Ops.Anim.RelativeTime = function()
 Ops.Anim.RelativeTime.prototype = new Op();
 
 
+// --------------------------------------------------------------------------
+
+
+Ops.Anim.TimeDiff = function()
+{
+    Op.apply(this, arguments);
+
+    this.name='TimeDiff';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.result=this.addOutPort(new Port(this,"result"));
+
+    var self=this;
+    var lastTime=Date.now();
+
+    this.exe.onTriggered=function()
+    {
+        self.result.val=(Date.now()-lastTime);
+        lastTime=Date.now();
+        self.trigger.call();
+    };
+
+    this.exe.onTriggered();
+
+};
+
+Ops.Anim.TimeDiff.prototype = new Op();
+
+
+
 // ---------------------------------------------------------------------------
+
+var cableVars={};
+
+Ops.Anim.Variable = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='Variable';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+
+    this.varName=this.addInPort(new Port(this,"name"));
+    this.val=this.addInPort(new Port(this,"value"));
+
+    this.result=this.addOutPort(new Port(this,"result"));
+
+
+    function changed()
+    {
+        cableVars[self.varName.val]=self.val.val;
+        self.result.val=self.val.val;
+    }
+
+    function readValue()
+    {
+        self.val.val=cableVars[self.varName.val];
+    }
+
+    this.val.onValueChanged=changed;
+    this.varName.onValueChanged=changed;
+    this.exe.onTriggered=readValue;
+
+};
+
+Ops.Anim.Variable.prototype = new Op();
+
+// ---------------------------------------------------------------------------
+
+
+
+
+
 
 
 
