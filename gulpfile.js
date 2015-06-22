@@ -1,6 +1,3 @@
-
-
-
 var gulp = require('gulp');
 
 
