@@ -197,6 +197,55 @@ Ops.Gl.Texture = function()
 Ops.Gl.Texture.prototype = new Op();
 
 // --------------------------------------------------------------------------
+
+Ops.Gl.TextureText = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='TextureText';
+    this.text=this.addInPort(new Port(this,"text"));
+    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    
+    var canvas = document.createElement('canvas');
+    canvas.id     = "hiddenCanvas";
+    canvas.width  = 512;
+    canvas.height = 512;
+    canvas.style.display   = "none";
+    var body = document.getElementsByTagName("body")[0];
+    body.appendChild(canvas);
+
+    var fontImage = document.getElementById('hiddenCanvas');
+
+
+    this.text.onValueChanged=function()
+    {
+        console.log('generate text texture');
+                
+        var ctx = fontImage.getContext('2d');
+        ctx.beginPath();
+        ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.fillStyle = 'rgba(255,255,255,250)';
+        ctx.fill();
+        ctx.fillStyle = 'black';
+        ctx.font = "85px Arial";
+        ctx.textAlign = 'center';
+        ctx.fillText(self.text.val, ctx.canvas.width / 2, ctx.canvas.height / 2);
+        ctx.restore();
+
+        if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);
+            else self.textureOut.val=new CGL.Texture.fromImage(fontImage);
+    };
+
+    this.text.val='cables';
+    
+
+};
+
+Ops.Gl.TextureText.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
 Ops.Gl.Meshes=Ops.Gl.Meshes || {};
 Ops.Gl.Meshes.Plotter = function()
 {

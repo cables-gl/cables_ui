@@ -6,6 +6,7 @@ CGL.Texture=function()
     this.tex = gl.createTexture();
     this.width=0;
     this.height=0;
+    this.flip=false;
 
     // gl.bindTexture(gl.TEXTURE_2D, this.tex);
     // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([111, 111, 111, 255]));
@@ -55,7 +56,7 @@ CGL.Texture=function()
 
 
         gl.bindTexture(gl.TEXTURE_2D, self.tex);
-        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        if(this.flip) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.image);
 
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -85,5 +86,16 @@ CGL.Texture.load=function(url,finishedCallback)
     texture.image.src = url;
     return texture;
 };
+
+
+CGL.Texture.fromImage=function(img)
+{
+    var texture=new CGL.Texture();
+    texture.flip=true;
+    texture.image = img;
+    texture.initTexture(img);
+    return texture;
+};
+
 
 // ---------------------------------------------------------------------------
