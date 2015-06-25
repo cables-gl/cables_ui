@@ -2271,18 +2271,12 @@ Ops.Gl.TextureText = function()
     body.appendChild(canvas);
 
     var fontImage = document.getElementById('hiddenCanvas');
-
+    var ctx = fontImage.getContext('2d');
 
     this.text.onValueChanged=function()
     {
-        console.log('generate text texture');
-                
-        var ctx = fontImage.getContext('2d');
-        ctx.beginPath();
-        ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = 'rgba(255,255,255,250)';
-        ctx.fill();
-        ctx.fillStyle = 'black';
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = 'white';
         ctx.font = "85px Arial";
         ctx.textAlign = 'center';
         ctx.fillText(self.text.val, ctx.canvas.width / 2, ctx.canvas.height / 2);
@@ -2293,8 +2287,6 @@ Ops.Gl.TextureText = function()
     };
 
     this.text.val='cables';
-    
-
 };
 
 Ops.Gl.TextureText.prototype = new Op();
