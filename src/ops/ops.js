@@ -339,9 +339,7 @@ Ops.Anim.Variable = function()
 
     this.varName=this.addInPort(new Port(this,"name"));
     this.val=this.addInPort(new Port(this,"value"));
-
     this.result=this.addOutPort(new Port(this,"result"));
-
 
     function changed()
     {
@@ -365,6 +363,31 @@ Ops.Anim.Variable.prototype = new Op();
 // ---------------------------------------------------------------------------
 
 
+Ops.String=Ops.String || {};
+
+Ops.String.concat = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='concat';
+    this.result=this.addOutPort(new Port(this,"result"));
+    this.string1=this.addInPort(new Port(this,"string1"));
+    this.string2=this.addInPort(new Port(this,"string2"));
+
+    this.exec= function()
+    {
+        self.result.val=self.string1.val+self.string2.val;
+    };
+
+    this.string1.onValueChanged=this.exec;
+    this.string2.onValueChanged=this.exec;
+
+    this.string1.val='wurst';
+    this.string2.val='tuete';
+};
+
+Ops.String.concat.prototype = new Op();
 
 
 

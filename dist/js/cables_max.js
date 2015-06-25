@@ -2260,8 +2260,15 @@ Ops.Gl.TextureText = function()
 
     this.name='TextureText';
     this.text=this.addInPort(new Port(this,"text"));
+    this.fontSize=this.addInPort(new Port(this,"fontSize"));
+    this.align=this.addInPort(new Port(this,"align"));
+    this.font=this.addInPort(new Port(this,"font"));
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
     
+    this.fontSize.val=30;
+    this.font.val='Arial';
+    this.align.val='center';
+
     var canvas = document.createElement('canvas');
     canvas.id     = "hiddenCanvas";
     canvas.width  = 512;
@@ -2273,19 +2280,26 @@ Ops.Gl.TextureText = function()
     var fontImage = document.getElementById('hiddenCanvas');
     var ctx = fontImage.getContext('2d');
 
-    this.text.onValueChanged=function()
+    function refresh()
     {
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.fillStyle = 'white';
-        ctx.font = "85px Arial";
-        ctx.textAlign = 'center';
-        ctx.fillText(self.text.val, ctx.canvas.width / 2, ctx.canvas.height / 2);
+        ctx.font = self.fontSize.val+"px "+self.font.val;
+        ctx.textAlign = self.align.val;
+        if(self.align.val=='center') ctx.fillText(self.text.val, ctx.canvas.width / 2, ctx.canvas.height / 2);
+        if(self.align.val=='left') ctx.fillText(self.text.val, 0, ctx.canvas.height / 2);
+        if(self.align.val=='right') ctx.fillText(self.text.val, ctx.canvas.width, ctx.canvas.height / 2);
         ctx.restore();
 
         if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);
             else self.textureOut.val=new CGL.Texture.fromImage(fontImage);
-    };
+    }
 
+
+    this.align.onValueChanged=refresh;
+    this.text.onValueChanged=refresh;
+    this.fontSize.onValueChanged=refresh;
+    this.font.onValueChanged=refresh;
     this.text.val='cables';
 };
 
@@ -3728,9 +3742,7 @@ Ops.Anim.Variable = function()
 
     this.varName=this.addInPort(new Port(this,"name"));
     this.val=this.addInPort(new Port(this,"value"));
-
     this.result=this.addOutPort(new Port(this,"result"));
-
 
     function changed()
     {
@@ -3754,6 +3766,31 @@ Ops.Anim.Variable.prototype = new Op();
 // ---------------------------------------------------------------------------
 
 
+Ops.String=Ops.String || {};
+
+Ops.String.concat = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='concat';
+    this.result=this.addOutPort(new Port(this,"result"));
+    this.string1=this.addInPort(new Port(this,"string1"));
+    this.string2=this.addInPort(new Port(this,"string2"));
+
+    this.exec= function()
+    {
+        self.result.val=self.string1.val+self.string2.val;
+    };
+
+    this.string1.onValueChanged=this.exec;
+    this.string2.onValueChanged=this.exec;
+
+    this.string1.val='wurst';
+    this.string2.val='tuete';
+};
+
+Ops.String.concat.prototype = new Op();
 
 
 
