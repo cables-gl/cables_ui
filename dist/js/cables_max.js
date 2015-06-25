@@ -83,6 +83,7 @@ console.log('bufVertexNormals.'+bufVertexNormals.numItems);
 
         var what=gl.TRIANGLES;
         if(cgl.wireframe)what=gl.LINES;
+        else if(cgl.points)what=gl.POINTS;
 
         gl.drawElements(what, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
     };
@@ -574,6 +575,7 @@ CGL.State=function()
     this.canvasHeight=360;
 
     this.wireframe=false;
+    this.points=false;
 
 
     this.beginFrame=function()
@@ -2194,6 +2196,34 @@ Ops.Gl.Wireframe.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
+Ops.Gl.Points = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Points';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.pointSize=this.addInPort(new Port(this,"pointSize"));
+
+    this.render.onTriggered=function()
+    {
+        cgl.points=true;
+        // gl.pointSize(self.pointSize.val);
+        self.trigger.call();
+        cgl.points=false;
+
+    };
+
+    this.pointSize.val=5;
+};
+
+Ops.Gl.Points.prototype = new Op();
+
+
+
+// --------------------------------------------------------------------------
+
     
 Ops.Gl.TextureEmpty = function()
 {
@@ -2552,6 +2582,68 @@ Ops.Gl.Matrix.Scale = function()
 };
 
 Ops.Gl.Matrix.Scale.prototype = new Op();
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Matrix.LookatCamera = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='LookatCamera';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.centerX=this.addInPort(new Port(this,"centerX"));
+    this.centerY=this.addInPort(new Port(this,"centerY"));
+    this.centerZ=this.addInPort(new Port(this,"centerZ"));
+
+    this.eyeX=this.addInPort(new Port(this,"eyeX"));
+    this.eyeY=this.addInPort(new Port(this,"eyeY"));
+    this.eyeZ=this.addInPort(new Port(this,"eyeZ"));
+
+    this.vecUpX=this.addInPort(new Port(this,"upX"));
+    this.vecUpY=this.addInPort(new Port(this,"upY"));
+    this.vecUpZ=this.addInPort(new Port(this,"upZ"));
+
+    this.centerX.val=0;
+    this.centerY.val=0;
+    this.centerZ.val=0;
+
+    this.eyeX.val=5;
+    this.eyeY.val=5;
+    this.eyeZ.val=5;
+
+    this.vecUpX.val=0;
+    this.vecUpY.val=1;
+    this.vecUpZ.val=0;
+
+    
+    var vUp=vec3.create();
+    var vEye=vec3.create();
+    var vCenter=vec3.create();
+    var transMatrix = mat4.create();
+    mat4.identity(transMatrix);
+
+    this.render.onTriggered=function()
+    {
+        cgl.pushMvMatrix();
+
+        vec3.set(vUp, self.vecUpX.val,self.vecUpY.val,self.vecUpZ.val);
+        vec3.set(vEye, self.eyeX.val,self.eyeY.val,self.eyeZ.val);
+        vec3.set(vCenter, self.centerX.val,self.centerY.val,self.centerZ.val);
+
+        mat4.lookAt(cgl.mvMatrix, vEye, vCenter, vUp);
+        self.trigger.call();
+        cgl.popMvMatrix();
+    };
+
+};
+
+Ops.Gl.Matrix.LookatCamera.prototype = new Op();
+
 
 // --------------------------------------------------------------------------
 

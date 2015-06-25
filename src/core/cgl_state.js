@@ -21,6 +21,7 @@ CGL.State=function()
     this.canvasHeight=360;
 
     this.wireframe=false;
+    this.points=false;
 
 
     this.beginFrame=function()

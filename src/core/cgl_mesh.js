@@ -83,6 +83,7 @@ console.log('bufVertexNormals.'+bufVertexNormals.numItems);
 
         var what=gl.TRIANGLES;
         if(cgl.wireframe)what=gl.LINES;
+        else if(cgl.points)what=gl.POINTS;
 
         gl.drawElements(what, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
     };
