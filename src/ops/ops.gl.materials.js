@@ -97,8 +97,13 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'   vec4 col=vec4(r,g,b,a);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'      #ifdef HAS_TEXTURE_DIFFUSE'
-        .endl()+'           col=texture2D(tex,texCoord);'
-        .endl()+'       #endif'
+        .endl()+'          col=texture2D(tex,texCoord);'
+        .endl()+'           #ifdef COLORIZE_TEXTURE'
+        .endl()+'               col.r*=r;'
+        .endl()+'               col.g*=g;'
+        .endl()+'               col.b*=b;'
+        .endl()+'           #endif'
+        .endl()+'      #endif'
         .endl()+'      #ifdef HAS_TEXTURE_OPACITY'
         .endl()+'           col.a*=texture2D(texOpacity,texCoord).g;'
         .endl()+'       #endif'
@@ -132,7 +137,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         else self.b.uniform.setValue(self.b.val);
     };
 
-    this.a=this.addInPort(new Port(this,"a"));
+    this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.a.onValueChanged=function()
     {
         if(!self.a.uniform) self.a.uniform=new CGL.Uniform(shader,'f','a',self.a.val);
@@ -144,13 +149,13 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.b.val=Math.random();
     this.a.val=1.0;
 
-
     this.render.onTriggered=this.doRender;
     this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
     this.textureUniform=null;
 
     this.texture.onValueChanged=function()
     {
+
         if(self.texture.val)
         {
             if(self.textureUniform!==null)return;
@@ -167,8 +172,6 @@ Ops.Gl.Shader.BasicMaterial = function()
             self.textureUniform=null;
         }
     };
-
-
 
     this.textureOpacity=this.addInPort(new Port(this,"textureOpacity",OP_PORT_TYPE_TEXTURE));
     this.textureOpacityUniform=null;
@@ -192,11 +195,17 @@ Ops.Gl.Shader.BasicMaterial = function()
         }
     };
 
+    this.colorizeTexture=this.addInPort(new Port(this,"colorizeTexture",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.colorizeTexture.val=false;
+    this.colorizeTexture.onValueChanged=function()
+    {
+        console.log('change'+self.colorizeTexture.val);
 
-        this.colorizeTexture=this.addInPort(new Port(this,"colorizeTexture",OP_PORT_TYPE_FUNCTION,
-        { display:'bool' }
-        ));
-        this.colorizeTexture.val=false;
+        if(self.colorizeTexture.val=='true')
+            shader.define('COLORIZE_TEXTURE');
+        else
+            shader.removeDefine('COLORIZE_TEXTURE');
+    };
 
     this.doRender();
 };

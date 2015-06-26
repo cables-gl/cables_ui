@@ -95,4 +95,4 @@ gulp.task('watch', function() {
 });
 
 
-gulp.task('default', ['lint','html_ui','scripts_core','scripts_libs','scripts_ui','sass','watch']);
+gulp.task('default', ['lint','html_ui','scripts_core','scripts_libs','scripts_ops','scripts_ui','sass','watch']);

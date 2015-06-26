@@ -7,6 +7,7 @@ CABLES.togglePortValBool=function(which)
     var bool_value = $('#'+which).val() == 'true';
     bool_value=!bool_value;
     $('#'+which).val(bool_value);
+    $('#'+which).trigger('input');
 };
 
 

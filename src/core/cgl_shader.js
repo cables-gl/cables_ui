@@ -83,10 +83,13 @@ CGL.Shader=function()
             if(defines[i][0]==name)
             {
                 defines[i][1]=value;
+                needsRecompile=true;
                 return;
             }
         }
         defines.push([name,value]);
+        needsRecompile=true;
+        
     };
 
     this.removeDefine=function(name,value)
@@ -96,9 +99,11 @@ CGL.Shader=function()
             if(defines[i][0]==name)
             {
                 defines.splice(i,1);
+                needsRecompile=true;
                 return;
             }
         }
+
     };
 
 
