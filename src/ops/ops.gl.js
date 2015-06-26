@@ -69,9 +69,9 @@ Ops.Gl.ClearColor = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    this.r=this.addInPort(new Port(this,"r"));
-    this.g=this.addInPort(new Port(this,"g"));
-    this.b=this.addInPort(new Port(this,"b"));
+    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
 
     this.r.val=0.3;
     this.g.val=0.3;

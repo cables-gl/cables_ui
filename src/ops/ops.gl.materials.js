@@ -51,7 +51,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     var self=this;
 
     this.name='BasicMaterial';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION) );
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     this.doRender=function()
@@ -111,21 +111,21 @@ Ops.Gl.Shader.BasicMaterial = function()
     var shader=new CGL.Shader();
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
-    this.r=this.addInPort(new Port(this,"r"));
+    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.r.onValueChanged=function()
     {
         if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.val);
         else self.r.uniform.setValue(self.r.val);
     };
 
-    this.g=this.addInPort(new Port(this,"g"));
+    this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.g.onValueChanged=function()
     {
         if(!self.g.uniform) self.g.uniform=new CGL.Uniform(shader,'f','g',self.g.val);
         else self.g.uniform.setValue(self.g.val);
     };
 
-    this.b=this.addInPort(new Port(this,"b"));
+    this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.b.onValueChanged=function()
     {
         if(!self.b.uniform) self.b.uniform=new CGL.Uniform(shader,'f','b',self.b.val);
@@ -193,6 +193,10 @@ Ops.Gl.Shader.BasicMaterial = function()
     };
 
 
+        this.colorizeTexture=this.addInPort(new Port(this,"colorizeTexture",OP_PORT_TYPE_FUNCTION,
+        { display:'bool' }
+        ));
+        this.colorizeTexture.val=false;
 
     this.doRender();
 };

@@ -118,7 +118,7 @@ var Op = function()
 
 // ------------------------------------------------------------------------------------
 
-var Port=function(parent,name,type)
+var Port=function(parent,name,type,uiAttribs)
 {
     var self=this;
     this.direction=PORT_DIR_IN;
@@ -128,6 +128,7 @@ var Port=function(parent,name,type)
     this.value=null;
     this.name=name;
     this.type=type || OP_PORT_TYPE_VALUE;
+    this.uiAttribs=uiAttribs;
     var valueBeforeLink=null;
 
     this.__defineGetter__("val", function()

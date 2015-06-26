@@ -9,6 +9,7 @@
 
     <script type="text/javascript" src="js/libs.min.js"></script>
     <script type="text/javascript" src="js/cables.min.js"></script> 
+    <script type="text/javascript" src="js/cables.ops.min.js"></script> 
     <script type="text/javascript" src="js/cablesui.min.js"></script> 
 
     <canvas id="glcanvas" width="640" height="360"></canvas>
@@ -238,12 +239,39 @@ $( ".searchresult:first" ).addClass( "selected" );
     </td>
 
     <td>
+
         {{#if isInput}}
+
             {{#if port.links}}
                     <span class="value watchPortValue_{{ port.watchId }}">{{port.val}}</span>
                 {{else}}
-                    <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+
+                    {{#if port.uiAttribs.display}}
+                        {{#compare port.uiAttribs.display '==' 'bool' }}
+                            
+                            <span class="button" onclick="CABLES.togglePortValBool('portval_{{ portnum }}');">toggle</span>
+                            <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:70px;display:inline;"/>
+
+                        {{/compare}}
+                        {{#compare port.uiAttribs.display '==' 'range' }}
+
+                            <input type ="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:135px;"/>
+
+
+                            
+
+                            <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
+
+
+                        {{/compare}}
+
+
+                    {{else}}
+                        <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                    
+                    {{/if}}
             {{/if}}
+
         {{else}}
             <span class="value watchPortValue_{{ port.watchId }}" >{{port.val}}</span>
         {{/if}}

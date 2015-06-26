@@ -31,15 +31,33 @@ gulp.task('scripts_libs', function()
 
 gulp.task('scripts_core', function()
 {
-    return gulp.src(['src/core/*.js','src/ops/*.js'])
+    return gulp.src(['src/core/*.js'])
         .pipe(sourcemaps.init())
-        .pipe(concat('cables_max.js'))
+        .pipe(concat('cables.max.js'))
         .pipe(gulp.dest('dist/js'))
         .pipe(rename('cables.min.js'))
         .pipe(uglify())
+        .on('error', function(){ console.log('error.....'); })
+
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('dist/js'));
 });
+
+
+gulp.task('scripts_ops', function()
+{
+    return gulp.src(['src/ops/*.js'])
+        .pipe(sourcemaps.init())
+        .pipe(concat('cables.ops.max.js'))
+        .pipe(gulp.dest('dist/js'))
+        .pipe(rename('cables.ops.min.js'))
+        .pipe(uglify())
+        .on('error', function(){ console.log('error.....'); })
+
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('dist/js'));
+});
+
 
 gulp.task('scripts_ui', function()
 {
@@ -50,9 +68,7 @@ gulp.task('scripts_ui', function()
         .pipe(rename('cablesui.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
-.on('error', gutil.log)
         .pipe(gulp.dest('dist/js'));
-
 });
 
 
@@ -71,7 +87,9 @@ gulp.task('sass', function() {
 
 
 gulp.task('watch', function() {
-    gulp.watch('src/**/*.js', ['scripts_core','scripts_ui']);
+    gulp.watch('src/core/**/*.js', ['scripts_core']);
+    gulp.watch('src/ops/**/*.js', ['scripts_ops']);
+    gulp.watch('src/ui/**/*.js', ['scripts_ui']);
     gulp.watch('scss/*.scss', ['sass']);
     gulp.watch('html/**/*.html', ['html_ui']);
 });

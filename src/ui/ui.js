@@ -2,9 +2,51 @@
 var CABLES=CABLES || {};
 
 
+CABLES.togglePortValBool=function(which)
+{
+    var bool_value = $('#'+which).val() == 'true';
+    bool_value=!bool_value;
+    $('#'+which).val(bool_value);
+};
+
+
 Handlebars.registerHelper('json', function(context) {
     return JSON.stringify(context);
 });
+
+Handlebars.registerHelper('compare', function(left_value, operator, right_value, options) {
+    var operators, result;
+
+    if (arguments.length < 4) {
+        throw new Error("Handlerbars Helper 'compare' needs 3 parameters, left value, operator and right value");
+    }
+
+    operators = {
+        '==':       function(l,r) { return l == r; },
+        '===':      function(l,r) { return l === r; },
+        '!=':       function(l,r) { return l != r; },
+        '<':        function(l,r) { return l < r; },
+        '>':        function(l,r) { return l > r; },
+        '<=':       function(l,r) { return l <= r; },
+        '>=':       function(l,r) { return l >= r; },
+        'typeof':   function(l,r) { return typeof l == r; }
+    };
+
+    if ( ! operators[operator]) {
+        throw new Error("Handlerbars Helper 'compare' doesn't know the operator "+ operator);
+    }
+
+    result = operators[operator](left_value, right_value);
+
+    if (result === true) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+});
+
+
+
 
 
 

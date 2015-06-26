@@ -26,9 +26,6 @@ CGL.Mesh=function(geom)
         bufVerticesIndizes.itemSize = 1;
         bufVerticesIndizes.numItems = geom.verticesIndices.length;
 
-
-
-
         if(geom.vertexNormals.length>0)
         {
             if(bufVertexNormals==-1)bufVertexNormals = gl.createBuffer();
@@ -37,8 +34,6 @@ CGL.Mesh=function(geom)
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertexNormals), gl.STATIC_DRAW);
             bufVertexNormals.itemSize = 3;
             bufVertexNormals.numItems = geom.vertexNormals.length/bufVertexNormals.itemSize;
-console.log('bufVertexNormals.'+bufVertexNormals.numItems);
-                    
         }
 
         if(geom.texCoords.length>0)

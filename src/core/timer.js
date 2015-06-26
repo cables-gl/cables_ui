@@ -1,5 +1,4 @@
 
-
 function Timer()
 {
     var self=this;
@@ -14,7 +13,6 @@ function Timer()
     {
         lastTime=(Date.now()-timeStart)/1000;
         return lastTime+timeOffset;
-
     }
 
     this.update=function()
@@ -49,8 +47,6 @@ function Timer()
             timeOffset+=val;
             currentTime=lastTime+timeOffset;
         }
-        
-
     };
 
     this.play=function()
