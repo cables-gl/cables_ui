@@ -234,7 +234,7 @@ Ops.Gl.TextureText = function()
     this.name='TextureText';
     this.text=this.addInPort(new Port(this,"text"));
     this.fontSize=this.addInPort(new Port(this,"fontSize"));
-    this.align=this.addInPort(new Port(this,"align"));
+    this.align=this.addInPort(new Port(this,"align",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['left','center','right']}));
     this.font=this.addInPort(new Port(this,"font"));
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
     

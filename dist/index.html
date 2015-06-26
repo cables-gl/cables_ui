@@ -256,15 +256,19 @@ $( ".searchresult:first" ).addClass( "selected" );
                         {{#compare port.uiAttribs.display '==' 'range' }}
 
                             <input type ="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:135px;"/>
-
-
-                            
-
                             <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
 
+                        {{/compare}}
+                        {{#compare port.uiAttribs.display '==' 'dropdown' }}
+                            
+                            <select oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');">
+                                {{#each port.uiAttribs.values}}
+                                    <option value="{{ this }}">{{ this }}</option>
+                                {{/each}}
+                            </select>
+                            <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:70px;display:inline;"/>
 
                         {{/compare}}
-
 
                     {{else}}
                         <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}"/>

@@ -706,7 +706,6 @@ this.oprect.getGroup().transform('t'+x+','+y);
                     {
                         ui.showOpSelect(20,20);
                     }
-
                     
                 break;
             }
@@ -716,7 +715,7 @@ this.oprect.getGroup().transform('t'+x+','+y);
         {
             var statusBarHeight=20;
             var menubarHeight=30;
-            var optionsWidth=360;
+            var optionsWidth=400;
             var rendererWidth=uiConfig.rendererSizes[rendererSize].w;
             var rendererHeight=uiConfig.rendererSizes[rendererSize].h;
 
