@@ -243,7 +243,11 @@ $( ".searchresult:first" ).addClass( "selected" );
         {{#if isInput}}
 
             {{#if port.links}}
-                    <span class="value watchPortValue_{{ port.watchId }}">{{port.val}}</span>
+
+                    {{#compare port.type '==' '1' }}function{{/compare}}
+                    {{#compare port.type '==' 0 }} <span class="value watchPortValue_{{ port.watchId }}">{{port.val}}</span>{{/compare}}
+                    {{#compare port.type '==' '2' }} object {{/compare}}
+                    
                 {{else}}
 
                     {{#if port.uiAttribs.display}}
@@ -271,13 +275,25 @@ $( ".searchresult:first" ).addClass( "selected" );
                         {{/compare}}
 
                     {{else}}
+                    
+                        {{#compare port.type '==' '1' }} function
+                        {{/compare}}{{#compare port.type '==' 0 }}
                         <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                        {{/compare}}
+                        {{#compare port.type '==' '2' }} object {{/compare}}
+
+                        
                     
                     {{/if}}
             {{/if}}
 
         {{else}}
-            <span class="value watchPortValue_{{ port.watchId }}" >{{port.val}}</span>
+
+            {{#compare port.type '==' '1' }}function{{/compare}}
+            {{#compare port.type '==' 0 }} <span class="value watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
+            {{#compare port.type '==' '2' }} object {{/compare}}
+
+            
         {{/if}}
     </td>
 

@@ -812,6 +812,21 @@ this.oprect.getGroup().transform('t'+x+','+y);
                 ui.showExample(params.index);
             });
 
+            router.addRoute('/project/:id').get(function(event, params)
+            {
+
+                console.log('load project...');
+                CABLES.api.get('project/'+params.id,function(proj)
+                {
+
+                        self.scene.clear();
+                        self.scene.deSerialize(proj);
+                            console.log('ja!',proj);
+                            
+                });
+                        
+            });
+
             router.start('/');
         };
 
