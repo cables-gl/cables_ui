@@ -667,6 +667,7 @@ this.oprect.getGroup().transform('t'+x+','+y);
         this.scene=null;
         var rendererSize=0;
         var watchPorts=[];
+        var currentProject=null;
 
         var mouseNewOPX=0;
         var mouseNewOPY=0;
@@ -818,10 +819,10 @@ this.oprect.getGroup().transform('t'+x+','+y);
                 console.log('load project...');
                 CABLES.api.get('project/'+params.id,function(proj)
                 {
-
-                        self.scene.clear();
-                        self.scene.deSerialize(proj);
-                            console.log('ja!',proj);
+                    self.setCurrentProject(proj);
+                    self.scene.clear();
+                    self.scene.deSerialize(proj);
+                        console.log('ja!',proj);
                             
                 });
                         
@@ -829,6 +830,29 @@ this.oprect.getGroup().transform('t'+x+','+y);
 
             router.start('/');
         };
+
+
+        this.saveCurrentProject=function()
+        {
+
+                    console.log( ui.scene.serialize() );
+
+        };
+
+        this.setCurrentProject=function(proj)
+        {
+            currentProject=proj;
+            if(currentProject==null)
+            {
+                $('#serverproject').hide();
+            }
+            else
+            {
+                $('#serverproject').show();
+                $('#serverprojectname').html(proj.name);
+            }
+        };
+
 
         this.showOpSelect=function(x,y,linkOp,linkPort,link)
         {
@@ -876,16 +900,22 @@ this.oprect.getGroup().transform('t'+x+','+y);
             $('#meta').append(getHandleBarHtml('timeline_controler'),{});
             $('#meta').append();
 
-            var html='<div><h2>Examples</h2>';
-            for(var example in examples)
+            CABLES.api.get('myprojects',function(data)
             {
+                $('#meta').append(getHandleBarHtml('projects',data));
+            });
+
+
+            // var html='<div><h2>Examples</h2>';
+            // for(var example in examples)
+            // {
                 
-                html+='<a href="#/example/'+example+'">'+examples[example].title+'</a><br/>';
+            //     html+='<a href="#/example/'+example+'">'+examples[example].title+'</a><br/>';
 
                 
-            }
-            html+='</div>';
-            $('#meta').append(html);
+            // }
+            // html+='</div>';
+            // $('#meta').append(html);
 
             // ----
 

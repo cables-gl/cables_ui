@@ -5,19 +5,19 @@ var CABLES=CABLES || {};
 CABLES.API=function()
 {
 
-    function request(method,url,cbSuccess)
+    function request(method,url,data,cbSuccess)
     {
 
         $.ajax(
         {
             method: method,
             url: "/api/"+url,
-            // data: { name: "John", location: "Boston" }
+            data: data
         })
         .done(function(data)
         {
             console.log( "success "+data );
-            cbSuccess(data);
+            if(cbSuccess) cbSuccess(data);
         })
         .fail(function()
         {
@@ -30,10 +30,14 @@ CABLES.API=function()
 
     }
 
-
     this.get=function(url,cb)
     {
-        request("GET",url,cb);
+        request("GET",url,{},cb);
+    };
+
+    this.post=function(url,data,cb)
+    {
+        request("POST",url,data,cb);
     };
 
 
