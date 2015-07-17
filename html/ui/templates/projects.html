@@ -1,0 +1,22 @@
+
+
+<script id="projects" type="text/x-handlebars-template">
+
+
+
+<div id="projects">
+<h2>my projects:</h2>
+{{#each projects}}
+    - <a href="#/project/{{_id}}">{{name}}</a>
+    <br/>
+{{/each}}
+
+<br/>
+<input type="text" id="projectname"/>
+<span class="button" onclick="CABLES.api.post('project',{name:$('#projectname').val()});">create</span>
+
+
+
+</div>
+
+</script>

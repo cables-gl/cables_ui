@@ -859,8 +859,28 @@ this.oprect.getGroup().transform('t'+x+','+y);
                 $('#projectfiles').show();
                 $('#serverproject').show();
                 $('#serverprojectname').html(proj.name);
-                $('#projectfiles').html(getHandleBarHtml('tmpl_projectfiles',proj));
+                self.updateProjectFiles(proj);
             }
+        };
+
+        this.updateProjectFiles=function(proj)
+        {
+            $('#projectfiles').html('');
+
+            CABLES.api.get(
+                'project/'+currentProject._id+'/files',
+                function(files)
+                {
+                    proj.files=files;
+                    var html='';
+                    html+=getHandleBarHtml('tmpl_projectfiles_list',proj);
+                    html+=getHandleBarHtml('tmpl_projectfiles_upload',proj);
+
+                    $('#projectfiles').html(html);
+                            
+                });
+
+
         };
 
         this.toggleSideBar=function()
