@@ -823,26 +823,31 @@ this.oprect.getGroup().transform('t'+x+','+y);
                     self.scene.clear();
                     self.scene.deSerialize(proj);
                         console.log('ja!',proj);
-                            
                 });
-                        
             });
 
             router.start('/');
         };
 
-
         this.saveCurrentProject=function()
         {
-
-                    console.log( ui.scene.serialize() );
+            CABLES.api.put(
+                'project/'+currentProject._id,
+                {
+                    "data":ui.scene.serialize()
+                },
+                function(r)
+                {
+                    if(r.success===true) setStatusText('project saved');
+                        else setStatusText('project NOT saved');
+                });
 
         };
 
         this.setCurrentProject=function(proj)
         {
             currentProject=proj;
-            if(currentProject==null)
+            if(currentProject===null)
             {
                 $('#serverproject').hide();
             }
@@ -853,6 +858,11 @@ this.oprect.getGroup().transform('t'+x+','+y);
             }
         };
 
+        this.toggleSideBar=function()
+        {
+            $('#sidebar').animate({width:'toggle'},200);
+
+        };
 
         this.showOpSelect=function(x,y,linkOp,linkPort,link)
         {

@@ -229,3 +229,12 @@ input[type=range]::-webkit-slider-thumb {
 
 input[type=range]:focus {
   outline: none; }
+
+#sidebar {
+  background-color: #222;
+  position: absolute;
+  width: 320px;
+  height: 100%;
+  display: none;
+  z-index: 1000;
+  padding: 20px; }

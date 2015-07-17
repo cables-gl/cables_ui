@@ -40,6 +40,11 @@ CABLES.API=function()
         request("POST",url,data,cb);
     };
 
+    this.put=function(url,data,cb)
+    {
+        request("PUT",url,data,cb);
+    };
+
 
 
 };

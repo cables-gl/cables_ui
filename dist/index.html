@@ -24,6 +24,25 @@
 
 
 
+
+<div id="sidebar" class="hidden ">
+    <a onclick="ui.toggleSideBar();" class="button">close</a>
+    <br/>
+    <br/>
+    <a onclick="localStorage['holo']=ui.scene.serialize();" >save local storage</a>
+    <br/>
+    <a onclick="ui.scene.clear();ui.scene.deSerialize(localStorage['holo']);" >load local storage</a>
+
+    <hr/>
+
+    <a onclick="ui.exportDialog();" >export</a>
+    <br/>
+    <a onclick="ui.importDialog();" >import</a>
+    <br/>
+    <br/>
+    <a onclick="ui.scene.clear();" >clear patch</a>
+</div>
+
 <div id="statusbar"></div>
 <div id="meta"></div>
 <div id="options" class="panel"></div>
@@ -31,25 +50,15 @@
 <div id="menubar">
 
 
-    
+<a onclick="ui.toggleSideBar();" class="button">cables</a>
 
 <a onclick="ui.showOpSelect(100,100);" class="button">new op</a>
 
-    <a onclick="localStorage['holo']=ui.scene.serialize();" class="button">save LS</a>
-    <a onclick="ui.scene.clear();ui.scene.deSerialize(localStorage['holo']);" class="button">load LS</a>
-    
-    <a onclick="ui.exportDialog();" class="button">export</a>
-    <a onclick="ui.importDialog();" class="button">import</a>
-
-    <a onclick="ui.scene.clear();" class="button" style="float:right;">clear</a>
-
-
-
-    <a onclick="ui.cycleRendererSize();" class="button">size</a>
+<a onclick="ui.cycleRendererSize();" class="button">size</a>
 
 <div id="serverproject" style="float:left;display:none;">
-project:<span id="serverprojectname"></span>
-<a onclick="ui.saveCurrentProject();" class="button">save project</a>
+
+<a onclick="ui.saveCurrentProject();" class="button">save project <span id="serverprojectname"></span></a>
 </div>
 
 
