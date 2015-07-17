@@ -7,7 +7,9 @@
             {{#each files}}
                 <tr>
                 <td>
-                {{name}}
+                    <a onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}')">
+                    {{name}}
+                    </a>
                 </td>
                 </tr>
             {{/each}}

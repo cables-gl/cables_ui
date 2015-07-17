@@ -54,7 +54,6 @@ CGL.Texture=function()
         self.width=img.width;
         self.height=img.height;
 
-
         gl.bindTexture(gl.TEXTURE_2D, self.tex);
         if(this.flip) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.image);

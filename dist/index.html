@@ -230,7 +230,7 @@ $( ".searchresult:first" ).addClass( "selected" );
         }
         else
         {
-                this.value = val - add;
+            this.value = val - add;
         }
 
          $(this).trigger('input');
@@ -337,7 +337,9 @@ $( ".searchresult:first" ).addClass( "selected" );
             {{#each files}}
                 <tr>
                 <td>
-                {{name}}
+                    <a onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}')">
+                    {{name}}
+                    </a>
                 </td>
                 </tr>
             {{/each}}

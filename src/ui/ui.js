@@ -1390,6 +1390,31 @@ this.getCanvasCoords=function(mx,my)
     return res;
 };
 
+this.addAssetOp=function(url,suffix)
+{
+
+    if(suffix=='.obj')
+    {
+        var op=ui.scene.addOp('Ops.Gl.Meshes.ObjMesh');
+        op.getPort('file').val=url;
+
+    }
+    else
+    if(suffix=='.png' || suffix=='.jpg')
+    {
+        var op=ui.scene.addOp('Ops.Gl.Texture');
+        op.getPort('file').val=url;
+    }
+    else
+    {
+        setStatusText('unknown file type');
+    }
+
+
+};
+
+
+
 
 
 

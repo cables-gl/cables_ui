@@ -213,6 +213,7 @@ Ops.Gl.Meshes.ObjMesh = function()
     this.name='OBJ Mesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
 
     this.mesh=null;
 
@@ -223,34 +224,53 @@ Ops.Gl.Meshes.ObjMesh = function()
         self.trigger.call();
     };
 
-    ajaxRequest('assets/skull.obj',function(response)
+
+
+    this.filename.onValueChanged=function()
     {
-        console.log(response);
-                
-        var r=parseOBJ(response);
+        // console.log('load texture...');
+        // self.tex=CGL.Texture.load(self.filename.val,function()
+        //     {
+        //         console.log('tex load FINISHED!!!');
 
-        unwrap = function(ind, crd, cpi)
-        {
-            var ncrd = new Array(Math.floor(ind.length/3)*cpi);
-            for(var i=0; i<ind.length; i++)
-            {
-                for(var j=0; j<cpi; j++)
-                {
-                    ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
-                }
-            }
-            return ncrd;
-        };
+        //         self.textureOut.val=self.tex;
+        //     });
+        // self.textureOut.val=self.tex;
 
-        var l=r.verticesIndices.length;
-            r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
-            r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
-            r.vertexNormals = unwrap(r.vertexNormalIndices  , r.vertexNormals  , 3);
-            r.verticesIndices = [];
-            for(var i=0; i<l; i++) r.verticesIndices.push(i);
-        
-        self.mesh=new CGL.Mesh(r);
-    });
+      ajaxRequest(self.filename.val,function(response)
+      {
+          console.log(response);
+                  
+          var r=parseOBJ(response);
+
+          unwrap = function(ind, crd, cpi)
+          {
+              var ncrd = new Array(Math.floor(ind.length/3)*cpi);
+              for(var i=0; i<ind.length; i++)
+              {
+                  for(var j=0; j<cpi; j++)
+                  {
+                      ncrd[i*cpi+j] = crd[ind[i]*cpi+j];
+                  }
+              }
+              return ncrd;
+          };
+
+          var l=r.verticesIndices.length;
+              r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
+              r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
+              r.vertexNormals = unwrap(r.vertexNormalIndices  , r.vertexNormals  , 3);
+              r.verticesIndices = [];
+              for(var i=0; i<l; i++) r.verticesIndices.push(i);
+          
+          self.mesh=new CGL.Mesh(r);
+      });
+
+
+    };
+
+    this.filename.val='assets/skull.obj';
+
 };
 
 Ops.Gl.Meshes.ObjMesh.prototype = new Op();
