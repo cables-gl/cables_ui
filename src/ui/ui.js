@@ -846,22 +846,26 @@ this.oprect.getGroup().transform('t'+x+','+y);
 
         this.setCurrentProject=function(proj)
         {
+            console.log('set current project '+proj.name);
+
             currentProject=proj;
             if(currentProject===null)
             {
                 $('#serverproject').hide();
+                $('#projectfiles').hide();
             }
             else
             {
+                $('#projectfiles').show();
                 $('#serverproject').show();
                 $('#serverprojectname').html(proj.name);
+                $('#projectfiles').html(getHandleBarHtml('tmpl_projectfiles',proj));
             }
         };
 
         this.toggleSideBar=function()
         {
             $('#sidebar').animate({width:'toggle'},200);
-
         };
 
         this.showOpSelect=function(x,y,linkOp,linkPort,link)
