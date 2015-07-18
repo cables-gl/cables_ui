@@ -26,21 +26,25 @@
 
 
 <div id="sidebar" class="hidden ">
-    <a onclick="ui.toggleSideBar();" class="button">close</a>
-    <br/>
-    <br/>
-    <a onclick="localStorage['holo']=ui.scene.serialize();" >save local storage</a>
-    <br/>
-    <a onclick="ui.scene.clear();ui.scene.deSerialize(localStorage['holo']);" >load local storage</a>
+    <div class="content">
+        <a onclick="ui.toggleSideBar();" class="button">close</a>
+        <br/>
+        <br/>
+        <a onclick="localStorage['holo']=ui.scene.serialize();" >save local storage</a>
+        <br/>
+        <a onclick="ui.scene.clear();ui.scene.deSerialize(localStorage['holo']);" >load local storage</a>
 
-    <hr/>
+        <hr/>
 
-    <a onclick="ui.exportDialog();" >export</a>
-    <br/>
-    <a onclick="ui.importDialog();" >import</a>
-    <br/>
-    <br/>
-    <a onclick="ui.scene.clear();" >clear patch</a>
+        <a onclick="ui.exportDialog();" >export</a>
+        <br/>
+        <a onclick="ui.importDialog();" >import</a>
+        <br/>
+        <br/>
+        <a onclick="ui.scene.clear();" >clear patch</a>
+
+        <div id="projectlist"></div>
+    </div>
 </div>
 
 <div id="statusbar"></div>
@@ -54,16 +58,24 @@
 <div id="menubar">
 
 
-<a onclick="ui.toggleSideBar();" class="button">cables</a>
+    <a onclick="ui.toggleSideBar();" class="button">cables</a>
 
-<a onclick="ui.showOpSelect(100,100);" class="button">new op</a>
+    <a onclick="ui.showOpSelect(100,100);" class="button">new op</a>
 
-<a onclick="ui.cycleRendererSize();" class="button">size</a>
+    <a onclick="ui.cycleRendererSize();" class="button">size</a>
 
-<div id="serverproject" style="float:left;display:none;">
+    <div id="serverproject" style="float:left;display:none;">
+        <a onclick="ui.saveCurrentProject();" class="button">save project <span id="serverprojectname"></span></a>
+    </div>
 
-<a onclick="ui.saveCurrentProject();" class="button">save project <span id="serverprojectname"></span></a>
-</div>
+    <div id="loggedin">
+        <div id="username"></div> <a class="button" href="/logout">logout</a>
+    </div>
+
+    <div id="loggedout">
+        <div id="username">not logged in</div> <a class="button" href="/">login</a>
+    </div>
+
 
 
 </div>

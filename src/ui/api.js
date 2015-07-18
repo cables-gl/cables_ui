@@ -5,7 +5,7 @@ var CABLES=CABLES || {};
 CABLES.API=function()
 {
 
-    function request(method,url,data,cbSuccess)
+    function request(method,url,data,cbSuccess,cbError)
     {
 
         $.ajax(
@@ -22,25 +22,26 @@ CABLES.API=function()
         .fail(function()
         {
             console.log('error ajax');
+            if(cbError)cbError();
         })
         .always(function()
         {
-            console.log( "complete" );
+            // console.log( "complete" );
         });
 
     }
 
-    this.get=function(url,cb)
+    this.get=function(url,cb,cbErr)
     {
-        request("GET",url,{},cb);
+        request("GET",url,{},cb,cbErr);
     };
 
-    this.post=function(url,data,cb)
+    this.post=function(url,data,cb,cbErr)
     {
         request("POST",url,data,cb);
     };
 
-    this.put=function(url,data,cb)
+    this.put=function(url,data,cb,cbErr)
     {
         request("PUT",url,data,cb);
     };

@@ -327,13 +327,39 @@ input[type=range]:focus {
 }
 
 
-#sidebar
-{
-    background-color:  #222;
-    position: absolute;
+
+#sidebar {
+  background-color: #222;
+  position: absolute;
+  width: 320px;
+  height: 100%;
+  display: none;
+  z-index: 1000;
+  padding: 20px;
+  overflow: hidden;
+  opacity: 0.96; 
+
+  .content
+  {
     width:320px;
-    height:100%;
-    display: none;
-    z-index: 1000;
-    padding:20px;
+  }
+
 }
+
+#loggedin,#loggedout
+{
+    float:right;
+    display:none;
+
+    #username
+    {
+
+        margin-top: 10px;
+        float:left;
+    }
+}
+
+
+
+
+

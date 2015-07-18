@@ -237,4 +237,19 @@ input[type=range]:focus {
   height: 100%;
   display: none;
   z-index: 1000;
-  padding: 20px; }
+  padding: 20px;
+  overflow: hidden;
+  opacity: 0.96; }
+  #sidebar
+.content {
+    width: 320px; }
+
+#loggedin, #loggedout {
+  float: right;
+  display: none; }
+  #loggedin
+#username
+, #loggedout
+#username {
+    margin-top: 10px;
+    float: left; }

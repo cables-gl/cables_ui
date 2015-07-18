@@ -936,8 +936,24 @@ this.oprect.getGroup().transform('t'+x+','+y);
 
             CABLES.api.get('myprojects',function(data)
             {
-                $('#meta').append(getHandleBarHtml('projects',data));
+                $('#projectlist').append(getHandleBarHtml('projects',data));
             });
+
+
+            CABLES.api.get('user/me',
+                function(data)
+                {
+                    if(data.user)
+                    {
+                        $('#loggedout').hide();
+                        $('#loggedin').show();
+                        $('#username').html(data.user.username);
+                    }
+                },function(data)
+                {
+                    $('#loggedout').show();
+                    $('#loggedin').hide();
+                });
 
 
             // var html='<div><h2>Examples</h2>';
