@@ -26,7 +26,7 @@
           <p>
             <input name="file" type="file" size="99999999" accept="*"/> 
           </p>  
-          <button type="submit">upload</button>
+          <button class="button" type="submit" style="border:none;">upload</button>
         </form>
     </div>
 
@@ -76,7 +76,7 @@
                 {
                     if(typeof data.error === 'undefined')
                     {
-
+                        ui.updateProjectFiles();
                         // Success so call function to process the form
                         // submitForm(event, data);
                     }

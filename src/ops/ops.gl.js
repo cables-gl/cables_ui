@@ -219,7 +219,7 @@ Ops.Gl.Texture = function()
 
     };
 
-    this.filename.val='assets/skull.png';
+    // this.filename.val='assets/skull.png';
 };
 
 Ops.Gl.Texture.prototype = new Op();
@@ -826,4 +826,12 @@ Ops.Gl.Render2Texture = function()
 };
 
 Ops.Gl.Render2Texture.prototype = new Op();
+
+
+
+
+
+
+
+
 

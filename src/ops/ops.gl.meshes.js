@@ -269,7 +269,7 @@ Ops.Gl.Meshes.ObjMesh = function()
 
     };
 
-    this.filename.val='assets/skull.obj';
+    // this.filename.val='assets/skull.obj';
 
 };
 

@@ -865,6 +865,7 @@ this.oprect.getGroup().transform('t'+x+','+y);
 
         this.updateProjectFiles=function(proj)
         {
+            if(!proj)proj=currentProject;
             $('#projectfiles').html('');
 
             CABLES.api.get(

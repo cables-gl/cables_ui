@@ -16,6 +16,10 @@ CGL.State=function()
     var simpleShader=new CGL.Shader();
     var currentShader=simpleShader;
 
+    var canvas = document.getElementById("glcanvas");
+    this.gl=canvas.getContext("experimental-webgl");
+    // this.gl = {};
+
 
     this.canvasWidth=640;
     this.canvasHeight=360;

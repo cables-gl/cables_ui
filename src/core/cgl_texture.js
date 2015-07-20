@@ -3,10 +3,10 @@ var CGL=CGL || {};
 CGL.Texture=function()
 {
     var self=this;
-    this.tex = gl.createTexture();
+    this.tex = cgl.gl.createTexture();
     this.width=0;
     this.height=0;
-    this.flip=false;
+    this.flip=true;
 
     // gl.bindTexture(gl.TEXTURE_2D, this.tex);
     // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([111, 111, 111, 255]));
@@ -23,7 +23,7 @@ CGL.Texture=function()
         self.width=w;
         self.height=h;
 
-        gl.bindTexture(gl.TEXTURE_2D, self.tex);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
         
         var arr=[];
         arr.length=w*h*4;
@@ -40,13 +40,13 @@ CGL.Texture=function()
         // }
         var uarr=new Uint8Array(arr);
 
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_EDGE);
+        cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_EDGE);
+        cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.LINEAR);
 
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, uarr);
+        cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, w, h, 0, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, uarr);
 
-        gl.bindTexture(gl.TEXTURE_2D, null);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 
     this.initTexture=function(img)
@@ -54,19 +54,19 @@ CGL.Texture=function()
         self.width=img.width;
         self.height=img.height;
 
-        gl.bindTexture(gl.TEXTURE_2D, self.tex);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
         if(this.flip) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.image);
+        cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, self.image);
 
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.NEAREST);
+        cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.NEAREST);
 
         // non power of two:
         // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-        gl.bindTexture(gl.TEXTURE_2D, null);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 
     this.setSize(8,8);
