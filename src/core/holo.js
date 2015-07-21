@@ -395,7 +395,9 @@ var Scene = function()
                 {
                     if(tryRelink)
                     {
-                        if(this.ops[i].portsIn[0].isLinked() && this.ops[i].portsOut[0].isLinked())
+                        if(
+                            (this.ops[i].portsIn.length>0 && this.ops[i].portsIn[0].isLinked()) && 
+                            (this.ops[i].portsOut.length>0 && this.ops[i].portsOut[0].isLinked()))
                         {
                             if(this.ops[i].portsIn[0].getType()==this.ops[i].portsOut[0].getType())
                             {
@@ -420,9 +422,7 @@ var Scene = function()
                     }
                 }
             }
-
         }
-
 
     };
 

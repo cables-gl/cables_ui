@@ -45,6 +45,7 @@
                         {{#compare port.uiAttribs.display '==' 'dropdown' }}
                             
                             <select oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');">
+                                <option value="">...</option>
                                 {{#each port.uiAttribs.values}}
                                     <option value="{{ this }}">{{ this }}</option>
                                 {{/each}}

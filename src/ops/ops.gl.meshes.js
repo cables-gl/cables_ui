@@ -156,10 +156,10 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         ];
 
         geom.texCoords = [
-             1.0, 1.0,
-             0.0, 1.0,
              1.0, 0.0,
-             0.0, 0.0
+             0.0, 0.0,
+             1.0, 1.0,
+             0.0, 1.0
         ];
 
         geom.verticesIndices = [

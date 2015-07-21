@@ -232,6 +232,34 @@ Ops.Gl.Points.prototype = new Op();
 
 
 
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Mouse = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='mouse';
+    this.mouseX=this.addOutPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
+    this.mouseY=this.addOutPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
+
+    this.canvas = document.getElementById("glcanvas");
+
+    this.canvas.onmousemove = function(e)
+    {
+        self.mouseX.val=e.offsetX;
+        self.mouseY.val=e.offsetY;
+    };
+
+
+};
+
+Ops.Gl.Mouse.prototype = new Op();
+
+
+
+
 // --------------------------------------------------------------------------
 
     
