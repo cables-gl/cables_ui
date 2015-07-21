@@ -52,6 +52,7 @@ var Op = function()
     {
         for(var i=0;i<this.portsIn.length;i++)
             this.portsIn[i].removeLinks();
+
         for(var ipo in this.portsOut)
             this.portsOut[ipo].removeLinks();
     };
@@ -68,16 +69,10 @@ var Op = function()
     this.findFittingPort=function(otherPort)
     {
         for(var ipo in this.portsOut)
-        {
-            console.log('.');
             if(Link.canLink(otherPort,this.portsOut[ipo]))return this.portsOut[ipo];
-        }
     
         for(var ipi in this.portsIn)
-        {
-            console.log('.');
             if(Link.canLink(otherPort,this.portsIn[ipi]))return this.portsIn[ipi];
-        }
     };
 
     this.getSerialized=function()
@@ -87,7 +82,6 @@ var Op = function()
         op.objName=this.objName;
         op.id=this.id;
         op.uiAttribs=this.uiAttribs;
-
         op.portsIn=[];
         op.portsOut=[];
 
@@ -123,7 +117,7 @@ var Port=function(parent,name,type,uiAttribs)
     this.value=null;
     this.name=name;
     this.type=type || OP_PORT_TYPE_VALUE;
-    this.uiAttribs=uiAttribs;
+    this.uiAttribs=uiAttribs || {};
     var valueBeforeLink=null;
 
     this.__defineGetter__("val", function(){ return this.value; });
@@ -162,18 +156,15 @@ var Port=function(parent,name,type,uiAttribs)
     this.removeLinkTo=function(p2)
     {
         for(var i in this.links)
-        {
             if(this.links[i].portIn==p2 || this.links[i].portOut==p2)
                 this.links[i].remove();
-        }
     };
 
     this.isLinkedTo=function(p2)
     {
         for(var i in this.links)
-        {
             if(this.links[i].portIn==p2 || this.links[i].portOut==p2)return true;
-        }
+
         return false;
     };
 
@@ -218,17 +209,14 @@ var Port=function(parent,name,type,uiAttribs)
     this.removeLinks=function()
     {
         while(this.links.length>0)
-        {
             this.links[0].remove();
-        }
     };
 
     this.removeLink=function(link)
     {
         for(var i in this.links)
-        {
             if(this.links[i]==link)this.links.splice( i, 1 );
-        }
+
         self.setValue(valueBeforeLink);
     };
 };
