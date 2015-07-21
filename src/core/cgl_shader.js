@@ -21,8 +21,8 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     this.updateValueF=function()
     {
-        if(loc==-1) loc=gl.getUniformLocation(shader.getProgram(), name);
-        gl.uniform1f(loc, value);
+        if(loc==-1) loc=cgl.gl.getUniformLocation(shader.getProgram(), name);
+        cgl.gl.uniform1f(loc, value);
     };
 
     this.setValueF=function(v)
@@ -35,11 +35,11 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     {
         if(loc==-1)
         {
-            loc=gl.getUniformLocation(shader.getProgram(), name);
+            loc=cgl.gl.getUniformLocation(shader.getProgram(), name);
             if(loc==-1) console.log('texture loc unknown!!');
         }
 
-        gl.uniform1i(loc, value);
+        cgl.gl.uniform1i(loc, value);
     };
 
     this.setValueT=function(v)
@@ -235,23 +235,23 @@ CGL.Shader=function()
 
         if(mvMatrixUniform==-1)
         {
-            attrVertexNormals = gl.getAttribLocation(program, 'attrVertNormal');
-            attrTexCoords = gl.getAttribLocation(program, 'attrTexCoord');
-            attrVertexPos = gl.getAttribLocation(program, 'vPosition');
+            attrVertexNormals = cgl.gl.getAttribLocation(program, 'attrVertNormal');
+            attrTexCoords = cgl.gl.getAttribLocation(program, 'attrTexCoord');
+            attrVertexPos = cgl.gl.getAttribLocation(program, 'vPosition');
 
-            projMatrixUniform = gl.getUniformLocation(program, "projMatrix");
-            mvMatrixUniform = gl.getUniformLocation(program, "mvMatrix");
+            projMatrixUniform = cgl.gl.getUniformLocation(program, "projMatrix");
+            mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
         }
 
-        GL.useProgram(program);
+        cgl.gl.useProgram(program);
 
         for(var i in uniforms)
         {
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
-        gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
-        gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
+        cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
+        cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
     };
 
     this.getProgram=function()
@@ -262,15 +262,15 @@ CGL.Shader=function()
 
     createShader =function(str, type,_shader)
     {
-        var shader = _shader || gl.createShader(type);
-        gl.shaderSource(shader, str);
-        gl.compileShader(shader);
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+        var shader = _shader || cgl.gl.createShader(type);
+        cgl.gl.shaderSource(shader, str);
+        cgl.gl.compileShader(shader);
+        if (!cgl.gl.getShaderParameter(shader, cgl.gl.COMPILE_STATUS))
         {
             console.log('compile status: ');
 
-            if(type==gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
-            if(type==gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
+            if(type==cgl.gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
+            if(type==cgl.gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
             
             console.warn( gl.getShaderInfoLog(shader) );
 
@@ -288,21 +288,21 @@ CGL.Shader=function()
 
     linkProgram=function(program)
     {
-        gl.linkProgram(program);
-        if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+        cgl.gl.linkProgram(program);
+        if (!cgl.gl.getProgramParameter(program, cgl.gl.LINK_STATUS))
         {
-            throw gl.getProgramInfoLog(program);
+            throw cgl.gl.getProgramInfoLog(program);
         }
 
     };
 
     createProgram=function(vstr, fstr)
     {
-        var program = gl.createProgram();
-        self.vshader = createShader(vstr, gl.VERTEX_SHADER);
-        self.fshader = createShader(fstr, gl.FRAGMENT_SHADER);
-        gl.attachShader(program, self.vshader);
-        gl.attachShader(program, self.fshader);
+        var program = cgl.gl.createProgram();
+        self.vshader = createShader(vstr, cgl.gl.VERTEX_SHADER);
+        self.fshader = createShader(fstr, cgl.gl.FRAGMENT_SHADER);
+        cgl.gl.attachShader(program, self.vshader);
+        cgl.gl.attachShader(program, self.fshader);
 
         linkProgram(program);
         return program;

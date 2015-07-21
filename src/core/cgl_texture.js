@@ -55,7 +55,7 @@ CGL.Texture=function()
         self.height=img.height;
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
-        if(self.flip) gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        if(self.flip) cgl.gl.pixelStorei(cgl.gl.UNPACK_FLIP_Y_WEBGL, true);
         cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, self.image);
 
         cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.NEAREST);
@@ -78,7 +78,7 @@ CGL.Texture.load=function(url,finishedCallback)
     texture.image = new Image();
     texture.image.onload = function ()
     {
-        console.log(texture.image);
+        // console.log(texture.image);
         texture.initTexture(texture.image);
         finishedCallback();
     };

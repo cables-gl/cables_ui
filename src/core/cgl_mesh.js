@@ -9,38 +9,38 @@ CGL.Mesh=function(geom)
 {
     var bufTexCoords=-1;
     var bufVertexNormals=-1;
-    var bufVertices = gl.createBuffer();
-    var bufVerticesIndizes = gl.createBuffer();
+    var bufVertices = cgl.gl.createBuffer();
+    var bufVerticesIndizes = cgl.gl.createBuffer();
 
     this.setGeom=function(geom)
     {
         
-        gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertices), gl.STATIC_DRAW);
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertices), cgl.gl.STATIC_DRAW);
         bufVertices.itemSize = 3;
         bufVertices.numItems = geom.vertices.length/3;
 
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), gl.STATIC_DRAW);
+        cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
+        cgl.gl.bufferData(cgl.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), cgl.gl.STATIC_DRAW);
         bufVerticesIndizes.itemSize = 1;
         bufVerticesIndizes.numItems = geom.verticesIndices.length;
 
         if(geom.vertexNormals.length>0)
         {
-            if(bufVertexNormals==-1)bufVertexNormals = gl.createBuffer();
+            if(bufVertexNormals==-1)bufVertexNormals = cgl.gl.createBuffer();
 
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexNormals);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.vertexNormals), gl.STATIC_DRAW);
+            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertexNormals);
+            cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertexNormals), cgl.gl.STATIC_DRAW);
             bufVertexNormals.itemSize = 3;
             bufVertexNormals.numItems = geom.vertexNormals.length/bufVertexNormals.itemSize;
         }
 
         if(geom.texCoords.length>0)
         {
-            if(bufTexCoords==-1)bufTexCoords = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), gl.STATIC_DRAW);
+            if(bufTexCoords==-1)bufTexCoords = cgl.gl.createBuffer();
+            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufTexCoords);
+            cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), cgl.gl.STATIC_DRAW);
             bufTexCoords.itemSize = 2;
             bufTexCoords.numItems = geom.texCoords.length/bufTexCoords.itemSize;
         }
@@ -55,32 +55,32 @@ CGL.Mesh=function(geom)
         if(!shader) return;
         shader.bind();
 
-        GL.enableVertexAttribArray(shader.getAttrVertexPos());
-        if(bufVertexNormals!=-1) GL.enableVertexAttribArray(shader.getAttrVertexNormals());
-        if(bufTexCoords!=-1) GL.enableVertexAttribArray(shader.getAttrTexCoords());
+        cgl.gl.enableVertexAttribArray(shader.getAttrVertexPos());
+        if(bufVertexNormals!=-1) cgl.gl.enableVertexAttribArray(shader.getAttrVertexNormals());
+        if(bufTexCoords!=-1) cgl.gl.enableVertexAttribArray(shader.getAttrTexCoords());
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, bufVertices);
-        gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, gl.FLOAT, false, 0, 0);
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
+        cgl.gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, cgl.gl.FLOAT, false, 0, 0);
 
         if(bufVertexNormals!=-1)
         {
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufVertexNormals);
-            gl.vertexAttribPointer(shader.getAttrVertexNormals(),bufVertexNormals.itemSize, gl.FLOAT, false, 0, 0);
+            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertexNormals);
+            cgl.gl.vertexAttribPointer(shader.getAttrVertexNormals(),bufVertexNormals.itemSize, cgl.gl.FLOAT, false, 0, 0);
         }
 
         if(bufTexCoords!=-1)
         {
-            gl.bindBuffer(gl.ARRAY_BUFFER, bufTexCoords);
-            gl.vertexAttribPointer(shader.getAttrTexCoords(),bufTexCoords.itemSize, gl.FLOAT, false, 0, 0);
+            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufTexCoords);
+            cgl.gl.vertexAttribPointer(shader.getAttrTexCoords(),bufTexCoords.itemSize, cgl.gl.FLOAT, false, 0, 0);
         }
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
+        cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
 
-        var what=gl.TRIANGLES;
+        var what=cgl.gl.TRIANGLES;
         if(cgl.wireframe)what=gl.LINES;
         else if(cgl.points)what=gl.POINTS;
 
-        gl.drawElements(what, bufVerticesIndizes.numItems, gl.UNSIGNED_SHORT, 0);
+        cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
     };
 
 };

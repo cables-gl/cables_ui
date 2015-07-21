@@ -6,7 +6,6 @@
 Ops.Gl=Ops.Gl || {};
 
 
-var GL=null;
 
 Ops.Gl.Renderer = function()
 {
@@ -25,11 +24,11 @@ Ops.Gl.Renderer = function()
         cgl.canvasWidth=self.canvas.clientWidth;
         cgl.canvasHeight=self.canvas.clientHeight;
 
-        gl.enable(gl.DEPTH_TEST);
-        GL.clearColor(0,0,0,1);
-        GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+        cgl.gl.enable(cgl.gl.DEPTH_TEST);
+        cgl.gl.clearColor(0,0,0,1);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
-        gl.viewport(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
+        cgl.gl.viewport(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
         mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
 
         cgl.pushPMatrix();
@@ -38,8 +37,8 @@ Ops.Gl.Renderer = function()
         mat4.identity(cgl.mvMatrix);
         mat4.translate(cgl.mvMatrix,cgl.mvMatrix, initTranslate);
 
-        GL.enable(GL.BLEND);
-        GL.blendFunc(GL.SRC_ALPHA,GL.ONE_MINUS_SRC_ALPHA);
+        cgl.gl.enable(cgl.gl.BLEND);
+        cgl.gl.blendFunc(cgl.gl.SRC_ALPHA,cgl.gl.ONE_MINUS_SRC_ALPHA);
 
         cgl.beginFrame();
 
@@ -51,9 +50,8 @@ Ops.Gl.Renderer = function()
     };
 
     this.canvas = document.getElementById("glcanvas");
-    GL = this.canvas.getContext("experimental-webgl");
-    gl = this.canvas.getContext("experimental-webgl");
-
+    // gl= GL = this.canvas.getContext("experimental-webgl");
+    
 };
 
 Ops.Gl.Renderer.prototype = new Op();
@@ -77,7 +75,7 @@ Ops.Gl.LetterBox = function()
 
     this.render.onTriggered=function()
     {
-        cgl.gl.enable(gl.SCISSOR_TEST);
+        cgl.gl.enable(cgl.gl.SCISSOR_TEST);
 
         w=cgl.canvasHeight*self.ratio.val;
         h=cgl.canvasHeight;
@@ -100,7 +98,7 @@ Ops.Gl.LetterBox = function()
 
 
         self.trigger.call();
-        cgl.gl.disable(gl.SCISSOR_TEST);
+        cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
     };
 
@@ -131,8 +129,8 @@ Ops.Gl.ClearColor = function()
     this.b.val=0.3;
     this.render.onTriggered=function()
     {
-        GL.clearColor(self.r.val,self.g.val,self.b.val,1);
-        GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+        cgl.gl.clearColor(self.r.val,self.g.val,self.b.val,1);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         self.trigger.call();
     };
@@ -153,12 +151,17 @@ Ops.Gl.ClearDepth = function()
 
     this.render.onTriggered=function()
     {
-        GL.clear(GL.DEPTH_BUFFER_BIT);
+        cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
         self.trigger.call();
     };
 };
 
 Ops.Gl.ClearDepth.prototype = new Op();
+
+
+
+// --------------------------------------------------------------------------
+
 
 
 
@@ -178,7 +181,7 @@ Ops.Gl.Wireframe = function()
     this.render.onTriggered=function()
     {
         cgl.wireframe=true;
-        gl.lineWidth(self.lineWidth.val);
+        cgl.gl.lineWidth(self.lineWidth.val);
         self.trigger.call();
         cgl.wireframe=false;
 
@@ -264,7 +267,7 @@ Ops.Gl.Texture = function()
         console.log('load texture...');
         self.tex=CGL.Texture.load(self.filename.val,function()
             {
-                console.log('tex load FINISHED!!!');
+                // console.log('tex load FINISHED!!!');
 
                 self.textureOut.val=self.tex;
             });

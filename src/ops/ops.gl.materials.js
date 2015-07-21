@@ -60,14 +60,14 @@ Ops.Gl.Shader.BasicMaterial = function()
 
         if(self.texture.val)
         {
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, self.texture.val.tex);
+            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.texture.val.tex);
         }
 
         if(self.textureOpacity.val)
         {
-            gl.activeTexture(gl.TEXTURE1);
-            gl.bindTexture(gl.TEXTURE_2D, self.textureOpacity.val.tex);
+            cgl.gl.activeTexture(cgl.gl.TEXTURE1);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureOpacity.val.tex);
         }
 
         self.trigger.call();
