@@ -84,8 +84,8 @@ Ops.Gl.LetterBox = function()
         
         if(w>cgl.canvasWidth)
         {
-          w=cgl.canvasWidth;
-          h=cgl.canvasWidth/self.ratio.val;
+            w=cgl.canvasWidth;
+            h=cgl.canvasWidth/self.ratio.val;
         }
 
         x=0;
@@ -94,6 +94,10 @@ Ops.Gl.LetterBox = function()
         if(h<cgl.canvasHeight) y=(cgl.canvasHeight-h)/2;
 
         cgl.gl.scissor(x,y,w,h);
+
+        cgl.gl.viewport(x,y,w,h);
+        mat4.perspective(cgl.pMatrix,45, self.ratio.val, 0.01, 1100.0);
+
 
         self.trigger.call();
         cgl.gl.disable(gl.SCISSOR_TEST);
