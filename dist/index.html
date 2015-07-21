@@ -199,18 +199,14 @@ $( ".searchresult:first" ).addClass( "selected" );
     <div class="">
         <h2>{{op.name}}</h2>
         [{{op.objName}}]
-
+        <input id="opname" oninput="ui.setSelectedOpTitle($('#opname').val());" value="{{op.name}}">
         <br/>
         <br/>
-
-
-  
     </div>
 
 <table>
 
 </script>
-
 
 
 <script id="params_op_foot" type="text/x-handlebars-template">
@@ -220,7 +216,6 @@ $( ".searchresult:first" ).addClass( "selected" );
 <div>
 {{{ json op.uiAttribs }}}
 </div>
-
 
 <div>
     <br/>

@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function(event)
 var uiConfig=
 {
     portSize:10,
+    portHeight:7,
     portPadding:2,
 
     colorLink:'#fff',
@@ -252,11 +253,11 @@ function UiLink(port1, port2)
 
         if(toY > fromY)
         {
-            fromY+=uiConfig.portSize;
+            fromY+=uiConfig.portHeight;
         }
         if(fromY > toY)
         {
-            toY+=uiConfig.portSize;
+            toY+=uiConfig.portHeight;
         }
 
         cp1X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
@@ -320,7 +321,7 @@ var line;
             stroke: "#000"
         });
 
-        var label = this.text(0+w/2,0+h/2-1, text);
+        var label = this.text(0+w/2,0+h/2+0, text);
         var layer = this.rect(0, 0, w, h).attr({
             fill: "#ccc",
             "fill-opacity": 0,
@@ -328,17 +329,14 @@ var line;
             cursor: "move"
         });
 
+        layer.setTitle=function(t)
+        {
+            label.attr({text:t});
+        };
+
         var group = this.set();
         group.push(background, label, layer);
-
         group.transform('t'+x+','+y);
-
-
-//         console.log(group);
-        
-// group.attrs.width.width=23233;
-//         console.log(this.oprect);
-
 
         layer.setGroup(group);
         layer.bgRect=background;
@@ -433,7 +431,11 @@ var line;
             pos.x=pos.x-startMoveX;
             pos.y=pos.y-startMoveY;
 
-
+            if(e.shiftKey===true)
+            {
+                pos.x=parseInt(pos.x/10,10)*10;
+                pos.y=parseInt(pos.y/10,10)*10;
+            }
         
             this.group.transform('t'+pos.x+','+pos.y);
             // this.group.translate(pos.x,pos.y);
@@ -496,7 +498,7 @@ var width=w;
             if(event.which==2)return;
         
 
-            if(!line) line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portSize/2, r);
+            if(!line) line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portheight, r);
             else
             {
                 // line.updateEnd(this.startx+dx,this.starty+dy);
@@ -559,11 +561,16 @@ var width=w;
         this.addPort=function(_inout)
         {
             var yp=0;
+            var offY=0;
             var inout=_inout;
-            if(inout=='out') yp=24;
+            if(inout=='out') yp=21;
 
             var portIndex=this.portsIn.length;
-            if(inout=='out') portIndex=this.portsOut.length;
+            if(inout=='out')
+            {
+                offY=uiConfig.portSize-uiConfig.portHeight;
+                portIndex=this.portsOut.length;
+            }
 
             var w=(uiConfig.portSize+uiConfig.portPadding)*portIndex;
             var xpos=0+w;
@@ -574,7 +581,7 @@ var width=w;
                 self.oprect.bgRect.attr({width:w+uiConfig.portSize});
             }
 
-            var port = r.rect(xpos,ypos, uiConfig.portSize, uiConfig.portSize).attr({
+            var port = r.rect(xpos,offY+ypos, uiConfig.portSize, uiConfig.portHeight).attr({
             // var port = r.circle(x+(uiConfig.portSize+uiConfig.portPadding)*portIndex,y+yp, uiConfig.portSize/2).attr({
                 fill: uiConfig.colorPort,
                 "stroke-width": 0
@@ -607,27 +614,30 @@ var width=w;
                     y:ypos-uiConfig.portSize*0.25,
                     width:uiConfig.portSize*1.5,
                     height:uiConfig.portSize*1.5,
-                    stroke:'#fff',
-                    'stroke-width':1,
+                    // stroke:'#fff',
+                    'stroke-width':0,
 
                 });
 
-
                 var statusText='Port: ';
-
                 
                 setStatusText(getPortDescription(thePort));
 
             }, function ()
             {
                 selectedEndPort=null;
+
+                var offY=0;
+                if(inout=='out') offY=uiConfig.portSize-uiConfig.portHeight;
+
                 port.attr(
                     {
+
                         fill:getPortColor(this.thePort.type),
                         width:uiConfig.portSize,
-                        height:uiConfig.portSize,
+                        height:uiConfig.portHeight,
                         x:xpos,
-                        y:ypos,
+                        y:ypos+offY,
                         'stroke-width':0,
                     });
 
@@ -635,7 +645,6 @@ var width=w;
             });
 
             port.drag(PortMove,PortDrag,PortUp);
-
 
             $(port.node).bind("contextmenu", function(e)
             {
@@ -648,7 +657,8 @@ var width=w;
             if(inout=='out') this.portsOut.push(port);
                 else this.portsIn.push(port);
 
-this.oprect.getGroup().transform('t'+x+','+y);
+            this.oprect.getGroup().transform('t'+x+','+y);
+
         };
 
     };
@@ -936,12 +946,13 @@ this.oprect.getGroup().transform('t'+x+','+y);
 
         this.updateViewBox=function()
         {
-            r.setViewBox(
-                viewBox.x,
-                viewBox.y,
-                viewBox.w,
-                viewBox.h
-                );
+            if(!isNaN(viewBox.x) && !isNaN(viewBox.y) && !isNaN(viewBox.w) && !isNaN(viewBox.h))
+                r.setViewBox(
+                    viewBox.x,
+                    viewBox.y,
+                    viewBox.w,
+                    viewBox.h
+                    );
         };
 
         this.show=function(_scene)
@@ -1007,8 +1018,11 @@ this.oprect.getGroup().transform('t'+x+','+y);
 
             $("svg").bind("mousewheel", function (event,delta,nbr)
             {
+                event=mouseEvent(event);
                 if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
                 {
+                    viewBox.x+=delta/2;
+                    viewBox.y+=delta/2;
                     viewBox.w-=delta;
                     viewBox.h-=delta;
                 }
@@ -1111,7 +1125,7 @@ this.oprect.getGroup().transform('t'+x+','+y);
 
             scene.onAdd=function(op)
             {
-                var uiOp=new OpUi(mouseNewOPX, mouseNewOPY, 100, 34, op.name);
+                var uiOp=new OpUi(mouseNewOPX, mouseNewOPY, 100, 31, op.name);
                 uiOp.op=op;
                 self.ops.push(uiOp);
                 
@@ -1126,6 +1140,12 @@ this.oprect.getGroup().transform('t'+x+','+y);
 
                 if(op.uiAttribs)
                 {
+                    if(op.uiAttribs.hasOwnProperty('title'))
+                    {
+                        console.log('settitle '+op.uiAttribs.title);
+        
+                        ui.setOpTitle(uiOp,op.uiAttribs.title);
+                    }
                     if(op.uiAttribs.hasOwnProperty('translate'))
                     {
                         uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
@@ -1210,6 +1230,22 @@ this.oprect.getGroup().transform('t'+x+','+y);
                 ui.setSelectedOp(uiOp);
           };
       };
+
+        this.setOpTitle=function(uiop,t)
+        {
+            uiop.op.uiAttribs.title=t;
+            uiop.op.name=t;
+            uiop.oprect.setTitle(t);
+
+        };
+
+        this.setSelectedOpTitle=function(t)
+        {
+            if(selectedOp)
+            {
+                this.setOpTitle(selectedOp,t);
+            }
+        };
 
         this.setSelectedOp=function(uiop)
         {
