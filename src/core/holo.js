@@ -1,4 +1,3 @@
-
 var PORT_DIR_IN=0;
 var PORT_DIR_OUT=1;
 
@@ -8,7 +7,6 @@ var OP_PORT_TYPE_OBJECT =2;
 var OP_PORT_TYPE_TEXTURE =2;
 
 var Ops = {};
-
 
 var Op = function()
 {
@@ -24,6 +22,7 @@ var Op = function()
     {
         return this.name;
     };
+
     this.addOutPort=function(p)
     {
         p.direction=PORT_DIR_OUT;
@@ -31,6 +30,7 @@ var Op = function()
         this.portsOut.push(p);
         return p;
     };
+
     this.addInPort=function(p)
     {
         p.direction=PORT_DIR_IN;
@@ -38,10 +38,7 @@ var Op = function()
         this.portsIn.push(p);
         return p;
     };
-    this.execute=function()
-    {
-        this.exec();
-    };
+
     this.printInfo=function()
     {
         for(var i=0;i<this.portsIn.length;i++)
@@ -81,9 +78,7 @@ var Op = function()
             console.log('.');
             if(Link.canLink(otherPort,this.portsIn[ipi]))return this.portsIn[ipi];
         }
-
     };
-
 
     this.getSerialized=function()
     {
@@ -131,15 +126,8 @@ var Port=function(parent,name,type,uiAttribs)
     this.uiAttribs=uiAttribs;
     var valueBeforeLink=null;
 
-    this.__defineGetter__("val", function()
-    {
-        return this.value;
-    });
-
-    this.__defineSetter__("val", function(v)
-    {
-        this.setValue(v);
-    });
+    this.__defineGetter__("val", function(){ return this.value; });
+    this.__defineSetter__("val", function(v){ this.setValue(v); });
 
     this.getType=function(){ return this.type; };
     this.isLinked=function(){ return this.links.length>0; };
@@ -176,11 +164,8 @@ var Port=function(parent,name,type,uiAttribs)
         for(var i in this.links)
         {
             if(this.links[i].portIn==p2 || this.links[i].portOut==p2)
-            {
                 this.links[i].remove();
-            }
         }
-
     };
 
     this.isLinkedTo=function(p2)
@@ -200,7 +185,6 @@ var Port=function(parent,name,type,uiAttribs)
             if(this.links[i].portOut!=this)this.links[i].portOut.onTriggered();
         }
     };
-
 
     this.execute=function()
     {
@@ -249,8 +233,6 @@ var Port=function(parent,name,type,uiAttribs)
     };
 };
 
-
-
 // ---------------------------------------------------------------------------
 
 var Link = function(scene)
@@ -280,7 +262,6 @@ var Link = function(scene)
         this.portOut=null;
         this.scene=null;
     };
-
 
     this.link=function(p1,p2)
     {
@@ -318,7 +299,6 @@ var Link = function(scene)
     };
 };
 
-
 Link.canLinkText=function(p1,p2)
 {
     if(!p1)return 'can not link: port 1 invalid';
@@ -346,9 +326,7 @@ Link.canLink=function(p1,p2)
     return true;
 };
 
-
 // ------------------------------------------------------------------------------------
-
 
 var Scene = function()
 {
@@ -357,7 +335,6 @@ var Scene = function()
     this.timer=new Timer();
     this.animFrameOps=[];
     
-
     this.clear=function()
     {
         this.timer=new Timer();
@@ -382,7 +359,6 @@ var Scene = function()
 
     this.deleteOp=function(opid,tryRelink)
     {
-
         for(var i in this.ops)
         {
             if(this.ops[i].id==opid)
@@ -396,7 +372,7 @@ var Scene = function()
                     if(tryRelink)
                     {
                         if(
-                            (this.ops[i].portsIn.length>0 && this.ops[i].portsIn[0].isLinked()) && 
+                            (this.ops[i].portsIn.length>0 && this.ops[i].portsIn[0].isLinked()) &&
                             (this.ops[i].portsOut.length>0 && this.ops[i].portsOut[0].isLinked()))
                         {
                             if(this.ops[i].portsIn[0].getType()==this.ops[i].portsOut[0].getType())
@@ -423,7 +399,6 @@ var Scene = function()
                 }
             }
         }
-
     };
 
     this.exec=function()
@@ -437,7 +412,6 @@ var Scene = function()
         {
             self.animFrameOps[i].onAnimFrame(time);
         }
-
     };
 
     this.link=function(op1,port1Name,op2,port2Name)
@@ -457,6 +431,7 @@ var Scene = function()
             console.log(Link.canLinkText(port1,port2));
         }
     };
+
     this.onAdd=function(op){};
     this.onDelete=function(op){};
     this.onLink=function(p1,p2){};
@@ -473,14 +448,15 @@ var Scene = function()
         
         return JSON.stringify(obj);
     };
+
     this.getOpById=function(opid)
     {
         for(var i in this.ops)
         {
             if(this.ops[i].id==opid)return this.ops[i];
         }
-
     };
+
     this.deSerialize=function(obj)
     {
         if (typeof obj === "string") obj=JSON.parse(obj);
@@ -517,9 +493,6 @@ var Scene = function()
                 var port2=op.getPortByName(obj.ops[iop].portsOut[ipo].name);
                 if(port2&& port2.type!=OP_PORT_TYPE_TEXTURE)port2.val=obj.ops[iop].portsOut[ipo].value;
             }
-
-
-            // op.uiAttribs=obj.ops[iop].uiAttribs;
         }
 
         // create links...
@@ -527,7 +500,6 @@ var Scene = function()
         {
             for(var ipi2 in obj.ops[iop].portsIn)
             {
-
                 for(var ili in obj.ops[iop].portsIn[ipi2].links)
                 {
                     addLink(
@@ -537,36 +509,15 @@ var Scene = function()
                         obj.ops[iop].portsIn[ipi2].links[ili].portOut);
                 }
             }
-
-
-            // for(var ipo in obj.ops[iop].portsOut)
-            // {
-            //     for(var ili in obj.ops[iop].portsOut[ipo].links)
-            //     {
-            //         addLink(
-            //             obj.ops[iop].portsOut[ipo].links[ili].objIn,
-            //             obj.ops[iop].portsOut[ipo].links[ili].objOut,
-            //             obj.ops[iop].portsOut[ipo].links[ili].portIn,
-            //             obj.ops[iop].portsOut[ipo].links[ili].portOut);
-
-            //     }
-            // }
         }
-
 
         for(var i in this.ops)
         {
             this.ops[i].id=generateUUID();
         }
 
-
-
     };
 
     this.exec();
 
 };
-
-
-
-
