@@ -139,23 +139,16 @@ function Line(startX, startY, thisPaper)
     {
         var startX=start.x;
         var startY=start.y;
-
         var endX=end.x;
         var endY=end.y;
 
-        
         return "M "+startX+" "+startY+" L" + endX + " " + endY;
-
     };
     this.thisLine = thisPaper.path(this.getPath());
     this.thisLine.attr({        stroke: uiConfig.colorLink,
         "stroke-width": 2});
     this.redraw = function() { this.thisLine.attr("path", this.getPath()); };
 }
-
-
-
-
 
 function UiLink(port1, port2)
 {
@@ -422,7 +415,7 @@ var line;
             // var tyGroup = dy-this.previousDy;
 
 
-            if(startMoveX==-1)
+            if(startMoveX==-1 && self.op.uiAttribs.translate)
             {
                 startMoveX=pos.x-self.op.uiAttribs.translate.x;
                 startMoveY=pos.y-self.op.uiAttribs.translate.y;
@@ -1460,19 +1453,18 @@ this.getCanvasCoords=function(mx,my)
     return res;
 };
 
-this.addAssetOp=function(url,suffix)
+this.addAssetOp=function(url,suffix,title)
 {
-
+    var uiAttr={'title':title,translate:{x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2}};
     if(suffix=='.obj')
     {
-        var op=ui.scene.addOp('Ops.Gl.Meshes.ObjMesh');
+        var op=ui.scene.addOp('Ops.Gl.Meshes.ObjMesh',uiAttr);
         op.getPort('file').val=url;
-
     }
     else
     if(suffix=='.png' || suffix=='.jpg')
     {
-        var op=ui.scene.addOp('Ops.Gl.Texture');
+        var op=ui.scene.addOp('Ops.Gl.Texture',uiAttr);
         op.getPort('file').val=url;
     }
     else

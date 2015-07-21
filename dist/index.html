@@ -347,7 +347,7 @@ $( ".searchresult:first" ).addClass( "selected" );
             {{#each files}}
                 <tr>
                 <td>
-                    <a onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}')">
+                    <a onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
                     {{name}}
                     </a>
                 </td>
