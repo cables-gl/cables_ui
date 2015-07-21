@@ -94,15 +94,26 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var w=0,h=0;
+    var x=0,y=0;
 
     this.name='fullscreen rectangle';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.ratio=this.addInPort(new Port(this,"ratio",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:[1.25,1.3333333333,1.777777777778,2.33333333333333]} ));
+
+    // 1,25 // 5:4
+    // 1,33333333333333 //4:3
+    // 1,77777777777778 // 16:9
+    // 2,33333333333333 // 21:9
 
     this.render.onTriggered=function()
     {
+        // if(w!=cgl.canvasWidth || h!=cgl.canvasHeight) 
+          rebuild();
         cgl.pushPMatrix();
         mat4.identity(cgl.pMatrix);
+        mat4.ortho(cgl.pMatrix, 0, cgl.canvasWidth, cgl.canvasHeight, 0, -10.0, 1000);
 
         cgl.pushMvMatrix();
         mat4.identity(cgl.mvMatrix);
@@ -112,29 +123,61 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
 
         cgl.popPMatrix();
         cgl.popMvMatrix();
-
     };
 
     var geom=new CGL.Geometry();
-    geom.vertices = [
-         1.0,  1.0,  0.0,
-        -1.0,  1.0,  0.0,
-         1.0, -1.0,  0.0,
-        -1.0, -1.0,  0.0
-    ];
+    this.mesh=null;
 
-    geom.texCoords = [
-         1.0, 1.0,
-         0.0, 1.0,
-         1.0, 0.0,
-         0.0, 0.0
-    ];
+    function rebuild()
+    {
 
-    geom.verticesIndices = [
-        0, 1, 2,
-        3, 1, 2
-    ];
-    this.mesh=new CGL.Mesh(geom);
+        // if(cgl.canvasWidth>cgl.canvasHeight)
+        {
+            w=cgl.canvasHeight*self.ratio.val;
+            h=cgl.canvasHeight;
+
+        }
+        
+        if(w>cgl.canvasWidth)
+        {
+          w=cgl.canvasWidth;
+          h=cgl.canvasWidth/self.ratio.val;
+        }
+
+        console.log('w,h ',w,h);
+
+        x=0;
+        y=0;
+        if(w<cgl.canvasWidth) x=(cgl.canvasWidth-w)/2;
+        if(h<cgl.canvasHeight) y=(cgl.canvasHeight-h)/2;
+
+        geom.vertices = [
+             x+w, y+h,  0.0,
+             x,   y+h,  0.0,
+             x+w, y,    0.0,
+             x,   y,    0.0
+        ];
+
+        geom.texCoords = [
+             1.0, 1.0,
+             0.0, 1.0,
+             1.0, 0.0,
+             0.0, 0.0
+        ];
+
+        geom.verticesIndices = [
+            0, 1, 2,
+            3, 1, 2
+        ];
+
+        if(!self.mesh) self.mesh=new CGL.Mesh(geom);
+        else self.mesh.setGeom(geom);
+    }
+
+    this.ratio.onValueChanged=rebuild;
+    // this.ratio.val=1.77777777777778;
+    this.ratio.val=1.333333333;
+
 };
 
 Ops.Gl.Meshes.FullscreenRectangle.prototype = new Op();

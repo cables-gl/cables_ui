@@ -28,6 +28,7 @@ Ops.Gl.Renderer = function()
         gl.enable(gl.DEPTH_TEST);
         GL.clearColor(0,0,0,1);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+
         gl.viewport(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
         mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
 
