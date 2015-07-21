@@ -11,6 +11,15 @@ CABLES.togglePortValBool=function(which)
 };
 
 
+function mouseEvent(event)
+{
+    if(!event.offsetX) event.offsetX = event.layerX;//(event.pageX - $(event.target).offset().left);
+    if(!event.offsetY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
+    return event;
+}
+
+
+
 Handlebars.registerHelper('json', function(context) {
     return JSON.stringify(context);
 });
@@ -195,7 +204,9 @@ function UiLink(port1, port2)
                     else
                     {
                         console.log('show showOpSelect');
-                                
+                             
+                        event=mouseEvent(event);
+
                         ui.showOpSelect(event.offsetX,event.offsetY,null,null,self);
                     }
                 }
@@ -390,13 +401,14 @@ var line;
           this.previousDx = 0;
           this.previousDy = 0;
         },
-        move = function (dx, dy,a,b,event)
+        move = function (dx, dy,a,b,e)
         {
-            if(event.which==3)return;
-            if(event.which==2)return;
+            if(e.which==3)return;
+            if(e.which==2)return;
 
+            e=mouseEvent(e);
 
-            var pos=ui.getCanvasCoords(event.offsetX,event.offsetY);
+            var pos=ui.getCanvasCoords(e.offsetX,e.offsetY);
 
             if(!self.op.uiAttribs)
             {
@@ -488,10 +500,13 @@ var width=w;
             else
             {
                 // line.updateEnd(this.startx+dx,this.starty+dy);
+
+
+                event=mouseEvent(event);
+
                 line.updateEnd(
                     ui.getCanvasCoords(event.offsetX,event.offsetY).x,
                     ui.getCanvasCoords(event.offsetX,event.offsetY).y
-                    // this.startx+dx,this.starty+dy
                     );
             }
 
@@ -533,6 +548,7 @@ var width=w;
             }
             else
             {
+                event=mouseEvent(event);
                 ui.showOpSelect(event.offsetX,event.offsetY,this.op,this.thePort);
             }
 
@@ -1006,18 +1022,19 @@ this.oprect.getGroup().transform('t'+x+','+y);
                 panY=0;
             });
 
-            $("svg").bind("mousemove", function (event)
+            $("svg").bind("mousemove", function (e)
             {
-                if(event.which==2 || event.which==3)
+                e=mouseEvent(e);
+                if(e.which==2 || e.which==3)
                 {
-                    viewBox.x+=panX-ui.getCanvasCoords(event.offsetX,event.offsetY).x;
-                    viewBox.y+=panY-ui.getCanvasCoords(event.offsetX,event.offsetY).y;
+                    viewBox.x+=panX-ui.getCanvasCoords(e.offsetX,e.offsetY).x;
+                    viewBox.y+=panY-ui.getCanvasCoords(e.offsetX,e.offsetY).y;
 
                     self.updateViewBox();
                 }
         
-                panX=ui.getCanvasCoords(event.offsetX,event.offsetY).x;
-                panY=ui.getCanvasCoords(event.offsetX,event.offsetY).y;
+                panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
+                panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
             });
 
         };
