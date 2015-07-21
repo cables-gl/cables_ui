@@ -96,7 +96,7 @@ var uiConfig=
 
     colorLink:'#fff',
     colorLinkHover:'#fff',
-    colorLinkInvalid:'#f00',
+    colorLinkInvalid:'#888',
     colorOpBg:'#fff',
     colorPort:'#6c9fde',
     colorPortHover:'#f00',
@@ -149,7 +149,7 @@ function Line(startX, startY, thisPaper)
     };
     this.thisLine = thisPaper.path(this.getPath());
     this.thisLine.attr({        stroke: uiConfig.colorLink,
-        "stroke-width": 1});
+        "stroke-width": 2});
     this.redraw = function() { this.thisLine.attr("path", this.getPath()); };
 }
 
@@ -498,7 +498,7 @@ var width=w;
             if(event.which==2)return;
         
 
-            if(!line) line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portheight, r);
+            if(!line) line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portHeight, r);
             else
             {
                 // line.updateEnd(this.startx+dx,this.starty+dy);
