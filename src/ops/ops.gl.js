@@ -15,14 +15,25 @@ Ops.Gl.Renderer = function()
     this.name='render';
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
+    this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
     var initTranslate=vec3.create();
     vec3.set(initTranslate, 0,0,-2);
 
     this.onAnimFrame=function(time)
     {
-        cgl.canvasWidth=self.canvas.clientWidth;
-        cgl.canvasHeight=self.canvas.clientHeight;
+        if(self.width.val!=self.canvas.clientWidth)
+        {
+            cgl.canvasWidth=self.canvas.clientWidth;
+            self.width.val=cgl.canvasWidth;
+        }
+
+        if(self.height.val!=self.canvas.clientHeight)
+        {
+            cgl.canvasHeight=self.canvas.clientHeight;
+            self.height.val=cgl.canvasHeight;
+        }
 
         cgl.gl.enable(cgl.gl.DEPTH_TEST);
         cgl.gl.clearColor(0,0,0,1);

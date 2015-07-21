@@ -426,8 +426,8 @@ var line;
 
             if(e.shiftKey===true)
             {
-                pos.x=parseInt(pos.x/10,10)*10;
-                pos.y=parseInt(pos.y/10,10)*10;
+                pos.x=parseInt(pos.x/25,10)*25;
+                pos.y=parseInt(pos.y/25,10)*25;
             }
         
             this.group.transform('t'+pos.x+','+pos.y);
