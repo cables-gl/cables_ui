@@ -109,8 +109,8 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
 
     this.render.onTriggered=function()
     {
-        // if(w!=cgl.canvasWidth || h!=cgl.canvasHeight) 
-          rebuild();
+        if(oldCanvasWidth!=cgl.canvasWidth || oldCanvasHeight!=cgl.canvasHeight) rebuild();
+
         cgl.pushPMatrix();
         mat4.identity(cgl.pMatrix);
         mat4.ortho(cgl.pMatrix, 0, cgl.canvasWidth, cgl.canvasHeight, 0, -10.0, 1000);
@@ -131,20 +131,17 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
     function rebuild()
     {
 
-        // if(cgl.canvasWidth>cgl.canvasHeight)
-        {
-            w=cgl.canvasHeight*self.ratio.val;
-            h=cgl.canvasHeight;
+        oldCanvasWidth=cgl.canvasWidth;
+        oldCanvasHeight=cgl.canvasHeight;
 
-        }
+        w=cgl.canvasHeight*self.ratio.val;
+        h=cgl.canvasHeight;
         
         if(w>cgl.canvasWidth)
         {
           w=cgl.canvasWidth;
           h=cgl.canvasWidth/self.ratio.val;
         }
-
-        console.log('w,h ',w,h);
 
         x=0;
         y=0;

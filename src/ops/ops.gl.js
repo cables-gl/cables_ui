@@ -61,6 +61,54 @@ Ops.Gl.Renderer.prototype = new Op();
 // --------------------------------------------------------------------------
 
 
+Ops.Gl.LetterBox = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='letterbox';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.ratio=this.addInPort(new Port(this,"ratio",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:[1.25,1.3333333333,1.777777777778,2.33333333333333]} ));
+    this.ratio.val=1.777777777778;
+
+    var x=0,y=0,w=1000,h=1000;
+
+    this.render.onTriggered=function()
+    {
+        cgl.gl.enable(gl.SCISSOR_TEST);
+
+        w=cgl.canvasHeight*self.ratio.val;
+        h=cgl.canvasHeight;
+        
+        if(w>cgl.canvasWidth)
+        {
+          w=cgl.canvasWidth;
+          h=cgl.canvasWidth/self.ratio.val;
+        }
+
+        x=0;
+        y=0;
+        if(w<cgl.canvasWidth) x=(cgl.canvasWidth-w)/2;
+        if(h<cgl.canvasHeight) y=(cgl.canvasHeight-h)/2;
+
+        cgl.gl.scissor(x,y,w,h);
+
+        self.trigger.call();
+        cgl.gl.disable(gl.SCISSOR_TEST);
+
+    };
+
+
+};
+
+Ops.Gl.LetterBox.prototype = new Op();
+Ops.Gl.AspectRatioBorder=Ops.Gl.LetterBox;
+
+// --------------------------------------------------------------------------
+
+
 Ops.Gl.ClearColor = function()
 {
     Op.apply(this, arguments);
