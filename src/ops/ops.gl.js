@@ -507,10 +507,10 @@ Ops.Gl.Shader.Noise = function()
         {
             timeStart=Date.now();
             shader.bind();
-            timeUniform=gl.getUniformLocation(shader.getProgram(), "time");
+            timeUniform=cgl.gl.getUniformLocation(shader.getProgram(), "time");
         }
 
-        gl.uniform1f(timeUniform, (Date.now()-timeStart)/1000);
+        cgl.gl.uniform1f(timeUniform, (Date.now()-timeStart)/1000);
         cgl.setPreviousShader();
 
         self.trigger.call();
@@ -883,17 +883,17 @@ Ops.Gl.Render2Texture = function()
 
     texture.setSize(this.width.val,this.height.val);
 
-    frameBuf = GL.createFramebuffer();
-    GL.bindFramebuffer(GL.FRAMEBUFFER, frameBuf);
+    frameBuf = cgl.gl.createFramebuffer();
+    cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
-    var renderbuffer = GL.createRenderbuffer();
-    GL.bindRenderbuffer(GL.RENDERBUFFER, renderbuffer);
-    GL.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, this.width.val,this.height.val);
-    GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture.tex, 0);
-    GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderbuffer);
-    GL.bindTexture(GL.TEXTURE_2D, null);
-    GL.bindRenderbuffer(GL.RENDERBUFFER, null);
-    GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+    var renderbuffer = cgl.gl.createRenderbuffer();
+    cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
+    cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, this.width.val,this.height.val);
+    cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
+    cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
+    cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
+    cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
+    cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
     self.tex.val=texture;
 
@@ -901,20 +901,20 @@ Ops.Gl.Render2Texture = function()
     {
         cgl.pushMvMatrix();
 
-        GL.bindFramebuffer(GL.FRAMEBUFFER, frameBuf);
+        cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
         
         cgl.pushPMatrix();
-        gl.viewport(0, 0, 1920,1080);
+        cgl.gl.viewport(0, 0, 1920,1080);
         mat4.perspective(cgl.pMatrix,45, self.width.val/self.height.val, 0.01, 1100.0);
 
         self.trigger.call();
 
         cgl.popPMatrix();
         
-        GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+        cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
         
         cgl.popMvMatrix();
-        gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
+        cgl.gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
     };
 
 

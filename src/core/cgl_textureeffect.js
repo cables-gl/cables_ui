@@ -29,8 +29,8 @@ CGL.TextureEffect=function()
     var textureSource=null;
     var textureTarget=new CGL.Texture();
 
-    var frameBuf = GL.createFramebuffer();
-    var renderbuffer = GL.createRenderbuffer();
+    var frameBuf = cgl.gl.createFramebuffer();
+    var renderbuffer = cgl.gl.createRenderbuffer();
 
     var switched=false;
 
@@ -54,15 +54,15 @@ CGL.TextureEffect=function()
         
         textureTarget.setSize(textureSource.width,textureSource.height);
 
-        GL.bindFramebuffer(GL.FRAMEBUFFER, frameBuf);
+        cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
-        GL.bindRenderbuffer(GL.RENDERBUFFER, renderbuffer);
-        GL.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, textureSource.width,textureSource.height);
-        GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, textureTarget.tex, 0);
-        GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderbuffer);
-        GL.bindTexture(GL.TEXTURE_2D, null);
-        GL.bindRenderbuffer(GL.RENDERBUFFER, null);
-        GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+        cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
+        cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, textureSource.width,textureSource.height);
+        cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, textureTarget.tex, 0);
+        cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
+        cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
+        cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
         console.log(
             self.getCurrentTargetTexture().height,
@@ -95,11 +95,11 @@ CGL.TextureEffect=function()
 
 
 
-        GL.bindFramebuffer(GL.FRAMEBUFFER, frameBuf);
-        GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, self.getCurrentTargetTexture().tex, 0);
+        cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
+        cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, self.getCurrentTargetTexture().tex, 0);
 
         cgl.pushPMatrix();
-        gl.viewport(0, 0, self.getCurrentTargetTexture().width,self.getCurrentTargetTexture().height);
+        cgl.gl.viewport(0, 0, self.getCurrentTargetTexture().width,self.getCurrentTargetTexture().height);
         mat4.perspective(cgl.pMatrix,45, self.getCurrentTargetTexture().width/self.getCurrentTargetTexture().height, 0.01, 1100.0);
 
 
@@ -110,8 +110,8 @@ CGL.TextureEffect=function()
         mat4.identity(cgl.mvMatrix);
 
 
-        GL.clearColor(0,1,0,1);
-        GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+        cgl.gl.clearColor(0,1,0,1);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
     };
 
     this.finish=function()
@@ -123,10 +123,10 @@ CGL.TextureEffect=function()
 
         cgl.popPMatrix();
 
-        GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+        cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
         cgl.popMvMatrix();
-        gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
+        cgl.gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
 
         switched=!switched;
 

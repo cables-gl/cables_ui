@@ -84,8 +84,8 @@ Ops.Gl.TextureEffects.Invert = function()
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
@@ -152,8 +152,8 @@ Ops.Gl.TextureEffects.Desaturate = function()
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
@@ -233,8 +233,8 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+        gl.activeTexture(cgl.gl.TEXTURE0);
+        gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
@@ -307,8 +307,8 @@ Ops.Gl.TextureEffects.Vignette = function()
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
@@ -377,8 +377,8 @@ Ops.Gl.TextureEffects.Blur = function()
         // first pass
 
         cgl.currentTextureEffect.bind();
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         uniDirX.setValue(0.0);
         uniDirY.setValue(1.0);
@@ -388,8 +388,8 @@ Ops.Gl.TextureEffects.Blur = function()
         // second pass
 
         cgl.currentTextureEffect.bind();
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         uniDirX.setValue(1.0);
         uniDirY.setValue(0.0);
