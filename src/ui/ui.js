@@ -879,6 +879,7 @@ var width=w;
                 $('#serverproject').show();
                 $('#serverprojectname').html(proj.name);
                 self.updateProjectFiles(proj);
+                $('.viewProjectLink').attr('href','/view/'+proj._id);
             }
         };
 
