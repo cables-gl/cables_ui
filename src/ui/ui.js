@@ -949,6 +949,16 @@ var width=w;
                     );
         };
 
+        this.updateProjectList=function()
+        {
+            $('#projectlist').html('...');
+
+            CABLES.api.get('myprojects',function(data)
+            {
+                $('#projectlist').html(getHandleBarHtml('projects',data));
+            });
+        };
+
         this.show=function(_scene)
         {
             this.scene=_scene;
@@ -956,11 +966,7 @@ var width=w;
             $('#meta').append(getHandleBarHtml('timeline_controler'),{});
             $('#meta').append();
 
-            CABLES.api.get('myprojects',function(data)
-            {
-                $('#projectlist').append(getHandleBarHtml('projects',data));
-            });
-
+            this.updateProjectList();
 
             CABLES.api.get('user/me',
                 function(data)

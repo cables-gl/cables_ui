@@ -41,6 +41,11 @@ CABLES.API=function()
         request("POST",url,data,cb);
     };
 
+    this.delete=function(url,data,cb,cbErr)
+    {
+        request("DELETE",url,data,cb);
+    };
+
     this.put=function(url,data,cb,cbErr)
     {
         request("PUT",url,data,cb);

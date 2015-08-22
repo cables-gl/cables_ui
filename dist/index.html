@@ -454,14 +454,24 @@ $( ".searchresult:first" ).addClass( "selected" );
 
 <div id="projects">
 <h2>my projects:</h2>
-{{#each projects}}
-    - <a href="#/project/{{_id}}">{{name}}</a>
-    <br/>
-{{/each}}
+
+<table>
+    {{#each projects}}
+    <tr>
+        <td style="width:70%;">
+            <a href="#/project/{{_id}}">{{name}}</a>
+        </td>
+        <td>
+            <span onclick="if(confirm('delete ?')) CABLES.api.delete('project/{{_id}}',{},function(){ ui.updateProjectList(); } );">[del]</span>
+            &nbsp;<span onclick="CABLES.api.put('project/{{_id}}',{name:prompt('projectname','{{name}}')},function(){ ui.updateProjectList(); } );">[rename]</span>
+        </td>
+    </tr>
+    {{/each}}
+
+</table>
 
 <br/>
-<input type="text" id="projectname"/>
-<span class="button" onclick="CABLES.api.post('project',{name:$('#projectname').val()});">create</span>
+<span class="button" onclick="CABLES.api.post('project',{name: prompt('projectname','') },function(){ ui.updateProjectList(); } );">create project</span>
 
 
 
