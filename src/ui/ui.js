@@ -820,7 +820,7 @@ var width=w;
 
                 if(!localStorage.holo || localStorage.holo===''  || localStorage.holo.length<20)
                 {
-                    scene.clear();
+                    self.scene.clear();
                     ui.showExample(0);
                 }
 
