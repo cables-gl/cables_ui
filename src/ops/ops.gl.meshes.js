@@ -225,8 +225,6 @@ Ops.Gl.Meshes.Circle = function()
             var posxTexCoord=(Math.cos(degInRad)+1.0)/2;
             var posyTexCoord=(Math.sin(degInRad)+1.0)/2;
 
-            console.log(posxTexCoord,posyTexCoord);
-
             geom.addFace(
                         [posx,posy,0],
                         [oldPosX,oldPosY,0],
