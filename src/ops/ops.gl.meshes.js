@@ -213,6 +213,8 @@ Ops.Gl.Meshes.Circle = function()
         geom.clear();
         var oldPosX=0;
         var oldPosY=0;
+        var oldPosXTexCoord=0;
+        var oldPosYTexCoord=0;
 
         for (var i=0; i <= self.segments.val*self.percent.val; i++)
         {
@@ -220,13 +222,21 @@ Ops.Gl.Meshes.Circle = function()
             var posx=Math.cos(degInRad)*self.radius.val;
             var posy=Math.sin(degInRad)*self.radius.val;
 
+            var posxTexCoord=Math.abs(Math.cos(degInRad))*0.5+0.5;
+            var posyTexCoord=Math.abs(Math.sin(degInRad))*0.5+0.5;
+
+            // console.log(posxTexCoord,posyTexCoord);
+
             geom.addFace(
                         [posx,posy,0],
                         [oldPosX,oldPosY,0],
                         [0,0,0]
                         );
 
-            geom.texCoords.push(0,0,0,0,0,0);
+            geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,0,0);
+
+            oldPosXTexCoord=posxTexCoord;
+            oldPosYTexCoord=posyTexCoord;
 
             oldPosX=posx;
             oldPosY=posy;
