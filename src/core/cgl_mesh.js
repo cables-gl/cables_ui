@@ -77,7 +77,7 @@ CGL.Mesh=function(geom)
         cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
 
         var what=cgl.gl.TRIANGLES;
-        if(cgl.wireframe)what=gl.LINES;
+        if(cgl.wireframe)what=cgl.gl.LINES;
         else if(cgl.points)what=gl.POINTS;
 
         cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);

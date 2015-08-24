@@ -253,11 +253,13 @@ Ops.Anim.SinusAnim = function()
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.result=this.addOutPort(new Port(this,"result"));
 
+    this.mul=this.addInPort(new Port(this,"mul",OP_PORT_TYPE_VALUE));
+
     var self=this;
 
     this.exe.onTriggered=function()
     {
-        self.result.val=Math.sin(Date.now()/1000.0);
+        self.result.val=Math.sin(Date.now()/1000.0*self.mul.val);
     };
 
     this.exe.onTriggered();

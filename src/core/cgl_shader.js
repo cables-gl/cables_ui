@@ -127,34 +127,34 @@ CGL.Shader=function()
 
     this.getDefaultVertexShader=function()
     {
-        return ''+
-        'attribute vec3 vPosition;\n'+
-        'attribute vec2 attrTexCoord;\n'+
-        'attribute vec3 attrVertNormal;\n'+
-        'varying vec2 texCoord;\n'+
-        'varying vec3 norm;\n'+
-        'uniform mat4 projMatrix;\n'+
-        'uniform mat4 mvMatrix;\n'+
-        'void main()\n'+
-        '{\n'+
-        '   texCoord=attrTexCoord;\n'+
-        '   norm=attrVertNormal;\n'+
-        // '   gl_PointSize=3.0;\n'+
-        '   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);\n'+
-        '}\n';
+        return ''
+        .endl()+'attribute vec3 vPosition;'
+        .endl()+'attribute vec2 attrTexCoord;'
+        .endl()+'attribute vec3 attrVertNormal;'
+        .endl()+'varying vec2 texCoord;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'uniform mat4 projMatrix;'
+        .endl()+'uniform mat4 mvMatrix;'
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   texCoord=attrTexCoord;'
+        .endl()+'   norm=attrVertNormal;'
+        // .endl()'   gl_PointSize=3.0;'
+        .endl()+'   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);'
+        .endl()+'}';
     };
 
     this.getDefaultFragmentShader=function()
     {
-        return ''+
-        'precision mediump float;\n'+
-        'varying vec3 norm;'+
-        'void main()\n'+
-        '{\n'+
+        return ''
+        .endl()+'precision mediump float;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'void main()'
+        .endl()+'{'
 
-        '   gl_FragColor = vec4(0.5,0.5,0.5,1.0);\n'+
+        .endl()+'   gl_FragColor = vec4(0.5,0.5,0.5,1.0);'
         // '   gl_FragColor = vec4(norm.x,norm.y,1.0,1.0);\n'+
-        '}\n';
+        .endl()+'}';
     };
 
     this.srcVert=this.getDefaultVertexShader();
@@ -272,7 +272,7 @@ CGL.Shader=function()
             if(type==cgl.gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
             if(type==cgl.gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
             
-            console.warn( gl.getShaderInfoLog(shader) );
+            console.warn( cgl.gl.getShaderInfoLog(shader) );
 
             var lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
             for(var i in lines)
@@ -281,7 +281,7 @@ CGL.Shader=function()
                 console.log(j+': ',lines[i]);
             }
 
-            console.warn( gl.getShaderInfoLog(shader) );
+            console.warn( cgl.gl.getShaderInfoLog(shader) );
         }
         return shader;
     };
