@@ -222,10 +222,10 @@ Ops.Gl.Meshes.Circle = function()
             var posx=Math.cos(degInRad)*self.radius.val;
             var posy=Math.sin(degInRad)*self.radius.val;
 
-            var posxTexCoord=Math.abs(Math.cos(degInRad))*0.5+0.5;
-            var posyTexCoord=Math.abs(Math.sin(degInRad))*0.5+0.5;
+            var posxTexCoord=(Math.cos(degInRad)+1.0)/2;
+            var posyTexCoord=(Math.sin(degInRad)+1.0)/2;
 
-            // console.log(posxTexCoord,posyTexCoord);
+            console.log(posxTexCoord,posyTexCoord);
 
             geom.addFace(
                         [posx,posy,0],
@@ -233,7 +233,7 @@ Ops.Gl.Meshes.Circle = function()
                         [0,0,0]
                         );
 
-            geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,0,0);
+            geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,0.5,0.5);
 
             oldPosXTexCoord=posxTexCoord;
             oldPosYTexCoord=posyTexCoord;
