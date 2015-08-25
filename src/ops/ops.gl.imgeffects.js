@@ -105,7 +105,7 @@ Ops.Gl.TextureEffects.Desaturate = function()
 
     this.name='Desaturate';
 
-    this.amount=this.addInPort(new Port(this,"amount"));
+    this.amount=this.addInPort(new Port(this,"amount",{ display:'range' }));
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
@@ -219,6 +219,112 @@ Ops.Gl.TextureEffects.RemoveAlpha = function()
 Ops.Gl.TextureEffects.RemoveAlpha.prototype = new Op();
 
 // ---------------------------------------------------------------------------------------------
+
+
+Ops.Gl.TextureEffects.ColorChannel = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='ColorChannel';
+
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var shader=new CGL.Shader();
+
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'#ifdef HAS_TEXTURES'
+        .endl()+'  varying vec2 texCoord;'
+        .endl()+'  uniform sampler2D tex;'
+        .endl()+'#endif'
+        .endl()+''
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(0.0,0.0,0.0,1.0);'
+        .endl()+'   #ifdef HAS_TEXTURES'
+        
+        .endl()+'   #ifdef CHANNEL_R'
+        .endl()+'       col.r=texture2D(tex,texCoord).r;'
+        .endl()+'   #endif'
+
+        .endl()+'   #ifdef CHANNEL_G'
+        .endl()+'       col.g=texture2D(tex,texCoord).g;'
+        .endl()+'   #endif'
+
+        .endl()+'   #ifdef CHANNEL_B'
+        .endl()+'       col.b=texture2D(tex,texCoord).b;'
+        .endl()+'   #endif'
+
+        .endl()+'   #endif'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
+
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+    var textureUniform=new CGL.Uniform(shader,'t','tex',0);
+
+    this.render.onTriggered=function()
+    {
+        if(!cgl.currentTextureEffect)return;
+        
+        cgl.setShader(shader);
+        cgl.currentTextureEffect.bind();
+
+        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+
+        cgl.currentTextureEffect.finish();
+        cgl.setPreviousShader();
+
+        self.trigger.call();
+    };
+
+    this.channelR=this.addInPort(new Port(this,"channelR",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.channelR.onValueChanged=function()
+    {
+        console.log('change'+self.channelR.val);
+
+        if(self.channelR.val=='true' || self.channelR.val==true)
+            shader.define('CHANNEL_R');
+        else
+            shader.removeDefine('CHANNEL_R');
+    };
+    this.channelR.val=true;
+
+    this.channelG=this.addInPort(new Port(this,"channelG",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.channelG.val=false;
+    this.channelG.onValueChanged=function()
+    {
+        console.log('change'+self.channelG.val);
+
+        if(self.channelG.val=='true')
+            shader.define('CHANNEL_G');
+        else
+            shader.removeDefine('CHANNEL_G');
+    };
+
+
+    this.channelB=this.addInPort(new Port(this,"channelB",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.channelB.val=false;
+    this.channelB.onValueChanged=function()
+    {
+        console.log('change'+self.channelB.val);
+
+        if(self.channelB.val=='true')
+            shader.define('CHANNEL_B');
+        else
+            shader.removeDefine('CHANNEL_B');
+    };
+
+
+};
+
+Ops.Gl.TextureEffects.ColorChannel.prototype = new Op();
+
+// ---------------------------------------------------------------------------------------------
+
 
 Ops.Gl.TextureEffects.RgbMultiply = function()
 {
