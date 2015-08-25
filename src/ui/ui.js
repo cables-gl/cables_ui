@@ -768,10 +768,7 @@ var width=w;
                 $('#glcanvas').attr('width',uiConfig.rendererSizes[rendererSize].w);
                 $('#glcanvas').attr('height',uiConfig.rendererSizes[rendererSize].h);
             }
-
-
         };
-
 
         this.getOpList=function()
         {
