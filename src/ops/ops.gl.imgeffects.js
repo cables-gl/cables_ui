@@ -105,7 +105,7 @@ Ops.Gl.TextureEffects.Desaturate = function()
 
     this.name='Desaturate';
 
-    this.amount=this.addInPort(new Port(this,"amount",{ display:'range' }));
+    this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
