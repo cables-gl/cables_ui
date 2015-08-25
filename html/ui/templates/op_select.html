@@ -15,7 +15,7 @@
   {{#each ops}}
 
     <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
-        <a onclick="ui.scene.addOp('{{name}}');ui.closeModal();" >{{name}}</a>
+        <a onclick="ui.scene.addOp('{{name}}');ui.closeModal();" >{{name}}  {{isFunction}}</a>
     </div>
 
 
@@ -45,8 +45,6 @@ $( ".searchresult:first" ).addClass( "selected" );
 
         oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
     }
-
-
 
     function onInput(e)
     {

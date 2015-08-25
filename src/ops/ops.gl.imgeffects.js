@@ -215,11 +215,9 @@ Ops.Gl.TextureEffects.BrightnessContrast = function()
 
     this.amount.onValueChanged=function()
     {
-                console.log('amount changed! '+self.amount.val);
-                
+        console.log('amount changed! '+self.amount.val);
         amountUniform.setValue(self.amount.val);
     };
-    
 
     this.amountBright.onValueChanged=function()
     {

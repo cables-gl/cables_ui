@@ -789,15 +789,19 @@ var width=w;
                             var opname='Ops.'+ parentname + propertyName + '';
 
                             var isOp=false;
+                            var isFunction=false;
                             if(eval('typeof('+opname+')')=="function") isFunction=true;
 
-                            var op=
+                            if(isFunction)
                             {
-                                isOp:isOp,
-                                name:opname,
-                                lowercasename:opname.toLowerCase()
-                            };
-                            ops.push(op);
+                                var op=
+                                {
+                                    isOp:isOp,
+                                    name:opname,
+                                    lowercasename:opname.toLowerCase()
+                                };
+                                ops.push(op);
+                            }
 
                             found=getop(val[propertyName],parentname+propertyName+'.');
                         }
