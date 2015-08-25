@@ -105,11 +105,11 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'           #endif'
         .endl()+'      #endif'
         .endl()+'      #ifdef HAS_TEXTURE_OPACITY'
-        .endl()+'           col.a*=texture2D(texOpacity,texCoord).g;'
+        .endl()+'          col.a*=texture2D(texOpacity,texCoord).g;'
         .endl()+'       #endif'
         .endl()+'       col.a*=a;'
         .endl()+'   #endif'
-        .endl()+'gl_FragColor = col;'
+        .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
 
@@ -344,6 +344,6 @@ Ops.Gl.Shader.TextureSinusWobble = function()
     this.doRender();
 };
 
-Ops.Gl.Shader.BasicMaterial.prototype = new Op();
+Ops.Gl.Shader.TextureSinusWobble.prototype = new Op();
 
 
