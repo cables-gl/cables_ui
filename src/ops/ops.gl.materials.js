@@ -207,17 +207,6 @@ Ops.Gl.Shader.BasicMaterial = function()
             shader.removeDefine('COLORIZE_TEXTURE');
     };
 
-    this.colorizeTexture=this.addInPort(new Port(this,"colorizeTexture",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    this.colorizeTexture.val=false;
-    this.colorizeTexture.onValueChanged=function()
-    {
-        console.log('change'+self.colorizeTexture.val);
-
-        if(self.colorizeTexture.val=='true')
-            shader.define('COLORIZE_TEXTURE');
-        else
-            shader.removeDefine('COLORIZE_TEXTURE');
-    };
 
     this.doRender();
 };

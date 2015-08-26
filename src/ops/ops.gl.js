@@ -299,17 +299,21 @@ Ops.Gl.Texture = function()
 
     this.name='texture';
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
+
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+
+    this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
+    this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
     
     this.filename.onValueChanged=function()
     {
         console.log('load texture...');
         self.tex=CGL.Texture.load(self.filename.val,function()
-            {
-                // console.log('tex load FINISHED!!!');
-
-                self.textureOut.val=self.tex;
-            });
+        {
+            self.textureOut.val=self.tex;
+            self.width.val=self.tex.width;
+            self.height.val=self.tex.height;
+        });
         self.textureOut.val=self.tex;
 
     };
