@@ -311,16 +311,35 @@ var line;
     {
         var background = this.rect(0, 0, w, h).attr({
             fill: uiConfig.colorOpBg,
-            stroke: "#000"
+            stroke: "#000",
+            "stroke-width":0
         });
 
         var label = this.text(0+w/2,0+h/2+0, text);
         var layer = this.rect(0, 0, w, h).attr({
-            fill: "#ccc",
+            fill: "#000",
             "fill-opacity": 0,
             "stroke-opacity": 0,
             cursor: "move"
         });
+
+        layer.setSelected=function(sel)
+        {
+            if(sel)
+                {
+                    background.attr(
+                        {
+                            "fill": "#ff0",
+                        });
+                }
+                else 
+                        background.attr(
+                        {
+                            "stroke": "#000",
+                            fill: uiConfig.colorOpBg,
+                        });
+
+        };
 
         layer.setTitle=function(t)
         {
@@ -459,14 +478,27 @@ var width=w;
         this.oprect=r.OpRect(x,y,w,h, txt).drag(move, dragger, up);
 
 
-        
-
-
-        this.oprect.node.onmousedown = function ()
+        this.setSelected=function(sel)
         {
-            self.showAddButtons();
-            ui.setSelectedOp(self);
-            ui.showOpParams(self.op);
+            this.oprect.setSelected(sel);
+        };
+
+
+        this.oprect.node.onmousedown = function (ev)
+        {
+            // console.log('ev',ev);
+
+            if(ev.shiftKey)
+            {
+                ui.addSelectedOp(self);
+            }
+            else
+            {
+                self.showAddButtons();
+                ui.setSelectedOp(self);
+                ui.showOpParams(self.op);
+            }
+
         };
         
         this.oprect.node.onclick = function ()
@@ -703,9 +735,11 @@ var width=w;
                     if ($("input").is(":focus")) return;
 
                     if(selectedOp)
-                    {
                         ui.scene.deleteOp( selectedOp.op.id,true );
-                    }
+
+                    if(selectedOps.length>0)
+                        for(var i in selectedOps)
+                            ui.scene.deleteOp( selectedOps[i].op.id,true);
         
                     if(e.stopPropagation) e.stopPropagation();
                     if(e.preventDefault) e.preventDefault();
@@ -1240,6 +1274,8 @@ var width=w;
 
         };
 
+
+
         this.setSelectedOpTitle=function(t)
         {
             if(selectedOp)
@@ -1248,13 +1284,30 @@ var width=w;
             }
         };
 
+        
+
         this.setSelectedOp=function(uiop)
         {
-            if(selectedOp)selectedOp.hideAddButtons();
+            if(selectedOp)
+            {
+                selectedOp.setSelected(false);
+                selectedOp.hideAddButtons();
+            }
                     
             selectedOp=uiop;
             selectedOp.showAddButtons();
+            uiop.oprect.setSelected(true);
         };
+
+        
+        var selectedOps=[];
+        this.addSelectedOp=function(uiop)
+        {
+            selectedOps.push(uiop);
+            uiop.oprect.setSelected(true);
+            console.log(selectedOps.length+' ops selected');
+        };
+
 
         this.cycleRendererSize=function()
         {
@@ -1362,8 +1415,6 @@ var width=w;
 
             for(var ipo in op.portsOut)
             {
-
-
                 (function (index)
                 {
                     $('#portdelete_out_'+index).on('click',function(e)
@@ -1374,13 +1425,8 @@ var width=w;
                 })(ipo);
             }
 
-
-
-
             for(var ipi in op.portsIn)
             {
-                
-
                 (function (index)
                 {
                     $('#portdelete_in_'+index).on('click',function(e)
@@ -1401,9 +1447,7 @@ var width=w;
                         // self.showOpParams(op);
                     });
                 })(ipii);
-
             }
-
         };
 
 
