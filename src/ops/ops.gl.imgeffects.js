@@ -575,14 +575,24 @@ Ops.Gl.TextureEffects.ColorChannel = function()
         
         .endl()+'   #ifdef CHANNEL_R'
         .endl()+'       col.r=texture2D(tex,texCoord).r;'
+        .endl()+'       #ifdef MONO'
+        .endl()+'           col.g=col.b=col.r;'
+        .endl()+'       #endif'
+
         .endl()+'   #endif'
 
         .endl()+'   #ifdef CHANNEL_G'
         .endl()+'       col.g=texture2D(tex,texCoord).g;'
+        .endl()+'       #ifdef MONO'
+        .endl()+'           col.r=col.b=col.g;'
+        .endl()+'       #endif'
         .endl()+'   #endif'
 
         .endl()+'   #ifdef CHANNEL_B'
         .endl()+'       col.b=texture2D(tex,texCoord).b;'
+        .endl()+'       #ifdef MONO'
+        .endl()+'           col.g=col.r=col.b;'
+        .endl()+'       #endif'
         .endl()+'   #endif'
 
         .endl()+'   #endif'
@@ -613,10 +623,8 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     {
         console.log('change'+self.channelR.val);
 
-        if(self.channelR.val=='true' || self.channelR.val==true)
-            shader.define('CHANNEL_R');
-        else
-            shader.removeDefine('CHANNEL_R');
+        if(self.channelR.val=='true' || self.channelR.val==true) shader.define('CHANNEL_R');
+            else shader.removeDefine('CHANNEL_R');
     };
     this.channelR.val=true;
 
@@ -626,10 +634,8 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     {
         console.log('change'+self.channelG.val);
 
-        if(self.channelG.val=='true')
-            shader.define('CHANNEL_G');
-        else
-            shader.removeDefine('CHANNEL_G');
+        if(self.channelG.val=='true')shader.define('CHANNEL_G');
+            else shader.removeDefine('CHANNEL_G');
     };
 
 
@@ -637,12 +643,16 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.channelB.val=false;
     this.channelB.onValueChanged=function()
     {
-        console.log('change'+self.channelB.val);
+        if(self.channelB.val=='true') shader.define('CHANNEL_B'); 
+            else shader.removeDefine('CHANNEL_B');
+    };
 
-        if(self.channelB.val=='true')
-            shader.define('CHANNEL_B');
-        else
-            shader.removeDefine('CHANNEL_B');
+    this.mono=this.addInPort(new Port(this,"mono",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.mono.val=false;
+    this.mono.onValueChanged=function()
+    {
+        if(self.mono.val=='true') shader.define('MONO');
+            else shader.removeDefine('MONO');
     };
 
 
