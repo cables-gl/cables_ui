@@ -95,7 +95,7 @@ var uiConfig=
     portHeight:7,
     portPadding:2,
 
-    colorBackground:'#222',
+    colorBackground:'#333',
     colorLink:'#fff',
     colorLinkHover:'#fff',
     colorLinkInvalid:'#888',
@@ -1067,36 +1067,30 @@ var width=w;
                 self.updateViewBox();
             });
 
-
-            var background = r.rect(0, 0, 9999, 9999).attr({
+            var background = r.rect(-9990, -9990, 9999, 9999).attr({
                 fill: uiConfig.colorBackground,
                 "stroke-width":0
             });
 
             background.toBack();
 
-            // §click = function ()
             background.node.onmousedown = function (ev)
             {
-                        
                 for(var i in selectedOps)
                 {
                     selectedOps[i].setSelected(false);
                 }
                 selectedOps.length=0;
+                self.setSelectedOp(false);
+                self.showProjectParams();
 
             };
-
-
 
             // $("svg").bind("mouseup", function (event)
             // {
             //     panX=0;
             //     panY=0;
             // });
-
-
-
 
             $("svg").bind("mousemove", function (e)
             {
@@ -1121,9 +1115,7 @@ var width=w;
             self.scene.deSerialize(examples[which].src);
         };
 
-
-                
-// document.getElementById()node.addEventListener( 'mousewheel', onMouseWheel, false );
+        // document.getElementById()node.addEventListener( 'mousewheel', onMouseWheel, false );
 
         this.bindScene=function(scene)
         {
@@ -1320,10 +1312,13 @@ var width=w;
                 selectedOp.setSelected(false);
                 selectedOp.hideAddButtons();
             }
-                    
+
             selectedOp=uiop;
-            selectedOp.showAddButtons();
-            uiop.oprect.setSelected(true);
+            if(selectedOp)
+            {
+                selectedOp.showAddButtons();
+                uiop.oprect.setSelected(true);
+            }
         };
 
         
@@ -1395,6 +1390,11 @@ var width=w;
             var context = obj;
             return template(context);
         }
+
+        this.showProjectParams=function(op)
+        {
+            $('#options').html('...');
+        };
 
         this.showOpParams=function(op)
         {
