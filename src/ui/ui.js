@@ -90,10 +90,12 @@ document.addEventListener("DOMContentLoaded", function(event)
 
 var uiConfig=
 {
+
     portSize:10,
     portHeight:7,
     portPadding:2,
 
+    colorBackground:'#222',
     colorLink:'#fff',
     colorLinkHover:'#fff',
     colorLinkInvalid:'#888',
@@ -1065,11 +1067,36 @@ var width=w;
                 self.updateViewBox();
             });
 
-            $("svg").bind("mouseup", function (event)
-            {
-                panX=0;
-                panY=0;
+
+            var background = r.rect(0, 0, 9999, 9999).attr({
+                fill: uiConfig.colorBackground,
+                "stroke-width":0
             });
+
+            background.toBack();
+
+            // §click = function ()
+            background.node.onmousedown = function (ev)
+            {
+                        
+                for(var i in selectedOps)
+                {
+                    selectedOps[i].setSelected(false);
+                }
+                selectedOps.length=0;
+
+            };
+
+
+
+            // $("svg").bind("mouseup", function (event)
+            // {
+            //     panX=0;
+            //     panY=0;
+            // });
+
+
+
 
             $("svg").bind("mousemove", function (e)
             {
