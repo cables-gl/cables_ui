@@ -86,11 +86,8 @@ document.addEventListener("DOMContentLoaded", function(event)
 
 // --------------------------------
 
-
-
 var uiConfig=
 {
-
     portSize:10,
     portHeight:7,
     portPadding:2,
@@ -100,6 +97,7 @@ var uiConfig=
     colorLinkHover:'#fff',
     colorLinkInvalid:'#888',
     colorOpBg:'#fff',
+    colorOpBgSelected:'#ff9',
     colorPort:'#6c9fde',
     colorPortHover:'#f00',
 
@@ -117,7 +115,6 @@ function getPortColor(type)
 
 var r;
 var selectedEndPort=null;
-
 
 function setStatusText(txt)
 {
@@ -331,7 +328,7 @@ var line;
                 {
                     background.attr(
                         {
-                            "fill": "#ff0",
+                            "fill": uiConfig.colorOpBgSelected,
                         });
                 }
                 else 
