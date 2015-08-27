@@ -32,7 +32,7 @@ Ops.Gl.TextureEffects.TextureEffect = function()
     {
         if(!ready)return;
         if(!self.tex.val) return;
-        if(!self.texOut) return;
+        if(!self.texOut.val) return;
         
         if(self.tex.val.width!=self.texOut.val.width || self.tex.val.height!=self.texOut.val.height)
         {
