@@ -32,9 +32,8 @@ Ops.Gl.TextureEffects.TextureEffect = function()
     {
         if(!ready)return;
         if(!self.tex.val) return;
-        if(!self.texOut.val) return;
         
-        if(self.tex.val.width!=self.texOut.val.width || self.tex.val.height!=self.texOut.val.height)
+        if(!self.texOut.val || self.tex.val.width!=self.texOut.val.width || self.tex.val.height!=self.texOut.val.height)
         {
             console.log("tex size changed!?!?!?!?");
             effect.setSourceTexture(self.tex.val);
