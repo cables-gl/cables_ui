@@ -259,7 +259,8 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
 
     this.name='PixelDisplacement';
 
-    this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.amount=this.addInPort(new Port(this,"amountX",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.amountY=this.addInPort(new Port(this,"amountY",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.displaceTex=this.addInPort(new Port(this,"displaceTex",OP_PORT_TYPE_TEXTURE));
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -273,14 +274,15 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
         .endl()+'  uniform sampler2D tex;'
         .endl()+'  uniform sampler2D displaceTex;'
         .endl()+'#endif'
-        .endl()+'uniform float amount;'
+        .endl()+'uniform float amountX;'
+        .endl()+'uniform float amountY;'
         .endl()+''
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
-        .endl()+'       col=texture2D(tex,texCoord+texture2D(displaceTex,texCoord).g*5.0*amount);'
+        .endl()+'       col=texture2D(tex,vec2(mod(texCoord.x+texture2D(displaceTex,texCoord).g*1.0*amountX,1.0),mod(texCoord.y+texture2D(displaceTex,texCoord).g*1.0*amountY,1.0) ) );'
         // .endl()+'       col.rgb=desaturate(col.rgb,amount);'
         .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
@@ -290,11 +292,17 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
     var textureDisplaceUniform=new CGL.Uniform(shader,'t','displaceTex',1);
 
-    var amountUniform=new CGL.Uniform(shader,'f','amount',1.0);
+    var amountXUniform=new CGL.Uniform(shader,'f','amountX',0.0);
+    var amountYUniform=new CGL.Uniform(shader,'f','amountY',0.0);
 
     this.amount.onValueChanged=function()
     {
-        amountUniform.setValue(self.amount.val);
+        amountXUniform.setValue(self.amount.val);
+    };
+
+    this.amountY.onValueChanged=function()
+    {
+        amountYUniform.setValue(self.amountY.val);
     };
 
     this.render.onTriggered=function()
@@ -318,6 +326,9 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
 
         self.trigger.call();
     };
+
+    self.amount.val=0.0;
+    self.amountY.val=0.0;
 };
 
 Ops.Gl.TextureEffects.PixelDisplacement.prototype = new Op();
