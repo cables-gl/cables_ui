@@ -39,6 +39,9 @@ CGL.State=function()
         if(mvMatrixStack.length>0) console.warn('mvmatrix stack length !=0 at end of rendering...');
         if(pMatrixStack.length>0) console.warn('pmatrix stack length !=0 at end of rendering...');
         if(shaderStack.length>0) console.warn('shaderStack length !=0 at end of rendering...');
+        mvMatrixStack.length=0;
+        pMatrixStack.length=0;
+        shaderStack.length=0;
     };
 
     // shader stack

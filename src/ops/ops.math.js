@@ -12,13 +12,15 @@ Ops.Math.Random = function()
     this.name='random';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.result=this.addOutPort(new Port(this,"result"));
+    this.max=this.addInPort(new Port(this,"max"));
 
     this.exe.onTriggered=function()
     {
-        self.result.val=Math.random();
+        self.result.val=Math.random()*self.max.val;
     };
 
     this.exe.onTriggered();
+    this.max.val=1.0;
 };
 
 Ops.Math.Random.prototype = new Op();
