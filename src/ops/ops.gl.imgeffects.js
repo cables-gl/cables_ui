@@ -438,8 +438,6 @@ Ops.Gl.TextureEffects.MixImage = function()
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=texture2D(tex,texCoord)*(1.0-amount);'
         .endl()+'       col+=texture2D(image,texCoord)*amount;'
-        // .endl()+'       col=texture2D(tex,texCoord);'
-        // .endl()+'       col*=texture2D(image,texCoord)*amount;'
         .endl()+'   #endif'
         .endl()+'   col.a=1.0;'
         .endl()+'   gl_FragColor = col;'
@@ -455,6 +453,7 @@ Ops.Gl.TextureEffects.MixImage = function()
     {
         amountUniform.setValue(self.amount.val);
     };
+    self.amount.val=1.0;
 
     this.render.onTriggered=function()
     {
@@ -484,6 +483,8 @@ Ops.Gl.TextureEffects.MixImage.prototype = new Op();
 
 
 // ---------------------------------------------------------------------------------------------
+
+
 
 
 
@@ -607,6 +608,8 @@ Ops.Gl.TextureEffects.ColorLookup = function()
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+
 
     var shader=new CGL.Shader();
 
@@ -1002,8 +1005,8 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
-        gl.activeTexture(cgl.gl.TEXTURE0);
-        gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
@@ -1013,6 +1016,93 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
 };
 
 Ops.Gl.TextureEffects.RgbMultiply.prototype = new Op();
+
+// ---------------------------------------------------------------------------------------------
+
+Ops.Gl.TextureEffects.Color = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Color';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var shader=new CGL.Shader();
+
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'#ifdef HAS_TEXTURES'
+        .endl()+'  varying vec2 texCoord;'
+        .endl()+'  uniform sampler2D tex;'
+        .endl()+'#endif'
+        .endl()+'uniform float r;'
+        .endl()+'uniform float g;'
+        .endl()+'uniform float b;'
+        .endl()+'uniform float a;'
+        .endl()+''
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(r,g,b,a);'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
+
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+    var textureUniform=new CGL.Uniform(shader,'t','tex',0);
+    var uniformR=new CGL.Uniform(shader,'f','r',1.0);
+    var uniformG=new CGL.Uniform(shader,'f','g',1.0);
+    var uniformB=new CGL.Uniform(shader,'f','b',1.0);
+    var uniformA=new CGL.Uniform(shader,'f','a',1.0);
+
+
+    this.r.onValueChanged=function()
+    {
+        uniformR.setValue(self.r.val);
+    };
+
+    this.g.onValueChanged=function()
+    {
+        uniformG.setValue(self.g.val);
+    };
+
+    this.b.onValueChanged=function()
+    {
+        uniformB.setValue(self.b.val);
+    };
+
+    this.a.onValueChanged=function()
+    {
+        uniformB.setValue(self.a.val);
+    };
+
+    this.r.val=1.0;
+    this.g.val=1.0;
+    this.b.val=1.0;
+    this.a.val=1.0;
+
+    this.render.onTriggered=function()
+    {
+        if(!cgl.currentTextureEffect)return;
+        
+        cgl.setShader(shader);
+        cgl.currentTextureEffect.bind();
+
+        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+
+        cgl.currentTextureEffect.finish();
+        cgl.setPreviousShader();
+
+        self.trigger.call();
+    };
+};
+
+Ops.Gl.TextureEffects.Color.prototype = new Op();
 
 // ---------------------------------------------------------------------------------------------
 
