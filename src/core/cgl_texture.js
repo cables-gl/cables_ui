@@ -23,6 +23,8 @@ CGL.Texture=function()
         self.width=w;
         self.height=h;
 
+        // console.log('w h ',w,h);
+
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
         
         var arr=[];

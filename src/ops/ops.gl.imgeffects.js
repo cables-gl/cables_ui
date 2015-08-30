@@ -6,6 +6,7 @@ Ops.Gl.TextureEffects=Ops.Gl.TextureEffects || {};
 
 Ops.Gl.TextureEffects.TextureEffect = function()
 {
+    // DEPRECATED
     Op.apply(this, arguments);
     var self=this;
 
@@ -13,8 +14,8 @@ Ops.Gl.TextureEffects.TextureEffect = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE));
 
-    this.tex=this.addInPort(new Port(this,"texture_in",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.tex=this.addInPort(new Port(this,"texture_in",OP_PORT_TYPE_TEXTURE));
 
     var ready=false;
     var effect=new CGL.TextureEffect();
@@ -48,6 +49,77 @@ Ops.Gl.TextureEffects.TextureEffect = function()
 };
 
 Ops.Gl.TextureEffects.TextureEffect.prototype = new Op();
+
+
+
+
+
+
+// ---------------------------------------------------------------------------------------------
+
+Ops.Gl.TextureEffects.ImageEffect = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Image Effect';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    
+    this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
+    this.height=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE));
+
+    // var ready=false;
+    var effect=new CGL.TextureEffect();
+
+    cgl.currentTextureEffect=effect;
+    this.tex=new CGL.Texture();
+    this.tex.setSize(1024,1024);
+    this.width.val=1024;
+    this.height.val=1024;
+
+    this.updateResolution=function()
+    {
+        // if(!self.texOut.val || self.tex.width!=self.texOut.val.width || self.tex.height!=self.texOut.val.height)
+        if(self.width.val!= self.tex.width || self.height.val!= self.tex.height)
+        {
+            self.tex.setSize(self.width.val, self.height.val);
+            effect.setSourceTexture(self.tex);
+            self.texOut.val=effect.getCurrentSourceTexture();
+        }
+    };
+
+    this.width.onValueChanged=function()
+    {
+        self.width.val=parseInt(self.width.val,10);
+        self.updateResolution();
+    };
+
+    this.height.onValueChanged=function()
+    {
+        self.height.val=parseInt(self.height.val,10);
+        self.updateResolution();
+    };
+
+
+    this.render.onTriggered=function()
+    {
+        // if(!ready)return;
+
+        self.updateResolution();
+        
+        cgl.currentTextureEffect=effect;
+
+        effect.startEffect();
+        self.trigger.call();
+        self.texOut.val=effect.getCurrentSourceTexture();
+    };
+};
+
+Ops.Gl.TextureEffects.ImageEffect.prototype = new Op();
+
 
 // ---------------------------------------------------------------------------------------------
 
@@ -477,12 +549,6 @@ Ops.Gl.TextureEffects.AlphaMask = function()
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
     var textureDisplaceUniform=new CGL.Uniform(shader,'t','image',1);
 
-    // var amountUniform=new CGL.Uniform(shader,'f','amount',1.0);
-
-    // this.amount.onValueChanged=function()
-    // {
-    //     amountUniform.setValue(self.amount.val);
-    // };
     this.method=this.addInPort(new Port(this,"method",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:["luminance","image alpha","red","green","blue"]} ));
 
     this.method.onValueChanged=function()
