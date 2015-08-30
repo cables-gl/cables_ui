@@ -44,18 +44,20 @@ function inputIncrement(v,dir)
     return val+add*dir;
 }
 
-    $("input").keydown(function(e) {
-        switch(e.which) {
-            case 37: // left
-            break;
+    $("input").keydown(function(e)
+    {
+        switch(e.which)
+        {
+            // case 37: // left
+            // break;
+
+            // case 39: // right
+            // break;
 
             case 38: // up
                 this.value=inputIncrement(this.value,1);
                 $(this).trigger('input');
                 return false;
-            break;
-
-            case 39: // right
             break;
 
             case 40: // down
