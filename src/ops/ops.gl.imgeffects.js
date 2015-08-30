@@ -424,10 +424,11 @@ Ops.Gl.TextureEffects.AlphaMask = function()
 
     this.name='AlphaMask';
 
-    this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
-    this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    // this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
 
     var shader=new CGL.Shader();
 
@@ -438,7 +439,7 @@ Ops.Gl.TextureEffects.AlphaMask = function()
         .endl()+'  uniform sampler2D tex;'
         .endl()+'  uniform sampler2D image;'
         .endl()+'#endif'
-        .endl()+'uniform float amount;'
+        // .endl()+'uniform float amount;'
         .endl()+''
         .endl()+''
         .endl()+'void main()'
@@ -446,9 +447,29 @@ Ops.Gl.TextureEffects.AlphaMask = function()
         .endl()+'   vec4 col=vec4(0.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=texture2D(tex,texCoord);'
+        
+        .endl()+'   #ifdef FROM_RED'
         .endl()+'       col.a=texture2D(image,texCoord).r;'
         .endl()+'   #endif'
-        // .endl()+'   col.a=1.0;'
+
+        .endl()+'   #ifdef FROM_GREEN'
+        .endl()+'       col.a=texture2D(image,texCoord).g;'
+        .endl()+'   #endif'
+
+        .endl()+'   #ifdef FROM_BLUE'
+        .endl()+'       col.a=texture2D(image,texCoord).b;'
+        .endl()+'   #endif'
+
+        .endl()+'   #ifdef FROM_ALPHA'
+        .endl()+'       col.a=texture2D(image,texCoord).a;'
+        .endl()+'   #endif'
+
+        .endl()+'   #ifdef FROM_LUMINANCE'
+        .endl()+'       vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), texture2D(image,texCoord).rgb ));'
+        .endl()+'       col.a=(gray.r+gray.g+gray.b)/3.0;'
+        .endl()+'   #endif'
+
+        .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
@@ -456,11 +477,26 @@ Ops.Gl.TextureEffects.AlphaMask = function()
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
     var textureDisplaceUniform=new CGL.Uniform(shader,'t','image',1);
 
-    var amountUniform=new CGL.Uniform(shader,'f','amount',1.0);
+    // var amountUniform=new CGL.Uniform(shader,'f','amount',1.0);
 
-    this.amount.onValueChanged=function()
+    // this.amount.onValueChanged=function()
+    // {
+    //     amountUniform.setValue(self.amount.val);
+    // };
+    this.method=this.addInPort(new Port(this,"method",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:["luminance","image alpha","red","green","blue"]} ));
+
+    this.method.onValueChanged=function()
     {
-        amountUniform.setValue(self.amount.val);
+        if(self.method.val=='luminance') shader.define('FROM_LUMINANCE');
+            else shader.removeDefine('FROM_LUMINANCE');
+        if(self.method.val=='image alpha') shader.define('FROM_ALPHA');
+            else shader.removeDefine('FROM_ALPHA');
+        if(self.method.val=='red') shader.define('FROM_RED');
+            else shader.removeDefine('FROM_RED');
+        if(self.method.val=='green') shader.define('FROM_GREEN');
+            else shader.removeDefine('FROM_GREEN');
+        if(self.method.val=='blue') shader.define('FROM_BLUE');
+            else shader.removeDefine('FROM_BLUE');
     };
 
     this.render.onTriggered=function()

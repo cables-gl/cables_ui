@@ -87,13 +87,7 @@ CGL.TextureEffect=function()
     {
         if(textureSource===null) throw 'no base texture set!';
 
-        // GL.bindFramebuffer(GL.FRAMEBUFFER, frameBuf);
-
         cgl.pushMvMatrix();
-
-        // cgl.currentTextureEffect=effect;
-
-
 
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
         cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, self.getCurrentTargetTexture().tex, 0);
@@ -108,7 +102,6 @@ CGL.TextureEffect=function()
 
         cgl.pushMvMatrix();
         mat4.identity(cgl.mvMatrix);
-
 
         cgl.gl.clearColor(0,0,0,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
