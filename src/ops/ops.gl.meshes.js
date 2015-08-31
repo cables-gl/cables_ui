@@ -195,6 +195,7 @@ Ops.Gl.Meshes.Circle = function()
 
     this.segments=this.addInPort(new Port(this,"segments"));
     this.radius=this.addInPort(new Port(this,"radius"));
+    this.innerRadius=this.addInPort(new Port(this,"innerRadius",OP_PORT_TYPE_VALUE,{display:"range"}));
     this.percent=this.addInPort(new Port(this,"percent"));
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -207,41 +208,104 @@ Ops.Gl.Meshes.Circle = function()
 
     this.segments.val=20;
     this.radius.val=1;
+    this.innerRadius.val=0;
     this.percent.val=1;
+
 
     var geom=new CGL.Geometry();
     var mesh=new CGL.Mesh(geom);
 
     function calc()
     {
+              console.log('calc');
+              
         geom.clear();
         var oldPosX=0;
         var oldPosY=0;
         var oldPosXTexCoord=0;
         var oldPosYTexCoord=0;
 
-        for (var i=0; i <= self.segments.val*self.percent.val; i++)
+        var oldPosXIn=0;
+        var oldPosYIn=0;
+        var oldPosXTexCoordIn=0;
+        var oldPosYTexCoordIn=0;
+
+        if(self.innerRadius.val<=0)
         {
-            var degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
-            var posx=Math.cos(degInRad)*self.radius.val;
-            var posy=Math.sin(degInRad)*self.radius.val;
+          for (var i=0; i <= self.segments.val*self.percent.val; i++)
+          {
+              var degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
+              var posx=Math.cos(degInRad)*self.radius.val;
+              var posy=Math.sin(degInRad)*self.radius.val;
 
-            var posxTexCoord=(Math.cos(degInRad)+1.0)/2;
-            var posyTexCoord=(Math.sin(degInRad)+1.0)/2;
+              var posxTexCoord=(Math.cos(degInRad)+1.0)/2;
+              var posyTexCoord=(Math.sin(degInRad)+1.0)/2;
 
-            geom.addFace(
-                        [posx,posy,0],
-                        [oldPosX,oldPosY,0],
-                        [0,0,0]
-                        );
+              geom.addFace(
+                          [posx,posy,0],
+                          [oldPosX,oldPosY,0],
+                          [0,0,0]
+                          );
 
-            geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,0.5,0.5);
+              geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,0.5,0.5);
 
-            oldPosXTexCoord=posxTexCoord;
-            oldPosYTexCoord=posyTexCoord;
+              oldPosXTexCoord=posxTexCoord;
+              oldPosYTexCoord=posyTexCoord;
 
-            oldPosX=posx;
-            oldPosY=posy;
+              oldPosX=posx;
+              oldPosY=posy;
+          }
+        }
+        else
+        {
+       for (var i=0; i <= self.segments.val*self.percent.val; i++)
+          {
+              var degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
+              var posx=Math.cos(degInRad)*self.radius.val;
+              var posy=Math.sin(degInRad)*self.radius.val;
+
+              var posxIn=Math.cos(degInRad)*self.innerRadius.val*self.radius.val;
+              var posyIn=Math.sin(degInRad)*self.innerRadius.val*self.radius.val;
+
+              var posxTexCoord=(Math.cos(degInRad)+1.0)/2;
+              var posyTexCoord=(Math.sin(degInRad)+1.0)/2;
+
+              var posxTexCoordIn=(Math.cos(degInRad)+1.0)/2*self.innerRadius.val;
+              var posyTexCoordIn=(Math.sin(degInRad)+1.0)/2*self.innerRadius.val;
+
+              geom.addFace(
+                          [posx,posy,0],
+                          [oldPosX,oldPosY,0],
+                          [posxIn,posyIn,0]
+                          );
+
+              geom.addFace(
+                          [posxIn,posyIn,0],
+                          [oldPosX,oldPosY,0],
+                          [oldPosXIn,oldPosYIn,0]
+                          );
+
+              // geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,0.5,0.5);
+              // geom.texCoords.push(0.5,0.5,oldPosXTexCoord,oldPosYTexCoord,0.5,0.5);
+
+              geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,posxTexCoordIn,posyTexCoordIn);
+              geom.texCoords.push(posxTexCoordIn,posyTexCoordIn,oldPosXTexCoord,oldPosYTexCoord,oldPosXTexCoordIn,oldPosYTexCoordIn);
+
+            oldPosXTexCoordIn=posxTexCoordIn;
+            oldPosYTexCoordIn=posyTexCoordIn;
+
+              oldPosXTexCoord=posxTexCoord;
+              oldPosYTexCoord=posyTexCoord;
+
+              oldPosX=posx;
+              oldPosY=posy;
+
+              oldPosXIn=posxIn;
+              oldPosYIn=posyIn;
+
+          }
+
+
         }
 
         mesh.setGeom(geom);
@@ -249,6 +313,7 @@ Ops.Gl.Meshes.Circle = function()
 
     this.segments.onValueChanged=calc;
     this.radius.onValueChanged=calc;
+    this.innerRadius.onValueChanged=calc;
     this.percent.onValueChanged=calc;
     calc();
 };
