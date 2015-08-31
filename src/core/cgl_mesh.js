@@ -139,9 +139,11 @@ CGL.Geometry=function()
             face[2]=(this.vertices.length-1)/3;
         }
 
-        this.verticesIndices.push(face[0]);
-        this.verticesIndices.push(face[1]);
-        this.verticesIndices.push(face[2]);
+        this.verticesIndices.push( parseInt( face[0],10 ) );
+        this.verticesIndices.push( parseInt( face[1],10 ) );
+        this.verticesIndices.push( parseInt( face[2],10 ) );
+
+        faceVertCount=this.verticesIndices.length;
 
     };
 
