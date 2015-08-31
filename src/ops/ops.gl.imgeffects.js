@@ -57,12 +57,12 @@ Ops.Gl.TextureEffects.TextureEffect.prototype = new Op();
 
 // ---------------------------------------------------------------------------------------------
 
-Ops.Gl.TextureEffects.ImageEffect = function()
+Ops.Gl.TextureEffects.ImageCompose = function()
 {
     Op.apply(this, arguments);
     var self=this;
 
-    this.name='Image Effect';
+    this.name='image compose';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     
     this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
@@ -119,7 +119,7 @@ Ops.Gl.TextureEffects.ImageEffect = function()
 
 };
 
-Ops.Gl.TextureEffects.ImageEffect.prototype = new Op();
+Ops.Gl.TextureEffects.ImageCompose.prototype = new Op();
 
 
 // ---------------------------------------------------------------------------------------------
@@ -333,7 +333,7 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
     this.name='PixelDisplacement';
 
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    
+
     this.amount=this.addInPort(new Port(this,"amountX",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.amountY=this.addInPort(new Port(this,"amountY",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.displaceTex=this.addInPort(new Port(this,"displaceTex",OP_PORT_TYPE_TEXTURE));
@@ -460,21 +460,22 @@ Ops.Gl.TextureEffects.MixImage = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
-        cgl.setShader(shader);
-        cgl.currentTextureEffect.bind();
-
-        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         if(self.image.val && self.image.val.tex)
         {
+
+            cgl.setShader(shader);
+            cgl.currentTextureEffect.bind();
+
+            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+
             cgl.gl.activeTexture(cgl.gl.TEXTURE1);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.image.val.tex );
-        }
 
-        cgl.currentTextureEffect.finish();
-        cgl.setPreviousShader();
+            cgl.currentTextureEffect.finish();
+            cgl.setPreviousShader();
+        }
 
         self.trigger.call();
     };

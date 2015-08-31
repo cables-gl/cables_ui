@@ -115,6 +115,9 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         mat4.identity(cgl.pMatrix);
         mat4.ortho(cgl.pMatrix, 0, cgl.canvasWidth, cgl.canvasHeight, 0, -10.0, 1000);
 
+
+
+
         cgl.pushMvMatrix();
         mat4.identity(cgl.mvMatrix);
 
@@ -154,6 +157,7 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
              x+w, y,    0.0,
              x,   y,    0.0
         ];
+
 
         geom.texCoords = [
              1.0, 0.0,
