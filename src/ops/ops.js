@@ -34,9 +34,10 @@ Ops.CallsPerSecond = function()
 
     this.name='CallsPerSecond';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.cps=this.addOutPort(new Port(this,"cps",OP_PORT_TYPE_VALUE));
 
     this.timeStart=0;
-    this.cps=0;
+    this.cpsCount=0;
 
     this.exe.onTriggered=function()
     {
@@ -46,11 +47,12 @@ Ops.CallsPerSecond = function()
         if(now-self.timeStart>1000)
         {
             self.timeStart=Date.now();
-            console.log('cps: '+self.cps);
-            self.cps=0;
+            // console.log('cps: '+self.cps);
+            self.cps.val=self.cpsCount;
+            self.cpsCount=0;
         }
 
-        self.cps++;
+        self.cpsCount++;
     };
 };
 Ops.CallsPerSecond.prototype = new Op();

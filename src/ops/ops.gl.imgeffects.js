@@ -71,14 +71,11 @@ Ops.Gl.TextureEffects.ImageEffect = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE));
 
-    // var ready=false;
     var effect=new CGL.TextureEffect();
 
     cgl.currentTextureEffect=effect;
     this.tex=new CGL.Texture();
-    this.tex.setSize(1024,1024);
-    this.width.val=1024;
-    this.height.val=1024;
+
 
     this.updateResolution=function()
     {
@@ -116,6 +113,10 @@ Ops.Gl.TextureEffects.ImageEffect = function()
         self.trigger.call();
         self.texOut.val=effect.getCurrentSourceTexture();
     };
+
+    this.width.val=1024;
+    this.height.val=1024;
+
 };
 
 Ops.Gl.TextureEffects.ImageEffect.prototype = new Op();
@@ -331,10 +332,11 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
 
     this.name='PixelDisplacement';
 
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    
     this.amount=this.addInPort(new Port(this,"amountX",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.amountY=this.addInPort(new Port(this,"amountY",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.displaceTex=this.addInPort(new Port(this,"displaceTex",OP_PORT_TYPE_TEXTURE));
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
@@ -415,9 +417,9 @@ Ops.Gl.TextureEffects.MixImage = function()
 
     this.name='MixImage';
 
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
