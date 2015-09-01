@@ -217,8 +217,6 @@ Ops.Gl.Meshes.Circle = function()
 
     function calc()
     {
-              console.log('calc');
-              
         geom.clear();
         var oldPosX=0;
         var oldPosY=0;
@@ -258,7 +256,8 @@ Ops.Gl.Meshes.Circle = function()
         }
         else
         {
-       for (var i=0; i <= self.segments.val*self.percent.val; i++)
+          
+          for (var i=0; i <= self.segments.val*self.percent.val; i++)
           {
               var degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
               var posx=Math.cos(degInRad)*self.radius.val;
@@ -291,8 +290,8 @@ Ops.Gl.Meshes.Circle = function()
               geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,posxTexCoordIn,posyTexCoordIn);
               geom.texCoords.push(posxTexCoordIn,posyTexCoordIn,oldPosXTexCoord,oldPosYTexCoord,oldPosXTexCoordIn,oldPosYTexCoordIn);
 
-            oldPosXTexCoordIn=posxTexCoordIn;
-            oldPosYTexCoordIn=posyTexCoordIn;
+              oldPosXTexCoordIn=posxTexCoordIn;
+              oldPosYTexCoordIn=posyTexCoordIn;
 
               oldPosXTexCoord=posxTexCoord;
               oldPosYTexCoord=posyTexCoord;

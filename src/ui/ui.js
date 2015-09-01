@@ -693,23 +693,6 @@ var width=w;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     CABLES.Ui=function()
     {
         var self=this;
@@ -725,11 +708,28 @@ var width=w;
         var linkNewOpToPort=null;
         var linkNewLink=null;
         var selectedOp=null;
+        var spacePressed=false;
+
+        $(document).keyup(function(e)
+        {
+
+            switch(e.which)
+            {
+                case 32:
+                    spacePressed=false;
+                break;
+            }
+
+        });
 
         $(document).keydown(function(e)
         {
             switch(e.which)
             {
+                case 32:
+                    spacePressed=true;
+                break;
+
                 case 46: case 8:
                     if ($("input").is(":focus")) return;
 
@@ -1092,7 +1092,11 @@ var width=w;
             $("svg").bind("mousemove", function (e)
             {
                 e=mouseEvent(e);
-                if(e.which==2 || e.which==3)
+
+                console.log('spacePressed'+spacePressed);
+                        
+
+                if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
                 {
                     viewBox.x+=panX-ui.getCanvasCoords(e.offsetX,e.offsetY).x;
                     viewBox.y+=panY-ui.getCanvasCoords(e.offsetX,e.offsetY).y;
