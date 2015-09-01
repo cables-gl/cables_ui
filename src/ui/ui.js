@@ -462,12 +462,14 @@ var line;
             }
 
             self.op.uiAttribs.translate={x:pos.x,y:pos.y};
+            self.isDragging=true;
 
         },
         up = function ()
         {
             startMoveX=-1;
             startMoveY=-1;
+            self.isDragging=false;
 
         };
 
@@ -486,7 +488,6 @@ var width=w;
 
         this.oprect.node.onmousedown = function (ev)
         {
-            // console.log('ev',ev);
 
             if(ev.shiftKey)
             {
@@ -503,6 +504,7 @@ var width=w;
         
         this.oprect.node.onclick = function ()
         {
+
         };
 
 
@@ -1062,11 +1064,8 @@ var width=w;
                    });
 
 
-
-
                 for(var i in self.ops)
                 {
-
                     var rect=self.ops[i].oprect.bgRect;
                     var opX=rect.matrix.e;
                     var opY=rect.matrix.f;
@@ -1080,14 +1079,10 @@ var width=w;
                     }
                     else
                     {
-                                // console.log('no');
-                                
+                        // console.log('no');
                         // this.ops[i].oprect.setSelected(false);
                     }
-
                 }
-
-
 
             }
         }
@@ -1165,7 +1160,7 @@ var width=w;
                 self.updateViewBox();
             });
 
-            var background = r.rect(-9990, -9990, 9999, 9999).attr({
+            var background = r.rect(-9990, -9990, 99999, 99999).attr({
                 fill: uiConfig.colorBackground,
                 "stroke-width":0
             });
@@ -1174,18 +1169,32 @@ var width=w;
 
             background.node.onmousedown = function (ev)
             {
-                for(var i in selectedOps)
-                {
-                    selectedOps[i].setSelected(false);
-                }
-                selectedOps.length=0;
+
+                // for(var i in selectedOps)
+                // {
+                //     selectedOps[i].setSelected(false);
+                // }
+                ui.setSelectedOp(null);
                 self.setSelectedOp(false);
                 self.showProjectParams();
-
             };
+
+
+
+        
+            $(background.node).on("mousemove", function(e)
+            {
+                for(var i in self.ops)
+                    if(self.ops[i].isDragging)
+                        return;
+
+                rubberBandMove(e);
+            });
+
 
             $("svg").bind("mouseup", function (event)
             {
+                        
                 rubberBandHide();
             });
 
@@ -1207,7 +1216,6 @@ var width=w;
                     self.updateViewBox();
                 }
 
-                rubberBandMove(e);
 
                 panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
                 panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
@@ -1416,7 +1424,6 @@ var width=w;
                     ui.ops[i].setSelected(false);
                 }
                 selectedOps.length=0;
-                        console.log('cleared selected ops');
                         
                 return;
             }
@@ -1446,7 +1453,6 @@ var width=w;
             }
             selectedOps.push(uiop);
             uiop.oprect.setSelected(true);
-            console.log(selectedOps.length+' ops selected');
         };
 
 
