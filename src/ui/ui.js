@@ -99,6 +99,7 @@ var uiConfig=
     colorOpBg:'#fff',
     colorOpBgSelected:'#ff9',
     colorPort:'#6c9fde',
+    colorRubberBand:'#6c9fde',
     colorPortHover:'#f00',
 
     watchValuesInterval:100,
@@ -710,6 +711,8 @@ var width=w;
         var selectedOp=null;
         var spacePressed=false;
 
+
+
         $(document).keyup(function(e)
         {
 
@@ -733,12 +736,16 @@ var width=w;
                 case 46: case 8:
                     if ($("input").is(":focus")) return;
 
-                    if(selectedOp)
-                        ui.scene.deleteOp( selectedOp.op.id,true );
 
                     if(selectedOps.length>0)
                         for(var i in selectedOps)
                             ui.scene.deleteOp( selectedOps[i].op.id,true);
+                        else
+                        {
+                            if(selectedOp)
+                            ui.scene.deleteOp( selectedOp.op.id,true );
+
+                        }
         
                     if(e.stopPropagation) e.stopPropagation();
                     if(e.preventDefault) e.preventDefault();
@@ -934,8 +941,6 @@ var width=w;
                     $('#projectfiles').html(html);
                             
                 });
-
-
         };
 
         this.toggleSideBar=function()
@@ -992,6 +997,102 @@ var width=w;
                 $('#projectlist').html(getHandleBarHtml('projects',data));
             });
         };
+
+
+        // ---------------------------------------------
+
+        var rubberBandStartPos=null;
+        var rubberBandPos=null;
+        var mouseRubberBandStartPos=null;
+        var mouseRubberBandPos=null;
+        var rubberBandRect=null;
+
+        function rubberBandHide()
+        {
+            mouseRubberBandStartPos=null;
+            mouseRubberBandPos=null;
+            if(rubberBandRect)rubberBandRect.attr({
+                x:0,y:0,width:0,height:0,
+                "stroke-width": 0,
+                "fill-opacity": 0
+            });
+        }
+
+        function rubberBandMove(e)
+        {
+            if(e.which==1 && !spacePressed)
+            {
+                if(!mouseRubberBandStartPos)
+                {
+                    ui.setSelectedOp(null);
+
+                    mouseRubberBandStartPos=ui.getCanvasCoords(e.offsetX,e.offsetY);
+                }
+                mouseRubberBandPos=ui.getCanvasCoords(e.offsetX,e.offsetY);
+
+                if(!rubberBandRect) rubberBandRect=r.rect(
+                        0,0,10,10).attr({
+                    });
+
+                var start={x:mouseRubberBandStartPos.x,y:mouseRubberBandStartPos.y};
+                var end={x:mouseRubberBandPos.x,y:mouseRubberBandPos.y};
+
+                if(end.x-start.x<0)
+                {
+                    var tempx=start.x;
+                    start.x=end.x;
+                    end.x=tempx;
+                }
+                if(end.y-start.y<0)
+                {
+                    var tempy=start.y;
+                    start.y=end.y;
+                    end.y=tempy;
+                }
+
+                rubberBandRect.attr({
+                        x:start.x,
+                        y:start.y,
+                        width:end.x-start.x,
+                        height:end.y-start.y,
+                        "stroke": uiConfig.colorRubberBand,
+                        "fill": uiConfig.colorRubberBand,
+                        "stroke-width": 2,
+                        "fill-opacity": 0.1
+                   });
+
+
+
+
+                for(var i in self.ops)
+                {
+
+                    var rect=self.ops[i].oprect.bgRect;
+                    var opX=rect.matrix.e;
+                    var opY=rect.matrix.f;
+
+                    if(opX>start.x && opX<end.x &&
+                        opY>start.y && opY<end.y
+                        )
+                    {
+                        ui.addSelectedOp(self.ops[i]);
+                        // this.ops[i].oprect.setSelected(true);
+                    }
+                    else
+                    {
+                                // console.log('no');
+                                
+                        // this.ops[i].oprect.setSelected(false);
+                    }
+
+                }
+
+
+
+            }
+        }
+
+        // ---------------------------------------------
 
         this.show=function(_scene)
         {
@@ -1083,18 +1184,20 @@ var width=w;
 
             };
 
-            // $("svg").bind("mouseup", function (event)
-            // {
-            //     panX=0;
-            //     panY=0;
-            // });
+            $("svg").bind("mouseup", function (event)
+            {
+                rubberBandHide();
+            });
 
+        
             $("svg").bind("mousemove", function (e)
             {
                 e=mouseEvent(e);
 
-                console.log('spacePressed'+spacePressed);
-                        
+                if(mouseRubberBandStartPos && e.which!=1)
+                {
+                    rubberBandHide();
+                }
 
                 if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
                 {
@@ -1103,11 +1206,12 @@ var width=w;
 
                     self.updateViewBox();
                 }
-        
+
+                rubberBandMove(e);
+
                 panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
                 panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
             });
-
         };
 
         this.showExample=function(which)
@@ -1294,8 +1398,6 @@ var width=w;
 
         };
 
-
-
         this.setSelectedOpTitle=function(t)
         {
             if(selectedOp)
@@ -1303,14 +1405,26 @@ var width=w;
                 this.setOpTitle(selectedOp,t);
             }
         };
-
         
 
         this.setSelectedOp=function(uiop)
         {
+            if(uiop===null)
+            {
+                for(var i in ui.ops)
+                {
+                    ui.ops[i].setSelected(false);
+                }
+                selectedOps.length=0;
+                        console.log('cleared selected ops');
+                        
+                return;
+            }
+
             if(selectedOp)
             {
-                selectedOp.setSelected(false);
+                this.setSelectedOp(null);
+                // selectedOp.setSelected(false);
                 selectedOp.hideAddButtons();
             }
 
@@ -1326,6 +1440,10 @@ var width=w;
         var selectedOps=[];
         this.addSelectedOp=function(uiop)
         {
+            for(var i in selectedOps)
+            {
+                if(selectedOps[i]==uiop)return;
+            }
             selectedOps.push(uiop);
             uiop.oprect.setSelected(true);
             console.log(selectedOps.length+' ops selected');
