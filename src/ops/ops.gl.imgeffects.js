@@ -68,6 +68,9 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
+    this.clear=this.addInPort(new Port(this,"clear",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+
+
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE));
 
@@ -103,24 +106,35 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     this.render.onTriggered=function()
     {
-        // if(!ready)return;
-
         self.updateResolution();
         
         cgl.currentTextureEffect=effect;
 
         effect.startEffect();
+
+        if(self.clear.val)
+        {
+            cgl.currentTextureEffect.bind();
+
+            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+            cgl.gl.clearColor(0,0,0,1.0);
+
+            cgl.currentTextureEffect.finish();
+        }
+
         self.trigger.call();
         self.texOut.val=effect.getCurrentSourceTexture();
+
     };
 
     this.width.val=1024;
     this.height.val=1024;
+    self.clear.val=true;
 
 };
 
 Ops.Gl.TextureEffects.ImageCompose.prototype = new Op();
-
 
 // ---------------------------------------------------------------------------------------------
 
@@ -490,9 +504,6 @@ Ops.Gl.TextureEffects.MixImage.prototype = new Op();
 
 
 
-
-
-
 Ops.Gl.TextureEffects.AlphaMask = function()
 {
     Op.apply(this, arguments);
@@ -593,6 +604,103 @@ Ops.Gl.TextureEffects.AlphaMask = function()
 };
 
 Ops.Gl.TextureEffects.AlphaMask.prototype = new Op();
+
+
+
+// ---------------------------------------------------------------------------------------------
+
+
+
+
+Ops.Gl.TextureEffects.WipeTransition = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='WipeTransition';
+
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.fade=this.addInPort(new Port(this,"fade",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.fadeWidth=this.addInPort(new Port(this,"fadeWidth",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+
+    var shader=new CGL.Shader();
+
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'#ifdef HAS_TEXTURES'
+        .endl()+'  varying vec2 texCoord;'
+        .endl()+'  uniform sampler2D tex;'
+        .endl()+'  uniform sampler2D image;'
+        .endl()+'#endif'
+
+        .endl()+'uniform float fade;'
+        .endl()+'uniform float fadeWidth;'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(0.0,0.0,0.0,1.0);'
+        .endl()+'   #ifdef HAS_TEXTURES'
+        .endl()+'       col=texture2D(tex,texCoord);'
+        .endl()+'       vec4 colWipe=texture2D(image,texCoord);'
+        
+        .endl()+'       float w=fadeWidth;'
+        .endl()+'       float v=colWipe.r;'
+        .endl()+'       float f=fade+fade*w;'
+
+        .endl()+'       if(f<v) col.a=1.0;'
+        .endl()+'       else if(f>v+w) col.a=0.0;'
+        .endl()+'       else if(f>v && f<=v+w) col.a = 1.0-(f-v)/w; ;'
+
+
+        .endl()+'   #endif'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
+
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+    var textureUniform=new CGL.Uniform(shader,'t','tex',0);
+    var textureDisplaceUniform=new CGL.Uniform(shader,'t','image',1);
+    var fadeUniform=new CGL.Uniform(shader,'f','fade',0);
+    var fadeWidthUniform=new CGL.Uniform(shader,'f','fadeWidth',0);
+
+
+    this.fade.onValueChanged=function()
+    {
+        fadeUniform.setValue(self.fade.val);
+    };
+
+    this.fadeWidth.onValueChanged=function()
+    {
+        fadeWidthUniform.setValue(self.fadeWidth.val);
+    };
+
+    this.render.onTriggered=function()
+    {
+        if(!cgl.currentTextureEffect)return;
+
+        if(self.image.val && self.image.val.tex)
+        {
+            cgl.setShader(shader);
+            cgl.currentTextureEffect.bind();
+
+            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+
+            cgl.gl.activeTexture(cgl.gl.TEXTURE1);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.image.val.tex );
+
+            cgl.currentTextureEffect.finish();
+            cgl.setPreviousShader();
+        }
+
+        self.trigger.call();
+    };
+
+};
+
+Ops.Gl.TextureEffects.WipeTransition.prototype = new Op();
 
 
 

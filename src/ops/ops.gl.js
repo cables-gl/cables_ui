@@ -175,10 +175,6 @@ Ops.Gl.ClearDepth.prototype = new Op();
 
 
 
-
-
-// --------------------------------------------------------------------------
-
 Ops.Gl.Wireframe = function()
 {
     Op.apply(this, arguments);

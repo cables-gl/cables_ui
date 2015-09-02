@@ -529,7 +529,7 @@ var width=w;
             else
             {
                 // line.updateEnd(this.startx+dx,this.starty+dy);
-
+self.isDragging=true;
 
                 event=mouseEvent(event);
 
@@ -583,6 +583,7 @@ var width=w;
 
             if(line && line.thisLine)line.thisLine.remove();
             line=null;
+            self.isDragging=false;
         };
 
         this.addPort=function(_inout)
@@ -1169,19 +1170,11 @@ var width=w;
 
             background.node.onmousedown = function (ev)
             {
-
-                // for(var i in selectedOps)
-                // {
-                //     selectedOps[i].setSelected(false);
-                // }
                 ui.setSelectedOp(null);
                 self.setSelectedOp(false);
                 self.showProjectParams();
             };
 
-
-
-        
             $(background.node).on("mousemove", function(e)
             {
                 for(var i in self.ops)

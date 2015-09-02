@@ -35,7 +35,6 @@ Ops.Net.Websocket = function()
          if (!window.WebSocket)
             console.error('Sorry, but your browser doesn\'t support WebSockets.');
 
-
         try
         {
             if(connection!=null)connection.close();
