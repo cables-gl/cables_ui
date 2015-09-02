@@ -102,6 +102,8 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.ratio=this.addInPort(new Port(this,"ratio",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:[1.25,1.3333333333,1.777777777778,2.33333333333333]} ));
 
+    var oldCanvasWidth=-1;
+    var oldCanvasHeight=-1;
     // 1,25 // 5:4
     // 1,33333333333333 //4:3
     // 1,77777777777778 // 16:9
@@ -122,6 +124,10 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         mat4.identity(cgl.mvMatrix);
 
         self.mesh.render(cgl.getShader());
+
+        cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
+
+
         self.trigger.call();
 
         cgl.popPMatrix();

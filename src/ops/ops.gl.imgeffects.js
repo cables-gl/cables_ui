@@ -676,6 +676,9 @@ Ops.Gl.TextureEffects.WipeTransition = function()
         fadeWidthUniform.setValue(self.fadeWidth.val);
     };
 
+    this.fade.val=0.5;
+    this.fadeWidth.val=0.2;
+
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
