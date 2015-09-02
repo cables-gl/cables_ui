@@ -224,26 +224,26 @@ Ops.Gl.Meshes.Circle = function()
     function calc()
     {
         geom.clear();
-        var oldPosX=0;
-        var oldPosY=0;
-        var oldPosXTexCoord=0;
-        var oldPosYTexCoord=0;
+        var i=0,degInRad=0;
+        var oldPosX=0,oldPosY=0;
+        var oldPosXTexCoord=0,oldPosYTexCoord=0;
 
-        var oldPosXIn=0;
-        var oldPosYIn=0;
-        var oldPosXTexCoordIn=0;
-        var oldPosYTexCoordIn=0;
+        var oldPosXIn=0,oldPosYIn=0;
+        var oldPosXTexCoordIn=0,oldPosYTexCoordIn=0;
+
+        var posxTexCoord=0,posyTexCoord=0;
+        var posx=0,posy=0;
 
         if(self.innerRadius.val<=0)
         {
-          for (var i=0; i <= self.segments.val*self.percent.val; i++)
+          for (i=0; i <= self.segments.val*self.percent.val; i++)
           {
-              var degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
-              var posx=Math.cos(degInRad)*self.radius.val;
-              var posy=Math.sin(degInRad)*self.radius.val;
+              degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
+              posx=Math.cos(degInRad)*self.radius.val;
+              posy=Math.sin(degInRad)*self.radius.val;
 
-              var posxTexCoord=(Math.cos(degInRad)+1.0)/2;
-              var posyTexCoord=(Math.sin(degInRad)+1.0)/2;
+              posxTexCoord=(Math.cos(degInRad)+1.0)/2;
+              posyTexCoord=(Math.sin(degInRad)+1.0)/2;
 
               geom.addFace(
                           [posx,posy,0],
@@ -263,17 +263,17 @@ Ops.Gl.Meshes.Circle = function()
         else
         {
           
-          for (var i=0; i <= self.segments.val*self.percent.val; i++)
+          for (i=0; i <= self.segments.val*self.percent.val; i++)
           {
-              var degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
-              var posx=Math.cos(degInRad)*self.radius.val;
-              var posy=Math.sin(degInRad)*self.radius.val;
+              degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
+              posx=Math.cos(degInRad)*self.radius.val;
+              posy=Math.sin(degInRad)*self.radius.val;
 
               var posxIn=Math.cos(degInRad)*self.innerRadius.val*self.radius.val;
               var posyIn=Math.sin(degInRad)*self.innerRadius.val*self.radius.val;
 
-              var posxTexCoord=(Math.cos(degInRad)+1.0)/2;
-              var posyTexCoord=(Math.sin(degInRad)+1.0)/2;
+              posxTexCoord=(Math.cos(degInRad)+1.0)/2;
+              posyTexCoord=(Math.sin(degInRad)+1.0)/2;
 
               var posxTexCoordIn=(Math.cos(degInRad)+1.0)/2*self.innerRadius.val;
               var posyTexCoordIn=(Math.sin(degInRad)+1.0)/2*self.innerRadius.val;
@@ -289,9 +289,6 @@ Ops.Gl.Meshes.Circle = function()
                           [oldPosX,oldPosY,0],
                           [oldPosXIn,oldPosYIn,0]
                           );
-
-              // geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,0.5,0.5);
-              // geom.texCoords.push(0.5,0.5,oldPosXTexCoord,oldPosYTexCoord,0.5,0.5);
 
               geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,posxTexCoordIn,posyTexCoordIn);
               geom.texCoords.push(posxTexCoordIn,posyTexCoordIn,oldPosXTexCoord,oldPosYTexCoord,oldPosXTexCoordIn,oldPosYTexCoordIn);
@@ -309,7 +306,6 @@ Ops.Gl.Meshes.Circle = function()
               oldPosYIn=posyIn;
 
           }
-
 
         }
 

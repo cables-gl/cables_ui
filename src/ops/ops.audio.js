@@ -23,7 +23,7 @@ Ops.Audio.Output = function()
         if (self.audioIn.val === null) {
             if (self.oldAudioIn !== null) {
                 self.oldAudioIn.disconnect(audioContext.destination);
-            };
+            }
         } else {
             self.audioIn.val.connect(audioContext.destination);
         }
@@ -36,7 +36,7 @@ Ops.Audio.Output.prototype = new Op();
 
 Ops.Audio.Oscillator = function()
 {
-    var self = this
+    var self = this;
     Op.apply(this, arguments);
     
     if(!window.audioContext) {
@@ -53,11 +53,11 @@ Ops.Audio.Oscillator = function()
     this.frequency.onValueChanged = function()
     {
         self.oscillator.frequency.value = self.frequency.val;
-    }
+    };
 
     this.audioOut=this.addOutPort(new Port(this, "audio out",OP_PORT_TYPE_OBJECT));
     this.audioOut.val = this.oscillator;
-}
+};
 
 Ops.Audio.Oscillator.prototype = new Op();
 
@@ -86,11 +86,11 @@ Ops.Audio.MicrophoneIn = function ()
             function(stream){
                 self.microphone = audioContext.createMediaStreamSource(stream);
                 self.audioOut.val = self.microphone;
-            }, 
+            },
             function(e){console.log('No live audio input ' + e);}
         );
-    };
-}
+    }
+};
 
 Ops.Audio.MicrophoneIn.prototype = new Op();
 
@@ -127,7 +127,7 @@ Ops.Audio.Analyser = function()
  
         average = values / array.length;
         self.avgVolume.val=average;
-    }
+    };
 
     this.audioIn.onValueChanged = function()
     {
@@ -135,7 +135,7 @@ Ops.Audio.Analyser = function()
         if (self.audioIn.val === null) {
             if (self.oldAudioIn !== null) {
                 self.oldAudioIn.disconnect(self.analyser);
-            };
+            }
         } else {
             self.audioIn.val.connect(self.analyser);
         }

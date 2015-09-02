@@ -170,7 +170,7 @@ parseOBJ = function(buff)
     var cg = {from: 0, to:0};   // current group
     var off = 0;
     var a = new Uint8Array(buff);
-    
+    var x=0,y=0,z=0;
     while(off < a.length)
     {
         var line = _readline(a, off);
@@ -181,27 +181,27 @@ parseOBJ = function(buff)
         if(cds[0] == "g")
         {
             cg.to = geom.verticesIndices.length;
-            if(geom.groups[cds[1]] == null) geom.groups[cds[1]] = {from:geom.verticesIndices.length, to:0};
+            if(!geom.groups[cds[1]]) geom.groups[cds[1]] = {from:geom.verticesIndices.length, to:0};
             cg = geom.groups[cds[1]];
         }
         if(cds[0] == "v")
         {
-            var x = parseFloat(cds[1]);
-            var y = parseFloat(cds[2]);
-            var z = parseFloat(cds[3]);
+            x = parseFloat(cds[1]);
+            y = parseFloat(cds[2]);
+            z = parseFloat(cds[3]);
             geom.vertices.push(x,y,z);
         }
         if(cds[0] == "vt")
         {
-            var x = parseFloat(cds[1]);
-            var y = 1-parseFloat(cds[2]);
+            x = parseFloat(cds[1]);
+            y = 1-parseFloat(cds[2]);
             geom.texCoords.push(x,y);
         }
         if(cds[0] == "vn")
         {
-            var x = parseFloat(cds[1]);
-            var y = parseFloat(cds[2]);
-            var z = parseFloat(cds[3]);
+            x = parseFloat(cds[1]);
+            y = parseFloat(cds[2]);
+            z = parseFloat(cds[3]);
             geom.vertexNormals.push(x,y,z);
         }
         if(cds[0] == "f")

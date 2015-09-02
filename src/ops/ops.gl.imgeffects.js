@@ -625,7 +625,6 @@ Ops.Gl.TextureEffects.WipeTransition = function()
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-
     var shader=new CGL.Shader();
 
     var srcFrag=''
@@ -645,7 +644,7 @@ Ops.Gl.TextureEffects.WipeTransition = function()
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=texture2D(tex,texCoord);'
         .endl()+'       vec4 colWipe=texture2D(image,texCoord);'
-        
+
         .endl()+'       float w=fadeWidth;'
         .endl()+'       float v=colWipe.r;'
         .endl()+'       float f=fade+fade*w;'
@@ -653,7 +652,6 @@ Ops.Gl.TextureEffects.WipeTransition = function()
         .endl()+'       if(f<v) col.a=1.0;'
         .endl()+'       else if(f>v+w) col.a=0.0;'
         .endl()+'       else if(f>v && f<=v+w) col.a = 1.0-(f-v)/w; ;'
-
 
         .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
@@ -664,7 +662,6 @@ Ops.Gl.TextureEffects.WipeTransition = function()
     var textureDisplaceUniform=new CGL.Uniform(shader,'t','image',1);
     var fadeUniform=new CGL.Uniform(shader,'f','fade',0);
     var fadeWidthUniform=new CGL.Uniform(shader,'f','fadeWidth',0);
-
 
     this.fade.onValueChanged=function()
     {
@@ -705,10 +702,7 @@ Ops.Gl.TextureEffects.WipeTransition = function()
 
 Ops.Gl.TextureEffects.WipeTransition.prototype = new Op();
 
-
-
 // ---------------------------------------------------------------------------------------------
-
 
 Ops.Gl.TextureEffects.ColorLookup = function()
 {
@@ -722,8 +716,6 @@ Ops.Gl.TextureEffects.ColorLookup = function()
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-
 
     var shader=new CGL.Shader();
 
@@ -1012,7 +1004,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     {
         console.log('change'+self.channelR.val);
 
-        if(self.channelR.val=='true' || self.channelR.val==true) shader.define('CHANNEL_R');
+        if(self.channelR.val=='true' || self.channelR.val===true) shader.define('CHANNEL_R');
             else shader.removeDefine('CHANNEL_R');
     };
     this.channelR.val=true;
@@ -1032,7 +1024,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.channelB.val=false;
     this.channelB.onValueChanged=function()
     {
-        if(self.channelB.val=='true') shader.define('CHANNEL_B'); 
+        if(self.channelB.val=='true') shader.define('CHANNEL_B');
             else shader.removeDefine('CHANNEL_B');
     };
 

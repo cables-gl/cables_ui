@@ -189,8 +189,8 @@ CGL.Shader=function()
     this.compile=function()
     {
         var definesStr='';
-
-        for(var i in defines)
+        var i=0;
+        for(i in defines)
         {
             definesStr+='#define '+defines[i][0]+' '+defines[i][1]+''.endl();
         }
@@ -220,7 +220,7 @@ CGL.Shader=function()
             
             mvMatrixUniform=-1;
 
-            for(var i in uniforms)uniforms[i].resetLoc();
+            for(i in uniforms)uniforms[i].resetLoc();
         }
 
         needsRecompile=false;
