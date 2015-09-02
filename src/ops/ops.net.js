@@ -27,7 +27,6 @@ Ops.Net.Websocket = function()
     function connect()
     {
         if(self.connected.val===true && connectedTo==self.url.val) return;
-
         if(self.connected.val===true)connection.close();
 
         window.WebSocket = window.WebSocket || window.MozWebSocket;
@@ -43,7 +42,6 @@ Ops.Net.Websocket = function()
         {
             console.log('could not connect to',self.url.val);
         }
-
         
         connection.onerror = function (message)
         {

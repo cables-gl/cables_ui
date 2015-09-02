@@ -15,6 +15,7 @@ var Op = function()
     this.portsIn=[];
     this.posts=[];
     this.uiAttribs={};
+    this.enabled=true;
     this.name='unknown';
     this.id=generateUUID();
 
@@ -127,17 +128,21 @@ var Port=function(parent,name,type,uiAttribs)
     this.isLinked=function(){ return this.links.length>0; };
     this.onValueChanged=function(){};
     this.onTriggered=function(){};
+    this._onTriggered=function(){ if(parent.enabled) self.onTriggered(); };
 
     this.setValue=function(v)
     {
-        if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE)
+        if(parent.enabled)
         {
-            this.value=v;
-            this.onValueChanged();
-
-            for(var i in this.links)
+            if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE)
             {
-                this.links[i].setValue();
+                this.value=v;
+                this.onValueChanged();
+
+                for(var i in this.links)
+                {
+                    this.links[i].setValue();
+                }
             }
         }
     };
@@ -170,10 +175,11 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.call=function()
     {
+        if(!parent.enabled)return;
         for(var i in this.links)
         {
-            if(this.links[i].portIn !=this)this.links[i].portIn.onTriggered();
-            if(this.links[i].portOut!=this)this.links[i].portOut.onTriggered();
+            if(this.links[i].portIn !=this)this.links[i].portIn._onTriggered();
+            if(this.links[i].portOut!=this)this.links[i].portOut._onTriggered();
         }
     };
 

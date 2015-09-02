@@ -323,22 +323,33 @@ var line;
             cursor: "move"
         });
 
+        layer.setEnabled=function(sel)
+        {
+            if(sel)
+                    background.attr(
+                    {
+                        "fill-opacity": 1
+                    });
+                else
+                    background.attr(
+                    {
+                        "fill-opacity": 0.6
+                    });
+        };
+
         layer.setSelected=function(sel)
         {
             if(sel)
-                {
                     background.attr(
-                        {
-                            "fill": uiConfig.colorOpBgSelected,
-                        });
-                }
-                else 
-                        background.attr(
-                        {
-                            "stroke": "#000",
-                            fill: uiConfig.colorOpBg,
-                        });
-
+                    {
+                        "fill": uiConfig.colorOpBgSelected,
+                    });
+                else
+                    background.attr(
+                    {
+                        "stroke": "#000",
+                        fill: uiConfig.colorOpBg,
+                    });
         };
 
         layer.setTitle=function(t)
@@ -475,10 +486,15 @@ var line;
 
 
 
-var width=w;
+        var width=w;
 
         this.oprect=r.OpRect(x,y,w,h, txt).drag(move, dragger, up);
 
+        this.setEnabled=function(en)
+        {
+            this.op.enabled=en;
+            this.oprect.setEnabled(en);
+        };
 
         this.setSelected=function(sel)
         {
@@ -771,6 +787,18 @@ self.isDragging=true;
                     }
                     
                 break;
+
+                case 68: // disable
+                    console.log('disable enable '+selectedOps.length);
+                    if(selectedOps.length>0)
+                        for(var j in selectedOps)
+                            selectedOps[j].setEnabled(!selectedOps[j].op.enabled);
+                        else
+                            if(selectedOp)selectedOp.setEnabled(!selectedOp.op.enabled);
+                         
+
+                break;
+
             }
         });
 
