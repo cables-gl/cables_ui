@@ -120,6 +120,8 @@ var Port=function(parent,name,type,uiAttribs)
     this.type=type || OP_PORT_TYPE_VALUE;
     this.uiAttribs=uiAttribs || {};
     var valueBeforeLink=null;
+    var anim=null;
+    var animated=false;
 
     this.__defineGetter__("val", function(){ return this.value; });
     this.__defineSetter__("val", function(v){ this.setValue(v); });
@@ -145,6 +147,19 @@ var Port=function(parent,name,type,uiAttribs)
                 }
             }
         }
+    };
+
+    this.isAnimated=function()
+    {
+        return animated;
+    };
+
+    this.toggleAnim=function()
+    {
+        animated=!animated;
+        if(!anim)anim=new CABLES.TL.Anim();
+        console.log('animated '+animated);
+                
     };
 
     this.getName= function()

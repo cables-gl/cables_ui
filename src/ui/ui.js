@@ -1663,6 +1663,23 @@ self.isDragging=true;
             {
                 (function (index)
                 {
+                    if(op.portsIn[index].isAnimated()) $('#portanim_in_'+index).addClass('timingbutton_active');
+
+                    $('#portanim_in_'+index).on('click',function(e)
+                    {
+                        $('#portanim_in_'+index).toggleClass('timingbutton_active');
+                                
+                        op.portsIn[index].toggleAnim();
+                        self.showOpParams(op);
+                    });
+                })(ipi);
+            }
+
+
+            for(var ipi in op.portsIn)
+            {
+                (function (index)
+                {
                     $('#portdelete_in_'+index).on('click',function(e)
                     {
                         op.portsIn[index].removeLinks();
