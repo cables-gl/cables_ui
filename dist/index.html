@@ -519,7 +519,12 @@ function inputIncrement(v,dir)
 
 <script id="timeline_controler" type="text/x-handlebars-template">
 
-<div id="timeline">
+<div id="timelineui">
+
+    <span class="timelinetime"></span>
+    <span class="button timeLineInsert">insert</span>
+
+
     <a class="button" onclick="ui.scene.timer.setOffset(-4);">rew</a>
 
     <a class="button" onclick="ui.scene.timer.togglePlay();">play / pause</a>
@@ -529,10 +534,6 @@ function inputIncrement(v,dir)
     <br/><br/>
 </div>
 
-    <div id="timelineui">
-        <div class="timelinetime"></div>
-        <div class="timeLineInsert">insert</div>
-    </div>
     <div id="timeline"></div>
 
 

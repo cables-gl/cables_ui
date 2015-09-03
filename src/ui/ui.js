@@ -837,13 +837,16 @@ self.isDragging=true;
             $('#patch svg').css('width',window.innerWidth-rendererWidth-2);
             $('#patch svg').css('top',menubarHeight);
 
+
+            $('#timelineui').css('width',window.innerWidth-rendererWidth-2);
+
             $('#timing').css('width',window.innerWidth-rendererWidth-2);
             $('#timing').css('height',timingHeight);
             $('#timing').css('top',menubarHeight+patchHeight);
 
             $('#timeline svg').css('width',window.innerWidth-rendererWidth-2);
-            $('#timeline svg').css('height',timingHeight-50);
-            // $('#timing').css('top',menubarHeight+patchHeight);
+            $('#timeline svg').css('height',timingHeight);
+            $('#timeline svg').css('margin-top',menubarHeight);
 
             
             $('#options').css('left',window.innerWidth-rendererWidth);
@@ -1203,7 +1206,6 @@ self.isDragging=true;
 
             window.addEventListener( 'resize', this.setLayout, false );
 
-            this.setLayout();
             this.setUpRouting();
 
 
@@ -1278,6 +1280,9 @@ self.isDragging=true;
             });
 
             this.timeLine=new CABLES.TL.UI.TimeLineUI();
+
+            this.setLayout();
+
         };
 
         this.showExample=function(which)
