@@ -52,7 +52,7 @@ CABLES.TL.Key.prototype.getPathString=function(viewBox,nextKey)
 CABLES.TL.UI.TimeLineUI=function()
 {
     var self=this;
-    var tl=new CABLES.TL.TimeLine();
+    var tl=new CABLES.TL.Anim();
     var viewBox={x:-100,y:-400,w:1200,h:1000};
     var fps=30;
     var cursorTime=0.0;
@@ -78,6 +78,12 @@ CABLES.TL.UI.TimeLineUI=function()
         return frame;
     }
 
+    function setAnim(timeline)
+    {
+        tl=timeline;
+        updateKeyLine();
+    }
+
     function setCursor(time)
     {
         if(time<0)time=0;
@@ -89,13 +95,6 @@ CABLES.TL.UI.TimeLineUI=function()
         ui.scene.timer.setTime(time/100);
     }
 
-    this.sortKeys=function()
-    {
-        tl.keys.sort(function(a, b) {
-            return parseFloat(a.time) - parseFloat(b.time);
-        });
-
-    };
 
 
 
@@ -121,7 +120,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function updateKeyLine()
     {
-        self.sortKeys();
+        tl.sortKeys();
         var str="M 0 0 ";
         for(var i=0;i<tl.keys.length;i++)
         {

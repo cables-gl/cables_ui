@@ -2,16 +2,13 @@
 var CABLES=CABLES || {};
 CABLES.TL=CABLES.TL || {};
 
-
 CABLES.TL.Key=function(obj)
 {
     this.time=0.0;
     this.value=0.0;
-
     this.ui={};
-
-
     this.onChange=null;
+
     this.set=function(obj)
     {
         if(obj)
@@ -30,14 +27,18 @@ CABLES.TL.Key=function(obj)
         this.initUI(obj.paper);
     }
 
-
-
 };
 
-CABLES.TL.TimeLine=function()
+CABLES.TL.Anim=function()
 {
     this.keys=[];
 
+    this.sortKeys=function()
+    {
+        this.keys.sort(function(a, b) {
+            return parseFloat(a.time) - parseFloat(b.time);
+        });
+    };
 
     this.getKeyIndex=function(time)
     {
@@ -52,9 +53,8 @@ CABLES.TL.TimeLine=function()
 
     this.getValue=function(time)
     {
-
+        return this.keys[this.getKeyIndex(time)];
     };
-
 };
 
 

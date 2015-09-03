@@ -36,18 +36,17 @@
 
 <div id="menubar">
 
-
     <a onclick="ui.toggleSideBar();" class="button">cables</a>
 
-    <a onclick="ui.showOpSelect(100,100);" class="button">new op</a>
+    <a onclick="ui.showOpSelect(100,100);" class="button fa fa-plus-square-o"></a>
 
-    <a onclick="ui.cycleRendererSize();" class="button">size</a>
+    <a onclick="ui.cycleRendererSize();" class="button  fa fa-expand"></a>
 
     <div id="serverproject" style="float:left;display:none;">
         <a onclick="ui.saveCurrentProject();" class="button">save project <span id="serverprojectname"></span></a>
     </div>
 
-    <a target="_blankk" class="viewProjectLink button">view</a>
+    <a target="_blankk" class="viewProjectLink button fa fa-external-link"></a>
 
 
     <div id="loggedin">
@@ -55,7 +54,7 @@
     </div>
 
     <div id="loggedout">
-        <div id="username">not logged in</div> <a class="button" href="/">login</a>
+        <div id="username">not logged in</div> <a class="button fa fa-sign-out" href="/"></a>
     </div>
 
 

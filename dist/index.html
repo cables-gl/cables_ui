@@ -63,18 +63,17 @@
 
 <div id="menubar">
 
-
     <a onclick="ui.toggleSideBar();" class="button">cables</a>
 
-    <a onclick="ui.showOpSelect(100,100);" class="button">new op</a>
+    <a onclick="ui.showOpSelect(100,100);" class="button fa fa-plus-square-o"></a>
 
-    <a onclick="ui.cycleRendererSize();" class="button">size</a>
+    <a onclick="ui.cycleRendererSize();" class="button  fa fa-expand"></a>
 
     <div id="serverproject" style="float:left;display:none;">
         <a onclick="ui.saveCurrentProject();" class="button">save project <span id="serverprojectname"></span></a>
     </div>
 
-    <a target="_blankk" class="viewProjectLink button">view</a>
+    <a target="_blankk" class="viewProjectLink button fa fa-external-link"></a>
 
 
     <div id="loggedin">
@@ -82,7 +81,7 @@
     </div>
 
     <div id="loggedout">
-        <div id="username">not logged in</div> <a class="button" href="/">login</a>
+        <div id="username">not logged in</div> <a class="button fa fa-sign-out" href="/"></a>
     </div>
 
 
@@ -370,7 +369,7 @@ function inputIncrement(v,dir)
 
     <td>
         {{#if port.links}}
-            <a class="button" id="portdelete_{{ dirStr }}_{{ portnum }}" >unlink</a>
+            <a class="button fa fa-chain-broken" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
             {{port.links.length}}x
         {{/if}}
     </td>
@@ -524,11 +523,11 @@ function inputIncrement(v,dir)
     <a class="button" onclick="ui.toggleTiming();">timing</a>
 
     <span class="timelinetime"></span>
-    <span class="button timeLineInsert">insert</span>
+    <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
-    <a class="button" onclick="ui.scene.timer.setOffset(-4);">rew</a>
-    <a class="button" onclick="ui.scene.timer.togglePlay();">play / pause</a>
-    <a class="button" onclick="ui.scene.timer.setOffset(4);">fwd</a>
+    <a class="button fa fa-backward" onclick="ui.scene.timer.setOffset(-4);"></a>
+    <a class="button fa fa-play" onclick="ui.scene.timer.togglePlay();"></a>
+    <a class="button fa fa-forward" onclick="ui.scene.timer.setOffset(4);"></a>
 
     <br/><br/>
 </div>
