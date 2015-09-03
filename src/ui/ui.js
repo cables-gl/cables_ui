@@ -1,4 +1,24 @@
+            $('#patch svg').bind("mousemove", function (e)
+            {
+                e=mouseEvent(e);
 
+                if(mouseRubberBandStartPos && e.which!=1)
+                {
+                    rubberBandHide();
+                }
+
+                if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
+                {
+                    viewBox.x+=panX-ui.getCanvasCoords(e.offsetX,e.offsetY).x;
+                    viewBox.y+=panY-ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+
+                    self.updateViewBox();
+                }
+
+
+                panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
+                panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+            });
 var CABLES=CABLES || {};
 
 
@@ -807,12 +827,24 @@ self.isDragging=true;
             var statusBarHeight=20;
             var menubarHeight=30;
             var optionsWidth=400;
+            var timingHeight=250;
             var rendererWidth=uiConfig.rendererSizes[rendererSize].w;
             var rendererHeight=uiConfig.rendererSizes[rendererSize].h;
 
-            $('svg').css('height',window.innerHeight-statusBarHeight-menubarHeight);
-            $('svg').css('width',window.innerWidth-rendererWidth-2);
-            $('svg').css('top',menubarHeight);
+            var patchHeight=window.innerHeight-statusBarHeight-menubarHeight-timingHeight;
+
+            $('#patch svg').css('height',patchHeight);
+            $('#patch svg').css('width',window.innerWidth-rendererWidth-2);
+            $('#patch svg').css('top',menubarHeight);
+
+            $('#timing').css('width',window.innerWidth-rendererWidth-2);
+            $('#timing').css('height',timingHeight);
+            $('#timing').css('top',menubarHeight+patchHeight);
+
+            $('#timeline svg').css('width',window.innerWidth-rendererWidth-2);
+            $('#timeline svg').css('height',timingHeight-50);
+            // $('#timing').css('top',menubarHeight+patchHeight);
+
             
             $('#options').css('left',window.innerWidth-rendererWidth);
             $('#options').css('top',rendererHeight);
@@ -839,6 +871,8 @@ self.isDragging=true;
                 $('#glcanvas').attr('width',uiConfig.rendererSizes[rendererSize].w);
                 $('#glcanvas').attr('height',uiConfig.rendererSizes[rendererSize].h);
             }
+
+
         };
 
         this.getOpList=function()
@@ -1122,7 +1156,9 @@ self.isDragging=true;
         {
             this.scene=_scene;
 
-            $('#meta').append(getHandleBarHtml('timeline_controler'),{});
+            $('#timing').append(getHandleBarHtml('timeline_controler'),{});
+
+
             $('#meta').append();
 
             this.updateProjectList();
@@ -1157,8 +1193,7 @@ self.isDragging=true;
             // ----
 
 
-
-            r= Raphael(0, 0, 640, 480);
+            r= Raphael("patch",0, 0);
             // r.setAttribute('preserveAspectRatio', 'none');
 
 
@@ -1172,10 +1207,10 @@ self.isDragging=true;
             this.setUpRouting();
 
 
-            viewBox={x:0,y:0,w:$('svg').width(),h:$('svg').height()};
+            viewBox={x:0,y:0,w:$('#patch svg').width(),h:$('#patch svg').height()};
             self.updateViewBox();
 
-            $("svg").bind("mousewheel", function (event,delta,nbr)
+            $('#patch svg').bind("mousewheel", function (event,delta,nbr)
             {
                 event=mouseEvent(event);
                 if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
@@ -1213,14 +1248,14 @@ self.isDragging=true;
             });
 
 
-            $("svg").bind("mouseup", function (event)
+            $('#patch svg').bind("mouseup", function (event)
             {
                         
                 rubberBandHide();
             });
 
         
-            $("svg").bind("mousemove", function (e)
+            $('#patch svg').bind("mousemove", function (e)
             {
                 e=mouseEvent(e);
 
@@ -1241,6 +1276,8 @@ self.isDragging=true;
                 panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
                 panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
             });
+
+            this.timeLine=new CABLES.TL.UI.TimeLineUI();
         };
 
         this.showExample=function(which)
@@ -1640,18 +1677,18 @@ self.isDragging=true;
 this.getCanvasCoords=function(mx,my)
 {
         
-    if(!$('svg')[0].attributes[6])
+    if(!$('#patch svg')[0].attributes[6])
     {
         console.log('no viewbox attr!');
         return {x:0,y:0};
     }
-    if($('svg')[0].attributes[6].name!='viewBox')        console.err('tis aint no viewbox attr');
-    var vb=$('svg')[0].attributes[6].value.split(' '); // this will break
-    var asp=$('svg')[0].attributes[7].value; // this will break
+    if($('#patch svg')[0].attributes[6].name!='viewBox')        console.err('tis aint no viewbox attr');
+    var vb=$('#patch svg')[0].attributes[6].value.split(' '); // this will break
+    // var asp=$('#patch svg')[0].attributes[7].value; // this will break
 
 
-    var w=$('svg').width();
-    var h=$('svg').height();
+    var w=$('#patch svg').width();
+    var h=$('#patch svg').height();
 
     var mulx=1;
     var muly=1;
@@ -1669,8 +1706,8 @@ this.getCanvasCoords=function(mx,my)
     
     var fx = 0;
     var fy = 0;
-    if(mx!==0) fx = (( mx / $('svg').width()  ) * mulx )  + parseInt(vb[0],10);
-    if(my!==0) fy = (( my / $('svg').height() ) * muly ) + parseInt(vb[1],10);
+    if(mx!==0) fx = (( mx / $('#patch svg').width()  ) * mulx )  + parseInt(vb[0],10);
+    if(my!==0) fy = (( my / $('#patch svg').height() ) * muly ) + parseInt(vb[1],10);
 
     // if(isNaN(fx))fx=0;
     // if(isNaN(fy))fy=0;

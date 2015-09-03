@@ -44,7 +44,12 @@ a
     }
 }
 
-svg
+#timeline svg
+{
+    position:absolute;
+}
+
+#patch svg
 {
     position:absolute;
     border:1px solid black;
@@ -363,3 +368,9 @@ input[type=range]:focus {
 
 
 
+#timing
+{
+    position: absolute;
+    overflow: hidden;
+
+}
