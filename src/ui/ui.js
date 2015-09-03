@@ -749,6 +749,7 @@ self.isDragging=true;
         var linkNewLink=null;
         var selectedOp=null;
         var spacePressed=false;
+        var showTiming=true;
 
 
 
@@ -822,16 +823,21 @@ self.isDragging=true;
             }
         });
 
+        
+
         this.setLayout=function()
         {
             var statusBarHeight=20;
             var menubarHeight=30;
             var optionsWidth=400;
             var timingHeight=250;
+            var timelineUiHeight=40;
+            
             var rendererWidth=uiConfig.rendererSizes[rendererSize].w;
             var rendererHeight=uiConfig.rendererSizes[rendererSize].h;
 
-            var patchHeight=window.innerHeight-statusBarHeight-menubarHeight-timingHeight;
+            var patchHeight=window.innerHeight-statusBarHeight-menubarHeight;
+            if(showTiming)patchHeight-=timingHeight;
 
             $('#patch svg').css('height',patchHeight);
             $('#patch svg').css('width',window.innerWidth-rendererWidth-2);
@@ -841,14 +847,21 @@ self.isDragging=true;
             $('#timelineui').css('width',window.innerWidth-rendererWidth-2);
 
             $('#timing').css('width',window.innerWidth-rendererWidth-2);
-            $('#timing').css('height',timingHeight);
-            $('#timing').css('top',menubarHeight+patchHeight);
+            $('#timing').css('bottom',statusBarHeight);
+            if(showTiming)
+            {
+                $('#timing').css('height',timingHeight);
+                $('#timeline svg').css('width',window.innerWidth-rendererWidth-2);
+                $('#timeline svg').css('height',timingHeight);
+                $('#timeline svg').css('margin-top',menubarHeight);
+                $('#timeline svg').show();
+            }
+            else
+            {
+                $('#timeline svg').hide();
+                $('#timing').css('height',timelineUiHeight);
+            }
 
-            $('#timeline svg').css('width',window.innerWidth-rendererWidth-2);
-            $('#timeline svg').css('height',timingHeight);
-            $('#timeline svg').css('margin-top',menubarHeight);
-
-            
             $('#options').css('left',window.innerWidth-rendererWidth);
             $('#options').css('top',rendererHeight);
             $('#options').css('width',optionsWidth);
@@ -1009,6 +1022,12 @@ self.isDragging=true;
                     $('#projectfiles').html(html);
                             
                 });
+        };
+
+        this.toggleTiming=function()
+        {
+            showTiming=!showTiming;
+            this.setLayout();
         };
 
         this.toggleSideBar=function()

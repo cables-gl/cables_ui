@@ -80,9 +80,13 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function setCursor(time)
     {
+        if(time<0)time=0;
+
         cursorTime=time;
         time=time*100;
         cursorLine.attr({path: "M "+time+" -1000 L" + time + " " + 1110 });
+
+        ui.scene.timer.setTime(time/100);
     }
 
     this.sortKeys=function()
@@ -140,14 +144,38 @@ CABLES.TL.UI.TimeLineUI=function()
     setCursor(cursorTime);
     this.updateViewBox();
 
+
+    var spacePressed=false;
+
+    $(document).keyup(function(e)
+    {
+        switch(e.which)
+        {
+            case 32:
+                spacePressed=false;
+            break;
+        }
+    });
+
+    $(document).keydown(function(e)
+    {
+        switch(e.which)
+        {
+            case 32:
+                spacePressed=true;
+            break;
+        }
+    });
+
+
     $(".timeLineInsert").bind("click", function (e)
     {
         console.log('huhu! '+cursorTime);
         tl.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:2.0}) );
         updateKeyLine();
-
     });
 
+    var panX=0,pany=0;
     $("#timeline").bind("mousemove", function (e)
     {
         e=mouseEvent(e);
@@ -155,9 +183,21 @@ CABLES.TL.UI.TimeLineUI=function()
         if(e.which==1 && e.offsetY<50)
         {
             var time=self.getTimeFromMouse(e.offsetX);
-            $('.timelinetime').html(time+" / "+getFrame(time) );
+            $('.timelinetime').html( getFrame(time)+"<br/>"+(time+"").substr(0, 4)+"s " );
             setCursor(time);
         }
+
+        if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
+        {
+            viewBox.x+=panX-ui.getCanvasCoords(e.offsetX,e.offsetY).x;
+            viewBox.y+=panY-ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+
+            self.updateViewBox();
+        }
+
+        panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
+        panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+
     });
 
     $('#timeline').bind("mousewheel", function (event,delta,nbr)

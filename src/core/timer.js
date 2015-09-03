@@ -34,6 +34,12 @@ function Timer()
             else self.pause();
     };
 
+    this.setTime=function(t)
+    {
+        if(t<0)t=0;
+        currentTime=t;
+    }
+
     this.setOffset=function(val)
     {
         if(currentTime+val<0)

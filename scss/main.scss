@@ -44,10 +44,21 @@ a
     }
 }
 
-#timeline svg
+#timing
 {
-    position:absolute;
+    font-family: monospace;
 }
+
+#timeline 
+{
+
+    svg
+    {
+        position:absolute;
+    }
+
+}
+
 
 #patch svg
 {
@@ -107,6 +118,17 @@ td.head
     background-color: #222;
 }
 
+#timelineui
+{
+    .timelinetime
+    {
+        display: block;
+        float:left;
+        padding:4px;
+        text-align: center;
+    }
+}
+
 
 #modalbg
 {
@@ -123,7 +145,7 @@ td.head
 textarea
 {
     width:500px;
-    height:300px;    
+    height:300px;
 }
 
 #modalcontent

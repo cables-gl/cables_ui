@@ -30,7 +30,11 @@ a {
 div {
     padding: 10px; }
 
-#timeline svg {
+#timing {
+  font-family: monospace; }
+
+#timeline
+svg {
   position: absolute; }
 
 #patch svg {
@@ -69,6 +73,13 @@ td.head {
 #menubar, #timelineui {
   position: absolute;
   background-color: #222; }
+
+#timelineui
+.timelinetime {
+  display: block;
+  float: left;
+  padding: 4px;
+  text-align: center; }
 
 #modalbg {
   background-color: black;
