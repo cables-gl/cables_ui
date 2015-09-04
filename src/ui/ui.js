@@ -1606,6 +1606,7 @@ self.isDragging=true;
         this.showOpParams=function(op)
         {
             watchPorts=[];
+            watchAnimPorts=[];
 
             var html = getHandleBarHtml('params_op_head',{op: op});
 
@@ -1616,11 +1617,16 @@ self.isDragging=true;
 
             for(var i in op.portsIn)
             {
+                op.portsIn[i].watchId='in_'+i;
+                watchAnimPorts.push(op.portsIn[i]);
 
                 if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated())
                 {
-                    op.portsIn[i].watchId='in_'+i;
                     watchPorts.push(op.portsIn[i]);
+
+                    if(op.portsIn[i].isAnimated())
+                    {
+                    }
                 }
 
                 html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true } );
@@ -1698,17 +1704,40 @@ self.isDragging=true;
                     });
                 })(ipii);
             }
+
+            for(var i in watchAnimPorts)
+            {
+                var thePort=watchAnimPorts[i];
+                (function (thePort)
+                {
+                    var id='.watchPortValue_'+thePort.watchId;
+
+                    $(id).on("focusin", function()
+                    {
+                        ui.timeLine.setAnim(thePort.anim);
+                    });
+
+                })(thePort);
+            }
+
+
+
         };
 
 
         function doWatchPorts()
         {
+
+
+
             for(var i in watchPorts)
             {
                 var id='.watchPortValue_'+watchPorts[i].watchId;
                 if(watchPorts[i].isAnimated())
                 {
                     $(id).val( watchPorts[i].val );
+
+
                 }
                 else
                 {

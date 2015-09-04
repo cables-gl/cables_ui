@@ -2,20 +2,25 @@
 CABLES.TL.UI=CABLES.TL.UI || {};
 
 CABLES.TL.Key.prototype.isUI=true;
-CABLES.TL.Key.prototype.circle={};
+CABLES.TL.Key.prototype.circle=null;
 
 
 CABLES.TL.Key.prototype.updateCircle=function(paper)
 {
+    if(!this.circle) this.initUI(ui.timeLine.getPaper());
     var posx=this.time*100;
     var posy=this.value*-100;
 
     this.circle.attr({ cx:posx, cy:posy });
+    this.circle.toFront();
 };
             
 CABLES.TL.Key.prototype.initUI=function(paper)
 {
     var self=this;
+
+    console.log('this',this);
+        
 
     this.x=this.time*100;
     this.y=this.value*-100;
@@ -88,19 +93,38 @@ CABLES.TL.UI.TimeLineUI=function()
         return frame;
     }
 
+    this.getPaper=function()
+    {
+        return paper;
+    };
+
     this.setAnim=function(anim)
     {
-
-        for(var i in tl.keys)
+                
+        if(tl) for(var i in tl.keys)
         {
-            tl.keys[i].circle.remove();
+            if(tl.keys[i].circle)tl.keys[i].circle.remove();
         }
+
+        if(!anim)
+        {
+            tl=null;
+            updateKeyLine();
+            return;
+        }
+
 
         console.log('anim ',anim);
         anim.paper=paper;
 
         tl=anim;
         updateKeyLine();
+
+        for(var i in tl.keys)
+        {
+            if(!tl.keys[i].circle)tl.keys[i].initUI();
+        }
+
 
         if(tl.onChange===null) tl.onChange=updateKeyLine;
     };
@@ -138,24 +162,28 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function updateKeyLine()
     {
-        tl.sortKeys();
         var str="M 0 0 ";
-        for(var i=0;i<tl.keys.length;i++)
+        if(tl)
         {
-            var nextKey=null;
-                    
-            if(tl.keys.length > i+1)
+            tl.sortKeys();
+            
+            for(var i=0;i<tl.keys.length;i++)
             {
-                nextKey=tl.keys[i+1];
+                var nextKey=null;
+                        
+                if(tl.keys.length > i+1)
+                {
+                    nextKey=tl.keys[i+1];
+                }
+
+                str+=tl.keys[i].getPathString(viewBox,nextKey);
+                
+                tl.keys[i].updateCircle();
+                if(tl.keys[i].onChange===null) tl.keys[i].onChange=updateKeyLine;
+
             }
-
-            str+=tl.keys[i].getPathString(viewBox,nextKey);
-            tl.keys[i].circle.toFront();
-            tl.keys[i].updateCircle();
-            if(tl.keys[i].onChange===null) tl.keys[i].onChange=updateKeyLine;
-
         }
-        
+
         keyLine.attr({ path:str });
     }
 

@@ -546,7 +546,10 @@ var Scene = function()
                 {
                     for(var ani in objPort.anim.keys)
                     {
-                        port.anim.keys.push(new CABLES.TL.Key({time:objPort.t,value:objPort.v}) );
+                        var o={time:objPort.anim.keys[ani].t,value:objPort.anim.keys[ani].v};
+                                console.log('o',objPort);
+                                
+                        port.anim.keys.push(new CABLES.TL.Key(o) );
 
                     }
                 }
