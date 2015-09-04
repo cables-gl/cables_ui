@@ -35,9 +35,9 @@ CABLES.TL.Key=function(obj)
     
     this.set(obj);
 
-    if(obj.paper && "isUI" in this)
+    if("isUI" in this)
     {
-        this.initUI(obj.paper);
+        this.initUI();
     }
 
 };

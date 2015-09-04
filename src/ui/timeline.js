@@ -5,8 +5,9 @@ CABLES.TL.Key.prototype.isUI=true;
 CABLES.TL.Key.prototype.circle=null;
 
 
-CABLES.TL.Key.prototype.updateCircle=function(paper)
+CABLES.TL.Key.prototype.updateCircle=function()
 {
+    if(!ui.timeLine)return;
     if(!this.circle) this.initUI(ui.timeLine.getPaper());
     var posx=this.time*100;
     var posy=this.value*-100;
@@ -15,18 +16,16 @@ CABLES.TL.Key.prototype.updateCircle=function(paper)
     this.circle.toFront();
 };
             
-CABLES.TL.Key.prototype.initUI=function(paper)
+CABLES.TL.Key.prototype.initUI=function()
 {
+    if(!ui.timeLine)return;
     var self=this;
-
-    console.log('this',this);
-        
 
     this.x=this.time*100;
     this.y=this.value*-100;
 
     var discattr = {fill: "#f0f", stroke: "none"};
-    this.circle=paper.circle(self.x, self.y, 6).attr(discattr);
+    this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 6).attr(discattr);
     this.circle.toFront();
 
     function move(dx, dy)
@@ -74,12 +73,12 @@ CABLES.TL.UI.TimeLineUI=function()
 
     var paper= Raphael("timeline", 0,0);
 
-    tl.keys.push(new CABLES.TL.Key({paper:paper,time:0.0,value:1.0}) );
-    tl.keys.push(new CABLES.TL.Key({paper:paper,time:1.0,value:1.0}) );
-    tl.keys.push(new CABLES.TL.Key({paper:paper,time:5.0,value:0.0}) );
-    tl.keys.push(new CABLES.TL.Key({paper:paper,time:6.0,value:4.0}) );
-    tl.keys.push(new CABLES.TL.Key({paper:paper,time:8.0,value:2.0}) );
-    tl.keys.push(new CABLES.TL.Key({paper:paper,time:10.0,value:2.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:0.0,value:1.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:1.0,value:1.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:5.0,value:0.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:6.0,value:4.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:8.0,value:2.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:10.0,value:2.0}) );
 
     var ki=tl.getKeyIndex(-1.0);
     console.log('ki '+ki);
@@ -100,7 +99,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.setAnim=function(anim)
     {
-                
+
         if(tl) for(var i in tl.keys)
         {
             if(tl.keys[i].circle)tl.keys[i].circle.remove();
@@ -122,7 +121,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
         for(var i in tl.keys)
         {
-            if(!tl.keys[i].circle)tl.keys[i].initUI();
+            if(tl.keys[i].circle)tl.keys[i].circle.remove();
+            tl.keys[i].circle=null;
+            tl.keys[i].initUI();
+            tl.keys[i].updateCircle();
         }
 
 
