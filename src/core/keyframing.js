@@ -105,7 +105,17 @@ CABLES.TL.Anim=function(cfg)
     this.getValue=function(time)
     {
         if(this.keys.length===0)return 0;
-        return this.keys[this.getKeyIndex(time)].value;
+
+        var index=this.getKeyIndex(time);
+        if(index>=this.keys.length-1)return this.keys[this.keys.length-1].value;
+        var index2=parseInt(index,10)+1;
+        var key1=this.keys[index];
+        var key2=this.keys[index2];
+
+        if(!key2)return -1;
+
+        var perc=(time-key1.time)/(key2.time-key1.time);
+        return parseFloat(key1.value)+ parseFloat((key2.value - key1.value)) * perc;
     };
 };
 

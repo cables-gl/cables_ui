@@ -29,7 +29,7 @@ CABLES.TL.Key.prototype.initUI=function()
     this.y=this.value*-100;
 
     var discattr = {fill: uiConfig.colorKey, stroke: "none"};
-    this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 6).attr(discattr);
+    this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 8).attr(discattr);
     this.circle.toFront();
 
     function move(dx,dy,a,b,e)
@@ -271,7 +271,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         if(e.which==1 && e.offsetY<50)
         {
-            var time=self.getTimeFromMouse(e.offsetX);
+            var time=self.getTimeFromMouse( e );
                     
             ui.scene.timer.setTime(time);
             self.updateTime();
@@ -303,12 +303,10 @@ CABLES.TL.UI.TimeLineUI=function()
         self.updateViewBox();
     });
 
-    this.getTimeFromMouse=function(offsetX)
+    this.getTimeFromMouse=function(e)
     {
-        var time=offsetX/$('#timeline').width() ;
-        time*=(viewBox.w);
+        var time=self.getCanvasCoordsMouse(e).x;//$('#timeline').width() ;
         time/=100;
-        time+=viewBox.x/100;
         return time;
     };
 
