@@ -112,8 +112,6 @@ CABLES.TL.UI.TimeLineUI=function()
             return;
         }
 
-
-        console.log('anim ',anim);
         anim.paper=paper;
 
         tl=anim;
@@ -193,6 +191,22 @@ CABLES.TL.UI.TimeLineUI=function()
 
     var spacePressed=false;
 
+    this.jumpKey=function(dir)
+    {
+        if(!tl)return;
+        var index=tl.getKeyIndex(cursorTime);
+        var newIndex=parseInt(index,10)+parseInt(dir,10);
+
+        if(tl.keys.length>newIndex && newIndex>=0)
+        {
+            var time=tl.keys[newIndex].time;
+            ui.scene.timer.setTime(time);
+            self.updateTime();
+        }
+
+    };
+
+
     $(document).keyup(function(e)
     {
         switch(e.which)
@@ -210,6 +224,17 @@ CABLES.TL.UI.TimeLineUI=function()
             case 32:
                 spacePressed=true;
             break;
+            case 74: // j
+                self.jumpKey(-1);
+            break;
+            case 75: // k
+                self.jumpKey(1);
+            break;
+
+            default:
+                // console.log('key ',e.which);
+            break;
+
         }
     });
 
