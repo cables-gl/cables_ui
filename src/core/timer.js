@@ -15,6 +15,11 @@ function Timer()
         return lastTime+timeOffset;
     }
 
+    this.isPlaying=function()
+    {
+        return !paused;
+    };
+
     this.update=function()
     {
         if(paused) return;
@@ -30,15 +35,17 @@ function Timer()
 
     this.togglePlay=function()
     {
-        if(paused)self.play();
+        if(paused) self.play();
             else self.pause();
     };
 
     this.setTime=function(t)
     {
         if(t<0)t=0;
+        timeStart=Date.now();
+        timeOffset=t;
         currentTime=t;
-    }
+    };
 
     this.setOffset=function(val)
     {

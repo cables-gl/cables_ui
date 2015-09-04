@@ -112,8 +112,6 @@ CABLES.TL.UI.TimeLineUI=function()
         cursorTime=time;
         time=time*100;
         cursorLine.attr({path: "M "+time+" -1000 L" + time + " " + 1110 });
-
-        ui.scene.timer.setTime(time/100);
     }
 
 
@@ -161,9 +159,6 @@ CABLES.TL.UI.TimeLineUI=function()
         keyLine.attr({ path:str });
     }
 
-    updateKeyLine();
-    setCursor(cursorTime);
-    this.updateViewBox();
 
 
     var spacePressed=false;
@@ -204,8 +199,9 @@ CABLES.TL.UI.TimeLineUI=function()
         if(e.which==1 && e.offsetY<50)
         {
             var time=self.getTimeFromMouse(e.offsetX);
-            $('.timelinetime').html( getFrame(time)+"<br/>"+(time+"").substr(0, 4)+"s " );
-            setCursor(time);
+                    
+            ui.scene.timer.setTime(time);
+            self.updateTime();
         }
 
         if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
@@ -250,6 +246,41 @@ CABLES.TL.UI.TimeLineUI=function()
         time/=100;
         return time;
     };
+
+    var updateTimer=null;
+
+    this.updateTime=function()
+    {
+        var time=ui.scene.timer.getTime();
+        setCursor(time);
+        $('.timelinetime').html( '<b>'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
+        // if(ui.scene.timer.isPlaying()) 
+        if(updateTimer===null) updateTimer=setInterval(self.updateTime,40);
+    };
+
+    this.togglePlay=function(patch)
+    {
+        ui.scene.timer.togglePlay();
+                
+        if(!ui.scene.timer.isPlaying())
+        {
+            $('#timelineplay').removeClass('fa-pause');
+            $('#timelineplay').addClass('fa-play');
+            this.updateTime();
+        }
+        else
+        {
+            $('#timelineplay').removeClass('fa-play');
+            $('#timelineplay').addClass('fa-pause');
+            this.updateTime();
+        }
+    };
+
+
+    updateKeyLine();
+    // setCursor(cursorTime,true);
+    this.updateTime();
+    this.updateViewBox();
 
 };
 
