@@ -86,7 +86,6 @@ CABLES.TL.Anim=function(cfg)
         if(this.onChange)this.onChange();
         this.sortKeys();
 
-        console.log('has keys: '+this.keys.length );
                 
     };
 

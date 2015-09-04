@@ -65,7 +65,8 @@ input {
   border: none; }
 
 input[type="text"] {
-  padding: 2px; }
+  padding: 2px;
+  padding-left: 4px; }
 
 td.head {
   background-color: #000; }
@@ -149,11 +150,19 @@ td.port {
   .panel td.portType_1 {
     border-left: 4px solid #6c9fde; }
   .panel
+input.value {
+    background-color: #444; }
+    .panel
+input.value:focus {
+      background-color: #666;
+      outline: none; }
+  .panel
 .value {
     font-family: monospace;
     width: 140px;
     display: block;
     padding: 2px;
+    padding-left: 7px;
     border-radius: 4px; }
   .panel
 table {
@@ -184,7 +193,7 @@ td {
     background-color: #ea6638; }
 
 .timingbutton_active {
-  color: #ff0 !important; }
+  color: #6c9fde !important; }
 
 .timingbutton {
   display: block;

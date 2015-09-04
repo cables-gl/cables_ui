@@ -77,11 +77,11 @@ function inputIncrement(v,dir)
 
         if (delta > 0)
         {
-            this.value = inputIncrement(this.value,1);
+            this.value = Math.round(1000*inputIncrement(this.value,1))/1000;
         }
         else
         {
-            this.value = inputIncrement(this.value,-1);
+            this.value = Math.round(1000*inputIncrement(this.value,-1))/1000;
         }
 
          $(this).trigger('input');

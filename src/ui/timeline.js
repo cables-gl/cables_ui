@@ -9,8 +9,12 @@ CABLES.TL.Key.prototype.updateCircle=function()
 {
     if(!ui.timeLine)return;
     if(!this.circle) this.initUI(ui.timeLine.getPaper());
+
+    if(isNaN(this.value)) this.value=0;
+
     var posx=this.time*100;
     var posy=this.value*-100;
+
 
     this.circle.attr({ cx:posx, cy:posy });
     this.circle.toFront();
@@ -73,18 +77,17 @@ CABLES.TL.UI.TimeLineUI=function()
 
     var paper= Raphael("timeline", 0,0);
 
-    tl.keys.push(new CABLES.TL.Key({time:0.0,value:1.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:1.0,value:1.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:5.0,value:0.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:6.0,value:4.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:8.0,value:2.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:10.0,value:2.0}) );
+    // tl.keys.push(new CABLES.TL.Key({time:0.0,value:1.0}) );
+    // tl.keys.push(new CABLES.TL.Key({time:1.0,value:1.0}) );
+    // tl.keys.push(new CABLES.TL.Key({time:5.0,value:0.0}) );
+    // tl.keys.push(new CABLES.TL.Key({time:6.0,value:4.0}) );
+    // tl.keys.push(new CABLES.TL.Key({time:8.0,value:2.0}) );
+    // tl.keys.push(new CABLES.TL.Key({time:10.0,value:2.0}) );
 
     var ki=tl.getKeyIndex(-1.0);
-    console.log('ki '+ki);
 
     var cursorLine = paper.path("M 0 0 L 10 10");
-    cursorLine.attr({stroke: "#ff0", "stroke-width": 2});
+    cursorLine.attr({stroke: "#6c9fde", "stroke-width": 2});
 
     function getFrame(time)
     {

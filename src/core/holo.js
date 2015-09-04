@@ -184,8 +184,6 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.setAnimated=function(a)
     {
-        console.log('set animated',a);
-                
         animated=a;
         if(animated && !self.anim)self.anim=new CABLES.TL.Anim();
     };
@@ -250,8 +248,6 @@ var Port=function(parent,name,type,uiAttribs)
         obj.name=this.getName();
         obj.value=this.value;
         if(animated) obj.animated=animated;
-                console.log('animated ',animated);
-                
         if(this.anim) obj.anim=this.anim.getSerialized();
 
         if(this.direction==PORT_DIR_IN && this.links.length>0)
@@ -547,7 +543,6 @@ var Scene = function()
                     for(var ani in objPort.anim.keys)
                     {
                         var o={time:objPort.anim.keys[ani].t,value:objPort.anim.keys[ani].v};
-                                console.log('o',objPort);
                                 
                         port.anim.keys.push(new CABLES.TL.Key(o) );
 
