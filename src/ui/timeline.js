@@ -19,7 +19,7 @@ CABLES.TL.Key.prototype.updateCircle=function()
     this.circle.attr({ cx:posx, cy:posy });
     this.circle.toFront();
 };
-            
+
 CABLES.TL.Key.prototype.initUI=function()
 {
     if(!ui.timeLine)return;
@@ -28,24 +28,25 @@ CABLES.TL.Key.prototype.initUI=function()
     this.x=this.time*100;
     this.y=this.value*-100;
 
-    var discattr = {fill: "#f0f", stroke: "none"};
+    var discattr = {fill: uiConfig.colorKey, stroke: "none"};
     this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 6).attr(discattr);
     this.circle.toFront();
 
-    function move(dx, dy)
+    function move(dx,dy,a,b,e)
     {
-        if(self.x==-1 && self.y==-1)
-        {
-            self.x=self.time*100;
-            self.y=self.value*-100;
-        }
+        var newPos=ui.timeLine.getCanvasCoordsMouse(e);
+        // if(self.x==-1 && self.y==-1)
+        // {
+        //     self.x=self.time*100;
+        //     self.y=self.value*-100;
+        // }
 
-        var posx=dx+self.x;
-        var posy=dy+self.y;
+        // var posx=dx+self.x;
+        // var posy=dy+self.y;
 
-        self.circle.attr({ cx:posx, cy:posy });
+        self.circle.attr({ cx:newPos.x, cy:newPos.y });
 
-        self.set({time:ui.timeLine.getTimeFromPaper(posx),value:posy/-100});
+        self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-100});
     }
 
     function up()
@@ -71,7 +72,7 @@ CABLES.TL.UI.TimeLineUI=function()
 {
     var self=this;
     var tl=new CABLES.TL.Anim();
-    var viewBox={x:-100,y:-400,w:1200,h:1000};
+    var viewBox={x:-100,y:-400,w:1200,h:400};
     var fps=30;
     var cursorTime=0.0;
 
@@ -147,7 +148,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var keyLine = paper.path("M "+-1000+" "+0+" L" + 1000 + " " + 0);
     keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
 
-    var zeroLine = paper.path("M "+-1000+" "+0+" L" + 1000 + " " + 0);
+    var zeroLine = paper.path("M 0 0 L 111000 0");
     zeroLine.attr({ stroke: "#999", "stroke-width": 1});
 
 
@@ -159,7 +160,7 @@ CABLES.TL.UI.TimeLineUI=function()
             viewBox.w,
             viewBox.h,false
         );
-        paper.canvas.setAttribute('preserveAspectRatio', 'none');
+        // paper.canvas.setAttribute('preserveAspectRatio', 'none');
 
     };
 
@@ -190,7 +191,21 @@ CABLES.TL.UI.TimeLineUI=function()
         keyLine.attr({ path:str });
     }
 
+    this.getCanvasCoordsMouse=function(evt)
+    {
+        var ctm = $('#timeline svg')[0].getScreenCTM();
 
+        ctm = ctm.inverse();
+        var uupos = $('#timeline svg')[0].createSVGPoint();
+
+        uupos.x = evt.clientX;
+        uupos.y = evt.clientY;
+
+        uupos = uupos.matrixTransform(ctm);
+        
+        var res={x:uupos.x,y:uupos.y};
+        return res;
+    };
 
     var spacePressed=false;
 
@@ -264,15 +279,14 @@ CABLES.TL.UI.TimeLineUI=function()
 
         if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
         {
-            viewBox.x+=panX-ui.getCanvasCoords(e.offsetX,e.offsetY).x;
-            viewBox.y+=panY-ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+            viewBox.x+=panX-self.getCanvasCoordsMouse(e).x;
+            viewBox.y+=panY-self.getCanvasCoordsMouse(e).y;
 
             self.updateViewBox();
         }
 
-        panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
-        panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
-
+        panX=self.getCanvasCoordsMouse(e).x;
+        panY=self.getCanvasCoordsMouse(e).y;
     });
 
     $('#timeline').bind("mousewheel", function (event,delta,nbr)

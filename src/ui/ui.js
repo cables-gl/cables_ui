@@ -9,15 +9,15 @@
 
                 if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
                 {
-                    viewBox.x+=panX-ui.getCanvasCoords(e.offsetX,e.offsetY).x;
-                    viewBox.y+=panY-ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+                    viewBox.x+=panX-ui.getCanvasCoordsMouse(e).x;//e.offsetX,e.offsetY).x;
+                    viewBox.y+=panY-ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
                     self.updateViewBox();
                 }
 
 
-                panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
-                panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+                panX=ui.getCanvasCoordsMouse(e).x;//e.offsetX,e.offsetY).x;
+                panY=ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
             });
 var CABLES=CABLES || {};
 
@@ -90,12 +90,12 @@ document.addEventListener("DOMContentLoaded", function(event)
     //     return true;
     // };
 
-            $(document).bind("contextmenu", function(e)
-            {
-                // if(e.stopPropagation) e.stopPropagation();
-                if(e.preventDefault) e.preventDefault();
-                // e.cancelBubble = false;
-            });
+    $(document).bind("contextmenu", function(e)
+    {
+        // if(e.stopPropagation) e.stopPropagation();
+        if(e.preventDefault) e.preventDefault();
+        // e.cancelBubble = false;
+    });
 
 
 
@@ -120,6 +120,8 @@ var uiConfig=
     colorOpBgSelected:'#ff9',
     colorPort:'#6c9fde',
     colorRubberBand:'#6c9fde',
+    colorKey:'#6c9fde',
+    colorSelected:'#fff',
     colorPortHover:'#f00',
 
     watchValuesInterval:100,
@@ -165,8 +167,7 @@ function Line(startX, startY, thisPaper)
         return "M "+startX+" "+startY+" L" + endX + " " + endY;
     };
     this.thisLine = thisPaper.path(this.getPath());
-    this.thisLine.attr({        stroke: uiConfig.colorLink,
-        "stroke-width": 2});
+    this.thisLine.attr({ stroke: uiConfig.colorLink, "stroke-width": 2});
     this.redraw = function() { this.thisLine.attr("path", this.getPath()); };
 }
 
@@ -206,7 +207,6 @@ function UiLink(port1, port2)
                 setStatusText('left click: insert op / right click: delete link');
             });
 
-
             addCircle.drag(function(){},function(){},function(event)
             {
                 if(self.p1!==null)
@@ -217,17 +217,12 @@ function UiLink(port1, port2)
                     }
                     else
                     {
-                        console.log('show showOpSelect');
-                             
                         event=mouseEvent(event);
-
                         ui.showOpSelect(event.offsetX,event.offsetY,null,null,self);
                     }
                 }
 
             });
-
-
         }
         else
         {
@@ -236,8 +231,6 @@ function UiLink(port1, port2)
                 cy:middlePosY
             });
         }
-
-
     };
 
     this.getPath = function()
@@ -449,7 +442,7 @@ var line;
 
             e=mouseEvent(e);
 
-            var pos=ui.getCanvasCoords(e.offsetX,e.offsetY);
+            var pos=ui.getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
 
             if(!self.op.uiAttribs)
             {
@@ -556,22 +549,23 @@ var line;
         },
         PortMove = function(dx, dy,a,b,event)
         {
-            // console.log(c);
             if(event.which==3)return;
             if(event.which==2)return;
-        
 
-            if(!line) line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portHeight, r);
+            if(!line)
+            {
+                line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portHeight, r);
+            }
             else
             {
                 // line.updateEnd(this.startx+dx,this.starty+dy);
-self.isDragging=true;
+                self.isDragging=true;
 
                 event=mouseEvent(event);
 
                 line.updateEnd(
-                    ui.getCanvasCoords(event.offsetX,event.offsetY).x,
-                    ui.getCanvasCoords(event.offsetX,event.offsetY).y
+                    ui.getCanvasCoordsMouse(event).x,//event.offsetX,event.offsetY).x,
+                    ui.getCanvasCoordsMouse(event).y//event.offsetX,event.offsetY).y
                     );
             }
 
@@ -651,14 +645,12 @@ self.isDragging=true;
                 "stroke-width": 0
             });
 
-
             this.oprect.getGroup().push(port);
-
             port.direction=inout;
             port.op=self.op;
             port.opUi=self;
-
             port.portIndex=portIndex;
+
             var thePort;
             if(inout=='out') thePort=self.op.portsOut[portIndex];
             else thePort=self.op.portsIn[portIndex];
@@ -1037,7 +1029,6 @@ self.isDragging=true;
 
         this.showOpSelect=function(x,y,linkOp,linkPort,link)
         {
-            // console.log('starting Port:',linkStartPort);
             linkNewLink=link;
             linkNewOpToPort=linkPort;
             linkNewOpToOp=linkOp;
@@ -1113,9 +1104,9 @@ self.isDragging=true;
                 {
                     ui.setSelectedOp(null);
 
-                    mouseRubberBandStartPos=ui.getCanvasCoords(e.offsetX,e.offsetY);
+                    mouseRubberBandStartPos=ui.getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
                 }
-                mouseRubberBandPos=ui.getCanvasCoords(e.offsetX,e.offsetY);
+                mouseRubberBandPos=ui.getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
 
                 if(!rubberBandRect) rubberBandRect=r.rect(
                         0,0,10,10).attr({
@@ -1287,15 +1278,15 @@ self.isDragging=true;
 
                 if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
                 {
-                    viewBox.x+=panX-ui.getCanvasCoords(e.offsetX,e.offsetY).x;
-                    viewBox.y+=panY-ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+                    viewBox.x+=panX-ui.getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
+                    viewBox.y+=panY-ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
                     self.updateViewBox();
                 }
 
 
-                panX=ui.getCanvasCoords(e.offsetX,e.offsetY).x;
-                panY=ui.getCanvasCoords(e.offsetX,e.offsetY).y;
+                panX=ui.getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
+                panY=ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
             });
 
             this.timeLine=new CABLES.TL.UI.TimeLineUI();
@@ -1480,346 +1471,346 @@ self.isDragging=true;
           };
       };
 
-        this.setOpTitle=function(uiop,t)
-        {
-            uiop.op.uiAttribs.title=t;
-            uiop.op.name=t;
-            uiop.oprect.setTitle(t);
-
-        };
-
-        this.setSelectedOpTitle=function(t)
-        {
-            if(selectedOp)
-            {
-                this.setOpTitle(selectedOp,t);
-            }
-        };
-        
-
-        this.setSelectedOp=function(uiop)
-        {
-            if(uiop===null)
-            {
-                for(var i in ui.ops)
-                {
-                    ui.ops[i].setSelected(false);
-                }
-                selectedOps.length=0;
-                        
-                return;
-            }
-
-            if(selectedOp)
-            {
-                this.setSelectedOp(null);
-                // selectedOp.setSelected(false);
-                selectedOp.hideAddButtons();
-            }
-
-            selectedOp=uiop;
-            if(selectedOp)
-            {
-                selectedOp.showAddButtons();
-                uiop.oprect.setSelected(true);
-            }
-        };
-
-        
-        var selectedOps=[];
-        this.addSelectedOp=function(uiop)
-        {
-            for(var i in selectedOps)
-            {
-                if(selectedOps[i]==uiop)return;
-            }
-            selectedOps.push(uiop);
-            uiop.oprect.setSelected(true);
-        };
-
-
-        this.cycleRendererSize=function()
-        {
-            rendererSize++;
-            if(rendererSize>uiConfig.rendererSizes.length-1)rendererSize=0;
-
-
-            self.setLayout();
-        };
-
-        this.closeModal=function()
-        {
-            mouseNewOPX=0;
-            mouseNewOPY=0;
-
-            $('#modalcontent').html('');
-            $('#modalcontent').hide();
-            $('#modalbg').hide();
-        };
-
-        this.showModal=function(content)
-        {
-            $('#modalcontent').html('<div class="modalclose"><a class="button" onclick="ui.closeModal();">close</a></div>');
-            $('#modalcontent').append(content);
-            $('#modalcontent').show();
-            $('#modalbg').show();
-        };
-
-        this.importDialog=function()
-        {
-            var html='';
-            html+='import:<br/><br/>';
-            html+='<textarea id="serialized"></textarea>';
-            html+='<br/>';
-            html+='<br/>';
-            html+='<a class="button" onclick="ui.scene.clear();ui.scene.deSerialize($(\'#serialized\').val());ui.closeModal();">import</a>';
-            self.showModal(html);
-        };
-
-        this.exportDialog=function()
-        {
-            var html='';
-            html+='export:<br/><br/>';
-            html+='<textarea id="serialized"></textarea>';
-            self.showModal(html);
-            $('#serialized').val(self.scene.serialize());
-        };
-
-        this.updateOpParams=function(id)
-        {
-            self.showOpParams(self.scene.getOpById(id));
-        };
-
-        function getHandleBarHtml(name,obj)
-        {
-            var source   = $("#"+name).html();
-            var template = Handlebars.compile(source);
-            var context = obj;
-            return template(context);
-        }
-
-        this.showProjectParams=function(op)
-        {
-            $('#options').html('...');
-        };
-
-        this.showOpParams=function(op)
-        {
-            watchPorts=[];
-            watchAnimPorts=[];
-
-            var html = getHandleBarHtml('params_op_head',{op: op});
-
-            var sourcePort = $("#params_port").html();
-            var templatePort = Handlebars.compile(sourcePort);
-
-            html += getHandleBarHtml('params_ports_head',{title:'in'});
-
-            for(var i in op.portsIn)
-            {
-                op.portsIn[i].watchId='in_'+i;
-                watchAnimPorts.push(op.portsIn[i]);
-
-                if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated())
-                {
-                    watchPorts.push(op.portsIn[i]);
-
-                    if(op.portsIn[i].isAnimated())
-                    {
-                    }
-                }
-
-                html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true } );
-            }
-
-            html += getHandleBarHtml('params_ports_head',{title:'out'});
-
-            for(var i2 in op.portsOut)
-            {
-                if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
-                {
-                    op.portsOut[i2].watchId='out_'+i2;
-                    watchPorts.push(op.portsOut[i2]);
-                }
-
-                html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false } );
-            }
-
-            html += getHandleBarHtml('params_op_foot',{op: op});
-
-            $('#options').html(html);
-
-            for(var ipo in op.portsOut)
-            {
-                (function (index)
-                {
-                    $('#portdelete_out_'+index).on('click',function(e)
-                    {
-                        op.portsOut[index].removeLinks();
-                        self.showOpParams(op);
-                    });
-                })(ipo);
-            }
-
-            for(var ipi in op.portsIn)
-            {
-                (function (index)
-                {
-                    if(op.portsIn[index].isAnimated())
-                    {
-                        $('#portanim_in_'+index).addClass('timingbutton_active');
-                    }
-
-                    $('#portanim_in_'+index).on('click',function(e)
-                    {
-                        $('#portanim_in_'+index).toggleClass('timingbutton_active');
-
-                        op.portsIn[index].toggleAnim();
-                        self.timeLine.setAnim(op.portsIn[index].anim);
-                        self.showOpParams(op);
-                    });
-                })(ipi);
-            }
-
-            for(var ipi in op.portsIn)
-            {
-                (function (index)
-                {
-                    $('#portdelete_in_'+index).on('click',function(e)
-                    {
-                        op.portsIn[index].removeLinks();
-                        self.showOpParams(op);
-                    });
-                })(ipi);
-            }
-
-            for(var ipii in op.portsIn)
-            {
-                (function (index)
-                {
-                    $('#portval_'+index).on('input',function(e)
-                    {
-                        op.portsIn[index].val=''+$('#portval_'+index).val();
-                        // self.showOpParams(op);
-                    });
-                })(ipii);
-            }
-
-            for(var i in watchAnimPorts)
-            {
-                var thePort=watchAnimPorts[i];
-                (function (thePort)
-                {
-                    var id='.watchPortValue_'+thePort.watchId;
-
-                    $(id).on("focusin", function()
-                    {
-                        ui.timeLine.setAnim(thePort.anim);
-                    });
-
-                })(thePort);
-            }
-
-
-
-        };
-
-
-        function doWatchPorts()
-        {
-
-
-
-            for(var i in watchPorts)
-            {
-                var id='.watchPortValue_'+watchPorts[i].watchId;
-                if(watchPorts[i].isAnimated())
-                {
-                    $(id).val( watchPorts[i].val );
-
-
-                }
-                else
-                {
-                    $(id).html( watchPorts[i].val );
-                }
-            }
-
-            if(uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,uiConfig.watchValuesInterval);
-        }
-        doWatchPorts();
-
-
-this.getCanvasCoords=function(mx,my)
-{
-        
-    if(!$('#patch svg')[0].attributes[6])
+    this.setOpTitle=function(uiop,t)
     {
-        console.log('no viewbox attr!');
-        return {x:0,y:0};
-    }
-    if($('#patch svg')[0].attributes[6].name!='viewBox')        console.err('tis aint no viewbox attr');
-    var vb=$('#patch svg')[0].attributes[6].value.split(' '); // this will break
-    // var asp=$('#patch svg')[0].attributes[7].value; // this will break
-
-
-    var w=$('#patch svg').width();
-    var h=$('#patch svg').height();
-
-    var mulx=1;
-    var muly=1;
-
-    if(w>h) // FUCK THIS SHIT
-    {
-        mulx=parseInt(vb[2],10);
-        muly=h * parseInt(vb[2],10)/w;
-    }
-    else
-    {
-        mulx=w * parseInt(vb[3],10)/h;
-        muly=parseInt(vb[3],10);
-    }
-    
-    var fx = 0;
-    var fy = 0;
-    if(mx!==0) fx = (( mx / $('#patch svg').width()  ) * mulx )  + parseInt(vb[0],10);
-    if(my!==0) fy = (( my / $('#patch svg').height() ) * muly ) + parseInt(vb[1],10);
-
-    // if(isNaN(fx))fx=0;
-    // if(isNaN(fy))fy=0;
-    var res={x:fx,y:fy};
-    return res;
-};
-
-this.addAssetOp=function(url,suffix,title)
-{
-    var uiAttr={'title':title,translate:{x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2}};
-    if(suffix=='.obj')
-    {
-        var op=ui.scene.addOp('Ops.Gl.Meshes.ObjMesh',uiAttr);
-        op.getPort('file').val=url;
-    }
-    else
-    if(suffix=='.png' || suffix=='.jpg')
-    {
-        var op=ui.scene.addOp('Ops.Gl.Texture',uiAttr);
-        op.getPort('file').val=url;
-    }
-    else
-    {
-        setStatusText('unknown file type');
-    }
-
-
-};
-
-
-
-
-
-
+        uiop.op.uiAttribs.title=t;
+        uiop.op.name=t;
+        uiop.oprect.setTitle(t);
 
     };
+
+    this.setSelectedOpTitle=function(t)
+    {
+        if(selectedOp)
+        {
+            this.setOpTitle(selectedOp,t);
+        }
+    };
+    
+
+    this.setSelectedOp=function(uiop)
+    {
+        if(uiop===null)
+        {
+            for(var i in ui.ops)
+            {
+                ui.ops[i].setSelected(false);
+            }
+            selectedOps.length=0;
+                    
+            return;
+        }
+
+        if(selectedOp)
+        {
+            this.setSelectedOp(null);
+            // selectedOp.setSelected(false);
+            selectedOp.hideAddButtons();
+        }
+
+        selectedOp=uiop;
+        if(selectedOp)
+        {
+            selectedOp.showAddButtons();
+            uiop.oprect.setSelected(true);
+        }
+    };
+
+    
+    var selectedOps=[];
+    this.addSelectedOp=function(uiop)
+    {
+        for(var i in selectedOps)
+        {
+            if(selectedOps[i]==uiop)return;
+        }
+        selectedOps.push(uiop);
+        uiop.oprect.setSelected(true);
+    };
+
+
+    this.cycleRendererSize=function()
+    {
+        rendererSize++;
+        if(rendererSize>uiConfig.rendererSizes.length-1)rendererSize=0;
+
+
+        self.setLayout();
+    };
+
+    this.closeModal=function()
+    {
+        mouseNewOPX=0;
+        mouseNewOPY=0;
+
+        $('#modalcontent').html('');
+        $('#modalcontent').hide();
+        $('#modalbg').hide();
+    };
+
+    this.showModal=function(content)
+    {
+        $('#modalcontent').html('<div class="modalclose"><a class="button" onclick="ui.closeModal();">close</a></div>');
+        $('#modalcontent').append(content);
+        $('#modalcontent').show();
+        $('#modalbg').show();
+    };
+
+    this.importDialog=function()
+    {
+        var html='';
+        html+='import:<br/><br/>';
+        html+='<textarea id="serialized"></textarea>';
+        html+='<br/>';
+        html+='<br/>';
+        html+='<a class="button" onclick="ui.scene.clear();ui.scene.deSerialize($(\'#serialized\').val());ui.closeModal();">import</a>';
+        self.showModal(html);
+    };
+
+    this.exportDialog=function()
+    {
+        var html='';
+        html+='export:<br/><br/>';
+        html+='<textarea id="serialized"></textarea>';
+        self.showModal(html);
+        $('#serialized').val(self.scene.serialize());
+    };
+
+    this.updateOpParams=function(id)
+    {
+        self.showOpParams(self.scene.getOpById(id));
+    };
+
+    function getHandleBarHtml(name,obj)
+    {
+        var source   = $("#"+name).html();
+        var template = Handlebars.compile(source);
+        var context = obj;
+        return template(context);
+    }
+
+    this.showProjectParams=function(op)
+    {
+        $('#options').html('...');
+    };
+
+    this.showOpParams=function(op)
+    {
+        watchPorts=[];
+        watchAnimPorts=[];
+
+        var html = getHandleBarHtml('params_op_head',{op: op});
+
+        var sourcePort = $("#params_port").html();
+        var templatePort = Handlebars.compile(sourcePort);
+
+        html += getHandleBarHtml('params_ports_head',{title:'in'});
+
+        for(var i in op.portsIn)
+        {
+            op.portsIn[i].watchId='in_'+i;
+            watchAnimPorts.push(op.portsIn[i]);
+
+            if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated())
+            {
+                watchPorts.push(op.portsIn[i]);
+
+                if(op.portsIn[i].isAnimated())
+                {
+                }
+            }
+
+            html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true } );
+        }
+
+        html += getHandleBarHtml('params_ports_head',{title:'out'});
+
+        for(var i2 in op.portsOut)
+        {
+            if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
+            {
+                op.portsOut[i2].watchId='out_'+i2;
+                watchPorts.push(op.portsOut[i2]);
+            }
+
+            html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false } );
+        }
+
+        html += getHandleBarHtml('params_op_foot',{op: op});
+
+        $('#options').html(html);
+
+        for(var ipo in op.portsOut)
+        {
+            (function (index)
+            {
+                $('#portdelete_out_'+index).on('click',function(e)
+                {
+                    op.portsOut[index].removeLinks();
+                    self.showOpParams(op);
+                });
+            })(ipo);
+        }
+
+        for(var ipi in op.portsIn)
+        {
+            (function (index)
+            {
+                if(op.portsIn[index].isAnimated())
+                {
+                    $('#portanim_in_'+index).addClass('timingbutton_active');
+                }
+
+                $('#portanim_in_'+index).on('click',function(e)
+                {
+                    $('#portanim_in_'+index).toggleClass('timingbutton_active');
+
+                    op.portsIn[index].toggleAnim();
+                    self.timeLine.setAnim(op.portsIn[index].anim);
+                    self.showOpParams(op);
+                });
+            })(ipi);
+        }
+
+        for(var ipi in op.portsIn)
+        {
+            (function (index)
+            {
+                $('#portdelete_in_'+index).on('click',function(e)
+                {
+                    op.portsIn[index].removeLinks();
+                    self.showOpParams(op);
+                });
+            })(ipi);
+        }
+
+        for(var ipii in op.portsIn)
+        {
+            (function (index)
+            {
+                $('#portval_'+index).on('input',function(e)
+                {
+                    op.portsIn[index].val=''+$('#portval_'+index).val();
+                    // self.showOpParams(op);
+                });
+            })(ipii);
+        }
+
+        for(var i in watchAnimPorts)
+        {
+            var thePort=watchAnimPorts[i];
+            (function (thePort)
+            {
+                var id='.watchPortValue_'+thePort.watchId;
+
+                $(id).on("focusin", function()
+                {
+                    ui.timeLine.setAnim(thePort.anim);
+                });
+
+            })(thePort);
+        }
+    };
+
+    function doWatchPorts()
+    {
+        for(var i in watchPorts)
+        {
+            var id='.watchPortValue_'+watchPorts[i].watchId;
+            if(watchPorts[i].isAnimated())
+            {
+                $(id).val( watchPorts[i].val );
+            }
+            else
+            {
+                $(id).html( watchPorts[i].val );
+            }
+        }
+
+        if(uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,uiConfig.watchValuesInterval);
+    }
+    doWatchPorts();
+
+
+    this.getCanvasCoordsMouse=function(evt)
+    {
+        var ctm = $('#patch svg')[0].getScreenCTM();
+
+        ctm = ctm.inverse();
+        var uupos = $('#patch svg')[0].createSVGPoint();
+
+        uupos.x = evt.clientX;
+        uupos.y = evt.clientY;
+
+        uupos = uupos.matrixTransform(ctm);
+        
+        var res={x:uupos.x,y:uupos.y};
+        return res;
+    };
+
+    this.getCanvasCoords=function(mx,my)
+    {
+        if(!$('#patch svg')[0].attributes[6])
+        {
+            console.log('no viewbox attr!');
+            return {x:0,y:0};
+        }
+
+        if($('#patch svg')[0].attributes[6].name!='viewBox') console.err('no viewbox attr');
+        var vb=$('#patch svg')[0].attributes[6].value.split(' '); // this will break
+        // var asp=$('#patch svg')[0].attributes[7].value; // this will break
+
+        var w=$('#patch svg').width();
+        var h=$('#patch svg').height();
+
+        var mulx=1;
+        var muly=1;
+
+        if(w>h) // FUCK THIS SHIT
+        {
+            mulx=parseInt(vb[2],10);
+            muly=h * parseInt(vb[2],10)/w;
+        }
+        else
+        {
+            mulx=w * parseInt(vb[3],10)/h;
+            muly=parseInt(vb[3],10);
+        }
+
+        var fx = 0;
+        var fy = 0;
+
+        console.log('mulx ',mulx);
+                
+        if(mx!==0) fx = (( mx / w  ) * mulx ) + parseFloat(vb[0],10);
+        if(my!==0) fy = (( my / h ) * muly ) + parseFloat(vb[1],10);
+
+        var res={x:fx,y:fy};
+        return res;
+    };
+
+    this.addAssetOp=function(url,suffix,title)
+    {
+        var uiAttr={'title':title,translate:{x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2}};
+        if(suffix=='.obj')
+        {
+            var op=ui.scene.addOp('Ops.Gl.Meshes.ObjMesh',uiAttr);
+            op.getPort('file').val=url;
+        }
+        else
+        if(suffix=='.png' || suffix=='.jpg')
+        {
+            var op=ui.scene.addOp('Ops.Gl.Texture',uiAttr);
+            op.getPort('file').val=url;
+        }
+        else
+        {
+            setStatusText('unknown file type');
+        }
+    };
+
+
+};
 
 
 
