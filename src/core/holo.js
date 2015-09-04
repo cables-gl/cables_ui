@@ -126,8 +126,6 @@ var Port=function(parent,name,type,uiAttribs)
     var animated=false;
     var oldAnimVal=-5711;
 
-        
-
     this.__defineGetter__("val", function()
         {
             if(animated)
@@ -184,10 +182,18 @@ var Port=function(parent,name,type,uiAttribs)
         return animated;
     };
 
+    this.setAnimated=function(a)
+    {
+        console.log('set animated',a);
+                
+        animated=a;
+        if(animated && !self.anim)self.anim=new CABLES.TL.Anim();
+    };
+
     this.toggleAnim=function()
     {
         animated=!animated;
-        if(!self.anim)self.anim=new CABLES.TL.Anim();
+        self.setAnimated(animated);
     };
 
     this.getName= function()
@@ -243,7 +249,9 @@ var Port=function(parent,name,type,uiAttribs)
         var obj={};
         obj.name=this.getName();
         obj.value=this.value;
-        if(this.animated) obj.animated=this.animated;
+        if(animated) obj.animated=animated;
+                console.log('animated ',animated);
+                
         if(this.anim) obj.anim=this.anim.getSerialized();
 
         if(this.direction==PORT_DIR_IN && this.links.length>0)
@@ -529,8 +537,19 @@ var Scene = function()
 
             for(var ipi in obj.ops[iop].portsIn)
             {
-                var port=op.getPortByName(obj.ops[iop].portsIn[ipi].name);
-                if(port && port.type!=OP_PORT_TYPE_TEXTURE)port.val=obj.ops[iop].portsIn[ipi].value;
+                var objPort=obj.ops[iop].portsIn[ipi];
+                var port=op.getPortByName(objPort.name);
+                if(port && port.type!=OP_PORT_TYPE_TEXTURE)port.val=objPort.value;
+
+                if(objPort.animated)port.setAnimated(objPort.animated);
+                if(objPort.anim)
+                {
+                    for(var ani in objPort.anim.keys)
+                    {
+                        port.anim.keys.push(new CABLES.TL.Key({time:objPort.t,value:objPort.v}) );
+
+                    }
+                }
             }
 
             for(var ipo in obj.ops[iop].portsOut)
