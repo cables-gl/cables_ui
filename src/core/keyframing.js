@@ -24,6 +24,14 @@ CABLES.TL.Key=function(obj)
         }
         if(this.onChange!==null)this.onChange();
     };
+
+    this.getSerialized=function()
+    {
+        var obj={};
+        obj.t=this.time;
+        obj.v=this.value;
+        return obj;
+    };
     
     this.set(obj);
 
@@ -80,6 +88,19 @@ CABLES.TL.Anim=function(cfg)
 
         console.log('has keys: '+this.keys.length );
                 
+    };
+
+    this.getSerialized=function()
+    {
+        var obj={};
+        obj.keys=[];
+
+        for(var i in this.keys)
+        {
+            obj.keys.push( this.keys[i].getSerialized() );
+        }
+
+        return obj;
     };
 
     this.getValue=function(time)
