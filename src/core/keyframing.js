@@ -9,6 +9,12 @@ CABLES.TL.Key=function(obj)
     this.ui={};
     this.onChange=null;
 
+    this.setValue=function(v)
+    {
+        this.value=v;
+        if(this.onChange!==null)this.onChange();
+    };
+
     this.set=function(obj)
     {
         if(obj)
@@ -17,7 +23,6 @@ CABLES.TL.Key=function(obj)
             this.value=obj.value;
         }
         if(this.onChange!==null)this.onChange();
-
     };
     
     this.set(obj);
@@ -29,13 +34,15 @@ CABLES.TL.Key=function(obj)
 
 };
 
-CABLES.TL.Anim=function()
+CABLES.TL.Anim=function(cfg)
 {
     this.keys=[];
+    this.onChange=null;
 
     this.sortKeys=function()
     {
-        this.keys.sort(function(a, b) {
+        this.keys.sort(function(a, b)
+        {
             return parseFloat(a.time) - parseFloat(b.time);
         });
     };
@@ -50,10 +57,35 @@ CABLES.TL.Anim=function()
         }
         return theKey;
     };
+    this.setValue=function(time,value)
+    {
+        var found=false;
+        for(var i in this.keys)
+        {
+            if(this.keys[i].time==time)
+            {
+                found=this.keys[i];
+                this.keys[i].setValue(value);
+                break;
+            }
+        }
+
+        if(!found)
+        {
+            this.keys.push(new CABLES.TL.Key({time:time,value:value,paper:this.paper})) ;
+        }
+
+        if(this.onChange)this.onChange();
+        this.sortKeys();
+
+        console.log('has keys: '+this.keys.length );
+                
+    };
 
     this.getValue=function(time)
     {
-        return this.keys[this.getKeyIndex(time)];
+        if(this.keys.length===0)return 0;
+        return this.keys[this.getKeyIndex(time)].value;
     };
 };
 

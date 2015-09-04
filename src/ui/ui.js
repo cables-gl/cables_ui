@@ -1616,7 +1616,8 @@ self.isDragging=true;
 
             for(var i in op.portsIn)
             {
-                if(op.portsIn[i].isLinked())
+
+                if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated())
                 {
                     op.portsIn[i].watchId='in_'+i;
                     watchPorts.push(op.portsIn[i]);
@@ -1638,14 +1639,9 @@ self.isDragging=true;
                 html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false } );
             }
 
-
             html += getHandleBarHtml('params_op_foot',{op: op});
 
-
             $('#options').html(html);
-
-
-           
 
             for(var ipo in op.portsOut)
             {
@@ -1663,18 +1659,21 @@ self.isDragging=true;
             {
                 (function (index)
                 {
-                    if(op.portsIn[index].isAnimated()) $('#portanim_in_'+index).addClass('timingbutton_active');
+                    if(op.portsIn[index].isAnimated())
+                    {
+                        $('#portanim_in_'+index).addClass('timingbutton_active');
+                    }
 
                     $('#portanim_in_'+index).on('click',function(e)
                     {
                         $('#portanim_in_'+index).toggleClass('timingbutton_active');
-                                
+
                         op.portsIn[index].toggleAnim();
+                        self.timeLine.setAnim(op.portsIn[index].anim);
                         self.showOpParams(op);
                     });
                 })(ipi);
             }
-
 
             for(var ipi in op.portsIn)
             {
@@ -1707,7 +1706,14 @@ self.isDragging=true;
             for(var i in watchPorts)
             {
                 var id='.watchPortValue_'+watchPorts[i].watchId;
-                $(id).html( watchPorts[i].val );
+                if(watchPorts[i].isAnimated())
+                {
+                    $(id).val( watchPorts[i].val );
+                }
+                else
+                {
+                    $(id).html( watchPorts[i].val );
+                }
             }
 
             if(uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,uiConfig.watchValuesInterval);

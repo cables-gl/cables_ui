@@ -3,6 +3,16 @@ CABLES.TL.UI=CABLES.TL.UI || {};
 
 CABLES.TL.Key.prototype.isUI=true;
 CABLES.TL.Key.prototype.circle={};
+
+
+CABLES.TL.Key.prototype.updateCircle=function(paper)
+{
+    var posx=this.time*100;
+    var posy=this.value*-100;
+
+    this.circle.attr({ cx:posx, cy:posy });
+};
+            
 CABLES.TL.Key.prototype.initUI=function(paper)
 {
     var self=this;
@@ -78,11 +88,22 @@ CABLES.TL.UI.TimeLineUI=function()
         return frame;
     }
 
-    function setAnim(timeline)
+    this.setAnim=function(anim)
     {
-        tl=timeline;
+
+        for(var i in tl.keys)
+        {
+            tl.keys[i].circle.remove();
+        }
+
+        console.log('anim ',anim);
+        anim.paper=paper;
+
+        tl=anim;
         updateKeyLine();
-    }
+
+        if(tl.onChange===null) tl.onChange=updateKeyLine;
+    };
 
     function setCursor(time)
     {
@@ -117,7 +138,6 @@ CABLES.TL.UI.TimeLineUI=function()
 
     };
 
-
     function updateKeyLine()
     {
         tl.sortKeys();
@@ -133,9 +153,11 @@ CABLES.TL.UI.TimeLineUI=function()
 
             str+=tl.keys[i].getPathString(viewBox,nextKey);
             tl.keys[i].circle.toFront();
-
+            tl.keys[i].updateCircle();
             if(tl.keys[i].onChange===null) tl.keys[i].onChange=updateKeyLine;
+
         }
+        
         keyLine.attr({ path:str });
     }
 

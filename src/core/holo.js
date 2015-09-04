@@ -16,6 +16,7 @@ var Op = function()
     this.posts=[];
     this.uiAttribs={};
     this.enabled=true;
+    this.patch=null;
     this.name='unknown';
     this.id=generateUUID();
 
@@ -108,6 +109,7 @@ var Op = function()
 
 // ------------------------------------------------------------------------------------
 
+
 var Port=function(parent,name,type,uiAttribs)
 {
     var self=this;
@@ -120,10 +122,28 @@ var Port=function(parent,name,type,uiAttribs)
     this.type=type || OP_PORT_TYPE_VALUE;
     this.uiAttribs=uiAttribs || {};
     var valueBeforeLink=null;
-    var anim=null;
+    this.anim=null;
     var animated=false;
+    var oldAnimVal=-5711;
 
-    this.__defineGetter__("val", function(){ return this.value; });
+        
+
+    this.__defineGetter__("val", function()
+        {
+            if(animated)
+            {
+                this.value=self.anim.getValue(parent.patch.timer.getTime());
+
+                if(oldAnimVal!=this.value)
+                {
+                    oldAnimVal=this.value;
+                    this.onValueChanged();
+                }
+                return this.value;
+            }
+
+            return this.value;
+        });
     this.__defineSetter__("val", function(v){ this.setValue(v); });
 
     this.getType=function(){ return this.type; };
@@ -138,8 +158,18 @@ var Port=function(parent,name,type,uiAttribs)
         {
             if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE)
             {
-                this.value=v;
-                this.onValueChanged();
+                
+                if(animated)
+                {
+                    self.anim.setValue(parent.patch.timer.getTime(),v);
+                }
+                else
+                {
+                    this.value=v;
+                    this.onValueChanged();
+                }
+
+                
 
                 for(var i in this.links)
                 {
@@ -157,9 +187,7 @@ var Port=function(parent,name,type,uiAttribs)
     this.toggleAnim=function()
     {
         animated=!animated;
-        if(!anim)anim=new CABLES.TL.Anim();
-        console.log('animated '+animated);
-                
+        if(!self.anim)self.anim=new CABLES.TL.Anim();
     };
 
     this.getName= function()
@@ -249,6 +277,11 @@ var Link = function(scene)
     this.portIn=null;
     this.portOut=null;
     this.scene=scene;
+
+    this.setValue=function(v)
+    {
+        this.portIn.val=v;
+    }
 
     this.setValue=function()
     {
@@ -357,6 +390,7 @@ var Scene = function()
     {
         var op=eval('new '+objName+'();');
         op.objName=objName;
+        op.patch=this;
         op.uiAttribs=uiAttribs;
 
         if(op.hasOwnProperty('onAnimFrame')) this.animFrameOps.push(op);
