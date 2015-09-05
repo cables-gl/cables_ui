@@ -536,12 +536,13 @@ function inputIncrement(v,dir)
     <span class="timelinetime"></span>
     <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
-<a class="button fa fa-step-backward" onclick="ui.scene.timer.setTime(0);"></a>
+    <a class="button fa fa-step-backward" onclick="ui.scene.timer.setTime(0);"></a>
     <a class="button fa fa-backward" onclick="ui.scene.timer.setOffset(-2);"></a>
     <a class="button fa fa-play " id="timelineplay" onclick="ui.timeLine.togglePlay()"></a>
     <a class="button fa fa-forward" onclick="ui.scene.timer.setOffset(2);"></a>
 
-    <br/><br/>
+    <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="width:85px;margin-left:20px;margin-top:10px;"/>
+
 </div>
 
     <div id="timeline"></div>

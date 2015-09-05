@@ -5,6 +5,8 @@ CABLES.TL.Key.prototype.isUI=true;
 CABLES.TL.Key.prototype.circle=null;
 
 
+CABLES.TL.TIMESCALE=100;
+
 CABLES.TL.Key.prototype.updateCircle=function()
 {
     if(!ui.timeLine)return;
@@ -12,7 +14,7 @@ CABLES.TL.Key.prototype.updateCircle=function()
 
     if(isNaN(this.value)) this.value=0;
 
-    var posx=this.time*100;
+    var posx=this.time*CABLES.TL.TIMESCALE;
     var posy=this.value*-100;
 
 
@@ -25,7 +27,7 @@ CABLES.TL.Key.prototype.initUI=function()
     if(!ui.timeLine)return;
     var self=this;
 
-    this.x=this.time*100;
+    this.x=this.time*CABLES.TL.TIMESCALE;
     this.y=this.value*-100;
 
     var discattr = {fill: uiConfig.colorKey, stroke: "none"};
@@ -37,7 +39,7 @@ CABLES.TL.Key.prototype.initUI=function()
         var newPos=ui.timeLine.getCanvasCoordsMouse(e);
         // if(self.x==-1 && self.y==-1)
         // {
-        //     self.x=self.time*100;
+        //     self.x=self.time*CABLES.TL.TIMESCALE;
         //     self.y=self.value*-100;
         // }
 
@@ -61,7 +63,7 @@ CABLES.TL.Key.prototype.initUI=function()
 
 CABLES.TL.Key.prototype.getPathString=function(viewBox,nextKey)
 {
-    var x=this.time*100;
+    var x=this.time*CABLES.TL.TIMESCALE;
     var y=this.value*-100;
 
     var str="L "+x+" "+y;
@@ -72,18 +74,18 @@ CABLES.TL.UI.TimeLineUI=function()
 {
     var self=this;
     var tl=new CABLES.TL.Anim();
-    var viewBox={x:-100,y:-400,w:1200,h:400};
+    var viewBox={x:-100,y:-200,w:1200,h:400};
     var fps=30;
     var cursorTime=0.0;
 
     var paper= Raphael("timeline", 0,0);
 
-    // tl.keys.push(new CABLES.TL.Key({time:0.0,value:1.0}) );
-    // tl.keys.push(new CABLES.TL.Key({time:1.0,value:1.0}) );
-    // tl.keys.push(new CABLES.TL.Key({time:5.0,value:0.0}) );
-    // tl.keys.push(new CABLES.TL.Key({time:6.0,value:4.0}) );
-    // tl.keys.push(new CABLES.TL.Key({time:8.0,value:2.0}) );
-    // tl.keys.push(new CABLES.TL.Key({time:10.0,value:2.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:0.0,value:1.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:1.0,value:1.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:5.0,value:0.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:6.0,value:4.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:8.0,value:2.0}) );
+    tl.keys.push(new CABLES.TL.Key({time:10.0,value:2.0}) );
 
     var ki=tl.getKeyIndex(-1.0);
 
@@ -138,7 +140,7 @@ CABLES.TL.UI.TimeLineUI=function()
         if(time<0)time=0;
 
         cursorTime=time;
-        time=time*100;
+        time=time*CABLES.TL.TIMESCALE;
         cursorLine.attr({path: "M "+time+" -1000 L" + time + " " + 1110 });
     }
 
@@ -269,7 +271,7 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         e=mouseEvent(e);
 
-        if(e.which==1 && e.offsetY<50)
+        if(e.which==1 && e.offsetY<50 || e.which==2)
         {
             var time=self.getTimeFromMouse( e );
                     
@@ -277,7 +279,7 @@ CABLES.TL.UI.TimeLineUI=function()
             self.updateTime();
         }
 
-        if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
+        if(e.which==3 || (e.which==1 && spacePressed))
         {
             viewBox.x+=panX-self.getCanvasCoordsMouse(e).x;
             viewBox.y+=panY-self.getCanvasCoordsMouse(e).y;
@@ -289,31 +291,88 @@ CABLES.TL.UI.TimeLineUI=function()
         panY=self.getCanvasCoordsMouse(e).y;
     });
 
-    $('#timeline').bind("mousewheel", function (event,delta,nbr)
+    // $('#timeline').bind("mousewheel", function (event,delta,nbr)
+    // {
+    //     event=mouseEvent(event);
+    //     if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
+    //     {
+    //         viewBox.x+=delta/2;
+    //         viewBox.y+=delta/2;
+    //         viewBox.w-=delta;
+    //         viewBox.h-=delta;
+    //     }
+
+    //     self.updateViewBox();
+    // });
+
+    var timeDisplayTexts=[];
+    function updateTimeDisplay()
     {
-        event=mouseEvent(event);
-        if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
+        var step=fps*5;
+        if(CABLES.TL.TIMESCALE>90)
         {
-            viewBox.x+=delta/2;
-            viewBox.y+=delta/2;
-            viewBox.w-=delta;
-            viewBox.h-=delta;
+            step=fps;
+        }
+        if(CABLES.TL.TIMESCALE>500)
+        {
+            step=fps/3;
+            // mul=1/10;
+        }
+        if(CABLES.TL.TIMESCALE>1000)
+        {
+            step=fps/6;
+            // mul=1/10;
+        }
+        if(CABLES.TL.TIMESCALE>1400)
+        {
+            step=fps/30;
+            // mul=1/10;
         }
 
-        self.updateViewBox();
-    });
+
+
+        for(var i=0;i<50;i++)
+        {
+            var frame=i*step;
+            var t;
+            if(i>timeDisplayTexts.length-1)
+            {
+                t = paper.text(50, 50, ""+( parseInt(frame)));
+                timeDisplayTexts.push(t);
+            }
+
+            t=timeDisplayTexts[i];
+
+            t.attr({
+                "text":""+parseInt(frame),
+                "x":i*step/fps*CABLES.TL.TIMESCALE,
+                "y":0,
+                "font-size": 36 });
+
+        }
+
+    }
+
+    this.setTimeScale=function(v)
+    {
+        CABLES.TL.TIMESCALE=v;
+        console.log('CABLES.TL.TIMESCALE ',CABLES.TL.TIMESCALE);
+                
+        updateKeyLine();
+        updateTimeDisplay();
+    };
 
     this.getTimeFromMouse=function(e)
     {
         var time=self.getCanvasCoordsMouse(e).x;//$('#timeline').width() ;
-        time/=100;
+        time/=CABLES.TL.TIMESCALE;
         return time;
     };
 
     this.getTimeFromPaper=function(offsetX)
     {
         var time=offsetX;
-        time/=100;
+        time/=CABLES.TL.TIMESCALE;
         return time;
     };
 
