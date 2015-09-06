@@ -3,9 +3,24 @@ CABLES.TL.UI=CABLES.TL.UI || {};
 
 CABLES.TL.Key.prototype.isUI=true;
 CABLES.TL.Key.prototype.circle=null;
+CABLES.TL.Key.prototype.selected=false;
 
 
 CABLES.TL.TIMESCALE=100;
+
+CABLES.TL.Key.prototype.setSelected=function(sel)
+{
+    this.selected=sel;
+
+    if(sel)
+    {
+        this.circle.attr({ fill:"white" });
+    }
+    else
+    {
+        this.circle.attr({ fill:uiConfig.colorKey });
+    }
+};
 
 CABLES.TL.Key.prototype.updateCircle=function()
 {
@@ -17,10 +32,10 @@ CABLES.TL.Key.prototype.updateCircle=function()
     var posx=this.time*CABLES.TL.TIMESCALE;
     var posy=this.value*-100;
 
-
     this.circle.attr({ cx:posx, cy:posy });
     this.circle.toFront();
 };
+
 
 CABLES.TL.Key.prototype.initUI=function()
 {
@@ -34,20 +49,15 @@ CABLES.TL.Key.prototype.initUI=function()
     this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 8).attr(discattr);
     this.circle.toFront();
 
+    this.circle.node.onclick = function ()
+    {
+        self.setSelected(true);
+    };
+
     function move(dx,dy,a,b,e)
     {
         var newPos=ui.timeLine.getCanvasCoordsMouse(e);
-        // if(self.x==-1 && self.y==-1)
-        // {
-        //     self.x=self.time*CABLES.TL.TIMESCALE;
-        //     self.y=self.value*-100;
-        // }
-
-        // var posx=dx+self.x;
-        // var posy=dy+self.y;
-
         self.circle.attr({ cx:newPos.x, cy:newPos.y });
-
         self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-100});
     }
 
@@ -69,6 +79,26 @@ CABLES.TL.Key.prototype.getPathString=function(viewBox,nextKey)
     var str="L "+x+" "+y;
     return str;
 };
+
+CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
+{
+    var found=true;
+
+    while(found)
+    {
+        found=false;
+        for(var i in this.keys)
+        {
+            if(this.keys[i].selected)
+            {
+                this.keys[i].circle.remove();
+                this.keys.splice(i, 1);
+                found=true;
+            }
+        }
+    }
+};
+
 
 CABLES.TL.UI.TimeLineUI=function()
 {
@@ -223,11 +253,9 @@ CABLES.TL.UI.TimeLineUI=function()
             ui.scene.timer.setTime(time);
             self.updateTime();
         }
-
     };
 
-
-    $(document).keyup(function(e)
+    $('#timeline').keyup(function(e)
     {
         switch(e.which)
         {
@@ -237,10 +265,14 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     });
 
-    $(document).keydown(function(e)
+    $('#timeline').keydown(function(e)
     {
         switch(e.which)
         {
+            case 46: case 8:
+                tl.deleteSelectedKeys();
+                updateKeyLine();
+            break;
             case 32:
                 spacePressed=true;
             break;
@@ -254,16 +286,19 @@ CABLES.TL.UI.TimeLineUI=function()
             default:
                 // console.log('key ',e.which);
             break;
-
         }
     });
 
 
     $(".timeLineInsert").bind("click", function (e)
     {
-        console.log('huhu! '+cursorTime);
         tl.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:2.0}) );
         updateKeyLine();
+    });
+
+    $('#timeline').bind("mouseup", function (event)
+    {
+        rubberBandHide();
     });
 
     var panX=0,pany=0;
@@ -274,7 +309,10 @@ CABLES.TL.UI.TimeLineUI=function()
         if(e.which==1 && e.offsetY<50 || e.which==2)
         {
             var time=self.getTimeFromMouse( e );
-                    
+
+            var frame=parseInt(time*fps,10);
+            time=frame/fps;
+
             ui.scene.timer.setTime(time);
             self.updateTime();
         }
@@ -284,11 +322,16 @@ CABLES.TL.UI.TimeLineUI=function()
             viewBox.x+=panX-self.getCanvasCoordsMouse(e).x;
             viewBox.y+=panY-self.getCanvasCoordsMouse(e).y;
 
+            var startTime=viewBox.x/CABLES.TL.TIMESCALE;;
+
             self.updateViewBox();
         }
 
         panX=self.getCanvasCoordsMouse(e).x;
         panY=self.getCanvasCoordsMouse(e).y;
+
+        rubberBandMove(e);
+
     });
 
     // $('#timeline').bind("mousewheel", function (event,delta,nbr)
@@ -309,27 +352,10 @@ CABLES.TL.UI.TimeLineUI=function()
     function updateTimeDisplay()
     {
         var step=fps*5;
-        if(CABLES.TL.TIMESCALE>90)
-        {
-            step=fps;
-        }
-        if(CABLES.TL.TIMESCALE>500)
-        {
-            step=fps/3;
-            // mul=1/10;
-        }
-        if(CABLES.TL.TIMESCALE>1000)
-        {
-            step=fps/6;
-            // mul=1/10;
-        }
-        if(CABLES.TL.TIMESCALE>1400)
-        {
-            step=fps/30;
-            // mul=1/10;
-        }
-
-
+        if(CABLES.TL.TIMESCALE>90) step=fps;
+        if(CABLES.TL.TIMESCALE>500) step=fps/3;
+        if(CABLES.TL.TIMESCALE>1000) step=fps/6;
+        if(CABLES.TL.TIMESCALE>1400) step=fps/30;
 
         for(var i=0;i<50;i++)
         {
@@ -337,26 +363,23 @@ CABLES.TL.UI.TimeLineUI=function()
             var t;
             if(i>timeDisplayTexts.length-1)
             {
-                t = paper.text(50, 50, ""+( parseInt(frame)));
+                t = paper.text(50, 50, "");
                 timeDisplayTexts.push(t);
             }
 
             t=timeDisplayTexts[i];
-
             t.attr({
-                "text":""+parseInt(frame),
+                "text":""+parseInt(frame,10),
                 "x":i*step/fps*CABLES.TL.TIMESCALE,
                 "y":0,
                 "font-size": 36 });
-
         }
-
     }
 
     this.setTimeScale=function(v)
     {
         CABLES.TL.TIMESCALE=v;
-        console.log('CABLES.TL.TIMESCALE ',CABLES.TL.TIMESCALE);
+        console.log('CABLES.TL.TIMESCALE ', CABLES.TL.TIMESCALE);
                 
         updateKeyLine();
         updateTimeDisplay();
@@ -410,6 +433,97 @@ CABLES.TL.UI.TimeLineUI=function()
     // setCursor(cursorTime,true);
     this.updateTime();
     this.updateViewBox();
+
+
+    // ------------------
+
+    var rubberBandStartPos=null;
+    var rubberBandPos=null;
+    var mouseRubberBandStartPos=null;
+    var mouseRubberBandPos=null;
+    var rubberBandRect=null;
+
+    function rubberBandHide()
+    {
+        mouseRubberBandStartPos=null;
+        mouseRubberBandPos=null;
+        if(rubberBandRect)rubberBandRect.attr({
+            x:0,y:0,width:0,height:0,
+            "stroke-width": 0,
+            "fill-opacity": 0
+        });
+    }
+
+    function rubberBandMove(e)
+    {
+        if(e.which==1 && !spacePressed)
+        {
+            if(!mouseRubberBandStartPos)
+            {
+                // ui.setSelectedOp(null);
+                mouseRubberBandStartPos=self.getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
+            }
+            mouseRubberBandPos=self.getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
+
+            if(!rubberBandRect) rubberBandRect=paper.rect( 0,0,10,10).attr({ });
+
+            var start={x:mouseRubberBandStartPos.x,y:mouseRubberBandStartPos.y};
+            var end={x:mouseRubberBandPos.x,y:mouseRubberBandPos.y};
+
+            if(end.x-start.x<0)
+            {
+                var tempx=start.x;
+                start.x=end.x;
+                end.x=tempx;
+            }
+            if(end.y-start.y<0)
+            {
+                var tempy=start.y;
+                start.y=end.y;
+                end.y=tempy;
+            }
+
+            rubberBandRect.attr({
+                    x:start.x,
+                    y:start.y,
+                    width:end.x-start.x,
+                    height:end.y-start.y,
+                    "stroke": uiConfig.colorRubberBand,
+                    "fill": uiConfig.colorRubberBand,
+                    "stroke-width": 2,
+                    "fill-opacity": 0.1
+               });
+
+            for(var i in tl.keys)
+            {
+                var rect=tl.keys[i].circle;
+                var opX=rect.attr("cx");
+                var opY=rect.attr("cy");
+
+                tl.keys[i].setSelected(false);
+                if(opX>start.x && opX<end.x && opY>start.y && opY<end.y )
+                {
+                    tl.keys[i].setSelected(true);
+                }
+            }
+
+            // for(var i in self.ops)
+            // {
+            //     var rect=self.ops[i].oprect.bgRect;
+            //     var opX=rect.matrix.e;
+            //     var opY=rect.matrix.f;
+
+            //     if(opX>start.x && opX<end.x && opY>start.y && opY<end.y )
+            //     {
+            //         ui.addSelectedOp(self.ops[i]);
+            //     }
+            // }
+        }
+    }
+
+
+    // ---------------------------------
+
 
 };
 

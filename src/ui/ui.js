@@ -745,7 +745,7 @@ var line;
 
 
 
-        $(document).keyup(function(e)
+        $('#patch').keyup(function(e)
         {
 
             switch(e.which)
@@ -757,7 +757,7 @@ var line;
 
         });
 
-        $(document).keydown(function(e)
+        $('#patch').keydown(function(e)
         {
             switch(e.which)
             {
