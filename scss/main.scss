@@ -51,6 +51,7 @@ a
 
 #timeline 
 {
+    outline:none;
     svg
     {
         position:absolute;
@@ -58,9 +59,13 @@ a
 }
 
 
-#patch svg
+#patch 
 {
-    position:absolute;
+    outline:none;
+    svg
+    {
+        position:absolute;
+    }
 }
 
 #statusbar
@@ -271,6 +276,8 @@ textarea
     font-family: arial;
     background-color:#6c9fde;
     border-radius: 4px;
+    min-width: 14px;
+    text-align: center;
     color:white;
     padding:3px;
     cursor:pointer;

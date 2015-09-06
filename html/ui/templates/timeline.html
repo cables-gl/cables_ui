@@ -14,7 +14,9 @@
     <a class="button fa fa-play " id="timelineplay" onclick="ui.timeLine.togglePlay()"></a>
     <a class="button fa fa-forward" onclick="ui.scene.timer.setOffset(2);"></a>
 
-    <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="width:85px;margin-left:20px;margin-top:10px;"/>
+    <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;"/>
+
+    <a id="keymovemode" class="button fa fa-arrows-h" ></a>
 
 </div>
 

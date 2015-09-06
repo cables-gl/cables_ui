@@ -6,6 +6,7 @@ CABLES.TL.Key.prototype.circle=null;
 CABLES.TL.Key.prototype.selected=false;
 
 
+CABLES.TL.MoveMode=0;
 CABLES.TL.TIMESCALE=100;
 
 CABLES.TL.Key.prototype.setSelected=function(sel)
@@ -57,8 +58,23 @@ CABLES.TL.Key.prototype.initUI=function()
     function move(dx,dy,a,b,e)
     {
         var newPos=ui.timeLine.getCanvasCoordsMouse(e);
-        self.circle.attr({ cx:newPos.x, cy:newPos.y });
-        self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-100});
+
+        if(CABLES.TL.MoveMode==0)
+        {
+            self.circle.attr({ cx:newPos.x });
+            self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:self.value});
+        }
+        if(CABLES.TL.MoveMode==1)
+        {
+            self.circle.attr({  cy:newPos.y });
+            self.set({value:newPos.y/-100,time:self.time});
+        }
+        if(CABLES.TL.MoveMode==2)
+        {
+            self.circle.attr({ cx:newPos.x, cy:newPos.y });
+            self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-100});
+        }
+
     }
 
     function up()
@@ -289,6 +305,33 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     });
 
+
+    function toggleMoveMode()
+    {
+        CABLES.TL.MoveMode++;
+        if(CABLES.TL.MoveMode>2)CABLES.TL.MoveMode=0;
+        if(CABLES.TL.MoveMode===0)
+        {
+            $("#keymovemode").addClass('fa-arrows-h');
+            $("#keymovemode").removeClass('fa-arrows-v');
+            $("#keymovemode").removeClass('fa-arrows');
+        }
+        if(CABLES.TL.MoveMode==1)
+        {
+            $("#keymovemode").addClass('fa-arrows-v');
+            $("#keymovemode").removeClass('fa-arrows-h');
+            $("#keymovemode").removeClass('fa-arrows');
+        }
+        if(CABLES.TL.MoveMode==2)
+        {
+            $("#keymovemode").addClass('fa-arrows');
+            $("#keymovemode").removeClass('fa-arrows-v');
+            $("#keymovemode").removeClass('fa-arrows-h');
+        }
+    }
+
+
+    $("#keymovemode").bind("click", toggleMoveMode);
 
     $(".timeLineInsert").bind("click", function (e)
     {

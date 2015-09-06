@@ -33,12 +33,17 @@ div {
 #timing {
   font-family: monospace; }
 
-#timeline
+#timeline {
+  outline: none; }
+  #timeline
 svg {
-  position: absolute; }
+    position: absolute; }
 
-#patch svg {
-  position: absolute; }
+#patch {
+  outline: none; }
+  #patch
+svg {
+    position: absolute; }
 
 #statusbar {
   height: 20px;
@@ -186,6 +191,8 @@ td {
   font-family: arial;
   background-color: #6c9fde;
   border-radius: 4px;
+  min-width: 14px;
+  text-align: center;
   color: white;
   padding: 3px;
   cursor: pointer; }
