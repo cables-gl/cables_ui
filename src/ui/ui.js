@@ -824,7 +824,8 @@ var line;
             var optionsWidth=400;
             var timingHeight=250;
             var timelineUiHeight=40;
-            
+            var timedisplayheight=25;
+
             var rendererWidth=uiConfig.rendererSizes[rendererSize].w;
             var rendererHeight=uiConfig.rendererSizes[rendererSize].h;
 
@@ -843,10 +844,22 @@ var line;
             if(showTiming)
             {
                 $('#timing').css('height',timingHeight);
+
+                $('#timetimeline').css('width',window.innerWidth-rendererWidth-2);
+                $('#timetimeline').css('height',timingHeight-timedisplayheight);
+                $('#timetimeline').css('margin-top',timelineUiHeight);
+
+                $('#timetimeline svg').css('width',window.innerWidth-rendererWidth-2);
+                $('#timetimeline svg').css('height',timingHeight-timedisplayheight);
+
+
                 $('#timeline svg').css('width',window.innerWidth-rendererWidth-2);
-                $('#timeline svg').css('height',timingHeight);
-                $('#timeline svg').css('margin-top',menubarHeight);
+                $('#timeline svg').css('height',timingHeight-timedisplayheight);
+                $('#timeline svg').css('margin-top',timelineUiHeight+timedisplayheight);
                 $('#timeline svg').show();
+
+
+
             }
             else
             {

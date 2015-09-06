@@ -49,6 +49,19 @@ a
     font-family: monospace;
 }
 
+#timetimeline
+{
+    position: absolute;
+    background-color: #2a2a2a;
+    height:25px;
+    max-height:25px;
+    overflow: hidden;
+    svg
+    {
+    }
+}
+
+
 #timeline 
 {
     outline:none;
@@ -128,6 +141,7 @@ td.head
         float:left;
         padding:4px;
         width:70px;
+        height:32px;
         margin-left: 10px;
         text-align: center;
     }
