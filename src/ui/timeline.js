@@ -57,9 +57,10 @@ CABLES.TL.Key.prototype.initUI=function()
 
     function move(dx,dy,a,b,e)
     {
+        self.isDragging=true;
         var newPos=ui.timeLine.getCanvasCoordsMouse(e);
 
-        if(CABLES.TL.MoveMode==0)
+        if(CABLES.TL.MoveMode===0)
         {
             self.circle.attr({ cx:newPos.x });
             self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:self.value});
@@ -79,6 +80,7 @@ CABLES.TL.Key.prototype.initUI=function()
 
     function up()
     {
+        self.isDragging=false;
         self.x=-1;
         self.y=-1;
     }
@@ -373,6 +375,11 @@ CABLES.TL.UI.TimeLineUI=function()
         panX=self.getCanvasCoordsMouse(e).x;
         panY=self.getCanvasCoordsMouse(e).y;
 
+
+        for(var i in tl.keys)
+            if(tl.keys[i].isDragging)
+                return;
+
         rubberBandMove(e);
 
     });
@@ -496,6 +503,8 @@ CABLES.TL.UI.TimeLineUI=function()
             "fill-opacity": 0
         });
     }
+
+
 
     function rubberBandMove(e)
     {
