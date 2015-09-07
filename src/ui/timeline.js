@@ -195,6 +195,7 @@ CABLES.TL.UI.TimeLineUI=function()
             tl.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:defaultValue}) );
         }
 
+
         updateKeyLine();
 
         for(var i in tl.keys)
