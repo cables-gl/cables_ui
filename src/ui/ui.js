@@ -716,9 +716,7 @@ var line;
                 else this.portsIn.push(port);
 
             this.oprect.getGroup().transform('t'+x+','+y);
-
         };
-
     };
 
 
@@ -747,7 +745,6 @@ var line;
 
         function paste(e)
         {
-
             if(e.clipboardData.types.indexOf('text/plain') > -1)
             {
                 var str=e.clipboardData.getData('text/plain');
@@ -760,23 +757,53 @@ var line;
                     if(json.ops)
                     {
 
-        
-                        var minx=Number.MAX_VALUE;
-                        var miny=Number.MAX_VALUE;
-                        for(var i in json.ops)
-                        {
-                            if(json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
+                        var i=0;
+                        { // change ids
+
+                            for(i in json.ops)
                             {
-                                minx=Math.min(minx,json.ops[i].uiAttribs.translate.x);
-                                miny=Math.min(minx,json.ops[i].uiAttribs.translate.y);
+                                var searchID=json.ops[i].id;
+                                var newID=json.ops[i].id=generateUUID();
+
+                                for(var j in json.ops)
+                                {
+                                    if(json.ops[j].portsIn)
+                                    for(var k in json.ops[j].portsIn)
+                                    {
+                                        if(json.ops[j].portsIn[k].links)
+                                        for(var l in json.ops[j].portsIn[k].links)
+                                        {
+                                            if(json.ops[j].portsIn[k].links[l].objIn==searchID) json.ops[j].portsIn[k].links[l].objIn=newID;
+                                            if(json.ops[j].portsIn[k].links[l].objOut==searchID) json.ops[j].portsIn[k].links[l].objOut=newID;
+                                        }
+                                    }
+                                }
+
                             }
+                            
+
                         }
-                        for(var i in json.ops)
-                        {
-                            if(json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
+
+                        { // change position of ops to paste
+                            var minx=Number.MAX_VALUE;
+                            var miny=Number.MAX_VALUE;
+
+                            for(i in json.ops)
                             {
-                                json.ops[i].uiAttribs.translate.x=json.ops[i].uiAttribs.translate.x-minx+mouseX;
-                                json.ops[i].uiAttribs.translate.y=json.ops[i].uiAttribs.translate.y-miny+mouseY;
+                                if(json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
+                                {
+                                    minx=Math.min(minx, json.ops[i].uiAttribs.translate.x);
+                                    miny=Math.min(miny, json.ops[i].uiAttribs.translate.y);
+                                }
+                            }
+
+                            for(i in json.ops)
+                            {
+                                if(json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
+                                {
+                                    json.ops[i].uiAttribs.translate.x=json.ops[i].uiAttribs.translate.x+mouseX-minx;
+                                    json.ops[i].uiAttribs.translate.y=json.ops[i].uiAttribs.translate.y+mouseY-miny;
+                                }
                             }
                         }
 
@@ -822,8 +849,6 @@ var line;
             {
                 console.log('copy timeline!');
             }
-
-                    
         });
 
         document.addEventListener('paste', function(e)
@@ -1206,6 +1231,7 @@ var line;
 
         function rubberBandMove(e)
         {
+                    
             if(e.which==1 && !spacePressed)
             {
                 if(!mouseRubberBandStartPos)
@@ -1344,7 +1370,7 @@ var line;
                 self.updateViewBox();
             });
 
-            var background = r.rect(-9990, -9990, 99999, 99999).attr({
+            var background = r.rect(-99999, -99999, 2*99999, 2*99999).attr({
                 fill: uiConfig.colorBackground,
                 "stroke-width":0
             });
@@ -1371,7 +1397,6 @@ var line;
 
             $('#patch svg').bind("mouseup", function (event)
             {
-                        
                 rubberBandHide();
             });
         

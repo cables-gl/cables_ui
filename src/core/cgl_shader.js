@@ -197,21 +197,21 @@ CGL.Shader=function()
 
         if(self.hasTextureUniforms()) definesStr+='#define HAS_TEXTURES'.endl();
 
-        console.log('shader compile...');
-        console.log('has textures: '+self.hasTextureUniforms() );
+        // console.log('shader compile...');
+        // console.log('has textures: '+self.hasTextureUniforms() );
 
         var vs=definesStr+self.srcVert;
         var fs=definesStr+self.srcFrag;
 
         if(!program)
         {
-            console.log('create shaderprogram');
+            // console.log('create shaderprogram');
                     
             program=createProgram(vs,fs, program);
         }
         else
         {
-            console.log('recompile shaders...');
+            // console.log('recompile shaders...');
 
             // self.vshader=createShader(vs, gl.VERTEX_SHADER, self.vshader );
             // self.fshader=createShader(fs, gl.FRAGMENT_SHADER, self.fshader );
