@@ -757,6 +757,29 @@ var line;
 
         });
 
+        $(document).keydown(function(e)
+        {
+            switch(e.which)
+            {
+                case 27:
+
+                    if(rendererSize==uiConfig.rendererSizes.length-1)
+                    {
+                        self.cycleRendererSize();
+                    }
+                    else
+                    if( $('#modalcontent').is(':visible') )
+                    {
+                        ui.closeModal();
+                    }
+                    else
+                    {
+                        ui.showOpSelect(20,20);
+                    }
+                    
+                break;
+            }
+        });
         $('#patch').keydown(function(e)
         {
             switch(e.which)
@@ -783,23 +806,7 @@ var line;
                     if(e.preventDefault) e.preventDefault();
 
                 break;
-                case 27:
 
-                    if(rendererSize==uiConfig.rendererSizes.length-1)
-                    {
-                        self.cycleRendererSize();
-                    }
-                    else
-                    if( $('#modalcontent').is(':visible') )
-                    {
-                        ui.closeModal();
-                    }
-                    else
-                    {
-                        ui.showOpSelect(20,20);
-                    }
-                    
-                break;
 
                 case 68: // disable
                     console.log('disable enable '+selectedOps.length);

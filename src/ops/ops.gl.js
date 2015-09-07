@@ -876,10 +876,13 @@ Ops.Gl.Render2Texture = function()
 
     this.width=this.addInPort(new Port(this,"texture width"));
     this.height=this.addInPort(new Port(this,"texture height"));
+    this.clear=this.addInPort(new Port(this,"clear",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.clear.val=true;
+
     this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
 
-    this.width.val=1024;
-    this.height.val=1024;
+    this.width.val=1920;
+    this.height.val=1080;
 
     texture.setSize(this.width.val,this.height.val);
 
@@ -902,10 +905,16 @@ Ops.Gl.Render2Texture = function()
         cgl.pushMvMatrix();
 
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
-        
+
         cgl.pushPMatrix();
         cgl.gl.viewport(-self.width/2, 0, self.width.val/2,self.height.val);
-        // mat4.perspective(cgl.pMatrix,45, self.width.val/self.height.val, 0.01, 1100.0);
+        // mat4.perspective(cgl.pMatrix,45, 1, 0.01, 1100.0);
+
+        if(self.clear.val===true)
+        {
+            cgl.gl.clearColor(0,0,0,1);
+            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+        }
 
         self.trigger.call();
 
@@ -915,6 +924,8 @@ Ops.Gl.Render2Texture = function()
         
         cgl.popMvMatrix();
         cgl.gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
+
+
     };
 
 
