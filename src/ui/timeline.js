@@ -57,13 +57,16 @@ CABLES.TL.Key.prototype.initUI=function()
     this.y=this.value*-100;
 
     var discattr = {fill: uiConfig.colorKey, stroke: "none"};
-    this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 8).attr(discattr);
+    this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 10).attr(discattr);
     this.circle.toFront();
 
-    this.circle.node.onclick = function ()
+    this.circle.node.onclick = function (e)
     {
+        if(!e.shiftKey) ui.timeLine.unselectKeys();
         self.setSelected(true);
     };
+
+
 
     function move(dx,dy,a,b,e)
     {
@@ -106,6 +109,14 @@ CABLES.TL.Key.prototype.getPathString=function(viewBox,nextKey)
 
     var str="L "+x+" "+y;
     return str;
+};
+
+CABLES.TL.Anim.prototype.unselectKeys=function()
+{
+    for(var i in this.keys)
+    {
+        this.keys[i].setSelected(false);
+    }
 };
 
 CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
@@ -646,6 +657,11 @@ CABLES.TL.UI.TimeLineUI=function()
 
 
     };
+
+    this.unselectKeys=function()
+    {
+        tl.unselectKeys();
+    }
 
 
 };
