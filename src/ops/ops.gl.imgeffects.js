@@ -128,8 +128,8 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     };
 
-    this.width.val=1024;
-    this.height.val=1024;
+    this.width.val=1920;
+    this.height.val=1080;
     self.clear.val=true;
 
 };

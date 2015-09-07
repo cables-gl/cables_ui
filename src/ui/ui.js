@@ -791,7 +791,6 @@ var line;
                 case 46: case 8:
                     if ($("input").is(":focus")) return;
 
-
                     if(selectedOps.length>0)
                         for(var i in selectedOps)
                             ui.scene.deleteOp( selectedOps[i].op.id,true);
@@ -799,12 +798,10 @@ var line;
                         {
                             if(selectedOp)
                             ui.scene.deleteOp( selectedOp.op.id,true );
-
                         }
         
                     if(e.stopPropagation) e.stopPropagation();
                     if(e.preventDefault) e.preventDefault();
-
                 break;
 
 
