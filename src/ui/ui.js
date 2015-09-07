@@ -521,12 +521,9 @@ var line;
         this.oprect.hover(function(e)
         {
             self.isMouseOver=true;
-            console.log('enter');
         },function(e)
         {
             self.isMouseOver=false;
-            console.log('leave');
-                    
         });
 
 
@@ -545,22 +542,12 @@ var line;
                 return;
             }
 
-            if(ev.shiftKey)
-            {
-                ui.addSelectedOp(self);
-            }
-            else
-            {
-                self.showAddButtons();
-                ui.setSelectedOp(null);
-                ui.setSelectedOp(self);
-                // ui.addSelectedOp(self);
-                ui.showOpParams(self.op);
-            }
-            // ui.setSelectedOp(self);
+            self.showAddButtons();
+            if(!ev.shiftKey) ui.setSelectedOp(null);
+            ui.setSelectedOp(self);
+            ui.showOpParams(self.op);
+
             self.isDragging=false;
-
-
         };
         
         // this.oprect.node.onclick = function (ev)
