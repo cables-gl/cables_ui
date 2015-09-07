@@ -428,14 +428,8 @@ var line;
         var olsPosX=0;
         var olsPosY=0;
 
-        var dragger = function()
-        {
-          this.group = this.getGroup();
 
-          this.previousDx = 0;
-          this.previousDy = 0;
-        },
-        move = function (dx, dy,a,b,e)
+        this.doMove = function (dx, dy,a,b,e)
         {
             if(e.which==3)return;
             if(e.which==2)return;
@@ -472,21 +466,32 @@ var line;
                 pos.x=parseInt(pos.x/25,10)*25;
                 pos.y=parseInt(pos.y/25,10)*25;
             }
-        
-            this.group.transform('t'+pos.x+','+pos.y);
-            // this.group.translate(pos.x,pos.y);
-            // this.previousDx = dx;
-            // this.previousDy = dy;
-
-
 
             for(var j in self.links)
             {
                 self.links[j].redraw();
             }
 
+            self.oprect.getGroup().transform('t'+pos.x+','+pos.y);
             self.op.uiAttribs.translate={x:pos.x,y:pos.y};
+
             self.isDragging=true;
+
+        };
+
+
+
+        var dragger = function()
+        {
+          this.group = this.getGroup();
+
+          this.previousDx = 0;
+          this.previousDy = 0;
+        },
+        move = function (dx, dy,a,b,e)
+        {
+            ui.moveSelectedOps(dx,dy,a,b,e);
+            // ui.moveSelectedOps(dx,dy,a,b,e);
 
         },
         up = function ()
@@ -494,10 +499,9 @@ var line;
             startMoveX=-1;
             startMoveY=-1;
             self.isDragging=false;
-
         };
 
-
+        var selected=false;
 
         var width=w;
 
@@ -511,13 +515,26 @@ var line;
 
         this.setSelected=function(sel)
         {
+            selected=sel;
+            self.isDragging=false;
             this.oprect.setSelected(sel);
         };
 
 
+        this.oprect.node.onmouseup = function (ev)
+        {
+            self.isDragging=false;
+        };
+
         this.oprect.node.onmousedown = function (ev)
         {
             $('#patch').focus();
+
+            if(selected)
+            {
+                console.log('is selecrted');
+                return;
+            }
 
             if(ev.shiftKey)
             {
@@ -526,17 +543,37 @@ var line;
             else
             {
                 self.showAddButtons();
+                ui.setSelectedOp(null);
                 ui.setSelectedOp(self);
                 // ui.addSelectedOp(self);
                 ui.showOpParams(self.op);
             }
+            // ui.setSelectedOp(self);
+            self.isDragging=false;
+
 
         };
         
-        this.oprect.node.onclick = function ()
-        {
+        // this.oprect.node.onclick = function (ev)
+        // {
+        //     $('#patch').focus();
 
-        };
+        //     if(ev.shiftKey)
+        //     {
+        //         ui.addSelectedOp(self);
+        //     }
+        //     else
+        //     {
+        //         self.showAddButtons();
+        //         ui.setSelectedOp(null);
+        //         ui.setSelectedOp(self);
+        //         // ui.addSelectedOp(self);
+        //         ui.showOpParams(self.op);
+        //     }
+        //     // ui.setSelectedOp(self);
+        //     self.isDragging=false;
+
+        // };
 
 
 
@@ -739,7 +776,7 @@ var line;
         var linkNewOpTo=null;
         var linkNewOpToPort=null;
         var linkNewLink=null;
-        var selectedOp=null;
+        var currentOp=null;
         var spacePressed=false;
         var showTiming=true;
 
@@ -901,14 +938,8 @@ var line;
                 case 46: case 8:
                     if ($("input").is(":focus")) return;
 
-                    if(selectedOps.length>0)
                         for(var i in selectedOps)
                             ui.scene.deleteOp( selectedOps[i].op.id,true);
-                        else
-                        {
-                            if(selectedOp)
-                            ui.scene.deleteOp( selectedOp.op.id,true );
-                        }
         
                     if(e.stopPropagation) e.stopPropagation();
                     if(e.preventDefault) e.preventDefault();
@@ -1282,12 +1313,12 @@ var line;
                         )
                     {
                         ui.addSelectedOp(self.ops[i]);
-                        // this.ops[i].oprect.setSelected(true);
+                        self.ops[i].setSelected(true);
                     }
                     else
                     {
                         // console.log('no');
-                        // this.ops[i].oprect.setSelected(false);
+                        self.ops[i].setSelected(false);
                     }
                 }
 
@@ -1379,7 +1410,6 @@ var line;
                 $('#patch').focus();
 
                 ui.setSelectedOp(null);
-                self.setSelectedOp(false);
                 self.showProjectParams();
             };
 
@@ -1591,8 +1621,9 @@ var line;
 
                 mouseNewOPX=0;
                 mouseNewOPY=0;
-                
+
                 ui.showOpParams(op);
+                ui.setSelectedOp(null);
                 ui.setSelectedOp(uiOp);
           };
       };
@@ -1616,45 +1647,59 @@ var line;
 
     this.setSelectedOp=function(uiop)
     {
-        selectedOps.length=0;
+        // console.log('set selected');
 
-        if(uiop===null)
+        if(uiop===null )
         {
+
+            selectedOps.length=0;
             for(var i in ui.ops)
             {
                 ui.ops[i].setSelected(false);
+                ui.ops[i].hideAddButtons();
             }
             return;
         }
 
-        if(selectedOp)
-        {
-            this.setSelectedOp(null);
-            selectedOp.hideAddButtons();
-        }
+        console.log('uiop',uiop);
+        
+            selectedOps.push(uiop);
 
-        selectedOp=uiop;
-        selectedOps.push(uiop);
-
-
-        if(selectedOp)
-        {
-            selectedOp.showAddButtons();
-            uiop.oprect.setSelected(true);
-            uiop.setSelected(true);
-        }
+        // uiop.showAddButtons();
+        // uiop.oprect.setSelected(true);
+        uiop.setSelected(true);
     };
 
     
     var selectedOps=[];
     this.addSelectedOp=function(uiop)
     {
+        uiop.oprect.setSelected(true);
         for(var i in selectedOps)
         {
             if(selectedOps[i]==uiop)return;
         }
         selectedOps.push(uiop);
-        uiop.oprect.setSelected(true);
+        
+    };
+
+
+
+    this.moveSelectedOps=function(dx,dy,a,b,e)
+    {
+        // console.log('move selectedOps '+selectedOps.length);
+                
+        for(var i in selectedOps)
+        {
+            selectedOps[i].doMove(dx,dy,a,b,e);
+            // if(selectedOps[i]!=except)
+            // {
+                        // console.log('move!');
+                        
+                // var pos=selectedOps[i].getPosition();
+                // selectedOps[i].setPosition(pos.x+dx,pos.y+dy);
+            // }
+        }
     };
 
 

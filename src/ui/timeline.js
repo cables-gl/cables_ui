@@ -597,7 +597,7 @@ CABLES.TL.UI.TimeLineUI=function()
         var obj={keys:keys};
         var objStr=JSON.stringify(obj);
 
-        console.log(keys.length+' keys copied...');
+        setStatusText(keys.length+' keys copied...');
 
         e.clipboardData.setData('text/plain', objStr);
         e.preventDefault();
@@ -633,6 +633,8 @@ CABLES.TL.UI.TimeLineUI=function()
                     {
                         minTime=Math.min(minTime,json.keys[i].t);
                     }
+
+                    setStatusText(json.keys.length+' keys pasted...');
 
                     for(i in json.keys)
                     {

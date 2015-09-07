@@ -35,13 +35,13 @@
                     {{#if port.uiAttribs.display}}
                         {{#compare port.uiAttribs.display '==' 'bool' }}
                             
-                            <span class="button" onclick="CABLES.togglePortValBool('portval_{{ portnum }}');">toggle</span>
+                            <span class="button fa fa-toggle-on" onclick="CABLES.togglePortValBool('portval_{{ portnum }}');"></span>
                             <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:70px;display:inline;"/>
 
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'range' }}
 
-<a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
+                            <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                             <input type ="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:135px;"/>
                             <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
 
@@ -62,16 +62,11 @@
                         {{#compare port.type '==' '1' }} function
                         {{/compare}}{{#compare port.type '==' 0 }}
 
-<a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
-
+                        <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                         <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
-                        
 
                         {{/compare}}
                         {{#compare port.type '==' '2' }} object {{/compare}}
-
-
-                        
                     
                     {{/if}}
             {{/if}}
