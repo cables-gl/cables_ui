@@ -1842,7 +1842,10 @@ var line;
                     $('#portanim_in_'+index).toggleClass('timingbutton_active');
 
                     op.portsIn[index].toggleAnim();
-                    self.timeLine.setAnim(op.portsIn[index].anim);
+                    self.timeLine.setAnim(op.portsIn[index].anim,parseFloat( $('#portval_'+index).val()));
+
+
+
                     self.showOpParams(op);
                 });
             })(ipi);

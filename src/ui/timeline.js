@@ -151,7 +151,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     var paper= Raphael("timeline", 0,0);
     var paperTime= Raphael("timetimeline", 0,0);
-    var scrollingTime=false;
+    var isScrollingTime=false;
 
     var ki=tl.getKeyIndex(-1.0);
 
@@ -172,7 +172,7 @@ CABLES.TL.UI.TimeLineUI=function()
         return paper;
     };
 
-    this.setAnim=function(anim)
+    this.setAnim=function(anim,defaultValue)
     {
         if(tl) for(var i in tl.keys)
         {
@@ -189,6 +189,12 @@ CABLES.TL.UI.TimeLineUI=function()
         anim.paper=paper;
 
         tl=anim;
+
+        if(defaultValue && anim.keys.length===0)
+        {
+            tl.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:defaultValue}) );
+        }
+
         updateKeyLine();
 
         for(var i in tl.keys)
@@ -385,23 +391,28 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $("#timetimeline").bind("mouseup", function(e)
     {
-        scrollingTime=false;
+        isScrollingTime=false;
     });
 
 
     $(document).bind("mousemove",function(e)
     {
-        if(scrollTime)
+        if(isScrollingTime)
         {
-            
+            scrollTime(e);
         }
+    });
+
+    $(document).bind("mouseup",function(e)
+    {
+        isScrollingTime=false;
     });
 
     function scrollTime(e)
     {
         if(e.which==1 || e.which==2)
         {
-            scrollingTime=true;
+            isScrollingTime=true;
             e.offsetX=e.clientX;
             var time=self.getTimeFromMouse( e );
             var frame=parseInt(time*fps,10);
@@ -424,7 +435,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var panX=0,panY=0;
     $("#timeline").bind("mousemove", function(e)
     {
-
+        if(isScrollingTime)return;
         e=mouseEvent(e);
 
         if(e.which==3 || (e.which==1 && spacePressed))
@@ -443,7 +454,6 @@ CABLES.TL.UI.TimeLineUI=function()
         for(var i in tl.keys)
             if(tl.keys[i].isDragging===true)
                 return;
-
 
         rubberBandMove(e);
 
@@ -476,6 +486,11 @@ CABLES.TL.UI.TimeLineUI=function()
                 "fill":'#aaa',
                 "font-size": 22 });
         }
+    }
+
+    this.getTime=function()
+    {
+        return cursorTime;
     }
 
     this.setTimeScale=function(v)

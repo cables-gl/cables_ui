@@ -222,7 +222,7 @@ var Port=function(parent,name,type,uiAttribs)
         if(animated && !self.anim)self.anim=new CABLES.TL.Anim();
     };
 
-    this.toggleAnim=function()
+    this.toggleAnim=function(val)
     {
         animated=!animated;
         self.setAnimated(animated);
