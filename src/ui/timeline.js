@@ -195,7 +195,6 @@ CABLES.TL.UI.TimeLineUI=function()
             tl.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:defaultValue}) );
         }
 
-
         updateKeyLine();
 
         for(var i in tl.keys)
@@ -247,7 +246,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function updateKeyLine()
     {
-        var str="M 0 0 ";
+        var str=null;
         if(tl)
         {
             tl.sortKeys();
@@ -257,12 +256,16 @@ CABLES.TL.UI.TimeLineUI=function()
                 var nextKey=null;
                         
                 if(tl.keys.length > i+1) nextKey=tl.keys[i+1];
+                
+                if(str===null) str="M 0 "+(tl.keys[0].value*-100)+" ";
 
                 str+=tl.keys[i].getPathString(viewBox,nextKey);
                 
                 tl.keys[i].updateCircle();
                 if(tl.keys[i].onChange===null) tl.keys[i].onChange=updateKeyLine;
             }
+
+            if(tl.keys.length>0) str+="L 9999000 "+(tl.keys[tl.keys.length-1].value*-100)+" ";
         }
 
         keyLine.attr({ path:str });
