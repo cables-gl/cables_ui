@@ -910,7 +910,7 @@ Ops.Gl.Render2Texture = function()
         cgl.gl.viewport(-self.width/2, 0, self.width.val/2,self.height.val);
         // mat4.perspective(cgl.pMatrix,45, 1, 0.01, 1100.0);
 
-        if(self.clear.val===true)
+        if(self.clear.val==='true')
         {
             cgl.gl.clearColor(0,0,0,1);
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
