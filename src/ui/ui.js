@@ -514,6 +514,8 @@ var line;
         this.setSelected=function(sel)
         {
             selected=sel;
+            if(sel)self.showAddButtons();
+                else self.hideAddButtons();
             self.isDragging=false;
             this.oprect.setSelected(sel);
         };
@@ -575,7 +577,6 @@ var line;
 
         var PortDrag = function (x,y,event)
         {
-        
             if(!line)
             {
                 this.startx=this.matrix.e+this.attrs.x;
