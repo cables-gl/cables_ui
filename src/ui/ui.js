@@ -428,6 +428,12 @@ var line;
         var olsPosX=0;
         var olsPosY=0;
 
+        this.doMoveFinished=function()
+        {
+            startMoveX=-1;
+            startMoveY=-1;
+            self.isDragging=false;
+        };
 
         this.doMove = function (dx, dy,a,b,e)
         {
@@ -443,14 +449,6 @@ var line;
                 self.op.uiAttribs={};
                 self.op.uiAttribs.translate={x:pos.x,y:pos.y};
             }
-
-            // dx=ui.getCanvasCoords(dx,dy).x;
-            // dy=ui.getCanvasCoords(dx,dy).y;
-
-
-            // var txGroup = dx-this.previousDx;
-            // var tyGroup = dy-this.previousDy;
-
 
             if(startMoveX==-1 && self.op.uiAttribs.translate)
             {
@@ -496,9 +494,7 @@ var line;
         },
         up = function ()
         {
-            startMoveX=-1;
-            startMoveY=-1;
-            self.isDragging=false;
+            ui.moveSelectedOpsFinished();
         };
 
         var selected=false;
@@ -875,7 +871,6 @@ var line;
 
 
 
-        // $(document).on('copy',function(e)
         document.addEventListener('copy', function(e)
         {
             if($('#patch').is(":focus")) copy(e);
@@ -927,6 +922,7 @@ var line;
                 break;
             }
         });
+
         $('#patch').keydown(function(e)
         {
             switch(e.which)
@@ -945,7 +941,6 @@ var line;
                     if(e.preventDefault) e.preventDefault();
                 break;
 
-
                 case 68: // disable
                     console.log('disable enable '+selectedOps.length);
                     if(selectedOps.length>0)
@@ -953,13 +948,9 @@ var line;
                             selectedOps[j].setEnabled(!selectedOps[j].op.enabled);
                         else
                             if(selectedOp)selectedOp.setEnabled(!selectedOp.op.enabled);
-                         
-
                 break;
-
             }
         });
-
         
 
         this.setLayout=function()
@@ -1000,14 +991,10 @@ var line;
                 $('#timetimeline svg').css('width',window.innerWidth-rendererWidth-2);
                 $('#timetimeline svg').css('height',timingHeight-timedisplayheight);
 
-
                 $('#timeline svg').css('width',window.innerWidth-rendererWidth-2);
                 $('#timeline svg').css('height',timingHeight-timedisplayheight);
                 $('#timeline svg').css('margin-top',timelineUiHeight+timedisplayheight);
                 $('#timeline svg').show();
-
-
-
             }
             else
             {
@@ -1683,22 +1670,20 @@ var line;
         
     };
 
+    this.moveSelectedOpsFinished=function()
+    {
+        for(var i in selectedOps)
+        {
+            selectedOps[i].doMoveFinished();
+        }
+    };
 
 
     this.moveSelectedOps=function(dx,dy,a,b,e)
     {
-        // console.log('move selectedOps '+selectedOps.length);
-                
         for(var i in selectedOps)
         {
             selectedOps[i].doMove(dx,dy,a,b,e);
-            // if(selectedOps[i]!=except)
-            // {
-                        // console.log('move!');
-                        
-                // var pos=selectedOps[i].getPosition();
-                // selectedOps[i].setPosition(pos.x+dx,pos.y+dy);
-            // }
         }
     };
 
