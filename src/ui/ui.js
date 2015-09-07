@@ -952,10 +952,13 @@ var line;
             var patchHeight=window.innerHeight-statusBarHeight-menubarHeight;
             if(showTiming)patchHeight-=timingHeight;
 
-            $('#patch svg').css('height',patchHeight);
+            $('#patch svg').css('height',patchHeight-2);
             $('#patch svg').css('width',window.innerWidth-rendererWidth-2);
             $('#patch svg').css('top',menubarHeight);
 
+            $('#patch').css('height',patchHeight-2);
+            $('#patch').css('width',window.innerWidth-rendererWidth-2);
+            $('#patch').css('top',menubarHeight);
 
             $('#timelineui').css('width',window.innerWidth-rendererWidth-2);
 

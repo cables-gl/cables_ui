@@ -1,4 +1,10 @@
 
+
+$mainColor: #6c9fde;
+    // td.portType_0 { border-left: 4px solid #ea6638; }
+    // td.portType_1 { border-left: 4px solid #; }
+
+
 body
 {
     padding: 0px;
@@ -6,7 +12,6 @@ body
     background-color: #333;
     overflow: hidden;
     font-family: arial;
-
 }
 
 *
@@ -23,15 +28,12 @@ div,td
     font-size: 13px;
 }
 
-
-
 a
 {
     color:#eee;
     text-decoration: none;
     cursor: pointer;
 }
-
 
 #meta
 {
@@ -51,6 +53,7 @@ a
 
 #timetimeline
 {
+    border:1px solid transparent;
     position: absolute;
     background-color: #2a2a2a;
     height:25px;
@@ -64,6 +67,14 @@ a
 
 #timeline 
 {
+    // border:1px solid red;
+
+border:1px solid transparent;
+
+    &:focus
+    {
+        border:1px solid $mainColor;
+    }
     outline:none;
     svg
     {
@@ -75,6 +86,16 @@ a
 #patch 
 {
     outline:none;
+    position:absolute;
+    border-left:1px solid transparent;
+    border-right:1px solid transparent;
+
+    &:focus
+    {
+        border-left:1px solid $mainColor;
+        border-right:1px solid $mainColor;
+    }
+
     svg
     {
         position:absolute;
@@ -118,8 +139,6 @@ input[type="text"]
     padding:2px;
     padding-left: 4px;
 }
-
-
 
 
 td.head

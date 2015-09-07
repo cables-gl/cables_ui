@@ -34,6 +34,7 @@ div {
   font-family: monospace; }
 
 #timetimeline {
+  border: 1px solid transparent;
   position: absolute;
   background-color: #2a2a2a;
   height: 25px;
@@ -41,13 +42,22 @@ div {
   overflow: hidden; }
 
 #timeline {
+  border: 1px solid transparent;
   outline: none; }
+  #timeline:focus {
+    border: 1px solid #6c9fde; }
   #timeline
 svg {
     position: absolute; }
 
 #patch {
-  outline: none; }
+  outline: none;
+  position: absolute;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent; }
+  #patch:focus {
+    border-left: 1px solid #6c9fde;
+    border-right: 1px solid #6c9fde; }
   #patch
 svg {
     position: absolute; }

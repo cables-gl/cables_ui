@@ -371,9 +371,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
             ui.scene.timer.setTime(time);
             self.updateTime();
+            $('#timeline').focus();
         }
 
-        $('#timeline').focus();
+        
     });
 
     var panX=0,panY=0;
