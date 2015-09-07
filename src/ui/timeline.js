@@ -151,7 +151,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     var paper= Raphael("timeline", 0,0);
     var paperTime= Raphael("timetimeline", 0,0);
-
+    var scrollingTime=false;
 
     var ki=tl.getKeyIndex(-1.0);
 
@@ -376,18 +376,33 @@ CABLES.TL.UI.TimeLineUI=function()
     $('#timeline').bind("mouseup", function (event)
     {
         rubberBandHide();
-            for(var i in tl.keys)
-            {
-                tl.keys[i].isDragging=false;
-            }
+        for(var i in tl.keys)
+        {
+            tl.keys[i].isDragging=false;
+        }
     });
 
-    $("#timetimeline").bind("mousemove", function(e)
+
+    $("#timetimeline").bind("mouseup", function(e)
     {
-        e=mouseEvent(e);
-        
+        scrollingTime=false;
+    });
+
+
+    $(document).bind("mousemove",function(e)
+    {
+        if(scrollTime)
+        {
+            
+        }
+    });
+
+    function scrollTime(e)
+    {
         if(e.which==1 || e.which==2)
         {
+            scrollingTime=true;
+            e.offsetX=e.clientX;
             var time=self.getTimeFromMouse( e );
             var frame=parseInt(time*fps,10);
             time=frame/fps;
@@ -396,11 +411,20 @@ CABLES.TL.UI.TimeLineUI=function()
             self.updateTime();
             $('#timeline').focus();
         }
+
+    }
+
+    $("#timetimeline").bind("mousemove", function(e)
+    {
+        e=mouseEvent(e);
+        scrollTime(e);
+        
     });
 
     var panX=0,panY=0;
     $("#timeline").bind("mousemove", function(e)
     {
+
         e=mouseEvent(e);
 
         if(e.which==3 || (e.which==1 && spacePressed))
