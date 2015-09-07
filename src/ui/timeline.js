@@ -301,6 +301,9 @@ CABLES.TL.UI.TimeLineUI=function()
             case 46: case 8:
                 tl.deleteSelectedKeys();
                 updateKeyLine();
+                if(e.stopPropagation) e.stopPropagation();
+                if(e.preventDefault) e.preventDefault();
+
             break;
             case 32:
                 spacePressed=true;
