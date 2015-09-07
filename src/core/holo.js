@@ -546,7 +546,6 @@ var Scene = function()
                         var o={time:objPort.anim.keys[ani].t,value:objPort.anim.keys[ani].v};
                                 
                         port.anim.keys.push(new CABLES.TL.Key(o) );
-
                     }
                 }
             }
@@ -578,7 +577,6 @@ var Scene = function()
         {
             this.ops[i].id=generateUUID();
         }
-
     };
 
     this.exec();

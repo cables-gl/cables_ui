@@ -9,15 +9,15 @@
 
                 if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
                 {
-                    viewBox.x+=panX-ui.getCanvasCoordsMouse(e).x;//e.offsetX,e.offsetY).x;
-                    viewBox.y+=panY-ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
+                    viewBox.x+=mouseX-ui.getCanvasCoordsMouse(e).x;//e.offsetX,e.offsetY).x;
+                    viewBox.y+=mouseY-ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
                     self.updateViewBox();
                 }
 
 
-                panX=ui.getCanvasCoordsMouse(e).x;//e.offsetX,e.offsetY).x;
-                panY=ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
+                mouseX=ui.getCanvasCoordsMouse(e).x;//e.offsetX,e.offsetY).x;
+                mouseY=ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
             });
 var CABLES=CABLES || {};
 
@@ -527,6 +527,7 @@ var line;
             {
                 self.showAddButtons();
                 ui.setSelectedOp(self);
+                // ui.addSelectedOp(self);
                 ui.showOpParams(self.op);
             }
 
@@ -744,18 +745,107 @@ var line;
         var spacePressed=false;
         var showTiming=true;
 
+        function paste(e)
+        {
 
+            if(e.clipboardData.types.indexOf('text/plain') > -1)
+            {
+                var str=e.clipboardData.getData('text/plain');
+
+                e.preventDefault();
+
+                var json=JSON.parse(str);
+                if(json)
+                {
+                    if(json.ops)
+                    {
+
+        
+                        var minx=Number.MAX_VALUE;
+                        var miny=Number.MAX_VALUE;
+                        for(var i in json.ops)
+                        {
+                            if(json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
+                            {
+                                minx=Math.min(minx,json.ops[i].uiAttribs.translate.x);
+                                miny=Math.min(minx,json.ops[i].uiAttribs.translate.y);
+                            }
+                        }
+                        for(var i in json.ops)
+                        {
+                            if(json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
+                            {
+                                json.ops[i].uiAttribs.translate.x=json.ops[i].uiAttribs.translate.x-minx+mouseX;
+                                json.ops[i].uiAttribs.translate.y=json.ops[i].uiAttribs.translate.y-miny+mouseY;
+                            }
+                        }
+
+                        setStatusText('pasted '+json.ops.length+' ops...');
+                        self.setSelectedOp(null);
+
+                        ui.scene.deSerialize(json);
+
+                        return;
+                    }
+                }
+                setStatusText("paste failed / not cables data format...");
+            }
+        }
+
+        function copy(e)
+        {
+            var ops=[];
+            for(var i in selectedOps)
+            {
+                ops.push( selectedOps[i].op.getSerialized() );
+            }
+
+            var obj={"ops":ops};
+            var objStr=JSON.stringify(obj);
+
+            setStatusText('copied '+selectedOps.length+' ops...');
+
+            e.clipboardData.setData('text/plain', objStr);
+            e.preventDefault();
+        }
+
+
+
+        // $(document).on('copy',function(e)
+        document.addEventListener('copy', function(e)
+        {
+            if($('#patch').is(":focus"))
+            {
+                copy(e);
+            }
+            if($('#timeline').is(":focus"))
+            {
+                console.log('copy timeline!');
+            }
+
+                    
+        });
+
+        document.addEventListener('paste', function(e)
+        {
+            if($('#patch').is(":focus"))
+            {
+                paste(e);
+            }
+            if($('#timeline').is(":focus"))
+            {
+            }
+                    
+        });
 
         $('#patch').keyup(function(e)
         {
-
             switch(e.which)
             {
                 case 32:
                     spacePressed=false;
                 break;
             }
-
         });
 
         $(document).keydown(function(e)
@@ -1070,8 +1160,8 @@ var line;
 
 
         var viewBox={x:0,y:0,w:1100,h:1010};
-        var panX=-1;
-        var panY=-1;
+        var mouseX=-1;
+        var mouseY=-1;
 
         this.updateViewBox=function()
         {
@@ -1264,7 +1354,7 @@ var line;
             background.node.onmousedown = function (ev)
             {
                 $('#patch').focus();
-                
+
                 ui.setSelectedOp(null);
                 self.setSelectedOp(false);
                 self.showProjectParams();
@@ -1279,34 +1369,28 @@ var line;
                 rubberBandMove(e);
             });
 
-
             $('#patch svg').bind("mouseup", function (event)
             {
                         
                 rubberBandHide();
             });
-
         
             $('#patch svg').bind("mousemove", function (e)
             {
                 e=mouseEvent(e);
 
-                if(mouseRubberBandStartPos && e.which!=1)
-                {
-                    rubberBandHide();
-                }
+                if(mouseRubberBandStartPos && e.which!=1) rubberBandHide();
 
                 if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
                 {
-                    viewBox.x+=panX-ui.getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
-                    viewBox.y+=panY-ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
+                    viewBox.x+=mouseX-ui.getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
+                    viewBox.y+=mouseY-ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
                     self.updateViewBox();
                 }
 
-
-                panX=ui.getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
-                panY=ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
+                mouseX=ui.getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
+                mouseY=ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
             });
 
             this.timeLine=new CABLES.TL.UI.TimeLineUI();
@@ -1510,29 +1594,32 @@ var line;
 
     this.setSelectedOp=function(uiop)
     {
+        selectedOps.length=0;
+
         if(uiop===null)
         {
             for(var i in ui.ops)
             {
                 ui.ops[i].setSelected(false);
             }
-            selectedOps.length=0;
-                    
             return;
         }
 
         if(selectedOp)
         {
             this.setSelectedOp(null);
-            // selectedOp.setSelected(false);
             selectedOp.hideAddButtons();
         }
 
         selectedOp=uiop;
+        selectedOps.push(uiop);
+
+
         if(selectedOp)
         {
             selectedOp.showAddButtons();
             uiop.oprect.setSelected(true);
+            uiop.setSelected(true);
         }
     };
 

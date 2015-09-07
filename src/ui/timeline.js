@@ -357,6 +357,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $("#timetimeline").bind("mousemove", function(e)
     {
+
         e=mouseEvent(e);
         
         if(e.which==1 || e.which==2)
@@ -368,6 +369,8 @@ CABLES.TL.UI.TimeLineUI=function()
             ui.scene.timer.setTime(time);
             self.updateTime();
         }
+
+        $('#timeline').focus();
     });
 
     var panX=0,panY=0;
