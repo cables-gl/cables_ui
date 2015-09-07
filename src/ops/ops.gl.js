@@ -907,7 +907,8 @@ Ops.Gl.Render2Texture = function()
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
         cgl.pushPMatrix();
-        cgl.gl.viewport(-self.width/2, 0, self.width.val/2,self.height.val);
+        // cgl.gl.viewport(-self.width/2, 0, self.width.val/2,self.height.val);
+        cgl.gl.viewport(0, 0, self.width.val,self.height.val);
         // mat4.perspective(cgl.pMatrix,45, 1, 0.01, 1100.0);
 
         if(self.clear.val==='true')

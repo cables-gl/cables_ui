@@ -540,6 +540,7 @@ var Scene = function()
                 if(objPort.animated)port.setAnimated(objPort.animated);
                 if(objPort.anim)
                 {
+                    if(!port.anim)port.anim=new CABLES.TL.Anim();
                     for(var ani in objPort.anim.keys)
                     {
                         var o={time:objPort.anim.keys[ani].t,value:objPort.anim.keys[ani].v};
