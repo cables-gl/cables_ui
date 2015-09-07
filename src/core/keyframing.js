@@ -107,6 +107,8 @@ CABLES.TL.Anim=function(cfg)
     {
         if(this.keys.length===0)return 0;
 
+        if(time<this.keys[0].time)return this.keys[0].value;
+
         var index=this.getKeyIndex(time);
         if(index>=this.keys.length-1)return this.keys[this.keys.length-1].value;
         var index2=parseInt(index,10)+1;

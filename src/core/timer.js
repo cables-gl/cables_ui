@@ -8,12 +8,18 @@ function Timer()
     var currentTime=0;
     var lastTime=0;
     var paused=true;
+    var delay=0;
 
     function getTime()
     {
         lastTime=(Date.now()-timeStart)/1000;
         return lastTime+timeOffset;
     }
+
+    this.setDelay=function(d)
+    {
+        delay=d;
+    };
 
     this.isPlaying=function()
     {
@@ -30,7 +36,7 @@ function Timer()
 
     this.getTime=function()
     {
-        return currentTime;
+        return currentTime-delay;
     };
 
     this.togglePlay=function()

@@ -102,6 +102,36 @@ Ops.TimeLineTime.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
+Ops.TimeLineDelay = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='TimeLineDelay';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+
+    this.theTime=this.addOutPort(new Port(this,"time"));
+    this.delay=this.addInPort(new Port(this,"delay"));
+    this.delay.val=0.0;
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.exe.onTriggered=function()
+    {
+        // console.log(''+self.patch.timer.getTime() );
+
+        self.patch.timer.setDelay(self.delay.val);
+        self.trigger.call();
+        self.patch.timer.setDelay(0);
+
+    };
+
+};
+Ops.TimeLineDelay.prototype = new Op();
+
+
+// ---------------------------------------------------------------------------
+
 
 
 
@@ -122,7 +152,8 @@ Ops.Repeat = function()
     this.exe.onTriggered=function()
     {
 
-        for(var i=0;i<self.num.value;i++)
+        // for(var i=0;i<self.num.value;i++)
+        for(var i=self.num.value-1;i>=0;i--)
         {
             self.idx.val=i;
             self.trigger.call();
