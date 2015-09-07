@@ -33,6 +33,17 @@ CABLES.TL.Key.prototype.updateCircle=function()
     var posx=this.time*CABLES.TL.TIMESCALE;
     var posy=this.value*-100;
 
+    if(isNaN(posx))
+    {
+        posx=0;
+        console.log('key posx NaN');
+    }
+    if(isNaN(posy))
+    {
+        posy=0;
+        console.log('key posx NaN');
+    }
+
     this.circle.attr({ cx:posx, cy:posy });
     this.circle.toFront();
 };
@@ -114,6 +125,7 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
             }
         }
     }
+    this.sortKeys();
 };
 
 
@@ -357,12 +369,10 @@ CABLES.TL.UI.TimeLineUI=function()
             {
                 tl.keys[i].isDragging=false;
             }
-
     });
 
     $("#timetimeline").bind("mousemove", function(e)
     {
-
         e=mouseEvent(e);
         
         if(e.which==1 || e.which==2)
@@ -375,9 +385,6 @@ CABLES.TL.UI.TimeLineUI=function()
             self.updateTime();
             $('#timeline').focus();
         }
-        
-
-        
     });
 
     var panX=0,panY=0;
@@ -563,8 +570,82 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     }
 
-
     // ---------------------------------
+
+    this.copy=function(e)
+    {
+        var keys=[];
+        for(var i in tl.keys)
+        {
+            if(tl.keys[i].selected)
+            {
+                keys.push(tl.keys[i].getSerialized() );
+            }
+        }
+
+        var obj={keys:keys};
+        var objStr=JSON.stringify(obj);
+
+        console.log(keys.length+' keys copied...');
+
+        e.clipboardData.setData('text/plain', objStr);
+        e.preventDefault();
+    };
+
+    this.cut=function(e)
+    {
+        self.copy(e);
+        tl.deleteSelectedKeys();
+        updateKeyLine();
+    };
+
+
+    this.paste=function(e)
+    {
+        if(e.clipboardData.types.indexOf('text/plain') > -1)
+        {
+            e.preventDefault();
+
+            var str=e.clipboardData.getData('text/plain');
+
+            e.preventDefault();
+
+            var json=JSON.parse(str);
+            if(json)
+            {
+                if(json.keys)
+                {
+                    var i=0;
+
+                    var minTime=Number.MAX_VALUE;
+                    for(i in json.keys)
+                    {
+                        minTime=Math.min(minTime,json.keys[i].t);
+                    }
+
+                    for(i in json.keys)
+                    {
+                        json.keys[i].t=json.keys[i].t-minTime+cursorTime;
+                        tl.addKey(new CABLES.TL.Key(json.keys[i]));
+                    }
+
+                    tl.sortKeys();
+
+                    for(i in json.keys)
+                    {
+                        tl.keys[i].updateCircle();
+                    }
+
+                    updateKeyLine();
+                    return;
+                }
+            }
+            setStatusText("paste failed / not cables data format...");
+
+        }
+
+
+    };
 
 
 };

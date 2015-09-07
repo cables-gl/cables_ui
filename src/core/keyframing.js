@@ -19,8 +19,11 @@ CABLES.TL.Key=function(obj)
     {
         if(obj)
         {
-            this.time=obj.time;
-            this.value=obj.value;
+            if(obj.t)this.time=obj.t;
+                else this.time=obj.time;
+    
+            if(obj.v)this.value=obj.v;
+                else this.value=obj.value;
         }
         if(this.onChange!==null)this.onChange();
     };
@@ -114,6 +117,18 @@ CABLES.TL.Anim=function(cfg)
 
         var perc=(time-key1.time)/(key2.time-key1.time);
         return parseFloat(key1.value)+ parseFloat((key2.value - key1.value)) * perc;
+    };
+
+    this.addKey=function(k)
+    {
+        if(k.time===undefined)
+        {
+            console.log('key time undefined, ignoreing!');
+        }
+        else
+        {
+            this.keys.push(k);
+        }
     };
 };
 

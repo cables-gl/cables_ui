@@ -841,26 +841,20 @@ var line;
         // $(document).on('copy',function(e)
         document.addEventListener('copy', function(e)
         {
-            if($('#patch').is(":focus"))
-            {
-                copy(e);
-            }
-            if($('#timeline').is(":focus"))
-            {
-                console.log('copy timeline!');
-            }
+            if($('#patch').is(":focus")) copy(e);
+            if($('#timeline').is(":focus"))self.timeLine.copy(e);
         });
 
         document.addEventListener('paste', function(e)
         {
-            if($('#patch').is(":focus"))
-            {
-                paste(e);
-            }
-            if($('#timeline').is(":focus"))
-            {
-            }
-                    
+            if($('#patch').is(":focus")) paste(e);
+            if($('#timeline').is(":focus"))self.timeLine.paste(e);
+        });
+
+        document.addEventListener('cut', function(e)
+        {
+            // if($('#patch').is(":focus")) paste(e);
+            if($('#timeline').is(":focus"))self.timeLine.cut(e);
         });
 
         $('#patch').keyup(function(e)
