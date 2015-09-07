@@ -517,6 +517,7 @@ var line;
 
         this.oprect.node.onmousedown = function (ev)
         {
+            $('#patch').focus();
 
             if(ev.shiftKey)
             {
@@ -1262,6 +1263,8 @@ var line;
 
             background.node.onmousedown = function (ev)
             {
+                $('#patch').focus();
+                
                 ui.setSelectedOp(null);
                 self.setSelectedOp(false);
                 self.showProjectParams();
