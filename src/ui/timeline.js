@@ -120,6 +120,7 @@ CABLES.TL.UI.TimeLineUI=function()
 {
     var self=this;
     var tl=new CABLES.TL.Anim();
+    var tlEmpty=new CABLES.TL.Anim();
     var viewBox={x:-100,y:-200,w:1200,h:400};
     var fps=30;
     var cursorTime=0.0;
@@ -127,12 +128,6 @@ CABLES.TL.UI.TimeLineUI=function()
     var paper= Raphael("timeline", 0,0);
     var paperTime= Raphael("timetimeline", 0,0);
 
-    tl.keys.push(new CABLES.TL.Key({time:0.0,value:1.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:1.0,value:1.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:5.0,value:0.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:6.0,value:4.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:8.0,value:2.0}) );
-    tl.keys.push(new CABLES.TL.Key({time:10.0,value:2.0}) );
 
     var ki=tl.getKeyIndex(-1.0);
 
@@ -162,7 +157,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         if(!anim)
         {
-            tl=null;
+            tl=tlEmpty;
             updateKeyLine();
             return;
         }
@@ -396,6 +391,7 @@ CABLES.TL.UI.TimeLineUI=function()
         for(var i in tl.keys)
             if(tl.keys[i].isDragging)
                 return;
+
 
         rubberBandMove(e);
 
