@@ -58,6 +58,7 @@ CABLES.TL.Key.prototype.initUI=function()
     {
         self.isDragging=true;
         var newPos=ui.timeLine.getCanvasCoordsMouse(e);
+        if(newPos.x<0)newPos.x=0;
 
         if(CABLES.TL.MoveMode===0)
         {
@@ -191,9 +192,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var keyLine = paper.path("M "+-1000+" "+0+" L" + 1000 + " " + 0);
     keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
 
-    var zeroLine = paperTime.path("M 0 0 L 111000 0");
-
-    var zeroLine2 = paper.path("M 0 -99 L 111000 0");
+    var zeroLine2 = paper.path("M 0 0 L 111000 0");
     zeroLine2.attr({ stroke: "#999", "stroke-width": 1});
 
     this.updateViewBox=function()
@@ -214,8 +213,6 @@ CABLES.TL.UI.TimeLineUI=function()
 
         paperTime.canvas.setAttribute('preserveAspectRatio', 'xMidYMid');
         paper.canvas.setAttribute('preserveAspectRatio', 'xMidYMid');
-
-
     };
 
     function updateKeyLine()

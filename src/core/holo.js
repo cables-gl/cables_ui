@@ -105,6 +105,15 @@ var Op = function()
             if(this.portsOut[ipo].name==name)return this.portsOut[ipo];
     };
 
+    this.updateAnims=function()
+    {
+        for(var i=0;i<this.portsIn.length;i++)
+        {
+            this.portsIn[i].updateAnim();
+        }
+    };
+
+
 };
 
 // ------------------------------------------------------------------------------------
@@ -128,17 +137,22 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.__defineGetter__("val", function()
         {
-            if(animated)
-            {
-                this.value=self.anim.getValue(parent.patch.timer.getTime());
+            // if(animated)
+            // {
 
-                if(oldAnimVal!=this.value)
-                {
-                    oldAnimVal=this.value;
-                    this.onValueChanged();
-                }
-                return this.value;
-            }
+            //     this.value=self.anim.getValue(parent.patch.timer.getTime());
+
+            //     if(oldAnimVal!=this.value)
+            //     {
+            //         oldAnimVal=this.value;
+            //         console.log('changed!!');
+            //         this.onValueChanged();
+            //     }
+            //     oldAnimVal=this.value;
+            //     console.log('this.value ',this.value );
+                        
+            //     return this.value;
+            // }
 
             return this.value;
         });
@@ -148,7 +162,11 @@ var Port=function(parent,name,type,uiAttribs)
     this.isLinked=function(){ return this.links.length>0; };
     this.onValueChanged=function(){};
     this.onTriggered=function(){};
-    this._onTriggered=function(){ if(parent.enabled) self.onTriggered(); };
+    this._onTriggered=function()
+    {
+        parent.updateAnims();
+        if(parent.enabled) self.onTriggered();
+    };
 
     this.setValue=function(v)
     {
@@ -156,7 +174,6 @@ var Port=function(parent,name,type,uiAttribs)
         {
             if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE)
             {
-                
                 if(animated)
                 {
                     self.anim.setValue(parent.patch.timer.getTime(),v);
@@ -175,6 +192,23 @@ var Port=function(parent,name,type,uiAttribs)
                 }
             }
         }
+    };
+
+    this.updateAnim=function()
+    {
+
+        if(animated)
+        {
+            this.value=self.anim.getValue(parent.patch.timer.getTime());
+
+            if(oldAnimVal!=this.value)
+            {
+                oldAnimVal=this.value;
+                this.onValueChanged();
+            }
+            oldAnimVal=this.value;
+        }
+
     };
 
     this.isAnimated=function()
