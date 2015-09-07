@@ -353,6 +353,11 @@ CABLES.TL.UI.TimeLineUI=function()
     $('#timeline').bind("mouseup", function (event)
     {
         rubberBandHide();
+            for(var i in tl.keys)
+            {
+                tl.keys[i].isDragging=false;
+            }
+
     });
 
     $("#timetimeline").bind("mousemove", function(e)
@@ -370,6 +375,7 @@ CABLES.TL.UI.TimeLineUI=function()
             self.updateTime();
             $('#timeline').focus();
         }
+        
 
         
     });
@@ -393,7 +399,7 @@ CABLES.TL.UI.TimeLineUI=function()
         panY=self.getCanvasCoordsMouse(e).y;
 
         for(var i in tl.keys)
-            if(tl.keys[i].isDragging)
+            if(tl.keys[i].isDragging===true)
                 return;
 
 
