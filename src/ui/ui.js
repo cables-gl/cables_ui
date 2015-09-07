@@ -1265,7 +1265,6 @@ var line;
                 if(!mouseRubberBandStartPos)
                 {
                     ui.setSelectedOp(null);
-
                     mouseRubberBandStartPos=ui.getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
                 }
                 mouseRubberBandPos=ui.getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
@@ -1307,17 +1306,23 @@ var line;
                     var rect=self.ops[i].oprect.bgRect;
                     var opX=rect.matrix.e;
                     var opY=rect.matrix.f;
+                    var opW=rect.attr("width");
+                    var opH=rect.attr("height");
+                            // console.log('w',  );
 
-                    if(opX>start.x && opX<end.x &&
-                        opY>start.y && opY<end.y
+                    if(
+                        (opX>start.x && opX<end.x && opY>start.y && opY<end.y) ||  // left upper corner
+                        (opX+opW>start.x && opX+opW<end.x && opY+opH>start.y && opY+opH<end.y)  // right bottom corner
+
                         )
                     {
-                        ui.addSelectedOp(self.ops[i]);
+                        self.addSelectedOp(self.ops[i]);
                         self.ops[i].setSelected(true);
                     }
                     else
                     {
                         // console.log('no');
+                        self.removeSelectedOp(self.ops[i]);
                         self.ops[i].setSelected(false);
                     }
                 }
@@ -1669,6 +1674,20 @@ var line;
 
     
     var selectedOps=[];
+
+    this.removeSelectedOp=function(uiop)
+    {
+        for(var i in selectedOps)
+        {
+            if(selectedOps[i]==uiop)
+            {
+                selectedOps.splice(i,1);
+                return;
+            }
+        }
+
+    };
+
     this.addSelectedOp=function(uiop)
     {
         uiop.oprect.setSelected(true);
