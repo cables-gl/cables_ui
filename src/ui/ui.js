@@ -427,6 +427,7 @@ var line;
         var startMoveY=-1;
         var olsPosX=0;
         var olsPosY=0;
+        this.isMouseOver=false;
 
         this.doMoveFinished=function()
         {
@@ -465,15 +466,16 @@ var line;
                 pos.y=parseInt(pos.y/25,10)*25;
             }
 
-            for(var j in self.links)
-            {
-                self.links[j].redraw();
-            }
 
             self.oprect.getGroup().transform('t'+pos.x+','+pos.y);
             self.op.uiAttribs.translate={x:pos.x,y:pos.y};
 
             self.isDragging=true;
+
+            for(var j in self.links)
+            {
+                self.links[j].redraw();
+            }
 
         };
 
@@ -515,6 +517,17 @@ var line;
             self.isDragging=false;
             this.oprect.setSelected(sel);
         };
+
+        this.oprect.hover(function(e)
+        {
+            self.isMouseOver=true;
+            console.log('enter');
+        },function(e)
+        {
+            self.isMouseOver=false;
+            console.log('leave');
+                    
+        });
 
 
         this.oprect.node.onmouseup = function (ev)
@@ -1400,11 +1413,14 @@ var line;
                 self.showProjectParams();
             };
 
-            $(background.node).on("mousemove", function(e)
+            $('#patch').on("mousemove", function(e)
             {
                 for(var i in self.ops)
-                    if(self.ops[i].isDragging)
+                {
+                    if(self.ops[i].isDragging || self.ops[i].isMouseOver)
                         return;
+
+                }
 
                 rubberBandMove(e);
             });
@@ -1634,8 +1650,6 @@ var line;
 
     this.setSelectedOp=function(uiop)
     {
-        // console.log('set selected');
-
         if(uiop===null )
         {
 
@@ -1648,12 +1662,8 @@ var line;
             return;
         }
 
-        console.log('uiop',uiop);
-        
-            selectedOps.push(uiop);
+        selectedOps.push(uiop);
 
-        // uiop.showAddButtons();
-        // uiop.oprect.setSelected(true);
         uiop.setSelected(true);
     };
 
