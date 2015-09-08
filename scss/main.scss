@@ -480,7 +480,17 @@ input[type=range]:focus {
 
 }
 
-
+.tooltip
+{
+    position: absolute;
+    z-index: 99999;
+    background-color: #aaa;
+    color:black;
+    padding:7px;
+    border-radius: 4px;
+    opacity:0.9;
+    display:none;
+}
 
 
 

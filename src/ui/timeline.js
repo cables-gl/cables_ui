@@ -8,6 +8,7 @@ CABLES.TL.Key.prototype.selected=false;
 
 CABLES.TL.MoveMode=0;
 CABLES.TL.TIMESCALE=100;
+CABLES.TL.VALUESCALE=100;
 
 CABLES.TL.Key.prototype.setSelected=function(sel)
 {
@@ -31,7 +32,7 @@ CABLES.TL.Key.prototype.updateCircle=function()
     if(isNaN(this.value)) this.value=0;
 
     var posx=this.time*CABLES.TL.TIMESCALE;
-    var posy=this.value*-100;
+    var posy=this.value*-CABLES.TL.VALUESCALE;
 
     if(isNaN(posx))
     {
@@ -54,7 +55,7 @@ CABLES.TL.Key.prototype.initUI=function()
     var self=this;
 
     this.x=this.time*CABLES.TL.TIMESCALE;
-    this.y=this.value*-100;
+    this.y=this.value*-CABLES.TL.VALUESCALE;
 
     var discattr = {fill: uiConfig.colorKey, stroke: "none"};
     this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 10).attr(discattr);
@@ -82,12 +83,12 @@ CABLES.TL.Key.prototype.initUI=function()
         if(CABLES.TL.MoveMode==1)
         {
             self.circle.attr({  cy:newPos.y });
-            self.set({value:newPos.y/-100,time:self.time});
+            self.set({value:newPos.y/-CABLES.TL.VALUESCALE,time:self.time});
         }
         if(CABLES.TL.MoveMode==2)
         {
             self.circle.attr({ cx:newPos.x, cy:newPos.y });
-            self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-100});
+            self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-CABLES.TL.VALUESCALE});
         }
     }
 
@@ -105,7 +106,7 @@ CABLES.TL.Key.prototype.initUI=function()
 CABLES.TL.Key.prototype.getPathString=function(viewBox,nextKey)
 {
     var x=this.time*CABLES.TL.TIMESCALE;
-    var y=this.value*-100;
+    var y=this.value*-CABLES.TL.VALUESCALE;
 
     var str="L "+x+" "+y;
     return str;
@@ -257,7 +258,7 @@ CABLES.TL.UI.TimeLineUI=function()
                         
                 if(tl.keys.length > i+1) nextKey=tl.keys[i+1];
                 
-                if(str===null) str="M 0 "+(tl.keys[0].value*-100)+" ";
+                if(str===null) str="M 0 "+(tl.keys[0].value*-CABLES.TL.VALUESCALE)+" ";
 
                 str+=tl.keys[i].getPathString(viewBox,nextKey);
                 
@@ -265,7 +266,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 if(tl.keys[i].onChange===null) tl.keys[i].onChange=updateKeyLine;
             }
 
-            if(tl.keys.length>0) str+="L 9999000 "+(tl.keys[tl.keys.length-1].value*-100)+" ";
+            if(tl.keys.length>0) str+="L 9999000 "+(tl.keys[tl.keys.length-1].value*-CABLES.TL.VALUESCALE)+" ";
         }
 
         keyLine.attr({ path:str });
@@ -375,7 +376,35 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     }
 
+    this.scaleHeight=function()
+    {
+        var maxv=-99999;
+        var minv=99999999;
+        for(var i in tl.keys)
+        {
+            maxv=Math.max(maxv,tl.keys[i].value);
+            minv=Math.min(minv,tl.keys[i].value);
+        }
+        
+        if(maxv>0)
+        {
+            var s=180/(maxv+Math.abs(minv));
+            console.log('value scale ',s);
+
+            self.setValueScale(s);
+            
+                    
+            viewBox.y=-200;
+            self.updateViewBox();
+
+        }
+    };
+
+
+
     $("#keymovemode").bind("click", toggleMoveMode);
+    $("#keyscaleheight").bind("click", this.scaleHeight);
+    
 
     $(".timeLineInsert").bind("click", function (e)
     {
@@ -495,7 +524,14 @@ CABLES.TL.UI.TimeLineUI=function()
     this.getTime=function()
     {
         return cursorTime;
-    }
+    };
+
+    this.setValueScale=function(v)
+    {
+        CABLES.TL.VALUESCALE=v;
+        updateKeyLine();
+        updateTimeDisplay();
+    };
 
     this.setTimeScale=function(v)
     {
@@ -706,7 +742,7 @@ CABLES.TL.UI.TimeLineUI=function()
     this.unselectKeys=function()
     {
         tl.unselectKeys();
-    }
+    };
 
 
 };

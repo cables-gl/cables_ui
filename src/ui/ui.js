@@ -1907,7 +1907,9 @@ var line;
 
                 $(id).colorPicker(
                 {
-                    opacity: false,
+                    opacity:true,
+                    margin: '4px -2px 0',
+                    doRender: 'div div',
                     renderCallback:function(res)
                     {
                         var colors = this.color.colors;
@@ -1927,15 +1929,10 @@ var line;
                         };
 
                         $('input', '.cp-panel').each(function() {
-                        this.value = modes[this.className.substr(3)];
+                            this.value = modes[this.className.substr(3)];
                         });
-
-
                     },
-                    opacity:true,
-                    margin: '4px -2px 0',
-                    doRender: 'div div',
-                    buildCallback: function($elm) 
+                    buildCallback: function($elm)
                     {
                         var colorInstance = this.color,
                             colorPicker = this;

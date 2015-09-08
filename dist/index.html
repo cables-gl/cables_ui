@@ -67,9 +67,9 @@
 
     <a onclick="ui.toggleSideBar();" class="button">cables</a>
 
-    <a onclick="ui.showOpSelect(100,100);" class="button fa fa-plus-square-o"></a>
+    <a onclick="ui.showOpSelect(100,100);" class="button fa fa-plus-square-o tt" data-tt="create new op"></a>
 
-    <a onclick="ui.cycleRendererSize();" class="button  fa fa-expand"></a>
+    <a onclick="ui.cycleRendererSize();" class="button fa fa-expand tt"  data-tt="resize webgl renderer (esc to exit fullscreen)"></a>
 
     <div id="serverproject" style="float:left;display:none;">
         <a onclick="ui.saveCurrentProject();" class="button">save project <span id="serverprojectname"></span></a>
@@ -79,7 +79,7 @@
 
 
     <div id="loggedin">
-        <div id="username"></div> <a class="button" href="/logout">logout</a>
+        <div id="username"></div> <a class="button tt" href="/logout" data-tt="logout">logout</a>
     </div>
 
     <div id="loggedout">
@@ -90,7 +90,7 @@
 
 </div>
 
-
+<div class="tooltip"></div>
 
 
 <script id="op_select" type="text/x-handlebars-template">
@@ -540,7 +540,7 @@ function inputIncrement(v,dir)
 
 <div id="timelineui">
 
-    <a class="button" onclick="ui.toggleTiming();">timing</a>
+    <a class="button tt" data-tt="insert key" onclick="ui.toggleTiming();">timing</a>
 
     <span class="timelinetime"></span>
     <span class="button timeLineInsert fa fa-plus-square-o"></span>
@@ -550,9 +550,20 @@ function inputIncrement(v,dir)
     <a class="button fa fa-play " id="timelineplay" onclick="ui.timeLine.togglePlay()"></a>
     <a class="button fa fa-forward" onclick="ui.scene.timer.setOffset(2);"></a>
 
-    <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;"/>
+    <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
 
-    <a id="keymovemode" class="button fa fa-arrows-h" ></a>
+
+    <a id="keymovemode" class="button fa fa-arrows-h tt" data-tt="key move mode" ></a>
+
+
+
+
+
+    <a id="keyscaleheight" class="button fa fa-ellipsis-v tt" data-tt="display max. value height"></a>
+
+
+
+
 
 </div>
 
