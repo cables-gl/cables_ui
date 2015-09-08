@@ -66,7 +66,9 @@ Ops.Value = function()
     var self=this;
 
     this.name='Value';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.v=this.addInPort(new Port(this,"value"));
+
     this.result=this.addOutPort(new Port(this,"result"));
 
     this.exec= function()
@@ -74,6 +76,7 @@ Ops.Value = function()
         self.result.val=self.v.val;
     };
 
+    this.exe.onTriggered=this.exec;
     this.v.onValueChanged=this.exec;
 };
 
