@@ -151,6 +151,44 @@ Ops.Gl.ClearColor.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
+
+
+Ops.Gl.Depth = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Depth';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.clear=this.addInPort(new Port(this,"clear depth",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.enable=this.addInPort(new Port(this,"enable depth testing",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.write=this.addInPort(new Port(this,"write to depth buffer",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+
+    this.clear.val=false;
+    this.enable.val=true;
+    this.write.val=true;
+
+    this.render.onTriggered=function()
+    {
+        if('true'==self.clear.val) cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
+        if('true'!=self.enable.val) cgl.gl.disable(cgl.gl.DEPTH_TEST);
+        if('true'!=self.write.val) cgl.gl.depthMask(false);
+
+        self.trigger.call();
+
+        cgl.gl.enable(cgl.gl.DEPTH_TEST);
+        cgl.gl.depthMask(true);
+    };
+
+};
+
+Ops.Gl.Depth.prototype = new Op();
+
+
+
+
 Ops.Gl.ClearDepth = function()
 {
     Op.apply(this, arguments);
@@ -941,4 +979,132 @@ Ops.Gl.Render2Texture.prototype = new Op();
 
 
 
+
+
+
+// ----------------------------------------------------
+
+Ops.Gl.Spray = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='spray';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    
+
+    this.timer=this.addInPort(new Port(this,"time"));
+
+    this.num=this.addInPort(new Port(this,"num"));
+    this.size=this.addInPort(new Port(this,"size"));
+
+    
+    this.lifetime=this.addInPort(new Port(this,"lifetime"));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION)) ;
+    this.idx=this.addOutPort(new Port(this,"index")) ;
+    this.lifeTimePercent=this.addOutPort(new Port(this,"lifeTimePercent")) ;
+    var particles=[];
+
+    var transVec=vec3.create();
+
+    function Particle()
+    {
+        this.pos=null;
+
+        this.startPos=null;
+        this.startTime=0;
+        this.lifeTime=0;
+        this.lifeTimePercent=0;
+        this.endTime=0;
+
+        this.pos=[0,0,0];
+        this.moveVec=[0,0,0];
+        this.idDead=false;
+
+        this.update=function(time)
+        {
+            var timeRunning=time-this.startTime;
+            if(time>this.endTime)this.isDead=true;
+            this.lifeTimePercent=timeRunning/this.lifeTime;
+        
+            this.pos=vec3.fromValues(
+                this.startPos[0]+timeRunning*this.moveVec[0],
+                this.startPos[1]+timeRunning*this.moveVec[1],
+                this.startPos[2]+timeRunning*this.moveVec[2]
+                );
+        };
+
+        this.reAnimate=function(time)
+        {
+            this.isDead=false;
+            this.startTime=time;
+            this.lifeTime=Math.random()*self.lifetime.val;
+            this.endTime=time+this.lifeTime;
+            this.startPos=vec3.fromValues(
+                Math.random()*0.5,
+                Math.random()*0.5,
+                Math.random()*0.5);
+
+            this.moveVec=[
+                Math.random()*0.2,
+                Math.random()*0.2,
+                Math.random()*0.2
+                ];
+
+                    
+
+        };
+        this.reAnimate(0);
+    }
+
+
+
+
+    this.exe.onTriggered=function()
+    {
+        // var time=self.patch.timer.getTime();
+        var time=self.timer.val;
+        for(var i=0;i<particles.length;i++)
+        {
+            if(particles[i].isDead)particles[i].reAnimate(time);
+            
+            particles[i].update(time);
+
+            cgl.pushMvMatrix();
+
+            mat4.translate(cgl.mvMatrix,cgl.mvMatrix, particles[i].pos);
+
+
+            self.idx.val=i;
+            self.lifeTimePercent.val= particles[i].lifeTimePercent;
+            // self.rnd.val=self.randomsFloats[i];
+
+            self.trigger.call();
+
+            cgl.popMvMatrix();
+        }
+    };
+
+    function reset()
+    {
+        particles.length=0;
+
+        for(var i=0;i<self.num.val;i++)
+        {
+            var p=new Particle();
+            p.reAnimate(0);
+            particles.push(p);
+        }
+    }
+
+    this.num.onValueChanged=reset;
+    this.size.onValueChanged=reset;
+    this.lifetime.onValueChanged=reset;
+
+    this.num.val=100;
+    reset();
+};
+
+Ops.Gl.Spray.prototype = new Op();
 

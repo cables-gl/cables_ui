@@ -231,6 +231,35 @@ Ops.Math.Sum.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
+Ops.Math.Subtract = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='subtract';
+    this.result=this.addOutPort(new Port(this,"result"));
+    this.number1=this.addInPort(new Port(this,"number1"));
+    this.number2=this.addInPort(new Port(this,"number2"));
+
+    this.exec= function()
+    {
+        self.result.val=parseFloat(self.number1.val)-parseFloat(self.number2.val);
+    };
+
+    this.number1.onValueChanged=this.exec;
+    this.number2.onValueChanged=this.exec;
+
+    this.number1.val=1;
+    this.number2.val=1;
+};
+
+Ops.Math.Subtract.prototype = new Op();
+
+
+
+// ---------------------------------------------------------------------------
+
+
 Ops.Math.Multiply = function()
 {
     Op.apply(this, arguments);

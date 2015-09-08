@@ -184,8 +184,6 @@ var Port=function(parent,name,type,uiAttribs)
                     this.onValueChanged();
                 }
 
-                
-
                 for(var i in this.links)
                 {
                     this.links[i].setValue();
