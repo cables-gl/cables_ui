@@ -304,6 +304,11 @@ textarea
 
 }
 
+.button_colorpick
+{
+    padding: 5px !important;
+}
+
 .button
 {
     font-family: arial;
@@ -482,3 +487,4 @@ input[type=range]:focus {
 
 
 @import 'font-awesome.scss';
+@import 'jcolorpicker.scss';

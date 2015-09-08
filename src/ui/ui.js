@@ -1774,6 +1774,7 @@ var line;
     {
         watchPorts=[];
         watchAnimPorts=[];
+        watchColorPicker=[];
 
         var html = getHandleBarHtml('params_op_head',{op: op});
 
@@ -1787,13 +1788,14 @@ var line;
             op.portsIn[i].watchId='in_'+i;
             watchAnimPorts.push(op.portsIn[i]);
 
+            if(op.portsIn[i].uiAttribs.colorPick)
+            {
+                watchColorPicker.push(op.portsIn[i]);
+            }
+
             if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated())
             {
                 watchPorts.push(op.portsIn[i]);
-
-                if(op.portsIn[i].isAnimated())
-                {
-                }
             }
 
             html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true } );
@@ -1889,6 +1891,78 @@ var line;
 
             })(thePort);
         }
+
+
+        for(var i in watchColorPicker)
+        {
+            var thePort=watchColorPicker[i];
+            (function (thePort)
+            {
+                var id='#watchcolorpick_'+thePort.watchId;
+                $(id).colorPicker(
+                {
+                    opacity: false,
+                    renderCallback:function(res)
+                    {
+                        var colors = this.color.colors;
+
+                        $(id).parent().next('td').find('input.value').val(colors.rgb.r).trigger('input');
+                        $(id).parent().parent().next('tr').find('input.value').val(colors.rgb.g).trigger('input');
+                        $(id).parent().parent().next('tr').next('tr').find('input.value').val(colors.rgb.b).trigger('input');
+
+                        $(id).parent().next('td').find('input.range').val(colors.rgb.r).trigger('input');
+                        $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
+                        $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
+
+
+                        modes = {
+                            r: Math.round(colors.rgb.r*255), g: Math.round(colors.rgb.g*255), b: Math.round(colors.rgb.b*255),
+                            h: colors.hsv.h, s: colors.hsv.s, v: colors.hsv.v,
+                            HEX: this.color.colors.HEX
+                        };
+
+                        $('input', '.cp-panel').each(function() {
+                        this.value = modes[this.className.substr(3)];
+                        });
+
+
+                    },
+                    opacity:true,
+                    margin: '4px -2px 0',
+                    doRender: 'div div',
+                    buildCallback: function($elm) 
+                    {
+                        var colorInstance = this.color,
+                            colorPicker = this;
+
+                        $elm.prepend('<div class="cp-panel">' +
+                            'R <input type="text" class="cp-r" /><br>' +
+                            'G <input type="text" class="cp-g" /><br>' +
+                            'B <input type="text" class="cp-b" /><hr>' +
+                            'H <input type="text" class="cp-h" /><br>' +
+                            'S <input type="text" class="cp-s" /><br>' +
+                            'B <input type="text" class="cp-v" /><hr>' +
+                            '<input type="text" class="cp-HEX" />' +
+                        '</div>').on('change', 'input', function(e) {
+                            var value = this.value,
+                                className = this.className,
+                                type = className.split('-')[1],
+                                color = {};
+
+                            color[type] = value;
+                            colorInstance.setColor(type === 'HEX' ? value : color,
+                                type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
+                            colorPicker.render();
+                            this.blur();
+                        });
+                    }
+                });
+
+            })(thePort);
+        }
+
+
+
     };
 
     function doWatchPorts()

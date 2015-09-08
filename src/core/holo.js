@@ -321,7 +321,7 @@ var Link = function(scene)
     this.setValue=function(v)
     {
         this.portIn.val=v;
-    }
+    };
 
     this.setValue=function()
     {

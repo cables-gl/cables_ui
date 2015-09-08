@@ -12,6 +12,11 @@
 
 <script id="params_port" type="text/x-handlebars-template">
 
+
+
+
+
+
 <tr>
     <td class="port portType_{{ port.type }}">
 
@@ -19,9 +24,17 @@
         {{port.name}}
     </td>
 
+<td>
+
+        {{#compare port.uiAttribs.colorPick '==' 'true' }}
+        <div class="button_colorpick button fa fa-eyedropper" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
+        {{/compare}}
+</td>
+
     <td>
 
         {{#if isInput}}
+
 
 
             {{#if port.links}}
@@ -33,6 +46,7 @@
                 {{else}}
 
                     {{#if port.uiAttribs.display}}
+
                         {{#compare port.uiAttribs.display '==' 'bool' }}
                             
                             <span class="button fa fa-toggle-on" onclick="CABLES.togglePortValBool('portval_{{ portnum }}');"></span>
@@ -42,7 +56,7 @@
                         {{#compare port.uiAttribs.display '==' 'range' }}
 
                             <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
-                            <input type ="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:135px;"/>
+                            <input type ="range" class="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:135px;"/>
                             <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
 
                         {{/compare}}

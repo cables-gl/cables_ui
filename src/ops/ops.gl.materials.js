@@ -116,7 +116,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     var shader=new CGL.Shader();
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
-    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
     this.r.onValueChanged=function()
     {
         if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.val);

@@ -205,6 +205,9 @@ td {
       border-bottom: 2px solid #222;
       padding-top: 3px; }
 
+.button_colorpick {
+  padding: 5px !important; }
+
 .button {
   font-family: arial;
   background-color: #6c9fde;
@@ -2350,3 +2353,46 @@ input[type=range]:focus {
 
 .fa-fonticons:before {
   content: "\f280"; }
+
+.cp-color-picker {
+  box-sizing: border-box;
+  width: 226px; }
+
+.cp-color-picker .cp-panel {
+  line-height: 21px;
+  float: right;
+  padding: 0 1px 0 8px;
+  margin-top: -1px;
+  overflow: visible; }
+
+.cp-xy-slider:active {
+  cursor: none; }
+
+.cp-panel, .cp-panel input {
+  color: #bbb;
+  font-family: monospace,     "Courier New",Courier,mono;
+  font-size: 12px; }
+
+.cp-panel input {
+  width: 28px;
+  padding: 2px 3px 1px !important;
+  text-align: right;
+  line-height: 12px;
+  background: transparent;
+  border: 1px solid;
+  border-color: #222 #666 #666 #222; }
+
+.cp-panel hr {
+  margin: 0 -2px 2px;
+  height: 1px;
+  border: 0;
+  background: #666;
+  border-top: 1px solid #222; }
+
+.cp-panel .cp-HEX {
+  width: 44px;
+  position: absolute;
+  margin: 1px -3px 0 -2px; }
+
+.cp-alpha {
+  width: 100px !important; }
