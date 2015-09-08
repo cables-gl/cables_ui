@@ -132,6 +132,38 @@ Ops.TimeLineDelay.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
+Ops.TimeLineOverwrite = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='TimeLineOverwrite';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+
+    this.theTime=this.addOutPort(new Port(this,"time"));
+    this.newTime=this.addInPort(new Port(this,"new time"));
+    this.newTime.val=0.0;
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var realTime=0;
+    this.exe.onTriggered=function()
+    {
+        realTime=self.patch.timer.getTime();
+
+        self.patch.timer.overwriteTime=self.newTime.val;
+        self.trigger.call();
+        self.patch.timer.overwriteTime=-1;
+        // self.patch.timer.setTime(realTime);
+
+    };
+
+};
+Ops.TimeLineOverwrite.prototype = new Op();
+
+
+// ---------------------------------------------------------------------------
+
 
 
 

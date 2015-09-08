@@ -9,9 +9,11 @@ function Timer()
     var lastTime=0;
     var paused=true;
     var delay=0;
+    this.overwriteTime=-1;
 
     function getTime()
     {
+
         lastTime=(Date.now()-timeStart)/1000;
         return lastTime+timeOffset;
     }
@@ -36,6 +38,7 @@ function Timer()
 
     this.getTime=function()
     {
+        if(this.overwriteTime>=0)return this.overwriteTime-delay;
         return currentTime-delay;
     };
 

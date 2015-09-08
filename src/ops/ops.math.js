@@ -256,6 +256,34 @@ Ops.Math.Multiply = function()
 
 Ops.Math.Multiply.prototype = new Op();
 
+
+// ---------------------------------------------------------------------------
+
+Ops.Math.Modulo = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Modulo';
+    this.result=this.addOutPort(new Port(this,"result"));
+    this.number1=this.addInPort(new Port(this,"number1"));
+    this.number2=this.addInPort(new Port(this,"number2"));
+
+    this.exec= function()
+    {
+        self.result.val=self.number1.val%self.number2.val ;
+    };
+
+    this.number1.onValueChanged=this.exec;
+    this.number2.onValueChanged=this.exec;
+
+    this.number1.val=1;
+    this.number2.val=2;
+
+};
+
+Ops.Math.Modulo.prototype = new Op();
+
 // ---------------------------------------------------------------------------
 
 Ops.Math.Divide = function()

@@ -211,7 +211,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function setCursor(time)
     {
+
         if(time<0)time=0;
+        if(isNaN(time))time=0;
+                
 
         cursorTime=time;
         time=time*CABLES.TL.TIMESCALE;

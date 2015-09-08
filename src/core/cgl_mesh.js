@@ -100,6 +100,7 @@ CGL.Geometry=function()
         this.verticesIndices.length=0;
         this.texCoords.length=0;
         this.texCoordsIndices.length=0;
+        this.vertexNormals.length=0;
     };
 
     this.addFace=function(a,b,c)
