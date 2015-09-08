@@ -1899,6 +1899,12 @@ var line;
             (function (thePort)
             {
                 var id='#watchcolorpick_'+thePort.watchId;
+                var c1=Math.round(255*$(id).parent().next('td').find('input.value').val());
+                var c2=Math.round(255*$(id).parent().parent().next('tr').find('input.value').val());
+                var c3=Math.round(255*$(id).parent().parent().next('tr').next('tr').find('input.value').val());
+
+                $(id).css('background-color','rgb('+c1+','+c2+','+c3+')');
+
                 $(id).colorPicker(
                 {
                     opacity: false,
@@ -1913,7 +1919,6 @@ var line;
                         $(id).parent().next('td').find('input.range').val(colors.rgb.r).trigger('input');
                         $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
                         $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
-
 
                         modes = {
                             r: Math.round(colors.rgb.r*255), g: Math.round(colors.rgb.g*255), b: Math.round(colors.rgb.b*255),
