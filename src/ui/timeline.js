@@ -174,12 +174,18 @@ CABLES.TL.UI.TimeLineUI=function()
         return paper;
     };
 
-    this.setAnim=function(anim,config)
+    function removeDots()
     {
         if(tl) for(var i in tl.keys)
         {
             if(tl.keys[i].circle)tl.keys[i].circle.remove();
         }
+        $('#timeline svg circle').remove(); // :(
+    }
+
+    this.setAnim=function(anim,config)
+    {
+        removeDots();
 
         if(!anim)
         {
