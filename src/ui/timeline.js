@@ -59,6 +59,7 @@ CABLES.TL.Key.prototype.initUI=function()
 
     var discattr = {fill: uiConfig.colorKey, stroke: "none"};
     this.circle=ui.timeLine.getPaper().circle(self.x, self.y, 10).attr(discattr);
+    ui.timeLine.tempCircles.push(this.circle);
     this.circle.toFront();
 
     this.circle.node.onclick = function (e)
@@ -154,6 +155,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var paperTime= Raphael("timetimeline", 0,0);
     var isScrollingTime=false;
     var enabled=false;
+    this.tempCircles=[];
 
     var ki=tl.getKeyIndex(-1.0);
 
@@ -180,7 +182,11 @@ CABLES.TL.UI.TimeLineUI=function()
         {
             if(tl.keys[i].circle)tl.keys[i].circle.remove();
         }
-        $('#timeline svg circle').remove(); // :(
+
+        for(var i in this.tempCircles)
+        {
+            this.tempCircles[i].remove();
+        }
     }
 
     this.setAnim=function(anim,config)
