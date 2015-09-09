@@ -20,6 +20,7 @@ var Op = function()
     this.name='unknown';
     this.id=generateUUID();
 
+
     this.getName= function()
     {
         return this.name;

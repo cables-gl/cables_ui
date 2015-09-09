@@ -153,6 +153,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var paper= Raphael("timeline", 0,0);
     var paperTime= Raphael("timetimeline", 0,0);
     var isScrollingTime=false;
+    var enabled=false;
 
     var ki=tl.getKeyIndex(-1.0);
 
@@ -182,6 +183,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         if(!anim)
         {
+            enabled=false;
             tl=tlEmpty;
             updateKeyLine();
             $('#timelineTitle').html('');
@@ -189,8 +191,8 @@ CABLES.TL.UI.TimeLineUI=function()
         }
 
         anim.paper=paper;
-
         tl=anim;
+        enabled=true;
 
         if(config && config.name)
         {
@@ -219,10 +221,8 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function setCursor(time)
     {
-
         if(time<0)time=0;
         if(isNaN(time))time=0;
-                
 
         cursorTime=time;
         time=time*CABLES.TL.TIMESCALE;
@@ -656,6 +656,7 @@ CABLES.TL.UI.TimeLineUI=function()
                     "fill-opacity": 0.1
                });
 
+            if(!enabled)return;
             for(var i in tl.keys)
             {
                 var rect=tl.keys[i].circle;
@@ -695,6 +696,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.cut=function(e)
     {
+        if(!enabled)return;
         self.copy(e);
         tl.deleteSelectedKeys();
         updateKeyLine();
@@ -703,6 +705,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.paste=function(e)
     {
+        if(!enabled)return;
         if(e.clipboardData.types.indexOf('text/plain') > -1)
         {
             e.preventDefault();
