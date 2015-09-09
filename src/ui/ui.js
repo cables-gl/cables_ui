@@ -1772,6 +1772,26 @@ var line;
 
     this.showOpParams=function(op)
     {
+
+        { // show first anim in timeline
+            if(self.timeLine)
+            {
+                var foundAnim=false;
+                for(var i in op.portsIn)
+                {
+                    if(op.portsIn[i].isAnimated())
+                    {
+                        self.timeLine.setAnim(op.portsIn[i].anim,{name:op.portsIn[i].name});
+                        foundAnim=true;
+                    }
+                }
+                if(!foundAnim) self.timeLine.setAnim(null);
+
+            }
+
+        }
+
+
         watchPorts=[];
         watchAnimPorts=[];
         watchColorPicker=[];
@@ -1844,9 +1864,7 @@ var line;
                     $('#portanim_in_'+index).toggleClass('timingbutton_active');
 
                     op.portsIn[index].toggleAnim();
-                    self.timeLine.setAnim(op.portsIn[index].anim,parseFloat( $('#portval_'+index).val()));
-
-
+                    self.timeLine.setAnim(op.portsIn[index].anim,{name:op.portsIn[index].name,defaultValue:parseFloat( $('#portval_'+index).val())} );
 
                     self.showOpParams(op);
                 });
@@ -1886,7 +1904,7 @@ var line;
 
                 $(id).on("focusin", function()
                 {
-                    ui.timeLine.setAnim(thePort.anim);
+                    ui.timeLine.setAnim(thePort.anim,{name:thePort.name});
                 });
 
             })(thePort);

@@ -66,18 +66,30 @@ Ops.Value = function()
     var self=this;
 
     this.name='Value';
-    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-    this.v=this.addInPort(new Port(this,"value"));
+    this.v=this.addInPort(new Port(this,"value",OP_PORT_TYPE_VALUE));
 
     this.result=this.addOutPort(new Port(this,"result"));
 
-    this.exec= function()
+    function frame(time)
     {
+        self.updateAnims();
+        self.exec();
+    }
+
+    this.v.onAnimToggle=function()
+    {
+        if(self.v.isAnimated()) self.onAnimFrame=frame;
+        else self.onAnimFrame=function(){};
+    };
+
+    this.exec=function()
+    {
+
         self.result.val=self.v.val;
     };
 
-    this.exe.onTriggered=this.exec;
     this.v.onValueChanged=this.exec;
+    this.onAnimFrame=function(){};
 };
 
 Ops.Value.prototype = new Op();
@@ -160,15 +172,11 @@ Ops.TimeLineOverwrite = function()
         // self.patch.timer.setTime(realTime);
 
     };
-
 };
+
 Ops.TimeLineOverwrite.prototype = new Op();
 
-
 // ---------------------------------------------------------------------------
-
-
-
 
 Ops.Repeat = function()
 {

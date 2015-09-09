@@ -194,7 +194,6 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.updateAnim=function()
     {
-
         if(animated)
         {
             this.value=self.anim.getValue(parent.patch.timer.getTime());
@@ -206,7 +205,6 @@ var Port=function(parent,name,type,uiAttribs)
             }
             oldAnimVal=this.value;
         }
-
     };
 
     this.isAnimated=function()
@@ -214,16 +212,25 @@ var Port=function(parent,name,type,uiAttribs)
         return animated;
     };
 
+    this.onAnimToggle=function(){};
+    this._onAnimToggle=function(){this.onAnimToggle();};
+
     this.setAnimated=function(a)
     {
-        animated=a;
-        if(animated && !self.anim)self.anim=new CABLES.TL.Anim();
+        if(animated!=a)
+        {
+            animated=a;
+            if(animated && !self.anim)self.anim=new CABLES.TL.Anim();
+            this._onAnimToggle();
+        }
     };
 
     this.toggleAnim=function(val)
     {
         animated=!animated;
+        if(animated && !self.anim)self.anim=new CABLES.TL.Anim();
         self.setAnimated(animated);
+        this._onAnimToggle();
     };
 
     this.getName= function()
@@ -279,7 +286,7 @@ var Port=function(parent,name,type,uiAttribs)
         var obj={};
         obj.name=this.getName();
         obj.value=this.value;
-        if(animated) obj.animated=animated;
+        if(animated) obj.setAnimated(true);
         if(this.anim) obj.anim=this.anim.getSerialized();
 
         if(this.direction==PORT_DIR_IN && this.links.length>0)

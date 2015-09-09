@@ -173,7 +173,7 @@ CABLES.TL.UI.TimeLineUI=function()
         return paper;
     };
 
-    this.setAnim=function(anim,defaultValue)
+    this.setAnim=function(anim,config)
     {
         if(tl) for(var i in tl.keys)
         {
@@ -184,6 +184,7 @@ CABLES.TL.UI.TimeLineUI=function()
         {
             tl=tlEmpty;
             updateKeyLine();
+            $('#timelineTitle').html('');
             return;
         }
 
@@ -191,9 +192,16 @@ CABLES.TL.UI.TimeLineUI=function()
 
         tl=anim;
 
-        if(defaultValue && anim.keys.length===0)
+        if(config && config.name)
         {
-            tl.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:defaultValue}) );
+            $('#timelineTitle').html(config.name);
+        }
+        else
+            $('#timelineTitle').html('');
+
+        if(config && config.defaultValue && anim.keys.length===0)
+        {
+            tl.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:config.defaultValue}) );
         }
 
         updateKeyLine();

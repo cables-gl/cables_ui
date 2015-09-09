@@ -51,6 +51,15 @@ a
     font-family: monospace;
 }
 
+
+#timelineTitle
+{
+    position: absolute;
+    z-index: 9999;
+    bottom:10px;
+    left:10px;
+}
+
 #timetimeline
 {
     border:1px solid transparent;
