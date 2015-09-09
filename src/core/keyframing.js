@@ -40,7 +40,7 @@ CABLES.TL.Key=function(obj)
 
     if("isUI" in this)
     {
-        this.initUI();
+        // this.initUI();
     }
 
 };
@@ -83,7 +83,7 @@ CABLES.TL.Anim=function(cfg)
 
         if(!found)
         {
-            this.keys.push(new CABLES.TL.Key({time:time,value:value,paper:this.paper})) ;
+            this.keys.push(new CABLES.TL.Key({time:time,value:value})) ;
         }
 
         if(this.onChange)this.onChange();

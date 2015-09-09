@@ -1783,12 +1783,11 @@ var line;
                     {
                         self.timeLine.setAnim(op.portsIn[i].anim,{name:op.portsIn[i].name});
                         foundAnim=true;
+                        continue;
                     }
                 }
                 if(!foundAnim) self.timeLine.setAnim(null);
-
             }
-
         }
 
 
