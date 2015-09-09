@@ -271,6 +271,7 @@ CABLES.TL.UI.TimeLineUI=function()
     function updateKeyLine()
     {
         var str=null;
+        if(!enabled) removeDots();
         if(tl)
         {
             tl.sortKeys();
