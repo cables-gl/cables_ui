@@ -286,7 +286,7 @@ var Port=function(parent,name,type,uiAttribs)
         var obj={};
         obj.name=this.getName();
         obj.value=this.value;
-        if(animated) obj.setAnimated(true);
+        if(animated) obj.animated=true;
         if(this.anim) obj.anim=this.anim.getSerialized();
 
         if(this.direction==PORT_DIR_IN && this.links.length>0)
