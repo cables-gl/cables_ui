@@ -1991,7 +1991,8 @@ var line;
             var id='.watchPortValue_'+watchPorts[i].watchId;
             if(watchPorts[i].isAnimated())
             {
-                $(id).val( watchPorts[i].val );
+                if( $(id).val() !=watchPorts[i].val )
+                    $(id).val( watchPorts[i].val );
             }
             else
             {
