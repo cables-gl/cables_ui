@@ -1,8 +1,6 @@
 
-
 $mainColor: #6c9fde;
-    // td.portType_0 { border-left: 4px solid #ea6638; }
-    // td.portType_1 { border-left: 4px solid #; }
+
 
 
 body
@@ -25,12 +23,12 @@ body
 
 div,td
 {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 a
 {
-    color:#eee;
+    color:#ccc;
     text-decoration: none;
     cursor: pointer;
 }
@@ -51,45 +49,6 @@ a
     font-family: monospace;
 }
 
-
-#timelineTitle
-{
-    position: absolute;
-    z-index: 9999;
-    bottom:10px;
-    left:10px;
-}
-
-#timetimeline
-{
-    border:1px solid transparent;
-    position: absolute;
-    background-color: #2a2a2a;
-    height:25px;
-    max-height:25px;
-    overflow: hidden;
-    svg
-    {
-    }
-}
-
-
-#timeline 
-{
-    // border:1px solid red;
-
-border:1px solid transparent;
-
-    &:focus
-    {
-        border:1px solid $mainColor;
-    }
-    outline:none;
-    svg
-    {
-        position:absolute;
-    }
-}
 
 
 #patch 
@@ -206,11 +165,21 @@ textarea
     padding:10px;
     background-color: #444;
     z-index: 9999;
+    min-width: 550px;
+    padding-bottom: 30px;
+
+
+    user-select:text;
+    -webkit-user-select: text;  /* Chrome all / Safari all */
+    -moz-user-select: text;     /* Firefox all */
+    -ms-user-select: text;      /* IE 10+ */
+
 
     .modalclose
     {   
-        text-align: right;
-
+        right:0px;
+        margin-top: -4px;
+        position: absolute;
     }
 }
 
@@ -321,7 +290,8 @@ textarea
 .button
 {
     font-family: arial;
-    background-color:#6c9fde;
+
+    background-color:#444;
     border-radius: 4px;
     min-width: 14px;
     text-align: center;
@@ -503,6 +473,70 @@ input[type=range]:focus {
 
 
 
+#timelineTitle
+{
+    position: absolute;
+    z-index: 9999;
+    bottom:10px;
+    left:10px;
+}
+
+#timetimeline
+{
+    border:1px solid transparent;
+    position: absolute;
+    background-color: #2a2a2a;
+    height:25px;
+    max-height:25px;
+    overflow: hidden;
+    svg
+    {
+    }
+}
+
+
+#timeline 
+{
+    // border:1px solid red;
+
+border:1px solid transparent;
+
+    &:focus
+    {
+        border:1px solid $mainColor;
+    }
+    outline:none;
+    svg
+    {
+        position:absolute;
+    }
+}
+
+
+.list
+{
+
+    a
+    {
+        color:ccc;
+    }
+
+    td
+    {
+        border-bottom: 1px solid #222;
+        padding-bottom: 4px;
+        padding-top: 4px;
+    }
+
+
+    .filename
+    {
+        display: block;
+        float:left;
+        max-width: 100px;
+        overflow:hidden;
+    }
+}
 
 
 @import 'font-awesome.scss';

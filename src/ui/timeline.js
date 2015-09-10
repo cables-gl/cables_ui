@@ -205,9 +205,6 @@ CABLES.TL.UI.TimeLineUI=function()
         {
             console.log('KEYS NOT REMOVED PROPERLY');
         }
-
-
-
     }
 
     this.setAnim=function(newanim,config)
@@ -244,10 +241,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         for(var i in anim.keys)
         {
-            // if(anim.keys[i].circle)anim.keys[i].circle.remove();
-            // anim.keys[i].circle=null;
             if(!anim.keys[i].circle)anim.keys[i].initUI();
-            // anim.keys[i].initUI();
             anim.keys[i].updateCircle();
         }
 
@@ -304,7 +298,7 @@ CABLES.TL.UI.TimeLineUI=function()
             for(var i=0;i<anim.keys.length;i++)
             {
                 var nextKey=null;
-                        
+
                 if(anim.keys.length > i+1) nextKey=anim.keys[i+1];
                 
                 if(str===null) str="M 0 "+(anim.keys[0].value*-CABLES.TL.VALUESCALE)+" ";

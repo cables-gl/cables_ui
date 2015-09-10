@@ -913,7 +913,7 @@ var line;
                     else
                     if( $('#modalcontent').is(':visible') )
                     {
-                        ui.closeModal();
+                        CABLES.UI.MODAL.hide();
                     }
                     else
                     {
@@ -975,7 +975,7 @@ var line;
 
             $('#patch').css('height',patchHeight-2);
             $('#patch').css('width',window.innerWidth-rendererWidth-2);
-            $('#patch').css('top',menubarHeight);
+            // $('#patch').css('top',menubarHeight);
 
             $('#timelineui').css('width',window.innerWidth-rendererWidth-2);
 
@@ -1080,7 +1080,6 @@ var line;
 
             router.addRoute('/').get(function(event, params)
             {
-
                 if(!localStorage.holo || localStorage.holo===''  || localStorage.holo.length<20)
                 {
                     self.scene.clear();
@@ -1184,7 +1183,7 @@ var line;
             mouseNewOPX=ui.getCanvasCoords(x,y).x;
             mouseNewOPY=ui.getCanvasCoords(x,y).y;
             var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
-            self.showModal(html);
+            CABLES.UI.MODAL.show(html);
 
             $('#opsearch').focus();
             $('#opsearch').on('input',function(e)
@@ -1714,23 +1713,7 @@ var line;
         self.setLayout();
     };
 
-    this.closeModal=function()
-    {
-        mouseNewOPX=0;
-        mouseNewOPY=0;
 
-        $('#modalcontent').html('');
-        $('#modalcontent').hide();
-        $('#modalbg').hide();
-    };
-
-    this.showModal=function(content)
-    {
-        $('#modalcontent').html('<div class="modalclose"><a class="button" onclick="ui.closeModal();">close</a></div>');
-        $('#modalcontent').append(content);
-        $('#modalcontent').show();
-        $('#modalbg').show();
-    };
 
     this.importDialog=function()
     {
@@ -1739,8 +1722,8 @@ var line;
         html+='<textarea id="serialized"></textarea>';
         html+='<br/>';
         html+='<br/>';
-        html+='<a class="button" onclick="ui.scene.clear();ui.scene.deSerialize($(\'#serialized\').val());ui.closeModal();">import</a>';
-        self.showModal(html);
+        html+='<a class="button" onclick="ui.scene.clear();ui.scene.deSerialize($(\'#serialized\').val());CABLES.UI.MODAL.hide();">import</a>';
+        CABLES.UI.MODAL.show(html);
     };
 
     this.exportDialog=function()
@@ -1748,7 +1731,7 @@ var line;
         var html='';
         html+='export:<br/><br/>';
         html+='<textarea id="serialized"></textarea>';
-        self.showModal(html);
+        CABLES.UI.MODAL.show(html);
         $('#serialized').val(self.scene.serialize());
     };
 

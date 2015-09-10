@@ -16,10 +16,10 @@ body {
   /* IE 10+ */ }
 
 div, td {
-  font-size: 13px; }
+  font-size: 14px; }
 
 a {
-  color: #eee;
+  color: #ccc;
   text-decoration: none;
   cursor: pointer; }
 
@@ -32,29 +32,6 @@ div {
 
 #timing {
   font-family: monospace; }
-
-#timelineTitle {
-  position: absolute;
-  z-index: 9999;
-  bottom: 10px;
-  left: 10px; }
-
-#timetimeline {
-  border: 1px solid transparent;
-  position: absolute;
-  background-color: #2a2a2a;
-  height: 25px;
-  max-height: 25px;
-  overflow: hidden; }
-
-#timeline {
-  border: 1px solid transparent;
-  outline: none; }
-  #timeline:focus {
-    border: 1px solid #6c9fde; }
-  #timeline
-svg {
-    position: absolute; }
 
 #patch {
   outline: none;
@@ -135,10 +112,21 @@ textarea {
   display: none;
   padding: 10px;
   background-color: #444;
-  z-index: 9999; }
+  z-index: 9999;
+  min-width: 550px;
+  padding-bottom: 30px;
+  user-select: text;
+  -webkit-user-select: text;
+  /* Chrome all / Safari all */
+  -moz-user-select: text;
+  /* Firefox all */
+  -ms-user-select: text;
+  /* IE 10+ */ }
   #modalcontent
 .modalclose {
-    text-align: right; }
+    right: 0px;
+    margin-top: -4px;
+    position: absolute; }
 
 h2 {
   color: #6c9fde;
@@ -216,7 +204,7 @@ td {
 
 .button {
   font-family: arial;
-  background-color: #6c9fde;
+  background-color: #444;
   border-radius: 4px;
   min-width: 14px;
   text-align: center;
@@ -347,6 +335,46 @@ input[type=range]:focus {
   border-radius: 4px;
   opacity: 0.9;
   display: none; }
+
+#timelineTitle {
+  position: absolute;
+  z-index: 9999;
+  bottom: 10px;
+  left: 10px; }
+
+#timetimeline {
+  border: 1px solid transparent;
+  position: absolute;
+  background-color: #2a2a2a;
+  height: 25px;
+  max-height: 25px;
+  overflow: hidden; }
+
+#timeline {
+  border: 1px solid transparent;
+  outline: none; }
+  #timeline:focus {
+    border: 1px solid #6c9fde; }
+  #timeline
+svg {
+    position: absolute; }
+
+.list
+a {
+  color: ccc; }
+
+.list
+td {
+  border-bottom: 1px solid #222;
+  padding-bottom: 4px;
+  padding-top: 4px; }
+
+.list
+.filename {
+  display: block;
+  float: left;
+  max-width: 100px;
+  overflow: hidden; }
 
 /*!
  *  Font Awesome 4.4.0 by @davegandy - http://fontawesome.io - @fontawesome

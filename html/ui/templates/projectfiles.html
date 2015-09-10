@@ -1,20 +1,26 @@
 
 <script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
-    <div>
         <h2>files</h2>
 
-        <table>
+        <table class="list">
             {{#each files}}
                 <tr>
                 <td>
-                    <a onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
+                    <a class="button fa fa-info-circle"></a> 
+                    <a class="button fa fa-plus-circle"></a>
+                </td>
+                <td>
+                    <a class="filename" onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
                     {{name}}
                     </a>
+                </td>
+                <td>
+                    <a class="button fa fa-trash-o"></a>&nbsp;
+                    <a class="button fa fa fa-retweet"></a>
                 </td>
                 </tr>
             {{/each}}
         </table>
-    </div>
 </script>
 
 

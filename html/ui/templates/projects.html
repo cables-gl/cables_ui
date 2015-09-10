@@ -14,8 +14,8 @@
             <a href="#/project/{{_id}}">{{name}}</a>
         </td>
         <td>
-            <span onclick="if(confirm('delete ?')) CABLES.api.delete('project/{{_id}}',{},function(){ ui.updateProjectList(); } );">[del]</span>
-            &nbsp;<span onclick="CABLES.api.put('project/{{_id}}',{name:prompt('projectname','{{name}}')},function(){ ui.updateProjectList(); } );">[rename]</span>
+            <span class="button fa fa-trash-o tt" data-tt="delete" onclick="if(confirm('delete ?')) CABLES.api.delete('project/{{_id}}',{},function(){ ui.updateProjectList(); } );"></span>
+            &nbsp;<span class="button fa fa-pencil-square-o tt" data-tt="rename" onclick="CABLES.api.put('project/{{_id}}',{name:prompt('projectname','{{name}}')},function(){ ui.updateProjectList(); } );"></span>
         </td>
     </tr>
     {{/each}}

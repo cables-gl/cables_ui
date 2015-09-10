@@ -47,6 +47,8 @@
         <br/>
         <br/>
         <a onclick="ui.scene.clear();" >clear patch</a>
+        <br/>
+        <br/>
 
         <div id="projectlist"></div>
     </div>
@@ -56,6 +58,9 @@
 
 <div id="timing"></div>
 <div id="statusbar"></div>
+<!-- <div id="splitter"></div> -->
+
+
 <div id="meta">
 
     <div id="projectfiles">
@@ -399,21 +404,27 @@ function inputIncrement(v,dir)
 
 
 <script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
-    <div>
         <h2>files</h2>
 
-        <table>
+        <table class="list">
             {{#each files}}
                 <tr>
                 <td>
-                    <a onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
+                    <a class="button fa fa-info-circle"></a> 
+                    <a class="button fa fa-plus-circle"></a>
+                </td>
+                <td>
+                    <a class="filename" onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
                     {{name}}
                     </a>
+                </td>
+                <td>
+                    <a class="button fa fa-trash-o"></a>&nbsp;
+                    <a class="button fa fa fa-retweet"></a>
                 </td>
                 </tr>
             {{/each}}
         </table>
-    </div>
 </script>
 
 
@@ -517,8 +528,8 @@ function inputIncrement(v,dir)
             <a href="#/project/{{_id}}">{{name}}</a>
         </td>
         <td>
-            <span onclick="if(confirm('delete ?')) CABLES.api.delete('project/{{_id}}',{},function(){ ui.updateProjectList(); } );">[del]</span>
-            &nbsp;<span onclick="CABLES.api.put('project/{{_id}}',{name:prompt('projectname','{{name}}')},function(){ ui.updateProjectList(); } );">[rename]</span>
+            <span class="button fa fa-trash-o tt" data-tt="delete" onclick="if(confirm('delete ?')) CABLES.api.delete('project/{{_id}}',{},function(){ ui.updateProjectList(); } );"></span>
+            &nbsp;<span class="button fa fa-pencil-square-o tt" data-tt="rename" onclick="CABLES.api.put('project/{{_id}}',{name:prompt('projectname','{{name}}')},function(){ ui.updateProjectList(); } );"></span>
         </td>
     </tr>
     {{/each}}
