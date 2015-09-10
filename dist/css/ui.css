@@ -267,7 +267,10 @@ input {
     font-size: 20px;
     padding: 10px;
     width: 100%;
-    border: none; }
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    background-color: #222; }
   .opsearch
 .searchresult {
     border-bottom: 1px solid #888;

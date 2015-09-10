@@ -131,6 +131,12 @@ CABLES.UI.OPSELECT.getOpList=function()
 
     getop(Ops,'');
 
+    ops.sort(function(a, b)
+    {
+        return a.name.length - b.name.length; // ASC -> a - b; DESC -> b - a
+    });
+
+
     return ops;
 };
 
