@@ -2,9 +2,8 @@
 window.onerror=function(err,file,row)
 {
     var str="";
-    str+='<h2>error</h2>';
-    str+='<br/>';
-    str+='message:'+err+'<br/>';
+    str+='<h2><span class="fa fa-exclamation-triangle"></span> Oooops...</h2>';
+    str+='error:'+err+'<br/>';
     str+='<br/>';
     str+='file: '+file+'<br/>';
     str+='row: '+row+'<br/>';

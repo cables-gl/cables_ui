@@ -1,33 +1,30 @@
 
 <script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
-        <h2>files</h2>
+    <h2>files</h2>
 
-        <table class="list">
-            {{#each files}}
-                <tr>
-                <td>
-                    <a class="button fa fa-info-circle"></a> 
-                    <a class="button fa fa-plus-circle"></a>
-                </td>
-                <td>
-                    <a class="filename" onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
-                    {{name}}
-                    </a>
-                </td>
-                <td>
-                    <a class="button fa fa-trash-o"></a>&nbsp;
-                    <a class="button fa fa fa-retweet"></a>
-                </td>
-                </tr>
-            {{/each}}
-        </table>
+    <table class="list">
+        {{#each files}}
+            <tr>
+            <td>
+                <a class="button fa fa-info-circle"></a> 
+            </td>
+            <td>
+                <a class="filename" onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
+                {{name}}
+                </a>
+            </td>
+            <td>
+                <a class="button fa fa-trash-o"></a>&nbsp;
+                <a class="button fa fa-retweet"></a>
+            </td>
+            </tr>
+        {{/each}}
+    </table>
 </script>
 
 
 <script id="tmpl_projectfiles_upload" type="text/x-handlebars-template">
-
-<br/>
+    <br/>
     <a class="fa fa-upload"></a>
     drag & drop files to browser window to upload...
-
 </script>

@@ -218,7 +218,7 @@ function UiLink(port1, port2)
                     else
                     {
                         event=mouseEvent(event);
-                        ui.showOpSelect(event.offsetX,event.offsetY,null,null,self);
+                        CABLES.UI.OPSELECT.showOpSelect(event.offsetX,event.offsetY,null,null,self);
                     }
                 }
 
@@ -644,7 +644,7 @@ var line;
             else
             {
                 event=mouseEvent(event);
-                ui.showOpSelect(event.offsetX,event.offsetY,this.op,this.thePort);
+                CABLES.UI.OPSELECT.showOpSelect(event.offsetX,event.offsetY,this.op,this.thePort);
             }
 
             if(line && line.thisLine)line.thisLine.remove();
@@ -913,7 +913,7 @@ var line;
                     }
                     else
                     {
-                        ui.showOpSelect(20,20);
+                        CABLES.UI.OPSELECT.showOpSelect(20,20);
                     }
                     
                 break;
@@ -1026,48 +1026,6 @@ var line;
             }
         };
 
-        this.getOpList=function()
-        {
-            var ops=[];
-
-            function getop(val,parentname)
-            {
-                if (Object.prototype.toString.call(val) === '[object Object]')
-                {
-                    for (var propertyName in val)
-                    {
-                        if (val.hasOwnProperty(propertyName))
-                        {
-                            var html='';
-                            var opname='Ops.'+ parentname + propertyName + '';
-
-                            var isOp=false;
-                            var isFunction=false;
-                            if(eval('typeof('+opname+')')=="function") isFunction=true;
-
-                            if(isFunction)
-                            {
-                                var op=
-                                {
-                                    isOp:isOp,
-                                    name:opname,
-                                    lowercasename:opname.toLowerCase()
-                                };
-                                ops.push(op);
-                            }
-
-                            found=getop(val[propertyName],parentname+propertyName+'.');
-                        }
-                    }
-                }
-            }
-
-            getop(Ops,'');
-
-            return ops;
-        };
-
-
         this.setUpRouting=function()
         {
             var router = new Simrou();
@@ -1153,8 +1111,8 @@ var line;
                 {
                     proj.files=files;
                     var html='';
-                    html+=getHandleBarHtml('tmpl_projectfiles_list',proj);
-                    html+=getHandleBarHtml('tmpl_projectfiles_upload',proj);
+                    html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_list',proj);
+                    html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_upload',proj);
 
                     $('#projectfiles').html(html);
                             
@@ -1172,28 +1130,6 @@ var line;
             $('#sidebar').animate({width:'toggle'},200);
         };
 
-        this.showOpSelect=function(x,y,linkOp,linkPort,link)
-        {
-            linkNewLink=link;
-            linkNewOpToPort=linkPort;
-            linkNewOpToOp=linkOp;
-            mouseNewOPX=ui.getCanvasCoords(x,y).x;
-            mouseNewOPY=ui.getCanvasCoords(x,y).y;
-            var html = getHandleBarHtml('op_select',{ops: self.getOpList() });
-            CABLES.UI.MODAL.show(html);
-
-            $('#opsearch').focus();
-            $('#opsearch').on('input',function(e)
-            {
-                var searchFor= $('#opsearch').val();
-
-                if(!searchFor)
-                    $('#search_style').html('.searchable:{display:block;}');
-                else
-                    $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
-            });
-
-        };
 
         var viewBox={x:0,y:0,w:1100,h:1010};
         var mouseX=-1;
@@ -1216,7 +1152,7 @@ var line;
 
             CABLES.api.get('myprojects',function(data)
             {
-                $('#projectlist').html(getHandleBarHtml('projects',data));
+                $('#projectlist').html(CABLES.UI.getHandleBarHtml('projects',data));
             });
         };
 
@@ -1318,7 +1254,7 @@ var line;
         {
             this.scene=_scene;
 
-            $('#timing').append(getHandleBarHtml('timeline_controler'),{});
+            $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'),{});
             $('#meta').append();
 
             this.updateProjectList();
@@ -1704,13 +1640,6 @@ var line;
         self.showOpParams(self.scene.getOpById(id));
     };
 
-    function getHandleBarHtml(name,obj)
-    {
-        var source   = $("#"+name).html();
-        var template = Handlebars.compile(source);
-        var context = obj;
-        return template(context);
-    }
 
     this.showProjectParams=function(op)
     {
@@ -1742,12 +1671,12 @@ var line;
         watchAnimPorts=[];
         watchColorPicker=[];
 
-        var html = getHandleBarHtml('params_op_head',{op: op});
+        var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op});
 
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 
-        html += getHandleBarHtml('params_ports_head',{title:'in'});
+        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in'});
 
         for(var i in op.portsIn)
         {
@@ -1767,7 +1696,7 @@ var line;
             html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true } );
         }
 
-        html += getHandleBarHtml('params_ports_head',{title:'out'});
+        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out'});
 
         for(var i2 in op.portsOut)
         {
@@ -1780,7 +1709,7 @@ var line;
             html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false } );
         }
 
-        html += getHandleBarHtml('params_op_foot',{op: op});
+        html += CABLES.UI.getHandleBarHtml('params_op_foot',{op: op});
 
         $('#options').html(html);
 

@@ -3,101 +3,24 @@
 <script id="op_select" type="text/x-handlebars-template">
     
 <div class="opsearch">
-<h2>selct op</h2>
+    <h2>selct op</h2>
 
-<input id="opsearch"/>
+    <input id="opsearch"/>
 
-<br/><br/>
-<style id="search_style"></style>
+    <br/><br/>
+    <style id="search_style"></style>
 
 
-<div style="height:300px;overflow:auto">
-  {{#each ops}}
+    <div style="height:300px;overflow:auto">
+      {{#each ops}}
 
-    <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
-        <a onclick="ui.scene.addOp('{{name}}');ui.closeModal();" >{{name}}  {{isFunction}}</a>
+        <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
+            <a onclick="ui.scene.addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{name}}  {{isFunction}}</a>
+        </div>
+
+      {{/each}}
     </div>
 
-
-  {{/each}}
 </div>
-
-</div>
-
-
-<script>
-
-$( ".searchresult:first" ).addClass( "selected" );
-
-    var displayBoxIndex=0;
-    var Navigate = function(diff) 
-    {
-        displayBoxIndex += diff;
-
-        if (displayBoxIndex < 0) displayBoxIndex = 0;
-        var oBoxCollection = $(".searchresult:visible");
-        var oBoxCollectionAll = $(".searchresult");
-        if (displayBoxIndex >= oBoxCollection.length) displayBoxIndex = 0;
-        if (displayBoxIndex < 0) displayBoxIndex = oBoxCollection.length - 1;
-
-        var cssClass = "selected";
-        oBoxCollectionAll.removeClass(cssClass);
-
-        oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
-    }
-
-    function onInput(e)
-    {
-
-        // $(".searchresult:visible").first().addClass( "selected" );
-        displayBoxIndex=0;
-        Navigate(0);
-    }
-
-    $('#opsearch').on('input',onInput);
-
-    $('#opsearch').keydown(function(e) 
-    {
-
-        switch(e.which)
-        {
-            case 13:
-            var opname=$('.selected').data('opname');
-
-            ui.scene.addOp(opname);
-            ui.closeModal();
-
-            break;
-
-            case 8:
-                onInput();
-                return true;
-            break;
-
-
-            case 37: // left
-            break;
-
-            case 38: // up
-                $('.selected').removeClass('selected');
-                Navigate(-1);
-            break;
-
-            case 39: // right
-            break;
-
-            case 40: // down
-                $('.selected').removeClass('selected');
-                Navigate(1);
-            break;
-
-            default: return; // exit this handler for other keys
-        }
-        e.preventDefault(); // prevent the default action (scroll / move caret)
-    });
-
-</script>
-
-
 
 </script>

@@ -25,7 +25,7 @@ body
 
 div,td
 {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 a
@@ -164,11 +164,11 @@ textarea
     left:20%;
     top:10%;
     display: none;
-    padding:10px;
+    padding:15px;
     background-color: #444;
+    color:#ddd;
     z-index: 9999;
     min-width: 550px;
-    padding-bottom: 30px;
 
 
     user-select:text;
@@ -179,31 +179,31 @@ textarea
 
     .modalclose
     {   
-        right:0px;
+        right:15px;
         margin-top: -4px;
         position: absolute;
     }
 }
 
 
-    h2
-    {
-        color:#6c9fde;
-        font-family: arial;
-        font-weight: normal;
-        margin-top: 0px;
-        margin-bottom: 0px;
-    }
+h2
+{
+    color:#6c9fde;
+    font-family: arial;
+    font-weight: normal;
+    margin-top: 0px;
+    margin-bottom: 8px;
+}
 
-    input[type="text"]
-    {
-        background-color: #888;
-        border-radius: 4px;
-        padding:0px;
-        padding-left:4px;
-        border:1px solid #aaa;
-        margin-bottom: 3px;
-    }
+input[type="text"]
+{
+    background-color: #888;
+    border-radius: 4px;
+    padding:0px;
+    padding-left:4px;
+    border:1px solid #aaa;
+    margin-bottom: 3px;
+}
 
 
 .panel
@@ -535,7 +535,7 @@ border:1px solid transparent;
     {
         display: block;
         float:left;
-        max-width: 100px;
+        max-width: 130px;
         overflow:hidden;
     }
 }

@@ -19,7 +19,7 @@ body {
   float: left; }
 
 div, td {
-  font-size: 14px; }
+  font-size: 13px; }
 
 a {
   color: #ccc;
@@ -113,11 +113,11 @@ textarea {
   left: 20%;
   top: 10%;
   display: none;
-  padding: 10px;
+  padding: 15px;
   background-color: #444;
+  color: #ddd;
   z-index: 9999;
   min-width: 550px;
-  padding-bottom: 30px;
   user-select: text;
   -webkit-user-select: text;
   /* Chrome all / Safari all */
@@ -127,7 +127,7 @@ textarea {
   /* IE 10+ */ }
   #modalcontent
 .modalclose {
-    right: 0px;
+    right: 15px;
     margin-top: -4px;
     position: absolute; }
 
@@ -136,7 +136,7 @@ h2 {
   font-family: arial;
   font-weight: normal;
   margin-top: 0px;
-  margin-bottom: 0px; }
+  margin-bottom: 8px; }
 
 input[type="text"] {
   background-color: #888;
@@ -376,7 +376,7 @@ td {
 .filename {
   display: block;
   float: left;
-  max-width: 100px;
+  max-width: 130px;
   overflow: hidden; }
 
 /*!
