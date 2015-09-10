@@ -812,10 +812,7 @@ var line;
                                         }
                                     }
                                 }
-
                             }
-                            
-
                         }
 
                         { // change position of ops to paste
@@ -870,8 +867,6 @@ var line;
             e.preventDefault();
         }
 
-
-
         document.addEventListener('copy', function(e)
         {
             if($('#patch').is(":focus")) copy(e);
@@ -905,6 +900,7 @@ var line;
             switch(e.which)
             {
                 case 27:
+                    $('.tooltip').hide();
 
                     if(rendererSize==uiConfig.rendererSizes.length-1)
                     {
@@ -1028,8 +1024,6 @@ var line;
                 $('#glcanvas').attr('width',uiConfig.rendererSizes[rendererSize].w);
                 $('#glcanvas').attr('height',uiConfig.rendererSizes[rendererSize].h);
             }
-
-
         };
 
         this.getOpList=function()
@@ -1124,7 +1118,10 @@ var line;
                 });
 
         };
-
+        this.getCurrentProject=function()
+        {
+            return currentProject;
+        };
         this.setCurrentProject=function(proj)
         {
             console.log('set current project '+proj.name);
@@ -1198,7 +1195,6 @@ var line;
 
         };
 
-
         var viewBox={x:0,y:0,w:1100,h:1010};
         var mouseX=-1;
         var mouseY=-1;
@@ -1223,7 +1219,6 @@ var line;
                 $('#projectlist').html(getHandleBarHtml('projects',data));
             });
         };
-
 
         // ---------------------------------------------
 
@@ -1324,8 +1319,6 @@ var line;
             this.scene=_scene;
 
             $('#timing').append(getHandleBarHtml('timeline_controler'),{});
-
-
             $('#meta').append();
 
             this.updateProjectList();
@@ -1345,27 +1338,7 @@ var line;
                     $('#loggedin').hide();
                 });
 
-
-            // var html='<div><h2>Examples</h2>';
-            // for(var example in examples)
-            // {
-                
-            //     html+='<a href="#/example/'+example+'">'+examples[example].title+'</a><br/>';
-
-                
-            // }
-            // html+='</div>';
-            // $('#meta').append(html);
-
-            // ----
-
-
             r= Raphael("patch",0, 0);
-            // r.setAttribute('preserveAspectRatio', 'none');
-
-
-
-            // var zpd = new RaphaelZPD(r, { zoom: false, pan: true, drag: false });
             this.bindScene(self.scene);
 
             window.addEventListener( 'resize', this.setLayout, false );
@@ -1639,7 +1612,6 @@ var line;
         }
     };
     
-
     this.setSelectedOp=function(uiop)
     {
         if(uiop===null )
@@ -1658,7 +1630,6 @@ var line;
 
         uiop.setSelected(true);
     };
-
     
     var selectedOps=[];
 
@@ -1672,7 +1643,6 @@ var line;
                 return;
             }
         }
-
     };
 
     this.addSelectedOp=function(uiop)
@@ -1683,7 +1653,6 @@ var line;
             if(selectedOps[i]==uiop)return;
         }
         selectedOps.push(uiop);
-        
     };
 
     this.moveSelectedOpsFinished=function()
@@ -1694,7 +1663,6 @@ var line;
         }
     };
 
-
     this.moveSelectedOps=function(dx,dy,a,b,e)
     {
         for(var i in selectedOps)
@@ -1703,17 +1671,13 @@ var line;
         }
     };
 
-
     this.cycleRendererSize=function()
     {
         rendererSize++;
         if(rendererSize>uiConfig.rendererSizes.length-1)rendererSize=0;
 
-
         self.setLayout();
     };
-
-
 
     this.importDialog=function()
     {
