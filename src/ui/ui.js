@@ -128,8 +128,14 @@ var uiConfig=
     rendererSizes:[{w:640,h:360},{w:800,h:480},{w:0,h:0}]
 };
 
-function getPortColor(type)
+function getPortOpacity(port)
 {
+    if(port.direction==PORT_DIR_IN && (port.isAnimated() || port.isLinked() ))return 1.0;
+    return 0.6;
+}
+function getPortColor(port)
+{
+    var type=port.getType();
     if(type==OP_PORT_TYPE_VALUE) return '#ea6638';
     else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
     else if(type==OP_PORT_TYPE_OBJECT)  return '#26a92a';
@@ -143,7 +149,6 @@ function setStatusText(txt)
 {
     $('#statusbar').html('&nbsp;'+txt);
 }
-
 
 function Line(startX, startY, thisPaper)
 {
@@ -197,9 +202,8 @@ function UiLink(port1, port2)
 
             addCircle = r.circle(middlePosX,middlePosY, uiConfig.portSize*0.74).attr(
             {
-                fill: getPortColor(self.p1.thePort.getType() ),
+                fill: getPortColor(self.p1.thePort ),
                 "stroke-width": 0,
-                "fill-opacity": 1,
             });
 
             addCircle.hover(function ()
@@ -285,7 +289,7 @@ function UiLink(port1, port2)
     this.thisLine = r.path(this.getPath());
     this.thisLine.attr(
     {
-        "stroke": getPortColor(port1.thePort.type),
+        "stroke": getPortColor(port1.thePort),
         "stroke-width": 2
     });
 
@@ -294,7 +298,7 @@ function UiLink(port1, port2)
         this.attr({stroke:uiConfig.colorLinkHover});
     }, function ()
     {
-        this.attr({stroke:getPortColor(self.p1.thePort.type)});
+        this.attr({stroke:getPortColor(self.p1.thePort)});
     });
 
     this.remove=function()
@@ -588,6 +592,8 @@ var line;
             if(event.which==3)return;
             if(event.which==2)return;
 
+            if(this.thePort.direction==PORT_DIR_IN && (this.thePort.isLinked() || this.thePort.isAnimated()) )  return;
+
             if(!line)
             {
                 line = new Line(this.startx+uiConfig.portSize/2,this.starty+uiConfig.portHeight, r);
@@ -652,6 +658,37 @@ var line;
             self.isDragging=false;
         };
 
+
+
+        this.updatePortAttribs=function(port)
+        {
+
+
+            if(!port)
+            {
+                var i=0;
+                for(i in this.portsOut)
+                {
+                    this.updatePortAttribs(this.portsOut[i]);
+                }
+
+                for(i in this.portsIn)
+                {
+                    this.updatePortAttribs(this.portsIn[i]);
+                }
+            }
+            else
+            {
+                port.attr(
+                    {
+                        "fill": getPortColor(port.thePort),
+                        "fill-opacity": getPortOpacity(port.thePort),
+                    });
+            }
+
+        };
+
+
         this.addPort=function(_inout)
         {
             var yp=0;
@@ -692,8 +729,7 @@ var line;
             else thePort=self.op.portsIn[portIndex];
 
             port.thePort=thePort;
-            port.attr({fill:getPortColor(thePort.type)});
-            
+            this.updatePortAttribs();            
 
             port.hover(function ()
             {
@@ -725,7 +761,8 @@ var line;
                 port.attr(
                     {
 
-                        fill:getPortColor(this.thePort.type),
+                        fill:getPortColor(this.thePort),
+                        "fill-opacity": getPortOpacity(this.thePort ),
                         width:uiConfig.portSize,
                         height:uiConfig.portHeight,
                         x:xpos,
@@ -901,8 +938,6 @@ var line;
             {
                 case 27:
                     $('.tooltip').hide();
-
-
 
                     if(rendererSize==uiConfig.rendererSizes.length-1)
                     {
@@ -1395,12 +1430,13 @@ var line;
                     {
                         if(self.ops[i].portsIn[j].thePort==p1) uiPort1=self.ops[i].portsIn[j];
                         if(self.ops[i].portsIn[j].thePort==p2) uiPort2=self.ops[i].portsIn[j];
-                        
+                        self.ops[i].updatePortAttribs();
                     }
                     for(var jo in self.ops[i].portsOut)
                     {
                         if(self.ops[i].portsOut[jo].thePort==p1) uiPort1=self.ops[i].portsOut[jo];
                         if(self.ops[i].portsOut[jo].thePort==p2) uiPort2=self.ops[i].portsOut[jo];
+                        self.ops[i].updatePortAttribs();
                     }
                 }
         
