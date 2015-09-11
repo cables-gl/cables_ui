@@ -396,6 +396,16 @@ td {
   max-width: 130px;
   overflow: hidden; }
 
+::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+  background: #1a1a1a;
+  opacity: 0.5; }
+
+::-webkit-scrollbar-thumb {
+  background: #666;
+  -webkit-border-radius: 1px; }
+
 /*!
  *  Font Awesome 4.4.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
