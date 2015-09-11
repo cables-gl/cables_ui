@@ -22,6 +22,7 @@ body
 }
 
 .fleft { float:left; }
+.mainColor { color:$mainColor; }
 
 div,td
 {
@@ -123,6 +124,15 @@ td.head
 
 #timelineui
 {
+    padding-top: 5px;
+
+    input
+    {
+        margin-top: 6px !important;
+        margin-left: 10px !important;
+        // border:1px solid red;
+    }
+
     .timelinetime
     {
         display: block;
@@ -130,6 +140,7 @@ td.head
         padding:4px;
         width:70px;
         height:32px;
+        margin-top: -4px;
         margin-left: 10px;
         text-align: center;
     }

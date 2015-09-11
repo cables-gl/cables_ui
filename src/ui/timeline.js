@@ -591,7 +591,7 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         var time=ui.scene.timer.getTime();
         setCursor(time);
-        $('.timelinetime').html( '<b>'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
+        $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
         if(updateTimer===null) updateTimer=setInterval(self.updateTime,40);
     };
 

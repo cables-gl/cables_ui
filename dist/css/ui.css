@@ -18,6 +18,9 @@ body {
 .fleft {
   float: left; }
 
+.mainColor {
+  color: #6c9fde; }
+
 div, td {
   font-size: 13px; }
 
@@ -80,15 +83,22 @@ td.head {
   position: absolute;
   background-color: #222; }
 
-#timelineui
+#timelineui {
+  padding-top: 5px; }
+  #timelineui
+input {
+    margin-top: 6px !important;
+    margin-left: 10px !important; }
+  #timelineui
 .timelinetime {
-  display: block;
-  float: left;
-  padding: 4px;
-  width: 70px;
-  height: 32px;
-  margin-left: 10px;
-  text-align: center; }
+    display: block;
+    float: left;
+    padding: 4px;
+    width: 70px;
+    height: 32px;
+    margin-top: -4px;
+    margin-left: 10px;
+    text-align: center; }
 
 #modalbg {
   background-color: black;
