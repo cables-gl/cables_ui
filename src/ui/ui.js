@@ -902,9 +902,16 @@ var line;
                 case 27:
                     $('.tooltip').hide();
 
+
+
                     if(rendererSize==uiConfig.rendererSizes.length-1)
                     {
                         self.cycleRendererSize();
+                    }
+                    else
+                    if( $('#sidebar').is(':visible') )
+                    {
+                        $('#sidebar').animate({width:'toggle'},200);
                     }
                     else
                     if( $('#modalcontent').is(':visible') )
