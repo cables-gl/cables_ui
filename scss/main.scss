@@ -57,13 +57,12 @@ a
 {
     outline:none;
     position:absolute;
-    border-left:1px solid transparent;
-    border-right:1px solid transparent;
+    border:1px solid transparent;
 
     &:focus
     {
-        border-left:1px solid $mainColor;
-        border-right:1px solid $mainColor;
+        // border-left:1px solid $mainColor;
+        border:1px solid $mainColor;
     }
 
     svg
@@ -519,9 +518,7 @@ input[type=range]:focus {
 
 #timeline 
 {
-    // border:1px solid red;
-
-border:1px solid transparent;
+    border:1px solid transparent;
 
     &:focus
     {
