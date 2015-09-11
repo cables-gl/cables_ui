@@ -2,14 +2,22 @@ CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 CABLES.UI.OPSELECT=CABLES.UI.MODAL || {};
 
+CABLES.UI.OPSELECT.linkNewLink=null;
+CABLES.UI.OPSELECT.linkNewOpToPort=null;
+CABLES.UI.OPSELECT.linkNewOpToOp=null;
+CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
+// CABLES.UI.OPSELECT.mouseNewOPX=0;
 
-CABLES.UI.OPSELECT.showOpSelect=function(x,y,linkOp,linkPort,link)
+// CABLES.UI.OPSELECT.mouseNewOPY=0;
+
+CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 {
-    linkNewLink=link;
-    linkNewOpToPort=linkPort;
-    linkNewOpToOp=linkOp;
-    mouseNewOPX=ui.getCanvasCoords(x,y).x;
-    mouseNewOPY=ui.getCanvasCoords(x,y).y;
+    CABLES.UI.OPSELECT.linkNewLink=link;
+    CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
+    CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
+    // CABLES.UI.OPSELECT.mouseNewOPX=ui.getCanvasCoords(x,y).x;
+    // CABLES.UI.OPSELECT.mouseNewOPY=ui.getCanvasCoords(x,y).y;
+    CABLES.UI.OPSELECT.newOpPos=pos;
 
     var html = CABLES.UI.getHandleBarHtml('op_select',{ops: CABLES.UI.OPSELECT.getOpList() });
     CABLES.UI.MODAL.show(html);

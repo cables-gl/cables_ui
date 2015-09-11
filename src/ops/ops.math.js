@@ -200,8 +200,42 @@ Ops.Math.Sin = function()
 
 Ops.Math.Sin.prototype = new Op();
 
+// ---------------------------------------------------------------------------
+
+
+Ops.Math.SmoothStep = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='SmoothStep';
+    this.result=this.addOutPort(new Port(this,"result"));
+    this.number=this.addInPort(new Port(this,"number1"));
+    this.max=this.addInPort(new Port(this,"min"));
+    this.min=this.addInPort(new Port(this,"max"));
+
+    this.exec= function()
+    {
+        // todo make it work with negative min value ?
+        
+        var x = Math.max(0, Math.min(1, (self.number.val-self.min.val)/(self.max.val-self.min.val)));
+        self.result.val= x*x*(3 - 2*x);
+    };
+
+    this.number.onValueChanged=this.exec;
+    this.max.onValueChanged=this.exec;
+    this.min.onValueChanged=this.exec;
+
+    this.number.val=0.5;
+    this.min.val=0;
+    this.max.val=1;
+};
+
+Ops.Math.SmoothStep.prototype = new Op();
+
 
 // ---------------------------------------------------------------------------
+
 
 Ops.Math.Sum = function()
 {
@@ -470,4 +504,5 @@ Ops.Math.Compare.Equals = function()
 };
 
 Ops.Math.Compare.Equals.prototype = new Op();
+
 

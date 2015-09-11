@@ -222,7 +222,7 @@ function UiLink(port1, port2)
                     else
                     {
                         event=mouseEvent(event);
-                        CABLES.UI.OPSELECT.showOpSelect(event.offsetX,event.offsetY,null,null,self);
+                        CABLES.UI.OPSELECT.showOpSelect(ui.getCanvasCoordsMouse(event),null,null,self);
                     }
                 }
 
@@ -650,7 +650,7 @@ var line;
             else
             {
                 event=mouseEvent(event);
-                CABLES.UI.OPSELECT.showOpSelect(event.offsetX,event.offsetY,this.op,this.thePort);
+                CABLES.UI.OPSELECT.showOpSelect(ui.getCanvasCoordsMouse(event),this.op,this.thePort);
             }
 
             if(line && line.thisLine)line.thisLine.remove();
@@ -729,7 +729,7 @@ var line;
             else thePort=self.op.portsIn[portIndex];
 
             port.thePort=thePort;
-            this.updatePortAttribs();            
+            this.updatePortAttribs();
 
             port.hover(function ()
             {
@@ -805,11 +805,11 @@ var line;
         var watchPorts=[];
         var currentProject=null;
 
-        var mouseNewOPX=0;
-        var mouseNewOPY=0;
-        var linkNewOpTo=null;
-        var linkNewOpToPort=null;
-        var linkNewLink=null;
+        // var CABLES.UI.OPSELECT.mouseNewOPX=0;
+        // var CABLES.UI.OPSELECT.mouseNewOPY=0;
+        // var linkNewOpTo=null;
+        // var CABLES.UI.OPSELECT.linkNewOpToPort=null;
+        // var CABLES.UI.OPSELECT.linkNewLink=null;
         var currentOp=null;
         var spacePressed=false;
         var showTiming=true;
@@ -955,7 +955,7 @@ var line;
                     }
                     else
                     {
-                        CABLES.UI.OPSELECT.showOpSelect(20,20);
+                        CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
                     }
                     
                 break;
@@ -1460,7 +1460,7 @@ var line;
 
             scene.onAdd=function(op)
             {
-                var uiOp=new OpUi(mouseNewOPX, mouseNewOPY, 100, 31, op.name);
+                var uiOp=new OpUi(CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
                 uiOp.op=op;
                 self.ops.push(uiOp);
                 
@@ -1490,17 +1490,17 @@ var line;
                 else
                 {
                     op.uiAttribs={};
-                    op.uiAttribs.translate={x:mouseNewOPX,y:mouseNewOPY};
+                    op.uiAttribs.translate={x:CABLES.UI.OPSELECT.newOpPos.x,y:CABLES.UI.OPSELECT.newOpPos.y};
                 }
 
-                if(linkNewLink)
+                if(CABLES.UI.OPSELECT.linkNewLink)
                 {
                     console.log('add into link...');
 
-                    var op1=linkNewLink.p1.op;
-                    var port1=linkNewLink.p1.thePort;
-                    var op2=linkNewLink.p2.op;
-                    var port2=linkNewLink.p2.thePort;
+                    var op1=CABLES.UI.OPSELECT.linkNewLink.p1.op;
+                    var port1=CABLES.UI.OPSELECT.linkNewLink.p1.thePort;
+                    var op2=CABLES.UI.OPSELECT.linkNewLink.p2.op;
+                    var port2=CABLES.UI.OPSELECT.linkNewLink.p2.thePort;
 
                     for(var il in port1.links)
                     {
@@ -1533,26 +1533,27 @@ var line;
                     }
                 }
                 else
-                if(linkNewOpToPort)
+                if(CABLES.UI.OPSELECT.linkNewOpToPort)
                 {
-                    var foundPort=op.findFittingPort(linkNewOpToPort);
+                    var foundPort=op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
 
                     if(foundPort)
                     {
                         var link=ui.scene.link(
-                            linkNewOpToOp,
-                            linkNewOpToPort.getName(),
+                            CABLES.UI.OPSELECT.linkNewOpToOp,
+                            CABLES.UI.OPSELECT.linkNewOpToPort.getName(),
                             op,
                             foundPort.getName());
                     }
                 }
 
-                linkNewOpToOp=null;
-                linkNewLink=null;
-                linkNewOpToPort=null;
+                CABLES.UI.OPSELECT.linkNewOpToOp=null;
+                CABLES.UI.OPSELECT.linkNewLink=null;
+                CABLES.UI.OPSELECT.linkNewOpToPort=null;
 
-                mouseNewOPX=0;
-                mouseNewOPY=0;
+                CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
+                // CABLES.UI.OPSELECT.mouseNewOPX=0;
+                // CABLES.UI.OPSELECT.mouseNewOPY=0;
 
                 ui.showOpParams(op);
                 ui.setSelectedOp(null);
@@ -1929,46 +1930,46 @@ var line;
         return res;
     };
 
-    this.getCanvasCoords=function(mx,my)
-    {
-        if(!$('#patch svg')[0].attributes[6])
-        {
-            console.log('no viewbox attr!');
-            return {x:0,y:0};
-        }
+    // this.getCanvasCoords=function(mx,my)
+    // {
+    //     if(!$('#patch svg')[0].attributes[6])
+    //     {
+    //         console.log('no viewbox attr!');
+    //         return {x:0,y:0};
+    //     }
 
-        if($('#patch svg')[0].attributes[6].name!='viewBox') console.err('no viewbox attr');
-        var vb=$('#patch svg')[0].attributes[6].value.split(' '); // this will break
-        // var asp=$('#patch svg')[0].attributes[7].value; // this will break
+    //     if($('#patch svg')[0].attributes[6].name!='viewBox') console.err('no viewbox attr');
+    //     var vb=$('#patch svg')[0].attributes[6].value.split(' '); // this will break
+    //     // var asp=$('#patch svg')[0].attributes[7].value; // this will break
 
-        var w=$('#patch svg').width();
-        var h=$('#patch svg').height();
+    //     var w=$('#patch svg').width();
+    //     var h=$('#patch svg').height();
 
-        var mulx=1;
-        var muly=1;
+    //     var mulx=1;
+    //     var muly=1;
 
-        if(w>h) // FUCK THIS SHIT
-        {
-            mulx=parseInt(vb[2],10);
-            muly=h * parseInt(vb[2],10)/w;
-        }
-        else
-        {
-            mulx=w * parseInt(vb[3],10)/h;
-            muly=parseInt(vb[3],10);
-        }
+    //     if(w>h) // FUCK THIS SHIT
+    //     {
+    //         mulx=parseInt(vb[2],10);
+    //         muly=h * parseInt(vb[2],10)/w;
+    //     }
+    //     else
+    //     {
+    //         mulx=w * parseInt(vb[3],10)/h;
+    //         muly=parseInt(vb[3],10);
+    //     }
 
-        var fx = 0;
-        var fy = 0;
+    //     var fx = 0;
+    //     var fy = 0;
 
-        console.log('mulx ',mulx);
+    //     console.log('mulx ',mulx);
                 
-        if(mx!==0) fx = (( mx / w  ) * mulx ) + parseFloat(vb[0],10);
-        if(my!==0) fy = (( my / h ) * muly ) + parseFloat(vb[1],10);
+    //     if(mx!==0) fx = (( mx / w  ) * mulx ) + parseFloat(vb[0],10);
+    //     if(my!==0) fy = (( my / h ) * muly ) + parseFloat(vb[1],10);
 
-        var res={x:fx,y:fy};
-        return res;
-    };
+    //     var res={x:fx,y:fy};
+    //     return res;
+    // };
 
     this.addAssetOp=function(url,suffix,title)
     {
