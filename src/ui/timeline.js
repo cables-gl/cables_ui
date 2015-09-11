@@ -5,7 +5,6 @@ CABLES.TL.Key.prototype.isUI=true;
 CABLES.TL.Key.prototype.circle=null;
 CABLES.TL.Key.prototype.selected=false;
 
-
 CABLES.TL.MoveMode=0;
 CABLES.TL.TIMESCALE=100;
 CABLES.TL.VALUESCALE=100;
@@ -432,22 +431,14 @@ CABLES.TL.UI.TimeLineUI=function()
         if(maxv>0)
         {
             var s=180/(maxv+Math.abs(minv));
-            console.log('value scale ',s);
-
             self.setValueScale(s);
-            
-                    
             viewBox.y=-200;
             self.updateViewBox();
-
         }
     };
 
-
-
     $("#keymovemode").bind("click", toggleMoveMode);
     $("#keyscaleheight").bind("click", this.scaleHeight);
-    
 
     $(".timeLineInsert").bind("click", function (e)
     {
@@ -464,12 +455,10 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     });
 
-
     $("#timetimeline").bind("mouseup", function(e)
     {
         isScrollingTime=false;
     });
-
 
     $(document).bind("mousemove",function(e)
     {
@@ -498,14 +487,12 @@ CABLES.TL.UI.TimeLineUI=function()
             self.updateTime();
             $('#timeline').focus();
         }
-
     }
 
     $("#timetimeline").bind("mousemove", function(e)
     {
         e=mouseEvent(e);
         scrollTime(e);
-        
     });
 
     var panX=0,panY=0;
@@ -734,7 +721,6 @@ CABLES.TL.UI.TimeLineUI=function()
         updateKeyLine();
     };
 
-
     this.paste=function(e)
     {
         if(!enabled)return;
@@ -779,18 +765,13 @@ CABLES.TL.UI.TimeLineUI=function()
                 }
             }
             setStatusText("paste failed / not cables data format...");
-
         }
-
-
     };
 
     this.unselectKeys=function()
     {
         tl.unselectKeys();
     };
-
-
 };
 
 

@@ -280,6 +280,20 @@ input {
 .selected {
     background-color: #888; }
 
+input.medium {
+  font-size: 18px;
+  padding: 5px;
+  width: 100%;
+  border: none;
+  border-radius: 3px;
+  outline: none;
+  background-color: #1a1a1a;
+  color: #6c9fde; }
+  input.medium:focus {
+    background-color: #666;
+    outline: none;
+    color: #fff; }
+
 input[type=range] {
   -webkit-appearance: none; }
 

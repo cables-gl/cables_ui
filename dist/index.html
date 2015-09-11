@@ -128,9 +128,9 @@
 <script id="params_op_head" type="text/x-handlebars-template">
 
     <div class="">
-        <h2>{{op.name}}</h2>
-        [{{op.objName}}]
-        <input id="opname" oninput="ui.setSelectedOpTitle($('#opname').val());" value="{{op.name}}">
+        <input class="medium" id="opname" oninput="ui.setCurrentOpTitle($('#opname').val());" value="{{op.name}}">
+        <br/><br/>{{op.objName}}
+        
         <br/>
         <br/>
     </div>

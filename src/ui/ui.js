@@ -939,12 +939,8 @@ var line;
                 break;
 
                 case 68: // disable
-                    console.log('disable enable '+selectedOps.length);
-                    if(selectedOps.length>0)
-                        for(var j in selectedOps)
-                            selectedOps[j].setEnabled(!selectedOps[j].op.enabled);
-                        else
-                            if(selectedOp)selectedOp.setEnabled(!selectedOp.op.enabled);
+                    for(var j in selectedOps)
+                        selectedOps[j].setEnabled(!selectedOps[j].op.enabled);
                 break;
             }
         });
@@ -1048,7 +1044,6 @@ var line;
 
             router.addRoute('/project/:id').get(function(event, params)
             {
-
                 console.log('load project...');
                 CABLES.api.get('project/'+params.id,function(proj)
                 {
@@ -1177,7 +1172,6 @@ var line;
 
         function rubberBandMove(e)
         {
-                    
             if(e.which==1 && !spacePressed)
             {
                 if(!mouseRubberBandStartPos)
@@ -1239,12 +1233,10 @@ var line;
                     }
                     else
                     {
-                        // console.log('no');
                         self.removeSelectedOp(self.ops[i]);
                         self.ops[i].setSelected(false);
                     }
                 }
-
             }
         }
 
@@ -1433,6 +1425,7 @@ var line;
                 {
                     uiOp.addPort('in');
                 }
+
                 for(var i2 in op.portsOut)
                 {
                     uiOp.addPort('out');
@@ -1453,16 +1446,8 @@ var line;
                 }
                 else
                 {
-
-    // var bnds = r.getBoundingClientRect();
-    //         console.log('bnds',bnds);
-            
-    // var fx = (event.clientX - bnds.left)/bnds.width * rect.attrs.width
-    // var fy = (event.clientY - bnds.top)/bnds.height * rect.attrs.height
-
                     op.uiAttribs={};
                     op.uiAttribs.translate={x:mouseNewOPX,y:mouseNewOPY};
-
                 }
 
                 if(linkNewLink)
@@ -1540,11 +1525,11 @@ var line;
 
     };
 
-    this.setSelectedOpTitle=function(t)
+    this.setCurrentOpTitle=function(t)
     {
-        if(selectedOp)
+        if(currentOp)
         {
-            this.setOpTitle(selectedOp,t);
+            this.setOpTitle(currentOp,t);
         }
     };
     
@@ -1640,7 +1625,6 @@ var line;
         self.showOpParams(self.scene.getOpById(id));
     };
 
-
     this.showProjectParams=function(op)
     {
         $('#options').html('...');
@@ -1663,6 +1647,14 @@ var line;
                     }
                 }
                 if(!foundAnim) self.timeLine.setAnim(null);
+            }
+        }
+
+        for(var i in this.ops)
+        {
+            if(this.ops[i].op==op)
+            {
+                currentOp=this.ops[i];
             }
         }
 
@@ -1785,7 +1777,6 @@ var line;
             })(thePort);
         }
 
-
         for(var i in watchColorPicker)
         {
             var thePort=watchColorPicker[i];
@@ -1855,8 +1846,6 @@ var line;
 
             })(thePort);
         }
-
-
 
     };
 
@@ -1958,8 +1947,5 @@ var line;
         }
     };
 
-
 };
-
-
 
