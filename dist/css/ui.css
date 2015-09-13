@@ -414,6 +414,16 @@ td {
   background: #666;
   -webkit-border-radius: 1px; }
 
+#undev {
+  background-image: url(../img/undev.png);
+  position: absolute;
+  right: 10px;
+  bottom: 0px;
+  width: 68px;
+  height: 18px;
+  background-size: 100% 100%;
+  display: block; }
+
 /*!
  *  Font Awesome 4.4.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)

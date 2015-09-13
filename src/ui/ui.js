@@ -443,6 +443,17 @@ var line;
             self.isDragging=false;
         };
 
+        this.setPos=function(x,y)
+        {
+            self.oprect.getGroup().transform('t'+x+','+y);
+            self.op.uiAttribs.translate={x:x,y:y};
+
+            for(var j in self.links)
+            {
+                self.links[j].redraw();
+            }
+        };
+
         this.doMove = function (dx, dy,a,b,e)
         {
             if(e.which==3)return;
@@ -983,10 +994,19 @@ var line;
                     if(e.preventDefault) e.preventDefault();
                 break;
 
-                case 68: // disable
+                case 68: // d - disable
                     for(var j in selectedOps)
                         selectedOps[j].setEnabled(!selectedOps[j].op.enabled);
                 break;
+
+                case 65: // a - align
+                    self.alignSelectedOps();                        
+                break;
+
+                default:
+                    // console.log('key ',e.which);
+                break;
+
             }
         });
         
@@ -1577,6 +1597,23 @@ var line;
         if(currentOp)
         {
             this.setOpTitle(currentOp,t);
+        }
+    };
+
+
+    this.alignSelectedOps=function()
+    {
+        if(selectedOps.length>0)
+        {
+            var j=0;
+            var sum=0;
+            for(j in selectedOps)
+                sum+=selectedOps[j].op.uiAttribs.translate.x;
+
+            var avg=sum/selectedOps.length;
+
+            for(j in selectedOps)
+                selectedOps[j].setPos(avg,selectedOps[j].op.uiAttribs.translate.y);
         }
     };
     
