@@ -388,8 +388,23 @@ CABLES.TL.UI.TimeLineUI=function()
                 self.jumpKey(1);
             break;
 
+
+            case 37: // left
+                var num=1;
+                if(e.shiftKey)num=10;
+                var newTime=getFrame((self.getTime()-1.0/fps*num)+0.001);
+                ui.scene.timer.setTime(newTime/fps);
+            break;
+
+            case 39: // right
+                var num=1;
+                if(e.shiftKey)num=10;
+                var newTime=getFrame((self.getTime()+1.0/fps*num)+0.001);
+                ui.scene.timer.setTime(newTime/fps);
+            break;
+
             default:
-                // console.log('key ',e.which);
+                console.log('key ',e.which);
             break;
         }
     });
