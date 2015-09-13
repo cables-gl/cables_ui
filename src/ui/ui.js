@@ -90,6 +90,9 @@ document.addEventListener("DOMContentLoaded", function(event)
     //     return true;
     // };
 
+
+
+
     $(document).bind("contextmenu", function(e)
     {
         // if(e.stopPropagation) e.stopPropagation();
