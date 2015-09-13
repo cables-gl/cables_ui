@@ -14,7 +14,8 @@
                 </a>
             </td>
             <td>
-                <a class="button fa fa-trash-o"></a>&nbsp;
+                <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){ui.updateProjectFiles();});"></a>&nbsp;
+
                 <a class="button fa fa-retweet"></a>
             </td>
             </tr>
