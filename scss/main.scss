@@ -88,6 +88,15 @@ a
     position:absolute;
     top:0px;
     right:0px;
+    border:1px solid transparent;
+    outline: none;
+
+    &:focus
+    {
+        border:1px solid $mainColor;
+    }
+
+
 }
 
 #options

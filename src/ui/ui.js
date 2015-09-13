@@ -936,6 +936,8 @@ var line;
             if($('#timeline').is(":focus"))self.timeLine.cut(e);
         });
 
+        $('#glcanvas').attr('tabindex','3');
+
         $('#patch').keyup(function(e)
         {
             switch(e.which)
@@ -1020,8 +1022,8 @@ var line;
             var timelineUiHeight=40;
             var timedisplayheight=25;
 
-            var rendererWidth=uiConfig.rendererSizes[rendererSize].w;
-            var rendererHeight=uiConfig.rendererSizes[rendererSize].h;
+            var rendererWidth=uiConfig.rendererSizes[rendererSize].w+2;
+            var rendererHeight=uiConfig.rendererSizes[rendererSize].h+2;
 
             var patchHeight=window.innerHeight-statusBarHeight-menubarHeight;
             if(showTiming)patchHeight-=timingHeight;
@@ -1285,7 +1287,6 @@ var line;
                     var opY=rect.matrix.f;
                     var opW=rect.attr("width");
                     var opH=rect.attr("height");
-                            // console.log('w',  );
 
                     if(
                         (opX>start.x && opX<end.x && opY>start.y && opY<end.y) ||  // left upper corner
@@ -1302,6 +1303,9 @@ var line;
                         self.ops[i].setSelected(false);
                     }
                 }
+
+                if(selectedOps.length==0) setStatusText('');
+                    else setStatusText(selectedOps.length+" ops selected / [del] delete ops / [a] align ops");
             }
         }
 

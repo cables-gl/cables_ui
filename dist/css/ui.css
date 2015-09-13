@@ -61,7 +61,11 @@ svg {
   background-color: black;
   position: absolute;
   top: 0px;
-  right: 0px; }
+  right: 0px;
+  border: 1px solid transparent;
+  outline: none; }
+  #glcanvas:focus {
+    border: 1px solid #6c9fde; }
 
 #options {
   position: absolute;
