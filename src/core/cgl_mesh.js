@@ -56,7 +56,10 @@ CGL.Mesh=function(geom)
         shader.bind();
 
         cgl.gl.enableVertexAttribArray(shader.getAttrVertexPos());
+        
         if(bufVertexNormals!=-1) cgl.gl.enableVertexAttribArray(shader.getAttrVertexNormals());
+        else cgl.gl.disableVertexAttribArray(shader.getAttrVertexNormals());
+
         if(bufTexCoords!=-1) cgl.gl.enableVertexAttribArray(shader.getAttrTexCoords());
 
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);

@@ -332,9 +332,10 @@ function inputIncrement(v,dir)
     <table class="list">
         {{#each files}}
             <tr>
+            <!--
             <td>
-                <a class="button fa fa-info-circle"></a> 
-            </td>
+                <a class="button fa fa-info-circle" onclick="ui.showFileInfo*()"></a> 
+            </td>-->
             <td>
                 <a class="filename" onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
                 {{name}}
