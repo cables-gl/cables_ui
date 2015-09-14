@@ -579,10 +579,20 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     };
 
+    this.setSelectedKeysEasing=function(e)
+    {
+
+    };
+
     $("#keymovemode").bind("click", toggleMoveMode);
     $("#keyscaleheight").bind("click", this.scaleHeight);
     $("#keyscalewidth").bind("click", this.scaleWidth);
-    
+
+    $("#ease_linear").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_LINEAR); } );
+    $("#ease_absolute").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE); } );
+    $("#ease_smoothstep").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP); } );
+
+
     $("#centercursor").bind("click", this.centerCursor);
     $("#centercursor").bind("mousedown", function(){doCenter=true;} );
     $("#centercursor").bind("mouseup", function(){doCenter=false;} );
@@ -842,18 +852,23 @@ CABLES.TL.UI.TimeLineUI=function()
 
             if(!enabled)return;
             var count=0;
-            for(var i in anim.keys)
-            {
-                var rect=anim.keys[i].circle;
-                var opX=rect.attr("cx");
-                var opY=rect.attr("cy");
 
-                anim.keys[i].setSelected(false);
-                if(opX>start.x && opX<end.x && opY>start.y && opY<end.y )
+            for(var j in anims)
+            {
+                for(var i in anims[j].keys)
                 {
-                    anim.keys[i].setSelected(true);
-                    count++;
+                    var rect=anims[j].keys[i].circle;
+                    var opX=rect.attr("cx");
+                    var opY=rect.attr("cy");
+
+                    anims[j].keys[i].setSelected(false);
+                    if(opX>start.x && opX<end.x && opY>start.y && opY<end.y )
+                    {
+                        anims[j].keys[i].setSelected(true);
+                        count++;
+                    }
                 }
+
             }
 
             CABLES.UI.setStatusText(count+' keys selected');

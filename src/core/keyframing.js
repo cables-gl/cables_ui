@@ -2,12 +2,21 @@
 var CABLES=CABLES || {};
 CABLES.TL=CABLES.TL || {};
 
+CABLES.TL.EASING_LINEAR=0;
+CABLES.TL.EASING_ABSOLUTE=1;
+CABLES.TL.EASING_SMOOTHSTEP=2;
+
 CABLES.TL.Key=function(obj)
 {
     this.time=0.0;
     this.value=0.0;
     this.ui={};
     this.onChange=null;
+
+
+    var easing=0;
+
+
 
     this.setValue=function(v)
     {
@@ -42,6 +51,33 @@ CABLES.TL.Key=function(obj)
     {
         // this.initUI();
     }
+
+    this.easeLinear=function(perc)
+    {
+        return perc;
+    };
+
+
+    this.easeAbsolute=function(perc)
+    {
+        return 0;
+    };
+
+    this.easeSmoothStep=function(perc)
+    {
+        var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
+        perc= x*x*(3 - 2*x); // smoothstep
+    };
+
+    this.setEasing=function(e)
+    {
+        easing=e;
+        if(easing==CABLES.TL.EASING_LINEAR) this.ease=this.easeLinear;
+        if(easing==CABLES.TL.EASING_ABSOLUTE) this.ease=this.easeAbsolute;
+        if(easing==CABLES.TL.EASING_SMOOTHSTEP) this.ease=this.easeSmoothStep;
+    };
+
+    this.setEasing(CABLES.TL.EASING_LINEAR);
 
 };
 
@@ -119,8 +155,7 @@ CABLES.TL.Anim=function(cfg)
         if(!key2)return -1;
 
         var perc=(time-key1.time)/(key2.time-key1.time);
-        var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
-        perc= x*x*(3 - 2*x); // smoothstep
+        perc=key1.ease(perc);
 
         return parseFloat(key1.value)+ parseFloat((key2.value - key1.value)) * perc;
     };
