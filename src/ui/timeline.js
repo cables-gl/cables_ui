@@ -466,6 +466,9 @@ CABLES.TL.UI.TimeLineUI=function()
                 self.jumpKey(1);
             break;
 
+                case 65: // a 
+                    if(e.metaKey || e.ctrlKey) self.selectAllKeys();
+                break;
 
             case 37: // left
                 var num=1;
@@ -577,6 +580,14 @@ CABLES.TL.UI.TimeLineUI=function()
             viewBox.y=-maxv*CABLES.TL.VALUESCALE;
             self.updateViewBox();
         }
+    };
+
+    this.selectAllKeys=function()
+    {
+        for(var anii in anims)
+            for(var i in anims[anii].keys)
+                anims[anii].keys[i].setSelected(true);
+        updateKeyLine();
     };
 
     this.setSelectedKeysEasing=function(e)

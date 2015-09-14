@@ -1001,7 +1001,10 @@ var line;
                 break;
 
                 case 65: // a - align
-                    self.alignSelectedOps();                        
+                        console.log('e',e);
+
+                        if(e.metaKey || e.ctrlKey) self.selectAllOps();
+                            else self.alignSelectedOps();
                 break;
 
                 default:
@@ -1236,6 +1239,15 @@ var line;
                 "fill-opacity": 0
             });
         }
+
+        this.selectAllOps=function()
+        {
+            for(var i in self.ops)
+            {
+                self.addSelectedOp(self.ops[i]);
+                self.ops[i].setSelected(true);
+            }
+        };
 
         function rubberBandMove(e)
         {
