@@ -403,36 +403,33 @@ function inputIncrement(v,dir)
 
 <script id="timeline_controler" type="text/x-handlebars-template">
 
-<div id="timelineui">
+    <div id="timelineui">
 
-    <a class="button tt" data-tt="insert key" onclick="ui.toggleTiming();">timing</a>
+        <a class="button tt" data-tt="insert key" onclick="ui.toggleTiming();">timing</a>
 
-    <span class="timelinetime"></span>
-    <span class="button timeLineInsert fa fa-plus-square-o"></span>
+        <span class="timelinetime"></span>
+        <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
-    <a class="button fa fa-step-backward" onclick="ui.scene.timer.setTime(0);"></a>
-    <a class="button fa fa-backward" onclick="ui.scene.timer.setOffset(-2);"></a>
-    <a class="button fa fa-play " id="timelineplay" onclick="ui.timeLine.togglePlay()"></a>
-    <a class="button fa fa-forward" onclick="ui.scene.timer.setOffset(2);"></a>
+        <a class="button fa fa-step-backward" onclick="ui.scene.timer.setTime(0);"></a>
+        <a class="button fa fa-backward" onclick="ui.scene.timer.setOffset(-2);"></a>
+        <a class="button fa fa-play " id="timelineplay" onclick="ui.timeLine.togglePlay()"></a>
+        <a class="button fa fa-forward" onclick="ui.scene.timer.setOffset(2);"></a>
 
-    <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
-
-
-    <a id="keymovemode" class="button fa fa-arrows-h tt" data-tt="key move mode" ></a>
-    <a id="keyscaleheight" class="button fa fa-ellipsis-v tt" data-tt="scale value display"></a>
-    <a id="keyscalewidth" class="button fa fa-ellipsis-h tt" data-tt="show all keys"></a>
-
-    <a id="centercursor" class="button fa fa-i-cursor tt" data-tt="scroll to cursor"></a>
+        <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
 
 
-    <a id="ease_linear" class="button tt" data-tt="easing: linear">lin</a>
-    <a id="ease_absolute" class="button tt" data-tt="easing: absolute">abs</a>
-    <a id="ease_smoothstep" class="button tt" data-tt="easing: smoothstep">smo</a>
-    <a id="ease_smootherstep" class="button tt" data-tt="easing: smootherstep">smo2</a>
+        <a id="keymovemode" class="button fa fa-arrows-h tt" data-tt="key move mode" ></a>
+        <a id="keyscaleheight" class="button fa fa-ellipsis-v tt" data-tt="scale value display"></a>
+        <a id="keyscalewidth" class="button fa fa-ellipsis-h tt" data-tt="show all keys"></a>
 
+        <a id="centercursor" class="button fa fa-i-cursor tt" data-tt="scroll to cursor"></a>
 
+        <a id="ease_linear" class="button tt" data-tt="easing: linear">lin</a>
+        <a id="ease_absolute" class="button tt" data-tt="easing: absolute">abs</a>
+        <a id="ease_smoothstep" class="button tt" data-tt="easing: smoothstep">smo</a>
+        <a id="ease_smootherstep" class="button tt" data-tt="easing: smootherstep">smo2</a>
 
-</div>
+    </div>
 
     <div id="timelineTitle" ></div>
     <div id="timetimeline" ></div>

@@ -583,9 +583,9 @@ var Scene = function()
                     if(!port.anim)port.anim=new CABLES.TL.Anim();
                     for(var ani in objPort.anim.keys)
                     {
-                        var o={time:objPort.anim.keys[ani].t,value:objPort.anim.keys[ani].v};
+                        // var o={t:objPort.anim.keys[ani].t,value:objPort.anim.keys[ani].v};
                                 
-                        port.anim.keys.push(new CABLES.TL.Key(o) );
+                        port.anim.keys.push(new CABLES.TL.Key(objPort.anim.keys[ani]) );
                     }
                 }
             }

@@ -25,11 +25,19 @@ CABLES.TL.Key=function(obj)
     {
         if(obj)
         {
+            if(obj.e)
+                {
+                    this.setEasing(obj.e);
+                            console.log('YEAH ',obj.e);
+                            
+                }
+                else this.setEasing(CABLES.TL.EASING_LINEAR);
+
             if(obj.t)this.time=obj.t;
-                else this.time=obj.time;
+                else if(obj.time) this.time=obj.time;
     
             if(obj.v)this.value=obj.v;
-                else this.value=obj.value;
+                else if(obj.value) this.value=obj.value;
         }
         if(this.onChange!==null)this.onChange();
     };
@@ -39,10 +47,12 @@ CABLES.TL.Key=function(obj)
         var obj={};
         obj.t=this.time;
         obj.v=this.value;
+        obj.e=easing;
+        console.log('obj.e ',obj.e);
+                
         return obj;
     };
     
-    this.set(obj);
 
     if("isUI" in this)
     {
@@ -74,13 +84,23 @@ CABLES.TL.Key=function(obj)
     this.setEasing=function(e)
     {
         easing=e;
-        if(easing==CABLES.TL.EASING_LINEAR) this.ease=this.easeLinear;
+
+                console.log('set easing',e);
+                
+        
         if(easing==CABLES.TL.EASING_ABSOLUTE) this.ease=this.easeAbsolute;
-        if(easing==CABLES.TL.EASING_SMOOTHSTEP) this.ease=this.easeSmoothStep;
-        if(easing==CABLES.TL.EASING_SMOOTHERSTEP) this.ease=this.easeSmootherStep;
+        else if(easing==CABLES.TL.EASING_SMOOTHSTEP) this.ease=this.easeSmoothStep;
+        else if(easing==CABLES.TL.EASING_SMOOTHERSTEP) this.ease=this.easeSmootherStep;
+        else
+        {
+            easing=CABLES.TL.EASING_LINEAR;
+            this.ease=this.easeLinear;
+        }
     };
 
     this.setEasing(CABLES.TL.EASING_LINEAR);
+    this.set(obj);
+
 
 };
 

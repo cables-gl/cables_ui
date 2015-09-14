@@ -903,7 +903,7 @@ CABLES.TL.UI.TimeLineUI=function()
         var obj={keys:keys};
         var objStr=JSON.stringify(obj);
 
-        setStatusText(keys.length+' keys copied...');
+        CABLES.UI.setStatusText(keys.length+' keys copied...');
 
         e.clipboardData.setData('text/plain', objStr);
         e.preventDefault();
@@ -941,7 +941,7 @@ CABLES.TL.UI.TimeLineUI=function()
                         minTime=Math.min(minTime,json.keys[i].t);
                     }
         
-                    setStatusText(json.keys.length+' keys pasted...');
+                    CABLES.UI.setStatusText(json.keys.length+' keys pasted...');
 
                     for(i in json.keys)
                     {
@@ -960,7 +960,7 @@ CABLES.TL.UI.TimeLineUI=function()
                     return;
                 }
             }
-            setStatusText("paste failed / not cables data format...");
+            CABLES.UI.setStatusText("paste failed / not cables data format...");
         }
     };
 
