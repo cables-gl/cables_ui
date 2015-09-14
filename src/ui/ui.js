@@ -1062,6 +1062,7 @@ var line;
                 $('#timeline svg').hide();
                 $('#timing').css('height',timelineUiHeight);
             }
+            self.timeLine.updateViewBox();
 
             $('#options').css('left',window.innerWidth-rendererWidth);
             $('#options').css('top',rendererHeight);
