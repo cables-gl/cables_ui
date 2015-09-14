@@ -6,6 +6,7 @@ CABLES.TL.EASING_LINEAR=0;
 CABLES.TL.EASING_ABSOLUTE=1;
 CABLES.TL.EASING_SMOOTHSTEP=2;
 CABLES.TL.EASING_SMOOTHERSTEP=3;
+CABLES.TL.EASING_BEZIER=3;
 
 CABLES.TL.Key=function(obj)
 {
@@ -25,13 +26,7 @@ CABLES.TL.Key=function(obj)
     {
         if(obj)
         {
-            if(obj.e)
-                {
-                    this.setEasing(obj.e);
-                            console.log('YEAH ',obj.e);
-                            
-                }
-                else this.setEasing(CABLES.TL.EASING_LINEAR);
+            if(obj.e) this.setEasing(obj.e);
 
             if(obj.t)this.time=obj.t;
                 else if(obj.time) this.time=obj.time;
@@ -59,27 +54,51 @@ CABLES.TL.Key=function(obj)
         // this.initUI();
     }
 
-    this.easeLinear=function(perc)
+    function linear(perc,key1,key2)
     {
-        return perc;
+        return parseFloat(key1.value)+ parseFloat((key2.value - key1.value)) * perc;
+    }
+
+    this.easeLinear=function(perc,key2)
+    {
+        return linear(perc,this,key2);
     };
 
-    this.easeAbsolute=function(perc)
+    this.easeAbsolute=function(perc,key2)
     {
-        return 0;
+        return this.value;
     };
 
-    this.easeSmoothStep=function(perc)
+    this.easeSmoothStep=function(perc,key2)
     {
         var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
-        return x*x*(3 - 2*x); // smoothstep
+        perc= x*x*(3 - 2*x); // smoothstep
+        return linear(perc,this,key2);
     };
 
-    this.easeSmootherStep=function(perc)
+    this.easeSmootherStep=function(perc,key2)
     {
         var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
-        return x*x*x*(x*(x*6 - 15) + 10); // smootherstep
+        perc= x*x*x*(x*(x*6 - 15) + 10); // smootherstep
+        return linear(perc,this,key2);
     };
+
+
+    BezierB1=function(t) { return t*t*t; };
+    BezierB2=function(t) { return 3*t*t*(1-t); };
+    BezierB3=function(t) { return 3*t*(1-t)*(1-t); };
+    BezierB4=function(t) { return (1-t)*(1-t)*(1-t); };
+
+    this.easingBezier=function(percent,nextKey)
+    {
+        // val1x
+        // ,c2x,c2y,val2x,c3y,c2x,c4y
+        var pos = new coord();
+        pos.x = val1x*BezierB1(percent) + c2x*BezierB2(percent) + val2x*BezierB3(percent) + c2x*BezierB4(percent);
+        pos.y = val1y*BezierB1(percent) + c2y*BezierB2(percent) + val2y*BezierB3(percent) + c2y*BezierB4(percent);
+        return pos;
+    };
+
 
     this.setEasing=function(e)
     {
@@ -88,6 +107,7 @@ CABLES.TL.Key=function(obj)
         if(easing==CABLES.TL.EASING_ABSOLUTE) this.ease=this.easeAbsolute;
         else if(easing==CABLES.TL.EASING_SMOOTHSTEP) this.ease=this.easeSmoothStep;
         else if(easing==CABLES.TL.EASING_SMOOTHERSTEP) this.ease=this.easeSmootherStep;
+        else if(easing==CABLES.TL.EASING_BEZIER) this.ease=this.easeBezier;
         else
         {
             easing=CABLES.TL.EASING_LINEAR;
@@ -175,9 +195,7 @@ CABLES.TL.Anim=function(cfg)
         if(!key2)return -1;
 
         var perc=(time-key1.time)/(key2.time-key1.time);
-        perc=key1.ease(perc);
-
-        return parseFloat(key1.value)+ parseFloat((key2.value - key1.value)) * perc;
+        return key1.ease(perc,key2);
     };
 
     this.addKey=function(k)

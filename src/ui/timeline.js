@@ -423,15 +423,7 @@ CABLES.TL.UI.TimeLineUI=function()
             ui.scene.timer.setTime(time);
             self.updateTime();
 
-        console.log('time',time,this.getTimeLeft(),this.getTimeRight());
-        
-            if(time>this.getTimeRight() || time<this.getTimeLeft())
-            {
-                        console.log('centerCursor');
-                        
-                this.centerCursor();
-            }
-
+            if(time>this.getTimeRight() || time<this.getTimeLeft()) this.centerCursor();
         }
     };
 
@@ -614,6 +606,8 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#ease_absolute").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE); } );
     $("#ease_smoothstep").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP); } );
     $("#ease_smootherstep").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP); } );
+    $("#ease_bezier").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_BEZIER); } );
+    
 
 
     $("#centercursor").bind("click", this.centerCursor);
