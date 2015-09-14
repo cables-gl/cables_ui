@@ -118,6 +118,9 @@ CABLES.TL.Anim=function(cfg)
         if(!key2)return -1;
 
         var perc=(time-key1.time)/(key2.time-key1.time);
+        var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
+        perc= x*x*(3 - 2*x); // smoothstep
+
         return parseFloat(key1.value)+ parseFloat((key2.value - key1.value)) * perc;
     };
 

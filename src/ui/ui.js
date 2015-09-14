@@ -148,10 +148,6 @@ function getPortColor(port)
 var r;
 var selectedEndPort=null;
 
-function setStatusText(txt)
-{
-    $('#statusbar').html('&nbsp;'+txt);
-}
 
 function Line(startX, startY, thisPaper)
 {
@@ -211,7 +207,7 @@ function UiLink(port1, port2)
 
             addCircle.hover(function ()
             {
-                setStatusText('left click: insert op / right click: delete link');
+                CABLES.UI.setStatusText('left click: insert op / right click: delete link');
             });
 
             addCircle.drag(function(){},function(){},function(event)
@@ -628,12 +624,12 @@ var line;
                     );
             }
 
-            if(selectedEndPort===null) setStatusText('select a port to link...');
+            if(selectedEndPort===null) CABLES.UI.setStatusText('select a port to link...');
             else
             {
                 var txt=Link.canLinkText(selectedEndPort.thePort,this.thePort);
-                if(txt=='can link') setStatusText(  getPortDescription(selectedEndPort.thePort));
-                    else setStatusText( txt );
+                if(txt=='can link') CABLES.UI.setStatusText(  getPortDescription(selectedEndPort.thePort));
+                    else CABLES.UI.setStatusText( txt );
             }
 
             if(selectedEndPort!==null && Link.canLink(selectedEndPort.thePort,this.thePort))
@@ -764,7 +760,7 @@ var line;
 
                 });
 
-                setStatusText(getPortDescription(thePort));
+                CABLES.UI.setStatusText(getPortDescription(thePort));
 
             }, function ()
             {
@@ -785,7 +781,7 @@ var line;
                         'stroke-width':0,
                     });
 
-                setStatusText('');
+                CABLES.UI.setStatusText('');
             });
 
             port.drag(PortMove,PortDrag,PortUp);
@@ -807,6 +803,12 @@ var line;
 
 
 
+    CABLES.UI= CABLES.UI || {};
+
+    CABLES.UI.setStatusText=function(txt)
+    {
+        $('#statusbar').html('&nbsp;'+txt);
+    };
 
 
 
@@ -890,7 +892,7 @@ var line;
                             }
                         }
 
-                        setStatusText('pasted '+json.ops.length+' ops...');
+                        CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
                         self.setSelectedOp(null);
 
                         ui.scene.deSerialize(json);
@@ -898,7 +900,7 @@ var line;
                         return;
                     }
                 }
-                setStatusText("paste failed / not cables data format...");
+                CABLES.UI.setStatusText("paste failed / not cables data format...");
             }
         }
 
@@ -913,7 +915,7 @@ var line;
             var obj={"ops":ops};
             var objStr=JSON.stringify(obj);
 
-            setStatusText('copied '+selectedOps.length+' ops...');
+            CABLES.UI.setStatusText('copied '+selectedOps.length+' ops...');
 
             e.clipboardData.setData('text/plain', objStr);
             e.preventDefault();
@@ -1135,8 +1137,8 @@ var line;
                 },
                 function(r)
                 {
-                    if(r.success===true) setStatusText('project saved');
-                        else setStatusText('project NOT saved');
+                    if(r.success===true) CABLES.UI.setStatusText('project saved');
+                        else CABLES.UI.setStatusText('project NOT saved');
                 });
 
         };
@@ -1306,8 +1308,8 @@ var line;
                     }
                 }
 
-                if(selectedOps.length==0) setStatusText('');
-                    else setStatusText(selectedOps.length+" ops selected / [del] delete ops / [a] align ops");
+                if(selectedOps.length==0) CABLES.UI.setStatusText('');
+                    else CABLES.UI.setStatusText(selectedOps.length+" ops selected / [del] delete ops / [a] align ops");
             }
         }
 
@@ -2033,7 +2035,7 @@ var line;
         }
         else
         {
-            setStatusText('unknown file type');
+            CABLES.UI.setStatusText('unknown file type');
         }
     };
 
