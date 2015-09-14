@@ -3,6 +3,7 @@ CABLES.TL.UI=CABLES.TL.UI || {};
 
 CABLES.TL.Key.prototype.isUI=true;
 CABLES.TL.Key.prototype.circle=null;
+CABLES.TL.Key.prototype.circleBezier=null;
 CABLES.TL.Key.prototype.selected=false;
 
 CABLES.TL.MoveMode=0;
@@ -27,11 +28,21 @@ CABLES.TL.Key.prototype.updateCircle=function()
 {
     if(!ui.timeLine)return;
     if(!this.circle) this.initUI();
+    if(this.getEasing()==CABLES.TL.EASING_BEZIER && !this.circleBezier) this.initUI();
 
     if(isNaN(this.value)) this.value=0;
 
     var posx=this.time*CABLES.TL.TIMESCALE;
     var posy=this.value*-CABLES.TL.VALUESCALE;
+
+    if(this.getEasing()==CABLES.TL.EASING_BEZIER)
+    {
+        var posBezX=posx+this.bezTime*CABLES.TL.TIMESCALE;
+        var posBezY=posy+this.bezValue*CABLES.TL.VALUESCALE;
+
+        this.circleBezier.attr({ cx:posBezX, cy:posBezY  });
+    }
+
 
     if(isNaN(posx))
     {
@@ -56,13 +67,25 @@ CABLES.TL.Key.prototype.initUI=function()
     this.x=this.time*CABLES.TL.TIMESCALE;
     this.y=this.value*-CABLES.TL.VALUESCALE;
 
+    this.bezX=this.x+this.bezTime*CABLES.TL.TIMESCALE;
+    this.bezY=this.y+this.bezValue*CABLES.TL.VALUESCALE;
+
     var discattr = {fill: uiConfig.colorKey, stroke: "none"};
 
     if(this.circle)
     {
         this.circle.remove();
+        if(this.circleBezier)this.circleBezier.remove();
+        // if(this.circleBezierValue)this.circleBezierValue.remove();
         this.circle=false;
     }
+
+    if(this.getEasing()==CABLES.TL.EASING_BEZIER)
+    {
+        this.circleBezier=ui.timeLine.getPaper().circle(this.bezX, this.bezY, 5);
+        this.circleBezier.attr({ fill:"#f00","fill-opacity":0.7  });
+    }
+
     this.circle=ui.timeLine.getPaper().circle(this.x, this.y, 10);
     this.circle.attr(discattr);
     // ui.timeLine.tempCircles.push(this.circle);
@@ -84,18 +107,21 @@ CABLES.TL.Key.prototype.initUI=function()
 
         if(CABLES.TL.MoveMode===0)
         {
-            self.circle.attr({ cx:newPos.x });
+            // self.circle.attr({ cx:newPos.x });
             self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:self.value});
+            self.updateCircle();
         }
         if(CABLES.TL.MoveMode==1)
         {
-            self.circle.attr({  cy:newPos.y });
+            // self.circle.attr({  cy:newPos.y });
             self.set({value:newPos.y/-CABLES.TL.VALUESCALE,time:self.time});
+            self.updateCircle();
         }
         if(CABLES.TL.MoveMode==2)
         {
-            self.circle.attr({ cx:newPos.x, cy:newPos.y });
+            // self.circle.attr({ cx:newPos.x, cy:newPos.y });
             self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-CABLES.TL.VALUESCALE});
+            self.updateCircle();
         }
     }
 
@@ -105,8 +131,46 @@ CABLES.TL.Key.prototype.initUI=function()
         self.x=-1;
         self.y=-1;
     }
-
     this.circle.drag(move,up);
+
+
+
+    function moveBezier(dx,dy,a,b,e)
+    {
+        self.isDragging=true;
+        var newPos=ui.timeLine.getCanvasCoordsMouse(e);
+        // if(newPos.x<0)newPos.x=0;
+
+        var t=self.time*CABLES.TL.TIMESCALE;
+        var v=self.value/CABLES.TL.VALUESCALE;
+
+        var newTime=ui.timeLine.getTimeFromPaper(newPos.x);
+        var newValue=newPos.y/CABLES.TL.VALUESCALE;
+
+        self.setBezierControl(newTime-t,newValue+v);
+
+        console.log('self.bezTime',self.bezTime);
+        // console.log('    .bezTime',t);
+        // console.log('    .bezTime',newTime);
+        console.log('    .bezTime',newValue);
+        console.log('    .bezTime',v);
+
+        // console.log('self.bezTime',t);
+        // self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-CABLES.TL.VALUESCALE});
+
+        self.updateCircle();
+
+    }
+
+    function upBezier()
+    {
+        self.isDragging=false;
+        self.x=-1;
+        self.y=-1;
+    }
+
+    if(self.circleBezier) self.circleBezier.drag(moveBezier,upBezier);
+
 };
 
 CABLES.TL.Anim.prototype.unselectKeys=function()

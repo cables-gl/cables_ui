@@ -6,7 +6,7 @@ CABLES.TL.EASING_LINEAR=0;
 CABLES.TL.EASING_ABSOLUTE=1;
 CABLES.TL.EASING_SMOOTHSTEP=2;
 CABLES.TL.EASING_SMOOTHERSTEP=3;
-CABLES.TL.EASING_BEZIER=3;
+CABLES.TL.EASING_BEZIER=4;
 
 CABLES.TL.Key=function(obj)
 {
@@ -15,6 +15,15 @@ CABLES.TL.Key=function(obj)
     this.ui={};
     this.onChange=null;
     var easing=0;
+    this.bezTime=0.5;
+    this.bezValue=0;
+
+    this.setBezierControl=function(t,v)
+    {
+        this.bezTime=t;
+        this.bezValue=v;
+        if(this.onChange!==null)this.onChange();
+    };
 
     this.setValue=function(v)
     {
@@ -83,22 +92,39 @@ CABLES.TL.Key=function(obj)
         return linear(perc,this,key2);
     };
 
-
     BezierB1=function(t) { return t*t*t; };
     BezierB2=function(t) { return 3*t*t*(1-t); };
     BezierB3=function(t) { return 3*t*(1-t)*(1-t); };
     BezierB4=function(t) { return (1-t)*(1-t)*(1-t); };
 
-    this.easingBezier=function(percent,nextKey)
+    this.easeBezier=function(percent,nextKey)
     {
-        // val1x
-        // ,c2x,c2y,val2x,c3y,c2x,c4y
-        var pos = new coord();
-        pos.x = val1x*BezierB1(percent) + c2x*BezierB2(percent) + val2x*BezierB3(percent) + c2x*BezierB4(percent);
-        pos.y = val1y*BezierB1(percent) + c2y*BezierB2(percent) + val2y*BezierB3(percent) + c2y*BezierB4(percent);
-        return pos;
+
+        var val1x=nextKey.time;
+        var c1x=nextKey.time;
+
+        var val1y=nextKey.value;
+        var c1y=nextKey.value;
+
+
+
+        var val2x=this.time;
+        var c2x=this.time+this.bezTime;
+
+        var val2y=this.value;
+        var c2y=this.value-this.bezValue;
+
+        // var pos = new coord();
+        var rx = val1x*BezierB1(percent) + c1x*BezierB2(percent) + val2x*BezierB3(percent) + c2x*BezierB4(percent);
+        var r  = val1y*BezierB1(percent) + c1y*BezierB2(percent) + val2y*BezierB3(percent) + c2y*BezierB4(percent);
+
+        return rx/r;
     };
 
+    this.getEasing=function()
+    {
+        return easing;
+    };
 
     this.setEasing=function(e)
     {
@@ -117,7 +143,6 @@ CABLES.TL.Key=function(obj)
 
     this.setEasing(CABLES.TL.EASING_LINEAR);
     this.set(obj);
-
 
 };
 
