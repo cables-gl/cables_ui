@@ -597,10 +597,9 @@ CABLES.TL.UI.TimeLineUI=function()
     $('#timeline').bind("mouseup", function (event)
     {
         rubberBandHide();
-        for(var i in anim.keys)
-        {
-            anim.keys[i].isDragging=false;
-        }
+        for(var j in anims)
+            for(var i in anims[j].keys)
+                anims[j].keys[i].isDragging=false;
     });
 
     $("#timetimeline").bind("mouseup", function(e)
@@ -656,6 +655,18 @@ CABLES.TL.UI.TimeLineUI=function()
         e.preventDefault();
     });
 
+    function isDragging()
+    {
+        for(var j in anims)
+            for(var i in anims[j].keys)
+                if(anims[j].keys[i].isDragging===true)
+                    return true;
+
+        return false;
+    }
+
+
+
     var panX=0,panY=0;
     $("#timeline").bind("mousemove", function(e)
     {
@@ -675,9 +686,7 @@ CABLES.TL.UI.TimeLineUI=function()
         panX=self.getCanvasCoordsMouse(e).x;
         panY=self.getCanvasCoordsMouse(e).y;
 
-        for(var i in anim.keys)
-            if(anim.keys[i].isDragging===true)
-                return;
+        if(isDragging())return;
 
         rubberBandMove(e);
 
