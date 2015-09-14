@@ -544,11 +544,18 @@ CABLES.TL.UI.TimeLineUI=function()
             $('#timeline').focus();
         }
     }
-
-    $("#timetimeline").bind("mousemove", function(e)
+    $("#timelineui").bind("mousedown", function(e)
     {
+        $('#timeline').focus();
+        e.preventDefault();
+    });
+
+    $("#timetimeline").bind("mousedown", function(e)
+    {
+        $('#timeline').focus();
         e=mouseEvent(e);
         scrollTime(e);
+        e.preventDefault();
     });
 
     var panX=0,panY=0;
