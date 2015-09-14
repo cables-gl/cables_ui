@@ -164,9 +164,12 @@ CABLES.TL.UI.TimeLineUI=function()
     var isScrollingTime=false;
     var enabled=false;
     var doCenter=false;
-    // this.tempCircles=[];
 
-    // var ki=anim.getKeyIndex(-1.0);
+    var rubberBandStartPos=null;
+    var rubberBandPos=null;
+    var mouseRubberBandStartPos=null;
+    var mouseRubberBandPos=null;
+    var rubberBandRect=null;
 
     var cursorLine = paper.path("M 0 0 L 10 10");
     cursorLine.attr({stroke: "#6c9fde", "stroke-width": 2});
@@ -465,9 +468,17 @@ CABLES.TL.UI.TimeLineUI=function()
         
         if(maxv>0)
         {
-            var s=180/(maxv+Math.abs(minv));
-            self.setValueScale(s);
-            viewBox.y=-200;
+            console.log('maxv',maxv);
+            console.log('maxv',minv);
+            console.log('maxv',CABLES.TL.VALUESCALE);
+
+            var s=Math.abs(maxv)+Math.abs(minv);
+            // var s=180/(maxv+Math.abs(minv));
+            self.setValueScale($('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
+
+            console.log('scale after:',CABLES.TL.VALUESCALE);
+
+            viewBox.y=-maxv*CABLES.TL.VALUESCALE;
             self.updateViewBox();
         }
     };
@@ -635,12 +646,11 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.updateTime=function()
     {
-        if(doCenter)self.centerCursor();
         var time=ui.scene.timer.getTime();
         setCursor(time);
+        if(doCenter)self.centerCursor();
         $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
-        if(updateTimer===null) updateTimer=setInterval(self.updateTime,40);
-
+        if(updateTimer===null) updateTimer=setInterval(self.updateTime,30);
     };
 
     this.togglePlay=function(patch)
@@ -661,18 +671,7 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     };
 
-    // updateKeyLine();
-    // this.updateViewBox();
-    // updateTimeDisplay();
-
-
     // ------------------
-
-    var rubberBandStartPos=null;
-    var rubberBandPos=null;
-    var mouseRubberBandStartPos=null;
-    var mouseRubberBandPos=null;
-    var rubberBandRect=null;
 
     function rubberBandHide()
     {
