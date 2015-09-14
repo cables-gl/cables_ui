@@ -426,15 +426,15 @@ Ops.Gl.Meshes.Plotter = function()
 
     this.render.onTriggered=function()
     {
-        gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),self.buffer.itemSize, gl.FLOAT, false, 0, 0);
+        cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),self.buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
         cgl.getShader().bind();
-        gl.bindBuffer(gl.ARRAY_BUFFER, self.buffer);
-        gl.drawArrays(gl.LINE_STRIP, 0, self.buffer.numItems);
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, self.buffer);
+        cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, self.buffer.numItems);
 
         self.trigger.call();
     };
 
-    this.buffer = gl.createBuffer();
+    this.buffer = cgl.gl.createBuffer();
     
     var num=50;
     this.vertices = [];
@@ -447,10 +447,10 @@ Ops.Gl.Meshes.Plotter = function()
 
     function bufferData()
     {
-        gl.lineWidth(4);
+        cgl.gl.lineWidth(4);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, self.buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(self.vertices), gl.STATIC_DRAW);
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, self.buffer);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(self.vertices), cgl.gl.STATIC_DRAW);
         self.buffer.itemSize = 3;
         self.buffer.numItems = num;
     }

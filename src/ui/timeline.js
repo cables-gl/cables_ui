@@ -131,12 +131,13 @@ CABLES.TL.Key.prototype.initUI=function()
     {
         if(!this.circleBezierOut)
             this.circleBezierOut=ui.timeLine.getPaper().circle(this.bezX, this.bezY, 7);
+        
+        this.circleBezierOut.attr({ fill:"#fff","fill-opacity":0.7  });
 
         if(!this.circleBezierIn)
             this.circleBezierIn=ui.timeLine.getPaper().circle(this.bezXIn, this.bezYIn, 7);
-
-        this.circleBezierOut.attr({ fill:"#fff","fill-opacity":0.7  });
-        this.circleBezierIn.attr({ fill:"#fff","fill-opacity":0.7  });
+        
+        this.circleBezierIn.attr({ fill:"#f00","fill-opacity":0.7  });
 
         if(!this.bezierControlLineOut)
             this.bezierControlLineOut = ui.timeLine.getPaper().path("M 0 0 ");
@@ -197,7 +198,7 @@ CABLES.TL.Key.prototype.initUI=function()
         var t=self.time;
         var v=self.value;
         var newValue=newPos.y/CABLES.TL.VALUESCALE;
-
+        
         self.setBezierControlOut(newTime-t,newValue+v);
         self.updateCircle();
     }
@@ -212,7 +213,6 @@ CABLES.TL.Key.prototype.initUI=function()
     if(self.circleBezierOut) self.circleBezierOut.drag(moveBezierOut,upBezierOut);
 
     // --------
-
 
     function moveBezierIn(dx,dy,a,b,e)
     {
@@ -235,7 +235,6 @@ CABLES.TL.Key.prototype.initUI=function()
     }
 
     if(self.circleBezierIn) self.circleBezierIn.drag(moveBezierIn,upBezierIn);
-
 
 };
 

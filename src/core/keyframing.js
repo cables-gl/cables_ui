@@ -19,11 +19,15 @@ CABLES.TL.Key=function(obj)
     this.bezValue=0;
     this.bezTimeIn=-0.5;
     this.bezValueIn=0;
+    var bezierAnim=null;
+    var updateBezier=false;
+    var self=this;
 
     this.setBezierControlOut=function(t,v)
     {
         this.bezTime=t;
         this.bezValue=v;
+        updateBezier=true;
         if(this.onChange!==null)this.onChange();
     };
 
@@ -31,12 +35,14 @@ CABLES.TL.Key=function(obj)
     {
         this.bezTimeIn=t;
         this.bezValueIn=v;
+        updateBezier=true;
         if(this.onChange!==null)this.onChange();
     };
 
     this.setValue=function(v)
     {
         this.value=v;
+        updateBezier=true;
         if(this.onChange!==null)this.onChange();
     };
 
@@ -52,6 +58,7 @@ CABLES.TL.Key=function(obj)
                 this.bezValue=obj.b[1];
                 this.bezTimeIn=obj.b[2];
                 this.bezValueIn=obj.b[3];
+                updateBezier=true;
             }
 
             if(obj.t)this.time=obj.t;
@@ -61,6 +68,7 @@ CABLES.TL.Key=function(obj)
                 else if(obj.value) this.value=obj.value;
         }
         if(this.onChange!==null)this.onChange();
+
     };
 
     this.getSerialized=function()
@@ -114,25 +122,66 @@ CABLES.TL.Key=function(obj)
     BezierB2=function(t) { return 3*t*t*(1-t); };
     BezierB3=function(t) { return 3*t*(1-t)*(1-t); };
     BezierB4=function(t) { return (1-t)*(1-t)*(1-t); };
+    Bezier =function(percent,nextKey)
+    {
+        var val1x=nextKey.time;
+        var val1y=nextKey.value;
+
+        var c1x=nextKey.time+nextKey.bezTimeIn;
+        var c1y=nextKey.value-nextKey.bezValueIn;
+
+        var val2x=self.time;
+        var val2y=self.value;
+
+        var c2x=self.time+self.bezTime;
+        var c2y=self.value-self.bezValue;
+
+        var x = val1x*BezierB1(percent) + c1x*BezierB2(percent) + val2x*BezierB3(percent) + c2x*BezierB4(percent);
+        var y = val1y*BezierB1(percent) + c1y*BezierB2(percent) + val2y*BezierB3(percent) + c2y*BezierB4(percent);
+
+        return {x:x,y:y};
+    };
+
+
 
     this.easeBezier=function(percent,nextKey)
     {
-        var val1x=nextKey.time;
-        var c1x=nextKey.time;
+        if(!bezierAnim)
+        {
+            bezierAnim=new CABLES.TL.Anim();
+            updateBezier=true;
+        }
 
-        var val1y=nextKey.value;
-        var c1y=nextKey.value;
+        var timeSpan=nextKey.time-self.time;
+        // if(updateBezier)
+        {
+            bezierAnim.clear();
+            // console.log('updateBezier');
 
-        var val2x=this.time;
-        var c2x=this.time+this.bezTime;
+            var steps=20;
+            var is=1/steps;
+            
+            for(var i=0;i<steps;i++)
+            {
+                var v=Bezier(i*is,nextKey);
 
-        var val2y=this.value;
-        var c2y=this.value-this.bezValue;
+                // console.log('v',v);
 
-        var rx = val1x*BezierB1(percent) + c1x*BezierB2(percent) + val2x*BezierB3(percent) + c2x*BezierB4(percent);
-        var r  = val1y*BezierB1(percent) + c1y*BezierB2(percent) + val2y*BezierB3(percent) + c2y*BezierB4(percent);
+                var time=self.time+timeSpan/steps*i;
+        
 
-        return rx/r;
+        // console.log('v.x');
+        
+                bezierAnim.setValue(v.x,v.y);
+                        
+                
+                // console.log('key ',time,v.y);
+            }
+            updateBezier=false;
+        }
+
+
+        return bezierAnim.getValue(self.time+percent*timeSpan);
     };
 
     this.getEasing=function()
@@ -147,7 +196,11 @@ CABLES.TL.Key=function(obj)
         if(easing==CABLES.TL.EASING_ABSOLUTE) this.ease=this.easeAbsolute;
         else if(easing==CABLES.TL.EASING_SMOOTHSTEP) this.ease=this.easeSmoothStep;
         else if(easing==CABLES.TL.EASING_SMOOTHERSTEP) this.ease=this.easeSmootherStep;
-        else if(easing==CABLES.TL.EASING_BEZIER) this.ease=this.easeBezier;
+        else if(easing==CABLES.TL.EASING_BEZIER)
+            {
+                updateBezier=true;
+                this.ease=this.easeBezier;
+            }
         else
         {
             easing=CABLES.TL.EASING_LINEAR;
@@ -165,6 +218,11 @@ CABLES.TL.Anim=function(cfg)
     this.keys=[];
     this.onChange=null;
     this.stayInTimeline=false;
+
+    this.clear=function()
+    {
+        this.keys.length=0;
+    };
 
     this.sortKeys=function()
     {
