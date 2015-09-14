@@ -318,7 +318,10 @@ function UiLink(port1, port2)
 
 function getPortDescription(thePort)
 {
-    return thePort.getName()+' ('+thePort.val+')'+' ['+thePort.getTypeString()+']';
+    var str=thePort.getName();
+    str+=' ('+thePort.val+')'+' ['+thePort.getTypeString()+']';
+    if(thePort.isLinked() )str+=' press right mouse button to unlink port';
+    return str;
 }
 
 var links=[];
@@ -761,8 +764,6 @@ var line;
 
                 });
 
-                var statusText='Port: ';
-                
                 setStatusText(getPortDescription(thePort));
 
             }, function ()
