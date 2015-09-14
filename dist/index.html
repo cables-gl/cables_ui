@@ -277,7 +277,8 @@ function inputIncrement(v,dir)
                         {{#compare port.uiAttribs.display '==' 'range' }}
 
                             <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
-                            <input type ="range" class="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:135px;"/>
+                            <a class="graphbutton fa fa-line-chart" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
+                            <input type ="range" class="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:90px;"/>
                             <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
 
                         {{/compare}}

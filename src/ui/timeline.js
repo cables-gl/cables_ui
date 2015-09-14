@@ -207,6 +207,7 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         if(newanim===null)return;
 
+        var i=0;
         newanim.onChange=null;
 
         if(!newanim.keyLine)
@@ -214,7 +215,7 @@ CABLES.TL.UI.TimeLineUI=function()
             newanim.keyLine = paper.path("M 0 0 L 1 1");
         }
 
-        for(var i in anims)
+        for(i in anims)
         {
             anims[i].keyLine.attr({ stroke: "#aaa", "stroke-width": 1 });
         }
@@ -222,18 +223,15 @@ CABLES.TL.UI.TimeLineUI=function()
         var newAnims=[];
         newAnims.push(newanim);
         newanim.keyLine.show();
-        
+
         found=false;
-        for(var i in anims)
+        for(i in anims)
         {
             if(anims[i])
             if(!anims[i].stayInTimeline && anims[i]!=newanim)
             {
-                console.log('hide!!!');
-                        
                 anims=anims.slice(i,1);
                 anims[i].keyLine.hide();
-                // newAnims.push(anims[i]);
                 found=true;
             }
             else
@@ -243,10 +241,9 @@ CABLES.TL.UI.TimeLineUI=function()
             }
         }
 
-
         anims=newAnims;
 
-        for(var i in anims)
+        for(i in anims)
         {
             if(anims[i]==newanim)
             {
@@ -294,7 +291,6 @@ CABLES.TL.UI.TimeLineUI=function()
         }
 
         if(anim.onChange===null) anim.onChange=updateKeyLine;
-        console.log('anim ',anim.keys.length);
         
     };
 
