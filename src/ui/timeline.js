@@ -480,14 +480,31 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.centerCursor=function()
     {
-
         var start=cursorTime*CABLES.TL.TIMESCALE;
         var width=viewBox.w;
         var left=start-width/2;
 
         viewBox.x=left;
         self.updateViewBox();
+        updateTimeDisplay();
+    };
 
+    this.scaleWidth=function()
+    {
+        var maxt=-99999;
+        var mint=99999999;
+        for(var i in anim.keys)
+        {
+            maxt=Math.max(maxt,anim.keys[i].time);
+            mint=Math.min(mint,anim.keys[i].time);
+        }
+
+        CABLES.TL.TIMESCALE=viewBox.w/(maxt-mint);
+        viewBox.x=mint*CABLES.TL.TIMESCALE;
+        console.log('CABLES.TL.TIMESCALE ',CABLES.TL.TIMESCALE);
+        
+        self.updateViewBox();
+        updateTimeDisplay();
 
     };
 
@@ -513,6 +530,8 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $("#keymovemode").bind("click", toggleMoveMode);
     $("#keyscaleheight").bind("click", this.scaleHeight);
+    $("#keyscalewidth").bind("click", this.scaleWidth);
+    
     $("#centercursor").bind("click", this.centerCursor);
     $("#centercursor").bind("mousedown", function(){doCenter=true;} );
     $("#centercursor").bind("mouseup", function(){doCenter=false;} );
@@ -658,8 +677,6 @@ CABLES.TL.UI.TimeLineUI=function()
     this.setTimeScale=function(v)
     {
         CABLES.TL.TIMESCALE=v;
-        
-        // updateTimeDisplay();
         this.centerCursor();
         updateKeyLine();
         $('#timeline').focus();
