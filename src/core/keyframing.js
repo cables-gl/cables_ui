@@ -5,6 +5,7 @@ CABLES.TL=CABLES.TL || {};
 CABLES.TL.EASING_LINEAR=0;
 CABLES.TL.EASING_ABSOLUTE=1;
 CABLES.TL.EASING_SMOOTHSTEP=2;
+CABLES.TL.EASING_SMOOTHERSTEP=3;
 
 CABLES.TL.Key=function(obj)
 {
@@ -12,11 +13,7 @@ CABLES.TL.Key=function(obj)
     this.value=0.0;
     this.ui={};
     this.onChange=null;
-
-
     var easing=0;
-
-
 
     this.setValue=function(v)
     {
@@ -57,7 +54,6 @@ CABLES.TL.Key=function(obj)
         return perc;
     };
 
-
     this.easeAbsolute=function(perc)
     {
         return 0;
@@ -66,7 +62,13 @@ CABLES.TL.Key=function(obj)
     this.easeSmoothStep=function(perc)
     {
         var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
-        perc= x*x*(3 - 2*x); // smoothstep
+        return x*x*(3 - 2*x); // smoothstep
+    };
+
+    this.easeSmootherStep=function(perc)
+    {
+        var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
+        return x*x*x*(x*(x*6 - 15) + 10); // smootherstep
     };
 
     this.setEasing=function(e)
@@ -75,6 +77,7 @@ CABLES.TL.Key=function(obj)
         if(easing==CABLES.TL.EASING_LINEAR) this.ease=this.easeLinear;
         if(easing==CABLES.TL.EASING_ABSOLUTE) this.ease=this.easeAbsolute;
         if(easing==CABLES.TL.EASING_SMOOTHSTEP) this.ease=this.easeSmoothStep;
+        if(easing==CABLES.TL.EASING_SMOOTHERSTEP) this.ease=this.easeSmootherStep;
     };
 
     this.setEasing(CABLES.TL.EASING_LINEAR);

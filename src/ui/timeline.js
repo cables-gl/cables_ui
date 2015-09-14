@@ -450,12 +450,12 @@ CABLES.TL.UI.TimeLineUI=function()
         switch(e.which)
         {
             case 46: case 8:
-                anim.deleteSelectedKeys();
+                for(var j in anims) anims[j].deleteSelectedKeys();
                 updateKeyLine();
                 if(e.stopPropagation) e.stopPropagation();
                 if(e.preventDefault) e.preventDefault();
-
             break;
+
             case 32:
                 spacePressed=true;
             break;
@@ -581,6 +581,17 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.setSelectedKeysEasing=function(e)
     {
+        for(var anii in anims)
+        {
+            for(var i in anims[anii].keys)
+            {
+                if(anims[anii].keys[i].selected)
+                {
+                    anims[anii].keys[i].setEasing(e);
+                }
+            }
+        }
+        updateKeyLine();
 
     };
 
@@ -591,6 +602,7 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#ease_linear").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_LINEAR); } );
     $("#ease_absolute").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE); } );
     $("#ease_smoothstep").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP); } );
+    $("#ease_smootherstep").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP); } );
 
 
     $("#centercursor").bind("click", this.centerCursor);
