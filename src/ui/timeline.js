@@ -59,10 +59,10 @@ CABLES.TL.Key.prototype.initUI=function()
     var discattr = {fill: uiConfig.colorKey, stroke: "none"};
 
     if(this.circle)
-        {
-            this.circle.remove();
-            this.circle=false;
-        }
+    {
+        this.circle.remove();
+        this.circle=false;
+    }
     this.circle=ui.timeLine.getPaper().circle(this.x, this.y, 10);
     this.circle.attr(discattr);
     // ui.timeLine.tempCircles.push(this.circle);
