@@ -109,16 +109,6 @@ CABLES.TL.Key.prototype.initUI=function()
     this.circle.drag(move,up);
 };
 
-
-CABLES.TL.Key.prototype.getPathString=function(viewBox,nextKey)
-{
-    var x=this.time*CABLES.TL.TIMESCALE;
-    var y=this.value*-CABLES.TL.VALUESCALE;
-
-    var str="L "+x+" "+y;
-    return str;
-};
-
 CABLES.TL.Anim.prototype.unselectKeys=function()
 {
     for(var i in this.keys)
@@ -309,14 +299,16 @@ CABLES.TL.UI.TimeLineUI=function()
             var start=viewBox.x/CABLES.TL.TIMESCALE;
             var width=viewBox.w/CABLES.TL.TIMESCALE*1.2;
 
-            str="M 0 0 ";
+            
             
             for(var i=0;i<numSteps;i++)
             {
                 var t=start+i*width/numSteps;
                 var v=anim.getValue(t);
 
-                str+="L "+t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
+                if(str===null)str+="M ";
+                else str+="L ";
+                str+=t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
             }
 
             for(var i=0;i<anim.keys.length;i++)
@@ -505,7 +497,6 @@ CABLES.TL.UI.TimeLineUI=function()
         
         self.updateViewBox();
         updateTimeDisplay();
-
     };
 
     this.scaleHeight=function()
@@ -676,10 +667,13 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.setTimeScale=function(v)
     {
+        cursorLine.hide();
         CABLES.TL.TIMESCALE=v;
         this.centerCursor();
         updateKeyLine();
         $('#timeline').focus();
+        cursorLine.show();
+        setCursor(this.getTime());
     };
 
     this.getTimeFromMouse=function(e)
