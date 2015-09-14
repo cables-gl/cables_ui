@@ -17,11 +17,20 @@ CABLES.TL.Key=function(obj)
     var easing=0;
     this.bezTime=0.5;
     this.bezValue=0;
+    this.bezTimeIn=-0.5;
+    this.bezValueIn=0;
 
-    this.setBezierControl=function(t,v)
+    this.setBezierControlOut=function(t,v)
     {
         this.bezTime=t;
         this.bezValue=v;
+        if(this.onChange!==null)this.onChange();
+    };
+
+    this.setBezierControlIn=function(t,v)
+    {
+        this.bezTimeIn=t;
+        this.bezValueIn=v;
         if(this.onChange!==null)this.onChange();
     };
 
@@ -36,6 +45,14 @@ CABLES.TL.Key=function(obj)
         if(obj)
         {
             if(obj.e) this.setEasing(obj.e);
+
+            if(obj.b)
+            {
+                this.bezTime=obj.b[0];
+                this.bezValue=obj.b[1];
+                this.bezTimeIn=obj.b[2];
+                this.bezValueIn=obj.b[3];
+            }
 
             if(obj.t)this.time=obj.t;
                 else if(obj.time) this.time=obj.time;
@@ -52,7 +69,8 @@ CABLES.TL.Key=function(obj)
         obj.t=this.time;
         obj.v=this.value;
         obj.e=easing;
-        console.log('obj.e ',obj.e);
+        if(easing==CABLES.TL.EASING_BEZIER)
+            obj.b=[this.bezTime,this.bezValue,this.bezTimeIn,this.bezValueIn];
                 
         return obj;
     };
@@ -99,14 +117,11 @@ CABLES.TL.Key=function(obj)
 
     this.easeBezier=function(percent,nextKey)
     {
-
         var val1x=nextKey.time;
         var c1x=nextKey.time;
 
         var val1y=nextKey.value;
         var c1y=nextKey.value;
-
-
 
         var val2x=this.time;
         var c2x=this.time+this.bezTime;
@@ -114,7 +129,6 @@ CABLES.TL.Key=function(obj)
         var val2y=this.value;
         var c2y=this.value-this.bezValue;
 
-        // var pos = new coord();
         var rx = val1x*BezierB1(percent) + c1x*BezierB2(percent) + val2x*BezierB3(percent) + c2x*BezierB4(percent);
         var r  = val1y*BezierB1(percent) + c1y*BezierB2(percent) + val2y*BezierB3(percent) + c2y*BezierB4(percent);
 
