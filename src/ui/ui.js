@@ -498,22 +498,39 @@ var line;
 
 
 
-        var dragger = function()
+        var dragger = function(x,y,ev)
         {
-          this.group = this.getGroup();
+            console.log('dragger');
+            // $('#patch').focus();
 
-          this.previousDx = 0;
-          this.previousDy = 0;
+            if(selected)
+            {
+                return;
+            }
+
+            self.showAddButtons();
+            if(!ev.shiftKey) ui.setSelectedOp(null);
+            ui.setSelectedOp(self);
+            
+
+            // self.isDragging=false;
+
+            //-------
+
+            this.group = this.getGroup();
+
+            this.previousDx = 0;
+            this.previousDy = 0;
         },
         move = function (dx, dy,a,b,e)
         {
+            console.log('moveee');
             ui.moveSelectedOps(dx,dy,a,b,e);
-            // ui.moveSelectedOps(dx,dy,a,b,e);
-
         },
         up = function ()
         {
             ui.moveSelectedOpsFinished();
+            ui.showOpParams(self.op);
         };
 
         var selected=false;
@@ -551,40 +568,23 @@ var line;
             self.isDragging=false;
         };
 
-        this.oprect.node.onmousedown = function (ev)
-        {
-            $('#patch').focus();
-
-            if(selected) return;
-
-            self.showAddButtons();
-            if(!ev.shiftKey) ui.setSelectedOp(null);
-            ui.setSelectedOp(self);
-            ui.showOpParams(self.op);
-
-            self.isDragging=false;
-        };
-        
-        // this.oprect.node.onclick = function (ev)
+        // this.oprect.node.onmousedown = function (ev)
         // {
         //     $('#patch').focus();
 
-        //     if(ev.shiftKey)
+        //     if(selected)
         //     {
-        //         ui.addSelectedOp(self);
+        //         return;
         //     }
-        //     else
-        //     {
-        //         self.showAddButtons();
-        //         ui.setSelectedOp(null);
-        //         ui.setSelectedOp(self);
-        //         // ui.addSelectedOp(self);
-        //         ui.showOpParams(self.op);
-        //     }
-        //     // ui.setSelectedOp(self);
-        //     self.isDragging=false;
 
+        //     self.showAddButtons();
+        //     if(!ev.shiftKey) ui.setSelectedOp(null);
+        //     ui.setSelectedOp(self);
+        //     ui.showOpParams(self.op);
+
+        //     self.isDragging=false;
         // };
+        
 
 
 
