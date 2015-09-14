@@ -85,9 +85,6 @@ CABLES.TL.Key=function(obj)
     {
         easing=e;
 
-                console.log('set easing',e);
-                
-        
         if(easing==CABLES.TL.EASING_ABSOLUTE) this.ease=this.easeAbsolute;
         else if(easing==CABLES.TL.EASING_SMOOTHSTEP) this.ease=this.easeSmoothStep;
         else if(easing==CABLES.TL.EASING_SMOOTHERSTEP) this.ease=this.easeSmootherStep;

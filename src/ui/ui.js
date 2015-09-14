@@ -555,11 +555,7 @@ var line;
         {
             $('#patch').focus();
 
-            if(selected)
-            {
-                console.log('is selecrted');
-                return;
-            }
+            if(selected) return;
 
             self.showAddButtons();
             if(!ev.shiftKey) ui.setSelectedOp(null);
