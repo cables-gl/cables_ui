@@ -327,12 +327,13 @@ input[type="text"]
 }
 
 
-.timingbutton_active
+
+.timingbutton_active,.graphbutton_active
 {
     color:#6c9fde !important;
 }
 
-.timingbutton
+.timingbutton,.graphbutton
 {
     display:block;
     float:left;

@@ -1814,9 +1814,21 @@ var line;
             (function (index)
             {
                 if(op.portsIn[index].isAnimated())
-                {
                     $('#portanim_in_'+index).addClass('timingbutton_active');
-                }
+
+                if(op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline)
+                    $('#portgraph_in_'+index).addClass('timingbutton_active');
+
+                $('#portgraph_in_'+index).on('click',function(e)
+                {
+                    if(op.portsIn[index].isAnimated())
+                    {
+                        op.portsIn[index].anim.stayInTimeline=!op.portsIn[index].anim.stayInTimeline;
+                        $('#portgraph_in_'+index).toggleClass('timingbutton_active');
+                        self.timeLine.setAnim(op.portsIn[index].anim,{name:op.portsIn[index].name,defaultValue:parseFloat( $('#portval_'+index).val())} );
+                    }
+
+                });
 
                 $('#portanim_in_'+index).on('click',function(e)
                 {

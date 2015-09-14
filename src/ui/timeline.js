@@ -144,10 +144,12 @@ CABLES.TL.UI.TimeLineUI=function()
     var self=this;
     
     var tlEmpty=new CABLES.TL.Anim();
-    var anim=tlEmpty;//new CABLES.TL.Anim();
+    var anim=null;//tlEmpty;//new CABLES.TL.Anim();
     var viewBox={x:-100,y:-200,w:1200,h:400};
     var fps=30;
     var cursorTime=0.0;
+
+    var anims=[];
 
     var paper= Raphael("timeline", 0,0);
     var paperTime= Raphael("timetimeline", 0,0);
@@ -180,16 +182,17 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function removeDots()
     {
-        if(anim)
+        for(var j in anims)
         {
-            for(var i in anim.keys)
+
+            for(var i in anims[j].keys)
             {
-                if(anim.keys[i].circle)
+                if(anims[j].keys[i].circle)
                 {
                     $('#timeline svg circle').hide();
-                    anim.keys[i].circle.undrag();
-                    anim.keys[i].circle.remove();
-                    anim.keys[i].circle=false;
+                    anims[j].keys[i].circle.undrag();
+                    anims[j].keys[i].circle.remove();
+                    anims[j].keys[i].circle=false;
                 }
             }
         }
@@ -199,6 +202,60 @@ CABLES.TL.UI.TimeLineUI=function()
             console.log('KEYS NOT REMOVED PROPERLY');
         }
     }
+
+    this.addAnim=function(newanim)
+    {
+        if(newanim===null)return;
+
+        newanim.onChange=null;
+
+        if(!newanim.keyLine)
+        {
+            newanim.keyLine = paper.path("M 0 0 L 1 1");
+        }
+
+        for(var i in anims)
+        {
+            anims[i].keyLine.attr({ stroke: "#aaa", "stroke-width": 1 });
+        }
+
+        var newAnims=[];
+        newAnims.push(newanim);
+        newanim.keyLine.show();
+        
+        found=false;
+        for(var i in anims)
+        {
+            if(anims[i])
+            if(!anims[i].stayInTimeline && anims[i]!=newanim)
+            {
+                console.log('hide!!!');
+                        
+                anims=anims.slice(i,1);
+                anims[i].keyLine.hide();
+                // newAnims.push(anims[i]);
+                found=true;
+            }
+            else
+            {
+                newAnims.push(anims[i]);
+                anims[i].keyLine.show();
+            }
+        }
+
+
+        anims=newAnims;
+
+        for(var i in anims)
+        {
+            if(anims[i]==newanim)
+            {
+                return;
+            }
+        }
+        anims.push(newanim);
+
+    };
 
     this.setAnim=function(newanim,config)
     {
@@ -213,17 +270,15 @@ CABLES.TL.UI.TimeLineUI=function()
             enabled=false;
             return;
         }
-
+        
         newanim.paper=paper;
         anim=newanim;
         enabled=true;
+        this.addAnim(anim);
+        anim.keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
 
-        if(config && config.name)
-        {
-            $('#timelineTitle').html(config.name);
-        }
-        else
-            $('#timelineTitle').html('');
+        if(config && config.name) $('#timelineTitle').html(config.name);
+            else $('#timelineTitle').html('');
 
         if(config && config.defaultValue && newanim.keys.length===0)
         {
@@ -239,10 +294,8 @@ CABLES.TL.UI.TimeLineUI=function()
         }
 
         if(anim.onChange===null) anim.onChange=updateKeyLine;
-
-
-
-
+        console.log('anim ',anim.keys.length);
+        
     };
 
     function setCursor(time)
@@ -256,8 +309,6 @@ CABLES.TL.UI.TimeLineUI=function()
         cursorLineDisplay.attr({path: "M "+time+" -1000 L" + time + " " + 1110 });
     }
 
-    var keyLine = paper.path("M "+-1000+" "+0+" L" + 1000 + " " + 0);
-    keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
 
     var zeroLine2 = paper.path("M 0 0 L 111000 0");
     zeroLine2.attr({ stroke: "#999", "stroke-width": 1});
@@ -289,46 +340,50 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function updateKeyLine()
     {
-        var str=null;
-
-        if(anim)
+        for(var anii in anims)
         {
-            anim.sortKeys();
-        
-            var numSteps=300;
-            var start=viewBox.x/CABLES.TL.TIMESCALE;
-            var width=viewBox.w/CABLES.TL.TIMESCALE*1.2;
-
-            
-            
-            for(var i=0;i<numSteps;i++)
+            var str=null;
+            var ani=anims[anii];
+            if(ani && ani.keys.length>0)
             {
-                var t=start+i*width/numSteps;
-                var v=anim.getValue(t);
+                ani.sortKeys();
 
-                if(str===null)str+="M ";
-                else str+="L ";
-                str+=t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
+                var numSteps=300;
+                var start=viewBox.x/CABLES.TL.TIMESCALE;
+                var width=viewBox.w/CABLES.TL.TIMESCALE*1.2;
+
+                for(var i=0;i<numSteps;i++)
+                {
+                    var t=start+i*width/numSteps;
+                    var v=ani.getValue(t);
+
+                    if(str===null)str+="M ";
+                        else str+="L ";
+
+                    str+=t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
+                }
+
+                for(var i=0;i<ani.keys.length;i++)
+                {
+                    var nextKey=null;
+
+                    if(ani.keys.length > i+1) nextKey=ani.keys[i+1];
+                    
+                    // if(str===null) str="M 0 "+(ani.keys[0].value*-CABLES.TL.VALUESCALE)+" ";
+
+                    // str+=ani.keys[i].getPathString(viewBox,nextKey);
+                    
+                    ani.keys[i].updateCircle();
+                    if(ani.keys[i].onChange===null) ani.keys[i].onChange=updateKeyLine;
+                }
+
+                // if(anim.keys.length>0) str+="L 9999000 "+(anim.keys[anim.keys.length-1].value*-CABLES.TL.VALUESCALE)+" ";
+                ani.keyLine.attr({ path:str });
             }
 
-            for(var i=0;i<anim.keys.length;i++)
-            {
-                var nextKey=null;
-
-                if(anim.keys.length > i+1) nextKey=anim.keys[i+1];
-                
-                // if(str===null) str="M 0 "+(anim.keys[0].value*-CABLES.TL.VALUESCALE)+" ";
-
-                // str+=anim.keys[i].getPathString(viewBox,nextKey);
-                
-                anim.keys[i].updateCircle();
-                if(anim.keys[i].onChange===null) anim.keys[i].onChange=updateKeyLine;
-            }
-
-            // if(anim.keys.length>0) str+="L 9999000 "+(anim.keys[anim.keys.length-1].value*-CABLES.TL.VALUESCALE)+" ";
+            
         }
 
-        keyLine.attr({ path:str });
     }
 
 
@@ -485,10 +540,14 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         var maxt=-99999;
         var mint=99999999;
-        for(var i in anim.keys)
+
+        for(var anii in anims)
         {
-            maxt=Math.max(maxt,anim.keys[i].time);
-            mint=Math.min(mint,anim.keys[i].time);
+            for(var i in anims[anii].keys)
+            {
+                maxt=Math.max(maxt,anims[anii].keys[i].time);
+                mint=Math.min(mint,anims[anii].keys[i].time);
+            }
         }
 
         CABLES.TL.TIMESCALE=viewBox.w/(maxt-mint);
@@ -503,10 +562,15 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         var maxv=-99999;
         var minv=99999999;
-        for(var i in anim.keys)
+
+
+        for(var anii in anims)
         {
-            maxv=Math.max(maxv,anim.keys[i].value);
-            minv=Math.min(minv,anim.keys[i].value);
+            for(var i in anims[anii].keys)
+            {
+                maxv=Math.max(maxv,anims[anii].keys[i].value);
+                minv=Math.min(minv,anims[anii].keys[i].value);
+            }
         }
         
         if(maxv>0)
@@ -880,6 +944,7 @@ CABLES.TL.UI.TimeLineUI=function()
     updateKeyLine();
     this.setAnim(tlEmpty);
     self.updateViewBox();
+    self.setAnim(tlEmpty);
 
     
 

@@ -49,6 +49,7 @@ CABLES.TL.Anim=function(cfg)
 {
     this.keys=[];
     this.onChange=null;
+    this.stayInTimeline=false;
 
     this.sortKeys=function()
     {

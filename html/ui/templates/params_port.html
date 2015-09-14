@@ -77,6 +77,8 @@
                         {{/compare}}{{#compare port.type '==' 0 }}
 
                         <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="graphbutton fa fa-line-chart" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
+                        
                         <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
 
                         {{/compare}}
