@@ -295,6 +295,9 @@ CABLES.TL.UI.TimeLineUI=function()
     var mouseRubberBandPos=null;
     var rubberBandRect=null;
 
+    var updateTimer=null;
+    var timeDisplayMode=true;
+
     var cursorLine = paper.path("M 0 0 L 10 10");
     cursorLine.attr({stroke: "#6c9fde", "stroke-width": 2});
 
@@ -725,6 +728,7 @@ CABLES.TL.UI.TimeLineUI=function()
         updateKeyLine();
     };
 
+
     $("#keymovemode").bind("click", toggleMoveMode);
     $("#keyscaleheight").bind("click", this.scaleHeight);
     $("#keyscalewidth").bind("click", this.scaleWidth);
@@ -841,10 +845,12 @@ CABLES.TL.UI.TimeLineUI=function()
     function updateTimeDisplay()
     {
         var step=fps*5;
+
         if(CABLES.TL.TIMESCALE>90) step=fps;
         if(CABLES.TL.TIMESCALE>500) step=fps/3;
         if(CABLES.TL.TIMESCALE>1000) step=fps/6;
         if(CABLES.TL.TIMESCALE>1400) step=fps/30;
+
 
         for(var i=0;i<50;i++)
         {
@@ -856,9 +862,12 @@ CABLES.TL.UI.TimeLineUI=function()
                 timeDisplayTexts.push(t);
             }
 
+            var txt=parseInt(frame,10);
+            if(!timeDisplayMode)txt=(''+i*step/fps).substr(0, 4)+"s ";
+
             t=timeDisplayTexts[i];
             t.attr({
-                "text":""+parseInt(frame,10),
+                "text":""+txt,
                 "x":i*step/fps*CABLES.TL.TIMESCALE,
                 "y":-190,
                 "fill":'#aaa',
@@ -903,14 +912,27 @@ CABLES.TL.UI.TimeLineUI=function()
         return time;
     };
 
-    var updateTimer=null;
+    this.toggleTimeDisplayMode=function()
+    {
+        timeDisplayMode=!timeDisplayMode;
+        console.log('timeDisplayMode',timeDisplayMode);
+        this.updateTime();
+        updateTimeDisplay();
+    };
 
     this.updateTime=function()
     {
         var time=ui.scene.timer.getTime();
         setCursor(time);
         if(doCenter)self.centerCursor();
-        $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
+ 
+        if(timeDisplayMode)
+            $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
+        else
+            $('.timelinetime').html( '<b class="mainColor">'+(time+'').substr(0, 4)+'s </b><br/>'+getFrame(time)+' ' );
+
+
+
         if(updateTimer===null) updateTimer=setInterval(self.updateTime,30);
     };
 

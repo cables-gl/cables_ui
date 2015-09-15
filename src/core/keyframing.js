@@ -153,10 +153,9 @@ CABLES.TL.Key=function(obj)
         }
 
         var timeSpan=nextKey.time-self.time;
-        // if(updateBezier)
+        if(updateBezier)
         {
             bezierAnim.clear();
-            // console.log('updateBezier');
 
             var steps=20;
             var is=1/steps;
@@ -165,21 +164,14 @@ CABLES.TL.Key=function(obj)
             {
                 var v=Bezier(i*is,nextKey);
 
-                // console.log('v',v);
-
                 var time=self.time+timeSpan/steps*i;
-        
 
-        // console.log('v.x');
-        
                 bezierAnim.setValue(v.x,v.y);
-                        
-                
+
                 // console.log('key ',time,v.y);
             }
             updateBezier=false;
         }
-
 
         return bezierAnim.getValue(self.time+percent*timeSpan);
     };

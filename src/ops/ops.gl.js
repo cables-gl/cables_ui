@@ -435,7 +435,7 @@ Ops.Gl.Meshes.Plotter = function()
     };
 
     this.buffer = cgl.gl.createBuffer();
-    
+
     var num=50;
     this.vertices = [];
     for(var i=0;i<num;i++)

@@ -321,6 +321,7 @@ Ops.Gl.Meshes.Circle = function()
 
 Ops.Gl.Meshes.Circle.prototype = new Op();
 
+
 // --------------------------------------------------------------------------
 
 Ops.Gl.Meshes.ObjMesh = function()
