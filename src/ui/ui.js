@@ -104,6 +104,8 @@ function getPortColor(port)
     if(type==OP_PORT_TYPE_VALUE) return '#ea6638';
     else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
     else if(type==OP_PORT_TYPE_OBJECT)  return '#26a92a';
+    else if(type==OP_PORT_TYPE_ARRAY)  return '#a02bbd';
+    
     else return '#c6c6c6';
 }
 

@@ -167,12 +167,17 @@ Ops.WebAudio.Analyser = function()
 
     this.audioOut=this.addOutPort(new Port(this, "audio out",OP_PORT_TYPE_OBJECT));
     this.avgVolume=this.addOutPort(new Port(this, "average volume",OP_PORT_TYPE_VALUE));
+    this.fftOut=this.addOutPort(new Port(this, "fft",OP_PORT_TYPE_ARRAY));
+
+
 
     this.oldAudioIn=null;
 
     this.analyser = audioContext.createAnalyser();
     this.analyser.smoothingTimeConstant = 0.3;
-    this.analyser.fftSize = 1024;
+    this.analyser.fftSize = 256;
+    var fftBufferLength=0;
+    var fftDataArray =null;
 
     this.refresh.onTriggered = function()
     {
@@ -189,6 +194,14 @@ Ops.WebAudio.Analyser = function()
  
         average = values / array.length;
         self.avgVolume.val=average;
+
+
+
+        self.analyser.getByteFrequencyData(fftDataArray);
+        self.fftOut.val=fftDataArray;
+        // console.log('',fftDataArray);
+                
+
     };
 
     this.audioIn.onValueChanged = function()
@@ -202,6 +215,9 @@ Ops.WebAudio.Analyser = function()
             self.audioIn.val.connect(self.analyser);
         }
         self.oldAudioIn=self.audioIn.val;
+
+        fftBufferLength = self.analyser.frequencyBinCount;
+        fftDataArray = new Uint8Array(fftBufferLength);
     };
 
     this.audioOut.val = this.analyser;
