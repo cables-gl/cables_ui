@@ -182,7 +182,8 @@ Ops.WebAudio.Analyser = function()
         var values = 0;
         var average;
 
-        for (var i = 0; i < array.length; i++) {
+        for (var i = 0; i < array.length; i++)
+        {
             values += array[i];
         }
  

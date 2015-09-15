@@ -41,7 +41,7 @@ $("html").on("drop", function(event)
         if (event.lengthComputable)
         {
             var complete = (event.loaded / event.total * 100 | 0);
-            CABLES.UI.MODAL.show('uploading ' + complete + '%');
+            CABLES.UI.MODAL.showLoading('uploading ' + complete + '%');
         }
     };
 
@@ -50,7 +50,9 @@ $("html").on("drop", function(event)
         ui.updateProjectFiles();
         if (xhr.status === 200)
         {
-            CABLES.UI.MODAL.show('upload success: ' + xhr.status);
+            setTimeout(function(){CABLES.UI.MODAL.hide();},300);
+            
+            // CABLES.UI.MODAL.show('upload success: ' + xhr.status);
         }
         else
         {

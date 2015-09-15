@@ -1,24 +1,4 @@
-            $('#patch svg').bind("mousemove", function (e)
-            {
-                e=mouseEvent(e);
 
-                if(mouseRubberBandStartPos && e.which!=1)
-                {
-                    rubberBandHide();
-                }
-
-                if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
-                {
-                    viewBox.x+=mouseX-ui.getCanvasCoordsMouse(e).x;//e.offsetX,e.offsetY).x;
-                    viewBox.y+=mouseY-ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
-
-                    self.updateViewBox();
-                }
-
-
-                mouseX=ui.getCanvasCoordsMouse(e).x;//e.offsetX,e.offsetY).x;
-                mouseY=ui.getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
-            });
 var CABLES=CABLES || {};
 
 
@@ -30,15 +10,12 @@ CABLES.togglePortValBool=function(which)
     $('#'+which).trigger('input');
 };
 
-
 function mouseEvent(event)
 {
     if(!event.offsetX) event.offsetX = event.layerX;//(event.pageX - $(event.target).offset().left);
     if(!event.offsetY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
     return event;
 }
-
-
 
 Handlebars.registerHelper('json', function(context) {
     return JSON.stringify(context);
@@ -82,25 +59,10 @@ Handlebars.registerHelper('compare', function(left_value, operator, right_value,
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
-
-    // window.onerror = function(message, url, lineNumber)
-    // {
-    //     console.error(message);
-    //     alert('error: '+JSON.stringify(message)+'\n'+url+'\nline:'+lineNumber);
-    //     return true;
-    // };
-
-
-
-
     $(document).bind("contextmenu", function(e)
     {
-        // if(e.stopPropagation) e.stopPropagation();
         if(e.preventDefault) e.preventDefault();
-        // e.cancelBubble = false;
     });
-
-
 
     var scene=new Scene();
     ui=new CABLES.Ui();
@@ -212,6 +174,8 @@ function UiLink(port1, port2)
 
             addCircle.drag(function(){},function(){},function(event)
             {
+                $('#patch').focus();
+
                 if(self.p1!==null)
                 {
                     if(event.which==3)
@@ -497,6 +461,7 @@ var line;
 
         var dragger = function(x,y,ev)
         {
+            $('#patch').focus();
             if(selected)return;
 
             self.showAddButtons();
@@ -577,6 +542,7 @@ var line;
 
         var PortDrag = function (x,y,event)
         {
+            $('#patch').focus();
             if(!line)
             {
                 this.startx=this.matrix.e+this.attrs.x;
@@ -658,8 +624,6 @@ var line;
 
         this.updatePortAttribs=function(port)
         {
-
-
             if(!port)
             {
                 var i=0;
@@ -804,12 +768,6 @@ var line;
         var rendererSize=0;
         var watchPorts=[];
         var currentProject=null;
-
-        // var CABLES.UI.OPSELECT.mouseNewOPX=0;
-        // var CABLES.UI.OPSELECT.mouseNewOPY=0;
-        // var linkNewOpTo=null;
-        // var CABLES.UI.OPSELECT.linkNewOpToPort=null;
-        // var CABLES.UI.OPSELECT.linkNewLink=null;
         var currentOp=null;
         var spacePressed=false;
         var showTiming=true;
@@ -973,7 +931,7 @@ var line;
                 break;
 
                 case 46: case 8:
-                    if ($("input").is(":focus")) return;
+                    if($("input").is(":focus")) return;
 
                         for(var i in selectedOps)
                             ui.scene.deleteOp( selectedOps[i].op.id,true);
@@ -1101,13 +1059,14 @@ var line;
 
             router.addRoute('/project/:id').get(function(event, params)
             {
-                console.log('load project...');
+                CABLES.UI.MODAL.showLoading('loading');
+
                 CABLES.api.get('project/'+params.id,function(proj)
                 {
                     self.setCurrentProject(proj);
                     self.scene.clear();
                     self.scene.deSerialize(proj);
-                        console.log('ja!',proj);
+                    CABLES.UI.MODAL.hide();
                 });
             });
 
@@ -1127,10 +1086,11 @@ var line;
                     if(r.success===true)
                     {
                         CABLES.UI.setStatusText('project saved');
-
                     }
                     else CABLES.UI.setStatusText('project NOT saved');
-                        CABLES.UI.MODAL.hide();
+
+                    setTimeout(function(){CABLES.UI.MODAL.hide();},300);
+                        
                 });
 
         };
@@ -1492,6 +1452,7 @@ var line;
 
             scene.onAdd=function(op)
             {
+                $('#patch').focus();
                 var uiOp=new OpUi(CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
                 uiOp.op=op;
                 self.ops.push(uiOp);
