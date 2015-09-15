@@ -2047,6 +2047,12 @@ var line;
             op.getPort('file').val=url;
         }
         else
+        if(suffix=='.mp3' || suffix=='.ogg')
+        {
+            var op=ui.scene.addOp('Ops.WebAudio.AudioPlayer',uiAttr);
+            op.getPort('file').val=url;
+        }
+        else
         {
             CABLES.UI.setStatusText('unknown file type');
         }

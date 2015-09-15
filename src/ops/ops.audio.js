@@ -1,9 +1,9 @@
 
 // TODO: CLAMP!
 
-Ops.Audio=Ops.Audio || {};
+Ops.WebAudio=Ops.WebAudio || {};
 
-Ops.Audio.Output = function()
+Ops.WebAudio.Output = function()
 {
     var self=this;
     Op.apply(this, arguments);
@@ -31,15 +31,56 @@ Ops.Audio.Output = function()
     };
 };
 
-Ops.Audio.Output.prototype = new Op();
+Ops.WebAudio.Output.prototype = new Op();
 
 
-Ops.Audio.Oscillator = function()
+
+Ops.WebAudio.AudioPlayer = function()
+{
+    var self = this;
+    Op.apply(this, arguments);
+    this.name='AudioPlayer';
+
+    this.file=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
+    this.volume=this.addInPort(new Port(this,"volume",OP_PORT_TYPE_VALUE,{ display:'range' }));
+
+    if(!window.audioContext)
+         audioContext = new AudioContext();
+
+    this.filter = audioContext.createGain();
+
+    this.volume.onValueChanged = function()
+    {
+        self.filter.gain.value=self.volume.val;
+    };
+
+    this.file.onValueChanged = function()
+    {
+        self.audio = new Audio();
+        self.audio.src = self.file.val;
+        self.media = audioContext.createMediaElementSource(self.audio);
+        self.audio.play();
+
+        self.media.connect(self.filter);
+        self.audioOut.val = self.filter;
+    };
+
+    this.audioOut=this.addOutPort(new Port(this, "audio out",OP_PORT_TYPE_OBJECT));
+    
+};
+
+Ops.WebAudio.AudioPlayer.prototype = new Op();
+
+
+
+// -----------------------------------
+
+Ops.WebAudio.Oscillator = function()
 {
     var self = this;
     Op.apply(this, arguments);
     
-    if(!window.audioContext) {
+    if(!window.audioContext){
          audioContext = new AudioContext();
     }
     this.oscillator = audioContext.createOscillator();
@@ -59,10 +100,11 @@ Ops.Audio.Oscillator = function()
     this.audioOut.val = this.oscillator;
 };
 
-Ops.Audio.Oscillator.prototype = new Op();
+Ops.WebAudio.Oscillator.prototype = new Op();
 
+// --------------------------------------------
 
-Ops.Audio.MicrophoneIn = function ()
+Ops.WebAudio.MicrophoneIn = function ()
 {
     var self = this;
     Op.apply(this, arguments);
@@ -92,9 +134,9 @@ Ops.Audio.MicrophoneIn = function ()
     }
 };
 
-Ops.Audio.MicrophoneIn.prototype = new Op();
+Ops.WebAudio.MicrophoneIn.prototype = new Op();
 
-Ops.Audio.Analyser = function()
+Ops.WebAudio.Analyser = function()
 {
     var self=this;
     Op.apply(this, arguments);
@@ -147,6 +189,6 @@ Ops.Audio.Analyser = function()
     this.audioOut.val = this.analyser;
 };
 
-Ops.Audio.Analyser.prototype = new Op();
+Ops.WebAudio.Analyser.prototype = new Op();
 
 
