@@ -33,7 +33,7 @@ Ops.WebAudio.Output = function()
 
 Ops.WebAudio.Output.prototype = new Op();
 
-
+// -----------------------------------
 
 Ops.WebAudio.AudioPlayer = function()
 {
@@ -44,34 +44,48 @@ Ops.WebAudio.AudioPlayer = function()
     this.file=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
     this.volume=this.addInPort(new Port(this,"volume",OP_PORT_TYPE_VALUE,{ display:'range' }));
 
-    if(!window.audioContext)
-         audioContext = new AudioContext();
+    if(!window.audioContext) audioContext = new AudioContext();
 
     this.filter = audioContext.createGain();
+    self.audio=null;
 
     this.volume.onValueChanged = function()
     {
         self.filter.gain.value=self.volume.val;
     };
 
+    function seek()
+    {
+        if(!self.audio)return;
+        self.audio.currentTime=self.patch.timer.getTime();
+    }
+
+    function playPause()
+    {
+        if(!self.audio)return;
+                
+        if(self.patch.timer.isPlaying()) self.audio.play();
+            else self.audio.pause();
+    }
+
     this.file.onValueChanged = function()
     {
         self.audio = new Audio();
         self.audio.src = self.file.val;
+
         self.media = audioContext.createMediaElementSource(self.audio);
-        self.audio.play();
+        self.patch.timer.onPlayPause(playPause);
+        self.patch.timer.onTimeChange(seek);
 
         self.media.connect(self.filter);
         self.audioOut.val = self.filter;
     };
 
     this.audioOut=this.addOutPort(new Port(this, "audio out",OP_PORT_TYPE_OBJECT));
-    
+
 };
 
 Ops.WebAudio.AudioPlayer.prototype = new Op();
-
-
 
 // -----------------------------------
 
@@ -136,6 +150,8 @@ Ops.WebAudio.MicrophoneIn = function ()
 
 Ops.WebAudio.MicrophoneIn.prototype = new Op();
 
+// --------------------------------------------
+
 Ops.WebAudio.Analyser = function()
 {
     var self=this;
@@ -148,6 +164,9 @@ Ops.WebAudio.Analyser = function()
     this.name='Audio Analyser';
     this.audioIn=this.addInPort(new Port(this,"audio in",OP_PORT_TYPE_OBJECT));
     this.refresh=this.addInPort(new Port(this,"refresh",OP_PORT_TYPE_FUNCTION));
+
+    this.audioOut=this.addOutPort(new Port(this, "audio out",OP_PORT_TYPE_OBJECT));
+    this.avgVolume=this.addOutPort(new Port(this, "average volume",OP_PORT_TYPE_VALUE));
 
     this.oldAudioIn=null;
 
@@ -184,8 +203,6 @@ Ops.WebAudio.Analyser = function()
         self.oldAudioIn=self.audioIn.val;
     };
 
-    this.avgVolume=this.addOutPort(new Port(this, "average volume",OP_PORT_TYPE_VALUE));
-    this.audioOut=this.addOutPort(new Port(this, "audio out",OP_PORT_TYPE_OBJECT));
     this.audioOut.val = this.analyser;
 };
 

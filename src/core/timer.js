@@ -54,6 +54,7 @@ function Timer()
         timeStart=Date.now();
         timeOffset=t;
         currentTime=t;
+        eventTimeChange();
     };
 
     this.setOffset=function(val)
@@ -75,12 +76,42 @@ function Timer()
     {
         timeStart=Date.now();
         paused=false;
+        eventPlayPause();
     };
 
     this.pause=function()
     {
         timeOffset=currentTime;
         paused=true;
+        eventPlayPause();
+    };
+
+    // ----------------
+
+    var cbPlayPause=[];
+    var cbTimeChange=[];
+    function eventPlayPause()
+    {
+        for(var i in cbPlayPause) cbPlayPause[i]();
+    }
+
+    function eventTimeChange()
+    {
+        for(var i in cbTimeChange) cbTimeChange[i]();
+    }
+
+    this.onPlayPause=function(cb)
+    {
+        if(cb && typeof cb == "function")
+            cbPlayPause.push(cb);
+
+    };
+
+    this.onTimeChange=function(cb)
+    {
+        if(cb && typeof cb == "function")
+            cbTimeChange.push(cb);
+
     };
 
 }
