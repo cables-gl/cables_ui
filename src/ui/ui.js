@@ -493,27 +493,15 @@ var line;
             {
                 self.links[j].redraw();
             }
-
         };
-
-
 
         var dragger = function(x,y,ev)
         {
-            console.log('dragger');
-            // $('#patch').focus();
-
-            if(selected)
-            {
-                return;
-            }
+            if(selected)return;
 
             self.showAddButtons();
             if(!ev.shiftKey) ui.setSelectedOp(null);
             ui.setSelectedOp(self);
-            
-
-            // self.isDragging=false;
 
             //-------
 
@@ -524,7 +512,6 @@ var line;
         },
         move = function (dx, dy,a,b,e)
         {
-            console.log('moveee');
             ui.moveSelectedOps(dx,dy,a,b,e);
         },
         up = function ()
@@ -1129,6 +1116,7 @@ var line;
 
         this.saveCurrentProject=function()
         {
+            CABLES.UI.MODAL.showLoading('saving project');
             CABLES.api.put(
                 'project/'+currentProject._id,
                 {
@@ -1136,8 +1124,13 @@ var line;
                 },
                 function(r)
                 {
-                    if(r.success===true) CABLES.UI.setStatusText('project saved');
-                        else CABLES.UI.setStatusText('project NOT saved');
+                    if(r.success===true)
+                    {
+                        CABLES.UI.setStatusText('project saved');
+
+                    }
+                    else CABLES.UI.setStatusText('project NOT saved');
+                        CABLES.UI.MODAL.hide();
                 });
 
         };

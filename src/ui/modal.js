@@ -26,3 +26,10 @@ CABLES.UI.MODAL.show=function(content)
 };
 
 
+CABLES.UI.MODAL.showLoading=function(title,content)
+{
+    $('#modalcontent').html('<div style="text-align:center;"><h3>'+title+'</h3><i class="fa fa-4x fa-cog fa-spin"></i><br/><br/><div>');
+    $('#modalcontent').append(content);
+    $('#modalcontent').show();
+    $('#modalbg').show();
+};

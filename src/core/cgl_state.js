@@ -27,6 +27,8 @@ CGL.State=function()
     this.wireframe=false;
     this.points=false;
 
+    this.doScreenshot=false;
+    this.screenShotDataURL=null;
 
     this.beginFrame=function()
     {
@@ -42,6 +44,13 @@ CGL.State=function()
         mvMatrixStack.length=0;
         pMatrixStack.length=0;
         shaderStack.length=0;
+
+        if(this.doScreenshot)
+        {
+            this.doScreenshot=false;
+            this.screenShotDataURL = canvas.toDataURL('image/png');
+        }
+
     };
 
     // shader stack
