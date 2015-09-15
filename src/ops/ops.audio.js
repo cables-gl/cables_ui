@@ -43,6 +43,7 @@ Ops.WebAudio.AudioPlayer = function()
 
     this.file=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
     this.volume=this.addInPort(new Port(this,"volume",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.volume.val=1.0;
 
     if(!window.audioContext) audioContext = new AudioContext();
 

@@ -31,6 +31,20 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         value=v;
     };
 
+
+    this.updateValue4F=function()
+    {
+        if(loc==-1) loc=cgl.gl.getUniformLocation(shader.getProgram(), name);
+        cgl.gl.uniform4f(loc, value[0],value[1],value[2],value[3]);
+    };
+
+    this.setValue4F=function(v)
+    {
+        self.needsUpdate=true;
+        value=v;
+    };
+
+
     this.updateValueT=function()
     {
         if(loc==-1)
@@ -52,6 +66,12 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     {
         this.setValue=this.setValueF;
         this.updateValue=this.updateValueF;
+    }
+
+    if(type=='4f')
+    {
+        this.setValue=this.setValue4F;
+        this.updateValue=this.updateValue4F;
     }
 
     if(type=='t')

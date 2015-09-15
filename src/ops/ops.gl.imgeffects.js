@@ -112,18 +112,16 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
         effect.startEffect();
 
+        if(self.clear.val=='true')
+        {
             cgl.currentTextureEffect.bind();
 
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
-        if(self.clear.val=='true')
-        {
-                    console.log('clear');
-                    
             cgl.gl.clearColor(0,0,0,1.0);
 
-        }
             cgl.currentTextureEffect.finish();
+        }
 
         self.trigger.call();
         self.texOut.val=effect.getCurrentSourceTexture();

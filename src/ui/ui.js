@@ -155,18 +155,33 @@ function UiLink(port1, port2)
     {
         if(addCircle)addCircle.remove();
         addCircle=null;
+
+        this.thisLine.attr(
+        {
+            "stroke-opacity": 1,
+            "stroke-width": 1
+        });
     };
 
     this.showAddButton=function()
     {
+
+        this.thisLine.attr(
+        {
+            "stroke-opacity": 1.0,
+            "stroke-width": 2
+        });
+
         if(addCircle===null)
         {
             // addCircle = r.rect(middlePosX,middlePosY, uiConfig.portSize, uiConfig.portSize).attr(
 
-            addCircle = r.circle(middlePosX,middlePosY, uiConfig.portSize*0.74).attr(
+            addCircle = r.circle(middlePosX,middlePosY, uiConfig.portSize*0.5).attr(
             {
-                fill: getPortColor(self.p1.thePort ),
-                "stroke-width": 0,
+                "stroke": getPortColor(self.p1.thePort ),
+                "stroke-width": 2,
+                "fill": uiConfig.colorBackground,
+
             });
 
             addCircle.hover(function ()
@@ -255,7 +270,9 @@ function UiLink(port1, port2)
     this.thisLine.attr(
     {
         "stroke": getPortColor(port1.thePort),
-        "stroke-width": 2
+        "stroke-opacity": 0.5,
+        "stroke-width": 1,
+        "stroke-linecap":"round"
     });
 
     this.thisLine.hover(function ()

@@ -128,10 +128,12 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
 
 
-        self.trigger.call();
 
         cgl.popPMatrix();
         cgl.popMvMatrix();
+
+        self.trigger.call();
+
     };
 
     var geom=new CGL.Geometry();

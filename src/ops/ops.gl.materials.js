@@ -44,6 +44,122 @@ Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
 
 
 
+Ops.Gl.Shader.GradientMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='GradientMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+
+    this.r=this.addInPort(new Port(this,"r1",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
+    this.g=this.addInPort(new Port(this,"g1",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.b=this.addInPort(new Port(this,"b1",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.a=this.addInPort(new Port(this,"a1",OP_PORT_TYPE_VALUE,{ display:'range' }));
+
+    this.r2=this.addInPort(new Port(this,"r2",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
+    this.g2=this.addInPort(new Port(this,"g2",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.b2=this.addInPort(new Port(this,"b2",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.a2=this.addInPort(new Port(this,"a2",OP_PORT_TYPE_VALUE,{ display:'range' }));
+
+    this.r3=this.addInPort(new Port(this,"r3",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
+    this.g3=this.addInPort(new Port(this,"g3",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.b3=this.addInPort(new Port(this,"b3",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.a3=this.addInPort(new Port(this,"a3",OP_PORT_TYPE_VALUE,{ display:'range' }));
+
+this.r.val=0.2;
+this.g.val=0.2;
+this.b.val=0.2;
+this.a.val=1.0;
+
+this.r2.val=0.73;
+this.g2.val=0.73;
+this.b2.val=0.73;
+this.a2.val=1.0;
+
+this.r3.val=1.0;
+this.g3.val=1.0;
+this.b3.val=1.0;
+this.a3.val=1.0;
+
+    var colA=[];
+    var colB=[];
+    var colC=[];
+
+
+
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
+        self.trigger.call();
+        cgl.setPreviousShader();
+    };
+
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'varying vec2 texCoord;'
+        .endl()+'uniform vec4 colA;'
+        .endl()+'uniform vec4 colB;'
+        .endl()+'uniform vec4 colC;'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   if(texCoord.y<0.5)'
+        .endl()+'   {'
+        .endl()+'       gl_FragColor = vec4(mix(colA, colB, texCoord.y*2.0));'
+        .endl()+'   }'
+        .endl()+'   if(texCoord.y>0.5)'
+        .endl()+'   {'
+        .endl()+'       gl_FragColor = vec4(mix(colB, colC, (texCoord.y-0.5)*2.0));'
+        .endl()+'   }'
+        .endl()+'}';
+
+
+    var shader=new CGL.Shader();
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+
+this.doRender();
+    this.r.onValueChanged=this.g.onValueChanged=this.b.onValueChanged=this.a.onValueChanged=function()
+    {
+        colA=[self.r.val,self.g.val,self.b.val,self.a.val];
+        if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'4f','colA',colA);
+        else self.r.uniform.setValue(colA);
+    };
+
+    this.r2.onValueChanged=this.g2.onValueChanged=this.b2.onValueChanged=this.a2.onValueChanged=function()
+    {
+        colB=[self.r2.val,self.g2.val,self.b2.val,self.a2.val];
+        if(!self.r2.uniform) self.r2.uniform=new CGL.Uniform(shader,'4f','colB',colB);
+        else self.r2.uniform.setValue(colB);
+    };
+
+    this.r3.onValueChanged=this.g3.onValueChanged=this.b3.onValueChanged=this.a3.onValueChanged=function()
+    {
+        colC=[self.r3.val,self.g3.val,self.b3.val,self.a3.val];
+        if(!self.r3.uniform) self.r3.uniform=new CGL.Uniform(shader,'4f','colC',colC);
+        else self.r3.uniform.setValue(colC);
+    };
+
+    this.r3.onValueChanged();
+    this.r2.onValueChanged();
+    this.r.onValueChanged();
+    this.render.onTriggered=this.doRender;
+    
+
+
+};
+
+Ops.Gl.Shader.GradientMaterial.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+
+
+
 
 Ops.Gl.Shader.BasicMaterial = function()
 {
