@@ -680,10 +680,10 @@ CABLES.TL.UI.TimeLineUI=function()
             }
         }
 
-        CABLES.TL.TIMESCALE=viewBox.w/(maxt-mint);
-        viewBox.x=mint*CABLES.TL.TIMESCALE;
+        CABLES.TL.TIMESCALE=viewBox.w/(maxt-mint)*0.9;
+        viewBox.x=mint*CABLES.TL.TIMESCALE-(maxt-mint)*0.05*CABLES.TL.TIMESCALE;
         console.log('CABLES.TL.TIMESCALE ',CABLES.TL.TIMESCALE);
-        
+
         self.updateViewBox();
         updateTimeDisplay();
     };
@@ -705,9 +705,9 @@ CABLES.TL.UI.TimeLineUI=function()
         if(maxv>0)
         {
             var s=Math.abs(maxv)+Math.abs(minv);
-            self.setValueScale($('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
+            self.setValueScale( $('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
 
-            viewBox.y=-maxv*CABLES.TL.VALUESCALE;
+            viewBox.y=-maxv*1.1*CABLES.TL.VALUESCALE;
             self.updateViewBox();
         }
     };
