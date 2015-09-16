@@ -427,6 +427,7 @@ var Scene = function()
     
     this.clear=function()
     {
+        self.animFrameOps.length=0;
         this.timer=new Timer();
         while(this.ops.length>0)
         {

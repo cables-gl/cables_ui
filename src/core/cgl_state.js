@@ -17,8 +17,7 @@ CGL.State=function()
     var currentShader=simpleShader;
 
     var canvas = document.getElementById("glcanvas");
-    this.gl=canvas.getContext("experimental-webgl");
-
+    this.gl=canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
     this.canvasWidth=640;
     this.canvasHeight=360;
 
@@ -46,7 +45,7 @@ CGL.State=function()
         if(this.doScreenshot)
         {
             console.log('do screenshot');
-                    
+
             this.doScreenshot=false;
             this.screenShotDataURL = document.getElementById("glcanvas").toDataURL('image/png');
         }
