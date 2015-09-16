@@ -42,6 +42,107 @@ Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
+Ops.Gl.Shader.SphereEnvMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='SphereEnvMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.textureUniform=null;
+
+    this.texture.onValueChanged=function()
+    {
+        if(self.texture.val)
+        {
+            if(self.textureUniform!==null)return;
+            shader.removeUniform('tex');
+            self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
+        }
+        else
+        {
+            console.log('TEXTURE REMOVED');
+            shader.removeUniform('tex');
+            self.textureUniform=null;
+        }
+    };
+
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
+
+        if(self.texture.val)
+        {
+            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.texture.val.tex);
+        }
+
+        self.trigger.call();
+        cgl.setPreviousShader();
+    };
+
+    var srcVert=''
+        .endl()+'precision mediump float;'
+        .endl()+'attribute vec3 vPosition;'
+        .endl()+'attribute vec2 attrTexCoord;'
+        .endl()+'attribute vec3 attrVertNormal;'
+        .endl()+'varying vec2 texCoord;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'uniform mat4 projMatrix;'
+        .endl()+'uniform mat4 mvMatrix;'
+        .endl()+'uniform mat4 normalMatrix;'
+        .endl()+'varying vec2 vNorm;'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'    texCoord=attrTexCoord;'
+        .endl()+'    norm=attrVertNormal;'
+        .endl()+''
+        .endl()+'    vec4 pos = vec4( vPosition, 1. );'
+        .endl()+'    vec3 e = normalize( vec3( mvMatrix * pos ) );'
+        .endl()+'    vec3 n = normalize( mat3(normalMatrix) * norm );'
+        .endl()+''
+        .endl()+'    vec3 r = reflect( e, n );'
+        .endl()+'    float m = 2. * sqrt( '
+        .endl()+'        pow(r.x, 2.0)+'
+        .endl()+'        pow(r.y, 2.0)+'
+        .endl()+'        pow(r.z + 1.0, 2.0)'
+        .endl()+'    );'
+        .endl()+'    vNorm = r.xy / m + 0.5;'
+        .endl()+''
+        .endl()+'    gl_Position = projMatrix * mvMatrix * pos;'
+        .endl()+'}';
+
+
+    var srcFrag=''
+        .endl()+'precision mediump float;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'varying vec2 texCoord;'
+        .endl()+'uniform sampler2D tex;'
+        .endl()+''
+        .endl()+'varying vec2 vNorm;'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'    vec4 col = texture2D( tex, vNorm );'
+        .endl()+'    gl_FragColor = col;'
+        .endl()+''
+        .endl()+'}';
+
+    var shader=new CGL.Shader();
+    shader.setSource(srcVert,srcFrag);
+
+    this.render.onTriggered=this.doRender;
+    this.doRender();
+};
+
+Ops.Gl.Shader.SphereEnvMaterial.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
 
 
 Ops.Gl.Shader.GradientMaterial = function()
@@ -52,7 +153,6 @@ Ops.Gl.Shader.GradientMaterial = function()
     this.name='GradientMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
 
     this.r=this.addInPort(new Port(this,"r1",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
     this.g=this.addInPort(new Port(this,"g1",OP_PORT_TYPE_VALUE,{ display:'range' }));
@@ -69,26 +169,24 @@ Ops.Gl.Shader.GradientMaterial = function()
     this.b3=this.addInPort(new Port(this,"b3",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.a3=this.addInPort(new Port(this,"a3",OP_PORT_TYPE_VALUE,{ display:'range' }));
 
-this.r.val=0.2;
-this.g.val=0.2;
-this.b.val=0.2;
-this.a.val=1.0;
+    this.r.val=0.2;
+    this.g.val=0.2;
+    this.b.val=0.2;
+    this.a.val=1.0;
 
-this.r2.val=0.73;
-this.g2.val=0.73;
-this.b2.val=0.73;
-this.a2.val=1.0;
+    this.r2.val=0.73;
+    this.g2.val=0.73;
+    this.b2.val=0.73;
+    this.a2.val=1.0;
 
-this.r3.val=1.0;
-this.g3.val=1.0;
-this.b3.val=1.0;
-this.a3.val=1.0;
+    this.r3.val=1.0;
+    this.g3.val=1.0;
+    this.b3.val=1.0;
+    this.a3.val=1.0;
 
     var colA=[];
     var colB=[];
     var colC=[];
-
-
 
     this.doRender=function()
     {
@@ -117,12 +215,10 @@ this.a3.val=1.0;
         .endl()+'   }'
         .endl()+'}';
 
-
     var shader=new CGL.Shader();
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+    this.doRender();
 
-
-this.doRender();
     this.r.onValueChanged=this.g.onValueChanged=this.b.onValueChanged=this.a.onValueChanged=function()
     {
         colA=[self.r.val,self.g.val,self.b.val,self.a.val];
@@ -148,9 +244,6 @@ this.doRender();
     this.r2.onValueChanged();
     this.r.onValueChanged();
     this.render.onTriggered=this.doRender;
-    
-
-
 };
 
 Ops.Gl.Shader.GradientMaterial.prototype = new Op();

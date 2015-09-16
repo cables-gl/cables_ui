@@ -19,7 +19,7 @@ CABLES.UI.MODAL.hide=function()
 
 CABLES.UI.MODAL.show=function(content)
 {
-    $('#modalcontent').html('<div class="modalclose"><a class="button fa fa-times tt" data-tt="close / press escape to close" onclick="CABLES.UI.MODAL.hide();"></a></div>');
+    $('#modalcontent').html('<div class="modalclose"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide();"></a></div>');
     $('#modalcontent').append(content);
     $('#modalcontent').show();
     $('#modalbg').show();

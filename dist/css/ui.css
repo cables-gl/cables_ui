@@ -406,7 +406,7 @@ td {
 .filename {
   display: block;
   float: left;
-  max-width: 130px;
+  max-width: 180px;
   overflow: hidden; }
 
 ::-webkit-scrollbar {

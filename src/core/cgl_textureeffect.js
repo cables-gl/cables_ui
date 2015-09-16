@@ -117,12 +117,9 @@ CGL.TextureEffect=function()
         cgl.popPMatrix();
         cgl.gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
 
-
         cgl.popMvMatrix();
 
-
         switched=!switched;
-
     };
 
 };

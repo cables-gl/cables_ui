@@ -885,6 +885,8 @@ Ops.RandomCluster = function()
         }
     }
 
+    this.size.val=40;
+
     this.num.onValueChanged=reset;
     this.size.onValueChanged=reset;
 

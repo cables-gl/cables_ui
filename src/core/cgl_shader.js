@@ -93,8 +93,6 @@ CGL.Shader=function()
     var defines=[];
     var needsRecompile=true;
 
-
-
     this.define=function(name,value)
     {
         if(!value)value='';
@@ -155,6 +153,8 @@ CGL.Shader=function()
         .endl()+'varying vec3 norm;'
         .endl()+'uniform mat4 projMatrix;'
         .endl()+'uniform mat4 mvMatrix;'
+        .endl()+'uniform mat4 normalMatrix;'
+        
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   texCoord=attrTexCoord;'
@@ -177,6 +177,17 @@ CGL.Shader=function()
         .endl()+'}';
     };
 
+    this.getErrorFragmentShader=function()
+    {
+        return ''
+        .endl()+'precision mediump float;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   gl_FragColor = vec4(1.0,0.0,0.0,1.0);'
+        .endl()+'}';
+    };
+
     this.srcVert=this.getDefaultVertexShader();
     this.srcFrag=this.getDefaultFragmentShader();
 
@@ -188,6 +199,8 @@ CGL.Shader=function()
 
     var projMatrixUniform=-1;
     var mvMatrixUniform=-1;
+    var normalMatrixUniform=-1;
+
 
     var attrTexCoords = -1;
     var attrVertexNormals = -1;
@@ -259,8 +272,10 @@ CGL.Shader=function()
             attrTexCoords = cgl.gl.getAttribLocation(program, 'attrTexCoord');
             attrVertexPos = cgl.gl.getAttribLocation(program, 'vPosition');
 
+
             projMatrixUniform = cgl.gl.getUniformLocation(program, "projMatrix");
             mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
+            normalMatrixUniform = cgl.gl.getUniformLocation(program, "normalMatrix");
         }
 
         cgl.gl.useProgram(program);
@@ -272,6 +287,17 @@ CGL.Shader=function()
 
         cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
+
+
+        // calc normal matrix
+        // var normalMatrix = cgl.mvMatrix.inverse();
+        var normalMatrix = mat4.create();
+        mat4.invert(normalMatrix,cgl.mvMatrix);
+        // normalMatrix = normalMatrix.transpose();
+        mat4.transpose(normalMatrix, normalMatrix);
+        cgl.gl.uniformMatrix4fv(normalMatrixUniform, false, normalMatrix);
+
+
     };
 
     this.getProgram=function()
@@ -302,6 +328,9 @@ CGL.Shader=function()
             }
 
             console.warn( cgl.gl.getShaderInfoLog(shader) );
+
+self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
+
         }
         return shader;
     };
