@@ -134,13 +134,15 @@ Ops.Gl.ClearColor = function()
     this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true'}));
     this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
 
     this.r.val=0.3;
     this.g.val=0.3;
     this.b.val=0.3;
+    this.a.val=1.0;
     this.render.onTriggered=function()
     {
-        cgl.gl.clearColor(self.r.val,self.g.val,self.b.val,1);
+        cgl.gl.clearColor(self.r.val,self.g.val,self.b.val,self.a.val);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         self.trigger.call();

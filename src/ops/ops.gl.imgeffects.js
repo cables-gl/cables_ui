@@ -455,7 +455,7 @@ Ops.Gl.TextureEffects.MixImage = function()
         .endl()+'       col=texture2D(tex,texCoord)*(1.0-amount);'
         .endl()+'       col+=texture2D(image,texCoord)*amount;'
         .endl()+'   #endif'
-        .endl()+'   col.a=1.0;'
+        // .endl()+'   col.a=1.0;'
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
