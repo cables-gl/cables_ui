@@ -1082,10 +1082,16 @@ var line;
 
                 CABLES.api.get('project/'+params.id,function(proj)
                 {
-                    viewBox.x=proj.ui.viewBox.x;
-                    viewBox.y=proj.ui.viewBox.y;
-                    viewBox.w=proj.ui.viewBox.w;
-                    viewBox.h=proj.ui.viewBox.h;
+                    if(proj.ui)
+                    {
+                        if(proj.ui.viewBox)
+                        {
+                            viewBox.x=proj.ui.viewBox.x;
+                            viewBox.y=proj.ui.viewBox.y;
+                            viewBox.w=proj.ui.viewBox.w;
+                            viewBox.h=proj.ui.viewBox.h;
+                        }
+                    }
                     self.updateViewBox();
 
                     self.setCurrentProject(proj);
