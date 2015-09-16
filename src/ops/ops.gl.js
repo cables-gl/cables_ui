@@ -168,6 +168,25 @@ Ops.Gl.Depth = function()
     this.enable=this.addInPort(new Port(this,"enable depth testing",OP_PORT_TYPE_VALUE,{ display:'bool' }));
     this.write=this.addInPort(new Port(this,"write to depth buffer",OP_PORT_TYPE_VALUE,{ display:'bool' }));
 
+
+    this.depthFunc=this.addInPort(new Port(this,"ratio",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:['never','always','less','less or equal','greater', 'greater or equal','equal','not equal']} ));
+
+    var theDepthFunc=cgl.gl.LEQUAL;
+
+    this.depthFunc.onValueChanged=function()
+    {
+        if(self.depthFunc.val=='never') theDepthFunc=cgl.gl.NEVER;
+        if(self.depthFunc.val=='always') theDepthFunc=cgl.gl.ALWAYS;
+        if(self.depthFunc.val=='less') theDepthFunc=cgl.gl.LESS;
+        if(self.depthFunc.val=='less or equal') theDepthFunc=cgl.gl.LEQUAL;
+        if(self.depthFunc.val=='greater') theDepthFunc=cgl.gl.GREATER;
+        if(self.depthFunc.val=='greater or equal') theDepthFunc=cgl.gl.EQUAL;
+        if(self.depthFunc.val=='equal') theDepthFunc=cgl.gl.EQUAL;
+        if(self.depthFunc.val=='not equal') theDepthFunc=cgl.gl.NOTEQUAL;
+    };
+
+    this.depthFunc.val='less or equal';
+
     this.clear.val=false;
     this.enable.val=true;
     this.write.val=true;
@@ -178,10 +197,13 @@ Ops.Gl.Depth = function()
         if('true'!=self.enable.val) cgl.gl.disable(cgl.gl.DEPTH_TEST);
         if('true'!=self.write.val) cgl.gl.depthMask(false);
 
+        cgl.gl.depthFunc(theDepthFunc);
+
         self.trigger.call();
 
         cgl.gl.enable(cgl.gl.DEPTH_TEST);
         cgl.gl.depthMask(true);
+        cgl.gl.depthFunc(cgl.gl.LEQUAL);
     };
 
 };
