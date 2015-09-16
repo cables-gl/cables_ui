@@ -855,7 +855,9 @@ var line;
                         CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
                         self.setSelectedOp(null);
 
+        
                         ui.scene.deSerialize(json);
+
 
                         return;
                     }
@@ -1096,7 +1098,9 @@ var line;
 
                     self.setCurrentProject(proj);
                     self.scene.clear();
+
                     self.scene.deSerialize(proj);
+
                     CABLES.UI.MODAL.hide();
                 });
             });

@@ -555,6 +555,9 @@ var Scene = function()
         if (typeof obj === "string") obj=JSON.parse(obj);
         var self=this;
 
+        var starttime=window.performance.now();
+
+
         function addLink(opinid,opoutid,inName,outName)
         {
             var found=false;
@@ -569,6 +572,7 @@ var Scene = function()
             }
         }
 
+console.log('add ops ');
         // add ops...
         for(var iop in obj.ops)
         {
@@ -577,6 +581,7 @@ var Scene = function()
 
             for(var ipi in obj.ops[iop].portsIn)
             {
+
                 var objPort=obj.ops[iop].portsIn[ipi];
                 var port=op.getPortByName(objPort.name);
                 if(port && port.type!=OP_PORT_TYPE_TEXTURE)port.val=objPort.value;
@@ -585,6 +590,10 @@ var Scene = function()
                 if(objPort.anim)
                 {
                     if(!port.anim)port.anim=new CABLES.TL.Anim();
+
+                    if(objPort.anim.loop)
+                        port.anim.loop=objPort.anim.loop;
+
                     for(var ani in objPort.anim.keys)
                     {
                         // var o={t:objPort.anim.keys[ani].t,value:objPort.anim.keys[ani].v};
@@ -592,6 +601,7 @@ var Scene = function()
                         port.anim.keys.push(new CABLES.TL.Key(objPort.anim.keys[ani]) );
                     }
                 }
+
             }
 
             for(var ipo in obj.ops[iop].portsOut)
@@ -599,7 +609,13 @@ var Scene = function()
                 var port2=op.getPortByName(obj.ops[iop].portsOut[ipo].name);
                 if(port2&& port2.type!=OP_PORT_TYPE_TEXTURE)port2.val=obj.ops[iop].portsOut[ipo].value;
             }
+
+
+
         }
+
+                console.log('create links...');
+                
 
         // create links...
         for(iop in obj.ops)
@@ -617,10 +633,20 @@ var Scene = function()
             }
         }
 
+        console.log('create uuids ');
+
         for(var i in this.ops)
         {
             this.ops[i].id=generateUUID();
         }
+
+
+
+        var timeused=window.performance.now()-starttime;
+        console.log('serialize :',timeused,op);
+
+
+
     };
 
     this.exec();

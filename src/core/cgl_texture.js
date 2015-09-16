@@ -29,6 +29,7 @@ CGL.Texture=function(options)
 
     this.setSize=function(w,h)
     {
+
         self.width=w;
         self.height=h;
 
@@ -55,7 +56,6 @@ CGL.Texture=function(options)
         cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_EDGE);
         cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.LINEAR);
 
-        
         if(isDepthTexture)
         {
             cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.DEPTH_COMPONENT, w,h, 0, cgl.gl.DEPTH_COMPONENT, cgl.gl.UNSIGNED_SHORT, null);
@@ -64,7 +64,6 @@ CGL.Texture=function(options)
         {
             cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, w, h, 0, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, uarr);
         }
-        
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };

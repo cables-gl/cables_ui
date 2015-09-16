@@ -648,6 +648,13 @@ CABLES.TL.UI.TimeLineUI=function()
         return this.getTimeLeft()+viewBox.w/CABLES.TL.TIMESCALE;
     };
 
+
+    this.toggleLoop=function()
+    {
+        anim.loop=!anim.loop;
+        updateKeyLine();
+    };
+
     this.centerCursor=function()
     {
         var start=cursorTime*CABLES.TL.TIMESCALE;
@@ -739,6 +746,8 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#ease_smootherstep").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP); } );
     $("#ease_bezier").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_BEZIER); } );
 
+
+    $("#loop").bind("click", this.toggleLoop);
     $("#centercursor").bind("click", this.centerCursor);
     $("#centercursor").bind("mousedown", function(){doCenter=true;} );
     $("#centercursor").bind("mouseup", function(){doCenter=false;} );

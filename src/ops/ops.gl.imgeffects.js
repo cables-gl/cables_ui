@@ -114,11 +114,14 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
         if(self.clear.val=='true')
         {
+
             cgl.currentTextureEffect.bind();
 
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
-            cgl.gl.clearColor(0,0,0,1.0);
+            cgl.gl.clearColor(0,0,0,0.0);
+
+            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
             cgl.currentTextureEffect.finish();
         }
@@ -618,7 +621,9 @@ Ops.Gl.TextureEffects.DepthTexture = function()
         .endl()+'       float c = (2.0 * n) / (f + n - z * (f - n));  // convert to linear values '
         .endl()+'       col=vec4(c,c,c,1.0);'
         .endl()+'   #endif'
-        .endl()+'   col.a=1.0;'
+        
+        .endl()+'   if(c>=0.99)col.a=0.0;'
+        .endl()+'   else col.a=1.0;'
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
@@ -1349,7 +1354,7 @@ Ops.Gl.TextureEffects.Color = function()
 
     this.a.onValueChanged=function()
     {
-        uniformB.setValue(self.a.val);
+        uniformA.setValue(self.a.val);
     };
 
     this.r.val=1.0;
@@ -1489,7 +1494,7 @@ Ops.Gl.TextureEffects.Blur = function()
         .endl()+'{'
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
-        .endl()+'       col=blur9(tex,texCoord,vec2(512.0,512.0),vec2(dirX,dirY));'
+        .endl()+'       col=blur9(tex,texCoord,vec2(480.0,270.0),vec2(dirX,dirY));'
         // .endl()+ '       col=blur9(tex,texCoord,vec2(512.0,512.0),vec2(dirX*1.4,dirY*1.4));'
         .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
