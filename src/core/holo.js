@@ -528,7 +528,7 @@ var Scene = function()
     this.onDelete=function(op){};
     this.onLink=function(p1,p2){};
     this.onUnLink=function(p1,p2){};
-    this.serialize=function()
+    this.serialize=function(asObj)
     {
         var obj={};
 
@@ -538,6 +538,7 @@ var Scene = function()
             obj.ops.push( this.ops[i].getSerialized() );
         }
         
+        if(asObj)return obj;
         return JSON.stringify(obj);
     };
 

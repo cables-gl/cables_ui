@@ -1082,6 +1082,12 @@ var line;
 
                 CABLES.api.get('project/'+params.id,function(proj)
                 {
+                    viewBox.x=proj.ui.viewBox.x;
+                    viewBox.y=proj.ui.viewBox.y;
+                    viewBox.w=proj.ui.viewBox.w;
+                    viewBox.h=proj.ui.viewBox.h;
+                    self.updateViewBox();
+
                     self.setCurrentProject(proj);
                     self.scene.clear();
                     self.scene.deSerialize(proj);
@@ -1100,11 +1106,20 @@ var line;
         
             setTimeout(function()
             {
+                var data=ui.scene.serialize(true);
+
+                data.ui={viewBox:{}};
+                data.ui.viewBox.w=viewBox.w;
+                data.ui.viewBox.h=viewBox.h;
+                data.ui.viewBox.x=viewBox.x;
+                data.ui.viewBox.y=viewBox.y;
+
+                data=JSON.stringify(data);
 
                 CABLES.api.put(
                     'project/'+currentProject._id,
                     {
-                        "data":ui.scene.serialize(),
+                        "data":data,
                         "screenshot":cgl.screenShotDataURL
                     },
                     function(r)
