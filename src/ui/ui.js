@@ -1139,7 +1139,7 @@ var line;
                         CABLES.UI.MODAL.hide();
                             
                     });
-            },100);
+            },30);
 
 
         };

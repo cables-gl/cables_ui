@@ -1,12 +1,21 @@
 var CGL=CGL || {};
 
-CGL.Texture=function()
+CGL.Texture=function(options)
 {
     var self=this;
     this.tex = cgl.gl.createTexture();
     this.width=0;
     this.height=0;
     this.flip=true;
+    var isDepthTexture=false;
+
+    if(options)
+    {
+        if(options.isDepthTexture)
+        {
+            isDepthTexture=options.isDepthTexture;
+        }
+    }
 
     // gl.bindTexture(gl.TEXTURE_2D, this.tex);
     // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([111, 111, 111, 255]));
@@ -46,7 +55,16 @@ CGL.Texture=function()
         cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_EDGE);
         cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.LINEAR);
 
-        cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, w, h, 0, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, uarr);
+        
+        if(isDepthTexture)
+        {
+            cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.DEPTH_COMPONENT, w,h, 0, cgl.gl.DEPTH_COMPONENT, cgl.gl.UNSIGNED_SHORT, null);
+        }
+        else
+        {
+            cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, w, h, 0, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, uarr);
+        }
+        
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };

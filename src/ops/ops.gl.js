@@ -907,12 +907,15 @@ Ops.Gl.Render2Texture = function()
     Op.apply(this, arguments);
     var self=this;
 
+var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
+
     this.name='render to texture';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var frameBuf;
     var texture=new CGL.Texture();
+    var textureDepth=new CGL.Texture({isDepthTexture:true});
 
     this.width=this.addInPort(new Port(this,"texture width"));
     this.height=this.addInPort(new Port(this,"texture height"));
@@ -920,11 +923,13 @@ Ops.Gl.Render2Texture = function()
     this.clear.val=true;
 
     this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.texDepth=this.addOutPort(new Port(this,"textureDepth",OP_PORT_TYPE_TEXTURE));
 
     this.width.val=1920;
     this.height.val=1080;
 
     texture.setSize(this.width.val,this.height.val);
+    textureDepth.setSize(this.width.val,this.height.val);
 
     frameBuf = cgl.gl.createFramebuffer();
     cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
@@ -932,13 +937,26 @@ Ops.Gl.Render2Texture = function()
     var renderbuffer = cgl.gl.createRenderbuffer();
     cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
     cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, this.width.val,this.height.val);
+    
     cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
     cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
+    
+
+    cgl.gl.framebufferTexture2D(
+        cgl.gl.FRAMEBUFFER,
+        cgl.gl.DEPTH_ATTACHMENT,
+        cgl.gl.TEXTURE_2D,
+        textureDepth.tex,
+        0 );
+
+
+
     cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
     cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
     self.tex.val=texture;
+    self.texDepth.val=textureDepth;
 
     this.render.onTriggered=function()
     {
