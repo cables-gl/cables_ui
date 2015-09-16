@@ -50,9 +50,7 @@ $("html").on("drop", function(event)
         ui.updateProjectFiles();
         if (xhr.status === 200)
         {
-            setTimeout(function(){CABLES.UI.MODAL.hide();},300);
-            
-            // CABLES.UI.MODAL.show('upload success: ' + xhr.status);
+            CABLES.UI.MODAL.hide();
         }
         else
         {

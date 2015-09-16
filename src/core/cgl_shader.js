@@ -263,15 +263,11 @@ CGL.Shader=function()
     {
         if(!program || needsRecompile) self.compile();
 
-       
-
-
         if(mvMatrixUniform==-1)
         {
             attrVertexNormals = cgl.gl.getAttribLocation(program, 'attrVertNormal');
             attrTexCoords = cgl.gl.getAttribLocation(program, 'attrTexCoord');
             attrVertexPos = cgl.gl.getAttribLocation(program, 'vPosition');
-
 
             projMatrixUniform = cgl.gl.getUniformLocation(program, "projMatrix");
             mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
@@ -287,7 +283,6 @@ CGL.Shader=function()
 
         cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
-
 
         // calc normal matrix
         // var normalMatrix = cgl.mvMatrix.inverse();

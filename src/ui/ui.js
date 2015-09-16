@@ -1095,22 +1095,31 @@ var line;
         this.saveCurrentProject=function()
         {
             CABLES.UI.MODAL.showLoading('saving project');
-            CABLES.api.put(
-                'project/'+currentProject._id,
-                {
-                    "data":ui.scene.serialize()
-                },
-                function(r)
-                {
-                    if(r.success===true)
-                    {
-                        CABLES.UI.setStatusText('project saved');
-                    }
-                    else CABLES.UI.setStatusText('project NOT saved');
 
-                    setTimeout(function(){CABLES.UI.MODAL.hide();},300);
-                        
-                });
+            cgl.doScreenshot=true;
+        
+            setTimeout(function()
+            {
+
+                CABLES.api.put(
+                    'project/'+currentProject._id,
+                    {
+                        "data":ui.scene.serialize(),
+                        "screenshot":cgl.screenShotDataURL
+                    },
+                    function(r)
+                    {
+                        if(r.success===true)
+                        {
+                            CABLES.UI.setStatusText('project saved');
+                        }
+                        else CABLES.UI.setStatusText('project NOT saved');
+
+                        CABLES.UI.MODAL.hide();
+                            
+                    });
+            },100);
+
 
         };
         this.getCurrentProject=function()
