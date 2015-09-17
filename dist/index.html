@@ -327,6 +327,63 @@ function inputIncrement(v,dir)
 </script>
 
 
+
+<script id="params_project" type="text/x-handlebars-template">
+
+
+    <div class="">
+        <input class="medium" id="projectsettings_name"  value="{{project.name}}">
+
+        <br/>
+        <br/>
+
+        <table>
+
+            <tr onclick="togglePublic();">
+                <td>
+                    public project
+                    <input type="hidden" id="projectsettings_public"></input>
+                </td>
+                <td>
+                    <a id="projectsettings_public_icon" class="button fa fa-check-square-o fa-square-o"></a>
+                </td>
+            </tr>
+
+        </table>
+
+        <br/>
+        <br/>
+
+        <a onclick="ui.saveProjectParams();" class="button">save settings</a>
+
+
+    </div>
+
+<script>
+
+function togglePublic()
+{
+    $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true')); 
+
+    if($('#projectsettings_public').val()=='true')
+    {
+        $('#projectsettings_public_icon').addClass('fa-check-square-o');
+        $('#projectsettings_public_icon').removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#projectsettings_public_icon').removeClass('fa-check-square-o');
+        $('#projectsettings_public_icon').addClass('fa-square-o');
+    }
+
+}
+
+</script>
+
+
+</script>
+
+
 <script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
     <h2>files</h2>
 

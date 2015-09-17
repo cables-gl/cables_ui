@@ -1734,7 +1734,22 @@ var line;
 
     this.showProjectParams=function(op)
     {
-        $('#options').html('...');
+        var html = CABLES.UI.getHandleBarHtml('params_project',{project: currentProject});
+        $('#options').html(html);
+    };
+
+    this.saveProjectParams=function()
+    {
+        var proj_name=$('$projectsettings_name').val();
+        var proj_public=$('$projectsettings_public').val();
+
+        CABLES.api.put('project/{{_id}}',{
+            name:proj_name,
+            settings:
+            {
+                isPublic:proj_public
+            }
+        });
     };
 
     this.showOpParams=function(op)
