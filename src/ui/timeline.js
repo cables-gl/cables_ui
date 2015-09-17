@@ -884,13 +884,16 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         var step=fps*5;
 
-        if(CABLES.TL.TIMESCALE>90) step=fps;
-        if(CABLES.TL.TIMESCALE>500) step=fps/3;
-        if(CABLES.TL.TIMESCALE>1000) step=fps/6;
-        if(CABLES.TL.TIMESCALE>1400) step=fps/30;
+        step=fps+fps/4;
+        if(CABLES.TL.TIMESCALE>30) step=fps/2;
+        if(CABLES.TL.TIMESCALE>60) step=fps/3;
+        if(CABLES.TL.TIMESCALE>300) step=fps/6;
+        if(CABLES.TL.TIMESCALE>500) step=fps/10;
+        // if(CABLES.TL.TIMESCALE>1000) step=fps/6;
+        if(CABLES.TL.TIMESCALE>1000) step=fps/30;
 
 
-        for(var i=0;i<50;i++)
+        for(var i=0;i<100;i++)
         {
             var frame=i*step;
             var t;
@@ -936,6 +939,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
 
         CABLES.TL.TIMESCALE=v;
+
+        console.log('CABLES.TL.TIMESCALE',CABLES.TL.TIMESCALE);
+        
+
 
         viewBox.x=cursorOffset*CABLES.TL.TIMESCALE;
 
