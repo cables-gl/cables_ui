@@ -422,6 +422,7 @@ var Scene = function()
 {
     var self=this;
     this.ops=[];
+    this.settings={};
     this.timer=new Timer();
     this.animFrameOps=[];
     
@@ -533,6 +534,7 @@ var Scene = function()
         var obj={};
 
         obj.ops=[];
+        obj.settings=this.settings;
         for(var i in this.ops)
         {
             obj.ops.push( this.ops[i].getSerialized() );
@@ -554,6 +556,8 @@ var Scene = function()
     {
         if (typeof obj === "string") obj=JSON.parse(obj);
         var self=this;
+
+        this.settings=obj.settings;
 
         var starttime=window.performance.now();
 

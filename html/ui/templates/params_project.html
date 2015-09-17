@@ -4,7 +4,7 @@
 
 
     <div class="">
-        <input class="medium" id="projectsettings_name"  value="{{project.name}}">
+        <input class="medium" id="projectsettings_name" oninput="ui.saveProjectParams();" value="{{project.name}}">
 
         <br/>
         <br/>
@@ -14,10 +14,10 @@
             <tr onclick="togglePublic();">
                 <td>
                     public project
-                    <input type="hidden" id="projectsettings_public"></input>
+                    <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
                 </td>
                 <td>
-                    <a id="projectsettings_public_icon" class="button fa fa-check-square-o fa-square-o"></a>
+                    <a id="projectsettings_public_icon" class="button fa fa-square-o"></a>
                 </td>
             </tr>
 
@@ -26,17 +26,15 @@
         <br/>
         <br/>
 
-        <a onclick="ui.saveProjectParams();" class="button">save settings</a>
+        <a onclick="ui.saveCurrentProject();" class="button">save settings</a>
 
 
     </div>
 
 <script>
 
-function togglePublic()
+function updateIcons()
 {
-    $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true')); 
-
     if($('#projectsettings_public').val()=='true')
     {
         $('#projectsettings_public_icon').addClass('fa-check-square-o');
@@ -47,8 +45,19 @@ function togglePublic()
         $('#projectsettings_public_icon').removeClass('fa-check-square-o');
         $('#projectsettings_public_icon').addClass('fa-square-o');
     }
-
+    ui.saveProjectParams();
 }
+
+function togglePublic()
+{
+    $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true')); 
+
+    updateIcons();
+}
+
+updateIcons();
+
+
 
 </script>
 

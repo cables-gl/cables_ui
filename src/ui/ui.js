@@ -1118,6 +1118,9 @@ var line;
             {
                 var data=ui.scene.serialize(true);
 
+        console.log('data',data.settings);
+        
+
                 data.ui={viewBox:{}};
                 data.ui.viewBox.w=viewBox.w;
                 data.ui.viewBox.h=viewBox.h;
@@ -1129,6 +1132,7 @@ var line;
                 CABLES.api.put(
                     'project/'+currentProject._id,
                     {
+                        "name":currentProject.name,
                         "data":data,
                         "screenshot":cgl.screenShotDataURL
                     },
@@ -1734,22 +1738,27 @@ var line;
 
     this.showProjectParams=function(op)
     {
-        var html = CABLES.UI.getHandleBarHtml('params_project',{project: currentProject});
+
+        console.log('currentProject.settings',self.scene.settings);
+        var s={};
+
+        s.name=currentProject.name;
+        s.settings=self.scene.settings;
+
+
+        // self.scene.settings=currentProject.settings || {};
+
+        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s});
         $('#options').html(html);
     };
 
     this.saveProjectParams=function()
     {
-        var proj_name=$('$projectsettings_name').val();
-        var proj_public=$('$projectsettings_public').val();
+        var proj_name=$('#projectsettings_name').val();
+        var proj_public=$('#projectsettings_public').val();
 
-        CABLES.api.put('project/{{_id}}',{
-            name:proj_name,
-            settings:
-            {
-                isPublic:proj_public
-            }
-        });
+        currentProject.name=proj_name;
+        self.scene.settings.isPublic=proj_public;
     };
 
     this.showOpParams=function(op)
