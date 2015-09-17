@@ -423,6 +423,7 @@ CABLES.TL.UI.TimeLineUI=function()
             anim.keys[i].updateCircle();
         }
 
+
         if(anim.onChange===null) anim.onChange=updateKeyLine;
         
     };
@@ -912,20 +913,16 @@ CABLES.TL.UI.TimeLineUI=function()
     this.setTimeScale=function(v)
     {
         cursorLine.hide();
+        var cursorOffset=this.getTimeFromPaper(viewBox.x);
+        // var addOffset=Math.abs(cursorOffset-cursorTime);
 
-
-// var cursorOffset=this.getTimeFromPaper(cursorTime*CABLES.TL.TIMESCALE-viewBox.x);
-var cursorOffset=this.getTimeFromPaper(viewBox.x);
-
-var addOffset=Math.abs(cursorOffset-cursorTime);
-
-        console.log('cursorOffset',cursorOffset);
-        console.log('addOffset',cursorTime*CABLES.TL.TIMESCALE);
+        // console.log('cursorOffset',cursorOffset);
+        // console.log('addOffset',cursorTime*CABLES.TL.TIMESCALE);
 
 
         CABLES.TL.TIMESCALE=v;
 
-viewBox.x=cursorOffset*CABLES.TL.TIMESCALE;
+        viewBox.x=cursorOffset*CABLES.TL.TIMESCALE;
 
         // this.centerCursor();
         updateKeyLine();
@@ -1152,6 +1149,20 @@ viewBox.x=cursorOffset*CABLES.TL.TIMESCALE;
     this.unselectKeys=function()
     {
         anim.unselectKeys();
+    };
+
+    this.clear=function()
+    {
+        for(var i in anims)
+        {
+            if(anims[i])
+            {
+                    anims[i].removeUi();
+                    anims[i].keyLine.hide();
+                    found=true;
+            }
+        }
+        anims.length=0;
     };
 
     this.updateTime();

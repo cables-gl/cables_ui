@@ -19,9 +19,11 @@ CABLES.API=function()
             console.log( "success "+data );
             if(cbSuccess) cbSuccess(data);
         })
-        .fail(function()
+        .fail(function(data)
         {
-            console.log('error ajax');
+            console.log('data',data);
+            CABLES.UI.MODAL.show('ajax error: '+data.statusText);
+            // console.log('error ajax');
             if(cbError)cbError();
         })
         .always(function()

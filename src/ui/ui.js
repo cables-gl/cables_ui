@@ -1164,6 +1164,8 @@ var line;
         {
             console.log('set current project '+proj.name);
 
+            self.timeLine.clear();
+
             currentProject=proj;
             if(currentProject===null)
             {
