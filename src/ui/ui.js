@@ -1758,6 +1758,7 @@ var line;
         var proj_public=$('#projectsettings_public').val();
 
         currentProject.name=proj_name;
+        self.scene.settings=self.scene.settings || {};
         self.scene.settings.isPublic=proj_public;
     };
 
