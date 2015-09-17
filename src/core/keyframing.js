@@ -8,6 +8,10 @@ CABLES.TL.EASING_SMOOTHSTEP=2;
 CABLES.TL.EASING_SMOOTHERSTEP=3;
 CABLES.TL.EASING_BEZIER=4;
 
+CABLES.TL.EASING_CUBIC_IN=5;
+CABLES.TL.EASING_CUBIC_OUT=6;
+CABLES.TL.EASING_CUBIC_INOUT=7;
+
 CABLES.TL.Key=function(obj)
 {
     this.time=0.0;
@@ -104,6 +108,34 @@ CABLES.TL.Key=function(obj)
         return this.value;
     };
 
+
+this.easeCubicIn=function(t,key2)
+{
+    t=t*t*t;
+    return linear(t,this,key2);
+};
+
+this.easeCubicOut=function(t,key2)
+{
+    t--;
+    t=(t*t*t + 1) ;
+    return linear(t,this,key2);
+};
+
+this.easeCubicInOut=function(t,key2)
+{
+    t*=2;
+    if (t < 1) t= 0.5*t*t*t;
+    else
+    {
+        t -= 2;
+        t= 0.5*(t*t*t + 2);
+    }
+    return linear(t,this,key2);
+};
+
+
+
     this.easeSmoothStep=function(perc,key2)
     {
         var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
@@ -188,6 +220,11 @@ CABLES.TL.Key=function(obj)
         if(easing==CABLES.TL.EASING_ABSOLUTE) this.ease=this.easeAbsolute;
         else if(easing==CABLES.TL.EASING_SMOOTHSTEP) this.ease=this.easeSmoothStep;
         else if(easing==CABLES.TL.EASING_SMOOTHERSTEP) this.ease=this.easeSmootherStep;
+
+        else if(easing==CABLES.TL.EASING_CUBIC_IN) this.ease=this.easeCubicIn;
+        else if(easing==CABLES.TL.EASING_CUBIC_OUT) this.ease=this.easeCubicOut;
+        else if(easing==CABLES.TL.EASING_CUBIC_INOUT) this.ease=this.easeCubicInOut;
+
         else if(easing==CABLES.TL.EASING_BEZIER)
             {
                 updateBezier=true;

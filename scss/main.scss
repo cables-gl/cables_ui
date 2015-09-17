@@ -21,6 +21,7 @@ body
     -ms-user-select: none;      /* IE 10+ */
 }
 
+.hidden { display:none;}
 .fleft { float:left; }
 .mainColor { color:$mainColor; }
 
@@ -613,4 +614,36 @@ input[type=range]:focus {
 @import 'jcolorpicker.scss';
 
 
+.easingselect
+{
+    padding:10px;
+    font-family: arial;
+    position: absolute;
+    margin-top:41px;
+    right:0px;
+    width:250px;
+    height:200px;
+    background-color: #222;
+    z-index: 99999999;
+
+    .select
+    {
+        float:left;
+        width:33%;
+
+        a
+        {
+            &:hover
+            {
+                text-decoration: underline;
+            }
+
+            .active
+            {
+                color:$mainColor;
+            }
+        }
+    }
+
+}
 
