@@ -189,10 +189,11 @@ function UiLink(port1, port2)
                 CABLES.UI.setStatusText('left click: insert op / right click: delete link');
             });
 
-            addCircle.drag(function(){},function(){},function(event)
+
+            addCircle.node.onmousedown = function (event)
             {
                 $('#patch').focus();
-
+        
                 if(self.p1!==null)
                 {
                     if(event.which==3)
@@ -205,8 +206,7 @@ function UiLink(port1, port2)
                         CABLES.UI.OPSELECT.showOpSelect(ui.getCanvasCoordsMouse(event),null,null,self);
                     }
                 }
-
-            });
+            };
         }
         else
         {
