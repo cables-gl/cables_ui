@@ -1743,15 +1743,10 @@ var line;
 
     this.showProjectParams=function(op)
     {
-
-        console.log('currentProject.settings',self.scene.settings);
         var s={};
 
         s.name=currentProject.name;
         s.settings=self.scene.settings;
-
-
-        // self.scene.settings=currentProject.settings || {};
 
         var html = CABLES.UI.getHandleBarHtml('params_project',{project: s});
         $('#options').html(html);
