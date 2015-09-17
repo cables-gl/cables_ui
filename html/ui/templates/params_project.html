@@ -9,11 +9,17 @@
         <br/>
         <br/>
 
+    </div>
         <table>
-
+            <tr>
+                <th colspan="11">
+                    <div class="panelhead">project settings</div>
+                </th>
+            </tr>
             <tr onclick="togglePublic();">
+            <td></td>
                 <td>
-                    public project
+                    &nbsp;public
                     <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
                 </td>
                 <td>
@@ -26,10 +32,10 @@
         <br/>
         <br/>
 
+    <div class="">
         <a onclick="ui.saveCurrentProject();" class="button">save settings</a>
-
-
     </div>
+
 
 <script>
 
