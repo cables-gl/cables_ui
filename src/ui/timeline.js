@@ -423,6 +423,11 @@ CABLES.TL.UI.TimeLineUI=function()
             anim.keys[i].updateCircle();
         }
 
+        if(anim.keys.length>1)
+        {
+            self.scaleHeight();
+            self.scaleWidth();
+        }
 
         if(anim.onChange===null) anim.onChange=updateKeyLine;
         
