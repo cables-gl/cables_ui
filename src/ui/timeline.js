@@ -163,9 +163,14 @@ CABLES.TL.Key.prototype.initUI=function()
         var newPos=ui.timeLine.getCanvasCoordsMouse(e);
         if(newPos.x<0)newPos.x=0;
 
+        var time=ui.timeLine.getTimeFromPaper(newPos.x);
+        var frame=parseInt( (time +0.5*1/ui.timeLine.getFPS() )*ui.timeLine.getFPS(),10);
+        time=frame/ui.timeLine.getFPS();
+
+
         if(CABLES.TL.MoveMode===0)
         {
-            self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:self.value});
+            self.set({time:time,value:self.value});
             self.updateCircle();
         }
         if(CABLES.TL.MoveMode==1)
@@ -175,7 +180,7 @@ CABLES.TL.Key.prototype.initUI=function()
         }
         if(CABLES.TL.MoveMode==2)
         {
-            self.set({time:ui.timeLine.getTimeFromPaper(newPos.x),value:newPos.y/-CABLES.TL.VALUESCALE});
+            self.set({time:time,value:newPos.y/-CABLES.TL.VALUESCALE});
             self.updateCircle();
         }
     }
@@ -303,6 +308,11 @@ CABLES.TL.UI.TimeLineUI=function()
 
     var cursorLineDisplay = paperTime.path("M 0 0 L 10 10");
     cursorLineDisplay.attr({stroke: "#6c9fde", "stroke-width": 2});
+
+    this.getFPS=function()
+    {
+        return fps;
+    };
 
     function getFrame(time)
     {
@@ -813,7 +823,7 @@ CABLES.TL.UI.TimeLineUI=function()
             isScrollingTime=true;
             e.offsetX=e.clientX;
             var time=self.getTimeFromMouse( e );
-            var frame=parseInt(time*fps,10);
+            var frame=parseInt( (time +0.5*1/fps )*fps,10);
             time=frame/fps;
 
             ui.scene.timer.setTime(time);
