@@ -930,6 +930,11 @@ var line;
                         $('#sidebar').animate({width:'toggle'},200);
                     }
                     else
+                    if( $('.easingselect').is(':visible') )
+                    {
+                        $('.easingselect').hide();
+                    }
+                    else
                     if( $('#modalcontent').is(':visible') )
                     {
                         CABLES.UI.MODAL.hide();

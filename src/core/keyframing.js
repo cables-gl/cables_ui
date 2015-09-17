@@ -12,6 +12,16 @@ CABLES.TL.EASING_CUBIC_IN=5;
 CABLES.TL.EASING_CUBIC_OUT=6;
 CABLES.TL.EASING_CUBIC_INOUT=7;
 
+CABLES.TL.EASING_EXPO_IN=8;
+CABLES.TL.EASING_EXPO_OUT=9;
+CABLES.TL.EASING_EXPO_INOUT=10;
+
+CABLES.TL.EASING_SIN_IN=11;
+CABLES.TL.EASING_SIN_OUT=12;
+CABLES.TL.EASING_SIN_INOUT=13;
+
+
+
 CABLES.TL.Key=function(obj)
 {
     this.time=0.0;
@@ -109,30 +119,86 @@ CABLES.TL.Key=function(obj)
     };
 
 
-this.easeCubicIn=function(t,key2)
+
+
+this.easeExpoIn=function( t,  key2)
 {
-    t=t*t*t;
+    t= Math.pow( 2, 10 * (t - 1) );
     return linear(t,this,key2);
 };
 
-this.easeCubicOut=function(t,key2)
+this.easeExpoOut=function( t,  key2)
 {
-    t--;
-    t=(t*t*t + 1) ;
+    t= ( -Math.pow( 2, -10 * t ) + 1 );
     return linear(t,this,key2);
 };
 
-this.easeCubicInOut=function(t,key2)
+this.easeExpoInOut=function( t,  key2)
 {
     t*=2;
-    if (t < 1) t= 0.5*t*t*t;
+    if (t < 1)
+    {
+      t= 0.5 * Math.pow( 2, 10 * (t - 1) );
+    }
     else
     {
-        t -= 2;
-        t= 0.5*(t*t*t + 2);
+        t--;
+        t= 0.5 * ( -Math.pow( 2, -10 * t) + 2 );
     }
     return linear(t,this,key2);
 };
+
+
+
+
+this.easeSinIn=function( t,key2)
+{
+    t= -1 * Math.cos(t * Math.PI/2) + 1;
+    return linear(t,this,key2);
+};
+
+this.easeSinOut=function( t,key2)
+{
+    t= Math.sin(t * Math.PI/2);
+    return linear(t,this,key2);
+};
+
+this.easeSinInOut=function( t,key2)
+{
+    t= -0.5 * (Math.cos(Math.PI*t) - 1.0);
+    return linear(t,this,key2);
+};
+
+
+
+
+
+
+
+    this.easeCubicIn=function(t,key2)
+    {
+        t=t*t*t;
+        return linear(t,this,key2);
+    };
+
+    this.easeCubicOut=function(t,key2)
+    {
+        t--;
+        t=(t*t*t + 1) ;
+        return linear(t,this,key2);
+    };
+
+    this.easeCubicInOut=function(t,key2)
+    {
+        t*=2;
+        if (t < 1) t= 0.5*t*t*t;
+        else
+        {
+            t -= 2;
+            t= 0.5*(t*t*t + 2);
+        }
+        return linear(t,this,key2);
+    };
 
 
 
@@ -225,11 +291,19 @@ this.easeCubicInOut=function(t,key2)
         else if(easing==CABLES.TL.EASING_CUBIC_OUT) this.ease=this.easeCubicOut;
         else if(easing==CABLES.TL.EASING_CUBIC_INOUT) this.ease=this.easeCubicInOut;
 
+        else if(easing==CABLES.TL.EASING_EXPO_IN) this.ease=this.easeExpoIn;
+        else if(easing==CABLES.TL.EASING_EXPO_OUT) this.ease=this.easeExpoOut;
+        else if(easing==CABLES.TL.EASING_EXPO_INOUT) this.ease=this.easeExpoInOut;
+
+        else if(easing==CABLES.TL.EASING_SIN_IN) this.ease=this.easeSinIn;
+        else if(easing==CABLES.TL.EASING_SIN_OUT) this.ease=this.easeSinOut;
+        else if(easing==CABLES.TL.EASING_SIN_INOUT) this.ease=this.easeSinInOut;
+
         else if(easing==CABLES.TL.EASING_BEZIER)
-            {
-                updateBezier=true;
-                this.ease=this.easeBezier;
-            }
+        {
+            updateBezier=true;
+            this.ease=this.easeBezier;
+        }
         else
         {
             easing=CABLES.TL.EASING_LINEAR;
