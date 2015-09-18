@@ -1524,13 +1524,7 @@ var line;
             else
             {
                 self.ops[i].hide();
-                // if(self.ops[i].op.objName=='Ops.Ui.Patch')
-                // {
-                //     if(self.ops[i].op.patchId.val==currentSubPatch)
-                //     {
-                //         self.ops[i].show();
-                //     }
-                // }
+
             }
         }
 

@@ -140,6 +140,7 @@ var Port=function(parent,name,type,uiAttribs)
     this.anim=null;
     var animated=false;
     var oldAnimVal=-5711;
+    this.onLink=false;
     this.shouldLink=function(){return true;};
 
     this.__defineGetter__("val", function()
@@ -377,6 +378,8 @@ var Link = function(scene)
 
         p1.addLink(this);
         p2.addLink(this);
+        if(p1.onLink) p1.onLink(this);
+        if(p2.onLink) p2.onLink(this);
         this.setValue();
     };
 

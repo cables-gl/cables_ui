@@ -25,61 +25,91 @@ Ops.Ui.Patch = function()
     var inPorts=[];
 
     this.addInput=this.addInPort(new Port(this,"new input",OP_PORT_TYPE_DYNAMIC));
+    this.patchId=this.addInPort(new Port(this,"patchId",OP_PORT_TYPE_VALUE,{ display:'readonly' }));
 
 
     this.addInput.shouldLink=function(p1,p2)
     {
-        console.log('shouldlink!');
-        console.log('p1',p1);
-     
+
         var theP=p1;
         if(p1.type==OP_PORT_TYPE_DYNAMIC) theP=p2;
 
         var p=self.addInPort(new Port(self,"new input"+inPorts.length,theP.type));
         inPorts.push(p);
 
-        self.patch.link(self,p.getName(),theP.parent,theP.getName());
+        var lIn=self.patch.link(self,p.getName(),theP.parent,theP.getName());
 
-    
+        lIn.getSerialized=function()
+        {
+            var obj={};
+
+            obj.portIn=self.addInput.getName();
+            obj.objIn=self.id;
+
+            obj.portOut=theP.getName();
+            obj.objOut=theP.parent.id;
+
+            return obj;
+        };
+
+
+
 
         var patchInputOP=self.patch.getSubPatchOp(self.patchId.val,'Ops.Ui.PatchInput');
 
-if(!patchInputOP)
-{
-    console.log('no patchinput!');
-    self.patch.addOp('Ops.Ui.PatchInput',{'subPatch':self.patchId.val} );
-
-    patchInputOP=self.patch.getSubPatchOp(self.patchId.val,'Ops.Ui.PatchInput');
-
-
-    
-    if(!patchInputOP)
-    {
-        console.log('no patchinput2!');
-    }
-}
-
-    var pOut=patchInputOP.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
-
-    if(theP.type==OP_PORT_TYPE_FUNCTION)
-    {
-        p.onTriggered=function()
+        if(!patchInputOP)
         {
-            pOut.call();
-        };
-    }
-    else
-    {
-        p.onValueChanged=function()
+            console.log('no patchinput!');
+            self.patch.addOp('Ops.Ui.PatchInput',{'subPatch':self.patchId.val} );
+
+            patchInputOP=self.patch.getSubPatchOp(self.patchId.val,'Ops.Ui.PatchInput');
+
+            if(!patchInputOP)
+            {
+                console.warn('no patchinput2!');
+            }
+        }
+
+        var pOut=patchInputOP.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
+
+
+        // pOut.onLink=function(l)
+        // {
+        //     console.log('linked that....');
+
+        //     console.log('l',l);
+
+        //     l.getSerialized=function()
+        //     {
+        //         var obj={};
+
+        //         obj.portIn=l.portIn.getName();
+        //         obj.objIn=l.portIn.parent.id;
+
+        //         obj.portOut=patchInputOP.addOutput.getName();
+        //         obj.objOut=patchInputOP.id;
+
+        //         return obj;
+        //     };
+        // };
+
+
+        if(theP.type==OP_PORT_TYPE_FUNCTION)
         {
-            pOut.val=p.val;
-        };
-    }
+            p.onTriggered=function()
+            {
+                pOut.call();
+            };
+        }
+        else
+        {
+            p.onValueChanged=function()
+            {
+                pOut.val=p.val;
+            };
+        }
 
-
-gui.patch().updateSubPatches();
-    
-                
+        gui.patch().updateSubPatches();
 
         return false;
     };
@@ -88,11 +118,7 @@ gui.patch().updateSubPatches();
     {
         console.log('dynamic link!',this.addInput.links.length);
         console.log(this.addInput.links[0]);
-
     };
-
-
-    this.patchId=this.addInPort(new Port(this,"patchId",OP_PORT_TYPE_VALUE,{ display:'readonly' }));
 
 
     this.patchId.onValueChanged=function()
@@ -116,8 +142,64 @@ Ops.Ui.PatchInput = function()
     Op.apply(this, arguments);
 
     this.name='PatchInput';
+
+    this.addOutput=this.addOutPort(new Port(this,"new output",OP_PORT_TYPE_DYNAMIC));
     
-    
+    this.addOutput.shouldLink=function(p1,p2)
+    {
+        // console.log('shouldlink!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+
+        // console.log(p1.getName() );
+        // console.log(p2.getName() );
+        
+
+        // // for(var i in self.portsOut)
+        // // {
+        // //     if(p2.getName()==self.portsOut[i].getName()) 
+        // //         {
+        // //             // found=true;
+        // //             return true;
+        // //         }
+        // // }
+
+        // theP=p2;
+        // if(p1.type==OP_PORT_TYPE_DYNAMIC) theP=p1;
+
+        // var pOut=self.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
+
+
+
+
+
+        //     if(p2.getName()==self.portsOut[i].getName())
+        //     {
+
+        // console.log(self.portsOut[i].getName());
+        // console.log(p1.getName());
+        // console.log(p2.getName());
+        // console.log('---', self.portsOut[i].getName());
+
+        // console.log(p1.type);
+        // console.log(self.portsOut[i].type);
+        
+
+        //         self.patch.link(p1.parent,p1.getName(),self,self.portsOut[i].getName());
+        //     }
+
+        //     // if(p2.getName()==self.portsOut[i].getName())
+        //     // {
+        //     //     self.patch.link(self,self.portsOut[i].getName(),p1.parent,p1.getName());
+        //     // }
+
+            
+        // }
+
+
+        console.log('shouldlink!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('p1',p1);
+
+        return true;
+    };
 
 };
 
