@@ -33,3 +33,14 @@ CABLES.UI.MODAL.showLoading=function(title,content)
     $('#modalcontent').show();
     $('#modalbg').show();
 };
+
+CABLES.UI.MODAL.showError=function(title,content)
+{
+
+$('#modalcontent').html('<div class="modalclose"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide();"></a></div>');
+    $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;'+title+'</h2>');
+    $('#modalcontent').append(content);
+    $('#modalcontent').show();
+    $('#modalbg').show();
+};
+

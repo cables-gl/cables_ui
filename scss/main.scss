@@ -309,7 +309,7 @@ input[type="text"]
     padding: 5px !important;
 }
 
-.button
+.button,.bluebutton
 {
     font-family: arial;
 
@@ -327,7 +327,11 @@ input[type="text"]
     }
 }
 
-
+.bluebutton
+{
+    background-color: $mainColor;
+    padding:10px;
+}
 
 .timingbutton_active,.graphbutton_active
 {
@@ -486,7 +490,7 @@ input[type=range]:focus {
     #username
     {
 
-        margin-top: 10px;
+        margin-top: 8px;
         float:left;
     }
 }

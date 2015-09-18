@@ -220,7 +220,7 @@ td {
 .button_colorpick {
   padding: 5px !important; }
 
-.button {
+.button, .bluebutton {
   font-family: arial;
   background-color: #444;
   border-radius: 4px;
@@ -229,8 +229,13 @@ td {
   color: white;
   padding: 3px;
   cursor: pointer; }
-  .button.warn {
+  .button.warn
+, .bluebutton.warn {
     background-color: #ea6638; }
+
+.bluebutton {
+  background-color: #6c9fde;
+  padding: 10px; }
 
 .timingbutton_active, .graphbutton_active {
   color: #6c9fde !important; }
@@ -355,7 +360,7 @@ input[type=range]:focus {
 #username
 , #loggedout
 #username {
-    margin-top: 10px;
+    margin-top: 8px;
     float: left; }
 
 #timing {

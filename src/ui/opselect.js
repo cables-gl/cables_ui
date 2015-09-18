@@ -98,6 +98,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         e.preventDefault(); // prevent the default action (scroll / move caret)
     });
 
+    setTimeout(function(){$('#opsearch').focus();},100);
 
 };
 
