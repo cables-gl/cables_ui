@@ -1007,7 +1007,7 @@ var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or b
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
         
         cgl.popMvMatrix();
-        cgl.gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
+        cgl.resetViewPort();
 
 
     };

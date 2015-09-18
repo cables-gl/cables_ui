@@ -34,6 +34,14 @@ CGL.State=function()
         return viewPort;
     };
 
+    this.resetViewPort=function()
+    {
+        cgl.gl.viewport(
+            viewPort[0],
+            viewPort[1],
+            viewPort[2],
+            viewPort[3]);
+    };
     this.setViewPort=function(x,y,w,h)
     {
         viewPort[0]=x;
