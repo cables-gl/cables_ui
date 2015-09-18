@@ -436,7 +436,7 @@ var Scene = function()
         }
     };
 
-    this.addOp=function(objName,uiAttribs,opId)
+    this.addOp=function(objName,uiAttribs)
     {
         var op=eval('new '+objName+'();');
         op.objName=objName;
@@ -446,7 +446,7 @@ var Scene = function()
         if(op.hasOwnProperty('onAnimFrame')) this.animFrameOps.push(op);
 
         this.ops.push(op);
-        op.id=opId;
+
         if(this.onAdd)this.onAdd(op);
         return op;
     };

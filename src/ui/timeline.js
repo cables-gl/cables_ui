@@ -153,12 +153,22 @@ CABLES.TL.Key.prototype.initUI=function()
 
     this.circle.node.onclick = function (e)
     {
+        $('#timeline').focus();
         if(!e.shiftKey) ui.timeLine.unselectKeys();
         self.setSelected(true);
     };
 
+    var oldValues={};
+
     function move(dx,dy,a,b,e)
     {
+        $('#timeline').focus();
+
+        if(!self.isDragging)
+        {
+            oldValues=self.getSerialized();
+        }
+
         self.isDragging=true;
         var newPos=ui.timeLine.getCanvasCoordsMouse(e);
         if(newPos.x<0)newPos.x=0;
@@ -166,7 +176,6 @@ CABLES.TL.Key.prototype.initUI=function()
         var time=ui.timeLine.getTimeFromPaper(newPos.x);
         var frame=parseInt( (time +0.5*1/ui.timeLine.getFPS() )*ui.timeLine.getFPS(),10);
         time=frame/ui.timeLine.getFPS();
-
 
         if(CABLES.TL.MoveMode===0)
         {
@@ -187,6 +196,21 @@ CABLES.TL.Key.prototype.initUI=function()
 
     function up()
     {
+
+        var undofunc=function(anim)
+        {
+            CABLES.undo.add({
+                undo: function()
+                {
+                    self.set(oldValues);
+                    ui.timeLine.refresh();
+                },
+                redo: function()
+                {
+                }
+            });
+        }(self);
+
         self.isDragging=false;
         self.x=-1;
         self.y=-1;
@@ -255,6 +279,20 @@ CABLES.TL.Anim.prototype.unselectKeys=function()
         this.keys[i].setSelected(false);
 };
 
+CABLES.TL.Anim.prototype.deleteKeyAt=function(t)
+{
+    for(var i in this.keys)
+    {
+        if(this.keys[i].time==t)
+        {
+            this.keys[i].removeUi();
+            this.keys.splice(i, 1);
+            return;
+        }
+    }
+
+};
+
 CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
 {
     var found=true;
@@ -266,7 +304,25 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
         {
             if(this.keys[i].selected)
             {
-                 this.keys[i].removeUi();
+                var undofunc=function(anim,objKey)
+                {
+                    CABLES.undo.add({
+                        undo: function(){
+                            anim.addKey(new CABLES.TL.Key(objKey));
+                            anim.sortKeys();
+                            ui.timeLine.refresh();
+                        },
+                        redo: function(){
+
+                            anim.deleteKeyAt(objKey.t);
+                            ui.timeLine.refresh();
+                        }
+                    });
+                }(this,this.keys[i].getSerialized());
+
+
+
+                this.keys[i].removeUi();
                 this.keys.splice(i, 1);
                 found=true;
             }
@@ -483,6 +539,11 @@ CABLES.TL.UI.TimeLineUI=function()
         updateKeyLine();
     };
 
+    this.refresh=function()
+    {
+        updateKeyLine();
+    };
+
     function updateKeyLine()
     {
         for(var anii in anims)
@@ -613,9 +674,17 @@ CABLES.TL.UI.TimeLineUI=function()
                 self.jumpKey(1);
             break;
 
-                case 65: // a 
-                    if(e.metaKey || e.ctrlKey) self.selectAllKeys();
-                break;
+            case 65: // a 
+                if(e.metaKey || e.ctrlKey) self.selectAllKeys();
+            break;
+
+            case 90: // z undo
+                if(e.metaKey || e.ctrlKey)
+                {
+                    if(e.shiftKey) CABLES.undo.redo();
+                    else CABLES.undo.undo();
+                }
+            break;
 
             case 37: // left
                 var num=1;
@@ -632,7 +701,7 @@ CABLES.TL.UI.TimeLineUI=function()
             break;
 
             default:
-                console.log('key ',e.which);
+                // console.log('key ',e.which);
             break;
         }
     });

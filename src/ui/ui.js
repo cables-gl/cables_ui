@@ -986,7 +986,7 @@ var line;
                         else CABLES.undo.undo();
                     }
 
-                    break;
+                break;
 
                 case 65: // a - align
                         console.log('e',e);
@@ -1562,26 +1562,24 @@ var undofunc=function(p1Name,p2Name,op1Id,op2Id)
             scene.link(scene.getOpById(op1Id), p1Name , scene.getOpById(op2Id), p2Name);
         }
     });
-}(p1Name=p1.getName(),p2Name=p2.getName(),p1.parent.id,p2.parent.id);
+}(p1.getName(),p2.getName(),p1.parent.id,p2.parent.id);
             };
 
             scene.onDelete=function(op)
             {
 
+                var undofunc=function(opname,opid)
+                {
+                    CABLES.undo.add({
+                        undo: function() {
+                            ui.scene.addOp(opname,op.uiAttribs,opid);
+                        },
+                        redo: function() {
+                            ui.scene.deleteOp( opid,false);
+                        }
+                    });
+                }(op.objName,op.id);
 
-var undofunc=function(opname,opid)
-{
-    console.log('ondelete');
-    CABLES.undo.add({
-        undo: function() {
-            ui.scene.addOp(opname,op.uiAttribs,opid);
-        },
-        redo: function() {
-            ui.scene.deleteOp( opid,false);
-        }
-    });
-
-}(op.objName,op.id);
 
                 for(var i in self.ops)
                 {
