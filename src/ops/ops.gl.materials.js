@@ -205,7 +205,7 @@ Ops.Gl.Shader.GradientMaterial = function()
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'   if(texCoord.y<0.5)'
+        .endl()+'   if(texCoord.y<=0.5)'
         .endl()+'   {'
         .endl()+'       gl_FragColor = vec4(mix(colA, colB, texCoord.y*2.0));'
         .endl()+'   }'

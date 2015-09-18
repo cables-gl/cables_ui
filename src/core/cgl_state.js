@@ -27,6 +27,22 @@ CGL.State=function()
     this.doScreenshot=false;
     this.screenShotDataURL=null;
 
+    var viewPort=[0,0,0,0];
+
+    this.getViewPort=function()
+    {
+        return viewPort;
+    };
+
+    this.setViewPort=function(x,y,w,h)
+    {
+        viewPort[0]=x;
+        viewPort[1]=y;
+        viewPort[2]=w;
+        viewPort[3]=h;
+        cgl.gl.viewport(x,y,w,h);
+    };
+
     this.beginFrame=function()
     {
         self.setShader(simpleShader);

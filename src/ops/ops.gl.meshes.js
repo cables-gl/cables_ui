@@ -94,31 +94,25 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
 {
     Op.apply(this, arguments);
     var self=this;
-    var w=0,h=0;
-    var x=0,y=0;
 
     this.name='fullscreen rectangle';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-    this.ratio=this.addInPort(new Port(this,"ratio",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:[1.25,1.3333333333,1.777777777778,2.33333333333333]} ));
 
-    var oldCanvasWidth=-1;
-    var oldCanvasHeight=-1;
-    // 1,25 // 5:4
-    // 1,33333333333333 //4:3
-    // 1,77777777777778 // 16:9
-    // 2,33333333333333 // 21:9
+    this.mesh=null;
+    var geom=new CGL.Geometry();
+    var x=0,y=0,z=0,w=0;
 
     this.render.onTriggered=function()
     {
-        if(oldCanvasWidth!=cgl.canvasWidth || oldCanvasHeight!=cgl.canvasHeight) rebuild();
+        if(cgl.getViewPort()[0]!=x ||
+          cgl.getViewPort()[1]!=y ||
+          cgl.getViewPort()[2]!=w ||
+          cgl.getViewPort()[3]!=h ) rebuild();
 
         cgl.pushPMatrix();
         mat4.identity(cgl.pMatrix);
-        mat4.ortho(cgl.pMatrix, 0, cgl.canvasWidth, cgl.canvasHeight, 0, -10.0, 1000);
-
-
-
+        mat4.ortho(cgl.pMatrix, 0, w, h, 0, -10.0, 1000);
 
         cgl.pushMvMatrix();
         mat4.identity(cgl.mvMatrix);
@@ -127,37 +121,20 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
 
         cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
 
-
-
         cgl.popPMatrix();
         cgl.popMvMatrix();
 
         self.trigger.call();
-
     };
-
-    var geom=new CGL.Geometry();
-    this.mesh=null;
 
     function rebuild()
     {
+        var currentViewPort=cgl.getViewPort().slice();
 
-        oldCanvasWidth=cgl.canvasWidth;
-        oldCanvasHeight=cgl.canvasHeight;
-
-        w=cgl.canvasHeight*self.ratio.val;
-        h=cgl.canvasHeight;
-        
-        if(w>cgl.canvasWidth)
-        {
-          w=cgl.canvasWidth;
-          h=cgl.canvasWidth/self.ratio.val;
-        }
-
-        x=0;
-        y=0;
-        if(w<cgl.canvasWidth) x=(cgl.canvasWidth-w)/2;
-        if(h<cgl.canvasHeight) y=(cgl.canvasHeight-h)/2;
+        x=currentViewPort[0];
+        y=currentViewPort[1];
+        w=currentViewPort[2];
+        h=currentViewPort[3];
 
         geom.vertices = [
              x+w, y+h,  0.0,
@@ -165,7 +142,6 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
              x+w, y,    0.0,
              x,   y,    0.0
         ];
-
 
         geom.texCoords = [
              1.0, 0.0,
@@ -182,11 +158,6 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         if(!self.mesh) self.mesh=new CGL.Mesh(geom);
         else self.mesh.setGeom(geom);
     }
-
-    this.ratio.onValueChanged=rebuild;
-    // this.ratio.val=1.77777777777778;
-    this.ratio.val=1.333333333;
-
 };
 
 Ops.Gl.Meshes.FullscreenRectangle.prototype = new Op();

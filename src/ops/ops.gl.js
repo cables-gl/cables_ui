@@ -39,7 +39,7 @@ Ops.Gl.Renderer = function()
         cgl.gl.clearColor(0,0,0,1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
-        cgl.gl.viewport(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
+        cgl.setViewPort(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
         mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
 
         cgl.pushPMatrix();
@@ -104,7 +104,8 @@ Ops.Gl.LetterBox = function()
 
         cgl.gl.scissor(x,y,w,h);
 
-        cgl.gl.viewport(x,y,w,h);
+        cgl.setViewPort(x,y,w,h);
+        
         mat4.perspective(cgl.pMatrix,45, self.ratio.val, 0.01, 1100.0);
 
 
