@@ -6,6 +6,7 @@ var OP_PORT_TYPE_FUNCTION =1;
 var OP_PORT_TYPE_OBJECT =2;
 var OP_PORT_TYPE_TEXTURE =2;
 var OP_PORT_TYPE_ARRAY =3;
+var OP_PORT_TYPE_DYNAMIC=4;
 
 
 var Ops = {};
@@ -137,6 +138,7 @@ var Port=function(parent,name,type,uiAttribs)
     this.anim=null;
     var animated=false;
     var oldAnimVal=-5711;
+    this.shouldLink=function(){return true;};
 
     this.__defineGetter__("val", function()
         {
@@ -397,13 +399,19 @@ Link.canLinkText=function(p1,p2)
     if(p2.direction==PORT_DIR_IN && p2.links.length>0)return 'input port already busy';
     if(p1.isLinkedTo(p2))return 'ports already linked';
     if(p1.direction==p2.direction)return 'can not link: same direction';
-    if(p1.type!=p2.type)return 'can not link: different type';
+
+
+    if( p1.type!=OP_PORT_TYPE_DYNAMIC && p2.type!=OP_PORT_TYPE_DYNAMIC )
+    {
+        if(p1.type!=p2.type)return 'can not link: different type';
+    }
     if(p1.parent==p2.parent)return 'can not link: same op';
     return 'can link';
 };
 
 Link.canLink=function(p1,p2)
 {
+    if( p1.type==OP_PORT_TYPE_DYNAMIC || p2.type==OP_PORT_TYPE_DYNAMIC )return true;
     if(!p1)return false;
     if(!p2)return false;
     if(p1.direction==PORT_DIR_IN && p1.links.length>0)return false;
@@ -514,6 +522,11 @@ var Scene = function()
         if(!op1 || !op2)return;
         var port1=op1.getPort(port1Name);
         var port2=op2.getPort(port2Name);
+
+        if(!port1.shouldLink(port1,port2) || !port2.shouldLink(port1,port2))
+        {
+            return false;
+        }
 
         if(Link.canLink(port1,port2))
         {

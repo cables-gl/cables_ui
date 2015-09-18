@@ -15,6 +15,7 @@ function getPortColor(port)
     else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
     else if(type==OP_PORT_TYPE_OBJECT)  return '#26a92a';
     else if(type==OP_PORT_TYPE_ARRAY)  return '#a02bbd';
+    else if(type==OP_PORT_TYPE_DYNAMIC)  return '#666';
     
     else return '#c6c6c6';
 }
@@ -573,9 +574,12 @@ var line;
             if(selectedEndPort!==null && Link.canLink(selectedEndPort.thePort,this.thePort))
             {
                 var link=gui.patch().scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , this.op, this.thePort.getName());
-                var thelink=new UiLink(selectedEndPort,this);
-                selectedEndPort.opUi.links.push(thelink);
-                self.links.push(thelink);
+                if(link)
+                {
+                    var thelink=new UiLink(selectedEndPort,this);
+                    selectedEndPort.opUi.links.push(thelink);
+                    self.links.push(thelink);
+                }
             }
             else
             {
@@ -1381,6 +1385,7 @@ var line;
 
                 for(var i in op.portsIn)
                 {
+                    if(!op.portsIn[i].uiAttribs || op.portsIn[i].uiAttribs.display!='readonly')
                     uiOp.addPort('in');
                 }
 
@@ -1506,7 +1511,16 @@ var line;
             if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
                 self.ops[i].show();
             else
+            {
                 self.ops[i].hide();
+                // if(self.ops[i].op.objName=='Ops.Ui.Patch')
+                // {
+                //     if(self.ops[i].op.patchId.val==currentSubPatch)
+                //     {
+                //         self.ops[i].show();
+                //     }
+                // }
+            }
         }
 
     };

@@ -267,6 +267,9 @@
                             </select>
                             <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:70px;display:inline;"/>
                         {{/compare}}
+                        {{#compare port.uiAttribs.display '==' 'readonly' }}
+                            {{ port.val }}
+                        {{/compare}}
 
                     {{else}}
                     
