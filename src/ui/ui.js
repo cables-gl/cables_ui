@@ -168,6 +168,15 @@ CABLES.UI.GUI=function()
     };
 
 
+    this.createProject=function()
+    {
+        CABLES.api.post('project',{name: prompt('projectname','') },function()
+            {
+                self.patch().updateProjectList();
+            });
+
+    };
+
     this.bind=function()
     {
         $('#glcanvas').attr('tabindex','3');
@@ -180,6 +189,9 @@ CABLES.UI.GUI=function()
         $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
         $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('.button_clearPatch').bind("mousedown", function (event) { self.scene().clear(); });
+
+
+
 
         $('.button_saveLocalStorage').bind("mousedown", function (event) { localStorage['cables']=self.scene().serialize(); });
         $('.button_loadLocalStorage').bind("mousedown", function (event) { self.scene().clear();self.scene().deSerialize(localStorage['cables']); });
