@@ -136,7 +136,7 @@ Ops.TimeLineDelay = function()
         // console.log(''+self.patch.timer.getTime() );
 
         self.patch.timer.setDelay(self.delay.val);
-        this.theTime.val=self.patch.timer.getTime();
+        self.theTime.val=self.patch.timer.getTime();
         self.trigger.call();
         self.patch.timer.setDelay(0);
 
