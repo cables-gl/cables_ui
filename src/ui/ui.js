@@ -190,8 +190,7 @@ CABLES.UI.GUI=function()
         $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
         $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('.button_clearPatch').bind("mousedown", function (event) { self.scene().clear(); });
-
-
+        $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
 
 
         $('.button_saveLocalStorage').bind("mousedown", function (event) { localStorage['cables']=self.scene().serialize(); });

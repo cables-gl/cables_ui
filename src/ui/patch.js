@@ -1513,8 +1513,13 @@ var line;
 
     this.setCurrentSubPatch=function(which)
     {
+        if(which===0) $('#button_subPatchBack').hide();
+            else $('#button_subPatchBack').show();
+
         currentSubPatch=which;
         self.updateSubPatches();
+
+        $('#patch').focus();
     };
 
     this.setSelectedOpsSubPatch=function(which)

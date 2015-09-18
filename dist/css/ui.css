@@ -2529,3 +2529,12 @@ a:hover {
 a
 .active {
       color: #6c9fde; }
+
+#button_subPatchBack {
+  position: absolute;
+  margin-top: 40px;
+  margin-left: 10px;
+  cursor: pointer;
+  z-index: 99999;
+  width: 30px;
+  height: 30px; }
