@@ -6,10 +6,22 @@ CABLES.UI.setStatusText=function(txt)
     $('#statusbar').html('&nbsp;'+txt);
 };
 
-CABLES.UI.togglePortValBool=function(which)
+CABLES.UI.togglePortValBool=function(which,checkbox)
 {
     var bool_value = $('#'+which).val() == 'true';
     bool_value=!bool_value;
+
+    if(bool_value)
+    {
+        $('#'+checkbox).addClass('fa-check-square-o');
+        $('#'+checkbox).removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#'+checkbox).addClass('fa-square-o');
+        $('#'+checkbox).removeClass('fa-check-square-o');
+    }
+
     $('#'+which).val(bool_value);
     $('#'+which).trigger('input');
 };

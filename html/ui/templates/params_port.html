@@ -19,8 +19,6 @@
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}">
     <td class="port portType_{{ port.type }}">
-
-
         {{port.name}}
     </td>
 
@@ -49,7 +47,7 @@
 
                         {{#compare port.uiAttribs.display '==' 'bool' }}
                             
-                            <span class="button fa fa-toggle-on" onclick="CABLES.togglePortValBool('portval_{{ portnum }}');"></span>
+                            <span id="portcheckbox_{{ portnum }}" class="button fa fa-square-o" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:10px;padding-right:10px;"></span>
                             <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:70px;display:inline;"/>
 
                         {{/compare}}

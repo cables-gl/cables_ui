@@ -1173,8 +1173,6 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.channelR=this.addInPort(new Port(this,"channelR",OP_PORT_TYPE_VALUE,{ display:'bool' }));
     this.channelR.onValueChanged=function()
     {
-        console.log('change'+self.channelR.val);
-
         if(self.channelR.val=='true' || self.channelR.val===true) shader.define('CHANNEL_R');
             else shader.removeDefine('CHANNEL_R');
     };
@@ -1184,8 +1182,6 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.channelG.val=false;
     this.channelG.onValueChanged=function()
     {
-        console.log('change'+self.channelG.val);
-
         if(self.channelG.val=='true')shader.define('CHANNEL_G');
             else shader.removeDefine('CHANNEL_G');
     };
