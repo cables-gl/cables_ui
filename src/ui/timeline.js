@@ -197,8 +197,8 @@ CABLES.TL.Key.prototype.initUI=function()
     function up()
     {
 
-        var undofunc=function(anim)
-        {
+        // var undofunc=function(anim)
+        // {
             CABLES.undo.add({
                 undo: function()
                 {
@@ -209,7 +209,7 @@ CABLES.TL.Key.prototype.initUI=function()
                 {
                 }
             });
-        }(self);
+        // }(self);
 
         self.isDragging=false;
         self.x=-1;

@@ -413,6 +413,8 @@ var line;
             for(var j in self.links) self.links[j].hideAddButton();
         };
 
+
+        var oldUiAttribs='';
         var startMoveX=-1;
         var startMoveY=-1;
         var olsPosX=0;
@@ -421,6 +423,21 @@ var line;
 
         this.doMoveFinished=function()
         {
+
+            // var undofunc=function(anim)
+            // {
+                CABLES.undo.add({
+                    undo: function()
+                    {
+                        var u=JSON.parse(oldUiAttribs);
+                        self.setPos(u.translate.x,u.translate.y);
+                    },
+                    redo: function()
+                    {
+                    }
+                });
+            // }(oldUiAttribs);
+
             startMoveX=-1;
             startMoveY=-1;
             self.isDragging=false;
@@ -436,6 +453,7 @@ var line;
                 self.links[j].redraw();
             }
         };
+
 
         this.doMove = function (dx, dy,a,b,e)
         {
@@ -454,6 +472,7 @@ var line;
 
             if(startMoveX==-1 && self.op.uiAttribs.translate)
             {
+                oldUiAttribs=JSON.stringify(self.op.uiAttribs);
                 startMoveX=pos.x-self.op.uiAttribs.translate.x;
                 startMoveY=pos.y-self.op.uiAttribs.translate.y;
             }
@@ -1523,8 +1542,6 @@ self.ops[i].links[j].p2.thePort.parent.id
 
             scene.onLink=function(p1,p2)
             {
-                        console.log('onlink');
-                        
                 var uiPort1=null;
                 var uiPort2=null;
                 for(var i in self.ops)
@@ -1579,7 +1596,6 @@ var undofunc=function(p1Name,p2Name,op1Id,op2Id)
                         }
                     });
                 }(op.objName,op.id);
-
 
                 for(var i in self.ops)
                 {
