@@ -24,7 +24,7 @@ $("html").on("drop", function(event)
     CABLES.UI.MODAL.showLoading("uploading");
 
     var files = event.dataTransfer.files;
-    var url='/api/project/'+ui.getCurrentProject()._id+'/file';
+    var url='/api/project/'+gui.patch().getCurrentProject()._id+'/file';
 
     var formData = new FormData();
     $.each(files, function(key, value)
@@ -47,7 +47,7 @@ $("html").on("drop", function(event)
 
     xhr.onload = function ()
     {
-        ui.updateProjectFiles();
+        gui.patch().updateProjectFiles();
         if (xhr.status === 200)
         {
             CABLES.UI.MODAL.hide();
