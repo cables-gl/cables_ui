@@ -35,8 +35,23 @@ Ops.Ui.Patch = function()
         var theP=p1;
         if(p1.type==OP_PORT_TYPE_DYNAMIC) theP=p2;
 
-        var p=self.addInPort(new Port(this,"new input",theP.type));
+        var p=self.addInPort(new Port(self,"new input"+inPorts.length,theP.type));
         inPorts.push(p);
+
+
+
+
+        console.log('------------');
+        console.log('a',self);
+        console.log('b',p);
+        console.log('c',theP.parent);
+        console.log('d',theP);
+        console.log('------------');
+
+
+        self.patch.link(self,p.getName(),theP.parent,theP.getName());
+
+                
 
         return false;
     };

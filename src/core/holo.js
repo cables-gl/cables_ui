@@ -22,7 +22,7 @@ var Op = function()
     this.patch=null;
     this.name='unknown';
     this.id=generateUUID();
-
+    this.onAddPort=null;
 
     this.getName= function()
     {
@@ -34,6 +34,7 @@ var Op = function()
         p.direction=PORT_DIR_OUT;
         p.parent=this;
         this.portsOut.push(p);
+        if(this.onAddPort)this.onAddPort(p);
         return p;
     };
 
@@ -42,6 +43,7 @@ var Op = function()
         p.direction=PORT_DIR_IN;
         p.parent=this;
         this.portsIn.push(p);
+        if(this.onAddPort)this.onAddPort(p);
         return p;
     };
 

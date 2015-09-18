@@ -619,15 +619,15 @@ var line;
         };
 
 
-        this.addPort=function(_inout)
+        this.addPort=function(_inout,thePort)
         {
             var yp=0;
             var offY=0;
             var inout=_inout;
-            if(inout=='out') yp=21;
+            if(inout==PORT_DIR_OUT) yp=21;
 
             var portIndex=this.portsIn.length;
-            if(inout=='out')
+            if(inout==PORT_DIR_OUT)
             {
                 offY=uiConfig.portSize-uiConfig.portHeight;
                 portIndex=this.portsOut.length;
@@ -654,9 +654,8 @@ var line;
             port.opUi=self;
             port.portIndex=portIndex;
 
-            var thePort;
-            if(inout=='out') thePort=self.op.portsOut[portIndex];
-            else thePort=self.op.portsIn[portIndex];
+            // if(inout=='out') thePort=self.op.portsOut[portIndex];
+            // else thePort=self.op.portsIn[portIndex];
 
             port.thePort=thePort;
             this.updatePortAttribs();
@@ -681,7 +680,7 @@ var line;
                 selectedEndPort=null;
 
                 var offY=0;
-                if(inout=='out') offY=uiConfig.portSize-uiConfig.portHeight;
+                if(inout==PORT_DIR_OUT) offY=uiConfig.portSize-uiConfig.portHeight;
 
                 port.attr(
                     {
@@ -708,7 +707,7 @@ var line;
                 e.cancelBubble = false;
             });
 
-            if(inout=='out') this.portsOut.push(port);
+            if(inout==PORT_DIR_OUT) this.portsOut.push(port);
                 else this.portsIn.push(port);
 
             this.oprect.getGroup().transform('t'+x+','+y);
@@ -1292,6 +1291,8 @@ var line;
 
             scene.onLink=function(p1,p2)
             {
+                console.log('on link');
+                        
                 var uiPort1=null;
                 var uiPort2=null;
                 for(var i in self.ops)
@@ -1363,6 +1364,7 @@ var line;
                 $('#patch').focus();
                 var uiOp=new OpUi(op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
                 self.ops.push(uiOp);
+
                 
 
                 console.log('on add');
@@ -1386,12 +1388,12 @@ var line;
                 for(var i in op.portsIn)
                 {
                     if(!op.portsIn[i].uiAttribs || op.portsIn[i].uiAttribs.display!='readonly')
-                    uiOp.addPort('in');
+                    uiOp.addPort(PORT_DIR_IN,op.portsIn[i]);
                 }
 
                 for(var i2 in op.portsOut)
                 {
-                    uiOp.addPort('out');
+                    uiOp.addPort(PORT_DIR_OUT,op.portsOut[i2]);
                 }
 
                 if(op.uiAttribs)
@@ -1469,6 +1471,14 @@ var line;
                             foundPort.getName());
                     }
                 }
+
+
+
+                op.onAddPort=function(p)
+                {
+                    console.log('yes, a new port was born!');
+                    uiOp.addPort(p.direction,p);
+                };
 
                 CABLES.UI.OPSELECT.linkNewOpToOp=null;
                 CABLES.UI.OPSELECT.linkNewLink=null;
