@@ -105,8 +105,7 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
 
     this.render.onTriggered=function()
     {
-        if(cgl.getViewPort()[0]!=x ||
-          cgl.getViewPort()[1]!=y ||
+        if(
           cgl.getViewPort()[2]!=w ||
           cgl.getViewPort()[3]!=h ) rebuild();
 
@@ -131,8 +130,8 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
     {
         var currentViewPort=cgl.getViewPort().slice();
 
-        x=currentViewPort[0];
-        y=currentViewPort[1];
+        // x=currentViewPort[0];
+        // y=currentViewPort[1];
         w=currentViewPort[2];
         h=currentViewPort[3];
 
