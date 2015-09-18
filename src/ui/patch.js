@@ -60,6 +60,16 @@ function UiLink(port1, port2)
 
     var addCircle=null;
 
+    self.hide=function()
+    {
+        this.thisLine.hide();
+    };
+
+    self.show=function()
+    {
+        this.thisLine.show();
+    };
+
     this.hideAddButton=function()
     {
         if(addCircle)addCircle.remove();
@@ -209,13 +219,18 @@ var line;
     Raphael.el.setGroup = function (group) { this.group = group; };
     Raphael.el.getGroup = function () { return this.group; };
 
-    Raphael.fn.OpRect = function (x, y, w, h, text)
+    Raphael.fn.OpRect = function (x, y, w, h, text,objName)
     {
         var background = this.rect(0, 0, w, h).attr({
             fill: uiConfig.colorOpBg,
-            stroke: "#000",
+            stroke: uiConfig.colorPatchStroke,
             "stroke-width":0
         });
+
+        if(objName=='Ops.Ui.Patch')
+        {
+            background.attr({'stroke-width':4,'stroke': uiConfig.colorPatchStroke});
+        }
 
         var label = this.text(0+w/2,0+h/2+0, text);
         var layer = this.rect(0, 0, w, h).attr({
@@ -249,7 +264,6 @@ var line;
                 else
                     background.attr(
                     {
-                        "stroke": "#000",
                         fill: uiConfig.colorOpBg,
                     });
         };
@@ -269,17 +283,46 @@ var line;
     };
 
 
-    var OpUi=function(x,y,w,h,txt)
+    var OpUi=function(op,x,y,w,h,txt)
     {
         var self=this;
         this.links=[];
         this.portsIn=[];
         this.portsOut=[];
+        var hidden=false;
+        this.op=op;
+
+        this.isHidden=function()
+        {
+            return hidden;
+        };
 
         this.remove=function()
         {
             this.oprect.getGroup().remove();
             this.oprect.remove();
+        };
+
+        this.hide=function()
+        {
+            hidden=true;
+            this.oprect.getGroup().hide();
+            for(var j in self.links)
+            {
+                self.links[j].hide();
+                self.links[j].hideAddButton();
+            }
+        };
+
+        this.show=function()
+        {
+            hidden=false;
+            this.oprect.getGroup().show();
+            for(var j in self.links)
+            {
+                self.links[j].show();
+            }
+
         };
 
         this.removeDeadLinks=function()
@@ -423,7 +466,23 @@ var line;
 
         var width=w;
 
-        this.oprect=r.OpRect(x,y,w,h, txt).drag(move, dragger, up);
+        this.oprect=r.OpRect(x,y,w,h, txt,self.op.objName).drag(move, dragger, up);
+
+        this.oprect.node.ondblclick = function (ev)
+        {
+            if(self.op.objName=='Ops.Ui.Patch')
+            {
+                console.log('PATCH0R!');
+
+
+                gui.patch().setCurrentSubPatch(self.op.patchId.val);
+
+                console.log('self.op.patchId.val',self.op.patchId.val);
+        
+                
+            }
+                    
+        };
 
         this.setEnabled=function(en)
         {
@@ -665,6 +724,7 @@ var line;
         var currentOp=null;
         var spacePressed=false;
         var selectedOps=[];
+        var currentSubPatch=0;
 
         this.paste=function(e)
         {
@@ -701,6 +761,14 @@ var line;
                                         }
                                     }
                                 }
+                            }
+                        }
+
+                        { // set current subpatch
+
+                            for(i in json.ops)
+                            {
+                                json.ops[i].uiAttribs.subPatch=currentSubPatch;
                             }
                         }
 
@@ -808,8 +876,16 @@ var line;
                             else self.alignSelectedOps();
                 break;
 
+
+                case 49: // / - test
+                
+                    self.setCurrentSubPatch(0);
+                break;
+
+
+
                 default:
-                    // console.log('key ',e.which);
+                    console.log('key ',e.which);
                 break;
 
             }
@@ -1003,25 +1079,28 @@ var line;
 
                 for(var i in self.ops)
                 {
-                    var rect=self.ops[i].oprect.bgRect;
-                    var opX=rect.matrix.e;
-                    var opY=rect.matrix.f;
-                    var opW=rect.attr("width");
-                    var opH=rect.attr("height");
-
-                    if(
-                        (opX>start.x && opX<end.x && opY>start.y && opY<end.y) ||  // left upper corner
-                        (opX+opW>start.x && opX+opW<end.x && opY+opH>start.y && opY+opH<end.y)  // right bottom corner
-
-                        )
+                    if(!self.ops[i].isHidden() )
                     {
-                        self.addSelectedOp(self.ops[i]);
-                        self.ops[i].setSelected(true);
-                    }
-                    else
-                    {
-                        self.removeSelectedOp(self.ops[i]);
-                        self.ops[i].setSelected(false);
+                        var rect=self.ops[i].oprect.bgRect;
+                        var opX=rect.matrix.e;
+                        var opY=rect.matrix.f;
+                        var opW=rect.attr("width");
+                        var opH=rect.attr("height");
+
+                        if(
+                            (opX>start.x && opX<end.x && opY>start.y && opY<end.y) ||  // left upper corner
+                            (opX+opW>start.x && opX+opW<end.x && opY+opH>start.y && opY+opH<end.y)  // right bottom corner
+
+                            )
+                        {
+                            self.addSelectedOp(self.ops[i]);
+                            self.ops[i].setSelected(true);
+                        }
+                        else
+                        {
+                            self.removeSelectedOp(self.ops[i]);
+                            self.ops[i].setSelected(false);
+                        }
                     }
                 }
 
@@ -1045,13 +1124,14 @@ var line;
                 }
             }
             self.updateViewBox();
-
+            currentSubPatch=0;
             self.setCurrentProject(proj);
             gui.scene().clear();
 
             gui.scene().deSerialize(proj);
             CABLES.undo.clear();
             CABLES.UI.MODAL.hide();
+            self.updateSubPatches();
         };
 
         this.show=function(_scene)
@@ -1277,8 +1357,7 @@ var line;
             scene.onAdd=function(op)
             {
                 $('#patch').focus();
-                var uiOp=new OpUi(CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
-                uiOp.op=op;
+                var uiOp=new OpUi(op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
                 self.ops.push(uiOp);
                 
 
@@ -1325,6 +1404,11 @@ var line;
                 {
                     op.uiAttribs={};
                     op.uiAttribs.translate={x:CABLES.UI.OPSELECT.newOpPos.x,y:CABLES.UI.OPSELECT.newOpPos.y};
+                }
+
+                if(!op.uiAttribs.hasOwnProperty('subPatch'))
+                {
+                    op.uiAttribs.subPatch=currentSubPatch;
                 }
 
                 if(CABLES.UI.OPSELECT.linkNewLink)
@@ -1411,6 +1495,39 @@ var line;
         }
     };
 
+    
+
+    this.updateSubPatches=function()
+    {
+        for(var i in self.ops)
+        {
+            if(!self.ops[i].op.uiAttribs.subPatch)self.ops[i].op.uiAttribs.subPatch=0;
+
+            if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
+                self.ops[i].show();
+            else
+                self.ops[i].hide();
+        }
+
+    };
+
+    this.setCurrentSubPatch=function(which)
+    {
+        currentSubPatch=which;
+        self.updateSubPatches();
+    };
+
+    this.setSelectedOpsSubPatch=function(which)
+    {
+        if(selectedOps.length>0)
+        {
+            for(var j in selectedOps)
+            {
+                selectedOps[j].op.uiAttribs.subPatch=which;
+            }
+        }
+        self.updateSubPatches();
+    };
 
     this.alignSelectedOps=function()
     {

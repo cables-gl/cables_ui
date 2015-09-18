@@ -14,6 +14,7 @@ var uiConfig=
     colorPort:'#6c9fde',
     colorRubberBand:'#6c9fde',
     colorPortHover:'#f00',
+    colorPatchStroke:'#6c9fde',
 
     colorSelected:'#fff',
     colorKey:'#6c9fde',

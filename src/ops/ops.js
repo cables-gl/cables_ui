@@ -92,6 +92,8 @@ Ops.Value = function()
     this.onAnimFrame=function(){};
 };
 
+
+
 Ops.Value.prototype = new Op();
 
 // ---------------------------------------------------------------------------

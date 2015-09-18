@@ -40,6 +40,7 @@ Ops.Math.Clamp = function()
 
     function clamp()
     {
+        self.updateAnims();
         self.result.val= Math.min(Math.max(self.val.val, self.min.val), self.max.val);
     }
 
@@ -71,6 +72,7 @@ Ops.Math.SmoothStep = function()
 
     function smoothstep ()
     {
+        self.updateAnims();
         var x = Math.max(0,Math.min(1,(self.val.val-self.min.val)/(self.max.val-self.min.val)));
         self.result.val=x*x*(3-2*x);
     }
@@ -105,6 +107,8 @@ Ops.Math.MapRange = function()
 
     this.exec= function()
     {
+        self.updateAnims();
+
         if(self.v.val>self.old_max.val)
         {
             self.result.val=self.new_max.val;
@@ -272,6 +276,7 @@ Ops.Math.Sum = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=parseFloat(self.number1.val)+parseFloat(self.number2.val);
     };
 
@@ -300,6 +305,7 @@ Ops.Math.Subtract = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=parseFloat(self.number1.val)-parseFloat(self.number2.val);
     };
 
@@ -329,6 +335,7 @@ Ops.Math.Multiply = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=self.number1.val*self.number2.val ;
     };
 
@@ -337,7 +344,6 @@ Ops.Math.Multiply = function()
 
     this.number1.val=1;
     this.number2.val=2;
-
 };
 
 Ops.Math.Multiply.prototype = new Op();
@@ -357,6 +363,7 @@ Ops.Math.Modulo = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=self.number1.val%self.number2.val ;
     };
 
@@ -384,6 +391,7 @@ Ops.Math.Divide = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=self.number1.val/self.number2.val ;
     };
 
@@ -436,6 +444,7 @@ Ops.Math.Compare.Greater = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=self.number1.val>self.number2.val ;
     };
 
@@ -465,6 +474,7 @@ Ops.Math.Compare.Between = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=
             (
                 self.number.val>Math.min(self.number1.val,self.number2.val) &&
@@ -493,6 +503,7 @@ Ops.Math.Compare.Lesser = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=self.number1.val<self.number2.val ;
     };
 
@@ -519,6 +530,7 @@ Ops.Math.Compare.Equals = function()
 
     this.exec= function()
     {
+        self.updateAnims();
         self.result.val=self.number1.val==self.number2.val ;
     };
 
