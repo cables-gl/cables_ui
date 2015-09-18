@@ -436,7 +436,7 @@ var Scene = function()
         }
     };
 
-    this.addOp=function(objName,uiAttribs)
+    this.addOp=function(objName,uiAttribs,opId)
     {
         var op=eval('new '+objName+'();');
         op.objName=objName;
@@ -446,6 +446,7 @@ var Scene = function()
         if(op.hasOwnProperty('onAnimFrame')) this.animFrameOps.push(op);
 
         this.ops.push(op);
+        op.id=opId;
         if(this.onAdd)this.onAdd(op);
         return op;
     };
@@ -478,6 +479,7 @@ var Scene = function()
 
                     this.ops[i].removeLinks();
                     this.onDelete(this.ops[i]);
+                    this.ops[i].id=generateUUID();
                     this.ops.splice( i, 1 );
 
                     if(reLinkP1!==null && reLinkP2!==null)

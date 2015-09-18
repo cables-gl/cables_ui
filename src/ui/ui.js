@@ -100,6 +100,7 @@ function getPortOpacity(port)
 }
 function getPortColor(port)
 {
+    if(!port)return '#ff0000';
     var type=port.getType();
     if(type==OP_PORT_TYPE_VALUE) return '#ea6638';
     else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
@@ -769,7 +770,13 @@ var line;
 
 
 
+
+
+
     CABLES.UI= CABLES.UI || {};
+
+    CABLES.undo = new UndoManager();
+
 
     CABLES.UI.setStatusText=function(txt)
     {
@@ -971,6 +978,15 @@ var line;
                     for(var j in selectedOps)
                         selectedOps[j].setEnabled(!selectedOps[j].op.enabled);
                 break;
+
+                case 90: // z undo
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        if(e.shiftKey) CABLES.undo.redo();
+                        else CABLES.undo.undo();
+                    }
+
+                    break;
 
                 case 65: // a - align
                         console.log('e',e);
@@ -1458,6 +1474,8 @@ var line;
         {
             scene.onUnLink=function(p1,p2)
             {
+                console.log('on unlink');
+
                 for(var i in self.ops)
                 {
                     self.ops[i].removeDeadLinks();
@@ -1468,10 +1486,36 @@ var line;
                             (self.ops[i].links[j].p1.thePort==p1 && self.ops[i].links[j].p2.thePort==p2) ||
                             (self.ops[i].links[j].p1.thePort==p2 && self.ops[i].links[j].p2.thePort==p1))
                             {
+
+
+
+var undofunc=function(p1Name,p2Name,op1Id,op2Id)
+{
+
+    CABLES.undo.add({
+        undo: function()
+        {
+            scene.link(scene.getOpById(op1Id), p1Name , scene.getOpById(op2Id), p2Name);
+        },
+        redo: function()
+        {
+            scene.getOpById(op1Id).getPortByName(p1Name).removeLinkTo( scene.getOpById(op2Id).getPortByName(p2Name) );
+        }
+    });
+}(self.ops[i].links[j].p1.thePort.getName(),
+self.ops[i].links[j].p2.thePort.getName(),
+self.ops[i].links[j].p1.thePort.parent.id,
+self.ops[i].links[j].p2.thePort.parent.id
+);
+
+
                                 self.ops[i].links[j].hideAddButton();
                                 self.ops[i].links[j].p1=null;
                                 self.ops[i].links[j].p2=null;
                                 self.ops[i].links[j].remove();
+
+
+
                             }
                     }
                 }
@@ -1479,6 +1523,8 @@ var line;
 
             scene.onLink=function(p1,p2)
             {
+                        console.log('onlink');
+                        
                 var uiPort1=null;
                 var uiPort2=null;
                 for(var i in self.ops)
@@ -1500,10 +1546,43 @@ var line;
                 var thelink=new UiLink(uiPort1,uiPort2);
                 uiPort1.opUi.links.push(thelink);
                 uiPort2.opUi.links.push(thelink);
+
+
+
+
+var undofunc=function(p1Name,p2Name,op1Id,op2Id)
+{
+    CABLES.undo.add({
+        undo: function()
+        {
+            scene.getOpById(op1Id).getPortByName(p1Name).removeLinkTo( scene.getOpById(op2Id).getPortByName(p2Name) );
+        },
+        redo: function()
+        {
+            scene.link(scene.getOpById(op1Id), p1Name , scene.getOpById(op2Id), p2Name);
+        }
+    });
+}(p1Name=p1.getName(),p2Name=p2.getName(),p1.parent.id,p2.parent.id);
             };
 
             scene.onDelete=function(op)
             {
+
+
+var undofunc=function(opname,opid)
+{
+    console.log('ondelete');
+    CABLES.undo.add({
+        undo: function() {
+            ui.scene.addOp(opname,op.uiAttribs,opid);
+        },
+        redo: function() {
+            ui.scene.deleteOp( opid,false);
+        }
+    });
+
+}(op.objName,op.id);
+
                 for(var i in self.ops)
                 {
                     if(self.ops[i].op==op)
@@ -1522,6 +1601,25 @@ var line;
                 uiOp.op=op;
                 self.ops.push(uiOp);
                 
+
+console.log('on add');
+
+var undofunc=function(opid,objName)
+{
+
+    CABLES.undo.add({
+        undo: function() {
+            ui.scene.deleteOp( opid,true);
+        },
+        redo: function() {
+            ui.scene.addOp(objName,op.uiAttribs,opid);
+        }
+    });
+
+}(op.id,op.objName);
+
+
+
                 for(var i in op.portsIn)
                 {
                     uiOp.addPort('in');

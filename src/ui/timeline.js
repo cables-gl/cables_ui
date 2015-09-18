@@ -266,7 +266,7 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
         {
             if(this.keys[i].selected)
             {
-                this.keys[i].removeUi();
+                 this.keys[i].removeUi();
                 this.keys.splice(i, 1);
                 found=true;
             }
