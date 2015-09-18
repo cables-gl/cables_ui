@@ -8,10 +8,10 @@
         <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
         <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
-        <a class="button fa fa-step-backward" onclick="ui.scene().timer.setTime(0);"></a>
-        <a class="button fa fa-backward" onclick="ui.scene().timer.setOffset(-2);"></a>
+        <a class="button fa fa-step-backward" onclick="gui.scene().timer.setTime(0);"></a>
+        <a class="button fa fa-backward" onclick="gui.scene().timer.setOffset(-2);"></a>
         <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
-        <a class="button fa fa-forward" onclick="ui.scene().timer.setOffset(2);"></a>
+        <a class="button fa fa-forward" onclick="gui.scene().timer.setOffset(2);"></a>
 
         <input type ="range" min="20" max="2000" value="" step ="1" oninput="gui.timeLine().setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
 
