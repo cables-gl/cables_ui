@@ -525,6 +525,17 @@ var Scene = function()
         var port1=op1.getPort(port1Name);
         var port2=op2.getPort(port2Name);
 
+        if(!port1)
+        {
+            console.warn('port not found! '+port1Name);
+            return;
+        }
+        if(!port2)
+        {
+            console.warn('port not found! '+port2Name);
+            return;
+        }
+
         if(!port1.shouldLink(port1,port2) || !port2.shouldLink(port1,port2))
         {
             return false;
@@ -568,6 +579,19 @@ var Scene = function()
         {
             if(this.ops[i].id==opid)return this.ops[i];
         }
+    };
+
+    this.getSubPatchOp=function(patchId,objName)
+    {
+        for(var i in self.ops)
+        {
+            if(self.ops[i].uiAttribs && self.ops[i].uiAttribs.subPatch==patchId && self.ops[i].objName==objName)
+            {
+                return self.ops[i];
+            }
+        }
+
+        return false;
     };
 
     this.deSerialize=function(obj)

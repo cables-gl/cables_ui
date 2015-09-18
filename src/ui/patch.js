@@ -1510,7 +1510,8 @@ var line;
         }
     };
 
-    
+
+
 
     this.updateSubPatches=function()
     {
@@ -1533,6 +1534,11 @@ var line;
             }
         }
 
+    };
+
+    this.getCurrentSubPatch=function()
+    {
+        return currentSubPatch;
     };
 
     this.setCurrentSubPatch=function(which)

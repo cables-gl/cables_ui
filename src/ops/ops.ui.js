@@ -38,18 +38,37 @@ Ops.Ui.Patch = function()
         var p=self.addInPort(new Port(self,"new input"+inPorts.length,theP.type));
         inPorts.push(p);
 
-
-
-
-        console.log('------------');
-        console.log('a',self);
-        console.log('b',p);
-        console.log('c',theP.parent);
-        console.log('d',theP);
-        console.log('------------');
-
-
         self.patch.link(self,p.getName(),theP.parent,theP.getName());
+
+        var patchInputOP=self.patch.getSubPatchOp(self.patchId.val,'Ops.Ui.PatchInput');
+
+if(patchInputOP)
+{
+    var pOut=patchInputOP.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
+
+    if(theP.type==OP_PORT_TYPE_FUNCTION)
+    {
+        p.onTriggered=function()
+        {
+            pOut.call();
+        };
+    }
+    else
+    {
+        p.onValueChanged=function()
+        {
+            pOut.val=p.val;
+        };
+    }
+
+}
+else
+{
+    console.log('no patchinput!');
+
+}
+
+
 
                 
 
