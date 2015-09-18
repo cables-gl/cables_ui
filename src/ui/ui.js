@@ -424,8 +424,8 @@ var line;
         this.doMoveFinished=function()
         {
 
-            // var undofunc=function(anim)
-            // {
+            if(oldUiAttribs!='')
+            {
                 CABLES.undo.add({
                     undo: function()
                     {
@@ -436,8 +436,9 @@ var line;
                     {
                     }
                 });
-            // }(oldUiAttribs);
+            }
 
+            oldUiAttribs='';
             startMoveX=-1;
             startMoveY=-1;
             self.isDragging=false;
