@@ -1314,9 +1314,7 @@ var line;
                 {
                     if(op.uiAttribs.hasOwnProperty('title'))
                     {
-                        console.log('settitle '+op.uiAttribs.title);
-        
-                        ui.setOpTitle(uiOp,op.uiAttribs.title);
+                        gui.patch().setOpTitle(uiOp,op.uiAttribs.title);
                     }
                     if(op.uiAttribs.hasOwnProperty('translate'))
                     {
