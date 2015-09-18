@@ -1141,7 +1141,7 @@ var line;
                     self.scene.clear();
 
                     self.scene.deSerialize(proj);
-
+                    CABLES.undo.clear();
                     CABLES.UI.MODAL.hide();
                 });
             });
