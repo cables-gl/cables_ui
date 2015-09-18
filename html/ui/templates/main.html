@@ -5,21 +5,21 @@
 
 <div id="sidebar" class="hidden ">
     <div class="content">
-        <a onclick="ui.toggleSideBar();" class="button">close</a>
+        <a  class="button_toggleSidebar button">close</a>
         <br/>
         <br/>
-        <a onclick="localStorage['holo']=ui.scene.serialize();" >save local storage</a>
+        <a class="button_saveLocalStorage" >save local storage</a>
         <br/>
-        <a onclick="ui.scene.clear();ui.scene.deSerialize(localStorage['holo']);" >load local storage</a>
+        <a class="button_loadLocalStorage" >load local storage</a>
 
         <hr/>
 
-        <a onclick="ui.exportDialog();" >export</a>
+        <a class="button_export" >export</a>
         <br/>
-        <a onclick="ui.importDialog();" >import</a>
+        <a class="button_import" >import</a>
         <br/>
         <br/>
-        <a onclick="ui.scene.clear();" >clear patch</a>
+        <a class="button_clearPatch" >clear patch</a>
         <br/>
         <br/>
 
@@ -43,18 +43,17 @@
 
 <div id="menubar">
 
-    <a onclick="ui.toggleSideBar();" class="button">cables</a>
+    <a class="button_toggleSidebar button">cables</a>
 
-    <a onclick="ui.showOpSelect(100,100);" class="button fa fa-plus-square-o tt" data-tt="create new op"></a>
+    <a class="button_addOp button fa fa-plus-square-o tt" data-tt="create new op"></a>
 
-    <a onclick="ui.cycleRendererSize();" class="button fa fa-expand tt"  data-tt="resize webgl renderer (esc to exit fullscreen)"></a>
+    <a id="button_cycleRenderSize" class="button fa fa-expand tt"  data-tt="resize webgl renderer (esc to exit fullscreen)"></a>
 
     <div id="serverproject" style="float:left;display:none;">
-        <a onclick="ui.saveCurrentProject();" class="button">save project <span id="serverprojectname"></span></a>
+        <a  class="button_saveCurrentProject button">save project <span id="serverprojectname"></span></a>
     </div>
 
     <a target="_blankk" class="viewProjectLink button fa fa-external-link"></a>
-
 
     <div id="loggedin">
         <div id="username"></div> <a class="button tt" href="/logout" data-tt="logout">logout</a>
@@ -63,8 +62,6 @@
     <div id="loggedout">
         <div id="username">not logged in</div> <a class="button fa fa-sign-out" href="/"></a>
     </div>
-
-
 
 </div>
 

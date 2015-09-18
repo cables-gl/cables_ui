@@ -30,21 +30,21 @@
 
 <div id="sidebar" class="hidden ">
     <div class="content">
-        <a onclick="ui.toggleSideBar();" class="button">close</a>
+        <a  class="button_toggleSidebar button">close</a>
         <br/>
         <br/>
-        <a onclick="localStorage['holo']=ui.scene.serialize();" >save local storage</a>
+        <a class="button_saveLocalStorage" >save local storage</a>
         <br/>
-        <a onclick="ui.scene.clear();ui.scene.deSerialize(localStorage['holo']);" >load local storage</a>
+        <a class="button_loadLocalStorage" >load local storage</a>
 
         <hr/>
 
-        <a onclick="ui.exportDialog();" >export</a>
+        <a class="button_export" >export</a>
         <br/>
-        <a onclick="ui.importDialog();" >import</a>
+        <a class="button_import" >import</a>
         <br/>
         <br/>
-        <a onclick="ui.scene.clear();" >clear patch</a>
+        <a class="button_clearPatch" >clear patch</a>
         <br/>
         <br/>
 
@@ -68,18 +68,17 @@
 
 <div id="menubar">
 
-    <a onclick="ui.toggleSideBar();" class="button">cables</a>
+    <a class="button_toggleSidebar button">cables</a>
 
-    <a onclick="ui.showOpSelect(100,100);" class="button fa fa-plus-square-o tt" data-tt="create new op"></a>
+    <a class="button_addOp button fa fa-plus-square-o tt" data-tt="create new op"></a>
 
-    <a onclick="ui.cycleRendererSize();" class="button fa fa-expand tt"  data-tt="resize webgl renderer (esc to exit fullscreen)"></a>
+    <a id="button_cycleRenderSize" class="button fa fa-expand tt"  data-tt="resize webgl renderer (esc to exit fullscreen)"></a>
 
     <div id="serverproject" style="float:left;display:none;">
-        <a onclick="ui.saveCurrentProject();" class="button">save project <span id="serverprojectname"></span></a>
+        <a  class="button_saveCurrentProject button">save project <span id="serverprojectname"></span></a>
     </div>
 
     <a target="_blankk" class="viewProjectLink button fa fa-external-link"></a>
-
 
     <div id="loggedin">
         <div id="username"></div> <a class="button tt" href="/logout" data-tt="logout">logout</a>
@@ -88,8 +87,6 @@
     <div id="loggedout">
         <div id="username">not logged in</div> <a class="button fa fa-sign-out" href="/"></a>
     </div>
-
-
 
 </div>
 
@@ -149,42 +146,27 @@
 <div>
     <br/>
     <br/>
-    <span class="button warn" onclick="if(confirm('delete ?'))ui.scene.deleteOp('{{op.id}}')">delete</span>
+    <span class="button warn" onclick="if(confirm('delete ?'))gui.scene().deleteOp('{{op.id}}')">delete</span>
     <br/>
     <br/>
 </div>
 
 <script>
 
-function inputIncrement(v,dir)
-{
-    var val=parseFloat(v);
-    var add=1;
-    if(Math.abs(val)<2) add=0.1;
-        else if(Math.abs(val)<100) add=1;
-            else add=10;
 
-    return val+add*dir;
-}
 
     $("input").keydown(function(e)
     {
         switch(e.which)
         {
-            // case 37: // left
-            // break;
-
-            // case 39: // right
-            // break;
-
             case 38: // up
-                this.value=inputIncrement(this.value,1);
+                this.value=CABLES.UI.inputIncrement(this.value,1);
                 $(this).trigger('input');
                 return false;
             break;
 
             case 40: // down
-                this.value=inputIncrement(this.value,-1);
+                this.value=CABLES.UI.inputIncrement(this.value,-1);
                 $(this).trigger('input');
                 return false;
             break;
@@ -196,15 +178,13 @@ function inputIncrement(v,dir)
 
     $("input").bind("mousewheel", function(event, delta) 
     {
-        // var add=getInputFieldIncrementValue(this.value);
-
         if (delta > 0)
         {
-            this.value = Math.round(1000*inputIncrement(this.value,1))/1000;
+            this.value = Math.round(1000*CABLES.UI.inputIncrement(this.value,1))/1000;
         }
         else
         {
-            this.value = Math.round(1000*inputIncrement(this.value,-1))/1000;
+            this.value = Math.round(1000*CABLES.UI.inputIncrement(this.value,-1))/1000;
         }
 
          $(this).trigger('input');
@@ -361,7 +341,7 @@ function inputIncrement(v,dir)
         <br/>
 
     <div class="">
-        <a onclick="ui.saveCurrentProject();" class="button">save settings</a>
+        <a onclick="gui.patch().saveCurrentProject();" class="button">save settings</a>
     </div>
 
 
@@ -379,7 +359,7 @@ function updateIcons()
         $('#projectsettings_public_icon').removeClass('fa-check-square-o');
         $('#projectsettings_public_icon').addClass('fa-square-o');
     }
-    ui.saveProjectParams();
+    gui.patch().saveProjectParams();
 }
 
 function togglePublic()
@@ -471,19 +451,17 @@ updateIcons();
 <script id="timeline_controler" type="text/x-handlebars-template">
 
     <div id="timelineui">
+        <a id="button_toggleTiming" class="button">timing</a>
 
-        <a class="button tt" data-tt="insert key" onclick="ui.toggleTiming();">timing</a>
-
-
-        <span class="timelinetime" onclick="ui.timeLine.toggleTimeDisplayMode();"></span>
+        <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
         <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
-        <a class="button fa fa-step-backward" onclick="ui.scene.timer.setTime(0);"></a>
-        <a class="button fa fa-backward" onclick="ui.scene.timer.setOffset(-2);"></a>
-        <a class="button fa fa-play " id="timelineplay" onclick="ui.timeLine.togglePlay()"></a>
-        <a class="button fa fa-forward" onclick="ui.scene.timer.setOffset(2);"></a>
+        <a class="button fa fa-step-backward" onclick="ui.scene().timer.setTime(0);"></a>
+        <a class="button fa fa-backward" onclick="ui.scene().timer.setOffset(-2);"></a>
+        <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
+        <a class="button fa fa-forward" onclick="ui.scene().timer.setOffset(2);"></a>
 
-        <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
+        <input type ="range" min="20" max="2000" value="" step ="1" oninput="gui.timeLine().setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
 
 
         <a id="keymovemode" class="button fa fa-arrows tt" data-tt="key move mode" ></a>
@@ -504,30 +482,30 @@ updateIcons();
 
 <div class="select">
     <h3>in_out</h3>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);">sin</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);">cubic</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);">expo</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);">sin</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);">cubic</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);">expo</a><br/>
     <br/>
 
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);">linear</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);">absolute</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP);">smoothstep</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP);">smootherstep</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bezier</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);">linear</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);">absolute</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP);">smoothstep</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP);">smootherstep</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bezier</a><br/>
 </div>
 
 <div class="select">
     <h3>in</h3>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);">sin</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);">cubic</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);">expo</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);">sin</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);">cubic</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);">expo</a><br/>
 </div>
 
 <div class="select">
     <h3>out</h3>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);">sin</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);">cubic</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);">expo</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);">sin</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);">cubic</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);">expo</a><br/>
 </div>
 
 

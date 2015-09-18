@@ -511,6 +511,7 @@ var Scene = function()
 
     this.link=function(op1,port1Name,op2,port2Name)
     {
+        if(!op1 || !op2)return;
         var port1=op1.getPort(port1Name);
         var port2=op2.getPort(port2Name);
 

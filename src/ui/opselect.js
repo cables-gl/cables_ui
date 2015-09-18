@@ -15,8 +15,6 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
     CABLES.UI.OPSELECT.linkNewLink=link;
     CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
-    // CABLES.UI.OPSELECT.mouseNewOPX=ui.getCanvasCoords(x,y).x;
-    // CABLES.UI.OPSELECT.mouseNewOPY=ui.getCanvasCoords(x,y).y;
     CABLES.UI.OPSELECT.newOpPos=pos;
 
     var html = CABLES.UI.getHandleBarHtml('op_select',{ops: CABLES.UI.OPSELECT.getOpList() });
@@ -68,7 +66,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         {
             case 13:
                 var opname=$('.selected').data('opname');
-                ui.scene.addOp(opname);
+                gui.scene().addOp(opname);
                 CABLES.UI.MODAL.hide();
             break;
 

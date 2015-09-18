@@ -26,42 +26,27 @@
 <div>
     <br/>
     <br/>
-    <span class="button warn" onclick="if(confirm('delete ?'))ui.scene.deleteOp('{{op.id}}')">delete</span>
+    <span class="button warn" onclick="if(confirm('delete ?'))gui.scene().deleteOp('{{op.id}}')">delete</span>
     <br/>
     <br/>
 </div>
 
 <script>
 
-function inputIncrement(v,dir)
-{
-    var val=parseFloat(v);
-    var add=1;
-    if(Math.abs(val)<2) add=0.1;
-        else if(Math.abs(val)<100) add=1;
-            else add=10;
 
-    return val+add*dir;
-}
 
     $("input").keydown(function(e)
     {
         switch(e.which)
         {
-            // case 37: // left
-            // break;
-
-            // case 39: // right
-            // break;
-
             case 38: // up
-                this.value=inputIncrement(this.value,1);
+                this.value=CABLES.UI.inputIncrement(this.value,1);
                 $(this).trigger('input');
                 return false;
             break;
 
             case 40: // down
-                this.value=inputIncrement(this.value,-1);
+                this.value=CABLES.UI.inputIncrement(this.value,-1);
                 $(this).trigger('input');
                 return false;
             break;
@@ -73,15 +58,13 @@ function inputIncrement(v,dir)
 
     $("input").bind("mousewheel", function(event, delta) 
     {
-        // var add=getInputFieldIncrementValue(this.value);
-
         if (delta > 0)
         {
-            this.value = Math.round(1000*inputIncrement(this.value,1))/1000;
+            this.value = Math.round(1000*CABLES.UI.inputIncrement(this.value,1))/1000;
         }
         else
         {
-            this.value = Math.round(1000*inputIncrement(this.value,-1))/1000;
+            this.value = Math.round(1000*CABLES.UI.inputIncrement(this.value,-1))/1000;
         }
 
          $(this).trigger('input');

@@ -3,19 +3,17 @@
 <script id="timeline_controler" type="text/x-handlebars-template">
 
     <div id="timelineui">
+        <a id="button_toggleTiming" class="button">timing</a>
 
-        <a class="button tt" data-tt="insert key" onclick="ui.toggleTiming();">timing</a>
-
-
-        <span class="timelinetime" onclick="ui.timeLine.toggleTimeDisplayMode();"></span>
+        <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
         <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
-        <a class="button fa fa-step-backward" onclick="ui.scene.timer.setTime(0);"></a>
-        <a class="button fa fa-backward" onclick="ui.scene.timer.setOffset(-2);"></a>
-        <a class="button fa fa-play " id="timelineplay" onclick="ui.timeLine.togglePlay()"></a>
-        <a class="button fa fa-forward" onclick="ui.scene.timer.setOffset(2);"></a>
+        <a class="button fa fa-step-backward" onclick="ui.scene().timer.setTime(0);"></a>
+        <a class="button fa fa-backward" onclick="ui.scene().timer.setOffset(-2);"></a>
+        <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
+        <a class="button fa fa-forward" onclick="ui.scene().timer.setOffset(2);"></a>
 
-        <input type ="range" min="20" max="2000" value="" step ="1" oninput="ui.timeLine.setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
+        <input type ="range" min="20" max="2000" value="" step ="1" oninput="gui.timeLine().setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
 
 
         <a id="keymovemode" class="button fa fa-arrows tt" data-tt="key move mode" ></a>
@@ -36,30 +34,30 @@
 
 <div class="select">
     <h3>in_out</h3>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);">sin</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);">cubic</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);">expo</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);">sin</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);">cubic</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);">expo</a><br/>
     <br/>
 
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);">linear</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);">absolute</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP);">smoothstep</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP);">smootherstep</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bezier</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);">linear</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);">absolute</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP);">smoothstep</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP);">smootherstep</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bezier</a><br/>
 </div>
 
 <div class="select">
     <h3>in</h3>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);">sin</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);">cubic</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);">expo</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);">sin</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);">cubic</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);">expo</a><br/>
 </div>
 
 <div class="select">
     <h3>out</h3>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);">sin</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);">cubic</a><br/>
-    <a onclick="ui.timeLine.setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);">expo</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);">sin</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);">cubic</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);">expo</a><br/>
 </div>
 
 

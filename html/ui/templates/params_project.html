@@ -33,7 +33,7 @@
         <br/>
 
     <div class="">
-        <a onclick="ui.saveCurrentProject();" class="button">save settings</a>
+        <a onclick="gui.patch().saveCurrentProject();" class="button">save settings</a>
     </div>
 
 
@@ -51,7 +51,7 @@ function updateIcons()
         $('#projectsettings_public_icon').removeClass('fa-check-square-o');
         $('#projectsettings_public_icon').addClass('fa-square-o');
     }
-    ui.saveProjectParams();
+    gui.patch().saveProjectParams();
 }
 
 function togglePublic()
