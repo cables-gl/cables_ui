@@ -964,6 +964,7 @@ var line;
         
                     if(e.stopPropagation) e.stopPropagation();
                     if(e.preventDefault) e.preventDefault();
+                    self.showProjectParams();
                 break;
 
                 case 68: // d - disable
