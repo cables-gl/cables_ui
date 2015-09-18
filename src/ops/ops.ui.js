@@ -40,10 +40,25 @@ Ops.Ui.Patch = function()
 
         self.patch.link(self,p.getName(),theP.parent,theP.getName());
 
+    
+
         var patchInputOP=self.patch.getSubPatchOp(self.patchId.val,'Ops.Ui.PatchInput');
 
-if(patchInputOP)
+if(!patchInputOP)
 {
+    console.log('no patchinput!');
+    self.patch.addOp('Ops.Ui.PatchInput',{'subPatch':self.patchId.val} );
+
+    patchInputOP=self.patch.getSubPatchOp(self.patchId.val,'Ops.Ui.PatchInput');
+
+
+    
+    if(!patchInputOP)
+    {
+        console.log('no patchinput2!');
+    }
+}
+
     var pOut=patchInputOP.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
 
     if(theP.type==OP_PORT_TYPE_FUNCTION)
@@ -61,15 +76,9 @@ if(patchInputOP)
         };
     }
 
-}
-else
-{
-    console.log('no patchinput!');
 
-}
-
-
-
+gui.patch().updateSubPatches();
+    
                 
 
         return false;
