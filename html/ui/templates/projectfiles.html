@@ -7,15 +7,15 @@
             <tr>
             <!--
             <td>
-                <a class="button fa fa-info-circle" onclick="ui.showFileInfo*()"></a> 
+                <a class="button fa fa-info-circle" onclick="gui.patch().showFileInfo*()"></a> 
             </td>-->
             <td>
-                <a class="filename" onclick="ui.addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
+                <a class="filename" onclick="gui.patch().addAssetOp('/assets/{{projectId}}/{{_id}}{{suffix}}','{{suffix}}','{{name}}')">
                 {{name}}
                 </a>
             </td>
             <td>
-                <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){ui.updateProjectFiles();});"></a>&nbsp;
+                <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){gui.patch().updateProjectFiles();});"></a>&nbsp;
 
                 <!-- <a class="button fa fa-retweet"></a> -->
             </td>
