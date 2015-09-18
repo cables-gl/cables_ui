@@ -360,10 +360,10 @@ CABLES.TL.UI.TimeLineUI=function()
     var timeDisplayMode=true;
 
     var cursorLine = paper.path("M 0 0 L 10 10");
-    cursorLine.attr({stroke: "#6c9fde", "stroke-width": 2});
+    cursorLine.attr({stroke: uiConfig.colorCursor, "stroke-width": 2});
 
     var cursorLineDisplay = paperTime.path("M 0 0 L 10 10");
-    cursorLineDisplay.attr({stroke: "#6c9fde", "stroke-width": 2});
+    cursorLineDisplay.attr({stroke: uiConfig.colorCursor, "stroke-width": 2});
 
     this.getFPS=function()
     {

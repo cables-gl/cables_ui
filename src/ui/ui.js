@@ -13,9 +13,11 @@ var uiConfig=
     colorOpBgSelected:'#ff9',
     colorPort:'#6c9fde',
     colorRubberBand:'#6c9fde',
-    colorKey:'#6c9fde',
-    colorSelected:'#fff',
     colorPortHover:'#f00',
+
+    colorSelected:'#fff',
+    colorKey:'#6c9fde',
+    colorCursor:'#ff0',
 
     watchValuesInterval:100,
     rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}]
