@@ -17,7 +17,7 @@ var uiConfig=
 
     colorSelected:'#fff',
     colorKey:'#6c9fde',
-    colorCursor:'#ff0',
+    colorCursor:'#ea6638',
 
     watchValuesInterval:100,
     rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}]
@@ -189,19 +189,19 @@ CABLES.UI.GUI=function()
 
         document.addEventListener('copy', function(e)
         {
-            if($('#patch').is(":focus")) patch.copy(e);
-            if($('#timeline').is(":focus"))patch.timeLine.copy(e);
+            if($('#patch').is(":focus")) self.patch().copy(e);
+            if($('#timeline').is(":focus"))self.patch().timeLine.copy(e);
         });
 
         document.addEventListener('paste', function(e)
         {
-            if($('#patch').is(":focus")) patch.paste(e);
-            if($('#timeline').is(":focus"))patch.timeLine.paste(e);
+            if($('#patch').is(":focus")) self.patch().paste(e);
+            if($('#timeline').is(":focus"))self.patch().timeLine.paste(e);
         });
 
         document.addEventListener('cut', function(e)
         {
-            if($('#timeline').is(":focus"))patch.timeLine.cut(e);
+            if($('#timeline').is(":focus"))self.patch().timeLine.cut(e);
         });
 
         $(document).keydown(function(e)
@@ -211,7 +211,7 @@ CABLES.UI.GUI=function()
                 case 83: // s - save
                     if(e.metaKey || e.ctrlKey)
                     {
-                        patch.saveCurrentProject();
+                        self.patch().saveCurrentProject();
                         e.preventDefault();
                     }
                 break;
@@ -261,12 +261,12 @@ CABLES.UI.GUI=function()
                 self.scene.clear();
             }
 
-            patch.scene.deSerialize(localStorage.holo);
+            self.patch().scene.deSerialize(localStorage.holo);
         });
 
         router.addRoute('/example/:index').get(function(event, params)
         {
-            patch.showExample(params.index);
+            self.patch().showExample(params.index);
         });
 
         router.addRoute('/project/:id').get(function(event, params)
