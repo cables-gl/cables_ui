@@ -424,21 +424,21 @@ var line;
         this.doMoveFinished=function()
         {
 
-            if(oldUiAttribs!='')
-            {
-                CABLES.undo.add({
-                    undo: function()
+            CABLES.undo.add({
+                undo: function()
+                {
+                    try
                     {
                         var u=JSON.parse(oldUiAttribs);
                         self.setPos(u.translate.x,u.translate.y);
-                    },
-                    redo: function()
-                    {
-                    }
-                });
-            }
+                    }catch(e){}
+                },
+                redo: function()
+                {
+                }
+            });
 
-            oldUiAttribs='';
+            // oldUiAttribs='';
             startMoveX=-1;
             startMoveY=-1;
             self.isDragging=false;
@@ -944,6 +944,16 @@ var line;
         {
             switch(e.which)
             {
+
+                case 83: // s - save
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        self.saveCurrentProject();
+                        e.preventDefault();
+                    }
+
+                break;
+
                 case 27:
                     $('.tooltip').hide();
 
