@@ -1,14 +1,11 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
-CABLES.UI.OPSELECT=CABLES.UI.MODAL || {};
+CABLES.UI.OPSELECT=CABLES.UI.OPSELECT || {};
 
 CABLES.UI.OPSELECT.linkNewLink=null;
 CABLES.UI.OPSELECT.linkNewOpToPort=null;
 CABLES.UI.OPSELECT.linkNewOpToOp=null;
 CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
-// CABLES.UI.OPSELECT.mouseNewOPX=0;
-
-// CABLES.UI.OPSELECT.mouseNewOPY=0;
 
 CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 {

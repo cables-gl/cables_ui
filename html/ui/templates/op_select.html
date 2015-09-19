@@ -15,7 +15,7 @@
       {{#each ops}}
 
         <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
-            <a onclick="ui.scene.addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{name}}  {{isFunction}}</a>
+            <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{name}}  {{isFunction}}</a>
         </div>
 
       {{/each}}

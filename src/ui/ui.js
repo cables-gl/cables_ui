@@ -221,6 +221,13 @@ CABLES.UI.GUI=function()
         {
             switch(e.which)
             {
+                case 79: // o - open
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        CABLES.UI.SELECTPROJECT.show();
+                        e.preventDefault();
+                    }
+                break;
                 case 83: // s - save
                     if(e.metaKey || e.ctrlKey)
                     {
@@ -230,6 +237,12 @@ CABLES.UI.GUI=function()
                 break;
 
                 case 27:
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        CABLES.UI.SELECTPROJECT.show();
+                        return;
+                    }
+
                     $('.tooltip').hide();
 
                     if(rendererSize==uiConfig.rendererSizes.length-1)

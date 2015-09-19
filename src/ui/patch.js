@@ -1393,7 +1393,6 @@ var line;
                     console.log('yes, a new port was born!');
                     uiOp.addPort(p.direction,p);
 
-
                     uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
                 };
 
@@ -1491,6 +1490,7 @@ var line;
 
 
 
+                    uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
 
 
 

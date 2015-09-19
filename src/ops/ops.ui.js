@@ -87,6 +87,7 @@ Ops.Ui.Patch = function()
             {
                 pOut.call();
             };
+            dynPort.onTriggered();
         }
         else
         {
@@ -94,12 +95,11 @@ Ops.Ui.Patch = function()
             {
                 pOut.val=dynPort.val;
             };
+            dynPort.onValueChanged();
         }
 
         gui.patch().updateSubPatches();
         getNewDynamicPort();
-
-
 
 
         return true;
