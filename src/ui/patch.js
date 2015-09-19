@@ -701,7 +701,6 @@ var line;
 
             $(port.node).bind("contextmenu", function(e)
             {
-                console.log('noyesmaybe');
                 if(e.stopPropagation) e.stopPropagation();
                 if(e.preventDefault) e.preventDefault();
                 e.cancelBubble = false;
@@ -710,7 +709,7 @@ var line;
             if(inout==PORT_DIR_OUT) this.portsOut.push(port);
                 else this.portsIn.push(port);
 
-            this.oprect.getGroup().transform('t'+x+','+y);
+            // this.oprect.getGroup().transform('t'+x+','+y);
         };
     };
 
@@ -1478,7 +1477,12 @@ var line;
                 {
                     console.log('yes, a new port was born!');
                     uiOp.addPort(p.direction,p);
+
+
+                    uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
                 };
+
+
 
                 CABLES.UI.OPSELECT.linkNewOpToOp=null;
                 CABLES.UI.OPSELECT.linkNewLink=null;
