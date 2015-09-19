@@ -548,6 +548,11 @@ var Scene = function()
         {
             var link=new Link(this);
             link.link(port1,port2);
+
+        console.log('port1',port1);
+        console.log('port2',port2);
+        
+
             this.onLink(port1,port2);
             return link;
         }
@@ -630,18 +635,17 @@ console.log('add ops ');
 
             for(var ipi in obj.ops[iop].portsIn)
             {
-
                 var objPort=obj.ops[iop].portsIn[ipi];
+
                 var port=op.getPortByName(objPort.name);
                 if(port && port.type!=OP_PORT_TYPE_TEXTURE)port.val=objPort.value;
 
                 if(objPort.animated)port.setAnimated(objPort.animated);
                 if(objPort.anim)
                 {
-                    if(!port.anim)port.anim=new CABLES.TL.Anim();
+                    if(!port.anim) port.anim=new CABLES.TL.Anim();
 
-                    if(objPort.anim.loop)
-                        port.anim.loop=objPort.anim.loop;
+                    if(objPort.anim.loop) port.anim.loop=objPort.anim.loop;
 
                     for(var ani in objPort.anim.keys)
                     {

@@ -809,6 +809,13 @@ var line;
             }
         };
 
+
+        this.cut=function(e)
+        {
+            self.copy(e);
+            self.deleteSelectedOps();
+        }
+
         this.copy=function(e)
         {
             var ops=[];
@@ -849,9 +856,7 @@ var line;
                 case 46: case 8: // delete
                     if($("input").is(":focus")) return;
 
-                        for(var i in selectedOps)
-                            gui.patch().scene.deleteOp( selectedOps[i].op.id,true);
-        
+                    self.deleteSelectedOps();
                     if(e.stopPropagation) e.stopPropagation();
                     if(e.preventDefault) e.preventDefault();
                     self.showProjectParams();
@@ -1383,6 +1388,16 @@ var line;
                 }(op.id,op.objName);
 
 
+                op.onAddPort=function(p)
+                {
+                    console.log('yes, a new port was born!');
+                    uiOp.addPort(p.direction,p);
+
+
+                    uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+                };
+
+
 
                 for(var i in op.portsIn)
                 {
@@ -1395,22 +1410,25 @@ var line;
                     uiOp.addPort(PORT_DIR_OUT,op.portsOut[i2]);
                 }
 
-                if(op.uiAttribs)
-                {
-                    if(op.uiAttribs.hasOwnProperty('title'))
-                    {
-                        gui.patch().setOpTitle(uiOp,op.uiAttribs.title);
-                    }
-                    if(op.uiAttribs.hasOwnProperty('translate'))
-                    {
-                        uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-                    }
-                }
-                else
+                if(!op.uiAttribs)
                 {
                     op.uiAttribs={};
+                }
+
+                if(!op.uiAttribs.translate)
+                {
                     op.uiAttribs.translate={x:CABLES.UI.OPSELECT.newOpPos.x,y:CABLES.UI.OPSELECT.newOpPos.y};
                 }
+
+                if(op.uiAttribs.hasOwnProperty('translate'))
+                {
+                    uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+                }
+                if(op.uiAttribs.hasOwnProperty('title'))
+                {
+                    gui.patch().setOpTitle(uiOp,op.uiAttribs.title);
+                }
+
 
                 if(!op.uiAttribs.hasOwnProperty('subPatch'))
                 {
@@ -1473,14 +1491,6 @@ var line;
 
 
 
-                op.onAddPort=function(p)
-                {
-                    console.log('yes, a new port was born!');
-                    uiOp.addPort(p.direction,p);
-
-
-                    uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-                };
 
 
 
@@ -1597,6 +1607,13 @@ var line;
         uiop.setSelected(true);
     };
     
+    this.deleteSelectedOps=function()
+    {
+        for(var i in selectedOps)
+            gui.patch().scene.deleteOp( selectedOps[i].op.id,true);
+
+    }
+
 
     this.removeSelectedOp=function(uiop)
     {

@@ -213,6 +213,7 @@ CABLES.UI.GUI=function()
 
         document.addEventListener('cut', function(e)
         {
+            if($('#patch').is(":focus")) self.patch().cut(e);
             if($('#timeline').is(":focus"))self.patch().timeLine.cut(e);
         });
 

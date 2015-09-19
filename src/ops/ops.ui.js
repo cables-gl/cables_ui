@@ -30,7 +30,6 @@ Ops.Ui.Patch = function()
 
     this.addInput.shouldLink=function(p1,p2)
     {
-
         var theP=p1;
         if(p1.type==OP_PORT_TYPE_DYNAMIC) theP=p2;
 
@@ -71,28 +70,6 @@ Ops.Ui.Patch = function()
         }
 
         var pOut=patchInputOP.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
-
-
-        // pOut.onLink=function(l)
-        // {
-        //     console.log('linked that....');
-
-        //     console.log('l',l);
-
-        //     l.getSerialized=function()
-        //     {
-        //         var obj={};
-
-        //         obj.portIn=l.portIn.getName();
-        //         obj.objIn=l.portIn.parent.id;
-
-        //         obj.portOut=patchInputOP.addOutput.getName();
-        //         obj.objOut=patchInputOP.id;
-
-        //         return obj;
-        //     };
-        // };
-
 
         if(theP.type==OP_PORT_TYPE_FUNCTION)
         {
