@@ -22,38 +22,27 @@ Ops.Ui.Patch = function()
     Op.apply(this, arguments);
 
     this.name='Patch';
-    var inPorts=[];
-
-    this.addInput=this.addInPort(new Port(this,"new input",OP_PORT_TYPE_DYNAMIC));
     this.patchId=this.addInPort(new Port(this,"patchId",OP_PORT_TYPE_VALUE,{ display:'readonly' }));
 
-
-    this.addInput.shouldLink=function(p1,p2)
+    var getNewDynamicPort=function(name)
     {
-        var theP=p1;
-        if(p1.type==OP_PORT_TYPE_DYNAMIC) theP=p2;
+        var p=self.addInPort(new Port(self,name,OP_PORT_TYPE_DYNAMIC));
+        p.shouldLink=self.shouldLink;
+        return p;
+    };
 
-        var p=self.addInPort(new Port(self,"new input"+inPorts.length,theP.type));
-        inPorts.push(p);
+    this.getPort=function(name)
+    {
+        for(var ipi in self.portsIn)
+            if(self.portsIn[ipi].getName()==name)return self.portsIn[ipi];
 
-        var lIn=self.patch.link(self,p.getName(),theP.parent,theP.getName());
+        var p=getNewDynamicPort(name);
+        
+        return p;
+    };
 
-        lIn.getSerialized=function()
-        {
-            var obj={};
-
-            obj.portIn=self.addInput.getName();
-            obj.objIn=self.id;
-
-            obj.portOut=theP.getName();
-            obj.objOut=theP.parent.id;
-
-            return obj;
-        };
-
-
-
-
+    var getSubPatchInputOp=function()
+    {
         var patchInputOP=self.patch.getSubPatchOp(self.patchId.val,'Ops.Ui.PatchInput');
 
         if(!patchInputOP)
@@ -69,34 +58,52 @@ Ops.Ui.Patch = function()
             }
         }
 
-        var pOut=patchInputOP.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
+        return patchInputOP;
+    };
 
-        if(theP.type==OP_PORT_TYPE_FUNCTION)
+    this.shouldLink=function(p1,p2)
+    {
+        var dynPort=p2;
+        var otherPort=p1;
+
+        if(p1.type!=OP_PORT_TYPE_DYNAMIC && p2.type!=OP_PORT_TYPE_DYNAMIC) return true;
+
+        if(p1.type==OP_PORT_TYPE_DYNAMIC)
         {
-            p.onTriggered=function()
+            dynPort=p1;
+            otherPort=p2;
+        }
+
+        dynPort.type=otherPort.type;
+        dynPort.name='in_'+otherPort.getName();
+
+        var patchInputOP=getSubPatchInputOp();
+        var pOut=patchInputOP.addOutPort(new Port(self,"out"+self.portsIn.length,dynPort.type));
+        // pOut.shouldLink=self.shouldLink;
+
+        if(dynPort.type==OP_PORT_TYPE_FUNCTION)
+        {
+            dynPort.onTriggered=function()
             {
                 pOut.call();
             };
         }
         else
         {
-            p.onValueChanged=function()
+            dynPort.onValueChanged=function()
             {
-                pOut.val=p.val;
+                pOut.val=dynPort.val;
             };
         }
 
         gui.patch().updateSubPatches();
+        getNewDynamicPort();
 
-        return false;
+
+
+
+        return true;
     };
-
-    this.addInput.onValueChanged=function()
-    {
-        console.log('dynamic link!',this.addInput.links.length);
-        console.log(this.addInput.links[0]);
-    };
-
 
     this.patchId.onValueChanged=function()
     {
@@ -105,6 +112,13 @@ Ops.Ui.Patch = function()
     };
 
     this.patchId.val=Ops.Ui.Patch.maxPatchId+1;
+
+    this.onCreate=function()
+    {
+        getNewDynamicPort('dyn');
+        getSubPatchInputOp();
+    };
+
 
 };
 Ops.Ui.Patch.maxPatchId=0;
@@ -120,63 +134,107 @@ Ops.Ui.PatchInput = function()
 
     this.name='PatchInput';
 
-    this.addOutput=this.addOutPort(new Port(this,"new output",OP_PORT_TYPE_DYNAMIC));
-    
-    this.addOutput.shouldLink=function(p1,p2)
+    this.getPatchOp=function()
     {
-        // console.log('shouldlink!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 
-        // console.log(p1.getName() );
-        // console.log(p2.getName() );
+        console.log('...'+self.patch.ops.length);
+        
+        console.log(self.uiAttribs.subPatch);
+
+        for(var i in self.patch.ops)
+        {
+            if(self.patch.ops[i].patchId)
+            {
+                if(self.patch.ops[i].patchId.val==self.uiAttribs.subPatch)
+                {
+                    console.log('FOUND PATCHOP' ,self.patch.ops[i].patchId.val );
+                    return self.patch.ops[i];
+                }
+                 
+            }
+
+            // if(self.patch.ops[i].uiAttribs && self.patch.ops[i].objName=='Ops.Ui.Patch')
+            // {
+                            
+                            
+            //     }
+            // }
+        }
+
+        console.log('NOT FOUND PATCHOP');
+
+
+    };
+
+
+
+    // this.getPort=function(name)
+    // {
+    //     for(var ipi in self.portsIn)
+    //         if(self.portsIn[ipi].getName()==name)return self.portsIn[ipi];
+
+    //     var p=getNewDynamicPort(name);
+        
+    //     return p;
+    // };
+
+    // this.addOutput=this.addOutPort(new Port(this,"new output",OP_PORT_TYPE_DYNAMIC));
+    
+    // this.addOutput.shouldLink=function(p1,p2)
+    // {
+    //     // console.log('shouldlink!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+
+    //     // console.log(p1.getName() );
+    //     // console.log(p2.getName() );
         
 
-        // // for(var i in self.portsOut)
-        // // {
-        // //     if(p2.getName()==self.portsOut[i].getName()) 
-        // //         {
-        // //             // found=true;
-        // //             return true;
-        // //         }
-        // // }
+    //     // // for(var i in self.portsOut)
+    //     // // {
+    //     // //     if(p2.getName()==self.portsOut[i].getName()) 
+    //     // //         {
+    //     // //             // found=true;
+    //     // //             return true;
+    //     // //         }
+    //     // // }
 
-        // theP=p2;
-        // if(p1.type==OP_PORT_TYPE_DYNAMIC) theP=p1;
+    //     // theP=p2;
+    //     // if(p1.type==OP_PORT_TYPE_DYNAMIC) theP=p1;
 
-        // var pOut=self.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
-
-
+    //     // var pOut=self.addOutPort(new Port(self,"new output"+inPorts.length,theP.type));
 
 
 
-        //     if(p2.getName()==self.portsOut[i].getName())
-        //     {
 
-        // console.log(self.portsOut[i].getName());
-        // console.log(p1.getName());
-        // console.log(p2.getName());
-        // console.log('---', self.portsOut[i].getName());
 
-        // console.log(p1.type);
-        // console.log(self.portsOut[i].type);
+    //     //     if(p2.getName()==self.portsOut[i].getName())
+    //     //     {
+
+    //     // console.log(self.portsOut[i].getName());
+    //     // console.log(p1.getName());
+    //     // console.log(p2.getName());
+    //     // console.log('---', self.portsOut[i].getName());
+
+    //     // console.log(p1.type);
+    //     // console.log(self.portsOut[i].type);
         
 
-        //         self.patch.link(p1.parent,p1.getName(),self,self.portsOut[i].getName());
-        //     }
+    //     //         self.patch.link(p1.parent,p1.getName(),self,self.portsOut[i].getName());
+    //     //     }
 
-        //     // if(p2.getName()==self.portsOut[i].getName())
-        //     // {
-        //     //     self.patch.link(self,self.portsOut[i].getName(),p1.parent,p1.getName());
-        //     // }
+    //     //     // if(p2.getName()==self.portsOut[i].getName())
+    //     //     // {
+    //     //     //     self.patch.link(self,self.portsOut[i].getName(),p1.parent,p1.getName());
+    //     //     // }
 
             
-        // }
+    //     // }
 
 
-        console.log('shouldlink!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('p1',p1);
+    //     console.log('shouldlink!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    //     console.log('p1',p1);
 
-        return true;
-    };
+    //     return true;
+    // };
 
 };
 

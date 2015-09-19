@@ -23,6 +23,7 @@ var Op = function()
     this.name='unknown';
     this.id=generateUUID();
     this.onAddPort=null;
+    this.onCreate=null;
 
     this.getName= function()
     {
@@ -65,14 +66,6 @@ var Op = function()
             this.portsOut[ipo].removeLinks();
     };
 
-    this.getPort=function(name)
-    {
-        for(var ipi in this.portsIn)
-            if(this.portsIn[ipi].getName()==name)return this.portsIn[ipi];
-
-        for(var ipo in this.portsOut)
-            if(this.portsOut[ipo].getName()==name)return this.portsOut[ipo];
-    };
 
     this.findFittingPort=function(otherPort)
     {
@@ -102,13 +95,19 @@ var Op = function()
         return op;
     };
 
+
+    this.getPort=function(name)
+    {
+        for(var ipi in this.portsIn)
+            if(this.portsIn[ipi].getName()==name)return this.portsIn[ipi];
+
+        for(var ipo in this.portsOut)
+            if(this.portsOut[ipo].getName()==name)return this.portsOut[ipo];
+    };
+
     this.getPortByName=function(name)
     {
-        for(var i=0;i<this.portsIn.length;i++)
-            if(this.portsIn[i].name==name)return this.portsIn[i];
-        
-        for(var ipo in this.portsOut)
-            if(this.portsOut[ipo].name==name)return this.portsOut[ipo];
+        return this.getPort(name);
     };
 
     this.updateAnims=function()
@@ -455,6 +454,7 @@ var Scene = function()
         op.objName=objName;
         op.patch=this;
         op.uiAttribs=uiAttribs;
+        if(op.onCreate)op.onCreate();
 
         if(op.hasOwnProperty('onAnimFrame')) this.animFrameOps.push(op);
 
