@@ -1,0 +1,61 @@
+
+
+<script id="select_project" type="text/x-handlebars-template">
+
+<style>
+
+.thumbcont .title
+{
+    background-color:black;
+    padding:10px;
+
+}
+
+.searchresult
+{
+    width:180px;
+    height:130px;
+    float:left;
+    cursor:pointer;
+}
+
+.thumbcont
+{
+    border:none !important;
+}
+
+.searchresult img
+{
+    max-width:180px;
+    max-height:100px;
+}
+
+</style>
+
+    
+<div class="opsearch" style="height:auto;">
+    <h2>selct project</h2>
+
+    <input id="projectsearch"/>
+
+    <br/><br/>
+    <style id="search_style"></style>
+
+
+    <div style="height:600px;overflow:auto">
+      {{#each projects}}
+
+
+        <div class="thumbcont searchresult searchable" data-projid="{{ _id }}" data-index="{{name}}" onclick="document.location.href='#/project/{{_id}}'">
+            <img src="/assets/{{_id}}/screenshot.png" style="width:180px;"/>
+            <div class="title">
+                {{name}}
+            </div>
+        </div>
+
+      {{/each}}
+    </div>
+
+</div>
+
+</script>
