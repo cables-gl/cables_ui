@@ -60,11 +60,11 @@
     {
         if (delta > 0)
         {
-            this.value = Math.round(1000*CABLES.UI.inputIncrement(this.value,1))/1000;
+            this.value = CABLES.UI.inputIncrement(this.value,1);
         }
         else
         {
-            this.value = Math.round(1000*CABLES.UI.inputIncrement(this.value,-1))/1000;
+            this.value = CABLES.UI.inputIncrement(this.value,-1);
         }
 
          $(this).trigger('input');
