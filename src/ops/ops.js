@@ -84,7 +84,6 @@ Ops.Value = function()
 
     this.exec=function()
     {
-
         self.result.val=self.v.val;
     };
 

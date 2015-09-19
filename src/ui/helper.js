@@ -35,7 +35,9 @@ CABLES.UI.inputIncrement=function(v,dir)
         else if(Math.abs(val)<100) add=1;
             else add=10;
 
-    return val+add*dir;
+    var r=val+add*dir;
+    if(isNaN(r))r=0.0;
+    return r;
 };
 
 
