@@ -942,6 +942,8 @@ var line;
 
 
         };
+
+
         this.getCurrentProject=function()
         {
             return currentProject;
@@ -1003,15 +1005,6 @@ var line;
                     );
         };
 
-        this.updateProjectList=function()
-        {
-            $('#projectlist').html('...');
-
-            CABLES.api.get('myprojects',function(data)
-            {
-                $('#projectlist').html(CABLES.UI.getHandleBarHtml('projects',data));
-            });
-        };
 
         // ---------------------------------------------
 
@@ -1148,7 +1141,6 @@ var line;
             $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'),{});
             $('#meta').append();
 
-            this.updateProjectList();
 
             CABLES.api.get('user/me',
                 function(data)

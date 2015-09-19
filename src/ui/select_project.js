@@ -4,7 +4,7 @@ CABLES.UI.SELECTPROJECT=CABLES.UI.SELECTPROJECT || {};
 
 
 CABLES.UI.SELECTPROJECT.projectsHtml=null;
-
+CABLES.UI.SELECTPROJECT.doReload=true;
 
 CABLES.UI.SELECTPROJECT.showSelectProjects=function(html)
 {
@@ -91,14 +91,14 @@ CABLES.UI.SELECTPROJECT.showSelectProjects=function(html)
 CABLES.UI.SELECTPROJECT.show=function()
 {
 
-    if(!CABLES.UI.SELECTPROJECT.projectsHtml)
+    if(!CABLES.UI.SELECTPROJECT.projectsHtml || CABLES.UI.SELECTPROJECT.doReload)
     {
         CABLES.api.get('myprojects',function(data)
         {
             CABLES.UI.MODAL.showLoading('loading projectlist...');
             CABLES.UI.SELECTPROJECT.projectsHtml = CABLES.UI.getHandleBarHtml('select_project',{projects:data.projects });
             CABLES.UI.SELECTPROJECT.showSelectProjects(CABLES.UI.SELECTPROJECT.projectsHtml);
-
+            CABLES.UI.SELECTPROJECT.doReload=false;
         });
     }
     else

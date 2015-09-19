@@ -44,11 +44,15 @@
         <a class="button_import" >import</a>
         <br/>
         <br/>
-        <a class="button_clearPatch" >clear patch</a>
+        <a class="button button_clearPatch" >clear patch</a>
         <br/>
         <br/>
+        <span class="button" onclick="gui.createProject();">create project</span>
+        <br/>
+        <br/>
+        <span class="button" onclick="CABLES.UI.SELECTPROJECT.show();">open projects</span>
 
-        <div id="projectlist"></div>
+
     </div>
 </div>
 
@@ -332,6 +336,14 @@
 
     <div class="">
         <a onclick="gui.patch().saveCurrentProject();" class="button">save settings</a>
+
+
+<br/>
+<br/>
+<br/>
+{{project.id}}
+    <span class="button fa fa-trash-o tt" data-tt="delete" onclick="gui.deleteCurrentProject();"></a>
+
     </div>
 
 
@@ -402,39 +414,6 @@ updateIcons();
 </script>
 
 
-
-
-
-<script id="projects" type="text/x-handlebars-template">
-
-
-
-<div id="projects">
-<h2>my projects:</h2>
-
-<table>
-    {{#each projects}}
-    <tr>
-        <td style="width:70%;">
-            <a href="#/project/{{_id}}">{{name}}</a>
-        </td>
-        <td>
-            <span class="button fa fa-trash-o tt" data-tt="delete" onclick="if(confirm('delete ?')) CABLES.api.delete('project/{{_id}}',{},function(){ ui.updateProjectList(); } );"></span>
-            &nbsp;<span class="button fa fa-pencil-square-o tt" data-tt="rename" onclick="CABLES.api.put('project/{{_id}}',{name:prompt('projectname','{{name}}')},function(){ ui.updateProjectList(); } );"></span>
-        </td>
-    </tr>
-    {{/each}}
-
-</table>
-
-<br/>
-<span class="button" onclick="gui.createProject();">create project</span>
-
-
-
-</div>
-
-</script>
 
 
 
