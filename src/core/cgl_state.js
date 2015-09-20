@@ -17,7 +17,11 @@ CGL.State=function()
     var currentShader=simpleShader;
 
     var canvas = document.getElementById("glcanvas");
-    this.gl=canvas.getContext("experimental-webgl", {preserveDrawingBuffer: true});
+    this.gl=canvas.getContext("experimental-webgl",
+        {
+            preserveDrawingBuffer: true,
+            antialias:true
+        });
     this.canvasWidth=640;
     this.canvasHeight=360;
 

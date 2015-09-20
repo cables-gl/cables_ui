@@ -358,14 +358,15 @@ Ops.Gl.Texture = function()
 
     this.name='texture';
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',filter:'image' } ));
-    this.filter=this.addInPort(new Port(this,"filter",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.filter=this.addInPort(new Port(this,"filter",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['nearest','linear','mipmap']}));
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
 
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
     
-    this.filter.val=true;
+    this.filter.val='linear';
+    this.cgl_filter=CGL.Texture.FILTER_LINEAR;
 
     var reload=function()
     {
@@ -375,13 +376,20 @@ Ops.Gl.Texture = function()
             self.textureOut.val=self.tex;
             self.width.val=self.tex.width;
             self.height.val=self.tex.height;
-        },{filter:self.filter.val});
+        },{filter:self.cgl_filter});
         self.textureOut.val=self.tex;
 
     };
 
     this.filename.onValueChanged=reload;
-    this.filter.onValueChanged=reload;
+    this.filter.onValueChanged=function()
+    {
+        if(self.filter.val=='nearest') self.cgl_filter=CGL.Texture.FILTER_NEAREST;
+        if(self.filter.val=='linear') self.cgl_filter=CGL.Texture.FILTER_LINEAR;
+        if(self.filter.val=='mipmap') self.cgl_filter=CGL.Texture.FILTER_MIPMAP;
+
+        reload();
+    };
 };
 
 Ops.Gl.Texture.prototype = new Op();
