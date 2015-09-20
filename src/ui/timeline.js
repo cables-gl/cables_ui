@@ -768,7 +768,7 @@ CABLES.TL.UI.TimeLineUI=function()
         var mint=99999999;
 
 
-
+        var count=0;
         for(var anii in anims)
         {
             for(var i in anims[anii].keys)
@@ -777,7 +777,11 @@ CABLES.TL.UI.TimeLineUI=function()
                 mint=Math.min(mint,anims[anii].keys[i].time);
             }
         }
-
+        if(count===0)
+        {
+            maxt=10;
+            mint=10;
+        }
         if(maxt==mint)
         {
             maxt+=3;
@@ -799,13 +803,21 @@ CABLES.TL.UI.TimeLineUI=function()
         var maxv=-99999;
         var minv=99999999;
 
+        var count=0;
         for(var anii in anims)
         {
             for(var i in anims[anii].keys)
             {
+                count++;
                 maxv=Math.max(maxv,anims[anii].keys[i].value);
                 minv=Math.min(minv,anims[anii].keys[i].value);
             }
+        }
+
+        if(count===0)
+        {
+            maxv=1;
+            minv=-1;
         }
 
         if(maxv==minv)
