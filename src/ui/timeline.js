@@ -778,6 +778,13 @@ CABLES.TL.UI.TimeLineUI=function()
             }
         }
 
+        if(maxt==mint)
+        {
+            maxt+=3;
+            mint-=3;
+            if(mint<0) mint=0;
+        }
+
         CABLES.TL.TIMESCALE=viewBox.w/(maxt-mint)*0.9;
         viewBox.x=mint*CABLES.TL.TIMESCALE-(maxt-mint)*0.05*CABLES.TL.TIMESCALE;
         console.log('CABLES.TL.TIMESCALE ',CABLES.TL.TIMESCALE);
