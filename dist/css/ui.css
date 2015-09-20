@@ -24,6 +24,9 @@ body {
 .mainColor {
   color: #6c9fde; }
 
+.monospace {
+  font-family: monospace; }
+
 div, td {
   font-size: 13px; }
 
@@ -145,6 +148,9 @@ textarea {
     right: 15px;
     margin-top: -4px;
     position: absolute; }
+
+h3, h4 {
+  color: #6c9fde; }
 
 h2 {
   color: #6c9fde;
@@ -2613,3 +2619,20 @@ div:hover {
 #lib_files .type_mesh, #library
 #lib_files .type_audio {
       cursor: pointer; }
+
+.help
+table {
+  width: 100%; }
+  .help
+table
+tr {
+    border-bottom: #444; }
+    .help
+table
+tr
+td {
+      vertical-align: top;
+      border-bottom: 1px solid #222;
+      padding-bottom: 7px;
+      padding-left: 6px;
+      padding-right: 6px; }

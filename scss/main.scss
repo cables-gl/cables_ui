@@ -24,7 +24,7 @@ body
 .hidden { display:none;}
 .fleft { float:left; }
 .mainColor { color:$mainColor; }
-
+.monospace { font-family: monospace;}
 div,td
 {
     font-size: 13px;
@@ -205,6 +205,10 @@ textarea
     }
 }
 
+h3,h4
+{
+    color:#6c9fde;
+}
 
 h2
 {
@@ -753,3 +757,25 @@ input[type=range]:focus {
     }
 }
 
+.help
+{
+    table
+    {
+        width:100%;
+
+        tr
+        {
+            border-bottom: #444;
+
+            td
+            {
+                vertical-align:top;
+                border-bottom: 1px solid #222;
+                padding-bottom: 7px;
+                padding-left: 6px;
+                padding-right: 6px;
+            }
+
+        }
+    }
+}

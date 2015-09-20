@@ -189,10 +189,14 @@ CABLES.UI.GUI=function()
         });
     };
 
+    this.showHelp=function()
+    {
+        var html=CABLES.UI.getHandleBarHtml('help1');
+        CABLES.UI.MODAL.show(html);
+    };
+
     this.deleteCurrentProject=function()
     {
-        
-
         if(confirm('delete ?'))
         {
             CABLES.api.delete('project/'+self.patch().getCurrentProject()._id,{},
@@ -216,6 +220,7 @@ CABLES.UI.GUI=function()
         $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('.button_clearPatch').bind("mousedown", function (event) { self.scene().clear(); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
+        $('#help').bind("click", function (event) { self.showHelp(); });
 
 
         $('.button_saveLocalStorage').bind("mousedown", function (event) { localStorage['cables']=self.scene().serialize(); });
