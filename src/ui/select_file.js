@@ -27,7 +27,7 @@ CABLES.UI.FileSelect=function()
         }
 
         $('#tab_'+currentTab).removeClass('active');
-        $('#tab_'+which).addClass('active');
+        
         currentTab=which;
         this.load();
 
@@ -56,6 +56,8 @@ CABLES.UI.FileSelect=function()
             this.setTab('projectfiles');
             return;
         }
+
+        $('#tab_'+currentTab).addClass('active');
 
         function getFileList(filterType,files,p)
         {

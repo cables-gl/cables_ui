@@ -283,6 +283,11 @@ CABLES.UI.GUI=function()
                         self.cycleRendererSize();
                     }
                     else
+                    if( $('#library').is(':visible') )
+                    {
+                        $('#library').hide();
+                    }
+                    else
                     if( $('#sidebar').is(':visible') )
                     {
                         $('#sidebar').animate({width:'toggle'},200);
