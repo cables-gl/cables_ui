@@ -37,8 +37,6 @@ CABLES.UI.inputIncrement=function(v,dir)
 
     var r=val+add*dir;
 
-    
-
     if(isNaN(r))r=0.0;
     else
         r= Math.round(1000*r)/1000;

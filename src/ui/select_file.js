@@ -13,7 +13,6 @@ CABLES.UI.FileSelect=function()
 
     this.setTab=function(which)
     {
-        console.log('set tab! '+which);
                
         if(which=='projectfiles')
         {

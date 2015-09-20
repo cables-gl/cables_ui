@@ -2636,3 +2636,13 @@ td {
       padding-bottom: 7px;
       padding-left: 6px;
       padding-right: 6px; }
+    .help
+table
+tr
+th {
+      color: white;
+      text-align: left;
+      font-weight: normal;
+      padding-top: 13px;
+      padding-bottom: 13px;
+      font-size: 13px; }

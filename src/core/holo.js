@@ -549,10 +549,6 @@ var Scene = function()
             var link=new Link(this);
             link.link(port1,port2);
 
-        console.log('port1',port1);
-        console.log('port2',port2);
-        
-
             this.onLink(port1,port2);
             return link;
         }

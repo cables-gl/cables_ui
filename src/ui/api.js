@@ -16,7 +16,7 @@ CABLES.API=function()
         })
         .done(function(data)
         {
-            console.log( "success "+data );
+            // console.log( "success "+data );
             if(cbSuccess) cbSuccess(data);
         })
         .fail(function(data)

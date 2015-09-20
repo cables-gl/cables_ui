@@ -475,7 +475,8 @@ CABLES.TL.UI.TimeLineUI=function()
         if(config && config.name) $('#timelineTitle').html(config.name);
             else $('#timelineTitle').html('');
 
-        if(config && config.defaultValue && newanim.keys.length===0)
+
+        if(config && config.hasOwnProperty('defaultValue') )
         {
             anim.keys.push(new CABLES.TL.Key({time:cursorTime,value:config.defaultValue}) );
             this.centerCursor();
@@ -491,9 +492,11 @@ CABLES.TL.UI.TimeLineUI=function()
 
         if(anim.keys.length>1)
         {
-            self.scaleHeight();
             self.scaleWidth();
         }
+
+        if(anim.keys.length==1)this.centerCursor();
+        self.scaleHeight();
 
         if(anim.onChange===null) anim.onChange=updateKeyLine;
         
@@ -586,8 +589,6 @@ CABLES.TL.UI.TimeLineUI=function()
                 // if(anim.keys.length>0) str+="L 9999000 "+(anim.keys[anim.keys.length-1].value*-CABLES.TL.VALUESCALE)+" ";
                 ani.keyLine.attr({ path:str });
             }
-
-            
         }
 
     }
@@ -800,14 +801,17 @@ CABLES.TL.UI.TimeLineUI=function()
             }
         }
 
-        if(maxv>0)
+        if(maxv==minv)
         {
-            var s=Math.abs(maxv)+Math.abs(minv);
-            self.setValueScale( $('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
-
-            viewBox.y=-maxv*1.1*CABLES.TL.VALUESCALE;
-            self.updateViewBox();
+            maxv+=2;
+            minv-=2;
         }
+        
+        var s=Math.abs(maxv)+Math.abs(minv);
+        self.setValueScale( $('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
+
+        viewBox.y=-maxv*1.1*CABLES.TL.VALUESCALE;
+        self.updateViewBox();
     };
 
     this.selectAllKeys=function()

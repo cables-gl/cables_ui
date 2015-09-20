@@ -474,14 +474,7 @@ var line;
         {
             if(self.op.objName=='Ops.Ui.Patch')
             {
-                console.log('PATCH0R!');
-
-
                 gui.patch().setCurrentSubPatch(self.op.patchId.val);
-
-                console.log('self.op.patchId.val',self.op.patchId.val);
-        
-                
             }
                     
         };
@@ -878,8 +871,6 @@ var line;
                 break;
 
                 case 65: // a - align
-                        console.log('e',e);
-
                         if(e.metaKey || e.ctrlKey) self.selectAllOps();
                             else self.alignSelectedOps();
                 break;
@@ -893,7 +884,7 @@ var line;
 
 
                 default:
-                    console.log('key ',e.which);
+                    // console.log('key ',e.which);
                 break;
 
             }
@@ -911,7 +902,6 @@ var line;
             {
                 var data=gui.patch().scene.serialize(true);
 
-                console.log('data',data.settings);
 
                 data.ui={viewBox:{}};
                 data.ui.viewBox.w=viewBox.w;
@@ -951,7 +941,6 @@ var line;
         };
         this.setCurrentProject=function(proj)
         {
-            console.log('set current project '+proj.name);
 
             if(self.timeLine) self.timeLine.clear();
 
@@ -1784,6 +1773,7 @@ var line;
                     $('#portanim_in_'+index).toggleClass('timingbutton_active');
 
                     op.portsIn[index].toggleAnim();
+
                     self.timeLine.setAnim(op.portsIn[index].anim,{name:op.portsIn[index].name,defaultValue:parseFloat( $('#portval_'+index).val())} );
 
                     self.showOpParams(op);
@@ -1811,6 +1801,7 @@ var line;
                 {
                     op.portsIn[index].val=''+$('#portval_'+index).val();
                     // self.showOpParams(op);
+                            gui.timeLine().scaleHeight();
                 });
             })(ipii);
         }
