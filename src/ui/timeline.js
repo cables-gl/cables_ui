@@ -614,7 +614,11 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.gotoZero=function()
     {
+        // setCursor(0);
+        gui.scene().timer.setTime(0);
+
         setCursor(0);
+        
         self.centerCursor();
     };
 
@@ -1106,17 +1110,23 @@ CABLES.TL.UI.TimeLineUI=function()
         updateTimeDisplay();
     };
 
+    var lastTime=-1;
     this.updateTime=function()
     {
         var time=gui.scene().timer.getTime();
         setCursor(time);
         if(doCenter)self.centerCursor();
  
-        if(timeDisplayMode)
-            $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
-        else
-            $('.timelinetime').html( '<b class="mainColor">'+(time+'').substr(0, 4)+'s </b><br/>'+getFrame(time)+' ' );
 
+        if(lastTime!=time)
+        {
+            lastTime=time;
+
+            if(timeDisplayMode)
+                $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
+            else
+                $('.timelinetime').html( '<b class="mainColor">'+(time+'').substr(0, 4)+'s </b><br/>'+getFrame(time)+' ' );
+        }
         if(updateTimer===null) updateTimer=setInterval(self.updateTime,30);
     };
 
