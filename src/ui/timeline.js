@@ -604,6 +604,20 @@ CABLES.TL.UI.TimeLineUI=function()
         return this.getCanvasCoordsSVG('#timetimeline svg',evt);
     };
 
+    this.gotoOffset=function(off)
+    {
+        gui.scene().timer.setOffset(off);
+        self.updateTime();
+        if(!self.isCursorVisible())self.centerCursor();
+
+    };
+
+    this.gotoZero=function()
+    {
+        setCursor(0);
+        self.centerCursor();
+    };
+
     this.getCanvasCoordsSVG=function(id,evt)
     {
         var ctm = $(id)[0].getScreenCTM();
@@ -767,12 +781,12 @@ CABLES.TL.UI.TimeLineUI=function()
         var maxt=-99999;
         var mint=99999999;
 
-
         var count=0;
         for(var anii in anims)
         {
             for(var i in anims[anii].keys)
             {
+                count++;
                 maxt=Math.max(maxt,anims[anii].keys[i].time);
                 mint=Math.min(mint,anims[anii].keys[i].time);
             }
@@ -845,7 +859,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
             viewBox.y=-maxv*1.1*CABLES.TL.VALUESCALE;
             self.updateViewBox();
-            
+
         }
     };
 
