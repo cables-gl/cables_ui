@@ -663,6 +663,9 @@ input[type=range]:focus {
     height:30px;
 }
 
+
+
+
 #library
 {
     display:none;
@@ -672,32 +675,81 @@ input[type=range]:focus {
     margin-top:41px;
     left:10px;
     width:620px;
-    height:400px;
+    height:440px;
     background-color: #222;
     z-index: 9;
-    overflow: auto;
- 
-    .lvl0{}
-    .lvl1{ margin-left: 10px;}
-    .lvl2{ margin-left: 20px;}
-    .lvl3{ margin-left: 30px;}
 
-    .unselectable
+
+    #lib_head
     {
-        color:#666;
+        .tabs 
+        {
+            div
+            {
+                float: left;
+                padding-top:7px;
+                padding-bottom:7px;
+                padding-left:20px;
+                padding-right:20px;
+                background-color: #222;
+                margin-right: 5px;
+                margin-bottom: 10px;
+                cursor:pointer;
+
+                &:hover
+                {
+                    background-color: #333;
+                }
+
+            }
+
+            .active
+            {
+                background-color: #444;
+                color:white;
+            }
+        }
+
+        .tabs
+        {
+            clear: both;
+            background-color: #222;
+            height:29px;
+            border-bottom: 1px solid #666;
+        }
+
     }
 
-    .selectable
+    #lib_files
     {
-        color:$mainColor;
-        &:hover
+        clear: both;
+        height:400px;
+        overflow: auto;
+     
+        .lvl0{}
+        .lvl1{ margin-left: 10px;}
+        .lvl2{ margin-left: 20px;}
+        .lvl3{ margin-left: 30px;}
+
+        .unselectable
         {
-            text-decoration: underline;
+            color:#666;
+        }
+
+        .selectable
+        {
+            color:$mainColor;
+            &:hover
+            {
+                text-decoration: underline;
+                color:white;
+            }
+        }
+
+        .type_image,.type_mesh,.type_audio,
+        {
+            cursor:pointer;
         }
     }
-
-    .type_image,.type_mesh,.type_audio,
-    {
-        cursor:pointer;
-    }
 }
+

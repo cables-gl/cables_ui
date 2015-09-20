@@ -174,44 +174,7 @@ CABLES.UI.GUI=function()
     this.showLibrary=function(inputId,filterType)
     {
         
-        function getFileList(filterType,files,p)
-        {
-            if(!p)p='/assets/library/';
-            var html='';
-            for(var i in files)
-            {
-                if(!files[i])continue;
-
-
-                files[i].selectableClass='';
-                if(!files[i].d)
-                    if(files[i].t==filterType)files[i].selectableClass='selectable';
-                        else files[i].selectableClass='unselectable';
-
-                files[i].p=p+files[i].n;
-
-                html+= CABLES.UI.getHandleBarHtml('library_file',{file: files[i],inputId:inputId });
-                if(files[i].d )
-                {
-                    html+=getFileList(filterType,files[i].c,p+files[i].n+'/');
-                }
-            }
-            return html;
-        }
-
-
-        $('#library').toggle();
-        if( $('#library').is(':visible') )
-        {
-            CABLES.api.get('library/',function(files)
-            {
-                var html=getFileList(filterType,files);
-                
-                $('#library').html(html);
-                        
-            });
-
-        }
+        CABLES.UI.fileSelect.show(inputId,filterType);
 
     };
 
