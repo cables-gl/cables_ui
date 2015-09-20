@@ -408,8 +408,6 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.colorizeTexture.val=false;
     this.colorizeTexture.onValueChanged=function()
     {
-        console.log('change'+self.colorizeTexture.val);
-
         if(self.colorizeTexture.val=='true')
             shader.define('COLORIZE_TEXTURE');
         else

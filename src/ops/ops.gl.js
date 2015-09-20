@@ -194,9 +194,9 @@ Ops.Gl.Depth = function()
 
     this.render.onTriggered=function()
     {
-        if('true'==self.clear.val) cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
-        if('true'!=self.enable.val) cgl.gl.disable(cgl.gl.DEPTH_TEST);
-        if('true'!=self.write.val) cgl.gl.depthMask(false);
+        if(true===self.clear.val) cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
+        if(true!==self.enable.val) cgl.gl.disable(cgl.gl.DEPTH_TEST);
+        if(true!==self.write.val) cgl.gl.depthMask(false);
 
         cgl.gl.depthFunc(theDepthFunc);
 
@@ -358,13 +358,16 @@ Ops.Gl.Texture = function()
 
     this.name='texture';
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',filter:'image' } ));
+    this.filter=this.addInPort(new Port(this,"filter",OP_PORT_TYPE_VALUE,{display:'bool'}));
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
 
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
     
-    this.filename.onValueChanged=function()
+    this.filter.val=true;
+
+    var reload=function()
     {
         console.log('load texture...');
         self.tex=CGL.Texture.load(self.filename.val,function()
@@ -372,12 +375,13 @@ Ops.Gl.Texture = function()
             self.textureOut.val=self.tex;
             self.width.val=self.tex.width;
             self.height.val=self.tex.height;
-        });
+        },{filter:self.filter.val});
         self.textureOut.val=self.tex;
 
     };
 
-    // this.filename.val='assets/skull.png';
+    this.filename.onValueChanged=reload;
+    this.filter.onValueChanged=reload;
 };
 
 Ops.Gl.Texture.prototype = new Op();
@@ -994,7 +998,7 @@ var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or b
         cgl.gl.viewport(0, 0, self.width.val,self.height.val);
         // mat4.perspective(cgl.pMatrix,45, 1, 0.01, 1100.0);
 
-        if(self.clear.val==='true')
+        if(self.clear.val)
         {
             cgl.gl.clearColor(0,0,0,1);
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);

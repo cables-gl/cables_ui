@@ -1173,7 +1173,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.channelR=this.addInPort(new Port(this,"channelR",OP_PORT_TYPE_VALUE,{ display:'bool' }));
     this.channelR.onValueChanged=function()
     {
-        if(self.channelR.val=='true' || self.channelR.val===true) shader.define('CHANNEL_R');
+        if(self.channelR.val) shader.define('CHANNEL_R');
             else shader.removeDefine('CHANNEL_R');
     };
     this.channelR.val=true;
@@ -1182,7 +1182,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.channelG.val=false;
     this.channelG.onValueChanged=function()
     {
-        if(self.channelG.val=='true')shader.define('CHANNEL_G');
+        if(self.channelG.val)shader.define('CHANNEL_G');
             else shader.removeDefine('CHANNEL_G');
     };
 
@@ -1191,7 +1191,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.channelB.val=false;
     this.channelB.onValueChanged=function()
     {
-        if(self.channelB.val=='true') shader.define('CHANNEL_B');
+        if(self.channelB.val) shader.define('CHANNEL_B');
             else shader.removeDefine('CHANNEL_B');
     };
 
@@ -1199,7 +1199,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.mono.val=false;
     this.mono.onValueChanged=function()
     {
-        if(self.mono.val=='true') shader.define('MONO');
+        if(self.mono.val) shader.define('MONO');
             else shader.removeDefine('MONO');
     };
 

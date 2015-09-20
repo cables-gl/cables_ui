@@ -1799,7 +1799,21 @@ var line;
             {
                 $('#portval_'+index).on('input',function(e)
                 {
-                    op.portsIn[index].val=''+$('#portval_'+index).val();
+                    var v=''+$('#portval_'+index).val();
+
+                    if( op.portsIn[index].uiAttribs)
+                    {
+                        if(op.portsIn[index].uiAttribs.hasOwnProperty('display'))
+                        {
+                            if(op.portsIn[index].uiAttribs.display=='bool')
+                            {
+                                if(v=='true')v=true;
+                                else v=false;
+                            }
+                        }
+                   }
+                            
+                    op.portsIn[index].val=v;
                     // self.showOpParams(op);
                     if(op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
                 });

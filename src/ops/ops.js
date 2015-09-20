@@ -260,7 +260,7 @@ Ops.IfTrueThen = function()
 
     this.exe.onTriggered=function()
     {
-        if(self.bool.val=='true' ||self.bool.val>=1 )
+        if(self.bool.val==true ||self.bool.val>=1 )
         {
             self.triggerThen.call();
         }
