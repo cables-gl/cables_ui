@@ -357,7 +357,7 @@ Ops.Gl.Texture = function()
     var self=this;
 
     this.name='texture';
-    this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
+    this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',filter:'image' } ));
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
 

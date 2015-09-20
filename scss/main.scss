@@ -662,3 +662,42 @@ input[type=range]:focus {
     width:30px;
     height:30px;
 }
+
+#library
+{
+    display:none;
+    padding:10px;
+    font-family: arial;
+    position: absolute;
+    margin-top:41px;
+    left:10px;
+    width:620px;
+    height:400px;
+    background-color: #222;
+    z-index: 9;
+    overflow: auto;
+ 
+    .lvl0{}
+    .lvl1{ margin-left: 10px;}
+    .lvl2{ margin-left: 20px;}
+    .lvl3{ margin-left: 30px;}
+
+    .unselectable
+    {
+        color:#666;
+    }
+
+    .selectable
+    {
+        color:$mainColor;
+        &:hover
+        {
+            text-decoration: underline;
+        }
+    }
+
+    .type_image,.type_mesh,.type_audio,
+    {
+        cursor:pointer;
+    }
+}

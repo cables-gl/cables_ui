@@ -304,7 +304,7 @@ Ops.Gl.Meshes.ObjMesh = function()
     this.name='OBJ Mesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-    this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
+    this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{display:'file',filter:'mesh'}));
 
     this.mesh=null;
 

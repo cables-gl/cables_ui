@@ -24,8 +24,18 @@
 </script>
 
 
+
+<script id="library_file" type="text/x-handlebars-template">
+
+<div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');"> {{file.n}} </div>
+
+</script>
+
+<div id="library"></div>
+
 <div id="modalbg"></div>
 <div id="modalcontent"></div>
+
 
 
 <div id="sidebar" class="hidden ">
@@ -70,7 +80,9 @@
     <div id="projectfiles">
     </div>
 </div>
-<div id="options" class="panel"></div>
+<div id="options" class="panel">
+</div>
+
 
 <div id="menubar">
 
@@ -95,6 +107,8 @@
     </div>
 
 </div>
+
+
 
 <div class="tooltip"></div>
 
@@ -261,6 +275,16 @@
                     {{#compare port.uiAttribs.display '==' 'readonly' }}
                         {{ port.val }}
                     {{/compare}}
+
+                    {{#compare port.uiAttribs.display '==' 'file' }}
+                        
+                        <a class="button timingbutton fa fa-file-image-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
+
+
+                        <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+
+                    {{/compare}}
+
 
                 {{else}}
                 
@@ -451,7 +475,7 @@ updateIcons();
 
     
 <div class="opsearch" style="height:auto;">
-    <h2>selct project</h2>
+    <h2>load project</h2>
 
     <input id="projectsearch"/>
 

@@ -2538,3 +2538,33 @@ a
   z-index: 99999;
   width: 30px;
   height: 30px; }
+
+#library {
+  display: none;
+  padding: 10px;
+  font-family: arial;
+  position: absolute;
+  margin-top: 41px;
+  left: 10px;
+  width: 620px;
+  height: 400px;
+  background-color: #222;
+  z-index: 9;
+  overflow: auto; }
+  #library .lvl1 {
+    margin-left: 10px; }
+  #library .lvl2 {
+    margin-left: 20px; }
+  #library .lvl3 {
+    margin-left: 30px; }
+  #library
+.unselectable {
+    color: #666; }
+  #library
+.selectable {
+    color: #6c9fde; }
+    #library
+.selectable:hover {
+      text-decoration: underline; }
+  #library .type_image, #library .type_mesh, #library .type_audio {
+    cursor: pointer; }

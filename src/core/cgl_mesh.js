@@ -81,7 +81,7 @@ CGL.Mesh=function(geom)
 
         var what=cgl.gl.TRIANGLES;
         if(cgl.wireframe)what=cgl.gl.LINES;
-        else if(cgl.points)what=gl.POINTS;
+        else if(cgl.points)what=cgl.gl.POINTS;
 
         cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
     };
