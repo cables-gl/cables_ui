@@ -798,6 +798,15 @@ CABLES.TL.UI.TimeLineUI=function()
         updateTimeDisplay();
     };
 
+    var delayedScaleHeight=0;
+    this.scaleHeightDelayed=function()
+    {
+        clearTimeout(delayedScaleHeight);
+        delayedScaleHeight = setTimeout(self.scaleHeight, 150);
+    };
+
+    var lastScaleHeightMax=0;
+    var lastScaleHeightMin=0;
     this.scaleHeight=function()
     {
         var maxv=-99999;
@@ -814,23 +823,30 @@ CABLES.TL.UI.TimeLineUI=function()
             }
         }
 
-        if(count===0)
+        if( lastScaleHeightMax!=maxv ||lastScaleHeightMin!=minv )
         {
-            maxv=1;
-            minv=-1;
-        }
+            lastScaleHeightMax=maxv;
+            lastScaleHeightMin=minv;
 
-        if(maxv==minv)
-        {
-            maxv+=2;
-            minv-=2;
-        }
-        
-        var s=Math.abs(maxv)+Math.abs(minv);
-        self.setValueScale( $('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
+            if(count===0)
+            {
+                maxv=1;
+                minv=-1;
+            }
 
-        viewBox.y=-maxv*1.1*CABLES.TL.VALUESCALE;
-        self.updateViewBox();
+            if(maxv==minv)
+            {
+                maxv+=2;
+                minv-=2;
+            }
+            
+            var s=Math.abs(maxv)+Math.abs(minv);
+            self.setValueScale( $('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
+
+            viewBox.y=-maxv*1.1*CABLES.TL.VALUESCALE;
+            self.updateViewBox();
+            
+        }
     };
 
     this.selectAllKeys=function()

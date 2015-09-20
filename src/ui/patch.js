@@ -1801,7 +1801,7 @@ var line;
                 {
                     op.portsIn[index].val=''+$('#portval_'+index).val();
                     // self.showOpParams(op);
-                            gui.timeLine().scaleHeight();
+                    if(op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
                 });
             })(ipii);
         }
