@@ -25,6 +25,15 @@ var Op = function()
     this.onAddPort=null;
     this.onCreate=null;
 
+    this.uiAttr=function(newAttribs)
+    {
+        if(!this.uiAttribs)this.uiAttribs={};
+        for(var p in newAttribs)
+        {
+            this.uiAttribs[p]=newAttribs[p];
+        }
+    };
+
     this.getName= function()
     {
         return this.name;
@@ -453,7 +462,7 @@ var Scene = function()
         var op=eval('new '+objName+'();');
         op.objName=objName;
         op.patch=this;
-        op.uiAttribs=uiAttribs;
+        op.uiAttr(uiAttribs);
         if(op.onCreate)op.onCreate();
 
         if(op.hasOwnProperty('onAnimFrame')) this.animFrameOps.push(op);

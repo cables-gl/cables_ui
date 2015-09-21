@@ -2646,3 +2646,8 @@ th {
       padding-top: 13px;
       padding-bottom: 13px;
       font-size: 13px; }
+
+.warning {
+  background-color: #5e180f;
+  color: white;
+  border-radius: 4px; }

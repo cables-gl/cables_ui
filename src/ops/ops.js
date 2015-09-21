@@ -304,12 +304,78 @@ Ops.Group = function()
         {
             self.triggers[i].call();
         }
-
     };
 
+    this.uiAttribs.warning='"group" is deprecated, please use "sequence now"';
 
 };
 Ops.Group.prototype = new Op();
+
+
+
+
+Ops.Sequence = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='sequence';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+
+    this.triggers=[];
+
+    for(var i=0;i<10;i++)
+    {
+        this.triggers.push( this.addOutPort(new Port(this,"trigger "+i,OP_PORT_TYPE_FUNCTION)) );
+    }
+
+    this.exe.onTriggered=function()
+    {
+        for(var i in self.triggers)
+        {
+            self.triggers[i].call();
+        }
+    };
+
+};
+Ops.Sequence.prototype = new Op();
+
+
+
+// ---------------------------------------------------------------------------
+
+
+
+Ops.TimedSequence = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='TimedSequence';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.current=this.addInPort(new Port(this,"current",OP_PORT_TYPE_VALUE));
+    this.current.val=0;
+
+    this.triggers=[];
+
+    for(var i=0;i<10;i++)
+    {
+        this.triggers.push( this.addOutPort(new Port(this,"trigger "+i,OP_PORT_TYPE_FUNCTION)) );
+    }
+
+    this.exe.onTriggered=function()
+    {
+        var i=Math.round(self.current.val-0.5);
+        if(i>=0 && i<self.triggers.length)
+        {
+            self.triggers[i].call();
+        }
+
+    };
+
+};
+Ops.TimedSequence.prototype = new Op();
+
 
 
 
