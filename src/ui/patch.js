@@ -871,8 +871,15 @@ var line;
                 break;
 
                 case 65: // a - align
-                        if(e.metaKey || e.ctrlKey) self.selectAllOps();
-                            else self.alignSelectedOps();
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        self.selectAllOps();
+                    }
+                    else
+                    {
+                        if(e.shiftKey) self.alignSelectedOpsHor();
+                        else self.alignSelectedOpsVert();
+                    }
                 break;
 
 
@@ -1555,7 +1562,7 @@ var line;
         self.updateSubPatches();
     };
 
-    this.alignSelectedOps=function()
+    this.alignSelectedOpsVert=function()
     {
         if(selectedOps.length>0)
         {
@@ -1568,6 +1575,22 @@ var line;
 
             for(j in selectedOps)
                 selectedOps[j].setPos(avg,selectedOps[j].op.uiAttribs.translate.y);
+        }
+    };
+
+    this.alignSelectedOpsHor=function()
+    {
+        if(selectedOps.length>0)
+        {
+            var j=0;
+            var sum=0;
+            for(j in selectedOps)
+                sum+=selectedOps[j].op.uiAttribs.translate.y;
+
+            var avg=sum/selectedOps.length;
+
+            for(j in selectedOps)
+                selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x,avg);
         }
     };
     

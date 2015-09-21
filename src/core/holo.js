@@ -8,7 +8,6 @@ var OP_PORT_TYPE_TEXTURE =2;
 var OP_PORT_TYPE_ARRAY =3;
 var OP_PORT_TYPE_DYNAMIC=4;
 
-
 var Ops = {};
 
 var Op = function()
