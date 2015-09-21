@@ -116,8 +116,6 @@ console.log('searching for ... ',name);
         console.log('shouldlink');
         console.log('p1 p2',p1.getName(),p2.getName());
 
-                
-
         var dynPort=p2;
         var otherPort=p1;
 
@@ -131,8 +129,7 @@ console.log('searching for ... ',name);
         dynPort.name='in_'+otherPort.getName();
 
         var patchInputOP=getSubPatchInputOp();
-        var pOut=patchInputOP.addOutPort(new Port(self,"out"+self.portsIn.length,dynPort.type));
-        // pOut.shouldLink=self.shouldLink;
+        var pOut=patchInputOP.addOutPort(new Port(self,"out_"+otherPort.getName(),dynPort.type));
 
         if(dynPort.type==OP_PORT_TYPE_FUNCTION)
         {

@@ -189,13 +189,13 @@ textarea
     color:#ddd;
     z-index: 9999;
     min-width: 550px;
-
+    max-height: 75%;
+    overflow: auto;
 
     user-select:text;
     -webkit-user-select: text;  /* Chrome all / Safari all */
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
-
 
     .modalclose
     {   
@@ -759,6 +759,18 @@ input[type=range]:focus {
 
 .help
 {
+    a
+    {
+        text-decoration: underline;
+
+        &:before
+        {
+            font-family: fontawesome;
+            content:"\f08e";
+            margin-right: 5px;
+            display:inline-block;
+        }
+    }
     table
     {
         width:100%;

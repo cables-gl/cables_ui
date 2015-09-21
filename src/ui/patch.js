@@ -4,6 +4,7 @@ CABLES.UI= CABLES.UI || {};
 
 function getPortOpacity(port)
 {
+    if(!port)return;
     if(port.direction==PORT_DIR_IN && (port.isAnimated() || port.isLinked() ))return 1.0;
     return 0.6;
 }
