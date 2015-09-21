@@ -23,9 +23,29 @@ Ops.Log = function()
 };
 Ops.Log.prototype = new Op();
 
-
 // ---------------------------------------------------------------------------
 
+Ops.Profiler = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Profiler';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.input=this.addInPort(new Port(this,"input"));
+    this.input.val='';
+
+    this.exec=function()
+    {
+        console.log("[log] " + self.input.val);
+    };
+
+    this.exe.onTriggered=this.exec;
+    this.input.onValueChanged=this.exec;
+};
+Ops.Profiler.prototype = new Op();
+
+// ---------------------------------------------------------------------------
 
 Ops.CallsPerSecond = function()
 {
@@ -138,7 +158,7 @@ Ops.TimeLineDelay = function()
 
         self.patch.timer.setDelay(self.delay.val);
         self.theTime.val=self.patch.timer.getTime();
-        self.trigger.call();
+        self.trigger.trigger();
         self.patch.timer.setDelay(0);
 
     };
@@ -169,7 +189,7 @@ Ops.TimeLineOverwrite = function()
         realTime=self.patch.timer.getTime();
 
         self.patch.timer.overwriteTime=self.newTime.val;
-        self.trigger.call();
+        self.trigger.trigger();
         self.patch.timer.overwriteTime=-1;
         // self.patch.timer.setTime(realTime);
 
@@ -201,7 +221,7 @@ Ops.Repeat = function()
         for(var i=self.num.value-1;i>=0;i--)
         {
             self.idx.val=i;
-            self.trigger.call();
+            self.trigger.trigger();
         }
 
     };
@@ -234,7 +254,7 @@ Ops.ArrayIterator = function()
         {
             self.idx.val=i;
             self.val.val=self.arr.val[i];
-            self.trigger.call();
+            self.trigger.trigger();
         }
 
     };
@@ -262,11 +282,11 @@ Ops.IfTrueThen = function()
     {
         if(self.bool.val==true ||self.bool.val>=1 )
         {
-            self.triggerThen.call();
+            self.triggerThen.trigger();
         }
         else
         {
-            self.triggerElse.call();
+            self.triggerElse.trigger();
         }
     };
 
@@ -302,7 +322,7 @@ Ops.Group = function()
     {
         for(var i in self.triggers)
         {
-            self.triggers[i].call();
+            self.triggers[i].trigger();
         }
     };
 
@@ -333,7 +353,7 @@ Ops.Sequence = function()
     {
         for(var i in self.triggers)
         {
-            self.triggers[i].call();
+            self.triggers[i].trigger();
         }
     };
 
@@ -364,7 +384,7 @@ Ops.TimedSequence = function()
         var i=Math.round(self.current.val-0.5);
         if(i>=0 && i<triggers.length)
         {
-            triggers[i].call();
+            triggers[i].trigger();
         }
     };
 
@@ -391,7 +411,7 @@ Ops.Interval = function()
         this.timeOutId=setTimeout(function()
         {
             self.timeOutId=-1;
-            self.trigger.call();
+            self.trigger.trigger();
             self.exec();
         },
         this.interval.val );
@@ -478,7 +498,7 @@ Ops.Anim.TimeDiff = function()
     {
         self.result.val=(Date.now()-lastTime);
         lastTime=Date.now();
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     this.exe.onTriggered();

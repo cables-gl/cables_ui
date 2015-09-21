@@ -53,7 +53,7 @@ Ops.Gl.Renderer = function()
 
         cgl.beginFrame();
 
-        self.trigger.call();
+        self.trigger.trigger();
 
         cgl.popMvMatrix();
         cgl.popPMatrix();
@@ -109,7 +109,7 @@ Ops.Gl.LetterBox = function()
         mat4.perspective(cgl.pMatrix,45, self.ratio.val, 0.01, 1100.0);
 
 
-        self.trigger.call();
+        self.trigger.trigger();
         cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
     };
@@ -146,7 +146,7 @@ Ops.Gl.ClearColor = function()
         cgl.gl.clearColor(self.r.val,self.g.val,self.b.val,self.a.val);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -200,7 +200,7 @@ Ops.Gl.Depth = function()
 
         cgl.gl.depthFunc(theDepthFunc);
 
-        self.trigger.call();
+        self.trigger.trigger();
 
         cgl.gl.enable(cgl.gl.DEPTH_TEST);
         cgl.gl.depthMask(true);
@@ -226,7 +226,7 @@ Ops.Gl.ClearDepth = function()
     this.render.onTriggered=function()
     {
         cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -252,7 +252,7 @@ Ops.Gl.Wireframe = function()
     {
         cgl.wireframe=true;
         cgl.gl.lineWidth(self.lineWidth.val);
-        self.trigger.call();
+        self.trigger.trigger();
         cgl.wireframe=false;
 
     };
@@ -279,7 +279,7 @@ Ops.Gl.Points = function()
     {
         cgl.points=true;
         // gl.pointSize(self.pointSize.val);
-        self.trigger.call();
+        self.trigger.trigger();
         cgl.points=false;
 
     };
@@ -468,7 +468,7 @@ Ops.Gl.Meshes.Plotter = function()
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, self.buffer);
         cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, self.buffer.numItems);
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     this.buffer = cgl.gl.createBuffer();
@@ -539,7 +539,7 @@ Ops.Gl.Shader.Schwurbel = function()
 
         cgl.setPreviousShader(shader);
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     var srcFrag=''+
@@ -588,7 +588,7 @@ Ops.Gl.Shader.Noise = function()
         cgl.gl.uniform1f(timeUniform, (Date.now()-timeStart)/1000);
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     var srcFrag=''+
@@ -642,7 +642,7 @@ Ops.Gl.Matrix.Translate = function()
         vec3.set(vec, self.x.val,self.y.val,self.z.val);
         cgl.pushMvMatrix();
         mat4.translate(cgl.mvMatrix,cgl.mvMatrix, vec);
-        self.trigger.call();
+        self.trigger.trigger();
         cgl.popMvMatrix();
     };
 };
@@ -672,7 +672,7 @@ Ops.Gl.Matrix.Scale = function()
     {
         cgl.pushMvMatrix();
         mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
-        self.trigger.call();
+        self.trigger.trigger();
         cgl.popMvMatrix();
     };
 
@@ -749,9 +749,10 @@ Ops.Gl.Matrix.LookatCamera = function()
         vec3.set(vCenter, self.centerX.val,self.centerY.val,self.centerZ.val);
 
         mat4.lookAt(cgl.mvMatrix, vEye, vCenter, vUp);
-        self.trigger.call();
+        self.trigger.trigger();
         cgl.popMvMatrix();
     };
+
 
 };
 
@@ -759,6 +760,223 @@ Ops.Gl.Matrix.LookatCamera.prototype = new Op();
 
 
 // --------------------------------------------------------------------------
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Matrix.WASDCamera = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='WASDCamera';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+
+    var vDir=vec3.create();
+    var vPosition=vec3.create();
+    var vMovement=vec3.create();
+    var vAdd=vec3.create();
+    var vUp=vec3.create();
+    var vCenter=vec3.create();
+    
+    var rotMatrix = mat4.create();
+    var transMatrix = mat4.create();
+    mat4.identity(transMatrix);
+
+    var centerX=0,centerZ=0;
+    var eyeX=0,eyeZ=0;
+    var moveX=0,moveZ=0;
+
+
+
+    this.render.onTriggered=function()
+    {
+        move();
+
+        vec3.set(vUp, 0,1,0);
+        
+        vec3.set(vDir, 0,rotX,0);
+        vec3.set(vMovement, moveX,0,moveZ);
+
+        
+
+
+        // vec3.mul(vAdd,vMovement,vDir);
+        
+        // console.log('vPosition',vMovement);
+        
+
+        vec3.add(vPosition, vMovement,vPosition);
+        // vec3.add(vCenter,vPosition,vDir);
+        // vec3.add(vAdd, vAdd,vPosition);
+
+    mat4.identity(rotMatrix);
+    mat4.rotateY(rotMatrix, rotMatrix, rotX);
+    // vec3.add(vAdd, vDir,vPosition);
+vec3.mul(vCenter, vPosition,rotMatrix);
+
+
+        // vec3.add(vCenter, vPosition,vDir);
+        // vec3.set(vCenter, vPosition);
+        
+
+
+        cgl.pushMvMatrix();
+        // mat4.identity(cgl.mvMatrix);
+
+        // mat4.translate(cgl.mvMatrix,cgl.mvMatrix,vPosition);
+        mat4.lookAt(cgl.mvMatrix, vPosition, vCenter, vUp);
+        self.trigger.trigger();
+        cgl.popMvMatrix();
+    };
+
+
+    //--------------
+
+    var rotX=0;
+
+    function moveCallback(e)
+    {
+        rotX+=e.movementX*0.01;
+        //console.log('e',e.movementX);
+    }
+
+    var canvas = document.getElementById("glcanvas");
+
+     function lockChangeCallback(e)
+     {
+        // var canvas = $("#pointerLock").get()[0];
+        if (document.pointerLockElement === canvas ||
+                document.mozPointerLockElement === canvas ||
+                document.webkitPointerLockElement === canvas)
+        {
+ 
+            // we've got a pointerlock for our element, add a mouselistener
+            document.addEventListener("mousemove", moveCallback, false);
+            console.log('lock start');
+        } else {
+ 
+            // pointer lock is no longer active, remove the callback
+            document.removeEventListener("mousemove", moveCallback, false);
+                    console.log('lock exit');
+                    
+ 
+        }
+    };
+       
+        document.addEventListener('pointerlockchange', lockChangeCallback, false);
+        document.addEventListener('mozpointerlockchange', lockChangeCallback, false);
+        document.addEventListener('webkitpointerlockchange', lockChangeCallback, false);
+
+//     $('#glcanvas').bind("mousemove",function(e)
+//     {
+//                 console.log('e',e);
+                
+// });
+$('#glcanvas').on('click',function()
+{
+document.addEventListener("mousemove", moveCallback, false);
+        console.log('canvas',canvas);
+        
+    canvas.requestPointerLock = canvas.requestPointerLock ||
+                                canvas.mozRequestPointerLock ||
+                                canvas.webkitRequestPointerLock;
+    canvas.requestPointerLock();
+
+
+});
+
+    var lastMove=0;
+    function move()
+    {
+        var timeOffset = window.performance.now()-lastMove;
+
+        var speed=0.01;
+        var moveVal=timeOffset*speed;
+
+moveX=0;
+moveZ=0;
+
+        if(pressedA)
+        {
+            moveX+=moveVal;
+        }
+        if(pressedD)
+        {
+            moveX-=moveVal;
+        }
+        if(pressedW)
+        {
+            moveZ+=moveVal;
+            // eyeZ+=moveVal;
+        }
+        if(pressedS)
+        {
+            moveZ-=moveVal;
+            // eyeZ-=moveVal;
+        }
+
+
+        lastMove = window.performance.now();
+    }
+
+    var pressedW=false;
+    var pressedA=false;
+    var pressedS=false;
+    var pressedD=false;
+
+    $('#glcanvas').keydown(function(e)
+    {
+        switch(e.which)
+        {
+            case 87:
+                pressedW=true;
+            break;
+            case 65:
+                pressedA=true;
+            break;
+            case 83:
+                pressedS=true;
+            break;
+            case 68:
+                pressedD=true;
+            break;
+
+            default:
+                console.log('key:',e.which);
+            break;
+        }
+    });
+
+    $('#glcanvas').keyup(function(e)
+    {
+        switch(e.which)
+        {
+            case 87:
+                pressedW=false;
+            break;
+            case 65:
+                pressedA=false;
+            break;
+            case 83:
+                pressedS=false;
+            break;
+            case 68:
+                pressedD=false;
+            break;
+        }
+    });
+
+
+};
+
+Ops.Gl.Matrix.WASDCamera.prototype = new Op();
+
+
+// --------------------------------------------------------------------------
+
 
 Ops.Gl.Matrix.Transform = function()
 {
@@ -792,7 +1010,7 @@ Ops.Gl.Matrix.Transform = function()
     {
         cgl.pushMvMatrix();
         mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
-        self.trigger.call();
+        self.trigger.trigger();
         cgl.popMvMatrix();
     };
 
@@ -894,7 +1112,7 @@ Ops.RandomCluster = function()
             self.idx.val=i;
             self.rnd.val=self.randomsFloats[i];
 
-            self.trigger.call();
+            self.trigger.trigger();
 
             cgl.popMvMatrix();
         }
@@ -1012,7 +1230,7 @@ var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or b
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
         }
 
-        self.trigger.call();
+        self.trigger.trigger();
 
         cgl.popPMatrix();
         
@@ -1137,7 +1355,7 @@ Ops.Gl.Spray = function()
             self.lifeTimePercent.val= particles[i].lifeTimePercent;
             // self.rnd.val=self.randomsFloats[i];
 
-            self.trigger.call();
+            self.trigger.trigger();
 
             cgl.popMvMatrix();
         }

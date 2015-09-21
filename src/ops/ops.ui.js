@@ -135,7 +135,7 @@ console.log('searching for ... ',name);
         {
             dynPort.onTriggered=function()
             {
-                pOut.call();
+                pOut.trigger();
             };
             dynPort.onTriggered();
         }

@@ -285,14 +285,20 @@ var Port=function(parent,name,type,uiAttribs)
         return false;
     };
 
-    this.call=function()
+    this.trigger=function()
     {
         if(!parent.enabled)return;
         for(var i in this.links)
         {
             if(this.links[i].portIn !=this)this.links[i].portIn._onTriggered();
-            if(this.links[i].portOut!=this)this.links[i].portOut._onTriggered();
+            else if(this.links[i].portOut!=this)this.links[i].portOut._onTriggered();
         }
+    };
+
+    this.call=function()
+    {
+        console.log('call deprecated - use trigger() ');
+        this.trigger();
     };
 
     this.execute=function()
@@ -528,7 +534,7 @@ var Scene = function()
         }
     };
 
-    this.exec=function()
+    this.exec=function(e)
     {
         requestAnimationFrame(self.exec);
         self.timer.update();

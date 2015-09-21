@@ -15,7 +15,7 @@ Ops.Gl.Meshes.Triangle = function()
     this.render.onTriggered=function()
     {
         self.mesh.render(cgl.getShader());
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     var geom=new CGL.Geometry();
@@ -51,7 +51,7 @@ Ops.Gl.Meshes.Rectangle = function()
     this.render.onTriggered=function()
     {
         self.mesh.render(cgl.getShader());
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     var geom=new CGL.Geometry();
@@ -123,7 +123,7 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         cgl.popPMatrix();
         cgl.popMvMatrix();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     function rebuild()
@@ -181,7 +181,7 @@ Ops.Gl.Meshes.Circle = function()
     this.render.onTriggered=function()
     {
         mesh.render(cgl.getShader());
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     this.segments.val=20;
@@ -312,7 +312,7 @@ Ops.Gl.Meshes.ObjMesh = function()
     {
         if(self.mesh) self.mesh.render(cgl.getShader());
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
 
@@ -382,7 +382,7 @@ Ops.Gl.Meshes.Cube = function()
     this.render.onTriggered=function()
     {
         if(self.mesh!==null) self.mesh.render(cgl.getShader());
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     var geom=new CGL.Geometry();

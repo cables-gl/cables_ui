@@ -1706,7 +1706,7 @@ var line;
         s.name=currentProject.name;
         s.settings=gui.scene().settings;
 
-        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s});
+        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,numOps:gui.scene().ops.length});
         $('#options').html(html);
     };
 
