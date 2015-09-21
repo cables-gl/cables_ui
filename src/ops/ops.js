@@ -340,11 +340,7 @@ Ops.Sequence = function()
 };
 Ops.Sequence.prototype = new Op();
 
-
-
 // ---------------------------------------------------------------------------
-
-
 
 Ops.TimedSequence = function()
 {
@@ -356,29 +352,24 @@ Ops.TimedSequence = function()
     this.current=this.addInPort(new Port(this,"current",OP_PORT_TYPE_VALUE));
     this.current.val=0;
 
-    this.triggers=[];
+    var triggers=[];
 
     for(var i=0;i<10;i++)
     {
-        this.triggers.push( this.addOutPort(new Port(this,"trigger "+i,OP_PORT_TYPE_FUNCTION)) );
+        triggers.push( this.addOutPort(new Port(this,"trigger "+i,OP_PORT_TYPE_FUNCTION)) );
     }
 
     this.exe.onTriggered=function()
     {
         var i=Math.round(self.current.val-0.5);
-        if(i>=0 && i<self.triggers.length)
+        if(i>=0 && i<triggers.length)
         {
-            self.triggers[i].call();
+            triggers[i].call();
         }
-
     };
 
 };
 Ops.TimedSequence.prototype = new Op();
-
-
-
-
 
 // ---------------------------------------------------------------------------
 
@@ -414,9 +405,6 @@ Ops.Interval.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
-
-// --------------------------------------------------------------------------
-
 Ops.Anim={};
 
 Ops.Anim.SinusAnim = function()
@@ -446,11 +434,7 @@ Ops.Anim.SinusAnim = function()
 
 Ops.Anim.SinusAnim.prototype = new Op();
 
-
-
-
 // --------------------------------------------------------------------------
-
 
 Ops.Anim.RelativeTime = function()
 {

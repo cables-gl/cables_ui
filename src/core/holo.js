@@ -614,7 +614,6 @@ var Scene = function()
 
         this.settings=obj.settings;
 
-        var starttime=window.performance.now();
 
 
         function addLink(opinid,opoutid,inName,outName)
@@ -700,8 +699,6 @@ console.log('add ops ');
 
 
 
-        var timeused=window.performance.now()-starttime;
-        console.log('serialize :',timeused,op);
 
 
 
