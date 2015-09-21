@@ -24,8 +24,43 @@ Ops.Ui.Patch = function()
     this.name='Patch';
     this.patchId=this.addInPort(new Port(this,"patchId",OP_PORT_TYPE_VALUE,{ display:'readonly' }));
 
+
+    var hasDynamicPort=function()
+    {
+
+
+        for(var i in self.portsIn)
+        {
+            if(self.portsIn[i].type==OP_PORT_TYPE_DYNAMIC)
+            {
+                        console.log('hasDynamicPort');
+                return true;
+            }
+            if(self.portsIn[i].getName()=='dyn')
+            {
+                console.log('hasDynamicPort');
+                return true;
+            }
+
+        }
+                
+        return false;
+    };
+
     var getNewDynamicPort=function(name)
     {
+
+        for(var i in this.portsIn)
+        {
+            if(this.portsIn[i].type==OP_PORT_TYPE_DYNAMIC)
+            {
+                this.portsIn[i].name=name;
+                console.log('found dyn port, change name...');
+                        
+                return this.portsIn[i];
+            }
+        }
+
         var p=self.addInPort(new Port(self,name,OP_PORT_TYPE_DYNAMIC));
         p.shouldLink=self.shouldLink;
         return p;
@@ -33,9 +68,22 @@ Ops.Ui.Patch = function()
 
     this.getPort=function(name)
     {
-        for(var ipi in self.portsIn)
-            if(self.portsIn[ipi].getName()==name)return self.portsIn[ipi];
 
+console.log('searching for ... ',name);
+
+
+        for(var ipi in self.portsIn)
+        {
+            if(self.portsIn[ipi].getName()==name)
+            {
+                console.log('found existing port with name');
+
+                return self.portsIn[ipi];
+            }
+        }
+
+        console.log('create new dyn port: ',name);
+                
         var p=getNewDynamicPort(name);
         
         return p;
@@ -63,10 +111,15 @@ Ops.Ui.Patch = function()
 
     this.shouldLink=function(p1,p2)
     {
+        if(p1.type!=OP_PORT_TYPE_DYNAMIC && p2.type!=OP_PORT_TYPE_DYNAMIC) return true;
+
+        console.log('shouldlink');
+        console.log('p1 p2',p1.getName(),p2.getName());
+
+                
+
         var dynPort=p2;
         var otherPort=p1;
-
-        if(p1.type!=OP_PORT_TYPE_DYNAMIC && p2.type!=OP_PORT_TYPE_DYNAMIC) return true;
 
         if(p1.type==OP_PORT_TYPE_DYNAMIC)
         {
@@ -99,8 +152,17 @@ Ops.Ui.Patch = function()
         }
 
         gui.patch().updateSubPatches();
-        getNewDynamicPort();
+        if(!hasDynamicPort())getNewDynamicPort('dyn');
 
+
+
+        console.log('port list');
+        for(var i in self.portsIn)
+        {
+            console.log(' ',self.portsIn[i].getName(),self.portsIn[i].type);
+        }
+        console.log('  ',self.portsIn.length+' ports');
+        
 
         return true;
     };
@@ -115,8 +177,10 @@ Ops.Ui.Patch = function()
 
     this.onCreate=function()
     {
-        getNewDynamicPort('dyn');
+        if(!hasDynamicPort())getNewDynamicPort('dyn');
         getSubPatchInputOp();
+        gui.patch().updateSubPatches();
+
     };
 
 

@@ -47,8 +47,20 @@ var Op = function()
         return p;
     };
 
+this.hasPort=function(name)
+{
+    for(var i in this.portsIn)
+    {
+        if(this.portsIn[i].getName()==name)
+        {
+            return true;
+        }
+    }
+    return false;
+};
     this.addInPort=function(p)
     {
+
         p.direction=PORT_DIR_IN;
         p.parent=this;
         this.portsIn.push(p);
@@ -95,10 +107,14 @@ var Op = function()
         op.portsOut=[];
 
         for(var i=0;i<this.portsIn.length;i++)
+        {
+            if(this.portsIn[i].type!=OP_PORT_TYPE_DYNAMIC)
             op.portsIn.push( this.portsIn[i].getSerialized() );
+        }
 
         for(var ipo in this.portsOut)
-            op.portsOut.push( this.portsOut[ipo].getSerialized() );
+            if(this.portsOut[ipo].type!=OP_PORT_TYPE_DYNAMIC)
+                op.portsOut.push( this.portsOut[ipo].getSerialized() );
 
         return op;
     };
@@ -111,11 +127,6 @@ var Op = function()
 
         for(var ipo in this.portsOut)
             if(this.portsOut[ipo].getName()==name)return this.portsOut[ipo];
-    };
-
-    this.getPortByName=function(name)
-    {
-        return this.getPort(name);
     };
 
     this.updateAnims=function()
@@ -613,8 +624,6 @@ var Scene = function()
 
         this.settings=obj.settings;
 
-
-
         function addLink(opinid,opoutid,inName,outName)
         {
             var found=false;
@@ -640,9 +649,9 @@ console.log('add ops ');
             {
                 var objPort=obj.ops[iop].portsIn[ipi];
 
-                var port=op.getPortByName(objPort.name);
-                if(port && port.type!=OP_PORT_TYPE_TEXTURE)port.val=objPort.value;
+                var port=op.getPort(objPort.name);
 
+                if(port && port.type!=OP_PORT_TYPE_TEXTURE)port.val=objPort.value;
                 if(objPort.animated)port.setAnimated(objPort.animated);
                 if(objPort.anim)
                 {
@@ -653,24 +662,18 @@ console.log('add ops ');
                     for(var ani in objPort.anim.keys)
                     {
                         // var o={t:objPort.anim.keys[ani].t,value:objPort.anim.keys[ani].v};
-                                
                         port.anim.keys.push(new CABLES.TL.Key(objPort.anim.keys[ani]) );
                     }
                 }
-
             }
 
             for(var ipo in obj.ops[iop].portsOut)
             {
-                var port2=op.getPortByName(obj.ops[iop].portsOut[ipo].name);
+                var port2=op.getPort(obj.ops[iop].portsOut[ipo].name);
                 if(port2&& port2.type!=OP_PORT_TYPE_TEXTURE)port2.val=obj.ops[iop].portsOut[ipo].value;
             }
-
-
-
         }
-
-                console.log('create links...');
+        console.log('create links...');
                 
 
         // create links...

@@ -612,6 +612,32 @@ var line;
 
         };
 
+        // var portRects=[];
+
+        // this.updatePorts=function()
+        // {
+        //     for(var j in portRects)
+        //     {
+        //         portRects[j].remove();
+        //         portRects[j].unhover();
+        //     }
+
+        //     portRects.length=0;
+        //     self.portsIn.length=0;
+        //     self.portsOut.length=0;
+
+        //     for(var i in op.portsIn)
+        //     {
+        //         if(!self.op.portsIn[i].uiAttribs || self.op.portsIn[i].uiAttribs.display!='readonly')
+        //             self.addPort(PORT_DIR_IN,self.op.portsIn[i]);
+        //     }
+
+        //     for(var i2 in op.portsOut)
+        //     {
+        //         self.addPort(PORT_DIR_OUT,self.op.portsOut[i2]);
+        //     }
+
+        // };
 
         this.addPort=function(_inout,thePort)
         {
@@ -641,6 +667,8 @@ var line;
                 fill: uiConfig.colorPort,
                 "stroke-width": 0
             });
+
+            // portRects.push(port);
 
             this.oprect.getGroup().push(port);
             port.direction=inout;
@@ -1358,14 +1386,12 @@ var line;
                 $('#patch').focus();
                 var uiOp=new OpUi(op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
                 self.ops.push(uiOp);
-
                 
 
                 console.log('on add');
 
                 var undofunc=function(opid,objName)
                 {
-
                     CABLES.undo.add({
                         undo: function() {
                             gui.scene().deleteOp( opid,true);
@@ -1380,10 +1406,18 @@ var line;
 
                 op.onAddPort=function(p)
                 {
-                    console.log('yes, a new port was born!');
+                    console.log('uiOp',uiOp);
+
+                    console.log('yes, a new port was born!',p.getName() ,p.direction,p.type);
                     uiOp.addPort(p.direction,p);
 
+                            
+
+                    // uiOp.updatePorts();
+
                     uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+
+
                 };
 
 
@@ -1391,7 +1425,7 @@ var line;
                 for(var i in op.portsIn)
                 {
                     if(!op.portsIn[i].uiAttribs || op.portsIn[i].uiAttribs.display!='readonly')
-                    uiOp.addPort(PORT_DIR_IN,op.portsIn[i]);
+                        uiOp.addPort(PORT_DIR_IN,op.portsIn[i]);
                 }
 
                 for(var i2 in op.portsOut)
