@@ -38,7 +38,7 @@ Ops.Gl.Matrix.WASDCamera = function()
 
         vec3.set(vPos, -posX,-posY,-posZ);
 
-        mat4.identity(viewMatrix);
+        // mat4.identity(viewMatrix);
 
         mat4.rotateX( cgl.mvMatrix ,cgl.mvMatrix,DEG2RAD*rotX);
         mat4.rotateY( cgl.mvMatrix ,cgl.mvMatrix,DEG2RAD*rotY);

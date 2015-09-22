@@ -758,8 +758,7 @@ Ops.Gl.Matrix.LookatCamera = function()
 
 Ops.Gl.Matrix.LookatCamera.prototype = new Op();
 
-
-// --------------------------------------------------------------------------
+// ----------------------------------------------------
 
 
 Ops.Gl.Matrix.Transform = function()
@@ -1167,3 +1166,33 @@ Ops.Gl.Spray = function()
 
 Ops.Gl.Spray.prototype = new Op();
 
+
+
+
+// --------------------------------------------------------------------------
+
+
+Ops.Gl.Identity = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Identity';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.exe.onTriggered=function()
+    {
+        cgl.pushMvMatrix();
+        mat4.identity(cgl.mvMatrix);
+        mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
+
+        self.trigger.trigger();
+
+        cgl.popMvMatrix();
+    };
+
+};
+
+Ops.Gl.Identity.prototype = new Op();
