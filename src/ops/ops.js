@@ -300,6 +300,35 @@ Ops.IfTrueThen.prototype = new Op();
 
 
 
+
+// ---------------------------------------------------------------------------
+
+
+Ops.ToggleBool = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='ToggleBool';
+
+    this.bool=this.addInPort(new Port(this,"boolean"));
+
+    this.bool.val=false;
+
+    this.boolOut=this.addOutPort(new Port(this,"result"));
+    this.boolOut.val=true;
+
+    this.bool.onValueChanged=function()
+    {
+        this.boolOut=!this.bool.val;
+    };
+
+};
+Ops.ToggleBool.prototype = new Op();
+
+
+
+
 // ---------------------------------------------------------------------------
 
 

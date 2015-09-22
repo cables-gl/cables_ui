@@ -14,6 +14,9 @@ Ops.Gl.Matrix.WASDCamera = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
+    this.isLocked=this.addOutPort(new Port(this,"isLocked",OP_PORT_TYPE_VALUE));
+    this.isLocked.val=false;
+
     var vPos=vec3.create();
 
     var posX=0,posZ=0,posY=0;
@@ -21,7 +24,7 @@ Ops.Gl.Matrix.WASDCamera = function()
     var speedx=0,speedy=0,speedz=0;
 
     var movementSpeedFactor = 0.5;
-    var isLocked=false;
+
 
     var viewMatrix = mat4.create();
 
@@ -139,7 +142,8 @@ Ops.Gl.Matrix.WASDCamera = function()
             document.addEventListener("keydown", keyDown, false);
             document.addEventListener("keyup", keyUp, false);
             console.log('lock start');
-            isLocked=true;
+            // isLocked=true;
+            self.isLocked.val=true;
 
         }
         else
@@ -147,7 +151,8 @@ Ops.Gl.Matrix.WASDCamera = function()
             document.removeEventListener("mousemove", moveCallback, false);
             document.removeEventListener("keydown", keyDown, false);
             document.removeEventListener("keyup", keyUp, false);
-            isLocked=false;
+            // isLocked=false;
+            self.isLocked.val=false;
             pressedW=false;
             pressedA=false;
             pressedS=false;
