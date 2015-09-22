@@ -384,6 +384,13 @@ CABLES.TL.Anim=function(cfg)
         return obj;
     };
 
+
+    this.getKey=function(time)
+    {
+        var index=this.getKeyIndex(time);
+        return this.keys[index];
+    };
+
     this.getValue=function(time)
     {
         if(this.keys.length===0)return 0;

@@ -33,12 +33,12 @@ Ops.Ui.Patch = function()
         {
             if(self.portsIn[i].type==OP_PORT_TYPE_DYNAMIC)
             {
-                        console.log('hasDynamicPort');
+                        // console.log('hasDynamicPort');
                 return true;
             }
             if(self.portsIn[i].getName()=='dyn')
             {
-                console.log('hasDynamicPort');
+                // console.log('hasDynamicPort');
                 return true;
             }
 
@@ -55,7 +55,7 @@ Ops.Ui.Patch = function()
             if(this.portsIn[i].type==OP_PORT_TYPE_DYNAMIC)
             {
                 this.portsIn[i].name=name;
-                console.log('found dyn port, change name...');
+                // console.log('found dyn port, change name...');
                         
                 return this.portsIn[i];
             }
@@ -68,22 +68,15 @@ Ops.Ui.Patch = function()
 
     this.getPort=function(name)
     {
-
-console.log('searching for ... ',name);
-
-
         for(var ipi in self.portsIn)
         {
             if(self.portsIn[ipi].getName()==name)
             {
-                console.log('found existing port with name');
-
+                // console.log('found existing port with name');
                 return self.portsIn[ipi];
             }
         }
 
-        console.log('create new dyn port: ',name);
-                
         var p=getNewDynamicPort(name);
         
         return p;
@@ -153,12 +146,12 @@ console.log('searching for ... ',name);
 
 
 
-        console.log('port list');
-        for(var i in self.portsIn)
-        {
-            console.log(' ',self.portsIn[i].getName(),self.portsIn[i].type);
-        }
-        console.log('  ',self.portsIn.length+' ports');
+        // console.log('port list');
+        // for(var i in self.portsIn)
+        // {
+        //     console.log(' ',self.portsIn[i].getName(),self.portsIn[i].type);
+        // }
+        // console.log('  ',self.portsIn.length+' ports');
         
 
         return true;
@@ -167,7 +160,6 @@ console.log('searching for ... ',name);
     this.patchId.onValueChanged=function()
     {
         Ops.Ui.Patch.maxPatchId=Math.max(Ops.Ui.Patch.maxPatchId,self.patchId.val);
-        console.log('max patch id ',Ops.Ui.Patch.maxPatchId);
     };
 
     this.patchId.val=Ops.Ui.Patch.maxPatchId+1;
@@ -199,9 +191,9 @@ Ops.Ui.PatchInput = function()
     this.getPatchOp=function()
     {
 
-        console.log('...'+self.patch.ops.length);
+        // console.log('...'+self.patch.ops.length);
         
-        console.log(self.uiAttribs.subPatch);
+        // console.log(self.uiAttribs.subPatch);
 
         for(var i in self.patch.ops)
         {
@@ -209,7 +201,7 @@ Ops.Ui.PatchInput = function()
             {
                 if(self.patch.ops[i].patchId.val==self.uiAttribs.subPatch)
                 {
-                    console.log('FOUND PATCHOP' ,self.patch.ops[i].patchId.val );
+                    // console.log('FOUND PATCHOP' ,self.patch.ops[i].patchId.val );
                     return self.patch.ops[i];
                 }
                  

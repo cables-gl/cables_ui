@@ -401,6 +401,15 @@ Ops.TimedSequence = function()
     this.current=this.addInPort(new Port(this,"current",OP_PORT_TYPE_VALUE));
     this.current.val=0;
 
+    this.overwriteTime=this.addInPort(new Port(this,"overwriteTime",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.overwriteTime.val=false;
+
+
+    this.triggerAlways=this.addOutPort(new Port(this,"triggerAlways",OP_PORT_TYPE_FUNCTION));
+    this.currentKeyTime=this.addOutPort(new Port(this,"currentKeyTime",OP_PORT_TYPE_VALUE));
+
+
+
     var triggers=[];
 
     for(var i=0;i<10;i++)
@@ -415,6 +424,24 @@ Ops.TimedSequence = function()
         {
             triggers[i].trigger();
         }
+
+        var time=self.current.parent.patch.timer.getTime();
+        self.currentKeyTime.val=time-self.current.anim.getKey(time).time;
+
+        if(self.current.isAnimated())
+        {
+
+            if(self.overwriteTime.val)
+            {
+                self.current.patch.timer.overwriteTime=self.newTime.val;  // todo  why current ? why  not self ?
+                self.current.trigger.trigger();
+            }
+        }
+        self.triggerAlways.trigger();
+
+
+        self.patch.timer.overwriteTime=-1;
+
     };
 
 };

@@ -330,7 +330,7 @@ Ops.Gl.Meshes.ObjMesh = function()
 
       ajaxRequest(self.filename.val,function(response)
       {
-          console.log(response);
+          // console.log(response);
                   
           var r=parseOBJ(response);
 

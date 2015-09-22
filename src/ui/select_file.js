@@ -10,10 +10,8 @@ CABLES.UI.FileSelect=function()
     var inputId='';
     var filterType='';
 
-
     this.setTab=function(which)
     {
-               
         if(which=='projectfiles')
         {
             assetPath='/assets/'+gui.patch().getCurrentProject()._id;
@@ -26,10 +24,9 @@ CABLES.UI.FileSelect=function()
         }
 
         $('#tab_'+currentTab).removeClass('active');
-        
+
         currentTab=which;
         this.load();
-
     };
 
     this.show=function(_inputId,_filterType)
