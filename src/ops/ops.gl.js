@@ -5,8 +5,6 @@
 
 Ops.Gl=Ops.Gl || {};
 
-
-
 Ops.Gl.Renderer = function()
 {
     Op.apply(this, arguments);
@@ -69,7 +67,6 @@ Ops.Gl.Renderer.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-
 Ops.Gl.LetterBox = function()
 {
     Op.apply(this, arguments);
@@ -113,15 +110,12 @@ Ops.Gl.LetterBox = function()
         cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
     };
-
-
 };
 
 Ops.Gl.LetterBox.prototype = new Op();
 Ops.Gl.AspectRatioBorder=Ops.Gl.LetterBox;
 
 // --------------------------------------------------------------------------
-
 
 Ops.Gl.ClearColor = function()
 {
@@ -154,8 +148,6 @@ Ops.Gl.ClearColor.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-
-
 Ops.Gl.Depth = function()
 {
     Op.apply(this, arguments);
@@ -168,7 +160,6 @@ Ops.Gl.Depth = function()
     this.clear=this.addInPort(new Port(this,"clear depth",OP_PORT_TYPE_VALUE,{ display:'bool' }));
     this.enable=this.addInPort(new Port(this,"enable depth testing",OP_PORT_TYPE_VALUE,{ display:'bool' }));
     this.write=this.addInPort(new Port(this,"write to depth buffer",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-
 
     this.depthFunc=this.addInPort(new Port(this,"ratio",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:['never','always','less','less or equal','greater', 'greater or equal','equal','not equal']} ));
 
@@ -211,8 +202,7 @@ Ops.Gl.Depth = function()
 
 Ops.Gl.Depth.prototype = new Op();
 
-
-
+// --------------------------------------------------------------------------
 
 Ops.Gl.ClearDepth = function()
 {
@@ -232,11 +222,7 @@ Ops.Gl.ClearDepth = function()
 
 Ops.Gl.ClearDepth.prototype = new Op();
 
-
-
 // --------------------------------------------------------------------------
-
-
 
 Ops.Gl.Wireframe = function()
 {
@@ -261,7 +247,6 @@ Ops.Gl.Wireframe = function()
 };
 
 Ops.Gl.Wireframe.prototype = new Op();
-
 
 // --------------------------------------------------------------------------
 
@@ -289,9 +274,6 @@ Ops.Gl.Points = function()
 
 Ops.Gl.Points.prototype = new Op();
 
-
-
-
 // --------------------------------------------------------------------------
 
 Ops.Gl.Mouse = function()
@@ -310,17 +292,11 @@ Ops.Gl.Mouse = function()
         self.mouseX.val=e.offsetX;
         self.mouseY.val=e.offsetY;
     };
-
-
 };
 
 Ops.Gl.Mouse.prototype = new Op();
 
-
-
-
 // --------------------------------------------------------------------------
-
     
 Ops.Gl.TextureEmpty = function()
 {
@@ -438,7 +414,6 @@ Ops.Gl.TextureText = function()
             else self.textureOut.val=new CGL.Texture.fromImage(fontImage);
     }
 
-
     this.align.onValueChanged=refresh;
     this.text.onValueChanged=refresh;
     this.fontSize.onValueChanged=refresh;
@@ -512,7 +487,6 @@ Ops.Gl.Meshes.Plotter = function()
 Ops.Gl.Meshes.Plotter.prototype = new Op();
 
 // ----------------------------------------------------------------
-
 
 Ops.Gl.Shader= Ops.Gl.Shader || {};
 
@@ -696,8 +670,6 @@ Ops.Gl.Matrix.Scale = function()
 
 Ops.Gl.Matrix.Scale.prototype = new Op();
 
-
-
 // --------------------------------------------------------------------------
 
 Ops.Gl.Matrix.LookatCamera = function()
@@ -732,7 +704,6 @@ Ops.Gl.Matrix.LookatCamera = function()
     this.vecUpX.val=0;
     this.vecUpY.val=1;
     this.vecUpZ.val=0;
-
     
     var vUp=vec3.create();
     var vEye=vec3.create();
@@ -752,7 +723,6 @@ Ops.Gl.Matrix.LookatCamera = function()
         self.trigger.trigger();
         cgl.popMvMatrix();
     };
-
 
 };
 
@@ -934,18 +904,13 @@ Ops.RandomCluster = function()
 Ops.RandomCluster.prototype = new Op();
 
 
-
-
-
-
 // --------------------------------------------------------------------------
 
 Ops.Gl.Render2Texture = function()
 {
     Op.apply(this, arguments);
     var self=this;
-
-var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
+    var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
 
     this.name='render to texture';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));

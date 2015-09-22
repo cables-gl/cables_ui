@@ -388,10 +388,6 @@ Ops.Gl.Shader.BasicMaterial = function()
         cgl.setPreviousShader();
     };
 
-
-
-
-
     var srcVert=''
         .endl()+'attribute vec3 vPosition;'
         .endl()+'attribute vec2 attrTexCoord;'
