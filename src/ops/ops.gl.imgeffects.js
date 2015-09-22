@@ -43,7 +43,7 @@ Ops.Gl.TextureEffects.TextureEffect = function()
         cgl.currentTextureEffect=effect;
 
         effect.startEffect();
-        self.trigger.call();
+        self.trigger.trigger();
         self.texOut.val=cgl.currentTextureEffect.getCurrentSourceTexture();
     };
 };
@@ -126,7 +126,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
             cgl.currentTextureEffect.finish();
         }
 
-        self.trigger.call();
+        self.trigger.trigger();
         self.texOut.val=effect.getCurrentSourceTexture();
 
     };
@@ -187,7 +187,7 @@ Ops.Gl.TextureEffects.Invert = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -245,7 +245,7 @@ Ops.Gl.TextureEffects.Scroll = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     var amountXUniform=new CGL.Uniform(shader,'f','amountX',1.0);
@@ -332,7 +332,7 @@ Ops.Gl.TextureEffects.Desaturate = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -415,7 +415,7 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     self.amount.val=0.0;
@@ -494,7 +494,7 @@ Ops.Gl.TextureEffects.MixImage = function()
             cgl.setPreviousShader();
         }
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -515,6 +515,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
+    this.imageAlpha=this.addInPort(new Port(this,"imageAlpha",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
@@ -526,8 +527,12 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'  uniform sampler2D tex;'
         .endl()+'  uniform sampler2D image;'
         .endl()+'#endif'
+
+        .endl()+'#ifdef HAS_TEXTUREALPHA'
+        .endl()+'  uniform sampler2D imageAlpha;'
+        .endl()+'#endif'
+
         .endl()+'uniform float amount;'
-        .endl()+''
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
@@ -536,15 +541,23 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'       col=texture2D(image,texCoord);'
 
 
+        .endl()+'#ifdef HAS_TEXTUREALPHA'
+        .endl()+'       col.a*=texture2D(imageAlpha,texCoord).a;'
+        .endl()+'#endif'
+
+
         .endl()+'       col=mix( col, texture2D(tex,texCoord) ,1.0-col.a*amount);'
+
+        .endl()+'#ifdef HAS_TEXTUREALPHA'
         .endl()+'   #endif'
-        // .endl()+'   col.a=1.0;'
+        .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
     var textureDisplaceUniform=new CGL.Uniform(shader,'t','image',1);
+    var textureAlpha=new CGL.Uniform(shader,'t','imageAlpha',2);
 
     var amountUniform=new CGL.Uniform(shader,'f','amount',1.0);
 
@@ -553,6 +566,18 @@ Ops.Gl.TextureEffects.DrawImage = function()
         amountUniform.setValue(self.amount.val);
     };
     self.amount.val=1.0;
+
+    this.imageAlpha.onValueChanged=function()
+    {
+        if(self.imageAlpha.val && self.imageAlpha.val.tex)
+        {
+            shader.define('HAS_TEXTUREALPHA');
+        }
+        else
+        {
+            shader.removeDefine('HAS_TEXTUREALPHA');
+        }
+    };
 
     this.render.onTriggered=function()
     {
@@ -570,11 +595,17 @@ Ops.Gl.TextureEffects.DrawImage = function()
             cgl.gl.activeTexture(cgl.gl.TEXTURE1);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.image.val.tex );
 
+            if(self.imageAlpha.val && self.imageAlpha.val.tex)
+            {
+                cgl.gl.activeTexture(cgl.gl.TEXTURE2);
+                cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.imageAlpha.val.tex );
+            }
+
             cgl.currentTextureEffect.finish();
             cgl.setPreviousShader();
         }
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -661,7 +692,7 @@ Ops.Gl.TextureEffects.DepthTexture = function()
             cgl.setPreviousShader();
         }
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -770,7 +801,7 @@ Ops.Gl.TextureEffects.AlphaMask = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -866,7 +897,7 @@ Ops.Gl.TextureEffects.WipeTransition = function()
             cgl.setPreviousShader();
         }
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
 };
@@ -953,7 +984,7 @@ Ops.Gl.TextureEffects.ColorLookup = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -1036,7 +1067,7 @@ Ops.Gl.TextureEffects.BrightnessContrast = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -1091,7 +1122,7 @@ Ops.Gl.TextureEffects.RemoveAlpha = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -1164,7 +1195,7 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
 
@@ -1275,7 +1306,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 
     this.channelR=this.addInPort(new Port(this,"channelR",OP_PORT_TYPE_VALUE,{ display:'bool' }));
@@ -1392,7 +1423,7 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -1479,7 +1510,7 @@ Ops.Gl.TextureEffects.Color = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -1553,7 +1584,7 @@ Ops.Gl.TextureEffects.Vignette = function()
         cgl.currentTextureEffect.finish();
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
@@ -1638,7 +1669,7 @@ Ops.Gl.TextureEffects.Blur = function()
         
         cgl.setPreviousShader();
 
-        self.trigger.call();
+        self.trigger.trigger();
     };
 };
 
