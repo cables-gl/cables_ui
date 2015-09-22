@@ -148,7 +148,7 @@ console.log('searching for ... ',name);
             dynPort.onValueChanged();
         }
 
-        if(gui)gui.patch().updateSubPatches();
+        if (CABLES.UI)gui.patch().updateSubPatches();
         if(!hasDynamicPort())getNewDynamicPort('dyn');
 
 
@@ -176,7 +176,8 @@ console.log('searching for ... ',name);
     {
         if(!hasDynamicPort())getNewDynamicPort('dyn');
         getSubPatchInputOp();
-        if(gui)gui.patch().updateSubPatches();
+
+        if (CABLES.UI) gui.patch().updateSubPatches();
 
     };
 
