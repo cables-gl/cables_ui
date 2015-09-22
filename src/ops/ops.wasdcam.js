@@ -19,12 +19,25 @@ Ops.Gl.Matrix.WASDCamera = function()
 
     var vPos=vec3.create();
 
-    var posX=0,posZ=0,posY=0;
-    var rotX=0,rotY=0,rotZ=0;
+    // var posX=0,posZ=0,posY=0;
+    // var rotX=0,rotY=0,rotZ=0;
     var speedx=0,speedy=0,speedz=0;
 
     var movementSpeedFactor = 0.5;
 
+    this.posX=this.addInPort(new Port(this,"posX",OP_PORT_TYPE_VALUE));
+    this.posY=this.addInPort(new Port(this,"posY",OP_PORT_TYPE_VALUE));
+    this.posZ=this.addInPort(new Port(this,"posZ",OP_PORT_TYPE_VALUE));
+
+    this.rotX=this.addInPort(new Port(this,"rotX",OP_PORT_TYPE_VALUE));
+    this.rotY=this.addInPort(new Port(this,"rotY",OP_PORT_TYPE_VALUE));
+
+    this.outPosX=this.addOutPort(new Port(this,"posX",OP_PORT_TYPE_VALUE));
+    this.outPosY=this.addOutPort(new Port(this,"posY",OP_PORT_TYPE_VALUE));
+    this.outPosZ=this.addOutPort(new Port(this,"posZ",OP_PORT_TYPE_VALUE));
+    self.outPosX.val=-self.posX.val;
+    self.outPosY.val=-self.posY.val;
+    self.outPosZ.val=-self.posZ.val;
 
     var viewMatrix = mat4.create();
 
@@ -34,14 +47,19 @@ Ops.Gl.Matrix.WASDCamera = function()
         calcCameraMovement();
         move();
 
+        if(speedx!=0.0 || speedy!=0.0 || speedz!=0)
+        {
+            self.outPosX.val=-self.posX.val;
+            self.outPosY.val=-self.posY.val;
+            self.outPosZ.val=-self.posZ.val;
+        }
+
         cgl.pushMvMatrix();
 
-        vec3.set(vPos, -posX,-posY,-posZ);
+        vec3.set(vPos, -self.posX.val,-self.posY.val,-self.posZ.val);
 
-        // mat4.identity(viewMatrix);
-
-        mat4.rotateX( cgl.mvMatrix ,cgl.mvMatrix,DEG2RAD*rotX);
-        mat4.rotateY( cgl.mvMatrix ,cgl.mvMatrix,DEG2RAD*rotY);
+        mat4.rotateX( cgl.mvMatrix ,cgl.mvMatrix,DEG2RAD*self.rotX.val);
+        mat4.rotateY( cgl.mvMatrix ,cgl.mvMatrix,DEG2RAD*self.rotY.val);
         mat4.translate( cgl.mvMatrix ,cgl.mvMatrix,vPos);
 
         
@@ -60,36 +78,36 @@ Ops.Gl.Matrix.WASDCamera = function()
         if (pressedW)
         {
             // Control X-Axis movement
-            var pitchFactor = Math.cos(DEG2RAD*rotX);
+            var pitchFactor = Math.cos(DEG2RAD*self.rotX.val);
                     
-            camMovementXComponent += ( movementSpeedFactor * (Math.sin(DEG2RAD*rotY)) ) * pitchFactor;
+            camMovementXComponent += ( movementSpeedFactor * (Math.sin(DEG2RAD*self.rotY.val)) ) * pitchFactor;
 
             // Control Y-Axis movement
-            camMovementYComponent += movementSpeedFactor * (Math.sin(DEG2RAD*rotX)) * -1.0;
+            camMovementYComponent += movementSpeedFactor * (Math.sin(DEG2RAD*self.rotX.val)) * -1.0;
 
             // Control Z-Axis movement
-            var yawFactor = (Math.cos(DEG2RAD*rotX));
-            camMovementZComponent += ( movementSpeedFactor * (Math.cos(DEG2RAD*rotY)) * -1.0 ) * yawFactor;
+            var yawFactor = (Math.cos(DEG2RAD*self.rotX.val));
+            camMovementZComponent += ( movementSpeedFactor * (Math.cos(DEG2RAD*self.rotY.val)) * -1.0 ) * yawFactor;
         }
 
         if (pressedS)
         {
             // Control X-Axis movement
-            var pitchFactor = Math.cos(DEG2RAD*rotX);
-            camMovementXComponent += ( movementSpeedFactor * (Math.sin(DEG2RAD*rotY)) * -1.0) * pitchFactor;
+            var pitchFactor = Math.cos(DEG2RAD*self.rotX.val);
+            camMovementXComponent += ( movementSpeedFactor * (Math.sin(DEG2RAD*self.rotY.val)) * -1.0) * pitchFactor;
 
             // Control Y-Axis movement
-            camMovementYComponent += movementSpeedFactor * (Math.sin(DEG2RAD*rotX));
+            camMovementYComponent += movementSpeedFactor * (Math.sin(DEG2RAD*self.rotX.val));
 
             // Control Z-Axis movement
-            var yawFactor = (Math.cos(DEG2RAD*rotX));
-            camMovementZComponent += ( movementSpeedFactor * (Math.cos(DEG2RAD*rotY)) ) * yawFactor;
+            var yawFactor = (Math.cos(DEG2RAD*self.rotX.val));
+            camMovementZComponent += ( movementSpeedFactor * (Math.cos(DEG2RAD*self.rotY.val)) ) * yawFactor;
         }
 
         if (pressedA)
         {
             // Calculate our Y-Axis rotation in radians once here because we use it twice
-            var yRotRad = DEG2RAD*rotY;
+            var yRotRad = DEG2RAD*self.rotY.val;
 
             camMovementXComponent += -movementSpeedFactor * (Math.cos(yRotRad));
             camMovementZComponent += -movementSpeedFactor * (Math.sin(yRotRad));
@@ -98,7 +116,7 @@ Ops.Gl.Matrix.WASDCamera = function()
         if (pressedD)
         {
             // Calculate our Y-Axis rotation in radians once here because we use it twice
-            var yRotRad = DEG2RAD*rotY;
+            var yRotRad = DEG2RAD*self.rotY.val;
 
             camMovementXComponent += movementSpeedFactor * (Math.cos(yRotRad));
             camMovementZComponent += movementSpeedFactor * (Math.sin(yRotRad));
@@ -121,13 +139,13 @@ Ops.Gl.Matrix.WASDCamera = function()
     function moveCallback(e)
     {
         var mouseSensitivity=0.1;
-        rotX+=e.movementY*mouseSensitivity;
-        rotY+=e.movementX*mouseSensitivity;
+        self.rotX.val+=e.movementY*mouseSensitivity;
+        self.rotY.val+=e.movementX*mouseSensitivity;
 
-        if (rotX < -90.0) rotX = -90.0;
-        if (rotX > 90.0) rotX = 90.0;
-        if (rotY < -180.0) rotY += 360.0;
-        if (rotY > 180.0) rotY -= 360.0;
+        if (self.rotX.val < -90.0) self.rotX.val = -90.0;
+        if (self.rotX.val > 90.0) self.rotX.val = 90.0;
+        if (self.rotY.val < -180.0) self.rotY.val += 360.0;
+        if (self.rotY.val > 180.0) self.rotY.val -= 360.0;
     }
 
     var canvas = document.getElementById("glcanvas");
@@ -181,9 +199,9 @@ Ops.Gl.Matrix.WASDCamera = function()
     {
         var timeOffset = window.performance.now()-lastMove;
 
-        posX+=speedx;
-        posY+=speedy;
-        posZ+=speedz;
+        self.posX.val+=speedx;
+        self.posY.val+=speedy;
+        self.posZ.val+=speedz;
 
         lastMove = window.performance.now();
     }

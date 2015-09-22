@@ -1012,6 +1012,11 @@ var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or b
             cgl.gl.clearColor(0,0,0,1);
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
         }
+        else
+        {
+            cgl.gl.clearColor(0,0,0,0);
+            cgl.gl.clear( cgl.gl.DEPTH_BUFFER_BIT);
+        }
 
         self.trigger.trigger();
 
