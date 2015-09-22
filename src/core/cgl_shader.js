@@ -159,7 +159,6 @@ CGL.Shader=function()
         .endl()+'{'
         .endl()+'   texCoord=attrTexCoord;'
         .endl()+'   norm=attrVertNormal;'
-        // .endl()'   gl_PointSize=3.0;'
         .endl()+'   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);'
         .endl()+'}';
     };

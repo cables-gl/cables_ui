@@ -388,6 +388,44 @@ Ops.Gl.Shader.BasicMaterial = function()
         cgl.setPreviousShader();
     };
 
+
+
+
+
+    var srcVert=''
+        .endl()+'attribute vec3 vPosition;'
+        .endl()+'attribute vec2 attrTexCoord;'
+        .endl()+'attribute vec3 attrVertNormal;'
+        .endl()+'varying vec2 texCoord;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'uniform mat4 projMatrix;'
+        .endl()+'uniform mat4 mvMatrix;'
+        .endl()+'uniform mat4 normalMatrix;'
+        
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   texCoord=attrTexCoord;'
+        .endl()+'   norm=attrVertNormal;'
+
+
+        .endl()+'#ifdef BILLBOARD'
+        .endl()+'   vec3 position=vPosition;'
+        .endl()+"   gl_Position = projMatrix * mvMatrix * vec4(( "
+        .endl()+"       position.x * vec3("
+        .endl()+"           mvMatrix[0][0],"
+        .endl()+"           mvMatrix[1][0], "
+        .endl()+"           mvMatrix[2][0] ) +"
+        .endl()+"       position.y * vec3("
+        .endl()+"           mvMatrix[0][1],"
+        .endl()+"           mvMatrix[1][1], "
+        .endl()+"           mvMatrix[2][1]) ), 1.0);"
+        .endl()+'#endif '
+        .endl()+""
+        .endl()+"#ifndef BILLBOARD"
+        .endl()+'   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);'
+        .endl()+'#endif '
+        .endl()+'}';
+
     var srcFrag=''
         .endl()+'precision highp float;'
         .endl()+'#ifdef HAS_TEXTURES'
@@ -426,7 +464,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
 
     var shader=new CGL.Shader();
-    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+    shader.setSource(srcVert,srcFrag);
 
     this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
     this.r.onValueChanged=function()
@@ -516,6 +554,18 @@ Ops.Gl.Shader.BasicMaterial = function()
         else
             shader.removeDefine('COLORIZE_TEXTURE');
     };
+
+
+    this.doBillboard=this.addInPort(new Port(this,"billboard",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.doBillboard.val=false;
+    this.doBillboard.onValueChanged=function()
+    {
+        if(self.doBillboard.val)
+            shader.define('BILLBOARD');
+        else
+            shader.removeDefine('BILLBOARD');
+    };
+
 
 
     this.doRender();
