@@ -68,7 +68,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
-    this.clear=this.addInPort(new Port(this,"clear",OP_PORT_TYPE_VALUE,{ display:'bool' }));
 
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -112,19 +111,16 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
         effect.startEffect();
 
-        if(self.clear.val=='true')
-        {
 
-            cgl.currentTextureEffect.bind();
+            // cgl.currentTextureEffect.bind();
 
-            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
-            cgl.gl.clearColor(0,0,0,0.0);
+            // cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            // cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+            // cgl.gl.clearColor(0,0,0,0.0);
 
-            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+            // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
-            cgl.currentTextureEffect.finish();
-        }
+            // cgl.currentTextureEffect.finish();
 
         self.trigger.trigger();
         self.texOut.val=effect.getCurrentSourceTexture();
@@ -133,7 +129,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     this.width.val=1920;
     this.height.val=1080;
-    self.clear.val=true;
 
 };
 

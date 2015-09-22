@@ -957,8 +957,8 @@ var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or b
 
     this.width=this.addInPort(new Port(this,"texture width"));
     this.height=this.addInPort(new Port(this,"texture height"));
-    this.clear=this.addInPort(new Port(this,"clear",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    this.clear.val=true;
+    // this.clear=this.addInPort(new Port(this,"clear",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    // this.clear.val=true;
 
     this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
     this.texDepth=this.addOutPort(new Port(this,"textureDepth",OP_PORT_TYPE_TEXTURE));
@@ -1007,16 +1007,16 @@ var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or b
         cgl.gl.viewport(0, 0, self.width.val,self.height.val);
         // mat4.perspective(cgl.pMatrix,45, 1, 0.01, 1100.0);
 
-        if(self.clear.val)
-        {
-            cgl.gl.clearColor(0,0,0,1);
-            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-        }
-        else
-        {
+        // if(self.clear.val)
+        // {
+        //     cgl.gl.clearColor(0,0,0,1);
+        //     cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+        // }
+        // else
+        // {
             cgl.gl.clearColor(0,0,0,0);
-            cgl.gl.clear( cgl.gl.DEPTH_BUFFER_BIT);
-        }
+            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+        // }
 
         self.trigger.trigger();
 
