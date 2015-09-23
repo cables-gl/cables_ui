@@ -954,12 +954,18 @@ var line;
         
 
 
-        this.saveCurrentProject=function()
+        this.saveCurrentProject=function(cb,_id,_name)
         {
             CABLES.UI.MODAL.showLoading('saving project');
 
             cgl.doScreenshot=true;
         
+            var id=currentProject._id;
+            var name=currentProject.name;
+            if(_id)id=_id;
+            if(_name)name=_name;
+
+
             setTimeout(function()
             {
                 var data=gui.patch().scene.serialize(true);
@@ -973,9 +979,9 @@ var line;
                 data=JSON.stringify(data);
 
                 CABLES.api.put(
-                    'project/'+currentProject._id,
+                    'project/'+id,
                     {
-                        "name":currentProject.name,
+                        "name":name,
                         "data":data,
                         "screenshot":cgl.screenShotDataURL
                     },
@@ -988,6 +994,7 @@ var line;
                         else CABLES.UI.setStatusText('project NOT saved');
 
                         CABLES.UI.MODAL.hide();
+                        if(cb)cb();
                             
                     });
             },30);

@@ -268,9 +268,24 @@ CABLES.UI.GUI=function()
                 case 83: // s - save
                     if(e.metaKey || e.ctrlKey)
                     {
-                        self.patch().saveCurrentProject();
-                        CABLES.UI.SELECTPROJECT.doReload=true;
-                        e.preventDefault();
+                        if(!e.shiftKey)
+                        {
+                            self.patch().saveCurrentProject();
+                            CABLES.UI.SELECTPROJECT.doReload=true;
+                            e.preventDefault();
+                        }
+                        else
+                        {
+                            CABLES.api.post('project',{name: prompt('projectname','') },function(d)
+                            {
+                                CABLES.UI.SELECTPROJECT.doReload=true;
+                                self.patch().saveCurrentProject(function(){
+                                    document.location.href='#/project/'+d._id;
+                                },d._id,d.name);
+                                
+                            });
+
+                        }
                     }
                 break;
 
