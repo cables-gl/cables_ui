@@ -1,9 +1,6 @@
-var CGL=CGL ||
-{
-    DEG2RAD:3.14159/180.0
-};
+var CGL=CGL || {};
 
-
+CGL.DEG2RAD=3.14159/180.0;
 
 CGL.Mesh=function(geom)
 {
