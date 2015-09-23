@@ -1387,7 +1387,6 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
     var uniformG=new CGL.Uniform(shader,'f','g',1.0);
     var uniformB=new CGL.Uniform(shader,'f','b',1.0);
 
-
     this.r.onValueChanged=function()
     {
         uniformR.setValue(self.r.val);
@@ -1422,10 +1421,7 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
 
 Ops.Gl.TextureEffects.RgbMultiply.prototype = new Op();
 
-
 // ---------------------------------------------------------------------------------------------
-
-
 
 Ops.Gl.TextureEffects.Hue = function()
 {
@@ -1452,7 +1448,6 @@ Ops.Gl.TextureEffects.Hue = function()
         .endl()+'uniform float hue;'
         .endl()+''
 
-
         .endl()+'vec3 rgb2hsv(vec3 c)'
         .endl()+'{'
         .endl()+'    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);'
@@ -1471,16 +1466,15 @@ Ops.Gl.TextureEffects.Hue = function()
         .endl()+'    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);'
         .endl()+'}'
 
-
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=texture2D(tex,texCoord);'
         
-        .endl()+'vec3 hsv = rgb2hsv(col.rgb);'
-        .endl()+'hsv.x=hsv.x+hue;'
-        .endl()+'col.rgb = hsv2rgb(hsv);'
+        .endl()+'       vec3 hsv = rgb2hsv(col.rgb);'
+        .endl()+'       hsv.x=hsv.x+hue;'
+        .endl()+'       col.rgb = hsv2rgb(hsv);'
 
         .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
