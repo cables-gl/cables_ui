@@ -514,6 +514,9 @@ Ops.Gl.TextureEffects.DrawImage = function()
         ] }));
     self.blendMode.val='normal';
     this.imageAlpha=this.addInPort(new Port(this,"imageAlpha",OP_PORT_TYPE_TEXTURE));
+    this.alphaSrc=this.addInPort(new Port(this,"alphaSrc",OP_PORT_TYPE_VALUE,{ display:'dropdown',values:[
+        'alpha channel','luminance'
+        ] }));
 
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -544,15 +547,12 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'       col=texture2D(image,texCoord);'
 
 
-        .endl()+'#ifdef HAS_TEXTUREALPHA'
-        .endl()+'       col.a*=texture2D(imageAlpha,texCoord).a;'
-        .endl()+'#endif'
+
 
         .endl()+'vec3 blend=col.rgb;'
         .endl()+'vec3 base=texture2D(tex,texCoord).rgb;'
 
-.endl()+'vec3 colNew=blend;'
-
+        .endl()+'vec3 colNew=blend;'
         .endl()+'#define Blend(base, blend, funcf)       vec3(funcf(base.r, blend.r), funcf(base.g, blend.g), funcf(base.b, blend.b))'
 
 
@@ -642,16 +642,31 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
 
 
-        .endl()+'       col.rgb=mix( colNew, base ,1.0-col.a*amount);'
-    
-
-
-
 
 
         .endl()+'#ifdef HAS_TEXTUREALPHA'
+
+
+        .endl()+'   vec4 colImgAlpha=texture2D(imageAlpha,texCoord);'
+        .endl()+'   float alpha=col.a;'
+
+        .endl()+'   #ifdef ALPHA_FROM_LUMINANCE'
+        .endl()+'       vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), colImgAlpha.rgb ));'
+        .endl()+'       alpha=(gray.r+gray.g+gray.b)/3.0;'
         .endl()+'   #endif'
+
+        .endl()+'   col.a*=alpha;'
+        .endl()+'#endif'
+        
+
+
+
+
+        .endl()+'       col.rgb=mix( colNew, base ,1.0-col.a*amount);'
+    
         .endl()+'   #endif'
+
+
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
@@ -659,6 +674,14 @@ Ops.Gl.TextureEffects.DrawImage = function()
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
     var textureDisplaceUniform=new CGL.Uniform(shader,'t','image',1);
     var textureAlpha=new CGL.Uniform(shader,'t','imageAlpha',2);
+
+
+
+    this.alphaSrc.onValueChanged=function()
+    {
+        if(self.alphaSrc.val=='luminance') shader.define('ALPHA_FROM_LUMINANCE');
+            else shader.removeDefine('ALPHA_FROM_LUMINANCE');
+    };
 
     this.blendMode.onValueChanged=function()
     {
