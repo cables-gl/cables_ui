@@ -45,7 +45,7 @@ $("html").on("drop", function(event)
         }
     };
 
-    xhr.onload = function ()
+    xhr.onload = function (e)
     {
         gui.patch().updateProjectFiles();
         if (xhr.status === 200)
@@ -54,7 +54,11 @@ $("html").on("drop", function(event)
         }
         else
         {
-            CABLES.UI.MODAL.show('upload error: ' + xhr.status);
+            var msg='unknown';
+            var res=JSON.parse(e.target.response);
+            msg=res.msg;
+
+            CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
         }
     };
 
