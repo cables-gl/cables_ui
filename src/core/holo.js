@@ -462,6 +462,9 @@ var Scene = function()
     this.settings={};
     this.timer=new Timer();
     this.animFrameOps=[];
+
+    this.onLoadStart=null;
+    this.onLoadEnd=null;
     
     this.clear=function()
     {
@@ -625,6 +628,8 @@ var Scene = function()
 
     this.deSerialize=function(obj)
     {
+        if(this.onLoadStart)this.onLoadStart();
+
         if (typeof obj === "string") obj=JSON.parse(obj);
         var self=this;
 
@@ -644,7 +649,7 @@ var Scene = function()
             }
         }
 
-console.log('add ops ');
+        console.log('add ops ');
         // add ops...
         for(var iop in obj.ops)
         {
@@ -707,7 +712,7 @@ console.log('add ops ');
 
 
 
-
+        if(this.onLoadEnd)this.onLoadEnd();
 
 
     };

@@ -606,6 +606,8 @@ var line;
             {
                 port.attr(
                     {
+                        "stroke":1,
+                        "stroke-color":"#000",
                         "fill": getPortColor(port.thePort),
                         "fill-opacity": getPortOpacity(port.thePort),
                     });
@@ -681,7 +683,7 @@ var line;
             // else thePort=self.op.portsIn[portIndex];
 
             port.thePort=thePort;
-            this.updatePortAttribs();
+            // this.updatePortAttribs();
 
             port.hover(function ()
             {
@@ -708,7 +710,7 @@ var line;
                 port.attr(
                     {
 
-                        fill:getPortColor(this.thePort),
+                        fill:getPortColor(port.thePort),
                         "fill-opacity": getPortOpacity(this.thePort ),
                         width:uiConfig.portSize,
                         height:uiConfig.portHeight,
@@ -750,6 +752,19 @@ var line;
         var spacePressed=false;
         var selectedOps=[];
         var currentSubPatch=0;
+
+        var viewBox={x:0,y:0,w:1100,h:1010};
+        var mouseX=-1;
+        var mouseY=-1;
+
+        var rubberBandStartPos=null;
+        var rubberBandPos=null;
+        var mouseRubberBandStartPos=null;
+        var mouseRubberBandPos=null;
+        var rubberBandRect=null;
+        var isLoading=false;
+
+
 
         this.paste=function(e)
         {
@@ -911,13 +926,10 @@ var line;
                     }
                 break;
 
-
                 case 49: // / - test
                 
                     self.setCurrentSubPatch(0);
                 break;
-
-
 
                 default:
                     // console.log('key ',e.which);
@@ -937,7 +949,6 @@ var line;
             setTimeout(function()
             {
                 var data=gui.patch().scene.serialize(true);
-
 
                 data.ui={viewBox:{}};
                 data.ui.viewBox.w=viewBox.w;
@@ -1016,9 +1027,6 @@ var line;
         };
 
 
-        var viewBox={x:0,y:0,w:1100,h:1010};
-        var mouseX=-1;
-        var mouseY=-1;
 
         this.updateViewBox=function()
         {
@@ -1033,12 +1041,6 @@ var line;
 
 
         // ---------------------------------------------
-
-        var rubberBandStartPos=null;
-        var rubberBandPos=null;
-        var mouseRubberBandStartPos=null;
-        var mouseRubberBandPos=null;
-        var rubberBandRect=null;
 
         function rubberBandHide()
         {
@@ -1264,8 +1266,155 @@ var line;
             gui.scene().deSerialize(examples[which].src);
         };
 
+        function doLink()
+        {
+
+        }
+
+
+        function doAddOp(uiOp)
+        {
+            var op=uiOp.op;
+
+            if(!isLoading)
+            {
+                var undofunc=function(opid,objName)
+                {
+                    CABLES.undo.add({
+                        undo: function() {
+                            gui.scene().deleteOp( opid,true);
+                        },
+                        redo: function() {
+                            gui.scene().addOp(objName,op.uiAttribs,opid);
+                        }
+                    });
+
+                }(op.id,op.objName);
+            }
+
+            op.onAddPort=function(p)
+            {
+                uiOp.addPort(p.direction,p);
+                uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+            };
+
+            for(var i in op.portsIn)
+            {
+                if(!op.portsIn[i].uiAttribs || op.portsIn[i].uiAttribs.display!='readonly')
+                    uiOp.addPort(PORT_DIR_IN,op.portsIn[i]);
+            }
+
+            for(var i2 in op.portsOut)
+            {
+                uiOp.addPort(PORT_DIR_OUT,op.portsOut[i2]);
+            }
+
+            if(!op.uiAttribs)
+            {
+                op.uiAttribs={};
+            }
+
+            if(!op.uiAttribs.translate)
+            {
+                op.uiAttribs.translate={x:CABLES.UI.OPSELECT.newOpPos.x,y:CABLES.UI.OPSELECT.newOpPos.y};
+            }
+
+            if(op.uiAttribs.hasOwnProperty('translate'))
+            {
+                uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+            }
+            if(op.uiAttribs.hasOwnProperty('title'))
+            {
+                gui.patch().setOpTitle(uiOp,op.uiAttribs.title);
+            }
+
+            if(!op.uiAttribs.hasOwnProperty('subPatch'))
+            {
+                op.uiAttribs.subPatch=currentSubPatch;
+            }
+
+            if(CABLES.UI.OPSELECT.linkNewLink)
+            {
+                console.log('add into link...');
+
+                var op1=CABLES.UI.OPSELECT.linkNewLink.p1.op;
+                var port1=CABLES.UI.OPSELECT.linkNewLink.p1.thePort;
+                var op2=CABLES.UI.OPSELECT.linkNewLink.p2.op;
+                var port2=CABLES.UI.OPSELECT.linkNewLink.p2.thePort;
+
+                for(var il in port1.links)
+                {
+                    if(
+                        port1.links[il].portIn==port1 && port1.links[il].portOut==port2 ||
+                        port1.links[il].portOut==port1 && port1.links[il].portIn==port2)
+                        {
+                            port1.links[il].remove();
+                        }
+                }
+
+                var foundPort1=op.findFittingPort(port1);
+                var foundPort2=op.findFittingPort(port2);
+
+                if(foundPort2 && foundPort1)
+                {
+                    gui.scene().link(
+                        op,
+                        foundPort1.getName(),
+                        op1,
+                        port1.getName()
+                        );
+
+                    gui.scene().link(
+                        op,
+                        foundPort2.getName(),
+                        op2,
+                        port2.getName()
+                        );
+                }
+            }
+            else
+            if(CABLES.UI.OPSELECT.linkNewOpToPort)
+            {
+                var foundPort=op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
+
+                if(foundPort)
+                {
+                    var link=gui.patch().scene.link(
+                        CABLES.UI.OPSELECT.linkNewOpToOp,
+                        CABLES.UI.OPSELECT.linkNewOpToPort.getName(),
+                        op,
+                        foundPort.getName());
+                }
+            }
+
+            uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+
+            CABLES.UI.OPSELECT.linkNewOpToOp=null;
+            CABLES.UI.OPSELECT.linkNewLink=null;
+            CABLES.UI.OPSELECT.linkNewOpToPort=null;
+
+            CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
+
+            gui.patch().showOpParams(op);
+            gui.patch().setSelectedOp(null);
+            gui.patch().setSelectedOp(uiOp);
+            uiOp.wasAdded=true;
+        }
+
+
         this.bindScene=function(scene)
         {
+
+            scene.onLoadStart=function()
+            {
+                isLoading=true;
+            };
+            scene.onLoadEnd=function()
+            {
+                isLoading=false;
+                self.setCurrentSubPatch(currentSubPatch);
+            };
+
             scene.onUnLink=function(p1,p2)
             {
                 console.log('on unlink');
@@ -1315,7 +1464,8 @@ var line;
             scene.onLink=function(p1,p2)
             {
                 console.log('on link');
-                        
+                // if(p1.parent.uiAttribs.subPatch!=currentSubPatch && p2.parent.uiAttribs.subPatch!=currentSubPatch)return;
+
                 var uiPort1=null;
                 var uiPort2=null;
                 for(var i in self.ops)
@@ -1324,17 +1474,19 @@ var line;
                     {
                         if(self.ops[i].portsIn[j].thePort==p1) uiPort1=self.ops[i].portsIn[j];
                         if(self.ops[i].portsIn[j].thePort==p2) uiPort2=self.ops[i].portsIn[j];
-                        self.ops[i].updatePortAttribs();
+                        // self.ops[i].updatePortAttribs();
                     }
                     for(var jo in self.ops[i].portsOut)
                     {
                         if(self.ops[i].portsOut[jo].thePort==p1) uiPort1=self.ops[i].portsOut[jo];
                         if(self.ops[i].portsOut[jo].thePort==p2) uiPort2=self.ops[i].portsOut[jo];
-                        self.ops[i].updatePortAttribs();
+                        // self.ops[i].updatePortAttribs();
                     }
                 }
         
                 var thelink=new UiLink(uiPort1,uiPort2);
+
+
                 uiPort1.opUi.links.push(thelink);
                 uiPort2.opUi.links.push(thelink);
 
@@ -1382,154 +1534,22 @@ var line;
                 }
             };
 
+
+
+
+
+
             scene.onAdd=function(op)
             {
                 $('#patch').focus();
                 var uiOp=new OpUi(op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
                 self.ops.push(uiOp);
                 
+                uiOp.wasAdded=false;
 
-                console.log('on add');
+                // if(op.uiAttribs.subPatch!=currentSubPatch)return;
 
-                var undofunc=function(opid,objName)
-                {
-                    CABLES.undo.add({
-                        undo: function() {
-                            gui.scene().deleteOp( opid,true);
-                        },
-                        redo: function() {
-                            gui.scene().addOp(objName,op.uiAttribs,opid);
-                        }
-                    });
-
-                }(op.id,op.objName);
-
-
-                op.onAddPort=function(p)
-                {
-                    console.log('uiOp',uiOp);
-
-                    console.log('yes, a new port was born!',p.getName() ,p.direction,p.type);
-                    uiOp.addPort(p.direction,p);
-
-                            
-
-                    // uiOp.updatePorts();
-
-                    uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-
-
-                };
-
-
-
-                for(var i in op.portsIn)
-                {
-                    if(!op.portsIn[i].uiAttribs || op.portsIn[i].uiAttribs.display!='readonly')
-                        uiOp.addPort(PORT_DIR_IN,op.portsIn[i]);
-                }
-
-                for(var i2 in op.portsOut)
-                {
-                    uiOp.addPort(PORT_DIR_OUT,op.portsOut[i2]);
-                }
-
-                if(!op.uiAttribs)
-                {
-                    op.uiAttribs={};
-                }
-
-                if(!op.uiAttribs.translate)
-                {
-                    op.uiAttribs.translate={x:CABLES.UI.OPSELECT.newOpPos.x,y:CABLES.UI.OPSELECT.newOpPos.y};
-                }
-
-                if(op.uiAttribs.hasOwnProperty('translate'))
-                {
-                    uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-                }
-                if(op.uiAttribs.hasOwnProperty('title'))
-                {
-                    gui.patch().setOpTitle(uiOp,op.uiAttribs.title);
-                }
-
-
-                if(!op.uiAttribs.hasOwnProperty('subPatch'))
-                {
-                    op.uiAttribs.subPatch=currentSubPatch;
-                }
-
-                if(CABLES.UI.OPSELECT.linkNewLink)
-                {
-                    console.log('add into link...');
-
-                    var op1=CABLES.UI.OPSELECT.linkNewLink.p1.op;
-                    var port1=CABLES.UI.OPSELECT.linkNewLink.p1.thePort;
-                    var op2=CABLES.UI.OPSELECT.linkNewLink.p2.op;
-                    var port2=CABLES.UI.OPSELECT.linkNewLink.p2.thePort;
-
-                    for(var il in port1.links)
-                    {
-                        if(
-                            port1.links[il].portIn==port1 && port1.links[il].portOut==port2 ||
-                            port1.links[il].portOut==port1 && port1.links[il].portIn==port2)
-                            {
-                                port1.links[il].remove();
-                            }
-                    }
-
-                    var foundPort1=op.findFittingPort(port1);
-                    var foundPort2=op.findFittingPort(port2);
-
-                    if(foundPort2 && foundPort1)
-                    {
-                        gui.scene().link(
-                            op,
-                            foundPort1.getName(),
-                            op1,
-                            port1.getName()
-                            );
-
-                        gui.scene().link(
-                            op,
-                            foundPort2.getName(),
-                            op2,
-                            port2.getName()
-                            );
-                    }
-                }
-                else
-                if(CABLES.UI.OPSELECT.linkNewOpToPort)
-                {
-                    var foundPort=op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
-
-                    if(foundPort)
-                    {
-                        var link=gui.patch().scene.link(
-                            CABLES.UI.OPSELECT.linkNewOpToOp,
-                            CABLES.UI.OPSELECT.linkNewOpToPort.getName(),
-                            op,
-                            foundPort.getName());
-                    }
-                }
-
-
-
-                    uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-
-
-
-                CABLES.UI.OPSELECT.linkNewOpToOp=null;
-                CABLES.UI.OPSELECT.linkNewLink=null;
-                CABLES.UI.OPSELECT.linkNewOpToPort=null;
-
-                CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
-                // CABLES.UI.OPSELECT.mouseNewOPX=0;
-                // CABLES.UI.OPSELECT.mouseNewOPY=0;
-
-                gui.patch().showOpParams(op);
-                gui.patch().setSelectedOp(null);
-                gui.patch().setSelectedOp(uiOp);
+                doAddOp(uiOp);
           };
       };
 
@@ -1538,7 +1558,6 @@ var line;
         uiop.op.uiAttribs.title=t;
         uiop.op.name=t;
         uiop.oprect.setTitle(t);
-
     };
 
     this.setCurrentOpTitle=function(t)
@@ -1549,17 +1568,18 @@ var line;
         }
     };
 
-
-
-
     this.updateSubPatches=function()
     {
+        if(isLoading)return;
         for(var i in self.ops)
         {
             if(!self.ops[i].op.uiAttribs.subPatch)self.ops[i].op.uiAttribs.subPatch=0;
 
             if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
+            {
                 self.ops[i].show();
+                self.ops[i].updatePortAttribs();
+            }
             else
             {
                 self.ops[i].hide();
@@ -1579,23 +1599,25 @@ var line;
         if(which===0) $('#button_subPatchBack').hide();
             else $('#button_subPatchBack').show();
 
+        console.log('setCurrentSubPatch '+which);
+
         currentSubPatch=which;
         self.updateSubPatches();
 
         $('#patch').focus();
     };
 
-    this.setSelectedOpsSubPatch=function(which)
-    {
-        if(selectedOps.length>0)
-        {
-            for(var j in selectedOps)
-            {
-                selectedOps[j].op.uiAttribs.subPatch=which;
-            }
-        }
-        self.updateSubPatches();
-    };
+    // this.setSelectedOpsSubPatch=function(which)
+    // {
+    //     if(selectedOps.length>0)
+    //     {
+    //         for(var j in selectedOps)
+    //         {
+    //             selectedOps[j].op.uiAttribs.subPatch=which;
+    //         }
+    //     }
+    //     self.updateSubPatches();
+    // };
 
     this.alignSelectedOpsVert=function()
     {
@@ -1633,7 +1655,6 @@ var line;
     {
         if(uiop===null )
         {
-
             selectedOps.length=0;
             for(var i in gui.patch().ops)
             {
@@ -1644,7 +1665,6 @@ var line;
         }
 
         selectedOps.push(uiop);
-
         uiop.setSelected(true);
     };
     
@@ -1652,9 +1672,7 @@ var line;
     {
         for(var i in selectedOps)
             gui.patch().scene.deleteOp( selectedOps[i].op.id,true);
-
-    }
-
+    };
 
     this.removeSelectedOp=function(uiop)
     {

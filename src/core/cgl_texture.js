@@ -10,6 +10,7 @@ CGL.Texture=function(options)
     this.flip=true;
     this.filter=CGL.Texture.FILTER_NEAREST;
     var isDepthTexture=false;
+    // var isDataTexture=true;
 
     if(options)
     {
@@ -66,20 +67,25 @@ CGL.Texture=function(options)
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
 
-        var arr=[];
-        arr.length=w*h*4;
-        // for(var x=0;x<w;x++)
+        var uarr=null;
+        // if(!isDataTexture)
         // {
-        //     for(var y=0;y<h;y++)
-        //     {
-        //         // var index=x+y*w;
-        //         arr.push( parseInt( (x/w)*255,10) );
-        //         arr.push(0);
-        //         arr.push( parseInt((y/w)*255,10));
-        //         arr.push(255);
-        //     }
+        //     var arr=[];
+        //     arr.length=w*h*4;
+        //     // for(var x=0;x<w;x++)
+        //     // {
+        //     //     for(var y=0;y<h;y++)
+        //     //     {
+        //     //         // var index=x+y*w;
+        //     //         arr.push( parseInt( (x/w)*255,10) );
+        //     //         arr.push(0);
+        //     //         arr.push( parseInt((y/w)*255,10));
+        //     //         arr.push(255);
+        //     //     }
+        //     // }
+        //     uarr=new Uint8Array(arr);
+
         // }
-        var uarr=new Uint8Array(arr);
 
 
         setFilter();
