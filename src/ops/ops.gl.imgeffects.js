@@ -524,7 +524,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         'hardlight'
         ] }));
     self.blendMode.val='normal';
-    this.imageAlpha=this.addInPort(new Port(this,"imageAlpha",OP_PORT_TYPE_TEXTURE));
+    this.imageAlpha=this.addInPort(new Port(this,"imageAlpha",OP_PORT_TYPE_TEXTURE,{preview:true }));
     this.alphaSrc=this.addInPort(new Port(this,"alphaSrc",OP_PORT_TYPE_VALUE,{ display:'dropdown',values:[
         'alpha channel','luminance'
         ] }));
@@ -553,15 +553,14 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'   vec4 col=vec4(0.0,0.0,0.0,1.0);'
+        .endl()+'   vec4 blendRGBA=vec4(0.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
-        .endl()+'       col=texture2D(image,texCoord);'
+        .endl()+'       blendRGBA=texture2D(image,texCoord);'
 
 
-
-
-        .endl()+'vec3 blend=col.rgb;'
-        .endl()+'vec3 base=texture2D(tex,texCoord).rgb;'
+        .endl()+'vec3 blend=blendRGBA.rgb;'
+        .endl()+'vec4 baseRGBA=texture2D(tex,texCoord);'
+        .endl()+'vec3 base=baseRGBA.rgb;'
 
         .endl()+'vec3 colNew=blend;'
         .endl()+'#define Blend(base, blend, funcf)       vec3(funcf(base.r, blend.r), funcf(base.g, blend.g), funcf(base.b, blend.b))'
@@ -652,27 +651,29 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'#endif'
 
 
-        .endl()+'float alpha=1.0;'
+        .endl()+'float alpha=baseRGBA.a;'
 
         .endl()+'#ifdef HAS_TEXTUREALPHA'
 
         .endl()+'   vec4 colImgAlpha=texture2D(imageAlpha,texCoord);'
+        .endl()+'   alpha=colImgAlpha.a;'
 
         .endl()+'   #ifdef ALPHA_FROM_LUMINANCE'
         .endl()+'       vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), colImgAlpha.rgb ));'
         .endl()+'       alpha=(gray.r+gray.g+gray.b)/3.0;'
         .endl()+'   #endif'
 
-        .endl()+'   alpha*=col.a;'
+
         .endl()+'#endif'
         
 
-        .endl()+'       col.rgb=mix( colNew, base ,1.0-alpha*amount);'
-    
-        .endl()+'   #endif'
+        .endl()+'blendRGBA.rgb=mix( colNew, base ,1.0-alpha*amount);'
+        // .endl()+'blendRGBA.a=alpha;'
+
+        .endl()+'#endif'
 
 
-        .endl()+'   gl_FragColor = col;'
+        .endl()+'   gl_FragColor = blendRGBA;'
         .endl()+'}';
 
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
@@ -800,12 +801,22 @@ Ops.Gl.TextureEffects.DrawImage = function()
         self.image.val.preview();
     }
 
+    function previewAlpha()
+    {
+        render();
+        self.imageAlpha.val.preview();
+    }
+
     this.image.onPreviewChanged=function()
     {
         if(self.image.showPreview) self.render.onTriggered=preview;
         else self.render.onTriggered=render;
+    };
 
-        console.log('show preview!');
+    this.imageAlpha.onPreviewChanged=function()
+    {
+        if(self.imageAlpha.showPreview) self.render.onTriggered=previewAlpha;
+        else self.render.onTriggered=render;
     };
     
     this.render.onTriggered=render;

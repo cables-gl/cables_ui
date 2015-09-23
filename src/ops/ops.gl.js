@@ -1000,9 +1000,15 @@ Ops.Gl.Render2Texture = function()
         cgl.resetViewPort();
     }
 
+    function preview()
+    {
+        render();
+        self.tex.val.preview();
+    }
+
     this.tex.onPreviewChanged=function()
     {
-        if(self.tex.showPreview) self.render.onTriggered=self.tex.val.preview;
+        if(self.tex.showPreview) self.render.onTriggered=preview;
         else self.render.onTriggered=render;
     };
 
