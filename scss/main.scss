@@ -517,9 +517,20 @@ input[type=range]:focus {
     background-color: #aaa;
     color:black;
     padding:7px;
-    border-radius: 4px;
-    opacity:0.9;
+    border-radius: 0px;
+    opacity:0.96;
     display:none;
+    &:hover
+    {
+        display: none;
+    }
+
+    b
+    {
+        font-weight: bold;
+        color:black;
+        font-size: 14px;
+    }
 }
 
 

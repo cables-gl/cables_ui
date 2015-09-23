@@ -210,14 +210,16 @@ function UiLink(port1, port2)
 
 function getPortDescription(thePort)
 {
-    var str=thePort.getName();
-    str+=' ('+thePort.val+')'+' ['+thePort.getTypeString()+']';
+    var str='<b>'+thePort.getName()+'</b>';
+    str+=' ['+thePort.getTypeString()+']';
     if(thePort.isLinked() )str+=' press right mouse button to unlink port';
     return str;
 }
 
 var links=[];
 var line;
+
+
 
     Raphael.el.setGroup = function (group) { this.group = group; };
     Raphael.el.getGroup = function () { return this.group; };
@@ -546,6 +548,9 @@ var line;
                 var txt=Link.canLinkText(selectedEndPort.thePort,this.thePort);
                 if(txt=='can link') CABLES.UI.setStatusText(  getPortDescription(selectedEndPort.thePort));
                     else CABLES.UI.setStatusText( txt );
+
+CABLES.UI.showToolTip(event,txt);
+
             }
 
             if(selectedEndPort!==null && Link.canLink(selectedEndPort.thePort,this.thePort))
@@ -698,10 +703,13 @@ var line;
                     'stroke-width':0,
                 });
 
-                CABLES.UI.setStatusText(getPortDescription(thePort));
+                var txt=getPortDescription(thePort);
+                CABLES.UI.setStatusText(txt);
+                CABLES.UI.showToolTip(event,txt);
 
             }, function ()
             {
+                CABLES.UI.hideToolTip();
                 selectedEndPort=null;
 
                 var offY=0;
