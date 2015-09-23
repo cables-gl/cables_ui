@@ -1534,20 +1534,12 @@ var line;
                 }
             };
 
-
-
-
-
-
             scene.onAdd=function(op)
             {
                 $('#patch').focus();
                 var uiOp=new OpUi(op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
                 self.ops.push(uiOp);
-                
                 uiOp.wasAdded=false;
-
-                // if(op.uiAttribs.subPatch!=currentSubPatch)return;
 
                 doAddOp(uiOp);
                 if(!isLoading) uiOp.updatePortAttribs();
@@ -1584,7 +1576,6 @@ var line;
             else
             {
                 self.ops[i].hide();
-
             }
         }
 

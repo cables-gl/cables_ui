@@ -1433,7 +1433,7 @@ Ops.Gl.TextureEffects.Color = function()
 
     this.name='Color';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true'}));
     this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
