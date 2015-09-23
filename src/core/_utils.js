@@ -35,11 +35,14 @@ CGL.incrementLoadingAssets=function()
     {
         CGL.numLoadingAssets++;
         CGL.numMaxLoadingAssets=Math.max(CGL.numLoadingAssets,CGL.numMaxLoadingAssets);
-        console.log('loading... ',CGL.numLoadingAssets+" / "+CGL.numMaxLoadingAssets);
-        console.log('loading... ',CGL.getLoadingStatus());
     };
 
-CGL.decrementLoadingAssets=function(){ CGL.numLoadingAssets--;};
-CGL.getLoadingStatus=function(){ return CGL.numLoadingAssets/CGL.numMaxLoadingAssets; };
+CGL.decrementLoadingAssets=function()
+{
+    CGL.numLoadingAssets--;
+    console.log('loading... ',CGL.numLoadingAssets+" / "+CGL.numMaxLoadingAssets);
+    console.log('loading... ',CGL.getLoadingStatus());
+};
+CGL.getLoadingStatus=function(){ return (CGL.numMaxLoadingAssets-CGL.numLoadingAssets)/CGL.numMaxLoadingAssets; };
 
 
