@@ -634,6 +634,39 @@ Ops.String.concat.prototype = new Op();
 // ----------------------------------------------------------------------
 
 
+Ops.LoadingStatus = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='loadingStatus';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.result=this.addOutPort(new Port(this,"status",OP_PORT_TYPE_VALUE));
+
+    this.finished=this.addOutPort(new Port(this,"finished",OP_PORT_TYPE_FUNCTION));
+
+    this.numAssets=this.addOutPort(new Port(this,"numAssets",OP_PORT_TYPE_FUNCTION));
+    
+
+    this.loading=this.addOutPort(new Port(this,"loading",OP_PORT_TYPE_FUNCTION));
+
+
+    
+
+
+    this.exe.onTriggered= function()
+    {
+        self.result.val=CGL.getLoadingStatus();
+        self.numAssets.val=CGL.numMaxLoadingAssets;
+        
+        if(self.result.val>=1.0) self.finished.trigger();
+            else self.loading.trigger();
+
+    };
+
+};
+
+Ops.LoadingStatus.prototype = new Op();
 
 
 

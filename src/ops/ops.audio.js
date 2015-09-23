@@ -74,8 +74,17 @@ Ops.WebAudio.AudioPlayer = function()
 
     this.file.onValueChanged = function()
     {
+        CGL.incrementLoadingAssets();
+
         self.audio = new Audio();
+
         self.audio.src = self.file.val;
+
+        self.audio.addEventListener('canplaythrough', function()
+        {
+            console.log('audio loaded!');
+            CGL.decrementLoadingAssets();
+        }, false);
 
         self.media = audioContext.createMediaElementSource(self.audio);
         self.patch.timer.onPlayPause(playPause);

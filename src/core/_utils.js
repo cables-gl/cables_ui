@@ -11,6 +11,7 @@ function generateUUID()
 }
 
 // ----------------------------------------------------------------
+
 function ajaxRequest(url, callback)
 {
     var request = new XMLHttpRequest();
@@ -25,6 +26,7 @@ function ajaxRequest(url, callback)
 
 String.prototype.endl = function(){return this+'\n';};
 
+// ----------------------------------------------------------------
 
 CGL=CGL || {};
 
@@ -40,8 +42,6 @@ CGL.incrementLoadingAssets=function()
 CGL.decrementLoadingAssets=function()
 {
     CGL.numLoadingAssets--;
-    console.log('loading... ',CGL.numLoadingAssets+" / "+CGL.numMaxLoadingAssets);
-    console.log('loading... ',CGL.getLoadingStatus());
 };
 CGL.getLoadingStatus=function(){ return (CGL.numMaxLoadingAssets-CGL.numLoadingAssets)/CGL.numMaxLoadingAssets; };
 

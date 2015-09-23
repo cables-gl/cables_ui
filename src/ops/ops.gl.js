@@ -1173,11 +1173,7 @@ Ops.Gl.Spray = function()
 
 Ops.Gl.Spray.prototype = new Op();
 
-
-
-
 // --------------------------------------------------------------------------
-
 
 Ops.Gl.Identity = function()
 {
