@@ -656,15 +656,12 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'#ifdef HAS_TEXTUREALPHA'
 
         .endl()+'   vec4 colImgAlpha=texture2D(imageAlpha,texCoord);'
-        .endl()+'   alpha=colImgAlpha.a;'
+        .endl()+'   blendRGBA.a=colImgAlpha.a*blendRGBA.a;'
 
         .endl()+'   #ifdef ALPHA_FROM_LUMINANCE'
         .endl()+'       vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), colImgAlpha.rgb ));'
-        .endl()+'       alpha=(gray.r+gray.g+gray.b)/3.0;'
+        .endl()+'       blendRGBA.a=(gray.r+gray.g+gray.b)/3.0;'
         .endl()+'   #endif'
-
-
-        .endl()+'   alpha=max(alpha,baseRGBA.a);'
 
         .endl()+'#endif'
         
