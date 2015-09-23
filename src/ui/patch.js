@@ -102,9 +102,14 @@ function UiLink(port1, port2)
 
             });
 
-            addCircle.hover(function ()
+            addCircle.hover(function (e)
             {
-                CABLES.UI.setStatusText('left click: insert op / right click: delete link');
+                var txt='left click: insert op / right click: delete link';
+                CABLES.UI.showToolTip(event,txt);
+                CABLES.UI.setStatusText(txt);
+            },function()
+            {
+                CABLES.UI.hideToolTip();
             });
 
             addCircle.node.onmousedown = function (event)
