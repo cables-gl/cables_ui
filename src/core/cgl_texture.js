@@ -52,9 +52,7 @@ CGL.Texture=function(options)
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.LINEAR);
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.NEAREST_MIPMAP_LINEAR);
             }
-
         }
-
     }
 
 

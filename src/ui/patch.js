@@ -1550,6 +1550,7 @@ var line;
                 // if(op.uiAttribs.subPatch!=currentSubPatch)return;
 
                 doAddOp(uiOp);
+                if(!isLoading) uiOp.updatePortAttribs();
           };
       };
 
