@@ -641,11 +641,11 @@ Ops.LoadingStatus = function()
 
     this.name='loadingStatus';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-    this.result=this.addOutPort(new Port(this,"status",OP_PORT_TYPE_VALUE));
 
     this.finished=this.addOutPort(new Port(this,"finished",OP_PORT_TYPE_FUNCTION));
 
-    this.numAssets=this.addOutPort(new Port(this,"numAssets",OP_PORT_TYPE_FUNCTION));
+    this.result=this.addOutPort(new Port(this,"status",OP_PORT_TYPE_VALUE));
+    this.numAssets=this.addOutPort(new Port(this,"numAssets",OP_PORT_TYPE_VALUE));
     
 
     this.loading=this.addOutPort(new Port(this,"loading",OP_PORT_TYPE_FUNCTION));
