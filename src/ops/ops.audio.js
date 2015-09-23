@@ -58,6 +58,9 @@ Ops.WebAudio.AudioPlayer = function()
     function seek()
     {
         if(!self.audio)return;
+
+        if(self.patch.timer.isPlaying() && self.audio.paused) self.audio.play();
+        else if(!self.patch.timer.isPlaying() && !self.audio.paused) self.audio.pause();
         self.audio.currentTime=self.patch.timer.getTime();
     }
 

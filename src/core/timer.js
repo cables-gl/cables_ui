@@ -21,6 +21,7 @@ function Timer()
     this.setDelay=function(d)
     {
         delay=d;
+        eventTimeChange();
     };
 
     this.isPlaying=function()
@@ -70,6 +71,7 @@ function Timer()
             timeOffset+=val;
             currentTime=lastTime+timeOffset;
         }
+        eventTimeChange();
     };
 
     this.play=function()
