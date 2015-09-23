@@ -419,28 +419,35 @@ Ops.TimedSequence = function()
 
     this.exe.onTriggered=function()
     {
+        if(self.current.anim)
+        {
+
+
+            var time=self.current.parent.patch.timer.getTime();
+            self.currentKeyTime.val=time-self.current.anim.getKey(time).time;
+
+            if(self.current.isAnimated())
+            {
+
+                if(self.overwriteTime.val)
+                {
+                    self.current.patch.timer.overwriteTime=self.newTime.val;  // todo  why current ? why  not self ?
+                    self.current.trigger.trigger();
+                }
+            }
+
+        }
+
         var i=Math.round(self.current.val-0.5);
         if(i>=0 && i<triggers.length)
         {
             triggers[i].trigger();
         }
 
-        var time=self.current.parent.patch.timer.getTime();
-        self.currentKeyTime.val=time-self.current.anim.getKey(time).time;
+        self.patch.timer.overwriteTime=-1;
 
-        if(self.current.isAnimated())
-        {
-
-            if(self.overwriteTime.val)
-            {
-                self.current.patch.timer.overwriteTime=self.newTime.val;  // todo  why current ? why  not self ?
-                self.current.trigger.trigger();
-            }
-        }
         self.triggerAlways.trigger();
 
-
-        self.patch.timer.overwriteTime=-1;
 
     };
 
