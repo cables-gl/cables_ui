@@ -53,7 +53,12 @@ Ops.Gl.Renderer = function()
 
         self.trigger.trigger();
 
-        if(CGL.Texture.previewTexture)CGL.Texture.texturePreviewer.render(CGL.Texture.previewTexture);
+        if(CGL.Texture.previewTexture)
+        {
+            if(!CGL.Texture.texturePreviewer) CGL.Texture.texturePreviewer=new CGL.Texture.texturePreview();
+
+            CGL.Texture.texturePreviewer.render(CGL.Texture.previewTexture);
+        }
 
 
         cgl.popMvMatrix();
@@ -342,7 +347,7 @@ Ops.Gl.Texture = function()
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',filter:'image' } ));
     this.filter=this.addInPort(new Port(this,"filter",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['nearest','linear','mipmap']}));
 
-    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
 
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
@@ -372,6 +377,18 @@ Ops.Gl.Texture = function()
 
         reload();
     };
+
+
+    this.textureOut.onPreviewChanged=function()
+    {
+        if(self.textureOut.showPreview) CGL.Texture.previewTexture=self.textureOut.val;
+        // if(self.texture.showPreview) self.render.onTriggered=self.texture.val.preview;
+        // else self.render.onTriggered=self.doRender;
+
+        // console.log('show preview!');
+    };
+
+
 };
 
 Ops.Gl.Texture.prototype = new Op();

@@ -124,15 +124,7 @@ CGL.Texture=function(options)
 
     this.preview=function()
     {
-
-        if(!CGL.Texture.texturePreviewer)
-        {
-            CGL.Texture.texturePreviewer=new CGL.Texture.texturePreview();
-        }
-
         CGL.Texture.previewTexture=self;
-        
-
     };
 
 };
@@ -167,8 +159,6 @@ CGL.Texture.fromImage=function(img)
 CGL.Texture.FILTER_NEAREST=0;
 CGL.Texture.FILTER_LINEAR=1;
 CGL.Texture.FILTER_MIPMAP=2;
-
-
 
 // ---------------------------------------------------------------------------
 
@@ -233,19 +223,13 @@ CGL.Texture.texturePreview=function()
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
     var startTime=Date.now()/1000.0;
 
-
     this.render=function(tex)
     {
-
         console.log('previewing ',tex.width,tex.height);
         cgl.gl.clearColor(0,0,0,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
-timeUni.setValue( (Date.now()/1000.0-startTime)*0.1 );
-
-
-
-        
+        timeUni.setValue( (Date.now()/1000.0-startTime)*0.1 );
 
         cgl.setShader(shader);
 

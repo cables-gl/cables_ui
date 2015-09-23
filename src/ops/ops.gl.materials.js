@@ -528,9 +528,17 @@ Ops.Gl.Shader.BasicMaterial = function()
         }
     };
 
-    this.textureOpacity=this.addInPort(new Port(this,"textureOpacity",OP_PORT_TYPE_TEXTURE));
+    this.textureOpacity=this.addInPort(new Port(this,"textureOpacity",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.textureOpacityUniform=null;
 
+    this.textureOpacity.onPreviewChanged=function()
+    {
+        if(self.textureOpacity.showPreview) self.render.onTriggered=self.textureOpacity.val.preview;
+        else self.render.onTriggered=self.doRender;
+
+        console.log('show preview!');
+    };
+    
     this.textureOpacity.onValueChanged=function()
     {
         if(self.textureOpacity.val)
