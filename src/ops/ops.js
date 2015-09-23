@@ -651,9 +651,6 @@ Ops.LoadingStatus = function()
     this.loading=this.addOutPort(new Port(this,"loading",OP_PORT_TYPE_FUNCTION));
 
 
-    
-
-
     this.exe.onTriggered= function()
     {
         self.result.val=CGL.getLoadingStatus();
