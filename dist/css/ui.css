@@ -395,6 +395,9 @@ b {
     font-weight: bold;
     color: black;
     font-size: 14px; }
+  .tooltip
+i {
+    color: black; }
 
 #timelineTitle {
   position: absolute;

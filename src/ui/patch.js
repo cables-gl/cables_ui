@@ -554,8 +554,9 @@ var line;
                 if(txt=='can link') CABLES.UI.setStatusText(  getPortDescription(selectedEndPort.thePort));
                     else CABLES.UI.setStatusText( txt );
 
-CABLES.UI.showToolTip(event,txt);
-
+                if(txt=='can link')txt='<i class="fa fa-check"></i>';
+                    else txt='<i class="fa fa-times"></i>';
+                CABLES.UI.showToolTip(event,txt+' '+getPortDescription(selectedEndPort.thePort));
             }
 
             if(selectedEndPort!==null && Link.canLink(selectedEndPort.thePort,this.thePort))
