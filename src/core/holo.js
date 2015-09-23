@@ -165,8 +165,6 @@ var Port=function(parent,name,type,uiAttribs)
     {
         if(onOff!=self.showPreview)
         {
-                    console.log('preview',onOff);
-                    
             self.showPreview=onOff;
             self.onPreviewChanged();
         }

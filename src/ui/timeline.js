@@ -320,8 +320,6 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
                     });
                 }(this,this.keys[i].getSerialized());
 
-
-
                 this.keys[i].removeUi();
                 this.keys.splice(i, 1);
                 found=true;
@@ -879,6 +877,7 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         for(var anii in anims)
         {
+            anims[anii].defaultEasing=e;
             for(var i in anims[anii].keys)
             {
                 anims[anii].removeUi();

@@ -121,58 +121,53 @@ CABLES.TL.Key=function(obj)
 
 
 
-this.easeExpoIn=function( t,  key2)
-{
-    t= Math.pow( 2, 10 * (t - 1) );
-    return linear(t,this,key2);
-};
-
-this.easeExpoOut=function( t,  key2)
-{
-    t= ( -Math.pow( 2, -10 * t ) + 1 );
-    return linear(t,this,key2);
-};
-
-this.easeExpoInOut=function( t,  key2)
-{
-    t*=2;
-    if (t < 1)
+    this.easeExpoIn=function( t,  key2)
     {
-      t= 0.5 * Math.pow( 2, 10 * (t - 1) );
-    }
-    else
+        t= Math.pow( 2, 10 * (t - 1) );
+        return linear(t,this,key2);
+    };
+
+    this.easeExpoOut=function( t,  key2)
     {
-        t--;
-        t= 0.5 * ( -Math.pow( 2, -10 * t) + 2 );
-    }
-    return linear(t,this,key2);
-};
+        t= ( -Math.pow( 2, -10 * t ) + 1 );
+        return linear(t,this,key2);
+    };
+
+    this.easeExpoInOut=function( t,  key2)
+    {
+        t*=2;
+        if (t < 1)
+        {
+          t= 0.5 * Math.pow( 2, 10 * (t - 1) );
+        }
+        else
+        {
+            t--;
+            t= 0.5 * ( -Math.pow( 2, -10 * t) + 2 );
+        }
+        return linear(t,this,key2);
+    };
 
 
 
 
-this.easeSinIn=function( t,key2)
-{
-    t= -1 * Math.cos(t * Math.PI/2) + 1;
-    return linear(t,this,key2);
-};
+    this.easeSinIn=function( t,key2)
+    {
+        t= -1 * Math.cos(t * Math.PI/2) + 1;
+        return linear(t,this,key2);
+    };
 
-this.easeSinOut=function( t,key2)
-{
-    t= Math.sin(t * Math.PI/2);
-    return linear(t,this,key2);
-};
+    this.easeSinOut=function( t,key2)
+    {
+        t= Math.sin(t * Math.PI/2);
+        return linear(t,this,key2);
+    };
 
-this.easeSinInOut=function( t,key2)
-{
-    t= -0.5 * (Math.cos(Math.PI*t) - 1.0);
-    return linear(t,this,key2);
-};
-
-
-
-
-
+    this.easeSinInOut=function( t,key2)
+    {
+        t= -0.5 * (Math.cos(Math.PI*t) - 1.0);
+        return linear(t,this,key2);
+    };
 
 
     this.easeCubicIn=function(t,key2)
@@ -322,6 +317,7 @@ CABLES.TL.Anim=function(cfg)
     this.onChange=null;
     this.stayInTimeline=false;
     this.loop=false;
+    this.defaultEasing=CABLES.TL.EASING_LINEAR;
 
     this.clear=function()
     {
@@ -361,7 +357,7 @@ CABLES.TL.Anim=function(cfg)
 
         if(!found)
         {
-            this.keys.push(new CABLES.TL.Key({time:time,value:value})) ;
+            this.keys.push(new CABLES.TL.Key({time:time,value:value,e:this.defaultEasing})) ;
         }
 
         if(this.onChange)this.onChange();

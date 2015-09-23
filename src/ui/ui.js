@@ -9,7 +9,7 @@ var uiConfig=
     colorLink:'#fff',
     colorLinkHover:'#fff',
     colorLinkInvalid:'#888',
-    colorOpBg:'#fff',
+    colorOpBg:'#ddd',
     colorOpBgSelected:'#ff9',
     colorPort:'#6c9fde',
     colorRubberBand:'#6c9fde',
