@@ -131,15 +131,17 @@ CGL.Texture=function(options)
 
 CGL.Texture.load=function(url,finishedCallback,settings)
 {
+    CGL.incrementLoadingAssets();
     var texture=new CGL.Texture();
     texture.image = new Image();
 
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
 
-    texture.image.onload = function ()
+    texture.image.onload=function()
     {
         texture.initTexture(texture.image,settings);
         if(finishedCallback)finishedCallback();
+        CGL.decrementLoadingAssets();
     };
     texture.image.src = url;
     return texture;

@@ -491,7 +491,7 @@ var Scene = function()
 
     this.onLoadStart=null;
     this.onLoadEnd=null;
-    
+
     this.clear=function()
     {
         self.animFrameOps.length=0;

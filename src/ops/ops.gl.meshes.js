@@ -328,10 +328,10 @@ Ops.Gl.Meshes.ObjMesh = function()
         //     });
         // self.textureOut.val=self.tex;
 
+      CGL.incrementLoadingAssets();
       ajaxRequest(self.filename.val,function(response)
       {
           // console.log(response);
-                  
           var r=parseOBJ(response);
 
           unwrap = function(ind, crd, cpi)
@@ -355,6 +355,7 @@ Ops.Gl.Meshes.ObjMesh = function()
               for(var i=0; i<l; i++) r.verticesIndices.push(i);
           
           self.mesh=new CGL.Mesh(r);
+          CGL.decrementLoadingAssets();
       });
 
 

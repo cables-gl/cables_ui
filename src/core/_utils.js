@@ -26,3 +26,20 @@ function ajaxRequest(url, callback)
 String.prototype.endl = function(){return this+'\n';};
 
 
+CGL=CGL || {};
+
+CGL.numMaxLoadingAssets=0;
+CGL.numLoadingAssets=0;
+
+CGL.incrementLoadingAssets=function()
+    {
+        CGL.numLoadingAssets++;
+        CGL.numMaxLoadingAssets=Math.max(CGL.numLoadingAssets,CGL.numMaxLoadingAssets);
+        console.log('loading... ',CGL.numLoadingAssets+" / "+CGL.numMaxLoadingAssets);
+        console.log('loading... ',CGL.getLoadingStatus());
+    };
+
+CGL.decrementLoadingAssets=function(){ CGL.numLoadingAssets--;};
+CGL.getLoadingStatus=function(){ return CGL.numLoadingAssets/CGL.numMaxLoadingAssets; };
+
+
