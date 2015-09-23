@@ -422,19 +422,25 @@ var Link = function(scene)
 
 Link.canLinkText=function(p1,p2)
 {
+    if(p1.direction==p2.direction)
+    {
+        var txt='(out)';
+        if(p2.direction==PORT_DIR_IN)txt="(in)";
+        return 'can not link: same direction'+txt;
+    }
+    if(p1.parent==p2.parent)return 'can not link: same op';
+    if( p1.type!=OP_PORT_TYPE_DYNAMIC && p2.type!=OP_PORT_TYPE_DYNAMIC )
+    {
+        if(p1.type!=p2.type)return 'can not link: different type';
+    }
+ 
     if(!p1)return 'can not link: port 1 invalid';
     if(!p2)return 'can not link: port 2 invalid';
     if(p1.direction==PORT_DIR_IN && p1.links.length>0)return 'input port already busy';
     if(p2.direction==PORT_DIR_IN && p2.links.length>0)return 'input port already busy';
     if(p1.isLinkedTo(p2))return 'ports already linked';
-    if(p1.direction==p2.direction)return 'can not link: same direction';
 
 
-    if( p1.type!=OP_PORT_TYPE_DYNAMIC && p2.type!=OP_PORT_TYPE_DYNAMIC )
-    {
-        if(p1.type!=p2.type)return 'can not link: different type';
-    }
-    if(p1.parent==p2.parent)return 'can not link: same op';
     return 'can link';
 };
 
