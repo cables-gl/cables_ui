@@ -23,6 +23,10 @@ CABLES.UI.MODAL.show=function(content)
     $('#modalcontent').append(content);
     $('#modalcontent').show();
     $('#modalbg').show();
+
+    $('#modalbg').on('click',function(){
+        CABLES.UI.MODAL.hide();
+    });
 };
 
 
@@ -42,5 +46,9 @@ $('#modalcontent').html('<div class="modalclose"><a class="button fa fa-times" o
     $('#modalcontent').append(content);
     $('#modalcontent').show();
     $('#modalbg').show();
+
+    $('#modalbg').on('click',function(){
+        CABLES.UI.MODAL.hide();
+    });
 };
 
