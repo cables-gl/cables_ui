@@ -53,8 +53,14 @@ Ops.Gl.Renderer = function()
 
         self.trigger.trigger();
 
+        if(CGL.Texture.previewTexture)CGL.Texture.texturePreviewer.render(CGL.Texture.previewTexture);
+
+
         cgl.popMvMatrix();
         cgl.popPMatrix();
+
+
+
         cgl.endFrame();
     };
 
@@ -925,7 +931,7 @@ Ops.Gl.Render2Texture = function()
     // this.clear=this.addInPort(new Port(this,"clear",OP_PORT_TYPE_VALUE,{ display:'bool' }));
     // this.clear.val=true;
 
-    this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.texDepth=this.addOutPort(new Port(this,"textureDepth",OP_PORT_TYPE_TEXTURE));
 
     this.width.val=1920;
@@ -961,7 +967,8 @@ Ops.Gl.Render2Texture = function()
     self.tex.val=texture;
     self.texDepth.val=textureDepth;
 
-    this.render.onTriggered=function()
+
+    function render()
     {
         cgl.pushMvMatrix();
 
@@ -991,9 +998,16 @@ Ops.Gl.Render2Texture = function()
         
         cgl.popMvMatrix();
         cgl.resetViewPort();
+    }
 
-
+    this.tex.onPreviewChanged=function()
+    {
+        if(self.tex.showPreview) self.render.onTriggered=self.tex.val.preview;
+        else self.render.onTriggered=render;
     };
+
+
+    self.render.onTriggered=render;
 
 
 };

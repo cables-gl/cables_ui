@@ -6,6 +6,28 @@ CABLES.UI.setStatusText=function(txt)
     $('#statusbar').html('&nbsp;'+txt);
 };
 
+
+CABLES.UI.showPreview=function(opid,which,onoff)
+{
+    var op=gui.scene().getOpById(opid);
+    if(!op)
+    {
+        console.log('opid not found:',opid);
+        return;
+    }
+    var port=op.getPort(which);
+    if(!port)
+    {
+        console.log('port not found:',which);
+        return;
+    }
+
+
+    port.doShowPreview(onoff);
+    if(!onoff)CGL.Texture.previewTexture=null;
+};
+
+
 CABLES.UI.togglePortValBool=function(which,checkbox)
 {
     var bool_value = $('#'+which).val() == 'true';

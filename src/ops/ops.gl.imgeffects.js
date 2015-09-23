@@ -69,7 +69,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.height=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-    this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE));
+    this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE,{preview:true}));
 
     var effect=new CGL.TextureEffect();
 
@@ -101,7 +101,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     };
 
 
-    this.render.onTriggered=function()
+    render=function()
     {
         self.updateResolution();
         
@@ -124,8 +124,19 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     };
 
+
+    this.texOut.onPreviewChanged=function()
+    {
+        if(self.texOut.showPreview) self.render.onTriggered=self.texOut.val.preview;
+        else self.render.onTriggered=render;
+                console.log('jaja changed');
+                
+    };
+    
+
     this.width.val=1920;
     this.height.val=1080;
+    this.render.onTriggered=render;
 
 };
 
@@ -504,7 +515,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
     
-    this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
+    this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE,{preview:true }));
     this.blendMode=this.addInPort(new Port(this,"blendMode",OP_PORT_TYPE_VALUE,{ display:'dropdown',values:[
         'normal','lighten','darken','multiply','average','add','substract','difference','negation','exclusion','overlay','screen',
         'color dodge',
@@ -641,28 +652,22 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'#endif'
 
 
-
-
+        .endl()+'float alpha=1.0;'
 
         .endl()+'#ifdef HAS_TEXTUREALPHA'
 
-
         .endl()+'   vec4 colImgAlpha=texture2D(imageAlpha,texCoord);'
-        .endl()+'   float alpha=col.a;'
 
         .endl()+'   #ifdef ALPHA_FROM_LUMINANCE'
         .endl()+'       vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), colImgAlpha.rgb ));'
         .endl()+'       alpha=(gray.r+gray.g+gray.b)/3.0;'
         .endl()+'   #endif'
 
-        .endl()+'   col.a*=alpha;'
+        .endl()+'   alpha*=col.a;'
         .endl()+'#endif'
         
 
-
-
-
-        .endl()+'       col.rgb=mix( colNew, base ,1.0-col.a*amount);'
+        .endl()+'       col.rgb=mix( colNew, base ,1.0-alpha*amount);'
     
         .endl()+'   #endif'
 
@@ -760,7 +765,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         }
     };
 
-    this.render.onTriggered=function()
+    function render()
     {
         if(!cgl.currentTextureEffect)return;
 
@@ -787,7 +792,25 @@ Ops.Gl.TextureEffects.DrawImage = function()
         }
 
         self.trigger.trigger();
+    }
+
+    function preview()
+    {
+        render();
+        self.image.val.preview();
+    }
+
+    this.image.onPreviewChanged=function()
+    {
+        if(self.image.showPreview) self.render.onTriggered=preview;
+        else self.render.onTriggered=render;
+
+        console.log('show preview!');
     };
+    
+    this.render.onTriggered=render;
+
+
 };
 
 Ops.Gl.TextureEffects.DrawImage.prototype = new Op();

@@ -159,6 +159,20 @@ var Port=function(parent,name,type,uiAttribs)
     var animated=false;
     var oldAnimVal=-5711;
     this.onLink=false;
+    this.showPreview=false;
+
+    this.doShowPreview=function(onOff)
+    {
+        if(onOff!=self.showPreview)
+        {
+                    console.log('preview',onOff);
+                    
+            self.showPreview=onOff;
+            self.onPreviewChanged();
+        }
+    };
+
+    this.onPreviewChanged=function(){};
     this.shouldLink=function(){return true;};
 
     this.__defineGetter__("val", function()

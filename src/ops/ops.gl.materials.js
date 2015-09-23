@@ -496,8 +496,17 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.a.val=1.0;
 
     this.render.onTriggered=this.doRender;
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.textureUniform=null;
+
+    this.texture.onPreviewChanged=function()
+    {
+        if(self.texture.showPreview) self.render.onTriggered=self.texture.val.preview;
+        else self.render.onTriggered=self.doRender;
+
+        console.log('show preview!');
+    };
+
 
     this.texture.onValueChanged=function()
     {

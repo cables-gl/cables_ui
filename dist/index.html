@@ -465,7 +465,15 @@
             {{#if port.links}}
                 {{#compare port.type '==' '1' }}function{{/compare}}
                 {{#compare port.type '==' 0 }} <span class="value watchPortValue_{{ port.watchId }}">{{port.val}}</span>{{/compare}}
-                {{#compare port.type '==' '2' }} object {{/compare}}
+                {{#compare port.type '==' '2' }} 
+
+                {{#if port.uiAttribs.preview}}
+                    <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a>
+                {{/if}}
+
+                object 
+
+                {{/compare}}
             {{else}}
                 {{#if port.uiAttribs.display}}
 
@@ -529,9 +537,11 @@
 
             {{#compare port.type '==' '1' }}function{{/compare}}
             {{#compare port.type '==' 0 }} <span class="value watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
-            {{#compare port.type '==' '2' }} object {{/compare}}
-
-            
+            {{#compare port.type '==' '2' }}
+                {{#if port.uiAttribs.preview}}
+                    <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a>
+                {{/if}}
+                object {{/compare}}
         {{/if}}
     </td>
 

@@ -1780,7 +1780,7 @@ var line;
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 
-        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in'});
+        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in',});
 
         for(var i in op.portsIn)
         {
@@ -1797,10 +1797,10 @@ var line;
                 watchPorts.push(op.portsIn[i]);
             }
 
-            html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true } );
+            html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op } );
         }
 
-        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out'});
+        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op});
 
         for(var i2 in op.portsOut)
         {
@@ -1810,7 +1810,7 @@ var line;
                 watchPorts.push(op.portsOut[i2]);
             }
 
-            html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false } );
+            html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false,op: op } );
         }
 
         html += CABLES.UI.getHandleBarHtml('params_op_foot',{op: op});
