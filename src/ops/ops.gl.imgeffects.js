@@ -683,6 +683,8 @@ Ops.Gl.TextureEffects.DrawImage = function()
             else shader.removeDefine('ALPHA_FROM_LUMINANCE');
     };
 
+    this.alphaSrc.val="alpha channel";
+
     this.blendMode.onValueChanged=function()
     {
         if(self.blendMode.val=='normal') shader.define('BM_NORMAL');
