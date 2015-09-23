@@ -503,13 +503,27 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
+    this.blendMode=this.addInPort(new Port(this,"blendMode",OP_PORT_TYPE_VALUE,{ display:'dropdown',values:[
+        'normal','lighten','darken','multiply','average','add','substract','difference','negation','exclusion','overlay','screen',
+        'color dodge',
+        'color burn',
+        'softlight',
+        'hardlight'
+        ] }));
+    self.blendMode.val='normal';
     this.imageAlpha=this.addInPort(new Port(this,"imageAlpha",OP_PORT_TYPE_TEXTURE));
+
+
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
 
     var srcFrag=''
+
+
+
         .endl()+'precision highp float;'
         .endl()+'#ifdef HAS_TEXTURES'
         .endl()+'  varying vec2 texCoord;'
@@ -534,8 +548,106 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'       col.a*=texture2D(imageAlpha,texCoord).a;'
         .endl()+'#endif'
 
+        .endl()+'vec3 blend=col.rgb;'
+        .endl()+'vec3 base=texture2D(tex,texCoord).rgb;'
 
-        .endl()+'       col=mix( col, texture2D(tex,texCoord) ,1.0-col.a*amount);'
+.endl()+'vec3 colNew=blend;'
+
+        .endl()+'#define Blend(base, blend, funcf)       vec3(funcf(base.r, blend.r), funcf(base.g, blend.g), funcf(base.b, blend.b))'
+
+
+        .endl()+'#ifdef BM_NORMAL'
+        .endl()+'colNew=blend;'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_MULTIPLY'
+        .endl()+'colNew=base*blend;'
+        .endl()+'#endif'
+
+
+        .endl()+'#ifdef BM_NORMAL'
+        .endl()+'colNew=blend;'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_MULTIPLY'
+        .endl()+'colNew=base*blend;'
+        .endl()+'#endif'
+
+
+        .endl()+'#ifdef BM_AVERAGE'
+        .endl()+'colNew=((base + blend) / 2.0);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_ADD'
+        .endl()+'colNew=min(base + blend, vec3(1.0));'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_SUBSTRACT'
+        .endl()+'colNew=max(base + blend - vec3(1.0), vec3(0.0));'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_DIFFERENCE'
+        .endl()+'colNew=abs(base - blend);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_NEGATION'
+        .endl()+'colNew=(vec3(1.0) - abs(vec3(1.0) - base - blend));'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_EXCLUSION'
+        .endl()+'colNew=(base + blend - 2.0 * base * blend);'
+        .endl()+'#endif'
+  
+        .endl()+'#ifdef BM_LIGHTEN'
+        .endl()+'colNew=max(blend, base);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_DARKEN'
+        .endl()+'colNew=min(blend, base);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_OVERLAY'
+        .endl()+'   #define BlendOverlayf(base, blend)  (base < 0.5 ? (2.0 * base * blend) : (1.0 - 2.0 * (1.0 - base) * (1.0 - blend)))'
+        // .endl()+'   #define BlendOverlay(base, blend)       Blend(base, blend, BlendOverlayf)'
+        .endl()+'   colNew=Blend(base, blend, BlendOverlayf);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_SCREEN'
+        .endl()+'   #define BlendScreenf(base, blend)       (1.0 - ((1.0 - base) * (1.0 - blend)))'
+        // .endl()+'   #define BlendScreen(base, blend)        Blend(base, blend, BlendScreenf)'
+        .endl()+'   colNew=Blend(base, blend, BlendScreenf);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_SOFTLIGHT'
+        .endl()+'   #define BlendSoftLightf(base, blend)    ((blend < 0.5) ? (2.0 * base * blend + base * base * (1.0 - 2.0 * blend)) : (sqrt(base) * (2.0 * blend - 1.0) + 2.0 * base * (1.0 - blend)))'
+        // .endl()+'   #define BlendSoftLight(base, blend)     Blend(base, blend, BlendSoftLightf)'
+        .endl()+'   colNew=Blend(base, blend, BlendSoftLightf);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_HARDLIGHT'
+        .endl()+'   #define BlendOverlayf(base, blend)  (base < 0.5 ? (2.0 * base * blend) : (1.0 - 2.0 * (1.0 - base) * (1.0 - blend)))'
+        // .endl()+'   #define BlendOverlay(base, blend)       Blend(base, blend, BlendOverlayf)'
+        .endl()+'   colNew=Blend(blend, base, BlendOverlayf);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_COLORDODGE'
+        .endl()+'   #define BlendColorDodgef(base, blend)   ((blend == 1.0) ? blend : min(base / (1.0 - blend), 1.0))'
+        .endl()+'   colNew=Blend(base, blend, BlendColorDodgef);'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef BM_COLORBURN'
+        .endl()+'   #define BlendColorBurnf(base, blend)    ((blend == 0.0) ? blend : max((1.0 - ((1.0 - base) / blend)), 0.0))'
+        .endl()+'   colNew=Blend(base, blend, BlendColorBurnf);'
+        .endl()+'#endif'
+
+
+
+        .endl()+'       col.rgb=mix( colNew, base ,1.0-col.a*amount);'
+    
+
+
+
+
 
         .endl()+'#ifdef HAS_TEXTUREALPHA'
         .endl()+'   #endif'
@@ -547,6 +659,61 @@ Ops.Gl.TextureEffects.DrawImage = function()
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
     var textureDisplaceUniform=new CGL.Uniform(shader,'t','image',1);
     var textureAlpha=new CGL.Uniform(shader,'t','imageAlpha',2);
+
+    this.blendMode.onValueChanged=function()
+    {
+        if(self.blendMode.val=='normal') shader.define('BM_NORMAL');
+            else shader.removeDefine('BM_NORMAL');
+
+        if(self.blendMode.val=='multiply') shader.define('BM_MULTIPLY');
+            else shader.removeDefine('BM_MULTIPLY');
+
+        if(self.blendMode.val=='average') shader.define('BM_AVERAGE');
+            else shader.removeDefine('BM_AVERAGE');
+
+        if(self.blendMode.val=='add') shader.define('BM_ADD');
+            else shader.removeDefine('BM_ADD');
+
+        if(self.blendMode.val=='substract') shader.define('BM_SUBSTRACT');
+            else shader.removeDefine('BM_SUBSTRACT');
+
+        if(self.blendMode.val=='difference') shader.define('BM_DIFFERENCE');
+            else shader.removeDefine('BM_DIFFERENCE');
+
+        if(self.blendMode.val=='negation') shader.define('BM_NEGATION');
+            else shader.removeDefine('BM_NEGATION');
+
+        if(self.blendMode.val=='exclusion') shader.define('BM_EXCLUSION');
+            else shader.removeDefine('BM_EXCLUSION');
+
+        if(self.blendMode.val=='lighten') shader.define('BM_LIGHTEN');
+            else shader.removeDefine('BM_LIGHTEN');
+
+        if(self.blendMode.val=='darken') shader.define('BM_DARKEN');
+            else shader.removeDefine('BM_DARKEN');
+
+        if(self.blendMode.val=='overlay') shader.define('BM_OVERLAY');
+            else shader.removeDefine('BM_OVERLAY');
+
+        if(self.blendMode.val=='screen') shader.define('BM_SCREEN');
+            else shader.removeDefine('BM_SCREEN');
+        
+        if(self.blendMode.val=='softlight') shader.define('BM_SOFTLIGHT');
+            else shader.removeDefine('BM_SOFTLIGHT');
+
+        if(self.blendMode.val=='hardlight') shader.define('BM_HARDLIGHT');
+            else shader.removeDefine('BM_HARDLIGHT');
+
+        if(self.blendMode.val=='color dodge') shader.define('BM_COLORDODGE');
+            else shader.removeDefine('BM_COLORDODGE');
+
+        if(self.blendMode.val=='color burn') shader.define('BM_COLORBURN');
+            else shader.removeDefine('BM_COLORBURN');
+
+
+
+
+    };
 
     var amountUniform=new CGL.Uniform(shader,'f','amount',1.0);
 
