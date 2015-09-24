@@ -46,7 +46,29 @@ numOps:{{numOps}}
 <br/>
 <br/>
 {{project.id}}
-    <span class="button fa fa-trash-o tt" data-tt="delete" onclick="gui.deleteCurrentProject();"></a>
+    <a class="button fa fa-trash-o tt" data-tt="delete" onclick="gui.deleteCurrentProject();">&nbsp;delete project</a>
+
+
+
+<br/><br/>
+<a class="button " onclick="gui.scene().clear();">&nbsp;clear patch</a>
+
+<br/>
+<br/><br/>
+<a class="button " onclick="localStorage['cables']=gui.scene().serialize();">&nbsp;load from local storage</a>
+<br/><br/>
+
+<a class="button " onclick="gui.scene().clear();self.scene().deSerialize(localStorage['cables']);">&nbsp;save to local storage</a>
+<br/><br/><br/>
+
+
+
+<a class="button " onclick="gui.exportDialog();">export</a>
+<a class="button " onclick="gui.importDialog();">import</a>
+<br/><br/>
+
+        
+
 
     </div>
 

@@ -214,18 +214,16 @@ CABLES.UI.GUI=function()
         $('#button_toggleTiming').bind("mousedown", function (event) { self.toggleTiming(); });
         $('#button_cycleRenderSize').bind("mousedown", function (event) { self.cycleRendererSize(); });
         $('.button_toggleSidebar').bind("mousedown", function (event) { self.toggleSideBar(); });
-        $('.button_export').bind("mousedown", function (event) { self.exportDialog(); });
-        $('.button_import').bind("mousedown", function (event) { self.importDialog(); });
         $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
         $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
-        $('.button_clearPatch').bind("mousedown", function (event) { self.scene().clear(); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
+        $('#button_settings').bind("click", function (event) { self.patch().showProjectParams(); });
+        
+
         $('#help').bind("click", function (event) { self.showHelp(); });
 
 
-        $('.button_saveLocalStorage').bind("mousedown", function (event) { localStorage['cables']=self.scene().serialize(); });
-        $('.button_loadLocalStorage').bind("mousedown", function (event) { self.scene().clear();self.scene().deSerialize(localStorage['cables']); });
-        
+
         
         window.addEventListener( 'resize', self.setLayout, false );
 
