@@ -1879,11 +1879,11 @@ var line;
 
                 $('#portanim_in_'+index).on('click',function(e)
                 {
-
                     if( $('#portanim_in_'+index).hasClass('timingbutton_active') )
                     {
                         var val=self.timeLine.deleteAnim(op.portsIn[index].anim);
                         op.portsIn[index].setAnimated(false);
+                        op.portsIn[index].anim=null;
                         $('#portanim_in_'+index).removeClass('timingbutton_active');
                         $('#portval_'+index).val(val);
                         $('#portval_'+index).trigger('input');

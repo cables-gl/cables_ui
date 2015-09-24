@@ -357,6 +357,8 @@ CABLES.TL.Anim=function(cfg)
 
         if(!found)
         {
+            console.log('not found');
+                    
             this.keys.push(new CABLES.TL.Key({time:time,value:value,e:this.defaultEasing})) ;
         }
 
@@ -394,7 +396,7 @@ CABLES.TL.Anim=function(cfg)
         if(time<this.keys[0].time)return this.keys[0].value;
 
         
-        if(this.loop && time>=this.keys[this.keys.length-1].time)
+        if(this.loop && time>this.keys[this.keys.length-1].time)
         {
             time=(time-this.keys[0].time)%(this.keys[this.keys.length-1].time-this.keys[0].time);
             time+=this.keys[0].time;

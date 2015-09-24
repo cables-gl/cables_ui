@@ -802,7 +802,6 @@ CABLES.TL.UI.TimeLineUI=function()
         return this.getTimeLeft()+viewBox.w/CABLES.TL.TIMESCALE;
     };
 
-
     this.toggleLoop=function()
     {
         anim.loop=!anim.loop;
