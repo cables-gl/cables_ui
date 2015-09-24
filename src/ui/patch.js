@@ -1879,18 +1879,25 @@ var line;
 
                 $('#portanim_in_'+index).on('click',function(e)
                 {
+
                     if( $('#portanim_in_'+index).hasClass('timingbutton_active') )
                     {
-                        self.timeLine.deleteAnim(op.portsIn[index].anim);
+                        var val=self.timeLine.deleteAnim(op.portsIn[index].anim);
+                        op.portsIn[index].setAnimated(false);
                         $('#portanim_in_'+index).removeClass('timingbutton_active');
+                        $('#portval_'+index).val(val);
+                        $('#portval_'+index).trigger('input');
+                        $('#portval_'+index).focus();
                         return;
                     }
 
                     $('#portanim_in_'+index).addClass('timingbutton_active');
+                    
 
                     op.portsIn[index].toggleAnim();
                     self.timeLine.setAnim(op.portsIn[index].anim,{name:op.portsIn[index].name,defaultValue:parseFloat( $('#portval_'+index).val())} );
-                    self.showOpParams(op);
+                    // self.showOpParams(op);
+
                 });
             })(ipi);
         }

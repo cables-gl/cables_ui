@@ -452,6 +452,8 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.deleteAnim=function(an)
     {
+        var val=an.getValue(cursorTime);
+
         an.stayInTimeline=false;
         
         for(var i in anims)
@@ -462,11 +464,12 @@ CABLES.TL.UI.TimeLineUI=function()
                 anims[i].keyLine.hide();
                 an.clear();
                 anims=anims.slice(i,1);
-                return;
+                updateKeyLine();
+                return val;
             }
         }
-        updateKeyLine();
-
+        
+        return 0;
     };
 
     this.setAnim=function(newanim,config)
@@ -635,7 +638,6 @@ CABLES.TL.UI.TimeLineUI=function()
         gui.scene().timer.setOffset(off);
         self.updateTime();
         if(!self.isCursorVisible())self.centerCursor();
-
     };
 
     this.gotoZero=function()
@@ -668,11 +670,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.jumpKey=function(dir)
     {
-        
-        console.log('dir',dir);
-
-
-var theKey=null;
+        var theKey=null;
 
         for(var anii in anims)
         {
@@ -699,7 +697,6 @@ var theKey=null;
 
             if(theKey.time>this.getTimeRight() || theKey.time<this.getTimeLeft()) this.centerCursor();
         }
-
     };
 
     $('#timeline').keyup(function(e)
