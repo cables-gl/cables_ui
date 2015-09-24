@@ -99,7 +99,6 @@ function UiLink(port1, port2)
                 "stroke": getPortColor(self.p1.thePort ),
                 "stroke-width": 2,
                 "fill": uiConfig.colorBackground,
-
             });
 
             addCircle.hover(function (e)

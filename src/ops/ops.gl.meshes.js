@@ -176,6 +176,12 @@ Ops.Gl.Meshes.Circle = function()
     this.innerRadius=this.addInPort(new Port(this,"innerRadius",OP_PORT_TYPE_VALUE,{display:"range"}));
     this.percent=this.addInPort(new Port(this,"percent"));
 
+    this.steps=this.addInPort(new Port(this,"steps",OP_PORT_TYPE_VALUE,{type:"int"}));
+    this.steps.val=0.0;
+    this.invertSteps=this.addInPort(new Port(this,"invertSteps",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.invertSteps.val=false;
+
+
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     this.render.onTriggered=function()
@@ -184,7 +190,7 @@ Ops.Gl.Meshes.Circle = function()
         self.trigger.trigger();
     };
 
-    this.segments.val=20;
+    this.segments.val=40;
     this.radius.val=1;
     this.innerRadius.val=0;
     this.percent.val=1;
@@ -235,8 +241,11 @@ Ops.Gl.Meshes.Circle = function()
         else
         {
           
+          var count=0;
           for (i=0; i <= self.segments.val*self.percent.val; i++)
           {
+              count++;
+
               degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
               posx=Math.cos(degInRad)*self.radius.val;
               posy=Math.sin(degInRad)*self.radius.val;
@@ -250,20 +259,28 @@ Ops.Gl.Meshes.Circle = function()
               var posxTexCoordIn=(Math.cos(degInRad)+1.0)/2*self.innerRadius.val;
               var posyTexCoordIn=(Math.sin(degInRad)+1.0)/2*self.innerRadius.val;
 
-              geom.addFace(
-                          [posx,posy,0],
-                          [oldPosX,oldPosY,0],
-                          [posxIn,posyIn,0]
-                          );
+              // if(count%5!==0)
+              if(self.steps.val===0.0 ||
+                (count%parseInt(self.steps.val,10)===0 && !self.invertSteps.val) ||
+                (count%parseInt(self.steps.val,10)!==0 && self.invertSteps.val)
+                )
 
-              geom.addFace(
-                          [posxIn,posyIn,0],
-                          [oldPosX,oldPosY,0],
-                          [oldPosXIn,oldPosYIn,0]
-                          );
+              {
+                  geom.addFace(
+                              [posx,posy,0],
+                              [oldPosX,oldPosY,0],
+                              [posxIn,posyIn,0]
+                              );
 
-              geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,posxTexCoordIn,posyTexCoordIn);
-              geom.texCoords.push(posxTexCoordIn,posyTexCoordIn,oldPosXTexCoord,oldPosYTexCoord,oldPosXTexCoordIn,oldPosYTexCoordIn);
+                  geom.addFace(
+                              [posxIn,posyIn,0],
+                              [oldPosX,oldPosY,0],
+                              [oldPosXIn,oldPosYIn,0]
+                              );
+
+                  geom.texCoords.push(posxTexCoord,posyTexCoord,oldPosXTexCoord,oldPosYTexCoord,posxTexCoordIn,posyTexCoordIn);
+                  geom.texCoords.push(posxTexCoordIn,posyTexCoordIn,oldPosXTexCoord,oldPosYTexCoord,oldPosXTexCoordIn,oldPosYTexCoordIn);
+              }
 
               oldPosXTexCoordIn=posxTexCoordIn;
               oldPosYTexCoordIn=posyTexCoordIn;
@@ -276,8 +293,8 @@ Ops.Gl.Meshes.Circle = function()
 
               oldPosXIn=posxIn;
               oldPosYIn=posyIn;
+            }
 
-          }
 
         }
 
@@ -288,6 +305,8 @@ Ops.Gl.Meshes.Circle = function()
     this.radius.onValueChanged=calc;
     this.innerRadius.onValueChanged=calc;
     this.percent.onValueChanged=calc;
+    this.steps.onValueChanged=calc;
+    this.invertSteps.onValueChanged=calc;
     calc();
 };
 

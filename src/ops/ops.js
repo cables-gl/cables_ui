@@ -322,7 +322,7 @@ Ops.IfBetweenThen = function()
 
     this.exe.onTriggered=function()
     {
-        if(self.number.val>self.min.val && self.number.val<self.max.val)
+        if(self.number.val>=self.min.val && self.number.val<self.max.val)
         {
             self.triggerThen.trigger();
         }
