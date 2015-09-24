@@ -1431,7 +1431,6 @@ var line;
             CABLES.UI.OPSELECT.linkNewOpToOp=null;
             CABLES.UI.OPSELECT.linkNewLink=null;
             CABLES.UI.OPSELECT.linkNewOpToPort=null;
-
             CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 
             setTimeout(function(){

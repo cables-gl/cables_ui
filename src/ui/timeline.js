@@ -465,7 +465,7 @@ CABLES.TL.UI.TimeLineUI=function()
             enabled=false;
             return;
         }
-        
+
         newanim.paper=paper;
         anim=newanim;
         enabled=true;
@@ -476,7 +476,7 @@ CABLES.TL.UI.TimeLineUI=function()
             else $('#timelineTitle').html('');
 
 
-        if(config && config.hasOwnProperty('defaultValue') )
+        if(config && config.hasOwnProperty('defaultValue') && anim.keys.length==0)
         {
             anim.keys.push(new CABLES.TL.Key({time:cursorTime,value:config.defaultValue}) );
             this.centerCursor();
@@ -490,7 +490,7 @@ CABLES.TL.UI.TimeLineUI=function()
             anim.keys[i].updateCircle();
         }
 
-        if(anim.keys.length>1)
+        if(anim.keys.length>1 || anims.length>0)
         {
             self.scaleWidth();
         }
@@ -553,8 +553,15 @@ CABLES.TL.UI.TimeLineUI=function()
         {
             var str=null;
             var ani=anims[anii];
-            if(ani && ani.keys.length>0)
+
+            if(ani && ani.keys.length===0)
             {
+                ani.keyLine.hide();
+            }
+            else
+            if(ani )
+            {
+                ani.keyLine.show();
                 ani.sortKeys();
 
                 var numSteps=300;
@@ -809,7 +816,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         CABLES.TL.TIMESCALE=viewBox.w/(maxt-mint)*0.9;
         viewBox.x=mint*CABLES.TL.TIMESCALE-(maxt-mint)*0.05*CABLES.TL.TIMESCALE;
-        console.log('CABLES.TL.TIMESCALE ',CABLES.TL.TIMESCALE);
+        console.log('CABLES.TL.TIMESCALE ',mint,maxt,count);
 
 
         self.updateViewBox();
@@ -910,7 +917,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $(".timeLineInsert").bind("click", function (e)
     {
-        anim.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:2.0}) );
+        anim.keys.push(new CABLES.TL.Key({paper:paper,time:cursorTime,value:anim.getValue(cursorTime)}) );
         updateKeyLine();
     });
 
@@ -1064,12 +1071,7 @@ CABLES.TL.UI.TimeLineUI=function()
         // console.log('cursorOffset',cursorOffset);
         // console.log('addOffset',cursorTime*CABLES.TL.TIMESCALE);
 
-
         CABLES.TL.TIMESCALE=v;
-
-        console.log('CABLES.TL.TIMESCALE',CABLES.TL.TIMESCALE);
-        
-
 
         viewBox.x=cursorOffset*CABLES.TL.TIMESCALE;
 
