@@ -121,7 +121,6 @@ CABLES.TL.Key.prototype.initUI=function()
 
     var discattr = {fill: uiConfig.colorKey, stroke: "none"};
 
-
     if(this.circle)
     {
         this.removeUi();
@@ -171,15 +170,20 @@ CABLES.TL.Key.prototype.initUI=function()
 
         self.isDragging=true;
         var newPos=gui.timeLine().getCanvasCoordsMouse(e);
-        if(newPos.x<0)newPos.x=0;
+        if(newPos.x<0)
+        {
+            newPos.x=0;
+        }
 
         var time=gui.timeLine().getTimeFromPaper(newPos.x);
         var frame=parseInt( (time +0.5*1/gui.timeLine().getFPS() )*gui.timeLine().getFPS(),10);
         time=frame/gui.timeLine().getFPS();
+        
 
         if(CABLES.TL.MoveMode===0)
         {
-            self.set({time:time,value:self.value});
+        self.set({time:time,value:self.value});
+
             self.updateCircle();
         }
         if(CABLES.TL.MoveMode==1)
@@ -740,6 +744,14 @@ CABLES.TL.UI.TimeLineUI=function()
                 if(e.metaKey || e.ctrlKey) self.selectAllKeys();
             break;
 
+
+            case 68: // d
+                
+                console.log('anim.keys',anim.keys);
+                        
+
+            break;
+
             case 90: // z undo
                 if(e.metaKey || e.ctrlKey)
                 {
@@ -763,7 +775,7 @@ CABLES.TL.UI.TimeLineUI=function()
             break;
 
             default:
-                // console.log('key ',e.which);
+                console.log('key ',e.which);
             break;
         }
     });

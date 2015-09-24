@@ -75,11 +75,11 @@ CABLES.TL.Key=function(obj)
                 updateBezier=true;
             }
 
-            if(obj.t)this.time=obj.t;
-                else if(obj.time) this.time=obj.time;
-    
-            if(obj.v)this.value=obj.v;
-                else if(obj.value) this.value=obj.value;
+            if(obj.hasOwnProperty('t'))this.time=obj.t;
+            if(obj.hasOwnProperty('time')) this.time=obj.time;
+
+            if(obj.hasOwnProperty('v')) this.value=obj.v;
+                else if(obj.hasOwnProperty('value')) this.value=obj.value;
         }
         if(this.onChange!==null)this.onChange();
 
