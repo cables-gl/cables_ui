@@ -452,6 +452,8 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.setAnim=function(newanim,config)
     {
+        if(newanim && newanim!=tlEmpty)gui.showTiming();
+
         removeDots();
 
         if(!newanim || newanim===null)

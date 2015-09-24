@@ -32,7 +32,7 @@ CABLES.UI.GUI=function()
 {
     var self=this;
     var rendererSize=0;
-    var showTiming=true;
+    var showTiming=false;
     var _scene=new Scene();
     var _patch=null;
 
@@ -93,9 +93,13 @@ CABLES.UI.GUI=function()
             $('#timeline svg').css('height',timingHeight-timedisplayheight);
             $('#timeline svg').css('margin-top',timelineUiHeight+timedisplayheight);
             $('#timeline svg').show();
+            $('#timetimeline').show();
+            $('#keycontrols').show();
         }
         else
         {
+            $('#keycontrols').hide();
+            $('#timetimeline').hide();
             $('#timeline svg').hide();
             $('#timing').css('height',timelineUiHeight);
         }
@@ -154,6 +158,12 @@ CABLES.UI.GUI=function()
         rendererSize++;
         if(rendererSize>uiConfig.rendererSizes.length-1)rendererSize=0;
 
+        self.setLayout();
+    };
+
+    this.showTiming=function()
+    {
+        showTiming=true;
         self.setLayout();
     };
 

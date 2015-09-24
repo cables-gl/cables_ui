@@ -6,26 +6,28 @@
         <a id="button_toggleTiming" class="button">timing</a>
 
         <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
-        <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
         <a class="button fa fa-step-backward" onclick="gui.timeLine().gotoZero();"></a>
         <a class="button fa fa-backward" onclick="gui.timeLine().gotoOffset(-2);"></a>
         <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
         <a class="button fa fa-forward" onclick="gui.timeLine().gotoOffset(2);"></a>
+        
 
-        <input type ="range" min="20" max="2000" value="" step ="1" oninput="gui.timeLine().setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
+        <div id="keycontrols">
+            <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
-
-        <a id="keymovemode" class="button fa fa-arrows tt" data-tt="key move mode" ></a>
-        <a id="keyscaleheight" class="button fa fa-ellipsis-v tt" data-tt="scale value display"></a>
-        <a id="keyscalewidth" class="button fa fa-ellipsis-h tt" data-tt="show all keys"></a>
-
-        <a id="centercursor" class="button fa fa-i-cursor tt" data-tt="scroll to cursor"></a>
-
-        <a id="loop" class="button fa fa-retweet tt" data-tt="toggle loop"></a>
+            <input type ="range" min="20" max="2000" value="" step ="1" oninput="gui.timeLine().setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
 
 
-<a onclick="$('.easingselect').toggle();" class="button">ease</a>
+            <a id="keymovemode" class="button fa fa-arrows tt" data-tt="key move mode" ></a>
+            <a id="keyscaleheight" class="button fa fa-ellipsis-v tt" data-tt="scale value display"></a>
+            <a id="keyscalewidth" class="button fa fa-ellipsis-h tt" data-tt="show all keys"></a>
+
+            <a id="centercursor" class="button fa fa-i-cursor tt" data-tt="scroll to cursor"></a>
+
+            <a id="loop" class="button fa fa-retweet tt" data-tt="toggle loop"></a>
+            <a onclick="$('.easingselect').toggle();" class="button">ease</a>
+        </div>
 
 
 
