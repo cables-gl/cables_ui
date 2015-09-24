@@ -22,7 +22,6 @@ CABLES.UI.showPreview=function(opid,which,onoff)
         return;
     }
 
-
     port.doShowPreview(onoff);
     if(!onoff)CGL.Texture.previewTexture=null;
 };
@@ -51,6 +50,9 @@ CABLES.UI.togglePortValBool=function(which,checkbox)
 
 CABLES.UI.inputIncrement=function(v,dir)
 {
+    if(v=='true') return 'false';
+    if(v=='false') return 'true';
+
     var val=parseFloat(v);
     var add=1;
     if(Math.abs(val)<2) add=0.1;

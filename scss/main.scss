@@ -112,6 +112,11 @@ input
     color:#fff;
     border:none;
 
+    &.invalid
+    {
+        border:1px solid red
+    }
+
 }
 
 input[type="text"]

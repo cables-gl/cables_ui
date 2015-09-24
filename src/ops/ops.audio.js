@@ -41,7 +41,7 @@ Ops.WebAudio.AudioPlayer = function()
     Op.apply(this, arguments);
     this.name='AudioPlayer';
 
-    this.file=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE));
+    this.file=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',filter:'mp3' }));
     this.volume=this.addInPort(new Port(this,"volume",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.volume.val=1.0;
 

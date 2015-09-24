@@ -538,7 +538,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
         console.log('show preview!');
     };
-    
+
     this.textureOpacity.onValueChanged=function()
     {
         if(self.textureOpacity.val)
@@ -562,7 +562,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.colorizeTexture.val=false;
     this.colorizeTexture.onValueChanged=function()
     {
-        if(self.colorizeTexture.val=='true')
+        if(self.colorizeTexture.val==true)
             shader.define('COLORIZE_TEXTURE');
         else
             shader.removeDefine('COLORIZE_TEXTURE');

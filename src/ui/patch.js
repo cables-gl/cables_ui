@@ -1317,12 +1317,27 @@ var line;
             {
                 uiOp.addPort(p.direction,p);
                 uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+
+
             };
 
             for(var i in op.portsIn)
             {
-                if(!op.portsIn[i].uiAttribs || op.portsIn[i].uiAttribs.display!='readonly')
-                    uiOp.addPort(PORT_DIR_IN,op.portsIn[i]);
+                var p=op.portsIn[i];
+
+                if(!p.uiAttribs )p.uiAttribs={};
+
+                if(p.uiAttribs.display!='readonly')
+                    uiOp.addPort(PORT_DIR_IN,p);
+
+        
+                if(p.uiAttribs.hasOwnProperty('display'))
+                {
+                    if(p.uiAttribs.display=='dropdown') p.uiAttribs.type='string';
+                    if(p.uiAttribs.display=='file') p.uiAttribs.type='string';
+                    if(p.uiAttribs.display=='bool') p.uiAttribs.type='bool';
+                }
+
             }
 
             for(var i2 in op.portsOut)
@@ -1340,6 +1355,7 @@ var line;
                 if(CABLES.UI.OPSELECT.newOpPos.y===0 && CABLES.UI.OPSELECT.newOpPos.x===0) op.uiAttribs.translate={x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2};
                     else op.uiAttribs.translate={x:CABLES.UI.OPSELECT.newOpPos.x,y:CABLES.UI.OPSELECT.newOpPos.y};
             }
+
 
             if(op.uiAttribs.hasOwnProperty('translate'))
             {
@@ -1891,17 +1907,30 @@ var line;
                 {
                     var v=''+$('#portval_'+index).val();
 
-                    if( op.portsIn[index].uiAttribs)
+                    if(!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type=='number')
                     {
-                        if(op.portsIn[index].uiAttribs.hasOwnProperty('display'))
+                        if(isNaN(v) || v==='' )
                         {
-                            if(op.portsIn[index].uiAttribs.display=='bool')
-                            {
-                                if(v=='true')v=true;
-                                else v=false;
-                            }
+                            $('#portval_'+index).addClass('invalid');
+                            return;
                         }
-                   }
+                        else
+                        {
+                            $('#portval_'+index).removeClass('invalid');
+                        }
+                    }
+
+                    if(op.portsIn[index].uiAttribs.display=='bool')
+                    {
+                        if(v!='true' && v!='false' )
+                        {
+                            v=false;
+                            $('#portval_'+index).val('false');
+                        }
+                        if(v=='true')v=true;
+                        else v=false;
+                    }
+
                             
                     op.portsIn[index].val=v;
                     // self.showOpParams(op);

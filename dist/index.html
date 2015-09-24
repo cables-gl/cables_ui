@@ -494,7 +494,7 @@
 
 
                         <span id="portcheckbox_{{ portnum }}" class="button fa {{#compare port.val '==' true }}fa-check-square-o{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:10px;padding-right:10px;"></span>
-                        <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:70px;display:inline;"/>
+                        <input class="value" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="width:70px;display:inline;"/>
 
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'range' }}
