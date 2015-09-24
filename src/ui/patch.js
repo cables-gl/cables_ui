@@ -852,6 +852,7 @@ var line;
                         CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
                         self.setSelectedOp(null);
 
+
                         gui.patch().scene.deSerialize(json);
 
                         return;
@@ -1433,9 +1434,12 @@ var line;
 
             CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 
-            gui.patch().showOpParams(op);
-            gui.patch().setSelectedOp(null);
-            gui.patch().setSelectedOp(uiOp);
+            setTimeout(function(){
+                gui.patch().setSelectedOp(null);
+                gui.patch().setSelectedOp(uiOp);
+                gui.patch().showOpParams(op);
+
+            },30);
             uiOp.wasAdded=true;
         }
 
