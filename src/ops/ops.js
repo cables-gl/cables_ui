@@ -292,7 +292,7 @@ Ops.IfTrueThen = function()
 
     this.bool.onValueChanged=function()
     {
-        self.exe.onTriggered();
+        // self.exe.onTriggered();
     };
 
 };
@@ -672,5 +672,36 @@ Ops.LoadingStatus = function()
 
 Ops.LoadingStatus.prototype = new Op();
 
+// ---------------
 
+
+Ops.TriggerCounter = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='TriggerCounter';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.reset=this.addInPort(new Port(this,"reset",OP_PORT_TYPE_FUNCTION));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.num=this.addOutPort(new Port(this,"timesTriggered",OP_PORT_TYPE_VALUE));
+
+    var num=0;
+
+    this.exe.onTriggered= function()
+    {
+        num++;
+        self.num.val=num;
+        self.trigger.trigger();
+    };
+    this.reset.onTriggered= function()
+    {
+        num=0;
+        self.num.val=num;
+    };
+
+};
+
+Ops.TriggerCounter.prototype = new Op();
 

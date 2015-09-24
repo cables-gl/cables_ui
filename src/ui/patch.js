@@ -1934,7 +1934,20 @@ var line;
                             $('#portval_'+index).removeClass('invalid');
                         }
                     }
+                    if(op.portsIn[index].uiAttribs.type=='int')
+                    {
+                        if(isNaN(v) || v==='' )
+                        {
+                            $('#portval_'+index).addClass('invalid');
+                            return;
+                        }
+                        else
+                        {
+                            $('#portval_'+index).removeClass('invalid');
+                            v=parseInt(v,10);
+                        }
 
+                    }
                     if(op.portsIn[index].uiAttribs.display=='bool')
                     {
                         if(v!='true' && v!='false' )
