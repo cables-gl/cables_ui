@@ -668,18 +668,38 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.jumpKey=function(dir)
     {
-        if(!anim)return;
-        var index=anim.getKeyIndex(cursorTime);
-        var newIndex=parseInt(index,10)+parseInt(dir,10);
+        
+        console.log('dir',dir);
 
-        if(anim.keys.length>newIndex && newIndex>=0)
+
+var theKey=null;
+
+        for(var anii in anims)
         {
-            var time=anim.keys[newIndex].time;
-            gui.scene().timer.setTime(time);
+            var index=anims[anii].getKeyIndex(cursorTime);
+            var newIndex=parseInt(index,10)+parseInt(dir,10);
+
+            if(anims[anii].keys.length>newIndex && newIndex>=0)
+            {
+                var thetime=anims[anii].keys[newIndex].time;
+
+                if(!theKey)theKey=anims[anii].keys[newIndex];
+
+                if( Math.abs(cursorTime-thetime) < Math.abs(cursorTime-theKey.time) )
+                {
+                    theKey=anims[anii].keys[newIndex];
+                }
+            }
+        }
+
+        if(theKey)
+        {
+            gui.scene().timer.setTime(theKey.time);
             self.updateTime();
 
-            if(time>this.getTimeRight() || time<this.getTimeLeft()) this.centerCursor();
+            if(theKey.time>this.getTimeRight() || theKey.time<this.getTimeLeft()) this.centerCursor();
         }
+
     };
 
     $('#timeline').keyup(function(e)
