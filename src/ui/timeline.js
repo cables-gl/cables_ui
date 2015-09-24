@@ -450,6 +450,25 @@ CABLES.TL.UI.TimeLineUI=function()
 
     };
 
+    this.deleteAnim=function(an)
+    {
+        an.stayInTimeline=false;
+        
+        for(var i in anims)
+        {
+            if(anims[i] && anims[i]==an)
+            {
+                anims[i].removeUi();
+                anims[i].keyLine.hide();
+                an.clear();
+                anims=anims.slice(i,1);
+                return;
+            }
+        }
+        updateKeyLine();
+
+    };
+
     this.setAnim=function(newanim,config)
     {
         if(newanim && newanim!=tlEmpty)gui.showTiming();
@@ -829,6 +848,7 @@ CABLES.TL.UI.TimeLineUI=function()
         clearTimeout(delayedScaleHeight);
         delayedScaleHeight = setTimeout(self.scaleHeight, 150);
     };
+
 
     var lastScaleHeightMax=0;
     var lastScaleHeightMin=0;
