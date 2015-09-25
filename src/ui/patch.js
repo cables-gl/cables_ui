@@ -1070,21 +1070,28 @@ var line;
 
         function rubberBandHide()
         {
-            mouseRubberBandStartPos=null;
-            mouseRubberBandPos=null;
-            if(rubberBandRect)rubberBandRect.attr({
-                x:0,y:0,width:0,height:0,
-                "stroke-width": 0,
-                "fill-opacity": 0
-            });
+            if(!mouseRubberBandStartPos)
+            {
+                mouseRubberBandStartPos=null;
+                mouseRubberBandPos=null;
+                if(rubberBandRect)rubberBandRect.attr({
+                    x:0,y:0,width:0,height:0,
+                    "stroke-width": 0,
+                    "fill-opacity": 0
+                });
+
+            }
         }
 
         this.selectAllOps=function()
         {
             for(var i in self.ops)
             {
-                self.addSelectedOp(self.ops[i]);
-                self.ops[i].setSelected(true);
+                if(!self.ops[i].isHidden())
+                {
+                    self.addSelectedOp(self.ops[i]);
+                    self.ops[i].setSelected(true);
+                }
             }
         };
 
@@ -1251,8 +1258,9 @@ var line;
             {
                 for(var i in self.ops)
                 {
-                    if(self.ops[i].isDragging || self.ops[i].isMouseOver)
-                        return;
+                    if(!self.ops[i].isHidden)
+                        if(self.ops[i].isDragging || self.ops[i].isMouseOver)
+                            return;
                 }
 
                 rubberBandMove(e);
@@ -1445,7 +1453,7 @@ var line;
                     gui.patch().showOpParams(op);
 
                 },30);
-                
+
             }
             uiOp.wasAdded=true;
         }
