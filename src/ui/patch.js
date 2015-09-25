@@ -1437,12 +1437,16 @@ var line;
             CABLES.UI.OPSELECT.linkNewOpToPort=null;
             CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 
-            setTimeout(function(){
-                gui.patch().setSelectedOp(null);
-                gui.patch().setSelectedOp(uiOp);
-                gui.patch().showOpParams(op);
+            if(!isLoading)
+            {
+                setTimeout(function(){
+                    gui.patch().setSelectedOp(null);
+                    gui.patch().setSelectedOp(uiOp);
+                    gui.patch().showOpParams(op);
 
-            },30);
+                },30);
+                
+            }
             uiOp.wasAdded=true;
         }
 
