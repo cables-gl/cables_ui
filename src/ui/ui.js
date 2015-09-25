@@ -162,6 +162,11 @@ CABLES.UI.GUI=function()
         self.setLayout();
     };
 
+    this.isShowingTiming=function()
+    {
+        return showTiming;
+    };
+
     this.showTiming=function()
     {
         showTiming=true;
