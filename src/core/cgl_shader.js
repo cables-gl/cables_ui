@@ -92,6 +92,7 @@ CGL.Shader=function()
     var uniforms=[];
     var defines=[];
     var needsRecompile=true;
+    var infoLog='';
 
     this.define=function(name,value)
     {
@@ -302,6 +303,22 @@ CGL.Shader=function()
 
     createShader =function(str, type,_shader)
     {
+
+        function getBadLines(infoLog)
+        {
+            var basLines=[];
+            var lines=infoLog.split('\n');
+            for(var i in lines)
+            {
+                var divide=lines[i].split(':');
+
+                if(parseInt(divide[2],10))
+                    basLines.push(parseInt( divide[2],10) );
+            }
+            // console.log('lines ',lines.length);
+            return basLines;
+        }
+
         var shader = _shader || cgl.gl.createShader(type);
         cgl.gl.shaderSource(shader, str);
         cgl.gl.compileShader(shader);
@@ -314,16 +331,43 @@ CGL.Shader=function()
             
             console.warn( cgl.gl.getShaderInfoLog(shader) );
 
+
+            var infoLog=cgl.gl.getShaderInfoLog(shader);
+
+            var badLines=getBadLines(infoLog);
+
+            var htmlWarning='<div class="shaderErrorCode">';
             var lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
             for(var i in lines)
             {
                 var j=parseInt(i,10)+1;
-                console.log(j+': ',lines[i]);
+                var line=j+': '+lines[i];
+                console.log(line);
+
+                var isBadLine=false;
+                for(var bj in badLines) if(badLines[bj]==j) isBadLine=true;
+
+        
+                if(isBadLine) htmlWarning+='<span class="error">';
+                htmlWarning+=line;
+                if(isBadLine) htmlWarning+='</span>';
+                
             }
 
-            console.warn( cgl.gl.getShaderInfoLog(shader) );
+            
+            console.warn( infoLog );
 
-self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
+
+
+            infoLog=infoLog.replace(/\n/g,'<br/>');
+
+            htmlWarning=infoLog+'<br/>'+htmlWarning+'<br/><br/>';
+
+            CABLES.UI.MODAL.showError('shader error',htmlWarning);
+
+            htmlWarning+='</div>';
+
+            self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
 
         }
         return shader;
@@ -334,7 +378,9 @@ self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
         cgl.gl.linkProgram(program);
         if (!cgl.gl.getProgramParameter(program, cgl.gl.LINK_STATUS))
         {
-            throw cgl.gl.getProgramInfoLog(program);
+            self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
+
+        //     // throw cgl.gl.getProgramInfoLog(program);
         }
 
     };

@@ -832,6 +832,24 @@ input[type=range]:focus {
 
 
 
+.shaderErrorCode
+{
+    font-family: monospace;
+    white-space: pre;
+    background-color: #222;
+    padding:10px;
+    max-height: 600px;
+    overflow: auto;
+    user-select:text;
+    -webkit-user-select: text;  /* Chrome all / Safari all */
+    -moz-user-select: text;     /* Firefox all */
+    -ms-user-select: text;      /* IE 10+ */
 
+
+    .error
+    {
+        color:#ea6638;
+    }
+}
 
 

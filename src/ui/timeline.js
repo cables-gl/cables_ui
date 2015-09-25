@@ -170,15 +170,12 @@ CABLES.TL.Key.prototype.initUI=function()
 
         self.isDragging=true;
         var newPos=gui.timeLine().getCanvasCoordsMouse(e);
-        if(newPos.x<0)
-        {
-            newPos.x=0;
-        }
+        
+        if(newPos.x<0) newPos.x=0;
 
         var time=gui.timeLine().getTimeFromPaper(newPos.x);
         var frame=parseInt( (time +0.5*1/gui.timeLine().getFPS() )*gui.timeLine().getFPS(),10);
         time=frame/gui.timeLine().getFPS();
-        
 
         if(CABLES.TL.MoveMode===0)
         {
@@ -200,20 +197,16 @@ CABLES.TL.Key.prototype.initUI=function()
 
     function up()
     {
-
-        // var undofunc=function(anim)
-        // {
-            CABLES.undo.add({
-                undo: function()
-                {
-                    self.set(oldValues);
-                    gui.timeLine().refresh();
-                },
-                redo: function()
-                {
-                }
-            });
-        // }(self);
+        CABLES.undo.add({
+            undo: function()
+            {
+                self.set(oldValues);
+                gui.timeLine().refresh();
+            },
+            redo: function()
+            {
+            }
+        });
 
         self.isDragging=false;
         self.x=-1;
