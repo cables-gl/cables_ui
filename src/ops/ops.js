@@ -520,7 +520,7 @@ Ops.TimedSequence = function()
 
     var triggers=[];
 
-    for(var i=0;i<10;i++)
+    for(var i=0;i<30;i++)
     {
         triggers.push( this.addOutPort(new Port(this,"trigger "+i,OP_PORT_TYPE_FUNCTION)) );
     }
