@@ -568,7 +568,8 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function updateKeyLine()
     {
-        if(!gui.isShowingTiming())return;
+        if(!CGL.finishedLoading())return;
+
         for(var anii in anims)
         {
             var str=null;
@@ -830,9 +831,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.scaleWidth=function()
     {
-        if(!gui.isShowingTiming())return;
-        console.log('gui.isShowingTiming()',gui.isShowingTiming());
-        
+        if(!CGL.finishedLoading())return;
 
         var maxt=-99999;
         var mint=99999999;
