@@ -81,12 +81,14 @@ Ops.WebAudio.AudioPlayer = function()
 
         self.audio.src = self.file.val;
 
-        self.audio.addEventListener('canplaythrough', function()
+        var onReady=function()
         {
-            self.audio.removeEventListener('canplaythrough');
             console.log('audio loaded!');
             CGL.decrementLoadingAssets();
-        }, false);
+            self.audio.removeEventListener('canplaythrough',onReady, false);
+        };
+
+        self.audio.addEventListener('canplaythrough',onReady, false);
 
         self.media = audioContext.createMediaElementSource(self.audio);
         self.patch.timer.onPlayPause(playPause);
