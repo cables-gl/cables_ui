@@ -118,6 +118,42 @@ Ops.Value.prototype = new Op();
 // ---------------------------------------------------------------------------
 
 
+Ops.ColorValue = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    this.name='ColorValue';
+
+this.g=this.addInPort(new Port(this,"ignore",OP_PORT_TYPE_FUNCTION,{display:'readonly'}));
+    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
+    this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
+    this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
+
+    this.outR=this.addOutPort(new Port(this,"outr",OP_PORT_TYPE_VALUE));
+    this.outG=this.addOutPort(new Port(this,"outg",OP_PORT_TYPE_VALUE));
+    this.outB=this.addOutPort(new Port(this,"outb",OP_PORT_TYPE_VALUE));
+    this.outA=this.addOutPort(new Port(this,"outa",OP_PORT_TYPE_VALUE));
+
+    var exec=function()
+    {
+        self.outR.val=self.r.val;
+        self.outG.val=self.g.val;
+        self.outB.val=self.b.val;
+        self.outA.val=self.a.val;
+    };
+
+    this.r.onValueChanged=exec;
+    this.g.onValueChanged=exec;
+    this.b.onValueChanged=exec;
+    this.a.onValueChanged=exec;
+};
+
+Ops.ColorValue.prototype = new Op();
+
+// ---------------------------------------------------------------------------
+
+
 
 Ops.TimeLineTime = function()
 {
@@ -165,6 +201,39 @@ Ops.TimeLineDelay = function()
 
 };
 Ops.TimeLineDelay.prototype = new Op();
+
+
+
+// ---------------------------------------------------------------------------
+
+Ops.TimeLineDelayFrames = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='TimeLineDelayFrames';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+
+    this.theTime=this.addOutPort(new Port(this,"time"));
+    this.delay=this.addInPort(new Port(this,"delay"));
+    this.delay.val=0.0;
+    
+    this.fps=this.addInPort(new Port(this,"fps"));
+    this.fps.val=30.0;
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.exe.onTriggered=function()
+    {
+        self.patch.timer.setDelay(self.delay.val/self.fps.val);
+        self.theTime.val=self.patch.timer.getTime();
+        self.trigger.trigger();
+        self.patch.timer.setDelay(0);
+
+    };
+
+};
+Ops.TimeLineDelayFrames.prototype = new Op();
 
 
 // ---------------------------------------------------------------------------

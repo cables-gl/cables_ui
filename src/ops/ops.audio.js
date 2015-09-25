@@ -19,6 +19,7 @@ Ops.WebAudio.Output = function()
 
     this.audioIn.onValueChanged = function()
     {
+        if(!self.audioIn.val)return;
         console.log(self.audioIn.val);
         if (self.audioIn.val === null) {
             if (self.oldAudioIn !== null) {
