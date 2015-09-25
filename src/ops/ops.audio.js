@@ -83,6 +83,7 @@ Ops.WebAudio.AudioPlayer = function()
 
         self.audio.addEventListener('canplaythrough', function()
         {
+            self.audio.removeEventListener('canplaythrough');
             console.log('audio loaded!');
             CGL.decrementLoadingAssets();
         }, false);
