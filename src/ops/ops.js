@@ -541,19 +541,39 @@ Ops.TimedSequence = function()
             }
         }
 
+
+
+
+
+        if(self.patch.gui && self.ignoreInSubPatch.val )
+        {
+            for(var i in triggers)
+            {
+                        
+                for(var spl in triggers[i].links)
+                {
+                    if(triggers[i].links[spl])
+                    {
+                        if(triggers[i].links[spl].portIn.parent.patchId)
+                        {
+                            if(gui.patch().getCurrentSubPatch() == triggers[i].links[spl].portIn.parent.patchId.val)
+                            {
+                                self.patch.timer.overwriteTime=-1;
+                                triggers[i].trigger();
+                                return;
+                            }
+                            // console.log(triggers[i].links[spl].portIn.parent.patchId.val);
+                        }
+                    }
+                }
+            }
+        }
+
+
+
         var outIndex=Math.round(self.current.val-0.5);
         if(outIndex>=0 && outIndex<triggers.length)
         {
-            if(self.patch.gui && self.ignoreInSubPatch.val )
-            {
-
-                
-                        console.log('',triggers[outIndex]);
-                        
-
-
-            }
-
             triggers[outIndex].trigger();
         }
 
