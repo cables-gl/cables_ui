@@ -34,6 +34,7 @@ CABLES.UI.GUI=function()
     var rendererSize=0;
     var showTiming=false;
     var _scene=new Scene();
+    _scene.gui=true;
     var _patch=null;
 
     this.timeLine=function()
@@ -377,6 +378,7 @@ CABLES.UI.GUI=function()
     this.init=function()
     {
         _patch=new CABLES.UI.Patch(this);
+
         _patch.show(_scene);
 
         initRouting();

@@ -245,12 +245,12 @@ Ops.TimeLineOverwrite = function()
 
     this.name='TimeLineOverwrite';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-
-    this.theTime=this.addOutPort(new Port(this,"time"));
     this.newTime=this.addInPort(new Port(this,"new time"));
-    this.newTime.val=0.0;
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.theTime=this.addOutPort(new Port(this,"time"));
+    this.newTime.val=0.0;
+
 
     var realTime=0;
     this.exe.onTriggered=function()
@@ -510,7 +510,8 @@ Ops.TimedSequence = function()
 
     this.overwriteTime=this.addInPort(new Port(this,"overwriteTime",OP_PORT_TYPE_VALUE,{ display:'bool' }));
     this.overwriteTime.val=false;
-
+    this.ignoreInSubPatch=this.addInPort(new Port(this,"ignoreInSubPatch",OP_PORT_TYPE_VALUE,{display:"bool"}));
+    this.ignoreInSubPatch.val=false;
 
     this.triggerAlways=this.addOutPort(new Port(this,"triggerAlways",OP_PORT_TYPE_FUNCTION));
     this.currentKeyTime=this.addOutPort(new Port(this,"currentKeyTime",OP_PORT_TYPE_VALUE));
@@ -528,27 +529,32 @@ Ops.TimedSequence = function()
     {
         if(self.current.anim)
         {
-
-
             var time=self.current.parent.patch.timer.getTime();
             self.currentKeyTime.val=time-self.current.anim.getKey(time).time;
 
             if(self.current.isAnimated())
             {
-
                 if(self.overwriteTime.val)
                 {
-                    self.current.patch.timer.overwriteTime=self.newTime.val;  // todo  why current ? why  not self ?
-                    self.current.trigger.trigger();
+                    self.current.parent.patch.timer.overwriteTime=self.currentKeyTime.val;  // todo  why current ? why  not self ?
                 }
             }
-
         }
 
-        var i=Math.round(self.current.val-0.5);
-        if(i>=0 && i<triggers.length)
+        var outIndex=Math.round(self.current.val-0.5);
+        if(outIndex>=0 && outIndex<triggers.length)
         {
-            triggers[i].trigger();
+            if(self.patch.gui && self.ignoreInSubPatch.val )
+            {
+
+                
+                        console.log('',triggers[outIndex]);
+                        
+
+
+            }
+
+            triggers[outIndex].trigger();
         }
 
         self.patch.timer.overwriteTime=-1;

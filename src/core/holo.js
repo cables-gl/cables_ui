@@ -488,6 +488,7 @@ var Scene = function()
     this.settings={};
     this.timer=new Timer();
     this.animFrameOps=[];
+    this.gui=false;
 
     this.onLoadStart=null;
     this.onLoadEnd=null;
