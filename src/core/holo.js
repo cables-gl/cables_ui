@@ -657,6 +657,7 @@ var Scene = function()
     {
         if(this.onLoadStart)this.onLoadStart();
 
+
         if (typeof obj === "string") obj=JSON.parse(obj);
         var self=this;
 

@@ -778,6 +778,10 @@ var line;
         var isLoading=false;
 
 
+        this.isLoading=function()
+        {
+            return isLoading;
+        };
 
         this.paste=function(e)
         {
