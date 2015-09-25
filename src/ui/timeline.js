@@ -831,6 +831,9 @@ CABLES.TL.UI.TimeLineUI=function()
     this.scaleWidth=function()
     {
         if(!gui.isShowingTiming())return;
+        console.log('gui.isShowingTiming()',gui.isShowingTiming());
+        
+
         var maxt=-99999;
         var mint=99999999;
 
