@@ -951,11 +951,6 @@ Ops.Gl.Render2Texture = function()
     this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.texDepth=this.addOutPort(new Port(this,"textureDepth",OP_PORT_TYPE_TEXTURE));
 
-    this.width.val=1920;
-    this.height.val=1080;
-
-    texture.setSize(this.width.val,this.height.val);
-    textureDepth.setSize(this.width.val,this.height.val);
 
     frameBuf = cgl.gl.createFramebuffer();
     cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
@@ -983,6 +978,18 @@ Ops.Gl.Render2Texture = function()
 
     self.tex.val=texture;
     self.texDepth.val=textureDepth;
+
+    function resize()
+    {
+        texture.setSize(self.width.val,self.height.val);
+        textureDepth.setSize(self.width.val,self.height.val);
+    }
+
+    this.width.onValueChanged=resize;
+    this.height.onValueChanged=resize;
+
+    this.width.val=1920;
+    this.height.val=1080;
 
 
     function render()
