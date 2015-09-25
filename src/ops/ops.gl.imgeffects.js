@@ -2010,8 +2010,8 @@ Ops.Gl.TextureEffects.FXAA = function()
 
     
     this.fxaa_span=this.addInPort(new Port(this,"span",OP_PORT_TYPE_VALUE,{display:'dropdown',values:[0,8,16,32,64]}));
-    this.fxaa_reduceMul=this.addInPort(new Port(this,"span",OP_PORT_TYPE_VALUE,{display:'range'}));
-    this.fxaa_reduceMin=this.addInPort(new Port(this,"span",OP_PORT_TYPE_VALUE,{display:'range'}));
+    this.fxaa_reduceMin=this.addInPort(new Port(this,"reduceMin",OP_PORT_TYPE_VALUE));
+    this.fxaa_reduceMul=this.addInPort(new Port(this,"reduceMul",OP_PORT_TYPE_VALUE));
 
     this.texWidth=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.texHeight=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
@@ -2029,6 +2029,12 @@ Ops.Gl.TextureEffects.FXAA = function()
         .endl()+'  uniform sampler2D tex;'
         .endl()+'#endif'
         .endl()+'    uniform float FXAA_SPAN_MAX;'
+
+        .endl()+'    uniform float FXAA_REDUCE_MUL;'
+        .endl()+'    uniform float FXAA_REDUCE_MIN;'
+
+        
+
         .endl()+'    uniform float width;'
         .endl()+'    uniform float height;'
 
@@ -2038,8 +2044,8 @@ Ops.Gl.TextureEffects.FXAA = function()
         .endl()+'    vec2 invtexsize=vec2(1.0/width,1.0/height);'
         .endl()+''
         
-        .endl()+'    float FXAA_REDUCE_MUL = 0.0;//1.0/8.0;'
-        .endl()+'    float FXAA_REDUCE_MIN = 0.0;//(1.0/128.0);'
+        // .endl()+'    float FXAA_REDUCE_MUL = 0.0;//1.0/8.0;'
+        // .endl()+'    float FXAA_REDUCE_MIN = 0.0;//(1.0/128.0);'
         .endl()+''
         .endl()+'    float step=1.0;'
         .endl()+''
@@ -2121,6 +2127,9 @@ Ops.Gl.TextureEffects.FXAA = function()
 
     var uniformSpan=new CGL.Uniform(shader,'f','FXAA_SPAN_MAX',0);
 
+    var uniformMul=new CGL.Uniform(shader,'f','FXAA_REDUCE_MUL',0);
+    var uniformMin=new CGL.Uniform(shader,'f','FXAA_REDUCE_MIN',0);
+
     this.fxaa_span.onValueChanged=function()
     {
         uniformSpan.setValue(parseInt(self.fxaa_span.val,10));
@@ -2137,7 +2146,24 @@ Ops.Gl.TextureEffects.FXAA = function()
 
     this.texWidth.onValueChanged=changeRes;
     this.texHeight.onValueChanged=changeRes;
+    
     this.fxaa_span.val=8;
+    this.texWidth.val=1920;
+    this.texHeight.val=1080;
+
+    this.fxaa_reduceMul.onValueChanged=function()
+    {
+        uniformMul.setValue(1.0/self.fxaa_reduceMul.val);
+    };
+
+    this.fxaa_reduceMin.onValueChanged=function()
+    {
+        uniformMin.setValue(1.0/self.fxaa_reduceMin.val);
+    };
+
+    this.fxaa_reduceMul.val=8;
+    this.fxaa_reduceMin.val=128;
+
 
 };
 
