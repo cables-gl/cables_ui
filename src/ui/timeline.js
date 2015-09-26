@@ -494,8 +494,7 @@ CABLES.TL.UI.TimeLineUI=function()
         if(config && config.name) $('#timelineTitle').html(config.name);
             else $('#timelineTitle').html('');
 
-
-        if(config && config.hasOwnProperty('defaultValue') && anim.keys.length==0)
+        if(config && config.hasOwnProperty('defaultValue') && anim.keys.length===0)
         {
             anim.keys.push(new CABLES.TL.Key({time:cursorTime,value:config.defaultValue}) );
             this.centerCursor();
@@ -532,7 +531,6 @@ CABLES.TL.UI.TimeLineUI=function()
         cursorLineDisplay.attr({path: "M "+time+" -1000 L" + time + " " + 1110 });
     }
 
-
     var zeroLine2 = paper.path("M 0 0 L 111000 0");
     zeroLine2.attr({ stroke: "#999", "stroke-width": 1});
 
@@ -568,7 +566,6 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function updateKeyLine()
     {
-        // if(!CGL.finishedLoading())return;
         if(gui.patch().isLoading())return;
 
         for(var anii in anims)
@@ -581,7 +578,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 ani.keyLine.hide();
             }
             else
-            if(ani )
+            if(ani)
             {
                 ani.keyLine.show();
                 ani.sortKeys();
@@ -601,21 +598,15 @@ CABLES.TL.UI.TimeLineUI=function()
                     str+=t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
                 }
 
-                for(var i=0;i<ani.keys.length;i++)
+                for(var ik=0;ik<ani.keys.length;ik++)
                 {
                     var nextKey=null;
-
-                    if(ani.keys.length > i+1) nextKey=ani.keys[i+1];
+                    if(ani.keys.length > ik+1) nextKey=ani.keys[ik+1];
                     
-                    // if(str===null) str="M 0 "+(ani.keys[0].value*-CABLES.TL.VALUESCALE)+" ";
-
-                    // str+=ani.keys[i].getPathString(viewBox,nextKey);
-                    
-                    ani.keys[i].updateCircle();
-                    if(ani.keys[i].onChange===null) ani.keys[i].onChange=updateKeyLine;
+                    ani.keys[ik].updateCircle();
+                    if(ani.keys[ik].onChange===null) ani.keys[ik].onChange=updateKeyLine;
                 }
 
-                // if(anim.keys.length>0) str+="L 9999000 "+(anim.keys[anim.keys.length-1].value*-CABLES.TL.VALUESCALE)+" ";
                 ani.keyLine.attr({ path:str });
             }
         }

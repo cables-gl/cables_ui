@@ -644,7 +644,6 @@ CABLES.UI.Patch=function(_gui)
 
     this.bindScene=function(scene)
     {
-
         scene.onLoadStart=function()
         {
             isLoading=true;
@@ -703,9 +702,6 @@ CABLES.UI.Patch=function(_gui)
 
         scene.onLink=function(p1,p2)
         {
-            console.log('on link');
-            // if(p1.parent.uiAttribs.subPatch!=currentSubPatch && p2.parent.uiAttribs.subPatch!=currentSubPatch)return;
-
             var uiPort1=null;
             var uiPort2=null;
             for(var i in self.ops)
@@ -723,7 +719,6 @@ CABLES.UI.Patch=function(_gui)
             }
     
             var thelink=new UiLink(uiPort1,uiPort2);
-
 
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
@@ -748,7 +743,6 @@ CABLES.UI.Patch=function(_gui)
 
         scene.onDelete=function(op)
         {
-
             var undofunc=function(opname,opid)
             {
                 CABLES.undo.add({
@@ -837,13 +831,11 @@ CABLES.UI.Patch=function(_gui)
         {
             var j=0;
             var sum=0;
-            for(j in selectedOps)
-                sum+=selectedOps[j].op.uiAttribs.translate.x;
+            for(j in selectedOps) sum+=selectedOps[j].op.uiAttribs.translate.x;
 
             var avg=sum/selectedOps.length;
 
-            for(j in selectedOps)
-                selectedOps[j].setPos(avg,selectedOps[j].op.uiAttribs.translate.y);
+            for(j in selectedOps) selectedOps[j].setPos(avg,selectedOps[j].op.uiAttribs.translate.y);
         }
     };
 
@@ -901,8 +893,7 @@ CABLES.UI.Patch=function(_gui)
     this.addSelectedOp=function(uiop)
     {
         uiop.oprect.setSelected(true);
-        for(var i in selectedOps)
-            if(selectedOps[i]==uiop)return;
+        for(var i in selectedOps) if(selectedOps[i]==uiop)return;
         selectedOps.push(uiop);
     };
 
@@ -972,7 +963,6 @@ CABLES.UI.Patch=function(_gui)
         watchColorPicker=[];
 
         var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op});
-
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 
@@ -1050,12 +1040,9 @@ CABLES.UI.Patch=function(_gui)
                     }
 
                     $('#portanim_in_'+index).addClass('timingbutton_active');
-                    
 
                     op.portsIn[index].toggleAnim();
                     self.timeLine.setAnim(op.portsIn[index].anim,{name:op.portsIn[index].name,defaultValue:parseFloat( $('#portval_'+index).val())} );
-                    // self.showOpParams(op);
-
                 });
             })(ipi);
         }
@@ -1116,10 +1103,8 @@ CABLES.UI.Patch=function(_gui)
                         if(v=='true')v=true;
                         else v=false;
                     }
-
                             
                     op.portsIn[index].val=v;
-                    // self.showOpParams(op);
                     if(op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
                 });
             })(ipii);
@@ -1218,14 +1203,9 @@ CABLES.UI.Patch=function(_gui)
         {
             var id='.watchPortValue_'+watchPorts[i].watchId;
             if(watchPorts[i].isAnimated())
-            {
-                if( $(id).val() !=watchPorts[i].val )
-                    $(id).val( watchPorts[i].val );
-            }
+                if( $(id).val()!=watchPorts[i].val ) $(id).val( watchPorts[i].val );
             else
-            {
                 $(id).html( watchPorts[i].val );
-            }
         }
 
         if(CABLES.UI.uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,CABLES.UI.uiConfig.watchValuesInterval);
