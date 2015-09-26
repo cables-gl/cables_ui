@@ -94,9 +94,11 @@ td.head {
 
 #menubar, #timelineui {
   position: absolute;
-  background-color: #222; }
+  background-color: #222;
+  overflow: hidden; }
 
 #timelineui {
+  overflow: hidden;
   padding-top: 5px; }
   #timelineui
 input {
@@ -286,7 +288,7 @@ td {
 :hover
 , #timing
 .button:hover {
-    background-color: #666; }
+    background-color: #666 !important; }
   #menubar
 .button
 :active

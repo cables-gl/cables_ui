@@ -136,10 +136,12 @@ td.head
 {
     position:absolute;
     background-color: #222;
+    overflow: hidden;
 }
 
 #timelineui
 {
+    overflow: hidden;
     padding-top: 5px;
 
     input
@@ -381,7 +383,7 @@ input[type="text"]
 
         &:hover
         {
-            background-color: #666;
+            background-color: #666 !important;
         }
         &:active
         {

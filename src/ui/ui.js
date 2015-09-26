@@ -7,7 +7,6 @@ CABLES.undo = new UndoManager();
 CABLES.UI.GUI=function()
 {
     var self=this;
-    var rendererSize=0;
     var showTiming=false;
     var _scene=new Scene();
     _scene.gui=true;
@@ -41,26 +40,19 @@ CABLES.UI.GUI=function()
         var timelineUiHeight=40;
         var timedisplayheight=25;
 
-        // var rendererWidth=CABLES.UI.uiConfig.rendererSizes[rendererSize].w+2;
-        // var rendererHeight=CABLES.UI.uiConfig.rendererSizes[rendererSize].h+2;
-
         var patchHeight=window.innerHeight-statusBarHeight-menubarHeight;
         if(showTiming)patchHeight-=this.timingHeight;
 
         $('#patch svg').css('height',patchHeight-2);
         $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9);
-        // $('#patch svg').css('top',menubarHeight);
 
-
-$('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
-$('#splitterRenderer').css('top',self.rendererHeight);
-$('#splitterRenderer').css('width',self.rendererWidth);
-$('#splitterRendererWH').css('right',self.rendererWidth-35);
-$('#splitterRendererWH').css('top',self.rendererHeight-30);
-
-
-
-
+        $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
+        $('#splitterPatch').css('height',patchHeight-2);
+        $('#splitterPatch').css('top',menubarHeight);
+        $('#splitterRenderer').css('top',self.rendererHeight);
+        $('#splitterRenderer').css('width',self.rendererWidth);
+        $('#splitterRendererWH').css('right',self.rendererWidth-35);
+        $('#splitterRendererWH').css('top',self.rendererHeight-30);
 
         $('#patch').css('height',patchHeight-2);
         $('#patch').css('width',window.innerWidth-self.rendererWidth-8);
@@ -100,8 +92,8 @@ $('#splitterRendererWH').css('top',self.rendererHeight-30);
             $('#timing').css('height',timelineUiHeight);
 
             $('#splitterTimeline').hide();
-
         }
+
         if(self.timeLine())self.timeLine().updateViewBox();
 
         $('#splitterTimeline').css('width',window.innerWidth-self.rendererWidth-2);
@@ -120,16 +112,18 @@ $('#splitterRendererWH').css('top',self.rendererHeight-30);
         $('#menubar').css('width',window.innerWidth-self.rendererWidth);
         $('#menubar').css('height',menubarHeight);
 
-        // if(CABLES.UI.uiConfig.rendererSizes[rendererSize].w===0)
-        // {
-        //     $('#glcanvas').attr('width',window.innerWidth);
-        //     $('#glcanvas').attr('height',window.innerHeight);
-        //     $('#glcanvas').css('z-index',9999);
-        // }
-        // else
-        $('#glcanvas').attr('width',this.rendererWidth);
-        $('#glcanvas').attr('height',this.rendererHeight);
-        CABLES.UI.setStatusText('webgl renderer set to size: '+CABLES.UI.uiConfig.rendererSizes[rendererSize].w+' x '+CABLES.UI.uiConfig.rendererSizes[rendererSize].h);
+        if(self.rendererWidth===0)
+        {
+            $('#glcanvas').attr('width',window.innerWidth);
+            $('#glcanvas').attr('height',window.innerHeight);
+            $('#glcanvas').css('z-index',9999);
+        }
+        else
+        {
+            $('#glcanvas').attr('width',this.rendererWidth);
+            $('#glcanvas').attr('height',this.rendererHeight);
+        }
+        CABLES.UI.setStatusText('webgl renderer set to size: '+this.rendererWidth+' x '+this.rendererHeight);
     };
 
     this.importDialog=function()
@@ -152,10 +146,20 @@ $('#splitterRendererWH').css('top',self.rendererHeight-30);
         $('#serialized').val(self.patch().scene.serialize());
     };
 
+    var oldRendwerWidth,oldRendwerHeight;
     this.cycleRendererSize=function()
     {
-        rendererSize++;
-        if(rendererSize>CABLES.UI.uiConfig.rendererSizes.length-1)rendererSize=0;
+        if(self.rendererWidth!==0)
+        {
+            oldRendwerWidth=self.rendererWidth;
+            oldRendwerHeight=self.rendererHeight;
+            self.rendererWidth=0;
+        }
+        else
+        {
+            self.rendererWidth=oldRendwerWidth;
+            self.rendererHeight=oldRendwerHeight;
+        }
 
         self.setLayout();
     };
@@ -305,7 +309,7 @@ $('#splitterRendererWH').css('top',self.rendererHeight-30);
 
                     $('.tooltip').hide();
 
-                    if(rendererSize==CABLES.UI.uiConfig.rendererSizes.length-1)
+                    if(self.rendererWidth===0)
                     {
                         self.cycleRendererSize();
                     }
