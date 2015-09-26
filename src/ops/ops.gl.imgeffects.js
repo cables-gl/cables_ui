@@ -30,7 +30,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         // if(!self.texOut.val || self.tex.width!=self.texOut.val.width || self.tex.height!=self.texOut.val.height)
         if((w!= self.tex.width || h!= self.tex.height) && w!==0 && h!==0)
         {
-                    console.log('img compos res:',w,h);
+            console.log('img compos res:',w,h);
                     
             self.tex.setSize(w,h);
             effect.setSourceTexture(self.tex);

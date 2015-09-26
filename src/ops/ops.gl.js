@@ -1028,6 +1028,13 @@ Ops.Gl.Render2Texture = function()
 
     function resize()
     {
+
+    cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
+    cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, this.width.val,this.height.val);
+    
+    cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
+
+
         texture.setSize(self.width.val,self.height.val);
         textureDepth.setSize(self.width.val,self.height.val);
     }
@@ -1038,6 +1045,7 @@ Ops.Gl.Render2Texture = function()
     this.width.val=1920;
     this.height.val=1080;
 
+    var oldViewport;
 
     function render()
     {
@@ -1050,6 +1058,7 @@ Ops.Gl.Render2Texture = function()
 
         cgl.pushPMatrix();
         // cgl.gl.viewport(-self.width/2, 0, self.width.val/2,self.height.val);
+
         cgl.gl.viewport(0, 0, self.width.val,self.height.val);
         // mat4.perspective(cgl.pMatrix,45, 1, 0.01, 1100.0);
 
@@ -1299,13 +1308,18 @@ Ops.Gl.ViewPortSize = function()
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
+    this.x=this.addOutPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
+    this.y=this.addOutPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
+
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
-    var w=0,h=0;
+    var w=0,h=0,x=0,y=0;
 
     this.exe.onTriggered=function()
     {
+        if(cgl.getViewPort()[0]!=x) w=self.x.val=cgl.getViewPort()[0];
+        if(cgl.getViewPort()[1]!=y) h=self.y.val=cgl.getViewPort()[1];
         if(cgl.getViewPort()[2]!=h) h=self.width.val=cgl.getViewPort()[2];
         if(cgl.getViewPort()[3]!=w) w=self.height.val=cgl.getViewPort()[3];
         self.trigger.trigger();
