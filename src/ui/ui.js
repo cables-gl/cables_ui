@@ -56,7 +56,7 @@ $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
 $('#splitterRenderer').css('top',self.rendererHeight);
 $('#splitterRenderer').css('width',self.rendererWidth);
 $('#splitterRendererWH').css('right',self.rendererWidth-35);
-$('#splitterRendererWH').css('top',self.rendererHeight-35);
+$('#splitterRendererWH').css('top',self.rendererHeight-30);
 
 
 
@@ -91,7 +91,6 @@ $('#splitterRendererWH').css('top',self.rendererHeight-35);
 
             $('#splitterTimeline').show();
             $('#splitterTimeline').css('bottom',this.timingHeight-timedisplayheight+2);
-
         }
         else
         {

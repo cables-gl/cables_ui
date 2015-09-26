@@ -92,9 +92,9 @@ CABLES.UI.Port=function(thePort)
         else
         {
             event=mouseEvent(event);
-            if(selectedEndPort && !selectedEndPort.thePort)
+            if(!selectedEndPort || !selectedEndPort.thePort)
             {
-                CABLES.UI.OPSELECT.showOpSelect(gui.patch().getCanvasCoordsMouse(event),this.op,self.thePort);
+                CABLES.UI.OPSELECT.showOpSelect(gui.patch().getCanvasCoordsMouse(event),self.op,self.thePort);
             }
         }
 

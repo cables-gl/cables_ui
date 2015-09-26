@@ -861,7 +861,6 @@ input[type=range]:focus {
     
 }
 
-
 #splitterTimeline
 {
     height:4px;
@@ -872,11 +871,11 @@ input[type=range]:focus {
 {
     height:40px;
     width:40px;
-    background-color: #000;
+    background-color: transparent;
     z-index: 99;
     cursor:ne-resize;
-}
 
+}
 
 #splitterRenderer
 {

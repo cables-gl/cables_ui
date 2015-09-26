@@ -786,6 +786,10 @@ Ops.Gl.Matrix.Transform = function()
     {
         cgl.pushMvMatrix();
         mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
+
+        // console.log('cgl.mvMatrix',cgl.mvMatrix);
+        
+
         self.trigger.trigger();
         cgl.popMvMatrix();
     };
