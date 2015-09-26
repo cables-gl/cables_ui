@@ -239,7 +239,7 @@ var Port=function(parent,name,type,uiAttribs)
             if(oldAnimVal!=this.value)
             {
                 oldAnimVal=this.value;
-                this.onValueChanged();
+                if(this.onValueChanged)this.onValueChanged();
             }
             oldAnimVal=this.value;
         }
