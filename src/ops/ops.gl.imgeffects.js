@@ -29,9 +29,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     this.updateResolution=function()
     {
-        console.log('pre img compos res:',w,h);
-
-        // if(!self.texOut.val || self.tex.width!=self.texOut.val.width || self.tex.height!=self.texOut.val.height)
         if((w!= self.tex.width || h!= self.tex.height) && w!==0 && h!==0)
         {
             console.log('img compos res:',w,h);
@@ -66,7 +63,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         w=parseInt(self.width.val,10);
         self.updateResolution();
     }
-
 
     render=function()
     {
