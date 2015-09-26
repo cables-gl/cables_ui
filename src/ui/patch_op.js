@@ -81,7 +81,7 @@ function UiLink(port1, port2)
 
         if(addCircle===null)
         {
-            addCircle = gui.patch().paper.circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5).attr(
+            addCircle = gui.patch().getPaper().circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5).attr(
             {
                 "stroke": CABLES.UI.uiConfig.getPortColor(self.p1.thePort ),
                 "stroke-width": 2,
@@ -97,6 +97,7 @@ function UiLink(port1, port2)
             {
                 CABLES.UI.hideToolTip();
             });
+            addCircle.toFront();
 
             addCircle.node.onmousedown = function (event)
             {
@@ -123,6 +124,8 @@ function UiLink(port1, port2)
                 cx:middlePosX,
                 cy:middlePosY
             });
+            addCircle.toFront();
+
         }
     };
 
@@ -198,17 +201,18 @@ function UiLink(port1, port2)
             this.linkLine.attr( CABLES.UI.uiConfig.linkingLine );
             this.linkLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
             
-            this.linkLine.hover(function ()
-            {
-                this.attr({stroke:CABLES.UI.uiConfig.colorLinkHover});
-            }, function ()
-            {
-                this.attr({stroke:CABLES.UI.uiConfig.getPortColor(self.p1.thePort)});
-            });
+            // this.linkLine.hover(function ()
+            // {
+            //     this.attr({stroke:CABLES.UI.uiConfig.colorLinkHover});
+            // }, function ()
+            // {
+            //     this.attr({stroke:CABLES.UI.uiConfig.getPortColor(self.p1.thePort)});
+            // });
         }
 
 
         this.linkLine.attr("path", this.getPath());
+        this.linkLine.toFront();
         this.showAddButton();
     };
 }
@@ -568,26 +572,6 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.oprect.setSelected(sel);
     };
 
-
-
-
-    this.updatePortAttribs=function(port)
-    {
-        // if(!port)
-        // {
-        //     var i=0;
-        //     for(i in this.portsOut) this.updatePortAttribs(this.portsOut[i]);
-        //     for(i in this.portsIn) this.updatePortAttribs(this.portsIn[i]);
-        // }
-        // else
-        // {
-        //     port.rect.attr(
-        //     {
-        //         "fill": CABLES.UI.uiConfig.getPortColor(port.thePort),
-        //         "fill-opacity": getPortOpacity(port.thePort),
-        //     });
-        // }
-    };
 
     this.addPort=function(_inout,thePort)
     {

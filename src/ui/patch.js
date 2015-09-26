@@ -756,7 +756,11 @@ CABLES.UI.Patch=function(_gui)
 
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
-            if(!uiPort1.opUi.isHidden())thelink.show();
+
+            if(!uiPort1.opUi.isHidden())
+            {
+                thelink.show();
+            }
 
             var undofunc=function(p1Name,p2Name,op1Id,op2Id)
             {
@@ -809,7 +813,6 @@ CABLES.UI.Patch=function(_gui)
             uiOp.wasAdded=false;
 
             doAddOp(uiOp);
-            if(!isLoading) uiOp.updatePortAttribs();
         };
     };
 
@@ -835,7 +838,6 @@ CABLES.UI.Patch=function(_gui)
             if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
             {
                 self.ops[i].show();
-                self.ops[i].updatePortAttribs();
             }
             else
             {
