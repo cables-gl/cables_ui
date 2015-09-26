@@ -28,24 +28,26 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.updateResolution=function()
     {
         // if(!self.texOut.val || self.tex.width!=self.texOut.val.width || self.tex.height!=self.texOut.val.height)
-        if((w!= self.tex.width || h!= self.tex.height) && w!=0 && h!=0)
+        if((w!= self.tex.width || h!= self.tex.height) && w!==0 && h!==0)
         {
+                    console.log('img compos res:',w,h);
+                    
             self.tex.setSize(w,h);
             effect.setSourceTexture(self.tex);
             self.texOut.val=effect.getCurrentSourceTexture();
         }
     };
 
-    this.width.onValueChanged=function()
+    this.height.onValueChanged=function()
     {
-        h=parseInt(self.width.val,10);
+        h=parseInt(self.height.val,10);
         // self.width.val=parseInt(self.width.val,10);
         self.updateResolution();
     };
 
-    this.height.onValueChanged=function()
+    this.width.onValueChanged=function()
     {
-        w=parseInt(self.height.val,10);
+        w=parseInt(self.width.val,10);
         // self.height.val=parseInt(self.height.val,10);
         self.updateResolution();
     };
