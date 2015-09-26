@@ -84,7 +84,14 @@ CGL.TextureEffect=function()
 
     this.bind=function()
     {
-        if(textureSource===null) throw 'no base texture set!';
+        if(textureSource===null)
+        {
+            console.log('no base texture set!');
+            return;
+        }
+
+
+                 
 
         cgl.pushMvMatrix();
 
@@ -107,6 +114,12 @@ CGL.TextureEffect=function()
 
     this.finish=function()
     {
+        if(textureSource===null)
+        {
+            console.log('no base texture set!');
+            return;
+        }
+
         mesh.render(cgl.getShader());
 
         cgl.popPMatrix();
