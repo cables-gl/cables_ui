@@ -230,6 +230,10 @@ CABLES.UI.Patch=function(_gui)
             data.ui.viewBox.x=viewBox.x;
             data.ui.viewBox.y=viewBox.y;
 
+            data.ui.renderer={};
+            data.ui.renderer.w=gui.rendererWidth;
+            data.ui.renderer.h=gui.rendererHeight;
+
             data=JSON.stringify(data);
 
             CABLES.api.put(
@@ -409,6 +413,13 @@ CABLES.UI.Patch=function(_gui)
                 viewBox.y=proj.ui.viewBox.y;
                 viewBox.w=proj.ui.viewBox.w;
                 viewBox.h=proj.ui.viewBox.h;
+            }
+
+            if(proj.ui.renderer)
+            {
+                gui.rendererWidth=proj.ui.renderer.w;
+                gui.rendererHeight=proj.ui.renderer.h;
+                gui.setLayout();
             }
         }
         self.updateViewBox();
