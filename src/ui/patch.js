@@ -31,6 +31,11 @@ CABLES.UI.Patch=function(_gui)
         return isLoading;
     };
 
+    this.getPaper=function()
+    {
+        return self.paper;
+    };
+
     this.paste=function(e)
     {
         if(e.clipboardData.types.indexOf('text/plain') > -1)
@@ -291,7 +296,7 @@ CABLES.UI.Patch=function(_gui)
     this.updateViewBox=function()
     {
         if(!isNaN(viewBox.x) && !isNaN(viewBox.y) && !isNaN(viewBox.w) && !isNaN(viewBox.h))
-            r.setViewBox( viewBox.x, viewBox.y, viewBox.w, viewBox.h );
+            self.paper.setViewBox( viewBox.x, viewBox.y, viewBox.w, viewBox.h );
     };
 
     function rubberBandHide()
@@ -305,9 +310,15 @@ CABLES.UI.Patch=function(_gui)
     {
         for(var i in self.ops)
         {
-            self.addSelectedOp(self.ops[i]);
-            self.ops[i].setSelected(true);
+            if(self.ops[i].getSubPatch()==currentSubPatch)
+            {
+                self.addSelectedOp(self.ops[i]);
+                self.ops[i].setSelected(true);
+
+            }
         }
+        
+        CABLES.UI.setStatusText(selectedOps.length+" ops selected / [del] delete ops / [a] align ops");
     };
 
     function rubberBandMove(e)
@@ -321,7 +332,7 @@ CABLES.UI.Patch=function(_gui)
             }
             mouseRubberBandPos=gui.patch().getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
 
-            if(!rubberBandRect) rubberBandRect=r.rect( 0,0,10,10).attr({ });
+            if(!rubberBandRect) rubberBandRect=self.paper.rect( 0,0,10,10).attr({ });
             rubberBandRect.show();
             var start={x:mouseRubberBandStartPos.x,y:mouseRubberBandStartPos.y};
             var end={x:mouseRubberBandPos.x,y:mouseRubberBandPos.y};
@@ -354,25 +365,29 @@ CABLES.UI.Patch=function(_gui)
             {
                 if(!self.ops[i].isHidden() )
                 {
-                    var rect=self.ops[i].oprect;
-                    var opX=rect.matrix.e;
-                    var opY=rect.matrix.f;
-                    var opW=rect.attr("width");
-                    var opH=rect.attr("height");
-
-                    if(
-                        (opX>start.x && opX<end.x && opY>start.y && opY<end.y) ||  // left upper corner
-                        (opX+opW>start.x && opX+opW<end.x && opY+opH>start.y && opY+opH<end.y)  // right bottom corner
-
-                        )
+                    var rect=self.ops[i].oprect.getRect();
+                    if(rect && rect.matrix)
                     {
-                        self.addSelectedOp(self.ops[i]);
-                        self.ops[i].setSelected(true);
-                    }
-                    else
-                    {
-                        self.removeSelectedOp(self.ops[i]);
-                        self.ops[i].setSelected(false);
+                        var opX=rect.matrix.e;
+                        var opY=rect.matrix.f;
+                        var opW=rect.attr("width");
+                        var opH=rect.attr("height");
+
+                        if(
+                            (opX>start.x && opX<end.x && opY>start.y && opY<end.y) ||  // left upper corner
+                            (opX+opW>start.x && opX+opW<end.x && opY+opH>start.y && opY+opH<end.y)  // right bottom corner
+
+                            )
+                        {
+                            self.addSelectedOp(self.ops[i]);
+                            self.ops[i].setSelected(true);
+                        }
+                        else
+                        {
+                            self.removeSelectedOp(self.ops[i]);
+                            self.ops[i].setSelected(false);
+                        }
+
                     }
                 }
             }
@@ -414,7 +429,7 @@ CABLES.UI.Patch=function(_gui)
         $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'),{});
         $('#meta').append();
 
-        r= Raphael("patch",0, 0);
+        this.paper= Raphael("patch",0, 0);
         this.bindScene(self.scene);
 
         viewBox={x:0,y:0,w:$('#patch svg').width(),h:$('#patch svg').height()};
@@ -434,7 +449,7 @@ CABLES.UI.Patch=function(_gui)
             self.updateViewBox();
         });
 
-        var background = r.rect(-99999, -99999, 2*99999, 2*99999).attr({
+        var background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
             fill: CABLES.UI.uiConfig.colorBackground,
             "stroke-width":0
         });
@@ -571,7 +586,8 @@ CABLES.UI.Patch=function(_gui)
 
         if(op.uiAttribs.hasOwnProperty('translate'))
         {
-            uiOp.oprect.getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+            uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+            // uiOp.oprect.getRect().getGroup().translate(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
         }
         if(op.uiAttribs.hasOwnProperty('title'))
         {
@@ -644,6 +660,8 @@ CABLES.UI.Patch=function(_gui)
         CABLES.UI.OPSELECT.linkNewOpToPort=null;
         CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 
+        uiOp.setPos();
+        
         if(!isLoading)
         {
             setTimeout(function(){
@@ -783,7 +801,7 @@ CABLES.UI.Patch=function(_gui)
         scene.onAdd=function(op)
         {
             $('#patch').focus();
-            var uiOp=new OpUi(op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
+            var uiOp=new OpUi(self.paper,op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
             self.ops.push(uiOp);
             uiOp.wasAdded=false;
 
@@ -832,6 +850,8 @@ CABLES.UI.Patch=function(_gui)
     {
         if(which===0) $('#button_subPatchBack').hide();
             else $('#button_subPatchBack').show();
+
+
 
         currentSubPatch=which;
         self.updateSubPatches();
@@ -935,13 +955,18 @@ CABLES.UI.Patch=function(_gui)
         s.name=currentProject.name;
         s.settings=gui.scene().settings;
 
-        var numOpsPatch=0;
+        var numVisibleOps=0;
+        for(var i in self.ops)
+        {
+            if(!self.ops[i].isHidden())numVisibleOps++;
+        }
 
         var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,
             debug:
             {
                 numOps:gui.scene().ops.length,
-                numSvgElements: $('#patch svg *').length
+                numVisibleOps:numVisibleOps,
+                numSvgElements: $('#patch svg *').length,
             }
             
         });

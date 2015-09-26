@@ -8,3 +8,7 @@ CABLES.UI.getHandleBarHtml=function(name,obj)
     var context = obj;
     return template(context);
 };
+
+function isNumber (o) {
+  return ! isNaN (o-0) && o !== null && o !== "" && o !== false;
+}

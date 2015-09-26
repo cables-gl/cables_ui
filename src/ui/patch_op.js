@@ -17,7 +17,7 @@ function getPortDescription(thePort)
 }
 
 
-function Line(startX, startY, paper)
+function Line(startX, startY)
 {
     var start={ x:startX,y:startY};
 
@@ -38,12 +38,12 @@ function Line(startX, startY, paper)
 
         return "M "+startX+" "+startY+" L" + endX + " " + endY;
     };
-    this.thisLine = paper.path(this.getPath());
+    this.thisLine = gui.patch().getPaper().path(this.getPath());
     this.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLink, "stroke-width": 2});
     this.redraw = function() { this.thisLine.attr("path", this.getPath()); };
 }
 
-
+ 
 
 function UiLink(port1, port2)
 {
@@ -86,7 +86,7 @@ function UiLink(port1, port2)
 
         if(addCircle===null)
         {
-            addCircle = r.circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5).attr(
+            addCircle = gui.patch().paper.circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5).attr(
             {
                 "stroke": CABLES.UI.uiConfig.getPortColor(self.p1.thePort ),
                 "stroke-width": 2,
@@ -171,10 +171,11 @@ function UiLink(port1, port2)
         return "M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
     };
 
-    this.thisLine = r.path(this.getPath());
+    this.thisLine = gui.patch().getPaper().path(this.getPath());
     this.thisLine.attr( CABLES.UI.uiConfig.linkingLine );
     this.thisLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
 
+    
     this.thisLine.hover(function ()
     {
         this.attr({stroke:CABLES.UI.uiConfig.colorLinkHover});
@@ -205,56 +206,154 @@ function UiLink(port1, port2)
 Raphael.el.setGroup = function (group) { this.group = group; };
 Raphael.el.getGroup = function () { return this.group; };
 
-Raphael.fn.OpRect = function (x, y, w, h, text,objName)
+var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 {
     var isSelected=true;
-    var group = this.set();
-    var background = this.rect(0, 0, w, h).attr(
-        {
-            fill: CABLES.UI.uiConfig.colorOpBg,
-            stroke: CABLES.UI.uiConfig.colorPatchStroke,
-            "stroke-width":0,
-            cursor: "move"
-        });
-    var label = this.text(0+w/2,0+h/2+0, text);
+    var group = Raphael.fn.set();
+    var background = null;
+    var label=null;
+    var w=_w;
+    var h=_h;
+    var x=_x;
+    var y=_y;
+    var opui=_opui;
+    var title=_text;
 
-    background.setEnabled=function(sel)
+    this.getRect=function()
     {
-        if(sel) background.attr( { "fill-opacity": 1 });
-            else background.attr( { "fill-opacity": 1 });
+        return background;
     };
 
-    background.setSelected=function(sel)
+    this.isVisible=function()
+    {
+        return label!==null;
+    };
+
+    this.removeUi=function()
+    {
+        if(!this.isVisible())return;
+
+        group.clear();
+        background.remove();
+        label.remove();
+        label=null;
+        background=null;
+    };
+
+    this.getWidth=function()
+    {
+        return w;
+    };
+
+    this.setWidth=function(_w)
+    {
+        w=_w;
+        if(this.isVisible()) background.attr({width:w});
+    };
+
+    function hover()
+    {
+        opui.isMouseOver=true;
+    }
+
+    function unhover()
+    {
+        opui.isMouseOver=false;
+    }
+
+    var dragger = function(x,y,ev)
+    {
+        $('#patch').focus();
+        if(opui.isSelected())return;
+
+        opui.showAddButtons();
+        if(!ev.shiftKey) gui.patch().setSelectedOp(null);
+        gui.patch().setSelectedOp(opui);
+    };
+
+    var move = function (dx, dy,a,b,e)
+    {
+        gui.patch().moveSelectedOps(dx,dy,a,b,e);
+    };
+
+    var up = function ()
+    {
+        gui.patch().moveSelectedOpsFinished();
+        gui.patch().showOpParams(opui.op);
+    };
+
+    this.addUi=function()
+    {
+        if(this.isVisible())return;
+
+        background=gui.patch().getPaper().rect(0, 0, w, h).attr(
+        {
+            "fill": CABLES.UI.uiConfig.colorOpBg,
+            "stroke": CABLES.UI.uiConfig.colorPatchStroke,
+            "stroke-width":0,
+            "cursor": "move"
+        });
+        label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+        $(label.node).css({'pointer-events': 'none'});
+
+        background.drag(move, dragger, up);
+        background.hover(hover,unhover);
+
+        background.node.ondblclick = function (ev)
+        {
+            if(opui.op.objName=='Ops.Ui.Patch')
+                gui.patch().setCurrentSubPatch(opui.op.patchId.val);
+        };
+
+        background.onmouseup = function (ev)
+        {
+            opui.isDragging=false;
+        };
+
+        if(objName=='Ops.Ui.Patch')
+        {
+            background.attr({
+                'stroke-width':4,
+                'stroke': CABLES.UI.uiConfig.colorPatchStroke
+            });
+        }
+
+        group.push(background,label);
+    };
+
+    this.setEnabled=function(sel)
+    {
+        if(this.isVisible())
+            if(sel) background.attr( { "fill-opacity": 1 });
+                else background.attr( { "fill-opacity": 1 });
+    };
+
+    this.setSelected=function(sel)
     {
         if(isSelected==sel)return;
         isSelected=sel;
         
-        if(sel) background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected });
-            else background.attr( { fill: CABLES.UI.uiConfig.colorOpBg });
+        if(this.isVisible())
+            if(sel) background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected });
+                else background.attr( { "fill": CABLES.UI.uiConfig.colorOpBg });
     };
 
-    background.setTitle=function(t)
+    this.setTitle=function(t)
     {
-        label.attr({text:t});
+        title=t;
+        if(label) label.attr({text:title});
     };
 
-    group.push(background, label);
+    this.getGroup=function()
+    {
+        return group;
+    };
+
+    // group.push(background);
     group.transform('t'+x+','+y);
-    background.setGroup(group);
-
-    if(objName=='Ops.Ui.Patch')
-    {
-        background.attr({
-            'stroke-width':4,
-            'stroke': CABLES.UI.uiConfig.colorPatchStroke
-        });
-    }
-    $(label.node).css({'pointer-events': 'none'});
-
-    return background;
 };
 
-var OpUi=function(op,x,y,w,h,txt)
+var OpUi=function(paper,op,x,y,w,h,txt)
 {
     var self=this;
     this.links=[];
@@ -270,21 +369,37 @@ var OpUi=function(op,x,y,w,h,txt)
     var startMoveY=-1;
     var olsPosX=0;
     var olsPosY=0;
+    var posx=0;
+    var posy=0;
     this.isMouseOver=false;
 
     this.remove=function()
     {
         this.oprect.getGroup().remove();
-        this.oprect.remove();
+        this.oprect.removeUi();
     };
 
+    this.getSubPatch=function()
+    {
+        if(!op.uiAttribs.subPatch)return 0;
+        else return op.uiAttribs.subPatch;
+    };
+
+    this.isSelected=function()
+    {
+        return selected;
+    };
     this.hide=function()
     {
         hidden=true;
+        this.oprect.removeUi();
         this.oprect.getGroup().hide();
 
+        var j=0;
+        for(j in self.portsIn) self.portsIn[j].removeUi();
+        for(j in self.portsOut) self.portsOut[j].removeUi();
 
-        for(var j in self.links)
+        for(j in self.links)
         {
             self.links[j].hide();
             self.links[j].hideAddButton();
@@ -294,9 +409,19 @@ var OpUi=function(op,x,y,w,h,txt)
     this.show=function()
     {
         hidden=false;
+        this.oprect.addUi();
         this.oprect.getGroup().show();
         
-        for(var j in self.links) self.links[j].show();
+
+        var j=0;
+        for(j in self.portsIn) self.portsIn[j].addUi(this.oprect.getGroup());
+        for(j in self.portsOut) self.portsOut[j].addUi(this.oprect.getGroup());
+        
+        // this.oprect.getGroup().transform('t'+posx+','+posy);
+
+        for(j in self.links) self.links[j].show();
+
+        self.setPos();
     };
 
     this.isHidden=function()
@@ -357,8 +482,17 @@ var OpUi=function(op,x,y,w,h,txt)
 
     this.setPos=function(x,y)
     {
-        self.oprect.getGroup().transform('t'+x+','+y);
-        self.op.uiAttribs.translate={x:x,y:y};
+        if(isNumber(x))
+        {
+            posx=x;
+            posy=y;
+        }
+
+        if(self.oprect.getGroup())
+        {
+            self.oprect.getGroup().transform('t'+posx+','+posy);
+        }
+        self.op.uiAttribs.translate={x:posx,y:posy};
 
         for(var j in self.links)
             self.links[j].redraw();
@@ -399,48 +533,7 @@ var OpUi=function(op,x,y,w,h,txt)
         self.isDragging=true;
     };
 
-    var dragger = function(x,y,ev)
-    {
-        $('#patch').focus();
-        if(selected)return;
-
-        self.showAddButtons();
-        if(!ev.shiftKey) gui.patch().setSelectedOp(null);
-        gui.patch().setSelectedOp(self);
-
-        //-------
-
-        this.group = this.getGroup();
-
-        this.previousDx = 0;
-        this.previousDy = 0;
-    };
-
-    var move = function (dx, dy,a,b,e)
-    {
-        gui.patch().moveSelectedOps(dx,dy,a,b,e);
-    };
-
-    var up = function ()
-    {
-        gui.patch().moveSelectedOpsFinished();
-        gui.patch().showOpParams(self.op);
-    };
-
-    this.oprect=r.OpRect(x,y,w,h, txt,self.op.objName).drag(move, dragger, up);
-    this.oprect.hover(function(e)
-        {
-            self.isMouseOver=true;
-        },function(e)
-        {
-            self.isMouseOver=false;
-        });
-
-    this.oprect.node.ondblclick = function (ev)
-    {
-        if(self.op.objName=='Ops.Ui.Patch')
-            gui.patch().setCurrentSubPatch(self.op.patchId.val);
-    };
+    this.oprect=new OpRect(this,x,y,w,h, txt,self.op.objName);
 
     this.setEnabled=function(en)
     {
@@ -457,10 +550,7 @@ var OpUi=function(op,x,y,w,h,txt)
         this.oprect.setSelected(sel);
     };
 
-    this.oprect.node.onmouseup = function (ev)
-    {
-        self.isDragging=false;
-    };
+
 
 
     this.updatePortAttribs=function(port)
@@ -488,8 +578,9 @@ var OpUi=function(op,x,y,w,h,txt)
         var portIndex=this.portsIn.length;
         if(inout==PORT_DIR_OUT) portIndex=this.portsOut.length;
 
+
         var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*portIndex;
-        if(self.oprect.attrs.width<w+CABLES.UI.uiConfig.portSize) self.oprect.attr({width:w+CABLES.UI.uiConfig.portSize});
+        if(self.oprect.getWidth()<w+CABLES.UI.uiConfig.portSize) self.oprect.setWidth(w+CABLES.UI.uiConfig.portSize);
 
         var port=new CABLES.UI.Port(thePort);
 
@@ -498,8 +589,9 @@ var OpUi=function(op,x,y,w,h,txt)
         port.opUi=self;
         port.portIndex=portIndex;
 
-        port.addUi();
-        this.oprect.getGroup().push(port.rect);
+
+        if(this.oprect.getRect()) port.addUi(this.oprect.getRect().getGroup());
+        
 
 
 
