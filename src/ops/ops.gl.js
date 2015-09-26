@@ -997,14 +997,24 @@ Ops.Gl.Render2Texture = function()
 
     this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.texDepth=this.addOutPort(new Port(this,"textureDepth",OP_PORT_TYPE_TEXTURE));
-
+var renderbuffer=null;
 
     frameBuf = cgl.gl.createFramebuffer();
+
+    self.tex.val=texture;
+    self.texDepth.val=textureDepth;
+
+    function resize()
+    {
+
+
     cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
-    var renderbuffer = cgl.gl.createRenderbuffer();
+if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
+
+    renderbuffer = cgl.gl.createRenderbuffer();
     cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
-    cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, this.width.val,this.height.val);
+    cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.val,self.height.val);
     
     cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
     cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
@@ -1023,17 +1033,7 @@ Ops.Gl.Render2Texture = function()
     cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
     cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
-    self.tex.val=texture;
-    self.texDepth.val=textureDepth;
-
-    function resize()
-    {
-
-    cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
-    cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.val,self.height.val);
-    
-    cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
-
+                console.log('resize',self.width.val,self.height.val);
 
         texture.setSize(self.width.val,self.height.val);
         textureDepth.setSize(self.width.val,self.height.val);

@@ -93,7 +93,7 @@ CGL.TextureEffect=function()
 
         cgl.pushPMatrix();
         cgl.gl.viewport(0, 0, self.getCurrentTargetTexture().width,self.getCurrentTargetTexture().height);
-        mat4.perspective(cgl.pMatrix,45, 1.0/1.77777, 0.01, 1100.0);
+        mat4.perspective(cgl.pMatrix,45, self.getCurrentTargetTexture().width/self.getCurrentTargetTexture().height, 0.01, 1100.0);
 
         cgl.pushPMatrix();
         mat4.identity(cgl.pMatrix);
@@ -115,7 +115,8 @@ CGL.TextureEffect=function()
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
         cgl.popPMatrix();
-        cgl.gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
+        // cgl.gl.viewport(0, 0, cgl.canvasWidth,cgl.canvasHeight);
+        cgl.resetViewPort();
 
         cgl.popMvMatrix();
 
