@@ -754,6 +754,53 @@ Ops.Gl.Matrix.LookatCamera.prototype = new Op();
 // ----------------------------------------------------
 
 
+Ops.Gl.Matrix.Shear = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    this.name='Shear';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.shearX=this.addInPort(new Port(this,"shearX"));
+    this.shearY=this.addInPort(new Port(this,"shearY"));
+
+    var shearMatrix = mat4.create();
+
+    function update()
+    {
+        mat4.identity(shearMatrix);
+        shearMatrix[1]=Math.tan(self.shearX.val);
+        shearMatrix[4]=Math.tan(self.shearY.val);
+    }
+
+    this.shearY.onValueChanged=update;
+    this.shearX.onValueChanged=update;
+
+    // 1, shearY, 0, 0, 
+    //   shearX, 1, 0, 0,
+    //   0, 0, 1, 0,
+    //   0, 0, 0, 1 };
+
+    this.render.onTriggered=function()
+    {
+        cgl.pushMvMatrix();
+
+        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,shearMatrix);
+        self.trigger.trigger();
+
+        cgl.popMvMatrix();
+    };
+
+    self.shearX.val=0.0;
+    self.shearY.val=0.0;
+
+};
+
+Ops.Gl.Matrix.Shear.prototype = new Op();
+
+// -----------------------------------------------------
+
 Ops.Gl.Matrix.Transform = function()
 {
     Op.apply(this, arguments);
@@ -773,7 +820,7 @@ Ops.Gl.Matrix.Transform = function()
     this.rotX=this.addInPort(new Port(this,"rotX"));
     this.rotY=this.addInPort(new Port(this,"rotY"));
     this.rotZ=this.addInPort(new Port(this,"rotZ"));
-    
+   
     var vPos=vec3.create();
     var vScale=vec3.create();
     var transMatrix = mat4.create();
@@ -786,9 +833,6 @@ Ops.Gl.Matrix.Transform = function()
     {
         cgl.pushMvMatrix();
         mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
-
-        // console.log('cgl.mvMatrix',cgl.mvMatrix);
-        
 
         self.trigger.trigger();
         cgl.popMvMatrix();
