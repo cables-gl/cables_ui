@@ -469,8 +469,17 @@ CABLES.TL.UI.TimeLineUI=function()
         return 0;
     };
 
+    function mousemoveTime(e)
+    {
+        if(isScrollingTime)
+            scrollTime(e);
+
+    }
+
     this.setAnim=function(newanim,config)
     {
+        $(document).bind("mousemove",mousemoveTime);
+
         if(newanim && newanim!=tlEmpty)gui.showTiming();
 
         removeDots();
@@ -972,11 +981,6 @@ CABLES.TL.UI.TimeLineUI=function()
         self.updateViewBox();
     });
 
-    $(document).bind("mousemove",function(e)
-    {
-        if(isScrollingTime)
-            scrollTime(e);
-    });
 
     $(document).bind("mouseup",function(e)
     {
@@ -1006,6 +1010,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $("#timetimeline").bind("mousedown", function(e)
     {
+        $(document).bind("mousemove",mousemoveTime);
         $('#timeline').focus();
         e=mouseEvent(e);
         scrollTime(e);

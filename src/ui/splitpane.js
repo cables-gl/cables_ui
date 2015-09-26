@@ -2,68 +2,69 @@ var min = 300;
 var max = 3600;
 var mainmin = 200;
 
-$( document ).ready(function() {
-
-
-$('#splitterPatch').mousedown(function (e)
+$( document ).ready(function() 
 {
-    e.preventDefault();
-    $(document).mousemove(function (e)
+
+
+    $('#splitterPatch').mousedown(function (e)
     {
         e.preventDefault();
+        $(document).mousemove(function (e)
+        {
+            e.preventDefault();
 
-        gui.rendererWidth=window.innerWidth - e.clientX;
-        gui.setLayout();
+            gui.rendererWidth=window.innerWidth - e.clientX;
+            gui.setLayout();
+        });
     });
-});
 
-$('#splitterRenderer').mousedown(function (e)
-{
-    e.preventDefault();
-    $(document).mousemove(function (e)
+    $('#splitterRenderer').mousedown(function (e)
     {
         e.preventDefault();
+        $(document).mousemove(function (e)
+        {
+            e.preventDefault();
 
-        gui.rendererHeight= e.clientY;
-        gui.setLayout();
+            gui.rendererHeight= e.clientY;
+            gui.setLayout();
+        });
     });
-});
 
 
-$('#splitterTimeline').mousedown(function (e)
-{
-    e.preventDefault();
-    $(document).mousemove(function (e)
+    $('#splitterTimeline').mousedown(function (e)
     {
         e.preventDefault();
+        $(document).mousemove(function (e)
+        {
+            e.preventDefault();
 
-        gui.timingHeight= window.innerHeight-e.clientY;
+            gui.timingHeight= window.innerHeight-e.clientY;
 
-        console.log('gui.timingHeight',gui.timingHeight);
-        
-        
+            console.log('gui.timingHeight',gui.timingHeight);
+            
+            
 
-        gui.setLayout();
+            gui.setLayout();
+        });
     });
-});
 
-$('#splitterRendererWH').mousedown(function (e)
-{
-    e.preventDefault();
-    $(document).mousemove(function (e)
+    $('#splitterRendererWH').mousedown(function (e)
     {
         e.preventDefault();
+        $(document).mousemove(function (e)
+        {
+            e.preventDefault();
 
-        gui.rendererWidth=window.innerWidth - e.clientX;
-        gui.rendererHeight= e.clientY;
-        gui.setLayout();
+            gui.rendererWidth=window.innerWidth - e.clientX;
+            gui.rendererHeight= e.clientY;
+            gui.setLayout();
+        });
     });
-});
 
 
-$(document).mouseup(function (e) {
-    $(document).unbind('mousemove');
-});
+    $(document).mouseup(function (e) {
+        $(document).unbind('mousemove');
+    });
 
 
 });
