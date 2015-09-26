@@ -526,6 +526,13 @@ CABLES.UI.Patch=function(_gui)
             uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
         };
 
+
+        if(op.uiAttribs && op.uiAttribs.subPatch)
+        {
+            if(op.uiAttribs.subPatch!=currentSubPatch) uiOp.hide();
+        }
+
+
         for(var i in op.portsIn)
         {
             var p=op.portsIn[i];
@@ -928,7 +935,18 @@ CABLES.UI.Patch=function(_gui)
         s.name=currentProject.name;
         s.settings=gui.scene().settings;
 
-        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,numOps:gui.scene().ops.length});
+        var numOpsPatch=0;
+
+        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,
+            debug:
+            {
+                numOps:gui.scene().ops.length,
+                numSvgElements: $('#patch svg *').length
+            }
+            
+        });
+        
+
         $('#options').html(html);
     };
 

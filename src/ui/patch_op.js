@@ -133,6 +133,9 @@ function UiLink(port1, port2)
 
     this.getPath = function()
     {
+        if(!port2.rect)return '';
+        if(!port1.rect)return '';
+
         if(!port2.rect.attrs)return '';
         if(!port1.rect.attrs)return '';
 
@@ -279,6 +282,8 @@ var OpUi=function(op,x,y,w,h,txt)
     {
         hidden=true;
         this.oprect.getGroup().hide();
+
+
         for(var j in self.links)
         {
             self.links[j].hide();
