@@ -11,7 +11,10 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     this.name='image compose';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    
+
+    this.useVPSize=this.addInPort(new Port(this,"use viewport size",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.useVPSize.val=true;
+
     this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
@@ -31,7 +34,9 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         if((w!= self.tex.width || h!= self.tex.height) && w!==0 && h!==0)
         {
             console.log('img compos res:',w,h);
-                    
+     
+            self.height.val=h;
+            self.width.val=w;
             self.tex.setSize(w,h);
             effect.setSourceTexture(self.tex);
             self.texOut.val=effect.getCurrentSourceTexture();
@@ -57,6 +62,11 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     {
         cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
+        if(self.useVPSize.val)
+        {
+            w=cgl.getViewPort()[2];
+            h=cgl.getViewPort()[3];
+        }
         self.updateResolution();
         
         cgl.currentTextureEffect=effect;

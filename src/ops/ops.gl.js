@@ -990,6 +990,9 @@ Ops.Gl.Render2Texture = function()
     var texture=new CGL.Texture();
     var textureDepth=new CGL.Texture({isDepthTexture:true});
 
+    this.useVPSize=this.addInPort(new Port(this,"use viewport size",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.useVPSize.val=true;
+
     this.width=this.addInPort(new Port(this,"texture width"));
     this.height=this.addInPort(new Port(this,"texture height"));
     // this.clear=this.addInPort(new Port(this,"clear",OP_PORT_TYPE_VALUE,{ display:'bool' }));
@@ -1033,7 +1036,7 @@ if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
     cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
     cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
-                console.log('resize',self.width.val,self.height.val);
+                console.log('resize r2t',self.width.val,self.height.val);
 
         texture.setSize(self.width.val,self.height.val);
         textureDepth.setSize(self.width.val,self.height.val);
@@ -1053,6 +1056,15 @@ if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
 
         cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
+        if(self.useVPSize.val)
+        {
+            if(texture.width!=cgl.getViewPort()[2] || texture.height!=cgl.getViewPort()[3] )
+            {
+                self.width.val=cgl.getViewPort()[2];
+                self.height.val=cgl.getViewPort()[3];
+                resize();
+            }
+        }
 
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
