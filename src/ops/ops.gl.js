@@ -10,7 +10,7 @@ Ops.Gl.Renderer = function()
     Op.apply(this, arguments);
     var self=this;
 
-    this.name='render';
+    this.name='renderer';
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
@@ -21,13 +21,13 @@ Ops.Gl.Renderer = function()
 
     this.onAnimFrame=function(time)
     {
-        if(self.width.val!=self.canvas.clientWidth)
+        if(cgl.canvasWidth!=self.canvas.clientWidth)
         {
             cgl.canvasWidth=self.canvas.clientWidth;
             self.width.val=cgl.canvasWidth;
         }
 
-        if(self.height.val!=self.canvas.clientHeight)
+        if(cgl.canvasHeight!=self.canvas.clientHeight)
         {
             cgl.canvasHeight=self.canvas.clientHeight;
             self.height.val=cgl.canvasHeight;
@@ -1043,6 +1043,9 @@ Ops.Gl.Render2Texture = function()
     {
         cgl.pushMvMatrix();
 
+        cgl.gl.disable(cgl.gl.SCISSOR_TEST);
+
+
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
         cgl.pushPMatrix();
@@ -1069,6 +1072,9 @@ Ops.Gl.Render2Texture = function()
         
         cgl.popMvMatrix();
         cgl.resetViewPort();
+
+        cgl.gl.enable(cgl.gl.SCISSOR_TEST);
+
     }
 
     function preview()
@@ -1274,11 +1280,36 @@ Ops.Gl.CanvasSize = function()
     this.exe.onTriggered=function()
     {
         if(cgl.canvasHeight!=h) h=self.height.val=cgl.canvasHeight;
-        if(cgl.canvasWidth!=h) h=self.width.val=cgl.canvasWidth;
-
+        if(cgl.canvasWidth!=w) w=self.width.val=cgl.canvasWidth;
         self.trigger.trigger();
     };
-
 };
 
 Ops.Gl.CanvasSize.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.ViewPortSize = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='ViewPortSize';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
+    this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
+
+    var w=0,h=0;
+
+    this.exe.onTriggered=function()
+    {
+        if(cgl.getViewPort()[2]!=h) h=self.width.val=cgl.getViewPort()[2];
+        if(cgl.getViewPort()[3]!=w) w=self.height.val=cgl.getViewPort()[3];
+        self.trigger.trigger();
+    };
+};
+
+Ops.Gl.ViewPortSize.prototype = new Op();
