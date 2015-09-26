@@ -661,10 +661,12 @@ CABLES.UI.Patch=function(_gui)
         CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 
         uiOp.setPos();
-        
+
         if(!isLoading)
         {
-            setTimeout(function(){
+            setTimeout(function()
+            {
+                if(currentSubPatch==uiOp.getSubPatch()) uiOp.show();
                 gui.patch().setSelectedOp(null);
                 gui.patch().setSelectedOp(uiOp);
                 gui.patch().showOpParams(op);
@@ -754,6 +756,7 @@ CABLES.UI.Patch=function(_gui)
 
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
+            if(!uiPort1.opUi.isHidden())thelink.show();
 
             var undofunc=function(p1Name,p2Name,op1Id,op2Id)
             {

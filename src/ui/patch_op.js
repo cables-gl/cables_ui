@@ -51,34 +51,29 @@ function UiLink(port1, port2)
     var middlePosX=30;
     var middlePosY=30;
     var addCircle=null;
+    this.linkLine=null;
     this.p1=port1;
     this.p2=port2;
 
-    self.hide=function()
-    {
-        this.thisLine.hide();
-    };
-
-    self.show=function()
-    {
-        this.thisLine.show();
-    };
 
     this.hideAddButton=function()
     {
         if(addCircle)addCircle.remove();
         addCircle=null;
 
-        this.thisLine.attr(
-        {
-            "stroke-opacity": 1,
-            "stroke-width": 1
-        });
+        if(this.linkLine)
+            this.linkLine.attr(
+            {
+                "stroke-opacity": 1,
+                "stroke-width": 1
+            });
     };
 
     this.showAddButton=function()
     {
-        this.thisLine.attr(
+        if(!this.isVisible())return;
+
+        this.linkLine.attr(
         {
             "stroke-opacity": 1.0,
             "stroke-width": 2
@@ -171,27 +166,49 @@ function UiLink(port1, port2)
         return "M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
     };
 
-    this.thisLine = gui.patch().getPaper().path(this.getPath());
-    this.thisLine.attr( CABLES.UI.uiConfig.linkingLine );
-    this.thisLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
 
-    
-    this.thisLine.hover(function ()
+    this.isVisible=function()
     {
-        this.attr({stroke:CABLES.UI.uiConfig.colorLinkHover});
-    }, function ()
+        return self.linkLine!==null;
+    };
+
+    self.hide=function()
     {
-        this.attr({stroke:CABLES.UI.uiConfig.getPortColor(self.p1.thePort)});
-    });
+        if(!this.isVisible())return;
+        this.linkLine.remove();
+        this.linkLine=null;
+    };
+
+    self.show=function()
+    {
+        if(this.isVisible())return;
+        this.redraw();
+    };
 
     this.remove=function()
     {
-        this.thisLine.remove();
+        self.hide();
     };
 
     this.redraw = function()
     {
-        this.thisLine.attr("path", this.getPath());
+        if(!this.linkLine)
+        {
+            this.linkLine = gui.patch().getPaper().path(this.getPath());
+            this.linkLine.attr( CABLES.UI.uiConfig.linkingLine );
+            this.linkLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
+            
+            this.linkLine.hover(function ()
+            {
+                this.attr({stroke:CABLES.UI.uiConfig.colorLinkHover});
+            }, function ()
+            {
+                this.attr({stroke:CABLES.UI.uiConfig.getPortColor(self.p1.thePort)});
+            });
+        }
+
+
+        this.linkLine.attr("path", this.getPath());
         this.showAddButton();
     };
 }
@@ -449,6 +466,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
     this.showAddButtons=function()
     {
+        if(this.isHidden())return;
         self.removeDeadLinks();
         for(var j in self.links) self.links[j].showAddButton();
     };
