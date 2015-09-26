@@ -2699,7 +2699,10 @@ th {
   background-color: #111;
   z-index: 98;
   position: absolute;
-  display: block;
+  display: block; }
+
+#splitterTimeline {
+  height: 4px;
   cursor: ns-resize; }
 
 #splitterRendererWH {
@@ -2711,7 +2714,8 @@ th {
 
 #splitterRenderer {
   height: 4px;
-  right: 0px; }
+  right: 0px;
+  cursor: ns-resize; }
 
 #splitterPatch {
   width: 4px;

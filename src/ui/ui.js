@@ -28,6 +28,7 @@ CABLES.UI.GUI=function()
         return _patch;
     };
 
+    this.timingHeight=250;
     this.rendererWidth=640;
     this.rendererHeight=360;
 
@@ -36,7 +37,7 @@ CABLES.UI.GUI=function()
         var statusBarHeight=20;
         var menubarHeight=30;
         var optionsWidth=400;
-        var timingHeight=250;
+
         var timelineUiHeight=40;
         var timedisplayheight=25;
 
@@ -44,7 +45,7 @@ CABLES.UI.GUI=function()
         // var rendererHeight=CABLES.UI.uiConfig.rendererSizes[rendererSize].h+2;
 
         var patchHeight=window.innerHeight-statusBarHeight-menubarHeight;
-        if(showTiming)patchHeight-=timingHeight;
+        if(showTiming)patchHeight-=this.timingHeight;
 
         $('#patch svg').css('height',patchHeight-2);
         $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9);
@@ -54,10 +55,10 @@ CABLES.UI.GUI=function()
 $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
 $('#splitterRenderer').css('top',self.rendererHeight);
 $('#splitterRenderer').css('width',self.rendererWidth);
-
-
 $('#splitterRendererWH').css('right',self.rendererWidth-35);
 $('#splitterRendererWH').css('top',self.rendererHeight-35);
+
+
 
 
 
@@ -69,23 +70,28 @@ $('#splitterRendererWH').css('top',self.rendererHeight-35);
 
         $('#timing').css('width',window.innerWidth-self.rendererWidth-2);
         $('#timing').css('bottom',statusBarHeight);
+
         if(showTiming)
         {
-            $('#timing').css('height',timingHeight);
+            $('#timing').css('height',this.timingHeight);
 
             $('#timetimeline').css('width',window.innerWidth-self.rendererWidth-2);
-            $('#timetimeline').css('height',timingHeight-timedisplayheight);
+            $('#timetimeline').css('height',this.timingHeight-timedisplayheight);
             $('#timetimeline').css('margin-top',timelineUiHeight);
 
             $('#timetimeline svg').css('width',window.innerWidth-self.rendererWidth-2);
-            $('#timetimeline svg').css('height',timingHeight-timedisplayheight);
+            $('#timetimeline svg').css('height',this.timingHeight-timedisplayheight);
 
             $('#timeline svg').css('width',window.innerWidth-self.rendererWidth-2);
-            $('#timeline svg').css('height',timingHeight-timedisplayheight);
+            $('#timeline svg').css('height',this.timingHeight-timedisplayheight);
             $('#timeline svg').css('margin-top',timelineUiHeight+timedisplayheight);
             $('#timeline svg').show();
             $('#timetimeline').show();
             $('#keycontrols').show();
+
+            $('#splitterTimeline').show();
+            $('#splitterTimeline').css('bottom',this.timingHeight-timedisplayheight+2);
+
         }
         else
         {
@@ -93,10 +99,15 @@ $('#splitterRendererWH').css('top',self.rendererHeight-35);
             $('#timetimeline').hide();
             $('#timeline svg').hide();
             $('#timing').css('height',timelineUiHeight);
+
+            $('#splitterTimeline').hide();
+
         }
         if(self.timeLine())self.timeLine().updateViewBox();
 
-        $('#options').css('left',window.innerWidth-self.rendererWidth);
+        $('#splitterTimeline').css('width',window.innerWidth-self.rendererWidth-2);
+
+        $('#options').css('left',window.innerWidth-self.rendererWidth-1);
         $('#options').css('top',self.rendererHeight);
         $('#options').css('width',optionsWidth);
         $('#options').css('height',window.innerHeight-self.rendererHeight-statusBarHeight);

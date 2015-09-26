@@ -11,7 +11,6 @@ $('#splitterPatch').mousedown(function (e)
     $(document).mousemove(function (e)
     {
         e.preventDefault();
-        $('#splitterPatch').css('left',e.clientX);
 
         gui.rendererWidth=window.innerWidth - e.clientX;
         gui.setLayout();
@@ -24,9 +23,26 @@ $('#splitterRenderer').mousedown(function (e)
     $(document).mousemove(function (e)
     {
         e.preventDefault();
-        $('#splitterPatch').css('left',e.clientX);
 
         gui.rendererHeight= e.clientY;
+        gui.setLayout();
+    });
+});
+
+
+$('#splitterTimeline').mousedown(function (e)
+{
+    e.preventDefault();
+    $(document).mousemove(function (e)
+    {
+        e.preventDefault();
+
+        gui.timingHeight= window.innerHeight-e.clientY;
+
+        console.log('gui.timingHeight',gui.timingHeight);
+        
+        
+
         gui.setLayout();
     });
 });
@@ -37,7 +53,6 @@ $('#splitterRendererWH').mousedown(function (e)
     $(document).mousemove(function (e)
     {
         e.preventDefault();
-        $('#splitterPatch').css('left',e.clientX);
 
         gui.rendererWidth=window.innerWidth - e.clientX;
         gui.rendererHeight= e.clientY;

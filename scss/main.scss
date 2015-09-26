@@ -858,9 +858,15 @@ input[type=range]:focus {
     z-index: 98;
     position: absolute;
     display: block;
-    cursor:ns-resize;
+    
 }
 
+
+#splitterTimeline
+{
+    height:4px;
+    cursor:ns-resize;
+}
 
 #splitterRendererWH
 {
@@ -876,6 +882,7 @@ input[type=range]:focus {
 {
     height:4px;
     right:0px;
+    cursor:ns-resize;
 }
 
 #splitterPatch
