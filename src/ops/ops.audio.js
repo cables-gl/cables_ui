@@ -58,6 +58,8 @@ Ops.WebAudio.AudioPlayer = function()
 
     function seek()
     {
+        if(!window.gui && CGL.getLoadingStatus()>=1.0)return;
+
         if(!self.audio)return;
 
         if(self.patch.timer.isPlaying() && self.audio.paused) self.audio.play();

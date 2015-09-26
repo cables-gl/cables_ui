@@ -740,11 +740,13 @@ Ops.LoadingStatus = function()
             self.loading.trigger();
             self.patch.timer.pause();
 
-            if(self.result.val>=1.0) 
+            if(self.result.val>=1.0)
             {
+                CGL.incrementLoadingAssets();
                 finishedLoading=true;
                 self.patch.timer.play();
                 self.patch.timer.setTime(0);
+                CGL.decrementLoadingAssets();
             }
 
         }
