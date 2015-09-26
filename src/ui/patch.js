@@ -17,8 +17,7 @@ CABLES.UI.Patch=function(_gui)
     var currentSubPatch=0;
 
     var viewBox={x:0,y:0,w:1100,h:1010};
-    var mouseX=-1;
-    var mouseY=-1;
+    var lastMouseMoveEvent=null;
 
     var rubberBandStartPos=null;
     var rubberBandPos=null;
@@ -94,6 +93,15 @@ CABLES.UI.Patch=function(_gui)
                         {
                             if(json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
                             {
+
+                                var mouseX=0,
+                                    mouseY=0;
+                                if(lastMouseMoveEvent)
+                                {
+                                    mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
+                                    mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
+                                }
+
                                 json.ops[i].uiAttribs.translate.x=json.ops[i].uiAttribs.translate.x+mouseX-minx;
                                 json.ops[i].uiAttribs.translate.y=json.ops[i].uiAttribs.translate.y+mouseY-miny;
                             }
@@ -444,13 +452,16 @@ CABLES.UI.Patch=function(_gui)
 
         $('#patch').on("mousemove", function(e)
         {
-            for(var i in self.ops)
-            {
-                if(self.ops[i].isDragging || self.ops[i].isMouseOver)
-                    return;
-            }
 
-            rubberBandMove(e);
+            if(e.which==1 && !spacePressed)
+            {
+
+                for(var i in self.ops)
+                    if(self.ops[i].isDragging || self.ops[i].isMouseOver)
+                        return;
+
+                rubberBandMove(e);
+            }
         });
 
         $('#patch svg').bind("mouseup", function (event)
@@ -466,14 +477,17 @@ CABLES.UI.Patch=function(_gui)
 
             if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
             {
+                var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
+                var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
+
                 viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
                 viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
                 self.updateViewBox();
             }
 
-            mouseX=gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
-            mouseY=gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
+            lastMouseMoveEvent=e;
+
         });
 
         this.timeLine=new CABLES.TL.UI.TimeLineUI();
@@ -625,13 +639,12 @@ CABLES.UI.Patch=function(_gui)
 
         if(!isLoading)
         {
-        setTimeout(function(){
-            gui.patch().setSelectedOp(null);
-            gui.patch().setSelectedOp(uiOp);
-            gui.patch().showOpParams(op);
+            setTimeout(function(){
+                gui.patch().setSelectedOp(null);
+                gui.patch().setSelectedOp(uiOp);
+                gui.patch().showOpParams(op);
 
-        },30);
-
+            },30);
         }
         uiOp.wasAdded=true;
     }

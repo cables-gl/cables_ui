@@ -199,6 +199,7 @@ Raphael.el.getGroup = function () { return this.group; };
 
 Raphael.fn.OpRect = function (x, y, w, h, text,objName)
 {
+    var isSelected=false;
     var group = this.set();
     var background = this.rect(0, 0, w, h).attr(
         {
@@ -217,6 +218,9 @@ Raphael.fn.OpRect = function (x, y, w, h, text,objName)
 
     background.setSelected=function(sel)
     {
+        if(isSelected==sel)return;
+        isSelected=sel;
+        
         if(sel) background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected });
             else background.attr( { fill: CABLES.UI.uiConfig.colorOpBg });
     };
