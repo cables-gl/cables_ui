@@ -199,7 +199,7 @@ Raphael.el.getGroup = function () { return this.group; };
 
 Raphael.fn.OpRect = function (x, y, w, h, text,objName)
 {
-    var isSelected=false;
+    var isSelected=true;
     var group = this.set();
     var background = this.rect(0, 0, w, h).attr(
         {
