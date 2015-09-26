@@ -1,5 +1,10 @@
 
-var uiConfig=
+
+
+CABLES.UI=CABLES.UI|| {};
+
+
+CABLES.UI.uiConfig=
 {
     portSize:10,
     portHeight:7,
@@ -21,11 +26,26 @@ var uiConfig=
     colorCursor:'#ea6638',
 
     watchValuesInterval:100,
-    rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}]
+    rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}],
+
+    getPortColor:function(port)
+    {
+        if(!port)return '#ff0000';
+        var type=port.getType();
+        if(type==OP_PORT_TYPE_VALUE) return '#ea6638';
+        else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
+        else if(type==OP_PORT_TYPE_OBJECT)  return '#26a92a';
+        else if(type==OP_PORT_TYPE_ARRAY)  return '#a02bbd';
+        else if(type==OP_PORT_TYPE_DYNAMIC)  return '#666';
+        
+        else return '#c6c6c6';
+    }
 };
 
 
-CABLES.UI=CABLES.UI|| {};
+
+
+
 CABLES.undo = new UndoManager();
 
 CABLES.UI.GUI=function()
@@ -61,8 +81,8 @@ CABLES.UI.GUI=function()
         var timelineUiHeight=40;
         var timedisplayheight=25;
 
-        var rendererWidth=uiConfig.rendererSizes[rendererSize].w+2;
-        var rendererHeight=uiConfig.rendererSizes[rendererSize].h+2;
+        var rendererWidth=CABLES.UI.uiConfig.rendererSizes[rendererSize].w+2;
+        var rendererHeight=CABLES.UI.uiConfig.rendererSizes[rendererSize].h+2;
 
         var patchHeight=window.innerHeight-statusBarHeight-menubarHeight;
         if(showTiming)patchHeight-=timingHeight;
@@ -120,7 +140,7 @@ CABLES.UI.GUI=function()
         $('#menubar').css('width',window.innerWidth-rendererWidth);
         $('#menubar').css('height',menubarHeight);
 
-        if(uiConfig.rendererSizes[rendererSize].w===0)
+        if(CABLES.UI.uiConfig.rendererSizes[rendererSize].w===0)
         {
             $('#glcanvas').attr('width',window.innerWidth);
             $('#glcanvas').attr('height',window.innerHeight);
@@ -128,9 +148,9 @@ CABLES.UI.GUI=function()
         }
         else
         {
-            $('#glcanvas').attr('width',uiConfig.rendererSizes[rendererSize].w);
-            $('#glcanvas').attr('height',uiConfig.rendererSizes[rendererSize].h);
-            CABLES.UI.setStatusText('webgl renderer set to size: '+uiConfig.rendererSizes[rendererSize].w+' x '+uiConfig.rendererSizes[rendererSize].h);
+            $('#glcanvas').attr('width',CABLES.UI.uiConfig.rendererSizes[rendererSize].w);
+            $('#glcanvas').attr('height',CABLES.UI.uiConfig.rendererSizes[rendererSize].h);
+            CABLES.UI.setStatusText('webgl renderer set to size: '+CABLES.UI.uiConfig.rendererSizes[rendererSize].w+' x '+CABLES.UI.uiConfig.rendererSizes[rendererSize].h);
         }
     };
 
@@ -157,7 +177,7 @@ CABLES.UI.GUI=function()
     this.cycleRendererSize=function()
     {
         rendererSize++;
-        if(rendererSize>uiConfig.rendererSizes.length-1)rendererSize=0;
+        if(rendererSize>CABLES.UI.uiConfig.rendererSizes.length-1)rendererSize=0;
 
         self.setLayout();
     };
@@ -312,7 +332,7 @@ CABLES.UI.GUI=function()
 
                     $('.tooltip').hide();
 
-                    if(rendererSize==uiConfig.rendererSizes.length-1)
+                    if(rendererSize==CABLES.UI.uiConfig.rendererSizes.length-1)
                     {
                         self.cycleRendererSize();
                     }

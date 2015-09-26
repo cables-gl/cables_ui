@@ -4,59 +4,6 @@ Ops.Gl.TextureEffects=Ops.Gl.TextureEffects || {};
 
 // ---------------------------------------------------------------------------------------------
 
-Ops.Gl.TextureEffects.TextureEffect = function()
-{
-    // DEPRECATED
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='texture effect';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE));
-
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-    this.tex=this.addInPort(new Port(this,"texture_in",OP_PORT_TYPE_TEXTURE));
-
-    var ready=false;
-    var effect=new CGL.TextureEffect();
-
-    cgl.currentTextureEffect=effect;
-
-    this.tex.onValueChanged=function()
-    {
-        effect.setSourceTexture(self.tex.val);
-        self.texOut.val=cgl.currentTextureEffect.getCurrentSourceTexture();
-        ready=true;
-    };
-
-    this.render.onTriggered=function()
-    {
-        if(!ready)return;
-        if(!self.tex.val) return;
-        
-        if(!self.texOut.val || self.tex.val.width!=self.texOut.val.width || self.tex.val.height!=self.texOut.val.height)
-        {
-            console.log("tex size changed!?!?!?!?");
-            effect.setSourceTexture(self.tex.val);
-            self.texOut.val=cgl.currentTextureEffect.getCurrentSourceTexture();
-        }
-        cgl.currentTextureEffect=effect;
-
-        effect.startEffect();
-        self.trigger.trigger();
-        self.texOut.val=cgl.currentTextureEffect.getCurrentSourceTexture();
-    };
-};
-
-Ops.Gl.TextureEffects.TextureEffect.prototype = new Op();
-
-
-
-
-
-
-// ---------------------------------------------------------------------------------------------
-
 Ops.Gl.TextureEffects.ImageCompose = function()
 {
     Op.apply(this, arguments);
@@ -2006,8 +1953,6 @@ Ops.Gl.TextureEffects.FXAA = function()
     this.name='FXAA';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-
     
     this.fxaa_span=this.addInPort(new Port(this,"span",OP_PORT_TYPE_VALUE,{display:'dropdown',values:[0,2,4,8,16,32,64]}));
     this.fxaa_reduceMin=this.addInPort(new Port(this,"reduceMin",OP_PORT_TYPE_VALUE));
@@ -2016,11 +1961,7 @@ Ops.Gl.TextureEffects.FXAA = function()
     this.texWidth=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.texHeight=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
-
     var shader=new CGL.Shader();
-
-
-
     var srcFrag=''
                
         .endl()+'precision highp float;'

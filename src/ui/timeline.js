@@ -21,7 +21,7 @@ CABLES.TL.Key.prototype.setSelected=function(sel)
     }
     else
     {
-        this.circle.attr({ fill:uiConfig.colorKey,"fill-opacity":0.7 });
+        this.circle.attr({ fill:CABLES.UI.uiConfig.colorKey,"fill-opacity":0.7 });
     }
 };
 
@@ -119,7 +119,7 @@ CABLES.TL.Key.prototype.initUI=function()
     this.bezX=this.x+this.bezTime*CABLES.TL.TIMESCALE;
     this.bezY=this.y+this.bezValue*CABLES.TL.VALUESCALE;
 
-    var discattr = {fill: uiConfig.colorKey, stroke: "none"};
+    var discattr = {fill: CABLES.UI.uiConfig.colorKey, stroke: "none"};
 
     if(this.circle)
     {
@@ -355,10 +355,10 @@ CABLES.TL.UI.TimeLineUI=function()
     var timeDisplayMode=true;
 
     var cursorLine = paper.path("M 0 0 L 10 10");
-    cursorLine.attr({stroke: uiConfig.colorCursor, "stroke-width": 2});
+    cursorLine.attr({stroke: CABLES.UI.uiConfig.colorCursor, "stroke-width": 2});
 
     var cursorLineDisplay = paperTime.path("M 0 0 L 10 10");
-    cursorLineDisplay.attr({stroke: uiConfig.colorCursor, "stroke-width": 2});
+    cursorLineDisplay.attr({stroke: CABLES.UI.uiConfig.colorCursor, "stroke-width": 2});
 
     this.getFPS=function()
     {
@@ -1242,8 +1242,8 @@ CABLES.TL.UI.TimeLineUI=function()
                     y:start.y,
                     width:end.x-start.x,
                     height:end.y-start.y,
-                    "stroke": uiConfig.colorRubberBand,
-                    "fill": uiConfig.colorRubberBand,
+                    "stroke": CABLES.UI.uiConfig.colorRubberBand,
+                    "fill": CABLES.UI.uiConfig.colorRubberBand,
                     "stroke-width": 2,
                     "fill-opacity": 0.1
                });
