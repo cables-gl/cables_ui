@@ -727,13 +727,27 @@ Ops.LoadingStatus = function()
     this.numAssets=this.addOutPort(new Port(this,"numAssets",OP_PORT_TYPE_VALUE));
     this.loading=this.addOutPort(new Port(this,"loading",OP_PORT_TYPE_FUNCTION));
 
+    var finishedLoading=false;
+
     this.exe.onTriggered= function()
     {
         self.result.val=CGL.getLoadingStatus();
         self.numAssets.val=CGL.numMaxLoadingAssets;
         
-        if(self.result.val>=1.0) self.finished.trigger();
-            else self.loading.trigger();
+        if(finishedLoading) self.finished.trigger();
+        else
+        {
+            self.loading.trigger();
+            self.patch.timer.pause();
+
+            if(self.result.val>=1.0) 
+            {
+                finishedLoading=true;
+                self.patch.timer.play();
+                self.patch.timer.setTime(0);
+            }
+
+        }
     };
 };
 

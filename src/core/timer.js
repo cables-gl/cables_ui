@@ -13,7 +13,6 @@ function Timer()
 
     function getTime()
     {
-
         lastTime=(Date.now()-timeStart)/1000;
         return lastTime+timeOffset;
     }
