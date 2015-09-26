@@ -1030,7 +1030,7 @@ Ops.Gl.Render2Texture = function()
     {
 
     cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
-    cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, this.width.val,this.height.val);
+    cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.val,self.height.val);
     
     cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
 
