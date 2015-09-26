@@ -592,7 +592,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         port.portIndex=portIndex;
 
 
-        if(this.oprect.getRect()) port.addUi(this.oprect.getRect().getGroup());
+        if(this.oprect.getRect()) port.addUi(this.oprect.getGroup());
         
 
 
