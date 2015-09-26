@@ -69,7 +69,8 @@ svg {
   top: 0px;
   right: 0px;
   border: 1px solid transparent;
-  outline: none; }
+  outline: none;
+  z-index: 100; }
   #glcanvas:focus {
     border: 1px solid #6c9fde; }
 
@@ -2693,3 +2694,26 @@ th {
   .shaderErrorCode
 .error {
     color: #ea6638; }
+
+.splitter {
+  background-color: #111;
+  z-index: 98;
+  position: absolute;
+  display: block;
+  cursor: ns-resize; }
+
+#splitterRendererWH {
+  height: 40px;
+  width: 40px;
+  background-color: #000;
+  z-index: 99;
+  cursor: ne-resize; }
+
+#splitterRenderer {
+  height: 4px;
+  right: 0px; }
+
+#splitterPatch {
+  width: 4px;
+  height: 100%;
+  cursor: ew-resize; }

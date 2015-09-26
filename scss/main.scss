@@ -91,6 +91,7 @@ a
     right:0px;
     border:1px solid transparent;
     outline: none;
+    z-index: 100;
 
     &:focus
     {
@@ -845,11 +846,41 @@ input[type=range]:focus {
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
 
-
     .error
     {
         color:#ea6638;
     }
 }
 
+.splitter
+{
+    background-color:#111;
+    z-index: 98;
+    position: absolute;
+    display: block;
+    cursor:ns-resize;
+}
 
+
+#splitterRendererWH
+{
+    height:40px;
+    width:40px;
+    background-color: #000;
+    z-index: 99;
+    cursor:ne-resize;
+}
+
+
+#splitterRenderer
+{
+    height:4px;
+    right:0px;
+}
+
+#splitterPatch
+{
+    width:4px;
+    height:100%;
+    cursor:ew-resize;
+}
