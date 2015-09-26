@@ -1030,8 +1030,6 @@ if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
         textureDepth.tex,
         0 );
 
-
-
     cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
     cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);

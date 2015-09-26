@@ -48,11 +48,15 @@ CGL.State=function()
     };
     this.setViewPort=function(x,y,w,h)
     {
-        viewPort[0]=x;
-        viewPort[1]=y;
-        viewPort[2]=w;
-        viewPort[3]=h;
-        cgl.gl.viewport(x,y,w,h);
+        viewPort[0]=parseInt(x,10);
+        viewPort[1]=parseInt(y,10);
+        viewPort[2]=parseInt(w,10);
+        viewPort[3]=parseInt(h,10);
+        cgl.gl.viewport(
+            viewPort[0],
+            viewPort[1],
+            viewPort[2],
+            viewPort[3]);
     };
 
     this.beginFrame=function()
