@@ -991,7 +991,6 @@ Ops.Gl.Render2Texture = function()
     var textureDepth=new CGL.Texture({isDepthTexture:true});
 
     this.useVPSize=this.addInPort(new Port(this,"use viewport size",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    this.useVPSize.val=true;
 
     this.width=this.addInPort(new Port(this,"texture width"));
     this.height=this.addInPort(new Port(this,"texture height"));
@@ -1000,7 +999,7 @@ Ops.Gl.Render2Texture = function()
 
     this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.texDepth=this.addOutPort(new Port(this,"textureDepth",OP_PORT_TYPE_TEXTURE));
-var renderbuffer=null;
+    var renderbuffer=null;
 
     frameBuf = cgl.gl.createFramebuffer();
 
@@ -1009,42 +1008,53 @@ var renderbuffer=null;
 
     function resize()
     {
+        cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
+
+        if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
+
+        renderbuffer = cgl.gl.createRenderbuffer();
+        cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
+        cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.val,self.height.val);
+
+        cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
+        cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
 
 
-    cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
+        cgl.gl.framebufferTexture2D(
+            cgl.gl.FRAMEBUFFER,
+            cgl.gl.DEPTH_ATTACHMENT,
+            cgl.gl.TEXTURE_2D,
+            textureDepth.tex,
+            0 );
 
-if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
+        cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
+        cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
-    renderbuffer = cgl.gl.createRenderbuffer();
-    cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
-    cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.val,self.height.val);
-    
-    cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
-    cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
-    
-
-    cgl.gl.framebufferTexture2D(
-        cgl.gl.FRAMEBUFFER,
-        cgl.gl.DEPTH_ATTACHMENT,
-        cgl.gl.TEXTURE_2D,
-        textureDepth.tex,
-        0 );
-
-    cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
-    cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
-    cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
-
-                console.log('resize r2t',self.width.val,self.height.val);
+        console.log('resize r2t',self.width.val,self.height.val);
 
         texture.setSize(self.width.val,self.height.val);
         textureDepth.setSize(self.width.val,self.height.val);
     }
 
-    this.width.onValueChanged=resize;
-    this.height.onValueChanged=resize;
+
+    this.useVPSize.onValueChanged=function()
+    {
+        if(self.useVPSize.val)
+        {
+            self.width.onValueChanged=null;
+            self.height.onValueChanged=null;
+        }
+        else
+        {
+            self.width.onValueChanged=resize;
+            self.height.onValueChanged=resize;
+        }
+    };
 
     this.width.val=1920;
     this.height.val=1080;
+    this.useVPSize.val=true;
 
     var oldViewport;
 
@@ -1058,6 +1068,8 @@ if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
         {
             if(texture.width!=cgl.getViewPort()[2] || texture.height!=cgl.getViewPort()[3] )
             {
+                console.log('not the same ? ',texture.width, cgl.getViewPort()[2] , texture.height , cgl.getViewPort()[3]);
+                        
                 self.width.val=cgl.getViewPort()[2];
                 self.height.val=cgl.getViewPort()[3];
                 resize();

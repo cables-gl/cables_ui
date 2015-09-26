@@ -198,7 +198,7 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.getType=function(){ return this.type; };
     this.isLinked=function(){ return this.links.length>0; };
-    this.onValueChanged=function(){};
+    this.onValueChanged=null;
     this.onTriggered=function(){};
     this._onTriggered=function()
     {
@@ -219,7 +219,7 @@ var Port=function(parent,name,type,uiAttribs)
                 else
                 {
                     this.value=v;
-                    this.onValueChanged();
+                    if(this.onValueChanged)this.onValueChanged();
                 }
 
                 for(var i in this.links)

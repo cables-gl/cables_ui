@@ -13,7 +13,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
 
     this.useVPSize=this.addInPort(new Port(this,"use viewport size",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    this.useVPSize.val=true;
 
     this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
@@ -43,19 +42,28 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         }
     };
 
-    this.height.onValueChanged=function()
+    this.useVPSize.onValueChanged=function()
+    {
+        if(self.useVPSize.val)
+        {
+            self.width.onValueChanged=null;
+            self.height.onValueChanged=null;
+        }
+        else
+        {
+            self.width.onValueChanged=resize;
+            self.height.onValueChanged=resize;
+        }
+    };
+    this.useVPSize.val=true;
+
+
+    function resize()
     {
         h=parseInt(self.height.val,10);
-        // self.width.val=parseInt(self.width.val,10);
-        self.updateResolution();
-    };
-
-    this.width.onValueChanged=function()
-    {
         w=parseInt(self.width.val,10);
-        // self.height.val=parseInt(self.height.val,10);
         self.updateResolution();
-    };
+    }
 
 
     render=function()
