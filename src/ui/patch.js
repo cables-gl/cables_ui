@@ -481,12 +481,6 @@ CABLES.UI.Patch=function(_gui)
         gui.setLayout();
     };
 
-    this.showExample=function(which)
-    {
-        gui.scene().clear();
-        gui.scene().deSerialize(examples[which].src);
-    };
-
     function doLink()
     {
 

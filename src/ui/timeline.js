@@ -731,12 +731,8 @@ CABLES.TL.UI.TimeLineUI=function()
                 if(e.metaKey || e.ctrlKey) self.selectAllKeys();
             break;
 
-
             case 68: // d
-                
                 console.log('anim.keys',anim.keys);
-                        
-
             break;
 
             case 90: // z undo

@@ -18,7 +18,7 @@ function getPortDescription(thePort)
 
 CABLES.UI.linkingLine=null;
 
-function Line(startX, startY, thisPaper)
+function Line(startX, startY, paper)
 {
     var start={ x:startX,y:startY};
 
@@ -39,7 +39,7 @@ function Line(startX, startY, thisPaper)
 
         return "M "+startX+" "+startY+" L" + endX + " " + endY;
     };
-    this.thisLine = thisPaper.path(this.getPath());
+    this.thisLine = paper.path(this.getPath());
     this.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLink, "stroke-width": 2});
     this.redraw = function() { this.thisLine.attr("path", this.getPath()); };
 }
@@ -49,13 +49,11 @@ function Line(startX, startY, thisPaper)
 function UiLink(port1, port2)
 {
     var self=this;
-    this.p1=port1;
-    this.p2=port2;
-
     var middlePosX=30;
     var middlePosY=30;
-
     var addCircle=null;
+    this.p1=port1;
+    this.p2=port2;
 
     self.hide=function()
     {
@@ -403,10 +401,12 @@ var OpUi=function(op,x,y,w,h,txt)
         this.previousDx = 0;
         this.previousDy = 0;
     };
+
     var move = function (dx, dy,a,b,e)
     {
         gui.patch().moveSelectedOps(dx,dy,a,b,e);
     };
+
     var up = function ()
     {
         gui.patch().moveSelectedOpsFinished();
@@ -415,12 +415,12 @@ var OpUi=function(op,x,y,w,h,txt)
 
     this.oprect=r.OpRect(x,y,w,h, txt,self.op.objName).drag(move, dragger, up);
     this.oprect.hover(function(e)
-    {
-        self.isMouseOver=true;
-    },function(e)
-    {
-        self.isMouseOver=false;
-    });
+        {
+            self.isMouseOver=true;
+        },function(e)
+        {
+            self.isMouseOver=false;
+        });
 
     this.oprect.node.ondblclick = function (ev)
     {
@@ -437,7 +437,7 @@ var OpUi=function(op,x,y,w,h,txt)
     this.setSelected=function(sel)
     {
         selected=sel;
-        if(sel)self.showAddButtons();
+        if(sel) self.showAddButtons();
             else self.hideAddButtons();
         self.isDragging=false;
         this.oprect.setSelected(sel);

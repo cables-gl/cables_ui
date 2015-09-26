@@ -2,7 +2,6 @@
 // http://howlerjs.com/
 //http://learningwebgl.com/lessons/lesson01/index.html
 
-
 Ops.Log = function()
 {
     Op.apply(this, arguments);
@@ -77,7 +76,6 @@ Ops.CallsPerSecond = function()
 };
 Ops.CallsPerSecond.prototype = new Op();
 
-
 // ---------------------------------------------------------------------------
 
 Ops.Value = function()
@@ -111,12 +109,9 @@ Ops.Value = function()
     this.onAnimFrame=function(){};
 };
 
-
-
 Ops.Value.prototype = new Op();
 
 // ---------------------------------------------------------------------------
-
 
 Ops.ColorValue = function()
 {
@@ -124,7 +119,7 @@ Ops.ColorValue = function()
     var self=this;
     this.name='ColorValue';
 
-this.g=this.addInPort(new Port(this,"ignore",OP_PORT_TYPE_FUNCTION,{display:'readonly'}));
+    this.g=this.addInPort(new Port(this,"ignore",OP_PORT_TYPE_FUNCTION,{display:'readonly'}));
     this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
     this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
@@ -153,8 +148,6 @@ Ops.ColorValue.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
-
-
 Ops.TimeLineTime = function()
 {
     Op.apply(this, arguments);
@@ -170,7 +163,6 @@ Ops.TimeLineTime = function()
 
 };
 Ops.TimeLineTime.prototype = new Op();
-
 
 // ---------------------------------------------------------------------------
 
@@ -202,8 +194,6 @@ Ops.TimeLineDelay = function()
 };
 Ops.TimeLineDelay.prototype = new Op();
 
-
-
 // ---------------------------------------------------------------------------
 
 Ops.TimeLineDelayFrames = function()
@@ -229,12 +219,10 @@ Ops.TimeLineDelayFrames = function()
         self.theTime.val=self.patch.timer.getTime();
         self.trigger.trigger();
         self.patch.timer.setDelay(0);
-
     };
 
 };
 Ops.TimeLineDelayFrames.prototype = new Op();
-
 
 // ---------------------------------------------------------------------------
 
@@ -251,7 +239,6 @@ Ops.TimeLineOverwrite = function()
     this.theTime=this.addOutPort(new Port(this,"time"));
     this.newTime.val=0.0;
 
-
     var realTime=0;
     this.exe.onTriggered=function()
     {
@@ -260,8 +247,6 @@ Ops.TimeLineOverwrite = function()
         self.patch.timer.overwriteTime=self.newTime.val;
         self.trigger.trigger();
         self.patch.timer.overwriteTime=-1;
-        // self.patch.timer.setTime(realTime);
-
     };
 };
 
@@ -285,8 +270,6 @@ Ops.Repeat = function()
 
     this.exe.onTriggered=function()
     {
-
-        // for(var i=0;i<self.num.value;i++)
         for(var i=self.num.value-1;i>=0;i--)
         {
             self.idx.val=i;
@@ -296,7 +279,6 @@ Ops.Repeat = function()
     };
 };
 Ops.Repeat.prototype = new Op();
-
 
 // ---------------------------------------------------------------------------
 
@@ -332,7 +314,6 @@ Ops.ArrayIterator.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
-
 Ops.IfTrueThen = function()
 {
     Op.apply(this, arguments);
@@ -349,7 +330,7 @@ Ops.IfTrueThen = function()
 
     this.exe.onTriggered=function()
     {
-        if(self.bool.val==true ||self.bool.val>=1 )
+        if(self.bool.val || self.bool.val>=1 )
         {
             self.triggerThen.trigger();
         }
@@ -359,15 +340,10 @@ Ops.IfTrueThen = function()
         }
     };
 
-
-
 };
 Ops.IfTrueThen.prototype = new Op();
 
-
-
 // ---------------------------------------------------------------------------
-
 
 Ops.IfBetweenThen = function()
 {
@@ -400,16 +376,10 @@ Ops.IfBetweenThen = function()
             self.triggerElse.trigger();
         }
     };
-
-
 };
 Ops.IfBetweenThen.prototype = new Op();
 
-
-
-
 // ---------------------------------------------------------------------------
-
 
 Ops.ToggleBool = function()
 {
@@ -433,11 +403,7 @@ Ops.ToggleBool = function()
 };
 Ops.ToggleBool.prototype = new Op();
 
-
-
-
 // ---------------------------------------------------------------------------
-
 
 Ops.Group = function()
 {
@@ -457,18 +423,13 @@ Ops.Group = function()
     this.exe.onTriggered=function()
     {
         for(var i in self.triggers)
-        {
             self.triggers[i].trigger();
-        }
     };
 
     this.uiAttribs.warning='"group" is deprecated, please use "sequence now"';
 
 };
 Ops.Group.prototype = new Op();
-
-
-
 
 Ops.Sequence = function()
 {
@@ -488,9 +449,7 @@ Ops.Sequence = function()
     this.exe.onTriggered=function()
     {
         for(var i in self.triggers)
-        {
             self.triggers[i].trigger();
-        }
     };
 
 };
@@ -516,8 +475,6 @@ Ops.TimedSequence = function()
     this.triggerAlways=this.addOutPort(new Port(this,"triggerAlways",OP_PORT_TYPE_FUNCTION));
     this.currentKeyTime=this.addOutPort(new Port(this,"currentKeyTime",OP_PORT_TYPE_VALUE));
 
-
-
     var triggers=[];
 
     for(var i=0;i<30;i++)
@@ -540,10 +497,6 @@ Ops.TimedSequence = function()
                 }
             }
         }
-
-
-
-
 
         if(self.patch.gui && self.ignoreInSubPatch.val )
         {
@@ -569,8 +522,6 @@ Ops.TimedSequence = function()
             }
         }
 
-
-
         var outIndex=Math.round(self.current.val-0.5);
         if(outIndex>=0 && outIndex<triggers.length)
         {
@@ -578,10 +529,7 @@ Ops.TimedSequence = function()
         }
 
         self.patch.timer.overwriteTime=-1;
-
         self.triggerAlways.trigger();
-
-
     };
 
 };
@@ -703,8 +651,6 @@ Ops.Anim.TimeDiff = function()
 
 Ops.Anim.TimeDiff.prototype = new Op();
 
-
-
 // ---------------------------------------------------------------------------
 
 var cableVars={};
@@ -735,13 +681,11 @@ Ops.Anim.Variable = function()
     this.val.onValueChanged=changed;
     this.varName.onValueChanged=changed;
     this.exe.onTriggered=readValue;
-
 };
 
 Ops.Anim.Variable.prototype = new Op();
 
 // ---------------------------------------------------------------------------
-
 
 Ops.String=Ops.String || {};
 
@@ -769,10 +713,7 @@ Ops.String.concat = function()
 
 Ops.String.concat.prototype = new Op();
 
-
-
 // ----------------------------------------------------------------------
-
 
 Ops.LoadingStatus = function()
 {
@@ -781,15 +722,10 @@ Ops.LoadingStatus = function()
 
     this.name='loadingStatus';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-
     this.finished=this.addOutPort(new Port(this,"finished",OP_PORT_TYPE_FUNCTION));
-
     this.result=this.addOutPort(new Port(this,"status",OP_PORT_TYPE_VALUE));
     this.numAssets=this.addOutPort(new Port(this,"numAssets",OP_PORT_TYPE_VALUE));
-    
-
     this.loading=this.addOutPort(new Port(this,"loading",OP_PORT_TYPE_FUNCTION));
-
 
     this.exe.onTriggered= function()
     {
@@ -798,15 +734,12 @@ Ops.LoadingStatus = function()
         
         if(self.result.val>=1.0) self.finished.trigger();
             else self.loading.trigger();
-
     };
-
 };
 
 Ops.LoadingStatus.prototype = new Op();
 
 // ---------------
-
 
 Ops.TriggerCounter = function()
 {

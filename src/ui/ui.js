@@ -331,16 +331,9 @@ CABLES.UI.GUI=function()
         router.addRoute('/').get(function(event, params)
         {
             if(!localStorage.holo || localStorage.holo===''  || localStorage.holo.length<20)
-            {
                 self.scene.clear();
-            }
 
             self.patch().scene.deSerialize(localStorage.holo);
-        });
-
-        router.addRoute('/example/:index').get(function(event, params)
-        {
-            self.patch().showExample(params.index);
         });
 
         router.addRoute('/project/:id').get(function(event, params)

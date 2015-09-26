@@ -47,7 +47,7 @@ Ops.Gl.Matrix.WASDCamera = function()
         calcCameraMovement();
         move();
 
-        if(speedx!=0.0 || speedy!=0.0 || speedz!=0)
+        if(speedx!==0.0 || speedy!==0.0 || speedz!==0)
         {
             self.outPosX.val=-self.posX.val;
             self.outPosY.val=-self.posY.val;
@@ -71,14 +71,16 @@ Ops.Gl.Matrix.WASDCamera = function()
 
     function calcCameraMovement()
     {
-        var camMovementXComponent = 0.0;
-        var camMovementYComponent = 0.0;
-        var camMovementZComponent = 0.0;
+        var camMovementXComponent = 0.0,
+            camMovementYComponent = 0.0,
+            camMovementZComponent = 0.0,
+            pitchFactor=0,
+            yawFactor=0;
 
         if (pressedW)
         {
             // Control X-Axis movement
-            var pitchFactor = Math.cos(DEG2RAD*self.rotX.val);
+            pitchFactor = Math.cos(DEG2RAD*self.rotX.val);
                     
             camMovementXComponent += ( movementSpeedFactor * (Math.sin(DEG2RAD*self.rotY.val)) ) * pitchFactor;
 
@@ -86,21 +88,21 @@ Ops.Gl.Matrix.WASDCamera = function()
             camMovementYComponent += movementSpeedFactor * (Math.sin(DEG2RAD*self.rotX.val)) * -1.0;
 
             // Control Z-Axis movement
-            var yawFactor = (Math.cos(DEG2RAD*self.rotX.val));
+            yawFactor = (Math.cos(DEG2RAD*self.rotX.val));
             camMovementZComponent += ( movementSpeedFactor * (Math.cos(DEG2RAD*self.rotY.val)) * -1.0 ) * yawFactor;
         }
 
         if (pressedS)
         {
             // Control X-Axis movement
-            var pitchFactor = Math.cos(DEG2RAD*self.rotX.val);
+            pitchFactor = Math.cos(DEG2RAD*self.rotX.val);
             camMovementXComponent += ( movementSpeedFactor * (Math.sin(DEG2RAD*self.rotY.val)) * -1.0) * pitchFactor;
 
             // Control Y-Axis movement
             camMovementYComponent += movementSpeedFactor * (Math.sin(DEG2RAD*self.rotX.val));
 
             // Control Z-Axis movement
-            var yawFactor = (Math.cos(DEG2RAD*self.rotX.val));
+            yawFactor = (Math.cos(DEG2RAD*self.rotX.val));
             camMovementZComponent += ( movementSpeedFactor * (Math.cos(DEG2RAD*self.rotY.val)) ) * yawFactor;
         }
 
