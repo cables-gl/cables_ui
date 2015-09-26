@@ -794,7 +794,6 @@ Ops.Gl.Matrix.Shear = function()
 
     self.shearX.val=0.0;
     self.shearY.val=0.0;
-
 };
 
 Ops.Gl.Matrix.Shear.prototype = new Op();
