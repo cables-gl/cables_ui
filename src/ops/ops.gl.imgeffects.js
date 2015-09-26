@@ -23,13 +23,14 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     cgl.currentTextureEffect=effect;
     this.tex=new CGL.Texture();
 
+    var w=0,h=0;
 
     this.updateResolution=function()
     {
         // if(!self.texOut.val || self.tex.width!=self.texOut.val.width || self.tex.height!=self.texOut.val.height)
-        if(self.width.val!= self.tex.width || self.height.val!= self.tex.height)
+        if(w!= self.tex.width || h!= self.tex.height)
         {
-            self.tex.setSize(self.width.val, self.height.val);
+            self.tex.setSize(w,h);
             effect.setSourceTexture(self.tex);
             self.texOut.val=effect.getCurrentSourceTexture();
         }
@@ -37,13 +38,15 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     this.width.onValueChanged=function()
     {
-        self.width.val=parseInt(self.width.val,10);
+        var h=parseInt(self.width.val,10);
+        // self.width.val=parseInt(self.width.val,10);
         self.updateResolution();
     };
 
     this.height.onValueChanged=function()
     {
-        self.height.val=parseInt(self.height.val,10);
+        w=parseInt(self.height.val,10);
+        // self.height.val=parseInt(self.height.val,10);
         self.updateResolution();
     };
 
