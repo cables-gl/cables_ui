@@ -28,7 +28,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.updateResolution=function()
     {
         // if(!self.texOut.val || self.tex.width!=self.texOut.val.width || self.tex.height!=self.texOut.val.height)
-        if(w!= self.tex.width || h!= self.tex.height)
+        if((w!= self.tex.width || h!= self.tex.height) && w!=0 && h!=0)
         {
             self.tex.setSize(w,h);
             effect.setSourceTexture(self.tex);
@@ -38,7 +38,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     this.width.onValueChanged=function()
     {
-        var h=parseInt(self.width.val,10);
+        h=parseInt(self.width.val,10);
         // self.width.val=parseInt(self.width.val,10);
         self.updateResolution();
     };
@@ -53,6 +53,8 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     render=function()
     {
+        cgl.gl.disable(cgl.gl.SCISSOR_TEST);
+
         self.updateResolution();
         
         cgl.currentTextureEffect=effect;
@@ -71,6 +73,8 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
         self.trigger.trigger();
         self.texOut.val=effect.getCurrentSourceTexture();
+
+        cgl.gl.enable(cgl.gl.SCISSOR_TEST);
 
     };
 
