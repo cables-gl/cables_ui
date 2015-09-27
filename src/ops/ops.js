@@ -182,12 +182,12 @@ Ops.TimeLineDelay = function()
 
     this.exe.onTriggered=function()
     {
-        // console.log(''+self.patch.timer.getTime() );
-
+        self.patch.timer.pauseEvents(true);
         self.patch.timer.setDelay(self.delay.val);
         self.theTime.val=self.patch.timer.getTime();
         self.trigger.trigger();
         self.patch.timer.setDelay(0);
+        self.patch.timer.pauseEvents(false);
 
     };
 

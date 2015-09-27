@@ -269,6 +269,11 @@ CABLES.UI.GUI=function()
                     }
                 break;
 
+                case 32: // space play
+
+                    self.timeLine().togglePlay();
+                break;
+
                 case 79: // o - open
                     if(e.metaKey || e.ctrlKey)
                     {

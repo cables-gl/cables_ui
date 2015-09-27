@@ -9,6 +9,7 @@ function Timer()
     var lastTime=0;
     var paused=true;
     var delay=0;
+    var eventsPaused=false;
     this.overwriteTime=-1;
 
     function getTime()
@@ -93,13 +94,20 @@ function Timer()
     var cbTimeChange=[];
     function eventPlayPause()
     {
+        if(eventsPaused)return;
         for(var i in cbPlayPause) cbPlayPause[i]();
     }
 
     function eventTimeChange()
     {
+        if(eventsPaused)return;
         for(var i in cbTimeChange) cbTimeChange[i]();
     }
+
+    this.pauseEvents=function(onoff)
+    {
+        eventsPaused=onoff;
+    };
 
     this.onPlayPause=function(cb)
     {
