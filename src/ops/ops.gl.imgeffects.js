@@ -501,6 +501,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         'alpha channel','luminance'
         ] }));
     this.removeAlphaSrc=this.addInPort(new Port(this,"removeAlphaSrc",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.invAlphaChannel=this.addInPort(new Port(this,"invert alpha channel",OP_PORT_TYPE_VALUE,{ display:'bool' }));
 
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -615,13 +616,18 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
 
         .endl()+'#ifdef REMOVE_ALPHA_SRC'
-        .endl()+'blendRGBA.a=1.0;'
+        .endl()+'   blendRGBA.a=1.0;'
         .endl()+'#endif'
 
         .endl()+'#ifdef HAS_TEXTUREALPHA'
 
         .endl()+'   vec4 colImgAlpha=texture2D(imageAlpha,texCoord);'
         .endl()+'   float colImgAlphaAlpha=colImgAlpha.a;'
+
+        .endl()+'   #ifdef INVERT_ALPHA'
+        .endl()+'       colImgAlphaAlpha=1.0-colImgAlphaAlpha;'
+        .endl()+'   #endif'
+
 
         .endl()+'   #ifdef ALPHA_FROM_LUMINANCE'
         .endl()+'       vec3 gray = vec3(dot(vec3(0.2126,0.7152,0.0722), colImgAlpha.rgb ));'
@@ -656,6 +662,12 @@ Ops.Gl.TextureEffects.DrawImage = function()
     var textureAlpha=new CGL.Uniform(shader,'t','imageAlpha',2);
 
 
+
+    this.invAlphaChannel.onValueChanged=function()
+    {
+        if(self.invAlphaChannel.val) shader.define('INVERT_ALPHA');
+            else shader.removeDefine('INVERT_ALPHA');
+    };
 
     this.removeAlphaSrc.onValueChanged=function()
     {
