@@ -972,7 +972,7 @@ Ops.Gl.TextureEffects.SSAO = function()
         .endl()+'   for (float j = 0.0 ; j < samples; j += 1.0)'
         .endl()+'   {'
         .endl()+'       float step = PI*2.0 / (samples*i);'
-        .endl()+'       float jj=j*12.0*i*12.0;'
+        .endl()+'       float jj=j*2.0*i*2.0;'
 
         .endl()+'       pw = (cos(jj*step)*i);'
         .endl()+'       ph = (sin(jj*step)*i)*2.0;'
