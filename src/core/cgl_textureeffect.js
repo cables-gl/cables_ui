@@ -90,9 +90,6 @@ CGL.TextureEffect=function()
             return;
         }
 
-
-                 
-
         cgl.pushMvMatrix();
 
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);

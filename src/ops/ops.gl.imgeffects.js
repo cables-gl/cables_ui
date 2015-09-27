@@ -500,6 +500,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
     this.alphaSrc=this.addInPort(new Port(this,"alphaSrc",OP_PORT_TYPE_VALUE,{ display:'dropdown',values:[
         'alpha channel','luminance'
         ] }));
+    this.removeAlphaSrc=this.addInPort(new Port(this,"removeAlphaSrc",OP_PORT_TYPE_VALUE,{ display:'bool' }));
 
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -507,9 +508,6 @@ Ops.Gl.TextureEffects.DrawImage = function()
     var shader=new CGL.Shader();
 
     var srcFrag=''
-
-
-
         .endl()+'precision highp float;'
         .endl()+'#ifdef HAS_TEXTURES'
         .endl()+'  varying vec2 texCoord;'
@@ -536,15 +534,6 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
         .endl()+'vec3 colNew=blend;'
         .endl()+'#define Blend(base, blend, funcf)       vec3(funcf(base.r, blend.r), funcf(base.g, blend.g), funcf(base.b, blend.b))'
-
-
-        .endl()+'#ifdef BM_NORMAL'
-        .endl()+'colNew=blend;'
-        .endl()+'#endif'
-
-        .endl()+'#ifdef BM_MULTIPLY'
-        .endl()+'colNew=base*blend;'
-        .endl()+'#endif'
 
 
         .endl()+'#ifdef BM_NORMAL'
@@ -623,7 +612,11 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'#endif'
 
 
-        .endl()+'float alpha=baseRGBA.a;'
+
+
+        .endl()+'#ifdef REMOVE_ALPHA_SRC'
+        .endl()+'blendRGBA.a=1.0;'
+        .endl()+'#endif'
 
         .endl()+'#ifdef HAS_TEXTUREALPHA'
 
@@ -652,6 +645,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
         .endl()+'#endif'
 
+   
 
         .endl()+'   gl_FragColor = blendRGBA;'
         .endl()+'}';
@@ -662,6 +656,12 @@ Ops.Gl.TextureEffects.DrawImage = function()
     var textureAlpha=new CGL.Uniform(shader,'t','imageAlpha',2);
 
 
+
+    this.removeAlphaSrc.onValueChanged=function()
+    {
+        if(self.removeAlphaSrc.val) shader.define('REMOVE_ALPHA_SRC');
+            else shader.removeDefine('REMOVE_ALPHA_SRC');
+    };
 
     this.alphaSrc.onValueChanged=function()
     {
