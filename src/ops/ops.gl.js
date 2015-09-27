@@ -128,6 +128,38 @@ Ops.Gl.AspectRatioBorder=Ops.Gl.LetterBox;
 
 // --------------------------------------------------------------------------
 
+
+
+
+
+Ops.Gl.ClearAlpha = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='ClearAlpha';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
+
+    this.a.val=1.0;
+
+    this.render.onTriggered=function()
+    {
+        glColorMask(FALSE, FALSE, FALSE, TRUE);//This ensures that only alpha will be effected
+        glClearColor(0, 0, 0, self.a.val);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        self.trigger.trigger();
+    };
+};
+
+Ops.Gl.ClearAlpha.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+
 Ops.Gl.ClearColor = function()
 {
     Op.apply(this, arguments);
