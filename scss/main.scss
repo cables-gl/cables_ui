@@ -650,7 +650,8 @@ input[type=range]:focus {
     padding:10px;
     font-family: arial;
     position: absolute;
-    margin-top:41px;
+    // margin-top:41px;
+    margin-top: -250;
     right:0px;
     width:250px;
     height:200px;
