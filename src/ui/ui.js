@@ -258,6 +258,22 @@ CABLES.UI.GUI=function()
             if($('#timeline').is(":focus"))self.patch().timeLine.cut(e);
         });
 
+        var spaceBarStart = 0;
+
+
+        $(document).keyup(function(e)
+        {
+            switch(e.which)
+            {
+                case 32: // space play
+                    var timeused=Date.now()-spaceBarStart;
+                    if(timeused<150) self.timeLine().togglePlay();
+                    spaceBarStart=0;
+                break;
+            }
+
+        });
+
         $(document).keydown(function(e)
         {
             switch(e.which)
@@ -270,8 +286,8 @@ CABLES.UI.GUI=function()
                 break;
 
                 case 32: // space play
-
-                    self.timeLine().togglePlay();
+                    if(spaceBarStart===0) spaceBarStart = Date.now();
+                    
                 break;
 
                 case 79: // o - open
