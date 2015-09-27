@@ -147,9 +147,10 @@ Ops.Gl.ClearAlpha = function()
 
     this.render.onTriggered=function()
     {
-        glColorMask(FALSE, FALSE, FALSE, TRUE);//This ensures that only alpha will be effected
-        glClearColor(0, 0, 0, self.a.val);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        cgl.gl.colorMask(false, false, false, true);
+        cgl.gl.clearColor(0, 0, 0, self.a.val);
+        cgl.gl.clear(cgl.gl.GL_COLOR_BUFFER_BIT | cgl.gl.GL_DEPTH_BUFFER_BIT);
+        cgl.gl.colorMask(true, true, true, true);
 
         self.trigger.trigger();
     };
