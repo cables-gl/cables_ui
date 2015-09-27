@@ -222,7 +222,9 @@ var Port=function(parent,name,type,uiAttribs)
                     if(this.onValueChanged)this.onValueChanged();
                 }
 
-                for(var i in this.links)
+                if(this.links.length!==0)
+                // for(var i in this.links)
+                for (var i = 0; i < this.links.length; ++i) 
                 {
                     this.links[i].setValue();
                 }
@@ -300,10 +302,16 @@ var Port=function(parent,name,type,uiAttribs)
     this.trigger=function()
     {
         if(!parent.enabled)return;
-        for(var i in this.links)
+        if(this.links.length===0)return;
+
+        for (var i = 0; i < this.links.length; ++i)
+        // for(var i in this.links)
         {
-            if(this.links[i].portIn !=this)this.links[i].portIn._onTriggered();
-            else if(this.links[i].portOut!=this)this.links[i].portOut._onTriggered();
+            // if(this.direction==PORT_DIR_OUT)this.links[i].portIn._onTriggered();
+            // else
+             this.links[i].portIn._onTriggered();
+            // if(this.links[i].portIn !=this)
+            // else if(this.links[i].portOut!=this)
         }
     };
 
@@ -571,7 +579,8 @@ var Scene = function()
 
         var time=self.timer.getTime();
 
-        for(var i in self.animFrameOps)
+        // for(var i in self.animFrameOps)
+        for (var i = 0; i < self.animFrameOps.length; ++i) 
         {
             self.animFrameOps[i].onAnimFrame(time);
         }

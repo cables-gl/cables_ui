@@ -97,7 +97,8 @@ CGL.Shader=function()
     this.define=function(name,value)
     {
         if(!value)value='';
-        for(var i in defines)
+        // for(var i in defines)
+        for(var i=0;i<defines.length;i++)
         {
             if(defines[i][0]==name)
             {
@@ -113,7 +114,7 @@ CGL.Shader=function()
 
     this.removeDefine=function(name,value)
     {
-        for(var i in defines)
+        for(var i=0;i<defines.length;i++)
         {
             if(defines[i][0]==name)
             {
@@ -128,7 +129,7 @@ CGL.Shader=function()
 
     this.removeUniform=function(name)
     {
-        for(var i in uniforms)
+        for(var i=0;i<uniforms.length;i++)
         {
             if(uniforms[i].getName()==name)
             {
@@ -212,7 +213,8 @@ CGL.Shader=function()
 
     this.hasTextureUniforms=function()
     {
-        for(var i in uniforms)
+        for(var i=0;i<uniforms.length;i++)
+        // for(var i in uniforms)
         {
             if(uniforms[i].getType()=='t') return true;
         }
@@ -223,7 +225,8 @@ CGL.Shader=function()
     {
         var definesStr='';
         var i=0;
-        for(i in defines)
+        // for(i in defines)
+        for(i=0;i<defines.length;i++)
         {
             definesStr+='#define '+defines[i][0]+' '+defines[i][1]+''.endl();
         }
@@ -253,7 +256,8 @@ CGL.Shader=function()
             
             mvMatrixUniform=-1;
 
-            for(i in uniforms)uniforms[i].resetLoc();
+            for(var i=0;i<uniforms.length;i++)
+                uniforms[i].resetLoc();
         }
 
         needsRecompile=false;
@@ -276,7 +280,7 @@ CGL.Shader=function()
 
         cgl.gl.useProgram(program);
 
-        for(var i in uniforms)
+        for(var i=0;i<uniforms.length;i++)
         {
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }

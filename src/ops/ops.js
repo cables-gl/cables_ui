@@ -270,7 +270,7 @@ Ops.Repeat = function()
 
     this.exe.onTriggered=function()
     {
-        for(var i=self.num.value-1;i>=0;i--)
+        for(var i=self.num.value-1;i>-1;i--)
         {
             self.idx.val=i;
             self.trigger.trigger();
@@ -307,7 +307,6 @@ Ops.ArrayIterator = function()
             self.val.val=self.arr.val[i];
             self.trigger.trigger();
         }
-
     };
 };
 Ops.ArrayIterator.prototype = new Op();
@@ -448,7 +447,7 @@ Ops.Sequence = function()
 
     this.exe.onTriggered=function()
     {
-        for(var i in self.triggers)
+        for(var i=0;i<self.triggers.length;i++)
             self.triggers[i].trigger();
     };
 
@@ -500,10 +499,11 @@ Ops.TimedSequence = function()
 
         if(self.patch.gui && self.ignoreInSubPatch.val )
         {
-            for(var i in triggers)
+
+            for(var i=0;i<triggers.length;i++)
             {
                         
-                for(var spl in triggers[i].links)
+                for(var spl=0;spl<triggers[i].links.length;spl++)
                 {
                     if(triggers[i].links[spl])
                     {
