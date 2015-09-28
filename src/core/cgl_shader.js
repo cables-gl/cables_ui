@@ -234,7 +234,7 @@ CGL.Shader=function()
 
         if(self.hasTextureUniforms()) definesStr+='#define HAS_TEXTURES'.endl();
 
-        // console.log('shader compile...');
+        console.log('shader compile...');
         // console.log('has textures: '+self.hasTextureUniforms() );
 
         var vs=definesStr+self.srcVert;

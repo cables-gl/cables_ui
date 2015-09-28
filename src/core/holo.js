@@ -24,6 +24,7 @@ var Op = function()
     this.onAddPort=null;
     this.onCreate=null;
     this.onResize=null;
+    this.onLoaded=null;
 
     this.uiAttr=function(newAttribs)
     {
@@ -48,17 +49,18 @@ var Op = function()
         return p;
     };
 
-this.hasPort=function(name)
-{
-    for(var i in this.portsIn)
+    this.hasPort=function(name)
     {
-        if(this.portsIn[i].getName()==name)
+        for(var i in this.portsIn)
         {
-            return true;
+            if(this.portsIn[i].getName()==name)
+            {
+                return true;
+            }
         }
-    }
-    return false;
-};
+        return false;
+    };
+
     this.addInPort=function(p)
     {
 

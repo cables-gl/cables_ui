@@ -32,6 +32,9 @@ Ops.Gl.Shader.ShowNormalsMaterial = function()
 
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
+
+
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
     this.render.onTriggered=this.doRender;
@@ -133,6 +136,7 @@ Ops.Gl.Shader.SphereEnvMaterial = function()
         .endl()+'}';
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
     shader.setSource(srcVert,srcFrag);
 
     this.render.onTriggered=this.doRender;
@@ -240,6 +244,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'}';
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
     shader.setSource(srcVert,srcFrag);
 
     this.render.onTriggered=this.doRender;
@@ -323,6 +328,7 @@ Ops.Gl.Shader.GradientMaterial = function()
         .endl()+'}';
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     this.doRender();
 
@@ -460,6 +466,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
     shader.setSource(srcVert,srcFrag);
 
     this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
@@ -658,6 +665,7 @@ Ops.Gl.Shader.TextureSinusWobble = function()
 
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
     this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));

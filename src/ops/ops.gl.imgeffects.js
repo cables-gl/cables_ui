@@ -106,7 +106,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         if(self.texOut.showPreview) self.render.onTriggered=self.texOut.val.preview;
         else self.render.onTriggered=render;
                 console.log('jaja changed');
-                
     };
     
 
@@ -129,6 +128,8 @@ Ops.Gl.TextureEffects.Invert = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
+    
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -186,6 +187,7 @@ Ops.Gl.TextureEffects.Scroll = function()
     this.amountY=this.addInPort(new Port(this,"amountY",OP_PORT_TYPE_VALUE));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -262,6 +264,7 @@ Ops.Gl.TextureEffects.Desaturate = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -333,6 +336,7 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -415,6 +419,7 @@ Ops.Gl.TextureEffects.MixImage = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -510,6 +515,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -843,6 +849,7 @@ Ops.Gl.TextureEffects.DepthTexture = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -932,6 +939,7 @@ Ops.Gl.TextureEffects.SSAO = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1100,6 +1108,7 @@ Ops.Gl.TextureEffects.AlphaMask = function()
 
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1208,6 +1217,7 @@ Ops.Gl.TextureEffects.WipeTransition = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1300,6 +1310,7 @@ Ops.Gl.TextureEffects.ColorLookup = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1387,6 +1398,7 @@ Ops.Gl.TextureEffects.BrightnessContrast = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1467,6 +1479,7 @@ Ops.Gl.TextureEffects.RemoveAlpha = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1531,6 +1544,7 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
 
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1630,6 +1644,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1748,6 +1763,7 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1829,6 +1845,7 @@ Ops.Gl.TextureEffects.Hue = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -1915,6 +1932,7 @@ Ops.Gl.TextureEffects.Color = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -2001,6 +2019,7 @@ Ops.Gl.TextureEffects.Vignette = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -2074,6 +2093,7 @@ Ops.Gl.TextureEffects.Blur = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -2172,6 +2192,7 @@ Ops.Gl.TextureEffects.FXAA = function()
     this.texHeight=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
     var srcFrag=''
                
         .endl()+'precision highp float;'
@@ -2342,6 +2363,7 @@ Ops.Gl.TextureEffects.Noise = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
+    this.onLoaded=shader.compile;
 
     var srcFrag=''
         .endl()+'precision highp float;'
