@@ -23,6 +23,7 @@ var Op = function()
     this.id=generateUUID();
     this.onAddPort=null;
     this.onCreate=null;
+    this.onResize=null;
 
     this.uiAttr=function(newAttribs)
     {

@@ -40,7 +40,8 @@ Ops.Gl.TextureEffects.ImageCompose = function()
             self.texOut.val=effect.getCurrentSourceTexture();
         }
     };
-
+    this.onResize=this.updateResolution;
+    
     this.useVPSize.onValueChanged=function()
     {
         if(self.useVPSize.val)

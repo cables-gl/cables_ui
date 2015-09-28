@@ -71,7 +71,7 @@ Ops.Gl.Renderer = function()
 
     this.canvas = document.getElementById("glcanvas");
     
-    
+
     // gl= GL = this.canvas.getContext("experimental-webgl");
     
 
@@ -991,6 +991,9 @@ Ops.Gl.Render2Texture = function()
     this.useVPSize.val=true;
 
     var oldViewport;
+
+    this.onResize=resize;
+
 
     function render()
     {
