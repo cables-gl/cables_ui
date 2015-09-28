@@ -112,7 +112,7 @@ Ops.Value = function()
         if(self.result.val!=self.v.val) self.result.val=self.v.val;
     };
 
-    this.exe.onTriggered=exec;
+    this.exe.onTriggered=this.exec;
 
     this.v.onValueChanged=this.exec;
     this.onAnimFrame=function(){};
