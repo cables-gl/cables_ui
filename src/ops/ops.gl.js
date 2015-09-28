@@ -19,6 +19,8 @@ Ops.Gl.Renderer = function()
     var initTranslate=vec3.create();
     vec3.set(initTranslate, 0,0,-2);
 
+    cgl.patch=self.patch;
+
     this.onAnimFrame=function(time)
     {
         if(cgl.canvasWidth!=self.canvas.clientWidth || cgl.canvasHeight!=self.canvas.clientHeight)
@@ -27,12 +29,6 @@ Ops.Gl.Renderer = function()
             self.width.val=cgl.canvasWidth;
             cgl.canvasHeight=self.canvas.clientHeight;
             self.height.val=cgl.canvasHeight;
-
-            for(var i=0;i<self.patch.ops.length;i++)
-            {
-                if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
-            }
-
         }
 
         cgl.gl.enable(cgl.gl.DEPTH_TEST);
@@ -97,26 +93,51 @@ Ops.Gl.LetterBox = function()
 
     var x=0,y=0,w=1000,h=1000;
 
+
+    function resize()
+    {
+        var _w=cgl.canvasHeight*self.ratio.val;
+        var _h=cgl.canvasHeight;
+        var _x=0;
+        var _y=0;
+        if(_w>cgl.canvasWidth)
+        {
+           _w=cgl.canvasWidth;
+           _h=cgl.canvasWidth/self.ratio.val;
+        }
+
+        if(_w<cgl.canvasWidth) _x=(cgl.canvasWidth-_w)/2;
+        if(_h<cgl.canvasHeight) _y=(cgl.canvasHeight-_h)/2;
+
+
+        if(_w!=w || _h!=h || _x!=x ||_y!=y)
+        {
+            w=_w;
+            h=_h;
+            x=_x;
+            y=_y;
+
+            cgl.setViewPort(x,y,w,h);
+
+        console.log('cgl.getViewPort',cgl.getViewPort());
+        
+            for(var i=0;i<self.patch.ops.length;i++)
+            {
+                if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
+            }
+
+        }
+        
+
+    }
+
     this.render.onTriggered=function()
     {
         cgl.gl.enable(cgl.gl.SCISSOR_TEST);
 
-        w=cgl.canvasHeight*self.ratio.val;
-        h=cgl.canvasHeight;
-        
-        if(w>cgl.canvasWidth)
-        {
-            w=cgl.canvasWidth;
-            h=cgl.canvasWidth/self.ratio.val;
-        }
-
-        x=0;
-        y=0;
-        if(w<cgl.canvasWidth) x=(cgl.canvasWidth-w)/2;
-        if(h<cgl.canvasHeight) y=(cgl.canvasHeight-h)/2;
+        resize();
 
         cgl.gl.scissor(x,y,w,h);
-
         cgl.setViewPort(x,y,w,h);
         
         mat4.perspective(cgl.pMatrix,45, self.ratio.val, 0.01, 1100.0);
@@ -944,6 +965,8 @@ Ops.Gl.Render2Texture = function()
 
     function resize()
     {
+                console.log('cgl.getViewPort()',cgl.getViewPort());
+
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
         if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
@@ -1015,7 +1038,10 @@ Ops.Gl.Render2Texture = function()
                 for(var i=0;i<self.patch.ops.length;i++)
                 {
                     if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
+                    console.log('resize !!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                            
                 }
+                console.log('resize finished ----------------------------------');
                 // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
             }

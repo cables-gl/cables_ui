@@ -1127,9 +1127,12 @@ CABLES.UI.Patch=function(_gui)
                 {
                     if( $('#portanim_in_'+index).hasClass('timingbutton_active') )
                     {
-                        var val=self.timeLine.deleteAnim(op.portsIn[index].anim);
+                        
+                        var val=self.timeLine.removeAnim(op.portsIn[index].anim);
                         op.portsIn[index].setAnimated(false);
-                        op.portsIn[index].anim=null;
+
+                        self.timeLine.setAnim(null);
+                        // op.portsIn[index].anim=null;
                         $('#portanim_in_'+index).removeClass('timingbutton_active');
                         $('#portval_'+index).val(val);
                         $('#portval_'+index).trigger('input');
@@ -1203,7 +1206,12 @@ CABLES.UI.Patch=function(_gui)
                     }
                             
                     op.portsIn[index].val=v;
-                    if(op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+                    if(op.portsIn[index].isAnimated())
+                        {
+                                    console.log('is animatedddd');
+                                    
+                            gui.timeLine().scaleHeightDelayed();
+                        }
                 });
             })(ipii);
         }
@@ -1217,7 +1225,7 @@ CABLES.UI.Patch=function(_gui)
 
                 $(id).on("focusin", function()
                 {
-                    gui.timeLine().setAnim(thePort.anim,{name:thePort.name});
+                    if(thePort.isAnimated() )gui.timeLine().setAnim(thePort.anim,{name:thePort.name});
                 });
 
             })(thePort);

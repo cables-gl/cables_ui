@@ -126,6 +126,8 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         self.trigger.trigger();
     };
 
+    this.onResize=this.rebuild;
+
     function rebuild()
     {
         var currentViewPort=cgl.getViewPort().slice();
@@ -134,11 +136,6 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         y=currentViewPort[1];
         w=currentViewPort[2];
         h=currentViewPort[3];
-
-                // console.log('h=currentViewPort[3]',currentViewPort[3]);
-                
-                        console.log(currentViewPort);
-                        
 
         var xx=0,xy=0;
         geom.vertices = [

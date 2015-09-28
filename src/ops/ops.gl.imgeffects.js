@@ -25,12 +25,18 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     cgl.currentTextureEffect=effect;
     this.tex=new CGL.Texture();
 
-    var w=640,h=360;
+    var w=8,h=8;
 
-    this.updateResolution=function()
+    function updateResolution()
     {
-        if((w!= self.tex.width || h!= self.tex.height) && w!==0 && h!==0)
+       
+        w=cgl.getViewPort()[2];
+        h=cgl.getViewPort()[3];
+
+        
+        if((w!= self.tex.width || h!= self.tex.height) && (w!==0 && h!==0))
         {
+            
             console.log('img compos res:',w,h);
      
             self.height.val=h;
@@ -39,9 +45,10 @@ Ops.Gl.TextureEffects.ImageCompose = function()
             effect.setSourceTexture(self.tex);
             self.texOut.val=effect.getCurrentSourceTexture();
         }
-    };
-    this.onResize=this.updateResolution;
-    
+    }
+
+    this.onResize=updateResolution;
+
     this.useVPSize.onValueChanged=function()
     {
         if(self.useVPSize.val)
@@ -62,7 +69,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     {
         h=parseInt(self.height.val,10);
         w=parseInt(self.width.val,10);
-        self.updateResolution();
+        updateResolution();
     }
 
     render=function()
@@ -74,7 +81,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
             w=cgl.getViewPort()[2];
             h=cgl.getViewPort()[3];
         }
-        self.updateResolution();
+        updateResolution();
         
         cgl.currentTextureEffect=effect;
 

@@ -224,8 +224,8 @@ var Port=function(parent,name,type,uiAttribs)
                 }
 
                 if(this.links.length!==0)
-                // for(var i in this.links)
-                for (var i = 0; i < this.links.length; ++i) 
+
+                for (var i = 0; i < this.links.length; ++i)
                 {
                     this.links[i].setValue();
                 }

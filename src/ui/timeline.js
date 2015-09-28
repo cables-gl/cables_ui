@@ -486,7 +486,9 @@ CABLES.TL.UI.TimeLineUI=function()
 
     };
 
-    this.deleteAnim=function(an)
+
+
+    this.removeAnim=function(an)
     {
         var val=an.getValue(cursorTime);
 
@@ -498,9 +500,12 @@ CABLES.TL.UI.TimeLineUI=function()
             {
                 anims[i].removeUi();
                 anims[i].keyLine.hide();
-                an.clear();
+                // an.clear();
                 anims=anims.slice(i,1);
+                self.addAnim(tlEmpty);
+                removeDots();
                 updateKeyLine();
+                this.refresh();
                 return val;
             }
         }
