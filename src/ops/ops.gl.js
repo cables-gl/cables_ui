@@ -1306,28 +1306,33 @@ Ops.Gl.Performance = function()
     var fontImage = document.getElementById('hiddenCanvasperformance');
     var ctx = fontImage.getContext('2d');
 
-var text='hallo';
+    var text='hallo';
 
-ctx.font = "18px arial";
-ctx.fillStyle = 'white';
+    ctx.font = "16px arial";
+    ctx.fillStyle = 'white';
 
-    var frames=0;
-    var fps=0;
-    var fpsStartTime=0;
+        var frames=0;
+        var fps=0;
+        var fpsStartTime=0;
 
-    var lastTime=0;
+        var lastTime=0;
 
-var queue=[];
-for(var i=0;i<canvas.width;i++)
-{
-    queue[i]=-1;
-}
+    var queue=[];
+    for(var i=0;i<canvas.width;i++)
+    {
+        queue[i]=-1;
+    }
 
-var avgMs=0;
-var text2='';
+    var avgMs=0;
+    var text2='';
+
+    var ll=0;
+    var selfTime=0;
 
     function refresh()
     {
+        ll=performance.now();
+
         var ms=performance.now()-lastTime;
         queue.push(ms);
         queue.shift();
@@ -1341,7 +1346,6 @@ var text2='';
             text='fps: '+fps;
             fpsStartTime=Date.now();
 
-
             var count=0;
             for(var i=0;i<queue.length;i++)
             {
@@ -1349,11 +1353,10 @@ var text2='';
                 {
                     avgMs+=queue[i];
                     count++;
-                    
                 }
             }
             avgMs/=count;
-            text2='avg ms: '+avgMs;
+            text2='avg ms: '+Math.round(avgMs*100)/100+' ('+Math.round((selfTime)*100)/100+')';
 
         }
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -1376,6 +1379,7 @@ var text2='';
 
         self.trigger.trigger();
         lastTime=performance.now();
+        selfTime=performance.now()-ll;
     }
 
     self.exe.onTriggered=refresh;

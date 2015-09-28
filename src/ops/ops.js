@@ -96,7 +96,11 @@ Ops.Value = function()
 
     this.v.onAnimToggle=function()
     {
-        if(self.v.isAnimated()) self.onAnimFrame=frame;
+        if(self.v.isAnimated() && !self.onAnimFrame)  
+            {
+                if(!self.onAnimFrame) this.animFrameOps.push(op);
+                self.onAnimFrame=frame;
+            }
         else self.onAnimFrame=function(){};
     };
 

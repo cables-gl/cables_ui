@@ -27,8 +27,11 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     this.setValueF=function(v)
     {
-        self.needsUpdate=true;
-        value=v;
+        if(v!=value)
+        {
+            self.needsUpdate=true;
+            value=v;
+        }
     };
 
 
