@@ -1344,16 +1344,16 @@ Ops.Gl.Performance = function()
     var fontImage = document.getElementById('performance');
     var ctx = fontImage.getContext('2d');
 
-    var text='hallo';
+    var text='';
 
-    ctx.font = "16px arial";
+    ctx.font = "13px arial";
     ctx.fillStyle = 'white';
 
-        var frames=0;
-        var fps=0;
-        var fpsStartTime=0;
+    var frames=0;
+    var fps=0;
+    var fpsStartTime=0;
 
-        var lastTime=0;
+    var lastTime=0;
 
     var queue=[];
     for(var i=0;i<canvas.width;i++)
@@ -1408,8 +1408,8 @@ Ops.Gl.Performance = function()
             ctx.fillRect(i,canvas.height-queue[i],1,queue[i]);
         }
 
-        ctx.fillText(text, 10, 30);
-        ctx.fillText(text2, 10, 55);
+        ctx.fillText(text, 10, 20);
+        ctx.fillText(text2, 10, 35);
         ctx.restore();
 
         if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);

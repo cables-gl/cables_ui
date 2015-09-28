@@ -29,14 +29,15 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
     function updateResolution()
     {
-       
-        w=cgl.getViewPort()[2];
-        h=cgl.getViewPort()[3];
-
+        if(self.useVPSize.val)
+        {
+            w=cgl.getViewPort()[2];
+            h=cgl.getViewPort()[3];
+        }
         
         if((w!= self.tex.width || h!= self.tex.height) && (w!==0 && h!==0))
         {
-            
+
             console.log('img compos res:',w,h);
      
             self.height.val=h;
@@ -76,11 +77,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     {
         cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
-        if(self.useVPSize.val)
-        {
-            w=cgl.getViewPort()[2];
-            h=cgl.getViewPort()[3];
-        }
         updateResolution();
         
         cgl.currentTextureEffect=effect;
@@ -863,12 +859,13 @@ Ops.Gl.TextureEffects.DepthTexture = function()
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=texture2D(image,texCoord);'
         .endl()+'       float z=col.r;'
-        .endl()+'       float c = (2.0 * n) / (f + n - z * (f - n));  // convert to linear values '
+        .endl()+'       float c=(2.0*n)/(f+n-z*(f-n));'
         .endl()+'       col=vec4(c,c,c,1.0);'
+
+        .endl()+'       if(c>=0.99)col.a=0.0;'
+        .endl()+'           else col.a=1.0;'
         .endl()+'   #endif'
         
-        .endl()+'   if(c>=0.99)col.a=0.0;'
-        .endl()+'   else col.a=1.0;'
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 

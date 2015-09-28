@@ -199,6 +199,7 @@ CGL.Shader=function()
     {
         this.srcVert=srcVert;
         this.srcFrag=srcFrag;
+        this.compile();
     };
 
     var projMatrixUniform=-1;
@@ -217,7 +218,6 @@ CGL.Shader=function()
     this.hasTextureUniforms=function()
     {
         for(var i=0;i<uniforms.length;i++)
-        // for(var i in uniforms)
         {
             if(uniforms[i].getType()=='t') return true;
         }
@@ -228,7 +228,6 @@ CGL.Shader=function()
     {
         var definesStr='';
         var i=0;
-        // for(i in defines)
         for(i=0;i<defines.length;i++)
         {
             definesStr+='#define '+defines[i][0]+' '+defines[i][1]+''.endl();
@@ -244,14 +243,10 @@ CGL.Shader=function()
 
         if(!program)
         {
-            // console.log('create shaderprogram');
-                    
             program=createProgram(vs,fs, program);
         }
         else
         {
-            // console.log('recompile shaders...');
-
             // self.vshader=createShader(vs, gl.VERTEX_SHADER, self.vshader );
             // self.fshader=createShader(fs, gl.FRAGMENT_SHADER, self.fshader );
             // linkProgram(program);
@@ -298,15 +293,12 @@ CGL.Shader=function()
         // normalMatrix = normalMatrix.transpose();
         mat4.transpose(normalMatrix, normalMatrix);
         cgl.gl.uniformMatrix4fv(normalMatrixUniform, false, normalMatrix);
-
-
     };
 
     this.getProgram=function()
     {
         return program;
     };
-
 
     createShader =function(str, type,_shader)
     {
@@ -340,11 +332,10 @@ CGL.Shader=function()
 
 
             var infoLog=cgl.gl.getShaderInfoLog(shader);
-
             var badLines=getBadLines(infoLog);
-
             var htmlWarning='<div class="shaderErrorCode">';
             var lines = str.match(/^.*((\r\n|\n|\r)|$)/gm);
+
             for(var i in lines)
             {
                 var j=parseInt(i,10)+1;
@@ -358,13 +349,9 @@ CGL.Shader=function()
                 if(isBadLine) htmlWarning+='<span class="error">';
                 htmlWarning+=line;
                 if(isBadLine) htmlWarning+='</span>';
-                
             }
-
             
             console.warn( infoLog );
-
-
 
             infoLog=infoLog.replace(/\n/g,'<br/>');
 
@@ -386,8 +373,6 @@ CGL.Shader=function()
         if (!cgl.gl.getProgramParameter(program, cgl.gl.LINK_STATUS))
         {
             self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
-
-        //     // throw cgl.gl.getProgramInfoLog(program);
         }
 
     };
