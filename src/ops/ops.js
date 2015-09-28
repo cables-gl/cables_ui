@@ -490,6 +490,14 @@ Ops.TimedSequence = function()
         triggers.push( this.addOutPort(new Port(this,"trigger "+i,OP_PORT_TYPE_FUNCTION)) );
     }
 
+    this.onLoaded=function()
+    {
+        for(var i=0;i<triggers.length;i++)
+        {
+            triggers[i].trigger();
+        }
+    };
+
     this.exe.onTriggered=function()
     {
         if(self.current.anim)
@@ -747,7 +755,7 @@ Ops.LoadingStatus = function()
             self.loading.trigger();
             self.patch.timer.pause();
 
-            if(self.result.val>=1.0 || CGL.numMaxLoadingAssets==0)
+            if(self.result.val>=1.0 || CGL.numMaxLoadingAssets===0)
             {
                 CGL.incrementLoadingAssets();
 

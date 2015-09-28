@@ -577,7 +577,18 @@ var Scene = function()
 
     this.exec=function(e)
     {
-        requestAnimationFrame(self.exec);
+
+        if(CGL.getLoadingStatus()>0 && CGL.getLoadingStatus()<1.0)
+        {
+            setTimeOut(function()
+            {
+                requestAnimationFrame(self.exec);
+            },120);
+        }
+        else
+        {
+            requestAnimationFrame(self.exec);
+        }
         self.timer.update();
 
         var time=self.timer.getTime();
