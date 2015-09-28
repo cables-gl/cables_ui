@@ -861,7 +861,6 @@ input[type=range]:focus {
     z-index: 98;
     position: absolute;
     display: block;
-    
 }
 
 #splitterTimeline
@@ -892,4 +891,10 @@ input[type=range]:focus {
     width:4px;
     height:100%;
     cursor:ew-resize;
+}
+
+#performance
+{
+    right:0;
+    position:absolute;
 }

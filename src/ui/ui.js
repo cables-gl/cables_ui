@@ -63,6 +63,9 @@ CABLES.UI.GUI=function()
         $('#timing').css('width',window.innerWidth-self.rendererWidth-2);
         $('#timing').css('bottom',statusBarHeight);
 
+
+
+
         if(showTiming)
         {
             $('#timing').css('height',this.timingHeight);
@@ -107,6 +110,10 @@ CABLES.UI.GUI=function()
         $('#meta').css('top',self.rendererHeight);
         $('#meta').css('width',self.rendererWidth-optionsWidth);
         $('#meta').css('height',window.innerHeight-self.rendererHeight-statusBarHeight);
+
+        $('#performance').css('bottom',statusBarHeight);
+        $('#performance').css('max-width',self.rendererWidth-optionsWidth);
+
 
         $('#menubar').css('top',0);
         $('#menubar').css('width',window.innerWidth-self.rendererWidth);
@@ -233,7 +240,7 @@ CABLES.UI.GUI=function()
         $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         $('#button_settings').bind("click", function (event) { self.patch().showProjectParams(); });
-       
+
         $('#help').bind("click", function (event) { self.showHelp(); });
 
         window.addEventListener( 'resize', self.setLayout, false );

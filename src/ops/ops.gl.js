@@ -1296,14 +1296,14 @@ Ops.Gl.Performance = function()
 
     
     var canvas = document.createElement('canvas');
-    canvas.id     = "hiddenCanvasperformance";
+    canvas.id     = "performance";
     canvas.width  = 512;
     canvas.height = 128;
-    canvas.style.display   = "none";
+    canvas.style.display   = "block";
     var body = document.getElementsByTagName("body")[0];
     body.appendChild(canvas);
 
-    var fontImage = document.getElementById('hiddenCanvasperformance');
+    var fontImage = document.getElementById('performance');
     var ctx = fontImage.getContext('2d');
 
     var text='hallo';
@@ -1377,13 +1377,14 @@ Ops.Gl.Performance = function()
         if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);
             else self.textureOut.val=new CGL.Texture.fromImage(fontImage);
 
-        self.trigger.trigger();
         lastTime=performance.now();
         selfTime=performance.now()-ll;
+        
+        self.trigger.trigger();
     }
 
     self.exe.onTriggered=refresh;
-
+    if(CABLES.UI)gui.setLayout();
 };
 
 Ops.Gl.Performance.prototype = new Op();
