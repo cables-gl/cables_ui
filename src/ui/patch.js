@@ -209,6 +209,30 @@ CABLES.UI.Patch=function(_gui)
         }
     });
     
+    
+    this.exportStatic=function()
+    {
+        CABLES.UI.MODAL.showLoading('exporting project');
+
+        CABLES.api.get(
+            'project/'+currentProject._id+'/export',
+            function(r)
+            {
+                // if(r.success===true) CABLES.UI.setStatusText('project exported');
+                // else CABLES.UI.setStatusText('project NOT exported');
+
+                var msg="<h2>export finished</h2>";
+                msg+='size: '+r.size+' mb';
+                msg+='<br/><br/><br/>';
+                msg+='<a class="bluebutton" href="'+r.path+'">download</a>';
+                msg+='<br/><br/>';
+
+                CABLES.UI.MODAL.show(msg);
+                // CABLES.UI.MODAL.hide();
+            });
+        
+    };
+
     this.saveCurrentProject=function(cb,_id,_name)
     {
         CABLES.UI.MODAL.showLoading('saving project');

@@ -186,9 +186,6 @@ CABLES.UI.GUI=function()
         $('#sidebar').animate({width:'toggle'},200);
     };
 
-
-
-
     this.showLibrary=function(inputId,filterType)
     {
         

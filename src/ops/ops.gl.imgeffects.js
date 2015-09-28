@@ -2333,9 +2333,9 @@ Ops.Gl.TextureEffects.Noise = function()
 
     this.name='Noise';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
     this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{display:'range'}));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var shader=new CGL.Shader();
 
@@ -2345,36 +2345,23 @@ Ops.Gl.TextureEffects.Noise = function()
         .endl()+'  varying vec2 texCoord;'
         .endl()+'  uniform sampler2D tex;'
         .endl()+'#endif'
-        .endl()+''
-        .endl()+'uniform float amount;'
 
+        .endl()+'uniform float amount;'
         .endl()+'uniform float time;'
-        .endl()+''
+
         .endl()+'float random(vec2 co)'
         .endl()+'{'
         .endl()+'   return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);'
         .endl()+'}'
+
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   float c=random(time*texCoord.xy);'
-
-
-        .endl()+'vec4 col=texture2D(tex,texCoord);'
-
-        .endl()+'col.rgb=mix(col.rgb,vec3(c),amount);'
-
+        .endl()+'   vec4 col=texture2D(tex,texCoord);'
+        .endl()+'   col.rgb=mix(col.rgb,vec3(c),amount);'
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
-        // .endl()+''
-        // .endl()+'void main()'
-        // .endl()+'{'
-        // .endl()+'   vec4 col=vec4(0.0,0.0,0.0,1.0);'
-        // .endl()+'   #ifdef HAS_TEXTURES'
-        // .endl()+'       col=texture2D(tex,vec2(mod(texCoord.x+amountX*0.1,1.0),mod(texCoord.y+amountY*0.1,1.0) ));'
-        // .endl()+'   #endif'
-        // .endl()+'   gl_FragColor = col;'
-        // .endl()+'}\n';
 
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
@@ -2406,7 +2393,6 @@ Ops.Gl.TextureEffects.Noise = function()
     };
 
     this.amount.val=0.3;
-
 
 };
 
