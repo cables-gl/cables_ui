@@ -110,7 +110,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.width.val=1920;
     this.height.val=1080;
     this.render.onTriggered=render;
-    render();
 };
 
 Ops.Gl.TextureEffects.ImageCompose.prototype = new Op();

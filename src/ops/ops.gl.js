@@ -21,16 +21,18 @@ Ops.Gl.Renderer = function()
 
     this.onAnimFrame=function(time)
     {
-        if(cgl.canvasWidth!=self.canvas.clientWidth)
+        if(cgl.canvasWidth!=self.canvas.clientWidth || cgl.canvasHeight!=self.canvas.clientHeight)
         {
             cgl.canvasWidth=self.canvas.clientWidth;
             self.width.val=cgl.canvasWidth;
-        }
-
-        if(cgl.canvasHeight!=self.canvas.clientHeight)
-        {
             cgl.canvasHeight=self.canvas.clientHeight;
             self.height.val=cgl.canvasHeight;
+
+            for(var i=0;i<self.patch.ops.length;i++)
+            {
+                if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
+            }
+
         }
 
         cgl.gl.enable(cgl.gl.DEPTH_TEST);
@@ -953,7 +955,6 @@ Ops.Gl.Render2Texture = function()
         cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
         cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
 
-
         cgl.gl.framebufferTexture2D(
             cgl.gl.FRAMEBUFFER,
             cgl.gl.DEPTH_ATTACHMENT,
@@ -1009,7 +1010,14 @@ Ops.Gl.Render2Texture = function()
                         
                 self.width.val=cgl.getViewPort()[2];
                 self.height.val=cgl.getViewPort()[3];
-                resize();
+
+                // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+                for(var i=0;i<self.patch.ops.length;i++)
+                {
+                    if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
+                }
+                // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
             }
         }
 
@@ -1059,8 +1067,6 @@ Ops.Gl.Render2Texture = function()
 
 
     self.render.onTriggered=render;
-    render();
-
 };
 
 Ops.Gl.Render2Texture.prototype = new Op();
