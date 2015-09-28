@@ -70,8 +70,11 @@ Ops.Gl.Renderer = function()
     };
 
     this.canvas = document.getElementById("glcanvas");
+    
+    
     // gl= GL = this.canvas.getContext("experimental-webgl");
     
+
 };
 
 Ops.Gl.Renderer.prototype = new Op();
@@ -1053,7 +1056,7 @@ Ops.Gl.Render2Texture = function()
 
 
     self.render.onTriggered=render;
-
+    render();
 
 };
 
