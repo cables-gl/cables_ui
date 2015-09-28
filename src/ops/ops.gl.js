@@ -119,8 +119,6 @@ Ops.Gl.LetterBox = function()
 
             cgl.setViewPort(x,y,w,h);
 
-        console.log('cgl.getViewPort',cgl.getViewPort());
-        
             for(var i=0;i<self.patch.ops.length;i++)
             {
                 if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
@@ -965,8 +963,6 @@ Ops.Gl.Render2Texture = function()
 
     function resize()
     {
-                console.log('cgl.getViewPort()',cgl.getViewPort());
-
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
         if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
@@ -989,7 +985,7 @@ Ops.Gl.Render2Texture = function()
         cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
-        console.log('resize r2t',self.width.val,self.height.val);
+        // console.log('resize r2t',self.width.val,self.height.val);
 
         texture.setSize(self.width.val,self.height.val);
         textureDepth.setSize(self.width.val,self.height.val);
@@ -1038,10 +1034,8 @@ Ops.Gl.Render2Texture = function()
                 for(var i=0;i<self.patch.ops.length;i++)
                 {
                     if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
-                    console.log('resize !!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                            
                 }
-                console.log('resize finished ----------------------------------');
+                console.log('window resize finished');
                 // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
             }

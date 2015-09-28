@@ -199,7 +199,6 @@ CGL.Shader=function()
     {
         this.srcVert=srcVert;
         this.srcFrag=srcFrag;
-        this.compile();
     };
 
     var projMatrixUniform=-1;
