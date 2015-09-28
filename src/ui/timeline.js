@@ -1004,11 +1004,17 @@ CABLES.TL.UI.TimeLineUI=function()
         updateKeyLine();
     });
 
+    var startMouseDown=0;
+    $('#timeline').bind("mousedown", function (event)
+    {
+        startMouseDown=Date.now();
+    });
     $('#timeline').bind("mouseup", function (event)
     {
+        if(Date.now()-startMouseDown<100 && !event.shiftKey && !isScrollingTime && !isDragging())self.unselectKeys();
         rubberBandHide();
 
-        if(!isScrollingTime && !isDragging())self.unselectKeys();
+
         for(var j in anims)
             for(var i in anims[j].keys)
                 anims[j].keys[i].isDragging=false;
