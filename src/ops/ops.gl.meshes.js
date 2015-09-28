@@ -381,6 +381,7 @@ Ops.Gl.Meshes.ObjMesh = function()
           
           self.mesh=new CGL.Mesh(r);
           CGL.decrementLoadingAssets();
+          self.render.trigger();
       });
 
 
