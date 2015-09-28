@@ -517,13 +517,14 @@ CABLES.TL.UI.TimeLineUI=function()
             anim.keys[i].updateCircle();
         }
 
-        if(anim.keys.length>1 || anims.length>0)
-        {
-            self.scaleWidth();
-        }
+        // if(anim.keys.length>1 || anims.length>0)
+        // {
+        //     self.scaleWidth();
+        // }
 
-        if(anim.keys.length==1)this.centerCursor();
-        self.scaleHeight();
+        // if(anim.keys.length==1)this.centerCursor();
+        // self.scaleHeight();
+        this.centerCursor();
 
         if(anim.onChange===null) anim.onChange=updateKeyLine;
         

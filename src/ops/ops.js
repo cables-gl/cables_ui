@@ -499,10 +499,8 @@ Ops.TimedSequence = function()
 
         if(self.patch.gui && self.ignoreInSubPatch.val )
         {
-
             for(var i=0;i<triggers.length;i++)
             {
-                        
                 for(var spl=0;spl<triggers[i].links.length;spl++)
                 {
                     if(triggers[i].links[spl])
