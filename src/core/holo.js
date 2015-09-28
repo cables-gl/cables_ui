@@ -580,7 +580,7 @@ var Scene = function()
         var time=self.timer.getTime();
 
         // for(var i in self.animFrameOps)
-        for (var i = 0; i < self.animFrameOps.length; ++i) 
+        for (var i = 0; i < self.animFrameOps.length; ++i)
         {
             self.animFrameOps[i].onAnimFrame(time);
         }

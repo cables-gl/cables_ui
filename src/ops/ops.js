@@ -84,6 +84,7 @@ Ops.Value = function()
     var self=this;
 
     this.name='Value';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.v=this.addInPort(new Port(this,"value",OP_PORT_TYPE_VALUE));
 
     this.result=this.addOutPort(new Port(this,"result"));
@@ -96,20 +97,22 @@ Ops.Value = function()
 
     this.v.onAnimToggle=function()
     {
-        console.log('animtoggle');
+        // console.log('animtoggle');
         
-        if(self.v.isAnimated() )
-        {
-            // if(!self.onAnimFrame) self.patch.animFrameOps.push(op);
-            self.onAnimFrame=frame;
-        }
-        else self.onAnimFrame=function(){};
+        // if(self.v.isAnimated() )
+        // {
+        //     // if(!self.onAnimFrame) self.patch.animFrameOps.push(op);
+        //     self.onAnimFrame=frame;
+        // }
+        // else self.onAnimFrame=function(){};
     };
 
     this.exec=function()
     {
         if(self.result.val!=self.v.val) self.result.val=self.v.val;
     };
+
+    this.exe.onTriggered=exec;
 
     this.v.onValueChanged=this.exec;
     this.onAnimFrame=function(){};
