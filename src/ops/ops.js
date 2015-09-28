@@ -96,17 +96,19 @@ Ops.Value = function()
 
     this.v.onAnimToggle=function()
     {
-        if(self.v.isAnimated() && !self.onAnimFrame)  
-            {
-                if(!self.onAnimFrame) this.animFrameOps.push(op);
-                self.onAnimFrame=frame;
-            }
+        console.log('animtoggle');
+        
+        if(self.v.isAnimated() )
+        {
+            // if(!self.onAnimFrame) self.patch.animFrameOps.push(op);
+            self.onAnimFrame=frame;
+        }
         else self.onAnimFrame=function(){};
     };
 
     this.exec=function()
     {
-        self.result.val=self.v.val;
+        if(self.result.val!=self.v.val) self.result.val=self.v.val;
     };
 
     this.v.onValueChanged=this.exec;
