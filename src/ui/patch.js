@@ -218,14 +218,22 @@ CABLES.UI.Patch=function(_gui)
             'project/'+currentProject._id+'/export',
             function(r)
             {
-                // if(r.success===true) CABLES.UI.setStatusText('project exported');
-                // else CABLES.UI.setStatusText('project NOT exported');
+                var msg='';
 
-                var msg="<h2>export finished</h2>";
-                msg+='size: '+r.size+' mb';
-                msg+='<br/><br/><br/>';
-                msg+='<a class="bluebutton" href="'+r.path+'">download</a>';
-                msg+='<br/><br/>';
+                if(r.error)
+                {
+                    msg="<h2>export error</h2>";
+                    msg+='<div class="shaderErrorCode">'+JSON.stringify(r)+'<div>';
+                }
+                else
+                {
+                    msg="<h2>export finished</h2>";
+                    msg+='size: '+r.size+' mb';
+                    msg+='<br/><br/><br/>';
+                    msg+='<a class="bluebutton" href="'+r.path+'">download</a>';
+                    msg+='<br/><br/>';
+                    msg+='<pre>'+r.log+'<pre>';
+                }
 
                 CABLES.UI.MODAL.show(msg);
                 // CABLES.UI.MODAL.hide();
