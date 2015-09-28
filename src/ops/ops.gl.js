@@ -1280,3 +1280,109 @@ Ops.Gl.ViewPortSize = function()
 };
 
 Ops.Gl.ViewPortSize.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Performance = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Performance';
+    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION)) ;
+
+    
+    var canvas = document.createElement('canvas');
+    canvas.id     = "hiddenCanvasperformance";
+    canvas.width  = 512;
+    canvas.height = 128;
+    canvas.style.display   = "none";
+    var body = document.getElementsByTagName("body")[0];
+    body.appendChild(canvas);
+
+    var fontImage = document.getElementById('hiddenCanvasperformance');
+    var ctx = fontImage.getContext('2d');
+
+var text='hallo';
+
+ctx.font = "18px arial";
+ctx.fillStyle = 'white';
+
+    var frames=0;
+    var fps=0;
+    var fpsStartTime=0;
+
+    var lastTime=0;
+
+var queue=[];
+for(var i=0;i<canvas.width;i++)
+{
+    queue[i]=-1;
+}
+
+var avgMs=0;
+var text2='';
+
+    function refresh()
+    {
+        var ms=performance.now()-lastTime;
+        queue.push(ms);
+        queue.shift();
+        frames++;
+        
+        if(fpsStartTime===0)fpsStartTime=Date.now();
+        if(Date.now()-fpsStartTime>=1000)
+        {
+            fps=frames;
+            frames=0;
+            text='fps: '+fps;
+            fpsStartTime=Date.now();
+
+
+            var count=0;
+            for(var i=0;i<queue.length;i++)
+            {
+                if(queue[i]>-1)
+                {
+                    avgMs+=queue[i];
+                    count++;
+                    
+                }
+            }
+            avgMs/=count;
+            text2='avg ms: '+avgMs;
+
+        }
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        ctx.fillStyle="#222222";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle="#aaaaaa";
+
+        for(var i=0;i<512;i++)
+        {
+            ctx.fillRect(i,canvas.height-queue[i],1,queue[i]);
+        }
+
+        ctx.fillText(text, 10, 30);
+        ctx.fillText(text2, 10, 55);
+        ctx.restore();
+
+        if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);
+            else self.textureOut.val=new CGL.Texture.fromImage(fontImage);
+
+        self.trigger.trigger();
+        lastTime=performance.now();
+    }
+
+    self.exe.onTriggered=refresh;
+
+};
+
+Ops.Gl.Performance.prototype = new Op();
+
+// --------------------------------------------------------------------------
+

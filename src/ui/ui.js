@@ -233,6 +233,7 @@ CABLES.UI.GUI=function()
         $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         $('#button_settings').bind("click", function (event) { self.patch().showProjectParams(); });
+       
         $('#help').bind("click", function (event) { self.showHelp(); });
 
         window.addEventListener( 'resize', self.setLayout, false );
