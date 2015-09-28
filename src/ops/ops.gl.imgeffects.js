@@ -659,7 +659,6 @@ Ops.Gl.TextureEffects.DrawImage = function()
         // .endl()+'blendRGBA.a=alpha;'
 
         .endl()+'#endif'
-
    
 
         .endl()+'   gl_FragColor = blendRGBA;'
@@ -670,24 +669,25 @@ Ops.Gl.TextureEffects.DrawImage = function()
     var textureDisplaceUniform=new CGL.Uniform(shader,'t','image',1);
     var textureAlpha=new CGL.Uniform(shader,'t','imageAlpha',2);
 
-
-
     this.invAlphaChannel.onValueChanged=function()
     {
         if(self.invAlphaChannel.val) shader.define('INVERT_ALPHA');
             else shader.removeDefine('INVERT_ALPHA');
+        shader.compile();
     };
 
     this.removeAlphaSrc.onValueChanged=function()
     {
         if(self.removeAlphaSrc.val) shader.define('REMOVE_ALPHA_SRC');
             else shader.removeDefine('REMOVE_ALPHA_SRC');
+        shader.compile();
     };
 
     this.alphaSrc.onValueChanged=function()
     {
         if(self.alphaSrc.val=='luminance') shader.define('ALPHA_FROM_LUMINANCE');
             else shader.removeDefine('ALPHA_FROM_LUMINANCE');
+        shader.compile();
     };
 
     this.alphaSrc.val="alpha channel";
@@ -742,9 +742,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         if(self.blendMode.val=='color burn') shader.define('BM_COLORBURN');
             else shader.removeDefine('BM_COLORBURN');
 
-
-
-
+        shader.compile();
     };
 
     var amountUniform=new CGL.Uniform(shader,'f','amount',1.0);
@@ -757,14 +755,9 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
     this.imageAlpha.onValueChanged=function()
     {
-        if(self.imageAlpha.val && self.imageAlpha.val.tex)
-        {
-            shader.define('HAS_TEXTUREALPHA');
-        }
-        else
-        {
-            shader.removeDefine('HAS_TEXTUREALPHA');
-        }
+        if(self.imageAlpha.val && self.imageAlpha.val.tex) shader.define('HAS_TEXTUREALPHA');
+            else shader.removeDefine('HAS_TEXTUREALPHA');
+        shader.compile();
     };
 
     function render()
