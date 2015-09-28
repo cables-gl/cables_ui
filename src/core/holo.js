@@ -580,7 +580,7 @@ var Scene = function()
 
         if(CGL.getLoadingStatus()>0 && CGL.getLoadingStatus()<1.0)
         {
-            setTimeOut(function()
+            setTimeout(function()
             {
                 requestAnimationFrame(self.exec);
             },120);
