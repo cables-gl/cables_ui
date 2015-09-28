@@ -965,6 +965,9 @@ Ops.Gl.Render2Texture = function()
     {
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
+        self.width.val=cgl.getViewPort()[2];
+        self.height.val=cgl.getViewPort()[3];
+
         if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
 
         renderbuffer = cgl.gl.createRenderbuffer();
@@ -1027,17 +1030,10 @@ Ops.Gl.Render2Texture = function()
             {
                 console.log('not the same ? ',texture.width, cgl.getViewPort()[2] , texture.height , cgl.getViewPort()[3]);
                         
-                self.width.val=cgl.getViewPort()[2];
-                self.height.val=cgl.getViewPort()[3];
-
-                // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
                 for(var i=0;i<self.patch.ops.length;i++)
                 {
                     if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
                 }
-                console.log('window resize finished');
-                // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-
             }
         }
 
