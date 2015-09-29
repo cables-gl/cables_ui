@@ -2087,6 +2087,8 @@ Ops.Gl.TextureEffects.Blur = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
+    this.iterations=this.addInPort(new Port(this,"iterations",OP_PORT_TYPE_VALUE));
+
     var shader=new CGL.Shader();
     this.onLoaded=shader.compile;
 
@@ -2097,6 +2099,8 @@ Ops.Gl.TextureEffects.Blur = function()
         .endl()+'  uniform sampler2D tex;'
         .endl()+'  uniform float dirX;'
         .endl()+'  uniform float dirY;'
+        .endl()+'  uniform float width;'
+        .endl()+'  uniform float height;'
         .endl()+'#endif'
         .endl()+''
         .endl()+'vec4 blur9(sampler2D texture, vec2 uv, vec2 red, vec2 dir)'
@@ -2116,7 +2120,7 @@ Ops.Gl.TextureEffects.Blur = function()
         .endl()+'{'
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
-        .endl()+'       col=blur9(tex,texCoord,vec2(480.0,270.0),vec2(dirX,dirY));'
+        .endl()+'       col=blur9(tex,texCoord,vec2(width,height),vec2(dirX,dirY));'
         // .endl()+ '       col=blur9(tex,texCoord,vec2(512.0,512.0),vec2(dirX*1.4,dirY*1.4));'
         .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
@@ -2127,33 +2131,43 @@ Ops.Gl.TextureEffects.Blur = function()
     var uniDirX=new CGL.Uniform(shader,'f','dirX',0);
     var uniDirY=new CGL.Uniform(shader,'f','dirY',0);
 
+    var uniWidth=new CGL.Uniform(shader,'f','width',0);
+    var uniHeight=new CGL.Uniform(shader,'f','height',0);
+
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
         cgl.setShader(shader);
 
-        // first pass
+        uniWidth.setValue(cgl.currentTextureEffect.getCurrentSourceTexture().width);
+        uniHeight.setValue(cgl.currentTextureEffect.getCurrentSourceTexture().height);
 
-        cgl.currentTextureEffect.bind();
-        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+        for(var i =0;i<self.iterations.val;i++)
+        {
+            // first pass
 
-        uniDirX.setValue(0.0);
-        uniDirY.setValue(1.0);
+            cgl.currentTextureEffect.bind();
+            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
-        cgl.currentTextureEffect.finish();
+            uniDirX.setValue(0.0);
+            uniDirY.setValue(1.0);
 
-        // second pass
+            cgl.currentTextureEffect.finish();
 
-        cgl.currentTextureEffect.bind();
-        cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+            // second pass
 
-        uniDirX.setValue(1.0);
-        uniDirY.setValue(0.0);
+            cgl.currentTextureEffect.bind();
+            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
-        cgl.currentTextureEffect.finish();
-        
+            uniDirX.setValue(1.0);
+            uniDirY.setValue(0.0);
+
+            cgl.currentTextureEffect.finish();
+            
+            
+        }
         cgl.setPreviousShader();
 
         self.trigger.trigger();
@@ -2446,11 +2460,9 @@ Ops.Gl.TextureEffects.ChromaticAberration = function()
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=texture2D(tex,texCoord);'
         .endl()+'       vec2 tcPos=vec2(texCoord.x,texCoord.y/1.777+0.25);'
-
         .endl()+'       float dist = distance(tcPos, vec2(0.5,0.5));'
-
         .endl()+'       col.r=texture2D(tex,texCoord+(dist)*-amount).r;'
-        .endl()+'       col.b=texture2D(tex,texCoord+(dist)*amount).r;'
+        .endl()+'       col.b=texture2D(tex,texCoord+(dist)*amount).b;'
         .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
