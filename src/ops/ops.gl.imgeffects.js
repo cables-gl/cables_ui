@@ -2074,8 +2074,6 @@ Ops.Gl.TextureEffects.Vignette = function()
 
 Ops.Gl.TextureEffects.Vignette.prototype = new Op();
 
-
-
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Blur = function()
@@ -2088,6 +2086,7 @@ Ops.Gl.TextureEffects.Blur = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     this.iterations=this.addInPort(new Port(this,"iterations",OP_PORT_TYPE_VALUE));
+    this.iterations.val=10;
 
     var shader=new CGL.Shader();
     this.onLoaded=shader.compile;
@@ -2121,10 +2120,9 @@ Ops.Gl.TextureEffects.Blur = function()
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=blur9(tex,texCoord,vec2(width,height),vec2(dirX,dirY));'
-        // .endl()+ '       col=blur9(tex,texCoord,vec2(512.0,512.0),vec2(dirX*1.4,dirY*1.4));'
         .endl()+'   #endif'
         .endl()+'   gl_FragColor = col;'
-        .endl()+'}\n';
+        .endl()+'}';
 
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);
@@ -2165,11 +2163,9 @@ Ops.Gl.TextureEffects.Blur = function()
             uniDirY.setValue(0.0);
 
             cgl.currentTextureEffect.finish();
-            
-            
         }
-        cgl.setPreviousShader();
 
+        cgl.setPreviousShader();
         self.trigger.trigger();
     };
 };
@@ -2213,20 +2209,12 @@ Ops.Gl.TextureEffects.FXAA = function()
 
         .endl()+'    uniform float FXAA_REDUCE_MUL;'
         .endl()+'    uniform float FXAA_REDUCE_MIN;'
-
-        
-
         .endl()+'    uniform float width;'
         .endl()+'    uniform float height;'
 
         .endl()+'vec4 getColorFXAA(vec2 coord)'
         .endl()+'{'
-        .endl()+''
         .endl()+'    vec2 invtexsize=vec2(1.0/width,1.0/height);'
-        .endl()+''
-        
-        // .endl()+'    float FXAA_REDUCE_MUL = 0.0;//1.0/8.0;'
-        // .endl()+'    float FXAA_REDUCE_MIN = 0.0;//(1.0/128.0);'
         .endl()+''
         .endl()+'    float step=1.0;'
         .endl()+''
@@ -2265,7 +2253,6 @@ Ops.Gl.TextureEffects.FXAA = function()
         .endl()+'                texture2D(tex, coord.xy + dir * (3.0/3.0 - 0.5)).xyz);'
         .endl()+'    float lumaB = dot(rgbB, luma);'
         .endl()+''
-        .endl()+''
         .endl()+'    vec4 color=texture2D(tex,coord).rgba;'
         .endl()+''
         .endl()+'    if((lumaB < lumaMin) || (lumaB > lumaMax)){'
@@ -2275,16 +2262,12 @@ Ops.Gl.TextureEffects.FXAA = function()
         .endl()+'    }'
         .endl()+'    return color;'
         .endl()+'}'
-
-
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
-
-        .endl()+'  gl_FragColor = getColorFXAA(texCoord);'
-
-        .endl()+'}\n';
+        .endl()+'   gl_FragColor = getColorFXAA(texCoord);'
+        .endl()+'}';
 
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     var textureUniform=new CGL.Uniform(shader,'t','tex',0);

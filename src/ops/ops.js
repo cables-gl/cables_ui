@@ -284,7 +284,6 @@ Ops.Repeat = function()
             self.idx.val=i;
             self.trigger.trigger();
         }
-
     };
 };
 Ops.Repeat.prototype = new Op();
@@ -347,8 +346,8 @@ Ops.IfTrueThen = function()
             self.triggerElse.trigger();
         }
     };
-
 };
+
 Ops.IfTrueThen.prototype = new Op();
 
 // ---------------------------------------------------------------------------
@@ -375,16 +374,11 @@ Ops.IfBetweenThen = function()
 
     this.exe.onTriggered=function()
     {
-        if(self.number.val>=self.min.val && self.number.val<self.max.val)
-        {
-            self.triggerThen.trigger();
-        }
-        else
-        {
-            self.triggerElse.trigger();
-        }
+        if(self.number.val>=self.min.val && self.number.val<self.max.val) self.triggerThen.trigger();
+            else self.triggerElse.trigger();
     };
 };
+
 Ops.IfBetweenThen.prototype = new Op();
 
 // ---------------------------------------------------------------------------
@@ -397,9 +391,7 @@ Ops.ToggleBool = function()
     this.name='ToggleBool';
 
     this.bool=this.addInPort(new Port(this,"boolean"));
-
     this.bool.val=false;
-
     this.boolOut=this.addOutPort(new Port(this,"result"));
     this.boolOut.val=true;
 
@@ -407,8 +399,8 @@ Ops.ToggleBool = function()
     {
         this.boolOut=!this.bool.val;
     };
-
 };
+
 Ops.ToggleBool.prototype = new Op();
 
 // ---------------------------------------------------------------------------
@@ -438,6 +430,8 @@ Ops.Group = function()
 
 };
 Ops.Group.prototype = new Op();
+
+// ---------------------------------------------------------------------------
 
 Ops.Sequence = function()
 {
@@ -617,7 +611,6 @@ Ops.Anim.SinusAnim = function()
 
 Ops.Anim.SinusAnim.prototype = new Op();
 
-
 // --------------------------------------------------------------------------
 
 Ops.Anim.RelativeTime = function()
@@ -642,8 +635,6 @@ Ops.Anim.RelativeTime = function()
 
 Ops.Anim.RelativeTime.prototype = new Op();
 
-
-
 // --------------------------------------------------------------------------
 
 Ops.Anim.Frequency = function()
@@ -666,14 +657,11 @@ Ops.Anim.Frequency = function()
             self.trigger.trigger();
         }
     };
-
 };
 
 Ops.Anim.Frequency.prototype = new Op();
 
-
 // --------------------------------------------------------------------------
-
 
 Ops.Anim.TimeDiff = function()
 {
@@ -803,9 +791,7 @@ Ops.LoadingStatus = function()
                 self.patch.timer.setTime(0);
                 CGL.decrementLoadingAssets();
                 console.log('loadingstatus finished -----------');
-                        
             }
-
         }
     };
 };
