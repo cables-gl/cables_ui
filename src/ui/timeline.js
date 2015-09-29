@@ -6,7 +6,9 @@ CABLES.TL.Key.prototype.circle=null;
 CABLES.TL.Key.prototype.circleBezierOut=null;
 CABLES.TL.Key.prototype.circleBezierIn=null;
 CABLES.TL.Key.prototype.selected=false;
+CABLES.TL.Key.prototype.showCircle=true;
 
+CABLES.TL.MultiGraphKeyDisplayMode=true;
 CABLES.TL.MoveMode=0;
 CABLES.TL.TIMESCALE=100;
 CABLES.TL.VALUESCALE=100;
@@ -73,10 +75,11 @@ CABLES.TL.Key.prototype.updateCircle=function()
 
     if(isNaN(this.value)) this.value=0;
 
-
     this.x=this.time*CABLES.TL.TIMESCALE;
     this.y=this.value*-CABLES.TL.VALUESCALE;
 
+    if(!this.showCircle) this.circle.hide();
+        else this.circle.show();
 
     if(this.getEasing()==CABLES.TL.EASING_BEZIER)
     {
@@ -175,7 +178,8 @@ CABLES.TL.Key.prototype.initUI=function()
 
     this.doMove=function(dx,dy,a,b,e,newPos)
     {
-        
+     
+        if(!this.showCircle)   return;
 
         if(startMoveX==-1 )
         {
@@ -517,6 +521,11 @@ CABLES.TL.UI.TimeLineUI=function()
 
     }
 
+    this.getAnim=function()
+    {
+        return anim;
+    };
+
     this.setAnim=function(newanim,config)
     {
 
@@ -665,6 +674,12 @@ CABLES.TL.UI.TimeLineUI=function()
                     var nextKey=null;
                     if(ani.keys.length > ik+1) nextKey=ani.keys[ik+1];
                     
+                    if(CABLES.TL.MultiGraphKeyDisplayMode)
+                        ani.keys[ik].showCircle=true;
+                    else
+                        if(ani==anim)ani.keys[ik].showCircle=true;
+                            else ani.keys[ik].showCircle=false
+
                     ani.keys[ik].updateCircle();
                     if(ani.keys[ik].onChange===null) ani.keys[ik].onChange=updateKeyLineDelayed;
                 }
@@ -976,7 +991,8 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         for(var anii in anims)
             for(var i in anims[anii].keys)
-                anims[anii].keys[i].setSelected(true);
+                if(anims[anii].keys[i].showCircle)
+                    anims[anii].keys[i].setSelected(true);
         updateKeyLine();
     };
 
@@ -996,6 +1012,15 @@ CABLES.TL.UI.TimeLineUI=function()
         updateKeyLine();
     };
 
+    function toggleMultiGraphKeyDisplay()
+    {
+        CABLES.TL.MultiGraphKeyDisplayMode=!CABLES.TL.MultiGraphKeyDisplayMode;
+
+        console.log('CABLES.TL.MultiGraphKeyDisplayMode ',CABLES.TL.MultiGraphKeyDisplayMode);
+                
+        updateKeyLine();
+    }
+
 
     $("#keymovemode").bind("click", toggleMoveMode);
     $("#keyscaleheight").bind("click", this.scaleHeight);
@@ -1012,6 +1037,9 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#centercursor").bind("click", this.centerCursor);
     $("#centercursor").bind("mousedown", function(){doCenter=true;} );
     $("#centercursor").bind("mouseup", function(){doCenter=false;} );
+
+    $("#toggleMultiGraphKeyDisplay").bind("mousedown", toggleMultiGraphKeyDisplay );
+    
 
     $(".timeLineInsert").bind("click", function (e)
     {
@@ -1315,14 +1343,18 @@ CABLES.TL.UI.TimeLineUI=function()
                 for(var i in anims[j].keys)
                 {
                     var rect=anims[j].keys[i].circle;
-                    var opX=rect.attr("cx");
-                    var opY=rect.attr("cy");
-
-                    anims[j].keys[i].setSelected(false);
-                    if(opX>start.x && opX<end.x && opY>start.y && opY<end.y )
+                    if(anims[j].keys[i].showCircle)
                     {
-                        anims[j].keys[i].setSelected(true);
-                        count++;
+                        var opX=rect.attr("cx");
+                        var opY=rect.attr("cy");
+
+                        anims[j].keys[i].setSelected(false);
+                        if(opX>start.x && opX<end.x && opY>start.y && opY<end.y )
+                        {
+                            anims[j].keys[i].setSelected(true);
+                            count++;
+                        }
+
                     }
                 }
             }
