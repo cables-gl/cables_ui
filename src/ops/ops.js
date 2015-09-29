@@ -494,8 +494,12 @@ Ops.TimedSequence = function()
     {
         for(var i=0;i<triggers.length;i++)
         {
+            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
             triggers[i].trigger();
         }
+        self.triggerAlways.trigger();
+        console.log('TimedSequence loaded');
+                
     };
 
     this.exe.onTriggered=function()
@@ -613,6 +617,7 @@ Ops.Anim.SinusAnim = function()
 
 Ops.Anim.SinusAnim.prototype = new Op();
 
+
 // --------------------------------------------------------------------------
 
 Ops.Anim.RelativeTime = function()
@@ -636,6 +641,35 @@ Ops.Anim.RelativeTime = function()
 };
 
 Ops.Anim.RelativeTime.prototype = new Op();
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Anim.Frequency = function()
+{
+    Op.apply(this, arguments);
+
+    this.name='Frequency';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.frequency=this.addInPort(new Port(this,"frequency",OP_PORT_TYPE_VALUE));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var self=this;
+    var startTime=0;
+
+    this.exe.onTriggered=function()
+    {
+        if(Date.now()-startTime>self.frequency.val)
+        {
+            startTime=Date.now();
+            self.trigger.trigger();
+        }
+    };
+
+};
+
+Ops.Anim.Frequency.prototype = new Op();
 
 
 // --------------------------------------------------------------------------
@@ -768,6 +802,8 @@ Ops.LoadingStatus = function()
                 self.patch.timer.play();
                 self.patch.timer.setTime(0);
                 CGL.decrementLoadingAssets();
+                console.log('loadingstatus finished -----------');
+                        
             }
 
         }
