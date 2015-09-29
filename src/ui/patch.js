@@ -342,6 +342,15 @@ CABLES.UI.Patch=function(_gui)
         if(rubberBandRect) rubberBandRect.hide();
     }
 
+    function setStatusSelectedOps()
+    {
+        var txt='';
+        txt+=selectedOps.length+" ops selected / [del] delete ops / [a] align ops / ";
+        txt+='<a class="fa fa-line-chart" data-tt="show graphs of all selected ops" onclick="gui.patch().showSelectedOpsGraphs()" ></a>';
+        CABLES.UI.setStatusText(txt);
+    }
+
+
     this.selectAllOps=function()
     {
         for(var i in self.ops)
@@ -353,8 +362,8 @@ CABLES.UI.Patch=function(_gui)
 
             }
         }
-        
-        CABLES.UI.setStatusText(selectedOps.length+" ops selected / [del] delete ops / [a] align ops");
+
+        setStatusSelectedOps();
     };
 
     function rubberBandMove(e)
@@ -429,7 +438,7 @@ CABLES.UI.Patch=function(_gui)
             }
 
             if(selectedOps.length===0) CABLES.UI.setStatusText('');
-                else CABLES.UI.setStatusText(selectedOps.length+" ops selected / [del] delete ops / [a] align ops");
+                else setStatusSelectedOps();
         }
     }
 
@@ -513,7 +522,6 @@ CABLES.UI.Patch=function(_gui)
 
             if(e.which==1 && !spacePressed)
             {
-
                 for(var i in self.ops)
                     if(self.ops[i].isDragging || self.ops[i].isMouseOver)
                         return;
@@ -899,13 +907,34 @@ CABLES.UI.Patch=function(_gui)
         if(which===0) $('#button_subPatchBack').hide();
             else $('#button_subPatchBack').show();
 
-
-
         currentSubPatch=which;
         self.updateSubPatches();
 
         $('#patch').focus();
     };
+
+
+    this.showSelectedOpsGraphs=function()
+    {
+                
+        if(selectedOps.length>0)
+        {
+            for(var j=0;j<selectedOps.length;j++)
+            {
+                for(var i=0;i<selectedOps[j].portsIn.length;i++)
+                {
+                    if(selectedOps[j].portsIn[i].thePort.isAnimated() && selectedOps[j].portsIn[i].thePort.anim)
+                    {
+                        selectedOps[j].portsIn[i].thePort.anim.stayInTimeline=true;
+                        self.timeLine.setAnim(selectedOps[j].portsIn[i].thePort.anim);
+                    }
+                }
+            }
+        }
+
+
+    };
+
 
     this.alignSelectedOpsVert=function()
     {

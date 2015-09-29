@@ -838,6 +838,7 @@ Ops.Gl.TextureEffects.DepthTexture = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.farPlane=this.addInPort(new Port(this,"farplane",OP_PORT_TYPE_VALUE));
     this.nearPlane=this.addInPort(new Port(this,"nearplane",OP_PORT_TYPE_VALUE));
+    
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 

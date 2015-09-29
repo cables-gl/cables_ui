@@ -78,9 +78,6 @@ CABLES.TL.Key.prototype.updateCircle=function()
     this.y=this.value*-CABLES.TL.VALUESCALE;
 
 
-    // var posx=this.time*CABLES.TL.TIMESCALE;
-    // var this.y=this.value*-CABLES.TL.VALUESCALE;
-
     if(this.getEasing()==CABLES.TL.EASING_BEZIER)
     {
         var posBezX=this.x+this.bezTime*CABLES.TL.TIMESCALE;
@@ -176,9 +173,9 @@ CABLES.TL.Key.prototype.initUI=function()
         self.isDragging=false;
     };
 
-    this.doMove=function(dx,dy,a,b,e)
+    this.doMove=function(dx,dy,a,b,e,newPos)
     {
-        var newPos=gui.timeLine().getCanvasCoordsMouse(e);
+        
 
         if(startMoveX==-1 )
         {
@@ -196,17 +193,17 @@ CABLES.TL.Key.prototype.initUI=function()
         if(CABLES.TL.MoveMode===0)
         {
             self.set({time:time,value:self.value});
-            self.updateCircle();
+            // self.updateCircle();
         }
         if(CABLES.TL.MoveMode==1)
         {
             self.set({time:time,value:newPos.y/-CABLES.TL.VALUESCALE});
-            self.updateCircle();
+            // self.updateCircle();
         }
         if(CABLES.TL.MoveMode==2)
         {
             self.set({time:time,value:newPos.y/-CABLES.TL.VALUESCALE});
-            self.updateCircle();
+            // self.updateCircle();
         }
 
     };
@@ -539,6 +536,9 @@ CABLES.TL.UI.TimeLineUI=function()
             return;
         }
 
+                console.log('set anbim');
+                
+
         newanim.paper=paper;
         anim=newanim;
         enabled=true;
@@ -571,7 +571,7 @@ CABLES.TL.UI.TimeLineUI=function()
         // self.scaleHeight();
         this.centerCursor();
 
-        if(anim.onChange===null) anim.onChange=updateKeyLine;
+        if(anim.onChange===null) anim.onChange=updateKeyLineDelayed;
         
     };
 
@@ -616,8 +616,15 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.refresh=function()
     {
-        updateKeyLine();
+        updateKeyLineDelayed();
     };
+
+    var delayedUpdateKeyLine=0;
+    function updateKeyLineDelayed()
+    {
+        clearTimeout(delayedUpdateKeyLine);
+        delayedUpdateKeyLine = setTimeout(updateKeyLine, 10);
+    }
 
     function updateKeyLine()
     {
@@ -659,7 +666,7 @@ CABLES.TL.UI.TimeLineUI=function()
                     if(ani.keys.length > ik+1) nextKey=ani.keys[ik+1];
                     
                     ani.keys[ik].updateCircle();
-                    if(ani.keys[ik].onChange===null) ani.keys[ik].onChange=updateKeyLine;
+                    if(ani.keys[ik].onChange===null) ani.keys[ik].onChange=updateKeyLineDelayed;
                 }
 
                 ani.keyLine.attr({ path:str });
@@ -1422,6 +1429,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.moveSelectedKeys=function(dx,dy,a,b,e)
     {
+        var newPos=gui.timeLine().getCanvasCoordsMouse(e);
         for(var i in anims)
         {
             if(anims[i])
@@ -1432,7 +1440,7 @@ CABLES.TL.UI.TimeLineUI=function()
                     if(key.selected)
                     {
 
-                        key.doMove(dx,dy,a,b,e);
+                        key.doMove(dx,dy,a,b,e,newPos);
                     }
                 }
             }
