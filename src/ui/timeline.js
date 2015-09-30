@@ -13,8 +13,6 @@ CABLES.TL.MoveMode=0;
 CABLES.TL.TIMESCALE=100;
 CABLES.TL.VALUESCALE=100;
 
-
-
 CABLES.TL.Key.prototype.setAttribs=function(sel)
 {
     var opa=0.7;
@@ -30,7 +28,6 @@ CABLES.TL.Key.prototype.setAttribs=function(sel)
 
     if(this.selected) this.circle.attr({ fill:"white" });
 };
-
 
 CABLES.TL.Key.prototype.setSelected=function(sel)
 {
@@ -317,6 +314,11 @@ CABLES.TL.Key.prototype.initUI=function()
 
     if(self.circleBezierIn) self.circleBezierIn.drag(moveBezierIn,upBezierIn);
 
+};
+
+CABLES.TL.Anim.prototype.hasSelectedKeys=function()
+{
+    for(var i in this.keys)if(this.keys[i].selected)return true;
 };
 
 CABLES.TL.Anim.prototype.show=function()
@@ -760,11 +762,9 @@ CABLES.TL.UI.TimeLineUI=function()
 
                 ani.keyLine.attr({ path:str });
     
-                if(ani==anim)
-                    anim.keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
-                else
-                    anim.keyLine.attr({ stroke: "#aaa", "stroke-width": 1 });
-
+                if(ani.keyLine)
+                    if(ani==anim) ani.keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
+                        else ani.keyLine.attr({ stroke: "#222", "stroke-width": 1 });
 
             }
         }
@@ -983,14 +983,21 @@ CABLES.TL.UI.TimeLineUI=function()
         var maxt=-99999;
         var mint=99999999;
 
+        var hasSelectedKeys=false;
+        for(var anii in anims)
+            if(anims[anii].hasSelectedKeys())hasSelectedKeys=true;
+
         var count=0;
         for(var anii in anims)
         {
             for(var i in anims[anii].keys)
             {
-                count++;
-                maxt=Math.max(maxt,anims[anii].keys[i].time);
-                mint=Math.min(mint,anims[anii].keys[i].time);
+                if(!hasSelectedKeys || anims[anii].keys[i].selected)
+                {
+                    count++;
+                    maxt=Math.max(maxt,anims[anii].keys[i].time);
+                    mint=Math.min(mint,anims[anii].keys[i].time);
+                }
             }
         }
         if(count===0)
@@ -1029,14 +1036,21 @@ CABLES.TL.UI.TimeLineUI=function()
         var maxv=-99999;
         var minv=99999999;
 
+        var hasSelectedKeys=false;
+        for(var anii in anims)
+            if(anims[anii].hasSelectedKeys())hasSelectedKeys=true;
+
         var count=0;
         for(var anii in anims)
         {
             for(var i in anims[anii].keys)
             {
-                count++;
-                maxv=Math.max(maxv,anims[anii].keys[i].value);
-                minv=Math.min(minv,anims[anii].keys[i].value);
+                if(!hasSelectedKeys || anims[anii].keys[i].selected)
+                {
+                    count++;
+                    maxv=Math.max(maxv,anims[anii].keys[i].value);
+                    minv=Math.min(minv,anims[anii].keys[i].value);
+                }
             }
         }
 

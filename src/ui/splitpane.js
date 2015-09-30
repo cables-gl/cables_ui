@@ -2,10 +2,8 @@ var min = 300;
 var max = 3600;
 var mainmin = 200;
 
-$( document ).ready(function() 
+$( document ).ready(function()
 {
-
-
     $('#splitterPatch').mousedown(function (e)
     {
         e.preventDefault();
@@ -30,20 +28,13 @@ $( document ).ready(function()
         });
     });
 
-
     $('#splitterTimeline').mousedown(function (e)
     {
         e.preventDefault();
         $(document).mousemove(function (e)
         {
             e.preventDefault();
-
             gui.timingHeight= window.innerHeight-e.clientY;
-
-            console.log('gui.timingHeight',gui.timingHeight);
-            
-            
-
             gui.setLayout();
         });
     });
