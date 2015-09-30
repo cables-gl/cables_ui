@@ -13,18 +13,34 @@ CABLES.TL.MoveMode=0;
 CABLES.TL.TIMESCALE=100;
 CABLES.TL.VALUESCALE=100;
 
-CABLES.TL.Key.prototype.setSelected=function(sel)
-{
-    this.selected=sel;
 
-    if(sel)
+
+CABLES.TL.Key.prototype.setAttribs=function(sel)
+{
+    var opa=0.7;
+    var fill='#222';
+    if(this.isMainAnim)
+    {
+        fill=CABLES.UI.uiConfig.colorKey;
+        opa=0.8;
+    }
+
+    this.circle.attr({ "fill-opacity":0.7 });
+
+    this.circle.attr({ cx:this.x, cy:this.y,"fill-opacity":opa,fill:fill  });
+
+    if(this.selected)
     {
         this.circle.attr({ fill:"white","fill-opacity":0.7 });
     }
-    else
-    {
-        this.circle.attr({ fill:CABLES.UI.uiConfig.colorKey,"fill-opacity":0.7 });
-    }
+
+}
+
+
+CABLES.TL.Key.prototype.setSelected=function(sel)
+{
+    this.selected=sel;
+    this.setAttribs();
 };
 
 CABLES.TL.Key.prototype.removeUi=function()
@@ -67,8 +83,12 @@ CABLES.TL.Key.prototype.removeUi=function()
 
 
 
-CABLES.TL.Key.prototype.updateCircle=function()
+CABLES.TL.Key.prototype.isMainAnim=false;
+
+CABLES.TL.Key.prototype.updateCircle=function(_isMainAnim)
 {
+    if(_isMainAnim!== undefined)this.isMainAnim=_isMainAnim;
+
     if(!gui.timeLine())return;
     if(!this.circle) this.initUI();
     if(this.getEasing()==CABLES.TL.EASING_BEZIER && !this.circleBezierOut) this.initUI();
@@ -98,6 +118,7 @@ CABLES.TL.Key.prototype.updateCircle=function()
         this.bezierControlLineIn.attr({ path:pathIn, stroke: "#888", "stroke-width": 1});
     }
 
+
     if(isNaN(this.x))
     {
         this.x=0;
@@ -109,8 +130,9 @@ CABLES.TL.Key.prototype.updateCircle=function()
         console.log('key this.x NaN');
     }
 
-    this.circle.attr({ cx:this.x, cy:this.y,"fill-opacity":0.7  });
-    this.circle.toFront();
+
+    this.setAttribs();
+    if(this.isMainAnim)this.circle.toFront();
 };
 
 CABLES.TL.Key.prototype.initUI=function()
@@ -148,7 +170,6 @@ CABLES.TL.Key.prototype.initUI=function()
 
         if(!this.bezierControlLineIn)
             this.bezierControlLineIn = gui.timeLine().getPaper().path("M 0 0 ");
-
     }
 
     this.circle=gui.timeLine().getPaper().circle(this.x, this.y, 7);
@@ -543,7 +564,6 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         if(isScrollingTime)
             scrollTime(e);
-
     }
 
     this.getAnim=function()
@@ -590,7 +610,7 @@ CABLES.TL.UI.TimeLineUI=function()
         for(var i in anim.keys)
         {
             if(!anim.keys[i].circle)anim.keys[i].initUI();
-            anim.keys[i].updateCircle();
+            anim.keys[i].updateCircle(true);
         }
 
         // if(anim.keys.length>1 || anims.length>0)
@@ -680,8 +700,6 @@ CABLES.TL.UI.TimeLineUI=function()
                 var start=viewBox.x/CABLES.TL.TIMESCALE;
                 var width=viewBox.w/CABLES.TL.TIMESCALE*1.2;
 
-
-
                 var timePoints=[0];
 
                 for(var ik=0;ik<ani.keys.length;ik++)
@@ -746,7 +764,7 @@ CABLES.TL.UI.TimeLineUI=function()
                         if(ani==anim)ani.keys[ik].showCircle=true;
                             else ani.keys[ik].showCircle=false;
 
-                    ani.keys[ik].updateCircle();
+                    ani.keys[ik].updateCircle(ani==anim);
                     if(ani.keys[ik].onChange===null) ani.keys[ik].onChange=updateKeyLineDelayed;
                 }
 
@@ -1386,7 +1404,6 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         if(e.which==1 && !spacePressed)
         {
-            console.log('rubbermode');
             if(!mouseRubberBandStartPos)
                 mouseRubberBandStartPos=self.getCanvasCoordsMouse(e);
             mouseRubberBandPos=self.getCanvasCoordsMouse(e);
@@ -1515,7 +1532,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
                     for(i in anim.keys)
                     {
-                        anim.keys[i].updateCircle();
+                        anim.keys[i].updateCircle(true);
                     }
 
                     updateKeyLine();

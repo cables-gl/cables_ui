@@ -20,6 +20,7 @@ CABLES.UI.uiConfig=
 
     colorSelected:'#fff',
     colorKey:'#6c9fde',
+    colorKeyOther:'#ea6638',
     colorCursor:'#ea6638',
 
     watchValuesInterval:100,
