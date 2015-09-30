@@ -596,7 +596,7 @@ CABLES.TL.UI.TimeLineUI=function()
         }
 
         updateKeyLine();
-        anim.keyLine.toFront();
+        if(anim.keyLine)anim.keyLine.toFront();
         for(var i in anim.keys)
         {
             if(!anim.keys[i].circle)anim.keys[i].initUI();
