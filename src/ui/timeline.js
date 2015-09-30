@@ -26,11 +26,9 @@ CABLES.TL.Key.prototype.setAttribs=function(sel)
     }
 
     this.circle.attr({ "fill-opacity":0.7 });
-
     this.circle.attr({ cx:this.x, cy:this.y,"fill-opacity":opa,fill:fill  });
 
     if(this.selected) this.circle.attr({ fill:"white" });
-
 };
 
 

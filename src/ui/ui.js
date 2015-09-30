@@ -85,7 +85,7 @@ CABLES.UI.GUI=function()
             $('#keycontrols').show();
 
             $('#splitterTimeline').show();
-            $('#splitterTimeline').css('bottom',this.timingHeight-timedisplayheight+2);
+            $('#splitterTimeline').css('bottom',this.timingHeight-timedisplayheight+2+timelineUiHeight);
         }
         else
         {
