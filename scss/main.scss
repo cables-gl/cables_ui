@@ -81,6 +81,13 @@ a
     position: absolute;
     bottom:0px;
     overflow: hidden;
+
+    a
+    {
+        background-color: #444;
+        color:white;
+        padding:2px;
+    }
 }
 
 #glcanvas

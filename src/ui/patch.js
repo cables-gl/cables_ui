@@ -198,6 +198,12 @@ CABLES.UI.Patch=function(_gui)
                 }
             break;
 
+            case 71: // g show graphs
+                // self.setCurrentSubPatch(0);
+                self.showSelectedOpsGraphs();
+            break;
+
+
             case 49: // / - test
                 self.setCurrentSubPatch(0);
             break;
@@ -345,8 +351,8 @@ CABLES.UI.Patch=function(_gui)
     function setStatusSelectedOps()
     {
         var txt='';
-        txt+=selectedOps.length+" ops selected / [del] delete ops / [a] align ops / ";
-        txt+='<a class="fa fa-line-chart" data-tt="show graphs of all selected ops" onclick="gui.patch().showSelectedOpsGraphs()" ></a>';
+        txt+=selectedOps.length+" ops selected / [del] delete ops / [a] align ops / [g] show grapghs ";
+        // txt+='<a class="fa fa-line-chart" data-tt="show graphs of all selected ops" onclick="gui.patch().showSelectedOpsGraphs()" ></a>';
         CABLES.UI.setStatusText(txt);
     }
 
@@ -916,7 +922,10 @@ CABLES.UI.Patch=function(_gui)
 
     this.showSelectedOpsGraphs=function()
     {
-                
+        gui.timeLine().clear();
+
+        var doShow=true;
+        var count=0;
         if(selectedOps.length>0)
         {
             for(var j=0;j<selectedOps.length;j++)
@@ -925,12 +934,20 @@ CABLES.UI.Patch=function(_gui)
                 {
                     if(selectedOps[j].portsIn[i].thePort.isAnimated() && selectedOps[j].portsIn[i].thePort.anim)
                     {
-                        selectedOps[j].portsIn[i].thePort.anim.stayInTimeline=true;
+                        if(count===0)
+                        {
+                            doShow=!selectedOps[j].portsIn[i].thePort.anim.stayInTimeline;
+                        }
+
+                        selectedOps[j].portsIn[i].thePort.anim.stayInTimeline=doShow;
                         self.timeLine.setAnim(selectedOps[j].portsIn[i].thePort.anim);
+                        count++;
                     }
                 }
             }
         }
+        if(!doShow)
+            gui.timeLine().clear();
 
 
     };

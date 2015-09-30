@@ -62,6 +62,11 @@ svg {
   position: absolute;
   bottom: 0px;
   overflow: hidden; }
+  #statusbar
+a {
+    background-color: #444;
+    color: white;
+    padding: 2px; }
 
 #glcanvas {
   background-color: black;

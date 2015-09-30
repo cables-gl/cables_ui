@@ -151,7 +151,7 @@ CABLES.TL.Key.prototype.initUI=function()
 
     }
 
-    this.circle=gui.timeLine().getPaper().circle(this.x, this.y, 10);
+    this.circle=gui.timeLine().getPaper().circle(this.x, this.y, 7);
     this.circle.attr(discattr);
     this.circle.toFront();
 
@@ -463,45 +463,52 @@ CABLES.TL.UI.TimeLineUI=function()
         if(newanim===null)return;
 
         var i=0;
-        newanim.onChange=null;
+        // newanim.onChange=null;
 
 
 
-        var newAnims=[];
-        newAnims.push(newanim);
+        // var newAnims=[];
+        // newAnims.push(newanim);
         newanim.show();
 
-        found=false;
-        for(i in anims)
+        var found=true;
+        while(found)
         {
-            // if(anims[i])
-            if(!found)
+            found=false;
+            for(i in anims)
             {
-                if(!anims[i].stayInTimeline && anims[i]!=newanim)
+                if(!found && !anims[i].stayInTimeline && anims[i]!=newanim)
                 {
+                            console.log('found one! '+i);
+                            
                     anims[i].removeUi();
+                    if(anims.length==1) anims.length=0;
+                        else
                     anims=anims.slice(i,1);
+
                     // if(anims[i].keyLine)anims[i].keyLine.hide();
                     found=true;
                 }
-                else
-                {
-                    newAnims.push(anims[i]);
-                    anims[i].show();
-                }
             }
         }
 
-        anims=newAnims;
+        anims.push(newanim);
 
-        for(i in anims)
-        {
-            if(anims[i]==newanim)
-            {
-                return;
-            }
-        }
-        if(newanim) anims.push(newanim);
+                // {
+                //     newAnims.push(anims[i]);
+                //     anims[i].show();
+                // }
+
+        // anims=newAnims;
+
+        // for(i in anims)
+        // {
+        //     if(anims[i]==newanim)
+        //     {
+        //         return;
+        //     }
+        // }
+        // if(newanim) anims.push(newanim);
 
     };
 
@@ -666,7 +673,7 @@ CABLES.TL.UI.TimeLineUI=function()
             else
             if(ani)
             {
-                ani.keyLine.show();
+                ani.show();
                 ani.sortKeys();
 
                 var numSteps=300;
