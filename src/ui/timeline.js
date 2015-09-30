@@ -872,12 +872,7 @@ CABLES.TL.UI.TimeLineUI=function()
             case 32:
                 spacePressed=true;
             break;
-            case 74: // j
-                self.jumpKey(-1);
-            break;
-            case 75: // k
-                self.jumpKey(1);
-            break;
+
 
             case 72: // h
                 self.scaleHeight();
