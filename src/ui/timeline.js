@@ -1154,7 +1154,18 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#centercursor").bind("mouseup", function(){doCenter=false;} );
 
     $("#toggleMultiGraphKeyDisplay").bind("mousedown", toggleMultiGraphKeyDisplay );
-    
+
+
+    $('#timeline').bind("mousewheel", function (event,delta,nbr)
+    {
+        // viewBox.y-=40;
+        // viewBox.h+=140;
+
+        CABLES.TL.VALUESCALE+=delta;
+
+        if(CABLES.TL.VALUESCALE<10)CABLES.TL.VALUESCALE=10;
+        self.updateViewBox();
+    });
 
     $(".timeLineInsert").bind("click", function (e)
     {
