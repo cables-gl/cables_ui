@@ -586,7 +586,6 @@ CABLES.TL.UI.TimeLineUI=function()
         enabled=true;
         this.addAnim(anim);
         
-
         if(config && config.name) $('#timelineTitle').html(config.name);
             else $('#timelineTitle').html('');
 
@@ -611,7 +610,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         // if(anim.keys.length==1)this.centerCursor();
         // self.scaleHeight();
-        this.centerCursor();
+        // this.centerCursor();
 
         if(anim.onChange===null) anim.onChange=updateKeyLineDelayed;
         
@@ -876,15 +875,15 @@ CABLES.TL.UI.TimeLineUI=function()
             case 74: // j
                 self.jumpKey(-1);
             break;
+            case 75: // k
+                self.jumpKey(1);
+            break;
 
             case 72: // h
                 self.scaleHeight();
                 self.scaleWidth();
             break;
 
-            case 75: // k
-                self.jumpKey(1);
-            break;
 
             case 65: // a 
                 if(e.metaKey || e.ctrlKey) self.selectAllKeys();
@@ -1158,9 +1157,6 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $('#timeline').bind("mousewheel", function (event,delta,nbr)
     {
-        // viewBox.y-=40;
-        // viewBox.h+=140;
-
         CABLES.TL.VALUESCALE+=delta;
 
         if(CABLES.TL.VALUESCALE<10)CABLES.TL.VALUESCALE=10;

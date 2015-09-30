@@ -295,6 +295,13 @@ CABLES.UI.GUI=function()
                     
                 break;
 
+                case 74: // j
+                    self.timeLine().jumpKey(-1);
+                break;
+                case 75: // k
+                    self.timeLine().jumpKey(1);
+                break;
+
                 case 79: // o - open
                     if(e.metaKey || e.ctrlKey)
                     {
