@@ -356,7 +356,6 @@ CABLES.UI.Patch=function(_gui)
         CABLES.UI.setStatusText(txt);
     }
 
-
     this.selectAllOps=function()
     {
         for(var i in self.ops)
@@ -365,7 +364,6 @@ CABLES.UI.Patch=function(_gui)
             {
                 self.addSelectedOp(self.ops[i]);
                 self.ops[i].setSelected(true);
-
             }
         }
 

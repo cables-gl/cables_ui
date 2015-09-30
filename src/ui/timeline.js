@@ -676,20 +676,64 @@ CABLES.TL.UI.TimeLineUI=function()
                 ani.show();
                 ani.sortKeys();
 
-                var numSteps=300;
+                // var numSteps=500;
                 var start=viewBox.x/CABLES.TL.TIMESCALE;
                 var width=viewBox.w/CABLES.TL.TIMESCALE*1.2;
 
-                for(var i=0;i<numSteps;i++)
-                {
-                    var t=start+i*width/numSteps;
-                    var v=ani.getValue(t);
 
+
+                var timePoints=[0];
+
+                for(var ik=0;ik<ani.keys.length;ik++)
+                {
+                    timePoints.push(ani.keys[ik].time-0.00001);
+                    timePoints.push(ani.keys[ik].time);
+                    timePoints.push(ani.keys[ik].time+0.00001);
+
+                    if(ani.keys[ik].getEasing()!=CABLES.TL.EASING_LINEAR &&
+                        ani.keys[ik].getEasing()!=CABLES.TL.EASING_ABSOLUTE  &&
+                        ik<ani.keys.length-1)
+                    {
+                        var timeSpan=ani.keys[ik+1].time-ani.keys[ik].time;
+                                        
+                        for(var j=0;j<timeSpan;j+=timeSpan/50)
+                        {
+                            timePoints.push(ani.keys[ik].time+j);
+                        }
+                    }
+                }
+                timePoints.push(1000);
+
+
+                for(var i=0;i<timePoints.length;i++)
+                {
+                    // var t=start+i*width/numSteps;
+                    var t=timePoints[i];
+                    var v=ani.getValue(t);
                     if(str===null)str+="M ";
                         else str+="L ";
-
                     str+=t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
+
                 }
+
+                // var lastValue=Number.MAX_VALUE;
+
+                // for(var i=0;i<numSteps;i++)
+                // {
+                //     var t=start+i*width/numSteps;
+                //     var v=ani.getValue(t);
+
+                //     if(lastValue!=v || i>=numSteps-2 || i<=3)
+                //     {
+                //         if(str===null)str+="M ";
+                //             else str+="L ";
+                //         str+=t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
+                //     }
+                //     lastValue=v;
+                // }
+
+                        // console.log('str ',str.length);
+                        
 
                 for(var ik=0;ik<ani.keys.length;ik++)
                 {
