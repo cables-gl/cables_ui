@@ -178,8 +178,7 @@ CABLES.TL.Key.prototype.initUI=function()
 
     this.doMove=function(dx,dy,a,b,e,newPos)
     {
-     
-        if(!this.showCircle)   return;
+        if(!this.showCircle) return;
 
         if(startMoveX==-1 )
         {
@@ -304,8 +303,28 @@ CABLES.TL.Key.prototype.initUI=function()
 
 };
 
+CABLES.TL.Anim.prototype.show=function()
+{
+
+    if(gui.timeLine())
+    if(!this.keyLine)
+    {
+        this.keyLine = gui.timeLine().getPaper().path("M 0 0 L 1 1");
+        this.keyLine.attr({ stroke: "#aaa", "stroke-width": 1 });
+    }
+
+};
+
 CABLES.TL.Anim.prototype.removeUi=function()
 {
+
+    if(this.keyLine)
+    {
+        this.keyLine.hide();
+        this.keyLine.remove();
+        this.keyLine=false;
+    }
+
     for(var i in this.keys)
         this.keys[i].removeUi();
 };
@@ -339,7 +358,7 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
         found=false;
         for(var i in this.keys)
         {
-            if(this.keys[i].selected)
+            if(this.keys[i].selected && this.keys[i].showCircle)
             {
                 var undofunc=function(anim,objKey)
                 {
@@ -421,14 +440,16 @@ CABLES.TL.UI.TimeLineUI=function()
         for(var j in anims)
         {
 
-            for(var i in anims[j].keys)
-            {
-                if(anims[j].keys[i].circle)
-                {
-                    // $('#timeline svg circle').hide();
-                    anims[j].keys[i].removeUi();
-                }
-            }
+            anims[j].removeUi();
+
+            // for(var i in anims[j].keys)
+            // {
+            //     if(anims[j].keys[i].circle)
+            //     {
+            //         // $('#timeline svg circle').hide();
+            //         anims[j].keys[i].removeUi();
+            //     }
+            // }
         }
         
         if($('#timeline svg circle').length>0)
@@ -444,32 +465,29 @@ CABLES.TL.UI.TimeLineUI=function()
         var i=0;
         newanim.onChange=null;
 
-        if(!newanim.keyLine)
-            newanim.keyLine = paper.path("M 0 0 L 1 1");
 
-        for(i in anims)
-            anims[i].keyLine.attr({ stroke: "#aaa", "stroke-width": 1 });
 
         var newAnims=[];
         newAnims.push(newanim);
-        newanim.keyLine.show();
+        newanim.show();
 
         found=false;
         for(i in anims)
         {
-            if(anims[i])
+            // if(anims[i])
+            if(!found)
             {
                 if(!anims[i].stayInTimeline && anims[i]!=newanim)
                 {
                     anims[i].removeUi();
                     anims=anims.slice(i,1);
-                    anims[i].keyLine.hide();
+                    // if(anims[i].keyLine)anims[i].keyLine.hide();
                     found=true;
                 }
                 else
                 {
                     newAnims.push(anims[i]);
-                    anims[i].keyLine.show();
+                    anims[i].show();
                 }
             }
         }
@@ -483,7 +501,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 return;
             }
         }
-        anims.push(newanim);
+        if(newanim) anims.push(newanim);
 
     };
 
@@ -491,17 +509,17 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.removeAnim=function(an)
     {
+        if(!an)return;
         var val=an.getValue(cursorTime);
 
         an.stayInTimeline=false;
+        // an.keyLine.hide();
         
         for(var i in anims)
         {
             if(anims[i] && anims[i]==an)
             {
-                anims[i].removeUi();
-                anims[i].keyLine.hide();
-                // an.clear();
+                an.removeUi();
                 anims=anims.slice(i,1);
                 self.addAnim(tlEmpty);
                 removeDots();
@@ -528,7 +546,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.setAnim=function(newanim,config)
     {
-
+        if(!gui.timeLine())return;
         $(document).bind("mousemove",mousemoveTime);
 
         if(newanim && newanim!=tlEmpty)gui.showTiming();
@@ -544,9 +562,6 @@ CABLES.TL.UI.TimeLineUI=function()
             enabled=false;
             return;
         }
-
-                console.log('set anbim');
-                
 
         newanim.paper=paper;
         anim=newanim;
@@ -646,7 +661,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
             if(ani && ani.keys.length===0)
             {
-                ani.keyLine.hide();
+                ani.removeUi();
             }
             else
             if(ani)
@@ -678,7 +693,7 @@ CABLES.TL.UI.TimeLineUI=function()
                         ani.keys[ik].showCircle=true;
                     else
                         if(ani==anim)ani.keys[ik].showCircle=true;
-                            else ani.keys[ik].showCircle=false
+                            else ani.keys[ik].showCircle=false;
 
                     ani.keys[ik].updateCircle();
                     if(ani.keys[ik].onChange===null) ani.keys[ik].onChange=updateKeyLineDelayed;
@@ -687,9 +702,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 ani.keyLine.attr({ path:str });
             }
         }
-
     }
-
 
     this.getCanvasCoordsMouse=function(evt)
     {
@@ -1012,12 +1025,34 @@ CABLES.TL.UI.TimeLineUI=function()
         updateKeyLine();
     };
 
-    function toggleMultiGraphKeyDisplay()
+    function toggleMultiGraphKeyDisplay(e)
     {
-        CABLES.TL.MultiGraphKeyDisplayMode=!CABLES.TL.MultiGraphKeyDisplayMode;
+        if(e.which==3)
+        {
+            console.log('JA BLA HUND');
 
-        console.log('CABLES.TL.MultiGraphKeyDisplayMode ',CABLES.TL.MultiGraphKeyDisplayMode);
-                
+            removeDots();
+
+            for(var i=0;i<anims.length;i++)
+            {
+                console.log('anims[i]',anims[i]);
+                self.removeAnim(anims[i]);
+            }
+
+        console.log('animslebngth',anims.length);
+        
+
+            self.setAnim(null);
+            updateKeyLine();
+
+
+
+        }
+        else
+        {
+            CABLES.TL.MultiGraphKeyDisplayMode=!CABLES.TL.MultiGraphKeyDisplayMode;
+            console.log('CABLES.TL.MultiGraphKeyDisplayMode ',CABLES.TL.MultiGraphKeyDisplayMode);
+        }
         updateKeyLine();
     }
 
@@ -1495,10 +1530,10 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         for(var i in anims)
         {
-            if(anims[i])
+            // if(anims[i])
             {
+                // anims[i].keyLine.hide();
                 anims[i].removeUi();
-                anims[i].keyLine.hide();
                 found=true;
             }
         }
