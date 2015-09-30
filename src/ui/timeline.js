@@ -29,12 +29,9 @@ CABLES.TL.Key.prototype.setAttribs=function(sel)
 
     this.circle.attr({ cx:this.x, cy:this.y,"fill-opacity":opa,fill:fill  });
 
-    if(this.selected)
-    {
-        this.circle.attr({ fill:"white","fill-opacity":0.7 });
-    }
+    if(this.selected) this.circle.attr({ fill:"white" });
 
-}
+};
 
 
 CABLES.TL.Key.prototype.setSelected=function(sel)
@@ -326,19 +323,13 @@ CABLES.TL.Key.prototype.initUI=function()
 
 CABLES.TL.Anim.prototype.show=function()
 {
-
     if(gui.timeLine())
-    if(!this.keyLine)
-    {
-        this.keyLine = gui.timeLine().getPaper().path("M 0 0 L 1 1");
-        this.keyLine.attr({ stroke: "#aaa", "stroke-width": 1 });
-    }
-
+        if(!this.keyLine)
+            this.keyLine = gui.timeLine().getPaper().path("M 0 0 L 1 1");
 };
 
 CABLES.TL.Anim.prototype.removeUi=function()
 {
-
     if(this.keyLine)
     {
         this.keyLine.hide();
@@ -594,7 +585,7 @@ CABLES.TL.UI.TimeLineUI=function()
         anim=newanim;
         enabled=true;
         this.addAnim(anim);
-        anim.keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
+        
 
         if(config && config.name) $('#timelineTitle').html(config.name);
             else $('#timelineTitle').html('');
@@ -606,7 +597,7 @@ CABLES.TL.UI.TimeLineUI=function()
         }
 
         updateKeyLine();
-
+        anim.keyLine.toFront();
         for(var i in anim.keys)
         {
             if(!anim.keys[i].circle)anim.keys[i].initUI();
@@ -685,6 +676,7 @@ CABLES.TL.UI.TimeLineUI=function()
         {
             var str=null;
             var ani=anims[anii];
+
 
             if(ani && ani.keys.length===0)
             {
@@ -769,6 +761,13 @@ CABLES.TL.UI.TimeLineUI=function()
                 }
 
                 ani.keyLine.attr({ path:str });
+    
+                if(ani==anim)
+                    anim.keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
+                else
+                    anim.keyLine.attr({ stroke: "#aaa", "stroke-width": 1 });
+
+
             }
         }
     }
