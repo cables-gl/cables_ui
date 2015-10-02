@@ -278,6 +278,53 @@ CABLES.UI.GUI=function()
             }
         });
 
+        $(document).keydown(function(e)
+        {
+            switch(e.which)
+            {
+
+                case 27:
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        CABLES.UI.SELECTPROJECT.show();
+                        return;
+                    }
+
+                    $('.tooltip').hide();
+
+                    if(self.rendererWidth===0)
+                    {
+                        self.cycleRendererSize();
+                    }
+                    else
+                    if( $('#library').is(':visible') )
+                    {
+                        $('#library').hide();
+                    }
+                    else
+                    if( $('#sidebar').is(':visible') )
+                    {
+                        $('#sidebar').animate({width:'toggle'},200);
+                    }
+                    else
+                    if( $('.easingselect').is(':visible') )
+                    {
+                        $('.easingselect').hide();
+                    }
+                    else
+                    if( $('#modalcontent').is(':visible') )
+                    {
+                        CABLES.UI.MODAL.hide();
+                    }
+                    else
+                    {
+                        CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
+                    }
+
+                break;
+            }
+        });
+
         $('#timeline, #patch').keydown(function(e)
         {
             switch(e.which)
@@ -332,45 +379,7 @@ CABLES.UI.GUI=function()
                     }
                 break;
 
-                case 27:
-                    if(e.metaKey || e.ctrlKey)
-                    {
-                        CABLES.UI.SELECTPROJECT.show();
-                        return;
-                    }
 
-                    $('.tooltip').hide();
-
-                    if(self.rendererWidth===0)
-                    {
-                        self.cycleRendererSize();
-                    }
-                    else
-                    if( $('#library').is(':visible') )
-                    {
-                        $('#library').hide();
-                    }
-                    else
-                    if( $('#sidebar').is(':visible') )
-                    {
-                        $('#sidebar').animate({width:'toggle'},200);
-                    }
-                    else
-                    if( $('.easingselect').is(':visible') )
-                    {
-                        $('.easingselect').hide();
-                    }
-                    else
-                    if( $('#modalcontent').is(':visible') )
-                    {
-                        CABLES.UI.MODAL.hide();
-                    }
-                    else
-                    {
-                        CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
-                    }
-
-                break;
             }
         });
 
