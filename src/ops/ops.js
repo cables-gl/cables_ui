@@ -486,21 +486,42 @@ Ops.TimedSequence = function()
 
     this.onLoaded=function()
     {
-        for(var i=0;i<triggers.length;i++)
+
+        var i=0;
+        console.log('TimedSequence loading---------------------------------------------');
+        for(i=0;i<triggers.length;i++)
         {
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
             triggers[i].trigger();
         }
+
+        if(self.current.anim)
+        {
+            for(i=0;i<self.current.anim.keys.length;i++)
+            {
+                CGL.preRenderTimes.push(self.current.anim.keys[i].time);
+                // var ii=i;
+                // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+                // var time=self.current.anim.keys[ii].time+0.001;
+                // self.exe.onTriggered(time);
+                // console.log('timed pre init...');
+                // cgl.gl.flush();
+            }
+        }
+
         self.triggerAlways.trigger();
-        console.log('TimedSequence loaded');
+        console.log('TimedSequence loaded---------------------------------------------');
                 
     };
 
-    this.exe.onTriggered=function()
+    this.exe.onTriggered=function(_time)
     {
         if(self.current.anim)
         {
-            var time=self.current.parent.patch.timer.getTime();
+            var time=_time;
+            if(_time===undefined) time=self.current.parent.patch.timer.getTime();
+
             self.currentKeyTime.val=time-self.current.anim.getKey(time).time;
 
             if(self.current.isAnimated())
@@ -761,16 +782,69 @@ Ops.LoadingStatus = function()
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.finished=this.addOutPort(new Port(this,"finished",OP_PORT_TYPE_FUNCTION));
     this.result=this.addOutPort(new Port(this,"status",OP_PORT_TYPE_VALUE));
+    this.preRenderStatus=this.addOutPort(new Port(this,"preRenderStatus",OP_PORT_TYPE_VALUE));
+    this.preRenderStatus.val=0;
     this.numAssets=this.addOutPort(new Port(this,"numAssets",OP_PORT_TYPE_VALUE));
     this.loading=this.addOutPort(new Port(this,"loading",OP_PORT_TYPE_FUNCTION));
 
     var finishedLoading=false;
 
+
+    var preRenderInc=0;
+    var preRenderDone=0;
+    var preRenderTime=0;
+
+
+    var identTranslate=vec3.create();
+    vec3.set(identTranslate, 0,0,-2);
+
+    this.onAnimFrame=function(time)
+    {
+        self.patch.timer.setTime(preRenderTime);
+        self.finished.trigger();
+        cgl.gl.flush();
+
+        Ops.Gl.Renderer.renderStart(identTranslate);
+
+        cgl.gl.clearColor(0,0,0,1);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+        self.loading.trigger();
+
+        Ops.Gl.Renderer.renderEnd();
+        preRenderDone=preRenderInc;
+    };
+
+    function checkPreRender()
+    {
+        if(preRenderInc==preRenderDone)
+        {
+            preRenderInc++;
+            preRenderTime=CGL.preRenderTimes[preRenderInc];
+        }
+
+        self.preRenderStatus.val=preRenderInc/CGL.preRenderTimes.length;
+
+        if(preRenderDone==CGL.preRenderTimes.length-1)
+        {
+            setTimeout(function()
+            {
+                self.onAnimFrame=function(){};
+                finishedLoading=true;
+                self.patch.timer.play();
+                self.patch.timer.setTime(0);
+                CGL.decrementLoadingAssets();
+            },80);
+        }
+        else
+        setTimeout(checkPreRender,30);
+    }
+
     this.exe.onTriggered= function()
     {
         self.result.val=CGL.getLoadingStatus();
         self.numAssets.val=CGL.numMaxLoadingAssets;
-        
+
         if(finishedLoading) self.finished.trigger();
         else
         {
@@ -781,16 +855,13 @@ Ops.LoadingStatus = function()
             {
                 CGL.incrementLoadingAssets();
 
-                for(var i=0;i<self.patch.ops.length;i++)
+                var i=0;
+                for(i=0;i<self.patch.ops.length;i++)
                 {
                     if(self.patch.ops[i].onLoaded)self.patch.ops[i].onLoaded();
                 }
 
-                finishedLoading=true;
-                self.patch.timer.play();
-                self.patch.timer.setTime(0);
-                CGL.decrementLoadingAssets();
-                console.log('loadingstatus finished -----------');
+                checkPreRender();
             }
         }
     };

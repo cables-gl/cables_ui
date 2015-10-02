@@ -17,13 +17,25 @@ gulp.task('lint', function()
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('scripts_libs', function()
+gulp.task('scripts_libs_ui', function()
 {
-    return gulp.src(['libs/*.js'])
+    return gulp.src(['libs/ui/*.js'])
         .pipe(sourcemaps.init())
-        .pipe(concat('libs.js'))
+        .pipe(concat('libs.ui.js'))
         .pipe(gulp.dest('dist/js'))
-        .pipe(rename('libs.min.js'))
+        .pipe(rename('libs.ui.min.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('scripts_libs_core', function()
+{
+    return gulp.src(['libs/core/*.js'])
+        .pipe(sourcemaps.init())
+        .pipe(concat('libs.core.js'))
+        .pipe(gulp.dest('dist/js'))
+        .pipe(rename('libs.core.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('dist/js'));
@@ -95,4 +107,4 @@ gulp.task('watch', function() {
 });
 
 
-gulp.task('default', ['lint','html_ui','scripts_core','scripts_libs','scripts_ops','scripts_ui','sass','watch']);
+gulp.task('default', ['lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','watch']);

@@ -37,8 +37,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         
         if((w!= self.tex.width || h!= self.tex.height) && (w!==0 && h!==0))
         {
-
-            console.log('img compos res:',w,h);
      
             self.height.val=h;
             self.width.val=w;

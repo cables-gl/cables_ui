@@ -10,7 +10,7 @@ CGL.State=function()
 
     this.pMatrix=mat4.create();
     this.mvMatrix=mat4.create();
-
+    this.canvas=null;
     mat4.identity(self.mvMatrix);
 
     var simpleShader=new CGL.Shader();

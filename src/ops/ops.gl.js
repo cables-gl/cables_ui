@@ -5,6 +5,9 @@
 
 Ops.Gl=Ops.Gl || {};
 
+
+
+
 Ops.Gl.Renderer = function()
 {
     Op.apply(this, arguments);
@@ -16,63 +19,64 @@ Ops.Gl.Renderer = function()
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
-    var initTranslate=vec3.create();
-    vec3.set(initTranslate, 0,0,-2);
-
+    var identTranslate=vec3.create();
+    vec3.set(identTranslate, 0,0,-2);
+    cgl.canvas = document.getElementById("glcanvas");
     cgl.patch=self.patch;
 
     this.onAnimFrame=function(time)
     {
-        if(cgl.canvasWidth!=self.canvas.clientWidth || cgl.canvasHeight!=self.canvas.clientHeight)
+        if(cgl.canvasWidth!=cgl.canvas.clientWidth || cgl.canvasHeight!=cgl.canvas.clientHeight)
         {
-            cgl.canvasWidth=self.canvas.clientWidth;
+            cgl.canvasWidth=cgl.canvas.clientWidth;
             self.width.val=cgl.canvasWidth;
-            cgl.canvasHeight=self.canvas.clientHeight;
+            cgl.canvasHeight=cgl.canvas.clientHeight;
             self.height.val=cgl.canvasHeight;
         }
 
-        cgl.gl.enable(cgl.gl.DEPTH_TEST);
-        cgl.gl.clearColor(0,0,0,1);
-        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-
-        cgl.setViewPort(0,0,self.canvas.clientWidth,self.canvas.clientHeight);
-        mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
-
-        cgl.pushPMatrix();
-        cgl.pushMvMatrix();
-
-        mat4.identity(cgl.mvMatrix);
-        mat4.translate(cgl.mvMatrix,cgl.mvMatrix, initTranslate);
-
-        cgl.gl.enable(cgl.gl.BLEND);
-        cgl.gl.blendFunc(cgl.gl.SRC_ALPHA,cgl.gl.ONE_MINUS_SRC_ALPHA);
-
-        cgl.beginFrame();
+        Ops.Gl.Renderer.renderStart(identTranslate);
 
         self.trigger.trigger();
 
         if(CGL.Texture.previewTexture)
         {
             if(!CGL.Texture.texturePreviewer) CGL.Texture.texturePreviewer=new CGL.Texture.texturePreview();
-
             CGL.Texture.texturePreviewer.render(CGL.Texture.previewTexture);
         }
-
-
-        cgl.popMvMatrix();
-        cgl.popPMatrix();
-
-
-
-        cgl.endFrame();
+        Ops.Gl.Renderer.renderEnd();
     };
 
-    this.canvas = document.getElementById("glcanvas");
-    
+};
 
-    // gl= GL = this.canvas.getContext("experimental-webgl");
-    
 
+Ops.Gl.Renderer.renderStart=function(identTranslate)
+{
+        cgl.gl.enable(cgl.gl.DEPTH_TEST);
+        cgl.gl.clearColor(0,0,0,1);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+        cgl.setViewPort(0,0,cgl.canvas.clientWidth,cgl.canvas.clientHeight);
+        mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
+
+        cgl.pushPMatrix();
+        cgl.pushMvMatrix();
+
+        mat4.identity(cgl.mvMatrix);
+        mat4.translate(cgl.mvMatrix,cgl.mvMatrix, identTranslate);
+
+        cgl.gl.enable(cgl.gl.BLEND);
+        cgl.gl.blendFunc(cgl.gl.SRC_ALPHA,cgl.gl.ONE_MINUS_SRC_ALPHA);
+
+        cgl.beginFrame();
+
+};
+
+Ops.Gl.Renderer.renderEnd=function(identTranslate)
+{
+    cgl.popMvMatrix();
+    cgl.popPMatrix();
+
+    cgl.endFrame();
 };
 
 Ops.Gl.Renderer.prototype = new Op();

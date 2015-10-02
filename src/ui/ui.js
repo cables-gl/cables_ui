@@ -266,7 +266,7 @@ CABLES.UI.GUI=function()
         var spaceBarStart = 0;
 
 
-        $(document).keyup(function(e)
+        $('#timeline, #patch').keyup(function(e)
         {
             switch(e.which)
             {
@@ -276,10 +276,9 @@ CABLES.UI.GUI=function()
                     spaceBarStart=0;
                 break;
             }
-
         });
 
-        $(document).keydown(function(e)
+        $('#timeline, #patch').keydown(function(e)
         {
             switch(e.which)
             {
@@ -370,7 +369,7 @@ CABLES.UI.GUI=function()
                     {
                         CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
                     }
-                    
+
                 break;
             }
         });

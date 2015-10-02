@@ -1150,13 +1150,13 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#toggleMultiGraphKeyDisplay").bind("mousedown", toggleMultiGraphKeyDisplay );
 
 
-    $('#timeline').bind("mousewheel", function (event,delta,nbr)
-    {
-        CABLES.TL.VALUESCALE+=delta;
+    // $('#timeline').bind("mousewheel", function (event,delta,nbr)
+    // {
+    //     CABLES.TL.VALUESCALE+=delta;
 
-        if(CABLES.TL.VALUESCALE<10)CABLES.TL.VALUESCALE=10;
-        self.updateViewBox();
-    });
+    //     if(CABLES.TL.VALUESCALE<10)CABLES.TL.VALUESCALE=10;
+    //     self.updateViewBox();
+    // });
 
     $(".timeLineInsert").bind("click", function (e)
     {

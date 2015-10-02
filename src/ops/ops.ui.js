@@ -106,8 +106,8 @@ Ops.Ui.Patch = function()
     {
         if(p1.type!=OP_PORT_TYPE_DYNAMIC && p2.type!=OP_PORT_TYPE_DYNAMIC) return true;
 
-        console.log('shouldlink');
-        console.log('p1 p2',p1.getName(),p2.getName());
+        // console.log('shouldlink');
+        // console.log('p1 p2',p1.getName(),p2.getName());
 
         var dynPort=p2;
         var otherPort=p1;
