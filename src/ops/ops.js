@@ -861,6 +861,10 @@ Ops.LoadingStatus = function()
                     if(self.patch.ops[i].onLoaded)self.patch.ops[i].onLoaded();
                 }
 
+
+            cgl.canvasWidth=cgl.canvas.clientWidth;
+            cgl.canvasHeight=cgl.canvas.clientHeight;
+
                 checkPreRender();
             }
         }
