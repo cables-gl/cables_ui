@@ -104,11 +104,10 @@ Ops.WebAudio.AudioPlayer = function()
         {
             if(firstProgress)
             {
-                self.audio.play(); self.audio.pause(); // force browser to download complete file at one.... wtf...
+                // self.audio.play(); self.audio.pause(); // force browser to download complete file at one.... wtf...
                 firstProgress=false;
-
             }
-            // console.log('progress e',self.audio.duration);
+            console.log('progress e',self.audio.duration);
 
             for(var i = 0; i < self.audio.buffered.length; i ++)
             {
@@ -128,7 +127,7 @@ Ops.WebAudio.AudioPlayer = function()
 
 
         self.audio.addEventListener('progress',progress, false);
-self.audio.play(); self.audio.pause();
+self.audio.play();self.audio.pause();
 
         self.media = audioContext.createMediaElementSource(self.audio);
         self.patch.timer.onPlayPause(playPause);
