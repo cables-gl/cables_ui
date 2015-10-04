@@ -82,8 +82,12 @@ Ops.WebAudio.AudioPlayer = function()
             else self.audio.pause();
     }
 
+    var loadingFilename='';
     this.file.onValueChanged = function()
     {
+        if(self.file.val==loadingFilename)return;
+        loadingFilename=self.file.val;
+
         CGL.incrementLoadingAssets();
 
         self.audio = new Audio();
