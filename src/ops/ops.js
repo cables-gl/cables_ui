@@ -838,15 +838,10 @@ Ops.LoadingStatus = function()
             self.patch.timer.setTime(0);
             self.patch.timer.pause();
 
-            setTimeout(function()
-            {
-                console.log('finished prerendering');
+            self.onAnimFrame=function(){};
+            CGL.decrementLoadingAssets();
+            finishedLoading=true;
 
-                self.onAnimFrame=function(){};
-                
-                CGL.decrementLoadingAssets();
-                finishedLoading=true;
-            },80);
         }
         else
             setTimeout(checkPreRender,30);
