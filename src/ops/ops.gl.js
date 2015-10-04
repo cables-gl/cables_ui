@@ -811,7 +811,7 @@ Ops.Gl.Matrix.Transform = function()
     this.translateChanged=function()
     {
         doTranslate=false;
-        if(self.posX.val!==0.0 || self.posY.val!==0.0 || self.posZ.val!==0.0)doTranslate=true;
+        // if(self.posX.val!==0.0 || self.posY.val!==0.0 || self.posZ.val!==0.0)doTranslate=true;
         vec3.set(vPos, self.posX.val,self.posY.val,self.posZ.val);
         updateMatrix();
     };
