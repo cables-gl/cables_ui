@@ -87,17 +87,37 @@ Ops.WebAudio.AudioPlayer = function()
         CGL.incrementLoadingAssets();
 
         self.audio = new Audio();
-
         self.audio.src = self.file.val;
 
-        var onReady=function()
+        // var onReady=function()
+        // {
+        //     console.log('audio loaded!');
+        //     CGL.decrementLoadingAssets();
+        //     self.audio.removeEventListener('canplaythrough',onReady, false);
+        // };
+        var progress=function(e)
         {
-            console.log('audio loaded!');
-            CGL.decrementLoadingAssets();
-            self.audio.removeEventListener('canplaythrough',onReady, false);
+            // console.log('progress e',self.audio.duration);
+
+            for(var i = 0; i < self.audio.buffered.length; i ++)
+            {
+                if(self.audio.buffered.end(i)==self.audio.duration)
+                {
+                    self.audio.removeEventListener('progress',progress, false);
+                    self.audio.play(); self.audio.pause();
+                    CGL.decrementLoadingAssets();
+                    return;
+                }
+            }
+
+            self.audio.play(); self.audio.pause(); // force browser to download complete file at one.... wtf...
+
+            // console.log('progress e',e);
+                    
         };
 
-        self.audio.addEventListener('canplaythrough',onReady, false);
+
+        self.audio.addEventListener('progress',progress, false);
 
         self.media = audioContext.createMediaElementSource(self.audio);
         self.patch.timer.onPlayPause(playPause);
