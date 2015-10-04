@@ -32,7 +32,6 @@ CGL=CGL || {};
 
 CGL.numMaxLoadingAssets=0;
 CGL.numLoadingAssets=0;
-CGL.preRenderTimes=[];
 
 CGL.finishedLoading=function()
 {

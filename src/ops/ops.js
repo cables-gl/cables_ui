@@ -488,30 +488,30 @@ Ops.TimedSequence = function()
     {
 
         var i=0;
-        console.log('TimedSequence loading---------------------------------------------');
-        for(i=0;i<triggers.length;i++)
-        {
-            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-            triggers[i].trigger();
-        }
+        // console.log('TimedSequence loading---------------------------------------------');
+        // for(i=0;i<triggers.length;i++)
+        // {
+        //     cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+        //     triggers[i].trigger();
+        // }
 
-        if(self.current.anim)
-        {
-            for(i=0;i<self.current.anim.keys.length;i++)
-            {
-                CGL.preRenderTimes.push(self.current.anim.keys[i].time);
-                // var ii=i;
-                // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+        // if(self.current.anim)
+        // {
+        //     for(i=0;i<self.current.anim.keys.length;i++)
+        //     {
+        //         preRenderTimes.push(self.current.anim.keys[i].time);
+        //         // var ii=i;
+        //         // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
-                // var time=self.current.anim.keys[ii].time+0.001;
-                // self.exe.onTriggered(time);
-                // console.log('timed pre init...');
-                // cgl.gl.flush();
-            }
-        }
+        //         // var time=self.current.anim.keys[ii].time+0.001;
+        //         // self.exe.onTriggered(time);
+        //         // console.log('timed pre init...');
+        //         // cgl.gl.flush();
+        //     }
+        // }
 
-        self.triggerAlways.trigger();
-        console.log('TimedSequence loaded---------------------------------------------');
+        // self.triggerAlways.trigger();
+        // console.log('TimedSequence loaded---------------------------------------------');
                 
     };
 
@@ -783,22 +783,22 @@ Ops.LoadingStatus = function()
     this.finished=this.addOutPort(new Port(this,"finished",OP_PORT_TYPE_FUNCTION));
     this.result=this.addOutPort(new Port(this,"status",OP_PORT_TYPE_VALUE));
     this.preRenderStatus=this.addOutPort(new Port(this,"preRenderStatus",OP_PORT_TYPE_VALUE));
+    this.preRenderTimeFrames=this.addInPort(new Port(this,"preRenderTimes",OP_PORT_TYPE_VALUE));
     this.preRenderStatus.val=0;
     this.numAssets=this.addOutPort(new Port(this,"numAssets",OP_PORT_TYPE_VALUE));
     this.loading=this.addOutPort(new Port(this,"loading",OP_PORT_TYPE_FUNCTION));
 
     var finishedLoading=false;
 
-
     var preRenderInc=0;
     var preRenderDone=0;
     var preRenderTime=0;
-
+    var preRenderTimes=[];
 
     var identTranslate=vec3.create();
     vec3.set(identTranslate, 0,0,-2);
 
-    this.onAnimFrame=function(time)
+    var preRenderAnimFrame=function(time)
     {
         self.patch.timer.setTime(preRenderTime);
         self.finished.trigger();
@@ -810,25 +810,34 @@ Ops.LoadingStatus = function()
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         self.loading.trigger();
-
+        console.log('pre anim');
+        
         Ops.Gl.Renderer.renderEnd();
         preRenderDone=preRenderInc;
     };
 
+    this.onAnimFrame=function(){};
+
     function checkPreRender()
     {
-        if(preRenderInc==preRenderDone)
+        // console.log(' checkprerender ',preRenderTimes.length,preRenderInc,preRenderDone);
+
+        if(preRenderTimes.length>0)
         {
-            preRenderInc++;
-            preRenderTime=CGL.preRenderTimes[preRenderInc];
+            if(preRenderInc==preRenderDone)
+            {
+                preRenderInc++;
+                preRenderTime=preRenderTimes[preRenderInc];
+            }
         }
+        self.preRenderStatus.val=preRenderInc/preRenderTimes.length;
 
-        self.preRenderStatus.val=preRenderInc/CGL.preRenderTimes.length;
-
-        if(preRenderDone==CGL.preRenderTimes.length-1)
+        if(preRenderTimes.length===0 || preRenderDone==preRenderTimes.length-1 )
         {
             setTimeout(function()
             {
+                console.log('finished prerendering');
+                        
                 self.onAnimFrame=function(){};
                 finishedLoading=true;
                 self.patch.timer.play();
@@ -837,7 +846,8 @@ Ops.LoadingStatus = function()
             },80);
         }
         else
-        setTimeout(checkPreRender,30);
+            setTimeout(checkPreRender,30);
+
     }
 
     this.exe.onTriggered= function()
@@ -861,10 +871,21 @@ Ops.LoadingStatus = function()
                     if(self.patch.ops[i].onLoaded)self.patch.ops[i].onLoaded();
                 }
 
+                cgl.canvasWidth=cgl.canvas.clientWidth;
+                cgl.canvasHeight=cgl.canvas.clientHeight;
+        
+                if(self.preRenderTimeFrames.isAnimated())
+                {
+                    for(i=0;i<self.preRenderTimeFrames.anim.keys.length;i++)
+                        preRenderTimes.push( self.preRenderTimeFrames.anim.keys[i].time );
 
-            cgl.canvasWidth=cgl.canvas.clientWidth;
-            cgl.canvasHeight=cgl.canvas.clientHeight;
+                    preRenderTimes.push(0);
+                }
 
+                if(this.onAnimFrame!=preRenderAnimFrame)
+                {
+                    self.onAnimFrame=preRenderAnimFrame;
+                }
                 checkPreRender();
             }
         }

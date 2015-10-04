@@ -385,8 +385,19 @@ var Link = function(scene)
 
     this.setValue=function()
     {
+        // try
+        {
         if(this.portIn.val!=this.portOut.val)
             this.portIn.val=this.portOut.val;
+
+        }
+        // catch(exc)
+        // {
+        //     console.log('',this);
+                    
+        //     // console.log('exc',exc);
+                    
+        // }
     };
 
     this.getOtherPort=function(p)
