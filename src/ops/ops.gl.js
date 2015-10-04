@@ -808,11 +808,31 @@ Ops.Gl.Matrix.Transform = function()
         if(doScale)mat4.scale(transMatrix,transMatrix, vScale);
     };
 
-    this.translateChanged=function()
+    var x=0;
+    var y=0;
+    var z=0;
+
+    this.translateChangedX=function()
     {
-        doTranslate=false;
-        // if(self.posX.val!==0.0 || self.posY.val!==0.0 || self.posZ.val!==0.0)doTranslate=true;
-        vec3.set(vPos, self.posX.val,self.posY.val,self.posZ.val);
+        doTranslate=true;
+        x=self.posX.val;
+        vec3.set(vPos, x,y,z);
+        updateMatrix();
+    };
+
+    this.translateChangedY=function()
+    {
+        doTranslate=true;
+        y=self.posY.val;
+        vec3.set(vPos, x,y,z);
+        updateMatrix();
+    };
+
+    this.translateChangedZ=function()
+    {
+        doTranslate=true;
+        z=self.posZ.val;
+        vec3.set(vPos, x,y,z);
         updateMatrix();
     };
 
