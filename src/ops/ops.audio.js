@@ -66,7 +66,11 @@ Ops.WebAudio.AudioPlayer = function()
         else if(!self.patch.timer.isPlaying() && !self.audio.paused) self.audio.pause();
 
         var t=self.patch.timer.getTime();
-        if(!isFinite(t))t=0.0;
+        if(!isFinite(t))
+        {
+            console.log('not finite time...',t);
+            t=0.0;
+        }
         self.audio.currentTime=t;
     }
 

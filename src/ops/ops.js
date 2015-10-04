@@ -836,17 +836,19 @@ Ops.LoadingStatus = function()
         {
             self.patch.timer.setTime(0);
             self.patch.timer.pause();
+
             setTimeout(function()
             {
                 console.log('finished prerendering');
 
                 self.onAnimFrame=function(){};
                 
+                CGL.decrementLoadingAssets();
+                finishedLoading=true;
                 self.patch.timer.setTime(0);
                 self.patch.timer.play();
                 self.patch.timer.setTime(0);
-                CGL.decrementLoadingAssets();
-                finishedLoading=true;
+
             },80);
         }
         else
@@ -858,6 +860,12 @@ Ops.LoadingStatus = function()
     {
         self.result.val=CGL.getLoadingStatus();
         self.numAssets.val=CGL.numMaxLoadingAssets;
+
+        if(this.onAnimFrame!=preRenderAnimFrame)
+        {
+            self.onAnimFrame=preRenderAnimFrame;
+        }
+
 
         if(finishedLoading) self.finished.trigger();
         else
@@ -885,10 +893,6 @@ Ops.LoadingStatus = function()
                 }
                 preRenderTimes.push(0);
 
-                if(this.onAnimFrame!=preRenderAnimFrame)
-                {
-                    self.onAnimFrame=preRenderAnimFrame;
-                }
                 checkPreRender();
             }
         }
