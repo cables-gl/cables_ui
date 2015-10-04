@@ -939,7 +939,9 @@ Ops.Gl.Render2Texture = function()
 {
     Op.apply(this, arguments);
     var self=this;
-    var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
+
+    var depthTextureExt = cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) || cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" );
+    // var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
 
     this.name='render to texture';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));

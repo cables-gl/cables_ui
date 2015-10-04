@@ -871,16 +871,15 @@ Ops.LoadingStatus = function()
                     if(self.patch.ops[i].onLoaded)self.patch.ops[i].onLoaded();
                 }
 
-                cgl.canvasWidth=cgl.canvas.clientWidth;
-                cgl.canvasHeight=cgl.canvas.clientHeight;
+                // cgl.canvasWidth=cgl.canvas.clientWidth;
+                // cgl.canvasHeight=cgl.canvas.clientHeight;
         
                 if(self.preRenderTimeFrames.isAnimated())
                 {
                     for(i=0;i<self.preRenderTimeFrames.anim.keys.length;i++)
                         preRenderTimes.push( self.preRenderTimeFrames.anim.keys[i].time );
-
-                    preRenderTimes.push(0);
                 }
+                preRenderTimes.push(0);
 
                 if(this.onAnimFrame!=preRenderAnimFrame)
                 {
