@@ -839,13 +839,14 @@ Ops.LoadingStatus = function()
             setTimeout(function()
             {
                 console.log('finished prerendering');
-                        
+
                 self.onAnimFrame=function(){};
-                finishedLoading=true;
+                
                 self.patch.timer.setTime(0);
                 self.patch.timer.play();
                 self.patch.timer.setTime(0);
                 CGL.decrementLoadingAssets();
+                finishedLoading=true;
             },80);
         }
         else
