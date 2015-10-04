@@ -794,6 +794,7 @@ Ops.LoadingStatus = function()
     var preRenderDone=0;
     var preRenderTime=0;
     var preRenderTimes=[];
+    var firstTime=true;
 
     var identTranslate=vec3.create();
     vec3.set(identTranslate, 0,0,-2);
@@ -810,7 +811,7 @@ Ops.LoadingStatus = function()
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         self.loading.trigger();
-        console.log('pre anim');
+        // console.log('pre anim');
         
         Ops.Gl.Renderer.renderEnd();
         preRenderDone=preRenderInc;
@@ -845,10 +846,6 @@ Ops.LoadingStatus = function()
                 
                 CGL.decrementLoadingAssets();
                 finishedLoading=true;
-                self.patch.timer.setTime(0);
-                self.patch.timer.play();
-                self.patch.timer.setTime(0);
-
             },80);
         }
         else
@@ -867,7 +864,17 @@ Ops.LoadingStatus = function()
         }
 
 
-        if(finishedLoading) self.finished.trigger();
+        if(finishedLoading)
+        {
+            if(firstTime)
+            {
+                self.patch.timer.setTime(0);
+                self.patch.timer.play();
+                firstTime=false;
+            }
+
+            self.finished.trigger();
+        }
         else
         {
             self.loading.trigger();
