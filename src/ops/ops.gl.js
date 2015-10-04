@@ -808,31 +808,11 @@ Ops.Gl.Matrix.Transform = function()
         if(doScale)mat4.scale(transMatrix,transMatrix, vScale);
     };
 
-    var x=0;
-    var y=0;
-    var z=0;
-
-    this.translateChangedX=function()
+    this.translateChanged=function()
     {
-        doTranslate=true;
-        x=self.posX.val;
-        vec3.set(vPos, x,y,z);
-        updateMatrix();
-    };
-
-    this.translateChangedY=function()
-    {
-        doTranslate=true;
-        y=self.posY.val;
-        vec3.set(vPos, x,y,z);
-        updateMatrix();
-    };
-
-    this.translateChangedZ=function()
-    {
-        doTranslate=true;
-        z=self.posZ.val;
-        vec3.set(vPos, x,y,z);
+        doTranslate=false;
+        if(self.posX.val!==0.0 || self.posY.val!==0.0 || self.posZ.val!==0.0)doTranslate=true;
+        vec3.set(vPos, self.posX.val,self.posY.val,self.posZ.val);
         updateMatrix();
     };
 
@@ -857,9 +837,9 @@ Ops.Gl.Matrix.Transform = function()
     this.scaleY.onValueChanged=this.scaleChanged;
     this.scaleZ.onValueChanged=this.scaleChanged;
 
-    this.posX.onValueChanged=this.translateChangedX;
-    this.posY.onValueChanged=this.translateChangedY;
-    this.posZ.onValueChanged=this.translateChangedZ;
+    this.posX.onValueChanged=this.translateChanged;
+    this.posY.onValueChanged=this.translateChanged;
+    this.posZ.onValueChanged=this.translateChanged;
 
     this.rotX.val=0.0;
     this.rotY.val=0.0;
@@ -960,7 +940,8 @@ Ops.Gl.Render2Texture = function()
     Op.apply(this, arguments);
     var self=this;
 
-    var depthTextureExt = cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) || cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" );
+    var depthTextureExt = cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) ||
+                    cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" );
     // var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
 
     this.name='render to texture';
