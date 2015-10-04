@@ -99,8 +99,15 @@ Ops.WebAudio.AudioPlayer = function()
         //     CGL.decrementLoadingAssets();
         //     self.audio.removeEventListener('canplaythrough',onReady, false);
         // };
+        var firstProgress=true;
         var progress=function(e)
         {
+            if(firstProgress)
+            {
+                self.audio.play(); self.audio.pause(); // force browser to download complete file at one.... wtf...
+                firstProgress=false;
+
+            }
             // console.log('progress e',self.audio.duration);
 
             for(var i = 0; i < self.audio.buffered.length; i ++)
@@ -108,13 +115,12 @@ Ops.WebAudio.AudioPlayer = function()
                 if(self.audio.buffered.end(i)==self.audio.duration)
                 {
                     self.audio.removeEventListener('progress',progress, false);
-                    self.audio.play(); self.audio.pause();
+                    // self.audio.play(); self.audio.pause();
                     CGL.decrementLoadingAssets();
                     return;
                 }
             }
 
-            self.audio.play(); self.audio.pause(); // force browser to download complete file at one.... wtf...
 
             // console.log('progress e',e);
                     
@@ -122,6 +128,7 @@ Ops.WebAudio.AudioPlayer = function()
 
 
         self.audio.addEventListener('progress',progress, false);
+self.audio.play(); self.audio.pause();
 
         self.media = audioContext.createMediaElementSource(self.audio);
         self.patch.timer.onPlayPause(playPause);
@@ -129,6 +136,7 @@ Ops.WebAudio.AudioPlayer = function()
 
         self.media.connect(self.filter);
         self.audioOut.val = self.filter;
+
     };
 
     this.audioOut=this.addOutPort(new Port(this, "audio out",OP_PORT_TYPE_OBJECT));
