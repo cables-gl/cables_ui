@@ -857,9 +857,9 @@ Ops.Gl.Matrix.Transform = function()
     this.scaleY.onValueChanged=this.scaleChanged;
     this.scaleZ.onValueChanged=this.scaleChanged;
 
-    this.posX.onValueChanged=this.translateChanged;
-    this.posY.onValueChanged=this.translateChanged;
-    this.posZ.onValueChanged=this.translateChanged;
+    this.posX.onValueChanged=this.translateChangedX;
+    this.posY.onValueChanged=this.translateChangedY;
+    this.posZ.onValueChanged=this.translateChangedZ;
 
     this.rotX.val=0.0;
     this.rotY.val=0.0;
