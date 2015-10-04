@@ -865,7 +865,7 @@ Ops.LoadingStatus = function()
                 self.patch.timer.setTime(0);
                 self.patch.timer.play();
                 firstTime=false;
-                console.log('finished loading complete...');
+                console.log('finished loading complete...', CGL.getLoadingStatus());
             }
 
             self.finished.trigger();
