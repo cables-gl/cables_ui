@@ -853,11 +853,10 @@ Ops.LoadingStatus = function()
         self.result.val=CGL.getLoadingStatus();
         self.numAssets.val=CGL.numMaxLoadingAssets;
 
-        if(this.onAnimFrame!=preRenderAnimFrame)
+        if(!finishedLoading && this.onAnimFrame!=preRenderAnimFrame)
         {
             self.onAnimFrame=preRenderAnimFrame;
         }
-
 
         if(finishedLoading)
         {
@@ -866,6 +865,7 @@ Ops.LoadingStatus = function()
                 self.patch.timer.setTime(0);
                 self.patch.timer.play();
                 firstTime=false;
+                console.log('finished loading complete...');
             }
 
             self.finished.trigger();
