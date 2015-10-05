@@ -282,7 +282,41 @@ CABLES.UI.GUI=function()
         {
             switch(e.which)
             {
-
+                case 79: // o - open
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        CABLES.UI.SELECTPROJECT.show();
+                        e.preventDefault();
+                    }
+                break;
+                case 83: // s - save
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        if(!e.shiftKey)
+                        {
+                            self.patch().saveCurrentProject();
+                            CABLES.UI.SELECTPROJECT.doReload=true;
+                            e.preventDefault();
+                        }
+                        else
+                        {
+                            CABLES.api.post('project',{name: prompt('projectname','') },function(d)
+                            {
+                                CABLES.UI.SELECTPROJECT.doReload=true;
+                                self.patch().saveCurrentProject(function(){
+                                    document.location.href='#/project/'+d._id;
+                                },d._id,d.name);
+                                
+                            });
+                        }
+                    }
+                break;
+                case 78: // n - new project
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        self.createProject();
+                    }
+                break;
                 case 27:
                     if(e.metaKey || e.ctrlKey)
                     {
@@ -329,12 +363,7 @@ CABLES.UI.GUI=function()
         {
             switch(e.which)
             {
-                case 78: // n - new project
-                    if(e.metaKey || e.ctrlKey)
-                    {
-                        self.createProject();
-                    }
-                break;
+
 
                 case 32: // space play
                     if(spaceBarStart===0) spaceBarStart = Date.now();
@@ -348,36 +377,6 @@ CABLES.UI.GUI=function()
                     self.timeLine().jumpKey(1);
                 break;
 
-                case 79: // o - open
-                    if(e.metaKey || e.ctrlKey)
-                    {
-                        CABLES.UI.SELECTPROJECT.show();
-                        e.preventDefault();
-                    }
-                break;
-                case 83: // s - save
-                    if(e.metaKey || e.ctrlKey)
-                    {
-                        if(!e.shiftKey)
-                        {
-                            self.patch().saveCurrentProject();
-                            CABLES.UI.SELECTPROJECT.doReload=true;
-                            e.preventDefault();
-                        }
-                        else
-                        {
-                            CABLES.api.post('project',{name: prompt('projectname','') },function(d)
-                            {
-                                CABLES.UI.SELECTPROJECT.doReload=true;
-                                self.patch().saveCurrentProject(function(){
-                                    document.location.href='#/project/'+d._id;
-                                },d._id,d.name);
-                                
-                            });
-
-                        }
-                    }
-                break;
 
 
             }

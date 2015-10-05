@@ -1101,10 +1101,8 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function toggleMultiGraphKeyDisplay(e)
     {
-        if(e.which==3)
+        if(e.buttons==3)
         {
-            console.log('JA BLA HUND');
-
             removeDots();
 
             for(var i=0;i<anims.length;i++)
@@ -1113,14 +1111,8 @@ CABLES.TL.UI.TimeLineUI=function()
                 self.removeAnim(anims[i]);
             }
 
-        console.log('animslebngth',anims.length);
-        
-
             self.setAnim(null);
             updateKeyLine();
-
-
-
         }
         else
         {
@@ -1198,7 +1190,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function scrollTime(e)
     {
-        if(e.which==1 || e.which==2)
+        if(e.buttons==1 || e.buttons==2)
         {
             isScrollingTime=true;
             e.offsetX=e.clientX;
@@ -1242,7 +1234,7 @@ CABLES.TL.UI.TimeLineUI=function()
         if(isScrollingTime)return;
         e=mouseEvent(e);
 
-        if(e.which==3 || (e.which==1 && spacePressed))
+        if(e.buttons==3 || (e.buttons==1 && spacePressed))
         {
             viewBox.x+=panX-self.getCanvasCoordsMouse(e).x;
             viewBox.y+=panY-self.getCanvasCoordsMouse(e).y;
@@ -1415,7 +1407,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function rubberBandMove(e)
     {
-        if(e.which==1 && !spacePressed)
+        if(e.buttons==1 && !spacePressed)
         {
             if(!mouseRubberBandStartPos)
                 mouseRubberBandStartPos=self.getCanvasCoordsMouse(e);

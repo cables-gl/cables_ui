@@ -330,13 +330,8 @@ Ops.WebAudio.Analyser = function()
         average = values / array.length;
         self.avgVolume.val=average;
 
-
-
         self.analyser.getByteFrequencyData(fftDataArray);
         self.fftOut.val=fftDataArray;
-        // console.log('',fftDataArray);
-                
-
     };
 
     this.audioIn.onValueChanged = function()

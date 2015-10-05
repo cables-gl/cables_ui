@@ -372,7 +372,8 @@ CABLES.UI.Patch=function(_gui)
 
     function rubberBandMove(e)
     {
-        if(e.which==1 && !spacePressed)
+                
+        if(e.buttons==1 && !spacePressed)
         {
             if(!mouseRubberBandStartPos)
             {
@@ -524,7 +525,7 @@ CABLES.UI.Patch=function(_gui)
         $('#patch').on("mousemove", function(e)
         {
 
-            if(e.which==1 && !spacePressed)
+            if(e.buttons==1 && !spacePressed)
             {
                 for(var i in self.ops)
                     if(self.ops[i].isDragging || self.ops[i].isMouseOver)
@@ -543,9 +544,9 @@ CABLES.UI.Patch=function(_gui)
         {
             e=mouseEvent(e);
 
-            if(mouseRubberBandStartPos && e.which!=1) rubberBandHide();
+            if(mouseRubberBandStartPos && e.buttons!=1) rubberBandHide();
 
-            if(e.which==2 || e.which==3 || (e.which==1 && spacePressed))
+            if(e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed))
             {
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
                 var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;

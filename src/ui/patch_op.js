@@ -91,7 +91,7 @@ function UiLink(port1, port2)
             addCircle.hover(function (e)
             {
                 var txt='left click: insert op / right click: delete link';
-                CABLES.UI.showToolTip(event,txt);
+                CABLES.UI.showToolTip(e,txt);
                 CABLES.UI.setStatusText(txt);
             },function()
             {

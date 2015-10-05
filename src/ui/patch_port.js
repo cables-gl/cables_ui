@@ -103,7 +103,7 @@ CABLES.UI.Port=function(thePort)
         self.opUi.isDragging=false;
     }
 
-    function hover()
+    function hover(event)
     {
         selectedEndPort=self;
         self.rect.toFront();
