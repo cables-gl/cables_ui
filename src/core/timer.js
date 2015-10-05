@@ -113,14 +113,12 @@ function Timer()
     {
         if(cb && typeof cb == "function")
             cbPlayPause.push(cb);
-
     };
 
     this.onTimeChange=function(cb)
     {
         if(cb && typeof cb == "function")
             cbTimeChange.push(cb);
-
     };
 
 }

@@ -835,8 +835,8 @@ Ops.LoadingStatus = function()
 
         if(preRenderTimes.length===0 || preRenderDone==preRenderTimes.length-1 )
         {
-            self.patch.timer.setTime(0);
-            self.patch.timer.pause();
+            // self.patch.timer.setTime(0);
+            // self.patch.timer.pause();
 
             self.onAnimFrame=function(){};
             CGL.decrementLoadingAssets();
@@ -862,10 +862,13 @@ Ops.LoadingStatus = function()
         {
             if(firstTime)
             {
+                CGL.incrementLoadingAssets();
+                console.log('finished loading complete...', CGL.getLoadingStatus());
                 self.patch.timer.setTime(0);
                 self.patch.timer.play();
+                CGL.decrementLoadingAssets();
+                        
                 firstTime=false;
-                console.log('finished loading complete...', CGL.getLoadingStatus());
             }
 
             self.finished.trigger();

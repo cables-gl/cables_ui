@@ -50,28 +50,63 @@ Ops.WebAudio.AudioPlayer = function()
 
     this.filter = audioContext.createGain();
     self.audio=null;
+    var buffer=null;
+    var playing=false;
 
     this.volume.onValueChanged = function()
     {
         self.filter.gain.value=self.volume.val;
     };
 
+
+
+    function stop()
+    {
+
+        self.media.stop();
+        self.media = audioContext.createBufferSource();
+
+        self.media.buffer = buffer;
+        self.media.connect(self.filter);
+        self.audioOut.val = self.filter;
+    }
+
     function seek()
     {
-        if(!window.gui && CGL.getLoadingStatus()>=1.0)return;
+        if(buffer===null)return;
+        if(!window.gui && CGL.getLoadingStatus()>=1.0)
+            {
+                        console.log('seek canceled',CGL.getLoadingStatus());
+                        
+                return;
+            }
 
-        if(!self.audio)return;
+        // if(!self.audio)return;
 
-        if(self.patch.timer.isPlaying() && self.audio.paused) self.audio.play();
-        else if(!self.patch.timer.isPlaying() && !self.audio.paused) self.audio.pause();
-
+        console.log('seek.....');
+        
         var t=self.patch.timer.getTime();
         if(!isFinite(t))
         {
             console.log('not finite time...',t);
             t=0.0;
         }
-        self.audio.currentTime=t;
+
+        if(playing) stop();
+        playing=false;
+
+        console.log('seek.....',self.patch.timer.isPlaying());
+
+        if(self.patch.timer.isPlaying() )
+        {
+            console.log('play!');
+                        
+            self.media.start(t);
+            playing=true;
+        }
+        // else if(!self.patch.timer.isPlaying() ) self.media.stop(t);
+
+        // self.audio.currentTime=t;
     }
 
     function playPause()
@@ -85,56 +120,94 @@ Ops.WebAudio.AudioPlayer = function()
     var loadingFilename='';
     this.file.onValueChanged = function()
     {
+
+        // http://www.clicktorelease.com/blog/loading-sounds-faster-using-html5-web-audio-api
+
         if(self.file.val==loadingFilename)return;
         loadingFilename=self.file.val;
 
         CGL.incrementLoadingAssets();
 
         self.audio = new Audio();
-        self.audio.src = self.file.val;
+        // self.audio.src = self.file.val;
 
-        // var onReady=function()
+        // var canplaythrough=function()
         // {
-        //     console.log('audio loaded!');
-        //     CGL.decrementLoadingAssets();
-        //     self.audio.removeEventListener('canplaythrough',onReady, false);
+        //     console.log('audio ready');
+        //     self.audio.play();self.audio.pause();
+        //     // CGL.decrementLoadingAssets();
+        //     self.audio.removeEventListener('canplaythrough',canplaythrough, false);
         // };
-        var firstProgress=true;
-        var progress=function(e)
-        {
-            if(firstProgress)
-            {
-                // self.audio.play(); self.audio.pause(); // force browser to download complete file at one.... wtf...
-                firstProgress=false;
-            }
-            console.log('progress e',self.audio.duration);
+        // var firstProgress=true;
+        // var progress=function(e)
+        // {
+        //     if(firstProgress)
+        //     {
+        //         // self.audio.play(); self.audio.pause(); // force browser to download complete file at one.... wtf...
+        //         firstProgress=false;
+        //     }
+        //     console.log('progress e',self.audio.duration);
 
-            for(var i = 0; i < self.audio.buffered.length; i ++)
-            {
-                if(self.audio.buffered.end(i)==self.audio.duration)
-                {
-                    self.audio.removeEventListener('progress',progress, false);
-                    // self.audio.play(); self.audio.pause();
-                    CGL.decrementLoadingAssets();
-                    return;
-                }
-            }
+        //     for(var i = 0; i < self.audio.buffered.length; i ++)
+        //     {
+        //         if(self.audio.buffered.end(i)==self.audio.duration)
+        //         {
+        //             self.audio.removeEventListener('progress',progress, false);
+        //             // self.audio.play(); self.audio.pause();
+        //             CGL.decrementLoadingAssets();
+        //             return;
+        //         }
+        //     }
 
 
-            // console.log('progress e',e);
+        //     // console.log('progress e',e);
                     
-        };
+        // };
 
 
-        self.audio.addEventListener('progress',progress, false);
-self.audio.play();self.audio.pause();
+        // self.audio.addEventListener('progress',progress, false);
+        // self.audio.addEventListener('canplaythrough',canplaythrough, false);
 
-        self.media = audioContext.createMediaElementSource(self.audio);
-        self.patch.timer.onPlayPause(playPause);
-        self.patch.timer.onTimeChange(seek);
+
+var request = new XMLHttpRequest();
+
+request.open( 'GET', self.file.val, true );
+request.responseType = 'arraybuffer';
+
+request.onload = function()
+{
+
+    
+    var audioData = request.response;
+
+    audioContext.decodeAudioData( audioData, function(res)
+    {
+        buffer=res;
+        console.log('sound load complete');
+        self.media.buffer = res;
 
         self.media.connect(self.filter);
         self.audioOut.val = self.filter;
+
+        CGL.decrementLoadingAssets();
+
+
+    } );
+
+
+};
+
+request.send();
+
+
+
+
+        // self.media = audioContext.createMediaElementSource(self.audio);
+        self.media = audioContext.createBufferSource();
+
+        self.patch.timer.onPlayPause(seek);
+        self.patch.timer.onTimeChange(seek);
+
 
     };
 
