@@ -9,6 +9,9 @@ Ops.WebAudio.Output = function()
     Op.apply(this, arguments);
 
     if(!window.audioContext) {
+        if('webkitAudioContext' in window)
+        audioContext = new webkitAudioContext();
+        else
          audioContext = new AudioContext();
     }
 
