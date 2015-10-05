@@ -8,12 +8,9 @@ Ops.WebAudio.Output = function()
     var self=this;
     Op.apply(this, arguments);
 
-    if(!window.audioContext) {
-        if('webkitAudioContext' in window)
-        audioContext = new webkitAudioContext();
-        else
-         audioContext = new AudioContext();
-    }
+    if(!window.audioContext) 
+        if('webkitAudioContext' in window) audioContext = new webkitAudioContext();
+            else audioContext = new AudioContext();
 
     this.name='audioOutput';
     this.audioIn=this.addInPort(new Port(this,"audio in",OP_PORT_TYPE_OBJECT));
@@ -49,7 +46,9 @@ Ops.WebAudio.AudioPlayer = function()
     this.volume=this.addInPort(new Port(this,"volume",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.volume.val=1.0;
 
-    if(!window.audioContext) audioContext = new AudioContext();
+    if(!window.audioContext) 
+        if('webkitAudioContext' in window) audioContext = new webkitAudioContext();
+            else audioContext = new AudioContext();
 
     this.filter = audioContext.createGain();
     self.audio=null;
