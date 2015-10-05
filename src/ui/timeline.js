@@ -1234,7 +1234,7 @@ CABLES.TL.UI.TimeLineUI=function()
         if(isScrollingTime)return;
         e=mouseEvent(e);
 
-        if(e.buttons==3 || (e.buttons==1 && spacePressed))
+        if(e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed))
         {
             viewBox.x+=panX-self.getCanvasCoordsMouse(e).x;
             viewBox.y+=panY-self.getCanvasCoordsMouse(e).y;

@@ -357,7 +357,7 @@
 <script id="op_select" type="text/x-handlebars-template">
     
 <div class="opsearch">
-    <h2>selct op</h2>
+    <h2>selcet op</h2>
 
     <input id="opsearch"/>
 
@@ -744,7 +744,7 @@ updateIcons();
 
 .thumbcont .title
 {
-    background-color:black;
+    background-color:#222;
     padding:10px;
 
 }
@@ -785,7 +785,7 @@ updateIcons();
 
 
         <div class="thumbcont searchresult searchable" data-projid="{{ _id }}" data-index="{{name}}" onclick="document.location.href='#/project/{{_id}}'">
-            <img src="/assets/{{_id}}/screenshot.png" style="width:180px;"/>
+            <div style="width:180px;height:100px;background-image:url(/assets/{{_id}}/screenshot.png);background-size:100%;background-position:center center;"></div>
             <div class="title">
                 {{name}}
             </div>

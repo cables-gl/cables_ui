@@ -43,8 +43,6 @@ function Line(startX, startY)
     this.redraw = function() { this.thisLine.attr("path", this.getPath()); };
 }
 
- 
-
 function UiLink(port1, port2)
 {
     var self=this;
@@ -54,7 +52,6 @@ function UiLink(port1, port2)
     this.linkLine=null;
     this.p1=port1;
     this.p2=port2;
-
 
     this.hideAddButton=function()
     {
@@ -215,6 +212,14 @@ function UiLink(port1, port2)
         this.linkLine.toFront();
         this.showAddButton();
     };
+
+    this.setEnabled=function(enabled)
+    {
+                console.log('enabled ',enabled);
+                
+        if(enabled) this.linkLine.attr("opacity", 1.0);
+            else this.linkLine.attr("opacity", 0.3);
+    };
 }
 
 
@@ -342,11 +347,15 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         group.push(background,label);
     };
 
-    this.setEnabled=function(sel)
+    this.setEnabled=function(enabled)
     {
         if(this.isVisible())
-            if(sel) background.attr( { "fill-opacity": 1 });
-                else background.attr( { "fill-opacity": 1 });
+            if(enabled) background.attr( { "fill-opacity": 1 });
+                else background.attr( { "fill-opacity": 0.5 });
+
+
+
+
     };
 
     this.setSelected=function(sel)
@@ -561,6 +570,12 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     {
         this.op.enabled=en;
         this.oprect.setEnabled(en);
+
+        for(var i=0;i<this.links.length;i++)
+        {
+            this.links[i].setEnabled(en);
+        }
+
     };
 
     this.setSelected=function(sel)

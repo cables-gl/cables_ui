@@ -17,6 +17,12 @@ CABLES.UI.Port=function(thePort)
 
     var linkingLine=null;
 
+    function changeActiveState()
+    {
+        for(var i=0;i<self.opUi.links.length;i++)
+            if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
+                self.opUi.links[i].setEnabled(self.thePort.getUiActiveState());
+    }
 
     function dragStart(x,y,event)
     {
@@ -103,6 +109,8 @@ CABLES.UI.Port=function(thePort)
         self.opUi.isDragging=false;
     }
 
+
+
     function hover(event)
     {
         selectedEndPort=self;
@@ -156,10 +164,14 @@ CABLES.UI.Port=function(thePort)
         this.rect.unhover(hover,hoverOut);
         this.rect.remove();
         this.rect=null;
+        thePort.onUiActiveStateChange=null;
     };
 
     this.addUi=function(group)
     {
+
+        thePort.onUiActiveStateChange=changeActiveState;
+
         if(self.isVisible())return;
         if(self.opUi.isHidden())return;
         var yp=0;

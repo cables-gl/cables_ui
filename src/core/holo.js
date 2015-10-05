@@ -163,6 +163,7 @@ var Port=function(parent,name,type,uiAttribs)
     var oldAnimVal=-5711;
     this.onLink=false;
     this.showPreview=false;
+    var uiActiveState=true;
 
     this.doShowPreview=function(onOff)
     {
@@ -254,6 +255,18 @@ var Port=function(parent,name,type,uiAttribs)
     {
         return animated;
     };
+
+    this.getUiActiveState=function()
+    {
+        return uiActiveState;
+    };
+    this.setUiActiveState=function(onoff)
+    {
+        uiActiveState=onoff;
+        if(this.onUiActiveStateChange)this.onUiActiveStateChange();
+    };
+
+    this.onUiActiveStateChange=null;
 
     this.onAnimToggle=function(){};
     this._onAnimToggle=function(){this.onAnimToggle();};

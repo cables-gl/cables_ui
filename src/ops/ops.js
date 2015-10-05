@@ -515,8 +515,25 @@ Ops.TimedSequence = function()
                 
     };
 
+    var lastUiValue=-1;
     this.exe.onTriggered=function(_time)
     {
+
+        if(window.gui)
+        {
+                    
+            if(self.current.val!=lastUiValue)
+            {
+                lastUiValue=parseInt(self.current.val,10);
+                for(var spl=0;spl<triggers.length;spl++)
+                {
+                    if(spl==lastUiValue) triggers[spl].setUiActiveState(true);
+                        else triggers[spl].setUiActiveState(false);
+                }
+                
+            }
+        }
+
         if(self.current.anim)
         {
             var time=_time;

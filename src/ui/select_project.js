@@ -67,18 +67,18 @@ CABLES.UI.SELECTPROJECT.showSelectProjects=function(html)
             case 37: // left
             break;
 
-            case 38: // up
-                $('.selected').removeClass('selected');
-                Navigate(-1);
-            break;
+            // case 38: // up
+            //     $('.selected').removeClass('selected');
+            //     Navigate(-1);
+            // break;
 
             case 39: // right
             break;
 
-            case 40: // down
-                $('.selected').removeClass('selected');
-                Navigate(1);
-            break;
+            // case 40: // down
+            //     $('.selected').removeClass('selected');
+            //     Navigate(1);
+            // break;
 
             default: return; // exit this handler for other keys
         }
