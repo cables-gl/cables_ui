@@ -145,14 +145,14 @@ Ops.Experimental.SaltedPerceptionMaterial = function()
         if(self.zBufferTex.val)
         {
             if(self.zBufferTexUniform!==null)return;
-            console.log('TEXTURE ADDED');
+            // console.log('TEXTURE ADDED');
             shader.removeUniform('texDepth');
             shader.define('HAS_TEXTURE_DIFFUSE');
             self.zBufferTexUniform=new CGL.Uniform(shader,'t','texDepth',0);
         }
         else
         {
-            console.log('TEXTURE REMOVED');
+            // console.log('TEXTURE REMOVED');
             shader.removeUniform('texDepth');
             shader.removeDefine('HAS_TEXTURE_DIFFUSE');
             self.zBufferTexUniform=null;

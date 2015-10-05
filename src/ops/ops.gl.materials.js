@@ -521,14 +521,14 @@ Ops.Gl.Shader.BasicMaterial = function()
         if(self.texture.val)
         {
             if(self.textureUniform!==null)return;
-            console.log('TEXTURE ADDED');
+            // console.log('TEXTURE ADDED');
             shader.removeUniform('tex');
             shader.define('HAS_TEXTURE_DIFFUSE');
             self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
         }
         else
         {
-            console.log('TEXTURE REMOVED');
+            // console.log('TEXTURE REMOVED');
             shader.removeUniform('tex');
             shader.removeDefine('HAS_TEXTURE_DIFFUSE');
             self.textureUniform=null;
@@ -697,14 +697,14 @@ Ops.Gl.Shader.TextureSinusWobble = function()
         if(self.texture.val)
         {
             if(self.textureUniform!==null)return;
-            console.log('TEXTURE ADDED');
+            // console.log('TEXTURE ADDED');
             shader.removeUniform('tex');
             shader.define('HAS_TEXTURE_DIFFUSE');
             self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
         }
         else
         {
-            console.log('TEXTURE REMOVED');
+            // console.log('TEXTURE REMOVED');
             shader.removeUniform('tex');
             shader.removeDefine('HAS_TEXTURE_DIFFUSE');
             self.textureUniform=null;

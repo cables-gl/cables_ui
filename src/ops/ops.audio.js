@@ -58,11 +58,8 @@ Ops.WebAudio.AudioPlayer = function()
         self.filter.gain.value=self.volume.val;
     };
 
-
-
     function stop()
     {
-
         self.media.stop();
         self.media = audioContext.createBufferSource();
 
@@ -71,42 +68,49 @@ Ops.WebAudio.AudioPlayer = function()
         self.audioOut.val = self.filter;
     }
 
+
     function seek()
     {
-        if(buffer===null)return;
         if(!window.gui && CGL.getLoadingStatus()>=1.0)
+        {
+            console.log('seek canceled',CGL.getLoadingStatus());
+            return;
+        }
+
+        if(window.gui)
+        {
+            if(!self.audio)return;
+
+            if(self.patch.timer.isPlaying() && self.audio.paused) self.audio.play();
+                else if(!self.patch.timer.isPlaying() && !self.audio.paused) self.audio.pause();
+
+            self.audio.currentTime=self.patch.timer.getTime();
+        }
+        else
+        {
+            if(buffer===null)return;
+
+            var t=self.patch.timer.getTime();
+            if(!isFinite(t))
             {
-                        console.log('seek canceled',CGL.getLoadingStatus());
-                        
-                return;
+                console.log('not finite time...',t);
+                t=0.0;
             }
 
-        // if(!self.audio)return;
+            if(playing) stop();
+            playing=false;
 
-        console.log('seek.....');
-        
-        var t=self.patch.timer.getTime();
-        if(!isFinite(t))
-        {
-            console.log('not finite time...',t);
-            t=0.0;
+            console.log('seek.....',self.patch.timer.isPlaying());
+
+            if(self.patch.timer.isPlaying() )
+            {
+                console.log('play!');
+                            
+                self.media.start(t);
+                playing=true;
+            }
         }
 
-        if(playing) stop();
-        playing=false;
-
-        console.log('seek.....',self.patch.timer.isPlaying());
-
-        if(self.patch.timer.isPlaying() )
-        {
-            console.log('play!');
-                        
-            self.media.start(t);
-            playing=true;
-        }
-        // else if(!self.patch.timer.isPlaying() ) self.media.stop(t);
-
-        // self.audio.currentTime=t;
     }
 
     function playPause()
@@ -120,24 +124,58 @@ Ops.WebAudio.AudioPlayer = function()
     var loadingFilename='';
     this.file.onValueChanged = function()
     {
-
-        // http://www.clicktorelease.com/blog/loading-sounds-faster-using-html5-web-audio-api
-
-        if(self.file.val==loadingFilename)return;
+        // if(self.file.val==loadingFilename)return;
         loadingFilename=self.file.val;
 
         CGL.incrementLoadingAssets();
 
-        self.audio = new Audio();
-        // self.audio.src = self.file.val;
+        if(window.gui)
+        {
+            self.audio = new Audio();
+            self.audio.src = self.file.val;
 
-        // var canplaythrough=function()
-        // {
-        //     console.log('audio ready');
-        //     self.audio.play();self.audio.pause();
-        //     // CGL.decrementLoadingAssets();
-        //     self.audio.removeEventListener('canplaythrough',canplaythrough, false);
-        // };
+            var canplaythrough=function()
+            {
+                CGL.decrementLoadingAssets();
+                self.audio.removeEventListener('canplaythrough',canplaythrough, false);
+            };
+
+            self.audio.addEventListener('canplaythrough',canplaythrough, false);
+            self.media = audioContext.createMediaElementSource(self.audio);
+            self.media.connect(self.filter);
+            self.audioOut.val = self.filter;
+
+        }
+        else
+        {
+            self.media = audioContext.createBufferSource();
+
+            var request = new XMLHttpRequest();
+
+            request.open( 'GET', self.file.val, true );
+            request.responseType = 'arraybuffer';
+
+            request.onload = function()
+            {
+                var audioData = request.response;
+
+                audioContext.decodeAudioData( audioData, function(res)
+                {
+                    buffer=res;
+                    console.log('sound load complete');
+                    self.media.buffer = res;
+                    self.media.connect(self.filter);
+                    self.audioOut.val = self.filter;
+
+                    CGL.decrementLoadingAssets();
+                } );
+
+            };
+
+            request.send();
+
+        }
+
         // var firstProgress=true;
         // var progress=function(e)
         // {
@@ -165,45 +203,12 @@ Ops.WebAudio.AudioPlayer = function()
         // };
 
 
-        // self.audio.addEventListener('progress',progress, false);
-        // self.audio.addEventListener('canplaythrough',canplaythrough, false);
-
-
-var request = new XMLHttpRequest();
-
-request.open( 'GET', self.file.val, true );
-request.responseType = 'arraybuffer';
-
-request.onload = function()
-{
-
-    
-    var audioData = request.response;
-
-    audioContext.decodeAudioData( audioData, function(res)
-    {
-        buffer=res;
-        console.log('sound load complete');
-        self.media.buffer = res;
-
-        self.media.connect(self.filter);
-        self.audioOut.val = self.filter;
-
-        CGL.decrementLoadingAssets();
-
-
-    } );
-
-
-};
-
-request.send();
 
 
 
 
-        // self.media = audioContext.createMediaElementSource(self.audio);
-        self.media = audioContext.createBufferSource();
+
+
 
         self.patch.timer.onPlayPause(seek);
         self.patch.timer.onTimeChange(seek);
