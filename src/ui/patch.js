@@ -494,6 +494,9 @@ CABLES.UI.Patch=function(_gui)
 
         $('#patch svg').bind("mousewheel", function (event,delta,nbr)
         {
+            delta=CABLES.UI.getWheelSpeed(event);
+                    // console.log('delta',delta);
+                    
             event=mouseEvent(event);
             if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
             {

@@ -1307,6 +1307,7 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         cursorLine.hide();
         var cursorOffset=this.getTimeFromPaper(viewBox.x);
+        var oldCursor=this.getPaperXFromTime(cursorTime);
         // var addOffset=Math.abs(cursorOffset-cursorTime);
 
         // console.log('cursorOffset',cursorOffset);
@@ -1314,7 +1315,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
         CABLES.TL.TIMESCALE=v;
 
-        viewBox.x=cursorOffset*CABLES.TL.TIMESCALE;
+        viewBox.x=cursorOffset*CABLES.TL.TIMESCALE/2;
+
+        var newCursor=this.getPaperXFromTime(cursorTime);
+        viewBox.x-=(oldCursor-newCursor)/2;
 
         // this.centerCursor();
         updateKeyLine();
@@ -1338,7 +1342,10 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         return (cursorTime> self.getTimeFromPaper(viewBox.x)  && cursorTime < self.getTimeFromPaper(viewBox.w)+self.getTimeFromPaper(viewBox.x));
     };
-
+    this.getPaperXFromTime=function(t)
+    {
+        return t*CABLES.TL.TIMESCALE;
+    };
     this.getTimeFromPaper=function(offsetX)
     {
         var time=offsetX;
