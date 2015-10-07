@@ -96,7 +96,7 @@ CABLES.UI.SELECTPROJECT.show=function()
         CABLES.api.get('myprojects',function(data)
         {
             CABLES.UI.MODAL.showLoading('loading projectlist...');
-            CABLES.UI.SELECTPROJECT.projectsHtml = CABLES.UI.getHandleBarHtml('select_project',{projects:data.projects });
+            CABLES.UI.SELECTPROJECT.projectsHtml = CABLES.UI.getHandleBarHtml('select_project',{projects:data });
             CABLES.UI.SELECTPROJECT.showSelectProjects(CABLES.UI.SELECTPROJECT.projectsHtml);
             CABLES.UI.SELECTPROJECT.doReload=false;
         });

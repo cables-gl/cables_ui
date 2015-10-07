@@ -3,6 +3,7 @@ $mainColor: #6c9fde;
 
 
 
+
 body
 {
     padding: 0px;
@@ -333,7 +334,7 @@ input[type="text"]
     font-family: arial;
 
     background-color:#444;
-    border-radius: 4px;
+    // border-radius: 4px;
     min-width: 14px;
     text-align: center;
     color:white;
@@ -905,3 +906,4 @@ input[type=range]:focus {
     right:0;
     position:absolute;
 }
+

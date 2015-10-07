@@ -7,7 +7,7 @@ Ops.Net.Websocket = function()
     Op.apply(this, arguments);
 
     this.name='Websocket';
-    this.url=this.addInPort(new Port(this,"url"));
+    this.url=this.addInPort(new Port(this,"url",OP_PORT_TYPE_VALUE,{type:'string'}));
     this.result=this.addOutPort(new Port(this,"result", OP_PORT_TYPE_OBJECT));
     this.connected=this.addOutPort(new Port(this,"connected"));
 
