@@ -58,10 +58,12 @@ svg {
 #statusbar {
   height: 20px;
   width: 100%;
+  padding: 3px;
   background-color: black;
   position: absolute;
   bottom: 0px;
-  overflow: hidden; }
+  overflow: hidden;
+  z-index: 999; }
   #statusbar
 a {
     background-color: #444;
@@ -98,6 +100,8 @@ td.head {
   background-color: #000; }
 
 #menubar, #timelineui {
+  padding-top: 2px;
+  padding-right: 10px;
   position: absolute;
   background-color: #222;
   overflow: hidden; }
@@ -120,21 +124,23 @@ input {
     margin-left: 10px;
     text-align: center; }
 
+textarea {
+  width: 500px;
+  height: 300px; }
+
 #modalbg {
-  background-color: black;
-  opacity: 0.8;
+  background-color: #222;
+  opacity: 0.9;
   width: 100%;
   height: 100%;
   position: absolute;
   z-index: 999;
   display: none; }
 
-textarea {
-  width: 500px;
-  height: 300px; }
-
 #modalcontent {
-  border-radius: 10px;
+  -webkit-box-shadow: -1px 1px 34px -6px rgba(0, 0, 0, 0.68);
+  -moz-box-shadow: -1px 1px 34px -6px rgba(0, 0, 0, 0.68);
+  box-shadow: -1px 1px 34px -6px rgba(0, 0, 0, 0.68);
   width: auto;
   height: auto;
   position: absolute;
@@ -162,9 +168,11 @@ textarea {
     position: absolute; }
 
 h3, h4 {
-  color: #6c9fde; }
+  color: #6c9fde;
+  font-weight: 100; }
 
 h2 {
+  font-weight: 100;
   color: #6c9fde;
   font-family: arial;
   font-weight: normal;
@@ -284,7 +292,6 @@ td {
   float: left;
   padding: 5px;
   padding-left: 5px;
-  padding-right: 5px;
   margin-left: 10px;
   margin-top: 3px; }
   #menubar
@@ -359,20 +366,6 @@ input[type=range]::-webkit-slider-thumb {
 
 input[type=range]:focus {
   outline: none; }
-
-#sidebar {
-  background-color: #222;
-  position: absolute;
-  width: 320px;
-  height: 100%;
-  display: none;
-  z-index: 1000;
-  padding: 20px;
-  overflow: hidden;
-  opacity: 0.96; }
-  #sidebar
-.content {
-    width: 320px; }
 
 #loggedin, #loggedout {
   float: right;
@@ -466,7 +459,8 @@ td {
   width: 68px;
   height: 19px;
   background-size: 100% 100%;
-  display: block; }
+  display: block;
+  z-index: 1000; }
 
 /*!
  *  Font Awesome 4.4.0 by @davegandy - http://fontawesome.io - @fontawesome

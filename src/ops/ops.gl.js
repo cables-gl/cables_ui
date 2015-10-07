@@ -449,7 +449,6 @@ Ops.Gl.Texture = function()
         // console.log('show preview!');
     };
 
-
 };
 
 Ops.Gl.Texture.prototype = new Op();
@@ -462,7 +461,7 @@ Ops.Gl.TextureText = function()
     var self=this;
 
     this.name='TextureText';
-    this.text=this.addInPort(new Port(this,"text",{type:'string'}));
+    this.text=this.addInPort(new Port(this,"text",OP_PORT_TYPE_VALUE,{type:'string'}));
     this.fontSize=this.addInPort(new Port(this,"fontSize"));
     this.align=this.addInPort(new Port(this,"align",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['left','center','right']}));
     this.font=this.addInPort(new Port(this,"font"));
