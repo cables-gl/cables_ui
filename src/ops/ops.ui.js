@@ -164,13 +164,13 @@ Ops.Ui.Patch = function()
 
     this.patchId.val=Ops.Ui.Patch.maxPatchId+1;
 
+
     this.onCreate=function()
     {
         if(!hasDynamicPort())getNewDynamicPort('dyn');
         getSubPatchInputOp();
 
         if (CABLES.UI) gui.patch().updateSubPatches();
-
     };
 
     this.onDelete=function()

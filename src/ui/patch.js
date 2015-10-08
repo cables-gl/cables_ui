@@ -45,11 +45,17 @@ CABLES.UI.Patch=function(_gui)
             e.preventDefault();
 
             var json=JSON.parse(str);
+
+        console.log('paste json',json);
+        
+
             if(json)
             {
                 if(json.ops)
                 {
-                    var i=0;
+
+                            
+                    var i=0,j=0;
                     { // change ids
 
                         for(i in json.ops)
@@ -57,7 +63,7 @@ CABLES.UI.Patch=function(_gui)
                             var searchID=json.ops[i].id;
                             var newID=json.ops[i].id=generateUUID();
 
-                            for(var j in json.ops)
+                            for(j in json.ops)
                             {
                                 if(json.ops[j].portsIn)
                                 for(var k in json.ops[j].portsIn)
@@ -73,11 +79,62 @@ CABLES.UI.Patch=function(_gui)
                         }
                     }
 
-                    { // set current subpatch
+                    { // set correct subpatch
+
+                        var fixedSubPatches=[];
+                        for(i=0;i<json.ops.length;i++)
+                        {
+                            if(json.ops[i].objName=='Ops.Ui.Patch')
+                            {
+
+                                for(var k in json.ops[i].portsIn)
+                                {
+                                    if(json.ops[i].portsIn[k].name=='patchId')
+                                    {
+                                        var oldSubPatchId=parseInt(json.ops[i].portsIn[k].value,10);
+                                        var newSubPatchId=json.ops[i].portsIn[k].value=Ops.Ui.Patch.maxPatchId+1;
+        
+                                        console.log('oldSubPatchId',oldSubPatchId);
+                                        console.log('newSubPatchId',newSubPatchId);
+
+                                        for(j=0;j<json.ops.length;j++)
+                                        {
+                                            console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
+                                                    
+                                            if(parseInt(json.ops[j].uiAttribs.subPatch,10)==oldSubPatchId)
+                                            {
+                                                console.log('found child patch');
+                                                        
+                                                json.ops[j].uiAttribs.subPatch=newSubPatchId;
+                                                fixedSubPatches.push(json.ops[j].id);
+                                            }
+                                        }
+
+
+                                    }
+                                }
+
+
+        
+
+                            }
+                        }
 
                         for(i in json.ops)
                         {
-                            json.ops[i].uiAttribs.subPatch=currentSubPatch;
+                            var found=false;
+                            for(j=0;j<fixedSubPatches.length;j++)
+                            {
+                                if(json.ops[i].id==fixedSubPatches[j])
+                                {
+                                    found=true;
+                                    break;
+                                }
+                            }
+                            if(!found)
+                            {
+                                json.ops[i].uiAttribs.subPatch=currentSubPatch;
+                            }
                         }
                     }
 
@@ -355,18 +412,23 @@ CABLES.UI.Patch=function(_gui)
         CABLES.UI.setStatusText(txt);
     }
 
-    this.selectAllOps=function()
+    this.selectAllOpsSubPatch=function(subPatch)
     {
         for(var i in self.ops)
         {
-            if(self.ops[i].getSubPatch()==currentSubPatch)
+            if(self.ops[i].getSubPatch()==subPatch)
             {
                 self.addSelectedOp(self.ops[i]);
                 self.ops[i].setSelected(true);
             }
         }
-
         setStatusSelectedOps();
+
+    };
+
+    this.selectAllOps=function()
+    {
+        this.selectAllOpsSubPatch(currentSubPatch);
     };
 
     function rubberBandMove(e)
@@ -414,6 +476,8 @@ CABLES.UI.Patch=function(_gui)
             {
                 if(!self.ops[i].isHidden() )
                 {
+
+
                     var rect=self.ops[i].oprect.getRect();
                     if(rect && rect.matrix)
                     {
@@ -430,6 +494,8 @@ CABLES.UI.Patch=function(_gui)
                         {
                             self.addSelectedOp(self.ops[i]);
                             self.ops[i].setSelected(true);
+
+
                         }
                         else
                         {
@@ -983,23 +1049,7 @@ CABLES.UI.Patch=function(_gui)
                 selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x,avg);
         }
     };
-    
-    this.setSelectedOp=function(uiop)
-    {
-        if(uiop===null )
-        {
-            selectedOps.length=0;
-            for(var i in gui.patch().ops)
-            {
-                gui.patch().ops[i].setSelected(false);
-                gui.patch().ops[i].hideAddButtons();
-            }
-            return;
-        }
 
-        selectedOps.push(uiop);
-        uiop.setSelected(true);
-    };
     
     this.deleteSelectedOps=function()
     {
@@ -1019,8 +1069,30 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
+
+    this.setSelectedOp=function(uiop)
+    {
+        if(uiop===null )
+        {
+            selectedOps.length=0;
+            for(var i in gui.patch().ops)
+            {
+                gui.patch().ops[i].setSelected(false);
+                gui.patch().ops[i].hideAddButtons();
+            }
+            return;
+        }
+
+        self.addSelectedOp(uiop);
+        // selectedOps.push(uiop);
+        uiop.setSelected(true);
+    };
+
     this.addSelectedOp=function(uiop)
     {
+        if(uiop.op.objName=='Ops.Ui.Patch')
+            self.selectAllOpsSubPatch(uiop.op.patchId.val);
+
         uiop.oprect.setSelected(true);
         for(var i in selectedOps) if(selectedOps[i]==uiop)return;
         selectedOps.push(uiop);
