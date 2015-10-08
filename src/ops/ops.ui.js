@@ -173,6 +173,13 @@ Ops.Ui.Patch = function()
 
     };
 
+    this.onDelete=function()
+    {
+        for (var i = 0; i < self.patch.ops.length; i++)
+            if(self.patch.ops[i].uiAttribs && self.patch.ops[i].uiAttribs.subPatch==self.patchId.val)
+                self.patch.deleteOp(self.patch.ops[i].id);
+    };
+
 
 };
 Ops.Ui.Patch.maxPatchId=0;

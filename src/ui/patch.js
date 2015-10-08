@@ -215,7 +215,7 @@ CABLES.UI.Patch=function(_gui)
         }
     });
     
-    
+
     this.exportStatic=function()
     {
         CABLES.UI.MODAL.showLoading('exporting project');
@@ -242,7 +242,6 @@ CABLES.UI.Patch=function(_gui)
                 }
 
                 CABLES.UI.MODAL.show(msg);
-                // CABLES.UI.MODAL.hide();
             });
         
     };

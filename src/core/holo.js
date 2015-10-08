@@ -25,6 +25,7 @@ var Op = function()
     this.onCreate=null;
     this.onResize=null;
     this.onLoaded=null;
+    this.onDelete=null;
 
     this.uiAttr=function(newAttribs)
     {
@@ -583,7 +584,9 @@ var Scene = function()
                     this.ops[i].removeLinks();
                     this.onDelete(this.ops[i]);
                     this.ops[i].id=generateUUID();
+                    if(this.ops[i].onDelete)this.ops[i].onDelete();
                     this.ops.splice( i, 1 );
+
 
                     if(reLinkP1!==null && reLinkP2!==null)
                     {
