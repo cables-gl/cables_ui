@@ -69,10 +69,27 @@ CABLES.UI.Patch=function(_gui)
                                 for(var k in json.ops[j].portsIn)
                                 {
                                     if(json.ops[j].portsIn[k].links)
-                                    for(var l in json.ops[j].portsIn[k].links)
                                     {
-                                        if(json.ops[j].portsIn[k].links[l].objIn==searchID) json.ops[j].portsIn[k].links[l].objIn=newID;
-                                        if(json.ops[j].portsIn[k].links[l].objOut==searchID) json.ops[j].portsIn[k].links[l].objOut=newID;
+                                        var l=json.ops[j].portsIn[k].links.length;
+                                        while(l--)
+                                        {
+                                            console.log('json.ops[j].portsIn[k].links[l]',json.ops[j].portsIn[k].links[l]);
+                                                    
+                                            if(json.ops[j].portsIn[k].links[l]===null)
+                                            {
+                                                        console.log('delete null link');
+                                                        
+                                                json.ops[j].portsIn[k].links.splice(l,1);
+                                            }
+                                            
+                                        }
+
+                                        
+                                        for(var l in json.ops[j].portsIn[k].links)
+                                        {
+                                            if(json.ops[j].portsIn[k].links[l].objIn==searchID) json.ops[j].portsIn[k].links[l].objIn=newID;
+                                            if(json.ops[j].portsIn[k].links[l].objOut==searchID) json.ops[j].portsIn[k].links[l].objOut=newID;
+                                        }
                                     }
                                 }
                             }
@@ -197,41 +214,27 @@ CABLES.UI.Patch=function(_gui)
             opIds.push(selectedOps[i].op.id);
         }
 
+
+        // remove links that are not fully copied...
         for(i=0;i<ops.length;i++)
         {
             for( j=0;j<ops[i].portsIn.length;j++)
             {
-                if(k=ops[i].portsIn[j].links)
+                if(ops[i].portsIn[j].links)
                 {
                     k=ops[i].portsIn[j].links.length;
                     while(k--)
                     {
-
-                        var found=false;
-
-                        for( l=0;l<opIds.length;l++)
+                        if(ops[i].portsIn[j].links[k] && ops[i].portsIn[j].links[k].objIn && ops[i].portsIn[j].links[k].objOut)
                         {
-                            if(ops[i].portsIn[j].links[k].objIn!=opIds[l] && ops[i].portsIn[j].links[k].objOut!=opIds[l])
+                            if(!arrayContains(opIds,ops[i].portsIn[j].links[k].objIn) || !arrayContains(opIds,ops[i].portsIn[j].links[k].objOut))
                             {
-                                found=k;
-                                console.log('deleted link');
+                                ops[i].portsIn[j].links[k]=null;
                             }
                         }
-
-                        if(found!==false)
-                        {
-                            if(ops[i].portsIn[j].links.length==1)ops[i].portsIn[j].links.length=0;
-                            else delete ops[i].portsIn[j].links[found];
-                        }
-
-
                     }
-
-
                 }
             }
-
-            // opIds
         }
 
         var obj={"ops":ops};

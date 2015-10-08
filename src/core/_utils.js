@@ -24,7 +24,22 @@ function ajaxRequest(url, callback)
     request.send();
 }
 
+
+
 String.prototype.endl = function(){return this+'\n';};
+
+var arrayContains = function(arr,obj)
+{
+    var i = arr.length;
+    while (i--)
+    {
+        if (arr[i] === obj)
+        {
+            return true;
+        }
+    }
+    return false;
+};
 
 // ----------------------------------------------------------------
 
