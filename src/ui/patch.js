@@ -189,9 +189,49 @@ CABLES.UI.Patch=function(_gui)
     this.copy=function(e)
     {
         var ops=[];
-        for(var i in selectedOps)
+        var opIds=[];
+        var j=0,i=0,k=0,l=0;
+        for(i in selectedOps)
         {
             ops.push( selectedOps[i].op.getSerialized() );
+            opIds.push(selectedOps[i].op.id);
+        }
+
+        for(i=0;i<ops.length;i++)
+        {
+            for( j=0;j<ops[i].portsIn.length;j++)
+            {
+                if(k=ops[i].portsIn[j].links)
+                {
+                    k=ops[i].portsIn[j].links.length;
+                    while(k--)
+                    {
+
+                        var found=false;
+
+                        for( l=0;l<opIds.length;l++)
+                        {
+                            if(ops[i].portsIn[j].links[k].objIn!=opIds[l] && ops[i].portsIn[j].links[k].objOut!=opIds[l])
+                            {
+                                found=k;
+                                console.log('deleted link');
+                            }
+                        }
+
+                        if(found!==false)
+                        {
+                            if(ops[i].portsIn[j].links.length==1)ops[i].portsIn[j].links.length=0;
+                            else delete ops[i].portsIn[j].links[found];
+                        }
+
+
+                    }
+
+
+                }
+            }
+
+            // opIds
         }
 
         var obj={"ops":ops};

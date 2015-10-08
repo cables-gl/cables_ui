@@ -324,6 +324,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         background.node.ondblclick = function (ev)
         {
+            gui.patch().setSelectedOp(null);
             if(opui.op.objName=='Ops.Ui.Patch')
                 gui.patch().setCurrentSubPatch(opui.op.patchId.val);
         };
