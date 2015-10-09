@@ -206,6 +206,8 @@ CABLES.TL.Key.prototype.initUI=function()
         var frame=parseInt( (time +0.5*1/gui.timeLine().getFPS() )*gui.timeLine().getFPS(),10);
         time=frame/gui.timeLine().getFPS();
 
+
+
         if(CABLES.TL.MoveMode===0)
         {
             self.set({time:time,value:self.value});
@@ -1567,16 +1569,27 @@ CABLES.TL.UI.TimeLineUI=function()
                 for(var k in anims[i].keys)
                 {
                     var key=anims[i].keys[k];
-                    key.doMoveFinished();
+                    if(key.selected)
+                    {
+                        key.doMoveFinished();
+                    }
                 }
             }
         }
-
     };
 
     this.moveSelectedKeys=function(dx,dy,a,b,e)
     {
         var newPos=gui.timeLine().getCanvasCoordsMouse(e);
+
+
+
+        // snap to cursor
+        if( Math.abs(e.clientX-gui.timeLine().getTime()*CABLES.TL.TIMESCALE) <20 )
+        {
+            newPos.x=gui.timeLine().getTime()*CABLES.TL.TIMESCALE;
+        }
+
         for(var i in anims)
         {
             if(anims[i])
@@ -1586,13 +1599,11 @@ CABLES.TL.UI.TimeLineUI=function()
                     var key=anims[i].keys[k];
                     if(key.selected)
                     {
-
                         key.doMove(dx,dy,a,b,e,newPos);
                     }
                 }
             }
         }
-
     };
 
     this.unselectKeys=function()

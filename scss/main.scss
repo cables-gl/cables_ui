@@ -11,6 +11,7 @@ body
     background-color: #333;
     overflow: hidden;
     font-family: arial;
+    font-size: 13px;
 }
 
 *
@@ -26,10 +27,6 @@ body
 .fleft { float:left; }
 .mainColor { color:$mainColor; }
 .monospace { font-family: monospace;}
-div,td
-{
-    font-size: 13px;
-}
 
 a
 {
@@ -899,3 +896,26 @@ input[type=range]:focus {
     position:absolute;
 }
 
+
+
+#editor {
+   margin: 0;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+}
+
+#ace {
+   margin: 0;
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+
+    .ace_content *{
+   font-family: monospace, monospace;
+    }
+
+}

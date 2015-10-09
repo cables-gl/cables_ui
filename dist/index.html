@@ -14,6 +14,7 @@
     <script type="text/javascript" src="js/cables.max.js"></script> 
     <script type="text/javascript" src="js/cables.ops.max.js"></script> 
     <script type="text/javascript" src="js/cablesui.max.js"></script> 
+    <script type="text/javascript" src="js/ace/ace.js"></script> 
 
 
 
@@ -275,6 +276,18 @@
 
 <div id="button_subPatchBack" class="hidden"><i class="fa  fa-3x fa-arrow-circle-o-left"></i></div>
 
+
+
+<div id="editor" style="">
+    <div id="ace" style="padding:0;height:300px;">function foo(items) {
+var i;
+for (i = 0; i &lt; items.length; i++) {
+    alert("Ace Rocks " + items[i]);
+}
+    }</div>
+
+</div>
+
 <div id="patch" tabindex="1"></div>
 
 <div id="timing"></div>
@@ -287,6 +300,9 @@
 
 <div id="meta">
     <div id="projectfiles"></div>
+
+
+
 </div>
 
 <div id="options" class="panel"></div>
@@ -330,11 +346,11 @@
     </div>
 
 
-    
-
 
 
 </div>
+
+
 
 
 

@@ -8,6 +8,7 @@ CABLES.UI.GUI=function()
 {
     var self=this;
     var showTiming=false;
+    var showEditor=false;
     var _scene=new Scene();
     _scene.gui=true;
     var _patch=null;
@@ -41,14 +42,33 @@ CABLES.UI.GUI=function()
         var timedisplayheight=25;
 
         var patchHeight=window.innerHeight-statusBarHeight-menubarHeight-2;
+
+        var patchWidth=window.innerWidth-self.rendererWidth-8;
+        var patchLeft=0;
+
         if(showTiming)
-            {
-                patchHeight=patchHeight-this.timingHeight-2;
-            }
-            else
-            {
-                patchHeight-=timelineUiHeight;
-            }
+        {
+            patchHeight=patchHeight-this.timingHeight-2;
+        }
+        else
+        {
+            patchHeight-=timelineUiHeight;
+        }
+
+        if(showEditor)
+        {
+$('#editor').show();
+            patchWidth=patchWidth/2;
+            patchLeft=patchWidth;
+            $('#ace').css('height',patchHeight-2);
+            $('#ace').css('width',patchWidth);
+            $('#ace').css('top',menubarHeight+2);
+            $('#ace').css('left',0);
+        }
+        else
+        {
+            $('#editor').hide();
+        }
 
         $('#patch svg').css('height',patchHeight-2);
         $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9);
@@ -62,8 +82,9 @@ CABLES.UI.GUI=function()
         $('#splitterRendererWH').css('top',self.rendererHeight-30);
 
         $('#patch').css('height',patchHeight-2);
-        $('#patch').css('width',window.innerWidth-self.rendererWidth-8);
+        $('#patch').css('width',patchWidth);
         $('#patch').css('top',menubarHeight+2);
+        $('#patch').css('left',patchLeft);
 
         $('#timelineui').css('width',window.innerWidth-self.rendererWidth-2);
 
@@ -283,6 +304,22 @@ CABLES.UI.GUI=function()
         {
             switch(e.which)
             {
+                default:
+                        console.log('e.which',e.which);
+                        
+                break;
+                case 49: // 1 - editor
+                showEditor=!showEditor;
+                self.setLayout();
+
+var editor = ace.edit("ace");
+editor.setTheme("ace/theme/twilight");
+editor.session.setMode("ace/mode/javascript");
+editor.resize();
+
+
+                break;
+
                 case 79: // o - open
                     if(e.metaKey || e.ctrlKey)
                     {
@@ -364,11 +401,8 @@ CABLES.UI.GUI=function()
         {
             switch(e.which)
             {
-
-
                 case 32: // space play
                     if(spaceBarStart===0) spaceBarStart = Date.now();
-                    
                 break;
 
                 case 74: // j
@@ -377,9 +411,6 @@ CABLES.UI.GUI=function()
                 case 75: // k
                     self.timeLine().jumpKey(1);
                 break;
-
-
-
             }
         });
 
@@ -455,3 +486,4 @@ document.addEventListener("DOMContentLoaded", function(event)
     gui.bind();
 
 });
+
