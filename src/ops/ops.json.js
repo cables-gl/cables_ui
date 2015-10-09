@@ -68,6 +68,110 @@ Ops.Json.jsonFile.prototype = new Op();
 Ops.Json3d=Ops.Json3d || {};
 
 
+
+
+Ops.Json3d.json3dFile = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='json3dFile';
+
+    this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'json' } ));
+    this.json=this.addOutPort(new Port(this,"json",OP_PORT_TYPE_OBJECT));
+
+
+    function addChild(x,parentOp,parentPort,ch)
+    {
+        if(ch.hasOwnProperty('transformation'))
+        {
+            var posx=parentOp.uiAttribs.translate.x+x*130;
+            var posy=parentOp.uiAttribs.translate.y+50;
+
+            var transOp=self.patch.addOp('Ops.Gl.Matrix.MatrixMul',{translate:{x:posx,y:posy}});
+            var mat=ch.transformation;
+            mat4.transpose(mat,mat);
+            transOp.matrix.val=ch.transformation;
+
+            if(ch.name)
+            {
+                transOp.name=ch.name;
+            }
+
+            self.patch.link(parentOp,parentPort,transOp,'render');
+
+            if(ch.hasOwnProperty('meshes'))
+            {
+                for(var i=0;i<ch.meshes.length;i++)
+                {
+                    var index=ch.meshes[i];
+                    var meshOp=self.patch.addOp('Ops.Json3d.Mesh',{translate:{x:posx,y:posy+50}});
+                    meshOp.index.val=index;
+
+                    self.patch.link(transOp,'trigger',meshOp,'render');
+                    self.patch.link(self,'json',meshOp,'json');
+                }
+            }
+
+            if(ch.hasOwnProperty('children'))
+            {
+                for(var i=0;i<ch.children.length;i++)
+                {
+                    addChild(x,transOp,'trigger',ch.children[i]);
+                }
+
+            }
+
+
+
+        }
+
+    }
+
+
+
+    var reload=function()
+    {
+        $.ajax(
+        {
+            url: self.filename.val,
+            context: document.body
+        })
+        .fail(function(data)
+        {
+            console.log('ajax fail!');
+        })
+        .done(function(data)
+        {
+            self.json.val=data;
+
+            console.log('scenes '+data.meshes.length);
+
+            var root=self.patch.addOp('Ops.Sequence',{translate:{x:self.uiAttribs.translate.x,y:self.uiAttribs.translate.y+50}});
+
+            for(var i=0;i<data.rootnode.children.length;i++)
+            {
+                addChild(i,root,'trigger 0',data.rootnode.children[i]);
+            }
+            // console.log('childs '+);
+
+
+
+
+        });
+
+    };
+
+    this.filename.onValueChanged=reload;
+};
+
+Ops.Json3d.json3dFile.prototype = new Op();
+
+
+
+
+// -------------------------------------------------------------
+
 Ops.Json3d.Mesh=function()
 {
     var self=this;
@@ -75,7 +179,7 @@ Ops.Json3d.Mesh=function()
 
     this.name='json3d Mesh';
 
-    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION ));
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION ));
     this.json=this.addInPort(new Port(this,"json",OP_PORT_TYPE_OBJECT ));
     this.index=this.addInPort(new Port(this,"mesh index",OP_PORT_TYPE_VALUE ));
 
@@ -87,17 +191,10 @@ Ops.Json3d.Mesh=function()
         {
             mesh.render(cgl.getShader());
         }
-
     }
-
 
     function reload()
     {
-        // geom.vertices = [
-        // geom.texCoords = [
-        // geom.vertexNormals = [
-        // geom.verticesIndices = [
-        
         if(self.json.val.meshes)
         {
             console.log(' has '+self.json.val.meshes.length+' meshes ');
@@ -134,7 +231,7 @@ Ops.Json3d.Mesh=function()
 
     }
 
-    this.exe.onTriggered=render;
+    this.render.onTriggered=render;
     this.json.onValueChanged=reload;
     this.index.onValueChanged=reload;
 

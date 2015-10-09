@@ -898,24 +898,32 @@ input[type=range]:focus {
 
 
 
-#editor {
-   margin: 0;
-   top: 0;
-   bottom: 0;
-   left: 0;
-   right: 0;
-}
+#editor
+{
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
-#ace {
-   margin: 0;
-   position: absolute;
-   top: 0;
-   bottom: 0;
-   left: 0;
-   right: 0;
-
-    .ace_content *{
-   font-family: monospace, monospace;
+    #editorbar
+    {
+        position: absolute;
     }
 
+    #ace
+    {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        .ace_content *
+        {
+            font-family: monospace, monospace;
+        }
+    }
 }
+

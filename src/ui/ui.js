@@ -57,12 +57,16 @@ CABLES.UI.GUI=function()
 
         if(showEditor)
         {
-$('#editor').show();
+            var editorbarHeight=30;
+            $('#editor').show();
+            $('#editorbar').css('height',editorbarHeight);
+            $('#editorbar').css('top',menubarHeight+2);
+
             patchWidth=patchWidth/2;
             patchLeft=patchWidth;
-            $('#ace').css('height',patchHeight-2);
+            $('#ace').css('height',patchHeight-2-editorbarHeight);
             $('#ace').css('width',patchWidth);
-            $('#ace').css('top',menubarHeight+2);
+            $('#ace').css('top',menubarHeight+2+editorbarHeight);
             $('#ace').css('left',0);
         }
         else
@@ -309,14 +313,16 @@ $('#editor').show();
                         
                 break;
                 case 49: // 1 - editor
-                showEditor=!showEditor;
-                self.setLayout();
+                if(e.shiftKey)
+                {
+                    showEditor=!showEditor;
+                    self.setLayout();
 
-var editor = ace.edit("ace");
-editor.setTheme("ace/theme/twilight");
-editor.session.setMode("ace/mode/javascript");
-editor.resize();
-
+                    var editor = ace.edit("ace");
+                    editor.setTheme("ace/theme/twilight");
+                    editor.session.setMode("ace/mode/javascript");
+                    editor.resize();
+                }
 
                 break;
 
@@ -441,6 +447,17 @@ editor.resize();
 
         router.start('/');
     }
+
+    this.importJson3D=function(id)
+    {
+        CABLES.api.get('json3dimport/'+id,
+            function(data)
+            {
+                console.log('data',data);
+            }
+        );
+        
+    };
 
     this.loadUser=function()
     {
