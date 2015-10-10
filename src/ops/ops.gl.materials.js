@@ -379,6 +379,9 @@ Ops.Gl.Shader.GradientMaterial = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
+    this.screenSpace=this.addInPort(new Port(this,"screen space",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.screenSpace.val=false;
+
     this.r=this.addInPort(new Port(this,"r1",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
     this.g=this.addInPort(new Port(this,"g1",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.b=this.addInPort(new Port(this,"b1",OP_PORT_TYPE_VALUE,{ display:'range' }));
@@ -413,8 +416,19 @@ Ops.Gl.Shader.GradientMaterial = function()
     var colB=[];
     var colC=[];
 
+    var w=0,h=0;
+
     this.doRender=function()
     {
+        if(w!=cgl.getViewPort()[2] || h!=cgl.getViewPort()[3])
+        {
+            w=cgl.getViewPort()[2];
+            h=cgl.getViewPort()[3];
+        }
+
+        uniformWidth.setValue(w);
+        uniformHeight.setValue(h);
+                    
         cgl.setShader(shader);
         self.trigger.trigger();
         cgl.setPreviousShader();
@@ -427,23 +441,40 @@ Ops.Gl.Shader.GradientMaterial = function()
         .endl()+'uniform vec4 colA;'
         .endl()+'uniform vec4 colB;'
         .endl()+'uniform vec4 colC;'
+        .endl()+'uniform float width,height;'
+
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'   if(texCoord.y<=0.5)'
+
+
+        .endl()+'   #ifdef USE_TEXCOORDS'
+        .endl()+'       vec2 coords=texCoord;'
+        .endl()+'   #endif'
+
+        .endl()+'   #ifdef USE_FRAGCOORDS'
+        .endl()+'       vec2 coords=vec2(gl_FragCoord.x/width,gl_FragCoord.y/height);'
+        .endl()+'   #endif'
+
+        .endl()+'   if(coords.y<=0.5)'
         .endl()+'   {'
-        .endl()+'       gl_FragColor = vec4(mix(colA, colB, texCoord.y*2.0));'
+        .endl()+'       gl_FragColor = vec4(mix(colA, colB, coords.y*2.0));'
         .endl()+'   }'
-        .endl()+'   if(texCoord.y>0.5)'
+        .endl()+'   if(coords.y>0.5)'
         .endl()+'   {'
-        .endl()+'       gl_FragColor = vec4(mix(colB, colC, (texCoord.y-0.5)*2.0));'
+        .endl()+'       gl_FragColor = vec4(mix(colB, colC, (coords.y-0.5)*2.0));'
         .endl()+'   }'
         .endl()+'}';
 
     var shader=new CGL.Shader();
     this.onLoaded=shader.compile;
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+    shader.define("USE_TEXCOORDS");
+    var uniformWidth=new CGL.Uniform(shader,'f','width',w);
+    var uniformHeight=new CGL.Uniform(shader,'f','height',h);
+
     this.doRender();
+
 
     this.r.onValueChanged=this.g.onValueChanged=this.b.onValueChanged=this.a.onValueChanged=function()
     {
@@ -464,6 +495,21 @@ Ops.Gl.Shader.GradientMaterial = function()
         colC=[self.r3.val,self.g3.val,self.b3.val,self.a3.val];
         if(!self.r3.uniform) self.r3.uniform=new CGL.Uniform(shader,'4f','colC',colC);
         else self.r3.uniform.setValue(colC);
+    };
+
+    this.screenSpace.onValueChanged=function()
+    {
+        if(self.screenSpace.val)
+        {
+            shader.define("USE_FRAGCOORDS");
+            shader.removeDefine("USE_TEXCOORDS");
+        }
+        else
+        {
+            shader.define("USE_TEXCOORDS");
+            shader.removeDefine("USE_FRAGCOORDS");
+        }
+
     };
 
     this.r3.onValueChanged();
