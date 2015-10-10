@@ -562,7 +562,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'uniform mat4 projMatrix;'
         .endl()+'uniform mat4 mvMatrix;'
         .endl()+'uniform mat4 normalMatrix;'
-        
+
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   texCoord=attrTexCoord;'
@@ -571,6 +571,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
         .endl()+'#ifdef BILLBOARD'
         .endl()+'   vec3 position=vPosition;'
+
         .endl()+"   gl_Position = projMatrix * mvMatrix * vec4(( "
         .endl()+"       position.x * vec3("
         .endl()+"           mvMatrix[0][0],"

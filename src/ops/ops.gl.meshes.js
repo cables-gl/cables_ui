@@ -92,7 +92,7 @@ Ops.Gl.Meshes.Rectangle = function()
 
         geom.verticesIndices = [
             0, 1, 2,
-            3, 1, 2
+            2, 1, 3
         ];
         if(!self.mesh) self.mesh=new CGL.Mesh(geom);
         self.mesh.setGeom(geom);
