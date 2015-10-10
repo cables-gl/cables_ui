@@ -137,6 +137,7 @@ Ops.Json3d.json3dFile = function()
 
     var reload=function()
     {
+
         $.ajax(
         {
             url: self.filename.val,
@@ -149,18 +150,23 @@ Ops.Json3d.json3dFile = function()
         .done(function(data)
         {
             scene.setValue(data);
-            // Ops.Json3d.currentScene=data;
+            
 
-            console.log('scenes '+data.meshes.length);
-
-            var root=self.patch.addOp('Ops.Sequence',{translate:{x:self.uiAttribs.translate.x,y:self.uiAttribs.translate.y+50}});
-
-            self.patch.link(self,'trigger',root,'exe');
-
-            for(var i=0;i<data.rootnode.children.length;i++)
+            if(!self.trigger.isLinked())
             {
-                addChild(i,3,root,'trigger 0',data.rootnode.children[i]);
+                console.log('scenes '+data.meshes.length);
+
+                var root=self.patch.addOp('Ops.Sequence',{translate:{x:self.uiAttribs.translate.x,y:self.uiAttribs.translate.y+50}});
+
+                self.patch.link(self,'trigger',root,'exe');
+
+                for(var i=0;i<data.rootnode.children.length;i++)
+                {
+                    addChild(i,3,root,'trigger 0',data.rootnode.children[i]);
+                }
+
             }
+
 
         });
 

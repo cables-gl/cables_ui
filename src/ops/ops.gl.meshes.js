@@ -45,6 +45,13 @@ Ops.Gl.Meshes.Rectangle = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.width=this.addInPort(new Port(this,"width"));
     this.height=this.addInPort(new Port(this,"height"));
+    
+    this.pivotX=this.addInPort(new Port(this,"pivot x",OP_PORT_TYPE_VALUE,{display:'dropdown',values:["center","left","right"]} ));
+    this.pivotX.val='center';
+
+    this.pivotY=this.addInPort(new Port(this,"pivot y",OP_PORT_TYPE_VALUE,{display:'dropdown',values:["center","top","bottom"]} ));
+    this.pivotY.val='center';
+
     this.width.val=1.0;
     this.height.val=1.0;
 
@@ -59,18 +66,28 @@ Ops.Gl.Meshes.Rectangle = function()
 
     function rebuild()
     {
+        var x=0;
+        var y=0;
+        if(self.pivotX.val=='center') x=0;
+        if(self.pivotX.val=='right') x=-self.width.val/2;
+        if(self.pivotX.val=='left') x=+self.width.val/2;
+
+        if(self.pivotY.val=='center') y=0;
+        if(self.pivotY.val=='top') y=-self.height.val/2;
+        if(self.pivotY.val=='bottom') y=+self.height.val/2;
+
         geom.vertices = [
-             self.width.val/2,  self.height.val/2,  0.0,
-            -self.width.val/2,  self.height.val/2,  0.0,
-             self.width.val/2, -self.height.val/2,  0.0,
-            -self.width.val/2, -self.height.val/2,  0.0
+             self.width.val/2+x,  self.height.val/2+y,  0.0,
+            -self.width.val/2+x,  self.height.val/2+y,  0.0,
+             self.width.val/2+x, -self.height.val/2+y,  0.0,
+            -self.width.val/2+x, -self.height.val/2+y,  0.0
         ];
 
         geom.texCoords = [
-             1.0, 1.0,
-             0.0, 1.0,
              1.0, 0.0,
-             0.0, 0.0
+             0.0, 0.0,
+             1.0, 1.0,
+             0.0, 1.0
         ];
 
         geom.verticesIndices = [
@@ -82,6 +99,8 @@ Ops.Gl.Meshes.Rectangle = function()
     }
     rebuild();
 
+    this.pivotX.onValueChanged=rebuild;
+    this.pivotY.onValueChanged=rebuild;
     this.width.onValueChanged=rebuild;
     this.height.onValueChanged=rebuild;
 };
