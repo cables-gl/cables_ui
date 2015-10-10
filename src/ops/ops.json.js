@@ -67,7 +67,7 @@ Ops.Json.jsonFile.prototype = new Op();
 
 Ops.Json3d=Ops.Json3d || {};
 
-
+Ops.Json3d.currentScene=null;
 
 
 Ops.Json3d.json3dFile = function()
@@ -77,16 +77,27 @@ Ops.Json3d.json3dFile = function()
 
     this.name='json3dFile';
 
+    var scene=new CABLES.Variable();
+
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'json' } ));
-    this.json=this.addOutPort(new Port(this,"json",OP_PORT_TYPE_OBJECT));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.exe.onTriggered=function()
+    {
+        Ops.Json3d.currentScene=scene;
+        self.trigger.trigger();
+        Ops.Json3d.currentScene=null;
+    };
 
 
-    function addChild(x,parentOp,parentPort,ch)
+    var row=0;
+    function addChild(x,y,parentOp,parentPort,ch)
     {
         if(ch.hasOwnProperty('transformation'))
         {
-            var posx=parentOp.uiAttribs.translate.x+x*130;
-            var posy=parentOp.uiAttribs.translate.y+50;
+            var posx=self.uiAttribs.translate.x+x*130;
+            var posy=self.uiAttribs.translate.y+y*50;
 
             var transOp=self.patch.addOp('Ops.Gl.Matrix.MatrixMul',{translate:{x:posx,y:posy}});
             var mat=ch.transformation;
@@ -109,7 +120,6 @@ Ops.Json3d.json3dFile = function()
                     meshOp.index.val=index;
 
                     self.patch.link(transOp,'trigger',meshOp,'render');
-                    self.patch.link(self,'json',meshOp,'json');
                 }
             }
 
@@ -117,15 +127,10 @@ Ops.Json3d.json3dFile = function()
             {
                 for(var i=0;i<ch.children.length;i++)
                 {
-                    addChild(x,transOp,'trigger',ch.children[i]);
+                    addChild(x+i,y+i,transOp,'trigger',ch.children[i]);
                 }
-
             }
-
-
-
         }
-
     }
 
 
@@ -143,20 +148,19 @@ Ops.Json3d.json3dFile = function()
         })
         .done(function(data)
         {
-            self.json.val=data;
+            scene.setValue(data);
+            // Ops.Json3d.currentScene=data;
 
             console.log('scenes '+data.meshes.length);
 
             var root=self.patch.addOp('Ops.Sequence',{translate:{x:self.uiAttribs.translate.x,y:self.uiAttribs.translate.y+50}});
 
+            self.patch.link(self,'trigger',root,'exe');
+
             for(var i=0;i<data.rootnode.children.length;i++)
             {
-                addChild(i,root,'trigger 0',data.rootnode.children[i]);
+                addChild(i,3,root,'trigger 0',data.rootnode.children[i]);
             }
-            // console.log('childs '+);
-
-
-
 
         });
 
@@ -180,13 +184,14 @@ Ops.Json3d.Mesh=function()
     this.name='json3d Mesh';
 
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION ));
-    this.json=this.addInPort(new Port(this,"json",OP_PORT_TYPE_OBJECT ));
+    // this.json=this.addInPort(new Port(this,"json",OP_PORT_TYPE_OBJECT ));
     this.index=this.addInPort(new Port(this,"mesh index",OP_PORT_TYPE_VALUE ));
 
     var mesh=null;
 
     function render()
     {
+        if(!mesh && Ops.Json3d.currentScene.getValue()) reload();
         if(mesh!==null)
         {
             mesh.render(cgl.getShader());
@@ -195,17 +200,17 @@ Ops.Json3d.Mesh=function()
 
     function reload()
     {
-        if(self.json.val.meshes)
+        if(Ops.Json3d.currentScene && Ops.Json3d.currentScene.getValue())
         {
-            console.log(' has '+self.json.val.meshes.length+' meshes ');
+            console.log(' has '+Ops.Json3d.currentScene.getValue().meshes.length+' meshes ');
 
-            if(self.index.val<0 || self.index.val>=self.json.val.meshes.length)
+            if(self.index.val<0 || self.index.val>=Ops.Json3d.currentScene.getValue().meshes.length)
             {
                 console.log('index out of range');
                 return;
             }
 
-            var jsonMesh=self.json.val.meshes[parseInt(self.index.val,10) ];
+            var jsonMesh=Ops.Json3d.currentScene.getValue().meshes[parseInt(self.index.val,10) ];
 
             var geom=new CGL.Geometry();
             geom.vertices=jsonMesh.vertices;
@@ -226,13 +231,12 @@ Ops.Json3d.Mesh=function()
         else
         {
             console.log('no meshes found');
-
         }
 
     }
 
     this.render.onTriggered=render;
-    this.json.onValueChanged=reload;
+    // this.json.onValueChanged=reload;
     this.index.onValueChanged=reload;
 
 };
