@@ -326,6 +326,7 @@ Ops.Gl.Meshes.ObjMesh = function()
     this.name='OBJ Mesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.calcNormals=this.addInPort(new Port(this,"calcNormals",OP_PORT_TYPE_VALUE,{display:'bool'}));
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{display:'file',type:'string',filter:'mesh'}));
 
     this.mesh=null;
@@ -338,8 +339,7 @@ Ops.Gl.Meshes.ObjMesh = function()
     };
 
 
-
-    this.filename.onValueChanged=function()
+    var reloadObj=function()
     {
         // console.log('load texture...');
         // self.tex=CGL.Texture.load(self.filename.val,function()
@@ -351,8 +351,14 @@ Ops.Gl.Meshes.ObjMesh = function()
         // self.textureOut.val=self.tex;
 
       CGL.incrementLoadingAssets();
+
+        console.log('filename:',self.filename.val);
+        if(self.filename.val==0)return;
+        
+
       ajaxRequest(self.filename.val,function(response)
       {
+        console.log('parse obj');
           // console.log(response);
           var r=parseOBJ(response);
 
@@ -369,20 +375,34 @@ Ops.Gl.Meshes.ObjMesh = function()
               return ncrd;
           };
 
+
           var l=r.verticesIndices.length;
               r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
               r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
-              r.vertexNormals = unwrap(r.vertexNormalIndices  , r.vertexNormals  , 3);
+              // r.vertexNormals = unwrap(r.vertexNormalIndices  , r.vertexNormals  , 3);
               r.verticesIndices = [];
               for(var i=0; i<l; i++) r.verticesIndices.push(i);
           
+          r.calcNormals=self.calcNormals.val;
+
+
           self.mesh=new CGL.Mesh(r);
+
+
           CGL.decrementLoadingAssets();
 
       });
 
 
     };
+
+    this.filename.onValueChanged=reloadObj;
+    this.calcNormals.onValueChanged=function()
+    {
+        reloadObj();
+    };
+
+
 
     // this.filename.val='assets/skull.obj';
 

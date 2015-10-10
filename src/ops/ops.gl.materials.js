@@ -165,6 +165,24 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
     this.textureUniform=null;
 
+    this.textureDiffuse=this.addInPort(new Port(this,"diffuse",OP_PORT_TYPE_TEXTURE));
+    this.textureDiffuseUniform=null;
+
+    this.textureNormal=this.addInPort(new Port(this,"normal",OP_PORT_TYPE_TEXTURE));
+    this.textureNormalUniform=null;
+
+    this.normalScale=this.addInPort(new Port(this,"normalScale",OP_PORT_TYPE_VALUE,{display:'range'}));
+    this.normalScale.val=0.4;
+    this.normalScaleUniform=null;
+
+
+    this.normalScale.onValueChanged=function()
+    {
+        if(!self.normalScaleUniform) self.normalScaleUniform=new CGL.Uniform(shader,'f','normalScale',self.normalScale.val);
+        else self.normalScaleUniform.setValue(self.normalScale.val);
+
+    };
+
     this.texture.onValueChanged=function()
     {
         if(self.texture.val)
@@ -181,6 +199,42 @@ Ops.Gl.Shader.MatCapMaterial = function()
         }
     };
 
+    this.textureDiffuse.onValueChanged=function()
+    {
+        if(self.textureDiffuse.val)
+        {
+            if(self.textureDiffuseUniform!==null)return;
+            shader.define('HAS_DIFFUSE_TEXTURE');
+            shader.removeUniform('texDiffuse');
+            self.textureDiffuseUniform=new CGL.Uniform(shader,'t','texDiffuse',1);
+        }
+        else
+        {
+            shader.removeDefine('HAS_DIFFUSE_TEXTURE');
+            shader.removeUniform('texDiffuse');
+            self.textureDiffuseUniform=null;
+        }
+    };
+
+
+    this.textureNormal.onValueChanged=function()
+    {
+        if(self.textureNormal.val)
+        {
+            if(self.textureNormalUniform!==null)return;
+            shader.define('HAS_NORMAL_TEXTURE');
+            shader.removeUniform('texNormal');
+            self.textureNormalUniform=new CGL.Uniform(shader,'t','texNormal',2);
+        }
+        else
+        {
+            shader.removeDefine('HAS_NORMAL_TEXTURE');
+            shader.removeUniform('texNormal');
+            self.textureNormalUniform=null;
+        }
+    };
+
+
     this.doRender=function()
     {
         cgl.setShader(shader);
@@ -189,6 +243,18 @@ Ops.Gl.Shader.MatCapMaterial = function()
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.texture.val.tex);
+        }
+
+        if(self.textureDiffuse.val)
+        {
+            cgl.gl.activeTexture(cgl.gl.TEXTURE1);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureDiffuse.val.tex);
+        }
+
+        if(self.textureNormal.val)
+        {
+            cgl.gl.activeTexture(cgl.gl.TEXTURE2);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureNormal.val.tex);
         }
 
         self.trigger.trigger();
@@ -206,6 +272,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'uniform mat4 mvMatrix;'
         .endl()+'uniform mat4 normalMatrix;'
         .endl()+'varying vec2 vNorm;'
+
+        .endl()+'varying vec3 e;'
+
+
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
@@ -213,7 +283,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    norm=attrVertNormal;'
         .endl()+''
         .endl()+'    vec4 pos = vec4( vPosition, 1. );'
-        .endl()+'    vec3 e = normalize( vec3( mvMatrix * pos ) );'
+        .endl()+'    e = normalize( vec3( mvMatrix * pos ) );'
         .endl()+'    vec3 n = normalize( mat3(normalMatrix) * norm );'
         .endl()+''
         .endl()+'    vec3 r = reflect( e, n );'
@@ -233,12 +303,55 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'varying vec3 norm;'
         .endl()+'varying vec2 texCoord;'
         .endl()+'uniform sampler2D tex;'
-        .endl()+''
         .endl()+'varying vec2 vNorm;'
+
+
+        .endl()+'#ifdef HAS_DIFFUSE_TEXTURE'
+        .endl()+'   uniform sampler2D texDiffuse;'
+        .endl()+'#endif'
+
+        .endl()+'#ifdef HAS_NORMAL_TEXTURE'
+        .endl()+'   uniform sampler2D texNormal;'
+        .endl()+'   uniform mat4 normalMatrix;'
+        .endl()+'   uniform float normalScale;'
+        .endl()+'   varying vec3 e;'
+        .endl()+'   vec2 vNormt;'
+        .endl()+'#endif'
+        
+        .endl()+''
+
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'    vec4 col = texture2D( tex, vNorm );'
+
+        .endl()+'   vec2 vn=vNorm;'
+
+        .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
+        .endl()+'       vec3 tnorm=texture2D( texNormal, texCoord ).xyz * 2.0 - 1.0;'
+        .endl()+'       tnorm.y *= -1.0;'
+        .endl()+'       tnorm *=normalScale;'
+
+        .endl()+'       vec3 n = ( mat3(normalMatrix) * (norm+tnorm) );'
+
+        .endl()+'       vec3 r = reflect( e, n );'
+        .endl()+'       float m = 2. * sqrt( '
+        .endl()+'           pow(r.x, 2.0)+'
+        .endl()+'           pow(r.y, 2.0)+'
+        .endl()+'           pow(r.z + 1.0, 2.0)'
+        .endl()+'       );'
+        .endl()+'       vn = r.xy / m + 0.5;'
+
+
+        .endl()+'   #endif'
+
+        
+        .endl()+'   vec4 col = texture2D( tex, vn );'
+
+
+        .endl()+'   #ifdef HAS_DIFFUSE_TEXTURE'
+        .endl()+'       col = mix(col,texture2D( texDiffuse, texCoord ),0.5);'
+        .endl()+'   #endif'
+
         .endl()+'    gl_FragColor = col;'
         .endl()+''
         .endl()+'}';
@@ -449,7 +562,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'   vec4 col=vec4(r,g,b,a);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'      #ifdef HAS_TEXTURE_DIFFUSE'
-        .endl()+'          col=texture2D(tex,texCoord);'
+        .endl()+'          col=texture2D(tex,vec2(texCoord.x,1.0-texCoord.y));'
         .endl()+'           #ifdef COLORIZE_TEXTURE'
         .endl()+'               col.r*=r;'
         .endl()+'               col.g*=g;'

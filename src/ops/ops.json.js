@@ -213,8 +213,15 @@ Ops.Json3d.Mesh=function()
             var jsonMesh=Ops.Json3d.currentScene.getValue().meshes[parseInt(self.index.val,10) ];
 
             var geom=new CGL.Geometry();
+            geom.calcNormals=true;
             geom.vertices=jsonMesh.vertices;
-            geom.normals=jsonMesh.normals;
+            geom.vertexNormals=jsonMesh.normals;
+
+        // console.log('jsonMesh.texturecoords',jsonMesh.texturecoords[]);
+        
+            geom.texCoords = jsonMesh.texturecoords[0];
+            
+                    
             geom.verticesIndices=[];
 
             for(var i=0;i<jsonMesh.faces.length;i++)
@@ -222,9 +229,9 @@ Ops.Json3d.Mesh=function()
                 geom.verticesIndices=geom.verticesIndices.concat(jsonMesh.faces[i]);
             }
 
-            console.log('geom.vertices ',geom.vertices);
-            console.log('geom.normals ',geom.normals);
-            console.log('geom.faces ',geom.faces);
+            console.log('verticesIndices ',geom.verticesIndices.length);
+            console.log('texturecoords',geom.texCoords.length);
+            console.log('vertices',geom.vertices.length);
 
             mesh=new CGL.Mesh(geom);
         }
