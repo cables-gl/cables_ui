@@ -35,10 +35,16 @@ a
     cursor: pointer;
 }
 
+#options td, #meta td
+{
+    font-size: 13px;
+}
+
 #meta
 {
     position:absolute;
     overflow: auto;
+
 
     div
     {

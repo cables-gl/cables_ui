@@ -23,91 +23,6 @@ CGL.Mesh=function(geom)
         bufVerticesIndizes.itemSize = 1;
         bufVerticesIndizes.numItems = geom.verticesIndices.length;
 
-
-//         if(geom.calcNormals)
-//         {
-//             console.log('calculating normals...');
-                    
-//             geom.vertexNormals.length=geom.vertices.length;
-
-//                     console.log('geom.vertices.length...',geom.vertices.length);
-
-
-//             var mNumFaces=geom.vertices.length/3;
-
-//             console.log('created');
-
-//             for(var i=0;i<geom.vertices.length;i++)
-//             {
-//                 geom.vertexNormals[i]=0;
-//             }
-//         console.log('geom.vertexNormals.length...',geom.vertexNormals.length);
-
-//             console.log('created');
-
-//             for(var i=0;i<mNumFaces;i++)
-//             {
-//                 var ia = geom.verticesIndices[i*3+0];
-//                 var ib = geom.verticesIndices[i*3+1];
-//                 var ic = geom.verticesIndices[i*3+2];
-
-//                 var e1 =[   geom.vertices[ia*3+0] - geom.vertices[ib*3+0],
-//                             geom.vertices[ia*3+1] - geom.vertices[ib*3+1],
-//                             geom.vertices[ia*3+2] - geom.vertices[ib*3+2]
-//                         ];
-//                 var e2 =[   geom.vertices[ic*3+0] - geom.vertices[ib*3+0],
-//                             geom.vertices[ic*3+1] - geom.vertices[ib*3+1],
-//                             geom.vertices[ic*3+2] - geom.vertices[ib*3+2]
-//                         ];
-                
-//                 // const vec3 e2 = geom.vertices[ic] - vert[ib].pos;
-//                 var no=vec3.create();
-//                 vec3.cross(no, e1, e2);
-//                 // const vec3 no = cross( e1, e2 );
-
-//                 geom.vertexNormals[ia*3+0]+=no[0];
-//                 geom.vertexNormals[ia*3+1]+=no[1];
-//                 geom.vertexNormals[ia*3+2]+=no[2];
-
-//                 geom.vertexNormals[ib*3+0]+=no[0];
-//                 geom.vertexNormals[ib*3+1]+=no[1];
-//                 geom.vertexNormals[ib*3+2]+=no[2];
-
-//                 geom.vertexNormals[ic*3+0]+=no[0];
-//                 geom.vertexNormals[ic*3+1]+=no[1];
-//                 geom.vertexNormals[ic*3+2]+=no[2];
-//             }
-
-//             for(var i=0;i<geom.vertexNormals.length/3;i++)
-//             {
-//                 var v=[];
-//                 v[0]=geom.vertexNormals[i*3+0];
-//                 v[1]=geom.vertexNormals[i*3+1];
-//                 v[2]=geom.vertexNormals[i*3+2];
-                
-//                 vec3.normalize(v,v);
-
-//                 geom.vertexNormals[i*3+0]=v[0];
-//                 geom.vertexNormals[i*3+1]=v[1];
-//                 geom.vertexNormals[i*3+2]=v[2];
-
-//             }
-//             // for(var i=0;i<mNumFaces;i++)
-//             // {
-
-//             // }
-//             // for( i=0; i < myself->mNumVerts; i++ ) verts[i].normal = normalize( verts[i].normal );
-
-
-// bufVertexNormals=-1;
-//         console.log('geom.vertexNormals.length...',geom.vertexNormals.length);
-
-
-//         }
-
-
-
-
         if(geom.vertexNormals.length>0)
         {
             if(bufVertexNormals==-1)bufVertexNormals = cgl.gl.createBuffer();
@@ -117,8 +32,6 @@ CGL.Mesh=function(geom)
             bufVertexNormals.itemSize = 3;
             bufVertexNormals.numItems = geom.vertexNormals.length/bufVertexNormals.itemSize;
         }
-
-
 
         if(geom.texCoords.length>0)
         {

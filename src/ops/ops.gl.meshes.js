@@ -3,6 +3,44 @@ Ops.Gl.Meshes=Ops.Gl.Meshes || {};
 
 // --------------------------------------------------------------------------
 
+Ops.Gl.Meshes.MorphMesh = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='MorphMesh';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+
+    this.mesh0=this.addInPort(new Port(this,"mesh 0",OP_PORT_TYPE_OBJECT));
+    this.mesh1=this.addInPort(new Port(this,"mesh 1",OP_PORT_TYPE_OBJECT));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var geom=new CGL.Geometry();
+    var mesh=null;
+
+    this.render.onTriggered=function()
+    {
+        self.mesh.render(cgl.getShader());
+        self.trigger.trigger();
+    };
+
+    function rebuild()
+    {
+        mesh=new CGL.Mesh(geom);
+
+    }
+
+    this.mesh0.onValueChanged=rebuild;
+    this.mesh1.onValueChanged=rebuild;
+
+
+};
+
+Ops.Gl.Meshes.MorphMesh.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
 Ops.Gl.Meshes.Triangle = function()
 {
     Op.apply(this, arguments);
@@ -165,10 +203,10 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
         ];
 
         geom.texCoords = [
-             1.0, 0.0,
-             0.0, 0.0,
              1.0, 1.0,
-             0.0, 1.0
+             0.0, 1.0,
+             1.0, 0.0,
+             0.0, 0.0
         ];
 
         geom.verticesIndices = [
@@ -262,7 +300,6 @@ Ops.Gl.Meshes.Circle = function()
         }
         else
         {
-          
           var count=0;
           for (i=0; i <= self.segments.val*self.percent.val; i++)
           {
@@ -286,7 +323,6 @@ Ops.Gl.Meshes.Circle = function()
                 (count%parseInt(self.steps.val,10)===0 && !self.invertSteps.val) ||
                 (count%parseInt(self.steps.val,10)!==0 && self.invertSteps.val)
                 )
-
               {
                   geom.addFace(
                               [posx,posy,0],
@@ -316,8 +352,6 @@ Ops.Gl.Meshes.Circle = function()
               oldPosXIn=posxIn;
               oldPosYIn=posyIn;
             }
-
-
         }
 
         mesh.setGeom(geom);

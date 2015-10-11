@@ -507,6 +507,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         'alpha channel','luminance'
         ] }));
     this.removeAlphaSrc=this.addInPort(new Port(this,"removeAlphaSrc",OP_PORT_TYPE_VALUE,{ display:'bool' }));
+    this.removeAlphaSrc.val=true;
     this.invAlphaChannel=this.addInPort(new Port(this,"invert alpha channel",OP_PORT_TYPE_VALUE,{ display:'bool' }));
 
 
@@ -997,6 +998,7 @@ Ops.Gl.TextureEffects.SSAO = function()
         .endl()+'       ph*=dist;'
 
         .endl()+'       d = readDepth( vec2(texCoord.s+pw*w,texCoord.t+ph*h));'
+
         .endl()+'       ao += compareDepths(depth,d)*fade;'
         .endl()+'       s += 1.0*fade*1.0;'
         .endl()+'   }'
