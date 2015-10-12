@@ -38,21 +38,16 @@ Ops.Json.jsonFile = function()
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'json' } ));
     this.result=this.addOutPort(new Port(this,"result",OP_PORT_TYPE_OBJECT));
 
+
+
     var reload=function()
     {
-        $.ajax(
-        {
-            url: self.filename.val,
-            context: document.body
-        })
-        .fail(function(data)
-        {
-            console.log('ajax fail!');
-        })
-        .done(function(data)
+
+        ajaxRequest(self.filename.val,function(data)
         {
             self.result.val=data;
             console.log('data',data);
+
         });
 
     };
@@ -106,7 +101,7 @@ Ops.Json3d.json3dFile = function()
 
             if(ch.name)
             {
-                transOp.name=ch.name;
+                transOp.uiAttribs.title=transOp.name=ch.name;
             }
 
             self.patch.link(parentOp,parentPort,transOp,'render');
@@ -116,8 +111,12 @@ Ops.Json3d.json3dFile = function()
                 for(var i=0;i<ch.meshes.length;i++)
                 {
                     var index=ch.meshes[i];
+
+
                     var meshOp=self.patch.addOp('Ops.Json3d.Mesh',{translate:{x:posx,y:posy+50}});
                     meshOp.index.val=index;
+
+                    meshOp.uiAttribs.title=meshOp.name=transOp.name+' Mesh';
 
                     self.patch.link(transOp,'trigger',meshOp,'render');
                 }
@@ -138,17 +137,28 @@ Ops.Json3d.json3dFile = function()
     var reload=function()
     {
 
-        $.ajax(
+// tinyxhr("/test",function (err,data,xhr){ if (err) console.log("goterr ",err); console.log(data)  });
+
+   CABLES.ajax(self.filename.val,
+
+        // $.ajax(
+        // {
+        //     url: self.filename.val,
+        //     context: document.body
+        // })
+        // .fail(function(data)
+        // {
+        //     console.log('ajax fail!');
+        // })
+        // .done(
+            function(err,_data,xhr)
         {
-            url: self.filename.val,
-            context: document.body
-        })
-        .fail(function(data)
-        {
-            console.log('ajax fail!');
-        })
-        .done(function(data)
-        {
+            if(err)
+            {
+                console.log('ajax error:',err);
+                return;
+            }
+var data=JSON.parse(_data);
             scene.setValue(data);
             
 
@@ -188,10 +198,11 @@ Ops.Json3d.Mesh=function()
     Op.apply(this, arguments);
 
     this.name='json3d Mesh';
-
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION ));
-    // this.json=this.addInPort(new Port(this,"json",OP_PORT_TYPE_OBJECT ));
     this.index=this.addInPort(new Port(this,"mesh index",OP_PORT_TYPE_VALUE ));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.geometryOut=this.addOutPort(new Port(this,"geometry",OP_PORT_TYPE_OBJECT ));
 
     var mesh=null;
 
@@ -202,6 +213,8 @@ Ops.Json3d.Mesh=function()
         {
             mesh.render(cgl.getShader());
         }
+
+        self.trigger.trigger();
     }
 
     function reload()
@@ -222,12 +235,7 @@ Ops.Json3d.Mesh=function()
             geom.calcNormals=true;
             geom.vertices=jsonMesh.vertices;
             geom.vertexNormals=jsonMesh.normals;
-
-        // console.log('jsonMesh.texturecoords',jsonMesh.texturecoords[]);
-        
-            geom.texCoords = jsonMesh.texturecoords[0];
-            
-                    
+            if(jsonMesh.texturecoords) geom.texCoords = jsonMesh.texturecoords[0];
             geom.verticesIndices=[];
 
             for(var i=0;i<jsonMesh.faces.length;i++)
@@ -235,10 +243,14 @@ Ops.Json3d.Mesh=function()
                 geom.verticesIndices=geom.verticesIndices.concat(jsonMesh.faces[i]);
             }
 
-            console.log('verticesIndices ',geom.verticesIndices.length);
-            console.log('texturecoords',geom.texCoords.length);
-            console.log('vertices',geom.vertices.length);
 
+            self.uiAttribs.info='';
+            self.uiAttribs.info+= geom.verticesIndices.length+' faces <br/>';
+            self.uiAttribs.info+= geom.texCoords.length+' texturecoords <br/>';
+            self.uiAttribs.info+= geom.vertices.length+' vertices <br/>';
+
+
+            self.geometryOut.val=geom;
             mesh=new CGL.Mesh(geom);
         }
         else

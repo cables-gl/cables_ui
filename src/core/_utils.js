@@ -25,6 +25,36 @@ function ajaxRequest(url, callback)
 }
 
 
+CABLES=CABLES || {};
+
+CABLES.ajax=function(url,cb,method,post,contenttype)
+{
+ var requestTimeout,xhr;
+ try{ xhr = new XMLHttpRequest(); }catch(e){
+
+ }
+ requestTimeout = setTimeout(function() {xhr.abort(); cb(new Error("tinyxhr: aborted by a timeout"), "",xhr); }, 5000);
+ xhr.onreadystatechange = function()
+ {
+  if (xhr.readyState != 4) return;
+  clearTimeout(requestTimeout);
+  cb(xhr.status != 200?new Error("tinyxhr: server respnse status is "+xhr.status):false, xhr.responseText,xhr);
+ };
+ xhr.open(method?method.toUpperCase():"GET", url, true);
+
+ //xhr.withCredentials = true;
+
+ if(!post)
+  xhr.send();
+ else
+ {
+  xhr.setRequestHeader('Content-type', contenttype?contenttype:'application/x-www-form-urlencoded');
+  xhr.send(post);
+ }
+};
+
+
+
 
 String.prototype.endl = function(){return this+'\n';};
 

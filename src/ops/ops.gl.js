@@ -396,12 +396,23 @@ Ops.Gl.Mouse = function()
     this.mouseX=this.addOutPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
     this.mouseY=this.addOutPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
 
+    this.normalize=this.addInPort(new Port(this,"normalize",OP_PORT_TYPE_VALUE,{display:'bool'}));
+
     this.canvas = document.getElementById("glcanvas");
 
     this.canvas.onmousemove = function(e)
     {
-        self.mouseX.val=e.offsetX;
-        self.mouseY.val=e.offsetY;
+        if(self.normalize.val)
+        {
+            self.mouseX.val=e.offsetX/self.canvas.width*2.0-1.0;
+            self.mouseY.val=e.offsetY/self.canvas.height*2.0-1.0;
+        }
+        else
+        {
+            self.mouseX.val=e.offsetX;
+            self.mouseY.val=e.offsetY;
+        }
+
     };
 };
 

@@ -178,8 +178,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     this.normalScale.onValueChanged=function()
     {
-        if(!self.normalScaleUniform) self.normalScaleUniform=new CGL.Uniform(shader,'f','normalScale',self.normalScale.val);
-        else self.normalScaleUniform.setValue(self.normalScale.val);
+        self.normalScaleUniform.setValue(self.normalScale.val);
 
     };
 
@@ -266,6 +265,11 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'attribute vec3 vPosition;'
         .endl()+'attribute vec2 attrTexCoord;'
         .endl()+'attribute vec3 attrVertNormal;'
+
+        .endl()+'#ifdef HAS_MORPH_TARGETS'
+        .endl()+'attribute vec3 attrMorphTargetA;'
+        .endl()+'#endif'
+
         .endl()+'varying vec2 texCoord;'
         .endl()+'varying vec3 norm;'
         .endl()+'uniform mat4 projMatrix;'
@@ -281,8 +285,17 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'{'
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
+
+        
         .endl()+''
+
+        .endl()+'#ifdef HAS_MORPH_TARGETS'
+        .endl()+'    vec4 pos = vec4( vPosition*0.5+attrMorphTargetA*0.5, 1. );'
+        .endl()+'#endif'
+        .endl()+'#ifndef HAS_MORPH_TARGETS'
         .endl()+'    vec4 pos = vec4( vPosition, 1. );'
+        .endl()+'#endif'
+
         .endl()+'    e = normalize( vec3( mvMatrix * pos ) );'
         .endl()+'    vec3 n = normalize( mat3(normalMatrix) * norm );'
         .endl()+''
@@ -359,6 +372,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
     var shader=new CGL.Shader();
     this.onLoaded=shader.compile;
     shader.setSource(srcVert,srcFrag);
+    this.normalScaleUniform=new CGL.Uniform(shader,'f','normalScale',self.normalScale.val);
 
     this.render.onTriggered=this.doRender;
     this.doRender();

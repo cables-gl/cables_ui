@@ -11,28 +11,48 @@ Ops.Gl.Meshes.MorphMesh = function()
     this.name='MorphMesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
 
-    this.mesh0=this.addInPort(new Port(this,"mesh 0",OP_PORT_TYPE_OBJECT));
-    this.mesh1=this.addInPort(new Port(this,"mesh 1",OP_PORT_TYPE_OBJECT));
+    this.geometry0=this.addInPort(new Port(this,"geometry 0",OP_PORT_TYPE_OBJECT));
+    this.geometry1=this.addInPort(new Port(this,"geometry 1",OP_PORT_TYPE_OBJECT));
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var geom=new CGL.Geometry();
+    var geom=null;
     var mesh=null;
 
     this.render.onTriggered=function()
     {
-        self.mesh.render(cgl.getShader());
+        if(mesh)
+        {
+            // console.log('render');
+            mesh.render(cgl.getShader());
+        }
         self.trigger.trigger();
     };
 
     function rebuild()
     {
-        mesh=new CGL.Mesh(geom);
+        if(self.geometry0.val && self.geometry1.val)
+        {
+            console.log('self.geometry0.val',self.geometry0.val);
+            var g=self.geometry0.val;
+            var geom=JSON.parse(JSON.stringify(g));
+            geom.morphTargets[0]=JSON.parse(JSON.stringify( self.geometry1.val.vertices ));
+            if(geom.morphTargets[0].length<self.geometry0.val.vertices.length) geom.morphTargets[0].length=self.geometry0.val.vertices.length;
 
+            console.log(geom.morphTargets[0].length);
+                    
+
+            mesh=new CGL.Mesh(geom);
+
+        }
+        else
+        {
+          mesh=null;
+        }
     }
 
-    this.mesh0.onValueChanged=rebuild;
-    this.mesh1.onValueChanged=rebuild;
+    this.geometry0.onValueChanged=rebuild;
+    this.geometry1.onValueChanged=rebuild;
 
 
 };
@@ -405,9 +425,9 @@ Ops.Gl.Meshes.ObjMesh = function()
 
       CGL.incrementLoadingAssets();
 
-        console.log('filename:',self.filename.val);
-        if(self.filename.val==0)return;
-        
+      console.log('filename:',self.filename.val);
+      if(self.filename.val==0)return;
+      
 
       ajaxRequest(self.filename.val,function(response)
       {
@@ -432,7 +452,7 @@ Ops.Gl.Meshes.ObjMesh = function()
           var l=r.verticesIndices.length;
               r.vertices = unwrap(r.verticesIndices, r.vertices, 3);
               r.texCoords = unwrap(r.texCoordsIndices  , r.texCoords  , 2);
-              // r.vertexNormals = unwrap(r.vertexNormalIndices  , r.vertexNormals  , 3);
+              r.vertexNormals = unwrap(r.vertexNormalIndices  , r.vertexNormals  , 3);
               r.verticesIndices = [];
               for(var i=0; i<l; i++) r.verticesIndices.push(i);
           
@@ -445,7 +465,6 @@ Ops.Gl.Meshes.ObjMesh = function()
           CGL.decrementLoadingAssets();
 
       });
-
 
     };
 

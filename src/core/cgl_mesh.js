@@ -4,11 +4,10 @@ CGL.DEG2RAD=3.14159/180.0;
 
 CGL.Mesh=function(geom)
 {
-    var bufTexCoords=-1;
-    var bufVertexNormals=-1;
     var bufVertices = cgl.gl.createBuffer();
     var bufVerticesIndizes = cgl.gl.createBuffer();
     
+    var attributes=[];
 
     this.setGeom=function(geom)
     {
@@ -25,23 +24,62 @@ CGL.Mesh=function(geom)
 
         if(geom.vertexNormals.length>0)
         {
-            if(bufVertexNormals==-1)bufVertexNormals = cgl.gl.createBuffer();
+            var bufVertexNormals= cgl.gl.createBuffer();
 
             cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertexNormals);
             cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertexNormals), cgl.gl.STATIC_DRAW);
-            bufVertexNormals.itemSize = 3;
-            bufVertexNormals.numItems = geom.vertexNormals.length/bufVertexNormals.itemSize;
+
+            var attr=
+                {
+                    loc:-1,
+                    buffer:bufVertexNormals,
+                    name:'attrVertNormal',
+                };
+
+            attr.itemSize = 3;
+            attr.numItems = geom.vertexNormals.length/attr.itemSize;
+            attributes.push(attr);
         }
 
         if(geom.texCoords.length>0)
         {
-            if(bufTexCoords==-1)bufTexCoords = cgl.gl.createBuffer();
+            var bufTexCoords = cgl.gl.createBuffer();
             cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufTexCoords);
             cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), cgl.gl.STATIC_DRAW);
-            bufTexCoords.itemSize = 2;
-            bufTexCoords.numItems = geom.texCoords.length/bufTexCoords.itemSize;
+
+            var attr=
+                {
+                    loc:-1,
+                    buffer:bufTexCoords,
+                    name:'attrTexCoord',
+                };
+
+            attr.itemSize = 2;
+            attr.numItems = geom.texCoords.length/attr.itemSize;
+            attributes.push(attr);
         }
 
+        for(var i=0;i<geom.morphTargets.length;i++)
+        {
+            var bufMT = cgl.gl.createBuffer();
+            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufMT);
+            cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.morphTargets[i]), cgl.gl.STATIC_DRAW);
+
+            var attr=
+                {
+                    name:'attrMorphTargetA',
+                    buffer:bufMT,
+                    loc:-1,
+                };
+
+            attr.itemSize = 3;
+            attr.numItems = geom.morphTargets[i].length/attr.itemSize;
+            attributes.push(attr);
+        }
+
+
+        console.log('',attributes);
+        
     };
 
     this.setGeom(geom);
@@ -52,27 +90,26 @@ CGL.Mesh=function(geom)
         if(!shader) return;
         shader.bind();
 
+        if(geom.morphTargets.length>0)
+         shader.define('HAS_MORPH_TARGETS');
+
         cgl.gl.enableVertexAttribArray(shader.getAttrVertexPos());
-
-        if(bufVertexNormals!=-1) cgl.gl.enableVertexAttribArray(shader.getAttrVertexNormals());
-        else cgl.gl.disableVertexAttribArray(shader.getAttrVertexNormals());
-
-        if(bufTexCoords!=-1) cgl.gl.enableVertexAttribArray(shader.getAttrTexCoords());
-
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
         cgl.gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, cgl.gl.FLOAT, false, 0, 0);
 
-        if(bufVertexNormals!=-1)
+        for(var i=0;i<attributes.length;i++)
         {
-            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertexNormals);
-            cgl.gl.vertexAttribPointer(shader.getAttrVertexNormals(),bufVertexNormals.itemSize, cgl.gl.FLOAT, false, 0, 0);
+            if(attributes[i].loc==-1)attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
+
+            // console.log('attributes[i].name',attributes[i].name,attributes[i].loc);
+        
+
+
+            cgl.gl.enableVertexAttribArray(attributes[i].loc);
+            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
+            cgl.gl.vertexAttribPointer(attributes[i].loc,attributes[i].itemSize, cgl.gl.FLOAT, false, 0, 0);
         }
 
-        if(bufTexCoords!=-1)
-        {
-            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufTexCoords);
-            cgl.gl.vertexAttribPointer(shader.getAttrTexCoords(),bufTexCoords.itemSize, cgl.gl.FLOAT, false, 0, 0);
-        }
 
         cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
 
@@ -94,6 +131,11 @@ CGL.Geometry=function()
     this.texCoords=[];
     this.texCoordsIndices=[];
     this.vertexNormals=[];
+
+    this.morphTargets=[];
+
+
+//https://www.opengl.org/wiki/Calculating_a_Surface_Normal
 
     this.clear=function()
     {

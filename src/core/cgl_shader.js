@@ -206,12 +206,7 @@ CGL.Shader=function()
     var normalMatrixUniform=-1;
 
 
-    var attrTexCoords = -1;
-    var attrVertexNormals = -1;
     var attrVertexPos = -1;
-
-    this.getAttrVertexNormals=function(){return attrVertexNormals;};
-    this.getAttrTexCoords=function(){return attrTexCoords;};
     this.getAttrVertexPos=function(){return attrVertexPos;};
 
     this.hasTextureUniforms=function()
@@ -266,8 +261,6 @@ CGL.Shader=function()
 
         if(mvMatrixUniform==-1)
         {
-            attrVertexNormals = cgl.gl.getAttribLocation(program, 'attrVertNormal');
-            attrTexCoords = cgl.gl.getAttribLocation(program, 'attrTexCoord');
             attrVertexPos = cgl.gl.getAttribLocation(program, 'vPosition');
 
             projMatrixUniform = cgl.gl.getUniformLocation(program, "projMatrix");
