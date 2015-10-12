@@ -49,6 +49,9 @@ CABLES.UI.GUI=function()
         if(showTiming)
         {
             patchHeight=patchHeight-this.timingHeight-2;
+
+            $('.easingselect').css('bottom',40);
+            $('.easingselect').css('left',patchWidth+30);
         }
         else
         {
@@ -73,6 +76,9 @@ CABLES.UI.GUI=function()
         {
             $('#editor').hide();
         }
+
+
+
 
         $('#patch svg').css('height',patchHeight-2);
         $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9);

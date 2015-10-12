@@ -354,7 +354,45 @@ for (i = 0; i &lt; items.length; i++) {
 </div>
 
 
+<div class="" style="float:right">
+    <div class="hidden easingselect" >
 
+<div>
+    <span class="button icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);"></span>
+    <span class="button icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);"></span>
+        <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bez</a><br/>
+
+</div>
+<div>
+    <span class="button icon-sin_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);"></span>
+    <span class="button icon-sin" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);"></span>
+    <span class="button icon-sin_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);"></span>
+</div>
+<br/>
+<br/>
+<div>
+    <span class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);"></span>
+    <span class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);"></span>
+    <span class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);"></span>
+</div>
+
+<div>
+    <span class="button icon-exp_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);"></span>
+    <span class="button icon-expo" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);"></span>
+    <span class="button icon-exp_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);"></span>
+</div>
+
+
+
+<!--
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP);">smoothstep</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP);">smootherstep</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bezier</a><br/>
+
+-->
+
+    </div>
+</div>
 
 
 <div class="tooltip"></div>
@@ -859,49 +897,7 @@ updateIcons();
     <div id="timeline" tabindex="2"></div>
 
 
-<div class="" style="float:right">
-    <div class="hidden easingselect" >
 
-<div class="select">
-    <h3>in_out</h3>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);">sin</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);">cubic</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);">expo</a><br/>
-    <br/>
-
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);">linear</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);">absolute</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP);">smoothstep</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP);">smootherstep</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bezier</a><br/>
-</div>
-
-<div class="select">
-    <h3>in</h3>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);">sin</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);">cubic</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);">expo</a><br/>
-</div>
-
-<div class="select">
-    <h3>out</h3>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);">sin</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);">cubic</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);">expo</a><br/>
-</div>
-
-
-
-
-<!--
-        // <a id="ease_linear" class="button tt" data-tt="easing: linear">lin</a>
-        // <a id="ease_absolute" class="button tt" data-tt="easing: absolute">abs</a>
-        // <a id="ease_smoothstep" class="button tt" data-tt="easing: smoothstep">smo</a>
-        // <a id="ease_smootherstep" class="button tt" data-tt="easing: smootherstep">smo2</a>
-        // <a id="ease_bezier" class="button tt" data-tt="easing: smootherstep">bez</a>
-        -->
-    </div>
-</div>
 
 
 </script>

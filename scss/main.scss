@@ -1,9 +1,6 @@
 
 $mainColor: #6c9fde;
 
-
-
-
 body
 {
     padding: 0px;
@@ -398,7 +395,7 @@ input[type="text"]
         float:left;
         padding:5px;
         padding-left:5px;
-        margin-left: 10px;
+        margin-left: 4px;
         margin-top: 3px;
 
         &:hover
@@ -645,6 +642,7 @@ input[type=range]:focus {
 
 
 @import 'font-awesome.scss';
+@import 'cables_icons.scss';
 @import 'jcolorpicker.scss';
 
 
@@ -654,11 +652,11 @@ input[type=range]:focus {
     font-family: arial;
     position: absolute;
     // margin-top:41px;
-    margin-top: -250;
+    // margin-top: -250;
     right:0px;
-    width:250px;
-    height:200px;
-    background-color: #222;
+    width:120px;
+    height:170px;
+    background-color: #1a1a1a;
     z-index: 99999999;
 
     .select
@@ -680,6 +678,17 @@ input[type=range]:focus {
         }
     }
 
+    .button
+    {
+        font-size:25px;
+    }
+
+    div
+    {
+        margin-bottom: 10px;
+        width:100%;
+        clear:both;
+    }
 }
 
 
