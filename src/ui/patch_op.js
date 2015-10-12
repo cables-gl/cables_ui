@@ -350,10 +350,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(this.isVisible())
             if(enabled) background.attr( { "fill-opacity": 1 });
                 else background.attr( { "fill-opacity": 0.5 });
-
-
-
-
     };
 
     this.setSelected=function(sel)
@@ -552,11 +548,19 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         pos.x=pos.x-startMoveX;
         pos.y=pos.y-startMoveY;
 
-        if(e.shiftKey===true)
-        {
-            pos.x=parseInt(pos.x/25,10)*25;
-            pos.y=parseInt(pos.y/25,10)*25;
-        }
+        var snap=(pos.x%65)-5;
+        if(snap>0 && snap<5) pos.x-=snap;
+        if(snap<0 && snap>-5) pos.x-=snap;
+
+        snap=(pos.y%50)-5;
+        if(snap>0 && snap<5) pos.y-=snap;
+        if(snap<0 && snap>-5) pos.y-=snap;
+
+        // if(e.shiftKey===true)
+        // {
+        //     pos.x=parseInt(pos.x/25,10)*25;
+        //     pos.y=parseInt(pos.y/25,10)*25;
+        // }
 
         self.setPos(pos.x,pos.y);
         self.isDragging=true;
