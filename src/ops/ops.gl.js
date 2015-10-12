@@ -429,12 +429,12 @@ Ops.Gl.Points.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-Ops.Gl.ReadPixel=function()
+Ops.Gl.ColorPick=function()
 {
     Op.apply(this, arguments);
     var self=this;
 
-    this.name='ReadPixel';
+    this.name='ColorPick';
     this.x=this.addInPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
     this.y=this.addInPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
 
@@ -454,13 +454,11 @@ Ops.Gl.ReadPixel=function()
         self.g.val=pixelValues[1]/255;
         self.b.val=pixelValues[2]/255;
         self.a.val=pixelValues[3]/255;
-
-
     };
 
 };
 
-Ops.Gl.ReadPixel.prototype = new Op();
+Ops.Gl.ColorPick.prototype = new Op();
 // --------------------------------------------------------------------------
 
 
