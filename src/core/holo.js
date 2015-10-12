@@ -354,7 +354,10 @@ var Port=function(parent,name,type,uiAttribs)
     {
         var obj={};
         obj.name=this.getName();
+
+        if(this.type!=OP_PORT_TYPE_OBJECT)
         obj.value=this.value;
+    
         if(animated) obj.animated=true;
         if(this.anim) obj.anim=this.anim.getSerialized();
 
