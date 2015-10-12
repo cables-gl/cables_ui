@@ -20,13 +20,11 @@ Ops.Json.jsonValue = function()
             self.result.val=self.data.val[self.key.val];
         }
     };
-
 };
 
 Ops.Json.jsonValue.prototype = new Op();
 
 // -------------------------------------------------------------
-
 
 Ops.Json.jsonFile = function()
 {
@@ -38,18 +36,14 @@ Ops.Json.jsonFile = function()
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'json' } ));
     this.result=this.addOutPort(new Port(this,"result",OP_PORT_TYPE_OBJECT));
 
-
-
     var reload=function()
     {
-
         ajaxRequest(self.filename.val,function(data)
         {
             self.result.val=data;
             console.log('data',data);
 
         });
-
     };
 
     this.filename.onValueChanged=reload;
@@ -57,13 +51,11 @@ Ops.Json.jsonFile = function()
 
 Ops.Json.jsonFile.prototype = new Op();
 
-
 // -------------------------------------------------------------
 
 Ops.Json3d=Ops.Json3d || {};
 
 Ops.Json3d.currentScene=null;
-
 
 Ops.Json3d.json3dFile = function()
 {
@@ -85,13 +77,17 @@ Ops.Json3d.json3dFile = function()
         Ops.Json3d.currentScene=null;
     };
 
-
+    var maxx=-3;
     var row=0;
     function addChild(x,y,parentOp,parentPort,ch)
     {
+
         if(ch.hasOwnProperty('transformation'))
         {
+            maxx=Math.max(x,maxx);
+
             var posx=self.uiAttribs.translate.x+x*130;
+            if(ch.children && ch.children.length>1) posx=posx+(ch.children.length+1)*130/2;// center
             var posy=self.uiAttribs.translate.y+y*50;
 
             var transOp=self.patch.addOp('Ops.Gl.Matrix.MatrixMul',{translate:{x:posx,y:posy}});
@@ -104,6 +100,9 @@ Ops.Json3d.json3dFile = function()
                 transOp.uiAttribs.title=transOp.name=ch.name;
             }
 
+            if(ch.children)console.log('ch ',ch.name,ch.children.length);
+                    
+
             self.patch.link(parentOp,parentPort,transOp,'render');
 
             if(ch.hasOwnProperty('meshes'))
@@ -111,7 +110,6 @@ Ops.Json3d.json3dFile = function()
                 for(var i=0;i<ch.meshes.length;i++)
                 {
                     var index=ch.meshes[i];
-
 
                     var meshOp=self.patch.addOp('Ops.Json3d.Mesh',{translate:{x:posx,y:posy+50}});
                     meshOp.index.val=index;
@@ -124,9 +122,12 @@ Ops.Json3d.json3dFile = function()
 
             if(ch.hasOwnProperty('children'))
             {
+                y++;
                 for(var i=0;i<ch.children.length;i++)
                 {
-                    addChild(x+i,y+i,transOp,'trigger',ch.children[i]);
+                    var x=maxx;
+                    if(ch.children.length>1)x++;
+                    addChild(x,y,transOp,'trigger',ch.children[i]);
                 }
             }
         }
@@ -172,7 +173,7 @@ var data=JSON.parse(_data);
 
                 for(var i=0;i<data.rootnode.children.length;i++)
                 {
-                    addChild(i,3,root,'trigger 0',data.rootnode.children[i]);
+                    addChild(maxx-2,3,root,'trigger 0',data.rootnode.children[i]);
                 }
 
             }
@@ -244,11 +245,12 @@ Ops.Json3d.Mesh=function()
             }
 
 
-            self.uiAttribs.info='';
-            self.uiAttribs.info+= geom.verticesIndices.length+' faces <br/>';
-            self.uiAttribs.info+= geom.texCoords.length+' texturecoords <br/>';
-            self.uiAttribs.info+= geom.vertices.length+' vertices <br/>';
-
+            self.uiAttribs.info ='';
+            self.uiAttribs.info += geom.verticesIndices.length+' faces <br/>';
+            self.uiAttribs.info += geom.vertices.length+' vertices <br/>';
+            self.uiAttribs.info += geom.texCoords.length+' texturecoords <br/>';
+            self.uiAttribs.info += geom.vertexNormals.length+' normals <br/>';
+            
 
             self.geometryOut.val=geom;
             mesh=new CGL.Mesh(geom);

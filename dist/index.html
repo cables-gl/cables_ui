@@ -402,12 +402,6 @@ for (i = 0; i &lt; items.length; i++) {
             </div>
         {{/if}}
 
-        {{#if op.uiAttribs.info}}
-            <div class="info">
-            {{op.uiAttribs.info}}
-            </div>
-        {{/if}}
-
     </div>
 
 <table>
@@ -419,9 +413,19 @@ for (i = 0; i &lt; items.length; i++) {
 
 </table>
 
-<div>
+
+
+        {{#if op.uiAttribs.info}}
+            <div class="info">
+            {{{op.uiAttribs.info}}}
+            </div>
+        {{/if}}
+
+<!--
+<pre>
 {{{ json op.uiAttribs }}}
-</div>
+</pre>
+-->
 
 <div>
     <br/>

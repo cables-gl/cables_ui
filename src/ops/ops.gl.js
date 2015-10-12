@@ -93,7 +93,7 @@ Ops.Gl.Perspective = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    this.fovY=this.addInPort(new Port(this,"fov",OP_PORT_TYPE_VALUE ));
+    this.fovY=this.addInPort(new Port(this,"fov y",OP_PORT_TYPE_VALUE ));
     this.fovY.val=45;
 
     this.zNear=this.addInPort(new Port(this,"frustum near",OP_PORT_TYPE_VALUE ));

@@ -15,12 +15,6 @@
             </div>
         {{/if}}
 
-        {{#if op.uiAttribs.info}}
-            <div class="info">
-            {{op.uiAttribs.info}}
-            </div>
-        {{/if}}
-
     </div>
 
 <table>
@@ -32,9 +26,19 @@
 
 </table>
 
-<div>
+
+
+        {{#if op.uiAttribs.info}}
+            <div class="info">
+            {{{op.uiAttribs.info}}}
+            </div>
+        {{/if}}
+
+<!--
+<pre>
 {{{ json op.uiAttribs }}}
-</div>
+</pre>
+-->
 
 <div>
     <br/>
