@@ -80,6 +80,48 @@ Ops.Gl.Renderer.renderEnd=function(identTranslate)
 
 Ops.Gl.Renderer.prototype = new Op();
 
+
+// --------------------------------------------------------------------------
+
+
+Ops.Gl.Perspective = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Perspective';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.fovY=this.addInPort(new Port(this,"fov",OP_PORT_TYPE_VALUE ));
+    this.fovY.val=45;
+
+    this.zNear=this.addInPort(new Port(this,"frustum near",OP_PORT_TYPE_VALUE ));
+    this.zNear.val=0.01;
+
+    this.zFar=this.addInPort(new Port(this,"frustum far",OP_PORT_TYPE_VALUE ));
+    this.zFar.val=2000.0;
+
+
+    this.render.onTriggered=function()
+    {
+        mat4.perspective(cgl.pMatrix,self.fovY.val*0.0174533, cgl.getViewPort()[2]/cgl.getViewPort()[3], self.zNear.val, self.zFar.val);
+        cgl.pushPMatrix();
+
+        self.trigger.trigger();
+
+        cgl.popPMatrix();
+    };
+
+    this.fovY.onValueChanged=function()
+    {
+
+    };
+
+};
+
+Ops.Gl.Perspective.prototype = new Op();
+
 // --------------------------------------------------------------------------
 
 Ops.Gl.LetterBox = function()
