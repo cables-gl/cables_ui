@@ -445,16 +445,17 @@ Ops.Gl.ColorPick=function()
     this.a=this.addOutPort(new Port(this,"a",OP_PORT_TYPE_VALUE));
 
     var pixelValues = new Uint8Array(4);
+    var canvas = document.getElementById("glcanvas");
 
     function render()
     {
-        cgl.gl.readPixels(self.x.val, self.y.val, 1,1,  cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE ,pixelValues);
+        cgl.gl.readPixels(self.x.val, canvas.height-self.y.val, 1,1,  cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE ,pixelValues);
         self.r.val=pixelValues[0]/255;
         self.g.val=pixelValues[1]/255;
         self.b.val=pixelValues[2]/255;
         self.a.val=pixelValues[3]/255;
     }
-    
+
     this.render.onTriggered=render;
 
 };
