@@ -358,7 +358,6 @@ var Port=function(parent,name,type,uiAttribs)
 
         if(!this.ignoreValueSerialize) obj.value=this.value;
             else console.log('ja hier nicht speichern....');
-                
 
         if(animated) obj.animated=true;
         if(this.anim) obj.anim=this.anim.getSerialized();
