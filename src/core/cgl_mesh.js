@@ -1,13 +1,30 @@
 var CGL=CGL || {};
 
-CGL.DEG2RAD=3.14159/180.0;
 
 CGL.Mesh=function(geom)
 {
     var bufVertices = cgl.gl.createBuffer();
     var bufVerticesIndizes = cgl.gl.createBuffer();
-    
     var attributes=[];
+
+    function addAttribute(name,array,itemSize)
+    {
+        var buffer= cgl.gl.createBuffer();
+
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(array), cgl.gl.STATIC_DRAW);
+
+        var attr=
+            {
+                loc:-1,
+                buffer:buffer,
+                name:name,
+                itemSize:itemSize,
+                numItems: array.length/itemSize
+            };
+
+        attributes.push(attr);
+    }
 
     this.setGeom=function(geom)
     {
@@ -22,94 +39,37 @@ CGL.Mesh=function(geom)
         bufVerticesIndizes.itemSize = 1;
         bufVerticesIndizes.numItems = geom.verticesIndices.length;
 
-        if(geom.vertexNormals.length>0)
-        {
-            var bufVertexNormals= cgl.gl.createBuffer();
+        if(geom.vertexNormals.length>0) addAttribute('attrVertNormal',geom.vertexNormals,3);
+        if(geom.texCoords.length>0) addAttribute('attrTexCoord',geom.texCoords,2);
 
-            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertexNormals);
-            cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertexNormals), cgl.gl.STATIC_DRAW);
+        for(var i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.texCoords,3);
 
-            var attr=
-                {
-                    loc:-1,
-                    buffer:bufVertexNormals,
-                    name:'attrVertNormal',
-                };
-
-            attr.itemSize = 3;
-            attr.numItems = geom.vertexNormals.length/attr.itemSize;
-            attributes.push(attr);
-        }
-
-        if(geom.texCoords.length>0)
-        {
-            var bufTexCoords = cgl.gl.createBuffer();
-            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufTexCoords);
-            cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.texCoords), cgl.gl.STATIC_DRAW);
-
-            var attr=
-                {
-                    loc:-1,
-                    buffer:bufTexCoords,
-                    name:'attrTexCoord',
-                };
-
-            attr.itemSize = 2;
-            attr.numItems = geom.texCoords.length/attr.itemSize;
-            attributes.push(attr);
-        }
-
-        for(var i=0;i<geom.morphTargets.length;i++)
-        {
-            var bufMT = cgl.gl.createBuffer();
-            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufMT);
-            cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.morphTargets[i]), cgl.gl.STATIC_DRAW);
-
-            var attr=
-                {
-                    name:'attrMorphTargetA',
-                    buffer:bufMT,
-                    loc:-1,
-                };
-
-            attr.itemSize = 3;
-            attr.numItems = geom.morphTargets[i].length/attr.itemSize;
-            attributes.push(attr);
-        }
-
-
-        console.log('',attributes);
-        
     };
-
-    this.setGeom(geom);
-
 
     this.render=function(shader)
     {
         if(!shader) return;
+        var i=0;
+
         shader.bind();
 
-        if(geom.morphTargets.length>0)
-         shader.define('HAS_MORPH_TARGETS');
+        if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
 
         cgl.gl.enableVertexAttribArray(shader.getAttrVertexPos());
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
         cgl.gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, cgl.gl.FLOAT, false, 0, 0);
 
-        for(var i=0;i<attributes.length;i++)
+        for(i=0;i<attributes.length;i++)
         {
             if(attributes[i].loc==-1)attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
 
-            // console.log('attributes[i].name',attributes[i].name,attributes[i].loc);
-        
-
-
-            cgl.gl.enableVertexAttribArray(attributes[i].loc);
-            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
-            cgl.gl.vertexAttribPointer(attributes[i].loc,attributes[i].itemSize, cgl.gl.FLOAT, false, 0, 0);
+            if(attributes[i].loc!=-1)
+            {
+                cgl.gl.enableVertexAttribArray(attributes[i].loc);
+                cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
+                cgl.gl.vertexAttribPointer(attributes[i].loc,attributes[i].itemSize, cgl.gl.FLOAT, false, 0, 0);
+            }
         }
-
 
         cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
 
@@ -118,8 +78,15 @@ CGL.Mesh=function(geom)
         else if(cgl.points)what=cgl.gl.POINTS;
 
         cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
+
+        for(i=0;i<attributes.length;i++)
+            if(attributes[i].loc!=-1)
+                cgl.gl.disableVertexAttribArray(attributes[i].loc);
+
     };
 
+
+    this.setGeom(geom);
 };
 
 CGL.Geometry=function()

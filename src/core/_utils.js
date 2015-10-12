@@ -24,39 +24,38 @@ function ajaxRequest(url, callback)
     request.send();
 }
 
+// ----------------------------------------------------------------
 
 CABLES=CABLES || {};
 
 CABLES.ajax=function(url,cb,method,post,contenttype)
 {
- var requestTimeout,xhr;
- try{ xhr = new XMLHttpRequest(); }catch(e){
+    var requestTimeout,xhr;
+    try{ xhr = new XMLHttpRequest(); }catch(e){}
 
- }
- requestTimeout = setTimeout(function() {xhr.abort(); cb(new Error("tinyxhr: aborted by a timeout"), "",xhr); }, 5000);
- xhr.onreadystatechange = function()
- {
-  if (xhr.readyState != 4) return;
-  clearTimeout(requestTimeout);
-  cb(xhr.status != 200?new Error("tinyxhr: server respnse status is "+xhr.status):false, xhr.responseText,xhr);
- };
- xhr.open(method?method.toUpperCase():"GET", url, true);
+    requestTimeout = setTimeout(function() {xhr.abort(); cb(new Error("tinyxhr: aborted by a timeout"), "",xhr); }, 5000);
+    xhr.onreadystatechange = function()
+    {
+        if (xhr.readyState != 4) return;
+        clearTimeout(requestTimeout);
+        cb(xhr.status != 200?new Error("tinyxhr: server respnse status is "+xhr.status):false, xhr.responseText,xhr);
+    };
+    xhr.open(method?method.toUpperCase():"GET", url, true);
 
- //xhr.withCredentials = true;
-
- if(!post)
-  xhr.send();
- else
- {
-  xhr.setRequestHeader('Content-type', contenttype?contenttype:'application/x-www-form-urlencoded');
-  xhr.send(post);
- }
+    if(!post) xhr.send();
+    else
+    {
+        xhr.setRequestHeader('Content-type', contenttype?contenttype:'application/x-www-form-urlencoded');
+        xhr.send(post);
+    }
 };
 
-
+// ----------------------------------------------------------------
 
 
 String.prototype.endl = function(){return this+'\n';};
+
+// ----------------------------------------------------------------
 
 var arrayContains = function(arr,obj)
 {
@@ -74,7 +73,7 @@ var arrayContains = function(arr,obj)
 // ----------------------------------------------------------------
 
 CGL=CGL || {};
-
+CGL.DEG2RAD=3.14159/180.0;
 CGL.numMaxLoadingAssets=0;
 CGL.numLoadingAssets=0;
 
@@ -84,10 +83,10 @@ CGL.finishedLoading=function()
 };
 
 CGL.incrementLoadingAssets=function()
-    {
-        CGL.numLoadingAssets++;
-        CGL.numMaxLoadingAssets=Math.max(CGL.numLoadingAssets,CGL.numMaxLoadingAssets);
-    };
+{
+    CGL.numLoadingAssets++;
+    CGL.numMaxLoadingAssets=Math.max(CGL.numLoadingAssets,CGL.numMaxLoadingAssets);
+};
 
 CGL.decrementLoadingAssets=function()
 {
