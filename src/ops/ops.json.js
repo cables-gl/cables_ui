@@ -204,6 +204,7 @@ Ops.Json3d.Mesh=function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     this.geometryOut=this.addOutPort(new Port(this,"geometry",OP_PORT_TYPE_OBJECT ));
+    this.geometryOut.ignoreValueSerialize=true;
 
     var mesh=null;
 

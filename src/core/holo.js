@@ -165,6 +165,7 @@ var Port=function(parent,name,type,uiAttribs)
     this.onLink=false;
     this.showPreview=false;
     var uiActiveState=true;
+    this.ignoreValueSerialize=false;
 
     this.doShowPreview=function(onOff)
     {
@@ -355,9 +356,10 @@ var Port=function(parent,name,type,uiAttribs)
         var obj={};
         obj.name=this.getName();
 
-        if(this.type!=OP_PORT_TYPE_OBJECT)
-        obj.value=this.value;
-    
+        if(!this.ignoreValueSerialize) obj.value=this.value;
+            else console.log('ja hier nicht speichern....');
+                
+
         if(animated) obj.animated=true;
         if(this.anim) obj.anim=this.anim.getSerialized();
 
