@@ -179,7 +179,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
     {
         cgl.setShader(shader);
         
-        shader.bindTextures();
+        self.bindTextures();
 
         self.trigger.trigger();
         cgl.setPreviousShader();
@@ -493,6 +493,8 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.doRender=function()
     {
         cgl.setShader(shader);
+        shader.bindTextures();
+        
         self.trigger.trigger();
 
         cgl.setPreviousShader();
@@ -512,7 +514,6 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'{'
         .endl()+'   texCoord=attrTexCoord;'
         .endl()+'   norm=attrVertNormal;'
-
 
         .endl()+'#ifdef BILLBOARD'
         .endl()+'   vec3 position=vPosition;'
@@ -676,10 +677,8 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.colorizeTexture.val=false;
     this.colorizeTexture.onValueChanged=function()
     {
-        if(self.colorizeTexture.val==true)
-            shader.define('COLORIZE_TEXTURE');
-        else
-            shader.removeDefine('COLORIZE_TEXTURE');
+        if(self.colorizeTexture.val) shader.define('COLORIZE_TEXTURE');
+            else shader.removeDefine('COLORIZE_TEXTURE');
     };
 
 

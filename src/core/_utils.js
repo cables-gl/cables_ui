@@ -12,6 +12,13 @@ function generateUUID()
 
 // ----------------------------------------------------------------
 
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
+// ----------------------------------------------------------------
+
 function ajaxRequest(url, callback)
 {
     var request = new XMLHttpRequest();
