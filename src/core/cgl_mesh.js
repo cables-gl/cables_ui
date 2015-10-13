@@ -91,7 +91,6 @@ CGL.Mesh=function(geom)
 
 CGL.Geometry=function()
 {
-    this.calcNormals=false;
     this.faceVertCount=3;
     this.vertices=[];
     this.verticesIndices=[];
@@ -101,6 +100,138 @@ CGL.Geometry=function()
 
     this.morphTargets=[];
 
+    function calcNormal(triangle)
+    {
+        // Begin Function CalculateSurfaceNormal (Input Triangle) Returns Vector
+ 
+        var u=[0,0,0],v=[0,0,0],normal=[0,0,0];
+            // console.log('triangle',triangle);
+
+        // Set Vector U to (Triangle.p2 minus Triangle.p1)
+        // Set Vector V to (Triangle.p3 minus Triangle.p1)
+
+        vec3.subtract(u,triangle[0],triangle[1]);
+        vec3.subtract(v,triangle[0],triangle[2]);
+
+        normal[0] = u[1]*v[2] - u[2]*v[1];
+        normal[1] = u[2]*v[0] - u[0]*v[2];
+        normal[2] = u[0]*v[1] - u[1]*v[0];
+
+        vec3.normalize(normal,normal);
+
+        return normal;
+     
+        // Set Normal.x to (multiply U.y by V.z) minus (multiply U.z by V.y)
+        // Set Normal.y to (multiply U.z by V.x) minus (multiply U.x by V.z)
+        // Set Normal.z to (multiply U.x by V.y) minus (multiply U.y by V.x)
+     
+        // Returning Normal
+    }
+
+    this.getVertexVec=function(which)
+    {
+        var vec=[0,0,0];
+        vec[0]=this.vertices[which*3+0];
+        vec[1]=this.vertices[which*3+1];
+        vec[2]=this.vertices[which*3+2];
+        return vec;
+    };
+
+    this.calcNormals=function(calcVertexNormals)
+    {
+        var i=0;
+
+        console.log('calcNormals');
+                
+        this.vertexNormals.length=this.vertices.length;
+        for(i=0;i<this.vertices.length;i++)
+        {
+            this.vertexNormals[i]=0;
+        }
+        var faceNormals=[];
+
+        faceNormals.length=this.verticesIndices.length/3;
+
+        for(i=0;i<this.verticesIndices.length;i+=3)
+        {
+            var triangle=[
+                this.getVertexVec(this.verticesIndices[i+0]),
+                this.getVertexVec(this.verticesIndices[i+1]),
+                this.getVertexVec(this.verticesIndices[i+2])
+                ];
+
+            faceNormals[i/3]=calcNormal(triangle);
+
+            if(!calcVertexNormals)
+            {
+                this.vertexNormals[this.verticesIndices[i+0]*3+0]=faceNormals[i/3][0];
+                this.vertexNormals[this.verticesIndices[i+0]*3+1]=faceNormals[i/3][1];
+                this.vertexNormals[this.verticesIndices[i+0]*3+2]=faceNormals[i/3][2];
+
+                this.vertexNormals[this.verticesIndices[i+1]*3+0]=faceNormals[i/3][0];
+                this.vertexNormals[this.verticesIndices[i+1]*3+1]=faceNormals[i/3][1];
+                this.vertexNormals[this.verticesIndices[i+1]*3+2]=faceNormals[i/3][2];
+
+                this.vertexNormals[this.verticesIndices[i+2]*3+0]=faceNormals[i/3][0];
+                this.vertexNormals[this.verticesIndices[i+2]*3+1]=faceNormals[i/3][1];
+                this.vertexNormals[this.verticesIndices[i+2]*3+2]=faceNormals[i/3][2];
+            }
+        }
+
+        console.log('this.vertices',this.vertices.length);
+        console.log('this.vertexNormals',this.vertexNormals.length);
+        
+        if(calcVertexNormals)
+        {
+            console.log('calc vertexnormals');
+                    
+            for(i=0;i<this.verticesIndices.length;i+=3) //faces
+            {
+                for(var k=0;k<3;k++) //triangles
+                {
+                    var v=[
+                        this.vertexNormals[this.verticesIndices[i+k]*3+0]+faceNormals[i/3][0],
+                        this.vertexNormals[this.verticesIndices[i+k]*3+1]+faceNormals[i/3][1],
+                        this.vertexNormals[this.verticesIndices[i+k]*3+2]+faceNormals[i/3][2]
+                        ];
+                    vec3.normalize(v,v);
+                    this.vertexNormals[this.verticesIndices[i+k]*3+0]=v[0];
+                    this.vertexNormals[this.verticesIndices[i+k]*3+1]=v[1];
+                    this.vertexNormals[this.verticesIndices[i+k]*3+2]=v[2];
+
+                }
+
+
+
+                // this.vertexNormals[this.verticesIndices[i+1]*3+0]+faceNormals[i][0];
+                // this.vertexNormals[this.verticesIndices[i+1]*3+1]+faceNormals[i][1];
+                // this.vertexNormals[this.verticesIndices[i+1]*3+2]+faceNormals[i][2];
+
+                // this.vertexNormals[this.verticesIndices[i+2]*3+0]+faceNormals[i][0];
+                // this.vertexNormals[this.verticesIndices[i+2]*3+1]+faceNormals[i][1];
+                // this.vertexNormals[this.verticesIndices[i+2]*3+2]+faceNormals[i][2];
+            }
+
+            // for(i=0;i<this.verticesIndices.length;i+=3)
+            // {
+            //     for(var k=0;k<3;k++)
+            //     {
+            //         var v=[
+            //             this.vertexNormals[this.verticesIndices[i+k]*3+0],
+            //             this.vertexNormals[this.verticesIndices[i+k]*3+1],
+            //             this.vertexNormals[this.verticesIndices[i+k]*3+2]
+            //             ];
+            //         vec3.normalize(v,v);
+            //         this.vertexNormals[this.verticesIndices[i+k]*3+0]=v[0];
+            //         this.vertexNormals[this.verticesIndices[i+k]*3+1]=v[1];
+            //         this.vertexNormals[this.verticesIndices[i+k]*3+2]=v[2];
+            //     }
+            // }
+
+        }
+  
+
+    };
 
 //https://www.opengl.org/wiki/Calculating_a_Surface_Normal
 

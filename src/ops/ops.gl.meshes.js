@@ -399,7 +399,9 @@ Ops.Gl.Meshes.ObjMesh = function()
     this.name='OBJ Mesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-    this.calcNormals=this.addInPort(new Port(this,"calcNormals",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.calcNormals=this.addInPort(new Port(this,"calcNormals",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['no','face','vertex']}));
+    this.calcNormals.val='no';
+
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{display:'file',type:'string',filter:'mesh'}));
 
     this.mesh=null;
@@ -426,7 +428,11 @@ Ops.Gl.Meshes.ObjMesh = function()
       CGL.incrementLoadingAssets();
 
       console.log('filename:',self.filename.val);
-      if(self.filename.val==0)return;
+      if(self.filename.val==0)
+      {
+        CGL.decrementLoadingAssets();
+        return;
+      }
       
 
       ajaxRequest(self.filename.val,function(response)
@@ -456,8 +462,8 @@ Ops.Gl.Meshes.ObjMesh = function()
               r.verticesIndices = [];
               for(var i=0; i<l; i++) r.verticesIndices.push(i);
           
-          r.calcNormals=self.calcNormals.val;
-
+          if(self.calcNormals.val=='face')r.calcNormals();
+          if(self.calcNormals.val=='vertex')r.calcNormals(true);
 
           self.mesh=new CGL.Mesh(r);
 
