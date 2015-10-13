@@ -2,7 +2,36 @@
 Ops.Gl.Shader= Ops.Gl.Shader || {};
 
 // --------------------------------------------------------------------------
+Ops.Gl.Shader.Shader = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
 
+    this.name='Shader';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.shader=this.addInPort(new Port(this,"shader",OP_PORT_TYPE_OBJECT));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.doRender=function()
+    {
+                console.log('self.shader.val ',self.shader.val );
+
+        if(self.shader.val)
+        {
+            cgl.setShader(self.shader.val);
+            self.shader.val.bindTextures();
+            self.trigger.trigger();
+            cgl.setPreviousShader();
+        }
+    };
+
+    this.render.onTriggered=this.doRender;
+    this.doRender();
+};
+
+Ops.Gl.Shader.Shader.prototype = new Op();
+
+// --------------------------------------------------------------------------
 
 Ops.Gl.Shader.ShowNormalsMaterial = function()
 {
@@ -45,113 +74,6 @@ Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-Ops.Gl.Shader.SphereEnvMaterial = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='SphereEnvMaterial';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
-    this.textureUniform=null;
-
-    this.texture.onValueChanged=function()
-    {
-        if(self.texture.val)
-        {
-            if(self.textureUniform!==null)return;
-            shader.removeUniform('tex');
-            self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
-        }
-        else
-        {
-            console.log('TEXTURE REMOVED');
-            shader.removeUniform('tex');
-            self.textureUniform=null;
-        }
-    };
-
-    this.doRender=function()
-    {
-        cgl.setShader(shader);
-
-        if(self.texture.val)
-        {
-            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.texture.val.tex);
-        }
-
-        self.trigger.trigger();
-        cgl.setPreviousShader();
-    };
-
-    var srcVert=''
-        .endl()+'precision mediump float;'
-        .endl()+'attribute vec3 vPosition;'
-        .endl()+'attribute vec2 attrTexCoord;'
-        .endl()+'attribute vec3 attrVertNormal;'
-        .endl()+'varying vec2 texCoord;'
-        .endl()+'varying vec3 norm;'
-        .endl()+'uniform mat4 projMatrix;'
-        .endl()+'uniform mat4 mvMatrix;'
-        .endl()+'uniform mat4 normalMatrix;'
-        .endl()+'varying vec2 vNorm;'
-        .endl()+''
-        .endl()+'void main()'
-        .endl()+'{'
-        .endl()+'    texCoord=attrTexCoord;'
-        .endl()+'    norm=attrVertNormal;'
-        .endl()+''
-        .endl()+'    vec4 pos = vec4( vPosition, 1. );'
-        .endl()+'    vec3 e = normalize( vec3( mvMatrix * pos ) );'
-        .endl()+'    vec3 n = normalize( mat3(normalMatrix) * norm );'
-        .endl()+''
-        .endl()+'    vec3 r = reflect( e, n );'
-        .endl()+'    float m = 2. * sqrt( '
-        .endl()+'        pow(r.x, 2.0)+'
-        .endl()+'        pow(r.y, 2.0)+'
-        .endl()+'        pow(r.z + 1.0, 2.0)'
-        .endl()+'    );'
-        .endl()+'    vNorm = r.xy / m + 0.5;'
-        .endl()+''
-        .endl()+'    gl_Position = projMatrix * mvMatrix * pos;'
-        .endl()+'}';
-
-
-    var srcFrag=''
-        .endl()+'precision mediump float;'
-        .endl()+'varying vec3 norm;'
-        .endl()+'varying vec2 texCoord;'
-        .endl()+'uniform sampler2D tex;'
-        .endl()+''
-        .endl()+'varying vec2 vNorm;'
-        .endl()+''
-        .endl()+'void main()'
-        .endl()+'{'
-        .endl()+'    vec4 col = texture2D( tex, vNorm );'
-        .endl()+'    gl_FragColor = col;'
-        .endl()+''
-        .endl()+'}';
-
-    var shader=new CGL.Shader();
-    this.onLoaded=shader.compile;
-    shader.setSource(srcVert,srcFrag);
-
-    this.render.onTriggered=this.doRender;
-    this.doRender();
-
-    this.uiAttribs.warning='"SphereEnvMaterial" is deprecated, please use "matcap"';
-
-
-};
-
-Ops.Gl.Shader.SphereEnvMaterial.prototype = new Op();
-
-
-
-// --------------------------------------------------------------------------
 
 Ops.Gl.Shader.MatCapMaterial = function()
 {
@@ -161,6 +83,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.name='MatCapMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.shaderOut=this.addOutPort(new Port(this,"shader",OP_PORT_TYPE_OBJECT));
+    this.shaderOut.ignoreValueSerialize=true;
 
     this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
     this.textureUniform=null;
@@ -175,11 +99,9 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.normalScale.val=0.4;
     this.normalScaleUniform=null;
 
-
     this.normalScale.onValueChanged=function()
     {
         self.normalScaleUniform.setValue(self.normalScale.val);
-
     };
 
     this.texture.onValueChanged=function()
@@ -215,7 +137,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         }
     };
 
-
     this.textureNormal.onValueChanged=function()
     {
         if(self.textureNormal.val)
@@ -233,11 +154,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         }
     };
 
-
-    this.doRender=function()
+    this.bindTextures=function()
     {
-        cgl.setShader(shader);
-
         if(self.texture.val)
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
@@ -255,6 +173,13 @@ Ops.Gl.Shader.MatCapMaterial = function()
             cgl.gl.activeTexture(cgl.gl.TEXTURE2);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureNormal.val.tex);
         }
+    };
+
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
+        
+        shader.bindTextures();
 
         self.trigger.trigger();
         cgl.setPreviousShader();
@@ -370,6 +295,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'}';
 
     var shader=new CGL.Shader();
+    shader.bindTextures=this.bindTextures;
+    this.shaderOut.val=shader;
     this.onLoaded=shader.compile;
     shader.setSource(srcVert,srcFrag);
     this.normalScaleUniform=new CGL.Uniform(shader,'f','normalScale',self.normalScale.val);
@@ -545,11 +472,11 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.name='BasicMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION) );
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.shaderOut=this.addOutPort(new Port(this,"shader",OP_PORT_TYPE_OBJECT));
+    this.shaderOut.ignoreValueSerialize=true;
 
-    this.doRender=function()
+    this.bindTextures=function()
     {
-        cgl.setShader(shader);
-
         if(self.texture.val)
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
@@ -561,7 +488,11 @@ Ops.Gl.Shader.BasicMaterial = function()
             cgl.gl.activeTexture(cgl.gl.TEXTURE1);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureOpacity.val.tex);
         }
+    };
 
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
         self.trigger.trigger();
 
         cgl.setPreviousShader();
@@ -640,6 +571,8 @@ Ops.Gl.Shader.BasicMaterial = function()
 
 
     var shader=new CGL.Shader();
+    shader.bindTextures=this.bindTextures;
+    this.shaderOut.val=shader;
     this.onLoaded=shader.compile;
     shader.setSource(srcVert,srcFrag);
 

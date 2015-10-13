@@ -25,6 +25,11 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         cgl.gl.uniform1f(loc, value);
     };
 
+    this.bindTextures=function()
+    {
+
+    };
+
     this.setValueF=function(v)
     {
         if(v!=value)
