@@ -477,6 +477,8 @@ CABLES.UI.Patch=function(_gui)
     function rubberBandMove(e)
     {
                 
+
+
         if(e.buttons==1 && !spacePressed)
         {
             if(!mouseRubberBandStartPos)
@@ -484,6 +486,8 @@ CABLES.UI.Patch=function(_gui)
                 gui.patch().setSelectedOp(null);
                 mouseRubberBandStartPos=gui.patch().getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
             }
+                    console.log('rubber!');
+                    
             mouseRubberBandPos=gui.patch().getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
 
             if(!rubberBandRect) rubberBandRect=self.paper.rect( 0,0,10,10).attr({ });
@@ -639,7 +643,7 @@ CABLES.UI.Patch=function(_gui)
             if(e.buttons==1 && !spacePressed)
             {
                 for(var i in self.ops)
-                    if(self.ops[i].isDragging || self.ops[i].isMouseOver)
+                    if(!self.ops[i].isHidden() && ( self.ops[i].isDragging || self.ops[i].isMouseOver))
                         return;
 
                 rubberBandMove(e);

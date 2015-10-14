@@ -142,7 +142,7 @@ Ops.Json3d.Mesh=function()
 
     function render()
     {
-        if(!mesh && Ops.Json3d.currentScene.getValue() || currentIndex!=self.index.val)
+        if(!mesh && Ops.Json3d.currentScene && Ops.Json3d.currentScene.getValue() || currentIndex!=self.index.val)
         {
             reload();
         }

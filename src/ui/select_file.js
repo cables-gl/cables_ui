@@ -58,6 +58,9 @@ CABLES.UI.FileSelect=function()
         function getFileList(filterType,files,p)
         {
             if(!p)p=assetPath;
+
+            // console.log('getFileList(filterType,files,p)',filterType);
+
             var html='';
             for(var i in files)
             {
@@ -65,13 +68,23 @@ CABLES.UI.FileSelect=function()
 
                 files[i].selectableClass='';
                 if(!files[i].d)
-                    if(files[i].t==filterType)files[i].selectableClass='selectable';
-                        else files[i].selectableClass='unselectable';
+                {
+                    if(files[i].t==filterType)
+                    {
+                        files[i].selectableClass='selectable';
+                    }
+                    else
+                    {
+                        if(filterType=='image')continue;
+                        files[i].selectableClass='unselectable';
+                    }
+
+                }
 
                 if(!files[i].p)files[i].p=p+files[i].n;
 
 
-                html+= CABLES.UI.getHandleBarHtml('library_file',{file: files[i],inputId:inputId });
+                html+= CABLES.UI.getHandleBarHtml('library_file',{file: files[i],inputId:inputId,filterType:filterType });
                 if(files[i].d )
                 {
                     html+=getFileList(filterType,files[i].c,p+files[i].n+'/');

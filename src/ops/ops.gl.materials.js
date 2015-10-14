@@ -14,7 +14,7 @@ Ops.Gl.Shader.Shader = function()
 
     this.doRender=function()
     {
-                console.log('self.shader.val ',self.shader.val );
+                // console.log('self.shader.val ',self.shader.val );
 
         if(self.shader.val)
         {
@@ -98,6 +98,49 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.normalScale=this.addInPort(new Port(this,"normalScale",OP_PORT_TYPE_VALUE,{display:'range'}));
     this.normalScale.val=0.4;
     this.normalScaleUniform=null;
+
+
+
+    this.diffuseRepeatX=this.addInPort(new Port(this,"diffuseRepeatX",OP_PORT_TYPE_VALUE));
+    this.diffuseRepeatY=this.addInPort(new Port(this,"diffuseRepeatY",OP_PORT_TYPE_VALUE));
+    this.diffuseRepeatX.val=1.0;
+    this.diffuseRepeatY.val=1.0;
+
+    this.diffuseRepeatX.onValueChanged=function()
+    {
+        self.diffuseRepeatXUniform.setValue(self.diffuseRepeatX.val);
+    };
+
+    this.diffuseRepeatY.onValueChanged=function()
+    {
+        self.diffuseRepeatYUniform.setValue(self.diffuseRepeatY.val);
+    };
+
+
+    this.projectCoords=this.addInPort(new Port(this,"projectCoords",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.projectCoords.onValueChanged=function()
+    {
+        if(self.projectCoords.val) shader.define('DO_PROJECT_COORDS');
+            else shader.removeDefine('DO_PROJECT_COORDS');
+    };
+    this.projectCoords.val=false;
+
+    this.normalRepeatX=this.addInPort(new Port(this,"normalRepeatX",OP_PORT_TYPE_VALUE));
+    this.normalRepeatY=this.addInPort(new Port(this,"normalRepeatY",OP_PORT_TYPE_VALUE));
+    this.normalRepeatX.val=1.0;
+    this.normalRepeatY.val=1.0;
+
+    this.normalRepeatX.onValueChanged=function()
+    {
+        self.normalRepeatXUniform.setValue(self.normalRepeatX.val);
+    };
+
+    this.normalRepeatY.onValueChanged=function()
+    {
+        self.normalRepeatYUniform.setValue(self.normalRepeatY.val);
+    };
+
+
 
     this.normalScale.onValueChanged=function()
     {
@@ -202,6 +245,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'uniform mat4 normalMatrix;'
         .endl()+'varying vec2 vNorm;'
 
+        // .endl()+'varying vec2 testTexCoords;'
+
+        
+
         .endl()+'varying vec3 e;'
 
 
@@ -211,7 +258,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
 
+
+
         
+
         .endl()+''
 
         .endl()+'#ifdef HAS_MORPH_TARGETS'
@@ -232,6 +282,11 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    );'
         .endl()+'    vNorm = r.xy / m + 0.5;'
         .endl()+''
+
+        .endl()+'#ifdef DO_PROJECT_COORDS'
+        .endl()+'    texCoord=(projMatrix * mvMatrix*pos).xy*0.01;'
+        .endl()+'#endif'
+
         .endl()+'    gl_Position = projMatrix * mvMatrix * pos;'
         .endl()+'}';
 
@@ -243,6 +298,9 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'uniform sampler2D tex;'
         .endl()+'varying vec2 vNorm;'
 
+        .endl()+'uniform float diffuseRepeatX;'
+        .endl()+'uniform float diffuseRepeatY;'
+
 
         .endl()+'#ifdef HAS_DIFFUSE_TEXTURE'
         .endl()+'   uniform sampler2D texDiffuse;'
@@ -252,6 +310,9 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'   uniform sampler2D texNormal;'
         .endl()+'   uniform mat4 normalMatrix;'
         .endl()+'   uniform float normalScale;'
+        .endl()+'   uniform float normalRepeatX;'
+        .endl()+'   uniform float normalRepeatY;'
+        
         .endl()+'   varying vec3 e;'
         .endl()+'   vec2 vNormt;'
         .endl()+'#endif'
@@ -265,11 +326,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'   vec2 vn=vNorm;'
 
         .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
-        .endl()+'       vec3 tnorm=texture2D( texNormal, texCoord ).xyz * 2.0 - 1.0;'
+
+        .endl()+'       vec3 tnorm=texture2D( texNormal, vec2(texCoord.x*normalRepeatX,texCoord.y*normalRepeatY) ).xyz * 2.0 - 1.0;'
         .endl()+'       tnorm.y *= -1.0;'
         .endl()+'       tnorm *=normalScale;'
 
-        .endl()+'       vec3 n = ( mat3(normalMatrix) * (norm+tnorm) );'
+        .endl()+'       vec3 n = ( mat3(normalMatrix) * normalize((norm+tnorm)) );'
 
         .endl()+'       vec3 r = reflect( e, n );'
         .endl()+'       float m = 2. * sqrt( '
@@ -279,7 +341,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       );'
         .endl()+'       vn = r.xy / m + 0.5;'
 
-
         .endl()+'   #endif'
 
         
@@ -287,7 +348,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
 
         .endl()+'   #ifdef HAS_DIFFUSE_TEXTURE'
-        .endl()+'       col = mix(col,texture2D( texDiffuse, texCoord ),0.5);'
+        // .endl()+'       col = mix(col,texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY) ),0.5);'
+        .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY));'
         .endl()+'   #endif'
 
         .endl()+'    gl_FragColor = col;'
@@ -300,6 +362,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.onLoaded=shader.compile;
     shader.setSource(srcVert,srcFrag);
     this.normalScaleUniform=new CGL.Uniform(shader,'f','normalScale',self.normalScale.val);
+    this.normalRepeatXUniform=new CGL.Uniform(shader,'f','normalRepeatX',self.normalRepeatX.val);
+    this.normalRepeatYUniform=new CGL.Uniform(shader,'f','normalRepeatY',self.normalRepeatY.val);
+
+    this.diffuseRepeatXUniform=new CGL.Uniform(shader,'f','diffuseRepeatX',self.diffuseRepeatX.val);
+    this.diffuseRepeatYUniform=new CGL.Uniform(shader,'f','diffuseRepeatY',self.diffuseRepeatY.val);
+
 
     this.render.onTriggered=this.doRender;
     this.doRender();

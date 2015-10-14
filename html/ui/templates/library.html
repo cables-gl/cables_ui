@@ -15,6 +15,18 @@
 
 <script id="library_file" type="text/x-handlebars-template">
 
-<div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');"> {{file.n}} </div>
+<div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
+{{#compare filterType '==' 'image' }}
+    style="float:left;width:120px;margin:5px;"{{/compare}}
+    onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');"> 
+    {{#compare filterType '==' 'image' }}
+        <div class="lib_imgpreview" style="background-image:url({{file.p}});background-size:100% auto;width:120px;height:120px;background-position:center center;"></div>
+    {{/compare}}
+{{file.n}} 
+({{file.t}})
+</div>
+
+
+
 
 </script>

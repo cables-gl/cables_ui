@@ -478,20 +478,73 @@ Ops.Gl.Mouse = function()
 
     this.normalize=this.addInPort(new Port(this,"normalize",OP_PORT_TYPE_VALUE,{display:'bool'}));
 
+    this.smooth=this.addInPort(new Port(this,"smooth",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.smoothSpeed=this.addInPort(new Port(this,"smoothSpeed",OP_PORT_TYPE_VALUE));
+    this.smoothSpeed.val=20;
+
+
     this.canvas = document.getElementById("glcanvas");
 
-    this.canvas.onmousemove = function(e)
+    var smoothTimer;
+
+
+    this.smooth.onValueChanged=function()
     {
+        if(self.smooth.val) smoothTimer = setInterval(updateSmooth, 20);
+        else clearTimeout(smoothTimer);
+    };
+
+    var smoothX,smoothY;
+    var lineX=0,lineY=0;
+
+    var mouseX=0,mouseY=0;
+
+    function updateSmooth()
+    {
+        if(self.smoothSpeed.val<=0)self.smoothSpeed.val=1;
+        var distanceX = Math.abs(mouseX - lineX);
+        var speedX = Math.round( distanceX / self.smoothSpeed.val, 0 );
+        lineX = (lineX < mouseX) ? lineX + speedX : lineX - speedX;
+
+        var distanceY = Math.abs(mouseY - lineY);
+        var speedY = Math.round( distanceY / self.smoothSpeed.val, 0 );
+        lineY = (lineY < mouseY) ? lineY + speedY : lineY - speedY;
+
+
         if(self.normalize.val)
         {
-            self.mouseX.val=e.offsetX/self.canvas.width*2.0-1.0;
-            self.mouseY.val=e.offsetY/self.canvas.height*2.0-1.0;
+            self.mouseX.val=lineX/self.canvas.width*2.0-1.0;
+            self.mouseY.val=lineY/self.canvas.height*2.0-1.0;
         }
         else
         {
-            self.mouseX.val=e.offsetX;
-            self.mouseY.val=e.offsetY;
+            self.mouseX.val=lineX;
+            self.mouseY.val=lineY;
         }
+
+    }
+    
+
+    this.canvas.onmousemove = function(e)
+    {
+        // linetimer = setInterval(updateSmooth, 25);
+
+        if(self.smooth.val)
+        {
+            mouseX=e.offsetX;
+            mouseY=e.offsetY;
+        }
+        else
+            if(self.normalize.val)
+            {
+                self.mouseX.val=e.offsetX/self.canvas.width*2.0-1.0;
+                self.mouseY.val=e.offsetY/self.canvas.height*2.0-1.0;
+            }
+            else
+            {
+                self.mouseX.val=e.offsetX;
+                self.mouseY.val=e.offsetY;
+            }
 
     };
 };
@@ -543,8 +596,8 @@ Ops.Gl.Texture = function()
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
     
-    this.filter.val='linear';
-    this.cgl_filter=CGL.Texture.FILTER_LINEAR;
+    this.filter.val='mipmap';
+    this.cgl_filter=CGL.Texture.FILTER_MIPMAP;
 
     var reload=function()
     {
