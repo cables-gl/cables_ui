@@ -117,13 +117,16 @@ Ops.Gl.Shader.MatCapMaterial = function()
     };
 
 
-    this.projectCoords=this.addInPort(new Port(this,"projectCoords",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.projectCoords=this.addInPort(new Port(this,"projectCoords",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['no','xy','yz']}));
+    this.projectCoords.val='no';
     this.projectCoords.onValueChanged=function()
     {
-        if(self.projectCoords.val) shader.define('DO_PROJECT_COORDS');
-            else shader.removeDefine('DO_PROJECT_COORDS');
+        shader.removeDefine('DO_PROJECT_COORDS_XY');
+        shader.removeDefine('DO_PROJECT_COORDS_XZ');
+
+        if(self.projectCoords.val=='xy') shader.define('DO_PROJECT_COORDS_XY');
+        if(self.projectCoords.val=='yz') shader.define('DO_PROJECT_COORDS_YZ');
     };
-    this.projectCoords.val=false;
 
     this.normalRepeatX=this.addInPort(new Port(this,"normalRepeatX",OP_PORT_TYPE_VALUE));
     this.normalRepeatY=this.addInPort(new Port(this,"normalRepeatY",OP_PORT_TYPE_VALUE));
@@ -139,8 +142,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
     {
         self.normalRepeatYUniform.setValue(self.normalRepeatY.val);
     };
-
-
 
     this.normalScale.onValueChanged=function()
     {
@@ -257,23 +258,17 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'{'
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
-
-
-
         
-
-        .endl()+''
-
-        .endl()+'#ifdef HAS_MORPH_TARGETS'
-        .endl()+'    vec4 pos = vec4( vPosition*0.5+attrMorphTargetA*0.5, 1. );'
-        .endl()+'#endif'
-        .endl()+'#ifndef HAS_MORPH_TARGETS'
-        .endl()+'    vec4 pos = vec4( vPosition, 1. );'
-        .endl()+'#endif'
+        .endl()+'    #ifdef HAS_MORPH_TARGETS'
+        .endl()+'       vec4 pos = vec4( vPosition*0.5+attrMorphTargetA*0.5, 1. );'
+        .endl()+'   #endif'
+        .endl()+'   #ifndef HAS_MORPH_TARGETS'
+        .endl()+'       vec4 pos = vec4( vPosition, 1. );'
+        .endl()+'   #endif'
 
         .endl()+'    e = normalize( vec3( mvMatrix * pos ) );'
         .endl()+'    vec3 n = normalize( mat3(normalMatrix) * norm );'
-        .endl()+''
+
         .endl()+'    vec3 r = reflect( e, n );'
         .endl()+'    float m = 2. * sqrt( '
         .endl()+'        pow(r.x, 2.0)+'
@@ -281,13 +276,16 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'        pow(r.z + 1.0, 2.0)'
         .endl()+'    );'
         .endl()+'    vNorm = r.xy / m + 0.5;'
-        .endl()+''
 
-        .endl()+'#ifdef DO_PROJECT_COORDS'
-        .endl()+'    texCoord=(projMatrix * mvMatrix*pos).xy*0.01;'
-        .endl()+'#endif'
+        .endl()+'   #ifdef DO_PROJECT_COORDS_XY'
+        .endl()+'       texCoord=(projMatrix * mvMatrix*pos).xy*0.1;'
+        .endl()+'   #endif'
+        .endl()+'   #ifdef DO_PROJECT_COORDS_YZ'
+        .endl()+'       texCoord=(projMatrix * mvMatrix*pos).yz*0.1;'
+        .endl()+'   #endif'
 
         .endl()+'    gl_Position = projMatrix * mvMatrix * pos;'
+
         .endl()+'}';
 
 
@@ -312,7 +310,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'   uniform float normalScale;'
         .endl()+'   uniform float normalRepeatX;'
         .endl()+'   uniform float normalRepeatY;'
-        
         .endl()+'   varying vec3 e;'
         .endl()+'   vec2 vNormt;'
         .endl()+'#endif'
@@ -331,7 +328,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       tnorm.y *= -1.0;'
         .endl()+'       tnorm *=normalScale;'
 
-        .endl()+'       vec3 n = ( mat3(normalMatrix) * normalize((norm+tnorm)) );'
+        .endl()+'       vec3 n = normalize( mat3(normalMatrix) * normalize((norm+tnorm)) );'
 
         .endl()+'       vec3 r = reflect( e, n );'
         .endl()+'       float m = 2. * sqrt( '

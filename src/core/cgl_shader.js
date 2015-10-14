@@ -283,13 +283,15 @@ CGL.Shader=function()
         cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
 
-        // calc normal matrix
-        // var normalMatrix = cgl.mvMatrix.inverse();
-        var normalMatrix = mat4.create();
-        mat4.invert(normalMatrix,cgl.mvMatrix);
-        // normalMatrix = normalMatrix.transpose();
-        mat4.transpose(normalMatrix, normalMatrix);
-        cgl.gl.uniformMatrix4fv(normalMatrixUniform, false, normalMatrix);
+        if(normalMatrixUniform!=-1)
+        {
+            var normalMatrix = mat4.create();
+            mat4.invert(normalMatrix,cgl.mvMatrix);
+            mat4.transpose(normalMatrix, normalMatrix);
+
+            cgl.gl.uniformMatrix4fv(normalMatrixUniform, false, normalMatrix);
+        }
+
     };
 
     this.getProgram=function()
