@@ -117,13 +117,10 @@ function valueChanger(ele)
     var isDown=false;
     var startVal=$('#'+ele).val();
     var el=document.getElementById(ele);
-    
-
 
     function keydown(e)
     {
     }
-
 
     function down(e)
     {
@@ -133,8 +130,6 @@ function valueChanger(ele)
         document.addEventListener('webkitpointerlockchange', lockChange, false);
 
         document.addEventListener('keydown', keydown, false);
-
-
 
         el.requestPointerLock = el.requestPointerLock ||
                                     el.mozRequestPointerLock ||
@@ -148,22 +143,17 @@ function valueChanger(ele)
         document.removeEventListener('pointerlockchange', lockChange, false);
         document.removeEventListener('mozpointerlockchange', lockChange, false);
         document.removeEventListener('webkitpointerlockchange', lockChange, false);
-
         document.removeEventListener('keydown', keydown, false);
-
         document.exitPointerLock();
 
-        console.log('up!');
         $( document ).unbind( "mouseup", up );
         $( document ).unbind( "mousedown", down );
-        // $( document ).unbind( "mousemove", move );
-        document.removeEventListener("mousemove", move, false);
 
+        document.removeEventListener("mousemove", move, false);
     }
 
     function move(e)
     {
-
         var v=parseFloat( $('#'+ele).val() ,10);
         var inc=e.movementY*0.5;
         if(e.shiftKey)inc*=0.005;
@@ -176,29 +166,21 @@ function valueChanger(ele)
 
      function lockChange(e)
      {
-        if (document.pointerLockElement === el ||
-                document.mozPointerLockElement === el ||
-                document.webkitPointerLockElement === el)
+        if (document.pointerLockElement === el || document.mozPointerLockElement === el || document.webkitPointerLockElement === el)
         {
             document.addEventListener("mousemove", move, false);
         }
         else
         {
-            //cancelede by escape ?
+            //propably cancled by escape key / reset value
             $('#'+ele).val(startVal);
             $('#'+ele).trigger('input');
-
             up();
         }
-
-        // console.log('e',e);
-                                        
-
         
     }
 
     $( document ).bind( "mouseup", up );
     $( document ).bind( "mousedown", down );
-
 
 }
