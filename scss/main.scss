@@ -293,6 +293,7 @@ input[type="text"]
     input.value
     {
         background-color: #444;
+        float:left;
         &:focus
         {
             background-color: #666;
@@ -308,7 +309,6 @@ input[type="text"]
         display: block;
         padding:2px;
         padding-left: 7px;
-        border-radius: 4px;
     }
     table
     {

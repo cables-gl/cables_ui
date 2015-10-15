@@ -109,3 +109,93 @@ Handlebars.registerHelper('compare', function(left_value, operator, right_value,
         return options.inverse(this);
     }
 });
+
+
+
+function valueChanger(ele)
+{
+    var isDown=false;
+    var startVal=$('#'+ele).val();
+    var el=document.getElementById(ele);
+    
+
+    function keydown(e)
+    {
+    }
+
+
+    function down(e)
+    {
+        isDown=true;
+        document.addEventListener('pointerlockchange', lockChange, false);
+        document.addEventListener('mozpointerlockchange', lockChange, false);
+        document.addEventListener('webkitpointerlockchange', lockChange, false);
+
+        document.addEventListener('keydown', keydown, false);
+
+
+
+        el.requestPointerLock = el.requestPointerLock ||
+                                    el.mozRequestPointerLock ||
+                                    el.webkitRequestPointerLock;
+        el.requestPointerLock();
+    }
+
+    function up(e)
+    {
+        isDown=false;
+        document.removeEventListener('pointerlockchange', lockChange, false);
+        document.removeEventListener('mozpointerlockchange', lockChange, false);
+        document.removeEventListener('webkitpointerlockchange', lockChange, false);
+
+        document.removeEventListener('keydown', keydown, false);
+
+        document.exitPointerLock();
+
+        console.log('up!');
+        $( document ).unbind( "mouseup", up );
+        $( document ).unbind( "mousedown", down );
+        // $( document ).unbind( "mousemove", move );
+        document.removeEventListener("mousemove", move, false);
+
+    }
+
+    function move(e)
+    {
+        var v=parseFloat( $('#'+ele).val() ,10);
+        var inc=e.movementY*0.5;
+        
+        v+=inc;
+
+        $('#'+ele).val(v);
+        $('#'+ele).trigger('input');
+    }
+
+     function lockChange(e)
+     {
+        if (document.pointerLockElement === el ||
+                document.mozPointerLockElement === el ||
+                document.webkitPointerLockElement === el)
+        {
+            document.addEventListener("mousemove", move, false);
+        }
+        else
+        {
+            //cancelede by escape ?
+            $('#'+ele).val(startVal);
+            $('#'+ele).trigger('input');
+
+            up();
+        }
+
+        // console.log('e',e);
+                                        
+
+        
+    }
+
+    $( document ).bind( "mouseup", up );
+    $( document ).bind( "mousedown", down );
+
+
+}

@@ -611,10 +611,10 @@ var Scene = function()
 
         if(CGL.getLoadingStatus()>0 && CGL.getLoadingStatus()<1.0)
         {
-            setTimeout(function()
-            {
+            // setTimeout(function()
+            // {
                 requestAnimationFrame(self.exec);
-            },120);
+            // 120);
         }
         else
         {

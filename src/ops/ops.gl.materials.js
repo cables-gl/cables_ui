@@ -122,7 +122,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.projectCoords.onValueChanged=function()
     {
         shader.removeDefine('DO_PROJECT_COORDS_XY');
-        shader.removeDefine('DO_PROJECT_COORDS_XZ');
+        shader.removeDefine('DO_PROJECT_COORDS_YZ');
 
         if(self.projectCoords.val=='xy') shader.define('DO_PROJECT_COORDS_XY');
         if(self.projectCoords.val=='yz') shader.define('DO_PROJECT_COORDS_YZ');

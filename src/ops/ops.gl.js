@@ -483,14 +483,14 @@ Ops.Gl.Mouse = function()
     this.smoothSpeed.val=20;
 
 
-    this.canvas = document.getElementById("glcanvas");
+    var canvas = document.getElementById("glcanvas");
 
     var smoothTimer;
 
 
     this.smooth.onValueChanged=function()
     {
-        if(self.smooth.val) smoothTimer = setInterval(updateSmooth, 20);
+        if(self.smooth.val) smoothTimer = setInterval(updateSmooth, 10);
         else clearTimeout(smoothTimer);
     };
 
@@ -513,43 +513,60 @@ Ops.Gl.Mouse = function()
 
         if(self.normalize.val)
         {
-            self.mouseX.val=lineX/self.canvas.width*2.0-1.0;
-            self.mouseY.val=lineY/self.canvas.height*2.0-1.0;
+            self.mouseX.val=lineX/canvas.width*2.0-1.0;
+            self.mouseY.val=lineY/canvas.height*2.0-1.0;
         }
         else
         {
             self.mouseX.val=lineX;
             self.mouseY.val=lineY;
         }
-
     }
-    
 
-    this.canvas.onmousemove = function(e)
+    canvas.onmouseenter = function(e)
     {
-        // linetimer = setInterval(updateSmooth, 25);
+        console.log('enter');
 
+    };
+
+    canvas.onmouseleave = function(e)
+    {
+        console.log('leave');
+        if(self.smooth.val)
+        {
+            mouseX=canvas.width/2;
+            mouseY=canvas.height/2;
+        }
+                
+    };
+
+
+    canvas.onmousemove = function(e)
+    {
         if(self.smooth.val)
         {
             mouseX=e.offsetX;
             mouseY=e.offsetY;
         }
         else
+        {
             if(self.normalize.val)
             {
-                self.mouseX.val=e.offsetX/self.canvas.width*2.0-1.0;
-                self.mouseY.val=e.offsetY/self.canvas.height*2.0-1.0;
+                self.mouseX.val=e.offsetX/canvas.width*2.0-1.0;
+                self.mouseY.val=e.offsetY/canvas.height*2.0-1.0;
             }
             else
             {
                 self.mouseX.val=e.offsetX;
                 self.mouseY.val=e.offsetY;
             }
-
+        }
     };
 };
 
 Ops.Gl.Mouse.prototype = new Op();
+
+
 
 // --------------------------------------------------------------------------
     

@@ -217,7 +217,8 @@ td.port {
     border-left: 4px solid #a02bbd; }
   .panel
 input.value {
-    background-color: #444; }
+    background-color: #444;
+    float: left; }
     .panel
 input.value:focus {
       background-color: #666;
@@ -228,8 +229,7 @@ input.value:focus {
     width: 140px;
     display: block;
     padding: 2px;
-    padding-left: 7px;
-    border-radius: 4px; }
+    padding-left: 7px; }
   .panel
 table {
     width: 100%;
