@@ -378,7 +378,7 @@ CABLES.UI.Patch=function(_gui)
                 {
                     "name":name,
                     "data":data,
-                    "screenshot":cgl.screenShotDataURL
+                    "screenshot":gui.patch().scene.cgl.screenShotDataURL
                 },
                 function(r)
                 {
