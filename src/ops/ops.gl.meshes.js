@@ -463,7 +463,7 @@ Ops.Gl.Meshes.ObjMesh = function()
               for(var i=0; i<l; i++) r.verticesIndices.push(i);
           
           if(self.calcNormals.val=='face')r.calcNormals();
-          if(self.calcNormals.val=='vertex')r.calcNormals(true);
+          else if(self.calcNormals.val=='vertex')r.calcNormals(true);
 
           self.mesh=new CGL.Mesh(r);
 

@@ -709,6 +709,100 @@ Ops.Gl.TextureText.prototype = new Op();
 // --------------------------------------------------------------------------
 
 Ops.Gl.Meshes=Ops.Gl.Meshes || {};
+Ops.Gl.Meshes.SplinePoints=[];
+Ops.Gl.Meshes.Spline = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Spline';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.triggerPoints=this.addOutPort(new Port(this,"triggerPoints",OP_PORT_TYPE_FUNCTION));
+    
+    var buffer = cgl.gl.createBuffer();
+
+    this.render.onTriggered=function()
+    {
+        // var pos=[0,0,0];
+        // vec3.transformMat4(pos, [0,0,0], cgl.mvMatrix);
+        // Ops.Gl.Meshes.SplinePoints.push(pos[0]);
+        // Ops.Gl.Meshes.SplinePoints.push(pos[1]);
+        // Ops.Gl.Meshes.SplinePoints.push(pos[2]);
+
+        self.trigger.trigger();
+        bufferData();
+
+
+        cgl.pushMvMatrix();
+        mat4.identity(cgl.mvMatrix);
+
+        cgl.getShader().bind();
+        cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
+        cgl.gl.enableVertexAttribArray(cgl.getShader().getAttrVertexPos());
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+        cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, buffer.numItems);
+
+        for(var i=0;i<Ops.Gl.Meshes.SplinePoints.length;i+=3)
+        {
+            var vec=[0,0,0];
+            vec3.set(vec, Ops.Gl.Meshes.SplinePoints[i+0], Ops.Gl.Meshes.SplinePoints[i+1], Ops.Gl.Meshes.SplinePoints[i+2]);
+            cgl.pushMvMatrix();
+            mat4.translate(cgl.mvMatrix,cgl.mvMatrix, vec);
+            self.triggerPoints.trigger();
+            cgl.popMvMatrix();
+        }
+
+        cgl.popMvMatrix();
+
+        Ops.Gl.Meshes.SplinePoints.length=0;
+    };
+
+    function bufferData()
+    {
+        cgl.gl.lineWidth(2);
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(Ops.Gl.Meshes.SplinePoints), cgl.gl.STATIC_DRAW);
+        buffer.itemSize = 3;
+        buffer.numItems = Ops.Gl.Meshes.SplinePoints.length/buffer.itemSize;
+    }
+
+    bufferData();
+};
+
+Ops.Gl.Meshes.Spline.prototype = new Op();
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Meshes.SplinePoint = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='SplinePoint';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.render.onTriggered=function()
+    {
+        var pos=[0,0,0];
+        vec3.transformMat4(pos, [0,0,0], cgl.mvMatrix);
+
+        Ops.Gl.Meshes.SplinePoints.push(pos[0]);
+        Ops.Gl.Meshes.SplinePoints.push(pos[1]);
+        Ops.Gl.Meshes.SplinePoints.push(pos[2]);
+
+        self.trigger.trigger();
+    };
+
+};
+
+Ops.Gl.Meshes.SplinePoint.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
 Ops.Gl.Meshes.Plotter = function()
 {
     Op.apply(this, arguments);
@@ -721,8 +815,9 @@ Ops.Gl.Meshes.Plotter = function()
 
     this.render.onTriggered=function()
     {
-        cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),self.buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
         cgl.getShader().bind();
+        cgl.gl.enableVertexAttribArray(cgl.getShader().getAttrVertexPos());
+        cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),self.buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, self.buffer);
         cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, self.buffer.numItems);
 
