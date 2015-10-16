@@ -521,7 +521,7 @@ Link.canLink=function(p1,p2)
 
 // ------------------------------------------------------------------------------------
 
-var Scene = function()
+var Scene = function(cfg)
 {
     var self=this;
     this.ops=[];
@@ -532,6 +532,14 @@ var Scene = function()
 
     this.onLoadStart=null;
     this.onLoadEnd=null;
+
+    this.config = cfg ||
+    {
+        glCanvasId:"glcanvas"
+    };
+
+    cgl.setCanvas(this.config.glCanvasId);
+
 
     this.clear=function()
     {
@@ -792,10 +800,7 @@ var Scene = function()
             this.ops[i].id=generateUUID();
         }
 
-
-
         if(this.onLoadEnd)this.onLoadEnd();
-
 
     };
 

@@ -16,14 +16,23 @@ CGL.State=function()
     var simpleShader=new CGL.Shader();
     var currentShader=simpleShader;
 
-    var canvas = document.getElementById("glcanvas");
-    this.gl=canvas.getContext("experimental-webgl",
+    this.setCanvas=function(id)
+    {
+        console.log('state set canvas! '+id);
+
+        this.canvas=document.getElementById(id);
+        this.gl=this.canvas.getContext("experimental-webgl",
         {
             preserveDrawingBuffer: true,
             antialias:true
         });
-    this.canvasWidth=640;
-    this.canvasHeight=360;
+
+        this.canvasWidth=this.canvas.clientWidth;
+        this.canvasHeight=this.canvas.clientHeight;
+    };
+
+    this.canvasWidth=-1;
+    this.canvasHeight=-1;
 
     this.wireframe=false;
     this.points=false;

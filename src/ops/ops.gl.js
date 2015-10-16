@@ -21,11 +21,23 @@ Ops.Gl.Renderer = function()
 
     var identTranslate=vec3.create();
     vec3.set(identTranslate, 0,0,-2);
-    cgl.canvas = document.getElementById("glcanvas");
+
+
+
+        
+
+    console.log('set canv yay!');
+            
     cgl.patch=self.patch;
 
     this.onAnimFrame=function(time)
     {
+        if(cgl.canvasWidth==-1)
+        {
+            cgl.setCanvas(self.patch.config.glCanvasId);
+            return;
+        }
+
         if(cgl.canvasWidth!=cgl.canvas.clientWidth || cgl.canvasHeight!=cgl.canvas.clientHeight)
         {
             cgl.canvasWidth=cgl.canvas.clientWidth;
@@ -445,11 +457,11 @@ Ops.Gl.ColorPick=function()
     this.a=this.addOutPort(new Port(this,"a",OP_PORT_TYPE_VALUE));
 
     var pixelValues = new Uint8Array(4);
-    var canvas = document.getElementById("glcanvas");
+    // var canvas = document.getElementById("glcanvas");
 
     function render()
     {
-        cgl.gl.readPixels(self.x.val, canvas.height-self.y.val, 1,1,  cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE ,pixelValues);
+        cgl.gl.readPixels(self.x.val, cgl.canvas.height-self.y.val, 1,1,  cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE ,pixelValues);
         self.r.val=pixelValues[0]/255;
         self.g.val=pixelValues[1]/255;
         self.b.val=pixelValues[2]/255;
@@ -483,7 +495,7 @@ Ops.Gl.Mouse = function()
     this.smoothSpeed.val=20;
 
 
-    var canvas = document.getElementById("glcanvas");
+    // var canvas = document.getElementById("glcanvas");
 
     var smoothTimer;
 
@@ -513,8 +525,8 @@ Ops.Gl.Mouse = function()
 
         if(self.normalize.val)
         {
-            self.mouseX.val=lineX/canvas.width*2.0-1.0;
-            self.mouseY.val=lineY/canvas.height*2.0-1.0;
+            self.mouseX.val=lineX/cgl.canvas.width*2.0-1.0;
+            self.mouseY.val=lineY/cgl.canvas.height*2.0-1.0;
         }
         else
         {
@@ -523,25 +535,25 @@ Ops.Gl.Mouse = function()
         }
     }
 
-    canvas.onmouseenter = function(e)
+    cgl.canvas.onmouseenter = function(e)
     {
         console.log('enter');
 
     };
 
-    canvas.onmouseleave = function(e)
+    cgl.canvas.onmouseleave = function(e)
     {
         console.log('leave');
         if(self.smooth.val)
         {
-            mouseX=canvas.width/2;
-            mouseY=canvas.height/2;
+            mouseX=cgl.canvas.width/2;
+            mouseY=cgl.canvas.height/2;
         }
                 
     };
 
 
-    canvas.onmousemove = function(e)
+    cgl.canvas.onmousemove = function(e)
     {
         if(self.smooth.val)
         {
@@ -552,8 +564,8 @@ Ops.Gl.Mouse = function()
         {
             if(self.normalize.val)
             {
-                self.mouseX.val=e.offsetX/canvas.width*2.0-1.0;
-                self.mouseY.val=e.offsetY/canvas.height*2.0-1.0;
+                self.mouseX.val=e.offsetX/cgl.canvas.width*2.0-1.0;
+                self.mouseY.val=e.offsetY/cgl.canvas.height*2.0-1.0;
             }
             else
             {
@@ -645,7 +657,6 @@ Ops.Gl.Texture = function()
         if(self.textureOut.showPreview) CGL.Texture.previewTexture=self.textureOut.val;
         // if(self.texture.showPreview) self.render.onTriggered=self.texture.val.preview;
         // else self.render.onTriggered=self.doRender;
-
         // console.log('show preview!');
     };
 
