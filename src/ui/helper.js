@@ -155,7 +155,7 @@ function valueChanger(ele)
     function move(e)
     {
         var v=parseFloat( $('#'+ele).val() ,10);
-        var inc=e.movementY*0.5;
+        var inc=e.movementY*-0.5;
         if(e.shiftKey)inc*=0.005;
         
         v+=inc;
