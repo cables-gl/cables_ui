@@ -794,6 +794,7 @@ Ops.LoadingStatus = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='loadingStatus';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -822,7 +823,7 @@ Ops.LoadingStatus = function()
         self.finished.trigger();
         cgl.gl.flush();
 
-        Ops.Gl.Renderer.renderStart(identTranslate);
+        Ops.Gl.Renderer.renderStart(cgl,identTranslate);
 
         cgl.gl.clearColor(0,0,0,1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
@@ -830,7 +831,7 @@ Ops.LoadingStatus = function()
         self.loading.trigger();
         // console.log('pre anim');
         
-        Ops.Gl.Renderer.renderEnd();
+        Ops.Gl.Renderer.renderEnd(cgl);
         preRenderDone=preRenderInc;
     };
 

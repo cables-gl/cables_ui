@@ -13,7 +13,7 @@ CGL.State=function()
     this.canvas=null;
     mat4.identity(self.mvMatrix);
 
-    var simpleShader=new CGL.Shader();
+    var simpleShader=new CGL.Shader(this);
     var currentShader=simpleShader;
 
     this.setCanvas=function(id)
@@ -49,7 +49,7 @@ CGL.State=function()
 
     this.resetViewPort=function()
     {
-        cgl.gl.viewport(
+        this.gl.viewport(
             viewPort[0],
             viewPort[1],
             viewPort[2],
@@ -61,7 +61,7 @@ CGL.State=function()
         viewPort[1]=parseInt(y,10);
         viewPort[2]=parseInt(w,10);
         viewPort[3]=parseInt(h,10);
-        cgl.gl.viewport(
+        this.gl.viewport(
             viewPort[0],
             viewPort[1],
             viewPort[2],
@@ -90,7 +90,6 @@ CGL.State=function()
             this.doScreenshot=false;
             this.screenShotDataURL = document.getElementById("glcanvas").toDataURL('image/png');
         }
-
     };
 
     // shader stack
@@ -142,9 +141,6 @@ CGL.State=function()
         if(pMatrixStack.length===0) throw "Invalid projection popMatrix!";
         self.pMatrix = pMatrixStack.pop();
     };
-
-
 };
 
-cgl=new CGL.State();
 

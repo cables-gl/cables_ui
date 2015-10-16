@@ -7,6 +7,7 @@ Ops.Experimental.ImageStream = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='ImageStream';
 
@@ -15,7 +16,7 @@ Ops.Experimental.ImageStream = function()
 
     this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
 
-    var texture=new CGL.Texture();
+    var texture=new CGL.Texture(cgl);
     texture.setSize(320,240);
 
     $('#glcanvas').append('<img id="imagestream">');
@@ -52,6 +53,7 @@ Ops.Experimental.SaltedPerceptionMaterial = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='SaltedPerceptionMaterial';
 
@@ -132,7 +134,7 @@ Ops.Experimental.SaltedPerceptionMaterial = function()
         .endl()+"gl_FragColor = color;"
         .endl()+"}";
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     shader.setSource(shader_vert,shader_frag);
 
 

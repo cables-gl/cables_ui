@@ -8,6 +8,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='image compose';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -20,10 +21,10 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.texOut=this.addOutPort(new Port(this,"texture_out",OP_PORT_TYPE_TEXTURE,{preview:true}));
 
-    var effect=new CGL.TextureEffect();
+    var effect=new CGL.TextureEffect(cgl);
 
     cgl.currentTextureEffect=effect;
-    this.tex=new CGL.Texture();
+    this.tex=new CGL.Texture(cgl);
 
     var w=8,h=8;
 
@@ -120,12 +121,13 @@ Ops.Gl.TextureEffects.Invert = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Invert';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
     
 
@@ -176,6 +178,7 @@ Ops.Gl.TextureEffects.Scroll = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Scroll';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -184,7 +187,7 @@ Ops.Gl.TextureEffects.Scroll = function()
     this.amountX=this.addInPort(new Port(this,"amountX",OP_PORT_TYPE_VALUE));
     this.amountY=this.addInPort(new Port(this,"amountY",OP_PORT_TYPE_VALUE));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -254,6 +257,7 @@ Ops.Gl.TextureEffects.Desaturate = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Desaturate';
 
@@ -261,7 +265,7 @@ Ops.Gl.TextureEffects.Desaturate = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -323,6 +327,7 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='PixelDisplacement';
 
@@ -333,7 +338,7 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
     this.displaceTex=this.addInPort(new Port(this,"displaceTex",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -408,6 +413,7 @@ Ops.Gl.TextureEffects.MixImage = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='MixImage';
 
@@ -416,7 +422,7 @@ Ops.Gl.TextureEffects.MixImage = function()
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -487,6 +493,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='DrawImage';
 
@@ -513,7 +520,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -831,6 +838,7 @@ Ops.Gl.TextureEffects.DepthTexture = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='DepthTexture';
 
@@ -841,7 +849,7 @@ Ops.Gl.TextureEffects.DepthTexture = function()
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -919,6 +927,7 @@ Ops.Gl.TextureEffects.SSAO = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='SSAO';
 
@@ -931,7 +940,7 @@ Ops.Gl.TextureEffects.SSAO = function()
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1092,6 +1101,7 @@ Ops.Gl.TextureEffects.AlphaMask = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='AlphaMask';
 
@@ -1101,7 +1111,7 @@ Ops.Gl.TextureEffects.AlphaMask = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1201,6 +1211,7 @@ Ops.Gl.TextureEffects.WipeTransition = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='WipeTransition';
 
@@ -1210,7 +1221,7 @@ Ops.Gl.TextureEffects.WipeTransition = function()
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1294,6 +1305,7 @@ Ops.Gl.TextureEffects.ColorLookup = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='ColorLookup';
 
@@ -1303,7 +1315,7 @@ Ops.Gl.TextureEffects.ColorLookup = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1383,6 +1395,7 @@ Ops.Gl.TextureEffects.BrightnessContrast = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='BrightnessContrast';
 
@@ -1391,7 +1404,7 @@ Ops.Gl.TextureEffects.BrightnessContrast = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1466,13 +1479,14 @@ Ops.Gl.TextureEffects.RemoveAlpha = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='RemoveAlpha';
 
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1525,6 +1539,7 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='ColorOverlay';
 
@@ -1537,7 +1552,7 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
     this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
 
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1631,13 +1646,14 @@ Ops.Gl.TextureEffects.ColorChannel = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='ColorChannel';
 
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1743,6 +1759,7 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='RgbMultiply';
 
@@ -1756,7 +1773,7 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1828,6 +1845,7 @@ Ops.Gl.TextureEffects.Hue = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Hue';
 
@@ -1838,7 +1856,7 @@ Ops.Gl.TextureEffects.Hue = function()
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -1916,6 +1934,7 @@ Ops.Gl.TextureEffects.Color = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Color';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -1925,7 +1944,7 @@ Ops.Gl.TextureEffects.Color = function()
     this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -2004,6 +2023,7 @@ Ops.Gl.TextureEffects.Vignette = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Vignette';
 
@@ -2012,7 +2032,7 @@ Ops.Gl.TextureEffects.Vignette = function()
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -2081,6 +2101,7 @@ Ops.Gl.TextureEffects.Blur = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Blur';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -2089,7 +2110,7 @@ Ops.Gl.TextureEffects.Blur = function()
     this.iterations=this.addInPort(new Port(this,"iterations",OP_PORT_TYPE_VALUE));
     this.iterations.val=10;
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -2183,6 +2204,7 @@ Ops.Gl.TextureEffects.FXAA = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     // shader from: https://github.com/mattdesl/glsl-fxaa
 
@@ -2197,7 +2219,7 @@ Ops.Gl.TextureEffects.FXAA = function()
     this.texWidth=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.texHeight=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
     var srcFrag=''
                
@@ -2341,6 +2363,7 @@ Ops.Gl.TextureEffects.Noise = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Noise';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -2348,7 +2371,7 @@ Ops.Gl.TextureEffects.Noise = function()
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''
@@ -2419,6 +2442,7 @@ Ops.Gl.TextureEffects.ChromaticAberration = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='ChromaticAberration';
 
@@ -2426,7 +2450,7 @@ Ops.Gl.TextureEffects.ChromaticAberration = function()
     this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{display:'range'}));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
     var srcFrag=''

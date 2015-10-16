@@ -10,7 +10,7 @@ var OP_PORT_TYPE_DYNAMIC=4;
 
 var Ops = {};
 
-var Op = function()
+var Op = function(_patch)
 {
     this.objName='';
     this.portsOut=[];
@@ -18,7 +18,7 @@ var Op = function()
     this.posts=[];
     this.uiAttribs={};
     this.enabled=true;
-    this.patch=null;
+    this.patch=_patch;
     this.name='unknown';
     this.id=generateUUID();
     this.onAddPort=null;
@@ -538,8 +538,9 @@ var Scene = function(cfg)
         glCanvasId:"glcanvas"
     };
 
-    cgl.setCanvas(this.config.glCanvasId);
-
+    this.cgl=new CGL.State();
+    this.cgl.patch=this;
+    this.cgl.setCanvas(this.config.glCanvasId);
 
     this.clear=function()
     {
@@ -553,7 +554,20 @@ var Scene = function(cfg)
 
     this.addOp=function(objName,uiAttribs)
     {
-        var op=eval('new '+objName+'();');
+
+        // console.log('objName',objName);
+        // var op=eval('new '+objName+'();');
+        var parts=objName.split('.');
+        var op=null;
+        if(parts.length==2) op=new window[parts[0]][parts[1]](this);
+        else if(parts.length==3) op=new window[parts[0]][parts[1]][parts[2]](this);
+        else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this);
+        else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this);
+        else console.log('parts.length',parts.length);
+                
+
+
+        // var op=new window[objName]();
         op.objName=objName;
         op.patch=this;
         op.uiAttr(uiAttribs);

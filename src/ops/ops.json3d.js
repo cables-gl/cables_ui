@@ -5,8 +5,9 @@ Ops.Json3d.currentScene=null;
 
 Ops.Json3d.json3dFile = function()
 {
-    var self=this;
     Op.apply(this, arguments);
+    var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='json3dFile';
 
@@ -126,8 +127,9 @@ Ops.Json3d.json3dFile.prototype = new Op();
 
 Ops.Json3d.Mesh=function()
 {
-    var self=this;
     Op.apply(this, arguments);
+    var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='json3d Mesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION ));
@@ -205,7 +207,7 @@ Ops.Json3d.Mesh=function()
             self.uiAttribs.info += geom.vertexNormals.length+' normals <br/>';
 
             self.geometryOut.val=geom;
-            mesh=new CGL.Mesh(geom);
+            mesh=new CGL.Mesh(cgl,geom);
         }
         else
         {

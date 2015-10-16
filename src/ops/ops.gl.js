@@ -13,6 +13,15 @@ Ops.Gl.Renderer = function()
     Op.apply(this, arguments);
     var self=this;
 
+
+
+    if(!this.patch.cgl)
+    {
+        console.log(' no cgl!');
+    }
+
+    var cgl=this.patch.cgl;
+
     this.name='renderer';
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -22,13 +31,9 @@ Ops.Gl.Renderer = function()
     var identTranslate=vec3.create();
     vec3.set(identTranslate, 0,0,-2);
 
-
-
-        
-
     console.log('set canv yay!');
             
-    cgl.patch=self.patch;
+    
 
     this.onAnimFrame=function(time)
     {
@@ -46,7 +51,7 @@ Ops.Gl.Renderer = function()
             self.height.val=cgl.canvasHeight;
         }
 
-        Ops.Gl.Renderer.renderStart(identTranslate);
+        Ops.Gl.Renderer.renderStart(cgl,identTranslate);
 
         self.trigger.trigger();
 
@@ -55,13 +60,13 @@ Ops.Gl.Renderer = function()
             if(!CGL.Texture.texturePreviewer) CGL.Texture.texturePreviewer=new CGL.Texture.texturePreview();
             CGL.Texture.texturePreviewer.render(CGL.Texture.previewTexture);
         }
-        Ops.Gl.Renderer.renderEnd();
+        Ops.Gl.Renderer.renderEnd(cgl);
     };
 
 };
 
 
-Ops.Gl.Renderer.renderStart=function(identTranslate)
+Ops.Gl.Renderer.renderStart=function(cgl,identTranslate)
 {
     cgl.gl.enable(cgl.gl.DEPTH_TEST);
     cgl.gl.clearColor(0,0,0,1);
@@ -82,7 +87,7 @@ Ops.Gl.Renderer.renderStart=function(identTranslate)
     cgl.beginFrame();
 };
 
-Ops.Gl.Renderer.renderEnd=function(identTranslate)
+Ops.Gl.Renderer.renderEnd=function(cgl,identTranslate)
 {
     cgl.popMvMatrix();
     cgl.popPMatrix();
@@ -100,6 +105,7 @@ Ops.Gl.Perspective = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Perspective';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -140,6 +146,7 @@ Ops.Gl.LetterBox = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='letterbox';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -217,6 +224,7 @@ Ops.Gl.ClearAlpha = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='ClearAlpha';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -246,6 +254,7 @@ Ops.Gl.ClearColor = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='ClearColor';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -277,6 +286,7 @@ Ops.Gl.FaceCulling = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='FaceCulling';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -317,6 +327,7 @@ Ops.Gl.Depth = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Depth';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -373,6 +384,7 @@ Ops.Gl.ClearDepth = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='ClearDepth';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -393,6 +405,7 @@ Ops.Gl.Wireframe = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Wireframe';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -419,6 +432,7 @@ Ops.Gl.Points = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Points';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -445,6 +459,7 @@ Ops.Gl.ColorPick=function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='ColorPick';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -482,6 +497,7 @@ Ops.Gl.Mouse = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='mouse';
     this.mouseX=this.addOutPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
@@ -578,13 +594,14 @@ Ops.Gl.TextureEmpty = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='texture empty';
     this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addInPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
-    this.tex=new CGL.Texture();
+    this.tex=new CGL.Texture(cgl);
     
     var sizeChanged=function()
     {
@@ -607,6 +624,7 @@ Ops.Gl.Texture = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='texture';
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'image' } ));
@@ -623,7 +641,7 @@ Ops.Gl.Texture = function()
     var reload=function()
     {
         // console.log('load texture...');
-        self.tex=CGL.Texture.load(self.filename.val,function()
+        self.tex=CGL.Texture.load(cgl,self.filename.val,function()
         {
             self.textureOut.val=self.tex;
             self.width.val=self.tex.width;
@@ -662,6 +680,7 @@ Ops.Gl.TextureText = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='TextureText';
     this.text=this.addInPort(new Port(this,"text",OP_PORT_TYPE_VALUE,{type:'string'}));
@@ -697,7 +716,7 @@ Ops.Gl.TextureText = function()
         ctx.restore();
 
         if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);
-            else self.textureOut.val=new CGL.Texture.fromImage(fontImage);
+            else self.textureOut.val=new CGL.Texture.fromImage(cgl,fontImage);
     }
 
     this.align.onValueChanged=refresh;
@@ -717,6 +736,7 @@ Ops.Gl.Meshes.Spline = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Spline';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -820,6 +840,7 @@ Ops.Gl.Meshes.SplinePoint = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='SplinePoint';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -847,6 +868,7 @@ Ops.Gl.Meshes.Plotter = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Plotter';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -913,6 +935,7 @@ Ops.Gl.Matrix.Translate = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='translate';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -945,6 +968,7 @@ Ops.Gl.Matrix.Scale = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='scale';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -992,6 +1016,7 @@ Ops.Gl.Matrix.LookatCamera = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='LookatCamera';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -1051,6 +1076,7 @@ Ops.Gl.Matrix.Shear = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
     this.name='Shear';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -1097,6 +1123,7 @@ Ops.Gl.Matrix.Transform = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
     this.name='transform';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -1198,6 +1225,7 @@ Ops.Gl.Matrix.MatrixMul = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
     this.name='matrix';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -1229,6 +1257,7 @@ Ops.RandomCluster = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='random cluster';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -1304,6 +1333,7 @@ Ops.Gl.Render2Texture = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     var depthTextureExt = cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) ||
                     cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" ) ||
@@ -1315,8 +1345,8 @@ Ops.Gl.Render2Texture = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var frameBuf;
-    var texture=new CGL.Texture();
-    var textureDepth=new CGL.Texture({isDepthTexture:true});
+    var texture=new CGL.Texture(cgl);
+    var textureDepth=new CGL.Texture(cgl,{isDepthTexture:true});
 
     this.useVPSize=this.addInPort(new Port(this,"use viewport size",OP_PORT_TYPE_VALUE,{ display:'bool' }));
 
@@ -1476,6 +1506,7 @@ Ops.Gl.Spray = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='spray';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -1602,6 +1633,7 @@ Ops.Gl.Identity = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Identity';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -1629,6 +1661,7 @@ Ops.Gl.CanvasSize = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='CanvasSize';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -1656,6 +1689,7 @@ Ops.Gl.ViewPortSize = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='ViewPortSize';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -1688,6 +1722,7 @@ Ops.Gl.Performance = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Performance';
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
@@ -1775,8 +1810,8 @@ Ops.Gl.Performance = function()
         ctx.fillText(text2, 10, 35);
         ctx.restore();
 
-        if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);
-            else self.textureOut.val=new CGL.Texture.fromImage(fontImage);
+        if(self.textureOut.val) self.textureOut.val.initTexture(cgl,fontImage);
+            else self.textureOut.val=new CGL.Texture.fromImage(cgl,fontImage);
 
         lastTime=performance.now();
         selfTime=performance.now()-ll;

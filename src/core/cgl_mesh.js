@@ -1,7 +1,7 @@
 var CGL=CGL || {};
 
 
-CGL.Mesh=function(geom)
+CGL.Mesh=function(cgl,geom)
 {
     var bufVertices = cgl.gl.createBuffer();
     var bufVerticesIndizes = cgl.gl.createBuffer();

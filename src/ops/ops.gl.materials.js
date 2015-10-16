@@ -6,6 +6,7 @@ Ops.Gl.Shader.Shader = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='Shader';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -37,6 +38,7 @@ Ops.Gl.Shader.ShowNormalsMaterial = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='ShowNormalsMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -60,7 +62,7 @@ Ops.Gl.Shader.ShowNormalsMaterial = function()
         .endl()+'}';
 
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
 
@@ -79,6 +81,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='MatCapMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -367,7 +370,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+''
         .endl()+'}';
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     shader.bindTextures=this.bindTextures;
     this.shaderOut.val=shader;
     this.onLoaded=shader.compile;
@@ -394,6 +397,7 @@ Ops.Gl.Shader.GradientMaterial = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='GradientMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -486,7 +490,7 @@ Ops.Gl.Shader.GradientMaterial = function()
         .endl()+'   }'
         .endl()+'}';
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     shader.define("USE_TEXCOORDS");
@@ -547,6 +551,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='BasicMaterial';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION) );
@@ -650,7 +655,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'}';
 
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     shader.bindTextures=this.bindTextures;
     this.shaderOut.val=shader;
     this.onLoaded=shader.compile;
@@ -792,6 +797,7 @@ Ops.Gl.Shader.TextureSinusWobble = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     this.name='texture sinus wobble';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION) );
@@ -849,7 +855,7 @@ Ops.Gl.Shader.TextureSinusWobble = function()
         .endl()+'}';
 
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 

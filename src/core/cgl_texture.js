@@ -1,8 +1,9 @@
+
 var CGL=CGL || {};
 
-
-CGL.Texture=function(options)
+CGL.Texture=function(cgl,options)
 {
+    if(!cgl) throw "no cgl";
     var self=this;
     this.tex = cgl.gl.createTexture();
     this.width=0;
@@ -129,10 +130,10 @@ CGL.Texture=function(options)
 
 };
 
-CGL.Texture.load=function(url,finishedCallback,settings)
+CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 {
     CGL.incrementLoadingAssets();
-    var texture=new CGL.Texture();
+    var texture=new CGL.Texture(cgl);
     texture.image = new Image();
 
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
@@ -149,9 +150,9 @@ CGL.Texture.load=function(url,finishedCallback,settings)
 
 
 
-CGL.Texture.fromImage=function(img)
+CGL.Texture.fromImage=function(cgl,img)
 {
-    var texture=new CGL.Texture();
+    var texture=new CGL.Texture(cgl);
     texture.flip=true;
     texture.image = img;
     texture.initTexture(img);
@@ -166,7 +167,7 @@ CGL.Texture.FILTER_MIPMAP=2;
 
 CGL.Texture.previewTexture=null;
 CGL.Texture.texturePreviewer=null;
-CGL.Texture.texturePreview=function()
+CGL.Texture.texturePreview=function(cgl)
 {
     var size=2;
 
@@ -190,7 +191,7 @@ CGL.Texture.texturePreview=function()
         0, 1, 2,
         3, 1, 2
     ];
-    var mesh=new CGL.Mesh(geom);
+    var mesh=new CGL.Mesh(cgl,geom);
 
 
 
@@ -218,7 +219,7 @@ CGL.Texture.texturePreview=function()
         .endl()+'}';
 
 
-    var shader=new CGL.Shader();
+    var shader=new CGL.Shader(cgl);
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
     var timeUni=new CGL.Uniform(shader,'f','time',0);

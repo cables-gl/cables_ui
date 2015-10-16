@@ -1,6 +1,6 @@
 var CGL=CGL || {};
 
-CGL.TextureEffect=function()
+CGL.TextureEffect=function(cgl)
 {
     var self=this;
     var geom=new CGL.Geometry();
@@ -24,10 +24,10 @@ CGL.TextureEffect=function()
         3, 1, 2
     ];
 
-    var mesh=new CGL.Mesh(geom);
+    var mesh=new CGL.Mesh(cgl,geom);
 
     var textureSource=null;
-    var textureTarget=new CGL.Texture();
+    var textureTarget=new CGL.Texture(cgl);
 
     var frameBuf = cgl.gl.createFramebuffer();
     var renderbuffer = cgl.gl.createRenderbuffer();
@@ -43,7 +43,7 @@ CGL.TextureEffect=function()
     {
         if(tex===null)
         {
-            textureSource=new CGL.Texture();
+            textureSource=new CGL.Texture(cgl);
             textureSource.setSize(16,16);
         }
         else

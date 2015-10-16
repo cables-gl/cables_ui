@@ -7,6 +7,7 @@ Ops.Gl.Meshes.MorphMesh = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='MorphMesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -42,7 +43,7 @@ Ops.Gl.Meshes.MorphMesh = function()
             console.log(geom.morphTargets[0].length);
                     
 
-            mesh=new CGL.Mesh(geom);
+            mesh=new CGL.Mesh(cgl,geom);
 
         }
         else
@@ -65,6 +66,7 @@ Ops.Gl.Meshes.Triangle = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Triangle';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -86,7 +88,7 @@ Ops.Gl.Meshes.Triangle = function()
     geom.verticesIndices = [
         0, 1, 2
     ];
-    this.mesh=new CGL.Mesh(geom);
+    this.mesh=new CGL.Mesh(cgl,geom);
 };
 
 Ops.Gl.Meshes.Triangle.prototype = new Op();
@@ -97,6 +99,7 @@ Ops.Gl.Meshes.Rectangle = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='rectangle';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -152,7 +155,7 @@ Ops.Gl.Meshes.Rectangle = function()
             0, 1, 2,
             2, 1, 3
         ];
-        if(!self.mesh) self.mesh=new CGL.Mesh(geom);
+        if(!self.mesh) self.mesh=new CGL.Mesh(cgl,geom);
         self.mesh.setGeom(geom);
     }
     rebuild();
@@ -171,6 +174,7 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='fullscreen rectangle';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -234,7 +238,7 @@ Ops.Gl.Meshes.FullscreenRectangle = function()
             3, 1, 2
         ];
 
-        if(!self.mesh) self.mesh=new CGL.Mesh(geom);
+        if(!self.mesh) self.mesh=new CGL.Mesh(cgl,geom);
         else self.mesh.setGeom(geom);
     }
 };
@@ -247,6 +251,7 @@ Ops.Gl.Meshes.Circle = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Circle';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -277,7 +282,7 @@ Ops.Gl.Meshes.Circle = function()
 
 
     var geom=new CGL.Geometry();
-    var mesh=new CGL.Mesh(geom);
+    var mesh=new CGL.Mesh(cgl,geom);
 
     function calc()
     {
@@ -395,6 +400,7 @@ Ops.Gl.Meshes.ObjMesh = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='OBJ Mesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -465,7 +471,7 @@ Ops.Gl.Meshes.ObjMesh = function()
           if(self.calcNormals.val=='face')r.calcNormals();
           else if(self.calcNormals.val=='vertex')r.calcNormals(true);
 
-          self.mesh=new CGL.Mesh(r);
+          self.mesh=new CGL.Mesh(cgl,r);
 
 
           CGL.decrementLoadingAssets();
@@ -494,6 +500,7 @@ Ops.Gl.Meshes.Cube = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=this.patch.cgl;
 
     this.name='Cube';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -623,7 +630,7 @@ Ops.Gl.Meshes.Cube = function()
             20, 21, 22,   20, 22, 23  // Left face
         ];
 
-    this.mesh=new CGL.Mesh(geom);
+    this.mesh=new CGL.Mesh(cgl,geom);
 };
 
 Ops.Gl.Meshes.Cube.prototype = new Op();

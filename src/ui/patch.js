@@ -350,7 +350,7 @@ CABLES.UI.Patch=function(_gui)
     {
         CABLES.UI.MODAL.showLoading('saving project');
 
-        cgl.doScreenshot=true;
+        gui.patch().scene.cgl.doScreenshot=true;
     
         var id=currentProject._id;
         var name=currentProject.name;

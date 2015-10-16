@@ -21,8 +21,8 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     this.updateValueF=function()
     {
-        if(loc==-1) loc=cgl.gl.getUniformLocation(shader.getProgram(), name);
-        cgl.gl.uniform1f(loc, value);
+        if(loc==-1) loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+        shader.getCgl().gl.uniform1f(loc, value);
     };
 
     this.bindTextures=function()
@@ -42,8 +42,8 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     this.updateValue4F=function()
     {
-        if(loc==-1) loc=cgl.gl.getUniformLocation(shader.getProgram(), name);
-        cgl.gl.uniform4f(loc, value[0],value[1],value[2],value[3]);
+        if(loc==-1) loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+        shader.getCgl().gl.uniform4f(loc, value[0],value[1],value[2],value[3]);
     };
 
     this.setValue4F=function(v)
@@ -57,11 +57,11 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     {
         if(loc==-1)
         {
-            loc=cgl.gl.getUniformLocation(shader.getProgram(), name);
+            loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
             if(loc==-1) console.log('texture loc unknown!!');
         }
 
-        cgl.gl.uniform1i(loc, value);
+        shader.getCgl().gl.uniform1i(loc, value);
     };
 
     this.setValueT=function(v)
@@ -93,7 +93,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
 // ---------------------------------------------------------------------------
 
-CGL.Shader=function()
+CGL.Shader=function(_cgl)
 {
     var self=this;
     var program=false;
@@ -101,6 +101,12 @@ CGL.Shader=function()
     var defines=[];
     var needsRecompile=true;
     var infoLog='';
+    var cgl=_cgl;
+
+    this.getCgl=function()
+    {
+        return cgl;
+    }
 
     this.define=function(name,value)
     {
@@ -387,8 +393,6 @@ CGL.Shader=function()
         linkProgram(program);
         return program;
     };
-
-
 
 };
 
