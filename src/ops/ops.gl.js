@@ -469,7 +469,6 @@ Ops.Gl.ColorPick=function()
     }
 
     this.render.onTriggered=render;
-
 };
 
 Ops.Gl.ColorPick.prototype = new Op();
@@ -494,11 +493,7 @@ Ops.Gl.Mouse = function()
     this.smoothSpeed=this.addInPort(new Port(this,"smoothSpeed",OP_PORT_TYPE_VALUE));
     this.smoothSpeed.val=20;
 
-
-    // var canvas = document.getElementById("glcanvas");
-
     var smoothTimer;
-
 
     this.smooth.onValueChanged=function()
     {
@@ -537,21 +532,18 @@ Ops.Gl.Mouse = function()
 
     cgl.canvas.onmouseenter = function(e)
     {
-        console.log('enter');
-
+        // console.log('enter');
     };
 
     cgl.canvas.onmouseleave = function(e)
     {
-        console.log('leave');
+        // console.log('leave');
         if(self.smooth.val)
         {
             mouseX=cgl.canvas.width/2;
             mouseY=cgl.canvas.height/2;
         }
-                
     };
-
 
     cgl.canvas.onmousemove = function(e)
     {
