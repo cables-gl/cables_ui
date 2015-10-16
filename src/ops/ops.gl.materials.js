@@ -145,7 +145,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     this.normalScale.onValueChanged=function()
     {
-        self.normalScaleUniform.setValue(self.normalScale.val);
+        self.normalScaleUniform.setValue(self.normalScale.val*5.0);
     };
 
     this.texture.onValueChanged=function()
@@ -323,12 +323,24 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'   vec2 vn=vNorm;'
 
         .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
-
         .endl()+'       vec3 tnorm=texture2D( texNormal, vec2(texCoord.x*normalRepeatX,texCoord.y*normalRepeatY) ).xyz * 2.0 - 1.0;'
-        .endl()+'       tnorm.y *= -1.0;'
-        .endl()+'       tnorm *=normalScale;'
+        
 
-        .endl()+'       vec3 n = normalize( mat3(normalMatrix) * normalize((norm+tnorm)) );'
+        .endl()+'vec3 tangent;'
+        .endl()+'vec3 binormal;'
+        .endl()+'vec3 c1 = cross(norm, vec3(0.0, 0.0, 1.0));'
+        .endl()+'vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
+        .endl()+'if(length(c1)>length(c2)) tangent = c1;'
+        .endl()+'    else tangent = c2;'
+        .endl()+'tangent = normalize(tangent);'
+        .endl()+'binormal = cross(norm, tangent);'
+        .endl()+'binormal = normalize(binormal);'
+        .endl()+'tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
+    
+        
+
+        // .endl()+'       tnorm.y *= -1.0;'
+        .endl()+'       vec3 n = normalize( mat3(normalMatrix) * (norm+tnorm*normalScale) );'
 
         .endl()+'       vec3 r = reflect( e, n );'
         .endl()+'       float m = 2. * sqrt( '
@@ -349,6 +361,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY));'
         .endl()+'   #endif'
 
+
+        // .endl()+'   if(length(tnorm)>1.0)col=vec4(1.0,0.0,0.0,1.0); '
         .endl()+'    gl_FragColor = col;'
         .endl()+''
         .endl()+'}';
