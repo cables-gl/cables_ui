@@ -7,6 +7,9 @@ CGL.State=function()
     var mvMatrixStack=[];
     var pMatrixStack=[];
     var shaderStack=[];
+    var viewPort=[0,0,0,0];
+
+    this.frameStore={};
 
     this.pMatrix=mat4.create();
     this.mvMatrix=mat4.create();
@@ -40,7 +43,6 @@ CGL.State=function()
     this.doScreenshot=false;
     this.screenShotDataURL=null;
 
-    var viewPort=[0,0,0,0];
 
     this.getViewPort=function()
     {

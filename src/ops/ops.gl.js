@@ -13,8 +13,6 @@ Ops.Gl.Renderer = function()
     Op.apply(this, arguments);
     var self=this;
 
-
-
     if(!this.patch.cgl)
     {
         console.log(' no cgl!');
@@ -32,8 +30,6 @@ Ops.Gl.Renderer = function()
     vec3.set(identTranslate, 0,0,-2);
 
     console.log('set canv yay!');
-            
-    
 
     this.onAnimFrame=function(time)
     {
@@ -1600,16 +1596,17 @@ Ops.Gl.Performance = function()
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION)) ;
 
-    
+
+
     var canvas = document.createElement('canvas');
-    canvas.id     = "performance";
+    canvas.id     = "performance_"+self.patch.config.glCanvasId;
     canvas.width  = 512;
     canvas.height = 128;
     canvas.style.display   = "block";
     var body = document.getElementsByTagName("body")[0];
     body.appendChild(canvas);
 
-    var fontImage = document.getElementById('performance');
+    var fontImage = document.getElementById("performance_"+self.patch.config.glCanvasId);
     var ctx = fontImage.getContext('2d');
 
     var text='';
@@ -1634,6 +1631,7 @@ Ops.Gl.Performance = function()
 
     var ll=0;
     var selfTime=0;
+    var hasErrors=false;
 
     function refresh()
     {
@@ -1649,7 +1647,8 @@ Ops.Gl.Performance = function()
         {
             fps=frames;
             frames=0;
-            text='fps: '+fps;
+
+            text=self.patch.config.glCanvasId+' fps: '+fps;
             fpsStartTime=Date.now();
 
             var count=0;
@@ -1671,13 +1670,19 @@ Ops.Gl.Performance = function()
         ctx.fillRect(0,0,canvas.width,canvas.height);
         ctx.fillStyle="#aaaaaa";
 
-        for(var i=0;i<512;i++)
+        for(var k=0;k<512;k++)
         {
-            ctx.fillRect(i,canvas.height-queue[i],1,queue[i]);
+            ctx.fillRect(k,canvas.height-queue[k],1,queue[k]);
         }
 
         ctx.fillText(text, 10, 20);
         ctx.fillText(text2, 10, 35);
+        if(hasErrors)
+            {
+                ctx.fillStyle="#ff8844";
+                ctx.fillText('has errors!', 10, 50);
+            }
+        
         ctx.restore();
 
         if(self.textureOut.val) self.textureOut.val.initTexture(cgl,fontImage);
@@ -1687,6 +1692,16 @@ Ops.Gl.Performance = function()
         selfTime=performance.now()-ll;
         
         self.trigger.trigger();
+
+        hasErrors=false;
+        var error = cgl.gl.getError();
+        if (error != cgl.gl.NO_ERROR)
+        {
+            hasErrors=true;
+        }
+
+
+
     }
 
     self.exe.onTriggered=refresh;

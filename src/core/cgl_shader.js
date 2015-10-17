@@ -95,6 +95,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
 CGL.Shader=function(_cgl)
 {
+    if(!_cgl) throw "shader constructed without cgl";
     var self=this;
     var program=false;
     var uniforms=[];
@@ -329,7 +330,7 @@ CGL.Shader=function(_cgl)
         return program;
     };
 
-    createShader =function(str, type,_shader)
+    var createShader =function(str, type,_shader)
     {
 
         function getBadLines(infoLog)
@@ -433,12 +434,5 @@ CGL.Shader=function(_cgl)
 
 
 };
-
-
-
-
-
-
-
 
 

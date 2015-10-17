@@ -1,7 +1,7 @@
 
 Ops.Json3d=Ops.Json3d || {};
 
-Ops.Json3d.currentScene=null;
+
 
 Ops.Json3d.json3dFile = function()
 {
@@ -10,8 +10,9 @@ Ops.Json3d.json3dFile = function()
     var cgl=this.patch.cgl;
 
     this.name='json3dFile';
-
     var scene=new CABLES.Variable();
+
+    cgl.frameStore.currentScene=null;
 
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'json' } ));
@@ -19,9 +20,9 @@ Ops.Json3d.json3dFile = function()
 
     this.exe.onTriggered=function()
     {
-        Ops.Json3d.currentScene=scene;
+        cgl.frameStore.currentScene=scene;
         self.trigger.trigger();
-        Ops.Json3d.currentScene=null;
+        cgl.frameStore.currentScene=null;
     };
 
     var maxx=-3;
@@ -52,9 +53,10 @@ Ops.Json3d.json3dFile = function()
 
             self.patch.link(parentOp,parentPort,transOp,'render');
 
+            var i=0;
             if(ch.hasOwnProperty('meshes'))
             {
-                for(var i=0;i<ch.meshes.length;i++)
+                for(i=0;i<ch.meshes.length;i++)
                 {
                     var index=ch.meshes[i];
 
@@ -71,11 +73,11 @@ Ops.Json3d.json3dFile = function()
             if(ch.hasOwnProperty('children'))
             {
                 y++;
-                for(var i=0;i<ch.children.length;i++)
+                for(i=0;i<ch.children.length;i++)
                 {
-                    var x=maxx;
-                    if(ch.children.length>1)x++;
-                    addChild(x,y,transOp,'trigger',ch.children[i]);
+                    var xx=maxx;
+                    if(ch.children.length>1)xx++;
+                    addChild(xx,y,transOp,'trigger',ch.children[i]);
                 }
             }
         }
@@ -85,13 +87,16 @@ Ops.Json3d.json3dFile = function()
 
     var reload=function()
     {
+        CGL.incrementLoadingAssets();
 
         CABLES.ajax(self.filename.val,
             function(err,_data,xhr)
             {
+
                 if(err)
                 {
                     console.log('ajax error:',err);
+                    CGL.decrementLoadingAssets();
                     return;
                 }
                 var data=JSON.parse(_data);
@@ -108,9 +113,8 @@ Ops.Json3d.json3dFile = function()
                         addChild(maxx-2,3,root,'trigger 0',data.rootnode.children[i]);
                     }
 
-                    // ----- 
-
                 }
+                CGL.decrementLoadingAssets();
             });
 
     };
@@ -144,7 +148,7 @@ Ops.Json3d.Mesh=function()
 
     function render()
     {
-        if(!mesh && Ops.Json3d.currentScene && Ops.Json3d.currentScene.getValue() || currentIndex!=self.index.val)
+        if(!mesh && cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue() || currentIndex!=self.index.val)
         {
             reload();
         }
@@ -156,9 +160,9 @@ Ops.Json3d.Mesh=function()
 
     function reload()
     {
-        if(Ops.Json3d.currentScene && Ops.Json3d.currentScene.getValue())
+        if(cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue())
         {
-            console.log(' has '+Ops.Json3d.currentScene.getValue().meshes.length+' meshes ');
+            // console.log(' has '+cgl.frameStore.currentScene.getValue().meshes.length+' meshes ');
 
             var jsonMesh=null;
 
@@ -166,21 +170,16 @@ Ops.Json3d.Mesh=function()
 
             if(isNumeric(self.index.val))
             {
-                if(self.index.val<0 || self.index.val>=Ops.Json3d.currentScene.getValue().meshes.length)
+                if(self.index.val<0 || self.index.val>=cgl.frameStore.currentScene.getValue().meshes.length)
                 {
                     console.log('index out of range');
                     return;
                 }
-                jsonMesh=Ops.Json3d.currentScene.getValue().meshes[parseInt(self.index.val,10) ];
+                jsonMesh=cgl.frameStore.currentScene.getValue().meshes[parseInt(self.index.val,10) ];
             }
             else
             {
-                var scene=Ops.Json3d.currentScene.getValue();
-                for(var i=0;i<scene.meshes.length;i++)
-                {
-                            // console.log('scene.meshes[i].name, ',scene.meshes[i]);
-
-                }
+                var scene=cgl.frameStore.currentScene.getValue();
             }
 
             if(!jsonMesh)
@@ -211,8 +210,8 @@ Ops.Json3d.Mesh=function()
         }
         else
         {
-            console.log('no meshes found');
-            console.log(Ops.Json3d.currentScene);
+            // console.log('no meshes found');
+            // console.log(cgl.frameStore.currentScene);
         }
     }
 

@@ -1,8 +1,9 @@
 var CGL=CGL || {};
 
 
-CGL.Mesh=function(cgl,geom)
+CGL.Mesh=function(_cgl,geom)
 {
+    var cgl=_cgl;
     var bufVertices = cgl.gl.createBuffer();
     var bufVerticesIndizes = cgl.gl.createBuffer();
     var attributes=[];
@@ -285,7 +286,7 @@ CGL.Geometry=function()
         this.verticesIndices.push( parseInt( face[1],10 ) );
         this.verticesIndices.push( parseInt( face[2],10 ) );
 
-        faceVertCount=this.verticesIndices.length;
+        this.faceVertCount=this.verticesIndices.length;
 
     };
 

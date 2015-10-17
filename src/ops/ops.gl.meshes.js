@@ -637,12 +637,13 @@ Ops.Gl.Meshes.Cube.prototype = new Op();
 
 // ----------------------------------------------------------------
 
-Ops.Gl.Meshes.SplinePoints=[];
+
 Ops.Gl.Meshes.Spline = function()
 {
     Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
+    cgl.frameStore.SplinePoints=[];
 
     this.name='Spline';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -685,10 +686,10 @@ Ops.Gl.Meshes.Spline = function()
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
         cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, buffer.numItems);
 
-        for(var i=0;i<Ops.Gl.Meshes.SplinePoints.length;i+=3)
+        for(var i=0;i<cgl.frameStore.SplinePoints.length;i+=3)
         {
             var vec=[0,0,0];
-            vec3.set(vec, Ops.Gl.Meshes.SplinePoints[i+0], Ops.Gl.Meshes.SplinePoints[i+1], Ops.Gl.Meshes.SplinePoints[i+2]);
+            vec3.set(vec, cgl.frameStore.SplinePoints[i+0], cgl.frameStore.SplinePoints[i+1], cgl.frameStore.SplinePoints[i+2]);
             cgl.pushMvMatrix();
             mat4.translate(cgl.mvMatrix,cgl.mvMatrix, vec);
             self.triggerPoints.trigger();
@@ -697,7 +698,7 @@ Ops.Gl.Meshes.Spline = function()
 
         cgl.popMvMatrix();
 
-        Ops.Gl.Meshes.SplinePoints.length=0;
+        cgl.frameStore.SplinePoints.length=0;
     };
 
     function bufferData()
@@ -706,15 +707,15 @@ Ops.Gl.Meshes.Spline = function()
         var subd=self.subDivs.val;
         // if(subd>0)
         // {
-        //     for(var i=0;i<Ops.Gl.Meshes.SplinePoints.length-3;i+=3)
+        //     for(var i=0;i<cgl.frameStore.SplinePoints.length-3;i+=3)
         //     {
         //         for(var j=0;j<subd;j++)
         //         {
         //             for(var k=0;k<3;k++)
         //             {
         //                 points.push(
-        //                     Ops.Gl.Meshes.SplinePoints[i+k]+
-        //                         ( Ops.Gl.Meshes.SplinePoints[i+k+3] - Ops.Gl.Meshes.SplinePoints[i+k] ) *
+        //                     cgl.frameStore.SplinePoints[i+k]+
+        //                         ( cgl.frameStore.SplinePoints[i+k+3] - cgl.frameStore.SplinePoints[i+k] ) *
         //                         easeSmootherStep(j/subd)
         //                         );
         //             }
@@ -724,18 +725,18 @@ Ops.Gl.Meshes.Spline = function()
         //         }
         //     }
 
-        // // console.log('Ops.Gl.Meshes.SplinePoints',Ops.Gl.Meshes.SplinePoints.length);
+        // // console.log('cgl.frameStore.SplinePoints',cgl.frameStore.SplinePoints.length);
         // // console.log('points',points.length);
         
 
-        //     Ops.Gl.Meshes.SplinePoints=points;
+        //     cgl.frameStore.SplinePoints=points;
         // }
 
         cgl.gl.lineWidth(2);
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
-        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(Ops.Gl.Meshes.SplinePoints), cgl.gl.STATIC_DRAW);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(cgl.frameStore.SplinePoints), cgl.gl.STATIC_DRAW);
         buffer.itemSize = 3;
-        buffer.numItems = Ops.Gl.Meshes.SplinePoints.length/buffer.itemSize;
+        buffer.numItems = cgl.frameStore.SplinePoints.length/buffer.itemSize;
     }
 
     bufferData();
@@ -762,9 +763,9 @@ Ops.Gl.Meshes.SplinePoint = function()
         var pos=[0,0,0];
         vec3.transformMat4(pos, [0,0,0], cgl.mvMatrix);
 
-        Ops.Gl.Meshes.SplinePoints.push(pos[0]);
-        Ops.Gl.Meshes.SplinePoints.push(pos[1]);
-        Ops.Gl.Meshes.SplinePoints.push(pos[2]);
+        cgl.frameStore.SplinePoints.push(pos[0]);
+        cgl.frameStore.SplinePoints.push(pos[1]);
+        cgl.frameStore.SplinePoints.push(pos[2]);
 
         self.trigger.trigger();
     };

@@ -821,7 +821,7 @@ Ops.LoadingStatus = function()
     {
         self.patch.timer.setTime(preRenderTime);
         self.finished.trigger();
-        cgl.gl.flush();
+        // cgl.gl.flush();
 
         Ops.Gl.Renderer.renderStart(cgl,identTranslate);
 

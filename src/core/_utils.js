@@ -84,6 +84,8 @@ CGL.DEG2RAD=3.14159/180.0;
 CGL.numMaxLoadingAssets=0;
 CGL.numLoadingAssets=0;
 
+CGL.onLoadingAssetsFinished=null;
+
 CGL.finishedLoading=function()
 {
     return CGL.numLoadingAssets!==0;
@@ -98,7 +100,24 @@ CGL.incrementLoadingAssets=function()
 CGL.decrementLoadingAssets=function()
 {
     CGL.numLoadingAssets--;
+    setTimeout(CGL.getLoadingStatus,100);
 };
-CGL.getLoadingStatus=function(){ return (CGL.numMaxLoadingAssets-CGL.numLoadingAssets)/CGL.numMaxLoadingAssets; };
+
+CGL.getLoadingStatus=function()
+{
+    if(CGL.numMaxLoadingAssets===0)return 0;
+
+    var stat=(CGL.numMaxLoadingAssets-CGL.numLoadingAssets)/CGL.numMaxLoadingAssets;
+    if(stat==1 && CGL.onLoadingAssetsFinished)
+    {
+        CGL.onLoadingAssetsFinished();
+    }
+    return stat;
+};
+
+
+
+
+
 
 

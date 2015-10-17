@@ -64,7 +64,6 @@ var Op = function(_patch)
 
     this.addInPort=function(p)
     {
-
         p.direction=PORT_DIR_IN;
         p.parent=this;
         this.portsIn.push(p);
@@ -564,8 +563,6 @@ var Scene = function(cfg)
         else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this);
         else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this);
         else console.log('parts.length',parts.length);
-                
-
 
         // var op=new window[objName]();
         op.objName=objName;
@@ -753,7 +750,7 @@ var Scene = function(cfg)
             }
         }
 
-        console.log('add ops ');
+        console.log('add ops ',self.config.glCanvasId);
         // add ops...
         for(var iop in obj.ops)
         {
