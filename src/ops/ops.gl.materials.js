@@ -210,7 +210,7 @@ Ops.Gl.ShaderEffects.VertexExtrudeGlitch = function()
 };
 
 Ops.Gl.ShaderEffects.VertexExtrudeGlitch.prototype = new Op();
-
+Ops.Gl.ShaderEffects.VertexGlitch=Ops.Gl.ShaderEffects.VertexExtrudeGlitch;
 // --------------------------------------------------------------------------
 
 
