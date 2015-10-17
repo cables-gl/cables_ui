@@ -16,7 +16,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     this.getType=function() {return type;};
     this.getName=function() {return name;};
-
+    this.getValue=function() {return value;};
     this.resetLoc=function() { loc=-1;};
 
     this.updateValueF=function()
@@ -102,11 +102,15 @@ CGL.Shader=function(_cgl)
     var needsRecompile=true;
     var infoLog='';
     var cgl=_cgl;
+    var projMatrixUniform=-1;
+    var mvMatrixUniform=-1;
+    var normalMatrixUniform=-1;
+    var attrVertexPos = -1;
 
     this.getCgl=function()
     {
         return cgl;
-    }
+    };
 
     this.define=function(name,value)
     {
@@ -123,7 +127,6 @@ CGL.Shader=function(_cgl)
         }
         defines.push([name,value]);
         needsRecompile=true;
-        
     };
 
     this.removeDefine=function(name,value)
@@ -137,9 +140,7 @@ CGL.Shader=function(_cgl)
                 return;
             }
         }
-
     };
-
 
     this.removeUniform=function(name)
     {
@@ -212,12 +213,7 @@ CGL.Shader=function(_cgl)
         this.srcFrag=srcFrag;
     };
 
-    var projMatrixUniform=-1;
-    var mvMatrixUniform=-1;
-    var normalMatrixUniform=-1;
 
-
-    var attrVertexPos = -1;
     this.getAttrVertexPos=function(){return attrVertexPos;};
 
     this.hasTextureUniforms=function()
@@ -240,11 +236,39 @@ CGL.Shader=function(_cgl)
 
         if(self.hasTextureUniforms()) definesStr+='#define HAS_TEXTURES'.endl();
 
+
+
         // console.log('shader compile...');
         // console.log('has textures: '+self.hasTextureUniforms() );
 
         var vs=definesStr+self.srcVert;
         var fs=definesStr+self.srcFrag;
+
+
+        var srcHeadVert='';
+        var srcHeadFrag='';
+        for(i=0;i<moduleNames.length;i++)
+        {
+            var srcVert='';
+            var srcFrag='';
+
+            for(var j=0;j<modules.length;j++)
+            {
+                if(modules[j].name==moduleNames[i])
+                {
+                    srcVert+=modules[j].srcBodyVert || '';
+                    srcFrag+=modules[j].srcBodyFrag || '';
+                    srcHeadVert+=modules[j].srcHeadVert || '';
+                    srcHeadFrag+=modules[j].srcHeadFrag || '';
+                }
+            }
+
+            vs=vs.replace('{{'+moduleNames[i]+'}}',srcVert);
+            fs=fs.replace('{{'+moduleNames[i]+'}}',srcFrag);
+        }
+        vs=vs.replace('{{MODULES_HEAD}}',srcHeadVert);
+        fs=fs.replace('{{MODULES_HEAD}}',srcHeadFrag);
+
 
         if(!program)
         {
@@ -259,7 +283,7 @@ CGL.Shader=function(_cgl)
             
             mvMatrixUniform=-1;
 
-            for(var i=0;i<uniforms.length;i++)
+            for(i=0;i<uniforms.length;i++)
                 uniforms[i].resetLoc();
         }
 
@@ -379,7 +403,6 @@ CGL.Shader=function(_cgl)
         {
             self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
         }
-
     };
 
     createProgram=function(vstr, fstr)
@@ -394,5 +417,28 @@ CGL.Shader=function(_cgl)
         return program;
     };
 
+    var moduleNames=[];
+    var modules=[];
+
+    this.addModule=function(mod)
+    {
+        modules.push(mod);
+        needsRecompile=true;
+    };
+
+    this.setModules=function(names)
+    {
+        moduleNames=names;
+    };
+
+
 };
+
+
+
+
+
+
+
+
 

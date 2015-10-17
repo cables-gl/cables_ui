@@ -637,3 +637,138 @@ Ops.Gl.Meshes.Cube.prototype = new Op();
 
 // ----------------------------------------------------------------
 
+Ops.Gl.Meshes.SplinePoints=[];
+Ops.Gl.Meshes.Spline = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='Spline';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+
+    this.subDivs=this.addInPort(new Port(this,"subDivs",OP_PORT_TYPE_VALUE));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.triggerPoints=this.addOutPort(new Port(this,"triggerPoints",OP_PORT_TYPE_FUNCTION));
+    
+    var buffer = cgl.gl.createBuffer();
+
+
+
+    function easeSmoothStep(perc)
+    {
+        var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
+        perc= x*x*(3 - 2*x); // smoothstep
+        return perc;
+    }
+
+    function easeSmootherStep(perc)
+    {
+        var x = Math.max(0, Math.min(1, (perc-0)/(1-0)));
+        perc= x*x*x*(x*(x*6 - 15) + 10); // smootherstep
+        return perc;
+    }
+
+
+    this.render.onTriggered=function()
+    {
+        self.trigger.trigger();
+        bufferData();
+
+        cgl.pushMvMatrix();
+        mat4.identity(cgl.mvMatrix);
+
+        cgl.getShader().bind();
+        cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
+        cgl.gl.enableVertexAttribArray(cgl.getShader().getAttrVertexPos());
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+        cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, buffer.numItems);
+
+        for(var i=0;i<Ops.Gl.Meshes.SplinePoints.length;i+=3)
+        {
+            var vec=[0,0,0];
+            vec3.set(vec, Ops.Gl.Meshes.SplinePoints[i+0], Ops.Gl.Meshes.SplinePoints[i+1], Ops.Gl.Meshes.SplinePoints[i+2]);
+            cgl.pushMvMatrix();
+            mat4.translate(cgl.mvMatrix,cgl.mvMatrix, vec);
+            self.triggerPoints.trigger();
+            cgl.popMvMatrix();
+        }
+
+        cgl.popMvMatrix();
+
+        Ops.Gl.Meshes.SplinePoints.length=0;
+    };
+
+    function bufferData()
+    {
+        var points=[];
+        var subd=self.subDivs.val;
+        // if(subd>0)
+        // {
+        //     for(var i=0;i<Ops.Gl.Meshes.SplinePoints.length-3;i+=3)
+        //     {
+        //         for(var j=0;j<subd;j++)
+        //         {
+        //             for(var k=0;k<3;k++)
+        //             {
+        //                 points.push(
+        //                     Ops.Gl.Meshes.SplinePoints[i+k]+
+        //                         ( Ops.Gl.Meshes.SplinePoints[i+k+3] - Ops.Gl.Meshes.SplinePoints[i+k] ) *
+        //                         easeSmootherStep(j/subd)
+        //                         );
+        //             }
+
+        //             // console.log('easeSmootherStep(j/subd)',easeSmootherStep(j/subd));
+                            
+        //         }
+        //     }
+
+        // // console.log('Ops.Gl.Meshes.SplinePoints',Ops.Gl.Meshes.SplinePoints.length);
+        // // console.log('points',points.length);
+        
+
+        //     Ops.Gl.Meshes.SplinePoints=points;
+        // }
+
+        cgl.gl.lineWidth(2);
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(Ops.Gl.Meshes.SplinePoints), cgl.gl.STATIC_DRAW);
+        buffer.itemSize = 3;
+        buffer.numItems = Ops.Gl.Meshes.SplinePoints.length/buffer.itemSize;
+    }
+
+    bufferData();
+};
+
+Ops.Gl.Meshes.Spline.prototype = new Op();
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Meshes.SplinePoint = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='SplinePoint';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.render.onTriggered=function()
+    {
+        var pos=[0,0,0];
+        vec3.transformMat4(pos, [0,0,0], cgl.mvMatrix);
+
+        Ops.Gl.Meshes.SplinePoints.push(pos[0]);
+        Ops.Gl.Meshes.SplinePoints.push(pos[1]);
+        Ops.Gl.Meshes.SplinePoints.push(pos[2]);
+
+        self.trigger.trigger();
+    };
+
+};
+
+Ops.Gl.Meshes.SplinePoint.prototype = new Op();

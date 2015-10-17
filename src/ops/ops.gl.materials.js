@@ -76,6 +76,143 @@ Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
+Ops.Gl.ShaderEffects=Ops.Gl.ShaderEffects || {};
+
+Ops.Gl.ShaderEffects.VertexSinusWobble = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='VertexSinusWobble';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    
+    // self.amplitude.val*Math.sin( ( Date.now()/1000.0 * self.mul.val ) + parseFloat(self.phase.val) );
+
+
+    var shader=null;
+    var uniTime;
+    
+    var srcHeadVert=''
+        .endl()+'uniform float time;'
+        .endl();
+
+    var srcBodyVert=''
+        // .endl()+'   pos.x+=0.1;'
+        .endl()+'   pos.y+=sin(pos.x+time*0.9)*5.0;'
+        .endl()+'   pos.x+=sin(pos.x+time*0.9)*5.0;'
+        .endl()+'   pos.z+=sin(pos.x+time*0.9)*5.0;'
+        // .endl()+'   pos.z+=sin(time+pos.x0.013)*1.0;'
+        .endl();
+
+    var startTime=Date.now()/1000.0;
+
+
+    this.render.onTriggered=function()
+    {
+        if(cgl.getShader()!=shader)
+        {
+            if(shader)
+            {
+
+                // unset module
+            }
+            shader=cgl.getShader();
+            shader.addModule(
+                {
+                    name:'MODULE_VERTEX_POSITION',
+                    srcHeadVert:srcHeadVert,
+                    srcBodyVert:srcBodyVert
+                });
+
+            uniTime=new CGL.Uniform(shader,'f','time',0);
+        }
+
+        uniTime.setValue(Date.now()/1000.0-startTime);
+        self.trigger.trigger();
+    };
+
+};
+
+Ops.Gl.ShaderEffects.VertexSinusWobble.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
+
+Ops.Gl.ShaderEffects.VertexExtrudeGlitch = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='VertexExtrudeGlitch';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.min=this.addInPort(new Port(this,"min",OP_PORT_TYPE_VALUE,{display:'range'}));
+    this.max=this.addInPort(new Port(this,"max",OP_PORT_TYPE_VALUE,{display:'range'}));
+    this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE,{display:'range'}));
+    this.extrude=this.addInPort(new Port(this,"extrude",OP_PORT_TYPE_VALUE));
+
+    this.min.onValueChanged=function(){ if(uniMin)uniMin.setValue(self.min.val); };
+    this.max.onValueChanged=function(){ if(uniMax)uniMax.setValue(self.max.val); };
+    this.width.onValueChanged=function(){ if(uniWidth)uniWidth.setValue(self.width.val); };
+    this.extrude.onValueChanged=function(){ if(uniExtrude)uniExtrude.setValue(self.extrude.val); };
+
+    var shader=null;
+    var uniMin;
+    var uniMax;
+    var uniWidth;
+    var uniExtrude;
+    
+    var srcHeadVert=''
+        .endl()+'uniform float glitch_x;'
+        .endl()+'uniform float glitch_y;'
+        .endl()+'uniform float glitch_width;'
+        .endl()+'uniform float glitch_extrude;'
+        .endl();
+
+    var srcBodyVert=''
+        // .endl()+'   float glitch_v=(texCoord.x+texCoord.y*2.0)*0.5;'
+        // .endl()+'   if(glitch_v>glitch_min && glitch_v<glitch_max)pos.xyz*=1.4;'
+
+        .endl()+'   if(texCoord.x>glitch_x && texCoord.x<glitch_x+glitch_width && texCoord.y>glitch_y && texCoord.y<glitch_y+glitch_width)pos.xyz*=glitch_extrude;'
+        .endl();
+
+
+    this.render.onTriggered=function()
+    {
+        if(cgl.getShader()!=shader)
+        {
+            if(shader)
+            {
+                // unset module
+            }
+            shader=cgl.getShader();
+            shader.addModule(
+                {
+                    name:'MODULE_VERTEX_POSITION',
+                    srcHeadVert:srcHeadVert,
+                    srcBodyVert:srcBodyVert
+                });
+            uniMin=new CGL.Uniform(shader,'f','glitch_x',self.min.val);
+            uniMax=new CGL.Uniform(shader,'f','glitch_y',self.max.val);
+            uniWidth=new CGL.Uniform(shader,'f','glitch_width',self.width.val);
+            uniExtrude=new CGL.Uniform(shader,'f','glitch_extrude',self.extrude.val);
+
+        }
+
+        self.trigger.trigger();
+    };
+
+};
+
+Ops.Gl.ShaderEffects.VertexExtrudeGlitch.prototype = new Op();
+
+// --------------------------------------------------------------------------
+
 
 Ops.Gl.Shader.MatCapMaterial = function()
 {
@@ -225,7 +362,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.doRender=function()
     {
         cgl.setShader(shader);
-        
         self.bindTextures();
 
         self.trigger.trigger();
@@ -233,6 +369,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
     };
 
     var srcVert=''
+        .endl()+'{{MODULES_HEAD}}'
         .endl()+'precision mediump float;'
         .endl()+'attribute vec3 vPosition;'
         .endl()+'attribute vec2 attrTexCoord;'
@@ -249,6 +386,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'uniform mat4 normalMatrix;'
         .endl()+'varying vec2 vNorm;'
 
+
         // .endl()+'varying vec2 testTexCoords;'
 
         
@@ -263,11 +401,15 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    norm=attrVertNormal;'
         
         .endl()+'    #ifdef HAS_MORPH_TARGETS'
-        .endl()+'       vec4 pos = vec4( vPosition*0.5+attrMorphTargetA*0.5, 1. );'
-        .endl()+'   #endif'
-        .endl()+'   #ifndef HAS_MORPH_TARGETS'
-        .endl()+'       vec4 pos = vec4( vPosition, 1. );'
-        .endl()+'   #endif'
+        .endl()+'        vec4 pos = vec4( vPosition*0.5+attrMorphTargetA*0.5, 1. );'
+        .endl()+'    #endif'
+        .endl()+'    #ifndef HAS_MORPH_TARGETS'
+        .endl()+'        vec4 pos = vec4( vPosition, 1. );'
+        .endl()+'    #endif'
+
+
+        .endl()+'    {{MODULE_VERTEX_POSITION}}'
+
 
         .endl()+'    e = normalize( vec3( mvMatrix * pos ) );'
         .endl()+'    vec3 n = normalize( mat3(normalMatrix) * norm );'
@@ -293,6 +435,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
 
     var srcFrag=''
+        .endl()+'{{MODULES_HEAD}}'
         .endl()+'precision mediump float;'
         .endl()+'varying vec3 norm;'
         .endl()+'varying vec2 texCoord;'
@@ -353,24 +496,27 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       );'
         .endl()+'       vn = r.xy / m + 0.5;'
 
-        .endl()+'   #endif'
+        .endl()+'    #endif'
 
         
-        .endl()+'   vec4 col = texture2D( tex, vn );'
+        .endl()+'    vec4 col = texture2D( tex, vn );'
 
 
-        .endl()+'   #ifdef HAS_DIFFUSE_TEXTURE'
+        .endl()+'    #ifdef HAS_DIFFUSE_TEXTURE'
         // .endl()+'       col = mix(col,texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY) ),0.5);'
         .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY));'
-        .endl()+'   #endif'
+        .endl()+'    #endif'
 
+        .endl()+'    {{MODULE_COLOR}}'
 
-        // .endl()+'   if(length(tnorm)>1.0)col=vec4(1.0,0.0,0.0,1.0); '
         .endl()+'    gl_FragColor = col;'
         .endl()+''
         .endl()+'}';
 
     var shader=new CGL.Shader(cgl);
+    
+    shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR']);
+
     shader.bindTextures=this.bindTextures;
     this.shaderOut.val=shader;
     this.onLoaded=shader.compile;
@@ -381,7 +527,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     this.diffuseRepeatXUniform=new CGL.Uniform(shader,'f','diffuseRepeatX',self.diffuseRepeatX.val);
     this.diffuseRepeatYUniform=new CGL.Uniform(shader,'f','diffuseRepeatY',self.diffuseRepeatY.val);
-
 
     this.render.onTriggered=this.doRender;
     this.doRender();
