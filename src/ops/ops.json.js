@@ -38,7 +38,7 @@ Ops.Json.jsonFile = function()
 
     var reload=function()
     {
-        ajaxRequest(self.filename.val,function(data)
+        ajaxRequest(self.patch.getFilePath(self.filename.val),function(data)
         {
             self.result.val=data;
             console.log('data',data);

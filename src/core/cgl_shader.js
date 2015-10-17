@@ -141,6 +141,7 @@ CGL.Shader=function(_cgl)
                 return;
             }
         }
+                
     };
 
     this.removeUniform=function(name)
@@ -261,6 +262,11 @@ CGL.Shader=function(_cgl)
                     srcFrag+=modules[j].srcBodyFrag || '';
                     srcHeadVert+=modules[j].srcHeadVert || '';
                     srcHeadFrag+=modules[j].srcHeadFrag || '';
+
+                    srcVert=srcVert.replace(/{{mod}}/g,modules[j].prefix);
+                    srcFrag=srcFrag.replace(/{{mod}}/g,modules[j].prefix);
+                    srcHeadVert=srcHeadVert.replace(/{{mod}}/g,modules[j].prefix);
+                    srcHeadFrag=srcHeadFrag.replace(/{{mod}}/g,modules[j].prefix);
                 }
             }
 
@@ -420,11 +426,32 @@ CGL.Shader=function(_cgl)
 
     var moduleNames=[];
     var modules=[];
+    var moduleNumId=0;
+    
+    this.removeModule=function(mod)
+    {
+        for(var i=0;i<modules.length;i++)
+        {
+            if(modules[i].id==mod.id)
+            {
+                modules.splice(i,1);
+                break;
+            }
+        }
+        needsRecompile=true;
+    };
 
     this.addModule=function(mod)
     {
+        mod.id=generateUUID();
+        mod.numId=moduleNumId;
+        mod.prefix='mod'+moduleNumId;
+
         modules.push(mod);
         needsRecompile=true;
+        moduleNumId++;
+
+        return mod;
     };
 
     this.setModules=function(names)

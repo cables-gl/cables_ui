@@ -165,6 +165,7 @@ var Port=function(parent,name,type,uiAttribs)
     this.showPreview=false;
     var uiActiveState=true;
     this.ignoreValueSerialize=false;
+    this.onLinkChanged=null;
 
     this.doShowPreview=function(onOff)
     {
@@ -297,6 +298,7 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.addLink=function(l)
     {
+        if(this.onLinkChanged)this.onLinkChanged();
         valueBeforeLink=self.value;
         this.links.push(l);
     };
@@ -380,6 +382,8 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.removeLink=function(link)
     {
+        if(this.onLinkChanged)this.onLinkChanged();
+
         for(var i in this.links)
             if(this.links[i]==link)this.links.splice( i, 1 );
 
@@ -534,12 +538,19 @@ var Scene = function(cfg)
 
     this.config = cfg ||
     {
-        glCanvasId:"glcanvas"
+        glCanvasId:'glcanvas',
+        prefixAssetPath:''
     };
 
     this.cgl=new CGL.State();
     this.cgl.patch=this;
     this.cgl.setCanvas(this.config.glCanvasId);
+
+
+    this.getFilePath=function(filename)
+    {
+        return this.config.prefixAssetPath+filename;
+    };
 
     this.clear=function()
     {

@@ -637,7 +637,7 @@ Ops.Gl.Texture = function()
     var reload=function()
     {
         // console.log('load texture...');
-        self.tex=CGL.Texture.load(cgl,self.filename.val,function()
+        self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.val),function()
         {
             self.textureOut.val=self.tex;
             self.width.val=self.tex.width;

@@ -89,7 +89,7 @@ Ops.Json3d.json3dFile = function()
     {
         CGL.incrementLoadingAssets();
 
-        CABLES.ajax(self.filename.val,
+        CABLES.ajax(self.patch.getFilePath(self.filename.val),
             function(err,_data,xhr)
             {
 

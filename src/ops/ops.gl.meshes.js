@@ -433,15 +433,15 @@ Ops.Gl.Meshes.ObjMesh = function()
 
       CGL.incrementLoadingAssets();
 
-      console.log('filename:',self.filename.val);
-      if(self.filename.val==0)
+      // console.log('filename:',self.filename.val);
+      if(self.filename.val===0)
       {
         CGL.decrementLoadingAssets();
         return;
       }
       
 
-      ajaxRequest(self.filename.val,function(response)
+      ajaxRequest(self.patch.getFilePath(self.filename.val),function(response)
       {
         console.log('parse obj');
           // console.log(response);
