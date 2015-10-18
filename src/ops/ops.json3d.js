@@ -18,12 +18,14 @@ Ops.Json3d.json3dFile = function()
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'json' } ));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
-    this.exe.onTriggered=function()
+    function render()
     {
         cgl.frameStore.currentScene=scene;
         self.trigger.trigger();
         cgl.frameStore.currentScene=null;
-    };
+    }
+
+    this.exe.onTriggered=render;
 
     var maxx=-3;
     var row=0;
@@ -112,8 +114,9 @@ Ops.Json3d.json3dFile = function()
                     {
                         addChild(maxx-2,3,root,'trigger 0',data.rootnode.children[i]);
                     }
-
                 }
+
+                render();
                 CGL.decrementLoadingAssets();
             });
 

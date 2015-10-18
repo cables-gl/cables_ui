@@ -95,6 +95,38 @@ Ops.Math.SmoothStep.prototype = new Op();
 
 // ----------------------------------------------------------------------------
 
+Ops.Math.SmootherStep = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='SmootherStep';
+    this.val=this.addInPort(new Port(this,"val"));
+    this.min=this.addInPort(new Port(this,"min"));
+    this.max=this.addInPort(new Port(this,"max"));
+    this.result=this.addOutPort(new Port(this,"result"));
+
+    function smootherstep ()
+    {
+        var x = Math.max(0, Math.min(1, (self.val.val-self.min.val)/(self.max.val-self.min.val)));
+        self.result.val= x*x*x*(x*(x*6 - 15) + 10); // smootherstep
+        // return linear(self.val.val,this,key2);
+    }
+
+    this.min.val=0;
+    this.max.val=1;
+    
+    this.val.onValueChanged=smootherstep;
+    this.min.onValueChanged=smootherstep;
+    this.max.onValueChanged=smootherstep;
+
+    this.val.val=0.5;
+};
+
+Ops.Math.SmootherStep.prototype = new Op();
+
+// ----------------------------------------------------------------------------
+
 
 Ops.Math.MapRange = function()
 {
@@ -364,10 +396,23 @@ Ops.Math.Modulo = function()
     this.result=this.addOutPort(new Port(this,"result"));
     this.number1=this.addInPort(new Port(this,"number1"));
     this.number2=this.addInPort(new Port(this,"number2"));
+    this.pingpong=this.addInPort(new Port(this,"pingpong",OP_PORT_TYPE_VALUE,{display:'bool'}));
+
+    var doPingPong=false;
 
     this.exec= function()
     {
         self.updateAnims();
+
+        if(doPingPong)
+        {
+            self.result.val=(self.number1.val%self.number2.val*2) ;
+            if(self.result.val>self.number2.val)
+                self.result.val=self.number2.val*2.0-self.result.val;
+
+            return;
+        }
+        
         self.result.val=self.number1.val%self.number2.val ;
     };
 
@@ -376,6 +421,11 @@ Ops.Math.Modulo = function()
 
     this.number1.val=1;
     this.number2.val=2;
+
+    this.pingpong.onValueChanged=function()
+    {
+        doPingPong=self.pingpong.val;
+    };
 
 };
 

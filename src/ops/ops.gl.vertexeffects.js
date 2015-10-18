@@ -333,13 +333,13 @@ Ops.Gl.ShaderEffects.VertexDisplacementMap.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-Ops.Gl.ShaderEffects.MorphMesh = function()
+Ops.Gl.ShaderEffects.MeshMorphTargets = function()
 {
     Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
-    this.name='MorphMesh';
+    this.name='MeshMorphTargets';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
 
     this.geometry0=this.addInPort(new Port(this,"geometry 0",OP_PORT_TYPE_OBJECT));
@@ -428,8 +428,8 @@ Ops.Gl.ShaderEffects.MorphMesh = function()
 
 };
 
-Ops.Gl.ShaderEffects.MorphMesh.prototype = new Op();
-Ops.Gl.Meshes.MorphMesh = Ops.Gl.ShaderEffects.MorphMesh;
+Ops.Gl.ShaderEffects.MeshMorphTargets.prototype = new Op();
+Ops.Gl.Meshes.MorphMesh = Ops.Gl.ShaderEffects.MeshMorphTargets;
 
 
 // --------------------------------------------------------------------------
