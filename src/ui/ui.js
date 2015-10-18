@@ -35,10 +35,13 @@ CABLES.UI.GUI=function()
     this.setLayout=function()
     {
 
-        if(this.rendererWidth>window.innerWidth*0.8 || this.rendererWidth>window.innerHeight*0.8)
+                console.log(' wxh',this.rendererWidth,this.rendererHeight);
+                
+
+        if(this.rendererWidth>window.innerWidth*0.8 || this.rendererHeight>window.innerHeight*0.8)
         {
             this.rendererWidth=window.innerWidth*0.4;
-            this.rendererHeight=window.innerHeight*0.4;
+            this.rendererHeight=window.innerHeight*0.25;
         }
 
         var statusBarHeight=26;
