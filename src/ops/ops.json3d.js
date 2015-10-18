@@ -89,7 +89,12 @@ Ops.Json3d.json3dFile = function()
 
     var reload=function()
     {
+        if(!self.filename.val)return;
+
         CGL.incrementLoadingAssets();
+
+        console.log('load ajax'+self.patch.getFilePath(self.filename.val));
+        
 
         CABLES.ajax(self.patch.getFilePath(self.filename.val),
             function(err,_data,xhr)

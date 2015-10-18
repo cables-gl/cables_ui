@@ -71,10 +71,7 @@ CGL.Mesh=function(_cgl,geom)
         for(i=0;i<attributes.length;i++)
         {
             if(attributes[i].loc==-1)
-            {
                 attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
-                console.log(i+'attr ',attributes[i].name,attributes[i].loc);
-            }
         
             if(attributes[i].loc!=-1)
             {

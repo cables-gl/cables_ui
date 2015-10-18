@@ -635,18 +635,22 @@ Ops.Gl.Texture = function()
 
     var reload=function()
     {
-        console.log('load texture...');
-        self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.val),function()
+        if(self.filename.val)
         {
+            // console.log('load texture... '+self.filename.val);
+            self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.val),function()
+            {
+                self.textureOut.val=self.tex;
+                self.width.val=self.tex.width;
+                self.height.val=self.tex.height;
+
+                if(!self.tex.isPowerOfTwo()) self.uiAttribs.warning='texture dimensions not power of two! - texture filtering will not work.';
+                else self.uiAttribs.warning='';
+
+            },{filter:self.cgl_filter});
             self.textureOut.val=self.tex;
-            self.width.val=self.tex.width;
-            self.height.val=self.tex.height;
-
-            if(!self.tex.isPowerOfTwo()) self.uiAttribs.warning='texture dimensions not power of two! - texture filtering will not work.';
-            else self.uiAttribs.warning='';
-
-        },{filter:self.cgl_filter});
-        self.textureOut.val=self.tex;
+            
+        }
 
     };
 
