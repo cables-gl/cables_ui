@@ -35,13 +35,14 @@ CABLES.UI.GUI=function()
     this.setLayout=function()
     {
 
-                console.log(' wxh',this.rendererWidth,this.rendererHeight);
-                
+        console.log(' wxh',self.rendererWidth,self.rendererHeight,window.innerWidth,window.innerHeight);
 
-        if(this.rendererWidth===undefined || this.rendererHeight===undefined || this.rendererWidth>window.innerWidth*0.8 || this.rendererHeight>window.innerHeight*0.8)
+        if(self.rendererWidth===undefined || self.rendererHeight===undefined || self.rendererWidth>window.innerWidth*0.99 || self.rendererHeight>window.innerHeight*0.99)
         {
-            this.rendererWidth=window.innerWidth*0.4;
-            this.rendererHeight=window.innerHeight*0.25;
+                    console.log('reset render size');
+                    
+            self.rendererWidth=window.innerWidth*0.4;
+            self.rendererHeight=window.innerHeight*0.25;
         }
 
         var statusBarHeight=26;
@@ -159,8 +160,8 @@ CABLES.UI.GUI=function()
         $('#meta').css('width',self.rendererWidth-optionsWidth);
         $('#meta').css('height',window.innerHeight-self.rendererHeight-statusBarHeight);
 
-        $('#performance').css('bottom',statusBarHeight);
-        $('#performance').css('max-width',self.rendererWidth-optionsWidth);
+        $('#performance_glcanvas').css('bottom',statusBarHeight);
+        $('#performance_glcanvas').css('max-width',self.rendererWidth-optionsWidth);
 
 
         $('#menubar').css('top',0);
@@ -175,10 +176,10 @@ CABLES.UI.GUI=function()
         }
         else
         {
-            $('#glcanvas').attr('width',this.rendererWidth);
-            $('#glcanvas').attr('height',this.rendererHeight);
+            $('#glcanvas').attr('width',self.rendererWidth);
+            $('#glcanvas').attr('height',self.rendererHeight);
         }
-        CABLES.UI.setStatusText('webgl renderer set to size: '+this.rendererWidth+' x '+this.rendererHeight);
+        CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight);
     };
 
     this.importDialog=function()
@@ -204,6 +205,8 @@ CABLES.UI.GUI=function()
     var oldRendwerWidth,oldRendwerHeight;
     this.cycleRendererSize=function()
     {
+                console.log('cycleRendererSize');
+                
         if(self.rendererWidth!==0)
         {
             oldRendwerWidth=self.rendererWidth;
