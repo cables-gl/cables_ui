@@ -34,6 +34,13 @@ CABLES.UI.GUI=function()
 
     this.setLayout=function()
     {
+
+        if(this.rendererWidth>window.innerWidth*0.8 || this.rendererWidth>window.innerHeight*0.8)
+        {
+            this.rendererWidth=window.innerWidth*0.4;
+            this.rendererHeight=window.innerHeight*0.4;
+        }
+
         var statusBarHeight=26;
         var menubarHeight=33;
         var optionsWidth=400;

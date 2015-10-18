@@ -196,6 +196,7 @@ Ops.Json3d.Mesh=function()
                 self.uiAttribs.warning='mesh not found...';
                 return;
             }
+            self.uiAttribs.warning='';
 
             var geom=new CGL.Geometry();
             geom.calcNormals=true;
