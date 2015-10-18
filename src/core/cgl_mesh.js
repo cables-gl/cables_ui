@@ -34,7 +34,6 @@ CGL.Mesh=function(_cgl,geom)
         bufVertices.itemSize = 3;
         bufVertices.numItems = geom.vertices.length/3;
 
-
         cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
         cgl.gl.bufferData(cgl.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), cgl.gl.STATIC_DRAW);
         bufVerticesIndizes.itemSize = 1;
@@ -44,7 +43,6 @@ CGL.Mesh=function(_cgl,geom)
         if(geom.texCoords.length>0) addAttribute('attrTexCoord',geom.texCoords,2);
 
         for(var i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.texCoords,3);
-
     };
 
     this.render=function(shader)

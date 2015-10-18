@@ -631,17 +631,24 @@ Ops.Gl.Texture = function()
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
     
-    this.filter.val='mipmap';
     this.cgl_filter=CGL.Texture.FILTER_MIPMAP;
 
     var reload=function()
     {
-        // console.log('load texture...');
+        console.log('load texture...');
         self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.val),function()
         {
             self.textureOut.val=self.tex;
             self.width.val=self.tex.width;
             self.height.val=self.tex.height;
+
+
+            if(!self.tex.isPowerOfTwo()) self.uiAttribs.warning='texture dimensions not power of two! - texture filtering will not work.';
+            else self.uiAttribs.warning='';
+
+
+
+
         },{filter:self.cgl_filter});
         self.textureOut.val=self.tex;
 
@@ -656,6 +663,7 @@ Ops.Gl.Texture = function()
 
         reload();
     };
+    this.filter.val='linear';
 
 
     this.textureOut.onPreviewChanged=function()

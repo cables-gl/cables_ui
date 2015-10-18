@@ -11,24 +11,26 @@ CGL.Texture=function(cgl,options)
     this.flip=true;
     this.filter=CGL.Texture.FILTER_NEAREST;
     var isDepthTexture=false;
-    // var isDataTexture=true;
 
     if(options)
     {
         if(options.isDepthTexture)
-        {
             isDepthTexture=options.isDepthTexture;
-        }
     }
 
-    function isPowerOfTwo (x)
+    this.isPowerOfTwo=function()
+    {
+        return _isPowerOfTwo(this.width) && _isPowerOfTwo(this.width);
+    };
+
+    function _isPowerOfTwo (x)
     {
         return ( x == 1 || x == 2 || x == 4 || x == 8 || x == 16 || x == 32 || x == 64 || x == 128 || x == 256 || x == 512 || x == 1024 || x == 2048 || x == 4096 || x == 8192 || x == 16384);
     }
 
     function setFilter()
     {
-        if(!isPowerOfTwo(self.width) || !isPowerOfTwo(self.height) )
+        if(!_isPowerOfTwo(self.width) || !_isPowerOfTwo(self.height) )
         {
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_EDGE);
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_EDGE);
@@ -112,7 +114,7 @@ CGL.Texture=function(cgl,options)
 
         setFilter();
 
-        if(isPowerOfTwo(self.width) && isPowerOfTwo(self.height) && self.filter==CGL.Texture.FILTER_MIPMAP)
+        if(_isPowerOfTwo(self.width) && _isPowerOfTwo(self.height) && self.filter==CGL.Texture.FILTER_MIPMAP)
         {
             cgl.gl.generateMipmap(cgl.gl.TEXTURE_2D);
         }
@@ -140,7 +142,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 
     texture.image.onload=function()
     {
-        texture.initTexture(texture.image,settings);
+        texture.initTexture(texture.image);
         if(finishedCallback)finishedCallback();
         CGL.decrementLoadingAssets();
     };

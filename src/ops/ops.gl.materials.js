@@ -74,217 +74,6 @@ Ops.Gl.Shader.ShowNormalsMaterial = function()
 
 Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
 
-// --------------------------------------------------------------------------
-
-Ops.Gl.ShaderEffects=Ops.Gl.ShaderEffects || {};
-
-Ops.Gl.ShaderEffects.VertexSinusWobble = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    var shader=null;
-    var uniTime;
-
-    this.name='VertexSinusWobble';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-
-    // this.phase=this.addInPort(new Port(this,"phase",OP_PORT_TYPE_VALUE));
-    this.frequency=this.addInPort(new Port(this,"frequency",OP_PORT_TYPE_VALUE));
-    var uniFrequency=null;
-    this.frequency.val=1.0;
-    this.frequency.onValueChanged=function(){ if(uniFrequency)uniFrequency.setValue(self.frequency.val); };
-
-    this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE));
-    var uniAmount=null;
-    this.amount.val=1.0;
-    this.amount.onValueChanged=function(){ if(uniAmount)uniAmount.setValue(self.amount.val); };
-
-
-    this.phase=this.addInPort(new Port(this,"phase",OP_PORT_TYPE_VALUE));
-    var uniPhase=null;
-    this.phase.val=1.0;
-    this.phase.onValueChanged=function(){ if(uniAmount)uniAmount.setValue(self.phase.val); };
-
-
-    this.toAxisX=this.addInPort(new Port(this,"axisX",OP_PORT_TYPE_VALUE,{display:'bool'}));
-    this.toAxisX.val=true;
-    this.toAxisX.onValueChanged=setDefines;
-
-    this.toAxisY=this.addInPort(new Port(this,"axisY",OP_PORT_TYPE_VALUE,{display:'bool'}));
-    this.toAxisY.val=true;
-    this.toAxisY.onValueChanged=setDefines;
-
-    this.toAxisZ=this.addInPort(new Port(this,"axisZ",OP_PORT_TYPE_VALUE,{display:'bool'}));
-    this.toAxisZ.val=true;
-    this.toAxisZ.onValueChanged=setDefines;
-
-
-    function setDefines()
-    {
-        if(!shader)return;
-
-        if(self.toAxisX.val)shader.define(module.prefix+'_TO_AXIS_X');
-            else shader.removeDefine(module.prefix+'_TO_AXIS_X');
-
-        if(self.toAxisY.val)shader.define(module.prefix+'_TO_AXIS_Y');
-            else shader.removeDefine(module.prefix+'_TO_AXIS_Y');
-
-        if(self.toAxisZ.val)shader.define(module.prefix+'_TO_AXIS_Z');
-            else shader.removeDefine(module.prefix+'_TO_AXIS_Z');
-    }
-    
-    var srcHeadVert=''
-        .endl()+'uniform float {{mod}}_time;'
-        .endl()+'uniform float {{mod}}_frequency;'
-        .endl()+'uniform float {{mod}}_amount;'
-        .endl()+'uniform float {{mod}}_phase;'
-        .endl();
-
-    var srcBodyVert=''
-        .endl()+'float {{mod}}_v=sin( (pos.y) + {{mod}}_time * {{mod}}_frequency + {{mod}}_phase ) * {{mod}}_amount;'
-
-        .endl()+'#ifdef {{mod}}_TO_AXIS_X'
-        .endl()+'   pos.x+={{mod}}_v;'
-        .endl()+'#endif'
-
-        .endl()+'#ifdef {{mod}}_TO_AXIS_Y'
-        .endl()+'   pos.y+={{mod}}_v;'
-        .endl()+'#endif'
-
-        .endl()+'#ifdef {{mod}}_TO_AXIS_Z'
-        .endl()+'   pos.z+={{mod}}_v;'
-        .endl()+'#endif'
-        .endl();
-
-    var startTime=Date.now()/1000.0;
-
-    function removeModule()
-    {
-        if(shader && module)
-        {
-            shader.removeModule(module);
-            shader=null;
-        }
-    }
-
-    this.render.onLinkChanged=removeModule;
-    this.render.onTriggered=function()
-    {
-        if(cgl.getShader()!=shader)
-        {
-            if(shader) removeModule();
-            shader=cgl.getShader();
-            module=shader.addModule(
-                {
-                    name:'MODULE_VERTEX_POSITION',
-                    srcHeadVert:srcHeadVert,
-                    srcBodyVert:srcBodyVert
-                });
-
-            uniTime=new CGL.Uniform(shader,'f',module.prefix+'_time',0);
-            uniFrequency=new CGL.Uniform(shader,'f',module.prefix+'_frequency',self.frequency.val);
-            uniAmount=new CGL.Uniform(shader,'f',module.prefix+'_amount',self.amount.val);
-            uniPhase=new CGL.Uniform(shader,'f',module.prefix+'_phase',self.phase.val);
-            setDefines();
-        }
-
-        uniTime.setValue(Date.now()/1000.0-startTime);
-        self.trigger.trigger();
-    };
-
-};
-
-Ops.Gl.ShaderEffects.VertexSinusWobble.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
-
-Ops.Gl.ShaderEffects.VertexExtrudeGlitch = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='VertexExtrudeGlitch';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.min=this.addInPort(new Port(this,"min",OP_PORT_TYPE_VALUE,{display:'range'}));
-    this.max=this.addInPort(new Port(this,"max",OP_PORT_TYPE_VALUE,{display:'range'}));
-    this.width=this.addInPort(new Port(this,"width",OP_PORT_TYPE_VALUE,{display:'range'}));
-    this.extrude=this.addInPort(new Port(this,"extrude",OP_PORT_TYPE_VALUE));
-
-    this.min.onValueChanged=function(){ if(uniMin)uniMin.setValue(self.min.val); };
-    this.max.onValueChanged=function(){ if(uniMax)uniMax.setValue(self.max.val); };
-    this.width.onValueChanged=function(){ if(uniWidth)uniWidth.setValue(self.width.val); };
-    this.extrude.onValueChanged=function(){ if(uniExtrude)uniExtrude.setValue(self.extrude.val); };
-
-    var shader=null;
-    var uniMin;
-    var uniMax;
-    var uniWidth;
-    var uniExtrude;
-    
-    var srcHeadVert=''
-        .endl()+'uniform float {{mod}}_x;'
-        .endl()+'uniform float {{mod}}_y;'
-        .endl()+'uniform float {{mod}}_width;'
-        .endl()+'uniform float {{mod}}_extrude;'
-        .endl();
-
-    var srcBodyVert=''
-        .endl()+'   if(texCoord.x>{{mod}}_x && texCoord.x<{{mod}}_x+{{mod}}_width && texCoord.y>{{mod}}_y && texCoord.y<{{mod}}_y+{{mod}}_width)pos.xyz*={{mod}}_extrude;'
-        .endl();
-
-    var module=null;
-
-    function removeModule()
-    {
-        console.log('remove module?',shader,module);
-
-        if(shader && module)
-        {
-            shader.removeModule(module);
-            shader=null;
-            console.log('remove module!');
-        }
-    }
-
-    this.render.onLinkChanged=removeModule;
-
-    this.render.onTriggered=function()
-    {
-        if(cgl.getShader()!=shader)
-        {
-            if(shader) removeModule();
-
-            shader=cgl.getShader();
-            module=shader.addModule(
-                {
-                    name:'MODULE_VERTEX_POSITION',
-                    srcHeadVert:srcHeadVert,
-                    srcBodyVert:srcBodyVert
-                });
-
-            uniMin=new CGL.Uniform(shader,'f',module.prefix+'_x',self.min.val);
-            uniMax=new CGL.Uniform(shader,'f',module.prefix+'_y',self.max.val);
-            uniWidth=new CGL.Uniform(shader,'f',module.prefix+'_width',self.width.val);
-            uniExtrude=new CGL.Uniform(shader,'f',module.prefix+'_extrude',self.extrude.val);
-
-        }
-
-        self.trigger.trigger();
-    };
-
-};
-
-Ops.Gl.ShaderEffects.VertexExtrudeGlitch.prototype = new Op();
-Ops.Gl.ShaderEffects.VertexGlitch=Ops.Gl.ShaderEffects.VertexExtrudeGlitch;
-// --------------------------------------------------------------------------
 
 
 Ops.Gl.Shader.MatCapMaterial = function()
@@ -358,7 +147,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     this.normalScale.onValueChanged=function()
     {
-        self.normalScaleUniform.setValue(self.normalScale.val*5.0);
+        self.normalScaleUniform.setValue(self.normalScale.val*2.0);
     };
 
     this.texture.onValueChanged=function()
@@ -543,6 +332,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
         .endl()+'       vec3 tnorm=texture2D( texNormal, vec2(texCoord.x*normalRepeatX,texCoord.y*normalRepeatY) ).xyz * 2.0 - 1.0;'
+
+        // .endl()+'       tnorm.y *= -1.0;'
+
+        .endl()+'       tnorm = normalize(tnorm*normalScale);'
         
 
         .endl()+'vec3 tangent;'
@@ -558,7 +351,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
     
         
 
-        // .endl()+'       tnorm.y *= -1.0;'
         .endl()+'       vec3 n = normalize( mat3(normalMatrix) * (norm+tnorm*normalScale) );'
 
         .endl()+'       vec3 r = reflect( e, n );'
@@ -568,6 +360,11 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'           pow(r.z + 1.0, 2.0)'
         .endl()+'       );'
         .endl()+'       vn = r.xy / m + 0.5;'
+
+
+.endl()+'vn.t=clamp(vn.t, 0.0, 1.0);'
+.endl()+'vn.s=clamp(vn.s, 0.0, 1.0);'
+
 
         .endl()+'    #endif'
 
