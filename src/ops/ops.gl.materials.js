@@ -235,9 +235,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'attribute vec2 attrTexCoord;'
         .endl()+'attribute vec3 attrVertNormal;'
 
-        .endl()+'#ifdef HAS_MORPH_TARGETS'
-        .endl()+'attribute vec3 attrMorphTargetA;'
-        .endl()+'#endif'
 
         .endl()+'varying vec2 texCoord;'
         .endl()+'varying vec3 norm;'
@@ -259,13 +256,9 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'{'
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
+
+        .endl()+'   vec4 pos = vec4( vPosition, 1. );'
         
-        .endl()+'    #ifdef HAS_MORPH_TARGETS'
-        .endl()+'        vec4 pos = vec4( vPosition*0.5+attrMorphTargetA*0.5, 1. );'
-        .endl()+'    #endif'
-        .endl()+'    #ifndef HAS_MORPH_TARGETS'
-        .endl()+'        vec4 pos = vec4( vPosition, 1. );'
-        .endl()+'    #endif'
 
 
         .endl()+'    {{MODULE_VERTEX_POSITION}}'

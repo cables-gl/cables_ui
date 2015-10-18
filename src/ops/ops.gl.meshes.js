@@ -1,66 +1,6 @@
 
 Ops.Gl.Meshes=Ops.Gl.Meshes || {};
 
-// --------------------------------------------------------------------------
-
-Ops.Gl.Meshes.MorphMesh = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=this.patch.cgl;
-
-    this.name='MorphMesh';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-
-    this.geometry0=this.addInPort(new Port(this,"geometry 0",OP_PORT_TYPE_OBJECT));
-    this.geometry1=this.addInPort(new Port(this,"geometry 1",OP_PORT_TYPE_OBJECT));
-
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    var geom=null;
-    var mesh=null;
-
-    this.render.onTriggered=function()
-    {
-        if(mesh)
-        {
-            // console.log('render');
-            mesh.render(cgl.getShader());
-        }
-        self.trigger.trigger();
-    };
-
-    function rebuild()
-    {
-        if(self.geometry0.val && self.geometry1.val)
-        {
-            console.log('self.geometry0.val',self.geometry0.val);
-            var g=self.geometry0.val;
-            var geom=JSON.parse(JSON.stringify(g));
-            geom.morphTargets[0]=JSON.parse(JSON.stringify( self.geometry1.val.vertices ));
-            if(geom.morphTargets[0].length<self.geometry0.val.vertices.length) geom.morphTargets[0].length=self.geometry0.val.vertices.length;
-
-            console.log(geom.morphTargets[0].length);
-                    
-
-            mesh=new CGL.Mesh(cgl,geom);
-
-        }
-        else
-        {
-          mesh=null;
-        }
-    }
-
-    this.geometry0.onValueChanged=rebuild;
-    this.geometry1.onValueChanged=rebuild;
-
-
-};
-
-Ops.Gl.Meshes.MorphMesh.prototype = new Op();
-
-// --------------------------------------------------------------------------
 
 Ops.Gl.Meshes.Triangle = function()
 {

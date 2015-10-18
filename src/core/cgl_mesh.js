@@ -25,7 +25,17 @@ CGL.Mesh=function(_cgl,geom)
             };
 
         attributes.push(attr);
+
+        for(i=0;i<attributes.length;i++)
+        {
+            attributes[i].loc=-1;
+        }
     }
+
+    this.getAttributes=function()
+    {
+        return attributes;
+    };
 
     this.setGeom=function(geom)
     {
@@ -42,7 +52,7 @@ CGL.Mesh=function(_cgl,geom)
         if(geom.vertexNormals.length>0) addAttribute('attrVertNormal',geom.vertexNormals,3);
         if(geom.texCoords.length>0) addAttribute('attrTexCoord',geom.texCoords,2);
 
-        for(var i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.texCoords,3);
+        for(var i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.morphTargets[i],3);
     };
 
     this.render=function(shader)
@@ -52,7 +62,7 @@ CGL.Mesh=function(_cgl,geom)
 
         shader.bind();
 
-        if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
+        // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
 
         cgl.gl.enableVertexAttribArray(shader.getAttrVertexPos());
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
@@ -60,8 +70,12 @@ CGL.Mesh=function(_cgl,geom)
 
         for(i=0;i<attributes.length;i++)
         {
-            if(attributes[i].loc==-1)attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
-
+            if(attributes[i].loc==-1)
+            {
+                attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
+                console.log(i+'attr ',attributes[i].name,attributes[i].loc);
+            }
+        
             if(attributes[i].loc!=-1)
             {
                 cgl.gl.enableVertexAttribArray(attributes[i].loc);
@@ -81,6 +95,7 @@ CGL.Mesh=function(_cgl,geom)
         for(i=0;i<attributes.length;i++)
             if(attributes[i].loc!=-1)
                 cgl.gl.disableVertexAttribArray(attributes[i].loc);
+
 
     };
 
