@@ -38,7 +38,7 @@ CABLES.UI.GUI=function()
                 console.log(' wxh',this.rendererWidth,this.rendererHeight);
                 
 
-        if(this.rendererWidth>window.innerWidth*0.8 || this.rendererHeight>window.innerHeight*0.8)
+        if(this.rendererWidth===undefined || this.rendererHeight===undefined || this.rendererWidth>window.innerWidth*0.8 || this.rendererHeight>window.innerHeight*0.8)
         {
             this.rendererWidth=window.innerWidth*0.4;
             this.rendererHeight=window.innerHeight*0.25;
