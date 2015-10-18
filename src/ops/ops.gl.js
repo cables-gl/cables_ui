@@ -642,12 +642,8 @@ Ops.Gl.Texture = function()
             self.width.val=self.tex.width;
             self.height.val=self.tex.height;
 
-
             if(!self.tex.isPowerOfTwo()) self.uiAttribs.warning='texture dimensions not power of two! - texture filtering will not work.';
             else self.uiAttribs.warning='';
-
-
-
 
         },{filter:self.cgl_filter});
         self.textureOut.val=self.tex;

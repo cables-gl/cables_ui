@@ -15,8 +15,6 @@ Ops.Gl.Shader.Shader = function()
 
     this.doRender=function()
     {
-                // console.log('self.shader.val ',self.shader.val );
-
         if(self.shader.val)
         {
             cgl.setShader(self.shader.val);
