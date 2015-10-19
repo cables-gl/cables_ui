@@ -20,9 +20,10 @@ Ops.Json3d.json3dFile = function()
 
     function render()
     {
+        var oldScene=cgl.frameStore.currentScene;
         cgl.frameStore.currentScene=scene;
         self.trigger.trigger();
-        cgl.frameStore.currentScene=null;
+        cgl.frameStore.currentScene=oldScene;
     }
 
     this.exe.onTriggered=render;
