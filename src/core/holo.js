@@ -589,6 +589,15 @@ var Scene = function(cfg)
         return op;
     };
 
+    this.removeOnAnimFrame=function(op)
+    {
+        for(var i=0;i<this.animFrameOps.length;i++)
+        {
+            this.animFrameOps.splice(i,1);
+        }
+
+    };
+
     this.deleteOp=function(opid,tryRelink)
     {
         for(var i in this.ops)

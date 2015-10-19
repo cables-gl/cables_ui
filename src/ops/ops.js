@@ -103,7 +103,7 @@ Ops.Value = function()
     this.exe.onTriggered=this.exec;
 
     this.v.onValueChanged=this.exec;
-    this.onAnimFrame=function(){};
+    // this.onAnimFrame=function(){};
 };
 
 Ops.Value.prototype = new Op();
@@ -140,7 +140,7 @@ Ops.Value2d = function()
 
     this.x.onValueChanged=this.exec;
     this.y.onValueChanged=this.exec;
-    this.onAnimFrame=function(){};
+    // this.onAnimFrame=function(){};
 };
 
 Ops.Value2d.prototype = new Op();
@@ -181,7 +181,7 @@ Ops.Value3d = function()
     this.y.onValueChanged=this.exec;
     this.z.onValueChanged=this.exec;
 
-    this.onAnimFrame=function(){};
+    // this.onAnimFrame=function(){};
 };
 
 Ops.Value3d.prototype = new Op();

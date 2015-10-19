@@ -8,6 +8,7 @@ Ops.Gl=Ops.Gl || {};
 
 
 
+
 Ops.Gl.Renderer = function()
 {
     Op.apply(this, arguments);
@@ -29,7 +30,10 @@ Ops.Gl.Renderer = function()
     var identTranslate=vec3.create();
     vec3.set(identTranslate, 0,0,-2);
 
-    console.log('set canv yay!');
+    this.onDelete=function()
+    {
+        self.patch.removeOnAnimFrame(self);
+    };
 
     this.onAnimFrame=function(time)
     {
@@ -1615,8 +1619,6 @@ Ops.Gl.Performance = function()
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION)) ;
 
-
-
     var canvas = document.createElement('canvas');
     canvas.id     = "performance_"+self.patch.config.glCanvasId;
     canvas.width  = 512;
@@ -1625,7 +1627,7 @@ Ops.Gl.Performance = function()
     var body = document.getElementsByTagName("body")[0];
     body.appendChild(canvas);
 
-    var fontImage = document.getElementById("performance_"+self.patch.config.glCanvasId);
+    var fontImage = document.getElementById(canvas.id);
     var ctx = fontImage.getContext('2d');
 
     var text='';
@@ -1718,10 +1720,12 @@ Ops.Gl.Performance = function()
         {
             hasErrors=true;
         }
-
-
-
     }
+
+    this.onDelete=function()
+    {
+        document.getElementById(canvas.id).remove();
+    };
 
     self.exe.onTriggered=refresh;
     if(CABLES.UI)gui.setLayout();
