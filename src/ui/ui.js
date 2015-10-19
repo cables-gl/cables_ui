@@ -34,13 +34,8 @@ CABLES.UI.GUI=function()
 
     this.setLayout=function()
     {
-
-        console.log(' wxh',self.rendererWidth,self.rendererHeight,window.innerWidth,window.innerHeight);
-
         if(self.rendererWidth===undefined || self.rendererHeight===undefined || self.rendererWidth>window.innerWidth*0.99 || self.rendererHeight>window.innerHeight*0.99)
         {
-                    console.log('reset render size');
-                    
             self.rendererWidth=window.innerWidth*0.4;
             self.rendererHeight=window.innerHeight*0.25;
         }
