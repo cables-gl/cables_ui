@@ -126,14 +126,8 @@ CABLES.UI.Patch=function(_gui)
                                                 fixedSubPatches.push(json.ops[j].id);
                                             }
                                         }
-
-
                                     }
                                 }
-
-
-        
-
                             }
                         }
 
@@ -1199,8 +1193,36 @@ CABLES.UI.Patch=function(_gui)
         gui.scene().settings.isPublic=proj_public;
     };
 
+    function updateUiAttribs()
+    {
+
+        console.log('currentOp.op.uiAttribs',currentOp.op.uiAttribs);
+                
+
+        if(!currentOp.op.uiAttribs.warning || currentOp.op.uiAttribs.warning.length===0)
+        {
+            console.log('hide warnings');
+                    
+            $('#options_warning').hide();
+        }
+        else
+        {
+            $('#options_warning').show();
+            $('#options_warning').html(currentOp.op.uiAttribs.warning);
+        }
+
+        if(!currentOp.op.uiAttribs.info) $('#options_info').hide();
+        else
+        {
+            $('#options_info').show();
+            $('#options_info').html(currentOp.op.uiAttribs.info);
+        }
+    }
+
     this.showOpParams=function(op)
     {
+
+        if(currentOp)currentOp.onUiAttrChange=null;
         { // show first anim in timeline
             if(self.timeLine)
             {
@@ -1221,6 +1243,11 @@ CABLES.UI.Patch=function(_gui)
         for(var iops in this.ops)
             if(this.ops[iops].op==op)
                 currentOp=this.ops[iops];
+
+
+        console.log('currentOp',currentOp);
+
+        currentOp.op.onUiAttrChange=updateUiAttribs;
 
         watchPorts=[];
         watchAnimPorts=[];
@@ -1259,6 +1286,7 @@ CABLES.UI.Patch=function(_gui)
         html += CABLES.UI.getHandleBarHtml('params_op_foot',{op: op});
 
         $('#options').html(html);
+        updateUiAttribs();
 
         for(var ipo in op.portsOut)
         {

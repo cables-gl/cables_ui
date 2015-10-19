@@ -9,11 +9,9 @@
         <br/>
         <br/>
 
-        {{#if op.uiAttribs.warning}}
-            <div class="warning">
-            {{op.uiAttribs.warning}}
-            </div>
-        {{/if}}
+        <div class="warning " id="options_warning" >
+        {{op.uiAttribs.warning}}
+        </div>
 
     </div>
 
@@ -28,11 +26,9 @@
 
 
 
-        {{#if op.uiAttribs.info}}
-            <div class="info">
-            {{{op.uiAttribs.info}}}
-            </div>
-        {{/if}}
+    <div class="info " id="options_info">
+    {{{op.uiAttribs.info}}}
+    </div>
 
 <!--
 <pre>

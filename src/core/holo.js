@@ -26,6 +26,7 @@ var Op = function(_patch)
     this.onResize=null;
     this.onLoaded=null;
     this.onDelete=null;
+    this.onUiAttrChange=null;
 
     this.uiAttr=function(newAttribs)
     {
@@ -34,6 +35,7 @@ var Op = function(_patch)
         {
             this.uiAttribs[p]=newAttribs[p];
         }
+        if(this.onUiAttrChange) this.onUiAttrChange();
     };
 
     this.getName= function()

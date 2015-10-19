@@ -445,11 +445,9 @@ for (i = 0; i &lt; items.length; i++) {
         <br/>
         <br/>
 
-        {{#if op.uiAttribs.warning}}
-            <div class="warning">
-            {{op.uiAttribs.warning}}
-            </div>
-        {{/if}}
+        <div class="warning " id="options_warning" >
+        {{op.uiAttribs.warning}}
+        </div>
 
     </div>
 
@@ -464,11 +462,9 @@ for (i = 0; i &lt; items.length; i++) {
 
 
 
-        {{#if op.uiAttribs.info}}
-            <div class="info">
-            {{{op.uiAttribs.info}}}
-            </div>
-        {{/if}}
+    <div class="info " id="options_info">
+    {{{op.uiAttribs.info}}}
+    </div>
 
 <!--
 <pre>
@@ -553,8 +549,6 @@ for (i = 0; i &lt; items.length; i++) {
         {{/compare}}
     </td>
     <td class="">
-
-
 
         {{#if port.links}}
 
