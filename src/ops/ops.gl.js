@@ -1528,8 +1528,8 @@ Ops.Gl.Identity = function()
         cgl.pushMvMatrix();
         mat4.identity(cgl.mvMatrix);
 
-        if(cgl.frameStore.perspective) mat4.perspective(cgl.pMatrix,cgl.frameStore.perspective.fovY, cgl.canvasWidth/cgl.canvasHeight, cgl.frameStore.perspective.zNear, cgl.frameStore.perspective.zFar);
-            else mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
+        // if(cgl.frameStore.perspective) mat4.perspective(cgl.pMatrix,cgl.frameStore.perspective.fovY, cgl.getViewPort()[2]/cgl.getViewPort()[3], cgl.frameStore.perspective.zNear, cgl.frameStore.perspective.zFar);
+        //     else mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
 
         self.trigger.trigger();
 
