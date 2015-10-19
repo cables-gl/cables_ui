@@ -716,3 +716,49 @@ Ops.Gl.Meshes.SplinePoint = function()
 };
 
 Ops.Gl.Meshes.SplinePoint.prototype = new Op();
+
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Meshes.TransformToGeometryVertices = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=this.patch.cgl;
+
+    this.name='TransformToGeometryVertices';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.geometry=this.addInPort(new Port(this,"geometry",OP_PORT_TYPE_OBJECT));
+
+    var vec=[0,0,0];
+    this.render.onTriggered=function()
+    {
+        if(self.geometry.val)
+        {
+
+            for(var i=0;i<self.geometry.val.vertices.length/3;i+=3)
+            {
+                vec3.set(vec, self.geometry.val.vertices[i+0],self.geometry.val.vertices[i+1],self.geometry.val.vertices[i+2]);
+                cgl.pushMvMatrix();
+                mat4.translate(cgl.mvMatrix,cgl.mvMatrix, vec);
+                self.trigger.trigger();
+                cgl.popMvMatrix();
+            }
+
+
+        }
+    };
+
+
+};
+
+Ops.Gl.Meshes.TransformToGeometryVertices.prototype = new Op();
+
+
+// --------------------------------------------------------------------------
+
+

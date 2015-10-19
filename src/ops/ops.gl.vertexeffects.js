@@ -331,7 +331,6 @@ Ops.Gl.ShaderEffects.VertexDisplacementMap.prototype = new Op();
 // --------------------------------------------------------------------------
 
 
-// --------------------------------------------------------------------------
 
 Ops.Gl.ShaderEffects.MeshMorphTargets = function()
 {
@@ -430,7 +429,4 @@ Ops.Gl.ShaderEffects.MeshMorphTargets = function()
 
 Ops.Gl.ShaderEffects.MeshMorphTargets.prototype = new Op();
 Ops.Gl.Meshes.MorphMesh = Ops.Gl.ShaderEffects.MeshMorphTargets;
-
-
-// --------------------------------------------------------------------------
 

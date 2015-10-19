@@ -27,10 +27,23 @@
 
 
 
+        {{#if port.links}}
+
+            {{#if port.direction }}
+                {{#each port.links}}
+                    > {{{portIn.name}}}
+                {{/each}}
+            {{else}}
+                {{#each port.links}}
+                    < {{{portOut.name}}}
+                {{/each}}
+            {{/if}}
+        {{/if}}
+
         {{#if isInput}}
 
             {{#if port.links}}
-                {{#compare port.type '==' '1' }}function{{/compare}}
+                {{#compare port.type '==' '1' }}[function]{{/compare}}
                 {{#compare port.type '==' 0 }} <span class="value watchPortValue_{{ port.watchId }}">{{port.val}}</span>{{/compare}}
                 {{#compare port.type '==' '2' }} 
 
@@ -38,7 +51,7 @@
                     <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a>
                 {{/if}}
 
-                object 
+                [object]
 
                 {{/compare}}
             {{else}}
@@ -83,7 +96,7 @@
 
                 {{else}}
                 
-                    {{#compare port.type '==' '1' }} function
+                    {{#compare port.type '==' '1' }} [function]
                     {{/compare}}{{#compare port.type '==' 0 }}
 
 
@@ -102,7 +115,7 @@
 
         {{else}}
 
-            {{#compare port.type '==' '1' }}function{{/compare}}
+            {{#compare port.type '==' '1' }}[function]{{/compare}}
             {{#compare port.type '==' 0 }} <span class="value watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
             {{#compare port.type '==' '2' }}
                 {{#if port.uiAttribs.preview}}
@@ -117,15 +130,6 @@
 
         {{#if port.links}}
 
-            {{#if port.direction }}
-                {{#each port.links}}
-                    > {{{portIn.name}}}
-                {{/each}}
-            {{else}}
-                {{#each port.links}}
-                    < {{{portOut.name}}}
-                {{/each}}
-            {{/if}}
 
 
             <a class="button fa fa-chain-broken" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
