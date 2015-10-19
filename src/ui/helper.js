@@ -79,6 +79,10 @@ Handlebars.registerHelper('json', function(context) {
     return JSON.stringify(context);
 });
 
+Handlebars.registerHelper('console', function(context) {
+    return console.log(context);
+});
+
 Handlebars.registerHelper('compare', function(left_value, operator, right_value, options) {
     var operators, result;
 

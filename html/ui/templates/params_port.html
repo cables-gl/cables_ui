@@ -18,11 +18,15 @@
         {{port.name}}
     </td>
     <td>
+
         {{#compare port.uiAttribs.colorPick '==' 'true' }}
         <div class="button_colorpick button fa fa-eyedropper" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/compare}}
     </td>
     <td class="">
+
+
+
         {{#if isInput}}
 
             {{#if port.links}}
@@ -112,6 +116,18 @@
     <td>
 
         {{#if port.links}}
+
+            {{#if port.direction }}
+                {{#each port.links}}
+                    > {{{portIn.name}}}
+                {{/each}}
+            {{else}}
+                {{#each port.links}}
+                    < {{{portOut.name}}}
+                {{/each}}
+            {{/if}}
+
+
             <a class="button fa fa-chain-broken" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
             {{port.links.length}}x
         {{/if}}

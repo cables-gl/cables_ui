@@ -1474,10 +1474,14 @@ CABLES.UI.Patch=function(_gui)
         for(var i in watchPorts)
         {
             var id='.watchPortValue_'+watchPorts[i].watchId;
-            if(watchPorts[i].isAnimated())
+            if(watchPorts[i].isAnimated() )
+            {
                 if( $(id).val()!=watchPorts[i].val ) $(id).val( watchPorts[i].val );
+            }
             else
+            {
                 $(id).html( watchPorts[i].val );
+            }
         }
 
         if(CABLES.UI.uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,CABLES.UI.uiConfig.watchValuesInterval);
