@@ -127,10 +127,19 @@ Ops.Gl.Perspective = function()
         cgl.popPMatrix();
     };
 
-    this.fovY.onValueChanged=function()
+    function changed()
     {
+        cgl.frameStore.perspective=
+        {
+            fovy:self.fovY.val,
+            zFar:self.zFar.val,
+            zNear:self.zNear.val,
+        };
+    }
 
-    };
+    this.fovY.onValueChanged=changed;
+    this.zFar.onValueChanged=changed;
+    this.zNear.onValueChanged=changed;
 
 };
 
@@ -1518,7 +1527,9 @@ Ops.Gl.Identity = function()
     {
         cgl.pushMvMatrix();
         mat4.identity(cgl.mvMatrix);
-        mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
+
+        if(cgl.frameStore.perspective) mat4.perspective(cgl.pMatrix,cgl.frameStore.perspective.fovY, cgl.canvasWidth/cgl.canvasHeight, cgl.frameStore.perspective.zNear, cgl.frameStore.perspective.zFar);
+            else mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
 
         self.trigger.trigger();
 
