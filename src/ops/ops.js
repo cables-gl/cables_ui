@@ -95,18 +95,6 @@ Ops.Value = function()
         self.exec();
     }
 
-    this.v.onAnimToggle=function()
-    {
-        // console.log('animtoggle');
-        
-        // if(self.v.isAnimated() )
-        // {
-        //     // if(!self.onAnimFrame) self.patch.animFrameOps.push(op);
-        //     self.onAnimFrame=frame;
-        // }
-        // else self.onAnimFrame=function(){};
-    };
-
     this.exec=function()
     {
         if(self.result.val!=self.v.val) self.result.val=self.v.val;
@@ -119,6 +107,84 @@ Ops.Value = function()
 };
 
 Ops.Value.prototype = new Op();
+
+
+// ---------------------------------------------------------------------------
+
+Ops.Value2d = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Value2d';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.x=this.addInPort(new Port(this,"value x",OP_PORT_TYPE_VALUE));
+    this.y=this.addInPort(new Port(this,"value y",OP_PORT_TYPE_VALUE));
+
+    this.resultX=this.addOutPort(new Port(this,"result x"));
+    this.resultY=this.addOutPort(new Port(this,"result y"));
+
+    function frame(time)
+    {
+        self.updateAnims();
+        self.exec();
+    }
+
+    this.exec=function()
+    {
+        if(self.resultX.val!=self.x.val) self.resultX.val=self.x.val;
+        if(self.resultY.val!=self.y.val) self.resultY.val=self.y.val;
+    };
+
+    this.exe.onTriggered=this.exec;
+
+    this.x.onValueChanged=this.exec;
+    this.y.onValueChanged=this.exec;
+    this.onAnimFrame=function(){};
+};
+
+Ops.Value2d.prototype = new Op();
+
+// ---------------------------------------------------------------------------
+
+Ops.Value3d = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+
+    this.name='Value3d';
+    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    this.x=this.addInPort(new Port(this,"value x",OP_PORT_TYPE_VALUE));
+    this.y=this.addInPort(new Port(this,"value y",OP_PORT_TYPE_VALUE));
+    this.z=this.addInPort(new Port(this,"value z",OP_PORT_TYPE_VALUE));
+
+    this.resultX=this.addOutPort(new Port(this,"result x"));
+    this.resultY=this.addOutPort(new Port(this,"result y"));
+    this.resultZ=this.addOutPort(new Port(this,"result z"));
+
+    function frame(time)
+    {
+        self.updateAnims();
+        self.exec();
+    }
+
+    this.exec=function()
+    {
+        if(self.resultX.val!=self.x.val) self.resultX.val=self.x.val;
+        if(self.resultY.val!=self.y.val) self.resultY.val=self.y.val;
+        if(self.resultZ.val!=self.z.val) self.resultZ.val=self.z.val;
+    };
+
+    this.exe.onTriggered=this.exec;
+
+    this.x.onValueChanged=this.exec;
+    this.y.onValueChanged=this.exec;
+    this.z.onValueChanged=this.exec;
+
+    this.onAnimFrame=function(){};
+};
+
+Ops.Value3d.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 

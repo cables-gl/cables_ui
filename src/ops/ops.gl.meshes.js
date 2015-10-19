@@ -588,6 +588,8 @@ Ops.Gl.Meshes.Spline = function()
     this.name='Spline';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
 
+    this.thickness=this.addInPort(new Port(this,"thickness",OP_PORT_TYPE_VALUE));
+
     this.subDivs=this.addInPort(new Port(this,"subDivs",OP_PORT_TYPE_VALUE));
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
@@ -672,7 +674,7 @@ Ops.Gl.Meshes.Spline = function()
         //     cgl.frameStore.SplinePoints=points;
         // }
 
-        cgl.gl.lineWidth(2);
+        cgl.gl.lineWidth(self.thickness.val);
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(cgl.frameStore.SplinePoints), cgl.gl.STATIC_DRAW);
         buffer.itemSize = 3;
