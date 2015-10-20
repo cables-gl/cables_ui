@@ -30,6 +30,8 @@ CGL.Mesh=function(_cgl,geom)
         {
             attributes[i].loc=-1;
         }
+
+
     }
 
     this.getAttributes=function()
@@ -39,6 +41,11 @@ CGL.Mesh=function(_cgl,geom)
 
     this.setGeom=function(geom)
     {
+        if(!this.meshChanged() )this.unBind();
+        cgl.lastMesh=null;
+        cgl.lastMeshShader=null;
+
+
         attributes.length=0;
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertices), cgl.gl.STATIC_DRAW);
@@ -82,25 +89,37 @@ CGL.Mesh=function(_cgl,geom)
 
     this.unBind=function()
     {
+        cgl.lastMesh=null;
+        cgl.lastMeshShader=null;
+
         for(i=0;i<attributes.length;i++)
             if(attributes[i].loc!=-1)
                 cgl.gl.disableVertexAttribArray(attributes[i].loc);
 
     };
 
+    this.meshChanged=function()
+    {
+        return (cgl.lastMesh && ( cgl.lastMesh!=this ));
+    };
+
+
     this.render=function(shader)
     {
+        // todo: enable/disablevertex only if the mesh has changed... think drawing 10000x the same mesh
 
         if(!shader) return;
         var i=0;
 
-        if(cgl.lastMesh && ( cgl.lastMesh!=this || cgl.lastMeshShader!=shader))
-        {
-            cgl.lastMesh.unBind();
-        }
+        // var meshChanged=this.meshChanged();
+        
+        // if(meshChanged)
+            // cgl.lastMesh.unBind();
+
         shader.bind();
 
-        if(cgl.lastMesh && cgl.lastMesh!=this || cgl.lastMeshShader!=shader) bind(shader);
+        // if(meshChanged)
+            bind(shader);
 
         // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
 
@@ -111,8 +130,11 @@ CGL.Mesh=function(_cgl,geom)
 
         cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
         
-        cgl.lastMesh=this;
-        cgl.lastMeshShader=shader;
+        this.unBind();
+
+        // cgl.lastMesh=this;
+        // cgl.lastMeshShader=shader;
+
     };
 
 

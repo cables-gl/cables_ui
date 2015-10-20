@@ -297,7 +297,7 @@ CGL.Shader=function(_cgl)
         needsRecompile=false;
     };
 
-    var lastPMatrix=mat4.create();
+    // var lastPMatrix=mat4.create();
 
     this.bind=function()
     {
@@ -319,10 +319,10 @@ CGL.Shader=function(_cgl)
         }
 
 
-        if( lastPMatrix[0]!=cgl.pMatrix[0] || lastPMatrix[1]!=cgl.pMatrix[1] || lastPMatrix[2]!=cgl.pMatrix[2] || lastPMatrix[3]!=cgl.pMatrix[3] || lastPMatrix[4]!=cgl.pMatrix[4] || lastPMatrix[5]!=cgl.pMatrix[5] || lastPMatrix[6]!=cgl.pMatrix[6] || lastPMatrix[7]!=cgl.pMatrix[7] || lastPMatrix[8]!=cgl.pMatrix[8] || lastPMatrix[9]!=cgl.pMatrix[9] || lastPMatrix[10]!=cgl.pMatrix[10] || lastPMatrix[11]!=cgl.pMatrix[11] || lastPMatrix[12]!=cgl.pMatrix[12] || lastPMatrix[13]!=cgl.pMatrix[13] || lastPMatrix[14]!=cgl.pMatrix[14] || lastPMatrix[15]!=cgl.pMatrix[15] )
+        // if( lastPMatrix[0]!=cgl.pMatrix[0] || lastPMatrix[1]!=cgl.pMatrix[1] || lastPMatrix[2]!=cgl.pMatrix[2] || lastPMatrix[3]!=cgl.pMatrix[3] || lastPMatrix[4]!=cgl.pMatrix[4] || lastPMatrix[5]!=cgl.pMatrix[5] || lastPMatrix[6]!=cgl.pMatrix[6] || lastPMatrix[7]!=cgl.pMatrix[7] || lastPMatrix[8]!=cgl.pMatrix[8] || lastPMatrix[9]!=cgl.pMatrix[9] || lastPMatrix[10]!=cgl.pMatrix[10] || lastPMatrix[11]!=cgl.pMatrix[11] || lastPMatrix[12]!=cgl.pMatrix[12] || lastPMatrix[13]!=cgl.pMatrix[13] || lastPMatrix[14]!=cgl.pMatrix[14] || lastPMatrix[15]!=cgl.pMatrix[15] )
         {
             cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
-            mat4.copy(lastPMatrix,cgl.pMatrix);
+            // mat4.copy(lastPMatrix,cgl.pMatrix);
         }
 
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
