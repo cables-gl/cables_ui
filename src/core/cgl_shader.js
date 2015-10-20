@@ -103,9 +103,9 @@ CGL.Shader=function(_cgl)
     var needsRecompile=true;
     var infoLog='';
     var cgl=_cgl;
-    var projMatrixUniform=-1;
-    var mvMatrixUniform=-1;
-    var normalMatrixUniform=-1;
+    var projMatrixUniform=null;
+    var mvMatrixUniform=null;
+    var normalMatrixUniform=null;
     var attrVertexPos = -1;
 
     this.getCgl=function()
@@ -288,7 +288,7 @@ CGL.Shader=function(_cgl)
             // linkProgram(program);
             program=createProgram(vs,fs, program);
             
-            mvMatrixUniform=-1;
+            mvMatrixUniform=null;
 
             for(i=0;i<uniforms.length;i++)
                 uniforms[i].resetLoc();
@@ -300,8 +300,8 @@ CGL.Shader=function(_cgl)
     this.bind=function()
     {
         if(!program || needsRecompile) self.compile();
-
-        if(mvMatrixUniform==-1)
+        
+        if(!mvMatrixUniform)
         {
             attrVertexPos = cgl.gl.getAttribLocation(program, 'vPosition');
 
@@ -319,8 +319,9 @@ CGL.Shader=function(_cgl)
 
         cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
-
-        if(normalMatrixUniform!=-1)
+        
+        
+        if(normalMatrixUniform)
         {
             var normalMatrix = mat4.create();
             mat4.invert(normalMatrix,cgl.mvMatrix);
