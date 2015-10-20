@@ -869,11 +869,7 @@ CABLES.UI.Patch=function(_gui)
                 uiOp.setSelected(true);
                 setStatusSelectedOps();
             }
-
         } ,30);
-
-
-
 
         uiOp.wasAdded=true;
     }

@@ -1649,15 +1649,20 @@ Ops.Gl.Performance = function()
     var fpsStartTime=0;
 
     var lastTime=0;
+    var childsTime=0;
 
     var queue=[];
+    var queueChilds=[];
     for(var i=0;i<canvas.width;i++)
     {
         queue[i]=-1;
+        queueChilds[i]=-1;
     }
 
     var avgMs=0;
+    var avgMsChilds=0;
     var text2='';
+    var text3='';
 
     var ll=0;
     var selfTime=0;
@@ -1670,6 +1675,10 @@ Ops.Gl.Performance = function()
         var ms=performance.now()-lastTime;
         queue.push(ms);
         queue.shift();
+
+        queueChilds.push(childsTime);
+        queueChilds.shift();
+
         frames++;
         
         if(fpsStartTime===0)fpsStartTime=Date.now();
@@ -1689,30 +1698,50 @@ Ops.Gl.Performance = function()
                     avgMs+=queue[i];
                     count++;
                 }
+
+                if(queueChilds[i]>-1)
+                {
+                    avgMsChilds+=queueChilds[i];
+                }
             }
             avgMs/=count;
-            text2='avg ms: '+Math.round(avgMs*100)/100+' ('+Math.round((selfTime)*100)/100+')';
+            avgMsChilds/=count;
+
+            text2='avg ms frame: '+Math.round(avgMs*100)/100;
+            //+' ('+Math.round((selfTime)*100)/100+') ';
+            text3='avg ms child ops: '+Math.round(avgMsChilds*100)/100+' ('+Math.round(avgMsChilds/avgMs*100)+'%)';
 
         }
         ctx.clearRect(0,0,canvas.width,canvas.height);
 
         ctx.fillStyle="#222222";
         ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle="#aaaaaa";
 
+
+        ctx.fillStyle="#aaaaaa";
         for(var k=0;k<512;k++)
         {
             ctx.fillRect(k,canvas.height-queue[k],1,queue[k]);
         }
 
-        ctx.fillText(text, 10, 20);
-        ctx.fillText(text2, 10, 35);
-        if(hasErrors)
-            {
-                ctx.fillStyle="#ff8844";
-                ctx.fillText('has errors!', 10, 50);
-            }
+        ctx.fillStyle="#ffffff";
+        for(k=0;k<512;k++)
+        {
+            ctx.fillRect(k,canvas.height-queueChilds[k],1,queueChilds[k]);
+        }
+
         
+        ctx.fillText(text, 10, 20);
+        ctx.fillStyle="#aaaaaa";
+        ctx.fillText(text2, 10, 35);
+        ctx.fillStyle="#ffffff";
+        ctx.fillText(text3, 10, 50);
+        if(hasErrors)
+        {
+            ctx.fillStyle="#ff8844";
+            ctx.fillText('has errors!', 10, 65);
+        }
+
         ctx.restore();
 
         if(self.textureOut.val) self.textureOut.val.initTexture(cgl,fontImage);
@@ -1721,7 +1750,12 @@ Ops.Gl.Performance = function()
         lastTime=performance.now();
         selfTime=performance.now()-ll;
         
+        var startTimeChilds=performance.now();
+
         self.trigger.trigger();
+
+        childsTime=performance.now()-startTimeChilds;
+
 
         hasErrors=false;
         var error = cgl.gl.getError();
@@ -1729,6 +1763,8 @@ Ops.Gl.Performance = function()
         {
             hasErrors=true;
         }
+
+        
     }
 
     this.onDelete=function()
