@@ -592,6 +592,8 @@ Ops.Gl.Meshes.Spline = function()
     this.thickness.val=1.0;
 
     this.subDivs=this.addInPort(new Port(this,"subDivs",OP_PORT_TYPE_VALUE));
+    this.centerpoint=this.addInPort(new Port(this,"centerpoint",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.centerpoint.val=false;
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.triggerPoints=this.addOutPort(new Port(this,"triggerPoints",OP_PORT_TYPE_FUNCTION));
@@ -626,8 +628,10 @@ Ops.Gl.Meshes.Spline = function()
         cgl.getShader().bind();
         cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
         cgl.gl.enableVertexAttribArray(cgl.getShader().getAttrVertexPos());
+
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
-        cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, buffer.numItems);
+        if(self.centerpoint.val)cgl.gl.drawArrays(cgl.gl.LINES, 0, buffer.numItems);
+          else cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, buffer.numItems);
 
         for(var i=0;i<cgl.frameStore.SplinePoints.length;i+=3)
         {
@@ -646,10 +650,33 @@ Ops.Gl.Meshes.Spline = function()
 
     function bufferData()
     {
-        var points=[];
+        
         var subd=self.subDivs.val;
+
+        if(self.centerpoint.val)
+        {
+            var points=[];
+
+            for(var i=0;i<cgl.frameStore.SplinePoints.length;i+=3)
+            {
+                //center point...
+                points.push( cgl.frameStore.SplinePoints[0] );
+                points.push( cgl.frameStore.SplinePoints[1] );
+                points.push( cgl.frameStore.SplinePoints[2] );
+
+                //other point
+                points.push( cgl.frameStore.SplinePoints[i+0] );
+                points.push( cgl.frameStore.SplinePoints[i+1] );
+                points.push( cgl.frameStore.SplinePoints[i+2] );
+
+            }
+
+            cgl.frameStore.SplinePoints=points;
+        }
+
         // if(subd>0)
         // {
+            // var points=[];
         //     for(var i=0;i<cgl.frameStore.SplinePoints.length-3;i+=3)
         //     {
         //         for(var j=0;j<subd;j++)
