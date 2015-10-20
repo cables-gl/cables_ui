@@ -522,14 +522,20 @@ Ops.Gl.Mouse = function()
 
     this.smooth.onValueChanged=function()
     {
-        if(self.smooth.val) smoothTimer = setInterval(updateSmooth, 10);
+        if(self.smooth.val) smoothTimer = setInterval(updateSmooth, 15);
         else clearTimeout(smoothTimer);
     };
+
 
     var smoothX,smoothY;
     var lineX=0,lineY=0;
 
-    var mouseX=0,mouseY=0;
+    var mouseX=cgl.canvas.width/2;
+    var mouseY=cgl.canvas.height/2;
+    this.mouseX.val=lineX=mouseX;
+    this.mouseY.val=lineY=mouseY;
+
+            
 
     function updateSmooth()
     {
@@ -560,7 +566,7 @@ Ops.Gl.Mouse = function()
         // console.log('enter');
     };
 
-    cgl.canvas.onmouseleave = function(e)
+    function mouseLeave(e)
     {
         // console.log('leave');
         if(self.smooth.val)
@@ -568,7 +574,8 @@ Ops.Gl.Mouse = function()
             mouseX=cgl.canvas.width/2;
             mouseY=cgl.canvas.height/2;
         }
-    };
+    }
+    cgl.canvas.onmouseleave=mouseLeave;
 
     cgl.canvas.onmousemove = function(e)
     {
@@ -591,6 +598,7 @@ Ops.Gl.Mouse = function()
             }
         }
     };
+
 };
 
 Ops.Gl.Mouse.prototype = new Op();
