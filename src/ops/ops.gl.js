@@ -57,7 +57,7 @@ Ops.Gl.Renderer = function()
 
         if(CGL.Texture.previewTexture)
         {
-            if(!CGL.Texture.texturePreviewer) CGL.Texture.texturePreviewer=new CGL.Texture.texturePreview();
+            if(!CGL.Texture.texturePreviewer) CGL.Texture.texturePreviewer=new CGL.Texture.texturePreview(cgl);
             CGL.Texture.texturePreviewer.render(CGL.Texture.previewTexture);
         }
         Ops.Gl.Renderer.renderEnd(cgl);
