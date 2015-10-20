@@ -1691,7 +1691,7 @@ Ops.Gl.Performance = function()
             fpsStartTime=Date.now();
 
             var count=0;
-            for(var i=0;i<queue.length;i++)
+            for(var i=queue.length;i>queue.length-queue.length/3;i--)
             {
                 if(queue[i]>-1)
                 {
@@ -1707,9 +1707,10 @@ Ops.Gl.Performance = function()
             avgMs/=count;
             avgMsChilds/=count;
 
-            text2='avg ms frame: '+Math.round(avgMs*100)/100;
-            //+' ('+Math.round((selfTime)*100)/100+') ';
-            text3='avg ms child ops: '+Math.round(avgMsChilds*100)/100+' ('+Math.round(avgMsChilds/avgMs*100)+'%)';
+            text2='frame: '+Math.round(avgMs*100)/100+' ms';
+            
+            text3='child ops: '+Math.round(avgMsChilds*100)/100+' ms ('+Math.round(avgMsChilds/avgMs*100)+'%)';
+            if(selfTime>=1.25) text3+=' (self: '+Math.round((selfTime)*100)/100+' ms) ';
 
         }
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -1721,20 +1722,18 @@ Ops.Gl.Performance = function()
         ctx.fillStyle="#aaaaaa";
         for(var k=0;k<512;k++)
         {
-            ctx.fillRect(k,canvas.height-queue[k],1,queue[k]);
+            ctx.fillRect(k,canvas.height-queue[k]*2.5,1,queue[k]*2.5);
         }
 
         ctx.fillStyle="#ffffff";
         for(k=0;k<512;k++)
         {
-            ctx.fillRect(k,canvas.height-queueChilds[k],1,queueChilds[k]);
+            ctx.fillRect(k,canvas.height-queueChilds[k]*2.5,1,queueChilds[k]*2.5);
         }
-
         
+        ctx.fillStyle="#bbbbbb";
         ctx.fillText(text, 10, 20);
-        ctx.fillStyle="#aaaaaa";
         ctx.fillText(text2, 10, 35);
-        ctx.fillStyle="#ffffff";
         ctx.fillText(text3, 10, 50);
         if(hasErrors)
         {
