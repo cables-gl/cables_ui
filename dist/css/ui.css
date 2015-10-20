@@ -258,7 +258,10 @@ td {
   text-align: center;
   color: white;
   padding: 3px;
-  cursor: pointer; }
+  cursor: pointer !important; }
+  .button:hover
+, .bluebutton:hover {
+    cursor: pointer !important; }
   .button.warn
 , .bluebutton.warn {
     background-color: #ea6638; }

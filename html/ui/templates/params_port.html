@@ -27,13 +27,16 @@
 
         {{#if port.links}}
 
+
+
             {{#if port.direction }}
                 {{#each port.links}}
-                    > {{{portIn.name}}}
+                    > <span class="button" onclick="gui.patch().setSelectedOpById('{{portIn.parent.id}}');">{{{portIn.name}}}</span>
                 {{/each}}
             {{else}}
                 {{#each port.links}}
-                    < {{{portOut.name}}}
+                    <  <span class="button" onclick="gui.patch().setSelectedOpById('{{portOut.parent.id}}');">{{{portOut.name}}}</span>
+
                 {{/each}}
             {{/if}}
         {{/if}}
@@ -127,8 +130,6 @@
     <td>
 
         {{#if port.links}}
-
-
 
             <a class="button fa fa-chain-broken" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
             {{port.links.length}}x

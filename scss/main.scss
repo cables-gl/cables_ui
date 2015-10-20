@@ -349,7 +349,12 @@ input[type="text"]
     text-align: center;
     color:white;
     padding:3px;
-    cursor:pointer;
+    cursor:pointer !important;
+
+&:hover
+{
+    cursor:pointer !important;
+}
 
     &.warn
     {

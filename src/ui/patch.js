@@ -1110,6 +1110,24 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
+    this.setSelectedOpById=function(id)
+    {
+        for(var i in gui.patch().ops)
+        {
+            if(gui.patch().ops[i].op.id==id)
+            {
+                // this.setSelectedOp(null);
+                // this.setSelectedOp(gui.patch().ops[i]);
+
+                gui.patch().setSelectedOp(null);
+                gui.patch().setSelectedOp(gui.patch().ops[i]);
+                gui.patch().showOpParams(gui.patch().ops[i].op);
+
+                        
+                return;
+            }
+        }
+    };
 
     this.setSelectedOp=function(uiop)
     {

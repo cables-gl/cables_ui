@@ -516,6 +516,10 @@ Ops.Gl.Mouse = function()
 
     this.smooth=this.addInPort(new Port(this,"smooth",OP_PORT_TYPE_VALUE,{display:'bool'}));
     this.smoothSpeed=this.addInPort(new Port(this,"smoothSpeed",OP_PORT_TYPE_VALUE));
+
+    this.multiply=this.addInPort(new Port(this,"multiply",OP_PORT_TYPE_VALUE));
+    this.multiply.val=1.0;
+
     this.smoothSpeed.val=20;
 
     var smoothTimer;
@@ -526,7 +530,6 @@ Ops.Gl.Mouse = function()
         else clearTimeout(smoothTimer);
     };
 
-
     var smoothX,smoothY;
     var lineX=0,lineY=0;
 
@@ -534,8 +537,6 @@ Ops.Gl.Mouse = function()
     var mouseY=cgl.canvas.height/2;
     this.mouseX.val=lineX=mouseX;
     this.mouseY.val=lineY=mouseY;
-
-            
 
     function updateSmooth()
     {
@@ -551,13 +552,13 @@ Ops.Gl.Mouse = function()
 
         if(self.normalize.val)
         {
-            self.mouseX.val=lineX/cgl.canvas.width*2.0-1.0;
-            self.mouseY.val=lineY/cgl.canvas.height*2.0-1.0;
+            self.mouseX.val=(lineX/cgl.canvas.width*2.0-1.0)*self.multiply.val;
+            self.mouseY.val=(lineY/cgl.canvas.height*2.0-1.0)*self.multiply.val;
         }
         else
         {
-            self.mouseX.val=lineX;
-            self.mouseY.val=lineY;
+            self.mouseX.val=lineX*self.multiply.val;
+            self.mouseY.val=lineY*self.multiply.val;
         }
     }
 
@@ -588,13 +589,13 @@ Ops.Gl.Mouse = function()
         {
             if(self.normalize.val)
             {
-                self.mouseX.val=e.offsetX/cgl.canvas.width*2.0-1.0;
-                self.mouseY.val=e.offsetY/cgl.canvas.height*2.0-1.0;
+                self.mouseX.val=(e.offsetX/cgl.canvas.width*2.0-1.0)*self.multiply.val;
+                self.mouseY.val=(e.offsetY/cgl.canvas.height*2.0-1.0)*self.multiply.val;
             }
             else
             {
-                self.mouseX.val=e.offsetX;
-                self.mouseY.val=e.offsetY;
+                self.mouseX.val=(e.offsetX)*self.multiply.val;
+                self.mouseY.val=(e.offsetY)*self.multiply.val;
             }
         }
     };
