@@ -56,18 +56,9 @@ CGL.Mesh=function(_cgl,geom)
         for(var i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.morphTargets[i],3);
     };
 
-    this.render=function(shader)
+
+    function bind(shader)
     {
-
-        // todo: enable/disablevertex only if the mesh has changed... think drawing 10000x the same mesh
-
-        if(!shader) return;
-        var i=0;
-
-        shader.bind();
-
-        // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
-
         cgl.gl.enableVertexAttribArray(shader.getAttrVertexPos());
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
         cgl.gl.vertexAttribPointer(shader.getAttrVertexPos(),bufVertices.itemSize, cgl.gl.FLOAT, false, 0, 0);
@@ -87,17 +78,41 @@ CGL.Mesh=function(_cgl,geom)
 
         cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
 
+    }
+
+    this.unBind=function()
+    {
+        for(i=0;i<attributes.length;i++)
+            if(attributes[i].loc!=-1)
+                cgl.gl.disableVertexAttribArray(attributes[i].loc);
+
+    };
+
+    this.render=function(shader)
+    {
+
+        if(!shader) return;
+        var i=0;
+
+        if(cgl.lastMesh && ( cgl.lastMesh!=this || cgl.lastMeshShader!=shader))
+        {
+            cgl.lastMesh.unBind();
+        }
+        shader.bind();
+
+        if(cgl.lastMesh && cgl.lastMesh!=this || cgl.lastMeshShader!=shader) bind(shader);
+
+        // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
+
+
         var what=cgl.gl.TRIANGLES;
         if(cgl.wireframe)what=cgl.gl.LINES;
         else if(cgl.points)what=cgl.gl.POINTS;
 
         cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
-
-        for(i=0;i<attributes.length;i++)
-            if(attributes[i].loc!=-1)
-                cgl.gl.disableVertexAttribArray(attributes[i].loc);
-
-
+        
+        cgl.lastMesh=this;
+        cgl.lastMeshShader=shader;
     };
 
 
