@@ -1664,6 +1664,7 @@ Ops.Gl.Performance = function()
     var ll=0;
     var selfTime=0;
     var hasErrors=false;
+    var countFrames=0;
 
     function refresh()
     {
@@ -1752,14 +1753,17 @@ Ops.Gl.Performance = function()
 
         childsTime=performance.now()-startTimeChilds;
 
-
-        hasErrors=false;
-        var error = cgl.gl.getError();
-        if (error != cgl.gl.NO_ERROR)
+        countFrames++;
+        if(countFrames==30)
         {
-            hasErrors=true;
+            hasErrors=false;
+            var error = cgl.gl.getError();
+            if (error != cgl.gl.NO_ERROR)
+            {
+                hasErrors=true;
+            }
+            countFrames=0;
         }
-
         
     }
 

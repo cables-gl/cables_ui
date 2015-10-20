@@ -58,6 +58,9 @@ CGL.Mesh=function(_cgl,geom)
 
     this.render=function(shader)
     {
+
+        // todo: enable/disablevertex only if the mesh has changed... think drawing 10000x the same mesh
+
         if(!shader) return;
         var i=0;
 
