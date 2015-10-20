@@ -354,7 +354,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
     this.setSelected=function(sel)
     {
-        if(isSelected==sel)return;
+        // if(isSelected==sel)return;
         isSelected=sel;
         
         if(this.isVisible())

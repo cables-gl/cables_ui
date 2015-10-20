@@ -63,6 +63,9 @@ CABLES.UI.Patch=function(_gui)
                             var searchID=json.ops[i].id;
                             var newID=json.ops[i].id=generateUUID();
 
+                            json.ops[i].uiAttribs.pasted=true;
+
+
                             for(j in json.ops)
                             {
                                 if(json.ops[j].portsIn)
@@ -101,6 +104,7 @@ CABLES.UI.Patch=function(_gui)
                         var fixedSubPatches=[];
                         for(i=0;i<json.ops.length;i++)
                         {
+
                             if(json.ops[i].objName=='Ops.Ui.Patch')
                             {
 
@@ -184,6 +188,22 @@ CABLES.UI.Patch=function(_gui)
                     CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
                     self.setSelectedOp(null);
                     gui.patch().scene.deSerialize(json);
+
+
+                    // setTimeout(function()
+                    // {
+                    //     for(i in json.ops)
+                    //     {
+                    //         console.log('json.ops[i].id',json.ops[i].id);
+
+                    //         self.addSelectedOpById(json.ops[i].id);
+                    //     }
+                    // },500);
+
+
+
+
+
                     return;
                 }
             }
@@ -835,9 +855,26 @@ CABLES.UI.Patch=function(_gui)
                 gui.patch().setSelectedOp(null);
                 gui.patch().setSelectedOp(uiOp);
                 gui.patch().showOpParams(op);
-
             },30);
         }
+
+
+        // select ops after pasing...
+        setTimeout(function()
+        {
+            if(uiOp.op.uiAttribs.pasted)
+            {
+                delete uiOp.op.uiAttribs.pasted;
+                gui.patch().addSelectedOpById(uiOp.op.id);
+                uiOp.setSelected(true);
+                setStatusSelectedOps();
+            }
+
+        } ,30);
+
+
+
+
         uiOp.wasAdded=true;
     }
 
@@ -1116,14 +1153,23 @@ CABLES.UI.Patch=function(_gui)
         {
             if(gui.patch().ops[i].op.id==id)
             {
-                // this.setSelectedOp(null);
-                // this.setSelectedOp(gui.patch().ops[i]);
-
                 gui.patch().setSelectedOp(null);
                 gui.patch().setSelectedOp(gui.patch().ops[i]);
                 gui.patch().showOpParams(gui.patch().ops[i].op);
+                return;
+            }
+        }
+    };
 
-                        
+    this.addSelectedOpById=function(id)
+    {
+        for(var i in gui.patch().ops)
+        {
+            if(gui.patch().ops[i].op.id==id)
+            {
+                self.addSelectedOp(gui.patch().ops[i]);
+                console.log('found sel op by id !');
+
                 return;
             }
         }

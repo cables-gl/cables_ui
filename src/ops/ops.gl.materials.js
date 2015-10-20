@@ -86,13 +86,13 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.shaderOut=this.addOutPort(new Port(this,"shader",OP_PORT_TYPE_OBJECT));
     this.shaderOut.ignoreValueSerialize=true;
 
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.textureUniform=null;
 
-    this.textureDiffuse=this.addInPort(new Port(this,"diffuse",OP_PORT_TYPE_TEXTURE));
+    this.textureDiffuse=this.addInPort(new Port(this,"diffuse",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.textureDiffuseUniform=null;
 
-    this.textureNormal=this.addInPort(new Port(this,"normal",OP_PORT_TYPE_TEXTURE));
+    this.textureNormal=this.addInPort(new Port(this,"normal",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.textureNormalUniform=null;
 
     this.normalScale=this.addInPort(new Port(this,"normalScale",OP_PORT_TYPE_VALUE,{display:'range'}));
@@ -146,6 +146,24 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.normalScale.onValueChanged=function()
     {
         self.normalScaleUniform.setValue(self.normalScale.val*2.0);
+    };
+
+    this.texture.onPreviewChanged=function()
+    {
+        if(self.texture.showPreview) self.render.onTriggered=self.texture.val.preview;
+            else self.render.onTriggered=self.doRender;
+    };
+
+    this.textureDiffuse.onPreviewChanged=function()
+    {
+        if(self.textureDiffuse.showPreview) self.render.onTriggered=self.textureDiffuse.val.preview;
+            else self.render.onTriggered=self.doRender;
+    };
+
+    this.textureNormal.onPreviewChanged=function()
+    {
+        if(self.textureNormal.showPreview) self.render.onTriggered=self.textureNormal.val.preview;
+            else self.render.onTriggered=self.doRender;
     };
 
     this.texture.onValueChanged=function()
