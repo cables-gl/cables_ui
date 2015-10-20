@@ -2,31 +2,34 @@
 
 <script id="library_head" type="text/x-handlebars-template">
 
-<div class="tabs">
-    <div onclick="CABLES.UI.fileSelect.setTab('projectfiles');" id="tab_projectfiles" class=" tab">project files</div>
-    <div onclick="CABLES.UI.fileSelect.setTab('library');" id="tab_library" class="tab">library</div>
-</div>
+    <div class="tabs">
+        <div onclick="CABLES.UI.fileSelect.setTab('projectfiles');" id="tab_projectfiles" class=" tab">project files</div>
+        <div onclick="CABLES.UI.fileSelect.setTab('library');" id="tab_library" class="tab">library</div>
+    </div>
+
+</script>
 
 
+<script id="library_preview" type="text/x-handlebars-template">
 
+    <div class="previewImage" style="border:4px solid #666;background-color:000;background-image:url('{{previewImageUrl}}');background-repeat:no-repeat;background-position:center center;background-size:100% auto;width:200px;height:200px;"></div>
+
+    <div class="info"></div>
 
 </script>
 
 
 <script id="library_file" type="text/x-handlebars-template">
 
-<div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
-{{#compare filterType '==' 'image' }}
-    style="float:left;width:120px;margin:5px;"{{/compare}}
-    onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');"> 
+    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
     {{#compare filterType '==' 'image' }}
-        <div class="lib_imgpreview" style="background-image:url({{file.p}});background-size:100% auto;width:120px;height:120px;background-position:center center;"></div>
-    {{/compare}}
-{{file.n}} 
-({{file.t}})
-</div>
-
-
-
+        style="float:left;width:120px;margin:5px;"{{/compare}}
+        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');"> 
+        {{#compare filterType '==' 'image' }}
+            <div class="lib_imgpreview" style="background-image:url({{file.p}});background-size:100% auto;width:120px;height:120px;background-position:center center;"></div>
+        {{/compare}}
+    {{file.n}} 
+    ({{file.t}})
+    </div>
 
 </script>

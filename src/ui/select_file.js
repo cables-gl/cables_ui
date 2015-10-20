@@ -29,6 +29,23 @@ CABLES.UI.FileSelect=function()
         this.load();
     };
 
+    this.showPreview=function(val)
+    {
+        console.log('val',val);
+                
+        var opts={};
+
+        if(val.endsWith('.jpg') || val.endsWith('.png'))
+        {
+            opts.previewImageUrl=val;
+        }
+
+        var html= CABLES.UI.getHandleBarHtml('library_preview',opts);
+
+        $('#lib_preview').html( html );
+
+    };
+
     this.show=function(_inputId,_filterType)
     {
         $('#library').toggle();
@@ -41,6 +58,10 @@ CABLES.UI.FileSelect=function()
             filterType=_filterType;
 
             this.load();
+
+
+            var val=$(_inputId).val();
+            this.showPreview(val);
         }
     };
 
@@ -59,8 +80,6 @@ CABLES.UI.FileSelect=function()
         {
             if(!p)p=assetPath;
 
-            // console.log('getFileList(filterType,files,p)',filterType);
-
             var html='';
             for(var i in files)
             {
@@ -78,7 +97,6 @@ CABLES.UI.FileSelect=function()
                         if(filterType=='image')continue;
                         files[i].selectableClass='unselectable';
                     }
-
                 }
 
                 if(!files[i].p)files[i].p=p+files[i].n;

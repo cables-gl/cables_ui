@@ -714,11 +714,29 @@ input[type=range]:focus {
     position: absolute;
     margin-top:41px;
     left:10px;
-    width:620px;
-    height:440px;
+    width:820px;
+    height:540px;
     background-color: #222;
-    z-index: 9;
+    z-index: 99999;
 
+    .left
+    {
+        width:600px;
+        float:left;
+    }
+
+    .right
+    {
+        float:left;
+        width:210px;
+    }
+
+    #lib_preview
+    {
+        margin-left: 10px;
+        width:200px;
+        height:500px;
+    }
 
     #lib_head
     {
@@ -763,7 +781,7 @@ input[type=range]:focus {
     #lib_files
     {
         clear: both;
-        height:400px;
+        height:500px;
         overflow: auto;
      
         .lvl0{}

@@ -236,9 +236,7 @@ CABLES.UI.GUI=function()
 
     this.showLibrary=function(inputId,filterType)
     {
-        
         CABLES.UI.fileSelect.show(inputId,filterType);
-
     };
 
 

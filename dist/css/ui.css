@@ -2630,10 +2630,23 @@ div {
   position: absolute;
   margin-top: 41px;
   left: 10px;
-  width: 620px;
-  height: 440px;
+  width: 820px;
+  height: 540px;
   background-color: #222;
-  z-index: 9; }
+  z-index: 99999; }
+  #library
+.left {
+    width: 600px;
+    float: left; }
+  #library
+.right {
+    float: left;
+    width: 210px; }
+  #library
+#lib_preview {
+    margin-left: 10px;
+    width: 200px;
+    height: 500px; }
   #library
 #lib_head
 .tabs
@@ -2668,7 +2681,7 @@ div:hover {
   #library
 #lib_files {
     clear: both;
-    height: 400px;
+    height: 500px;
     overflow: auto; }
     #library
 #lib_files .lvl1 {

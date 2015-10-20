@@ -67,7 +67,7 @@ Ops.Gl.ShaderEffects.VertexSinusWobble = function()
         .endl();
 
     var srcBodyVert=''
-        .endl()+'float {{mod}}_v=sin( (pos.x)*0.1 + {{mod}}_time * {{mod}}_frequency + {{mod}}_phase ) * {{mod}}_amount;'
+        .endl()+'float {{mod}}_v=sin( (pos.x)*3.0 + {{mod}}_time * {{mod}}_frequency + {{mod}}_phase ) * {{mod}}_amount;'
 
         .endl()+'#ifdef {{mod}}_TO_AXIS_X'
         .endl()+'   pos.x+={{mod}}_v;'
