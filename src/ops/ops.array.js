@@ -47,7 +47,7 @@ Ops.Array.ArrayGetValue = function()
 
     function update()
     {
-        self.value.val=self.array.val[self.index.val];
+        self.value.set( self.array.val[self.index.get()] );
         // console.log('self.array.val',self.array.val[self.index.val]);
     }
 

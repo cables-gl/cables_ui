@@ -237,13 +237,13 @@ Ops.Gl.Meshes.Circle = function()
         var posxTexCoord=0,posyTexCoord=0;
         var posx=0,posy=0;
 
-        if(self.innerRadius.val<=0)
+        if(self.innerRadius.get()<=0)
         {
-          for (i=0; i <= self.segments.val*self.percent.val; i++)
+          for (i=0; i <= self.segments.get()*self.percent.get(); i++)
           {
-              degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
-              posx=Math.cos(degInRad)*self.radius.val;
-              posy=Math.sin(degInRad)*self.radius.val;
+              degInRad = (360/self.segments.get())*i*CGL.DEG2RAD;
+              posx=Math.cos(degInRad)*self.radius.get();
+              posy=Math.sin(degInRad)*self.radius.get();
 
               posxTexCoord=(Math.cos(degInRad)+1.0)/2;
               posyTexCoord=(Math.sin(degInRad)+1.0)/2;
@@ -266,27 +266,27 @@ Ops.Gl.Meshes.Circle = function()
         else
         {
           var count=0;
-          for (i=0; i <= self.segments.val*self.percent.val; i++)
+          for (i=0; i <= self.segments.get()*self.percent.get(); i++)
           {
               count++;
 
-              degInRad = (360/self.segments.val)*i*CGL.DEG2RAD;
-              posx=Math.cos(degInRad)*self.radius.val;
-              posy=Math.sin(degInRad)*self.radius.val;
+              degInRad = (360/self.segments.get())*i*CGL.DEG2RAD;
+              posx=Math.cos(degInRad)*self.radius.get();
+              posy=Math.sin(degInRad)*self.radius.get();
 
-              var posxIn=Math.cos(degInRad)*self.innerRadius.val*self.radius.val;
-              var posyIn=Math.sin(degInRad)*self.innerRadius.val*self.radius.val;
+              var posxIn=Math.cos(degInRad)*self.innerRadius.get()*self.radius.get();
+              var posyIn=Math.sin(degInRad)*self.innerRadius.get()*self.radius.get();
 
               posxTexCoord=(Math.cos(degInRad)+1.0)/2;
               posyTexCoord=(Math.sin(degInRad)+1.0)/2;
 
-              var posxTexCoordIn=(Math.cos(degInRad)+1.0)/2*self.innerRadius.val;
-              var posyTexCoordIn=(Math.sin(degInRad)+1.0)/2*self.innerRadius.val;
+              var posxTexCoordIn=(Math.cos(degInRad)+1.0)/2*self.innerRadius.get();
+              var posyTexCoordIn=(Math.sin(degInRad)+1.0)/2*self.innerRadius.get();
 
               // if(count%5!==0)
-              if(self.steps.val===0.0 ||
-                (count%parseInt(self.steps.val,10)===0 && !self.invertSteps.val) ||
-                (count%parseInt(self.steps.val,10)!==0 && self.invertSteps.val)
+              if(self.steps.get()===0.0 ||
+                (count%parseInt(self.steps.get(),10)===0 && !self.invertSteps.get()) ||
+                (count%parseInt(self.steps.get(),10)!==0 && self.invertSteps.get())
                 )
               {
                   geom.addFace(

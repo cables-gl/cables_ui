@@ -888,7 +888,7 @@ CABLES.UI.Patch=function(_gui)
 
         scene.onUnLink=function(p1,p2)
         {
-            console.log('on unlink');
+            // console.log('on unlink');
 
             for(var i in self.ops)
             {

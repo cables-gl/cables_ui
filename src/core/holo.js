@@ -181,6 +181,17 @@ var Port=function(parent,name,type,uiAttribs)
     this.onPreviewChanged=function(){};
     this.shouldLink=function(){return true;};
 
+
+    this.get=function()
+    {
+        return this.value;
+    };
+
+    this.set=function(v)
+    {
+        this.setValue(v);
+    };
+
     this.__defineGetter__("val", function()
         {
             // if(animated)
@@ -409,11 +420,13 @@ var Link = function(scene)
     this.setValue=function()
     {
         // try
-        {
-        if(this.portIn.val!=this.portOut.val)
-            this.portIn.val=this.portOut.val;
+        // if(this.portIn.val!=this.portOut.val)
+        //     this.portIn.val=this.portOut.val;
 
-        }
+        if(this.portIn.get()!=this.portOut.get())
+            this.portIn.set(this.portOut.get());
+
+
         // catch(exc)
         // {
         //     console.log('',this);

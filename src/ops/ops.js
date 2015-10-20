@@ -345,9 +345,9 @@ Ops.Repeat = function()
 
     this.exe.onTriggered=function()
     {
-        for(var i=self.num.value-1;i>-1;i--)
+        for(var i=self.num.get()-1;i>-1;i--)
         {
-            self.idx.val=i;
+            self.idx.set(i);
             self.trigger.trigger();
         }
     };
@@ -440,7 +440,7 @@ Ops.IfBetweenThen = function()
 
     this.exe.onTriggered=function()
     {
-        if(self.number.val>=self.min.val && self.number.val<self.max.val) self.triggerThen.trigger();
+        if(self.number.get()>=self.min.get() && self.number.get()<self.max.get()) self.triggerThen.trigger();
             else self.triggerElse.trigger();
     };
 };

@@ -39,6 +39,7 @@ CGL.Mesh=function(_cgl,geom)
 
     this.setGeom=function(geom)
     {
+        attributes.length=0;
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertices), cgl.gl.STATIC_DRAW);
         bufVertices.itemSize = 3;

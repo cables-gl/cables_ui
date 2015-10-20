@@ -895,7 +895,7 @@ Ops.Gl.Matrix.Scale = function()
     this.scaleChanged=function()
     {
         doScale=false;
-        vec3.set(vScale, self.scale.val,self.scale.val,self.scale.val);
+        vec3.set(vScale, self.scale.get(),self.scale.get(),self.scale.get());
         updateMatrix();
     };
 
@@ -1058,9 +1058,9 @@ Ops.Gl.Matrix.Transform = function()
         mat4.identity(transMatrix);
         if(doTranslate)mat4.translate(transMatrix,transMatrix, vPos);
 
-        if(self.rotX.val!==0)mat4.rotateX(transMatrix,transMatrix, self.rotX.val*CGL.DEG2RAD);
-        if(self.rotY.val!==0)mat4.rotateY(transMatrix,transMatrix, self.rotY.val*CGL.DEG2RAD);
-        if(self.rotZ.val!==0)mat4.rotateZ(transMatrix,transMatrix, self.rotZ.val*CGL.DEG2RAD);
+        if(self.rotX.get()!==0)mat4.rotateX(transMatrix,transMatrix, self.rotX.get()*CGL.DEG2RAD);
+        if(self.rotY.get()!==0)mat4.rotateY(transMatrix,transMatrix, self.rotY.get()*CGL.DEG2RAD);
+        if(self.rotZ.get()!==0)mat4.rotateZ(transMatrix,transMatrix, self.rotZ.get()*CGL.DEG2RAD);
 
         if(doScale)mat4.scale(transMatrix,transMatrix, vScale);
     };
@@ -1068,23 +1068,20 @@ Ops.Gl.Matrix.Transform = function()
     this.translateChanged=function()
     {
         doTranslate=false;
-        if(self.posX.val!==0.0 || self.posY.val!==0.0 || self.posZ.val!==0.0)doTranslate=true;
-        vec3.set(vPos, self.posX.val,self.posY.val,self.posZ.val);
+        if(self.posX.get()!==0.0 || self.posY.get()!==0.0 || self.posZ.get()!==0.0)doTranslate=true;
+        vec3.set(vPos, self.posX.get(),self.posY.get(),self.posZ.get());
         updateMatrix();
     };
 
     this.scaleChanged=function()
     {
         doScale=false;
-        if(self.scaleX.val!==0.0 || self.scaleY.val!==0.0 || self.scaleZ.val!==0.0)doScale=true;
-        vec3.set(vScale, self.scaleX.val,self.scaleY.val,self.scaleZ.val);
+        if(self.scaleX.get()!==0.0 || self.scaleY.get()!==0.0 || self.scaleZ.get()!==0.0)doScale=true;
+        vec3.set(vScale, self.scaleX.get(),self.scaleY.get(),self.scaleZ.get());
         updateMatrix();
     };
 
-    this.rotChanged=function()
-    {
-        updateMatrix();
-    };
+    this.rotChanged=updateMatrix;
 
     this.rotX.onValueChanged=this.rotChanged;
     this.rotY.onValueChanged=this.rotChanged;
@@ -1181,8 +1178,8 @@ Ops.RandomCluster = function()
             mat4.rotateY(cgl.mvMatrix,cgl.mvMatrix, self.randomsRot[i][1]);
             mat4.rotateZ(cgl.mvMatrix,cgl.mvMatrix, self.randomsRot[i][2]);
 
-            self.idx.val=i;
-            self.rnd.val=self.randomsFloats[i];
+            self.idx.set(i);
+            self.rnd.set(self.randomsFloats[i]);
 
             self.trigger.trigger();
 

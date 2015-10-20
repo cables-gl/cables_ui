@@ -688,29 +688,29 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true' }));
     this.r.onValueChanged=function()
     {
-        if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.val);
-        else self.r.uniform.setValue(self.r.val);
+        if(!self.r.uniform) self.r.uniform=new CGL.Uniform(shader,'f','r',self.r.get());
+        else self.r.uniform.setValue(self.r.get());
     };
 
     this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.g.onValueChanged=function()
     {
-        if(!self.g.uniform) self.g.uniform=new CGL.Uniform(shader,'f','g',self.g.val);
-        else self.g.uniform.setValue(self.g.val);
+        if(!self.g.uniform) self.g.uniform=new CGL.Uniform(shader,'f','g',self.g.get());
+        else self.g.uniform.setValue(self.g.get());
     };
 
     this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.b.onValueChanged=function()
     {
-        if(!self.b.uniform) self.b.uniform=new CGL.Uniform(shader,'f','b',self.b.val);
-        else self.b.uniform.setValue(self.b.val);
+        if(!self.b.uniform) self.b.uniform=new CGL.Uniform(shader,'f','b',self.b.get());
+        else self.b.uniform.setValue(self.b.get());
     };
 
     this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.a.onValueChanged=function()
     {
-        if(!self.a.uniform) self.a.uniform=new CGL.Uniform(shader,'f','a',self.a.val);
-        else self.a.uniform.setValue(self.a.val);
+        if(!self.a.uniform) self.a.uniform=new CGL.Uniform(shader,'f','a',self.a.get());
+        else self.a.uniform.setValue(self.a.get());
     };
 
     this.r.val=Math.random();

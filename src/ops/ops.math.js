@@ -313,14 +313,14 @@ Ops.Math.Sum = function()
     this.exec= function()
     {
         self.updateAnims();
-        self.result.val=parseFloat(self.number1.val)+parseFloat(self.number2.val);
+        self.result.set( parseFloat(self.number1.get())+parseFloat(self.number2.get()) );
     };
 
     this.number1.onValueChanged=this.exec;
     this.number2.onValueChanged=this.exec;
 
-    this.number1.val=1;
-    this.number2.val=1;
+    this.number1.set(1);
+    this.number2.set(1);
 };
 
 Ops.Math.Sum.prototype = new Op();
@@ -372,14 +372,14 @@ Ops.Math.Multiply = function()
     this.exec= function()
     {
         self.updateAnims();
-        self.result.val=self.number1.val*self.number2.val ;
+        self.result.set(self.number1.get()*self.number2.get() );
     };
 
     this.number1.onValueChanged=this.exec;
     this.number2.onValueChanged=this.exec;
 
-    this.number1.val=1;
-    this.number2.val=2;
+    this.number1.set(1);
+    this.number2.set(2);
 };
 
 Ops.Math.Multiply.prototype = new Op();
