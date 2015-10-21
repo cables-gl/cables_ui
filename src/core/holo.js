@@ -786,7 +786,7 @@ var Scene = function(cfg)
             }
         }
 
-        console.log('add ops ',self.config.glCanvasId);
+        // console.log('add ops ',self.config.glCanvasId);
         // add ops...
         for(var iop in obj.ops)
         {
@@ -821,7 +821,7 @@ var Scene = function(cfg)
                 if(port2&& port2.type!=OP_PORT_TYPE_TEXTURE)port2.val=obj.ops[iop].portsOut[ipo].value;
             }
         }
-        console.log('create links...');
+        // console.log('create links...');
                 
 
         // create links...
@@ -840,7 +840,7 @@ var Scene = function(cfg)
             }
         }
 
-        console.log('create uuids ');
+        // console.log('create uuids ');
 
         for(var i in this.ops)
         {

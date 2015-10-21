@@ -156,7 +156,8 @@ CABLES.UI.GUI=function()
         $('#meta').css('height',window.innerHeight-self.rendererHeight-statusBarHeight);
 
         $('#performance_glcanvas').css('bottom',statusBarHeight);
-        $('#performance_glcanvas').css('right',0-(self.rendererWidth-optionsWidth));
+        // $('#performance_glcanvas').css('right',($('#performance_glcanvas').width()-(self.rendererWidth+optionsWidth))) ;
+        $('#performance_glcanvas').css('right',self.rendererWidth-optionsWidth-$('#performance_glcanvas').width()+1 );
         // $('#performance_glcanvas').css('max-width',self.rendererWidth-optionsWidth);
 
 

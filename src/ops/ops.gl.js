@@ -521,8 +521,23 @@ Ops.Gl.Mouse = function()
     this.multiply.set(1.0);
 
     this.smoothSpeed.set(20);
+    var speed=this.smoothSpeed.get();
 
     var smoothTimer;
+
+    function setValue(x,y)
+    {
+        if(self.normalize.get())
+        {
+            self.mouseX.set( (x/cgl.canvas.width*2.0-1.0)*self.multiply.get() );
+            self.mouseY.set( (y/cgl.canvas.height*2.0-1.0)*self.multiply.get() );
+        }
+        else
+        {
+            self.mouseX.set( x*self.multiply.get() );
+            self.mouseY.set( y*self.multiply.get() );
+        }
+    }
 
     this.smooth.onValueChanged=function()
     {
@@ -543,36 +558,26 @@ Ops.Gl.Mouse = function()
 
     function updateSmooth()
     {
-        if(self.smoothSpeed.get()<=0)self.smoothSpeed.set(1);
+        if(speed<=0)speed=0.01;
         var distanceX = Math.abs(mouseX - lineX);
-        var speedX = Math.round( distanceX / self.smoothSpeed.get(), 0 );
+        var speedX = Math.round( distanceX / speed, 0 );
         lineX = (lineX < mouseX) ? lineX + speedX : lineX - speedX;
 
         var distanceY = Math.abs(mouseY - lineY);
-        var speedY = Math.round( distanceY / self.smoothSpeed.get(), 0 );
+        var speedY = Math.round( distanceY / speed, 0 );
         lineY = (lineY < mouseY) ? lineY + speedY : lineY - speedY;
 
-
-        if(self.normalize.get())
-        {
-            self.mouseX.set( (lineX/cgl.canvas.width*2.0-1.0)*self.multiply.get() );
-            self.mouseY.set( (lineY/cgl.canvas.height*2.0-1.0)*self.multiply.get() );
-        }
-        else
-        {
-            self.mouseX.set( lineX*self.multiply.get() );
-            self.mouseY.set( lineY*self.multiply.get() );
-        }
+        setValue(lineX,lineY);
     }
 
     cgl.canvas.onmouseenter = function(e)
     {
-        // console.log('enter');
+        speed=self.smoothSpeed.get();
     };
 
     function mouseLeave(e)
     {
-        // console.log('leave');
+        speed=100;
         if(self.smooth.get())
         {
             mouseX=cgl.canvas.width/2;
@@ -590,16 +595,7 @@ Ops.Gl.Mouse = function()
         }
         else
         {
-            if(self.normalize.get())
-            {
-                self.mouseX.set( (e.offsetX/cgl.canvas.width*2.0-1.0)*self.multiply.get() );
-                self.mouseY.set( (e.offsetY/cgl.canvas.height*2.0-1.0)*self.multiply.get() );
-            }
-            else
-            {
-                self.mouseX.set( (e.offsetX)*self.multiply.get() );
-                self.mouseY.set( (e.offsetY)*self.multiply.get() );
-            }
+            setValue(e.offsetX,e.offsetY);
         }
     };
 

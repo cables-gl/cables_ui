@@ -21,8 +21,6 @@ CGL.State=function()
 
     this.setCanvas=function(id)
     {
-        console.log('state set canvas! '+id);
-
         this.canvas=document.getElementById(id);
         this.gl=this.canvas.getContext("experimental-webgl",
         {

@@ -94,8 +94,7 @@ Ops.Json3d.json3dFile = function()
 
         CGL.incrementLoadingAssets();
 
-        console.log('load ajax'+self.patch.getFilePath(self.filename.val));
-        
+        // console.log('load ajax'+self.patch.getFilePath(self.filename.val));
 
         CABLES.ajax(self.patch.getFilePath(self.filename.val),
             function(err,_data,xhr)
@@ -175,8 +174,7 @@ Ops.Json3d.Mesh=function()
         if(cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue())
         {
             // console.log(' has '+cgl.frameStore.currentScene.getValue().meshes.length+' meshes ');
-
-            console.log('reload');
+            // console.log('reload');
             self.uiAttr({warning:''});
             self.uiAttr({info:''});
 
