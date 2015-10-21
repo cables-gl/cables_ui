@@ -49,9 +49,9 @@ Ops.Devices.MotionSensor = function()
         if(Date.now()-lastTime>15)
         {
             lastTime=Date.now();
-            self.axis1.set(event.alpha);
-            self.axis2.set(event.beta);
-            self.axis3.set(event.gamma);
+            self.axis1.set(event.alpha || 0);
+            self.axis2.set(event.beta || 0);
+            self.axis3.set(event.gamma || 0);
 
         }
     }, true);
