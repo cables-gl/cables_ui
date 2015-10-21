@@ -609,6 +609,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     };
 
     var srcVert=''
+        .endl()+'{{MODULES_HEAD}}'
         .endl()+'attribute vec3 vPosition;'
         .endl()+'attribute vec2 attrTexCoord;'
         .endl()+'attribute vec3 attrVertNormal;'
@@ -622,6 +623,9 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'{'
         .endl()+'   texCoord=attrTexCoord;'
         .endl()+'   norm=attrVertNormal;'
+
+        .endl()+'{{MODULE_VERTEX_POSITION}}'
+
 
         .endl()+'#ifdef BILLBOARD'
         .endl()+'   vec3 position=vPosition;'
@@ -643,7 +647,10 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'}';
 
     var srcFrag=''
+
         .endl()+'precision mediump float;'
+
+        .endl()+'{{MODULES_HEAD}}'
         .endl()+'#ifdef HAS_TEXTURES'
         .endl()+'   varying vec2 texCoord;'
         .endl()+'   #ifdef HAS_TEXTURE_DIFFUSE'
@@ -660,10 +667,15 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
+        .endl()+'vec2 texCoords=texCoord;'
+
+        .endl()+'{{MODULE_BEGIN_FRAG}}'
+
+
         .endl()+'   vec4 col=vec4(r,g,b,a);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'      #ifdef HAS_TEXTURE_DIFFUSE'
-        .endl()+'          col=texture2D(tex,vec2(texCoord.x,1.0-texCoord.y));'
+        .endl()+'          col=texture2D(tex,vec2(texCoords.x,1.0-texCoords.y));'
         .endl()+'           #ifdef COLORIZE_TEXTURE'
         .endl()+'               col.r*=r;'
         .endl()+'               col.g*=g;'
@@ -671,15 +683,18 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'           #endif'
         .endl()+'      #endif'
         .endl()+'      #ifdef HAS_TEXTURE_OPACITY'
-        .endl()+'          col.a*=texture2D(texOpacity,texCoord).g;'
+        .endl()+'          col.a*=texture2D(texOpacity,texCoords).g;'
         .endl()+'       #endif'
         .endl()+'       col.a*=a;'
         .endl()+'   #endif'
+        .endl()+'{{MODULE_COLOR}}'
+        
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
 
     var shader=new CGL.Shader(cgl);
+    shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
     shader.bindTextures=this.bindTextures;
     this.shaderOut.val=shader;
     this.onLoaded=shader.compile;

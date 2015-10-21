@@ -13,7 +13,8 @@ Ops.Devices.MotionSensor = function()
     
 
     this.mulAxis=this.addInPort(new Port(this,"mulAxis"));
-
+    this.mulAxis.val=1.0;
+    
     this.foundSensor=this.addOutPort(new Port(this,"foundSensor"));
     
     this.axis1=this.addOutPort(new Port(this,"axis1"));
