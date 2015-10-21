@@ -11,6 +11,9 @@ Ops.Devices.MotionSensor = function()
 
     this.name='MotionSensor';
     
+
+    this.mulAxis=this.addInPort(new Port(this,"mulAxis"));
+
     this.foundSensor=this.addOutPort(new Port(this,"foundSensor"));
     
     this.axis1=this.addOutPort(new Port(this,"axis1"));
@@ -49,9 +52,9 @@ Ops.Devices.MotionSensor = function()
         if(Date.now()-lastTime>15)
         {
             lastTime=Date.now();
-            self.axis1.set(event.alpha || 0);
-            self.axis2.set(event.beta || 0);
-            self.axis3.set(event.gamma || 0);
+            self.axis1.set( (event.alpha || 0) *self.mulAxis.get() );
+            self.axis2.set( (event.beta || 0 ) *self.mulAxis.get() );
+            self.axis3.set( (event.gamma || 0) *self.mulAxis.get() );
 
         }
     }, true);
