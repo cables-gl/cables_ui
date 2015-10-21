@@ -759,7 +759,8 @@ Ops.Gl.Meshes.TransformToGeometryVertices = function()
     this.name='TransformToGeometryVertices';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.geometry=this.addInPort(new Port(this,"geometry",OP_PORT_TYPE_OBJECT));
-    
+    this.geometry.ignoreValueSerialize=true;
+
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
     this.x=this.addOutPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
     this.y=this.addOutPort(new Port(this,"y",OP_PORT_TYPE_VALUE));

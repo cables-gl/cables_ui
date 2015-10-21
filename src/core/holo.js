@@ -124,14 +124,18 @@ var Op = function(_patch)
         return op;
     };
 
-
-    this.getPort=function(name)
+    this.getPortByName=function(name)
     {
         for(var ipi in this.portsIn)
             if(this.portsIn[ipi].getName()==name)return this.portsIn[ipi];
 
         for(var ipo in this.portsOut)
             if(this.portsOut[ipo].getName()==name)return this.portsOut[ipo];
+    };
+
+    this.getPort=function(name)
+    {
+        return this.getPortByName(name);
     };
 
     this.updateAnims=function()
@@ -163,7 +167,7 @@ var Port=function(parent,name,type,uiAttribs)
     this.anim=null;
     var animated=false;
     var oldAnimVal=-5711;
-    this.onLink=false;
+    this.onLink=null;
     this.showPreview=false;
     var uiActiveState=true;
     this.ignoreValueSerialize=false;

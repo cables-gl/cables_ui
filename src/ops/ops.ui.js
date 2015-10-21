@@ -27,8 +27,6 @@ Ops.Ui.Patch = function()
 
     var hasDynamicPort=function()
     {
-
-
         for(var i in self.portsIn)
         {
             if(self.portsIn[i].type==OP_PORT_TYPE_DYNAMIC)
@@ -72,7 +70,6 @@ Ops.Ui.Patch = function()
         {
             if(self.portsIn[ipi].getName()==name)
             {
-                // console.log('found existing port with name');
                 return self.portsIn[ipi];
             }
         }

@@ -10,7 +10,6 @@ Ops.Devices.MotionSensor = function()
     Op.apply(this, arguments);
 
     this.name='MotionSensor';
-    // this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     
     this.foundSensor=this.addOutPort(new Port(this,"foundSensor"));
     
@@ -30,46 +29,32 @@ Ops.Devices.MotionSensor = function()
     this.accY.set(0);
     this.accZ.set(0);
 
+    var lastTime=0;
+    var lastTimeAcc=0;
+
     window.ondevicemotion = function(event)
     {
-        var accelerationX = event.accelerationIncludingGravity.x;
-        var accelerationY = event.accelerationIncludingGravity.y;
-        var accelerationZ = event.accelerationIncludingGravity.z;
-        console.log('event',event);
+        if(Date.now()-lastTimeAcc>15)
+        {
+            lastTimeAcc=Date.now();
+
+            self.accX.set( event.accelerationIncludingGravity.x );
+            self.accY.set( event.accelerationIncludingGravity.y );
+            self.accZ.set( event.accelerationIncludingGravity.z );
+        }
     };
 
     window.addEventListener("deviceorientation", function (event)
     {
-        console.log('event',event);
-                
-        self.axis1.set(event.alpha);
-        self.axis2.set(event.beta);
-        self.axis3.set(event.gamma);
+        if(Date.now()-lastTime>15)
+        {
+            lastTime=Date.now();
+            self.axis1.set(event.alpha);
+            self.axis2.set(event.beta);
+            self.axis3.set(event.gamma);
+
+        }
     }, true);
-
-
-    // if (window.DeviceOrientationEvent)
-    // {
-    //     window.addEventListener("deviceorientation", function (event)
-    //     {
-    //                 console.log('event',event);
-                    
-    //         self.axis1.set(event.alpha);
-    //         self.axis2.set(event.beta);
-    //         self.axis3.set(event.gamma);
-    //     }, true);
-    // }
-    // else if (window.DeviceMotionEvent)
-    // {
-    //     window.addEventListener('devicemotion', function (event)
-    //     {
-    //         console.log('event',event);
-
-    //         self.axis1.set(event.acceleration.x);
-    //         self.axis2.set(event.acceleration.y);
-    //         self.axis3.set(event.acceleration.z);
-    //     }, true);
-    // }
 
 
 };

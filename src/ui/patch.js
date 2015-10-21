@@ -386,6 +386,8 @@ CABLES.UI.Patch=function(_gui)
             data.ui.renderer.h=gui.rendererHeight;
 
             data=JSON.stringify(data);
+            console.log('data.length',data.length);
+                    
 
             CABLES.api.put(
                 'project/'+id,
