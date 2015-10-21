@@ -1255,14 +1255,8 @@ CABLES.UI.Patch=function(_gui)
 
     function updateUiAttribs()
     {
-
-        console.log('currentOp.op.uiAttribs',currentOp.op.uiAttribs);
-                
-
         if(!currentOp.op.uiAttribs.warning || currentOp.op.uiAttribs.warning.length===0)
         {
-            console.log('hide warnings');
-                    
             $('#options_warning').hide();
         }
         else
@@ -1303,9 +1297,6 @@ CABLES.UI.Patch=function(_gui)
         for(var iops in this.ops)
             if(this.ops[iops].op==op)
                 currentOp=this.ops[iops];
-
-
-        console.log('currentOp',currentOp);
 
         currentOp.op.onUiAttrChange=updateUiAttribs;
 

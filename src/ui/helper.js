@@ -54,10 +54,11 @@ CABLES.UI.inputIncrement=function(v,dir)
     if(v=='false') return 'true';
 
     var val=parseFloat(v);
-    var add=1;
-    if(Math.abs(val)<2) add=0.1;
-        else if(Math.abs(val)<100) add=1;
-            else add=10;
+    var add=0.1;
+    // if(val.)
+    // if(Math.abs(val)<2) add=0.1;
+    //     else if(Math.abs(val)<100) add=1;
+    //         else add=10;
 
     var r=val+add*dir;
 
@@ -160,7 +161,7 @@ function valueChanger(ele)
     {
         var v=parseFloat( $('#'+ele).val() ,10);
         var inc=e.movementY*-0.5;
-        if(e.shiftKey)inc*=0.005;
+        if(e.shiftKey || e.which==3)inc*=0.005;
         
         v+=inc;
 
