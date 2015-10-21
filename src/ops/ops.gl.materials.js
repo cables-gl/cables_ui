@@ -168,7 +168,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     this.texture.onValueChanged=function()
     {
-        if(self.texture.val)
+        if(self.texture.get())
         {
             if(self.textureUniform!==null)return;
             shader.removeUniform('tex');
@@ -218,7 +218,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     this.bindTextures=function()
     {
-        if(self.texture.val)
+        if(self.texture.get())
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.texture.val.tex);
@@ -585,13 +585,13 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     this.bindTextures=function()
     {
-        if(self.texture.val)
+        if(self.texture.get())
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.texture.val.tex);
         }
 
-        if(self.textureOpacity.val)
+        if(self.textureOpacity.get())
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE1);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureOpacity.val.tex);
@@ -643,7 +643,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'}';
 
     var srcFrag=''
-        .endl()+'precision highp float;'
+        .endl()+'precision mediump float;'
         .endl()+'#ifdef HAS_TEXTURES'
         .endl()+'   varying vec2 texCoord;'
         .endl()+'   #ifdef HAS_TEXTURE_DIFFUSE'
@@ -734,7 +734,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.texture.onValueChanged=function()
     {
 
-        if(self.texture.val)
+        if(self.texture.get())
         {
             if(self.textureUniform!==null)return;
             // console.log('TEXTURE ADDED');
@@ -764,7 +764,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     this.textureOpacity.onValueChanged=function()
     {
-        if(self.textureOpacity.val)
+        if(self.textureOpacity.get())
         {
             if(self.textureOpacityUniform!==null)return;
             console.log('TEXTURE OPACITY ADDED');
@@ -831,7 +831,7 @@ Ops.Gl.Shader.TextureSinusWobble = function()
     {
         cgl.setShader(shader);
 
-        if(self.texture.val)
+        if(self.texture.get())
         {
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, self.texture.val.tex);
@@ -909,7 +909,7 @@ Ops.Gl.Shader.TextureSinusWobble = function()
     this.texture.onValueChanged=function()
     {
 
-        if(self.texture.val)
+        if(self.texture.get())
         {
             if(self.textureUniform!==null)return;
             // console.log('TEXTURE ADDED');

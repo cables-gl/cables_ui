@@ -69,19 +69,19 @@ Ops.Gl.Meshes.Rectangle = function()
     {
         var x=0;
         var y=0;
-        if(self.pivotX.val=='center') x=0;
-        if(self.pivotX.val=='right') x=-self.width.val/2;
-        if(self.pivotX.val=='left') x=+self.width.val/2;
+        if(self.pivotX.get()=='center') x=0;
+        if(self.pivotX.get()=='right') x=-self.width.get()/2;
+        if(self.pivotX.get()=='left') x=+self.width.get()/2;
 
-        if(self.pivotY.val=='center') y=0;
-        if(self.pivotY.val=='top') y=-self.height.val/2;
-        if(self.pivotY.val=='bottom') y=+self.height.val/2;
+        if(self.pivotY.get()=='center') y=0;
+        if(self.pivotY.get()=='top') y=-self.height.get()/2;
+        if(self.pivotY.get()=='bottom') y=+self.height.get()/2;
 
         geom.vertices = [
-             self.width.val/2+x,  self.height.val/2+y,  0.0,
-            -self.width.val/2+x,  self.height.val/2+y,  0.0,
-             self.width.val/2+x, -self.height.val/2+y,  0.0,
-            -self.width.val/2+x, -self.height.val/2+y,  0.0
+             self.width.get()/2+x,  self.height.get()/2+y,  0.0,
+            -self.width.get()/2+x,  self.height.get()/2+y,  0.0,
+             self.width.get()/2+x, -self.height.get()/2+y,  0.0,
+            -self.width.get()/2+x, -self.height.get()/2+y,  0.0
         ];
 
         geom.texCoords = [

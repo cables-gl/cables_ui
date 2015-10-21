@@ -8,6 +8,8 @@ CGL.Mesh=function(_cgl,geom)
     var bufVerticesIndizes = cgl.gl.createBuffer();
     var attributes=[];
 
+    var _geom=null;
+
     function addAttribute(name,array,itemSize)
     {
         var buffer= cgl.gl.createBuffer();
@@ -42,8 +44,6 @@ CGL.Mesh=function(_cgl,geom)
     this.setGeom=function(geom)
     {
         if(!this.meshChanged() )this.unBind();
-        cgl.lastMesh=null;
-        cgl.lastMeshShader=null;
 
 
         attributes.length=0;

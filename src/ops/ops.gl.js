@@ -46,9 +46,9 @@ Ops.Gl.Renderer = function()
         if(cgl.canvasWidth!=cgl.canvas.clientWidth || cgl.canvasHeight!=cgl.canvas.clientHeight)
         {
             cgl.canvasWidth=cgl.canvas.clientWidth;
-            self.width.val=cgl.canvasWidth;
+            self.width.set(cgl.canvasWidth);
             cgl.canvasHeight=cgl.canvas.clientHeight;
-            self.height.val=cgl.canvasHeight;
+            self.height.set(cgl.canvasHeight);
         }
 
         Ops.Gl.Renderer.renderStart(cgl,identTranslate);
@@ -518,16 +518,16 @@ Ops.Gl.Mouse = function()
     this.smoothSpeed=this.addInPort(new Port(this,"smoothSpeed",OP_PORT_TYPE_VALUE));
 
     this.multiply=this.addInPort(new Port(this,"multiply",OP_PORT_TYPE_VALUE));
-    this.multiply.val=1.0;
+    this.multiply.set(1.0);
 
-    this.smoothSpeed.val=20;
+    this.smoothSpeed.set(20);
 
     var smoothTimer;
 
     this.smooth.onValueChanged=function()
     {
-        if(self.smooth.val) smoothTimer = setInterval(updateSmooth, 15);
-        else clearTimeout(smoothTimer);
+        if(self.smooth.get()) smoothTimer = setInterval(updateSmooth, 15);
+            else clearTimeout(smoothTimer);
     };
 
     var smoothX,smoothY;
@@ -535,30 +535,33 @@ Ops.Gl.Mouse = function()
 
     var mouseX=cgl.canvas.width/2;
     var mouseY=cgl.canvas.height/2;
-    this.mouseX.val=lineX=mouseX;
-    this.mouseY.val=lineY=mouseY;
+    lineX=mouseX;
+    lineY=mouseY;
+
+    this.mouseX.set(mouseX);
+    this.mouseY.set(mouseY);
 
     function updateSmooth()
     {
-        if(self.smoothSpeed.val<=0)self.smoothSpeed.val=1;
+        if(self.smoothSpeed.get()<=0)self.smoothSpeed.set(1);
         var distanceX = Math.abs(mouseX - lineX);
-        var speedX = Math.round( distanceX / self.smoothSpeed.val, 0 );
+        var speedX = Math.round( distanceX / self.smoothSpeed.get(), 0 );
         lineX = (lineX < mouseX) ? lineX + speedX : lineX - speedX;
 
         var distanceY = Math.abs(mouseY - lineY);
-        var speedY = Math.round( distanceY / self.smoothSpeed.val, 0 );
+        var speedY = Math.round( distanceY / self.smoothSpeed.get(), 0 );
         lineY = (lineY < mouseY) ? lineY + speedY : lineY - speedY;
 
 
-        if(self.normalize.val)
+        if(self.normalize.get())
         {
-            self.mouseX.val=(lineX/cgl.canvas.width*2.0-1.0)*self.multiply.val;
-            self.mouseY.val=(lineY/cgl.canvas.height*2.0-1.0)*self.multiply.val;
+            self.mouseX.set( (lineX/cgl.canvas.width*2.0-1.0)*self.multiply.get() );
+            self.mouseY.set( (lineY/cgl.canvas.height*2.0-1.0)*self.multiply.get() );
         }
         else
         {
-            self.mouseX.val=lineX*self.multiply.val;
-            self.mouseY.val=lineY*self.multiply.val;
+            self.mouseX.set( lineX*self.multiply.get() );
+            self.mouseY.set( lineY*self.multiply.get() );
         }
     }
 
@@ -570,7 +573,7 @@ Ops.Gl.Mouse = function()
     function mouseLeave(e)
     {
         // console.log('leave');
-        if(self.smooth.val)
+        if(self.smooth.get())
         {
             mouseX=cgl.canvas.width/2;
             mouseY=cgl.canvas.height/2;
@@ -580,22 +583,22 @@ Ops.Gl.Mouse = function()
 
     cgl.canvas.onmousemove = function(e)
     {
-        if(self.smooth.val)
+        if(self.smooth.get())
         {
             mouseX=e.offsetX;
             mouseY=e.offsetY;
         }
         else
         {
-            if(self.normalize.val)
+            if(self.normalize.get())
             {
-                self.mouseX.val=(e.offsetX/cgl.canvas.width*2.0-1.0)*self.multiply.val;
-                self.mouseY.val=(e.offsetY/cgl.canvas.height*2.0-1.0)*self.multiply.val;
+                self.mouseX.set( (e.offsetX/cgl.canvas.width*2.0-1.0)*self.multiply.get() );
+                self.mouseY.set( (e.offsetY/cgl.canvas.height*2.0-1.0)*self.multiply.get() );
             }
             else
             {
-                self.mouseX.val=(e.offsetX)*self.multiply.val;
-                self.mouseY.val=(e.offsetY)*self.multiply.val;
+                self.mouseX.set( (e.offsetX)*self.multiply.get() );
+                self.mouseY.set( (e.offsetY)*self.multiply.get() );
             }
         }
     };
@@ -1044,8 +1047,30 @@ Ops.Gl.Matrix.Transform = function()
     var doScale=false;
     var doTranslate=false;
 
+    var translationChanged=true;
+    var scaleChanged=true;
+    var rotChanged=true;
+
     this.render.onTriggered=function()
     {
+        var updateMatrix=false;
+        if(translationChanged)
+        {
+            updateTranslation();
+            updateMatrix=true;
+        }
+        if(scaleChanged)
+        {
+            updateScale();
+            updateMatrix=true;
+        }
+        if(rotChanged)
+        {
+            updateMatrix=true;
+        }
+        if(updateMatrix)doUpdateMatrix();
+
+
         cgl.pushMvMatrix();
         mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
 
@@ -1053,7 +1078,7 @@ Ops.Gl.Matrix.Transform = function()
         cgl.popMvMatrix();
     };
 
-    var updateMatrix=function()
+    var doUpdateMatrix=function()
     {
         mat4.identity(transMatrix);
         if(doTranslate)mat4.translate(transMatrix,transMatrix, vPos);
@@ -1063,25 +1088,39 @@ Ops.Gl.Matrix.Transform = function()
         if(self.rotZ.get()!==0)mat4.rotateZ(transMatrix,transMatrix, self.rotZ.get()*CGL.DEG2RAD);
 
         if(doScale)mat4.scale(transMatrix,transMatrix, vScale);
+        rotChanged=false;
     };
 
-    this.translateChanged=function()
+    function updateTranslation()
     {
         doTranslate=false;
         if(self.posX.get()!==0.0 || self.posY.get()!==0.0 || self.posZ.get()!==0.0)doTranslate=true;
         vec3.set(vPos, self.posX.get(),self.posY.get(),self.posZ.get());
-        updateMatrix();
-    };
+        translationChanged=false;
+    }
 
-    this.scaleChanged=function()
+    function updateScale()
     {
         doScale=false;
         if(self.scaleX.get()!==0.0 || self.scaleY.get()!==0.0 || self.scaleZ.get()!==0.0)doScale=true;
         vec3.set(vScale, self.scaleX.get(),self.scaleY.get(),self.scaleZ.get());
-        updateMatrix();
+        scaleChanged=false;
+    }
+
+    this.translateChanged=function()
+    {
+        translationChanged=true;
     };
 
-    this.rotChanged=updateMatrix;
+    this.scaleChanged=function()
+    {
+        scaleChanged=true;
+    };
+
+    this.rotChanged=function()
+    {
+        rotChanged=true;
+    };
 
     this.rotX.onValueChanged=this.rotChanged;
     this.rotY.onValueChanged=this.rotChanged;
@@ -1095,19 +1134,19 @@ Ops.Gl.Matrix.Transform = function()
     this.posY.onValueChanged=this.translateChanged;
     this.posZ.onValueChanged=this.translateChanged;
 
-    this.rotX.val=0.0;
-    this.rotY.val=0.0;
-    this.rotZ.val=0.0;
+    this.rotX.set(0.0);
+    this.rotY.set(0.0);
+    this.rotZ.set(0.0);
 
-    this.scaleX.val=1.0;
-    this.scaleY.val=1.0;
-    this.scaleZ.val=1.0;
+    this.scaleX.set(1.0);
+    this.scaleY.set(1.0);
+    this.scaleZ.set(1.0);
 
-    this.posX.val=0.0;
-    this.posY.val=0.0;
-    this.posZ.val=0.0;
+    this.posX.set(0.0);
+    this.posY.set(0.0);
+    this.posZ.set(0.0);
 
-    updateMatrix();
+    doUpdateMatrix();
 };
 
 Ops.Gl.Matrix.Transform.prototype = new Op();
@@ -1124,7 +1163,6 @@ Ops.Gl.Matrix.MatrixMul = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     this.matrix=this.addInPort(new Port(this,"matrix"),OP_PORT_TYPE_ARRAY);
-
 
     this.render.onTriggered=function()
     {
@@ -1193,13 +1231,13 @@ Ops.RandomCluster = function()
         self.randomsRot=[];
         self.randomsFloats=[];
 
-        for(var i=0;i<self.num.val;i++)
+        for(var i=0;i<self.num.get();i++)
         {
             self.randomsFloats.push(Math.random());
             self.randoms.push(vec3.fromValues(
-                (Math.random()-0.5)*self.size.val,
-                (Math.random()-0.5)*self.size.val,
-                (Math.random()-0.5)*self.size.val
+                (Math.random()-0.5)*self.size.get(),
+                (Math.random()-0.5)*self.size.get(),
+                (Math.random()-0.5)*self.size.get()
                 ));
             self.randomsRot.push(vec3.fromValues(
                 Math.random()*360*CGL.DEG2RAD,
@@ -1209,12 +1247,12 @@ Ops.RandomCluster = function()
         }
     }
 
-    this.size.val=40;
+    this.size.set(40);
 
     this.num.onValueChanged=reset;
     this.size.onValueChanged=reset;
 
-    this.num.val=100;
+    this.num.set(100);
 };
 
 Ops.RandomCluster.prototype = new Op();
@@ -1707,8 +1745,9 @@ Ops.Gl.Performance = function()
 
             text2='frame: '+Math.round(avgMs*100)/100+' ms';
             
-            text3='child ops: '+Math.round(avgMsChilds*100)/100+' ms ('+Math.round(avgMsChilds/avgMs*100)+'%)';
+            text3='child ops: '+Math.round(avgMsChilds*100)/100+' ms ('+Math.round(avgMsChilds/avgMs*100)+'%) uniforms/s: '+CGL.profileUniformCount;
             if(selfTime>=1.25) text3+=' (self: '+Math.round((selfTime)*100)/100+' ms) ';
+            CGL.profileUniformCount=0;
 
         }
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -1741,8 +1780,8 @@ Ops.Gl.Performance = function()
 
         ctx.restore();
 
-        if(self.textureOut.val) self.textureOut.val.initTexture(cgl,fontImage);
-            else self.textureOut.val=new CGL.Texture.fromImage(cgl,fontImage);
+        if(self.textureOut.get()) self.textureOut.get().initTexture(cgl,fontImage);
+            else self.textureOut.set( new CGL.Texture.fromImage(cgl,fontImage) );
 
         lastTime=performance.now();
         selfTime=performance.now()-ll;

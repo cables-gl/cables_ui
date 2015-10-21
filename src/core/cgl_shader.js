@@ -2,13 +2,16 @@ var CGL=CGL || {};
 
 // ---------------------------------------------------------------------------
 
+CGL.profileUniformCount=0;
+
+
 CGL.Uniform=function(_shader,_type,_name,_value)
 {
     var self=this;
     var loc=-1;
     var name=_name;
     var type=_type;
-    var value=0;
+    var value=0.00001;
     var shader=_shader;
     this.needsUpdate=true;
 
@@ -17,12 +20,14 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     this.getType=function() {return type;};
     this.getName=function() {return name;};
     this.getValue=function() {return value;};
-    this.resetLoc=function() { loc=-1;};
+    this.resetLoc=function() { loc=-1;self.needsUpdate=true; };
 
     this.updateValueF=function()
     {
         if(loc==-1) loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+        else self.needsUpdate=false;
         shader.getCgl().gl.uniform1f(loc, value);
+        CGL.profileUniformCount++;
     };
 
     this.bindTextures=function()
@@ -36,6 +41,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         {
             self.needsUpdate=true;
             value=v;
+            // self.updateValueF();
         }
     };
 
@@ -44,6 +50,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     {
         if(loc==-1) loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
         shader.getCgl().gl.uniform4f(loc, value[0],value[1],value[2],value[3]);
+        // self.needsUpdate=false;
     };
 
     this.setValue4F=function(v)
@@ -89,6 +96,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     }
 
     this.setValue(_value);
+    self.needsUpdate=true;
 };
 
 // ---------------------------------------------------------------------------
@@ -172,7 +180,7 @@ CGL.Shader=function(_cgl)
         .endl()+'varying vec3 norm;'
         .endl()+'uniform mat4 projMatrix;'
         .endl()+'uniform mat4 mvMatrix;'
-        .endl()+'uniform mat4 normalMatrix;'
+        // .endl()+'uniform mat4 normalMatrix;'
         
         .endl()+'void main()'
         .endl()+'{'
@@ -297,7 +305,6 @@ CGL.Shader=function(_cgl)
         needsRecompile=false;
     };
 
-    // var lastPMatrix=mat4.create();
 
     this.bind=function()
     {
@@ -309,21 +316,22 @@ CGL.Shader=function(_cgl)
             projMatrixUniform = cgl.gl.getUniformLocation(program, "projMatrix");
             mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
             normalMatrixUniform = cgl.gl.getUniformLocation(program, "normalMatrix");
+            for(var i=0;i<uniforms.length;i++)uniforms[i].needsUpdate=true;
+
         }
 
-        cgl.gl.useProgram(program);
+        if(cgl.currentProgram!=program)
+        {
+            cgl.gl.useProgram(program);
+            cgl.currentProgram=program;
+        }
 
         for(var i=0;i<uniforms.length;i++)
         {
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
-
-        // if( lastPMatrix[0]!=cgl.pMatrix[0] || lastPMatrix[1]!=cgl.pMatrix[1] || lastPMatrix[2]!=cgl.pMatrix[2] || lastPMatrix[3]!=cgl.pMatrix[3] || lastPMatrix[4]!=cgl.pMatrix[4] || lastPMatrix[5]!=cgl.pMatrix[5] || lastPMatrix[6]!=cgl.pMatrix[6] || lastPMatrix[7]!=cgl.pMatrix[7] || lastPMatrix[8]!=cgl.pMatrix[8] || lastPMatrix[9]!=cgl.pMatrix[9] || lastPMatrix[10]!=cgl.pMatrix[10] || lastPMatrix[11]!=cgl.pMatrix[11] || lastPMatrix[12]!=cgl.pMatrix[12] || lastPMatrix[13]!=cgl.pMatrix[13] || lastPMatrix[14]!=cgl.pMatrix[14] || lastPMatrix[15]!=cgl.pMatrix[15] )
-        {
-            cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
-            // mat4.copy(lastPMatrix,cgl.pMatrix);
-        }
+        cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
 
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
         

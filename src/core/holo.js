@@ -194,6 +194,8 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.__defineGetter__("val", function()
         {
+            // throw "deprecated val";
+                    
             // if(animated)
             // {
 
@@ -218,11 +220,11 @@ var Port=function(parent,name,type,uiAttribs)
     this.getType=function(){ return this.type; };
     this.isLinked=function(){ return this.links.length>0; };
     this.onValueChanged=null;
-    this.onTriggered=function(){};
+    this.onTriggered=null;
     this._onTriggered=function()
     {
         parent.updateAnims();
-        if(parent.enabled) self.onTriggered();
+        if(parent.enabled && self.onTriggered) self.onTriggered();
     };
 
     this.setValue=function(v)
@@ -241,8 +243,7 @@ var Port=function(parent,name,type,uiAttribs)
                     if(this.onValueChanged)this.onValueChanged();
                 }
 
-                if(this.links.length!==0)
-
+                // if(this.links.length!==0)
                 for (var i = 0; i < this.links.length; ++i)
                 {
                     this.links[i].setValue();
