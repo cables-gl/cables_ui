@@ -128,9 +128,7 @@
     <td>
 
         {{#if port.links}}
-
-            <a class="button fa fa-chain-broken" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
-            {{port.links.length}}x
+            <a class="tt graphbutton fa fa-chain-broken" data-tt="unlink {{port.links.length}} links" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
         {{/if}}
     </td>
 </tr>
