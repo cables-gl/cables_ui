@@ -31,11 +31,11 @@
 
             {{#if port.direction }}
                 {{#each port.links}}
-                    > <span class="button" onclick="gui.patch().setSelectedOpById('{{portIn.parent.id}}');">{{{portIn.name}}}</span>
+                    <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portIn.parent.id}}');"> [{{{portIn.name}}}]</span>
                 {{/each}}
             {{else}}
                 {{#each port.links}}
-                    <  <span class="button" onclick="gui.patch().setSelectedOpById('{{portOut.parent.id}}');">{{{portOut.name}}}</span>
+                    <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portOut.parent.id}}');"> [{{{portOut.name}}}]</span>
 
                 {{/each}}
             {{/if}}
@@ -44,23 +44,23 @@
         {{#if isInput}}
 
             {{#if port.links}}
-                {{#compare port.type '==' '1' }}[function]{{/compare}}
-                {{#compare port.type '==' 0 }} <span class="value watchPortValue_{{ port.watchId }}">{{port.val}}</span>{{/compare}}
+                <!-- {{#compare port.type '==' '1' }}[function]{{/compare}} -->
+                {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
                 {{#compare port.type '==' '2' }} 
 
                 {{#if port.uiAttribs.preview}}
                     <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a>
                 {{/if}}
 
-                [object]
+                <!--[object]-->
 
                 {{/compare}}
             {{else}}
                 {{#if port.uiAttribs.display}}
 
                     {{#compare port.uiAttribs.display '==' 'bool' }}
-                        <span id="portcheckbox_{{ portnum }}" class="button fa {{#compare port.val '==' true }}fa-check-square-o{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:10px;padding-right:10px;"></span>
-                        <input class="value" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="width:70px;display:inline;"/>
+                        <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square-o{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:5px;padding-right:30px;"></span>
+                        <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
 
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'range' }}
@@ -88,8 +88,6 @@
                     {{#compare port.uiAttribs.display '==' 'file' }}
                         
                         <a class="button timingbutton fa fa-file-image-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
-
-
                         <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
 
                     {{/compare}}
@@ -104,25 +102,25 @@
                     <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                     <a class="graphbutton fa fa-line-chart" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
                     
-                    <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                    <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" />
 
                     <a class="button fa fa-sort" onmousedown="valueChanger('portval_{{ portnum }}');" style="margin-left:0px;height:11px;background-color:#383838"></a>
 
                     {{/compare}}
-                    {{#compare port.type '==' '2' }} object {{/compare}}
+                    <!-- {{#compare port.type '==' '2' }} object {{/compare}} -->
                 
                 {{/if}}
             {{/if}}
 
         {{else}}
 
-            {{#compare port.type '==' '1' }}[function]{{/compare}}
-            {{#compare port.type '==' 0 }} <span class="value watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
+            <!-- {{#compare port.type '==' '1' }}[function]{{/compare}}-->
+            {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
             {{#compare port.type '==' '2' }}
                 {{#if port.uiAttribs.preview}}
                     <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a>
                 {{/if}}
-                object {{/compare}}
+                {{/compare}}
         {{/if}}
     </td>
 

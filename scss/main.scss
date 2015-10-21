@@ -334,6 +334,28 @@ input[type="text"]
 
 }
 
+.paramsPortLink
+{
+    text-decoration: underline;
+    margin-right: 5px;
+    cursor:pointer;
+
+    &:hover
+    {
+        color: #fff;
+    }
+    // color:#fff;
+    float:left;
+}
+
+.valuetext
+{
+    width:75px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    float:left;
+}
+
 .button_colorpick
 {
     padding: 5px !important;
@@ -387,7 +409,7 @@ input[type="text"]
 
     &:hover
     {
-        color:#aaa;
+        color:#eee;
     }
 }
 

@@ -248,6 +248,20 @@ td {
       border-bottom: 2px solid #222;
       padding-top: 3px; }
 
+.paramsPortLink {
+  text-decoration: underline;
+  margin-right: 5px;
+  cursor: pointer;
+  float: left; }
+  .paramsPortLink:hover {
+    color: #fff; }
+
+.valuetext {
+  width: 75px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  float: left; }
+
 .button_colorpick {
   padding: 5px !important; }
 
@@ -285,7 +299,7 @@ td {
   margin-right: 5px; }
   .timingbutton:hover
 , .graphbutton:hover {
-    color: #aaa; }
+    color: #eee; }
 
 #menubar
 .button

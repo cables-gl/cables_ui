@@ -50,6 +50,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     {
         if(loc==-1) loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
         shader.getCgl().gl.uniform4f(loc, value[0],value[1],value[2],value[3]);
+        CGL.profileUniformCount++;
         // self.needsUpdate=false;
     };
 
@@ -67,8 +68,9 @@ CGL.Uniform=function(_shader,_type,_name,_value)
             loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
             if(loc==-1) console.log('texture loc unknown!!');
         }
-
+        CGL.profileUniformCount++;
         shader.getCgl().gl.uniform1i(loc, value);
+        self.needsUpdate=false;
     };
 
     this.setValueT=function(v)
