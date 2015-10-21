@@ -108,3 +108,4 @@ gulp.task('watch', function() {
 
 
 gulp.task('default', ['lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','watch']);
+gulp.task('build', ['html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass']);
