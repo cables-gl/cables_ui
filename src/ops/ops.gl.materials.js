@@ -667,7 +667,10 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'vec2 texCoords=texCoord;'
+
+        .endl()+'#ifdef HAS_TEXTURES'
+        .endl()+'   vec2 texCoords=texCoord;'
+        .endl()+'#endif'
 
         .endl()+'{{MODULE_BEGIN_FRAG}}'
 

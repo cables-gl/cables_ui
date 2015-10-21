@@ -24,38 +24,31 @@ Ops.Gl.ShaderEffects.TextureShiftGlitch = function()
     this.pos.onValueChanged=function(){ if(unipos)unipos.setValue(self.pos.val); };
     this.height.onValueChanged=function(){ if(uniheight)uniheight.setValue(self.height.val); };
     this.width.onValueChanged=function(){ if(uniWidth)uniWidth.setValue(self.width.val); };
-    this.extrude.onValueChanged=function(){ if(uniExtrude)uniExtrude.setValue(self.extrude.val); };
 
     var shader=null;
     var unipos;
     var uniheight;
     var uniWidth;
-    var uniExtrude;
     
     var srcHeadVert=''
         .endl()+'uniform float {{mod}}_pos;'
         .endl()+'uniform float {{mod}}_height;'
         .endl()+'uniform float {{mod}}_width;'
-        .endl()+'uniform float {{mod}}_extrude;'
         .endl();
 
     var srcBodyVert=''
     
         .endl()+'   if( texCoords.y > {{mod}}_pos - {{mod}}_height*0.5 && texCoords.y<{{mod}}_pos+{{mod}}_height*0.5) texCoords.x+={{mod}}_width; '
-        // .endl()+'   texCoords.y=texCoords.y+{{mod}}_mod + {{mod}}_v*0.5;'
         .endl();
 
     var module=null;
 
     function removeModule()
     {
-        console.log('remove module?',shader,module);
-
         if(shader && module)
         {
             shader.removeModule(module);
             shader=null;
-            console.log('remove module!');
         }
     }
 
@@ -78,8 +71,6 @@ Ops.Gl.ShaderEffects.TextureShiftGlitch = function()
             unipos=new CGL.Uniform(shader,'f',module.prefix+'_pos',self.pos.val);
             uniheight=new CGL.Uniform(shader,'f',module.prefix+'_height',self.height.val);
             uniWidth=new CGL.Uniform(shader,'f',module.prefix+'_width',self.width.val);
-            uniExtrude=new CGL.Uniform(shader,'f',module.prefix+'_extrude',self.extrude.val);
-
         }
 
         self.trigger.trigger();
