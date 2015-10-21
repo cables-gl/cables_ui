@@ -1,6 +1,84 @@
 
-
 Ops.Devices= Ops.Devices || {};
+
+
+
+
+Ops.Devices.MotionSensor = function()
+{
+    var self=this;
+    Op.apply(this, arguments);
+
+    this.name='MotionSensor';
+    // this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
+    
+    this.foundSensor=this.addOutPort(new Port(this,"foundSensor"));
+    
+    this.axis1=this.addOutPort(new Port(this,"axis1"));
+    this.axis2=this.addOutPort(new Port(this,"axis2"));
+    this.axis3=this.addOutPort(new Port(this,"axis3"));
+
+    this.accX=this.addOutPort(new Port(this,"accX"));
+    this.accY=this.addOutPort(new Port(this,"accY"));
+    this.accZ=this.addOutPort(new Port(this,"accX"));
+
+    this.axis1.set(0);
+    this.axis2.set(0);
+    this.axis3.set(0);
+
+    this.accX.set(0);
+    this.accY.set(0);
+    this.accZ.set(0);
+
+    window.ondevicemotion = function(event)
+    {
+        var accelerationX = event.accelerationIncludingGravity.x;
+        var accelerationY = event.accelerationIncludingGravity.y;
+        var accelerationZ = event.accelerationIncludingGravity.z;
+        console.log('event',event);
+    };
+
+    window.addEventListener("deviceorientation", function (event)
+    {
+        console.log('event',event);
+                
+        self.axis1.set(event.alpha);
+        self.axis2.set(event.beta);
+        self.axis3.set(event.gamma);
+    }, true);
+
+
+    // if (window.DeviceOrientationEvent)
+    // {
+    //     window.addEventListener("deviceorientation", function (event)
+    //     {
+    //                 console.log('event',event);
+                    
+    //         self.axis1.set(event.alpha);
+    //         self.axis2.set(event.beta);
+    //         self.axis3.set(event.gamma);
+    //     }, true);
+    // }
+    // else if (window.DeviceMotionEvent)
+    // {
+    //     window.addEventListener('devicemotion', function (event)
+    //     {
+    //         console.log('event',event);
+
+    //         self.axis1.set(event.acceleration.x);
+    //         self.axis2.set(event.acceleration.y);
+    //         self.axis3.set(event.acceleration.z);
+    //     }, true);
+    // }
+
+
+};
+
+Ops.Devices.MotionSensor.prototype = new Op();
+
+
+
+// -------------------------------------------------------------------------
 
 Ops.Devices.GamePad = function()
 {
