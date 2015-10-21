@@ -313,7 +313,8 @@ Ops.Math.Sum = function()
     this.exec= function()
     {
         self.updateAnims();
-        self.result.set( parseFloat(self.number1.get())+parseFloat(self.number2.get()) );
+        var v=parseFloat(self.number1.get())+parseFloat(self.number2.get());
+        if(!isNaN(v)) self.result.set( v );
     };
 
     this.number1.onValueChanged=this.exec;
@@ -324,8 +325,6 @@ Ops.Math.Sum = function()
 };
 
 Ops.Math.Sum.prototype = new Op();
-
-
 
 // ---------------------------------------------------------------------------
 
@@ -339,17 +338,18 @@ Ops.Math.Subtract = function()
     this.number1=this.addInPort(new Port(this,"number1"));
     this.number2=this.addInPort(new Port(this,"number2"));
 
-    this.exec= function()
+    function exec()
     {
         self.updateAnims();
-        self.result.val=parseFloat(self.number1.val)-parseFloat(self.number2.val);
-    };
+        var v=parseFloat(self.number1.get())-parseFloat(self.number2.get());
+        if(!isNaN(v)) self.result.set( v );
+    }
 
-    this.number1.onValueChanged=this.exec;
-    this.number2.onValueChanged=this.exec;
+    this.number1.onValueChanged=exec;
+    this.number2.onValueChanged=exec;
 
-    this.number1.val=1;
-    this.number2.val=1;
+    this.number1.set(1);
+    this.number2.set(1);
 };
 
 Ops.Math.Subtract.prototype = new Op();
