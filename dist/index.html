@@ -619,7 +619,7 @@
 
                     {{#compare port.uiAttribs.display '==' 'file' }}
                         
-                        <a class="button timingbutton fa fa-file-image-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
+                        <a class="graphbutton timingbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
                         <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
 
                     {{/compare}}

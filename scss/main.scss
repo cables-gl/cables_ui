@@ -373,10 +373,11 @@ input[type="text"]
     padding:3px;
     cursor:pointer !important;
 
-&:hover
-{
-    cursor:pointer !important;
-}
+    &:hover
+    {
+        cursor:pointer !important;
+        background-color:#777;
+    }
 
     &.warn
     {
@@ -406,6 +407,7 @@ input[type="text"]
     padding-right:5px;
     margin-left: 0px;
     margin-right: 5px;
+    cursor:pointer;
 
     &:hover
     {

@@ -275,7 +275,8 @@ td {
   cursor: pointer !important; }
   .button:hover
 , .bluebutton:hover {
-    cursor: pointer !important; }
+    cursor: pointer !important;
+    background-color: #777; }
   .button.warn
 , .bluebutton.warn {
     background-color: #ea6638; }
@@ -296,7 +297,8 @@ td {
   font-size: 16px !important;
   padding-right: 5px;
   margin-left: 0px;
-  margin-right: 5px; }
+  margin-right: 5px;
+  cursor: pointer; }
   .timingbutton:hover
 , .graphbutton:hover {
     color: #eee; }
