@@ -699,7 +699,7 @@ Ops.Gl.TextureCycler = function()
 
         // newPort.onLink=checkPorts;
         newPort.onLinkChanged=checkPorts;
-        newPort.onValueChanged=setTextureArray;
+        newPort.onValueChanged=checkPorts;
 
         texturePorts.push(newPort);
         checkPorts();
@@ -711,8 +711,6 @@ Ops.Gl.TextureCycler = function()
 
     this.exe.onTriggered=function()
     {
-        console.log('textures.length',textures.length);
-        
         if(textures.length===0)
         {
             self.textureOut.set(null);
@@ -723,7 +721,6 @@ Ops.Gl.TextureCycler = function()
         if(index>textures.length-1)index=0;
         self.textureOut.set(textures[index]);
     };
-
 
     this.textureOut.onPreviewChanged=function()
     {
@@ -770,7 +767,6 @@ Ops.Gl.Texture = function()
 
             },{filter:self.cgl_filter});
             self.textureOut.val=self.tex;
-            
         }
 
     };
@@ -786,13 +782,9 @@ Ops.Gl.Texture = function()
     };
     this.filter.val='linear';
 
-
     this.textureOut.onPreviewChanged=function()
     {
         if(self.textureOut.showPreview) CGL.Texture.previewTexture=self.textureOut.val;
-        // if(self.texture.showPreview) self.render.onTriggered=self.texture.val.preview;
-        // else self.render.onTriggered=self.doRender;
-        // console.log('show preview!');
     };
 
 };
