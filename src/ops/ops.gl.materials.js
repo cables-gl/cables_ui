@@ -275,6 +275,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
 
+
+
         .endl()+'   vec4 pos = vec4( vPosition, 1. );'
         
 
@@ -306,8 +308,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
 
     var srcFrag=''
-        .endl()+'{{MODULES_HEAD}}'
         .endl()+'precision mediump float;'
+        
+        .endl()+'{{MODULES_HEAD}}'
+        
         .endl()+'varying vec3 norm;'
         .endl()+'varying vec2 texCoord;'
         .endl()+'uniform sampler2D tex;'
@@ -336,6 +340,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
+        
+        .endl()+'#ifdef HAS_DIFFUSE_TEXTURE'
+        .endl()+'   vec2 texCoords=texCoord;'
+        .endl()+'{{MODULE_BEGIN_FRAG}}'
+        .endl()+'#endif'
+
 
         .endl()+'   vec2 vn=vNorm;'
 
@@ -383,7 +393,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'    #ifdef HAS_DIFFUSE_TEXTURE'
         // .endl()+'       col = mix(col,texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY) ),0.5);'
-        .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY));'
+        .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY));'
         .endl()+'    #endif'
 
         .endl()+'    {{MODULE_COLOR}}'
@@ -394,7 +404,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     var shader=new CGL.Shader(cgl);
     
-    shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR']);
+    shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
 
     shader.bindTextures=this.bindTextures;
     this.shaderOut.val=shader;
