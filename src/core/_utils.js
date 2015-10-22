@@ -114,6 +114,12 @@ CGL.getLoadingStatus=function()
     {
         CGL.onLoadingAssetsFinished();
     }
+    if(CABLES.UI && CABLES.UI.GUI)
+        if(stat==1)  $('#assetsloadingindicator').hide();
+            else  $('#assetsloadingindicator').show();
+
+
+
     return stat;
 };
 

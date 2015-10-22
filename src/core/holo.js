@@ -555,17 +555,23 @@ var Scene = function(cfg)
 
     this.onLoadStart=null;
     this.onLoadEnd=null;
+    this.aborted=false;
 
     this.config = cfg ||
     {
         glCanvasId:'glcanvas',
-        prefixAssetPath:''
+        prefixAssetPath:'',
+        onError:null
     };
 
     this.cgl=new CGL.State();
     this.cgl.patch=this;
     this.cgl.setCanvas(this.config.glCanvasId);
 
+    if(this.cgl.aborted)
+    {
+        this.aborted=true;
+    }
 
     this.getFilePath=function(filename)
     {

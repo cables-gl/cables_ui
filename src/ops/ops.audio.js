@@ -50,6 +50,11 @@ Ops.WebAudio.AudioPlayer = function()
         if('webkitAudioContext' in window) audioContext = new webkitAudioContext();
             else audioContext = new AudioContext();
 
+    if(!window.audioContext)
+    {
+        if(this.patch.config.onError) this.patch.config.onError('sorry, could not initialize WebAudio. Please check if your Browser supports WebAudio');
+    }
+
     this.filter = audioContext.createGain();
     self.audio=null;
     var buffer=null;

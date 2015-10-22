@@ -66,6 +66,9 @@ svg {
   overflow: hidden;
   z-index: 999; }
   #statusbar
+div {
+    float: left; }
+  #statusbar
 a {
     background-color: #444;
     color: white;

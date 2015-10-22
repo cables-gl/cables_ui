@@ -18,8 +18,10 @@ Ops.Gl.Renderer = function()
     {
         console.log(' no cgl!');
     }
-
+    
     var cgl=this.patch.cgl;
+    if(cgl.aborted)return;
+
 
     this.name='renderer';
 
@@ -37,6 +39,7 @@ Ops.Gl.Renderer = function()
 
     this.onAnimFrame=function(time)
     {
+        if(cgl.aborted)return;
         if(cgl.canvasWidth==-1)
         {
             cgl.setCanvas(self.patch.config.glCanvasId);
@@ -323,8 +326,8 @@ Ops.Gl.FaceCulling = function()
     this.facing.onValueChanged=function()
     {
         whichFace=cgl.gl.BACK;
-        if(self.facing.val=='front')whichFace=cgl.gl.FRONT;
-        if(self.facing.val=='both')whichFace=cgl.gl.FRONT_AND_BACK;
+        if(self.facing.get()=='front')whichFace=cgl.gl.FRONT;
+        if(self.facing.get()=='both')whichFace=cgl.gl.FRONT_AND_BACK;
     };
 };
 
@@ -352,14 +355,14 @@ Ops.Gl.Depth = function()
 
     this.depthFunc.onValueChanged=function()
     {
-        if(self.depthFunc.val=='never') theDepthFunc=cgl.gl.NEVER;
-        if(self.depthFunc.val=='always') theDepthFunc=cgl.gl.ALWAYS;
-        if(self.depthFunc.val=='less') theDepthFunc=cgl.gl.LESS;
-        if(self.depthFunc.val=='less or equal') theDepthFunc=cgl.gl.LEQUAL;
-        if(self.depthFunc.val=='greater') theDepthFunc=cgl.gl.GREATER;
-        if(self.depthFunc.val=='greater or equal') theDepthFunc=cgl.gl.EQUAL;
-        if(self.depthFunc.val=='equal') theDepthFunc=cgl.gl.EQUAL;
-        if(self.depthFunc.val=='not equal') theDepthFunc=cgl.gl.NOTEQUAL;
+        if(self.depthFunc.get()=='never') theDepthFunc=cgl.gl.NEVER;
+        if(self.depthFunc.get()=='always') theDepthFunc=cgl.gl.ALWAYS;
+        if(self.depthFunc.get()=='less') theDepthFunc=cgl.gl.LESS;
+        if(self.depthFunc.get()=='less or equal') theDepthFunc=cgl.gl.LEQUAL;
+        if(self.depthFunc.get()=='greater') theDepthFunc=cgl.gl.GREATER;
+        if(self.depthFunc.get()=='greater or equal') theDepthFunc=cgl.gl.EQUAL;
+        if(self.depthFunc.get()=='equal') theDepthFunc=cgl.gl.EQUAL;
+        if(self.depthFunc.get()=='not equal') theDepthFunc=cgl.gl.NOTEQUAL;
     };
 
     this.depthFunc.val='less or equal';
@@ -622,15 +625,15 @@ Ops.Gl.TextureEmpty = function()
     
     var sizeChanged=function()
     {
-        self.tex.setSize(self.width.val,self.height.val);
-        self.textureOut.val=self.tex;
+        self.tex.setSize(self.width.get(),self.height.get());
+        self.textureOut.set( self.tex );
     };
 
     this.width.onValueChanged=sizeChanged;
     this.height.onValueChanged=sizeChanged;
 
-    this.width.val=8;
-    this.height.val=8;
+    this.width.set(8);
+    this.height.set(8);
 };
 
 Ops.Gl.TextureEmpty.prototype = new Op();
@@ -753,20 +756,20 @@ Ops.Gl.Texture = function()
 
     var reload=function()
     {
-        if(self.filename.val)
+        if(self.filename.get())
         {
             // console.log('load texture... '+self.filename.val);
-            self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.val),function()
+            self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.get()),function()
             {
                 self.textureOut.val=self.tex;
-                self.width.val=self.tex.width;
-                self.height.val=self.tex.height;
+                self.width.set(self.tex.width);
+                self.height.set(self.tex.height);
 
                 if(!self.tex.isPowerOfTwo()) self.uiAttr({warning:'texture dimensions not power of two! - texture filtering will not work.'});
                 else self.uiAttr({warning:''});
 
             },{filter:self.cgl_filter});
-            self.textureOut.val=self.tex;
+            self.textureOut.set(self.tex);
         }
 
     };
@@ -774,17 +777,17 @@ Ops.Gl.Texture = function()
     this.filename.onValueChanged=reload;
     this.filter.onValueChanged=function()
     {
-        if(self.filter.val=='nearest') self.cgl_filter=CGL.Texture.FILTER_NEAREST;
-        if(self.filter.val=='linear') self.cgl_filter=CGL.Texture.FILTER_LINEAR;
-        if(self.filter.val=='mipmap') self.cgl_filter=CGL.Texture.FILTER_MIPMAP;
+        if(self.filter.get()=='nearest') self.cgl_filter=CGL.Texture.FILTER_NEAREST;
+        if(self.filter.get()=='linear') self.cgl_filter=CGL.Texture.FILTER_LINEAR;
+        if(self.filter.get()=='mipmap') self.cgl_filter=CGL.Texture.FILTER_MIPMAP;
 
         reload();
     };
-    this.filter.val='linear';
+    this.filter.set('linear');
 
     this.textureOut.onPreviewChanged=function()
     {
-        if(self.textureOut.showPreview) CGL.Texture.previewTexture=self.textureOut.val;
+        if(self.textureOut.showPreview) CGL.Texture.previewTexture=self.textureOut.get();
     };
 
 };
@@ -806,9 +809,9 @@ Ops.Gl.TextureText = function()
     this.font=this.addInPort(new Port(this,"font"));
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
     
-    this.fontSize.val=30;
-    this.font.val='Arial';
-    this.align.val='center';
+    this.fontSize.set(30);
+    this.font.set('Arial');
+    this.align.set('center');
 
     var canvas = document.createElement('canvas');
     canvas.id     = "hiddenCanvas";
@@ -825,11 +828,11 @@ Ops.Gl.TextureText = function()
     {
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.fillStyle = 'white';
-        ctx.font = self.fontSize.val+"px "+self.font.val;
-        ctx.textAlign = self.align.val;
-        if(self.align.val=='center') ctx.fillText(self.text.val, ctx.canvas.width / 2, ctx.canvas.height / 2);
-        if(self.align.val=='left') ctx.fillText(self.text.val, 0, ctx.canvas.height / 2);
-        if(self.align.val=='right') ctx.fillText(self.text.val, ctx.canvas.width, ctx.canvas.height / 2);
+        ctx.font = self.fontSize.get()+"px "+self.font.get();
+        ctx.textAlign = self.align.get();
+        if(self.align.get()=='center') ctx.fillText(self.text.val, ctx.canvas.width / 2, ctx.canvas.height / 2);
+        if(self.align.get()=='left') ctx.fillText(self.text.val, 0, ctx.canvas.height / 2);
+        if(self.align.get()=='right') ctx.fillText(self.text.val, ctx.canvas.width, ctx.canvas.height / 2);
         ctx.restore();
 
         if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);
@@ -840,7 +843,7 @@ Ops.Gl.TextureText = function()
     this.text.onValueChanged=refresh;
     this.fontSize.onValueChanged=refresh;
     this.font.onValueChanged=refresh;
-    this.text.val='cables';
+    this.text.set('cables');
 };
 
 Ops.Gl.TextureText.prototype = new Op();
@@ -899,7 +902,7 @@ Ops.Gl.Meshes.Plotter = function()
     {
         self.vertices.splice(0,3);
         self.vertices.push(1);
-        self.vertices.push(self.v.val);
+        self.vertices.push(self.v.get());
         self.vertices.push(0);
 
         for(var i=0;i<num*3;i+=3)
@@ -931,15 +934,15 @@ Ops.Gl.Matrix.Translate = function()
     this.x=this.addInPort(new Port(this,"x"));
     this.y=this.addInPort(new Port(this,"y"));
     this.z=this.addInPort(new Port(this,"z"));
-    this.x.val=0.0;
-    this.y.val=0.0;
-    this.z.val=0.0;
+    this.x.set(0.0);
+    this.y.set(0.0);
+    this.z.set(0.0);
     
     var vec=vec3.create();
 
     this.render.onTriggered=function()
     {
-        vec3.set(vec, self.x.val,self.y.val,self.z.val);
+        vec3.set(vec, self.x.get(),self.y.get(),self.z.get());
         cgl.pushMvMatrix();
         mat4.translate(cgl.mvMatrix,cgl.mvMatrix, vec);
         self.trigger.trigger();
@@ -991,7 +994,7 @@ Ops.Gl.Matrix.Scale = function()
     };
 
     this.scale.onValueChanged=this.scaleChanged;
-    this.scale.val=1.0;
+    this.scale.set(1.0);
     updateMatrix();
 };
 
@@ -1021,17 +1024,17 @@ Ops.Gl.Matrix.LookatCamera = function()
     this.vecUpY=this.addInPort(new Port(this,"upY"));
     this.vecUpZ=this.addInPort(new Port(this,"upZ"));
 
-    this.centerX.val=0;
-    this.centerY.val=0;
-    this.centerZ.val=0;
+    this.centerX.set(0);
+    this.centerY.set(0);
+    this.centerZ.set(0);
 
-    this.eyeX.val=5;
-    this.eyeY.val=5;
-    this.eyeZ.val=5;
+    this.eyeX.set(5);
+    this.eyeY.set(5);
+    this.eyeZ.set(5);
 
-    this.vecUpX.val=0;
-    this.vecUpY.val=1;
-    this.vecUpZ.val=0;
+    this.vecUpX.set(0);
+    this.vecUpY.set(1);
+    this.vecUpZ.set(0);
     
     var vUp=vec3.create();
     var vEye=vec3.create();
@@ -1043,9 +1046,9 @@ Ops.Gl.Matrix.LookatCamera = function()
     {
         cgl.pushMvMatrix();
 
-        vec3.set(vUp, self.vecUpX.val,self.vecUpY.val,self.vecUpZ.val);
-        vec3.set(vEye, self.eyeX.val,self.eyeY.val,self.eyeZ.val);
-        vec3.set(vCenter, self.centerX.val,self.centerY.val,self.centerZ.val);
+        vec3.set(vUp, self.vecUpX.get(),self.vecUpY.get(),self.vecUpZ.get());
+        vec3.set(vEye, self.eyeX.get(),self.eyeY.get(),self.eyeZ.get());
+        vec3.set(vCenter, self.centerX.get(),self.centerY.get(),self.centerZ.get());
 
         mat4.lookAt(cgl.mvMatrix, vEye, vCenter, vUp);
         self.trigger.trigger();
@@ -1076,8 +1079,8 @@ Ops.Gl.Matrix.Shear = function()
     function update()
     {
         mat4.identity(shearMatrix);
-        shearMatrix[1]=Math.tan(self.shearX.val);
-        shearMatrix[4]=Math.tan(self.shearY.val);
+        shearMatrix[1]=Math.tan(self.shearX.get());
+        shearMatrix[4]=Math.tan(self.shearY.get());
     }
 
     this.shearY.onValueChanged=update;
@@ -1098,8 +1101,8 @@ Ops.Gl.Matrix.Shear = function()
         cgl.popMvMatrix();
     };
 
-    self.shearX.val=0.0;
-    self.shearY.val=0.0;
+    self.shearX.set(0.0);
+    self.shearY.set(0.0);
 };
 
 Ops.Gl.Matrix.Shear.prototype = new Op();
@@ -1255,7 +1258,7 @@ Ops.Gl.Matrix.MatrixMul = function()
     this.render.onTriggered=function()
     {
         cgl.pushMvMatrix();
-        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,self.matrix.val);
+        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,self.matrix.get());
         self.trigger.trigger();
         cgl.popMvMatrix();
     };
@@ -1263,7 +1266,7 @@ Ops.Gl.Matrix.MatrixMul = function()
 
     // this.matrix.onValueChanged=update;
 
-    this.matrix.val=[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    this.matrix.set( [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] );
 
 };
 
@@ -1380,21 +1383,21 @@ Ops.Gl.Render2Texture = function()
 
     frameBuf = cgl.gl.createFramebuffer();
 
-    self.tex.val=texture;
-    self.texDepth.val=textureDepth;
+    self.tex.set( texture );
+    self.texDepth.set ( textureDepth );
 
     function resize()
     {
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 
-        self.width.val=cgl.getViewPort()[2];
-        self.height.val=cgl.getViewPort()[3];
+        self.width.set( cgl.getViewPort()[2] );
+        self.height.set( cgl.getViewPort()[3] );
 
         if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
 
         renderbuffer = cgl.gl.createRenderbuffer();
         cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
-        cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.val,self.height.val);
+        cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.get(),self.height.get());
 
         cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
         cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
@@ -1410,10 +1413,10 @@ Ops.Gl.Render2Texture = function()
         cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
-        // console.log('resize r2t',self.width.val,self.height.val);
+        // console.log('resize r2t',self.width.get(),self.height.get());
 
-        texture.setSize(self.width.val,self.height.val);
-        textureDepth.setSize(self.width.val,self.height.val);
+        texture.setSize(self.width.get(),self.height.get());
+        textureDepth.setSize(self.width.get(),self.height.get());
     }
 
 
@@ -1431,9 +1434,9 @@ Ops.Gl.Render2Texture = function()
         }
     };
 
-    this.width.val=1920;
-    this.height.val=1080;
-    this.useVPSize.val=true;
+    this.width.set(1920);
+    this.height.set(1080);
+    this.useVPSize.set(true);
 
     var oldViewport;
 
@@ -1446,7 +1449,7 @@ Ops.Gl.Render2Texture = function()
 
         cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
-        if(self.useVPSize.val)
+        if(self.useVPSize.get())
         {
             if(texture.width!=cgl.getViewPort()[2] || texture.height!=cgl.getViewPort()[3] )
             {
@@ -1464,7 +1467,7 @@ Ops.Gl.Render2Texture = function()
         cgl.pushPMatrix();
         // cgl.gl.viewport(-self.width/2, 0, self.width.val/2,self.height.val);
 
-        cgl.gl.viewport(0, 0, self.width.val,self.height.val);
+        cgl.gl.viewport(0, 0, self.width.get() ,self.height.get() );
         // mat4.perspective(cgl.pMatrix,45, 1, 0.01, 1100.0);
 
         // if(self.clear.val)
@@ -1577,7 +1580,7 @@ Ops.Gl.Spray = function()
         {
             this.isDead=false;
             this.startTime=time;
-            this.lifeTime=Math.random()*self.lifetime.val;
+            this.lifeTime=Math.random()*self.lifetime.get();
             this.endTime=time+this.lifeTime;
             this.startPos=vec3.fromValues(
                 Math.random()*0.5,
@@ -1602,7 +1605,7 @@ Ops.Gl.Spray = function()
     this.exe.onTriggered=function()
     {
         // var time=self.patch.timer.getTime();
-        var time=self.timer.val;
+        var time=self.timer.get();
         for(var i=0;i<particles.length;i++)
         {
             if(particles[i].isDead)particles[i].reAnimate(time);
@@ -1614,7 +1617,7 @@ Ops.Gl.Spray = function()
             mat4.translate(cgl.mvMatrix,cgl.mvMatrix, particles[i].pos);
 
 
-            self.idx.val=i;
+            self.idx.set(i);
             self.lifeTimePercent.val= particles[i].lifeTimePercent;
             // self.rnd.val=self.randomsFloats[i];
 
@@ -1744,6 +1747,8 @@ Ops.Gl.Performance = function()
     Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
+
+    if(cgl.aborted)return;
 
     this.name='Performance';
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));

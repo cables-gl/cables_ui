@@ -3,8 +3,9 @@ CABLES.UI=CABLES.UI || {};
 
 CABLES.UI.setStatusText=function(txt)
 {
-    $('#statusbar').html('&nbsp;'+txt);
+    $('#statusbar .text').html('&nbsp;'+txt);
 };
+
 
 
 CABLES.UI.showPreview=function(opid,which,onoff)

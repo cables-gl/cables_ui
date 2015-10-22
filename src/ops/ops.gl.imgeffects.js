@@ -35,10 +35,9 @@ Ops.Gl.TextureEffects.ImageCompose = function()
             w=cgl.getViewPort()[2];
             h=cgl.getViewPort()[3];
         }
-        
+
         if((w!= self.tex.width || h!= self.tex.height) && (w!==0 && h!==0))
         {
-     
             self.height.val=h;
             self.width.val=w;
             self.tex.setSize(w,h);
