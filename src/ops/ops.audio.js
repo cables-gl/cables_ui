@@ -46,7 +46,7 @@ Ops.WebAudio.AudioPlayer = function()
     this.volume=this.addInPort(new Port(this,"volume",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.volume.val=1.0;
 
-    if(!window.audioContext) 
+    if(!window.audioContext)
         if('webkitAudioContext' in window) audioContext = new webkitAudioContext();
             else audioContext = new AudioContext();
 
@@ -67,14 +67,22 @@ Ops.WebAudio.AudioPlayer = function()
 
     function stop()
     {
-        self.media.stop();
-        self.media = audioContext.createBufferSource();
+        // if(self.media)
+        // {
+        //     self.media.stop();
+        //     self.media = audioContext.createBufferSource();
 
-        self.media.buffer = buffer;
-        self.media.connect(self.filter);
-        self.audioOut.val = self.filter;
+        //     self.media.buffer = buffer;
+        //     self.media.connect(self.filter);
+        //     self.audioOut.val = self.filter;
+        // }
     }
 
+    this.onDelete=function()
+    {
+        if(self.audio) self.audio.pause();
+
+    };
 
     function seek()
     {
