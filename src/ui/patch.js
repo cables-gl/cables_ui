@@ -886,6 +886,7 @@ CABLES.UI.Patch=function(_gui)
         {
             isLoading=false;
             self.setCurrentSubPatch(currentSubPatch);
+            self.showProjectParams();
         };
 
         scene.onUnLink=function(p1,p2)
@@ -1218,7 +1219,7 @@ CABLES.UI.Patch=function(_gui)
         self.showOpParams(gui.scene().getOpById(id));
     };
 
-    this.showProjectParams=function(op)
+    this.showProjectParams=function()
     {
         var s={};
 

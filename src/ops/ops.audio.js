@@ -81,7 +81,6 @@ Ops.WebAudio.AudioPlayer = function()
     this.onDelete=function()
     {
         if(self.audio) self.audio.pause();
-
     };
 
     function seek()
