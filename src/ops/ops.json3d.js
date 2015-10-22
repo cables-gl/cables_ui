@@ -32,7 +32,6 @@ Ops.Json3d.json3dFile = function()
     var row=0;
     function addChild(x,y,parentOp,parentPort,ch)
     {
-
         if(ch.hasOwnProperty('transformation'))
         {
             maxx=Math.max(x,maxx);
@@ -52,15 +51,19 @@ Ops.Json3d.json3dFile = function()
             }
 
             if(ch.children)console.log('ch ',ch.name,ch.children.length);
-                    
 
             self.patch.link(parentOp,parentPort,transOp,'render');
+            
+
+
 
             var i=0;
             if(ch.hasOwnProperty('meshes'))
             {
+
                 for(i=0;i<ch.meshes.length;i++)
                 {
+                    console.log('   meshes...'+i);
                     var index=ch.meshes[i];
 
                     var meshOp=self.patch.addOp('Ops.Json3d.Mesh',{translate:{x:posx,y:posy+50}});
@@ -78,6 +81,7 @@ Ops.Json3d.json3dFile = function()
                 y++;
                 for(i=0;i<ch.children.length;i++)
                 {
+                    console.log('   child...');
                     var xx=maxx;
                     if(ch.children.length>1)xx++;
                     addChild(xx,y,transOp,'trigger',ch.children[i]);
@@ -114,15 +118,19 @@ Ops.Json3d.json3dFile = function()
                     console.log('data.meshes '+data.meshes.length);
                     var root=self.patch.addOp('Ops.Sequence',{translate:{x:self.uiAttribs.translate.x,y:self.uiAttribs.translate.y+50}});
                     self.patch.link(self,'trigger',root,'exe');
-
+        
                     for(var i=0;i<data.rootnode.children.length;i++)
                     {
                         addChild(maxx-2,3,root,'trigger 0',data.rootnode.children[i]);
                     }
                 }
+                console.log('loaded1');
 
                 render();
+                console.log('loaded2');
                 CGL.decrementLoadingAssets();
+                console.log('loaded...');
+                        
             });
 
     };
@@ -175,6 +183,8 @@ Ops.Json3d.Mesh=function()
         {
             // console.log(' has '+cgl.frameStore.currentScene.getValue().meshes.length+' meshes ');
             // console.log('reload');
+                    console.log('load mesh...');
+                    
             self.uiAttr({warning:''});
             self.uiAttr({info:''});
 
@@ -243,8 +253,6 @@ Ops.Json3d.Mesh=function()
                     verts[i+2]+=(off[2] );
                 }
 
-
-
                 max=[-998999999,-998999999,-998999999];
                 min=[998999999,998999999,998999999];
 
@@ -261,12 +269,7 @@ Ops.Json3d.Mesh=function()
 
                 console.log('after max',max);
                 console.log('after min',min);
-
-
-
-
             }
-
 
             var geom=new CGL.Geometry();
             geom.calcNormals=true;
@@ -275,8 +278,9 @@ Ops.Json3d.Mesh=function()
             if(jsonMesh.texturecoords) geom.texCoords = jsonMesh.texturecoords[0];
             geom.verticesIndices=[];
 
-            for(i=0;i<jsonMesh.faces.length;i++)
-                geom.verticesIndices=geom.verticesIndices.concat(jsonMesh.faces[i]);
+            // for(i=0;i<jsonMesh.faces.length;i++)
+            // geom.verticesIndices=geom.verticesIndices.concat(jsonMesh.faces[i]);
+            geom.verticesIndices=[].concat.apply([], jsonMesh.faces);
 
             var nfo='';
             nfo += geom.verticesIndices.length+' faces <br/>';

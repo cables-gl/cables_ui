@@ -4,7 +4,7 @@ var SocketConnection=function()
     var connection=null;
     var connected=false;
     var connectedTo=null;
-    var url='ws://0.0.0.0:5712';
+    var url='ws://127.0.0.1:5712';
     // var url='ws://echo.websocket.org';
 
     function checkConnection()

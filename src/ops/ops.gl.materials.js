@@ -99,6 +99,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.normalScale.val=0.4;
     this.normalScaleUniform=null;
 
+    this.textureSpec=this.addInPort(new Port(this,"specular",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureSpecUniform=null;
+
+    this.textureSpecMatCap=this.addInPort(new Port(this,"specular matcap",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureSpecMatCapUniform=null;
+
 
 
     this.diffuseRepeatX=this.addInPort(new Port(this,"diffuseRepeatX",OP_PORT_TYPE_VALUE));
@@ -199,6 +205,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         }
     };
 
+
+
     this.textureNormal.onValueChanged=function()
     {
         if(self.textureNormal.val)
@@ -215,6 +223,33 @@ Ops.Gl.Shader.MatCapMaterial = function()
             self.textureNormalUniform=null;
         }
     };
+
+
+    function changeSpec()
+    {
+        if(self.textureSpec.val && self.textureSpecMatCap.val)
+        {
+            if(self.textureSpecUniform!==null)return;
+            shader.define('USE_SPECULAR_TEXTURE');
+            shader.removeUniform('texSpec');
+            shader.removeUniform('texSpecMatCap');
+            self.textureSpecUniform=new CGL.Uniform(shader,'t','texSpec',3);
+            self.textureSpecMatCapUniform=new CGL.Uniform(shader,'t','texSpecMatCap',4);
+        }
+        else
+        {
+            shader.removeDefine('USE_SPECULAR_TEXTURE');
+            shader.removeUniform('texSpec');
+            shader.removeUniform('texSpecMatCap');
+            self.textureSpecUniform=null;
+            self.textureSpecMatCapUniform=null;
+        }
+
+    }
+
+    this.textureSpec.onValueChanged=changeSpec;
+    this.textureSpecMatCap.onValueChanged=changeSpec;
+
 
     this.bindTextures=function()
     {
@@ -235,7 +270,20 @@ Ops.Gl.Shader.MatCapMaterial = function()
             cgl.gl.activeTexture(cgl.gl.TEXTURE2);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureNormal.val.tex);
         }
+
+        if(self.textureSpec.val)
+        {
+            cgl.gl.activeTexture(cgl.gl.TEXTURE3);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureSpec.val.tex);
+        }
+        if(self.textureSpecMatCap.val)
+        {
+            cgl.gl.activeTexture(cgl.gl.TEXTURE4);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureSpecMatCap.val.tex);
+        }
+
     };
+
 
     this.doRender=function()
     {
@@ -311,7 +359,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'precision mediump float;'
         
         .endl()+'{{MODULES_HEAD}}'
-        
+
         .endl()+'varying vec3 norm;'
         .endl()+'varying vec2 texCoord;'
         .endl()+'uniform sampler2D tex;'
@@ -324,6 +372,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'#ifdef HAS_DIFFUSE_TEXTURE'
         .endl()+'   uniform sampler2D texDiffuse;'
         .endl()+'#endif'
+
+        .endl()+'#ifdef USE_SPECULAR_TEXTURE'
+        .endl()+'   uniform sampler2D texSpec;'
+        .endl()+'   uniform sampler2D texSpecMatCap;'
+        .endl()+'#endif'
+
 
         .endl()+'#ifdef HAS_NORMAL_TEXTURE'
         .endl()+'   uniform sampler2D texNormal;'
@@ -381,8 +435,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       vn = r.xy / m + 0.5;'
 
 
-.endl()+'vn.t=clamp(vn.t, 0.0, 1.0);'
-.endl()+'vn.s=clamp(vn.s, 0.0, 1.0);'
+        .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
+        .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
 
 
         .endl()+'    #endif'
@@ -392,9 +446,17 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
 
         .endl()+'    #ifdef HAS_DIFFUSE_TEXTURE'
-        // .endl()+'       col = mix(col,texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY) ),0.5);'
         .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY));'
         .endl()+'    #endif'
+
+
+        .endl()+'    #ifdef USE_SPECULAR_TEXTURE'
+        .endl()+'       vec4 spec = texture2D( texSpecMatCap, vn );'
+        .endl()+'       spec*= texture2D( texSpec, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY) );'
+        .endl()+'       col+=spec*2.0;'
+
+        .endl()+'    #endif'
+
 
         .endl()+'    {{MODULE_COLOR}}'
 
