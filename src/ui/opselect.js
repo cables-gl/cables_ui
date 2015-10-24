@@ -26,6 +26,8 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
             $('#search_style').html('.searchable:{display:block;}');
         else
             $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
+
+
     });
 
 
@@ -46,7 +48,46 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         oBoxCollectionAll.removeClass(cssClass);
 
         oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
+        
+        updateInfo();
     };
+
+    var infoTimeout=-1;
+    var lastInfoOpName='';
+    function updateInfo()
+    {
+        var opname=$('.selected').data('opname');
+
+        if(opname && lastInfoOpName!=opname)
+        {
+            $('#searchinfo').html('');
+            
+            var cached=CABLES.api.hasCached('doc/ops/'+opname);
+            if(cached)
+            {
+                $('#searchinfo').html(cached.data.html);
+                return;
+            }
+
+            if(infoTimeout!=-1)clearTimeout(infoTimeout);
+            infoTimeout = setTimeout(function()
+            {
+                lastInfoOpName=$('.selected').data('opname');
+
+                CABLES.api.getCached(
+                    'doc/ops/'+opname,
+                    function(res)
+                    {
+                        $('#searchinfo').html(res.html);
+                    },
+                    function(res){ console.log('err',res); }
+                    );
+                console.log('opname',opname);
+
+            }, 300);
+
+        }
+    }
 
     function onInput(e)
     {

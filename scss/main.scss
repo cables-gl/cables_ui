@@ -460,17 +460,34 @@ input[type="text"]
         outline: none;
         background-color: #222;
     }
+    .searchbrowser
+    {
+        float:left;
+        width:60%;
+    }
 
     .searchresult
     {
-        border-bottom: 1px solid #888;
+        border-bottom: 1px solid #444;
+        background-color: #333;
         font-size: 14px;
         padding:5px;
     }
 
+    .searchinfo
+    {
+        float:left;
+        width:35%;
+        padding-left: 20px;
+    }
+
     .selected
     {
-        background-color: #888;
+        background-color: #6c9fde;
+        a
+        {
+            color:white;
+        }
     }
 }
 

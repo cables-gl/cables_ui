@@ -16,222 +16,6 @@
     <script type="text/javascript" src="js/cablesui.max.js"></script> 
     <script type="text/javascript" src="js/ace/ace.js"></script> 
 
-
-
-<script id="help1" type="text/x-handlebars-template">
-
-<div class="help">
-    <h2>help</h2>
-
-    <h3>videos</h3>
-
-    <a href="https://vimeo.com/139844037" target="blank">general introduction demo</a>
-    <br/><br/>
-    <a href="https://vimeo.com/139855880" target="blank">repeat operator demo</a>
-    <br/><br/>
-    <a href="https://vimeo.com/139954403" target="blank">subpatches</a>
-    <br/><br/>
-
-    <h3>keyboard shortcuts</h3>
-
-
-<table>
-
-    <tr>
-        <th>
-            global
-        </th>
-    </tr>
-
-
-    <tr>
-        <td class="monospace">
-            [escape]
-        </td>
-        <td>
-            - add operator / show op select dialog<br/>
-            - close op select / close [mod]al dialogs
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="monospace">
-            [mod] + n
-        </td>
-        <td>
-            - new patch
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            [mod] + s
-        </td>
-        <td>
-            - save project
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            [mod] + [shift] + s
-        </td>
-        <td>
-            - save as new project
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            [mod] + [escape]<br/>
-            [mod] + o
-        </td>
-        <td>
-            - open list of my patches
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            space
-        </td>
-        <td>
-            - play/pause timeline
-        </td>
-    </tr>
-
-    <tr>
-        <th>
-            patch
-        </th>
-    </tr>
-
-
-    <tr>
-        <td class="monospace">
-            [del]
-        </td>
-        <td>
-            - delete selected ops<br/>
-
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            a
-        </td>
-        <td>
-            - align selected ops vertically<br/>
-        </td>
-    </tr>
-
-
-    <tr>
-        <td class="monospace">
-            g
-        </td>
-        <td>
-            - show graphs of selected ops<br/>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            [shift]+a
-        </td>
-        <td>
-            - align selected ops horizontally<br/>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            d
-        </td>
-        <td>
-            - disable op<br/>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            [mod] + a
-        </td>
-        <td>
-            - select all ops<br/>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            [mod] + z
-        </td>
-        <td>
-            - undo<br/>
-        </td>
-    </tr>
-
-    <tr>
-        <th>
-            timeline
-        </th>
-    </tr>
-
-
-    <tr>
-        <td class="monospace">
-            h
-        </td>
-        <td>
-            - scale timeline to show all keys <br/>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            j/k
-        </td>
-        <td>
-            - jump to previous/next key <br/>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            left/right
-        </td>
-        <td>
-            - move scrubber 1 frame left/right<br/>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            [mod] + a
-        </td>
-        <td>
-            - select all keys<br/>
-        </td>
-    </tr>
-
-    <tr>
-        <td class="monospace">
-            [mod] + z
-        </td>
-        <td>
-            - undo<br/>
-        </td>
-    </tr>
-</table>
-
-
-
-</div>
-
-</script>
-
 <script id="entry-template" type="text/x-handlebars-template">
   <div class="entry">
     <h1>{{title}}</h1>
@@ -340,12 +124,12 @@
     <a class="button_addOp button fa fa-plus-square-o tt" data-tt="create new op"></a>
 
 
-    <a id="help" class="button fa fa-question-circle"></a>
+    <a id="help" href="/doc" target="_blankkk" class="button fa fa-question-circle"></a>
 
     <a id="button_settings" class="button fa fa-cog"></a>
 
 
-<div id="assetsloadingindicator" style="float:left;margin-left:10px;padding-top:2px;"><i class="fa fa-2x fa-spinner fa-pulse"></i></div>
+<div id="assetsloadingindicator" style="display:none;float:left;margin-left:10px;padding-top:2px;"><i class="fa fa-2x fa-spinner fa-pulse"></i></div>
 
 
 
@@ -433,7 +217,7 @@
     <style id="search_style"></style>
 
 
-    <div style="height:300px;overflow:auto">
+    <div style="height:300px;overflow:auto" class="searchbrowser">
       {{#each ops}}
 
         <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
@@ -442,6 +226,10 @@
 
       {{/each}}
     </div>
+
+        <div id="searchinfo" class="searchinfo">
+            doc...
+        </div>
 
 </div>
 

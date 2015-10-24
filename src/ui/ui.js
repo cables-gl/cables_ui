@@ -252,11 +252,6 @@ CABLES.UI.GUI=function()
         });
     };
 
-    this.showHelp=function()
-    {
-        var html=CABLES.UI.getHandleBarHtml('help1');
-        CABLES.UI.MODAL.show(html);
-    };
 
     this.deleteCurrentProject=function()
     {
@@ -280,8 +275,6 @@ CABLES.UI.GUI=function()
         $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         $('#button_settings').bind("click", function (event) { self.patch().showProjectParams(); });
-
-        $('#help').bind("click", function (event) { self.showHelp(); });
 
         window.addEventListener( 'resize', self.setLayout, false );
 
@@ -323,7 +316,7 @@ CABLES.UI.GUI=function()
             switch(e.which)
             {
                 default:
-                        console.log('e.which',e.which);
+                        // console.log('e.which',e.which);
                         
                 break;
                 case 49: // 1 - editor

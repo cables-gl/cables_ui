@@ -231,7 +231,7 @@ Ops.Gl.Matrix.WASDCamera = function()
             break;
 
             default:
-                console.log('key:',e.which);
+                // console.log('key:',e.which);
             break;
         }
     }

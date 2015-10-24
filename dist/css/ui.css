@@ -344,13 +344,27 @@ input {
     outline: none;
     background-color: #222; }
   .opsearch
+.searchbrowser {
+    float: left;
+    width: 60%; }
+  .opsearch
 .searchresult {
-    border-bottom: 1px solid #888;
+    border-bottom: 1px solid #444;
+    background-color: #333;
     font-size: 14px;
     padding: 5px; }
   .opsearch
+.searchinfo {
+    float: left;
+    width: 35%;
+    padding-left: 20px; }
+  .opsearch
 .selected {
-    background-color: #888; }
+    background-color: #6c9fde; }
+    .opsearch
+.selected
+a {
+      color: white; }
 
 input.medium {
   font-size: 18px;
