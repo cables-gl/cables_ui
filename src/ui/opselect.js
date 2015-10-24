@@ -61,6 +61,12 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         if(opname && lastInfoOpName!=opname)
         {
             $('#searchinfo').html('');
+
+            if(!CABLES.API.isConnected)
+            {
+                $('#searchinfo').html('not connected to server...');
+                return;
+            }
             
             var cached=CABLES.api.hasCached('doc/ops/'+opname);
             if(cached)

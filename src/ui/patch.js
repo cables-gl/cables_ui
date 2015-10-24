@@ -502,7 +502,7 @@ CABLES.UI.Patch=function(_gui)
                 gui.patch().setSelectedOp(null);
                 mouseRubberBandStartPos=gui.patch().getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
             }
-                    console.log('rubber!');
+            // console.log('rubber!');
                     
             mouseRubberBandPos=gui.patch().getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
 
