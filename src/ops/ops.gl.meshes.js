@@ -199,7 +199,7 @@ Ops.Gl.Meshes.Circle = function()
     this.segments=this.addInPort(new Port(this,"segments"));
     this.radius=this.addInPort(new Port(this,"radius"));
     this.innerRadius=this.addInPort(new Port(this,"innerRadius",OP_PORT_TYPE_VALUE,{display:"range"}));
-    this.percent=this.addInPort(new Port(this,"percent"));
+    this.percent=this.addInPort(new Port(this,"percent",OP_PORT_TYPE_VALUE,{display:'range'}));
 
     this.steps=this.addInPort(new Port(this,"steps",OP_PORT_TYPE_VALUE,{type:"int"}));
     this.steps.val=0.0;
