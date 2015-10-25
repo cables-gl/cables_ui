@@ -469,12 +469,14 @@ CABLES.UI.GUI=function()
 
     this.showOpDoc=function(opname)
     {
-        var docOpHead='documentation';
-        var docOpFooter='<br/><br/><a href="/doc/ops/edit/'+opname+'" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a>';
+        var docOpHead='<div class="panelhead">documentation</div><div>';
+        var docOpFooter='<br/><br/><a onclick="CABLES.api.clearCache(); "href="/doc/ops/edit/'+opname+'" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
 
         var cached=CABLES.api.hasCached('doc/ops/'+opname);
         if(cached)
         {
+            console.log('uyes cached ',cached.data.html);
+                    
             $('#doc_op').html(docOpHead+cached.data.html+docOpFooter);
             return;
         }

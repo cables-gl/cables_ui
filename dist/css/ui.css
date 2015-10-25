@@ -201,6 +201,7 @@ div {
     font-family: arial;
     background-color: #1d1d1d;
     padding: 5px;
+    font-size: 14px;
     padding-left: 10px;
     padding-right: 10px;
     color: #fff; }
@@ -2862,6 +2863,19 @@ th {
       font-family: monospace, monospace; }
 
 #doc_op {
-  border-bottom: 2px solid #222;
-  max-height: 200px;
+  margin-top: 20px;
+  background-color: #262626;
+  padding: 10px;
   overflow: auto; }
+  #doc_op
+li {
+    padding-left: 0px; }
+  #doc_op
+ul {
+    padding-left: 20px; }
+  #doc_op
+a {
+    text-decoration: underline; }
+  #doc_op
+.button {
+    text-decoration: none; }

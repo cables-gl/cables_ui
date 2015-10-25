@@ -1191,7 +1191,7 @@ CABLES.UI.Patch=function(_gui)
         // selectedOps.push(uiop);
         uiop.setSelected(true);
 
-        gui.showOpDoc(uiop.op.objName);
+        // gui.showOpDoc(uiop.op.objName);
     };
 
     this.addSelectedOp=function(uiop)
@@ -1313,32 +1313,38 @@ CABLES.UI.Patch=function(_gui)
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 
-        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in',});
-
-        for(var i in op.portsIn)
+        if(op.portsIn.length>0)
         {
-            op.portsIn[i].watchId='in_'+i;
-            watchAnimPorts.push(op.portsIn[i]);
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in',});
 
-            if(op.portsIn[i].uiAttribs.colorPick) watchColorPicker.push(op.portsIn[i]);
-            if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
-
-            html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op } );
-        }
-
-        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op});
-
-        for(var i2 in op.portsOut)
-        {
-            if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
+            for(var i in op.portsIn)
             {
-                op.portsOut[i2].watchId='out_'+i2;
-                watchPorts.push(op.portsOut[i2]);
-            }
+                op.portsIn[i].watchId='in_'+i;
+                watchAnimPorts.push(op.portsIn[i]);
 
-            html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false,op: op } );
+                if(op.portsIn[i].uiAttribs.colorPick) watchColorPicker.push(op.portsIn[i]);
+                if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
+
+                html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op } );
+            }
         }
 
+        if(op.portsOut.length>0)
+        {
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op});
+
+            for(var i2 in op.portsOut)
+            {
+                if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
+                {
+                    op.portsOut[i2].watchId='out_'+i2;
+                    watchPorts.push(op.portsOut[i2]);
+                }
+
+                html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false,op: op } );
+            }
+        }
+        
         html += CABLES.UI.getHandleBarHtml('params_op_foot',{op: op});
 
         $('#options').html(html);

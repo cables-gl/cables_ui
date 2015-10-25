@@ -59,6 +59,12 @@ CABLES.API=function()
         return null;
     };
 
+    this.clearCache=function()
+    {
+        console.log('cache cleared....');
+        cache.length=0;
+    };
+
     this.getCached=function(url,cb,cbErr)
     {
         for(var i=0;i<cache.length;i++)
