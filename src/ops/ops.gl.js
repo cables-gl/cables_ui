@@ -1928,14 +1928,11 @@ Ops.Gl.Matrix.CircleTransform = function()
     this.radius=this.addInPort(new Port(this,"radius"));
     this.percent=this.addInPort(new Port(this,"percent",OP_PORT_TYPE_VALUE,{display:'range'}));
 
-
-
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+    this.index=this.addOutPort(new Port(this,"index"));
 
     this.render.onTriggered=function()
     {
-
-
         for(var i=0;i<self.pos.length;i++)
         {
             cgl.pushMvMatrix();
@@ -1943,10 +1940,10 @@ Ops.Gl.Matrix.CircleTransform = function()
             mat4.translate(cgl.mvMatrix,cgl.mvMatrix, self.pos[i] );
             self.trigger.trigger();
 
+            self.index.val=i;
+
             cgl.popMvMatrix();
-
         }
-
     };
 
     this.segments.val=40;
@@ -1981,3 +1978,41 @@ Ops.Gl.Matrix.CircleTransform = function()
 };
 
 Ops.Gl.Matrix.CircleTransform.prototype = new Op();
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Matrix.TransformMul = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='TransformMul';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.mul=this.addInPort(new Port(this,"mul"));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.render.onTriggered=function()
+    {
+        var pos=[0,0,0];
+        vec3.transformMat4(pos, [0,0,0], cgl.mvMatrix);
+
+        cgl.pushMvMatrix();
+        vec3.mul(pos,pos,[self.mul.get(),self.mul.get(),self.mul.get()] );
+
+        mat4.translate(cgl.mvMatrix,cgl.mvMatrix, pos );
+        self.trigger.trigger();
+
+        cgl.popMvMatrix();
+
+        
+    };
+
+};
+
+Ops.Gl.Matrix.TransformMul.prototype = new Op();
+
+
