@@ -467,10 +467,19 @@ CABLES.UI.GUI=function()
 
     var infoTimeout=-1;
 
+    this.editOpDoc=function(objName)
+    {
+        CABLES.api.clearCache();
+
+        var html='<iframe style="border:none;width:600px;height:600px;" src="/doc/ops/edit/'+objName+'" ></iframe>';
+
+        CABLES.UI.MODAL.show(html);
+    };
+
     this.showOpDoc=function(opname)
     {
         var docOpHead='<div class="panelhead">documentation</div><div>';
-        var docOpFooter='<br/><br/><a onclick="CABLES.api.clearCache(); "href="/doc/ops/edit/'+opname+'" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
+        var docOpFooter='<br/><br/><a onclick="gui.editOpDoc(\''+opname+'\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
 
         var cached=CABLES.api.hasCached('doc/ops/'+opname);
         if(cached)
