@@ -1190,6 +1190,8 @@ CABLES.UI.Patch=function(_gui)
         self.addSelectedOp(uiop);
         // selectedOps.push(uiop);
         uiop.setSelected(true);
+
+        gui.showOpDoc(uiop.op.objName);
     };
 
     this.addSelectedOp=function(uiop)

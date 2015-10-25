@@ -463,7 +463,36 @@ CABLES.UI.GUI=function()
                 console.log('data',data);
             }
         );
-        
+    };
+
+    var infoTimeout=-1;
+
+    this.showOpDoc=function(opname)
+    {
+        var docOpHead='documentation';
+        var docOpFooter='<br/><br/><a href="/doc/ops/edit/'+opname+'" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a>';
+
+        var cached=CABLES.api.hasCached('doc/ops/'+opname);
+        if(cached)
+        {
+            $('#doc_op').html(docOpHead+cached.data.html+docOpFooter);
+            return;
+        }
+
+        if(infoTimeout!=-1)clearTimeout(infoTimeout);
+        infoTimeout = setTimeout(function()
+        {
+            CABLES.api.getCached(
+                'doc/ops/'+opname,
+                function(res)
+                {
+                    if(!res.html)res.html='';
+                    $('#doc_op').html(docOpHead+ res.html + docOpFooter);
+                },
+                function(res){ console.log('err',res); }
+                );
+
+        }, 300);
     };
 
     this.loadUser=function()

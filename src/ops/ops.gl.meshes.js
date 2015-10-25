@@ -239,9 +239,9 @@ Ops.Gl.Meshes.Circle = function()
 
         if(self.innerRadius.get()<=0)
         {
-          for (i=0; i <= self.segments.get()*self.percent.get(); i++)
+          for (i=0; i <= Math.round(self.segments.get())*self.percent.get(); i++)
           {
-              degInRad = (360/self.segments.get())*i*CGL.DEG2RAD;
+              degInRad = (360/Math.round(self.segments.get()))*i*CGL.DEG2RAD;
               posx=Math.cos(degInRad)*self.radius.get();
               posy=Math.sin(degInRad)*self.radius.get();
 
@@ -266,11 +266,11 @@ Ops.Gl.Meshes.Circle = function()
         else
         {
           var count=0;
-          for (i=0; i <= self.segments.get()*self.percent.get(); i++)
+          for (i=0; i <= Math.round(self.segments.get())*self.percent.get(); i++)
           {
               count++;
 
-              degInRad = (360/self.segments.get())*i*CGL.DEG2RAD;
+              degInRad = (360/Math.round(self.segments.get()))*i*CGL.DEG2RAD;
               posx=Math.cos(degInRad)*self.radius.get();
               posy=Math.sin(degInRad)*self.radius.get();
 

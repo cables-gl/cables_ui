@@ -1012,3 +1012,9 @@ input[type=range]:focus {
     }
 }
 
+#doc_op
+{
+    border-bottom: 2px solid #222;
+    max-height: 200px;
+    overflow: auto;
+}
