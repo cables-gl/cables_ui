@@ -1022,3 +1022,113 @@ Ops.Gl.Shader.TextureSinusWobble = function()
 Ops.Gl.Shader.TextureSinusWobble.prototype = new Op();
 
 
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Shader.Picker = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='Picker';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+
+    this.x=this.addInPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
+    this.y=this.addInPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
+
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var pixelRGB = new Uint8Array(4);
+
+    this.doRender=function()
+    {
+        cgl.frameStore.renderOffscreen=true;
+        cgl.frameStore.pickingpass=true;
+        cgl.frameStore.pickingpassNum=0;
+        self.trigger.trigger();
+        cgl.frameStore.renderOffscreen=false;
+        cgl.frameStore.pickingpass=false;
+
+        cgl.gl.readPixels(self.x.val, cgl.canvas.height-self.y.val, 1,1,  cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE ,pixelRGB);
+        cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT | cgl.gl.COLOR_BUFFER_BIT);
+
+        cgl.frameStore.pickedColor=pixelRGB[0];
+
+        self.trigger.trigger();
+    };
+
+    this.render.onTriggered=this.doRender;
+};
+
+Ops.Gl.Shader.Picker.prototype = new Op();
+
+
+
+
+Ops.Gl.Shader.PickingMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='PickingMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.isPicked=this.addOutPort(new Port(this,"is picked",OP_PORT_TYPE_VALUE));
+
+
+    var currentPickingColor=-1;
+
+    this.doRender=function()
+    {
+        if(cgl.frameStore.pickingpass)
+        {
+            cgl.frameStore.pickingpassNum+=4;
+            currentPickingColor=cgl.frameStore.pickingpassNum;
+            pickColorUniformR.setValue(currentPickingColor/255);
+            cgl.setShader(shader);
+            self.trigger.trigger();
+            cgl.setPreviousShader();
+        }
+        else
+        {
+            if(cgl.frameStore.pickedColor==currentPickingColor)
+            {
+                // console.log('picked !'+currentPickingColor);
+            }
+
+            self.isPicked.set( cgl.frameStore.pickedColor==currentPickingColor );
+
+            self.trigger.trigger();
+        }
+
+    };
+
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'uniform float r;'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(r,0.0,0.0,1.0);'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
+
+    var shader=new CGL.Shader(cgl);
+    shader.offScreenPass=true;
+    this.onLoaded=shader.compile;
+
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+    var pickColorUniformR=new CGL.Uniform(shader,'f','r',0);
+
+    this.render.onTriggered=this.doRender;
+    this.doRender();
+};
+
+Ops.Gl.Shader.PickingMaterial.prototype = new Op();
