@@ -469,80 +469,101 @@
 
 
     <div class="">
-        <input class="medium" id="projectsettings_name" oninput="gui.patch().saveProjectParams();" value="{{project.name}}">
+        <input class="medium" id="projectsettings_name" onblur="gui.patch().saveProjectParams();" value="{{project.name}}">
+        <br/>
+        <br/>
+    </div>
+    <table>
+        <tr>
+            <th colspan="11">
+                <div class="panelhead">project settings</div>
+            </th>
+        </tr>
+        <tr onclick="togglePublic();">
+        <td></td>
+            <td>
+                &nbsp;public
+                <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
+            </td>
+            <td>
+                <a id="projectsettings_public_icon" class="button fa fa-square-o"></a>
+            </td>
+        </tr>
 
-        <br/>
-        <br/>
+    </table>
+
+    <br/>
+
+
+
+
+    <div id="projectdescription" class="panel" style="padding:0px;">
+        <div class="panelhead">description</div>
+        <div>
+            {{{descr}}}
+            <a onclick="gui.editProjectDescription();" class="button">edit description</a>
+        </div>
+    
+    </div>
+
+    <div id="projectdescription" class="panel" style="padding:0px;">
+
+
+
+
+    <div class="panel" style="padding:0px;">
+        <div class="panelhead">export</div>
+        <div>
+            <a onclick="gui.patch().exportStatic();" class="button">export static archive</a>
+        </div>
 
     </div>
-        <table>
-            <tr>
-                <th colspan="11">
-                    <div class="panelhead">project settings</div>
-                </th>
-            </tr>
-            <tr onclick="togglePublic();">
-            <td></td>
-                <td>
-                    &nbsp;public
-                    <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
-                </td>
-                <td>
-                    <a id="projectsettings_public_icon" class="button fa fa-square-o"></a>
-                </td>
-            </tr>
-
-        </table>
-
-        <br/>
-        <br/>
-
-    <div class="">
-        <a onclick="gui.patch().saveCurrentProject();" class="button">save settings</a>
-
-<br/>
-<br/>
-<br/>
-
-    <a onclick="gui.patch().exportStatic();" class="button">export static archive</a>
-
-
-<br/>
-<br/>
-<br/>
-
-
-<h3>debug</h3>
-numOps:{{debug.numOps}}
-<br/>
-numSvgElements:{{debug.numSvgElements}}
-<br/>
-numVisibleOps:{{debug.numVisibleOps}}
-<br/>
-<br/>
-<br/>
-<br/>
-{{project.id}}
-    <a class="button fa fa-trash-o tt" data-tt="delete" onclick="gui.deleteCurrentProject();">&nbsp;delete project</a>
 
 
 
-<br/><br/>
-<a class="button " onclick="gui.scene().clear();">&nbsp;clear patch</a>
+    <div class="panel" style="padding:0px;">
+        <div class="panelhead">debug</div>
+        <div>
 
-<br/>
-<br/><br/>
-<a class="button " onclick="localStorage['cables']=gui.scene().serialize();">&nbsp;load from local storage</a>
-<br/><br/>
+            <!-- <a onclick="gui.patch().saveCurrentProject();" class="button">save settings</a> -->
+            <h3>debug</h3>
+            numOps:{{debug.numOps}}
+            <br/>
+            numSvgElements:{{debug.numSvgElements}}
+            <br/>
+            numVisibleOps:{{debug.numVisibleOps}}
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            {{project.id}}
+            <a class="button fa fa-trash-o tt" data-tt="delete" onclick="gui.deleteCurrentProject();">&nbsp;delete project</a>
 
-<a class="button " onclick="gui.scene().clear();self.scene().deSerialize(localStorage['cables']);">&nbsp;save to local storage</a>
-<br/><br/><br/>
+
+
+            <br/><br/>
+            <a class="button " onclick="gui.scene().clear();">&nbsp;clear patch</a>
+
+            <br/>
+            <br/><br/>
+            <a class="button " onclick="localStorage['cables']=gui.scene().serialize();">&nbsp;load from local storage</a>
+            <br/><br/>
+
+            <a class="button " onclick="gui.scene().clear();self.scene().deSerialize(localStorage['cables']);">&nbsp;save to local storage</a>
+            <br/><br/><br/>
 
 
 
-<a class="button " onclick="gui.exportDialog();">export</a>
-<a class="button " onclick="gui.importDialog();">import</a>
-<br/><br/>
+            <a class="button " onclick="gui.exportDialog();">export</a>
+            <a class="button " onclick="gui.importDialog();">import</a>
+            <br/><br/>
+
+
+        </div>
+
+    </div>
+
+
 
         
 
@@ -564,7 +585,7 @@ function updateIcons()
         $('#projectsettings_public_icon').removeClass('fa-check-square-o');
         $('#projectsettings_public_icon').addClass('fa-square-o');
     }
-    gui.patch().saveProjectParams();
+    
 }
 
 function togglePublic()
@@ -572,6 +593,8 @@ function togglePublic()
     $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true')); 
 
     updateIcons();
+    gui.patch().saveProjectParams();
+
 }
 
 updateIcons();

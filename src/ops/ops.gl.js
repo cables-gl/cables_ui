@@ -751,6 +751,9 @@ Ops.Gl.Texture = function()
 
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
+
+    this.flip=this.addInPort(new Port(this,"flip",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.flip.set(false);
     
     this.cgl_filter=CGL.Texture.FILTER_MIPMAP;
 
@@ -758,6 +761,8 @@ Ops.Gl.Texture = function()
     {
         if(self.filename.get())
         {
+            console.log('self.flip.get()',self.flip.get());
+                    
             // console.log('load texture... '+self.filename.val);
             self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.get()),function()
             {
@@ -768,12 +773,13 @@ Ops.Gl.Texture = function()
                 if(!self.tex.isPowerOfTwo()) self.uiAttr({warning:'texture dimensions not power of two! - texture filtering will not work.'});
                 else self.uiAttr({warning:''});
 
-            },{filter:self.cgl_filter});
+            },{flip:self.flip.get(),filter:self.cgl_filter});
             self.textureOut.set(self.tex);
         }
 
     };
 
+    this.flip.onValueChanged=reload;
     this.filename.onValueChanged=reload;
     this.filter.onValueChanged=function()
     {
@@ -784,6 +790,7 @@ Ops.Gl.Texture = function()
         reload();
     };
     this.filter.set('linear');
+    
 
     this.textureOut.onPreviewChanged=function()
     {
@@ -1979,8 +1986,6 @@ Ops.Gl.Matrix.CircleTransform = function()
 
 Ops.Gl.Matrix.CircleTransform.prototype = new Op();
 
-
-
 // --------------------------------------------------------------------------
 
 Ops.Gl.Matrix.TransformMul = function()
@@ -2007,8 +2012,6 @@ Ops.Gl.Matrix.TransformMul = function()
         self.trigger.trigger();
 
         cgl.popMvMatrix();
-
-        
     };
 
 };

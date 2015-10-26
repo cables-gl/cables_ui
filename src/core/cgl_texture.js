@@ -109,7 +109,8 @@ CGL.Texture=function(cgl,options)
         self.height=img.height;
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
-        if(self.flip) cgl.gl.pixelStorei(cgl.gl.UNPACK_FLIP_Y_WEBGL, true);
+        cgl.gl.pixelStorei(cgl.gl.UNPACK_FLIP_Y_WEBGL, self.flip);
+
         cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, self.image);
 
         setFilter();
@@ -139,6 +140,9 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     texture.image = new Image();
 
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
+    if(settings && settings.hasOwnProperty('flip')) texture.flip=settings.flip;
+        console.log('texture.flip',texture.flip);
+        
 
     texture.image.onload=function()
     {

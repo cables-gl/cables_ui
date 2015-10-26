@@ -1234,7 +1234,10 @@ CABLES.UI.Patch=function(_gui)
             if(!self.ops[i].isHidden())numVisibleOps++;
         }
 
-        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,
+        console.log('s',s);
+        
+
+        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,descr:currentProject.descriptionHTML,
             debug:
             {
                 numOps:gui.scene().ops.length,
@@ -1256,6 +1259,7 @@ CABLES.UI.Patch=function(_gui)
         currentProject.name=proj_name;
         gui.scene().settings=gui.scene().settings || {};
         gui.scene().settings.isPublic=proj_public;
+        self.saveCurrentProject();
     };
 
     function updateUiAttribs()
@@ -1344,7 +1348,7 @@ CABLES.UI.Patch=function(_gui)
                 html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false,op: op } );
             }
         }
-        
+
         html += CABLES.UI.getHandleBarHtml('params_op_foot',{op: op});
 
         $('#options').html(html);

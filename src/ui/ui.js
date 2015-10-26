@@ -476,6 +476,17 @@ CABLES.UI.GUI=function()
         CABLES.UI.MODAL.show(html);
     };
 
+    this.editProjectDescription=function(objName)
+    {
+        CABLES.api.clearCache();
+
+        var html='<iframe style="border:none;width:600px;height:600px;" src="/project/'+self.patch().getCurrentProject()._id+'/edit_description"></iframe>';
+
+        CABLES.UI.MODAL.show(html);
+    };
+
+
+
     this.showOpDoc=function(opname)
     {
         var docOpHead='<div class="panelhead">documentation</div><div>';
@@ -485,7 +496,7 @@ CABLES.UI.GUI=function()
         if(cached)
         {
             console.log('uyes cached ',cached.data.html);
-                    
+
             $('#doc_op').html(docOpHead+cached.data.html+docOpFooter);
             return;
         }

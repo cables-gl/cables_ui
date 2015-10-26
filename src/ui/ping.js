@@ -35,7 +35,8 @@ CABLES.API.PING.ping=function()
     })
     .fail(function()
     {
-        CABLES.API.PING.delay=CABLES.API.PING.delay*2;
+        CABLES.API.PING.delay=CABLES.API.PING.pingDelay*2;
+
         CABLES.API.isConnected=false;
         CABLES.UI.setStatusText('connection to server lost...');
     });
