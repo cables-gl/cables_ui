@@ -105,11 +105,9 @@ CGL.State=function()
     // shader stack
     this.getShader=function()
     {
-
+        if(currentShader)
         if(!this.frameStore || (true===this.frameStore.renderOffscreen == currentShader.offScreenPass===true))
-        {
             return currentShader;
-        }
 
         for(var i=shaderStack.length-1;i>=0;i--)
             if(this.frameStore.renderOffscreen == shaderStack[i].offScreenPass)
