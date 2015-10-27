@@ -125,7 +125,7 @@ CGL.State=function()
 
     this.setPreviousShader=function()
     {
-        if(shaderStack.length===0) throw "Invalid movelview popMatrix!";
+        if(shaderStack.length===0) throw "Invalid shader stack pop!";
         shaderStack.pop();
         currentShader = shaderStack[shaderStack.length-1];
     };

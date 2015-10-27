@@ -141,8 +141,6 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
     if(settings && settings.hasOwnProperty('flip')) texture.flip=settings.flip;
-        console.log('texture.flip',texture.flip);
-        
 
     texture.image.onload=function()
     {

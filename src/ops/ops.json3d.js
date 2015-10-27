@@ -115,7 +115,6 @@ Ops.Json3d.json3dFile = function()
 
                 if(!self.trigger.isLinked())
                 {
-                    console.log('data.meshes '+data.meshes.length);
                     var root=self.patch.addOp('Ops.Sequence',{translate:{x:self.uiAttribs.translate.x,y:self.uiAttribs.translate.y+50}});
                     self.patch.link(self,'trigger',root,'exe');
         
@@ -124,12 +123,9 @@ Ops.Json3d.json3dFile = function()
                         addChild(maxx-2,3,root,'trigger 0',data.rootnode.children[i]);
                     }
                 }
-                console.log('loaded1');
 
                 render();
-                console.log('loaded2');
                 CGL.decrementLoadingAssets();
-                console.log('loaded...');
                         
             });
 
@@ -183,7 +179,6 @@ Ops.Json3d.Mesh=function()
         {
             // console.log(' has '+cgl.frameStore.currentScene.getValue().meshes.length+' meshes ');
             // console.log('reload');
-                    console.log('load mesh...');
                     
             self.uiAttr({warning:''});
             self.uiAttr({info:''});

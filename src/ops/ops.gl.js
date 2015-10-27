@@ -785,8 +785,6 @@ Ops.Gl.Texture = function()
     {
         if(self.filename.get())
         {
-            console.log('self.flip.get()',self.flip.get());
-                    
             // console.log('load texture... '+self.filename.val);
             self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.get()),function()
             {
