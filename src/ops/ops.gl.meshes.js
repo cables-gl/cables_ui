@@ -702,6 +702,8 @@ Ops.Gl.Meshes.Spline = function()
         //     cgl.frameStore.SplinePoints=points;
         // }
 
+        if(self.thickness.get()<1)self.thickness.set(0);
+
         cgl.gl.lineWidth(self.thickness.val);
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(cgl.frameStore.SplinePoints), cgl.gl.STATIC_DRAW);
