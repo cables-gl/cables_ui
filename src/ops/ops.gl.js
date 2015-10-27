@@ -514,6 +514,8 @@ Ops.Gl.Mouse = function()
     this.name='mouse';
     this.mouseX=this.addOutPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
     this.mouseY=this.addOutPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
+    this.mouseDown=this.addOutPort(new Port(this,"button down",OP_PORT_TYPE_VALUE));
+    this.mouseClick=this.addOutPort(new Port(this,"click",OP_PORT_TYPE_VALUE));
 
     this.normalize=this.addInPort(new Port(this,"normalize",OP_PORT_TYPE_VALUE,{display:'bool'}));
 
@@ -577,6 +579,28 @@ Ops.Gl.Mouse = function()
     {
         speed=self.smoothSpeed.get();
     };
+
+    cgl.canvas.onmousedown = function(e)
+    {
+        self.mouseDown.set(true);
+    };
+
+    cgl.canvas.onmouseup = function(e)
+    {
+        self.mouseDown.set(false);
+        self.mouseClick.set(false);
+    };
+
+    cgl.canvas.onmouseclick = function(e)
+    {
+        self.mouseClick.set(true);
+    };
+
+    cgl.canvas.onmousewheel=function(e)
+    {
+        // console.log('e',e);
+    };
+
 
     function mouseLeave(e)
     {
