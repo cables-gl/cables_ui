@@ -1,14 +1,13 @@
 
-
 // --------------------------------------------------------------------------
 
 Ops.Gl.Matrix.WASDCamera = function()
 {
     Op.apply(this, arguments);
     var self=this;
+    var cgl=self.patch.cgl;
 
     var DEG2RAD=3.14159/180.0;
-
 
     this.name='WASDCamera';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
@@ -261,6 +260,5 @@ Ops.Gl.Matrix.WASDCamera = function()
 };
 
 Ops.Gl.Matrix.WASDCamera.prototype = new Op();
-
 
 // --------------------------------------------------------------------------
