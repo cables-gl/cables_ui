@@ -173,13 +173,12 @@ Ops.Gl.Orthogonal = function()
     this.zFar=this.addInPort(new Port(this,"frustum far",OP_PORT_TYPE_VALUE ));
     this.zFar.val=2000.0;
 
-
     this.render.onTriggered=function()
     {
-        // mat4.Orthogonal(cgl.pMatrix,self.fovY.val*0.0174533, cgl.getViewPort()[2]/cgl.getViewPort()[3], self.zNear.val, self.zFar.val);
+        var ratio=cgl.getViewPort()[2]/cgl.getViewPort()[3];
+                
         cgl.pushPMatrix();
-        mat4.ortho(cgl.pMatrix, 0, self.bounds.get(), 0, self.bounds.get(), self.zNear.get(), self.zFar.get());
-
+        mat4.ortho(cgl.pMatrix, 0, self.bounds.get()*ratio, 0, self.bounds.get(), self.zNear.get(), self.zFar.get());
 
         self.trigger.trigger();
 
@@ -188,14 +187,6 @@ Ops.Gl.Orthogonal = function()
 
     function changed()
     {
-                console.log('', 0, self.bounds.get(), 0, self.bounds.get(), self.zNear.get(), self.zFar.get());
-
-        // cgl.frameStore.Orthogonal=
-        // {
-        //     fovy:self.fovY.val,
-        //     zFar:self.zFar.val,
-        //     zNear:self.zNear.val,
-        // };
     }
 
     this.bounds.onValueChanged=changed;
