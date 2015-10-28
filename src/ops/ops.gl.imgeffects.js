@@ -2243,8 +2243,8 @@ Ops.Gl.TextureEffects.DepthOfField = function()
         .endl()+'vec4 blur9(sampler2D texture, vec2 uv, vec2 red, vec2 dir)'
         .endl()+'{'
         .endl()+'   vec4 color = vec4(0.0);'
-        .endl()+'   vec2 offset1 = vec2(1.3846153846) * dir;'
-        .endl()+'   vec2 offset2 = vec2(3.2307692308) * dir;'
+        .endl()+'   vec2 offset1 = vec2(1.3846153846) * dir*1.4;'
+        .endl()+'   vec2 offset2 = vec2(3.2307692308) * dir*1.4;'
         .endl()+'   color += texture2D(texture, uv) * 0.2270270270;'
         .endl()+'   color += texture2D(texture, uv + (offset1 / red)) * 0.3162162162;'
         .endl()+'   color += texture2D(texture, uv - (offset1 / red)) * 0.3162162162;'
@@ -2269,13 +2269,21 @@ Ops.Gl.TextureEffects.DepthOfField = function()
         
         .endl()+'   vec4 baseCol=texture2D(tex, texCoord);'
 
-        .endl()+'       col=blur9(tex,texCoord,vec2(width,height),vec2(dirX,dirY));'
 
-        .endl()+'       col=mix(baseCol,col,getDepth() );'
+        .endl()+'   float d=getDepth();'
+        .endl()+'       if(d>=0.99)d=0.0;'
+        // .endl()+'           else d.a=1.0;'
+
+
+        .endl()+'       if(d!=0.0)col=blur9(tex,texCoord,vec2(width,height),vec2(dirX,dirY));'
+
+        .endl()+'       col=mix(baseCol,col,d );'
+
+
         
 
         .endl()+'       #ifdef SHOW_INTENSITY'
-        .endl()+'       col=vec4(getDepth(),getDepth(),getDepth(),1.0);'
+        .endl()+'       col=vec4(d,d,d,1.0);'
         .endl()+'       #endif'
 
         .endl()+'   #endif'
