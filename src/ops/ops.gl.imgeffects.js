@@ -2225,13 +2225,13 @@ Ops.Gl.TextureEffects.DepthOfField = function()
     this.onLoaded=shader.compile;
 
     var srcFrag=''
-        .endl()+'precision highp float;'
+        .endl()+'precision mediump float;'
         .endl()+'#ifdef HAS_TEXTURES'
         .endl()+'  varying vec2 texCoord;'
         .endl()+'  uniform sampler2D tex;'
         .endl()+'  uniform sampler2D depthTex;'
         .endl()+'  uniform float dirX;'
-        .endl()+'  uniform float dirY;'
+        // .endl()+'  uniform float dirY;'
         .endl()+'  uniform float width;'
         .endl()+'  uniform float height;'
 
@@ -2267,6 +2267,9 @@ Ops.Gl.TextureEffects.DepthOfField = function()
         .endl()+'{'
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
+        .endl()+'   float dirY=0.0;'
+        .endl()+'   if(dirX==0.0)dirY=1.0;'
+
         
         .endl()+'   vec4 baseCol=texture2D(tex, texCoord);'
 
@@ -2332,13 +2335,17 @@ Ops.Gl.TextureEffects.DepthOfField = function()
             cgl.currentTextureEffect.bind();
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
+            if(i===0)
+            {
 
             cgl.gl.activeTexture(cgl.gl.TEXTURE1);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.depthTex.get().tex );
 
+            }
+
 
             uniDirX.setValue(0.0);
-            uniDirY.setValue(1.0);
+            // uniDirY.setValue(1.0);
 
             cgl.currentTextureEffect.finish();
 
@@ -2348,11 +2355,11 @@ Ops.Gl.TextureEffects.DepthOfField = function()
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
-            cgl.gl.activeTexture(cgl.gl.TEXTURE1);
-            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.depthTex.get().tex );
+            // cgl.gl.activeTexture(cgl.gl.TEXTURE1);
+            // cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.depthTex.get().tex );
 
             uniDirX.setValue(1.0);
-            uniDirY.setValue(0.0);
+            // uniDirY.setValue(0.0);
 
             cgl.currentTextureEffect.finish();
         }

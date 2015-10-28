@@ -296,7 +296,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     var srcVert=''
         .endl()+'{{MODULES_HEAD}}'
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
         .endl()+'attribute vec3 vPosition;'
         .endl()+'attribute vec2 attrTexCoord;'
         .endl()+'attribute vec3 attrVertNormal;'
@@ -309,25 +309,14 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'uniform mat4 normalMatrix;'
         .endl()+'varying vec2 vNorm;'
 
-
-        // .endl()+'varying vec2 testTexCoords;'
-
-        
-
         .endl()+'varying vec3 e;'
 
-
-        .endl()+''
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
 
-
-
         .endl()+'   vec4 pos = vec4( vPosition, 1. );'
-        
-
 
         .endl()+'    {{MODULE_VERTEX_POSITION}}'
 
@@ -356,7 +345,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
 
     var srcFrag=''
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
         
         .endl()+'{{MODULES_HEAD}}'
 
@@ -390,8 +379,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'#endif'
         
         .endl()+''
-
-        .endl()+''
         .endl()+'void main()'
         .endl()+'{'
         
@@ -405,8 +392,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
         .endl()+'       vec3 tnorm=texture2D( texNormal, vec2(texCoord.x*normalRepeatX,texCoord.y*normalRepeatY) ).xyz * 2.0 - 1.0;'
-
-        // .endl()+'       tnorm.y *= -1.0;'
 
         .endl()+'       tnorm = normalize(tnorm*normalScale);'
         
@@ -422,8 +407,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'binormal = normalize(binormal);'
         .endl()+'tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
     
-        
-
         .endl()+'       vec3 n = normalize( mat3(normalMatrix) * (norm+tnorm*normalScale) );'
 
         .endl()+'       vec3 r = reflect( e, n );'
@@ -437,18 +420,13 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
         .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
-
-
         .endl()+'    #endif'
-
         
         .endl()+'    vec4 col = texture2D( tex, vn );'
-
 
         .endl()+'    #ifdef HAS_DIFFUSE_TEXTURE'
         .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY));'
         .endl()+'    #endif'
-
 
         .endl()+'    #ifdef USE_SPECULAR_TEXTURE'
         .endl()+'       vec4 spec = texture2D( texSpecMatCap, vn );'
@@ -456,7 +434,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       col+=spec*2.0;'
 
         .endl()+'    #endif'
-
 
         .endl()+'    {{MODULE_COLOR}}'
 

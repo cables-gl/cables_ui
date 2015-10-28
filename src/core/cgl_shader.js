@@ -197,7 +197,7 @@ CGL.Shader=function(_cgl)
     this.getDefaultFragmentShader=function()
     {
         return ''
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
         .endl()+'varying vec3 norm;'
         .endl()+'void main()'
         .endl()+'{'
@@ -210,7 +210,7 @@ CGL.Shader=function(_cgl)
     this.getErrorFragmentShader=function()
     {
         return ''
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
         .endl()+'varying vec3 norm;'
         .endl()+'void main()'
         .endl()+'{'

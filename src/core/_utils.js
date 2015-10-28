@@ -12,6 +12,21 @@ function generateUUID()
 
 // ----------------------------------------------------------------
 
+Math.randomSeed=1;
+Math.seededRandom = function(max, min)
+{
+    if(Math.randomSeed===0)Math.randomSeed=Math.random()*999;
+    max = max || 1;
+    min = min || 0;
+
+    Math.randomSeed = (Math.randomSeed * 9301 + 49297) % 233280;
+    var rnd = Math.randomSeed / 233280.0;
+
+    return min + rnd * (max - min);
+};
+
+// ----------------------------------------------------------------
+
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }

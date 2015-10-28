@@ -176,7 +176,7 @@ Ops.Gl.Orthogonal = function()
     this.render.onTriggered=function()
     {
         var ratio=cgl.getViewPort()[2]/cgl.getViewPort()[3];
-                
+
         cgl.pushPMatrix();
         mat4.ortho(cgl.pMatrix, 0, self.bounds.get()*ratio, 0, self.bounds.get(), self.zNear.get(), self.zFar.get());
 
@@ -1360,6 +1360,7 @@ Ops.RandomCluster = function()
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
     this.num=this.addInPort(new Port(this,"num"));
     this.size=this.addInPort(new Port(this,"size"));
+    this.seed=this.addInPort(new Port(this,"random seed"));
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION)) ;
     this.idx=this.addOutPort(new Port(this,"index")) ;
@@ -1397,24 +1398,28 @@ Ops.RandomCluster = function()
         self.randomsRot=[];
         self.randomsFloats=[];
 
+        Math.randomSeed=self.seed.get();
+
         for(var i=0;i<self.num.get();i++)
         {
-            self.randomsFloats.push(Math.random());
+            self.randomsFloats.push(Math.seededRandom());
             self.randoms.push(vec3.fromValues(
-                (Math.random()-0.5)*self.size.get(),
-                (Math.random()-0.5)*self.size.get(),
-                (Math.random()-0.5)*self.size.get()
+                (Math.seededRandom()-0.5)*self.size.get(),
+                (Math.seededRandom()-0.5)*self.size.get(),
+                (Math.seededRandom()-0.5)*self.size.get()
                 ));
             self.randomsRot.push(vec3.fromValues(
-                Math.random()*360*CGL.DEG2RAD,
-                Math.random()*360*CGL.DEG2RAD,
-                Math.random()*360*CGL.DEG2RAD
+                Math.seededRandom()*360*CGL.DEG2RAD,
+                Math.seededRandom()*360*CGL.DEG2RAD,
+                Math.seededRandom()*360*CGL.DEG2RAD
                 ));
         }
     }
 
     this.size.set(40);
 
+this.seed.set(1);
+    this.seed.onValueChanged=reset;
     this.num.onValueChanged=reset;
     this.size.onValueChanged=reset;
 
