@@ -2259,7 +2259,6 @@ Ops.Gl.TextureEffects.DepthOfField = function()
         .endl()+'       float z=texture2D(depthTex,tc).r;'
         .endl()+'       float c=(2.0*n)/(f+n-z*(f-n));'
         .endl()+'       if(c>=0.99)c=0.0;'
-
         .endl()+'       return c;'
         .endl()+'}'
 
@@ -2275,15 +2274,9 @@ Ops.Gl.TextureEffects.DepthOfField = function()
         .endl()+'   float d=getDepth(texCoord);'
         .endl()+'   float ds=d+getDepth(texCoord*1.1)+getDepth(texCoord*0.9);'
 
-        // .endl()+'           else d.a=1.0;'
-
-
-        .endl()+'       if(ds>0.0)col=blur9(tex,texCoord,vec2(width,height),vec2(dirX,dirY));'
-
+        .endl()+'       if(ds>0.0)'
+        .endl()+'           col=blur9(tex,texCoord,vec2(width,height),vec2(dirX,dirY));'
         .endl()+'       col=mix(baseCol,col,d );'
-
-
-        
 
         .endl()+'       #ifdef SHOW_INTENSITY'
         .endl()+'       col=vec4(d,d,d,1.0);'
