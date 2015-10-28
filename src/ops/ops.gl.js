@@ -427,7 +427,7 @@ Ops.Gl.Wireframe = function()
     this.render.onTriggered=function()
     {
         cgl.wireframe=true;
-        cgl.gl.lineWidth(self.lineWidth.val);
+        // cgl.gl.lineWidth(self.lineWidth.val);
         self.trigger.trigger();
         cgl.wireframe=false;
 

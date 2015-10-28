@@ -720,7 +720,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     var srcFrag=''
 
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
 
         .endl()+'{{MODULES_HEAD}}'
         .endl()+'#ifdef HAS_TEXTURES'
