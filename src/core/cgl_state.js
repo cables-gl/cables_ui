@@ -113,7 +113,7 @@ CGL.State=function()
             if(this.frameStore.renderOffscreen == shaderStack[i].offScreenPass)
                 return shaderStack[i];
 
-        console.log('no shader found?');
+        // console.log('no shader found?');
 
     };
 

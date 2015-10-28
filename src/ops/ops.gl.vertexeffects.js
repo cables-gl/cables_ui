@@ -252,13 +252,13 @@ Ops.Gl.ShaderEffects.VertexExtrudeGlitch = function()
 
     function removeModule()
     {
-        console.log('remove module?',shader,module);
+        // console.log('remove module?',shader,module);
 
         if(shader && module)
         {
             shader.removeModule(module);
             shader=null;
-            console.log('remove module!');
+            // console.log('remove module!');
         }
     }
 
