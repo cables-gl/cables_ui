@@ -154,6 +154,61 @@ Ops.Gl.Perspective.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
+Ops.Gl.Orthogonal = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='Orthogonal';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.bounds=this.addInPort(new Port(this,"bounds",OP_PORT_TYPE_VALUE ));
+    this.bounds.val=45;
+
+    this.zNear=this.addInPort(new Port(this,"frustum near",OP_PORT_TYPE_VALUE ));
+    this.zNear.val=0.01;
+
+    this.zFar=this.addInPort(new Port(this,"frustum far",OP_PORT_TYPE_VALUE ));
+    this.zFar.val=2000.0;
+
+
+    this.render.onTriggered=function()
+    {
+        // mat4.Orthogonal(cgl.pMatrix,self.fovY.val*0.0174533, cgl.getViewPort()[2]/cgl.getViewPort()[3], self.zNear.val, self.zFar.val);
+        cgl.pushPMatrix();
+        mat4.ortho(cgl.pMatrix, 0, self.bounds.get(), 0, self.bounds.get(), self.zNear.get(), self.zFar.get());
+
+
+        self.trigger.trigger();
+
+        cgl.popPMatrix();
+    };
+
+    function changed()
+    {
+                console.log('', 0, self.bounds.get(), 0, self.bounds.get(), self.zNear.get(), self.zFar.get());
+
+        // cgl.frameStore.Orthogonal=
+        // {
+        //     fovy:self.fovY.val,
+        //     zFar:self.zFar.val,
+        //     zNear:self.zNear.val,
+        // };
+    }
+
+    this.bounds.onValueChanged=changed;
+    this.zFar.onValueChanged=changed;
+    this.zNear.onValueChanged=changed;
+
+};
+
+Ops.Gl.Orthogonal.prototype = new Op();
+
+
+// --------------------------------------------------------------------------
+
 Ops.Gl.LetterBox = function()
 {
     Op.apply(this, arguments);

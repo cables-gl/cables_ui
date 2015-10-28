@@ -698,7 +698,6 @@ Ops.Gl.Shader.BasicMaterial = function()
 
         .endl()+'{{MODULE_VERTEX_POSITION}}'
 
-
         .endl()+'#ifdef BILLBOARD'
         .endl()+'   vec3 position=vPosition;'
 
