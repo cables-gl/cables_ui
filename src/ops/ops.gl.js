@@ -126,7 +126,7 @@ Ops.Gl.Perspective = function()
 
     this.render.onTriggered=function()
     {
-        mat4.perspective(cgl.pMatrix,self.fovY.val*0.0174533, cgl.getViewPort()[2]/cgl.getViewPort()[3], self.zNear.val, self.zFar.val);
+        mat4.perspective(cgl.pMatrix,cgl.frameStore.perspective.fovy*0.0174533, cgl.getViewPort()[2]/cgl.getViewPort()[3], cgl.frameStore.perspective.zNear, cgl.frameStore.perspective.zFar);
         cgl.pushPMatrix();
 
         self.trigger.trigger();
@@ -138,15 +138,16 @@ Ops.Gl.Perspective = function()
     {
         cgl.frameStore.perspective=
         {
-            fovy:self.fovY.val,
-            zFar:self.zFar.val,
-            zNear:self.zNear.val,
+            fovy:parseFloat(self.fovY.val),
+            zFar:parseFloat(self.zFar.val),
+            zNear:parseFloat(self.zNear.val),
         };
     }
 
     this.fovY.onValueChanged=changed;
     this.zFar.onValueChanged=changed;
     this.zNear.onValueChanged=changed;
+    changed();
 
 };
 
@@ -1488,6 +1489,29 @@ Ops.Gl.Render2Texture = function()
             cgl.gl.TEXTURE_2D,
             textureDepth.tex,
             0 );
+
+        // if (!cgl.gl.isFramebuffer(frameBuf)) {
+        //     throw("Invalid framebuffer");
+        // }
+        // var status = cgl.gl.checkFramebufferStatus(cgl.gl.FRAMEBUFFER);
+        // switch (status) {
+        //     case cgl.gl.FRAMEBUFFER_COMPLETE:
+        //         break;
+        //     case cgl.gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+        //         throw("Incomplete framebuffer: FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+        //         break;
+        //     case cgl.gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+        //         throw("Incomplete framebuffer: FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
+        //         break;
+        //     case cgl.gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+        //         throw("Incomplete framebuffer: FRAMEBUFFER_INCOMPLETE_DIMENSIONS");
+        //         break;
+        //     case cgl.gl.FRAMEBUFFER_UNSUPPORTED:
+        //         throw("Incomplete framebuffer: FRAMEBUFFER_UNSUPPORTED");
+        //         break;
+        //     default:
+        //         throw("Incomplete framebuffer: " + status);
+        // }
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
         cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
