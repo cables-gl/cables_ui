@@ -13,6 +13,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     var type=_type;
     var value=0.00001;
     var shader=_shader;
+
     this.needsUpdate=true;
 
     shader.addUniform(this);
@@ -117,6 +118,7 @@ CGL.Shader=function(_cgl)
     var mvMatrixUniform=null;
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
+    this.offScreenPass=false;
 
     this.getCgl=function()
     {
@@ -195,7 +197,7 @@ CGL.Shader=function(_cgl)
     this.getDefaultFragmentShader=function()
     {
         return ''
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
         .endl()+'varying vec3 norm;'
         .endl()+'void main()'
         .endl()+'{'
@@ -208,7 +210,7 @@ CGL.Shader=function(_cgl)
     this.getErrorFragmentShader=function()
     {
         return ''
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
         .endl()+'varying vec3 norm;'
         .endl()+'void main()'
         .endl()+'{'
@@ -310,6 +312,7 @@ CGL.Shader=function(_cgl)
 
     this.bind=function()
     {
+
         if(!program || needsRecompile) self.compile();
         
         if(!mvMatrixUniform)

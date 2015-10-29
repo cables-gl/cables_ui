@@ -401,7 +401,7 @@ Ops.IfTrueThen = function()
     this.triggerThen=this.addOutPort(new Port(this,"then",OP_PORT_TYPE_FUNCTION));
     this.triggerElse=this.addOutPort(new Port(this,"else",OP_PORT_TYPE_FUNCTION));
 
-    this.exe.onTriggered=function()
+    function exec()
     {
         if(self.bool.val || self.bool.val>=1 )
         {
@@ -411,7 +411,11 @@ Ops.IfTrueThen = function()
         {
             self.triggerElse.trigger();
         }
-    };
+    }
+
+    this.exe.onTriggered=exec;
+    // this.bool.onValueChanged=exec;
+
 };
 
 Ops.IfTrueThen.prototype = new Op();

@@ -199,7 +199,7 @@ Ops.Gl.Meshes.Circle = function()
     this.segments=this.addInPort(new Port(this,"segments"));
     this.radius=this.addInPort(new Port(this,"radius"));
     this.innerRadius=this.addInPort(new Port(this,"innerRadius",OP_PORT_TYPE_VALUE,{display:"range"}));
-    this.percent=this.addInPort(new Port(this,"percent"));
+    this.percent=this.addInPort(new Port(this,"percent",OP_PORT_TYPE_VALUE,{display:'range'}));
 
     this.steps=this.addInPort(new Port(this,"steps",OP_PORT_TYPE_VALUE,{type:"int"}));
     this.steps.val=0.0;
@@ -239,9 +239,9 @@ Ops.Gl.Meshes.Circle = function()
 
         if(self.innerRadius.get()<=0)
         {
-          for (i=0; i <= self.segments.get()*self.percent.get(); i++)
+          for (i=0; i <= Math.round(self.segments.get())*self.percent.get(); i++)
           {
-              degInRad = (360/self.segments.get())*i*CGL.DEG2RAD;
+              degInRad = (360/Math.round(self.segments.get()))*i*CGL.DEG2RAD;
               posx=Math.cos(degInRad)*self.radius.get();
               posy=Math.sin(degInRad)*self.radius.get();
 
@@ -266,11 +266,11 @@ Ops.Gl.Meshes.Circle = function()
         else
         {
           var count=0;
-          for (i=0; i <= self.segments.get()*self.percent.get(); i++)
+          for (i=0; i <= Math.round(self.segments.get())*self.percent.get(); i++)
           {
               count++;
 
-              degInRad = (360/self.segments.get())*i*CGL.DEG2RAD;
+              degInRad = (360/Math.round(self.segments.get()))*i*CGL.DEG2RAD;
               posx=Math.cos(degInRad)*self.radius.get();
               posy=Math.sin(degInRad)*self.radius.get();
 
@@ -578,6 +578,218 @@ Ops.Gl.Meshes.Cube.prototype = new Op();
 // ----------------------------------------------------------------
 
 
+
+
+// ----------------------------------------------------------------
+
+Ops.Gl.Meshes.SkyBox = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=this.patch.cgl;
+
+    this.name='SkyBox';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.mapping=this.addInPort(new Port(this,"mapping",OP_PORT_TYPE_VALUE,{display:'dropdown',values:["-+--","--+-"]} ));
+    this.mapping.val="-+--";
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var mesh=null;
+
+    this.render.onTriggered=function()
+    {
+        if(mesh!==null) mesh.render(cgl.getShader());
+        self.trigger.trigger();
+    };
+
+
+
+    function build()
+    {
+        console.log('rebuild!!!'+self.mapping.get());
+
+        var geom=new CGL.Geometry();
+        var zeroDotThree=0.33333333;
+        var zeroDotThree2=0.33333333*2;
+
+        if(self.mapping.get()=='--+-')
+        {
+            geom.texCoords = [
+              // Front face
+              0, zeroDotThree2,
+              0.25, zeroDotThree2,
+              0.25, zeroDotThree,
+              0, zeroDotThree,
+              // Back face
+              0.75, zeroDotThree2,
+              0.75, zeroDotThree,
+              0.5, zeroDotThree,
+              0.5, zeroDotThree2,
+              // Top face
+              0.75, zeroDotThree,
+              0.75, 0,
+              0.5, 0,
+              0.5, zeroDotThree,
+              // Bottom face
+              0.75,  zeroDotThree2,
+              0.5, zeroDotThree2,
+              0.5, 1,
+              0.75,  1,
+              // Right face
+              0.5, zeroDotThree2,
+              0.5, zeroDotThree,
+              0.25, zeroDotThree,
+              0.25, zeroDotThree2,
+              // Left face
+              0.75, zeroDotThree2,
+              1, zeroDotThree2,
+              1, zeroDotThree,
+              0.75, zeroDotThree,
+            ];
+
+        }
+
+        if(self.mapping.get()=='-+--')
+        {
+            geom.texCoords = [
+              // Front face
+              0, zeroDotThree2,
+              0.25, zeroDotThree2,
+              0.25, zeroDotThree,
+              0, zeroDotThree,
+              // Back face
+              0.75, zeroDotThree2,
+              0.75, zeroDotThree,
+              0.5, zeroDotThree,
+              0.5, zeroDotThree2,
+              // Top face
+
+              0.5,  0,
+              0.25, 0,
+              0.25, zeroDotThree,
+              0.5,  zeroDotThree,
+              
+
+              // 0.5, zeroDotThree,
+              // 0.5, 0,
+              // 0.25, 0,
+              // 0.25, zeroDotThree,
+              // Bottom face
+              0.5, 1,
+              0.5, zeroDotThree2,
+              0.25,  zeroDotThree2,
+              0.25,  1,
+              // Right face
+              0.5, zeroDotThree2,
+              0.5, zeroDotThree,
+              0.25, zeroDotThree,
+              0.25, zeroDotThree2,
+              // Left face
+              0.75, zeroDotThree2,
+              1, zeroDotThree2,
+              1, zeroDotThree,
+              0.75, zeroDotThree,
+            ];
+
+        }
+
+
+        geom.vertices = [
+          
+            1.0, -1.0,-1.0, // Front face
+            1.0, -1.0, 1.0,
+            1.0,  1.0, 1.0,
+            1.0,  1.0,-1.0,
+          
+           -1.0, -1.0,-1.0,// Back face
+           -1.0,  1.0,-1.0,
+           -1.0,  1.0, 1.0,
+           -1.0, -1.0, 1.0,
+          
+           -1.0,  1.0,-1.0,// Top face
+            1.0,  1.0,-1.0,
+            1.0,  1.0, 1.0,
+           -1.0,  1.0, 1.0,
+          
+           -1.0, -1.0,-1.0,// Bottom face
+           -1.0, -1.0, 1.0,
+            1.0, -1.0, 1.0,
+            1.0, -1.0,-1.0,
+          
+           -1.0, -1.0, 1.0,// Right face
+           -1.0,  1.0, 1.0,
+            1.0,  1.0, 1.0,
+            1.0, -1.0, 1.0,
+          
+           -1.0, -1.0,-1.0,// Left face
+            1.0, -1.0,-1.0,
+            1.0,  1.0,-1.0,
+           -1.0,  1.0,-1.0,
+        ];
+
+
+        geom.vertexNormals = [
+            // Front face
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+
+            // Back face
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+
+            // Top face
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+
+            // Bottom face
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+
+            // Right face
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+
+            // Left face
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0
+        ];
+
+        geom.verticesIndices = [
+            0, 1, 2,      0, 2, 3,    // Front face
+            4, 5, 6,      4, 6, 7,    // Back face
+            8, 9, 10,     8, 10, 11,  // Top face
+            12, 13, 14,   12, 14, 15, // Bottom face
+            16, 17, 18,   16, 18, 19, // Right face
+            20, 21, 22,   20, 22, 23  // Left face
+        ];
+
+        mesh=new CGL.Mesh(cgl,geom);
+    }
+
+    this.mapping.onValueChanged=build;
+    build();
+
+};
+
+Ops.Gl.Meshes.SkyBox.prototype = new Op();
+
+// ----------------------------------------------------------------
+
+
+
 Ops.Gl.Meshes.Spline = function()
 {
     Op.apply(this, arguments);
@@ -619,13 +831,16 @@ Ops.Gl.Meshes.Spline = function()
 
     this.render.onTriggered=function()
     {
+        var shader=cgl.getShader();
         self.trigger.trigger();
+        if(!shader)return;
         bufferData();
 
         cgl.pushMvMatrix();
         mat4.identity(cgl.mvMatrix);
 
-        cgl.getShader().bind();
+        
+        shader.bind();
         cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
         cgl.gl.enableVertexAttribArray(cgl.getShader().getAttrVertexPos());
 
@@ -701,6 +916,8 @@ Ops.Gl.Meshes.Spline = function()
 
         //     cgl.frameStore.SplinePoints=points;
         // }
+
+        if(self.thickness.get()<1)self.thickness.set(1);
 
         cgl.gl.lineWidth(self.thickness.val);
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);

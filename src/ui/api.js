@@ -4,10 +4,10 @@ var CABLES=CABLES || {};
 
 CABLES.API=function()
 {
+    var cache=[];
 
-    function request(method,url,data,cbSuccess,cbError)
+    function request(method,url,data,cbSuccess,cbError,doCache)
     {
-
         $.ajax(
         {
             method: method,
@@ -16,6 +16,11 @@ CABLES.API=function()
         })
         .done(function(data)
         {
+            if(doCache)
+            {
+                cache.push({url:url,method:method,data:data});
+            }
+
             // console.log( "success "+data );
             if(cbSuccess) cbSuccess(data);
         })
@@ -42,6 +47,37 @@ CABLES.API=function()
         });
 
     }
+
+    this.hasCached=function(url,method)
+    {
+        if(!method)method='GET';
+        for(var i=0;i<cache.length;i++)
+        {
+            if(cache[i].url==url && cache[i].method==method)
+                return cache[i];
+        }
+        return null;
+    };
+
+    this.clearCache=function()
+    {
+        console.log('cache cleared....');
+        cache.length=0;
+    };
+
+    this.getCached=function(url,cb,cbErr)
+    {
+        for(var i=0;i<cache.length;i++)
+        {
+            if(cache[i].url==url)
+            {
+                cb(cache[i].data);
+                return;
+            }
+        }
+
+        request("GET",url,{},cb,cbErr,true);
+    };
 
     this.get=function(url,cb,cbErr)
     {

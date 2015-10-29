@@ -85,6 +85,11 @@ a
     overflow: hidden;
     z-index:999;
 
+    div
+    {
+        float:left;
+    }
+
     a
     {
         background-color: #444;
@@ -270,6 +275,7 @@ input[type="text"]
         font-family: arial;
         background-color: #1d1d1d;
         padding: 5px;
+        font-size: 14px;
         padding-left: 10px;
         padding-right: 10px;
         color:#fff;
@@ -455,17 +461,34 @@ input[type="text"]
         outline: none;
         background-color: #222;
     }
+    .searchbrowser
+    {
+        float:left;
+        width:60%;
+    }
 
     .searchresult
     {
-        border-bottom: 1px solid #888;
+        border-bottom: 1px solid #444;
+        background-color: #333;
         font-size: 14px;
         padding:5px;
     }
 
+    .searchinfo
+    {
+        float:left;
+        width:35%;
+        padding-left: 20px;
+    }
+
     .selected
     {
-        background-color: #888;
+        background-color: #6c9fde;
+        a
+        {
+            color:white;
+        }
     }
 }
 
@@ -961,6 +984,39 @@ input[type=range]:focus {
 
 
 
+
+#doc_op
+{
+    margin-top: 20px;
+    background-color: #262626;
+    padding:10px;
+    overflow: auto;
+
+    li
+    {
+        padding-left: 0px;
+    }
+
+    ul
+    {
+        padding-left: 20px;
+    }
+
+    a
+    {
+        text-decoration: underline;
+    }
+
+    .button
+    {
+        text-decoration: none;
+    }
+
+}
+
+
+
+
 #editor
 {
     margin: 0;
@@ -972,6 +1028,35 @@ input[type=range]:focus {
     #editorbar
     {
         position: absolute;
+        background-color: #222;
+        width:100%;
+
+        .tabs
+        {
+            width:100%;
+            margin-bottom: 15px;
+            background-color:#444;
+
+            .tab
+            {
+                float:left;
+                padding:5px;
+                cursor:pointer;
+                padding-left: 10px;
+                padding-right: 10px;
+
+                &.active
+                {
+                    background-color: #222;
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    .iconbar
+    {
+        padding-left: 10px;
     }
 
     #ace
@@ -988,5 +1073,12 @@ input[type=range]:focus {
             font-family: monospace, monospace;
         }
     }
+
+
+
+
+
+
+
 }
 

@@ -21,18 +21,16 @@
 
 
 <div id="editor" style="">
-    <div id="editorbar">
-        <a class="button">start</a>
-    </div>
-    <div id="ace" style="padding:0;height:300px;">
-    }</div>
-
+    <div id="editorbar"></div>
+    <div id="ace" style="padding:0;height:300px;"></div>
 </div>
 
 <div id="patch" tabindex="1"></div>
 
 <div id="timing"></div>
-<div id="statusbar"></div>
+<div id="statusbar">
+    <div class="text"></div>
+</div>
 <div id="splitterPatch" class="splitter"></div>
 <div id="splitterRenderer" class="splitter"></div>
 <div id="splitterRendererWH" class="splitter"></div>
@@ -54,9 +52,16 @@
     <a class="button_addOp button fa fa-plus-square-o tt" data-tt="create new op"></a>
 
 
-    <a id="help" class="button fa fa-question-circle"></a>
+    <a id="help" href="/doc" target="_blankkk" class="button fa fa-question-circle"></a>
+
+    <a id="button_editor" class="button fa fa-pencil-square"></a>
+
 
     <a id="button_settings" class="button fa fa-cog"></a>
+
+
+<div id="assetsloadingindicator" style="display:none;float:left;margin-left:10px;padding-top:2px;"><i class="fa fa-2x fa-spinner fa-pulse"></i></div>
+
 
 
     <div id="" style="float:right;">

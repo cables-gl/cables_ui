@@ -913,7 +913,7 @@ CABLES.TL.UI.TimeLineUI=function()
             break;
 
             default:
-                console.log('key ',e.which);
+                // console.log('key ',e.which);
             break;
         }
     });
@@ -1231,6 +1231,14 @@ CABLES.TL.UI.TimeLineUI=function()
     }
 
     var panX=0,panY=0;
+
+
+    $("#timeline").bind("mouseleave", function(e)
+    {
+        rubberBandHide();
+    });
+
+
     $("#timeline").bind("mousemove", function(e)
     {
         if(isScrollingTime)return;
@@ -1308,21 +1316,24 @@ CABLES.TL.UI.TimeLineUI=function()
     this.setTimeScale=function(v)
     {
         cursorLine.hide();
-        var cursorOffset=this.getTimeFromPaper(viewBox.x);
-        var oldCursor=this.getPaperXFromTime(cursorTime);
-        // var addOffset=Math.abs(cursorOffset-cursorTime);
 
-        // console.log('cursorOffset',cursorOffset);
-        // console.log('addOffset',cursorTime*CABLES.TL.TIMESCALE);
+        var oldx=viewBox.x;
+                
+        var offsetLeftTime=this.getTimeFromPaper(viewBox.x);
+        var oldCursor=(this.getPaperXFromTime(cursorTime)-viewBox.x);
+
+        var leftToCursorDiff=this.getPaperXFromTime(cursorTime-offsetLeftTime);
+     
 
         CABLES.TL.TIMESCALE=v;
 
-        viewBox.x=cursorOffset*CABLES.TL.TIMESCALE/2;
 
-        var newCursor=this.getPaperXFromTime(cursorTime);
-        viewBox.x-=(oldCursor-newCursor)/2;
+        var leftToCursorDiffAfter=this.getPaperXFromTime(cursorTime-offsetLeftTime);
+        leftToCursorDiff=leftToCursorDiffAfter-leftToCursorDiff;
 
-        // this.centerCursor();
+        this.centerCursor();
+        viewBox.x-=leftToCursorDiff;
+
         updateKeyLine();
 
         self.updateViewBox();

@@ -11,7 +11,7 @@
     <style id="search_style"></style>
 
 
-    <div style="height:300px;overflow:auto">
+    <div style="height:300px;overflow:auto" class="searchbrowser">
       {{#each ops}}
 
         <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
@@ -20,6 +20,8 @@
 
       {{/each}}
     </div>
+
+    <div id="searchinfo" class="searchinfo"></div>
 
 </div>
 

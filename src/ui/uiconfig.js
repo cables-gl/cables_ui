@@ -42,7 +42,7 @@ CABLES.UI.uiConfig=
     linkingLine:
     {
         "stroke-width": 1,
-    }
+    },
 
 
 };

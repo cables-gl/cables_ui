@@ -10,31 +10,38 @@ function guid()
     s4() + '-' + s4() + s4() + s4();
 }
 
-var pingDelay=10000;
-var windowUUID=guid();
-var delay=pingDelay;
-var hasFailed=false;
+CABLES = CABLES || {};
+CABLES.API = CABLES.API || {};
 
-var ping=function()
+CABLES.API.PING ={};
+CABLES.API.PING.pingDelay=5000;
+CABLES.API.PING.windowUUID=guid();
+CABLES.API.PING.delay=0;
+CABLES.API.isConnected=true;
+
+
+
+CABLES.API.PING.ping=function()
 {
     $.ajax(
     {
-        url: "/api/ping/"+windowUUID+'/editor',
+        url: "/api/ping/"+CABLES.API.PING.windowUUID+'/editor',
     })
     .done(function()
     {
-        delay=pingDelay;
-        if(hasFailed) CABLES.UI.setStatusText('connection to server ESTABLISHED...');
-        hasFailed=false;
+        CABLES.API.PING.delay=CABLES.API.PING.pingDelay;
+        if(!CABLES.API.isConnected) CABLES.UI.setStatusText('connection to server ESTABLISHED...');
+        CABLES.API.isConnected=true;
     })
     .fail(function()
     {
-        delay=pingDelay*2;
-        hasFailed=true;
+        CABLES.API.PING.delay=CABLES.API.PING.pingDelay*2;
+
+        CABLES.API.isConnected=false;
         CABLES.UI.setStatusText('connection to server lost...');
     });
 
-    setTimeout(ping,delay);
+    setTimeout(CABLES.API.PING.ping,CABLES.API.PING.delay);
 };
 
-ping();
+CABLES.API.PING.ping();

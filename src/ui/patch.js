@@ -502,7 +502,7 @@ CABLES.UI.Patch=function(_gui)
                 gui.patch().setSelectedOp(null);
                 mouseRubberBandStartPos=gui.patch().getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
             }
-                    console.log('rubber!');
+            // console.log('rubber!');
                     
             mouseRubberBandPos=gui.patch().getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
 
@@ -886,6 +886,7 @@ CABLES.UI.Patch=function(_gui)
         {
             isLoading=false;
             self.setCurrentSubPatch(currentSubPatch);
+            self.showProjectParams();
         };
 
         scene.onUnLink=function(p1,p2)
@@ -1189,6 +1190,8 @@ CABLES.UI.Patch=function(_gui)
         self.addSelectedOp(uiop);
         // selectedOps.push(uiop);
         uiop.setSelected(true);
+
+        // gui.showOpDoc(uiop.op.objName);
     };
 
     this.addSelectedOp=function(uiop)
@@ -1218,7 +1221,7 @@ CABLES.UI.Patch=function(_gui)
         self.showOpParams(gui.scene().getOpById(id));
     };
 
-    this.showProjectParams=function(op)
+    this.showProjectParams=function()
     {
         var s={};
 
@@ -1231,7 +1234,10 @@ CABLES.UI.Patch=function(_gui)
             if(!self.ops[i].isHidden())numVisibleOps++;
         }
 
-        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,
+        console.log('s',s);
+        
+
+        var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,descr:currentProject.descriptionHTML,
             debug:
             {
                 numOps:gui.scene().ops.length,
@@ -1253,6 +1259,7 @@ CABLES.UI.Patch=function(_gui)
         currentProject.name=proj_name;
         gui.scene().settings=gui.scene().settings || {};
         gui.scene().settings.isPublic=proj_public;
+        self.saveCurrentProject();
     };
 
     function updateUiAttribs()
@@ -1310,30 +1317,36 @@ CABLES.UI.Patch=function(_gui)
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 
-        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in',});
-
-        for(var i in op.portsIn)
+        if(op.portsIn.length>0)
         {
-            op.portsIn[i].watchId='in_'+i;
-            watchAnimPorts.push(op.portsIn[i]);
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in',});
 
-            if(op.portsIn[i].uiAttribs.colorPick) watchColorPicker.push(op.portsIn[i]);
-            if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
+            for(var i in op.portsIn)
+            {
+                op.portsIn[i].watchId='in_'+i;
+                watchAnimPorts.push(op.portsIn[i]);
 
-            html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op } );
+                if(op.portsIn[i].uiAttribs.colorPick) watchColorPicker.push(op.portsIn[i]);
+                if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
+
+                html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op } );
+            }
         }
 
-        html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op});
-
-        for(var i2 in op.portsOut)
+        if(op.portsOut.length>0)
         {
-            if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
-            {
-                op.portsOut[i2].watchId='out_'+i2;
-                watchPorts.push(op.portsOut[i2]);
-            }
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op});
 
-            html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false,op: op } );
+            for(var i2 in op.portsOut)
+            {
+                if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
+                {
+                    op.portsOut[i2].watchId='out_'+i2;
+                    watchPorts.push(op.portsOut[i2]);
+                }
+
+                html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false,op: op } );
+            }
         }
 
         html += CABLES.UI.getHandleBarHtml('params_op_foot',{op: op});
@@ -1359,6 +1372,33 @@ CABLES.UI.Patch=function(_gui)
             {
                 if(op.portsIn[index].isAnimated()) $('#portanim_in_'+index).addClass('timingbutton_active');
                 if(op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $('#portgraph_in_'+index).addClass('timingbutton_active');
+
+
+                $('#portedit_in_'+index).on('click',function(e)
+                {
+                    var thePort=op.portsIn[index];
+
+        console.log('thePort.uiAttribs.editorSyntax',thePort.uiAttribs.editorSyntax);
+        
+
+
+                    gui.showEditor();
+                    gui.editor().addTab({
+                        content:op.portsIn[index].get(),
+                        title:''+op.portsIn[index].name,
+                        syntax:thePort.uiAttribs.editorSyntax,
+                        onSave:function(content)
+                        {
+                            console.log('save...');
+                                    
+                            thePort.set(content);
+
+                        }
+                    });
+                    console.log('edit clicked...ja...');
+                    
+                            
+                });
 
                 $('#portgraph_in_'+index).on('click',function(e)
                 {

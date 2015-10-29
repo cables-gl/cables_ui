@@ -66,6 +66,9 @@ svg {
   overflow: hidden;
   z-index: 999; }
   #statusbar
+div {
+    float: left; }
+  #statusbar
 a {
     background-color: #444;
     color: white;
@@ -198,6 +201,7 @@ div {
     font-family: arial;
     background-color: #1d1d1d;
     padding: 5px;
+    font-size: 14px;
     padding-left: 10px;
     padding-right: 10px;
     color: #fff; }
@@ -341,13 +345,27 @@ input {
     outline: none;
     background-color: #222; }
   .opsearch
+.searchbrowser {
+    float: left;
+    width: 60%; }
+  .opsearch
 .searchresult {
-    border-bottom: 1px solid #888;
+    border-bottom: 1px solid #444;
+    background-color: #333;
     font-size: 14px;
     padding: 5px; }
   .opsearch
+.searchinfo {
+    float: left;
+    width: 35%;
+    padding-left: 20px; }
+  .opsearch
 .selected {
-    background-color: #888; }
+    background-color: #6c9fde; }
+    .opsearch
+.selected
+a {
+      color: white; }
 
 input.medium {
   font-size: 18px;
@@ -2822,6 +2840,24 @@ th {
   right: 0;
   position: absolute; }
 
+#doc_op {
+  margin-top: 20px;
+  background-color: #262626;
+  padding: 10px;
+  overflow: auto; }
+  #doc_op
+li {
+    padding-left: 0px; }
+  #doc_op
+ul {
+    padding-left: 20px; }
+  #doc_op
+a {
+    text-decoration: underline; }
+  #doc_op
+.button {
+    text-decoration: none; }
+
 #editor {
   margin: 0;
   top: 0;
@@ -2830,7 +2866,33 @@ th {
   right: 0; }
   #editor
 #editorbar {
-    position: absolute; }
+    position: absolute;
+    background-color: #222;
+    width: 100%; }
+    #editor
+#editorbar
+.tabs {
+      width: 100%;
+      margin-bottom: 15px;
+      background-color: #444; }
+      #editor
+#editorbar
+.tabs
+.tab {
+        float: left;
+        padding: 5px;
+        cursor: pointer;
+        padding-left: 10px;
+        padding-right: 10px; }
+        #editor
+#editorbar
+.tabs
+.tab.active {
+          background-color: #222;
+          color: #fff; }
+  #editor
+.iconbar {
+    padding-left: 10px; }
   #editor
 #ace {
     margin: 0;

@@ -10,7 +10,7 @@ CGL.State=function()
     var viewPort=[0,0,0,0];
 
     this.frameStore={};
-
+    this.gl=null;
     this.pMatrix=mat4.create();
     this.mvMatrix=mat4.create();
     this.canvas=null;
@@ -18,6 +18,7 @@ CGL.State=function()
 
     var simpleShader=new CGL.Shader(this);
     var currentShader=simpleShader;
+    var aborted=false;
 
     this.setCanvas=function(id)
     {
@@ -28,8 +29,17 @@ CGL.State=function()
             antialias:true
         });
 
-        this.canvasWidth=this.canvas.clientWidth;
-        this.canvasHeight=this.canvas.clientHeight;
+        if(!this.gl)
+        {
+            if(this.patch.config.onError)this.patch.config.onError('sorry, could not initialize WebGL. Please check if your Browser supports WebGL.');
+            this.aborted=true;
+            return;
+        }
+        else
+        {
+            this.canvasWidth=this.canvas.clientWidth;
+            this.canvasHeight=this.canvas.clientHeight;
+        }
     };
 
     this.canvasWidth=-1;
@@ -93,10 +103,18 @@ CGL.State=function()
     };
 
     // shader stack
-
     this.getShader=function()
     {
-        return currentShader;
+        if(currentShader)
+        if(!this.frameStore || (true===this.frameStore.renderOffscreen == currentShader.offScreenPass===true))
+            return currentShader;
+
+        for(var i=shaderStack.length-1;i>=0;i--)
+            if(this.frameStore.renderOffscreen == shaderStack[i].offScreenPass)
+                return shaderStack[i];
+
+        // console.log('no shader found?');
+
     };
 
     this.setShader=function(shader)
@@ -107,7 +125,7 @@ CGL.State=function()
 
     this.setPreviousShader=function()
     {
-        if(shaderStack.length===0) throw "Invalid movelview popMatrix!";
+        if(shaderStack.length===0) throw "Invalid shader stack pop!";
         shaderStack.pop();
         currentShader = shaderStack[shaderStack.length-1];
     };

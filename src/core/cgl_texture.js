@@ -32,6 +32,9 @@ CGL.Texture=function(cgl,options)
     {
         if(!_isPowerOfTwo(self.width) || !_isPowerOfTwo(self.height) )
         {
+            cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.NEAREST);
+            cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.NEAREST);
+
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_EDGE);
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_EDGE);
         }
@@ -92,6 +95,7 @@ CGL.Texture=function(cgl,options)
 
         if(isDepthTexture)
         {
+            
             cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.DEPTH_COMPONENT, w,h, 0, cgl.gl.DEPTH_COMPONENT, cgl.gl.UNSIGNED_SHORT, null);
         }
         else
@@ -109,7 +113,8 @@ CGL.Texture=function(cgl,options)
         self.height=img.height;
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
-        if(self.flip) cgl.gl.pixelStorei(cgl.gl.UNPACK_FLIP_Y_WEBGL, true);
+        cgl.gl.pixelStorei(cgl.gl.UNPACK_FLIP_Y_WEBGL, !self.flip);
+
         cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, self.image);
 
         setFilter();
@@ -139,6 +144,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     texture.image = new Image();
 
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
+    if(settings && settings.hasOwnProperty('flip')) texture.flip=settings.flip;
 
     texture.image.onload=function()
     {
@@ -155,7 +161,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 CGL.Texture.fromImage=function(cgl,img)
 {
     var texture=new CGL.Texture(cgl);
-    texture.flip=true;
+    texture.flip=false;
     texture.image = img;
     texture.initTexture(img);
     return texture;

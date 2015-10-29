@@ -72,6 +72,7 @@ Ops.Gl.Shader.ShowNormalsMaterial = function()
 
 Ops.Gl.Shader.ShowNormalsMaterial.prototype = new Op();
 
+// --------------------------------------------------------------------------
 
 
 Ops.Gl.Shader.MatCapMaterial = function()
@@ -98,6 +99,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.normalScale=this.addInPort(new Port(this,"normalScale",OP_PORT_TYPE_VALUE,{display:'range'}));
     this.normalScale.val=0.4;
     this.normalScaleUniform=null;
+
+    this.textureSpec=this.addInPort(new Port(this,"specular",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureSpecUniform=null;
+
+    this.textureSpecMatCap=this.addInPort(new Port(this,"specular matcap",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureSpecMatCapUniform=null;
 
 
 
@@ -199,6 +206,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         }
     };
 
+
+
     this.textureNormal.onValueChanged=function()
     {
         if(self.textureNormal.val)
@@ -215,6 +224,33 @@ Ops.Gl.Shader.MatCapMaterial = function()
             self.textureNormalUniform=null;
         }
     };
+
+
+    function changeSpec()
+    {
+        if(self.textureSpec.val && self.textureSpecMatCap.val)
+        {
+            if(self.textureSpecUniform!==null)return;
+            shader.define('USE_SPECULAR_TEXTURE');
+            shader.removeUniform('texSpec');
+            shader.removeUniform('texSpecMatCap');
+            self.textureSpecUniform=new CGL.Uniform(shader,'t','texSpec',3);
+            self.textureSpecMatCapUniform=new CGL.Uniform(shader,'t','texSpecMatCap',4);
+        }
+        else
+        {
+            shader.removeDefine('USE_SPECULAR_TEXTURE');
+            shader.removeUniform('texSpec');
+            shader.removeUniform('texSpecMatCap');
+            self.textureSpecUniform=null;
+            self.textureSpecMatCapUniform=null;
+        }
+
+    }
+
+    this.textureSpec.onValueChanged=changeSpec;
+    this.textureSpecMatCap.onValueChanged=changeSpec;
+
 
     this.bindTextures=function()
     {
@@ -235,7 +271,20 @@ Ops.Gl.Shader.MatCapMaterial = function()
             cgl.gl.activeTexture(cgl.gl.TEXTURE2);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureNormal.val.tex);
         }
+
+        if(self.textureSpec.val)
+        {
+            cgl.gl.activeTexture(cgl.gl.TEXTURE3);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureSpec.val.tex);
+        }
+        if(self.textureSpecMatCap.val)
+        {
+            cgl.gl.activeTexture(cgl.gl.TEXTURE4);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureSpecMatCap.val.tex);
+        }
+
     };
+
 
     this.doRender=function()
     {
@@ -248,7 +297,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     var srcVert=''
         .endl()+'{{MODULES_HEAD}}'
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
         .endl()+'attribute vec3 vPosition;'
         .endl()+'attribute vec2 attrTexCoord;'
         .endl()+'attribute vec3 attrVertNormal;'
@@ -261,23 +310,14 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'uniform mat4 normalMatrix;'
         .endl()+'varying vec2 vNorm;'
 
-
-        // .endl()+'varying vec2 testTexCoords;'
-
-        
-
         .endl()+'varying vec3 e;'
 
-
-        .endl()+''
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
 
         .endl()+'   vec4 pos = vec4( vPosition, 1. );'
-        
-
 
         .endl()+'    {{MODULE_VERTEX_POSITION}}'
 
@@ -306,8 +346,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
 
     var srcFrag=''
+        .endl()+'precision highp float;'
+        
         .endl()+'{{MODULES_HEAD}}'
-        .endl()+'precision mediump float;'
+
         .endl()+'varying vec3 norm;'
         .endl()+'varying vec2 texCoord;'
         .endl()+'uniform sampler2D tex;'
@@ -321,6 +363,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'   uniform sampler2D texDiffuse;'
         .endl()+'#endif'
 
+        .endl()+'#ifdef USE_SPECULAR_TEXTURE'
+        .endl()+'   uniform sampler2D texSpec;'
+        .endl()+'   uniform sampler2D texSpecMatCap;'
+        .endl()+'#endif'
+
+
         .endl()+'#ifdef HAS_NORMAL_TEXTURE'
         .endl()+'   uniform sampler2D texNormal;'
         .endl()+'   uniform mat4 normalMatrix;'
@@ -332,17 +380,19 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'#endif'
         
         .endl()+''
-
-        .endl()+''
         .endl()+'void main()'
         .endl()+'{'
+        
+        .endl()+'#ifdef HAS_DIFFUSE_TEXTURE'
+        .endl()+'   vec2 texCoords=texCoord;'
+        .endl()+'{{MODULE_BEGIN_FRAG}}'
+        .endl()+'#endif'
+
 
         .endl()+'   vec2 vn=vNorm;'
 
         .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
         .endl()+'       vec3 tnorm=texture2D( texNormal, vec2(texCoord.x*normalRepeatX,texCoord.y*normalRepeatY) ).xyz * 2.0 - 1.0;'
-
-        // .endl()+'       tnorm.y *= -1.0;'
 
         .endl()+'       tnorm = normalize(tnorm*normalScale);'
         
@@ -358,8 +408,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'binormal = normalize(binormal);'
         .endl()+'tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
     
-        
-
         .endl()+'       vec3 n = normalize( mat3(normalMatrix) * (norm+tnorm*normalScale) );'
 
         .endl()+'       vec3 r = reflect( e, n );'
@@ -371,19 +419,21 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       vn = r.xy / m + 0.5;'
 
 
-.endl()+'vn.t=clamp(vn.t, 0.0, 1.0);'
-.endl()+'vn.s=clamp(vn.s, 0.0, 1.0);'
-
-
+        .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
+        .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
         .endl()+'    #endif'
-
         
         .endl()+'    vec4 col = texture2D( tex, vn );'
 
-
         .endl()+'    #ifdef HAS_DIFFUSE_TEXTURE'
-        // .endl()+'       col = mix(col,texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY) ),0.5);'
-        .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoord.x*diffuseRepeatX,texCoord.y*diffuseRepeatY));'
+        .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY));'
+        .endl()+'    #endif'
+
+        .endl()+'    #ifdef USE_SPECULAR_TEXTURE'
+        .endl()+'       vec4 spec = texture2D( texSpecMatCap, vn );'
+        .endl()+'       spec*= texture2D( texSpec, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY) );'
+        .endl()+'       col+=spec*2.0;'
+
         .endl()+'    #endif'
 
         .endl()+'    {{MODULE_COLOR}}'
@@ -394,7 +444,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     var shader=new CGL.Shader(cgl);
     
-    shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR']);
+    shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
 
     shader.bindTextures=this.bindTextures;
     this.shaderOut.val=shader;
@@ -626,7 +676,6 @@ Ops.Gl.Shader.BasicMaterial = function()
 
         .endl()+'{{MODULE_VERTEX_POSITION}}'
 
-
         .endl()+'#ifdef BILLBOARD'
         .endl()+'   vec3 position=vPosition;'
 
@@ -648,7 +697,7 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     var srcFrag=''
 
-        .endl()+'precision mediump float;'
+        .endl()+'precision highp float;'
 
         .endl()+'{{MODULES_HEAD}}'
         .endl()+'#ifdef HAS_TEXTURES'
@@ -949,4 +998,164 @@ Ops.Gl.Shader.TextureSinusWobble = function()
 
 Ops.Gl.Shader.TextureSinusWobble.prototype = new Op();
 
+
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Shader.Picker = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='Picker';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+
+    this.x=this.addInPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
+    this.y=this.addInPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
+
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    var pixelRGB = new Uint8Array(4);
+
+    this.doRender=function()
+    {
+        cgl.frameStore.renderOffscreen=true;
+        cgl.frameStore.pickingpass=true;
+        cgl.frameStore.pickingpassNum=0;
+        self.trigger.trigger();
+        cgl.frameStore.renderOffscreen=false;
+        cgl.frameStore.pickingpass=false;
+
+        cgl.gl.readPixels(self.x.val, cgl.canvas.height-self.y.val, 1,1,  cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE ,pixelRGB);
+        cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT | cgl.gl.COLOR_BUFFER_BIT);
+
+        cgl.frameStore.pickedColor=pixelRGB[0];
+
+        self.trigger.trigger();
+    };
+
+    this.render.onTriggered=this.doRender;
+};
+
+Ops.Gl.Shader.Picker.prototype = new Op();
+
+
+
+
+Ops.Gl.Shader.PickingMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='PickingMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.isPicked=this.addOutPort(new Port(this,"is picked",OP_PORT_TYPE_VALUE));
+
+
+    var currentPickingColor=-1;
+
+    this.doRender=function()
+    {
+        if(cgl.frameStore.pickingpass)
+        {
+            cgl.frameStore.pickingpassNum+=4;
+            currentPickingColor=cgl.frameStore.pickingpassNum;
+            pickColorUniformR.setValue(currentPickingColor/255);
+            cgl.setShader(shader);
+            self.trigger.trigger();
+            cgl.setPreviousShader();
+        }
+        else
+        {
+            if(cgl.frameStore.pickedColor==currentPickingColor)
+            {
+                // console.log('picked !'+currentPickingColor);
+            }
+
+            self.isPicked.set( cgl.frameStore.pickedColor==currentPickingColor );
+
+            self.trigger.trigger();
+        }
+
+    };
+
+    var srcFrag=''
+        .endl()+'precision highp float;'
+        .endl()+'varying vec3 norm;'
+        .endl()+'uniform float r;'
+        .endl()+''
+        .endl()+'void main()'
+        .endl()+'{'
+        .endl()+'   vec4 col=vec4(r,0.0,0.0,1.0);'
+        .endl()+'   gl_FragColor = col;'
+        .endl()+'}';
+
+    var shader=new CGL.Shader(cgl);
+    shader.offScreenPass=true;
+    this.onLoaded=shader.compile;
+
+    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
+
+    var pickColorUniformR=new CGL.Uniform(shader,'f','r',0);
+
+    this.render.onTriggered=this.doRender;
+    this.doRender();
+};
+
+Ops.Gl.Shader.PickingMaterial.prototype = new Op();
+
+
+// --------------------------------------------------------------------------
+
+Ops.Gl.Shader.ShaderMaterial = function()
+{
+    Op.apply(this, arguments);
+    var self=this;
+    var cgl=self.patch.cgl;
+
+    this.name='ShaderMaterial';
+    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
+    
+    this.fragmentShader=this.addInPort(new Port(this,"fragment",OP_PORT_TYPE_VALUE,{display:'editor',editorSyntax:'glsl'}));
+    this.vertexShader=this.addInPort(new Port(this,"vertex",OP_PORT_TYPE_VALUE,{display:'editor',editorSyntax:'glsl'}));
+
+    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
+
+    this.doRender=function()
+    {
+        cgl.setShader(shader);
+        self.trigger.trigger();
+        cgl.setPreviousShader();
+    };
+
+    function updateShader()
+    {
+        shader.setSource(self.vertexShader.get(),self.fragmentShader.get());
+        shader.compile();
+    }
+
+
+    var shader=new CGL.Shader(cgl);
+    this.fragmentShader.set(shader.getDefaultFragmentShader());
+    this.vertexShader.set(shader.getDefaultVertexShader());
+    updateShader();
+    this.onLoaded=shader.compile;
+
+    this.fragmentShader.onValueChanged=updateShader;
+    this.fragmentShader.onValueChanged=updateShader;
+
+
+    this.render.onTriggered=this.doRender;
+    this.doRender();
+};
+
+Ops.Gl.Shader.ShaderMaterial.prototype = new Op();
+
+// --------------------------------------------------------------------------
 
