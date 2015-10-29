@@ -8,10 +8,11 @@ CABLES.UI.GUI=function()
 {
     var self=this;
     var showTiming=false;
-    var showEditor=false;
+    var showingEditor=false;
     var _scene=new Scene();
     _scene.gui=true;
     var _patch=null;
+    var _editor=new CABLES.Editor();
 
     this.timeLine=function()
     {
@@ -28,9 +29,24 @@ CABLES.UI.GUI=function()
         return _patch;
     };
 
+    this.editor=function()
+    {
+        return _editor;
+    };
+
     this.timingHeight=250;
     this.rendererWidth=640;
     this.rendererHeight=360;
+
+    this.showEditor=function()
+    {
+        if(!showingEditor)
+        {
+            showingEditor=true;
+            this.setLayout();
+            
+        }
+    };
 
     this.setLayout=function()
     {
@@ -64,17 +80,19 @@ CABLES.UI.GUI=function()
             patchHeight-=timelineUiHeight;
         }
 
-        if(showEditor)
+        var editorWidth=0;
+
+        if(showingEditor)
         {
-            var editorbarHeight=30;
+            var editorbarHeight=70;
             $('#editor').show();
             $('#editorbar').css('height',editorbarHeight);
             $('#editorbar').css('top',menubarHeight+2);
 
-            patchWidth=patchWidth/2;
-            patchLeft=patchWidth;
+            editorWidth=patchWidth/2;
+            patchLeft=editorWidth;
             $('#ace').css('height',patchHeight-2-editorbarHeight);
-            $('#ace').css('width',patchWidth);
+            $('#ace').css('width',editorWidth);
             $('#ace').css('top',menubarHeight+2+editorbarHeight);
             $('#ace').css('left',0);
         }
@@ -87,7 +105,7 @@ CABLES.UI.GUI=function()
 
 
         $('#patch svg').css('height',patchHeight-2);
-        $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9);
+        $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9-editorWidth);
 
         $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
         $('#splitterPatch').css('height',patchHeight+timelineUiHeight+2);
@@ -98,7 +116,7 @@ CABLES.UI.GUI=function()
         $('#splitterRendererWH').css('top',self.rendererHeight-30);
 
         $('#patch').css('height',patchHeight-2);
-        $('#patch').css('width',patchWidth);
+        $('#patch').css('width',patchWidth-editorWidth);
         $('#patch').css('top',menubarHeight+2);
         $('#patch').css('left',patchLeft);
 
@@ -322,13 +340,8 @@ CABLES.UI.GUI=function()
                 case 49: // 1 - editor
                 if(e.shiftKey)
                 {
-                    showEditor=!showEditor;
+                    showingEditor=!showingEditor;
                     self.setLayout();
-
-                    var editor = ace.edit("ace");
-                    editor.setTheme("ace/theme/twilight");
-                    editor.session.setMode("ace/mode/javascript");
-                    editor.resize();
                 }
 
                 break;
@@ -470,34 +483,75 @@ CABLES.UI.GUI=function()
     this.editOpDoc=function(objName)
     {
         CABLES.api.clearCache();
+     
+        this.showEditor();
 
-        var html='<iframe style="border:none;width:600px;height:600px;" src="/doc/ops/edit/'+objName+'" ></iframe>';
+        this.getOpDoc(objName,false,function(content)
+        {
+            self.editor().addTab(
+            {
+                content:content,
+                title:objName,
+                syntax:'md',
+                onSave:function(content)
+                {
+                    CABLES.api.post(
+                        'doc/ops/edit/'+objName,
+                        {content:content},
+                        function(res)
+                        {
+                            console.log('res',res);
+                        },
+                        function(res)
+                        {
+                            console.log('err res',res);
+                        }
+                    );
 
-        CABLES.UI.MODAL.show(html);
+                }
+            });
+        });
+
     };
 
     this.editProjectDescription=function(objName)
     {
-        CABLES.api.clearCache();
+        this.showEditor();
 
-        var html='<iframe style="border:none;width:600px;height:600px;" src="/project/'+self.patch().getCurrentProject()._id+'/edit_description"></iframe>';
+        self.editor().addTab(
+        {
+            content:self.patch().getCurrentProject().description || '### '+self.patch().getCurrentProject().name+'\n\n is great!',
+            title:self.patch().getCurrentProject().name+' description',
+            syntax:'md',
+            onSave:function(content)
+            {
+                CABLES.api.post(
+                    'project/'+self.patch().getCurrentProject()._id+'/save_description',
+                    {content:content},
+                    function(res)
+                    {
+                        console.log('res',res);
+                    },
+                    function(res)
+                    {
+                        console.log('err res',res);
+                    }
+                );
+            }
+        });
 
-        CABLES.UI.MODAL.show(html);
     };
 
-
-
-    this.showOpDoc=function(opname)
+    this.getOpDoc=function(opname,html,cb)
     {
-        var docOpHead='<div class="panelhead">documentation</div><div>';
-        var docOpFooter='<br/><br/><a onclick="gui.editOpDoc(\''+opname+'\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
+        var apiUrl='doc/ops/'+opname;
+        if(!html)apiUrl='doc/ops/md/'+opname;
+            
 
-        var cached=CABLES.api.hasCached('doc/ops/'+opname);
+        var cached=CABLES.api.hasCached(apiUrl);
         if(cached)
         {
-            console.log('uyes cached ',cached.data.html);
-
-            $('#doc_op').html(docOpHead+cached.data.html+docOpFooter);
+            cb(cached.data.content);
             return;
         }
 
@@ -505,16 +559,28 @@ CABLES.UI.GUI=function()
         infoTimeout = setTimeout(function()
         {
             CABLES.api.getCached(
-                'doc/ops/'+opname,
+                apiUrl,
                 function(res)
                 {
-                    if(!res.html)res.html='';
-                    $('#doc_op').html(docOpHead+ res.html + docOpFooter);
+                    if(!res.content)res.content='';
+                    cb(res.content);
                 },
                 function(res){ console.log('err',res); }
                 );
 
         }, 300);
+
+    };
+
+    this.showOpDoc=function(opname)
+    {
+        var docOpHead='<div class="panelhead">documentation</div><div>';
+        var docOpFooter='<br/><br/><a onclick="gui.editOpDoc(\''+opname+'\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
+
+        this.getOpDoc(opname,true,function(html)
+        {
+            $('#doc_op').html(docOpHead+html+docOpFooter);
+        });
     };
 
     this.loadUser=function()

@@ -16,6 +16,30 @@
     <script type="text/javascript" src="js/cablesui.max.js"></script> 
     <script type="text/javascript" src="js/ace/ace.js"></script> 
 
+
+
+<script id="editor_bar" type="text/x-handlebars-template">
+
+
+<div class="tabs">
+    {{#each contents}}
+    <div id="editortab{{id}}" class="tab" onclick="gui.editor().setTab('{{id}}')">{{title}}</div>
+    {{/each}}
+    <div style="clear:both;"></div>
+</div>
+
+<div class="iconbar">
+    <a class="button" onclick="gui.editor().save()">save</a>
+
+
+    <a style="margin-left:100px;" class="button" onclick="gui.editor().closeCurrentTab()">X</a>
+</div>
+
+
+
+
+</script>
+
 <script id="entry-template" type="text/x-handlebars-template">
   <div class="entry">
     <h1>{{title}}</h1>
@@ -89,12 +113,8 @@
 
 
 <div id="editor" style="">
-    <div id="editorbar">
-        <a class="button">start</a>
-    </div>
-    <div id="ace" style="padding:0;height:300px;">
-    }</div>
-
+    <div id="editorbar"></div>
+    <div id="ace" style="padding:0;height:300px;"></div>
 </div>
 
 <div id="patch" tabindex="1"></div>

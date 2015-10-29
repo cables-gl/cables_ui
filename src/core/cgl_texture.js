@@ -95,6 +95,7 @@ CGL.Texture=function(cgl,options)
 
         if(isDepthTexture)
         {
+            
             cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.DEPTH_COMPONENT, w,h, 0, cgl.gl.DEPTH_COMPONENT, cgl.gl.UNSIGNED_SHORT, null);
         }
         else

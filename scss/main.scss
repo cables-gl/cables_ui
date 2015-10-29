@@ -984,34 +984,6 @@ input[type=range]:focus {
 
 
 
-#editor
-{
-    margin: 0;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    #editorbar
-    {
-        position: absolute;
-    }
-
-    #ace
-    {
-        margin: 0;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-
-        .ace_content *
-        {
-            font-family: monospace, monospace;
-        }
-    }
-}
 
 #doc_op
 {
@@ -1041,3 +1013,72 @@ input[type=range]:focus {
     }
 
 }
+
+
+
+
+#editor
+{
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    #editorbar
+    {
+        position: absolute;
+        background-color: #222;
+        width:100%;
+
+        .tabs
+        {
+            width:100%;
+            margin-bottom: 15px;
+            background-color:#444;
+
+            .tab
+            {
+                float:left;
+                padding:5px;
+                cursor:pointer;
+                padding-left: 10px;
+                padding-right: 10px;
+
+                &.active
+                {
+                    background-color: #222;
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    .iconbar
+    {
+        padding-left: 10px;
+    }
+
+    #ace
+    {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        .ace_content *
+        {
+            font-family: monospace, monospace;
+        }
+    }
+
+
+
+
+
+
+
+}
+

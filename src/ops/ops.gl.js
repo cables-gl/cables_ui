@@ -76,7 +76,7 @@ Ops.Gl.Renderer.renderStart=function(cgl,identTranslate)
     cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
     cgl.setViewPort(0,0,cgl.canvas.clientWidth,cgl.canvas.clientHeight);
-    mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
+    mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.1, 1000.0);
 
     cgl.pushPMatrix();
     cgl.pushMvMatrix();
@@ -122,7 +122,6 @@ Ops.Gl.Perspective = function()
 
     this.zFar=this.addInPort(new Port(this,"frustum far",OP_PORT_TYPE_VALUE ));
     this.zFar.val=2000.0;
-
 
     this.render.onTriggered=function()
     {
@@ -1438,9 +1437,16 @@ Ops.Gl.Render2Texture = function()
     var self=this;
     var cgl=self.patch.cgl;
 
-    var depthTextureExt = cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) ||
-                    cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" ) ||
-                    cgl.gl.getExtension('WEBGL_depth_texture');
+    var depthTextureExt = cgl.gl.getExtension('WEBGL_depth_texture') ||
+                    cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) ||
+                    cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" );
+
+                    if(!depthTextureExt)
+                    {
+                                console.log('depth buffer ext problem');
+                                
+                    }
+
     // var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
 
     this.name='render to texture';
@@ -1455,14 +1461,13 @@ Ops.Gl.Render2Texture = function()
 
     this.width=this.addInPort(new Port(this,"texture width"));
     this.height=this.addInPort(new Port(this,"texture height"));
-    // this.clear=this.addInPort(new Port(this,"clear",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    // this.clear.val=true;
 
     this.tex=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.texDepth=this.addOutPort(new Port(this,"textureDepth",OP_PORT_TYPE_TEXTURE));
-    var renderbuffer=null;
+    var depthBuffer=null;
 
     frameBuf = cgl.gl.createFramebuffer();
+    depthBuffer = cgl.gl.createRenderbuffer();
 
     self.tex.set( texture );
     self.texDepth.set ( textureDepth );
@@ -1470,18 +1475,20 @@ Ops.Gl.Render2Texture = function()
     function resize()
     {
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
+        cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, depthBuffer);
 
         self.width.set( cgl.getViewPort()[2] );
         self.height.set( cgl.getViewPort()[3] );
+        texture.setSize(self.width.get(),self.height.get());
+        textureDepth.setSize(self.width.get(),self.height.get());
 
-        if(renderbuffer)cgl.gl.deleteRenderbuffer(renderbuffer);
+        // if(depthBuffer)cgl.gl.deleteRenderbuffer(depthBuffer);
 
-        renderbuffer = cgl.gl.createRenderbuffer();
-        cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, renderbuffer);
+        
         cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.get(),self.height.get());
 
         cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
-        cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, renderbuffer);
+        cgl.gl.framebufferRenderbuffer(cgl.gl.FRAMEBUFFER, cgl.gl.DEPTH_ATTACHMENT, cgl.gl.RENDERBUFFER, depthBuffer);
 
         cgl.gl.framebufferTexture2D(
             cgl.gl.FRAMEBUFFER,
@@ -1519,8 +1526,6 @@ Ops.Gl.Render2Texture = function()
 
         // console.log('resize r2t',self.width.get(),self.height.get());
 
-        texture.setSize(self.width.get(),self.height.get());
-        textureDepth.setSize(self.width.get(),self.height.get());
     }
 
 
