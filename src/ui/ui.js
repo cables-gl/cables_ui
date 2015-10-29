@@ -14,6 +14,8 @@ CABLES.UI.GUI=function()
     var _patch=null;
     var _editor=new CABLES.Editor();
 
+    this.serverOps=new CABLES.UI.ServerOps();
+
     this.timeLine=function()
     {
         return _patch.timeLine;

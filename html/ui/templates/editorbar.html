@@ -1,0 +1,23 @@
+
+
+<script id="editor_bar" type="text/x-handlebars-template">
+
+
+<div class="tabs">
+    {{#each contents}}
+    <div id="editortab{{id}}" class="tab" onclick="gui.editor().setTab('{{id}}')">{{title}}</div>
+    {{/each}}
+    <div style="clear:both;"></div>
+</div>
+
+<div class="iconbar">
+    <a class="button" onclick="gui.editor().save()">save</a>
+
+
+    <a style="margin-left:100px;" class="button" onclick="gui.editor().closeCurrentTab()">X</a>
+</div>
+
+
+
+
+</script>

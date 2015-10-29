@@ -58,8 +58,17 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
     {
         var opname=$('.selected').data('opname');
 
+        var htmlFoot='';
+        
+
         if(opname && lastInfoOpName!=opname)
         {
+            if(gui.serverOps.isServerOp(opname))
+            {
+                htmlFoot+='<hr/><a onclick="gui.serverOps.edit(\''+opname+'\');">edit serverOp</a>';
+            }
+
+
             $('#searchinfo').html('');
 
             if(!CABLES.API.isConnected)
@@ -71,7 +80,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
             var cached=CABLES.api.hasCached('doc/ops/'+opname);
             if(cached)
             {
-                $('#searchinfo').html(cached.data.html);
+                $('#searchinfo').html(cached.data.html+htmlFoot);
                 return;
             }
 
@@ -84,7 +93,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
                     'doc/ops/'+opname,
                     function(res)
                     {
-                        $('#searchinfo').html(res.html);
+                        $('#searchinfo').html(res.html+htmlFoot);
                     },
                     function(res){ console.log('err',res); }
                     );
