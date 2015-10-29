@@ -8,9 +8,12 @@ CABLES.Editor=function()
     var currentTabId='';
 
     var editor = ace.edit("ace");
+    editor.setValue('nothing to edit right now :/');
     editor.setTheme("ace/theme/twilight");
-    // editor.session.setMode("ace/mode/javascript");
+    editor.session.setMode("ace/mode/text");
     editor.resize();
+    editor.focus();
+    
 
     function updateTabs()
     {
@@ -26,10 +29,17 @@ CABLES.Editor=function()
             if(contents[i].id==currentTabId)
             {
                 contents.splice(i,1);
-                
+
                 updateTabs();
-                if(contents.length>0)this.setTab(contents[0].id);
-                    else editor.setValue('');
+                if(contents.length>0)
+                {
+                    this.setTab(contents[0].id);
+                }
+                else
+                {
+                    $('#editorbar').html('');
+                    editor.setValue('nothing to edit right now :/');
+                }
                 return;
             }
         }
@@ -79,7 +89,9 @@ CABLES.Editor=function()
                 $('#editortab'+contents[i].id).addClass('active');
                 
                 if(contents[i].syntax=='md')  editor.session.setMode("ace/mode/Markdown");
-
+                else if(contents[i].syntax=='js')  editor.session.setMode("ace/mode/javascript");
+                else if(contents[i].syntax=='glsl')  editor.session.setMode("ace/mode/glsl");
+                else editor.session.setMode("ace/mode/Text");
 
                 editor.setValue(contents[i].content);
             }
@@ -90,26 +102,11 @@ CABLES.Editor=function()
         }
     };
 
-
-
-
-
-    this.addTab({
-        title:'hund.js',
-        content:'wurstsalat!!!!!'
-    });
-
-    this.addTab({
-        title:'hans.js',
-        content:'a alles andere ist euer bier!!!!!',
-        onSave:function()
-        {
-            console.log('hallo save!');
-        }
-    });
-
-
-
+    // this.addTab({
+    //     title:'nothing',
+    //     content:'empty'
+    // });
+    // this.closeCurrentTab();
 
 };
 

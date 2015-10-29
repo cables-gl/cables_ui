@@ -295,6 +295,7 @@ CABLES.UI.GUI=function()
         $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         $('#button_settings').bind("click", function (event) { self.patch().showProjectParams(); });
+        $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
         window.addEventListener( 'resize', self.setLayout, false );
 
@@ -339,14 +340,6 @@ CABLES.UI.GUI=function()
                         // console.log('e.which',e.which);
                         
                 break;
-                case 49: // 1 - editor
-                if(e.shiftKey)
-                {
-                    showingEditor=!showingEditor;
-                    self.setLayout();
-                }
-
-                break;
 
                 case 79: // o - open
                     if(e.metaKey || e.ctrlKey)
@@ -360,12 +353,16 @@ CABLES.UI.GUI=function()
                     {
                         if(!e.shiftKey)
                         {
+                            if(showingEditor)
+                                self.editor().save();
+                            
                             self.patch().saveCurrentProject();
                             CABLES.UI.SELECTPROJECT.doReload=true;
                             e.preventDefault();
                         }
                         else
                         {
+
                             CABLES.api.post('project',{name: prompt('projectname','') },function(d)
                             {
                                 CABLES.UI.SELECTPROJECT.doReload=true;

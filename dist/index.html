@@ -148,6 +148,9 @@
 
     <a id="help" href="/doc" target="_blankkk" class="button fa fa-question-circle"></a>
 
+    <a id="button_editor" class="button fa fa-pencil-square"></a>
+
+
     <a id="button_settings" class="button fa fa-cog"></a>
 
 
@@ -411,18 +414,19 @@
                     {{#compare port.uiAttribs.display '==' 'bool' }}
                         <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square-o{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:5px;padding-right:30px;"></span>
                         <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
-
                     {{/compare}}
-                    {{#compare port.uiAttribs.display '==' 'range' }}
 
+                    {{#compare port.uiAttribs.display '==' 'editor' }}
+                        <a class="graphbutton fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" ></a>
+                    {{/compare}}
+
+                    {{#compare port.uiAttribs.display '==' 'range' }}
                         <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                         <a class="graphbutton fa fa-line-chart" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
                         <input type ="range" class="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:90px;"/>
                         <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
-
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
-                        
                         <select oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');">
                             <option value="">...</option>
                             {{#each port.uiAttribs.values}}
@@ -436,10 +440,8 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'file' }}
-                        
                         <a class="graphbutton timingbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
                         <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
-
                     {{/compare}}
 
 

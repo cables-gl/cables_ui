@@ -1373,6 +1373,33 @@ CABLES.UI.Patch=function(_gui)
                 if(op.portsIn[index].isAnimated()) $('#portanim_in_'+index).addClass('timingbutton_active');
                 if(op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $('#portgraph_in_'+index).addClass('timingbutton_active');
 
+
+                $('#portedit_in_'+index).on('click',function(e)
+                {
+                    var thePort=op.portsIn[index];
+
+        console.log('thePort.uiAttribs.editorSyntax',thePort.uiAttribs.editorSyntax);
+        
+
+
+                    gui.showEditor();
+                    gui.editor().addTab({
+                        content:op.portsIn[index].get(),
+                        title:''+op.portsIn[index].name,
+                        syntax:thePort.uiAttribs.editorSyntax,
+                        onSave:function(content)
+                        {
+                            console.log('save...');
+                                    
+                            thePort.set(content);
+
+                        }
+                    });
+                    console.log('edit clicked...ja...');
+                    
+                            
+                });
+
                 $('#portgraph_in_'+index).on('click',function(e)
                 {
                     if(op.portsIn[index].isAnimated())
