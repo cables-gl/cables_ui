@@ -861,7 +861,7 @@ CABLES.UI.Patch=function(_gui)
         }
 
 
-        // select ops after pasing...
+        // select ops after pasting...
         setTimeout(function()
         {
             if(uiOp.op.uiAttribs.pasted)
@@ -1285,6 +1285,12 @@ CABLES.UI.Patch=function(_gui)
     this.showOpParams=function(op)
     {
 
+        if(gui.user.isAdmin && gui.serverOps.isServerOp(op.objName))
+        {
+            op.isServerOp=true;
+        }
+
+
         if(currentOp)currentOp.onUiAttrChange=null;
         { // show first anim in timeline
             if(self.timeLine)
@@ -1387,12 +1393,10 @@ CABLES.UI.Patch=function(_gui)
                         content:op.portsIn[index].get(),
                         title:''+op.portsIn[index].name,
                         syntax:thePort.uiAttribs.editorSyntax,
-                        onSave:function(content)
+                        onSave:function(setStatus,content)
                         {
-                            console.log('save...');
-                                    
+                            setStatus('value set');
                             thePort.set(content);
-
                         }
                     });
                     console.log('edit clicked...ja...');

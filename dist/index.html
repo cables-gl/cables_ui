@@ -33,8 +33,9 @@
 <div class="iconbar">
     <a class="button" onclick="gui.editor().save()">save</a>
 
+<span id="editorstatus"></span>
 
-    <a style="margin-left:100px;" class="button" onclick="gui.editor().closeCurrentTab()">X</a>
+    <div style="margin-right:10px;" class="graphbutton fa fa-times fright" onclick="gui.editor().closeCurrentTab()"></div>
 </div>
 
 
@@ -129,6 +130,7 @@
 <div id="splitterRenderer" class="splitter"></div>
 <div id="splitterRendererWH" class="splitter"></div>
 <div id="splitterTimeline" class="splitter"></div>
+<div id="splitterEditor" class="splitter"></div>
 
 
 <div id="meta">
@@ -154,7 +156,7 @@
     <a id="button_settings" class="button fa fa-cog"></a>
 
 
-<div id="assetsloadingindicator" style="display:none;float:left;margin-left:10px;padding-top:2px;"><i class="fa fa-2x fa-spinner fa-pulse"></i></div>
+<div id="assetsloadingindicator" style="display:none;float:left;margin-top:6px;margin-left:10px;padding-top:2px;"><i class="fa fa-spinner fa-pulse"></i></div>
 
 
 
@@ -252,6 +254,7 @@
       {{/each}}
     </div>
 
+    <div id="opOptions" class="searchinfo"></div>
     <div id="searchinfo" class="searchinfo"></div>
 
 </div>
@@ -265,6 +268,9 @@
     <div class="">
         <input class="medium" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}">
         <br/><br/>{{op.objName}}
+        {{#if op.isServerOp }}
+            <span class="button fright fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
+        {{/if}}
         
         <br/>
         <br/>

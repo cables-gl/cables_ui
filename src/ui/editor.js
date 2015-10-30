@@ -9,7 +9,8 @@ CABLES.Editor=function()
 
     var editor = ace.edit("ace");
     editor.setValue('nothing to edit right now :/');
-    editor.setTheme("ace/theme/twilight");
+    editor.setOption("showPrintMargin", false);
+    editor.setTheme("ace/theme/ambiance");
     editor.session.setMode("ace/mode/text");
     editor.resize();
     editor.focus();
@@ -34,11 +35,12 @@ CABLES.Editor=function()
                 if(contents.length>0)
                 {
                     this.setTab(contents[0].id);
-                }
+                }   
                 else
                 {
                     $('#editorbar').html('');
-                    editor.setValue('nothing to edit right now :/');
+                    editor.setValue('nothing to edit right now :/',-1);
+                    gui.closeEditor();
                 }
                 return;
             }
@@ -53,14 +55,27 @@ CABLES.Editor=function()
         this.setTab(c.id);
     };
 
+    function setStatus(txt,stay)
+    {
+        $('#editorstatus').html(txt);
+
+        if(!stay)
+            setTimeout(function()
+            {
+                $('#editorstatus').html('');
+            },500);
+    }
+
     this.save=function()
     {
+        $('#editorstatus').html('<i class="fa fa-spinner fa-pulse"></i>');
+
         this.setCurrentTabContent();
         for(var i=0;i<contents.length;i++)
         {
             if(contents[i].id==currentTabId)
             {
-                contents[i].onSave(editor.getValue());
+                contents[i].onSave(setStatus,editor.getValue());
             }
         }
     };
@@ -93,7 +108,7 @@ CABLES.Editor=function()
                 else if(contents[i].syntax=='glsl')  editor.session.setMode("ace/mode/glsl");
                 else editor.session.setMode("ace/mode/Text");
 
-                editor.setValue(contents[i].content);
+                editor.setValue(contents[i].content,-1);
             }
             else
             {

@@ -1550,7 +1550,6 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
     this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
     this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
 
-
     var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
 
@@ -1600,13 +1599,10 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
         self.trigger.trigger();
     };
 
-
-
     var uniformR=new CGL.Uniform(shader,'f','r',1.0);
     var uniformG=new CGL.Uniform(shader,'f','g',1.0);
     var uniformB=new CGL.Uniform(shader,'f','b',1.0);
     var uniformA=new CGL.Uniform(shader,'f','a',1.0);
-
 
     this.r.onValueChanged=function()
     {
@@ -1638,8 +1634,6 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
 Ops.Gl.TextureEffects.ColorOverlay.prototype = new Op();
 
 // ---------------------------------------------------------------------------------------------
-
-
 
 Ops.Gl.TextureEffects.ColorChannel = function()
 {

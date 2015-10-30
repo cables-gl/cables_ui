@@ -16,6 +16,18 @@ $( document ).ready(function()
         });
     });
 
+    $('#splitterEditor').mousedown(function (e)
+    {
+        e.preventDefault();
+        $(document).mousemove(function (e)
+        {
+            e.preventDefault();
+
+            gui.editorWidth=e.clientX;
+            gui.setLayout();
+        });
+    });
+
     $('#splitterRenderer').mousedown(function (e)
     {
         e.preventDefault();

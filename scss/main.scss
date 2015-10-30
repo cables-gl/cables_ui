@@ -22,6 +22,7 @@ body
 
 .hidden { display:none;}
 .fleft { float:left; }
+.fright { float:right !important; }
 .mainColor { color:$mainColor; }
 .monospace { font-family: monospace;}
 
@@ -372,12 +373,18 @@ input[type="text"]
     font-family: arial;
 
     background-color:#444;
-    // border-radius: 4px;
     min-width: 14px;
     text-align: center;
     color:white;
     padding:3px;
     cursor:pointer !important;
+    padding-left: 5px;
+    padding-right: 5px;
+
+    &.fa:before
+    {
+        margin-right: 5px;
+    }
 
     &:hover
     {
@@ -959,7 +966,6 @@ input[type=range]:focus {
     background-color: transparent;
     z-index: 99;
     cursor:ne-resize;
-
 }
 
 #splitterRenderer
@@ -969,7 +975,7 @@ input[type=range]:focus {
     cursor:ns-resize;
 }
 
-#splitterPatch
+#splitterPatch,#splitterEditor
 {
     width:4px;
     height:100%;
@@ -1023,13 +1029,14 @@ input[type=range]:focus {
     top: 0;
     bottom: 0;
     left: 0;
-    right: 0;
+    // right: 0;
+    position: absolute;
+    z-index: 99;
 
     #editorbar
     {
         position: absolute;
         background-color: #222;
-        width:100%;
 
         .tabs
         {
@@ -1048,6 +1055,11 @@ input[type=range]:focus {
                 &.active
                 {
                     background-color: #222;
+                    color: #ccc;
+                }
+
+                &:hover
+                {
                     color: #fff;
                 }
             }
@@ -1055,6 +1067,11 @@ input[type=range]:focus {
     }
 
     .iconbar
+    {
+        padding-left: 10px;
+    }
+
+    #editorstatus
     {
         padding-left: 10px;
     }
@@ -1074,11 +1091,11 @@ input[type=range]:focus {
         }
     }
 
-
-
-
-
-
-
 }
 
+hr
+{
+    border:none;
+    border-top: 1px solid #222;
+    height:1px;
+}
