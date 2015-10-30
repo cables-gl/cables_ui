@@ -1227,7 +1227,6 @@ Ops.Gl.SpotLight = function()
 
     this.exe.onTriggered=function()
     {
-
         if(self.show.get())
         {
             var shader=cgl.getShader();
