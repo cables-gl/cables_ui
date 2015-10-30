@@ -23,6 +23,10 @@ CABLES.UI.ServerOps=function()
 
     this.showOpInstancingError=function(name,e)
     {
+        console.log('show server op error message modal');
+
+        gui.patch().loadingError=true;
+
         var msg='<h2><span class="fa fa-exclamation-triangle"></span> cablefail :/</h2>';
 
         msg+='error creating op: '+name;

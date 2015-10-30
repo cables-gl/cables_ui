@@ -815,6 +815,7 @@ var Scene = function(cfg)
         for(var iop in obj.ops)
         {
             var op=this.addOp(obj.ops[iop].objName,obj.ops[iop].uiAttribs);
+            if(!op)continue;
             op.id=obj.ops[iop].id;
 
             for(var ipi in obj.ops[iop].portsIn)

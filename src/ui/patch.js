@@ -362,6 +362,12 @@ CABLES.UI.Patch=function(_gui)
 
     this.saveCurrentProject=function(cb,_id,_name)
     {
+        if(this.loadingError)
+        {
+            CABLES.UI.MODAL.showError('project not saved','could not save project: had errors while loading!');
+            return;
+        }
+
         CABLES.UI.MODAL.showLoading('saving project');
 
         gui.patch().scene.cgl.doScreenshot=true;
@@ -576,9 +582,11 @@ CABLES.UI.Patch=function(_gui)
     }
 
     // ---------------------------------------------
+    this.loadingError=false;
 
     this.setProject=function(proj)
     {
+        this.loadingError=false;
         if(proj.ui)
         {
             if(proj.ui.viewBox)
@@ -603,7 +611,7 @@ CABLES.UI.Patch=function(_gui)
 
         gui.scene().deSerialize(proj);
         CABLES.undo.clear();
-        CABLES.UI.MODAL.hide();
+        if(!this.loadingError) CABLES.UI.MODAL.hide();
         self.updateSubPatches();
     };
 
