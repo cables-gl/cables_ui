@@ -617,7 +617,10 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+"           mvMatrix[1][1], "
         .endl()+"           mvMatrix[2][1]) ), 1.0);"
         .endl()+'#endif '
-        .endl()+""
+
+        .endl()+"gl_PointSize=12.0;"
+
+
         .endl()+"#ifndef BILLBOARD"
         .endl()+'   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);'
         .endl()+'#endif '
