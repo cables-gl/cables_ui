@@ -12,6 +12,7 @@ CABLES.Editor=function()
     editor.setOption("showPrintMargin", false);
     editor.setTheme("ace/theme/ambiance");
     editor.session.setMode("ace/mode/text");
+    editor.$blockScrolling = Infinity;
     editor.resize();
     editor.focus();
     
@@ -29,13 +30,19 @@ CABLES.Editor=function()
         {
             if(contents[i].id==currentTabId)
             {
+
+                if(contents[i].onClose)
+                    contents[i].onClose(contents[i]);
+
                 contents.splice(i,1);
+
+
 
                 updateTabs();
                 if(contents.length>0)
                 {
                     this.setTab(contents[0].id);
-                }   
+                }
                 else
                 {
                     $('#editorbar').html('');
@@ -49,10 +56,19 @@ CABLES.Editor=function()
 
     this.addTab=function(c)
     {
+        for(var i in contents)
+        {
+            if(contents[i].title==c.title)
+            {
+                this.setTab(contents[i].id);
+                return;
+            }
+        }
         c.id=generateUUID();
         contents.push(c);
         updateTabs();
         this.setTab(c.id);
+        return c;
     };
 
     function setStatus(txt,stay)
@@ -73,7 +89,7 @@ CABLES.Editor=function()
         this.setCurrentTabContent();
         for(var i=0;i<contents.length;i++)
         {
-            if(contents[i].id==currentTabId)
+            if(contents[i].onSave && contents[i].id==currentTabId)
             {
                 contents[i].onSave(setStatus,editor.getValue());
             }

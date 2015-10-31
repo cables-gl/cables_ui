@@ -1242,9 +1242,6 @@ CABLES.UI.Patch=function(_gui)
             if(!self.ops[i].isHidden())numVisibleOps++;
         }
 
-        console.log('s',s);
-        
-
         var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,descr:currentProject.descriptionHTML,
             debug:
             {

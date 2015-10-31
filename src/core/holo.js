@@ -590,10 +590,6 @@ var Scene = function(cfg)
 
     this.addOp=function(objName,uiAttribs)
     {
-
-        console.log('objName',objName);
-        // var op=eval('new '+objName+'();');
-
         var parts=objName.split('.');
         var op=null;
 

@@ -41,9 +41,6 @@ CGL.State=function()
             this.canvasHeight=this.canvas.clientHeight;
         }
 
-        this.gl.enable(this.gl.POINT_SPRITE);
-        this.gl.enable(0x8642);
-
     };
 
     this.canvasWidth=-1;
