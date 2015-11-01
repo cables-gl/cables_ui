@@ -27,7 +27,10 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         else
             $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
 
-
+        if(gui.user.isAdmin && $('#opsearch').val() && $('#opsearch').val().startsWith('Ops.'))
+        {
+            $('#opOptions').html('admin: <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create serverOp</a><hr/>');
+        }
     });
 
 
@@ -57,25 +60,25 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
     function updateInfo()
     {
         var opname=$('.selected').data('opname');
-
         var htmlFoot='';
-        
 
-        if(opname && lastInfoOpName!=opname)
+        if(!CABLES.API.isConnected)
         {
-            if(gui.serverOps.isServerOp(opname))
+            $('#searchinfo').html('not connected to server...');
+            return;
+        }
+
+        if(opname)
+        {
+
+                    
+            if(gui.user.isAdmin && gui.serverOps.isServerOp(opname))
             {
-                htmlFoot+='<hr/><a onclick="gui.serverOps.edit(\''+opname+'\');">edit serverOp</a>';
+                htmlFoot+='<hr/>admin:<a onclick="gui.serverOps.edit(\''+opname+'\');">edit serverOp</a>';
             }
-
-
+            
             $('#searchinfo').html('');
 
-            if(!CABLES.API.isConnected)
-            {
-                $('#searchinfo').html('not connected to server...');
-                return;
-            }
             
             var cached=CABLES.api.hasCached('doc/ops/'+opname);
             if(cached)
@@ -93,7 +96,8 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
                     'doc/ops/'+opname,
                     function(res)
                     {
-                        $('#searchinfo').html(res.html+htmlFoot);
+                        if(res.html) $('#searchinfo').html(res.html+htmlFoot);
+                            else $('#searchinfo').html(res.html+htmlFoot);
                     },
                     function(res){ console.log('err',res); }
                     );
@@ -119,8 +123,8 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         {
             case 13:
                 var opname=$('.selected').data('opname');
-                gui.scene().addOp(opname);
                 CABLES.UI.MODAL.hide();
+                gui.scene().addOp(opname);
             break;
 
             case 8:

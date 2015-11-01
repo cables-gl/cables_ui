@@ -39,6 +39,7 @@ CABLES.UI.GUI=function()
     this.timingHeight=250;
     this.rendererWidth=640;
     this.rendererHeight=360;
+    this.editorWidth=700;
 
     this.showEditor=function()
     {
@@ -46,7 +47,15 @@ CABLES.UI.GUI=function()
         {
             showingEditor=true;
             this.setLayout();
-            
+        }
+    };
+
+    this.closeEditor=function()
+    {
+        if(showingEditor)
+        {
+            showingEditor=false;
+            this.setLayout();
         }
     };
 
@@ -82,32 +91,44 @@ CABLES.UI.GUI=function()
             patchHeight-=timelineUiHeight;
         }
 
-        var editorWidth=0;
 
         if(showingEditor)
         {
+            if(self.editorWidth>window.innerWidth-self.rendererWidth)
+                self.rendererWidth=window.innerWidth-self.editorWidth;
+
+
             var editorbarHeight=70;
             $('#editor').show();
             $('#editorbar').css('height',editorbarHeight);
             $('#editorbar').css('top',menubarHeight+2);
 
-            editorWidth=patchWidth/2;
-            patchLeft=editorWidth;
-            $('#ace').css('height',patchHeight-2-editorbarHeight);
-            $('#ace').css('width',editorWidth);
+            // patchLeft=self.editorWidth;
+            var editorHeight=patchHeight-2-editorbarHeight;
+            $('#ace').css('height',editorHeight);
+            $('#ace').css('width',self.editorWidth);
             $('#ace').css('top',menubarHeight+2+editorbarHeight);
             $('#ace').css('left',0);
+
+            $('#editorbar').css('width',self.editorWidth);
+
+            $('#splitterEditor').show();
+            $('#splitterEditor').css('left',self.editorWidth);
+            $('#splitterEditor').css('height',patchHeight-2);
+            $('#splitterEditor').css('width',5);
+            $('#splitterEditor').css('top',menubarHeight);
+
         }
         else
         {
+            $('#splitterEditor').hide();
             $('#editor').hide();
         }
 
-
-
+        if(self.rendererWidth<100)self.rendererWidth=100;
 
         $('#patch svg').css('height',patchHeight-2);
-        $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9-editorWidth);
+        $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9);
 
         $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
         $('#splitterPatch').css('height',patchHeight+timelineUiHeight+2);
@@ -117,8 +138,10 @@ CABLES.UI.GUI=function()
         $('#splitterRendererWH').css('right',self.rendererWidth-35);
         $('#splitterRendererWH').css('top',self.rendererHeight-30);
 
+
+
         $('#patch').css('height',patchHeight-2);
-        $('#patch').css('width',patchWidth-editorWidth);
+        $('#patch').css('width',patchWidth);
         $('#patch').css('top',menubarHeight+2);
         $('#patch').css('left',patchLeft);
 
@@ -337,8 +360,7 @@ CABLES.UI.GUI=function()
             switch(e.which)
             {
                 default:
-                        // console.log('e.which',e.which);
-                        
+                    // console.log('e.which',e.which);
                 break;
 
                 case 79: // o - open
@@ -348,6 +370,16 @@ CABLES.UI.GUI=function()
                         e.preventDefault();
                     }
                 break;
+                case 69: // e - editor save/execute/build
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        if(showingEditor)
+                        {
+                            self.editor().save();
+                        }
+                        
+                    }
+                break;
                 case 83: // s - save
                     if(e.metaKey || e.ctrlKey)
                     {
@@ -355,7 +387,7 @@ CABLES.UI.GUI=function()
                         {
                             if(showingEditor)
                                 self.editor().save();
-                            
+
                             self.patch().saveCurrentProject();
                             CABLES.UI.SELECTPROJECT.doReload=true;
                             e.preventDefault();
@@ -492,17 +524,19 @@ CABLES.UI.GUI=function()
                 content:content,
                 title:objName,
                 syntax:'md',
-                onSave:function(content)
+                onSave:function(setStatus,content)
                 {
                     CABLES.api.post(
                         'doc/ops/edit/'+objName,
                         {content:content},
                         function(res)
                         {
+                            setStatus('saved');
                             console.log('res',res);
                         },
                         function(res)
                         {
+                            setStatus('error: not saved');
                             console.log('err res',res);
                         }
                     );
@@ -522,17 +556,19 @@ CABLES.UI.GUI=function()
             content:self.patch().getCurrentProject().description || '### '+self.patch().getCurrentProject().name+'\n\n is great!',
             title:self.patch().getCurrentProject().name+' description',
             syntax:'md',
-            onSave:function(content)
+            onSave:function(setStatus,content)
             {
                 CABLES.api.post(
                     'project/'+self.patch().getCurrentProject()._id+'/save_description',
                     {content:content},
                     function(res)
                     {
+                        setStatus('saved');
                         console.log('res',res);
                     },
                     function(res)
                     {
+                        setStatus('error: not saved');
                         console.log('err res',res);
                     }
                 );
@@ -582,6 +618,8 @@ CABLES.UI.GUI=function()
         });
     };
 
+    this.user=null;
+
     this.loadUser=function()
     {
         CABLES.api.get('user/me',
@@ -589,6 +627,9 @@ CABLES.UI.GUI=function()
             {
                 if(data.user)
                 {
+                            // console.log('data.user',data.user);
+                            
+                    self.user=data.user;
                     $('#loggedout').hide();
                     $('#loggedin').show();
                     $('#username').html(data.user.username);

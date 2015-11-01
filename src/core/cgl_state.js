@@ -40,6 +40,7 @@ CGL.State=function()
             this.canvasWidth=this.canvas.clientWidth;
             this.canvasHeight=this.canvas.clientHeight;
         }
+
     };
 
     this.canvasWidth=-1;

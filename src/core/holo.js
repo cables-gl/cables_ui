@@ -590,16 +590,26 @@ var Scene = function(cfg)
 
     this.addOp=function(objName,uiAttribs)
     {
-
-        // console.log('objName',objName);
-        // var op=eval('new '+objName+'();');
         var parts=objName.split('.');
         var op=null;
-        if(parts.length==2) op=new window[parts[0]][parts[1]](this);
-        else if(parts.length==3) op=new window[parts[0]][parts[1]][parts[2]](this);
-        else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this);
-        else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this);
-        else console.log('parts.length',parts.length);
+
+        try
+        {
+            if(parts.length==2) op=new window[parts[0]][parts[1]](this);
+            else if(parts.length==3) op=new window[parts[0]][parts[1]][parts[2]](this);
+            else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this);
+            else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this);
+            else console.log('parts.length',parts.length);
+        }
+        catch(e)
+        {
+            console.log('instancing error '+objName,e);
+            if(CABLES.UI)
+            {
+                gui.serverOps.showOpInstancingError(objName,e);
+            }
+            return;
+        }
 
         // var op=new window[objName]();
         op.objName=objName;
@@ -801,6 +811,7 @@ var Scene = function(cfg)
         for(var iop in obj.ops)
         {
             var op=this.addOp(obj.ops[iop].objName,obj.ops[iop].uiAttribs);
+            if(!op)continue;
             op.id=obj.ops[iop].id;
 
             for(var ipi in obj.ops[iop].portsIn)

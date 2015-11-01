@@ -362,6 +362,12 @@ CABLES.UI.Patch=function(_gui)
 
     this.saveCurrentProject=function(cb,_id,_name)
     {
+        if(this.loadingError)
+        {
+            CABLES.UI.MODAL.showError('project not saved','could not save project: had errors while loading!');
+            return;
+        }
+
         CABLES.UI.MODAL.showLoading('saving project');
 
         gui.patch().scene.cgl.doScreenshot=true;
@@ -576,9 +582,11 @@ CABLES.UI.Patch=function(_gui)
     }
 
     // ---------------------------------------------
+    this.loadingError=false;
 
     this.setProject=function(proj)
     {
+        this.loadingError=false;
         if(proj.ui)
         {
             if(proj.ui.viewBox)
@@ -603,7 +611,7 @@ CABLES.UI.Patch=function(_gui)
 
         gui.scene().deSerialize(proj);
         CABLES.undo.clear();
-        CABLES.UI.MODAL.hide();
+        if(!this.loadingError) CABLES.UI.MODAL.hide();
         self.updateSubPatches();
     };
 
@@ -861,7 +869,7 @@ CABLES.UI.Patch=function(_gui)
         }
 
 
-        // select ops after pasing...
+        // select ops after pasting...
         setTimeout(function()
         {
             if(uiOp.op.uiAttribs.pasted)
@@ -1234,9 +1242,6 @@ CABLES.UI.Patch=function(_gui)
             if(!self.ops[i].isHidden())numVisibleOps++;
         }
 
-        console.log('s',s);
-        
-
         var html = CABLES.UI.getHandleBarHtml('params_project',{project: s,descr:currentProject.descriptionHTML,
             debug:
             {
@@ -1284,6 +1289,12 @@ CABLES.UI.Patch=function(_gui)
 
     this.showOpParams=function(op)
     {
+
+        if(gui.user.isAdmin && gui.serverOps.isServerOp(op.objName))
+        {
+            op.isServerOp=true;
+        }
+
 
         if(currentOp)currentOp.onUiAttrChange=null;
         { // show first anim in timeline
@@ -1387,12 +1398,10 @@ CABLES.UI.Patch=function(_gui)
                         content:op.portsIn[index].get(),
                         title:''+op.portsIn[index].name,
                         syntax:thePort.uiAttribs.editorSyntax,
-                        onSave:function(content)
+                        onSave:function(setStatus,content)
                         {
-                            console.log('save...');
-                                    
+                            setStatus('value set');
                             thePort.set(content);
-
                         }
                     });
                     console.log('edit clicked...ja...');

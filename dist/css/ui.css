@@ -22,6 +22,9 @@ body {
 .fleft {
   float: left; }
 
+.fright {
+  float: right !important; }
+
 .mainColor {
   color: #6c9fde; }
 
@@ -276,7 +279,12 @@ td {
   text-align: center;
   color: white;
   padding: 3px;
-  cursor: pointer !important; }
+  cursor: pointer !important;
+  padding-left: 5px;
+  padding-right: 5px; }
+  .button.fa:before
+, .bluebutton.fa:before {
+    margin-right: 5px; }
   .button:hover
 , .bluebutton:hover {
     cursor: pointer !important;
@@ -2831,7 +2839,7 @@ th {
   right: 0px;
   cursor: ns-resize; }
 
-#splitterPatch {
+#splitterPatch, #splitterEditor {
   width: 4px;
   height: 100%;
   cursor: ew-resize; }
@@ -2863,12 +2871,12 @@ a {
   top: 0;
   bottom: 0;
   left: 0;
-  right: 0; }
+  position: absolute;
+  z-index: 99; }
   #editor
 #editorbar {
     position: absolute;
-    background-color: #222;
-    width: 100%; }
+    background-color: #222; }
     #editor
 #editorbar
 .tabs {
@@ -2889,9 +2897,17 @@ a {
 .tabs
 .tab.active {
           background-color: #222;
+          color: #ccc; }
+        #editor
+#editorbar
+.tabs
+.tab:hover {
           color: #fff; }
   #editor
 .iconbar {
+    padding-left: 10px; }
+  #editor
+#editorstatus {
     padding-left: 10px; }
   #editor
 #ace {
@@ -2905,3 +2921,8 @@ a {
 #ace
 .ace_content * {
       font-family: monospace, monospace; }
+
+hr {
+  border: none;
+  border-top: 1px solid #222;
+  height: 1px; }

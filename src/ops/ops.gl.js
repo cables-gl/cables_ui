@@ -245,10 +245,7 @@ Ops.Gl.LetterBox = function()
             {
                 if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
             }
-
         }
-        
-
     }
 
     this.render.onTriggered=function()
@@ -273,9 +270,6 @@ Ops.Gl.LetterBox.prototype = new Op();
 Ops.Gl.AspectRatioBorder=Ops.Gl.LetterBox;
 
 // --------------------------------------------------------------------------
-
-
-
 
 
 Ops.Gl.ClearAlpha = function()
@@ -305,157 +299,7 @@ Ops.Gl.ClearAlpha = function()
 
 Ops.Gl.ClearAlpha.prototype = new Op();
 
-// --------------------------------------------------------------------------
 
-
-Ops.Gl.ClearColor = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='ClearColor';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.r=this.addInPort(new Port(this,"r",OP_PORT_TYPE_VALUE,{ display:'range', colorPick:'true'}));
-    this.g=this.addInPort(new Port(this,"g",OP_PORT_TYPE_VALUE,{ display:'range' }));
-    this.b=this.addInPort(new Port(this,"b",OP_PORT_TYPE_VALUE,{ display:'range' }));
-    this.a=this.addInPort(new Port(this,"a",OP_PORT_TYPE_VALUE,{ display:'range' }));
-
-    this.r.val=0.3;
-    this.g.val=0.3;
-    this.b.val=0.3;
-    this.a.val=1.0;
-    this.render.onTriggered=function()
-    {
-        cgl.gl.clearColor(self.r.val,self.g.val,self.b.val,self.a.val);
-        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-
-        self.trigger.trigger();
-    };
-};
-
-Ops.Gl.ClearColor.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
-Ops.Gl.FaceCulling = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='FaceCulling';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.enable=this.addInPort(new Port(this,"enable",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    this.enable.val=true;
-
-    this.facing=this.addInPort(new Port(this,"facing",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:['back','front','both']} ));
-    this.facing.val='back';
-
-    var whichFace=cgl.gl.BACK;
-    this.render.onTriggered=function()
-    {
-        cgl.gl.cullFace(whichFace);
-
-        if(self.enable.val) cgl.gl.enable(cgl.gl.CULL_FACE);
-        else cgl.gl.disable(cgl.gl.CULL_FACE);
-
-        self.trigger.trigger();
-
-        cgl.gl.disable(cgl.gl.CULL_FACE);
-    };
-
-    this.facing.onValueChanged=function()
-    {
-        whichFace=cgl.gl.BACK;
-        if(self.facing.get()=='front')whichFace=cgl.gl.FRONT;
-        if(self.facing.get()=='both')whichFace=cgl.gl.FRONT_AND_BACK;
-    };
-};
-
-Ops.Gl.FaceCulling.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
-Ops.Gl.Depth = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='Depth';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.clear=this.addInPort(new Port(this,"clear depth",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    this.enable=this.addInPort(new Port(this,"enable depth testing",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    this.write=this.addInPort(new Port(this,"write to depth buffer",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-
-    this.depthFunc=this.addInPort(new Port(this,"ratio",OP_PORT_TYPE_VALUE ,{display:'dropdown',values:['never','always','less','less or equal','greater', 'greater or equal','equal','not equal']} ));
-
-    var theDepthFunc=cgl.gl.LEQUAL;
-
-    this.depthFunc.onValueChanged=function()
-    {
-        if(self.depthFunc.get()=='never') theDepthFunc=cgl.gl.NEVER;
-        if(self.depthFunc.get()=='always') theDepthFunc=cgl.gl.ALWAYS;
-        if(self.depthFunc.get()=='less') theDepthFunc=cgl.gl.LESS;
-        if(self.depthFunc.get()=='less or equal') theDepthFunc=cgl.gl.LEQUAL;
-        if(self.depthFunc.get()=='greater') theDepthFunc=cgl.gl.GREATER;
-        if(self.depthFunc.get()=='greater or equal') theDepthFunc=cgl.gl.EQUAL;
-        if(self.depthFunc.get()=='equal') theDepthFunc=cgl.gl.EQUAL;
-        if(self.depthFunc.get()=='not equal') theDepthFunc=cgl.gl.NOTEQUAL;
-    };
-
-    this.depthFunc.val='less or equal';
-
-    this.clear.val=false;
-    this.enable.val=true;
-    this.write.val=true;
-
-    this.render.onTriggered=function()
-    {
-        if(true===self.clear.val) cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
-        if(true!==self.enable.val) cgl.gl.disable(cgl.gl.DEPTH_TEST);
-        if(true!==self.write.val) cgl.gl.depthMask(false);
-
-        cgl.gl.depthFunc(theDepthFunc);
-
-        self.trigger.trigger();
-
-        cgl.gl.enable(cgl.gl.DEPTH_TEST);
-        cgl.gl.depthMask(true);
-        cgl.gl.depthFunc(cgl.gl.LEQUAL);
-    };
-
-};
-
-Ops.Gl.Depth.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
-Ops.Gl.ClearDepth = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='ClearDepth';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.render.onTriggered=function()
-    {
-        cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
-        self.trigger.trigger();
-    };
-};
-
-Ops.Gl.ClearDepth.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
@@ -500,7 +344,6 @@ Ops.Gl.Points = function()
     this.render.onTriggered=function()
     {
         cgl.points=true;
-        // gl.pointSize(self.pointSize.val);
         self.trigger.trigger();
         cgl.points=false;
 
@@ -513,42 +356,6 @@ Ops.Gl.Points.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-Ops.Gl.ColorPick=function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='ColorPick';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.x=this.addInPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
-    this.y=this.addInPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
-
-    this.r=this.addOutPort(new Port(this,"r",OP_PORT_TYPE_VALUE));
-    this.g=this.addOutPort(new Port(this,"g",OP_PORT_TYPE_VALUE));
-    this.b=this.addOutPort(new Port(this,"b",OP_PORT_TYPE_VALUE));
-    this.a=this.addOutPort(new Port(this,"a",OP_PORT_TYPE_VALUE));
-
-    var pixelValues = new Uint8Array(4);
-    // var canvas = document.getElementById("glcanvas");
-
-    function render()
-    {
-        cgl.gl.readPixels(self.x.val, cgl.canvas.height-self.y.val, 1,1,  cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE ,pixelValues);
-        self.r.val=pixelValues[0]/255;
-        self.g.val=pixelValues[1]/255;
-        self.b.val=pixelValues[2]/255;
-        self.a.val=pixelValues[3]/255;
-    }
-
-    this.render.onTriggered=render;
-};
-
-Ops.Gl.ColorPick.prototype = new Op();
-Ops.Gl.ReadPixel=Ops.Gl.ColorPick;
-
-
-// --------------------------------------------------------------------------
 
 
 Ops.Gl.Mouse = function()
@@ -646,7 +453,6 @@ Ops.Gl.Mouse = function()
     {
         // console.log('e',e);
     };
-
 
     function mouseLeave(e)
     {
@@ -871,60 +677,6 @@ Ops.Gl.Texture.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-Ops.Gl.TextureText = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='TextureText';
-    this.text=this.addInPort(new Port(this,"text",OP_PORT_TYPE_VALUE,{type:'string',display:'editor'}));
-    this.fontSize=this.addInPort(new Port(this,"fontSize"));
-    this.align=this.addInPort(new Port(this,"align",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['left','center','right']}));
-    this.font=this.addInPort(new Port(this,"font"));
-    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
-    
-    this.fontSize.set(30);
-    this.font.set('Arial');
-    this.align.set('center');
-
-    var canvas = document.createElement('canvas');
-    canvas.id     = "hiddenCanvas";
-    canvas.width  = 512;
-    canvas.height = 512;
-    canvas.style.display   = "none";
-    var body = document.getElementsByTagName("body")[0];
-    body.appendChild(canvas);
-
-    var fontImage = document.getElementById('hiddenCanvas');
-    var ctx = fontImage.getContext('2d');
-
-    function refresh()
-    {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = 'white';
-        ctx.font = self.fontSize.get()+"px "+self.font.get();
-        ctx.textAlign = self.align.get();
-        if(self.align.get()=='center') ctx.fillText(self.text.val, ctx.canvas.width / 2, ctx.canvas.height / 2);
-        if(self.align.get()=='left') ctx.fillText(self.text.val, 0, ctx.canvas.height / 2);
-        if(self.align.get()=='right') ctx.fillText(self.text.val, ctx.canvas.width, ctx.canvas.height / 2);
-        ctx.restore();
-
-        if(self.textureOut.val) self.textureOut.val.initTexture(fontImage);
-            else self.textureOut.val=new CGL.Texture.fromImage(cgl,fontImage);
-    }
-
-    this.align.onValueChanged=refresh;
-    this.text.onValueChanged=refresh;
-    this.fontSize.onValueChanged=refresh;
-    this.font.onValueChanged=refresh;
-    this.text.set('cables');
-};
-
-Ops.Gl.TextureText.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
 Ops.Gl.Meshes=Ops.Gl.Meshes || {};
 
 // --------------------------------------------------------------------------
@@ -996,84 +748,6 @@ Ops.Gl.Meshes.Plotter.prototype = new Op();
 
 Ops.Gl.Matrix={};
 
-Ops.Gl.Matrix.Translate = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='translate';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.x=this.addInPort(new Port(this,"x"));
-    this.y=this.addInPort(new Port(this,"y"));
-    this.z=this.addInPort(new Port(this,"z"));
-    this.x.set(0.0);
-    this.y.set(0.0);
-    this.z.set(0.0);
-    
-    var vec=vec3.create();
-
-    this.render.onTriggered=function()
-    {
-        vec3.set(vec, self.x.get(),self.y.get(),self.z.get());
-        cgl.pushMvMatrix();
-        mat4.translate(cgl.mvMatrix,cgl.mvMatrix, vec);
-        self.trigger.trigger();
-        cgl.popMvMatrix();
-    };
-};
-
-Ops.Gl.Matrix.Translate.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
-Ops.Gl.Matrix.Scale = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='scale';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.scale=this.addInPort(new Port(this,"scale"));
-    
-    var vScale=vec3.create();
-    var transMatrix = mat4.create();
-    mat4.identity(transMatrix);
-
-    var doScale=false;
-
-    this.render.onTriggered=function()
-    {
-        cgl.pushMvMatrix();
-        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
-        self.trigger.trigger();
-        cgl.popMvMatrix();
-    };
-
-    var updateMatrix=function()
-    {
-        mat4.identity(transMatrix);
-        mat4.scale(transMatrix,transMatrix, vScale);
-    };
-
-    this.scaleChanged=function()
-    {
-        doScale=false;
-        vec3.set(vScale, self.scale.get(),self.scale.get(),self.scale.get());
-        updateMatrix();
-    };
-
-    this.scale.onValueChanged=this.scaleChanged;
-    this.scale.set(1.0);
-    updateMatrix();
-};
-
-Ops.Gl.Matrix.Scale.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
@@ -1134,190 +808,7 @@ Ops.Gl.Matrix.LookatCamera = function()
 
 Ops.Gl.Matrix.LookatCamera.prototype = new Op();
 
-// ----------------------------------------------------
-
-
-Ops.Gl.Matrix.Shear = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-    this.name='Shear';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.shearX=this.addInPort(new Port(this,"shearX"));
-    this.shearY=this.addInPort(new Port(this,"shearY"));
-
-    var shearMatrix = mat4.create();
-
-    function update()
-    {
-        mat4.identity(shearMatrix);
-        shearMatrix[1]=Math.tan(self.shearX.get());
-        shearMatrix[4]=Math.tan(self.shearY.get());
-    }
-
-    this.shearY.onValueChanged=update;
-    this.shearX.onValueChanged=update;
-
-    // 1, shearY, 0, 0, 
-    //   shearX, 1, 0, 0,
-    //   0, 0, 1, 0,
-    //   0, 0, 0, 1 };
-
-    this.render.onTriggered=function()
-    {
-        cgl.pushMvMatrix();
-
-        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,shearMatrix);
-        self.trigger.trigger();
-
-        cgl.popMvMatrix();
-    };
-
-    self.shearX.set(0.0);
-    self.shearY.set(0.0);
-};
-
-Ops.Gl.Matrix.Shear.prototype = new Op();
-
 // -----------------------------------------------------
-
-Ops.Gl.Matrix.Transform = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-    this.name='transform';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.posX=this.addInPort(new Port(this,"posX"));
-    this.posY=this.addInPort(new Port(this,"posY"));
-    this.posZ=this.addInPort(new Port(this,"posZ"));
-
-    this.scaleX=this.addInPort(new Port(this,"scaleX"));
-    this.scaleY=this.addInPort(new Port(this,"scaleY"));
-    this.scaleZ=this.addInPort(new Port(this,"scaleZ"));
-
-    this.rotX=this.addInPort(new Port(this,"rotX"));
-    this.rotY=this.addInPort(new Port(this,"rotY"));
-    this.rotZ=this.addInPort(new Port(this,"rotZ"));
-   
-    var vPos=vec3.create();
-    var vScale=vec3.create();
-    var transMatrix = mat4.create();
-    mat4.identity(transMatrix);
-
-    var doScale=false;
-    var doTranslate=false;
-
-    var translationChanged=true;
-    var scaleChanged=true;
-    var rotChanged=true;
-
-    this.render.onTriggered=function()
-    {
-        var updateMatrix=false;
-        if(translationChanged)
-        {
-            updateTranslation();
-            updateMatrix=true;
-        }
-        if(scaleChanged)
-        {
-            updateScale();
-            updateMatrix=true;
-        }
-        if(rotChanged)
-        {
-            updateMatrix=true;
-        }
-        if(updateMatrix)doUpdateMatrix();
-
-
-        cgl.pushMvMatrix();
-        mat4.multiply(cgl.mvMatrix,cgl.mvMatrix,transMatrix);
-
-        self.trigger.trigger();
-        cgl.popMvMatrix();
-    };
-
-    var doUpdateMatrix=function()
-    {
-        mat4.identity(transMatrix);
-        if(doTranslate)mat4.translate(transMatrix,transMatrix, vPos);
-
-        if(self.rotX.get()!==0)mat4.rotateX(transMatrix,transMatrix, self.rotX.get()*CGL.DEG2RAD);
-        if(self.rotY.get()!==0)mat4.rotateY(transMatrix,transMatrix, self.rotY.get()*CGL.DEG2RAD);
-        if(self.rotZ.get()!==0)mat4.rotateZ(transMatrix,transMatrix, self.rotZ.get()*CGL.DEG2RAD);
-
-        if(doScale)mat4.scale(transMatrix,transMatrix, vScale);
-        rotChanged=false;
-    };
-
-    function updateTranslation()
-    {
-        doTranslate=false;
-        if(self.posX.get()!==0.0 || self.posY.get()!==0.0 || self.posZ.get()!==0.0)doTranslate=true;
-        vec3.set(vPos, self.posX.get(),self.posY.get(),self.posZ.get());
-        translationChanged=false;
-    }
-
-    function updateScale()
-    {
-        doScale=false;
-        if(self.scaleX.get()!==0.0 || self.scaleY.get()!==0.0 || self.scaleZ.get()!==0.0)doScale=true;
-        vec3.set(vScale, self.scaleX.get(),self.scaleY.get(),self.scaleZ.get());
-        scaleChanged=false;
-    }
-
-    this.translateChanged=function()
-    {
-        translationChanged=true;
-    };
-
-    this.scaleChanged=function()
-    {
-        scaleChanged=true;
-    };
-
-    this.rotChanged=function()
-    {
-        rotChanged=true;
-    };
-
-    this.rotX.onValueChanged=this.rotChanged;
-    this.rotY.onValueChanged=this.rotChanged;
-    this.rotZ.onValueChanged=this.rotChanged;
-
-    this.scaleX.onValueChanged=this.scaleChanged;
-    this.scaleY.onValueChanged=this.scaleChanged;
-    this.scaleZ.onValueChanged=this.scaleChanged;
-
-    this.posX.onValueChanged=this.translateChanged;
-    this.posY.onValueChanged=this.translateChanged;
-    this.posZ.onValueChanged=this.translateChanged;
-
-    this.rotX.set(0.0);
-    this.rotY.set(0.0);
-    this.rotZ.set(0.0);
-
-    this.scaleX.set(1.0);
-    this.scaleY.set(1.0);
-    this.scaleZ.set(1.0);
-
-    this.posX.set(0.0);
-    this.posY.set(0.0);
-    this.posZ.set(0.0);
-
-    doUpdateMatrix();
-};
-
-Ops.Gl.Matrix.Transform.prototype = new Op();
-
-// ----------------------------------------------------
 
 Ops.Gl.Matrix.MatrixMul = function()
 {
@@ -1338,95 +829,11 @@ Ops.Gl.Matrix.MatrixMul = function()
         cgl.popMvMatrix();
     };
 
-
-    // this.matrix.onValueChanged=update;
-
     this.matrix.set( [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] );
-
 };
 
 Ops.Gl.Matrix.MatrixMul.prototype = new Op();
 
-
-// -----------------------------------------
-
-Ops.RandomCluster = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='random cluster';
-    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-    this.num=this.addInPort(new Port(this,"num"));
-    this.size=this.addInPort(new Port(this,"size"));
-    this.seed=this.addInPort(new Port(this,"random seed"));
-
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION)) ;
-    this.idx=this.addOutPort(new Port(this,"index")) ;
-    this.rnd=this.addOutPort(new Port(this,"rnd")) ;
-    this.randoms=[];
-    this.randomsRot=[];
-    this.randomsFloats=[];
-
-    var transVec=vec3.create();
-
-    this.exe.onTriggered=function()
-    {
-        for(var i=0;i<self.randoms.length;i++)
-        {
-            cgl.pushMvMatrix();
-
-            mat4.translate(cgl.mvMatrix,cgl.mvMatrix, self.randoms[i]);
-
-            mat4.rotateX(cgl.mvMatrix,cgl.mvMatrix, self.randomsRot[i][0]);
-            mat4.rotateY(cgl.mvMatrix,cgl.mvMatrix, self.randomsRot[i][1]);
-            mat4.rotateZ(cgl.mvMatrix,cgl.mvMatrix, self.randomsRot[i][2]);
-
-            self.idx.set(i);
-            self.rnd.set(self.randomsFloats[i]);
-
-            self.trigger.trigger();
-
-            cgl.popMvMatrix();
-        }
-    };
-
-    function reset()
-    {
-        self.randoms=[];
-        self.randomsRot=[];
-        self.randomsFloats=[];
-
-        Math.randomSeed=self.seed.get();
-
-        for(var i=0;i<self.num.get();i++)
-        {
-            self.randomsFloats.push(Math.seededRandom());
-            self.randoms.push(vec3.fromValues(
-                (Math.seededRandom()-0.5)*self.size.get(),
-                (Math.seededRandom()-0.5)*self.size.get(),
-                (Math.seededRandom()-0.5)*self.size.get()
-                ));
-            self.randomsRot.push(vec3.fromValues(
-                Math.seededRandom()*360*CGL.DEG2RAD,
-                Math.seededRandom()*360*CGL.DEG2RAD,
-                Math.seededRandom()*360*CGL.DEG2RAD
-                ));
-        }
-    }
-
-    this.size.set(40);
-
-this.seed.set(1);
-    this.seed.onValueChanged=reset;
-    this.num.onValueChanged=reset;
-    this.size.onValueChanged=reset;
-
-    this.num.set(100);
-};
-
-Ops.RandomCluster.prototype = new Op();
 
 
 // --------------------------------------------------------------------------
@@ -1441,11 +848,10 @@ Ops.Gl.Render2Texture = function()
                     cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) ||
                     cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" );
 
-                    if(!depthTextureExt)
-                    {
-                                console.log('depth buffer ext problem');
-                                
-                    }
+    if(!depthTextureExt)
+    {
+        console.log('depth buffer ext problem');
+    }
 
     // var depthTextureExt = cgl.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
 
@@ -1760,64 +1166,6 @@ Ops.Gl.Spray.prototype = new Op();
 
 // --------------------------------------------------------------------------
 
-Ops.Gl.Identity = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='Identity';
-    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.exe.onTriggered=function()
-    {
-        cgl.pushMvMatrix();
-        mat4.identity(cgl.mvMatrix);
-
-        // if(cgl.frameStore.perspective) mat4.perspective(cgl.pMatrix,cgl.frameStore.perspective.fovY, cgl.getViewPort()[2]/cgl.getViewPort()[3], cgl.frameStore.perspective.zNear, cgl.frameStore.perspective.zFar);
-        //     else mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.01, 1100.0);
-
-        self.trigger.trigger();
-
-        cgl.popMvMatrix();
-    };
-
-};
-
-Ops.Gl.Identity.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
-Ops.Gl.CanvasSize = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='CanvasSize';
-    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
-    this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
-
-    var w=0,h=0;
-
-    this.exe.onTriggered=function()
-    {
-        if(cgl.canvasHeight!=h) h=self.height.val=cgl.canvasHeight;
-        if(cgl.canvasWidth!=w) w=self.width.val=cgl.canvasWidth;
-        self.trigger.trigger();
-    };
-};
-
-Ops.Gl.CanvasSize.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
 Ops.Gl.ViewPortSize = function()
 {
     Op.apply(this, arguments);
@@ -1849,275 +1197,119 @@ Ops.Gl.ViewPortSize = function()
 
 Ops.Gl.ViewPortSize.prototype = new Op();
 
+
+
 // --------------------------------------------------------------------------
 
-Ops.Gl.Performance = function()
+Ops.Gl.SpotLight = function()
 {
     Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
-    if(cgl.aborted)return;
-
-    this.name='Performance';
-    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
-
+    this.name='SpotLight';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION)) ;
 
-    var canvas = document.createElement('canvas');
-    canvas.id     = "performance_"+self.patch.config.glCanvasId;
-    canvas.width  = 512;
-    canvas.height = 128;
-    canvas.style.display   = "block";
-    var body = document.getElementsByTagName("body")[0];
-    body.appendChild(canvas);
+    this.show=this.addInPort(new Port(this,"show",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.show.set(true);
 
-    var fontImage = document.getElementById(canvas.id);
-    var ctx = fontImage.getContext('2d');
+    this.x=this.addInPort(new Port(this,"eye x",OP_PORT_TYPE_VALUE));
+    this.y=this.addInPort(new Port(this,"eye y",OP_PORT_TYPE_VALUE));
+    this.z=this.addInPort(new Port(this,"eye z",OP_PORT_TYPE_VALUE));
 
-    var text='';
-
-    ctx.font = "13px arial";
-    ctx.fillStyle = 'white';
-
-    var frames=0;
-    var fps=0;
-    var fpsStartTime=0;
-
-    var lastTime=0;
-    var childsTime=0;
-
-    var queue=[];
-    var queueChilds=[];
-    for(var i=0;i<canvas.width;i++)
-    {
-        queue[i]=-1;
-        queueChilds[i]=-1;
-    }
-
-    var avgMs=0;
-    var avgMsChilds=0;
-    var text2='';
-    var text3='';
-
-    var ll=0;
-    var selfTime=0;
-    var hasErrors=false;
-    var countFrames=0;
-
-    function refresh()
-    {
-        ll=performance.now();
-
-        var ms=performance.now()-lastTime;
-        queue.push(ms);
-        queue.shift();
-
-        queueChilds.push(childsTime);
-        queueChilds.shift();
-
-        frames++;
-        
-        if(fpsStartTime===0)fpsStartTime=Date.now();
-        if(Date.now()-fpsStartTime>=1000)
-        {
-            fps=frames;
-            frames=0;
-
-            text=self.patch.config.glCanvasId+' fps: '+fps;
-            fpsStartTime=Date.now();
-
-            var count=0;
-            for(var i=queue.length;i>queue.length-queue.length/3;i--)
-            {
-                if(queue[i]>-1)
-                {
-                    avgMs+=queue[i];
-                    count++;
-                }
-
-                if(queueChilds[i]>-1)
-                {
-                    avgMsChilds+=queueChilds[i];
-                }
-            }
-            avgMs/=count;
-            avgMsChilds/=count;
-
-            text2='frame: '+Math.round(avgMs*100)/100+' ms';
-            
-            text3='child ops: '+Math.round(avgMsChilds*100)/100+' ms ('+Math.round(avgMsChilds/avgMs*100)+'%) uniforms/s: '+CGL.profileUniformCount;
-            if(selfTime>=1.25) text3+=' (self: '+Math.round((selfTime)*100)/100+' ms) ';
-            CGL.profileUniformCount=0;
-
-        }
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-
-        ctx.fillStyle="#222222";
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-
-
-        ctx.fillStyle="#aaaaaa";
-        for(var k=0;k<512;k++)
-        {
-            ctx.fillRect(k,canvas.height-queue[k]*2.5,1,queue[k]*2.5);
-        }
-
-        ctx.fillStyle="#ffffff";
-        for(k=0;k<512;k++)
-        {
-            ctx.fillRect(k,canvas.height-queueChilds[k]*2.5,1,queueChilds[k]*2.5);
-        }
-        
-        ctx.fillStyle="#bbbbbb";
-        ctx.fillText(text, 10, 20);
-        ctx.fillText(text2, 10, 35);
-        ctx.fillText(text3, 10, 50);
-        if(hasErrors)
-        {
-            ctx.fillStyle="#ff8844";
-            ctx.fillText('has errors!', 10, 65);
-        }
-
-        ctx.restore();
-
-        if(self.textureOut.get()) self.textureOut.get().initTexture(cgl,fontImage);
-            else self.textureOut.set( new CGL.Texture.fromImage(cgl,fontImage) );
-
-        lastTime=performance.now();
-        selfTime=performance.now()-ll;
-        
-        var startTimeChilds=performance.now();
-
-        self.trigger.trigger();
-
-        childsTime=performance.now()-startTimeChilds;
-
-        countFrames++;
-        if(countFrames==30)
-        {
-            hasErrors=false;
-            var error = cgl.gl.getError();
-            if (error != cgl.gl.NO_ERROR)
-            {
-                hasErrors=true;
-            }
-            countFrames=0;
-        }
-        
-    }
-
-    this.onDelete=function()
-    {
-        document.getElementById(canvas.id).remove();
-    };
-
-    self.exe.onTriggered=refresh;
-    if(CABLES.UI)gui.setLayout();
-};
-
-Ops.Gl.Performance.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
-
-// --------------------------------------------------------------------------
-
-Ops.Gl.Matrix.CircleTransform = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=this.patch.cgl;
-
-    this.name='CircleTransform';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-
-    this.segments=this.addInPort(new Port(this,"segments"));
-    this.radius=this.addInPort(new Port(this,"radius"));
-    this.percent=this.addInPort(new Port(this,"percent",OP_PORT_TYPE_VALUE,{display:'range'}));
+    this.tx=this.addInPort(new Port(this,"target x",OP_PORT_TYPE_VALUE));
+    this.ty=this.addInPort(new Port(this,"target y",OP_PORT_TYPE_VALUE));
+    this.tz=this.addInPort(new Port(this,"target z",OP_PORT_TYPE_VALUE));
 
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-    this.index=this.addOutPort(new Port(this,"index"));
 
-    this.render.onTriggered=function()
+    var buffer = cgl.gl.createBuffer();
+
+    this.exe.onTriggered=function()
     {
-        for(var i=0;i<self.pos.length;i++)
+        if(self.show.get())
         {
+            var shader=cgl.getShader();
+            shader.bind();
+
             cgl.pushMvMatrix();
+            
+            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+            cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),3, cgl.gl.FLOAT, false, 0, 0);
+            cgl.gl.enableVertexAttribArray(cgl.getShader().getAttrVertexPos());
 
-            mat4.translate(cgl.mvMatrix,cgl.mvMatrix, self.pos[i] );
-            self.trigger.trigger();
-
-            self.index.val=i;
+            cgl.gl.drawArrays(cgl.gl.LINES, 0, 4);
+            cgl.gl.drawArrays(cgl.gl.POINTS, 0, 4);
+            // cgl.gl.drawArrays(cgl.gl.POINTS, 0, 2);
+            cgl.gl.disableVertexAttribArray(cgl.getShader().getAttrVertexPos());
 
             cgl.popMvMatrix();
         }
-    };
 
-    this.segments.val=40;
-    this.radius.val=1;
-    this.percent.val=1;
-
-    this.pos=[];
-
-    function calc()
-    {
-        self.pos.length=0;
-
-        var i=0,degInRad=0;
-
-        for (i=0; i <= Math.round(self.segments.get())*self.percent.get(); i++)
-        {
-            degInRad = (360/Math.round(self.segments.get()))*i*CGL.DEG2RAD;
-            self.pos.push(
-                [
-                Math.cos(degInRad)*self.radius.get(),
-                Math.sin(degInRad)*self.radius.get(),
-                0
-                ]
-                );
-        }
-    }
-
-    this.segments.onValueChanged=calc;
-    this.radius.onValueChanged=calc;
-    this.percent.onValueChanged=calc;
-    calc();
-};
-
-Ops.Gl.Matrix.CircleTransform.prototype = new Op();
-
-// --------------------------------------------------------------------------
-
-Ops.Gl.Matrix.TransformMul = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='TransformMul';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.mul=this.addInPort(new Port(this,"mul"));
-
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.render.onTriggered=function()
-    {
-        var pos=[0,0,0];
-        vec3.transformMat4(pos, [0,0,0], cgl.mvMatrix);
-
-        cgl.pushMvMatrix();
-        vec3.mul(pos,pos,[self.mul.get(),self.mul.get(),self.mul.get()] );
-
-        mat4.translate(cgl.mvMatrix,cgl.mvMatrix, pos );
         self.trigger.trigger();
 
-        cgl.popMvMatrix();
     };
+
+    function update()
+    {
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(
+            [
+                self.x.get(),
+                self.y.get(),
+                self.z.get(),
+                self.tx.get(),
+                self.ty.get(),
+                self.tz.get(),
+
+                self.x.get(),
+                self.y.get(),
+                self.z.get(),
+                self.tx.get()+0.1,
+                self.ty.get()+0.1,
+                self.tz.get()+0.1,
+
+                // self.x.get(),
+                // self.y.get(),
+                // self.z.get(),
+                // self.tx.get()+0.1,
+                // self.ty.get()+0.1,
+                // self.tz.get(),
+
+
+            ]), cgl.gl.STATIC_DRAW);
+
+    }
+
+    this.x.onValueChanged=update;
+    this.y.onValueChanged=update;
+    this.z.onValueChanged=update;
+
+    this.tx.onValueChanged=update;
+    this.ty.onValueChanged=update;
+    this.tz.onValueChanged=update;
 
 };
 
-Ops.Gl.Matrix.TransformMul.prototype = new Op();
+Ops.Gl.SpotLight.prototype = new Op();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
