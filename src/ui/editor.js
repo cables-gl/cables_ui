@@ -15,7 +15,7 @@ CABLES.Editor=function()
     editor.$blockScrolling = Infinity;
     editor.resize();
     editor.focus();
-    
+
 
     function updateTabs()
     {
@@ -111,14 +111,14 @@ CABLES.Editor=function()
     {
         this.setCurrentTabContent();
         console.log('setTab',id);
-                
+
         for(var i=0;i<contents.length;i++)
         {
             if(contents[i].id==id)
             {
                 currentTabId=id;
                 $('#editortab'+contents[i].id).addClass('active');
-                
+
                 if(contents[i].syntax=='md')  editor.session.setMode("ace/mode/Markdown");
                 else if(contents[i].syntax=='js')  editor.session.setMode("ace/mode/javascript");
                 else if(contents[i].syntax=='glsl')  editor.session.setMode("ace/mode/glsl");
@@ -140,7 +140,3 @@ CABLES.Editor=function()
     // this.closeCurrentTab();
 
 };
-
-
-
-
