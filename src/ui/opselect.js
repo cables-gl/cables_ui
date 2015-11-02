@@ -27,7 +27,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         else
             $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
 
-        if(gui.user.isAdmin && $('#opsearch').val() && $('#opsearch').val().startsWith('Ops.'))
+        if(gui.user.isAdmin && $('#opsearch').val() && $('#opsearch').val().startsWith('Ops.') && $('#opsearch').val().startsWith('Op.') )
         {
             $('#opOptions').html('admin: <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create serverOp</a><hr/>');
         }
