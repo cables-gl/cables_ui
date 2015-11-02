@@ -1,11 +1,6 @@
 
 var CGL=CGL || {};
 
-CGL.Texture.FILTER_NEAREST=0;
-CGL.Texture.FILTER_LINEAR=1;
-CGL.Texture.FILTER_MIPMAP=2;
-
-
 CGL.Texture=function(cgl,options)
 {
     if(!cgl) throw "no cgl";
@@ -172,6 +167,9 @@ CGL.Texture.fromImage=function(cgl,img)
     return texture;
 };
 
+CGL.Texture.FILTER_NEAREST=0;
+CGL.Texture.FILTER_LINEAR=1;
+CGL.Texture.FILTER_MIPMAP=2;
 
 // ---------------------------------------------------------------------------
 
