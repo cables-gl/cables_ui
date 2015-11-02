@@ -133,8 +133,6 @@ CGL.getLoadingStatus=function()
         if(stat==1)  $('#assetsloadingindicator').hide();
             else  $('#assetsloadingindicator').show();
 
-
-
     return stat;
 };
 

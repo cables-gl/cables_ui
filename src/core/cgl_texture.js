@@ -1,6 +1,11 @@
 
 var CGL=CGL || {};
 
+CGL.Texture.FILTER_NEAREST=0;
+CGL.Texture.FILTER_LINEAR=1;
+CGL.Texture.FILTER_MIPMAP=2;
+
+
 CGL.Texture=function(cgl,options)
 {
     if(!cgl) throw "no cgl";
@@ -55,7 +60,7 @@ CGL.Texture=function(cgl,options)
             if(self.filter==CGL.Texture.FILTER_MIPMAP)
             {
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.LINEAR);
-                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.NEAREST_MIPMAP_LINEAR);
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.LINEAR_MIPMAP_LINEAR);
             }
         }
     }
@@ -167,9 +172,6 @@ CGL.Texture.fromImage=function(cgl,img)
     return texture;
 };
 
-CGL.Texture.FILTER_NEAREST=0;
-CGL.Texture.FILTER_LINEAR=1;
-CGL.Texture.FILTER_MIPMAP=2;
 
 // ---------------------------------------------------------------------------
 
