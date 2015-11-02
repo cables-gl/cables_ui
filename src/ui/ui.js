@@ -14,6 +14,7 @@ CABLES.UI.GUI=function()
     var _patch=null;
     var _editor=new CABLES.Editor();
 
+    this.user=null;
     this.serverOps=new CABLES.UI.ServerOps();
 
     this.timeLine=function()
@@ -480,8 +481,7 @@ CABLES.UI.GUI=function()
 
         router.addRoute('/').get(function(event, params)
         {
-            if(!localStorage.holo || localStorage.holo===''  || localStorage.holo.length<20)
-                self.scene.clear();
+            if(!localStorage.holo || localStorage.holo===''  || localStorage.holo.length<20) self.scene.clear();
 
             self.patch().scene.deSerialize(localStorage.holo);
         });
@@ -581,7 +581,6 @@ CABLES.UI.GUI=function()
     {
         var apiUrl='doc/ops/'+opname;
         if(!html)apiUrl='doc/ops/md/'+opname;
-            
 
         var cached=CABLES.api.hasCached(apiUrl);
         if(cached)
@@ -618,7 +617,6 @@ CABLES.UI.GUI=function()
         });
     };
 
-    this.user=null;
 
     this.loadUser=function()
     {
@@ -627,8 +625,6 @@ CABLES.UI.GUI=function()
             {
                 if(data.user)
                 {
-                            // console.log('data.user',data.user);
-                            
                     self.user=data.user;
                     $('#loggedout').hide();
                     $('#loggedin').show();
@@ -647,8 +643,9 @@ CABLES.UI.GUI=function()
         _patch.show(_scene);
 
         initRouting();
-        self.loadUser();
+        
     };
+    self.loadUser();
 
 };
 
