@@ -29,7 +29,7 @@ CABLES.UI.getWheelSpeed=function(event)
     normalized*=-4.0;
     if(normalized>400)normalized=400;
     if(normalized<-400)normalized=-400;
-    console.log('normalized',normalized);
+    // console.log('normalized',normalized);
         
 
     return normalized;

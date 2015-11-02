@@ -176,38 +176,6 @@ Ops.TimeLineDelayFrames = function()
 Ops.TimeLineDelayFrames.prototype = new Op();
 
 
-// ---------------------------------------------------------------------------
-
-Ops.IfTrueThen = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-
-    this.name='if true then';
-    this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-
-    this.bool=this.addInPort(new Port(this,"boolean"));
-    this.bool.val=false;
-
-    this.triggerThen=this.addOutPort(new Port(this,"then",OP_PORT_TYPE_FUNCTION));
-    this.triggerElse=this.addOutPort(new Port(this,"else",OP_PORT_TYPE_FUNCTION));
-
-    function exec()
-    {
-        if(self.bool.val || self.bool.val>=1 )
-        {
-            self.triggerThen.trigger();
-        }
-        else
-        {
-            self.triggerElse.trigger();
-        }
-    }
-
-    this.exe.onTriggered=exec;
-};
-
-Ops.IfTrueThen.prototype = new Op();
 
 // ---------------------------------------------------------------------------
 
