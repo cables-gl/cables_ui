@@ -367,7 +367,7 @@ Ops.Gl.Texture = function()
 
         reload();
     };
-    this.filter.set('linear');
+    this.filter.set('mipmap');
     
 
     this.textureOut.onPreviewChanged=function()

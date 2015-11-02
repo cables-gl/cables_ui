@@ -10,7 +10,7 @@ CABLES.Editor=function()
     var editor = ace.edit("ace");
     editor.setValue('nothing to edit right now :/');
     editor.setOption("showPrintMargin", false);
-    editor.setTheme("ace/theme/ambiance");
+    editor.setTheme("ace/theme/cables");
     editor.session.setMode("ace/mode/text");
     editor.$blockScrolling = Infinity;
     editor.resize();
