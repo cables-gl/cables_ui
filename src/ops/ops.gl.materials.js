@@ -331,7 +331,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
         // .endl()+'if(length(c1)>length(c2)) tangent = c2;'
         // .endl()+'    else tangent = c1;'
-        .endl()+'    tangent = c2;'
+        .endl()+'    tangent = c1;'
 
         .endl()+'tangent = normalize(tangent);'
         .endl()+'binormal = cross(norm, tangent);'
