@@ -2100,8 +2100,6 @@ Ops.Gl.TextureEffects.Blur.prototype = new Op();
 
 
 
-
-
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.FXAA = function()

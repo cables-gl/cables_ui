@@ -9,7 +9,7 @@ CGL.Texture=function(cgl,options)
     this.width=0;
     this.height=0;
     this.flip=true;
-    this.filter=CGL.Texture.FILTER_NEAREST;
+    this.filter=CGL.Texture.FILTER_MIPMAP;
     var isDepthTexture=false;
 
     if(options)
