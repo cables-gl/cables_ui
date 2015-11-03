@@ -16,6 +16,8 @@ CGL.Texture=function(cgl,options)
     {
         if(options.isDepthTexture)
             isDepthTexture=options.isDepthTexture;
+
+        if(options.filter) this.filter=options.filter;
     }
 
     this.isPowerOfTwo=function()
@@ -32,6 +34,7 @@ CGL.Texture=function(cgl,options)
     {
         if(!_isPowerOfTwo(self.width) || !_isPowerOfTwo(self.height) )
         {
+
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.NEAREST);
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.NEAREST);
 
@@ -45,17 +48,20 @@ CGL.Texture=function(cgl,options)
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.NEAREST);
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.NEAREST);
             }
-
-            if(self.filter==CGL.Texture.FILTER_LINEAR)
+            else if(self.filter==CGL.Texture.FILTER_LINEAR)
             {
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.LINEAR);
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.LINEAR);
             }
-
-            if(self.filter==CGL.Texture.FILTER_MIPMAP)
+            else if(self.filter==CGL.Texture.FILTER_MIPMAP)
             {
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.LINEAR);
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.LINEAR_MIPMAP_LINEAR);
+            }
+            else
+            {
+                console.log('unknown texture filter!');
+                        
             }
         }
     }
@@ -87,15 +93,12 @@ CGL.Texture=function(cgl,options)
         //     //     }
         //     // }
         //     uarr=new Uint8Array(arr);
-
         // }
-
 
         setFilter();
 
         if(isDepthTexture)
         {
-            
             cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.DEPTH_COMPONENT, w,h, 0, cgl.gl.DEPTH_COMPONENT, cgl.gl.UNSIGNED_SHORT, null);
         }
         else
@@ -104,6 +107,11 @@ CGL.Texture=function(cgl,options)
         }
 
 
+        if(_isPowerOfTwo(self.width) && _isPowerOfTwo(self.height) && self.filter==CGL.Texture.FILTER_MIPMAP)
+        {
+            cgl.gl.generateMipmap(cgl.gl.TEXTURE_2D);
+        }
+        
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 

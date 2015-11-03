@@ -354,7 +354,6 @@ Ops.Gl.Texture = function()
             },{flip:self.flip.get(),filter:self.cgl_filter});
             self.textureOut.set(self.tex);
         }
-
     };
 
     this.flip.onValueChanged=reload;
@@ -368,7 +367,6 @@ Ops.Gl.Texture = function()
         reload();
     };
     this.filter.set('mipmap');
-    
 
     this.textureOut.onPreviewChanged=function()
     {
@@ -564,7 +562,7 @@ Ops.Gl.Render2Texture = function()
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
 
     var frameBuf;
-    var texture=new CGL.Texture(cgl);
+    var texture=new CGL.Texture(cgl,{filter:CGL.Texture.FILTER_MIPMAP});
     var textureDepth=new CGL.Texture(cgl,{isDepthTexture:true});
 
     this.useVPSize=this.addInPort(new Port(this,"use viewport size",OP_PORT_TYPE_VALUE,{ display:'bool' }));

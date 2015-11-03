@@ -24,8 +24,8 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     var effect=new CGL.TextureEffect(cgl);
 
     cgl.currentTextureEffect=effect;
-    this.tex=new CGL.Texture(cgl,{filter:self.cgl_filter});
-
+    this.tex=new CGL.Texture(cgl);
+    this.tex.filter=CGL.Texture.FILTER_MIPMAP;
 
 
     var w=8,h=8;
@@ -36,6 +36,11 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         {
             w=cgl.getViewPort()[2];
             h=cgl.getViewPort()[3];
+        }
+        else
+        {
+            w=self.width.get();
+            h=self.height.get();
         }
 
         if((w!= self.tex.width || h!= self.tex.height) && (w!==0 && h!==0))
