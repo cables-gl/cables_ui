@@ -587,8 +587,12 @@ Ops.Gl.Render2Texture = function()
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
         cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, depthBuffer);
 
-        self.width.set( cgl.getViewPort()[2] );
-        self.height.set( cgl.getViewPort()[3] );
+        if(self.useVPSize.val)
+        {
+            self.width.set( cgl.getViewPort()[2] );
+            self.height.set( cgl.getViewPort()[3] );
+        }
+
         texture.setSize(self.width.get(),self.height.get());
         textureDepth.setSize(self.width.get(),self.height.get());
 
