@@ -27,7 +27,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         else
             $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
 
-        if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.')) )
+        if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
         {
             $('#opOptions').html('admin: <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create serverOp</a><hr/>');
         }
@@ -161,7 +161,7 @@ CABLES.UI.OPSELECT.getOpList=function()
 {
     var ops=[];
 
-    function getop(val,parentname)
+    function getop(ns,val,parentname)
     {
         if (Object.prototype.toString.call(val) === '[object Object]')
         {
@@ -170,7 +170,7 @@ CABLES.UI.OPSELECT.getOpList=function()
                 if (val.hasOwnProperty(propertyName))
                 {
                     var html='';
-                    var opname='Ops.'+ parentname + propertyName + '';
+                    var opname=ns+'.'+ parentname + propertyName + '';
 
                     var isOp=false;
                     var isFunction=false;
@@ -187,13 +187,14 @@ CABLES.UI.OPSELECT.getOpList=function()
                         ops.push(op);
                     }
 
-                    found=getop(val[propertyName],parentname+propertyName+'.');
+                    found=getop(ns,val[propertyName],parentname+propertyName+'.');
                 }
             }
         }
     }
 
-    getop(Ops,'');
+    getop('Ops',Ops,'');
+    getop('Op',Op,'');
 
     ops.sort(function(a, b)
     {

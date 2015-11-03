@@ -10,6 +10,7 @@ CGL.State=function()
     var viewPort=[0,0,0,0];
 
     this.frameStore={};
+    this.vars={};
     this.gl=null;
     this.pMatrix=mat4.create();
     this.mvMatrix=mat4.create();
