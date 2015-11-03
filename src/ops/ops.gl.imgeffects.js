@@ -24,7 +24,9 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     var effect=new CGL.TextureEffect(cgl);
 
     cgl.currentTextureEffect=effect;
-    this.tex=new CGL.Texture(cgl);
+    this.tex=new CGL.Texture(cgl,{filter:self.cgl_filter});
+
+
 
     var w=8,h=8;
 
