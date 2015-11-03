@@ -564,6 +564,8 @@ var Scene = function(cfg)
         onError:null
     };
 
+    this.vars={};
+
     this.cgl=new CGL.State();
     this.cgl.patch=this;
     this.cgl.setCanvas(this.config.glCanvasId);
