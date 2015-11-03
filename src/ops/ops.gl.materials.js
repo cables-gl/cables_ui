@@ -329,8 +329,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'vec3 binormal;'
         .endl()+'vec3 c1 = cross(norm, vec3(0.0, 0.0, 1.0));'
         .endl()+'vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
-        .endl()+'if(length(c1)>length(c2)) tangent = c1;'
-        .endl()+'    else tangent = c2;'
+        // .endl()+'if(length(c1)>length(c2)) tangent = c2;'
+        // .endl()+'    else tangent = c1;'
+        .endl()+'    tangent = c2;'
+
         .endl()+'tangent = normalize(tangent);'
         .endl()+'binormal = cross(norm, tangent);'
         .endl()+'binormal = normalize(binormal);'
@@ -345,7 +347,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'           pow(r.z + 1.0, 2.0)'
         .endl()+'       );'
         .endl()+'       vn = r.xy / m + 0.5;'
-
 
         .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
         .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
@@ -365,6 +366,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    #endif'
 
         .endl()+'    {{MODULE_COLOR}}'
+
+        // .endl()+'    col.xyz=tnorm;'
 
         .endl()+'    gl_FragColor = col;'
         .endl()+''
