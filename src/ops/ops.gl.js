@@ -72,7 +72,7 @@ Ops.Gl.Renderer = function()
 Ops.Gl.Renderer.renderStart=function(cgl,identTranslate)
 {
     cgl.gl.enable(cgl.gl.DEPTH_TEST);
-    cgl.gl.clearColor(0,0,0,1);
+    cgl.gl.clearColor(0,0,0,0);
     cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
     cgl.setViewPort(0,0,cgl.canvas.clientWidth,cgl.canvas.clientHeight);
