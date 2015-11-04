@@ -39,7 +39,8 @@ Ops.Gl.Renderer = function()
 
     this.onAnimFrame=function(time)
     {
-        if(cgl.aborted)return;
+        if(cgl.aborted || cgl.canvas.clientWidth===0 || cgl.canvas.clientHeight===0)return;
+
         if(cgl.canvasWidth==-1)
         {
             cgl.setCanvas(self.patch.config.glCanvasId);
