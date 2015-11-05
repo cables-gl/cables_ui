@@ -361,7 +361,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    #ifdef USE_SPECULAR_TEXTURE'
         .endl()+'       vec4 spec = texture2D( texSpecMatCap, vn );'
         .endl()+'       spec*= texture2D( texSpec, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY) );'
-        .endl()+'       col+=spec*2.0;'
+        .endl()+'       col+=spec;'
 
         .endl()+'    #endif'
 
