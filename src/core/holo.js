@@ -552,6 +552,7 @@ var Scene = function(cfg)
     this.timer=new Timer();
     this.animFrameOps=[];
     this.gui=false;
+    var paused=false;
 
     this.onLoadStart=null;
     this.onLoadEnd=null;
@@ -574,6 +575,16 @@ var Scene = function(cfg)
     {
         this.aborted=true;
     }
+
+    this.pause=function()
+    {
+        paused=true;
+    };
+    this.resume=function()
+    {
+        paused=false;
+        this.exec();
+    };
 
     this.getFilePath=function(filename)
     {
@@ -685,6 +696,7 @@ var Scene = function(cfg)
 
     this.exec=function(e)
     {
+        if(paused)return;
 
         if(CGL.getLoadingStatus()>0 && CGL.getLoadingStatus()<1.0)
         {
@@ -695,6 +707,7 @@ var Scene = function(cfg)
         }
         else
         {
+
             requestAnimationFrame(self.exec);
         }
         self.timer.update();

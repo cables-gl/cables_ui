@@ -61,7 +61,6 @@ CGL.Texture=function(cgl,options)
             else
             {
                 console.log('unknown texture filter!');
-                        
             }
         }
     }
@@ -133,7 +132,6 @@ CGL.Texture=function(cgl,options)
         }
     
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
-
     };
 
     this.setSize(8,8);
@@ -157,6 +155,8 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     texture.image.onload=function()
     {
         texture.initTexture(texture.image);
+        console.log('loaded texture: ',url);
+                
         if(finishedCallback)finishedCallback();
         CGL.decrementLoadingAssets();
     };

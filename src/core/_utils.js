@@ -117,7 +117,7 @@ CGL.incrementLoadingAssets=function()
 CGL.decrementLoadingAssets=function()
 {
     CGL.numLoadingAssets--;
-    setTimeout(CGL.getLoadingStatus,100);
+    setTimeout(CGL.getLoadingStatus,500);
 };
 
 CGL.getLoadingStatus=function()
@@ -127,6 +127,7 @@ CGL.getLoadingStatus=function()
     var stat=(CGL.numMaxLoadingAssets-CGL.numLoadingAssets)/CGL.numMaxLoadingAssets;
     if(stat==1 && CGL.onLoadingAssetsFinished)
     {
+        console.log('loading status: ',CGL.numMaxLoadingAssets,CGL.numLoadingAssets);
         CGL.onLoadingAssetsFinished();
     }
     if(CABLES.UI && CABLES.UI.GUI)
