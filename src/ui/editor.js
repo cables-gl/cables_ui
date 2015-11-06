@@ -65,6 +65,7 @@ CABLES.Editor=function()
             }
         }
         c.id=generateUUID();
+
         contents.push(c);
         updateTabs();
         this.setTab(c.id);
@@ -111,7 +112,8 @@ CABLES.Editor=function()
     {
         this.setCurrentTabContent();
         console.log('setTab',id);
-                
+
+
         for(var i=0;i<contents.length;i++)
         {
             if(contents[i].id==id)
@@ -125,6 +127,9 @@ CABLES.Editor=function()
                 else editor.session.setMode("ace/mode/Text");
 
                 editor.setValue(contents[i].content,-1);
+
+                $('#editorbar .iconbar .editortoolbar').html(contents[i].toolbarHtml || '');
+
             }
             else
             {

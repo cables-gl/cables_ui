@@ -5,9 +5,6 @@ Ops.Math=Ops.Math || {};
 
 
 
-
-
-
 // ---------------------------------------------------------------------------
 
 
@@ -122,8 +119,6 @@ Ops.Math.Subtract = function()
 
 Ops.Math.Subtract.prototype = new Op();
 
-
-
 // ---------------------------------------------------------------------------
 
 Ops.Math.Divide = function()
@@ -152,8 +147,6 @@ Ops.Math.Divide.prototype = new Op();
 
 
 Ops.Math.Compare={};
-
-
 
 
 Ops.Math.Compare.IsEven = function()
