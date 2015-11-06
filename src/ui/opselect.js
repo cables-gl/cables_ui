@@ -79,7 +79,6 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
             
             $('#searchinfo').html('');
 
-            
             var cached=CABLES.api.hasCached('doc/ops/'+opname);
             if(cached)
             {
