@@ -286,7 +286,7 @@ Ops.Gl.TextureCycler.prototype = new Op();
 // --------------------------------------------------------------------------
 
 
-Ops.Gl.Texture = function()
+Ops.Gl.Texture=function()
 {
     Op.apply(this, arguments);
     var self=this;
@@ -306,12 +306,15 @@ Ops.Gl.Texture = function()
     
     this.cgl_filter=CGL.Texture.FILTER_MIPMAP;
 
-    var reload=function()
+    var reload=function(nocache)
     {
+        var url=self.patch.getFilePath(self.filename.get());
+        if(nocache)url+='?rnd='+generateUUID();
+
         if(self.filename.get())
         {
             // console.log('load texture... '+self.filename.val);
-            self.tex=CGL.Texture.load(cgl,self.patch.getFilePath(self.filename.get()),function()
+            self.tex=CGL.Texture.load(cgl,url,function()
             {
                 self.textureOut.val=self.tex;
                 self.width.set(self.tex.width);
@@ -340,6 +343,15 @@ Ops.Gl.Texture = function()
     this.textureOut.onPreviewChanged=function()
     {
         if(self.textureOut.showPreview) CGL.Texture.previewTexture=self.textureOut.get();
+    };
+
+    this.onFileUploaded=function(fn)
+    {
+        if(self.filename.get().endsWith(fn))
+        {
+            console.log('found!');
+            reload(true);
+        }
     };
 
 };

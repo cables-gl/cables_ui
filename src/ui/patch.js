@@ -1677,6 +1677,16 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
+
+    this.onUploadFile=function(fn)
+    {
+        console.log('file uploaded:',fn);
+        for(var i=0;i<this.ops.length;i++)
+        {
+            if(this.ops[i].op.onFileUploaded)this.ops[i].op.onFileUploaded(fn);
+        }
+    };
+
     doWatchPorts();
 
 };

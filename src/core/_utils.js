@@ -31,7 +31,13 @@ function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+String.prototype.startsWith = function(prefix) {
+    return this.indexOf(prefix) === 0;
+};
 
+String.prototype.endsWith = function(suffix) {
+    return this.match(suffix+"$") == suffix;
+};
 // ----------------------------------------------------------------
 
 function ajaxRequest(url, callback)
