@@ -124,6 +124,12 @@ var Op = function(_patch)
         return op;
     };
 
+    this.getFistOutPortByType=function(type)
+    {
+        for(var ipo in this.portsOut)
+            if(this.portsOut[ipo].type==type)return this.portsOut[ipo];
+    };
+
     this.getPortByName=function(name)
     {
         for(var ipi in this.portsIn)
@@ -552,6 +558,7 @@ var Scene = function(cfg)
     this.timer=new Timer();
     this.animFrameOps=[];
     this.gui=false;
+    var paused=false;
 
     this.onLoadStart=null;
     this.onLoadEnd=null;
@@ -564,6 +571,8 @@ var Scene = function(cfg)
         onError:null
     };
 
+    this.vars={};
+
     this.cgl=new CGL.State();
     this.cgl.patch=this;
     this.cgl.setCanvas(this.config.glCanvasId);
@@ -572,6 +581,16 @@ var Scene = function(cfg)
     {
         this.aborted=true;
     }
+
+    this.pause=function()
+    {
+        paused=true;
+    };
+    this.resume=function()
+    {
+        paused=false;
+        this.exec();
+    };
 
     this.getFilePath=function(filename)
     {
@@ -683,6 +702,7 @@ var Scene = function(cfg)
 
     this.exec=function(e)
     {
+        if(paused)return;
 
         if(CGL.getLoadingStatus()>0 && CGL.getLoadingStatus()<1.0)
         {
@@ -693,6 +713,7 @@ var Scene = function(cfg)
         }
         else
         {
+
             requestAnimationFrame(self.exec);
         }
         self.timer.update();

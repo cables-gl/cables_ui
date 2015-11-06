@@ -31,7 +31,13 @@ function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+String.prototype.startsWith = function(prefix) {
+    return this.indexOf(prefix) === 0;
+};
 
+String.prototype.endsWith = function(suffix) {
+    return this.match(suffix+"$") == suffix;
+};
 // ----------------------------------------------------------------
 
 function ajaxRequest(url, callback)
@@ -117,7 +123,7 @@ CGL.incrementLoadingAssets=function()
 CGL.decrementLoadingAssets=function()
 {
     CGL.numLoadingAssets--;
-    setTimeout(CGL.getLoadingStatus,100);
+    setTimeout(CGL.getLoadingStatus,500);
 };
 
 CGL.getLoadingStatus=function()
@@ -127,19 +133,38 @@ CGL.getLoadingStatus=function()
     var stat=(CGL.numMaxLoadingAssets-CGL.numLoadingAssets)/CGL.numMaxLoadingAssets;
     if(stat==1 && CGL.onLoadingAssetsFinished)
     {
+        console.log('loading status: ',CGL.numMaxLoadingAssets,CGL.numLoadingAssets);
         CGL.onLoadingAssetsFinished();
     }
     if(CABLES.UI && CABLES.UI.GUI)
         if(stat==1)  $('#assetsloadingindicator').hide();
             else  $('#assetsloadingindicator').show();
 
-
-
     return stat;
 };
 
 
+CGL.getWheelSpeed=function(event)
+{
+    var normalized;
+    if (event.wheelDelta)
+    {
+        normalized = (event.wheelDelta % 120 - 0) == -0 ? event.wheelDelta / 120 : event.wheelDelta / 12;
+    }
+    else
+    {
+        var rawAmmount = event.deltaY ? event.deltaY : event.detail;
+        normalized = -(rawAmmount % 3 ? rawAmmount * 10 : rawAmmount / 3);
+    }
 
+    normalized*=-4.0;
+    if(normalized>400)normalized=400;
+    if(normalized<-400)normalized=-400;
+    // console.log('normalized',normalized);
+        
+
+    return normalized;
+};
 
 
 

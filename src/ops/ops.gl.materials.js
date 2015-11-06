@@ -15,25 +15,24 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.shaderOut=this.addOutPort(new Port(this,"shader",OP_PORT_TYPE_OBJECT));
     this.shaderOut.ignoreValueSerialize=true;
 
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureUniform=null;
 
-    this.textureDiffuse=this.addInPort(new Port(this,"diffuse",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureDiffuse=this.addInPort(new Port(this,"diffuse",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureDiffuseUniform=null;
 
-    this.textureNormal=this.addInPort(new Port(this,"normal",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureNormal=this.addInPort(new Port(this,"normal",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureNormalUniform=null;
 
     this.normalScale=this.addInPort(new Port(this,"normalScale",OP_PORT_TYPE_VALUE,{display:'range'}));
     this.normalScale.val=0.4;
     this.normalScaleUniform=null;
 
-    this.textureSpec=this.addInPort(new Port(this,"specular",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureSpec=this.addInPort(new Port(this,"specular",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureSpecUniform=null;
 
-    this.textureSpecMatCap=this.addInPort(new Port(this,"specular matcap",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureSpecMatCap=this.addInPort(new Port(this,"specular matcap",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureSpecMatCapUniform=null;
-
 
 
     this.diffuseRepeatX=this.addInPort(new Port(this,"diffuseRepeatX",OP_PORT_TYPE_VALUE));
@@ -329,8 +328,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'vec3 binormal;'
         .endl()+'vec3 c1 = cross(norm, vec3(0.0, 0.0, 1.0));'
         .endl()+'vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
-        .endl()+'if(length(c1)>length(c2)) tangent = c1;'
-        .endl()+'    else tangent = c2;'
+        // .endl()+'if(length(c1)>length(c2)) tangent = c2;'
+        // .endl()+'    else tangent = c1;'
+        .endl()+'    tangent = c1;'
+
         .endl()+'tangent = normalize(tangent);'
         .endl()+'binormal = cross(norm, tangent);'
         .endl()+'binormal = normalize(binormal);'
@@ -346,7 +347,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       );'
         .endl()+'       vn = r.xy / m + 0.5;'
 
-
         .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
         .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
         .endl()+'    #endif'
@@ -360,11 +360,13 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    #ifdef USE_SPECULAR_TEXTURE'
         .endl()+'       vec4 spec = texture2D( texSpecMatCap, vn );'
         .endl()+'       spec*= texture2D( texSpec, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY) );'
-        .endl()+'       col+=spec*2.0;'
+        .endl()+'       col+=spec;'
 
         .endl()+'    #endif'
 
         .endl()+'    {{MODULE_COLOR}}'
+
+        // .endl()+'    col.xyz=tnorm;'
 
         .endl()+'    gl_FragColor = col;'
         .endl()+''
@@ -620,7 +622,6 @@ Ops.Gl.Shader.BasicMaterial = function()
 
         .endl()+"gl_PointSize=12.0;"
 
-
         .endl()+"#ifndef BILLBOARD"
         .endl()+'   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);'
         .endl()+'#endif '
@@ -717,7 +718,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.a.val=1.0;
 
     this.render.onTriggered=this.doRender;
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureUniform=null;
 
     this.texture.onPreviewChanged=function()
@@ -731,7 +732,6 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     this.texture.onValueChanged=function()
     {
-
         if(self.texture.get())
         {
             if(self.textureUniform!==null)return;
@@ -749,7 +749,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         }
     };
 
-    this.textureOpacity=this.addInPort(new Port(this,"textureOpacity",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureOpacity=this.addInPort(new Port(this,"textureOpacity",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureOpacityUniform=null;
 
     this.textureOpacity.onPreviewChanged=function()
@@ -924,114 +924,5 @@ Ops.Gl.Shader.TextureSinusWobble = function()
 Ops.Gl.Shader.TextureSinusWobble.prototype = new Op();
 
 
-
-
 // --------------------------------------------------------------------------
-
-Ops.Gl.Shader.Picker = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='Picker';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-
-    this.x=this.addInPort(new Port(this,"x",OP_PORT_TYPE_VALUE));
-    this.y=this.addInPort(new Port(this,"y",OP_PORT_TYPE_VALUE));
-
-
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    var pixelRGB = new Uint8Array(4);
-
-    this.doRender=function()
-    {
-        cgl.frameStore.renderOffscreen=true;
-        cgl.frameStore.pickingpass=true;
-        cgl.frameStore.pickingpassNum=0;
-        self.trigger.trigger();
-        cgl.frameStore.renderOffscreen=false;
-        cgl.frameStore.pickingpass=false;
-
-        cgl.gl.readPixels(self.x.val, cgl.canvas.height-self.y.val, 1,1,  cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE ,pixelRGB);
-        cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT | cgl.gl.COLOR_BUFFER_BIT);
-
-        cgl.frameStore.pickedColor=pixelRGB[0];
-
-        self.trigger.trigger();
-    };
-
-    this.render.onTriggered=this.doRender;
-};
-
-Ops.Gl.Shader.Picker.prototype = new Op();
-
-
-
-
-Ops.Gl.Shader.PickingMaterial = function()
-{
-    Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='PickingMaterial';
-    this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
-    this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-
-    this.isPicked=this.addOutPort(new Port(this,"is picked",OP_PORT_TYPE_VALUE));
-
-
-    var currentPickingColor=-1;
-
-    this.doRender=function()
-    {
-        if(cgl.frameStore.pickingpass)
-        {
-            cgl.frameStore.pickingpassNum+=4;
-            currentPickingColor=cgl.frameStore.pickingpassNum;
-            pickColorUniformR.setValue(currentPickingColor/255);
-            cgl.setShader(shader);
-            self.trigger.trigger();
-            cgl.setPreviousShader();
-        }
-        else
-        {
-            if(cgl.frameStore.pickedColor==currentPickingColor)
-            {
-                // console.log('picked !'+currentPickingColor);
-            }
-
-            self.isPicked.set( cgl.frameStore.pickedColor==currentPickingColor );
-
-            self.trigger.trigger();
-        }
-
-    };
-
-    var srcFrag=''
-        .endl()+'precision highp float;'
-        .endl()+'varying vec3 norm;'
-        .endl()+'uniform float r;'
-        .endl()+''
-        .endl()+'void main()'
-        .endl()+'{'
-        .endl()+'   vec4 col=vec4(r,0.0,0.0,1.0);'
-        .endl()+'   gl_FragColor = col;'
-        .endl()+'}';
-
-    var shader=new CGL.Shader(cgl);
-    shader.offScreenPass=true;
-    this.onLoaded=shader.compile;
-
-    shader.setSource(shader.getDefaultVertexShader(),srcFrag);
-
-    var pickColorUniformR=new CGL.Uniform(shader,'f','r',0);
-
-    this.render.onTriggered=this.doRender;
-    this.doRender();
-};
-
-Ops.Gl.Shader.PickingMaterial.prototype = new Op();
 

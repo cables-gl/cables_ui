@@ -28,6 +28,34 @@ CABLES.UI.ServerOps=function()
         console.log('storedOps.length',storedOps.length);
     }
 
+    this.pushOp=function(name)
+    {
+        CABLES.api.get('ops/github/push/'+name,function(res)
+        {
+            var msg='<h2>push status</h2>';
+
+            msg+='<br/><pre>'+JSON.stringify(res,false,4)+'</pre><br/>';
+
+            CABLES.UI.MODAL.show(msg);
+
+        });
+
+    };
+
+    this.pullOp=function(name)
+    {
+        CABLES.api.get('ops/github/pull/'+name,function(res)
+            {
+
+                var msg='<h2><span class="fa fa-exclamation-triangle"></span> pull status</h2>';
+
+                msg+='<a class="bluebutton" onclick="document.location.reload()">reload</a>';
+                msg+='<br/><pre>'+JSON.stringify(res,false,4)+'</pre><br/>';
+
+                CABLES.UI.MODAL.show(msg);
+
+            });
+    };
 
     this.load=function(cb)
     {
@@ -66,11 +94,15 @@ CABLES.UI.ServerOps=function()
 
         var msg='<h2><span class="fa fa-exclamation-triangle"></span> cablefail :/</h2>';
         msg+='error creating op: '+name;
-        msg+='<br/><pre>'+e+'</pre>';
+        msg+='<br/><pre>'+e+'</pre><br/>';
 
-        if(this.isServerOp(name) && gui.user.isAdmin)
+        if(this.isServerOp(name))
         {
-            msg+='<br/><a class="bluebutton" onclick="gui.showEditor();gui.serverOps.edit(\''+name+'\')">edit op</a><br/><br/>';
+            msg+='<a class="bluebutton" onclick="gui.showEditor();gui.serverOps.edit(\''+name+'\')">edit op</a>';
+        }
+        if(gui.user.isAdmin)
+        {
+            msg+=' <a class="bluebutton" onclick="gui.serverOps.pullOp(\''+name+'\')">try to pull</a>';
         }
         CABLES.UI.MODAL.show(msg);
 
@@ -139,11 +171,15 @@ CABLES.UI.ServerOps=function()
                 storedOps.push(name);
                 updateStoredOps();
 
+                var html='<a class="button" onclick="gui.serverOps.pushOp(\''+op.name+'\');">push to github</a>';
+
+
                 gui.editor().addTab(
                 {
                     content:res.code,
                     title:op.name,
                     syntax:'js',
+                    toolbarHtml:html,
                     onClose:function(which)
                     {
                         console.log('close tab',which);

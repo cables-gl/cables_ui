@@ -45,13 +45,17 @@ CGL.TextureEffect=function(cgl)
         {
             textureSource=new CGL.Texture(cgl);
             textureSource.setSize(16,16);
+            // textureSource.filter=CGL.Texture.FILTER_MIPMAP;
+
         }
         else
         {
             textureSource=tex;
         }
         
+        textureTarget.filter=CGL.Texture.FILTER_MIPMAP;
         textureTarget.setSize(textureSource.width,textureSource.height);
+
 
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
 

@@ -630,8 +630,7 @@ CABLES.UI.Patch=function(_gui)
 
         $('#patch svg').bind("mousewheel", function (event,delta,nbr)
         {
-            delta=CABLES.UI.getWheelSpeed(event);
-                    // console.log('delta',delta);
+            delta=CGL.getWheelSpeed(event);
                     
             event=mouseEvent(event);
             if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
@@ -899,6 +898,7 @@ CABLES.UI.Patch=function(_gui)
 
         scene.onUnLink=function(p1,p2)
         {
+            self.updateCurrentOpParams();
             // console.log('on unlink');
 
             for(var i in self.ops)
@@ -970,6 +970,8 @@ CABLES.UI.Patch=function(_gui)
             {
                 thelink.show();
             }
+
+            self.updateCurrentOpParams();
 
             var undofunc=function(p1Name,p2Name,op1Id,op2Id)
             {
@@ -1287,6 +1289,11 @@ CABLES.UI.Patch=function(_gui)
         }
     }
 
+    this.updateCurrentOpParams=function()
+    {
+        if(currentOp)self.showOpParams(currentOp.op);
+    };
+
     this.showOpParams=function(op)
     {
 
@@ -1384,14 +1391,24 @@ CABLES.UI.Patch=function(_gui)
                 if(op.portsIn[index].isAnimated()) $('#portanim_in_'+index).addClass('timingbutton_active');
                 if(op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $('#portgraph_in_'+index).addClass('timingbutton_active');
 
+                $('#portCreateOp_in_'+index).on('click',function(e)
+                {
+                    var thePort=op.portsIn[index];
+                    if(thePort.type==OP_PORT_TYPE_TEXTURE)
+                    {
+                        var newop=gui.scene().addOp('Ops.Gl.Texture');
+                        
+                        gui.scene().link(op,thePort.name,newop,newop.getFistOutPortByType(thePort.type).name );
+
+                    }
+
+                });
 
                 $('#portedit_in_'+index).on('click',function(e)
                 {
                     var thePort=op.portsIn[index];
 
-        console.log('thePort.uiAttribs.editorSyntax',thePort.uiAttribs.editorSyntax);
-        
-
+                    console.log('thePort.uiAttribs.editorSyntax',thePort.uiAttribs.editorSyntax);
 
                     gui.showEditor();
                     gui.editor().addTab({
@@ -1657,6 +1674,16 @@ CABLES.UI.Patch=function(_gui)
         else
         {
             CABLES.UI.setStatusText('unknown file type');
+        }
+    };
+
+
+    this.onUploadFile=function(fn)
+    {
+        console.log('file uploaded:',fn);
+        for(var i=0;i<this.ops.length;i++)
+        {
+            if(this.ops[i].op.onFileUploaded)this.ops[i].op.onFileUploaded(fn);
         }
     };
 

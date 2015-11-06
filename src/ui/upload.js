@@ -41,16 +41,43 @@ $("html").on("drop", function(event)
         if (event.lengthComputable)
         {
             var complete = (event.loaded / event.total * 100 | 0);
-            CABLES.UI.MODAL.showLoading('uploading ' + complete + '%');
+            if(complete==100) CABLES.UI.MODAL.showLoading('processing files... ');
+                else CABLES.UI.MODAL.showLoading('uploading ' + complete + '%');
         }
     };
 
-    xhr.onload = function (e)
+    xhr.onload = function (e,r)
     {
         gui.patch().updateProjectFiles();
         if (xhr.status === 200)
         {
-            CABLES.UI.MODAL.hide();
+            // console.log('e',r);
+            var res=JSON.parse(e.target.response);
+            var msg="<h2>files uploaded</h2>";
+            msg+='<table>';
+
+            for(var i=0;i<res.log.length;i++)
+            {
+                gui.patch().onUploadFile(res.log[i].filename);
+
+                msg+='<tr>';
+                msg+='<td>';
+                if(!res.log[i].success) msg+='FAIL';
+                msg+='</td>';
+                msg+='<td>';
+                msg+=res.log[i].filename;
+                msg+='</td>';
+                msg+='<td>';
+                msg+=''+res.log[i].msg;
+                msg+='</td>';
+                msg+='<td>';
+                msg+=''+res.log[i].filesize;
+                msg+='</td>';
+                msg+='</tr>';
+            }
+            msg+='</table>';
+            CABLES.UI.MODAL.show(msg);
+            // CABLES.UI.MODAL.hide();
         }
         else
         {

@@ -67,6 +67,10 @@
                         <a class="graphbutton fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" ></a>
                     {{/compare}}
 
+                    {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
+                        <a class="tt graphbutton fa fa-plus-square" data-tt="create new fitting op" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ></a>
+                    {{/compare}}
+
                     {{#compare port.uiAttribs.display '==' 'range' }}
                         <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                         <a class="graphbutton fa fa-line-chart" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>

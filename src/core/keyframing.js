@@ -319,9 +319,16 @@ CABLES.TL.Anim=function(cfg)
     this.loop=false;
     this.defaultEasing=CABLES.TL.EASING_LINEAR;
 
-    this.clear=function()
+    this.clear=function(time)
     {
+        var v=0;
+        if(time)
+            v=this.getValue(time);
         this.keys.length=0;
+
+        if(time)
+            this.setValue(time,v);
+
     };
 
     this.sortKeys=function()
@@ -357,7 +364,7 @@ CABLES.TL.Anim=function(cfg)
 
         if(!found)
         {
-            console.log('not found');
+            // console.log('not found');
                     
             this.keys.push(new CABLES.TL.Key({time:time,value:value,e:this.defaultEasing})) ;
         }
@@ -393,7 +400,6 @@ CABLES.TL.Anim=function(cfg)
         if(this.keys.length===0)return 0;
 
         if(time<this.keys[0].time)return this.keys[0].value;
-
         
         if(this.loop && time>this.keys[this.keys.length-1].time)
         {

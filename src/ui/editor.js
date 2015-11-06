@@ -10,7 +10,7 @@ CABLES.Editor=function()
     var editor = ace.edit("ace");
     editor.setValue('nothing to edit right now :/');
     editor.setOption("showPrintMargin", false);
-    editor.setTheme("ace/theme/ambiance");
+    editor.setTheme("ace/theme/cables");
     editor.session.setMode("ace/mode/text");
     editor.$blockScrolling = Infinity;
     editor.resize();
@@ -65,6 +65,7 @@ CABLES.Editor=function()
             }
         }
         c.id=generateUUID();
+
         contents.push(c);
         updateTabs();
         this.setTab(c.id);
@@ -125,6 +126,9 @@ CABLES.Editor=function()
                 else editor.session.setMode("ace/mode/Text");
 
                 editor.setValue(contents[i].content,-1);
+
+                $('#editorbar .iconbar .editortoolbar').html(contents[i].toolbarHtml || '');
+
             }
             else
             {
