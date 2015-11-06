@@ -124,6 +124,12 @@ var Op = function(_patch)
         return op;
     };
 
+    this.getFistOutPortByType=function(type)
+    {
+        for(var ipo in this.portsOut)
+            if(this.portsOut[ipo].type==type)return this.portsOut[ipo];
+    };
+
     this.getPortByName=function(name)
     {
         for(var ipi in this.portsIn)

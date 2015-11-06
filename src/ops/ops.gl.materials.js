@@ -15,25 +15,24 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.shaderOut=this.addOutPort(new Port(this,"shader",OP_PORT_TYPE_OBJECT));
     this.shaderOut.ignoreValueSerialize=true;
 
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureUniform=null;
 
-    this.textureDiffuse=this.addInPort(new Port(this,"diffuse",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureDiffuse=this.addInPort(new Port(this,"diffuse",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureDiffuseUniform=null;
 
-    this.textureNormal=this.addInPort(new Port(this,"normal",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureNormal=this.addInPort(new Port(this,"normal",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureNormalUniform=null;
 
     this.normalScale=this.addInPort(new Port(this,"normalScale",OP_PORT_TYPE_VALUE,{display:'range'}));
     this.normalScale.val=0.4;
     this.normalScaleUniform=null;
 
-    this.textureSpec=this.addInPort(new Port(this,"specular",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureSpec=this.addInPort(new Port(this,"specular",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureSpecUniform=null;
 
-    this.textureSpecMatCap=this.addInPort(new Port(this,"specular matcap",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureSpecMatCap=this.addInPort(new Port(this,"specular matcap",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureSpecMatCapUniform=null;
-
 
 
     this.diffuseRepeatX=this.addInPort(new Port(this,"diffuseRepeatX",OP_PORT_TYPE_VALUE));
@@ -719,7 +718,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.a.val=1.0;
 
     this.render.onTriggered=this.doRender;
-    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.texture=this.addInPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureUniform=null;
 
     this.texture.onPreviewChanged=function()
@@ -733,7 +732,6 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     this.texture.onValueChanged=function()
     {
-
         if(self.texture.get())
         {
             if(self.textureUniform!==null)return;
@@ -751,7 +749,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         }
     };
 
-    this.textureOpacity=this.addInPort(new Port(this,"textureOpacity",OP_PORT_TYPE_TEXTURE,{preview:true}));
+    this.textureOpacity=this.addInPort(new Port(this,"textureOpacity",OP_PORT_TYPE_TEXTURE,{preview:true,display:'createOpHelper'}));
     this.textureOpacityUniform=null;
 
     this.textureOpacity.onPreviewChanged=function()
