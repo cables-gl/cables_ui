@@ -298,6 +298,8 @@ Ops.Gl.Texture=function()
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
 
+    
+
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
@@ -308,12 +310,12 @@ Ops.Gl.Texture=function()
 
     var reload=function(nocache)
     {
+
         var url=self.patch.getFilePath(self.filename.get());
         if(nocache)url+='?rnd='+generateUUID();
 
-        if(self.filename.get())
+        if(self.filename.get() && self.filename.get().length>1)
         {
-            // console.log('load texture... '+self.filename.val);
             self.tex=CGL.Texture.load(cgl,url,function()
             {
                 self.textureOut.val=self.tex;
@@ -325,6 +327,10 @@ Ops.Gl.Texture=function()
 
             },{flip:self.flip.get(),filter:self.cgl_filter});
             self.textureOut.set(self.tex);
+        }
+        else
+        {
+            self.textureOut.set(CGL.Texture.getTemporaryTexture(cgl));
         }
     };
 

@@ -114,6 +114,26 @@ CGL.Texture=function(cgl,options)
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 
+    this.initFromData=function(data,w,h,filter)
+    {
+        this.filter=filter;
+        self.width=w;
+        self.height=h;
+
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
+        cgl.gl.pixelStorei(cgl.gl.UNPACK_FLIP_Y_WEBGL, !self.flip);
+        cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, w, h, 0, cgl.gl.RGBA, cgl.gl.UNSIGNED_BYTE, data);
+
+        setFilter();
+
+        if(_isPowerOfTwo(self.width) && _isPowerOfTwo(self.height) && self.filter==CGL.Texture.FILTER_MIPMAP)
+        {
+            cgl.gl.generateMipmap(cgl.gl.TEXTURE_2D);
+        }
+    
+        cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
+    };
+
     this.initTexture=function(img)
     {
         self.width=img.width;
@@ -164,7 +184,39 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     return texture;
 };
 
+CGL.Texture.getTemporaryTexture=function(cgl)
+{
+    if(!cgl.temporaryTexture)
+    {
+        cgl.temporaryTexture=new CGL.Texture(cgl);
+        var size=256;
+        var arr=[];
+        for(var y=0;y<size;y++)
+        {
+            for(var x=0;x<size;x++)
+            {
+                if((x+y)%60<30)
+                {
+                    arr.push(220);
+                    arr.push(220);
+                    arr.push(220);
+                }
+                else
+                {
+                    arr.push(40);
+                    arr.push(40);
+                    arr.push(40);
+                }
+                arr.push(255);
+            }
+        }
 
+        var data = new Uint8Array(arr);
+        cgl.temporaryTexture.initFromData(data,size,size,CGL.Texture.FILTER_MIPMAP);
+    }
+
+    return cgl.temporaryTexture;
+};
 
 CGL.Texture.fromImage=function(cgl,img)
 {

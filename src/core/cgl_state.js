@@ -9,6 +9,7 @@ CGL.State=function()
     var shaderStack=[];
     var viewPort=[0,0,0,0];
 
+    this.temporaryTexture=null;
     this.frameStore={};
     this.gl=null;
     this.pMatrix=mat4.create();

@@ -78,7 +78,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         updateResolution();
     }
 
-    render=function()
+    var render=function()
     {
         cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
