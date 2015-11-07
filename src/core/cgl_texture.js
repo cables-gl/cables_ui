@@ -10,6 +10,7 @@ CGL.Texture=function(cgl,options)
     this.height=0;
     this.flip=true;
     this.filter=CGL.Texture.FILTER_NEAREST;
+    this.wrap=CGL.Texture.WRAP_REPEAT;
     var isDepthTexture=false;
 
     if(options)
@@ -43,6 +44,34 @@ CGL.Texture=function(cgl,options)
         }
         else
         {
+
+
+            if(self.wrap==CGL.Texture.WRAP_CLAMP_TO_EDGE)
+            {
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_EDGE);
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_EDGE);
+            }
+
+            if(self.wrap==CGL.Texture.WRAP_REPEAT)
+            {
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.REPEAT);
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.REPEAT);
+            }
+
+            if(self.wrap==CGL.Texture.WRAP_MIRRORED_REPEAT)
+            {
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.MIRRORED_REPEAT);
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.MIRRORED_REPEAT);
+            }
+
+            if(self.wrap==CGL.Texture.WRAP_CLAMP_TO_BORDER)
+            {
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_BORDER);
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_BORDER);
+            }
+
+
+
             if(self.filter==CGL.Texture.FILTER_NEAREST)
             {
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.NEAREST);
@@ -184,38 +213,34 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     return texture;
 };
 
-CGL.Texture.getTemporaryTexture=function(cgl)
+CGL.Texture.getTemporaryTexture=function(cgl,size,filter,wrap)
 {
-    if(!cgl.temporaryTexture)
+    var temptex=new CGL.Texture(cgl);
+    var arr=[];
+    for(var y=0;y<size;y++)
     {
-        cgl.temporaryTexture=new CGL.Texture(cgl);
-        var size=256;
-        var arr=[];
-        for(var y=0;y<size;y++)
+        for(var x=0;x<size;x++)
         {
-            for(var x=0;x<size;x++)
+            if((x+y)%60<30)
             {
-                if((x+y)%60<30)
-                {
-                    arr.push(220);
-                    arr.push(220);
-                    arr.push(220);
-                }
-                else
-                {
-                    arr.push(40);
-                    arr.push(40);
-                    arr.push(40);
-                }
-                arr.push(255);
+                arr.push(220);
+                arr.push(220);
+                arr.push(220);
             }
+            else
+            {
+                arr.push(40);
+                arr.push(40);
+                arr.push(40);
+            }
+            arr.push(255);
         }
-
-        var data = new Uint8Array(arr);
-        cgl.temporaryTexture.initFromData(data,size,size,CGL.Texture.FILTER_MIPMAP);
     }
 
-    return cgl.temporaryTexture;
+    var data = new Uint8Array(arr);
+    temptex.initFromData(data,size,size,CGL.Texture.FILTER_MIPMAP);
+
+    return temptex;
 };
 
 CGL.Texture.fromImage=function(cgl,img)
@@ -230,6 +255,11 @@ CGL.Texture.fromImage=function(cgl,img)
 CGL.Texture.FILTER_NEAREST=0;
 CGL.Texture.FILTER_LINEAR=1;
 CGL.Texture.FILTER_MIPMAP=2;
+
+CGL.Texture.WRAP_REPEAT=0;
+CGL.Texture.WRAP_MIRRORED_REPEAT=1;
+CGL.Texture.WRAP_CLAMP_TO_EDGE=1;
+CGL.Texture.WRAP_CLAMP_TO_BORDER=3;
 
 // ---------------------------------------------------------------------------
 

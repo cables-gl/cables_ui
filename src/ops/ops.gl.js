@@ -295,18 +295,20 @@ Ops.Gl.Texture=function()
     this.name='texture';
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'image' } ));
     this.filter=this.addInPort(new Port(this,"filter",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['nearest','linear','mipmap']}));
+    this.wrap=this.addInPort(new Port(this,"wrap",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['repeat','mirrored repeat','clamp to edge','clamp to border']}));
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
 
-    
+
 
     this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
     this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
 
     this.flip=this.addInPort(new Port(this,"flip",OP_PORT_TYPE_VALUE,{display:'bool'}));
     this.flip.set(false);
-    
-    this.cgl_filter=CGL.Texture.FILTER_MIPMAP;
+
+    this.cgl_filter=0;
+    this.cgl_wrap=0;
 
     var reload=function(nocache)
     {
@@ -325,12 +327,16 @@ Ops.Gl.Texture=function()
                 if(!self.tex.isPowerOfTwo()) self.uiAttr({warning:'texture dimensions not power of two! - texture filtering will not work.'});
                 else self.uiAttr({warning:''});
 
-            },{flip:self.flip.get(),filter:self.cgl_filter});
+            },{
+                wrap:self.wrap.get(),
+                flip:self.flip.get(),
+                filter:self.cgl_filter
+            });
             self.textureOut.set(self.tex);
         }
         else
         {
-            self.textureOut.set(CGL.Texture.getTemporaryTexture(cgl));
+            self.textureOut.set(CGL.Texture.getTemporaryTexture(cgl,256,self.cgl_filter,self.cgl_wrap));
         }
     };
 
@@ -345,6 +351,17 @@ Ops.Gl.Texture=function()
         reload();
     };
     this.filter.set('mipmap');
+
+    this.wrap.onValueChanged=function()
+    {
+        if(self.wrap.get()=='repeat') self.cgl_wrap=CGL.Texture.WRAP_REPEAT;
+        if(self.wrap.get()=='mirrored repeat') self.cgl_wrap=CGL.Texture.WRAP_MIRRORED_REPEAT;
+        if(self.wrap.get()=='clamp to edge') self.cgl_wrap=CGL.Texture.WRAP_CLAMP_TO_EDGE;
+        if(self.wrap.get()=='clamp to border') self.cgl_wrap=CGL.Texture.WRAP_CLAMP_TO_BORDER;
+
+        reload();
+    };
+    this.wrap.set('repeat');
 
     this.textureOut.onPreviewChanged=function()
     {
