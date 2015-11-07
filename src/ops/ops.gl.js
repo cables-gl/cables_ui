@@ -310,16 +310,27 @@ Ops.Gl.Texture=function()
     this.cgl_filter=0;
     this.cgl_wrap=0;
 
+    var setTempTexture=function()
+    {
+        self.textureOut.set(CGL.Texture.getTemporaryTexture(cgl,64,self.cgl_filter,self.cgl_wrap));
+    };
+
     var reload=function(nocache)
     {
 
         var url=self.patch.getFilePath(self.filename.get());
         if(nocache)url+='?rnd='+generateUUID();
 
-        if(self.filename.get() && self.filename.get().length>1)
+        if(self.filename.get() && self.filename.get().length>1 )
         {
-            self.tex=CGL.Texture.load(cgl,url,function()
+            self.tex=CGL.Texture.load(cgl,url,function(err)
             {
+                if(err)
+                {
+                    setTempTexture();
+                    self.uiAttr({warning:'could not load texture'});
+                    return;
+                }
                 self.textureOut.val=self.tex;
                 self.width.set(self.tex.width);
                 self.height.set(self.tex.height);
@@ -336,7 +347,7 @@ Ops.Gl.Texture=function()
         }
         else
         {
-            self.textureOut.set(CGL.Texture.getTemporaryTexture(cgl,64,self.cgl_filter,self.cgl_wrap));
+            setTempTexture();
         }
     };
 
@@ -369,7 +380,7 @@ Ops.Gl.Texture=function()
 
     this.onFileUploaded=function(fn)
     {
-        if(self.filename.get().endsWith(fn))
+        if(self.filename.get() && self.filename.get().endsWith(fn))
         {
             console.log('found!');
             reload(true);

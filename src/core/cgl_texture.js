@@ -197,7 +197,14 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
     if(settings && settings.hasOwnProperty('flip')) texture.flip=settings.flip;
 
-    texture.image.onload=function()
+    texture.image.onabort=texture.image.onerror=function(e)
+    {
+        var error={error:true};
+        if(finishedCallback)finishedCallback(error);
+        CGL.decrementLoadingAssets();
+    };
+
+    texture.image.onload=function(e)
     {
         texture.initTexture(texture.image);
         console.log('loaded texture: ',url);
