@@ -1,14 +1,14 @@
 var CGL=CGL || {};
 
 
-CGL.Mesh=function(_cgl,geom)
+CGL.Mesh=function(_cgl,geom,_triangleMode)
 {
     var cgl=_cgl;
     var bufVertices = cgl.gl.createBuffer();
     var bufVerticesIndizes = cgl.gl.createBuffer();
     var attributes=[];
-
     var _geom=null;
+    var triangleMode=_triangleMode || cgl.gl.TRIANGLES;
 
     function addAttribute(name,array,itemSize)
     {
@@ -32,8 +32,6 @@ CGL.Mesh=function(_cgl,geom)
         {
             attributes[i].loc=-1;
         }
-
-
     }
 
     this.getAttributes=function()
@@ -44,7 +42,6 @@ CGL.Mesh=function(_cgl,geom)
     this.setGeom=function(geom)
     {
         if(!this.meshChanged() )this.unBind();
-
 
         attributes.length=0;
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
@@ -124,7 +121,9 @@ CGL.Mesh=function(_cgl,geom)
         // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
 
 
-        var what=cgl.gl.TRIANGLES;
+        // var what=cgl.gl.TRIANGLES;
+
+        var what=triangleMode;
         if(cgl.wireframe)what=cgl.gl.LINES;
         else if(cgl.points)what=cgl.gl.POINTS;
 
