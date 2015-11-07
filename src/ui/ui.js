@@ -13,6 +13,7 @@ CABLES.UI.GUI=function()
     _scene.gui=true;
     var _patch=null;
     var _editor=new CABLES.Editor();
+    var _chat = new CABLES.Chat();
 
     this.user=null;
     this.serverOps=new CABLES.UI.ServerOps();
@@ -247,7 +248,7 @@ CABLES.UI.GUI=function()
     this.cycleRendererSize=function()
     {
                 console.log('cycleRendererSize');
-                
+
         if(self.rendererWidth!==0)
         {
             oldRendwerWidth=self.rendererWidth;
@@ -380,7 +381,7 @@ CABLES.UI.GUI=function()
                         {
                             self.editor().save();
                         }
-                        
+
                     }
                 break;
                 case 83: // s - save
@@ -404,7 +405,7 @@ CABLES.UI.GUI=function()
                                 self.patch().saveCurrentProject(function(){
                                     document.location.href='#/project/'+d._id;
                                 },d._id,d.name);
-                                
+
                             });
                         }
                     }
@@ -516,7 +517,7 @@ CABLES.UI.GUI=function()
     this.editOpDoc=function(objName)
     {
         CABLES.api.clearCache();
-     
+
         this.showEditor();
 
         this.getOpDoc(objName,false,function(content)
@@ -645,7 +646,7 @@ CABLES.UI.GUI=function()
         _patch.show(_scene);
 
         initRouting();
-        
+
     };
     self.loadUser();
 
@@ -666,4 +667,3 @@ document.addEventListener("DOMContentLoaded", function(event)
     gui.bind();
 
 });
-
