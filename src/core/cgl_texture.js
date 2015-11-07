@@ -64,11 +64,6 @@ CGL.Texture=function(cgl,options)
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.MIRRORED_REPEAT);
             }
 
-            if(self.wrap==CGL.Texture.WRAP_CLAMP_TO_BORDER)
-            {
-                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_BORDER);
-                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_BORDER);
-            }
 
 
 
@@ -143,9 +138,10 @@ CGL.Texture=function(cgl,options)
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 
-    this.initFromData=function(data,w,h,filter)
+    this.initFromData=function(data,w,h,filter,wrap)
     {
         this.filter=filter;
+        this.wrap=wrap;
         self.width=w;
         self.height=h;
 
@@ -221,24 +217,24 @@ CGL.Texture.getTemporaryTexture=function(cgl,size,filter,wrap)
     {
         for(var x=0;x<size;x++)
         {
-            if((x+y)%60<30)
+            if((x+y)%64<32)
             {
-                arr.push(220);
-                arr.push(220);
-                arr.push(220);
+                arr.push(200+y/size*25+x/size*25);
+                arr.push(200+y/size*25+x/size*25);
+                arr.push(200+y/size*25+x/size*25);
             }
             else
             {
-                arr.push(40);
-                arr.push(40);
-                arr.push(40);
+                arr.push(40+y/size*25+x/size*25);
+                arr.push(40+y/size*25+x/size*25);
+                arr.push(40+y/size*25+x/size*25);
             }
             arr.push(255);
         }
     }
 
     var data = new Uint8Array(arr);
-    temptex.initFromData(data,size,size,CGL.Texture.FILTER_MIPMAP);
+    temptex.initFromData(data,size,size,filter,wrap);
 
     return temptex;
 };
@@ -258,8 +254,8 @@ CGL.Texture.FILTER_MIPMAP=2;
 
 CGL.Texture.WRAP_REPEAT=0;
 CGL.Texture.WRAP_MIRRORED_REPEAT=1;
-CGL.Texture.WRAP_CLAMP_TO_EDGE=1;
-CGL.Texture.WRAP_CLAMP_TO_BORDER=3;
+CGL.Texture.WRAP_CLAMP_TO_EDGE=2;
+
 
 // ---------------------------------------------------------------------------
 

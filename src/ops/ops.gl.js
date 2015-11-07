@@ -295,7 +295,7 @@ Ops.Gl.Texture=function()
     this.name='texture';
     this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'image' } ));
     this.filter=this.addInPort(new Port(this,"filter",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['nearest','linear','mipmap']}));
-    this.wrap=this.addInPort(new Port(this,"wrap",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['repeat','mirrored repeat','clamp to edge','clamp to border']}));
+    this.wrap=this.addInPort(new Port(this,"wrap",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['repeat','mirrored repeat','clamp to edge']}));
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
 
@@ -336,7 +336,7 @@ Ops.Gl.Texture=function()
         }
         else
         {
-            self.textureOut.set(CGL.Texture.getTemporaryTexture(cgl,256,self.cgl_filter,self.cgl_wrap));
+            self.textureOut.set(CGL.Texture.getTemporaryTexture(cgl,64,self.cgl_filter,self.cgl_wrap));
         }
     };
 
@@ -357,7 +357,6 @@ Ops.Gl.Texture=function()
         if(self.wrap.get()=='repeat') self.cgl_wrap=CGL.Texture.WRAP_REPEAT;
         if(self.wrap.get()=='mirrored repeat') self.cgl_wrap=CGL.Texture.WRAP_MIRRORED_REPEAT;
         if(self.wrap.get()=='clamp to edge') self.cgl_wrap=CGL.Texture.WRAP_CLAMP_TO_EDGE;
-        if(self.wrap.get()=='clamp to border') self.cgl_wrap=CGL.Texture.WRAP_CLAMP_TO_BORDER;
 
         reload();
     };
