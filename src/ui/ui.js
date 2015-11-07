@@ -13,7 +13,7 @@ CABLES.UI.GUI=function()
     _scene.gui=true;
     var _patch=null;
     var _editor=new CABLES.Editor();
-    var _chat = new CABLES.Chat();
+    // var _chat = new CABLES.Chat();
 
     this.user=null;
     this.serverOps=new CABLES.UI.ServerOps();
@@ -638,6 +638,9 @@ CABLES.UI.GUI=function()
                 $('#loggedout').show();
                 $('#loggedin').hide();
             });
+
+            console.log('data.user',self.user);
+                
     };
 
     this.init=function()
