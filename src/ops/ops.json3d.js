@@ -103,7 +103,6 @@ Ops.Json3d.json3dFile = function()
         CABLES.ajax(self.patch.getFilePath(self.filename.val),
             function(err,_data,xhr)
             {
-
                 if(err)
                 {
                     console.log('ajax error:',err);

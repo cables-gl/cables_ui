@@ -423,7 +423,7 @@ CGL.Shader=function(_cgl)
         return shader;
     };
 
-    linkProgram=function(program)
+    var linkProgram=function(program)
     {
         cgl.gl.linkProgram(program);
         if (!cgl.gl.getProgramParameter(program, cgl.gl.LINK_STATUS))
@@ -432,7 +432,7 @@ CGL.Shader=function(_cgl)
         }
     };
 
-    createProgram=function(vstr, fstr)
+    var createProgram=function(vstr, fstr)
     {
         var program = cgl.gl.createProgram();
         self.vshader = createShader(vstr, cgl.gl.VERTEX_SHADER);
