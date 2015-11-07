@@ -2300,9 +2300,11 @@ Ops.Gl.TextureEffects.Noise = function()
 
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'   float c=random(time*texCoord.xy);'
+        .endl()+'   float c=random((time+0.232323)*texCoord.xy);'
+        // .endl()+'   vec4 col=vec4(c,c,c,1.0);'
         .endl()+'   vec4 col=texture2D(tex,texCoord);'
         .endl()+'   col.rgb=mix(col.rgb,vec3(c),amount);'
+        // .endl()+'   col.rgb+=vec3(c)*amount;'
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
@@ -2314,6 +2316,7 @@ Ops.Gl.TextureEffects.Noise = function()
     {
         if(!cgl.currentTextureEffect)return;
         
+        // console.log(self.patch.timer.getTime());
         timeUniform.setValue(self.patch.timer.getTime());
 
         cgl.setShader(shader);

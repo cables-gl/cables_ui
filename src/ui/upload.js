@@ -76,8 +76,8 @@ $("html").on("drop", function(event)
                 msg+='</tr>';
             }
             msg+='</table>';
-            CABLES.UI.MODAL.show(msg);
-            // CABLES.UI.MODAL.hide();
+            // CABLES.UI.MODAL.show(msg);
+            CABLES.UI.MODAL.hide();
         }
         else
         {

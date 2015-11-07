@@ -304,8 +304,10 @@ CABLES.UI.GUI=function()
             CABLES.api.delete('project/'+self.patch().getCurrentProject()._id,{},
                 function()
                 {
-                    CABLES.UI.SELECTPROJECT.doReload=true;
+                    // CABLES.UI.SELECTPROJECT.doReload=true;
+                    document.location.href="/";
                 } );
+
         }
     };
 
