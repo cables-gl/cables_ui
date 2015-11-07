@@ -9,14 +9,24 @@
 
     <canvas id="glcanvas" width="640" height="360"></canvas>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="js/libs.ui.min.js"></script>
     <script type="text/javascript" src="js/libs.core.min.js"></script>
-    <script type="text/javascript" src="js/cables.max.js"></script> 
-    <script type="text/javascript" src="js/cables.ops.max.js"></script> 
-    <script type="text/javascript" src="/api/ops/code"></script> 
-    
-    <script type="text/javascript" src="js/cablesui.max.js"></script> 
-    <script type="text/javascript" src="js/ace/ace.js"></script> 
+    <script type="text/javascript" src="js/cables.max.js"></script>
+    <script type="text/javascript" src="js/cables.ops.max.js"></script>
+    <script type="text/javascript" src="/api/ops/code"></script>
+
+    <script type="text/javascript" src="js/cablesui.max.js"></script>
+    <script type="text/javascript" src="js/ace/ace.js"></script>
+
+<div id="chat">
+    <div class="chat-messages">
+    </div>
+    <div class="chat-controls">
+        <input type="text" class="message-input" placeholder="type here" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button class="send">Send</button>
+    </div>
+</div>
 
 
 
@@ -157,6 +167,9 @@
 
 
     <a id="button_settings" class="button fa fa-cog"></a>
+    <a id="button_chat" class="button fa fa-users" style="display: none">
+        <span class="badge"></span>
+    </a>
 
 
 <div id="assetsloadingindicator" style="display:none;float:left;margin-top:6px;margin-left:10px;padding-top:2px;"><i class="fa fa-spinner fa-pulse"></i></div>
@@ -168,7 +181,7 @@
 
         <a id="button_cycleRenderSize" class="button fa fa-expand tt"  data-tt="resize webgl renderer (esc to exit fullscreen)"></a>
         &nbsp;
-        
+
 
     </div>
 
@@ -236,10 +249,11 @@
 <div class="tooltip"></div>
 
 
+
 <script id="op_select" type="text/x-handlebars-template">
-    
+
 <div class="opsearch">
-    <h2>selcet op</h2>
+    <h2>select op</h2>
 
     <input id="opsearch"/>
 
