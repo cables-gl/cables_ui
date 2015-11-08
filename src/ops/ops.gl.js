@@ -31,9 +31,16 @@ Ops.Gl.Renderer = function()
     var identTranslate=vec3.create();
     vec3.set(identTranslate, 0,0,-2);
 
+    var remove=function()
+    {
+        cgl.gl.clearColor(0,0,0,0);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+self.patch.removeOnAnimFrame(self);
+    };
+
     this.onDelete=function()
     {
-        self.patch.removeOnAnimFrame(self);
+        requestAnimationFrame(remove);
     };
 
     this.onAnimFrame=function(time)
