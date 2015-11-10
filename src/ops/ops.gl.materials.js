@@ -195,24 +195,24 @@ Ops.Gl.Shader.MatCapMaterial = function()
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.texture.val.tex);
         }
 
-        if(self.textureDiffuse.val)
+        if(self.textureDiffuse.get())
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE1);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureDiffuse.val.tex);
         }
 
-        if(self.textureNormal.val)
+        if(self.textureNormal.get())
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE2);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureNormal.val.tex);
         }
 
-        if(self.textureSpec.val)
+        if(self.textureSpec.get())
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE3);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureSpec.val.tex);
         }
-        if(self.textureSpecMatCap.val)
+        if(self.textureSpecMatCap.get())
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE4);
             cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.textureSpecMatCap.val.tex);
@@ -237,10 +237,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'attribute vec2 attrTexCoord;'
         .endl()+'attribute vec3 attrVertNormal;'
 
-        .endl()+'attribute vec3 attrTangent;'
-        .endl()+'attribute vec3 attrBiTangent;'
-
         .endl()+'#ifdef HAS_NORMAL_TEXTURE'
+        .endl()+'   attribute vec3 attrTangent;'
+        .endl()+'   attribute vec3 attrBiTangent;'
+
         .endl()+'   varying vec3 vBiTangent;'
         .endl()+'   varying vec3 vTangent;'
         .endl()+'#endif'
@@ -259,12 +259,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
 
-        .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
-        .endl()+'       vTangent=attrTangent;'
-        .endl()+'       vBiTangent=attrBiTangent;'
-        .endl()+'   #endif'
+        .endl()+'    #ifdef HAS_NORMAL_TEXTURE'
+        .endl()+'        vTangent=attrTangent;'
+        .endl()+'        vBiTangent=attrBiTangent;'
+        .endl()+'    #endif'
 
-        .endl()+'   vec4 pos = vec4( vPosition, 1. );'
+        .endl()+'    vec4 pos = vec4( vPosition, 1. );'
 
         .endl()+'    {{MODULE_VERTEX_POSITION}}'
 
