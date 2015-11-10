@@ -408,6 +408,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         // .endl()+'    col.b=0.0;'
 
         .endl()+'    if(vn.s>0.96 || vn.t>0.96)col.rgb=vec3(1.0,0.0,0.0);'
+        .endl()+'    if(vn.s<0.03 || vn.t<0.03)col.rgb=vec3(0.0,1.0,0.0);'
+        // .endl()+'    col.rgb=vec3(length(vn),0.0,0.0);'
 
 
         .endl()+'    gl_FragColor = col;'
