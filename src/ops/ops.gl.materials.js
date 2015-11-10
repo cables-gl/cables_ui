@@ -268,7 +268,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'    {{MODULE_VERTEX_POSITION}}'
 
-
         .endl()+'    e = normalize( vec3( mvMatrix * pos ) );'
         .endl()+'    vec3 n = normalize( mat3(normalMatrix) * norm );'
 
@@ -283,6 +282,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'   #ifdef DO_PROJECT_COORDS_XY'
         .endl()+'       texCoord=(projMatrix * mvMatrix*pos).xy*0.1;'
         .endl()+'   #endif'
+
         .endl()+'   #ifdef DO_PROJECT_COORDS_YZ'
         .endl()+'       texCoord=(projMatrix * mvMatrix*pos).yz*0.1;'
         .endl()+'   #endif'
@@ -333,6 +333,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'void main()'
         .endl()+'{'
         
+        .endl()+'   vec2 vnOrig=vNorm;'
         .endl()+'   vec2 vn=vNorm;'
 
         .endl()+'   #ifdef HAS_DIFFUSE_TEXTURE'
@@ -351,9 +352,9 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'       #ifdef CALC_TANGENT'
         .endl()+'           vec3 c1 = cross(norm, vec3(0.0, 0.0, 1.0));'
-        .endl()+'           vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
-        .endl()+'           if(length(c1)>length(c2)) tangent = c2;'
-        .endl()+'               else tangent = c1;'
+        // .endl()+'           vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
+        // .endl()+'           if(length(c1)>length(c2)) tangent = c2;'
+        // .endl()+'               else tangent = c1;'
         .endl()+'           tangent = c1;'
         .endl()+'           tangent = normalize(tangent);'
         .endl()+'           binormal = cross(norm, tangent);'
@@ -389,6 +390,14 @@ Ops.Gl.Shader.MatCapMaterial = function()
         
         .endl()+'    vec4 col = texture2D( tex, vn );'
 
+        // .endl()+'   float bias=0.1;'
+        // .endl()+'    if(vn.s>1.0-bias || vn.t>1.0-bias || vn.s<bias || vn.t<bias)' //col.rgb=vec3(0.0,1.0,0.0);
+        // .endl()+'    {;'
+        // .endl()+'       col = texture2D( tex, vnOrig );'
+        
+        // .endl()+'    };'
+
+
         .endl()+'    #ifdef HAS_DIFFUSE_TEXTURE'
         .endl()+'       col = col*texture2D( texDiffuse, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY));'
         .endl()+'    #endif'
@@ -397,7 +406,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       vec4 spec = texture2D( texSpecMatCap, vn );'
         .endl()+'       spec*= texture2D( texSpec, vec2(texCoords.x*diffuseRepeatX,texCoords.y*diffuseRepeatY) );'
         .endl()+'       col+=spec;'
-
         .endl()+'    #endif'
 
         .endl()+'    {{MODULE_COLOR}}'
@@ -407,8 +415,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         // .endl()+'    col.g=0.0;'
         // .endl()+'    col.b=0.0;'
 
-        .endl()+'    if(vn.s>0.96 || vn.t>0.96)col.rgb=vec3(1.0,0.0,0.0);'
-        .endl()+'    if(vn.s<0.04 || vn.t<0.04)col.rgb=vec3(0.0,1.0,0.0);'
+        // .endl()+'    if()col.rgb=vec3(1.0,0.0,0.0);'
+        
         // .endl()+'    col.rgb=vec3(length(vn),0.0,0.0);'
 
 
