@@ -51,6 +51,14 @@ Ops.Gl.Shader.MatCapMaterial = function()
     };
 
 
+    this.calcTangents=this.addInPort(new Port(this,"calc normal tangents",OP_PORT_TYPE_VALUE,{display:'bool'}));
+    this.calcTangents.onValueChanged=function()
+    {
+        if(self.calcTangents.val) shader.define('CALC_TANGENT');
+            else shader.removeDefine('CALC_TANGENT');
+    };
+
+
     this.projectCoords=this.addInPort(new Port(this,"projectCoords",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['no','xy','yz']}));
     this.projectCoords.val='no';
     this.projectCoords.onValueChanged=function()
@@ -332,24 +340,28 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       vec3 tnorm=texture2D( texNormal, vec2(texCoord.x*normalRepeatX,texCoord.y*normalRepeatY) ).xyz * 2.0 - 1.0;'
 
         .endl()+'       tnorm = normalize(tnorm*normalScale);'
+
         
+        .endl()+'       vec3 tangent;'
+        .endl()+'       vec3 binormal;'
 
-        .endl()+'vec3 tangent;'
-        .endl()+'vec3 binormal;'
-        // .endl()+'vec3 c1 = cross(norm, vec3(0.0, 0.0, 1.0));'
-        // .endl()+'vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
-        // .endl()+'if(length(c1)>length(c2)) tangent = c2;'
-        // .endl()+'    else tangent = c1;'
-        // .endl()+'    tangent = c1;'
+        .endl()+'       #ifdef CALC_TANGENT'
+        .endl()+'           vec3 c1 = cross(norm, vec3(0.0, 0.0, 1.0));'
+        .endl()+'           vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
+        .endl()+'           if(length(c1)>length(c2)) tangent = c2;'
+        .endl()+'               else tangent = c1;'
+        .endl()+'           tangent = c1;'
+        .endl()+'           tangent = normalize(tangent);'
+        .endl()+'           binormal = cross(norm, tangent);'
+        .endl()+'           binormal = normalize(binormal);'
+        .endl()+'       #endif'
 
-        .endl()+'tangent=vTangent;'
-        .endl()+'binormal=vBiTangent;'
+        .endl()+'       #ifndef CALC_TANGENT'
+        .endl()+'           tangent=vTangent;'
+        .endl()+'           binormal=vBiTangent;'
+        .endl()+'       #endif'
 
-
-        // .endl()+'tangent = normalize(tangent);'
-        // .endl()+'binormal = cross(norm, tangent);'
-        // .endl()+'binormal = normalize(binormal);'
-        .endl()+'tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
+        .endl()+'       tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
     
         .endl()+'       vec3 n = normalize( mat3(normalMatrix) * (norm+tnorm*normalScale) );'
 
@@ -390,6 +402,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
     
     shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
 
+
     shader.bindTextures=this.bindTextures;
     this.shaderOut.val=shader;
     this.onLoaded=shader.compile;
@@ -402,6 +415,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.diffuseRepeatYUniform=new CGL.Uniform(shader,'f','diffuseRepeatY',self.diffuseRepeatY.val);
 
     this.render.onTriggered=this.doRender;
+    this.calcTangents.set(true);
     this.doRender();
 };
 
