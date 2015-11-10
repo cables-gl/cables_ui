@@ -328,19 +328,18 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'void main()'
         .endl()+'{'
         
-        .endl()+'#ifdef HAS_DIFFUSE_TEXTURE'
-        .endl()+'   vec2 texCoords=texCoord;'
-        .endl()+'{{MODULE_BEGIN_FRAG}}'
-        .endl()+'#endif'
-
-
         .endl()+'   vec2 vn=vNorm;'
+
+        .endl()+'   #ifdef HAS_DIFFUSE_TEXTURE'
+        .endl()+'       vec2 texCoords=texCoord;'
+        .endl()+'       {{MODULE_BEGIN_FRAG}}'
+        .endl()+'   #endif'
+
 
         .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
         .endl()+'       vec3 tnorm=texture2D( texNormal, vec2(texCoord.x*normalRepeatX,texCoord.y*normalRepeatY) ).xyz * 2.0 - 1.0;'
 
         .endl()+'       tnorm = normalize(tnorm*normalScale);'
-
         
         .endl()+'       vec3 tangent;'
         .endl()+'       vec3 binormal;'
@@ -357,8 +356,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       #endif'
 
         .endl()+'       #ifndef CALC_TANGENT'
-        .endl()+'           tangent=vTangent;'
-        .endl()+'           binormal=vBiTangent;'
+        .endl()+'           tangent=normalize(vTangent);'
+        .endl()+'           binormal=normalize(vBiTangent*norm);'
         .endl()+'       #endif'
 
         .endl()+'       tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
