@@ -239,8 +239,11 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'attribute vec3 attrTangent;'
         .endl()+'attribute vec3 attrBiTangent;'
-        .endl()+'varying vec3 vBiTangent;'
-        .endl()+'varying vec3 vTangent;'
+
+        .endl()+'#ifdef HAS_NORMAL_TEXTURE'
+        .endl()+'   varying vec3 vBiTangent;'
+        .endl()+'   varying vec3 vTangent;'
+        .endl()+'#endif'
 
         .endl()+'varying vec2 texCoord;'
         .endl()+'varying vec3 norm;'
@@ -255,8 +258,11 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'{'
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
-        .endl()+'    vTangent=attrTangent;'
-        .endl()+'    vBiTangent=attrBiTangent;'
+
+        .endl()+'   #ifdef HAS_NORMAL_TEXTURE'
+        .endl()+'       vTangent=attrTangent;'
+        .endl()+'       vBiTangent=attrBiTangent;'
+        .endl()+'   #endif'
 
         .endl()+'   vec4 pos = vec4( vPosition, 1. );'
 
@@ -296,10 +302,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'uniform sampler2D tex;'
         .endl()+'varying vec2 vNorm;'
 
-        .endl()+'varying vec3 vBiTangent;'
-        .endl()+'varying vec3 vTangent;'
-
-
         .endl()+'uniform float diffuseRepeatX;'
         .endl()+'uniform float diffuseRepeatY;'
 
@@ -315,6 +317,9 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
 
         .endl()+'#ifdef HAS_NORMAL_TEXTURE'
+        .endl()+'   varying vec3 vBiTangent;'
+        .endl()+'   varying vec3 vTangent;'
+
         .endl()+'   uniform sampler2D texNormal;'
         .endl()+'   uniform mat4 normalMatrix;'
         .endl()+'   uniform float normalScale;'
@@ -372,8 +377,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       );'
         .endl()+'       vn = r.xy / m + 0.5;'
 
-        .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
-        .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
+        // .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
+        // .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
         .endl()+'    #endif'
         
         .endl()+'    vec4 col = texture2D( tex, vn );'
