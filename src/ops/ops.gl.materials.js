@@ -366,7 +366,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         // .endl()+'           binormal=vBiTangent*norm;'
         // .endl()+'           binormal.z*=-1.0;'
         // .endl()+'           binormal=normalize(binormal);'
-        .endl()+'           binormal=normalize( cross( norm, vBiTangent ) *-1.0  );'
+        .endl()+'           binormal=normalize( cross( normalize(norm), normalize(vBiTangent) )   );'
             // vBinormal = normalize( cross( vNormal, vTangent ) * tangent.w );
 
         .endl()+'       #endif'
@@ -402,7 +402,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'    {{MODULE_COLOR}}'
 
-        // .endl()+'    col.xy=vn;'
+        // .endl()+'    col.xyz=vBiTangent;'
 
         .endl()+'    gl_FragColor = col;'
         .endl()+''

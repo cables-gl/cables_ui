@@ -57,7 +57,12 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         if(geom.vertexNormals.length>0) addAttribute('attrVertNormal',geom.vertexNormals,3);
         if(geom.texCoords.length>0) addAttribute('attrTexCoord',geom.texCoords,2);
         if(geom.hasOwnProperty('tangents') && geom.tangents.length>0) addAttribute('attrTangent',geom.tangents,3);
-        if(geom.hasOwnProperty('bitangents') && geom.bitangents.length>0) addAttribute('attrBiTangent',geom.bitangents,3);
+        if(geom.hasOwnProperty('biTangents') && geom.biTangents.length>0)
+            {
+                        console.log('bifuckingtangents');
+                        
+                addAttribute('attrBiTangent',geom.biTangents,3);
+            }
 
         for(var i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.morphTargets[i],3);
     };
