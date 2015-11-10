@@ -361,12 +361,12 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       #endif'
 
         .endl()+'       #ifndef CALC_TANGENT'
-        .endl()+'           tangent=vTangent;'
+        .endl()+'           tangent=normalize(vTangent);'
         // .endl()+'           tangent.y*=-13.0;'
-        .endl()+'           binormal=vBiTangent*norm;'
+        // .endl()+'           binormal=vBiTangent*norm;'
         // .endl()+'           binormal.z*=-1.0;'
         // .endl()+'           binormal=normalize(binormal);'
-        .endl()+'           binormal=normalize( cross( norm, tangent ) *-1.0  );'
+        .endl()+'           binormal=normalize( cross( norm, vBiTangent ) *-1.0  );'
             // vBinormal = normalize( cross( vNormal, vTangent ) * tangent.w );
 
         .endl()+'       #endif'
@@ -383,8 +383,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       );'
         .endl()+'       vn = r.xy / m + 0.5;'
 
-        // .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
-        // .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
+        .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
+        .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
         .endl()+'    #endif'
         
         .endl()+'    vec4 col = texture2D( tex, vn );'
@@ -402,7 +402,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'    {{MODULE_COLOR}}'
 
-        // .endl()+'    col.xyz=tangent;'
+        // .endl()+'    col.xy=vn;'
 
         .endl()+'    gl_FragColor = col;'
         .endl()+''
