@@ -59,8 +59,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         if(geom.hasOwnProperty('tangents') && geom.tangents.length>0) addAttribute('attrTangent',geom.tangents,3);
         if(geom.hasOwnProperty('biTangents') && geom.biTangents.length>0)
             {
-                        console.log('bifuckingtangents');
-                        
+                        // console.log('bifuckingtangents');
                 addAttribute('attrBiTangent',geom.biTangents,3);
             }
 
