@@ -10,7 +10,7 @@ CGL.Texture=function(cgl,options)
     this.height=0;
     this.flip=true;
     this.filter=CGL.Texture.FILTER_NEAREST;
-    this.wrap=CGL.Texture.WRAP_CLAMP_TO_EDGE;
+    this.wrap=CGL.Texture.WRAP_REPEAT;
     var isDepthTexture=false;
 
     if(options)
@@ -44,8 +44,6 @@ CGL.Texture=function(cgl,options)
         }
         else
         {
-
-
             // if(self.wrap==CGL.Texture.WRAP_CLAMP_TO_EDGE)
             // {
             //     cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_EDGE);
@@ -197,6 +195,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
     if(settings && settings.hasOwnProperty('flip')) texture.flip=settings.flip;
+    if(settings && settings.hasOwnProperty('wrap')) texture.wrap=settings.wrap;
 
     texture.image.onabort=texture.image.onerror=function(e)
     {

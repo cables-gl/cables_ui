@@ -361,8 +361,14 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       #endif'
 
         .endl()+'       #ifndef CALC_TANGENT'
-        .endl()+'           tangent=normalize(vTangent);'
-        .endl()+'           binormal=normalize(vBiTangent*norm);'
+        .endl()+'           tangent=vTangent;'
+        // .endl()+'           tangent.y*=-13.0;'
+        .endl()+'           binormal=vBiTangent*norm;'
+        // .endl()+'           binormal.z*=-1.0;'
+        // .endl()+'           binormal=normalize(binormal);'
+        .endl()+'           binormal=normalize( cross( norm, tangent ) *-1.0  );'
+            // vBinormal = normalize( cross( vNormal, vTangent ) * tangent.w );
+
         .endl()+'       #endif'
 
         .endl()+'       tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
