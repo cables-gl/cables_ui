@@ -82,6 +82,10 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     {
         cgl.gl.disable(cgl.gl.SCISSOR_TEST);
 
+        // cgl.gl.disable(cgl.gl.BLEND);
+        // cgl.gl.blendFunc(cgl.gl.ONE, cgl.gl.ONE_MINUS_SRC_ALPHA);
+
+
         updateResolution();
         
         cgl.currentTextureEffect=effect;
@@ -110,12 +114,11 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     {
         if(self.texOut.showPreview) self.render.onTriggered=self.texOut.val.preview;
         else self.render.onTriggered=render;
-                console.log('jaja changed');
     };
     
 
-    this.width.val=1920;
-    this.height.val=1080;
+    this.width.val=640;
+    this.height.val=360;
     this.render.onTriggered=render;
 };
 

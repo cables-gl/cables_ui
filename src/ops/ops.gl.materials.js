@@ -229,6 +229,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'attribute vec2 attrTexCoord;'
         .endl()+'attribute vec3 attrVertNormal;'
 
+        .endl()+'attribute vec3 attrTangent;'
+        .endl()+'attribute vec3 attrBiTangent;'
+        .endl()+'varying vec3 vBiTangent;'
+        .endl()+'varying vec3 vTangent;'
 
         .endl()+'varying vec2 texCoord;'
         .endl()+'varying vec3 norm;'
@@ -243,6 +247,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'{'
         .endl()+'    texCoord=attrTexCoord;'
         .endl()+'    norm=attrVertNormal;'
+        .endl()+'    vTangent=attrTangent;'
+        .endl()+'    vBiTangent=attrBiTangent;'
 
         .endl()+'   vec4 pos = vec4( vPosition, 1. );'
 
@@ -281,6 +287,10 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'varying vec2 texCoord;'
         .endl()+'uniform sampler2D tex;'
         .endl()+'varying vec2 vNorm;'
+
+        .endl()+'varying vec3 vBiTangent;'
+        .endl()+'varying vec3 vTangent;'
+
 
         .endl()+'uniform float diffuseRepeatX;'
         .endl()+'uniform float diffuseRepeatY;'
@@ -326,15 +336,19 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'vec3 tangent;'
         .endl()+'vec3 binormal;'
-        .endl()+'vec3 c1 = cross(norm, vec3(0.0, 0.0, 1.0));'
-        .endl()+'vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
+        // .endl()+'vec3 c1 = cross(norm, vec3(0.0, 0.0, 1.0));'
+        // .endl()+'vec3 c2 = cross(norm, vec3(0.0, 1.0, 0.0));'
         // .endl()+'if(length(c1)>length(c2)) tangent = c2;'
         // .endl()+'    else tangent = c1;'
-        .endl()+'    tangent = c1;'
+        // .endl()+'    tangent = c1;'
 
-        .endl()+'tangent = normalize(tangent);'
-        .endl()+'binormal = cross(norm, tangent);'
-        .endl()+'binormal = normalize(binormal);'
+        .endl()+'tangent=vTangent;'
+        .endl()+'binormal=vBiTangent;'
+
+
+        // .endl()+'tangent = normalize(tangent);'
+        // .endl()+'binormal = cross(norm, tangent);'
+        // .endl()+'binormal = normalize(binormal);'
         .endl()+'tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
     
         .endl()+'       vec3 n = normalize( mat3(normalMatrix) * (norm+tnorm*normalScale) );'
@@ -366,7 +380,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
         .endl()+'    {{MODULE_COLOR}}'
 
-        // .endl()+'    col.xyz=tnorm;'
+        // .endl()+'    col.xyz=tangent;'
 
         .endl()+'    gl_FragColor = col;'
         .endl()+''

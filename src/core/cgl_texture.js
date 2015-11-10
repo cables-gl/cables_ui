@@ -10,7 +10,7 @@ CGL.Texture=function(cgl,options)
     this.height=0;
     this.flip=true;
     this.filter=CGL.Texture.FILTER_NEAREST;
-    this.wrap=CGL.Texture.WRAP_REPEAT;
+    this.wrap=CGL.Texture.WRAP_CLAMP_TO_EDGE;
     var isDepthTexture=false;
 
     if(options)
@@ -98,7 +98,8 @@ CGL.Texture=function(cgl,options)
         // console.log('self.width',self.width,self.height);
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
-
+        console.log('resize',w,h,self.filter);
+        
         var uarr=null;
         // if(!isDataTexture)
         // {

@@ -27,7 +27,8 @@ CGL.State=function()
         this.gl=this.canvas.getContext("experimental-webgl",
         {
             preserveDrawingBuffer: true,
-            antialias:true
+            // premultipliedAlpha:true,
+            antialias:true,
         });
 
         if(!this.gl)
@@ -61,6 +62,8 @@ CGL.State=function()
 
     this.resetViewPort=function()
     {
+                // console.log(viewPort);
+                
         this.gl.viewport(
             viewPort[0],
             viewPort[1],

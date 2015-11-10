@@ -44,8 +44,8 @@ CGL.TextureEffect=function(cgl)
         if(tex===null)
         {
             textureSource=new CGL.Texture(cgl);
+            textureSource.filter=CGL.Texture.FILTER_MIPMAP;
             textureSource.setSize(16,16);
-            // textureSource.filter=CGL.Texture.FILTER_MIPMAP;
 
         }
         else
@@ -101,7 +101,7 @@ CGL.TextureEffect=function(cgl)
 
         cgl.pushPMatrix();
         cgl.gl.viewport(0, 0, self.getCurrentTargetTexture().width,self.getCurrentTargetTexture().height);
-        mat4.perspective(cgl.pMatrix,45, self.getCurrentTargetTexture().width/self.getCurrentTargetTexture().height, 0.01, 1100.0);
+        mat4.perspective(cgl.pMatrix,45, self.getCurrentTargetTexture().width/self.getCurrentTargetTexture().height, 0.1, 1100.0);
 
         cgl.pushPMatrix();
         mat4.identity(cgl.pMatrix);

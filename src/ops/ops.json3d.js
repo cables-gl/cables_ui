@@ -269,6 +269,9 @@ Ops.Json3d.Mesh=function()
             geom.calcNormals=true;
             geom.vertices=verts;
             geom.vertexNormals=jsonMesh.normals;
+            geom.tangents=jsonMesh.tangents;
+            geom.biTangents=jsonMesh.bitangents;
+
             if(jsonMesh.texturecoords) geom.texCoords = jsonMesh.texturecoords[0];
             geom.verticesIndices=[];
 
