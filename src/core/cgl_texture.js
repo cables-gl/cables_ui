@@ -96,7 +96,7 @@ CGL.Texture=function(cgl,options)
         // console.log('self.width',self.width,self.height);
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
-        console.log('resize',w,h,self.filter);
+        // console.log('resize',w,h,self.filter);
         
         var uarr=null;
         // if(!isDataTexture)
@@ -207,7 +207,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     texture.image.onload=function(e)
     {
         texture.initTexture(texture.image);
-        console.log('loaded texture: ',url);
+        // console.log('loaded texture: ',url);
                 
         if(finishedCallback)finishedCallback();
         CGL.decrementLoadingAssets();
