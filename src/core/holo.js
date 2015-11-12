@@ -148,7 +148,8 @@ var Op = function(_patch)
     {
         for(var i=0;i<this.portsIn.length;i++)
         {
-            this.portsIn[i].updateAnim();
+            // quickdirty fix ie11
+            // this.portsIn[i].updateAnim();
         }
     };
 
