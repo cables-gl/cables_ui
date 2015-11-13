@@ -1104,6 +1104,8 @@ hr
 
 
 .chat-messages {
+    position:absolute;
+    display: none;
     overflow-y: scroll;
     height: 200px;
     width: 500px;

@@ -10,7 +10,7 @@ var OP_PORT_TYPE_DYNAMIC=4;
 
 var Ops = {};
 
-var Op = function(_patch)
+var Op = function()
 {
     this.objName='';
     this.portsOut=[];
@@ -18,8 +18,8 @@ var Op = function(_patch)
     this.posts=[];
     this.uiAttribs={};
     this.enabled=true;
-    this.patch=_patch;
-    this.name='unknown';
+    this.patch=arguments[0];
+    this.name=arguments[1] || 'unknown';
     this.id=generateUUID();
     this.onAddPort=null;
     this.onCreate=null;
@@ -27,6 +27,7 @@ var Op = function(_patch)
     this.onLoaded=null;
     this.onDelete=null;
     this.onUiAttrChange=null;
+    var _self=this;
 
     this.uiAttr=function(newAttribs)
     {
@@ -76,10 +77,10 @@ var Op = function(_patch)
     this.printInfo=function()
     {
         for(var i=0;i<this.portsIn.length;i++)
-            console.log('in: '+this.portsIn[i].getName());
+             console.log('in: '+this.portsIn[i].getName());
 
         for(var ipo in this.portsOut)
-            console.log('out: '+this.portsOut[ipo].getName());
+             console.log('out: '+this.portsOut[ipo].getName());
     };
 
     this.removeLinks=function()
@@ -153,8 +154,15 @@ var Op = function(_patch)
         }
     };
 
+    this.log=function(txt)
+    {
+        if(!this.patch.silent) console.log('['+(this.getName())+'] '+txt);
+    };
+
+
 
 };
+
 
 // ------------------------------------------------------------------------------------
 
@@ -230,12 +238,20 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.getType=function(){ return this.type; };
     this.isLinked=function(){ return this.links.length>0; };
-    this.onValueChanged=null;
+    
+    this.onValueChanged=null; // deprecated!
+    var onValueChanged=null;
     this.onTriggered=null;
     this._onTriggered=function()
     {
         parent.updateAnims();
         if(parent.enabled && self.onTriggered) self.onTriggered();
+    };
+
+    this.onValueChange=function(cb)
+    {
+        // onValueChanged=cb;
+        onValueChanged=cb.bind(this.parent);
     };
 
     this.setValue=function(v)
@@ -251,7 +267,16 @@ var Port=function(parent,name,type,uiAttribs)
                 else
                 {
                     this.value=v;
-                    if(this.onValueChanged)this.onValueChanged();
+                    if(onValueChanged)
+                    {
+                        onValueChanged();
+                    }
+                    else
+                    if(this.onValueChanged)
+                    {
+                        // deprecated!
+                        this.onValueChanged();
+                    }
                 }
 
                 // if(this.links.length!==0)
@@ -559,6 +584,7 @@ var Scene = function(cfg)
     this.timer=new Timer();
     this.animFrameOps=[];
     this.gui=false;
+    this.silent=false;
     var paused=false;
 
     this.onLoadStart=null;
@@ -569,6 +595,7 @@ var Scene = function(cfg)
     {
         glCanvasId:'glcanvas',
         prefixAssetPath:'',
+        silent:false,
         onError:null
     };
 
@@ -578,10 +605,8 @@ var Scene = function(cfg)
     this.cgl.patch=this;
     this.cgl.setCanvas(this.config.glCanvasId);
 
-    if(this.cgl.aborted)
-    {
-        this.aborted=true;
-    }
+    if(this.cgl.aborted) this.aborted=true;
+    if(this.cgl.silent) this.silent=true;
 
     this.pause=function()
     {
@@ -615,15 +640,15 @@ var Scene = function(cfg)
 
         try
         {
-            if(parts.length==2) op=new window[parts[0]][parts[1]](this);
-            else if(parts.length==3) op=new window[parts[0]][parts[1]][parts[2]](this);
-            else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this);
-            else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this);
+            if(parts.length==2) op=new window[parts[0]][parts[1]](this,objName);
+            else if(parts.length==3) op=new window[parts[0]][parts[1]][parts[2]](this,objName);
+            else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this,objName);
+            else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this,objName);
             else console.log('parts.length',parts.length);
         }
         catch(e)
         {
-            console.log('instancing error '+objName,e);
+            console.error('instancing error '+objName,e);
             if(CABLES.UI)
             {
                 gui.serverOps.showOpInstancingError(objName,e);
