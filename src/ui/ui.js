@@ -113,12 +113,14 @@ CABLES.UI.GUI=function()
             $('#ace').css('left',0);
 
             $('#editorbar').css('width',self.editorWidth);
-
             $('#splitterEditor').show();
             $('#splitterEditor').css('left',self.editorWidth);
             $('#splitterEditor').css('height',patchHeight-2);
             $('#splitterEditor').css('width',5);
             $('#splitterEditor').css('top',menubarHeight);
+
+            patchWidth-=self.editorWidth-6;
+            patchLeft=self.editorWidth+5;
 
         }
         else
@@ -130,7 +132,7 @@ CABLES.UI.GUI=function()
         if(self.rendererWidth<100)self.rendererWidth=100;
 
         $('#patch svg').css('height',patchHeight-2);
-        $('#patch svg').css('width',window.innerWidth-self.rendererWidth-9);
+        $('#patch svg').css('width',patchWidth-2);
 
         $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
         $('#splitterPatch').css('height',patchHeight+timelineUiHeight+2);
@@ -640,7 +642,7 @@ CABLES.UI.GUI=function()
             });
 
             console.log('data.user',self.user);
-                
+
     };
 
     this.init=function()

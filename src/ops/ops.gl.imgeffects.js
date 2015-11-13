@@ -70,7 +70,6 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     };
     this.useVPSize.val=true;
 
-
     function resize()
     {
         h=parseInt(self.height.val,10);
@@ -87,7 +86,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
 
 
         updateResolution();
-        
+
         cgl.currentTextureEffect=effect;
 
         effect.startEffect();
@@ -115,7 +114,7 @@ Ops.Gl.TextureEffects.ImageCompose = function()
         if(self.texOut.showPreview) self.render.onTriggered=self.texOut.val.preview;
         else self.render.onTriggered=render;
     };
-    
+
 
     this.width.val=640;
     this.height.val=360;
@@ -138,7 +137,7 @@ Ops.Gl.TextureEffects.Invert = function()
 
     var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
-    
+
 
     var srcFrag=''
         .endl()+'precision highp float;'
@@ -165,7 +164,7 @@ Ops.Gl.TextureEffects.Invert = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -225,7 +224,7 @@ Ops.Gl.TextureEffects.Scroll = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -314,7 +313,7 @@ Ops.Gl.TextureEffects.Desaturate = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -391,7 +390,7 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -508,7 +507,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.amount=this.addInPort(new Port(this,"amount",OP_PORT_TYPE_VALUE,{ display:'range' }));
-    
+
     this.image=this.addInPort(new Port(this,"image",OP_PORT_TYPE_TEXTURE,{preview:true }));
     this.blendMode=this.addInPort(new Port(this,"blendMode",OP_PORT_TYPE_VALUE,{ display:'dropdown',values:[
         'normal','lighten','darken','multiply','average','add','substract','difference','negation','exclusion','overlay','screen',
@@ -523,7 +522,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         'alpha channel','luminance'
         ] }));
     this.removeAlphaSrc=this.addInPort(new Port(this,"removeAlphaSrc",OP_PORT_TYPE_VALUE,{ display:'bool' }));
-    
+
     this.invAlphaChannel=this.addInPort(new Port(this,"invert alpha channel",OP_PORT_TYPE_VALUE,{ display:'bool' }));
 
 
@@ -593,7 +592,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         .endl()+'#ifdef BM_EXCLUSION'
         .endl()+'colNew=(base + blend - 2.0 * base * blend);'
         .endl()+'#endif'
-  
+
         .endl()+'#ifdef BM_LIGHTEN'
         .endl()+'colNew=max(blend, base);'
         .endl()+'#endif'
@@ -662,7 +661,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
 
         .endl()+'#endif'
-        
+
 
         // .endl()+'vec4 finalColor=vec4(colNew*amount*blendRGBA.a,blendRGBA.a);'
         // .endl()+'finalColor+=vec4(base*(1.0-amount)*baseRGBA.a,baseRGBA.a);'//, base ,1.0-blendRGBA.a*amount);'
@@ -674,7 +673,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         // .endl()+'blendRGBA.a=alpha;'
 
         .endl()+'#endif'
-   
+
 
         .endl()+'   gl_FragColor = blendRGBA;'
         .endl()+'}';
@@ -745,7 +744,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
         if(self.blendMode.val=='screen') shader.define('BM_SCREEN');
             else shader.removeDefine('BM_SCREEN');
-        
+
         if(self.blendMode.val=='softlight') shader.define('BM_SOFTLIGHT');
             else shader.removeDefine('BM_SOFTLIGHT');
 
@@ -828,7 +827,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
         if(self.imageAlpha.showPreview) self.render.onTriggered=previewAlpha;
         else self.render.onTriggered=render;
     };
-    
+
     this.render.onTriggered=render;
 
 
@@ -872,7 +871,7 @@ Ops.Gl.TextureEffects.SSAO = function()
         .endl()+'#endif'
         .endl()+'uniform float amount;'
         .endl()+'uniform float dist;'
-        
+
         .endl()+'uniform float near;'
         .endl()+'uniform float far;'
         .endl()+''
@@ -937,7 +936,7 @@ Ops.Gl.TextureEffects.SSAO = function()
         .endl()+'ao = 1.0-ao;'
         // .endl()+'ao *= amount;'
         .endl()+'ao = 1.0-ao;'
-        
+
         .endl()+'vec4 col=vec4(ao,ao,ao,1.0);'
         // .endl()+'col.r=0.0;'
         .endl()+'col=texture2D(colTex,texCoord)-col*amount;'
@@ -955,7 +954,7 @@ Ops.Gl.TextureEffects.SSAO = function()
     var uniNearplane=new CGL.Uniform(shader,'f','near',1.0);
     var uniAmount=new CGL.Uniform(shader,'f','amount',1.0);
     var uniDist=new CGL.Uniform(shader,'f','dist',1.0);
-    
+
 
 
     this.dist.onValueChanged=function()
@@ -1049,7 +1048,7 @@ Ops.Gl.TextureEffects.AlphaMask = function()
         .endl()+'   vec4 col=vec4(0.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=texture2D(tex,texCoord);'
-        
+
         .endl()+'   #ifdef FROM_RED'
         .endl()+'       col.a=texture2D(image,texCoord).r;'
         .endl()+'   #endif'
@@ -1098,7 +1097,7 @@ Ops.Gl.TextureEffects.AlphaMask = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1285,7 +1284,7 @@ Ops.Gl.TextureEffects.ColorLookup = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1368,7 +1367,7 @@ Ops.Gl.TextureEffects.BrightnessContrast = function()
     {
         amountBrightUniform.setValue(self.amountBright.val);
     };
-    
+
 
     this.amountBright.val=0;
     this.amount.val=0.5;
@@ -1376,7 +1375,7 @@ Ops.Gl.TextureEffects.BrightnessContrast = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1433,7 +1432,7 @@ Ops.Gl.TextureEffects.RemoveAlpha = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1507,7 +1506,7 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1582,7 +1581,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
         .endl()+'{'
         .endl()+'   vec4 col=vec4(0.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
-        
+
         .endl()+'   #ifdef CHANNEL_R'
         .endl()+'       col.r=texture2D(tex,texCoord).r;'
         .endl()+'       #ifdef MONO'
@@ -1615,7 +1614,7 @@ Ops.Gl.TextureEffects.ColorChannel = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1737,7 +1736,7 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1805,7 +1804,7 @@ Ops.Gl.TextureEffects.Hue = function()
         .endl()+'   vec4 col=vec4(1.0,0.0,0.0,1.0);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       col=texture2D(tex,texCoord);'
-        
+
         .endl()+'       vec3 hsv = rgb2hsv(col.rgb);'
         .endl()+'       hsv.x=hsv.x+hue;'
         .endl()+'       col.rgb = hsv2rgb(hsv);'
@@ -1826,7 +1825,7 @@ Ops.Gl.TextureEffects.Hue = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1915,7 +1914,7 @@ Ops.Gl.TextureEffects.Color = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -1993,7 +1992,7 @@ Ops.Gl.TextureEffects.Vignette = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
@@ -2123,7 +2122,7 @@ Ops.Gl.TextureEffects.FXAA = function()
     this.name='FXAA';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION));
     this.trigger=this.addOutPort(new Port(this,"trigger",OP_PORT_TYPE_FUNCTION));
-    
+
     this.fxaa_span=this.addInPort(new Port(this,"span",OP_PORT_TYPE_VALUE,{display:'dropdown',values:[0,2,4,8,16,32,64]}));
     this.fxaa_reduceMin=this.addInPort(new Port(this,"reduceMin",OP_PORT_TYPE_VALUE));
     this.fxaa_reduceMul=this.addInPort(new Port(this,"reduceMul",OP_PORT_TYPE_VALUE));
@@ -2134,7 +2133,7 @@ Ops.Gl.TextureEffects.FXAA = function()
     var shader=new CGL.Shader(cgl);
     this.onLoaded=shader.compile;
     var srcFrag=''
-               
+
         .endl()+'precision highp float;'
         .endl()+'#ifdef HAS_TEXTURES'
         .endl()+'  varying vec2 texCoord;'
@@ -2217,7 +2216,7 @@ Ops.Gl.TextureEffects.FXAA = function()
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, cgl.currentTextureEffect.getCurrentSourceTexture().tex );
 
         cgl.currentTextureEffect.finish();
-        
+
         cgl.setPreviousShader();
 
         self.trigger.trigger();
@@ -2245,7 +2244,7 @@ Ops.Gl.TextureEffects.FXAA = function()
 
     this.texWidth.onValueChanged=changeRes;
     this.texHeight.onValueChanged=changeRes;
-    
+
     this.fxaa_span.val=8;
     this.texWidth.val=1920;
     this.texHeight.val=1080;
@@ -2318,7 +2317,7 @@ Ops.Gl.TextureEffects.Noise = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         // console.log(self.patch.timer.getTime());
         timeUniform.setValue(self.patch.timer.getTime());
 
@@ -2403,7 +2402,7 @@ Ops.Gl.TextureEffects.ChromaticAberration = function()
     this.render.onTriggered=function()
     {
         if(!cgl.currentTextureEffect)return;
-        
+
         cgl.setShader(shader);
         cgl.currentTextureEffect.bind();
 
