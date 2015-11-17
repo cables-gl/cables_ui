@@ -119,6 +119,7 @@ CGL.Shader=function(_cgl)
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
     this.offScreenPass=false;
+    var firstCompile=true;
     CGL.incrementLoadingAssets();
 
     this.getCgl=function()
@@ -308,7 +309,12 @@ CGL.Shader=function(_cgl)
         }
 
         needsRecompile=false;
-        CGL.decrementLoadingAssets();
+        if(firstCompile)
+        {
+            firstCompile=false;
+            CGL.decrementLoadingAssets();
+        }
+
     };
 
 
