@@ -357,6 +357,12 @@ CGL.Shader=function(_cgl)
             cgl.gl.uniformMatrix4fv(normalMatrixUniform, false, normalMatrix);
         }
 
+        if(firstCompile)
+        {
+            firstCompile=false;
+            CGL.decrementLoadingAssets();
+        }
+
     };
 
     this.getProgram=function()
