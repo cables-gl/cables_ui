@@ -90,13 +90,13 @@ Ops.Json3d.json3dFile = function()
         }
     }
 
-CGL.incrementLoadingAssets();
 
     var reload=function()
     {
         if(!self.filename.val)return;
 
         // console.log('load ajax'+self.patch.getFilePath(self.filename.val));
+        CGL.incrementLoadingAssets();
 
         CABLES.ajax(
             self.patch.getFilePath(self.filename.val),
