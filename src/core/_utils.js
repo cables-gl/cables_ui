@@ -130,6 +130,7 @@ CGL.incrementLoadingAssets=function()
 CGL.decrementLoadingAssets=function()
 {
     CGL.numLoadingAssets--;
+    if(CGL.numLoadingAssets<0)CGL.numLoadingAssets=0;
     setTimeout(CGL.getLoadingStatus,500);
 };
 
@@ -168,11 +169,7 @@ CGL.getWheelSpeed=function(event)
     if(normalized>400)normalized=400;
     if(normalized<-400)normalized=-400;
     // console.log('normalized',normalized);
-        
+
 
     return normalized;
 };
-
-
-
-
