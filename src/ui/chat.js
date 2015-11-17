@@ -26,7 +26,8 @@ CABLES.Chat = function() {
         "userList": []
     }));
 
-    chatButton.on("click", function(e) {
+    chatButton.on("click", function(e)
+    {
         e.preventDefault();
 
         registerHandlers();

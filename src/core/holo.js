@@ -97,7 +97,7 @@ var Op = function()
     {
         for(var ipo in this.portsOut)
             if(Link.canLink(otherPort,this.portsOut[ipo]))return this.portsOut[ipo];
-    
+
         for(var ipi in this.portsIn)
             if(Link.canLink(otherPort,this.portsIn[ipi]))return this.portsIn[ipi];
     };
@@ -214,7 +214,7 @@ var Port=function(parent,name,type,uiAttribs)
     this.__defineGetter__("val", function()
         {
             // throw "deprecated val";
-                    
+
             // if(animated)
             // {
 
@@ -228,7 +228,7 @@ var Port=function(parent,name,type,uiAttribs)
             //     }
             //     oldAnimVal=this.value;
             //     console.log('this.value ',this.value );
-                        
+
             //     return this.value;
             // }
 
@@ -238,7 +238,7 @@ var Port=function(parent,name,type,uiAttribs)
 
     this.getType=function(){ return this.type; };
     this.isLinked=function(){ return this.links.length>0; };
-    
+
     this.onValueChanged=null; // deprecated!
     var onValueChanged=null;
     this.onTriggered=null;
@@ -467,9 +467,9 @@ var Link = function(scene)
         // catch(exc)
         // {
         //     console.log('',this);
-                    
+
         //     // console.log('exc',exc);
-                    
+
         // }
     };
 
@@ -540,7 +540,7 @@ Link.canLinkText=function(p1,p2)
     {
         if(p1.type!=p2.type)return 'can not link: different type';
     }
- 
+
     if(!p1)return 'can not link: port 1 invalid';
     if(!p2)return 'can not link: port 2 invalid';
 
@@ -803,7 +803,7 @@ var Scene = function(cfg)
         {
             obj.ops.push( this.ops[i].getSerialized() );
         }
-        
+
         if(asObj)return obj;
         return JSON.stringify(obj);
     };
@@ -833,6 +833,7 @@ var Scene = function(cfg)
     {
         if(this.onLoadStart)this.onLoadStart();
 
+        CGL.incrementLoadingAssets();
 
         if (typeof obj === "string") obj=JSON.parse(obj);
         var self=this;
@@ -890,7 +891,7 @@ var Scene = function(cfg)
             }
         }
         // console.log('create links...');
-                
+
 
         // create links...
         for(iop in obj.ops)
@@ -914,6 +915,8 @@ var Scene = function(cfg)
         {
             this.ops[i].id=generateUUID();
         }
+
+        CGL.decrementLoadingAssets();
 
         if(this.onLoadEnd)this.onLoadEnd();
 
