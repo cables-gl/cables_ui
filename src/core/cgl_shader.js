@@ -119,6 +119,7 @@ CGL.Shader=function(_cgl)
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
     this.offScreenPass=false;
+    CGL.incrementLoadingAssets();
 
     this.getCgl=function()
     {
@@ -153,7 +154,7 @@ CGL.Shader=function(_cgl)
                 return;
             }
         }
-                
+
     };
 
     this.removeUniform=function(name)
@@ -185,7 +186,7 @@ CGL.Shader=function(_cgl)
         .endl()+'uniform mat4 projMatrix;'
         .endl()+'uniform mat4 mvMatrix;'
         // .endl()+'uniform mat4 normalMatrix;'
-        
+
         .endl()+'void main()'
         .endl()+'{'
         .endl()+'   texCoord=attrTexCoord;'
@@ -299,7 +300,7 @@ CGL.Shader=function(_cgl)
             // self.fshader=createShader(fs, gl.FRAGMENT_SHADER, self.fshader );
             // linkProgram(program);
             program=createProgram(vs,fs, program);
-            
+
             mvMatrixUniform=null;
 
             for(i=0;i<uniforms.length;i++)
@@ -307,6 +308,7 @@ CGL.Shader=function(_cgl)
         }
 
         needsRecompile=false;
+        CGL.decrementLoadingAssets();
     };
 
 
@@ -314,7 +316,7 @@ CGL.Shader=function(_cgl)
     {
 
         if(!program || needsRecompile) self.compile();
-        
+
         if(!mvMatrixUniform)
         {
             attrVertexPos = cgl.gl.getAttribLocation(program, 'vPosition');
@@ -339,7 +341,7 @@ CGL.Shader=function(_cgl)
         cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
 
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
-        
+
         if(normalMatrixUniform)
         {
             var normalMatrix = mat4.create();
@@ -383,7 +385,7 @@ CGL.Shader=function(_cgl)
 
             if(type==cgl.gl.VERTEX_SHADER)console.log('VERTEX_SHADER');
             if(type==cgl.gl.FRAGMENT_SHADER)console.log('FRAGMENT_SHADER');
-            
+
             console.warn( cgl.gl.getShaderInfoLog(shader) );
 
 
@@ -401,12 +403,12 @@ CGL.Shader=function(_cgl)
                 var isBadLine=false;
                 for(var bj in badLines) if(badLines[bj]==j) isBadLine=true;
 
-        
+
                 if(isBadLine) htmlWarning+='<span class="error">';
                 htmlWarning+=line;
                 if(isBadLine) htmlWarning+='</span>';
             }
-            
+
             console.warn( infoLog );
 
             infoLog=infoLog.replace(/\n/g,'<br/>');
@@ -447,7 +449,7 @@ CGL.Shader=function(_cgl)
     var moduleNames=[];
     var modules=[];
     var moduleNumId=0;
-    
+
     this.removeModule=function(mod)
     {
         for(var i=0;i<modules.length;i++)
@@ -481,5 +483,3 @@ CGL.Shader=function(_cgl)
 
 
 };
-
-
