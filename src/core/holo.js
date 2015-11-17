@@ -833,6 +833,7 @@ var Scene = function(cfg)
     {
         if(this.onLoadStart)this.onLoadStart();
 
+        CGL.resetLoadingStatus();
         CGL.incrementLoadingAssets();
 
         if (typeof obj === "string") obj=JSON.parse(obj);

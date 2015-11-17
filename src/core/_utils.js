@@ -109,6 +109,13 @@ CGL.numLoadingAssets=0;
 
 CGL.onLoadingAssetsFinished=null;
 
+
+CGL.resetLoadingStatus=function()
+{
+    CGL.numMaxLoadingAssets=0;
+    CGL.numLoadingAssets=0;
+};
+
 CGL.finishedLoading=function()
 {
     return CGL.numLoadingAssets!==0;
