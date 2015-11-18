@@ -2,6 +2,73 @@
 var CGL=CGL || {};
 
 
+CABLES.LoadingManager=function()
+{
+    console.log('created loadingmanager');
+    var loadingAssets={};
+    var cbFinished=null;
+    var percent=0;
+
+    this.setOnFinishedLoading=function(cb)
+    {
+        cbFinished=cb;
+    };
+
+    this.getProgress=function()
+    {
+        return percent;
+    };
+
+    this.checkStatus=function()
+    {
+        // console.log('--------');
+        var countFinished=0;
+        var count=0;
+        for(var i in loadingAssets)
+        {
+            count++;
+            if(!loadingAssets[i].finished)
+            {
+                countFinished++;
+                // console.log(loadingAssets[i].type+': '+loadingAssets[i].finished+': '+loadingAssets[i].name );
+            }
+            // if(countFinished===0) console.log('all loaded');
+        }
+
+        percent=(count-countFinished)/count;
+        console.log(countFinished+'/'+count,'perc:',percent);
+
+        if(CGL.onLoadingAssetsFinished)
+        {
+            console.warn('CGL.onLoadingAssetsFinished is deprecated, please use config parameter onFinishedLoading with scene/patch constructor');
+            cbFinished=CGL.onLoadingAssetsFinished;
+        }
+
+        if(countFinished===0 && cbFinished)
+        {
+            setTimeout(cbFinished,200);
+        }
+    };
+
+    this.finished=function(id)
+    {
+        if(loadingAssets[id])
+        {
+            loadingAssets[id].finished=true;
+        }
+        this.checkStatus();
+    };
+
+    this.start=function(type,name)
+    {
+        var id=generateUUID();
+        loadingAssets[id]=({id:id,type:type,name:name,finished:false});
+        console.log('LOAD: '+loadingAssets[id].type+': '+loadingAssets[id].finished+': '+loadingAssets[id].name );
+
+        return id;
+    };
+};
+
 CGL.State=function()
 {
     var self=this;
@@ -18,12 +85,22 @@ CGL.State=function()
     this.canvas=null;
     mat4.identity(self.mvMatrix);
 
-    var simpleShader=new CGL.Shader(this);
-    var currentShader=simpleShader;
+
+
+
+
+    this.loading=new CABLES.LoadingManager();
+
+
+    var simpleShader=null;
+    var currentShader=null;
     var aborted=false;
 
     this.setCanvas=function(id)
     {
+        console.log('hallo');
+
+
         this.canvas=document.getElementById(id);
         this.gl=this.canvas.getContext("experimental-webgl",
         {
@@ -64,7 +141,7 @@ CGL.State=function()
     this.resetViewPort=function()
     {
                 // console.log(viewPort);
-                
+
         this.gl.viewport(
             viewPort[0],
             viewPort[1],
@@ -112,14 +189,16 @@ CGL.State=function()
     this.getShader=function()
     {
         if(currentShader)
-        if(!this.frameStore || (true===this.frameStore.renderOffscreen == currentShader.offScreenPass===true))
-            return currentShader;
+            if(!this.frameStore || (true===this.frameStore.renderOffscreen == currentShader.offScreenPass===true))
+                return currentShader;
 
         for(var i=shaderStack.length-1;i>=0;i--)
-            if(this.frameStore.renderOffscreen == shaderStack[i].offScreenPass)
-                return shaderStack[i];
+            if(shaderStack[i])
+                if(this.frameStore.renderOffscreen == shaderStack[i].offScreenPass)
+                    return shaderStack[i];
 
-        // console.log('no shader found?');
+        if(!simpleShader)simpleShader=new CGL.Shader(this,'simpleShader');
+        return simpleShader;
 
     };
 
@@ -165,6 +244,16 @@ CGL.State=function()
         if(pMatrixStack.length===0) throw "Invalid projection popMatrix!";
         self.pMatrix = pMatrixStack.pop();
     };
+
+
+
+
+
+
+
+
+
+
+
+
 };
-
-

@@ -97,7 +97,7 @@ CGL.Texture=function(cgl,options)
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
         // console.log('resize',w,h,self.filter);
-        
+
         var uarr=null;
         // if(!isDataTexture)
         // {
@@ -133,7 +133,7 @@ CGL.Texture=function(cgl,options)
         {
             cgl.gl.generateMipmap(cgl.gl.TEXTURE_2D);
         }
-        
+
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 
@@ -154,7 +154,7 @@ CGL.Texture=function(cgl,options)
         {
             cgl.gl.generateMipmap(cgl.gl.TEXTURE_2D);
         }
-    
+
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 
@@ -174,7 +174,7 @@ CGL.Texture=function(cgl,options)
         {
             cgl.gl.generateMipmap(cgl.gl.TEXTURE_2D);
         }
-    
+
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 
@@ -189,7 +189,7 @@ CGL.Texture=function(cgl,options)
 
 CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 {
-    CGL.incrementLoadingAssets();
+    var loadingId=cgl.loading.start('texture',url);
     var texture=new CGL.Texture(cgl);
     texture.image = new Image();
 
@@ -199,18 +199,18 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 
     texture.image.onabort=texture.image.onerror=function(e)
     {
+        cgl.loading.finished(loadingId);
         var error={error:true};
         if(finishedCallback)finishedCallback(error);
-        CGL.decrementLoadingAssets();
+
     };
 
     texture.image.onload=function(e)
     {
         texture.initTexture(texture.image);
-        // console.log('loaded texture: ',url);
-                
+        cgl.loading.finished(loadingId);
         if(finishedCallback)finishedCallback();
-        CGL.decrementLoadingAssets();
+
     };
     texture.image.src = url;
     return texture;
@@ -348,4 +348,3 @@ CGL.Texture.texturePreview=function(cgl)
     };
 
 };
-

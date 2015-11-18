@@ -10,6 +10,7 @@ function generateUUID()
     return uuid;
 }
 
+
 // ----------------------------------------------------------------
 
 Math.randomSeed=1;
@@ -104,52 +105,52 @@ var arrayContains = function(arr,obj)
 
 CGL=CGL || {};
 CGL.DEG2RAD=3.14159/180.0;
-CGL.numMaxLoadingAssets=0;
-CGL.numLoadingAssets=0;
-
+// CGL.numMaxLoadingAssets=0;
+// CGL.numLoadingAssets=0;
+//
 CGL.onLoadingAssetsFinished=null;
-
-
-CGL.resetLoadingStatus=function()
-{
-    CGL.numMaxLoadingAssets=0;
-    CGL.numLoadingAssets=0;
-};
-
-CGL.finishedLoading=function()
-{
-    return CGL.numLoadingAssets!==0;
-};
-
-CGL.incrementLoadingAssets=function()
-{
-    CGL.numLoadingAssets++;
-    CGL.numMaxLoadingAssets=Math.max(CGL.numLoadingAssets,CGL.numMaxLoadingAssets);
-};
-
-CGL.decrementLoadingAssets=function()
-{
-    CGL.numLoadingAssets--;
-    if(CGL.numLoadingAssets<0)CGL.numLoadingAssets=0;
-    setTimeout(CGL.getLoadingStatus,500);
-};
-
-CGL.getLoadingStatus=function()
-{
-    if(CGL.numMaxLoadingAssets===0)return 0;
-
-    var stat=(CGL.numMaxLoadingAssets-CGL.numLoadingAssets)/CGL.numMaxLoadingAssets;
-    if(stat==1 && CGL.onLoadingAssetsFinished)
-    {
-        console.log('loading status: ',CGL.numMaxLoadingAssets,CGL.numLoadingAssets);
-        CGL.onLoadingAssetsFinished();
-    }
-    if(CABLES.UI && CABLES.UI.GUI)
-        if(stat==1)  $('#assetsloadingindicator').hide();
-            else  $('#assetsloadingindicator').show();
-
-    return stat;
-};
+//
+//
+// CGL.resetLoadingStatus=function()
+// {
+//     CGL.numMaxLoadingAssets=0;
+//     CGL.numLoadingAssets=0;
+// };
+//
+// CGL.finishedLoading=function()
+// {
+//     return CGL.numLoadingAssets!==0;
+// };
+//
+// CGL.incrementLoadingAssets=function()
+// {
+//     CGL.numLoadingAssets++;
+//     CGL.numMaxLoadingAssets=Math.max(CGL.numLoadingAssets,CGL.numMaxLoadingAssets);
+// };
+//
+// CGL.decrementLoadingAssets=function()
+// {
+//     CGL.numLoadingAssets--;
+//     if(CGL.numLoadingAssets<0)CGL.numLoadingAssets=0;
+//     setTimeout(CGL.getLoadingStatus,500);
+// };
+//
+// CGL.getLoadingStatus=function()
+// {
+//     if(CGL.numMaxLoadingAssets===0)return 0;
+//
+//     var stat=(CGL.numMaxLoadingAssets-CGL.numLoadingAssets)/CGL.numMaxLoadingAssets;
+//     if(stat==1 && CGL.onLoadingAssetsFinished)
+//     {
+//         console.log('loading status: ',CGL.numMaxLoadingAssets,CGL.numLoadingAssets);
+//         CGL.onLoadingAssetsFinished();
+//     }
+//     if(CABLES.UI && CABLES.UI.GUI)
+//         if(stat==1)  $('#assetsloadingindicator').hide();
+//             else  $('#assetsloadingindicator').show();
+//
+//     return stat;
+// };
 
 
 CGL.getWheelSpeed=function(event)

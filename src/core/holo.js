@@ -150,7 +150,7 @@ var Op = function()
         for(var i=0;i<this.portsIn.length;i++)
         {
             // quickdirty fix ie11
-            // this.portsIn[i].updateAnim();
+            this.portsIn[i].updateAnim();
         }
     };
 
@@ -596,7 +596,9 @@ var Scene = function(cfg)
         glCanvasId:'glcanvas',
         prefixAssetPath:'',
         silent:false,
-        onError:null
+        onError:null,
+        onFinishedLoading:null,
+        onFirstFrameRendered:null
     };
 
     this.vars={};
@@ -604,6 +606,7 @@ var Scene = function(cfg)
     this.cgl=new CGL.State();
     this.cgl.patch=this;
     this.cgl.setCanvas(this.config.glCanvasId);
+    this.cgl.loading.setOnFinishedLoading(this.config.onFinishedLoading);
 
     if(this.cgl.aborted) this.aborted=true;
     if(this.cgl.silent) this.silent=true;
@@ -726,22 +729,14 @@ var Scene = function(cfg)
         }
     };
 
+var frameNum=0;
+
     this.exec=function(e)
     {
         if(paused)return;
 
-        if(CGL.getLoadingStatus()>0 && CGL.getLoadingStatus()<1.0)
-        {
-            // setTimeout(function()
-            // {
-                requestAnimationFrame(self.exec);
-            // 120);
-        }
-        else
-        {
+        requestAnimationFrame(self.exec);
 
-            requestAnimationFrame(self.exec);
-        }
         self.timer.update();
 
         var time=self.timer.getTime();
@@ -750,6 +745,11 @@ var Scene = function(cfg)
         for (var i = 0; i < self.animFrameOps.length; ++i)
         {
             self.animFrameOps[i].onAnimFrame(time);
+        }
+        frameNum++;
+        if(frameNum==1)
+        {
+            if(self.config.onFirstFrameRendered)self.config.onFirstFrameRendered();
         }
     };
 
@@ -831,10 +831,8 @@ var Scene = function(cfg)
 
     this.deSerialize=function(obj)
     {
+        var loadingId=this.cgl.loading.start('core','deserialize');
         if(this.onLoadStart)this.onLoadStart();
-
-        CGL.resetLoadingStatus();
-        CGL.incrementLoadingAssets();
 
         if (typeof obj === "string") obj=JSON.parse(obj);
         var self=this;
@@ -914,12 +912,15 @@ var Scene = function(cfg)
 
         for(var i in this.ops)
         {
+            if(this.ops[i].onLoaded)this.ops[i].onLoaded();
             this.ops[i].id=generateUUID();
         }
 
-        CGL.decrementLoadingAssets();
+        this.cgl.loading.finished(loadingId);
+
 
         if(this.onLoadEnd)this.onLoadEnd();
+
 
     };
 

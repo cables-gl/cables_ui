@@ -294,7 +294,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
 
     var srcFrag=''
         .endl()+'precision highp float;'
-        
+
         .endl()+'{{MODULES_HEAD}}'
 
         .endl()+'varying vec3 norm;'
@@ -328,11 +328,11 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'   varying vec3 e;'
         .endl()+'   vec2 vNormt;'
         .endl()+'#endif'
-        
+
         .endl()+''
         .endl()+'void main()'
         .endl()+'{'
-        
+
         .endl()+'   vec2 vnOrig=vNorm;'
         .endl()+'   vec2 vn=vNorm;'
 
@@ -346,7 +346,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       vec3 tnorm=texture2D( texNormal, vec2(texCoord.x*normalRepeatX,texCoord.y*normalRepeatY) ).xyz * 2.0 - 1.0;'
 
         .endl()+'       tnorm = normalize(tnorm*normalScale);'
-        
+
         .endl()+'       vec3 tangent;'
         .endl()+'       vec3 binormal;'
 
@@ -373,7 +373,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       #endif'
 
         .endl()+'       tnorm=normalize(tangent*tnorm.x + binormal*tnorm.y + norm*tnorm.z);'
-    
+
         .endl()+'       vec3 n = normalize( mat3(normalMatrix) * (norm+tnorm*normalScale) );'
 
         .endl()+'       vec3 r = reflect( e, n );'
@@ -387,14 +387,14 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'       vn.t=clamp(vn.t, 0.0, 1.0);'
         .endl()+'       vn.s=clamp(vn.s, 0.0, 1.0);'
         .endl()+'    #endif'
-        
+
         .endl()+'    vec4 col = texture2D( tex, vn );'
 
         // .endl()+'   float bias=0.1;'
         // .endl()+'    if(vn.s>1.0-bias || vn.t>1.0-bias || vn.s<bias || vn.t<bias)' //col.rgb=vec3(0.0,1.0,0.0);
         // .endl()+'    {;'
         // .endl()+'       col = texture2D( tex, vnOrig );'
-        
+
         // .endl()+'    };'
 
 
@@ -416,7 +416,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         // .endl()+'    col.b=0.0;'
 
         // .endl()+'    if()col.rgb=vec3(1.0,0.0,0.0);'
-        
+
         // .endl()+'    col.rgb=vec3(length(vn),0.0,0.0);'
 
 
@@ -424,8 +424,8 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+''
         .endl()+'}';
 
-    var shader=new CGL.Shader(cgl);
-    
+    var shader=new CGL.Shader(cgl,'MatCapMaterial');
+
     shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
 
 
@@ -510,7 +510,7 @@ Ops.Gl.Shader.GradientMaterial = function()
 
         uniformWidth.setValue(w);
         uniformHeight.setValue(h);
-                    
+
         cgl.setShader(shader);
         self.trigger.trigger();
         cgl.setPreviousShader();
@@ -548,7 +548,7 @@ Ops.Gl.Shader.GradientMaterial = function()
         .endl()+'   }'
         .endl()+'}';
 
-    var shader=new CGL.Shader(cgl);
+    var shader=new CGL.Shader(cgl,'GradientMaterial');
     this.onLoaded=shader.compile;
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
     shader.define("USE_TEXCOORDS");
@@ -636,7 +636,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     {
         cgl.setShader(shader);
         shader.bindTextures();
-        
+
         self.trigger.trigger();
 
         cgl.setPreviousShader();
@@ -726,12 +726,12 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'       col.a*=a;'
         .endl()+'   #endif'
         .endl()+'{{MODULE_COLOR}}'
-        
+
         .endl()+'   gl_FragColor = col;'
         .endl()+'}';
 
 
-    var shader=new CGL.Shader(cgl);
+    var shader=new CGL.Shader(cgl,'BasicMaterial');
     shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
     shader.bindTextures=this.bindTextures;
     this.shaderOut.val=shader;
@@ -906,7 +906,7 @@ Ops.Gl.Shader.TextureSinusWobble = function()
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'      #ifdef HAS_TEXTURE_DIFFUSE'
 
-        // float smoothstep(float edge0, float edge1, float x)  
+        // float smoothstep(float edge0, float edge1, float x)
 
         // .endl()+'          col=texture2D(tex,texCoord);'
         // .endl()+'           float x=smoothstep(-1.0,1.0,texCoord.x*sin(time+texCoord.y*(col.r-0.5)) );'
@@ -917,7 +917,7 @@ Ops.Gl.Shader.TextureSinusWobble = function()
 
         .endl()+'           vec2 tc=vec2(x,y );'
         .endl()+'          col=texture2D(tex,tc);'
-        
+
         .endl()+'      #endif'
         .endl()+'       col.a*=a;'
         .endl()+'   #endif'
@@ -979,4 +979,3 @@ Ops.Gl.Shader.TextureSinusWobble.prototype = new Op();
 
 
 // --------------------------------------------------------------------------
-

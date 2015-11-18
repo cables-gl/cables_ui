@@ -54,13 +54,9 @@ Ops.Json3d.json3dFile = function()
 
             self.patch.link(parentOp,parentPort,transOp,'render');
 
-
-
-
             var i=0;
             if(ch.hasOwnProperty('meshes'))
             {
-
                 for(i=0;i<ch.meshes.length;i++)
                 {
                     console.log('   meshes...'+i);
@@ -93,10 +89,10 @@ Ops.Json3d.json3dFile = function()
 
     var reload=function()
     {
-        if(!self.filename.val)return;
+        if(!self.filename.get())return;
 
         // console.log('load ajax'+self.patch.getFilePath(self.filename.val));
-        CGL.incrementLoadingAssets();
+        var loadingId=cgl.loading.start('json3dFile',self.filename.get());
 
         CABLES.ajax(
             self.patch.getFilePath(self.filename.val),
@@ -105,7 +101,7 @@ Ops.Json3d.json3dFile = function()
                 if(err)
                 {
                     console.log('ajax error:',err);
-                    CGL.decrementLoadingAssets();
+                    cgl.loading.finished(loadingId);
                     return;
                 }
                 var data=JSON.parse(_data);
@@ -123,7 +119,7 @@ Ops.Json3d.json3dFile = function()
                 }
 
                 render();
-                CGL.decrementLoadingAssets();
+                cgl.loading.finished(loadingId);
 
             });
 
@@ -161,6 +157,7 @@ Ops.Json3d.Mesh=function()
 
     function render()
     {
+
         if(!mesh && cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue() || currentIndex!=self.index.val)
         {
             reload();

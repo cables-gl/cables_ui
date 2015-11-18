@@ -119,8 +119,6 @@ CGL.Shader=function(_cgl)
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
     this.offScreenPass=false;
-    var firstCompile=true;
-    CGL.incrementLoadingAssets();
 
     this.getCgl=function()
     {
@@ -309,12 +307,6 @@ CGL.Shader=function(_cgl)
         }
 
         needsRecompile=false;
-        if(firstCompile)
-        {
-            firstCompile=false;
-            CGL.decrementLoadingAssets();
-        }
-
     };
 
 
@@ -355,12 +347,6 @@ CGL.Shader=function(_cgl)
             mat4.transpose(normalMatrix, normalMatrix);
 
             cgl.gl.uniformMatrix4fv(normalMatrixUniform, false, normalMatrix);
-        }
-
-        if(firstCompile)
-        {
-            firstCompile=false;
-            CGL.decrementLoadingAssets();
         }
 
     };
