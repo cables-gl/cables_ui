@@ -58,7 +58,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
             else shader.removeDefine('CALC_TANGENT');
     };
 
-
     this.projectCoords=this.addInPort(new Port(this,"projectCoords",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['no','xy','yz']}));
     this.projectCoords.val='no';
     this.projectCoords.onValueChanged=function()
@@ -336,7 +335,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         .endl()+'   vec2 vnOrig=vNorm;'
         .endl()+'   vec2 vn=vNorm;'
 
-        .endl()+'   #ifdef HAS_DIFFUSE_TEXTURE'
+        .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'       vec2 texCoords=texCoord;'
         .endl()+'       {{MODULE_BEGIN_FRAG}}'
         .endl()+'   #endif'
