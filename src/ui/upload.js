@@ -48,12 +48,16 @@ $("html").on("drop", function(event)
 
     xhr.onload = function (e,r)
     {
+
+        var msg='';
+        var res='';
+
         gui.patch().updateProjectFiles();
         if (xhr.status === 200)
         {
             // console.log('e',r);
-            var res=JSON.parse(e.target.response);
-            var msg="<h2>files uploaded</h2>";
+            res=JSON.parse(e.target.response);
+            msg="<h2>files uploaded</h2>";
             msg+='<table>';
 
             for(var i=0;i<res.log.length;i++)
@@ -81,8 +85,7 @@ $("html").on("drop", function(event)
         }
         else
         {
-            var msg='unknown';
-            var res=JSON.parse(e.target.response);
+            res=JSON.parse(e.target.response);
             msg=res.msg;
 
             CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);

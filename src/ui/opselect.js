@@ -51,7 +51,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         oBoxCollectionAll.removeClass(cssClass);
 
         oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
-        
+
         updateInfo();
     };
 
@@ -71,12 +71,12 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         if(opname)
         {
 
-                    
+
             if(gui.user.isAdmin && gui.serverOps.isServerOp(opname))
             {
                 htmlFoot+='<hr/>admin:<a onclick="gui.serverOps.edit(\''+opname+'\');">edit serverOp</a>';
             }
-            
+
             $('#searchinfo').html('');
 
             var cached=CABLES.api.hasCached('doc/ops/'+opname);
@@ -129,14 +129,14 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
             case 8:
                 onInput();
                 return true;
-            break;
 
-            case 37: // left
-            break;
 
             case 38: // up
                 $('.selected').removeClass('selected');
                 Navigate(-1);
+            break;
+
+            case 37: // left
             break;
 
             case 39: // right
@@ -203,6 +203,3 @@ CABLES.UI.OPSELECT.getOpList=function()
 
     return ops;
 };
-
-
-

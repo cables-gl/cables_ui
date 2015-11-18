@@ -17,7 +17,7 @@ Ops.Gl.Renderer = function()
     {
         console.log(' no cgl!');
     }
-    
+
     var cgl=this.patch.cgl;
     if(cgl.aborted)return;
 
@@ -166,7 +166,7 @@ Ops.Gl.Points.prototype = new Op();
 
 
 // --------------------------------------------------------------------------
-    
+
 Ops.Gl.TextureEmpty = function()
 {
     Op.apply(this, arguments);
@@ -179,7 +179,7 @@ Ops.Gl.TextureEmpty = function()
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE));
     this.tex=new CGL.Texture(cgl);
-    
+
     var sizeChanged=function()
     {
         self.tex.setSize(self.width.get(),self.height.get());
@@ -207,7 +207,7 @@ Ops.Gl.TextureCycler = function()
 
     this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
-    
+
     var textures=[];
     var texturePorts=[];
 
@@ -531,7 +531,7 @@ Ops.Gl.Render2Texture = function()
 
         // if(depthBuffer)cgl.gl.deleteRenderbuffer(depthBuffer);
 
-        
+
         cgl.gl.renderbufferStorage(cgl.gl.RENDERBUFFER, cgl.gl.DEPTH_COMPONENT16, self.width.get(),self.height.get());
 
         cgl.gl.framebufferTexture2D(cgl.gl.FRAMEBUFFER, cgl.gl.COLOR_ATTACHMENT0, cgl.gl.TEXTURE_2D, texture.tex, 0);
@@ -553,16 +553,12 @@ Ops.Gl.Render2Texture = function()
                 break;
             case cgl.gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
                 throw("Incomplete framebuffer: FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
-                break;
             case cgl.gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
                 throw("Incomplete framebuffer: FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
-                break;
             case cgl.gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
                 throw("Incomplete framebuffer: FRAMEBUFFER_INCOMPLETE_DIMENSIONS");
-                break;
             case cgl.gl.FRAMEBUFFER_UNSUPPORTED:
                 throw("Incomplete framebuffer: FRAMEBUFFER_UNSUPPORTED");
-                break;
             default:
                 throw("Incomplete framebuffer: " + status);
         }
@@ -610,7 +606,7 @@ Ops.Gl.Render2Texture = function()
             if(texture.width!=cgl.getViewPort()[2] || texture.height!=cgl.getViewPort()[3] )
             {
                 console.log('not the same ? ',texture.width, cgl.getViewPort()[2] , texture.height , cgl.getViewPort()[3]);
-                        
+
                 for(var i=0;i<self.patch.ops.length;i++)
                 {
                     if(self.patch.ops[i].onResize)self.patch.ops[i].onResize();
@@ -640,9 +636,9 @@ Ops.Gl.Render2Texture = function()
         self.trigger.trigger();
 
         cgl.popPMatrix();
-        
+
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
-        
+
         cgl.popMvMatrix();
         cgl.resetViewPort();
 
@@ -704,7 +700,7 @@ Ops.Gl.SpotLight = function()
             shader.bind();
 
             cgl.pushMvMatrix();
-            
+
             cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
             cgl.gl.vertexAttribPointer(cgl.getShader().getAttrVertexPos(),3, cgl.gl.FLOAT, false, 0, 0);
             cgl.gl.enableVertexAttribArray(cgl.getShader().getAttrVertexPos());
@@ -763,24 +759,3 @@ Ops.Gl.SpotLight = function()
 };
 
 Ops.Gl.SpotLight.prototype = new Op();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

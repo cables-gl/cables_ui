@@ -29,6 +29,7 @@ var Op = function()
     this.onUiAttrChange=null;
     var _self=this;
 
+
     this.uiAttr=function(newAttribs)
     {
         if(!this.uiAttribs)this.uiAttribs={};
@@ -149,7 +150,6 @@ var Op = function()
     {
         for(var i=0;i<this.portsIn.length;i++)
         {
-            // quickdirty fix ie11
             this.portsIn[i].updateAnim();
         }
     };
@@ -158,8 +158,6 @@ var Op = function()
     {
         if(!this.patch.silent) console.log('['+(this.getName())+'] '+txt);
     };
-
-
 
 };
 
@@ -590,6 +588,7 @@ var Scene = function(cfg)
     this.onLoadStart=null;
     this.onLoadEnd=null;
     this.aborted=false;
+    this.loading=new CABLES.LoadingManager();
 
     this.config = cfg ||
     {
@@ -606,7 +605,7 @@ var Scene = function(cfg)
     this.cgl=new CGL.State();
     this.cgl.patch=this;
     this.cgl.setCanvas(this.config.glCanvasId);
-    this.cgl.loading.setOnFinishedLoading(this.config.onFinishedLoading);
+    this.loading.setOnFinishedLoading(this.config.onFinishedLoading);
 
     if(this.cgl.aborted) this.aborted=true;
     if(this.cgl.silent) this.silent=true;
@@ -615,6 +614,7 @@ var Scene = function(cfg)
     {
         paused=true;
     };
+
     this.resume=function()
     {
         paused=false;
@@ -679,7 +679,6 @@ var Scene = function(cfg)
         {
             this.animFrameOps.splice(i,1);
         }
-
     };
 
     this.deleteOp=function(opid,tryRelink)

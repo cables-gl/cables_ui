@@ -158,7 +158,7 @@ Ops.TimeLineDelayFrames = function()
     this.theTime=this.addOutPort(new Port(this,"time"));
     this.delay=this.addInPort(new Port(this,"delay"));
     this.delay.val=0.0;
-    
+
     this.fps=this.addInPort(new Port(this,"fps"));
     this.fps.val=30.0;
 
@@ -286,25 +286,25 @@ Ops.TimedSequence = function()
 
         // self.triggerAlways.trigger();
         // console.log('TimedSequence loaded---------------------------------------------');
-                
+
     };
 
     var lastUiValue=-1;
     this.exe.onTriggered=function(_time)
     {
-
+        var spl=0;
         if(window.gui)
         {
-                    
+
             if(self.current.val!=lastUiValue)
             {
                 lastUiValue=parseInt(self.current.val,10);
-                for(var spl=0;spl<triggers.length;spl++)
+                for(spl=0;spl<triggers.length;spl++)
                 {
                     if(spl==lastUiValue) triggers[spl].setUiActiveState(true);
                         else triggers[spl].setUiActiveState(false);
                 }
-                
+
             }
         }
 
@@ -328,7 +328,7 @@ Ops.TimedSequence = function()
         {
             for(var i=0;i<triggers.length;i++)
             {
-                for(var spl=0;spl<triggers[i].links.length;spl++)
+                for(spl=0;spl<triggers[i].links.length;spl++)
                 {
                     if(triggers[i].links[spl])
                     {

@@ -312,7 +312,7 @@ CGL.Shader=function(_cgl)
 
     this.bind=function()
     {
-
+        var i=0;
         if(!program || needsRecompile) self.compile();
 
         if(!mvMatrixUniform)
@@ -321,7 +321,7 @@ CGL.Shader=function(_cgl)
             projMatrixUniform = cgl.gl.getUniformLocation(program, "projMatrix");
             mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
             normalMatrixUniform = cgl.gl.getUniformLocation(program, "normalMatrix");
-            for(var i=0;i<uniforms.length;i++)uniforms[i].needsUpdate=true;
+            for(i=0;i<uniforms.length;i++)uniforms[i].needsUpdate=true;
 
         }
 
@@ -331,7 +331,7 @@ CGL.Shader=function(_cgl)
             cgl.currentProgram=program;
         }
 
-        for(var i=0;i<uniforms.length;i++)
+        for(i=0;i<uniforms.length;i++)
         {
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }

@@ -62,23 +62,12 @@ CABLES.UI.SELECTPROJECT.showSelectProjects=function(html)
             case 8:
                 onInput();
                 return true;
-            break;
 
             case 37: // left
             break;
 
-            // case 38: // up
-            //     $('.selected').removeClass('selected');
-            //     Navigate(-1);
-            // break;
-
             case 39: // right
             break;
-
-            // case 40: // down
-            //     $('.selected').removeClass('selected');
-            //     Navigate(1);
-            // break;
 
             default: return; // exit this handler for other keys
         }
@@ -104,9 +93,6 @@ CABLES.UI.SELECTPROJECT.show=function()
     else
         CABLES.UI.SELECTPROJECT.showSelectProjects(CABLES.UI.SELECTPROJECT.projectsHtml);
 
-    
+
 
 };
-
-
-

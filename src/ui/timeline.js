@@ -57,7 +57,7 @@ CABLES.TL.Key.prototype.removeUi=function()
         this.circleBezierOut.remove();
         this.circleBezierOut=false;
     }
-    
+
     if(this.circleBezierIn)
     {
         this.circleBezierIn.undrag();
@@ -105,7 +105,7 @@ CABLES.TL.Key.prototype.updateCircle=function(_isMainAnim)
 
         var pathOut="M "+this.x+" "+this.y+" L "+posBezX+" "+posBezY;
         var pathIn="M "+this.x+" "+this.y+" L "+posBezXIn+" "+posBezYIn;
-                
+
         this.bezierControlLineOut.attr({ path:pathOut, stroke: "#888", "stroke-width": 1});
         this.bezierControlLineIn.attr({ path:pathIn, stroke: "#888", "stroke-width": 1});
     }
@@ -149,12 +149,12 @@ CABLES.TL.Key.prototype.initUI=function()
     {
         if(!this.circleBezierOut)
             this.circleBezierOut=gui.timeLine().getPaper().circle(this.bezX, this.bezY, 7);
-        
+
         this.circleBezierOut.attr({ fill:"#fff","fill-opacity":0.7  });
 
         if(!this.circleBezierIn)
             this.circleBezierIn=gui.timeLine().getPaper().circle(this.bezXIn, this.bezYIn, 7);
-        
+
         this.circleBezierIn.attr({ fill:"#f00","fill-opacity":0.7  });
 
         if(!this.bezierControlLineOut)
@@ -278,7 +278,7 @@ CABLES.TL.Key.prototype.initUI=function()
         var t=self.time;
         var v=self.value;
         var newValue=newPos.y/CABLES.TL.VALUESCALE;
-        
+
         self.setBezierControlOut(newTime-t,newValue+v);
         self.updateCircle();
     }
@@ -403,7 +403,7 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
 CABLES.TL.UI.TimeLineUI=function()
 {
     var self=this;
-    
+
     var tlEmpty=new CABLES.TL.Anim();
     var anim=null;//tlEmpty;//new CABLES.TL.Anim();
     var viewBox={x:-10,y:-170,w:1200,h:400};
@@ -465,7 +465,7 @@ CABLES.TL.UI.TimeLineUI=function()
             //     }
             // }
         }
-        
+
         if($('#timeline svg circle').length>0)
         {
             console.log('KEYS NOT REMOVED PROPERLY');
@@ -494,7 +494,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 if(!found && !anims[i].stayInTimeline && anims[i]!=newanim)
                 {
                             console.log('found one! '+i);
-                            
+
                     anims[i].removeUi();
                     if(anims.length==1) anims.length=0;
                         else
@@ -535,7 +535,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         an.stayInTimeline=false;
         // an.keyLine.hide();
-        
+
         for(var i in anims)
         {
             if(anims[i] && anims[i]==an)
@@ -549,7 +549,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 return val;
             }
         }
-        
+
         return 0;
     };
 
@@ -587,7 +587,7 @@ CABLES.TL.UI.TimeLineUI=function()
         anim=newanim;
         enabled=true;
         this.addAnim(anim);
-        
+
         if(config && config.name) $('#timelineTitle').html(config.name);
             else $('#timelineTitle').html('');
 
@@ -615,7 +615,7 @@ CABLES.TL.UI.TimeLineUI=function()
         // this.centerCursor();
 
         if(anim.onChange===null) anim.onChange=updateKeyLineDelayed;
-        
+
     };
 
     function setCursor(time)
@@ -692,10 +692,11 @@ CABLES.TL.UI.TimeLineUI=function()
                 // var numSteps=500;
                 var start=viewBox.x/CABLES.TL.TIMESCALE;
                 var width=viewBox.w/CABLES.TL.TIMESCALE*1.2;
+                var ik=0;
 
                 var timePoints=[0];
 
-                for(var ik=0;ik<ani.keys.length;ik++)
+                for(ik=0;ik<ani.keys.length;ik++)
                 {
                     timePoints.push(ani.keys[ik].time-0.00001);
                     timePoints.push(ani.keys[ik].time);
@@ -706,7 +707,7 @@ CABLES.TL.UI.TimeLineUI=function()
                         ik<ani.keys.length-1)
                     {
                         var timeSpan=ani.keys[ik+1].time-ani.keys[ik].time;
-                                        
+
                         for(var j=0;j<timeSpan;j+=timeSpan/50)
                         {
                             timePoints.push(ani.keys[ik].time+j);
@@ -744,13 +745,13 @@ CABLES.TL.UI.TimeLineUI=function()
                 // }
 
                         // console.log('str ',str.length);
-                        
 
-                for(var ik=0;ik<ani.keys.length;ik++)
+
+                for(ik=0;ik<ani.keys.length;ik++)
                 {
                     var nextKey=null;
                     if(ani.keys.length > ik+1) nextKey=ani.keys[ik+1];
-                    
+
                     if(CABLES.TL.MultiGraphKeyDisplayMode)
                         ani.keys[ik].showCircle=true;
                     else
@@ -762,7 +763,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 }
 
                 ani.keyLine.attr({ path:str });
-    
+
                 if(ani.keyLine)
                     if(ani==anim) ani.keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
                         else ani.keyLine.attr({ stroke: "#222", "stroke-width": 1 });
@@ -794,7 +795,7 @@ CABLES.TL.UI.TimeLineUI=function()
         gui.scene().timer.setTime(0);
 
         setCursor(0);
-        
+
         self.centerCursor();
     };
 
@@ -809,7 +810,7 @@ CABLES.TL.UI.TimeLineUI=function()
         uupos.y = evt.clientY;
 
         uupos = uupos.matrixTransform(ctm);
-        
+
         var res={x:uupos.x,y:uupos.y};
         return res;
     };
@@ -882,7 +883,7 @@ CABLES.TL.UI.TimeLineUI=function()
             break;
 
 
-            case 65: // a 
+            case 65: // a
                 if(e.metaKey || e.ctrlKey) self.selectAllKeys();
             break;
 
@@ -906,10 +907,10 @@ CABLES.TL.UI.TimeLineUI=function()
             break;
 
             case 39: // right
-                var num=1;
-                if(e.shiftKey)num=10;
-                var newTime=getFrame((self.getTime()+1.0/fps*num)+0.001);
-                gui.scene().timer.setTime(newTime/fps);
+                var numr=1;
+                if(e.shiftKey)numr=10;
+                var rNewTime=getFrame((self.getTime()+1.0/fps*numr)+0.001);
+                gui.scene().timer.setTime(rNewTime/fps);
             break;
 
             default:
@@ -978,13 +979,14 @@ CABLES.TL.UI.TimeLineUI=function()
 
         var maxt=-99999;
         var mint=99999999;
+        var anii=0;
 
         var hasSelectedKeys=false;
-        for(var anii in anims)
+        for(anii in anims)
             if(anims[anii].hasSelectedKeys())hasSelectedKeys=true;
 
         var count=0;
-        for(var anii in anims)
+        for(anii in anims)
         {
             for(var i in anims[anii].keys)
             {
@@ -1031,13 +1033,14 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         var maxv=-99999;
         var minv=99999999;
-
+        var anii=0;
         var hasSelectedKeys=false;
-        for(var anii in anims)
+
+        for(anii in anims)
             if(anims[anii].hasSelectedKeys())hasSelectedKeys=true;
 
         var count=0;
-        for(var anii in anims)
+        for(anii in anims)
         {
             for(var i in anims[anii].keys)
             {
@@ -1066,7 +1069,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 maxv+=2;
                 minv-=2;
             }
-            
+
             var s=Math.abs(maxv)+Math.abs(minv);
             self.setValueScale( $('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
 
@@ -1260,7 +1263,7 @@ CABLES.TL.UI.TimeLineUI=function()
         if(isDragging())return;
 
 
-                
+
         rubberBandMove(e);
     });
 
@@ -1318,12 +1321,12 @@ CABLES.TL.UI.TimeLineUI=function()
         cursorLine.hide();
 
         var oldx=viewBox.x;
-                
+
         var offsetLeftTime=this.getTimeFromPaper(viewBox.x);
         var oldCursor=(this.getPaperXFromTime(cursorTime)-viewBox.x);
 
         var leftToCursorDiff=this.getPaperXFromTime(cursorTime-offsetLeftTime);
-     
+
 
         CABLES.TL.TIMESCALE=v;
 
@@ -1380,7 +1383,7 @@ CABLES.TL.UI.TimeLineUI=function()
         var time=gui.scene().timer.getTime();
         setCursor(time);
         if(doCenter)self.centerCursor();
- 
+
 
         if(lastTime!=time)
         {
@@ -1397,7 +1400,7 @@ CABLES.TL.UI.TimeLineUI=function()
     this.togglePlay=function(patch)
     {
         gui.scene().timer.togglePlay();
-                
+
         if(!gui.scene().timer.isPlaying())
         {
             $('#timelineplay').removeClass('fa-pause');
@@ -1544,7 +1547,7 @@ CABLES.TL.UI.TimeLineUI=function()
                     {
                         minTime=Math.min(minTime,json.keys[i].t);
                     }
-        
+
                     CABLES.UI.setStatusText(json.keys.length+' keys pasted...');
 
                     for(i in json.keys)
@@ -1651,9 +1654,6 @@ CABLES.TL.UI.TimeLineUI=function()
     self.updateViewBox();
     self.setAnim(tlEmpty);
 
-    
+
 
 };
-
-
-

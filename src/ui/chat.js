@@ -221,4 +221,4 @@ CABLES.Chat = function() {
 
         return true;
     }
-}
+};
