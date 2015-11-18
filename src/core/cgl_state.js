@@ -63,7 +63,7 @@ CABLES.LoadingManager=function()
     {
         var id=generateUUID();
         loadingAssets[id]=({id:id,type:type,name:name,finished:false});
-        console.log('LOAD: '+loadingAssets[id].type+': '+loadingAssets[id].finished+': '+loadingAssets[id].name );
+        // console.log('LOAD: '+loadingAssets[id].type+': '+loadingAssets[id].finished+': '+loadingAssets[id].name );
 
         return id;
     };

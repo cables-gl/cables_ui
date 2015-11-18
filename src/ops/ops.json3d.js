@@ -144,6 +144,7 @@ Ops.Json3d.Mesh=function()
     this.name='json3d Mesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION ));
     this.index=this.addInPort(new Port(this,"mesh index",OP_PORT_TYPE_VALUE,{type:'string'} ));
+    this.index.val=-1;
     this.centerPivot=this.addInPort(new Port(this,"center pivot",OP_PORT_TYPE_VALUE,{display:'bool'} ));
     this.centerPivot.val=false;
 
@@ -170,7 +171,7 @@ Ops.Json3d.Mesh=function()
 
     function reload()
     {
-        if(cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue())
+        if(cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue() && self.index.val>=0)
         {
             // console.log(' has '+cgl.frameStore.currentScene.getValue().meshes.length+' meshes ');
             // console.log('reload');
@@ -298,7 +299,7 @@ Ops.Json3d.Mesh=function()
     {
         mesh=null;
     };
-    // this.index.onValueChanged=reload;
+    this.index.onValueChanged=reload;
 
 };
 
