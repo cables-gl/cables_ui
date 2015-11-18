@@ -171,7 +171,7 @@ Ops.Json3d.Mesh=function()
 
     function reload()
     {
-        if(cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue() && self.index.val>=0)
+        if(cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue() && self.index.get()>=0)
         {
             // console.log(' has '+cgl.frameStore.currentScene.getValue().meshes.length+' meshes ');
             // console.log('reload');

@@ -85,15 +85,10 @@ CGL.State=function()
     this.canvas=null;
     mat4.identity(self.mvMatrix);
 
-
-
-
-
     this.loading=new CABLES.LoadingManager();
 
-
-    var simpleShader=null;
-    var currentShader=null;
+    var simpleShader=new CGL.Shader(this);
+    var currentShader=simpleShader;
     var aborted=false;
 
     this.setCanvas=function(id)
@@ -197,8 +192,7 @@ CGL.State=function()
                 if(this.frameStore.renderOffscreen == shaderStack[i].offScreenPass)
                     return shaderStack[i];
 
-        if(!simpleShader)simpleShader=new CGL.Shader(this,'simpleShader');
-        return simpleShader;
+        // console.log('no shader found?');
 
     };
 
