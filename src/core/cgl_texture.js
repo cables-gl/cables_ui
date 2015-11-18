@@ -189,7 +189,7 @@ CGL.Texture=function(cgl,options)
 
 CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 {
-    var loadingId=cgl.loading.start('texture',url);
+    var loadingId=cgl.patch.loading.start('texture',url);
     var texture=new CGL.Texture(cgl);
     texture.image = new Image();
 
@@ -208,7 +208,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     texture.image.onload=function(e)
     {
         texture.initTexture(texture.image);
-        cgl.loading.finished(loadingId);
+        cgl.patch.loading.finished(loadingId);
         if(finishedCallback)finishedCallback();
 
     };

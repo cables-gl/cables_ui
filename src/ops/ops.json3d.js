@@ -5,7 +5,7 @@ Ops.Json3d=Ops.Json3d || {};
 
 Ops.Json3d.json3dFile = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -92,7 +92,7 @@ Ops.Json3d.json3dFile = function()
         if(!self.filename.get())return;
 
         // console.log('load ajax'+self.patch.getFilePath(self.filename.val));
-        var loadingId=cgl.loading.start('json3dFile',self.filename.get());
+        var loadingId=self.patch.loading.start('json3dFile',self.filename.get());
 
         CABLES.ajax(
             self.patch.getFilePath(self.filename.val),
@@ -101,7 +101,7 @@ Ops.Json3d.json3dFile = function()
                 if(err)
                 {
                     console.log('ajax error:',err);
-                    cgl.loading.finished(loadingId);
+                    self.patch.loading.finished(loadingId);
                     return;
                 }
                 var data=JSON.parse(_data);
@@ -119,7 +119,7 @@ Ops.Json3d.json3dFile = function()
                 }
 
                 render();
-                cgl.loading.finished(loadingId);
+                self.patch.loading.finished(loadingId);
 
             });
 
@@ -128,7 +128,7 @@ Ops.Json3d.json3dFile = function()
     this.filename.onValueChanged=reload;
 };
 
-Ops.Json3d.json3dFile.prototype = new Op();
+Ops.Json3d.json3dFile.prototype = new CABLES.Op();
 
 
 
@@ -137,7 +137,7 @@ Ops.Json3d.json3dFile.prototype = new Op();
 
 Ops.Json3d.Mesh=function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -303,4 +303,4 @@ Ops.Json3d.Mesh=function()
 
 };
 
-Ops.Json3d.Mesh.prototype = new Op();
+Ops.Json3d.Mesh.prototype = new CABLES.Op();

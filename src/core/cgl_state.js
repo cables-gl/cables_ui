@@ -19,15 +19,12 @@ CGL.State=function()
     this.canvas=null;
     mat4.identity(self.mvMatrix);
 
-
     var simpleShader=new CGL.Shader(this);
     var currentShader=simpleShader;
     var aborted=false;
 
     this.setCanvas=function(id)
     {
-        console.log('hallo');
-
         this.canvas=document.getElementById(id);
         this.gl=this.canvas.getContext("experimental-webgl",
         {

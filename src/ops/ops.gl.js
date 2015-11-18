@@ -10,7 +10,7 @@ Ops.Gl.Matrix=Ops.Gl.Matrix || {};
 
 Ops.Gl.Renderer = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
 
     if(!this.patch.cgl)
@@ -106,7 +106,7 @@ Ops.Gl.Renderer.renderEnd=function(cgl,identTranslate)
     cgl.endFrame();
 };
 
-Ops.Gl.Renderer.prototype = new Op();
+Ops.Gl.Renderer.prototype = new CABLES.Op();
 
 
 
@@ -115,7 +115,7 @@ Ops.Gl.Renderer.prototype = new Op();
 
 Ops.Gl.Wireframe = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -136,13 +136,13 @@ Ops.Gl.Wireframe = function()
     this.lineWidth.val=2;
 };
 
-Ops.Gl.Wireframe.prototype = new Op();
+Ops.Gl.Wireframe.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
 Ops.Gl.Points = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -162,14 +162,14 @@ Ops.Gl.Points = function()
     this.pointSize.val=5;
 };
 
-Ops.Gl.Points.prototype = new Op();
+Ops.Gl.Points.prototype = new CABLES.Op();
 
 
 // --------------------------------------------------------------------------
 
 Ops.Gl.TextureEmpty = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -193,13 +193,13 @@ Ops.Gl.TextureEmpty = function()
     this.height.set(8);
 };
 
-Ops.Gl.TextureEmpty.prototype = new Op();
+Ops.Gl.TextureEmpty.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
 Ops.Gl.TextureCycler = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -289,14 +289,14 @@ Ops.Gl.TextureCycler = function()
 
 };
 
-Ops.Gl.TextureCycler.prototype = new Op();
+Ops.Gl.TextureCycler.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
 
 Ops.Gl.Texture=function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -397,7 +397,7 @@ Ops.Gl.Texture=function()
 
 };
 
-Ops.Gl.Texture.prototype = new Op();
+Ops.Gl.Texture.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
@@ -407,7 +407,7 @@ Ops.Gl.Meshes=Ops.Gl.Meshes || {};
 
 Ops.Gl.Meshes.Plotter = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -465,7 +465,7 @@ Ops.Gl.Meshes.Plotter = function()
     };
 };
 
-Ops.Gl.Meshes.Plotter.prototype = new Op();
+Ops.Gl.Meshes.Plotter.prototype = new CABLES.Op();
 
 
 // --------------------------------------------------------------------------
@@ -477,7 +477,7 @@ Ops.Gl.Meshes.Plotter.prototype = new Op();
 
 Ops.Gl.Render2Texture = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -662,7 +662,7 @@ Ops.Gl.Render2Texture = function()
     self.render.onTriggered=render;
 };
 
-Ops.Gl.Render2Texture.prototype = new Op();
+Ops.Gl.Render2Texture.prototype = new CABLES.Op();
 
 
 
@@ -670,7 +670,7 @@ Ops.Gl.Render2Texture.prototype = new Op();
 
 Ops.Gl.SpotLight = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -758,4 +758,4 @@ Ops.Gl.SpotLight = function()
 
 };
 
-Ops.Gl.SpotLight.prototype = new Op();
+Ops.Gl.SpotLight.prototype = new CABLES.Op();

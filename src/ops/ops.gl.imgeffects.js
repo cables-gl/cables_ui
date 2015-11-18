@@ -6,7 +6,7 @@ Ops.Gl.TextureEffects=Ops.Gl.TextureEffects || {};
 
 Ops.Gl.TextureEffects.ImageCompose = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -121,13 +121,13 @@ Ops.Gl.TextureEffects.ImageCompose = function()
     this.render.onTriggered=render;
 };
 
-Ops.Gl.TextureEffects.ImageCompose.prototype = new Op();
+Ops.Gl.TextureEffects.ImageCompose.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Invert = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -178,13 +178,13 @@ Ops.Gl.TextureEffects.Invert = function()
     };
 };
 
-Ops.Gl.TextureEffects.Invert.prototype = new Op();
+Ops.Gl.TextureEffects.Invert.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Scroll = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -257,13 +257,13 @@ Ops.Gl.TextureEffects.Scroll = function()
 
 };
 
-Ops.Gl.TextureEffects.Scroll.prototype = new Op();
+Ops.Gl.TextureEffects.Scroll.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Desaturate = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -327,13 +327,13 @@ Ops.Gl.TextureEffects.Desaturate = function()
     };
 };
 
-Ops.Gl.TextureEffects.Desaturate.prototype = new Op();
+Ops.Gl.TextureEffects.Desaturate.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.PixelDisplacement = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -413,13 +413,13 @@ Ops.Gl.TextureEffects.PixelDisplacement = function()
     self.amountY.val=0.0;
 };
 
-Ops.Gl.TextureEffects.PixelDisplacement.prototype = new Op();
+Ops.Gl.TextureEffects.PixelDisplacement.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.MixImage = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -490,7 +490,7 @@ Ops.Gl.TextureEffects.MixImage = function()
     };
 };
 
-Ops.Gl.TextureEffects.MixImage.prototype = new Op();
+Ops.Gl.TextureEffects.MixImage.prototype = new CABLES.Op();
 
 
 
@@ -499,7 +499,7 @@ Ops.Gl.TextureEffects.MixImage.prototype = new Op();
 
 Ops.Gl.TextureEffects.DrawImage = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -833,7 +833,7 @@ Ops.Gl.TextureEffects.DrawImage = function()
 
 };
 
-Ops.Gl.TextureEffects.DrawImage.prototype = new Op();
+Ops.Gl.TextureEffects.DrawImage.prototype = new CABLES.Op();
 
 
 
@@ -844,7 +844,7 @@ Ops.Gl.TextureEffects.DrawImage.prototype = new Op();
 
 Ops.Gl.TextureEffects.SSAO = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1005,7 +1005,7 @@ Ops.Gl.TextureEffects.SSAO = function()
     };
 };
 
-Ops.Gl.TextureEffects.SSAO.prototype = new Op();
+Ops.Gl.TextureEffects.SSAO.prototype = new CABLES.Op();
 
 
 
@@ -1018,7 +1018,7 @@ Ops.Gl.TextureEffects.SSAO.prototype = new Op();
 
 Ops.Gl.TextureEffects.AlphaMask = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1117,7 +1117,7 @@ Ops.Gl.TextureEffects.AlphaMask = function()
     };
 };
 
-Ops.Gl.TextureEffects.AlphaMask.prototype = new Op();
+Ops.Gl.TextureEffects.AlphaMask.prototype = new CABLES.Op();
 
 
 
@@ -1128,7 +1128,7 @@ Ops.Gl.TextureEffects.AlphaMask.prototype = new Op();
 
 Ops.Gl.TextureEffects.WipeTransition = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1216,13 +1216,13 @@ Ops.Gl.TextureEffects.WipeTransition = function()
 
 };
 
-Ops.Gl.TextureEffects.WipeTransition.prototype = new Op();
+Ops.Gl.TextureEffects.WipeTransition.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.ColorLookup = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1304,7 +1304,7 @@ Ops.Gl.TextureEffects.ColorLookup = function()
     };
 };
 
-Ops.Gl.TextureEffects.ColorLookup.prototype = new Op();
+Ops.Gl.TextureEffects.ColorLookup.prototype = new CABLES.Op();
 
 
 
@@ -1312,7 +1312,7 @@ Ops.Gl.TextureEffects.ColorLookup.prototype = new Op();
 
 Ops.Gl.TextureEffects.BrightnessContrast = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1389,14 +1389,14 @@ Ops.Gl.TextureEffects.BrightnessContrast = function()
     };
 };
 
-Ops.Gl.TextureEffects.BrightnessContrast.prototype = new Op();
+Ops.Gl.TextureEffects.BrightnessContrast.prototype = new CABLES.Op();
 
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.RemoveAlpha = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1446,7 +1446,7 @@ Ops.Gl.TextureEffects.RemoveAlpha = function()
     };
 };
 
-Ops.Gl.TextureEffects.RemoveAlpha.prototype = new Op();
+Ops.Gl.TextureEffects.RemoveAlpha.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
@@ -1456,7 +1456,7 @@ Ops.Gl.TextureEffects.RemoveAlpha.prototype = new Op();
 
 Ops.Gl.TextureEffects.ColorOverlay = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1551,13 +1551,13 @@ Ops.Gl.TextureEffects.ColorOverlay = function()
 
 };
 
-Ops.Gl.TextureEffects.ColorOverlay.prototype = new Op();
+Ops.Gl.TextureEffects.ColorOverlay.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.ColorChannel = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1663,14 +1663,14 @@ Ops.Gl.TextureEffects.ColorChannel = function()
 
 };
 
-Ops.Gl.TextureEffects.ColorChannel.prototype = new Op();
+Ops.Gl.TextureEffects.ColorChannel.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 
 Ops.Gl.TextureEffects.RgbMultiply = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1750,13 +1750,13 @@ Ops.Gl.TextureEffects.RgbMultiply = function()
     };
 };
 
-Ops.Gl.TextureEffects.RgbMultiply.prototype = new Op();
+Ops.Gl.TextureEffects.RgbMultiply.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Hue = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1839,13 +1839,13 @@ Ops.Gl.TextureEffects.Hue = function()
     };
 };
 
-Ops.Gl.TextureEffects.Hue.prototype = new Op();
+Ops.Gl.TextureEffects.Hue.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Color = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -1928,13 +1928,13 @@ Ops.Gl.TextureEffects.Color = function()
     };
 };
 
-Ops.Gl.TextureEffects.Color.prototype = new Op();
+Ops.Gl.TextureEffects.Color.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Vignette = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -2006,13 +2006,13 @@ Ops.Gl.TextureEffects.Vignette = function()
     };
 };
 
-Ops.Gl.TextureEffects.Vignette.prototype = new Op();
+Ops.Gl.TextureEffects.Vignette.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Blur = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -2105,7 +2105,7 @@ Ops.Gl.TextureEffects.Blur = function()
     };
 };
 
-Ops.Gl.TextureEffects.Blur.prototype = new Op();
+Ops.Gl.TextureEffects.Blur.prototype = new CABLES.Op();
 
 
 
@@ -2113,7 +2113,7 @@ Ops.Gl.TextureEffects.Blur.prototype = new Op();
 
 Ops.Gl.TextureEffects.FXAA = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -2265,14 +2265,14 @@ Ops.Gl.TextureEffects.FXAA = function()
 
 };
 
-Ops.Gl.TextureEffects.FXAA.prototype = new Op();
+Ops.Gl.TextureEffects.FXAA.prototype = new CABLES.Op();
 
 
 // ---------------------------------------------------------------------------------------------
 
 Ops.Gl.TextureEffects.Noise = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -2345,7 +2345,7 @@ Ops.Gl.TextureEffects.Noise = function()
 
 };
 
-Ops.Gl.TextureEffects.Noise.prototype = new Op();
+Ops.Gl.TextureEffects.Noise.prototype = new CABLES.Op();
 
 
 
@@ -2354,7 +2354,7 @@ Ops.Gl.TextureEffects.Noise.prototype = new Op();
 
 Ops.Gl.TextureEffects.ChromaticAberration = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -2416,4 +2416,4 @@ Ops.Gl.TextureEffects.ChromaticAberration = function()
     };
 };
 
-Ops.Gl.TextureEffects.ChromaticAberration.prototype = new Op();
+Ops.Gl.TextureEffects.ChromaticAberration.prototype = new CABLES.Op();

@@ -8,7 +8,7 @@ Ops.Gl.ShaderEffects=Ops.Gl.ShaderEffects || {};
 
 Ops.Gl.ShaderEffects.TextureShiftGlitch = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -78,14 +78,14 @@ Ops.Gl.ShaderEffects.TextureShiftGlitch = function()
 
 };
 
-Ops.Gl.ShaderEffects.TextureShiftGlitch.prototype = new Op();
+Ops.Gl.ShaderEffects.TextureShiftGlitch.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
 
 Ops.Gl.ShaderEffects.VertexSinusWobble = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -206,14 +206,14 @@ Ops.Gl.ShaderEffects.VertexSinusWobble = function()
 
 };
 
-Ops.Gl.ShaderEffects.VertexSinusWobble.prototype = new Op();
+Ops.Gl.ShaderEffects.VertexSinusWobble.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
 
 Ops.Gl.ShaderEffects.VertexExtrudeGlitch = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -290,14 +290,14 @@ Ops.Gl.ShaderEffects.VertexExtrudeGlitch = function()
 
 };
 
-Ops.Gl.ShaderEffects.VertexExtrudeGlitch.prototype = new Op();
+Ops.Gl.ShaderEffects.VertexExtrudeGlitch.prototype = new CABLES.Op();
 Ops.Gl.ShaderEffects.VertexGlitch=Ops.Gl.ShaderEffects.VertexExtrudeGlitch;
 
 // --------------------------------------------------------------------------
 
 Ops.Gl.ShaderEffects.VertexDisplacementMap = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -407,7 +407,7 @@ Ops.Gl.ShaderEffects.VertexDisplacementMap = function()
 
 };
 
-Ops.Gl.ShaderEffects.VertexDisplacementMap.prototype = new Op();
+Ops.Gl.ShaderEffects.VertexDisplacementMap.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
@@ -415,7 +415,7 @@ Ops.Gl.ShaderEffects.VertexDisplacementMap.prototype = new Op();
 
 Ops.Gl.ShaderEffects.MeshMorphTargets = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -508,6 +508,6 @@ Ops.Gl.ShaderEffects.MeshMorphTargets = function()
 
 };
 
-Ops.Gl.ShaderEffects.MeshMorphTargets.prototype = new Op();
+Ops.Gl.ShaderEffects.MeshMorphTargets.prototype = new CABLES.Op();
 Ops.Gl.Meshes.MorphMesh = Ops.Gl.ShaderEffects.MeshMorphTargets;
 

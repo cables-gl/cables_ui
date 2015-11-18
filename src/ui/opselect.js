@@ -193,7 +193,7 @@ CABLES.UI.OPSELECT.getOpList=function()
     }
 
     getop('Ops',Ops,'');
-    getop('Op',Op,'');
+    // getop('Op',CABLES.Op,'');
 
     ops.sort(function(a, b)
     {

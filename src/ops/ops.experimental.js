@@ -5,7 +5,7 @@ Ops.Experimental=Ops.Experimental || {};
 
 Ops.Experimental.ImageStream = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -45,13 +45,13 @@ Ops.Experimental.ImageStream = function()
 setTimeout(run, 500);
 };
 
-Ops.Experimental.ImageStream.prototype = new Op();
+Ops.Experimental.ImageStream.prototype = new CABLES.Op();
 
 // -----------------------------------------------
 
 Ops.Experimental.SaltedPerceptionMaterial = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=this.patch.cgl;
 
@@ -184,4 +184,4 @@ Ops.Experimental.SaltedPerceptionMaterial = function()
     this.doRender();
 
 };
-Ops.Experimental.SaltedPerceptionMaterial.prototype = new Op();
+Ops.Experimental.SaltedPerceptionMaterial.prototype = new CABLES.Op();

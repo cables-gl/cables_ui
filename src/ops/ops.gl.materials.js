@@ -5,7 +5,7 @@ Ops.Gl.Shader= Ops.Gl.Shader || {};
 
 Ops.Gl.Shader.MatCapMaterial = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -117,7 +117,6 @@ Ops.Gl.Shader.MatCapMaterial = function()
         }
         else
         {
-            console.log('TEXTURE REMOVED');
             shader.removeUniform('tex');
             self.textureUniform=null;
         }
@@ -444,7 +443,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
     this.doRender();
 };
 
-Ops.Gl.Shader.MatCapMaterial.prototype = new Op();
+Ops.Gl.Shader.MatCapMaterial.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
@@ -452,7 +451,7 @@ Ops.Gl.Shader.MatCapMaterial.prototype = new Op();
 
 Ops.Gl.Shader.GradientMaterial = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -599,14 +598,14 @@ Ops.Gl.Shader.GradientMaterial = function()
     this.render.onTriggered=this.doRender;
 };
 
-Ops.Gl.Shader.GradientMaterial.prototype = new Op();
+Ops.Gl.Shader.GradientMaterial.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
 
 Ops.Gl.Shader.BasicMaterial = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -856,7 +855,7 @@ Ops.Gl.Shader.BasicMaterial = function()
     this.doRender();
 };
 
-Ops.Gl.Shader.BasicMaterial.prototype = new Op();
+Ops.Gl.Shader.BasicMaterial.prototype = new CABLES.Op();
 
 
 // --------------------------------------------------------------------------
@@ -864,7 +863,7 @@ Ops.Gl.Shader.BasicMaterial.prototype = new Op();
 
 Ops.Gl.Shader.TextureSinusWobble = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     var cgl=self.patch.cgl;
 
@@ -974,7 +973,7 @@ Ops.Gl.Shader.TextureSinusWobble = function()
     this.doRender();
 };
 
-Ops.Gl.Shader.TextureSinusWobble.prototype = new Op();
+Ops.Gl.Shader.TextureSinusWobble.prototype = new CABLES.Op();
 
 
 // --------------------------------------------------------------------------

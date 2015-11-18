@@ -7,7 +7,7 @@
 
 Ops.Value = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
 
     this.name='Value';
@@ -31,14 +31,14 @@ Ops.Value = function()
     this.v.onValueChanged=this.exec;
 };
 
-Ops.Value.prototype = new Op();
+Ops.Value.prototype = new CABLES.Op();
 
 
 // ---------------------------------------------------------------------------
 
 Ops.Value2d = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
 
     this.name='Value2d';
@@ -68,13 +68,13 @@ Ops.Value2d = function()
     // this.onAnimFrame=function(){};
 };
 
-Ops.Value2d.prototype = new Op();
+Ops.Value2d.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------
 
 Ops.Value3d = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
 
     this.name='Value3d';
@@ -107,13 +107,13 @@ Ops.Value3d = function()
     this.z.onValueChanged=this.exec;
 };
 
-Ops.Value3d.prototype = new Op();
+Ops.Value3d.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------
 
 Ops.ColorValue = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
     this.name='ColorValue';
 
@@ -142,14 +142,14 @@ Ops.ColorValue = function()
     this.a.onValueChanged=exec;
 };
 
-Ops.ColorValue.prototype = new Op();
+Ops.ColorValue.prototype = new CABLES.Op();
 
 
 // ---------------------------------------------------------------------------
 
 Ops.TimeLineDelayFrames = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
 
     this.name='TimeLineDelayFrames';
@@ -173,7 +173,7 @@ Ops.TimeLineDelayFrames = function()
     };
 
 };
-Ops.TimeLineDelayFrames.prototype = new Op();
+Ops.TimeLineDelayFrames.prototype = new CABLES.Op();
 
 
 
@@ -181,7 +181,7 @@ Ops.TimeLineDelayFrames.prototype = new Op();
 
 Ops.IfBetweenThen = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
 
     this.name='if between then';
@@ -206,13 +206,13 @@ Ops.IfBetweenThen = function()
     };
 };
 
-Ops.IfBetweenThen.prototype = new Op();
+Ops.IfBetweenThen.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------
 
 Ops.ToggleBool = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
 
     this.name='ToggleBool';
@@ -228,14 +228,14 @@ Ops.ToggleBool = function()
     };
 };
 
-Ops.ToggleBool.prototype = new Op();
+Ops.ToggleBool.prototype = new CABLES.Op();
 
 
 // ---------------------------------------------------------------------------
 
 Ops.TimedSequence = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
     var self=this;
 
     this.name='TimedSequence';
@@ -358,7 +358,7 @@ Ops.TimedSequence = function()
     };
 
 };
-Ops.TimedSequence.prototype = new Op();
+Ops.TimedSequence.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------
 
@@ -369,7 +369,7 @@ Ops.Anim=Ops.Anim || {};
 
 Ops.Anim.Frequency = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
 
     this.name='Frequency';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -389,13 +389,13 @@ Ops.Anim.Frequency = function()
     };
 };
 
-Ops.Anim.Frequency.prototype = new Op();
+Ops.Anim.Frequency.prototype = new CABLES.Op();
 
 // --------------------------------------------------------------------------
 
 Ops.Anim.TimeDiff = function()
 {
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
 
     this.name='TimeDiff';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -416,7 +416,7 @@ Ops.Anim.TimeDiff = function()
 
 };
 
-Ops.Anim.TimeDiff.prototype = new Op();
+Ops.Anim.TimeDiff.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------
 
@@ -425,7 +425,7 @@ var cableVars={};
 Ops.Anim.Variable = function()
 {
     var self=this;
-    Op.apply(this, arguments);
+    CABLES.Op.apply(this, arguments);
 
     this.name='Variable';
     this.exe=this.addInPort(new Port(this,"exe",OP_PORT_TYPE_FUNCTION));
@@ -450,6 +450,6 @@ Ops.Anim.Variable = function()
     this.exe.onTriggered=readValue;
 };
 
-Ops.Anim.Variable.prototype = new Op();
+Ops.Anim.Variable.prototype = new CABLES.Op();
 
 // ---------------------------------------------------------------------------
