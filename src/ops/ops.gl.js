@@ -6,8 +6,6 @@
 Ops.Gl=Ops.Gl || {};
 Ops.Gl.Matrix=Ops.Gl.Matrix || {};
 
-
-
 Ops.Gl.Renderer = function()
 {
     CABLES.Op.apply(this, arguments);

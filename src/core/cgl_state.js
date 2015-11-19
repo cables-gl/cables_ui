@@ -1,8 +1,6 @@
 
 var CGL=CGL || {};
 
-
-
 CGL.State=function()
 {
     var self=this;

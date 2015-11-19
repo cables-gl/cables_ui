@@ -26,11 +26,10 @@ CGL.TextureEffect=function(cgl)
 
     var mesh=new CGL.Mesh(cgl,geom);
 
-    var textureSource=null;
-    var textureTarget=new CGL.Texture(cgl);
-
-    var frameBuf = cgl.gl.createFramebuffer();
-    var renderbuffer = cgl.gl.createRenderbuffer();
+    var textureSource = null;
+    var textureTarget = new CGL.Texture(cgl);
+    var frameBuf      = cgl.gl.createFramebuffer();
+    var renderbuffer  = cgl.gl.createRenderbuffer();
 
     var switched=false;
 
@@ -46,13 +45,12 @@ CGL.TextureEffect=function(cgl)
             textureSource=new CGL.Texture(cgl);
             textureSource.filter=CGL.Texture.FILTER_MIPMAP;
             textureSource.setSize(16,16);
-
         }
         else
         {
             textureSource=tex;
         }
-        
+
         textureTarget.filter=CGL.Texture.FILTER_MIPMAP;
         textureTarget.setSize(textureSource.width,textureSource.height);
 

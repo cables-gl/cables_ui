@@ -20,8 +20,6 @@ CABLES.TL.EASING_SIN_IN=11;
 CABLES.TL.EASING_SIN_OUT=12;
 CABLES.TL.EASING_SIN_INOUT=13;
 
-
-
 CABLES.TL.Key=function(obj)
 {
     this.time=0.0;
@@ -93,10 +91,10 @@ CABLES.TL.Key=function(obj)
         obj.e=easing;
         if(easing==CABLES.TL.EASING_BEZIER)
             obj.b=[this.bezTime,this.bezValue,this.bezTimeIn,this.bezValueIn];
-                
+
         return obj;
     };
-    
+
 
     if("isUI" in this)
     {
@@ -147,9 +145,6 @@ CABLES.TL.Key=function(obj)
         }
         return linear(t,this,key2);
     };
-
-
-
 
     this.easeSinIn=function( t,key2)
     {
@@ -252,7 +247,7 @@ CABLES.TL.Key=function(obj)
 
             var steps=20;
             var is=1/steps;
-            
+
             for(var i=0;i<steps;i++)
             {
                 var v=Bezier(i*is,nextKey);
@@ -365,7 +360,7 @@ CABLES.TL.Anim=function(cfg)
         if(!found)
         {
             // console.log('not found');
-                    
+
             this.keys.push(new CABLES.TL.Key({time:time,value:value,e:this.defaultEasing})) ;
         }
 
@@ -400,7 +395,7 @@ CABLES.TL.Anim=function(cfg)
         if(this.keys.length===0)return 0;
 
         if(time<this.keys[0].time)return this.keys[0].value;
-        
+
         if(this.loop && time>this.keys[this.keys.length-1].time)
         {
             time=(time-this.keys[0].time)%(this.keys[this.keys.length-1].time-this.keys[0].time);
@@ -431,5 +426,3 @@ CABLES.TL.Anim=function(cfg)
         }
     };
 };
-
-

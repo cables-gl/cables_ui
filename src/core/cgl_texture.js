@@ -4,20 +4,18 @@ var CGL=CGL || {};
 CGL.Texture=function(cgl,options)
 {
     if(!cgl) throw "no cgl";
-    var self=this;
+    var self = this;
     this.tex = cgl.gl.createTexture();
-    this.width=0;
-    this.height=0;
-    this.flip=true;
-    this.filter=CGL.Texture.FILTER_NEAREST;
-    this.wrap=CGL.Texture.WRAP_REPEAT;
-    var isDepthTexture=false;
+    this.width = 0;
+    this.height = 0;
+    this.flip = true;
+    this.filter = CGL.Texture.FILTER_NEAREST;
+    this.wrap = CGL.Texture.WRAP_REPEAT;
+    var isDepthTexture = false;
 
     if(options)
     {
-        if(options.isDepthTexture)
-            isDepthTexture=options.isDepthTexture;
-
+        if(options.isDepthTexture) isDepthTexture=options.isDepthTexture;
         if(options.filter) this.filter=options.filter;
     }
 
@@ -35,7 +33,6 @@ CGL.Texture=function(cgl,options)
     {
         if(!_isPowerOfTwo(self.width) || !_isPowerOfTwo(self.height) )
         {
-
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.NEAREST);
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MIN_FILTER, cgl.gl.NEAREST);
 
@@ -61,9 +58,6 @@ CGL.Texture=function(cgl,options)
             //     cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.MIRRORED_REPEAT);
             //     cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.MIRRORED_REPEAT);
             // }
-
-
-
 
             if(self.filter==CGL.Texture.FILTER_NEAREST)
             {
@@ -271,7 +265,6 @@ CGL.Texture.texturePreviewer=null;
 CGL.Texture.texturePreview=function(cgl)
 {
     var size=2;
-
     var geom=new CGL.Geometry();
 
     geom.vertices = [
@@ -292,9 +285,8 @@ CGL.Texture.texturePreview=function(cgl)
         0, 1, 2,
         3, 1, 2
     ];
+
     var mesh=new CGL.Mesh(cgl,geom);
-
-
 
     var srcFrag=''
         .endl()+'precision highp float;'

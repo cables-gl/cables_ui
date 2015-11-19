@@ -1,10 +1,11 @@
+var CABLES=CABLES || {};
 
-var Scene = function(cfg)
+CABLES.Patch = function(cfg)
 {
     var self=this;
     this.ops=[];
     this.settings={};
-    this.timer=new Timer();
+    this.timer=new CABLES.Timer();
     this.animFrameOps=[];
     this.gui=false;
     this.silent=false;
@@ -54,7 +55,7 @@ var Scene = function(cfg)
     this.clear=function()
     {
         self.animFrameOps.length=0;
-        this.timer=new Timer();
+        this.timer=new CABLES.Timer();
         while(this.ops.length>0)
         {
             this.deleteOp(this.ops[0].id);
@@ -199,9 +200,9 @@ var Scene = function(cfg)
             return false;
         }
 
-        if(Link.canLink(port1,port2))
+        if(CABLES.Link.canLink(port1,port2))
         {
-            var link=new Link(this);
+            var link=new CABLES.Link(this);
             link.link(port1,port2);
 
             this.onLink(port1,port2);
@@ -209,7 +210,7 @@ var Scene = function(cfg)
         }
         else
         {
-            console.log(Link.canLinkText(port1,port2));
+            console.log(CABLES.Link.canLinkText(port1,port2));
         }
     };
 
@@ -351,3 +352,5 @@ var Scene = function(cfg)
     this.exec();
 
 };
+
+var Scene=CABLES.Patch;

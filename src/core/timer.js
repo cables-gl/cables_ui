@@ -1,5 +1,5 @@
 
-function Timer()
+CABLES.Timer=function()
 {
     var self=this;
     var timeStart=Date.now();

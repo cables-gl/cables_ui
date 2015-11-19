@@ -1,10 +1,9 @@
 var PORT_DIR_IN=0;
 var PORT_DIR_OUT=1;
 
-// ------------------------------------------------------------------------------------
+var CABLES=CABLES || {};
 
-
-var Port=function(parent,name,type,uiAttribs)
+CABLES.Port=function(parent,name,type,uiAttribs)
 {
     var self=this;
     this.direction=PORT_DIR_IN;
@@ -277,3 +276,6 @@ var Port=function(parent,name,type,uiAttribs)
         self.setValue(valueBeforeLink);
     };
 };
+
+
+var Port = CABLES.Port; // TODO deprecated.. remove one day...

@@ -6,7 +6,6 @@ CABLES.Variable=function()
     var value=null;
     var changedCallbacks=[];
 
-
     this.onChanged=function(f)
     {
         changedCallbacks.push(f);
@@ -31,7 +30,4 @@ CABLES.Variable=function()
         }
     };
 
-
-
 };
-

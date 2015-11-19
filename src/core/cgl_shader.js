@@ -250,8 +250,6 @@ CGL.Shader=function(_cgl)
 
         if(self.hasTextureUniforms()) definesStr+='#define HAS_TEXTURES'.endl();
 
-
-
         // console.log('shader compile...');
         // console.log('has textures: '+self.hasTextureUniforms() );
 
@@ -322,7 +320,6 @@ CGL.Shader=function(_cgl)
             mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
             normalMatrixUniform = cgl.gl.getUniformLocation(program, "normalMatrix");
             for(i=0;i<uniforms.length;i++)uniforms[i].needsUpdate=true;
-
         }
 
         if(cgl.currentProgram!=program)

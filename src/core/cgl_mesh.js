@@ -77,7 +77,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         {
             if(attributes[i].loc==-1)
                 attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
-        
+
             if(attributes[i].loc!=-1)
             {
                 cgl.gl.enableVertexAttribArray(attributes[i].loc);
@@ -108,13 +108,13 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
 
     this.render=function(shader)
     {
-        // todo: enable/disablevertex only if the mesh has changed... think drawing 10000x the same mesh
+        // TODO: enable/disablevertex only if the mesh has changed... think drawing 10000x the same mesh
 
         if(!shader) return;
         var i=0;
 
         // var meshChanged=this.meshChanged();
-        
+
         // if(meshChanged)
             // cgl.lastMesh.unBind();
 
@@ -133,7 +133,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         else if(cgl.points)what=cgl.gl.POINTS;
 
         cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
-        
+
         this.unBind();
 
         // cgl.lastMesh=this;
@@ -159,7 +159,7 @@ CGL.Geometry=function()
     function calcNormal(triangle)
     {
         // Begin Function CalculateSurfaceNormal (Input Triangle) Returns Vector
- 
+
         var u=[0,0,0],v=[0,0,0],normal=[0,0,0];
             // console.log('triangle',triangle);
 
@@ -176,11 +176,11 @@ CGL.Geometry=function()
         vec3.normalize(normal,normal);
 
         return normal;
-     
+
         // Set Normal.x to (multiply U.y by V.z) minus (multiply U.z by V.y)
         // Set Normal.y to (multiply U.z by V.x) minus (multiply U.x by V.z)
         // Set Normal.z to (multiply U.x by V.y) minus (multiply U.y by V.x)
-     
+
         // Returning Normal
     }
 
@@ -198,7 +198,7 @@ CGL.Geometry=function()
         var i=0;
 
         console.log('calcNormals');
-                
+
         this.vertexNormals.length=this.vertices.length;
         for(i=0;i<this.vertices.length;i++)
         {
@@ -236,11 +236,11 @@ CGL.Geometry=function()
 
         console.log('this.vertices',this.vertices.length);
         console.log('this.vertexNormals',this.vertexNormals.length);
-        
+
         if(calcVertexNormals)
         {
             console.log('calc vertexnormals');
-                    
+
             for(i=0;i<this.verticesIndices.length;i+=3) //faces
             {
                 for(var k=0;k<3;k++) //triangles
@@ -285,7 +285,7 @@ CGL.Geometry=function()
             // }
 
         }
-  
+
 
     };
 
@@ -408,12 +408,12 @@ parseOBJ = function(buff)
             var vi0 = parseInt(v0a[0])-1, vi1 = parseInt(v1a[0])-1, vi2 = parseInt(v2a[0])-1;
             var ui0 = parseInt(v0a[1])-1, ui1 = parseInt(v1a[1])-1, ui2 = parseInt(v2a[1])-1;
             var ni0 = parseInt(v0a[2])-1, ni1 = parseInt(v1a[2])-1, ni2 = parseInt(v2a[2])-1;
-            
+
             var vlen = geom.vertices.length/3, ulen = geom.texCoords.length/2, nlen = geom.vertexNormals.length/3;
             if(vi0<0) vi0 = vlen + vi0+1; if(vi1<0) vi1 = vlen + vi1+1; if(vi2<0) vi2 = vlen + vi2+1;
             if(ui0<0) ui0 = ulen + ui0+1; if(ui1<0) ui1 = ulen + ui1+1; if(ui2<0) ui2 = ulen + ui2+1;
             if(ni0<0) ni0 = nlen + ni0+1; if(ni1<0) ni1 = nlen + ni1+1; if(ni2<0) ni2 = nlen + ni2+1;
-            
+
             geom.verticesIndices.push(vi0, vi1, vi2);  //cg.verticesIndices.push(vi0, vi1, vi2)
             geom.texCoordsIndices  .push(ui0, ui1, ui2);  //cg.texCoordsIndices  .push(ui0, ui1, ui2);
             geom.vertexNormalIndices.push(ni0, ni1, ni2);  //cg.vertexNormalIndices.push(ni0, ni1, ni2);
@@ -431,8 +431,6 @@ parseOBJ = function(buff)
         }
     }
     cg.to = geom.verticesIndices.length;
-    
+
     return geom;
 };
-
-

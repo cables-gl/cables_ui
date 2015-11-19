@@ -1,4 +1,7 @@
-var Link = function(scene)
+
+var CABLES=CABLES || {};
+
+CABLES.Link = function(scene)
 {
     this.portIn=null;
     this.portOut=null;
@@ -11,21 +14,8 @@ var Link = function(scene)
 
     this.setValue=function()
     {
-        // try
-        // if(this.portIn.val!=this.portOut.val)
-        //     this.portIn.val=this.portOut.val;
-
         if(this.portIn.get()!=this.portOut.get())
             this.portIn.set(this.portOut.get());
-
-
-        // catch(exc)
-        // {
-        //     console.log('',this);
-
-        //     // console.log('exc',exc);
-
-        // }
     };
 
     this.getOtherPort=function(p)
@@ -46,7 +36,7 @@ var Link = function(scene)
 
     this.link=function(p1,p2)
     {
-        if(!Link.canLink(p1,p2))
+        if(!CABLES.Link.canLink(p1,p2))
         {
             console.log('cannot link ports!');
             return false;
@@ -82,7 +72,7 @@ var Link = function(scene)
     };
 };
 
-Link.canLinkText=function(p1,p2)
+CABLES.Link.canLinkText=function(p1,p2)
 {
     if(p1.direction==p2.direction)
     {
@@ -102,16 +92,14 @@ Link.canLinkText=function(p1,p2)
     if(p1.direction==PORT_DIR_IN && p1.isAnimated())return 'can not link: is animated';
     if(p2.direction==PORT_DIR_IN && p2.isAnimated())return 'can not link: is animated';
 
-
     if(p1.direction==PORT_DIR_IN && p1.links.length>0)return 'input port already busy';
     if(p2.direction==PORT_DIR_IN && p2.links.length>0)return 'input port already busy';
     if(p1.isLinkedTo(p2))return 'ports already linked';
 
-
     return 'can link';
 };
 
-Link.canLink=function(p1,p2)
+CABLES.Link.canLink=function(p1,p2)
 {
     if( p1.type==OP_PORT_TYPE_DYNAMIC || p2.type==OP_PORT_TYPE_DYNAMIC )return true;
     if(!p1)return false;

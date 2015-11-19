@@ -284,8 +284,6 @@ input[type="text"]
         color:#fff;
     }
 
-
-
     td.port
     {
         border-left:4px solid #aaa;
@@ -308,7 +306,6 @@ input[type="text"]
             background-color: #666;
             outline: none;
         }
-
     }
 
     .value
@@ -331,10 +328,15 @@ input[type="text"]
             text-align: left;
         }
 
+        tr
+        {
+            background-color: #262626;
+        }
+
         td
         {
             padding-bottom: 3px;
-            background-color: #262626;
+
             border-bottom: 2px solid #222;
             padding-top: 3px;
 
@@ -374,14 +376,17 @@ input[type="text"]
 {
     font-family: arial;
     cursor:pointer;
-    background-color:#444;
+    background-color:#3a3a3a;
     min-width: 14px;
     text-align: center;
-    color:white;
+    color:#bbb;
     padding:3px;
     cursor:pointer !important;
     padding-left: 5px;
     padding-right: 5px;
+    border-top: 1px solid #444;
+    box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.2);
+    border-radius: 1px;
 
     &.fa:before
     {
@@ -391,13 +396,15 @@ input[type="text"]
     &:hover
     {
         cursor:pointer !important;
-        background-color:#777;
+        background-color:#444;
+        color:#eee;
     }
 
     &.warn
     {
         background-color:#ea6638;
     }
+
 }
 
 .bluebutton
@@ -434,11 +441,11 @@ input[type="text"]
 {
     .button
     {
-        background-color: #444;
-        display:block;
-        float:left;
-        padding:5px;
-        padding-left:5px;
+        display: block;
+        float: left;
+        padding: 5px;
+        padding-left: 5px;
+        padding-right: 1px;
         margin-left: 4px;
         margin-top: 3px;
 
@@ -678,7 +685,7 @@ input[type=range]:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #666;
+    background: #444;
     -webkit-border-radius: 1px;
     // -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
 }

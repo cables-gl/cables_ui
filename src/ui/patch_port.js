@@ -62,7 +62,7 @@ CABLES.UI.Port=function(thePort)
         }
         else
         {
-            var txt=Link.canLinkText(selectedEndPort.thePort,self.thePort);
+            var txt=CABLES.Link.canLinkText(selectedEndPort.thePort,self.thePort);
             if(txt=='can link') CABLES.UI.setStatusText(  getPortDescription(selectedEndPort.thePort));
                 else CABLES.UI.setStatusText( txt );
 
@@ -71,7 +71,7 @@ CABLES.UI.Port=function(thePort)
             CABLES.UI.showToolTip(event,txt+' '+getPortDescription(selectedEndPort.thePort));
         }
 
-        if(selectedEndPort && selectedEndPort.thePort && Link.canLink(selectedEndPort.thePort,self.thePort))
+        if(selectedEndPort && selectedEndPort.thePort && CABLES.Link.canLink(selectedEndPort.thePort,self.thePort))
             linkingLine.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLink });
         else
             linkingLine.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLinkInvalid });
@@ -85,7 +85,7 @@ CABLES.UI.Port=function(thePort)
             return;
         }
 
-        if(selectedEndPort && selectedEndPort.thePort && Link.canLink(selectedEndPort.thePort,self.thePort))
+        if(selectedEndPort && selectedEndPort.thePort && CABLES.Link.canLink(selectedEndPort.thePort,self.thePort))
         {
             var link=gui.patch().scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , self.op, self.thePort.getName());
             if(link)
@@ -208,5 +208,3 @@ CABLES.UI.Port=function(thePort)
 
 
 };
-
-

@@ -8,7 +8,7 @@
         {{#if op.isServerOp }}
             <span class="button fright fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
         {{/if}}
-        
+
         <br/>
         <br/>
 
@@ -76,7 +76,7 @@
         e.preventDefault(); // prevent the default action (scroll / move caret)
     });
 
-    $("input").bind("mousewheel", function(event, delta) 
+    $("input").bind("mousewheel", function(event, delta)
     {
         if (delta > 0)
         {

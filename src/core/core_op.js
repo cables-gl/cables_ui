@@ -14,7 +14,6 @@ CABLES.Op = function()
     this.objName='';
     this.portsOut=[];
     this.portsIn=[];
-    this.posts=[];
     this.uiAttribs={};
     this.enabled=true;
     this.patch=arguments[0];
@@ -95,10 +94,10 @@ CABLES.Op = function()
     this.findFittingPort=function(otherPort)
     {
         for(var ipo in this.portsOut)
-            if(Link.canLink(otherPort,this.portsOut[ipo]))return this.portsOut[ipo];
+            if(CABLES.Link.canLink(otherPort,this.portsOut[ipo]))return this.portsOut[ipo];
 
         for(var ipi in this.portsIn)
-            if(Link.canLink(otherPort,this.portsIn[ipi]))return this.portsIn[ipi];
+            if(CABLES.Link.canLink(otherPort,this.portsIn[ipi]))return this.portsIn[ipi];
     };
 
     this.getSerialized=function()
