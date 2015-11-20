@@ -1,16 +1,17 @@
 var CGL=CGL || {};
 
 
-CGL.Framebuffer=function(cgl)
+CGL.Framebuffer=function(_cgl,w,h)
 {
+    var cgl=_cgl;
     var depthTextureExt = cgl.gl.getExtension('WEBGL_depth_texture') || cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) || cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" );
 
     if(!depthTextureExt)
         console.error('depth buffer ext problem');
 
 
-    var width=512;
-    var height=512;
+    var width = w || 512;
+    var height = h || 512;
 
     var texture=new CGL.Texture(cgl,{filter:CGL.Texture.FILTER_MIPMAP});
     var textureDepth=new CGL.Texture(cgl,{isDepthTexture:true});
@@ -78,7 +79,7 @@ this.setSize=function(w,h)
 
 };
 
-this.renderStart=function(cgl)
+this.renderStart=function()
 {
     cgl.pushMvMatrix();
     cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, frameBuf);
@@ -91,7 +92,7 @@ this.renderStart=function(cgl)
 
 };
 
-this.renderEnd=function(cgl)
+this.renderEnd=function()
 {
     cgl.popPMatrix();
 
