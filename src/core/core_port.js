@@ -102,16 +102,23 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                 }
                 else
                 {
-                    this.value=v;
-                    if(onValueChanged)
+                    try
                     {
-                        onValueChanged();
+                        this.value=v;
+                        if(onValueChanged)
+                        {
+                            onValueChanged();
+                        }
+                        else
+                        if(this.onValueChanged)
+                        {
+                            // deprecated!
+                            this.onValueChanged();
+                        }
                     }
-                    else
-                    if(this.onValueChanged)
+                    catch(ex)
                     {
-                        // deprecated!
-                        this.onValueChanged();
+                        console.error('onvaluechanged exception cought',ex);
                     }
                 }
 
@@ -209,14 +216,21 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         if(!parent.enabled)return;
         if(this.links.length===0)return;
 
-        for (var i = 0; i < this.links.length; ++i)
-        // for(var i in this.links)
+        try
         {
-            // if(this.direction==PORT_DIR_OUT)this.links[i].portIn._onTriggered();
-            // else
-             this.links[i].portIn._onTriggered();
-            // if(this.links[i].portIn !=this)
-            // else if(this.links[i].portOut!=this)
+            for (var i = 0; i < this.links.length; ++i)
+            // for(var i in this.links)
+            {
+                // if(this.direction==PORT_DIR_OUT)this.links[i].portIn._onTriggered();
+                // else
+                 this.links[i].portIn._onTriggered();
+                // if(this.links[i].portIn !=this)
+                // else if(this.links[i].portOut!=this)
+            }
+        }
+        catch(ex)
+        {
+            console.error('ontriggered exception caught:',ex);
         }
     };
 

@@ -57,6 +57,9 @@ function ajaxRequest(url, callback)
 
 CABLES=CABLES || {};
 
+
+CABLES.DateNow=performance.now || Date.now;
+
 CABLES.ajax=function(url,cb,method,post,contenttype)
 {
     var requestTimeout,xhr;

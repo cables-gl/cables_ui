@@ -29,16 +29,12 @@ Ops.Gl.Renderer = function()
     var identTranslate=vec3.create();
     vec3.set(identTranslate, 0,0,-2);
 
-    var remove=function()
+    this.onDelete=function()
     {
         cgl.gl.clearColor(0,0,0,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-        self.patch.removeOnAnimFrame(self);
-    };
 
-    this.onDelete=function()
-    {
-        requestAnimationFrame(remove);
+        self.patch.removeOnAnimFrame(self);
     };
 
     this.onAnimFrame=function(time)
@@ -292,111 +288,6 @@ Ops.Gl.TextureCycler.prototype = new CABLES.Op();
 // --------------------------------------------------------------------------
 
 
-Ops.Gl.Texture=function()
-{
-    CABLES.Op.apply(this, arguments);
-    var self=this;
-    var cgl=self.patch.cgl;
-
-    this.name='texture';
-    this.filename=this.addInPort(new Port(this,"file",OP_PORT_TYPE_VALUE,{ display:'file',type:'string',filter:'image' } ));
-    this.filter=this.addInPort(new Port(this,"filter",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['nearest','linear','mipmap']}));
-    this.wrap=this.addInPort(new Port(this,"wrap",OP_PORT_TYPE_VALUE,{display:'dropdown',values:['repeat','mirrored repeat','clamp to edge']}));
-
-    this.textureOut=this.addOutPort(new Port(this,"texture",OP_PORT_TYPE_TEXTURE,{preview:true}));
-
-
-
-    this.width=this.addOutPort(new Port(this,"width",OP_PORT_TYPE_VALUE));
-    this.height=this.addOutPort(new Port(this,"height",OP_PORT_TYPE_VALUE));
-
-    this.flip=this.addInPort(new Port(this,"flip",OP_PORT_TYPE_VALUE,{display:'bool'}));
-    this.flip.set(false);
-
-    this.cgl_filter=0;
-    this.cgl_wrap=0;
-
-    var setTempTexture=function()
-    {
-        self.textureOut.set(CGL.Texture.getTemporaryTexture(cgl,64,self.cgl_filter,self.cgl_wrap));
-    };
-
-    var reload=function(nocache)
-    {
-
-        var url=self.patch.getFilePath(self.filename.get());
-        if(nocache)url+='?rnd='+generateUUID();
-
-        if(self.filename.get() && self.filename.get().length>1 )
-        {
-            self.tex=CGL.Texture.load(cgl,url,function(err)
-            {
-                if(err)
-                {
-                    setTempTexture();
-                    self.uiAttr({warning:'could not load texture'});
-                    return;
-                }
-                self.textureOut.val=self.tex;
-                self.width.set(self.tex.width);
-                self.height.set(self.tex.height);
-
-                if(!self.tex.isPowerOfTwo()) self.uiAttr({warning:'texture dimensions not power of two! - texture filtering will not work.'});
-                else self.uiAttr({warning:''});
-
-            },{
-                wrap:self.wrap.get(),
-                flip:self.flip.get(),
-                filter:self.cgl_filter
-            });
-            self.textureOut.set(self.tex);
-        }
-        else
-        {
-            setTempTexture();
-        }
-    };
-
-    this.flip.onValueChanged=reload;
-    this.filename.onValueChanged=reload;
-    this.filter.onValueChanged=function()
-    {
-        if(self.filter.get()=='nearest') self.cgl_filter=CGL.Texture.FILTER_NEAREST;
-        if(self.filter.get()=='linear') self.cgl_filter=CGL.Texture.FILTER_LINEAR;
-        if(self.filter.get()=='mipmap') self.cgl_filter=CGL.Texture.FILTER_MIPMAP;
-
-        reload();
-    };
-    this.filter.set('mipmap');
-
-    this.wrap.onValueChanged=function()
-    {
-        if(self.wrap.get()=='repeat') self.cgl_wrap=CGL.Texture.WRAP_REPEAT;
-        if(self.wrap.get()=='mirrored repeat') self.cgl_wrap=CGL.Texture.WRAP_MIRRORED_REPEAT;
-        if(self.wrap.get()=='clamp to edge') self.cgl_wrap=CGL.Texture.WRAP_CLAMP_TO_EDGE;
-
-        reload();
-    };
-    this.wrap.set('repeat');
-
-    this.textureOut.onPreviewChanged=function()
-    {
-        if(self.textureOut.showPreview) CGL.Texture.previewTexture=self.textureOut.get();
-    };
-
-    this.onFileUploaded=function(fn)
-    {
-        if(self.filename.get() && self.filename.get().endsWith(fn))
-        {
-            console.log('found!');
-            reload(true);
-        }
-    };
-
-};
-
-Ops.Gl.Texture.prototype = new CABLES.Op();
-
 // --------------------------------------------------------------------------
 
 Ops.Gl.Meshes=Ops.Gl.Meshes || {};
@@ -615,12 +506,11 @@ Ops.Gl.Render2Texture = function()
         //
         // cgl.popMvMatrix();
 
-fb.renderStart(cgl);
-self.trigger.trigger();
-fb.renderEnd(cgl);
+        fb.renderStart(cgl);
+        self.trigger.trigger();
+        fb.renderEnd(cgl);
 
         cgl.resetViewPort();
-        //
         cgl.gl.enable(cgl.gl.SCISSOR_TEST);
     }
 

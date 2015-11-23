@@ -554,28 +554,34 @@
 
 
 
+        <div class="panel" style="padding:0px;">
+            <div class="panelhead">functions</div>
+            <div>
+                <a onclick="gui.patch().exportStatic();" class="button fa fa-cloud-download">export static archive</a>
+                <br/><br/>
+                <a onclick="gui.showVersions();" class="button fa fa-code-fork">show versions</a>
+                <br/><br/>
+                <a onclick="gui.editProjectDescription();" class="button fa fa-edit">edit description</a>
+                <br/><br/>
+                <a class="button fa fa-times" onclick="if(confirm('really?'))gui.scene().clear();">&nbsp;clear patch</a>
+
+            </div>
+
+        </div>
+
 
     <div id="projectdescription" class="panel" style="padding:0px;">
         <div class="panelhead">description</div>
         <div>
             {{{descr}}}
-            <a onclick="gui.editProjectDescription();" class="button">edit description</a>
         </div>
-    
+
     </div>
 
     <div id="projectdescription" class="panel" style="padding:0px;">
 
 
 
-
-    <div class="panel" style="padding:0px;">
-        <div class="panelhead">export</div>
-        <div>
-            <a onclick="gui.patch().exportStatic();" class="button">export static archive</a>
-        </div>
-
-    </div>
 
 
 
@@ -595,26 +601,22 @@
             <br/>
             <br/>
             {{project.id}}
-            <a class="button fa fa-trash-o tt" data-tt="delete" onclick="gui.deleteCurrentProject();">&nbsp;delete project</a>
 
 
 
-            <br/><br/>
-            <a class="button " onclick="gui.scene().clear();">&nbsp;clear patch</a>
 
             <br/>
             <br/><br/>
             <a class="button " onclick="localStorage['cables']=gui.scene().serialize();">&nbsp;load from local storage</a>
-            <br/><br/>
 
             <a class="button " onclick="gui.scene().clear();self.scene().deSerialize(localStorage['cables']);">&nbsp;save to local storage</a>
             <br/><br/><br/>
 
-
-
             <a class="button " onclick="gui.exportDialog();">export</a>
             <a class="button " onclick="gui.importDialog();">import</a>
             <br/><br/>
+            <br/><br/>
+            <a class="button fa fa-trash-o tt" data-tt="delete" onclick="if(confirm('really?'))gui.deleteCurrentProject();">&nbsp;delete project</a>
 
 
         </div>
@@ -623,7 +625,7 @@
 
 
 
-        
+
 
 
     </div>
@@ -643,12 +645,12 @@ function updateIcons()
         $('#projectsettings_public_icon').removeClass('fa-check-square-o');
         $('#projectsettings_public_icon').addClass('fa-square-o');
     }
-    
+
 }
 
 function togglePublic()
 {
-    $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true')); 
+    $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true'));
 
     updateIcons();
     gui.patch().saveProjectParams();

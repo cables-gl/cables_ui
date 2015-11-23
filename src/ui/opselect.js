@@ -177,6 +177,13 @@ CABLES.UI.OPSELECT.getOpList=function()
 
                     if(isFunction)
                     {
+                        console.log(opname);
+                        if(eval('typeof('+opname+'.v2)')=="function")
+                        {
+                            console.log('found v2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                            opname=opname+'.v2';
+                        }
+
                         var op=
                         {
                             isOp:isOp,

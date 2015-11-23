@@ -246,6 +246,28 @@ CABLES.UI.GUI=function()
         $('#serialized').val(self.patch().scene.serialize());
     };
 
+    this.showVersions=function()
+    {
+        CABLES.UI.MODAL.showLoading();
+        CABLES.api.get('project/'+self.patch().getCurrentProject()._id+'/versions',function(r)
+        {
+            var html='<h2>project history</h2>';
+            html+='<select id="versionselect">';
+            html+='<option>select...</option>';
+            for(var i in r)
+            {
+                html+='<option value="/ui/#/project/'+r[i].projectId+'/v/'+r[i]._id+'">'+r[i].name+' / '+r[i].readableDate+' ('+r[i].readableDateSince+')</option>';
+            }
+            html+='</select>';
+            html+='<br/><br/><br/>';
+            html+='<a onclick="document.location.href=$(\'#versionselect\').val()" class="bluebutton">load</a>';
+
+            CABLES.UI.MODAL.show(html);
+            console.log(r);
+        });
+    };
+
+
     var oldRendwerWidth,oldRendwerHeight;
     this.cycleRendererSize=function()
     {
@@ -491,10 +513,18 @@ CABLES.UI.GUI=function()
             self.patch().scene.deSerialize(localStorage.holo);
         });
 
+        router.addRoute('/project/:id/v/:ver').get(function(event, params)
+        {
+            CABLES.UI.MODAL.showLoading('loading');
+            CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
+            {
+                self.patch().setProject(proj);
+            });
+        });
+
         router.addRoute('/project/:id').get(function(event, params)
         {
             CABLES.UI.MODAL.showLoading('loading');
-
             CABLES.api.get('project/'+params.id,function(proj)
             {
                 self.patch().setProject(proj);
