@@ -252,15 +252,23 @@ CABLES.UI.GUI=function()
         CABLES.api.get('project/'+self.patch().getCurrentProject()._id+'/versions',function(r)
         {
             var html='<h2>project history</h2>';
-            html+='<select id="versionselect">';
-            html+='<option>select...</option>';
-            for(var i in r)
+
+            if(r.length===0)
             {
-                html+='<option value="/ui/#/project/'+r[i].projectId+'/v/'+r[i]._id+'">'+r[i].name+' / '+r[i].readableDate+' ('+r[i].readableDateSince+')</option>';
+                html+='no old versions of project available. save project first.<br/><br/>';
             }
-            html+='</select>';
-            html+='<br/><br/><br/>';
-            html+='<a onclick="document.location.href=$(\'#versionselect\').val()" class="bluebutton">load</a>';
+            else
+            {
+                html+='<select id="versionselect">';
+                html+='<option>select...</option>';
+                for(var i in r)
+                {
+                    html+='<option value="/ui/#/project/'+r[i].projectId+'/v/'+r[i]._id+'">'+r[i].name+' / '+r[i].readableDate+' ('+r[i].readableDateSince+')</option>';
+                }
+                html+='</select>';
+                html+='<br/><br/><br/>';
+                html+='<a onclick="document.location.href=$(\'#versionselect\').val()" class="bluebutton">load</a>';
+            }
 
             CABLES.UI.MODAL.show(html);
             console.log(r);
