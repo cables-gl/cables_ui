@@ -100,7 +100,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
                     },
                     function(res){ console.log('err',res); }
                     );
-                console.log('opname',opname);
+                // console.log('opname',opname);
 
             }, 300);
 
@@ -177,7 +177,7 @@ CABLES.UI.OPSELECT.getOpList=function()
 
                     if(isFunction)
                     {
-                        console.log(opname);
+                        // console.log(opname);
                         if(eval('typeof('+opname+'.v2)')=="function")
                         {
                             console.log('found v2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');

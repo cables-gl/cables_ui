@@ -68,6 +68,12 @@ CABLES.UI.GUI=function()
             self.rendererWidth=window.innerWidth*0.4;
             self.rendererHeight=window.innerHeight*0.25;
         }
+        if(self.rendererWidth===0)
+        {
+            self.rendererWidth=window.innerWidth;
+            self.rendererHeight=window.innerHeight;
+
+        }
 
         var statusBarHeight=26;
         var menubarHeight=33;
@@ -223,7 +229,7 @@ CABLES.UI.GUI=function()
             $('#glcanvas').attr('width',self.rendererWidth);
             $('#glcanvas').attr('height',self.rendererHeight);
         }
-        CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight);
+        CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
     };
 
     this.importDialog=function()
@@ -279,7 +285,7 @@ CABLES.UI.GUI=function()
     var oldRendwerWidth,oldRendwerHeight;
     this.cycleRendererSize=function()
     {
-                console.log('cycleRendererSize');
+        console.log('cycleRendererSize');
 
         if(self.rendererWidth!==0)
         {
@@ -291,6 +297,7 @@ CABLES.UI.GUI=function()
         {
             self.rendererWidth=oldRendwerWidth;
             self.rendererHeight=oldRendwerHeight;
+
         }
 
         self.setLayout();
@@ -396,7 +403,7 @@ CABLES.UI.GUI=function()
             switch(e.which)
             {
                 default:
-                    console.log('e.which',e.which);
+                    // console.log('e.which',e.which);
                 break;
 
                 case 79: // o - open
@@ -457,9 +464,11 @@ CABLES.UI.GUI=function()
 
                     $('.tooltip').hide();
 
-                    if(self.rendererWidth===0)
+                    if(self.rendererWidth>window.innerWidth*0.9)
                     {
-                        self.cycleRendererSize();
+                        self.rendererWidth=window.innerWidth*0.4;
+                        self.rendererHeight=window.innerHeight*0.25;
+                        self.setLayout();
                     }
                     else
                     if( $('#library').is(':visible') )
