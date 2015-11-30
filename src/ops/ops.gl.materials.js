@@ -683,6 +683,9 @@ Ops.Gl.Shader.BasicMaterial = function()
 
         .endl()+'precision highp float;'
 
+        .endl()+'uniform float diffuseRepeatX;'
+        .endl()+'uniform float diffuseRepeatY;'
+
         .endl()+'{{MODULES_HEAD}}'
         .endl()+'#ifdef HAS_TEXTURES'
         .endl()+'   varying vec2 texCoord;'
@@ -711,7 +714,7 @@ Ops.Gl.Shader.BasicMaterial = function()
         .endl()+'   vec4 col=vec4(r,g,b,a);'
         .endl()+'   #ifdef HAS_TEXTURES'
         .endl()+'      #ifdef HAS_TEXTURE_DIFFUSE'
-        .endl()+'          col=texture2D(tex,vec2(texCoords.x,1.0-texCoords.y));'
+        .endl()+'          col=texture2D(tex,vec2(texCoords.x*diffuseRepeatX,(1.0-texCoords.y)*diffuseRepeatY));'
         .endl()+'           #ifdef COLORIZE_TEXTURE'
         .endl()+'               col.r*=r;'
         .endl()+'               col.g*=g;'
@@ -787,14 +790,12 @@ Ops.Gl.Shader.BasicMaterial = function()
         if(self.texture.get())
         {
             if(self.textureUniform!==null)return;
-            // console.log('TEXTURE ADDED');
             shader.removeUniform('tex');
             shader.define('HAS_TEXTURE_DIFFUSE');
             self.textureUniform=new CGL.Uniform(shader,'t','tex',0);
         }
         else
         {
-            // console.log('TEXTURE REMOVED');
             shader.removeUniform('tex');
             shader.removeDefine('HAS_TEXTURE_DIFFUSE');
             self.textureUniform=null;
@@ -850,6 +851,23 @@ Ops.Gl.Shader.BasicMaterial = function()
             shader.removeDefine('BILLBOARD');
     };
 
+    var diffuseRepeatX=this.addInPort(new Port(this,"diffuseRepeatX",OP_PORT_TYPE_VALUE));
+    var diffuseRepeatY=this.addInPort(new Port(this,"diffuseRepeatY",OP_PORT_TYPE_VALUE));
+    diffuseRepeatX.set(1);
+    diffuseRepeatY.set(1);
+
+    diffuseRepeatX.onValueChanged=function()
+    {
+        diffuseRepeatXUniform.setValue(diffuseRepeatX.get());
+    };
+
+    diffuseRepeatY.onValueChanged=function()
+    {
+        diffuseRepeatYUniform.setValue(diffuseRepeatY.get());
+    };
+
+    var diffuseRepeatXUniform=new CGL.Uniform(shader,'f','diffuseRepeatX',diffuseRepeatX.get());
+    var diffuseRepeatYUniform=new CGL.Uniform(shader,'f','diffuseRepeatY',diffuseRepeatY.get());
 
 
     this.doRender();

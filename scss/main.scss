@@ -409,8 +409,17 @@ input[type="text"]
 
 .bluebutton
 {
+    color:#eee;
     background-color: $mainColor;
     padding:10px;
+
+    &:hover
+    {
+        cursor:pointer !important;
+        background-color:$mainColor;
+        color:#fff;
+    }
+
 }
 
 .timingbutton_active,.graphbutton_active

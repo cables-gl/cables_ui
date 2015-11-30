@@ -252,6 +252,12 @@ CABLES.UI.GUI=function()
         $('#serialized').val(self.patch().scene.serialize());
     };
 
+    this.showUsers=function()
+    {
+        var um=new CABLES.UI.UserManager(self.patch().getCurrentProject()._id);
+        um.show();
+    };
+
     this.showVersions=function()
     {
         CABLES.UI.MODAL.showLoading();
@@ -274,10 +280,11 @@ CABLES.UI.GUI=function()
                 html+='</select>';
                 html+='<br/><br/><br/>';
                 html+='<a onclick="document.location.href=$(\'#versionselect\').val()" class="bluebutton">load</a>';
+                html+='<br/><br/>';
             }
 
             CABLES.UI.MODAL.show(html);
-            console.log(r);
+            // console.log(r);
         });
     };
 
