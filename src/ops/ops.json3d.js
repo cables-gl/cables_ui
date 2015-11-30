@@ -65,6 +65,7 @@ Ops.Json3d.json3dFile = function()
                     var meshOp=self.patch.addOp('Ops.Json3d.Mesh',{translate:{x:posx,y:posy+50}});
                     meshOp.index.val=index;
 
+
                     meshOp.uiAttribs.title=meshOp.name=transOp.name+' Mesh';
                     // scene.meshes[index].name=meshOp.name;
 
@@ -107,6 +108,7 @@ Ops.Json3d.json3dFile = function()
                 var data=JSON.parse(_data);
                 scene.setValue(data);
 
+
                 if(!self.trigger.isLinked())
                 {
                     var root=self.patch.addOp('Ops.Sequence',{translate:{x:self.uiAttribs.translate.x,y:self.uiAttribs.translate.y+50}});
@@ -144,6 +146,9 @@ Ops.Json3d.Mesh=function()
     this.name='json3d Mesh';
     this.render=this.addInPort(new Port(this,"render",OP_PORT_TYPE_FUNCTION ));
     this.index=this.addInPort(new Port(this,"mesh index",OP_PORT_TYPE_VALUE,{type:'string'} ));
+    // var meshname=this.addInPort(new Port(this,"mesh name",OP_PORT_TYPE_VALUE,{type:'string'} ));
+    // meshname.set('');
+
     this.index.val=-1;
     this.centerPivot=this.addInPort(new Port(this,"center pivot",OP_PORT_TYPE_VALUE,{display:'bool'} ));
     this.centerPivot.val=false;
@@ -158,19 +163,24 @@ Ops.Json3d.Mesh=function()
 
     function render()
     {
-
-        if(!mesh && cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue() || currentIndex!=self.index.val)
-        {
-            reload();
-        }
-        if(mesh!==null)
-            mesh.render(cgl.getShader());
+        if(!mesh && cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue() || currentIndex!=self.index.val) reload();
+        if(mesh!==null) mesh.render(cgl.getShader());
 
         self.trigger.trigger();
     }
 
     function reload()
     {
+        if(!cgl.frameStore.currentScene || !cgl.frameStore.currentScene.getValue())return;
+        var meshes=cgl.frameStore.currentScene.getValue().meshes;
+        // console.log('---',meshes.length);
+        // for(var i in meshes)
+        // {
+        //     console.log(meshes[i].name);
+        // }
+
+        // ---------
+
         if(cgl.frameStore.currentScene && cgl.frameStore.currentScene.getValue() && self.index.get()>=0)
         {
             // console.log(' has '+cgl.frameStore.currentScene.getValue().meshes.length+' meshes ');
@@ -293,6 +303,11 @@ Ops.Json3d.Mesh=function()
             // console.log(cgl.frameStore.currentScene);
         }
     }
+
+    // meshname.onValueChanged=function()
+    // {
+    //
+    // };
 
     this.render.onTriggered=render;
     this.centerPivot.onValueChanged=function()

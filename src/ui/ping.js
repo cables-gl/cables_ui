@@ -14,7 +14,7 @@ CABLES = CABLES || {};
 CABLES.API = CABLES.API || {};
 
 CABLES.API.PING ={};
-CABLES.API.PING.pingDelay=5000;
+CABLES.API.PING.pingDelay=10000;
 CABLES.API.PING.windowUUID=guid();
 CABLES.API.PING.delay=0;
 CABLES.API.isConnected=true;
