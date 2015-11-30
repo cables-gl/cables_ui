@@ -115,10 +115,10 @@ Ops.Ui.Patch = function()
         }
 
         dynPort.type=otherPort.type;
-        dynPort.name='in_'+otherPort.getName()+'_'+self.portsIn.length;
+        dynPort.name='in_'+otherPort.parent.getName()+otherPort.getName();
 
         var patchInputOP=getSubPatchInputOp();
-        var pOut=patchInputOP.addOutPort(new Port(self,"out_"+otherPort.getName()+'_'+self.portsIn.length,dynPort.type));
+        var pOut=patchInputOP.addOutPort(new Port(self,"out_"+otherPort.parent.getName()+otherPort.getName(),dynPort.type));
 
         if(dynPort.type==OP_PORT_TYPE_FUNCTION)
         {
