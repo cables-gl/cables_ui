@@ -39,6 +39,7 @@ Ops.Ui.Patch = function()
                 // console.log('hasDynamicPort');
                 return true;
             }
+
         }
 
         return false;
@@ -115,10 +116,10 @@ Ops.Ui.Patch = function()
         }
 
         dynPort.type=otherPort.type;
-        dynPort.name='in_'+otherPort.parent.getName()+otherPort.getName();
+        dynPort.name='in_'+otherPort.getName();
 
         var patchInputOP=getSubPatchInputOp();
-        var pOut=patchInputOP.addOutPort(new Port(self,"out_"+otherPort.parent.getName()+otherPort.getName(),dynPort.type));
+        var pOut=patchInputOP.addOutPort(new Port(self,"out_"+otherPort.getName(),dynPort.type));
 
         if(dynPort.type==OP_PORT_TYPE_FUNCTION)
         {
@@ -140,12 +141,15 @@ Ops.Ui.Patch = function()
         if (CABLES.UI)gui.patch().updateSubPatches();
         if(!hasDynamicPort())getNewDynamicPort('dyn');
 
+
+
         // console.log('port list');
         // for(var i in self.portsIn)
         // {
         //     console.log(' ',self.portsIn[i].getName(),self.portsIn[i].type);
         // }
         // console.log('  ',self.portsIn.length+' ports');
+
 
         return true;
     };
