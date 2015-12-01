@@ -152,10 +152,11 @@ CGL.Texture=function(cgl,options)
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, null);
     };
 
-    this.initTexture=function(img)
+    this.initTexture=function(img,filter)
     {
         self.width=img.width;
         self.height=img.height;
+        if(filter)this.filter=filter;
 
         cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, self.tex);
         cgl.gl.pixelStorei(cgl.gl.UNPACK_FLIP_Y_WEBGL, !self.flip);
@@ -240,10 +241,11 @@ CGL.Texture.getTemporaryTexture=function(cgl,size,filter,wrap)
     return temptex;
 };
 
-CGL.Texture.fromImage=function(cgl,img)
+CGL.Texture.fromImage=function(cgl,img,filter)
 {
     var texture=new CGL.Texture(cgl);
     texture.flip=false;
+    if(filter)texture.filter=filter;
     texture.image = img;
     texture.initTexture(img);
     return texture;
