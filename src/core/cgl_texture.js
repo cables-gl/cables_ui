@@ -13,6 +13,8 @@ CGL.Texture=function(cgl,options)
     this.wrap = CGL.Texture.WRAP_REPEAT;
     var isDepthTexture = false;
 
+    cgl.gl.pixelStorei(cgl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
     if(options)
     {
         if(options.isDepthTexture) isDepthTexture=options.isDepthTexture;
