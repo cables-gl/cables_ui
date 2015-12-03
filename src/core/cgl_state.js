@@ -27,7 +27,8 @@ CGL.State=function()
         this.gl=this.canvas.getContext("experimental-webgl",
         {
             preserveDrawingBuffer: true,
-            // premultipliedAlpha:true,
+            premultipliedAlpha:true,
+alpha:true,
             antialias:true,
         });
 
