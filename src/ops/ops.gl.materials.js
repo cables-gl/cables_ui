@@ -224,6 +224,7 @@ Ops.Gl.Shader.MatCapMaterial = function()
         cgl.setShader(shader);
         self.bindTextures();
 
+
         self.trigger.trigger();
         cgl.setPreviousShader();
     };
@@ -634,8 +635,10 @@ Ops.Gl.Shader.BasicMaterial = function()
     {
         cgl.setShader(shader);
         shader.bindTextures();
+        if(preMultipliedAlpha.get())cgl.gl.blendFunc(cgl.gl.ONE, cgl.gl.ONE_MINUS_SRC_ALPHA);
 
         self.trigger.trigger();
+        if(preMultipliedAlpha.get())cgl.gl.blendFunc(cgl.gl.SRC_ALPHA,cgl.gl.ONE_MINUS_SRC_ALPHA);
 
         cgl.setPreviousShader();
     };
@@ -868,6 +871,8 @@ Ops.Gl.Shader.BasicMaterial = function()
 
     var diffuseRepeatXUniform=new CGL.Uniform(shader,'f','diffuseRepeatX',diffuseRepeatX.get());
     var diffuseRepeatYUniform=new CGL.Uniform(shader,'f','diffuseRepeatY',diffuseRepeatY.get());
+
+    var preMultipliedAlpha=this.addInPort(new Port(this,"preMultiplied alpha",OP_PORT_TYPE_VALUE,{ display:'bool' }));
 
 
     this.doRender();
