@@ -15,13 +15,24 @@
             </th>
         </tr>
         <tr onclick="togglePublic();">
-        <td></td>
+            <td></td>
             <td>
                 &nbsp;public
                 <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
             </td>
             <td>
                 <a id="projectsettings_public_icon" class="button fa fa-square-o"></a>
+            </td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td>
+                &nbsp;secret
+            </td>
+            <td>
+                <input type="text" id="projectsettings_secret" value="{{ project.settings.secret }}" onblur="gui.patch().saveProjectParams();"></input>
+                <!-- <a id="projectsettings_public_icon" class="button fa fa-square-o"></a> -->
             </td>
         </tr>
 
@@ -135,6 +146,8 @@ function togglePublic()
     gui.patch().saveProjectParams();
 
 }
+
+
 
 updateIcons();
 

@@ -1206,10 +1206,13 @@ CABLES.UI.Patch=function(_gui)
     {
         var proj_name=$('#projectsettings_name').val();
         var proj_public=$('#projectsettings_public').val();
+        var proj_secret=$('#projectsettings_secret').val();
 
         currentProject.name=proj_name;
         gui.scene().settings=gui.scene().settings || {};
         gui.scene().settings.isPublic=proj_public;
+        gui.scene().settings.secret=proj_secret;
+
         self.saveCurrentProject();
     };
 
