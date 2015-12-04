@@ -548,6 +548,17 @@
             </td>
         </tr>
 
+        <tr onclick="toggleAutoScreenshot();">
+            <td></td>
+            <td>
+                &nbsp;manual screenshot
+                <input type="hidden" id="projectsettings_autoscreenshot" value="{{ project.settings.manualScreenshot }}"></input>
+            </td>
+            <td>
+                <a id="projectsettings_autoscreenshot_icon" class="button fa fa-square-o"></a>
+            </td>
+        </tr>
+
         <tr>
             <td></td>
             <td>
@@ -659,6 +670,17 @@ function updateIcons()
         $('#projectsettings_public_icon').addClass('fa-square-o');
     }
 
+    if($('#projectsettings_autoscreenshot').val()=='true')
+    {
+        $('#projectsettings_autoscreenshot_icon').addClass('fa-check-square-o');
+        $('#projectsettings_autoscreenshot_icon').removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#projectsettings_autoscreenshot_icon').removeClass('fa-check-square-o');
+        $('#projectsettings_autoscreenshot_icon').addClass('fa-square-o');
+    }
+
 }
 
 function togglePublic()
@@ -667,7 +689,14 @@ function togglePublic()
 
     updateIcons();
     gui.patch().saveProjectParams();
+}
 
+function toggleAutoScreenshot()
+{
+    $('#projectsettings_autoscreenshot').val(''+!($('#projectsettings_autoscreenshot').val()=='true'));
+
+    updateIcons();
+    gui.patch().saveProjectParams();
 }
 
 
