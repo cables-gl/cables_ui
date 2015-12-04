@@ -104,6 +104,7 @@ alpha:true,
             this.gl.clearColor(1, 1, 1, 1);
             this.gl.colorMask(false, false, false, true);
             this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+            this.gl.colorMask(true, true, true, true);
 
             console.log('do screenshot');
 
