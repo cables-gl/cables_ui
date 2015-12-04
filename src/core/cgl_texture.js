@@ -189,6 +189,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     var loadingId=cgl.patch.loading.start('texture',url);
     var texture=new CGL.Texture(cgl);
     texture.image = new Image();
+    texture.image.crossOrigin = '';
 
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
     if(settings && settings.hasOwnProperty('flip')) texture.flip=settings.flip;
