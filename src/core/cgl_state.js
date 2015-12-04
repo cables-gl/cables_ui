@@ -100,6 +100,11 @@ alpha:true,
 
         if(this.doScreenshot)
         {
+            // clear alpha channel
+            this.gl.clearColor(1, 1, 1, 1);
+            this.gl.colorMask(false, false, false, true);
+            this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+
             console.log('do screenshot');
 
             this.doScreenshot=false;

@@ -95,11 +95,6 @@ Ops.Gl.Renderer.renderStart=function(cgl,identTranslate)
 Ops.Gl.Renderer.renderEnd=function(cgl,identTranslate)
 {
 
-    // clear alpha channel
-    // cgl.gl.clearColor(1, 1, 1, 1);
-    // cgl.gl.colorMask(false, false, false, true);
-    // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT);
-
     cgl.popMvMatrix();
     cgl.popPMatrix();
 
