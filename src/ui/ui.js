@@ -63,6 +63,9 @@ CABLES.UI.GUI=function()
 
     this.setLayout=function()
     {
+        $('#menubar').show();
+        $('#timelineui').show();
+
         if(self.rendererWidth===undefined || self.rendererHeight===undefined || self.rendererWidth>window.innerWidth*0.99 || self.rendererHeight>window.innerHeight*0.99)
         {
             self.rendererWidth=window.innerWidth*0.4;
@@ -72,7 +75,6 @@ CABLES.UI.GUI=function()
         {
             self.rendererWidth=window.innerWidth;
             self.rendererHeight=window.innerHeight;
-
         }
 
         var statusBarHeight=26;
@@ -714,6 +716,7 @@ CABLES.UI.GUI=function()
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
+    console.log("starting...");
     $(document).bind("contextmenu", function(e)
     {
         if(e.preventDefault) e.preventDefault();

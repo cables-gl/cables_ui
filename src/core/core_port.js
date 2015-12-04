@@ -118,6 +118,8 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                     }
                     catch(ex)
                     {
+                        console.error('exception in: '+this.parent.name);
+
                         console.error('onvaluechanged exception cought',ex);
                     }
                 }
