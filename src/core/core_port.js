@@ -23,6 +23,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     var uiActiveState=true;
     this.ignoreValueSerialize=false;
     this.onLinkChanged=null;
+    this.crashed=true;
 
     this.doShowPreview=function(onOff)
     {
@@ -118,13 +119,14 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                     }
                     catch(ex)
                     {
+                        this.crashed=true;
+                        this.setValue=function(v){};
+                        this.onTriggered=function(){};
                         console.error('exception in: '+this.parent.name);
-
                         console.error('onvaluechanged exception cought',ex);
                     }
                 }
 
-                // if(this.links.length!==0)
                 for (var i = 0; i < this.links.length; ++i)
                 {
                     this.links[i].setValue();
