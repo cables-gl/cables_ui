@@ -122,7 +122,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                         this.crashed=true;
                         this.setValue=function(v){};
                         this.onTriggered=function(){};
-                        console.error('exception in: '+this.parent.name);
+                        console.error('exception in: '+parent.name);
                         console.error('onvaluechanged exception cought',ex);
                     }
                 }
