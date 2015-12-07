@@ -12,8 +12,7 @@ CGL.Texture=function(cgl,options)
     this.filter = CGL.Texture.FILTER_NEAREST;
     this.wrap = CGL.Texture.WRAP_REPEAT;
     var isDepthTexture = false;
-
-    cgl.gl.pixelStorei(cgl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    this.unpackAlpha=true;
 
     if(options)
     {
@@ -33,6 +32,9 @@ CGL.Texture=function(cgl,options)
 
     function setFilter()
     {
+        cgl.gl.pixelStorei(cgl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, unpackAlpha);
+
+
         if(!_isPowerOfTwo(self.width) || !_isPowerOfTwo(self.height) )
         {
             cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_MAG_FILTER, cgl.gl.NEAREST);
@@ -194,6 +196,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     if(settings && settings.hasOwnProperty('filter')) texture.filter=settings.filter;
     if(settings && settings.hasOwnProperty('flip')) texture.flip=settings.flip;
     if(settings && settings.hasOwnProperty('wrap')) texture.wrap=settings.wrap;
+    if(settings && settings.hasOwnProperty('unpackAlpha')) texture.unpackAlpha=settings.unpackAlpha;
 
     texture.image.onabort=texture.image.onerror=function(e)
     {

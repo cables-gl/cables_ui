@@ -348,7 +348,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             label.attr({
                 'y':40,
                 'x':15,
-                'font-size':30,
+                'font-size':32,
                 'text-align':'left',
                 'fill':'#fff'
             });
