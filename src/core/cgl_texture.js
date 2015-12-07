@@ -32,7 +32,7 @@ CGL.Texture=function(cgl,options)
 
     function setFilter()
     {
-        cgl.gl.pixelStorei(cgl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, unpackAlpha);
+        cgl.gl.pixelStorei(cgl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.unpackAlpha);
 
 
         if(!_isPowerOfTwo(self.width) || !_isPowerOfTwo(self.height) )
