@@ -8,8 +8,18 @@ Ops.Ui.Comment = function()
     CABLES.Op.apply(this, arguments);
 
     this.name='Comment';
-    this.title=this.addInPort(new Port(this,"title"));
-    this.text=this.addInPort(new Port(this,"text"));
+    var title=this.addInPort(new Port(this,"title",OP_PORT_TYPE_VALUE,{type:'string'}));
+    var text=this.addInPort(new Port(this,"text",OP_PORT_TYPE_VALUE,{type:'string'}));
+
+    title.set('comment');
+    text.set('');
+
+    title.onValueChange(function()
+    {
+        this.name=title.get();
+        this.uiAttr('title',this.name);
+    });
+
 };
 
 Ops.Ui.Comment.prototype = new CABLES.Op();

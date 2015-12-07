@@ -100,7 +100,7 @@ function UiLink(port1, port2)
             {
                 $('#library').hide();
                 $('#patch').focus();
-        
+
                 if(self.p1!==null)
                 {
                     if(event.which==3)
@@ -197,7 +197,7 @@ function UiLink(port1, port2)
             this.linkLine = gui.patch().getPaper().path(this.getPath());
             this.linkLine.attr( CABLES.UI.uiConfig.linkingLine );
             this.linkLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
-            
+
             // this.linkLine.hover(function ()
             // {
             //     this.attr({stroke:CABLES.UI.uiConfig.colorLinkHover});
@@ -317,6 +317,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             "cursor": "move"
         });
         label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+
         $(label.node).css({'pointer-events': 'none'});
 
         background.drag(move, dragger, up);
@@ -342,6 +343,25 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             });
         }
 
+        if(objName=='Ops.Ui.Comment')
+        {
+            label.attr({
+                'y':40,
+                'x':15,
+                'font-size':30,
+                'text-align':'left',
+                'fill':'#fff'
+            });
+            background.attr({
+                'width':40,
+                'height':20,
+                'opacity':0.2
+            });
+
+        }
+
+
+
         group.push(background,label);
     };
 
@@ -356,7 +376,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         // if(isSelected==sel)return;
         isSelected=sel;
-        
+
         if(this.isVisible())
             if(sel) background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected });
                 else background.attr( { "fill": CABLES.UI.uiConfig.colorOpBg });
@@ -435,12 +455,15 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         hidden=false;
         this.oprect.addUi();
         this.oprect.getGroup().show();
-        
+
 
         var j=0;
-        for(j in self.portsIn) self.portsIn[j].addUi(this.oprect.getGroup());
-        for(j in self.portsOut) self.portsOut[j].addUi(this.oprect.getGroup());
-        
+        if(op.objName!='Ops.Ui.Comment')
+        {
+            for(j in self.portsIn) self.portsIn[j].addUi(this.oprect.getGroup());
+            for(j in self.portsOut) self.portsOut[j].addUi(this.oprect.getGroup());
+        }
+
         // this.oprect.getGroup().transform('t'+posx+','+posy);
 
         for(j in self.links) self.links[j].show();
@@ -610,7 +633,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
 
         if(this.oprect.getRect()) port.addUi(this.oprect.getGroup());
-        
+
 
 
 

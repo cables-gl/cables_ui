@@ -1220,6 +1220,9 @@ CABLES.UI.Patch=function(_gui)
 
     function updateUiAttribs()
     {
+// console.log('ui attr change...',currentOp.op.uiAttribs);
+        self.setCurrentOpTitle(currentOp.op.name);
+
         if(!currentOp.op.uiAttribs.warning || currentOp.op.uiAttribs.warning.length===0)
         {
             $('#options_warning').hide();
