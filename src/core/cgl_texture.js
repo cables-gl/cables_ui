@@ -32,7 +32,7 @@ CGL.Texture=function(cgl,options)
 
     function setFilter()
     {
-        cgl.gl.pixelStorei(cgl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.unpackAlpha);
+
 
 
         if(!_isPowerOfTwo(self.width) || !_isPowerOfTwo(self.height) )
@@ -137,6 +137,7 @@ CGL.Texture=function(cgl,options)
 
     this.initFromData=function(data,w,h,filter,wrap)
     {
+        cgl.gl.pixelStorei(cgl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.unpackAlpha);
         this.filter=filter;
         this.wrap=wrap;
         self.width=w;
@@ -158,6 +159,7 @@ CGL.Texture=function(cgl,options)
 
     this.initTexture=function(img,filter)
     {
+        cgl.gl.pixelStorei(cgl.gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.unpackAlpha);
         self.width=img.width;
         self.height=img.height;
         if(filter)this.filter=filter;
