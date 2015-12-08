@@ -242,6 +242,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var opui=_opui;
     var title=_text;
     var backgroundResize=null;
+    var backgroundComment=null;
 
     this.getRect=function()
     {
@@ -262,6 +263,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         label.remove();
         label=null;
         background=null;
+        backgroundResize=null;
     };
 
     this.getWidth=function()
@@ -360,15 +362,27 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 'x':sw/2,
                 'y':40,
                 'font-size':32,
-                'text-align':'left',
                 'fill':'#fff'
             });
 
             background.attr({
+                'width':resizeSize,
+                'height':resizeSize,
+                'opacity':0.2,
+            });
+
+            backgroundComment=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
+            {
+                "x":0,
+                "y":0,
                 'width':sw,
                 'height':sh,
-                'opacity':0.1
+                "fill": CABLES.UI.uiConfig.colorOpBg,
+                "stroke": CABLES.UI.uiConfig.colorPatchStroke,
+                "stroke-width":0,
+                'opacity':0.1,
             });
+
 
             backgroundResize=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
             {
@@ -386,12 +400,14 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             {
                 oldPosX=backgroundResize.attrs.x;
                 oldPosY=backgroundResize.attrs.y;
+                opui.isDragging=true;
             };
 
             var resizeEnd = function (dx, dy,a,b,e)
             {
                 oldPosX=-1;
                 oldPosY=-1;
+                opui.isDragging=false;
             };
 
             var resizeMove = function (dx, dy,a,b,e)
@@ -405,35 +421,37 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 if(height<50)height=50;
 
                 label.attr({
-                    x:background.attrs.x+width/2
+                    x:backgroundComment.attrs.x+width/2
                 });
 
                 backgroundResize.attr({
                     x:oldPosX+dx,
                     y:oldPosY+dy
                 });
-                background.attr({
+
+                backgroundComment.attr({
+                    x:background.attrs.x,
+                    y:background.attrs.y,
                     width:width+resizeSize,
                     height:height+resizeSize
                 });
 
                 _opui.op.uiAttribs.size=[width,height];
 
-                background.toBack();
+                backgroundComment.toBack();
                 gui.patch().background.toBack();
+                background.toFront();
                 backgroundResize.toFront();
             };
 
             backgroundResize.drag(resizeMove, resizeStart,resizeEnd);
 
-
-            group.push(backgroundResize);
-            background.toBack();
+            group.push(backgroundResize,backgroundComment);
+            backgroundComment.toBack();
             gui.patch().background.toBack();
             backgroundResize.toFront();
+            background.toFront();
         }
-
-
 
         group.push(background,label);
     };
@@ -447,7 +465,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
     this.setSelected=function(sel)
     {
-        // if(isSelected==sel)return;
         isSelected=sel;
 
         if(this.isVisible())

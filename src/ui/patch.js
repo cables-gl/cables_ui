@@ -25,6 +25,7 @@ CABLES.UI.Patch=function(_gui)
     var mouseRubberBandPos=null;
     var rubberBandRect=null;
     var isLoading=false;
+
     this.background=null;
 
     this.isLoading=function()
@@ -472,7 +473,7 @@ CABLES.UI.Patch=function(_gui)
 
     function rubberBandMove(e)
     {
-        if(e.buttons==1 && !spacePressed)
+        if(e.buttons==1 && !spacePressed )
         {
             if(!mouseRubberBandStartPos)
             {
