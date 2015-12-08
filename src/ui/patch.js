@@ -25,6 +25,7 @@ CABLES.UI.Patch=function(_gui)
     var mouseRubberBandPos=null;
     var rubberBandRect=null;
     var isLoading=false;
+    this.background=null;
 
     this.isLoading=function()
     {
@@ -608,14 +609,14 @@ CABLES.UI.Patch=function(_gui)
             self.updateViewBox();
         });
 
-        var background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
+        this.background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
             fill: CABLES.UI.uiConfig.colorBackground,
             "stroke-width":0
         });
 
-        background.toBack();
+        this.background.toBack();
 
-        background.node.onmousedown = function (ev)
+        this.background.node.onmousedown = function (ev)
         {
             $('#library').hide();
             $('#patch').focus();

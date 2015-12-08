@@ -303,29 +303,17 @@
 
 </table>
 
-
-
-    <div class="info " id="options_info">
-    {{{op.uiAttribs.info}}}
-    </div>
-
-<!--
-<pre>
-{{{ json op.uiAttribs }}}
-</pre>
-
-<div>
-    <br/>
-    <br/>
-    <span class="button warn" onclick="if(confirm('delete ?'))gui.scene().deleteOp('{{op.id}}')">delete</span>
-    <br/>
-    <br/>
+<div class="info " id="options_info">
+{{{op.uiAttribs.info}}}
 </div>
--->
-
 
 
 <div id="doc_op" class="panel" style="padding:0px;"></div>
+
+
+<div class="panelhead">
+    <pre>{{{ json op.uiAttribs }}}</pre>
+</div>
 
 <script>
 

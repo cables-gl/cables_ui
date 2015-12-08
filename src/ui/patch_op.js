@@ -241,6 +241,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var y=_y;
     var opui=_opui;
     var title=_text;
+    var backgroundResize=null;
 
     this.getRect=function()
     {
@@ -345,19 +346,91 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         if(objName=='Ops.Ui.Comment')
         {
+            var sw=40;
+            var sh=40;
+            var resizeSize=20;
+
+            if(opui.op.uiAttribs.size)
+            {
+                sw=opui.op.uiAttribs.size[0];
+                sh=opui.op.uiAttribs.size[1];
+            }
+
             label.attr({
+                'x':sw/2,
                 'y':40,
-                'x':15,
                 'font-size':32,
                 'text-align':'left',
                 'fill':'#fff'
             });
+
             background.attr({
-                'width':40,
-                'height':20,
-                'opacity':0.2
+                'width':sw,
+                'height':sh,
+                'opacity':0.1
             });
 
+            backgroundResize=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
+            {
+                "x":sw-resizeSize,
+                "y":sh-resizeSize,
+                "fill": CABLES.UI.uiConfig.colorOpBg,
+                "stroke": CABLES.UI.uiConfig.colorPatchStroke,
+                "stroke-width":0,
+                'opacity':0.2,
+                "cursor": "move"
+            });
+
+            var oldPosX,oldPosY;
+            var resizeStart = function (dx, dy,a,b,e)
+            {
+                oldPosX=backgroundResize.attrs.x;
+                oldPosY=backgroundResize.attrs.y;
+            };
+
+            var resizeEnd = function (dx, dy,a,b,e)
+            {
+                oldPosX=-1;
+                oldPosY=-1;
+            };
+
+            var resizeMove = function (dx, dy,a,b,e)
+            {
+                if(oldPosX<0)return;
+
+                var width=backgroundResize.attrs.x-background.attrs.x;
+                var height=backgroundResize.attrs.y-background.attrs.y;
+
+                if(width<50)width=50;
+                if(height<50)height=50;
+
+                label.attr({
+                    x:background.attrs.x+width/2
+                });
+
+                backgroundResize.attr({
+                    x:oldPosX+dx,
+                    y:oldPosY+dy
+                });
+                background.attr({
+                    width:width+resizeSize,
+                    height:height+resizeSize
+                });
+
+                _opui.op.uiAttribs.size=[width,height];
+
+                background.toBack();
+                gui.patch().background.toBack();
+                backgroundResize.toFront();
+            };
+
+            backgroundResize.drag(resizeMove, resizeStart,resizeEnd);
+
+
+            group.push(backgroundResize);
+            background.toBack();
+            gui.patch().background.toBack();
+            backgroundResize.toFront();
         }
 
 

@@ -78,7 +78,7 @@ function mouseEvent(event)
 }
 
 Handlebars.registerHelper('json', function(context) {
-    return JSON.stringify(context);
+    return JSON.stringify(context,true,4);
 });
 
 Handlebars.registerHelper('console', function(context) {
@@ -163,7 +163,7 @@ function valueChanger(ele)
         var v=parseFloat( $('#'+ele).val() ,10);
         var inc=e.movementY*-0.5;
         if(e.shiftKey || e.which==3)inc*=0.005;
-        
+
         v+=inc;
 
         $('#'+ele).val(v);
@@ -183,7 +183,7 @@ function valueChanger(ele)
             $('#'+ele).trigger('input');
             up();
         }
-        
+
     }
 
     $( document ).bind( "mouseup", up );
