@@ -348,8 +348,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         if(objName=='Ops.Ui.Comment')
         {
-            var sw=40;
-            var sh=40;
+            var sw=150;
+            var sh=100;
             var resizeSize=20;
 
             if(opui.op.uiAttribs.size)
@@ -360,15 +360,16 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
             label.attr({
                 'x':sw/2,
-                'y':40,
+                'y':45,
                 'font-size':32,
                 'fill':'#fff'
             });
 
             background.attr({
-                'width':resizeSize,
+                'width':sw,
                 'height':resizeSize,
                 'opacity':0.2,
+                "fill": '#000',
             });
 
             backgroundComment=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
@@ -377,10 +378,10 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 "y":0,
                 'width':sw,
                 'height':sh,
-                "fill": CABLES.UI.uiConfig.colorOpBg,
+                "fill": '#000',
                 "stroke": CABLES.UI.uiConfig.colorPatchStroke,
                 "stroke-width":0,
-                'opacity':0.1,
+                'opacity':0.3,
             });
 
 
@@ -388,11 +389,11 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             {
                 "x":sw-resizeSize,
                 "y":sh-resizeSize,
-                "fill": CABLES.UI.uiConfig.colorOpBg,
+                "fill": '#000',
                 "stroke": CABLES.UI.uiConfig.colorPatchStroke,
                 "stroke-width":0,
                 'opacity':0.2,
-                "cursor": "move"
+                "cursor": "se-resize"
             });
 
             var oldPosX,oldPosY;
@@ -422,6 +423,10 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
                 label.attr({
                     x:backgroundComment.attrs.x+width/2
+                });
+
+                background.attr({
+                    width:width+resizeSize
                 });
 
                 backgroundResize.attr({
@@ -467,7 +472,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         isSelected=sel;
 
-        if(this.isVisible())
+        if(this.isVisible() && !backgroundComment)
             if(sel) background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected });
                 else background.attr( { "fill": CABLES.UI.uiConfig.colorOpBg });
     };
