@@ -193,7 +193,11 @@ CABLES.UI.Patch=function(_gui)
 
     this.createSubPatchFromSelection=function()
     {
-        var patchOp=gui.scene().addOp('Ops.Ui.Patch');
+        var trans=JSON.parse(JSON.stringify(selectedOps[0].op.uiAttribs.translate));
+        // patchOp.uiAttribs.translate=trans;
+
+
+        var patchOp=gui.scene().addOp('Ops.Ui.Patch',{translate:trans});
         var patchId=patchOp.patchId.get();
 
         var i,j,k;
@@ -201,8 +205,6 @@ CABLES.UI.Patch=function(_gui)
         {
             selectedOps[i].op.uiAttribs.subPatch=patchId;
         }
-
-
 
 
         for(i=0;i<selectedOps.length;i++)
@@ -217,38 +219,8 @@ CABLES.UI.Patch=function(_gui)
                     if(otherOp.uiAttribs.subPatch!=patchId)
                     {
                         console.log('found outside connection!! ',otherPort.name);
-                        // var p1=theOp.portsIn[j];
-                        // theOp.portsIn[j].links[k].remove();
-                        // patchOp.shouldLink(p1,other);
-// console.log(theOp.portsIn[j].links[k]);
 
-
-
-patchOp.routeLink(theOp.portsIn[j].links[k]);
-
-
-// setTimeout(function()
-// {
-//     console.log('patchOp',patchOp);
-//     console.log('otherOp',otherOp);
-//
-//     var l=gui.scene().link(
-//         patchOp,
-//         'dyn',
-//         otherOp,
-//         otherPort.name
-//         );
-//
-//     var l2=gui.scene().link(
-//         theOp,
-//         'dyn',
-//         otherOp,
-//         otherPort.name
-//         );
-//
-// },500);
-
-
+                        patchOp.routeLink(theOp.portsIn[j].links[k]);
 
                     }
 
@@ -718,7 +690,11 @@ patchOp.routeLink(theOp.portsIn[j].links[k]);
             {
                 for(var i in self.ops)
                     if(!self.ops[i].isHidden() && ( self.ops[i].isDragging || self.ops[i].isMouseOver))
+                    {
+                        // console.log('rubberband canceled/op in action...',);
                         return;
+
+                    }
 
                 rubberBandMove(e);
             }
@@ -1098,6 +1074,8 @@ patchOp.routeLink(theOp.portsIn[j].links[k]);
 
     this.setCurrentSubPatch=function(which)
     {
+        for(var i in self.ops) self.ops[i].isDragging = self.ops[i].isMouseOver=false;
+
         if(which===0) $('#button_subPatchBack').hide();
             else $('#button_subPatchBack').show();
 
