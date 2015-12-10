@@ -189,6 +189,25 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
+
+
+    this.createSubPatchFromSelection=function()
+    {
+        var patch=gui.scene().addOp('Ops.Ui.Patch');
+
+        var patchId=patch.patchId.get();
+
+        for(var i in selectedOps)
+        {
+            selectedOps[i].op.uiAttribs.subPatch=patchId;
+        }
+
+        self.setSelectedOp(null);
+        gui.patch().setCurrentSubPatch(patchId);
+
+    };
+
+
     this.cut=function(e)
     {
         self.copy(e);
@@ -1157,8 +1176,8 @@ CABLES.UI.Patch=function(_gui)
 
     this.addSelectedOp=function(uiop)
     {
-        if(uiop.op.objName=='Ops.Ui.Patch')
-            self.selectAllOpsSubPatch(uiop.op.patchId.val);
+        // if(uiop.op.objName=='Ops.Ui.Patch')
+            // self.selectAllOpsSubPatch(uiop.op.patchId.val);
 
         uiop.oprect.setSelected(true);
         for(var i in selectedOps) if(selectedOps[i]==uiop)return;

@@ -96,6 +96,7 @@ CABLES.Patch = function(cfg)
         this.ops.push(op);
 
         if(this.onAdd)this.onAdd(op);
+
         return op;
     };
 

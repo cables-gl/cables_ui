@@ -77,6 +77,7 @@ CABLES.UI.GUI=function()
             self.rendererHeight=window.innerHeight;
         }
 
+
         var statusBarHeight=26;
         var menubarHeight=33;
         var optionsWidth=400;
@@ -150,6 +151,7 @@ CABLES.UI.GUI=function()
         $('#splitterRendererWH').css('right',self.rendererWidth-35);
         $('#splitterRendererWH').css('top',self.rendererHeight-30);
 
+        $('#button_subPatchBack').css('margin-right',self.rendererWidth+20);
 
 
         $('#patch').css('height',patchHeight-2);
