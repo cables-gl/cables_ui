@@ -189,10 +189,66 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
+    this.createCommentFromSelection=function()
+    {
+        var bounds=this.getSelectionBounds();
+
+        var padding=100;
+
+        var commentOp=gui.scene().addOp('Ops.Ui.Comment',
+            {
+                size:
+                [
+                    (bounds.maxx-bounds.minx) + padding*3,
+                    (bounds.maxy-bounds.miny) + padding*2
+                ],
+                translate:
+                {
+                    x:bounds.minx-padding,
+                    y:bounds.miny-padding
+                }
+            });
+
+
+    };
+
+
+
+    this.unPatchSubPatch=function(patchId)
+    {
+        var toSelect=[];
+        // this.selectAllOpsSubPatch(patchId);
+        for(var i in this.ops)
+        {
+            if(this.ops[i].op.uiAttribs.subPatch == patchId)
+            {
+                this.ops[i].op.uiAttribs.subPatch=currentSubPatch;
+                toSelect.push(this.ops[i]);
+            }
+        }
+
+        this.setCurrentSubPatch(currentSubPatch);
+
+        for(var j in toSelect)
+        {
+            this.addSelectedOp(toSelect[j]);
+            this.ops[i].setSelected(true);
+        }
+
+    };
 
 
     this.createSubPatchFromSelection=function()
     {
+
+        if(selectedOps.length==1 && selectedOps[0].op.objName=='Ops.Ui.Patch')
+        {
+            this.unPatchSubPatch(selectedOps[0].op.patchId.val);
+            console.log('JAJA GENAU');
+            return;
+        }
+
+
         var trans=JSON.parse(JSON.stringify(selectedOps[0].op.uiAttribs.translate));
         // patchOp.uiAttribs.translate=trans;
 
@@ -1083,6 +1139,34 @@ CABLES.UI.Patch=function(_gui)
         self.updateSubPatches();
 
         $('#patch').focus();
+    };
+
+    this.getSelectionBounds=function()
+    {
+        var bounds=
+            {
+                minx:  9999999,
+                maxx: -9999999,
+                miny:  9999999,
+                maxy: -9999999,
+            };
+
+        for(var j=0;j<selectedOps.length;j++)
+        {
+            if(selectedOps[j].op.uiAttribs && selectedOps[j].op.uiAttribs.translate)
+            {
+                console.log(selectedOps[j].op.uiAttribs.translate.x);
+                bounds.minx=Math.min(bounds.minx, selectedOps[j].op.uiAttribs.translate.x);
+                bounds.maxx=Math.max(bounds.maxx, selectedOps[j].op.uiAttribs.translate.x);
+                bounds.miny=Math.min(bounds.miny, selectedOps[j].op.uiAttribs.translate.y);
+                bounds.maxy=Math.max(bounds.maxy, selectedOps[j].op.uiAttribs.translate.y);
+
+            }
+        }
+
+        console.log(bounds);
+
+        return bounds;
     };
 
     this.showSelectedOpsGraphs=function()

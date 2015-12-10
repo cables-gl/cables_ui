@@ -261,9 +261,9 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         group.clear();
         background.remove();
         label.remove();
-        label=null;
-        background=null;
-        backgroundResize=null;
+        if(backgroundComment)backgroundComment.remove();
+        if(backgroundResize)backgroundResize.remove();
+        label=background=backgroundComment=backgroundResize=null;
     };
 
     this.getWidth=function()
@@ -356,6 +356,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             {
                 sw=opui.op.uiAttribs.size[0];
                 sh=opui.op.uiAttribs.size[1];
+                console.log('has size!!! ',sw);
             }
 
             label.attr({

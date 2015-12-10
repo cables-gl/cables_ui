@@ -83,10 +83,6 @@ Ops.Ui.Patch = function()
             createPatchInputPort(p,realName);
         }
 
-
-
-
-
         return p;
     };
 
@@ -168,7 +164,6 @@ Ops.Ui.Patch = function()
             pOut = patchInputOP.addOutPort(new Port(self,"out_"+name,dynPort.type));
         }
 
-
         if(dynPort.type==OP_PORT_TYPE_FUNCTION)
         {
             dynPort.onTriggered=function()
@@ -199,9 +194,6 @@ Ops.Ui.Patch = function()
             return true;
         }
 
-        // console.log('shouldlink');
-        // console.log('p1 p2',p1.getName(),p2.getName());
-
         var dynPort=p2;
         var otherPort=p1;
 
@@ -216,18 +208,8 @@ Ops.Ui.Patch = function()
 
         createPatchInputPort(dynPort,otherPort.getName());
 
-        if (CABLES.UI)gui.patch().updateSubPatches();
+        if(CABLES.UI)gui.patch().updateSubPatches();
         if(!hasDynamicPort())getNewDynamicPort('dyn');
-
-
-
-        // console.log('port list');
-        // for(var i in self.portsIn)
-        // {
-        //     console.log(' ',self.portsIn[i].getName(),self.portsIn[i].type);
-        // }
-        // console.log('  ',self.portsIn.length+' ports');
-
 
         return true;
     };
@@ -238,7 +220,6 @@ Ops.Ui.Patch = function()
     };
 
     this.patchId.val=Ops.Ui.Patch.maxPatchId+1;
-
 
     this.onCreate=function()
     {
@@ -254,7 +235,6 @@ Ops.Ui.Patch = function()
             if(self.patch.ops[i].uiAttribs && self.patch.ops[i].uiAttribs.subPatch==self.patchId.val)
                 self.patch.deleteOp(self.patch.ops[i].id);
     };
-
 
 };
 Ops.Ui.Patch.maxPatchId=0;

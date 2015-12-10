@@ -18,7 +18,6 @@
         {{port.name}}
     </td>
     <td>
-
         {{#compare port.uiAttribs.colorPick '==' 'true' }}
         <div class="button_colorpick button fa fa-eyedropper" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/compare}}
@@ -26,8 +25,6 @@
     <td class="">
 
         {{#if port.links}}
-
-
             {{#if port.links}}
                 <a class="tt graphbutton fa fa-chain-broken" data-tt="unlink {{port.links.length}} links" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
             {{/if}}
@@ -51,7 +48,7 @@
             {{#if port.links}}
 
                 <!-- {{#compare port.type '==' '1' }}[function]{{/compare}} -->
-                
+
                 {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
                 {{#compare port.type '==' '2' }}
 
