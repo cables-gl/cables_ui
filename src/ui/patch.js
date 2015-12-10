@@ -193,18 +193,76 @@ CABLES.UI.Patch=function(_gui)
 
     this.createSubPatchFromSelection=function()
     {
-        var patch=gui.scene().addOp('Ops.Ui.Patch');
+        var patchOp=gui.scene().addOp('Ops.Ui.Patch');
+        var patchId=patchOp.patchId.get();
 
-        var patchId=patch.patchId.get();
-
-        for(var i in selectedOps)
+        var i,j,k;
+        for( i in selectedOps)
         {
             selectedOps[i].op.uiAttribs.subPatch=patchId;
         }
 
-        self.setSelectedOp(null);
-        gui.patch().setCurrentSubPatch(patchId);
 
+
+
+        for(i=0;i<selectedOps.length;i++)
+        {
+            for( j=0;j<selectedOps[i].op.portsIn.length;j++)
+            {
+                var theOp=selectedOps[i].op;
+                for( k=0;k<theOp.portsIn[j].links.length;k++)
+                {
+                    var otherPort=theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
+                    var otherOp=otherPort.parent;
+                    if(otherOp.uiAttribs.subPatch!=patchId)
+                    {
+                        console.log('found outside connection!! ',otherPort.name);
+                        // var p1=theOp.portsIn[j];
+                        // theOp.portsIn[j].links[k].remove();
+                        // patchOp.shouldLink(p1,other);
+// console.log(theOp.portsIn[j].links[k]);
+
+
+
+patchOp.routeLink(theOp.portsIn[j].links[k]);
+
+
+// setTimeout(function()
+// {
+//     console.log('patchOp',patchOp);
+//     console.log('otherOp',otherOp);
+//
+//     var l=gui.scene().link(
+//         patchOp,
+//         'dyn',
+//         otherOp,
+//         otherPort.name
+//         );
+//
+//     var l2=gui.scene().link(
+//         theOp,
+//         'dyn',
+//         otherOp,
+//         otherPort.name
+//         );
+//
+// },500);
+
+
+
+                    }
+
+                }
+            }
+        }
+
+        // this.shouldLink=function(p1,p2)
+
+
+
+
+        self.setSelectedOpById(patchOp.id);
+        self.setCurrentSubPatch(currentSubPatch);
     };
 
 

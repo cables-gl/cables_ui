@@ -140,7 +140,6 @@ CABLES.Patch = function(cfg)
                     if(this.ops[i].onDelete)this.ops[i].onDelete();
                     this.ops.splice( i, 1 );
 
-
                     if(reLinkP1!==null && reLinkP2!==null)
                     {
                         self.link(
@@ -190,6 +189,7 @@ CABLES.Patch = function(cfg)
             console.warn('port not found! '+port1Name);
             return;
         }
+
         if(!port2)
         {
             console.warn('port not found! '+port2Name);
@@ -213,6 +213,7 @@ CABLES.Patch = function(cfg)
         {
             console.log(CABLES.Link.canLinkText(port1,port2));
         }
+
     };
 
     this.onAdd=function(op){};
@@ -227,6 +228,7 @@ CABLES.Patch = function(cfg)
         obj.settings=this.settings;
         for(var i in this.ops)
         {
+            console.log(this.ops[i].objName);
             obj.ops.push( this.ops[i].getSerialized() );
         }
 
@@ -344,10 +346,7 @@ CABLES.Patch = function(cfg)
 
         this.loading.finished(loadingId);
 
-
         if(this.onLoadEnd)this.onLoadEnd();
-
-
     };
 
     this.exec();
