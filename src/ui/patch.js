@@ -451,6 +451,14 @@ CABLES.UI.Patch=function(_gui)
         txt+=selectedOps.length+" ops selected / [del] delete ops / [a] align ops / [g] show grapghs ";
         // txt+='<a class="fa fa-line-chart" data-tt="show graphs of all selected ops" onclick="gui.patch().showSelectedOpsGraphs()" ></a>';
         CABLES.UI.setStatusText(txt);
+
+        var html = CABLES.UI.getHandleBarHtml(
+            'params_ops',
+            {
+                numOps:selectedOps.length,
+            });
+
+        $('#options').html(html);
     }
 
     this.selectAllOpsSubPatch=function(subPatch)

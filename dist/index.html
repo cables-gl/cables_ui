@@ -360,6 +360,37 @@
 
 
 
+<script id="params_ops" type="text/x-handlebars-template">
+
+    <div>
+
+        <h2>{{numOps}} ops selected</h2>
+
+
+
+        align:
+
+        <a onclick="gui.patch().alignSelectedOpsVert();" class="button">&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;<i class="fa fa-arrow-left"></i>&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a onclick="gui.patch().alignSelectedOpsHor();" class="button">&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-ellipsis-h"></i>&nbsp;<i class="fa fa-arrow-up"></i>&nbsp;&nbsp;&nbsp;&nbsp;</a>
+
+
+        <br/><br/>
+        <a onclick="gui.patch()" class="button fa fa-database">create subpatch</a>
+
+
+
+        <br/>
+        <br/>
+        <br/>
+        <a onclick="gui.patch().deleteSelectedOps();" class="button fa fa-trash">delete</a>
+
+
+    </div>
+
+</script>
+
+
+
 <script id="params_ports_head" type="text/x-handlebars-template">
 
 <tr>
