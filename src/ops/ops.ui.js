@@ -155,6 +155,8 @@ Ops.Ui.Patch = function()
     {
         var patchInputOP=getSubPatchInputOp();
 
+        patchInputOP.uiAttribs.translate={x:self.uiAttribs.translate.x,y:self.uiAttribs.translate.y-100};
+
         var pOut=patchInputOP.getPortByName('out_'+name);
 
         if(pOut)
