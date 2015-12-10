@@ -34,7 +34,7 @@ Ops.Json3d.json3dFile = function()
     {
         if(ch.hasOwnProperty('transformation'))
         {
-            maxx=Math.max(x,maxx);
+            maxx=Math.max(x,maxx)+1;
 
             var posx=self.uiAttribs.translate.x+x*130;
             if(ch.children && ch.children.length>1) posx=posx+(ch.children.length+1)*130/2;// center

@@ -249,8 +249,13 @@ CABLES.UI.Patch=function(_gui)
         }
 
 
-        var trans=JSON.parse(JSON.stringify(selectedOps[0].op.uiAttribs.translate));
-        // patchOp.uiAttribs.translate=trans;
+        var bounds=this.getSelectionBounds();
+
+        var trans=
+            {
+                x:bounds.minx+(bounds.maxx-bounds.minx)/2,
+                y:bounds.miny
+            };
 
 
         var patchOp=gui.scene().addOp('Ops.Ui.Patch',{translate:trans});
