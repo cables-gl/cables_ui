@@ -134,11 +134,13 @@ CABLES.Patch = function(cfg)
                         }
                     }
 
-                    this.ops[i].removeLinks();
-                    this.onDelete(this.ops[i]);
-                    this.ops[i].id=generateUUID();
-                    if(this.ops[i].onDelete)this.ops[i].onDelete();
+                    var opToDelete=this.ops[i];
+                    opToDelete.removeLinks();
+                    this.onDelete(opToDelete);
+                    opToDelete.id=generateUUID();
                     this.ops.splice( i, 1 );
+
+                    if(opToDelete.onDelete)opToDelete.onDelete();
 
                     if(reLinkP1!==null && reLinkP2!==null)
                     {

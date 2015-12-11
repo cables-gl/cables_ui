@@ -231,9 +231,17 @@ Ops.Ui.Patch = function()
 
     this.onDelete=function()
     {
-        for (var i = 0; i < self.patch.ops.length; i++)
+        for (var i = self.patch.ops.length-1; i >=0 ; i--)
+        {
             if(self.patch.ops[i].uiAttribs && self.patch.ops[i].uiAttribs.subPatch==self.patchId.val)
+            {
+                console.log(self.patch.ops[i].objName);
+
                 self.patch.deleteOp(self.patch.ops[i].id);
+
+            }
+        }
+
     };
 
 };
