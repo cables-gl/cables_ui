@@ -60,8 +60,18 @@ CABLES=CABLES || {};
 
 CABLES.DateNow=performance.now || Date.now;
 
+CABLES.ajaxSync=function(url,cb,method,post,contenttype)
+{
+    CABLES.ajax(url,cb,method,post,contenttype,false);
+};
 CABLES.ajax=function(url,cb,method,post,contenttype)
 {
+    CABLES.ajax(url,cb,method,post,contenttype,true);
+};
+
+CABLES.ajax=function(url,cb,method,post,contenttype,asynch)
+{
+
     var requestTimeout,xhr;
     try{ xhr = new XMLHttpRequest(); }catch(e){}
 
@@ -74,7 +84,7 @@ CABLES.ajax=function(url,cb,method,post,contenttype)
 
         cb(xhr.status != 200?new Error(url+"server response status is "+xhr.status):false, xhr.responseText,xhr);
     };
-    xhr.open(method?method.toUpperCase():"GET", url, true);
+    xhr.open(method?method.toUpperCase():"GET", url, asynch);
 
     if(!post) xhr.send();
     else

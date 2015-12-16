@@ -246,6 +246,26 @@ CABLES.Patch = function(cfg)
         }
     };
 
+    this.loadLib=function(which)
+    {
+
+        CABLES.ajaxSync('/ui/libs/'+which+'.js',
+            function(err,res)
+            {
+                var se = document.createElement('script');
+                se.type = "text/javascript";
+                se.text = res;
+                document.getElementsByTagName('head')[0].appendChild(se);
+
+            },'GET');
+        // open and send a synchronous request
+        // xhrObj.open('GET', '/ui/libs/'+which+'.js', false);
+        // xhrObj.send('');
+        // add the returned content to a newly created script tag
+
+    };
+
+
     this.getSubPatchOp=function(patchId,objName)
     {
         for(var i in self.ops)
