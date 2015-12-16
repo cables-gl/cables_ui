@@ -62,14 +62,14 @@ CABLES.DateNow=performance.now || Date.now;
 
 CABLES.ajaxSync=function(url,cb,method,post,contenttype)
 {
-    CABLES.ajax(url,cb,method,post,contenttype,false);
+    CABLES.ajaxIntern(url,cb,method,post,contenttype,false);
 };
 CABLES.ajax=function(url,cb,method,post,contenttype)
 {
-    CABLES.ajax(url,cb,method,post,contenttype,true);
+    CABLES.ajaxIntern(url,cb,method,post,contenttype,true);
 };
 
-CABLES.ajax=function(url,cb,method,post,contenttype,asynch)
+CABLES.ajaxIntern=function(url,cb,method,post,contenttype,asynch)
 {
 
     var requestTimeout,xhr;
