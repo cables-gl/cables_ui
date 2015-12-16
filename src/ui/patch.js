@@ -1640,36 +1640,58 @@ CABLES.UI.Patch=function(_gui)
             })(thePort);
         }
 
+        var ignoreColorChanges=true;
+        var colors;
+
         for(var iwcp in watchColorPicker)
         {
             var thePort2=watchColorPicker[iwcp];
             (function (thePort)
             {
-                var id='#watchcolorpick_'+thePort.watchId;
-                var c1=Math.round(255*$(id).parent().next('td').find('input.value').val());
-                var c2=Math.round(255*$(id).parent().parent().next('tr').find('input.value').val());
-                var c3=Math.round(255*$(id).parent().parent().next('tr').next('tr').find('input.value').val());
+                function updateColorPickerButton(id)
+                {
+                    var c1=Math.round(255*$(id).parent().parent().find('input.range').val());
+                    var c2=Math.round(255*$(id).parent().parent().next('tr').find('input.value').val());
+                    var c3=Math.round(255*$(id).parent().parent().next('tr').next('tr').find('input.value').val());
 
-                $(id).css('background-color','rgb('+c1+','+c2+','+c3+')');
+                    $(id).css('background-color','rgb('+c1+','+c2+','+c3+')');
+                }
+
+                var id='#watchcolorpick_'+thePort.watchId;
+                updateColorPickerButton(id);
 
                 $(id).colorPicker(
                 {
                     opacity:true,
-                    margin: '4px -2px 0',
+                    margin: '100px -40px 0',
                     doRender: 'div div',
-                    renderCallback:function(res)
+                    renderCallback:function(res,toggled)
                     {
-                        var colors = this.color.colors;
 
-                        $(id).parent().next('td').find('input.value').val(colors.rgb.r).trigger('input');
-                        $(id).parent().parent().next('tr').find('input.value').val(colors.rgb.g).trigger('input');
-                        $(id).parent().parent().next('tr').next('tr').find('input.value').val(colors.rgb.b).trigger('input');
+                        if(toggled === false)
+                        {
+                            ignoreColorChanges=true;
+                        }
+                        if(toggled === true)
+                        {
+                            updateColorPickerButton(id);
+                            colors = this.color.colors;
+                            ignoreColorChanges=false;
+                        }
 
-                        $(id).parent().next('td').find('input.range').val(colors.rgb.r).trigger('input');
-                        $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
-                        $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
+                        if(!ignoreColorChanges)
+                        {
+                            $(id).parent().parent().find('input.range').val(colors.rgb.r).trigger('input');
+                            $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
+                            $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
+                        }
+                        else
+                        {
+                            updateColorPickerButton(id);
+                        }
 
-                        modes = {
+                        modes=
+                        {
                             r: Math.round(colors.rgb.r*255), g: Math.round(colors.rgb.g*255), b: Math.round(colors.rgb.b*255),
                             h: colors.hsv.h, s: colors.hsv.s, v: colors.hsv.v,
                             HEX: this.color.colors.HEX
@@ -1678,9 +1700,11 @@ CABLES.UI.Patch=function(_gui)
                         $('input', '.cp-panel').each(function() {
                             this.value = modes[this.className.substr(3)];
                         });
+                        console.log('color 2');
                     },
                     buildCallback: function($elm)
                     {
+                        console.log('color 1');
                         var colorInstance = this.color,
                             colorPicker = this;
 
@@ -1692,18 +1716,21 @@ CABLES.UI.Patch=function(_gui)
                             'S <input type="text" class="cp-s" /><br>' +
                             'B <input type="text" class="cp-v" /><hr>' +
                             '<input type="text" class="cp-HEX" />' +
-                        '</div>').on('change', 'input', function(e) {
-                            var value = this.value,
-                                className = this.className,
-                                type = className.split('-')[1],
-                                color = {};
+                            '</div>')
+                            .on('change', 'input',
+                                function(e)
+                                {
+                                    var value = this.value,
+                                        className = this.className,
+                                        type = className.split('-')[1],
+                                        color = {};
 
-                            color[type] = value;
-                            colorInstance.setColor(type === 'HEX' ? value : color,
-                                type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
-                            colorPicker.render();
-                            this.blur();
-                        });
+                                    color[type] = value;
+                                    colorInstance.setColor(type === 'HEX' ? value : color,
+                                        type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
+                                    colorPicker.render();
+                                    this.blur();
+                                });
                     }
                 });
 
