@@ -32,6 +32,8 @@ CGL.State=function()
         if(!this.patch.config.canvas.hasOwnProperty('alpha')) this.patch.config.canvas.alpha=true;
         if(!this.patch.config.canvas.hasOwnProperty('antialias')) this.patch.config.canvas.antialias=true;
 
+        console.log('canvas attributes: ' , this.patch.config.canvas);
+
         this.gl=this.canvas.getContext("experimental-webgl",this.patch.config.canvas);
 
         if(!this.gl)
