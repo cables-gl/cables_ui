@@ -14,6 +14,7 @@ CABLES.UI.GUI=function()
     var _patch=null;
     var _editor=new CABLES.Editor();
     var _chat = new CABLES.Chat();
+    var _userManager=null;
 
     this.user=null;
     this.serverOps=new CABLES.UI.ServerOps();
@@ -130,7 +131,6 @@ CABLES.UI.GUI=function()
 
             patchWidth-=self.editorWidth-6;
             patchLeft=self.editorWidth+5;
-
         }
         else
         {
@@ -256,10 +256,15 @@ CABLES.UI.GUI=function()
         $('#serialized').val(self.patch().scene.serialize());
     };
 
+    this.userManager=function()
+    {
+        _userManager=_userManager || new CABLES.UI.UserManager(self.patch().getCurrentProject()._id);
+        return _userManager;
+    };
+
     this.showUsers=function()
     {
-        var um=new CABLES.UI.UserManager(self.patch().getCurrentProject()._id);
-        um.show();
+        this.userManager().show();
     };
 
     this.showVersions=function()

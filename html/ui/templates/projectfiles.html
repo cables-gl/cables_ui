@@ -7,14 +7,12 @@
             <tr>
             <!--
             <td>
-                <a class="button fa fa-info-circle" onclick="gui.patch().showFileInfo*()"></a> 
+                <a class="button fa fa-info-circle" onclick="gui.patch().showFileInfo*()"></a>
             </td>-->
             <td>
                 <a class="filename" onclick="gui.patch().addAssetOp('{{p}}','{{suffix}}','{{name}}')">
                 {{name}}
                 </a>
-                
-                {{#compare suffix '==' '.json' }}<br/><a class="button" onclick="gui.importJson3D('{{_id}}')">create scene ops</a>{{/compare}}
             </td>
             <td>
 
@@ -33,5 +31,3 @@
     <a class="fa fa-upload"></a>
     drag & drop files to browser window to upload...
 </script>
-
-
