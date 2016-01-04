@@ -3,3 +3,7 @@ node_modules
 dist/js/ace
 dist/js/*.js
 dist/js/*.map
+*.min.js
+*.min.js.map
+*.js.map
+*.max.js

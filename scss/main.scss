@@ -905,7 +905,7 @@ input[type=range]:focus {
 
         &:before
         {
-            font-family: fontawesome;
+            font-family: fontawesome,arial;
             content:"\f08e";
             margin-right: 5px;
             display:inline-block;

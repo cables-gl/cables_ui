@@ -74,13 +74,13 @@ CABLES.UI.ServerOps=function()
                 if(storedOps && storedOps.length>0)
                 {
                     console.log('found storedOps!!!!!!!!!!!!!');
-                            
+
                     for(var i in storedOps)
                     {
                         self.edit(storedOps[i]);
                     }
 
-                            
+
                 }
             }
         });
@@ -148,7 +148,7 @@ CABLES.UI.ServerOps=function()
     this.edit=function(name)
     {
         var op=null;
-                
+
         for(var i=0;i<ops.length;i++)
         {
             if(ops[i].name==name)
@@ -167,11 +167,12 @@ CABLES.UI.ServerOps=function()
             {
                 gui.showEditor();
                 CABLES.UI.MODAL.hide();
-                
+
                 storedOps.push(name);
                 updateStoredOps();
 
-                var html='<a class="button" onclick="gui.serverOps.pushOp(\''+op.name+'\');">push to github</a>';
+                var html='';
+                //html+='<a class="button" onclick="gui.serverOps.pushOp(\''+op.name+'\');">push to github</a>';
 
 
                 gui.editor().addTab(
@@ -187,7 +188,7 @@ CABLES.UI.ServerOps=function()
                         for(var i in storedOps)
                         {
                             console.log('-- ', storedOps[i], which.title);
-                                    
+
                             if(storedOps[i]==which.title)
                             {
                                 console.log('found op to remove');
@@ -200,7 +201,7 @@ CABLES.UI.ServerOps=function()
                     },
                     onSave:function(setStatus,content)
                     {
-                        
+
                         CABLES.api.put(
                             'ops/'+op.name,
                             {code:content},
@@ -228,7 +229,7 @@ CABLES.UI.ServerOps=function()
                 });
 
             });
-        
+
 
     };
 

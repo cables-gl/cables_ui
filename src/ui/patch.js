@@ -1404,7 +1404,7 @@ CABLES.UI.Patch=function(_gui)
     {
         var i=0;
 
-        if(gui.user.isAdmin && gui.serverOps.isServerOp(op.objName)) op.isServerOp=true;
+        if(gui.serverOps.isServerOp(op.objName)) op.isServerOp=true;
 
         if(currentOp)currentOp.onUiAttrChange=null;
         { // show first anim in timeline

@@ -281,6 +281,7 @@
     <div class="">
         <input class="medium" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}">
         <br/><br/>{{op.objName}}
+        
         {{#if op.isServerOp }}
             <span class="button fright fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
         {{/if}}
@@ -591,6 +592,9 @@
                 <br/><br/>
                 <a class="button fa fa-user" onclick="gui.showUsers();">&nbsp;users</a>
                 <br/><br/>
+                <a class="button fa fa-book" onclick="gui.showUserOps();">&nbsp;user ops</a>
+                <br/><br/>
+
                 <a onclick="gui.showVersions();" class="button fa fa-code-fork">show versions</a>
                 <br/><br/>
                 <a onclick="gui.editProjectDescription();" class="button fa fa-edit">edit description</a>

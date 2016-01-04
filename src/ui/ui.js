@@ -15,6 +15,7 @@ CABLES.UI.GUI=function()
     var _editor=new CABLES.Editor();
     var _chat = new CABLES.Chat();
     var _userManager=null;
+    var _userOpManager=null;
 
     this.user=null;
     this.serverOps=new CABLES.UI.ServerOps();
@@ -262,9 +263,20 @@ CABLES.UI.GUI=function()
         return _userManager;
     };
 
+    this.userOpManager=function()
+    {
+        _userOpManager=_userOpManager || new CABLES.UI.UserOpManager(self.patch().getCurrentProject()._id);
+        return _userOpManager;
+    };
+
     this.showUsers=function()
     {
         this.userManager().show();
+    };
+
+    this.showUserOps=function()
+    {
+        this.userOpManager().show();
     };
 
     this.showVersions=function()
