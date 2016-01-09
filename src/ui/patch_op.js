@@ -666,14 +666,15 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
         pos.x=pos.x-startMoveX;
         pos.y=pos.y-startMoveY;
-        var snapRange=10;
-        var snap=(pos.x%65)-snapRange;
-        if(snap>0 && snap<snapRange) pos.x-=snap;
-        if(snap<0 && snap>-snapRange) pos.x-=snap;
 
-        snap=(pos.y%50)-snapRange;
-        if(snap>0 && snap<snapRange) pos.y-=snap;
-        if(snap<0 && snap>-snapRange) pos.y-=snap;
+        // var snapRange=10;
+        // var snap=(pos.x%65)-snapRange;
+        // if(snap>0 && snap<snapRange) pos.x-=snap;
+        // if(snap<0 && snap>-snapRange) pos.x-=snap;
+        //
+        // snap=(pos.y%50)-snapRange;
+        // if(snap>0 && snap<snapRange) pos.y-=snap;
+        // if(snap<0 && snap>-snapRange) pos.y-=snap;
 
         // if(e.shiftKey===true)
         // {
