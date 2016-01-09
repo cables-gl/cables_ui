@@ -64,6 +64,12 @@ CABLES.Patch = function(cfg)
 
     this.addOp=function(objName,uiAttribs)
     {
+        if(!objName || objName.indexOf('.') == -1)
+        {
+            CABLES.UI.MODAL.showError('could not create op','op unknown');
+            return;
+        }
+
         var parts=objName.split('.');
         var op=null;
 
