@@ -79,6 +79,7 @@ CABLES.UI.Port=function(thePort)
 
     function dragEnd(event)
     {
+
         if(event.which==3)
         {
             self.thePort.removeLinks();
@@ -100,7 +101,12 @@ CABLES.UI.Port=function(thePort)
             event=mouseEvent(event);
             if(!selectedEndPort || !selectedEndPort.thePort || !linkingLine)
             {
-                CABLES.UI.OPSELECT.showOpSelect(gui.patch().getCanvasCoordsMouse(event),self.op,self.thePort);
+                console.log(self.thePort);
+                var links=self.opUi.getPortLinks(self.thePort.id);
+                if(links.length>0)
+                    CABLES.UI.OPSELECT.showOpSelect(gui.patch().getCanvasCoordsMouse(event),null,self.thePort,links[0]);
+                else
+                    CABLES.UI.OPSELECT.showOpSelect(gui.patch().getCanvasCoordsMouse(event),self.op,self.thePort);
             }
         }
 

@@ -693,10 +693,18 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.oprect.setEnabled(en);
 
         for(var i=0;i<this.links.length;i++)
-        {
             this.links[i].setEnabled(en);
+    };
+
+    this.getPortLinks=function(portId)
+    {
+        var links=[];
+        for(var i=0;i<this.links.length;i++)
+        {
+            if(this.links[i].p2.thePort.id==portId || this.links[i].p1.thePort.id==portId)links.push(this.links[i]);
         }
 
+        return links;
     };
 
     this.setSelected=function(sel)
