@@ -183,7 +183,36 @@ CGL.State=function()
 
 
 
+    this.renderStart=function(cgl,identTranslate)
+    {
+        cgl.gl.enable(cgl.gl.DEPTH_TEST);
+        cgl.gl.clearColor(0,0,0,0);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
+        cgl.setViewPort(0,0,cgl.canvas.clientWidth,cgl.canvas.clientHeight);
+        mat4.perspective(cgl.pMatrix,45, cgl.canvasWidth/cgl.canvasHeight, 0.1, 1000.0);
+
+        cgl.pushPMatrix();
+        cgl.pushMvMatrix();
+
+        mat4.identity(cgl.mvMatrix);
+        mat4.translate(cgl.mvMatrix,cgl.mvMatrix, identTranslate);
+
+        cgl.gl.enable(cgl.gl.BLEND);
+        cgl.gl.blendFunc(cgl.gl.SRC_ALPHA,cgl.gl.ONE_MINUS_SRC_ALPHA);
+
+
+        cgl.beginFrame();
+    };
+
+    this.renderEnd=function(cgl,identTranslate)
+    {
+
+        cgl.popMvMatrix();
+        cgl.popPMatrix();
+
+        cgl.endFrame();
+    };
 
 
 

@@ -91,7 +91,6 @@ CABLES.Patch = function(cfg)
             return;
         }
 
-        // var op=new window[objName]();
         op.objName=objName;
         op.patch=this;
         op.uiAttr(uiAttribs);
