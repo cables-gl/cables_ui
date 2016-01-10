@@ -375,8 +375,30 @@ CABLES.UI.GUI=function()
                     // CABLES.UI.SELECTPROJECT.doReload=true;
                     document.location.href="/";
                 } );
-
         }
+    };
+
+    this.convertFile=function(fileId)
+    {
+        CABLES.api.post('project/'+self.patch().getCurrentProject()._id+'/file/convert/'+fileId,{options:{hund:"katze"}},
+            function(r)
+            {
+                CABLES.UI.MODAL.show('<pre>'+JSON.stringify(r,null,4)+'</pre>');
+            });
+    };
+
+    this.showConverter=function(fileId)
+    {
+        var html = CABLES.UI.getHandleBarHtml(
+            'params_convert',
+            {
+                fileId:fileId
+
+            });
+
+
+        $('#options').html(html);
+
     };
 
     this.bind=function()

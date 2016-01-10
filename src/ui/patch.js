@@ -1700,11 +1700,10 @@ CABLES.UI.Patch=function(_gui)
                         $('input', '.cp-panel').each(function() {
                             this.value = modes[this.className.substr(3)];
                         });
-                        console.log('color 2');
+
                     },
                     buildCallback: function($elm)
                     {
-                        console.log('color 1');
                         var colorInstance = this.color,
                             colorPicker = this;
 

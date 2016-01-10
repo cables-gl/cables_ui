@@ -1,0 +1,49 @@
+
+
+<script id="params_convert" type="text/x-handlebars-template">
+
+
+    <div class="">
+        <h2>converter</h2>
+        <br/>
+        <br/>
+    </div>
+    <table>
+        <tr>
+            <th colspan="11">
+                <div class="panelhead">converter settings</div>
+            </th>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                ignore tangents/bitangents
+            </td>
+            <td>
+                <input type="checkbox" id="bla"></input>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                ignore texture coordinates
+            </td>
+            <td>
+                <input type="checkbox" id="bla"></input>
+            </td>
+        </tr>
+
+
+    </table>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <div>
+        <a class="bluebutton fa fa-retweet" onclick="gui.convertFile('{{fileId}}');">&nbsp;convert</a>
+    </div>
+
+
+
+</script>

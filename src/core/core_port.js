@@ -40,6 +40,33 @@ CABLES.Port=function(parent,name,type,uiAttribs)
 
     this.get=function()
     {
+        if(animated)
+        {
+            this.value=self.anim.getValue(parent.patch.timer.getTime());
+console.log('animated!');
+            // if(oldAnimVal!=this.value)
+            {
+                oldAnimVal=this.value;
+
+                if(onValueChanged)
+                {
+                    onValueChanged();
+                }
+                else
+                if(this.onValueChanged)
+                {
+                    // deprecated!
+                    this.onValueChanged();
+                }
+
+                // console.log('changed!!');
+                // this.onValueChanged();
+            }
+            // console.log('this.value ',this.value );
+
+            // return this.value;
+        }
+
         return this.value;
     };
 
@@ -52,24 +79,9 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         {
             // throw "deprecated val";
 
-            // if(animated)
-            // {
 
-            //     this.value=self.anim.getValue(parent.patch.timer.getTime());
 
-            //     if(oldAnimVal!=this.value)
-            //     {
-            //         oldAnimVal=this.value;
-            //         console.log('changed!!');
-            //         this.onValueChanged();
-            //     }
-            //     oldAnimVal=this.value;
-            //     console.log('this.value ',this.value );
-
-            //     return this.value;
-            // }
-
-            return this.value;
+            return this.get();
         });
     this.__defineSetter__("val", function(v){ this.setValue(v); });
 
@@ -228,7 +240,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
             {
                 // if(this.direction==PORT_DIR_OUT)this.links[i].portIn._onTriggered();
                 // else
-                 this.links[i].portIn._onTriggered();
+                this.links[i].portIn._onTriggered();
                 // if(this.links[i].portIn !=this)
                 // else if(this.links[i].portOut!=this)
             }
