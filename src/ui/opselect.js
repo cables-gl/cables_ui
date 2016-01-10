@@ -82,7 +82,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
             var cached=CABLES.api.hasCached('doc/ops/'+opname);
             if(cached)
             {
-                $('#searchinfo').html(cached.data.html+htmlFoot);
+                $('#searchinfo').html(cached.data.content+htmlFoot);
                 return;
             }
 
@@ -95,8 +95,9 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
                     'doc/ops/'+opname,
                     function(res)
                     {
-                        if(res.html) $('#searchinfo').html(res.html+htmlFoot);
-                            else $('#searchinfo').html(res.html+htmlFoot);
+                        // if(res.content) 
+                        $('#searchinfo').html(res.content+htmlFoot);
+                            // else $('#searchinfo').html(res.content+htmlFoot);
                     },
                     function(res){ console.log('err',res); }
                     );
