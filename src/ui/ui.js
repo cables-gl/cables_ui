@@ -380,7 +380,13 @@ CABLES.UI.GUI=function()
 
     this.convertFile=function(fileId)
     {
-        CABLES.api.post('project/'+self.patch().getCurrentProject()._id+'/file/convert/'+fileId,{options:{hund:"katze"}},
+
+
+        CABLES.api.post('project/'+self.patch().getCurrentProject()._id+'/file/convert/'+fileId,{options:
+            {
+                removeTangents:$('#convert_remove_tangents').is(':checked'),
+                removeTexcoords:$('#convert_remove_texcoords').is(':checked'),
+            }},
             function(r)
             {
                 CABLES.UI.MODAL.show('<pre>'+JSON.stringify(r,null,4)+'</pre>');

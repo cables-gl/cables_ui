@@ -5,24 +5,19 @@
     <table class="list">
         {{#each files}}
             <tr>
-            <!--
-            <td>
-                <a class="button fa fa-info-circle" onclick="gui.patch().showFileInfo*()"></a>
-            </td>-->
-            <td style="text-overflow: ellipsis;">
-                <a class="filename" onclick="gui.patch().addAssetOp('{{p}}','{{suffix}}','{{name}}')">
-                {{name}}
-                </a>
-            </td>
-            <td>
-                <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){gui.patch().updateProjectFiles();});"></a>&nbsp;
+                <td style="width:50%">
+                    <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){gui.patch().updateProjectFiles();});"></a>&nbsp;
+                    {{#compare suffix '==' '.fbx' }}
+                    <a class="button fa fa-retweet" onclick="gui.showConverter('{{_id}}')"></a>
+                    {{/compare}}
 
-                {{#compare suffix '==' '.fbx' }}
+                </td>
 
-                <a class="button fa fa-retweet" onclick="gui.showConverter('{{_id}}')"></a>
-                {{/compare}}
-
-            </td>
+                <td style="text-overflow: hidden;width:50%">
+                    <a class="filename" onclick="gui.patch().addAssetOp('{{p}}','{{suffix}}','{{name}}')">
+                    {{name}}
+                    </a>
+                </td>
             </tr>
         {{/each}}
     </table>
