@@ -103,17 +103,22 @@ CABLES.UI.Port=function(thePort)
             {
                 console.log(self.thePort);
                 var links=self.opUi.getPortLinks(self.thePort.id);
-                var coords={x:self.op.uiAttribs.translate.x,y:self.op.uiAttribs.translate.y+40};
+
+                var coords=gui.patch().getCanvasCoordsMouse(event);
+
+                if(Math.abs(coords.x-self.op.uiAttribs.translate.x )<50) coords.x=self.op.uiAttribs.translate.x;
+                if(Math.abs(coords.y-self.op.uiAttribs.translate.y )<40) coords.y=self.op.uiAttribs.translate.y+40;
+
 
                 if(links.length==1 && !self.opUi.isDragging)
                 {
+                    console.log('joa');
+
                     CABLES.UI.OPSELECT.showOpSelect(coords,null,self.thePort,links[0]);
-                        console.log('link1');
                 }
                 else
                 {
-                    CABLES.UI.OPSELECT.showOpSelect(gui.patch().getCanvasCoordsMouse(event),self.op,self.thePort);
-                    console.log('link2');
+                    CABLES.UI.OPSELECT.showOpSelect(coords,self.op,self.thePort);
                 }
             }
         }
