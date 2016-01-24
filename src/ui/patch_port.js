@@ -103,16 +103,18 @@ CABLES.UI.Port=function(thePort)
             {
                 console.log(self.thePort);
                 var links=self.opUi.getPortLinks(self.thePort.id);
-
-// console.log( gui.patch().getCanvasCoordsMouse(event) );
-
                 var coords={x:self.op.uiAttribs.translate.x,y:self.op.uiAttribs.translate.y+40};
 
-
-                if(links.length>0)
+                if(links.length==1 && !self.opUi.isDragging)
+                {
                     CABLES.UI.OPSELECT.showOpSelect(coords,null,self.thePort,links[0]);
+                        console.log('link1');
+                }
                 else
-                    CABLES.UI.OPSELECT.showOpSelect(coords,self.op,self.thePort);
+                {
+                    CABLES.UI.OPSELECT.showOpSelect(gui.patch().getCanvasCoordsMouse(event),self.op,self.thePort);
+                    console.log('link2');
+                }
             }
         }
 
