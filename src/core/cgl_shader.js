@@ -354,7 +354,6 @@ CGL.Shader=function(_cgl)
         }
 
         cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
-
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
 
         if(normalMatrixUniform)
@@ -403,7 +402,6 @@ CGL.Shader=function(_cgl)
 
             console.warn( cgl.gl.getShaderInfoLog(shader) );
 
-
             var infoLog=cgl.gl.getShaderInfoLog(shader);
             var badLines=getBadLines(infoLog);
             var htmlWarning='<div class="shaderErrorCode">';
@@ -417,7 +415,6 @@ CGL.Shader=function(_cgl)
 
                 var isBadLine=false;
                 for(var bj in badLines) if(badLines[bj]==j) isBadLine=true;
-
 
                 if(isBadLine) htmlWarning+='<span class="error">';
                 htmlWarning+=line;
@@ -435,7 +432,6 @@ CGL.Shader=function(_cgl)
             htmlWarning+='</div>';
 
             self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
-
         }
         return shader;
     };

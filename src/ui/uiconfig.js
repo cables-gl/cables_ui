@@ -11,7 +11,7 @@ CABLES.UI.uiConfig=
     colorLink:'#fff',
     colorLinkHover:'#fff',
     colorLinkInvalid:'#888',
-    colorOpBg:'#ddd',
+    colorOpBg:'#ccc',
     colorOpBgSelected:'#ff9',
     colorPort:'#6c9fde',
     colorRubberBand:'#6c9fde',
@@ -35,7 +35,7 @@ CABLES.UI.uiConfig=
         else if(type==OP_PORT_TYPE_OBJECT)  return '#26a92a';
         else if(type==OP_PORT_TYPE_ARRAY)  return '#a02bbd';
         else if(type==OP_PORT_TYPE_DYNAMIC)  return '#666';
-        
+
         else return '#c6c6c6';
     },
 
@@ -46,4 +46,3 @@ CABLES.UI.uiConfig=
 
 
 };
-

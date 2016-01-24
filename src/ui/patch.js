@@ -1763,8 +1763,8 @@ CABLES.UI.Patch=function(_gui)
         ctm = ctm.inverse();
         var uupos = $('#patch svg')[0].createSVGPoint();
 
-        uupos.x = evt.clientX;
-        uupos.y = evt.clientY;
+        uupos.x = evt.clientX || 0;
+        uupos.y = evt.clientY || 0;
 
         uupos = uupos.matrixTransform(ctm);
 

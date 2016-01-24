@@ -78,6 +78,7 @@ function UiLink(port1, port2)
 
         if(addCircle===null)
         {
+            if(self.p1)
             addCircle = gui.patch().getPaper().circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5).attr(
             {
                 "stroke": CABLES.UI.uiConfig.getPortColor(self.p1.thePort ),
@@ -308,13 +309,22 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         gui.patch().showOpParams(opui.op);
     };
 
+    this.getBgColor=function()
+    {
+        var fill=CABLES.UI.uiConfig.colorOpBg;
+        if(objName.startsWith('Ops.Gl.Shader') || objName.startsWith('Ops.Gl.Phong.PhongMaterial')) fill='#ccffcc';
+        if(objName.startsWith('Ops.Gl.Meshes') || objName.startsWith('Ops.Json3d.Mesh') ) fill='#bbeeff';
+        return fill;
+    };
+
     this.addUi=function()
     {
         if(this.isVisible())return;
 
+
         background=gui.patch().getPaper().rect(0, 0, w, h).attr(
         {
-            "fill": CABLES.UI.uiConfig.colorOpBg,
+            "fill": this.getBgColor(),
             "stroke": CABLES.UI.uiConfig.colorPatchStroke,
             "stroke-width":0,
             "cursor": "move"
@@ -384,7 +394,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 "stroke-width":0,
                 'opacity':0.3,
             });
-
 
             backgroundResize=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
             {
@@ -474,8 +483,11 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         isSelected=sel;
 
         if(this.isVisible() && !backgroundComment)
-            if(sel) background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected });
-                else background.attr( { "fill": CABLES.UI.uiConfig.colorOpBg });
+        if(sel) background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected });
+            else background.attr( { "fill": this.getBgColor() });
+
+        // if(sel) background.attr( { stroke: '#fff', "stroke-width": 10});
+        //     else background.attr( { stroke: '#fff', "stroke-width": 0});
     };
 
     this.setTitle=function(t)
