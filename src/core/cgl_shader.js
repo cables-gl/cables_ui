@@ -124,9 +124,11 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
 // ---------------------------------------------------------------------------
 
-CGL.Shader=function(_cgl)
+CGL.Shader=function(_cgl,_name)
 {
     if(!_cgl) throw "shader constructed without cgl";
+    var name=_name || 'unknown';
+
     var self=this;
     var program=null;
     var uniforms=[];
@@ -217,7 +219,7 @@ CGL.Shader=function(_cgl)
     this.getDefaultFragmentShader=function()
     {
         return ''
-        .endl()+'precision highp float;'
+        .endl()+'precision mediump float;'
         .endl()+'varying vec3 norm;'
         .endl()+'void main()'
         .endl()+'{'
@@ -230,11 +232,14 @@ CGL.Shader=function(_cgl)
     this.getErrorFragmentShader=function()
     {
         return ''
-        .endl()+'precision highp float;'
+        .endl()+'precision mediump float;'
         .endl()+'varying vec3 norm;'
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'   gl_FragColor = vec4(1.0,0.0,0.0,1.0);'
+        .endl()+'   float g=mod(gl_FragCoord.y+gl_FragCoord.x,0.02)*50.0;'
+        .endl()+'   if(g>0.5)g=0.4;'
+        .endl()+'       else g=0.0;'
+        .endl()+'   gl_FragColor = vec4( 1.0, g, 0.0, 1.0);'
         .endl()+'}';
     };
 
@@ -246,7 +251,6 @@ CGL.Shader=function(_cgl)
         this.srcVert=srcVert;
         this.srcFrag=srcFrag;
     };
-
 
     this.getAttrVertexPos=function(){return attrVertexPos;};
 
@@ -393,6 +397,8 @@ CGL.Shader=function(_cgl)
         var shader = _shader || cgl.gl.createShader(type);
         cgl.gl.shaderSource(shader, str);
         cgl.gl.compileShader(shader);
+
+
         if (!cgl.gl.getShaderParameter(shader, cgl.gl.COMPILE_STATUS))
         {
             console.log('compile status: ');
@@ -427,11 +433,16 @@ CGL.Shader=function(_cgl)
 
             htmlWarning=infoLog+'<br/>'+htmlWarning+'<br/><br/>';
 
-            CABLES.UI.MODAL.showError('shader error',htmlWarning);
+            CABLES.UI.MODAL.showError('shader error '+name,htmlWarning);
 
             htmlWarning+='</div>';
 
+            name="errorshader";
             self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
+        }
+        else
+        {
+            // console.log(name+' shader compiled...');
         }
         return shader;
     };
@@ -439,10 +450,31 @@ CGL.Shader=function(_cgl)
     var linkProgram=function(program)
     {
         cgl.gl.linkProgram(program);
+
+        var infoLog=cgl.gl.getProgramInfoLog(program);
+        if(infoLog)
+        {
+            console.log(name+' link programinfo: ',cgl.gl.getProgramInfoLog(program));
+        }
+
         if (!cgl.gl.getProgramParameter(program, cgl.gl.LINK_STATUS))
         {
+            console.error(name+" shader linking fail...");
+            console.log(name+' programinfo: ',cgl.gl.getProgramInfoLog(program));
+            name="errorshader";
             self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
         }
+        else
+        {
+
+        }
+
+        // var error = cgl.gl.getError();
+        // if (error == cgl.gl.NO_ERROR )
+        // console.log('no error: ',error);
+        // else
+        //   console.log('get error: ',error);
+
     };
 
     var createProgram=function(vstr, fstr)
@@ -450,6 +482,7 @@ CGL.Shader=function(_cgl)
         var program = cgl.gl.createProgram();
         self.vshader = createShader(vstr, cgl.gl.VERTEX_SHADER);
         self.fshader = createShader(fstr, cgl.gl.FRAGMENT_SHADER);
+
         cgl.gl.attachShader(program, self.vshader);
         cgl.gl.attachShader(program, self.fshader);
 
