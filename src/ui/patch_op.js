@@ -111,7 +111,9 @@ function UiLink(port1, port2)
                     else
                     {
                         event=mouseEvent(event);
-                        CABLES.UI.OPSELECT.showOpSelect(gui.patch().getCanvasCoordsMouse(event),null,null,self);
+                        var coords=gui.patch().getCanvasCoordsMouse(event);
+                        coords.x=self.p1.op.uiAttribs.translate.x;
+                        CABLES.UI.OPSELECT.showOpSelect(coords,null,null,self);
                     }
                 }
             };
