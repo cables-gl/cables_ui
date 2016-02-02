@@ -322,7 +322,7 @@ CGL.Texture.texturePreview=function(cgl)
         .endl()+'}';
 
 
-    var shader=new CGL.Shader(cgl);
+    var shader=new CGL.Shader(cgl,"texturepreview");
     shader.setSource(shader.getDefaultVertexShader(),srcFrag);
 
     var timeUni=new CGL.Uniform(shader,'f','time',0);

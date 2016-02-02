@@ -74,8 +74,6 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         value=v;
     };
 
-
-
     this.updateValueT=function()
     {
         if(loc==-1)

@@ -25,6 +25,7 @@ CABLES.Patch = function(cfg)
         onFinishedLoading:null,
         onFirstFrameRendered:null
     };
+    if(!this.config.prefixAssetPath)this.config.prefixAssetPath='';
 
     this.vars={};
 

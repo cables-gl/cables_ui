@@ -43,7 +43,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         if(animated)
         {
             this.value=self.anim.getValue(parent.patch.timer.getTime());
-console.log('animated!');
+// console.log('animated!');
             // if(oldAnimVal!=this.value)
             {
                 oldAnimVal=this.value;
@@ -247,7 +247,8 @@ console.log('animated!');
         }
         catch(ex)
         {
-            console.error('ontriggered exception caught:',ex);
+            console.error('ontriggered exception caught: op:'+this.parent.name+' port:'+this.name,ex);
+
         }
     };
 

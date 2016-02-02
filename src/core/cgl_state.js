@@ -17,7 +17,7 @@ CGL.State=function()
     this.canvas=null;
     mat4.identity(self.mvMatrix);
 
-    var simpleShader=new CGL.Shader(this);
+    var simpleShader=new CGL.Shader(this,"simpleshader");
     var currentShader=simpleShader;
     var aborted=false;
 
