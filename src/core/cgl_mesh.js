@@ -32,7 +32,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         {
             attributes[i].loc=-1;
         }
-        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, null);
+        // cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, null);
 
     }
 
@@ -104,7 +104,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
             if(attributes[i].loc!=-1)
                 cgl.gl.disableVertexAttribArray(attributes[i].loc);
 
-        cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, null);
+        // cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, null);
 
     };
 
