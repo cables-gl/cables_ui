@@ -455,7 +455,7 @@ CGL.Shader=function(_cgl,_name)
         var infoLog=cgl.gl.getProgramInfoLog(program);
         if(infoLog)
         {
-            console.log(name+' link programinfo: ',cgl.gl.getProgramInfoLog(program));
+            // console.log(name+' link programinfo: ',cgl.gl.getProgramInfoLog(program));
         }
 
         if (!cgl.gl.getProgramParameter(program, cgl.gl.LINK_STATUS))
