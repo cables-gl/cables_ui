@@ -198,9 +198,9 @@ CGL.Shader=function(_cgl,_name)
     {
         return ''
         .endl()+'attribute vec3 vPosition;'
-        // .endl()+'attribute vec2 attrTexCoord;'
+        .endl()+'attribute vec2 attrTexCoord;'
         // .endl()+'attribute vec3 attrVertNormal;'
-        // .endl()+'varying vec2 texCoord;'
+        .endl()+'varying vec2 texCoord;'
         // .endl()+'varying vec3 norm;'
         .endl()+'uniform mat4 projMatrix;'
         .endl()+'uniform mat4 mvMatrix;'
@@ -208,7 +208,7 @@ CGL.Shader=function(_cgl,_name)
 
         .endl()+'void main()'
         .endl()+'{'
-        // .endl()+'   texCoord=attrTexCoord;'
+        .endl()+'   texCoord=attrTexCoord;'
         // .endl()+'   norm=attrVertNormal;'
         .endl()+'   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);'
         .endl()+'}';
@@ -330,7 +330,7 @@ CGL.Shader=function(_cgl,_name)
     };
 
 
-var normalMatrix = mat4.create();
+
 
     this.bind=function()
     {
@@ -364,6 +364,7 @@ var normalMatrix = mat4.create();
 
         if(normalMatrixUniform)
         {
+            var normalMatrix = mat4.create();
             mat4.invert(normalMatrix,cgl.mvMatrix);
             mat4.transpose(normalMatrix, normalMatrix);
 
