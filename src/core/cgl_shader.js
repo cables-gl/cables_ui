@@ -198,18 +198,18 @@ CGL.Shader=function(_cgl,_name)
     {
         return ''
         .endl()+'attribute vec3 vPosition;'
-        .endl()+'attribute vec2 attrTexCoord;'
-        .endl()+'attribute vec3 attrVertNormal;'
-        .endl()+'varying vec2 texCoord;'
-        .endl()+'varying vec3 norm;'
+        // .endl()+'attribute vec2 attrTexCoord;'
+        // .endl()+'attribute vec3 attrVertNormal;'
+        // .endl()+'varying vec2 texCoord;'
+        // .endl()+'varying vec3 norm;'
         .endl()+'uniform mat4 projMatrix;'
         .endl()+'uniform mat4 mvMatrix;'
         // .endl()+'uniform mat4 normalMatrix;'
 
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'   texCoord=attrTexCoord;'
-        .endl()+'   norm=attrVertNormal;'
+        // .endl()+'   texCoord=attrTexCoord;'
+        // .endl()+'   norm=attrVertNormal;'
         .endl()+'   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);'
         .endl()+'}';
     };
@@ -218,7 +218,7 @@ CGL.Shader=function(_cgl,_name)
     {
         return ''
         .endl()+'precision mediump float;'
-        .endl()+'varying vec3 norm;'
+        // .endl()+'varying vec3 norm;'
         .endl()+'void main()'
         .endl()+'{'
 
@@ -330,6 +330,8 @@ CGL.Shader=function(_cgl,_name)
     };
 
 
+var normalMatrix = mat4.create();
+
     this.bind=function()
     {
         var i=0;
@@ -355,18 +357,18 @@ CGL.Shader=function(_cgl,_name)
             if(uniforms[i].needsUpdate)uniforms[i].updateValue();
         }
 
+        // console.log('bind',name);
+
         cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
         cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
 
         if(normalMatrixUniform)
         {
-            var normalMatrix = mat4.create();
             mat4.invert(normalMatrix,cgl.mvMatrix);
             mat4.transpose(normalMatrix, normalMatrix);
 
             cgl.gl.uniformMatrix4fv(normalMatrixUniform, false, normalMatrix);
         }
-
     };
 
     this.getProgram=function()

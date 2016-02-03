@@ -32,6 +32,8 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         {
             attributes[i].loc=-1;
         }
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, null);
+
     }
 
     this.getAttributes=function()
@@ -75,7 +77,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
 
         for(i=0;i<attributes.length;i++)
         {
-            if(attributes[i].loc==-1)
+            // if(attributes[i].loc==-1)
                 attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
 
             if(attributes[i].loc!=-1)
@@ -89,14 +91,20 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
     }
 
-    this.unBind=function()
+    this.unBind=function(shader)
     {
+        // cgl.gl.enableVertexAttribArray(null);
+
         cgl.lastMesh=null;
         cgl.lastMeshShader=null;
+
+// cgl.gl.disableVertexAttribArray(shader.getAttrVertexPos());
 
         for(i=0;i<attributes.length;i++)
             if(attributes[i].loc!=-1)
                 cgl.gl.disableVertexAttribArray(attributes[i].loc);
+
+        cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, null);
 
     };
 
@@ -134,7 +142,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
 
         cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
 
-        this.unBind();
+        this.unBind(shader);
 
         // cgl.lastMesh=this;
         // cgl.lastMeshShader=shader;

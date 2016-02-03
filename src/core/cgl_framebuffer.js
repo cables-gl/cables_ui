@@ -9,16 +9,17 @@ CGL.Framebuffer=function(_cgl,w,h)
     if(!depthTextureExt)
         console.error('depth buffer ext problem');
 
-
     var width = w || 512;
     var height = h || 512;
 
-    var texture=new CGL.Texture(cgl,{filter:CGL.Texture.FILTER_MIPMAP});
+    var texture=new CGL.Texture(cgl,{filter:CGL.Texture.FILTER_NEAREST});
     var textureDepth=new CGL.Texture(cgl,{isDepthTexture:true});
 
     var frameBuf = cgl.gl.createFramebuffer();
     var depthBuffer = cgl.gl.createRenderbuffer();
 
+this.getWidth=function(){ return width; };
+this.getHeight=function(){ return height; };
 
     this.getTextureColor=function()
     {
