@@ -329,7 +329,7 @@
     <div class="">
         <input class="medium" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}">
         <br/><br/>{{op.objName}}
-        
+
         {{#if op.isServerOp }}
             <span class="button fright fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
         {{/if}}
@@ -350,60 +350,65 @@
 
 <script id="params_op_foot" type="text/x-handlebars-template">
 
-</table>
-
-<div class="info " id="options_info">
-{{{op.uiAttribs.info}}}
-</div>
+    </table>
 
 
-<div id="doc_op" class="panel" style="padding:0px;"></div>
+    <div class="info " id="options_info">
+    {{{op.uiAttribs.info}}}
+    </div>
+
+    <div>
+        <span class="button  fa fa-remove" onclick="gui.patch().deleteChilds('{{op.id}}');">delete all childs </span>
+    </div>
 
 
-<div class="panelhead">
-    <pre>{{{ json op.uiAttribs }}}</pre>
-</div>
+    <div id="doc_op" class="panel" style="padding:0px;"></div>
 
-<script>
 
-    gui.showOpDoc('{{{op.objName}}}');
+    <div class="panelhead">
+        <pre>{{{ json op.uiAttribs }}}</pre>
+    </div>
 
-    $("input").keydown(function(e)
-    {
-        switch(e.which)
+    <script>
+
+        gui.showOpDoc('{{{op.objName}}}');
+
+        $("input").keydown(function(e)
         {
-            case 38: // up
-                this.value=CABLES.UI.inputIncrement(this.value,1);
-                $(this).trigger('input');
-                return false;
-            break;
+            switch(e.which)
+            {
+                case 38: // up
+                    this.value=CABLES.UI.inputIncrement(this.value,1);
+                    $(this).trigger('input');
+                    return false;
+                break;
 
-            case 40: // down
-                this.value=CABLES.UI.inputIncrement(this.value,-1);
-                $(this).trigger('input');
-                return false;
-            break;
+                case 40: // down
+                    this.value=CABLES.UI.inputIncrement(this.value,-1);
+                    $(this).trigger('input');
+                    return false;
+                break;
 
-            default: return; // exit this handler for other keys
-        }
-        e.preventDefault(); // prevent the default action (scroll / move caret)
-    });
+                default: return; // exit this handler for other keys
+            }
+            e.preventDefault(); // prevent the default action (scroll / move caret)
+        });
 
-    $("input").bind("mousewheel", function(event, delta)
-    {
-        if (delta > 0)
+        $("input").bind("mousewheel", function(event, delta)
         {
-            this.value = CABLES.UI.inputIncrement(this.value,1);
-        }
-        else
-        {
-            this.value = CABLES.UI.inputIncrement(this.value,-1);
-        }
+            if (delta > 0)
+            {
+                this.value = CABLES.UI.inputIncrement(this.value,1);
+            }
+            else
+            {
+                this.value = CABLES.UI.inputIncrement(this.value,-1);
+            }
 
-         $(this).trigger('input');
-        return false;
-     });
-</script>
+             $(this).trigger('input');
+            return false;
+         });
+    </script>
 
 </script>
 

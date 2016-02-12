@@ -4,10 +4,13 @@ var CGL=CGL || {};
 CGL.Framebuffer=function(_cgl,w,h)
 {
     var cgl=_cgl;
+
+
     var depthTextureExt = cgl.gl.getExtension('WEBGL_depth_texture') || cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) || cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" );
 
     if(!depthTextureExt)
         console.error('depth buffer ext problem');
+
 
     var width = w || 512;
     var height = h || 512;

@@ -14,6 +14,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
     {
         var buffer= cgl.gl.createBuffer();
 
+console.log('attribute: '+name,array.length);
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(array), cgl.gl.STATIC_DRAW);
 
@@ -43,9 +44,16 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
 
     this.setGeom=function(geom)
     {
-        if(!this.meshChanged() )this.unBind();
+        if(!this.meshChanged())this.unBind();
 
         attributes.length=0;
+
+        // {
+        //     geom.unIndex();
+        //     geom.calcBaycentric();
+        //     addAttribute('attrBaycentric',geom.baycentrics,3);
+        // }
+
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertices), cgl.gl.STATIC_DRAW);
         bufVertices.itemSize = 3;
@@ -59,11 +67,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         if(geom.vertexNormals.length>0) addAttribute('attrVertNormal',geom.vertexNormals,3);
         if(geom.texCoords.length>0) addAttribute('attrTexCoord',geom.texCoords,2);
         if(geom.hasOwnProperty('tangents') && geom.tangents && geom.tangents.length>0) addAttribute('attrTangent',geom.tangents,3);
-        if(geom.hasOwnProperty('biTangents') && geom.biTangents && geom.biTangents.length>0)
-            {
-                        // console.log('bifuckingtangents');
-                addAttribute('attrBiTangent',geom.biTangents,3);
-            }
+        if(geom.hasOwnProperty('biTangents') && geom.biTangents && geom.biTangents.length>0) addAttribute('attrBiTangent',geom.biTangents,3);
 
         for(var i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.morphTargets[i],3);
     };
@@ -98,21 +102,19 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         cgl.lastMesh=null;
         cgl.lastMeshShader=null;
 
-// cgl.gl.disableVertexAttribArray(shader.getAttrVertexPos());
+        // cgl.gl.disableVertexAttribArray(shader.getAttrVertexPos());
 
         for(i=0;i<attributes.length;i++)
             if(attributes[i].loc!=-1)
                 cgl.gl.disableVertexAttribArray(attributes[i].loc);
 
         // cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, null);
-
     };
 
     this.meshChanged=function()
     {
         return (cgl.lastMesh && ( cgl.lastMesh!=this ));
     };
-
 
     this.render=function(shader)
     {
@@ -161,7 +163,7 @@ CGL.Geometry=function()
     this.texCoords=[];
     this.texCoordsIndices=[];
     this.vertexNormals=[];
-
+    this.baycentrics=[];
     this.morphTargets=[];
 
     function calcNormal(triangle)
@@ -199,6 +201,75 @@ CGL.Geometry=function()
         vec[1]=this.vertices[which*3+1];
         vec[2]=this.vertices[which*3+2];
         return vec;
+    };
+
+    this.unIndex=function()
+    {
+        var newVerts=[];
+        var newIndizes=[];
+        var count=0;
+        console.log('unindexing');
+        this.vertexNormals.length=0;
+        this.texCoords.length=0;
+
+        for(i=0;i<this.verticesIndices.length;i+=3)
+        {
+            newVerts.push(this.vertices[this.verticesIndices[i+0]*3+0]);
+            newVerts.push(this.vertices[this.verticesIndices[i+0]*3+1]);
+            newVerts.push(this.vertices[this.verticesIndices[i+0]*3+2]);
+            newIndizes.push(count);
+            count++;
+
+            newVerts.push(this.vertices[this.verticesIndices[i+1]*3+0]);
+            newVerts.push(this.vertices[this.verticesIndices[i+1]*3+1]);
+            newVerts.push(this.vertices[this.verticesIndices[i+1]*3+2]);
+            newIndizes.push(count);
+            count++;
+
+            newVerts.push(this.vertices[this.verticesIndices[i+2]*3+0]);
+            newVerts.push(this.vertices[this.verticesIndices[i+2]*3+1]);
+            newVerts.push(this.vertices[this.verticesIndices[i+2]*3+2]);
+            newIndizes.push(count);
+            count++;
+        }
+
+        this.vertices=newVerts;
+        this.verticesIndices=newIndizes;
+
+    };
+
+    this.calcBaycentric=function()
+    {
+        this.baycentrics.length=this.vertices.length;
+
+        for(i=0;i<this.vertices.length;i++) this.baycentrics[i]=0;
+
+        var count=0;
+        for(i=0;i<this.vertices.length;i+=3)
+        {
+            if(count==0)
+            {
+                this.baycentrics[i+0]=0;
+                this.baycentrics[i+1]=1;
+                this.baycentrics[i+2]=0;
+            }
+            if(count==1)
+            {
+                this.baycentrics[i+0]=1;
+                this.baycentrics[i+1]=0;
+                this.baycentrics[i+2]=0;
+            }
+            if(count==2)
+            {
+                this.baycentrics[i+0]=0.0;
+                this.baycentrics[i+1]=0.0;
+                this.baycentrics[i+2]=1;
+            }
+            count++;
+            if(count==3)count=0;
+
+        }
+
     };
 
     this.calcNormals=function(calcVertexNormals)
@@ -441,4 +512,69 @@ parseOBJ = function(buff)
     cg.to = geom.verticesIndices.length;
 
     return geom;
+};
+
+
+CGL.WirePoint=function(cgl,size)
+{
+    var buffer = cgl.gl.createBuffer();
+
+    function bufferData()
+    {
+        var points=[];
+        var segments=4;
+        var i=0,degInRad=0;
+        var radius=size || 1.0;
+
+        for (i=0; i <= Math.round(segments); i++)
+        {
+            degInRad = (360.0/Math.round(segments))*i*CGL.DEG2RAD;
+            points.push(Math.cos(degInRad)*radius);
+            points.push(0);
+            points.push(Math.sin(degInRad)*radius);
+        }
+
+        for (i=0; i <= Math.round(segments); i++)
+        {
+            degInRad = (360.0/Math.round(segments))*i*CGL.DEG2RAD;
+            points.push(Math.cos(degInRad)*radius);
+            points.push(Math.sin(degInRad)*radius);
+            points.push(0);
+        }
+
+        for (i=0; i <= Math.round(segments); i++)
+        {
+            degInRad = (360.0/Math.round(segments))*i*CGL.DEG2RAD;
+            points.push(0);
+            points.push(Math.cos(degInRad)*radius);
+            points.push(Math.sin(degInRad)*radius);
+        }
+
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(points), cgl.gl.STATIC_DRAW);
+        buffer.itemSize = 3;
+        buffer.numItems = points.length/buffer.itemSize;
+    }
+
+
+    this.render=function(cgl)
+    {
+        cgl.pushMvMatrix();
+
+        var shader=cgl.getDefaultShader();
+        shader.bind();
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+
+        cgl.gl.vertexAttribPointer(shader.getAttrVertexPos(),buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
+        cgl.gl.enableVertexAttribArray(shader.getAttrVertexPos());
+
+        cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
+        cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, buffer.numItems);
+
+        cgl.popMvMatrix();
+
+    };
+
+    bufferData();
+
 };

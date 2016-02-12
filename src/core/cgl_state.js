@@ -134,7 +134,11 @@ CGL.State=function()
                     return shaderStack[i];
 
         // console.log('no shader found?');
+    };
 
+    this.getDefaultShader=function()
+    {
+        return simpleShader;
     };
 
     this.setShader=function(shader)

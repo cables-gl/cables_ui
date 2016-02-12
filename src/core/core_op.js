@@ -81,6 +81,31 @@ CABLES.Op = function()
              console.log('out: '+this.portsOut[ipo].getName());
     };
 
+    this.deleteChilds=function()
+    {
+        var opsToDelete=[];
+        for(var ipo in this.portsOut)
+        {
+            for(var l in this.portsOut[ipo].links)
+            {
+                if(this.portsOut[ipo].links[l].portIn.parent!=this)
+                {
+                    if(this.portsOut[ipo].parent!=this)opsToDelete.push(this.portsOut[ipo].parent);
+                    opsToDelete.push(this.portsOut[ipo].links[l].portIn.parent);
+                    this.portsOut[ipo].links[l].portIn.parent.deleteChilds();
+                }
+
+
+                // this.portsOut[ipo].removeLinks();
+            }
+        }
+
+        for(var i in opsToDelete)
+        {
+            this.patch.deleteOp(opsToDelete[i].id);
+        }
+    };
+
     this.removeLinks=function()
     {
         for(var i=0;i<this.portsIn.length;i++)

@@ -1235,6 +1235,11 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
+    this.deleteChilds=function(id)
+    {
+        var op=gui.scene().getOpById(id);
+        op.deleteChilds();
+    };
 
     this.deleteSelectedOps=function()
     {
