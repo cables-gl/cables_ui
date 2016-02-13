@@ -14,7 +14,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
     {
         var buffer= cgl.gl.createBuffer();
 
-console.log('attribute: '+name,array.length);
+        // console.log('attribute: '+name,array.length);
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(array), cgl.gl.STATIC_DRAW);
 

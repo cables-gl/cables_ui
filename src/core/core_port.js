@@ -276,7 +276,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         obj.name=this.getName();
 
         if(!this.ignoreValueSerialize) obj.value=this.value;
-            else console.log('ja hier nicht speichern....');
+            // else console.log('ja hier nicht speichern....');
 
         if(animated) obj.animated=true;
         if(this.anim) obj.anim=this.anim.getSerialized();

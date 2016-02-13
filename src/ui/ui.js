@@ -485,10 +485,14 @@ CABLES.UI.GUI=function()
                         if(!e.shiftKey)
                         {
                             if(showingEditor)
+                            {
                                 self.editor().save();
-
-                            self.patch().saveCurrentProject();
-                            CABLES.UI.SELECTPROJECT.doReload=true;
+                            }
+                            else
+                            {
+                                self.patch().saveCurrentProject();
+                                CABLES.UI.SELECTPROJECT.doReload=true;
+                            }
                             e.preventDefault();
                         }
                         else
