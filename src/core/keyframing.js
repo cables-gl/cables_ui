@@ -336,13 +336,13 @@ CABLES.TL.Anim=function(cfg)
 
     this.getKeyIndex=function(time)
     {
-        var theKey=0;
-        for(var i in this.keys)
+        var index=0;
+        for(var i=0;i<this.keys.length;i++)
         {
-            if(time >= this.keys[i].time) theKey=i;
-            if( this.keys[i].time > time ) return theKey;
+            if(time >= this.keys[i].time) index=i;
+            if( this.keys[i].time > time ) return index;
         }
-        return theKey;
+        return index;
     };
     this.setValue=function(time,value)
     {
@@ -387,6 +387,14 @@ CABLES.TL.Anim=function(cfg)
     this.getKey=function(time)
     {
         var index=this.getKeyIndex(time);
+        return this.keys[index];
+    };
+
+    this.getNextKey=function(time)
+    {
+        var index=this.getKeyIndex(time)+1;
+        if(index>=this.keys.length)index=this.keys.length-1;
+
         return this.keys[index];
     };
 

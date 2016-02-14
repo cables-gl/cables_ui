@@ -40,10 +40,11 @@ CABLES.Port=function(parent,name,type,uiAttribs)
 
     this.get=function()
     {
+        // if(this.name=='posX') console.log(this.name+' animated!');
         if(animated)
         {
             this.value=self.anim.getValue(parent.patch.timer.getTime());
-// console.log('animated!');
+
             // if(oldAnimVal!=this.value)
             {
                 oldAnimVal=this.value;
@@ -78,9 +79,6 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     this.__defineGetter__("val", function()
         {
             // throw "deprecated val";
-
-
-
             return this.get();
         });
     this.__defineSetter__("val", function(v){ this.setValue(v); });
@@ -152,7 +150,9 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     {
         if(animated)
         {
-            this.value=self.anim.getValue(parent.patch.timer.getTime());
+
+            this.value=this.get();//self.anim.getValue(parent.patch.timer.getTime());
+
 
             if(oldAnimVal!=this.value)
             {

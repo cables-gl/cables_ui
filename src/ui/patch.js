@@ -1433,7 +1433,8 @@ CABLES.UI.Patch=function(_gui)
             if(this.ops[iops].op==op)
                 currentOp=this.ops[iops];
 
-        currentOp.op.onUiAttrChange=updateUiAttribs;
+        if(!currentOp)return;
+
 
         watchPorts=[];
         watchAnimPorts=[];

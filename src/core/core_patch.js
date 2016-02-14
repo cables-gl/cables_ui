@@ -271,6 +271,63 @@ CABLES.Patch = function(cfg)
 
     };
 
+    this.reloadOp=function(objName)
+    {
+        for(var i in self.ops)
+        {
+            if(self.ops[i].objName==objName)
+            {
+                var oldOp=self.ops[i];
+                var op=this.addOp(objName,oldOp.uiAttribs);
+                var j,k;
+                for(j in oldOp.portsIn)
+                {
+                    if(oldOp.portsIn[j].links.length===0)
+                    {
+                        op.getPort(oldOp.portsIn[j].name).set(oldOp.portsIn[j].get() );
+                    }
+                    else
+                    while(oldOp.portsIn[j].links.length)
+                    {
+                        var oldName=oldOp.portsIn[j].links[0].portIn.name;
+                        var oldOutName=oldOp.portsIn[j].links[0].portOut.name;
+                        var oldOutOp=oldOp.portsIn[j].links[0].portOut.parent;
+                        oldOp.portsIn[j].links[0].remove();
+
+                        var l=self.link(
+                            op,
+                            oldName,
+                            oldOutOp,
+                            oldOutName
+                            );
+                        l.setValue();
+                    }
+                }
+
+                for(j in oldOp.portsOut)
+                {
+                    while(oldOp.portsOut[j].links.length)
+                    {
+                        var oldNewName=oldOp.portsOut[j].links[0].portOut.name;
+                        var oldInName=oldOp.portsOut[j].links[0].portIn.name;
+                        var oldInOp=oldOp.portsOut[j].links[0].portIn.parent;
+                        oldOp.portsOut[j].links[0].remove();
+
+                        var l=self.link(
+                            op,
+                            oldNewName,
+                            oldInOp,
+                            oldInName
+                            );
+                        l.setValue();
+                    }
+                }
+
+                self.deleteOp(oldOp.id);
+            }
+        }
+
+    };
 
     this.getSubPatchOp=function(patchId,objName)
     {

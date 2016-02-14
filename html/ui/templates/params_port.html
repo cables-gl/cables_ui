@@ -100,6 +100,8 @@
                         </td><td>
                         <a class="graphbutton timingbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
                         <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                        &nbsp;<a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
+
                     {{/compare}}
 
 

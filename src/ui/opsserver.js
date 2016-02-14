@@ -28,34 +28,34 @@ CABLES.UI.ServerOps=function()
         console.log('storedOps.length',storedOps.length);
     }
 
-    this.pushOp=function(name)
-    {
-        CABLES.api.get('ops/github/push/'+name,function(res)
-        {
-            var msg='<h2>push status</h2>';
+    // this.pushOp=function(name)
+    // {
+    //     CABLES.api.get('ops/github/push/'+name,function(res)
+    //     {
+    //         var msg='<h2>push status</h2>';
+    //
+    //         msg+='<br/><pre>'+JSON.stringify(res,false,4)+'</pre><br/>';
+    //
+    //         CABLES.UI.MODAL.show(msg);
+    //
+    //     });
+    //
+    // };
 
-            msg+='<br/><pre>'+JSON.stringify(res,false,4)+'</pre><br/>';
-
-            CABLES.UI.MODAL.show(msg);
-
-        });
-
-    };
-
-    this.pullOp=function(name)
-    {
-        CABLES.api.get('ops/github/pull/'+name,function(res)
-            {
-
-                var msg='<h2><span class="fa fa-exclamation-triangle"></span> pull status</h2>';
-
-                msg+='<a class="bluebutton" onclick="document.location.reload()">reload</a>';
-                msg+='<br/><pre>'+JSON.stringify(res,false,4)+'</pre><br/>';
-
-                CABLES.UI.MODAL.show(msg);
-
-            });
-    };
+    // this.pullOp=function(name)
+    // {
+    //     CABLES.api.get('ops/github/pull/'+name,function(res)
+    //         {
+    //
+    //             var msg='<h2><span class="fa fa-exclamation-triangle"></span> pull status</h2>';
+    //
+    //             msg+='<a class="bluebutton" onclick="document.location.reload()">reload</a>';
+    //             msg+='<br/><pre>'+JSON.stringify(res,false,4)+'</pre><br/>';
+    //
+    //             CABLES.UI.MODAL.show(msg);
+    //
+    //         });
+    // };
 
     this.load=function(cb)
     {
@@ -145,6 +145,21 @@ CABLES.UI.ServerOps=function()
 
     };
 
+    this.execute=function(name)
+    {
+        // console.log(name);
+        CABLES.UI.MODAL.showLoading('executing...');
+        var s = document.createElement( 'script' );
+        s.setAttribute( 'src', '/api/op/'+name );
+        s.onload=function()
+        {
+            gui.patch().scene.reloadOp(name);
+            CABLES.UI.MODAL.hide();
+        };
+        document.body.appendChild( s );
+
+    };
+
     this.edit=function(name)
     {
         var op=null;
@@ -172,7 +187,7 @@ CABLES.UI.ServerOps=function()
                 updateStoredOps();
 
                 var html='';
-                //html+='<a class="button" onclick="gui.serverOps.pushOp(\''+op.name+'\');">push to github</a>';
+                html+='<a class="button" onclick="gui.serverOps.execute(\''+op.name+'\');">execute</a>';
 
 
                 gui.editor().addTab(
