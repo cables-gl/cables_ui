@@ -154,7 +154,7 @@ CABLES.UI.ServerOps=function()
         s.onload=function()
         {
             gui.patch().scene.reloadOp(name);
-            CABLES.UI.MODAL.hide();
+            CABLES.UI.MODAL.hideLoading();
         };
         document.body.appendChild( s );
 

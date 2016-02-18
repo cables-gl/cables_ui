@@ -694,7 +694,7 @@ CABLES.UI.Patch=function(_gui)
 
         gui.scene().deSerialize(proj);
         CABLES.undo.clear();
-        if(!this.loadingError) CABLES.UI.MODAL.hide();
+        CABLES.UI.MODAL.hideLoading();
         self.updateSubPatches();
     };
 

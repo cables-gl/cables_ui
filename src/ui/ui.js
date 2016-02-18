@@ -1,6 +1,4 @@
 
-
-
 CABLES.UI=CABLES.UI|| {};
 CABLES.undo = new UndoManager();
 
@@ -281,7 +279,7 @@ CABLES.UI.GUI=function()
 
     this.showVersions=function()
     {
-        CABLES.UI.MODAL.showLoading();
+        CABLES.UI.MODAL.showLoading('loading versions');
         CABLES.api.get('project/'+self.patch().getCurrentProject()._id+'/versions',function(r)
         {
             var html='<h2>project history</h2>';

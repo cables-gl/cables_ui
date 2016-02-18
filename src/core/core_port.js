@@ -132,8 +132,12 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                         this.crashed=true;
                         this.setValue=function(v){};
                         this.onTriggered=function(){};
+
+                        CABLES.UI.MODAL.showException(ex,parent);
+
                         console.log('exception!');
-                        console.log('onvaluechanged exception cought',ex);
+                        console.error('onvaluechanged exception cought',ex);
+                        console.log(ex.stack);
                         console.log('exception in: '+parent.name);
                     }
                 }
@@ -247,7 +251,14 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         }
         catch(ex)
         {
-            console.error('ontriggered exception caught: op:'+this.parent.name+' port:'+this.name,ex);
+            parent.enabled=false;
+
+            CABLES.UI.MODAL.showException(ex,parent);
+
+            console.log('exception!');
+            console.error('ontriggered exception cought',ex);
+            console.log(ex.stack);
+            console.log('exception in: '+parent.name);
 
         }
     };
