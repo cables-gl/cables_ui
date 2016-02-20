@@ -48,11 +48,6 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
 
         attributes.length=0;
 
-        // {
-        //     geom.unIndex();
-        //     geom.calcBaycentric();
-        //     addAttribute('attrBaycentric',geom.baycentrics,3);
-        // }
 
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertices), cgl.gl.STATIC_DRAW);
@@ -123,6 +118,15 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         if(!shader) return;
         var i=0;
 
+        if(shader.wireframe && geom.isIndexed())
+        {
+            geom.unIndex();
+            geom.calcBaycentric();
+            this.setGeom(geom);
+
+            addAttribute('attrBaycentric',geom.baycentrics,3);
+        }
+
         // var meshChanged=this.meshChanged();
 
         // if(meshChanged)
@@ -165,6 +169,12 @@ CGL.Geometry=function()
     this.vertexNormals=[];
     this.baycentrics=[];
     this.morphTargets=[];
+    var indexed=true;
+
+    this.isIndexed=function()
+    {
+        return indexed;
+    };
 
     function calcNormal(triangle)
     {
@@ -205,36 +215,51 @@ CGL.Geometry=function()
 
     this.unIndex=function()
     {
+        indexed=false;
         var newVerts=[];
         var newIndizes=[];
+        var newTexCoords=[];
         var count=0;
         console.log('unindexing');
         this.vertexNormals.length=0;
-        this.texCoords.length=0;
 
         for(i=0;i<this.verticesIndices.length;i+=3)
         {
             newVerts.push(this.vertices[this.verticesIndices[i+0]*3+0]);
             newVerts.push(this.vertices[this.verticesIndices[i+0]*3+1]);
             newVerts.push(this.vertices[this.verticesIndices[i+0]*3+2]);
+
+            newTexCoords.push(this.texCoords[this.verticesIndices[i+0]*2+0]);
+            newTexCoords.push(this.texCoords[this.verticesIndices[i+0]*2+1]);
+
             newIndizes.push(count);
             count++;
 
             newVerts.push(this.vertices[this.verticesIndices[i+1]*3+0]);
             newVerts.push(this.vertices[this.verticesIndices[i+1]*3+1]);
             newVerts.push(this.vertices[this.verticesIndices[i+1]*3+2]);
+
+            newTexCoords.push(this.texCoords[this.verticesIndices[i+1]*2+0]);
+            newTexCoords.push(this.texCoords[this.verticesIndices[i+1]*2+1]);
+
             newIndizes.push(count);
             count++;
 
             newVerts.push(this.vertices[this.verticesIndices[i+2]*3+0]);
             newVerts.push(this.vertices[this.verticesIndices[i+2]*3+1]);
             newVerts.push(this.vertices[this.verticesIndices[i+2]*3+2]);
+
+            newTexCoords.push(this.texCoords[this.verticesIndices[i+2]*2+0]);
+            newTexCoords.push(this.texCoords[this.verticesIndices[i+2]*2+1]);
+
             newIndizes.push(count);
             count++;
         }
 
         this.vertices=newVerts;
+        this.texCoords=newTexCoords;
         this.verticesIndices=newIndizes;
+        // console.log(newTexCoords);
 
     };
 
@@ -372,6 +397,7 @@ CGL.Geometry=function()
 
     this.clear=function()
     {
+        indexed=true;
         this.vertices.length=0;
         this.verticesIndices.length=0;
         this.texCoords.length=0;

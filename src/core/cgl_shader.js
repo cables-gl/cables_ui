@@ -139,6 +139,7 @@ CGL.Shader=function(_cgl,_name)
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
     this.offScreenPass=false;
+    this.wireframe=false;
 
     this.getCgl=function()
     {

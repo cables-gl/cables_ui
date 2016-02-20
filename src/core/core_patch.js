@@ -84,6 +84,11 @@ CABLES.Patch = function(cfg)
         }
         catch(e)
         {
+            if(CABLES.UI)
+            {
+                CABLES.UI.MODAL.showException(e,op);
+            }
+
             console.error('instancing error '+objName,e);
             if(CABLES.UI)
             {
