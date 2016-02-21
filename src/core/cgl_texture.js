@@ -45,23 +45,23 @@ CGL.Texture=function(cgl,options)
         }
         else
         {
-            // if(self.wrap==CGL.Texture.WRAP_CLAMP_TO_EDGE)
-            // {
-            //     cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_EDGE);
-            //     cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_EDGE);
-            // }
+            if(self.wrap==CGL.Texture.WRAP_CLAMP_TO_EDGE)
+            {
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.CLAMP_TO_EDGE);
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.CLAMP_TO_EDGE);
+            }
 
-            // if(self.wrap==CGL.Texture.WRAP_REPEAT)
+            if(self.wrap==CGL.Texture.WRAP_REPEAT)
             {
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.REPEAT);
                 cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.REPEAT);
             }
 
-            // if(self.wrap==CGL.Texture.WRAP_MIRRORED_REPEAT)
-            // {
-            //     cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.MIRRORED_REPEAT);
-            //     cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.MIRRORED_REPEAT);
-            // }
+            if(self.wrap==CGL.Texture.WRAP_MIRRORED_REPEAT)
+            {
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_S, cgl.gl.MIRRORED_REPEAT);
+                cgl.gl.texParameteri(cgl.gl.TEXTURE_2D, cgl.gl.TEXTURE_WRAP_T, cgl.gl.MIRRORED_REPEAT);
+            }
 
             if(self.filter==CGL.Texture.FILTER_NEAREST)
             {
