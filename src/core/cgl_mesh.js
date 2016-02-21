@@ -317,17 +317,17 @@ CGL.Geometry=function()
 
             if(!calcVertexNormals)
             {
-                this.vertexNormals[this.verticesIndices[i+0]*3+0]+=faceNormals[i/3][0]/3;
-                this.vertexNormals[this.verticesIndices[i+0]*3+1]+=faceNormals[i/3][1]/3;
-                this.vertexNormals[this.verticesIndices[i+0]*3+2]+=faceNormals[i/3][2]/3;
+                this.vertexNormals[this.verticesIndices[i+0]*3+0]+=faceNormals[i/3][0];
+                this.vertexNormals[this.verticesIndices[i+0]*3+1]+=faceNormals[i/3][1];
+                this.vertexNormals[this.verticesIndices[i+0]*3+2]+=faceNormals[i/3][2];
 
-                this.vertexNormals[this.verticesIndices[i+1]*3+0]+=faceNormals[i/3][0]/3;
-                this.vertexNormals[this.verticesIndices[i+1]*3+1]+=faceNormals[i/3][1]/3;
-                this.vertexNormals[this.verticesIndices[i+1]*3+2]+=faceNormals[i/3][2]/3;
+                this.vertexNormals[this.verticesIndices[i+1]*3+0]+=faceNormals[i/3][0];
+                this.vertexNormals[this.verticesIndices[i+1]*3+1]+=faceNormals[i/3][1];
+                this.vertexNormals[this.verticesIndices[i+1]*3+2]+=faceNormals[i/3][2];
 
-                this.vertexNormals[this.verticesIndices[i+2]*3+0]+=faceNormals[i/3][0]/3;
-                this.vertexNormals[this.verticesIndices[i+2]*3+1]+=faceNormals[i/3][1]/3;
-                this.vertexNormals[this.verticesIndices[i+2]*3+2]+=faceNormals[i/3][2]/3;
+                this.vertexNormals[this.verticesIndices[i+2]*3+0]+=faceNormals[i/3][0];
+                this.vertexNormals[this.verticesIndices[i+2]*3+1]+=faceNormals[i/3][1];
+                this.vertexNormals[this.verticesIndices[i+2]*3+2]+=faceNormals[i/3][2];
             }
         }
 
