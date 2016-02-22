@@ -744,8 +744,27 @@ CABLES.UI.Patch=function(_gui)
             self.showProjectParams();
         };
 
+        var lastZoomDrag=-1;
+
         $('#patch').on("mousemove", function(e)
         {
+
+            if(e.which==2)
+            {
+                if(lastZoomDrag!=-1)
+                {
+                    var delta=lastZoomDrag-e.clientY;
+                    if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
+                    {
+                        viewBox.x+=delta/2;
+                        viewBox.y+=delta/2;
+                        viewBox.w-=delta;
+                        viewBox.h-=delta;
+                        self.updateViewBox();
+                    }
+                }
+                lastZoomDrag=e.clientY;
+            }
 
             if(e.buttons==1 && !spacePressed)
             {
@@ -764,6 +783,7 @@ CABLES.UI.Patch=function(_gui)
         $('#patch svg').bind("mouseup", function (event)
         {
             rubberBandHide();
+            lastZoomDrag=-1;
         });
 
         $('#patch svg').bind("mousemove", function (e)

@@ -84,15 +84,16 @@ CABLES.Patch = function(cfg)
         }
         catch(e)
         {
-            if(CABLES.UI)
-            {
-                CABLES.UI.MODAL.showException(e,op);
-            }
+            // if(CABLES.UI)
+            // {
+            //     CABLES.UI.MODAL.showException(e,op);
+            // }
 
-            console.error('instancing error '+objName,e);
+            console.error('!instancing error '+objName,e);
             if(CABLES.UI)
             {
-                gui.serverOps.showOpInstancingError(objName,e);
+                // gui.serverOps.showOpInstancingError(objName,e);
+                CABLES.UI.MODAL.showException(e,op);
             }
             return;
         }

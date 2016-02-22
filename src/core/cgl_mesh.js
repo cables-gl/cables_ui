@@ -263,6 +263,8 @@ CGL.Geometry=function()
 
     this.calcNormals=function(calcVertexNormals)
     {
+        //https://www.opengl.org/wiki/Calculating_a_Surface_Normal
+
         function calcNormal(triangle)
         {
             // Begin Function CalculateSurfaceNormal (Input Triangle) Returns Vector
@@ -290,7 +292,6 @@ CGL.Geometry=function()
             vec[2]=this.vertices[which*3+2];
             return vec;
         };
-
 
         var i=0;
 
@@ -338,7 +339,7 @@ CGL.Geometry=function()
         {
             console.log('calc vertexnormals');
 
-            for(i=0;i<this.verticesIndices.length;i+=3) //faces
+            for(i=0;i<this.verticesIndices.length;i+=3) // faces
             {
                 for(var k=0;k<3;k++) //triangles
                 {
@@ -351,18 +352,10 @@ CGL.Geometry=function()
                     this.vertexNormals[this.verticesIndices[i+k]*3+0]=v[0];
                     this.vertexNormals[this.verticesIndices[i+k]*3+1]=v[1];
                     this.vertexNormals[this.verticesIndices[i+k]*3+2]=v[2];
-
                 }
-
             }
-
-
         }
-
-
     };
-
-//https://www.opengl.org/wiki/Calculating_a_Surface_Normal
 
     this.clear=function()
     {
@@ -418,9 +411,6 @@ CGL.Geometry=function()
         this.faceVertCount=this.verticesIndices.length;
 
     };
-
-
-
 };
 
 parseOBJ = function(buff)
