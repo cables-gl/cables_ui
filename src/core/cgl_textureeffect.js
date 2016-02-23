@@ -43,7 +43,7 @@ CGL.TextureEffect=function(cgl)
         if(tex===null)
         {
             textureSource=new CGL.Texture(cgl);
-            textureSource.filter=CGL.Texture.FILTER_MIPMAP;
+            textureSource.filter=CGL.Texture.FILTER_LINEAR;
             textureSource.setSize(16,16);
         }
         else
@@ -51,7 +51,7 @@ CGL.TextureEffect=function(cgl)
             textureSource=tex;
         }
 
-        textureTarget.filter=CGL.Texture.FILTER_MIPMAP;
+        textureTarget.filter=textureSource.filter;
         textureTarget.setSize(textureSource.width,textureSource.height);
 
 

@@ -5,24 +5,21 @@ CGL.Framebuffer=function(_cgl,w,h)
 {
     var cgl=_cgl;
 
-
     var depthTextureExt = cgl.gl.getExtension('WEBGL_depth_texture') || cgl.gl.getExtension( "WEBKIT_WEBGL_depth_texture" ) || cgl.gl.getExtension( "MOZ_WEBGL_depth_texture" );
 
-    if(!depthTextureExt)
-        console.error('depth buffer ext problem');
-
+    if(!depthTextureExt) console.error('depth buffer ext problem');
 
     var width = w || 512;
     var height = h || 512;
 
-    var texture=new CGL.Texture(cgl,{filter:CGL.Texture.FILTER_NEAREST});
+    var texture=new CGL.Texture(cgl,{filter:CGL.Texture.FILTER_LINEAR});
     var textureDepth=new CGL.Texture(cgl,{isDepthTexture:true});
 
     var frameBuf = cgl.gl.createFramebuffer();
     var depthBuffer = cgl.gl.createRenderbuffer();
 
-this.getWidth=function(){ return width; };
-this.getHeight=function(){ return height; };
+    this.getWidth=function(){ return width; };
+    this.getHeight=function(){ return height; };
 
     this.getTextureColor=function()
     {
@@ -34,6 +31,12 @@ this.getHeight=function(){ return height; };
         return textureDepth;
     };
 
+
+this.setFilter=function(f)
+{
+    texture.filter=f;
+    texture.setSize(width,height);
+};
 
 this.setSize=function(w,h)
 {
