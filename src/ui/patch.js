@@ -1416,7 +1416,7 @@ CABLES.UI.Patch=function(_gui)
         else
         {
             $('#options_info').show();
-            $('#options_info').html(currentOp.op.uiAttribs.info);
+            $('#options_info').html('<div class="panelhead">info</div><div>'+currentOp.op.uiAttribs.info+'</div>');
         }
     }
 

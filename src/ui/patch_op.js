@@ -244,6 +244,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var y=_y;
     var opui=_opui;
     var title=_text;
+    var shownTitle=_text;
     var backgroundResize=null;
     var backgroundComment=null;
 
@@ -332,6 +333,12 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             "cursor": "move"
         });
         label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+
+        this.setTitle(title);
+
+
+
+
 
         $(label.node).css({'pointer-events': 'none'});
 
@@ -495,7 +502,18 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.setTitle=function(t)
     {
         title=t;
-        if(label) label.attr({text:title});
+        if(label)
+        {
+            shownTitle=title;
+            label.attr({text:shownTitle});
+            while(label.node.getComputedTextLength()>w)
+            {
+                shownTitle=shownTitle.substr(0,shownTitle.length-1);
+                label.attr({'text': shownTitle+'...  '});
+            }
+        }
+
+
     };
 
     this.getGroup=function()

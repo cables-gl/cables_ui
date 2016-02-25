@@ -63,6 +63,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     this.updateValue3F=function()
     {
+        if(!value)console.log('name',name);
         if(loc==-1) loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
         shader.getCgl().gl.uniform3f(loc, value[0],value[1],value[2]);
         CGL.profileUniformCount++;

@@ -76,11 +76,33 @@ CABLES.Patch = function(cfg)
 
         try
         {
-            if(parts.length==2) op=new window[parts[0]][parts[1]](this,objName);
-            else if(parts.length==3) op=new window[parts[0]][parts[1]][parts[2]](this,objName);
-            else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this,objName);
-            else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this,objName);
-            else console.log('parts.length',parts.length);
+
+            var opObj=null;
+            if(parts.length==2) opObj=window[parts[0]][parts[1]];
+            else if(parts.length==3) opObj=window[parts[0]][parts[1]][parts[2]];
+            else if(parts.length==4) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]];
+            else if(parts.length==5) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]];
+            // else console.log('parts.length',parts.length);
+
+            if(!opObj)
+            {
+                if(CABLES.UI)
+                {
+                    CABLES.UI.MODAL.showError('unknown op','unknown op: '+objName);
+                }
+                console.error('unknown op: '+objName);
+                // alert('could not create '+objName);
+
+            }
+            else
+            {
+                if(parts.length==2) op=new window[parts[0]][parts[1]](this,objName);
+                else if(parts.length==3) op=new window[parts[0]][parts[1]][parts[2]](this,objName);
+                else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this,objName);
+                else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this,objName);
+                else console.log('parts.length',parts.length);
+
+            }
         }
         catch(e)
         {
@@ -97,17 +119,19 @@ CABLES.Patch = function(cfg)
             }
             return;
         }
+        if(op)
+        {
+            op.objName=objName;
+            op.patch=this;
+            op.uiAttr(uiAttribs);
+            if(op.onCreate)op.onCreate();
 
-        op.objName=objName;
-        op.patch=this;
-        op.uiAttr(uiAttribs);
-        if(op.onCreate)op.onCreate();
+            if(op.hasOwnProperty('onAnimFrame')) this.animFrameOps.push(op);
 
-        if(op.hasOwnProperty('onAnimFrame')) this.animFrameOps.push(op);
+            this.ops.push(op);
 
-        this.ops.push(op);
-
-        if(this.onAdd)this.onAdd(op);
+            if(this.onAdd)this.onAdd(op);
+        }
 
         return op;
     };
