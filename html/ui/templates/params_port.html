@@ -76,8 +76,8 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'range' }}
-                        <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
-                        <a class="graphbutton fa fa-line-chart" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="tt timingbutton fa fa-clock-o" data-tt="enable keyframing" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="tt graphbutton fa fa-line-chart" data-tt="keep in keyframing view" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
                         </td><td>
                         <input type ="range" class="range" min ="0" max="1.0" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:90px;"/>
                         <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
@@ -85,12 +85,14 @@
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
                         </td><td>
                             <select oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');">
-                                <option value="">...</option>
+                                {{#compare '' '==' port.val }}
+                                    <option value="">...</option>
+                                {{/compare}}
                                 {{#each port.uiAttribs.values}}
-                                    <option value="{{ this }}">{{ this }}</option>
+                                    <option {{#compare this '==' ../port.val }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{ this }}</option>
                                 {{/each}}
                             </select>
-                            <input class="value" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:70px;display:inline;"/>
+                            <input type="hidden" class="value" id="portval_{{ portnum }}" value="{{ port.val }}" />
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'readonly' }}
                         {{ port.val }}
@@ -109,8 +111,8 @@
 
                     {{#compare port.type '==' '1' }} [function]
                     {{/compare}}{{#compare port.type '==' 0 }}
-                        <a class="timingbutton fa fa-clock-o" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
-                        <a class="graphbutton fa fa-line-chart" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="tt timingbutton fa fa-clock-o" data-tt="enable keyframing" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="tt graphbutton fa fa-line-chart" data-tt="keep in timing view" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
                     </td><td>
                         <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" />
                         <a class="graphbutton fa fa-sort" onmousedown="valueChanger('portval_{{ portnum }}');" style="margin-left:0px;height:17px;background-color:#383838"></a>
