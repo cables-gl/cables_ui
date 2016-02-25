@@ -30,15 +30,20 @@
             {{/if}}
 
             {{#if port.direction }}
+            </td><td>
+                <table>
                 {{#each port.links}}
-                    </td><td>
-                    <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portIn.parent.id}}');"> [{{{portIn.name}}}]</span>
+                    <tr>
+                        <td>
+                            <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portIn.parent.id}}');">{{{ portIn.parent.name }}} - {{{portIn.name}}}</span>
+                        </td>
+                    </tr>
                 {{/each}}
+                </table>
             {{else}}
                 {{#each port.links}}
                     </td><td>
-                    <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portOut.parent.id}}');"> [{{{portOut.name}}}]</span>
-
+                    <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portOut.parent.id}}');">{{{ portOut.parent.name }}} - {{{portOut.name}}}</span>
                 {{/each}}
             {{/if}}
         {{/if}}
@@ -63,7 +68,7 @@
                 {{#if port.uiAttribs.display}}
 
                     {{#compare port.uiAttribs.display '==' 'bool' }}
-                        <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square-o{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:5px;padding-right:30px;"></span>
+                        <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:5px;padding-right:30px;"></span>
                         <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
                     {{/compare}}
 
@@ -72,7 +77,7 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
-                        <a class="tt graphbutton fa fa-plus-square" data-tt="create new fitting op" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="tt graphbutton fa fa-plus-square-o" data-tt="create new fitting op" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ></a>
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'range' }}
