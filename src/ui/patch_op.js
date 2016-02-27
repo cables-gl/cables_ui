@@ -217,8 +217,9 @@ function UiLink(port1, port2)
 
     this.setEnabled=function(enabled)
     {
-        if(enabled) this.linkLine.attr("opacity", 1.0);
-            else this.linkLine.attr("opacity", 0.3);
+        if(this.linkLine)
+            if(enabled) this.linkLine.attr("opacity", 1.0);
+                else this.linkLine.attr("opacity", 0.3);
     };
 }
 
@@ -506,7 +507,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         {
             shownTitle=title;
             label.attr({text:shownTitle});
-            while(label.node.getComputedTextLength()>w)
+
+            while(label.node.getComputedTextLength()>background.attr("width"))
             {
                 shownTitle=shownTitle.substr(0,shownTitle.length-1);
                 label.attr({'text': shownTitle+'...  '});

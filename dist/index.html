@@ -519,6 +519,13 @@
                         <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
                     {{/compare}}
 
+                    {{#compare port.uiAttribs.display '==' 'button' }}
+                    </td><td>
+                        <span class="button" id="portbutton_{{ portnum }}" >{{port.name}}</span>
+
+
+                    {{/compare}}
+
                     {{#compare port.uiAttribs.display '==' 'editor' }}
                         <a class="graphbutton fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" ></a>
                     {{/compare}}
@@ -630,6 +637,22 @@
             </td>
         </tr>
 
+        {{#if user.isAdmin}}
+
+            <tr onclick="toggleExample();">
+                <td></td>
+                <td>
+                    &nbsp;example
+                    <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
+                </td>
+                <td>
+                    <a id="projectsettings_example_icon" class="button fa fa-square-o"></a>
+                </td>
+            </tr>
+
+        {{/if}}
+
+
         <tr>
             <td></td>
             <td>
@@ -686,9 +709,6 @@
     <div class="panel" style="padding:0px;">
         <div class="panelhead">debug</div>
         <div>
-
-            <!-- <a onclick="gui.patch().saveCurrentProject();" class="button">save settings</a> -->
-            <h3>debug</h3>
             numOps:{{debug.numOps}}
             <br/>
             numSvgElements:{{debug.numSvgElements}}
@@ -699,9 +719,6 @@
             <br/>
             <br/>
             {{project.id}}
-
-
-
 
             <br/>
             <br/><br/>
@@ -755,6 +772,17 @@ function updateIcons()
         $('#projectsettings_autoscreenshot_icon').addClass('fa-square-o');
     }
 
+    if($('#projectsettings_example').val()=='true')
+    {
+        $('#projectsettings_example_icon').addClass('fa-check-square-o');
+        $('#projectsettings_example_icon').removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#projectsettings_example_icon').removeClass('fa-check-square-o');
+        $('#projectsettings_example_icon').addClass('fa-square-o');
+    }
+
 }
 
 function togglePublic()
@@ -768,6 +796,14 @@ function togglePublic()
 function toggleAutoScreenshot()
 {
     $('#projectsettings_autoscreenshot').val(''+!($('#projectsettings_autoscreenshot').val()=='true'));
+
+    updateIcons();
+    gui.patch().saveProjectParams();
+}
+
+function toggleExample()
+{
+    $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
 
     updateIcons();
     gui.patch().saveProjectParams();

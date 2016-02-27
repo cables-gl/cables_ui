@@ -1368,15 +1368,14 @@ CABLES.UI.Patch=function(_gui)
             'params_project',
             {
                 project: s,descr:currentProject.descriptionHTML,
+                user:gui.user,
                 debug:
                 {
                     numOps:gui.scene().ops.length,
                     numVisibleOps:numVisibleOps,
                     numSvgElements: $('#patch svg *').length,
                 }
-
             });
-
 
         $('#options').html(html);
     };
@@ -1386,12 +1385,15 @@ CABLES.UI.Patch=function(_gui)
         var proj_name=$('#projectsettings_name').val();
         var proj_public=$('#projectsettings_public').val();
         var proj_secret=$('#projectsettings_secret').val();
+        var proj_example=$('#projectsettings_example').val();
         var proj_autoscreenshot=$('#projectsettings_autoscreenshot').val();
 
         currentProject.name=proj_name;
         gui.scene().settings=gui.scene().settings || {};
         gui.scene().settings.isPublic=proj_public;
         gui.scene().settings.secret=proj_secret;
+        gui.scene().settings.isExample=proj_example;
+
         gui.scene().settings.manualScreenshot=proj_autoscreenshot;
 
         self.saveCurrentProject();
@@ -1548,6 +1550,12 @@ CABLES.UI.Patch=function(_gui)
                     });
                     // console.log('edit clicked...ja...');
                 });
+
+                $('#portbutton_'+index).on('click',function(e)
+                {
+                    op.portsIn[index]._onTriggered();
+                });
+
 
                 $('#portgraph_in_'+index).on('click',function(e)
                 {

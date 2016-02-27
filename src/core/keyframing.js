@@ -314,6 +314,13 @@ CABLES.TL.Anim=function(cfg)
     this.loop=false;
     this.defaultEasing=CABLES.TL.EASING_LINEAR;
 
+    this.hasEnded=function(time)
+    {
+        if(this.keys.length==0)return true;
+        if(this.keys[this.keys.length-1].time<=time)return true;
+        return false;
+    };
+
     this.clear=function(time)
     {
         var v=0;

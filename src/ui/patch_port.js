@@ -168,6 +168,9 @@ CABLES.UI.Port=function(thePort)
             });
 
         CABLES.UI.setStatusText('');
+
+        // for(var i=0;i<self.opUi.links.length;i++) self.opUi.links[i].redraw();
+
     }
 
 

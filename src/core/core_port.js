@@ -232,6 +232,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         return false;
     };
 
+
     this.trigger=function()
     {
         if(!parent.enabled)return;

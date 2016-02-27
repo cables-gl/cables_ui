@@ -72,6 +72,13 @@
                         <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
                     {{/compare}}
 
+                    {{#compare port.uiAttribs.display '==' 'button' }}
+                    </td><td>
+                        <span class="button" id="portbutton_{{ portnum }}" >{{port.name}}</span>
+
+
+                    {{/compare}}
+
                     {{#compare port.uiAttribs.display '==' 'editor' }}
                         <a class="graphbutton fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" ></a>
                     {{/compare}}
