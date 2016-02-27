@@ -7,7 +7,7 @@ CABLES.UI = CABLES.UI || {};
 // localStorage.cables.editor.serverops= [];
 
 
-CABLES.UI.ServerOps=function()
+CABLES.UI.ServerOps=function(gui)
 {
     var ops=[];
     var self=this;
@@ -28,34 +28,6 @@ CABLES.UI.ServerOps=function()
         console.log('storedOps.length',storedOps.length);
     }
 
-    // this.pushOp=function(name)
-    // {
-    //     CABLES.api.get('ops/github/push/'+name,function(res)
-    //     {
-    //         var msg='<h2>push status</h2>';
-    //
-    //         msg+='<br/><pre>'+JSON.stringify(res,false,4)+'</pre><br/>';
-    //
-    //         CABLES.UI.MODAL.show(msg);
-    //
-    //     });
-    //
-    // };
-
-    // this.pullOp=function(name)
-    // {
-    //     CABLES.api.get('ops/github/pull/'+name,function(res)
-    //         {
-    //
-    //             var msg='<h2><span class="fa fa-exclamation-triangle"></span> pull status</h2>';
-    //
-    //             msg+='<a class="bluebutton" onclick="document.location.reload()">reload</a>';
-    //             msg+='<br/><pre>'+JSON.stringify(res,false,4)+'</pre><br/>';
-    //
-    //             CABLES.UI.MODAL.show(msg);
-    //
-    //         });
-    // };
 
     this.load=function(cb)
     {
@@ -64,7 +36,7 @@ CABLES.UI.ServerOps=function()
             if(res)
             {
                 ops=res;
-                console.log('loaded ops...');
+                console.log('loaded ops...',ops);
 
                 if(cb)cb(ops);
 
@@ -73,14 +45,10 @@ CABLES.UI.ServerOps=function()
 
                 if(storedOps && storedOps.length>0)
                 {
-                    console.log('found storedOps!!!!!!!!!!!!!');
-
                     for(var i in storedOps)
                     {
                         self.edit(storedOps[i]);
                     }
-
-
                 }
             }
         });
@@ -189,7 +157,6 @@ CABLES.UI.ServerOps=function()
                 var html='';
                 html+='<a class="button" onclick="gui.serverOps.execute(\''+op.name+'\');">execute</a>';
 
-
                 gui.editor().addTab(
                 {
                     content:res.code,
@@ -248,6 +215,20 @@ CABLES.UI.ServerOps=function()
 
     };
 
-    this.load();
+    var s = document.createElement( 'script' );
+    s.setAttribute( 'src', '/api/ops/code/'+gui.user.username );
+    s.onload=function()
+    {
+        self.load();
+        self.loaded=true;
+    };
+    document.body.appendChild( s );
+
+    this.loaded=false;
+    this.finished=function()
+    {
+        return this.loaded;
+    };
+
 
 };

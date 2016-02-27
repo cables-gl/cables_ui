@@ -16,7 +16,6 @@ CABLES.UI.GUI=function()
     var _userOpManager=null;
 
     this.user=null;
-    this.serverOps=new CABLES.UI.ServerOps();
 
     this.timeLine=function()
     {
@@ -579,6 +578,13 @@ CABLES.UI.GUI=function()
 
     function initRouting()
     {
+        if(!self.serverOps || !self.serverOps.finished())
+        {
+            // wait for userops finished loading....
+            setTimeout(initRouting,100);
+            return;
+        }
+
         var router = new Simrou();
 
         router.addRoute('/').get(function(event, params)
@@ -730,6 +736,7 @@ CABLES.UI.GUI=function()
 
     this.loadUser=function()
     {
+
         CABLES.api.get('user/me',
             function(data)
             {
@@ -739,6 +746,9 @@ CABLES.UI.GUI=function()
                     $('#loggedout').hide();
                     $('#loggedin').show();
                     $('#username').html(data.user.username);
+
+                    self.serverOps=new CABLES.UI.ServerOps(self);
+
                 }
             },function(data)
             {
@@ -750,12 +760,17 @@ CABLES.UI.GUI=function()
 
     };
 
+
+
+
+
     this.init=function()
     {
         _patch=new CABLES.UI.Patch(this);
         _patch.show(_scene);
 
         initRouting();
+
 
     };
     self.loadUser();
