@@ -2,13 +2,12 @@
 
 
 
-
-
 CABLES.UI.Port=function(thePort)
 {
     var self=this;
     this.thePort=null;
     this.rect=null;
+    this.hover=null;
     this.portIndex=0;
     this.thePort=thePort;
     this.opUi=null;
@@ -36,10 +35,16 @@ CABLES.UI.Port=function(thePort)
 
     function dragMove(dx, dy,a,b,event)
     {
-        if(event.which==3)return;
-        if(event.which==2)return;
+        if(event.which==3 || event.which==2) return;
 
-        if(self.thePort.direction==PORT_DIR_IN && (self.thePort.isLinked() || self.thePort.isAnimated()) )  return;
+        if(self.thePort.direction==PORT_DIR_IN && (self.thePort.isLinked() || self.thePort.isAnimated()) )
+        {
+            return;
+            // var otherPort=self.thePort.links[0].getOtherPort(self.thePort);
+            // self.thePort.removeLinks();
+            // self.thePort=otherPort;
+            // return;
+        }
 
         if(!linkingLine)
         {
@@ -72,9 +77,20 @@ CABLES.UI.Port=function(thePort)
         }
 
         if(selectedEndPort && selectedEndPort.thePort && CABLES.Link.canLink(selectedEndPort.thePort,self.thePort))
-            linkingLine.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLink });
+        {
+            linkingLine.thisLine.attr({ stroke: CABLES.UI.uiConfig.getPortColor(selectedEndPort.thePort) });
+
+        }
+
         else
             linkingLine.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLinkInvalid });
+    }
+
+    function removeLinkingLine()
+    {
+        if(linkingLine && linkingLine.thisLine)linkingLine.thisLine.remove();
+        linkingLine=null;
+
     }
 
     function dragEnd(event)
@@ -82,6 +98,8 @@ CABLES.UI.Port=function(thePort)
 
         if(event.which==3)
         {
+            removeLinkingLine();
+
             self.thePort.removeLinks();
             return;
         }
@@ -89,12 +107,13 @@ CABLES.UI.Port=function(thePort)
         if(selectedEndPort && selectedEndPort.thePort && CABLES.Link.canLink(selectedEndPort.thePort,self.thePort))
         {
             var link=gui.patch().scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , self.op, self.thePort.getName());
-            if(link)
-            {
-                var thelink=new UiLink(selectedEndPort,self);
-                selectedEndPort.opUi.links.push(thelink);
-                self.opUi.links.push(thelink);
-            }
+            // if(link)
+            // {
+            //     var thelink=new UiLink(selectedEndPort,self);
+            //     selectedEndPort.opUi.links.push(thelink);
+            //     self.opUi.links.push(thelink);
+            //
+            // }
         }
         else
         {
@@ -123,8 +142,9 @@ CABLES.UI.Port=function(thePort)
             }
         }
 
-        if(linkingLine && linkingLine.thisLine)linkingLine.thisLine.remove();
-        linkingLine=null;
+        removeLinkingLine();
+        // if(linkingLine && linkingLine.thisLine)linkingLine.thisLine.remove();
+        // linkingLine=null;
         self.opUi.isDragging=false;
     }
 
@@ -136,11 +156,8 @@ CABLES.UI.Port=function(thePort)
         self.rect.toFront();
         self.rect.attr(
         {
-            x:xpos-CABLES.UI.uiConfig.portSize*0.25,
-            y:ypos-CABLES.UI.uiConfig.portSize*0.25,
-            width:CABLES.UI.uiConfig.portSize*1.5,
-            height:CABLES.UI.uiConfig.portSize*1.5,
-            'stroke-width':0,
+            'stroke-width':2,
+            "fill-opacity": 1,
         });
 
         var txt=getPortDescription(thePort);
@@ -152,7 +169,6 @@ CABLES.UI.Port=function(thePort)
     {
         CABLES.UI.hideToolTip();
         selectedEndPort=null;
-
         var offY=0;
         if(self.direction==PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
 
@@ -208,13 +224,19 @@ CABLES.UI.Port=function(thePort)
         xpos=0+w;
         ypos=0+yp;
 
-        this.rect = gui.patch().getPaper().rect(xpos,offY+ypos, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight).attr({
+
+        this.rect = gui.patch().getPaper().rect(xpos,offY+ypos, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
+        this.rect.attr({
             "stroke-width": 0,
+            "stroke": CABLES.UI.uiConfig.getPortColor(self.thePort),
             "fill":CABLES.UI.uiConfig.getPortColor(self.thePort),
             "fill-opacity": getPortOpacity(self.thePort ),
         });
 
+
+
         group.push(this.rect);
+        // group.push(this.hover);
 
         $(self.rect.node).bind("contextmenu", function(e)
         {

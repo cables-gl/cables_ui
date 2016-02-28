@@ -794,6 +794,7 @@ CABLES.UI.Patch=function(_gui)
 
             if(e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed))
             {
+
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
                 var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 
@@ -1825,6 +1826,18 @@ CABLES.UI.Patch=function(_gui)
         if(suffix=='.mp3' || suffix=='.ogg')
         {
             op=gui.scene().addOp('Ops.WebAudio.AudioPlayer',uiAttr);
+            op.getPort('file').val=url;
+        }
+        else
+        if(suffix=='.3d.json' )
+        {
+            op=gui.scene().addOp('Ops.Json3d.json3dFile',uiAttr);
+            op.getPort('file').val=url;
+        }
+        else
+        if(suffix=='.seq.json' )
+        {
+            op=gui.scene().addOp('Ops.Gl.MeshSequence',uiAttr);
             op.getPort('file').val=url;
         }
         else

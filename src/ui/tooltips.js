@@ -7,7 +7,7 @@ CABLES.UI.showToolTip=function(e,txt)
 {
     $('.tooltip').show();
     $('.tooltip').css('top',e.clientY+12);
-    $('.tooltip').css('left',e.clientX+12);
+    $('.tooltip').css('left',e.clientX+25);
     $('.tooltip').html(txt);
 };
 
@@ -32,4 +32,3 @@ $(document).on('mouseout', '.tt', function()
     clearTimeout(tooltipTimeout);
     CABLES.UI.hideToolTip();
 });
-

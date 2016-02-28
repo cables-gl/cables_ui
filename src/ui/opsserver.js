@@ -25,7 +25,7 @@ CABLES.UI.ServerOps=function(gui)
           },[]); // this empty array becomes the starting value for a
 
         localStorage.setItem("cables.editor.serverops",JSON.stringify(storedOps));
-        console.log('storedOps.length',storedOps.length);
+        // console.log('storedOps.length',storedOps.length);
     }
 
 
@@ -36,7 +36,7 @@ CABLES.UI.ServerOps=function(gui)
             if(res)
             {
                 ops=res;
-                console.log('loaded ops...',ops);
+                // console.log('loaded ops...',ops);
 
                 if(cb)cb(ops);
 
@@ -56,7 +56,7 @@ CABLES.UI.ServerOps=function(gui)
 
     this.showOpInstancingError=function(name,e)
     {
-        console.log('show server op error message modal');
+        // console.log('show server op error message modal');
 
         gui.patch().loadingError=true;
 
@@ -91,13 +91,13 @@ CABLES.UI.ServerOps=function(gui)
 
     this.create=function(name)
     {
-        console.log('create '+name);
+        // console.log('create '+name);
 
         CABLES.api.get(
             'ops/create/'+name,
             function(res)
             {
-                console.log('res',res);
+                // console.log('res',res);
                 self.load(
                 function()
                 {

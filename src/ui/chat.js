@@ -139,7 +139,7 @@ CABLES.Chat = function() {
             userList = newUserList;
             updateBadge();
 
-            console.info("User leaved, newUserList", userList);
+            console.info("User left, newUserList", userList);
         });
     }
 

@@ -89,10 +89,12 @@ function UiLink(port1, port2)
             addCircle.hover(function (e)
             {
                 var txt='left click: insert op / right click: delete link';
+                addCircle.attr({"stroke-width":4});
                 CABLES.UI.showToolTip(e,txt);
                 CABLES.UI.setStatusText(txt);
             },function()
             {
+                addCircle.attr({"stroke-width":2});
                 CABLES.UI.hideToolTip();
             });
             addCircle.toFront();
@@ -128,6 +130,8 @@ function UiLink(port1, port2)
 
         }
     };
+
+
 
     this.getPath = function()
     {
@@ -166,7 +170,9 @@ function UiLink(port1, port2)
         cp1X=fromX-0;
         cp2X=toX+0;
 
-        return "M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
+        var str="M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
+        // console.log(str);
+        return str;
     };
 
 
@@ -193,11 +199,14 @@ function UiLink(port1, port2)
         self.hide();
     };
 
+
     this.redraw = function()
     {
         if(!this.linkLine)
         {
             this.linkLine = gui.patch().getPaper().path(this.getPath());
+
+            // this.linkLine = gui.patch().getPaper().path(this.getPath());
             this.linkLine.attr( CABLES.UI.uiConfig.linkingLine );
             this.linkLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
 
@@ -208,9 +217,12 @@ function UiLink(port1, port2)
             // {
             //     this.attr({stroke:CABLES.UI.uiConfig.getPortColor(self.p1.thePort)});
             // });
-        }
 
-        this.linkLine.attr("path", this.getPath());
+            // this.linkLine.attr("path", this.getPathStraight());
+            // this.linkLine.animate({"path":this.getPath()},80);
+        }
+        this.linkLine.attr({"path": this.getPath()});
+
         this.linkLine.toFront();
         this.showAddButton();
     };
@@ -493,8 +505,16 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         isSelected=sel;
 
         if(this.isVisible() && !backgroundComment)
-        if(sel) background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected });
-            else background.attr( { "fill": this.getBgColor() });
+        if(sel)
+        {
+            background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected,"stroke-width":0,"stroke":"#fff" });
+            // label.attr( { "font-weight": "bold" });
+        }
+        else
+        {
+            background.attr( { "fill": this.getBgColor(),"stroke-width":0 });
+            // label.attr( { "font-weight": "normal" });
+        }
 
         // if(sel) background.attr( { stroke: '#fff', "stroke-width": 10});
         //     else background.attr( { stroke: '#fff', "stroke-width": 0});
@@ -586,7 +606,6 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.oprect.addUi();
         this.oprect.getGroup().show();
 
-
         var j=0;
         if(op.objName!='Ops.Ui.Comment')
         {
@@ -619,6 +638,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
                 {
                     self.links.splice(j,1);
                     found=true;
+                    console.log('remove dead links');
                 }
             }
         }
@@ -772,9 +792,6 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
 
         if(this.oprect.getRect()) port.addUi(this.oprect.getGroup());
-
-
-
 
         if(inout==PORT_DIR_OUT) this.portsOut.push(port);
             else this.portsIn.push(port);
