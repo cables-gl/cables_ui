@@ -10,7 +10,7 @@ CGL.Texture=function(cgl,options)
     this.height = 0;
     this.flip = true;
     this.filter = CGL.Texture.FILTER_NEAREST;
-    this.wrap = CGL.Texture.WRAP_REPEAT;
+    this.wrap = CGL.Texture.CLAMP_TO_EDGE;
     var isDepthTexture = false;
     this.unpackAlpha=true;
 
