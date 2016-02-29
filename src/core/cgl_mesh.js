@@ -1,14 +1,14 @@
 var CGL=CGL || {};
 
 
-CGL.Mesh=function(_cgl,geom,_triangleMode)
+CGL.Mesh=function(_cgl,geom,glPrimitive)
 {
     var cgl=_cgl;
     var bufVertices = cgl.gl.createBuffer();
     var bufVerticesIndizes = cgl.gl.createBuffer();
     var attributes=[];
     var _geom=null;
-    var triangleMode=_triangleMode || cgl.gl.TRIANGLES;
+    // var glPrimitive=_triangleMode || cgl.gl.TRIANGLES;
 
     function addAttribute(name,array,itemSize,cb)
     {
@@ -69,7 +69,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         var verticesNumbers=[];
         verticesNumbers.length=geom.vertices.length/3;
         for(i=0;i<geom.vertices.length/3;i++)verticesNumbers[i]=i;
-        addAttribute('attrVertNumber',verticesNumbers,1,function(attr,geom,shader)
+        addAttribute('attrVertIndex',verticesNumbers,1,function(attr,geom,shader)
             {
                 if(!shader.uniformNumVertices) shader.uniformNumVertices=new CGL.Uniform(shader,'f','numVertices',geom.vertices.length/3);
                 shader.uniformNumVertices.setValue(geom.vertices.length/3);
@@ -157,7 +157,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
 
 
         preBind(shader);
-        
+
         shader.bind();
 
         // if(meshChanged)
@@ -166,10 +166,13 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
         // var what=cgl.gl.TRIANGLES;
 
-        var what=triangleMode;
-        if(cgl.points)what=cgl.gl.POINTS; // todo this should be in the shader...
+        var prim=glPrimitive || cgl.gl.TRIANGLES;
+        if(shader.glPrimitive==1)prim=cgl.gl.POINTS;
+        if(shader.glPrimitive==2)prim=cgl.gl.LINE_STRIP;
+        // if(cgl.points)prim=; // todo this should be in the shader...
+        // prim=cgl.gl.LINE_STRIP;
 
-        cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
+        cgl.gl.drawElements(prim, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
 
         this.unBind(shader);
 
@@ -275,7 +278,7 @@ CGL.Geometry=function()
             {
                 this.baycentrics[i+0]=0.0;
                 this.baycentrics[i+1]=0.0;
-                this.baycentrics[i+2]=1;
+                this.baycentrics[i+2]=0.0;
             }
             count++;
             if(count==3)count=0;

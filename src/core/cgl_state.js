@@ -56,8 +56,6 @@ CGL.State=function()
     this.canvasWidth=-1;
     this.canvasHeight=-1;
 
-    this.points=false;
-
     this.doScreenshot=false;
     this.screenShotDataURL=null;
 
