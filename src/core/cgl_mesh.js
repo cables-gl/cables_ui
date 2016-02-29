@@ -10,7 +10,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
     var _geom=null;
     var triangleMode=_triangleMode || cgl.gl.TRIANGLES;
 
-    function addAttribute(name,array,itemSize)
+    function addAttribute(name,array,itemSize,cb)
     {
         var buffer= cgl.gl.createBuffer();
 
@@ -23,6 +23,7 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
                 loc:-1,
                 buffer:buffer,
                 name:name,
+                cb:cb,
                 itemSize:itemSize,
                 numItems: array.length/itemSize
             };
@@ -45,9 +46,9 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
     this.setGeom=function(geom)
     {
         if(!this.meshChanged())this.unBind();
+        var i=0;
 
         attributes.length=0;
-
 
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, bufVertices);
         cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(geom.vertices), cgl.gl.STATIC_DRAW);
@@ -64,9 +65,31 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         if(geom.hasOwnProperty('tangents') && geom.tangents && geom.tangents.length>0) addAttribute('attrTangent',geom.tangents,3);
         if(geom.hasOwnProperty('biTangents') && geom.biTangents && geom.biTangents.length>0) addAttribute('attrBiTangent',geom.biTangents,3);
 
-        for(var i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.morphTargets[i],3);
+        // make this optional!
+        var verticesNumbers=[];
+        verticesNumbers.length=geom.vertices.length/3;
+        for(i=0;i<geom.vertices.length/3;i++)verticesNumbers[i]=i;
+        addAttribute('attrVertNumber',verticesNumbers,1,function(attr,geom,shader)
+            {
+                if(!shader.uniformNumVertices) shader.uniformNumVertices=new CGL.Uniform(shader,'f','numVertices',geom.vertices.length/3);
+                shader.uniformNumVertices.setValue(geom.vertices.length/3);
+            });
+
+        for(i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.morphTargets[i],3);
     };
 
+
+    function preBind(shader)
+    {
+        for(i=0;i<attributes.length;i++)
+        {
+            if(attributes[i].cb)
+            {
+                attributes[i].cb(attributes[i],geom,shader);
+            }
+        }
+
+    }
 
     function bind(shader)
     {
@@ -76,14 +99,14 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
 
         for(i=0;i<attributes.length;i++)
         {
-            // if(attributes[i].loc==-1)
-                attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
+            attributes[i].loc = cgl.gl.getAttribLocation(shader.getProgram(), attributes[i].name);
 
             if(attributes[i].loc!=-1)
             {
                 cgl.gl.enableVertexAttribArray(attributes[i].loc);
                 cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
                 cgl.gl.vertexAttribPointer(attributes[i].loc,attributes[i].itemSize, cgl.gl.FLOAT, false, 0, 0);
+
             }
         }
 
@@ -132,19 +155,19 @@ CGL.Mesh=function(_cgl,geom,_triangleMode)
         // if(meshChanged)
             // cgl.lastMesh.unBind();
 
+
+        preBind(shader);
+        
         shader.bind();
 
         // if(meshChanged)
-            bind(shader);
+        bind(shader);
 
         // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
-
-
         // var what=cgl.gl.TRIANGLES;
 
         var what=triangleMode;
-        if(cgl.wireframe)what=cgl.gl.LINES;
-        else if(cgl.points)what=cgl.gl.POINTS;
+        if(cgl.points)what=cgl.gl.POINTS; // todo this should be in the shader...
 
         cgl.gl.drawElements(what, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
 
