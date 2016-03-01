@@ -166,9 +166,9 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
         // var what=cgl.gl.TRIANGLES;
 
-        var prim=glPrimitive || cgl.gl.TRIANGLES;
-        if(shader.glPrimitive==1)prim=cgl.gl.POINTS;
-        if(shader.glPrimitive==2)prim=cgl.gl.LINE_STRIP;
+        var prim=shader.glPrimitive || glPrimitive || cgl.gl.TRIANGLES;
+        // if(shader.glPrimitive==1)prim=cgl.gl.POINTS;
+        // if(shader.glPrimitive==2)prim=cgl.gl.LINE_STRIP;
         // if(cgl.points)prim=; // todo this should be in the shader...
         // prim=cgl.gl.LINE_STRIP;
 

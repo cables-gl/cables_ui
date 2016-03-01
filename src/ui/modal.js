@@ -84,7 +84,7 @@ $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa 
     }
 
     $('#modalcontent').append(''+ex.message+'<br/><br/>');
-    $('#modalcontent').append('<pre><code>'+ex.stack+'</code></pre>');
+    $('#modalcontent').append('<div class="shaderErrorCode">'+ex.stack+'</div>');
     $('#modalcontent').show();
     $('#modalbg').show();
 

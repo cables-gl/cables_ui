@@ -9,7 +9,7 @@ CABLES.Link = function(scene)
 
     this.setValue=function(v)
     {
-        this.portIn.val=v;
+        this.portIn.set(v);
     };
 
     this.setValue=function()

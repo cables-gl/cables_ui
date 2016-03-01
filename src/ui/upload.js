@@ -1,22 +1,32 @@
 //http://html5doctor.com/drag-and-drop-to-server/
 
-$("html").on("dragover", function(event)
+
+$("body").on("dragover", function(event)
 {
     event.preventDefault();
     event.stopPropagation();
     $(this).addClass('dragging');
+    // $('body').css('pointer-events','none');
+
     CABLES.UI.MODAL.show("drop files to upload!");
     jQuery.event.props.push('dataTransfer');
+    // console.log('over');
+
 });
 
-$("html").on("dragleave", function(event)
+$("body").on("dragleave", function(event)
 {
+    $(this).removeClass('dragging');
+    // $(this).css('pointer-events','all');
+    // $('body').css('pointer-events','all');
+    // console.log('leave');
+    CABLES.UI.MODAL.hide();
     event.preventDefault();
     event.stopPropagation();
-    $(this).removeClass('dragging');
+
 });
 
-$("html").on("drop", function(event)
+$("body").on("drop", function(event)
 {
     event.preventDefault();
     event.stopPropagation();

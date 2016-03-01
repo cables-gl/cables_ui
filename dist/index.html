@@ -183,7 +183,7 @@
 
 
     <div id="serverproject" style="float:right;display:none;">
-        <a  class="button_saveCurrentProject button">save project <span id="serverprojectname"></span></a>
+        <a  class="button_saveCurrentProject button">save project "<span id="serverprojectname"></span>"</a>
     </div>
 
     <div id="loggedin">
@@ -248,29 +248,29 @@
 
 <script id="op_select" type="text/x-handlebars-template">
 
-<div class="opsearch">
-    <h2>select op</h2>
+    <div class="opsearch">
+        <h2>select op</h2>
 
-    <input id="opsearch"/>
+        <input id="opsearch"/>
 
-    <br/><br/>
-    <style id="search_style"></style>
+        <br/><br/>
+        <style id="search_style"></style>
 
 
-    <div style="height:300px;overflow:auto" class="searchbrowser">
-      {{#each ops}}
+        <div style="height:300px;overflow:auto" class="searchbrowser">
+          {{#each ops}}
 
-        <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
-            <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{name}}  {{isFunction}}</a>
+            <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
+                <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{name}}  {{isFunction}}</a>
+            </div>
+
+          {{/each}}
         </div>
 
-      {{/each}}
+        <div id="opOptions" class="searchinfo"></div>
+        <div id="searchinfo" class="searchinfo"></div>
+
     </div>
-
-    <div id="opOptions" class="searchinfo"></div>
-    <div id="searchinfo" class="searchinfo"></div>
-
-</div>
 
 </script>
 

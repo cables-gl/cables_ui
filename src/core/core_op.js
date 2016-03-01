@@ -37,7 +37,7 @@ CABLES.Op = function()
         if(this.onUiAttrChange) this.onUiAttrChange();
     };
 
-    this.getName= function()
+    this.getName=function()
     {
         return this.name;
     };

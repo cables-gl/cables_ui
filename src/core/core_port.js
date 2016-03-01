@@ -38,9 +38,9 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     this.shouldLink=function(){return true;};
 
 
+
     this.get=function()
     {
-        // if(this.name=='posX') console.log(this.name+' animated!');
         if(animated)
         {
             this.value=self.anim.getValue(parent.patch.timer.getTime());
@@ -59,13 +59,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                     // deprecated!
                     this.onValueChanged();
                 }
-
-                // console.log('changed!!');
-                // this.onValueChanged();
             }
-            // console.log('this.value ',this.value );
-
-            // return this.value;
         }
 
         return this.value;
@@ -77,10 +71,10 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     };
 
     this.__defineGetter__("val", function()
-        {
-            // throw "deprecated val";
-            return this.get();
-        });
+    {
+        // throw "deprecated val";
+        return this.get();
+    });
     this.__defineSetter__("val", function(v){ this.setValue(v); });
 
     this.getType=function(){ return this.type; };
@@ -154,9 +148,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     {
         if(animated)
         {
-
             this.value=this.get();//self.anim.getValue(parent.patch.timer.getTime());
-
 
             if(oldAnimVal!=this.value)
             {
@@ -176,6 +168,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     {
         return uiActiveState;
     };
+
     this.setUiActiveState=function(onoff)
     {
         uiActiveState=onoff;
@@ -183,7 +176,6 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     };
 
     this.onUiActiveStateChange=null;
-
     this.onAnimToggle=function(){};
     this._onAnimToggle=function(){this.onAnimToggle();};
 
@@ -232,22 +224,16 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         return false;
     };
 
-
     this.trigger=function()
     {
-        if(!parent.enabled)return;
         if(this.links.length===0)return;
+        if(!parent.enabled)return;
 
         try
         {
             for (var i = 0; i < this.links.length; ++i)
-            // for(var i in this.links)
             {
-                // if(this.direction==PORT_DIR_OUT)this.links[i].portIn._onTriggered();
-                // else
                 this.links[i].portIn._onTriggered();
-                // if(this.links[i].portIn !=this)
-                // else if(this.links[i].portOut!=this)
             }
         }
         catch(ex)
@@ -260,7 +246,6 @@ CABLES.Port=function(parent,name,type,uiAttribs)
             console.error('ontriggered exception cought',ex);
             console.log(ex.stack);
             console.log('exception in: '+parent.name);
-
         }
     };
 
@@ -288,7 +273,6 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         obj.name=this.getName();
 
         if(!this.ignoreValueSerialize) obj.value=this.value;
-            // else console.log('ja hier nicht speichern....');
 
         if(animated) obj.animated=true;
         if(this.anim) obj.anim=this.anim.getSerialized();
