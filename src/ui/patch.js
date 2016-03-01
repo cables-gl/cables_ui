@@ -493,6 +493,8 @@ CABLES.UI.Patch=function(_gui)
                     if(r.success===true) CABLES.UI.setStatusText('project saved');
                     else CABLES.UI.setStatusText('project NOT saved');
 
+gui.setStateSaved();
+
                     CABLES.UI.MODAL.hide();
                     if(cb)cb();
                 });
@@ -822,6 +824,7 @@ CABLES.UI.Patch=function(_gui)
     {
         var op=uiOp.op;
 
+
         if(!isLoading)
         {
             var undofunc=function(opid,objName)
@@ -997,10 +1000,12 @@ CABLES.UI.Patch=function(_gui)
             isLoading=false;
             self.setCurrentSubPatch(currentSubPatch);
             self.showProjectParams();
+            gui.setStateSaved();
         };
 
         scene.onUnLink=function(p1,p2)
         {
+            gui.setStateUnsaved();
             self.updateCurrentOpParams();
 
             for(var i in self.ops)
@@ -1047,6 +1052,8 @@ CABLES.UI.Patch=function(_gui)
 
         scene.onLink=function(p1,p2)
         {
+            gui.setStateUnsaved();
+
             var uiPort1=null;
             var uiPort2=null;
             for(var i in self.ops)
@@ -1092,6 +1099,7 @@ CABLES.UI.Patch=function(_gui)
 
         scene.onDelete=function(op)
         {
+
             var undofunc=function(opname,opid)
             {
                 CABLES.undo.add({
@@ -1113,10 +1121,13 @@ CABLES.UI.Patch=function(_gui)
                     self.ops.splice( i, 1 );
                 }
             }
+            gui.setStateUnsaved();
+
         };
 
         scene.onAdd=function(op)
         {
+            gui.setStateUnsaved();
             $('#patch').focus();
             var uiOp=new OpUi(self.paper,op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
             self.ops.push(uiOp);

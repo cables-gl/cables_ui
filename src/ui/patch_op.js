@@ -323,6 +323,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         gui.patch().moveSelectedOpsFinished();
         gui.patch().showOpParams(opui.op);
+        gui.setStateUnsaved();
     };
 
     this.getBgColor=function()

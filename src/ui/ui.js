@@ -757,7 +757,30 @@ CABLES.UI.GUI=function()
             });
 
             console.log('data.user',self.user);
+    };
 
+    this.setStateUnsaved=function()
+    {
+        $('#stateUnsaved').show();
+        window.onbeforeunload = function (event)
+        {
+            var message = 'unsaved content!';
+            if(typeof event == 'undefined')
+            {
+                event = window.event;
+            }
+            if(event)
+            {
+                event.returnValue = message;
+            }
+            return message;
+        };
+    };
+
+    this.setStateSaved=function()
+    {
+        $('#stateUnsaved').hide();
+        window.onbeforeunload = null;
     };
 
 

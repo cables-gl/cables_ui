@@ -30,6 +30,7 @@ CABLES.UI.showPreview=function(opid,which,onoff)
 
 CABLES.UI.togglePortValBool=function(which,checkbox)
 {
+    gui.setStateUnsaved();
     var bool_value = $('#'+which).val() == 'true';
     bool_value=!bool_value;
 
@@ -51,6 +52,7 @@ CABLES.UI.togglePortValBool=function(which,checkbox)
 
 CABLES.UI.inputIncrement=function(v,dir)
 {
+    gui.setStateUnsaved();
     if(v=='true') return 'false';
     if(v=='false') return 'true';
 
@@ -130,6 +132,7 @@ function valueChanger(ele)
 
     function down(e)
     {
+        gui.setStateUnsaved();
         isDown=true;
         document.addEventListener('pointerlockchange', lockChange, false);
         document.addEventListener('mozpointerlockchange', lockChange, false);
@@ -145,6 +148,7 @@ function valueChanger(ele)
 
     function up(e)
     {
+        gui.setStateUnsaved();
         isDown=false;
         document.removeEventListener('pointerlockchange', lockChange, false);
         document.removeEventListener('mozpointerlockchange', lockChange, false);
@@ -160,6 +164,7 @@ function valueChanger(ele)
 
     function move(e)
     {
+        gui.setStateUnsaved();
         var v=parseFloat( $('#'+ele).val() ,10);
         var inc=e.movementY*-0.5;
         if(e.shiftKey || e.which==3)inc*=0.005;
