@@ -1133,10 +1133,25 @@ input[type=range]:focus {
 
         .ace_search_field
         {
-            color:black;
+            color:#aaa;
+        }
+        .ace_search
+        {
+            background-color: #444;
+            border: none;
+
+            .ace_search_form
+            {
+                border: none;
+            }
+
+            .ace_search_form *
+            {
+                background-color: #222;
+                border-color: #000;
+            }
         }
     }
-
 }
 
 hr

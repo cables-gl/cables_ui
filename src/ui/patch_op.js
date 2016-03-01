@@ -317,13 +317,13 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var move = function (dx, dy,a,b,e)
     {
         gui.patch().moveSelectedOps(dx,dy,a,b,e);
+        gui.setStateUnsaved();
     };
 
     var up = function ()
     {
         gui.patch().moveSelectedOpsFinished();
         gui.patch().showOpParams(opui.op);
-        gui.setStateUnsaved();
     };
 
     this.getBgColor=function()
@@ -639,7 +639,6 @@ var OpUi=function(paper,op,x,y,w,h,txt)
                 {
                     self.links.splice(j,1);
                     found=true;
-                    console.log('remove dead links');
                 }
             }
         }
@@ -757,6 +756,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         var links=[];
         for(var i=0;i<this.links.length;i++)
         {
+            if(this.links[i].p2)
             if(this.links[i].p2.thePort.id==portId || this.links[i].p1.thePort.id==portId)links.push(this.links[i]);
         }
 
