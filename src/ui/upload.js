@@ -20,7 +20,7 @@ $("body").on("dragleave", function(event)
     // $(this).css('pointer-events','all');
     // $('body').css('pointer-events','all');
     // console.log('leave');
-    CABLES.UI.MODAL.hide();
+    // CABLES.UI.MODAL.hide();
     event.preventDefault();
     event.stopPropagation();
 

@@ -7,24 +7,53 @@ CABLES.UI.setStatusText=function(txt)
 };
 
 
+CABLES.UI.PREVIEW={};
+CABLES.UI.PREVIEW.op=null;
+CABLES.UI.PREVIEW.port=null;
+CABLES.UI.PREVIEW.onoff=false;
 
-CABLES.UI.showPreview=function(opid,which,onoff)
+CABLES.UI.togglePreview=function(opid,which)
 {
-    var op=gui.scene().getOpById(opid);
-    if(!op)
+
+    CABLES.UI.PREVIEW.onoff=!CABLES.UI.PREVIEW.onoff;
+    console.log('CABLES.UI.PREVIEW.onoff',CABLES.UI.PREVIEW.onoff);
+
+    if(!CABLES.UI.PREVIEW.onoff)
     {
-        console.log('opid not found:',opid);
-        return;
+        CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
+        CABLES.UI.PREVIEW.op=null;
+        CABLES.UI.PREVIEW.port=null;
+        CGL.Texture.previewTexture=null;
+        console.log('preview OFFF');
     }
-    var port=op.getPort(which);
-    if(!port)
+    else
     {
-        console.log('port not found:',which);
-        return;
+        var op=gui.scene().getOpById(opid);
+        if(!op)
+        {
+            console.log('opid not found:',opid);
+            return;
+        }
+        var port=op.getPort(which);
+        if(!port)
+        {
+            console.log('port not found:',which);
+            return;
+        }
+
+        CABLES.UI.PREVIEW.op=op;
+        CABLES.UI.PREVIEW.port=port;
     }
 
-    port.doShowPreview(onoff);
-    if(!onoff)CGL.Texture.previewTexture=null;
+    if(CABLES.UI.PREVIEW.port && CABLES.UI.PREVIEW.onoff) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
+
+ // onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"
+};
+
+CABLES.UI.showPreview=function()
+{
+    // if(CABLES.UI.PREVIEW.port) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
+    if(CABLES.UI.PREVIEW.port && CABLES.UI.PREVIEW.onoff) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
 };
 
 

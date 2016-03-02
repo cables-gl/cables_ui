@@ -57,9 +57,9 @@
                 {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
                 {{#compare port.type '==' '2' }}
 
-                {{#if port.uiAttribs.preview}}
-                    <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a>
-                {{/if}}
+                <!-- {{#if port.uiAttribs.preview}}
+                    <span class="button fa fa-eye" onclick="console.log(1);CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
+                {{/if}} -->
 
                 <!--[object]-->
 
@@ -141,7 +141,8 @@
             {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
             {{#compare port.type '==' '2' }}
                 {{#if port.uiAttribs.preview}}
-                    <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a>
+                    <span class="button fa fa-eye" onclick="CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
+                    <!-- <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a> -->
                 {{/if}}
             {{/compare}}
         {{/if}}
