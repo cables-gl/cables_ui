@@ -288,9 +288,9 @@ CGL.Geometry=function()
             }
             if(count==2)
             {
-                this.baycentrics[i+0]=0.0;
-                this.baycentrics[i+1]=0.0;
-                this.baycentrics[i+2]=0.1;
+                this.baycentrics[i+0]=0;
+                this.baycentrics[i+1]=0;
+                this.baycentrics[i+2]=1;
             }
             count++;
             if(count==3)count=0;
