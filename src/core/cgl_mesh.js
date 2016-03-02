@@ -168,12 +168,8 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
 
 
         var prim=cgl.gl.TRIANGLES;
-        if(!shader.wireframe)
-        {
-            if(glPrimitive!==undefined)prim=glPrimitive;
-            if(shader.glPrimitive!==null)prim=shader.glPrimitive;
-
-        }
+        if(glPrimitive!==undefined) prim=glPrimitive;
+        if(shader.glPrimitive!==null) prim=shader.glPrimitive;
 
         // console.log(shader.glPrimitive);
 
@@ -274,24 +270,7 @@ CGL.Geometry=function()
         var count=0;
         for(i=0;i<this.vertices.length;i+=3)
         {
-            if(count==0)
-            {
-                this.baycentrics[i+0]=0;
-                this.baycentrics[i+1]=1;
-                this.baycentrics[i+2]=0;
-            }
-            if(count==1)
-            {
-                this.baycentrics[i+0]=1;
-                this.baycentrics[i+1]=0;
-                this.baycentrics[i+2]=0;
-            }
-            if(count==2)
-            {
-                this.baycentrics[i+0]=0;
-                this.baycentrics[i+1]=0;
-                this.baycentrics[i+2]=1;
-            }
+            this.baycentrics[i+count]=1;
             count++;
             if(count==3)count=0;
 
