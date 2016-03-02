@@ -140,7 +140,7 @@ CGL.Shader=function(_cgl,_name)
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
 
-    var glPrimitive=0;
+    this.glPrimitive=null;
     this.offScreenPass=false;
     this.wireframe=false;
 

@@ -761,7 +761,8 @@ CABLES.UI.GUI=function()
 
     this.setStateUnsaved=function()
     {
-        $('#stateUnsaved').show();
+        document.title='* '+gui.patch().getCurrentProject().name;
+
         window.onbeforeunload = function (event)
         {
             var message = 'unsaved content!';
@@ -779,7 +780,7 @@ CABLES.UI.GUI=function()
 
     this.setStateSaved=function()
     {
-        $('#stateUnsaved').hide();
+        document.title=''+gui.patch().getCurrentProject().name;
         window.onbeforeunload = null;
     };
 
