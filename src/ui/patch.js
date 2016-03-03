@@ -1426,6 +1426,16 @@ gui.setStateSaved();
             $('#options_warning').html(currentOp.op.uiAttribs.warning);
         }
 
+        if(!currentOp.op.uiAttribs.error || currentOp.op.uiAttribs.error.length===0)
+        {
+            $('#options_error').hide();
+        }
+        else
+        {
+            $('#options_error').show();
+            $('#options_error').html(currentOp.op.uiAttribs.error);
+        }
+
         if(!currentOp.op.uiAttribs.info) $('#options_info').hide();
         else
         {

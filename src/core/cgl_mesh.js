@@ -273,7 +273,6 @@ CGL.Geometry=function()
             this.baycentrics[i+count]=1;
             count++;
             if(count==3)count=0;
-
         }
 
     };

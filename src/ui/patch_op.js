@@ -352,8 +352,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
 
 
-
-
         $(label.node).css({'pointer-events': 'none'});
 
         background.drag(move, dragger, up);
@@ -515,6 +513,11 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         {
             background.attr( { "fill": this.getBgColor(),"stroke-width":0 });
             // label.attr( { "font-weight": "normal" });
+        }
+
+        if(opui.op.uiAttribs.error)
+        {
+            background.attr({"fill":"#f88"});
         }
 
         // if(sel) background.attr( { stroke: '#fff', "stroke-width": 10});

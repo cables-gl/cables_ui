@@ -202,8 +202,8 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
 
     texture.image.onabort=texture.image.onerror=function(e)
     {
-        cgl.loading.finished(loadingId);
-        var error={error:true};
+        cgl.patch.loading.finished(loadingId);
+        var error={'error':true};
         if(finishedCallback)finishedCallback(error);
 
     };
