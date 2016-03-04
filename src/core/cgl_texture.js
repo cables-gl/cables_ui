@@ -205,7 +205,6 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
         cgl.patch.loading.finished(loadingId);
         var error={'error':true};
         if(finishedCallback)finishedCallback(error);
-
     };
 
     texture.image.onload=function(e)

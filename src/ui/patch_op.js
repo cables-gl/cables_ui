@@ -515,7 +515,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             // label.attr( { "font-weight": "normal" });
         }
 
-        if(opui.op.uiAttribs.error)
+        if(opui.op.uiAttribs.error && opui.op.uiAttribs.error.length>0)
         {
             background.attr({"fill":"#f88"});
         }

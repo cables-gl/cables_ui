@@ -65,6 +65,11 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         if(geom.hasOwnProperty('tangents') && geom.tangents && geom.tangents.length>0) addAttribute('attrTangent',geom.tangents,3);
         if(geom.hasOwnProperty('biTangents') && geom.biTangents && geom.biTangents.length>0) addAttribute('attrBiTangent',geom.biTangents,3);
 
+if(geom.vertexColors.length>0) addAttribute('attrVertColor',geom.vertexColors,4);
+
+
+
+
         // make this optional!
         var verticesNumbers=[];
         verticesNumbers.length=geom.vertices.length/3;
@@ -203,6 +208,8 @@ CGL.Geometry=function()
     this.vertexNormals=[];
     this.baycentrics=[];
     this.morphTargets=[];
+    this.vertexColors=[];
+    
     var indexed=true;
 
     this.isIndexed=function()

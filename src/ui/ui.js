@@ -15,6 +15,12 @@ CABLES.UI.GUI=function()
     var _userManager=null;
     var _userOpManager=null;
 
+
+    var favIconLink = document.createElement('link');
+    document.getElementsByTagName('head')[0].appendChild(favIconLink);
+    favIconLink.type = 'image/x-icon';
+    favIconLink.rel = 'shortcut icon';
+
     this.user=null;
 
     this.timeLine=function()
@@ -481,14 +487,15 @@ CABLES.UI.GUI=function()
                     {
                         if(!e.shiftKey)
                         {
-                            if(showingEditor)
-                            {
-                                self.editor().save();
-                            }
-                            else
+                            if($('#patch').is(":focus"))
                             {
                                 self.patch().saveCurrentProject();
                                 CABLES.UI.SELECTPROJECT.doReload=true;
+                            }
+                            else
+                            if(showingEditor)
+                            {
+                                self.editor().save();
                             }
                             e.preventDefault();
                         }
@@ -759,9 +766,11 @@ CABLES.UI.GUI=function()
             console.log('data.user',self.user);
     };
 
+
     this.setStateUnsaved=function()
     {
-        document.title='* '+gui.patch().getCurrentProject().name;
+        document.title=gui.patch().getCurrentProject().name+' *';
+        favIconLink.href = '/favicon/favicon_orange.ico';
 
         window.onbeforeunload = function (event)
         {
@@ -780,6 +789,8 @@ CABLES.UI.GUI=function()
 
     this.setStateSaved=function()
     {
+        favIconLink.href = '/favicon/favicon.ico';
+
         document.title=''+gui.patch().getCurrentProject().name;
         window.onbeforeunload = null;
     };
