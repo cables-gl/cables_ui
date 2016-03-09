@@ -478,9 +478,6 @@ CABLES.TL.UI.TimeLineUI=function()
 
         var i=0;
         // newanim.onChange=null;
-
-
-
         // var newAnims=[];
         // newAnims.push(newanim);
         newanim.show();
@@ -493,12 +490,11 @@ CABLES.TL.UI.TimeLineUI=function()
             {
                 if(!found && !anims[i].stayInTimeline && anims[i]!=newanim)
                 {
-                            console.log('found one! '+i);
+                    console.log('found one! '+i);
 
                     anims[i].removeUi();
                     if(anims.length==1) anims.length=0;
-                        else
-                    anims=anims.slice(i,1);
+                        else anims=anims.slice(i,1);
 
                     // if(anims[i].keyLine)anims[i].keyLine.hide();
                     found=true;
@@ -508,10 +504,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
         anims.push(newanim);
 
-                // {
-                //     newAnims.push(anims[i]);
-                //     anims[i].show();
-                // }
+        // {
+        //     newAnims.push(anims[i]);
+        //     anims[i].show();
+        // }
 
         // anims=newAnims;
 
@@ -725,27 +721,7 @@ CABLES.TL.UI.TimeLineUI=function()
                     if(str===null)str+="M ";
                         else str+="L ";
                     str+=t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
-
                 }
-
-                // var lastValue=Number.MAX_VALUE;
-
-                // for(var i=0;i<numSteps;i++)
-                // {
-                //     var t=start+i*width/numSteps;
-                //     var v=ani.getValue(t);
-
-                //     if(lastValue!=v || i>=numSteps-2 || i<=3)
-                //     {
-                //         if(str===null)str+="M ";
-                //             else str+="L ";
-                //         str+=t*CABLES.TL.TIMESCALE+" "+v*-CABLES.TL.VALUESCALE;
-                //     }
-                //     lastValue=v;
-                // }
-
-                        // console.log('str ',str.length);
-
 
                 for(ik=0;ik<ani.keys.length;ik++)
                 {

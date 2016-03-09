@@ -313,6 +313,7 @@ CABLES.TL.Anim=function(cfg)
     this.stayInTimeline=false;
     this.loop=false;
     this.defaultEasing=CABLES.TL.EASING_LINEAR;
+    var needsSort=false;
 
     this.hasEnded=function(time)
     {
@@ -335,10 +336,12 @@ CABLES.TL.Anim=function(cfg)
 
     this.sortKeys=function()
     {
+
         this.keys.sort(function(a, b)
         {
             return parseFloat(a.time) - parseFloat(b.time);
         });
+        needsSort=false;
     };
 
     this.getKeyIndex=function(time)
@@ -372,7 +375,7 @@ CABLES.TL.Anim=function(cfg)
         }
 
         if(this.onChange)this.onChange();
-        this.sortKeys();
+        needsSort=true;
     };
 
 
@@ -408,6 +411,7 @@ CABLES.TL.Anim=function(cfg)
     this.getValue=function(time)
     {
         if(this.keys.length===0)return 0;
+        if(needsSort)this.sortKeys();
 
         if(time<this.keys[0].time)return this.keys[0].value;
 
@@ -441,3 +445,46 @@ CABLES.TL.Anim=function(cfg)
         }
     };
 };
+
+CABLES.TL.Anim.slerpQuaternion=function(time,q,animx,animy,animz,animw)
+{
+    var i1=animx.getKeyIndex(time);
+    var i2=parseInt(animx.getKeyIndex(time))+1;
+    if(i2>=animx.keys.length)i2=animx.keys.length-1;
+
+    if(i1==i2)
+    {
+        quat.set(q,
+            animx.keys[i1].value,
+            animy.keys[i1].value,
+            animz.keys[i1].value,
+            animw.keys[i1].value
+        );
+    }
+    else
+    {
+        var key1Time=animx.keys[i1].time;
+        var key2Time=animx.keys[i2].time;
+        var perc=(time-key1Time)/(key2Time-key1Time);
+
+        quat.set(CABLES.TL.Anim.slerpQuaternion.q1,
+            animx.keys[i1].value,
+            animy.keys[i1].value,
+            animz.keys[i1].value,
+            animw.keys[i1].value
+        );
+
+        quat.set(CABLES.TL.Anim.slerpQuaternion.q2,
+            animx.keys[i2].value,
+            animy.keys[i2].value,
+            animz.keys[i2].value,
+            animw.keys[i2].value
+        );
+
+        quat.slerp(q, CABLES.TL.Anim.slerpQuaternion.q1, CABLES.TL.Anim.slerpQuaternion.q2, perc);
+    }
+    return q;
+
+};
+CABLES.TL.Anim.slerpQuaternion.q1=quat.create();
+CABLES.TL.Anim.slerpQuaternion.q2=quat.create();

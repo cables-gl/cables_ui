@@ -1072,6 +1072,11 @@ gui.setStateSaved();
 
             var thelink=new UiLink(uiPort1,uiPort2);
 
+            if(!uiPort1)
+            {
+                console.log( 'no uiport found' );
+                return;
+            }
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
 

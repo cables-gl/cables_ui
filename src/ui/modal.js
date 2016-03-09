@@ -68,14 +68,13 @@ $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa 
 
 CABLES.UI.MODAL.showException=function(ex,op)
 {
-console.log('show exceptioN!');
     // str+='<h2><span class="fa fa-exclamation-triangle"></span> cablefail :/</h2>';
     // str+='error:'+err+'<br/>';
     // str+='<br/>';
     // str+='file: '+file+'<br/>';
     // str+='row: '+row+'<br/>';
-console.log(ex.stack);
-$('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+    console.log(ex.stack);
+    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
     $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
 
     if(op)
