@@ -416,11 +416,18 @@ CABLES.UI.GUI=function()
 
         $('#button_toggleTiming').bind("mousedown", function (event) { self.toggleTiming(); });
         $('#button_cycleRenderSize').bind("mousedown", function (event) { self.cycleRendererSize(); });
+
         $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
-        $('.button_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
+        $('.nav_patch_save').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
+        $('.nav_patch_saveas').bind("mousedown", function (event) { self.patch().saveCurrentProjectAs(); });
+        $('.nav_patch_new').bind("mousedown", function (event) { self.createProject(); });
+        $('.nav_patch_clear').bind("mousedown", function (event) { if(confirm('really?'))gui.scene().clear(); });
+        $('.nav_patch_export').bind("mousedown", function (event) { gui.patch().exportStatic(); });
+        $('.nav_patch_settings').bind("click", function (event) { self.patch().showProjectParams(); });
+
+        $('.nav_op_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
-        $('#button_settings').bind("click", function (event) { self.patch().showProjectParams(); });
-        $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
+        // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
         window.addEventListener( 'resize', self.setLayout, false );
 
@@ -501,15 +508,7 @@ CABLES.UI.GUI=function()
                         }
                         else
                         {
-
-                            CABLES.api.post('project',{name: prompt('projectname','') },function(d)
-                            {
-                                CABLES.UI.SELECTPROJECT.doReload=true;
-                                self.patch().saveCurrentProject(function(){
-                                    document.location.href='#/project/'+d._id;
-                                },d._id,d.name);
-
-                            });
+                            self.patch().saveCurrentProjectAs();
                         }
                     }
                 break;

@@ -33,7 +33,7 @@
 <div class="iconbar">
     <a class="button" onclick="gui.editor().save()">save</a>
 
-
+    
 <span class="editortoolbar"></span>
 
 <span id="editorstatus"></span>
@@ -83,10 +83,10 @@
 
 <script id="library_file" type="text/x-handlebars-template">
 
-    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}"
+    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
     {{#compare filterType '==' 'image' }}
         style="float:left;width:100px;margin:5px;"{{/compare}}
-        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
+        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');"> 
         {{#compare filterType '==' 'image' }}
             <div class="lib_imgpreview" style="background-image:url({{file.p}});background-repeat:no-repeat;background-size:cover;width:100px;height:100px;background-position:center center;"></div>
         {{/compare}}
@@ -95,7 +95,7 @@
     <i class="fa fa-image"></i>
     {{/compare}}
 
-    {{file.n}}
+    {{file.n}} 
 
 
     </div>
@@ -149,39 +149,52 @@
 <div id="options" class="panel"></div>
 
 <div id="menubar">
-    <a class="button" href="/" target="_blankk">cables</a>
+    <!-- <a class="button" href="/" target="_blankk">cables</a> -->
 
 
-    <!-- <nav>
+    <nav>
         <ul>
-            <li>Home</li>
-            <li onclick="CABLES.UI.SELECTPROJECT.show();">About</li>
+            <li onclick=""><a href="/" target="_blank">cables</a></li>
             <li>
-                Portfolio
+                Patch
                 <ul>
-                    <li>Web Design</li>
-                    <li>Web Development</li>
-                    <li>Illustrations<span>CMD A</span></li>
-                    <li onclick="CABLES.UI.SELECTPROJECT.show();">About</li>
+                    <li class="nav_patch_new">new</li>
+                    <li class="divide"></li>
+                    <li onclick="CABLES.UI.SELECTPROJECT.show();">open</li>
+                    <li class="divide"></li>
+                    <li class="nav_patch_save">save</li>
+                    <li class="nav_patch_saveas">save as</li>
+                    <li class="divide"></li>
+                    <li class="nav_patch_clear">clear</li>
+                    <li class="nav_patch_settings">settings</li>
+                    <li class="nav_patch_export">export</li>
                 </ul>
             </li>
-            <li>Blog</li>
-            <li>Contact</li>
+            <li>
+                Op
+                <ul>
+                    <li class="nav_op_addOp">add new</li>
+
+                </ul>
+            </li>
+
+
+
         </ul>
-    </nav> -->
+    </nav>
 
 
-    <a id="button_openprojects" class="button fa fa-folder-open" onclick="CABLES.UI.SELECTPROJECT.show();"></a>
+    <!-- <a id="button_openprojects" class="button fa fa-folder-open" ></a> -->
 
-    <a class="button_addOp button fa fa-plus-square-o tt" data-tt="create new op"></a>
-
-
-    <a id="help" href="/doc" target="_blankkk" class="button fa fa-question-circle"></a>
-
-    <a id="button_editor" class="button fa fa-pencil-square"></a>
+    <!-- <a class="button_addOp button fa fa-plus-square-o tt" data-tt="create new op"></a> -->
 
 
-    <a id="button_settings" class="button fa fa-cog"></a>
+    <!-- <a id="help" href="/doc" target="_blankkk" class="button fa fa-question-circle"></a> -->
+
+    <!-- <a id="button_editor" class="button fa fa-pencil-square"></a> -->
+
+
+    <!-- <a id="button_settings" class="button fa fa-cog"></a> -->
     <a id="button_chat" class="button fa fa-users" style="display: none">
         <span class="badge"></span>
     </a>
@@ -694,8 +707,8 @@
         <div class="panel" style="padding:0px;">
             <div class="panelhead">functions</div>
             <div>
-                <a onclick="gui.patch().exportStatic();" class="button fa fa-cloud-download">export static archive</a>
-                <br/><br/>
+                <!-- <a onclick="" class="button fa fa-cloud-download">export static archive</a> -->
+                <!-- <br/><br/> -->
                 <a class="button fa fa-user" onclick="gui.showUsers();">&nbsp;users</a>
                 <br/><br/>
                 <a class="button fa fa-book" onclick="gui.showUserOps();">&nbsp;user ops</a>
@@ -704,8 +717,8 @@
                 <a onclick="gui.showVersions();" class="button fa fa-code-fork">show versions</a>
                 <br/><br/>
                 <a onclick="gui.editProjectDescription();" class="button fa fa-edit">edit description</a>
-                <br/><br/>
-                <a class="button fa fa-times" onclick="if(confirm('really?'))gui.scene().clear();">&nbsp;clear patch</a>
+                <!-- <br/><br/> -->
+                <!-- <a class="button fa fa-times" onclick="if(confirm('really?'))gui.scene().clear();">&nbsp;clear patch</a> -->
 
             </div>
 
@@ -853,9 +866,6 @@ updateIcons();
                     {{#compare suffix '==' '.fbx' }}
                     <a class="button fa fa-retweet" onclick="gui.showConverter('{{_id}}')"></a>
                     {{/compare}}
-                    {{#compare suffix '==' '.dae' }}
-                    <a class="button fa fa-retweet" onclick="gui.showConverter('{{_id}}')"></a>
-                    {{/compare}}
 
                 </td>
 
@@ -910,7 +920,7 @@ updateIcons();
 
 </style>
 
-
+    
 <div class="opsearch" style="height:auto;">
     <h2>load project</h2>
 
@@ -951,7 +961,7 @@ updateIcons();
         <a class="button fa fa-backward" onclick="gui.timeLine().gotoOffset(-2);"></a>
         <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
         <a class="button fa fa-forward" onclick="gui.timeLine().gotoOffset(2);"></a>
-
+        
 
         <div id="keycontrols">
             <span class="button timeLineInsert fa fa-plus-square-o"></span>

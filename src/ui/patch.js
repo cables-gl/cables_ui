@@ -446,6 +446,20 @@ CABLES.UI.Patch=function(_gui)
 
     };
 
+    this.saveCurrentProjectAs=function(cb,_id,_name)
+    {
+        CABLES.api.post('project',{name: prompt('projectname','') },function(d)
+        {
+            CABLES.UI.SELECTPROJECT.doReload=true;
+            self.saveCurrentProject(function(){
+                document.location.href='#/project/'+d._id;
+            },d._id,d.name);
+
+        });
+
+    };
+
+
     this.saveCurrentProject=function(cb,_id,_name)
     {
         if(this.loadingError)
