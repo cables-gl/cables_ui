@@ -982,9 +982,14 @@ gui.setStateSaved();
             setTimeout(function()
             {
                 if(currentSubPatch==uiOp.getSubPatch()) uiOp.show();
-                gui.patch().setSelectedOp(null);
-                gui.patch().setSelectedOp(uiOp);
-                gui.patch().showOpParams(op);
+
+                if(showAddedOpTimeout!=-1)clearTimeout(showAddedOpTimeout);
+                showAddedOpTimeout=setTimeout(function()
+                {
+                    gui.patch().setSelectedOp(null);
+                    gui.patch().setSelectedOp(uiOp);
+                    gui.patch().showOpParams(op);
+                },30);
             },30);
         }
 
@@ -1002,6 +1007,8 @@ gui.setStateSaved();
 
         uiOp.wasAdded=true;
     }
+
+    var showAddedOpTimeout=-1;
 
     this.bindScene=function(scene)
     {

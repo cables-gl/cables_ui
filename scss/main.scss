@@ -691,7 +691,6 @@ input[type=range]:focus {
 
 .list
 {
-
     a
     {
         color:ccc;
@@ -744,7 +743,6 @@ input[type=range]:focus {
     display: block;
     z-index:1000;
 }
-
 
 @import 'font-awesome.scss';
 @import 'cables_icons.scss';
@@ -806,11 +804,7 @@ input[type=range]:focus {
     z-index: 99999;
     width:30px;
     height:30px;
-
-
 }
-
-
 
 
 #library
@@ -866,7 +860,6 @@ input[type=range]:focus {
                 {
                     background-color: #333;
                 }
-
             }
 
             .active
@@ -883,7 +876,6 @@ input[type=range]:focus {
             height:29px;
             border-bottom: 1px solid #666;
         }
-
     }
 
     #lib_files
@@ -959,7 +951,6 @@ input[type=range]:focus {
                 padding-bottom: 13px;
                 font-size: 13px;
             }
-
         }
     }
 }
@@ -1037,8 +1028,6 @@ input[type=range]:focus {
 }
 
 
-
-
 #doc_op
 {
     margin-top: 20px;
@@ -1050,26 +1039,19 @@ input[type=range]:focus {
     {
         padding-left: 0px;
     }
-
     ul
     {
         padding-left: 20px;
     }
-
     a
     {
         text-decoration: underline;
     }
-
     .button
     {
         text-decoration: none;
     }
-
 }
-
-
-
 
 #editor
 {
@@ -1077,7 +1059,6 @@ input[type=range]:focus {
     top: 0;
     bottom: 0;
     left: 0;
-    // right: 0;
     position: absolute;
     z-index: 99;
 
@@ -1214,9 +1195,10 @@ hr
     }
 }
 
-.chat-controls {
-
-    input {
+.chat-controls
+{
+    input
+    {
         height: 20px;
         outline: none;
         width: 507px;
@@ -1224,11 +1206,13 @@ hr
     }
 }
 
-#button_chat {
-    &.new {
+#button_chat
+{
+    &.new
+    {
         color: $mainColor;
-
-        .badge {
+        .badge
+        {
             color: $mainColor !important;
         }
     }
@@ -1264,13 +1248,11 @@ nav
             margin-left: 20px;
         }
     }
-
     ul li:hover
     {
         background: #555;
         color: #fff;
     }
-
     ul li ul
     {
         padding: 0;
@@ -1290,23 +1272,23 @@ nav
         -o-transition: opacity 0.1s;
         -transition: opacity 0.1s;
     }
-    ul li ul li {
+    ul li ul li
+    {
         background: #555;
         display: block;
         color: #fff;
         text-shadow: 0 -1px 0 #000;
     }
     ul li ul li:hover { background: #666; }
-    ul li:hover ul {
+    ul li:hover ul
+    {
         display: block;
         opacity: 1;
         visibility: visible;
     }
-
     .divide
     {
         padding:0px;
         border-bottom: 1px solid #222;
     }
-
 }

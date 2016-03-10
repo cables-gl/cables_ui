@@ -10,6 +10,22 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
     var _geom=null;
     // var glPrimitive=_triangleMode || cgl.gl.TRIANGLES;
 
+    this.updateAttribute=function(name,array)
+    {
+
+        for(var i=0;i<attributes.length;i++)
+        {
+
+            if(attributes[i].name==name)
+            {
+
+                cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
+                cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(array), cgl.gl.STATIC_DRAW);
+
+            }
+        }
+    };
+
     function addAttribute(name,array,itemSize,cb)
     {
         var buffer= cgl.gl.createBuffer();
@@ -37,6 +53,7 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         // cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, null);
 
     }
+    this.addAttribute=addAttribute;
 
     this.getAttributes=function()
     {
@@ -80,7 +97,7 @@ if(geom.vertexColors.length>0) addAttribute('attrVertColor',geom.vertexColors,4)
                 shader.uniformNumVertices.setValue(geom.vertices.length/3);
             });
 
-        for(i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.morphTargets[i],3);
+        // for(i=0;i<geom.morphTargets.length;i++) addAttribute('attrMorphTargetA',geom.morphTargets[i],3);
     };
 
 
@@ -209,7 +226,7 @@ CGL.Geometry=function()
     this.baycentrics=[];
     this.morphTargets=[];
     this.vertexColors=[];
-    
+
     var indexed=true;
 
     this.isIndexed=function()
@@ -318,7 +335,7 @@ CGL.Geometry=function()
 
         var i=0;
 
-        console.log('calcNormals');
+        // console.log('calcNormals');
 
         this.vertexNormals.length=this.vertices.length;
         for(i=0;i<this.vertices.length;i++)
@@ -355,8 +372,8 @@ CGL.Geometry=function()
             }
         }
 
-        console.log('this.vertices',this.vertices.length);
-        console.log('this.vertexNormals',this.vertexNormals.length);
+        // console.log('this.vertices',this.vertices.length);
+        // console.log('this.vertexNormals',this.vertexNormals.length);
 
         if(calcVertexNormals)
         {
