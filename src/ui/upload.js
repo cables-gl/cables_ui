@@ -71,25 +71,26 @@ $("body").on("drop", function(event)
         var msg='';
         var res='';
 
+        console.log(e.target.response);
+        try
+        {
+            res=JSON.parse(e.target.response);
+        }
+        catch(ex)
+        {
+            console.log(ex);
+        }
+
         gui.patch().updateProjectFiles();
         if (xhr.status === 200)
         {
-            console.log(e.target.response);
-            try
-            {
-                res=JSON.parse(e.target.response);
-            }
-            catch(e)
-            {
-                console.log(e);
-            }
+
             CABLES.UI.MODAL.hide();
             gui.jobs().finish('uploadingfiles');
         }
         else
         {
-            res=JSON.parse(e.target.response);
-            msg=res.msg;
+            if(res.msg) msg=res.msg;
             gui.jobs().finish('uploadingfiles');
 
             CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
