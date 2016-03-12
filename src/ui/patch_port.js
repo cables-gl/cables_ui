@@ -68,8 +68,9 @@ CABLES.UI.Port=function(thePort)
         else
         {
             var txt=CABLES.Link.canLinkText(selectedEndPort.thePort,self.thePort);
-            if(txt=='can link') CABLES.UI.setStatusText(  getPortDescription(selectedEndPort.thePort));
-                else CABLES.UI.setStatusText( txt );
+            if(txt=='can link') getPortDescription(selectedEndPort.thePort);
+                else CABLES.UI.hideInfo();
+
 
             if(txt=='can link') txt='<i class="fa fa-check"></i>';
                 else txt='<i class="fa fa-times"></i> '+txt;
@@ -183,7 +184,7 @@ CABLES.UI.Port=function(thePort)
                 'stroke-width':0,
             });
 
-        CABLES.UI.setStatusText('');
+        CABLES.UI.hideInfo();
 
         // for(var i=0;i<self.opUi.links.length;i++) self.opUi.links[i].redraw();
 

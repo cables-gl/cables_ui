@@ -10,9 +10,17 @@ function getPortOpacity(port)
 
 function getPortDescription(thePort)
 {
-    var str='<b>'+thePort.getName()+'</b>';
-    str+=' ['+thePort.getTypeString()+']';
-    if(thePort.isLinked() )str+=' press right mouse button to unlink port';
+    var str=thePort.getTypeString()+' ';
+    str+='<b>'+thePort.getName()+'</b>';
+
+
+    var strInfo='';
+    if(thePort.direction==PORT_DIR_IN)strInfo+=CABLES.UI.TEXTS.portDirIn;
+    if(thePort.direction==PORT_DIR_OUT)strInfo+=CABLES.UI.TEXTS.portDirOut;
+    if(thePort.isLinked() )strInfo+=CABLES.UI.TEXTS.portMouseUnlink;
+    else strInfo+=CABLES.UI.TEXTS.portMouseCreate;
+    CABLES.UI.showInfo(strInfo);
+
     return str;
 }
 
@@ -89,7 +97,7 @@ function UiLink(port1, port2)
             addCircle.hover(function (e)
             {
                 addCircle.attr({"stroke-width":4});
-                CABLES.UI.showInfo(e,CABLES.UI.TEXTS.link_addCircle);
+                CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
             },function()
             {
                 addCircle.attr({"stroke-width":2});

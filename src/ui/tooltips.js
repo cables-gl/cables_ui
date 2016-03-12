@@ -36,9 +36,10 @@ $(document).on('mouseout', '.tt', function()
 
 // --------------------------
 
-CABLES.UI.showInfo=function(e,txt)
+CABLES.UI.showInfo=function(txt)
 {
-    $('#infoArea').html(txt);
+    if(!txt)txt='';
+    $('#infoArea').html(mmd(txt));
 };
 
 
@@ -52,10 +53,7 @@ $(document).on('mouseover mousemove', '.info', function(e)
 {
     clearTimeout(tooltipTimeout);
     var txt=$(this).data('info');
-    tooltipTimeout = setTimeout(function()
-    {
-        CABLES.UI.showInfo(e,txt);
-    }, 300);
+    CABLES.UI.showInfo(txt);
 });
 
 $(document).on('mouseout', '.info', function()

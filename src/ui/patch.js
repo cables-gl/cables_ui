@@ -1405,6 +1405,7 @@ gui.setStateSaved();
         var html = CABLES.UI.getHandleBarHtml(
             'params_project',
             {
+                texts:CABLES.UI.TEXTS,
                 project: s,descr:currentProject.descriptionHTML,
                 user:gui.user,
                 debug:
@@ -1510,13 +1511,13 @@ gui.setStateSaved();
         watchAnimPorts=[];
         watchColorPicker=[];
 
-        var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op});
+        var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op,texts:CABLES.UI.TEXTS});
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 
         if(op.portsIn.length>0)
         {
-            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in',});
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in',texts:CABLES.UI.TEXTS});
 
             for(i in op.portsIn)
             {
@@ -1526,13 +1527,13 @@ gui.setStateSaved();
                 if(op.portsIn[i].uiAttribs.colorPick) watchColorPicker.push(op.portsIn[i]);
                 if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
 
-                html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op } );
+                html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op ,texts:CABLES.UI.TEXTS} );
             }
         }
 
         if(op.portsOut.length>0)
         {
-            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op});
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op,texts:CABLES.UI.TEXTS});
 
             for(var i2 in op.portsOut)
             {

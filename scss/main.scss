@@ -18,6 +18,7 @@ body
     -webkit-user-select: none;  /* Chrome all / Safari all */
     -moz-user-select: none;     /* Firefox all */
     -ms-user-select: none;      /* IE 10+ */
+    line-height: 19px;
 }
 
 .hidden { display:none;}
@@ -34,10 +35,6 @@ a
     cursor: pointer;
 }
 
-#options td, #meta td
-{
-    font-size: 13px;
-}
 
 #meta
 {
@@ -185,6 +182,25 @@ td.head
     overflow: hidden;
     padding-top: 5px;
 
+    #button_toggleTiming
+    {
+        float: left;
+        font-family: arial;
+        margin-left: 10px;
+        padding-top: 5px;
+        cursor: pointer;
+        height:30px;
+        padding-right: 10px;
+        color:#fff;
+        opacity: 0.5;
+
+
+        i
+        {
+            margin-right: 10px;
+        }
+    }
+
     input
     {
         margin-top: 6px !important;
@@ -195,12 +211,14 @@ td.head
     .timelinetime
     {
         display: block;
+        font-size: 12px;
+        line-height: 10px;
         float:left;
         padding:4px;
         width:70px;
         height:32px;
-        margin-top: -4px;
-        margin-left: 10px;
+        margin-top: -5px;
+        margin-left: 0px;
         text-align: center;
     }
 }
@@ -1295,4 +1313,31 @@ nav
         padding:0px;
         border-bottom: 1px solid #222;
     }
+}
+
+#infoArea
+{
+    background-color:#222;
+    padding:10px;
+    padding-top:20px !important;
+    height:120px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    h2
+    {
+        font-size: 17px;
+    }
+
+    ul
+    {
+        margin-left: 15px;
+        padding-left: 0px;
+    }
+}
+
+#options td, #meta td,#options input
+{
+    font-size: 13px;
+    line-height: 14px !important;
 }

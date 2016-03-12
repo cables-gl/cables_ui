@@ -83,14 +83,14 @@ CABLES.UI.GUI=function()
         }
 
 
-        var statusBarHeight=26;
+        // var statusBarHeight=26;
         var menubarHeight=33;
         var optionsWidth=400;
 
         var timelineUiHeight=40;
         var timedisplayheight=25;
 
-        var patchHeight=window.innerHeight-statusBarHeight-menubarHeight-2;
+        var patchHeight=window.innerHeight-menubarHeight-2;
 
         var patchWidth=window.innerWidth-self.rendererWidth-8;
         var patchLeft=0;
@@ -166,7 +166,7 @@ CABLES.UI.GUI=function()
         $('#timelineui').css('width',window.innerWidth-self.rendererWidth-2);
 
         $('#timing').css('width',window.innerWidth-self.rendererWidth-2);
-        $('#timing').css('bottom',statusBarHeight);
+        $('#timing').css('bottom',0);
 
 
 
@@ -180,7 +180,7 @@ CABLES.UI.GUI=function()
             $('#timetimeline').css('margin-top',timelineUiHeight);
 
             $('#timetimeline svg').css('width',window.innerWidth-self.rendererWidth-2);
-            $('#timetimeline svg').css('height',this.timingHeight-timedisplayheight-timelineUiHeight-statusBarHeight);
+            $('#timetimeline svg').css('height',this.timingHeight-timedisplayheight-timelineUiHeight);
 
             $('#timeline svg').css('width',window.innerWidth-self.rendererWidth-2);
             $('#timeline svg').css('height',this.timingHeight-timedisplayheight);
@@ -190,7 +190,7 @@ CABLES.UI.GUI=function()
             $('#keycontrols').show();
 
             $('#splitterTimeline').show();
-            $('#splitterTimeline').css('bottom',this.timingHeight-timedisplayheight+timelineUiHeight+8);
+            $('#splitterTimeline').css('bottom',this.timingHeight-4);
         }
         else
         {
@@ -209,14 +209,14 @@ CABLES.UI.GUI=function()
         $('#options').css('left',window.innerWidth-self.rendererWidth-1);
         $('#options').css('top',self.rendererHeight);
         $('#options').css('width',optionsWidth);
-        $('#options').css('height',window.innerHeight-self.rendererHeight-statusBarHeight);
+        $('#options').css('height',window.innerHeight-self.rendererHeight);
 
         $('#meta').css('right',0);
         $('#meta').css('top',self.rendererHeight);
         $('#meta').css('width',self.rendererWidth-optionsWidth);
-        $('#meta').css('height',window.innerHeight-self.rendererHeight-statusBarHeight);
+        $('#meta').css('height',window.innerHeight-self.rendererHeight);
 
-        $('#performance_glcanvas').css('bottom',statusBarHeight);
+        // $('#performance_glcanvas').css('bottom',statusBarHeight);
         // $('#performance_glcanvas').css('right',($('#performance_glcanvas').width()-(self.rendererWidth+optionsWidth))) ;
         $('#performance_glcanvas').css('right',self.rendererWidth-optionsWidth-$('#performance_glcanvas').width()+1 );
         // $('#performance_glcanvas').css('max-width',self.rendererWidth-optionsWidth);
@@ -339,15 +339,31 @@ CABLES.UI.GUI=function()
         return showTiming;
     };
 
+    function updateTimingIcon()
+    {
+        if(showTiming)
+        {
+            $('#button_toggleTiming i').removeClass('fa-caret-up');
+            $('#button_toggleTiming i').addClass('fa-caret-down');
+        }
+        else
+        {
+            $('#button_toggleTiming i').removeClass('fa-caret-down');
+            $('#button_toggleTiming i').addClass('fa-caret-up');
+        }
+    }
+
     this.showTiming=function()
     {
         showTiming=true;
+        updateTimingIcon();
         self.setLayout();
     };
 
     this.toggleTiming=function()
     {
         showTiming=!showTiming;
+        updateTimingIcon();
         self.setLayout();
     };
 
