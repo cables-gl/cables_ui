@@ -14,7 +14,8 @@ CABLES.UI.GUI=function()
     var _userManager=null;
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
-    var _socket=null;
+    // var _socket=null;
+    var _connection=null;
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);
@@ -509,6 +510,7 @@ CABLES.UI.GUI=function()
                         {
                             self.editor().save();
                         }
+
                     }
                 break;
                 case 83: // s - save
@@ -827,7 +829,9 @@ CABLES.UI.GUI=function()
         _patch.show(_scene);
 
         initRouting();
-        _socket=new CABLES.API.Socket(this);
+        // _socket=new CABLES.API.Socket(this);
+        // _socket = new CABLES.API.Socket();
+        _connection=new CABLES.API.Connection(this);
     };
     self.loadUser();
 

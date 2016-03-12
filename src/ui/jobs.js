@@ -18,6 +18,18 @@ function()
         $('#jobs').html(str);
     }
 
+    this.update=function(job,func)
+    {
+        for(var i in jobs)
+        {
+            if(jobs[i].id==job.id)
+            {
+                jobs[i].title=job.title;
+                break;
+            }
+        }
+        updateJobListing();
+    };
 
     this.start=function(job,func)
     {

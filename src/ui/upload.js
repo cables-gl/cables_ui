@@ -31,7 +31,8 @@ $("body").on("drop", function(event)
     event.preventDefault();
     event.stopPropagation();
 
-    CABLES.UI.MODAL.showLoading("uploading");
+    // CABLES.UI.MODAL.showLoading("uploading");
+    gui.jobs().start({id:'uploadingfiles',title:'uploading files...'});
 
     var files = event.dataTransfer.files;
     var url='/api/project/'+gui.patch().getCurrentProject()._id+'/file';
@@ -51,8 +52,14 @@ $("body").on("drop", function(event)
         if (event.lengthComputable)
         {
             var complete = (event.loaded / event.total * 100 | 0);
-            if(complete==100) CABLES.UI.MODAL.showLoading('processing files... ');
-                else CABLES.UI.MODAL.showLoading('uploading ' + complete + '%');
+            if(complete==100)
+            {
+                gui.jobs().start({id:'processingfiles',title:'processing files...'});
+            }
+            else
+            {
+                gui.jobs().update({id:'uploadingfiles',title:'uploading: '+complete+'%'});
+            }
         }
     };
 
@@ -92,11 +99,13 @@ $("body").on("drop", function(event)
             msg+='</table>';
             // CABLES.UI.MODAL.show(msg);
             CABLES.UI.MODAL.hide();
+            gui.jobs().finish('uploadingfiles');
         }
         else
         {
             res=JSON.parse(e.target.response);
             msg=res.msg;
+            gui.jobs().finish('uploadingfiles');
 
             CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
         }
