@@ -19,13 +19,19 @@ function()
     }
 
 
-    this.start=function(job)
+    this.start=function(job,func)
     {
         $('.cables .logo').removeClass('cablesLogo');
         $('.cables .logo').addClass('fa fa-circle-o-notch fa-spin');
 
         jobs.push(job);
         updateJobListing();
+
+        if(func)
+        {
+            console.log('jo start joib');
+            setTimeout(func,30);
+        }
     };
 
     this.finish=function(jobId)

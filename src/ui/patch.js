@@ -470,7 +470,6 @@ CABLES.UI.Patch=function(_gui)
         }
 
         gui.jobs().start({id:'projectsave',title:'saving project'});
-        // CABLES.UI.MODAL.showLoading('saving project');
 
         gui.patch().scene.cgl.doScreenshot=true;
 
@@ -1298,7 +1297,15 @@ CABLES.UI.Patch=function(_gui)
     this.deleteChilds=function(id)
     {
         var op=gui.scene().getOpById(id);
-        op.deleteChilds();
+        gui.jobs().start(
+            {id:'deletechilds',title:'deleting ops'},
+            function()
+            {
+                op.deleteChilds();
+                gui.jobs().finish('deletechilds');
+            }
+        );
+
     };
 
     this.deleteSelectedOps=function()
