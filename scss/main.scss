@@ -1315,6 +1315,7 @@ nav
     {
         background-color: #222;
         color:#aaa;
+        width:250px;
         font-weight: normal;
     }
 
@@ -1327,6 +1328,7 @@ nav
 
 #infoArea
 {
+    display:none;
     background-color:#222;
     padding:10px;
     padding-top:20px !important;
@@ -1357,20 +1359,20 @@ nav
     a
     {
         display: block;
-        margin-left: 20px;
+        margin-left: 25px;
     }
 
     .logo
     {
         position: absolute;
-        color:white;
+        color:#aaa;
         width:25px;
         text-align: center;
     }
 
     .fa
     {
-        margin-top: 3px;
+        margin-top: 4px;
         margin-left: -5px;
     }
 

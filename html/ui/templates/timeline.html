@@ -3,7 +3,7 @@
 <script id="timeline_controler" type="text/x-handlebars-template">
 
     <div id="timelineui">
-        <a id="button_toggleTiming" class="button">timing</a>
+        <a id="button_toggleTiming" class=""><i class="fa fa-caret-up"></i>timing</a>
 
         <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
 
@@ -11,7 +11,7 @@
         <a class="button fa fa-backward" onclick="gui.timeLine().gotoOffset(-2);"></a>
         <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
         <a class="button fa fa-forward" onclick="gui.timeLine().gotoOffset(2);"></a>
-        
+
 
         <div id="keycontrols">
             <span class="button timeLineInsert fa fa-plus-square-o"></span>

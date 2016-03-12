@@ -21,6 +21,15 @@ function()
 
     this.start=function(job,func)
     {
+        for(var i in jobs)
+        {
+            if(jobs[i].id==job.id)
+            {
+                jobs.splice(i,1);
+                break;
+            }
+        }
+
         $('.cables .logo').removeClass('cablesLogo');
         $('.cables .logo').addClass('fa fa-circle-o-notch fa-spin');
 
