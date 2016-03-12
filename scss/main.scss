@@ -1294,6 +1294,8 @@ nav
         -o-transition: opacity 0.1s;
         -transition: opacity 0.1s;
     }
+
+
     ul li ul li
     {
         background: #555;
@@ -1308,6 +1310,14 @@ nav
         opacity: 1;
         visibility: visible;
     }
+
+    ul li ul#jobs li
+    {
+        background-color: #222;
+        color:#aaa;
+        font-weight: normal;
+    }
+
     .divide
     {
         padding:0px;
@@ -1340,4 +1350,39 @@ nav
 {
     font-size: 13px;
     line-height: 14px !important;
+}
+
+.cables
+{
+    a
+    {
+        display: block;
+        margin-left: 20px;
+    }
+
+    .logo
+    {
+        position: absolute;
+        color:white;
+        width:25px;
+        text-align: center;
+    }
+
+    .fa
+    {
+        margin-top: 3px;
+        margin-left: -5px;
+    }
+
+    .cablesLogo
+    {
+        background-image: url(/logo.png);
+        background-repeat: no-repeat;
+        background-size:auto 80%;
+        background-position:0px center;
+        display:block;
+        height:20px;
+        float: left;
+    }
+
 }

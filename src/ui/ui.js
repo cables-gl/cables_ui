@@ -14,6 +14,7 @@ CABLES.UI.GUI=function()
     var _chat = new CABLES.Chat();
     var _userManager=null;
     var _userOpManager=null;
+    var _jobs=new CABLES.UI.Jobs();
 
 
     var favIconLink = document.createElement('link');
@@ -41,6 +42,11 @@ CABLES.UI.GUI=function()
     this.editor=function()
     {
         return _editor;
+    };
+
+    this.jobs=function()
+    {
+        return _jobs;
     };
 
     this.timingHeight=250;

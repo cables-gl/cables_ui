@@ -33,7 +33,7 @@
 <div class="iconbar">
     <a class="button" onclick="gui.editor().save()">save</a>
 
-
+    
 <span class="editortoolbar"></span>
 
 <span id="editorstatus"></span>
@@ -83,10 +83,10 @@
 
 <script id="library_file" type="text/x-handlebars-template">
 
-    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}"
+    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
     {{#compare filterType '==' 'image' }}
         style="float:left;width:100px;margin:5px;"{{/compare}}
-        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
+        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');"> 
         {{#compare filterType '==' 'image' }}
             <div class="lib_imgpreview" style="background-image:url({{file.p}});background-repeat:no-repeat;background-size:cover;width:100px;height:100px;background-position:center center;"></div>
         {{/compare}}
@@ -95,7 +95,7 @@
     <i class="fa fa-image"></i>
     {{/compare}}
 
-    {{file.n}}
+    {{file.n}} 
 
 
     </div>
@@ -132,9 +132,6 @@
 <div id="patch" tabindex="1"></div>
 
 <div id="timing"></div>
-<!-- <div id="statusbar">
-    <div class="text"></div>
-</div> -->
 <div id="splitterPatch" class="splitter"></div>
 <div id="splitterRenderer" class="splitter"></div>
 <div id="splitterRendererWH" class="splitter"></div>
@@ -155,9 +152,11 @@
 
     <nav>
         <ul>
-            <li style="background-image: url(/logo.png);background-repeat: no-repeat;background-size:auto 50%;background-position:10px center;padding-left:33px;"><a href="/" target="_blank">
-
-                cables</a></li>
+            <li class="cables">
+                <div class="logo cablesLogo"></div>
+                <a href="/" target="_blank">cables</a>
+                <ul id="jobs"></ul>
+            </li>
             <li>
                 Patch
                 <ul>
@@ -923,7 +922,7 @@ updateIcons();
 
 </style>
 
-
+    
 <div class="opsearch" style="height:auto;">
     <h2>load project</h2>
 
@@ -956,7 +955,7 @@ updateIcons();
 <script id="timeline_controler" type="text/x-handlebars-template">
 
     <div id="timelineui">
-        <div id="button_toggleTiming" ><i class="fa fa-caret-up"></i>timing</div>
+        <a id="button_toggleTiming" class="button">timing</a>
 
         <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
 
@@ -964,7 +963,7 @@ updateIcons();
         <a class="button fa fa-backward" onclick="gui.timeLine().gotoOffset(-2);"></a>
         <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
         <a class="button fa fa-forward" onclick="gui.timeLine().gotoOffset(2);"></a>
-
+        
 
         <div id="keycontrols">
             <span class="button timeLineInsert fa fa-plus-square-o"></span>

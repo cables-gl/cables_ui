@@ -42,7 +42,6 @@ CABLES.UI.MODAL.show=function(content)
     });
 };
 
-
 CABLES.UI.MODAL.showLoading=function(title,content)
 {
     $('#modalcontent').html('<div class="modalLoading" style="text-align:center;"><h3>'+title+'</h3><i class="fa fa-4x fa-spinner fa-pulse"></i><br/><br/><div>');

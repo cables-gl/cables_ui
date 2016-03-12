@@ -451,7 +451,8 @@ CABLES.UI.Patch=function(_gui)
         CABLES.api.post('project',{name: prompt('projectname','') },function(d)
         {
             CABLES.UI.SELECTPROJECT.doReload=true;
-            self.saveCurrentProject(function(){
+            self.saveCurrentProject(function()
+            {
                 document.location.href='#/project/'+d._id;
             },d._id,d.name);
 
@@ -468,7 +469,8 @@ CABLES.UI.Patch=function(_gui)
             return;
         }
 
-        CABLES.UI.MODAL.showLoading('saving project');
+        gui.jobs().start({id:'projectsave',title:'saving project'});
+        // CABLES.UI.MODAL.showLoading('saving project');
 
         gui.patch().scene.cgl.doScreenshot=true;
 
@@ -507,9 +509,9 @@ CABLES.UI.Patch=function(_gui)
                     if(r.success===true) CABLES.UI.setStatusText('project saved');
                     else CABLES.UI.setStatusText('project NOT saved');
 
-gui.setStateSaved();
-
-                    CABLES.UI.MODAL.hide();
+                    gui.setStateSaved();
+                    gui.jobs().finish('projectsave');
+                    // CABLES.UI.MODAL.hide();
                     if(cb)cb();
                 });
         },30);
