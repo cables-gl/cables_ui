@@ -32,6 +32,7 @@ $("body").on("drop", function(event)
     event.stopPropagation();
 
     // CABLES.UI.MODAL.showLoading("uploading");
+    CABLES.UI.MODAL.hide();
     gui.jobs().start({id:'uploadingfiles',title:'uploading files...'});
 
     var files = event.dataTransfer.files;
@@ -55,6 +56,7 @@ $("body").on("drop", function(event)
             if(complete==100)
             {
                 gui.jobs().start({id:'processingfiles',title:'processing files...'});
+                gui.jobs().finish('uploadingfiles');
             }
             else
             {
@@ -72,32 +74,7 @@ $("body").on("drop", function(event)
         gui.patch().updateProjectFiles();
         if (xhr.status === 200)
         {
-            // console.log('e',r);
             res=JSON.parse(e.target.response);
-            msg="<h2>files uploaded</h2>";
-            msg+='<table>';
-
-            for(var i=0;i<res.log.length;i++)
-            {
-                gui.patch().onUploadFile(res.log[i].filename);
-
-                msg+='<tr>';
-                msg+='<td>';
-                if(!res.log[i].success) msg+='FAIL';
-                msg+='</td>';
-                msg+='<td>';
-                msg+=res.log[i].filename;
-                msg+='</td>';
-                msg+='<td>';
-                msg+=''+res.log[i].msg;
-                msg+='</td>';
-                msg+='<td>';
-                msg+=''+res.log[i].filesize;
-                msg+='</td>';
-                msg+='</tr>';
-            }
-            msg+='</table>';
-            // CABLES.UI.MODAL.show(msg);
             CABLES.UI.MODAL.hide();
             gui.jobs().finish('uploadingfiles');
         }

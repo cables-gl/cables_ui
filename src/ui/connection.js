@@ -8,6 +8,11 @@ CABLES.API.Connection=function(ui)
 
     var simpleio = window.simpleio;
     var client = simpleio.create({ajax: jQuery.ajax});
+
+    function doConnect()
+    {
+    }
+
     client.connect();
 
     client.on('message', function(message)
@@ -30,12 +35,26 @@ CABLES.API.Connection=function(ui)
         }
     });
 
-    client.on('error', console.log);
+    client.on('error', function()
+    {
+        console.log('simpleio error...');
+        ui.jobs().start({id:'connecting',title:'reconnecting to server'});
+        client.connect();
+    });
 
+    client.on('connect', function()
+    {
+        console.log('client connect');
+    });
     client.send({"cmd":"ping"},
         function()
         {
             console.log('Message sent');
         });
+
+        window.onbeforeunload = function(e)
+        {
+          client.disconnect();
+        };
 
 };
