@@ -23,7 +23,7 @@ CABLES.API.Socket=function(ui)
         port=443;
         protocol='wss';
     }
-    var url=protocol+':'+window.location.hostname+':'+port+'/';
+    var url=protocol+':'+window.location.hostname+':'+port+'/ws';
     var pingDelay=5000;
     var checkDelay=5000;
     var checkDelayError=2000;
