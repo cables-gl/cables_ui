@@ -11,7 +11,6 @@ CABLES.UI.GUI=function()
     _scene.gui=true;
     var _patch=null;
     var _editor=new CABLES.Editor();
-    // var _chat = new CABLES.Chat();
     var _userManager=null;
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
@@ -510,7 +509,6 @@ CABLES.UI.GUI=function()
                         {
                             self.editor().save();
                         }
-
                     }
                 break;
                 case 83: // s - save

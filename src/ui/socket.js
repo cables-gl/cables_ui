@@ -16,7 +16,7 @@ CABLES.API = CABLES.API || {};
 CABLES.API.Socket=function(ui)
 {
     var gui=ui;
-    var url='ws:localhost:5711/';
+    var url='ws:'+window.location.hostname+':5711/';
     var pingDelay=5000;
     var checkDelay=5000;
     var checkDelayError=2000;
