@@ -74,7 +74,15 @@ $("body").on("drop", function(event)
         gui.patch().updateProjectFiles();
         if (xhr.status === 200)
         {
-            res=JSON.parse(e.target.response);
+            console.log(e.target.response);
+            try
+            {
+                res=JSON.parse(e.target.response);
+            }
+            catch(e)
+            {
+                console.log(e);
+            }
             CABLES.UI.MODAL.hide();
             gui.jobs().finish('uploadingfiles');
         }
