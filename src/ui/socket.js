@@ -16,7 +16,9 @@ CABLES.API = CABLES.API || {};
 CABLES.API.Socket=function(ui)
 {
     var gui=ui;
-    var url='ws:'+window.location.hostname+':5711/';
+    var port=5711;
+    if(window.location.hostname=='cables.undev.de') port=443;
+    var url='ws:'+window.location.hostname+':'+port+'/';
     var pingDelay=5000;
     var checkDelay=5000;
     var checkDelayError=2000;
