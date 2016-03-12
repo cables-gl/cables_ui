@@ -38,7 +38,6 @@ function()
 
         if(func)
         {
-            console.log('jo start joib');
             setTimeout(func,30);
         }
     };

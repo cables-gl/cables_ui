@@ -119,7 +119,6 @@ CABLES.API.Socket=function(ui)
                     CABLES.API.WsPingStart=0;
                     setTimeout(ping,pingDelay);
                 }
-
             }
             catch(e)
             {

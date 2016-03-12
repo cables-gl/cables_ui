@@ -90,7 +90,7 @@ CABLES.UI.GUI=function()
 
 
         // var statusBarHeight=26;
-        var menubarHeight=33;
+        var menubarHeight=30;
         var optionsWidth=400;
 
         var timelineUiHeight=40;

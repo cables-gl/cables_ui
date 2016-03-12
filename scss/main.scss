@@ -164,7 +164,6 @@ td.head
 
 #menubar,#timelineui
 {
-    padding-top: 2px;
     padding-right:10px;
     position:absolute;
     background-color: #222;
@@ -1387,4 +1386,9 @@ nav
         float: left;
     }
 
+}
+
+.button_saveCurrentProject
+{
+    line-height: 12px;
 }
