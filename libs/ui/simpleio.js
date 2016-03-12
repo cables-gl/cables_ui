@@ -439,7 +439,7 @@ Client.options = {
     ajax: null,
     reconnectionDelay: 1000,
     maxReconnectionDelay: 10000,
-    multiplexDuration: 500,
+    multiplexDuration: 50,
     ajaxOptions: {
         cache: false,
         dataType: 'json',

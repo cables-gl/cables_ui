@@ -6,28 +6,62 @@ CABLES.API.Connection=function(ui)
 {
     ui.jobs().start({id:'connecting',title:'connecting to server'});
 
+    var pingStart=0;
     var simpleio = window.simpleio;
     var client = simpleio.create({ajax: jQuery.ajax});
+    var connected=false;
 
-    function doConnect()
+    function ping()
     {
+        if(connected)
+        {
+            pingStart=Date.now();
+            client.send({"cmd":"ping"});
+        }
+        else
+        setTimeout(ping,3000);
     }
 
-    client.connect();
+    function checkConnection()
+    {
+        if(!connected)
+        {
+            console.log('checkConnection');
+        }
+    }
+
 
     client.on('message', function(message)
     {
-        console.log('got new message:', message.data.data);
-
         if(message.data.data.success===true)
         {
+            connected=true;
             ui.jobs().finish('connecting');
+            setTimeout(ping,3000);
         }
         else
-        if(message.data.data.cmd && message.data.data.cmd=='filesprocessed')
+        if(message.data.data.cmd)
         {
-            ui.jobs().finish('processingfiles');
-            gui.patch().updateProjectFiles();
+            if(message.data.data.cmd && message.data.data.cmd=='filesprocessed')
+            {
+                ui.jobs().finish('processingfiles');
+                gui.patch().updateProjectFiles();
+            }
+            else
+            if(message.data.data.cmd=='pong')
+            {
+                if(pingStart!==0)
+                {
+                    var delay=Date.now()-pingStart;
+                    console.log("ping time:",delay);
+                    pingStart=0;
+                    setTimeout(ping,30000);
+                }
+            }
+            else
+            {
+                console.log('unknown message',message.data.data);
+            }
         }
         else
         {
@@ -35,26 +69,39 @@ CABLES.API.Connection=function(ui)
         }
     });
 
+    var checkTimeout=null;
+
     client.on('error', function()
     {
-        console.log('simpleio error...');
+        connected=false;
+        // console.log('simpleio error...');
         ui.jobs().start({id:'connecting',title:'reconnecting to server'});
-        client.connect();
+        clearTimeout(checkTimeout);
     });
 
-    client.on('connect', function()
+    client.on('success', function()
     {
-        console.log('client connect');
+        connected=true;
+        console.log('success');
+        ui.jobs().finish('connecting');
     });
-    client.send({"cmd":"ping"},
+
+
+    window.onbeforeunload = function(e)
+    {
+        client.disconnect();
+    };
+
+
+    client.connect();
+
+    client.send(
+        {"cmd":"connect"},
         function()
         {
-            console.log('Message sent');
+            console.log('connecting to server...');
         });
 
-        window.onbeforeunload = function(e)
-        {
-          client.disconnect();
-        };
+    // checkTimeout=setTimeout(checkConnection,500);
 
 };
