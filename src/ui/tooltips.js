@@ -32,3 +32,34 @@ $(document).on('mouseout', '.tt', function()
     clearTimeout(tooltipTimeout);
     CABLES.UI.hideToolTip();
 });
+
+
+// --------------------------
+
+CABLES.UI.showInfo=function(e,txt)
+{
+    $('#infoArea').html(txt);
+};
+
+
+CABLES.UI.hideInfo=function()
+{
+    $('#infoArea').html('');
+};
+
+
+$(document).on('mouseover mousemove', '.info', function(e)
+{
+    clearTimeout(tooltipTimeout);
+    var txt=$(this).data('info');
+    tooltipTimeout = setTimeout(function()
+    {
+        CABLES.UI.showInfo(e,txt);
+    }, 300);
+});
+
+$(document).on('mouseout', '.info', function()
+{
+    clearTimeout(tooltipTimeout);
+    CABLES.UI.hideInfo();
+});

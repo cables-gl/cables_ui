@@ -88,14 +88,12 @@ function UiLink(port1, port2)
 
             addCircle.hover(function (e)
             {
-                var txt='left click: insert op / right click: delete link';
                 addCircle.attr({"stroke-width":4});
-                CABLES.UI.showToolTip(e,txt);
-                CABLES.UI.setStatusText(txt);
+                CABLES.UI.showInfo(e,CABLES.UI.TEXTS.link_addCircle);
             },function()
             {
                 addCircle.attr({"stroke-width":2});
-                CABLES.UI.hideToolTip();
+                CABLES.UI.hideInfo();
             });
             addCircle.toFront();
 
