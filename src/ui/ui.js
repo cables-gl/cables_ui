@@ -515,7 +515,6 @@ CABLES.UI.GUI=function()
                         {
                             self.editor().save();
                         }
-
                     }
                 break;
                 case 83: // s - save
@@ -718,18 +717,49 @@ CABLES.UI.GUI=function()
                     {content:content},
                     function(res)
                     {
-                        setStatus('saved');
+                        // setStatus('saved');
                         console.log('res',res);
                     },
                     function(res)
                     {
-                        setStatus('error: not saved');
+                        // setStatus('error: not saved');
                         console.log('err res',res);
                     }
                 );
             }
         });
+    };
 
+    this.editProjectTags=function(objName)
+    {
+        var tags = prompt("enter comma seperated tags", self.patch().getCurrentProject().tags.join() || 'webgl, audio, bla');
+
+        if(tags)
+        {
+            CABLES.api.post(
+                'project/'+self.patch().getCurrentProject()._id+'/save_tags',
+                {"tags":tags},
+                function(res)
+                {
+                    tags = tags.split(",");
+                    for(var i in tags)
+                    {
+                        tags[i]=tags[i].trim();
+                    }
+
+                    self.patch().getCurrentProject().tags=tags;
+
+                    // setStatus('saved');
+                    console.log('res',res);
+                },
+                function(res)
+                {
+                    // setStatus('error: not saved');
+                    console.log('err res',res);
+                }
+            );
+
+        }
     };
 
     this.getOpDoc=function(opname,html,cb)

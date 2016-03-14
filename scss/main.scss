@@ -1251,6 +1251,14 @@ nav
 {
     float:left;
     z-index: 9999;
+
+    a
+    {
+        &:hover
+        {
+            color:#fff;
+        }
+    }
     ul
     {
         text-align: left;
@@ -1280,6 +1288,10 @@ nav
     {
         background: $mainColor;
         color: #fff;
+        a
+        {
+            color:white;
+        }
     }
     ul li ul
     {
@@ -1301,16 +1313,18 @@ nav
         -o-transition: opacity 0.1s;
         -transition: opacity 0.1s;
     }
-
-
     ul li ul li
     {
-        background: #222;
+        background: #444;
         display: block;
         color: #fff;
         // text-shadow: 0 -1px 0 #000;
     }
-    ul li ul li:hover { background: $mainColor; }
+    ul li ul li:hover
+    {
+        background: $mainColor;
+        cursor:pointer;
+    }
     ul li:hover ul
     {
         display: block;
