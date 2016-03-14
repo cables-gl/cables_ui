@@ -204,9 +204,9 @@ CABLES.Port=function(parent,name,type,uiAttribs)
 
     this.addLink=function(l)
     {
-        if(this.onLinkChanged)this.onLinkChanged();
         valueBeforeLink=self.value;
         this.links.push(l);
+        if(this.onLinkChanged)this.onLinkChanged();
     };
 
     this.removeLinkTo=function(p2)
@@ -296,12 +296,13 @@ CABLES.Port=function(parent,name,type,uiAttribs)
 
     this.removeLink=function(link)
     {
-        if(this.onLinkChanged)this.onLinkChanged();
 
         for(var i in this.links)
             if(this.links[i]==link)this.links.splice( i, 1 );
 
         self.setValue(valueBeforeLink);
+
+        if(this.onLinkChanged)this.onLinkChanged();
     };
 };
 

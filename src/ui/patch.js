@@ -234,17 +234,13 @@ CABLES.UI.Patch=function(_gui)
             this.addSelectedOp(toSelect[j]);
             this.ops[i].setSelected(true);
         }
-
     };
-
 
     this.createSubPatchFromSelection=function()
     {
-
         if(selectedOps.length==1 && selectedOps[0].op.objName=='Ops.Ui.Patch')
         {
             this.unPatchSubPatch(selectedOps[0].op.patchId.val);
-            console.log('JAJA GENAU');
             return;
         }
 
@@ -865,6 +861,7 @@ CABLES.UI.Patch=function(_gui)
         {
             uiOp.addPort(p.direction,p);
             uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+            
         };
 
         if(op.uiAttribs && op.uiAttribs.subPatch)

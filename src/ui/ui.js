@@ -129,7 +129,7 @@ CABLES.UI.GUI=function()
             var editorHeight=patchHeight-2-editorbarHeight;
             console.log('editoe height ',editorHeight);
             $('#ace').css('height',editorHeight);
-            _editor.resize();
+
 
             $('#ace').css('width',self.editorWidth);
             $('#ace').css('top',menubarHeight+2+editorbarHeight);
@@ -141,6 +141,8 @@ CABLES.UI.GUI=function()
             $('#splitterEditor').css('height',patchHeight-2);
             $('#splitterEditor').css('width',5);
             $('#splitterEditor').css('top',menubarHeight);
+
+            _editor.resize();
 
             patchWidth-=self.editorWidth-6;
             patchLeft=self.editorWidth+5;
