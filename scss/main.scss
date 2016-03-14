@@ -1095,6 +1095,9 @@ input[type=range]:focus {
         {
             width:100%;
             margin-bottom: 15px;
+            height:32px;
+            overflow: hidden;
+
             background-color:#444;
 
             .tab
