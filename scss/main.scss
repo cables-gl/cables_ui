@@ -18,6 +18,10 @@ body
     -webkit-user-select: none;  /* Chrome all / Safari all */
     -moz-user-select: none;     /* Firefox all */
     -ms-user-select: none;      /* IE 10+ */
+}
+
+p
+{
     line-height: 19px;
 }
 
@@ -211,12 +215,12 @@ td.head
     {
         display: block;
         font-size: 12px;
-        line-height: 10px;
+        line-height: 12px;
         float:left;
         padding:4px;
         width:70px;
         height:32px;
-        margin-top: -5px;
+        margin-top: -1px;
         margin-left: 0px;
         text-align: center;
     }
@@ -1270,7 +1274,7 @@ nav
     }
     ul li:hover
     {
-        background: #555;
+        background: $mainColor;
         color: #fff;
     }
     ul li ul
@@ -1297,12 +1301,12 @@ nav
 
     ul li ul li
     {
-        background: #555;
+        background: #222;
         display: block;
         color: #fff;
-        text-shadow: 0 -1px 0 #000;
+        // text-shadow: 0 -1px 0 #000;
     }
-    ul li ul li:hover { background: #666; }
+    ul li ul li:hover { background: $mainColor; }
     ul li:hover ul
     {
         display: block;
@@ -1321,7 +1325,7 @@ nav
     .divide
     {
         padding:0px;
-        border-bottom: 1px solid #222;
+        border-bottom: 1px solid #333;
     }
 }
 
@@ -1364,7 +1368,7 @@ nav
     .logo
     {
         position: absolute;
-        color:#aaa;
+        // color:#aaa;
         width:25px;
         text-align: center;
     }
@@ -1383,12 +1387,12 @@ nav
         background-position:0px center;
         display:block;
         height:20px;
-        float: left;
+        float:left;
     }
 
 }
 
-.button_saveCurrentProject
-{
-    line-height: 12px;
-}
+// .button_saveCurrentProject
+// {
+//     line-height: 12px;
+// }

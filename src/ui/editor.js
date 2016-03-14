@@ -16,6 +16,10 @@ CABLES.Editor=function()
     editor.resize();
     editor.focus();
 
+    this.resize=function()
+    {
+        editor.resize();
+    };
 
     function updateTabs()
     {

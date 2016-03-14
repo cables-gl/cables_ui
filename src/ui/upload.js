@@ -55,7 +55,7 @@ $("body").on("drop", function(event)
             var complete = (event.loaded / event.total * 100 | 0);
             if(complete==100)
             {
-                gui.jobs().start({id:'processingfiles',title:'processing files...'});
+                // gui.jobs().start({id:'processingfiles',title:'processing files...'});
                 gui.jobs().finish('uploadingfiles');
             }
             else

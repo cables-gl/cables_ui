@@ -42,12 +42,12 @@ CABLES.API.Connection=function(ui)
         else
         if(message.data.data.cmd)
         {
-            if(message.data.data.cmd && message.data.data.cmd=='filesprocessed')
-            {
-                ui.jobs().finish('processingfiles');
-                gui.patch().updateProjectFiles();
-            }
-            else
+            // if(message.data.data.cmd && message.data.data.cmd=='filesprocessed')
+            // {
+            //     ui.jobs().finish('processingfiles');
+            //     gui.patch().updateProjectFiles();
+            // }
+            // else
             if(message.data.data.cmd=='pong')
             {
                 if(pingStart!==0)
@@ -57,6 +57,17 @@ CABLES.API.Connection=function(ui)
                     pingStart=0;
                     setTimeout(ping,30000);
                 }
+            }
+            else
+            if(message.data.data.cmd=='startJob')
+            {
+                ui.jobs().start({id:message.data.data.jobId,title:message.data.data.jobTitle});
+            }
+            else
+            if(message.data.data.cmd=='finishJob')
+            {
+                ui.jobs().finish(message.data.data.jobId);
+                gui.patch().updateProjectFiles();
             }
             else
             {

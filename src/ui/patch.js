@@ -418,6 +418,11 @@ CABLES.UI.Patch=function(_gui)
 
     this.exportStatic=function()
     {
+        if(!gui.getSavedState())
+        {
+            CABLES.UI.MODAL.show(CABLES.UI.TEXTS.projectExportNotSaved);
+            return;
+        }
         CABLES.UI.MODAL.showLoading('exporting project');
 
         CABLES.api.get(
@@ -528,14 +533,14 @@ CABLES.UI.Patch=function(_gui)
         currentProject=proj;
         if(currentProject===null)
         {
-            $('#serverproject').hide();
+            // $('#serverproject').hide();
             $('#projectfiles').hide();
         }
         else
         {
             $('#projectfiles').show();
-            $('#serverproject').show();
-            $('#serverprojectname').html(proj.name);
+            // $('#serverproject').show();
+            // $('#serverprojectname').html(proj.name);
             self.updateProjectFiles(proj);
             $('.viewProjectLink').attr('href','/view/'+proj._id);
         }

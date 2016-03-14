@@ -16,6 +16,7 @@ CABLES.UI.GUI=function()
     var _jobs=new CABLES.UI.Jobs();
     // var _socket=null;
     var _connection=null;
+    var savedState=true;
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);
@@ -125,9 +126,11 @@ CABLES.UI.GUI=function()
             $('#editorbar').css('height',editorbarHeight);
             $('#editorbar').css('top',menubarHeight+2);
 
-            // patchLeft=self.editorWidth;
             var editorHeight=patchHeight-2-editorbarHeight;
+            console.log('editoe height ',editorHeight);
             $('#ace').css('height',editorHeight);
+            _editor.resize();
+
             $('#ace').css('width',self.editorWidth);
             $('#ace').css('top',menubarHeight+2+editorbarHeight);
             $('#ace').css('left',0);
@@ -441,7 +444,7 @@ CABLES.UI.GUI=function()
         $('#button_toggleTiming').bind("mousedown", function (event) { self.toggleTiming(); });
         $('#button_cycleRenderSize').bind("mousedown", function (event) { self.cycleRendererSize(); });
 
-        $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
+        // $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
         $('.nav_patch_save').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
         $('.nav_patch_saveas').bind("mousedown", function (event) { self.patch().saveCurrentProjectAs(); });
         $('.nav_patch_new').bind("mousedown", function (event) { self.createProject(); });
@@ -793,11 +796,17 @@ CABLES.UI.GUI=function()
             console.log('data.user',self.user);
     };
 
+    this.getSavedState=function()
+    {
+        return savedState;
+    };
+
 
     this.setStateUnsaved=function()
     {
         document.title=gui.patch().getCurrentProject().name+' *';
         favIconLink.href = '/favicon/favicon_orange.ico';
+        savedState=false;
 
         window.onbeforeunload = function (event)
         {
@@ -816,6 +825,7 @@ CABLES.UI.GUI=function()
 
     this.setStateSaved=function()
     {
+        savedState=true;
         favIconLink.href = '/favicon/favicon.ico';
 
         document.title=''+gui.patch().getCurrentProject().name;

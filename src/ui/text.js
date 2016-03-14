@@ -8,7 +8,7 @@ CABLES.UI.TEXTS=
 
     portFloatDrag:"* hold left mouse button and drag to change value. \n\n* use shift to for smaller increase.",
     portUnlink:"unlink port",
-    portCreateOp:"create fitting op",
+    portCreateOp:"create and connect new texture op",
     portAnimKeep:"keep in keyframing view",
     portAnimToggle:"toggle parameter animation. enable to keyframe parameter",
 
@@ -17,8 +17,10 @@ CABLES.UI.TEXTS=
     portMouseUnlink:'* press right mouse button to unlink port',
     portMouseCreate:'* press left mousebutton (or press and drag) to create and link new op',
 
-    projectSettingsPublic:"make project public - everyone can see it",
-    projectSettingsTitle:"project title - click to edit",
-    projectSettingsExample:"ADMIN: project will be listed as example"
+    projectSettingsPublic:"make patch public - everyone can see it",
+    projectSettingsTitle:"patch title - click to edit",
+    projectSettingsExample:"ADMIN: patch will be listed as example",
+
+    projectExportNotSaved:"patch not saved - save patch before exporting"
 
 };
