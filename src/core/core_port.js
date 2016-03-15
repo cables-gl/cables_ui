@@ -24,6 +24,8 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     this.ignoreValueSerialize=false;
     this.onLinkChanged=null;
     this.crashed=true;
+    var lastAnimFrame=-1;
+
 
     this.doShowPreview=function(onOff)
     {
@@ -38,11 +40,11 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     this.shouldLink=function(){return true;};
 
 
-
     this.get=function()
     {
-        if(animated)
+        if(animated && lastAnimFrame!=parent.patch.getFrameNum())
         {
+            lastAnimFrame=parent.patch.getFrameNum();
             this.value=self.anim.getValue(parent.patch.timer.getTime());
 
             // if(oldAnimVal!=this.value)

@@ -344,6 +344,12 @@ CABLES.TL.Anim=function(cfg)
         needsSort=false;
     };
 
+    this.getLength=function()
+    {
+        if(this.keys.length===0)return 0;
+        return this.keys[this.keys.length-1].time;
+    };
+
     this.getKeyIndex=function(time)
     {
         var index=0;

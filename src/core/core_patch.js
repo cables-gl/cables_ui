@@ -10,6 +10,7 @@ CABLES.Patch = function(cfg)
     this.gui=false;
     this.silent=false;
     var paused=false;
+    var frameNum=0;
 
     this.onLoadStart=null;
     this.onLoadEnd=null;
@@ -192,7 +193,10 @@ CABLES.Patch = function(cfg)
         }
     };
 
-    var frameNum=0;
+    this.getFrameNum=function()
+    {
+        return frameNum;
+    };
 
     this.exec=function(e)
     {

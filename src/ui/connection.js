@@ -53,9 +53,9 @@ CABLES.API.Connection=function(ui)
                 if(pingStart!==0)
                 {
                     var delay=Date.now()-pingStart;
-                    console.log("ping time:",delay);
+                    // console.log("ping time:",delay);
                     pingStart=0;
-                    setTimeout(ping,30000);
+                    setTimeout(ping,60000);
                 }
             }
             else
@@ -93,7 +93,7 @@ CABLES.API.Connection=function(ui)
     client.on('success', function()
     {
         connected=true;
-        console.log('success');
+        // console.log('success');
         ui.jobs().finish('connecting');
     });
 

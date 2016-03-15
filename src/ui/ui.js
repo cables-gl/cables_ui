@@ -127,7 +127,7 @@ CABLES.UI.GUI=function()
             $('#editorbar').css('top',menubarHeight+2);
 
             var editorHeight=patchHeight-2-editorbarHeight;
-            console.log('editoe height ',editorHeight);
+
             $('#ace').css('height',editorHeight);
 
 

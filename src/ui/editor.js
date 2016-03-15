@@ -86,6 +86,7 @@ CABLES.Editor=function()
                 $('#editorstatus').html('');
             },500);
     }
+    this.setStatus=setStatus;
 
     this.save=function()
     {

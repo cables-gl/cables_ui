@@ -60,10 +60,16 @@ function()
         {
             if(jobs[i].id==jobId)
             {
+                if(jobs[i].title.indexOf('file')>=0)
+                {
+                    gui.patch().updateProjectFiles();
+                }
                 jobs.splice(i,1);
                 break;
             }
         }
+
+
 
         if(jobs.length===0)
         {

@@ -861,7 +861,7 @@ CABLES.UI.Patch=function(_gui)
         {
             uiOp.addPort(p.direction,p);
             uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-            
+
         };
 
         if(op.uiAttribs && op.uiAttribs.subPatch)
@@ -1599,13 +1599,17 @@ CABLES.UI.Patch=function(_gui)
 
                     gui.showEditor();
                     gui.editor().addTab({
-                        content:op.portsIn[index].get(),
+                        content:op.portsIn[index].get()+'',
                         title:''+op.portsIn[index].name,
                         syntax:thePort.uiAttribs.editorSyntax,
                         onSave:function(setStatus,content)
                         {
+                            gui.editor().setStatus('ok');
                             // setStatus('value set');
+                            console.log('setvalue...');
                             thePort.set(content);
+
+
                         }
                     });
                     // console.log('edit clicked...ja...');
