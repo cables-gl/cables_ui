@@ -72,19 +72,24 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         bufVertices.itemSize = 3;
         bufVertices.numItems = geom.vertices.length/3;
 
-        cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
-        cgl.gl.bufferData(cgl.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), cgl.gl.STATIC_DRAW);
-        bufVerticesIndizes.itemSize = 1;
-        bufVerticesIndizes.numItems = geom.verticesIndices.length;
+        if(geom.verticesIndices.length>0)
+        {
+            cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
+            cgl.gl.bufferData(cgl.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), cgl.gl.STATIC_DRAW);
+            bufVerticesIndizes.itemSize = 1;
+            bufVerticesIndizes.numItems = geom.verticesIndices.length;
+
+        }
+        else
+            bufVerticesIndizes.numItems=0;
+
 
         if(geom.vertexNormals.length>0) addAttribute('attrVertNormal',geom.vertexNormals,3);
         if(geom.texCoords.length>0) addAttribute('attrTexCoord',geom.texCoords,2);
         if(geom.hasOwnProperty('tangents') && geom.tangents && geom.tangents.length>0) addAttribute('attrTangent',geom.tangents,3);
         if(geom.hasOwnProperty('biTangents') && geom.biTangents && geom.biTangents.length>0) addAttribute('attrBiTangent',geom.biTangents,3);
 
-if(geom.vertexColors.length>0) addAttribute('attrVertColor',geom.vertexColors,4);
-
-
+        if(geom.vertexColors.length>0) addAttribute('attrVertColor',geom.vertexColors,4);
 
 
         // make this optional!
@@ -128,11 +133,10 @@ if(geom.vertexColors.length>0) addAttribute('attrVertColor',geom.vertexColors,4)
                 cgl.gl.enableVertexAttribArray(attributes[i].loc);
                 cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
                 cgl.gl.vertexAttribPointer(attributes[i].loc,attributes[i].itemSize, cgl.gl.FLOAT, false, 0, 0);
-
             }
         }
 
-        cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
+        if(bufVerticesIndizes.numItems!==0) cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, bufVerticesIndizes);
     }
 
     this.unBind=function(shader)
@@ -202,7 +206,11 @@ if(geom.vertexColors.length>0) addAttribute('attrVertColor',geom.vertexColors,4)
         // if(cgl.points)prim=; // todo this should be in the shader...
         // prim=cgl.gl.LINE_STRIP;
 
-        cgl.gl.drawElements(prim, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
+        if(bufVerticesIndizes.numItems===0)
+        {
+            cgl.gl.drawArrays(prim, 0,bufVertices.numItems);
+        }
+        else cgl.gl.drawElements(prim, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
 
         this.unBind(shader);
 

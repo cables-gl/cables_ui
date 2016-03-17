@@ -1,6 +1,6 @@
 var CGL=CGL || {};
 
-CGL.TextureEffect=function(cgl)
+CGL.TextureEffect=function(cgl,options)
 {
     var self=this;
     var geom=new CGL.Geometry();
@@ -65,10 +65,6 @@ CGL.TextureEffect=function(cgl)
         cgl.gl.bindRenderbuffer(cgl.gl.RENDERBUFFER, null);
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 
-        // console.log(
-        //     self.getCurrentTargetTexture().width,
-        //     self.getCurrentSourceTexture().height
-        //     );
     };
 
 

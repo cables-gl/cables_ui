@@ -11,12 +11,16 @@ CGL.Texture=function(cgl,options)
     this.flip = true;
     this.filter = CGL.Texture.FILTER_NEAREST;
     this.wrap = CGL.Texture.CLAMP_TO_EDGE;
-    var isDepthTexture = false;
+
+
+    var textureType='default';
+
     this.unpackAlpha=true;
 
     if(options)
     {
-        if(options.isDepthTexture) isDepthTexture=options.isDepthTexture;
+        if(options.isDepthTexture) textureType='depth';
+        if(options.isFloatingPointTexture) textureType='floatingpoint';
         if(options.filter) this.filter=options.filter;
     }
 
@@ -117,7 +121,18 @@ CGL.Texture=function(cgl,options)
 
         setFilter();
 
-        if(isDepthTexture)
+        if(textureType=='floatingpoint')
+        {
+            if(!cgl.gl.getExtension('OES_texture_float'))
+            {
+                console.log('no floating point texture extension!');
+            }else {
+                console.log('yay fp tex');
+            }
+            cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.RGBA, w,h, 0, cgl.gl.RGBA, cgl.gl.FLOAT, null);
+        }
+        else
+        if(textureType=='depth')
         {
             cgl.gl.texImage2D(cgl.gl.TEXTURE_2D, 0, cgl.gl.DEPTH_COMPONENT, w,h, 0, cgl.gl.DEPTH_COMPONENT, cgl.gl.UNSIGNED_SHORT, null);
         }
@@ -214,7 +229,7 @@ CGL.Texture.load=function(cgl,url,finishedCallback,settings)
     {
         texture.initTexture(texture.image);
         cgl.patch.loading.finished(loadingId);
-        gui.jobs().finish('loadtexture'+loadingId);
+        if(CABLES.UI) gui.jobs().finish('loadtexture'+loadingId);
 
         if(finishedCallback)finishedCallback();
 

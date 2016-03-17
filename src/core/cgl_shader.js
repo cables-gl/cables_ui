@@ -3,7 +3,7 @@ var CGL=CGL || {};
 // ---------------------------------------------------------------------------
 
 CGL.profileUniformCount=0;
-
+CGL.profileShaderCompiles=0;
 
 CGL.Uniform=function(_shader,_type,_name,_value)
 {
@@ -49,7 +49,11 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     this.updateValue4F=function()
     {
-        if(loc==-1) loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+        if(loc==-1)
+        {
+            loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+            CGL.profileShaderGetUniform++;
+        }
         shader.getCgl().gl.uniform4f(loc, value[0],value[1],value[2],value[3]);
         CGL.profileUniformCount++;
         // self.needsUpdate=false;
@@ -64,7 +68,11 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     this.updateValue3F=function()
     {
         if(!value)console.log('name',name);
-        if(loc==-1) loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+        if(loc==-1)
+        {
+            loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+            CGL.profileShaderGetUniform++;
+        }
         shader.getCgl().gl.uniform3f(loc, value[0],value[1],value[2]);
         CGL.profileUniformCount++;
     };
@@ -80,6 +88,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         if(loc==-1)
         {
             loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+            CGL.profileShaderGetUniform++;
             if(loc==-1) console.log('texture loc unknown!!');
         }
         CGL.profileUniformCount++;
@@ -465,6 +474,7 @@ CGL.Shader=function(_cgl,_name)
         if (!cgl.gl.getProgramParameter(program, cgl.gl.LINK_STATUS))
         {
             console.error(name+" shader linking fail...");
+            console.log(this.srcFrag);
             console.log(name+' programinfo: ',cgl.gl.getProgramInfoLog(program));
             name="errorshader";
             self.setSource(self.getDefaultVertexShader(),self.getErrorFragmentShader());
