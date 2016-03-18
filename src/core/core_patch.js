@@ -286,6 +286,16 @@ CABLES.Patch = function(cfg)
         }
     };
 
+    this.getOpsByName=function(name)
+    {
+        var arr=[];
+        for(var i in this.ops)
+        {
+            if(this.ops[i].name==name)arr.push(this.ops[i]);
+        }
+        return arr;
+    };
+
     this.loadLib=function(which)
     {
 

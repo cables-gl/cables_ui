@@ -27,7 +27,10 @@ CGL.TextureEffect=function(cgl,options)
     var mesh=new CGL.Mesh(cgl,geom);
 
     var textureSource = null;
-    var textureTarget = new CGL.Texture(cgl);
+
+    var opts={};
+    if(options && options.fp)opts.isFloatingPointTexture=true;
+    var textureTarget = new CGL.Texture(cgl,opts);
     var frameBuf      = cgl.gl.createFramebuffer();
     var renderbuffer  = cgl.gl.createRenderbuffer();
 

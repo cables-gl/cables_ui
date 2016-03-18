@@ -213,10 +213,19 @@ CGL.State=function()
         cgl.endFrame();
     };
 
+    this.setTexture=function(slot,t)
+    {
+        this.gl.activeTexture(this.gl.TEXTURE0+slot);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, t);
+    };
 
+    this.fullScreen=function()
+    {
+          if(this.canvas.requestFullscreen) this.canvas.requestFullscreen();
+          else if(this.canvas.mozRequestFullScreen) this.canvas.mozRequestFullScreen();
+          else if(this.canvas.webkitRequestFullscreen) this.canvas.webkitRequestFullscreen();
+          else if(this.canvas.msRequestFullscreen) this.canvas.msRequestFullscreen();
 
-
-
-
+    };
 
 };

@@ -12,7 +12,6 @@ CGL.Texture=function(cgl,options)
     this.filter = CGL.Texture.FILTER_NEAREST;
     this.wrap = CGL.Texture.CLAMP_TO_EDGE;
 
-
     var textureType='default';
 
     this.unpackAlpha=true;
