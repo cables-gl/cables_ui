@@ -3,9 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 // localStorage.cables=localStorage.cables || {};
 // localStorage.cables.editor=localStorage.cables.editor || {};
-
 // localStorage.cables.editor.serverops= [];
-
 
 CABLES.UI.ServerOps=function(gui)
 {
@@ -36,7 +34,7 @@ CABLES.UI.ServerOps=function(gui)
             if(res)
             {
                 ops=res;
-                // console.log('loaded ops...',ops);
+                console.log('loaded ops...',ops);
 
                 if(cb)cb(ops);
 
@@ -178,7 +176,6 @@ CABLES.UI.ServerOps=function(gui)
                                 updateStoredOps();
                                 return;
                             }
-
                         }
                     },
                     onSave:function(setStatus,content)
@@ -196,7 +193,13 @@ CABLES.UI.ServerOps=function(gui)
                                 }
                                 else
                                 {
-// exec ???
+                                    if(!gui.patch().scene.getOpClass(op.name))
+                                    {
+                                        console.log('execute first time...');
+                                        gui.serverOps.execute(op.name);
+                                    }
+
+                                    // exec ???
                                     setStatus('saved');
                                 }
                                 console.log('res',res);

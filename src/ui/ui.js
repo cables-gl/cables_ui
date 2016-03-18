@@ -385,7 +385,6 @@ CABLES.UI.GUI=function()
         CABLES.UI.fileSelect.show(inputId,filterType);
     };
 
-
     this.createProject=function()
     {
         CABLES.api.post('project',{name: prompt('projectname','') },function(d)
@@ -395,7 +394,6 @@ CABLES.UI.GUI=function()
             document.location.href='#/project/'+d._id;
         });
     };
-
 
     this.deleteCurrentProject=function()
     {
@@ -412,8 +410,6 @@ CABLES.UI.GUI=function()
 
     this.convertFile=function(fileId)
     {
-
-
         CABLES.api.post('project/'+self.patch().getCurrentProject()._id+'/file/convert/'+fileId,{options:
             {
                 removeTangents:$('#convert_remove_tangents').is(':checked'),
@@ -434,9 +430,7 @@ CABLES.UI.GUI=function()
 
             });
 
-
         $('#options').html(html);
-
     };
 
     this.bind=function()

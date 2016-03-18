@@ -64,6 +64,18 @@ CABLES.Patch = function(cfg)
         }
     };
 
+
+    this.getOpClass=function(objName)
+    {
+        var parts=objName.split('.');
+        var opObj=null;
+        if(parts.length==2) opObj=window[parts[0]][parts[1]];
+        else if(parts.length==3) opObj=window[parts[0]][parts[1]][parts[2]];
+        else if(parts.length==4) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]];
+        else if(parts.length==5) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]];
+        return opObj;
+    };
+
     this.addOp=function(objName,uiAttribs)
     {
         if(!objName || objName.indexOf('.') == -1)
@@ -77,12 +89,12 @@ CABLES.Patch = function(cfg)
 
         try
         {
-
-            var opObj=null;
-            if(parts.length==2) opObj=window[parts[0]][parts[1]];
-            else if(parts.length==3) opObj=window[parts[0]][parts[1]][parts[2]];
-            else if(parts.length==4) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]];
-            else if(parts.length==5) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]];
+            var opObj=this.getOpClass(objName);
+            // null;
+            // if(parts.length==2) opObj=window[parts[0]][parts[1]];
+            // else if(parts.length==3) opObj=window[parts[0]][parts[1]][parts[2]];
+            // else if(parts.length==4) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]];
+            // else if(parts.length==5) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]];
             // else console.log('parts.length',parts.length);
 
             if(!opObj)
