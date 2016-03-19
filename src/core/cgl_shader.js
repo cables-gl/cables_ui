@@ -67,7 +67,11 @@ CGL.Uniform=function(_shader,_type,_name,_value)
 
     this.updateValue3F=function()
     {
-        if(!value)console.log('name',name);
+        if(!value)
+        {
+            console.log('name',name);
+            return;
+        }
         if(loc==-1)
         {
             loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
