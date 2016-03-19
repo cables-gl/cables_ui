@@ -15,12 +15,12 @@ CABLES.UI.ServerOps=function(gui)
     {
         if(!storedOps)storedOps=[];
 
-        // storedOps = storedOps.slice() // slice makes copy of array before sorting it
-        //   .sort()
-        //   .reduce(function(a,b){
-        //     if (a.slice(-1)[0] !== b) a.push(b); // slice(-1)[0] means last item in array without removing it (like .pop())
-        //     return a;
-        //   },[]); // this empty array becomes the starting value for a
+        storedOps = storedOps.slice() // slice makes copy of array before sorting it
+          .sort()
+          .reduce(function(a,b){
+            if (a.slice(-1)[0] !== b) a.push(b); // slice(-1)[0] means last item in array without removing it (like .pop())
+            return a;
+          },[]); // this empty array becomes the starting value for a
 
 
 
