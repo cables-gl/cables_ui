@@ -15,14 +15,17 @@ CABLES.UI.ServerOps=function(gui)
     {
         if(!storedOps)storedOps=[];
 
-        storedOps = storedOps.slice() // slice makes copy of array before sorting it
-          .sort()
-          .reduce(function(a,b){
-            if (a.slice(-1)[0] !== b) a.push(b); // slice(-1)[0] means last item in array without removing it (like .pop())
-            return a;
-          },[]); // this empty array becomes the starting value for a
+        // storedOps = storedOps.slice() // slice makes copy of array before sorting it
+        //   .sort()
+        //   .reduce(function(a,b){
+        //     if (a.slice(-1)[0] !== b) a.push(b); // slice(-1)[0] means last item in array without removing it (like .pop())
+        //     return a;
+        //   },[]); // this empty array becomes the starting value for a
+
+
 
         localStorage.setItem("cables.editor.serverops",JSON.stringify(storedOps));
+        console.log('storedops'+storedOps.length);
         // console.log('storedOps.length',storedOps.length);
     }
 
@@ -126,7 +129,7 @@ CABLES.UI.ServerOps=function(gui)
 
     };
 
-    this.edit=function(name)
+    this.edit=function(name,readOnly)
     {
         var op=null;
 
@@ -153,34 +156,11 @@ CABLES.UI.ServerOps=function(gui)
                 updateStoredOps();
 
                 var html='';
-                html+='<a class="button" onclick="gui.serverOps.execute(\''+op.name+'\');">execute</a>';
+                if(!readOnly) html+='<a class="button" onclick="gui.serverOps.execute(\''+op.name+'\');">execute</a>';
 
-                gui.editor().addTab(
-                {
-                    content:res.code,
-                    title:op.name,
-                    syntax:'js',
-                    toolbarHtml:html,
-                    onClose:function(which)
+                var save=null;
+                if(!readOnly) save=function(setStatus,content)
                     {
-                        console.log('close tab',which);
-
-                        for(var i in storedOps)
-                        {
-                            console.log('-- ', storedOps[i], which.title);
-
-                            if(storedOps[i]==which.title)
-                            {
-                                console.log('found op to remove');
-                                storedOps.splice(i,1);
-                                updateStoredOps();
-                                return;
-                            }
-                        }
-                    },
-                    onSave:function(setStatus,content)
-                    {
-
                         CABLES.api.put(
                             'ops/'+op.name,
                             {code:content},
@@ -210,7 +190,33 @@ CABLES.UI.ServerOps=function(gui)
                                 console.log('err res',res);
                             }
                         );
-                    }
+                    };
+
+                gui.editor().addTab(
+                {
+                    content:res.code,
+                    title:op.name,
+                    syntax:'js',
+                    readOnly:readOnly,
+                    toolbarHtml:html,
+                    onClose:function(which)
+                    {
+                        console.log('close tab',which);
+
+                        for(var i=storedOps.length;i>=0;i--)
+                        {
+                            console.log('-- ', storedOps[i], which.title);
+
+                            if(storedOps[i]==which.title)
+                            {
+                                console.log('found op to remove');
+                                storedOps.splice(i,1);
+
+                            }
+                        }
+                        updateStoredOps();
+                    },
+                    onSave:save
                 });
 
             });

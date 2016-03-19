@@ -4,7 +4,6 @@ CABLES = CABLES || {};
 CABLES.Editor=function()
 {
     var contents=[];
-
     var currentTabId='';
 
     var editor = ace.edit("ace");
@@ -34,13 +33,10 @@ CABLES.Editor=function()
         {
             if(contents[i].id==currentTabId)
             {
-
                 if(contents[i].onClose)
                     contents[i].onClose(contents[i]);
 
                 contents.splice(i,1);
-
-
 
                 updateTabs();
                 if(contents.length>0)
@@ -116,7 +112,6 @@ CABLES.Editor=function()
     this.setTab=function(id)
     {
         this.setCurrentTabContent();
-        console.log('setTab',id);
 
         for(var i=0;i<contents.length;i++)
         {
@@ -131,9 +126,12 @@ CABLES.Editor=function()
                 else editor.session.setMode("ace/mode/Text");
 
                 editor.setValue(contents[i].content,-1);
+                editor.setReadOnly(contents[i].readOnly);
+
+                if(contents[i].readOnly)$('.editorsavebutton').hide();
+                    else $('.editorsavebutton').show();
 
                 $('#editorbar .iconbar .editortoolbar').html(contents[i].toolbarHtml || '');
-
             }
             else
             {

@@ -490,7 +490,7 @@ CABLES.TL.Anim.slerpQuaternion=function(time,q,animx,animy,animz,animw)
         quat.slerp(q, CABLES.TL.Anim.slerpQuaternion.q1, CABLES.TL.Anim.slerpQuaternion.q2, perc);
     }
     return q;
-
 };
+
 CABLES.TL.Anim.slerpQuaternion.q1=quat.create();
 CABLES.TL.Anim.slerpQuaternion.q2=quat.create();

@@ -62,16 +62,8 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         var opname=$('.selected').data('opname');
         var htmlFoot='';
 
-        if(!CABLES.API.isConnected)
-        {
-            $('#searchinfo').html('not connected to server...');
-            return;
-        }
-
         if(opname)
         {
-
-
             if(gui.user.isAdmin && gui.serverOps.isServerOp(opname))
             {
                 htmlFoot+='<hr/>admin:<a onclick="gui.serverOps.edit(\''+opname+'\');">edit serverOp</a>';
