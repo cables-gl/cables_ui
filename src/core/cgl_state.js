@@ -9,6 +9,7 @@ CGL.State=function()
     var shaderStack=[];
     var viewPort=[0,0,0,0];
 
+
     this.temporaryTexture=null;
     this.frameStore={};
     this.gl=null;
@@ -48,6 +49,13 @@ CGL.State=function()
         }
         else
         {
+
+            var ext = this.gl.getExtension("ANGLE_instanced_arrays"); 
+            if(!ext)
+            {
+                console.err('no instanced arrays extension');
+            }
+
             this.canvasWidth=this.canvas.clientWidth;
             this.canvasHeight=this.canvas.clientHeight;
         }

@@ -8,26 +8,24 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
     var bufVerticesIndizes = cgl.gl.createBuffer();
     var attributes=[];
     var _geom=null;
+    this.numInstances=0;
     // var glPrimitive=_triangleMode || cgl.gl.TRIANGLES;
+    var ext = cgl.gl.getExtension("ANGLE_instanced_arrays");
 
-    this.updateAttribute=function(name,array)
+
+    function setAttribute(name,array,itemSize,cb)
     {
 
         for(var i=0;i<attributes.length;i++)
         {
-
             if(attributes[i].name==name)
             {
-
                 cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
                 cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(array), cgl.gl.STATIC_DRAW);
-
+                return;
             }
         }
-    };
 
-    function addAttribute(name,array,itemSize,cb)
-    {
         var buffer= cgl.gl.createBuffer();
 
         // console.log('attribute: '+name,array.length);
@@ -53,7 +51,8 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         // cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, null);
 
     }
-    this.addAttribute=addAttribute;
+    this.addAttribute=setAttribute;
+    this.updateAttribute=setAttribute;
 
     this.getAttributes=function()
     {
@@ -78,25 +77,22 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
             cgl.gl.bufferData(cgl.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geom.verticesIndices), cgl.gl.STATIC_DRAW);
             bufVerticesIndizes.itemSize = 1;
             bufVerticesIndizes.numItems = geom.verticesIndices.length;
-
         }
-        else
-            bufVerticesIndizes.numItems=0;
+        else bufVerticesIndizes.numItems=0;
 
+        if(geom.vertexNormals.length>0) setAttribute('attrVertNormal',geom.vertexNormals,3);
+        if(geom.texCoords.length>0) setAttribute('attrTexCoord',geom.texCoords,2);
+        if(geom.hasOwnProperty('tangents') && geom.tangents && geom.tangents.length>0) setAttribute('attrTangent',geom.tangents,3);
+        if(geom.hasOwnProperty('biTangents') && geom.biTangents && geom.biTangents.length>0) setAttribute('attrBiTangent',geom.biTangents,3);
 
-        if(geom.vertexNormals.length>0) addAttribute('attrVertNormal',geom.vertexNormals,3);
-        if(geom.texCoords.length>0) addAttribute('attrTexCoord',geom.texCoords,2);
-        if(geom.hasOwnProperty('tangents') && geom.tangents && geom.tangents.length>0) addAttribute('attrTangent',geom.tangents,3);
-        if(geom.hasOwnProperty('biTangents') && geom.biTangents && geom.biTangents.length>0) addAttribute('attrBiTangent',geom.biTangents,3);
-
-        if(geom.vertexColors.length>0) addAttribute('attrVertColor',geom.vertexColors,4);
+        if(geom.vertexColors.length>0) setAttribute('attrVertColor',geom.vertexColors,4);
 
 
         // make this optional!
         var verticesNumbers=[];
         verticesNumbers.length=geom.vertices.length/3;
         for(i=0;i<geom.vertices.length/3;i++)verticesNumbers[i]=i;
-        addAttribute('attrVertIndex',verticesNumbers,1,function(attr,geom,shader)
+        setAttribute('attrVertIndex',verticesNumbers,1,function(attr,geom,shader)
             {
                 if(!shader.uniformNumVertices) shader.uniformNumVertices=new CGL.Uniform(shader,'f','numVertices',geom.vertices.length/3);
                 shader.uniformNumVertices.setValue(geom.vertices.length/3);
@@ -115,7 +111,6 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
                 attributes[i].cb(attributes[i],geom,shader);
             }
         }
-
     }
 
     function bind(shader)
@@ -132,7 +127,31 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
             {
                 cgl.gl.enableVertexAttribArray(attributes[i].loc);
                 cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
-                cgl.gl.vertexAttribPointer(attributes[i].loc,attributes[i].itemSize, cgl.gl.FLOAT, false, 0, 0);
+
+                if(attributes[i].name=='instMat')
+                {
+                    // todo: make create attribute flag for instanced stuff...
+                    // todo: easier way to fill mat4 attribs...
+
+                    cgl.gl.vertexAttribPointer(attributes[i].loc, 4, cgl.gl.FLOAT,  false, 16*4,0);
+                    cgl.gl.enableVertexAttribArray(attributes[i].loc+1);
+                    cgl.gl.vertexAttribPointer(attributes[i].loc+1, 4, cgl.gl.FLOAT,  false, 16*4, 4*4*1);
+                    cgl.gl.enableVertexAttribArray(attributes[i].loc+2);
+                    cgl.gl.vertexAttribPointer(attributes[i].loc+2, 4, cgl.gl.FLOAT,  false, 16*4, 4*4*2);
+                    cgl.gl.enableVertexAttribArray(attributes[i].loc+3);
+                    cgl.gl.vertexAttribPointer(attributes[i].loc+3, 4, cgl.gl.FLOAT,  false, 16*4, 4*4*3);
+
+                    ext.vertexAttribDivisorANGLE(attributes[i].loc, 1);
+                    ext.vertexAttribDivisorANGLE(attributes[i].loc+1, 1);
+                    ext.vertexAttribDivisorANGLE(attributes[i].loc+2, 1);
+                    ext.vertexAttribDivisorANGLE(attributes[i].loc+3, 1);
+                }
+                else
+                {
+                    cgl.gl.vertexAttribPointer(attributes[i].loc,attributes[i].itemSize, cgl.gl.FLOAT, false, attributes[i].itemSize*4, 0);
+                }
+
+
             }
         }
 
@@ -149,8 +168,21 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         // cgl.gl.disableVertexAttribArray(shader.getAttrVertexPos());
 
         for(i=0;i<attributes.length;i++)
-            if(attributes[i].loc!=-1)
-                cgl.gl.disableVertexAttribArray(attributes[i].loc);
+        {
+            if(attributes[i].loc!=-1) cgl.gl.disableVertexAttribArray(attributes[i].loc);
+            if(attributes[i].name=='instMat')
+            {
+                ext.vertexAttribDivisorANGLE(attributes[i].loc, 0);
+                ext.vertexAttribDivisorANGLE(attributes[i].loc+1, 0);
+                ext.vertexAttribDivisorANGLE(attributes[i].loc+2, 0);
+                ext.vertexAttribDivisorANGLE(attributes[i].loc+3, 0);
+                cgl.gl.disableVertexAttribArray(attributes[i].loc+1);
+                cgl.gl.disableVertexAttribArray(attributes[i].loc+2);
+                cgl.gl.disableVertexAttribArray(attributes[i].loc+3);
+
+            }
+
+        }
 
         // cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, null);
     };
@@ -210,7 +242,18 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         {
             cgl.gl.drawArrays(prim, 0,bufVertices.numItems);
         }
-        else cgl.gl.drawElements(prim, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
+        else
+        {
+            if(this.numInstances===0)
+            {
+                cgl.gl.drawElements(prim, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0);
+            }
+            else
+            {
+                ext.drawElementsInstancedANGLE(prim, bufVerticesIndizes.numItems, cgl.gl.UNSIGNED_SHORT, 0,this.numInstances);
+            }
+
+        }
 
         this.unBind(shader);
 

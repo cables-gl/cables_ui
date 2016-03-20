@@ -589,6 +589,9 @@ CABLES.UI.Patch=function(_gui)
         $('#options').html(html);
     }
 
+
+
+
     this.selectAllOpsSubPatch=function(subPatch)
     {
         for(var i in self.ops)
@@ -1296,6 +1299,37 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
+    this.selectChilds=function(id)
+    {
+        var op=gui.scene().getOpById(id);
+        gui.jobs().start(
+            {id:'selectchilds',title:'selecting child ops'},
+            function()
+            {
+                var i=0;
+                for(i in self.ops) self.ops[i].op.marked=false;
+
+                op.markChilds();
+                op.marked=false;
+
+                for(i in self.ops)
+                {
+                    if(self.ops[i].op.marked)
+                    {
+                        self.addSelectedOp(self.ops[i]);
+                        self.ops[i].setSelected(true);
+                    }
+                    else
+                    {
+                        self.removeSelectedOp(self.ops[i]);
+                        self.ops[i].setSelected(false);
+                    }
+                }
+                setStatusSelectedOps();
+            }
+        );
+    };
+
     this.deleteChilds=function(id)
     {
         var op=gui.scene().getOpById(id);
@@ -1307,7 +1341,6 @@ CABLES.UI.Patch=function(_gui)
                 gui.jobs().finish('deletechilds');
             }
         );
-
     };
 
     this.deleteSelectedOps=function()

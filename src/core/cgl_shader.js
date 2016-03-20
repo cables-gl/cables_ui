@@ -69,7 +69,7 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     {
         if(!value)
         {
-            console.log('name',name);
+            // console.log('name',name);
             return;
         }
         if(loc==-1)
