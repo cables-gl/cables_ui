@@ -179,6 +179,14 @@ CGL.Shader=function(_cgl,_name)
         needsRecompile=true;
     };
 
+    this.hasDefine=function(name,value)
+    {
+        for(var i=0;i<defines.length;i++)
+            if(defines[i][0]==name)
+                return true;
+    };
+
+
     this.removeDefine=function(name,value)
     {
         for(var i=0;i<defines.length;i++)
@@ -190,7 +198,14 @@ CGL.Shader=function(_cgl,_name)
                 return;
             }
         }
+    };
 
+    this.getUniform=function(name)
+    {
+        for(var i=0;i<uniforms.length;i++)
+            if(uniforms[i].getName()==name)
+                return uniforms[i];
+        return null;
     };
 
     this.removeUniform=function(name)
@@ -528,6 +543,7 @@ CGL.Shader=function(_cgl,_name)
 
     this.addModule=function(mod)
     {
+
         mod.id=generateUUID();
         mod.numId=moduleNumId;
         mod.prefix='mod'+moduleNumId;
