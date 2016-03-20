@@ -296,7 +296,7 @@ CGL.Geometry=function()
         var newVerts=[];
         var newIndizes=[];
         var newTexCoords=[];
-        if(!this.texCoords)this.texCoords=[];
+
         var count=0;
         console.log('unindexing');
         this.vertexNormals.length=0;
@@ -307,8 +307,16 @@ CGL.Geometry=function()
             newVerts.push(this.vertices[this.verticesIndices[i+0]*3+1]);
             newVerts.push(this.vertices[this.verticesIndices[i+0]*3+2]);
 
-            newTexCoords.push(this.texCoords[this.verticesIndices[i+0]*2+0]);
-            newTexCoords.push(this.texCoords[this.verticesIndices[i+0]*2+1]);
+            if(!this.texCoords)
+            {
+                newTexCoords.push(0);
+                newTexCoords.push(0);
+            }
+            else
+            {
+                newTexCoords.push(this.texCoords[this.verticesIndices[i+0]*2+0]);
+                newTexCoords.push(this.texCoords[this.verticesIndices[i+0]*2+1]);
+            }
 
             newIndizes.push(count);
             count++;
@@ -317,8 +325,16 @@ CGL.Geometry=function()
             newVerts.push(this.vertices[this.verticesIndices[i+1]*3+1]);
             newVerts.push(this.vertices[this.verticesIndices[i+1]*3+2]);
 
-            newTexCoords.push(this.texCoords[this.verticesIndices[i+1]*2+0]);
-            newTexCoords.push(this.texCoords[this.verticesIndices[i+1]*2+1]);
+            if(!this.texCoords)
+            {
+                newTexCoords.push(0);
+                newTexCoords.push(0);
+            }
+            else
+            {
+                newTexCoords.push(this.texCoords[this.verticesIndices[i+1]*2+0]);
+                newTexCoords.push(this.texCoords[this.verticesIndices[i+1]*2+1]);
+            }
 
             newIndizes.push(count);
             count++;
@@ -327,8 +343,16 @@ CGL.Geometry=function()
             newVerts.push(this.vertices[this.verticesIndices[i+2]*3+1]);
             newVerts.push(this.vertices[this.verticesIndices[i+2]*3+2]);
 
-            newTexCoords.push(this.texCoords[this.verticesIndices[i+2]*2+0]);
-            newTexCoords.push(this.texCoords[this.verticesIndices[i+2]*2+1]);
+            if(!this.texCoords)
+            {
+                newTexCoords.push(0);
+                newTexCoords.push(0);
+            }
+            else
+            {
+                newTexCoords.push(this.texCoords[this.verticesIndices[i+2]*2+0]);
+                newTexCoords.push(this.texCoords[this.verticesIndices[i+2]*2+1]);
+            }
 
             newIndizes.push(count);
             count++;
