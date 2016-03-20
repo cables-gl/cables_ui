@@ -15,13 +15,17 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
 
     function setAttribute(name,array,itemSize,cb)
     {
+        var arr=null;
+
+        if(array instanceof Float32Array)arr=new Float32Array(array);
+        else arr=new Float32Array(array);
 
         for(var i=0;i<attributes.length;i++)
         {
             if(attributes[i].name==name)
             {
                 cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, attributes[i].buffer);
-                cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(array), cgl.gl.STATIC_DRAW);
+                cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, arr, cgl.gl.STATIC_DRAW);
                 return;
             }
         }
@@ -30,7 +34,7 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
 
         // console.log('attribute: '+name,array.length);
         cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, buffer);
-        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(array), cgl.gl.STATIC_DRAW);
+        cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, arr, cgl.gl.STATIC_DRAW);
 
         var attr=
             {
@@ -81,7 +85,7 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         else bufVerticesIndizes.numItems=0;
 
         if(geom.vertexNormals.length>0) setAttribute('attrVertNormal',geom.vertexNormals,3);
-        if(geom.texCoords.length>0) setAttribute('attrTexCoord',geom.texCoords,2);
+        if(geom.texCoords && geom.texCoords.length>0) setAttribute('attrTexCoord',geom.texCoords,2);
         if(geom.hasOwnProperty('tangents') && geom.tangents && geom.tangents.length>0) setAttribute('attrTangent',geom.tangents,3);
         if(geom.hasOwnProperty('biTangents') && geom.biTangents && geom.biTangents.length>0) setAttribute('attrBiTangent',geom.biTangents,3);
 
@@ -292,6 +296,7 @@ CGL.Geometry=function()
         var newVerts=[];
         var newIndizes=[];
         var newTexCoords=[];
+        if(!this.texCoords)this.texCoords=[];
         var count=0;
         console.log('unindexing');
         this.vertexNormals.length=0;
