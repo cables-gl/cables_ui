@@ -150,6 +150,8 @@ CGL.Shader=function(_cgl,_name)
     var cgl=_cgl;
     var projMatrixUniform=null;
     var mvMatrixUniform=null;
+    var mMatrixUniform=null;
+    var vMatrixUniform=null;
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
 
@@ -352,7 +354,7 @@ CGL.Shader=function(_cgl,_name)
             // linkProgram(program);
             program=createProgram(vs,fs, program);
 
-            mvMatrixUniform=null;
+            projMatrixUniform=null;
 
             for(i=0;i<uniforms.length;i++)
                 uniforms[i].resetLoc();
@@ -369,11 +371,13 @@ CGL.Shader=function(_cgl,_name)
         var i=0;
         if(!program || needsRecompile) self.compile();
 
-        if(!mvMatrixUniform)
+        if(!projMatrixUniform)
         {
             attrVertexPos = cgl.gl.getAttribLocation(program, 'vPosition');
             projMatrixUniform = cgl.gl.getUniformLocation(program, "projMatrix");
             mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
+            vMatrixUniform = cgl.gl.getUniformLocation(program, "viewMatrix");
+            mMatrixUniform = cgl.gl.getUniformLocation(program, "modelMatrix");
             normalMatrixUniform = cgl.gl.getUniformLocation(program, "normalMatrix");
             for(i=0;i<uniforms.length;i++)uniforms[i].needsUpdate=true;
         }
@@ -392,7 +396,17 @@ CGL.Shader=function(_cgl,_name)
         // console.log('bind',name);
 
         cgl.gl.uniformMatrix4fv(projMatrixUniform, false, cgl.pMatrix);
-        cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, cgl.mvMatrix);
+        if(vMatrixUniform)
+        {
+            cgl.gl.uniformMatrix4fv(vMatrixUniform, false, cgl.vMatrix);
+            cgl.gl.uniformMatrix4fv(mMatrixUniform, false, cgl.mvMatrix);
+        }
+        else
+        {
+            var tempmv=mat4.create();
+            mat4.mul(tempmv,cgl.vMatrix,cgl.mvMatrix);
+            cgl.gl.uniformMatrix4fv(mvMatrixUniform, false, tempmv);
+        }
 
         if(normalMatrixUniform)
         {

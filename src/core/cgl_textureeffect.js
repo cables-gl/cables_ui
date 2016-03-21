@@ -103,6 +103,9 @@ CGL.TextureEffect=function(cgl,options)
         cgl.pushPMatrix();
         mat4.identity(cgl.pMatrix);
 
+        cgl.pushViewMatrix();
+        mat4.identity(cgl.vMatrix);
+
         cgl.pushMvMatrix();
         mat4.identity(cgl.mvMatrix);
 
@@ -122,6 +125,7 @@ CGL.TextureEffect=function(cgl,options)
 
         cgl.popPMatrix();
         cgl.popMvMatrix();
+        cgl.popViewMatrix();
 
         cgl.gl.bindFramebuffer(cgl.gl.FRAMEBUFFER, null);
 

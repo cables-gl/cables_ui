@@ -5,6 +5,7 @@ CGL.State=function()
 {
     var self=this;
     var mvMatrixStack=[];
+    var vMatrixStack=[];
     var pMatrixStack=[];
     var shaderStack=[];
     var viewPort=[0,0,0,0];
@@ -15,8 +16,10 @@ CGL.State=function()
     this.gl=null;
     this.pMatrix=mat4.create();
     this.mvMatrix=mat4.create();
+    this.vMatrix=mat4.create();
     this.canvas=null;
     mat4.identity(self.mvMatrix);
+    mat4.identity(self.vMatrix);
 
     var simpleShader=new CGL.Shader(this,"simpleshader");
     var currentShader=simpleShader;
@@ -50,7 +53,7 @@ CGL.State=function()
         else
         {
 
-            var ext = this.gl.getExtension("ANGLE_instanced_arrays"); 
+            var ext = this.gl.getExtension("ANGLE_instanced_arrays");
             if(!ext)
             {
                 console.err('no instanced arrays extension');
@@ -102,10 +105,12 @@ CGL.State=function()
     this.endFrame=function()
     {
         self.setPreviousShader();
+        if(vMatrixStack.length>0) console.warn('view matrix stack length !=0 at end of rendering...');
         if(mvMatrixStack.length>0) console.warn('mvmatrix stack length !=0 at end of rendering...');
         if(pMatrixStack.length>0) console.warn('pmatrix stack length !=0 at end of rendering...');
         if(shaderStack.length>0) console.warn('shaderStack length !=0 at end of rendering...');
         mvMatrixStack.length=0;
+        vMatrixStack.length=0;
         pMatrixStack.length=0;
         shaderStack.length=0;
 
@@ -157,20 +162,40 @@ CGL.State=function()
         currentShader = shaderStack[shaderStack.length-1];
     };
 
+
+    // view matrix stack
+
+    this.pushViewMatrix=function()
+    {
+        var copy=mat4.clone(self.vMatrix);
+        // var copy = mat4.create();
+        // mat4.copy(copy,self.mvMatrix);
+        vMatrixStack.push(copy);
+    };
+
+    this.popViewMatrix=function()
+    {
+        if(vMatrixStack.length===0) throw "Invalid view popMatrix!";
+        self.vMatrix = vMatrixStack.pop();
+    };
+
     // modelview matrix stack
 
     this.pushMvMatrix=function()
     {
-        var copy = mat4.create();
-        mat4.copy(copy,self.mvMatrix);
+        // var copy = mat4.create();
+        // mat4.copy(copy,self.mvMatrix);
+        var copy=mat4.clone(self.mvMatrix);
         mvMatrixStack.push(copy);
     };
 
     this.popMvMatrix=function()
     {
-        if(mvMatrixStack.length===0) throw "Invalid movelview popMatrix!";
+        if(mvMatrixStack.length===0) throw "Invalid modelview popMatrix!";
         self.mvMatrix = mvMatrixStack.pop();
     };
+    this.popModelMatrix=this.popMvMatrix;
+    this.pushModelMatrix=this.pushMvMatrix;
 
     // projection matrix stack
 
@@ -187,11 +212,15 @@ CGL.State=function()
         self.pMatrix = pMatrixStack.pop();
     };
 
+    var identView=vec3.create();
+    vec3.set(identView, 0,0,02);
+    var ident=vec3.create();
+    vec3.set(ident, 0,0,0);
 
-
-
-    this.renderStart=function(cgl,identTranslate)
+    this.renderStart=function(cgl,identTranslate,identTranslateView)
     {
+        if(!identTranslate)identTranslate=ident;
+        if(!identTranslateView)identTranslateView=identView;
         cgl.gl.enable(cgl.gl.DEPTH_TEST);
         cgl.gl.clearColor(0,0,0,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
@@ -201,22 +230,26 @@ CGL.State=function()
 
         cgl.pushPMatrix();
         cgl.pushMvMatrix();
+        cgl.pushViewMatrix();
 
         mat4.identity(cgl.mvMatrix);
+        mat4.identity(cgl.vMatrix);
         mat4.translate(cgl.mvMatrix,cgl.mvMatrix, identTranslate);
+        // mat4.translate(cgl.mvMatrix,cgl.mvMatrix, identTranslate);
+        mat4.translate(cgl.vMatrix,cgl.vMatrix, identTranslateView);
 
         cgl.gl.enable(cgl.gl.BLEND);
         cgl.gl.blendFunc(cgl.gl.SRC_ALPHA,cgl.gl.ONE_MINUS_SRC_ALPHA);
-
 
         cgl.beginFrame();
     };
 
     this.renderEnd=function(cgl,identTranslate)
     {
-
+        cgl.popViewMatrix();
         cgl.popMvMatrix();
         cgl.popPMatrix();
+
 
         cgl.endFrame();
     };
@@ -229,11 +262,10 @@ CGL.State=function()
 
     this.fullScreen=function()
     {
-          if(this.canvas.requestFullscreen) this.canvas.requestFullscreen();
-          else if(this.canvas.mozRequestFullScreen) this.canvas.mozRequestFullScreen();
-          else if(this.canvas.webkitRequestFullscreen) this.canvas.webkitRequestFullscreen();
-          else if(this.canvas.msRequestFullscreen) this.canvas.msRequestFullscreen();
-
+        if(this.canvas.requestFullscreen) this.canvas.requestFullscreen();
+        else if(this.canvas.mozRequestFullScreen) this.canvas.mozRequestFullScreen();
+        else if(this.canvas.webkitRequestFullscreen) this.canvas.webkitRequestFullscreen();
+        else if(this.canvas.msRequestFullscreen) this.canvas.msRequestFullscreen();
     };
 
 };

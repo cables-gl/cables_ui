@@ -209,7 +209,7 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
             geom.calcBaycentric();
             this.setGeom(geom);
 
-            addAttribute('attrBaycentric',geom.baycentrics,3);
+            setAttribute('attrBaycentric',geom.baycentrics,3);
         }
 
         // var meshChanged=this.meshChanged();
