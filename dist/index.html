@@ -681,6 +681,17 @@
                 </td>
             </tr>
 
+            <tr onclick="toggleTest();" class="info" data-info="{{ texts.projectSettingsTest }}">
+                <td></td>
+                <td>
+                    &nbsp;testcase
+                    <input type="hidden" id="projectsettings_test" value="{{ project.settings.isTest }}"></input>
+                </td>
+                <td>
+                    <a id="projectsettings_test_icon" class="button fa fa-square-o"></a>
+                </td>
+            </tr>
+
         {{/if}}
 
 
@@ -816,6 +827,17 @@ function updateIcons()
         $('#projectsettings_example_icon').addClass('fa-square-o');
     }
 
+    if($('#projectsettings_test').val()=='true')
+    {
+        $('#projectsettings_test_icon').addClass('fa-check-square-o');
+        $('#projectsettings_test_icon').removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#projectsettings_test_icon').removeClass('fa-check-square-o');
+        $('#projectsettings_test_icon').addClass('fa-square-o');
+    }
+
 }
 
 function togglePublic()
@@ -837,6 +859,14 @@ function toggleAutoScreenshot()
 function toggleExample()
 {
     $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
+
+    updateIcons();
+    gui.patch().saveProjectParams();
+}
+
+function toggleTest()
+{
+    $('#projectsettings_test').val(''+!($('#projectsettings_test').val()=='true'));
 
     updateIcons();
     gui.patch().saveProjectParams();

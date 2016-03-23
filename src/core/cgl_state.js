@@ -250,7 +250,6 @@ CGL.State=function()
         cgl.popMvMatrix();
         cgl.popPMatrix();
 
-
         cgl.endFrame();
     };
 

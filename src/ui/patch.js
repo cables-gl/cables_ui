@@ -1469,6 +1469,7 @@ CABLES.UI.Patch=function(_gui)
         var proj_public=$('#projectsettings_public').val();
         var proj_secret=$('#projectsettings_secret').val();
         var proj_example=$('#projectsettings_example').val();
+        var proj_test=$('#projectsettings_test').val();
         var proj_autoscreenshot=$('#projectsettings_autoscreenshot').val();
 
         currentProject.name=proj_name;
@@ -1476,6 +1477,7 @@ CABLES.UI.Patch=function(_gui)
         gui.scene().settings.isPublic=proj_public;
         gui.scene().settings.secret=proj_secret;
         gui.scene().settings.isExample=proj_example;
+        gui.scene().settings.isTest=proj_test;
 
         gui.scene().settings.manualScreenshot=proj_autoscreenshot;
 
@@ -1943,14 +1945,6 @@ CABLES.UI.Patch=function(_gui)
     };
 
 
-    this.onUploadFile=function(fn)
-    {
-        console.log('file uploaded:',fn);
-        for(var i=0;i<this.ops.length;i++)
-        {
-            if(this.ops[i].op.onFileUploaded)this.ops[i].op.onFileUploaded(fn);
-        }
-    };
 
     doWatchPorts();
 
