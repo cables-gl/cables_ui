@@ -33,7 +33,7 @@
 <div class="iconbar">
     <a class="button" onclick="gui.editor().save()">save</a>
 
-
+    
 <span class="editortoolbar"></span>
 
 <span id="editorstatus"></span>
@@ -83,10 +83,10 @@
 
 <script id="library_file" type="text/x-handlebars-template">
 
-    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}"
+    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
     {{#compare filterType '==' 'image' }}
         style="float:left;width:100px;margin:5px;"{{/compare}}
-        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
+        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');"> 
         {{#compare filterType '==' 'image' }}
             <div class="lib_imgpreview" style="background-image:url({{file.p}});background-repeat:no-repeat;background-size:cover;width:100px;height:100px;background-position:center center;"></div>
         {{/compare}}
@@ -95,7 +95,7 @@
     <i class="fa fa-image"></i>
     {{/compare}}
 
-    {{file.n}}
+    {{file.n}} 
 
 
     </div>
@@ -353,6 +353,25 @@
 
 
 
+<script id="params_find" type="text/x-handlebars-template">
+
+
+    <div class="">
+        <input class="medium info" id="findinput" oninput="gui.find().search(this.value);" >
+        <br/>
+        <br/>
+
+        <div id="searchresult">
+        </div>
+    </div>
+
+
+
+
+</script>
+
+
+
 <script id="params_op_head" type="text/x-handlebars-template">
 
     <div class="">
@@ -388,12 +407,6 @@
     </div>
 
     <div>
-
-        <span class="button  fa fa-remove" onclick="gui.patch().selectChilds('{{op.id}}');">select all children </span>
-        <br/><br/>
-        <br/><br/>
-        <br/><br/>
-        <br/><br/>
         <span class="button  fa fa-remove" onclick="gui.patch().deleteChilds('{{op.id}}');">delete all children </span>
     </div>
 
@@ -681,17 +694,6 @@
                 </td>
             </tr>
 
-            <tr onclick="toggleTest();" class="info" data-info="{{ texts.projectSettingsTest }}">
-                <td></td>
-                <td>
-                    &nbsp;testcase
-                    <input type="hidden" id="projectsettings_test" value="{{ project.settings.isTest }}"></input>
-                </td>
-                <td>
-                    <a id="projectsettings_test_icon" class="button fa fa-square-o"></a>
-                </td>
-            </tr>
-
         {{/if}}
 
 
@@ -827,17 +829,6 @@ function updateIcons()
         $('#projectsettings_example_icon').addClass('fa-square-o');
     }
 
-    if($('#projectsettings_test').val()=='true')
-    {
-        $('#projectsettings_test_icon').addClass('fa-check-square-o');
-        $('#projectsettings_test_icon').removeClass('fa-square-o');
-    }
-    else
-    {
-        $('#projectsettings_test_icon').removeClass('fa-check-square-o');
-        $('#projectsettings_test_icon').addClass('fa-square-o');
-    }
-
 }
 
 function togglePublic()
@@ -859,14 +850,6 @@ function toggleAutoScreenshot()
 function toggleExample()
 {
     $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
-
-    updateIcons();
-    gui.patch().saveProjectParams();
-}
-
-function toggleTest()
-{
-    $('#projectsettings_test').val(''+!($('#projectsettings_test').val()=='true'));
 
     updateIcons();
     gui.patch().saveProjectParams();
@@ -949,7 +932,7 @@ updateIcons();
 
 </style>
 
-
+    
 <div class="opsearch" style="height:auto;">
     <h2>load project</h2>
 
@@ -1034,7 +1017,5 @@ updateIcons();
 
     <script type="text/javascript" src="js/ace/ace.js"></script>
     <script type="text/javascript" src="js/cablesui.max.js"></script>
-
-
 
 </html>

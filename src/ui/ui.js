@@ -14,6 +14,7 @@ CABLES.UI.GUI=function()
     var _userManager=null;
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
+    var _find=new CABLES.UI.Find();
     // var _socket=null;
     var _connection=null;
     var savedState=true;
@@ -48,6 +49,11 @@ CABLES.UI.GUI=function()
     this.jobs=function()
     {
         return _jobs;
+    };
+
+    this.find=function()
+    {
+        return _find;
     };
 
     this.timingHeight=250;
@@ -489,12 +495,25 @@ CABLES.UI.GUI=function()
 
         $(document).keydown(function(e)
         {
+
+
             switch(e.which)
             {
                 default:
                     // console.log('e.which',e.which);
                 break;
+                case 70:
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        if($('#patch').is(":focus"))
+                        {
+                            _find.show();
+                            // self.patch().copy(e);
+                            e.preventDefault();
+                        }
 
+                    }
+                break;
                 case 79: // o - open
                     if(e.metaKey || e.ctrlKey)
                     {

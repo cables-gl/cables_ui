@@ -560,6 +560,14 @@ CABLES.UI.Patch=function(_gui)
             });
     };
 
+    this.centerViewBox=function(x,y)
+    {
+        viewBox.x=x-viewBox.w/2;
+        viewBox.y=y-viewBox.h/2;
+        self.updateViewBox();
+    };
+
+
     this.updateViewBox=function()
     {
         if(!isNaN(viewBox.x) && !isNaN(viewBox.y) && !isNaN(viewBox.w) && !isNaN(viewBox.h))
