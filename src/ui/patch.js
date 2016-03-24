@@ -1375,6 +1375,8 @@ CABLES.UI.Patch=function(_gui)
         {
             if(gui.patch().ops[i].op.id==id)
             {
+                self.setCurrentSubPatch(gui.patch().ops[i].getSubPatch());
+
                 gui.patch().setSelectedOp(null);
                 gui.patch().setSelectedOp(gui.patch().ops[i]);
                 gui.patch().showOpParams(gui.patch().ops[i].op);

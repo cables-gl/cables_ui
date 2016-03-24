@@ -18,7 +18,8 @@ this.show=function()
 function addResultOp(op)
 {
     var html='';
-    html+='<div onmouseover="gui.patch().centerViewBox('+op.op.uiAttribs.translate.x+','+op.op.uiAttribs.translate.y+');" onclick="gui.patch().setSelectedOpById(\''+op.op.id+'\');">';
+
+    html+='<div onmouseover="gui.patch().setCurrentSubPatch('+op.getSubPatch()+');gui.patch().centerViewBox('+op.op.uiAttribs.translate.x+','+op.op.uiAttribs.translate.y+');" onclick="gui.patch().setSelectedOpById(\''+op.op.id+'\');">';
     html+='<h3>'+op.op.name+'</h3>';
     html+=''+op.op.objName;
     html+='</div>';
@@ -37,11 +38,10 @@ this.search=function(str)
     {
         if(gui.patch().ops[i].op)
         {
-            if(gui.patch().ops[i].op.objName.toLowerCase().indexOf(str)>-1)
-            {
-                addResultOp(gui.patch().ops[i]);
-            }
-            if(gui.patch().ops[i].op.name.toLowerCase().indexOf(str)>-1)
+            if(
+                gui.patch().ops[i].op.objName.toLowerCase().indexOf(str)>-1 ||
+                gui.patch().ops[i].op.name.toLowerCase().indexOf(str)>-1
+            )
             {
                 addResultOp(gui.patch().ops[i]);
             }
