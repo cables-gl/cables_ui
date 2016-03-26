@@ -566,20 +566,30 @@ CABLES.UI.Patch=function(_gui)
         var minY=99999;
         var maxX=-99999;
         var maxY=-99999;
-        for(var i in self.ops)
+
+        var arr=self.ops;
+        if(selectedOps.length>0)arr=selectedOps;
+
+        for(var i in arr)
         {
-            if(self.ops[i].getSubPatch()==currentSubPatch)
+            if(arr[i].getSubPatch()==currentSubPatch)
             {
-                minX=Math.min(minX,self.ops[i].op.uiAttribs.translate.x);
-                maxX=Math.max(maxX,self.ops[i].op.uiAttribs.translate.x);
-                minY=Math.min(minY,self.ops[i].op.uiAttribs.translate.y);
-                maxY=Math.max(maxY,self.ops[i].op.uiAttribs.translate.y);
+                minX=Math.min(minX,arr[i].op.uiAttribs.translate.x);
+                maxX=Math.max(maxX,arr[i].op.uiAttribs.translate.x);
+                minY=Math.min(minY,arr[i].op.uiAttribs.translate.y);
+                maxY=Math.max(maxY,arr[i].op.uiAttribs.translate.y);
             }
         }
-        viewBox.x=minX;
-        viewBox.y=minY;
-        viewBox.w=0.7*(Math.abs(minX)+Math.abs(maxX));
-        viewBox.h=0.7*(Math.abs(minY)+Math.abs(maxY));
+        viewBox.x=minX-30;
+        viewBox.y=minY-30;
+        var w=1*(Math.abs(maxX-minX));
+        var h=1*(Math.abs(maxY-minY));
+        // viewBox.w=100;
+        // viewBox.h=100;
+        if(w>h)viewBox.w=w;
+            else viewBox.h=h;
+        viewBox.w=w;
+        viewBox.h=h;
         self.updateViewBox();
     };
 

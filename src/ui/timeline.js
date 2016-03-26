@@ -423,7 +423,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var mouseRubberBandStartPos=null;
     var mouseRubberBandPos=null;
     var rubberBandRect=null;
-
+    var firstTimeLine=true;
     var updateTimer=null;
     var timeDisplayMode=true;
 
@@ -611,6 +611,13 @@ CABLES.TL.UI.TimeLineUI=function()
         // this.centerCursor();
 
         if(anim.onChange===null) anim.onChange=updateKeyLineDelayed;
+
+        if(firstTimeLine)
+        {
+            firstTimeLin=false;
+            self.scaleWidth();
+            self.scaleHeight();
+        }
 
     };
 
