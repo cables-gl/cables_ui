@@ -581,7 +581,6 @@ CABLES.UI.Patch=function(_gui)
         viewBox.w=0.7*(Math.abs(minX)+Math.abs(maxX));
         viewBox.h=0.7*(Math.abs(minY)+Math.abs(maxY));
         self.updateViewBox();
-
     };
 
     this.centerViewBox=function(x,y)

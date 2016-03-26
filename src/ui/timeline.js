@@ -1088,6 +1088,31 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     };
 
+    this.timeLineTimeClick=function(e)
+    {
+        if(!e)return;
+        if(e.which!=1)
+        {
+            gui.timeLine().toggleTimeDisplayMode();
+        }
+        else
+        {
+
+            var frame=window.prompt('jump to key:',0);
+
+            if(frame!==null)
+            {
+                var t=frame/gui.timeLine().getFPS();
+
+                gui.scene().timer.setTime(t);
+                setCursor(t);
+                self.centerCursor();
+
+            }
+
+        }
+    };
+
     this.selectAllKeys=function()
     {
         for(var anii in anims)
@@ -1140,6 +1165,9 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#keymovemode").bind("click", toggleMoveMode);
     $("#keyscaleheight").bind("click", this.scaleHeight);
     $("#keyscalewidth").bind("click", this.scaleWidth);
+    $(".timelinetime").bind("click", this.timeLineTimeClick);
+
+
 
     // $("#ease_linear").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_LINEAR); } );
     // $("#ease_absolute").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE); } );
