@@ -94,6 +94,7 @@ function UiLink(port1, port2)
                 "fill": CABLES.UI.uiConfig.colorBackground,
             });
 
+            if(!addCircle)return;
             addCircle.hover(function (e)
             {
                 addCircle.attr({"stroke-width":4});
