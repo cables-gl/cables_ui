@@ -839,6 +839,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $('#timeline').keydown(function(e)
     {
+        console.log(e.which);
         switch(e.which)
         {
             case 46: case 8:
@@ -856,6 +857,38 @@ CABLES.TL.UI.TimeLineUI=function()
             case 72: // h
                 self.scaleHeight();
                 self.scaleWidth();
+            break;
+
+            case 77: // m move key
+                var frame=window.prompt("move keys",Math.round(cursorTime*gui.timeLine().getFPS()));
+                if(frame!==null)
+                {
+                    console.log(frame);
+                    var firstKeyTimeFPS=-1;
+                    for(var i in anim.keys)
+                    {
+
+                        if(anim.keys[i].selected)
+                        {
+                            var t=anim.keys[i].time;
+                            if(firstKeyTimeFPS==-1)
+                            {
+                                 firstKeyTimeFPS=t;
+                                 anim.keys[i].time=frame/gui.timeLine().getFPS();
+                            }
+                            else
+                            {
+                                anim.keys[i].time=anim.keys[i].time-firstKeyTimeFPS+frame/gui.timeLine().getFPS();
+                            }
+
+                        }
+
+                    }
+                    anim.sortKeys();
+                    updateKeyLine();
+
+                }
+
             break;
 
 

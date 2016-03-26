@@ -523,7 +523,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         if(opui.op.uiAttribs.error && opui.op.uiAttribs.error.length>0)
         {
-            background.attr({"fill":"#f88"});
+            if(background)background.attr({"fill":"#f88"});
         }
 
         // if(sel) background.attr( { stroke: '#fff', "stroke-width": 10});
