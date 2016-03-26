@@ -500,8 +500,12 @@ CABLES.UI.GUI=function()
             switch(e.which)
             {
                 default:
-                    // console.log('e.which',e.which);
+                    console.log('e.which',e.which);
                 break;
+                case 67:  //c center
+                    self.patch().centerViewBoxOps();
+                    break;
+
                 case 70:
                     if(e.metaKey || e.ctrlKey)
                     {

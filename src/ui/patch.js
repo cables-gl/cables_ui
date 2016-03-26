@@ -560,6 +560,30 @@ CABLES.UI.Patch=function(_gui)
             });
     };
 
+    this.centerViewBoxOps=function()
+    {
+        var minX=99999;
+        var minY=99999;
+        var maxX=-99999;
+        var maxY=-99999;
+        for(var i in self.ops)
+        {
+            if(self.ops[i].getSubPatch()==currentSubPatch)
+            {
+                minX=Math.min(minX,self.ops[i].op.uiAttribs.translate.x);
+                maxX=Math.max(maxX,self.ops[i].op.uiAttribs.translate.x);
+                minY=Math.min(minY,self.ops[i].op.uiAttribs.translate.y);
+                maxY=Math.max(maxY,self.ops[i].op.uiAttribs.translate.y);
+            }
+        }
+        viewBox.x=minX;
+        viewBox.y=minY;
+        viewBox.w=0.7*(Math.abs(minX)+Math.abs(maxX));
+        viewBox.h=0.7*(Math.abs(minY)+Math.abs(maxY));
+        self.updateViewBox();
+
+    };
+
     this.centerViewBox=function(x,y)
     {
         viewBox.x=x-viewBox.w/2;

@@ -839,7 +839,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $('#timeline').keydown(function(e)
     {
-        console.log(e.which);
+        // console.log(e.which);
         switch(e.which)
         {
             case 46: case 8:
