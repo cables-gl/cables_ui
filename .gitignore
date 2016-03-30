@@ -7,3 +7,4 @@ dist/js/*.map
 *.min.js.map
 *.js.map
 *.max.js
+dist/css
