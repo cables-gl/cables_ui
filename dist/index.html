@@ -1,0 +1,1004 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+    <title>| cables</title>
+    <link rel="stylesheet" type="text/css" href="css/ui.css">
+</head>
+<body>
+
+    <canvas id="glcanvas" width="0" height="0"></canvas>
+
+<div id="chat" class="hidden">
+    <div class="chat-messages">
+    </div>
+    <div class="chat-controls">
+        <input type="text" class="message-input" placeholder="type here" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button class="send">Send</button>
+    </div>
+</div>
+
+
+
+<script id="editor_bar" type="text/x-handlebars-template">
+
+
+<div class="tabs">
+    {{#each contents}}
+    <div id="editortab{{id}}" class="tab" onclick="gui.editor().setTab('{{id}}')">{{title}}</div>
+    {{/each}}
+    <div style="clear:both;"></div>
+</div>
+
+<div class="iconbar">
+    <a class="button" onclick="gui.editor().save()">save</a>
+
+    
+<span class="editortoolbar"></span>
+
+<span id="editorstatus"></span>
+
+    <div style="margin-right:10px;" class="graphbutton fa fa-times fright" onclick="gui.editor().closeCurrentTab()"></div>
+</div>
+
+
+
+
+</script>
+
+<script id="entry-template" type="text/x-handlebars-template">
+  <div class="entry">
+    <h1>{{title}}</h1>
+    <div class="body">
+      {{body}}
+    </div>
+  </div>
+</script>
+
+
+
+<script id="library_head" type="text/x-handlebars-template">
+
+    <div class="tabs">
+        <div onclick="CABLES.UI.fileSelect.setTab('projectfiles');" id="tab_projectfiles" class=" tab">project files</div>
+        <div onclick="CABLES.UI.fileSelect.setTab('library');" id="tab_library" class="tab">library</div>
+    </div>
+
+</script>
+
+
+<script id="library_preview" type="text/x-handlebars-template">
+
+    <div class="previewImage" style="border:4px solid #666;background-color:000;background-image:url('{{previewImageUrl}}');background-repeat:no-repeat;background-position:center center;background-size:100% auto;width:200px;height:200px;"></div>
+
+    <div class="info"></div>
+
+    <div>
+        <br/><br/><br/>
+        <a class="button" href="{{previewImageUrl}}" target="_blankk">open file</a>
+    </div>
+
+</script>
+
+
+<script id="library_file" type="text/x-handlebars-template">
+
+    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
+    {{#compare filterType '==' 'image' }}
+        style="float:left;width:100px;margin:5px;"{{/compare}}
+        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');"> 
+        {{#compare filterType '==' 'image' }}
+            <div class="lib_imgpreview" style="background-image:url({{file.p}});background-repeat:no-repeat;background-size:cover;width:100px;height:100px;background-position:center center;"></div>
+        {{/compare}}
+
+    {{#compare file.t '==' 'image' }}
+    <i class="fa fa-image"></i>
+    {{/compare}}
+
+    {{file.n}} 
+
+
+    </div>
+
+</script>
+
+
+<div id="library">
+    <div class="left">
+        <div id="lib_head"></div>
+        <div id="lib_files"></div>
+    </div>
+    <div class="right">
+        <div id="lib_preview"></div>
+    </div>
+</div>
+
+<div id="modalbg"></div>
+<div id="modalcontent"></div>
+
+
+
+
+
+<div id="button_subPatchBack" class="hidden"><i class="fa  fa-3x fa-arrow-circle-o-left"></i></div>
+
+
+
+<div id="editor" style="">
+    <div id="editorbar"></div>
+    <div id="ace" style="padding:0;height:300px;"></div>
+</div>
+
+<div id="patch" tabindex="1"></div>
+
+<div id="timing"></div>
+<div id="splitterPatch" class="splitter"></div>
+<div id="splitterRenderer" class="splitter"></div>
+<div id="splitterRendererWH" class="splitter"></div>
+<div id="splitterTimeline" class="splitter"></div>
+<div id="splitterEditor" class="splitter"></div>
+
+
+
+
+<div id="menubar">
+    <!-- <a class="button" href="/" target="_blankk">cables</a> -->
+    <nav>
+        <ul>
+            <li class="cables">
+                <div class="logo cablesLogo"></div>
+                <a href="/" target="_blank">cables</a>
+                <ul id="jobs"></ul>
+            </li>
+            <li>
+                Patch
+                <ul>
+                    <li class="nav_patch_new">new</li>
+                    <li class="divide"></li>
+                    <li onclick="CABLES.UI.SELECTPROJECT.show();">open</li>
+                    <li class="divide"></li>
+                    <li class="nav_patch_save">save</li>
+                    <li class="nav_patch_saveas">save as</li>
+                    <li class="divide"></li>
+                    <li class="nav_patch_clear">clear</li>
+                    <li class="nav_patch_settings">settings</li>
+                    <li class="nav_patch_export">export</li>
+                </ul>
+            </li>
+            <li>
+                Op
+                <ul>
+                    <li class="nav_op_addOp">add new</li>
+
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+
+    <!-- <a id="button_openprojects" class="button fa fa-folder-open" ></a> -->
+
+    <!-- <a class="button_addOp button fa fa-plus-square-o tt" data-tt="create new op"></a> -->
+
+
+    <!-- <a id="help" href="/doc" target="_blankkk" class="button fa fa-question-circle"></a> -->
+
+    <!-- <a id="button_editor" class="button fa fa-pencil-square"></a> -->
+
+
+    <!-- <a id="button_settings" class="button fa fa-cog"></a> -->
+    <!-- <a id="button_chat" class="button fa fa-users" style="display: none">
+        <span class="badge"></span>
+    </a> -->
+
+
+    <!-- <div id="assetsloadingindicator" style="display:none;float:left;margin-top:6px;margin-left:10px;padding-top:2px;"><i class="fa fa-spinner fa-pulse"></i></div> -->
+
+
+
+    <div id="" style="float:right;">
+        <a target="_blank" class="viewProjectLink button fa fa-external-link"></a>
+
+        <a id="button_cycleRenderSize" class="button fa fa-expand tt"  data-info="resize webgl renderer (esc to exit fullscreen)"></a>
+        &nbsp;
+    </div>
+
+
+    <!-- <div id="serverproject" style="float:right;display:none;">
+        <a  class="button_saveCurrentProject button">save project "<span id="serverprojectname"></span>"</a>
+    </div> -->
+
+    <div id="loggedin">
+        <div id="username"></div>
+    </div>
+
+
+
+    <div id="loggedout">
+        <div id="username">not logged in</div> <a class="button fa fa-sign-out" href="/"></a>
+    </div>
+
+
+
+
+</div>
+
+<div id="meta">
+    <div id="infoArea"></div>
+    <div id="projectfiles"></div>
+</div>
+
+<div id="options" class="panel"></div>
+
+
+<div class="" style="float:right">
+    <div class="hidden easingselect" >
+
+<div>
+    <span class="button icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);"></span>
+    <span class="button icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);"></span>
+    <span class="button icon-bezier" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);"></span>
+<br/>
+<br/>
+</div>
+<div>
+    <span class="button icon-sin_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);"></span>
+    <span class="button icon-sin" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);"></span>
+    <span class="button icon-sin_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);"></span>
+</div>
+<div>
+    <span class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);"></span>
+    <span class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);"></span>
+    <span class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);"></span>
+</div>
+
+<div>
+    <span class="button icon-exp_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);"></span>
+    <span class="button icon-expo" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);"></span>
+    <span class="button icon-exp_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);"></span>
+</div>
+
+
+
+<!--
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP);">smoothstep</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP);">smootherstep</a><br/>
+    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bezier</a><br/>
+
+-->
+
+    </div>
+</div>
+
+
+<div class="tooltip"></div>
+
+
+
+<script id="op_select" type="text/x-handlebars-template">
+
+    <div class="opsearch">
+        <h2>select op</h2>
+
+        <input id="opsearch"/>
+
+        <br/><br/>
+        <style id="search_style"></style>
+
+
+        <div style="height:300px;overflow:auto" class="searchbrowser">
+          {{#each ops}}
+
+            <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
+                <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{name}}  {{isFunction}}</a>
+            </div>
+
+          {{/each}}
+        </div>
+
+        <div id="opOptions" class="searchinfo"></div>
+        <div id="searchinfo" class="searchinfo"></div>
+
+    </div>
+
+</script>
+
+
+
+<script id="params_convert" type="text/x-handlebars-template">
+    <div class="">
+        <h2>converter</h2>
+        <br/>
+        <br/>
+    </div>
+    <table>
+        <tr>
+            <th colspan="11">
+                <div class="panelhead">converter settings</div>
+            </th>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                ignore tangents/bitangents
+            </td>
+            <td>
+                <input type="checkbox" id="convert_remove_tangents"></input>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                ignore texture coordinates
+            </td>
+            <td>
+                <input type="checkbox" id="convert_remove_texcoords"></input>
+            </td>
+        </tr>
+
+
+    </table>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <div>
+        <a class="bluebutton fa fa-retweet" onclick="gui.convertFile('{{fileId}}');">&nbsp;convert</a>
+    </div>
+
+
+
+</script>
+
+
+
+<script id="params_op_head" type="text/x-handlebars-template">
+
+    <div class="">
+        <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
+        <br/><br/>{{op.objName}}
+        <br/><br/>
+        {{#if op.isServerOp }}
+            <span class="button fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
+        {{/if}}
+
+        <br/>
+        <br/>
+
+        <div class="warning " id="options_warning" >
+        {{op.uiAttribs.warning}}
+        </div>
+        <div class="warning" id="options_error" >
+        {{op.uiAttribs.error}}
+        </div>
+    </div>
+<table>
+
+</script>
+
+
+<script id="params_op_foot" type="text/x-handlebars-template">
+
+    </table>
+
+    <br/>
+    <div class="info " id="options_info" style="padding:0px;">
+        {{{op.uiAttribs.info}}}
+    </div>
+
+    <div>
+        <span class="button  fa fa-remove" onclick="gui.patch().selectChilds('{{op.id}}');">select all children </span>
+        <br/><br/><br/><br/>
+        <span class="button  fa fa-remove" onclick="gui.patch().deleteChilds('{{op.id}}');">delete all children </span>
+    </div>
+
+
+    <div id="doc_op" class="panel" style="padding:0px;"></div>
+
+
+    <!-- <div class="panelhead">
+        <pre>{{{ json op.uiAttribs }}}</pre>
+    </div> -->
+
+    <script>
+
+        gui.showOpDoc('{{{op.objName}}}');
+
+        $("input").keydown(function(e)
+        {
+            switch(e.which)
+            {
+                case 38: // up
+                    this.value=CABLES.UI.inputIncrement(this.value,1);
+                    $(this).trigger('input');
+                    return false;
+                break;
+
+                case 40: // down
+                    this.value=CABLES.UI.inputIncrement(this.value,-1);
+                    $(this).trigger('input');
+                    return false;
+                break;
+
+                default: return; // exit this handler for other keys
+            }
+            e.preventDefault(); // prevent the default action (scroll / move caret)
+        });
+
+        $("input").bind("mousewheel", function(event, delta)
+        {
+            if (delta > 0)
+            {
+                this.value = CABLES.UI.inputIncrement(this.value,1);
+            }
+            else
+            {
+                this.value = CABLES.UI.inputIncrement(this.value,-1);
+            }
+
+             $(this).trigger('input');
+            return false;
+         });
+    </script>
+
+</script>
+
+
+
+<script id="params_ops" type="text/x-handlebars-template">
+
+    <div>
+
+        <h2>{{numOps}} ops selected</h2>
+
+
+
+        align:
+
+        <a onclick="gui.patch().alignSelectedOpsVert();" class="button">&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-ellipsis-v"></i>&nbsp;<i class="fa fa-arrow-left"></i>&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <a onclick="gui.patch().alignSelectedOpsHor();" class="button">&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-ellipsis-h"></i>&nbsp;<i class="fa fa-arrow-up"></i>&nbsp;&nbsp;&nbsp;&nbsp;</a>
+
+
+        <br/><br/>
+        <a onclick="gui.patch().createSubPatchFromSelection()" class="button fa fa-database">create subpatch</a>
+        <br/><br/>
+        <a onclick="gui.patch().createCommentFromSelection()" class="button fa fa-comment-o">create comment</a>
+
+
+
+        <br/>
+        <br/>
+        <br/>
+        <a onclick="gui.patch().deleteSelectedOps();" class="button fa fa-trash">delete</a>
+
+
+    </div>
+
+</script>
+
+
+
+<script id="params_ports_head" type="text/x-handlebars-template">
+
+<tr>
+<th colspan="11">
+<div class="panelhead">{{title}}:</div>
+</th>
+</tr>
+
+</script>
+
+<script id="params_port" type="text/x-handlebars-template">
+
+
+<tr id="tr_{{ dirStr }}_{{ portnum }}">
+    <td class="port portType_{{ port.type }}">
+        {{port.name}}
+    </td>
+    <td>
+        {{#compare port.uiAttribs.colorPick '==' 'true' }}
+        <div class="button_colorpick button fa fa-eyedropper" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
+        {{/compare}}
+    </td>
+    <td class="">
+
+        {{#if port.links}}
+            {{#if port.links}}
+                <a class="info graphbutton fa fa-chain-broken" data-info="{{ texts.portUnlink }}" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
+            {{/if}}
+
+            {{#if port.direction }}
+            </td><td>
+                <table>
+                {{#each port.links}}
+                    <tr>
+                        <td>
+                            <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portIn.parent.id}}');">{{{ portIn.parent.name }}} - {{{portIn.name}}}</span>
+                        </td>
+                    </tr>
+                {{/each}}
+                </table>
+            {{else}}
+                {{#each port.links}}
+                    </td><td>
+                    <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portOut.parent.id}}');">{{{ portOut.parent.name }}} - {{{portOut.name}}}</span>
+                {{/each}}
+            {{/if}}
+        {{/if}}
+
+        {{#if isInput}}
+
+            {{#if port.links}}
+
+                <!-- {{#compare port.type '==' '1' }}[function]{{/compare}} -->
+
+                {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
+                {{#compare port.type '==' '2' }}
+
+                <!-- {{#if port.uiAttribs.preview}}
+                    <span class="button fa fa-eye" onclick="console.log(1);CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
+                {{/if}} -->
+
+                <!--[object]-->
+
+                {{/compare}}
+            {{else}}
+                {{#if port.uiAttribs.display}}
+
+                    {{#compare port.uiAttribs.display '==' 'bool' }}
+                        <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:5px;padding-right:30px;"></span>
+                        <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
+                    {{/compare}}
+
+                    {{#compare port.uiAttribs.display '==' 'button' }}
+                    </td><td>
+                        <span class="button" id="portbutton_{{ portnum }}" >{{port.name}}</span>
+                    {{/compare}}
+
+                    {{#compare port.uiAttribs.display '==' 'editor' }}
+                        <a class="graphbutton fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" ></a>
+                    {{/compare}}
+
+                    {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
+                        <a class="info graphbutton fa fa-plus-square-o" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ></a>
+                    {{/compare}}
+
+                    {{#compare port.uiAttribs.display '==' 'range' }}
+                        <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="info graphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
+                        </td><td>
+
+                        <input type ="range" class="range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.min }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
+                        <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
+                    {{/compare}}
+                    {{#compare port.uiAttribs.display '==' 'dropdown' }}
+                        </td><td>
+                            <select oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');">
+                                {{#compare '' '==' port.val }}
+                                    <option value="">...</option>
+                                {{/compare}}
+                                {{#each port.uiAttribs.values}}
+                                    <option {{#compare this '==' ../port.val }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{ this }}</option>
+                                {{/each}}
+                            </select>
+                            <input type="hidden" class="value" id="portval_{{ portnum }}" value="{{ port.val }}" />
+                    {{/compare}}
+                    {{#compare port.uiAttribs.display '==' 'readonly' }}
+                        {{ port.val }}
+                    {{/compare}}
+
+                    {{#compare port.uiAttribs.display '==' 'file' }}
+                        </td><td>
+                        <a class="graphbutton timingbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
+                        <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                        &nbsp;<a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
+                    {{/compare}}
+
+                {{else}}
+                    {{#compare port.type '==' '1' }} [function]
+                    {{/compare}}{{#compare port.type '==' 0 }}
+                        <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="info graphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
+                    </td><td>
+                        <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" />
+                        <a class="graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');" style="margin-left:0px;height:17px;background-color:#383838" data-info="{{ texts.portFloatDrag }}"></a>
+                    {{/compare}}
+
+                {{/if}}
+            {{/if}}
+
+        {{else}}
+
+            <!-- {{#compare port.type '==' '1' }}[function]{{/compare}}-->
+            {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
+            {{#compare port.type '==' '2' }}
+                {{#if port.uiAttribs.preview}}
+                    <span class="button fa fa-eye" onclick="CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
+                    <!-- <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a> -->
+                {{/if}}
+            {{/compare}}
+        {{/if}}
+    </td>
+
+
+</tr>
+
+</script>
+
+
+
+<script id="params_project" type="text/x-handlebars-template">
+
+
+    <div class="">
+        <input class="medium info" id="projectsettings_name" onblur="gui.patch().saveProjectParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}">
+        <br/>
+        <br/>
+    </div>
+    <table>
+        <tr>
+            <th colspan="11">
+                <div class="panelhead">project settings</div>
+            </th>
+        </tr>
+        <tr onclick="togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
+            <td></td>
+            <td>
+                &nbsp;public
+                <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
+            </td>
+            <td>
+                <a id="projectsettings_public_icon" class="button fa fa-square-o"></a>
+            </td>
+        </tr>
+
+        <tr onclick="toggleAutoScreenshot();">
+            <td></td>
+            <td>
+                &nbsp;manual screenshot
+                <input type="hidden" id="projectsettings_autoscreenshot" value="{{ project.settings.manualScreenshot }}"></input>
+            </td>
+            <td>
+                <a id="projectsettings_autoscreenshot_icon" class="button fa fa-square-o"></a>
+            </td>
+        </tr>
+
+        {{#if user.isAdmin}}
+
+            <tr onclick="toggleExample();" class="info" data-info="{{ texts.projectSettingsExample }}">
+                <td></td>
+                <td>
+                    &nbsp;example
+                    <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
+                </td>
+                <td>
+                    <a id="projectsettings_example_icon" class="button fa fa-square-o"></a>
+                </td>
+            </tr>
+
+        {{/if}}
+
+
+        <tr>
+            <td></td>
+            <td>
+                &nbsp;secret
+            </td>
+            <td>
+                <input type="text" id="projectsettings_secret" value="{{ project.settings.secret }}" onblur="gui.patch().saveProjectParams();"></input>
+                <!-- <a id="projectsettings_public_icon" class="button fa fa-square-o"></a> -->
+            </td>
+        </tr>
+
+    </table>
+
+    <br/>
+
+
+
+        <div class="panel" style="padding:0px;">
+            <div class="panelhead">functions</div>
+            <div>
+                <!-- <a onclick="" class="button fa fa-cloud-download">export static archive</a> -->
+                <!-- <br/><br/> -->
+                <a class="button fa fa-user" onclick="gui.showUsers();">&nbsp;users</a>
+                <br/><br/>
+                <a class="button fa fa-book" onclick="gui.showUserOps();">&nbsp;user ops</a>
+                <br/><br/>
+
+                <a onclick="gui.showVersions();" class="button fa fa-code-fork">show versions</a>
+                <br/><br/>
+                <a onclick="gui.editProjectDescription();" class="button fa fa-edit">edit description</a>
+                <br/><br/>
+                <a onclick="gui.editProjectTags();" class="button fa fa-edit">edit tags</a>
+                <!-- <br/><br/> -->
+                <!-- <a class="button fa fa-times" onclick="if(confirm('really?'))gui.scene().clear();">&nbsp;clear patch</a> -->
+
+            </div>
+
+        </div>
+
+
+    <div id="projectdescription" class="panel" style="padding:0px;">
+        <div class="panelhead">description</div>
+        <div>
+            {{{descr}}}
+        </div>
+
+    </div>
+
+    <div id="projectdescription" class="panel" style="padding:0px;">
+
+
+
+
+
+
+    <div class="panel" style="padding:0px;">
+        <div class="panelhead">debug</div>
+        <div>
+            numOps:{{debug.numOps}}
+            <br/>
+            numSvgElements:{{debug.numSvgElements}}
+            <br/>
+            numVisibleOps:{{debug.numVisibleOps}}
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            {{project.id}}
+
+            <br/>
+            <br/><br/>
+            <a class="button " onclick="localStorage['cables']=gui.scene().serialize();">&nbsp;load from local storage</a>
+
+            <a class="button " onclick="gui.scene().clear();self.scene().deSerialize(localStorage['cables']);">&nbsp;save to local storage</a>
+            <br/><br/><br/>
+
+            <a class="button " onclick="gui.exportDialog();">export</a>
+            <a class="button " onclick="gui.importDialog();">import</a>
+            <br/><br/>
+            <br/><br/>
+            <a class="button fa fa-trash-o tt" data-tt="delete" onclick="if(confirm('really?'))gui.deleteCurrentProject();">&nbsp;delete project</a>
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+    </div>
+
+
+<script>
+
+function updateIcons()
+{
+    if($('#projectsettings_public').val()=='true')
+    {
+        $('#projectsettings_public_icon').addClass('fa-check-square-o');
+        $('#projectsettings_public_icon').removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#projectsettings_public_icon').removeClass('fa-check-square-o');
+        $('#projectsettings_public_icon').addClass('fa-square-o');
+    }
+
+    if($('#projectsettings_autoscreenshot').val()=='true')
+    {
+        $('#projectsettings_autoscreenshot_icon').addClass('fa-check-square-o');
+        $('#projectsettings_autoscreenshot_icon').removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#projectsettings_autoscreenshot_icon').removeClass('fa-check-square-o');
+        $('#projectsettings_autoscreenshot_icon').addClass('fa-square-o');
+    }
+
+    if($('#projectsettings_example').val()=='true')
+    {
+        $('#projectsettings_example_icon').addClass('fa-check-square-o');
+        $('#projectsettings_example_icon').removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#projectsettings_example_icon').removeClass('fa-check-square-o');
+        $('#projectsettings_example_icon').addClass('fa-square-o');
+    }
+
+}
+
+function togglePublic()
+{
+    $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true'));
+
+    updateIcons();
+    gui.patch().saveProjectParams();
+}
+
+function toggleAutoScreenshot()
+{
+    $('#projectsettings_autoscreenshot').val(''+!($('#projectsettings_autoscreenshot').val()=='true'));
+
+    updateIcons();
+    gui.patch().saveProjectParams();
+}
+
+function toggleExample()
+{
+    $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
+
+    updateIcons();
+    gui.patch().saveProjectParams();
+}
+
+
+
+updateIcons();
+
+
+
+</script>
+
+
+</script>
+
+
+<script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
+    <h2>files</h2>
+
+    <table class="list">
+        {{#each files}}
+            <tr>
+                <td style="width:50%">
+                    <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){gui.patch().updateProjectFiles();});"></a>&nbsp;
+                    {{#compare suffix '==' '.fbx' }}
+                    <a class="button fa fa-retweet" onclick="gui.showConverter('{{_id}}')"></a>
+                    {{/compare}}
+
+                </td>
+
+                <td style="text-overflow: hidden;width:50%">
+                    <a class="filename" onclick="gui.patch().addAssetOp('{{p}}','{{suffix}}','{{name}}')">
+                    {{name}}
+                    </a>
+                </td>
+            </tr>
+        {{/each}}
+    </table>
+</script>
+
+
+<script id="tmpl_projectfiles_upload" type="text/x-handlebars-template">
+    <br/>
+    <a class="fa fa-upload"></a>
+    drag & drop files to browser window to upload...
+</script>
+
+
+
+<script id="select_project" type="text/x-handlebars-template">
+
+<style>
+
+.thumbcont .title
+{
+    background-color:#222;
+    padding:10px;
+
+}
+
+.searchresult
+{
+    width:180px;
+    height:130px;
+    float:left;
+    cursor:pointer;
+}
+
+.thumbcont
+{
+    border:none !important;
+}
+
+.searchresult img
+{
+    max-width:180px;
+    max-height:100px;
+}
+
+</style>
+
+    
+<div class="opsearch" style="height:auto;">
+    <h2>load project</h2>
+
+    <input id="projectsearch"/>
+
+    <br/><br/>
+    <style id="search_style"></style>
+
+
+    <div style="height:600px;overflow:auto">
+      {{#each projects}}
+
+
+        <div class="thumbcont searchresult searchable" data-projid="{{ _id }}" data-index="{{name}}" onclick="document.location.href='#/project/{{_id}}'">
+            <div style="background-color:black;width:180px;height:100px;background-image:url(/api/project/{{_id}}/screenshot);background-repeat:no-repeat;background-size:100%;background-position:center center;"></div>
+            <div class="title">
+                {{name}}
+            </div>
+        </div>
+
+      {{/each}}
+    </div>
+
+</div>
+
+</script>
+
+
+
+<script id="timeline_controler" type="text/x-handlebars-template">
+
+    <div id="timelineui">
+        <a id="button_toggleTiming" class=""><i class="fa fa-caret-up"></i>timing</a>
+
+        <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
+
+        <a class="button fa fa-step-backward" onclick="gui.timeLine().gotoZero();"></a>
+        <a class="button fa fa-backward" onclick="gui.timeLine().gotoOffset(-2);"></a>
+        <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
+        <a class="button fa fa-forward" onclick="gui.timeLine().gotoOffset(2);"></a>
+
+
+        <div id="keycontrols">
+            <span class="button timeLineInsert fa fa-plus-square-o"></span>
+
+            <input type ="range" min="20" max="2000" value="" step ="1" oninput="gui.timeLine().setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/>
+
+
+            <a id="keymovemode" class="button fa fa-arrows-h tt" data-tt="key move mode" ></a>
+            <a id="keyscaleheight" class="button fa fa-ellipsis-v tt" data-tt="scale value display"></a>
+            <a id="keyscalewidth" class="button fa fa-ellipsis-h tt" data-tt="show all keys"></a>
+            <a id="centercursor" class="button fa fa-i-cursor tt" data-tt="scroll to cursor"></a>
+            <a id="loop" class="button fa fa-retweet tt" data-tt="toggle loop"></a>
+            <a id="toggleMultiGraphKeyDisplay" class="button fa fa-line-chart tt" data-tt="toggle key display of multiple graphs / right click - remove all graphs"></a>
+
+
+            <a onclick="$('.easingselect').toggle();" class="button">ease</a>
+        </div>
+
+    </div>
+
+    <div id="timelineTitle" ></div>
+    <div id="timetimeline" ></div>
+    <div id="timeline" tabindex="2"></div>
+
+
+
+
+
+</script>
+
+
+        <a id="undev" target="_blank" href="http://www.undev.de"></a>
+
+    </body>
+
+    <script type="text/javascript" src="js/libs.ui.min.js"></script>
+    <script type="text/javascript" src="js/libs.core.min.js"></script>
+    <script type="text/javascript" src="js/cables.max.js"></script>
+    <!-- <script type="text/javascript" src="js/cables.ops.max.js"></script> -->
+    <script type="text/javascript" src="/api/ops/code"></script>
+
+    <script type="text/javascript" src="js/ace/ace.js"></script>
+    <script type="text/javascript" src="js/cablesui.max.js"></script>
+
+</html>
