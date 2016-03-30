@@ -81,8 +81,9 @@ CABLES.ajaxIntern=function(url,cb,method,post,contenttype,asynch)
         if (xhr.readyState != 4) return;
         clearTimeout(requestTimeout);
 
+        // cb( (xhr.status != 200 || xhr.status !==0 ) ?new Error(url+"server response status is "+xhr.status):false, xhr.responseText,xhr);
+        cb(false, xhr.responseText,xhr);
 
-        cb(xhr.status != 200?new Error(url+"server response status is "+xhr.status):false, xhr.responseText,xhr);
     };
     xhr.open(method?method.toUpperCase():"GET", url, asynch);
 

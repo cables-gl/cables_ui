@@ -1367,6 +1367,9 @@ CABLES.UI.Patch=function(_gui)
                     }
                 }
                 setStatusSelectedOps();
+
+                gui.jobs().finish( 'selectchilds' );
+
             }
         );
     };

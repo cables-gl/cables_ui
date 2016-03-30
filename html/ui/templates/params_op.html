@@ -5,9 +5,9 @@
     <div class="">
         <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
         <br/><br/>{{op.objName}}
-
+        <br/><br/>
         {{#if op.isServerOp }}
-            <span class="button fright fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
+            <span class="button fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
         {{/if}}
 
         <br/>

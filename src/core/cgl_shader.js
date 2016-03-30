@@ -65,6 +65,8 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         value=v;
     };
 
+    var oldValue=null;
+
     this.updateValue3F=function()
     {
         if(!value)
@@ -77,8 +79,10 @@ CGL.Uniform=function(_shader,_type,_name,_value)
             loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
             CGL.profileShaderGetUniform++;
         }
+        // if(oldValue!==null && ( value[0]!=oldValue[0] || value[1]!=oldValue[1] || value[2]!=oldValue[2]))
         shader.getCgl().gl.uniform3f(loc, value[0],value[1],value[2]);
         CGL.profileUniformCount++;
+        oldValue=value;
     };
 
     this.setValue3F=function(v)

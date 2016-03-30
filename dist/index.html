@@ -33,7 +33,7 @@
 <div class="iconbar">
     <a class="button" onclick="gui.editor().save()">save</a>
 
-
+    
 <span class="editortoolbar"></span>
 
 <span id="editorstatus"></span>
@@ -83,10 +83,10 @@
 
 <script id="library_file" type="text/x-handlebars-template">
 
-    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}"
+    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
     {{#compare filterType '==' 'image' }}
         style="float:left;width:100px;margin:5px;"{{/compare}}
-        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
+        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');"> 
         {{#compare filterType '==' 'image' }}
             <div class="lib_imgpreview" style="background-image:url({{file.p}});background-repeat:no-repeat;background-size:cover;width:100px;height:100px;background-position:center center;"></div>
         {{/compare}}
@@ -95,7 +95,7 @@
     <i class="fa fa-image"></i>
     {{/compare}}
 
-    {{file.n}}
+    {{file.n}} 
 
 
     </div>
@@ -377,9 +377,9 @@
     <div class="">
         <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
         <br/><br/>{{op.objName}}
-
+        <br/><br/>
         {{#if op.isServerOp }}
-            <span class="button fright fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
+            <span class="button fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
         {{/if}}
 
         <br/>
@@ -588,7 +588,7 @@
                         <a class="info graphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
                         </td><td>
 
-                        <input type ="range" class="range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.min }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style="width:90px;"/>
+                        <input type ="range" class="range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.min }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
                         <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
@@ -934,7 +934,7 @@ updateIcons();
 
 </style>
 
-
+    
 <div class="opsearch" style="height:auto;">
     <h2>load project</h2>
 
@@ -969,7 +969,7 @@ updateIcons();
     <div id="timelineui">
         <a id="button_toggleTiming" class=""><i class="fa fa-caret-up"></i>timing</a>
 
-        <span class="timelinetime" onclick="gui.timeLine().timeLineTimeClick();"></span>
+        <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
 
         <a class="button fa fa-step-backward" onclick="gui.timeLine().gotoZero();"></a>
         <a class="button fa fa-backward" onclick="gui.timeLine().gotoOffset(-2);"></a>
