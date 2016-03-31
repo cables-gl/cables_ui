@@ -15,6 +15,15 @@ CABLES.Editor=function()
     editor.resize();
     editor.focus();
 
+    // Hover text
+    $('#ace').hover(function (e)
+    {
+        CABLES.UI.showInfo(CABLES.UI.TEXTS.editor);
+    },function()
+    {
+        CABLES.UI.hideInfo();
+    });
+
     this.resize=function()
     {
         editor.resize();

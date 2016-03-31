@@ -18,9 +18,15 @@ CABLES.UI.TEXTS=
     portMouseCreate:'* press left mousebutton (or press and drag) to create and link new op',
 
     projectSettingsPublic:"make patch public - everyone can see it",
-    projectSettingsTitle:"patch title - click to edit",
+    projectSettingsTitle:"## Patch Name \n\nIf this is your op, click to edit",
     projectSettingsExample:"ADMIN: patch will be listed as example",
 
-    projectExportNotSaved:"patch not saved - save patch before exporting"
+    projectExportNotSaved:"patch not saved - save patch before exporting",
 
+    editor: "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
+    patch: "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n### Shortcuts \n\n* `[esc]: Quick-add op` \n* `[mod] + s`: Save patch / save current editor file \n* `[mod] + c`: Copy selected op \n*`[mod] + v`: Paste selected op \n*`[del]: Delete selected ops \n* `a`: Align selected ops vertically \n* `[shift] + a`: Align selected ops horizontally \n* `[mod] + a`: Select all ops",
+    canvas: "## Preview \n\nHere you can see the visual output of your patch.",
+    infoArea: "## Info Panel \n\nHover over an element to see some infos here.",
+    projectFiles: "## Project Files \n\nOverview over your uploaded files",
+    undevLogo: "## Undev \n\nCables was made by **Undefined Development**, come visit us in our office in Berlin and have a coffee with us! "
 };
