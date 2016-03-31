@@ -36,20 +36,6 @@
             </td>
         </tr>
 
-        {{#if user.isAdmin}}
-
-            <tr onclick="toggleExample();" class="info" data-info="{{ texts.projectSettingsExample }}">
-                <td></td>
-                <td>
-                    &nbsp;example
-                    <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
-                </td>
-                <td>
-                    <a id="projectsettings_example_icon" class="button fa fa-square-o"></a>
-                </td>
-            </tr>
-
-        {{/if}}
 
 
         <tr>
@@ -62,6 +48,36 @@
                 <!-- <a id="projectsettings_public_icon" class="button fa fa-square-o"></a> -->
             </td>
         </tr>
+
+
+
+        {{#if user.isAdmin}}
+
+            <tr onclick="toggleExample();" class="info" data-info="{{ texts.projectSettingsExample }}">
+                <td>&nbsp;</td>
+                <td>
+                    <i class="fa fa-lock"/>
+                    &nbsp;example
+                    <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
+                </td>
+                <td>
+                    <a id="projectsettings_example_icon" class="button fa fa-square-o"></a>
+                </td>
+            </tr>
+
+            <tr onclick="toggleTest();" class="info" data-info="{{ texts.projectSettingsTest }}">
+                <td>&nbsp;</td>
+                <td>
+                    <i class="fa fa-lock"/>
+                    &nbsp;testcase
+                    <input type="hidden" id="projectsettings_test" value="{{ project.settings.isTest }}"></input>
+                </td>
+                <td>
+                    <a id="projectsettings_test_icon" class="button fa fa-square-o"></a>
+                </td>
+            </tr>
+        {{/if}}
+
 
     </table>
 
@@ -184,6 +200,17 @@ function updateIcons()
         $('#projectsettings_example_icon').addClass('fa-square-o');
     }
 
+    if($('#projectsettings_test').val()=='true')
+    {
+        $('#projectsettings_test_icon').addClass('fa-check-square-o');
+        $('#projectsettings_test_icon').removeClass('fa-square-o');
+    }
+    else
+    {
+        $('#projectsettings_test_icon').removeClass('fa-check-square-o');
+        $('#projectsettings_test_icon').addClass('fa-square-o');
+    }
+
 }
 
 function togglePublic()
@@ -205,6 +232,14 @@ function toggleAutoScreenshot()
 function toggleExample()
 {
     $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
+
+    updateIcons();
+    gui.patch().saveProjectParams();
+}
+
+function toggleTest()
+{
+    $('#projectsettings_test').val(''+!($('#projectsettings_test').val()=='true'));
 
     updateIcons();
     gui.patch().saveProjectParams();

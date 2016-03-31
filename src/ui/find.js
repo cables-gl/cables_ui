@@ -16,7 +16,6 @@ CABLES.UI.Find=function()
         $('#findinput').focus();
         $('#findinput').val(lastSearch);
         this.search(lastSearch);
-
     };
 
     function addResultOp(op)
@@ -50,14 +49,8 @@ CABLES.UI.Find=function()
                 {
                     addResultOp(gui.patch().ops[i]);
                 }
-
-
             }
-
         }
-
     };
-
-
 
 };

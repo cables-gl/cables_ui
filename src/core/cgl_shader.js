@@ -79,15 +79,29 @@ CGL.Uniform=function(_shader,_type,_name,_value)
             loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
             CGL.profileShaderGetUniform++;
         }
-        // if(oldValue!==null && ( value[0]!=oldValue[0] || value[1]!=oldValue[1] || value[2]!=oldValue[2]))
+
         shader.getCgl().gl.uniform3f(loc, value[0],value[1],value[2]);
+        self.needsUpdate=false;
         CGL.profileUniformCount++;
-        oldValue=value;
     };
 
     this.setValue3F=function(v)
     {
-        self.needsUpdate=true;
+        if(!v)return;
+        if(!oldValue)
+        {
+            oldValue=[v[0]-1,1,2];
+            self.needsUpdate=true;
+        }
+        else
+        if( v[0]!=oldValue[0] || v[1]!=oldValue[1] || v[2]!=oldValue[2])
+        {
+            oldValue[0]=v[0];
+            oldValue[1]=v[1];
+            oldValue[2]=v[2];
+            self.needsUpdate=true;
+        }
+
         value=v;
     };
 
@@ -301,11 +315,16 @@ CGL.Shader=function(_cgl,_name)
 
     this.compile=function()
     {
+        CGL.profileShaderCompiles++;
         var definesStr='';
         var i=0;
         for(i=0;i<defines.length;i++)
         {
             definesStr+='#define '+defines[i][0]+' '+defines[i][1]+''.endl();
+        }
+        for(i=0;i<uniforms.length;i++)
+        {
+            uniforms[i].needsUpdate=true;
         }
 
         if(self.hasTextureUniforms()) definesStr+='#define HAS_TEXTURES'.endl();
@@ -374,6 +393,7 @@ CGL.Shader=function(_cgl,_name)
     {
         var i=0;
         if(!program || needsRecompile) self.compile();
+
 
         if(!projMatrixUniform)
         {

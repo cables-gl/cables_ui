@@ -5,8 +5,10 @@ CABLES.UI.TEXTS=
     linkAddCircle:"## Link \n\n* left click: insert op \n* right click: delete link",
 
     timeLineToggle:"toggle timeline / keyframing panel",
+    timeLineTime:"* shows current frame/time in seconds\n\n * click to enter frame to go to",
 
-    portFloatDrag:"* hold left mouse button and drag to change value. \n\n* use shift to for smaller increase.",
+    portFloatInput:"* use mousewheel or up/down keys to inc/decrement by 0.1",
+    portFloatDrag:"* hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
     portUnlink:"unlink port",
     portCreateOp:"create and connect new texture op",
     portAnimKeep:"keep in keyframing view",

@@ -400,12 +400,17 @@ CABLES.UI.GUI=function()
 
     this.createProject=function()
     {
-        CABLES.api.post('project',{name: prompt('projectname','') },function(d)
+        var name=prompt('projectname','');
+        if(name)
         {
-            CABLES.UI.SELECTPROJECT.doReload=true;
+            CABLES.api.post('project',{"name":name },function(d)
+            {
+                CABLES.UI.SELECTPROJECT.doReload=true;
 
-            document.location.href='#/project/'+d._id;
-        });
+                document.location.href='#/project/'+d._id;
+            });
+
+        }
     };
 
     this.deleteCurrentProject=function()
