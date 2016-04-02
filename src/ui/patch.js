@@ -1965,45 +1965,7 @@ CABLES.UI.Patch=function(_gui)
         var uiAttr={'title':title,translate:{x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2}};
         var op=gui.scene().addOp(opname,uiAttr);
         op.getPort(portname).val='/assets/'+currentProject._id+'/'+filename;
-
-
-// addAssetOp('{{op}}','{{port}}','{{file.fileDb.fileName}}')">&
-        // if(suffix=='.obj')
-        // {
-        //     op=gui.scene().addOp('Ops.Gl.Meshes.ObjMesh',uiAttr);
-        //     op.getPort('file').val=url;
-        // }
-        // else
-        // if(suffix=='.png' || suffix=='.jpg')
-        // {
-        //     op=gui.scene().addOp('Ops.Gl.Texture',uiAttr);
-        //     op.getPort('file').val=url;
-        // }
-        // else
-        // if(suffix=='.mp3' || suffix=='.ogg')
-        // {
-        //     op=gui.scene().addOp('Ops.WebAudio.AudioPlayer',uiAttr);
-        //     op.getPort('file').val=url;
-        // }
-        // else
-        // if(suffix=='.3d.json' )
-        // {
-        //     op=gui.scene().addOp('Ops.Json3d.json3dFile',uiAttr);
-        //     op.getPort('file').val=url;
-        // }
-        // else
-        // if(suffix=='.seq.json' )
-        // {
-        //     op=gui.scene().addOp('Ops.Gl.MeshSequence',uiAttr);
-        //     op.getPort('file').val=url;
-        // }
-        // else
-        // {
-        //     CABLES.UI.setStatusText('unknown file type');
-        // }
     };
-
-
 
     doWatchPorts();
 

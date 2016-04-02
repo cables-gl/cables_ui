@@ -37,7 +37,6 @@ CABLES.UI.ServerOps=function(gui)
             if(res)
             {
                 ops=res;
-                console.log('loaded ops...',ops);
 
                 if(cb)cb(ops);
 

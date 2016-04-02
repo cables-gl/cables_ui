@@ -434,7 +434,6 @@ CABLES.UI.GUI=function()
 
     this.showFile=function(fileId,file)
     {
-        console.log(file);
         var html = CABLES.UI.getHandleBarHtml(
             'params_file',
             {
