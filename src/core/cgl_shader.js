@@ -170,6 +170,7 @@ CGL.Shader=function(_cgl,_name)
     var mvMatrixUniform=null;
     var mMatrixUniform=null;
     var vMatrixUniform=null;
+    var camPosUniform=null;
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
 
@@ -402,6 +403,7 @@ CGL.Shader=function(_cgl,_name)
             mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
             vMatrixUniform = cgl.gl.getUniformLocation(program, "viewMatrix");
             mMatrixUniform = cgl.gl.getUniformLocation(program, "modelMatrix");
+            camPosUniform = cgl.gl.getUniformLocation(program, "camPos");
             normalMatrixUniform = cgl.gl.getUniformLocation(program, "normalMatrix");
             for(i=0;i<uniforms.length;i++)uniforms[i].needsUpdate=true;
         }
@@ -424,6 +426,12 @@ CGL.Shader=function(_cgl,_name)
         {
             cgl.gl.uniformMatrix4fv(vMatrixUniform, false, cgl.vMatrix);
             cgl.gl.uniformMatrix4fv(mMatrixUniform, false, cgl.mvMatrix);
+
+var m=mat4.create();
+mat4.invert(m,cgl.vMatrix);
+cgl.gl.uniform3f(camPosUniform, m[12],m[13],m[14]);
+// console.log(m[12],m[13],m[14]);
+
         }
         else
         {

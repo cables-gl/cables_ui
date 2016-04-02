@@ -29,7 +29,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 
         // if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
         {
-            $('#opOptions').html('admin: <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create op</a><hr/>');
+            $('#opOptions').html('<i class="fa fa-lock"/> <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create op</a><hr/>');
         }
 
     });
@@ -66,7 +66,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         {
             if(gui.user.isAdmin && gui.serverOps.isServerOp(opname))
             {
-                htmlFoot+='<hr/>admin:<a onclick="gui.serverOps.edit(\''+opname+'\');">edit serverOp</a>';
+                htmlFoot+='<hr/><i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit serverOp</a>';
             }
 
             $('#searchinfo').html('');
@@ -168,6 +168,11 @@ CABLES.UI.OPSELECT.getOpList=function()
                     var isFunction=false;
                     if(eval('typeof('+opname+')')=="function") isFunction=true;
 
+                    var parts=opname.split('.');
+                    var shortName=parts[parts.length-1];
+                    parts.length=parts.length-1;
+                    var nameSpace=parts.join('.');
+
                     if(isFunction)
                     {
                         // console.log(opname);
@@ -178,8 +183,10 @@ CABLES.UI.OPSELECT.getOpList=function()
 
                         var op=
                         {
-                            isOp:isOp,
-                            name:opname,
+                            "isOp":isOp,
+                            "name":opname,
+                            "shortName":shortName,
+                            "nameSpace":nameSpace,
                             lowercasename:opname.toLowerCase()
                         };
                         ops.push(op);

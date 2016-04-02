@@ -458,7 +458,6 @@ CABLES.UI.Patch=function(_gui)
             },d._id,d.name);
 
         });
-
     };
 
 
@@ -473,6 +472,11 @@ CABLES.UI.Patch=function(_gui)
         gui.jobs().start({id:'projectsave',title:'saving project'});
 
         gui.patch().scene.cgl.doScreenshot=true;
+
+        var w=$('#glcanvas').attr('width');
+        var h=$('#glcanvas').attr('height');
+        $('#glcanvas').attr('width',640);
+        $('#glcanvas').attr('height',360);
 
         var id=currentProject._id;
         var name=currentProject.name;
@@ -506,6 +510,9 @@ CABLES.UI.Patch=function(_gui)
                 },
                 function(r)
                 {
+                    $('#glcanvas').attr('width',w);
+                    $('#glcanvas').attr('height',h);
+
                     if(r.success===true) CABLES.UI.setStatusText('project saved');
                     else CABLES.UI.setStatusText('project NOT saved');
 
@@ -1951,43 +1958,49 @@ CABLES.UI.Patch=function(_gui)
         return res;
     };
 
-    this.addAssetOp=function(url,suffix,title)
+    this.addAssetOp=function(opname,portname,filename,title)
     {
+        if(!title)title=filename;
+
         var uiAttr={'title':title,translate:{x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2}};
-        var op;
-        if(suffix=='.obj')
-        {
-            op=gui.scene().addOp('Ops.Gl.Meshes.ObjMesh',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        if(suffix=='.png' || suffix=='.jpg')
-        {
-            op=gui.scene().addOp('Ops.Gl.Texture',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        if(suffix=='.mp3' || suffix=='.ogg')
-        {
-            op=gui.scene().addOp('Ops.WebAudio.AudioPlayer',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        if(suffix=='.3d.json' )
-        {
-            op=gui.scene().addOp('Ops.Json3d.json3dFile',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        if(suffix=='.seq.json' )
-        {
-            op=gui.scene().addOp('Ops.Gl.MeshSequence',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        {
-            CABLES.UI.setStatusText('unknown file type');
-        }
+        var op=gui.scene().addOp(opname,uiAttr);
+        op.getPort(portname).val='/assets/'+currentProject._id+'/'+filename;
+
+
+// addAssetOp('{{op}}','{{port}}','{{file.fileDb.fileName}}')">&
+        // if(suffix=='.obj')
+        // {
+        //     op=gui.scene().addOp('Ops.Gl.Meshes.ObjMesh',uiAttr);
+        //     op.getPort('file').val=url;
+        // }
+        // else
+        // if(suffix=='.png' || suffix=='.jpg')
+        // {
+        //     op=gui.scene().addOp('Ops.Gl.Texture',uiAttr);
+        //     op.getPort('file').val=url;
+        // }
+        // else
+        // if(suffix=='.mp3' || suffix=='.ogg')
+        // {
+        //     op=gui.scene().addOp('Ops.WebAudio.AudioPlayer',uiAttr);
+        //     op.getPort('file').val=url;
+        // }
+        // else
+        // if(suffix=='.3d.json' )
+        // {
+        //     op=gui.scene().addOp('Ops.Json3d.json3dFile',uiAttr);
+        //     op.getPort('file').val=url;
+        // }
+        // else
+        // if(suffix=='.seq.json' )
+        // {
+        //     op=gui.scene().addOp('Ops.Gl.MeshSequence',uiAttr);
+        //     op.getPort('file').val=url;
+        // }
+        // else
+        // {
+        //     CABLES.UI.setStatusText('unknown file type');
+        // }
     };
 
 

@@ -564,6 +564,12 @@ input[type="text"]
             color:white;
         }
     }
+
+    .namespace
+    {
+        font-size: 11px;
+        font-style: normal;
+    }
 }
 
 
@@ -1434,5 +1440,24 @@ nav
             cursor:pointer;
             background-color: #1a1a1a;
         }
+    }
+}
+
+
+.filename
+{
+    border-left:2px solid #aaa;
+    cursor:pointer;
+    text-overflow:ellipsis;
+    word-wrap:break-word;
+    padding-left:4px !important;
+    padding-right:0px !important;
+    padding-top:0px !important;
+    padding-bottom:0px !important;
+    margin-bottom:3px;
+
+    &:hover
+    {
+        color:white;
     }
 }

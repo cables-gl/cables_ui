@@ -2,25 +2,12 @@
 <script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
     <h2>files</h2>
 
-    <table class="list">
-        {{#each files}}
-            <tr>
-                <td style="width:50%">
-                    <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){gui.patch().updateProjectFiles();});"></a>&nbsp;
-                    {{#compare suffix '==' '.fbx' }}
-                    <a class="button fa fa-retweet" onclick="gui.showConverter('{{_id}}')"></a>
-                    {{/compare}}
+    {{#each files}}
+        <div class="filename" onclick="CABLES.api.get('project/{{projectId}}/file/info/{{_id}}',function(r){ gui.showFile('{{_id}}',r) });">
+            {{name}}
+        </div>
+    {{/each}}
 
-                </td>
-
-                <td style="text-overflow: hidden;width:50%">
-                    <a class="filename" onclick="gui.patch().addAssetOp('{{p}}','{{suffix}}','{{name}}')">
-                    {{name}}
-                    </a>
-                </td>
-            </tr>
-        {{/each}}
-    </table>
 </script>
 
 

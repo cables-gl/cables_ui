@@ -290,7 +290,7 @@
           {{#each ops}}
 
             <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
-                <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{name}}  {{isFunction}}</a>
+                <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{shortName}} <span class="namespace">{{nameSpace}}</span>{{isFunction}}</a>
             </div>
 
           {{/each}}
@@ -305,13 +305,70 @@
 
 
 
-<script id="params_convert" type="text/x-handlebars-template">
+<script id="params_file" type="text/x-handlebars-template">
     <div class="">
-        <h2>converter</h2>
+        <h2>
+            {{file.fileDb.fileName}}
+        </h2>
         <br/>
         <br/>
+
+        {{#each file.ops}}
+            <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
+            <br/><br/>
+        {{/each}}
+
+        <table>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>filename</td>
+                <td>{{file.fileDb.fileName}}</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>size</td>
+                <td>{{file.sizeKb}} kb</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>created</td>
+                <td>{{file.fileDb.created}}</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>projectId</td>
+                <td>{{file.fileDb.projectId}}</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>suffix</td>
+                <td>{{file.fileDb.suffix}}</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>type</td>
+                <td>{{file.fileDb.type}}</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>user</td>
+                <td>{{file.fileDb.userId}}</td>
+            </tr>
+
+        </table>
+
+        <br/><br/>
+        <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{fileId}}',null,function(){gui.patch().updateProjectFiles();});">delete </a>
+
     </div>
-    <table>
+    <!-- <table>
         <tr>
             <th colspan="11">
                 <div class="panelhead">converter settings</div>
@@ -337,14 +394,14 @@
         </tr>
 
 
-    </table>
+    </table> -->
 
     <br/>
     <br/>
     <br/>
     <br/>
     <div>
-        <a class="bluebutton fa fa-retweet" onclick="gui.convertFile('{{fileId}}');">&nbsp;convert</a>
+        <!-- <a class="bluebutton fa fa-retweet" onclick="gui.convertFile('{{fileId}}');">&nbsp;convert</a> -->
     </div>
 
 
@@ -747,6 +804,12 @@
                 <a onclick="gui.editProjectDescription();" class="button fa fa-edit">edit description</a>
                 <br/><br/>
                 <a onclick="gui.editProjectTags();" class="button fa fa-edit">edit tags</a>
+
+                <br/><br/>
+                <a onclick="gui.saveScreenshot();" class="button fa fa-image">download screenshot</a>
+
+
+
                 <!-- <br/><br/> -->
                 <!-- <a class="button fa fa-times" onclick="if(confirm('really?'))gui.scene().clear();">&nbsp;clear patch</a> -->
 
@@ -907,25 +970,12 @@ updateIcons();
 <script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
     <h2>files</h2>
 
-    <table class="list">
-        {{#each files}}
-            <tr>
-                <td style="width:50%">
-                    <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){gui.patch().updateProjectFiles();});"></a>&nbsp;
-                    {{#compare suffix '==' '.fbx' }}
-                    <a class="button fa fa-retweet" onclick="gui.showConverter('{{_id}}')"></a>
-                    {{/compare}}
+    {{#each files}}
+        <div class="filename" onclick="CABLES.api.get('project/{{projectId}}/file/info/{{_id}}',function(r){ gui.showFile('{{_id}}',r) });">
+            {{name}}
+        </div>
+    {{/each}}
 
-                </td>
-
-                <td style="text-overflow: hidden;width:50%">
-                    <a class="filename" onclick="gui.patch().addAssetOp('{{p}}','{{suffix}}','{{name}}')">
-                    {{name}}
-                    </a>
-                </td>
-            </tr>
-        {{/each}}
-    </table>
 </script>
 
 
