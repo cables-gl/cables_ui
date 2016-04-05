@@ -350,7 +350,7 @@ CGL.Texture.texturePreview=function(cgl)
 
     this.render=function(tex)
     {
-        console.log('previewing ',tex.width,tex.height);
+        // console.log('previewing ',tex.width,tex.height);
         cgl.gl.clearColor(0,0,0,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
@@ -361,7 +361,7 @@ CGL.Texture.texturePreview=function(cgl)
         if(tex)
         {
             cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-            cgl.gl.bindTexture(texType, tex.tex);
+            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, tex.tex);
         }
 
         mesh.render(cgl.getShader());

@@ -49,6 +49,15 @@ CABLES.UI.Find=function()
                 {
                     addResultOp(gui.patch().ops[i]);
                 }
+                else
+                {
+                    var op=gui.patch().ops[i].op;
+                    for(var j=0;j<op.portsIn.length;j++)
+                    {
+                        console.log(op.portsIn[j].uiAttribs.type, op.portsIn[j].get());
+                        if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1) addResultOp(gui.patch().ops[i]);
+                    }
+                }
             }
         }
     };
