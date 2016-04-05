@@ -282,7 +282,7 @@ CABLES.Patch = function(cfg)
         obj.settings=this.settings;
         for(var i in this.ops)
         {
-            console.log(this.ops[i].objName);
+            // console.log(this.ops[i].objName);
             obj.ops.push( this.ops[i].getSerialized() );
         }
 

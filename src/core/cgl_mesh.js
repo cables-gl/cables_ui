@@ -298,7 +298,7 @@ CGL.Geometry=function()
         var newTexCoords=[];
 
         var count=0;
-        console.log('unindexing');
+        // console.log('unindexing');
         this.vertexNormals.length=0;
 
         for(i=0;i<this.verticesIndices.length;i+=3)
@@ -457,7 +457,7 @@ CGL.Geometry=function()
 
         if(calcVertexNormals)
         {
-            console.log('calc vertexnormals');
+            // console.log('calc vertexnormals');
 
             for(i=0;i<this.verticesIndices.length;i+=3) // faces
             {
