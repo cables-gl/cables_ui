@@ -223,7 +223,7 @@ CABLES.Patch = function(cfg)
         // for(var i in self.animFrameOps)
         for (var i = 0; i < self.animFrameOps.length; ++i)
         {
-            self.animFrameOps[i].onAnimFrame(time);
+            if(self.animFrameOps[i].onAnimFrame) self.animFrameOps[i].onAnimFrame(time);
         }
         frameNum++;
         if(frameNum==1)
