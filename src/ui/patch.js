@@ -1835,11 +1835,12 @@ CABLES.UI.Patch=function(_gui)
             (function (thePort)
             {
 
+console.log('watch colorpic ',thePort.watchId);
                 function updateColorPickerButton(id)
                 {
                     var splits=id.split('_');
                     var portNum=parseInt(splits[splits.length-1]);
-
+console.log('the id:',id);
                     var c1=Math.round(255 * $('#portval_'+portNum).val());
                     var c2=Math.round(255 * $('#portval_'+(portNum+1)).val());
                     var c3=Math.round(255 * $('#portval_'+(portNum+2)).val());
@@ -1857,6 +1858,8 @@ CABLES.UI.Patch=function(_gui)
                     doRender: 'div div',
                     renderCallback:function(res,toggled)
                     {
+                        console.log( 'res',res );
+                        var id=res[0].id;
                         var splits=id.split('_');
                         var portNum=parseInt(splits[splits.length-1]);
 
