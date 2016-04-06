@@ -1834,11 +1834,15 @@ CABLES.UI.Patch=function(_gui)
             var thePort2=watchColorPicker[iwcp];
             (function (thePort)
             {
+
                 function updateColorPickerButton(id)
                 {
-                    var c1=Math.round(255*$(id).parent().parent().find('input.range').val());
-                    var c2=Math.round(255*$(id).parent().parent().next('tr').find('input.value').val());
-                    var c3=Math.round(255*$(id).parent().parent().next('tr').next('tr').find('input.value').val());
+                    var splits=id.split('_');
+                    var portNum=parseInt(splits[splits.length-1]);
+
+                    var c1=Math.round(255 * $('#portval_'+portNum).val());
+                    var c2=Math.round(255 * $('#portval_'+(portNum+1)).val());
+                    var c3=Math.round(255 * $('#portval_'+(portNum+2)).val());
 
                     $(id).css('background-color','rgb('+c1+','+c2+','+c3+')');
                 }
@@ -1853,6 +1857,8 @@ CABLES.UI.Patch=function(_gui)
                     doRender: 'div div',
                     renderCallback:function(res,toggled)
                     {
+                        var splits=id.split('_');
+                        var portNum=parseInt(splits[splits.length-1]);
 
                         if(toggled === false)
                         {
@@ -1867,9 +1873,15 @@ CABLES.UI.Patch=function(_gui)
 
                         if(!ignoreColorChanges)
                         {
-                            $(id).parent().parent().find('input.range').val(colors.rgb.r).trigger('input');
-                            $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
-                            $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
+                            $('#portval_'+portNum+'_range').val(colors.rgb.r).trigger('input');
+                            $('#portval_'+(portNum+1)+'_range').val(colors.rgb.g).trigger('input');
+                            $('#portval_'+(portNum+2)+'_range').val(colors.rgb.b).trigger('input');
+
+                            // console.log(id);
+                            // id="portval_{{ portnum }}"
+                            // $(id).parent().parent().find('input.range').val(colors.rgb.r).trigger('input');
+                            // $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
+                            // $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
                         }
                         else
                         {
