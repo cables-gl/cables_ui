@@ -38,6 +38,50 @@ CABLES.UI.Patch=function(_gui)
         return self.paper;
     };
 
+    this.getLargestPort=function()
+    {
+        var max=0;
+        var maxName='unknown';
+        var j=0;
+        var ser='';
+        var maxValue='';
+
+        for(var i in this.ops)
+        {
+            for(j in this.ops[i].op.portsIn)
+            {
+                ser=JSON.stringify(this.ops[i].op.portsIn[j].getSerialized());
+                if(ser.length>max)
+                {
+                    max=ser.length;
+                    maxValue=ser;
+                    maxName=this.ops[i].op.name+' - in: '+this.ops[i].op.portsIn[j].name;
+                }
+            }
+            for(j in this.ops[i].op.portsOut)
+            {
+                ser=JSON.stringify(this.ops[i].op.portsOut[j].getSerialized());
+                if(ser.length>max)
+                {
+                    max=ser.length;
+                    maxValue=ser;
+                    maxName=this.ops[i].op.name+' - out: '+this.ops[i].op.portsOut[j].name;
+                }
+            }
+        }
+
+        if(max>4000)
+        {
+            alert('warning big port: '+maxName+' / '+max+' chars');
+            // console.log(maxValue);
+        }
+        console.log('biggest port:',maxName,max);
+
+
+
+    };
+
+
     this.paste=function(e)
     {
         if(e.clipboardData.types.indexOf('text/plain') > -1)
@@ -461,6 +505,7 @@ CABLES.UI.Patch=function(_gui)
     };
 
 
+
     this.saveCurrentProject=function(cb,_id,_name)
     {
         if(this.loadingError)
@@ -498,7 +543,11 @@ CABLES.UI.Patch=function(_gui)
             data.ui.renderer.h=gui.rendererHeight;
 
             data=JSON.stringify(data);
+
+
             console.log('data.length',data.length);
+
+            gui.patch().getLargestPort();
 
 
             CABLES.api.put(
