@@ -151,6 +151,7 @@ CABLES.Patch = function(cfg)
 
     this.removeOnAnimFrame=function(op)
     {
+
         for(var i=0;i<this.animFrameOps.length;i++)
         {
             this.animFrameOps.splice(i,1);

@@ -329,6 +329,33 @@ CABLES.UI.GUI=function()
             CABLES.UI.MODAL.show(html);
             // console.log(r);
         });
+
+    };
+
+    this.showReports=function()
+    {
+        CABLES.UI.MODAL.showLoading('loading versions');
+        CABLES.api.get('report/summary/'+self.patch().getCurrentProject()._id,
+            function(r)
+            {
+                var html='<h2>patch reports</h2>';
+
+                if(r.length===0)
+                {
+                    html+='no reports available. visit <a href="/p/'+self.patch().getCurrentProject()._id+'">this page</a> and watch it for 20 seconds to generate reports...<br/><br/>';
+                }
+                else
+                {
+                    html+='<pre><code>';
+                    for(var i in r)
+                    {
+                        html+=Math.round(r[i].avgFps)+' FPS / '+r[i].renderer+' / '+r[i].when+' \n';
+                    }
+                    html+='</code></pre>';
+                }
+
+                CABLES.UI.MODAL.show(html);
+            });
     };
 
 
