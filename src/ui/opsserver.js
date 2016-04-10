@@ -144,20 +144,21 @@ CABLES.UI.ServerOps=function(gui)
             function(res)
             {
                 console.log('err res',res);
-
+                CABLES.UI.MODAL.showError('op name invalid','');
             }
         );
     };
 
     this.cloneDialog=function(name)
     {
-
         var newName=name;
         if(name.indexOf('Ops.')===0)newName=name.substr(4,name.length);
 
         var html='<h2>Clone operator</h2>';
         html+='<div class="clone"><span>Ops.User.'+gui.user.username+'.</span><input id="cloneOpName" value="'+newName+'"/></div></div>';
-        html+='<br/><br/><br/>';
+        html+='<br/>';
+        html+='Your cloned op will be private. Only you can see and use them.';
+        html+='<br/><br/>';
         html+='<a onclick="gui.serverOps.clone(\''+name+'\',\'Ops.User.'+gui.user.username+'.\'+$(\'#cloneOpName\').val());" class="bluebutton fa fa-clone">clone</a>';
         html+='<br/><br/>';
 
