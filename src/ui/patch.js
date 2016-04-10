@@ -591,10 +591,9 @@ CABLES.UI.Patch=function(_gui)
         else
         {
             $('#projectfiles').show();
-            // $('#serverproject').show();
-            // $('#serverprojectname').html(proj.name);
+
             self.updateProjectFiles(proj);
-            $('.viewProjectLink').attr('href','/view/'+proj._id);
+            $('.viewProjectLink').attr('href','/p/'+proj._id);
         }
     };
 

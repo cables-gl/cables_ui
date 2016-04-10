@@ -54,10 +54,14 @@ CABLES.Browser=function(projectId)
         var exts = patch.cgl.gl.getSupportedExtensions();
         if(exts) browser.gl.extensions=exts;
 
-        CGL.fpsReport.splice(0,1);
-        browser.gl.fps=CGL.fpsReport;
+        if(CGL.fpsReport && CGL.fpsReport.length>1)
+        {
+            CGL.fpsReport.splice(0,1);
+            browser.gl.fps=CGL.fpsReport;
 
-        CABLES.api.post('report/'+projectId,{"report":browser});
+            CABLES.api.post('report/'+projectId,{"report":browser});
+        }
+
     };
 
 };

@@ -73,6 +73,11 @@ CABLES.Patch = function(cfg)
         else if(parts.length==3) opObj=window[parts[0]][parts[1]][parts[2]];
         else if(parts.length==4) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]];
         else if(parts.length==5) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]];
+        else if(parts.length==6) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]];
+        else if(parts.length==7) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]];
+        else if(parts.length==8) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]][parts[7]];
+        else if(parts.length==9) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]][parts[7]][parts[8]];
+        else if(parts.length==10) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]][parts[7]][parts[8]][parts[9]];
         return opObj;
     };
 
@@ -90,12 +95,6 @@ CABLES.Patch = function(cfg)
         try
         {
             var opObj=this.getOpClass(objName);
-            // null;
-            // if(parts.length==2) opObj=window[parts[0]][parts[1]];
-            // else if(parts.length==3) opObj=window[parts[0]][parts[1]][parts[2]];
-            // else if(parts.length==4) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]];
-            // else if(parts.length==5) opObj=window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]];
-            // else console.log('parts.length',parts.length);
 
             if(!opObj)
             {
@@ -104,15 +103,18 @@ CABLES.Patch = function(cfg)
                     CABLES.UI.MODAL.showError('unknown op','unknown op: '+objName);
                 }
                 console.error('unknown op: '+objName);
-                // alert('could not create '+objName);
-
             }
             else
             {
-                if(parts.length==2) op=new window[parts[0]][parts[1]](this,objName);
+                if(parts.length==2)      op=new window[parts[0]][parts[1]](this,objName);
                 else if(parts.length==3) op=new window[parts[0]][parts[1]][parts[2]](this,objName);
                 else if(parts.length==4) op=new window[parts[0]][parts[1]][parts[2]][parts[3]](this,objName);
                 else if(parts.length==5) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]](this,objName);
+                else if(parts.length==6) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]](this,objName);
+                else if(parts.length==7) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]](this,objName);
+                else if(parts.length==8) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]][parts[7]](this,objName);
+                else if(parts.length==9) op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]][parts[7]][parts[8]](this,objName);
+                else if(parts.length==10)op=new window[parts[0]][parts[1]][parts[2]][parts[3]][parts[4]][parts[5]][parts[6]][parts[7]][parts[8]][parts[9]](this,objName);
                 else console.log('parts.length',parts.length);
 
             }

@@ -126,6 +126,44 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         value=v;
     };
 
+    this.updateValue2F=function()
+    {
+        if(!value)
+        {
+            // console.log('name',name);
+            return;
+        }
+        if(loc==-1)
+        {
+            loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+            CGL.profileShaderGetUniform++;
+        }
+
+        shader.getCgl().gl.uniform2f(loc, value[0],value[1]);
+        self.needsUpdate=false;
+        CGL.profileUniformCount++;
+    };
+
+    this.setValue2F=function(v)
+    {
+        if(!v)return;
+        if(!oldValue)
+        {
+            oldValue=[v[0]-1,1];
+            self.needsUpdate=true;
+        }
+        else
+        if( v[0]!=oldValue[0] || v[1]!=oldValue[1])
+        {
+            oldValue[0]=v[0];
+            oldValue[1]=v[1];
+            self.needsUpdate=true;
+        }
+
+        value=v;
+    };
+
+
     this.updateValueT=function()
     {
         if(loc==-1)
@@ -161,6 +199,12 @@ CGL.Uniform=function(_shader,_type,_name,_value)
     {
         this.setValue=this.setValue3F;
         this.updateValue=this.updateValue3F;
+    }
+
+    if(type=='2f')
+    {
+        this.setValue=this.setValue2F;
+        this.updateValue=this.updateValue2F;
     }
 
     if(type=='t')

@@ -8,6 +8,7 @@
         <br/><br/>
         {{#if op.isServerOp }}
             <span class="button fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
+            <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
         {{/if}}
 
         <br/>
