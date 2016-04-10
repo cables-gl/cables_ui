@@ -416,8 +416,14 @@
         <br/><br/>{{op.objName}}
         <br/><br/>
         {{#if op.isServerOp }}
-            <span class="button fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
+
+            {{#if user.isAdmin}}
+            <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
+            {{/if}}
+
+            <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
             <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
+
         {{/if}}
 
         <br/>

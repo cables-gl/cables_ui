@@ -1658,7 +1658,10 @@ CABLES.UI.Patch=function(_gui)
         watchAnimPorts=[];
         watchColorPicker=[];
 
-        var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op,texts:CABLES.UI.TEXTS});
+        var ownsOp=false;
+        if(op.objName.startsWith('Ops.User.'+gui.user.username)) ownsOp=true;
+
+        var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op,texts:CABLES.UI.TEXTS,user:gui.user,ownsOp:ownsOp});
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 
