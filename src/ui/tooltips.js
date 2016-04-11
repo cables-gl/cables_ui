@@ -38,14 +38,14 @@ $(document).on('mouseout', '.tt', function()
 
 CABLES.UI.showInfo=function(txt)
 {
-    if(!txt)txt='';
-    $('#infoArea').html(mmd(txt));
+  if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
+  $('#infoArea').html(mmd(txt));
 };
-
 
 CABLES.UI.hideInfo=function()
 {
-    $('#infoArea').html('');
+  var txt = CABLES.UI.TEXTS.infoArea;
+  $('#infoArea').html(mmd(txt));
 };
 
 
@@ -53,6 +53,7 @@ $(document).on('mouseover mousemove', '.info', function(e)
 {
     clearTimeout(tooltipTimeout);
     var txt=$(this).data('info');
+    if(!txt) { txt = $('infoArea').data('info');}
     CABLES.UI.showInfo(txt);
 });
 
