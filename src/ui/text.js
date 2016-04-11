@@ -26,7 +26,7 @@ CABLES.UI.TEXTS=
     projectExportNotSaved:"patch not saved - save patch before exporting",
 
     editor: "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-    patch: "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n### Shortcuts \n\n* `[esc]: Quick-add op` \n* `[mod] + s`: Save patch / save current editor file \n* `[mod] + c`: Copy selected op \n*`[mod] + v`: Paste selected op \n*`[del]: Delete selected ops \n* `a`: Align selected ops vertically \n* `[shift] + a`: Align selected ops horizontally \n* `[mod] + a`: Select all ops",
+    patch: "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n### Shortcuts \n\n* `[esc]: Quick-add op` \n* `[space] + mouse drag:`: Move the visible area \n* `[mod] + s`: Save patch / save current editor file \n* `[mod] + c`: Copy selected op \n*`[mod] + v`: Paste selected op \n*`[del]: Delete selected ops \n* `a`: Align selected ops vertically \n* `[shift] + a`: Align selected ops horizontally \n* `[mod] + a`: Select all ops",
     canvas: "## Preview \n\nHere you can see the visual output of your patch.",
     infoArea: "## Info Panel \n\nHover over an element to see some infos here.",
     projectFiles: "## Project Files \n\nOverview over your uploaded files",
