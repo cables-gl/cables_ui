@@ -10,7 +10,6 @@ CGL.State=function()
     var shaderStack=[];
     var viewPort=[0,0,0,0];
 
-
     this.temporaryTexture=null;
     this.frameStore={};
     this.gl=null;
@@ -219,6 +218,8 @@ CGL.State=function()
 
     this.renderStart=function(cgl,identTranslate,identTranslateView)
     {
+
+
         if(!identTranslate)identTranslate=ident;
         if(!identTranslateView)identTranslateView=identView;
         cgl.gl.enable(cgl.gl.DEPTH_TEST);
@@ -251,6 +252,8 @@ CGL.State=function()
         cgl.popPMatrix();
 
         cgl.endFrame();
+
+
     };
 
     this.setTexture=function(slot,t)

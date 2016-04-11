@@ -418,6 +418,7 @@ input[type="text"]
 
 .button,.bluebutton
 {
+
     font-family: arial;
     cursor:pointer;
     background-color:#3a3a3a;
@@ -563,6 +564,12 @@ input[type="text"]
         {
             color:white;
         }
+    }
+
+    .namespace
+    {
+        font-size: 11px;
+        font-style: normal;
     }
 }
 
@@ -1410,11 +1417,6 @@ nav
 
 }
 
-// .button_saveCurrentProject
-// {
-//     line-height: 12px;
-// }
-
 #searchresult
 {
     h3
@@ -1435,4 +1437,160 @@ nav
             background-color: #1a1a1a;
         }
     }
+}
+
+
+.filename
+{
+    border-left:2px solid #aaa;
+    cursor:pointer;
+    text-overflow:ellipsis;
+    word-wrap:break-word;
+    padding-left:4px !important;
+    padding-right:0px !important;
+    padding-top:0px !important;
+    padding-bottom:0px !important;
+    margin-bottom:3px;
+
+    &:hover
+    {
+        color:white;
+    }
+}
+
+
+nav
+{
+    float:left;
+    z-index: 9999;
+
+    a
+    {
+        &:hover
+        {
+            color:#fff;
+        }
+    }
+    ul
+    {
+        text-align: left;
+        display: inline;
+        margin: 0;
+        padding: 5px 4px 5px 0;
+        list-style: none;
+        -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+    }
+    ul li
+    {
+        font: bold 12px/18px sans-serif;
+        display: inline-block;
+        margin-right: -4px;
+        position: relative;
+        padding: 7px 20px;
+        cursor: pointer;
+
+        span
+        {
+            margin-left: 20px;
+        }
+    }
+    ul li:hover
+    {
+        background: $mainColor;
+        color: #fff;
+        a
+        {
+            color:white;
+        }
+    }
+    ul li ul
+    {
+        z-index: 9999;
+        padding: 0;
+        position: absolute;
+        top: 28px;
+        left: 0;
+        width: 150px;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        display: none;
+        opacity: 0;
+        visibility: hidden;
+        -webkit-transiton: opacity 0.1s;
+        -moz-transition: opacity 0.1s;
+        -ms-transition: opacity 0.1s;
+        -o-transition: opacity 0.1s;
+        -transition: opacity 0.1s;
+    }
+    ul li ul li
+    {
+        background: #444;
+        display: block;
+        color: #fff;
+        // text-shadow: 0 -1px 0 #000;
+    }
+    ul li ul li:hover
+    {
+        background: $mainColor;
+        cursor:pointer;
+    }
+    ul li:hover ul
+    {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    ul li ul#jobs li
+    {
+        background-color: #222;
+        color:#aaa;
+        width:250px;
+        font-weight: normal;
+    }
+
+    .divide
+    {
+        padding:0px;
+        border-bottom: 1px solid #333;
+    }
+}
+
+
+.clone
+{
+    background-color: #2a2a2a;
+    width:500px;
+    padding:0px;
+    padding-left: 10px;
+    font-size: 13px;
+    color:#bbb;
+    height:38px;
+    line-height: 40px;
+    text-align: right;
+
+    span
+    {
+        margin-top: 10px;
+    }
+
+    input
+    {
+        &:focus
+        {
+            outline: none;
+        }
+        font-size: 13px;
+        padding:10px;
+        padding-left:5px;
+        height:100%;
+        width:350px;
+        background-color: #222;
+        color:#eee;
+        float:right
+    }
+
 }

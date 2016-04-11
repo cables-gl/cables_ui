@@ -37,7 +37,6 @@ CABLES.UI.ServerOps=function(gui)
             if(res)
             {
                 ops=res;
-                console.log('loaded ops...',ops);
 
                 if(cb)cb(ops);
 
@@ -90,15 +89,12 @@ CABLES.UI.ServerOps=function(gui)
         return false;
     };
 
-    this.create=function(name)
+    this.create=function(name,cb)
     {
-        // console.log('create '+name);
-
         CABLES.api.get(
             'ops/create/'+name,
             function(res)
             {
-                // console.log('res',res);
                 self.load(
                 function()
                 {
@@ -109,6 +105,7 @@ CABLES.UI.ServerOps=function(gui)
             function(res)
             {
                 console.log('err res',res);
+
             }
         );
 
@@ -127,6 +124,46 @@ CABLES.UI.ServerOps=function(gui)
         };
         document.body.appendChild( s );
 
+    };
+
+    this.clone=function(oldname,name)
+    {
+
+        console.log('clone',name,oldname);
+        CABLES.api.get(
+            'ops/clone/'+oldname+'/'+name,
+            function(res)
+            {
+                self.load(
+                function()
+                {
+                    console.log('now edit...');
+                    self.edit(name);
+                });
+            },
+            function(res)
+            {
+                console.log('err res',res);
+                CABLES.UI.MODAL.showError('op name invalid','');
+            }
+        );
+    };
+
+    this.cloneDialog=function(name)
+    {
+        var newName=name;
+        if(name.indexOf('Ops.')===0)newName=name.substr(4,name.length);
+
+        var html='<h2>Clone operator</h2>';
+        html+='<div class="clone"><span>Ops.User.'+gui.user.username+'.</span><input id="cloneOpName" value="'+newName+'"/></div></div>';
+        html+='<br/>';
+        html+='Your cloned op will be private. Only you can see and use them.';
+        html+='<br/><br/>';
+        html+='<a onclick="gui.serverOps.clone(\''+name+'\',\'Ops.User.'+gui.user.username+'.\'+$(\'#cloneOpName\').val());" class="bluebutton fa fa-clone">clone</a>';
+        html+='<br/><br/>';
+
+        CABLES.UI.MODAL.show(html);
+        $('#cloneOpName').focus();
     };
 
     this.edit=function(name,readOnly)

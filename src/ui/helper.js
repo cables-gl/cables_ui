@@ -14,7 +14,6 @@ CABLES.UI.PREVIEW.onoff=false;
 
 CABLES.UI.togglePreview=function(opid,which)
 {
-
     CABLES.UI.PREVIEW.onoff=!CABLES.UI.PREVIEW.onoff;
     console.log('CABLES.UI.PREVIEW.onoff',CABLES.UI.PREVIEW.onoff);
 

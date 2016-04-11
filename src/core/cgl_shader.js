@@ -65,6 +65,27 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         value=v;
     };
 
+    this.updateValueM4=function()
+    {
+        if(loc==-1)
+        {
+            loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+            CGL.profileShaderGetUniform++;
+        }
+        shader.getCgl().gl.uniformMatrix4fv(loc,false,value);
+        CGL.profileUniformCount++;
+
+    };
+
+    this.setValueM4=function(v)
+    {
+        self.needsUpdate=true;
+        value=v;
+    };
+
+
+
+
     var oldValue=null;
 
     this.updateValue3F=function()
@@ -105,6 +126,44 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         value=v;
     };
 
+    this.updateValue2F=function()
+    {
+        if(!value)
+        {
+            // console.log('name',name);
+            return;
+        }
+        if(loc==-1)
+        {
+            loc=shader.getCgl().gl.getUniformLocation(shader.getProgram(), name);
+            CGL.profileShaderGetUniform++;
+        }
+
+        shader.getCgl().gl.uniform2f(loc, value[0],value[1]);
+        self.needsUpdate=false;
+        CGL.profileUniformCount++;
+    };
+
+    this.setValue2F=function(v)
+    {
+        if(!v)return;
+        if(!oldValue)
+        {
+            oldValue=[v[0]-1,1];
+            self.needsUpdate=true;
+        }
+        else
+        if( v[0]!=oldValue[0] || v[1]!=oldValue[1])
+        {
+            oldValue[0]=v[0];
+            oldValue[1]=v[1];
+            self.needsUpdate=true;
+        }
+
+        value=v;
+    };
+
+
     this.updateValueT=function()
     {
         if(loc==-1)
@@ -142,10 +201,22 @@ CGL.Uniform=function(_shader,_type,_name,_value)
         this.updateValue=this.updateValue3F;
     }
 
+    if(type=='2f')
+    {
+        this.setValue=this.setValue2F;
+        this.updateValue=this.updateValue2F;
+    }
+
     if(type=='t')
     {
         this.setValue=this.setValueT;
         this.updateValue=this.updateValueT;
+    }
+
+    if(type=='m4')
+    {
+        this.setValue=this.setValueM4;
+        this.updateValue=this.updateValueM4;
     }
 
     this.setValue(_value);
@@ -170,6 +241,7 @@ CGL.Shader=function(_cgl,_name)
     var mvMatrixUniform=null;
     var mMatrixUniform=null;
     var vMatrixUniform=null;
+    var camPosUniform=null;
     var normalMatrixUniform=null;
     var attrVertexPos = -1;
 
@@ -402,6 +474,7 @@ CGL.Shader=function(_cgl,_name)
             mvMatrixUniform = cgl.gl.getUniformLocation(program, "mvMatrix");
             vMatrixUniform = cgl.gl.getUniformLocation(program, "viewMatrix");
             mMatrixUniform = cgl.gl.getUniformLocation(program, "modelMatrix");
+            camPosUniform = cgl.gl.getUniformLocation(program, "camPos");
             normalMatrixUniform = cgl.gl.getUniformLocation(program, "normalMatrix");
             for(i=0;i<uniforms.length;i++)uniforms[i].needsUpdate=true;
         }
@@ -424,6 +497,12 @@ CGL.Shader=function(_cgl,_name)
         {
             cgl.gl.uniformMatrix4fv(vMatrixUniform, false, cgl.vMatrix);
             cgl.gl.uniformMatrix4fv(mMatrixUniform, false, cgl.mvMatrix);
+
+var m=mat4.create();
+mat4.invert(m,cgl.vMatrix);
+cgl.gl.uniform3f(camPosUniform, m[12],m[13],m[14]);
+// console.log(m[12],m[13],m[14]);
+
         }
         else
         {

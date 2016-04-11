@@ -290,7 +290,7 @@
           {{#each ops}}
 
             <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
-                <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{name}}  {{isFunction}}</a>
+                <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{shortName}} <span class="namespace">{{nameSpace}}</span>{{isFunction}}</a>
             </div>
 
           {{/each}}
@@ -305,46 +305,83 @@
 
 
 
-<script id="params_convert" type="text/x-handlebars-template">
+<script id="params_file" type="text/x-handlebars-template">
     <div class="">
-        <h2>converter</h2>
+        <h3>{{file.fileDb.fileName}}</h3>
+
+        {{file.fileDb.type}} - {{file.sizeKb}} KB
+
+        {{#if file.imgSizeWidth  }}
+            - {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} - {{ file.imgSizePower }}
+        {{/if}}
+
+        <br/>uploaded {{file.readableDateSince}} ( {{file.readableDate}} )
+
+
+        <br/><br/>
+
+        {{#each file.ops}}
+            <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
+            <br/><br/>
+        {{/each}}
+
+        <a href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" target="_blank" class="button fa fa-external-link" >open file</a>
+
+        <br/><br/>
+
+        {{#if file.imgPreview  }}
+            <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" style="width:100%;"/>
+            <br/><br/>
+        {{/if}}
+
+
+        <table>
+<!-- 
+            <tr>
+                <td>&nbsp;</td>
+                <td>filename</td>
+                <td>{{file.fileDb.fileName}}</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>created</td>
+                <td>{{file.fileDb.created}}</td>
+            </tr>
+
+
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>suffix</td>
+                <td>{{file.fileDb.suffix}}</td>
+            </tr>
+             -->
+            <tr>
+                <td>&nbsp;</td>
+                <td>projectId</td>
+                <td>{{file.fileDb.projectId}}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>user</td>
+                <td>{{file.fileDb.userId}}</td>
+            </tr>
+
+        </table>
+
+
         <br/>
-        <br/>
+        <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{fileId}}',null,function(){gui.patch().updateProjectFiles();$('#options').html('')});">delete </a>
+
     </div>
-    <table>
-        <tr>
-            <th colspan="11">
-                <div class="panelhead">converter settings</div>
-            </th>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td>
-                ignore tangents/bitangents
-            </td>
-            <td>
-                <input type="checkbox" id="convert_remove_tangents"></input>
-            </td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td>
-                ignore texture coordinates
-            </td>
-            <td>
-                <input type="checkbox" id="convert_remove_texcoords"></input>
-            </td>
-        </tr>
-
-
-    </table>
 
     <br/>
     <br/>
     <br/>
     <br/>
     <div>
-        <a class="bluebutton fa fa-retweet" onclick="gui.convertFile('{{fileId}}');">&nbsp;convert</a>
+        <!-- <a class="bluebutton fa fa-retweet" onclick="gui.convertFile('{{fileId}}');">&nbsp;convert</a> -->
     </div>
 
 
@@ -379,7 +416,14 @@
         <br/><br/>{{op.objName}}
         <br/><br/>
         {{#if op.isServerOp }}
-            <span class="button fa fa-edit" onclick="gui.serverOps.edit('{{op.objName}}');">edit op code</span>
+
+            {{#if user.isAdmin}}
+            <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
+            {{/if}}
+
+            <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
+            <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
+
         {{/if}}
 
         <br/>
@@ -588,7 +632,7 @@
                         <a class="info graphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
                         </td><td>
 
-                        <input type ="range" class="range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.min }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
+                        <input type ="range" class="range" id="portval_{{ portnum }}_range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.min }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
                         <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
@@ -610,7 +654,7 @@
                     {{#compare port.uiAttribs.display '==' 'file' }}
                         </td><td>
                         <a class="graphbutton timingbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
-                        <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                        <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:75%;"/>
                         &nbsp;<a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
                     {{/compare}}
 
@@ -747,6 +791,15 @@
                 <a onclick="gui.editProjectDescription();" class="button fa fa-edit">edit description</a>
                 <br/><br/>
                 <a onclick="gui.editProjectTags();" class="button fa fa-edit">edit tags</a>
+
+                <br/><br/>
+                <a onclick="gui.saveScreenshot();" class="button fa fa-image">download screenshot</a>
+
+                <br/><br/>
+                <a onclick="gui.showReports();" class="button fa fa-image">see FPS reports</a>
+
+
+
                 <!-- <br/><br/> -->
                 <!-- <a class="button fa fa-times" onclick="if(confirm('really?'))gui.scene().clear();">&nbsp;clear patch</a> -->
 
@@ -907,25 +960,12 @@ updateIcons();
 <script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
     <h2>files</h2>
 
-    <table class="list">
-        {{#each files}}
-            <tr>
-                <td style="width:50%">
-                    <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{_id}}',null,function(){gui.patch().updateProjectFiles();});"></a>&nbsp;
-                    {{#compare suffix '==' '.fbx' }}
-                    <a class="button fa fa-retweet" onclick="gui.showConverter('{{_id}}')"></a>
-                    {{/compare}}
+    {{#each files}}
+        <div class="filename" onclick="CABLES.api.get('project/{{projectId}}/file/info/{{_id}}',function(r){ gui.showFile('{{_id}}',r) });">
+            {{name}}
+        </div>
+    {{/each}}
 
-                </td>
-
-                <td style="text-overflow: hidden;width:50%">
-                    <a class="filename" onclick="gui.patch().addAssetOp('{{p}}','{{suffix}}','{{name}}')">
-                    {{name}}
-                    </a>
-                </td>
-            </tr>
-        {{/each}}
-    </table>
 </script>
 
 

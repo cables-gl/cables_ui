@@ -336,6 +336,33 @@ CABLES.UI.GUI=function()
             CABLES.UI.MODAL.show(html);
             // console.log(r);
         });
+
+    };
+
+    this.showReports=function()
+    {
+        CABLES.UI.MODAL.showLoading('loading versions');
+        CABLES.api.get('report/summary/'+self.patch().getCurrentProject()._id,
+            function(r)
+            {
+                var html='<h2>patch reports</h2>';
+
+                if(r.length===0)
+                {
+                    html+='no reports available. visit <a href="/p/'+self.patch().getCurrentProject()._id+'">this page</a> and watch it for 20 seconds to generate reports...<br/><br/>';
+                }
+                else
+                {
+                    html+='<pre><code>';
+                    for(var i in r)
+                    {
+                        html+=Math.round(r[i].avgFps)+' FPS / '+r[i].renderer+' / '+r[i].when+' \n';
+                    }
+                    html+='</code></pre>';
+                }
+
+                CABLES.UI.MODAL.show(html);
+            });
     };
 
 
@@ -426,26 +453,27 @@ CABLES.UI.GUI=function()
         }
     };
 
-    this.convertFile=function(fileId)
-    {
-        CABLES.api.post('project/'+self.patch().getCurrentProject()._id+'/file/convert/'+fileId,{options:
-            {
-                removeTangents:$('#convert_remove_tangents').is(':checked'),
-                removeTexcoords:$('#convert_remove_texcoords').is(':checked'),
-            }},
-            function(r)
-            {
-                CABLES.UI.MODAL.show('<pre>'+JSON.stringify(r,null,4)+'</pre>');
-            });
-    };
+    // this.convertFile=function(fileId)
+    // {
+    //     CABLES.api.post('project/'+self.patch().getCurrentProject()._id+'/file/convert/'+fileId,{options:
+    //         {
+    //             removeTangents:$('#convert_remove_tangents').is(':checked'),
+    //             removeTexcoords:$('#convert_remove_texcoords').is(':checked'),
+    //         }},
+    //         function(r)
+    //         {
+    //             CABLES.UI.MODAL.show('<pre>'+JSON.stringify(r,null,4)+'</pre>');
+    //         });
+    // };
 
-    this.showConverter=function(fileId)
+    this.showFile=function(fileId,file)
     {
         var html = CABLES.UI.getHandleBarHtml(
-            'params_convert',
+            'params_file',
             {
-                fileId:fileId
-
+                file:file,
+                fileId:fileId,
+                projectId:self.patch().getCurrentProject()._id
             });
 
         $('#options').html(html);
@@ -822,6 +850,32 @@ CABLES.UI.GUI=function()
         }, 300);
 
     };
+
+    this.saveScreenshot=function()
+    {
+        var w=$('#glcanvas').attr('width');
+        var h=$('#glcanvas').attr('height');
+        $('#glcanvas').attr('width',1920);
+        $('#glcanvas').attr('height',1080);
+
+        gui.patch().scene.cgl.doScreenshot=true;
+        setTimeout(function()
+        {
+            $('#glcanvas').attr('width',w);
+            $('#glcanvas').attr('height',h);
+
+            var img=gui.patch().scene.cgl.screenShotDataURL.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+            var anchor = document.createElement('a');
+
+            anchor.setAttribute('download', 'cables_screenshot.png');
+            anchor.setAttribute('href', img);
+            anchor.click();
+        },100);
+
+
+
+    };
+
 
     this.showOpDoc=function(opname)
     {

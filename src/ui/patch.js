@@ -38,6 +38,50 @@ CABLES.UI.Patch=function(_gui)
         return self.paper;
     };
 
+    this.getLargestPort=function()
+    {
+        var max=0;
+        var maxName='unknown';
+        var j=0;
+        var ser='';
+        var maxValue='';
+
+        for(var i in this.ops)
+        {
+            for(j in this.ops[i].op.portsIn)
+            {
+                ser=JSON.stringify(this.ops[i].op.portsIn[j].getSerialized());
+                if(ser.length>max)
+                {
+                    max=ser.length;
+                    maxValue=ser;
+                    maxName=this.ops[i].op.name+' - in: '+this.ops[i].op.portsIn[j].name;
+                }
+            }
+            for(j in this.ops[i].op.portsOut)
+            {
+                ser=JSON.stringify(this.ops[i].op.portsOut[j].getSerialized());
+                if(ser.length>max)
+                {
+                    max=ser.length;
+                    maxValue=ser;
+                    maxName=this.ops[i].op.name+' - out: '+this.ops[i].op.portsOut[j].name;
+                }
+            }
+        }
+
+        if(max>4000)
+        {
+            alert('warning big port: '+maxName+' / '+max+' chars');
+            // console.log(maxValue);
+        }
+        console.log('biggest port:',maxName,max);
+
+
+
+    };
+
+
     this.paste=function(e)
     {
         if(e.clipboardData.types.indexOf('text/plain') > -1)
@@ -466,8 +510,8 @@ CABLES.UI.Patch=function(_gui)
             },d._id,d.name);
 
         });
-
     };
+
 
 
     this.saveCurrentProject=function(cb,_id,_name)
@@ -481,6 +525,11 @@ CABLES.UI.Patch=function(_gui)
         gui.jobs().start({id:'projectsave',title:'saving project'});
 
         gui.patch().scene.cgl.doScreenshot=true;
+
+        var w=$('#glcanvas').attr('width');
+        var h=$('#glcanvas').attr('height');
+        $('#glcanvas').attr('width',640);
+        $('#glcanvas').attr('height',360);
 
         var id=currentProject._id;
         var name=currentProject.name;
@@ -502,7 +551,11 @@ CABLES.UI.Patch=function(_gui)
             data.ui.renderer.h=gui.rendererHeight;
 
             data=JSON.stringify(data);
+
+
             console.log('data.length',data.length);
+
+            gui.patch().getLargestPort();
 
 
             CABLES.api.put(
@@ -514,6 +567,9 @@ CABLES.UI.Patch=function(_gui)
                 },
                 function(r)
                 {
+                    $('#glcanvas').attr('width',w);
+                    $('#glcanvas').attr('height',h);
+
                     if(r.success===true) CABLES.UI.setStatusText('project saved');
                     else CABLES.UI.setStatusText('project NOT saved');
 
@@ -543,10 +599,9 @@ CABLES.UI.Patch=function(_gui)
         else
         {
             $('#projectfiles').show();
-            // $('#serverproject').show();
-            // $('#serverprojectname').html(proj.name);
+
             self.updateProjectFiles(proj);
-            $('.viewProjectLink').attr('href','/view/'+proj._id);
+            $('.viewProjectLink').attr('href','/p/'+proj._id);
         }
         $('#projectfiles').hover(function (e)
         {
@@ -1618,7 +1673,10 @@ CABLES.UI.Patch=function(_gui)
         watchAnimPorts=[];
         watchColorPicker=[];
 
-        var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op,texts:CABLES.UI.TEXTS});
+        var ownsOp=false;
+        if(op.objName.startsWith('Ops.User.'+gui.user.username)) ownsOp=true;
+
+        var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op,texts:CABLES.UI.TEXTS,user:gui.user,ownsOp:ownsOp});
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 
@@ -1842,11 +1900,16 @@ CABLES.UI.Patch=function(_gui)
             var thePort2=watchColorPicker[iwcp];
             (function (thePort)
             {
+
+console.log('watch colorpic ',thePort.watchId);
                 function updateColorPickerButton(id)
                 {
-                    var c1=Math.round(255*$(id).parent().parent().find('input.range').val());
-                    var c2=Math.round(255*$(id).parent().parent().next('tr').find('input.value').val());
-                    var c3=Math.round(255*$(id).parent().parent().next('tr').next('tr').find('input.value').val());
+                    var splits=id.split('_');
+                    var portNum=parseInt(splits[splits.length-1]);
+console.log('the id:',id);
+                    var c1=Math.round(255 * $('#portval_'+portNum).val());
+                    var c2=Math.round(255 * $('#portval_'+(portNum+1)).val());
+                    var c3=Math.round(255 * $('#portval_'+(portNum+2)).val());
 
                     $(id).css('background-color','rgb('+c1+','+c2+','+c3+')');
                 }
@@ -1861,6 +1924,10 @@ CABLES.UI.Patch=function(_gui)
                     doRender: 'div div',
                     renderCallback:function(res,toggled)
                     {
+                        console.log( 'res',res );
+                        var id=res[0].id;
+                        var splits=id.split('_');
+                        var portNum=parseInt(splits[splits.length-1]);
 
                         if(toggled === false)
                         {
@@ -1875,9 +1942,15 @@ CABLES.UI.Patch=function(_gui)
 
                         if(!ignoreColorChanges)
                         {
-                            $(id).parent().parent().find('input.range').val(colors.rgb.r).trigger('input');
-                            $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
-                            $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
+                            $('#portval_'+portNum+'_range').val(colors.rgb.r).trigger('input');
+                            $('#portval_'+(portNum+1)+'_range').val(colors.rgb.g).trigger('input');
+                            $('#portval_'+(portNum+2)+'_range').val(colors.rgb.b).trigger('input');
+
+                            // console.log(id);
+                            // id="portval_{{ portnum }}"
+                            // $(id).parent().parent().find('input.range').val(colors.rgb.r).trigger('input');
+                            // $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
+                            // $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
                         }
                         else
                         {
@@ -1966,46 +2039,14 @@ CABLES.UI.Patch=function(_gui)
         return res;
     };
 
-    this.addAssetOp=function(url,suffix,title)
+    this.addAssetOp=function(opname,portname,filename,title)
     {
+        if(!title)title=filename;
+
         var uiAttr={'title':title,translate:{x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2}};
-        var op;
-        if(suffix=='.obj')
-        {
-            op=gui.scene().addOp('Ops.Gl.Meshes.ObjMesh',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        if(suffix=='.png' || suffix=='.jpg')
-        {
-            op=gui.scene().addOp('Ops.Gl.Texture',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        if(suffix=='.mp3' || suffix=='.ogg')
-        {
-            op=gui.scene().addOp('Ops.WebAudio.AudioPlayer',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        if(suffix=='.3d.json' )
-        {
-            op=gui.scene().addOp('Ops.Json3d.json3dFile',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        if(suffix=='.seq.json' )
-        {
-            op=gui.scene().addOp('Ops.Gl.MeshSequence',uiAttr);
-            op.getPort('file').val=url;
-        }
-        else
-        {
-            CABLES.UI.setStatusText('unknown file type');
-        }
+        var op=gui.scene().addOp(opname,uiAttr);
+        op.getPort(portname).val='/assets/'+currentProject._id+'/'+filename;
     };
-
-
 
     doWatchPorts();
 
