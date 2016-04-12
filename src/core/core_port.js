@@ -101,7 +101,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     {
         if(parent.enabled)
         {
-            if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE)
+            if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE || this.type==OP_PORT_TYPE_ARRAY)
             {
                 if(animated)
                 {

@@ -730,7 +730,7 @@ CABLES.UI.GUI=function()
             {
                 content:content,
                 title:objName,
-                syntax:'md',
+                syntax:'Markdown',
                 onSave:function(setStatus,content)
                 {
                     CABLES.api.post(
