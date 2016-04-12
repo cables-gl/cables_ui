@@ -325,7 +325,7 @@ CGL.Shader=function(_cgl,_name)
 
         .endl()+'attribute vec3 vPosition;'
         .endl()+'attribute vec2 attrTexCoord;'
-        // .endl()+'attribute vec3 attrVertNormal;'
+        .endl()+'attribute vec3 attrVertNormal;'
         .endl()+'varying vec2 texCoord;'
         .endl()+'varying vec3 norm;'
         .endl()+'uniform mat4 projMatrix;'
