@@ -387,6 +387,14 @@ CABLES.UI.Patch=function(_gui)
         e.preventDefault();
     };
 
+    $('#patch').hover(function (e)
+    {
+        CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
+    },function()
+    {
+        CABLES.UI.hideInfo();
+    });
+
     $('#patch').keyup(function(e)
     {
         switch(e.which)
@@ -595,6 +603,13 @@ CABLES.UI.Patch=function(_gui)
             self.updateProjectFiles(proj);
             $('.viewProjectLink').attr('href','/p/'+proj._id);
         }
+        $('#projectfiles').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
     };
 
     this.updateProjectFiles=function(proj)

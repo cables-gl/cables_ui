@@ -257,6 +257,13 @@ CABLES.UI.GUI=function()
             $('#glcanvas').attr('height',self.rendererHeight);
         }
         CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
+        $('#glcanvas').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
     };
 
     this.importDialog=function()
@@ -946,6 +953,13 @@ CABLES.UI.GUI=function()
     this.init=function()
     {
         $('#infoArea').show();
+        $('#infoArea').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.infoArea);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
         _patch=new CABLES.UI.Patch(this);
         _patch.show(_scene);
 
@@ -953,6 +967,13 @@ CABLES.UI.GUI=function()
         // _socket=new CABLES.API.Socket(this);
         // _socket = new CABLES.API.Socket();
         _connection=new CABLES.API.Connection(this);
+        $('#undev').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
     };
     self.loadUser();
 
