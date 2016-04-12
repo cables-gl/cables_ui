@@ -321,7 +321,7 @@ CGL.Shader=function(_cgl,_name)
     this.getDefaultVertexShader=function()
     {
         return ''
-        .endl()+'{{MODULES_HEAD}}'
+        // .endl()+'{{MODULES_HEAD}}'
 
         .endl()+'attribute vec3 vPosition;'
         .endl()+'attribute vec2 attrTexCoord;'
@@ -336,7 +336,7 @@ CGL.Shader=function(_cgl,_name)
         .endl()+'{'
         .endl()+'   texCoord=attrTexCoord;'
         .endl()+'   norm=attrVertNormal;'
-        .endl()+'   {{MODULE_VERTEX_POSITION}}'
+        // .endl()+'   {{MODULE_VERTEX_POSITION}}'
 
         .endl()+'   gl_Position = projMatrix * mvMatrix * vec4(vPosition,  1.0);'
         .endl()+'}';
