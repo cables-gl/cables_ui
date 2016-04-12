@@ -8,9 +8,16 @@ CABLES.Editor=function()
 
     var editor = ace.edit("ace");
     editor.setValue('nothing to edit right now :/');
-    editor.setOption("showPrintMargin", false);
+
+    editor.setOptions({
+        "enableBasicAutocompletion": true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true,
+        "showPrintMargin": false
+    });
+
     editor.setTheme("ace/theme/cables");
-    editor.session.setMode("ace/mode/text");
+    editor.session.setMode("ace/mode/javascript");
     editor.$blockScrolling = Infinity;
     editor.resize();
     editor.focus();
