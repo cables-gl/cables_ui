@@ -162,4 +162,9 @@ CABLES.Editor=function()
     // });
     // this.closeCurrentTab();
 
+    this.focus=function()
+    {
+        editor.focus();
+    };
+
 };

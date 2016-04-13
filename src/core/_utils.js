@@ -10,7 +10,6 @@ function generateUUID()
     return uuid;
 }
 
-
 // ----------------------------------------------------------------
 
 Math.randomSeed=1;

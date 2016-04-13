@@ -644,6 +644,7 @@ CABLES.UI.GUI=function()
                     if( $('#modalcontent').is(':visible') )
                     {
                         CABLES.UI.MODAL.hide();
+                        if(showingEditor) self.editor().focus();
                     }
                     else
                     {

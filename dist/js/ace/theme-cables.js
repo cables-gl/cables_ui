@@ -1,11 +1,8 @@
 ace.define("ace/theme/cables",["require","exports","module","ace/lib/dom"],function(e,t,n){t.isDark=!0,t.cssClass="ace-idle-fingers",t.cssText=""+
     ".ace-idle-fingers .ace_gutter {background: #222; color: #555;}"+
     ".ace_autocomplete {background: #333 !important; border:none !important;}"+
-    ".ace_autocomplete .ace_active-line{background: #666 !important; border:none !important;}"+
+    ".ace_autocomplete .ace_active-line{background: #777 !important; border:none !important;}"+
     ".ace_completion-highlight {color: #eee !important;}"+
-
-
-
     ".ace_gutter-cell .ace_gutter {background: #222; color: #555 !important;}"+
     ".ace-idle-fingers .ace_print-margin {width: 1px;background: #3b3b3b}"+
     ".ace-idle-fingers { background-color: #1c1c1c;color: #FFFFFF}"+
@@ -34,4 +31,3 @@ ace.define("ace/theme/cables",["require","exports","module","ace/lib/dom"],funct
     ".ace-idle-fingers .ace_indent-guide {background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMwMjLyZYiPj/8PAAreAwAI1+g0AAAAAElFTkSuQmCC) right repeat-y}";
 var r=e("../lib/dom");
 r.importCssString(t.cssText,t.cssClass)});
-lo
