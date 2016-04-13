@@ -29,6 +29,11 @@ CABLES.Op = function()
 
     this.uiAttr=function(newAttribs)
     {
+        if(newAttribs && newAttribs.error)
+        {
+            console.error('error:',this.name,newAttribs.error);
+        }
+
         if(!this.uiAttribs)this.uiAttribs={};
         for(var p in newAttribs)
         {

@@ -14,6 +14,20 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
     CABLES.UI.OPSELECT.newOpPos=pos;
 
+    var self=this;
+    this.opDocs=[];
+
+    CABLES.api.get(
+        'doc/ops/all',
+        function(res)
+        {
+            console.log('loaded '+res.length+' op docs.');
+            self.opDocs=res;
+        },
+        function(res){ console.log('err',res); }
+        );
+
+
     var html = CABLES.UI.getHandleBarHtml('op_select',{ops: CABLES.UI.OPSELECT.getOpList() });
     CABLES.UI.MODAL.show(html);
 
@@ -29,7 +43,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 
         // if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
         {
-            $('#opOptions').html('<i class="fa fa-lock"/> <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create op</a><hr/>');
+            $('#opOptions').html('<i class="fa fa-lock"/> <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create op</a>');
         }
 
     });
@@ -71,31 +85,36 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 
             $('#searchinfo').html('');
 
-            var cached=CABLES.api.hasCached('doc/ops/'+opname);
-            if(cached)
+            var content='No docs found';
+            for(var i=0;i<self.opDocs.length;i++)
             {
-                $('#searchinfo').html(cached.data.content+htmlFoot);
-                return;
+                if(self.opDocs[i].name==opname)
+                {
+                    content=self.opDocs[i].content;
+                    break;
+                }
             }
+            $('#searchinfo').html(content+htmlFoot);
 
-            if(infoTimeout!=-1)clearTimeout(infoTimeout);
-            infoTimeout = setTimeout(function()
-            {
-                lastInfoOpName=$('.selected').data('opname');
 
-                CABLES.api.getCached(
-                    'doc/ops/'+opname,
-                    function(res)
-                    {
-                        // if(res.content)
-                        $('#searchinfo').html(res.content+htmlFoot);
-                            // else $('#searchinfo').html(res.content+htmlFoot);
-                    },
-                    function(res){ console.log('err',res); }
-                    );
-                // console.log('opname',opname);
-
-            }, 300);
+            // if(infoTimeout!=-1)clearTimeout(infoTimeout);
+            // infoTimeout = setTimeout(function()
+            // {
+            //     lastInfoOpName=$('.selected').data('opname');
+            //
+            //     CABLES.api.getCached(
+            //         'doc/ops/'+opname,
+            //         function(res)
+            //         {
+            //             // if(res.content)
+            //             $('#searchinfo').html(res.content+htmlFoot);
+            //                 // else $('#searchinfo').html(res.content+htmlFoot);
+            //         },
+            //         function(res){ console.log('err',res); }
+            //         );
+            //     // console.log('opname',opname);
+            //
+            // }, 300);
 
         }
     }

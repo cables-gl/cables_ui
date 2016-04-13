@@ -3,7 +3,7 @@
 <script id="op_select" type="text/x-handlebars-template">
 
     <div class="opsearch">
-        <h2>select op</h2>
+        <h2>Select op</h2>
 
         <input id="opsearch"/>
 
@@ -11,7 +11,7 @@
         <style id="search_style"></style>
 
 
-        <div style="height:300px;overflow:auto" class="searchbrowser">
+        <div class="searchbrowser">
           {{#each ops}}
 
             <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
@@ -21,9 +21,9 @@
           {{/each}}
         </div>
 
-        <div id="opOptions" class="searchinfo"></div>
         <div id="searchinfo" class="searchinfo"></div>
 
     </div>
+    <div id="opOptions" class="opOptions"></div>
 
 </script>

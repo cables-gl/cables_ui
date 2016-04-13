@@ -519,12 +519,16 @@ input[type="text"]
     }
 }
 
+.opOptions
+{
+    padding-top:5px;
+}
 
 .opsearch
 {
-    width:640px;
-    height:400px;
-    overflow: auto;
+    width:800px;
+    height:480px;
+    overflow: hidden;
 
     input
     {
@@ -532,14 +536,14 @@ input[type="text"]
         padding:10px;
         width:100%;
         border:none;
-        border-radius: 8px;
         outline: none;
         background-color: #222;
     }
+
     .searchbrowser
     {
         float:left;
-        width:60%;
+        width:48%;
     }
 
     .searchresult
@@ -550,11 +554,25 @@ input[type="text"]
         padding:5px;
     }
 
+    .searchbrowser
+    {
+        height:420px;
+        overflow:hidden
+    }
+
     .searchinfo
     {
         float:left;
-        width:35%;
+        width:49%;
         padding-left: 20px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        height:420px;
+
+        h1
+        {
+            margin-top: 0px;
+        }
     }
 
     .selected
@@ -750,7 +768,7 @@ input[type=range]:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #444;
+    background: #2a2a2a;
     -webkit-border-radius: 1px;
     // -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
 }
