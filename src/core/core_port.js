@@ -40,6 +40,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     this.shouldLink=function(){return true;};
 
 
+
     this.get=function()
     {
         if(animated && lastAnimFrame!=parent.patch.getFrameNum())
@@ -58,7 +59,6 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                 else
                 if(this.onValueChanged)
                 {
-                    // deprecated!
                     this.onValueChanged();
                 }
             }
@@ -97,8 +97,12 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         onValueChanged=cb.bind(this.parent);
     };
 
+
+    var lastValueChangeFrame=-1;
+
     this.setValue=function(v)
     {
+
         if(parent.enabled)
         {
             if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE || this.type==OP_PORT_TYPE_ARRAY)
@@ -112,16 +116,24 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                     try
                     {
                         this.value=v;
-                        if(onValueChanged)
+
+                        if(lastValueChangeFrame!=parent.patch.getFrameNum())
                         {
-                            onValueChanged();
+                            lastValueChangeFrame=parent.patch.getFrameNum();
+                            if(onValueChanged)
+                            {
+                                onValueChanged();
+                            }
+                            else
+                            if(this.onValueChanged)
+                            {
+                                // deprecated!
+                                this.onValueChanged();
+                            }
                         }
-                        else
-                        if(this.onValueChanged)
-                        {
-                            // deprecated!
-                            this.onValueChanged();
-                        }
+
+
+
                     }
                     catch(ex)
                     {

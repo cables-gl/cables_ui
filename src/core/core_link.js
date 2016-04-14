@@ -56,7 +56,9 @@ CABLES.Link = function(scene)
         p2.addLink(this);
         if(p1.onLink) p1.onLink(this);
         if(p2.onLink) p2.onLink(this);
-        this.setValue();
+
+        this.portIn.setValue();
+
     };
 
     this.getSerialized=function()
