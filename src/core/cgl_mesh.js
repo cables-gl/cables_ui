@@ -68,7 +68,7 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
 
     this.setGeom=function(geom)
     {
-        if(!this.meshChanged())this.unBind();
+        if(!this.meshChanged()) this.unBind();
         var i=0;
 
         attributes.length=0;
@@ -186,9 +186,7 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
                 cgl.gl.disableVertexAttribArray(attributes[i].loc+1);
                 cgl.gl.disableVertexAttribArray(attributes[i].loc+2);
                 cgl.gl.disableVertexAttribArray(attributes[i].loc+3);
-
             }
-
         }
 
         // cgl.gl.bindBuffer(cgl.gl.ELEMENT_ARRAY_BUFFER, null);
@@ -218,13 +216,15 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         // var meshChanged=this.meshChanged();
 
         // if(meshChanged)
-            // cgl.lastMesh.unBind();
+        // cgl.lastMesh.unBind();
+
 var needsBind=false;
 if(CGL.MESH.lastMesh!=this || CGL.MESH.lastShader!=shader)
 {
     needsBind=true;
     if(CGL.MESH.lastMesh && CGL.MESH.lastShader) CGL.MESH.lastMesh.unBind(CGL.MESH.lastShader);
 }
+if(!CGL.MESH.lastMesh || !CGL.MESH.lastShader) needsBind=true;
 if(needsBind) preBind(shader);
 
 shader.bind();

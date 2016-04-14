@@ -135,6 +135,7 @@ CGL.TextureEffect=function(cgl,options)
 
         cgl.popMvMatrix();
 
+
         switched=!switched;
     };
 

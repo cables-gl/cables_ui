@@ -23,6 +23,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         {
             console.log('loaded '+res.length+' op docs.');
             self.opDocs=res;
+            updateInfo();
         },
         function(res){ console.log('err',res); }
         );
@@ -62,8 +63,8 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         if (displayBoxIndex < 0) displayBoxIndex = oBoxCollection.length - 1;
 
         var cssClass = "selected";
-        oBoxCollectionAll.removeClass(cssClass);
 
+        oBoxCollectionAll.removeClass(cssClass);
         oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
 
         updateInfo();
@@ -124,6 +125,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         // $(".searchresult:visible").first().addClass( "selected" );
         displayBoxIndex=0;
         Navigate(0);
+        updateInfo();
     }
 
     $('#opsearch').on('input',onInput);
