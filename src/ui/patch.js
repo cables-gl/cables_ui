@@ -1839,6 +1839,7 @@ CABLES.UI.Patch=function(_gui)
                         else
                         {
                             $('#portval_'+index).removeClass('invalid');
+                            v=parseFloat(v);
                         }
                     }
                     if(op.portsIn[index].uiAttribs.type=='int')
