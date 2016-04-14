@@ -137,7 +137,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                         this.setValue=function(v){};
                         this.onTriggered=function(){};
 
-                        CABLES.UI.MODAL.showException(ex,parent);
+                        if(CABLES.UI) CABLES.UI.MODAL.showException(ex,parent);
 
                         console.log('exception!');
                         console.error('onvaluechanged exception cought',ex);
