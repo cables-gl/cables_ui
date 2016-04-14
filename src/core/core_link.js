@@ -60,7 +60,7 @@ CABLES.Link = function(scene)
         if(p1.onLink) p1.onLink(this);
         if(p2.onLink) p2.onLink(this);
 
-        this.portIn.setValue();
+        this.setValue();
 
     };
 
