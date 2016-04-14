@@ -14,7 +14,10 @@ CABLES.Link = function(scene)
 
     this.setValue=function()
     {
-        if(this.portIn.get()!=this.portOut.get())
+        // if(isNaN(this.portOut.get())) console.log('nan schwein!!!');
+        // console.log('setvalue ',this.portIn.name,this.portOut.name);
+        // console.log('setvalue ',this.portIn.get(),this.portOut.get());
+        if(this.portIn.get()!=this.portOut.get() && !isNaN(this.portOut.get()))
             this.portIn.set(this.portOut.get());
     };
 

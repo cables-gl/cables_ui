@@ -117,21 +117,17 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                     {
                         this.value=v;
 
-                        if(lastValueChangeFrame!=parent.patch.getFrameNum())
-                        {
-                            lastValueChangeFrame=parent.patch.getFrameNum();
-                            if(onValueChanged)
-                            {
-                                onValueChanged();
-                            }
-                            else
-                            if(this.onValueChanged)
-                            {
-                                // deprecated!
-                                this.onValueChanged();
-                            }
-                        }
 
+                        if(onValueChanged)
+                        {
+                            onValueChanged();
+                        }
+                        else
+                        if(this.onValueChanged)
+                        {
+                            // deprecated!
+                            this.onValueChanged();
+                        }
 
 
                     }
