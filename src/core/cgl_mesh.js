@@ -1,5 +1,8 @@
 var CGL=CGL || {};
+CGL.MESH=CGL.MESH || {};
 
+CGL.MESH.lastShader=null;
+CGL.MESH.lastMesh=null;
 
 CGL.Mesh=function(_cgl,geom,glPrimitive)
 {
@@ -216,14 +219,24 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
 
         // if(meshChanged)
             // cgl.lastMesh.unBind();
+var needsBind=false;
+if(CGL.MESH.lastMesh!=this || CGL.MESH.lastShader!=shader)
+{
+    needsBind=true;
+    if(CGL.MESH.lastMesh && CGL.MESH.lastShader) CGL.MESH.lastMesh.unBind(CGL.MESH.lastShader);
+}
+if(needsBind) preBind(shader);
+
+shader.bind();
+
+if(needsBind) bind(shader);
 
 
-        preBind(shader);
-
-        shader.bind();
 
         // if(meshChanged)
-        bind(shader);
+
+CGL.MESH.lastMesh=this;
+CGL.MESH.lastShader=shader;
 
         // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
         // var what=cgl.gl.TRIANGLES;
@@ -259,7 +272,7 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
 
         }
 
-        this.unBind(shader);
+        // this.unBind(shader);
 
         // cgl.lastMesh=this;
         // cgl.lastMeshShader=shader;
