@@ -40,7 +40,6 @@ CABLES.Port=function(parent,name,type,uiAttribs)
     this.shouldLink=function(){return true;};
 
 
-
     this.get=function()
     {
         if(animated && lastAnimFrame!=parent.patch.getFrameNum())
@@ -59,6 +58,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                 else
                 if(this.onValueChanged)
                 {
+                    // deprecated!
                     this.onValueChanged();
                 }
             }
@@ -97,12 +97,8 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         onValueChanged=cb.bind(this.parent);
     };
 
-
-    var lastValueChangeFrame=-1;
-
     this.setValue=function(v)
     {
-
         if(parent.enabled)
         {
             if(v!=this.value || this.type==OP_PORT_TYPE_TEXTURE || this.type==OP_PORT_TYPE_ARRAY)
@@ -116,8 +112,6 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                     try
                     {
                         this.value=v;
-
-
                         if(onValueChanged)
                         {
                             onValueChanged();
@@ -128,8 +122,6 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                             // deprecated!
                             this.onValueChanged();
                         }
-
-
                     }
                     catch(ex)
                     {
@@ -137,7 +129,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
                         this.setValue=function(v){};
                         this.onTriggered=function(){};
 
-                        if(CABLES.UI) CABLES.UI.MODAL.showException(ex,parent);
+                        CABLES.UI.MODAL.showException(ex,parent);
 
                         console.log('exception!');
                         console.error('onvaluechanged exception cought',ex);
@@ -310,7 +302,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         for(var i in this.links)
             if(this.links[i]==link)this.links.splice( i, 1 );
 
-        self.setValue(valueBeforeLink);
+        if(this.direction==PORT_DIR_IN) self.setValue(valueBeforeLink);
 
         if(this.onLinkChanged)this.onLinkChanged();
     };

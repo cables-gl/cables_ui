@@ -14,9 +14,6 @@ CABLES.Link = function(scene)
 
     this.setValue=function()
     {
-        // if(isNaN(this.portOut.get())) console.log('nan schwein!!!');
-        // console.log('setvalue ',this.portIn.name,this.portOut.name);
-        // console.log('setvalue ',this.portIn.get(),this.portOut.get());
         if(this.portIn.get()!=this.portOut.get())
             this.portIn.set(this.portOut.get());
     };
@@ -59,9 +56,7 @@ CABLES.Link = function(scene)
         p2.addLink(this);
         if(p1.onLink) p1.onLink(this);
         if(p2.onLink) p2.onLink(this);
-
         this.setValue();
-
     };
 
     this.getSerialized=function()
