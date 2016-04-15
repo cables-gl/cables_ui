@@ -196,6 +196,40 @@ CABLES.Op = function()
         if(!this.patch.silent) console.log('['+(this.getName())+'] '+txt);
     };
 
+    this.unLinkShake=function()
+    {
+        var tryRelink=true;
+        if(tryRelink)
+        {
+            if(
+                (this.portsIn.length>0 && this.portsIn[0].isLinked()) &&
+                (this.portsOut.length>0 && this.portsOut[0].isLinked()))
+            {
+                if(this.portsIn[0].getType()==this.portsOut[0].getType())
+                {
+                    reLinkP1=this.portsIn[0].links[0].getOtherPort(this.portsIn[0]);
+                    reLinkP2=this.portsOut[0].links[0].getOtherPort(this.portsOut[0]);
+                }
+            }
+        }
+
+        for(var ipi in this.portsIn) this.portsIn[ipi].removeLinks();
+        for(var ipo in this.portsOut) this.portsOut[ipo].removeLinks();
+
+        if(reLinkP1!==null && reLinkP2!==null)
+        {
+            this.patch.link(
+                reLinkP1.parent,
+                reLinkP1.getName(),
+                reLinkP2.parent,
+                reLinkP2.getName()
+                );
+        }
+
+
+
+    };
+
 };
 
 var Op=CABLES.Op; // deprecated!

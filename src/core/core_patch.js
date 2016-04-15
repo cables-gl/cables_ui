@@ -160,6 +160,8 @@ CABLES.Patch = function(cfg)
         }
     };
 
+
+
     this.deleteOp=function(opid,tryRelink)
     {
         for(var i in this.ops)
@@ -266,10 +268,7 @@ CABLES.Patch = function(cfg)
             this.onLink(port1,port2);
             return link;
         }
-        else
-        {
-            console.log(CABLES.Link.canLinkText(port1,port2));
-        }
+        // else console.log(CABLES.Link.canLinkText(port1,port2));
 
     };
 

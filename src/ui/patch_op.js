@@ -316,6 +316,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         opui.isMouseOver=false;
     }
 
+
     var dragger = function(x,y,ev)
     {
         $('#patch').focus();
@@ -326,14 +327,48 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         gui.patch().setSelectedOp(opui);
     };
 
+    var shakeCountP=0;
+    var shakeCountN=0;
+    var shakeLastX=-1;
+    var shakeTimeOut=0;
+    var lastShakeDir=false;
+
     var move = function (dx, dy,a,b,e)
     {
+        if(shakeLastX!=-1)
+        {
+            if(shakeLastX-a>30 && lastShakeDir)
+            {
+                lastShakeDir=false;
+                shakeCountP++;
+                clearTimeout(shakeTimeOut);
+                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },500);
+            }
+            if(shakeLastX-a<30 && !lastShakeDir)
+            {
+                lastShakeDir=true;
+                shakeCountN++;
+                clearTimeout(shakeTimeOut);
+                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },500);
+            }
+            if(shakeCountP>=2 && shakeCountN>=2)
+            {
+                opui.op.unLinkShake();
+                shakeCount=0;
+                shakeLastX=-1;
+            }
+            shakeLastX=-1;
+        }
+        shakeLastX=a;
+
         gui.patch().moveSelectedOps(dx,dy,a,b,e);
         gui.setStateUnsaved();
     };
 
     var up = function ()
     {
+        shakeCount=0;
+        lastX=-1;
         gui.patch().moveSelectedOpsFinished();
         gui.patch().showOpParams(opui.op);
     };
