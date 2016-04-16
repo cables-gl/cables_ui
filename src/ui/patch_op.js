@@ -378,17 +378,12 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         if(CABLES.UI.LINKHOVER)
         {
-
             var oldLink=CABLES.UI.LINKHOVER;
             if(oldLink.p1 && oldLink.p2)
             {
-                // var op=oldLink.p1.thePort.parent;
-                // var pName=oldLink.p1.thePort.getName();
-                // var op2=oldLink.p2.thePort.parent;
-                // var pName2=oldLink.p2.thePort.getName();
-
                 var portIn=oldLink.p1;
                 var portOut=oldLink.p2;
+
                 if(oldLink.p2.thePort.direction==PORT_DIR_IN)
                 {
                     portIn=oldLink.p2;
@@ -397,20 +392,25 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
                 portIn.thePort.removeLinks();
 
+                if(CABLES.Link.canLink(opui.op.portsIn[0],portOut.thePort))
+                {
+                    gui.patch().scene.link(
+                        opui.op,
+                        opui.op.portsIn[0].getName() , portOut.thePort.parent, portOut.thePort.getName());
 
-                gui.patch().scene.link(
-                    opui.op,
-                    opui.op.portsIn[0].getName() , portOut.thePort.parent, portOut.thePort.getName());
+                    gui.patch().scene.link(
+                        opui.op,
+                        opui.op.portsOut[0].getName() , portIn.thePort.parent, portIn.thePort.getName());
 
-                gui.patch().scene.link(
-                    opui.op,
-                    opui.op.portsOut[0].getName() , portIn.thePort.parent, portIn.thePort.getName());
-
+                    opui.setPos(portOut.thePort.parent.uiAttribs.translate.x,opui.op.uiAttribs.translate.y);
+                }
+                else
+                {
+                    gui.patch().scene.link(
+                        portIn.thePort.parent, portIn.thePort.getName(),
+                        portOut.thePort.parent, portOut.thePort.getName());
+                }
             }
-
-            console.log("yes, verlinken!");
-            console.log(CABLES.UI.LINKHOVER);
-
         }
 
         gui.patch().moveSelectedOpsFinished();

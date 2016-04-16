@@ -198,6 +198,8 @@ CABLES.Op = function()
 
     this.unLinkShake=function()
     {
+        var reLinkP1=null;
+        var reLinkP2=null;
         var tryRelink=true;
         if(tryRelink)
         {
@@ -216,7 +218,7 @@ CABLES.Op = function()
         for(var ipi in this.portsIn) this.portsIn[ipi].removeLinks();
         for(var ipo in this.portsOut) this.portsOut[ipo].removeLinks();
 
-        if(reLinkP1!==null && reLinkP2!==null)
+        if(reLinkP1 && reLinkP2)
         {
             this.patch.link(
                 reLinkP1.parent,
