@@ -1534,13 +1534,27 @@ CABLES.UI.Patch=function(_gui)
 
     this.moveSelectedOpsFinished=function()
     {
-        for(var i in selectedOps)
+        var i=0;
+        // if(selectedOps.length==1)
+        //     for(i in self.ops)
+        //         if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
+        //             for(var j in self.ops[i].links)
+        //                 self.ops[i].links[j].hideAddButton();
+
+        for(i in selectedOps)
             selectedOps[i].doMoveFinished();
     };
 
     this.moveSelectedOps=function(dx,dy,a,b,e)
     {
-        for(var i in selectedOps)
+        var i=0;
+        if(selectedOps.length==1)
+            for(i in self.ops)
+                if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
+                    for(var j in self.ops[i].links)
+                        self.ops[i].links[j].showAddButton();
+
+        for(i in selectedOps)
             selectedOps[i].doMove(dx,dy,a,b,e);
     };
 

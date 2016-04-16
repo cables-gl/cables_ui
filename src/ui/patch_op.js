@@ -1,6 +1,9 @@
 var CABLES=CABLES || {};
 CABLES.UI= CABLES.UI || {};
 
+CABLES.UI.LINKHOVER=null;
+
+
 function getPortOpacity(port)
 {
     if(!port)return;
@@ -57,6 +60,7 @@ function UiLink(port1, port2)
     var middlePosX=30;
     var middlePosY=30;
     var addCircle=null;
+
     this.linkLine=null;
     this.p1=port1;
     this.p2=port2;
@@ -102,10 +106,12 @@ function UiLink(port1, port2)
 
             addCircle.hover(function (e)
             {
+                CABLES.UI.LINKHOVER=self;
                 addCircle.attr({"stroke-width":4});
                 CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
             },function()
             {
+                CABLES.UI.LINKHOVER=null;
                 addCircle.attr({"stroke-width":2});
                 CABLES.UI.hideInfo();
             });
@@ -369,8 +375,47 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         shakeCount=0;
         lastX=-1;
+
+        if(CABLES.UI.LINKHOVER)
+        {
+
+            var oldLink=CABLES.UI.LINKHOVER;
+            if(oldLink.p1 && oldLink.p2)
+            {
+                // var op=oldLink.p1.thePort.parent;
+                // var pName=oldLink.p1.thePort.getName();
+                // var op2=oldLink.p2.thePort.parent;
+                // var pName2=oldLink.p2.thePort.getName();
+
+                var portIn=oldLink.p1;
+                var portOut=oldLink.p2;
+                if(oldLink.p2.thePort.direction==PORT_DIR_IN)
+                {
+                    portIn=oldLink.p2;
+                    portOut=oldLink.p1;
+                }
+
+                portIn.thePort.removeLinks();
+
+
+                gui.patch().scene.link(
+                    opui.op,
+                    opui.op.portsIn[0].getName() , portOut.thePort.parent, portOut.thePort.getName());
+
+                gui.patch().scene.link(
+                    opui.op,
+                    opui.op.portsOut[0].getName() , portIn.thePort.parent, portIn.thePort.getName());
+
+            }
+
+            console.log("yes, verlinken!");
+            console.log(CABLES.UI.LINKHOVER);
+
+        }
+
         gui.patch().moveSelectedOpsFinished();
         gui.patch().showOpParams(opui.op);
+        CABLES.UI.LINKHOVER=null;
     };
 
     this.getBgColor=function()
