@@ -469,6 +469,10 @@ CGL.Shader=function(_cgl,_name)
     this.bind=function()
     {
         var i=0;
+
+        CGL.MESH.lastShader=this;
+
+
         if(!program || needsRecompile) self.compile();
 
 
