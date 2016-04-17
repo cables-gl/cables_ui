@@ -435,8 +435,9 @@ CABLES.Patch = function(cfg)
             for(var ipi in obj.ops[iop].portsIn)
             {
                 var objPort=obj.ops[iop].portsIn[ipi];
-
                 var port=op.getPort(objPort.name);
+
+                if(typeof objPort.value =='string' && !isNaN(objPort.value)) objPort.value=parseFloat(objPort.value);
 
                 if(port && port.type!=OP_PORT_TYPE_TEXTURE)port.val=objPort.value;
                 if(objPort.animated)port.setAnimated(objPort.animated);
@@ -457,6 +458,7 @@ CABLES.Patch = function(cfg)
             for(var ipo in obj.ops[iop].portsOut)
             {
                 var port2=op.getPort(obj.ops[iop].portsOut[ipo].name);
+
                 if(port2&& port2.type!=OP_PORT_TYPE_TEXTURE)port2.val=obj.ops[iop].portsOut[ipo].value;
             }
         }
