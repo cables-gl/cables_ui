@@ -17,35 +17,33 @@
         <tr onclick="togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
             <td></td>
             <td>
-                &nbsp;public
+                &nbsp;Public
                 <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
             </td>
             <td>
-                <a id="projectsettings_public_icon" class="button fa fa-square-o"></a>
+                <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a>
             </td>
         </tr>
 
         <tr onclick="toggleAutoScreenshot();">
             <td></td>
             <td>
-                &nbsp;manual screenshot
+                &nbsp;Manual screenshot
                 <input type="hidden" id="projectsettings_autoscreenshot" value="{{ project.settings.manualScreenshot }}"></input>
             </td>
             <td>
-                <a id="projectsettings_autoscreenshot_icon" class="button fa fa-square-o"></a>
+                <a id="projectsettings_autoscreenshot_icon" class="graphbutton fa fa-square-o"></a>
             </td>
         </tr>
-
-
 
         <tr>
             <td></td>
             <td>
-                &nbsp;secret
+                &nbsp;API Secret
             </td>
             <td>
                 <input type="text" id="projectsettings_secret" value="{{ project.settings.secret }}" onblur="gui.patch().saveProjectParams();"></input>
-                <!-- <a id="projectsettings_public_icon" class="button fa fa-square-o"></a> -->
+                <!-- <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a> -->
             </td>
         </tr>
 
@@ -61,7 +59,7 @@
                     <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
                 </td>
                 <td>
-                    <a id="projectsettings_example_icon" class="button fa fa-square-o"></a>
+                    <a id="projectsettings_example_icon" class="graphbutton fa fa-square-o"></a>
                 </td>
             </tr>
 
@@ -73,7 +71,7 @@
                     <input type="hidden" id="projectsettings_test" value="{{ project.settings.isTest }}"></input>
                 </td>
                 <td>
-                    <a id="projectsettings_test_icon" class="button fa fa-square-o"></a>
+                    <a id="projectsettings_test_icon" class="graphbutton fa fa-square-o"></a>
                 </td>
             </tr>
         {{/if}}

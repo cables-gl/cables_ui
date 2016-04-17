@@ -68,6 +68,9 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
 
     this.setGeom=function(geom)
     {
+        CGL.MESH.lastShader=null;
+        CGL.MESH.lastMesh=null;
+
         if(!this.meshChanged()) this.unBind();
         var i=0;
 
@@ -218,25 +221,22 @@ CGL.Mesh=function(_cgl,geom,glPrimitive)
         // if(meshChanged)
         // cgl.lastMesh.unBind();
 
-var needsBind=false;
-if(CGL.MESH.lastMesh!=this || CGL.MESH.lastShader!=shader)
-{
-    needsBind=true;
-    if(CGL.MESH.lastMesh && CGL.MESH.lastShader) CGL.MESH.lastMesh.unBind(CGL.MESH.lastShader);
-}
-if(!CGL.MESH.lastMesh || !CGL.MESH.lastShader) needsBind=true;
-if(needsBind) preBind(shader);
+        var needsBind=false;
+        if(CGL.MESH.lastMesh!=this || CGL.MESH.lastShader!=shader)
+        {
+            needsBind=true;
+            if(CGL.MESH.lastMesh && CGL.MESH.lastShader) CGL.MESH.lastMesh.unBind(CGL.MESH.lastShader);
+        }
+        if(!CGL.MESH.lastMesh || !CGL.MESH.lastShader) needsBind=true;
+        if(needsBind) preBind(shader);
 
-shader.bind();
+        shader.bind();
 
-if(needsBind) bind(shader);
+        if(needsBind) bind(shader);
 
 
-
-        // if(meshChanged)
-
-CGL.MESH.lastMesh=this;
-CGL.MESH.lastShader=shader;
+        CGL.MESH.lastMesh=this;
+        CGL.MESH.lastShader=shader;
 
         // if(geom.morphTargets.length>0) shader.define('HAS_MORPH_TARGETS');
         // var what=cgl.gl.TRIANGLES;

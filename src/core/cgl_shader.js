@@ -325,7 +325,7 @@ CGL.Shader=function(_cgl,_name)
         // .endl()+'{{MODULES_HEAD}}'
 
         .endl()+'attribute vec3 vPosition;'
-        .endl()+'attribute vec2 attrTexCoord;'
+        // .endl()+'attribute vec2 attrTexCoord;'
         .endl()+'attribute vec3 attrVertNormal;'
         .endl()+'varying vec2 texCoord;'
         .endl()+'varying vec3 norm;'
@@ -335,7 +335,7 @@ CGL.Shader=function(_cgl,_name)
 
         .endl()+'void main()'
         .endl()+'{'
-        .endl()+'   texCoord=attrTexCoord;'
+        // .endl()+'   texCoord=attrTexCoord;'
         .endl()+'   norm=attrVertNormal;'
         // .endl()+'   {{MODULE_VERTEX_POSITION}}'
 

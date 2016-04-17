@@ -411,7 +411,7 @@
 
 <script id="params_op_head" type="text/x-handlebars-template">
 
-    <div class="">
+    <div class="selectable">
         <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
         <br/><br/>{{op.objName}}
         <br/><br/>
@@ -558,11 +558,12 @@
 <tr id="tr_{{ dirStr }}_{{ portnum }}">
     <td class="port portType_{{ port.type }}">
         {{port.name}}
-    </td>
-    <td>
+
         {{#compare port.uiAttribs.colorPick '==' 'true' }}
-        <div class="button_colorpick button fa fa-eyedropper" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
+        <div class="button_colorpick button fa fa-eyedropper fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/compare}}
+
+
     </td>
     <td class="">
 
@@ -708,35 +709,33 @@
         <tr onclick="togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
             <td></td>
             <td>
-                &nbsp;public
+                &nbsp;Public
                 <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
             </td>
             <td>
-                <a id="projectsettings_public_icon" class="button fa fa-square-o"></a>
+                <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a>
             </td>
         </tr>
 
         <tr onclick="toggleAutoScreenshot();">
             <td></td>
             <td>
-                &nbsp;manual screenshot
+                &nbsp;Manual screenshot
                 <input type="hidden" id="projectsettings_autoscreenshot" value="{{ project.settings.manualScreenshot }}"></input>
             </td>
             <td>
-                <a id="projectsettings_autoscreenshot_icon" class="button fa fa-square-o"></a>
+                <a id="projectsettings_autoscreenshot_icon" class="graphbutton fa fa-square-o"></a>
             </td>
         </tr>
-
-
 
         <tr>
             <td></td>
             <td>
-                &nbsp;secret
+                &nbsp;API Secret
             </td>
             <td>
                 <input type="text" id="projectsettings_secret" value="{{ project.settings.secret }}" onblur="gui.patch().saveProjectParams();"></input>
-                <!-- <a id="projectsettings_public_icon" class="button fa fa-square-o"></a> -->
+                <!-- <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a> -->
             </td>
         </tr>
 
@@ -752,7 +751,7 @@
                     <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
                 </td>
                 <td>
-                    <a id="projectsettings_example_icon" class="button fa fa-square-o"></a>
+                    <a id="projectsettings_example_icon" class="graphbutton fa fa-square-o"></a>
                 </td>
             </tr>
 
@@ -764,7 +763,7 @@
                     <input type="hidden" id="projectsettings_test" value="{{ project.settings.isTest }}"></input>
                 </td>
                 <td>
-                    <a id="projectsettings_test_icon" class="button fa fa-square-o"></a>
+                    <a id="projectsettings_test_icon" class="graphbutton fa fa-square-o"></a>
                 </td>
             </tr>
         {{/if}}

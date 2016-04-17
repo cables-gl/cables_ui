@@ -20,6 +20,14 @@ body
     -ms-user-select: none;      /* IE 10+ */
 }
 
+.selectable
+{
+    user-select:text;
+    -webkit-user-select: text;  /* Chrome all / Safari all */
+    -moz-user-select: text;     /* Firefox all */
+    -ms-user-select: text;      /* IE 10+ */
+}
+
 p
 {
     line-height: 19px;

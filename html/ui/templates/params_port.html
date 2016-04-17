@@ -16,11 +16,12 @@
 <tr id="tr_{{ dirStr }}_{{ portnum }}">
     <td class="port portType_{{ port.type }}">
         {{port.name}}
-    </td>
-    <td>
+
         {{#compare port.uiAttribs.colorPick '==' 'true' }}
-        <div class="button_colorpick button fa fa-eyedropper" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
+        <div class="button_colorpick button fa fa-eyedropper fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/compare}}
+
+
     </td>
     <td class="">
 

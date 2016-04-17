@@ -252,8 +252,6 @@ CGL.State=function()
         cgl.popPMatrix();
 
         cgl.endFrame();
-
-
     };
 
     this.setTexture=function(slot,t)
