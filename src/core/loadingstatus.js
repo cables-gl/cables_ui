@@ -1,6 +1,6 @@
 CABLES.LoadingStatus=function()
 {
-    console.log('created loadingmanager');
+    // console.log('created loadingmanager');
     var loadingAssets={};
     var cbFinished=null;
     var percent=0;

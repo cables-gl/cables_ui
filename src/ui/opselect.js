@@ -194,14 +194,8 @@ CABLES.UI.OPSELECT.getOpList=function()
                     parts.length=parts.length-1;
                     var nameSpace=parts.join('.');
 
-                    if(isFunction)
+                    if(isFunction && !opname.startsWith('Ops.Deprecated'))
                     {
-                        // console.log(opname);
-                        if(eval('typeof('+opname+'.v2)')=="function")
-                        {
-                            opname=opname+'.v2';
-                        }
-
                         var op=
                         {
                             "isOp":isOp,

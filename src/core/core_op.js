@@ -68,6 +68,24 @@ CABLES.Op = function()
         return false;
     };
 
+
+    this.hasDynamicPort=function()
+    {
+        var i=0;
+        for(i in this.portsIn)
+        {
+            if(this.portsIn[i].type==OP_PORT_TYPE_DYNAMIC) return true;
+            if(this.portsIn[i].getName()=='dyn') return true;
+        }
+        for(i in this.portsOut)
+        {
+            if(this.portsOut[i].type==OP_PORT_TYPE_DYNAMIC) return true;
+            if(this.portsOut[i].getName()=='dyn') return true;
+        }
+
+        return false;
+    };
+
     this.addInPort=function(p)
     {
         p.direction=PORT_DIR_IN;

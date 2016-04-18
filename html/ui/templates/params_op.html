@@ -6,6 +6,12 @@
         <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
         <br/><br/>{{op.objName}}
         <br/><br/>
+
+        {{#if op.isDeprecated }}
+            <div class="warning " id="">This operator is deprecated. Please use another one.</div>
+            <br/><br/>
+        {{/if}}
+
         {{#if op.isServerOp }}
 
             {{#if user.isAdmin}}

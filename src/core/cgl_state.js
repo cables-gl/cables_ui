@@ -28,18 +28,11 @@ CGL.State=function()
     {
         this.canvas=document.getElementById(id);
 
-        console.log('canvas attributes: ' , this.patch.config.canvas);
-
         if(!this.patch.config.canvas) this.patch.config.canvas={};
-
-        console.log('canvas attributes: ' , this.patch.config.canvas);
-
         if(!this.patch.config.canvas.hasOwnProperty('preserveDrawingBuffer')) this.patch.config.canvas.preserveDrawingBuffer=true;
         if(!this.patch.config.canvas.hasOwnProperty('premultipliedAlpha')) this.patch.config.canvas.premultipliedAlpha=true;
         if(!this.patch.config.canvas.hasOwnProperty('alpha')) this.patch.config.canvas.alpha=true;
         if(!this.patch.config.canvas.hasOwnProperty('antialias')) this.patch.config.canvas.antialias=true;
-
-        console.log('canvas attributes: ' , this.patch.config.canvas);
 
         this.gl=this.canvas.getContext("experimental-webgl",this.patch.config.canvas);
 
