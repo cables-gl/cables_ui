@@ -504,6 +504,12 @@ CABLES.UI.Patch=function(_gui)
         CABLES.api.post('project',{name: prompt('projectname','') },function(d)
         {
             CABLES.UI.SELECTPROJECT.doReload=true;
+
+            gui.scene().settings.isPublic=false;
+            gui.scene().settings.secret='';
+            gui.scene().settings.isExample=false;
+            gui.scene().settings.isTest=false;
+
             self.saveCurrentProject(function()
             {
                 document.location.href='#/project/'+d._id;
