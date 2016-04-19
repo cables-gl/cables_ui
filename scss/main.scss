@@ -289,18 +289,15 @@ textarea
     }
 }
 
-h3,h4
+h1,h2,h3,h4
 {
     color:#6c9fde;
     font-weight: 100;
+    font-family: arial;
 }
 
 h2
 {
-    font-weight: 100;
-    color:#6c9fde;
-    font-family: arial;
-    font-weight: normal;
     margin-top: 0px;
     margin-bottom: 8px;
 }
@@ -529,7 +526,7 @@ input[type="text"]
 
 .opOptions
 {
-    padding-top:5px;
+    padding-top:14px;
 }
 
 .opsearch
@@ -590,6 +587,11 @@ input[type="text"]
         {
             color:white;
         }
+
+        .namespace
+        {
+            color:#222;
+        }
     }
 
     .namespace
@@ -598,8 +600,6 @@ input[type="text"]
         font-style: normal;
     }
 }
-
-
 
 input.medium
 {

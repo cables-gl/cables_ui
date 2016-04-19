@@ -15,6 +15,7 @@ CABLES.UI.GUI=function()
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
     var _find=new CABLES.UI.Find();
+    this.opDocs=new CABLES.UI.OpDocs();
     // var _socket=null;
     var _connection=null;
     var savedState=true;
@@ -825,31 +826,7 @@ CABLES.UI.GUI=function()
 
     this.getOpDoc=function(opname,html,cb)
     {
-        var apiUrl='doc/ops/'+opname;
-        if(!html)apiUrl='doc/ops/md/'+opname;
-
-        var cached=CABLES.api.hasCached(apiUrl);
-        if(cached)
-        {
-            cb(cached.data.content);
-            return;
-        }
-
-        if(infoTimeout!=-1)clearTimeout(infoTimeout);
-        infoTimeout = setTimeout(function()
-        {
-            CABLES.api.getCached(
-                apiUrl,
-                function(res)
-                {
-                    if(!res.content)res.content='';
-                    cb(res.content);
-                },
-                function(res){ console.log('err',res); }
-                );
-
-        }, 300);
-
+        cb(this.opDocs.get(opname));
     };
 
     this.saveScreenshot=function()

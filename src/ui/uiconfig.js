@@ -10,7 +10,7 @@ CABLES.UI.uiConfig=
     colorBackground:'#282828',
     colorLink:'#fff',
     colorLinkHover:'#fff',
-    colorLinkInvalid:'#222',
+    colorLinkInvalid:'#666',
     colorOpBg:'#aaa',
     colorOpBgSelected:'#fff',
     colorPort:'#6c9fde',

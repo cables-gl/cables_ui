@@ -496,7 +496,6 @@ CABLES.UI.Patch=function(_gui)
 
                 CABLES.UI.MODAL.show(msg);
             });
-
     };
 
     this.saveCurrentProjectAs=function(cb,_id,_name)
@@ -504,6 +503,12 @@ CABLES.UI.Patch=function(_gui)
         CABLES.api.post('project',{name: prompt('projectname','') },function(d)
         {
             CABLES.UI.SELECTPROJECT.doReload=true;
+
+            gui.scene().settings.isPublic=false;
+            gui.scene().settings.secret='';
+            gui.scene().settings.isExample=false;
+            gui.scene().settings.isTest=false;
+
             self.saveCurrentProject(function()
             {
                 document.location.href='#/project/'+d._id;
@@ -797,6 +802,7 @@ CABLES.UI.Patch=function(_gui)
     }
 
     // ---------------------------------------------
+
     this.loadingError=false;
 
     this.setProject=function(proj)
@@ -924,7 +930,7 @@ CABLES.UI.Patch=function(_gui)
 
             if(mouseRubberBandStartPos && e.buttons!=1) rubberBandHide();
 
-            if(e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed))
+            if((e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
 
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
@@ -954,7 +960,6 @@ CABLES.UI.Patch=function(_gui)
     {
         var op=uiOp.op;
 
-
         if(!isLoading)
         {
             var undofunc=function(opid,objName)
@@ -975,7 +980,6 @@ CABLES.UI.Patch=function(_gui)
         {
             uiOp.addPort(p.direction,p);
             uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-
         };
 
         if(op.uiAttribs && op.uiAttribs.subPatch)
