@@ -802,6 +802,7 @@ CABLES.UI.Patch=function(_gui)
     }
 
     // ---------------------------------------------
+
     this.loadingError=false;
 
     this.setProject=function(proj)
@@ -929,7 +930,7 @@ CABLES.UI.Patch=function(_gui)
 
             if(mouseRubberBandStartPos && e.buttons!=1) rubberBandHide();
 
-            if(e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed))
+            if((e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
 
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
@@ -959,7 +960,6 @@ CABLES.UI.Patch=function(_gui)
     {
         var op=uiOp.op;
 
-
         if(!isLoading)
         {
             var undofunc=function(opid,objName)
@@ -980,7 +980,6 @@ CABLES.UI.Patch=function(_gui)
         {
             uiOp.addPort(p.direction,p);
             uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-
         };
 
         if(op.uiAttribs && op.uiAttribs.subPatch)
