@@ -496,7 +496,6 @@ CABLES.UI.Patch=function(_gui)
 
                 CABLES.UI.MODAL.show(msg);
             });
-
     };
 
     this.saveCurrentProjectAs=function(cb,_id,_name)

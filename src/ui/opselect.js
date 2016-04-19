@@ -44,19 +44,6 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
     CABLES.UI.OPSELECT.newOpPos=pos;
 
     var self=this;
-    this.opDocs=[];
-
-    CABLES.api.get(
-        'doc/ops/all',
-        function(res)
-        {
-            console.log('loaded '+res.length+' op docs.');
-            self.opDocs=res;
-            updateInfo();
-        },
-        function(res){ console.log('err',res); }
-        );
-
 
     var html = CABLES.UI.getHandleBarHtml('op_select',{ops: CABLES.UI.OPSELECT.getOpList() });
     CABLES.UI.MODAL.show(html);
@@ -109,15 +96,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 
             $('#searchinfo').html('');
 
-            var content='';
-            for(var i=0;i<self.opDocs.length;i++)
-            {
-                if(self.opDocs[i].name==opname)
-                {
-                    content=self.opDocs[i].content;
-                    break;
-                }
-            }
+            var content=gui.opDocs.get(opname);
             $('#searchinfo').html(content+htmlFoot);
         }
     }
