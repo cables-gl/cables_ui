@@ -14,8 +14,10 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
     if(num===0)
     {
         $('#search_noresults').show();
-        var userOpName='Ops.Users.'+gui.user.username+'.'+$('#opsearch').val();
+        var userOpName='Ops.User.'+gui.user.username+'.'+$('#opsearch').val();
         $('.userCreateOpName').html(userOpName);
+        $('#createuserop').attr('onclick','gui.serverOps.create(\''+userOpName+'\');')
+
     }
     else $('#search_noresults').hide();
 
@@ -30,9 +32,7 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
         optionsHtml+='&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit '+opname+'</a>';
     }
 
-
     $('#opOptions').html(optionsHtml);
-
 };
 
 
