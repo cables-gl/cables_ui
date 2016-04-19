@@ -7,6 +7,35 @@ CABLES.UI.OPSELECT.linkNewOpToPort=null;
 CABLES.UI.OPSELECT.linkNewOpToOp=null;
 CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 
+CABLES.UI.OPSELECT.updateOptions=function(opname)
+{
+    var num=$('.searchbrowser .searchable:visible').length;
+
+    if(num===0)
+    {
+        $('#search_noresults').show();
+        var userOpName='Ops.Users.'+gui.user.username+'.'+$('#opsearch').val();
+        $('.userCreateOpName').html(userOpName);
+    }
+    else $('#search_noresults').hide();
+
+    var optionsHtml='&nbsp;found '+num+' ops.';
+
+    if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
+    {
+        optionsHtml+='&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create op</a>';
+    }
+    if(gui.user.isAdmin && gui.serverOps.isServerOp(opname))
+    {
+        optionsHtml+='&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit '+opname+'</a>';
+    }
+
+
+    $('#opOptions').html(optionsHtml);
+
+};
+
+
 CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 {
     CABLES.UI.OPSELECT.linkNewLink=link;
@@ -42,11 +71,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         else
             $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
 
-        // if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
-        {
-            $('#opOptions').html('<i class="fa fa-lock"/> <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create op</a>');
-        }
-
+        CABLES.UI.OPSELECT.updateOptions();
     });
 
     $( ".searchresult:first" ).addClass( "selected" );
@@ -77,16 +102,14 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         var opname=$('.selected').data('opname');
         var htmlFoot='';
 
+        CABLES.UI.OPSELECT.updateOptions(opname);
+
         if(opname)
         {
-            if(gui.user.isAdmin && gui.serverOps.isServerOp(opname))
-            {
-                htmlFoot+='<hr/><i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit serverOp</a>';
-            }
 
             $('#searchinfo').html('');
 
-            var content='No docs found';
+            var content='';
             for(var i=0;i<self.opDocs.length;i++)
             {
                 if(self.opDocs[i].name==opname)
@@ -96,33 +119,11 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
                 }
             }
             $('#searchinfo').html(content+htmlFoot);
-
-
-            // if(infoTimeout!=-1)clearTimeout(infoTimeout);
-            // infoTimeout = setTimeout(function()
-            // {
-            //     lastInfoOpName=$('.selected').data('opname');
-            //
-            //     CABLES.api.getCached(
-            //         'doc/ops/'+opname,
-            //         function(res)
-            //         {
-            //             // if(res.content)
-            //             $('#searchinfo').html(res.content+htmlFoot);
-            //                 // else $('#searchinfo').html(res.content+htmlFoot);
-            //         },
-            //         function(res){ console.log('err',res); }
-            //         );
-            //     // console.log('opname',opname);
-            //
-            // }, 300);
-
         }
     }
 
     function onInput(e)
     {
-        // $(".searchresult:visible").first().addClass( "selected" );
         displayBoxIndex=0;
         Navigate(0);
         updateInfo();
@@ -136,24 +137,19 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         {
             case 13:
                 var opname=$('.selected').data('opname');
-                CABLES.UI.MODAL.hide();
-                gui.scene().addOp(opname);
+                if(opname && opname.length>2)
+                {
+                    CABLES.UI.MODAL.hide();
+                    gui.scene().addOp(opname);
+                }
             break;
 
             case 8:
                 onInput();
                 return true;
-
-
             case 38: // up
                 $('.selected').removeClass('selected');
                 Navigate(-1);
-            break;
-
-            case 37: // left
-            break;
-
-            case 39: // right
             break;
 
             case 40: // down
