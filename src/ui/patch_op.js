@@ -588,7 +588,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         if(this.isVisible())
             if(enabled) background.attr( { "fill-opacity": 1 });
-                else background.attr( { "fill-opacity": 0.5 });
+                else background.attr( { "fill-opacity": 0.1 });
     };
 
     this.setSelected=function(sel)
