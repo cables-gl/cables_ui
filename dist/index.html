@@ -33,7 +33,7 @@
 <div class="iconbar">
     <a class="button" onclick="gui.editor().save()">save</a>
 
-
+    
 <span class="editortoolbar"></span>
 
 <span id="editorstatus"></span>
@@ -83,10 +83,10 @@
 
 <script id="library_file" type="text/x-handlebars-template">
 
-    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}"
+    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}" 
     {{#compare filterType '==' 'image' }}
         style="float:left;width:100px;margin:5px;"{{/compare}}
-        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
+        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');"> 
         {{#compare filterType '==' 'image' }}
             <div class="lib_imgpreview" style="background-image:url({{file.p}});background-repeat:no-repeat;background-size:cover;width:100px;height:100px;background-position:center center;"></div>
         {{/compare}}
@@ -95,7 +95,7 @@
     <i class="fa fa-image"></i>
     {{/compare}}
 
-    {{file.n}}
+    {{file.n}} 
 
 
     </div>
@@ -342,7 +342,7 @@
 
 
         <table>
-<!--
+<!-- 
             <tr>
                 <td>&nbsp;</td>
                 <td>filename</td>
@@ -428,20 +428,25 @@
         {{/if}}
 
         {{#if op.isServerOp }}
+
             {{#if user.isAdmin}}
-                <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
-                <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">attachments</span>
-                <br/><br/>
+            <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
             {{/if}}
+
             <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
             <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
+
         {{/if}}
 
         <br/>
         <br/>
 
-        <div class="warning " id="options_warning">{{op.uiAttribs.warning}}</div>
-        <div class="warning" id="options_error">{{op.uiAttribs.error}}</div>
+        <div class="warning " id="options_warning" >
+        {{op.uiAttribs.warning}}
+        </div>
+        <div class="warning" id="options_error" >
+        {{op.uiAttribs.error}}
+        </div>
     </div>
 <table>
 
@@ -1014,7 +1019,7 @@ updateIcons();
 
 </style>
 
-
+    
 <div class="opsearch" style="height:auto;">
     <h2>load project</h2>
 
@@ -1101,6 +1106,6 @@ updateIcons();
     <script type="text/javascript" src="js/ace/ext-language_tools.js"></script>
 
     <script type="text/javascript" src="js/cablesui.max.js"></script>
-
+    
 
 </html>
