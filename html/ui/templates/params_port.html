@@ -20,8 +20,6 @@
         {{#compare port.uiAttribs.colorPick '==' 'true' }}
         <div class="button_colorpick button fa fa-eyedropper fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/compare}}
-
-
     </td>
     <td class="">
 
@@ -133,7 +131,8 @@
         {{else}}
 
             <!-- {{#compare port.type '==' '1' }}[function]{{/compare}}-->
-            {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
+            {{#compare port.type '==' 0 }}
+            <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
             {{#compare port.type '==' '2' }}
                 {{#if port.uiAttribs.preview}}
                     <span class="button fa fa-eye" onclick="CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>

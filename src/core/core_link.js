@@ -101,9 +101,9 @@ CABLES.Link.canLinkText=function(p1,p2)
 
 CABLES.Link.canLink=function(p1,p2)
 {
-    if( p1.type==OP_PORT_TYPE_DYNAMIC || p2.type==OP_PORT_TYPE_DYNAMIC )return true;
     if(!p1)return false;
     if(!p2)return false;
+    if( p1.type==OP_PORT_TYPE_DYNAMIC || p2.type==OP_PORT_TYPE_DYNAMIC )return true;
     if(p1.direction==PORT_DIR_IN && p1.isAnimated())return false;
     if(p2.direction==PORT_DIR_IN && p2.isAnimated())return false;
 

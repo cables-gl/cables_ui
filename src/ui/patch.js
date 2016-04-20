@@ -70,7 +70,7 @@ CABLES.UI.Patch=function(_gui)
             }
         }
 
-        if(max>4000)
+        if(max>10000)
         {
             alert('warning big port: '+maxName+' / '+max+' chars');
             // console.log(maxValue);
@@ -2034,7 +2034,7 @@ CABLES.UI.Patch=function(_gui)
             }
             else
             {
-                $(id).html( watchPorts[i].val );
+                 $(id).html( String(watchPorts[i].val) );
             }
         }
 
