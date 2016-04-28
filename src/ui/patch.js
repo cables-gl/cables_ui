@@ -284,8 +284,9 @@ CABLES.UI.Patch=function(_gui)
             y+=15;
             count++;
         }
-var pos={"x":x,"y":y};
-console.log(pos);
+
+        var pos={"x":x,"y":y};
+        console.log(pos);
         return pos;
     };
 
