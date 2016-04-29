@@ -286,7 +286,6 @@ CABLES.UI.Patch=function(_gui)
         }
 
         var pos={"x":x,"y":y};
-        console.log(pos);
         return pos;
     };
 
@@ -1751,6 +1750,7 @@ CABLES.UI.Patch=function(_gui)
                 if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
 
                 html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op ,texts:CABLES.UI.TEXTS} );
+
             }
         }
 
@@ -1774,6 +1774,20 @@ CABLES.UI.Patch=function(_gui)
 
         $('#options').html(html);
         updateUiAttribs();
+
+        for(i in op.portsIn)
+        {
+            if(op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display=='file')
+            {
+                if(op.portsIn[i].get().endsWith('.jpg') || op.portsIn[i].get().endsWith('.png'))
+                {
+                    $('#portpreview_'+i).css('background-image','url('+op.portsIn[i].get()+')');
+                    $('#portpreview_'+i).css('width','100px');
+                    $('#portpreview_'+i).css('background-size','cover');
+                    $('#portpreview_'+i).css('height','100px');
+                }
+            }
+        }
 
         for(var ipo in op.portsOut)
         {
@@ -1981,7 +1995,6 @@ CABLES.UI.Patch=function(_gui)
                     doRender: 'div div',
                     renderCallback:function(res,toggled)
                     {
-                        console.log( 'res',res );
                         var id=res[0].id;
                         var splits=id.split('_');
                         var portNum=parseInt(splits[splits.length-1]);

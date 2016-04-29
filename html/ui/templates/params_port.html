@@ -67,7 +67,7 @@
                 {{#if port.uiAttribs.display}}
 
                     {{#compare port.uiAttribs.display '==' 'bool' }}
-                        <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-left:5px;padding-right:30px;"></span>
+                        <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-right:10px;"></span>
                         <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
                     {{/compare}}
 
@@ -109,10 +109,14 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'file' }}
+                            <a class="graphbutton timingbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');"></a>
+                            <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
                         </td><td>
-                        <a class="graphbutton timingbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" ></a>
-                        <input class="value portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:75%;"/>
-                        &nbsp;<a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
+
+                        <input class="value filevalue portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:75%;"/>
+                        <br/><br/>
+
+                        <div id="portpreview_{{ portnum }}" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');"></div>
                     {{/compare}}
 
                 {{else}}
@@ -144,5 +148,6 @@
 
 
 </tr>
+
 
 </script>

@@ -82,6 +82,10 @@ a
     svg
     {
         position:absolute;
+        text
+        {
+            text-transform: capitalize;
+        }
     }
 }
 
@@ -338,7 +342,12 @@ input[type="text"]
         border-left:4px solid #aaa;
         padding-left: 10px;
         font-family: arial;
+        text-transform: capitalize;
         align:top;
+
+        text-overflow: ellipsis;
+        max-width: 135px;
+        overflow: hidden;
     }
 
     td.portType_0 { border-left: 4px solid #ea6638; }
@@ -423,7 +432,7 @@ input[type="text"]
 
 .button,.bluebutton
 {
-
+    text-transform: capitalize;
     font-family: arial;
     cursor:pointer;
     background-color:#3a3a3a;
@@ -483,7 +492,7 @@ input[type="text"]
     float:left;
     padding:0px;
     color:#999;
-    padding-left:5px;
+    padding-left:2px;
     font-size: 16px !important;
     padding-right:5px;
     margin-left: 0px;
@@ -1404,7 +1413,7 @@ nav
 
 #options td, #meta td,#options input
 {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 14px !important;
 }
 
