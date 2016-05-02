@@ -262,6 +262,10 @@ CABLES.UI.GUI=function()
         {
             $('#glcanvas').attr('width',self.rendererWidth);
             $('#glcanvas').attr('height',self.rendererHeight);
+            $('#cablescanvas').attr('width',self.rendererWidth);
+            $('#cablescanvas').attr('height',self.rendererHeight);
+            $('#cablescanvas').css('width',self.rendererWidth+'px');
+            $('#cablescanvas').css('height',self.rendererHeight+'px');
         }
         CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
         $('#glcanvas').hover(function (e)

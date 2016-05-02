@@ -773,6 +773,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         self.isDragging=false;
     };
 
+this.getPosX=function(){return posx;};
+this.getPosY=function(){return posy;};
     this.setPos=function(x,y)
     {
         if(isNumber(x))

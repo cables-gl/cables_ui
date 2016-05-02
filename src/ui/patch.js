@@ -70,7 +70,7 @@ CABLES.UI.Patch=function(_gui)
             }
         }
 
-        if(max>4000)
+        if(max>10000)
         {
             alert('warning big port: '+maxName+' / '+max+' chars');
             // console.log(maxValue);
@@ -256,7 +256,38 @@ CABLES.UI.Patch=function(_gui)
 
     };
 
+    this.testCollisionOpPosition=function(x,y)
+    {
+        for(var i in this.ops)
+        {
+            var r=this.ops[i].oprect.getRect();
+            var op=this.ops[i].op;
 
+            if(
+                x>=op.uiAttribs.translate.x &&
+                x<=op.uiAttribs.translate.x+100 &&
+                y>=op.uiAttribs.translate.y &&
+                y<=op.uiAttribs.translate.y+30)
+            {
+                console.log('colliding...');
+                return true;
+            }
+        }
+        return false;
+    };
+
+    this.findNonCollidingPosition=function(x,y)
+    {
+        var count=0;
+        while(this.testCollisionOpPosition(x,y) && count<400)
+        {
+            y+=15;
+            count++;
+        }
+
+        var pos={"x":x,"y":y};
+        return pos;
+    };
 
     this.unPatchSubPatch=function(patchId)
     {
@@ -1089,7 +1120,7 @@ CABLES.UI.Patch=function(_gui)
             }
         }
 
-        uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+        // uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
 
         CABLES.UI.OPSELECT.linkNewOpToOp=null;
         CABLES.UI.OPSELECT.linkNewLink=null;
@@ -1097,6 +1128,10 @@ CABLES.UI.Patch=function(_gui)
         CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 
         uiOp.setPos();
+        var pos=self.findNonCollidingPosition(uiOp.getPosX(),uiOp.getPosY());
+
+        uiOp.setPos(pos.x,pos.y);
+
 
         if(!isLoading)
         {
@@ -1276,11 +1311,14 @@ CABLES.UI.Patch=function(_gui)
         {
             gui.setStateUnsaved();
             $('#patch').focus();
+
             var uiOp=new OpUi(self.paper,op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
+
             self.ops.push(uiOp);
             uiOp.wasAdded=false;
 
             doAddOp(uiOp);
+
         };
     };
 
@@ -1712,6 +1750,7 @@ CABLES.UI.Patch=function(_gui)
                 if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
 
                 html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op ,texts:CABLES.UI.TEXTS} );
+
             }
         }
 
@@ -1735,6 +1774,20 @@ CABLES.UI.Patch=function(_gui)
 
         $('#options').html(html);
         updateUiAttribs();
+
+        for(i in op.portsIn)
+        {
+            if(op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display=='file')
+            {
+                if(op.portsIn[i].get().endsWith('.jpg') || op.portsIn[i].get().endsWith('.png'))
+                {
+                    $('#portpreview_'+i).css('background-image','url('+op.portsIn[i].get()+')');
+                    $('#portpreview_'+i).css('width','100px');
+                    $('#portpreview_'+i).css('background-size','cover');
+                    $('#portpreview_'+i).css('height','100px');
+                }
+            }
+        }
 
         for(var ipo in op.portsOut)
         {
@@ -1942,7 +1995,6 @@ CABLES.UI.Patch=function(_gui)
                     doRender: 'div div',
                     renderCallback:function(res,toggled)
                     {
-                        console.log( 'res',res );
                         var id=res[0].id;
                         var splits=id.split('_');
                         var portNum=parseInt(splits[splits.length-1]);
@@ -2034,7 +2086,7 @@ CABLES.UI.Patch=function(_gui)
             }
             else
             {
-                $(id).html( watchPorts[i].val );
+                 $(id).html( String(watchPorts[i].val) );
             }
         }
 
