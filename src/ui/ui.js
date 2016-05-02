@@ -484,18 +484,18 @@ CABLES.UI.GUI=function()
     {
         $('#glcanvas').attr('tabindex','3');
 
-        $('#button_toggleTiming').bind("mousedown", function (event) { self.toggleTiming(); });
-        $('#button_cycleRenderSize').bind("mousedown", function (event) { self.cycleRendererSize(); });
+        $('#button_toggleTiming').bind("click", function (event) { self.toggleTiming(); });
+        $('#button_cycleRenderSize').bind("click", function (event) { self.cycleRendererSize(); });
 
         // $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
-        $('.nav_patch_save').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
-        $('.nav_patch_saveas').bind("mousedown", function (event) { self.patch().saveCurrentProjectAs(); });
-        $('.nav_patch_new').bind("mousedown", function (event) { self.createProject(); });
-        $('.nav_patch_clear').bind("mousedown", function (event) { if(confirm('really?'))gui.scene().clear(); });
-        $('.nav_patch_export').bind("mousedown", function (event) { gui.patch().exportStatic(); });
+        $('.nav_patch_save').bind("click", function (event) { self.patch().saveCurrentProject(); });
+        $('.nav_patch_saveas').bind("click", function (event) { self.patch().saveCurrentProjectAs(); });
+        $('.nav_patch_new').bind("click", function (event) { self.createProject(); });
+        $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))gui.scene().clear(); });
+        $('.nav_patch_export').bind("click", function (event) { gui.patch().exportStatic(); });
         $('.nav_patch_settings').bind("click", function (event) { self.patch().showProjectParams(); });
 
-        $('.nav_op_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
+        $('.nav_op_addOp').bind("click", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
