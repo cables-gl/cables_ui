@@ -1,0 +1,55 @@
+/* Custom Styles for the introduction */
+
+.introjs-helperLayer {
+  background: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
+  background-color: transparent;
+  transition: none;
+  -moz-transition: none;
+  -webkit-transition: none;
+  border-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border: 1px solid white;
+}
+
+.introjs-tooltip {
+  background-color: white;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.introjs-tooltipReferenceLayer {
+  border: 1px solid white;
+  border-radius: 0;
+  z-index: 1000000;
+}
+
+.introjs-tooltiptext {
+  color: black;
+}
+
+.introjs-helperNumberLayer {
+  padding: 20px;
+  display: none;
+  background-color: black;
+  background: black;
+  text-shadow: none;
+  color: white;
+  box-shadow: none;
+  border-radius: 1px solid white;
+  left: -13;
+  top: -13;
+}
+
+.introjs-button {
+  border-radius: 0;
+  padding: 4px 10px;
+}
+
+.introjs-showElement {
+  z-index: 1000;
+}

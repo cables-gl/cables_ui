@@ -15,6 +15,7 @@ CABLES.UI.GUI=function()
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
     var _find=new CABLES.UI.Find();
+    var _introduction = new CABLES.UI.Introduction();
     this.opDocs=new CABLES.UI.OpDocs();
     // var _socket=null;
     var _connection=null;
@@ -55,6 +56,11 @@ CABLES.UI.GUI=function()
     this.find=function()
     {
         return _find;
+    };
+
+    this.introduction=function()
+    {
+        return _introduction;
     };
 
     this.timingHeight=250;
@@ -494,6 +500,22 @@ CABLES.UI.GUI=function()
         $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))gui.scene().clear(); });
         $('.nav_patch_export').bind("click", function (event) { gui.patch().exportStatic(); });
         $('.nav_patch_settings').bind("click", function (event) { self.patch().showProjectParams(); });
+
+        // --- Help menu
+        // Documentation
+        $('.nav_help_documentation').bind("click", function (event) {
+          var win = window.open('https://docs.cables.gl', '_blank');
+          if(win){
+              //Browser has allowed it to be opened
+              win.focus();
+          } else{
+              //Broswer has blocked it
+              alert('Please allow popups for this site');
+          }
+        });
+
+        // Introduction
+        $('.nav_help_introduction').bind("click", function (event) { self.introduction().showIntroduction() });
 
         $('.nav_op_addOp').bind("click", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
