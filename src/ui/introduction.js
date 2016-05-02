@@ -6,7 +6,9 @@ function() {
   /* Disables intro.js for the current logged-in user */
   function disableIntroForUser(){
     console.log("Intro completed");
-    // TODO
+    CABLES.api.put('user/introCompleted',function(result) {
+        console.log(result);
+    });
   }
 
   function defineIntroSteps(){
