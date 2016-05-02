@@ -15,6 +15,7 @@ CABLES.UI.GUI=function()
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
     var _find=new CABLES.UI.Find();
+    var _introduction = new CABLES.UI.Introduction();
     this.opDocs=new CABLES.UI.OpDocs();
     // var _socket=null;
     var _connection=null;
@@ -55,6 +56,11 @@ CABLES.UI.GUI=function()
     this.find=function()
     {
         return _find;
+    };
+
+    this.introduction=function()
+    {
+        return _introduction;
     };
 
     this.timingHeight=250;
@@ -256,6 +262,10 @@ CABLES.UI.GUI=function()
         {
             $('#glcanvas').attr('width',self.rendererWidth);
             $('#glcanvas').attr('height',self.rendererHeight);
+            $('#cablescanvas').attr('width',self.rendererWidth);
+            $('#cablescanvas').attr('height',self.rendererHeight);
+            $('#cablescanvas').css('width',self.rendererWidth+'px');
+            $('#cablescanvas').css('height',self.rendererHeight+'px');
         }
         CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
         $('#glcanvas').hover(function (e)
@@ -484,18 +494,34 @@ CABLES.UI.GUI=function()
     {
         $('#glcanvas').attr('tabindex','3');
 
-        $('#button_toggleTiming').bind("mousedown", function (event) { self.toggleTiming(); });
-        $('#button_cycleRenderSize').bind("mousedown", function (event) { self.cycleRendererSize(); });
+        $('#button_toggleTiming').bind("click", function (event) { self.toggleTiming(); });
+        $('#button_cycleRenderSize').bind("click", function (event) { self.cycleRendererSize(); });
 
         // $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
-        $('.nav_patch_save').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
-        $('.nav_patch_saveas').bind("mousedown", function (event) { self.patch().saveCurrentProjectAs(); });
-        $('.nav_patch_new').bind("mousedown", function (event) { self.createProject(); });
-        $('.nav_patch_clear').bind("mousedown", function (event) { if(confirm('really?'))gui.scene().clear(); });
-        $('.nav_patch_export').bind("mousedown", function (event) { gui.patch().exportStatic(); });
+        $('.nav_patch_save').bind("click", function (event) { self.patch().saveCurrentProject(); });
+        $('.nav_patch_saveas').bind("click", function (event) { self.patch().saveCurrentProjectAs(); });
+        $('.nav_patch_new').bind("click", function (event) { self.createProject(); });
+        $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))gui.scene().clear(); });
+        $('.nav_patch_export').bind("click", function (event) { gui.patch().exportStatic(); });
         $('.nav_patch_settings').bind("click", function (event) { self.patch().showProjectParams(); });
 
-        $('.nav_op_addOp').bind("mousedown", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
+        // --- Help menu
+        // Documentation
+        $('.nav_help_documentation').bind("click", function (event) {
+          var win = window.open('https://docs.cables.gl', '_blank');
+          if(win){
+              //Browser has allowed it to be opened
+              win.focus();
+          } else{
+              //Broswer has blocked it
+              alert('Please allow popups for this site');
+          }
+        });
+
+        // Introduction
+        $('.nav_help_introduction').bind("click", function (event) { self.introduction().showIntroduction() });
+
+        $('.nav_op_addOp').bind("click", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
@@ -882,6 +908,9 @@ CABLES.UI.GUI=function()
 
                     self.serverOps=new CABLES.UI.ServerOps(self);
 
+                    if(!data.user.introCompleted) {
+                      _introduction.showIntroduction();
+                    }
                 }
             },function(data)
             {
