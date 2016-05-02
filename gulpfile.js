@@ -91,7 +91,7 @@ gulp.task('html_ui', function() {
 });
 
 gulp.task('sass', function() {
-    return gulp.src('scss/*.scss')
+    return gulp.src('scss/main.scss')
         .pipe(sass())
         .pipe(rename('ui.css'))
         .pipe(gulp.dest('dist/css'));
