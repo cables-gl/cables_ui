@@ -37,7 +37,7 @@ CABLES.UI.uiConfig=
         if(type==OP_PORT_TYPE_VALUE) return '#F0D165';
         else if(type==OP_PORT_TYPE_FUNCTION) return '#50B283';
         else if(type==OP_PORT_TYPE_OBJECT)  return '#DE8A3C';
-        else if(type==OP_PORT_TYPE_ARRAY)  return '#7874E3';
+        else if(type==OP_PORT_TYPE_ARRAY)  return '#7A8AE3';
         else if(type==OP_PORT_TYPE_DYNAMIC)  return '#733E70';
 
         else return '#c6c6c6';
