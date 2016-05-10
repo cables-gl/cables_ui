@@ -1596,6 +1596,7 @@ nav
 }
 
 
+
 .clone
 {
     background-color: #2a2a2a;
@@ -1628,5 +1629,13 @@ nav
         color:#eee;
         float:right
     }
+
+
+}
+
+
+rect
+{
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
 
 }
