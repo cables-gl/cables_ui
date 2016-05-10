@@ -7,7 +7,7 @@ CABLES.UI.LINKHOVER=null;
 function getPortOpacity(port)
 {
     if(!port)return;
-    if(port.direction==PORT_DIR_IN && (port.isAnimated() || port.isLinked() ))return 1.0;
+    if(port.direction==PORT_DIR_IN && (port.isAnimated() || port.isLinked() ))return 0.5;
     return 0.6;
 }
 
@@ -324,8 +324,18 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     }
 
 
+    var shakeCountP=0;
+    var shakeCountN=0;
+    var shakeLastX=-1;
+    var shakeTimeOut=0;
+    var lastShakeDir=false;
+
     var dragger = function(x,y,ev)
     {
+        shakeCount=0;
+        shakeCountP=0;
+        shakeCountN=0;
+
         $('#patch').focus();
         if(opui.isSelected())return;
 
@@ -333,12 +343,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(!ev.shiftKey) gui.patch().setSelectedOp(null);
         gui.patch().setSelectedOp(opui);
     };
-
-    var shakeCountP=0;
-    var shakeCountN=0;
-    var shakeLastX=-1;
-    var shakeTimeOut=0;
-    var lastShakeDir=false;
 
     var move = function (dx, dy,a,b,e)
     {
@@ -351,6 +355,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 clearTimeout(shakeTimeOut);
                 shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },250);
             }
+            else
             if(shakeLastX-a<30 && !lastShakeDir)
             {
                 lastShakeDir=true;
@@ -375,6 +380,9 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var up = function ()
     {
         shakeCount=0;
+        shakeCountP=0;
+        shakeCountN=0;
+
         lastX=-1;
 
         if(CABLES.UI.LINKHOVER)
@@ -445,7 +453,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             "fill": "#777",
             "stroke": CABLES.UI.uiConfig.colorPatchStroke,
             "stroke-width":0,
-            "cursor": "resize",
+            "cursor": "pointer",
         });
 
 
@@ -483,7 +491,43 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             });
         }
 
-        if(objName=='Ops.Ui.Comment')
+        if(objName!='Ops.Ui.Comment')
+        {
+            // var oldPosX = 0;
+            // var resizeStart = function(dx, dy,a,b,e)
+            // {
+            //     oldPosX=resizeHandle.attrs.x;
+            //     opui.isDragging=true;
+            // };
+            //
+            // var resizeEnd = function(dx, dy,a,b,e)
+            // {
+            //     oldPosX=-1;
+            //     opui.isDragging=false;
+            // };
+            //
+            // var resizeMove = function(dx, dy,a,b,e)
+            // {
+            //     if(oldPosX<0)return;
+            //
+            //     var width=oldPosX+dx-background.attrs.x;
+            //     if(width<50)width=50;
+            //
+            //     resizeHandle.attr({
+            //         "x":oldPosX+dx
+            //     });
+            //     background.attr({
+            //         "width":width
+            //     });
+            //     label.attr({
+            //         "x":width/2
+            //     });
+            // };
+            //
+            // resizeHandle.drag(resizeMove, resizeStart,resizeEnd);
+
+        }
+        else
         {
             var sw=150;
             var sh=100;
@@ -493,7 +537,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             {
                 sw=opui.op.uiAttribs.size[0];
                 sh=opui.op.uiAttribs.size[1];
-                console.log('has size!!! ',sw);
             }
 
             label.attr({
@@ -534,21 +577,21 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             });
 
             var oldPosX,oldPosY;
-            var resizeStart = function (dx, dy,a,b,e)
+            var resizeCommentStart = function(dx, dy,a,b,e)
             {
                 oldPosX=backgroundResize.attrs.x;
                 oldPosY=backgroundResize.attrs.y;
                 opui.isDragging=true;
             };
 
-            var resizeEnd = function (dx, dy,a,b,e)
+            var resizeCommentEnd = function(dx, dy,a,b,e)
             {
                 oldPosX=-1;
                 oldPosY=-1;
                 opui.isDragging=false;
             };
 
-            var resizeMove = function (dx, dy,a,b,e)
+            var resizeCommentMove = function(dx, dy,a,b,e)
             {
                 if(oldPosX<0)return;
 
@@ -586,7 +629,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 backgroundResize.toFront();
             };
 
-            backgroundResize.drag(resizeMove, resizeStart,resizeEnd);
+            backgroundResize.drag(resizeCommentMove, resizeCommentStart,resizeCommentEnd);
 
             group.push(backgroundResize,backgroundComment);
             backgroundComment.toBack();
@@ -595,7 +638,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             background.toFront();
         }
 
-        group.push(background,resizeHandle,label);
+        group.push(background,label,resizeHandle);
+        resizeHandle.toFront();
     };
 
     this.setEnabled=function(enabled)
