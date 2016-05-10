@@ -114,7 +114,6 @@ CABLES.UI.Port=function(thePort)
         }
         else
         {
-
             var txt=CABLES.Link.canLinkText(selectedEndPort.thePort,CABLES.UI.selectedStartPort);
             if(txt=='can link') getPortDescription(selectedEndPort.thePort);
                 else CABLES.UI.hideInfo();
@@ -171,7 +170,6 @@ CABLES.UI.Port=function(thePort)
                     if(links.length==1 && !self.opUi.isDragging) CABLES.UI.OPSELECT.showOpSelect(coords,null,CABLES.UI.selectedStartPort,links[0]);
                         else CABLES.UI.OPSELECT.showOpSelect(coords,self.op,CABLES.UI.selectedStartPort);
                 }
-
             }
         }
 
@@ -180,18 +178,11 @@ CABLES.UI.Port=function(thePort)
         CABLES.UI.selectedStartPort=false;
     }
 
-
-
     function hover(event)
     {
         selectedEndPort=self;
         self.rect.toFront();
         self.rect.node.classList.add('active');
-        // self.rect.attr(
-        // {
-        //     'stroke-width':2,
-        //     "fill-opacity": 1,
-        // });
 
         var txt=getPortDescription(thePort);
         CABLES.UI.setStatusText(txt);
@@ -207,20 +198,12 @@ CABLES.UI.Port=function(thePort)
 
         self.rect.attr(
             {
-                // width:CABLES.UI.uiConfig.portSize,
-                // height:CABLES.UI.uiConfig.portHeight,
                 x:xpos,
                 y:ypos+offY,
-
             });
         self.rect.node.classList.remove('active');
 
-
-
         CABLES.UI.hideInfo();
-
-        // for(var i=0;i<self.opUi.links.length;i++) self.opUi.links[i].redraw();
-
     }
 
 
@@ -258,12 +241,11 @@ CABLES.UI.Port=function(thePort)
         xpos=0+w;
         ypos=0+yp;
 
-
         this.rect = gui.patch().getPaper().rect(xpos,offY+ypos);
         CABLES.UI.cleanRaphael(this.rect);
-        this.rect.attr({
-            "fill-opacity": getPortOpacity(self.thePort ),
-        });
+        // this.rect.attr({
+        //     "fill-opacity": getPortOpacity(self.thePort ),
+        // });
         this.rect.node.classList.add(CABLES.UI.uiConfig.getPortClass(self.thePort));
         this.rect.node.classList.add('port');
 

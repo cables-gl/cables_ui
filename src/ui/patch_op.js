@@ -16,12 +16,12 @@ CABLES.UI.cleanRaphael=function(el)
 
 };
 
-function getPortOpacity(port)
-{
-    if(!port)return;
-    if(port.direction==PORT_DIR_IN && (port.isAnimated()))return 0.25;
-    return 0.5;
-}
+// function getPortOpacity(port)
+// {
+//     if(!port)return;
+//     if(port.direction==PORT_DIR_IN && (port.isAnimated()))return 0.25;
+//     return 0.5;
+// }
 
 function getPortDescription(thePort)
 {

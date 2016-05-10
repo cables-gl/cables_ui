@@ -18,7 +18,7 @@
         {
             text-transform: capitalize;
             font-size: 13px;
-            fill:#fff;
+            fill:$color_op_text;
             font-family: "futura-pt";
         }
     }
@@ -79,8 +79,8 @@
         &.active
         {
             stroke-width:2;
-            fill-opacity:0.3;
-            stroke-opacity:0.4;
+            fill-opacity:1;
+            stroke-opacity:1;
         }
     }
 
@@ -125,6 +125,8 @@
     .addCircle
     {
         fill:#222;
+        stroke-width:2;
+        stroke-opacity:0.5;
 
         &.active
         {
