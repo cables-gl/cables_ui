@@ -421,9 +421,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.getBgColor=function()
     {
         var fill=CABLES.UI.uiConfig.colorOpBg;
-        // TODO: Add class to color accordingly
-        //if(objName.startsWith('Ops.Gl.Shader') || objName.startsWith('Ops.Gl.Phong.PhongMaterial')) fill='#ccffcc';
-        //if(objName.startsWith('Ops.Gl.Meshes') || objName.startsWith('Ops.Json3d.Mesh') ) fill='#bbeeff';
+        // if( objName.startsWith('Ops.Gl') ) fill='#ccffcc';
+        // else if( objName.startsWith('Ops.WebAudio') ) fill='#bbeeff';
         return fill;
     };
 

@@ -33,11 +33,11 @@ CABLES.UI.uiConfig=
         // TEST
         //return '#aaa'
         var type=port.getType();
-        if(type==OP_PORT_TYPE_VALUE) return '#45B29D'; //return '#ea6638';
-        else if(type==OP_PORT_TYPE_FUNCTION) return '#EFC94C';
+        if(type==OP_PORT_TYPE_VALUE) return '#EFC94C'; //return '#ea6638';
+        else if(type==OP_PORT_TYPE_FUNCTION) return '#45B29D';
         else if(type==OP_PORT_TYPE_OBJECT)  return '#DF5A49';
-        else if(type==OP_PORT_TYPE_ARRAY)  return '#EFC94C';
-        else if(type==OP_PORT_TYPE_DYNAMIC)  return '#EFC94C';
+        else if(type==OP_PORT_TYPE_ARRAY)  return '#E27A3F';
+        else if(type==OP_PORT_TYPE_DYNAMIC)  return '#733E70';
 
         else return '#c6c6c6';
     },
