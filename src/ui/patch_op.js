@@ -8,7 +8,7 @@ function getPortOpacity(port)
 {
     if(!port)return;
     if(port.direction==PORT_DIR_IN && (port.isAnimated() || port.isLinked() ))return 1.0;
-    return 0.6;
+    return 1.0; // TODO: Test, change back
 }
 
 function getPortDescription(thePort)
@@ -248,8 +248,9 @@ function UiLink(port1, port2)
     this.setEnabled=function(enabled)
     {
         if(this.linkLine)
-            if(enabled) this.linkLine.attr("opacity", 1.0);
-                else this.linkLine.attr("opacity", 0.3);
+            // if(enabled) this.linkLine.attr("opacity", 1.0);
+            //     else this.linkLine.attr("opacity", 0.3);
+            this.linkLine.attr("opacity", 1.0);
     };
 }
 
@@ -441,10 +442,10 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, h).attr(
         {
-            "fill": "#777",
+            "fill": CABLES.UI.uiConfig.getOpColor(opui.op.objName),
             "stroke": CABLES.UI.uiConfig.colorPatchStroke,
             "stroke-width":0,
-            "cursor": "resize",
+            "cursor": "resize"
         });
 
 
