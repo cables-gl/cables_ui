@@ -507,6 +507,9 @@ CABLES.UI.GUI=function()
 
         // --- Help menu
         // Documentation
+        $('.nav_help_about').bind("click", function (event) {
+          // TODO: Show popup which explains what cables is and who develops it
+        });
         $('.nav_help_documentation').bind("click", function (event) {
           var win = window.open('https://docs.cables.gl', '_blank');
           if(win){
@@ -519,7 +522,7 @@ CABLES.UI.GUI=function()
         });
 
         // Introduction
-        $('.nav_help_introduction').bind("click", function (event) { self.introduction().showIntroduction() });
+        $('.nav_help_introduction').bind("click", function (event) { self.introduction().showIntroduction(); });
 
         $('.nav_op_addOp').bind("click", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });

@@ -7,12 +7,13 @@ CABLES.UI.uiConfig=
     portHeight:7,
     portPadding:2,
 
-    colorBackground:'#282828',
+    colorBackground:'#222222',
     colorLink:'#fff',
     colorLinkHover:'#fff',
     colorLinkInvalid:'#666',
-    colorOpBg:'#aaa',
-    colorOpBgSelected:'#fff',
+    colorOpBg:'#333',
+    colorOpText: '#eee',
+    colorOpBgSelected:'#444',
     colorPort:'#6c9fde',
     colorRubberBand:'#6c9fde',
     colorPortHover:'#f00',
@@ -29,11 +30,13 @@ CABLES.UI.uiConfig=
     getPortColor:function(port)
     {
         if(!port)return '#ff0000';
+        // TEST
+        //return '#aaa'
         var type=port.getType();
-        if(type==OP_PORT_TYPE_VALUE) return '#ea6638';
-        else if(type==OP_PORT_TYPE_FUNCTION) return '#6c9fde';
-        else if(type==OP_PORT_TYPE_OBJECT)  return '#26a92a';
-        else if(type==OP_PORT_TYPE_ARRAY)  return '#a02bbd';
+        if(type==OP_PORT_TYPE_VALUE) return '#45B29D'; //return '#ea6638';
+        else if(type==OP_PORT_TYPE_FUNCTION) return '#EFC94C';
+        else if(type==OP_PORT_TYPE_OBJECT)  return '#DF5A49';
+        else if(type==OP_PORT_TYPE_ARRAY)  return '#334D5C';
         else if(type==OP_PORT_TYPE_DYNAMIC)  return '#666';
 
         else return '#c6c6c6';

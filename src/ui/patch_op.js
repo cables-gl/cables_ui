@@ -421,8 +421,9 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.getBgColor=function()
     {
         var fill=CABLES.UI.uiConfig.colorOpBg;
-        if(objName.startsWith('Ops.Gl.Shader') || objName.startsWith('Ops.Gl.Phong.PhongMaterial')) fill='#ccffcc';
-        if(objName.startsWith('Ops.Gl.Meshes') || objName.startsWith('Ops.Json3d.Mesh') ) fill='#bbeeff';
+        // TODO: Add class to color accordingly
+        //if(objName.startsWith('Ops.Gl.Shader') || objName.startsWith('Ops.Gl.Phong.PhongMaterial')) fill='#ccffcc';
+        //if(objName.startsWith('Ops.Gl.Meshes') || objName.startsWith('Ops.Json3d.Mesh') ) fill='#bbeeff';
         return fill;
     };
 
@@ -438,7 +439,11 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             "stroke-width":0,
             "cursor": "move"
         });
-        label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+        label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title).attr(
+        {
+            "fill": CABLES.UI.uiConfig.colorOpText,
+            "font-family": "futura-pt"
+        });
 
         this.setTitle(title);
 

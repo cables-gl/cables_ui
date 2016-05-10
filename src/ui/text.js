@@ -2,6 +2,11 @@ CABLES=CABLES || {};
 CABLES.UI=CABLES.UI || {};
 CABLES.UI.TEXTS=
 {
+    /* Menu ------------------ */
+    /* Patch */
+    nav_patch_new: "## New Patch\n\nCreates a new patch",
+    nav_patch_open: "## Open Patch\n\nLoad an existing patch",
+
     linkAddCircle:"## Link \n\n* left click: insert op \n* right click: delete link",
 
     timeLineToggle:"toggle timeline / keyframing panel",

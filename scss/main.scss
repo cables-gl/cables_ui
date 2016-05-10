@@ -1,6 +1,6 @@
 @import 'introjs.min';
-
-$mainColor: #6c9fde;
+@import 'typo';
+@import 'colors';
 
 body
 {
@@ -8,8 +8,25 @@ body
     margin:0px;
     background-color: #282828;
     overflow: hidden;
-    font-family: arial;
-    font-size: 13px;
+    font-family: $text-font, sans-serif;
+    font-size: $font-size-default;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: $font-weight-headline;
+  font-family: $headline-font, serif;
+  font-style: normal;
+}
+
+nav li {
+  font-family: $headline-font, serif;
+  font-weight: 400;
+}
+
+p {
+  font-style: normal;
+  line-height: $line-height-text;
+  font-weight: 400;
 }
 
 *
@@ -29,17 +46,11 @@ body
     -ms-user-select: text;      /* IE 10+ */
 }
 
-p
-{
-    line-height: 19px;
-}
-
 .hidden { display:none;}
 .fleft { float:left; }
 .fright { float:right !important; }
 .mainColor { color:$mainColor; }
 .monospace { font-family: monospace;}
-
 
 a
 {
@@ -48,12 +59,10 @@ a
     cursor: pointer;
 }
 
-
 #meta
 {
     position:absolute;
     overflow: auto;
-
 
     div
     {
@@ -66,8 +75,6 @@ a
     font-family: monospace;
 }
 
-
-
 #patch
 {
     outline:none;
@@ -77,7 +84,7 @@ a
     &:focus
     {
         // border-left:1px solid $mainColor;
-        border:1px solid #666;
+        border:1px solid $highlight-color;
     }
 
     svg
@@ -128,14 +135,16 @@ a
     {
         border:1px solid $mainColor;
     }
-
-
 }
 
 #options
 {
     position:absolute;
     background-color: #222;
+
+    &:focus {
+      border: 1px solid $highlight-color;
+    }
 
 td
 {
@@ -169,6 +178,11 @@ input[type="text"]
 {
     padding:2px;
     padding-left: 4px;
+    height: 18px;
+    outline: none;
+    font-size: $text-input-font-size;
+    border-radius: 0;
+    border: none;
 }
 
 
@@ -201,7 +215,7 @@ td.head
     #button_toggleTiming
     {
         float: left;
-        font-family: arial;
+        // font-family: arial;
         margin-left: 10px;
         padding-top: 5px;
         cursor: pointer;
@@ -209,7 +223,6 @@ td.head
         padding-right: 10px;
         color:#fff;
         opacity: 0.5;
-
 
         i
         {
@@ -227,7 +240,7 @@ td.head
     .timelinetime
     {
         display: block;
-        font-size: 12px;
+        font-size: $timeline-font-size;
         line-height: 12px;
         float:left;
         padding:4px;
@@ -296,9 +309,8 @@ textarea
 
 h1,h2,h3,h4
 {
-    color:#6c9fde;
-    font-weight: 100;
-    font-family: arial;
+    color: $highlight-color;
+    text-transform: capitalize;
 }
 
 h2
@@ -315,6 +327,8 @@ input[type="text"]
     padding-left:4px;
     border:1px solid #aaa;
     margin-bottom: 3px;
+    border-radius: 0;
+    border: none;
 }
 
 
@@ -329,20 +343,24 @@ input[type="text"]
 
     .panelhead
     {
-        font-family: arial;
-        background-color: #1d1d1d;
+        //font-family: arial;
+        //background-color: #1d1d1d;
         padding: 5px;
-        font-size: 14px;
+        font-family: $headline-font;
+        text-transform: capitalize;
+        font-size: $panelhead-font-size;
+        font-weight: $panelhead-font-weight;
+        font-style: normal;
         padding-left: 10px;
         padding-right: 10px;
-        color:#fff;
+        color: $highlight-color;
     }
 
     td.port
     {
         border-left:4px solid #aaa;
         padding-left: 10px;
-        font-family: arial;
+        //font-family: arial;
         text-transform: capitalize;
         align:top;
 
@@ -369,7 +387,7 @@ input[type="text"]
 
     .value
     {
-        font-family: monospace;
+        //font-family: monospace;
         width: 140px;
         display: block;
         padding:2px;
@@ -396,7 +414,7 @@ input[type="text"]
         {
             padding-bottom: 3px;
 
-            border-bottom: 2px solid #222;
+            //border-bottom: 2px solid #222;
             padding-top: 3px;
 
         }
@@ -434,29 +452,29 @@ input[type="text"]
 .button,.bluebutton
 {
     text-transform: capitalize;
-    font-family: arial;
+    //font-family: arial;
     cursor:pointer;
-    background-color:#3a3a3a;
+    background-color: $button-background-color;
+    border: 1px solid $button-border-color;
+    color: $button-text-color;
     min-width: 14px;
     text-align: center;
-    color:#bbb;
-    padding:3px;
+    font-family: futura-pt;
+    padding:5px 7px;
     cursor:pointer !important;
-    padding-left: 5px;
-    padding-right: 5px;
-    border-top: 1px solid #444;
-    box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.2);
-    border-radius: 1px;
 
     &.fa:before
     {
         margin-right: 5px;
+        font-family: fontawesome;
     }
 
     &:hover
     {
         cursor:pointer !important;
-        background-color:#444;
+        //background-color:#444;
+        background-color: inherit;
+        border: 1px solid $highlight-color;
         color:#eee;
     }
 
@@ -465,6 +483,15 @@ input[type="text"]
         background-color:#ea6638;
     }
 
+}
+
+.button.fa {
+  font: normal normal normal 14px/1 FontAwesome, futura-pt, arial;
+  background-color: $icon-button-background-color;
+}
+
+a.button.fa-times:before {
+  margin-right: 0;
 }
 
 .bluebutton
@@ -476,7 +503,7 @@ input[type="text"]
     &:hover
     {
         cursor:pointer !important;
-        background-color:$mainColor;
+        background-color: $highlight-color;
         color:#fff;
     }
 
@@ -484,7 +511,7 @@ input[type="text"]
 
 .timingbutton_active,.graphbutton_active
 {
-    color:#6c9fde !important;
+    color: $highlight-color !important;
 }
 
 .timingbutton,.graphbutton
@@ -494,7 +521,8 @@ input[type="text"]
     padding:0px;
     color:#999;
     padding-left:2px;
-    font-size: 16px !important;
+    padding-top: 2px;
+    font-size: 14px !important;
     padding-right:5px;
     margin-left: 0px;
     margin-right: 5px;
@@ -524,12 +552,12 @@ input[type="text"]
 
         &:hover
         {
-            background-color: #666 !important;
+            background-color: $icon-button-background-color-hover !important;
         }
 
         &:active
         {
-            background-color: #333;
+            background-color: $icon-button-background-color-hover;
         }
     }
 }
@@ -563,7 +591,6 @@ input[type="text"]
 
     .searchresult
     {
-        border-bottom: 1px solid #444;
         background-color: #333;
         font-size: 14px;
         padding:5px;
@@ -588,11 +615,16 @@ input[type="text"]
         {
             margin-top: 0px;
         }
+
+        p
+        {
+          line-height: 21px;
+        }
     }
 
     .selected
     {
-        background-color: #6c9fde;
+        background-color: $highlight-color;
         a
         {
             color:white;
@@ -817,7 +849,7 @@ input[type=range]:focus {
 .easingselect
 {
     padding:10px;
-    font-family: arial;
+    //font-family: arial;
     position: absolute;
     // margin-top:41px;
     // margin-top: -250;
@@ -876,7 +908,7 @@ input[type=range]:focus {
 {
     display:none;
     padding:10px;
-    font-family: arial;
+    //font-family: arial;
     position: absolute;
     margin-top:41px;
     left:10px;
@@ -986,7 +1018,7 @@ input[type=range]:focus {
 
         &:before
         {
-            font-family: fontawesome,arial;
+            font-family: fontawesome,futura-pt,arial;
             content:"\f08e";
             margin-right: 5px;
             display:inline-block;
@@ -1315,7 +1347,7 @@ nav
     }
     ul li
     {
-        font: bold 12px/18px sans-serif;
+        //font: bold 12px/18px sans-serif;
         display: inline-block;
         margin-right: -4px;
         position: relative;
@@ -1414,8 +1446,9 @@ nav
 
 #options td, #meta td,#options input
 {
-    font-size: 12px;
-    line-height: 14px !important;
+    padding-top: 4px;
+    font-size: 14px;
+    line-height: 18px !important;
 }
 
 .cables
@@ -1520,7 +1553,7 @@ nav
     }
     ul li
     {
-        font: bold 12px/18px sans-serif;
+        //font: bold 12px/18px sans-serif;
         display: inline-block;
         margin-right: -4px;
         position: relative;
