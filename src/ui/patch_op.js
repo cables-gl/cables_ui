@@ -268,6 +268,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var isSelected=true;
     var group = Raphael.fn.set();
     var background = null;
+    var resizeHandle = null;
     var label=null;
     var w=_w;
     var h=_h;
@@ -437,11 +438,22 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             "stroke-width":0,
             "cursor": "move",
         });
+
+        resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, h).attr(
+        {
+            "fill": "#777",
+            "stroke": CABLES.UI.uiConfig.colorPatchStroke,
+            "stroke-width":0,
+            "cursor": "resize",
+        });
+
+
         label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title).attr(
         {
             "fill": CABLES.UI.uiConfig.colorOpText,
             "font-family": "futura-pt"
         });
+
 
         this.setTitle(title);
 
@@ -582,7 +594,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             background.toFront();
         }
 
-        group.push(background,label);
+        group.push(background,resizeHandle,label);
     };
 
     this.setEnabled=function(enabled)
@@ -880,7 +892,7 @@ this.getPosY=function(){return posy;};
 
 
         var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*portIndex;
-        if(self.oprect.getWidth()<w+CABLES.UI.uiConfig.portSize) self.oprect.setWidth(w+CABLES.UI.uiConfig.portSize);
+        if(self.oprect.getWidth()<w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2) self.oprect.setWidth(w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2);
 
         var port=new CABLES.UI.Port(thePort);
 
