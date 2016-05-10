@@ -7,8 +7,8 @@ CABLES.UI.LINKHOVER=null;
 function getPortOpacity(port)
 {
     if(!port)return;
-    if(port.direction==PORT_DIR_IN && (port.isAnimated() || port.isLinked() ))return 0.5;
-    return 0.6;
+    if(port.direction==PORT_DIR_IN && (port.isAnimated()))return 0.25;
+    return 0.5;
 }
 
 function getPortDescription(thePort)
@@ -73,7 +73,7 @@ function UiLink(port1, port2)
         if(this.linkLine)
             this.linkLine.attr(
             {
-                "stroke-opacity": 1,
+                "stroke-opacity": 0.4,
                 "stroke-width": 1
             });
     };
@@ -248,8 +248,9 @@ function UiLink(port1, port2)
     this.setEnabled=function(enabled)
     {
         if(this.linkLine)
-            if(enabled) this.linkLine.attr("opacity", 1.0);
-                else this.linkLine.attr("opacity", 0.3);
+            // if(enabled) this.linkLine.attr("opacity", 1.0);
+            //     else this.linkLine.attr("opacity", 0.3);
+            this.linkLine.attr("opacity", 1.0);
     };
 }
 
@@ -430,9 +431,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.getBgColor=function()
     {
         var fill=CABLES.UI.uiConfig.colorOpBg;
-        // TODO: Add class to color accordingly
-        //if(objName.startsWith('Ops.Gl.Shader') || objName.startsWith('Ops.Gl.Phong.PhongMaterial')) fill='#ccffcc';
-        //if(objName.startsWith('Ops.Gl.Meshes') || objName.startsWith('Ops.Json3d.Mesh') ) fill='#bbeeff';
+        // if( objName.startsWith('Ops.Gl') ) fill='#ccffcc';
+        // else if( objName.startsWith('Ops.WebAudio') ) fill='#bbeeff';
         return fill;
     };
 
@@ -450,10 +450,10 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, h).attr(
         {
-            "fill": "#777",
+            "fill": CABLES.UI.uiConfig.getOpColor(opui.op.objName),
             "stroke": CABLES.UI.uiConfig.colorPatchStroke,
             "stroke-width":0,
-            "cursor": "pointer",
+            "cursor": "ew-resize",
         });
 
 

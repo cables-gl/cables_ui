@@ -4,12 +4,21 @@
  * SVG Colors defined in /ui/uiconfig.js
 */
 
-// colors ---------------------------------------------------------------------
+// main colors ----------------------------------------------------------------
 
 $highlight-color: #D95F48; // not so bright red
 $mainColor: $highlight-color; // todo replace in code with $highlight-color
 $background-color-dark: #222222;
 $background-color-brighter: #262626;
+
+// ops ------------------------------------------------------------------------
+
+// muss noch eingabeut werden + farben aktualisiert...
+// $op-background-color: #3A3A3A;
+// $op-background-color-gl: #FFE2A2;
+// $op-background-color-audio: #8EFFF1;
+// $op-background-color-devices: #FFBA9A;
+// $op-background-color-html: #D8C6FF;
 
 // general UI elements --------------------------------------------------------
 

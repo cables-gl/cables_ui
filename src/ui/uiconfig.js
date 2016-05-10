@@ -8,7 +8,7 @@ CABLES.UI.uiConfig=
     portPadding:2,
     resizeBarWidth:8,
 
-    colorBackground:'#222222',
+    colorBackground:'#1a1a1a',
     colorLink:'#fff',
     colorLinkHover:'#fff',
     colorLinkInvalid:'#666',
@@ -34,13 +34,25 @@ CABLES.UI.uiConfig=
         // TEST
         //return '#aaa'
         var type=port.getType();
-        if(type==OP_PORT_TYPE_VALUE) return '#45B29D'; //return '#ea6638';
-        else if(type==OP_PORT_TYPE_FUNCTION) return '#EFC94C';
-        else if(type==OP_PORT_TYPE_OBJECT)  return '#DF5A49';
-        else if(type==OP_PORT_TYPE_ARRAY)  return '#EFC94C';
-        else if(type==OP_PORT_TYPE_DYNAMIC)  return '#EFC94C';
+        if(type==OP_PORT_TYPE_VALUE) return '#F0D165';
+        else if(type==OP_PORT_TYPE_FUNCTION) return '#50B283';
+        else if(type==OP_PORT_TYPE_OBJECT)  return '#DE8A3C';
+        else if(type==OP_PORT_TYPE_ARRAY)  return '#7A8AE3';
+        else if(type==OP_PORT_TYPE_DYNAMIC)  return '#733E70';
 
         else return '#c6c6c6';
+    },
+    getOpColor:function(opName)
+    {
+        var opColor = '#E0766C';
+        if(!opName) return opColor;
+        console.log("op name: " + opName );
+        if( opName.startsWith('Ops.Gl') ) opColor='#8FD692';
+        if( opName.startsWith('Ops.WebAudio') ) opColor='#83BDE0';
+        if( opName.startsWith('Ops.Devices') ) opColor='#FFBC8A';
+        if( opName.startsWith('Ops.Html') ) opColor='#E392BC';
+
+        return opColor;
     },
 
     linkingLine:
