@@ -1,6 +1,7 @@
 @import 'introjs.min';
 @import 'typo';
 @import 'colors';
+@import 'patch';
 
 body
 {
@@ -77,27 +78,6 @@ a
     font-family: monospace;
 }
 
-#patch
-{
-    outline:none;
-    position:absolute;
-    border:1px solid transparent;
-
-    &:focus
-    {
-        // border-left:1px solid $mainColor;
-        border:1px solid $highlight-color;
-    }
-
-    svg
-    {
-        position:absolute;
-        text
-        {
-            text-transform: capitalize;
-        }
-    }
-}
 
 #statusbar
 {
@@ -593,7 +573,7 @@ a.button.fa-times:before {
     .searchresult
     {
         background-color: #333;
-        font-size: 14px;
+        font-size: 16px;
         padding:5px;
     }
 

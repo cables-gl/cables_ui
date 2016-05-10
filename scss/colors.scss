@@ -11,14 +11,23 @@ $mainColor: $highlight-color; // todo replace in code with $highlight-color
 $background-color-dark: #222222;
 $background-color-brighter: #262626;
 
-// ops ------------------------------------------------------------------------
+// patch ------------------------------------------------------------------------
 
-// muss noch eingabeut werden + farben aktualisiert...
-// $op-background-color: #3A3A3A;
-// $op-background-color-gl: #FFE2A2;
-// $op-background-color-audio: #8EFFF1;
-// $op-background-color-devices: #FFBA9A;
-// $op-background-color-html: #D8C6FF;
+$color_op_bg:#333;
+$color_op_bg_active:#555;
+
+$color_op_handle_default:#E0766C;
+$color_op_handle_gl:#8FD692;
+$color_op_handle_audio:#83BDE0;
+$color_op_handle_devices:#FFBC8A;
+$color_op_handle_html:#E392BC;
+
+$color_port_function:#50B283;
+$color_port_value:#F0D165;
+$color_port_object:#DE8A3C;
+$color_port_array:#7A8AE3;
+$color_port_dynamic:#733E70;
+
 
 // general UI elements --------------------------------------------------------
 
@@ -51,7 +60,7 @@ $text-input-border-color: $text-input-background-color;
 $text-input-color-hover: $text-input-color;
 $text-input-background-color-hover: #555;
 $text-input-border-color-hover: $highlight-color;
-$text-input-border-color-hover: $highlight-color;
+
 // active / focus
 $text-input-color-focus: white;
 $text-input-background-color-focus: ;

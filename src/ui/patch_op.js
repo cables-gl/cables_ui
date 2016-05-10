@@ -4,6 +4,18 @@ CABLES.UI= CABLES.UI || {};
 CABLES.UI.LINKHOVER=null;
 
 
+CABLES.UI.cleanRaphael=function(el)
+{
+    el.node.removeAttribute('font-family');
+    el.node.removeAttribute('font-size');
+    el.node.removeAttribute('stroke-width');
+    el.node.removeAttribute('stroke');
+    el.node.removeAttribute('fill');
+    el.node.removeAttribute('fill-opacity');
+    el.node.removeAttribute('stroke-opacity');
+
+};
+
 function getPortOpacity(port)
 {
     if(!port)return;
@@ -84,19 +96,16 @@ function UiLink(port1, port2)
 
         this.linkLine.attr(
         {
-            "stroke-opacity": 1.0,
-            "stroke-width": 2
+            "stroke-opacity": 0.6,
+            "stroke-width": 1.5
         });
 
         if(addCircle===null)
         {
             if(self.p1)
-            addCircle = gui.patch().getPaper().circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5).attr(
-            {
-                "stroke": CABLES.UI.uiConfig.getPortColor(self.p1.thePort ),
-                "stroke-width": 2,
-                "fill": CABLES.UI.uiConfig.colorBackground,
-            });
+            addCircle = gui.patch().getPaper().circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5);
+            addCircle.node.classList.add(CABLES.UI.uiConfig.getLinkClass(self.p1.thePort ));
+            addCircle.node.classList.add('addCircle');
 
             if(!addCircle)
             {
@@ -107,12 +116,14 @@ function UiLink(port1, port2)
             addCircle.hover(function (e)
             {
                 CABLES.UI.LINKHOVER=self;
-                addCircle.attr({"stroke-width":4});
+                addCircle.node.classList.add('active');
+
                 CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
             },function()
             {
                 CABLES.UI.LINKHOVER=null;
-                addCircle.attr({"stroke-width":2});
+                addCircle.node.classList.remove('active');
+
                 CABLES.UI.hideInfo();
             });
             addCircle.toFront();
@@ -226,7 +237,10 @@ function UiLink(port1, port2)
 
             // this.linkLine = gui.patch().getPaper().path(this.getPath());
             this.linkLine.attr( CABLES.UI.uiConfig.linkingLine );
-            this.linkLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
+            // this.linkLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
+            this.linkLine.node.classList.add(CABLES.UI.uiConfig.getLinkClass(port1.thePort));
+
+
 
             // this.linkLine.hover(function ()
             // {
@@ -428,41 +442,31 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         CABLES.UI.LINKHOVER=null;
     };
 
-    this.getBgColor=function()
-    {
-        var fill=CABLES.UI.uiConfig.colorOpBg;
-        // if( objName.startsWith('Ops.Gl') ) fill='#ccffcc';
-        // else if( objName.startsWith('Ops.WebAudio') ) fill='#bbeeff';
-        return fill;
-    };
+    // this.getBgColor=function()
+    // {
+    //     var fill=CABLES.UI.uiConfig.colorOpBg;
+    //     // if( objName.startsWith('Ops.Gl') ) fill='#ccffcc';
+    //     // else if( objName.startsWith('Ops.WebAudio') ) fill='#bbeeff';
+    //     return fill;
+    // };
 
     this.addUi=function()
     {
         if(this.isVisible())return;
 
-        background=gui.patch().getPaper().rect(0, 0, w, h).attr(
-        {
-            "fill": this.getBgColor(),
-            "stroke": CABLES.UI.uiConfig.colorPatchStroke,
-            "stroke-width":0,
-            "cursor": "move",
-        });
-
-        resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, h).attr(
-        {
-            "fill": CABLES.UI.uiConfig.getOpColor(opui.op.objName),
-            "stroke": CABLES.UI.uiConfig.colorPatchStroke,
-            "stroke-width":0,
-            "cursor": "ew-resize",
-        });
+        background=gui.patch().getPaper().rect(0, 0, w, h);
+        CABLES.UI.cleanRaphael(background);
+        background.node.classList.add('op_background');
 
 
-        label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title).attr(
-        {
-            "fill": CABLES.UI.uiConfig.colorOpText,
-            "font-family": "futura-pt"
-        });
+        resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, h);
+        CABLES.UI.cleanRaphael(resizeHandle);
+        resizeHandle.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
+        resizeHandle.node.classList.add('op_handle');
 
+
+        label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+        CABLES.UI.cleanRaphael(label);
 
         this.setTitle(title);
 
@@ -541,9 +545,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
             label.attr({
                 'x':sw/2,
-                'y':45,
-                'font-size':32,
-                'fill':'#fff'
+                'y':45
             });
 
             background.attr({
@@ -564,6 +566,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 "stroke-width":0,
                 'opacity':0.3,
             });
+            CABLES.UI.cleanRaphael(backgroundComment);
 
             backgroundResize=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
             {
@@ -575,6 +578,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 'opacity':0.2,
                 "cursor": "se-resize"
             });
+            CABLES.UI.cleanRaphael(backgroundResize);
 
             var oldPosX,oldPosY;
             var resizeCommentStart = function(dx, dy,a,b,e)
@@ -656,12 +660,14 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(this.isVisible() && !backgroundComment)
         if(sel)
         {
-            background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected,"stroke-width":0,"stroke":"#fff" });
+            background.node.classList.add("active");
+            // background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected,"stroke-width":0,"stroke":"#fff" });
             // label.attr( { "font-weight": "bold" });
         }
         else
         {
-            background.attr( { "fill": this.getBgColor(),"stroke-width":0 });
+            background.node.classList.remove("active");
+            // background.attr( { "fill": this.getBgColor(),"stroke-width":0 });
             // label.attr( { "font-weight": "normal" });
         }
 
@@ -680,7 +686,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(label)
         {
             shownTitle=title;
-            label.attr({text:shownTitle,font:"","-webkit-tap-highlight-color":""});
+            label.attr({text:shownTitle});
 
             while(label.node.getComputedTextLength()>background.attr("width"))
             {

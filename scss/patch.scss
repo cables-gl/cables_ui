@@ -1,0 +1,166 @@
+
+#patch
+{
+    outline:none;
+    position:absolute;
+    border:1px solid transparent;
+
+    &:focus
+    {
+        // border-left:1px solid $mainColor;
+        border:1px solid $highlight-color;
+    }
+
+    svg
+    {
+        position:absolute;
+        text
+        {
+            text-transform: capitalize;
+            font-size: 13px;
+            fill:#fff;
+            font-family: "futura-pt";
+        }
+    }
+
+
+    .op_background
+    {
+        fill: $color_op_bg;
+        stroke-width:0;
+        cursor: move;
+
+        &.active
+        {
+            fill:$color_op_bg_active;
+        }
+    }
+
+
+    .op_handle
+    {
+        stroke-width:0;
+        cursor: "ew-resize";
+    }
+
+    .op_handle_default
+    {
+        fill:$color_op_handle_default;
+    }
+
+    .op_handle_gl
+    {
+        fill:$color_op_handle_gl;
+    }
+
+    .op_handle_audio
+    {
+        fill:$color_op_handle_audio;
+    }
+
+    .op_handle_devices
+    {
+        fill:$color_op_handle_devices;
+    }
+
+    .op_handle_html
+    {
+        fill:$color_op_handle_html;
+    }
+
+
+    .port
+    {
+        stroke-width: 0;
+        fill-opacity:0.3;
+        width:10px;
+        height:7px;
+
+        &.active
+        {
+            stroke-width:2;
+            fill-opacity:0.3;
+            stroke-opacity:0.4;
+        }
+    }
+
+
+    .port_color_function
+    {
+        fill:$color_port_function;
+        stroke:$color_port_function;
+    }
+
+    .port_color_value
+    {
+        fill:$color_port_value;
+        stroke:$color_port_value;
+    }
+
+    .port_color_object
+    {
+        fill:$color_port_object;
+        stroke:$color_port_object;
+    }
+
+    .port_color_array
+    {
+        fill:$color_port_array;
+        stroke:$color_port_array;
+    }
+
+    .port_color_dynamic
+    {
+        fill:$color_port_dynamic;
+        stroke:$color_port_dynamic;
+    }
+
+    .port_color_unknown
+    {
+        fill:#0f0;
+    }
+
+
+
+    .addCircle
+    {
+        fill:#222;
+
+        &.active
+        {
+            stroke-width:4;
+        }
+    }
+
+
+    .link_color_function
+    {
+        stroke:$color_port_function;
+    }
+
+    .link_color_value
+    {
+        stroke:$color_port_value;
+    }
+
+    .link_color_object
+    {
+        stroke:$color_port_object;
+    }
+
+    .link_color_array
+    {
+        stroke:$color_port_array;
+    }
+
+    .link_color_dynamic
+    {
+        stroke:$color_port_dynamic;
+    }
+
+    .link_color_unknown,.link_color_error
+    {
+        stroke:#f00;
+    }
+
+}
