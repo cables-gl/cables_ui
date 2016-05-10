@@ -1,0 +1,49 @@
+/*
+ * Cables Color Theme
+ *
+ * SVG Colors defined in /ui/uiconfig.js
+*/
+
+// colors ---------------------------------------------------------------------
+
+$highlight-color: #D95F48; // not so bright red
+$mainColor: $highlight-color; // todo replace in code with $highlight-color
+$background-color-dark: #222222;
+$background-color-brighter: #262626;
+
+// general UI elements --------------------------------------------------------
+
+// Button with Text and (optional icon)
+// normal
+$button-text-color: #fff;
+$button-background-color: $background-color-dark;
+$button-border-color: $background-color-dark;
+// hover
+$button-text-color-hover: $highlight-color;
+$button-background-color-hover: $background-color-dark;
+$button-border-color-hover: $background-color-dark;
+
+// Button with icon only (no text)
+// normal
+$icon-button-color: #fff;
+$icon-button-background-color: $background-color-dark;
+$icon-button-border-color: $icon-button-background-color;
+// hover / active
+$icon-button-color-hover: $highlight-color;
+$icon-button-background-color-hover: $background-color-dark;
+$icon-button-border-color-hover: $highlight-color;
+
+// input[text]
+// normal
+$text-input-color: white;
+$text-input-background-color: #444;
+$text-input-border-color: $text-input-background-color;
+// hover
+$text-input-color-hover: $text-input-color;
+$text-input-background-color-hover: #555;
+$text-input-border-color-hover: $highlight-color;
+$text-input-border-color-hover: $highlight-color;
+// active / focus
+$text-input-color-focus: white;
+$text-input-background-color-focus: ;
+$text-input-border-color-focus: $highlight-color;

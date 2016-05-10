@@ -422,8 +422,9 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.getBgColor=function()
     {
         var fill=CABLES.UI.uiConfig.colorOpBg;
-        if(objName.startsWith('Ops.Gl.Shader') || objName.startsWith('Ops.Gl.Phong.PhongMaterial')) fill='#ccffcc';
-        if(objName.startsWith('Ops.Gl.Meshes') || objName.startsWith('Ops.Json3d.Mesh') ) fill='#bbeeff';
+        // TODO: Add class to color accordingly
+        //if(objName.startsWith('Ops.Gl.Shader') || objName.startsWith('Ops.Gl.Phong.PhongMaterial')) fill='#ccffcc';
+        //if(objName.startsWith('Ops.Gl.Meshes') || objName.startsWith('Ops.Json3d.Mesh') ) fill='#bbeeff';
         return fill;
     };
 
@@ -439,18 +440,21 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             "cursor": "move",
         });
 
-
-        resizeHandle=gui.patch().getPaper().rect(0, 0, w, h).attr(
+        resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, h).attr(
         {
-            "fill": "#aaa",
+            "fill": "#777",
             "stroke": CABLES.UI.uiConfig.colorPatchStroke,
             "stroke-width":0,
-            "width":CABLES.UI.uiConfig.resizeBarWidth,
             "cursor": "resize",
         });
 
 
-        label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+        label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title).attr(
+        {
+            "fill": CABLES.UI.uiConfig.colorOpText,
+            "font-family": "futura-pt"
+        });
+
 
         this.setTitle(title);
 
@@ -889,7 +893,7 @@ this.getPosY=function(){return posy;};
 
 
         var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*portIndex;
-        if(self.oprect.getWidth()<w+CABLES.UI.uiConfig.portSize) self.oprect.setWidth(w+CABLES.UI.uiConfig.portSize);
+        if(self.oprect.getWidth()<w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2) self.oprect.setWidth(w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2);
 
         var port=new CABLES.UI.Port(thePort);
 
