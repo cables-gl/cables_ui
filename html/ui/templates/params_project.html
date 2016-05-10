@@ -2,17 +2,20 @@
 
 <script id="params_project" type="text/x-handlebars-template">
 
-
-    <div class="">
-        <input class="medium info" id="projectsettings_name" onblur="gui.patch().saveProjectParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}">
-        <br/>
-        <br/>
-    </div>
     <table>
         <tr>
             <th colspan="11">
                 <div id="project_settings" class="panelhead">project settings</div>
             </th>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+              &nbsp;Project Name
+            </td>
+            <td>
+                <input class="" id="projectsettings_name" onblur="gui.patch().saveProjectParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
+            </td>
         </tr>
         <tr onclick="togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
             <td></td>
@@ -24,7 +27,6 @@
                 <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a>
             </td>
         </tr>
-
         <tr onclick="toggleAutoScreenshot();">
             <td></td>
             <td>
