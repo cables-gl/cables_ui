@@ -36,8 +36,8 @@ CABLES.UI.uiConfig=
         if(type==OP_PORT_TYPE_VALUE) return '#45B29D'; //return '#ea6638';
         else if(type==OP_PORT_TYPE_FUNCTION) return '#EFC94C';
         else if(type==OP_PORT_TYPE_OBJECT)  return '#DF5A49';
-        else if(type==OP_PORT_TYPE_ARRAY)  return '#334D5C';
-        else if(type==OP_PORT_TYPE_DYNAMIC)  return '#666';
+        else if(type==OP_PORT_TYPE_ARRAY)  return '#EFC94C';
+        else if(type==OP_PORT_TYPE_DYNAMIC)  return '#EFC94C';
 
         else return '#c6c6c6';
     },

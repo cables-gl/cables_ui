@@ -1,10 +1,17 @@
+/*
+ * Cables Color Theme
+ *
+ * SVG Colors defined in /ui/uiconfig.js
+*/
+
+// colors ---------------------------------------------------------------------
+
 $highlight-color: #D95F48; // not so bright red
 $mainColor: $highlight-color; // todo replace in code with $highlight-color
-//$highlight-color: #FC8058; // pinkish red
-//$highlight-color: #F77A52; // knalliges rot
-//$highlight-color: #ffffff; // white
 $background-color-dark: #222222;
 $background-color-brighter: #262626;
+
+// general UI elements --------------------------------------------------------
 
 // Button with Text and (optional icon)
 // normal
@@ -25,3 +32,18 @@ $icon-button-border-color: $icon-button-background-color;
 $icon-button-color-hover: $highlight-color;
 $icon-button-background-color-hover: $background-color-dark;
 $icon-button-border-color-hover: $highlight-color;
+
+// input[text]
+// normal
+$text-input-color: white;
+$text-input-background-color: #444;
+$text-input-border-color: $text-input-background-color;
+// hover
+$text-input-color-hover: $text-input-color;
+$text-input-background-color-hover: #555;
+$text-input-border-color-hover: $highlight-color;
+$text-input-border-color-hover: $highlight-color;
+// active / focus
+$text-input-color-focus: white;
+$text-input-background-color-focus: ;
+$text-input-border-color-focus: $highlight-color;
