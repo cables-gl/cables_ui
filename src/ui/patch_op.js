@@ -348,16 +348,16 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 lastShakeDir=false;
                 shakeCountP++;
                 clearTimeout(shakeTimeOut);
-                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },500);
+                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },250);
             }
             if(shakeLastX-a<30 && !lastShakeDir)
             {
                 lastShakeDir=true;
                 shakeCountN++;
                 clearTimeout(shakeTimeOut);
-                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },500);
+                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },250);
             }
-            if(shakeCountP>=2 && shakeCountN>=2)
+            if(shakeCountP + shakeCountN>=3)
             {
                 opui.op.unLinkShake();
                 shakeCount=0;
@@ -431,13 +431,12 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         if(this.isVisible())return;
 
-
         background=gui.patch().getPaper().rect(0, 0, w, h).attr(
         {
             "fill": this.getBgColor(),
             "stroke": CABLES.UI.uiConfig.colorPatchStroke,
             "stroke-width":0,
-            "cursor": "move"
+            "cursor": "move",
         });
         label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title).attr(
         {
@@ -446,8 +445,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         });
 
         this.setTitle(title);
-
-
 
         $(label.node).css({'pointer-events': 'none'});
 
@@ -627,7 +624,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(label)
         {
             shownTitle=title;
-            label.attr({text:shownTitle});
+            label.attr({text:shownTitle,font:"","-webkit-tap-highlight-color":""});
 
             while(label.node.getComputedTextLength()>background.attr("width"))
             {

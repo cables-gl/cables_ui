@@ -245,10 +245,30 @@ CABLES.Op = function()
                 reLinkP2.getName()
                 );
         }
-
-
-
     };
+
+
+    this.findParent=function(objName)
+    {
+
+        for(var ipi in this.portsIn)
+        {
+            if(this.portsIn[ipi].isLinked())
+            {
+                if(this.portsIn[ipi].links[0].portOut.parent.objName==objName)
+                    return this.portsIn[ipi].links[0].portOut.parent;
+                else
+                {
+                    var found=null;
+                    found=this.portsIn[ipi].links[0].portOut.parent.findParent(objName);
+                    if(found) return found;
+                }
+            }
+        }
+
+        return null;
+    };
+
 
 };
 

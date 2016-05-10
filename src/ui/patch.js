@@ -116,7 +116,7 @@ CABLES.UI.Patch=function(_gui)
                                         var l=json.ops[j].portsIn[k].links.length;
                                         while(l--)
                                         {
-                                            console.log('json.ops[j].portsIn[k].links[l]',json.ops[j].portsIn[k].links[l]);
+                                            // console.log('json.ops[j].portsIn[k].links[l]',json.ops[j].portsIn[k].links[l]);
 
                                             if(json.ops[j].portsIn[k].links[l]===null)
                                             {
@@ -157,7 +157,7 @@ CABLES.UI.Patch=function(_gui)
 
                                         for(j=0;j<json.ops.length;j++)
                                         {
-                                            console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
+                                            // console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
 
                                             if(parseInt(json.ops[j].uiAttribs.subPatch,10)==oldSubPatchId)
                                             {
@@ -269,7 +269,7 @@ CABLES.UI.Patch=function(_gui)
                 y>=op.uiAttribs.translate.y &&
                 y<=op.uiAttribs.translate.y+30)
             {
-                console.log('colliding...');
+                // console.log('colliding...');
                 return true;
             }
         }
@@ -1779,7 +1779,7 @@ CABLES.UI.Patch=function(_gui)
         {
             if(op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display=='file')
             {
-                if(op.portsIn[i].get().endsWith('.jpg') || op.portsIn[i].get().endsWith('.png'))
+                if(op.portsIn[i].get() && (op.portsIn[i].get().endsWith('.jpg') || op.portsIn[i].get().endsWith('.png')))
                 {
                     $('#portpreview_'+i).css('background-image','url('+op.portsIn[i].get()+')');
                     $('#portpreview_'+i).css('width','100px');
