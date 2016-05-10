@@ -6,6 +6,7 @@ CABLES.UI.uiConfig=
     portSize:10,
     portHeight:7,
     portPadding:2,
+    resizeBarWidth:10,
 
     colorBackground:'#282828',
     colorLink:'#fff',

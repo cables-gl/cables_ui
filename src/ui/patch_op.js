@@ -268,6 +268,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var isSelected=true;
     var group = Raphael.fn.set();
     var background = null;
+    var resizeHandle = null;
     var label=null;
     var w=_w;
     var h=_h;
@@ -437,6 +438,18 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             "stroke-width":0,
             "cursor": "move",
         });
+
+
+        resizeHandle=gui.patch().getPaper().rect(0, 0, w, h).attr(
+        {
+            "fill": "#aaa",
+            "stroke": CABLES.UI.uiConfig.colorPatchStroke,
+            "stroke-width":0,
+            "width":CABLES.UI.uiConfig.resizeBarWidth,
+            "cursor": "resize",
+        });
+
+
         label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
 
         this.setTitle(title);
@@ -578,7 +591,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             background.toFront();
         }
 
-        group.push(background,label);
+        group.push(background,resizeHandle,label);
     };
 
     this.setEnabled=function(enabled)
