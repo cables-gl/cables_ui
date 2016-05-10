@@ -14,7 +14,7 @@
               &nbsp;Project Name
             </td>
             <td>
-                <input class="" id="projectsettings_name" onblur="gui.patch().saveProjectParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
+                <input type="text" class="" id="projectsettings_name" onblur="gui.patch().saveProjectParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
             </td>
         </tr>
         <tr onclick="togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
