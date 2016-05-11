@@ -17,12 +17,12 @@ body
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: $font-weight-headline;
-  font-family: $headline-font, serif;
+  font-family: $headline-font, sans-serif;
   font-style: normal;
 }
 
 nav li {
-  font-family: $headline-font, serif;
+  font-family: $headline-font, sans-serif;
   font-weight: 400;
 }
 
