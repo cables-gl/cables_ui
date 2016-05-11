@@ -4,7 +4,7 @@
  * SVG Colors defined in /ui/uiconfig.js
 */
 
-$color_theme: 31;
+$color_theme: 33;
 
 // main colors ----------------------------------------------------------------
 
@@ -32,31 +32,6 @@ $background-color-brighter: #262626;
   $color_port_object: #F7E967;
   $color_port_array: #588F27;
   $color_port_dynamic: #F7E967;
-
-  $color_link_function: $color_port_function;
-  $color_link_value: $color_port_value;
-  $color_link_object: $color_port_object;
-  $color_link_array: $color_port_array;
-  $color_link_dynamic: $color_port_dynamic;
-}
-
-// theme forest ranger ---------------------------------
-@if $color_theme == 31 {
-  $color_op_bg:#333;
-  $color_op_bg_active:#555;
-  $color_op_text:#eee;
-
-  $color_op_handle_default:#515151;
-  $color_op_handle_gl:#7AC4E0;
-  $color_op_handle_audio:#D183BF;
-  $color_op_handle_devices:#9091D6;
-  $color_op_handle_html:#FFC395;
-
-  $color_port_function: #F0D165;
-  $color_port_value: #53B3B5;
-  $color_port_object: #2598C5;
-  $color_port_array: #8ABEFD;
-  $color_port_dynamic: #FFF6E5;
 
   $color_link_function: $color_port_function;
   $color_link_value: $color_port_value;
@@ -121,16 +96,22 @@ $background-color-brighter: #262626;
   $color_op_bg_active:#555;
   $color_op_text:#eee;
 
+  // $color_op_handle_default:#515151;
+  // $color_op_handle_gl:#F59F8A;
+  // $color_op_handle_audio:#C0FFA4;
+  // $color_op_handle_devices:#FFAAF7;
+  // $color_op_handle_html:#BFB7FF;
+
   $color_op_handle_default:#515151;
-  $color_op_handle_gl:#7AC4E0;
-  $color_op_handle_audio:#D183BF;
-  $color_op_handle_devices:#9091D6;
-  $color_op_handle_html:#FFC395;
+  $color_op_handle_gl:#499043;
+  $color_op_handle_audio:#8B4DBA;
+  $color_op_handle_devices:#BF4A3D;
+  $color_op_handle_html:#6058C7;
 
   $color_port_function: #F0D165;
-  $color_port_value: #53B3B5;
-  $color_port_object: #2598C5;
-  $color_port_array: #8ABEFD;
+  $color_port_value: #5CB59E; //#53B3B5;
+  $color_port_object: #52FDE1; //#2598C5;
+  $color_port_array: #2598C5; //#8ABEFD;
   $color_port_dynamic: #FFF6E5;
 
   $color_link_function: $color_port_function;
@@ -139,6 +120,57 @@ $background-color-brighter: #262626;
   $color_link_array: $color_port_array;
   $color_link_dynamic: $color_port_dynamic;
 }
+
+// theme cyberspace ---------------------------------
+@if $color_theme == 32 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#FF974F;
+  $color_op_handle_audio:#9C9B7A;
+  $color_op_handle_devices:#FFD393;
+  $color_op_handle_html:#405952;
+
+  $color_port_function: #F0D165;
+  $color_port_value: #5CB59E; //#53B3B5;
+  $color_port_object: #52FDE1; //#2598C5;
+  $color_port_array: #2598C5; //#8ABEFD;
+  $color_port_dynamic: #FFF6E5;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
+// theme cyberspace ---------------------------------
+@if $color_theme == 33 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#88A61B;
+  $color_op_handle_audio:#D92525;
+  $color_op_handle_devices:#F25C05;
+  $color_op_handle_html:#0E3D59;
+
+  $color_port_function: #F0D165;
+  $color_port_value: #5CB59E; //#53B3B5;
+  $color_port_object: #52FDE1; //#2598C5;
+  $color_port_array: #2598C5; //#8ABEFD;
+  $color_port_dynamic: #FFF6E5;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
 
 
 // theme burma --------------------------------
