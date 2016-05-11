@@ -267,7 +267,7 @@ CABLES.Port=function(parent,name,type,uiAttribs)
         if(this.type==OP_PORT_TYPE_VALUE)return 'Value';
         else if(this.type==OP_PORT_TYPE_FUNCTION)return 'Function';
         else if(this.type==OP_PORT_TYPE_TEXTURE)return 'Texture';
-        else if(this.type==OP_PORT_TYPE_DYN)return 'Dynamic';
+        else if(this.type==OP_PORT_TYPE_DYNAMIC)return 'Dynamic';
         else if(this.type==OP_PORT_TYPE_ARRAY)return 'Array';
         else return 'Unknown';
     };
