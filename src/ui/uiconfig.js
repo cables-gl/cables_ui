@@ -4,9 +4,9 @@ CABLES.UI=CABLES.UI|| {};
 CABLES.UI.uiConfig=
 {
     portSize:10,
-    portHeight:7,
+    portHeight:6,
     portPadding:2,
-    resizeBarWidth:8,
+    resizeBarWidth:6,
 
     colorBackground:'#1a1a1a',
     colorLink:'#fff',

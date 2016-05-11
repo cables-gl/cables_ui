@@ -104,14 +104,15 @@ function UiLink(port1, port2)
         {
             if(self.p1)
             addCircle = gui.patch().getPaper().circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5);
-            addCircle.node.classList.add(CABLES.UI.uiConfig.getLinkClass(self.p1.thePort ));
-            addCircle.node.classList.add('addCircle');
 
             if(!addCircle)
             {
                 this.hide();
                 return;
             }
+
+            addCircle.node.classList.add(CABLES.UI.uiConfig.getLinkClass(self.p1.thePort ));
+            addCircle.node.classList.add('addCircle');
 
             addCircle.hover(function (e)
             {
