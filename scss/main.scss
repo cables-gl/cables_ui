@@ -435,7 +435,7 @@ input[type="text"]
     text-transform: capitalize;
     //font-family: arial;
     cursor:pointer;
-    background-color: $button-background-color;
+    // background-color: $button-background-color;
     border: 1px solid $button-border-color;
     color: $button-text-color;
     min-width: 14px;
@@ -468,7 +468,7 @@ input[type="text"]
 
 .button.fa {
   font: normal normal normal 14px/1 FontAwesome, futura-pt, arial;
-  background-color: $icon-button-background-color;
+  background-color: $button-background-color;
 }
 
 a.button.fa-times:before {
