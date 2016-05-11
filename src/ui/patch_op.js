@@ -85,8 +85,8 @@ function UiLink(port1, port2)
         if(this.linkLine)
             this.linkLine.attr(
             {
-                "stroke-opacity": 0.4,
-                "stroke-width": 1
+                "stroke-opacity": 1, //0.4,
+                "stroke-width": 0.7
             });
     };
 
@@ -96,7 +96,7 @@ function UiLink(port1, port2)
 
         this.linkLine.attr(
         {
-            "stroke-opacity": 0.6,
+            "stroke-opacity": 1, //0.6,
             "stroke-width": 1.5
         });
 
