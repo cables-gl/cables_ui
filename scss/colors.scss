@@ -4,6 +4,8 @@
  * SVG Colors defined in /ui/uiconfig.js
 */
 
+$color_theme: 31;
+
 // main colors ----------------------------------------------------------------
 
 $highlight-color: #D95F48; // not so bright red
@@ -13,22 +15,182 @@ $background-color-brighter: #262626;
 
 // patch ------------------------------------------------------------------------
 
-$color_op_bg:#333;
-$color_op_bg_active:#555;
-$color_op_text:#eee;
+// lime
+@if $color_theme == 6 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
 
-$color_op_handle_default:#E0766C;
-$color_op_handle_gl:#8FD692;
-$color_op_handle_audio:#83BDE0;
-$color_op_handle_devices:#FFBC8A;
-$color_op_handle_html:#E392BC;
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#7AC4E0;
+  $color_op_handle_audio:#D183BF;
+  $color_op_handle_devices:#9091D6;
+  $color_op_handle_html:#FFC395;
 
-$color_port_function:#50B283;
-$color_port_value:#F0D165;
-$color_port_object:#DE8A3C;
-$color_port_array:#7A8AE3;
-$color_port_dynamic:#733E70;
+  $color_port_function: #04BFBF;
+  $color_port_value: #A9CF54;
+  $color_port_object: #F7E967;
+  $color_port_array: #588F27;
+  $color_port_dynamic: #F7E967;
 
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
+// theme forest ranger ---------------------------------
+@if $color_theme == 31 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#7AC4E0;
+  $color_op_handle_audio:#D183BF;
+  $color_op_handle_devices:#9091D6;
+  $color_op_handle_html:#FFC395;
+
+  $color_port_function: #F0D165;
+  $color_port_value: #53B3B5;
+  $color_port_object: #2598C5;
+  $color_port_array: #8ABEFD;
+  $color_port_dynamic: #FFF6E5;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
+// theme forest ranger ---------------------------------
+@if $color_theme == 5 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#7AC4E0;
+  $color_op_handle_audio:#D183BF;
+  $color_op_handle_devices:#9091D6;
+  $color_op_handle_html:#FFC395;
+
+  $color_port_function: #FF6138;
+  $color_port_value: #BEEB9F;
+  $color_port_object: #79BD8F;
+  $color_port_array: #00A388;
+  $color_port_dynamic: #FFFF9D;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
+// theme hildegard --------------------------------
+@if $color_theme == 3 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#7AC4E0;
+  $color_op_handle_audio:#D183BF;
+  $color_op_handle_devices:#9091D6;
+  $color_op_handle_html:#FFC395;
+
+  $color_port_function: #FF7F66;
+  $color_port_value: #53B3B5;
+  $color_port_object: #2598C5;
+  $color_port_array: #8ABEFD;
+  $color_port_dynamic: #FFF6E5;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
+// theme cyberspace ---------------------------------
+@if $color_theme == 31 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#7AC4E0;
+  $color_op_handle_audio:#D183BF;
+  $color_op_handle_devices:#9091D6;
+  $color_op_handle_html:#FFC395;
+
+  $color_port_function: #F0D165;
+  $color_port_value: #53B3B5;
+  $color_port_object: #2598C5;
+  $color_port_array: #8ABEFD;
+  $color_port_dynamic: #FFF6E5;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
+
+// theme burma --------------------------------
+@if $color_theme == 2 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#7AC4E0;
+  $color_op_handle_audio:#D183BF;
+  $color_op_handle_devices:#9091D6;
+  $color_op_handle_html:#FFC395;
+
+  $color_port_function: #D15D3A;
+  $color_port_value: #7D9100;
+  $color_port_object: #ACEBAE;
+  $color_port_array: #C9DE55;
+  $color_port_dynamic: #FFFF9D;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
+
+// theme beach ---------------------------------
+@if $color_theme == 1 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#515151;
+  $color_op_handle_gl:#7AC4E0;
+  $color_op_handle_audio:#D183BF;
+  $color_op_handle_devices:#9091D6;
+  $color_op_handle_html:#FFC395;
+
+  $color_port_function: #536EA6;
+  $color_port_value: #F2C849;
+  $color_port_object: #F29849;
+  $color_port_array: #D9663D;
+  $color_port_dynamic: #A64037;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
 
 // general UI elements --------------------------------------------------------
 
