@@ -73,7 +73,7 @@
     {
         fill:#222;
         stroke-width:2;
-        stroke-opacity:0.5;
+        stroke-opacity:1;
 
         &.active
         {
@@ -81,11 +81,11 @@
         }
     }
 
-    .link_color_function { stroke:$color_port_function; }
-    .link_color_value { stroke:$color_port_value; }
-    .link_color_object { stroke:$color_port_object; }
-    .link_color_array { stroke:$color_port_array; }
-    .link_color_dynamic { stroke:$color_port_dynamic; }
+    .link_color_function { stroke:$color_link_function; }
+    .link_color_value { stroke:$color_link_value; }
+    .link_color_object { stroke:$color_link_object; }
+    .link_color_array { stroke:$color_link_array; }
+    .link_color_dynamic { stroke:$color_link_dynamic; }
     .link_color_unknown,.link_color_error { stroke:#f00; }
 
 }
