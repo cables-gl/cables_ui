@@ -126,7 +126,7 @@
                         <a class="info graphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a>
                     </td><td>
                         <input class="value watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}" />
-                        <a class="graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');" style="margin-left:0px;height:17px;background-color:#383838" data-info="{{ texts.portFloatDrag }}"></a>
+                        <a class="valueDragger graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');"  data-info="{{ texts.portFloatDrag }}"></a>
                     {{/compare}}
 
                 {{/if}}
