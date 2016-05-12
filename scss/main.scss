@@ -376,6 +376,7 @@ input[type="text"]
         padding:2px;
         padding-left: 7px;
     }
+
     table
     {
         width:100%;
@@ -480,13 +481,13 @@ a.button.fa-times:before {
 .bluebutton
 {
     color:#eee;
-    background-color: $mainColor;
+    background-color: $highlight-color-dark;
     padding:10px;
 
     &:hover
     {
         cursor:pointer !important;
-        background-color: $highlight-color;
+        background-color: $highlight-color-dark;
         color:#fff;
     }
 
@@ -607,7 +608,7 @@ a.button.fa-times:before {
 
     .selected
     {
-        background-color: $highlight-color;
+        background-color: $highlight-color-dark;
         a
         {
             color:white;
@@ -1363,7 +1364,7 @@ nav
     }
     ul li:hover
     {
-        background: $mainColor;
+        background: $highlight-color-dark;
         color: #fff;
         a
         {
@@ -1399,7 +1400,7 @@ nav
     }
     ul li ul li:hover
     {
-        background: $mainColor;
+        background: $highlight-color-dark;
         cursor:pointer;
     }
     ul li:hover ul
@@ -1599,7 +1600,7 @@ nav
     }
     ul li:hover
     {
-        background: $mainColor;
+        background: $highlight-color-dark;
         color: #fff;
         a
         {
@@ -1635,7 +1636,7 @@ nav
     }
     ul li ul li:hover
     {
-        background: $mainColor;
+        background: $highlight-color-dark;
         cursor:pointer;
     }
     ul li:hover ul
