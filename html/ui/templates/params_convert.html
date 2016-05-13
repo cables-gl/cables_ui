@@ -4,7 +4,7 @@
 
         <h2>{{ converterName }}</h2>
 
-
+        <i id="converterprogress" class="fa fa-circle-o-notch fa-spin" style="display:none;"></i>
 
         <form id="converterform">
             {{#compare converterId '==' 'pcconv' }}
@@ -33,16 +33,13 @@
 
             </div>
 
-
             {{/compare}}
+
+            <a class="button fa fa-retweet" onclick="$('#converterprogress').show();$('#converterform').hide();CABLES.api.post('project/{{ projectId }}/file/convert/{{ fileId }}/{{ converterId }}',{options:CABLES.serializeForm('#converterform')},function(){$('#converterprogress').hide();});">&nbsp;{{ converterName }}</a>
+            <br/><br/>
+
+
         </form>
-
-
-
-
-
-        <a class="button fa fa-retweet" onclick="CABLES.api.post('project/{{ projectId }}/file/convert/{{ fileId }}/{{ converterId }}',{options:CABLES.serializeForm('#converterform')});">&nbsp;{{ converterName }}</a>
-        <br/><br/>
 
     </div>
 </script>
