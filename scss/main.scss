@@ -1181,10 +1181,11 @@ input[type=text]:active, input[type=text]:focus {
             .tab
             {
                 float:left;
+                font-size: 13px;
                 padding:5px;
                 cursor:pointer;
-                padding-left: 10px;
-                padding-right: 10px;
+                padding-left: 8px;
+                padding-right: 8px;
                 margin-top: 7px;
 
                 &.active

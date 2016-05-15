@@ -165,9 +165,14 @@ CABLES.UI.OPSELECT.getOpList=function()
                     if(eval('typeof('+opname+')')=="function") isFunction=true;
 
                     var parts=opname.split('.');
+                    var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();
+
                     var shortName=parts[parts.length-1];
                     parts.length=parts.length-1;
                     var nameSpace=parts.join('.');
+
+
+
 
                     if(isFunction && !opname.startsWith('Ops.Deprecated'))
                     {
@@ -177,7 +182,7 @@ CABLES.UI.OPSELECT.getOpList=function()
                             "name":opname,
                             "shortName":shortName,
                             "nameSpace":nameSpace,
-                            lowercasename:opname.toLowerCase()
+                            "lowercasename":lowercasename
                         };
                         ops.push(op);
                     }
