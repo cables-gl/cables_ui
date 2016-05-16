@@ -925,9 +925,9 @@ CABLES.UI.GUI=function()
 
                     self.serverOps=new CABLES.UI.ServerOps(self);
 
-                    if(!data.user.introCompleted) {
-                      _introduction.showIntroduction();
-                    }
+                    // if(!data.user.introCompleted) {
+                    //   _introduction.showIntroduction();
+                    // }
                 }
             },function(data)
             {
