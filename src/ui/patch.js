@@ -675,6 +675,8 @@ CABLES.UI.Patch=function(_gui)
             });
     };
 
+
+
     this.centerViewBoxOps=function()
     {
         var minX=99999;
@@ -715,6 +717,7 @@ CABLES.UI.Patch=function(_gui)
         self.updateViewBox();
     };
 
+    var minimapBounds={x:0,y:0,w:0,h:0};
 
     this.setMinimapBounds=function()
     {
@@ -732,18 +735,26 @@ CABLES.UI.Patch=function(_gui)
         {
             if(self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
             {
-                bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
-                bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
-                bounds.miny=Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
-                bounds.maxy=Math.max(bounds.maxy, self.ops[j].op.uiAttribs.translate.y);
+                if(self.ops[j].op.uiAttribs.subPatch==currentSubPatch)
+                {
+                    bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
+                    bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
+                    bounds.miny=Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
+                    bounds.maxy=Math.max(bounds.maxy, self.ops[j].op.uiAttribs.translate.y);
+                }
             }
         }
 
+        minimapBounds.x=bounds.minx-100;
+        minimapBounds.y=bounds.miny-100;
+        minimapBounds.w=(bounds.maxx-bounds.minx)+300;
+        minimapBounds.h=(bounds.maxy-bounds.miny)+300;
+
         self.paperMap.setViewBox(
-            bounds.minx-100,
-            bounds.miny-100,
-            (bounds.maxx-bounds.minx)+300,
-            (bounds.maxy-bounds.miny)+300
+            minimapBounds.x,
+            minimapBounds.y,
+            minimapBounds.w,
+            minimapBounds.h
         );
         // return bounds;
 
@@ -921,6 +932,20 @@ CABLES.UI.Patch=function(_gui)
         self.updateSubPatches();
     };
 
+
+    function dragMiniMap(e)
+    {
+        if(e.buttons==1)
+        {
+            var p=e.offsetX/CABLES.UI.uiConfig.miniMapWidth;
+            var ph=e.offsetY/CABLES.UI.uiConfig.miniMapHeight;
+
+            viewBox.x=(minimapBounds.x+p*minimapBounds.w)-viewBox.w/3;
+            viewBox.y=(minimapBounds.y+ph*minimapBounds.h)-viewBox.h/3;
+            self.updateViewBox();
+        }
+    }
+
     this.show=function(_scene)
     {
         this.scene=_scene;
@@ -928,20 +953,24 @@ CABLES.UI.Patch=function(_gui)
         $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'),{});
         $('#meta').append();
 
-        this.paperMap= Raphael("minimap",240, 240);
+        this.paperMap= Raphael("minimap",CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
 
         setInterval(self.setMinimapBounds,500);
         self.paperMap.setViewBox( -500,-500,4000,4000 );
 
         miniMapBounding=this.paperMap.rect(0,0,10,10).attr({
-            "stroke": "#aaa",
+            "stroke": "#666",
             "fill": "#1a1a1a",
             // "vector-effect":"non-scaling-stroke"
             "stroke-width":1
         });
 
 
-        this.paper= Raphael("patch",0, 0);
+        $('#minimap svg').on("mousemove", dragMiniMap);
+        $('#minimap svg').on("mousedown", dragMiniMap);
+
+
+        this.paper=Raphael("patch",0, 0);
         this.bindScene(self.scene);
 
 
@@ -1430,6 +1459,7 @@ CABLES.UI.Patch=function(_gui)
         self.updateSubPatches();
 
         $('#patch').focus();
+        self.updateBounds=true;
     };
 
 

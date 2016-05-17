@@ -334,6 +334,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(backgroundComment)backgroundComment.remove();
         if(backgroundResize)backgroundResize.remove();
         if(resizeHandle)resizeHandle.remove();
+        if(miniRect)miniRect.remove();
         label=background=backgroundComment=backgroundResize=null;
     };
 
