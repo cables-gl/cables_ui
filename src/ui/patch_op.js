@@ -1,8 +1,6 @@
 var CABLES=CABLES || {};
 CABLES.UI= CABLES.UI || {};
-
 CABLES.UI.LINKHOVER=null;
-
 
 CABLES.UI.cleanRaphael=function(el)
 {
@@ -13,7 +11,6 @@ CABLES.UI.cleanRaphael=function(el)
     el.node.removeAttribute('fill');
     el.node.removeAttribute('fill-opacity');
     el.node.removeAttribute('stroke-opacity');
-
 };
 
 // function getPortOpacity(port)
@@ -27,7 +24,6 @@ function getPortDescription(thePort)
 {
     var str='<b>'+thePort.getName()+'</b> (' + thePort.getTypeString() + ')';
 
-
     var strInfo='';
     if(thePort.direction==PORT_DIR_IN)strInfo+=CABLES.UI.TEXTS.portDirIn;
     if(thePort.direction==PORT_DIR_OUT)strInfo+=CABLES.UI.TEXTS.portDirOut;
@@ -37,7 +33,6 @@ function getPortDescription(thePort)
 
     return str;
 }
-
 
 function Line(startX, startY)
 {
@@ -380,13 +375,37 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         shakeCount=0;
         shakeCountP=0;
         shakeCountN=0;
-
         $('#patch').focus();
-        if(opui.isSelected())return;
+
+        if(ev.buttos==2)
+        {
+            //show context menu...
+            return;
+        }
+
+
+        if(opui.isSelected())
+        {
+            if(ev.shiftKey)
+            {
+                gui.patch().removeSelectedOp(opui);
+                opui.setSelected(false);
+            }
+            return;
+        }
 
         opui.showAddButtons();
-        if(!ev.shiftKey) gui.patch().setSelectedOp(null);
-        gui.patch().setSelectedOp(opui);
+
+        if(!ev.shiftKey)
+        {
+            gui.patch().setSelectedOp(null);
+            gui.patch().setSelectedOp(opui);
+        }
+        else
+        {
+            gui.patch().addSelectedOp(opui);
+            opui.setSelected(true);
+        }
 
     };
 

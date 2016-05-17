@@ -886,7 +886,7 @@ CABLES.UI.Patch=function(_gui)
                         else
                         {
                             self.removeSelectedOp(self.ops[i]);
-                            self.ops[i].setSelected(false);
+                            // self.ops[i].setSelected(false);
                         }
                     }
                 }
@@ -1006,7 +1006,7 @@ CABLES.UI.Patch=function(_gui)
             $('#library').hide();
             $('#patch').focus();
 
-            gui.patch().setSelectedOp(null);
+            if(!ev.shiftKey) gui.patch().setSelectedOp(null);
             self.showProjectParams();
         };
 
@@ -1483,7 +1483,6 @@ CABLES.UI.Patch=function(_gui)
                 bounds.maxx=Math.max(bounds.maxx, selectedOps[j].op.uiAttribs.translate.x);
                 bounds.miny=Math.min(bounds.miny, selectedOps[j].op.uiAttribs.translate.y);
                 bounds.maxy=Math.max(bounds.maxy, selectedOps[j].op.uiAttribs.translate.y);
-
             }
         }
 
@@ -1612,6 +1611,7 @@ CABLES.UI.Patch=function(_gui)
         {
             if(selectedOps[i]==uiop)
             {
+
                 selectedOps.splice(i,1);
                 return;
             }
