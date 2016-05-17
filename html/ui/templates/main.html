@@ -57,9 +57,9 @@
                 <ul>
                     <li class="nav_patch_new">New</li>
                     <li class="divide"></li>
-                    <li onclick="CABLES.UI.SELECTPROJECT.show();">Open</li>
+                    <li onclick="CABLES.UI.SELECTPROJECT.show();">Open <span class="shortcut">[cmd + o]</span></li>
                     <li class="divide"></li>
-                    <li class="nav_patch_save">Save</li>
+                    <li class="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li>
                     <li class="nav_patch_saveas">Save As</li>
                     <li class="divide"></li>
                     <li class="nav_patch_clear">Clear</li>
@@ -70,8 +70,11 @@
             <li>
                 Op
                 <ul>
-                    <li class="nav_op_addOp">Add New</li>
-
+                    <li class="nav_op_addOp">Add New <span class="shortcut">[esc]</span></li>
+                    <li class="divide"></li>
+                    <li class="nav_op_copy inactive">Copy <span class="shortcut">[mod + c]</span></li>
+                    <li class="nav_op_paste inactive">Paste <span class="shortcut">[mod + v]</span></li>
+                    <li class="nav_op_delete inactive">Delete <span class="shortcut">[backspace]</span></li>
                 </ul>
             </li>
             <li>
@@ -83,7 +86,6 @@
             </li>
         </ul>
     </nav>
-
 
     <!-- <a id="button_openprojects" class="button fa fa-folder-open" ></a> -->
 
