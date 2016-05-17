@@ -735,10 +735,13 @@ CABLES.UI.Patch=function(_gui)
         {
             if(self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
             {
-                bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
-                bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
-                bounds.miny=Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
-                bounds.maxy=Math.max(bounds.maxy, self.ops[j].op.uiAttribs.translate.y);
+                if(self.ops[j].op.uiAttribs.subPatch==currentSubPatch)
+                {
+                    bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
+                    bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
+                    bounds.miny=Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
+                    bounds.maxy=Math.max(bounds.maxy, self.ops[j].op.uiAttribs.translate.y);
+                }
             }
         }
 
@@ -1456,6 +1459,7 @@ CABLES.UI.Patch=function(_gui)
         self.updateSubPatches();
 
         $('#patch').focus();
+        self.updateBounds=true;
     };
 
 

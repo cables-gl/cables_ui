@@ -188,24 +188,21 @@ CABLES.UI.GUI=function()
         $('#patch').css('top',menubarHeight+2);
         $('#patch').css('left',patchLeft);
 
+        $('#minimapContainer').show();
+        $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-4);
         if(showMiniMap)
         {
-            $('#minimapContainer').show();
             $('#minimapContainer').css('top',menubarHeight+patchHeight-CABLES.UI.uiConfig.miniMapHeight-24);
-            $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-11);
             $('#minimap').show();
             $('#minimapContainer .title_closed').hide();
             $('#minimapContainer .title_opened').show();
-
         }
         else
         {
-            $('#minimapContainer').show();
             $('#minimapContainer .title_closed').show();
             $('#minimapContainer .title_opened').hide();
             $('#minimapContainer').css('top',menubarHeight+patchHeight-24);
             $('#minimapContainer').css('width',CABLES.UI.uiConfig.miniMapWidth);
-            $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-11);
             $('#minimap').hide();
         }
 
