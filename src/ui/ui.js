@@ -187,8 +187,8 @@ CABLES.UI.GUI=function()
         $('#patch').css('top',menubarHeight+2);
         $('#patch').css('left',patchLeft);
 
-        $('#minimap').css('top',menubarHeight+patchHeight-284);
-        $('#minimap').css('left',patchLeft+patchWidth-251);
+        $('#minimap').css('top',menubarHeight+patchHeight-CABLES.UI.uiConfig.miniMapHeight-44);
+        $('#minimap').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-11);
 
         $('#timelineui').css('width',window.innerWidth-self.rendererWidth-2);
 
