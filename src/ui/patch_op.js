@@ -25,8 +25,7 @@ CABLES.UI.cleanRaphael=function(el)
 
 function getPortDescription(thePort)
 {
-    var str=thePort.getTypeString()+' ';
-    str+='<b>'+thePort.getName()+'</b>';
+    var str='<b>'+thePort.getName()+'</b> (' + thePort.getTypeString() + ')';
 
 
     var strInfo='';
