@@ -7,6 +7,7 @@ CABLES.UI.GUI=function()
     var self=this;
     var showTiming=false;
     var showingEditor=false;
+    var showMiniMap=false;
     var _scene=new Scene();
     _scene.gui=true;
     var _patch=null;
@@ -187,8 +188,26 @@ CABLES.UI.GUI=function()
         $('#patch').css('top',menubarHeight+2);
         $('#patch').css('left',patchLeft);
 
-        $('#minimap').css('top',menubarHeight+patchHeight-CABLES.UI.uiConfig.miniMapHeight-44);
-        $('#minimap').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-11);
+        if(showMiniMap)
+        {
+            $('#minimapContainer').show();
+            $('#minimapContainer').css('top',menubarHeight+patchHeight-CABLES.UI.uiConfig.miniMapHeight-24);
+            $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-11);
+            $('#minimap').show();
+            $('#minimapContainer .title_closed').hide();
+            $('#minimapContainer .title_opened').show();
+
+        }
+        else
+        {
+            $('#minimapContainer').show();
+            $('#minimapContainer .title_closed').show();
+            $('#minimapContainer .title_opened').hide();
+            $('#minimapContainer').css('top',menubarHeight+patchHeight-24);
+            $('#minimapContainer').css('width',CABLES.UI.uiConfig.miniMapWidth);
+            $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-11);
+            $('#minimap').hide();
+        }
 
         $('#timelineui').css('width',window.innerWidth-self.rendererWidth-2);
 
@@ -419,6 +438,13 @@ CABLES.UI.GUI=function()
             $('#button_toggleTiming i').addClass('fa-caret-up');
         }
     }
+
+
+    this.toggleMiniMap=function()
+    {
+        showMiniMap=!showMiniMap;
+        self.setLayout();
+    };
 
     this.showTiming=function()
     {
