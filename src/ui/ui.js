@@ -480,6 +480,47 @@ CABLES.UI.GUI=function()
     //         });
     // };
 
+    this.getUserOs=function()
+    {
+      var OSName="Unknown OS";
+      if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+      if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+      if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+      if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+
+      return OSName;
+    }
+
+    /* Returns the default mod key for a OS */
+    this.getModKeyForOs=function(os)
+    {
+      switch(os) {
+        case 'Windows':
+          return 'ctrl';
+          break;
+        case 'MacOS':
+          return 'cmd';
+          break;
+        case 'UNIX':
+          return 'cmd';
+          break;
+        case 'Linux':
+        default:
+          return 'mod';
+      }
+    }
+
+    /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
+    this.replaceNavShortcuts=function()
+    {
+      var osMod = gui.getModKeyForOs(gui.getUserOs());
+      console.log("osmod: " + osMod);
+        $("nav ul li .shortcut").each(function(){
+            var newShortcut = $(this).text().replace("mod", osMod);
+            $(this).text(newShortcut);
+        });
+    }
+
     this.showFile=function(fileId,file)
     {
         var html = CABLES.UI.getHandleBarHtml(
@@ -521,6 +562,9 @@ CABLES.UI.GUI=function()
         $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))gui.scene().clear(); });
         $('.nav_patch_export').bind("click", function (event) { gui.patch().exportStatic(); });
         $('.nav_patch_settings').bind("click", function (event) { self.patch().showProjectParams(); });
+        $('.nav_patch_browse_examples').bind("click", function (event) { var win = window.open('https://cables.gl/examples', '_blank'); win.focus(); });
+        $('.nav_patch_browse_favourites').bind("click", function (event) { var win = window.open('https://cables.gl/myfavs', '_blank'); win.focus(); });
+        $('.nav_patch_browse_public').bind("click", function (event) { var win = window.open('https://cables.gl/projects', '_blank'); win.focus(); });
 
         // --- Help menu
         // Documentation
@@ -1001,6 +1045,7 @@ CABLES.UI.GUI=function()
         {
             CABLES.UI.hideInfo();
         });
+        gui.replaceNavShortcuts();
     };
     self.loadUser();
 
