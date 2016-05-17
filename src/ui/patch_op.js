@@ -290,6 +290,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var isSelected=true;
     var group = Raphael.fn.set();
     var background = null;
+    var miniRect = null;
     var resizeHandle = null;
     var label=null;
     var w=_w;
@@ -310,6 +311,18 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.isVisible=function()
     {
         return label!==null;
+    };
+
+    this.setPosition=function(posx,posy)
+    {
+        if(this.getGroup())
+        {
+            this.getGroup().transform('t'+posx+','+posy);
+        }
+
+        if(miniRect) miniRect.attr({x:posx,y:posy});
+
+
     };
 
     this.removeUi=function()
@@ -333,7 +346,16 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.setWidth=function(_w)
     {
         w=_w;
-        if(this.isVisible()) background.attr({width:w});
+        if(this.isVisible())
+        {
+            background.attr({width:w});
+
+            if(miniRect)miniRect.attr({
+                width:w,
+                height:10,
+            });
+        }
+
     };
 
     function hover()
@@ -365,6 +387,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         opui.showAddButtons();
         if(!ev.shiftKey) gui.patch().setSelectedOp(null);
         gui.patch().setSelectedOp(opui);
+
     };
 
     var move = function (dx, dy,a,b,e)
@@ -397,6 +420,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         shakeLastX=a;
 
         gui.patch().moveSelectedOps(dx,dy,a,b,e);
+        gui.patch().updateBounds=true;
         gui.setStateUnsaved();
     };
 
@@ -461,6 +485,17 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.addUi=function()
     {
         if(this.isVisible())return;
+
+        miniRect=gui.patch().getPaperMap().rect(x,y, w, h);
+        miniRect.attr({
+            "width":w,
+            "height":32,
+            "fill-opacity":1
+        });
+
+        miniRect.node.classList.add(CABLES.UI.uiConfig.getOpMiniRectClassName(opui.op.objName));
+        CABLES.UI.cleanRaphael(miniRect);
+
 
         background=gui.patch().getPaper().rect(0, 0, w, h);
         CABLES.UI.cleanRaphael(background);
@@ -620,6 +655,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 background.attr({
                     width:width+resizeSize
                 });
+
 
                 backgroundResize.attr({
                     x:oldPosX+dx,
@@ -845,8 +881,9 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         self.isDragging=false;
     };
 
-this.getPosX=function(){return posx;};
-this.getPosY=function(){return posy;};
+    this.getPosX=function(){return posx;};
+    this.getPosY=function(){return posy;};
+
     this.setPos=function(x,y)
     {
         if(isNumber(x))
@@ -855,10 +892,11 @@ this.getPosY=function(){return posy;};
             posy=y;
         }
 
-        if(self.oprect.getGroup())
-        {
-            self.oprect.getGroup().transform('t'+posx+','+posy);
-        }
+
+        self.oprect.setPosition(posx,posy);
+
+
+
         self.op.uiAttribs.translate={x:posx,y:posy};
 
         for(var j in self.links)

@@ -195,7 +195,7 @@ CABLES.UI.Port=function(thePort)
         if(self.direction==PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
 
 
-        if(thePort.isLinked() || hovering)
+        if(thePort.isLinked())
         {
             if(self.direction==PORT_DIR_IN)offY-=3;
         }

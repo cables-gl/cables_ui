@@ -187,6 +187,9 @@ CABLES.UI.GUI=function()
         $('#patch').css('top',menubarHeight+2);
         $('#patch').css('left',patchLeft);
 
+        $('#minimap').css('top',menubarHeight+patchHeight-279);
+        $('#minimap').css('left',patchLeft+patchWidth-246);
+
         $('#timelineui').css('width',window.innerWidth-self.rendererWidth-2);
 
         $('#timing').css('width',window.innerWidth-self.rendererWidth-2);

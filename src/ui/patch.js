@@ -26,6 +26,9 @@ CABLES.UI.Patch=function(_gui)
     var rubberBandRect=null;
     var isLoading=false;
 
+    this.updateBounds=false;
+    var miniMapBounding=null;
+
     this.background=null;
 
     this.isLoading=function()
@@ -36,6 +39,12 @@ CABLES.UI.Patch=function(_gui)
     this.getPaper=function()
     {
         return self.paper;
+    };
+
+
+    this.getPaperMap=function()
+    {
+        return self.paperMap;
     };
 
     this.getLargestPort=function()
@@ -707,10 +716,57 @@ CABLES.UI.Patch=function(_gui)
     };
 
 
+
+    this.setMinimapBounds=function()
+    {
+        if(!self.updateBounds)return;
+        self.updateBounds=false;
+        var bounds=
+            {
+                minx:  9999999,
+                maxx: -9999999,
+                miny:  9999999,
+                maxy: -9999999,
+            };
+
+        for(var j=0;j<self.ops.length;j++)
+        {
+            if(self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
+            {
+                console.log(self.ops[j].op.uiAttribs.translate.x);
+                bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
+                bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
+                bounds.miny=Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
+                bounds.maxy=Math.max(bounds.maxy, self.ops[j].op.uiAttribs.translate.y);
+            }
+        }
+
+        self.paperMap.setViewBox(
+            bounds.minx-100,
+            bounds.miny-100,
+            (bounds.maxx-bounds.minx)+300,
+            (bounds.maxy-bounds.miny)+300
+        );
+        // return bounds;
+
+    };
+
+
     this.updateViewBox=function()
     {
         if(!isNaN(viewBox.x) && !isNaN(viewBox.y) && !isNaN(viewBox.w) && !isNaN(viewBox.h))
             self.paper.setViewBox( viewBox.x, viewBox.y, viewBox.w, viewBox.h );
+
+
+
+        miniMapBounding.attr(
+        {
+            x:viewBox.x,
+            y:viewBox.y,
+            width:viewBox.w,
+            height:viewBox.h
+        });
+
     };
 
     function rubberBandHide()
@@ -874,8 +930,21 @@ CABLES.UI.Patch=function(_gui)
         $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'),{});
         $('#meta').append();
 
+        this.paperMap= Raphael("minimap",240, 240);
+
+        setInterval(self.setMinimapBounds,500);
+        self.paperMap.setViewBox( -500,-500,4000,4000 );
+
+        miniMapBounding=this.paperMap.rect(0,0,10,10).attr({
+            // "stroke": "#fff",
+            "fill": "#2f2f2f",
+            // "stroke-width":2
+        });
+
+
         this.paper= Raphael("patch",0, 0);
         this.bindScene(self.scene);
+
 
         viewBox={x:0,y:0,w:$('#patch svg').width(),h:$('#patch svg').height()};
         self.updateViewBox();
@@ -1316,6 +1385,7 @@ CABLES.UI.Patch=function(_gui)
 
             self.ops.push(uiOp);
             uiOp.wasAdded=false;
+            gui.patch().updateBounds=true;
 
             doAddOp(uiOp);
 
@@ -1362,6 +1432,8 @@ CABLES.UI.Patch=function(_gui)
 
         $('#patch').focus();
     };
+
+
 
     this.getSelectionBounds=function()
     {

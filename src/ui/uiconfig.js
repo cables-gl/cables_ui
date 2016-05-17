@@ -78,6 +78,19 @@ CABLES.UI.uiConfig=
     //
     //     return opColor;
     // },
+
+    getOpMiniRectClassName:function(opName)
+    {
+        if(!opName) return 'op_minirect_default';
+
+        if( opName.startsWith('Ops.Gl') ) return 'op_minirect_gl';
+        if( opName.startsWith('Ops.WebAudio') ) return 'op_minirect_audio';
+        if( opName.startsWith('Ops.Devices') ) return 'op_minirect_devices';
+        if( opName.startsWith('Ops.Html') ) return 'op_minirect_html';
+        return 'op_minirect_default';
+
+    },
+
     getOpHandleClassName:function(opName)
     {
         if(!opName) return 'op_handle_default';
