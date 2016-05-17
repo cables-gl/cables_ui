@@ -227,6 +227,9 @@ function UiLink(port1, port2)
     this.remove=function()
     {
         self.hide();
+        port1.updateUI();
+        port2.updateUI();
+
     };
 
 
@@ -267,6 +270,9 @@ function UiLink(port1, port2)
             //     else this.linkLine.attr("opacity", 0.3);
             this.linkLine.attr("opacity", 1.0);
     };
+
+    port1.updateUI();
+    port2.updateUI();
 }
 
 

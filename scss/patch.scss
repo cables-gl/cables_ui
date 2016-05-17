@@ -54,11 +54,19 @@
         width:10px;
         height:6px;
 
+        &.connected
+        {
+            height:9px;
+        }
+
+
         &.active
         {
-            stroke-width:2;
+            height:9px;
+            stroke-width:1;
             fill-opacity:1;
-            stroke-opacity:1;
+            stroke:#fff !important;
+            // stroke-opacity:0.5;
         }
     }
 
