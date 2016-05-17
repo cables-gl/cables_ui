@@ -21,11 +21,6 @@ h1, h2, h3, h4, h5, h6 {
   font-style: normal;
 }
 
-nav li {
-  font-family: $headline-font, sans-serif;
-  font-weight: 400;
-}
-
 p {
   font-style: normal;
   line-height: $line-height-text;
@@ -1333,105 +1328,6 @@ hr
 }
 
 
-nav
-{
-    float:left;
-    z-index: 9999;
-
-    a
-    {
-        &:hover
-        {
-            color:#fff;
-        }
-    }
-    ul
-    {
-        text-align: left;
-        display: inline;
-        margin: 0;
-        padding: 5px 4px 5px 0;
-        list-style: none;
-        -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-        -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-    }
-    ul li
-    {
-        //font: bold 12px/18px sans-serif;
-        display: inline-block;
-        margin-right: -4px;
-        position: relative;
-        padding: 7px 20px;
-        cursor: pointer;
-
-        span
-        {
-            margin-left: 20px;
-        }
-    }
-    ul li:hover
-    {
-        background: $highlight-color-dark;
-        color: #fff;
-        a
-        {
-            color:white;
-        }
-    }
-    ul li ul
-    {
-        z-index: 9999;
-        padding: 0;
-        position: absolute;
-        top: 28px;
-        left: 0;
-        width: 150px;
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: none;
-        display: none;
-        opacity: 0;
-        visibility: hidden;
-        -webkit-transiton: opacity 0.1s;
-        -moz-transition: opacity 0.1s;
-        -ms-transition: opacity 0.1s;
-        -o-transition: opacity 0.1s;
-        -transition: opacity 0.1s;
-    }
-    ul li ul li
-    {
-        background: #444;
-        display: block;
-        color: #fff;
-        // text-shadow: 0 -1px 0 #000;
-    }
-    ul li ul li:hover
-    {
-        background: $highlight-color-dark;
-        cursor:pointer;
-    }
-    ul li:hover ul
-    {
-        display: block;
-        opacity: 1;
-        visibility: visible;
-    }
-
-    ul li ul#jobs li
-    {
-        background-color: #222;
-        color:#aaa;
-        width:250px;
-        font-weight: normal;
-    }
-
-    .divide
-    {
-        padding:0px;
-        border-bottom: 1px solid #333;
-    }
-}
 
 #infoArea
 {
@@ -1574,6 +1470,116 @@ nav
     float:left;
     z-index: 9999;
 
+        li
+        {
+          font-family: $headline-font, sans-serif;
+          font-weight: 400;
+        }
+
+        a
+        {
+            &:hover
+            {
+                color:#fff;
+            }
+        }
+        ul
+        {
+            text-align: left;
+            display: inline;
+            margin: 0;
+            padding: 5px 4px 5px 0;
+            list-style: none;
+            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        }
+        ul li
+        {
+            //font: bold 12px/18px sans-serif;
+            display: inline-block;
+            margin-right: -4px;
+            position: relative;
+            padding: 7px 20px;
+            cursor: pointer;
+
+            &.inactive
+            {
+              color: #737373;
+            }
+
+            .shortcut {
+                  float: right;
+            }
+
+            span
+            {
+                margin-left: 20px;
+            }
+        }
+        ul li:hover
+        {
+            background: $highlight-color-dark;
+            color: #fff;
+            a
+            {
+                color:white;
+            }
+        }
+        ul li ul
+        {
+            z-index: 9999;
+            padding: 0;
+            position: absolute;
+            top: 28px;
+            left: 0;
+            width: 200px;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            -webkit-transiton: opacity 0.1s;
+            -moz-transition: opacity 0.1s;
+            -ms-transition: opacity 0.1s;
+            -o-transition: opacity 0.1s;
+            -transition: opacity 0.1s;
+        }
+        ul li ul li
+        {
+            background: #444;
+            display: block;
+            color: #fff;
+            // text-shadow: 0 -1px 0 #000;
+        }
+        ul li ul li:hover
+        {
+            background: $highlight-color-dark;
+            cursor:pointer;
+        }
+        ul li:hover ul
+        {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        ul li ul#jobs li
+        {
+            background-color: #222;
+            color:#aaa;
+            width:250px;
+            font-weight: normal;
+        }
+
+        .divide
+        {
+            padding:0px;
+            border-bottom: 1px solid #333;
+        }
+
+
     a
     {
         &:hover
@@ -1622,7 +1628,7 @@ nav
         position: absolute;
         top: 28px;
         left: 0;
-        width: 150px;
+        // width: 150px;
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;
