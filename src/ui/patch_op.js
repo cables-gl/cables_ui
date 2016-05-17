@@ -315,6 +315,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         label.remove();
         if(backgroundComment)backgroundComment.remove();
         if(backgroundResize)backgroundResize.remove();
+        if(resizeHandle)resizeHandle.remove();
         label=background=backgroundComment=backgroundResize=null;
     };
 
@@ -379,7 +380,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 clearTimeout(shakeTimeOut);
                 shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },250);
             }
-            if(shakeCountP + shakeCountN>=3)
+            if(shakeCountP + shakeCountN>=5)
             {
                 opui.op.unLinkShake();
                 shakeCount=0;

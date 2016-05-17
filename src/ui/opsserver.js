@@ -229,10 +229,14 @@ CABLES.UI.ServerOps=function(gui)
                         );
                     };
 
+
+                var parts=op.name.split(".");
+                var title='Op '+parts[parts.length-1];
                 gui.editor().addTab(
                 {
                     content:res.code,
-                    title:op.name,
+                    title:title,
+                    opname:op.name,
                     syntax:'js',
                     readOnly:readOnly,
                     toolbarHtml:html,
@@ -242,9 +246,9 @@ CABLES.UI.ServerOps=function(gui)
 
                         for(var i=storedOps.length;i>=0;i--)
                         {
-                            console.log('-- ', storedOps[i], which.title);
+                            console.log('-- ', storedOps[i], which.opname);
 
-                            if(storedOps[i]==which.title)
+                            if(storedOps[i]==which.opname)
                             {
                                 console.log('found op to remove');
                                 storedOps.splice(i,1);

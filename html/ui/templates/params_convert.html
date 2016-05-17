@@ -1,0 +1,45 @@
+
+<script id="params_convert" type="text/x-handlebars-template">
+    <div>
+
+        <h2>{{ converterName }}</h2>
+
+        <i id="converterprogress" class="fa fa-circle-o-notch fa-spin" style="display:none;"></i>
+
+        <form id="converterform">
+            {{#compare converterId '==' 'pcconv' }}
+
+            <div>
+
+                <table>
+                    <tr>
+                        <td>Center Points</td>
+                        <td>
+                            <select name="doCenter">
+                                <option value="false">false</option>
+                                <option value="true">true</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Reduce Points Num</td>
+                        <td>
+                            <input name="reduce" value="0"/>
+                            <br/>0 - do not reduce
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+            {{/compare}}
+
+            <a class="button fa fa-retweet" onclick="$('#converterprogress').show();$('#converterform').hide();CABLES.api.post('project/{{ projectId }}/file/convert/{{ fileId }}/{{ converterId }}',{options:CABLES.serializeForm('#converterform')},function(){$('#converterprogress').hide();});">&nbsp;{{ converterName }}</a>
+            <br/><br/>
+
+
+        </form>
+
+    </div>
+</script>

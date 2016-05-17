@@ -281,7 +281,7 @@ CABLES.UI.Patch=function(_gui)
         var count=0;
         while(this.testCollisionOpPosition(x,y) && count<400)
         {
-            y+=15;
+            y+=10;
             count++;
         }
 

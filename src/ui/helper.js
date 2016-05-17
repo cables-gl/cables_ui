@@ -6,6 +6,18 @@ CABLES.UI.setStatusText=function(txt)
     $('#statusbar .text').html('&nbsp;'+txt);
 };
 
+CABLES.serializeForm=function(selector)
+{
+    var json={};
+    $(selector).find(':input').each( function()
+    {
+        json[$(this).attr('name')]=$(this).val();
+        // console.log(,);
+    });
+    console.log(json);
+    return json;
+};
+
 
 CABLES.UI.PREVIEW={};
 CABLES.UI.PREVIEW.op=null;

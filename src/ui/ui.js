@@ -490,6 +490,20 @@ CABLES.UI.GUI=function()
         $('#options').html(html);
     };
 
+    this.showConverter=function(converterId,projectId,fileId,converterName)
+    {
+        var html = CABLES.UI.getHandleBarHtml(
+            'params_convert',
+            {
+                "converterId":converterId,
+                "converterName":converterName,
+                "projectId":projectId,
+                "fileId":fileId
+            });
+
+        $('#options').html(html);
+    };
+
     this.bind=function()
     {
         $('#glcanvas').attr('tabindex','3');
@@ -911,9 +925,9 @@ CABLES.UI.GUI=function()
 
                     self.serverOps=new CABLES.UI.ServerOps(self);
 
-                    if(!data.user.introCompleted) {
-                      _introduction.showIntroduction();
-                    }
+                    // if(!data.user.introCompleted) {
+                    //   _introduction.showIntroduction();
+                    // }
                 }
             },function(data)
             {

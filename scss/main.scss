@@ -148,6 +148,7 @@ input
     background-color: #888;
     color:#fff;
     border:none;
+    font-family: futura-pt;
 
     &.invalid
     {
@@ -163,6 +164,7 @@ input[type="text"]
     outline: none;
     font-size: $text-input-font-size;
     border-radius: 0;
+    font-family: futura-pt;
     //border: none;
 }
 
@@ -375,6 +377,7 @@ input[type="text"]
         padding:2px;
         padding-left: 7px;
     }
+
     table
     {
         width:100%;
@@ -485,13 +488,13 @@ a.button.fa-times:before {
 .bluebutton
 {
     color:#eee;
-    background-color: $mainColor;
+    background-color: $highlight-color-dark;
     padding:10px;
 
     &:hover
     {
         cursor:pointer !important;
-        background-color: $highlight-color;
+        background-color: $highlight-color-dark;
         color:#fff;
     }
 
@@ -612,7 +615,7 @@ a.button.fa-times:before {
 
     .selected
     {
-        background-color: $highlight-color;
+        background-color: $highlight-color-dark;
         a
         {
             color:white;
@@ -1185,10 +1188,11 @@ input[type=text]:active, input[type=text]:focus {
             .tab
             {
                 float:left;
+                font-size: 13px;
                 padding:5px;
                 cursor:pointer;
-                padding-left: 10px;
-                padding-right: 10px;
+                padding-left: 8px;
+                padding-right: 8px;
                 margin-top: 7px;
 
                 &.active
@@ -1368,7 +1372,7 @@ nav
     }
     ul li:hover
     {
-        background: $mainColor;
+        background: $highlight-color-dark;
         color: #fff;
         a
         {
@@ -1404,7 +1408,7 @@ nav
     }
     ul li ul li:hover
     {
-        background: $mainColor;
+        background: $highlight-color-dark;
         cursor:pointer;
     }
     ul li:hover ul
@@ -1451,12 +1455,33 @@ nav
     }
 }
 
-#options td, #meta td,#options input
+#options td, #meta td
 {
     padding-top: 4px;
+}
+
+.valueDragger
+{
+    margin-left: -1px;
+    height: 17px;
+    background-color: #383838;
+    padding-left: 5px;
+    margin-top: 1px;
+    padding-right: 6px;
+    padding-top: 5px;
+}
+
+#options td, #meta td,#options input
+{
     font-size: 14px;
     line-height: 18px !important;
     border: 1px solid $background-color-dark;
+}
+
+#options input[type="text"]
+{
+    padding:0px;
+    padding-left:5px;
 }
 
 #options input:hover {
@@ -1583,7 +1608,7 @@ nav
     }
     ul li:hover
     {
-        background: $mainColor;
+        background: $highlight-color-dark;
         color: #fff;
         a
         {
@@ -1619,7 +1644,7 @@ nav
     }
     ul li ul li:hover
     {
-        background: $mainColor;
+        background: $highlight-color-dark;
         cursor:pointer;
     }
     ul li:hover ul
