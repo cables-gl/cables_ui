@@ -4,12 +4,12 @@
  * SVG Colors defined in /ui/uiconfig.js
 */
 
-$color_theme: 7;
+$color_theme:34;
 
 // main colors ----------------------------------------------------------------
 
 $highlight-color: #52FDE1; // not so bright red
-$highlight-color-dark: #5CB59E; 
+$highlight-color-dark: #5CB59E;
 
 $mainColor: $highlight-color; // todo replace in code with $highlight-color
 $background-color-dark: #222222;
@@ -31,7 +31,7 @@ $background-color-brighter: #262626;
 
   $color_port_function: #F0D165;
   $color_port_value: #63A8E8;
-  $color_port_object: #A976EB;
+  $color_port_object: #CF5D9D;
   $color_port_array: #66C984;
   $color_port_dynamic: #D66AA6;
 
@@ -189,6 +189,31 @@ $background-color-brighter: #262626;
   $color_port_value: #5CB59E; //#53B3B5;
   $color_port_object: #52FDE1; //#2598C5;
   $color_port_array: #2598C5; //#8ABEFD;
+  $color_port_dynamic: #FFF6E5;
+
+  $color_link_function: $color_port_function;
+  $color_link_value: $color_port_value;
+  $color_link_object: $color_port_object;
+  $color_link_array: $color_port_array;
+  $color_link_dynamic: $color_port_dynamic;
+}
+
+// theme cyberspace ---------------------------------
+@if $color_theme == 34 {
+  $color_op_bg:#333;
+  $color_op_bg_active:#555;
+  $color_op_text:#eee;
+
+  $color_op_handle_default:#7D7D7D;
+  $color_op_handle_gl:#88A61B;
+  $color_op_handle_audio:#A32BD9;
+  $color_op_handle_devices:#F25C05;
+  $color_op_handle_html:#0E3D59;
+
+  $color_port_function: #F0D165;
+  $color_port_value: #5CB59E;
+  $color_port_object: #AB5A94;
+  $color_port_array: #8084D4;
   $color_port_dynamic: #FFF6E5;
 
   $color_link_function: $color_port_function;
