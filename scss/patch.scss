@@ -4,10 +4,14 @@
     position: absolute;
     svg
     {
-
         background-color: rgba(15, 15, 15, 0.9);
+        border:2px solid #111;
         margin-top: 40px;
         margin-left: 5px;
+    }
+    rect
+    {
+        vector-effect:non-scaling-stroke;
     }
 
     .op_minirect_default { fill:$color_op_handle_default;}
@@ -29,8 +33,11 @@
         border:1px solid $highlight-color;
     }
 
+
     svg
     {
+
+        // shape-rendering:crispEdges;
         position:absolute;
         text
         {

@@ -716,7 +716,6 @@ CABLES.UI.Patch=function(_gui)
     };
 
 
-
     this.setMinimapBounds=function()
     {
         if(!self.updateBounds)return;
@@ -935,9 +934,10 @@ CABLES.UI.Patch=function(_gui)
         self.paperMap.setViewBox( -500,-500,4000,4000 );
 
         miniMapBounding=this.paperMap.rect(0,0,10,10).attr({
-            // "stroke": "#fff",
-            "fill": "#2f2f2f",
-            // "stroke-width":2
+            "stroke": "#aaa",
+            "fill": "#1a1a1a",
+            // "vector-effect":"non-scaling-stroke"
+            "stroke-width":1
         });
 
 
