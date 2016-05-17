@@ -358,6 +358,7 @@ input[type="text"]
     input.value
     {
         background-color: #444;
+        border: 1px solid $background-color-brighter;
         float:left;
         &:focus
         {
@@ -388,7 +389,7 @@ input[type="text"]
 
         tr
         {
-            background-color: #262626;
+
         }
 
         td
@@ -473,6 +474,12 @@ input[type="text"]
 
 a.button.fa-times:before {
   margin-right: 0;
+}
+
+.fa-sort {
+  margin-left: 0px;
+  height: 25px;
+  background-color: #383838;
 }
 
 .bluebutton
