@@ -31,20 +31,6 @@ CABLES.UI.uiConfig=
     watchValuesInterval:100,
     rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}],
 
-    // getPortColor:function(port)
-    // {
-    //     if(!port)return '#ff0000';
-    //     // TEST
-    //     //return '#aaa'
-    //     var type=port.getType();
-    //     if(type==OP_PORT_TYPE_VALUE) return '#F0D165';
-    //     else if(type==OP_PORT_TYPE_FUNCTION) return '#50B283';
-    //     else if(type==OP_PORT_TYPE_OBJECT)  return '#DE8A3C';
-    //     else if(type==OP_PORT_TYPE_ARRAY)  return '#7A8AE3';
-    //     else if(type==OP_PORT_TYPE_DYNAMIC)  return '#733E70';
-    //
-    //     else return '#c6c6c6';
-    // },
 
     getPortClass:function(port)
     {
@@ -69,41 +55,28 @@ CABLES.UI.uiConfig=
         else return 'link_color_unknown';
 
     },
-    // getOpColor:function(opName)
-    // {
-    //     var opColor = '#E0766C';
-    //     if(!opName) return opColor;
-    //     console.log("op name: " + opName );
-    //     if( opName.startsWith('Ops.Gl') ) opColor='#8FD692';
-    //     if( opName.startsWith('Ops.WebAudio') ) opColor='#83BDE0';
-    //     if( opName.startsWith('Ops.Devices') ) opColor='#FFBC8A';
-    //     if( opName.startsWith('Ops.Html') ) opColor='#E392BC';
-    //
-    //     return opColor;
-    // },
+
+
+    getNamespaceClassName:function(opName)
+    {
+        if(!opName) return 'default';
+        if( opName.startsWith('Ops.Gl') ) return 'gl';
+        if( opName.startsWith('Ops.WebAudio') ) return 'audio';
+        if( opName.startsWith('Ops.Devices') ) return 'devices';
+        if( opName.startsWith('Ops.Html') ) return 'html';
+        if( opName.startsWith('Ops.Sidebar') ) return 'html';
+        return 'default';
+
+    },
 
     getOpMiniRectClassName:function(opName)
     {
-        if(!opName) return 'op_minirect_default';
-
-        if( opName.startsWith('Ops.Gl') ) return 'op_minirect_gl';
-        if( opName.startsWith('Ops.WebAudio') ) return 'op_minirect_audio';
-        if( opName.startsWith('Ops.Devices') ) return 'op_minirect_devices';
-        if( opName.startsWith('Ops.Html') ) return 'op_minirect_html';
-        return 'op_minirect_default';
-
+        return 'op_minirect_'+this.getNamespaceClassName(opName);
     },
 
     getOpHandleClassName:function(opName)
     {
-        if(!opName) return 'op_handle_default';
-
-        if( opName.startsWith('Ops.Gl') ) return 'op_handle_gl';
-        if( opName.startsWith('Ops.WebAudio') ) return 'op_handle_audio';
-        if( opName.startsWith('Ops.Devices') ) return 'op_handle_devices';
-        if( opName.startsWith('Ops.Html') ) return 'op_handle_html';
-        return 'op_handle_default';
-
+        return 'op_handle_'+this.getNamespaceClassName(opName);
     },
 
     linkingLine:
