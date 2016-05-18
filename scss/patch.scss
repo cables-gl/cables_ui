@@ -3,13 +3,13 @@
 {
     border:1px solid red;
     border:2px solid #111;
-    background-color: rgba(15, 15, 15, 0.9);
     position: absolute;
     display: none;
 
     .title
     {
         cursor:pointer;
+        background-color: rgba(15, 15, 15, 0.9);
     }
 }
 

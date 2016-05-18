@@ -297,6 +297,38 @@ CGL.Geometry=function()
 
     var indexed=true;
 
+    this.copy=function()
+    {
+        var i=0;
+        var geom=new CGL.Geometry();
+        geom.faceVertCount=this.faceVertCount;
+
+        geom.vertices.length=this.vertices.length;
+        for(i=0;i<this.vertices.length;i++) geom.vertices[i]=this.vertices[i];
+
+        geom.verticesIndices.length=this.verticesIndices.length;
+        for(i=0;i<this.verticesIndices.length;i++) geom.verticesIndices[i]=this.verticesIndices[i];
+
+        geom.texCoords.length=this.texCoords.length;
+        for(i=0;i<this.texCoords.length;i++) geom.texCoords[i]=this.texCoords[i];
+
+        geom.texCoordsIndices.length=this.texCoordsIndices.length;
+        for(i=0;i<this.texCoordsIndices.length;i++) geom.texCoordsIndices[i]=this.texCoordsIndices[i];
+
+        geom.vertexNormals.length=this.vertexNormals.length;
+        for(i=0;i<this.vertexNormals.length;i++) geom.vertexNormals[i]=this.vertexNormals[i];
+
+        geom.baycentrics.length=this.baycentrics.length;
+        for(i=0;i<this.baycentrics.length;i++) geom.baycentrics[i]=this.baycentrics[i];
+
+        geom.morphTargets.length=this.morphTargets.length;
+        for(i=0;i<this.morphTargets.length;i++) geom.morphTargets[i]=this.morphTargets[i];
+
+        geom.vertexColors.length=this.vertexColors.length;
+        for(i=0;i<this.vertexColors.length;i++) geom.vertexColors[i]=this.vertexColors[i];
+
+    };
+
     this.isIndexed=function()
     {
         return indexed;
@@ -391,7 +423,6 @@ CGL.Geometry=function()
             count++;
             if(count==3)count=0;
         }
-
     };
 
     this.calcNormals=function(calcVertexNormals)
@@ -546,92 +577,92 @@ CGL.Geometry=function()
     };
 };
 
-parseOBJ = function(buff)
-{
-
-    _readline = function(a, off)  // Uint8Array, offset
-    {
-        var s = "";
-        while(a[off] != 10) s += String.fromCharCode(a[off++]);
-        return s;
-    };
-
-    var geom = new CGL.Geometry();
-    geom.groups = {};
-
-    geom.vertexNormals = [];
-    geom.vertexNormalIndices = [];
-
-    var cg = {from: 0, to:0};   // current group
-    var off = 0;
-    var a = new Uint8Array(buff);
-    var x=0,y=0,z=0;
-    while(off < a.length)
-    {
-        var line = _readline(a, off);
-        off += line.length + 1;
-        line = line.replace(/ +(?= )/g,'');
-        line = line.replace(/(^\s+|\s+$)/g, '');
-        var cds = line.split(" ");
-        if(cds[0] == "g")
-        {
-            cg.to = geom.verticesIndices.length;
-            if(!geom.groups[cds[1]]) geom.groups[cds[1]] = {from:geom.verticesIndices.length, to:0};
-            cg = geom.groups[cds[1]];
-        }
-        if(cds[0] == "v")
-        {
-            x = parseFloat(cds[1]);
-            y = parseFloat(cds[2]);
-            z = parseFloat(cds[3]);
-            geom.vertices.push(x,y,z);
-        }
-        if(cds[0] == "vt")
-        {
-            x = parseFloat(cds[1]);
-            y = 1-parseFloat(cds[2]);
-            geom.texCoords.push(x,y);
-        }
-        if(cds[0] == "vn")
-        {
-            x = parseFloat(cds[1]);
-            y = parseFloat(cds[2]);
-            z = parseFloat(cds[3]);
-            geom.vertexNormals.push(x,y,z);
-        }
-        if(cds[0] == "f")
-        {
-            var v0a = cds[1].split("/"), v1a = cds[2].split("/"), v2a = cds[3].split("/");
-            var vi0 = parseInt(v0a[0])-1, vi1 = parseInt(v1a[0])-1, vi2 = parseInt(v2a[0])-1;
-            var ui0 = parseInt(v0a[1])-1, ui1 = parseInt(v1a[1])-1, ui2 = parseInt(v2a[1])-1;
-            var ni0 = parseInt(v0a[2])-1, ni1 = parseInt(v1a[2])-1, ni2 = parseInt(v2a[2])-1;
-
-            var vlen = geom.vertices.length/3, ulen = geom.texCoords.length/2, nlen = geom.vertexNormals.length/3;
-            if(vi0<0) vi0 = vlen + vi0+1; if(vi1<0) vi1 = vlen + vi1+1; if(vi2<0) vi2 = vlen + vi2+1;
-            if(ui0<0) ui0 = ulen + ui0+1; if(ui1<0) ui1 = ulen + ui1+1; if(ui2<0) ui2 = ulen + ui2+1;
-            if(ni0<0) ni0 = nlen + ni0+1; if(ni1<0) ni1 = nlen + ni1+1; if(ni2<0) ni2 = nlen + ni2+1;
-
-            geom.verticesIndices.push(vi0, vi1, vi2);  //cg.verticesIndices.push(vi0, vi1, vi2)
-            geom.texCoordsIndices  .push(ui0, ui1, ui2);  //cg.texCoordsIndices  .push(ui0, ui1, ui2);
-            geom.vertexNormalIndices.push(ni0, ni1, ni2);  //cg.vertexNormalIndices.push(ni0, ni1, ni2);
-            if(cds.length == 5)
-            {
-                var v3a = cds[4].split("/");
-                var vi3 = parseInt(v3a[0])-1, ui3 = parseInt(v3a[1])-1, ni3 = parseInt(v3a[2])-1;
-                if(vi3<0) vi3 = vlen + vi3+1;
-                if(ui3<0) ui3 = ulen + ui3+1;
-                if(ni3<0) ni3 = nlen + ni3+1;
-                geom.verticesIndices.push(vi0, vi2, vi3);  //cg.verticesIndices.push(vi0, vi2, vi3);
-                geom.texCoordsIndices  .push(ui0, ui2, ui3);  //cg.texCoordsIndices  .push(ui0, ui2, ui3);
-                geom.vertexNormalIndices.push(ni0, ni2, ni3);  //cg.vertexNormalIndices.push(ni0, ni2, ni3);
-            }
-        }
-    }
-    cg.to = geom.verticesIndices.length;
-
-    return geom;
-};
-
+// parseOBJ = function(buff)
+// {
+//
+//     _readline = function(a, off)  // Uint8Array, offset
+//     {
+//         var s = "";
+//         while(a[off] != 10) s += String.fromCharCode(a[off++]);
+//         return s;
+//     };
+//
+//     var geom = new CGL.Geometry();
+//     geom.groups = {};
+//
+//     geom.vertexNormals = [];
+//     geom.vertexNormalIndices = [];
+//
+//     var cg = {from: 0, to:0};   // current group
+//     var off = 0;
+//     var a = new Uint8Array(buff);
+//     var x=0,y=0,z=0;
+//     while(off < a.length)
+//     {
+//         var line = _readline(a, off);
+//         off += line.length + 1;
+//         line = line.replace(/ +(?= )/g,'');
+//         line = line.replace(/(^\s+|\s+$)/g, '');
+//         var cds = line.split(" ");
+//         if(cds[0] == "g")
+//         {
+//             cg.to = geom.verticesIndices.length;
+//             if(!geom.groups[cds[1]]) geom.groups[cds[1]] = {from:geom.verticesIndices.length, to:0};
+//             cg = geom.groups[cds[1]];
+//         }
+//         if(cds[0] == "v")
+//         {
+//             x = parseFloat(cds[1]);
+//             y = parseFloat(cds[2]);
+//             z = parseFloat(cds[3]);
+//             geom.vertices.push(x,y,z);
+//         }
+//         if(cds[0] == "vt")
+//         {
+//             x = parseFloat(cds[1]);
+//             y = 1-parseFloat(cds[2]);
+//             geom.texCoords.push(x,y);
+//         }
+//         if(cds[0] == "vn")
+//         {
+//             x = parseFloat(cds[1]);
+//             y = parseFloat(cds[2]);
+//             z = parseFloat(cds[3]);
+//             geom.vertexNormals.push(x,y,z);
+//         }
+//         if(cds[0] == "f")
+//         {
+//             var v0a = cds[1].split("/"), v1a = cds[2].split("/"), v2a = cds[3].split("/");
+//             var vi0 = parseInt(v0a[0])-1, vi1 = parseInt(v1a[0])-1, vi2 = parseInt(v2a[0])-1;
+//             var ui0 = parseInt(v0a[1])-1, ui1 = parseInt(v1a[1])-1, ui2 = parseInt(v2a[1])-1;
+//             var ni0 = parseInt(v0a[2])-1, ni1 = parseInt(v1a[2])-1, ni2 = parseInt(v2a[2])-1;
+//
+//             var vlen = geom.vertices.length/3, ulen = geom.texCoords.length/2, nlen = geom.vertexNormals.length/3;
+//             if(vi0<0) vi0 = vlen + vi0+1; if(vi1<0) vi1 = vlen + vi1+1; if(vi2<0) vi2 = vlen + vi2+1;
+//             if(ui0<0) ui0 = ulen + ui0+1; if(ui1<0) ui1 = ulen + ui1+1; if(ui2<0) ui2 = ulen + ui2+1;
+//             if(ni0<0) ni0 = nlen + ni0+1; if(ni1<0) ni1 = nlen + ni1+1; if(ni2<0) ni2 = nlen + ni2+1;
+//
+//             geom.verticesIndices.push(vi0, vi1, vi2);  //cg.verticesIndices.push(vi0, vi1, vi2)
+//             geom.texCoordsIndices  .push(ui0, ui1, ui2);  //cg.texCoordsIndices  .push(ui0, ui1, ui2);
+//             geom.vertexNormalIndices.push(ni0, ni1, ni2);  //cg.vertexNormalIndices.push(ni0, ni1, ni2);
+//             if(cds.length == 5)
+//             {
+//                 var v3a = cds[4].split("/");
+//                 var vi3 = parseInt(v3a[0])-1, ui3 = parseInt(v3a[1])-1, ni3 = parseInt(v3a[2])-1;
+//                 if(vi3<0) vi3 = vlen + vi3+1;
+//                 if(ui3<0) ui3 = ulen + ui3+1;
+//                 if(ni3<0) ni3 = nlen + ni3+1;
+//                 geom.verticesIndices.push(vi0, vi2, vi3);  //cg.verticesIndices.push(vi0, vi2, vi3);
+//                 geom.texCoordsIndices  .push(ui0, ui2, ui3);  //cg.texCoordsIndices  .push(ui0, ui2, ui3);
+//                 geom.vertexNormalIndices.push(ni0, ni2, ni3);  //cg.vertexNormalIndices.push(ni0, ni2, ni3);
+//             }
+//         }
+//     }
+//     cg.to = geom.verticesIndices.length;
+//
+//     return geom;
+// };
+//
 
 CGL.WirePoint=function(cgl,size)
 {
