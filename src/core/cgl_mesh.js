@@ -327,6 +327,7 @@ CGL.Geometry=function()
         geom.vertexColors.length=this.vertexColors.length;
         for(i=0;i<this.vertexColors.length;i++) geom.vertexColors[i]=this.vertexColors[i];
 
+        return geom;
     };
 
     this.isIndexed=function()
