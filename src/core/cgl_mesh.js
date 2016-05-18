@@ -426,27 +426,43 @@ CGL.Geometry=function()
         }
     };
 
-    this.calcNormals=function(calcVertexNormals)
+
+    // deprecated
+    this.calcNormals=function(smooth)
     {
-        //https://www.opengl.org/wiki/Calculating_a_Surface_Normal
+        var options={};
+
+        if(!smooth)
+        {
+            this.unIndex();
+        }
+
+        this.calculateNormals(options);
+    };
+
+    this.calculateNormals=function(options)
+    {
+        var u=vec3.create();
+        var v=vec3.create();
+        var n=vec3.create();
 
         function calcNormal(triangle)
         {
-            // Begin Function CalculateSurfaceNormal (Input Triangle) Returns Vector
-            var u=[0,0,0],v=[0,0,0],normal=[0,0,0];
-            // Set Vector U to (Triangle.p2 minus Triangle.p1)
-            // Set Vector V to (Triangle.p3 minus Triangle.p1)
-
             vec3.subtract(u,triangle[0],triangle[1]);
             vec3.subtract(v,triangle[0],triangle[2]);
+            vec3.cross(n,u,v);
+            vec3.normalize(n,n);
 
-            normal[0] = u[1]*v[2] - u[2]*v[1];
-            normal[1] = u[2]*v[0] - u[0]*v[2];
-            normal[2] = u[0]*v[1] - u[1]*v[0];
-
-            vec3.normalize(normal,normal);
-
-            return normal;
+            if(options && options.forceZUp)
+            {
+                if(n[2]<0)
+                {
+                    n[0]*=-1;
+                    n[1]*=-1;
+                    n[2]*=-1;
+                }
+            }
+            return n;
         }
 
         this.getVertexVec=function(which)
@@ -481,43 +497,37 @@ CGL.Geometry=function()
 
             faceNormals[i/3]=calcNormal(triangle);
 
-            if(!calcVertexNormals)
-            {
-                this.vertexNormals[this.verticesIndices[i+0]*3+0]+=faceNormals[i/3][0];
-                this.vertexNormals[this.verticesIndices[i+0]*3+1]+=faceNormals[i/3][1];
-                this.vertexNormals[this.verticesIndices[i+0]*3+2]+=faceNormals[i/3][2];
+            this.vertexNormals[this.verticesIndices[i+0]*3+0]+=faceNormals[i/3][0];
+            this.vertexNormals[this.verticesIndices[i+0]*3+1]+=faceNormals[i/3][1];
+            this.vertexNormals[this.verticesIndices[i+0]*3+2]+=faceNormals[i/3][2];
 
-                this.vertexNormals[this.verticesIndices[i+1]*3+0]+=faceNormals[i/3][0];
-                this.vertexNormals[this.verticesIndices[i+1]*3+1]+=faceNormals[i/3][1];
-                this.vertexNormals[this.verticesIndices[i+1]*3+2]+=faceNormals[i/3][2];
+            this.vertexNormals[this.verticesIndices[i+1]*3+0]+=faceNormals[i/3][0];
+            this.vertexNormals[this.verticesIndices[i+1]*3+1]+=faceNormals[i/3][1];
+            this.vertexNormals[this.verticesIndices[i+1]*3+2]+=faceNormals[i/3][2];
 
-                this.vertexNormals[this.verticesIndices[i+2]*3+0]+=faceNormals[i/3][0];
-                this.vertexNormals[this.verticesIndices[i+2]*3+1]+=faceNormals[i/3][1];
-                this.vertexNormals[this.verticesIndices[i+2]*3+2]+=faceNormals[i/3][2];
-            }
+            this.vertexNormals[this.verticesIndices[i+2]*3+0]+=faceNormals[i/3][0];
+            this.vertexNormals[this.verticesIndices[i+2]*3+1]+=faceNormals[i/3][1];
+            this.vertexNormals[this.verticesIndices[i+2]*3+2]+=faceNormals[i/3][2];
         }
 
         // console.log('this.vertices',this.vertices.length);
         // console.log('this.vertexNormals',this.vertexNormals.length);
 
-        if(calcVertexNormals)
-        {
             // console.log('calc vertexnormals');
 
-            for(i=0;i<this.verticesIndices.length;i+=3) // faces
+        for(i=0;i<this.verticesIndices.length;i+=3) // faces
+        {
+            for(var k=0;k<3;k++) //triangles
             {
-                for(var k=0;k<3;k++) //triangles
-                {
-                    var v=[
-                        this.vertexNormals[this.verticesIndices[i+k]*3+0]+faceNormals[i/3][0],
-                        this.vertexNormals[this.verticesIndices[i+k]*3+1]+faceNormals[i/3][1],
-                        this.vertexNormals[this.verticesIndices[i+k]*3+2]+faceNormals[i/3][2]
-                        ];
-                    vec3.normalize(v,v);
-                    this.vertexNormals[this.verticesIndices[i+k]*3+0]=v[0];
-                    this.vertexNormals[this.verticesIndices[i+k]*3+1]=v[1];
-                    this.vertexNormals[this.verticesIndices[i+k]*3+2]=v[2];
-                }
+                var v=[
+                    this.vertexNormals[this.verticesIndices[i+k]*3+0]+faceNormals[i/3][0],
+                    this.vertexNormals[this.verticesIndices[i+k]*3+1]+faceNormals[i/3][1],
+                    this.vertexNormals[this.verticesIndices[i+k]*3+2]+faceNormals[i/3][2]
+                    ];
+                vec3.normalize(v,v);
+                this.vertexNormals[this.verticesIndices[i+k]*3+0]=v[0];
+                this.vertexNormals[this.verticesIndices[i+k]*3+1]=v[1];
+                this.vertexNormals[this.verticesIndices[i+k]*3+2]=v[2];
             }
         }
     };
