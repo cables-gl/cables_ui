@@ -57,10 +57,15 @@
                 <ul>
                     <li class="nav_patch_new">New</li>
                     <li class="divide"></li>
-                    <li onclick="CABLES.UI.SELECTPROJECT.show();">Open</li>
+                    <li onclick="CABLES.UI.SELECTPROJECT.show();">Open <span class="shortcut">[cmd + o]</span></li>
                     <li class="divide"></li>
-                    <li class="nav_patch_save">Save</li>
+                    <li class="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li>
                     <li class="nav_patch_saveas">Save As</li>
+                    <li class="divide"></li>
+                    <li class="nav_patch_load_version" onclick="gui.showVersions();">Load Backup</li>
+                    <li class="divide"></li>
+                    <li class="nav_patch_users" onclick="gui.showUsers();">Manage Contributors</li>
+                    <li class="nav_patch_screenshot" onclick="gui.saveScreenshot();">Save Screenshot</li>
                     <li class="divide"></li>
                     <li class="nav_patch_clear">Clear</li>
                     <li class="nav_patch_settings">Settings</li>
@@ -70,8 +75,11 @@
             <li>
                 Op
                 <ul>
-                    <li class="nav_op_addOp">Add New</li>
-
+                    <li class="nav_op_addOp">Add New <span class="shortcut">[esc]</span></li>
+                    <li class="divide"></li>
+                    <li class="nav_op_copy inactive">Copy <span class="shortcut">[mod + c]</span></li>
+                    <li class="nav_op_paste inactive">Paste <span class="shortcut">[mod + v]</span></li>
+                    <li class="nav_op_delete inactive">Delete <span class="shortcut">[backspace]</span></li>
                 </ul>
             </li>
             <li>
@@ -83,7 +91,6 @@
             </li>
         </ul>
     </nav>
-
 
     <!-- <a id="button_openprojects" class="button fa fa-folder-open" ></a> -->
 
