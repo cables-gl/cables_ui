@@ -178,6 +178,7 @@ CABLES.UI.OPSELECT.getOpList=function()
                     {
                         var op=
                         {
+                            "nscolor":CABLES.UI.uiConfig.getNamespaceClassName(opname),
                             "isOp":isOp,
                             "name":opname,
                             "shortName":shortName,

@@ -14,7 +14,7 @@
         <div class="searchbrowser">
           {{#each ops}}
 
-            <div class="searchresult searchable" data-opname="{{ name }}" data-index="{{lowercasename}}">
+            <div class="searchresult searchable item_color_{{ nscolor }}" data-opname="{{ name }}" data-index="{{lowercasename}}">
                 <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{shortName}} <span class="namespace">{{nameSpace}}</span>{{isFunction}}</a>
             </div>
 

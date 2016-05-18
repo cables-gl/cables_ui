@@ -1385,7 +1385,7 @@ hr
 }
 
 #options input:active, #options input:focus {
-  border: 1px solid #D95F48;
+  border-bottom: 1px solid $highlight-color-dark;
 }
 
 .cables
@@ -1709,13 +1709,19 @@ nav
         color:#eee;
         float:right
     }
-
-
 }
-
 
 rect
 {
     -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
 
+.searchbrowser
+{
+    .searchable{ margin-bottom: 1px;}
+    .item_color_default { border-left:15px solid $color_op_handle_default;}
+    .item_color_gl { border-left:15px solid $color_op_handle_gl; }
+    .item_color_audio { border-left:15px solid $color_op_handle_audio; }
+    .item_color_devices { border-left:15px solid $color_op_handle_devices; }
+    .item_color_html { border-left:15px solid $color_op_handle_html; }
 }
