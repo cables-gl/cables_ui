@@ -43,7 +43,7 @@ gulp.task('scripts_libs_core', function()
 
 gulp.task('scripts_core', function()
 {
-    return gulp.src(['src/core/*.js'])
+    return gulp.src(['../cables/src/core/*.js'])
         .pipe(sourcemaps.init())
         .pipe(concat('cables.max.js'))
         .pipe(gulp.dest('dist/js'))
@@ -99,7 +99,7 @@ gulp.task('sass', function() {
 
 
 gulp.task('watch', function() {
-    gulp.watch('src/core/**/*.js', ['scripts_core']);
+    gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);
     gulp.watch('src/ui/**/*.js', ['scripts_ui']);
     gulp.watch('scss/*.scss', ['sass']);
