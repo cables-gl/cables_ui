@@ -519,15 +519,15 @@ CGL.Geometry=function()
         {
             for(var k=0;k<3;k++) //triangles
             {
-                var v=[
-                    this.vertexNormals[this.verticesIndices[i+k]*3+0]+faceNormals[i/3][0],
-                    this.vertexNormals[this.verticesIndices[i+k]*3+1]+faceNormals[i/3][1],
-                    this.vertexNormals[this.verticesIndices[i+k]*3+2]+faceNormals[i/3][2]
+                var vv=[
+                    this.vertexNormals[this.verticesIndices[i+k]*3+0],
+                    this.vertexNormals[this.verticesIndices[i+k]*3+1],
+                    this.vertexNormals[this.verticesIndices[i+k]*3+2]
                     ];
-                vec3.normalize(v,v);
-                this.vertexNormals[this.verticesIndices[i+k]*3+0]=v[0];
-                this.vertexNormals[this.verticesIndices[i+k]*3+1]=v[1];
-                this.vertexNormals[this.verticesIndices[i+k]*3+2]=v[2];
+                vec3.normalize(vv,vv);
+                this.vertexNormals[this.verticesIndices[i+k]*3+0]=vv[0];
+                this.vertexNormals[this.verticesIndices[i+k]*3+1]=vv[1];
+                this.vertexNormals[this.verticesIndices[i+k]*3+2]=vv[2];
             }
         }
     };
