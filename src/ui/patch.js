@@ -1275,6 +1275,12 @@ CABLES.UI.Patch=function(_gui)
             self.setCurrentSubPatch(currentSubPatch);
             self.showProjectParams();
             gui.setStateSaved();
+
+            console.log('  self.ops.length ',self.ops.length);
+            if(self.ops.length>CABLES.UI.uiConfig.miniMapShowAutomaticallyNumOps)
+            {
+                gui.showMiniMap();
+            }
         };
 
         scene.onUnLink=function(p1,p2)

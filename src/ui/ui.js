@@ -436,6 +436,12 @@ CABLES.UI.GUI=function()
         }
     }
 
+    this.showMiniMap=function()
+    {
+        showMiniMap=true;
+        self.setLayout();
+    };
+
 
     this.toggleMiniMap=function()
     {

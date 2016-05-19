@@ -3,6 +3,7 @@ CABLES.UI=CABLES.UI|| {};
 
 CABLES.UI.uiConfig=
 {
+
     portSize:10,
     portHeight:6,
     portPadding:2,
@@ -27,6 +28,7 @@ CABLES.UI.uiConfig=
 
     miniMapWidth:240,
     miniMapHeight:180,
+    miniMapShowAutomaticallyNumOps:20,
 
     watchValuesInterval:100,
     rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}],
