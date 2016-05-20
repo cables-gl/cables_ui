@@ -15,7 +15,10 @@
           {{#each ops}}
 
             <div class="searchresult searchable item_color_{{ nscolor }}" data-opname="{{ name }}" data-index="{{lowercasename}}">
-                <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >{{shortName}} <span class="namespace">{{nameSpace}}</span>{{isFunction}}</a>
+                <a onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();" >
+                    {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
+                    {{shortName}} <span class="namespace">{{nameSpace}}</span>{{isFunction}}
+                </a>
             </div>
 
           {{/each}}

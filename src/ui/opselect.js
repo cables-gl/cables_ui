@@ -172,8 +172,6 @@ CABLES.UI.OPSELECT.getOpList=function()
                     var nameSpace=parts.join('.');
 
 
-
-
                     if(isFunction && !opname.startsWith('Ops.Deprecated'))
                     {
                         var op=
@@ -181,6 +179,7 @@ CABLES.UI.OPSELECT.getOpList=function()
                             "nscolor":CABLES.UI.uiConfig.getNamespaceClassName(opname),
                             "isOp":isOp,
                             "name":opname,
+                            "userOp":opname.startsWith('Ops.User'),
                             "shortName":shortName,
                             "nameSpace":nameSpace,
                             "lowercasename":lowercasename
