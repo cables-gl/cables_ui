@@ -47,14 +47,14 @@ CABLES.UI.Profiler=function(projectId)
 
         sortedItems.sort(function(a, b) {return b.percent - a.percent; });
 
-
-
-$('#profilerdata').html(htmlData);
+        $('#profilerdata').html(htmlData);
 
         for(i in sortedItems)
         {
             var item=sortedItems[i];
-            html+=item.percent+'% / '+item.title+': '+item.numTriggers+' / '+Math.round(item.timeUsed)+'ms <br/>';
+            var pad='';
+            if(sortedItems.length>0)for(i=0;i<2-(item.percent+'').length;i++)pad+='&nbsp;';
+            html+=pad+item.percent+'% '+item.title+': '+item.numTriggers+' / '+Math.round(item.timeUsed)+'ms <br/>';
 
             if(item.percent>0)
             {
