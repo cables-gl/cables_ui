@@ -27,6 +27,7 @@ CABLES.UI.GUI=function()
     favIconLink.type = 'image/x-icon';
     favIconLink.rel = 'shortcut icon';
 
+    this.profiler=null;
     this.user=null;
 
     this.timeLine=function()
@@ -594,6 +595,9 @@ CABLES.UI.GUI=function()
         $('.nav_patch_browse_examples').bind("click", function (event) { var win = window.open('https://cables.gl/examples', '_blank'); win.focus(); });
         $('.nav_patch_browse_favourites').bind("click", function (event) { var win = window.open('https://cables.gl/myfavs', '_blank'); win.focus(); });
         $('.nav_patch_browse_public').bind("click", function (event) { var win = window.open('https://cables.gl/projects', '_blank'); win.focus(); });
+
+        $('.nav_patch_profile').bind("click", function (event) { if(!self.profiler)self.profiler = new CABLES.UI.Profiler();self.profiler.show(); });
+
 
         // --- Help menu
         // Documentation
