@@ -315,22 +315,25 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         }
 
         if(miniRect) miniRect.attr({x:posx,y:posy});
-
-
     };
 
-    this.removeUi=function()
+    this.deleteUi=function()
     {
-        if(!this.isVisible())return;
-
         group.clear();
-        background.remove();
-        label.remove();
+
+        if(background)background.remove();
+        if(label)label.remove();
         if(backgroundComment)backgroundComment.remove();
         if(backgroundResize)backgroundResize.remove();
         if(resizeHandle)resizeHandle.remove();
         if(miniRect)miniRect.remove();
         label=background=backgroundComment=backgroundResize=null;
+    };
+
+    this.removeUi=function()
+    {
+        if(!this.isVisible())return;
+        this.deleteUi();
     };
 
     this.getWidth=function()
@@ -777,6 +780,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     this.portsIn=[];
     this.portsOut=[];
     var hidden=false;
+    var deleted=false;
     this.op=op;
     var selected=false;
     var width=w;
@@ -792,8 +796,10 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
     this.remove=function()
     {
+        deleted=true;
+        this.hide();
         this.oprect.getGroup().remove();
-        this.oprect.removeUi();
+        this.oprect.deleteUi();
     };
 
     this.getSubPatch=function()
@@ -806,6 +812,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     {
         return selected;
     };
+
     this.hide=function()
     {
         hidden=true;
@@ -825,7 +832,9 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
     this.show=function()
     {
+        if(deleted)return;
         hidden=false;
+
         this.oprect.addUi();
         this.oprect.getGroup().show();
 

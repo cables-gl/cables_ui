@@ -119,7 +119,9 @@ CABLES.UI.ServerOps=function(gui)
         s.setAttribute( 'src', '/api/op/'+name );
         s.onload=function()
         {
+
             gui.patch().scene.reloadOp(name);
+
             CABLES.UI.MODAL.hideLoading();
         };
         document.body.appendChild( s );

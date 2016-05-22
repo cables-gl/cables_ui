@@ -265,7 +265,7 @@ CABLES.UI.Patch=function(_gui)
 
     };
 
-    this.testCollisionOpPosition=function(x,y)
+    this.testCollisionOpPosition=function(x,y,opid)
     {
         for(var i in this.ops)
         {
@@ -273,22 +273,24 @@ CABLES.UI.Patch=function(_gui)
             var op=this.ops[i].op;
 
             if(
+                !op.deleted &&
+                opid!=op.id &&
                 x>=op.uiAttribs.translate.x &&
                 x<=op.uiAttribs.translate.x+100 &&
                 y>=op.uiAttribs.translate.y &&
-                y<=op.uiAttribs.translate.y+30)
+                y<=op.uiAttribs.translate.y+20)
             {
-                // console.log('colliding...');
+                console.log('colliding...',op.id);
                 return true;
             }
         }
         return false;
     };
 
-    this.findNonCollidingPosition=function(x,y)
+    this.findNonCollidingPosition=function(x,y,opid)
     {
         var count=0;
-        while(this.testCollisionOpPosition(x,y) && count<400)
+        while(this.testCollisionOpPosition(x,y,opid) && count<400)
         {
             y+=10;
             count++;
@@ -1225,7 +1227,7 @@ CABLES.UI.Patch=function(_gui)
         CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 
         uiOp.setPos();
-        var pos=self.findNonCollidingPosition(uiOp.getPosX(),uiOp.getPosY());
+        var pos=self.findNonCollidingPosition(uiOp.getPosX(),uiOp.getPosY(),uiOp.op.id);
 
         uiOp.setPos(pos.x,pos.y);
 
@@ -1384,7 +1386,6 @@ CABLES.UI.Patch=function(_gui)
 
         scene.onDelete=function(op)
         {
-
             var undofunc=function(opname,opid)
             {
                 CABLES.undo.add({
@@ -1401,8 +1402,10 @@ CABLES.UI.Patch=function(_gui)
             {
                 if(self.ops[i].op==op)
                 {
-                    self.ops[i].hideAddButtons();
-                    self.ops[i].remove();
+                    var theUi=self.ops[i];
+
+                    theUi.hideAddButtons();
+                    theUi.remove();
                     self.ops.splice( i, 1 );
                 }
             }

@@ -812,9 +812,9 @@ CABLES.UI.GUI=function()
 
         router.addRoute('/').get(function(event, params)
         {
-            if(!localStorage.holo || localStorage.holo===''  || localStorage.holo.length<20) self.scene.clear();
-
-            self.patch().scene.deSerialize(localStorage.holo);
+            // if(!localStorage.holo || localStorage.holo===''  || localStorage.holo.length<20) self.scene.clear();
+            //
+            // self.patch().scene.deSerialize(localStorage.holo);
         });
 
         router.addRoute('/project/:id/v/:ver').get(function(event, params)
