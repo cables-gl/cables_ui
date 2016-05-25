@@ -1087,7 +1087,10 @@ CABLES.UI.GUI=function()
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
-    console.log("starting...");
+    console.log("Init UI...");
+
+    $('#mainContainer').show();
+
     $(document).bind("contextmenu", function(e)
     {
         if(e.preventDefault) e.preventDefault();
@@ -1097,5 +1100,7 @@ document.addEventListener("DOMContentLoaded", function(event)
 
     gui.init();
     gui.bind();
+
+    console.log("Init UI done");
 
 });
