@@ -123,7 +123,7 @@ CABLES.API.Connection=function(ui)
         {"cmd":"connect"},
         function()
         {
-            console.log('connecting to server...');
+            // console.log('connecting to server...');
         });
 
     // checkTimeout=setTimeout(checkConnection,500);

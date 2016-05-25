@@ -544,7 +544,6 @@ CABLES.UI.GUI=function()
     this.replaceNavShortcuts=function()
     {
       var osMod = gui.getModKeyForOs(gui.getUserOs());
-      console.log("osmod: " + osMod);
         $("nav ul li .shortcut").each(function(){
             var newShortcut = $(this).text().replace("mod", osMod);
             $(this).text(newShortcut);
@@ -1092,7 +1091,6 @@ document.addEventListener("DOMContentLoaded", function(event)
     var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
     console.log(timeUsed+"s Init UI...");
 
-    $('#mainContainer').show();
 
     $(document).bind("contextmenu", function(e)
     {
@@ -1100,12 +1098,12 @@ document.addEventListener("DOMContentLoaded", function(event)
     });
 
     gui=new CABLES.UI.GUI();
+    $('#mainContainer').show();
 
     gui.init();
     gui.bind();
 
     timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-
     console.log(timeUsed+"s Init UI done");
 
 });
