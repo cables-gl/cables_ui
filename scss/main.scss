@@ -17,7 +17,7 @@ body
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: $font-weight-headline;
-  font-family: $headline-font, sans-serif;
+  font-family: $headline-font, "sans-serif";
   font-style: normal;
 }
 
@@ -324,7 +324,7 @@ input[type="text"]
         //font-family: arial;
         //background-color: #1d1d1d;
         padding: 5px;
-        font-family: $headline-font;
+        font-family: $headline-font, sans-serif;
         text-transform: capitalize;
         font-size: $panelhead-font-size;
         font-weight: $panelhead-font-weight;
@@ -439,7 +439,7 @@ input[type="text"]
     color: $button-text-color;
     min-width: 14px;
     text-align: center;
-    font-family: futura-pt;
+    font-family: futura-pt, sans-serif;
     padding:5px 7px;
     cursor:pointer !important;
 
