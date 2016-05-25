@@ -6,9 +6,11 @@
     </body>
 
     <script>
+        var CABLES = CABLES || {};
+        CABLES.uiLoadStart=performance.now();
         console.log("UI Loading...");
     </script>
-    <script src="https://use.typekit.net/tsi7ykf.js"></script>
+    <script src="https://use.typekit.net/tsi7ykf.js" asynch></script>
     <script>try{Typekit.load({ async: true });}catch(e){}</script>
     <link rel="stylesheet" type="text/css" href="css/ui.css">
 

@@ -38,6 +38,9 @@ CABLES.UI.ServerOps=function(gui)
             {
                 ops=res;
 
+                var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+                console.log(timeUsed+"s Ops loaded");
+
                 if(cb)cb(ops);
 
                 storedOps=JSON.parse(localStorage.getItem("cables.editor.serverops"));

@@ -1005,6 +1005,9 @@ CABLES.UI.GUI=function()
 
                     self.serverOps=new CABLES.UI.ServerOps(self);
 
+                    var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+                    console.log(timeUsed+"s User Data loaded...");
+
                     // if(!data.user.introCompleted) {
                     //   _introduction.showIntroduction();
                     // }
@@ -1015,7 +1018,6 @@ CABLES.UI.GUI=function()
                 $('#loggedin').hide();
             });
 
-            console.log('data.user',self.user);
     };
 
     this.getSavedState=function()
@@ -1087,7 +1089,8 @@ CABLES.UI.GUI=function()
 
 document.addEventListener("DOMContentLoaded", function(event)
 {
-    console.log("Init UI...");
+    var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+    console.log(timeUsed+"s Init UI...");
 
     $('#mainContainer').show();
 
@@ -1101,6 +1104,8 @@ document.addEventListener("DOMContentLoaded", function(event)
     gui.init();
     gui.bind();
 
-    console.log("Init UI done");
+    timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+
+    console.log(timeUsed+"s Init UI done");
 
 });

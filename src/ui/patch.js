@@ -1278,11 +1278,15 @@ CABLES.UI.Patch=function(_gui)
             self.showProjectParams();
             gui.setStateSaved();
 
-            console.log('  self.ops.length ',self.ops.length);
+
             if(self.ops.length>CABLES.UI.uiConfig.miniMapShowAutomaticallyNumOps)
             {
                 gui.showMiniMap();
             }
+
+            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+            console.log(timeUsed+"s Patch loaded.");
+
         };
 
         scene.onUnLink=function(p1,p2)
