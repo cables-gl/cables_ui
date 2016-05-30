@@ -878,36 +878,6 @@ CABLES.UI.GUI=function()
 
     };
 
-    this.editProjectDescription=function(objName)
-    {
-        this.showEditor();
-
-        self.editor().addTab(
-        {
-            content:self.patch().getCurrentProject().description || '### '+self.patch().getCurrentProject().name+'\n\n is great!',
-            title:self.patch().getCurrentProject().name+' description',
-            syntax:'md',
-            onSave:function(setStatus,content)
-            {
-                CABLES.api.post(
-                    'project/'+self.patch().getCurrentProject()._id+'/save_description',
-                    {content:content},
-                    function(res)
-                    {
-                        // setStatus('saved');
-                        console.log('res',res);
-                    },
-                    function(res)
-                    {
-                        // setStatus('error: not saved');
-                        console.log('err res',res);
-                    }
-                );
-            }
-        });
-    };
-
-
 
     this.getOpDoc=function(opname,html,cb)
     {

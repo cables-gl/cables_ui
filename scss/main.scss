@@ -1725,3 +1725,12 @@ rect
     .item_color_devices { border-left:15px solid $color_op_handle_devices; }
     .item_color_html { border-left:15px solid $color_op_handle_html; }
 }
+
+
+.projectsettings
+{
+    textarea,input
+    {
+        background-color: #222;
+    }
+}

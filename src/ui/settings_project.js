@@ -61,4 +61,23 @@ var self=this;
 
     };
 
+    this.saveDescription=function(content)
+    {
+        CABLES.api.post(
+            'project/'+gui.patch().getCurrentProject()._id+'/save_description',
+            {content:content},
+            function(res)
+            {
+                // setStatus('saved');
+                console.log('res',res);
+            },
+            function(res)
+            {
+                // setStatus('error: not saved');
+                console.log('err res',res);
+            }
+        );
+
+    };
+
 };

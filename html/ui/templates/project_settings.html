@@ -1,20 +1,28 @@
 
 <script id="settings" type="text/x-handlebars-template">
-    <h2>settings</h2>
+    <div class="projectsettings">
+        <h2>settings</h2>
 
-    {{ project.name }}
+        {{ project.name }}
 
-    <hr/>
+        <hr/>
 
-    <h2>Users</h2>
+        <h2>Users</h2>
 
-    <div id="projectSettingsUsers"></div>
+        <div id="projectSettingsUsers"></div>
 
-    <hr/>
+        <hr/>
 
-    <h2>Tags</h2>
+        <h2>Tags</h2>
 
-    <input type="text" id="settings_tags" value="{{ tags }}" onblur="gui.projectSettings().saveTags($(this).val());"/>
+        <input type="text" id="settings_tags" value="{{ tags }}" onblur="gui.projectSettings().saveTags($(this).val());"/>
+
+        <hr/>
+
+        <h2>Description</h2>
+
+        <textarea type="text" id="settings_tags" onblur="gui.projectSettings().saveDescription($(this).val());">{{ project.description }} </textarea>
+    </div>
 
 </script>
 
