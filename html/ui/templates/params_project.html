@@ -2,118 +2,30 @@
 
 <script id="params_project" type="text/x-handlebars-template">
 
-    <table>
-        <tr>
-            <th colspan="11">
-                <div id="project_settings" class="panelhead">project settings</div>
-            </th>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-              &nbsp;Project Name
-            </td>
-            <td>
-                <input type="text" class="" id="projectsettings_name" onblur="gui.patch().saveProjectParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
-            </td>
-        </tr>
-        <tr onclick="togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
-            <td></td>
-            <td>
-                &nbsp;Public
-                <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
-            </td>
-            <td>
-                <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a>
-            </td>
-        </tr>
-        <tr onclick="toggleAutoScreenshot();">
-            <td></td>
-            <td>
-                &nbsp;Manual screenshot
-                <input type="hidden" id="projectsettings_autoscreenshot" value="{{ project.settings.manualScreenshot }}"></input>
-            </td>
-            <td>
-                <a id="projectsettings_autoscreenshot_icon" class="graphbutton fa fa-square-o"></a>
-            </td>
-        </tr>
-
-        <tr>
-            <td></td>
-            <td>
-                &nbsp;API Secret
-            </td>
-            <td>
-                <input type="text" id="projectsettings_secret" value="{{ project.settings.secret }}" onblur="gui.patch().saveProjectParams();"></input>
-                <!-- <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a> -->
-            </td>
-        </tr>
-
-
-
-        {{#if user.isAdmin}}
-
-            <tr onclick="toggleExample();" class="info" data-info="{{ texts.projectSettingsExample }}">
-                <td>&nbsp;</td>
-                <td>
-                    <i class="fa fa-lock"/>
-                    &nbsp;example
-                    <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
-                </td>
-                <td>
-                    <a id="projectsettings_example_icon" class="graphbutton fa fa-square-o"></a>
-                </td>
-            </tr>
-
-            <tr onclick="toggleTest();" class="info" data-info="{{ texts.projectSettingsTest }}">
-                <td>&nbsp;</td>
-                <td>
-                    <i class="fa fa-lock"/>
-                    &nbsp;testcase
-                    <input type="hidden" id="projectsettings_test" value="{{ project.settings.isTest }}"></input>
-                </td>
-                <td>
-                    <a id="projectsettings_test_icon" class="graphbutton fa fa-square-o"></a>
-                </td>
-            </tr>
-        {{/if}}
-
-
-    </table>
 
     <br/>
 
-
-
-        <div class="panel" style="padding:0px;">
-            <div class="panelhead">functions</div>
-            <div>
-                <a class="button fa fa-cog" onclick="gui.showSettings();">&nbsp;Settings</a>
-                <br/><br/>
-                <a class="button fa fa-book" onclick="gui.showUserOps();">&nbsp;user ops</a>
-                <br/><br/>
-                <a onclick="gui.showVersions();" class="button fa fa-code-fork">show versions</a>
-                <br/><br/>
-                <a onclick="gui.saveScreenshot();" class="button fa fa-image">download screenshot</a>
-                <br/><br/>
-                <a onclick="gui.showReports();" class="button fa fa-image">see FPS reports</a>
-            </div>
-        </div>
-
-    <div id="projectdescription" class="panel" style="padding:0px;">
-        <div class="panelhead">description</div>
+    <div class="panel" style="padding:0px;">
+        <div class="panelhead">functions</div>
         <div>
-            {{{descr}}}
+            <a class="button fa fa-cog" onclick="gui.showSettings();">&nbsp;Settings</a>
+            <br/><br/>
+            <a class="button fa fa-book" onclick="gui.showUserOps();">&nbsp;user ops</a>
+            <br/><br/>
+            <a onclick="gui.showVersions();" class="button fa fa-code-fork">show versions</a>
+            <br/><br/>
+            <a onclick="gui.saveScreenshot();" class="button fa fa-image">download screenshot</a>
+            <br/><br/>
+            <a onclick="gui.showReports();" class="button fa fa-image">see FPS reports</a>
         </div>
-
     </div>
 
     <div id="projectdescription" class="panel" style="padding:0px;">
+        <div class="panelhead">description</div>
+        <div>{{{descr}}}</div>
+    </div>
 
-
-
-
-
+    <div id="projectdescription" class="panel" style="padding:0px;">
 
     <div class="panel" style="padding:0px;">
         <div class="panelhead">debug</div>
@@ -153,97 +65,6 @@
 
 
     </div>
-
-
-<script>
-
-function updateIcons()
-{
-    if($('#projectsettings_public').val()=='true')
-    {
-        $('#projectsettings_public_icon').addClass('fa-check-square-o');
-        $('#projectsettings_public_icon').removeClass('fa-square-o');
-    }
-    else
-    {
-        $('#projectsettings_public_icon').removeClass('fa-check-square-o');
-        $('#projectsettings_public_icon').addClass('fa-square-o');
-    }
-
-    if($('#projectsettings_autoscreenshot').val()=='true')
-    {
-        $('#projectsettings_autoscreenshot_icon').addClass('fa-check-square-o');
-        $('#projectsettings_autoscreenshot_icon').removeClass('fa-square-o');
-    }
-    else
-    {
-        $('#projectsettings_autoscreenshot_icon').removeClass('fa-check-square-o');
-        $('#projectsettings_autoscreenshot_icon').addClass('fa-square-o');
-    }
-
-    if($('#projectsettings_example').val()=='true')
-    {
-        $('#projectsettings_example_icon').addClass('fa-check-square-o');
-        $('#projectsettings_example_icon').removeClass('fa-square-o');
-    }
-    else
-    {
-        $('#projectsettings_example_icon').removeClass('fa-check-square-o');
-        $('#projectsettings_example_icon').addClass('fa-square-o');
-    }
-
-    if($('#projectsettings_test').val()=='true')
-    {
-        $('#projectsettings_test_icon').addClass('fa-check-square-o');
-        $('#projectsettings_test_icon').removeClass('fa-square-o');
-    }
-    else
-    {
-        $('#projectsettings_test_icon').removeClass('fa-check-square-o');
-        $('#projectsettings_test_icon').addClass('fa-square-o');
-    }
-
-}
-
-function togglePublic()
-{
-    $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true'));
-
-    updateIcons();
-    gui.patch().saveProjectParams();
-}
-
-function toggleAutoScreenshot()
-{
-    $('#projectsettings_autoscreenshot').val(''+!($('#projectsettings_autoscreenshot').val()=='true'));
-
-    updateIcons();
-    gui.patch().saveProjectParams();
-}
-
-function toggleExample()
-{
-    $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
-
-    updateIcons();
-    gui.patch().saveProjectParams();
-}
-
-function toggleTest()
-{
-    $('#projectsettings_test').val(''+!($('#projectsettings_test').val()=='true'));
-
-    updateIcons();
-    gui.patch().saveProjectParams();
-}
-
-
-
-updateIcons();
-
-
-
-</script>
 
 
 </script>

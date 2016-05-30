@@ -512,7 +512,7 @@ CABLES.UI.GUI=function()
       if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
 
       return OSName;
-    }
+  };
 
     /* Returns the default mod key for a OS */
     this.getModKeyForOs=function(os)
@@ -520,18 +520,14 @@ CABLES.UI.GUI=function()
       switch(os) {
         case 'Windows':
           return 'ctrl';
-          break;
         case 'MacOS':
           return 'cmd';
-          break;
         case 'UNIX':
           return 'cmd';
-          break;
-        case 'Linux':
         default:
           return 'mod';
       }
-    }
+    };
 
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     this.replaceNavShortcuts=function()
@@ -541,7 +537,7 @@ CABLES.UI.GUI=function()
             var newShortcut = $(this).text().replace("mod", osMod);
             $(this).text(newShortcut);
         });
-    }
+    };
 
     this.showFile=function(fileId,file)
     {

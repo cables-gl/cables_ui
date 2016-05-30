@@ -1736,7 +1736,8 @@ CABLES.UI.Patch=function(_gui)
             'params_project',
             {
                 texts:CABLES.UI.TEXTS,
-                project: s,descr:currentProject.descriptionHTML,
+                project: s,
+                descr:currentProject.descriptionHTML,
                 user:gui.user,
                 debug:
                 {
@@ -1749,26 +1750,6 @@ CABLES.UI.Patch=function(_gui)
         $('#options').html(html);
     };
 
-    this.saveProjectParams=function()
-    {
-        var proj_name=$('#projectsettings_name').val();
-        var proj_public=$('#projectsettings_public').val();
-        var proj_secret=$('#projectsettings_secret').val();
-        var proj_example=$('#projectsettings_example').val();
-        var proj_test=$('#projectsettings_test').val();
-        var proj_autoscreenshot=$('#projectsettings_autoscreenshot').val();
-
-        currentProject.name=proj_name;
-        gui.scene().settings=gui.scene().settings || {};
-        gui.scene().settings.isPublic=proj_public;
-        gui.scene().settings.secret=proj_secret;
-        gui.scene().settings.isExample=proj_example;
-        gui.scene().settings.isTest=proj_test;
-
-        gui.scene().settings.manualScreenshot=proj_autoscreenshot;
-
-        self.saveCurrentProject();
-    };
 
     function updateUiAttribs()
     {

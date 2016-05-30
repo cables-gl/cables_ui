@@ -10,6 +10,7 @@ var self=this;
         var html = CABLES.UI.getHandleBarHtml(
             'settings',
             {
+                "user":gui.user,
                 "project":project,
                 "tags":project.tags.join()
             });
@@ -17,6 +18,7 @@ var self=this;
         CABLES.UI.MODAL.show(html);
 
         this.loadUsers();
+        this.updateIcons();
     };
 
     this.loadUsers=function()
@@ -79,5 +81,113 @@ var self=this;
         );
 
     };
+
+
+    this.saveParams=function()
+    {
+        var proj_name=$('#projectsettings_name').val();
+        var proj_public=$('#projectsettings_public').val();
+        var proj_secret=$('#projectsettings_secret').val();
+        var proj_example=$('#projectsettings_example').val();
+        var proj_test=$('#projectsettings_test').val();
+        var proj_autoscreenshot=$('#projectsettings_autoscreenshot').val();
+
+        gui.patch().getCurrentProject().name=proj_name;
+        gui.scene().settings=gui.scene().settings || {};
+        gui.scene().settings.isPublic=proj_public;
+        gui.scene().settings.secret=proj_secret;
+        gui.scene().settings.isExample=proj_example;
+        gui.scene().settings.isTest=proj_test;
+
+        gui.scene().settings.manualScreenshot=proj_autoscreenshot;
+
+        gui.patch().saveCurrentProject();
+
+    };
+
+    this.updateIcons=function()
+    {
+        if($('#projectsettings_public').val()=='true')
+        {
+            $('#projectsettings_public_icon').addClass('fa-check-square-o');
+            $('#projectsettings_public_icon').removeClass('fa-square-o');
+        }
+        else
+        {
+            $('#projectsettings_public_icon').removeClass('fa-check-square-o');
+            $('#projectsettings_public_icon').addClass('fa-square-o');
+        }
+
+        if($('#projectsettings_autoscreenshot').val()=='true')
+        {
+            $('#projectsettings_autoscreenshot_icon').addClass('fa-check-square-o');
+            $('#projectsettings_autoscreenshot_icon').removeClass('fa-square-o');
+        }
+        else
+        {
+            $('#projectsettings_autoscreenshot_icon').removeClass('fa-check-square-o');
+            $('#projectsettings_autoscreenshot_icon').addClass('fa-square-o');
+        }
+
+        if($('#projectsettings_example').val()=='true')
+        {
+            $('#projectsettings_example_icon').addClass('fa-check-square-o');
+            $('#projectsettings_example_icon').removeClass('fa-square-o');
+        }
+        else
+        {
+            $('#projectsettings_example_icon').removeClass('fa-check-square-o');
+            $('#projectsettings_example_icon').addClass('fa-square-o');
+        }
+
+        if($('#projectsettings_test').val()=='true')
+        {
+            $('#projectsettings_test_icon').addClass('fa-check-square-o');
+            $('#projectsettings_test_icon').removeClass('fa-square-o');
+        }
+        else
+        {
+            $('#projectsettings_test_icon').removeClass('fa-check-square-o');
+            $('#projectsettings_test_icon').addClass('fa-square-o');
+        }
+
+    };
+
+    this.togglePublic=function()
+    {
+        $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true'));
+
+        self.updateIcons();
+        self.saveParams();
+    };
+
+    this.toggleAutoScreenshot=function()
+    {
+        $('#projectsettings_autoscreenshot').val(''+!($('#projectsettings_autoscreenshot').val()=='true'));
+
+        self.updateIcons();
+        self.saveParams();
+    };
+
+    this.toggleExample=function()
+    {
+        $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
+
+        self.updateIcons();
+        self.saveParams();
+    };
+
+    this.toggleTest=function()
+    {
+        $('#projectsettings_test').val(''+!($('#projectsettings_test').val()=='true'));
+
+        self.updateIcons();
+        self.saveParams();
+    };
+
+
+
+
+
 
 };
