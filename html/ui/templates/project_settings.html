@@ -1,99 +1,114 @@
 
 <script id="settings" type="text/x-handlebars-template">
-    <div class="projectsettings">
-        <h2>settings</h2>
 
-        <table>
-            <tr>
-                <td></td>
-                <td>
-                  &nbsp;Project Name
-                </td>
-                <td>
-                    <input type="text" class="" id="projectsettings_name" onblur="gui.projectSettings().saveParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
-                </td>
-            </tr>
-            <tr onclick="gui.projectSettings().togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
-                <td></td>
-                <td>
-                    &nbsp;Public
-                    <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
-                </td>
-                <td>
-                    <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a>
-                </td>
-            </tr>
-            <tr onclick="gui.projectSettings().toggleAutoScreenshot();">
-                <td></td>
-                <td>
-                    &nbsp;Manual screenshot
-                    <input type="hidden" id="projectsettings_autoscreenshot" value="{{ project.settings.manualScreenshot }}"></input>
-                </td>
-                <td>
-                    <a id="projectsettings_autoscreenshot_icon" class="graphbutton fa fa-square-o"></a>
-                </td>
-            </tr>
+    <div class="fleft" style="width:100px;">
+        <br/><br/>
+        <a onclick="gui.projectSettings().tab('params');">Parameters</a>
+        <a onclick="gui.projectSettings().tab('users');">Users</a>
+        <br/><br/>
+        <a onclick="gui.projectSettings().tab('delete');">Delete</a>
+    </div>
+    <div class="projectsettings fleft" style="width:500px;overflow:hidden;">
 
-            <tr>
-                <td></td>
-                <td>
-                    &nbsp;API Secret
-                </td>
-                <td>
-                    <input type="text" id="projectsettings_secret" value="{{ project.settings.secret }}" onblur="gui.projectSettings().saveProjectParams();"></input>
-                    <!-- <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a> -->
-                </td>
-            </tr>
+        <div id="settings_tab_delete" class="hidden">
+
+            <h2>settings</h2>
+
+            <a class="button fa fa-trash-o tt" data-tt="delete" onclick="if(confirm('really?'))gui.deleteCurrentProject();">&nbsp;delete project</a>
 
 
+        </div>
 
-            {{#if user.isAdmin}}
+        <div id="settings_tab_params">
 
-                <tr onclick="gui.projectSettings().toggleExample();" class="info" data-info="{{ texts.projectSettingsExample }}">
-                    <td>&nbsp;</td>
+            <h2>settings</h2>
+
+            <table>
+                <tr>
                     <td>
-                        <i class="fa fa-lock"/>
-                        &nbsp;example
-                        <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
+                      Project Name
                     </td>
                     <td>
-                        <a id="projectsettings_example_icon" class="graphbutton fa fa-square-o"></a>
+                        <input type="text" class="" id="projectsettings_name" onblur="gui.projectSettings().saveParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
+                    </td>
+                </tr>
+                <tr onclick="gui.projectSettings().togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
+                    <td>
+                        Public
+                        <input type="hidden" id="projectsettings_public" value="{{ project.settings.isPublic }}"></input>
+                    </td>
+                    <td>
+                        <a id="projectsettings_public_icon" class="graphbutton fa fa-square-o"></a>
+                    </td>
+                </tr>
+                <tr onclick="gui.projectSettings().toggleAutoScreenshot();">
+                    <td>
+                        Manual screenshot
+                        <input type="hidden" id="projectsettings_autoscreenshot" value="{{ project.settings.manualScreenshot }}"></input>
+                    </td>
+                    <td>
+                        <a id="projectsettings_autoscreenshot_icon" class="graphbutton fa fa-square-o"></a>
                     </td>
                 </tr>
 
-                <tr onclick="gui.projectSettings().toggleTest();" class="info" data-info="{{ texts.projectSettingsTest }}">
-                    <td>&nbsp;</td>
+                <!-- <tr>
                     <td>
-                        <i class="fa fa-lock"/>
-                        &nbsp;testcase
-                        <input type="hidden" id="projectsettings_test" value="{{ project.settings.isTest }}"></input>
+                        API Secret
                     </td>
                     <td>
-                        <a id="projectsettings_test_icon" class="graphbutton fa fa-square-o"></a>
+                        <input type="text" id="projectsettings_secret" value="{{ project.settings.secret }}" onblur="gui.projectSettings().saveProjectParams();"></input>
                     </td>
-                </tr>
-            {{/if}}
+                </tr> -->
 
 
-        </table>
 
-        <hr/>
+                {{#if user.isAdmin}}
 
-        <h2>Users</h2>
+                    <tr onclick="gui.projectSettings().toggleExample();" class="info" data-info="{{ texts.projectSettingsExample }}">
+                        <td>
+                            <i class="fa fa-lock"/>
+                            example
+                            <input type="hidden" id="projectsettings_example" value="{{ project.settings.isExample }}"></input>
+                        </td>
+                        <td>
+                            <a id="projectsettings_example_icon" class="graphbutton fa fa-square-o"></a>
+                        </td>
+                    </tr>
 
-        <div id="projectSettingsUsers"></div>
+                    <tr onclick="gui.projectSettings().toggleTest();" class="info" data-info="{{ texts.projectSettingsTest }}">
+                        <td>
+                            <i class="fa fa-lock"/>
+                            testcase
+                            <input type="hidden" id="projectsettings_test" value="{{ project.settings.isTest }}"></input>
+                        </td>
+                        <td>
+                            <a id="projectsettings_test_icon" class="graphbutton fa fa-square-o"></a>
+                        </td>
+                    </tr>
+                {{/if}}
 
-        <hr/>
+            </table>
 
-        <h2>Tags</h2>
+            <hr/>
 
-        <input type="text" id="settings_tags" value="{{ tags }}" onblur="gui.projectSettings().saveTags($(this).val());"/>
+            <h2>Tags</h2>
 
-        <hr/>
+            <input type="text" id="settings_tags" value="{{ tags }}" onblur="gui.projectSettings().saveTags($(this).val());"/>
 
-        <h2>Description</h2>
+            <hr/>
 
-        <textarea type="text" id="settings_tags" onblur="gui.projectSettings().saveDescription($(this).val());">{{ project.description }} </textarea>
+            <h2>Description</h2>
+
+            <textarea type="text" id="settings_tags" onblur="gui.projectSettings().saveDescription($(this).val());">{{ project.description }} </textarea>
+
+        </div>
+
+        <div id="settings_tab_users" class="hidden">
+            <h2>Users</h2>
+            <div id="projectSettingsUsers"></div>
+            <br/><br/>
+        </div>
+
     </div>
 
 </script>
@@ -118,9 +133,9 @@
 
         <input type="text" id="userid" class="hidden" />
         <select id="userAddSelectBox" onchange="$('#userid').val($(this).val());"></select>
-        <a class="button" onclick="gui.projectSettings().userManager.addToProject($('#userid').val());">Add User</a>
+        <a class="bluebutton" onclick="gui.projectSettings().userManager.addToProject($('#userid').val());">Add User</a>
     </div>
 
-    <a id="adduserbutton" class="button" onclick="gui.projectSettings().userManager.showAddUserNames('userAddSelectBox')">Add User</a>
+    <a id="adduserbutton" class="bluebutton" onclick="gui.projectSettings().userManager.showAddUserNames('userAddSelectBox')">Add User</a>
 
 </script>

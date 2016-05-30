@@ -9,7 +9,7 @@ body
     margin:0px;
     background-color: #282828;
     overflow: hidden;
-    font-family: $text-font, sans-serif;
+    font-family: $text-font, arial;
     font-size: $font-size-default;
     -webkit-font-smoothing: antialiased;
 	  -moz-osx-font-smoothing: grayscale;
@@ -17,7 +17,7 @@ body
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: $font-weight-headline;
-  font-family: $headline-font, "sans-serif";
+  font-family: $headline-font, arial;
   font-style: normal;
 }
 
@@ -143,7 +143,7 @@ input
     background-color: #888;
     color:#fff;
     border:none;
-    font-family: futura-pt;
+    font-family: arial;
 
     &.invalid
     {
@@ -159,7 +159,7 @@ input[type="text"]
     outline: none;
     font-size: $text-input-font-size;
     border-radius: 0;
-    font-family: futura-pt;
+    font-family: arial;
     //border: none;
 }
 
@@ -324,7 +324,7 @@ input[type="text"]
         //font-family: arial;
         //background-color: #1d1d1d;
         padding: 5px;
-        font-family: $headline-font, sans-serif;
+        font-family: $headline-font, Arial;
         text-transform: capitalize;
         font-size: $panelhead-font-size;
         font-weight: $panelhead-font-weight;
@@ -439,7 +439,7 @@ input[type="text"]
     color: $button-text-color;
     min-width: 14px;
     text-align: center;
-    font-family: futura-pt, sans-serif;
+    font-family: futura-pt, arial;
     padding:5px 7px;
     cursor:pointer !important;
 
@@ -683,7 +683,6 @@ input[type=text] {
   background-color: $text-input-background-color;
   color: $text-input-color;
   border: 1px solid $text-input-border-color;
-  font-family: futura-pt;
   padding: 12px 10px !important; // TODO: Correct, looks bad in op settings
   width: auto;
 }
@@ -1472,7 +1471,7 @@ nav
 
         li
         {
-          font-family: $headline-font, sans-serif;
+          font-family: $headline-font, arial;
           font-weight: 400;
         }
 
@@ -1496,7 +1495,7 @@ nav
         }
         ul li
         {
-            //font: bold 12px/18px sans-serif;
+            //font: bold 12px/18px arial;
             display: inline-block;
             margin-right: -4px;
             position: relative;
@@ -1600,7 +1599,7 @@ nav
     }
     ul li
     {
-        //font: bold 12px/18px sans-serif;
+        //font: bold 12px/18px arial;
         display: inline-block;
         margin-right: -4px;
         position: relative;

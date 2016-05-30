@@ -323,14 +323,11 @@ CABLES.UI.GUI=function()
         $('#serialized').val(self.patch().scene.serialize());
     };
 
-
     this.userOpManager=function()
     {
         _userOpManager=_userOpManager || new CABLES.UI.UserOpManager(self.patch().getCurrentProject()._id);
         return _userOpManager;
     };
-
-
 
     this.showVersions=function()
     {
@@ -1022,6 +1019,7 @@ function startUi(event)
     var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
     console.log(timeUsed+"s Init UI...");
 
+    CABLES.UI.initHandleBarsHelper();
 
     $(document).bind("contextmenu", function(e)
     {

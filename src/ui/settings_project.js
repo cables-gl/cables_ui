@@ -187,6 +187,17 @@ var self=this;
 
 
 
+    this.tab=function(which)
+    {
+        $('#settings_tab_users').hide();
+        $('#settings_tab_params').hide();
+        $('#settings_tab_delete').hide();
+
+        if(which=='users') $('#settings_tab_users').show();
+        if(which=='params') $('#settings_tab_params').show();
+        if(which=='delete') $('#settings_tab_delete').show();
+
+    };
 
 
 
