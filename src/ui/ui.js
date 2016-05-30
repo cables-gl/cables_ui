@@ -12,7 +12,7 @@ CABLES.UI.GUI=function()
     _scene.gui=true;
     var _patch=null;
     var _editor=new CABLES.Editor();
-    var _userManager=null;
+    var _projectSettings=null;
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
     var _find=new CABLES.UI.Find();
@@ -63,6 +63,12 @@ CABLES.UI.GUI=function()
     this.introduction=function()
     {
         return _introduction;
+    };
+
+    this.projectSettings=function()
+    {
+        console.log(_projectSettings);
+        return _projectSettings;
     };
 
     this.timingHeight=250;
@@ -317,11 +323,6 @@ CABLES.UI.GUI=function()
         $('#serialized').val(self.patch().scene.serialize());
     };
 
-    this.userManager=function()
-    {
-        _userManager=_userManager || new CABLES.UI.UserManager(self.patch().getCurrentProject()._id);
-        return _userManager;
-    };
 
     this.userOpManager=function()
     {
@@ -329,15 +330,7 @@ CABLES.UI.GUI=function()
         return _userOpManager;
     };
 
-    this.showUsers=function()
-    {
-        this.userManager().show();
-    };
 
-    this.showUserOps=function()
-    {
-        this.userOpManager().show();
-    };
 
     this.showVersions=function()
     {
@@ -914,37 +907,7 @@ CABLES.UI.GUI=function()
         });
     };
 
-    this.editProjectTags=function(objName)
-    {
-        var tags = prompt("enter comma seperated tags", self.patch().getCurrentProject().tags.join() || 'webgl, audio, bla');
 
-        if(tags)
-        {
-            CABLES.api.post(
-                'project/'+self.patch().getCurrentProject()._id+'/save_tags',
-                {"tags":tags},
-                function(res)
-                {
-                    tags = tags.split(",");
-                    for(var i in tags)
-                    {
-                        tags[i]=tags[i].trim();
-                    }
-
-                    self.patch().getCurrentProject().tags=tags;
-
-                    // setStatus('saved');
-                    console.log('res',res);
-                },
-                function(res)
-                {
-                    // setStatus('error: not saved');
-                    console.log('err res',res);
-                }
-            );
-
-        }
-    };
 
     this.getOpDoc=function(opname,html,cb)
     {
@@ -971,11 +934,13 @@ CABLES.UI.GUI=function()
             anchor.setAttribute('href', img);
             anchor.click();
         },100);
-
-
-
     };
 
+    this.showSettings=function()
+    {
+        _projectSettings=new CABLES.ProjectSettings(self.patch().getCurrentProject());
+        _projectSettings.show();
+    };
 
     this.showOpDoc=function(opname)
     {
@@ -1086,7 +1051,7 @@ CABLES.UI.GUI=function()
 };
 
 
-document.addEventListener("DOMContentLoaded", function(event)
+function startUi(event)
 {
     var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
     console.log(timeUsed+"s Init UI...");
@@ -1106,4 +1071,4 @@ document.addEventListener("DOMContentLoaded", function(event)
     timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
     console.log(timeUsed+"s Init UI done");
 
-});
+}

@@ -1,0 +1,46 @@
+
+<script id="settings" type="text/x-handlebars-template">
+    <h2>settings</h2>
+
+    {{ project.name }}
+
+    <hr/>
+
+    <h2>Users</h2>
+
+    <div id="projectSettingsUsers"></div>
+
+    <hr/>
+
+    <h2>Tags</h2>
+
+    <input type="text" id="settings_tags" value="{{ tags }}" onblur="gui.projectSettings().saveTags($(this).val());"/>
+
+</script>
+
+
+<script id="settings_users" type="text/x-handlebars-template">
+
+    <ul>
+    {{#each userData.users}}
+    <li>
+        {{username }}
+        {{#if owner }}(owner)
+        {{else}}
+        |
+        <a onclick="gui.projectSettings().userManager.removeFromProject( '{{id}}' );">remove</a>
+        {{/if}}
+    </li>
+    {{/each}}
+    </ul>
+
+    <div id="adduserdialog" class="hidden">
+
+        <input type="text" id="userid" class="hidden" />
+        <select id="userAddSelectBox" onchange="$('#userid').val($(this).val());"></select>
+        <a class="button" onclick="gui.projectSettings().userManager.addToProject($('#userid').val());">Add User</a>
+    </div>
+
+    <a id="adduserbutton" class="button" onclick="gui.projectSettings().userManager.showAddUserNames('userAddSelectBox')">Add User</a>
+
+</script>

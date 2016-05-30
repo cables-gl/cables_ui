@@ -8,5 +8,5 @@ window.onerror=function(err,file,row)
     str+='file: '+file+'<br/>';
     str+='row: '+row+'<br/>';
 
-    CABLES.UI.MODAL.show(str);
+    if(CABLES && CABLES.UI && CABLES.UI.MODAL) CABLES.UI.MODAL.show(str);
 };

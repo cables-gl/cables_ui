@@ -119,44 +119,48 @@ function mouseEvent(event)
     return event;
 }
 
-Handlebars.registerHelper('json', function(context) {
-    return JSON.stringify(context,true,4);
-});
+CABLES.UI.initHandleBarsHelper=function ()
+{
+    Handlebars.registerHelper('json', function(context) {
+        return JSON.stringify(context,true,4);
+    });
 
-Handlebars.registerHelper('console', function(context) {
-    return console.log(context);
-});
+    Handlebars.registerHelper('console', function(context) {
+        return console.log(context);
+    });
 
-Handlebars.registerHelper('compare', function(left_value, operator, right_value, options) {
-    var operators, result;
+    Handlebars.registerHelper('compare', function(left_value, operator, right_value, options) {
+        var operators, result;
 
-    if (arguments.length < 4) {
-        throw new Error("Handlerbars Helper 'compare' needs 3 parameters, left value, operator and right value");
-    }
+        if (arguments.length < 4) {
+            throw new Error("Handlerbars Helper 'compare' needs 3 parameters, left value, operator and right value");
+        }
 
-    operators = {
-        '==':       function(l,r) { return l == r; },
-        '===':      function(l,r) { return l === r; },
-        '!=':       function(l,r) { return l != r; },
-        '<':        function(l,r) { return l < r; },
-        '>':        function(l,r) { return l > r; },
-        '<=':       function(l,r) { return l <= r; },
-        '>=':       function(l,r) { return l >= r; },
-        'typeof':   function(l,r) { return typeof l == r; }
-    };
+        operators = {
+            '==':       function(l,r) { return l == r; },
+            '===':      function(l,r) { return l === r; },
+            '!=':       function(l,r) { return l != r; },
+            '<':        function(l,r) { return l < r; },
+            '>':        function(l,r) { return l > r; },
+            '<=':       function(l,r) { return l <= r; },
+            '>=':       function(l,r) { return l >= r; },
+            'typeof':   function(l,r) { return typeof l == r; }
+        };
 
-    if ( ! operators[operator]) {
-        throw new Error("Handlerbars Helper 'compare' doesn't know the operator "+ operator);
-    }
+        if ( ! operators[operator]) {
+            throw new Error("Handlerbars Helper 'compare' doesn't know the operator "+ operator);
+        }
 
-    result = operators[operator](left_value, right_value);
+        result = operators[operator](left_value, right_value);
 
-    if (result === true) {
-        return options.fn(this);
-    } else {
-        return options.inverse(this);
-    }
-});
+        if (result === true) {
+            return options.fn(this);
+        } else {
+            return options.inverse(this);
+        }
+    });
+
+};
 
 
 
