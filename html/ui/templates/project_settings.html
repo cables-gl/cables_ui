@@ -1,23 +1,41 @@
 
 <script id="settings" type="text/x-handlebars-template">
 
-    <div class="fleft" style="width:100px;">
+    <div class="fleft settings_tabs" style="width:100px;">
         <br/><br/>
-        <a onclick="gui.projectSettings().tab('params');">Parameters</a>
-        <a onclick="gui.projectSettings().tab('users');">Users</a>
-        <br/><br/>
-        <a onclick="gui.projectSettings().tab('delete');">Delete</a>
+        <a class="tab_params active"onclick="gui.projectSettings().tab('params');">Parameters</a>
+        <a class="tab_users" onclick="gui.projectSettings().tab('users');">Users</a>
+        <a class="tab_reports" onclick="gui.projectSettings().tab('reports');">Reports</a>
+        <a class="tab_versions" onclick="gui.projectSettings().tab('versions');">Versions</a>
+        <br/>
+
+
+
+        <a class="tab_delete" onclick="gui.projectSettings().tab('delete');">Delete</a>
     </div>
     <div class="projectsettings fleft" style="width:500px;overflow:hidden;">
 
-        <div id="settings_tab_delete" class="hidden">
-
-            <h2>settings</h2>
-
-            <a class="button fa fa-trash-o tt" data-tt="delete" onclick="if(confirm('really?'))gui.deleteCurrentProject();">&nbsp;delete project</a>
 
 
+        <div id="settings_tab_versions" class="hidden">
+            <h2>Old Versions</h2>
+            <div id="loadversions"></div>
         </div>
+
+
+        <div id="settings_tab_reports" class="hidden">
+            <h2>Reports</h2>
+            <div id="fpsreports"></div>
+        </div>
+
+
+
+        <div id="settings_tab_delete" class="hidden">
+            <h2>settings</h2>
+            <a class="button fa fa-trash-o tt" data-tt="delete" onclick="if(confirm('really?'))gui.deleteCurrentProject();">&nbsp;delete project</a>
+        </div>
+
+
 
         <div id="settings_tab_params">
 
@@ -28,7 +46,7 @@
                     <td>
                       Project Name
                     </td>
-                    <td>
+                    <td style="width: 75%;">
                         <input type="text" class="" id="projectsettings_name" onblur="gui.projectSettings().saveParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
                     </td>
                 </tr>
@@ -136,6 +154,9 @@
         <a class="bluebutton" onclick="gui.projectSettings().userManager.addToProject($('#userid').val());">Add User</a>
     </div>
 
+    <br/>
+
     <a id="adduserbutton" class="bluebutton" onclick="gui.projectSettings().userManager.showAddUserNames('userAddSelectBox')">Add User</a>
+<br/><br/>
 
 </script>

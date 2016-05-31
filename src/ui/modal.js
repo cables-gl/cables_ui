@@ -30,7 +30,7 @@ CABLES.UI.MODAL.hide=function(force)
     $('.tooltip').hide();
 };
 
-CABLES.UI.MODAL.show=function(content)
+CABLES.UI.MODAL.show=function(content,options)
 {
     $('#modalcontent').html('<div class="modalclose"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
     $('#modalcontent').append(content);
@@ -52,8 +52,7 @@ CABLES.UI.MODAL.showLoading=function(title,content)
 
 CABLES.UI.MODAL.showError=function(title,content)
 {
-
-$('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
     $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;'+title+'</h2>');
     $('#modalcontent').append(content);
     $('#modalcontent').show();

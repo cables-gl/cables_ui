@@ -1731,5 +1731,22 @@ rect
     textarea,input
     {
         background-color: #222;
+        width:100%;
+    }
+}
+
+
+.settings_tabs
+{
+    a
+    {
+        display: block;
+        padding:4px;
+        padding-left: 5px;
+    }
+
+    .active
+    {
+        color: #fff;
     }
 }

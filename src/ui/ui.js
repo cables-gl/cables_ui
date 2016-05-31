@@ -67,7 +67,6 @@ CABLES.UI.GUI=function()
 
     this.projectSettings=function()
     {
-        console.log(_projectSettings);
         return _projectSettings;
     };
 
@@ -329,62 +328,7 @@ CABLES.UI.GUI=function()
         return _userOpManager;
     };
 
-    this.showVersions=function()
-    {
-        CABLES.UI.MODAL.showLoading('loading versions');
-        CABLES.api.get('project/'+self.patch().getCurrentProject()._id+'/versions',function(r)
-        {
-            var html='<h2>project history</h2>';
 
-            if(r.length===0)
-            {
-                html+='no old versions of project available. save project first.<br/><br/>';
-            }
-            else
-            {
-                html+='<select id="versionselect">';
-                html+='<option>select...</option>';
-                for(var i in r)
-                {
-                    html+='<option value="/ui/#/project/'+r[i].projectId+'/v/'+r[i]._id+'">'+r[i].name+' / '+r[i].readableDate+' ('+r[i].readableDateSince+')</option>';
-                }
-                html+='</select>';
-                html+='<br/><br/><br/>';
-                html+='<a onclick="document.location.href=$(\'#versionselect\').val()" class="bluebutton">load</a>';
-                html+='<br/><br/>';
-            }
-
-            CABLES.UI.MODAL.show(html);
-            // console.log(r);
-        });
-
-    };
-
-    this.showReports=function()
-    {
-        CABLES.UI.MODAL.showLoading('loading versions');
-        CABLES.api.get('report/summary/'+self.patch().getCurrentProject()._id,
-            function(r)
-            {
-                var html='<h2>patch reports</h2>';
-
-                if(r.length===0)
-                {
-                    html+='no reports available. visit <a href="/p/'+self.patch().getCurrentProject()._id+'">this page</a> and watch it for 20 seconds to generate reports...<br/><br/>';
-                }
-                else
-                {
-                    html+='<pre><code>';
-                    for(var i in r)
-                    {
-                        html+=Math.round(r[i].avgFps)+' FPS / '+r[i].renderer+' / '+r[i].when+' \n';
-                    }
-                    html+='</code></pre>';
-                }
-
-                CABLES.UI.MODAL.show(html);
-            });
-    };
 
 
     var oldRendwerWidth,oldRendwerHeight;
@@ -576,7 +520,7 @@ CABLES.UI.GUI=function()
         $('.nav_patch_new').bind("click", function (event) { self.createProject(); });
         $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))gui.scene().clear(); });
         $('.nav_patch_export').bind("click", function (event) { gui.patch().exportStatic(); });
-        $('.nav_patch_settings').bind("click", function (event) { self.patch().showProjectParams(); });
+        $('.nav_patch_settings').bind("click", function (event) { self.showSettings(); });
         $('.nav_patch_browse_examples').bind("click", function (event) { var win = window.open('https://cables.gl/examples', '_blank'); win.focus(); });
         $('.nav_patch_browse_favourites').bind("click", function (event) { var win = window.open('https://cables.gl/myfavs', '_blank'); win.focus(); });
         $('.nav_patch_browse_public').bind("click", function (event) { var win = window.open('https://cables.gl/projects', '_blank'); win.focus(); });

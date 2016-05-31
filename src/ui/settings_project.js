@@ -1,8 +1,8 @@
 
 CABLES.ProjectSettings=function(project)
 {
+    var self=this;
 
-var self=this;
     this.userManager=new CABLES.UI.UserManager(project._id);
 
     this.show=function()
@@ -42,7 +42,7 @@ var self=this;
             {"tags":tags},
             function(res)
             {
-                console.log('saved tags...');
+                // console.log('saved tags...');
                 tags = tags.split(",");
                 for(var i in tags)
                 {
@@ -52,7 +52,7 @@ var self=this;
                 gui.patch().getCurrentProject().tags=tags;
 
 
-                console.log('res',res);
+                // console.log('res',res);
             },
             function(res)
             {
@@ -186,19 +186,89 @@ var self=this;
     };
 
 
-
+    var oldTab="params";
     this.tab=function(which)
     {
         $('#settings_tab_users').hide();
         $('#settings_tab_params').hide();
         $('#settings_tab_delete').hide();
+        $('#settings_tab_reports').hide();
+        $('#settings_tab_versions').hide();
 
         if(which=='users') $('#settings_tab_users').show();
         if(which=='params') $('#settings_tab_params').show();
         if(which=='delete') $('#settings_tab_delete').show();
+        if(which=='reports')
+        {
+            $('#settings_tab_reports').show();
+            loadFPSReports();
+        }
 
+        if(which=='versions')
+        {
+            $('#settings_tab_versions').show();
+            showVersions();
+        }
+
+        $('.settings_tabs .tab_'+oldTab).removeClass('active');
+        $('.settings_tabs .tab_'+which).addClass('active');
+        oldTab=which;
     };
 
+    function loadFPSReports()
+    {
+        CABLES.api.get('report/summary/'+project._id,
+            function(r)
+            {
+                var html='';
+
+                if(r.length===0)
+                {
+                    html+='no reports available. visit <a href="/p/'+project._id+'">this page</a> and watch it for 20 seconds to generate reports...<br/><br/>';
+                }
+                else
+                {
+                    for(var i in r)
+                    {
+                        html+=(r[i].when)+': '+Math.round(r[i].avgFps)+' FPS <br/>'+r[i].renderer+' <br/><br/>';
+                    }
+                }
+
+                $('#fpsreports').html(html);
+            });
+    }
+
+    function showVersions()
+    {
+        // CABLES.UI.MODAL.showLoading('loading versions');
+        CABLES.api.get('project/'+project._id+'/versions',function(r)
+        {
+            var html='';
+
+            if(r.length===0)
+            {
+                html+='no old versions of project available. save project first.<br/><br/>';
+            }
+            else
+            {
+                html+='<select id="versionselect">';
+                html+='<option>select...</option>';
+                for(var i in r)
+                {
+                    html+='<option value="/ui/#/project/'+r[i].projectId+'/v/'+r[i]._id+'">'+r[i].name+' / '+r[i].readableDate+' ('+r[i].readableDateSince+')</option>';
+                }
+                html+='</select>';
+                html+='<br/><br/><br/>';
+                html+='<a onclick="document.location.href=$(\'#versionselect\').val()" class="bluebutton">load</a>';
+                html+='<br/><br/>';
+            }
+
+            // CABLES.UI.MODAL.show(html);
+            $('#loadversions').html(html);
+
+        });
+
+    }
 
 
 };
