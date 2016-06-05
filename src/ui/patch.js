@@ -747,10 +747,11 @@ CABLES.UI.Patch=function(_gui)
             }
         }
 
+
         minimapBounds.x=bounds.minx-100;
         minimapBounds.y=bounds.miny-100;
-        minimapBounds.w=(bounds.maxx-bounds.minx)+300;
-        minimapBounds.h=(bounds.maxy-bounds.miny)+300;
+        minimapBounds.w=Math.abs(bounds.maxx-bounds.minx)+300;
+        minimapBounds.h=Math.abs(bounds.maxy-bounds.miny)+300;
 
         self.paperMap.setViewBox(
             minimapBounds.x,
@@ -1016,25 +1017,24 @@ CABLES.UI.Patch=function(_gui)
 
         $('#patch').on("dblclick", function(e)
         {
-            console.log('double');
             console.log(viewBox);
 
             var x=gui.patch().getCanvasCoordsMouse(e).x;
             var y=gui.patch().getCanvasCoordsMouse(e).y;
 
-            var size=1500;
-            if(viewBox.w>=size)
+            var sizeSmall=450;
+            var size=Math.max(minimapBounds.w,minimapBounds.h);
+            if(viewBox.w>=sizeSmall*2)
             {
-                size=400;
-                viewBox.x=x-size/2;
-                viewBox.y=y-size/2;
-                viewBox.w=size;
-                viewBox.h=size;
+                viewBox.x=x-sizeSmall/2;
+                viewBox.y=y-sizeSmall/2;
+                viewBox.w=sizeSmall;
+                viewBox.h=sizeSmall;
             }
             else
             {
-                viewBox.x=x-size/2;
-                viewBox.y=y-size/2;
+                viewBox.x=minimapBounds.x;
+                viewBox.y=minimapBounds.y;
                 viewBox.w=size;
                 viewBox.h=size;
             }

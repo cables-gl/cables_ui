@@ -764,8 +764,8 @@ CABLES.UI.GUI=function()
                 for(var i in proj.userList)
                     userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
 
-                loadjs( userOpsUrls,'userops');
-                loadjs.ready('userops',function()
+                loadjs( userOpsUrls,'userops'+proj._id);
+                loadjs.ready('userops'+proj._id,function()
                 {
                     var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
                     console.log(timeUsed+"s loaded user ops...");
