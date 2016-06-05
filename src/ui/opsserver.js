@@ -45,6 +45,7 @@ CABLES.UI.ServerOps=function(gui)
 
                 storedOps=JSON.parse(localStorage.getItem("cables.editor.serverops"));
                 updateStoredOps();
+                self.loaded=true;
 
                 if(storedOps && storedOps.length>0)
                 {
@@ -270,14 +271,6 @@ CABLES.UI.ServerOps=function(gui)
 
     };
 
-    var s = document.createElement( 'script' );
-    s.setAttribute( 'src', '/api/ops/code/'+gui.user.username );
-    s.onload=function()
-    {
-        self.load();
-        self.loaded=true;
-    };
-    document.body.appendChild( s );
 
     this.loaded=false;
     this.finished=function()
@@ -285,5 +278,6 @@ CABLES.UI.ServerOps=function(gui)
         return this.loaded;
     };
 
+this.load();
 
 };

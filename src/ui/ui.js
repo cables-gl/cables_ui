@@ -760,7 +760,24 @@ CABLES.UI.GUI=function()
             CABLES.UI.MODAL.showLoading('loading');
             CABLES.api.get('project/'+params.id,function(proj)
             {
-                self.patch().setProject(proj);
+
+                var userOpsUrls=[];
+
+                for(var i in proj.userList)
+                {
+                    userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
+                }
+                console.log(userOpsUrls);
+
+                loadjs( userOpsUrls,'userops');
+                loadjs.ready('userops',function()
+                {
+                    var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+                    console.log(timeUsed+"s loaded user ops...");
+                    self.patch().setProject(proj);
+                });
+
+
             });
         });
 
@@ -878,6 +895,8 @@ CABLES.UI.GUI=function()
 
                     var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
                     console.log(timeUsed+"s User Data loaded...");
+
+
 
                     // if(!data.user.introCompleted) {
                     //   _introduction.showIntroduction();

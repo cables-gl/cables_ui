@@ -24,9 +24,11 @@ CABLES.UI.Port=function(thePort)
 
     function changeActiveState()
     {
+
         for(var i=0;i<self.opUi.links.length;i++)
-            if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
-                self.opUi.links[i].setEnabled(self.thePort.getUiActiveState());
+            if(self.opUi.links[i].p1 && !self.opUi.links[i].p2)
+                if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
+                    self.opUi.links[i].setEnabled(self.thePort.getUiActiveState());
     }
 
     function dragStart(x,y,event)
