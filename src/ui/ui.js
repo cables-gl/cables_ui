@@ -760,14 +760,9 @@ CABLES.UI.GUI=function()
             CABLES.UI.MODAL.showLoading('loading');
             CABLES.api.get('project/'+params.id,function(proj)
             {
-
                 var userOpsUrls=[];
-
                 for(var i in proj.userList)
-                {
                     userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
-                }
-                console.log(userOpsUrls);
 
                 loadjs( userOpsUrls,'userops');
                 loadjs.ready('userops',function()
