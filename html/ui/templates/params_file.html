@@ -74,7 +74,7 @@
 
 
         <br/>
-        <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{fileId}}',null,function(){gui.patch().updateProjectFiles();$('#options').html('')});">delete </a>
+        <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{fileId}}',null,function(){gui.updateProjectFiles();$('#options').html('')});">delete </a>
 
     </div>
 

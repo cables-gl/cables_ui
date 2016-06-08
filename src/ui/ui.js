@@ -21,6 +21,7 @@ CABLES.UI.GUI=function()
     // var _socket=null;
     var _connection=null;
     var savedState=true;
+    this.bookmarks=new CABLES.UI.Bookmarks();
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);
@@ -29,6 +30,11 @@ CABLES.UI.GUI=function()
 
     this.profiler=null;
     this.user=null;
+
+    this.project=function()
+    {
+        return self.patch().getCurrentProject();
+    };
 
     this.timeLine=function()
     {
@@ -324,7 +330,7 @@ CABLES.UI.GUI=function()
 
     this.userOpManager=function()
     {
-        _userOpManager=_userOpManager || new CABLES.UI.UserOpManager(self.patch().getCurrentProject()._id);
+        _userOpManager=_userOpManager || new CABLES.UI.UserOpManager(self.project()._id);
         return _userOpManager;
     };
 
@@ -525,7 +531,7 @@ CABLES.UI.GUI=function()
         $('.nav_patch_browse_favourites').bind("click", function (event) { var win = window.open('https://cables.gl/myfavs', '_blank'); win.focus(); });
         $('.nav_patch_browse_public').bind("click", function (event) { var win = window.open('https://cables.gl/projects', '_blank'); win.focus(); });
 
-        $('.nav_patch_profile').bind("click", function (event) { if(!self.profiler)self.profiler = new CABLES.UI.Profiler();self.profiler.show(); });
+        $('.nav_patch_profile').bind("click", self.showProfiler);
 
 
         // --- Help menu
@@ -588,8 +594,6 @@ CABLES.UI.GUI=function()
 
         $(document).keydown(function(e)
         {
-
-
             switch(e.which)
             {
                 default:
@@ -855,6 +859,12 @@ CABLES.UI.GUI=function()
         },100);
     };
 
+    this.showProfiler=function()
+    {
+        if(!self.profiler)self.profiler = new CABLES.UI.Profiler();
+        self.profiler.show();
+    };
+
     this.showSettings=function()
     {
         _projectSettings=new CABLES.ProjectSettings(self.patch().getCurrentProject());
@@ -908,6 +918,37 @@ CABLES.UI.GUI=function()
     this.getSavedState=function()
     {
         return savedState;
+    };
+
+    this.updateProjectFiles=function(proj)
+    {
+        if(!proj)proj=self.project();
+        $('#meta_content_files').html('');
+
+        CABLES.api.get(
+            'project/'+proj._id+'/files',
+            function(files)
+            {
+                proj.files=files;
+                var html='';
+                html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_list',proj);
+                html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_upload',proj);
+
+                $('#meta_content_files').html(html);
+            });
+    };
+
+    this.setMetaTab=function(which)
+    {
+        $('.meta_content').hide();
+        $('#metatabs a').removeClass('active');
+        $('#metatabs .tab_'+which).addClass('active');
+
+        $('#meta_content_'+which).show();
+
+        if(which=='profiler') self.showProfiler();
+        if(which=='bookmarks') self.bookmarks.show();
+
     };
 
 

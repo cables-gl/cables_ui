@@ -1,4 +1,4 @@
-
+asasas
 <div id="library">
     <div class="left">
         <div id="lib_head"></div>
@@ -138,12 +138,26 @@
     </div>
 
 
-
-
 </div>
 
 <div id="meta">
-    <div id="projectfiles"></div>
+    <div id="metatabs">
+        <div class="tabs">
+            <a class="tab_files active fa fa-files-o" onclick="gui.setMetaTab('files')"> </i> </a>
+            <a class="tab_profiler fa fa-pie-chart" onclick="gui.setMetaTab('profiler')"></a>
+            <a class="tab_bookmarks fa fa-bookmark-o" onclick="gui.setMetaTab('bookmarks')"></a>
+
+            <a class="tab_debug fa fa-info-circle" onclick="gui.setMetaTab('debug')"></a>
+            <a class="tab_screen fa fa-television" onclick="gui.setMetaTab('screen')"></a>
+        </div>
+    </div>
+    <div id="meta_content">
+        <div id="meta_content_files" class="meta_content"></div>
+        <div id="meta_content_profiler" class="meta_content"></div>
+        <div id="meta_content_debug" class="meta_content"></div>
+        <div id="meta_content_bookmarks" class="meta_content"></div>
+    </div>
+
     <div id="infoArea"></div>
 </div>
 

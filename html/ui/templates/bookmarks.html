@@ -1,0 +1,18 @@
+
+
+
+<script id="bookmarks" type="text/x-handlebars-template">
+
+        <h3>Bookmarks</h3>
+
+        <a onclick="gui.bookmarks.add()" class="button fa fa-bookmark-o">add</a>
+
+        <br/><br/>
+
+        {{#each bookmarks}}
+            - <a onclick="gui.bookmarks.goto('{{id}}');">{{name}}</a>
+            <a class="button fa fa-trash-o" onclick="gui.bookmarks.remove('{{id}}');"></a>
+            <br/>
+        {{/each}}
+
+</script>

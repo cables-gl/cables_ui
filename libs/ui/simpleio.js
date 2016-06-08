@@ -327,14 +327,14 @@ Emitter.prototype.emit = function(event){
     callbacks = callbacks.slice(0);
     for (var i = 0, len = callbacks.length; i < len; ++i){
 
-        try
+        // try
         {
             callbacks[i].apply(this, args);
         }
-        catch(e)
-        {
-            console.log('caught simpleio error.....');
-        }
+        // catch(e)
+        // {
+        //     console.log('caught simpleio error.....');
+        // }
     }
   }
 

@@ -1,12 +1,14 @@
 
-<script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
-    <h2>files</h2>
 
-    {{#each files}}
-        <div class="filename" onclick="CABLES.api.get('project/{{projectId}}/file/info/{{_id}}',function(r){ gui.showFile('{{_id}}',r) });">
-            {{name}}
-        </div>
-    {{/each}}
+
+<script id="tmpl_projectfiles_list" type="text/x-handlebars-template">
+
+        <h3>files</h3>
+        {{#each files}}
+            <div class="filename" onclick="CABLES.api.get('project/{{projectId}}/file/info/{{_id}}',function(r){ gui.showFile('{{_id}}',r) });">
+                {{name}}
+            </div>
+        {{/each}}
 
 </script>
 

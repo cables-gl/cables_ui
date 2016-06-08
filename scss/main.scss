@@ -45,6 +45,7 @@ p {
 }
 
 .hidden { display:none;}
+.clear { clear:both; }
 .fleft { float:left; }
 .fright { float:right !important; }
 .mainColor { color:$mainColor; }
@@ -1748,5 +1749,36 @@ rect
     .active
     {
         color: #fff;
+    }
+}
+
+
+#metatabs
+{
+    padding: 0px !important;
+}
+.tabs
+{
+    background-color: #111;
+    display: block;
+    padding:6px !important;
+    padding-bottom: 0px !important;
+    padding-left: 10px !important;
+    width:100%;
+
+    a
+    {
+        padding:8px !important;
+        padding-bottom:8px !important;
+        padding-left:8px !important;
+        padding-right:8px !important;
+    }
+
+
+    a.active
+    {
+
+        background-color: #2a2a2a;
+        color:#fff;
     }
 }

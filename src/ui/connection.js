@@ -67,7 +67,7 @@ CABLES.API.Connection=function(ui)
             if(message.data.data.cmd=='finishJob')
             {
                 ui.jobs().finish(message.data.data.jobId);
-                gui.patch().updateProjectFiles();
+                gui.updateProjectFiles();
 
                 // TODO: send filename back from server to client...
                 // TODO: update files with filename

@@ -31,12 +31,12 @@
             loadjs(['js/ace/ext-language_tools.js'],'ace');
         });
 
-        loadjs('https://use.typekit.net/tsi7ykf.js',function()
-        {
-            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-            console.log(timeUsed+" typekit js");
-            try{Typekit.load({ async: true });}catch(e){}
-        });
+        // loadjs('https://use.typekit.net/tsi7ykf.js',function()
+        // {
+        //     var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+        //     console.log(timeUsed+" typekit js");
+        //     try{Typekit.load({ async: true });}catch(e){}
+        // });
 
         loadjs.ready('ace', function()
         {

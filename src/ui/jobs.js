@@ -62,7 +62,7 @@ function()
             {
                 if(jobs[i].title.indexOf('file')>=0)
                 {
-                    gui.patch().updateProjectFiles();
+                    gui.updateProjectFiles();
                 }
                 jobs.splice(i,1);
                 break;

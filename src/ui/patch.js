@@ -641,16 +641,16 @@ CABLES.UI.Patch=function(_gui)
         if(currentProject===null)
         {
             // $('#serverproject').hide();
-            $('#projectfiles').hide();
+            $('#meta_content_files').hide();
         }
         else
         {
-            $('#projectfiles').show();
+            $('#meta_content_files').show();
 
-            self.updateProjectFiles(proj);
+            gui.updateProjectFiles(proj);
             $('.viewProjectLink').attr('href','/p/'+proj._id);
         }
-        $('#projectfiles').hover(function (e)
+        $('#meta_content_files').hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
         },function()
@@ -658,25 +658,6 @@ CABLES.UI.Patch=function(_gui)
             CABLES.UI.hideInfo();
         });
     };
-
-    this.updateProjectFiles=function(proj)
-    {
-        if(!proj)proj=currentProject;
-        $('#projectfiles').html('');
-
-        CABLES.api.get(
-            'project/'+currentProject._id+'/files',
-            function(files)
-            {
-                proj.files=files;
-                var html='';
-                html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_list',proj);
-                html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_upload',proj);
-
-                $('#projectfiles').html(html);
-            });
-    };
-
 
 
     this.centerViewBoxOps=function()
@@ -703,6 +684,9 @@ CABLES.UI.Patch=function(_gui)
         viewBox.y=minY-30;
         var w=1*(Math.abs(maxX-minX));
         var h=1*(Math.abs(maxY-minY));
+
+        w=Math.max(500,w);
+        h=Math.max(500,h);
         // viewBox.w=100;
         // viewBox.h=100;
         if(w>h)viewBox.w=w;
@@ -1502,7 +1486,10 @@ CABLES.UI.Patch=function(_gui)
         self.updateBounds=true;
     };
 
-
+    this.getSelectedOps=function()
+    {
+        return selectedOps;
+    };
 
     this.getSelectionBounds=function()
     {
