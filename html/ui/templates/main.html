@@ -27,7 +27,7 @@ asasas
 
 <div id="patch" tabindex="1"></div>
 
-<div id="minimapContainer" >
+<div id="minimapContainer" data-info="{{ texts.minimapContainer }}" >
     <div onclick="gui.toggleMiniMap();" class="title title_closed">&nbsp;<i class="fa fa-angle-up" ></i>&nbsp; Mini Map</div>
     <div onclick="gui.toggleMiniMap();" class="title title_opened">&nbsp;<i class="fa fa-angle-down" ></i> </div>
     <div id="minimap"></div>
@@ -143,9 +143,9 @@ asasas
 <div id="meta">
     <div id="metatabs">
         <div class="tabs">
-            <a class="tab_files active fa fa-files-o" onclick="gui.setMetaTab('files')"> </i> </a>
-            <a class="tab_profiler fa fa-pie-chart" onclick="gui.setMetaTab('profiler')"></a>
-            <a class="tab_bookmarks fa fa-bookmark-o" onclick="gui.setMetaTab('bookmarks')"></a>
+            <a class="tab_files active fa fa-files-o" data-info="{{ texts.tab_files }}" onclick="gui.setMetaTab('files')"> </i> </a>
+            <a class="tab_profiler fa fa-pie-chart" data-info="{{ texts.tab_profiler }}" onclick="gui.setMetaTab('profiler')"></a>
+            <a class="tab_bookmarks fa fa-bookmark-o" data-info="{{ texts.tab_bookmarks }}" onclick="gui.setMetaTab('bookmarks')"></a>
 
             <a class="tab_debug fa fa-info-circle" onclick="gui.setMetaTab('debug')"></a>
             <a class="tab_screen fa fa-television" onclick="gui.setMetaTab('screen')"></a>

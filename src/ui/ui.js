@@ -1006,6 +1006,56 @@ CABLES.UI.GUI=function()
         {
             CABLES.UI.hideInfo();
         });
+        /* Tab pane on the right */
+        $('.tab_files').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_files);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
+        $('.tab_profiler').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_profiler);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
+        $('.tab_bookmarks').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_bookmarks);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
+        $('.tab_debug').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_debug);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
+        $('.tab_screen').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_screen);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
+        $('.download_screenshot').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.download_screenshot);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
+        $('#minimapContainer').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.minimapContainer);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
         gui.replaceNavShortcuts();
     };
     self.loadUser();

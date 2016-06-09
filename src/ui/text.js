@@ -1,5 +1,8 @@
 CABLES=CABLES || {};
 CABLES.UI=CABLES.UI || {};
+
+/* After adding a text add jQuery-hover-definition in ui.js + add data-info="{{ texts.foo }}" to the template */
+
 CABLES.UI.TEXTS=
 {
     /* Menu ------------------ */
@@ -35,5 +38,15 @@ CABLES.UI.TEXTS=
     canvas: "## Preview \n\nHere you can see the visual output of your patch.",
     infoArea: "## Info Panel \n\nHover over an element to see some infos here.",
     projectFiles: "## Project Files \n\nOverview over your uploaded files",
-    undevLogo: "## Undev \n\nCables was made by **Undefined Development**, come visit us in our office in Berlin and have a coffee with us! "
+    undevLogo: "## Undev \n\nCables was made by **Undefined Development**, come visit us in our office in Berlin and have a coffee with us! ",
+
+    tab_files: "## Files \n\nUpload and manage your files",
+    tab_profiler: "## Profiler \n\nFind out which ops require most processing time",
+    tab_bookmarks: "## Bookmarks \n\nBookmark ops in a big patch to easily locate them",
+    tab_debug: "## Debug \n\n",
+    tab_screen: "## Screen \n\n",
+
+    download_screenshot: "## Download screenshot \n\nDownload a HD-image (1920 x 1080) of your patch",
+    minimapContainer: "## Minimap \n\nShows an overview over your patch. Click inside the map to navigate."
+
 };
