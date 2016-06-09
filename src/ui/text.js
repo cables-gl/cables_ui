@@ -47,6 +47,9 @@ CABLES.UI.TEXTS=
     tab_screen: "## Screen \n\n",
 
     download_screenshot: "## Download screenshot \n\nDownload a HD-image (1920 x 1080) of your patch",
-    minimapContainer: "## Minimap \n\nShows an overview over your patch. Click inside the map to navigate."
+    minimapContainer: "## Minimap \n\nShows an overview over your patch. Click inside the map to navigate.",
+    project_settings_btn: "## project Settings \n\nEdit project name, make it private / public, add collaborators.",
+    timelineui: "## Timeline \n\nIn the timeline you can animate ports over time.",
+    op_background: "## Op \n\n"
 
 };

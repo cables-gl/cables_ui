@@ -1056,6 +1056,28 @@ CABLES.UI.GUI=function()
         {
             CABLES.UI.hideInfo();
         });
+        $('#project_settings_btn').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.project_settings_btn);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
+        $('#timelineui').hover(function (e)
+        {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.timelineui);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
+        $('.op_background').hover(function (e)
+        {
+          alert("hover");
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.op_background);
+        },function()
+        {
+            CABLES.UI.hideInfo();
+        });
         gui.replaceNavShortcuts();
     };
     self.loadUser();
