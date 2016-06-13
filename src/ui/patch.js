@@ -587,7 +587,10 @@ CABLES.UI.Patch=function(_gui)
         {
             var data=gui.patch().scene.serialize(true);
 
+
             data.ui={viewBox:{}};
+            data.ui.bookmarks=gui.bookmarks.getBookmarks();
+
             data.ui.viewBox.w=viewBox.w;
             data.ui.viewBox.h=viewBox.h;
             data.ui.viewBox.x=viewBox.x;

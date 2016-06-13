@@ -773,7 +773,9 @@ CABLES.UI.GUI=function()
                 {
                     var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
                     console.log(timeUsed+"s loaded user ops...");
+
                     self.patch().setProject(proj);
+                    if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
                 });
 
 

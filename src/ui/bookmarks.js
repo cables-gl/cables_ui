@@ -21,7 +21,9 @@ CABLES.UI.Bookmarks=function(projectId)
             }
             else
             {
+                console.log("op not found",bookmarks[i]);
                 bookmarks[i]=null;
+
             }
         }
 
@@ -31,7 +33,14 @@ CABLES.UI.Bookmarks=function(projectId)
 
     this.set=function(arr)
     {
+        console.log('setting bookmarks',arr);
+        // bookmarks.length=0;
 
+        if(arr)
+        {
+            bookmarks=arr;
+            for(var i in bookmarks) console.log(bookmarks[i]);
+        }
     };
 
     this.remove=function(id)
@@ -42,15 +51,12 @@ CABLES.UI.Bookmarks=function(projectId)
             {
                 if(bookmarks[i]==id)bookmarks[i]=null;
             }
-
         }
 
         while(bookmarks.indexOf(null)>=0)
-        {
             bookmarks.splice(bookmarks.indexOf(null),1);
-        }
-        this.show();
 
+        this.show();
     };
 
     this.add=function()
@@ -75,4 +81,8 @@ CABLES.UI.Bookmarks=function(projectId)
 
     };
 
+    this.getBookmarks=function()
+    {
+        return bookmarks;
+    };
 };

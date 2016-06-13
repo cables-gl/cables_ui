@@ -43,7 +43,7 @@ p {
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
 }
-
+.clickable {cursor:pointer;}
 .hidden { display:none;}
 .clear { clear:both; }
 .fleft { float:left; }
@@ -585,8 +585,8 @@ a.button.fa-times:before {
 
     .searchbrowser
     {
-        height:420px;
-        overflow:hidden
+        height:377px;
+        overflow:auto;
     }
 
     .searchinfo
@@ -620,6 +620,12 @@ a.button.fa-times:before {
         .namespace
         {
             color:#222;
+            &:hover
+            {
+                font-weight: bold;
+                color:white;
+            }
+
         }
     }
 
@@ -627,6 +633,11 @@ a.button.fa-times:before {
     {
         font-size: 11px;
         font-style: normal;
+        &:hover
+        {
+            font-weight: bold;
+            color:$highlight-color-dark;
+        }
     }
 }
 
@@ -1718,7 +1729,9 @@ rect
 
 .searchbrowser
 {
-    .searchable{ margin-bottom: 1px;}
+    .searchable{
+        margin-bottom: 1px;
+    }
     .item_color_default { border-left:15px solid $color_op_handle_default;}
     .item_color_gl { border-left:15px solid $color_op_handle_gl; }
     .item_color_audio { border-left:15px solid $color_op_handle_audio; }

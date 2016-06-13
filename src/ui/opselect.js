@@ -38,6 +38,18 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
 
 CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 {
+    function search()
+    {
+        var searchFor= $('#opsearch').val();
+
+        if(!searchFor)
+            $('#search_style').html('.searchable:{display:block;}');
+        else
+            $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
+
+        CABLES.UI.OPSELECT.updateOptions();
+
+    }
     CABLES.UI.OPSELECT.linkNewLink=link;
     CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
@@ -49,21 +61,13 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
     CABLES.UI.MODAL.show(html);
 
     $('#opsearch').focus();
-    $('#opsearch').on('input',function(e)
-    {
-        var searchFor= $('#opsearch').val();
-
-        if(!searchFor)
-            $('#search_style').html('.searchable:{display:block;}');
-        else
-            $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
-
-        CABLES.UI.OPSELECT.updateOptions();
-    });
+    $('#opsearch').on('input',search);
 
     $( ".searchresult:first" ).addClass( "selected" );
+    var itemHeight=$( ".searchresult:first" ).height()+10+1;
 
     var displayBoxIndex=0;
+
     var Navigate = function(diff)
     {
         displayBoxIndex += diff;
@@ -71,7 +75,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         if (displayBoxIndex < 0) displayBoxIndex = 0;
         var oBoxCollection = $(".searchresult:visible");
         var oBoxCollectionAll = $(".searchresult");
-        if (displayBoxIndex >= oBoxCollection.length) displayBoxIndex = 0;
+        if (displayBoxIndex >= oBoxCollection.length) displayBoxIndex = oBoxCollection.length-1;
         if (displayBoxIndex < 0) displayBoxIndex = oBoxCollection.length - 1;
 
         var cssClass = "selected";
@@ -79,11 +83,34 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
         oBoxCollectionAll.removeClass(cssClass);
         oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
 
+        if(displayBoxIndex>12)
+            $('.searchbrowser').scrollTop( (displayBoxIndex-12)*itemHeight );
+        else
+            $('.searchbrowser').scrollTop( 1 );
+
         updateInfo();
     };
 
     var infoTimeout=-1;
     var lastInfoOpName='';
+
+    this.searchFor=function(what)
+    {
+        $('#opsearch').val(what);
+        search();
+    };
+
+    this.selectOp=function(name)
+    {
+        var oBoxCollectionAll = $(".searchresult");
+
+        oBoxCollectionAll.removeClass('selected');
+        $('.searchresult[data-opname="'+name+'"]').addClass('selected');
+        // oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass('selected');
+
+        updateInfo();
+    };
+
     function updateInfo()
     {
         var opname=$('.selected').data('opname');
