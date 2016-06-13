@@ -171,7 +171,7 @@ function UiLink(port1, port2)
         var toY=port2.rect.matrix.f+port2.rect.attrs.y;
 
         middlePosX=0.5*(fromX+toX);
-        middlePosY=0.5*(fromY+toY);
+        middlePosY=0.5*(fromY+toY+CABLES.UI.uiConfig.portSize*0.5);
 
         var cp1X=0;
         var cp1Y=0;
@@ -522,6 +522,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         background=gui.patch().getPaper().rect(0, 0, w, h);
         CABLES.UI.cleanRaphael(background);
         background.node.classList.add('op_background');
+        background.node.setAttribute('data-info', CABLES.UI.TEXTS.op_background);
 
 
         resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, h);

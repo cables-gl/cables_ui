@@ -347,11 +347,11 @@ input[type="text"]
         max-width: 135px;
         overflow: hidden;
     }
-
-    td.portType_0 { border-left: 4px solid #ea6638; }
-    td.portType_1 { border-left: 4px solid #6c9fde; }
-    td.portType_2 { border-left: 4px solid #26a92a; }
-    td.portType_3 { border-left: 4px solid #a02bbd; }
+    /* 90 degree border */
+    td.portType_0 { box-shadow: inset 4px 0 0 #ea6638 !important; }
+    td.portType_1 { box-shadow: inset 4px 0 0 #6c9fde !important; }
+    td.portType_2 { box-shadow: inset 4px 0 0 #26a92a !important; }
+    td.portType_3 { box-shadow: inset 4px 0 0 #a02bbd !important; }
 
     input.value
     {
@@ -597,6 +597,15 @@ a.button.fa-times:before {
         overflow-x: hidden;
         overflow-y: auto;
         height:420px;
+
+        /* enable text selection on all elements except svg */
+        * {
+          -webkit-user-select: text;
+          -khtml-user-select: text;
+          -moz-user-select: text;
+          -o-user-select: text;
+          user-select: text;
+        }
 
         h1
         {
@@ -1149,6 +1158,15 @@ input[type=text]:active, input[type=text]:focus {
     background-color: #262626;
     padding:10px;
     overflow: auto;
+
+    /* enable text selection */
+    * {
+      -webkit-user-select: text;
+      -khtml-user-select: text;
+      -moz-user-select: text;
+      -o-user-select: text;
+      user-select: text;
+    }
 
     li
     {
