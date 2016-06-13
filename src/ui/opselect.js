@@ -42,6 +42,9 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
     {
         var searchFor= $('#opsearch').val();
 
+        if(searchFor==='') $('#clearsearch').hide();
+            else $('#clearsearch').show();
+
         if(!searchFor)
             $('#search_style').html('.searchable:{display:block;}');
         else
@@ -93,6 +96,28 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
 
     var infoTimeout=-1;
     var lastInfoOpName='';
+
+    this.clear=function()
+    {
+        var v=$('#opsearch').val();
+
+        if(v.indexOf('.')>0)
+        {
+            var arr=v.split('.');
+            arr.length=arr.length-1;
+            v=arr.join('.');
+
+            if(v=='Ops') v='';
+
+            $('#opsearch').val(v);
+            search();
+        }
+        else
+        {
+            $('#opsearch').val('');
+            search();
+        }
+    };
 
     this.searchFor=function(what)
     {
