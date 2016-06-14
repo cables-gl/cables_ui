@@ -17,8 +17,8 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
         var userOpName='Ops.User.'+gui.user.username+'.'+$('#opsearch').val();
         $('.userCreateOpName').html(userOpName);
         $('#createuserop').attr('onclick','gui.serverOps.create(\''+userOpName+'\');')
-
     }
+
     else $('#search_noresults').hide();
 
     var optionsHtml='&nbsp;found '+num+' ops.';
@@ -236,6 +236,7 @@ CABLES.UI.OPSELECT.getOpList=function()
                             "nameSpace":nameSpace,
                             "lowercasename":lowercasename
                         };
+                        op.pop=gui.opDocs.getPopularity(opname);
                         ops.push(op);
                     }
 
@@ -250,7 +251,8 @@ CABLES.UI.OPSELECT.getOpList=function()
 
     ops.sort(function(a, b)
     {
-        return a.name.length - b.name.length; // ASC -> a - b; DESC -> b - a
+        return b.pop-a.pop;
+        // return a.name.length - b.name.length; // ASC -> a - b; DESC -> b - a
     });
 
 

@@ -19,6 +19,14 @@ CABLES.UI.OpDocs=function()
         function(res){ console.log('err',res); }
         );
 
+    this.getPopularity=function(opname)
+    {
+        for(var i=0;i<opDocs.length;i++)
+            if(opDocs[i].name==opname)
+                return opDocs[i].pop;
+
+        return 0;
+    };
 
     this.get=function(opname)
     {
