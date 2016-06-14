@@ -173,12 +173,24 @@ CABLES.UI.Port=function(thePort)
                 {
                     var links=self.opUi.getPortLinks(CABLES.UI.selectedStartPort.id);
                     var coords=gui.patch().getCanvasCoordsMouse(event);
+                    var isDragging=self.opUi.isDragging;
+                    var selectedStartPort=CABLES.UI.selectedStartPort;
 
                     if(Math.abs(coords.x-self.op.uiAttribs.translate.x )<50) coords.x=self.op.uiAttribs.translate.x;
                     if(Math.abs(coords.y-self.op.uiAttribs.translate.y )<40) coords.y=self.op.uiAttribs.translate.y+40;
 
-                    if(links.length==1 && !self.opUi.isDragging) CABLES.UI.OPSELECT.showOpSelect(coords,null,CABLES.UI.selectedStartPort,links[0]);
-                        else CABLES.UI.OPSELECT.showOpSelect(coords,self.op,CABLES.UI.selectedStartPort);
+                    var showSelect=function()
+                    {
+                        if(links.length==1 && !isDragging) CABLES.UI.OPSELECT.showOpSelect(coords,null,selectedStartPort,links[0]);
+                            else CABLES.UI.OPSELECT.showOpSelect(coords,self.op,selectedStartPort);
+                    };
+
+                    if( Math.abs(coords.x-self.op.uiAttribs.translate.x )+Math.abs(coords.y-self.op.uiAttribs.translate.y ) >30)
+                    {
+                        CABLES.UI.suggestions=new CABLES.UI.SuggestionDialog(self.op,CABLES.UI.selectedStartPort.name,event,coords,showSelect);
+                    }
+                    else showSelect();
+
                 }
             }
         }

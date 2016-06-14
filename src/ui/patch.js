@@ -1179,6 +1179,16 @@ CABLES.UI.Patch=function(_gui)
             op.uiAttribs.subPatch=currentSubPatch;
         }
 
+
+        if(CABLES.UI.OPSELECT.linkNewOpToSuggestedPort)
+        {
+            var link=gui.patch().scene.link(
+                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op,
+                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName,
+                op,
+                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName);
+        }
+        else
         if(CABLES.UI.OPSELECT.linkNewLink)
         {
             console.log('add into link...');
@@ -1239,6 +1249,7 @@ CABLES.UI.Patch=function(_gui)
         CABLES.UI.OPSELECT.linkNewLink=null;
         CABLES.UI.OPSELECT.linkNewOpToPort=null;
         CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
+        CABLES.UI.OPSELECT.linkNewOpToSuggestedPort=null;
 
         uiOp.setPos();
         var pos=self.findNonCollidingPosition(uiOp.getPosX(),uiOp.getPosY(),uiOp.op.id);

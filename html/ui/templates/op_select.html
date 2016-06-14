@@ -19,13 +19,12 @@
                 <a>
                     {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
                     {{shortName}} <span class="namespace" onClick="CABLES.UI.OPSELECT.searchFor('{{nameSpace}}');">{{nameSpace}}</span>{{isFunction}}
-
                 </a>
             </div>
 
           {{/each}}
 
-          <div id="search_noresults">
+          <div id="search_noresults" class="hidden">
               &nbsp;no ops found
               <br/><br/><br/>
               <a class="bluebutton" id="createuserop">create <span class="userCreateOpName" style="color:#222"></span></a>

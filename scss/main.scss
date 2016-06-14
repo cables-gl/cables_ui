@@ -241,7 +241,7 @@ textarea
 #modalbg
 {
     background-color: #222;
-    opacity: 0.9;
+    opacity: 0.7;
     top:0px;
     left:0px;
     width:100%;
@@ -1805,11 +1805,61 @@ rect
         padding-right:8px !important;
     }
 
-
     a.active
     {
-
         background-color: #2a2a2a;
         color:#fff;
     }
+}
+
+
+#suggestionDialog
+{
+    position: absolute;
+    z-index: 1000;
+    bottom: 100px;
+
+    .suggestion
+    {
+        // background-color: #444;
+        margin-bottom: 10px;
+        padding:5px;
+        color:#fff;
+
+        text-overflow: ellipsis;
+        position: absolute;
+        font-size: 13px;
+
+        &:hover
+        {
+            cursor:pointer !important;
+            background-color: $highlight-color-dark;
+            color:#fff;
+        }
+
+    }
+
+    .opSelect
+    {
+        margin-left: -15px;
+        margin-top: -15px;
+        width: 30px;
+        height: 30px;
+        background-color: #fff;
+        color:#222;
+        border-radius: 100px;
+        text-align: center;
+        font-size: 25px;
+        font-weight: bold;
+
+        &:hover
+        {
+            cursor:pointer !important;
+            background-color: $highlight-color-dark;
+            color:#fff;
+        }
+
+    }
+
+
 }

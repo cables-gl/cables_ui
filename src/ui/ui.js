@@ -683,6 +683,12 @@ CABLES.UI.GUI=function()
                         self.setLayout();
                     }
                     else
+                    if(CABLES.UI.suggestions)
+                    {
+                        CABLES.UI.suggestions.close();
+                        CABLES.UI.suggestions=null;
+                    }
+                    else
                     if( $('#library').is(':visible') )
                     {
                         $('#library').hide();
