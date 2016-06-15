@@ -85,12 +85,15 @@ CABLES.ProjectSettings=function(project)
 
     this.saveParams=function()
     {
+
         var proj_name=$('#projectsettings_name').val();
         var proj_public=$('#projectsettings_public').val();
         var proj_secret=$('#projectsettings_secret').val();
         var proj_example=$('#projectsettings_example').val();
         var proj_test=$('#projectsettings_test').val();
         var proj_autoscreenshot=$('#projectsettings_autoscreenshot').val();
+
+        gui.setProjectName(proj_name);
 
         gui.patch().getCurrentProject().name=proj_name;
         gui.scene().settings=gui.scene().settings || {};

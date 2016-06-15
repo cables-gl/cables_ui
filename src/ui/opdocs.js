@@ -9,10 +9,7 @@ CABLES.UI.OpDocs=function()
         'doc/ops/all',
         function(res)
         {
-            // console.log('loaded '+res.length+' op docs.');
-            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-            console.log(timeUsed+"s loaded op docs");
-
+            logStartup('Op docs loaded');
 
             opDocs=res;
         },

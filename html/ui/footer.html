@@ -7,9 +7,23 @@
 
 
     <script>
+
         var CABLES = CABLES || {};
         CABLES.uiLoadStart=performance.now();
-        console.log("cables ui loading...");
+
+        CABLES.startUpLog=[];
+        function logStartup(title)
+        {
+            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+            console.log(timeUsed+"s ---"+title);
+            CABLES.startUpLog.push(
+            {
+                "title":title,
+                "time":timeUsed
+            })
+        }
+
+        logStartup("Start");
     </script>
 
     <script type="text/javascript" src="js/libs.core.min.js"></script>
@@ -25,8 +39,7 @@
 
         loadjs.ready('libs', function()
         {
-            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-            console.log(timeUsed+" loaded libs");
+            logStartup('loaded libs');
 
             loadjs(['js/ace/ext-language_tools.js'],'ace');
         });
@@ -40,16 +53,13 @@
 
         loadjs.ready('ace', function()
         {
-            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-            console.log(timeUsed+" loaded more libs");
-
+            logStartup('loaded more libs');
             loadjs(['js/cablesui.max.js'], 'cablesui');
         });
 
         loadjs.ready('cablesui', function()
         {
-            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-            console.log(timeUsed+" loaded ui");
+            logStartup('loaded ui');
             startUi();
         });
 

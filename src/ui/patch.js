@@ -914,7 +914,7 @@ CABLES.UI.Patch=function(_gui)
         }
         self.updateViewBox();
         currentSubPatch=0;
-
+        gui.setProjectName(proj.name);
         self.setCurrentProject(proj);
 
         gui.scene().clear();
@@ -1000,6 +1000,7 @@ CABLES.UI.Patch=function(_gui)
             $('#patch').focus();
 
             if(!ev.shiftKey) gui.patch().setSelectedOp(null);
+
             self.showProjectParams();
         };
 
@@ -1312,8 +1313,7 @@ CABLES.UI.Patch=function(_gui)
                 gui.showMiniMap();
             }
 
-            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-            console.log(timeUsed+"s Patch loaded.");
+            logStartup('Patch loaded');
 
         };
 

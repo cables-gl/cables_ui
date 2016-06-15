@@ -404,9 +404,49 @@ CABLES.UI.GUI=function()
         self.setLayout();
     };
 
+    this.showMetaScreen=function()
+    {
+        var html = CABLES.UI.getHandleBarHtml(
+            'meta_screen',
+            {
+            });
+
+        $('#meta_content_screen').html(html);
+
+
+    };
+
+    this.showMetaUiDebug=function()
+    {
+
+        var numVisibleOps=0;
+        for(var i in self.ops)
+        {
+            if(!self.ops[i].isHidden())numVisibleOps++;
+        }
+
+        var html = CABLES.UI.getHandleBarHtml(
+            'uiDebug',
+            {
+                numOps:gui.scene().ops.length,
+                numVisibleOps:numVisibleOps,
+                numSvgElements: $('#patch svg *').length,
+                startup:CABLES.startUpLog
+            });
+
+        $('#meta_content_debug').html(html);
+
+
+    };
+
     this.showLibrary=function(inputId,filterType)
     {
         CABLES.UI.fileSelect.show(inputId,filterType);
+    };
+
+    this.setProjectName=function(name)
+    {
+        $('.projectname').html('&nbsp;&nbsp;'+name);
     };
 
     this.createProject=function()
@@ -778,8 +818,7 @@ CABLES.UI.GUI=function()
                 loadjs( userOpsUrls,'userops'+proj._id);
                 loadjs.ready('userops'+proj._id,function()
                 {
-                    var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-                    console.log(timeUsed+"s loaded user ops...");
+                    logStartup('User Ops loaded');
 
                     self.patch().setProject(proj);
                     if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
@@ -907,10 +946,7 @@ CABLES.UI.GUI=function()
 
                     self.serverOps=new CABLES.UI.ServerOps(self);
 
-                    var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-                    console.log(timeUsed+"s User Data loaded...");
-
-
+                    logStartup('User Data loaded');
 
                     // if(!data.user.introCompleted) {
                     //   _introduction.showIntroduction();
@@ -956,8 +992,9 @@ CABLES.UI.GUI=function()
         $('#meta_content_'+which).show();
 
         if(which=='profiler') self.showProfiler();
+        if(which=='debug') self.showMetaUiDebug();
+        if(which=='screen') self.showMetaScreen();
         if(which=='bookmarks') self.bookmarks.show();
-
     };
 
 
@@ -1096,8 +1133,7 @@ CABLES.UI.GUI=function()
 
 function startUi(event)
 {
-    var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-    console.log(timeUsed+"s Init UI...");
+    logStartup('Init UI');
 
     CABLES.UI.initHandleBarsHelper();
 
@@ -1112,7 +1148,6 @@ function startUi(event)
     gui.init();
     gui.bind();
 
-    timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-    console.log(timeUsed+"s Init UI done");
+    logStartup('Init UI done');
 
 }
