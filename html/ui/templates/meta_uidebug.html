@@ -1,0 +1,25 @@
+
+<script id="uiDebug" type="text/x-handlebars-template">
+
+        <h3>UI Debug</h3>
+
+        numOps:{{numOps}}
+        <br/>
+        numSvgElements:{{numSvgElements}}
+        <br/>
+        numVisibleOps:{{numVisibleOps}}
+        <br/>
+        <br/>
+
+        <h3>startup times</h3>
+        <table>
+            {{#each startup}}
+                <tr>
+                    <td>{{time}}s</td>
+                    <td>{{title}}</td>
+                </tr>
+            {{/each}}
+        </table>
+
+
+</script>
