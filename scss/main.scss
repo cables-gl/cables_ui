@@ -238,10 +238,12 @@ textarea
     height:300px;
 }
 
+
+
 #modalbg
 {
     background-color: #111;
-    // opacity: 0.5;
+    opacity: 0.5;
     top:0px;
     left:0px;
     width:100%;
@@ -1813,6 +1815,7 @@ rect
 }
 
 
+
 #suggestionDialog
 {
     position: absolute;
@@ -1834,7 +1837,6 @@ rect
             background-color: $highlight-color-dark;
             color:#fff;
         }
-
     }
 
     .opSelect
@@ -1856,8 +1858,6 @@ rect
             background-color: $highlight-color-dark;
             color:#fff;
         }
-
     }
-
 
 }
