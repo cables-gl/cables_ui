@@ -893,6 +893,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.setProject=function(proj)
     {
+
         this.loadingError=false;
         if(proj.ui)
         {
@@ -913,7 +914,9 @@ CABLES.UI.Patch=function(_gui)
         }
         self.updateViewBox();
         currentSubPatch=0;
+
         self.setCurrentProject(proj);
+
         gui.scene().clear();
 
         gui.scene().deSerialize(proj);

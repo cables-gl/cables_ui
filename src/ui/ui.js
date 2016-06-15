@@ -685,6 +685,7 @@ CABLES.UI.GUI=function()
                     else
                     if(CABLES.UI.suggestions)
                     {
+                        console.log(CABLES.UI.suggestions);
                         CABLES.UI.suggestions.close();
                         CABLES.UI.suggestions=null;
                     }

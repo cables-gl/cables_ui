@@ -1,15 +1,20 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-CABLES.UI.Bookmarks=function(projectId)
+CABLES.UI.Bookmarks=function()
 {
     var bookmarks=[];
+
     this.show=function()
     {
+
+
         var bm=[];
         for(var i in bookmarks)
         {
             var op=gui.patch().scene.getOpById(bookmarks[i]);
+
+
 
             if(op)
             {
@@ -33,6 +38,7 @@ CABLES.UI.Bookmarks=function(projectId)
 
     this.set=function(arr)
     {
+
         console.log('setting bookmarks',arr);
         // bookmarks.length=0;
 
