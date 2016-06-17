@@ -55,7 +55,6 @@
 
                 {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
                 {{#compare port.type '==' '2' }}
-
                 <!-- {{#if port.uiAttribs.preview}}
                     <span class="button fa fa-eye" onclick="console.log(1);CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
                 {{/if}} -->
@@ -138,6 +137,9 @@
             {{#compare port.type '==' 0 }}
             <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
             {{#compare port.type '==' '2' }}
+
+                <span class="button fa fa-database" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">snapshot</span>
+
                 {{#if port.uiAttribs.preview}}
                     <span class="button fa fa-eye" onclick="CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
                     <!-- <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a> -->

@@ -24,6 +24,39 @@ CABLES.UI.PREVIEW.op=null;
 CABLES.UI.PREVIEW.port=null;
 CABLES.UI.PREVIEW.onoff=false;
 
+CABLES.UI.showJson=function(opid,which)
+{
+
+    var op=gui.scene().getOpById(opid);
+    if(!op)
+    {
+        console.log('opid not found:',opid);
+        return;
+    }
+    var port=op.getPort(which);
+    if(!port)
+    {
+        console.log('port not found:',which);
+        return;
+    }
+
+
+    // CABLES.UI.MODAL.show( '<pre><code>'+ +'</code></pre>');
+    gui.showEditor();
+    gui.editor().addTab(
+    {
+        content:JSON.stringify(port.get() ,null, 4),
+        title:'content: '+port.name,
+        syntax:'JSON',
+        onSave:function(setStatus,content)
+        {
+        }
+    });
+
+
+};
+
+
 CABLES.UI.togglePreview=function(opid,which)
 {
     CABLES.UI.PREVIEW.onoff=!CABLES.UI.PREVIEW.onoff;
