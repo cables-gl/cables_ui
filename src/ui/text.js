@@ -26,6 +26,7 @@ CABLES.UI.TEXTS=
     portDirOut:'## Output Port\n\n',
     portMouseUnlink:'* press right mouse button to unlink port',
     portMouseCreate:'* press left mousebutton (or press and drag) to create and link new op',
+    portObjectSnapshot:'see at object data snapshot',
 
     projectSettingsPublic:"make patch public - everyone can see it",
     projectSettingsTitle:"## Patch Name \n\nIf this is your op, click to edit",

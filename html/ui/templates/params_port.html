@@ -138,7 +138,7 @@
             <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
             {{#compare port.type '==' '2' }}
 
-                <span class="button fa fa-database" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">snapshot</span>
+                <span class="button fa fa-database info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">snapshot</span>
 
                 {{#if port.uiAttribs.preview}}
                     <span class="button fa fa-eye" onclick="CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
