@@ -930,41 +930,6 @@ CABLES.UI.GUI=function()
         });
     };
 
-    this.sendErrorReport=function()
-    {
-        $('#errorReportButton').hide();
-
-        CABLES.UI.errorReport.time=Date.now();
-        CABLES.UI.errorReport.projectId=gui.patch().getCurrentProject()._id;
-        CABLES.UI.errorReport.username=this.user.username;
-        CABLES.UI.errorReport.userId=this.user.id;
-
-        CABLES.UI.errorReport.infoPlatform=navigator.platform;
-        CABLES.UI.errorReport.infoLanguage=navigator.language;
-        CABLES.UI.errorReport.infoUserAgent=navigator.userAgent;
-
-        try
-        {
-            var dbgRenderInfo = gui.patch().scene.cgl.gl.getExtension("WEBGL_debug_renderer_info");
-            CABLES.UI.errorReport.glRenderer=gui.patch().scene.cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
-        }
-        catch(e)
-        {
-            console.log(e);
-        }
-
-
-
-        if(CABLES.UI.errorReport.exception) CABLES.UI.errorReport.stack=CABLES.UI.errorReport.exception.stack;
-
-        console.log(CABLES.UI.errorReport);
-
-        CABLES.api.post('errorReport',CABLES.UI.errorReport,function(d)
-        {
-            CABLES.UI.errorReport={};
-            $('#errorReportSent').show();
-        });
-    };
 
     this.loadUser=function()
     {
