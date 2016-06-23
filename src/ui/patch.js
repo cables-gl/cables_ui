@@ -1006,9 +1006,15 @@ CABLES.UI.Patch=function(_gui)
 
         var lastZoomDrag=-1;
 
-        $('#patch').on("dblclick", function(e)
+
+        this.background.node.ondblclick= function(e)
         {
-            console.log(viewBox);
+            if(e.which!==1)
+            {
+                console.log('dblclick verhindert',e.which);
+                return;
+            }
+            console.log(e);
 
             var x=gui.patch().getCanvasCoordsMouse(e).x;
             var y=gui.patch().getCanvasCoordsMouse(e).y;
@@ -1030,7 +1036,7 @@ CABLES.UI.Patch=function(_gui)
                 viewBox.h=size;
             }
             self.updateViewBox();
-        });
+        };
 
         $('#patch').on("mousemove", function(e)
         {
