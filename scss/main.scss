@@ -1858,3 +1858,17 @@ rect
     }
 
 }
+
+
+#notify
+{
+    position: absolute;
+    top:55px;
+    left:20px;
+    background-color: #333;
+    padding:10px;
+    opacity: 0.8;
+    border-radius: 5px;
+    z-index: 9999;
+    display: none;
+}
