@@ -968,6 +968,7 @@ CABLES.UI.GUI=function()
     this.updateProjectFiles=function(proj)
     {
         if(!proj)proj=self.project();
+        if(!proj)return;
         $('#meta_content_files').html('');
 
         CABLES.api.get(

@@ -100,7 +100,6 @@ CABLES.UI.Patch=function(_gui)
             var json=JSON.parse(str);
             var k=0;
 
-            console.log('paste json',json);
 
             if(json)
             {
@@ -231,7 +230,8 @@ CABLES.UI.Patch=function(_gui)
                         }
                     }
 
-                    CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
+                    CABLES.UI.notify('Pasted '+json.ops.length+' ops');
+                    // CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
                     self.setSelectedOp(null);
                     gui.patch().scene.deSerialize(json);
 
@@ -423,7 +423,8 @@ CABLES.UI.Patch=function(_gui)
         var obj={"ops":ops};
         var objStr=JSON.stringify(obj);
 
-        CABLES.UI.setStatusText('copied '+selectedOps.length+' ops...');
+        // CABLES.UI.setStatusText('copied '+selectedOps.length+' ops...');
+        CABLES.UI.notify('Copied '+selectedOps.length+' ops');
 
         e.clipboardData.setData('text/plain', objStr);
         e.preventDefault();
@@ -606,6 +607,8 @@ CABLES.UI.Patch=function(_gui)
             console.log('data.length',data.length);
 
             gui.patch().getLargestPort();
+            $('#glcanvas').attr('width',w);
+            $('#glcanvas').attr('height',h);
 
 
             CABLES.api.put(
@@ -617,9 +620,8 @@ CABLES.UI.Patch=function(_gui)
                 },
                 function(r)
                 {
-                    $('#glcanvas').attr('width',w);
-                    $('#glcanvas').attr('height',h);
 
+                    CABLES.UI.notify('patch saved');
                     if(r.success===true) CABLES.UI.setStatusText('project saved');
                     else CABLES.UI.setStatusText('project NOT saved');
 
@@ -1006,9 +1008,15 @@ CABLES.UI.Patch=function(_gui)
 
         var lastZoomDrag=-1;
 
-        $('#patch').on("dblclick", function(e)
+
+        this.background.node.ondblclick= function(e)
         {
-            console.log(viewBox);
+            if(e.which!==1)
+            {
+                console.log('dblclick verhindert',e.which);
+                return;
+            }
+            console.log(e);
 
             var x=gui.patch().getCanvasCoordsMouse(e).x;
             var y=gui.patch().getCanvasCoordsMouse(e).y;
@@ -1030,7 +1038,7 @@ CABLES.UI.Patch=function(_gui)
                 viewBox.h=size;
             }
             self.updateViewBox();
-        });
+        };
 
         $('#patch').on("mousemove", function(e)
         {

@@ -51,6 +51,7 @@ p {
 .mainColor { color:$mainColor; }
 .monospace { font-family: monospace;}
 
+
 a
 {
     color:#ccc;
@@ -123,6 +124,8 @@ a
     &:focus {
       border: 1px solid $highlight-color;
     }
+
+
 
 td
 {
@@ -1857,4 +1860,18 @@ rect
         }
     }
 
+}
+
+
+#notify
+{
+    position: absolute;
+    top:55px;
+    left:20px;
+    background-color: #333;
+    padding:10px;
+    opacity: 0.8;
+    border-radius: 5px;
+    z-index: 9999;
+    display: none;
 }

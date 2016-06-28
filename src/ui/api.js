@@ -38,7 +38,7 @@ CABLES.API=function()
                 }
 
             }
-        
+
             if(cbError)cbError(data.responseJSON);
         })
         .always(function()
@@ -100,6 +100,51 @@ CABLES.API=function()
     };
 
 
+    var lastErrorReport=0;
+    this.sendErrorReport=function(exc)
+    {
+        var report={};
+        if(Date.now()-lastErrorReport<1000)
+        {
+            report.time=Date.now();
+
+            lastErrorReport=Date.now();
+            if(window.gui)report.projectId=gui.patch().getCurrentProject()._id;
+            if(window.gui)report.username=gui.user.username;
+            if(window.gui)report.userId=gui.user.id;
+            report.url=document.location.href;
+
+            report.infoPlatform=navigator.platform;
+            report.infoLanguage=navigator.language;
+            report.infoUserAgent=navigator.userAgent;
+
+            if(window.gui)
+            {
+                try
+                {
+                    var dbgRenderInfo = gui.patch().scene.cgl.gl.getExtension("WEBGL_debug_renderer_info");
+                    report.glRenderer=gui.patch().scene.cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
+                }
+                catch(e)
+                {
+                    console.log(e);
+                }
+            }
+
+            if(exc)
+            {
+                report.stack=exc.stack;
+                report.exception=exc;
+            }
+
+            console.log('error report sent.');
+
+            CABLES.api.post('errorReport',report,function(d)
+            {
+                $('#errorReportSent').show();
+            });
+        }
+    };
 
 };
 
