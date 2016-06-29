@@ -160,6 +160,16 @@ CABLES.ProjectSettings=function(project)
     {
         $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true'));
 
+        if($('#projectsettings_public').val()=='true')
+        {
+            if(gui.project().tags.length<2)
+            {
+                $('#settings_error').html('Not published: Please enter at least 2 Tags');
+                $('#settings_error').show();
+                return;
+            }
+        }
+
         self.updateIcons();
         self.saveParams();
     };
@@ -175,6 +185,8 @@ CABLES.ProjectSettings=function(project)
     this.toggleExample=function()
     {
         $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
+
+
 
         self.updateIcons();
         self.saveParams();

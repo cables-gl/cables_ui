@@ -8,13 +8,11 @@
         <a class="tab_reports" onclick="gui.projectSettings().tab('reports');">Reports</a>
         <a class="tab_versions" onclick="gui.projectSettings().tab('versions');">Versions</a>
         <br/>
-
-
-
         <a class="tab_delete" onclick="gui.projectSettings().tab('delete');">Delete</a>
     </div>
     <div class="projectsettings fleft" style="width:500px;overflow:hidden;">
 
+        <div id="settings_error" class="warning" style="padding:20px;display:none;margin-bottom:15px;"></div>
 
 
         <div id="settings_tab_versions" class="hidden">
@@ -110,7 +108,7 @@
             <hr/>
 
             <h2>Tags</h2>
-
+            please enter some comma seperated tags<br/>
             <input type="text" id="settings_tags" value="{{ tags }}" onblur="gui.projectSettings().saveTags($(this).val());"/>
 
             <hr/>
