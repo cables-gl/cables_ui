@@ -371,6 +371,7 @@ input[type="text"]
     {
         //font-family: monospace;
         width: 140px;
+
         display: block;
         padding:2px;
         padding-left: 7px;
@@ -396,8 +397,8 @@ input[type="text"]
         td
         {
             padding-bottom: 3px;
-
-            //border-bottom: 2px solid #222;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             padding-top: 3px;
 
         }
@@ -416,7 +417,7 @@ input[type="text"]
         color: #fff;
     }
     // color:#fff;
-    float:left;
+    // float:left;
 }
 
 .valuetext
@@ -498,13 +499,22 @@ a.button.fa-times:before {
 
 }
 
+
+.timingbutton,.showgraphbutton
+{
+    opacity: 0.5;
+}
+
 .timingbutton_active,.graphbutton_active
 {
     color: $highlight-color !important;
+    opacity: 1;
+
 }
 
 .timingbutton,.graphbutton
 {
+
     display:block;
     float:left;
     padding:0px;
@@ -519,6 +529,7 @@ a.button.fa-times:before {
 
     &:hover
     {
+        opacity: 1;
         color:#eee;
     }
 }
