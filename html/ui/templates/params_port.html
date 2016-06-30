@@ -145,9 +145,9 @@
                 <span class="button fa fa-database info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">snapshot</span><br/>
 
                 {{#if port.links}}
+                {{else}}
                     </td>
                     <td>
-                {{else}}
                 {{/if}}
 
                 {{#if port.uiAttribs.preview}}
