@@ -36,7 +36,7 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
 };
 
 
-CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
+CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
 {
     function search()
     {
@@ -56,7 +56,13 @@ CABLES.UI.OPSELECT.showOpSelect=function(pos,linkOp,linkPort,link)
     CABLES.UI.OPSELECT.linkNewLink=link;
     CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
-    CABLES.UI.OPSELECT.newOpPos=pos;
+    CABLES.UI.OPSELECT.newOpPos=options;
+
+    if(options.search)
+    {
+        $('#opsearch').val(options.search);
+        search();
+    }
 
     var self=this;
 

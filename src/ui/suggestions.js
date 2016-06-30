@@ -10,6 +10,7 @@ CABLES.UI.SuggestionDialog=function(op,portname,mouseEvent,coords,cb)
         $('#suggestionDialog').html('');
         $('#suggestionDialog').hide();
         CABLES.UI.MODAL.hide(true);
+        CABLES.UI.suggestions=null;
     };
 
     this.showSelect=function()

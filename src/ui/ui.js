@@ -634,6 +634,13 @@ CABLES.UI.GUI=function()
 
         $(document).keydown(function(e)
         {
+            if(CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91) )
+            {
+                if(CABLES.UI.suggestions) CABLES.UI.suggestions.close();
+                CABLES.UI.OPSELECT.showOpSelect({search:String.fromCharCode(e.charCode),x:0,y:0});
+                return;
+            }
+
             switch(e.which)
             {
                 default:
