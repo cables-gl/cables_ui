@@ -5,6 +5,7 @@ CABLES.undo = new UndoManager();
 CABLES.UI.GUI=function()
 {
     var self=this;
+    var userOpsLoaded=false;
     var showTiming=false;
     var showingEditor=false;
     var showMiniMap=false;
@@ -788,7 +789,7 @@ CABLES.UI.GUI=function()
 
     function initRouting()
     {
-        if(!self.serverOps || !self.serverOps.finished())
+        if( !self.serverOps || !self.serverOps.finished())
         {
             // wait for userops finished loading....
             setTimeout(initRouting,100);
@@ -806,7 +807,7 @@ CABLES.UI.GUI=function()
 
         router.addRoute('/project/:id/v/:ver').get(function(event, params)
         {
-            CABLES.UI.MODAL.showLoading('loading');
+            CABLES.UI.MODAL.showLoading('Loading');
             CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
             {
                 self.patch().setProject(proj);
@@ -815,9 +816,11 @@ CABLES.UI.GUI=function()
 
         router.addRoute('/project/:id').get(function(event, params)
         {
-            CABLES.UI.MODAL.showLoading('loading');
+            CABLES.UI.MODAL.showLoading('Loading');
             CABLES.api.get('project/'+params.id,function(proj)
             {
+                incrementStartup();
+
                 var userOpsUrls=[];
                 for(var i in proj.userList)
                     userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
@@ -825,13 +828,13 @@ CABLES.UI.GUI=function()
                 loadjs( userOpsUrls,'userops'+proj._id);
                 loadjs.ready('userops'+proj._id,function()
                 {
+                    incrementStartup();
                     logStartup('User Ops loaded');
 
                     self.patch().setProject(proj);
                     if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
+                    userOpsLoaded=true;
                 });
-
-
             });
         });
 
@@ -950,7 +953,7 @@ CABLES.UI.GUI=function()
                     $('#loggedout').hide();
                     $('#loggedin').show();
                     $('#username').html(data.user.username);
-
+                    incrementStartup();
                     self.serverOps=new CABLES.UI.ServerOps(self);
 
                     logStartup('User Data loaded');
@@ -1026,6 +1029,22 @@ CABLES.UI.GUI=function()
             return message;
         };
     };
+
+    this.waitToShowUI=function()
+    {
+        if(userOpsLoaded && self.user && self.serverOps && self.serverOps.finished())
+        {
+            logStartup('Show UI');
+            $('#mainContainer').show();
+        }
+        else
+        {
+            console.log('waiting...');
+            setTimeout(self.waitToShowUI,100);
+        }
+    };
+
+
 
     this.setStateSaved=function()
     {
@@ -1138,7 +1157,6 @@ CABLES.UI.GUI=function()
 
 };
 
-
 function startUi(event)
 {
     logStartup('Init UI');
@@ -1151,11 +1169,12 @@ function startUi(event)
     });
 
     gui=new CABLES.UI.GUI();
-    $('#mainContainer').show();
 
     gui.init();
     gui.bind();
 
     logStartup('Init UI done');
+
+    gui.waitToShowUI();
 
 }

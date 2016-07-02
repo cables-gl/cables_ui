@@ -250,7 +250,6 @@ textarea
     height:100%;
     position: absolute;
     z-index: 999;
-    display: none;
 }
 
 #modalcontent
@@ -266,7 +265,6 @@ textarea
     position: absolute;
     left:20%;
     top:10%;
-    display: none;
     padding:15px;
     background-color: #444;
     color:#ddd;
@@ -286,6 +284,7 @@ textarea
         margin-top: -4px;
         position: absolute;
     }
+
 }
 
 h1,h2,h3,h4

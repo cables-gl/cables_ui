@@ -274,6 +274,7 @@ CABLES.UI.ServerOps=function(gui)
     this.loaded=false;
     this.finished=function()
     {
+        incrementStartup();
         return this.loaded;
     };
 

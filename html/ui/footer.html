@@ -10,8 +10,14 @@
 
         var CABLES = CABLES || {};
         CABLES.uiLoadStart=performance.now();
+        // document.getElementById("modalcontent").innerHTML='<div class="modalLoading" style="text-align:center;"><h3>Loading js</h3><i class="fa fa-2x fa-circle-o-notch fa-spin"></i><div>';
 
         CABLES.startUpLog=[];
+
+        function incrementStartup()
+        {
+            document.getElementById("loadingstatus").innerHTML+='|';
+        }
         function logStartup(title)
         {
             var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
@@ -23,12 +29,15 @@
             })
         }
 
+        incrementStartup();
         logStartup("Start");
     </script>
 
     <script type="text/javascript" src="js/libs.core.min.js"></script>
 
     <script>
+
+        incrementStartup();
 
         loadjs([
             'js/libs.ui.min.js',
@@ -39,29 +48,26 @@
 
         loadjs.ready('libs', function()
         {
+            incrementStartup();
             logStartup('loaded libs');
 
             loadjs(['js/ace/ext-language_tools.js'],'ace');
+
+            loadjs.ready('ace', function()
+            {
+                incrementStartup();
+                logStartup('loaded more libs');
+                loadjs(['js/cablesui.max.js'], 'cablesui');
+
+                loadjs.ready('cablesui', function()
+                {
+                    incrementStartup();
+                    logStartup('loaded ui');
+                    startUi();
+                });
+            });
         });
 
-        // loadjs('https://use.typekit.net/tsi7ykf.js',function()
-        // {
-        //     var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-        //     console.log(timeUsed+" typekit js");
-        //     try{Typekit.load({ async: true });}catch(e){}
-        // });
-
-        loadjs.ready('ace', function()
-        {
-            logStartup('loaded more libs');
-            loadjs(['js/cablesui.max.js'], 'cablesui');
-        });
-
-        loadjs.ready('cablesui', function()
-        {
-            logStartup('loaded ui');
-            startUi();
-        });
 
     </script>
 
