@@ -30,6 +30,7 @@
     rect
     {
         vector-effect:non-scaling-stroke;
+        pointer-events: none;
     }
 
     .op_minirect_default { fill:$color_op_handle_default;}

@@ -930,6 +930,7 @@ CABLES.UI.Patch=function(_gui)
 
     function dragMiniMap(e)
     {
+
         if(e.buttons==1)
         {
             var p=e.offsetX/CABLES.UI.uiConfig.miniMapWidth;

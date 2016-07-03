@@ -175,7 +175,6 @@ CABLES.UI.Port=function(thePort)
 
                     var showSelect=function()
                     {
-                        console.log('ahja... ',selectedStartPort);
                         if(links.length==1 && !isDragging) CABLES.UI.OPSELECT.showOpSelect(coords,null,selectedStartPort,links[0]);
                             else CABLES.UI.OPSELECT.showOpSelect(coords,self.op,selectedStartPort);
                     };
