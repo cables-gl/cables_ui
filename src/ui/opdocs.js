@@ -40,9 +40,6 @@ CABLES.UI.OpDocs=function()
 
     this.getSuggestions=function(objName,portName)
     {
-
-        console.log('suggestion for:',objName,portName);
-
         for(var i=0;i<opDocs.length;i++)
         {
             if(opDocs[i].name==objName)
@@ -50,16 +47,10 @@ CABLES.UI.OpDocs=function()
                 if(opDocs[i].portSuggestions && opDocs[i].portSuggestions[portName])
                 {
                     var suggestions=opDocs[i].portSuggestions[portName].ops;
-                    console.log('suggestions: ', opDocs[i].portSuggestions[portName] );
-                    for(var j in suggestions)
-                    {
-                        console.log('',suggestions[j].name,suggestions[j].port);
-                    }
                     return suggestions;
                 }
             }
         }
-
     };
 
 

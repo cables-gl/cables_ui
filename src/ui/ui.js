@@ -637,8 +637,8 @@ CABLES.UI.GUI=function()
         {
             if(CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91) )
             {
-                if(CABLES.UI.suggestions) CABLES.UI.suggestions.close();
-                CABLES.UI.OPSELECT.showOpSelect({search:String.fromCharCode(e.charCode),x:0,y:0});
+                if(CABLES.UI.suggestions) CABLES.UI.suggestions.showSelect();
+                // CABLES.UI.OPSELECT.showOpSelect({search:String.fromCharCode(e.charCode),x:0,y:0});
                 return;
             }
 

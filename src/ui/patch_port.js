@@ -1,8 +1,6 @@
 CABLES.UI.MOUSEOVERPORT=false;
 CABLES.UI.selectedStartPort=null;
 
-
-
 CABLES.UI.Port=function(thePort)
 {
     var self=this;
@@ -19,12 +17,8 @@ CABLES.UI.Port=function(thePort)
     var linkingLine=null;
     var cancelDeleteLink=false;
 
-
-
-
     function changeActiveState()
     {
-
         for(var i=0;i<self.opUi.links.length;i++)
             if(self.opUi.links[i].p1 && !self.opUi.links[i].p2)
                 if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
@@ -181,6 +175,7 @@ CABLES.UI.Port=function(thePort)
 
                     var showSelect=function()
                     {
+                        console.log('ahja... ',selectedStartPort);
                         if(links.length==1 && !isDragging) CABLES.UI.OPSELECT.showOpSelect(coords,null,selectedStartPort,links[0]);
                             else CABLES.UI.OPSELECT.showOpSelect(coords,self.op,selectedStartPort);
                     };
