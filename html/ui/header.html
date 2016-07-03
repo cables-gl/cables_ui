@@ -4,13 +4,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
         <style media="screen">
             body { background-color: #282828; color:#aaa;}
-            #loadingstatus { position:absolute;top:0px;left:0px;color:#aaa;font-family: monospace; -webkit-font-smoothing: none !important; font-size: 12px;}
+            #loadingstatusBar { background-color: #999;height:100%;width:0px;}
+            #loadingstatus { position:absolute;top:40px;left:0px;background-color: #444;height:2px;width:50%;margin-left: 25%;}
             #mainContainer { display:none; }
         </style>
         <!-- do not load css/scripts here, do in footer.html -->
     </head>
 <body>
-    <div id="loadingstatus"></div>
+
+    <div id="loadingstatus"><div id="loadingstatusBar"></div></div>
+
 
     <div id="mainContainer">
 

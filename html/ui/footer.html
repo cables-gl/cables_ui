@@ -7,22 +7,25 @@
 
 
     <script>
-
         var CABLES = CABLES || {};
-        CABLES.uiLoadStart=performance.now();
-        // document.getElementById("modalcontent").innerHTML='<div class="modalLoading" style="text-align:center;"><h3>Loading js</h3><i class="fa fa-2x fa-circle-o-notch fa-spin"></i><div>';
 
-        CABLES.startUpLog=[];
+        CABLES.uiLoadStart=performance.now();
+        CABLES.startup={};
+        CABLES.startup.log=[];
+        CABLES.startup.maxEvents=9-1;
+        CABLES.startup.numEvents=0;
 
         function incrementStartup()
         {
-            document.getElementById("loadingstatus").innerHTML+='|';
+            CABLES.startup.numEvents++;
+            document.getElementById("loadingstatusBar").style.width=(CABLES.startup.numEvents/CABLES.startup.maxEvents)*100+'%';
+            // console.log('startup',CABLES.startup.numEvents);
         }
+
         function logStartup(title)
         {
             var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-            // console.log(timeUsed+"s ---"+title);
-            CABLES.startUpLog.push(
+            CABLES.startup.log.push(
             {
                 "title":title,
                 "time":timeUsed

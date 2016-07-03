@@ -432,7 +432,7 @@ CABLES.UI.GUI=function()
                 numOps:gui.scene().ops.length,
                 numVisibleOps:numVisibleOps,
                 numSvgElements: $('#patch svg *').length,
-                startup:CABLES.startUpLog
+                startup:CABLES.startup.log
             });
 
         $('#meta_content_debug').html(html);
@@ -554,7 +554,7 @@ CABLES.UI.GUI=function()
         $('#options').html(html);
     };
 
-    this.bind=function()
+    this.bind=function(cb)
     {
         $('#glcanvas').attr('tabindex','3');
 
@@ -784,18 +784,29 @@ CABLES.UI.GUI=function()
             }
         });
 
+        initRouting(cb);
     };
 
 
-    function initRouting()
+    this.waitToShowUI=function()
+    {
+        $('#loadingstatus').hide();
+        $('#mainContainer').show();
+    };
+
+    function initRouting(cb)
     {
         if( !self.serverOps || !self.serverOps.finished())
         {
             // wait for userops finished loading....
-            setTimeout(initRouting,100);
+            setTimeout(function()
+            {
+                initRouting(cb);
+            },100);
             return;
         }
 
+        logStartup('init routing...');
         var router = new Simrou();
 
         router.addRoute('/').get(function(event, params)
@@ -828,12 +839,14 @@ CABLES.UI.GUI=function()
                 loadjs( userOpsUrls,'userops'+proj._id);
                 loadjs.ready('userops'+proj._id,function()
                 {
+                    userOpsLoaded=true;
                     incrementStartup();
                     logStartup('User Ops loaded');
+                    cb();
 
                     self.patch().setProject(proj);
                     if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
-                    userOpsLoaded=true;
+
                 });
             });
         });
@@ -1030,20 +1043,6 @@ CABLES.UI.GUI=function()
         };
     };
 
-    this.waitToShowUI=function()
-    {
-        if(userOpsLoaded && self.user && self.serverOps && self.serverOps.finished())
-        {
-            logStartup('Show UI');
-            $('#mainContainer').show();
-        }
-        else
-        {
-            console.log('waiting...');
-            setTimeout(self.waitToShowUI,100);
-        }
-    };
-
 
 
     this.setStateSaved=function()
@@ -1068,7 +1067,7 @@ CABLES.UI.GUI=function()
         _patch=new CABLES.UI.Patch(this);
         _patch.show(_scene);
 
-        initRouting();
+
         // _socket=new CABLES.API.Socket(this);
         // _socket = new CABLES.API.Socket();
         _connection=new CABLES.API.Connection(this);
@@ -1171,10 +1170,14 @@ function startUi(event)
     gui=new CABLES.UI.GUI();
 
     gui.init();
-    gui.bind();
+    gui.bind(function()
+    {
+        gui.waitToShowUI();
+    });
+
 
     logStartup('Init UI done');
 
-    gui.waitToShowUI();
+
 
 }

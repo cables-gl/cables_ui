@@ -45,6 +45,7 @@ CABLES.UI.ServerOps=function(gui)
                 storedOps=JSON.parse(localStorage.getItem("cables.editor.serverops"));
                 updateStoredOps();
                 self.loaded=true;
+                incrementStartup();
 
                 if(storedOps && storedOps.length>0)
                 {
@@ -274,7 +275,6 @@ CABLES.UI.ServerOps=function(gui)
     this.loaded=false;
     this.finished=function()
     {
-        incrementStartup();
         return this.loaded;
     };
 
