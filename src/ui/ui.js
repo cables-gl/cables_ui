@@ -823,6 +823,11 @@ CABLES.UI.GUI=function()
                 self.patch().setProject(proj);
             });
         });
+        router.addRoute('/project').get(function(event, params)
+        {
+            console.log('no projectid?');
+            $('#loadingInfo').append('Error: No Project ID in URL');
+        });
 
         router.addRoute('/project/:id').get(function(event, params)
         {
@@ -830,7 +835,6 @@ CABLES.UI.GUI=function()
             CABLES.api.get('project/'+params.id,function(proj)
             {
                 incrementStartup();
-
                 var userOpsUrls=[];
                 for(var i in proj.userList)
                     userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
@@ -847,6 +851,11 @@ CABLES.UI.GUI=function()
                     if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
 
                 });
+            },function()
+            {
+                console.log('hurr');
+                    $('#loadingInfo').append('Error: Unknown Project');
+
             });
         });
 
@@ -969,15 +978,10 @@ CABLES.UI.GUI=function()
                     self.serverOps=new CABLES.UI.ServerOps(self);
 
                     logStartup('User Data loaded');
-
-                    // if(!data.user.introCompleted) {
-                    //   _introduction.showIntroduction();
-                    // }
                 }
             },function(data)
             {
-                $('#loggedout').show();
-                $('#loggedin').hide();
+                $('#loadingInfo').append('Error: You are not <a href="/"> logged in </a>');
             });
 
     };
