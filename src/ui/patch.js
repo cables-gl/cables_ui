@@ -26,6 +26,8 @@ CABLES.UI.Patch=function(_gui)
     var rubberBandRect=null;
     var isLoading=false;
 
+    var subPatchViewBoxes=[];
+
     this.updateBounds=false;
     var miniMapBounding=null;
 
@@ -373,9 +375,6 @@ CABLES.UI.Patch=function(_gui)
 
         // this.shouldLink=function(p1,p2)
 
-
-
-
         self.setSelectedOpById(patchOp.id);
         self.setCurrentSubPatch(currentSubPatch);
     };
@@ -596,6 +595,7 @@ CABLES.UI.Patch=function(_gui)
             data.ui.viewBox.h=viewBox.h;
             data.ui.viewBox.x=viewBox.x;
             data.ui.viewBox.y=viewBox.y;
+            data.ui.subPatchViewBoxes=subPatchViewBoxes;
 
             data.ui.renderer={};
             data.ui.renderer.w=gui.rendererWidth;
@@ -899,6 +899,7 @@ CABLES.UI.Patch=function(_gui)
         this.loadingError=false;
         if(proj.ui)
         {
+            if(proj.ui.subPatchViewBoxes)subPatchViewBoxes=proj.ui.subPatchViewBoxes;
             if(proj.ui.viewBox)
             {
                 viewBox.x=proj.ui.viewBox.x;
@@ -1500,6 +1501,15 @@ CABLES.UI.Patch=function(_gui)
 
     this.setCurrentSubPatch=function(which)
     {
+
+        subPatchViewBoxes[currentSubPatch]=
+            {
+                x:viewBox.x,
+                y:viewBox.y,
+                w:viewBox.w,
+                h:viewBox.h
+            };
+
         for(var i in self.ops) self.ops[i].isDragging = self.ops[i].isMouseOver=false;
 
         if(which===0) $('#button_subPatchBack').hide();
@@ -1507,6 +1517,12 @@ CABLES.UI.Patch=function(_gui)
 
         currentSubPatch=which;
         self.updateSubPatches();
+
+        if(subPatchViewBoxes[which])
+        {
+            viewBox=subPatchViewBoxes[which];
+            this.updateViewBox();
+        }
 
         $('#patch').focus();
         self.updateBounds=true;
@@ -2075,12 +2091,7 @@ CABLES.UI.Patch=function(_gui)
                     }
 
                     op.portsIn[index].val=v;
-                    if(op.portsIn[index].isAnimated())
-                        {
-                                    console.log('is animatedddd');
-
-                            gui.timeLine().scaleHeightDelayed();
-                        }
+                    if(op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
                 });
             })(ipii);
         }

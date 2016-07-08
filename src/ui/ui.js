@@ -761,7 +761,6 @@ CABLES.UI.GUI=function()
                     {
                         CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
                     }
-
                 break;
             }
         });
@@ -964,7 +963,6 @@ CABLES.UI.GUI=function()
 
     this.loadUser=function()
     {
-
         CABLES.api.get('user/me',
             function(data)
             {
@@ -983,7 +981,6 @@ CABLES.UI.GUI=function()
             {
                 $('#loadingInfo').append('Error: You are not <a href="/"> logged in </a>');
             });
-
     };
 
     this.getSavedState=function()
