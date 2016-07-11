@@ -915,12 +915,15 @@ CABLES.UI.GUI=function()
         cb(this.opDocs.get(opname));
     };
 
-    this.saveScreenshot=function()
+    this.saveScreenshot=function(filename,cb)
     {
         var w=$('#glcanvas').attr('width');
         var h=$('#glcanvas').attr('height');
-        $('#glcanvas').attr('width',1920);
-        $('#glcanvas').attr('height',1080);
+        $('#glcanvas').attr('width',$('#render_width').val());
+        $('#glcanvas').attr('height',$('#render_height').val());
+
+        if(!filename)filename='cables_screenshot.png';
+            else filename+='.png';
 
         gui.patch().scene.cgl.doScreenshot=true;
         setTimeout(function()
@@ -931,10 +934,22 @@ CABLES.UI.GUI=function()
             var img=gui.patch().scene.cgl.screenShotDataURL.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
             var anchor = document.createElement('a');
 
-            anchor.setAttribute('download', 'cables_screenshot.png');
+            anchor.setAttribute('download', filename);
             anchor.setAttribute('href', img);
             anchor.click();
+            if(cb)cb();
         },100);
+    };
+
+
+    this.renderScreenshots=function()
+    {
+        var startTime=parseFloat($('#render_start').val());
+        var endTime=parseFloat($('#render_end').val());
+        var fps=parseFloat($('#render_fps').val());
+        var filename=$('#filename').val();
+
+        new CABLES.UI.ImageSequenceExport(filename,startTime,endTime,fps);
     };
 
     this.showProfiler=function()
