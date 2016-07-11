@@ -399,6 +399,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         opui.showAddButtons();
 
+console.log(opui.op.uiAttribs.translate);
         if(!ev.shiftKey)
         {
             gui.patch().setSelectedOp(null);
@@ -555,10 +556,11 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         if(objName=='Ops.Ui.Patch')
         {
-            background.attr({
-                'stroke-width':4,
-                'stroke': CABLES.UI.uiConfig.colorPatchStroke
-            });
+            background.node.classList.add('op_subpatch');
+            // background.attr({
+            //     'stroke-width':4,
+            //     'stroke': '#eee'
+            // });
         }
 
         if(objName!='Ops.Ui.Comment')
@@ -1032,6 +1034,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
         if(inout==PORT_DIR_OUT) this.portsOut.push(port);
             else this.portsIn.push(port);
-
     };
+
+
 };

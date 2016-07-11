@@ -267,41 +267,6 @@ CABLES.UI.Patch=function(_gui)
 
     };
 
-    this.testCollisionOpPosition=function(x,y,opid)
-    {
-        for(var i in this.ops)
-        {
-            var r=this.ops[i].oprect.getRect();
-            var op=this.ops[i].op;
-
-            if(
-                !op.deleted &&
-                opid!=op.id &&
-                x>=op.uiAttribs.translate.x &&
-                x<=op.uiAttribs.translate.x+100 &&
-                y>=op.uiAttribs.translate.y &&
-                y<=op.uiAttribs.translate.y+20)
-            {
-                console.log('colliding...',op.id);
-                return true;
-            }
-        }
-        return false;
-    };
-
-    this.findNonCollidingPosition=function(x,y,opid)
-    {
-        var count=0;
-        while(this.testCollisionOpPosition(x,y,opid) && count<400)
-        {
-            y+=10;
-            count++;
-        }
-
-        var pos={"x":x,"y":y};
-        return pos;
-    };
-
     this.unPatchSubPatch=function(patchId)
     {
         var toSelect=[];
@@ -484,8 +449,9 @@ CABLES.UI.Patch=function(_gui)
                 }
                 else
                 {
-                    if(e.shiftKey) self.alignSelectedOpsHor();
-                    else self.alignSelectedOpsVert();
+                    // if(e.shiftKey) self.alignSelectedOpsHor();
+                    // else self.alignSelectedOpsVert();
+                    self.arrangeSelectedOps();
                 }
             break;
 
@@ -1013,9 +979,10 @@ CABLES.UI.Patch=function(_gui)
 
         this.background.node.ondblclick= function(e)
         {
+
             if(e.which!==1)
             {
-                console.log('dblclick verhindert',e.which);
+                // console.log('dblclick verhindert',e.which);
                 return;
             }
             console.log(e);
@@ -1590,6 +1557,75 @@ CABLES.UI.Patch=function(_gui)
         if(!doShow) gui.timeLine().clear();
     };
 
+
+    this.testCollisionOpPosition=function(x,y,opid)
+    {
+        for(var i in this.ops)
+        {
+
+            var op=this.ops[i].op;
+            if(
+                !op.deleted &&
+                opid!=op.id &&
+                x>=op.uiAttribs.translate.x-10 &&
+                x<=op.uiAttribs.translate.x+200 &&
+                y>=op.uiAttribs.translate.y &&
+                y<=op.uiAttribs.translate.y+47)
+            {
+                // console.log('colliding...',op.id);
+                return true;
+            }
+        }
+        return false;
+    };
+
+    this.findNonCollidingPosition=function(x,y,opid)
+    {
+        var count=0;
+        while(this.testCollisionOpPosition(x,y,opid) && count<400)
+        {
+            y+=17;
+            count++;
+        }
+
+        var pos={"x":x,"y":y};
+        return pos;
+    };
+
+
+    this.arrangeSelectedOps=function()
+    {
+        var i=0;
+        selectedOps.sort(function(a,b)
+        {
+            return a.op.uiAttribs.translate.y-b.op.uiAttribs.translate.y;
+        });
+
+        for(i=0;i<selectedOps.length;i++)
+
+        for(i=1;i<selectedOps.length;i++)
+        {
+            selectedOps[i].setPos(
+                selectedOps[i].op.uiAttribs.translate.x,
+                selectedOps[0].op.uiAttribs.translate.y
+            );
+        }
+
+        for(i=1;i<selectedOps.length;i++)
+        {
+            var newpos=self.findNonCollidingPosition(
+                selectedOps[i].op.uiAttribs.translate.x,
+                selectedOps[i].op.uiAttribs.translate.y,
+                selectedOps[i].op.id);
+
+            if(Math.abs(selectedOps[i].op.uiAttribs.translate.x-selectedOps[0].op.uiAttribs.translate.x)<60)
+            {
+                newpos.x=selectedOps[0].op.uiAttribs.translate.x;
+            }
+
+            selectedOps[i].setPos(newpos.x,newpos.y);
+        }
+    };
 
     this.alignSelectedOpsVert=function()
     {
