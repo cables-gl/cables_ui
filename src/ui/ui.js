@@ -931,7 +931,7 @@ CABLES.UI.GUI=function()
             $('#glcanvas').attr('width',w);
             $('#glcanvas').attr('height',h);
 
-            var img=gui.patch().scene.cgl.screenShotDataURL.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+            var img=gui.patch().scene.cgl.screenShotDataURL;//.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
             var anchor = document.createElement('a');
 
             anchor.setAttribute('download', filename);
