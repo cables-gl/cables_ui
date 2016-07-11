@@ -936,7 +936,9 @@ CABLES.UI.GUI=function()
 
             anchor.setAttribute('download', filename);
             anchor.setAttribute('href', img);
-            anchor.click();
+            setTimeout(function() {
+                anchor.click();
+            },66);
             if(cb)cb();
         },100);
     };
