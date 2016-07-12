@@ -922,9 +922,13 @@ CABLES.UI.GUI=function()
         $('#glcanvas').attr('width',$('#render_width').val());
         $('#glcanvas').attr('height',$('#render_height').val());
 
+
         if(!filename)filename='cables_screenshot.png';
             else filename+='.png';
 
+        gui.patch().scene.cgl.doScreenshotClearAlpha=$('#render_removeAlpha').is(':checked');
+
+        console.log('gui.patch().scene.cgl.doScreenshotClearAlpha ',gui.patch().scene.cgl.doScreenshotClearAlpha);
         gui.patch().scene.cgl.doScreenshot=true;
         setTimeout(function()
         {
