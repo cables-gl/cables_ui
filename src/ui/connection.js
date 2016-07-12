@@ -13,13 +13,13 @@ CABLES.API.Connection=function(ui)
 
     function ping()
     {
-        if(connected)
-        {
-            pingStart=Date.now();
-            client.send({"cmd":"ping"});
-        }
-        else
-        setTimeout(ping,3000);
+//        if(connected)
+//        {
+//            pingStart=Date.now();
+//            client.send({"cmd":"ping"});
+//        }
+//        else
+//        setTimeout(ping,3000);
     }
 
     function checkConnection()
@@ -50,13 +50,13 @@ CABLES.API.Connection=function(ui)
             // else
             if(message.data.data.cmd=='pong')
             {
-                if(pingStart!==0)
-                {
-                    var delay=Date.now()-pingStart;
-                    // console.log("ping time:",delay);
-                    pingStart=0;
-                    setTimeout(ping,60000);
-                }
+                //if(pingStart!==0)
+                // {
+                //     var delay=Date.now()-pingStart;
+                //    // console.log("ping time:",delay);
+                //    pingStart=0;
+                //    setTimeout(ping,60000);
+                //}
             }
             else
             if(message.data.data.cmd=='startJob')
