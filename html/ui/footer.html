@@ -40,10 +40,11 @@
         {
             if(!window.hasOwnProperty('loadjs'))
             {
-                console.log('waiting for libs...');
                 setTimeout(CABLES.loadAll,100);
                 return;
             }
+
+            logStartup('loaded minimum libs / starting up...');
 
             incrementStartup();
 
