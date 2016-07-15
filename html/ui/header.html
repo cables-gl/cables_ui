@@ -5,17 +5,39 @@
         <style media="screen">
             body { background-color: #282828; color:#aaa;}
             #loadingstatusBar { background-color: #999;height:100%;width:0px;margin-bottom: 10px;}
-            #loadingstatus { position:absolute;top:40px;left:0px;background-color: #444;height:2px;width:50%;margin-left: 25%;}
+            #loadingstatus { position:absolute;top:0px;left:0px;height:4px;width:100%;}
             #mainContainer { display:none; }
+
+
+            @keyframes spin
+            {
+                0%{ transform: rotate(0deg); }
+                100%{ transform: rotate(360deg); }
+            }
+
+            .loading
+            {
+                border:2px solid #444;
+                border-top:2px solid #aaa;
+                animation: spin 2s infinite linear;
+                border-radius: 50%;
+                width:40px;
+                height:40px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top:20px;
+                margin-bottom:20px;
+            }
+
         </style>
         <!-- do not load css/scripts here, do in footer.html -->
     </head>
 <body>
 
-    <div id="loadingstatus"><div id="loadingstatusBar"></div>
-    <div id="loadingInfo"></div>
-</div>
 
+
+    <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:100px;"></div></div>
 
     <div id="mainContainer">
 

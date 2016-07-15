@@ -897,6 +897,7 @@ CABLES.UI.Patch=function(_gui)
 
     function dragMiniMap(e)
     {
+        if(mouseRubberBandPos)return;
 
         if(e.buttons==1)
         {
@@ -1468,6 +1469,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.setCurrentSubPatch=function(which)
     {
+        if(currentSubPatch==which)return;
 
         subPatchViewBoxes[currentSubPatch]=
             {
