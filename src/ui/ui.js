@@ -82,6 +82,14 @@ CABLES.UI.GUI=function()
     this.rendererHeight=360;
     this.editorWidth=700;
 
+
+    this.toggleEditor=function()
+    {
+        if(showingEditor)self.closeEditor();
+            else self.showEditor();
+        self.setLayout();
+    };
+
     this.showEditor=function()
     {
         if(!showingEditor)
@@ -644,8 +652,17 @@ CABLES.UI.GUI=function()
             switch(e.which)
             {
                 default:
-                    // console.log('e.which',e.which);
+                    console.log('e.which',e.which);
                 break;
+
+                case 49:
+                    if(e.ctrlKey)self.toggleEditor();
+                    break;
+                case 112:  // f1
+                    self.toggleEditor();
+                    break;
+
+
                 case 67:  //c center
                     if($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey)
                     {
