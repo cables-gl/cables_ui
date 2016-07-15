@@ -51,6 +51,19 @@ $( document ).ready(function()
         });
     });
 
+
+    $('#splitterMeta').mousedown(function (e)
+    {
+        e.preventDefault();
+        $(document).mousemove(function (e)
+        {
+            e.preventDefault();
+            gui.infoHeight= window.innerHeight-e.clientY;
+            gui.setLayout();
+        });
+    });
+
+
     $('#splitterRendererWH').mousedown(function (e)
     {
         e.preventDefault();

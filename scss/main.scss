@@ -59,6 +59,8 @@ a
     cursor: pointer;
 }
 
+
+
 #meta
 {
     position:absolute;
@@ -67,6 +69,17 @@ a
     div
     {
         padding: 10px;
+        min-width: 250px;
+    }
+}
+
+#meta_content
+{
+    overflow:scroll;
+
+    h3
+    {
+        margin-top: 0px;
     }
 }
 
@@ -176,9 +189,15 @@ td.head
 {
     padding-right:10px;
     position:absolute;
-    background-color: #222;
+    background-color: #111;
     overflow: hidden;
     display:none;
+
+    .button
+    {
+        background-color: transparent;
+    }
+
 }
 
 #menubar
@@ -1134,6 +1153,14 @@ input[type=text]:active, input[type=text]:focus {
     cursor:ns-resize;
 }
 
+#splitterMeta
+{
+    height:2px;
+    padding:4px !important;
+    background-color: transparent;
+    cursor:ns-resize;
+}
+
 #splitterRendererWH
 {
     height:40px;
@@ -1372,6 +1399,9 @@ hr
 
 #infoArea
 {
+    width: 100%;
+    position: absolute;
+    min-width: 10px !important;
     display:none;
     background-color:#222;
     padding:10px;

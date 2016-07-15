@@ -4,6 +4,7 @@ CABLES.undo = new UndoManager();
 
 CABLES.UI.GUI=function()
 {
+
     var self=this;
     var userOpsLoaded=false;
     var showTiming=false;
@@ -22,6 +23,7 @@ CABLES.UI.GUI=function()
     // var _socket=null;
     var _connection=null;
     var savedState=true;
+    var metaCode=new CABLES.UI.MetaCode();
     this.bookmarks=new CABLES.UI.Bookmarks();
 
     var favIconLink = document.createElement('link');
@@ -77,6 +79,7 @@ CABLES.UI.GUI=function()
         return _projectSettings;
     };
 
+    this.infoHeight=300;
     this.timingHeight=250;
     this.rendererWidth=640;
     this.rendererHeight=360;
@@ -277,9 +280,10 @@ CABLES.UI.GUI=function()
         $('#options').css('width',optionsWidth);
         $('#options').css('height',window.innerHeight-self.rendererHeight);
 
+var metaWidth=self.rendererWidth-optionsWidth;
         $('#meta').css('right',0);
         $('#meta').css('top',self.rendererHeight);
-        $('#meta').css('width',self.rendererWidth-optionsWidth);
+        $('#meta').css('width',metaWidth);
         $('#meta').css('height',window.innerHeight-self.rendererHeight);
 
         $('#performance_glcanvas').css('bottom',0);
@@ -291,6 +295,19 @@ CABLES.UI.GUI=function()
         $('#menubar').css('top',0);
         $('#menubar').css('width',window.innerWidth-self.rendererWidth-10);
         $('#menubar').css('height',menubarHeight);
+
+
+
+        $('#splitterMeta').css('bottom',self.infoHeight+'px');
+        $('#splitterMeta').css('width',metaWidth+'px');
+
+        $('#infoArea').css('width',(metaWidth-20)+'px');
+        $('#infoArea').css('height',(self.infoHeight-22)+'px');
+        $('#infoArea').css('bottom','0px');
+
+        $('#meta_content').css('height',window.innerHeight-self.rendererHeight-self.infoHeight-50);
+
+
 
         if(self.rendererWidth===0)
         {
@@ -984,6 +1001,12 @@ CABLES.UI.GUI=function()
         self.profiler.show();
     };
 
+    this.showMetaCode=function()
+    {
+
+        metaCode.show();
+    };
+
     this.showSettings=function()
     {
         _projectSettings=new CABLES.ProjectSettings(self.patch().getCurrentProject());
@@ -1056,6 +1079,7 @@ CABLES.UI.GUI=function()
 
         $('#meta_content_'+which).show();
 
+        if(which=='code') self.showMetaCode();
         if(which=='profiler') self.showProfiler();
         if(which=='debug') self.showMetaUiDebug();
         if(which=='screen') self.showMetaScreen();
