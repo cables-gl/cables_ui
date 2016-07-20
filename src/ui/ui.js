@@ -669,7 +669,7 @@ var metaWidth=self.rendererWidth-optionsWidth;
             switch(e.which)
             {
                 default:
-                    console.log('e.which',e.which);
+                    // console.log('e.which',e.which);
                 break;
 
                 case 49:
@@ -882,7 +882,7 @@ var metaWidth=self.rendererWidth-optionsWidth;
 
                     self.patch().setProject(proj);
                     if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
-
+                    metaCode.init();
                 });
             },function()
             {
@@ -1133,6 +1133,7 @@ var metaWidth=self.rendererWidth-optionsWidth;
         _patch.show(_scene);
 
 
+
         // _socket=new CABLES.API.Socket(this);
         // _socket = new CABLES.API.Socket();
         _connection=new CABLES.API.Connection(this);
@@ -1239,6 +1240,9 @@ function startUi(event)
     {
         gui.waitToShowUI();
     });
+
+
+
 
 
     logStartup('Init UI done');

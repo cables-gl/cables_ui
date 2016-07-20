@@ -81,7 +81,7 @@ $("body").on("drop", function(event)
             console.log(ex);
         }
 
-        gui.patch().updateProjectFiles();
+        gui.updateProjectFiles();
 
 
         if (xhr.status === 200)

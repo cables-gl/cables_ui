@@ -1883,9 +1883,32 @@ CABLES.UI.Patch=function(_gui)
         if(currentOp)self.showOpParams(currentOp.op);
     };
 
+
+    var eventListeners={};
+    this.addEventListener=function(name,cb)
+    {
+        eventListeners[name]=eventListeners[name]||[];
+        eventListeners[name].push(cb);
+    };
+
+    function callEvent(name,params)
+    {
+        if(eventListeners.hasOwnProperty(name))
+        {
+            for(var i in eventListeners[name])
+            {
+                eventListeners[name][i](params);
+            }
+        }
+    }
+
+
+
     this.showOpParams=function(op)
     {
         var i=0;
+
+        callEvent('opSelected',op);
 
         if(gui.serverOps.isServerOp(op.objName)) op.isServerOp=true;
 
