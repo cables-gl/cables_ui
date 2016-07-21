@@ -153,7 +153,7 @@
                 {{/if}}
 
                 {{#if port.uiAttribs.preview}}
-                    <span class="button fa fa-eye" onclick="CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
+                    <span class="button fa fa-eye" onclick="gui.setMetaTab('preview');gui.preview.setTexture('{{op.id}}','{{port.name}}');">preview</span>
                     <!-- <a class="button fa fa-eye" onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"></a> -->
                 {{/if}}
             {{/compare}}

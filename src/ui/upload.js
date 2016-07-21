@@ -90,8 +90,6 @@ $("body").on("drop", function(event)
             return;
         }
 
-
-
         if (xhr.status === 200)
         {
             CABLES.UI.MODAL.hide();

@@ -150,6 +150,7 @@
             <a class="tab_code fa fa-code" data-info="{{ texts.tab_code }}" onclick="gui.setMetaTab('code')"> </i> </a>
             <a class="tab_profiler fa fa-pie-chart" data-info="{{ texts.tab_profiler }}" onclick="gui.setMetaTab('profiler')"></a>
             <a class="tab_bookmarks fa fa-bookmark-o" data-info="{{ texts.tab_bookmarks }}" onclick="gui.setMetaTab('bookmarks')"></a>
+            <a class="tab_preview fa fa-eye" data-info="{{ texts.tab_preview }}" onclick="gui.setMetaTab('preview')"></a>
 
             <a class="tab_debug fa fa-info-circle" onclick="gui.setMetaTab('debug')"></a>
             <a class="tab_screen fa fa-television" onclick="gui.setMetaTab('screen')"></a>
@@ -157,6 +158,7 @@
     </div>
     <div id="meta_content">
         <div id="meta_content_files" class="meta_content"></div>
+        <div id="meta_content_preview" class="meta_content"></div>
         <div id="meta_content_code" class="meta_content"></div>
         <div id="meta_content_profiler" class="meta_content"></div>
         <div id="meta_content_debug" class="meta_content"></div>

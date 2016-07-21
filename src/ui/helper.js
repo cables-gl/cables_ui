@@ -19,10 +19,6 @@ CABLES.serializeForm=function(selector)
 };
 
 
-CABLES.UI.PREVIEW={};
-CABLES.UI.PREVIEW.op=null;
-CABLES.UI.PREVIEW.port=null;
-CABLES.UI.PREVIEW.onoff=false;
 
 CABLES.UI.showJson=function(opid,which)
 {
@@ -57,48 +53,48 @@ CABLES.UI.showJson=function(opid,which)
 };
 
 
-CABLES.UI.togglePreview=function(opid,which)
-{
-    CABLES.UI.PREVIEW.onoff=!CABLES.UI.PREVIEW.onoff;
-    console.log('CABLES.UI.PREVIEW.onoff',CABLES.UI.PREVIEW.onoff);
-
-    if(!CABLES.UI.PREVIEW.onoff)
-    {
-        CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
-        CABLES.UI.PREVIEW.op=null;
-        CABLES.UI.PREVIEW.port=null;
-        CGL.Texture.previewTexture=null;
-        console.log('preview OFFF');
-    }
-    else
-    {
-        var op=gui.scene().getOpById(opid);
-        if(!op)
-        {
-            console.log('opid not found:',opid);
-            return;
-        }
-        var port=op.getPort(which);
-        if(!port)
-        {
-            console.log('port not found:',which);
-            return;
-        }
-
-        CABLES.UI.PREVIEW.op=op;
-        CABLES.UI.PREVIEW.port=port;
-    }
-
-    if(CABLES.UI.PREVIEW.port && CABLES.UI.PREVIEW.onoff) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
-
- // onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"
-};
-
-CABLES.UI.showPreview=function()
-{
-    // if(CABLES.UI.PREVIEW.port) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
-    if(CABLES.UI.PREVIEW.port && CABLES.UI.PREVIEW.onoff) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
-};
+// CABLES.UI.togglePreview=function(opid,which)
+// {
+//     CABLES.UI.PREVIEW.onoff=!CABLES.UI.PREVIEW.onoff;
+//     console.log('CABLES.UI.PREVIEW.onoff',CABLES.UI.PREVIEW.onoff);
+//
+//     if(!CABLES.UI.PREVIEW.onoff)
+//     {
+//         CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
+//         CABLES.UI.PREVIEW.op=null;
+//         CABLES.UI.PREVIEW.port=null;
+//         CGL.Texture.previewTexture=null;
+//         console.log('preview OFFF');
+//     }
+//     else
+//     {
+//         var op=gui.scene().getOpById(opid);
+//         if(!op)
+//         {
+//             console.log('opid not found:',opid);
+//             return;
+//         }
+//         var port=op.getPort(which);
+//         if(!port)
+//         {
+//             console.log('port not found:',which);
+//             return;
+//         }
+// 
+//         CABLES.UI.PREVIEW.op=op;
+//         CABLES.UI.PREVIEW.port=port;
+//     }
+//
+//     if(CABLES.UI.PREVIEW.port && CABLES.UI.PREVIEW.onoff) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
+//
+//  // onmouseover="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',true);" onmouseout="CABLES.UI.showPreview('{{op.id}}','{{port.name}}',false);"
+// };
+//
+// CABLES.UI.showPreview=function()
+// {
+//     // if(CABLES.UI.PREVIEW.port) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
+//     if(CABLES.UI.PREVIEW.port && CABLES.UI.PREVIEW.onoff) CABLES.UI.PREVIEW.port.doShowPreview(CABLES.UI.PREVIEW.onoff);
+// };
 
 
 CABLES.UI.togglePortValBool=function(which,checkbox)

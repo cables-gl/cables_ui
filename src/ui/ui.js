@@ -25,6 +25,7 @@ CABLES.UI.GUI=function()
     var savedState=true;
     var metaCode=new CABLES.UI.MetaCode();
     this.bookmarks=new CABLES.UI.Bookmarks();
+    this.preview=new CABLES.UI.Preview();
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);
@@ -1084,6 +1085,8 @@ var metaWidth=self.rendererWidth-optionsWidth;
         if(which=='debug') self.showMetaUiDebug();
         if(which=='screen') self.showMetaScreen();
         if(which=='bookmarks') self.bookmarks.show();
+        if(which=='preview') self.preview.show();
+        else self.preview.hide();
     };
 
 
