@@ -1,7 +1,41 @@
 
 <script id="meta_screen" type="text/x-handlebars-template">
 
+    <h3>Export Animation</h3>
 
-<a onclick="gui.saveScreenshot();" data-info="{{ texts.download_screenshot }}" class="button fa fa-image download_screenshot">download screenshot</a>
+    <table>
+        <tr>
+            <td>Time Start:</td>
+            <td><input type="text" id="render_start" value="0"/></td>
+        </tr>
+        <tr>
+            <td>Time End:</td>
+            <td><input type="text" id="render_end" value="1"/></td>
+        </tr>
+        <tr>
+            <td>FPS:</td>
+            <td><input type="text" id="render_fps" value="30"/></td>
+        </tr>
+
+        <tr>
+            <td>Resolution:</td>
+            <td><input type="text" id="render_width" value="1920" style="width:60px;"/> x <input type="text" id="render_height" value="1080" style="width:60px;"/></td>
+        </tr>
+        <tr>
+            <td>Filename:</td>
+            <td><input type="text" id="filename" value="cables_screenshot"/>.png
+        </tr>
+        <tr>
+            <td>Remove<br/>Alpha Channel:</td>
+            <td><input type="checkbox" id="render_removeAlpha" checked/>
+        </tr>
+
+    </table>
+    <br/>
+    <a onclick="gui.renderScreenshots();" data-info="{{ texts.download_screenshot }}" class="button fa fa-image download_screenshot">Download Animation</a>
+
+    <a onclick="gui.saveScreenshot($('#filename').val());" data-info="{{ texts.download_screenshot }}" class="button fa fa-image download_screenshot">Download screenshot</a>
+
+
 
 </script>

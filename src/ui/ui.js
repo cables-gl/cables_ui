@@ -4,6 +4,7 @@ CABLES.undo = new UndoManager();
 
 CABLES.UI.GUI=function()
 {
+
     var self=this;
     var userOpsLoaded=false;
     var showTiming=false;
@@ -22,6 +23,7 @@ CABLES.UI.GUI=function()
     // var _socket=null;
     var _connection=null;
     var savedState=true;
+    var metaCode=new CABLES.UI.MetaCode();
     this.bookmarks=new CABLES.UI.Bookmarks();
 
     var favIconLink = document.createElement('link');
@@ -77,10 +79,19 @@ CABLES.UI.GUI=function()
         return _projectSettings;
     };
 
+    this.infoHeight=300;
     this.timingHeight=250;
     this.rendererWidth=640;
     this.rendererHeight=360;
     this.editorWidth=700;
+
+
+    this.toggleEditor=function()
+    {
+        if(showingEditor)self.closeEditor();
+            else self.showEditor();
+        self.setLayout();
+    };
 
     this.showEditor=function()
     {
@@ -269,9 +280,10 @@ CABLES.UI.GUI=function()
         $('#options').css('width',optionsWidth);
         $('#options').css('height',window.innerHeight-self.rendererHeight);
 
+var metaWidth=self.rendererWidth-optionsWidth;
         $('#meta').css('right',0);
         $('#meta').css('top',self.rendererHeight);
-        $('#meta').css('width',self.rendererWidth-optionsWidth);
+        $('#meta').css('width',metaWidth);
         $('#meta').css('height',window.innerHeight-self.rendererHeight);
 
         $('#performance_glcanvas').css('bottom',0);
@@ -283,6 +295,19 @@ CABLES.UI.GUI=function()
         $('#menubar').css('top',0);
         $('#menubar').css('width',window.innerWidth-self.rendererWidth-10);
         $('#menubar').css('height',menubarHeight);
+
+
+
+        $('#splitterMeta').css('bottom',self.infoHeight+'px');
+        $('#splitterMeta').css('width',metaWidth+'px');
+
+        $('#infoArea').css('width',(metaWidth-20)+'px');
+        $('#infoArea').css('height',(self.infoHeight-22)+'px');
+        $('#infoArea').css('bottom','0px');
+
+        $('#meta_content').css('height',window.innerHeight-self.rendererHeight-self.infoHeight-50);
+
+
 
         if(self.rendererWidth===0)
         {
@@ -646,6 +671,15 @@ CABLES.UI.GUI=function()
                 default:
                     // console.log('e.which',e.which);
                 break;
+
+                case 49:
+                    if(e.ctrlKey)self.toggleEditor();
+                    break;
+                case 112:  // f1
+                    self.toggleEditor();
+                    break;
+
+
                 case 67:  //c center
                     if($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey)
                     {
@@ -761,7 +795,6 @@ CABLES.UI.GUI=function()
                     {
                         CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
                     }
-
                 break;
             }
         });
@@ -823,6 +856,11 @@ CABLES.UI.GUI=function()
                 self.patch().setProject(proj);
             });
         });
+        router.addRoute('/project').get(function(event, params)
+        {
+            console.log('no projectid?');
+            $('#loadingInfo').append('Error: No Project ID in URL');
+        });
 
         router.addRoute('/project/:id').get(function(event, params)
         {
@@ -830,7 +868,6 @@ CABLES.UI.GUI=function()
             CABLES.api.get('project/'+params.id,function(proj)
             {
                 incrementStartup();
-
                 var userOpsUrls=[];
                 for(var i in proj.userList)
                     userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
@@ -845,8 +882,13 @@ CABLES.UI.GUI=function()
 
                     self.patch().setProject(proj);
                     if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
-
+                    metaCode.init();
                 });
+            },function()
+            {
+                console.log('hurr');
+                    $('#loadingInfo').append('Error: Unknown Project');
+
             });
         });
 
@@ -907,32 +949,62 @@ CABLES.UI.GUI=function()
         cb(this.opDocs.get(opname));
     };
 
-    this.saveScreenshot=function()
+    this.saveScreenshot=function(filename,cb)
     {
         var w=$('#glcanvas').attr('width');
         var h=$('#glcanvas').attr('height');
-        $('#glcanvas').attr('width',1920);
-        $('#glcanvas').attr('height',1080);
+        $('#glcanvas').attr('width',$('#render_width').val());
+        $('#glcanvas').attr('height',$('#render_height').val());
 
+
+        if(!filename)filename='cables_screenshot.png';
+            else filename+='.png';
+
+        gui.patch().scene.cgl.doScreenshotClearAlpha=$('#render_removeAlpha').is(':checked');
+
+        console.log('gui.patch().scene.cgl.doScreenshotClearAlpha ',gui.patch().scene.cgl.doScreenshotClearAlpha);
         gui.patch().scene.cgl.doScreenshot=true;
         setTimeout(function()
         {
             $('#glcanvas').attr('width',w);
             $('#glcanvas').attr('height',h);
 
-            var img=gui.patch().scene.cgl.screenShotDataURL.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+            var img=gui.patch().scene.cgl.screenShotDataURL;//.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
             var anchor = document.createElement('a');
 
-            anchor.setAttribute('download', 'cables_screenshot.png');
+            anchor.setAttribute('download', filename);
             anchor.setAttribute('href', img);
-            anchor.click();
+            document.body.appendChild(anchor);
+
+            setTimeout(function() {
+                anchor.click();
+                if(cb)cb();
+            },66);
+
         },100);
+    };
+
+
+    this.renderScreenshots=function()
+    {
+        var startTime=parseFloat($('#render_start').val());
+        var endTime=parseFloat($('#render_end').val());
+        var fps=parseFloat($('#render_fps').val());
+        var filename=$('#filename').val();
+
+        new CABLES.UI.ImageSequenceExport(filename,startTime,endTime,fps);
     };
 
     this.showProfiler=function()
     {
         if(!self.profiler)self.profiler = new CABLES.UI.Profiler();
         self.profiler.show();
+    };
+
+    this.showMetaCode=function()
+    {
+
+        metaCode.show();
     };
 
     this.showSettings=function()
@@ -955,7 +1027,6 @@ CABLES.UI.GUI=function()
 
     this.loadUser=function()
     {
-
         CABLES.api.get('user/me',
             function(data)
             {
@@ -969,17 +1040,11 @@ CABLES.UI.GUI=function()
                     self.serverOps=new CABLES.UI.ServerOps(self);
 
                     logStartup('User Data loaded');
-
-                    // if(!data.user.introCompleted) {
-                    //   _introduction.showIntroduction();
-                    // }
                 }
             },function(data)
             {
-                $('#loggedout').show();
-                $('#loggedin').hide();
+                $('#loadingInfo').append('Error: You are not <a href="/"> logged in </a>');
             });
-
     };
 
     this.getSavedState=function()
@@ -1014,6 +1079,7 @@ CABLES.UI.GUI=function()
 
         $('#meta_content_'+which).show();
 
+        if(which=='code') self.showMetaCode();
         if(which=='profiler') self.showProfiler();
         if(which=='debug') self.showMetaUiDebug();
         if(which=='screen') self.showMetaScreen();
@@ -1065,6 +1131,7 @@ CABLES.UI.GUI=function()
         });
         _patch=new CABLES.UI.Patch(this);
         _patch.show(_scene);
+
 
 
         // _socket=new CABLES.API.Socket(this);
@@ -1173,6 +1240,9 @@ function startUi(event)
     {
         gui.waitToShowUI();
     });
+
+
+
 
 
     logStartup('Init UI done');

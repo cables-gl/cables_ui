@@ -81,12 +81,19 @@ $("body").on("drop", function(event)
             console.log(ex);
         }
 
-        gui.patch().updateProjectFiles();
+        gui.updateProjectFiles();
+        if (xhr.status === 502)
+        {
+            console.log('ajax 502 error ! possibly upload ?');
+            CABLES.UI.MODAL.hide();
+            gui.jobs().finish('uploadingfiles');
+            return;
+        }
+
 
 
         if (xhr.status === 200)
         {
-
             CABLES.UI.MODAL.hide();
             gui.jobs().finish('uploadingfiles');
         }

@@ -4,7 +4,12 @@
 
     <div class="selectable">
         <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
-        <br/><br/>{{op.objName}}
+        <br/><br/>
+
+
+{{#if ownsOp }}<i class="fa fa-user" ></span>{{/if}}
+
+        {{op.objName}}
         <br/><br/>
 
         {{#if op.isDeprecated }}
@@ -49,8 +54,8 @@
 
     <div>
         <span class="button  fa fa-remove" onclick="gui.patch().selectChilds('{{op.id}}');">select all children </span>
-        <br/><br/><br/><br/>
-        <span class="button  fa fa-remove" onclick="gui.patch().deleteChilds('{{op.id}}');">delete all children </span>
+        <!-- <br/><br/><br/><br/> -->
+        <!-- <span class="button  fa fa-remove" onclick="gui.patch().deleteChilds('{{op.id}}');">delete all children </span> -->
     </div>
 
 

@@ -25,6 +25,19 @@ CABLES.UI.OpDocs=function()
         return 0;
     };
 
+    this.getAttachmentFiles=function(opname)
+    {
+        for(var i=0;i<opDocs.length;i++)
+        {
+            if(opDocs[i].name==opname)
+            {
+                return opDocs[i].attachmentFiles||[];
+            }
+        }
+
+        return [];
+    };
+
     this.get=function(opname)
     {
         for(var i=0;i<opDocs.length;i++)

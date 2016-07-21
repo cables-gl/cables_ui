@@ -26,6 +26,8 @@ CABLES.UI.Patch=function(_gui)
     var rubberBandRect=null;
     var isLoading=false;
 
+    var subPatchViewBoxes=[];
+
     this.updateBounds=false;
     var miniMapBounding=null;
 
@@ -265,41 +267,6 @@ CABLES.UI.Patch=function(_gui)
 
     };
 
-    this.testCollisionOpPosition=function(x,y,opid)
-    {
-        for(var i in this.ops)
-        {
-            var r=this.ops[i].oprect.getRect();
-            var op=this.ops[i].op;
-
-            if(
-                !op.deleted &&
-                opid!=op.id &&
-                x>=op.uiAttribs.translate.x &&
-                x<=op.uiAttribs.translate.x+100 &&
-                y>=op.uiAttribs.translate.y &&
-                y<=op.uiAttribs.translate.y+20)
-            {
-                console.log('colliding...',op.id);
-                return true;
-            }
-        }
-        return false;
-    };
-
-    this.findNonCollidingPosition=function(x,y,opid)
-    {
-        var count=0;
-        while(this.testCollisionOpPosition(x,y,opid) && count<400)
-        {
-            y+=10;
-            count++;
-        }
-
-        var pos={"x":x,"y":y};
-        return pos;
-    };
-
     this.unPatchSubPatch=function(patchId)
     {
         var toSelect=[];
@@ -372,9 +339,6 @@ CABLES.UI.Patch=function(_gui)
         }
 
         // this.shouldLink=function(p1,p2)
-
-
-
 
         self.setSelectedOpById(patchOp.id);
         self.setCurrentSubPatch(currentSubPatch);
@@ -485,8 +449,9 @@ CABLES.UI.Patch=function(_gui)
                 }
                 else
                 {
-                    if(e.shiftKey) self.alignSelectedOpsHor();
-                    else self.alignSelectedOpsVert();
+                    // if(e.shiftKey) self.alignSelectedOpsHor();
+                    // else self.alignSelectedOpsVert();
+                    self.arrangeSelectedOps();
                 }
             break;
 
@@ -596,6 +561,7 @@ CABLES.UI.Patch=function(_gui)
             data.ui.viewBox.h=viewBox.h;
             data.ui.viewBox.x=viewBox.x;
             data.ui.viewBox.y=viewBox.y;
+            data.ui.subPatchViewBoxes=subPatchViewBoxes;
 
             data.ui.renderer={};
             data.ui.renderer.w=gui.rendererWidth;
@@ -899,6 +865,7 @@ CABLES.UI.Patch=function(_gui)
         this.loadingError=false;
         if(proj.ui)
         {
+            if(proj.ui.subPatchViewBoxes)subPatchViewBoxes=proj.ui.subPatchViewBoxes;
             if(proj.ui.viewBox)
             {
                 viewBox.x=proj.ui.viewBox.x;
@@ -930,6 +897,7 @@ CABLES.UI.Patch=function(_gui)
 
     function dragMiniMap(e)
     {
+        if(mouseRubberBandPos)return;
 
         if(e.buttons==1)
         {
@@ -1012,9 +980,10 @@ CABLES.UI.Patch=function(_gui)
 
         this.background.node.ondblclick= function(e)
         {
+
             if(e.which!==1)
             {
-                console.log('dblclick verhindert',e.which);
+                // console.log('dblclick verhindert',e.which);
                 return;
             }
             console.log(e);
@@ -1500,6 +1469,16 @@ CABLES.UI.Patch=function(_gui)
 
     this.setCurrentSubPatch=function(which)
     {
+        if(currentSubPatch==which)return;
+
+        subPatchViewBoxes[currentSubPatch]=
+            {
+                x:viewBox.x,
+                y:viewBox.y,
+                w:viewBox.w,
+                h:viewBox.h
+            };
+
         for(var i in self.ops) self.ops[i].isDragging = self.ops[i].isMouseOver=false;
 
         if(which===0) $('#button_subPatchBack').hide();
@@ -1507,6 +1486,12 @@ CABLES.UI.Patch=function(_gui)
 
         currentSubPatch=which;
         self.updateSubPatches();
+
+        if(subPatchViewBoxes[which])
+        {
+            viewBox=subPatchViewBoxes[which];
+            this.updateViewBox();
+        }
 
         $('#patch').focus();
         self.updateBounds=true;
@@ -1574,6 +1559,75 @@ CABLES.UI.Patch=function(_gui)
         if(!doShow) gui.timeLine().clear();
     };
 
+
+    this.testCollisionOpPosition=function(x,y,opid)
+    {
+        for(var i in this.ops)
+        {
+
+            var op=this.ops[i].op;
+            if(
+                !op.deleted &&
+                opid!=op.id &&
+                x>=op.uiAttribs.translate.x-10 &&
+                x<=op.uiAttribs.translate.x+200 &&
+                y>=op.uiAttribs.translate.y &&
+                y<=op.uiAttribs.translate.y+47)
+            {
+                // console.log('colliding...',op.id);
+                return true;
+            }
+        }
+        return false;
+    };
+
+    this.findNonCollidingPosition=function(x,y,opid)
+    {
+        var count=0;
+        while(this.testCollisionOpPosition(x,y,opid) && count<400)
+        {
+            y+=17;
+            count++;
+        }
+
+        var pos={"x":x,"y":y};
+        return pos;
+    };
+
+
+    this.arrangeSelectedOps=function()
+    {
+        var i=0;
+        selectedOps.sort(function(a,b)
+        {
+            return a.op.uiAttribs.translate.y-b.op.uiAttribs.translate.y;
+        });
+
+        for(i=0;i<selectedOps.length;i++)
+
+        for(i=1;i<selectedOps.length;i++)
+        {
+            selectedOps[i].setPos(
+                selectedOps[i].op.uiAttribs.translate.x,
+                selectedOps[0].op.uiAttribs.translate.y
+            );
+        }
+
+        for(i=1;i<selectedOps.length;i++)
+        {
+            var newpos=self.findNonCollidingPosition(
+                selectedOps[i].op.uiAttribs.translate.x,
+                selectedOps[i].op.uiAttribs.translate.y,
+                selectedOps[i].op.id);
+
+            if(Math.abs(selectedOps[i].op.uiAttribs.translate.x-selectedOps[0].op.uiAttribs.translate.x)<60)
+            {
+                newpos.x=selectedOps[0].op.uiAttribs.translate.x;
+            }
+
+            selectedOps[i].setPos(newpos.x,newpos.y);
+        }
+    };
 
     this.alignSelectedOpsVert=function()
     {
@@ -1829,9 +1883,32 @@ CABLES.UI.Patch=function(_gui)
         if(currentOp)self.showOpParams(currentOp.op);
     };
 
+
+    var eventListeners={};
+    this.addEventListener=function(name,cb)
+    {
+        eventListeners[name]=eventListeners[name]||[];
+        eventListeners[name].push(cb);
+    };
+
+    function callEvent(name,params)
+    {
+        if(eventListeners.hasOwnProperty(name))
+        {
+            for(var i in eventListeners[name])
+            {
+                eventListeners[name][i](params);
+            }
+        }
+    }
+
+
+
     this.showOpParams=function(op)
     {
         var i=0;
+
+        callEvent('opSelected',op);
 
         if(gui.serverOps.isServerOp(op.objName)) op.isServerOp=true;
 
@@ -2075,12 +2152,7 @@ CABLES.UI.Patch=function(_gui)
                     }
 
                     op.portsIn[index].val=v;
-                    if(op.portsIn[index].isAnimated())
-                        {
-                                    console.log('is animatedddd');
-
-                            gui.timeLine().scaleHeightDelayed();
-                        }
+                    if(op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
                 });
             })(ipii);
         }

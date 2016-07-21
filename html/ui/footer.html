@@ -5,14 +5,14 @@
 
     </body>
 
-
+<script async type="text/javascript" src="/ui/js/libs.core.min.js"></script>
     <script>
         var CABLES = CABLES || {};
 
         CABLES.uiLoadStart=performance.now();
         CABLES.startup={};
         CABLES.startup.log=[];
-        CABLES.startup.maxEvents=9-1;
+        CABLES.startup.maxEvents=11-1;
         CABLES.startup.numEvents=0;
 
         function incrementStartup()
@@ -34,49 +34,75 @@
 
         incrementStartup();
         logStartup("Start");
-    </script>
 
-    <script type="text/javascript" src="js/libs.core.min.js"></script>
 
-    <script>
-
-        incrementStartup();
-
-        loadjs([
-            'js/libs.ui.min.js',
-            '/api/ops/code',
-            'js/cables.max.js',
-            'js/ace/ace.js'
-        ], 'libs');
-
-        loadjs.ready('libs', function()
+        CABLES.loadAll=function()
         {
+            if(!window.hasOwnProperty('loadjs'))
+            {
+                setTimeout(CABLES.loadAll,100);
+                return;
+            }
+
+            logStartup('loaded minimum libs / starting up...');
+
             incrementStartup();
-            logStartup('loaded libs');
 
-            loadjs(['js/ace/ext-language_tools.js'],'ace');
+            loadjs([
+                'js/libs.ui.min.js',
+                'js/libs.core.min.js',
+                'js/ace/ace.js'
+            ], 'libs');
 
-            loadjs.ready('ace', function()
+            loadjs.ready('libs', function()
             {
                 incrementStartup();
-                logStartup('loaded more libs');
-                loadjs(['js/cablesui.max.js'], 'cablesui');
+                logStartup('loaded libs');
 
-                loadjs.ready('cablesui', function()
+                loadjs(['js/ace/ext-language_tools.js'],'ace');
+
+                loadjs.ready('ace', function()
                 {
+                    logStartup('loaded ace');
                     incrementStartup();
-                    logStartup('loaded ui');
-                    startUi();
+                    loadjs(['js/cables.max.js'],'cables_core');
+
+                    loadjs.ready('cables_core', function()
+                    {
+                        logStartup('loaded cables core');
+
+                        incrementStartup();
+                        loadjs(['/api/ops/code'],'cables_ops');
+
+                        loadjs.ready('cables_ops', function()
+                        {
+                            incrementStartup();
+                            logStartup('loaded cables ops');
+                            loadjs(['js/cablesui.max.js'], 'cablesui');
+
+                            loadjs.ready('cablesui', function()
+                            {
+                                incrementStartup();
+                                logStartup('loaded ui');
+                                startUi();
+                            });
+                        });
+                    });
                 });
             });
-        });
 
+
+        }
+
+        CABLES.loadAll();
+
+        var resource = document.createElement('link');
+        resource.setAttribute("rel", "stylesheet");
+        resource.setAttribute("href","css/ui.css");
+        resource.setAttribute("type","text/css");
+        var head = document.getElementsByTagName('head')[0];
+        head.appendChild(resource);
 
     </script>
-
-    <link rel="stylesheet" type="text/css" href="css/ui.css">
-
-    <!-- <script src="https://use.typekit.net/tsi7ykf.js" async></script>
-    <script></script> -->
 
 </html>
