@@ -2198,7 +2198,8 @@ CABLES.UI.Patch=function(_gui)
                 $(id).colorPicker(
                 {
                     opacity:true,
-                    margin: '100px -40px 0',
+                    animationSpeed: 0,
+                    margin: '-80px -40px 0',
                     doRender: 'div div',
                     renderCallback:function(res,toggled)
                     {

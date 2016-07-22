@@ -1,4 +1,19 @@
-.cp-color-picker{box-sizing:border-box; width:226px;}
+.cp-color-picker{
+    box-sizing:border-box; width:226px;
+    z-index: 200;
+    border-radius: 0px !important;
+    padding: 10px 10px 10px !important;
+
+    input
+    {
+        padding: 4px;
+        border: none !important;
+        background: #333 !important;
+        padding-left: 3px !important;
+        padding-right: 3px !important;
+
+    }
+}
 .cp-color-picker .cp-panel {line-height: 21px; float:right;
     padding:0 1px 0 8px; margin-top:-1px; overflow:visible}
 .cp-xy-slider:active {cursor:none;}
