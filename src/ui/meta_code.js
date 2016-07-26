@@ -33,10 +33,7 @@ CABLES.UI.MetaCode=function(projectId)
         var doc={};
         if(op)
         {
-            console.log(op);
             doc.attachmentFiles=gui.opDocs.getAttachmentFiles(op.objName);
-            console.log(doc);
-            console.log(doc.attachmentFiles);
         }
 
         var html = CABLES.UI.getHandleBarHtml('meta_code',
