@@ -80,7 +80,7 @@ CABLES.Editor=function()
                 return;
             }
         }
-        c.id=generateUUID();
+        c.id=CABLES.generateUUID();
 
         contents.push(c);
         updateTabs();

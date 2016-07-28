@@ -112,7 +112,7 @@ CABLES.UI.Patch=function(_gui)
                         for(i in json.ops)
                         {
                             var searchID=json.ops[i].id;
-                            var newID=json.ops[i].id=generateUUID();
+                            var newID=json.ops[i].id=CABLES.generateUUID();
 
                             json.ops[i].uiAttribs.pasted=true;
 
@@ -235,7 +235,7 @@ CABLES.UI.Patch=function(_gui)
                     CABLES.UI.notify('Pasted '+json.ops.length+' ops');
                     // CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
                     self.setSelectedOp(null);
-                    gui.patch().scene.deSerialize(json);
+                    gui.patch().scene.deSerialize(json,true);
 
                     return;
                 }
@@ -386,6 +386,14 @@ CABLES.UI.Patch=function(_gui)
 
         var obj={"ops":ops};
         var objStr=JSON.stringify(obj);
+        // var objNew=JSON.parse(objStr);
+        // for(i=0;i<objNew.ops.length;i++)
+        // {
+        //     objNew.ops[i].id=CABLES.generateUUID();
+        // }
+        //
+        // objStr=JSON.stringify(objNew);
+
 
         // CABLES.UI.setStatusText('copied '+selectedOps.length+' ops...');
         CABLES.UI.notify('Copied '+selectedOps.length+' ops');
