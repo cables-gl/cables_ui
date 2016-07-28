@@ -1271,6 +1271,7 @@ CABLES.UI.Patch=function(_gui)
                 delete uiOp.op.uiAttribs.pasted;
                 gui.patch().addSelectedOpById(uiOp.op.id);
                 uiOp.setSelected(true);
+                uiOp.show();
                 setStatusSelectedOps();
             }
         } ,30);
@@ -1439,6 +1440,7 @@ CABLES.UI.Patch=function(_gui)
             var uiOp=new OpUi(self.paper,op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
 
             self.ops.push(uiOp);
+
             uiOp.wasAdded=false;
             gui.patch().updateBounds=true;
 
@@ -1910,8 +1912,6 @@ CABLES.UI.Patch=function(_gui)
         }
     }
 
-
-
     this.showOpParams=function(op)
     {
         var i=0;
@@ -1944,7 +1944,6 @@ CABLES.UI.Patch=function(_gui)
 
         if(!currentOp)return;
 
-
         watchPorts=[];
         watchAnimPorts=[];
         watchColorPicker=[];
@@ -1970,7 +1969,6 @@ CABLES.UI.Patch=function(_gui)
                 if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
 
                 html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op ,texts:CABLES.UI.TEXTS} );
-
             }
         }
 
