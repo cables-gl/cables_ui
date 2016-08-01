@@ -58,7 +58,7 @@ CABLES.UI.Profiler=function(projectId)
 
             if(item.percent>0)
             {
-                htmlBar+='<div class="tt" data-tt="'+item.title+'" style="height:20px;background-color:'+colors[colorCounter]+';float:left;padding:0px;overflow:hidden;width:'+item.percent*2+'px"></div>';
+                htmlBar+='<div class="tt" data-tt="'+item.title+'" style="height:20px;background-color:'+colors[colorCounter]+';float:left;padding:0px;overflow:hidden;min-width:0px;width:'+item.percent*2+'px"></div>';
                 colorCounter++;
                 if(colorCounter>colors.length-1)colorCounter=0;
             }
