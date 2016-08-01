@@ -20,6 +20,8 @@
                     {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
                     {{shortName}} <span class="namespace" onClick="CABLES.UI.OPSELECT.searchFor('{{nameSpace}}');">{{nameSpace}}</span>{{isFunction}}
                 </a>
+
+                <div class="graphbutton fright insertbutton" style="color:white !important;display:none;" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">insert</div>
             </div>
 
           {{/each}}
