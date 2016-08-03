@@ -27,6 +27,8 @@ CABLES.UI.Preview=function()
     {
         if(paused || !previewDataOp || !previewDataPort)return;
 
+        // console.log(previewDataPort.get());
+
         var dataUrl=createImageFromTexture(
             previewDataOp.patch.cgl.gl,
             previewDataPort.get().tex,
@@ -70,11 +72,20 @@ CABLES.UI.Preview=function()
 
     function createImageFromTexture(gl, texture, width, height)
     {
-        if(!width || !height)return;
+        if(!width || !height)
+        {
+            console.log('unknown image size: ',width,height);
+            return;
+        }
+
         if(!canvas)
         {
             canvas = document.getElementById('preview_img');
-            if(!canvas)return;
+            if(!canvas)
+            {
+                console.log('no canvas...');
+                return;
+            }
             context = canvas.getContext('2d');
         }
 
@@ -96,6 +107,8 @@ CABLES.UI.Preview=function()
         if(!imageData)imageData = context.createImageData(width, height);
         imageData.data.set(pixelData);
         context.putImageData(imageData, 0, 0);
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
 
