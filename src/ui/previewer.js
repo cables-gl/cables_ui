@@ -57,12 +57,17 @@ CABLES.UI.Preview=function()
         canvas=null;
         if(framebuffer)
         {
-            previewDataOp.patch.cgl.gl.deleteFramebuffer(framebuffer);
-            framebuffer=null;
+            reset();
         }
 
         updatePreview();
     };
+
+    function reset()
+    {
+        previewDataOp.patch.cgl.gl.deleteFramebuffer(framebuffer);
+        framebuffer=null;
+    }
 
     var pixelData = new Uint8Array(2 * 2 * 4);
     var canvas = null;
@@ -105,9 +110,15 @@ CABLES.UI.Preview=function()
 
         // Copy the pixels to a 2D canvas
         if(!imageData)imageData = context.createImageData(width, height);
-        imageData.data.set(pixelData);
-        context.putImageData(imageData, 0, 0);
-
+        try
+        {
+            imageData.data.set(pixelData);
+            context.putImageData(imageData, 0, 0);
+        }
+        catch(e)
+        {
+            reset();
+        }
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
