@@ -235,7 +235,7 @@ CABLES.UI.Patch=function(_gui)
                     CABLES.UI.notify('Pasted '+json.ops.length+' ops');
                     // CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
                     self.setSelectedOp(null);
-                    gui.patch().scene.deSerialize(json,true);
+                    gui.patch().scene.deSerialize(json,false);
 
                     return;
                 }
@@ -1999,10 +1999,9 @@ CABLES.UI.Patch=function(_gui)
             {
                 if(op.portsIn[i].get() && (op.portsIn[i].get().endsWith('.jpg') || op.portsIn[i].get().endsWith('.png')))
                 {
-                    $('#portpreview_'+i).css('background-image','url('+op.portsIn[i].get()+')');
-                    $('#portpreview_'+i).css('width','100px');
-                    $('#portpreview_'+i).css('background-size','cover');
-                    $('#portpreview_'+i).css('height','100px');
+                    $('#portpreview_'+i).css('background-color','black');
+                    $('#portpreview_'+i).css('max-width','100%');
+                    $('#portpreview_'+i).html('<img src="'+op.portsIn[i].get()+'" style="max-width:100%"/>');
                 }
             }
         }

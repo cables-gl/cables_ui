@@ -1054,6 +1054,9 @@ input[type=text]:active, input[type=text]:focus {
         clear: both;
         height:500px;
         overflow: auto;
+        font-size: 11px;
+
+
 
         .lvl0{}
         .lvl1{ margin-left: 10px;}
@@ -1065,12 +1068,24 @@ input[type=text]:active, input[type=text]:focus {
             color:#666;
         }
 
+        .filename
+        {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+            overflow: hidden;
+            padding-top:5px !important;
+        }
+
         .selectable
         {
+            text-overflow: ellipsis;
+
             color:$mainColor;
             &:hover
             {
                 text-decoration: underline;
+                background-color: #222;
                 color:white;
             }
         }
@@ -1411,8 +1426,6 @@ hr
     }
 }
 
-
-
 #infoArea
 {
     width: 100%;
@@ -1535,7 +1548,7 @@ hr
 
 .filename
 {
-    border-left:2px solid #aaa;
+    // border-left:2px solid #aaa;
     cursor:pointer;
     text-overflow:ellipsis;
     word-wrap:break-word;
@@ -1762,8 +1775,6 @@ nav
     }
 }
 
-
-
 .clone
 {
     background-color: #2a2a2a;
@@ -1870,8 +1881,6 @@ rect
     }
 }
 
-
-
 #suggestionDialog
 {
     position: absolute;
@@ -1915,9 +1924,7 @@ rect
             color:#fff;
         }
     }
-
 }
-
 
 #notify
 {
