@@ -160,7 +160,7 @@ CABLES.UI.Patch=function(_gui)
                                     if(json.ops[i].portsIn[k].name=='patchId')
                                     {
                                         var oldSubPatchId=parseInt(json.ops[i].portsIn[k].value,10);
-                                        var newSubPatchId=json.ops[i].portsIn[k].value=Ops.Ui.Patch.maxPatchId+1;
+                                        var newSubPatchId=Ops.Ui.Patch.maxPatchId=json.ops[i].portsIn[k].value=Ops.Ui.Patch.maxPatchId+1;
 
                                         console.log('oldSubPatchId',oldSubPatchId);
                                         console.log('newSubPatchId',newSubPatchId);
@@ -237,11 +237,13 @@ CABLES.UI.Patch=function(_gui)
                     self.setSelectedOp(null);
                     gui.patch().scene.deSerialize(json,false);
 
+
                     return;
                 }
             }
             CABLES.UI.setStatusText("paste failed / not cables data format...");
         }
+
     };
 
     this.createCommentFromSelection=function()
@@ -289,6 +291,23 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
+
+    this.resolveSubpatch=function()
+    {
+
+        console.log('resolve!');
+
+        if(currentSubPatch!==0)
+        {
+            for(var i in self.ops)
+            {
+                self.ops[i].op.uiAttribs.subPatch=0;
+            }
+
+            this.setCurrentSubPatch(0);
+        }
+    };
+
     this.createSubPatchFromSelection=function()
     {
         if(selectedOps.length==1 && selectedOps[0].op.objName=='Ops.Ui.Patch')
@@ -329,19 +348,15 @@ CABLES.UI.Patch=function(_gui)
                     if(otherOp.uiAttribs.subPatch!=patchId)
                     {
                         console.log('found outside connection!! ',otherPort.name);
-
                         patchOp.routeLink(theOp.portsIn[j].links[k]);
-
                     }
-
                 }
             }
         }
 
-        // this.shouldLink=function(p1,p2)
-
         self.setSelectedOpById(patchOp.id);
-        self.setCurrentSubPatch(currentSubPatch);
+        // self.setCurrentSubPatch(patchId);
+        self.updateSubPatches();
     };
 
 
@@ -356,6 +371,16 @@ CABLES.UI.Patch=function(_gui)
         var ops=[];
         var opIds=[];
         var j=0,i=0,k=0,l=0;
+
+        for(i in selectedOps)
+        {
+            if(selectedOps[i].op.objName=='Ops.Ui.Patch')
+            {
+                console.log('selecting subpatch',selectedOps[i].op.patchId.get() );
+                self.selectAllOpsSubPatch(selectedOps[i].op.patchId.get());
+            }
+        }
+
         for(i in selectedOps)
         {
             ops.push( selectedOps[i].op.getSerialized() );
@@ -1273,6 +1298,7 @@ CABLES.UI.Patch=function(_gui)
                 uiOp.setSelected(true);
                 uiOp.show();
                 setStatusSelectedOps();
+                self.updateSubPatches();
             }
         } ,30);
 

@@ -597,6 +597,7 @@ var metaWidth=self.rendererWidth-optionsWidth;
         $('.nav_patch_browse_examples').bind("click", function (event) { var win = window.open('https://cables.gl/examples', '_blank'); win.focus(); });
         $('.nav_patch_browse_favourites').bind("click", function (event) { var win = window.open('https://cables.gl/myfavs', '_blank'); win.focus(); });
         $('.nav_patch_browse_public').bind("click", function (event) { var win = window.open('https://cables.gl/projects', '_blank'); win.focus(); });
+        $('.nav_patch_resolve_subpatch').bind("click",function(event){ self.patch().resolveSubpatch(); });
 
         $('.nav_patch_profile').bind("click", self.showProfiler);
 
@@ -825,6 +826,8 @@ var metaWidth=self.rendererWidth-optionsWidth;
     {
         $('#loadingstatus').hide();
         $('#mainContainer').show();
+        self.setMetaTab('files');
+
     };
 
     function initRouting(cb)
@@ -1237,6 +1240,7 @@ function startUi(event)
     });
 
     gui=new CABLES.UI.GUI();
+
 
     gui.init();
     gui.bind(function()
