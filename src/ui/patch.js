@@ -1871,9 +1871,6 @@ CABLES.UI.Patch=function(_gui)
                 user:gui.user,
                 debug:
                 {
-                    numOps:gui.scene().ops.length,
-                    numVisibleOps:numVisibleOps,
-                    numSvgElements: $('#patch svg *').length,
                 }
             });
 

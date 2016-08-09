@@ -1,7 +1,7 @@
 
 <script id="uiDebug" type="text/x-handlebars-template">
 
-        <h3>UI Debug</h3>
+        <h3>SVG</h3>
 
         numOps:{{numOps}}
         <br/>
@@ -10,6 +10,19 @@
         numVisibleOps:{{numVisibleOps}}
         <br/>
         <br/>
+
+        <h3>Canvas</h3>
+        <table>
+            {{#each canvass}}
+                <tr>
+                    <td>{{name}}</td>
+                    <td>{{width}}x{{height}}</td>
+                </tr>
+            {{/each}}
+        </table>
+        <br/>
+        <br/>
+
 
         <h3>startup times</h3>
         <table>

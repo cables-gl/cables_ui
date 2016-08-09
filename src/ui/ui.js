@@ -449,16 +449,31 @@ var metaWidth=self.rendererWidth-optionsWidth;
         var numVisibleOps=0;
         for(var i in self.ops)
         {
-            if(!self.ops[i].isHidden())numVisibleOps++;
+            if(!self.ops[i].isHidden()) numVisibleOps++;
         }
+
+        var canvass=[];
+
+        var canvs=$('canvas');
+        for(i=0;i<canvs.length;i++)
+        {
+            canvass.push(
+                {
+                    "name":canvs[i].id,
+                    "width":canvs[i].width,
+                    "height":canvs[i].height
+                });
+        }
+
 
         var html = CABLES.UI.getHandleBarHtml(
             'uiDebug',
             {
-                numOps:gui.scene().ops.length,
-                numVisibleOps:numVisibleOps,
-                numSvgElements: $('#patch svg *').length,
-                startup:CABLES.startup.log
+                "numOps":gui.scene().ops.length,
+                "numVisibleOps":numVisibleOps,
+                "canvass":canvass,
+                "numSvgElements": $('#patch svg *').length,
+                "startup":CABLES.startup.log
             });
 
         $('#meta_content_debug').html(html);
