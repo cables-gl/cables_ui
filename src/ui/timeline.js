@@ -887,15 +887,11 @@ CABLES.TL.UI.TimeLineUI=function()
                             {
                                 anim.keys[i].time=anim.keys[i].time-firstKeyTimeFPS+frame/gui.timeLine().getFPS();
                             }
-
                         }
-
                     }
                     anim.sortKeys();
                     updateKeyLine();
-
                 }
-
             break;
 
 

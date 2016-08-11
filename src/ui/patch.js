@@ -1024,7 +1024,7 @@ CABLES.UI.Patch=function(_gui)
             var x=gui.patch().getCanvasCoordsMouse(e).x;
             var y=gui.patch().getCanvasCoordsMouse(e).y;
 
-            var sizeSmall=450;
+            var sizeSmall=650;
             var size=Math.max(minimapBounds.w,minimapBounds.h);
             if(viewBox.w>=sizeSmall*2)
             {
@@ -2020,7 +2020,7 @@ CABLES.UI.Patch=function(_gui)
         {
             if(op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display=='file')
             {
-                if(op.portsIn[i].get() && (op.portsIn[i].get().endsWith('.jpg') || op.portsIn[i].get().endsWith('.png')))
+                if(op.portsIn[i].get() && (op.portsIn[i].get()+''.endsWith('.jpg') || op.portsIn[i].get()+''.endsWith('.png')))
                 {
                     $('#portpreview_'+i).css('background-color','black');
                     $('#portpreview_'+i).css('max-width','100%');
