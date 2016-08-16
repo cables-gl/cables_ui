@@ -147,4 +147,10 @@
     .link_color_dynamic { stroke:$color_link_dynamic; }
     .link_color_unknown,.link_color_error { stroke:#fff; }
 
+    .link_hover
+    {
+        stroke:#fff !important;
+        stroke-width:3;
+    }
+
 }

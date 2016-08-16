@@ -220,6 +220,8 @@ CABLES.UI.Port=function(thePort)
         if(hovering)
         {
             self.rect.node.classList.add('active');
+
+
         }
         else
         {
@@ -246,6 +248,13 @@ CABLES.UI.Port=function(thePort)
         CABLES.UI.setStatusText(txt);
         CABLES.UI.showToolTip(event,txt);
         updateUI();
+
+
+        // hover link
+        for(var i=0;i<self.opUi.links.length;i++)
+            if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
+                self.opUi.links[i].linkLine.node.classList.add('link_hover');
+
     }
 
     function hoverOut()
@@ -258,6 +267,13 @@ CABLES.UI.Port=function(thePort)
 
         CABLES.UI.hideInfo();
         updateUI();
+
+        // hover link
+        for(var i=0;i<self.opUi.links.length;i++)
+            if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
+                self.opUi.links[i].linkLine.node.classList.remove('link_hover');
+
+
     }
 
 
