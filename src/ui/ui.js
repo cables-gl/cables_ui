@@ -608,6 +608,8 @@ var metaWidth=self.rendererWidth-optionsWidth;
         $('.nav_patch_new').bind("click", function (event) { self.createProject(); });
         $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))gui.scene().clear(); });
         $('.nav_patch_export').bind("click", function (event) { gui.patch().exportStatic(); });
+        $('.nav_patch_export_ignoreAssets').bind("click", function (event) { gui.patch().exportStatic(true); });
+
         $('.nav_patch_settings').bind("click", function (event) { self.showSettings(); });
         $('.nav_patch_browse_examples').bind("click", function (event) { var win = window.open('https://cables.gl/examples', '_blank'); win.focus(); });
         $('.nav_patch_browse_favourites').bind("click", function (event) { var win = window.open('https://cables.gl/myfavs', '_blank'); win.focus(); });
@@ -905,8 +907,7 @@ var metaWidth=self.rendererWidth-optionsWidth;
                 });
             },function()
             {
-                console.log('hurr');
-                    $('#loadingInfo').append('Error: Unknown Project');
+                $('#loadingInfo').append('Error: Unknown Project');
 
             });
         });

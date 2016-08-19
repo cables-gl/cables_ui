@@ -252,7 +252,7 @@ CABLES.UI.Port=function(thePort)
 
         // hover link
         for(var i=0;i<self.opUi.links.length;i++)
-            if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
+            if(self.opUi.links[i].p1)if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
                 self.opUi.links[i].linkLine.node.classList.add('link_hover');
 
     }

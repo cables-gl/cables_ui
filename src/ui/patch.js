@@ -505,7 +505,7 @@ CABLES.UI.Patch=function(_gui)
     });
 
 
-    this.exportStatic=function()
+    this.exportStatic=function(ignoreAssets)
     {
         if(!gui.getSavedState())
         {
@@ -514,8 +514,11 @@ CABLES.UI.Patch=function(_gui)
         }
         CABLES.UI.MODAL.showLoading('exporting project');
 
+        var apiUrl='project/'+currentProject._id+'/export';
+        if(ignoreAssets)apiUrl+='?ignoreAssets=true';
+
         CABLES.api.get(
-            'project/'+currentProject._id+'/export',
+            apiUrl,
             function(r)
             {
                 var msg='';
