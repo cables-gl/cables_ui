@@ -57,6 +57,25 @@ $("body").on("drop", function(event)
             {
                 // gui.jobs().start({id:'processingfiles',title:'processing files...'});
                 gui.jobs().finish('uploadingfiles');
+
+                // console.log(files);
+                setTimeout(function()
+                {
+                    for(var i in files)
+                    {
+                        var file=files[i];
+                        if(!file || !file.name || file.name=='item')continue;
+                        for(var j=0;j<gui.patch().ops.length;j++)
+                        {
+                            if(gui.patch().ops[j].op && gui.patch().ops[j].op.onFileUploaded)
+                            {
+                                gui.patch().ops[j].op.onFileUploaded(files[i].name);
+                            }
+                        }
+                    }
+
+                },800);
+
             }
             else
             {

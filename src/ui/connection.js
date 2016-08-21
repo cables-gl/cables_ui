@@ -69,18 +69,6 @@ CABLES.API.Connection=function(ui)
                 ui.jobs().finish(message.data.data.jobId);
                 gui.updateProjectFiles();
 
-                // TODO: send filename back from server to client...
-                // TODO: update files with filename
-                // for(var i=0;i<gui.patch().ops.length;i++)
-                // {
-                //     console.log(1);
-                //     if(gui.patch().ops[i].op.onFileUploaded)
-                //     {
-                //         console.log('file uploaded callback');
-                //         this.ops[i].op.onFileUploaded(fn);
-                //     }
-                // }
-
             }
             else
             {
