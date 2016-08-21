@@ -386,7 +386,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             return;
         }
 
-
         if(opui.isSelected())
         {
             if(ev.shiftKey)
@@ -399,7 +398,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         opui.showAddButtons();
 
-console.log(opui.op.uiAttribs.translate);
         if(!ev.shiftKey)
         {
             gui.patch().setSelectedOp(null);

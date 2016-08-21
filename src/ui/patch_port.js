@@ -251,9 +251,11 @@ CABLES.UI.Port=function(thePort)
 
 
         // hover link
+
         for(var i=0;i<self.opUi.links.length;i++)
-            if(self.opUi.links[i].p1)if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
-                self.opUi.links[i].linkLine.node.classList.add('link_hover');
+            if(self.opUi.links[i].p1 && self.opUi.links[i].p2)
+                if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
+                    self.opUi.links[i].linkLine.node.classList.add('link_hover');
 
     }
 
@@ -264,18 +266,15 @@ CABLES.UI.Port=function(thePort)
 
         hovering=false;
 
-
         CABLES.UI.hideInfo();
         updateUI();
 
         // hover link
         for(var i=0;i<self.opUi.links.length;i++)
-            if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
-                self.opUi.links[i].linkLine.node.classList.remove('link_hover');
-
-
+            if(self.opUi.links[i].p1 && self.opUi.links[i].p2)
+                if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
+                    self.opUi.links[i].linkLine.node.classList.remove('link_hover');
     }
-
 
     this.isVisible=function()
     {
