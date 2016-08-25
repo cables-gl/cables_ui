@@ -1601,22 +1601,22 @@ CABLES.UI.Patch=function(_gui)
 
     this.testCollisionOpPosition=function(x,y,opid)
     {
-        for(var i in this.ops)
-        {
-
-            var op=this.ops[i].op;
-            if(
-                !op.deleted &&
-                opid!=op.id &&
-                x>=op.uiAttribs.translate.x-10 &&
-                x<=op.uiAttribs.translate.x+200 &&
-                y>=op.uiAttribs.translate.y &&
-                y<=op.uiAttribs.translate.y+47)
-            {
-                // console.log('colliding...',op.id);
-                return true;
-            }
-        }
+        // for(var i in this.ops)
+        // {
+        //
+        //     var op=this.ops[i].op;
+        //     if(
+        //         !op.deleted &&
+        //         opid!=op.id &&
+        //         x>=op.uiAttribs.translate.x-10 &&
+        //         x<=op.uiAttribs.translate.x+200 &&
+        //         y>=op.uiAttribs.translate.y &&
+        //         y<=op.uiAttribs.translate.y+47)
+        //     {
+        //         // console.log('colliding...',op.id);
+        //         return true;
+        //     }
+        // }
         return false;
     };
 

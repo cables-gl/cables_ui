@@ -431,6 +431,22 @@ var metaWidth=self.rendererWidth-optionsWidth;
         self.setLayout();
     };
 
+    this.toggleMute=function()
+    {
+        if(_scene.config.masterVolume>0.0)
+        {
+            $('#timelineVolume').removeClass('fa-volume-up');
+            $('#timelineVolume').addClass('fa-volume-off');
+            _scene.setVolume(0.0);
+        }
+        else
+        {
+            $('#timelineVolume').addClass('fa-volume-up');
+            $('#timelineVolume').removeClass('fa-volume-off');
+            _scene.setVolume(1.0);
+        }
+    };
+
     this.showMetaScreen=function()
     {
         var html = CABLES.UI.getHandleBarHtml(
