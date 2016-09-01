@@ -126,6 +126,7 @@ CABLES.UI.ServerOps=function(gui)
 
             gui.patch().scene.reloadOp(name);
 
+
             CABLES.UI.MODAL.hideLoading();
         };
         document.body.appendChild( s );

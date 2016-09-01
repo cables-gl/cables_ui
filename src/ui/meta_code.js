@@ -1,6 +1,9 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
+
+CABLES.UI.OpShowMetaCode=0;
+
 CABLES.UI.MetaCode=function(projectId)
 {
     var self=this;
@@ -16,8 +19,14 @@ CABLES.UI.MetaCode=function(projectId)
         gui.patch().addEventListener('opSelected',function(_op)
         {
             op=_op;
-            self.show();
-            console.log('op selected!',_op.name);
+
+            clearTimeout(CABLES.UI.OpShowMetaCode);
+            CABLES.UI.OpShowMetaCode=setTimeout(function()
+                {
+                    self.show();
+                },100);
+
+
         });
 
     };

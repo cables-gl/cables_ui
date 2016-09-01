@@ -1948,11 +1948,25 @@ CABLES.UI.Patch=function(_gui)
         }
     }
 
+    var delayedShowOpParams=0;
     this.showOpParams=function(op)
     {
+        clearTimeout(delayedShowOpParams);
+        delayedShowOpParams=setTimeout(function()
+        {
+            self._showOpParams(op);
+        },60);
+
+    };
+    this._showOpParams=function(op)
+    {
+
+
         var i=0;
 
         callEvent('opSelected',op);
+
+        // console.log('showOpParams',op.name);
 
         if(gui.serverOps.isServerOp(op.objName)) op.isServerOp=true;
 
