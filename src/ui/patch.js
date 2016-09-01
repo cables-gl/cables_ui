@@ -589,7 +589,6 @@ CABLES.UI.Patch=function(_gui)
         {
             var data=gui.patch().scene.serialize(true);
 
-
             data.ui={viewBox:{}};
             data.ui.bookmarks=gui.bookmarks.getBookmarks();
 
@@ -618,18 +617,29 @@ CABLES.UI.Patch=function(_gui)
                 {
                     "name":name,
                     "data":data,
-                    "screenshot":gui.patch().scene.cgl.screenShotDataURL
+                    // "screenshot":gui.patch().scene.cgl.screenShotDataURL
                 },
                 function(r)
                 {
-
                     CABLES.UI.notify('patch saved');
                     if(r.success===true) CABLES.UI.setStatusText('project saved');
                     else CABLES.UI.setStatusText('project NOT saved');
 
                     gui.setStateSaved();
                     gui.jobs().finish('projectsave');
-                    // CABLES.UI.MODAL.hide();
+
+                    gui.jobs().start({id:'uploadscreenshot',title:'uploading screenshot'});
+                    CABLES.api.put(
+                        'project/'+id+'/screenshot',
+                        {
+                            "screenshot":gui.patch().scene.cgl.screenShotDataURL
+                        },
+                        function(r)
+                        {
+                            gui.jobs().finish('uploadscreenshot');
+                            if(cb)cb();
+                        });
+
                     if(cb)cb();
                 });
         },30);

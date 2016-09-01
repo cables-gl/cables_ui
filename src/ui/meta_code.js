@@ -17,7 +17,7 @@ CABLES.UI.MetaCode=function(projectId)
         {
             op=_op;
             self.show();
-            console.log('op selected!');
+            console.log('op selected!',_op.name);
         });
 
     };
