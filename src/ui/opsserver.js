@@ -123,9 +123,10 @@ CABLES.UI.ServerOps=function(gui)
         s.setAttribute( 'src', '/api/op/'+name );
         s.onload=function()
         {
-
-            gui.patch().scene.reloadOp(name);
-
+            gui.patch().scene.reloadOp(name,function(num)
+            {
+                CABLES.UI.notify(num+' ops reloaded');
+            });
 
             CABLES.UI.MODAL.hideLoading();
         };

@@ -88,28 +88,34 @@ CABLES.Editor=function()
         return c;
     };
 
-    function setStatus(txt,stay)
-    {
-        $('#editorstatus').html(txt);
-
-        if(!stay)
-            setTimeout(function()
-            {
-                $('#editorstatus').html('');
-            },500);
-    }
-    this.setStatus=setStatus;
+    // function setStatus(txt,stay)
+    // {
+    //     $('#editorstatus').html(txt);
+    //
+    //     if(!stay)
+    //         setTimeout(function()
+    //         {
+    //             $('#editorstatus').html('');
+    //         },500);
+    // }
+    // this.setStatus=setStatus;
 
     this.save=function()
     {
-        $('#editorstatus').html('<i class="fa fa-spinner fa-pulse"></i>');
+        // $('#editorstatus').html('<i class="fa fa-spinner fa-pulse"></i>');
 
         this.setCurrentTabContent();
         for(var i=0;i<contents.length;i++)
         {
             if(contents[i].onSave && contents[i].id==currentTabId)
             {
-                contents[i].onSave(setStatus,editor.getValue());
+                gui.jobs().start({id:'saveeditorcontent',title:'saving editor content'});
+
+                contents[i].onSave(function(txt,stay)
+                    {
+                        gui.jobs().finish('saveeditorcontent');
+                        CABLES.UI.notify(txt);
+                    },editor.getValue());
             }
         }
     };

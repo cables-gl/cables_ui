@@ -100,18 +100,18 @@ CABLES.UI.notify=function(title)
 {
     $('#notify').html(title);
     $('#notify').show();
-    $('#notify' ).css({left: "0px" ,opacity: 0 });
+    $('#notify' ).css({top: "0px" ,opacity: 0 });
 
     $('#notify').animate(
         {
-            left: "20px",
+            top: "20px",
             opacity:0.8
         }, 150);
 
     setTimeout(function()
     {
         $( "#notify" ).animate({
-           left: "0px",
+           top: "40px",
            opacity:0
        }, 150,function()
        {
