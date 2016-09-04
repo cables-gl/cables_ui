@@ -1,4 +1,5 @@
 
+
 CABLES.UI=CABLES.UI|| {};
 CABLES.undo = new UndoManager();
 
@@ -99,6 +100,7 @@ CABLES.UI.GUI=function()
         if(!showingEditor)
         {
             showingEditor=true;
+            _editor.focus();
             this.setLayout();
         }
     };
@@ -194,8 +196,8 @@ CABLES.UI.GUI=function()
 
         if(self.rendererWidth<100)self.rendererWidth=100;
 
-        $('#patch svg').css('height',patchHeight-2);
-        $('#patch svg').css('width',patchWidth-2);
+        $('#patch svg').css('height',patchHeight);
+        $('#patch svg').css('width',patchWidth);
 
         $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
         $('#splitterPatch').css('height',patchHeight+timelineUiHeight+2);
@@ -208,9 +210,9 @@ CABLES.UI.GUI=function()
         $('#button_subPatchBack').css('margin-right',self.rendererWidth+20);
 
 
-        $('#patch').css('height',patchHeight-2);
+        $('#patch').css('height',patchHeight);
         $('#patch').css('width',patchWidth);
-        $('#patch').css('top',menubarHeight+2);
+        $('#patch').css('top',menubarHeight);
         $('#patch').css('left',patchLeft);
 
         $('#minimapContainer').show();
@@ -704,11 +706,11 @@ var metaWidth=self.rendererWidth-optionsWidth;
             switch(e.which)
             {
                 default:
-                    // console.log('e.which',e.which);
+                    console.log('e.which',e.which);
                 break;
 
-                case 49:
-                    if(e.ctrlKey)self.toggleEditor();
+                case 13:
+                    if(e.ctrlKey || e.metaKey)self.toggleEditor();
                     break;
                 case 112:  // f1
                     self.toggleEditor();

@@ -17,7 +17,10 @@
 <br/>
     <h3>attachments</h3>
     {{#each doc.attachmentFiles}}
-        {{.}} <br/>
+        {{.}}
+        <a class="button fa fa-trash" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
+        <br/>
     {{/each}}
+    <a class="button fa fa-plus-o" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>
 {{/if}}
 </script>

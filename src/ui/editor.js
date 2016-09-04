@@ -7,7 +7,7 @@ CABLES.Editor=function()
     var currentTabId='';
 
     var editor = ace.edit("ace");
-    editor.setValue('nothing to edit right now :/');
+    editor.setValue('');
 
     editor.setOptions({
         "enableBasicAutocompletion": true,
@@ -19,6 +19,44 @@ CABLES.Editor=function()
     editor.setTheme("ace/theme/cables");
     editor.session.setMode("ace/mode/javascript");
     editor.$blockScrolling = Infinity;
+
+    editor.commands.bindKey("Cmd-D", "selectMoreAfter");
+    editor.commands.bindKey("Cmd-Ctrl-Up", "movelinesup");
+    editor.commands.bindKey("Cmd-Ctrl-Down", "movelinesdown");
+
+    var staticWordCompleter = {
+        getCompletions: function(editor, session, pos, prefix, callback) {
+            var wordList = [
+                "op.log",
+                ".onChange",
+                "op.inFunction",
+                "op.inValue",
+                "op.inValueBool",
+                "op.inObject",
+                "op.inValueSlider",
+
+                "op.outFunction",
+                "op.outValue",
+                "op.outObject",
+                "op.patch.cgl",
+            ];
+            callback(null, wordList.map(function(word) {
+                return {
+                    caption: word,
+                    value: word,
+                    meta: "static"
+                };
+            }));
+
+        }
+    };
+
+    // or
+    editor.completers = [staticWordCompleter];
+
+
+
+
     editor.resize();
     editor.focus();
 

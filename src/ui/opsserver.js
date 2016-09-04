@@ -157,6 +157,34 @@ CABLES.UI.ServerOps=function(gui)
         );
     };
 
+
+    this.deleteAttachment=function(opName,attName)
+    {
+        if(confirm("really ?"))
+        {
+            CABLES.api.delete(
+                'op/'+opName+'/attachments/'+attName,
+                function(res)
+                {
+                    console.log(res);
+                });
+        }
+
+
+    };
+
+    this.addAttachmentDialog=function(name)
+    {
+        var attName=prompt('Attachment name');
+
+        CABLES.api.post(
+            'op/'+name+'/attachments/'+attName,
+            function(res)
+            {
+                console.log(res);
+            });
+    };
+
     this.cloneDialog=function(name)
     {
         var newName=name;
