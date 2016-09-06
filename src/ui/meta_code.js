@@ -49,6 +49,7 @@ CABLES.UI.MetaCode=function(projectId)
         {
             op:op,
             doc:doc,
+            libs:gui.opDocs.libs,
             user:gui.user
         });
         $('#meta_content_code').html(html);

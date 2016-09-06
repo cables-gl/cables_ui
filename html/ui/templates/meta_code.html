@@ -23,4 +23,17 @@
     {{/each}}
     <a class="button fa fa-plus-o" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>
 {{/if}}
+
+
+<br/><br/>
+    <h3>Libs</h3>
+
+    <select>
+    {{#each libs}}
+        <option value="{{.}}">{{.}}</option>
+    {{/each}}
+    <select>
+    <a class="button fa fa-plus-o" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>
+
+
 </script>

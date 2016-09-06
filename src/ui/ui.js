@@ -706,7 +706,7 @@ var metaWidth=self.rendererWidth-optionsWidth;
             switch(e.which)
             {
                 default:
-                    console.log('e.which',e.which);
+                    // console.log('e.which',e.which);
                 break;
 
                 case 13:

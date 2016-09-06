@@ -3,15 +3,17 @@ CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 CABLES.UI.OpDocs=function()
 {
+    var self=this;
     var opDocs=[];
+    this.libs=[];
 
     CABLES.api.get(
         'doc/ops/all',
         function(res)
         {
             logStartup('Op docs loaded');
-
-            opDocs=res;
+            opDocs=res.opDocs;
+            self.libs=res.libs;
         },
         function(res){ console.log('err',res); }
         );
@@ -28,25 +30,16 @@ CABLES.UI.OpDocs=function()
     this.getAttachmentFiles=function(opname)
     {
         for(var i=0;i<opDocs.length;i++)
-        {
             if(opDocs[i].name==opname)
-            {
                 return opDocs[i].attachmentFiles||[];
-            }
-        }
-
         return [];
     };
 
     this.get=function(opname)
     {
         for(var i=0;i<opDocs.length;i++)
-        {
             if(opDocs[i].name==opname)
-            {
                 return opDocs[i].content;
-            }
-        }
 
         return '';
     };
