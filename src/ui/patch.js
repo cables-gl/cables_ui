@@ -252,7 +252,7 @@ CABLES.UI.Patch=function(_gui)
 
         var padding=100;
 
-        var commentOp=gui.scene().addOp('Ops.Ui.Comment',
+        gui.scene().addOp('Ops.Ui.Comment',
             {
                 size:
                 [
@@ -326,37 +326,40 @@ CABLES.UI.Patch=function(_gui)
             };
 
 
-        var patchOp=gui.scene().addOp('Ops.Ui.Patch',{translate:trans});
-        var patchId=patchOp.patchId.get();
-
-        var i,j,k;
-        for( i in selectedOps)
+        gui.scene().addOp('Ops.Ui.Patch',{translate:trans},function(patchOp)
         {
-            selectedOps[i].op.uiAttribs.subPatch=patchId;
-        }
+            var patchId=patchOp.patchId.get();
 
-
-        for(i=0;i<selectedOps.length;i++)
-        {
-            for( j=0;j<selectedOps[i].op.portsIn.length;j++)
+            var i,j,k;
+            for( i in selectedOps)
             {
-                var theOp=selectedOps[i].op;
-                for( k=0;k<theOp.portsIn[j].links.length;k++)
+                selectedOps[i].op.uiAttribs.subPatch=patchId;
+            }
+
+
+            for(i=0;i<selectedOps.length;i++)
+            {
+                for( j=0;j<selectedOps[i].op.portsIn.length;j++)
                 {
-                    var otherPort=theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
-                    var otherOp=otherPort.parent;
-                    if(otherOp.uiAttribs.subPatch!=patchId)
+                    var theOp=selectedOps[i].op;
+                    for( k=0;k<theOp.portsIn[j].links.length;k++)
                     {
-                        console.log('found outside connection!! ',otherPort.name);
-                        patchOp.routeLink(theOp.portsIn[j].links[k]);
+                        var otherPort=theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
+                        var otherOp=otherPort.parent;
+                        if(otherOp.uiAttribs.subPatch!=patchId)
+                        {
+                            console.log('found outside connection!! ',otherPort.name);
+                            patchOp.routeLink(theOp.portsIn[j].links[k]);
+                        }
                     }
                 }
             }
-        }
 
-        self.setSelectedOpById(patchOp.id);
-        // self.setCurrentSubPatch(patchId);
-        self.updateSubPatches();
+            self.setSelectedOpById(patchOp.id);
+            // self.setCurrentSubPatch(patchId);
+            self.updateSubPatches();
+
+        });
     };
 
 
@@ -933,7 +936,7 @@ CABLES.UI.Patch=function(_gui)
         self.setCurrentProject(proj);
 
         gui.scene().clear();
-        
+
         gui.opDocs.loadProjectLibs(proj,function()
         {
             gui.scene().deSerialize(proj);
@@ -2085,8 +2088,11 @@ CABLES.UI.Patch=function(_gui)
                     var thePort=op.portsIn[index];
                     if(thePort.type==OP_PORT_TYPE_TEXTURE)
                     {
-                        var newop=gui.scene().addOp('Ops.Gl.Texture');
-                        gui.scene().link(op,thePort.name,newop,newop.getFistOutPortByType(thePort.type).name );
+                        gui.scene().addOp('Ops.Gl.Texture',{},function(newop)
+                        {
+                            gui.scene().link(op,thePort.name,newop,newop.getFistOutPortByType(thePort.type).name );
+                        });
+
                     }
                 });
 
@@ -2382,8 +2388,10 @@ CABLES.UI.Patch=function(_gui)
         if(!title)title=filename;
 
         var uiAttr={'title':title,translate:{x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2}};
-        var op=gui.scene().addOp(opname,uiAttr);
-        op.getPort(portname).val='/assets/'+currentProject._id+'/'+filename;
+        gui.scene().addOp(opname,uiAttr,function(op)
+        {
+            op.getPort(portname).val='/assets/'+currentProject._id+'/'+filename;
+        });
     };
 
     doWatchPorts();
