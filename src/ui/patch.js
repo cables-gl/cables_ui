@@ -933,11 +933,16 @@ CABLES.UI.Patch=function(_gui)
         self.setCurrentProject(proj);
 
         gui.scene().clear();
+        
+        gui.opDocs.loadProjectLibs(proj,function()
+        {
+            gui.scene().deSerialize(proj);
+            CABLES.undo.clear();
+            CABLES.UI.MODAL.hideLoading();
+            self.updateSubPatches();
 
-        gui.scene().deSerialize(proj);
-        CABLES.undo.clear();
-        CABLES.UI.MODAL.hideLoading();
-        self.updateSubPatches();
+        });
+
     };
 
 

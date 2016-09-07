@@ -56,7 +56,7 @@ function() {
       })
       .start();
     addIntroJsStyles();
-  }
+};
 
  /*
   * Because styles do not apply when we add them to the stylesheet we need to define them here...
@@ -115,4 +115,4 @@ function() {
       .css("z-index", "1000")
       ;
   }
-}
+};

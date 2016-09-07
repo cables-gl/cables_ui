@@ -28,12 +28,16 @@
 <br/><br/>
     <h3>Libs</h3>
 
-    <select>
+    {{#each doc.libs}}
+        {{.}}<br/>
+    {{/each}}
+
+    <select id="addoplib">
     {{#each libs}}
         <option value="{{.}}">{{.}}</option>
     {{/each}}
     <select>
-    <a class="button fa fa-plus-o" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>
+    <a class="button fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">add</a>
 
 
 </script>

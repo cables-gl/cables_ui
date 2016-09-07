@@ -16,7 +16,7 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
         $('#search_noresults').show();
         var userOpName='Ops.User.'+gui.user.username+'.'+$('#opsearch').val();
         $('.userCreateOpName').html(userOpName);
-        $('#createuserop').attr('onclick','gui.serverOps.create(\''+userOpName+'\');')
+        $('#createuserop').attr('onclick','gui.serverOps.create(\''+userOpName+'\');');
     }
 
     else $('#search_noresults').hide();

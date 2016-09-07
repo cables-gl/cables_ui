@@ -5,6 +5,11 @@ CABLES.UI = CABLES.UI || {};
 // localStorage.cables.editor=localStorage.cables.editor || {};
 // localStorage.cables.editor.serverops= [];
 
+
+// todo: merge serverops and opdocs.js ....
+
+
+
 CABLES.UI.ServerOps=function(gui)
 {
     var ops=[];
@@ -22,13 +27,10 @@ CABLES.UI.ServerOps=function(gui)
             return a;
           },[]); // this empty array becomes the starting value for a
 
-
-
         localStorage.setItem("cables.editor.serverops",JSON.stringify(storedOps));
         console.log('storedops'+storedOps.length);
         // console.log('storedOps.length',storedOps.length);
     }
-
 
     this.load=function(cb)
     {
@@ -157,6 +159,21 @@ CABLES.UI.ServerOps=function(gui)
         );
     };
 
+
+
+    this.addOpLib=function(opName,libName)
+    {
+        // app.put("/api/op/:name/libs/:libName", apiOpLibAdd);
+        // console.log(opName,libname);
+
+        CABLES.api.put(
+            'op/'+opName+'/libs/'+libName,
+            function(res)
+            {
+                console.log(res);
+            });
+
+    };
 
     this.deleteAttachment=function(opName,attName)
     {

@@ -6,6 +6,18 @@ CABLES.UI.setStatusText=function(txt)
     $('#statusbar .text').html('&nbsp;'+txt);
 };
 
+CABLES.uniqueArray=function(arr)
+{
+    var u = {}, a = [];
+    for(var i = 0, l = arr.length; i < l; ++i){
+        if(!u.hasOwnProperty(arr[i])) {
+            a.push(arr[i]);
+            u[arr[i]] = 1;
+        }
+    }
+    return a;
+};
+
 CABLES.serializeForm=function(selector)
 {
     var json={};
@@ -80,7 +92,7 @@ CABLES.UI.showJson=function(opid,which)
 //             console.log('port not found:',which);
 //             return;
 //         }
-// 
+//
 //         CABLES.UI.PREVIEW.op=op;
 //         CABLES.UI.PREVIEW.port=port;
 //     }
