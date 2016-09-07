@@ -3,6 +3,9 @@
 @import 'colors';
 @import 'patch';
 
+
+
+
 body
 {
     padding: 0px;
@@ -12,7 +15,7 @@ body
     font-family: $text-font, arial;
     font-size: $font-size-default;
     -webkit-font-smoothing: antialiased;
-	  -moz-osx-font-smoothing: grayscale;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {

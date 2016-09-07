@@ -25,8 +25,6 @@ CABLES.UI.MetaCode=function(projectId)
                 {
                     self.show();
                 },100);
-
-
         });
 
     };
@@ -43,7 +41,7 @@ CABLES.UI.MetaCode=function(projectId)
         if(op)
         {
             doc.attachmentFiles=gui.opDocs.getAttachmentFiles(op.objName);
-            doc.libs=gui.opDocs.getOpLibs(op.objName);
+            doc.libs=gui.serverOps.getOpLibs(op.objName);
         }
 
         var html = CABLES.UI.getHandleBarHtml('meta_code',

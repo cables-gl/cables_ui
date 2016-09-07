@@ -727,10 +727,10 @@ var metaWidth=self.rendererWidth-optionsWidth;
                 case 70:
                     if(e.metaKey || e.ctrlKey)
                     {
-                        if($('#patch').is(":focus"))
+                        // if($('#patch').is(":focus"))
+                        if(!showingEditor)
                         {
                             _find.show();
-                            // self.patch().copy(e);
                             e.preventDefault();
                         }
 

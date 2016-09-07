@@ -937,7 +937,7 @@ CABLES.UI.Patch=function(_gui)
 
         gui.scene().clear();
 
-        gui.opDocs.loadProjectLibs(proj,function()
+        gui.serverOps.loadProjectLibs(proj,function()
         {
             gui.scene().deSerialize(proj);
             CABLES.undo.clear();

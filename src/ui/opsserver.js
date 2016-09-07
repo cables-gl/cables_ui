@@ -319,6 +319,94 @@ CABLES.UI.ServerOps=function(gui)
     };
 
 
+
+        this._loadedLibs=[];
+
+        this.getOpLibs=function(opname)
+        {
+
+            for(i=0;i<ops.length;i++)
+            {
+                if(ops[i].name==opname)
+                {
+                    if(ops[i].libs)
+                    {
+                        var libs=[];
+                        for(var j=0;j<ops[i].libs.length;j++)
+                        {
+                            var libName='/libs/'+ops[i].libs[j];
+                            if(this._loadedLibs.indexOf(libName)==-1)
+                            {
+                                libs.push(libName);
+                            }
+                            this._loadedLibs.push(libName);
+                        }
+
+                        return libs;
+                    }
+                }
+            }
+            return [];
+        };
+
+        this.loadProjectLibs=function(proj,next)
+        {
+            console.log('loading project libs...');
+
+            var libsToLoad=[];
+            var i=0;
+
+            for(i=0;i<proj.ops.length;i++)
+            {
+                libsToLoad=libsToLoad.concat( this.getOpLibs(proj.ops[i].objName) );
+            }
+
+            libsToLoad=CABLES.uniqueArray(libsToLoad);
+
+
+
+            console.log(libsToLoad);
+
+            if(libsToLoad.length===0)
+            {
+                next();
+                return;
+            }
+
+            loadjs(libsToLoad,'oplibs');
+
+            loadjs.ready('oplibs', function()
+            {
+                console.log('finished loading libs...');
+                next();
+            });
+
+
+        };
+
+        this.loadOpLibs=function(opName,next)
+        {
+            var libsToLoad=this.getOpLibs(opName);
+
+            if(libsToLoad.length===0)
+            {
+                next();
+                return;
+            }
+
+            var lid='oplibs'+CABLES.generateUUID();
+            loadjs(libsToLoad,lid);
+
+            loadjs.ready(lid, function()
+            {
+                console.log('finished loading libs for '+opName);
+                next();
+            });
+
+
+        };
+
+
     this.loaded=false;
     this.finished=function()
     {

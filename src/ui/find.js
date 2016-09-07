@@ -9,13 +9,24 @@ CABLES.UI.Find=function()
         {
         });
 
+    var findTimeoutId=0;
+
     this.show=function()
     {
         $('#options').html(html);
-
         $('#findinput').focus();
+
         $('#findinput').val(lastSearch);
-        this.search(lastSearch);
+        document.getElementById('findinput').setSelectionRange(0, lastSearch.length);
+
+        var self=this;
+        clearTimeout(findTimeoutId);
+        findTimeoutId=setTimeout(function()
+        {
+            self.search(lastSearch);
+        },200);
+
+
     };
 
     function addResultOp(op)
@@ -37,7 +48,7 @@ CABLES.UI.Find=function()
         if(str.length<2)return;
 
         str=str.toLowerCase();
-        console.log('--- ',str);
+        // console.log('--- ',str);
         for(var i=0;i<gui.patch().ops.length;i++)
         {
             if(gui.patch().ops[i].op)
