@@ -283,7 +283,7 @@ CABLES.UI.GUI=function()
         $('#options').css('width',optionsWidth);
         $('#options').css('height',window.innerHeight-self.rendererHeight);
 
-var metaWidth=self.rendererWidth-optionsWidth;
+        var metaWidth=self.rendererWidth-optionsWidth;
         $('#meta').css('right',0);
         $('#meta').css('top',self.rendererHeight);
         $('#meta').css('width',metaWidth);
@@ -457,8 +457,6 @@ var metaWidth=self.rendererWidth-optionsWidth;
             });
 
         $('#meta_content_screen').html(html);
-
-
     };
 
     this.showMetaUiDebug=function()
@@ -731,6 +729,7 @@ var metaWidth=self.rendererWidth-optionsWidth;
                         if(!showingEditor)
                         {
                             _find.show();
+                            self.setMetaTab('find');
                             e.preventDefault();
                         }
 
@@ -1124,6 +1123,8 @@ var metaWidth=self.rendererWidth-optionsWidth;
         if(which=='bookmarks') self.bookmarks.show();
         if(which=='preview') self.preview.show();
         else self.preview.hide();
+        if(which=='find') self.find().show();
+
     };
 
 

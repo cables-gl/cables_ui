@@ -9,7 +9,7 @@ CABLES.UI.Profiler=function(projectId)
 
     this.show=function()
     {
-        var html = CABLES.UI.getHandleBarHtml('params_profiler',{});
+        var html = CABLES.UI.getHandleBarHtml('meta_profiler',{});
         $('#meta_content_profiler').html(html);
     };
 

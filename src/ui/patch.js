@@ -2108,9 +2108,10 @@ CABLES.UI.Patch=function(_gui)
                         syntax:thePort.uiAttribs.editorSyntax,
                         onSave:function(setStatus,content)
                         {
-                            gui.editor().setStatus('ok');
+                            // gui.editor().setStatus('ok');
                             // setStatus('value set');
                             console.log('setvalue...');
+                            gui.jobs().finish('saveeditorcontent');
                             thePort.set(content);
 
 

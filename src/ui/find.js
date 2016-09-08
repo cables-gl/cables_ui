@@ -13,19 +13,18 @@ CABLES.UI.Find=function()
 
     this.show=function()
     {
-        $('#options').html(html);
+        $('#meta_content_find').html(html);
         $('#findinput').focus();
 
         $('#findinput').val(lastSearch);
         document.getElementById('findinput').setSelectionRange(0, lastSearch.length);
-
         var self=this;
+
         clearTimeout(findTimeoutId);
         findTimeoutId=setTimeout(function()
         {
             self.search(lastSearch);
-        },200);
-
+        },100);
 
     };
 
