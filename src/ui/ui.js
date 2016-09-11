@@ -294,12 +294,9 @@ CABLES.UI.GUI=function()
         $('#performance_glcanvas').css('right',self.rendererWidth-optionsWidth-$('#performance_glcanvas').width()+1 );
         // $('#performance_glcanvas').css('max-width',self.rendererWidth-optionsWidth);
 
-
         $('#menubar').css('top',0);
         $('#menubar').css('width',window.innerWidth-self.rendererWidth-10);
         $('#menubar').css('height',menubarHeight);
-
-
 
         $('#splitterMeta').css('bottom',self.infoHeight+'px');
         $('#splitterMeta').css('width',metaWidth+'px');
@@ -309,8 +306,6 @@ CABLES.UI.GUI=function()
         $('#infoArea').css('bottom','0px');
 
         $('#meta_content').css('height',window.innerHeight-self.rendererHeight-self.infoHeight-50);
-
-
 
         if(self.rendererWidth===0)
         {

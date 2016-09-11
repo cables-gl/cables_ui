@@ -543,8 +543,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         background.node.ondblclick = function (ev)
         {
             gui.patch().setSelectedOp(null);
-            if(opui.op.objName=='Ops.Ui.Patch')
-                gui.patch().setCurrentSubPatch(opui.op.patchId.val);
+            if(CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
         };
 
         background.onmouseup = function (ev)
@@ -552,14 +551,9 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             opui.isDragging=false;
         };
 
-        if(objName=='Ops.Ui.Patch')
-        {
-            background.node.classList.add('op_subpatch');
-            // background.attr({
-            //     'stroke-width':4,
-            //     'stroke': '#eee'
-            // });
-        }
+        if(CABLES.Op.isSubpatchOp(opui.op.objName)) background.node.classList.add('op_subpatch');
+        if(opui.op.objName=="Ops.Ui.PatchInput") background.node.classList.add('op_subpatch_in');
+        if(opui.op.objName=="Ops.Ui.PatchOutput") background.node.classList.add('op_subpatch_out');
 
         if(objName!='Ops.Ui.Comment')
         {

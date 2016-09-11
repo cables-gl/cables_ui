@@ -152,7 +152,7 @@ CABLES.UI.Patch=function(_gui)
                         for(i=0;i<json.ops.length;i++)
                         {
 
-                            if(json.ops[i].objName=='Ops.Ui.Patch')
+                            if(CABLES.Op.isSubpatchOp(json.ops[i].objName))
                             {
 
                                 for(k in json.ops[i].portsIn)
@@ -310,12 +310,11 @@ CABLES.UI.Patch=function(_gui)
 
     this.createSubPatchFromSelection=function()
     {
-        if(selectedOps.length==1 && selectedOps[0].op.objName=='Ops.Ui.Patch')
+        if(selectedOps.length==1 && selectedOps[0].op.objName=='Ops.Ui.SubPatch')
         {
             this.unPatchSubPatch(selectedOps[0].op.patchId.val);
             return;
         }
-
 
         var bounds=this.getSelectionBounds();
 
@@ -326,7 +325,7 @@ CABLES.UI.Patch=function(_gui)
             };
 
 
-        gui.scene().addOp('Ops.Ui.Patch',{translate:trans},function(patchOp)
+        gui.scene().addOp('Ops.Ui.SubPatch',{translate:trans},function(patchOp)
         {
             var patchId=patchOp.patchId.get();
 
@@ -349,7 +348,35 @@ CABLES.UI.Patch=function(_gui)
                         if(otherOp.uiAttribs.subPatch!=patchId)
                         {
                             console.log('found outside connection!! ',otherPort.name);
-                            patchOp.routeLink(theOp.portsIn[j].links[k]);
+                            theOp.portsIn[j].links[k].remove();
+                            // patchOp.routeLink(theOp.portsIn[j].links[k]);
+                            gui.scene().link(
+                                otherPort.parent,
+                                otherPort.getName(),
+                                patchOp,
+                                patchOp.dyn.name
+                                );
+                            patchOp.addSubLink(theOp.portsIn[j],otherPort);
+
+                        }
+                    }
+
+                    if(theOp.portsOut[j])
+                    for( k=0;k<theOp.portsOut[j].links.length;k++)
+                    {
+                        var otherPortOut=theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
+                        var otherOpOut=otherPortOut.parent;
+                        if(otherOpOut.uiAttribs.subPatch!=patchId)
+                        {
+                            console.log('found outside connection!! ',otherPortOut.name);
+                            theOp.portsOut[j].links[k].remove();
+                            gui.scene().link(
+                                otherPortOut.parent,
+                                otherPortOut.getName(),
+                                patchOp,
+                                patchOp.dynOut.name
+                                );
+                            patchOp.addSubLink(theOp.portsOut[j],otherPortOut);
                         }
                     }
                 }

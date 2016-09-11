@@ -208,7 +208,7 @@ td.head
 
 #menubar
 {
-    overflow: hidden;
+    overflow: visible;
 }
 
 #timelineui
@@ -1439,7 +1439,7 @@ hr
     background-color:#222;
     padding:10px;
     padding-top:20px !important;
-    height:300px;
+    height:240px;
     text-overflow: ellipsis;
     overflow: hidden;
 
