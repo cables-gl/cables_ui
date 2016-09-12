@@ -1052,7 +1052,6 @@ CABLES.UI.Patch=function(_gui)
 
             self.setMinimapBounds();
             self.updateViewBox();
-
         });
 
         this.background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
@@ -1405,9 +1404,6 @@ CABLES.UI.Patch=function(_gui)
         {
             gui.setStateUnsaved();
 
-console.log('onunlink',p1,p2);
-
-
             // todo: check if needs to be updated ?
             self.updateCurrentOpParams();
 
@@ -1633,7 +1629,7 @@ console.log('onunlink',p1,p2);
         {
             if(selectedOps[j].op.uiAttribs && selectedOps[j].op.uiAttribs.translate)
             {
-                console.log(selectedOps[j].op.uiAttribs.translate.x);
+                // console.log(selectedOps[j].op.uiAttribs.translate.x);
                 bounds.minx=Math.min(bounds.minx, selectedOps[j].op.uiAttribs.translate.x);
                 bounds.maxx=Math.max(bounds.maxx, selectedOps[j].op.uiAttribs.translate.x);
                 bounds.miny=Math.min(bounds.miny, selectedOps[j].op.uiAttribs.translate.y);
@@ -1641,7 +1637,7 @@ console.log('onunlink',p1,p2);
             }
         }
 
-        console.log(bounds);
+        // console.log(bounds);
 
         return bounds;
     };
