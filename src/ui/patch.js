@@ -752,10 +752,9 @@ CABLES.UI.Patch=function(_gui)
 
     var minimapBounds={x:0,y:0,w:0,h:0};
 
-    this.setMinimapBounds=function()
+    this.getSubPatchBounds=function(subPatch)
     {
-        if(!self.updateBounds)return;
-        self.updateBounds=false;
+
         var bounds=
             {
                 minx:  9999999,
@@ -768,7 +767,7 @@ CABLES.UI.Patch=function(_gui)
         {
             if(self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
             {
-                if(self.ops[j].op.uiAttribs.subPatch==currentSubPatch)
+                if(self.ops[j].op.uiAttribs.subPatch==subPatch)
                 {
                     bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
                     bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
@@ -779,10 +778,21 @@ CABLES.UI.Patch=function(_gui)
         }
 
 
-        minimapBounds.x=bounds.minx-100;
-        minimapBounds.y=bounds.miny-100;
-        minimapBounds.w=Math.abs(bounds.maxx-bounds.minx)+300;
-        minimapBounds.h=Math.abs(bounds.maxy-bounds.miny)+300;
+        bounds.x=bounds.minx-100;
+        bounds.y=bounds.miny-100;
+        bounds.w=Math.abs(bounds.maxx-bounds.minx)+300;
+        bounds.h=Math.abs(bounds.maxy-bounds.miny)+300;
+        return bounds;
+
+    };
+
+
+    this.setMinimapBounds=function()
+    {
+        if(!self.updateBounds)return;
+        self.updateBounds=false;
+
+        minimapBounds=this.getSubPatchBounds(currentSubPatch);
 
         self.paperMap.setViewBox(
             minimapBounds.x,
@@ -1000,7 +1010,7 @@ CABLES.UI.Patch=function(_gui)
 
         this.paperMap= Raphael("minimap",CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
 
-        setInterval(self.setMinimapBounds,500);
+        setInterval(self.setMinimapBounds.bind(self),500);
         self.paperMap.setViewBox( -500,-500,4000,4000 );
 
         miniMapBounding=this.paperMap.rect(0,0,10,10).attr({
