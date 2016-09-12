@@ -325,15 +325,19 @@ CABLES.UI.Patch=function(_gui)
             };
 
 
-        gui.scene().addOp('Ops.Ui.SubPatch',{translate:trans},function(patchOp)
+        gui.scene().addOp('Ops.Ui.SubPatch',{"translate":trans},function(patchOp)
         {
             var patchId=patchOp.patchId.get();
+
+            patchOp.uiAttr({"translate":trans});
 
             var i,j,k;
             for( i in selectedOps)
             {
                 selectedOps[i].op.uiAttribs.subPatch=patchId;
             }
+
+
 
 
             for(i=0;i<selectedOps.length;i++)
@@ -754,7 +758,6 @@ CABLES.UI.Patch=function(_gui)
 
     this.getSubPatchBounds=function(subPatch)
     {
-
         var bounds=
             {
                 minx:  9999999,
@@ -764,19 +767,19 @@ CABLES.UI.Patch=function(_gui)
             };
 
         for(var j=0;j<self.ops.length;j++)
-        {
-            if(self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
+            if(self.ops[j].op.objName.indexOf("Ops.Ui.")==-1)
             {
-                if(self.ops[j].op.uiAttribs.subPatch==subPatch)
-                {
-                    bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
-                    bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
-                    bounds.miny=Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
-                    bounds.maxy=Math.max(bounds.maxy, self.ops[j].op.uiAttribs.translate.y);
-                }
-            }
-        }
 
+                if(self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
+                    if(self.ops[j].op.uiAttribs.subPatch==subPatch)
+                    {
+
+                        bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
+                        bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
+                        bounds.miny=Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
+                        bounds.maxy=Math.max(bounds.maxy, self.ops[j].op.uiAttribs.translate.y);
+                    }
+            }
 
         bounds.x=bounds.minx-100;
         bounds.y=bounds.miny-100;
@@ -789,6 +792,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.setMinimapBounds=function()
     {
+        console.log('minimapBounds');
         if(!self.updateBounds)return;
         self.updateBounds=false;
 
@@ -1010,7 +1014,7 @@ CABLES.UI.Patch=function(_gui)
 
         this.paperMap= Raphael("minimap",CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
 
-        setInterval(self.setMinimapBounds.bind(self),500);
+        // setInterval(self.setMinimapBounds.bind(self),500);
         self.paperMap.setViewBox( -500,-500,4000,4000 );
 
         miniMapBounding=this.paperMap.rect(0,0,10,10).attr({
@@ -1046,7 +1050,9 @@ CABLES.UI.Patch=function(_gui)
                 viewBox.h-=delta;
             }
 
+            self.setMinimapBounds();
             self.updateViewBox();
+
         });
 
         this.background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({

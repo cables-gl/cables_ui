@@ -929,7 +929,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
 
 
-        self.op.uiAttribs.translate={x:posx,y:posy};
+        self.op.uiAttr({"translate":{x:posx,y:posy}});
 
         for(var j in self.links)
             self.links[j].redraw();
