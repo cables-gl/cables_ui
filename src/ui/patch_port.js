@@ -255,7 +255,13 @@ CABLES.UI.Port=function(thePort)
         for(var i=0;i<self.opUi.links.length;i++)
             if(self.opUi.links[i].p1 && self.opUi.links[i].p2)
                 if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
-                    self.opUi.links[i].linkLine.node.classList.add('link_hover');
+                {
+                    // console.log(self.opUi.links[i]);
+                    if(!self.opUi.links[i].p2.thePort.isLinked() || !self.opUi.links[i].p1.thePort.isLinked())
+                        self.opUi.links[i].hide();
+                    else
+                        self.opUi.links[i].linkLine.node.classList.add('link_hover');
+                }
 
     }
 
@@ -273,7 +279,11 @@ CABLES.UI.Port=function(thePort)
         for(var i=0;i<self.opUi.links.length;i++)
             if(self.opUi.links[i].p1 && self.opUi.links[i].p2)
                 if(self.opUi.links[i].p1.thePort==self.thePort || self.opUi.links[i].p2.thePort==self.thePort)
-                    self.opUi.links[i].linkLine.node.classList.remove('link_hover');
+                    if(!self.opUi.links[i].p2.thePort.isLinked() || !self.opUi.links[i].p1.thePort.isLinked())
+                        self.opUi.links[i].hide();
+                    else
+                        if(self.opUi.links[i].linkLine)
+                            self.opUi.links[i].linkLine.node.classList.remove('link_hover');
     }
 
     this.isVisible=function()

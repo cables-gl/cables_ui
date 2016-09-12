@@ -1163,6 +1163,12 @@ CABLES.UI.Patch=function(_gui)
 
     }
 
+    this.removeDeadLinks=function()
+    {
+        for(var i in self.ops)
+            self.ops[i].removeDeadLinks();
+    };
+
     function doAddOp(uiOp)
     {
         var op=uiOp.op;
@@ -1355,6 +1361,7 @@ CABLES.UI.Patch=function(_gui)
 
     var showAddedOpTimeout=-1;
 
+
     this.bindScene=function(scene)
     {
         scene.onLoadStart=function()
@@ -1381,6 +1388,11 @@ CABLES.UI.Patch=function(_gui)
         scene.onUnLink=function(p1,p2)
         {
             gui.setStateUnsaved();
+
+console.log('onunlink',p1,p2);
+
+
+            // todo: check if needs to be updated ?
             self.updateCurrentOpParams();
 
             for(var i in self.ops)
@@ -1393,6 +1405,8 @@ CABLES.UI.Patch=function(_gui)
                         (self.ops[i].links[j].p1.thePort==p1 && self.ops[i].links[j].p2.thePort==p2) ||
                         (self.ops[i].links[j].p1.thePort==p2 && self.ops[i].links[j].p2.thePort==p1))
                         {
+
+                            console.log('found onunlink ports!');
                             var undofunc=function(p1Name,p2Name,op1Id,op2Id)
                             {
 
@@ -1457,6 +1471,9 @@ CABLES.UI.Patch=function(_gui)
 
             if(!uiPort1.opUi.isHidden()) thelink.show();
 
+
+
+            // todo: update is too often ?? check if current op is linked else do not update!!!
             self.updateCurrentOpParams();
 
             var undofunc=function(p1Name,p2Name,op1Id,op2Id)
@@ -1995,7 +2012,6 @@ CABLES.UI.Patch=function(_gui)
     };
     this._showOpParams=function(op)
     {
-
 
         var i=0;
 

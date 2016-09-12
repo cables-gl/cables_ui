@@ -208,6 +208,7 @@ function UiLink(port1, port2)
     self.hide=function()
     {
         if(!this.isVisible())return;
+        this.hideAddButton();
         this.linkLine.remove();
         this.linkLine=null;
     };
@@ -861,8 +862,16 @@ var OpUi=function(paper,op,x,y,w,h,txt)
             found=false;
             for(var j in self.links)
             {
-                if(self.links[j].p1===null)
+                if(!self.links[j].p2.thePort.isLinked() || !self.links[j].p1.thePort.isLinked())
                 {
+                    self.links[j].hide();
+                    self.links.splice(j,1);
+                    found=true;
+                }
+                else
+                if(self.links[j].p1===null || self.links[j].p2===null)
+                {
+                    self.links[j].hide();
                     self.links.splice(j,1);
                     found=true;
                 }
