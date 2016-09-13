@@ -55,9 +55,8 @@
 
     svg
     {
-
         // shape-rendering:crispEdges;
-        shape-rendering:optimizeSpeed;
+        // shape-rendering:optimizeSpeed;
         position:absolute;
         text
         {
@@ -93,7 +92,7 @@
         stroke-width:2;
     }
 
-    
+
     .op_handle_default { fill:$color_op_handle_default;}
     .op_handle_gl { fill:$color_op_handle_gl; }
     .op_handle_audio { fill:$color_op_handle_audio; }

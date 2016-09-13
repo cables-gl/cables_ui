@@ -860,8 +860,50 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         while(found)
         {
             found=false;
+
+            var p=0;
+            for(p in self.portsIn)
+            {
+                var port=self.portsIn[p];
+                for(var j in port.links)
+                {
+                    if(port.links[j].portIn===null || port.links[j].portOut===null )
+                    {
+                        port.links[j].remove();
+                        found=true;
+                    }
+                }
+            }
+
+            for(p in self.portsOut)
+            {
+                var port=self.portsOut[p];
+                for(var j in port.links)
+                {
+                    if(port.links[j].portIn===null || port.links[j].portOut===null )
+                    {
+                        port.links[j].remove();
+                        found=true;
+                    }
+                }
+            }
+        }
+        found=true;
+
+        while(found)
+        {
+            found=false;
             for(var j in self.links)
             {
+
+                if(!self.links[j])
+                {
+                    self.links.splice(j,1);
+                    found=true;
+
+                }
+                else
+
                 if(!self.links[j].p2.thePort.isLinked() || !self.links[j].p1.thePort.isLinked())
                 {
                     self.links[j].hide();
@@ -869,12 +911,14 @@ var OpUi=function(paper,op,x,y,w,h,txt)
                     found=true;
                 }
                 else
+
                 if(self.links[j].p1===null || self.links[j].p2===null)
                 {
                     self.links[j].hide();
                     self.links.splice(j,1);
                     found=true;
                 }
+
             }
         }
     };
