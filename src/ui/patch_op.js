@@ -556,43 +556,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(opui.op.objName=="Ops.Ui.PatchInput") background.node.classList.add('op_subpatch_in');
         if(opui.op.objName=="Ops.Ui.PatchOutput") background.node.classList.add('op_subpatch_out');
 
-        if(objName!='Ops.Ui.Comment')
-        {
-            // var oldPosX = 0;
-            // var resizeStart = function(dx, dy,a,b,e)
-            // {
-            //     oldPosX=resizeHandle.attrs.x;
-            //     opui.isDragging=true;
-            // };
-            //
-            // var resizeEnd = function(dx, dy,a,b,e)
-            // {
-            //     oldPosX=-1;
-            //     opui.isDragging=false;
-            // };
-            //
-            // var resizeMove = function(dx, dy,a,b,e)
-            // {
-            //     if(oldPosX<0)return;
-            //
-            //     var width=oldPosX+dx-background.attrs.x;
-            //     if(width<50)width=50;
-            //
-            //     resizeHandle.attr({
-            //         "x":oldPosX+dx
-            //     });
-            //     background.attr({
-            //         "width":width
-            //     });
-            //     label.attr({
-            //         "x":width/2
-            //     });
-            // };
-            //
-            // resizeHandle.drag(resizeMove, resizeStart,resizeEnd);
-
-        }
-        else
+        if(objName=='Ops.Ui.Comment')
         {
             var sw=150;
             var sh=100;
@@ -606,7 +570,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
             label.attr({
                 'x':sw/2,
-                'y':45
+                'y':45,
+                "font-size": 22,
             });
 
             background.attr({
@@ -673,7 +638,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 background.attr({
                     width:width+resizeSize
                 });
-
 
                 backgroundResize.attr({
                     x:oldPosX+dx,
@@ -756,8 +720,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 label.attr({'text': shownTitle+'...  '});
             }
         }
-
-
     };
 
     this.getGroup=function()
@@ -841,8 +803,6 @@ var OpUi=function(paper,op,x,y,w,h,txt)
             for(j in self.portsOut) self.portsOut[j].addUi(this.oprect.getGroup());
         }
 
-        // this.oprect.getGroup().transform('t'+posx+','+posy);
-
         for(j in self.links) self.links[j].show();
 
         self.setPos();
@@ -856,6 +816,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     this.removeDeadLinks=function()
     {
         var found=true;
+        var j=0;
+        var port=null;
 
         while(found)
         {
@@ -864,8 +826,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
             var p=0;
             for(p in self.portsIn)
             {
-                var port=self.portsIn[p];
-                for(var j in port.links)
+                port=self.portsIn[p];
+                for( j in port.links)
                 {
                     if(port.links[j].portIn===null || port.links[j].portOut===null )
                     {
@@ -877,8 +839,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
             for(p in self.portsOut)
             {
-                var port=self.portsOut[p];
-                for(var j in port.links)
+                port=self.portsOut[p];
+                for(j in port.links)
                 {
                     if(port.links[j].portIn===null || port.links[j].portOut===null )
                     {
@@ -893,17 +855,15 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         while(found)
         {
             found=false;
-            for(var j in self.links)
+            for(j in self.links)
             {
 
                 if(!self.links[j])
                 {
                     self.links.splice(j,1);
                     found=true;
-
                 }
                 else
-
                 if(!self.links[j].p2.thePort.isLinked() || !self.links[j].p1.thePort.isLinked())
                 {
                     self.links[j].hide();
@@ -911,14 +871,12 @@ var OpUi=function(paper,op,x,y,w,h,txt)
                     found=true;
                 }
                 else
-
                 if(self.links[j].p1===null || self.links[j].p2===null)
                 {
                     self.links[j].hide();
                     self.links.splice(j,1);
                     found=true;
                 }
-
             }
         }
     };
@@ -945,7 +903,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
                 {
                     var u=JSON.parse(oldUiAttribs);
                     self.setPos(u.translate.x,u.translate.y);
-                }catch(e){}
+                }
+                catch(e){}
             },
             redo: function()
             {
@@ -968,11 +927,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
             posy=y;
         }
 
-
         self.oprect.setPosition(posx,posy);
-
-
-
         self.op.uiAttr({"translate":{x:posx,y:posy}});
 
         for(var j in self.links)
@@ -1059,10 +1014,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     this.addPort=function(_inout,thePort)
     {
         var inout=_inout;
-
         var portIndex=this.portsIn.length;
         if(inout==PORT_DIR_OUT) portIndex=this.portsOut.length;
-
 
         var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*portIndex;
         if(self.oprect.getWidth()<w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2) self.oprect.setWidth(w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2);
@@ -1074,12 +1027,9 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         port.opUi=self;
         port.portIndex=portIndex;
 
-
         if(this.oprect.getRect()) port.addUi(this.oprect.getGroup());
 
         if(inout==PORT_DIR_OUT) this.portsOut.push(port);
             else this.portsIn.push(port);
     };
-
-
 };
