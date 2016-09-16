@@ -1941,3 +1941,16 @@ rect
     z-index: 9999;
     display: none;
 }
+
+#delayed
+{
+    position: absolute;
+    top:20px;
+    right:20px;
+    background-color: #333;
+    padding:10px;
+    opacity: 0.8;
+    border-radius: 5px;
+    z-index: 9999;
+    display: block;
+}
