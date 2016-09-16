@@ -720,12 +720,15 @@ CABLES.UI.GUI=function()
                 case 70:
                     if(e.metaKey || e.ctrlKey)
                     {
-                        // if($('#patch').is(":focus"))
+                         if(!$('#ace textarea').is(":focus"))
+                         {
+                             _find.show();
+                             self.setMetaTab('find');
+                             e.preventDefault();
+                             
+                         }
                         if(!showingEditor)
                         {
-                            _find.show();
-                            self.setMetaTab('find');
-                            e.preventDefault();
                         }
 
                     }
