@@ -780,7 +780,7 @@ input[type=text]:active, input[type=text]:focus {
 
     #username
     {
-        margin-top: 8px;
+        margin-top: 5px;
         float:left;
     }
 }
@@ -975,82 +975,141 @@ input[type=text]:active, input[type=text]:focus {
 #library
 {
     display:none;
-    padding:10px;
     //font-family: arial;
     position: absolute;
-    margin-top:41px;
-    left:10px;
-    width:820px;
-    height:540px;
+    height:600px;
     background-color: #222;
     z-index: 99999;
 
     .left
     {
-        width:600px;
+        width:70%;
         float:left;
     }
 
     .right
     {
         float:left;
-        width:210px;
+        width:30%;
     }
 
     #lib_preview
     {
         margin-left: 10px;
         padding-top:40px;
-        width:200px;
-        height:500px;
+    }
+
+    .iconcontainer
+    {
+        width:120px;
+        height:140px;
+        float:left;
+        cursor:pointer;
+
+        &:hover
+        {
+            background-color: #444;
+
+            .filename
+            {
+                color:#fff;
+            }
+        }
+
+        .filename
+        {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width:100px;
+            margin-left: 10px;
+            text-align: center;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+
+
+        .library-file-icon,i
+        {
+            margin-top:10px;
+            background-color: #111;
+            margin-left: 10px;
+            background-repeat:no-repeat;
+            background-size:100% auto;
+            width:100px;
+            height:100px;
+            background-position:center center;
+        }
+
+        i
+        {
+            height:70px;
+            padding-top: 30px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+    }
+
+    .library-file-list
+    {
+        padding:4px;
+        cursor:pointer;
+
+        i
+        {
+            margin-right: 3px;
+        }
+
+        &:hover
+        {
+            background-color: #444;
+            color:#fff;
+        }
     }
 
     #lib_head
     {
         .tabs
         {
-            div
+            height:40px;
+            clear: both;
+            background-color: #000;
+
+            .tab
             {
                 float: left;
-                padding-top:12px;
-                padding-bottom:7px;
+                padding-top:13px;
+                padding-bottom:9px;
                 padding-left:20px;
                 padding-right:20px;
-                background-color: #222;
+                background-color: transparent;
                 margin-right: 5px;
                 margin-bottom: 10px;
                 cursor:pointer;
+                max-height:100%;
 
                 &:hover
                 {
-                    background-color: #333;
+                    color: #fff;
                 }
             }
 
             .active
             {
-                background-color: #444;
+                background-color: #222;
                 color:white;
             }
         }
 
-        .tabs
-        {
-            clear: both;
-            background-color: #222;
-            height:33px;
-            border-bottom: 1px solid #666;
-        }
     }
 
     #lib_files
     {
         clear: both;
-        height:500px;
+        height:540px;
         overflow: auto;
-        font-size: 11px;
-
-
+        font-size: 12px;
 
         .lvl0{}
         .lvl1{ margin-left: 10px;}

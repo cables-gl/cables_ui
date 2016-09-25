@@ -1225,7 +1225,7 @@ CABLES.UI.Patch=function(_gui)
 
             if(!p.uiAttribs) p.uiAttribs={};
 
-            if(p.uiAttribs.display!='readonly')
+            if(p.uiAttribs.display!='readonly' && !p.uiAttribs.hidePort)
                 uiOp.addPort(PORT_DIR_IN,p);
 
             if(p.uiAttribs.hasOwnProperty('display'))

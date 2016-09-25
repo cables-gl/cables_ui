@@ -9,6 +9,8 @@ CABLES.UI.FileSelect=function()
     var apiPath='';
     var inputId='';
     var filterType='';
+    this._viewClass='icon';
+    var self=this;
 
     this.setTab=function(which)
     {
@@ -31,7 +33,6 @@ CABLES.UI.FileSelect=function()
 
     this.showPreview=function(val)
     {
-        console.log('val',val);
 
         var opts={};
 
@@ -44,6 +45,12 @@ CABLES.UI.FileSelect=function()
 
         $('#lib_preview').html( html );
 
+    };
+
+    this.setView=function(v)
+    {
+        this._viewClass=v;
+        this.load();
     };
 
     this.show=function(_inputId,_filterType)
@@ -83,6 +90,7 @@ CABLES.UI.FileSelect=function()
             var html='';
             for(var i in files)
             {
+
                 if(!files[i])continue;
 
                 files[i].selectableClass='';
@@ -102,7 +110,7 @@ CABLES.UI.FileSelect=function()
                 if(!files[i].p)files[i].p=p+files[i].n;
 
 
-                html+= CABLES.UI.getHandleBarHtml('library_file',{file: files[i],inputId:inputId,filterType:filterType });
+                html+= CABLES.UI.getHandleBarHtml('library_file_'+self._viewClass,{file: files[i],inputId:inputId,filterType:filterType });
                 if(files[i].d )
                 {
                     html+=getFileList(filterType,files[i].c,p+files[i].n+'/');
@@ -115,7 +123,7 @@ CABLES.UI.FileSelect=function()
 
             CABLES.api.get(apiPath,function(files)
             {
-                console.log(files);
+
                 var html=getFileList(filterType,files);
 
                 $('#lib_files').html(html);

@@ -215,6 +215,11 @@ CABLES.UI.GUI=function()
         $('#patch').css('top',menubarHeight);
         $('#patch').css('left',patchLeft);
 
+
+        $('#library').css('left',0);
+        $('#library').css('width',patchWidth);
+        $('#library').css('top',0);
+
         $('#minimapContainer').show();
         $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-4);
         if(showMiniMap)
@@ -277,6 +282,7 @@ CABLES.UI.GUI=function()
         if(self.timeLine())self.timeLine().updateViewBox();
 
         $('#splitterTimeline').css('width',window.innerWidth-self.rendererWidth-2);
+
 
         $('#options').css('left',window.innerWidth-self.rendererWidth-1);
         $('#options').css('top',self.rendererHeight);
@@ -725,7 +731,7 @@ CABLES.UI.GUI=function()
                              _find.show();
                              self.setMetaTab('find');
                              e.preventDefault();
-                             
+
                          }
                         if(!showingEditor)
                         {
@@ -781,6 +787,15 @@ CABLES.UI.GUI=function()
                     {
                         self.createProject();
                     }
+                break;
+
+                case 9:
+                    if($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey)
+                    {
+                        CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
+                        e.preventDefault();
+                    }
+
                 break;
                 case 27:
                     if(e.metaKey || e.ctrlKey)

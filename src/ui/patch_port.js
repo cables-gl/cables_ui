@@ -260,7 +260,8 @@ CABLES.UI.Port=function(thePort)
                     if(!self.opUi.links[i].p2.thePort.isLinked() || !self.opUi.links[i].p1.thePort.isLinked())
                         self.opUi.links[i].hide();
                     else
-                        self.opUi.links[i].linkLine.node.classList.add('link_hover');
+                        if(self.opUi.links[i].linkLine)
+                            self.opUi.links[i].linkLine.node.classList.add('link_hover');
                 }
 
     }
