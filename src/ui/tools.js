@@ -6,7 +6,7 @@ CABLES.UI.getHandleBarHtml=function(name,obj)
     var source   = $("#"+name).html();
     if(!source)
     {
-        CABLES.UI.MODAL.showError('template not found','template '+name+' not found...')
+        CABLES.UI.MODAL.showError('template not found','template '+name+' not found...');
 
         return;
     }

@@ -241,7 +241,8 @@ CABLES.UI.Patch=function(_gui)
                     return;
                 }
             }
-            CABLES.UI.setStatusText("paste failed / not cables data format...");
+            CABLES.UI.notify('Paste failed');
+            // CABLES.UI.setStatusText("paste failed / not cables data format...");
         }
 
     };
@@ -660,8 +661,8 @@ CABLES.UI.Patch=function(_gui)
                 function(r)
                 {
                     CABLES.UI.notify('patch saved');
-                    if(r.success===true) CABLES.UI.setStatusText('project saved');
-                    else CABLES.UI.setStatusText('project NOT saved');
+                    // if(r.success===true) CABLES.UI.setStatusText('project saved');
+                    // else CABLES.UI.setStatusText('project NOT saved');
 
                     gui.setStateSaved();
                     gui.jobs().finish('projectsave');
@@ -841,8 +842,6 @@ CABLES.UI.Patch=function(_gui)
     {
         var txt='';
         txt+=selectedOps.length+" ops selected / [del] delete ops / [a] align ops / [g] show grapghs ";
-        // txt+='<a class="fa fa-line-chart" data-tt="show graphs of all selected ops" onclick="gui.patch().showSelectedOpsGraphs()" ></a>';
-        CABLES.UI.setStatusText(txt);
 
         var html = CABLES.UI.getHandleBarHtml(
             'params_ops',
@@ -944,8 +943,7 @@ CABLES.UI.Patch=function(_gui)
                 }
             }
 
-            if(selectedOps.length===0) CABLES.UI.setStatusText('');
-                else setStatusSelectedOps();
+            if(selectedOps.length!==0) setStatusSelectedOps();
         }
     }
 

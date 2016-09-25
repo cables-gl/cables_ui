@@ -328,7 +328,7 @@ CABLES.UI.GUI=function()
             $('#cablescanvas').css('width',self.rendererWidth+'px');
             $('#cablescanvas').css('height',self.rendererHeight+'px');
         }
-        CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
+        // CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
         $('#glcanvas').hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
@@ -963,33 +963,41 @@ CABLES.UI.GUI=function()
 
         this.showEditor();
 
-        this.getOpDoc(objName,false,function(content)
-        {
-            self.editor().addTab(
+        CABLES.api.get(
+            'doc/ops/md/'+objName,
+            function(res)
             {
-                content:content,
-                title:objName,
-                syntax:'Markdown',
-                onSave:function(setStatus,content)
-                {
-                    CABLES.api.post(
-                        'doc/ops/edit/'+objName,
-                        {content:content},
-                        function(res)
-                        {
-                            setStatus('saved');
-                            console.log('res',res);
-                        },
-                        function(res)
-                        {
-                            setStatus('error: not saved');
-                            console.log('err res',res);
-                        }
-                    );
+                var content=res.content||'';
 
-                }
+                self.editor().addTab(
+                {
+                    content:content,
+                    title:objName,
+                    syntax:'Markdown',
+                    onSave:function(setStatus,content)
+                    {
+                        CABLES.api.post(
+                            'doc/ops/edit/'+objName,
+                            {content:content},
+                            function(res)
+                            {
+                                setStatus('saved');
+                                console.log('res',res);
+                            },
+                            function(res)
+                            {
+                                setStatus('error: not saved');
+                                console.log('err res',res);
+                            }
+                        );
+
+                    }
+                });
+
+
             });
-        });
+
+
 
     };
 

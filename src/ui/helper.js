@@ -1,10 +1,10 @@
 
 CABLES.UI=CABLES.UI || {};
 
-CABLES.UI.setStatusText=function(txt)
-{
-    $('#statusbar .text').html('&nbsp;'+txt);
-};
+// CABLES.UI.setStatusText=function(txt)
+// {
+//     // $('#statusbar .text').html('&nbsp;'+txt);
+// };
 
 CABLES.uniqueArray=function(arr)
 {
