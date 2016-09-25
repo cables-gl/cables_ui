@@ -217,7 +217,7 @@ CABLES.UI.GUI=function()
 
 
         $('#library').css('left',0);
-        $('#library').css('width',patchWidth);
+        $('#library').css('width',window.innerWidth-self.rendererWidth);
         $('#library').css('top',0);
 
         $('#minimapContainer').show();
