@@ -2110,15 +2110,20 @@ CABLES.UI.Patch=function(_gui)
         $('#options').html(html);
         updateUiAttribs();
 
-        for(i in op.portsIn)
+        for(i=0;i<op.portsIn.length;i++)
         {
             if(op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display=='file')
             {
-                if(op.portsIn[i].get() && (op.portsIn[i].get()+''.endsWith('.jpg') || op.portsIn[i].get()+''.endsWith('.png')))
+                if(op.portsIn[i].get() && ((op.portsIn[i].get()+'').endsWith('.jpg') || (op.portsIn[i].get()+'').endsWith('.png')) )
                 {
+                    console.log( op.portsIn[i].get() );
                     $('#portpreview_'+i).css('background-color','black');
                     $('#portpreview_'+i).css('max-width','100%');
-                    $('#portpreview_'+i).html('<img src="'+op.portsIn[i].get()+'" style="max-width:100%"/>');
+                    $('#portpreview_'+i).html('<img src="'+op.portsIn[i].get()+'" style="max-width:100%"/>lalala');
+                }
+                else
+                {
+                    $('#portpreview_'+i).html('');
                 }
             }
         }
