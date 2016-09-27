@@ -999,6 +999,9 @@ input[type=text]:active, input[type=text]:focus {
         padding-top:40px;
     }
 
+
+
+
     .iconcontainer
     {
         width:120px;
@@ -1049,6 +1052,14 @@ input[type=text]:active, input[type=text]:focus {
             vertical-align: middle;
         }
 
+    }
+
+    .iconcontainer_dir
+    {
+        i
+        {
+            background-color: transparent !important;
+        }
     }
 
     .library-file-list

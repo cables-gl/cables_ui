@@ -35,7 +35,7 @@
 
 
 <script id="library_file_list" type="text/x-handlebars-template">
-    <div class="library-file-list lvl{{file.l}}" onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
+    <div class="library-file-list lvl{{file.l}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}');">
 
         {{#compare file.t '==' 'image' }}<i class="fa fa-1x fa-file-image-o" ></i>{{/compare}}
         {{#compare file.t '==' 'audio' }}<i class="fa fa-1x fa-file-audio-o" ></i>{{/compare}}
@@ -44,7 +44,7 @@
         {{#compare file.t '==' 'mesh' }}<i class="fa fa-1x fa-cube" ></i>{{/compare}}
         {{#compare file.t '==' 'json' }}<i class="fa fa-1x fa-file-code-o" ></i>{{/compare}}
 
-        {{file.n}}
+        {{file.n}} - {{file.t}}
     </div>
 </script>
 
@@ -56,7 +56,8 @@
         <div style="clear:both;"></div>
         {{/compare}}
 
-        <div class="iconcontainer" onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
+
+        <div class="iconcontainer iconcontainer_{{file.t}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}');">
 
             {{#compare file.t '==' 'audio' }}<i class="fa fa-4x fa-file-audio-o" ></i>{{/compare}}
             {{#compare file.t '==' 'dir' }}<i class="fa fa-4x fa-folder-open-o"></i>{{/compare}}
