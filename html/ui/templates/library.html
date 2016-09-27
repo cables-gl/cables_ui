@@ -69,7 +69,12 @@
                 </div>
             {{/compare}}
             <div class="filename">
+
+                {{#compare file.t '==' 'dir' }}<h2>{{/compare}}
+
                 {{file.n}}
+
+                {{#compare file.t '==' 'dir' }}</h2>{{/compare}}
             </div>
 
 
