@@ -2117,7 +2117,7 @@ CABLES.UI.Patch=function(_gui)
                     console.log( op.portsIn[i].get() );
                     $('#portpreview_'+i).css('background-color','black');
                     $('#portpreview_'+i).css('max-width','100%');
-                    $('#portpreview_'+i).html('<img src="'+op.portsIn[i].get()+'" style="max-width:100%"/>lalala');
+                    $('#portpreview_'+i).html('<img src="'+op.portsIn[i].get()+'" style="max-width:100%"/>');
                 }
                 else
                 {

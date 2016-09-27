@@ -35,7 +35,7 @@
 
 
 <script id="library_file_list" type="text/x-handlebars-template">
-    <div class="library-file-list" onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
+    <div class="library-file-list lvl{{file.l}}" onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
 
         {{#compare file.t '==' 'image' }}<i class="fa fa-1x fa-file-image-o" ></i>{{/compare}}
         {{#compare file.t '==' 'audio' }}<i class="fa fa-1x fa-file-audio-o" ></i>{{/compare}}
@@ -52,6 +52,10 @@
 
     <div class="library-file-icon">
 
+        {{#compare file.t '==' 'dir' }}
+        <div style="clear:both;"></div>
+        {{/compare}}
+
         <div class="iconcontainer" onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
 
             {{#compare file.t '==' 'audio' }}<i class="fa fa-4x fa-file-audio-o" ></i>{{/compare}}
@@ -67,23 +71,14 @@
             <div class="filename">
                 {{file.n}}
             </div>
+
+
         </div>
+        {{#compare file.t '==' 'dir' }}
+        <div style="clear:both;"></div>
+        {{/compare}}
 
     </div>
 
-
-    <!-- <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}"
-    {{#compare filterType '==' 'image' }}
-        class="library-file-icon"
-        style="float:left;width:100px;margin:5px;"{{/compare}}
-        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
-        {{#compare filterType '==' 'image' }}
-            <div class="lib_imgpreview" style="background-image:url({{file.p}});background-repeat:no-repeat;background-size:100% auto;width:100px;height:100px;background-position:center center;"></div>
-        {{/compare}}
-
-        {{#compare file.t '==' 'image' }}
-            <i class="fa fa-image" style="margin-top:5px;width: 100%;text-overflow: ellipsis;overflow: hidden;height: 15px;white-space: nowrap;">&nbsp;{{file.n}}</i>
-        {{/compare}}
-    </div> -->
 
 </script>

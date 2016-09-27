@@ -121,14 +121,12 @@ CABLES.UI.FileSelect=function()
 
 
 
-            CABLES.api.get(apiPath,function(files)
-            {
-
-                var html=getFileList(filterType,files);
-
-                $('#lib_files').html(html);
-
-            });
+        CABLES.api.get(apiPath,function(files)
+        {
+            console.log(files);
+            var html=getFileList(filterType,files);
+            $('#lib_files').html(html);
+        });
 
     };
 
