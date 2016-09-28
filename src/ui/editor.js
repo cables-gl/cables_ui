@@ -32,9 +32,12 @@ CABLES.Editor=function()
                 "op.inFunction",
                 "op.inValue",
                 "op.inValueBool",
+                "op.inValueString",
                 "op.inObject",
                 "op.inValueSlider",
+                "op.inValueSelect",
 
+                "op.outTexture",
                 "op.outFunction",
                 "op.outValue",
                 "op.outObject",

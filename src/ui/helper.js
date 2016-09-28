@@ -34,7 +34,6 @@ CABLES.serializeForm=function(selector)
 
 CABLES.UI.showJson=function(opid,which)
 {
-
     var op=gui.scene().getOpById(opid);
     if(!op)
     {
