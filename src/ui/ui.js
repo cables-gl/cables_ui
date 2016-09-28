@@ -1101,8 +1101,16 @@ CABLES.UI.GUI=function()
                 }
             },function(data)
             {
-                $('#loadingInfo').append('Error: You are not <a href="/"> logged in </a>');
+                self.redirectNotLoggedIn();
+
             });
+    };
+
+    this.redirectNotLoggedIn=function()
+    {
+        var theUrl=document.location.href;
+        theUrl=theUrl.replace('#','@HASH@');
+        document.location.href='/login?redir='+theUrl;
     };
 
     this.getSavedState=function()
