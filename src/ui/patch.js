@@ -99,7 +99,17 @@ CABLES.UI.Patch=function(_gui)
         {
             var str=e.clipboardData.getData('text/plain');
             e.preventDefault();
-            var json=JSON.parse(str);
+
+            var json=null;
+            try
+            {
+                json=JSON.parse(str);
+            }
+            catch(exp)
+            {
+                CABLES.UI.notify("Paste failed");
+            }
+
             var k=0;
 
 
@@ -797,7 +807,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.setMinimapBounds=function()
     {
-        console.log('minimapBounds');
+        // console.log('minimapBounds');
         if(!self.updateBounds)return;
         self.updateBounds=false;
 

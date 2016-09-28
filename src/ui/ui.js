@@ -284,6 +284,8 @@ CABLES.UI.GUI=function()
         $('#splitterTimeline').css('width',window.innerWidth-self.rendererWidth-2);
 
 
+        $('#delayed').css('left',window.innerWidth-self.rendererWidth+10);
+
         $('#options').css('left',window.innerWidth-self.rendererWidth-1);
         $('#options').css('top',self.rendererHeight);
         $('#options').css('width',optionsWidth);
