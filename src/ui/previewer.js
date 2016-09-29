@@ -71,9 +71,12 @@ CABLES.UI.Preview=function()
 
     var pixelData = new Uint8Array(2 * 2 * 4);
     var canvas = null;
+    var canvasContainer = null;
     var context = null;
     var imageData = null;
     var framebuffer = null;
+
+    var lastWidth,lastHeight;
 
     function createImageFromTexture(gl, texture, width, height)
     {
@@ -83,9 +86,19 @@ CABLES.UI.Preview=function()
             return;
         }
 
-        if(!canvas)
+        if(!canvas || lastWidth !=width || lastHeight!=height)
         {
             canvas = document.getElementById('preview_img');
+            canvasContainer = document.getElementById('preview_img_container');
+
+            lastWidth =width;
+            lastHeight=height;
+
+
+            canvasContainer.style['max-width']=width+'px';
+            canvasContainer.style['padding-top']=height/width*100+'%';
+
+            imageData=null;
             if(!canvas)
             {
                 console.log('no canvas...');

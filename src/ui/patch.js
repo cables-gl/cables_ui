@@ -99,7 +99,17 @@ CABLES.UI.Patch=function(_gui)
         {
             var str=e.clipboardData.getData('text/plain');
             e.preventDefault();
-            var json=JSON.parse(str);
+
+            var json=null;
+            try
+            {
+                json=JSON.parse(str);
+            }
+            catch(exp)
+            {
+                CABLES.UI.notify("Paste failed");
+            }
+
             var k=0;
 
 
@@ -241,7 +251,8 @@ CABLES.UI.Patch=function(_gui)
                     return;
                 }
             }
-            CABLES.UI.setStatusText("paste failed / not cables data format...");
+            CABLES.UI.notify('Paste failed');
+            // CABLES.UI.setStatusText("paste failed / not cables data format...");
         }
 
     };
@@ -660,8 +671,8 @@ CABLES.UI.Patch=function(_gui)
                 function(r)
                 {
                     CABLES.UI.notify('patch saved');
-                    if(r.success===true) CABLES.UI.setStatusText('project saved');
-                    else CABLES.UI.setStatusText('project NOT saved');
+                    // if(r.success===true) CABLES.UI.setStatusText('project saved');
+                    // else CABLES.UI.setStatusText('project NOT saved');
 
                     gui.setStateSaved();
                     gui.jobs().finish('projectsave');
@@ -796,7 +807,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.setMinimapBounds=function()
     {
-        console.log('minimapBounds');
+        // console.log('minimapBounds');
         if(!self.updateBounds)return;
         self.updateBounds=false;
 
@@ -841,8 +852,6 @@ CABLES.UI.Patch=function(_gui)
     {
         var txt='';
         txt+=selectedOps.length+" ops selected / [del] delete ops / [a] align ops / [g] show grapghs ";
-        // txt+='<a class="fa fa-line-chart" data-tt="show graphs of all selected ops" onclick="gui.patch().showSelectedOpsGraphs()" ></a>';
-        CABLES.UI.setStatusText(txt);
 
         var html = CABLES.UI.getHandleBarHtml(
             'params_ops',
@@ -944,8 +953,7 @@ CABLES.UI.Patch=function(_gui)
                 }
             }
 
-            if(selectedOps.length===0) CABLES.UI.setStatusText('');
-                else setStatusSelectedOps();
+            if(selectedOps.length!==0) setStatusSelectedOps();
         }
     }
 
@@ -1225,7 +1233,7 @@ CABLES.UI.Patch=function(_gui)
 
             if(!p.uiAttribs) p.uiAttribs={};
 
-            if(p.uiAttribs.display!='readonly')
+            if(p.uiAttribs.display!='readonly' && !p.uiAttribs.hidePort)
                 uiOp.addPort(PORT_DIR_IN,p);
 
             if(p.uiAttribs.hasOwnProperty('display'))
@@ -2110,15 +2118,20 @@ CABLES.UI.Patch=function(_gui)
         $('#options').html(html);
         updateUiAttribs();
 
-        for(i in op.portsIn)
+        for(i=0;i<op.portsIn.length;i++)
         {
             if(op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display=='file')
             {
-                if(op.portsIn[i].get() && (op.portsIn[i].get()+''.endsWith('.jpg') || op.portsIn[i].get()+''.endsWith('.png')))
+                if(op.portsIn[i].get() && ((op.portsIn[i].get()+'').endsWith('.jpg') || (op.portsIn[i].get()+'').endsWith('.png')) )
                 {
+                    console.log( op.portsIn[i].get() );
                     $('#portpreview_'+i).css('background-color','black');
                     $('#portpreview_'+i).css('max-width','100%');
                     $('#portpreview_'+i).html('<img src="'+op.portsIn[i].get()+'" style="max-width:100%"/>');
+                }
+                else
+                {
+                    $('#portpreview_'+i).html('');
                 }
             }
         }

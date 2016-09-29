@@ -1,10 +1,10 @@
 
 CABLES.UI=CABLES.UI || {};
 
-CABLES.UI.setStatusText=function(txt)
-{
-    $('#statusbar .text').html('&nbsp;'+txt);
-};
+// CABLES.UI.setStatusText=function(txt)
+// {
+//     // $('#statusbar .text').html('&nbsp;'+txt);
+// };
 
 CABLES.uniqueArray=function(arr)
 {
@@ -34,7 +34,6 @@ CABLES.serializeForm=function(selector)
 
 CABLES.UI.showJson=function(opid,which)
 {
-
     var op=gui.scene().getOpById(opid);
     if(!op)
     {

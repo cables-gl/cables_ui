@@ -215,6 +215,11 @@ CABLES.UI.GUI=function()
         $('#patch').css('top',menubarHeight);
         $('#patch').css('left',patchLeft);
 
+
+        $('#library').css('left',0);
+        $('#library').css('width',window.innerWidth-self.rendererWidth);
+        $('#library').css('top',0);
+
         $('#minimapContainer').show();
         $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-4);
         if(showMiniMap)
@@ -278,6 +283,9 @@ CABLES.UI.GUI=function()
 
         $('#splitterTimeline').css('width',window.innerWidth-self.rendererWidth-2);
 
+
+        $('#delayed').css('left',window.innerWidth-self.rendererWidth+10);
+
         $('#options').css('left',window.innerWidth-self.rendererWidth-1);
         $('#options').css('top',self.rendererHeight);
         $('#options').css('width',optionsWidth);
@@ -322,7 +330,7 @@ CABLES.UI.GUI=function()
             $('#cablescanvas').css('width',self.rendererWidth+'px');
             $('#cablescanvas').css('height',self.rendererHeight+'px');
         }
-        CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
+        // CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
         $('#glcanvas').hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
@@ -725,7 +733,7 @@ CABLES.UI.GUI=function()
                              _find.show();
                              self.setMetaTab('find');
                              e.preventDefault();
-                             
+
                          }
                         if(!showingEditor)
                         {
@@ -781,6 +789,15 @@ CABLES.UI.GUI=function()
                     {
                         self.createProject();
                     }
+                break;
+
+                case 9:
+                    if($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey)
+                    {
+                        CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
+                        e.preventDefault();
+                    }
+
                 break;
                 case 27:
                     if(e.metaKey || e.ctrlKey)
@@ -948,33 +965,41 @@ CABLES.UI.GUI=function()
 
         this.showEditor();
 
-        this.getOpDoc(objName,false,function(content)
-        {
-            self.editor().addTab(
+        CABLES.api.get(
+            'doc/ops/md/'+objName,
+            function(res)
             {
-                content:content,
-                title:objName,
-                syntax:'Markdown',
-                onSave:function(setStatus,content)
-                {
-                    CABLES.api.post(
-                        'doc/ops/edit/'+objName,
-                        {content:content},
-                        function(res)
-                        {
-                            setStatus('saved');
-                            console.log('res',res);
-                        },
-                        function(res)
-                        {
-                            setStatus('error: not saved');
-                            console.log('err res',res);
-                        }
-                    );
+                var content=res.content||'';
 
-                }
+                self.editor().addTab(
+                {
+                    content:content,
+                    title:objName,
+                    syntax:'Markdown',
+                    onSave:function(setStatus,content)
+                    {
+                        CABLES.api.post(
+                            'doc/ops/edit/'+objName,
+                            {content:content},
+                            function(res)
+                            {
+                                setStatus('saved');
+                                console.log('res',res);
+                            },
+                            function(res)
+                            {
+                                setStatus('error: not saved');
+                                console.log('err res',res);
+                            }
+                        );
+
+                    }
+                });
+
+
             });
-        });
+
+
 
     };
 
@@ -1078,8 +1103,16 @@ CABLES.UI.GUI=function()
                 }
             },function(data)
             {
-                $('#loadingInfo').append('Error: You are not <a href="/"> logged in </a>');
+                self.redirectNotLoggedIn();
+
             });
+    };
+
+    this.redirectNotLoggedIn=function()
+    {
+        var theUrl=document.location.href;
+        theUrl=theUrl.replace('#','@HASH@');
+        document.location.href='/login?redir='+theUrl;
     };
 
     this.getSavedState=function()

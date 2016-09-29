@@ -219,6 +219,8 @@ CABLES.UI.ServerOps=function(gui)
         $('#cloneOpName').focus();
     };
 
+
+
     this.edit=function(name,readOnly)
     {
         var op=null;

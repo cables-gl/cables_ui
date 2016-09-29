@@ -9,6 +9,25 @@ CABLES.UI.FileSelect=function()
     var apiPath='';
     var inputId='';
     var filterType='';
+    this._viewClass='icon';
+    var self=this;
+
+    this.setFile=function(_id,_url)
+    {
+        $(_id).val(_url);
+        $(_id).trigger('input');
+        // $(_id).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+        var highlightBg="#fff";
+        var originalBg = $(_id).css("background-color");
+        $(_id).stop().css("opacity", 0);
+        $(_id).animate({"opacity": 1}, 1000);
+
+        // $(_id).animate({backgroundColor:'#fff'}, 300);//.animate({backgroundColor:'#555'}, 100);
+
+
+
+        CABLES.UI.fileSelect.showPreview(_url);
+    };
 
     this.setTab=function(which)
     {
@@ -31,8 +50,6 @@ CABLES.UI.FileSelect=function()
 
     this.showPreview=function(val)
     {
-        console.log('val',val);
-
         var opts={};
 
         if(val.endsWith('.jpg') || val.endsWith('.png'))
@@ -43,7 +60,12 @@ CABLES.UI.FileSelect=function()
         var html= CABLES.UI.getHandleBarHtml('library_preview',opts);
 
         $('#lib_preview').html( html );
+    };
 
+    this.setView=function(v)
+    {
+        this._viewClass=v;
+        this.load();
     };
 
     this.show=function(_inputId,_filterType)
@@ -59,12 +81,10 @@ CABLES.UI.FileSelect=function()
 
             this.load();
 
-
             var val=$(_inputId).val();
             this.showPreview(val);
         }
     };
-
 
     this.load=function()
     {
@@ -73,6 +93,9 @@ CABLES.UI.FileSelect=function()
             this.setTab('projectfiles');
             return;
         }
+
+
+$('#lib_files').html('<div style="text-align:center;margin-top:50px;"><i class="fa fa-2x fa-circle-o-notch fa-spin"></i><div>');
 
         $('#tab_'+currentTab).addClass('active');
 
@@ -94,15 +117,14 @@ CABLES.UI.FileSelect=function()
                     }
                     else
                     {
-                        if(filterType=='image')continue;
+                        if(filterType)continue;
                         files[i].selectableClass='unselectable';
                     }
                 }
 
                 if(!files[i].p)files[i].p=p+files[i].n;
 
-
-                html+= CABLES.UI.getHandleBarHtml('library_file',{file: files[i],inputId:inputId,filterType:filterType });
+                html+= CABLES.UI.getHandleBarHtml('library_file_'+self._viewClass,{file: files[i],inputId:inputId,filterType:filterType });
                 if(files[i].d )
                 {
                     html+=getFileList(filterType,files[i].c,p+files[i].n+'/');
@@ -111,16 +133,14 @@ CABLES.UI.FileSelect=function()
             return html;
         }
 
+        CABLES.api.get(apiPath,function(files)
+        {
+            var html=getFileList(filterType,files);
 
+            if(html.length===0) html='<div style="margin-top:50px;text-align:center;"><a class="fa fa-upload"></a>&nbsp;no project files yet...<br/><br/>drag & drop files to browser window to upload.</a>';
 
-            CABLES.api.get(apiPath,function(files)
-            {
-                console.log(files);
-                var html=getFileList(filterType,files);
-
-                $('#lib_files').html(html);
-
-            });
+            $('#lib_files').html(html);
+        });
 
     };
 

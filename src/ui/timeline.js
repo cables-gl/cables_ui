@@ -1530,7 +1530,8 @@ CABLES.TL.UI.TimeLineUI=function()
                 }
             }
 
-            CABLES.UI.setStatusText(count+' keys selected');
+            // CABLES.UI.setStatusText(count+' keys selected');
+            CABLES.UI.notify(count+' keys selected');
         }
     }
 
@@ -1550,7 +1551,8 @@ CABLES.TL.UI.TimeLineUI=function()
         var obj={keys:keys};
         var objStr=JSON.stringify(obj);
 
-        CABLES.UI.setStatusText(keys.length+' keys copied...');
+        // CABLES.UI.setStatusText(keys.length+' keys copied...');
+        CABLES.UI.notify(keys.length+' keys copied...');
 
         e.clipboardData.setData('text/plain', objStr);
         e.preventDefault();
@@ -1588,7 +1590,8 @@ CABLES.TL.UI.TimeLineUI=function()
                         minTime=Math.min(minTime,json.keys[i].t);
                     }
 
-                    CABLES.UI.setStatusText(json.keys.length+' keys pasted...');
+                    // CABLES.UI.setStatusText(json.keys.length+' keys pasted...');
+                    CABLES.UI.notify(json.keys.length+' keys pasted');
 
                     for(i in json.keys)
                     {
@@ -1607,7 +1610,9 @@ CABLES.TL.UI.TimeLineUI=function()
                     return;
                 }
             }
-            CABLES.UI.setStatusText("paste failed / not cables data format...");
+            // CABLES.UI.setStatusText("paste failed / not cables data format...");
+            CABLES.UI.notify('Paste failed');
+
         }
     };
 

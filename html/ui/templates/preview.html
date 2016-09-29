@@ -4,6 +4,9 @@
 <script id="preview" type="text/x-handlebars-template">
 
     <h3>preview</h3>
-    <canvas id="preview_img" style="height:100%;max-width: 100%;transform: scaleY(-1);"></canvas>
+
+    <div id="preview_img_container" style="min-width:0;width:100%;padding-top:100%;position: relative;">
+        <canvas id="preview_img" style="position:absolute;top: 0;left: 0;right: 0;bottom: 0;transform: scaleY(-1);width: 100%;"></canvas>
+    </div>
 
 </script>

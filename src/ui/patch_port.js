@@ -111,7 +111,7 @@ CABLES.UI.Port=function(thePort)
 
         if(!selectedEndPort || !selectedEndPort.thePort)
         {
-            CABLES.UI.setStatusText('select a port to link...');
+            // CABLES.UI.setStatusText('select a port to link...');
         }
         else
         {
@@ -245,7 +245,7 @@ CABLES.UI.Port=function(thePort)
         hovering=true;
 
         var txt=getPortDescription(thePort);
-        CABLES.UI.setStatusText(txt);
+        // CABLES.UI.setStatusText(txt);
         CABLES.UI.showToolTip(event,txt);
         updateUI();
 
@@ -260,7 +260,8 @@ CABLES.UI.Port=function(thePort)
                     if(!self.opUi.links[i].p2.thePort.isLinked() || !self.opUi.links[i].p1.thePort.isLinked())
                         self.opUi.links[i].hide();
                     else
-                        self.opUi.links[i].linkLine.node.classList.add('link_hover');
+                        if(self.opUi.links[i].linkLine)
+                            self.opUi.links[i].linkLine.node.classList.add('link_hover');
                 }
 
     }

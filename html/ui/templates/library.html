@@ -3,40 +3,88 @@
 <script id="library_head" type="text/x-handlebars-template">
 
     <div class="tabs">
-        <div onclick="CABLES.UI.fileSelect.setTab('projectfiles');" id="tab_projectfiles" class=" tab">project files</div>
+        <div onclick="CABLES.UI.fileSelect.setTab('projectfiles');" id="tab_projectfiles" class="tab">project files</div>
         <div onclick="CABLES.UI.fileSelect.setTab('library');" id="tab_library" class="tab">library</div>
+
+        <div style="float:right">
+            <div onclick="CABLES.UI.fileSelect.setView('list');" id="tab_library" class="tab">
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </div>
+            <div onclick="CABLES.UI.fileSelect.setView('icon');" id="tab_library" class="tab">
+                <i class="fa fa-th" aria-hidden="true"></i>
+            </div>
     </div>
+
 
 </script>
 
 
 <script id="library_preview" type="text/x-handlebars-template">
 
-    <div class="previewImage" style="border:4px solid #666;background-color:000;background-image:url('{{previewImageUrl}}');background-repeat:no-repeat;background-position:center center;background-size:100% auto;width:200px;height:200px;"></div>
+<div class="modalclose" style="position:absolute;right:0px;top:0px;"><a class="button fa fa-times" onclick="$('#library').hide();"></a></div>
 
+    <div class="previewImage" style="border:4px solid #666;background-color:000;background-image:url('{{previewImageUrl}}');background-repeat:no-repeat;background-position:center center;background-size:100% auto;width:80%;padding-top:80%;"></div>
     <div class="info"></div>
 
     <div>
         <br/><br/><br/>
-        <a class="button" href="{{previewImageUrl}}" target="_blankk">open file</a>
+        <!-- <a class="button" href="{{previewImageUrl}}" target="_blankk">open file</a> -->
     </div>
 
 </script>
 
 
-<script id="library_file" type="text/x-handlebars-template">
+<script id="library_file_list" type="text/x-handlebars-template">
+    <div class="library-file-list lvl{{file.l}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}');">
 
-    <div class="file lvl{{file.l}} {{file.selectableClass}} type_{{file.t}}"
-    {{#compare filterType '==' 'image' }}
-        style="float:left;width:100px;margin:5px;"{{/compare}}
-        onclick="$('{{inputId}}').val('{{file.p}}');$('{{inputId}}').trigger('input');CABLES.UI.fileSelect.showPreview('{{file.p}}');">
-        {{#compare filterType '==' 'image' }}
-            <div class="lib_imgpreview" style="background-image:url({{file.p}});background-repeat:no-repeat;background-size:100% auto;width:100px;height:100px;background-position:center center;"></div>
-        {{/compare}}
+        {{#compare file.t '==' 'image' }}<i class="fa fa-1x fa-file-image-o" ></i>{{/compare}}
+        {{#compare file.t '==' 'audio' }}<i class="fa fa-1x fa-file-audio-o" ></i>{{/compare}}
+        {{#compare file.t '==' 'dir' }}<i class="fa fa-1x fa-folder-open-o" ></i>{{/compare}}
+        {{#compare file.t '==' 'unknown' }}<i class="fa fa-1x fa-file-o" ></i>{{/compare}}
+        {{#compare file.t '==' 'mesh' }}<i class="fa fa-1x fa-cube" ></i>{{/compare}}
+        {{#compare file.t '==' 'json' }}<i class="fa fa-1x fa-file-code-o" ></i>{{/compare}}
 
-        {{#compare file.t '==' 'image' }}
-            <i class="fa fa-image" style="margin-top:5px;width: 100%;text-overflow: ellipsis;overflow: hidden;height: 15px;white-space: nowrap;">&nbsp;{{file.n}}</i>
-        {{/compare}}
+        {{file.n}} - {{file.t}}
     </div>
+</script>
+
+<script id="library_file_icon" type="text/x-handlebars-template">
+
+    <div class="library-file-icon">
+
+        {{#compare file.t '==' 'dir' }}
+        <div style="clear:both;"></div>
+        {{/compare}}
+
+
+        <div class="iconcontainer iconcontainer_{{file.t}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}');">
+
+            {{#compare file.t '==' 'audio' }}<i class="fa fa-4x fa-file-audio-o" ></i>{{/compare}}
+            {{#compare file.t '==' 'dir' }}<i class="fa fa-4x fa-folder-open-o"></i>{{/compare}}
+            {{#compare file.t '==' 'unknown' }}<i class="fa fa-4x fa-file-o" ></i>{{/compare}}
+            {{#compare file.t '==' 'mesh' }}<i class="fa fa-4x fa-cube" ></i>{{/compare}}
+            {{#compare file.t '==' 'json' }}<i class="fa fa-4x fa-file-code-o" ></i>{{/compare}}
+
+            {{#compare file.t '==' 'image' }}
+                <div class="library-file-icon" style="background-image:url({{file.p}});">
+                </div>
+            {{/compare}}
+            <div class="filename">
+
+                {{#compare file.t '==' 'dir' }}<h2>{{/compare}}
+
+                {{file.n}}
+
+                {{#compare file.t '==' 'dir' }}</h2>{{/compare}}
+            </div>
+
+
+        </div>
+        {{#compare file.t '==' 'dir' }}
+        <div style="clear:both;"></div>
+        {{/compare}}
+
+    </div>
+
 
 </script>

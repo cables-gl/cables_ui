@@ -112,11 +112,11 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'file' }}
-                            <a class="graphbutton timingbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');"></a>
+                            <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');"></a>
                             <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
                         </td><td>
 
-                        <input class="value filevalue portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:75%;"/>
+                        <input class="value filevalue portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;"/>
                         <br/><br/>
 
                         <div id="portpreview_{{ portnum }}" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" style="padding:0px;"></div>

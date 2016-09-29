@@ -222,6 +222,7 @@ CABLES.UI.OPSELECT.getOpList=function()
                     var isFunction=false;
                     if(eval('typeof('+opname+')')=="function") isFunction=true;
 
+
                     var parts=opname.split('.');
                     var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();
 

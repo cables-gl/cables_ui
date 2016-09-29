@@ -5,8 +5,9 @@
 <h3>{{op.objName}}</h3>
 
 {{#if user.isAdmin}}
-<span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
+    <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
 {{/if}}
+
 <br/>
 <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
 <br/>
