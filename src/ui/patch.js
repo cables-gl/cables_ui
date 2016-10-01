@@ -531,9 +531,9 @@ CABLES.UI.Patch=function(_gui)
                 }
                 else
                 {
-                    // if(e.shiftKey) self.alignSelectedOpsHor();
-                    // else self.alignSelectedOpsVert();
-                    self.arrangeSelectedOps();
+                    if(e.shiftKey) self.alignSelectedOpsHor();
+                    else self.alignSelectedOpsVert();
+                    // self.arrangeSelectedOps();
                 }
             break;
 
@@ -1722,36 +1722,36 @@ CABLES.UI.Patch=function(_gui)
 
     this.arrangeSelectedOps=function()
     {
-        var i=0;
-        selectedOps.sort(function(a,b)
-        {
-            return a.op.uiAttribs.translate.y-b.op.uiAttribs.translate.y;
-        });
-
-        for(i=0;i<selectedOps.length;i++)
-
-        for(i=1;i<selectedOps.length;i++)
-        {
-            selectedOps[i].setPos(
-                selectedOps[i].op.uiAttribs.translate.x,
-                selectedOps[0].op.uiAttribs.translate.y
-            );
-        }
-
-        for(i=1;i<selectedOps.length;i++)
-        {
-            var newpos=self.findNonCollidingPosition(
-                selectedOps[i].op.uiAttribs.translate.x,
-                selectedOps[i].op.uiAttribs.translate.y,
-                selectedOps[i].op.id);
-
-            if(Math.abs(selectedOps[i].op.uiAttribs.translate.x-selectedOps[0].op.uiAttribs.translate.x)<60)
-            {
-                newpos.x=selectedOps[0].op.uiAttribs.translate.x;
-            }
-
-            selectedOps[i].setPos(newpos.x,newpos.y);
-        }
+        // var i=0;
+        // selectedOps.sort(function(a,b)
+        // {
+        //     return a.op.uiAttribs.translate.y-b.op.uiAttribs.translate.y;
+        // });
+        //
+        // for(i=0;i<selectedOps.length;i++)
+        //
+        // for(i=1;i<selectedOps.length;i++)
+        // {
+        //     selectedOps[i].setPos(
+        //         selectedOps[i].op.uiAttribs.translate.x,
+        //         selectedOps[0].op.uiAttribs.translate.y
+        //     );
+        // }
+        //
+        // for(i=1;i<selectedOps.length;i++)
+        // {
+        //     var newpos=self.findNonCollidingPosition(
+        //         selectedOps[i].op.uiAttribs.translate.x,
+        //         selectedOps[i].op.uiAttribs.translate.y,
+        //         selectedOps[i].op.id);
+        //
+        //     if(Math.abs(selectedOps[i].op.uiAttribs.translate.x-selectedOps[0].op.uiAttribs.translate.x)<60)
+        //     {
+        //         newpos.x=selectedOps[0].op.uiAttribs.translate.x;
+        //     }
+        //
+        //     selectedOps[i].setPos(newpos.x,newpos.y);
+        // }
     };
 
     this.alignSelectedOpsVert=function()
@@ -2034,6 +2034,24 @@ CABLES.UI.Patch=function(_gui)
         },60);
 
     };
+
+
+    function checkDefaultValue(op, index)
+    {
+        if(op.portsIn[index].defaultValue!==undefined && op.portsIn[index].defaultValue!==null)
+        {
+            var titleEl=$('#portTitle_in_'+index);
+            if(op.portsIn[index].val!=op.portsIn[index].defaultValue )
+            {
+                if(!titleEl.hasClass('nonDefaultValue'))  titleEl.addClass('nonDefaultValue');
+            }
+            else
+            {
+                if(titleEl.hasClass('nonDefaultValue')) titleEl.removeClass('nonDefaultValue');
+            }
+        }
+
+    }
     this._showOpParams=function(op)
     {
 
@@ -2248,6 +2266,8 @@ CABLES.UI.Patch=function(_gui)
         {
             (function (index)
             {
+                checkDefaultValue(op,index);
+
                 $('#portval_'+index).on('input',function(e)
                 {
                     var v=''+$('#portval_'+index).val();
@@ -2291,6 +2311,10 @@ CABLES.UI.Patch=function(_gui)
                     }
 
                     op.portsIn[index].val=v;
+
+                    checkDefaultValue(op,index);
+
+
                     if(op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
                 });
             })(ipii);
@@ -2433,7 +2457,8 @@ CABLES.UI.Patch=function(_gui)
             }
             else
             {
-                 $(id).html( String(watchPorts[i].val) );
+
+                $(id).html( String(watchPorts[i].val) );
             }
         }
 

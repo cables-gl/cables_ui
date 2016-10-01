@@ -14,8 +14,10 @@
 
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}">
-    <td class="port portType_{{ port.type }}">
+    <td class="port portType_{{ port.type }} ">
+        <span id="portTitle_{{ dirStr }}_{{ portnum }}">
         {{port.name}}
+        </span>
 
         {{#compare port.uiAttribs.colorPick '==' 'true' }}
         <div class="button_colorpick button fa fa-eyedropper fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>

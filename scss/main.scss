@@ -361,6 +361,17 @@ input[type="text"]
         color: $highlight-color;
     }
 
+    .invalid
+    {
+        border:1px solid red;
+    }
+
+    .nonDefaultValue
+    {
+        color:#fff;
+    }
+
+
     td.port
     {
         // border-left:4px solid #aaa;
