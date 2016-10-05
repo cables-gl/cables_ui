@@ -1022,7 +1022,7 @@ CABLES.UI.GUI=function()
 
         gui.patch().scene.cgl.doScreenshotClearAlpha=$('#render_removeAlpha').is(':checked');
 
-        console.log('gui.patch().scene.cgl.doScreenshotClearAlpha ',gui.patch().scene.cgl.doScreenshotClearAlpha);
+        // console.log('gui.patch().scene.cgl.doScreenshotClearAlpha ',gui.patch().scene.cgl.doScreenshotClearAlpha);
         gui.patch().scene.cgl.doScreenshot=true;
         setTimeout(function()
         {
