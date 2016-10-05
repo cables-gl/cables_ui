@@ -199,7 +199,7 @@ $background-color-brighter: #262626;
 }
 
 // theme cyberspace ---------------------------------
-@if $color_theme == 34 {
+//@if $color_theme == 34 {
   $color_op_bg:#333;
   $color_op_bg_active:#555;
   $color_op_text:#eee;
@@ -221,7 +221,7 @@ $background-color-brighter: #262626;
   $color_link_object: $color_port_object;
   $color_link_array: $color_port_array;
   $color_link_dynamic: $color_port_dynamic;
-}
+//}
 
 
 
