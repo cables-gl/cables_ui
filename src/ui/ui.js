@@ -1038,10 +1038,11 @@ CABLES.UI.GUI=function()
             anchor.setAttribute('href', img);
             document.body.appendChild(anchor);
 
-            setTimeout(function() {
-                anchor.click();
-                if(cb)cb();
-            },66);
+            setTimeout(
+                function() {
+                    anchor.click();
+                    if(cb)cb();
+                },66);
 
         },100);
     };

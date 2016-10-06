@@ -28,8 +28,6 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
         optionsHtml+='&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create op</a>';
     }
 
-    console.log(11,opname,gui.user.username);
-
     if(opname && (gui.user.isAdmin || opname.startsWith('Ops.User.'+gui.user.username)) && gui.serverOps.isServerOp(opname))
     {
         optionsHtml+='&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit '+opname+'</a>';
