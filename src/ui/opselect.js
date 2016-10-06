@@ -27,7 +27,10 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
     {
         optionsHtml+='&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.create(\''+$('#opsearch').val()+'\');">create op</a>';
     }
-    if(gui.user.isAdmin && gui.serverOps.isServerOp(opname))
+
+    console.log(11,opname,gui.user.username);
+
+    if(opname && (gui.user.isAdmin || opname.startsWith('Ops.User.'+gui.user.username)) && gui.serverOps.isServerOp(opname))
     {
         optionsHtml+='&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit '+opname+'</a>';
     }
@@ -45,14 +48,12 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
         if(searchFor==='') $('#clearsearch').hide();
             else $('#clearsearch').show();
 
-        if(!searchFor)
-            $('#search_style').html('.searchable:{display:block;}');
-        else
-            $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
+        if(!searchFor) $('#search_style').html('.searchable:{display:block;}');
+            else $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
 
         CABLES.UI.OPSELECT.updateOptions();
-
     }
+
     CABLES.UI.OPSELECT.linkNewLink=link;
     CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;

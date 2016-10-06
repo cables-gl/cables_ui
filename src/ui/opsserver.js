@@ -136,6 +136,8 @@ CABLES.UI.ServerOps=function(gui)
 
     };
 
+
+
     this.clone=function(oldname,name)
     {
 
@@ -186,8 +188,6 @@ CABLES.UI.ServerOps=function(gui)
                     console.log(res);
                 });
         }
-
-
     };
 
     this.addAttachmentDialog=function(name)
@@ -202,21 +202,49 @@ CABLES.UI.ServerOps=function(gui)
             });
     };
 
-    this.cloneDialog=function(name)
+    this.opNameDialog=function(title,name,cb)
     {
         var newName=name;
         if(name.indexOf('Ops.')===0)newName=name.substr(4,name.length);
 
-        var html='<h2>Clone operator</h2>';
-        html+='<div class="clone"><span>Ops.User.'+gui.user.username+'.</span><input id="cloneOpName" value="'+newName+'"/></div></div>';
+        var html='<h2>'+title+'</h2>';
+        html+='<div class="clone"><span>Ops.User.'+gui.user.username+'.</span><input id="opNameDialogInput" value="'+newName+'"/></div></div>';
         html+='<br/>';
-        html+='Your cloned op will be private. Only you can see and use them.';
+        html+='Your op will be private. Only you can see and use them.';
         html+='<br/><br/>';
-        html+='<a onclick="gui.serverOps.clone(\''+name+'\',\'Ops.User.'+gui.user.username+'.\'+$(\'#cloneOpName\').val());" class="bluebutton fa fa-clone">clone</a>';
+        html+='<a id="opNameDialogSubmit" class="bluebutton fa fa-clone">create</a>';
         html+='<br/><br/>';
 
         CABLES.UI.MODAL.show(html);
         $('#cloneOpName').focus();
+
+        $('#opNameDialogSubmit').bind("click",
+            function(event)
+            {
+                cb($('#opNameDialogInput').val());
+            });
+    };
+
+    this.createDialog=function()
+    {
+        console.log('aaa');
+        this.opNameDialog('Create operator',name,function(newname)
+        {
+            console.log(newname);
+            self.create('Ops.User.'+gui.user.username+'.'+newname,function()
+            {
+                CABLES.UI.MODAL.hide();
+            });
+        });
+
+    };
+
+    this.cloneDialog=function(oldName)
+    {
+        this.opNameDialog('Clone operator',name,function(newname)
+        {
+            gui.serverOps.clone(oldName,'Ops.User.'+gui.user.username+'.'+newname);
+        });
     };
 
 

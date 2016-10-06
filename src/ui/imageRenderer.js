@@ -31,7 +31,6 @@ CABLES.UI.ImageSequenceExport=function(filename,start,end,fps)
         gui.patch().scene.timer.setTime(time);
         gui.patch().scene.freeTimer.setTime(time);
 
-
         var str = "" + num;
         var pad = "0000";
         num = '_'+pad.substring(0, pad.length - str.length) + str;
@@ -42,5 +41,4 @@ CABLES.UI.ImageSequenceExport=function(filename,start,end,fps)
     var currentNum=start*fps;
     var frameDuration=1/fps;
     render(currentNum);
-
 };
