@@ -34,7 +34,7 @@ CABLES.UI.ServerOps=function(gui)
 
     this.load=function(cb)
     {
-        CABLES.api.get('ops/',function(res)
+        CABLES.api.get(CABLES.noCacheUrl('ops/'),function(res)
         {
             if(res)
             {
@@ -122,7 +122,7 @@ CABLES.UI.ServerOps=function(gui)
         // console.log(name);
         CABLES.UI.MODAL.showLoading('executing...');
         var s = document.createElement( 'script' );
-        s.setAttribute( 'src', '/api/op/'+name );
+        s.setAttribute( 'src', '/api/op/'+name+'?nocache='+CABLES.generateUUID() );
         s.onload=function()
         {
             gui.patch().scene.reloadOp(name,function(num)

@@ -8,7 +8,7 @@ CABLES.UI.OpDocs=function()
     this.libs=[];
 
     CABLES.api.get(
-        'doc/ops/all',
+        CABLES.noCacheUrl('doc/ops/all'),
         function(res)
         {
             logStartup('Op docs loaded');

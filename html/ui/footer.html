@@ -32,6 +32,11 @@
             })
         }
 
+        CABLES.noCacheUrl=function(url)
+        {
+            return url+'?nocache='+Date.now();
+        }
+
         incrementStartup();
         logStartup("Start");
 
@@ -49,8 +54,8 @@
             incrementStartup();
 
             loadjs([
-                'js/libs.ui.min.js',
-                'js/libs.core.min.js',
+                CABLES.noCacheUrl('js/libs.ui.min.js'),
+                CABLES.noCacheUrl('js/libs.core.min.js'),
                 'js/ace/ace.js'
             ], 'libs');
 
@@ -65,20 +70,20 @@
                 {
                     logStartup('loaded ace');
                     incrementStartup();
-                    loadjs(['js/cables.max.js'],'cables_core');
+                    loadjs([CABLES.noCacheUrl('js/cables.max.js')],'cables_core');
 
                     loadjs.ready('cables_core', function()
                     {
                         logStartup('loaded cables core');
 
                         incrementStartup();
-                        loadjs(['/api/ops/code'],'cables_ops');
+                        loadjs([CABLES.noCacheUrl('/api/ops/code')],'cables_ops');
 
                         loadjs.ready('cables_ops', function()
                         {
                             incrementStartup();
                             logStartup('loaded cables ops');
-                            loadjs(['js/cablesui.max.js'], 'cablesui');
+                            loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
 
                             loadjs.ready('cablesui', function()
                             {
