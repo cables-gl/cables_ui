@@ -64,13 +64,35 @@ CABLES.UI.MODAL.showError=function(title,content)
 };
 
 
+CABLES.UI.MODAL.showOpException=function(ex,opName)
+{
+    console.log(ex.stack);
+    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+    $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
+
+    $('#modalcontent').append('in op: <b>'+opName+'</b><br/><br/>');
+
+    CABLES.api.sendErrorReport(ex);
+
+    $('#modalcontent').append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
+
+    if(gui.user.isAdmin || opName.startsWith("Op.User."+gui.user.username))
+    {
+        $('#modalcontent').append('<a class="bluebutton fa fa-edit" onclick="gui.serverOps.edit(\''+opName+'\');CABLES.UI.MODAL.hide(true);">Edit op</a><br/><br/>');
+    }
+
+    $('#modalcontent').append('<div class="shaderErrorCode">'+ex.stack+'</div>');
+    $('#modalcontent').show();
+    $('#modalbg').show();
+
+    $('#modalbg').on('click',function(){
+        CABLES.UI.MODAL.hide(true);
+    });
+
+};
+
 CABLES.UI.MODAL.showException=function(ex,op)
 {
-    // str+='<h2><span class="fa fa-exclamation-triangle"></span> cablefail :/</h2>';
-    // str+='error:'+err+'<br/>';
-    // str+='<br/>';
-    // str+='file: '+file+'<br/>';
-    // str+='row: '+row+'<br/>';
     console.log(ex.stack);
     $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
     $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
