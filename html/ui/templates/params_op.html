@@ -6,8 +6,7 @@
         <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
         <br/><br/>
 
-
-{{#if ownsOp }}<i class="fa fa-user" ></span>{{/if}}
+        {{#if ownsOp }}<i class="fa fa-user" ></span>{{/if}}
 
         {{op.objName}}
         <br/><br/>
@@ -16,7 +15,6 @@
             <div class="warning" id="">This operator is deprecated. Please use another one.</div>
             <br/><br/>
         {{/if}}
-
 
         {{#if op.isExperimental }}
             <div class="warning-dark" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
