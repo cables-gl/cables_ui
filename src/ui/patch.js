@@ -2094,6 +2094,7 @@ CABLES.UI.Patch=function(_gui)
         var ownsOp=false;
         if(op.objName.startsWith('Ops.User.'+gui.user.username)) ownsOp=true;
         if(op.objName.startsWith('Ops.Deprecated.')) op.isDeprecated=true;
+        if(op.objName.startsWith('Ops.Exp.')) op.isExperimental=true;
 
         var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op,texts:CABLES.UI.TEXTS,user:gui.user,ownsOp:ownsOp});
         var sourcePort = $("#params_port").html();

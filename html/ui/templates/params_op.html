@@ -13,7 +13,13 @@
         <br/><br/>
 
         {{#if op.isDeprecated }}
-            <div class="warning " id="">This operator is deprecated. Please use another one.</div>
+            <div class="warning" id="">This operator is deprecated. Please use another one.</div>
+            <br/><br/>
+        {{/if}}
+
+
+        {{#if op.isDeprecated }}
+            <div class="warning" id=""><b>Warning: This operator is Experimental.</b> You can play around with it, but a lot will change and it might stop working for you.</div>
             <br/><br/>
         {{/if}}
 
