@@ -306,11 +306,11 @@ CABLES.UI.GUI=function()
         $('#menubar').css('width',window.innerWidth-self.rendererWidth-10);
         $('#menubar').css('height',menubarHeight);
 
-        $('#splitterMeta').css('bottom',self.infoHeight+'px');
-        $('#splitterMeta').css('width',metaWidth+'px');
+        $('#splitterMeta').css('bottom',self.infoHeight+30+'px');
+        $('#splitterMeta').css('width',metaWidth-22+'px');
 
         $('#infoArea').css('width',(metaWidth-20)+'px');
-        $('#infoArea').css('height',(self.infoHeight-22)+'px');
+        $('#infoArea').css('height',(self.infoHeight)+'px');
         $('#infoArea').css('bottom','0px');
 
         $('#meta_content').css('height',window.innerHeight-self.rendererHeight-self.infoHeight-50);
@@ -658,7 +658,7 @@ CABLES.UI.GUI=function()
         $('.nav_help_introduction').bind("click", function (event) { self.introduction().showIntroduction(); });
 
         $('.nav_op_addOp').bind("click", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
-        $('.nav_op_createOp').bind("click", function (event) { console.log(123);self.serverOps.createDialog(); });
+        $('.nav_op_createOp').bind("click", function (event) { self.serverOps.createDialog(); });
 
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
@@ -1026,11 +1026,14 @@ CABLES.UI.GUI=function()
 
         // console.log('gui.patch().scene.cgl.doScreenshotClearAlpha ',gui.patch().scene.cgl.doScreenshotClearAlpha);
         gui.patch().scene.cgl.doScreenshot=true;
-        setTimeout(function()
+
+        gui.patch().scene.cgl.onScreenShot=function(data)
         {
             $('#glcanvas').attr('width',w);
             $('#glcanvas').attr('height',h);
+            gui.patch().scene.cgl.onScreenShot=null;
 
+            // console.log(gui.patch().scene.cgl.screenShotDataURL.length);
             var img=gui.patch().scene.cgl.screenShotDataURL;//.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
             var anchor = document.createElement('a');
 
@@ -1042,9 +1045,10 @@ CABLES.UI.GUI=function()
                 function() {
                     anchor.click();
                     if(cb)cb();
-                },66);
+                },33);
 
-        },100);
+        };
+
     };
 
 
@@ -1183,6 +1187,11 @@ CABLES.UI.GUI=function()
         };
     };
 
+    this.closeInfo=function()
+    {
+        this.infoHeight=-30;
+        this.setLayout();
+    };
 
 
     this.setStateSaved=function()
@@ -1199,7 +1208,7 @@ CABLES.UI.GUI=function()
         $('#infoArea').show();
         $('#infoArea').hover(function (e)
         {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.infoArea);
+            CABLES.UI.showInfo();
         },function()
         {
             CABLES.UI.hideInfo();

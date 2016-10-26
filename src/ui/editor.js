@@ -34,6 +34,7 @@ CABLES.Editor=function()
                 "op.inValueBool",
                 "op.inValueString",
                 "op.inObject",
+                "op.inArray",
                 "op.inValueSlider",
                 "op.inValueSelect",
 
@@ -41,6 +42,7 @@ CABLES.Editor=function()
                 "op.outFunction",
                 "op.outValue",
                 "op.outObject",
+                "op.outArray",
                 "op.patch.cgl",
             ];
             callback(null, wordList.map(function(word) {

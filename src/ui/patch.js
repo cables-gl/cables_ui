@@ -634,8 +634,9 @@ CABLES.UI.Patch=function(_gui)
         if(_id)id=_id;
         if(_name)name=_name;
 
-        setTimeout(function()
+        gui.patch().scene.cgl.onScreenShot=function(d)
         {
+
             var data=gui.patch().scene.serialize(true);
 
             data.ui={viewBox:{}};
@@ -691,7 +692,7 @@ CABLES.UI.Patch=function(_gui)
 
                     if(cb)cb();
                 });
-        },30);
+        };
     };
 
     this.getCurrentProject=function()
@@ -1882,7 +1883,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.setSelectedOp=function(uiop)
     {
-        if(uiop===null )
+        if(uiop===null)
         {
             selectedOps.length=0;
             for(var i in gui.patch().ops)
@@ -2120,12 +2121,20 @@ CABLES.UI.Patch=function(_gui)
         {
             html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op,texts:CABLES.UI.TEXTS});
 
+            var foundPreview=false;
             for(var i2 in op.portsOut)
             {
                 if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
                 {
                     op.portsOut[i2].watchId='out_'+i2;
                     watchPorts.push(op.portsOut[i2]);
+                }
+
+                // set auto preview
+                if(!foundPreview && op.portsOut[i2].uiAttribs.preview)
+                {
+                    foundPreview=true;
+                    gui.preview.setTexture(op.id,op.portsOut[i2].getName());
                 }
 
                 html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false,op: op } );

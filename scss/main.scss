@@ -68,6 +68,7 @@ a
 {
     position:absolute;
     overflow: auto;
+    overflow-x: hidden;
 
     div
     {
@@ -1271,7 +1272,7 @@ input[type=text]:active, input[type=text]:focus {
 {
     height:2px;
     padding:4px !important;
-    background-color: transparent;
+    background-color: #000;
     cursor:ns-resize;
 }
 

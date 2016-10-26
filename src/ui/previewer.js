@@ -3,7 +3,7 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.Preview=function()
 {
-    var interval=50;
+    var interval=100;
     var paused=false;
 
     this.show=function()
@@ -29,11 +29,12 @@ CABLES.UI.Preview=function()
 
         // console.log(previewDataPort.get());
 
-        var dataUrl=createImageFromTexture(
-            previewDataOp.patch.cgl.gl,
-            previewDataPort.get().tex,
-            previewDataPort.get().width,
-            previewDataPort.get().height);
+        if(previewDataPort.get())
+            createImageFromTexture(
+                previewDataOp.patch.cgl.gl,
+                previewDataPort.get().tex,
+                previewDataPort.get().width,
+                previewDataPort.get().height);
 
         setTimeout(updatePreview,interval);
     }
@@ -93,7 +94,6 @@ CABLES.UI.Preview=function()
 
             lastWidth =width;
             lastHeight=height;
-
 
             canvasContainer.style['max-width']=width+'px';
             canvasContainer.style['padding-top']=height/width*100+'%';

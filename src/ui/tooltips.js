@@ -36,10 +36,11 @@ $(document).on('mouseout', '.tt', function()
 
 // --------------------------
 
+
 CABLES.UI.showInfo=function(txt)
 {
   if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
-  $('#infoArea').html(mmd(txt));
+  $('#infoArea').html(mmd(txt)+'<a class="button" onclick="gui.closeInfo();">close</a>');
 };
 
 CABLES.UI.hideInfo=function()
