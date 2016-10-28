@@ -323,6 +323,9 @@ CABLES.UI.Port=function(thePort)
 
         this.rect = gui.patch().getPaper().rect(xpos,offY+ypos);
         CABLES.UI.cleanRaphael(this.rect);
+
+        this.rect.attr({ width:10, height:6, }); // for firefox compatibility: ff seems to ignore css width/height of svg rect?!
+        // this.rect.attr(height=9;
         // this.rect.attr({
         //     "fill-opacity": getPortOpacity(self.thePort ),
         // });
