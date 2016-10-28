@@ -52,8 +52,10 @@ function Line(startX, startY)
         var startY=start.y;
         var endX=end.x;
         var endY=end.y;
+        var str="M "+startX+" "+startY+" L" + endX + " " + endY;
 
-        return "M "+startX+" "+startY+" L" + endX + " " + endY;
+        return str;
+
     };
     this.thisLine = gui.patch().getPaper().path(this.getPath());
     this.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLink, "stroke-width": 2});
@@ -182,12 +184,29 @@ function UiLink(port1, port2)
         cp1Y=Math.min(fromY,toY)+(Math.max(fromY,toY)-Math.min(fromY,toY))/2;
         cp2Y=Math.min(fromY,toY)+(Math.max(fromY,toY)-Math.min(fromY,toY))/2;
 
-        if(toY > fromY)fromY+=CABLES.UI.uiConfig.portHeight;
-        if(fromY > toY) toY+=CABLES.UI.uiConfig.portHeight;
+        if(fromY > toY)
+        {
+            toY+=CABLES.UI.uiConfig.portHeight;
+        }
 
-        cp1X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
-        cp2X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/4;
+        cp1X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/2;
+        cp2X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/2;
 
+        if(toY > fromY-20)
+        {
+            // "falschrum"
+            fromY+=CABLES.UI.uiConfig.portHeight;
+
+            var dist=(Math.max(fromY,toY)-Math.min(fromY,toY));
+
+            var distX=(Math.max(fromY,toY)-Math.min(fromY,toY));
+
+            cp1Y-=(dist*0.75+40);
+            cp2Y+=(dist*0.75+40);
+
+            cp1X+=distX/2;
+            cp2X-=distX/2;
+        }
 
         var difx=Math.min(fromX,toX)+Math.abs(toX-fromX);
 
