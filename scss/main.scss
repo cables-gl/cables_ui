@@ -1977,6 +1977,7 @@ rect
         text-overflow: ellipsis;
         position: absolute;
         font-size: 13px;
+        min-width: 50px;
 
         &:hover
         {

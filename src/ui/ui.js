@@ -702,7 +702,14 @@ CABLES.UI.GUI=function()
         {
             if(CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91) )
             {
-                if(CABLES.UI.suggestions) CABLES.UI.suggestions.showSelect();
+                if(CABLES.UI.suggestions)
+                {
+                    var suggs=CABLES.UI.suggestions;
+                    CABLES.UI.suggestions.close();
+                    suggs.showSelect();
+
+                    // CABLES.UI.suggestions=null;
+                }
                 return;
             }
 

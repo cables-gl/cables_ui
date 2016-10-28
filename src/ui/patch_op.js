@@ -135,6 +135,7 @@ function UiLink(port1, port2)
                     if(event.which==3)
                     {
                         self.p1.thePort.removeLinkTo( self.p2.thePort );
+
                     }
                     else
                     {
@@ -167,6 +168,13 @@ function UiLink(port1, port2)
         if(!port2.rect.attrs)return '';
         if(!port1.rect.attrs)return '';
 
+        if(port2.direction==PORT_DIR_IN)
+        {
+            var temp=port1;
+            port1=port2;
+            port2=temp;
+        }
+
         var fromX=port1.rect.matrix.e+port1.rect.attrs.x+CABLES.UI.uiConfig.portSize/2;
         var fromY=port1.rect.matrix.f+port1.rect.attrs.y;
         var toX=port2.rect.matrix.e+port2.rect.attrs.x+CABLES.UI.uiConfig.portSize/2;
@@ -198,7 +206,6 @@ function UiLink(port1, port2)
             fromY+=CABLES.UI.uiConfig.portHeight;
 
             var dist=(Math.max(fromY,toY)-Math.min(fromY,toY));
-
             var distX=(Math.max(fromY,toY)-Math.min(fromY,toY));
 
             cp1Y-=(dist*0.75+40);
@@ -378,6 +385,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
     function hover()
     {
+        CABLES.UI.selectedEndOp=opui;
         opui.isMouseOver=true;
     }
 
@@ -883,14 +891,14 @@ var OpUi=function(paper,op,x,y,w,h,txt)
                     found=true;
                 }
                 else
-                if(!self.links[j].p2.thePort.isLinked() || !self.links[j].p1.thePort.isLinked())
+                if(self.links[j].p1===null || self.links[j].p2===null)
                 {
                     self.links[j].hide();
                     self.links.splice(j,1);
                     found=true;
                 }
                 else
-                if(self.links[j].p1===null || self.links[j].p2===null)
+                if(!self.links[j].p2.thePort.isLinked() || !self.links[j].p1.thePort.isLinked())
                 {
                     self.links[j].hide();
                     self.links.splice(j,1);

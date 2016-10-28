@@ -2,9 +2,9 @@
 
 <script id="suggestions" type="text/x-handlebars-template">
 
-    <div id="suggestionOpSelect" class="opSelect" onclick="CABLES.UI.suggestions.showSelect();" >+</div>
+    {{#if showSelect}}<div id="suggestionOpSelect" class="opSelect" onclick="CABLES.UI.suggestions.showSelect();" >+</div>{{/if}}
     {{#each suggestions}}
-        <div class="suggestion" id="suggestion{{id}}" onClick="CABLES.UI.suggestions.createOp({{id}});" style="transform:rotate({{rot}}deg);margin-left:{{left}}px;margin-top:{{top}}px;transform-origin:center left;">
+        <div class="suggestion" id="suggestion{{id}}" onClick="CABLES.UI.suggestions.action({{id}});" style="transform:rotate({{rot}}deg);margin-left:{{left}}px;margin-top:{{top}}px;transform-origin:center left;">
             {{shortName}}
         </div>
     {{/each}}

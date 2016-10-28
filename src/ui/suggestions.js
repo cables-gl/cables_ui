@@ -1,10 +1,80 @@
 
-
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-CABLES.UI.SuggestionDialog=function(op,portname,mouseEvent,coords,cb)
+CABLES.UI.SuggestPortDialog=function(op,port,mouseEvent,cb,cbCancel)
 {
+    var suggestions=[];
+    var i=0;
+
+    function addPort(p)
+    {
+        suggestions.push({
+            p:p,
+            name:p.name,
+        });
+    }
+
+    for(i=0;i<op.portsIn.length;i++)
+    {
+        if(CABLES.Link.canLink(op.portsIn[i],port))
+        {
+            addPort(op.portsIn[i]);
+            console.log('  - ',op.portsIn[i].name);
+        }
+    }
+
+    for(i=0;i<op.portsOut.length;i++)
+    {
+        if(CABLES.Link.canLink(op.portsOut[i],port))
+        {
+             console.log('  - ',op.portsOut[i].name);
+             addPort(op.portsOut[i]);
+        }
+    }
+
+    new CABLES.UI.SuggestionDialog(suggestions,op,mouseEvent,cb,
+        function(id)
+        {
+            for(var i in suggestions)
+            {
+                if(suggestions[i].id==id)
+                {
+                    cb(suggestions[i].name);
+                }
+            }
+        },false,cbCancel);
+};
+
+CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
+{
+    var suggestions=gui.opDocs.getSuggestions(op.objName,portname);
+    CABLES.UI.OPSELECT.newOpPos=coords;
+
+    new CABLES.UI.SuggestionDialog(suggestions,op,mouseEvent,cb,
+        function(id)
+        {
+            for(var i in suggestions)
+            {
+                if(suggestions[i].id==id)
+                {
+                    CABLES.UI.OPSELECT.linkNewOpToSuggestedPort={};
+                    CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op=op;
+                    CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName=portname;
+                    CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName=suggestions[i].port;
+                    gui.scene().addOp(suggestions[i].name);
+                }
+            }
+        },true);
+};
+
+
+// ----------------------------------------------------------------------------------
+
+
+CABLES.UI.SuggestionDialog=function(suggestions,op,mouseEvent,cb,_action,showSelect,cbCancel)
+{
+    this.doShowSelect=showSelect;
     this.close=function()
     {
         $('#suggestionDialog').html('');
@@ -15,37 +85,27 @@ CABLES.UI.SuggestionDialog=function(op,portname,mouseEvent,coords,cb)
 
     this.showSelect=function()
     {
-        this.close();
-        cb();
+        if(cb)cb();
+        else this.close();
     };
 
-    this.createOp=function(id)
+    this.action=function(id)
     {
-        for(var i in suggestions)
-        {
-            if(suggestions[i].id==id)
-            {
-                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort={};
-                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op=op;
-                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName=portname;
-                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName=suggestions[i].port;
-                gui.scene().addOp(suggestions[i].name);
-            }
-        }
+        _action(id);
         this.close();
-
     };
 
-    CABLES.UI.OPSELECT.newOpPos=coords;
+
     var self=this;
-    var suggestions=gui.opDocs.getSuggestions(op.objName,portname);
 
     if(!suggestions)
     {
-        cb();
+        if(cb)cb();
         return;
     }
 
+    CABLES.UI.suggestions=this;
+    
     var sugDegree=6;
     var sugHeight=20;
     var i=0;
@@ -57,26 +117,31 @@ CABLES.UI.SuggestionDialog=function(op,portname,mouseEvent,coords,cb)
         suggestions[i].left=15-Math.abs(((i)-((suggestions.length-1)/2))*3)/2;
         suggestions[i].top=(i*sugHeight)-(suggestions.length*sugHeight/2)-sugHeight;
         suggestions[i].shortName=suggestions[i].name.substr(4,suggestions[i].name.length);
+        if(suggestions[i].name) suggestions[i].shortName=suggestions[i].name;
+
     }
 
-    var html = CABLES.UI.getHandleBarHtml('suggestions',{suggestions: suggestions });
+
+
+    var html = CABLES.UI.getHandleBarHtml('suggestions',{suggestions: suggestions,showSelect:showSelect });
     $('#suggestionDialog').html(html);
     $('#modalbg').show();
     $('#suggestionDialog').show();
     $('#suggestionDialog').css(
-    {
-        left:mouseEvent.clientX,
-        top:mouseEvent.clientY,
-    });
+        {
+            left:mouseEvent.clientX,
+            top:mouseEvent.clientY,
+        });
 
 
     $( ".opSelect" ).css({width:5,height:5,  "margin-left":2.5,"margin-top":-2.5});
-    $( ".opSelect" ).animate({
-      width:30,
-      height:30,
-      "margin-left":-15,
-      "margin-top":-15
-    }, 100);
+    $( ".opSelect" ).animate(
+        {
+          width:30,
+          height:30,
+          "margin-left":-15,
+          "margin-top":-15
+        }, 100);
 
     for(i=0;i<suggestions.length;i++)
     {
@@ -86,17 +151,21 @@ CABLES.UI.SuggestionDialog=function(op,portname,mouseEvent,coords,cb)
         suggestions[i].shortName=suggestions[i].name.substr(4,suggestions[i].name.length);
 
         $( "#suggestion"+i ).css({opacity:0});
-
-        $( "#suggestion"+i ).delay( Math.abs(i-suggestions.length/2) *25).animate({
-          opacity: 1,
-          left: left,
-      }, 230);
+        $( "#suggestion"+i ).delay( Math.abs(i-suggestions.length/2) *25).animate(
+            {
+                opacity: 1,
+                left: left,
+            }, 230);
 
         suggestions[i].id=i;
     }
 
+
+
     $('#modalbg').on('click',function(){
         self.close();
+
+        if(cbCancel)cbCancel();
     });
 
 };

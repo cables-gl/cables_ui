@@ -1074,6 +1074,11 @@ CABLES.UI.Patch=function(_gui)
 
         this.background.toBack();
 
+        this.background.node.onmousemove = function (ev)
+        {
+            CABLES.UI.selectedEndOp=null;
+        };
+
         this.background.node.onmousedown = function (ev)
         {
             $('#library').hide();
@@ -1403,38 +1408,35 @@ CABLES.UI.Patch=function(_gui)
             self.showProjectParams();
             gui.setStateSaved();
 
-
             if(self.ops.length>CABLES.UI.uiConfig.miniMapShowAutomaticallyNumOps)
             {
                 gui.showMiniMap();
             }
 
             logStartup('Patch loaded');
-
         };
 
         scene.onUnLink=function(p1,p2)
         {
             gui.setStateUnsaved();
 
+            console.log('onunlink',p1,p2);
+
+            // console.log('unlink',p1,p2 );
             // todo: check if needs to be updated ?
             self.updateCurrentOpParams();
 
             for(var i in self.ops)
             {
-                self.ops[i].removeDeadLinks();
 
                 for(var j in self.ops[i].links)
                 {
-                    if(
-                        (self.ops[i].links[j].p1.thePort==p1 && self.ops[i].links[j].p2.thePort==p2) ||
-                        (self.ops[i].links[j].p1.thePort==p2 && self.ops[i].links[j].p2.thePort==p1))
+                    if(self.ops[i].links[j].p1 && self.ops[i].links[j].p2 &&
+                        ((self.ops[i].links[j].p1.thePort==p1 && self.ops[i].links[j].p2.thePort==p2) ||
+                        (self.ops[i].links[j].p1.thePort==p2 && self.ops[i].links[j].p2.thePort==p1)))
                         {
-
-                            console.log('found onunlink ports!');
                             var undofunc=function(p1Name,p2Name,op1Id,op2Id)
                             {
-
                                 CABLES.undo.add({
                                     undo: function()
                                     {
@@ -1455,13 +1457,21 @@ CABLES.UI.Patch=function(_gui)
                                 );
 
                             self.ops[i].links[j].hideAddButton();
+
+                            self.ops[i].links[j].p1.updateUI();
+                            self.ops[i].links[j].p2.updateUI();
                             self.ops[i].links[j].p1=null;
                             self.ops[i].links[j].p2=null;
                             self.ops[i].links[j].remove();
+                            console.log('found unlink...');
 
                         }
                 }
+                self.ops[i].removeDeadLinks();
+
             }
+
+
         };
 
         scene.onLink=function(p1,p2)
