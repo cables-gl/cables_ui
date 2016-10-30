@@ -178,7 +178,7 @@ function UiLink(port1, port2)
         var fromX=port1.rect.matrix.e+port1.rect.attrs.x+CABLES.UI.uiConfig.portSize/2;
         var fromY=port1.rect.matrix.f+port1.rect.attrs.y;
         var toX=port2.rect.matrix.e+port2.rect.attrs.x+CABLES.UI.uiConfig.portSize/2;
-        var toY=port2.rect.matrix.f+port2.rect.attrs.y;
+        var toY=port2.rect.matrix.f+port2.rect.attrs.y+CABLES.UI.uiConfig.portHeight*1.5;
 
         middlePosX=0.5*(fromX+toX);
         middlePosY=0.5*(fromY+toY+CABLES.UI.uiConfig.portSize*0.5);
@@ -194,7 +194,7 @@ function UiLink(port1, port2)
 
         if(fromY > toY)
         {
-            toY+=CABLES.UI.uiConfig.portHeight;
+            // toY+=CABLES.UI.uiConfig.portHeight;
         }
 
         cp1X=Math.min(fromX,toX)+(Math.max(fromX,toX)-Math.min(fromX,toX))/2;
@@ -203,7 +203,7 @@ function UiLink(port1, port2)
         if(toY > fromY-20)
         {
             // "falschrum"
-            fromY+=CABLES.UI.uiConfig.portHeight;
+            // fromY+=CABLES.UI.uiConfig.portHeight;
 
             var dist=(Math.max(fromY,toY)-Math.min(fromY,toY));
             var distX=(Math.max(fromY,toY)-Math.min(fromY,toY));
@@ -220,8 +220,13 @@ function UiLink(port1, port2)
         cp1X=fromX-0;
         cp2X=toX+0;
 
-        var str="M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
-        // console.log(str);
+        var str='';
+        if(Math.abs(fromY-toY)<50 && Math.abs(fromX-toX)<50)
+            str="M "+fromX+" "+fromY+" L "+ toX + " " + toY;
+        else
+            str="M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
+        //  str="M "+fromX+" "+fromY+" L " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
+
         return str;
     };
 
@@ -263,9 +268,8 @@ function UiLink(port1, port2)
             // this.linkLine = gui.patch().getPaper().path(this.getPath());
             this.linkLine.attr( CABLES.UI.uiConfig.linkingLine );
             // this.linkLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
+
             this.linkLine.node.classList.add(CABLES.UI.uiConfig.getLinkClass(port1.thePort));
-
-
 
             // this.linkLine.hover(function ()
             // {
