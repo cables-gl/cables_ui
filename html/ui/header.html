@@ -14,12 +14,24 @@
                 0%{ transform: rotate(0deg); }
                 100%{ transform: rotate(360deg); }
             }
+            @keyframes scaleout {
+              0% {
+                transform: scale(0.0);
+                -webkit-transform: scale(0.0);
+              } 100% {
+                transform: scale(1.0);
+                -webkit-transform: scale(1.0);
+                opacity: 0;
+              }
+            }
 
             .loading
             {
-                border:2px solid #444;
-                border-top:2px solid #aaa;
-                animation: spin 2s infinite linear;
+                /*border:2px solid #444;*/
+                /*border-top:2px solid #aaa;*/
+                /*animation: spin 2s infinite linear;*/
+                background-color: #aaa;
+                animation: scaleout 1.0s infinite ease-in-out;
                 border-radius: 50%;
                 width:40px;
                 height:40px;
@@ -35,9 +47,7 @@
     </head>
 <body>
 
-
-
-    <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:100px;"></div></div>
+    <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:50px;"></div></div>
 
     <div id="mainContainer">
 

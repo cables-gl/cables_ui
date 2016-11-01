@@ -68,9 +68,10 @@
         text
         {
             text-transform: capitalize;
-            font-size: 13px;
+            font-size: 12px !important;
+            pointer-events:none;
             fill:$color_op_text;
-            font-family: "futura-pt";
+            // font-family: "futura-pt";
         }
     }
 

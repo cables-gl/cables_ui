@@ -1420,7 +1420,7 @@ CABLES.UI.Patch=function(_gui)
         {
             gui.setStateUnsaved();
 
-            console.log('onunlink',p1,p2);
+            // console.log('onunlink',p1,p2);
 
             // console.log('unlink',p1,p2 );
             // todo: check if needs to be updated ?

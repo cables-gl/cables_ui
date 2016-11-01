@@ -55,8 +55,8 @@ function Line(startX, startY)
         var str="M "+startX+" "+startY+" L" + endX + " " + endY;
 
         return str;
-
     };
+
     this.thisLine = gui.patch().getPaper().path(this.getPath());
     this.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLink, "stroke-width": 2});
     this.redraw = function() { this.thisLine.attr("path", this.getPath()); };
@@ -567,7 +567,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         this.setTitle(title);
 
-        $(label.node).css({'pointer-events': 'none'});
+        // $(label.node).css({'pointer-events': 'none'});
 
         background.drag(move, dragger, up);
         background.hover(hover,unhover);
@@ -600,9 +600,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             }
 
             label.attr({
-                'x':sw/2,
+                'x':Math.rount(sw/2),
                 'y':45,
-                "font-size": 22,
             });
 
             background.attr({

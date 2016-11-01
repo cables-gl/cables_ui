@@ -32,9 +32,7 @@ CABLES.UI.Preview=function()
         if(previewDataPort.get())
             createImageFromTexture(
                 previewDataOp.patch.cgl.gl,
-                previewDataPort.get().tex,
-                previewDataPort.get().width,
-                previewDataPort.get().height);
+                previewDataPort.get());
 
         setTimeout(updatePreview,interval);
     }
@@ -79,24 +77,25 @@ CABLES.UI.Preview=function()
 
     var lastWidth,lastHeight;
 
-    function createImageFromTexture(gl, texture, width, height)
+    function createImageFromTexture(gl, texture)
     {
-        if(!width || !height)
-        {
-            console.log('unknown image size: ',width,height);
-            return;
-        }
+        var width=texture.width;
+        var height=texture.height;
 
         if(!canvas || lastWidth !=width || lastHeight!=height)
         {
             canvas = document.getElementById('preview_img');
             canvasContainer = document.getElementById('preview_img_container');
+            infoContainer = document.getElementById('preview_img_info');
+
+            infoContainer.innerHTML=JSON.stringify(texture.getInfo());
 
             lastWidth =width;
             lastHeight=height;
 
             canvasContainer.style['max-width']=width+'px';
-            canvasContainer.style['padding-top']=height/width*100+'%';
+            canvasContainer.style['max-height']=height+'px';
+            // canvasContainer.style['padding-top']=height/width*100+'%';
 
             imageData=null;
             if(!canvas)
@@ -111,7 +110,7 @@ CABLES.UI.Preview=function()
         // Create a framebuffer backed by the texture
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture.tex, 0);
 
         // Read the contents of the framebuffer
         if(pixelData.length!=width*height*4) pixelData = new Uint8Array(width * height * 4);
