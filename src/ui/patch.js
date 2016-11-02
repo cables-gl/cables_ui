@@ -2319,6 +2319,7 @@ CABLES.UI.Patch=function(_gui)
                         }
 
                     }
+
                     if(op.portsIn[index].uiAttribs.display=='bool')
                     {
                         if(v!='true' && v!='false' )
@@ -2329,6 +2330,7 @@ CABLES.UI.Patch=function(_gui)
                         if(v=='true')v=true;
                         else v=false;
                     }
+
 
                     op.portsIn[index].val=v;
 
