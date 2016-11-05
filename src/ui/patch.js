@@ -661,7 +661,6 @@ CABLES.UI.Patch=function(_gui)
             $('#glcanvas').attr('width',w);
             $('#glcanvas').attr('height',h);
 
-
             CABLES.api.put(
                 'project/'+id,
                 {

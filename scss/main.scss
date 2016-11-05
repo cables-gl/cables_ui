@@ -1223,7 +1223,6 @@ input[type=text]:active, input[type=text]:focus {
 {
     background-color: #ec9213;
     color:white;
-    border-radius: 4px;
 }
 
 .warning-dark
@@ -2052,5 +2051,19 @@ rect
     &:hover
     {
         opacity: 1;
+    }
+}
+
+
+#settings_error
+{
+    b
+    {
+        color:white;
+    }
+    ul,li
+    {
+        color:black;
+        margin-bottom: 0px;
     }
 }

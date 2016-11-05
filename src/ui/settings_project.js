@@ -35,8 +35,9 @@ CABLES.ProjectSettings=function(project)
         });
     };
 
-    this.saveTags=function(tags)
+    this.saveTags=function(cb)
     {
+        var tags=$("#settings_tags").val();
         CABLES.api.post(
             'project/'+gui.patch().getCurrentProject()._id+'/save_tags',
             {"tags":tags},
@@ -51,11 +52,12 @@ CABLES.ProjectSettings=function(project)
 
                 gui.patch().getCurrentProject().tags=tags;
 
-
+                cb();
                 // console.log('res',res);
             },
             function(res)
             {
+                cb();
                 // setStatus('error: not saved');
                 console.log('err res',res);
             }
@@ -63,28 +65,34 @@ CABLES.ProjectSettings=function(project)
 
     };
 
-    this.saveDescription=function(content)
+    this.saveDescription=function(cb)
     {
         CABLES.api.post(
             'project/'+gui.patch().getCurrentProject()._id+'/save_description',
-            {content:content},
+            {content:$("#settings_description").val()},
             function(res)
             {
+                cb();
                 // setStatus('saved');
                 console.log('res',res);
             },
             function(res)
             {
+                cb();
                 // setStatus('error: not saved');
                 console.log('err res',res);
             }
         );
-
     };
 
 
     this.saveParams=function()
     {
+        if(this.hasErrors())
+        {
+            console.log('has errors');
+            return;
+        }
 
         var proj_name=$('#projectsettings_name').val();
         var proj_public=$('#projectsettings_public').val();
@@ -104,12 +112,64 @@ CABLES.ProjectSettings=function(project)
 
         gui.scene().settings.manualScreenshot=proj_autoscreenshot;
 
-        gui.patch().saveCurrentProject();
+console.log('saving');
+        this.saveTags(function()
+        {
+            console.log('saving1');
+            this.saveDescription(function()
+            {
+                console.log('saving2');
+                gui.patch().saveCurrentProject();
+            }.bind(this));
+        }.bind(this));
+
+    };
+
+    this.hasErrors=function()
+    {
+        var errors=[];
+
+        if($('#projectsettings_name').val().length<4)
+            errors.push({"txt":'Enter a longer name'});
+
+        if($('#projectsettings_public').val()=='true')
+            if($('#projectsettings_name').val().toLowerCase()=="new project")
+                errors.push({"txt":'Enter a better patch name'});
+
+        if($('#projectsettings_public').val()=='true')
+        {
+            var tags=$("#settings_tags").val();
+            tags = tags.split(",");
+            if(tags.length<2)
+                errors.push({"txt":'Please enter at least two tags to make patch public'});
+        }
+
+
+        if(errors.length>0)
+        {
+            var html="<b>PATCH NOT SAVED:</b><br/><ul>";
+            for(var i=0;i<errors.length;i++)
+            {
+                html+="<li>"+errors[i].txt+"</li>";
+            }
+
+            html+="</ul>";
+
+            $('#settings_error').html(html);
+            $('#settings_error').show();
+        }
+        else
+        {
+            $('#settings_error').hide();
+        }
+
+        return errors.length!==0;
 
     };
 
     this.updateIcons=function()
     {
+
         if($('#projectsettings_public').val()=='true')
         {
             $('#projectsettings_public_icon').addClass('fa-check-square-o');
@@ -160,18 +220,7 @@ CABLES.ProjectSettings=function(project)
     {
         $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true'));
 
-        if($('#projectsettings_public').val()=='true')
-        {
-            if(gui.project().tags.length<2)
-            {
-                $('#settings_error').html('Not published: Please enter at least 2 Tags');
-                $('#settings_error').show();
-                return;
-            }
-        }
-
         self.updateIcons();
-        self.saveParams();
     };
 
     this.toggleAutoScreenshot=function()
@@ -179,17 +228,13 @@ CABLES.ProjectSettings=function(project)
         $('#projectsettings_autoscreenshot').val(''+!($('#projectsettings_autoscreenshot').val()=='true'));
 
         self.updateIcons();
-        self.saveParams();
     };
 
     this.toggleExample=function()
     {
         $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
 
-
-
         self.updateIcons();
-        self.saveParams();
     };
 
     this.toggleTest=function()
@@ -197,7 +242,6 @@ CABLES.ProjectSettings=function(project)
         $('#projectsettings_test').val(''+!($('#projectsettings_test').val()=='true'));
 
         self.updateIcons();
-        self.saveParams();
     };
 
 

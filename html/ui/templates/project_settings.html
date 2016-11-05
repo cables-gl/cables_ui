@@ -12,8 +12,7 @@
     </div>
     <div class="projectsettings fleft" style="width:500px;overflow:hidden;">
 
-        <div id="settings_error" class="warning" style="padding:20px;display:none;margin-bottom:15px;"></div>
-
+        <div id="settings_error" class="warning" style="padding:10px;display:none;margin-bottom:15px;"></div>
 
         <div id="settings_tab_versions" class="hidden">
             <h2>Old Versions</h2>
@@ -42,10 +41,10 @@
             <table>
                 <tr>
                     <td>
-                      Project Name
+                      Patch Name
                     </td>
                     <td style="width: 75%;">
-                        <input type="text" class="" id="projectsettings_name" onblur="gui.projectSettings().saveParams();" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
+                        <input type="text" class="" id="projectsettings_name" onblur="" value="{{project.name}}" data-info="{{ texts.projectSettingsTitle }}"></input>
                     </td>
                 </tr>
                 <tr onclick="gui.projectSettings().togglePublic();" class="info" data-info="{{ texts.projectSettingsPublic }}">
@@ -108,14 +107,18 @@
             <hr/>
 
             <h2>Tags</h2>
-            please enter some comma seperated tags<br/>
-            <input type="text" id="settings_tags" value="{{ tags }}" onblur="gui.projectSettings().saveTags($(this).val());"/>
+            comma seperated tags<br/>
+            <input type="text" id="settings_tags" value="{{ tags }}" />
 
             <hr/>
 
             <h2>Description</h2>
 
-            <textarea type="text" id="settings_tags" onblur="gui.projectSettings().saveDescription($(this).val());">{{ project.description }} </textarea>
+            <textarea type="text" id="settings_description" style="height:200px;" >{{ project.description }}</textarea>
+
+<br/><br/>
+<div class="bluebutton" onclick="gui.projectSettings().saveParams();">Save Settings</div>
+
 
         </div>
 
