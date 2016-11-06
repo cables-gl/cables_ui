@@ -23,8 +23,9 @@ CABLES.UI.UserManager=function(projectId)
         loadUserNames(function(users)
             {
                 var sel = document.getElementById( selectId );
-                for(var i in users)
+                for(var i=0;i<users.length;i++)
                 {
+
                     var opt = document.createElement('option');
                     opt.innerHTML = users[i].username;
                     opt.value = users[i]._id;
@@ -42,10 +43,13 @@ CABLES.UI.UserManager=function(projectId)
 
     this.addToProject=function(userid)
     {
-
-        // CABLES.UI.MODAL.showLoading();
-        var doUpdate=gui.projectSettings().loadUsers;
-        CABLES.api.put( 'project/'+projectId+'/user/'+userid, {}, doUpdate );
+        if(userid)
+        {
+            // CABLES.UI.MODAL.showLoading();
+            var doUpdate=gui.projectSettings().loadUsers;
+            CABLES.api.put( 'project/'+projectId+'/user/'+userid, {}, doUpdate );
+            
+        }
     };
 
 

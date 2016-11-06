@@ -151,7 +151,9 @@
     <div id="adduserdialog" class="hidden">
 
         <input type="text" id="userid" class="hidden" />
-        <select id="userAddSelectBox" onchange="$('#userid').val($(this).val());"></select>
+        <select id="userAddSelectBox" onchange="$('#userid').val($(this).val());">
+            <option value="">Select</option>
+        </select>
         <a class="bluebutton" onclick="gui.projectSettings().userManager.addToProject($('#userid').val());">Add User</a>
     </div>
 

@@ -824,12 +824,28 @@ CABLES.UI.Patch=function(_gui)
     };
 
 
+    var oldVBW=0;
+    var oldVBH=0;
+    var oldVBX=0;
+    var oldVBY=0;
     this.updateViewBox=function()
     {
+
+        if(viewBox.w<300)
+        {
+            viewBox.w=oldVBW;
+            viewBox.h=oldVBH;
+            viewBox.x=oldVBX;
+            viewBox.y=oldVBY;
+        }
+
+        oldVBW=viewBox.w;
+        oldVBH=viewBox.h;
+        oldVBX=viewBox.x;
+        oldVBY=viewBox.y;
+
         if(!isNaN(viewBox.x) && !isNaN(viewBox.y) && !isNaN(viewBox.w) && !isNaN(viewBox.h))
             self.paper.setViewBox( viewBox.x, viewBox.y, viewBox.w, viewBox.h );
-
-
 
         miniMapBounding.attr(
         {
@@ -1017,6 +1033,8 @@ CABLES.UI.Patch=function(_gui)
         }
     }
 
+
+
     this.show=function(_scene)
     {
         this.scene=_scene;
@@ -1051,15 +1069,35 @@ CABLES.UI.Patch=function(_gui)
         $('#patch svg').bind("mousewheel", function (event,delta,nbr)
         {
             delta=CGL.getWheelSpeed(event);
-            delta/=2;
+            delta=Math.min(delta,10);
+            delta=Math.max(delta,-10);
+            delta*=15;
 
             event=mouseEvent(event);
             if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
             {
-                viewBox.x+=delta/2;
-                viewBox.y+=delta/2;
+                // viewBox.x+=delta/2;
+                // viewBox.y+=delta/2;
+                var oldWidth = viewBox.w;
+                var oldHeight = viewBox.h;
+
                 viewBox.w-=delta;
                 viewBox.h-=delta;
+
+                // viewbox.width *= this._zoomStep;
+                // viewbox.height *= this._zoomStep;
+                //  this._zoom += this._zoomStep;
+
+                // if(typeof point != 'undefined') {
+                     viewBox.x -= (event.offsetX / 1000 * (viewBox.w - oldWidth));
+                     viewBox.y -= (event.offsetY / 1000 * (viewBox.h - oldHeight));
+                // }
+
+                // this.update();
+                // return this;
+
+
+
             }
 
             self.setMinimapBounds();
