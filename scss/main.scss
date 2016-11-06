@@ -126,7 +126,7 @@ a
     position:absolute;
     top:0px;
     right:0px;
-    border:1px solid transparent;
+    border:1px solid black;
     outline: none;
     z-index: 100;
 
@@ -864,12 +864,12 @@ input[type=text]:active, input[type=text]:focus {
 #timeline
 {
     border:1px solid transparent;
+    outline:none;
 
     &:focus
     {
         border:1px solid $mainColor;
     }
-    outline:none;
     svg
     {
         position:absolute;

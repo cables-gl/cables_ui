@@ -130,7 +130,6 @@ CABLES.UI.GUI=function()
             self.rendererHeight=window.innerHeight;
         }
 
-
         // var statusBarHeight=26;
         var menubarHeight=30;
         var optionsWidth=400;
@@ -140,7 +139,7 @@ CABLES.UI.GUI=function()
 
         var patchHeight=window.innerHeight-menubarHeight-2;
 
-        var patchWidth=window.innerWidth-self.rendererWidth-8;
+        var patchWidth=window.innerWidth-self.rendererWidth-6;
         var patchLeft=0;
 
         if(showTiming)
@@ -185,7 +184,7 @@ CABLES.UI.GUI=function()
 
             _editor.resize();
 
-            patchWidth-=self.editorWidth-6;
+            patchWidth-=self.editorWidth-5;
             patchLeft=self.editorWidth+5;
         }
         else
@@ -199,7 +198,7 @@ CABLES.UI.GUI=function()
         $('#patch svg').css('height',patchHeight);
         $('#patch svg').css('width',patchWidth);
 
-        $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-5);
+        $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-4);
         $('#splitterPatch').css('height',patchHeight+timelineUiHeight+2);
         $('#splitterPatch').css('top',menubarHeight);
         $('#splitterRenderer').css('top',self.rendererHeight);
