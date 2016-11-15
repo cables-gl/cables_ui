@@ -531,8 +531,7 @@ CABLES.UI.Patch=function(_gui)
                 }
                 else
                 {
-                    if(e.shiftKey) self.alignSelectedOpsHor();
-                    else self.alignSelectedOpsVert();
+                    self.alignSelectedOps();
                     // self.arrangeSelectedOps();
                 }
             break;
@@ -1800,6 +1799,33 @@ CABLES.UI.Patch=function(_gui)
         //
         //     selectedOps[i].setPos(newpos.x,newpos.y);
         // }
+    };
+
+    this.alignSelectedOps=function()
+    {
+        var sumX=0,minX=0;
+        var sumY=0,minY=0;
+        var j=0;
+
+        for(j in selectedOps)
+        {
+            minX=Math.min(9999999,selectedOps[j].op.uiAttribs.translate.x);
+            minY=Math.min(9999999,selectedOps[j].op.uiAttribs.translate.y);
+        }
+
+        for(j in selectedOps)
+        {
+            sumX+=(selectedOps[j].op.uiAttribs.translate.x-minX);
+            sumY+=(selectedOps[j].op.uiAttribs.translate.y-minY);
+        }
+
+        sumY*=3.5;
+
+        console.log("sumx sumy ",sumX,sumY);
+
+        if(Math.abs(sumX)>Math.abs(sumY)) self.alignSelectedOpsHor();
+            else self.alignSelectedOpsVert();
+
     };
 
     this.alignSelectedOpsVert=function()
