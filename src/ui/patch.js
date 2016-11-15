@@ -1807,6 +1807,8 @@ CABLES.UI.Patch=function(_gui)
         var sumY=0,minY=0;
         var j=0;
 
+        this.saveUndoSelectedOpsPositions();
+
         for(j in selectedOps)
         {
             minX=Math.min(9999999,selectedOps[j].op.uiAttribs.translate.x);
@@ -1821,10 +1823,39 @@ CABLES.UI.Patch=function(_gui)
 
         sumY*=3.5;
 
-        console.log("sumx sumy ",sumX,sumY);
-
         if(Math.abs(sumX)>Math.abs(sumY)) self.alignSelectedOpsHor();
             else self.alignSelectedOpsVert();
+
+    };
+
+    this.saveUndoSelectedOpsPositions=function()
+    {
+        var opPositions=[];
+        for(var j=0;j<selectedOps.length;j++)
+        {
+            var obj={};
+            obj.id=selectedOps[j].op.id;
+            obj.x=selectedOps[j].op.uiAttribs.translate.x;
+            obj.y=selectedOps[j].op.uiAttribs.translate.y;
+            opPositions.push(obj);
+        }
+
+        CABLES.undo.add({
+            undo: function()
+            {
+                for(var j=0;j<opPositions.length;j++)
+                {
+                    var obj=opPositions[j];
+                    for(var i in self.ops)
+                        if(self.ops[i].op.id==obj.id)
+                            self.ops[i].setPos(obj.x,obj.y);
+                }
+            },
+            redo: function() {
+                gui.scene().addOp(objName,op.uiAttribs,opid);
+            }
+        });
+
 
     };
 
