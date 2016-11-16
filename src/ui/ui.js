@@ -909,24 +909,14 @@ CABLES.UI.GUI=function()
             // self.patch().scene.deSerialize(localStorage.holo);
         });
 
-        router.addRoute('/project/:id/v/:ver').get(function(event, params)
-        {
-            CABLES.UI.MODAL.showLoading('Loading');
-            CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
-            {
-                self.patch().setProject(proj);
-            });
-        });
-        router.addRoute('/project').get(function(event, params)
-        {
-            console.log('no projectid?');
-            $('#loadingInfo').append('Error: No Project ID in URL');
-        });
 
-        router.addRoute('/project/:id').get(function(event, params)
+        function loadProject(id,ver)
         {
+            if(ver) ver='/version/'+ver;
+                else ver="";
+
             CABLES.UI.MODAL.showLoading('Loading');
-            CABLES.api.get('project/'+params.id,function(proj)
+            CABLES.api.get('project/'+id,function(proj)
             {
                 incrementStartup();
                 var userOpsUrls=[];
@@ -950,6 +940,27 @@ CABLES.UI.GUI=function()
                 $('#loadingInfo').append('Error: Unknown Project');
 
             });
+        }
+
+
+        router.addRoute('/project/:id/v/:ver').get(function(event, params)
+        {
+            loadProject(params.id,params.ver);
+            // CABLES.UI.MODAL.showLoading('Loading');
+            // CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
+            // {
+            //     self.patch().setProject(proj);
+            // });
+        });
+        router.addRoute('/project').get(function(event, params)
+        {
+            console.log('no projectid?');
+            $('#loadingInfo').append('Error: No Project ID in URL');
+        });
+
+        router.addRoute('/project/:id').get(function(event, params)
+        {
+            loadProject(params.id);
         });
 
         router.start('/');
