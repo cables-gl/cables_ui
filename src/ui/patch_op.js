@@ -328,6 +328,11 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var backgroundResize=null;
     var backgroundComment=null;
 
+    this.getHeight=function()
+    {
+        return h;
+    };
+
     this.getRect=function()
     {
         return background;
@@ -788,6 +793,15 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.hide();
         this.oprect.getGroup().remove();
         this.oprect.deleteUi();
+    };
+
+    this.getHeight=function()
+    {
+        return this.oprect.getHeight();
+    };
+    this.getWidth=function()
+    {
+        return this.oprect.getWidth();
     };
 
     this.getSubPatch=function()

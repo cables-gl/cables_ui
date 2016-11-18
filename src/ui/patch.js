@@ -1599,7 +1599,7 @@ CABLES.UI.Patch=function(_gui)
             gui.setStateUnsaved();
             $('#patch').focus();
 
-            var uiOp=new OpUi(self.paper,op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, 31, op.name);
+            var uiOp=new OpUi(self.paper,op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, CABLES.UI.uiConfig.opHeight, op.name);
 
             self.ops.push(uiOp);
 
@@ -1729,6 +1729,53 @@ CABLES.UI.Patch=function(_gui)
         }
 
         if(!doShow) gui.timeLine().clear();
+    };
+
+    this.opCollisionTest=function(uiOp)
+    {
+        for(var i in this.ops)
+        {
+            var testOp=this.ops[i];
+            if(
+                !testOp.op.deleted &&
+                uiOp.op.id!=testOp.op.id )
+                {
+                    // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
+                    // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
+
+                    if( (uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x &&
+                        uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+3) ||
+                        (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
+                            uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+3)
+                    )
+                        {
+
+                            var fixPos=false;
+                            if(uiOp.op.uiAttribs.translate.y>=testOp.op.uiAttribs.translate.y &&
+                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+3)
+                            {
+                                fixPos=true;
+                                uiOp.setPos(
+                                    testOp.op.uiAttribs.translate.x,
+                                    testOp.op.uiAttribs.translate.y+testOp.getHeight()+3);
+                                return true;
+                            }
+
+                            if(uiOp.op.uiAttribs.translate.y+testOp.getHeight()>=testOp.op.uiAttribs.translate.y &&
+                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+3)
+                            {
+                                fixPos=true;
+                                uiOp.setPos(
+                                    testOp.op.uiAttribs.translate.x,
+                                    testOp.op.uiAttribs.translate.y-testOp.getHeight()-3);
+                                return true;
+                            }
+
+                        }
+
+                }
+        }
+        return false;
     };
 
 
@@ -2020,6 +2067,12 @@ CABLES.UI.Patch=function(_gui)
         //         if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
         //             for(var j in self.ops[i].links)
         //                 self.ops[i].links[j].hideAddButton();
+
+        if(selectedOps.length==1)
+        {
+            this.opCollisionTest(selectedOps[0]);
+
+        }
 
         for(i in selectedOps)
             selectedOps[i].doMoveFinished();
