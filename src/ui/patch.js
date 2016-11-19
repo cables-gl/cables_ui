@@ -1742,35 +1742,36 @@ CABLES.UI.Patch=function(_gui)
                 {
                     // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
                     // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
+var spacing=8;
+
 
                     if( (uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x &&
-                        uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+3) ||
+                        uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+spacing) ||
                         (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
-                            uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+3)
+                            uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+spacing)
                     )
                         {
 
                             var fixPos=false;
                             if(uiOp.op.uiAttribs.translate.y>=testOp.op.uiAttribs.translate.y &&
-                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+3)
+                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+spacing)
                             {
                                 fixPos=true;
                                 uiOp.setPos(
                                     testOp.op.uiAttribs.translate.x,
-                                    testOp.op.uiAttribs.translate.y+testOp.getHeight()+3);
+                                    testOp.op.uiAttribs.translate.y+testOp.getHeight()+spacing);
                                 return true;
                             }
 
                             if(uiOp.op.uiAttribs.translate.y+testOp.getHeight()>=testOp.op.uiAttribs.translate.y &&
-                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+3)
+                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+spacing)
                             {
                                 fixPos=true;
                                 uiOp.setPos(
                                     testOp.op.uiAttribs.translate.x,
-                                    testOp.op.uiAttribs.translate.y-testOp.getHeight()-3);
+                                    testOp.op.uiAttribs.translate.y-testOp.getHeight()-spacing);
                                 return true;
                             }
-
                         }
 
                 }

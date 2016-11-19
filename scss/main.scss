@@ -940,15 +940,24 @@ input[type=text]:active, input[type=text]:focus {
 .easingselect
 {
     padding:10px;
-    //font-family: arial;
     position: absolute;
-    // margin-top:41px;
-    // margin-top: -250;
     right:0px;
-    width:120px;
-    height:170px;
+    width:240px;
+    height:260px;
     background-color: #1a1a1a;
     z-index: 99999999;
+
+    .title
+    {
+        display:inline-block;
+        width:120px;
+    }
+
+    div,span
+    {
+        font-size: 12px;
+        font-family: arial;
+    }
 
     .select
     {
@@ -957,6 +966,7 @@ input[type=text]:active, input[type=text]:focus {
 
         a
         {
+            font-family: arial;
             &:hover
             {
                 text-decoration: underline;
@@ -971,12 +981,12 @@ input[type=text]:active, input[type=text]:focus {
 
     .button
     {
-        font-size:25px;
+        font-size:14px;
     }
 
     div
     {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         width:100%;
         clear:both;
     }

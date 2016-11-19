@@ -180,39 +180,67 @@
 
 <div class="" style="float:right">
     <div class="hidden easingselect" >
+        <div>
+            <a class="button icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);"><span>
+                &nbsp;Linear</span></a>
+            <a class="button icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);"><span>&nbsp;Absolute</span></a>
+        <br/>
+        <br/>
+        </div>
+        <div>
+            <div class="title">Sin</div>
 
-<div>
-    <span class="button icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_LINEAR);"></span>
-    <span class="button icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE);"></span>
-    <span class="button icon-bezier" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);"></span>
-<br/>
-<br/>
-</div>
-<div>
-    <span class="button icon-sin_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);"></span>
-    <span class="button icon-sin" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);"></span>
-    <span class="button icon-sin_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);"></span>
-</div>
-<div>
-    <span class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);"></span>
-    <span class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);"></span>
-    <span class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);"></span>
-</div>
-
-<div>
-    <span class="button icon-exp_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);"></span>
-    <span class="button icon-expo" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);"></span>
-    <span class="button icon-exp_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);"></span>
-</div>
+            <a class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_IN);"></span></a>
+            <a class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_INOUT);"></span></a>
+            <a class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SIN_OUT);"></span></a>
+        </div>
+        <div>
+            <div class="title">Cubic</div>
+            <a class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_IN);"></span></a>
+            <a class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_INOUT);"></span></a>
+            <a class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_CUBIC_OUT);"></span></a>
+        </div>
 
 
 
-<!--
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP);">smoothstep</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP);">smootherstep</a><br/>
-    <a onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BEZIER);">bezier</a><br/>
+        <div>
+            <div class="title">Quart</div>
+            <a class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_QUART_IN);"></span></a>
+            <a class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_QUART_INOUT);"></span></a>
+            <a class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_QUART_OUT);"></span></a>
+        </div>
 
--->
+        <div>
+            <div class="title">Quint</div>
+            <a class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_QUINT_IN);"></span></a>
+            <a class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_QUINT_INOUT);"></span></a>
+            <a class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_QUINT_OUT);"></span></a>
+        </div>
+
+        <div>
+            <div class="title">Expo</div>
+            <a class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_IN);"></span></a>
+            <a class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_INOUT);"></span></a>
+            <a class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_EXPO_OUT);"></span></a>
+        </div>
+
+        <div>
+            <div class="title">Back</div>
+            <a class="button icon-cub_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BACK_IN);"></span></a>
+            <a class="button icon-cubic" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BACK_INOUT);"></span></a>
+            <a class="button icon-cub_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BACK_OUT);"></span></a>
+        </div>
+
+        <div>
+            <div class="title">Elastic</div>
+            <a class="button icon-exp_in" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ELASTIC_IN);"></span></a>
+            <a class="button icon-exp_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_ELASTIC_OUT);"></span></a>
+        </div>
+
+        <div>
+            <div class="title">Bounce</div>
+            <a class="button icon-exp_out" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.TL.EASING_BOUNCE_OUT);"></span></a>
+        </div>
 
     </div>
 </div>
