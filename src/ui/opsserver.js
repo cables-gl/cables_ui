@@ -414,6 +414,11 @@ CABLES.UI.ServerOps=function(gui)
 
         };
 
+        this.opHasLibs=function(opName)
+        {
+            return this.getOpLibs(opName).length!==0;
+        };
+
         this.loadOpLibs=function(opName,next)
         {
             var libsToLoad=this.getOpLibs(opName);

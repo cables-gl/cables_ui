@@ -154,8 +154,19 @@ CABLES.UI.GUI=function()
             patchHeight-=timelineUiHeight;
         }
 
-        if(patchWidth<600)$('#username').hide();
-            else $('#username').show();
+        if(patchWidth<600)
+        {
+            $('#username').hide();
+            $('.projectname').hide();
+            $('.naventry').hide();
+
+        }
+        else
+        {
+            $('#username').show();
+            $('.projectname').show();
+            $('.naventry').show();
+        }
 
 
         if(showingEditor)
