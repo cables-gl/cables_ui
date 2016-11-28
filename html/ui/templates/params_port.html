@@ -3,17 +3,14 @@
 <script id="params_ports_head" type="text/x-handlebars-template">
 
 <tr>
-<th colspan="11">
-<div class="panelhead">{{title}}:</div>
-</th>
+<td colspan="11" class="panelhead" data-panelselector=".opports_{{dirStr}}">{{title}}</td>
 </tr>
 
 </script>
 
 <script id="params_port" type="text/x-handlebars-template">
 
-
-<tr id="tr_{{ dirStr }}_{{ portnum }}">
+<tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}">
     <td class="port portType_{{ port.type }} ">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}">
         {{port.name}}

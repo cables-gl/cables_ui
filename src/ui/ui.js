@@ -154,6 +154,9 @@ CABLES.UI.GUI=function()
             patchHeight-=timelineUiHeight;
         }
 
+        if(patchWidth<600)$('#username').hide();
+            else $('#username').show();
+
 
         if(showingEditor)
         {
@@ -1099,7 +1102,7 @@ CABLES.UI.GUI=function()
 
     this.showOpDoc=function(opname)
     {
-        var docOpHead='<div class="panelhead">documentation</div><div>';
+        var docOpHead='<div>';
         var docOpFooter='<br/><br/><a onclick="gui.editOpDoc(\''+opname+'\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
 
         this.getOpDoc(opname,true,function(html)
@@ -1234,7 +1237,6 @@ CABLES.UI.GUI=function()
         _patch.show(_scene);
 
 
-
         // _socket=new CABLES.API.Socket(this);
         // _socket = new CABLES.API.Socket();
         _connection=new CABLES.API.Connection(this);
@@ -1344,6 +1346,33 @@ function startUi(event)
     });
 
 
+
+
+
+    $(document).on("click", '.panelhead', function(e)
+        {
+            var panelselector=$(this).data("panelselector");
+            if(panelselector)
+            {
+                $(panelselector).toggle();
+
+                if($(panelselector).is(":visible"))
+                {
+                    $(this).addClass("opened");
+                    $(this).removeClass("closed");
+                }
+                else
+                {
+                    $(this).addClass("closed");
+                    $(this).removeClass("opened");
+                }
+
+
+
+            }
+
+
+        });
 
 
 

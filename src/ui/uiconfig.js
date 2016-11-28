@@ -10,6 +10,8 @@ CABLES.UI.uiConfig=
     resizeBarWidth:6,
 
     opHeight:31,
+    opWidth:100,
+    opWidthSmall:40,
 
     colorBackground:'#1a1a1a',
     colorLink:'#fff',

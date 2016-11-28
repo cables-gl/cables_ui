@@ -1,12 +1,25 @@
 
 <script id="meta_code" type="text/x-handlebars-template">
 
-<h3>Code</h3>
-<h3>{{op.objName}}</h3>
+<h4>{{op.objName}}</h4>
+
 
 {{#if user.isAdmin}}
-    <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
+<h3>Admin</h3>
+
+<span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
+<br/>
+<span class="button fa fa-lock" onclick="CABLES.UI.MetaCode.rename('{{op.objName}}');">rename</span>
+<br/>
+<span class="button fa fa-lock" onclick="">move from/to experimental</span>
+
+<br/><br/>
+
 {{/if}}
+
+
+
+<h3>Code</h3>
 
 <br/>
 <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>

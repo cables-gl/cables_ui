@@ -55,4 +55,21 @@ CABLES.UI.MetaCode=function(projectId)
     };
 
 
+
+};
+
+CABLES.UI.MetaCode.rename=function(oldName)
+{
+    var newName=prompt('rename '+oldName+':',oldName);
+
+    if(newName)
+        CABLES.api.get(
+            'admin/op/rename/'+oldName+'/'+newName,
+            function(res)
+            {
+                var html='<h2>Rename</h2><br/> <a class="bluebutton" onclick="document.location.reload();">reload now</a><br/><br/><br/><div>'+JSON.stringify(res)+'</div>';
+                CABLES.UI.MODAL.show(html);
+
+            });
+
 };

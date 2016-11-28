@@ -1598,8 +1598,10 @@ CABLES.UI.Patch=function(_gui)
         {
             gui.setStateUnsaved();
             $('#patch').focus();
+            var width=CABLES.UI.uiConfig.opWidth;
+            if(op.name.length==1) width=CABLES.UI.uiConfig.opWidthSmall;
 
-            var uiOp=new OpUi(self.paper,op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, 100, CABLES.UI.uiConfig.opHeight, op.name);
+            var uiOp=new OpUi(self.paper,op,CABLES.UI.OPSELECT.newOpPos.x,CABLES.UI.OPSELECT.newOpPos.y, width, CABLES.UI.uiConfig.opHeight, op.name);
 
             self.ops.push(uiOp);
 
@@ -2261,7 +2263,7 @@ var spacing=8;
 
         if(op.portsIn.length>0)
         {
-            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'in',texts:CABLES.UI.TEXTS});
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',{"dirStr":'in', "title":'Input Parameters',"texts":CABLES.UI.TEXTS});
 
             for(i in op.portsIn)
             {
@@ -2271,13 +2273,13 @@ var spacing=8;
                 if(op.portsIn[i].uiAttribs.colorPick) watchColorPicker.push(op.portsIn[i]);
                 if(op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
 
-                html += templatePort( {port: op.portsIn[i],dirStr:"in",portnum:i,isInput:true,op:op ,texts:CABLES.UI.TEXTS} );
+                html += templatePort( {port: op.portsIn[i],"dirStr":"in","portnum":i,"isInput":true,"op":op ,"texts":CABLES.UI.TEXTS} );
             }
         }
 
         if(op.portsOut.length>0)
         {
-            html += CABLES.UI.getHandleBarHtml('params_ports_head',{title:'out',op: op,texts:CABLES.UI.TEXTS});
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',{"dirStr":'out', "title":'Output Parameters',"op": op,texts:CABLES.UI.TEXTS});
 
             var foundPreview=false;
             for(var i2 in op.portsOut)
@@ -2295,11 +2297,11 @@ var spacing=8;
                     gui.preview.setTexture(op.id,op.portsOut[i2].getName());
                 }
 
-                html += templatePort( {port: op.portsOut[i2],dirStr:"out",portnum:i2,isInput:false,op: op } );
+                html += templatePort( {"port": op.portsOut[i2],"dirStr":"out","portnum":i2,"isInput":false,"op": op } );
             }
         }
 
-        html += CABLES.UI.getHandleBarHtml('params_op_foot',{op: op});
+        html += CABLES.UI.getHandleBarHtml('params_op_foot',{"op": op,"user":gui.user});
 
         $('#options').html(html);
         updateUiAttribs();

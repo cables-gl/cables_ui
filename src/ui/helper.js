@@ -6,6 +6,9 @@ CABLES.UI=CABLES.UI || {};
 //     // $('#statusbar .text').html('&nbsp;'+txt);
 // };
 
+
+
+
 CABLES.uniqueArray=function(arr)
 {
     var u = {}, a = [];

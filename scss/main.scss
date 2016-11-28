@@ -141,6 +141,8 @@ a
     position:absolute;
     background-color: #222;
     font-size: 12px;
+    overflow: scroll;
+    overflow-x: hidden;
 
     &:focus {
       border: 1px solid $highlight-color;
@@ -338,29 +340,17 @@ input[type="text"]
 }
 
 
+
+
 .panel
 {
     overflow: auto;
-
+padding:10px;
     div
     {
-        padding:10px;
+
     }
 
-    .panelhead
-    {
-        //font-family: arial;
-        //background-color: #1d1d1d;
-        padding: 5px;
-        font-family: Arial;
-        text-transform: capitalize;
-        font-size: 17px;
-        font-weight: $panelhead-font-weight;
-        font-style: normal;
-        padding-left: 10px;
-        padding-right: 10px;
-        color: $highlight-color;
-    }
 
     .invalid
     {
@@ -422,8 +412,14 @@ input[type="text"]
 
         th
         {
-            font-weight: normal;
+            font-weight: bold;
             text-align: left;
+            padding:5px;
+            padding-left:10px;
+            padding-top: 20px;
+            padding-bottom: 10px;
+            font-size: 14px;
+            color:$highlight-color;
         }
 
         tr
@@ -1317,9 +1313,8 @@ input[type=text]:active, input[type=text]:focus {
 
 #doc_op
 {
-    margin-top: 20px;
-    background-color: #262626;
     padding:10px;
+    padding-top: 0px;
     overflow: auto;
 
     /* enable text selection */
@@ -2076,4 +2071,44 @@ rect
         color:black;
         margin-bottom: 0px;
     }
+}
+
+.panelhead
+{
+    background-color: #1d1d1d;
+    padding: 6px !important;
+    font-family: Arial;
+    text-transform: capitalize;
+    font-size: 14px !important;
+    font-style: normal;
+    cursor:pointer;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 1px;
+
+    &:hover
+    {
+        color:#fff;
+        background-color: #1a1a1a;
+    }
+
+    &:before
+    {
+        font-family: fontawesome,futura-pt,arial;
+        content:"\f107";
+        margin-right: 5px;
+        display:inline-block;
+    }
+
+    &.closed
+    {
+        &:before
+        {
+            font-family: fontawesome,futura-pt,arial;
+            content:"\f106";
+            margin-right: 5px;
+            display:inline-block;
+        }
+    }
+
 }
