@@ -1394,6 +1394,11 @@ CABLES.UI.Patch=function(_gui)
 
         uiOp.setPos(pos.x,pos.y);
 
+        if(!self.scene.isLoading)
+        {
+            if(op.onLoaded)op.onLoaded();
+            op.onLoaded=null;
+        }
 
         if(!isLoading)
         {
