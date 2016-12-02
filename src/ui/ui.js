@@ -1356,10 +1356,6 @@ function startUi(event)
         gui.waitToShowUI();
     });
 
-
-
-
-
     $(document).on("click", '.panelhead', function(e)
         {
             var panelselector=$(this).data("panelselector");
@@ -1377,18 +1373,9 @@ function startUi(event)
                     $(this).addClass("closed");
                     $(this).removeClass("opened");
                 }
-
-
-
             }
-
-
         });
 
-
-
     logStartup('Init UI done');
-
-
 
 }

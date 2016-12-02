@@ -133,24 +133,21 @@ CABLES.UI.togglePortValBool=function(which,checkbox)
 };
 
 
-CABLES.UI.inputIncrement=function(v,dir)
+CABLES.UI.inputIncrement=function(v,dir,e)
 {
     gui.setStateUnsaved();
     if(v=='true') return 'false';
     if(v=='false') return 'true';
 
     var val=parseFloat(v);
+    if(val!=val)return v;
     var add=0.1;
-    // if(val.)
-    // if(Math.abs(val)<2) add=0.1;
-    //     else if(Math.abs(val)<100) add=1;
-    //         else add=10;
+    if(e.shiftKey)add=0.01;
 
     var r=val+add*dir;
 
     if(isNaN(r))r=0.0;
-    else
-        r= Math.round(1000*r)/1000;
+        else r= Math.round(1000*r)/1000;
     return r;
 };
 
