@@ -633,45 +633,52 @@ CABLES.UI.Patch=function(_gui)
         if(_id)id=_id;
         if(_name)name=_name;
 
-        gui.patch().scene.cgl.onScreenShot=function(d)
-        {
-
-            var data=gui.patch().scene.serialize(true);
-
-            data.ui={viewBox:{}};
-            data.ui.bookmarks=gui.bookmarks.getBookmarks();
-
-            data.ui.viewBox.w=viewBox.w;
-            data.ui.viewBox.h=viewBox.h;
-            data.ui.viewBox.x=viewBox.x;
-            data.ui.viewBox.y=viewBox.y;
-            data.ui.subPatchViewBoxes=subPatchViewBoxes;
-
-            data.ui.renderer={};
-            data.ui.renderer.w=gui.rendererWidth;
-            data.ui.renderer.h=gui.rendererHeight;
-
-            data=JSON.stringify(data);
 
 
-            console.log('data.length',data.length);
 
-            gui.patch().getLargestPort();
-            $('#glcanvas').attr('width',w);
-            $('#glcanvas').attr('height',h);
+        var data=gui.patch().scene.serialize(true);
 
-            CABLES.api.put(
-                'project/'+id,
+        data.ui={viewBox:{}};
+        data.ui.bookmarks=gui.bookmarks.getBookmarks();
+
+        data.ui.viewBox.w=viewBox.w;
+        data.ui.viewBox.h=viewBox.h;
+        data.ui.viewBox.x=viewBox.x;
+        data.ui.viewBox.y=viewBox.y;
+        data.ui.subPatchViewBoxes=subPatchViewBoxes;
+
+        data.ui.renderer={};
+        data.ui.renderer.w=gui.rendererWidth;
+        data.ui.renderer.h=gui.rendererHeight;
+
+        data=JSON.stringify(data);
+        console.log('data.length',data.length);
+
+        gui.patch().getLargestPort();
+
+        CABLES.UI.notify('patch saved');
+
+        CABLES.api.put(
+            'project/'+id,
+            {
+                "name":name,
+                "data":data,
+                // "screenshot":gui.patch().scene.cgl.screenShotDataURL
+            },
+            function(r)
+            {
+
+                setTimeout(function()
                 {
-                    "name":name,
-                    "data":data,
-                    // "screenshot":gui.patch().scene.cgl.screenShotDataURL
-                },
-                function(r)
+                    $('#glcanvas').attr('width',w);
+                    $('#glcanvas').attr('height',h);
+                    gui.patch().scene.cgl.onScreenShot=null;
+                },2000);
+
+                gui.patch().scene.cgl.onScreenShot=function(d)
                 {
-                    CABLES.UI.notify('patch saved');
-                    // if(r.success===true) CABLES.UI.setStatusText('project saved');
-                    // else CABLES.UI.setStatusText('project NOT saved');
+                    $('#glcanvas').attr('width',w);
+                    $('#glcanvas').attr('height',h);
 
                     gui.setStateSaved();
                     gui.jobs().finish('projectsave');
@@ -689,8 +696,8 @@ CABLES.UI.Patch=function(_gui)
                         });
 
                     if(cb)cb();
-                });
-        };
+                };
+        });
     };
 
     this.getCurrentProject=function()
@@ -1745,11 +1752,11 @@ CABLES.UI.Patch=function(_gui)
             var testOp=this.ops[i];
             if(
                 !testOp.op.deleted &&
-                uiOp.op.id!=testOp.op.id )
+                uiOp.op.id!=testOp.op.id && uiOp.getSubPatch()==testOp.getSubPatch() )
                 {
                     // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
                     // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
-var spacing=8;
+                    var spacing=8;
 
 
                     if( (uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x &&
