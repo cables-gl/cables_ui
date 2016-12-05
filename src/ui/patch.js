@@ -667,12 +667,14 @@ CABLES.UI.Patch=function(_gui)
             },
             function(r)
             {
+                gui.jobs().finish('projectsave');
 
                 setTimeout(function()
                 {
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
                     gui.patch().scene.cgl.onScreenShot=null;
+                    gui.jobs().finish('uploadscreenshot');
                 },2000);
 
                 gui.patch().scene.cgl.onScreenShot=function(d)
@@ -681,7 +683,6 @@ CABLES.UI.Patch=function(_gui)
                     $('#glcanvas').attr('height',h);
 
                     gui.setStateSaved();
-                    gui.jobs().finish('projectsave');
 
                     gui.jobs().start({id:'uploadscreenshot',title:'uploading screenshot'});
                     CABLES.api.put(
