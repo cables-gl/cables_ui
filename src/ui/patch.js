@@ -668,6 +668,8 @@ CABLES.UI.Patch=function(_gui)
             function(r)
             {
                 gui.jobs().finish('projectsave');
+                gui.setStateSaved();
+                if(cb)cb();
 
                 setTimeout(function()
                 {
@@ -682,8 +684,6 @@ CABLES.UI.Patch=function(_gui)
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
 
-                    gui.setStateSaved();
-
                     gui.jobs().start({id:'uploadscreenshot',title:'uploading screenshot'});
                     CABLES.api.put(
                         'project/'+id+'/screenshot',
@@ -696,7 +696,7 @@ CABLES.UI.Patch=function(_gui)
                             if(cb)cb();
                         });
 
-                    if(cb)cb();
+
                 };
         });
     };
