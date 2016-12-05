@@ -142,11 +142,11 @@ CABLES.UI.inputIncrement=function(v,dir,e)
     var val=parseFloat(v);
     if(val!=val)return v;
     var add=0.1;
-    if(e.shiftKey)add=0.01;
+    if(e && e.shiftKey)add=0.01;
 
     var r=val+add*dir;
 
-    if(isNaN(r))r=0.0;
+    if(isNaN(r)) r=0.0;
         else r= Math.round(1000*r)/1000;
     return r;
 };

@@ -94,13 +94,13 @@
             switch(e.which)
             {
                 case 38: // up
-                    this.value=CABLES.UI.inputIncrement(this.value,1);
+                    this.value=CABLES.UI.inputIncrement(this.value,1,e);
                     $(this).trigger('input');
                     return false;
                 break;
 
                 case 40: // down
-                    this.value=CABLES.UI.inputIncrement(this.value,-1);
+                    this.value=CABLES.UI.inputIncrement(this.value,-1,e);
                     $(this).trigger('input');
                     return false;
                 break;
@@ -116,13 +116,13 @@
             {
                 if (delta > 0)
                 {
-                    if(event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value,0.1);
-                        else this.value = CABLES.UI.inputIncrement(this.value,1);
+                    if(event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value,0.1,event);
+                        else this.value = CABLES.UI.inputIncrement(this.value,1,event);
                 }
                 else
                 {
-                    if(event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value,-0.1);
-                        else this.value = CABLES.UI.inputIncrement(this.value,-1);
+                    if(event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value,-0.1,event);
+                        else this.value = CABLES.UI.inputIncrement(this.value,-1,event);
                 }
 
                  $(this).trigger('input');
