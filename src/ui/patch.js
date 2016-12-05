@@ -632,10 +632,6 @@ CABLES.UI.Patch=function(_gui)
         var name=currentProject.name;
         if(_id)id=_id;
         if(_name)name=_name;
-
-
-
-
         var data=gui.patch().scene.serialize(true);
 
         data.ui={viewBox:{}};
@@ -679,12 +675,13 @@ CABLES.UI.Patch=function(_gui)
                     gui.jobs().finish('uploadscreenshot');
                 },2000);
 
+                gui.jobs().start({id:'uploadscreenshot',title:'uploading screenshot'});
+
                 gui.patch().scene.cgl.onScreenShot=function(d)
                 {
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
 
-                    gui.jobs().start({id:'uploadscreenshot',title:'uploading screenshot'});
                     CABLES.api.put(
                         'project/'+id+'/screenshot',
                         {
@@ -693,7 +690,6 @@ CABLES.UI.Patch=function(_gui)
                         function(r)
                         {
                             gui.jobs().finish('uploadscreenshot');
-                            if(cb)cb();
                         });
 
 
