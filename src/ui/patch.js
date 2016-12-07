@@ -621,7 +621,6 @@ CABLES.UI.Patch=function(_gui)
 
         gui.jobs().start({id:'projectsave',title:'saving project'});
 
-        gui.patch().scene.cgl.doScreenshot=true;
 
         var w=$('#glcanvas').attr('width');
         var h=$('#glcanvas').attr('height');
@@ -667,18 +666,23 @@ CABLES.UI.Patch=function(_gui)
                 gui.setStateSaved();
                 if(cb)cb();
 
-                setTimeout(function()
+                var screenshotTimeout=setTimeout(function()
                 {
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
-                    gui.patch().scene.cgl.onScreenShot=null;
+                    // gui.patch().scene.cgl.onScreenShot=null;
+                    gui.patch().scene.cgl.doScreenshot=false;
+
                     gui.jobs().finish('uploadscreenshot');
+                    console.log('screenshot timed out...');
                 },2000);
 
                 gui.jobs().start({id:'uploadscreenshot',title:'uploading screenshot'});
 
                 gui.patch().scene.cgl.onScreenShot=function(d)
                 {
+                    clearTimeout(screenshotTimeout);
+
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
 
@@ -691,9 +695,9 @@ CABLES.UI.Patch=function(_gui)
                         {
                             gui.jobs().finish('uploadscreenshot');
                         });
-
-
                 };
+                gui.patch().scene.cgl.doScreenshot=true;
+
         });
     };
 
