@@ -1879,6 +1879,29 @@ CABLES.UI.Patch=function(_gui)
         // }
     };
 
+
+    this.compressSelectedOps=function()
+    {
+
+        this.saveUndoSelectedOpsPositions();
+
+        selectedOps.sort(function(a,b)
+        {
+            return a.op.uiAttribs.translate.y-b.op.uiAttribs.translate.y;
+        });
+
+        var y=selectedOps[0].op.uiAttribs.translate.y;
+
+        for(var j=0;j<selectedOps.length;j++)
+        {
+            if(j>0) y+=selectedOps[j].getHeight()+10;
+            selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x,y);
+
+        }
+
+    };
+
+
     this.alignSelectedOps=function()
     {
         var sumX=0,minX=0;
