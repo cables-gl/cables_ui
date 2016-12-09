@@ -513,9 +513,9 @@ CABLES.UI.GUI=function()
 
     };
 
-    this.showLibrary=function(inputId,filterType)
+    this.showLibrary=function(inputId,filterType,opid)
     {
-        CABLES.UI.fileSelect.show(inputId,filterType);
+        CABLES.UI.fileSelect.show(inputId,filterType,opid);
     };
 
     this.setProjectName=function(name)

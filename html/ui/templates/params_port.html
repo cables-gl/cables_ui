@@ -111,7 +111,7 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'file' }}
-                            <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');"></a>
+                            <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a>
                             <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
                         </td><td>
 

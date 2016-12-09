@@ -11,12 +11,14 @@ CABLES.UI.FileSelect=function()
     var filterType='';
     this._viewClass='icon';
     var self=this;
+    this.currentOpid=null;
 
     this.setFile=function(_id,_url)
     {
         $(_id).val(_url);
         $(_id).trigger('input');
-        // $(_id).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+
+
         var highlightBg="#fff";
         var originalBg = $(_id).css("background-color");
         $(_id).stop().css("opacity", 0);
@@ -24,6 +26,11 @@ CABLES.UI.FileSelect=function()
 
         // $(_id).animate({backgroundColor:'#fff'}, 300);//.animate({backgroundColor:'#555'}, 100);
 
+
+console.log(this.currentOpid);
+console.log(gui.scene().getOpById(this.currentOpid));
+
+        gui.patch().showOpParams(gui.scene().getOpById(this.currentOpid));
 
 
         CABLES.UI.fileSelect.showPreview(_url);
@@ -68,9 +75,10 @@ CABLES.UI.FileSelect=function()
         this.load();
     };
 
-    this.show=function(_inputId,_filterType)
+    this.show=function(_inputId,_filterType,_opid)
     {
         $('#library').toggle();
+        this.currentOpid=_opid;
 
         if( $('#library').is(':visible') )
         {
