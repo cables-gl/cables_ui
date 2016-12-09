@@ -503,7 +503,22 @@ CABLES.UI.Patch=function(_gui)
             break;
 
             case 46: case 8: // delete
+
                 if($("input").is(":focus")) return;
+
+                if(gui.patch().hoverPort)
+                {
+                    gui.patch().hoverPort.removeLinks();
+                    return;
+                }
+
+                if(CABLES.UI.LINKHOVER)
+                {
+                    CABLES.UI.LINKHOVER.p1.thePort.removeLinkTo( CABLES.UI.LINKHOVER.p2.thePort );
+
+                    // CABLES.UI.LINKHOVER.remove();
+                    return;
+                }
 
                 self.deleteSelectedOps();
                 if(e.stopPropagation) e.stopPropagation();

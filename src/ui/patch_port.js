@@ -351,6 +351,9 @@ CABLES.UI.Port=function(thePort)
         // self.rect.node.classList.add('active');
         hovering=true;
 
+        gui.patch().hoverPort=thePort;
+
+
         var txt=getPortDescription(thePort);
         // CABLES.UI.setStatusText(txt);
         CABLES.UI.showToolTip(event,txt);
@@ -377,6 +380,7 @@ CABLES.UI.Port=function(thePort)
     {
         CABLES.UI.hideToolTip();
         selectedEndPort=null;
+        gui.patch().hoverPort=null;
 
         hovering=false;
 
