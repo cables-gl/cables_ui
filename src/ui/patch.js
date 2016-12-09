@@ -539,15 +539,20 @@ CABLES.UI.Patch=function(_gui)
                 }
             break;
 
+
+
             case 65: // a - align
                 if(e.metaKey || e.ctrlKey)
                 {
                     self.selectAllOps();
                 }
+                if(e.shiftKey )
+                {
+                    self.compressSelectedOps();
+                }
                 else
                 {
                     self.alignSelectedOps();
-                    // self.arrangeSelectedOps();
                 }
             break;
 
@@ -985,7 +990,7 @@ CABLES.UI.Patch=function(_gui)
                         else
                         {
                             self.removeSelectedOp(self.ops[i]);
-                            // self.ops[i].setSelected(false);
+                            self.ops[i].setSelected(false);
                         }
                     }
                 }
@@ -1882,7 +1887,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.compressSelectedOps=function()
     {
-
+        if(!selectedOps || selectedOps.length===0)return;
         this.saveUndoSelectedOpsPositions();
 
         selectedOps.sort(function(a,b)
