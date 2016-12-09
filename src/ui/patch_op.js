@@ -116,16 +116,14 @@ function UiLink(port1, port2)
 
                 // gui.patch().hoverPort=self.p1;
                 addCircle.node.classList.add('active');
-
-self.linkLine.node.classList.add('link_hover');
+                self.linkLine.node.classList.add('link_hover');
 
                 CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
             },function()
             {
                 CABLES.UI.LINKHOVER=null;
                 addCircle.node.classList.remove('active');
-
-self.linkLine.node.classList.remove('link_hover');
+                self.linkLine.node.classList.remove('link_hover');
 
                 CABLES.UI.hideInfo();
             });
