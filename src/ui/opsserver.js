@@ -300,7 +300,7 @@ CABLES.UI.ServerOps=function(gui)
                                     }
 
                                     // exec ???
-                                    setStatus('saved');
+                                    setStatus('saved '+op.name);
                                 }
                                 console.log('res',res);
                             },
