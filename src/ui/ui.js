@@ -1083,6 +1083,40 @@ CABLES.UI.GUI=function()
     };
 
 
+
+    this.liveRecord=function()
+    {
+        $('#glcanvas').attr('width',parseFloat($('#render_width').val()) );
+        $('#glcanvas').attr('height',parseFloat($('#render_height').val()));
+
+        if(!CABLES.UI.capturer)
+        {
+            $('#liveRecordButton').html("Stop Live Recording");
+            CABLES.UI.capturer = new CCapture( {
+                format: 'gif',
+                // format: 'webm',
+                // quality:77,
+                workersPath: '/ui/js/gifjs/',
+                framerate: parseFloat($('#render_fps').val()),
+                display:true,
+                verbose: true
+            } );
+
+            CABLES.UI.capturer.start( gui.patch().scene.cgl.canvas );
+
+        }
+        else
+        {
+            $('#liveRecordButton').html("Start Live Recording");
+            CABLES.UI.capturer.stop();
+            CABLES.UI.capturer.save();
+            var oldCap=CABLES.UI.capturer;
+            CABLES.UI.capturer=null;
+        }
+
+    };
+
+
     this.renderScreenshots=function()
     {
         var startTime=parseFloat($('#render_start').val());
