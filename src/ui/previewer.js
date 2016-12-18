@@ -48,7 +48,7 @@ CABLES.UI.Preview=function()
         previewDataPort=previewDataOp.getPort(portName);
         if(!previewDataPort)
         {
-            console.log('port not found:',which);
+            console.log('port not found:',portName);
             return;
         }
 

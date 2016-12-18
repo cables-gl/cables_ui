@@ -337,7 +337,7 @@ CABLES.UI.GUI=function()
         else
         {
             $('#glcanvas').attr('width',self.rendererWidth);
-            $('#glcanvas').attr('height',self.rendererHeight);
+            $('#glcanvas').attr('height',self.rendererHeight-2);
             $('#cablescanvas').attr('width',self.rendererWidth);
             $('#cablescanvas').attr('height',self.rendererHeight);
             $('#cablescanvas').css('width',self.rendererWidth+'px');
@@ -382,7 +382,7 @@ CABLES.UI.GUI=function()
 
 
 
-    var oldRendwerWidth,oldRendwerHeight;
+    var oldRendwerWidth,oldRendwerHeight,oldShowingEditor;
     this.cycleRendererSize=function()
     {
         console.log('cycleRendererSize');
@@ -391,12 +391,18 @@ CABLES.UI.GUI=function()
         {
             oldRendwerWidth=self.rendererWidth;
             oldRendwerHeight=self.rendererHeight;
+            oldShowingEditor=showingEditor;
+
             self.rendererWidth=0;
+            showingEditor=false;
+
         }
         else
         {
             self.rendererWidth=oldRendwerWidth;
             self.rendererHeight=oldRendwerHeight;
+            showingEditor=oldShowingEditor;
+
 
         }
 
@@ -834,6 +840,8 @@ CABLES.UI.GUI=function()
                     {
                         self.rendererWidth=window.innerWidth*0.4;
                         self.rendererHeight=window.innerHeight*0.25;
+                        showingEditor=oldShowingEditor;
+
                         self.setLayout();
                     }
                     else
@@ -937,8 +945,9 @@ CABLES.UI.GUI=function()
                 for(var i in proj.userList)
                     userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
 
-                loadjs( userOpsUrls,'userops'+proj._id);
-                loadjs.ready('userops'+proj._id,function()
+                var lid='userops'+proj._id+CABLES.generateUUID();
+                loadjs( userOpsUrls,lid);
+                loadjs.ready(lid,function()
                 {
                     userOpsLoaded=true;
                     incrementStartup();

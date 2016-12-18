@@ -352,9 +352,8 @@ CABLES.UI.ServerOps=function(gui)
 
         this._loadedLibs=[];
 
-        this.getOpLibs=function(opname)
+        this.getOpLibs=function(opname,checkLoaded)
         {
-
             for(i=0;i<ops.length;i++)
             {
                 if(ops[i].name==opname)
@@ -365,11 +364,15 @@ CABLES.UI.ServerOps=function(gui)
                         for(var j=0;j<ops[i].libs.length;j++)
                         {
                             var libName='/libs/'+ops[i].libs[j];
+                            if(!checkLoaded)
+                            {
+                                libs.push(libName);
+                            }
+                            else
                             if(this._loadedLibs.indexOf(libName)==-1)
                             {
                                 libs.push(libName);
                             }
-                            this._loadedLibs.push(libName);
                         }
 
                         return libs;
@@ -393,8 +396,6 @@ CABLES.UI.ServerOps=function(gui)
 
             libsToLoad=CABLES.uniqueArray(libsToLoad);
 
-
-
             console.log(libsToLoad);
 
             if(libsToLoad.length===0)
@@ -403,20 +404,45 @@ CABLES.UI.ServerOps=function(gui)
                 return;
             }
 
-            loadjs(libsToLoad,'oplibs');
+            var id=CABLES.generateUUID();
+            loadjs(libsToLoad,'oplibs'+id);
 
-            loadjs.ready('oplibs', function()
+
+
+            loadjs.ready('oplibs'+id, function()
             {
+                for(i=0;i<libsToLoad.length;i++)
+                {
+                    this._loadedLibs.push(libsToLoad[i]);
+                }
+
                 console.log('finished loading libs...');
                 next();
-            });
+            }.bind(this));
 
+
+        };
+
+        this.isLibLoaded=function(libName)
+        {
+            return this._loadedLibs.indexOf(libName)!=-1;
 
         };
 
         this.opHasLibs=function(opName)
         {
             return this.getOpLibs(opName).length!==0;
+        };
+
+        this.opLibsLoaded=function(opName)
+        {
+            var libsToLoad=this.getOpLibs(opName);
+            for(var i=0;i<libsToLoad.length;i++)
+            {
+                if(!this.isLibLoaded(libsToLoad[i]))return false;
+            }
+            return true;
+
         };
 
         this.loadOpLibs=function(opName,next)
@@ -430,13 +456,13 @@ CABLES.UI.ServerOps=function(gui)
             }
 
             var lid='oplibs'+CABLES.generateUUID();
-            loadjs(libsToLoad,lid);
 
             loadjs.ready(lid, function()
             {
                 console.log('finished loading libs for '+opName);
                 next();
             });
+            loadjs(libsToLoad,lid);
 
 
         };
