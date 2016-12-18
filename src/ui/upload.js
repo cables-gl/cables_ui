@@ -58,6 +58,8 @@ $("body").on("drop", function(event)
                 // gui.jobs().start({id:'processingfiles',title:'processing files...'});
                 gui.jobs().finish('uploadingfiles');
 
+CABLES.UI.notify("File Uploaded");
+
                 // console.log(files);
                 setTimeout(function()
                 {
