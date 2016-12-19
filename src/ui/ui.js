@@ -1385,7 +1385,7 @@ function startUi(event)
 
     CABLES.UI.initHandleBarsHelper();
 
-    $(document).bind("contextmenu", function(e)
+    $("#patch").bind("contextmenu", function(e)
     {
         if(e.preventDefault) e.preventDefault();
     });

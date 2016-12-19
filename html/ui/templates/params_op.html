@@ -7,7 +7,7 @@
             <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
             <br/><br/>
 
-            <a href="/op/{{op.objName}}" href="blank"><i class="fa fa-external-link"></i>&nbsp;{{op.objName}}</a>
+            <a href="/op/{{op.objName}}" target="blank"><i class="fa fa-external-link"></i>&nbsp;{{op.objName}}</a>
             <br/><br/>
 
             {{#if op.isDeprecated }}
