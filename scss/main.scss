@@ -917,15 +917,15 @@ input[type=text]:active, input[type=text]:focus {
 
 #undev
 {
-    background-image: url(../img/undev.png);
+    background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAyMDIuNiA1My44IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyMDIuNiA1My44OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7ZmlsbDojNkI2QjZCO30NCjwvc3R5bGU+DQo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMjAyLjEsMC41aC01NC43djBoLTYuM3YwYy0wLjIsMC0wLjQsMC0wLjYsMGMtOC45LDAtMTYuNCw1LjctMTkuMiwxMy41Yy0yLjYtNy41LTkuNy0xMy0xOC4yLTEzLjRWMC41aC0yMg0KCXYxNS40SDgxQzc5LjIsNy4zLDcxLjcsMC43LDYyLjYsMC4xVjBoLTEuMmMtMC4xLDAtMC4xLDAtMC4yLDBjLTAuMSwwLTAuMSwwLTAuMiwwSDB2MzMuMmgwYzAsMCwwLDAuMSwwLDAuMUMwLDQ0LjIsOS4xLDUzLDIwLjMsNTMNCgljMTAsMCwxOC4zLTcuMSwyMC0xNi40djE2LjdIMTAzdi0wLjFjOC41LTAuMywxNS42LTUuOCwxOC4zLTEzLjNjMi43LDcuOCwxMC4zLDEzLjUsMTkuMiwxMy41YzAuMywwLDAuNiwwLDAuOSwwaDIwLjlWMzYuMQ0KCUwxODEuOSw1M2wxOS45LTE3aDAuM1YwLjV6IE0xMjEuNCwyN0MxMjEuNCwyNywxMjEuNCwyNywxMjEuNCwyN2MwLDAsMC0wLjEtMC4xLTAuMWMwLDAsMCwwLDAsMEMxMjEuMywyNi45LDEyMS4zLDI2LjksMTIxLjQsMjd6Ig0KCS8+DQo8L3N2Zz4NCg==");
     position: absolute;
-    right: 10px;
-    bottom:0px;
+    right: 0px;
+    bottom:3px;
     width:68px;
     height:19px;
     background-size: 100% 100%;
     display: block;
-    z-index:1000;
+    z-index:99;
 }
 
 @import 'font-awesome.scss';
