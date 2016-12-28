@@ -8,6 +8,7 @@ CABLES.UI.Patch=function(_gui)
     this.ops=[];
     this.scene=null;
     var gui=_gui;
+    this.modeTouchPad=false;
 
     var watchPorts=[];
     var currentProject=null;
@@ -1093,8 +1094,39 @@ CABLES.UI.Patch=function(_gui)
         viewBox={x:0,y:0,w:$('#patch svg').width(),h:$('#patch svg').height()};
         self.updateViewBox();
 
+
+        // $('#patch svg').bind("touchmove", function (event,delta,nbr)
+        // {
+        //     // console.log(event);
+        //     console.log(123);
+        //     console.log(event.changedTouches);
+        //
+        // });
+
+
         $('#patch svg').bind("mousewheel", function (event,delta,nbr)
         {
+            if(event.ctrlKey) // disable chrome pinch/zoom gesture
+            {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                return;
+            }
+
+            if(self.modeTouchPad)
+            {
+
+                if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) viewBox.x+=event.deltaX;
+                else viewBox.y+=-1*event.deltaY;
+
+                self.updateViewBox();
+
+                return;
+
+            }
+
+
+
             delta=CGL.getWheelSpeed(event);
             delta=Math.min(delta,10);
             delta=Math.max(delta,-10);
@@ -1154,6 +1186,7 @@ CABLES.UI.Patch=function(_gui)
         };
 
         var lastZoomDrag=-1;
+
 
 
         this.background.node.ondblclick= function(e)
