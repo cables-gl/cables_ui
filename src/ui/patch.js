@@ -1106,14 +1106,8 @@ CABLES.UI.Patch=function(_gui)
 
         $('#patch svg').bind("mousewheel", function (event,delta,nbr)
         {
-            if(event.ctrlKey) // disable chrome pinch/zoom gesture
-            {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-                return;
-            }
 
-            if(self.modeTouchPad)
+            if(!event.ctrlKey && self.modeTouchPad)
             {
 
                 if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) viewBox.x+=event.deltaX;
@@ -1130,7 +1124,8 @@ CABLES.UI.Patch=function(_gui)
             delta=CGL.getWheelSpeed(event);
             delta=Math.min(delta,10);
             delta=Math.max(delta,-10);
-            delta*=15;
+            if(!self.modeTouchPad)delta*=15;
+
 
             event=mouseEvent(event);
             if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
@@ -1161,6 +1156,14 @@ CABLES.UI.Patch=function(_gui)
 
             self.setMinimapBounds();
             self.updateViewBox();
+
+            if(event.ctrlKey) // disable chrome pinch/zoom gesture
+            {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                return;
+            }
+
         });
 
         this.background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
