@@ -1083,7 +1083,7 @@ CABLES.UI.Patch=function(_gui)
         });
 
 
-        $('#minimap svg').on("mousemove", dragMiniMap);
+        $('#minimap svg').on("mousemove touchmove", dragMiniMap);
         $('#minimap svg').on("mousedown", dragMiniMap);
 
 
@@ -1107,16 +1107,17 @@ CABLES.UI.Patch=function(_gui)
         $('#patch svg').bind("mousewheel", function (event,delta,nbr)
         {
 
+
             if(!event.ctrlKey && self.modeTouchPad)
             {
+                if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) event.deltaY*=0.5;
+                    else event.deltaX*=0.5;
 
-                if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) viewBox.x+=event.deltaX;
-                else viewBox.y+=-1*event.deltaY;
-
+                viewBox.x+=event.deltaX;
+                viewBox.y+=-1*event.deltaY;
                 self.updateViewBox();
 
                 return;
-
             }
 
 
@@ -1224,7 +1225,7 @@ CABLES.UI.Patch=function(_gui)
             self.updateViewBox();
         };
 
-        $('#patch').on("mousemove", function(e)
+        $('#patch').on("mousemove touchmove", function(e)
         {
 
             if(e.which==2)
@@ -1264,13 +1265,15 @@ CABLES.UI.Patch=function(_gui)
             lastZoomDrag=-1;
         });
 
-        $('#patch svg').bind("mousemove", function (e)
+        $('#patch svg').bind("mousemove touchmove", function (e)
         {
+
+
             e=mouseEvent(e);
 
             if(mouseRubberBandStartPos && e.buttons!=1) rubberBandHide();
 
-            if((e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
+            if(lastMouseMoveEvent && (e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
 
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
@@ -2716,6 +2719,14 @@ CABLES.UI.Patch=function(_gui)
         for(var i in watchPorts)
         {
             var id='.watchPortValue_'+watchPorts[i].watchId;
+
+            if(!watchPorts[i].isAnimated)
+            {
+                console.log(watchPorts[i]);
+            }
+
+
+
             if(watchPorts[i].isAnimated() )
             {
                 if( $(id).val()!=watchPorts[i].val ) $(id).val( watchPorts[i].val );

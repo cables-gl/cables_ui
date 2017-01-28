@@ -154,6 +154,14 @@ CABLES.UI.inputIncrement=function(v,dir,e)
 
 function mouseEvent(event)
 {
+
+    if(event.type=="touchmove" && event.originalEvent)
+    {
+        event.buttons=3;
+        event.clientX=event.originalEvent.touches[0].pageX;
+        event.clientY=event.originalEvent.touches[0].pageY;
+    }
+
     if(!event.offsetX) event.offsetX = event.layerX;//(event.pageX - $(event.target).offset().left);
     if(!event.offsetY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
     return event;

@@ -503,10 +503,18 @@ CABLES.UI.GUI=function()
                 });
         }
 
+        var gl=gui.patch().scene.cgl.gl;
+        var dbgRenderInfo = gl.getExtension("WEBGL_debug_renderer_info");
+        var gl_renderer="unknown";
+        if(dbgRenderInfo) gl_renderer= gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
+
 
         var html = CABLES.UI.getHandleBarHtml(
             'uiDebug',
             {
+
+                "gl_ver":gl.getParameter(gl.VERSION),
+                "gl_renderer":gl_renderer,
                 "numOps":gui.scene().ops.length,
                 "numVisibleOps":numVisibleOps,
                 "canvass":canvass,
