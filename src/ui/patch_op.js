@@ -558,6 +558,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         background=gui.patch().getPaper().rect(0, 0, w, h);
         CABLES.UI.cleanRaphael(background);
         background.node.classList.add('op_background');
+        var objNameClassNameified = opui.op.objName.replace(/[\W_]+/g,"_");
+        background.node.classList.add(objNameClassNameified);
         background.node.setAttribute('data-info', CABLES.UI.TEXTS.op_background);
 
 
