@@ -33,7 +33,7 @@
                 {{#each port.links}}
                     <tr>
                         <td>
-                            <a class="info graphbutton fa fa-chain-broken" data-info="{{ texts.portUnlink }}" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
+                            <a class="info graphbutton fa fa-chain-broken" data-info="{{ texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
                             <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portIn.parent.id}}');">{{{ portIn.parent.name }}} - {{{portIn.name}}}</span><br/>
                         </td>
                     </tr>
@@ -42,7 +42,7 @@
             {{else}}
                 {{#each port.links}}
                     </td><td>
-                        <a class="info graphbutton fa fa-chain-broken" data-info="{{ texts.portUnlink }}" id="portdelete_{{ dirStr }}_{{ portnum }}" ></a>
+                        <a class="info graphbutton fa fa-chain-broken" data-info="{{ texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
                         <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portOut.parent.id}}');">{{{ portOut.parent.name }}} - {{{portOut.name}}}</span><br/>
                 {{/each}}
             {{/if}}
@@ -111,7 +111,7 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'file' }}
-                            <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');"></a>
+                            <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a>
                             <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
                         </td><td>
 

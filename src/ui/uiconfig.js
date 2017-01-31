@@ -14,7 +14,7 @@ CABLES.UI.uiConfig=
     opWidthSmall:40,
 
     colorBackground:'#1a1a1a',
-    colorLink:'#fff',
+    colorLink:'#888',
     colorLinkHover:'#fff',
     colorLinkInvalid:'#666',
     // colorOpBg:'#333',

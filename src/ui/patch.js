@@ -8,6 +8,7 @@ CABLES.UI.Patch=function(_gui)
     this.ops=[];
     this.scene=null;
     var gui=_gui;
+    this.modeTouchPad=false;
 
     var watchPorts=[];
     var currentProject=null;
@@ -503,7 +504,22 @@ CABLES.UI.Patch=function(_gui)
             break;
 
             case 46: case 8: // delete
+
                 if($("input").is(":focus")) return;
+
+                if(gui.patch().hoverPort)
+                {
+                    gui.patch().hoverPort.removeLinks();
+                    return;
+                }
+
+                if(CABLES.UI.LINKHOVER)
+                {
+                    CABLES.UI.LINKHOVER.p1.thePort.removeLinkTo( CABLES.UI.LINKHOVER.p2.thePort );
+
+                    // CABLES.UI.LINKHOVER.remove();
+                    return;
+                }
 
                 self.deleteSelectedOps();
                 if(e.stopPropagation) e.stopPropagation();
@@ -524,15 +540,20 @@ CABLES.UI.Patch=function(_gui)
                 }
             break;
 
+
+
             case 65: // a - align
                 if(e.metaKey || e.ctrlKey)
                 {
                     self.selectAllOps();
                 }
+                if(e.shiftKey )
+                {
+                    self.compressSelectedOps();
+                }
                 else
                 {
                     self.alignSelectedOps();
-                    // self.arrangeSelectedOps();
                 }
             break;
 
@@ -621,7 +642,6 @@ CABLES.UI.Patch=function(_gui)
 
         gui.jobs().start({id:'projectsave',title:'saving project'});
 
-        gui.patch().scene.cgl.doScreenshot=true;
 
         var w=$('#glcanvas').attr('width');
         var h=$('#glcanvas').attr('height');
@@ -667,18 +687,23 @@ CABLES.UI.Patch=function(_gui)
                 gui.setStateSaved();
                 if(cb)cb();
 
-                setTimeout(function()
+                var screenshotTimeout=setTimeout(function()
                 {
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
-                    gui.patch().scene.cgl.onScreenShot=null;
+                    // gui.patch().scene.cgl.onScreenShot=null;
+                    gui.patch().scene.cgl.doScreenshot=false;
+
                     gui.jobs().finish('uploadscreenshot');
+                    console.log('screenshot timed out...');
                 },2000);
 
                 gui.jobs().start({id:'uploadscreenshot',title:'uploading screenshot'});
 
                 gui.patch().scene.cgl.onScreenShot=function(d)
                 {
+                    clearTimeout(screenshotTimeout);
+
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
 
@@ -691,9 +716,9 @@ CABLES.UI.Patch=function(_gui)
                         {
                             gui.jobs().finish('uploadscreenshot');
                         });
-
-
                 };
+                gui.patch().scene.cgl.doScreenshot=true;
+
         });
     };
 
@@ -966,7 +991,7 @@ CABLES.UI.Patch=function(_gui)
                         else
                         {
                             self.removeSelectedOp(self.ops[i]);
-                            // self.ops[i].setSelected(false);
+                            self.ops[i].setSelected(false);
                         }
                     }
                 }
@@ -1058,7 +1083,7 @@ CABLES.UI.Patch=function(_gui)
         });
 
 
-        $('#minimap svg').on("mousemove", dragMiniMap);
+        $('#minimap svg').on("mousemove touchmove", dragMiniMap);
         $('#minimap svg').on("mousedown", dragMiniMap);
 
 
@@ -1069,12 +1094,39 @@ CABLES.UI.Patch=function(_gui)
         viewBox={x:0,y:0,w:$('#patch svg').width(),h:$('#patch svg').height()};
         self.updateViewBox();
 
+
+        // $('#patch svg').bind("touchmove", function (event,delta,nbr)
+        // {
+        //     // console.log(event);
+        //     console.log(123);
+        //     console.log(event.changedTouches);
+        //
+        // });
+
+
         $('#patch svg').bind("mousewheel", function (event,delta,nbr)
         {
+
+
+            if(!event.ctrlKey && self.modeTouchPad)
+            {
+                if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) event.deltaY*=0.5;
+                    else event.deltaX*=0.5;
+
+                viewBox.x+=event.deltaX;
+                viewBox.y+=-1*event.deltaY;
+                self.updateViewBox();
+
+                return;
+            }
+
+
+
             delta=CGL.getWheelSpeed(event);
             delta=Math.min(delta,10);
             delta=Math.max(delta,-10);
-            delta*=15;
+            if(!self.modeTouchPad)delta*=15;
+
 
             event=mouseEvent(event);
             if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
@@ -1105,6 +1157,14 @@ CABLES.UI.Patch=function(_gui)
 
             self.setMinimapBounds();
             self.updateViewBox();
+
+            if(event.ctrlKey) // disable chrome pinch/zoom gesture
+            {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                return;
+            }
+
         });
 
         this.background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
@@ -1130,6 +1190,7 @@ CABLES.UI.Patch=function(_gui)
         };
 
         var lastZoomDrag=-1;
+
 
 
         this.background.node.ondblclick= function(e)
@@ -1164,7 +1225,7 @@ CABLES.UI.Patch=function(_gui)
             self.updateViewBox();
         };
 
-        $('#patch').on("mousemove", function(e)
+        $('#patch').on("mousemove touchmove", function(e)
         {
 
             if(e.which==2)
@@ -1204,13 +1265,15 @@ CABLES.UI.Patch=function(_gui)
             lastZoomDrag=-1;
         });
 
-        $('#patch svg').bind("mousemove", function (e)
+        $('#patch svg').bind("mousemove touchmove", function (e)
         {
+
+
             e=mouseEvent(e);
 
             if(mouseRubberBandStartPos && e.buttons!=1) rubberBandHide();
 
-            if((e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
+            if(lastMouseMoveEvent && (e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
 
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
@@ -1754,18 +1817,19 @@ CABLES.UI.Patch=function(_gui)
                     // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
                     // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
                     var spacing=8;
+                    var detectionSpacing=0;
 
 
                     if( (uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x &&
-                        uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+spacing) ||
+                        uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing) ||
                         (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
-                            uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+spacing)
+                            uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing)
                     )
                         {
 
                             var fixPos=false;
                             if(uiOp.op.uiAttribs.translate.y>=testOp.op.uiAttribs.translate.y &&
-                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+spacing)
+                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+detectionSpacing)
                             {
                                 fixPos=true;
                                 uiOp.setPos(
@@ -1775,7 +1839,7 @@ CABLES.UI.Patch=function(_gui)
                             }
 
                             if(uiOp.op.uiAttribs.translate.y+testOp.getHeight()>=testOp.op.uiAttribs.translate.y &&
-                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+spacing)
+                                uiOp.op.uiAttribs.translate.y<=testOp.op.uiAttribs.translate.y+testOp.getHeight()+detectionSpacing)
                             {
                                 fixPos=true;
                                 uiOp.setPos(
@@ -1859,6 +1923,29 @@ CABLES.UI.Patch=function(_gui)
         //     selectedOps[i].setPos(newpos.x,newpos.y);
         // }
     };
+
+
+    this.compressSelectedOps=function()
+    {
+        if(!selectedOps || selectedOps.length===0)return;
+        this.saveUndoSelectedOpsPositions();
+
+        selectedOps.sort(function(a,b)
+        {
+            return a.op.uiAttribs.translate.y-b.op.uiAttribs.translate.y;
+        });
+
+        var y=selectedOps[0].op.uiAttribs.translate.y;
+
+        for(var j=0;j<selectedOps.length;j++)
+        {
+            if(j>0) y+=selectedOps[j].getHeight()+10;
+            selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x,y);
+
+        }
+
+    };
+
 
     this.alignSelectedOps=function()
     {
@@ -2632,6 +2719,14 @@ CABLES.UI.Patch=function(_gui)
         for(var i in watchPorts)
         {
             var id='.watchPortValue_'+watchPorts[i].watchId;
+
+            if(!watchPorts[i].isAnimated)
+            {
+                console.log(watchPorts[i]);
+            }
+
+
+
             if(watchPorts[i].isAnimated() )
             {
                 if( $(id).val()!=watchPorts[i].val ) $(id).val( watchPorts[i].val );

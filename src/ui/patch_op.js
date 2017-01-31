@@ -113,13 +113,17 @@ function UiLink(port1, port2)
             addCircle.hover(function (e)
             {
                 CABLES.UI.LINKHOVER=self;
+
+                // gui.patch().hoverPort=self.p1;
                 addCircle.node.classList.add('active');
+                self.linkLine.node.classList.add('link_hover');
 
                 CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
             },function()
             {
                 CABLES.UI.LINKHOVER=null;
                 addCircle.node.classList.remove('active');
+                self.linkLine.node.classList.remove('link_hover');
 
                 CABLES.UI.hideInfo();
             });
@@ -607,7 +611,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             }
 
             label.attr({
-                'x':Math.rount(sw/2),
+                'x':Math.round(sw/2),
                 'y':45,
             });
 

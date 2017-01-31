@@ -337,7 +337,7 @@ CABLES.UI.GUI=function()
         else
         {
             $('#glcanvas').attr('width',self.rendererWidth);
-            $('#glcanvas').attr('height',self.rendererHeight);
+            $('#glcanvas').attr('height',self.rendererHeight-2);
             $('#cablescanvas').attr('width',self.rendererWidth);
             $('#cablescanvas').attr('height',self.rendererHeight);
             $('#cablescanvas').css('width',self.rendererWidth+'px');
@@ -382,7 +382,7 @@ CABLES.UI.GUI=function()
 
 
 
-    var oldRendwerWidth,oldRendwerHeight;
+    var oldRendwerWidth,oldRendwerHeight,oldShowingEditor;
     this.cycleRendererSize=function()
     {
         console.log('cycleRendererSize');
@@ -391,12 +391,18 @@ CABLES.UI.GUI=function()
         {
             oldRendwerWidth=self.rendererWidth;
             oldRendwerHeight=self.rendererHeight;
+            oldShowingEditor=showingEditor;
+
             self.rendererWidth=0;
+            showingEditor=false;
+
         }
         else
         {
             self.rendererWidth=oldRendwerWidth;
             self.rendererHeight=oldRendwerHeight;
+            showingEditor=oldShowingEditor;
+
 
         }
 
@@ -497,10 +503,18 @@ CABLES.UI.GUI=function()
                 });
         }
 
+        var gl=gui.patch().scene.cgl.gl;
+        var dbgRenderInfo = gl.getExtension("WEBGL_debug_renderer_info");
+        var gl_renderer="unknown";
+        if(dbgRenderInfo) gl_renderer= gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
+
 
         var html = CABLES.UI.getHandleBarHtml(
             'uiDebug',
             {
+
+                "gl_ver":gl.getParameter(gl.VERSION),
+                "gl_renderer":gl_renderer,
                 "numOps":gui.scene().ops.length,
                 "numVisibleOps":numVisibleOps,
                 "canvass":canvass,
@@ -513,9 +527,9 @@ CABLES.UI.GUI=function()
 
     };
 
-    this.showLibrary=function(inputId,filterType)
+    this.showLibrary=function(inputId,filterType,opid)
     {
-        CABLES.UI.fileSelect.show(inputId,filterType);
+        CABLES.UI.fileSelect.show(inputId,filterType,opid);
     };
 
     this.setProjectName=function(name)
@@ -834,6 +848,8 @@ CABLES.UI.GUI=function()
                     {
                         self.rendererWidth=window.innerWidth*0.4;
                         self.rendererHeight=window.innerHeight*0.25;
+                        showingEditor=oldShowingEditor;
+
                         self.setLayout();
                     }
                     else
@@ -937,8 +953,9 @@ CABLES.UI.GUI=function()
                 for(var i in proj.userList)
                     userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
 
-                loadjs( userOpsUrls,'userops'+proj._id);
-                loadjs.ready('userops'+proj._id,function()
+                var lid='userops'+proj._id+CABLES.generateUUID();
+                loadjs( userOpsUrls,lid);
+                loadjs.ready(lid,function()
                 {
                     userOpsLoaded=true;
                     incrementStartup();
@@ -1079,6 +1096,40 @@ CABLES.UI.GUI=function()
                 },33);
 
         };
+
+    };
+
+
+
+    this.liveRecord=function()
+    {
+        $('#glcanvas').attr('width',parseFloat($('#render_width').val()) );
+        $('#glcanvas').attr('height',parseFloat($('#render_height').val()));
+
+        if(!CABLES.UI.capturer)
+        {
+            $('#liveRecordButton').html("Stop Live Recording");
+            CABLES.UI.capturer = new CCapture( {
+                format: 'gif',
+                // format: 'webm',
+                // quality:77,
+                workersPath: '/ui/js/gifjs/',
+                framerate: parseFloat($('#render_fps').val()),
+                display:true,
+                verbose: true
+            } );
+
+            CABLES.UI.capturer.start( gui.patch().scene.cgl.canvas );
+
+        }
+        else
+        {
+            $('#liveRecordButton').html("Start Live Recording");
+            CABLES.UI.capturer.stop();
+            CABLES.UI.capturer.save();
+            var oldCap=CABLES.UI.capturer;
+            CABLES.UI.capturer=null;
+        }
 
     };
 
@@ -1342,7 +1393,7 @@ function startUi(event)
 
     CABLES.UI.initHandleBarsHelper();
 
-    $(document).bind("contextmenu", function(e)
+    $("#patch").bind("contextmenu", function(e)
     {
         if(e.preventDefault) e.preventDefault();
     });

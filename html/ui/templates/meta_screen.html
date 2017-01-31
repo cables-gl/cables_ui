@@ -1,6 +1,8 @@
 
 <script id="meta_screen" type="text/x-handlebars-template">
 
+
+
     <h3>Export Animation</h3>
 
     <table>
@@ -32,9 +34,13 @@
 
     </table>
     <br/>
-    <a onclick="gui.renderScreenshots();" data-info="{{ texts.download_screenshot }}" class="button fa fa-image download_screenshot">Download Animation</a>
+    <a onclick="gui.renderScreenshots();" data-info="{{ texts.download_screenshot }}" class="button fa fa-video-camera download_screenshot">Download Animation</a>
 
     <a onclick="gui.saveScreenshot($('#filename').val());" data-info="{{ texts.download_screenshot }}" class="button fa fa-image download_screenshot">Download screenshot</a>
+
+<br/><br/>
+    <a id="liveRecordButton" onclick="gui.liveRecord();"  class="button fa fa-video-camera ">Start Live record GIF</a>
+
 
 
 
