@@ -2341,6 +2341,7 @@ CABLES.UI.Patch=function(_gui)
         for(var iops in this.ops)
             if(this.ops[iops].op==op)
                 currentOp=this.ops[iops];
+        op.summary=gui.opDocs.getSummary(op.objName);
 
         if(!currentOp)return;
 

@@ -38,16 +38,20 @@ CABLES.UI.MetaCode=function(projectId)
         }
 
         var doc={};
+        var summary="";
         if(op)
         {
             doc.attachmentFiles=gui.opDocs.getAttachmentFiles(op.objName);
             doc.libs=gui.serverOps.getOpLibs(op.objName,false);
+            summary=gui.opDocs.getSummary(op.objName);
         }
-console.log("libs",doc,op.objName);
+
+
         var html = CABLES.UI.getHandleBarHtml('meta_code',
         {
             op:op,
             doc:doc,
+            summary:summary,
             libs:gui.opDocs.libs,
             user:gui.user
         });

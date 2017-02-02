@@ -688,6 +688,11 @@ a.button.fa-times:before {
             }
         }
 
+        .summary
+        {
+            color:#222;
+        }
+
         .namespace
         {
             color:#222;
@@ -696,7 +701,6 @@ a.button.fa-times:before {
                 font-weight: bold;
                 color:white;
             }
-
         }
     }
 
@@ -709,6 +713,14 @@ a.button.fa-times:before {
             font-weight: bold;
             color:$highlight-color-dark;
         }
+    }
+
+    .summary
+    {
+        font-size: 12px;
+        font-style: normal;
+        margin-top: 5px;
+        padding-left: 10px;
     }
 }
 

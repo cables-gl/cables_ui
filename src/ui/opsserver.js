@@ -162,11 +162,19 @@ CABLES.UI.ServerOps=function(gui)
     };
 
 
+    this.addOpSummary=function(opName,summary)
+    {
+        CABLES.api.put(
+            'op/'+opName+'/summary/'+summary,
+            function(res)
+            {
+                console.log(res);
+            });
+    };
+
 
     this.addOpLib=function(opName,libName)
     {
-        // app.put("/api/op/:name/libs/:libName", apiOpLibAdd);
-        // console.log(opName,libname);
 
         CABLES.api.put(
             'op/'+opName+'/libs/'+libName,

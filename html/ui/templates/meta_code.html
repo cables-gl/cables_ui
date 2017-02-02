@@ -18,6 +18,13 @@
 {{/if}}
 
 
+<h3>Summary</h3>
+
+<input type="text" id="opsummary" style="width:100%" value="{{summary}}"/>
+<a class="button fa fa-plus-o" onclick="gui.serverOps.addOpSummary('{{op.objName}}', $('#opsummary').val() );">save</a>
+<br/><br/>
+
+
 
 <h3>Code</h3>
 
@@ -39,7 +46,8 @@
 {{/if}}
 
 
-<br/><br/>
+    <br/><br/>
+
     <h3>Libs</h3>
 
     {{#each doc.libs}}
@@ -47,11 +55,15 @@
     {{/each}}
 
     <select id="addoplib">
+        <option value="">---</option>
     {{#each libs}}
         <option value="{{.}}">{{.}}</option>
     {{/each}}
     <select>
     <a class="button fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">add</a>
+
+
+
 
 
 </script>
