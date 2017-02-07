@@ -30,6 +30,7 @@ CABLES.Editor=function()
                 "op.log",
                 ".onChange",
                 "op.inFunction",
+                "op.inFunctionButton",
                 "op.inValue",
                 "op.inValueBool",
                 "op.inValueString",
