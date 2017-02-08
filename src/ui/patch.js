@@ -700,22 +700,36 @@ CABLES.UI.Patch=function(_gui)
 
                 gui.jobs().start({id:'uploadscreenshot',title:'uploading screenshot'});
 
-                gui.patch().scene.cgl.onScreenShot=function(d)
+                gui.patch().scene.cgl.onScreenShot=function(screenBlob)
                 {
                     clearTimeout(screenshotTimeout);
+                    gui.patch().scene.cgl.onScreenShot=null;
 
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
 
-                    CABLES.api.put(
-                        'project/'+id+'/screenshot',
-                        {
-                            "screenshot":gui.patch().scene.cgl.screenShotDataURL
-                        },
-                        function(r)
-                        {
-                            gui.jobs().finish('uploadscreenshot');
-                        });
+
+console.log(URL.createObjectURL(screenBlob));
+                    console.log("uploading screenshot");
+
+                    var reader = new FileReader();
+
+                    reader.onload = function(event)
+                    {
+
+                        CABLES.api.put(
+                            'project/'+id+'/screenshot',
+                            {
+                                "screenshot":event.target.result//gui.patch().scene.cgl.screenShotDataURL
+                            },
+                            function(r)
+                            {
+                                console.log(r);
+                                gui.jobs().finish('uploadscreenshot');
+                            });
+                    };
+                    reader.readAsDataURL(screenBlob);
+
                 };
                 gui.patch().scene.cgl.doScreenshot=true;
 
@@ -2341,6 +2355,7 @@ CABLES.UI.Patch=function(_gui)
         for(var iops in this.ops)
             if(this.ops[iops].op==op)
                 currentOp=this.ops[iops];
+        op.summary=gui.opDocs.getSummary(op.objName);
 
         if(!currentOp)return;
 

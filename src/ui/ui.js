@@ -1075,18 +1075,16 @@ CABLES.UI.GUI=function()
         // console.log('gui.patch().scene.cgl.doScreenshotClearAlpha ',gui.patch().scene.cgl.doScreenshotClearAlpha);
         gui.patch().scene.cgl.doScreenshot=true;
 
-        gui.patch().scene.cgl.onScreenShot=function(data)
+        gui.patch().scene.cgl.onScreenShot=function(blob)
         {
             $('#glcanvas').attr('width',w);
             $('#glcanvas').attr('height',h);
             gui.patch().scene.cgl.onScreenShot=null;
 
-            // console.log(gui.patch().scene.cgl.screenShotDataURL.length);
-            var img=gui.patch().scene.cgl.screenShotDataURL;//.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
             var anchor = document.createElement('a');
 
             anchor.setAttribute('download', filename);
-            anchor.setAttribute('href', img);
+            anchor.setAttribute('href', URL.createObjectURL(blob));
             document.body.appendChild(anchor);
 
             setTimeout(

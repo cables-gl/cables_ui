@@ -1420,20 +1420,25 @@ CABLES.TL.UI.TimeLineUI=function()
     var lastTime=-1;
     this.updateTime=function()
     {
-        var time=gui.scene().timer.getTime();
-        setCursor(time);
-        if(doCenter)self.centerCursor();
-
-
-        if(lastTime!=time)
+        if(gui.isShowingTiming())
         {
-            lastTime=time;
+            var time=gui.scene().timer.getTime();
+            setCursor(time);
+            if(doCenter)self.centerCursor();
 
-            if(timeDisplayMode)
-                $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
-            else
-                $('.timelinetime').html( '<b class="mainColor">'+(time+'').substr(0, 4)+'s </b><br/>'+getFrame(time)+' ' );
+
+            if(lastTime!=time)
+            {
+                lastTime=time;
+
+                if(timeDisplayMode)
+                    $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
+                else
+                    $('.timelinetime').html( '<b class="mainColor">'+(time+'').substr(0, 4)+'s </b><br/>'+getFrame(time)+' ' );
+            }
+
         }
+
         if(updateTimer===null) updateTimer=setInterval(self.updateTime,30);
     };
 
