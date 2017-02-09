@@ -12,6 +12,11 @@ function() {
   }
 
   function defineIntroSteps(){
+    $('#patch')
+      .attr("data-step", 1)
+      .attr("data-intro", "Press the Escape-key to insert your first op (operator)")
+      .attr("data-position", "right");
+    /*
     $('#project_settings').parent().parent().parent()
       .attr("data-step", 1)
       .attr("data-intro", "Settings panel, where you can access all project settings. If you select an op in the patch panel you will see its settings here instead.")
@@ -36,6 +41,7 @@ function() {
       .attr("data-step", 6)
       .attr("data-intro", "On the main cables site you can browse through public projects / examples and get some inspiration.")
       .attr("data-position", "bottom");
+      */
   }
 
 
