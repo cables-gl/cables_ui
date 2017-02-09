@@ -39,6 +39,7 @@ CABLES.Editor=function()
                 "op.inValueSlider",
                 "op.inFile",
                 "op.inValueSelect",
+                "op.inValueInt",
 
                 "op.outTexture",
                 "op.outFunction",

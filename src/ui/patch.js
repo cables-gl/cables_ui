@@ -2096,6 +2096,12 @@ console.log(URL.createObjectURL(screenBlob));
         );
     };
 
+    this.unlinkSelectedOps=function()
+    {
+        for(var i in selectedOps) selectedOps[i].op.unLinkShake();
+
+    };
+
     this.deleteSelectedOps=function()
     {
         for(var i in selectedOps)

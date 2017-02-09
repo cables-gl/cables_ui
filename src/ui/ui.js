@@ -753,6 +753,13 @@ CABLES.UI.GUI=function()
                     self.toggleEditor();
                     break;
 
+                case 88:  //x unlink
+                    if($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey)
+                    {
+                        self.patch().unlinkSelectedOps();
+                    }
+                    break;
+
 
                 case 67:  //c center
                     if($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey)
@@ -1067,7 +1074,24 @@ CABLES.UI.GUI=function()
         $('#glcanvas').attr('height',$('#render_height').val());
 
 
-        if(!filename)filename='cables_screenshot.png';
+        function padLeft(nr, n, str){
+            return Array(n-String(nr).length+1).join(str||'0')+nr;
+        }
+
+        var d=new Date();
+
+        var dateStr=String(d.getFullYear())+
+            String(d.getMonth()+1)+
+            String(d.getDate())+'_'+
+            padLeft(d.getHours(),2)+
+            padLeft(d.getMinutes(),2)+
+            padLeft(d.getSeconds(),2);
+
+        var projectStr=this.project().name;
+        projectStr=projectStr.split(' ').join('_');
+
+
+        if(!filename)filename='cables_'+projectStr+'_'+dateStr+'.png';
             else filename+='.png';
 
         gui.patch().scene.cgl.doScreenshotClearAlpha=$('#render_removeAlpha').is(':checked');

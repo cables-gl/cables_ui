@@ -1033,8 +1033,20 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.op.enabled=en;
         this.oprect.setEnabled(en);
 
-        for(var i=0;i<this.links.length;i++)
-            this.links[i].setEnabled(en);
+        // for(var i=0;i<this.links.length;i++)
+        // {
+        //     this.links[i].setEnabled(en);
+        // }
+
+console.log('enabled ',en);
+
+
+        if(!en) this.op.unLinkShake();
+         else this.op.undoShake();
+
+
+
+
     };
 
     this.getPortLinks=function(portId)
