@@ -716,8 +716,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     this.setEnabled=function(enabled)
     {
         if(this.isVisible())
-            if(enabled) background.attr( { "fill-opacity": 1 });
-                else background.attr( { "fill-opacity": 0.1 });
+            if(enabled) group.attr( { "fill-opacity": 1 });
+                else group.attr( { "fill-opacity": 0.25 });
     };
 
     this.setSelected=function(sel)
@@ -1035,19 +1035,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.op.enabled=en;
         this.oprect.setEnabled(en);
 
-        // for(var i=0;i<this.links.length;i++)
-        // {
-        //     this.links[i].setEnabled(en);
-        // }
-
-console.log('enabled ',en);
-
-
         if(!en) this.op.unLinkShake();
-         else this.op.undoShake();
-
-
-
+            else this.op.undoShake();
 
     };
 

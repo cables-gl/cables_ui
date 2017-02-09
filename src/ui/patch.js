@@ -1585,8 +1585,6 @@ console.log(URL.createObjectURL(screenBlob));
                             self.ops[i].links[j].p1=null;
                             self.ops[i].links[j].p2=null;
                             self.ops[i].links[j].remove();
-                            console.log('found unlink...');
-
                         }
                 }
                 self.ops[i].removeDeadLinks();
