@@ -34,7 +34,7 @@ CABLES.UI.uiConfig=
     miniMapHeight:180,
     miniMapShowAutomaticallyNumOps:20,
 
-    watchValuesInterval:100,
+    watchValuesInterval:33,
     rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}],
 
 

@@ -1449,6 +1449,10 @@ function startUi(event)
             }
         });
 
+    CABLES.watchPortVisualize.init();
+
+
+
     logStartup('Init UI done');
 
 }

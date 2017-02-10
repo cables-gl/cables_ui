@@ -528,8 +528,28 @@ CABLES.UI.Patch=function(_gui)
             break;
 
             case 68: // d - disable
-                for(var j in selectedOps)
-                    selectedOps[j].setEnabled(!selectedOps[j].op.enabled);
+                var j=0;
+                if(selectedOps.length===0)
+                {
+                    for(j=0;j<self.ops.length;j++)
+                        if(!self.ops[j].op.enabled)
+                            self.ops[j].setEnabled(true);
+
+                    for(j=0;j<self.ops.length;j++)
+                            self.ops[j].op.undoShake();
+
+
+                    return;
+                }
+
+                var state=!selectedOps[j].op.enabled;
+
+                for(j in selectedOps)
+                    if(selectedOps[j].op.enabled!=state) selectedOps[j].setEnabled(state);
+
+                for(j in selectedOps)
+                    if(selectedOps[j].op.enabled)selectedOps[j].op.undoShake();
+
             break;
 
             case 90: // z undo
@@ -2730,31 +2750,37 @@ console.log(URL.createObjectURL(screenBlob));
 
             })(thePort2);
         }
-
     };
+
+
+    var cycleWatchPort=false;
 
     function doWatchPorts()
     {
+        cycleWatchPort=!cycleWatchPort;
+
+
         for(var i in watchPorts)
         {
+            if(watchPorts[i].type!=OP_PORT_TYPE_VALUE && watchPorts[i].type!=OP_PORT_TYPE_ARRAY)continue;
+
             var id='.watchPortValue_'+watchPorts[i].watchId;
 
-            if(!watchPorts[i].isAnimated)
+            // if(cycleWatchPort)
             {
-                console.log(watchPorts[i]);
+                var el=$(id);
+
+                if(watchPorts[i].isAnimated() )
+                {
+                    if(el.val()!=watchPorts[i].get() )el.val( watchPorts[i].get() );
+                }
+                else
+                   el.html( String(watchPorts[i].get()) );
+
             }
 
+            CABLES.watchPortVisualize.update(id,watchPorts[i].watchId,watchPorts[i].get());
 
-
-            if(watchPorts[i].isAnimated() )
-            {
-                if( $(id).val()!=watchPorts[i].val ) $(id).val( watchPorts[i].val );
-            }
-            else
-            {
-
-                $(id).html( String(watchPorts[i].val) );
-            }
         }
 
         if(CABLES.UI.uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,CABLES.UI.uiConfig.watchValuesInterval);

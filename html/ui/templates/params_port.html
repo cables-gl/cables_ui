@@ -54,7 +54,7 @@
 
                 <!-- {{#compare port.type '==' '1' }}[function]{{/compare}} -->
 
-                {{#compare port.type '==' 0 }} <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
+                {{#compare port.type '==' 0 }} <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
                 {{#compare port.type '==' '2' }}
                 <!-- {{#if port.uiAttribs.preview}}
                     <span class="button fa fa-eye" onclick="console.log(1);CABLES.UI.togglePreview('{{op.id}}','{{port.name}}');">preview</span>
@@ -92,7 +92,7 @@
                         </td><td>
 
                         <input type ="range" class="range" id="portval_{{ portnum }}_range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.max }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
-                        <input class="value watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
+                        <input class="value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
                         </td><td>
@@ -115,7 +115,7 @@
                             <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
                         </td><td>
 
-                        <input class="value filevalue portFileVal_{{ portnum }} watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;"/>
+                        <input class="value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;"/>
                         <br/><br/>
 
                         <div id="portpreview_{{ portnum }}" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" style="padding:0px;"></div>
@@ -133,7 +133,7 @@
 
                             <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
 
-                        <input class="value watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}" />
+                        <input class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}" />
                         {{#if port.uiAttribs.type }}
                         {{else}}
                             <a class="valueDragger graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');"  data-info="{{ texts.portFloatDrag }}"></a>
@@ -149,7 +149,7 @@
 
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
 
-                    <input class="value watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}" />
+                    <input class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}" />
                     {{#if port.uiAttribs.type }}
                     {{else}}
                         <a class="valueDragger graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');"  data-info="{{ texts.portFloatDrag }}"></a>
@@ -163,7 +163,7 @@
 
             <!-- {{#compare port.type '==' '1' }}[function]{{/compare}}-->
             {{#compare port.type '==' 0 }}
-            <span class="value valuetext watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
+            <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}" >{{port.val}}</span> {{/compare}}
             {{#compare port.type '==' '2' }}
 
                 {{#if port.links}}

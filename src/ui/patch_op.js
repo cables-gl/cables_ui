@@ -1036,7 +1036,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.oprect.setEnabled(en);
 
         if(!en) this.op.unLinkShake();
-            else this.op.undoShake();
+            else this.op.preUndoShake();
 
     };
 
