@@ -81,12 +81,11 @@ CABLES.UI.GUI=function()
         return _projectSettings;
     };
 
-    this.infoHeight=300;
+    this.infoHeight=200;
     this.timingHeight=250;
     this.rendererWidth=640;
     this.rendererHeight=360;
     this.editorWidth=700;
-
 
     this.toggleEditor=function()
     {

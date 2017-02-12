@@ -911,9 +911,6 @@ console.log(URL.createObjectURL(screenBlob));
 
     function setStatusSelectedOps()
     {
-        var txt='';
-        txt+=selectedOps.length+" ops selected / [del] delete ops / [a] align ops / [g] show grapghs ";
-
         var html = CABLES.UI.getHandleBarHtml(
             'params_ops',
             {
@@ -921,6 +918,11 @@ console.log(URL.createObjectURL(screenBlob));
             });
 
         $('#options').html(html);
+
+        CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
+
+
+
     }
 
 
@@ -967,6 +969,7 @@ console.log(URL.createObjectURL(screenBlob));
                 start.x=end.x;
                 end.x=tempx;
             }
+
             if(end.y-start.y<0)
             {
                 var tempy=start.y;
@@ -981,8 +984,8 @@ console.log(URL.createObjectURL(screenBlob));
                     height:end.y-start.y,
                     "stroke": CABLES.UI.uiConfig.colorRubberBand,
                     "fill": CABLES.UI.uiConfig.colorRubberBand,
-                    "stroke-width": 2,
-                    "fill-opacity": 0.1
+                    "stroke-width": 1,
+                    "fill-opacity": 0.08
                });
 
             for(var i in self.ops)
@@ -1198,6 +1201,7 @@ console.log(URL.createObjectURL(screenBlob));
 
         this.background.node.onmousedown = function (ev)
         {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             $('#library').hide();
             $('#patch').focus();
 
@@ -2377,6 +2381,8 @@ console.log(URL.createObjectURL(screenBlob));
         var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op,texts:CABLES.UI.TEXTS,user:gui.user,ownsOp:ownsOp});
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
+
+        CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
 
         if(op.portsIn.length>0)
         {

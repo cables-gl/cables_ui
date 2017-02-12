@@ -21,7 +21,7 @@ CABLES.UI.uiConfig=
     colorOpText: '#eee',
     colorOpBgSelected:'#444',
     colorPort:'#6c9fde',
-    colorRubberBand:'#6c9fde',
+    colorRubberBand:'#52FDE1',
     colorPortHover:'#f00',
     colorPatchStroke:'#6c9fde',
 
