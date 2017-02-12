@@ -527,6 +527,10 @@ CABLES.UI.Patch=function(_gui)
                 self.showProjectParams();
             break;
 
+            case 69: // e - edit
+                if(selectedOps.length>0) gui.serverOps.edit(selectedOps[0].op.objName);
+            break;
+
             case 68: // d - disable
             if(e.shiftKey)
                 self.tempUnlinkOp();

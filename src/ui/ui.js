@@ -321,9 +321,17 @@ CABLES.UI.GUI=function()
         $('#splitterMeta').css('bottom',self.infoHeight+30+'px');
         $('#splitterMeta').css('width',metaWidth-22+'px');
 
-        $('#infoArea').css('width',(metaWidth-20)+'px');
-        $('#infoArea').css('height',(self.infoHeight)+'px');
-        $('#infoArea').css('bottom','0px');
+        if(self.infoHeight===0)
+        {
+            $('#infoArea').hide();
+            $('#splitterMeta').hide();
+        }
+        else
+        {
+            $('#infoArea').css('width',(metaWidth-20)+'px');
+            $('#infoArea').css('height',(self.infoHeight)+'px');
+            $('#infoArea').css('bottom','0px');
+        }
 
         $('#meta_content').css('height',window.innerHeight-self.rendererHeight-self.infoHeight-50);
 
@@ -1292,7 +1300,7 @@ CABLES.UI.GUI=function()
 
     this.closeInfo=function()
     {
-        this.infoHeight=-30;
+        this.infoHeight=0;
         this.setLayout();
     };
 

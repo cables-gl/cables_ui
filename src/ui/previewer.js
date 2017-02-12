@@ -3,7 +3,7 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.Preview=function()
 {
-    var interval=100;
+    var interval=120;
     var paused=false;
 
     this.show=function()
@@ -88,7 +88,7 @@ CABLES.UI.Preview=function()
             canvasContainer = document.getElementById('preview_img_container');
             infoContainer = document.getElementById('preview_img_info');
 
-            infoContainer.innerHTML=JSON.stringify(texture.getInfo());
+            infoContainer.innerHTML='<pre>'+JSON.stringify(texture.getInfo(),false,2)+'</pre>';
 
             lastWidth =width;
             lastHeight=height;

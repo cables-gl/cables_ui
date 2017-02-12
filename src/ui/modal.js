@@ -30,8 +30,16 @@ CABLES.UI.MODAL.hide=function(force)
     $('.tooltip').hide();
 };
 
+CABLES.UI.MODAL.showTop=function(content,options)
+{
+    $('#modalcontent').css({"top":0});
+    CABLES.UI.MODAL.show(content,{ignoreTop:true});
+};
+
+
 CABLES.UI.MODAL.show=function(content,options)
 {
+    if(options && !options.ignoreTop)$('#modalcontent').css({"top":"10%"});
     $('#modalcontent').html('<div class="modalclose"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
     $('#modalcontent').append(content);
     $('#modalcontent').show();

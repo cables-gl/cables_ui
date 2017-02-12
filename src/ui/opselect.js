@@ -66,7 +66,8 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     var self=this;
 
     var html = CABLES.UI.getHandleBarHtml('op_select',{ops: CABLES.UI.OPSELECT.getOpList() });
-    CABLES.UI.MODAL.show(html);
+    CABLES.UI.MODAL.showTop(html);
+
 
     $('#opsearch').focus();
     $('#opsearch').on('input',search);
@@ -199,7 +200,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     });
 
     setTimeout(function(){$('#opsearch').focus();},100);
-
+    
 };
 
 CABLES.UI.OPSELECT.getOpList=function()
