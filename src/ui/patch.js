@@ -549,6 +549,7 @@ CABLES.UI.Patch=function(_gui)
                 {
                     self.selectAllOps();
                 }
+                else
                 if(e.shiftKey )
                 {
                     self.compressSelectedOps();
@@ -1835,9 +1836,10 @@ console.log(URL.createObjectURL(screenBlob));
 
 
                     if( (uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x &&
-                        uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing) ||
-                        (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
-                            uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing)
+                        uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing)
+                        // ||
+                        // (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
+                        //     uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing)
                     )
                         {
 
@@ -1957,7 +1959,6 @@ console.log(URL.createObjectURL(screenBlob));
             selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x,y);
 
         }
-
     };
 
 
@@ -1985,7 +1986,6 @@ console.log(URL.createObjectURL(screenBlob));
 
         if(Math.abs(sumX)>Math.abs(sumY)) self.alignSelectedOpsHor();
             else self.alignSelectedOpsVert();
-
     };
 
     this.saveUndoSelectedOpsPositions=function()
