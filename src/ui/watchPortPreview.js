@@ -4,12 +4,15 @@ var CABLES=CABLES||{};
 CABLES.WatchPortVisualizer=function()
 {
 
+    this._canvasWidth=300;
+    this._canvasHeight=120;
+
     this.created=false;
     var self=this;
     this._lastId=0;
     this._visible=false;
 
-    this._num=100;
+    this._num=this._canvasWidth/2;
     this._buff=[];
     this._buff.length=this._num;
 
@@ -53,7 +56,7 @@ CABLES.WatchPortVisualizer=function()
 
 
         this.ctx.fillStyle="#1b1b1b";
-        this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+        this.ctx.fillRect(0,0,this._canvasWidth,this._canvasHeight);
 
         this.ctx.strokeStyle="#aaa";
 
@@ -69,10 +72,9 @@ CABLES.WatchPortVisualizer=function()
 
         this.ctx.beginPath();
 
-        this.ctx.moveTo(0,this.canvas.height/2);
-        this.ctx.lineTo(this.canvas.width,this.canvas.height/2);
+        this.ctx.moveTo(0,this._canvasHeight/2);
+        this.ctx.lineTo(this._canvasWidth,this._canvasHeight/2);
         this.ctx.stroke();
-
 
         this.ctx.strokeStyle=CABLES.UI.uiConfig.highlight;
         this.ctx.beginPath();
@@ -96,26 +98,21 @@ CABLES.WatchPortVisualizer=function()
                 this.ctx.lineTo(
                     i*2,
                     pos);
-
             }
-
         }
         this.ctx.stroke();
 
         this.ctx.fillStyle="#666";
         this.ctx.fillText('max:'+(Math.round(this._max*100)/100), 10, this.canvas.height-10);
         this.ctx.fillText('min:'+(Math.round(this._min*100)/100), 10, this.canvas.height-30);
-
-
-
     };
 
     this.create=function()
     {
         this.canvas = document.createElement('canvas');
         this.canvas.id     = "watchportpreview";
-        this.canvas.width  = 200;
-        this.canvas.height = 150;
+        this.canvas.width  = this._canvasWidth;
+        this.canvas.height = this._canvasHeight;
         this.canvas.style.display   = "block";
         this.canvas.style.position   = "absolute";
         this.canvas.style['z-index']   = 9999999;
