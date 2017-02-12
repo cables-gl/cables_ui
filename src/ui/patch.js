@@ -528,28 +528,10 @@ CABLES.UI.Patch=function(_gui)
             break;
 
             case 68: // d - disable
-                var j=0;
-                if(selectedOps.length===0)
-                {
-                    for(j=0;j<self.ops.length;j++)
-                        if(!self.ops[j].op.enabled)
-                            self.ops[j].setEnabled(true);
-
-                    for(j=0;j<self.ops.length;j++)
-                            self.ops[j].op.undoShake();
-
-
-                    return;
-                }
-
-                var state=!selectedOps[j].op.enabled;
-
-                for(j in selectedOps)
-                    if(selectedOps[j].op.enabled!=state) selectedOps[j].setEnabled(state);
-
-                for(j in selectedOps)
-                    if(selectedOps[j].op.enabled)selectedOps[j].op.undoShake();
-
+            if(e.shiftKey)
+                self.tempUnlinkOp();
+            else
+                self.disableEnableOps();
             break;
 
             case 90: // z undo
@@ -2116,7 +2098,7 @@ console.log(URL.createObjectURL(screenBlob));
 
     this.unlinkSelectedOps=function()
     {
-        for(var i in selectedOps) selectedOps[i].op.unLinkShake();
+        for(var i in selectedOps) selectedOps[i].op.unLinkTemporary();
 
     };
 
@@ -2814,5 +2796,56 @@ console.log(URL.createObjectURL(screenBlob));
     };
 
     doWatchPorts();
+
+    this.disableEnableOps=function()
+    {
+        if(!selectedOps.length)return;
+        var i=0;
+        for(i=0;i<self.ops.length;i++)
+        {
+            self.ops[i].op.marked=false;
+        }
+
+        var newstate=false;
+        if(!selectedOps[0].op.enabled)newstate=true;
+
+        for(var j=0;j<selectedOps.length;j++)
+        {
+            var op=selectedOps[j].op;
+
+            op.markChilds();
+
+            for(i=0;i<self.ops.length;i++)
+            {
+                if(self.ops[i].op.marked)
+                {
+                    self.ops[i].setEnabled(newstate);
+                }
+            }
+        }
+
+    };
+
+    var lastTempOP=null;
+    this.tempUnlinkOp=function()
+    {
+        var j=0;
+
+        var op=null;
+        if(selectedOps.length===0 && lastTempOP)op=lastTempOP;
+        else
+        {
+            if(selectedOps.length===0)return;
+            op=selectedOps[0];
+        }
+        lastTempOP=op;
+
+        op.setEnabled(!op.op.enabled);
+
+        if(!op.op.enabled) op.op.unLinkTemporary();
+            else op.op.undoUnLinkTemporary();
+
+
+    };
 
 };

@@ -74,7 +74,7 @@ CABLES.WatchPortVisualizer=function()
         this.ctx.stroke();
 
 
-        this.ctx.strokeStyle="#aaa";
+        this.ctx.strokeStyle=CABLES.UI.uiConfig.highlight;
         this.ctx.beginPath();
 
         this.ctx.lineWidth = 2;

@@ -473,7 +473,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             }
             if(shakeCountP + shakeCountN>=5)
             {
-                opui.op.unLinkShake();
+                opui.op.unLink();
                 shakeCount=0;
                 shakeLastX=-1;
             }
@@ -1035,8 +1035,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.op.enabled=en;
         this.oprect.setEnabled(en);
 
-        if(!en) this.op.unLinkShake();
-            else this.op.preUndoShake();
+        // if(!en) this.op.unLinkTemporary();
+        //     else this.op.preUnLinkTemporary();
 
     };
 

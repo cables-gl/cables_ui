@@ -30,6 +30,8 @@ CABLES.UI.uiConfig=
     colorKeyOther:'#ea6638',
     colorCursor:'#ea6638',
 
+    highlight:'#52FDE1',
+
     miniMapWidth:240,
     miniMapHeight:180,
     miniMapShowAutomaticallyNumOps:20,
