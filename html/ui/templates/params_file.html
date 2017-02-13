@@ -1,7 +1,7 @@
 
 
 <script id="params_file" type="text/x-handlebars-template">
-    <div class="">
+    <div class="panel">
         <h3>{{file.fileDb.fileName}}</h3>
 
         {{file.fileDb.type}} - {{file.sizeKb}} KB
@@ -20,10 +20,13 @@
             <br/><br/>
         {{/each}}
 
-        {{#if file.converter  }}
-            <a class="button fa fa-retweet" onclick="gui.showConverter('{{ file.converter.id }}','{{ file.fileDb.projectId }}','{{ file.fileDb._id }}','{{ file.converter.name }}');">&nbsp;{{ file.converter.name }}</a>
-
+        {{#if file.converters  }}
+            {{#each file.converters}}
+                <a class="button fa fa-retweet" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');">&nbsp;{{ name }}</a>
+                <br/>
+            {{/each}}
             <br/><br/>
+
         {{/if}}
 
 

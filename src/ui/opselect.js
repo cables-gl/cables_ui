@@ -44,7 +44,8 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
         var searchFor= $('#opsearch').val();
 
         if(searchFor==='') $('#clearsearch').hide();
-            else $('#clearsearch').show();
+            else
+            $('#clearsearch').show();
 
         if(!searchFor) $('#search_style').html('.searchable:{display:block;}');
             else $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
@@ -68,7 +69,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     var html = CABLES.UI.getHandleBarHtml('op_select',{ops: CABLES.UI.OPSELECT.getOpList() });
     CABLES.UI.MODAL.showTop(html);
 
-
+    $('#clearsearch').hide();
     $('#opsearch').focus();
     $('#opsearch').on('input',search);
 
@@ -200,7 +201,8 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     });
 
     setTimeout(function(){$('#opsearch').focus();},100);
-    
+
+
 };
 
 CABLES.UI.OPSELECT.getOpList=function()

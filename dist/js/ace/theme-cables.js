@@ -15,7 +15,7 @@ ace.define("ace/theme/cables",["require","exports","module","ace/lib/dom"],funct
     ".ace-idle-fingers .ace_gutter-active-line {background-color: #353637}"+
     ".ace-idle-fingers .ace_marker-layer .ace_selected-word {border: 1px solid rgba(90, 100, 126, 0.88)}"+
     ".ace-idle-fingers .ace_invisible {color: #404040}"+
-    ".ace-idle-fingers .ace_keyword,.ace-idle-fingers .ace_meta {color: #CC7833}"+
+    ".ace-idle-fingers .ace_keyword,.ace-idle-fingers .ace_meta {color: #F0D165}"+
     ".ace-idle-fingers .ace_constant,.ace-idle-fingers .ace_constant.ace_character,.ace-idle-fingers .ace_constant.ace_character.ace_escape,.ace-idle-fingers .ace_constant.ace_other,.ace-idle-fingers "+
     ".ace_support.ace_constant {color: #418ce9}"+
     ".ace-idle-fingers .ace_invalid {color: #FFFFFF;background-color: #FF0000}"+
