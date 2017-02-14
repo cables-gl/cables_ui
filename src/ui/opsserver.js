@@ -255,6 +255,51 @@ CABLES.UI.ServerOps=function(gui)
         });
     };
 
+    this.editAttachment=function(opname,attachmentname)
+    {
+        CABLES.api.clearCache();
+
+        gui.showEditor();
+
+        CABLES.api.get(
+            'op/'+opname+'/attachment/'+attachmentname,
+            function(res)
+            {
+                var content=res.content||'';
+
+                var syntax="text";
+
+                if(attachmentname.endsWith(".frag"))syntax="glsl";
+                if(attachmentname.endsWith(".vert"))syntax="glsl";
+                if(attachmentname.endsWith(".json"))syntax="json";
+
+
+                gui.editor().addTab(
+                {
+                    content:content,
+                    title:attachmentname,
+                    syntax:syntax,
+                    onSave:function(setStatus,content)
+                    {
+                        CABLES.api.post(
+                            'op/'+opname+'/attachment/'+attachmentname,
+                            {content:content},
+                            function(res)
+                            {
+                                setStatus('saved');
+                                console.log('res',res);
+                            },
+                            function(res)
+                            {
+                                setStatus('error: not saved');
+                                console.log('err res',res);
+                            }
+                        );
+                    }
+                });
+            });
+    };
+
 
 
     this.edit=function(name,readOnly)

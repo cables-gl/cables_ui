@@ -34,16 +34,16 @@
 <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
 <br/>
 
-{{#if doc.attachmentFiles}}
 <br/>
     <h3>attachments</h3>
     {{#each doc.attachmentFiles}}
+        <a class="button fa fa-edit" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');"></a>
+
         {{.}}
         <a class="button fa fa-trash" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
         <br/>
     {{/each}}
     <a class="button fa fa-plus-o" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>
-{{/if}}
 
 
     <br/><br/>

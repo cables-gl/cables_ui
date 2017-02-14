@@ -1057,15 +1057,9 @@ CABLES.UI.GUI=function()
                                 console.log('err res',res);
                             }
                         );
-
                     }
                 });
-
-
             });
-
-
-
     };
 
 
@@ -1073,6 +1067,9 @@ CABLES.UI.GUI=function()
     {
         cb(this.opDocs.get(opname));
     };
+
+
+
 
     this.saveScreenshot=function(filename,cb)
     {
