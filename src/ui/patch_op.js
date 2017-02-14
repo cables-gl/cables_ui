@@ -473,7 +473,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             }
             if(shakeCountP + shakeCountN>=5)
             {
-                opui.op.unLink();
+                opui.op.unLinkTemporary();
+                console.log("SHAKE?");
                 shakeCount=0;
                 shakeLastX=-1;
             }
