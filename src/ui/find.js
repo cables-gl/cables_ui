@@ -37,10 +37,17 @@ CABLES.UI.Find=function()
         html+=''+op.op.objName;
         html+='</div>';
 
-        $('#searchresult').append(html);
+
+        setTimeout(
+            function()
+            {
+                $('#searchresult').append(html);
+            },1);
+
+
     }
 
-    this.search=function(str)
+    this.doSearch=function(str)
     {
         lastSearch=str;
         $('#searchresult').html('');
@@ -69,6 +76,16 @@ CABLES.UI.Find=function()
                 }
             }
         }
+
+    };
+
+    this.search=function(str)
+    {
+        setTimeout(
+            function()
+            {
+                this.doSearch(str);
+            }.bind(this),1);
     };
 
 };
