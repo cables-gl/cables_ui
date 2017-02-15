@@ -54,42 +54,48 @@
             incrementStartup();
 
             loadjs([
-                CABLES.noCacheUrl('js/libs.ui.min.js'),
-                CABLES.noCacheUrl('js/libs.core.min.js'),
                 'js/ace/ace.js'
-            ], 'libs');
+            ], 'ace');
 
-            loadjs.ready('libs', function()
+            loadjs.ready('ace', function()
             {
-                incrementStartup();
-                logStartup('loaded libs');
+                loadjs([
+                    CABLES.noCacheUrl('js/libs.ui.min.js'),
+                    CABLES.noCacheUrl('js/libs.core.min.js'),
+                ], 'libs');
 
-                loadjs(['js/ace/ext-language_tools.js'],'ace');
-
-                loadjs.ready('ace', function()
+                loadjs.ready('libs', function()
                 {
-                    logStartup('loaded ace');
                     incrementStartup();
-                    loadjs([CABLES.noCacheUrl('js/cables.max.js')],'cables_core');
+                    logStartup('loaded libs');
 
-                    loadjs.ready('cables_core', function()
+                    loadjs(['js/ace/ext-language_tools.js'],'ace');
+
+                    loadjs.ready('ace', function()
                     {
-                        logStartup('loaded cables core');
-
+                        logStartup('loaded ace');
                         incrementStartup();
-                        loadjs([CABLES.noCacheUrl('/api/ops/code')],'cables_ops');
+                        loadjs([CABLES.noCacheUrl('js/cables.max.js')],'cables_core');
 
-                        loadjs.ready('cables_ops', function()
+                        loadjs.ready('cables_core', function()
                         {
-                            incrementStartup();
-                            logStartup('loaded cables ops');
-                            loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
+                            logStartup('loaded cables core');
 
-                            loadjs.ready('cablesui', function()
+                            incrementStartup();
+                            loadjs([CABLES.noCacheUrl('/api/ops/code')],'cables_ops');
+
+                            loadjs.ready('cables_ops', function()
                             {
                                 incrementStartup();
-                                logStartup('loaded ui');
-                                startUi();
+                                logStartup('loaded cables ops');
+                                loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
+
+                                loadjs.ready('cablesui', function()
+                                {
+                                    incrementStartup();
+                                    logStartup('loaded ui');
+                                    startUi();
+                                });
                             });
                         });
                     });

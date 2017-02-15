@@ -57,9 +57,15 @@ CABLES.UI.Find=function()
 
         str=str.toLowerCase();
         // console.log('--- ',str);
+
+
         for(var i=0;i<gui.patch().ops.length;i++)
         {
-            if(canceledSearch==searchId)return;
+            if(canceledSearch==searchId)
+            {
+                console.log("canceled search...");
+                return;
+            }
             if(gui.patch().ops[i].op)
             {
                 if(
@@ -74,7 +80,6 @@ CABLES.UI.Find=function()
                     var op=gui.patch().ops[i].op;
                     for(var j=0;j<op.portsIn.length;j++)
                     {
-                        if(canceledSearch==searchId)return;
                         if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1) addResultOp(gui.patch().ops[i]);
                     }
                 }
@@ -85,13 +90,7 @@ CABLES.UI.Find=function()
 
     this.search=function(str)
     {
-        cancelSearch=idSearch;
-        setTimeout(
-            function()
-            {
-                idSearch++;
-                this.doSearch(str);
-            }.bind(this),10);
+        this.doSearch(str,ids);
     };
 
 };
