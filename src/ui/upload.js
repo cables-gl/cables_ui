@@ -23,6 +23,7 @@ CABLES.uploadSelectFile=function()
 
 CABLES.uploadDragOver=function(event)
 {
+    CABLES.uploadDropEvent=null;
     if(CABLES.DragNDrop.internal)
     {
         console.log('cancel because internal');
@@ -101,50 +102,62 @@ CABLES.uploadFiles=function(files)
 
 
 
-        xhr.onload = function (e,r)
+    xhr.onload = function (e,r)
+    {
+        var msg='';
+        var res='';
+
+console.log(1234);
+
+        console.log(e.target.response);
+
+        try
         {
-            var msg='';
-            var res='';
+            res=JSON.parse(e.target.response);
+        }
+        catch(ex)
+        {
+            console.log(ex);
+        }
 
-            console.log(e.target.response);
-            try
-            {
-                res=JSON.parse(e.target.response);
-            }
-            catch(ex)
-            {
-                console.log(ex);
-            }
+        // gui.updateProjectFiles();
+        CABLES.UI.fileSelect.load();
+        CABLES.UI.fileSelect.show();
 
-            // gui.updateProjectFiles();
-            CABLES.UI.fileSelect.load();
-            CABLES.UI.fileSelect.show();
 
-            if (xhr.status === 502)
-            {
-                console.log('ajax 502 error ! possibly upload ?');
-                CABLES.UI.MODAL.hide();
-                gui.jobs().finish('uploadingfiles');
-                return;
-            }
 
-            if (xhr.status === 200)
-            {
-                CABLES.UI.MODAL.hide();
-                gui.jobs().finish('uploadingfiles');
-            }
-            else
-            {
-                if(res.msg) msg=res.msg;
-                gui.jobs().finish('uploadingfiles');
+        console.log(res);
 
-                CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
-            }
-        };
+        gui.patch().addAssetOpAuto('/assets/'+gui.patch().getCurrentProject()._id+'/'res.filename,CABLES.uploadDropEvent);
 
-        xhr.send(formData);
+
+        if (xhr.status === 502)
+        {
+            console.log('ajax 502 error ! possibly upload ?');
+            CABLES.UI.MODAL.hide();
+            gui.jobs().finish('uploadingfiles');
+            return;
+        }
+
+        if (xhr.status === 200)
+        {
+            CABLES.UI.MODAL.hide();
+            gui.jobs().finish('uploadingfiles');
+        }
+        else
+        {
+            if(res.msg) msg=res.msg;
+            gui.jobs().finish('uploadingfiles');
+
+            CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
+        }
+    };
+
+    xhr.send(formData);
 
 };
+
+CABLES.uploadDropEvent=null;
 
 CABLES.uploadDrop=function(event)
 {
@@ -162,6 +175,7 @@ CABLES.uploadDrop=function(event)
     var files = event.dataTransfer.files;
 
     CABLES.uploadFiles(files);
+    CABLES.uploadDropEvent=event;
 
 };
 

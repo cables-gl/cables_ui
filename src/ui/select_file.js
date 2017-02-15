@@ -60,6 +60,7 @@ CABLES.UI.FileSelect=function()
     {
         var html='';
 
+if(!gui.patch().getCurrentProject)return;
 
         if(!val)
         {
