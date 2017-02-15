@@ -15,6 +15,7 @@ CABLES.UI.ServerOps=function(gui)
     var ops=[];
     var self=this;
     var storedOps=[];
+    var lastTab=CABLES.UI.userSettings.get('editortab');
 
     function updateStoredOps()
     {
@@ -56,6 +57,9 @@ CABLES.UI.ServerOps=function(gui)
                         self.edit(storedOps[i]);
                     }
                 }
+
+
+
             }
         });
     };
@@ -388,13 +392,14 @@ CABLES.UI.ServerOps=function(gui)
                             {
                                 console.log('found op to remove');
                                 storedOps.splice(i,1);
-
                             }
                         }
+
                         updateStoredOps();
                     },
                     onSave:save
                 });
+                gui.editor().setTabByTitle(lastTab);
 
             });
 

@@ -85,7 +85,7 @@ CABLES.UI.GUI=function()
     this.timingHeight=250;
     this.rendererWidth=640;
     this.rendererHeight=360;
-    this.editorWidth=700;
+    this.editorWidth=CABLES.UI.userSettings.get("editorWidth")||700;
 
     this.toggleEditor=function()
     {

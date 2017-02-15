@@ -24,6 +24,11 @@ $( document ).ready(function()
             e.preventDefault();
 
             gui.editorWidth=e.clientX;
+
+            if(gui.editorWidth<30)gui.editorWidth=30;
+
+            CABLES.UI.userSettings.set("editorWidth",gui.editorWidth);
+
             gui.setLayout();
         });
     });

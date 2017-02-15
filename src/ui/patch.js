@@ -2794,10 +2794,23 @@ console.log(URL.createObjectURL(screenBlob));
     {
         if(!event)return;
         var opname='';
+        var title=filename.substr(filename.lastIndexOf('/')+1);
 
-        if(filename.endsWith(".png") || filename.endsWith(".jpg"))opname="Ops.Gl.Texture";
-        else if(filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3"))opname="Ops.WebAudio.AudioPlayer";
-        else if(filename.endsWith(".3d.json"))opname="Ops.Json3d.json3dFile";
+        if(filename.endsWith(".png") || filename.endsWith(".jpg"))
+        {
+            opname="Ops.Gl.Texture";
+            title="Texture: "+title;
+        }
+        else if(filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3"))
+        {
+            opname="Ops.WebAudio.AudioPlayer";
+            title="Audio: "+title;
+        }
+        else if(filename.endsWith(".3d.json"))
+        {
+            opname="Ops.Json3d.json3dFile";
+            title="Json: "+title;
+        }
         else
         {
             CABLES.UI.notify("no known operator found");
@@ -2807,7 +2820,6 @@ console.log(URL.createObjectURL(screenBlob));
         var x=gui.patch().getCanvasCoordsMouse(event).x;
         var y=gui.patch().getCanvasCoordsMouse(event).y;
 
-        var title=filename.substr(filename.lastIndexOf('/')+1);
 
         var uiAttr={'title':title,translate:{x:x,y:y}};
         gui.scene().addOp(opname,uiAttr,function(op)

@@ -105,6 +105,8 @@ CABLES.Editor=function()
                 if(contents.length>0)
                 {
                     this.setTab(contents[0].id);
+
+
                 }
                 else
                 {
@@ -178,6 +180,13 @@ CABLES.Editor=function()
         }
     };
 
+    this.setTabByTitle=function(title)
+    {
+        for(var i=0;i<contents.length;i++)
+            if(contents[i].title==title)
+                this.setTab(contents[i].id);
+    };
+
     this.setTab=function(id)
     {
         this.setCurrentTabContent();
@@ -187,6 +196,8 @@ CABLES.Editor=function()
             if(contents[i].id==id)
             {
                 currentTabId=id;
+                CABLES.UI.userSettings.set('editortab',contents[i].title);
+
                 $('#editortab'+contents[i].id).addClass('active');
 
                 if(contents[i].syntax=='md')  editor.session.setMode("ace/mode/Markdown");
