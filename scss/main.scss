@@ -1033,7 +1033,7 @@ input[type=text]:active, input[type=text]:focus {
 
     .previewImage
     {
-        border:4px solid #666;
+        // border:4px solid #666;
         background-color:000;
         background-repeat:no-repeat;
         background-position:center center;
@@ -1075,8 +1075,8 @@ input[type=text]:active, input[type=text]:focus {
             max-width:100px;
             margin-left: 10px;
             text-align: center;
-            padding-top: 5px;
-            padding-bottom: 5px;
+            padding-top: 4px;
+            padding-bottom: 4px;
         }
 
         .library-file-icon,i
@@ -1103,11 +1103,26 @@ input[type=text]:active, input[type=text]:focus {
 
     .iconcontainer_dir
     {
+        .iconcontainer
+        {
+        }
+
         i
         {
-            background-color: transparent !important;
+            background-color: #111;
+            opacity: 0.5;
+            // background-color: transparent !important;
         }
     }
+
+    .uploadFile
+    {
+        text-align:center;
+        opacity:0.5;
+        border:2px dashed white;
+        border-radius:10px;
+    }
+
 
     .library-file-list
     {
@@ -1168,6 +1183,8 @@ input[type=text]:active, input[type=text]:focus {
         height:100%;
         overflow: auto;
         font-size: 12px;
+        padding-left: 5px;
+        padding-top: 5px;
 
         .lvl0{}
         .lvl1{ margin-left: 20px;}

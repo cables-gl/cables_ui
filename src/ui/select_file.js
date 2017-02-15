@@ -134,7 +134,7 @@ CABLES.UI.FileSelect=function()
             return;
         }
 
-        $('#lib_files').html('<div style="text-align:center;margin-top:50px;"><i class="fa fa-2x fa-circle-o-notch fa-spin"></i><div>');
+        $('#lib_files').html('<div style="text-align:center;margin-top:50px;"><div class="loading"></div><div>');
         $('#tab_'+currentTab).addClass('active');
 
         function getFileList(filterType,files,p)
@@ -176,10 +176,14 @@ CABLES.UI.FileSelect=function()
 
         CABLES.api.get(apiPath,function(files)
         {
-            var html=getFileList(filterType,files);
+            setTimeout(function()
+            {
+                var html=getFileList(filterType,files);
 
 
-            $('#lib_files').html(html);
+                $('#lib_files').html(html);
+
+            },0);
         });
 
     };

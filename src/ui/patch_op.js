@@ -99,7 +99,10 @@ function UiLink(port1, port2)
         if(addCircle===null)
         {
             if(self.p1)
-            addCircle = gui.patch().getPaper().circle(middlePosX,middlePosY, CABLES.UI.uiConfig.portSize*0.5);
+            addCircle = gui.patch().getPaper().circle(
+                middlePosX,
+                middlePosY-CABLES.UI.uiConfig.portSize*0.5*0.5,
+                CABLES.UI.uiConfig.portSize*0.5);
 
             if(!addCircle)
             {
