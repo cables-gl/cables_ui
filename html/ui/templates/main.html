@@ -89,6 +89,10 @@
 
                 </ul>
             </li>
+            <li class="nav_files">
+                Files
+            </li>
+
             <li>
                 Help
                 <ul>
@@ -96,6 +100,8 @@
                     <li class="nav_help_introduction">Introduction</li>
                 </ul>
             </li>
+
+
         </ul>
     </nav>
 
@@ -244,6 +250,11 @@
 
     </div>
 </div>
+
+<form id="hiddenupload" class="hide">
+    <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.handleFileInputUpload(this.files)"/>
+</form>
+
 
 
 <div class="tooltip"></div>

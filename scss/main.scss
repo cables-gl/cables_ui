@@ -1007,7 +1007,7 @@ input[type=text]:active, input[type=text]:focus {
     display:none;
     //font-family: arial;
     position: absolute;
-    height:600px;
+    height:400px;
     background-color: #222;
     z-index: 99999;
 
@@ -1023,13 +1023,22 @@ input[type=text]:active, input[type=text]:focus {
         width:30%;
     }
 
+    .previewImage
+    {
+        border:4px solid #666;
+        background-color:000;
+        background-repeat:no-repeat;
+        background-position:center center;
+        background-size:100% auto;
+        width:60%;
+        padding-top:60%;
+    }
+
     #lib_preview
     {
         margin-left: 10px;
         padding-top:40px;
     }
-
-
 
 
     .iconcontainer
@@ -1041,7 +1050,7 @@ input[type=text]:active, input[type=text]:focus {
 
         &:hover
         {
-            background-color: #444;
+            background-color: #111;
 
             .filename
             {
@@ -1052,6 +1061,8 @@ input[type=text]:active, input[type=text]:focus {
         .filename
         {
             overflow: hidden;
+            font-size: 11px;
+            text-transform: none;
             text-overflow: ellipsis;
             max-width:100px;
             margin-left: 10px;
@@ -1148,7 +1159,7 @@ input[type=text]:active, input[type=text]:focus {
     #lib_files
     {
         clear: both;
-        height:540px;
+        height:340px;
         overflow: auto;
         font-size: 12px;
 

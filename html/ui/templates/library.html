@@ -23,7 +23,8 @@
 
 <div class="modalclose" style="position:absolute;right:0px;top:0px;"><a class="button fa fa-times" onclick="$('#library').hide();"></a></div>
 
-    <div class="previewImage" style="border:4px solid #666;background-color:000;background-image:url('{{previewImageUrl}}');background-repeat:no-repeat;background-position:center center;background-size:100% auto;width:80%;padding-top:80%;"></div>
+
+    <div class="previewImage" style="background-image:url('{{previewImageUrl}}');"></div>
     <div class="info"></div>
 
     <div>
@@ -48,6 +49,23 @@
     </div>
 </script>
 
+<script type="text/x-handlebars-template" id="library_uploadfile">
+
+    <div class="iconcontainer iconcontainer_image" onclick="CABLES.uploadSelectFile();" style="opacity:0.5;" >
+        <div class="library-file-icon" style="text-align:center;opacity:0.5;border:2px dashed white;border-radius:10px;">
+            <br/><br/>
+            <span class="fa fa-3x fa-upload" aria-hidden="true"></span>
+
+        </div>
+        <div class="filename">Upload File
+        </div>
+    </div>
+
+
+</script>
+
+
+
 <script id="library_file_icon" type="text/x-handlebars-template">
 
     <div class="library-file-icon">
@@ -56,8 +74,7 @@
         <div style="clear:both;"></div>
         {{/compare}}
 
-
-        <div class="iconcontainer iconcontainer_{{file.t}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}');">
+        <div class="iconcontainer iconcontainer_{{file.t}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}');"   draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{file.p}}');">
 
             {{#compare file.t '==' 'audio' }}<i class="fa fa-4x fa-file-audio-o" ></i>{{/compare}}
             {{#compare file.t '==' 'dir' }}<i class="fa fa-4x fa-folder-open-o"></i>{{/compare}}
@@ -66,7 +83,7 @@
             {{#compare file.t '==' 'json' }}<i class="fa fa-4x fa-file-code-o" ></i>{{/compare}}
 
             {{#compare file.t '==' 'image' }}
-                <div class="library-file-icon" style="background-image:url({{file.p}});">
+                <div class="library-file-icon" style="background-image:url('{{file.p}}');">
                 </div>
             {{/compare}}
             <div class="filename">

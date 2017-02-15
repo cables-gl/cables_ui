@@ -1,41 +1,53 @@
 //http://html5doctor.com/drag-and-drop-to-server/
 
+var CABLES=CABLES||{};
 
-$("body").on("dragover", function(event)
+
+CABLES.handleFileInputUpload=function(files)
 {
+    CABLES.uploadFiles(files);
+
+};
+
+CABLES.uploadSelectFile=function()
+{
+    var fileElem = document.getElementById("hiddenfileElem");
+
+    if (fileElem)
+    {
+        console.log('click');
+        fileElem.click();
+    }
+};
+
+
+CABLES.uploadDragOver=function(event)
+{
+    if(CABLES.DragNDrop.internal)
+    {
+        console.log('cancel because internal');
+        return;
+    }
+    console.log('upload dragover');
+
     event.preventDefault();
     event.stopPropagation();
     $(this).addClass('dragging');
-    // $('body').css('pointer-events','none');
 
     CABLES.UI.MODAL.show("drop files to upload!");
     jQuery.event.props.push('dataTransfer');
-    // console.log('over');
+};
 
-});
-
-$("body").on("dragleave", function(event)
+CABLES.uploadDragLeave=function(event)
 {
     $(this).removeClass('dragging');
-    // $(this).css('pointer-events','all');
-    // $('body').css('pointer-events','all');
-    // console.log('leave');
-    // CABLES.UI.MODAL.hide();
+
     event.preventDefault();
     event.stopPropagation();
+};
 
-});
-
-$("body").on("drop", function(event)
+CABLES.uploadFiles=function(files)
 {
-    event.preventDefault();
-    event.stopPropagation();
-
-    // CABLES.UI.MODAL.showLoading("uploading");
-    CABLES.UI.MODAL.hide();
-    gui.jobs().start({id:'uploadingfiles',title:'uploading files...'});
-
-    var files = event.dataTransfer.files;
     var url='/api/project/'+gui.patch().getCurrentProject()._id+'/file';
 
     var formData = new FormData();
@@ -58,7 +70,7 @@ $("body").on("drop", function(event)
                 // gui.jobs().start({id:'processingfiles',title:'processing files...'});
                 gui.jobs().finish('uploadingfiles');
 
-CABLES.UI.notify("File Uploaded");
+                CABLES.UI.notify("File Uploaded");
 
                 // console.log(files);
                 setTimeout(function()
@@ -86,45 +98,84 @@ CABLES.UI.notify("File Uploaded");
         }
     };
 
-    xhr.onload = function (e,r)
+
+
+
+        xhr.onload = function (e,r)
+        {
+            var msg='';
+            var res='';
+
+            console.log(e.target.response);
+            try
+            {
+                res=JSON.parse(e.target.response);
+            }
+            catch(ex)
+            {
+                console.log(ex);
+            }
+
+            gui.updateProjectFiles();
+
+            if (xhr.status === 502)
+            {
+                console.log('ajax 502 error ! possibly upload ?');
+                CABLES.UI.MODAL.hide();
+                gui.jobs().finish('uploadingfiles');
+                return;
+            }
+
+            if (xhr.status === 200)
+            {
+                CABLES.UI.MODAL.hide();
+                gui.jobs().finish('uploadingfiles');
+            }
+            else
+            {
+                if(res.msg) msg=res.msg;
+                gui.jobs().finish('uploadingfiles');
+
+                CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
+            }
+            CABLES.UI.fileSelect.load();
+        };
+
+        xhr.send(formData);
+
+};
+
+CABLES.uploadDrop=function(event)
+{
+    event.preventDefault();
+    event.stopPropagation();
+
+    CABLES.UI.MODAL.hide();
+    gui.jobs().start({id:'uploadingfiles',title:'uploading files...'});
+
+    if(event.dataTransfer.files.length===0)
     {
+        console.log('no files to upload...');
+        return;
+    }
+    var files = event.dataTransfer.files;
 
-        var msg='';
-        var res='';
+    CABLES.uploadFiles(files);
 
-        console.log(e.target.response);
-        try
-        {
-            res=JSON.parse(e.target.response);
-        }
-        catch(ex)
-        {
-            console.log(ex);
-        }
+};
 
-        gui.updateProjectFiles();
-        if (xhr.status === 502)
-        {
-            console.log('ajax 502 error ! possibly upload ?');
-            CABLES.UI.MODAL.hide();
-            gui.jobs().finish('uploadingfiles');
-            return;
-        }
+CABLES.bindUploadDragNDrop=function()
+{
+    $("body").on("drop", CABLES.uploadDrop);
+    $("body").on("dragover",CABLES.uploadDragOver );
+    $("body").on("dragleave",CABLES.uploadDragLeave);
+};
 
-        if (xhr.status === 200)
-        {
-            CABLES.UI.MODAL.hide();
-            gui.jobs().finish('uploadingfiles');
-        }
-        else
-        {
-            if(res.msg) msg=res.msg;
-            gui.jobs().finish('uploadingfiles');
+CABLES.unBindUploadDragNDrop=function()
+{
+    $("body").off("drop",CABLES.uploadDrop);
+    $("body").off("dragover",CABLES.uploadDragOver);
+    $("body").off("dragleave",CABLES.uploadDragLeave);
+};
 
-            CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
-        }
-    };
-
-    xhr.send(formData);
-
-});
+CABLES.bindUploadDragNDrop();

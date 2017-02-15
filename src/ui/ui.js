@@ -695,8 +695,12 @@ CABLES.UI.GUI=function()
         $('.nav_op_addOp').bind("click", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
         $('.nav_op_createOp').bind("click", function (event) { self.serverOps.createDialog(); });
 
+        $('.nav_files').bind("click", function (event) { self.showLibrary(); });
+
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
+
+
 
         window.addEventListener( 'resize', self.setLayout, false );
 

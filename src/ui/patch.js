@@ -1141,6 +1141,9 @@ console.log(URL.createObjectURL(screenBlob));
                 viewBox.y+=-1*event.deltaY;
                 self.updateViewBox();
 
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
                 return;
             }
 
@@ -2751,28 +2754,21 @@ console.log(URL.createObjectURL(screenBlob));
     {
         cycleWatchPort=!cycleWatchPort;
 
-
         for(var i in watchPorts)
         {
             if(watchPorts[i].type!=OP_PORT_TYPE_VALUE && watchPorts[i].type!=OP_PORT_TYPE_ARRAY)continue;
-
             var id='.watchPortValue_'+watchPorts[i].watchId;
 
-            // if(cycleWatchPort)
+            var el=$(id);
+
+            if(watchPorts[i].isAnimated() )
             {
-                var el=$(id);
-
-                if(watchPorts[i].isAnimated() )
-                {
-                    if(el.val()!=watchPorts[i].get() )el.val( watchPorts[i].get() );
-                }
-                else
-                   el.html( String(watchPorts[i].get()) );
-
+                if(el.val()!=watchPorts[i].get() )el.val( watchPorts[i].get() );
             }
+            else
+               el.html( String(watchPorts[i].get()) );
 
             CABLES.watchPortVisualize.update(id,watchPorts[i].watchId,watchPorts[i].get());
-
         }
 
         if(CABLES.UI.uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,CABLES.UI.uiConfig.watchValuesInterval);
@@ -2794,6 +2790,31 @@ console.log(URL.createObjectURL(screenBlob));
         return res;
     };
 
+    this.addAssetOpAuto=function(filename,event)
+    {
+        var opname='';
+
+        if(filename.endsWith(".png") || filename.endsWith(".jpg"))opname="Ops.Gl.Texture";
+        else if(filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3"))opname="Ops.WebAudio.AudioPlayer";
+        else if(filename.endsWith(".3d.json"))opname="Ops.Json3d.json3dFile";
+
+        var x=gui.patch().getCanvasCoordsMouse(event).x;
+        var y=gui.patch().getCanvasCoordsMouse(event).y;
+
+        var title=filename.substr(filename.lastIndexOf('/')+1);
+
+        var uiAttr={'title':title,translate:{x:x,y:y}};
+        gui.scene().addOp(opname,uiAttr,function(op)
+        {
+            for(var i=0;i<op.portsIn.length;i++)
+            {
+                if(op.portsIn[i].uiAttribs.display=='file')
+                    op.portsIn[i].set(filename);
+            }
+        });
+    };
+
+
     this.addAssetOp=function(opname,portname,filename,title)
     {
         if(!title)title=filename;
@@ -2801,7 +2822,7 @@ console.log(URL.createObjectURL(screenBlob));
         var uiAttr={'title':title,translate:{x:viewBox.x+viewBox.w/2,y:viewBox.y+viewBox.h/2}};
         gui.scene().addOp(opname,uiAttr,function(op)
         {
-            op.getPort(portname).val='/assets/'+currentProject._id+'/'+filename;
+            op.getPort(portname).set('/assets/'+currentProject._id+'/'+filename);
         });
     };
 

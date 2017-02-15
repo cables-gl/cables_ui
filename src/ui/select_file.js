@@ -18,7 +18,6 @@ CABLES.UI.FileSelect=function()
         $(_id).val(_url);
         $(_id).trigger('input');
 
-
         var highlightBg="#fff";
         var originalBg = $(_id).css("background-color");
         $(_id).stop().css("opacity", 0);
@@ -26,12 +25,12 @@ CABLES.UI.FileSelect=function()
 
         // $(_id).animate({backgroundColor:'#fff'}, 300);//.animate({backgroundColor:'#555'}, 100);
 
-
-console.log(this.currentOpid);
-console.log(gui.scene().getOpById(this.currentOpid));
-
-        gui.patch().showOpParams(gui.scene().getOpById(this.currentOpid));
-
+        if(this.currentOpid)
+        {
+            // console.log(this.currentOpid);
+            // console.log(gui.scene().getOpById(this.currentOpid));
+            gui.patch().showOpParams(gui.scene().getOpById(this.currentOpid));
+        }
 
         CABLES.UI.fileSelect.showPreview(_url);
     };
@@ -57,14 +56,23 @@ console.log(gui.scene().getOpById(this.currentOpid));
 
     this.showPreview=function(val)
     {
-        var opts={};
-
-        if(val.endsWith('.jpg') || val.endsWith('.png'))
+        var html='...';
+        if(!val)
         {
-            opts.previewImageUrl=val;
-        }
 
-        var html= CABLES.UI.getHandleBarHtml('library_preview',opts);
+        }
+        else
+        {
+            var opts={};
+
+            if(val.endsWith('.jpg') || val.endsWith('.png'))
+            {
+                opts.previewImageUrl=val;
+            }
+
+            html= CABLES.UI.getHandleBarHtml('library_preview',opts);
+
+        }
 
         $('#lib_preview').html( html );
     };
@@ -102,9 +110,7 @@ console.log(gui.scene().getOpById(this.currentOpid));
             return;
         }
 
-
-$('#lib_files').html('<div style="text-align:center;margin-top:50px;"><i class="fa fa-2x fa-circle-o-notch fa-spin"></i><div>');
-
+        $('#lib_files').html('<div style="text-align:center;margin-top:50px;"><i class="fa fa-2x fa-circle-o-notch fa-spin"></i><div>');
         $('#tab_'+currentTab).addClass('active');
 
         function getFileList(filterType,files,p)
@@ -112,6 +118,9 @@ $('#lib_files').html('<div style="text-align:center;margin-top:50px;"><i class="
             if(!p)p=assetPath;
 
             var html='';
+
+            if(currentTab!='library') html= CABLES.UI.getHandleBarHtml('library_uploadfile',{file: files[i],inputId:inputId,filterType:filterType });
+
             for(var i in files)
             {
                 if(!files[i])continue;
@@ -145,7 +154,6 @@ $('#lib_files').html('<div style="text-align:center;margin-top:50px;"><i class="
         {
             var html=getFileList(filterType,files);
 
-            if(html.length===0) html='<div style="margin-top:50px;text-align:center;"><a class="fa fa-upload"></a>&nbsp;no project files yet...<br/><br/>drag & drop files to browser window to upload.</a>';
 
             $('#lib_files').html(html);
         });
