@@ -128,7 +128,7 @@ console.log(1234);
 
         console.log(res);
 
-        gui.patch().addAssetOpAuto('/assets/'+gui.patch().getCurrentProject()._id+'/'res.filename,CABLES.uploadDropEvent);
+        gui.patch().addAssetOpAuto('/assets/'+gui.patch().getCurrentProject()._id+'/'+res.filename,CABLES.uploadDropEvent);
 
 
         if (xhr.status === 502)
