@@ -54,48 +54,56 @@
             incrementStartup();
 
             loadjs([
+                CABLES.noCacheUrl('js/libs.ui.min.js'),
+                CABLES.noCacheUrl('js/libs.core.min.js'),
                 'js/ace/ace.js'
-            ], 'ace');
+            ], 'libs');
 
-            loadjs.ready('ace', function()
+            loadjs.ready('libs', function()
             {
-                loadjs([
-                    CABLES.noCacheUrl('js/libs.ui.min.js'),
-                    CABLES.noCacheUrl('js/libs.core.min.js'),
-                ], 'libs');
+                incrementStartup();
+                logStartup('loaded libs');
 
-                loadjs.ready('libs', function()
+                loadjs(['js/ace/ext-language_tools.js'],'ace');
+
+                loadjs.ready('ace', function()
                 {
+                    logStartup('loaded ace');
                     incrementStartup();
-                    logStartup('loaded libs');
+                    loadjs([CABLES.noCacheUrl('js/cables.max.js')],'cables_core');
 
-                    loadjs(['js/ace/ext-language_tools.js'],'ace');
-
-                    loadjs.ready('ace', function()
+                    loadjs.ready('cables_core', function()
                     {
-                        logStartup('loaded ace');
+                        logStartup('loaded cables core');
+
                         incrementStartup();
-                        loadjs([CABLES.noCacheUrl('js/cables.max.js')],'cables_core');
+                        loadjs([CABLES.noCacheUrl('/api/ops/code')],'cables_ops');
 
-                        loadjs.ready('cables_core', function()
+                        loadjs.ready('cables_ops', function()
                         {
-                            logStartup('loaded cables core');
-
                             incrementStartup();
-                            loadjs([CABLES.noCacheUrl('/api/ops/code')],'cables_ops');
+                            logStartup('loaded cables ops');
+                            loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
 
-                            loadjs.ready('cables_ops', function()
+                            loadjs.ready('cablesui', function()
                             {
                                 incrementStartup();
-                                logStartup('loaded cables ops');
-                                loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
+                                logStartup('loaded ui');
 
-                                loadjs.ready('cablesui', function()
+
+                                function waitForAce()
                                 {
-                                    incrementStartup();
-                                    logStartup('loaded ui');
+                                    if(!window.ace || !ace.define || !ace.edit)
+                                    {
+                                        console.log("tim waits for ace...");
+                                        setTimeout(waitForAce,100);
+                                    }
+                                    else
                                     startUi();
-                                });
+
+                                }
+
+                                waitForAce();
                             });
                         });
                     });
