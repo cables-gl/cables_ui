@@ -23,20 +23,21 @@ CABLES.uploadSelectFile=function()
 
 CABLES.uploadDragOver=function(event)
 {
-    CABLES.uploadDropEvent=null;
+    CABLES.uploadDropEvent=event.originalEvent;
+
+
     if(CABLES.DragNDrop.internal)
     {
         console.log('cancel because internal');
         return;
     }
-    console.log('upload dragover');
 
     event.preventDefault();
     event.stopPropagation();
-    $(this).addClass('dragging');
 
     CABLES.UI.MODAL.show("drop files to upload!");
     jQuery.event.props.push('dataTransfer');
+
 };
 
 CABLES.uploadDragLeave=function(event)
@@ -175,7 +176,6 @@ CABLES.uploadDrop=function(event)
     var files = event.dataTransfer.files;
 
     CABLES.uploadFiles(files);
-    CABLES.uploadDropEvent=event;
 
 };
 

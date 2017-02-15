@@ -38,6 +38,8 @@ CABLES.UI.FileSelect=function()
 
     this.setTab=function(which)
     {
+        if(!gui.patch().getCurrentProject())return;
+        
         if(which=='projectfiles')
         {
             assetPath='/assets/'+gui.patch().getCurrentProject()._id;
