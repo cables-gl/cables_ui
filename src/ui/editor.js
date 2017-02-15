@@ -6,7 +6,7 @@ CABLES.Editor=function()
     var contents=[];
     var currentTabId='';
 
-    var editor = ace.edit("ace");
+    var editor = ace.edit("ace_editor");
     editor.setValue('');
 
     editor.setOptions({
@@ -70,7 +70,7 @@ CABLES.Editor=function()
     editor.focus();
 
     // Hover text
-    $('#ace').hover(function (e)
+    $('#ace_editor').hover(function (e)
     {
         CABLES.UI.showInfo(CABLES.UI.TEXTS.editor);
     },function()

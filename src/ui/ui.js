@@ -181,12 +181,12 @@ CABLES.UI.GUI=function()
 
             var editorHeight=patchHeight-2-editorbarHeight;
 
-            $('#ace').css('height',editorHeight);
+            $('#ace_editor').css('height',editorHeight);
 
 
-            $('#ace').css('width',self.editorWidth);
-            $('#ace').css('top',menubarHeight+2+editorbarHeight);
-            $('#ace').css('left',0);
+            $('#ace_editor').css('width',self.editorWidth);
+            $('#ace_editor').css('top',menubarHeight+2+editorbarHeight);
+            $('#ace_editor').css('left',0);
 
             $('#editorbar').css('width',self.editorWidth);
             $('#splitterEditor').show();
@@ -783,7 +783,7 @@ CABLES.UI.GUI=function()
                 case 70:
                     if(e.metaKey || e.ctrlKey)
                     {
-                         if(!$('#ace textarea').is(":focus"))
+                         if(!$('#ace_editor textarea').is(":focus"))
                          {
                              _find.show();
                              self.setMetaTab('find');
