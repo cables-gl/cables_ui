@@ -1132,7 +1132,7 @@ console.log(URL.createObjectURL(screenBlob));
         {
 
 
-            if(!event.ctrlKey && self.modeTouchPad)
+            if(!event.metaKey && !event.ctrlKey && self.modeTouchPad)
             {
                 if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) event.deltaY*=0.5;
                     else event.deltaX*=0.5;
