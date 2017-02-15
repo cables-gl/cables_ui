@@ -1,11 +1,16 @@
 
 <div id="library">
-    <div class="left">
-        <div id="lib_head"></div>
-        <div id="lib_files"></div>
-    </div>
-    <div class="right">
-        <div id="lib_preview"></div>
+    <div id="lib_head"></div>
+    <div style="clear:both"></div>
+
+    <div class="libContentContainer">
+        <div class="libleft">
+            <div id="lib_files"></div>
+        </div>
+        <div class="libright">
+            <div id="lib_preview"></div>
+        </div>
+        <div style="clear:both"></div>
     </div>
 </div>
 
@@ -155,7 +160,7 @@
 <div id="meta">
     <div id="metatabs">
         <div class="tabs">
-            <a class="tab_files active fa fa-files-o" data-info="{{ texts.tab_files }}" onclick="gui.setMetaTab('files')"> </i> </a>
+            <a class="tab_doc active fa fa-info-circle" data-info="{{ texts.tab_doc }}" onclick="gui.setMetaTab('doc')"> </i> </a>
             <a class="tab_code fa fa-code" data-info="{{ texts.tab_code }}" onclick="gui.setMetaTab('code')"> </i> </a>
             <a class="tab_profiler fa fa-pie-chart" data-info="{{ texts.tab_profiler }}" onclick="gui.setMetaTab('profiler')"></a>
             <a class="tab_bookmarks fa fa-bookmark-o" data-info="{{ texts.tab_bookmarks }}" onclick="gui.setMetaTab('bookmarks')"></a>
@@ -167,7 +172,7 @@
         </div>
     </div>
     <div id="meta_content">
-        <div id="meta_content_files" class="meta_content"></div>
+        <div id="meta_content_doc" class="meta_content"></div>
         <div id="meta_content_preview" class="meta_content"></div>
         <div id="meta_content_code" class="meta_content"></div>
         <div id="meta_content_profiler" class="meta_content"></div>

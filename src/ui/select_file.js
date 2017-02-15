@@ -2,6 +2,7 @@ CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
 
+
 CABLES.UI.FileSelect=function()
 {
     var currentTab='';
@@ -13,7 +14,7 @@ CABLES.UI.FileSelect=function()
     var self=this;
     this.currentOpid=null;
 
-    this.setFile=function(_id,_url)
+    this.setFile=function(_id,_url,fileid)
     {
         $(_id).val(_url);
         $(_id).trigger('input');
@@ -32,7 +33,7 @@ CABLES.UI.FileSelect=function()
             gui.patch().showOpParams(gui.scene().getOpById(this.currentOpid));
         }
 
-        CABLES.UI.fileSelect.showPreview(_url);
+        CABLES.UI.fileSelect.showPreview(_url,fileid);
     };
 
     this.setTab=function(which)
@@ -54,12 +55,32 @@ CABLES.UI.FileSelect=function()
         this.load();
     };
 
-    this.showPreview=function(val)
+
+    this.showPreview=function(val,id)
     {
-        var html='...';
+        var html='';
+
+
         if(!val)
         {
 
+        }
+        else
+        if(id)
+        {
+            CABLES.api.get(
+                'project/'+gui.patch().getCurrentProject()._id+'/file/info/'+id,
+                function(r)
+                {
+                    html= CABLES.UI.getHandleBarHtml('library_preview_full',
+                        {
+                            "projectId":gui.patch().getCurrentProject()._id,
+                            "file":r
+                        });
+                    console.log(r);
+                    $('#lib_preview').html( html );
+
+                });
         }
         else
         {

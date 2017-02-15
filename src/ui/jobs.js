@@ -62,7 +62,8 @@ function()
             {
                 if(jobs[i].title.indexOf('file')>=0)
                 {
-                    gui.updateProjectFiles();
+                    // gui.updateProjectFiles();
+                    CABLES.UI.fileSelect.load();
                 }
                 jobs.splice(i,1);
                 break;

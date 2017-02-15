@@ -932,7 +932,7 @@ CABLES.UI.GUI=function()
     {
         $('#loadingstatus').hide();
         $('#mainContainer').show();
-        self.setMetaTab('files');
+        self.setMetaTab('doc');
 
     };
 
@@ -1200,7 +1200,7 @@ CABLES.UI.GUI=function()
 
         this.getOpDoc(opname,true,function(html)
         {
-            $('#doc_op').html(docOpHead+html+docOpFooter);
+            $('#meta_content_doc').html(docOpHead+html+docOpFooter);
         });
     };
 
@@ -1240,24 +1240,24 @@ CABLES.UI.GUI=function()
         return savedState;
     };
 
-    this.updateProjectFiles=function(proj)
-    {
-        if(!proj)proj=self.project();
-        if(!proj)return;
-        $('#meta_content_files').html('');
-
-        CABLES.api.get(
-            'project/'+proj._id+'/files',
-            function(files)
-            {
-                proj.files=files;
-                var html='';
-                html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_list',proj);
-                html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_upload',proj);
-
-                $('#meta_content_files').html(html);
-            });
-    };
+    // this.updateProjectFiles=function(proj)
+    // {
+    //     if(!proj)proj=self.project();
+    //     if(!proj)return;
+    //     $('#meta_content_files').html('');
+    //
+    //     CABLES.api.get(
+    //         'project/'+proj._id+'/files',
+    //         function(files)
+    //         {
+    //             proj.files=files;
+    //             var html='';
+    //             html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_list',proj);
+    //             html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_upload',proj);
+    //
+    //             $('#meta_content_files').html(html);
+    //         });
+    // };
 
     this.setMetaTab=function(which)
     {

@@ -7,10 +7,10 @@
         <div onclick="CABLES.UI.fileSelect.setTab('library');" id="tab_library" class="tab">library</div>
 
         <div style="float:right">
-            <div onclick="CABLES.UI.fileSelect.setView('list');" id="tab_library" class="tab">
+            <div onclick="CABLES.UI.fileSelect.setView('list');" class="tab tab_library">
                 <i class="fa fa-list" aria-hidden="true"></i>
             </div>
-            <div onclick="CABLES.UI.fileSelect.setView('icon');" id="tab_library" class="tab">
+            <div onclick="CABLES.UI.fileSelect.setView('icon');" class="tab tab_library">
                 <i class="fa fa-th" aria-hidden="true"></i>
             </div>
     </div>
@@ -18,21 +18,6 @@
 
 </script>
 
-
-<script id="library_preview" type="text/x-handlebars-template">
-
-<div class="modalclose" style="position:absolute;right:0px;top:0px;"><a class="button fa fa-times" onclick="$('#library').hide();"></a></div>
-
-
-    <div class="previewImage" style="background-image:url('{{previewImageUrl}}');"></div>
-    <div class="info"></div>
-
-    <div>
-        <br/><br/><br/>
-        <!-- <a class="button" href="{{previewImageUrl}}" target="_blankk">open file</a> -->
-    </div>
-
-</script>
 
 
 <script id="library_file_list" type="text/x-handlebars-template">
@@ -74,7 +59,7 @@
         <div style="clear:both;"></div>
         {{/compare}}
 
-        <div class="iconcontainer iconcontainer_{{file.t}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}');"   draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{file.p}}');">
+        <div class="iconcontainer iconcontainer_{{file.t}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}','{{file._id}}');"   draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{file.p}}');">
 
             {{#compare file.t '==' 'audio' }}<i class="fa fa-4x fa-file-audio-o" ></i>{{/compare}}
             {{#compare file.t '==' 'dir' }}<i class="fa fa-4x fa-folder-open-o"></i>{{/compare}}
@@ -102,6 +87,114 @@
         {{/compare}}
 
     </div>
+
+
+</script>
+
+
+
+<script id="library_preview" type="text/x-handlebars-template">
+
+    <div class="modalclose" style="position:absolute;right:0px;top:0px;"><a class="button fa fa-times" onclick="$('#library').hide();"></a></div>
+
+
+    <div class="previewImage" style="background-image:url('{{previewImageUrl}}');"></div>
+    <div class="info"></div>
+
+    <div>
+        <br/><br/><br/>
+    </div>
+
+</script>
+
+
+
+<script id="library_preview_full" type="text/x-handlebars-template">
+
+        {{file.fileDb.fileName}}
+        <br/><br/>
+
+        {{#if file.imgPreview  }}
+            <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" style="width:100%;"/>
+            <br/><br/>
+        {{/if}}
+
+        {{#if file.imgSizeWidth  }}
+            {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} -->
+        {{/if}}
+
+        - {{file.sizeKb}}kb - {{file.fileDb.type}}
+
+        <br/>changed {{file.readableDateSince}} <br/>
+        {{file.readableDate}}
+
+
+        <br/><br/>
+
+        {{#each file.ops}}
+            <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
+            <br/><br/>
+        {{/each}}
+
+        {{#if file.converters  }}
+            {{#each file.converters}}
+                <a class="button fa fa-retweet" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');">&nbsp;{{ name }}</a>
+                <br/>
+            {{/each}}
+            <br/><br/>
+
+        {{/if}}
+
+
+        <a href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" target="_blank" class="button fa fa-external-link" >open file</a>
+        <a download href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" target="_blank" class="button fa fa-download" >download file</a>
+
+
+        <!-- <table>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>filename</td>
+                <td>{{file.fileDb.fileName}}</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>created</td>
+                <td>{{file.fileDb.created}}</td>
+            </tr>
+
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>suffix</td>
+                <td>{{file.fileDb.suffix}}</td>
+            </tr>
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>type</td>
+                <td>{{file.fileDb.type}}</td>
+            </tr>
+
+
+            <tr>
+                <td>&nbsp;</td>
+                <td>projectId</td>
+                <td>{{file.fileDb.projectId}}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>user</td>
+                <td>{{file.fileDb.userId}}</td>
+            </tr>
+
+        </table> -->
+
+
+        <br/>
+        <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{file._id}}',null,function(){gui.updateProjectFiles();$('#options').html('')});">delete </a>
+
 
 
 </script>

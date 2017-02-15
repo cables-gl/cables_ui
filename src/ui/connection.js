@@ -67,7 +67,8 @@ CABLES.API.Connection=function(ui)
             if(message.data.data.cmd=='finishJob')
             {
                 ui.jobs().finish(message.data.data.jobId);
-                gui.updateProjectFiles();
+                // gui.updateProjectFiles();
+                CABLES.UI.fileSelect.load();
 
             }
             else

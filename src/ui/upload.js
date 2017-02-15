@@ -116,7 +116,9 @@ CABLES.uploadFiles=function(files)
                 console.log(ex);
             }
 
-            gui.updateProjectFiles();
+            // gui.updateProjectFiles();
+            CABLES.UI.fileSelect.load();
+            CABLES.UI.fileSelect.show();
 
             if (xhr.status === 502)
             {
@@ -138,7 +140,6 @@ CABLES.uploadFiles=function(files)
 
                 CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
             }
-            CABLES.UI.fileSelect.load();
         };
 
         xhr.send(formData);

@@ -762,7 +762,7 @@ console.log(URL.createObjectURL(screenBlob));
         {
             $('#meta_content_files').show();
 
-            gui.updateProjectFiles(proj);
+            CABLES.UI.fileSelect.load();
             $('.viewProjectLink').attr('href','/p/'+proj._id);
         }
         $('#meta_content_files').hover(function (e)
@@ -1132,7 +1132,7 @@ console.log(URL.createObjectURL(screenBlob));
         {
 
 
-            if(!event.metaKey && !event.ctrlKey && self.modeTouchPad)
+            if(!event.metaKey && !event.altKey && !event.ctrlKey && self.modeTouchPad)
             {
                 if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) event.deltaY*=0.5;
                     else event.deltaX*=0.5;

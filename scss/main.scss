@@ -1005,22 +1005,30 @@ input[type=text]:active, input[type=text]:focus {
 #library
 {
     display:none;
-    //font-family: arial;
     position: absolute;
-    height:400px;
     background-color: #222;
     z-index: 99999;
 
-    .left
+    .libleft
     {
         width:70%;
         float:left;
     }
 
-    .right
+    .libright
     {
-        float:left;
+        float:right;
         width:30%;
+        overflow: scroll;
+        max-height: 100%;
+        overflow-x: hidden;
+        background-color: 1b1b1b;
+    }
+
+    .libContentContainer
+    {
+        overflow: hidden;
+        height:440px;
     }
 
     .previewImage
@@ -1036,10 +1044,10 @@ input[type=text]:active, input[type=text]:focus {
 
     #lib_preview
     {
+        padding-top: 10px;
         margin-left: 10px;
-        padding-top:40px;
+        min-height: 100%;
     }
-
 
     .iconcontainer
     {
@@ -1070,8 +1078,6 @@ input[type=text]:active, input[type=text]:focus {
             padding-top: 5px;
             padding-bottom: 5px;
         }
-
-
 
         .library-file-icon,i
         {
@@ -1125,6 +1131,7 @@ input[type=text]:active, input[type=text]:focus {
         .tabs
         {
             height:40px;
+            overflow: hidden;
             clear: both;
             background-color: #000;
 
@@ -1158,7 +1165,7 @@ input[type=text]:active, input[type=text]:focus {
 
     #lib_files
     {
-        clear: both;
+        // clear: both;
         height:340px;
         overflow: auto;
         font-size: 12px;
