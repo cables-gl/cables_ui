@@ -18,6 +18,11 @@ CABLES.UI.UserSettings=function()
         return settings[key];
     };
 
+    this.getAll=function()
+    {
+        return settings;
+    };
+
 };
 
 

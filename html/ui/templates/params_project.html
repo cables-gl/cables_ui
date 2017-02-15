@@ -4,7 +4,7 @@
 
 <br/>
 <div class="panel">
-    <input type="checkbox" id="switchTouchPadMode" onChange="gui.patch().modeTouchPad=this.checked;"> touchpad mode
+    <input type="checkbox" {{#if userSettings.touchpadmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('touchpadmode',this.checked)"> touchpad mode
 </div>
 
 </script>

@@ -2246,6 +2246,7 @@ console.log(URL.createObjectURL(screenBlob));
                 project: s,
                 descr:currentProject.descriptionHTML,
                 user:gui.user,
+                userSettings:CABLES.UI.userSettings.getAll(),
                 debug:
                 {
                 }

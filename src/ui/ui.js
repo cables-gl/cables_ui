@@ -932,8 +932,8 @@ CABLES.UI.GUI=function()
     {
         $('#loadingstatus').hide();
         $('#mainContainer').show();
-        self.setMetaTab('doc');
-
+        // self.setMetaTab('doc');
+        self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
     };
 
     function initRouting(cb)
@@ -1275,6 +1275,8 @@ CABLES.UI.GUI=function()
         if(which=='preview') self.preview.show();
         else self.preview.hide();
         if(which=='find') self.find().show();
+
+        CABLES.UI.userSettings.set("metatab",which);
 
     };
 

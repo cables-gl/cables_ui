@@ -90,7 +90,7 @@ CABLES.UI.Find=function()
 
     this.search=function(str)
     {
-        this.doSearch(str,ids);
+        this.doSearch(str);
     };
 
 };
