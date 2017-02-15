@@ -39,7 +39,7 @@ CABLES.UI.FileSelect=function()
     this.setTab=function(which)
     {
         if(!gui.patch().getCurrentProject())return;
-        
+
         if(which=='projectfiles')
         {
             assetPath='/assets/'+gui.patch().getCurrentProject()._id;
@@ -62,7 +62,7 @@ CABLES.UI.FileSelect=function()
     {
         var html='';
 
-if(!gui.patch().getCurrentProject)return;
+        if(!gui.patch().getCurrentProject)return;
 
         if(!val)
         {
@@ -80,7 +80,7 @@ if(!gui.patch().getCurrentProject)return;
                             "projectId":gui.patch().getCurrentProject()._id,
                             "file":r
                         });
-                    console.log(r);
+                    // console.log(r);
                     $('#lib_preview').html( html );
 
                 });

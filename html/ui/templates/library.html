@@ -6,6 +6,7 @@
         <div onclick="CABLES.UI.fileSelect.setTab('projectfiles');" id="tab_projectfiles" class="tab">project files</div>
         <div onclick="CABLES.UI.fileSelect.setTab('library');" id="tab_library" class="tab">library</div>
 
+
         <div style="float:right">
             <div onclick="CABLES.UI.fileSelect.setView('list');" class="tab tab_library">
                 <i class="fa fa-list" aria-hidden="true"></i>
@@ -13,6 +14,13 @@
             <div onclick="CABLES.UI.fileSelect.setView('icon');" class="tab tab_library">
                 <i class="fa fa-th" aria-hidden="true"></i>
             </div>
+
+            <div onclick="$('#library').hide();" class="tab">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </div>
+
+
+
     </div>
 
 
@@ -94,9 +102,6 @@
 
 
 <script id="library_preview" type="text/x-handlebars-template">
-
-    <div class="modalclose" style="position:absolute;right:0px;top:0px;"><a class="button fa fa-times" onclick="$('#library').hide();"></a></div>
-
 
     <div class="previewImage" style="background-image:url('{{previewImageUrl}}');"></div>
     <div class="info"></div>
@@ -193,7 +198,7 @@
 
 
         <br/>
-        <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{file._id}}',null,function(){gui.updateProjectFiles();$('#options').html('')});">delete </a>
+        <a class="button fa fa-trash-o" onclick="CABLES.api.delete('project/{{projectId}}/file/{{file.fileDb._id}}',null,function(){ CABLES.UI.fileSelect.load(); });$('#lib_preview').html('');">delete </a>
 
 
 

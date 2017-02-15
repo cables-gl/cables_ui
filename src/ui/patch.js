@@ -2792,11 +2792,17 @@ console.log(URL.createObjectURL(screenBlob));
 
     this.addAssetOpAuto=function(filename,event)
     {
+        if(!event)return;
         var opname='';
 
         if(filename.endsWith(".png") || filename.endsWith(".jpg"))opname="Ops.Gl.Texture";
         else if(filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3"))opname="Ops.WebAudio.AudioPlayer";
         else if(filename.endsWith(".3d.json"))opname="Ops.Json3d.json3dFile";
+        else
+        {
+            CABLES.UI.notify("no known operator found");
+            return;
+        }
 
         var x=gui.patch().getCanvasCoordsMouse(event).x;
         var y=gui.patch().getCanvasCoordsMouse(event).y;

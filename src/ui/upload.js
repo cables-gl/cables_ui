@@ -7,6 +7,9 @@ CABLES.handleFileInputUpload=function(files)
 {
     CABLES.uploadFiles(files);
 
+    CABLES.UI.fileSelect.load();
+    CABLES.UI.fileSelect.show();
+
 };
 
 CABLES.uploadSelectFile=function()
@@ -15,7 +18,6 @@ CABLES.uploadSelectFile=function()
 
     if (fileElem)
     {
-        console.log('click');
         fileElem.click();
     }
 };
@@ -107,8 +109,6 @@ CABLES.uploadFiles=function(files)
     {
         var msg='';
         var res='';
-
-console.log(1234);
 
         console.log(e.target.response);
 
