@@ -1305,6 +1305,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
 
         rubberBandMove(e);
+
+        e.preventDefault();
+        e.stopPropagation();
+
     });
 
     var timeDisplayTexts=[];
@@ -1704,6 +1708,10 @@ CABLES.TL.UI.TimeLineUI=function()
     self.updateViewBox();
     self.setAnim(tlEmpty);
 
+    $("#timeline").bind("contextmenu", function(e)
+    {
+        if(e.preventDefault) e.preventDefault();
+    });
 
 
 };

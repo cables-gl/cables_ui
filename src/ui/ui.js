@@ -1429,6 +1429,7 @@ function startUi(event)
         if(e.preventDefault) e.preventDefault();
     });
 
+
     gui=new CABLES.UI.GUI();
 
 
