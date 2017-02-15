@@ -52,7 +52,7 @@ CABLES.UI.MODAL.show=function(content,options)
 
 CABLES.UI.MODAL.showLoading=function(title,content)
 {
-    $('#modalcontent').html('<div class="modalLoading" style="text-align:center;"><h3>'+title+'</h3><i class="fa fa-2x fa-circle-o-notch fa-spin"></i><br/><br/><div>');
+    $('#modalcontent').html('<div class="modalLoading" style="text-align:center;"><h3>'+title+'</h3><div class="loading" style="margin-top:0px;"><br/><br/><div>');
     $('#modalcontent').append(content);
     $('#modalcontent').show();
     $('#modalbg').show();

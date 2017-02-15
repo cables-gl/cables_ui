@@ -383,17 +383,41 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
     this.setWidth=function(_w)
     {
-        w=_w;
-        if(this.isVisible())
+        if(_w)
         {
-            background.attr({width:w});
 
-            if(miniRect)miniRect.attr({
-                width:w,
-                height:10,
-            });
+            w=_w;
+            // if(this.isVisible())
+            // {
+            //     background.attr({width:w});
+            //
+            //     if(miniRect) miniRect.attr({
+            //         width:w,
+            //         height:10,
+            //     });
+            // }
         }
+        else
+        {
+            var labelWidth=label.getBBox().width+20;
+            // if(Math.abs(labelWidth-w)>15) labelWidth+=Math.abs(labelWidth-w);
 
+            var setw=w;
+
+            if(labelWidth>w)
+            {
+                setw=labelWidth+20;
+            }
+            if(this.isVisible())
+            {
+                background.attr({"width":setw});
+                label.attr({x:setw/2});
+                resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
+                if(miniRect) miniRect.attr({ width:setw, height:10 });
+
+            }
+
+        }
     };
 
     function hover()
@@ -574,6 +598,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
 
         label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+
         CABLES.UI.cleanRaphael(label);
 
         this.setTitle(title);
@@ -755,11 +780,13 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             shownTitle=title;
             label.attr({text:shownTitle});
 
-            while(label.node.getComputedTextLength()>background.attr("width"))
-            {
-                shownTitle=shownTitle.substr(0,shownTitle.length-1);
-                label.attr({'text': shownTitle+'...  '});
-            }
+            this.setWidth();
+// label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+            // while(label.node.getComputedTextLength()>background.attr("width"))
+            // {
+            //     shownTitle=shownTitle.substr(0,shownTitle.length-1);
+            //     label.attr({'text': shownTitle+'...  '});
+            // }
         }
     };
 
@@ -1069,7 +1096,8 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         if(inout==PORT_DIR_OUT) portIndex=this.portsOut.length;
 
         var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*portIndex;
-        if(self.oprect.getWidth()<w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2) self.oprect.setWidth(w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2);
+        if(self.oprect.getWidth()<w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2)
+            self.oprect.setWidth(w+CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.resizeBarWidth*2);
 
         var port=new CABLES.UI.Port(thePort);
 
