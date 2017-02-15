@@ -155,7 +155,7 @@ function UiLink(port1, port2)
         {
             addCircle.attr({
                 cx:middlePosX,
-                cy:middlePosY
+                cy:middlePosY-CABLES.UI.uiConfig.portSize*0.5*0.5
             });
             addCircle.toFront();
 
@@ -747,6 +747,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
     this.setSelected=function(sel)
     {
+        group.toFront();
         isSelected=sel;
 
         if(this.isVisible() && !backgroundComment)
