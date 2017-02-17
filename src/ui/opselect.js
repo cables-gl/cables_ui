@@ -162,9 +162,10 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     function onInput(e)
     {
         displayBoxIndex=0;
-        Navigate(0);
+
         updateInfo();
         search();
+        Navigate(0);
     }
 
     $('#opsearch').on('input',onInput);
