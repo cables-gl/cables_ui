@@ -5,7 +5,10 @@ CABLES.UI=CABLES.UI || {};
 // {
 //     // $('#statusbar .text').html('&nbsp;'+txt);
 // };
-
+CABLES.UI.MOUSE_BUTTON_NONE = 0;
+CABLES.UI.MOUSE_BUTTON_LEFT = 1;
+CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
+CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
 
 
@@ -152,9 +155,25 @@ CABLES.UI.inputIncrement=function(v,dir,e)
 };
 
 
+
+
 function mouseEvent(event)
 {
-    event.buttons=event.which || event.buttons;
+
+    if(event.buttons===undefined) // safari
+    {
+        event.buttons=event.which;
+        if(event.buttons==3)event.buttons=CABLES.UI.MOUSE_BUTTON_WHEEL;
+    }
+
+
+    // if(!event.buttons)
+    // {
+    //     event.buttons=event.which || event.buttons;
+    //
+    //     console.log(event.buttons);
+    //
+    // }
 
     if(event.type=="touchmove" && event.originalEvent)
     {
@@ -236,7 +255,7 @@ function valueChanger(ele)
         el.requestPointerLock = el.requestPointerLock ||
                                     el.mozRequestPointerLock ||
                                     el.webkitRequestPointerLock;
-        el.requestPointerLock();
+        if(el.requestPointerLock) el.requestPointerLock();
     }
 
     function up(e)
@@ -247,7 +266,8 @@ function valueChanger(ele)
         document.removeEventListener('mozpointerlockchange', lockChange, false);
         document.removeEventListener('webkitpointerlockchange', lockChange, false);
         document.removeEventListener('keydown', keydown, false);
-        document.exitPointerLock();
+
+        if(document.exitPointerLock)document.exitPointerLock();
 
         $( document ).unbind( "mouseup", up );
         $( document ).unbind( "mousedown", down );

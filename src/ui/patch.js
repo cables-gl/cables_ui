@@ -953,7 +953,7 @@ console.log(URL.createObjectURL(screenBlob));
 
     function rubberBandMove(e)
     {
-        if(e.buttons==1 && !spacePressed )
+        if(e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed )
         {
             if(!mouseRubberBandStartPos)
             {
@@ -1077,7 +1077,7 @@ console.log(URL.createObjectURL(screenBlob));
 
         e=mouseEvent(e);
 
-        if(e.buttons==1)
+        if(e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT)
         {
             var p=e.offsetX/CABLES.UI.uiConfig.miniMapWidth;
             var ph=e.offsetY/CABLES.UI.uiConfig.miniMapHeight;
@@ -1228,11 +1228,7 @@ console.log(URL.createObjectURL(screenBlob));
         {
             e=mouseEvent(e);
 
-            if(e.buttons!==1)
-            {
-                // console.log('dblclick verhindert',e.which);
-                return;
-            }
+            if(e.buttons!==CABLES.UI.MOUSE_BUTTON_LEFT) return;
 
             var x=gui.patch().getCanvasCoordsMouse(e).x;
             var y=gui.patch().getCanvasCoordsMouse(e).y;
@@ -1261,13 +1257,10 @@ console.log(URL.createObjectURL(screenBlob));
             e=mouseEvent(e);
 
 
-            if(e.buttons==2)
+            if(e.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL)
             {
                 if(lastZoomDrag!=-1)
                 {
-
-
-
                     var delta=lastZoomDrag-e.clientY;
                     if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
                     {
@@ -1281,7 +1274,7 @@ console.log(URL.createObjectURL(screenBlob));
                 lastZoomDrag=e.clientY;
             }
 
-            if(e.buttons==1 && !spacePressed)
+            if(e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed)
             {
                 for(var i in self.ops)
                     if(!self.ops[i].isHidden() && ( self.ops[i].isDragging || self.ops[i].isMouseOver))
@@ -1307,9 +1300,9 @@ console.log(URL.createObjectURL(screenBlob));
 
             e=mouseEvent(e);
 
-            if(mouseRubberBandStartPos && e.buttons!=1) rubberBandHide();
+            if(mouseRubberBandStartPos && e.buttons!=CABLES.UI.MOUSE_BUTTON_LEFT) rubberBandHide();
 
-            if(lastMouseMoveEvent && (e.buttons==2 || e.buttons==3 || (e.buttons==1 && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
+            if(lastMouseMoveEvent && ( e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
 
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;

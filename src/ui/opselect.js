@@ -71,7 +71,6 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
 
     $('#clearsearch').hide();
     $('#opsearch').focus();
-    $('#opsearch').on('input',search);
 
     $( ".searchresult:first" ).addClass( "selected" );
     var itemHeight=$( ".searchresult:first" ).height()+10+1;
@@ -165,6 +164,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
         displayBoxIndex=0;
         Navigate(0);
         updateInfo();
+        search();
     }
 
     $('#opsearch').on('input',onInput);
@@ -201,8 +201,6 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     });
 
     setTimeout(function(){$('#opsearch').focus();},100);
-
-
 };
 
 CABLES.UI.OPSELECT.getOpList=function()
@@ -224,14 +222,12 @@ CABLES.UI.OPSELECT.getOpList=function()
                     var isFunction=false;
                     if(eval('typeof('+opname+')')=="function") isFunction=true;
 
-
                     var parts=opname.split('.');
                     var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();
 
                     var shortName=parts[parts.length-1];
                     parts.length=parts.length-1;
                     var nameSpace=parts.join('.');
-
 
                     if(isFunction && !opname.startsWith('Ops.Deprecated'))
                     {
