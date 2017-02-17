@@ -500,6 +500,7 @@ CABLES.UI.Patch=function(_gui)
         switch(e.which)
         {
             case 32:
+
                 spacePressed=true;
             break;
 
@@ -1074,6 +1075,8 @@ console.log(URL.createObjectURL(screenBlob));
     {
         if(mouseRubberBandPos)return;
 
+        e=mouseEvent(e);
+
         if(e.buttons==1)
         {
             var p=e.offsetX/CABLES.UI.uiConfig.miniMapWidth;
@@ -1223,13 +1226,13 @@ console.log(URL.createObjectURL(screenBlob));
 
         this.background.node.ondblclick= function(e)
         {
+            e=mouseEvent(e);
 
-            if(e.which!==1)
+            if(e.buttons!==1)
             {
                 // console.log('dblclick verhindert',e.which);
                 return;
             }
-            console.log(e);
 
             var x=gui.patch().getCanvasCoordsMouse(e).x;
             var y=gui.patch().getCanvasCoordsMouse(e).y;
@@ -1255,11 +1258,16 @@ console.log(URL.createObjectURL(screenBlob));
 
         $('#patch').on("mousemove touchmove", function(e)
         {
+            e=mouseEvent(e);
 
-            if(e.which==2)
+
+            if(e.buttons==2)
             {
                 if(lastZoomDrag!=-1)
                 {
+
+
+
                     var delta=lastZoomDrag-e.clientY;
                     if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
                     {

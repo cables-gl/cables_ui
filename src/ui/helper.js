@@ -154,6 +154,7 @@ CABLES.UI.inputIncrement=function(v,dir,e)
 
 function mouseEvent(event)
 {
+    event.buttons=event.which || event.buttons;
 
     if(event.type=="touchmove" && event.originalEvent)
     {
