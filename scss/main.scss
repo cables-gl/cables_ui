@@ -622,11 +622,25 @@ a.button.fa-times:before {
         width:48%;
     }
 
+    .shortname
+    {
+        color:white;
+
+        i
+        {
+            text-decoration: underline;
+            font-style: normal;
+            color:white;
+        }
+
+    }
+
     .searchresult
     {
         background-color: #333;
         font-size: 16px;
         padding:5px;
+
     }
 
     .searchbrowser
@@ -691,15 +705,36 @@ a.button.fa-times:before {
         .summary
         {
             color:#222;
+            i
+            {
+                text-decoration: underline;
+                font-style: normal;
+                color:#222;
+            }
         }
 
         .namespace
         {
             color:#222;
+
+            i
+            {
+                text-decoration: underline;
+                font-style: normal;
+                color:#222;
+            }
+
             &:hover
             {
                 font-weight: bold;
                 color:white;
+                i
+                {
+                    text-decoration: underline;
+                    font-style: bold;
+                    color:white;
+                }
+
             }
         }
     }
@@ -713,6 +748,12 @@ a.button.fa-times:before {
             font-weight: bold;
             color:$highlight-color-dark;
         }
+        i
+        {
+            text-decoration: underline;
+            font-style: normal;
+            color:#aaa;
+        }
     }
 
     .summary
@@ -720,6 +761,12 @@ a.button.fa-times:before {
         font-size: 12px;
         font-style: normal;
         margin-top: 5px;
+        i
+        {
+            text-decoration: underline;
+            font-style: normal;
+            color:#aaa;
+        }
     }
 }
 

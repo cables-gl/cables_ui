@@ -14,16 +14,16 @@
 
         <div class="searchbrowser">
           {{#each ops}}
-<!-- gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide(); -->
-            <div class="searchresult clickable searchable item_color_{{ nscolor }}" data-opname="{{ name }}" data-index="{{lowercasename}}"  onclick="CABLES.UI.OPSELECT.selectOp('{{ name }}')" >
+            <div id="result_{{id}}" class="searchresult clickable searchable item_color_{{ nscolor }}" data-opname="{{name}}" onclick="CABLES.UI.OPSELECT.selectOp('{{ name }}')" >
                 <div class="graphbutton fright insertbutton" style="display:none;" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
 
                 <a>
                     {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
-                    {{shortName}} <span class="namespace" onClick="CABLES.UI.OPSELECT.searchFor('{{nameSpace}}');">{{nameSpace}}</span>{{isFunction}}
-
+                    <span class="shortname">{{shortName}}</span>
+                    <span class="namespace" onClick="CABLES.UI.OPSELECT.searchFor('{{nameSpace}}');">{{nameSpace}}</span>{{isFunction}}
+                    <span class="score"></span>
                     {{#if summary}}
-                    <div class="summary">{{summary}}</div>
+                        <div class="summary">{{summary}}</div>
                     {{/if}}
                 </a>
 
