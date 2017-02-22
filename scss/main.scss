@@ -2207,3 +2207,52 @@ rect
     }
 
 }
+
+@keyframes pathSpeedAnim
+{
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 200; }
+}
+
+.pathSpeed0,.pathSpeed1,.pathSpeed2,.pathSpeed3,.pathSpeed4
+{
+
+    stroke-dashoffset: 0;
+    stroke-dasharray: 5;
+    stroke-width:2px;
+    -webkit-animation: pathSpeedAnim 10s;
+    animation-iteration-count:infinite;
+}
+
+.pathSpeed0
+{
+    animation-iteration-count:0;
+}
+
+.pathSpeed1
+{
+    -webkit-animation: pathSpeedAnim 10s;
+    animation-iteration-count:infinite;
+    // animation-timing-function: linear;
+}
+
+.pathSpeed2
+{
+    -webkit-animation: pathSpeedAnim 5s;
+    animation-iteration-count:infinite;
+    animation-timing-function: linear;
+}
+
+.pathSpeed3
+{
+    -webkit-animation: pathSpeedAnim 2.5s;
+    animation-iteration-count:infinite;
+    animation-timing-function: linear;
+}
+
+.pathSpeed4
+{
+    -webkit-animation: pathSpeedAnim 1.25s;
+    animation-iteration-count:infinite;
+    animation-timing-function: linear;
+}

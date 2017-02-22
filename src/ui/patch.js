@@ -2803,7 +2803,7 @@ console.log(URL.createObjectURL(screenBlob));
             opname="Ops.Gl.Texture";
             title="Texture: "+title;
         }
-        else if(filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3"))
+        else if(filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac"))
         {
             opname="Ops.WebAudio.AudioPlayer";
             title="Audio: "+title;
@@ -2898,5 +2898,50 @@ console.log(URL.createObjectURL(screenBlob));
 
 
     };
+
+
+
+// var speedCycle=true;
+// setInterval(function()
+// {
+//     speedCycle=!speedCycle;
+//
+//     for(var i=0;i<this.ops.length;i++)
+//     {
+//         for(var j=0;j<this.ops[j].links.length;j++)
+//         {
+//
+//             if(this.ops[i].links[j] && this.ops[i].links[j].linkLine && this.ops[i].links[j].p1 && this.ops[i].links[j].p1.direction==PORT_DIR_IN)
+//             {
+//                 var link=this.ops[i].links[j].p1.thePort.getLinkTo( this.ops[i].links[j].p2.thePort );
+//
+//                 if(link.speedCycle!=speedCycle)
+//                 {
+//
+//                     link.speedCycle=speedCycle;
+//
+//                     var newClass="pathSpeed0";
+//                     // console.log(link.activityCounter);
+//                     if(link.activityCounter>=1) newClass="pathSpeed1";
+//                     if(link.activityCounter>=20) newClass="pathSpeed2";
+//                     if(link.activityCounter>=60) newClass="pathSpeed3";
+//                     if(link.activityCounter>=120) newClass="pathSpeed4";
+//
+//                     // console.log('activityCounter',link.activityCounter);
+//
+//
+//                     if(this.ops[i].links[j].linkLine.speedClass!=newClass)
+//                     {
+//                         this.ops[i].links[j].linkLine.node.classList.remove( this.ops[i].links[j].linkLine.speedClass);
+//                         this.ops[i].links[j].linkLine.speedClass=newClass;
+//                         this.ops[i].links[j].linkLine.node.classList.add(newClass);
+//                     }
+//                     link.activityCounter=0;
+//                 }
+//             }
+//         }
+//     }
+// }.bind(this),500);
+
 
 };

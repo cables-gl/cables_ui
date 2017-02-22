@@ -111,20 +111,15 @@ CABLES.UI.Port=function(thePort)
 
         if(window.CABLES.UI.selectedEndOp)
         {
-
-
             for(var i=0;i<CABLES.UI.selectedEndOp.op.portsIn.length;i++)
             {
                 if(CABLES.UI.selectedEndOp.op.portsIn[i].type==CABLES.UI.selectedStartPort.type)
                 {
-
                     // console.log(CABLES.UI.selectedEndOp.op.portsIn[i].name);
                 }
             }
             // console.log(  );
-
             // console.log();
-
 
             // var portIn=oldLink.p1;
             // var portOut=oldLink.p2;
@@ -371,7 +366,9 @@ CABLES.UI.Port=function(thePort)
                         self.opUi.links[i].hide();
                     else
                         if(self.opUi.links[i].linkLine)
+                        {
                             self.opUi.links[i].linkLine.node.classList.add('link_hover');
+                        }
                 }
 
     }
@@ -458,6 +455,8 @@ CABLES.UI.Port=function(thePort)
         self.rect.drag(dragMove,dragStart,dragEnd);
         updateUI();
     };
+
+
 
 
 };
