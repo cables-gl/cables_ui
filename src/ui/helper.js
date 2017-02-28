@@ -144,8 +144,13 @@ CABLES.UI.inputIncrement=function(v,dir,e)
 
     var val=parseFloat(v);
     if(val!=val)return v;
+
     var add=0.1;
-    if(e && e.shiftKey)add=0.01;
+
+    if(e && e.altKey && e.shiftKey) add=10;
+        else if(e && e.shiftKey)add=0.01;
+        else if(e && e.altKey) add=1;
+
 
     var r=val+add*dir;
 

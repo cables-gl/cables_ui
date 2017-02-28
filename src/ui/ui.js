@@ -36,6 +36,7 @@ CABLES.UI.GUI=function()
     this.profiler=null;
     this.user=null;
 
+
     this.project=function()
     {
         return self.patch().getCurrentProject();
@@ -934,6 +935,17 @@ CABLES.UI.GUI=function()
         $('#mainContainer').show();
         // self.setMetaTab('doc');
         self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
+
+        if(_scene.cgl.aborted)
+        {
+            console.log('errror...');
+            CABLES.UI.MODAL.showError('no webgl','your browser does not support webgl');
+            // _scene.pause();
+            return;
+        }
+
+
+
     };
 
     function initRouting(cb)
@@ -961,6 +973,12 @@ CABLES.UI.GUI=function()
 
         function loadProject(id,ver)
         {
+            if(_scene.cgl.aborted)
+            {
+                cb();
+                return;
+            }
+
             if(ver) ver='/version/'+ver;
                 else ver="";
 
@@ -995,6 +1013,7 @@ CABLES.UI.GUI=function()
 
         router.addRoute('/project/:id/v/:ver').get(function(event, params)
         {
+
             loadProject(params.id,params.ver);
             // CABLES.UI.MODAL.showLoading('Loading');
             // CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
@@ -1320,6 +1339,8 @@ CABLES.UI.GUI=function()
 
     this.init=function()
     {
+
+
         $('#infoArea').show();
         $('#infoArea').hover(function (e)
         {
@@ -1330,6 +1351,7 @@ CABLES.UI.GUI=function()
         });
         _patch=new CABLES.UI.Patch(this);
         _patch.show(_scene);
+
 
 
         // _socket=new CABLES.API.Socket(this);
@@ -1408,7 +1430,6 @@ CABLES.UI.GUI=function()
         });
         $('.op_background').hover(function (e)
         {
-          alert("hover");
             CABLES.UI.showInfo(CABLES.UI.TEXTS.op_background);
         },function()
         {
@@ -1417,6 +1438,8 @@ CABLES.UI.GUI=function()
         gui.replaceNavShortcuts();
     };
     self.loadUser();
+
+
 
 };
 
@@ -1436,10 +1459,14 @@ function startUi(event)
 
 
     gui.init();
+
+
     gui.bind(function()
     {
         gui.waitToShowUI();
     });
+
+
 
     $(document).on("click", '.panelhead', function(e)
         {
@@ -1466,5 +1493,4 @@ function startUi(event)
 
 
     logStartup('Init UI done');
-
 }
