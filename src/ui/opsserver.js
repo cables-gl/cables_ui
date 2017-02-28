@@ -517,24 +517,32 @@ CABLES.UI.ServerOps=function(gui)
                 return;
             }
 
-            var lid='oplibs'+CABLES.generateUUID();
+            var lid='oplibs'+libsToLoad[0];
 
-            loadjs.ready(lid, function()
+            function libReady()
             {
                 console.log('finished loading libs for '+opName);
 
                 var libsToLoad=this.getOpLibs(opName);
                 for(var i=0;i<libsToLoad.length;i++)
                 {
-                    this._loadedLibs.push(libsToLoad[i]);    
+                    this._loadedLibs.push(libsToLoad[i]);
                 }
 
 
 
 
                 next();
-            }.bind(this));
-            loadjs(libsToLoad,lid);
+            }
+
+            try{
+                loadjs.ready(lid, libReady.bind(this));
+                loadjs(libsToLoad,lid);
+
+            }catch(e)
+            {
+                console.log('...');
+            }
 
 
         };
