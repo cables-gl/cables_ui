@@ -19,6 +19,7 @@ CABLES.UI.GUI=function()
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
     var _find=new CABLES.UI.Find();
+    var _opselect=new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
     this.opDocs=new CABLES.UI.OpDocs();
     // var _socket=null;
@@ -40,6 +41,11 @@ CABLES.UI.GUI=function()
     this.project=function()
     {
         return self.patch().getCurrentProject();
+    };
+
+    this.opSelect=function()
+    {
+        return _opselect;
     };
 
     this.timeLine=function()
@@ -693,7 +699,7 @@ CABLES.UI.GUI=function()
         // Introduction
         $('.nav_help_introduction').bind("click", function (event) { self.introduction().showIntroduction(); });
 
-        $('.nav_op_addOp').bind("click", function (event) { CABLES.UI.OPSELECT.showOpSelect({x:0,y:0}); });
+        $('.nav_op_addOp').bind("click", function (event) { gui.opSelect().showOpSelect({x:0,y:0}); });
         $('.nav_op_createOp').bind("click", function (event) { self.serverOps.createDialog(); });
 
         $('.nav_files').bind("click", function (event) { self.showLibrary(); });
@@ -850,7 +856,7 @@ CABLES.UI.GUI=function()
                 case 9:
                     if($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey)
                     {
-                        CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
+                        gui.opSelect().showOpSelect({x:0,y:0});
                         e.preventDefault();
                     }
 
@@ -902,7 +908,7 @@ CABLES.UI.GUI=function()
                     }
                     else
                     {
-                        CABLES.UI.OPSELECT.showOpSelect({x:0,y:0});
+                        gui.opSelect().showOpSelect({x:0,y:0});
                     }
                 break;
             }

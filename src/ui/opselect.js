@@ -1,13 +1,22 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
-CABLES.UI.OPSELECT=CABLES.UI.OPSELECT || {};
 
+CABLES.UI.OPSELECT={};
 CABLES.UI.OPSELECT.linkNewLink=null;
 CABLES.UI.OPSELECT.linkNewOpToPort=null;
 CABLES.UI.OPSELECT.linkNewOpToOp=null;
 CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
+CABLES.UI.OPSELECT.maxPop=0;
 
-CABLES.UI.OPSELECT.updateOptions=function(opname)
+
+CABLES.UI.OpSelect=function()
+{
+    this._list=null;
+    this.displayBoxIndex=0;
+};
+
+
+CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 {
     var num=$('.searchbrowser .searchable:visible').length;
 
@@ -37,27 +46,9 @@ CABLES.UI.OPSELECT.updateOptions=function(opname)
 };
 
 
-
-
-
-CABLES.UI.OPSELECT.showHighlights=function(item,match,selector,orig)
+CABLES.UI.OpSelect.prototype._search=function(q)
 {
-    var found=false;
-
-    if(match.indices && match.indices.length>0)
-    {
-        var part1=orig.substr( 0,match.indices[0][0]);
-        var part2=orig.substr( match.indices[0][0],match.indices[0][1]+1);
-        var part3=orig.substr( match.indices[0][0]+match.indices[0][1]+1, orig.length-(match.indices[0][0]+match.indices[0][1]+1));
-
-        $('#result_'+item.id+' .'+selector).html( part1+'<i>'+part2+'</i>'+part3 );
-        found=true;
-    }
-};
-
-CABLES.UI.OPSELECT._search=function(q)
-{
-    var list=CABLES.UI.OPSELECT.list;
+    var list=this._list;
     var query=q.toLowerCase();
     var result=[];
 
@@ -71,13 +62,13 @@ CABLES.UI.OPSELECT._search=function(q)
         if(list[i]._summary.indexOf(query)>-1)
         {
             found=true;
-            points+=2;
+            points+=1;
         }
 
         if(list[i]._nameSpace.indexOf(query)>-1)
         {
             found=true;
-            points+=2;
+            points+=1;
         }
 
         if(list[i]._shortName.indexOf(query)>-1)
@@ -88,7 +79,7 @@ CABLES.UI.OPSELECT._search=function(q)
 
         if(found)
         {
-            points+=list[i].pop||0/4000;
+            points+=(list[i].pop||0)/CABLES.UI.OPSELECT.maxPop*10;
             result.push({item:list[i]});
         }
 
@@ -100,131 +91,88 @@ CABLES.UI.OPSELECT._search=function(q)
 
 
 
-var list=[];
-CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
+
+CABLES.UI.OpSelect.prototype.updateInfo=function()
+{
+    var opname=$('.selected').data('opname');
+    var htmlFoot='';
+
+    this.updateOptions(opname);
+
+    if(opname)
+    {
+
+        $('#searchinfo').html('');
+
+        var content=gui.opDocs.get(opname);
+        $('#searchinfo').html(content+htmlFoot);
+    }
+};
+
+
+
+CABLES.UI.OpSelect.prototype.search=function()
+{
+    var result=this._search($('#opsearch').val());
+    var i=0;
+
+    var html='';
+
+    for(i=0;i<this._list.length;i++)
+    {
+        if(this._list[i].score>0)
+        {
+            $('#result_'+this._list[i].id).show();
+            $('#result_'+this._list[i].id+' .score').html( Math.round(100*this._list[i].score)/100 );
+            $('#result_'+this._list[i].id)[0].dataset.score=this._list[i].score;
+        }
+        else $('#result_'+this._list[i].id).hide();
+    }
+
+    // sort html elements
+    var $wrapper = $('.searchbrowser');
+
+    $wrapper.find('.searchresult').sort(
+        function (a, b)
+        {
+            return b.dataset.score - a.dataset.score;
+        }).appendTo( $wrapper );
+
+    this.Navigate(0);
+
+
+};
+
+CABLES.UI.OpSelect.prototype.Navigate = function(diff)
+{
+    this.displayBoxIndex += diff;
+
+    if (this.displayBoxIndex < 0) this.displayBoxIndex = 0;
+    var oBoxCollection = $(".searchresult:visible");
+    var oBoxCollectionAll = $(".searchresult");
+    if (this.displayBoxIndex >= oBoxCollection.length) this.displayBoxIndex = oBoxCollection.length-1;
+    if (this.displayBoxIndex < 0) this.displayBoxIndex = oBoxCollection.length - 1;
+
+    var cssClass = "selected";
+
+    oBoxCollectionAll.removeClass(cssClass);
+    oBoxCollection.removeClass(cssClass).eq(this.displayBoxIndex).addClass(cssClass);
+
+    if(this.displayBoxIndex>12)
+        $('.searchbrowser').scrollTop( (this.displayBoxIndex-12)*itemHeight );
+    else
+        $('.searchbrowser').scrollTop( 1 );
+
+    this.updateInfo();
+};
+
+CABLES.UI.OpSelect.prototype.show=
+CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
 {
     var markHighlightTimeout=0;
     var self=this;
 
 
-    function search()
-    {
-        // var result = CABLES.UI.OPSELECT.fuse.search($('#opsearch').val() );
-        var result=CABLES.UI.OPSELECT._search($('#opsearch').val());
-        var i=0;
-
-
-        var html='';
-
-        // show found ops
-
-        // console.log('0------');
-
-        // for(i=0;i<list.length;i++)
-        // {
-        //     list[i].score=99;
-        // }
-        //
-        // for(i=0;i<result.length;i++)
-        // {
-        //     list[result[i].item.id].score=result[i].score;
-        //     // result[i].item.score=result[i].score;
-        // }
-        //
-        for(i=0;i<CABLES.UI.OPSELECT.list.length;i++)
-        {
-            if(CABLES.UI.OPSELECT.list[i].score>0)
-            {
-                $('#result_'+CABLES.UI.OPSELECT.list[i].id).show();
-                $('#result_'+CABLES.UI.OPSELECT.list[i].id+' .score').html(CABLES.UI.OPSELECT.list[i].score);
-
-                $('#result_'+CABLES.UI.OPSELECT.list[i].id)[0].dataset.score=CABLES.UI.OPSELECT.list[i].score;
-            }
-                else $('#result_'+CABLES.UI.OPSELECT.list[i].id).hide();
-        }
-        //
-        // for(i=0;i<result.length;i++)
-        // {
-        //     $('#result_'+result[i].item.id).show();
-        //
-        //     // console.log(result[i].item.shortName);
-        //
-        //     var addScore=0;
-        //     if(result[i].matches && result[i].matches.length>0)
-        //     {
-        //         for(var m=0;m<result[i].matches.length;m++)
-        //         {
-        //             var match=result[i].matches[m];
-        //             if(match.indices && match.indices.length>0 && match.key=='shortName')
-        //             {
-        //                 addScore=(match.indices[0][1]-match.indices[0][0])/result[i].item.shortName.length;
-        //                 // console.log(result[i].item.shortName,addScore);
-        //                 // continue;
-        //             }
-        //         }
-        //     }
-        //
-        //     // $('#result_'+result[i].item.id)[0].dataset.score=result[i].score;//addScore/100+result[i].score
-        // }
-
-        // for(i=0;i<result.length;i++)
-        // {
-        //     $('#result_'+result[i].item.id).show();
-        // }
-
-
-        // sort html elements
-        var $wrapper = $('.searchbrowser');
-
-        $wrapper.find('.searchresult').sort(
-            function (a, b)
-            {
-                return b.dataset.score - a.dataset.score;
-            }).appendTo( $wrapper );
-        //
-        Navigate(0);
-
-
-
-        // show highlights
-
-        // clearTimeout(markHighlightTimeout);
-        // markHighlightTimeout=setTimeout(function(_result)
-        // {
-        //     for(var i=0;i<_result.length;i++)
-        //     {
-        //         // $('#_result_'+i+' .score').html(_result[i].score+'!');
-        //
-        //
-        //         $('#_result_'+i+' .namespace').html(_result[i].item.nameSpace);
-        //         $('#_result_'+i+' .summary').html(_result[i].item.summary);
-        //         $('#_result_'+i+' .shortname').html(_result[i].item.shortName);
-        //
-        //         for(var m=0;m<_result[i].matches.length;m++)
-        //         {
-        //             var match=_result[i].matches[m];
-        //             if(match.key=='shortName')CABLES.UI.OPSELECT.showHighlights(_result[i].item,match,'shortname',_result[i].item.shortName);
-        //             if(match.key=='summary')CABLES.UI.OPSELECT.showHighlights(_result[i].item,match,'summary',_result[i].item.summary);
-        //             if(match.key=='nameSpace')CABLES.UI.OPSELECT.showHighlights(_result[i].item,match,'namespace',_result[i].item.nameSpace);
-        //         }
-        //     }
-        // }(result),200);
-
-
-        // console.log('time handle', (Date.now()-time)/1000);
-        // console.log('time html', (Date.now()-time)/1000);
-
-        // var searchFor= $('#opsearch').val();
-        //
-        // if(searchFor==='') $('#clearsearch').hide();
-        //     else
-        //     $('#clearsearch').show();
-        //
-        // if(!searchFor) $('#search_style').html('.searchable:{display:block;}');
-        //     else $('#search_style').html(".searchable:not([data-index*=\"" + searchFor.toLowerCase() + "\"]) { display: none; }");
-        //
-        // CABLES.UI.OPSELECT.updateOptions();
-    }
 
     CABLES.UI.OPSELECT.linkNewLink=link;
     CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
@@ -234,23 +182,28 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     if(options.search)
     {
         $('#opsearch').val(options.search);
-        search();
+        this.search();
     }
 
-    if(!CABLES.UI.OPSELECT.list)
+    if(!this._list)
     {
-        CABLES.UI.OPSELECT.list=CABLES.UI.OPSELECT.getOpList();
+        this._list=this.getOpList();
 
         // list=CABLES.UI.OPSELECT.getOpList();
+        var maxPop=0;
 
-        for(var i=0;i<CABLES.UI.OPSELECT.list.length;i++)
+        for(var i=0;i<this._list.length;i++)
         {
-            CABLES.UI.OPSELECT.list[i].id=i;
-            CABLES.UI.OPSELECT.list[i].summary=CABLES.UI.OPSELECT.list[i].summary||'';
-            CABLES.UI.OPSELECT.list[i]._summary=CABLES.UI.OPSELECT.list[i].summary.toLowerCase();
-            CABLES.UI.OPSELECT.list[i]._shortName=CABLES.UI.OPSELECT.list[i].shortName.toLowerCase();
-            CABLES.UI.OPSELECT.list[i]._nameSpace=CABLES.UI.OPSELECT.list[i].nameSpace.toLowerCase();
+            maxPop=Math.max(this._list[i].pop||0,maxPop);
+            this._list[i].id=i;
+            this._list[i].summary=this._list[i].summary||'';
+            this._list[i]._summary=this._list[i].summary.toLowerCase();
+            this._list[i]._shortName=this._list[i].shortName.toLowerCase();
+            this._list[i]._nameSpace=this._list[i].nameSpace.toLowerCase();
         }
+
+        CABLES.UI.OPSELECT.maxPop=maxPop;
+
 
         // CABLES.UI.OPSELECT.fuse = new Fuse(list,
         // {
@@ -273,7 +226,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
 
     // console.log(CABLES.UI.OPSELECT.getOpList());
 
-    var html = CABLES.UI.getHandleBarHtml('op_select',{ops: CABLES.UI.OPSELECT.list });
+    var html = CABLES.UI.getHandleBarHtml('op_select',{ops: this._list });
     CABLES.UI.MODAL.showTop(html);
 
     $('#clearsearch').hide();
@@ -282,30 +235,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     $( ".searchresult:first" ).addClass( "selected" );
     var itemHeight=$( ".searchresult:first" ).height()+10+1;
 
-    var displayBoxIndex=0;
-
-    var Navigate = function(diff)
-    {
-        displayBoxIndex += diff;
-
-        if (displayBoxIndex < 0) displayBoxIndex = 0;
-        var oBoxCollection = $(".searchresult:visible");
-        var oBoxCollectionAll = $(".searchresult");
-        if (displayBoxIndex >= oBoxCollection.length) displayBoxIndex = oBoxCollection.length-1;
-        if (displayBoxIndex < 0) displayBoxIndex = oBoxCollection.length - 1;
-
-        var cssClass = "selected";
-
-        oBoxCollectionAll.removeClass(cssClass);
-        oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass(cssClass);
-
-        if(displayBoxIndex>12)
-            $('.searchbrowser').scrollTop( (displayBoxIndex-12)*itemHeight );
-        else
-            $('.searchbrowser').scrollTop( 1 );
-
-        updateInfo();
-    };
+    this.displayBoxIndex=0;
 
     var infoTimeout=-1;
     var lastInfoOpName='';
@@ -323,12 +253,12 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
             if(v=='Ops') v='';
 
             $('#opsearch').val(v);
-            search();
+            this.search();
         }
         else
         {
             $('#opsearch').val('');
-            search();
+            this.search();
         }
     };
 
@@ -336,6 +266,7 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
     this.searchFor=function(what)
     {
         $('#opsearch').val(what);
+
     };
 
     this.selectOp=function(name)
@@ -344,42 +275,26 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
 
         oBoxCollectionAll.removeClass('selected');
         $('.searchresult[data-opname="'+name+'"]').addClass('selected');
-        // oBoxCollection.removeClass(cssClass).eq(displayBoxIndex).addClass('selected');
+        // oBoxCollection.removeClass(cssClass).eq(this.displayBoxIndex).addClass('selected');
 
-        updateInfo();
+        this.updateInfo();
     };
 
-    function updateInfo()
-    {
-        var opname=$('.selected').data('opname');
-        var htmlFoot='';
-
-        CABLES.UI.OPSELECT.updateOptions(opname);
-
-        if(opname)
-        {
-
-            $('#searchinfo').html('');
-
-            var content=gui.opDocs.get(opname);
-            $('#searchinfo').html(content+htmlFoot);
-        }
-    }
 
     function onInput(e)
     {
-        displayBoxIndex=0;
+        self.displayBoxIndex=0;
 
-        updateInfo();
+        self.updateInfo();
 
         // clearTimeout(this.searchTimeout);
         // this.searchTimeout=setTimeout( search,75);
 
-        search();
+        self.search();
 
     }
 
-    $('#opsearch').on('input',onInput);
+    $('#opsearch').on('input',onInput.bind(this));
 
     $('#opsearch').keydown(function(e)
     {
@@ -400,23 +315,23 @@ CABLES.UI.OPSELECT.showOpSelect=function(options,linkOp,linkPort,link)
                 return true;
             case 38: // up
                 $('.selected').removeClass('selected');
-                Navigate(-1);
+                this.Navigate(-1);
             break;
 
             case 40: // down
                 $('.selected').removeClass('selected');
-                Navigate(1);
+                this.Navigate(1);
             break;
 
             default: return; // exit this handler for other keys
         }
         e.preventDefault(); // prevent the default action (scroll / move caret)
-    });
+    }.bind(this));
 
     setTimeout(function(){$('#opsearch').focus();},100);
 };
 
-CABLES.UI.OPSELECT.getOpList=function()
+CABLES.UI.OpSelect.prototype.getOpList=function()
 {
     var ops=[];
 

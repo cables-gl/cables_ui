@@ -277,8 +277,8 @@ CABLES.UI.Port=function(thePort)
 
                         var showSelect=function()
                         {
-                            if(links.length==1 && !isDragging) CABLES.UI.OPSELECT.showOpSelect(coords,null,selectedStartPort,links[0]);
-                                else CABLES.UI.OPSELECT.showOpSelect(coords,self.op,selectedStartPort);
+                            if(links.length==1 && !isDragging) gui.opSelect().show(coords,null,selectedStartPort,links[0]);
+                                else gui.opSelect().show(coords,self.op,selectedStartPort);
                         };
 
                         if( Math.abs(coords.x-self.op.uiAttribs.translate.x )+Math.abs(coords.y-self.op.uiAttribs.translate.y ) >30)

@@ -677,7 +677,11 @@ a.button.fa-times:before {
           line-height: 21px;
         }
     }
-
+    .score
+    {
+        color:#aaa;
+        padding-left: 5px;
+    }
     .selected
     {
         background-color: $highlight-color-dark;
@@ -711,6 +715,11 @@ a.button.fa-times:before {
                 font-style: normal;
                 color:#222;
             }
+        }
+
+        .score
+        {
+            color:#222;
         }
 
         .namespace
