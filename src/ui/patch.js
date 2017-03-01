@@ -2773,8 +2773,15 @@ console.log(URL.createObjectURL(screenBlob));
                 if(el.val()!=watchPorts[i].get() )el.val( watchPorts[i].get() );
             }
             else
-                if(watchPorts[i].type==OP_PORT_TYPE_ARRAY) el.html( 'length: '+String(watchPorts[i].get().length) );
-                    else el.html( String(watchPorts[i].get()) );
+                if(watchPorts[i].type==OP_PORT_TYPE_ARRAY )
+                {
+                    if(watchPorts[i].get())
+                        el.html( 'length: '+String(watchPorts[i].get().length) );
+                }
+                else
+                {
+                    el.html( String(watchPorts[i].get()) );    
+                }
 
             CABLES.watchPortVisualize.update(id,watchPorts[i].watchId,watchPorts[i].get());
         }

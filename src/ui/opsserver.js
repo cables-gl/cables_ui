@@ -239,7 +239,6 @@ CABLES.UI.ServerOps=function(gui)
 
     this.createDialog=function()
     {
-        console.log('aaa');
         this.opNameDialog('Create operator',name,function(newname)
         {
             console.log(newname);
