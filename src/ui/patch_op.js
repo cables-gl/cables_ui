@@ -149,7 +149,7 @@ function UiLink(port1, port2)
                         event=mouseEvent(event);
                         var coords=gui.patch().getCanvasCoordsMouse(event);
                         coords.x=self.p1.op.uiAttribs.translate.x;
-                        gui.opSelect.show(coords,null,null,self);
+                        gui.opSelect().show(coords,null,null,self);
                     }
                 }
             };

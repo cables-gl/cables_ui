@@ -2421,7 +2421,7 @@ console.log(URL.createObjectURL(screenBlob));
             var foundPreview=false;
             for(var i2 in op.portsOut)
             {
-                if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE)
+                if(op.portsOut[i2].getType()==OP_PORT_TYPE_VALUE || op.portsOut[i2].getType()==OP_PORT_TYPE_ARRAY)
                 {
                     op.portsOut[i2].watchId='out_'+i2;
                     watchPorts.push(op.portsOut[i2]);
@@ -2773,12 +2773,15 @@ console.log(URL.createObjectURL(screenBlob));
                 if(el.val()!=watchPorts[i].get() )el.val( watchPorts[i].get() );
             }
             else
-               el.html( String(watchPorts[i].get()) );
+                if(watchPorts[i].type==OP_PORT_TYPE_ARRAY) el.html( 'length: '+String(watchPorts[i].get().length) );
+                    else el.html( String(watchPorts[i].get()) );
 
             CABLES.watchPortVisualize.update(id,watchPorts[i].watchId,watchPorts[i].get());
         }
 
-        if(CABLES.UI.uiConfig.watchValuesInterval>0) setTimeout( doWatchPorts,CABLES.UI.uiConfig.watchValuesInterval);
+
+        if(CABLES.UI.uiConfig.watchValuesInterval>0)
+            setTimeout( doWatchPorts,CABLES.UI.uiConfig.watchValuesInterval);
     }
 
     this.getCanvasCoordsMouse=function(evt)
