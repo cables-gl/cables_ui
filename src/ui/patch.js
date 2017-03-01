@@ -94,6 +94,8 @@ CABLES.UI.Patch=function(_gui)
     };
 
 
+
+
     this.paste=function(e)
     {
         if(e.clipboardData.types.indexOf('text/plain') > -1)
@@ -113,49 +115,50 @@ CABLES.UI.Patch=function(_gui)
 
             var k=0;
 
-
             if(json)
             {
                 if(json.ops)
                 {
-                    var i=0,j=0;
-                    { // change ids
-                        for(i in json.ops)
-                        {
-                            var searchID=json.ops[i].id;
-                            var newID=json.ops[i].id=CABLES.generateUUID();
-
-                            json.ops[i].uiAttribs.pasted=true;
-
-                            for(j in json.ops)
+                    gui.serverOps.loadProjectLibs(json,function()
+                    {
+                        var i=0,j=0;
+                        { // change ids
+                            for(i in json.ops)
                             {
-                                if(json.ops[j].portsIn)
-                                for(k in json.ops[j].portsIn)
+                                var searchID=json.ops[i].id;
+                                var newID=json.ops[i].id=CABLES.generateUUID();
+
+                                json.ops[i].uiAttribs.pasted=true;
+
+                                for(j in json.ops)
                                 {
-                                    if(json.ops[j].portsIn[k].links)
+                                    if(json.ops[j].portsIn)
+                                    for(k in json.ops[j].portsIn)
                                     {
-                                        var l=json.ops[j].portsIn[k].links.length;
-                                        while(l--)
+                                        if(json.ops[j].portsIn[k].links)
                                         {
-                                            // console.log('json.ops[j].portsIn[k].links[l]',json.ops[j].portsIn[k].links[l]);
-
-                                            if(json.ops[j].portsIn[k].links[l]===null)
+                                            var l=json.ops[j].portsIn[k].links.length;
+                                            while(l--)
                                             {
-                                                console.log('delete null link');
-                                                json.ops[j].portsIn[k].links.splice(l,1);
-                                            }
-                                        }
+                                                // console.log('json.ops[j].portsIn[k].links[l]',json.ops[j].portsIn[k].links[l]);
 
-                                        for(l in json.ops[j].portsIn[k].links)
-                                        {
-                                            if(json.ops[j].portsIn[k].links[l].objIn==searchID) json.ops[j].portsIn[k].links[l].objIn=newID;
-                                            if(json.ops[j].portsIn[k].links[l].objOut==searchID) json.ops[j].portsIn[k].links[l].objOut=newID;
+                                                if(json.ops[j].portsIn[k].links[l]===null)
+                                                {
+                                                    console.log('delete null link');
+                                                    json.ops[j].portsIn[k].links.splice(l,1);
+                                                }
+                                            }
+
+                                            for(l in json.ops[j].portsIn[k].links)
+                                            {
+                                                if(json.ops[j].portsIn[k].links[l].objIn==searchID) json.ops[j].portsIn[k].links[l].objIn=newID;
+                                                if(json.ops[j].portsIn[k].links[l].objOut==searchID) json.ops[j].portsIn[k].links[l].objOut=newID;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
 
                     { // set correct subpatch
 
@@ -250,7 +253,9 @@ CABLES.UI.Patch=function(_gui)
 
 
                     return;
+                });
                 }
+
             }
             CABLES.UI.notify('Paste failed');
             // CABLES.UI.setStatusText("paste failed / not cables data format...");
