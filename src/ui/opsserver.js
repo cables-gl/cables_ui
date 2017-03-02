@@ -5,33 +5,49 @@ CABLES.UI = CABLES.UI || {};
 // localStorage.cables.editor=localStorage.cables.editor || {};
 // localStorage.cables.editor.serverops= [];
 
-
 // todo: merge serverops and opdocs.js ....
-
-
 
 CABLES.UI.ServerOps=function(gui)
 {
     var ops=[];
     var self=this;
-    var storedOps=[];
+    var openEditors=[];
     var lastTab=CABLES.UI.userSettings.get('editortab');
 
-    function updateStoredOps()
+    console.log('lasttab',lastTab);
+
+
+    function removeOpenEditor(obj)
     {
-        if(!storedOps)storedOps=[];
-
-        storedOps = storedOps.slice() // slice makes copy of array before sorting it
-          .sort()
-          .reduce(function(a,b){
-            if (a.slice(-1)[0] !== b) a.push(b); // slice(-1)[0] means last item in array without removing it (like .pop())
-            return a;
-          },[]); // this empty array becomes the starting value for a
-
-        localStorage.setItem("cables.editor.serverops",JSON.stringify(storedOps));
-        console.log('storedops'+storedOps.length);
-        // console.log('storedOps.length',storedOps.length);
+        console.log("remove",obj);
     }
+    function saveOpenEditor(obj)
+    {
+        openEditors.push(obj);
+
+        CABLES.UI.userSettings.set("openEditors",openEditors);
+        CABLES.UI.userSettings.set("editortab",obj.name);
+
+    }
+
+
+    // function updateStoredOps()
+    // {
+    //     if(!storedOps)storedOps=[];
+    //
+    //     storedOps = storedOps.slice()
+    //       .sort()
+    //       .reduce(function(a,b){
+    //         if (a.slice(-1)[0] !== b) a.push(b);
+    //         return a;
+    //       },[]);
+    //
+    //     localStorage.setItem("cables.editor.serverops",JSON.stringify(storedOps));
+    //
+    //
+    //     console.log('storedops'+storedOps);
+    //
+    // }
 
     this.load=function(cb)
     {
@@ -45,23 +61,41 @@ CABLES.UI.ServerOps=function(gui)
 
                 if(cb)cb(ops);
 
-                storedOps=JSON.parse(localStorage.getItem("cables.editor.serverops"));
-                updateStoredOps();
-                self.loaded=true;
-                incrementStartup();
-
-                if(storedOps && storedOps.length>0)
+                var edits=CABLES.UI.userSettings.get("openEditors");
+console.log('open editors...',edits.length);
+                for(var i=0;i<edits.length;i++)
                 {
-                    for(var i in storedOps)
+                    console.log(edits[i].type,edits[i].name);
+                    if(edits[i].type=="op")
                     {
-                        self.edit(storedOps[i]);
+                        this.edit(edits[i].name);
+                    }
+                    else if(edits[i].type=="attachment")
+                    {
+                        this.editAttachment(edits[i].opname,edits[i].name);
                     }
                 }
 
-
+                // storedOps=JSON.parse(localStorage.getItem("cables.editor.serverops"));
+                //
+                // console.log('storedOps',storedOps);
+                //
+                //
+                // updateStoredOps();
+                self.loaded=true;
+                incrementStartup();
+                // gui.editor().setTabByTitle(lastTab);
+                //
+                // if(storedOps && storedOps.length>0)
+                // {
+                //     for(var i in storedOps)
+                //     {
+                //         self.edit(storedOps[i]);
+                //     }
+                // }
 
             }
-        });
+        }.bind(this) );
     };
 
     this.showOpInstancingError=function(name,e)
@@ -195,8 +229,10 @@ CABLES.UI.ServerOps=function(gui)
         {
             CABLES.api.delete(
                 'op/'+opName+'/attachments/'+attName,
+                {},
                 function(res)
                 {
+                    gui.showMetaCode();
                     console.log(res);
                 });
         }
@@ -208,10 +244,13 @@ CABLES.UI.ServerOps=function(gui)
 
         CABLES.api.post(
             'op/'+name+'/attachments/'+attName,
+            {},
             function(res)
             {
-                console.log(res);
-            });
+                console.log(name,attName);
+                gui.showMetaCode();
+            }
+        );
     };
 
     this.opNameDialog=function(title,name,cb)
@@ -258,11 +297,22 @@ CABLES.UI.ServerOps=function(gui)
         });
     };
 
-    this.editAttachment=function(opname,attachmentname)
+    this.editAttachment=function(opname,attachmentname,readOnly)
     {
+        saveOpenEditor(
+            {
+                "type":'attachment',
+                "opname":opname,
+                "name":attachmentname
+            });
+
         CABLES.api.clearCache();
 
         gui.showEditor();
+
+        var toolbarHtml='';
+        if(!readOnly) toolbarHtml+='<a class="button" onclick="gui.serverOps.execute(\''+opname+'\');">execute</a>';
+
 
         CABLES.api.get(
             'op/'+opname+'/attachment/'+attachmentname,
@@ -276,12 +326,12 @@ CABLES.UI.ServerOps=function(gui)
                 if(attachmentname.endsWith(".vert"))syntax="glsl";
                 if(attachmentname.endsWith(".json"))syntax="json";
 
-
                 gui.editor().addTab(
                 {
                     content:content,
                     title:attachmentname,
                     syntax:syntax,
+                    toolbarHtml:toolbarHtml,
                     onSave:function(setStatus,content)
                     {
                         CABLES.api.post(
@@ -328,8 +378,11 @@ CABLES.UI.ServerOps=function(gui)
                 gui.showEditor();
                 CABLES.UI.MODAL.hide();
 
-                storedOps.push(name);
-                updateStoredOps();
+                var editorObj={
+                    "type":"op",
+                    "name":name
+                };
+                saveOpenEditor(editorObj);
 
                 var html='';
                 if(!readOnly) html+='<a class="button" onclick="gui.serverOps.execute(\''+op.name+'\');">execute</a>';
@@ -375,26 +428,28 @@ CABLES.UI.ServerOps=function(gui)
                 {
                     content:res.code,
                     title:title,
+                    editorObj:editorObj,
                     opname:op.name,
                     syntax:'js',
                     readOnly:readOnly,
                     toolbarHtml:html,
                     onClose:function(which)
                     {
-                        console.log('close tab',which);
+                        // console.log('close tab',which);
+                        console.log(which);
+                        removeOpenEditor(which.editorObj);
+                        // for(var i=storedOps.length;i>=0;i--)
+                        // {
+                        //     console.log('-- ', storedOps[i], which.opname);
+                        //
+                        //     if(storedOps[i]==which.opname)
+                        //     {
+                        //         console.log('found op to remove');
+                        //         storedOps.splice(i,1);
+                        //     }
+                        // }
 
-                        for(var i=storedOps.length;i>=0;i--)
-                        {
-                            console.log('-- ', storedOps[i], which.opname);
 
-                            if(storedOps[i]==which.opname)
-                            {
-                                console.log('found op to remove');
-                                storedOps.splice(i,1);
-                            }
-                        }
-
-                        updateStoredOps();
                     },
                     onSave:save
                 });
@@ -407,144 +462,144 @@ CABLES.UI.ServerOps=function(gui)
 
 
 
-        this._loadedLibs=[];
+    this._loadedLibs=[];
 
-        this.getOpLibs=function(opname,checkLoaded)
+    this.getOpLibs=function(opname,checkLoaded)
+    {
+        for(i=0;i<ops.length;i++)
         {
-            for(i=0;i<ops.length;i++)
+            if(ops[i].name==opname)
             {
-                if(ops[i].name==opname)
+                if(ops[i].libs)
                 {
-                    if(ops[i].libs)
+                    var libs=[];
+                    for(var j=0;j<ops[i].libs.length;j++)
                     {
-                        var libs=[];
-                        for(var j=0;j<ops[i].libs.length;j++)
+                        var libName='/libs/'+ops[i].libs[j];
+                        if(!checkLoaded)
                         {
-                            var libName='/libs/'+ops[i].libs[j];
-                            if(!checkLoaded)
-                            {
-                                libs.push(libName);
-                            }
-                            else
-                            if(this._loadedLibs.indexOf(libName)==-1)
-                            {
-                                libs.push(libName);
-                            }
+                            libs.push(libName);
                         }
-
-                        return libs;
+                        else
+                        if(this._loadedLibs.indexOf(libName)==-1)
+                        {
+                            libs.push(libName);
+                        }
                     }
+
+                    return libs;
                 }
             }
-            return [];
-        };
+        }
+        return [];
+    };
 
-        this.loadProjectLibs=function(proj,next)
+    this.loadProjectLibs=function(proj,next)
+    {
+        console.log('loading project libs...');
+
+        var libsToLoad=[];
+        var i=0;
+
+        for(i=0;i<proj.ops.length;i++)
         {
-            console.log('loading project libs...');
+            libsToLoad=libsToLoad.concat( this.getOpLibs(proj.ops[i].objName) );
+        }
 
-            var libsToLoad=[];
-            var i=0;
+        libsToLoad=CABLES.uniqueArray(libsToLoad);
 
-            for(i=0;i<proj.ops.length;i++)
+        console.log(libsToLoad);
+
+        if(libsToLoad.length===0)
+        {
+            next();
+            return;
+        }
+
+        var id=CABLES.generateUUID();
+        loadjs(libsToLoad,'oplibs'+id);
+
+
+
+        loadjs.ready('oplibs'+id, function()
+        {
+            for(var i=0;i<libsToLoad.length;i++)
             {
-                libsToLoad=libsToLoad.concat( this.getOpLibs(proj.ops[i].objName) );
+                this._loadedLibs.push(libsToLoad[i]);
             }
 
-            libsToLoad=CABLES.uniqueArray(libsToLoad);
-
-            console.log(libsToLoad);
-
-            if(libsToLoad.length===0)
-            {
-                next();
-                return;
-            }
-
-            var id=CABLES.generateUUID();
-            loadjs(libsToLoad,'oplibs'+id);
-
-
-
-            loadjs.ready('oplibs'+id, function()
-            {
-                for(var i=0;i<libsToLoad.length;i++)
-                {
-                    this._loadedLibs.push(libsToLoad[i]);
-                }
-
-                // console.log('finished loading libs...');
-                // console.log(this._loadedLibs);
-                next();
-            }.bind(this));
-
-
-        };
-
-        this.isLibLoaded=function(libName)
-        {
+            // console.log('finished loading libs...');
             // console.log(this._loadedLibs);
-            var isloaded=this._loadedLibs.indexOf(libName)!=-1;
-            // console.log(libName,isloaded);
-            return isloaded;
+            next();
+        }.bind(this));
 
-        };
 
-        this.opHasLibs=function(opName)
+    };
+
+    this.isLibLoaded=function(libName)
+    {
+        // console.log(this._loadedLibs);
+        var isloaded=this._loadedLibs.indexOf(libName)!=-1;
+        // console.log(libName,isloaded);
+        return isloaded;
+
+    };
+
+    this.opHasLibs=function(opName)
+    {
+        return this.getOpLibs(opName).length!==0;
+    };
+
+    this.opLibsLoaded=function(opName)
+    {
+        var libsToLoad=this.getOpLibs(opName);
+        for(var i=0;i<libsToLoad.length;i++)
         {
-            return this.getOpLibs(opName).length!==0;
-        };
+            if(!this.isLibLoaded(libsToLoad[i]))return false;
+        }
+        return true;
 
-        this.opLibsLoaded=function(opName)
+    };
+
+    this.loadOpLibs=function(opName,next)
+    {
+        var libsToLoad=this.getOpLibs(opName);
+
+        if(libsToLoad.length===0)
         {
+            next();
+            return;
+        }
+
+        var lid='oplibs'+libsToLoad[0];
+
+        function libReady()
+        {
+            console.log('finished loading libs for '+opName);
+
             var libsToLoad=this.getOpLibs(opName);
             for(var i=0;i<libsToLoad.length;i++)
             {
-                if(!this.isLibLoaded(libsToLoad[i]))return false;
+                this._loadedLibs.push(libsToLoad[i]);
             }
-            return true;
 
-        };
 
-        this.loadOpLibs=function(opName,next)
+
+
+            next();
+        }
+
+        try{
+            loadjs.ready(lid, libReady.bind(this));
+            loadjs(libsToLoad,lid);
+
+        }catch(e)
         {
-            var libsToLoad=this.getOpLibs(opName);
-
-            if(libsToLoad.length===0)
-            {
-                next();
-                return;
-            }
-
-            var lid='oplibs'+libsToLoad[0];
-
-            function libReady()
-            {
-                console.log('finished loading libs for '+opName);
-
-                var libsToLoad=this.getOpLibs(opName);
-                for(var i=0;i<libsToLoad.length;i++)
-                {
-                    this._loadedLibs.push(libsToLoad[i]);
-                }
+            console.log('...');
+        }
 
 
-
-
-                next();
-            }
-
-            try{
-                loadjs.ready(lid, libReady.bind(this));
-                loadjs(libsToLoad,lid);
-
-            }catch(e)
-            {
-                console.log('...');
-            }
-
-
-        };
+    };
 
 
     this.loaded=false;
@@ -553,6 +608,6 @@ CABLES.UI.ServerOps=function(gui)
         return this.loaded;
     };
 
-this.load();
+    this.load();
 
 };

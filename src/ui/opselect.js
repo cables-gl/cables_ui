@@ -52,8 +52,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
     var query=q.toLowerCase();
     var result=[];
 
-
-
     for(var i=0;i<list.length;i++)
     {
         var found=false;
@@ -69,6 +67,12 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         {
             found=true;
             points+=1;
+        }
+
+        if(list[i]._nameSpaceFull.indexOf(query)>-1)
+        {
+            found=true;
+            points+=0.1;
         }
 
         if(list[i]._shortName.indexOf(query)>-1)
@@ -200,6 +204,7 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
             this._list[i]._summary=this._list[i].summary.toLowerCase();
             this._list[i]._shortName=this._list[i].shortName.toLowerCase();
             this._list[i]._nameSpace=this._list[i].nameSpace.toLowerCase();
+            this._list[i]._nameSpaceFull=this._list[i].nameSpace.toLowerCase()+'.'+this._list[i].shortName.toLowerCase();
         }
 
         CABLES.UI.OPSELECT.maxPop=maxPop;

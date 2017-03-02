@@ -971,9 +971,6 @@ CABLES.UI.GUI=function()
 
         router.addRoute('/').get(function(event, params)
         {
-            // if(!localStorage.holo || localStorage.holo===''  || localStorage.holo.length<20) self.scene.clear();
-            //
-            // self.patch().scene.deSerialize(localStorage.holo);
         });
 
 
@@ -1016,10 +1013,8 @@ CABLES.UI.GUI=function()
             });
         }
 
-
         router.addRoute('/project/:id/v/:ver').get(function(event, params)
         {
-
             loadProject(params.id,params.ver);
             // CABLES.UI.MODAL.showLoading('Loading');
             // CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
@@ -1091,14 +1086,10 @@ CABLES.UI.GUI=function()
             });
     };
 
-
     this.getOpDoc=function(opname,html,cb)
     {
         cb(this.opDocs.get(opname));
     };
-
-
-
 
     this.saveScreenshot=function(filename,cb)
     {
@@ -1106,7 +1097,6 @@ CABLES.UI.GUI=function()
         var h=$('#glcanvas').attr('height');
         $('#glcanvas').attr('width',$('#render_width').val());
         $('#glcanvas').attr('height',$('#render_height').val());
-
 
         function padLeft(nr, n, str){
             return Array(n-String(nr).length+1).join(str||'0')+nr;
@@ -1123,7 +1113,6 @@ CABLES.UI.GUI=function()
 
         var projectStr=this.project().name;
         projectStr=projectStr.split(' ').join('_');
-
 
         if(!filename)filename='cables_'+projectStr+'_'+dateStr+'.png';
             else filename+='.png';
@@ -1150,12 +1139,8 @@ CABLES.UI.GUI=function()
                     anchor.click();
                     if(cb)cb();
                 },33);
-
         };
-
     };
-
-
 
     this.liveRecord=function()
     {
@@ -1176,7 +1161,6 @@ CABLES.UI.GUI=function()
             } );
 
             CABLES.UI.capturer.start( gui.patch().scene.cgl.canvas );
-
         }
         else
         {
@@ -1188,7 +1172,6 @@ CABLES.UI.GUI=function()
         }
 
     };
-
 
     this.renderScreenshots=function()
     {
@@ -1208,7 +1191,6 @@ CABLES.UI.GUI=function()
 
     this.showMetaCode=function()
     {
-
         metaCode.show();
     };
 

@@ -37,25 +37,39 @@ CABLES.UI.MetaCode=function(projectId)
             return;
         }
 
-        var doc={};
-        var summary="";
+        $('#meta_content_code').html('<div class="loading" style="width:40px;height:40px;"></div>');
+
         if(op)
         {
-            doc.attachmentFiles=gui.opDocs.getAttachmentFiles(op.objName);
-            doc.libs=gui.serverOps.getOpLibs(op.objName,false);
-            summary=gui.opDocs.getSummary(op.objName);
+
+console.log('loading meta code ',op.objName);
+
+
+            CABLES.api.get(
+                'op/'+op.objName+'/info',
+                function(res)
+                {
+                    var doc={};
+                    var summary="";
+                        // doc.attachmentFiles=gui.opDocs.getAttachmentFiles(op.objName);
+                        doc.attachmentFiles=res.attachmentFiles;
+                        doc.libs=gui.serverOps.getOpLibs(op.objName,false);
+                        summary=gui.opDocs.getSummary(op.objName);
+
+                    var html = CABLES.UI.getHandleBarHtml('meta_code',
+                    {
+                        op:op,
+                        doc:doc,
+                        summary:summary,
+                        libs:gui.opDocs.libs,
+                        user:gui.user
+                    });
+                    $('#meta_content_code').html(html);
+
+
+                });
         }
 
-
-        var html = CABLES.UI.getHandleBarHtml('meta_code',
-        {
-            op:op,
-            doc:doc,
-            summary:summary,
-            libs:gui.opDocs.libs,
-            user:gui.user
-        });
-        $('#meta_content_code').html(html);
     };
 
 

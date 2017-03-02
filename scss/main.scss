@@ -476,9 +476,11 @@ padding:10px;
     color: $button-text-color;
     min-width: 14px;
     text-align: center;
+    font-size: 13px;
     font-family: futura-pt, arial;
     padding:5px 7px;
     cursor:pointer !important;
+    background-color: #1a1a1a;
 
     &.fa:before
     {
@@ -1463,7 +1465,7 @@ input[type=text]:active, input[type=text]:focus {
         .tabs
         {
             width:100%;
-            margin-bottom: 15px;
+            margin-bottom: 11px;
             height:32px;
             overflow: hidden;
 

@@ -11,8 +11,8 @@ CABLES.Editor=function()
 
     editor.setOptions({
         "enableBasicAutocompletion": true,
-        enableSnippets: true,
-        enableLiveAutocompletion: true,
+        "enableSnippets": true,
+        "enableLiveAutocompletion": true,
         "showPrintMargin": false
     });
 
@@ -105,8 +105,6 @@ CABLES.Editor=function()
                 if(contents.length>0)
                 {
                     this.setTab(contents[0].id);
-
-
                 }
                 else
                 {
