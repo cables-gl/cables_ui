@@ -14,7 +14,7 @@
 
         <div class="searchbrowser">
           {{#each ops}}
-            <div id="result_{{id}}" class="searchresult clickable searchable item_color_{{ nscolor }}" data-opname="{{name}}" onclick="CABLES.UI.OPSELECT.selectOp('{{ name }}')" >
+            <div id="result_{{id}}" class="searchresult clickable searchable item_color_{{ nscolor }}" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" >
                 <div class="graphbutton fright insertbutton" style="display:none;" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
 
                 <a>
