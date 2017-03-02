@@ -31,7 +31,7 @@ CABLES.UI.ServerOps=function(gui)
             }
         }
 
-        console.log('l;alala',index);
+
 
         if(index>-1)
         {
@@ -48,25 +48,6 @@ CABLES.UI.ServerOps=function(gui)
         CABLES.UI.userSettings.set("openEditors",openEditors);
         CABLES.UI.userSettings.set("editortab",obj.name);
     }
-
-
-    // function updateStoredOps()
-    // {
-    //     if(!storedOps)storedOps=[];
-    //
-    //     storedOps = storedOps.slice()
-    //       .sort()
-    //       .reduce(function(a,b){
-    //         if (a.slice(-1)[0] !== b) a.push(b);
-    //         return a;
-    //       },[]);
-    //
-    //     localStorage.setItem("cables.editor.serverops",JSON.stringify(storedOps));
-    //
-    //
-    //     console.log('storedops'+storedOps);
-    //
-    // }
 
     this.load=function(cb)
     {
