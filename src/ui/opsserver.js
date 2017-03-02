@@ -19,15 +19,34 @@ CABLES.UI.ServerOps=function(gui)
 
     function removeOpenEditor(obj)
     {
-        console.log("remove",obj);
+        var index=-1;
+
+        for(var i=0;i<openEditors.length;i++)
+        {
+            if(openEditors[i].name==obj.name && openEditors[i].type==obj.type)
+            {
+                index=i;
+                console.log("FOUND CLOSED");
+                break;
+            }
+        }
+
+        console.log('l;alala',index);
+
+        if(index>-1)
+        {
+            openEditors.splice(index, 1);
+            CABLES.UI.userSettings.set("openEditors",openEditors);
+        }
+
     }
+
     function saveOpenEditor(obj)
     {
         openEditors.push(obj);
 
         CABLES.UI.userSettings.set("openEditors",openEditors);
         CABLES.UI.userSettings.set("editortab",obj.name);
-
     }
 
 
@@ -62,20 +81,24 @@ CABLES.UI.ServerOps=function(gui)
                 if(cb)cb(ops);
 
                 var edits=CABLES.UI.userSettings.get("openEditors");
-console.log('open editors...',edits.length);
-                for(var i=0;i<edits.length;i++)
+                if(edits)
                 {
-                    console.log(edits[i].type,edits[i].name);
-                    if(edits[i].type=="op")
+                    console.log('open editors...',edits.length);
+                    for(var i=0;i<edits.length;i++)
                     {
-                        this.edit(edits[i].name);
+                        console.log(edits[i].type,edits[i].name);
+                        if(edits[i].type=="op")
+                        {
+                            this.edit(edits[i].name);
+                        }
+                        else if(edits[i].type=="attachment")
+                        {
+                            this.editAttachment(edits[i].opname,edits[i].name);
+                        }
                     }
-                    else if(edits[i].type=="attachment")
-                    {
-                        this.editAttachment(edits[i].opname,edits[i].name);
-                    }
-                }
 
+
+                }
                 // storedOps=JSON.parse(localStorage.getItem("cables.editor.serverops"));
                 //
                 // console.log('storedOps',storedOps);
@@ -302,6 +325,7 @@ console.log('open editors...',edits.length);
         saveOpenEditor(
             {
                 "type":'attachment',
+
                 "opname":opname,
                 "name":attachmentname
             });
