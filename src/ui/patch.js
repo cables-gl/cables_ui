@@ -2780,7 +2780,7 @@ console.log(URL.createObjectURL(screenBlob));
                 }
                 else
                 {
-                    el.html( String(watchPorts[i].get()) );    
+                    el.html( String(watchPorts[i].get()) );
                 }
 
             CABLES.watchPortVisualize.update(id,watchPorts[i].watchId,watchPorts[i].get());
@@ -2825,7 +2825,7 @@ console.log(URL.createObjectURL(screenBlob));
         }
         else if(filename.endsWith(".3d.json"))
         {
-            opname="Ops.Json3d.json3dFile";
+            opname="Ops.Json3d.Json3dMesh";
             title="Json: "+title;
         }
         else

@@ -13,6 +13,7 @@ CABLES.UI.OpSelect=function()
 {
     this._list=null;
     this.displayBoxIndex=0;
+    this.itemHeight=0;
 };
 
 
@@ -190,7 +191,7 @@ CABLES.UI.OpSelect.prototype.Navigate = function(diff)
     oBoxCollection.removeClass(cssClass).eq(this.displayBoxIndex).addClass(cssClass);
 
     if(this.displayBoxIndex>12)
-        $('.searchbrowser').scrollTop( (this.displayBoxIndex-12)*itemHeight );
+        $('.searchbrowser').scrollTop( (this.displayBoxIndex-12)*this.itemHeight );
     else
         $('.searchbrowser').scrollTop( 1 );
 
@@ -245,7 +246,7 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     $('#opsearch').focus();
 
     $( ".searchresult:first" ).addClass( "selected" );
-    var itemHeight=$( ".searchresult:first" ).height()+10+1;
+    this.itemHeight=$( ".searchresult:first" ).height()+10+1;
 
     this.displayBoxIndex=0;
 
