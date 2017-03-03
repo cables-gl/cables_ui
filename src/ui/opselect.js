@@ -46,11 +46,10 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 };
 
 
-CABLES.UI.OpSelect.prototype._search=function(q)
+CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 {
-    var list=this._list;
-    var query=q.toLowerCase();
     var result=[];
+    console.log('list length',list.length,list);
 
     for(var i=0;i<list.length;i++)
     {
@@ -84,10 +83,40 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         if(found)
         {
             points+=(list[i].pop||0)/CABLES.UI.OPSELECT.maxPop*10;
-            result.push({item:list[i]});
+            result.push(list[i]);
         }
 
-        list[i].score=points;
+        if(points===0 && list[i].score>0) list[i].score=0;
+        else list[i].score+=points;
+    }
+
+    return result;
+};
+
+CABLES.UI.OpSelect.prototype._search=function(q)
+{
+    var query=q.toLowerCase();
+    var i=0;
+
+    for(i=0;i<this._list.length;i++)
+    {
+        this._list[i].score=0;
+    }
+    var result=null;
+
+    if(query.indexOf(" ")>-1)
+    {
+        var words=query.split(" ");
+
+        for(i=0;i<words.length;i++)
+        {
+            result=this._searchWord(result||this._list,words[i]);
+        }
+
+    }
+    else
+    {
+        result=this._searchWord(this._list,query);
     }
 
     return result;
@@ -176,8 +205,6 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     var markHighlightTimeout=0;
     var self=this;
 
-
-
     CABLES.UI.OPSELECT.linkNewLink=link;
     CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
@@ -208,24 +235,6 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
         }
 
         CABLES.UI.OPSELECT.maxPop=maxPop;
-
-
-        // CABLES.UI.OPSELECT.fuse = new Fuse(list,
-        // {
-        //     shouldSort: true,
-        //     tokenize: false,
-        //     threshold: 0.1,
-        //     location: 0,
-        //     distance: 100,
-        //     maxPatternLength: 32,
-        //     minMatchCharLength: 3,
-        //     include: ["matches","score"],
-        //     keys: [
-        //       { name:"shortName", weight:0.6 },
-        //       { name:"summary", weight:0.2 },
-        //       { name:"nameSpace", weight:0.2 },
-        //     ]
-        // });
     }
 
 

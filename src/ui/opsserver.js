@@ -21,23 +21,32 @@ CABLES.UI.ServerOps=function(gui)
     {
         var index=-1;
 
-        for(var i=0;i<openEditors.length;i++)
+        var found=true;
+
+        while(found)
         {
-            if(openEditors[i].name==obj.name && openEditors[i].type==obj.type)
+            found=false;
+            for(var i=0;i<openEditors.length;i++)
             {
-                index=i;
-                console.log("FOUND CLOSED");
-                break;
+                if(openEditors[i].name==obj.name && openEditors[i].type==obj.type)
+                {
+                    index=i;
+                    found=true;
+                    openEditors.splice(index, 1);
+                    CABLES.UI.userSettings.set("openEditors",openEditors);
+
+                    console.log("FOUND CLOSED");
+                    break;
+                }
             }
+
         }
 
-
-
-        if(index>-1)
+        if(index==-1)
         {
-            openEditors.splice(index, 1);
-            CABLES.UI.userSettings.set("openEditors",openEditors);
+            console.log('not found! ',obj.name,obj.type);
         }
+
 
     }
 
@@ -47,6 +56,8 @@ CABLES.UI.ServerOps=function(gui)
 
         CABLES.UI.userSettings.set("openEditors",openEditors);
         CABLES.UI.userSettings.set("editortab",obj.name);
+
+        console.log("openEditors",openEditors.length);
     }
 
     this.load=function(cb)
@@ -303,13 +314,13 @@ CABLES.UI.ServerOps=function(gui)
 
     this.editAttachment=function(opname,attachmentname,readOnly)
     {
-        saveOpenEditor(
-            {
-                "type":'attachment',
+        var editorObj={
+            "type":'attachment',
 
-                "opname":opname,
-                "name":attachmentname
-            });
+            "opname":opname,
+            "name":attachmentname
+        };
+        saveOpenEditor(editorObj);
 
         CABLES.api.clearCache();
 
@@ -336,6 +347,7 @@ CABLES.UI.ServerOps=function(gui)
                     content:content,
                     title:attachmentname,
                     syntax:syntax,
+                    editorObj:editorObj,
                     toolbarHtml:toolbarHtml,
                     onSave:function(setStatus,content)
                     {
@@ -353,7 +365,12 @@ CABLES.UI.ServerOps=function(gui)
                                 console.log('err res',res);
                             }
                         );
-                    }
+                    },
+                    onClose:function(which)
+                    {
+                        removeOpenEditor(which.editorObj);
+                    },
+
                 });
             });
     };
@@ -440,21 +457,7 @@ CABLES.UI.ServerOps=function(gui)
                     toolbarHtml:html,
                     onClose:function(which)
                     {
-                        // console.log('close tab',which);
-                        console.log(which);
                         removeOpenEditor(which.editorObj);
-                        // for(var i=storedOps.length;i>=0;i--)
-                        // {
-                        //     console.log('-- ', storedOps[i], which.opname);
-                        //
-                        //     if(storedOps[i]==which.opname)
-                        //     {
-                        //         console.log('found op to remove');
-                        //         storedOps.splice(i,1);
-                        //     }
-                        // }
-
-
                     },
                     onSave:save
                 });
