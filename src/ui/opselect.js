@@ -49,7 +49,6 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 {
     var result=[];
-    console.log('list length',list.length,list);
 
     for(var i=0;i<list.length;i++)
     {
@@ -87,7 +86,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
         }
 
         if(points===0 && list[i].score>0) list[i].score=0;
-        else list[i].score+=points;
+            else list[i].score+=points;
     }
 
     return result;
@@ -112,7 +111,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         {
             result=this._searchWord(result||this._list,words[i]);
         }
-
     }
     else
     {
