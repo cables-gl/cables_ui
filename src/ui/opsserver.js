@@ -52,6 +52,13 @@ CABLES.UI.ServerOps=function(gui)
 
     function saveOpenEditor(obj)
     {
+
+        for(var i=0;i<openEditors.length;i++)
+        {
+            if(openEditors[i].name==obj.name && openEditors[i].type==obj.type )return;
+        }
+
+
         openEditors.push(obj);
 
         CABLES.UI.userSettings.set("openEditors",openEditors);
@@ -73,6 +80,8 @@ CABLES.UI.ServerOps=function(gui)
                 if(cb)cb(ops);
 
                 var edits=CABLES.UI.userSettings.get("openEditors");
+
+                console.log(edits);
                 if(edits)
                 {
                     console.log('open editors...',edits.length);
@@ -88,8 +97,6 @@ CABLES.UI.ServerOps=function(gui)
                             this.editAttachment(edits[i].opname,edits[i].name);
                         }
                     }
-
-
                 }
                 // storedOps=JSON.parse(localStorage.getItem("cables.editor.serverops"));
                 //
