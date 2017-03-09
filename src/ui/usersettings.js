@@ -27,3 +27,7 @@ CABLES.UI.UserSettings=function()
 
 
 CABLES.UI.userSettings=new CABLES.UI.UserSettings();
+
+
+// CABLES.UI.userSettings.set('touchpadmode'=CABLES.UI.userSettings.touchpadmode||false;
+console.log('touchpadmode',  CABLES.UI.userSettings.get("touchpadmode") );

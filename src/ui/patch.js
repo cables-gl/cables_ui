@@ -8,7 +8,7 @@ CABLES.UI.Patch=function(_gui)
     this.ops=[];
     this.scene=null;
     var gui=_gui;
-    this.modeTouchPad=false;
+    // this.modeTouchPad=false;
 
     var watchPorts=[];
     var currentProject=null;
@@ -1140,7 +1140,7 @@ console.log(URL.createObjectURL(screenBlob));
         {
 
 
-            if(!event.metaKey && !event.altKey && !event.ctrlKey && self.modeTouchPad)
+            if(!event.metaKey && !event.altKey && !event.ctrlKey && CABLES.UI.userSettings.get("touchpadmode"))
             {
                 if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) event.deltaY*=0.5;
                     else event.deltaX*=0.5;
@@ -1160,7 +1160,7 @@ console.log(URL.createObjectURL(screenBlob));
             delta=CGL.getWheelSpeed(event);
             delta=Math.min(delta,10);
             delta=Math.max(delta,-10);
-            if(!self.modeTouchPad)delta*=15;
+            if(!CABLES.UI.userSettings.get("touchpadmode"))delta*=3;
 
 
             event=mouseEvent(event);
