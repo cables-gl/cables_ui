@@ -319,7 +319,11 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
                 if(opname && opname.length>2)
                 {
                     CABLES.UI.MODAL.hide();
-                    gui.scene().addOp(opname);
+                    gui.serverOps.loadOpLibs(opname,function()
+                    {
+                        gui.scene().addOp(opname);
+                    });
+
                 }
             break;
 

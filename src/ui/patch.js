@@ -1495,11 +1495,11 @@ console.log(URL.createObjectURL(screenBlob));
 
         uiOp.setPos(pos.x,pos.y);
 
-        if(!self.scene.isLoading)
-        {
-            if(op.onLoaded)op.onLoaded();
-            op.onLoaded=null;
-        }
+        // if(!self.scene.isLoading)
+        // {
+        //     // if(op.onLoaded)op.onLoaded();
+        //     // op.onLoaded=null;
+        // }
 
         if(!isLoading)
         {

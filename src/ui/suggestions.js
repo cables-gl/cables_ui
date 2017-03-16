@@ -15,6 +15,11 @@ CABLES.UI.SuggestPortDialog=function(op,port,mouseEvent,cb,cbCancel)
         });
     }
 
+
+
+
+    //linkRecommendations
+
     for(i=0;i<op.portsIn.length;i++)
     {
         if(CABLES.Link.canLink(op.portsIn[i],port))
@@ -49,6 +54,31 @@ CABLES.UI.SuggestPortDialog=function(op,port,mouseEvent,cb,cbCancel)
 CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
 {
     var suggestions=gui.opDocs.getSuggestions(op.objName,portname);
+
+    if(op.getPort(portname).uiAttribs && op.getPort(portname).uiAttribs.linkRecommendations)
+    {
+        var recs=op.getPort(portname).uiAttribs.linkRecommendations.ops;
+        if(recs)
+        {
+            suggestions=suggestions||[];
+
+            for(var i=0;i<recs.length;i++)
+            {
+                suggestions.push(
+                    {
+                        "name":recs[i].name,
+                        "port":recs[i].port,
+                        "recommended":true,
+                    });
+
+            }
+        }
+
+    }
+
+
+
+
     CABLES.UI.OPSELECT.newOpPos=coords;
 
     new CABLES.UI.SuggestionDialog(suggestions,op,mouseEvent,cb,
@@ -67,6 +97,8 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
             }
         },true);
 };
+
+
 
 
 // ----------------------------------------------------------------------------------
@@ -105,7 +137,7 @@ CABLES.UI.SuggestionDialog=function(suggestions,op,mouseEvent,cb,_action,showSel
     }
 
     CABLES.UI.suggestions=this;
-    
+
     var sugDegree=6;
     var sugHeight=20;
     var i=0;

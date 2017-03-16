@@ -202,15 +202,52 @@ CABLES.UI.Port=function(thePort)
     {
         CABLES.UI.MOUSEOVERPORT=false;
 
+
+        console.log("HUHUHALLO");
+        console.log(self.thePort.uiAttribs);
+
+        // if(CABLES.UI.selectedStartPort.uiAttribs.linkRecommendations)
+        // {
+        //
+        //     if(CABLES.UI.selectedStartPort.uiAttribs.linkRecommendations.ops.length==1)
+        //     {
+        //         var coords=gui.patch().getCanvasCoordsMouse(mouseEvent(event));
+        //         var newOp=gui.scene().addOp(
+        //             CABLES.UI.selectedStartPort.uiAttribs.linkRecommendations.ops[0].name,
+        //             {
+        //                 "translate":
+        //                 {
+        //                     "x":coords.x,
+        //                     "y":coords.y
+        //                 }
+        //             });
+        //
+        //         removeLinkingLine();
+        //         self.thePort.removeLinks();
+        //
+        //         var link=gui.scene().link(
+        //             newOp,
+        //             CABLES.UI.selectedStartPort.uiAttribs.linkRecommendations.ops[0].port,
+        //             CABLES.UI.selectedStartPort.parent,
+        //             CABLES.UI.selectedStartPort.getName()
+        //         );
+        //
+        //         return;
+        //     }
+        // }
+
         var foundAutoOp=false;
         if(CABLES.UI.selectedEndOp && !selectedEndPort)
         {
             var i=0;
             var numFitting=CABLES.UI.selectedEndOp.op.countFittingPorts(CABLES.UI.selectedStartPort);
 
+
             if(numFitting==1)
             {
                 var p=CABLES.UI.selectedEndOp.op.findFittingPort(CABLES.UI.selectedStartPort);
+
+
 
                 gui.patch().scene.link(
                     CABLES.UI.selectedEndOp.op,
@@ -225,7 +262,7 @@ CABLES.UI.Port=function(thePort)
             if(numFitting>0)
             {
                 foundAutoOp=true;
-                console.log(numFitting+' numFitting ports...');
+                // console.log(numFitting+' numFitting ports...');
                 new CABLES.UI.SuggestPortDialog(CABLES.UI.selectedEndOp.op,CABLES.UI.selectedStartPort,event,
                     function(portName)
                     {

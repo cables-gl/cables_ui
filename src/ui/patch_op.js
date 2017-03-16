@@ -938,7 +938,6 @@ var OpUi=function(paper,op,x,y,w,h,txt)
             found=false;
             for(j in self.links)
             {
-
                 if(!self.links[j])
                 {
                     self.links.splice(j,1);
