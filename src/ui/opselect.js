@@ -97,7 +97,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
 {
     var query=q.toLowerCase();
     var i=0;
-    console.log("q", q, this._list);
     for(i=0;i<this._list.length;i++)
     {
         this._list[i].score=0;
