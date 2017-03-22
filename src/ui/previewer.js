@@ -6,6 +6,7 @@ CABLES.UI.Preview=function()
     var interval=120;
     var paused=false;
 
+
     this.show=function()
     {
         paused=false;
@@ -81,6 +82,9 @@ CABLES.UI.Preview=function()
     {
         var width=texture.width;
         var height=texture.height;
+
+        if(gui.rendererWidth>window.innerWidth*0.8)return;
+        console.log('preview...');
 
         if(!canvas || lastWidth !=width || lastHeight!=height)
         {

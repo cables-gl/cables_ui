@@ -399,7 +399,7 @@ CABLES.UI.GUI=function()
     var oldRendwerWidth,oldRendwerHeight,oldShowingEditor;
     this.cycleRendererSize=function()
     {
-        console.log('cycleRendererSize');
+
 
         if(self.rendererWidth!==0)
         {
