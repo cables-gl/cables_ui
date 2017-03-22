@@ -541,9 +541,12 @@ CABLES.UI.ServerOps=function(gui)
             for(var i=0;i<libsToLoad.length;i++)
             {
                 this._loadedLibs.push(libsToLoad[i]);
+
+                console.log('loaded libs...',this._loadedLibs);
+
             }
 
-            // console.log('finished loading libs...');
+
             // console.log(this._loadedLibs);
             next();
         }.bind(this));
@@ -586,32 +589,37 @@ CABLES.UI.ServerOps=function(gui)
             return;
         }
 
-        var lid='oplibs'+libsToLoad[0];
-
-        function libReady()
+        if(!this.isLibLoaded(libsToLoad[0]))
         {
-            console.log('finished loading libs for '+opName);
+            var lid='oplibs'+libsToLoad[0];
 
-            var libsToLoad=this.getOpLibs(opName);
-            for(var i=0;i<libsToLoad.length;i++)
+            function libReady()
             {
-                this._loadedLibs.push(libsToLoad[i]);
+                console.log('finished loading libs for '+opName);
+
+                var libsToLoad=this.getOpLibs(opName);
+                for(var i=0;i<libsToLoad.length;i++)
+                {
+                    this._loadedLibs.push(libsToLoad[i]);
+                }
+
+                next();
             }
 
+            try{
+                loadjs.ready(lid, libReady.bind(this));
+                loadjs(libsToLoad,lid);
 
+            }catch(e)
+            {
+                console.log('...',e);
+            }
 
-
+        }
+        else {
             next();
         }
 
-        try{
-            loadjs.ready(lid, libReady.bind(this));
-            loadjs(libsToLoad,lid);
-
-        }catch(e)
-        {
-            console.log('...');
-        }
 
 
     };

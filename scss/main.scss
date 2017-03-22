@@ -2272,3 +2272,8 @@ rect
     animation-iteration-count:infinite;
     animation-timing-function: linear;
 }
+
+#preview_img_container canvas
+{
+    border: 2px dashed #777;
+}
