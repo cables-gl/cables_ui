@@ -82,7 +82,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 
         if(found)
         {
-            points+=(list[i].pop||0)/CABLES.UI.OPSELECT.maxPop*10;
+            points+=(list[i].pop||0)/CABLES.UI.OPSELECT.maxPop||1*10;
             result.push(list[i]);
         }
 
@@ -97,7 +97,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
 {
     var query=q.toLowerCase();
     var i=0;
-
     for(i=0;i<this._list.length;i++)
     {
         this._list[i].score=0;
