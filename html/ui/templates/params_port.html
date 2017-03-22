@@ -171,7 +171,7 @@
             </td>
             <td>
 
-                <span class="button fa fa-database info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">snapshot</span><br/>
+                <span class="button fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">inspect</span><br/>
             {{/compare}}
             {{#compare port.type '==' '2' }}
 
@@ -186,7 +186,7 @@
                 {{#if port.uiAttribs.preview}}
                     <span class="button fa fa-eye" onclick="gui.setMetaTab('preview');gui.preview.setTexture('{{op.id}}','{{port.name}}');">preview</span>
                 {{else}}
-                    <span class="button fa fa-database info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">snapshot</span><br/>
+                    <span class="button fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">inspect</span><br/>
                 {{/if}}
             {{/compare}}
         {{/if}}

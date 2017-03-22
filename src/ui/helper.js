@@ -55,16 +55,20 @@ CABLES.UI.showJson=function(opid,which)
 
 
     // CABLES.UI.MODAL.show( '<pre><code>'+ +'</code></pre>');
-    gui.showEditor();
-    gui.editor().addTab(
-    {
-        content:JSON.stringify(port.get() ,null, 4),
-        title:'content: '+port.name,
-        syntax:'JSON',
-        onSave:function(setStatus,content)
-        {
-        }
-    });
+
+
+    CABLES.UI.MODAL.showPortValue('port: '+port.name+'',port);
+
+    // gui.showEditor();
+    // gui.editor().addTab(
+    // {
+    //     content:JSON.stringify(port.get() ,null, 4),
+    //     title:'content: '+port.name,
+    //     syntax:'JSON',
+    //     onSave:function(setStatus,content)
+    //     {
+    //     }
+    // });
 
 
 };

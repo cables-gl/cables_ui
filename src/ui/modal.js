@@ -149,3 +149,34 @@ CABLES.UI.notify=function(title)
        });
     },800);
 };
+
+
+
+CABLES.UI.MODAL.updatePortValuePreview=function(title)
+{
+    CABLES.UI.MODAL.showPortValue(title,CABLES.UI.MODAL.PORTPREVIEW);
+};
+
+CABLES.UI.MODAL.showPortValue=function(title,port)
+{
+
+    CABLES.UI.MODAL.PORTPREVIEW=port;
+
+    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+    $('#modalcontent').append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
+
+    $('#modalcontent').append('in op: <b>'+title+'</b><br/><br/>');
+
+    $('#modalcontent').append('<a class="button fa fa-refresh" onclick="CABLES.UI.MODAL.updatePortValuePreview(\''+title+'\')">update</a>');
+
+    $('#modalcontent').append('<br/><br/>');
+
+    $('#modalcontent').append('<div class="shaderErrorCode">'+JSON.stringify(port.get() ,null, 4)+'</div>');
+    $('#modalcontent').show();
+    $('#modalbg').show();
+
+    $('#modalbg').on('click',function(){
+        CABLES.UI.MODAL.hide(true);
+    });
+
+};
