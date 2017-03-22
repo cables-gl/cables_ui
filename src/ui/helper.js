@@ -57,7 +57,7 @@ CABLES.UI.showJson=function(opid,which)
     // CABLES.UI.MODAL.show( '<pre><code>'+ +'</code></pre>');
 
 
-    CABLES.UI.MODAL.showPortValue('port: '+port.name+'',port);
+    CABLES.UI.MODAL.showPortValue(port.name,port);
 
     // gui.showEditor();
     // gui.editor().addTab(

@@ -3,7 +3,8 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.Preview=function()
 {
-    var interval=120;
+    var defaultInterval=120;
+    var interval=defaultInterval;
     var paused=false;
 
 
@@ -83,8 +84,9 @@ CABLES.UI.Preview=function()
         var width=texture.width;
         var height=texture.height;
 
-        if(gui.rendererWidth>window.innerWidth*0.8)return;
-        console.log('preview...');
+        if(gui.rendererWidth>window.innerWidth*0.9)return;
+
+        interval=Math.min(2000,width*height/(256*256)*defaultInterval);
 
         if(!canvas || lastWidth !=width || lastHeight!=height)
         {

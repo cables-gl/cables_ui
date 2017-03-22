@@ -165,13 +165,24 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
     $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
     $('#modalcontent').append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
 
-    $('#modalcontent').append('in op: <b>'+title+'</b><br/><br/>');
+    $('#modalcontent').append('port: <b>'+title+'</b> of <b>'+port.parent.name+'</b> ');
+
+
+    $('#modalcontent').append('<br/><br/>');
+
+
 
     $('#modalcontent').append('<a class="button fa fa-refresh" onclick="CABLES.UI.MODAL.updatePortValuePreview(\''+title+'\')">update</a>');
 
     $('#modalcontent').append('<br/><br/>');
+    var thing=port.get();
+    $('#modalcontent').append(''+thing.constructor.name+' \n');
+    if(thing.constructor.name=="Array") $('#modalcontent').append( ' - length:'+thing.length +'\n');
+    if(thing.constructor.name=="Float32Array") $('#modalcontent').append( ' - length:'+thing.length +'\n');
 
-    $('#modalcontent').append('<div class="shaderErrorCode">'+JSON.stringify(port.get() ,null, 4)+'</div>');
+    $('#modalcontent').append('<br/><br/>');
+
+    $('#modalcontent').append('<div class="shaderErrorCode">'+JSON.stringify(thing ,null, 4)+'</div>');
     $('#modalcontent').show();
     $('#modalbg').show();
 
