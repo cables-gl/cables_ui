@@ -80,9 +80,15 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             points+=4;
         }
 
+        if(list[i]._shortName.indexOf(query)===0)
+        {
+            found=true;
+            points+=2;
+        }
+
         if(found)
         {
-            points+=(list[i].pop||0)/CABLES.UI.OPSELECT.maxPop||1*10;
+            points+=(list[i].pop||0)/CABLES.UI.OPSELECT.maxPop||1;
             result.push(list[i]);
         }
 

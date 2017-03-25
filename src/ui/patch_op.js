@@ -303,8 +303,8 @@ function UiLink(port1, port2)
             this.linkLine.attr("opacity", 1.0);
     };
 
-    port1.updateUI();
-    port2.updateUI();
+    if(port1)port1.updateUI();
+    if(port2)port2.updateUI();
 }
 
 
