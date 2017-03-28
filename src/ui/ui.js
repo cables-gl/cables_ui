@@ -1003,8 +1003,12 @@ CABLES.UI.GUI=function()
                     cb();
 
                     self.patch().setProject(proj);
-                    if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
+                    if(proj.ui)
+                    {
+                        self.bookmarks.set(proj.ui.bookmarks);
+                    }
                     metaCode.init();
+                    self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
                 });
             },function()
             {

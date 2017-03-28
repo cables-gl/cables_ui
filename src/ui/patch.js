@@ -173,8 +173,8 @@ CABLES.UI.Patch=function(_gui)
                                 {
                                     if(json.ops[i].portsIn[k].name=='patchId')
                                     {
-                                        var oldSubPatchId=parseInt(json.ops[i].portsIn[k].value,10);
-                                        var newSubPatchId=Ops.Ui.Patch.maxPatchId=json.ops[i].portsIn[k].value=Ops.Ui.Patch.maxPatchId+1;
+                                        var oldSubPatchId=json.ops[i].portsIn[k].value;
+                                        var newSubPatchId=json.ops[i].portsIn[k].value=CABLES.generateUUID();
 
                                         console.log('oldSubPatchId',oldSubPatchId);
                                         console.log('newSubPatchId',newSubPatchId);
@@ -183,7 +183,7 @@ CABLES.UI.Patch=function(_gui)
                                         {
                                             // console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
 
-                                            if(parseInt(json.ops[j].uiAttribs.subPatch,10)==oldSubPatchId)
+                                            if(json.ops[j].uiAttribs.subPatch==oldSubPatchId)
                                             {
                                                 console.log('found child patch');
 
@@ -653,7 +653,6 @@ CABLES.UI.Patch=function(_gui)
         }
 
         gui.jobs().start({id:'projectsave',title:'saving project'});
-
 
         var w=$('#glcanvas').attr('width');
         var h=$('#glcanvas').attr('height');
@@ -1159,7 +1158,7 @@ console.log(URL.createObjectURL(screenBlob));
             delta=CGL.getWheelSpeed(event);
             delta=Math.min(delta,10);
             delta=Math.max(delta,-10);
-            if(!CABLES.UI.userSettings.get("touchpadmode"))delta*=3;
+            if(!CABLES.UI.userSettings.get("touchpadmode"))delta*=13;
 
 
             event=mouseEvent(event);
@@ -2909,10 +2908,54 @@ console.log(URL.createObjectURL(screenBlob));
 
         if(!op.op.enabled) op.op.unLinkTemporary();
             else op.op.undoUnLinkTemporary();
-
-
     };
 
+
+    this.getSubPatches=function()
+    {
+        var foundPatchIds=[];
+        var subPatches=[];
+        var i=0;
+
+        for(i=0;i<this.ops.length;i++)
+        {
+            if(this.ops[i].op.patchId && this.ops[i].op.patchId.get()!==0)
+            {
+                foundPatchIds.push(this.ops[i].op.patchId.get());
+            }
+        }
+
+        // find lost ops, which are in subpoatches, but no subpatch op exists for that subpatch..... :(
+        for(i=0;i<this.ops.length;i++)
+        {
+            if(this.ops[i].op.uiAttribs && this.ops[i].op.uiAttribs.subPatch)
+                if(foundPatchIds.indexOf( this.ops[i].op.uiAttribs.subPatch )==-1)
+                    foundPatchIds.push(this.ops[i].op.uiAttribs.subPatch);
+        }
+
+        foundPatchIds=CABLES.uniqueArray(foundPatchIds);
+
+        for(i=0;i<foundPatchIds.length;i++)
+        {
+            var found=false;
+            for(var j=0;j<this.ops.length;j++)
+            {
+                if(this.ops[j].op.patchId && this.ops[j].op.patchId.get()==foundPatchIds[i])
+                {
+                    console.log("found real patch");
+                    subPatches.push({"name":this.ops[j].op.name,"id":foundPatchIds[i]});
+                    found=true;
+                }
+            }
+
+            if(!found)
+            {
+                subPatches.push({"name":"lost patch "+foundPatchIds[i],"id":foundPatchIds[i]});
+            }
+        }
+
+        return subPatches;
+    };
 
 
 // var speedCycle=true;
