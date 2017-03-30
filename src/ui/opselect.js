@@ -86,9 +86,9 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             points+=2;
         }
 
-        if(found)
+        if(found && list[i].pop)
         {
-            points+=(list[i].pop||1)/CABLES.UI.OPSELECT.maxPop||1;
+            points+=(list[i].pop||2)/CABLES.UI.OPSELECT.maxPop||1;
             result.push(list[i]);
         }
 

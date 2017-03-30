@@ -27,6 +27,9 @@ CABLES.UI.Patch=function(_gui)
     var rubberBandRect=null;
     var isLoading=false;
 
+    var timeoutPan=0;
+    var fpsLimitBefore=0;
+
     var subPatchViewBoxes=[];
 
     this.updateBounds=false;
@@ -1145,6 +1148,7 @@ console.log(URL.createObjectURL(screenBlob));
 
                 viewBox.x+=event.deltaX;
                 viewBox.y+=-1*event.deltaY;
+
                 self.updateViewBox();
 
                 event.preventDefault();
@@ -1307,14 +1311,22 @@ console.log(URL.createObjectURL(screenBlob));
 
             if(lastMouseMoveEvent && ( e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
+              var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
+              var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 
-                var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
-                var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
+              viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
+              viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
-                viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
-                viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
+              if(self.scene.config.fpsLimit!=2)fpsLimitBefore=self.scene.config.fpsLimit;
+              self.scene.config.fpsLimit=2;
+              // self.updateViewBox();
+              timeoutPan=setTimeout(function()
+              {
 
                 self.updateViewBox();
+                clearTimeout(timeoutPan);
+                self.scene.config.fpsLimit=fpsLimitBefore;
+              },50);
             }
 
             lastMouseMoveEvent=e;
@@ -2835,16 +2847,18 @@ console.log(URL.createObjectURL(screenBlob));
         var x=gui.patch().getCanvasCoordsMouse(event).x;
         var y=gui.patch().getCanvasCoordsMouse(event).y;
 
-
         var uiAttr={'title':title,translate:{x:x,y:y}};
-        gui.scene().addOp(opname,uiAttr,function(op)
+        var op=gui.scene().addOp(opname,uiAttr);
+
+        for(var i=0;i<op.portsIn.length;i++)
         {
-            for(var i=0;i<op.portsIn.length;i++)
+            if(op.portsIn[i].uiAttribs.display=='file')
             {
-                if(op.portsIn[i].uiAttribs.display=='file')
-                    op.portsIn[i].set(filename);
+                console.log('yeah');
+                op.portsIn[i].set(filename);
             }
-        });
+        }
+
     };
 
 
