@@ -17,7 +17,6 @@ CABLES.UI.ServerOps=function(gui)
     function removeOpenEditor(obj)
     {
         var index=-1;
-
         var found=true;
 
         while(found)
@@ -31,20 +30,15 @@ CABLES.UI.ServerOps=function(gui)
                     found=true;
                     openEditors.splice(index, 1);
                     CABLES.UI.userSettings.set("openEditors",openEditors);
-
-                    console.log("FOUND CLOSED");
                     break;
                 }
             }
-
         }
 
         if(index==-1)
         {
             console.log('not found! ',obj.name,obj.type);
         }
-
-
     }
 
     function saveOpenEditor(obj)
