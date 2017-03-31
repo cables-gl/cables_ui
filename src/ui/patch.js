@@ -28,6 +28,7 @@ CABLES.UI.Patch=function(_gui)
     var isLoading=false;
 
     var timeoutPan=0;
+    var timeoutFpsLimit=0;
     var fpsLimitBefore=0;
 
     var subPatchViewBoxes=[];
@@ -1317,15 +1318,23 @@ console.log(URL.createObjectURL(screenBlob));
               viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
               viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
-              if(self.scene.config.fpsLimit!=2)fpsLimitBefore=self.scene.config.fpsLimit;
-              self.scene.config.fpsLimit=2;
+              if(self.scene.config.fpsLimit!=10)fpsLimitBefore=self.scene.config.fpsLimit;
+              self.scene.config.fpsLimit=10;
               // self.updateViewBox();
+
+              clearTimeout(timeoutFpsLimit);
+              timeoutFpsLimit=setTimeout(function()
+              {
+                  self.scene.config.fpsLimit=fpsLimitBefore;
+
+              },100);
+
               timeoutPan=setTimeout(function()
               {
 
                 self.updateViewBox();
                 clearTimeout(timeoutPan);
-                self.scene.config.fpsLimit=fpsLimitBefore;
+
               },50);
             }
 
