@@ -1335,7 +1335,7 @@ console.log(URL.createObjectURL(screenBlob));
                 self.updateViewBox();
                 clearTimeout(timeoutPan);
 
-              },50);
+                },25);
             }
 
             lastMouseMoveEvent=e;
