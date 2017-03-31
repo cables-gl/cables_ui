@@ -38,10 +38,6 @@ CABLES.UI.Bookmarks=function()
 
     this.set=function(arr)
     {
-
-        console.log('setting bookmarks',arr);
-        // bookmarks.length=0;
-
         if(arr)
         {
             bookmarks=arr;

@@ -202,10 +202,6 @@ CABLES.UI.Port=function(thePort)
     {
         CABLES.UI.MOUSEOVERPORT=false;
 
-
-        console.log("HUHUHALLO");
-        console.log(self.thePort.uiAttribs);
-
         // if(CABLES.UI.selectedStartPort.uiAttribs.linkRecommendations)
         // {
         //

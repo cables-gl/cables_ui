@@ -14,9 +14,6 @@ CABLES.UI.ServerOps=function(gui)
     var openEditors=[];
     var lastTab=CABLES.UI.userSettings.get('editortab');
 
-    console.log('lasttab',lastTab);
-
-
     function removeOpenEditor(obj)
     {
         var index=-1;
@@ -81,10 +78,8 @@ CABLES.UI.ServerOps=function(gui)
 
                 var edits=CABLES.UI.userSettings.get("openEditors");
 
-                console.log(edits);
                 if(edits)
                 {
-                    console.log('open editors...',edits.length);
                     for(var i=0;i<edits.length;i++)
                     {
                         console.log(edits[i].type,edits[i].name);
@@ -511,8 +506,6 @@ CABLES.UI.ServerOps=function(gui)
 
     this.loadProjectLibs=function(proj,next)
     {
-        console.log('loading project libs...');
-
         var libsToLoad=[];
         var i=0;
 
@@ -522,8 +515,6 @@ CABLES.UI.ServerOps=function(gui)
         }
 
         libsToLoad=CABLES.uniqueArray(libsToLoad);
-
-        console.log(libsToLoad);
 
         if(libsToLoad.length===0)
         {

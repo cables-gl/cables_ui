@@ -488,7 +488,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 lastShakeDir=false;
                 shakeCountP++;
                 clearTimeout(shakeTimeOut);
-                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },250);
+                shakeTimeOut=setTimeout(function(){ shakeCountP=0; shakeCountN=0; },250);
             }
             else
             if(shakeLastX-a<30 && !lastShakeDir)
@@ -496,7 +496,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 lastShakeDir=true;
                 shakeCountN++;
                 clearTimeout(shakeTimeOut);
-                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },250);
+                shakeTimeOut=setTimeout(function(){ shakeCountP=0; shakeCountN=0; },250);
             }
             if(shakeCountP + shakeCountN>=5)
             {
