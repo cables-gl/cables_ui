@@ -576,6 +576,8 @@ CABLES.TL.UI.TimeLineUI=function()
         if(!gui.timeLine())return;
         $(document).bind("mousemove",mousemoveTime);
 
+if(newanim==anim)return;
+
         if(newanim && newanim!=tlEmpty)gui.showTiming();
 
         gui.metaKeyframes.setAnim(newanim);
@@ -1288,12 +1290,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
     var panX=0,panY=0;
 
-
     $("#timeline").bind("mouseleave", function(e)
     {
         rubberBandHide();
     });
-
 
     $("#timeline").bind("mousemove", function(e)
     {
@@ -1315,13 +1315,10 @@ CABLES.TL.UI.TimeLineUI=function()
 
         if(isDragging())return;
 
-
-
         rubberBandMove(e);
 
         e.preventDefault();
         e.stopPropagation();
-
     });
 
     var timeDisplayTexts=[];
@@ -1336,7 +1333,6 @@ CABLES.TL.UI.TimeLineUI=function()
         if(CABLES.TL.TIMESCALE>500) step=fps/10;
         // if(CABLES.TL.TIMESCALE>1000) step=fps/6;
         if(CABLES.TL.TIMESCALE>1000) step=fps/30;
-
 
         for(var i=0;i<100;i++)
         {
@@ -1384,9 +1380,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         var leftToCursorDiff=this.getPaperXFromTime(cursorTime-offsetLeftTime);
 
-
         CABLES.TL.TIMESCALE=v;
-
 
         var leftToCursorDiffAfter=this.getPaperXFromTime(cursorTime-offsetLeftTime);
         leftToCursorDiff=leftToCursorDiffAfter-leftToCursorDiff;
@@ -1444,8 +1438,6 @@ CABLES.TL.UI.TimeLineUI=function()
             var time=gui.scene().timer.getTime();
             setCursor(time);
             if(doCenter)self.centerCursor();
-
-
             if(lastTime!=time)
             {
                 lastTime=time;
@@ -1549,7 +1541,6 @@ CABLES.TL.UI.TimeLineUI=function()
                             anims[j].keys[i].setSelected(true);
                             count++;
                         }
-
                     }
                 }
             }
@@ -1640,9 +1631,6 @@ CABLES.TL.UI.TimeLineUI=function()
         }
     };
 
-
-
-
     this.moveSelectedKeysFinished=function()
     {
         for(var i in anims)
@@ -1665,13 +1653,9 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         var newPos=gui.timeLine().getCanvasCoordsMouse(e);
 
-
-
         // snap to cursor
         if( Math.abs(e.clientX-gui.timeLine().getTime()*CABLES.TL.TIMESCALE) <20 )
-        {
             newPos.x=gui.timeLine().getTime()*CABLES.TL.TIMESCALE;
-        }
 
         for(var i in anims)
         {
