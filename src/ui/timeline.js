@@ -1148,7 +1148,7 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         for(var anii in anims)
         {
-            anims[anii].defaultEasing=e;
+            // anims[anii].defaultEasing=e;
             for(var i in anims[anii].keys)
             {
                 anims[anii].removeUi();
