@@ -186,6 +186,7 @@ CABLES.TL.Key.prototype.initUI=function()
     {
         startMoveX=-1;
         startMoveY=-1;
+        gui.metaKeyframes.update();
         self.isDragging=false;
     };
 
@@ -263,6 +264,8 @@ CABLES.TL.Key.prototype.initUI=function()
             {
             }
         });
+
+        gui.metaKeyframes.update();
 
         self.isDragging=false;
     }
@@ -370,7 +373,7 @@ CABLES.TL.Anim.prototype.deleteKeyAt=function(t)
             return;
         }
     }
-
+    gui.metaKeyframes.update();
 };
 
 CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
@@ -407,6 +410,7 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
         }
     }
     this.sortKeys();
+    gui.metaKeyframes.update();
 };
 
 
@@ -576,9 +580,9 @@ CABLES.TL.UI.TimeLineUI=function()
         if(!gui.timeLine())return;
         $(document).bind("mousemove",mousemoveTime);
 
-if(newanim==anim)return;
-
+        if(newanim==anim)return;
         if(newanim && newanim!=tlEmpty)gui.showTiming();
+
 
         gui.metaKeyframes.setAnim(newanim);
 
