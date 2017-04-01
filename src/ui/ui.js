@@ -26,6 +26,7 @@ CABLES.UI.GUI=function()
     var _connection=null;
     var savedState=true;
     var metaCode=new CABLES.UI.MetaCode();
+    this.metaKeyframes=new CABLES.UI.MetaKeyframes();
     this.bookmarks=new CABLES.UI.Bookmarks();
     this.preview=new CABLES.UI.Preview();
 
@@ -1279,6 +1280,8 @@ CABLES.UI.GUI=function()
         $('#meta_content_'+which).show();
 
         if(which=='code') self.showMetaCode();
+        if(which=='keyframes') self.metaKeyframes.show();
+
         if(which=='profiler') self.showProfiler();
         if(which=='debug') self.showMetaUiDebug();
         if(which=='screen') self.showMetaScreen();

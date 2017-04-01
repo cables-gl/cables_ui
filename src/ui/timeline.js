@@ -323,6 +323,16 @@ CABLES.TL.Anim.prototype.hasSelectedKeys=function()
     for(var i in this.keys)if(this.keys[i].selected)return true;
 };
 
+CABLES.TL.Anim.prototype.moveKeyAt=function(t,nt)
+{
+    for(var i in this.keys)
+        if(this.keys[i].time==t)
+        {
+            this.keys[i].time=nt;
+            this.sortKeys();
+        }
+};
+
 CABLES.TL.Anim.prototype.show=function()
 {
     if(gui.timeLine())
@@ -437,6 +447,7 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         return fps;
     };
+
 
     function getFrame(time)
     {
@@ -566,6 +577,8 @@ CABLES.TL.UI.TimeLineUI=function()
         $(document).bind("mousemove",mousemoveTime);
 
         if(newanim && newanim!=tlEmpty)gui.showTiming();
+
+        gui.metaKeyframes.setAnim(newanim);
 
         removeDots();
 
@@ -1402,10 +1415,12 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         return (cursorTime> self.getTimeFromPaper(viewBox.x)  && cursorTime < self.getTimeFromPaper(viewBox.w)+self.getTimeFromPaper(viewBox.x));
     };
+
     this.getPaperXFromTime=function(t)
     {
         return t*CABLES.TL.TIMESCALE;
     };
+
     this.getTimeFromPaper=function(offsetX)
     {
         var time=offsetX;

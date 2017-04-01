@@ -1326,16 +1326,15 @@ console.log(URL.createObjectURL(screenBlob));
               timeoutFpsLimit=setTimeout(function()
               {
                   self.scene.config.fpsLimit=fpsLimitBefore;
-
               },100);
 
-              timeoutPan=setTimeout(function()
-              {
+              // timeoutPan=setTimeout(function()
+              // {
 
                 self.updateViewBox();
-                clearTimeout(timeoutPan);
+                // clearTimeout(timeoutPan);
 
-                },25);
+                // },25);
             }
 
             lastMouseMoveEvent=e;
