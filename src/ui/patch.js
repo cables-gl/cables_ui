@@ -30,6 +30,7 @@ CABLES.UI.Patch=function(_gui)
     var timeoutPan=0;
     var timeoutFpsLimit=0;
     var fpsLimitBefore=0;
+    var timeoutRubberBand=-1;
 
     var subPatchViewBoxes=[];
 
@@ -932,13 +933,7 @@ console.log(URL.createObjectURL(screenBlob));
         $('#options').html(html);
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
-
-
-
     }
-
-
-
 
     this.selectAllOpsSubPatch=function(subPatch)
     {
@@ -1000,36 +995,46 @@ console.log(URL.createObjectURL(screenBlob));
                     "fill-opacity": 0.08
                });
 
-            for(var i in self.ops)
-            {
-                if(!self.ops[i].isHidden() )
-                {
-                    var rect=self.ops[i].oprect.getRect();
-                    if(rect && rect.matrix)
-                    {
-                        var opX=rect.matrix.e;
-                        var opY=rect.matrix.f;
-                        var opW=rect.attr("width");
-                        var opH=rect.attr("height");
 
-                        if(
-                            (opX>start.x && opX<end.x && opY>start.y && opY<end.y) ||  // left upper corner
-                            (opX+opW>start.x && opX+opW<end.x && opY+opH>start.y && opY+opH<end.y)  // right bottom corner
-                            )
-                        {
-                            self.addSelectedOp(self.ops[i]);
-                            self.ops[i].setSelected(true);
-                        }
-                        else
-                        {
-                            self.removeSelectedOp(self.ops[i]);
-                            self.ops[i].setSelected(false);
-                        }
-                    }
-                }
-            }
+             if(timeoutRubberBand==-1)
+                 timeoutRubberBand=setTimeout(function()
+                 {
+                      for(var i in self.ops)
+                      {
+                          if(!self.ops[i].isHidden() )
+                          {
+                              var rect=self.ops[i].oprect.getRect();
+                              if(rect && rect.matrix)
+                              {
+                                  var opX=rect.matrix.e;
+                                  var opY=rect.matrix.f;
+                                  var opW=rect.attr("width");
+                                  var opH=rect.attr("height");
 
-            if(selectedOps.length!==0) setStatusSelectedOps();
+                                  if(
+                                      (opX>start.x && opX<end.x && opY>start.y && opY<end.y) ||  // left upper corner
+                                      (opX+opW>start.x && opX+opW<end.x && opY+opH>start.y && opY+opH<end.y)  // right bottom corner
+                                      )
+                                  {
+                                      self.addSelectedOp(self.ops[i]);
+                                      self.ops[i].setSelected(true);
+                                  }
+                                  else
+                                  {
+                                      self.removeSelectedOp(self.ops[i]);
+                                      self.ops[i].setSelected(false);
+                                  }
+                              }
+                          }
+                      }
+
+                      if(selectedOps.length!==0) setStatusSelectedOps();
+                      timeoutRubberBand=-1;
+
+                  },100);
+
+
+
         }
     }
 
@@ -1312,28 +1317,27 @@ console.log(URL.createObjectURL(screenBlob));
 
             if(lastMouseMoveEvent && ( e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
-              var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
-              var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
+                var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
+                var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 
-              viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
-              viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
+                viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
+                viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
-              if(self.scene.config.fpsLimit!=10)fpsLimitBefore=self.scene.config.fpsLimit;
-              self.scene.config.fpsLimit=10;
-              // self.updateViewBox();
+                if(self.scene.config.fpsLimit!=10)fpsLimitBefore=self.scene.config.fpsLimit;
+                self.scene.config.fpsLimit=10;
+                // self.updateViewBox();
 
-              clearTimeout(timeoutFpsLimit);
-              timeoutFpsLimit=setTimeout(function()
-              {
+                clearTimeout(timeoutFpsLimit);
+                timeoutFpsLimit=setTimeout(function()
+                {
                   self.scene.config.fpsLimit=fpsLimitBefore;
-              },100);
+                },100);
 
-              // timeoutPan=setTimeout(function()
-              // {
+                // timeoutPan=setTimeout(function()
+                // {
 
                 self.updateViewBox();
                 // clearTimeout(timeoutPan);
-
                 // },25);
             }
 
@@ -1353,8 +1357,12 @@ console.log(URL.createObjectURL(screenBlob));
 
     this.removeDeadLinks=function()
     {
-        for(var i in self.ops)
-            self.ops[i].removeDeadLinks();
+        setTimeout(function()
+        {
+            for(var i in self.ops)
+                self.ops[i].removeDeadLinks();
+                console.log("removeDeadLinks");
+        },10);
     };
 
     function doAddOp(uiOp)
