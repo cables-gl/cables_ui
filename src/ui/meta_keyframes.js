@@ -34,14 +34,10 @@ CABLES.UI.MetaKeyframes.prototype.addKey=function()
     if(v==null)return;
 
     var values=v.split(" ");
-    console.log("frame:",values[0]);
-    console.log("value:",values[1]);
 
     gui.timeLine().getAnim().setValue(values[0]/gui.timeLine().getFPS(),values[1]||0);
     gui.timeLine().refresh();
     this.update();
-
-
 };
 
 CABLES.UI.MetaKeyframes.prototype.setAnim=function(anim)

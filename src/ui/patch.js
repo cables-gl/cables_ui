@@ -670,7 +670,12 @@ CABLES.UI.Patch=function(_gui)
         if(_name)name=_name;
         var data=gui.patch().scene.serialize(true);
 
-        data.ui={viewBox:{}};
+        data.ui={
+            "viewBox":{},
+            "timeLineLength":gui.timeLine().getTimeLineLength()
+        };
+
+
         data.ui.bookmarks=gui.bookmarks.getBookmarks();
 
         data.ui.viewBox.w=viewBox.w;
@@ -1063,6 +1068,9 @@ console.log(URL.createObjectURL(screenBlob));
                 gui.rendererHeight=proj.ui.renderer.h;
                 gui.setLayout();
             }
+
+            gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
+
         }
         self.updateViewBox();
         currentSubPatch=0;

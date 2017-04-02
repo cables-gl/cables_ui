@@ -263,25 +263,28 @@ CABLES.UI.GUI=function()
         $('#timing').css('width',window.innerWidth-self.rendererWidth-2);
         $('#timing').css('bottom',0);
 
-
-
-
         if(showTiming)
         {
             $('#timing').css('height',this.timingHeight);
 
-            $('#timetimeline').css('width',window.innerWidth-self.rendererWidth-2);
-            $('#timetimeline').css('height',this.timingHeight-timedisplayheight);
-            $('#timetimeline').css('margin-top',timelineUiHeight);
+            // $('#timetimeline').css('width',window.innerWidth-self.rendererWidth-2);
+            // $('#timetimeline').css('height',this.timingHeight-timedisplayheight);
 
+            $('#overviewtimeline').css('margin-top',timelineUiHeight);
+            $('#overviewtimeline svg').css('width',window.innerWidth-self.rendererWidth-2);
+            $('#overviewtimeline svg').css('height',25);
+
+            $('#timetimeline').css('margin-top',timelineUiHeight+timedisplayheight);
             $('#timetimeline svg').css('width',window.innerWidth-self.rendererWidth-2);
             $('#timetimeline svg').css('height',this.timingHeight-timedisplayheight-timelineUiHeight);
 
             $('#timeline svg').css('width',window.innerWidth-self.rendererWidth-2);
             $('#timeline svg').css('height',this.timingHeight-timedisplayheight);
-            $('#timeline svg').css('margin-top',timelineUiHeight+timedisplayheight);
+            $('#timeline svg').css('margin-top',timelineUiHeight+timedisplayheight+timedisplayheight);
+
             $('#timeline svg').show();
             $('#timetimeline').show();
+            $('#overviewtimeline').show();
             $('#keycontrols').show();
 
             $('#splitterTimeline').show();
@@ -290,6 +293,7 @@ CABLES.UI.GUI=function()
         }
         else
         {
+            $('#overviewtimeline').hide();
             $('#timelineTitle').hide();
             $('#keycontrols').hide();
             $('#timetimeline').hide();

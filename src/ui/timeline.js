@@ -1,4 +1,5 @@
 
+
 CABLES.TL.UI=CABLES.TL.UI || {};
 
 CABLES.TL.Key.prototype.isUI=true;
@@ -417,18 +418,21 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
 CABLES.TL.UI.TimeLineUI=function()
 {
     var self=this;
-
+    var projectLength=20;
     var tlEmpty=new CABLES.TL.Anim();
     var anim=null;//tlEmpty;//new CABLES.TL.Anim();
     var viewBox={x:-10,y:-170,w:1200,h:400};
     var fps=30;
     var cursorTime=0.0;
+    var centerCursorTimeout=-1;
 
     var anims=[];
 
     var paper= Raphael("timeline", 0,0);
     var paperTime= Raphael("timetimeline", 0,0);
+    var paperOverview= Raphael("overviewtimeline", 0,0);
     var isScrollingTime=false;
+    var isScrollingOverview=false;
     var enabled=false;
     var doCenter=false;
 
@@ -437,6 +441,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var mouseRubberBandStartPos=null;
     var mouseRubberBandPos=null;
     var rubberBandRect=null;
+    var overviewRect=null;
     var firstTimeLine=true;
     var updateTimer=null;
     var timeDisplayMode=true;
@@ -446,6 +451,29 @@ CABLES.TL.UI.TimeLineUI=function()
 
     var cursorLineDisplay = paperTime.path("M 0 0 L 10 10");
     cursorLineDisplay.attr({stroke: CABLES.UI.uiConfig.colorCursor, "stroke-width": 2});
+
+    overviewRect=paperOverview.rect( 0,0,10,10).attr({
+        x:0,y:0,width:20,height:30,
+        "stroke-width": 0,
+        "fill-opacity": 1,
+        "fill":"#333"
+    });
+
+    var cursorLineOverview = paperOverview.path("M 0 0 L 10 10");
+    cursorLineOverview.attr({stroke: "#ffffff", "stroke-width": 1});
+
+
+
+
+    this.setTimeLineLength=function(l)
+    {
+        projectLength=l;
+    };
+
+    this.getTimeLineLength=function()
+    {
+        return projectLength;
+    };
 
     this.getFPS=function()
     {
@@ -566,8 +594,12 @@ CABLES.TL.UI.TimeLineUI=function()
 
     function mousemoveTime(e)
     {
-        if(isScrollingTime)
-            scrollTime(e);
+        if(isScrollingTime) scrollTime(e);
+    }
+
+    function mousemoveOverview(e)
+    {
+        if(isScrollingOverview) scrollTimeOverview(e);
     }
 
     this.getAnim=function()
@@ -644,10 +676,31 @@ CABLES.TL.UI.TimeLineUI=function()
         if(time<0)time=0;
         if(isNaN(time))time=0;
 
+
+
+        var pixel=$('#timeline').width()* (time/projectLength);
+
+        cursorLineOverview.attr({path: "M "+pixel+" -1000 L" + pixel + " " + 100 });
+
+// console.log('time',time);
+// console.log('projectLength',projectLength);
+// console.log('time/projectLength*100',time/projectLength*100);
+
+var start=(viewBox.x/CABLES.TL.TIMESCALE)/projectLength;
+var width=(viewBox.w/CABLES.TL.TIMESCALE)/projectLength;
+overviewRect.attr(
+    {
+        "x":start*$('#timeline').width(),
+        "width":width*$('#timeline').width(),
+    });
+
+
+
         cursorTime=time;
         time=time*CABLES.TL.TIMESCALE;
         cursorLine.attr({path: "M "+time+" -1000 L" + time + " " + 1110 });
-        cursorLineDisplay.attr({path: "M "+time+" -1000 L" + time + " " + 1110 });
+        cursorLineDisplay.attr({path: "M "+time+" -1000 L" + time + " " + 30 });
+
     }
 
     var zeroLine2 = paper.path("M 0 0 L 111000 0");
@@ -656,6 +709,14 @@ CABLES.TL.UI.TimeLineUI=function()
     this.updateViewBox=function()
     {
         if(!enabled) removeDots();
+
+        paperOverview.setViewBox(
+            0,
+            0,
+            $('#timeline').width(),
+            25,
+            true
+        );
 
         paper.setViewBox(
             viewBox.x,
@@ -712,7 +773,8 @@ CABLES.TL.UI.TimeLineUI=function()
 
                 // var numSteps=500;
                 var start=viewBox.x/CABLES.TL.TIMESCALE;
-                var width=viewBox.w/CABLES.TL.TIMESCALE*1.2;
+                var width=viewBox.w/CABLES.TL.TIMESCALE;
+
                 var ik=0;
 
                 var timePoints=[0];
@@ -1224,9 +1286,10 @@ CABLES.TL.UI.TimeLineUI=function()
     {
         startMouseDown=Date.now();
     });
+
     $('#timeline').bind("mouseup", function (event)
     {
-        if(Date.now()-startMouseDown<100 && !event.shiftKey && !isScrollingTime && !isDragging())self.unselectKeys();
+        if(Date.now()-startMouseDown<100 && !event.shiftKey && !isScrollingTime && !isScrollingOverview && !isDragging())self.unselectKeys();
 
         rubberBandHide();
 
@@ -1240,16 +1303,36 @@ CABLES.TL.UI.TimeLineUI=function()
         isScrollingTime=false;
     });
 
+    $("#overviewtimeline").bind("mouseup", function(e)
+    {
+        isScrollingOverview=false;
+    });
+
     window.addEventListener('resize', function(event)
     {
         self.updateViewBox();
     });
 
-
     $(document).bind("mouseup",function(e)
     {
         isScrollingTime=false;
+        isScrollingOverview=false;
     });
+
+    function scrollTimeOverview(e)
+    {
+        isScrollingOverview=true;
+        var time=e.clientX/$('#timeline').width();
+        time=projectLength*time;
+
+        gui.scene().timer.setTime(time);
+        clearTimeout(centerCursorTimeout);
+        centerCursorTimeout=setTimeout(function()
+        {
+            self.centerCursor();
+        },100);
+
+    }
 
     function scrollTime(e)
     {
@@ -1279,6 +1362,29 @@ CABLES.TL.UI.TimeLineUI=function()
         e=mouseEvent(e);
         scrollTime(e);
         e.preventDefault();
+    });
+
+    $("#overviewtimeline").bind("mousedown", function(e)
+    {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if(e.which==3)
+        {
+            var l=prompt("projectlength",Math.floor(projectLength*gui.timeLine().getFPS()));
+            if(l==null)return;
+            projectLength=parseInt(l)/gui.timeLine().getFPS();
+        }
+        else
+        {
+            $(document).bind("mousemove",mousemoveOverview);
+            $('#timeline').focus();
+            e=mouseEvent(e);
+        }
+        scrollTimeOverview(e);
+        e.preventDefault();
+        e.stopPropagation();
+
     });
 
     function isDragging()
