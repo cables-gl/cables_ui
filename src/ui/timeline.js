@@ -467,7 +467,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
     this.setTimeLineLength=function(l)
     {
-        projectLength=l;
+        projectLength=l||20;
     };
 
     this.getTimeLineLength=function()
