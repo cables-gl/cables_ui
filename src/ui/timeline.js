@@ -725,13 +725,26 @@ overviewRect.attr(
             viewBox.h,false
         );
 
-        paperTime.setViewBox(
-            viewBox.x,
-            -200,
-            $('#timeline').width(),
-            400,false
-        );
+try
+{
+    paperTime.setViewBox(
+        viewBox.x,
+        -200,
+        $('#timeline').width(),
+        400,false
+    );
 
+}
+catch(e)
+{
+    console.log(e);
+    console.log('strange values????',viewBox.x,
+                -200,
+                $('#timeline').width(),
+                400,false
+    );
+
+}
         viewBox.w=$('#timeline').width();
 
         paperTime.canvas.setAttribute('preserveAspectRatio', 'xMinYMin slice');
@@ -1417,6 +1430,8 @@ overviewRect.attr(
             var startTime=viewBox.x/CABLES.TL.TIMESCALE;
 
             self.updateViewBox();
+            updateTimeDisplay();
+
         }
 
         panX=self.getCanvasCoordsMouse(e).x;
@@ -1433,36 +1448,55 @@ overviewRect.attr(
     var timeDisplayTexts=[];
     function updateTimeDisplay()
     {
-        var step=fps*5;
+        var step=1;
 
-        step=fps+fps/4;
-        if(CABLES.TL.TIMESCALE>30) step=fps/2;
-        if(CABLES.TL.TIMESCALE>60) step=fps/3;
-        if(CABLES.TL.TIMESCALE>300) step=fps/6;
-        if(CABLES.TL.TIMESCALE>500) step=fps/10;
-        // if(CABLES.TL.TIMESCALE>1000) step=fps/6;
-        if(CABLES.TL.TIMESCALE>1000) step=fps/30;
+        var start=(viewBox.x/CABLES.TL.TIMESCALE);
+        var width=viewBox.w/CABLES.TL.TIMESCALE;
 
-        for(var i=0;i<100;i++)
+        if(width>1.5)step=5;
+        if(width>5.5)step=10;
+        if(width>13)step=20;
+        if(width>20)step=100;
+
+        var startFrame=Math.floor( (start*self.getFPS() ) )-5;
+        var endFrame=Math.floor( ((start+width)*self.getFPS() ) )+5;
+
+        for(var i=0;i<timeDisplayTexts.length;i++)
         {
-            var frame=i*step;
-            var t;
-            if(i>timeDisplayTexts.length-1)
+            timeDisplayTexts[i].hide();
+        }
+
+        var count=0;
+        for(var i=startFrame;i<endFrame;i++)
+        {
+            if(i%step==0)
             {
-                t = paperTime.text(10, -80, "");
-                timeDisplayTexts.push(t);
+                var frame=i;
+                if(frame<0)continue;
+                var t;
+                var textIndex=(i-startFrame);
+
+                if(count>timeDisplayTexts.length-1)
+                {
+                    t = paperTime.text(10, -80, "");
+                    timeDisplayTexts.push(t);
+                }
+
+
+                var txt=i;
+
+                t=timeDisplayTexts[count];
+                t.show();
+                t.attr({
+                    "text":""+txt,
+                    "x":(i/fps)*CABLES.TL.TIMESCALE,
+                    "y":-190,
+                    "fill":'#aaa',
+                    "font-size": 12 });
+
+                count++;
+
             }
-
-            var txt=parseInt(frame,10);
-            if(!timeDisplayMode)txt=(''+i*step/fps).substr(0, 4)+"s ";
-
-            t=timeDisplayTexts[i];
-            t.attr({
-                "text":""+txt,
-                "x":i*step/fps*CABLES.TL.TIMESCALE,
-                "y":-190,
-                "fill":'#aaa',
-                "font-size": 12 });
         }
     }
 
