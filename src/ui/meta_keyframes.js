@@ -28,6 +28,22 @@ CABLES.UI.MetaKeyframes.prototype.show=function()
     $('#meta_content_keyframes').html(html);
 };
 
+CABLES.UI.MetaKeyframes.prototype.addKey=function()
+{
+    var v=prompt("New Keyframe [frame value]");
+    if(v==null)return;
+
+    var values=v.split(" ");
+    console.log("frame:",values[0]);
+    console.log("value:",values[1]);
+
+    gui.timeLine().getAnim().setValue(values[0]/gui.timeLine().getFPS(),values[1]||0);
+    gui.timeLine().refresh();
+    this.update();
+
+
+};
+
 CABLES.UI.MetaKeyframes.prototype.setAnim=function(anim)
 {
     if(CABLES.UI.userSettings.get("metatab")=="keyframes")

@@ -583,7 +583,6 @@ CABLES.TL.UI.TimeLineUI=function()
         if(newanim==anim)return;
         if(newanim && newanim!=tlEmpty)gui.showTiming();
 
-
         gui.metaKeyframes.setAnim(newanim);
 
         removeDots();
@@ -633,7 +632,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         if(firstTimeLine)
         {
-            firstTimeLin=false;
+            firstTimeLine=false;
             self.scaleWidth();
             self.scaleHeight();
         }
