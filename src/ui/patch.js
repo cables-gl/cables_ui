@@ -1321,7 +1321,11 @@ console.log(URL.createObjectURL(screenBlob));
 
             e=mouseEvent(e);
 
-            if(mouseRubberBandStartPos && e.buttons!=CABLES.UI.MOUSE_BUTTON_LEFT) rubberBandHide();
+            if(CABLES.UI.MOUSEOVERPORT || (mouseRubberBandStartPos && e.buttons!=CABLES.UI.MOUSE_BUTTON_LEFT))
+            {
+                rubberBandHide();
+                return;
+            }
 
             if(lastMouseMoveEvent && ( e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {

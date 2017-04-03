@@ -1343,7 +1343,7 @@ catch(e)
         centerCursorTimeout=setTimeout(function()
         {
             self.centerCursor();
-        },100);
+        },50);
 
     }
 
@@ -1481,7 +1481,6 @@ catch(e)
                     t = paperTime.text(10, -80, "");
                     timeDisplayTexts.push(t);
                 }
-
 
                 var txt=i;
 
