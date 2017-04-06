@@ -49,13 +49,10 @@ CABLES.UI.ServerOps=function(gui)
             if(openEditors[i].name==obj.name && openEditors[i].type==obj.type )return;
         }
 
-
         openEditors.push(obj);
 
         CABLES.UI.userSettings.set("openEditors",openEditors);
         CABLES.UI.userSettings.set("editortab",obj.name);
-
-        console.log("openEditors",openEditors.length);
     }
 
     this.load=function(cb)
@@ -76,7 +73,6 @@ CABLES.UI.ServerOps=function(gui)
                 {
                     for(var i=0;i<edits.length;i++)
                     {
-                        console.log(edits[i].type,edits[i].name);
                         if(edits[i].type=="op")
                         {
                             this.edit(edits[i].name);

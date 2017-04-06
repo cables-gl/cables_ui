@@ -1283,7 +1283,7 @@ console.log(URL.createObjectURL(screenBlob));
                 if(lastZoomDrag!=-1)
                 {
                     var delta=lastZoomDrag-e.clientY;
-                    if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
+                    // if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
                     {
                         viewBox.x+=delta/2;
                         viewBox.y+=delta/2;
