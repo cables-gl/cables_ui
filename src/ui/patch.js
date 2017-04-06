@@ -894,13 +894,13 @@ console.log(URL.createObjectURL(screenBlob));
     this.updateViewBox=function()
     {
 
-        if(viewBox.w<300)
-        {
-            viewBox.w=oldVBW;
-            viewBox.h=oldVBH;
-            viewBox.x=oldVBX;
-            viewBox.y=oldVBY;
-        }
+        // if(viewBox.w<300)
+        // {
+        //     viewBox.w=oldVBW;
+        //     viewBox.h=oldVBH;
+        //     viewBox.x=oldVBX;
+        //     viewBox.y=oldVBY;
+        // }
 
         oldVBW=viewBox.w;
         oldVBH=viewBox.h;
@@ -1154,7 +1154,6 @@ console.log(URL.createObjectURL(screenBlob));
         $('#patch svg').bind("mousewheel", function (event,delta,nbr)
         {
 
-
             if(!event.metaKey && !event.altKey && !event.ctrlKey && CABLES.UI.userSettings.get("touchpadmode"))
             {
                 if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) event.deltaY*=0.5;
@@ -1180,6 +1179,9 @@ console.log(URL.createObjectURL(screenBlob));
 
 
             event=mouseEvent(event);
+
+            delta=(viewBox.w/delta)*10;
+
             if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
             {
                 // viewBox.x+=delta/2;
