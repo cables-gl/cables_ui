@@ -41,10 +41,6 @@ CABLES.UI.MetaCode=function(projectId)
 
         if(op)
         {
-
-console.log('loading meta code ',op.objName);
-
-
             CABLES.api.get(
                 'op/'+op.objName+'/info',
                 function(res)

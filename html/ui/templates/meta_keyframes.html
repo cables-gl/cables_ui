@@ -1,0 +1,42 @@
+
+<script id="meta_keyframes" type="text/x-handlebars-template">
+
+
+<h4>keyframes {{op.objName}}</h4>
+
+
+{{#if anim}}
+<a onclick="gui.metaKeyframes.addKey();" class="button">Add Keyframe</a>
+<br/><br/>
+{{/if}}
+
+
+<table>
+    <tr>
+        <th></th>
+        <th>frame</th>
+        <th>value</th>
+        <th>easing</th>
+        <th></th>
+    </tr>
+    {{#each anim.keys}}
+        <tr>
+            <td>
+                <a onclick="var newFrame=prompt('new frame');if(newFrame==null){return;}gui.timeLine().getAnim().moveKeyAt({{time}},parseInt(newFrame)/gui.timeLine().getFPS() );gui.metaKeyframes.update();gui.timeLine().refresh()" class="button fa fa-arrows-h tt" data-tt="move"></a>
+            </td>
+
+            <td onclick="gui.scene().timer.setTime({{time}});gui.metaKeyframes.update()" style="cursor:pointer;">{{frame}}&nbsp;&nbsp;</td>
+            <td onclick="var newValue=prompt('value');if(newValue==null){return;}gui.timeLine().getAnim().setValue({{time}},newValue);gui.metaKeyframes.update()" style="cursor:pointer;">{{value}}</td>
+            <td>{{_easing}}</td>
+            <td>
+                <a onclick="gui.timeLine().getAnim().deleteKeyAt({{time}});gui.metaKeyframes.update()" class="button fa fa-times"></a>
+            </td>
+        </tr>
+    {{/each}}
+</table>
+
+
+
+
+
+</script>

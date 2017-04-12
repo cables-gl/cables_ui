@@ -26,6 +26,7 @@ CABLES.UI.GUI=function()
     var _connection=null;
     var savedState=true;
     var metaCode=new CABLES.UI.MetaCode();
+    this.metaKeyframes=new CABLES.UI.MetaKeyframes();
     this.bookmarks=new CABLES.UI.Bookmarks();
     this.preview=new CABLES.UI.Preview();
 
@@ -262,25 +263,28 @@ CABLES.UI.GUI=function()
         $('#timing').css('width',window.innerWidth-self.rendererWidth-2);
         $('#timing').css('bottom',0);
 
-
-
-
         if(showTiming)
         {
             $('#timing').css('height',this.timingHeight);
 
-            $('#timetimeline').css('width',window.innerWidth-self.rendererWidth-2);
-            $('#timetimeline').css('height',this.timingHeight-timedisplayheight);
-            $('#timetimeline').css('margin-top',timelineUiHeight);
+            // $('#timetimeline').css('width',window.innerWidth-self.rendererWidth-2);
+            // $('#timetimeline').css('height',this.timingHeight-timedisplayheight);
 
+            $('#overviewtimeline').css('margin-top',timelineUiHeight);
+            $('#overviewtimeline svg').css('width',window.innerWidth-self.rendererWidth-2);
+            $('#overviewtimeline svg').css('height',25);
+
+            $('#timetimeline').css('margin-top',timelineUiHeight+timedisplayheight);
             $('#timetimeline svg').css('width',window.innerWidth-self.rendererWidth-2);
             $('#timetimeline svg').css('height',this.timingHeight-timedisplayheight-timelineUiHeight);
 
             $('#timeline svg').css('width',window.innerWidth-self.rendererWidth-2);
             $('#timeline svg').css('height',this.timingHeight-timedisplayheight);
-            $('#timeline svg').css('margin-top',timelineUiHeight+timedisplayheight);
+            $('#timeline svg').css('margin-top',timelineUiHeight+timedisplayheight+timedisplayheight);
+
             $('#timeline svg').show();
             $('#timetimeline').show();
+            $('#overviewtimeline').show();
             $('#keycontrols').show();
 
             $('#splitterTimeline').show();
@@ -289,6 +293,7 @@ CABLES.UI.GUI=function()
         }
         else
         {
+            $('#overviewtimeline').hide();
             $('#timelineTitle').hide();
             $('#keycontrols').hide();
             $('#timetimeline').hide();
@@ -1003,8 +1008,12 @@ CABLES.UI.GUI=function()
                     cb();
 
                     self.patch().setProject(proj);
-                    if(proj.ui) self.bookmarks.set(proj.ui.bookmarks);
+                    if(proj.ui)
+                    {
+                        self.bookmarks.set(proj.ui.bookmarks);
+                    }
                     metaCode.init();
+                    self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
                 });
             },function()
             {
@@ -1275,6 +1284,8 @@ CABLES.UI.GUI=function()
         $('#meta_content_'+which).show();
 
         if(which=='code') self.showMetaCode();
+        if(which=='keyframes') self.metaKeyframes.show();
+
         if(which=='profiler') self.showProfiler();
         if(which=='debug') self.showMetaUiDebug();
         if(which=='screen') self.showMetaScreen();

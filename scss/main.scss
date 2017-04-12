@@ -912,6 +912,22 @@ input[type=text]:active, input[type=text]:focus {
     left:10px;
 }
 
+
+
+#overviewtimeline
+{
+    border:none;
+    position: absolute;
+    background-color: #222;
+    height:25px;
+    max-height:25px;
+    overflow: hidden;
+    svg
+    {
+    }
+}
+
+
 #timetimeline
 {
     border:1px solid transparent;

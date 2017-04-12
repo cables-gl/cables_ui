@@ -15,4 +15,12 @@
             <br/>
         {{/each}}
 
+        <h3>Subpatches</h3>
+
+        {{#each subPatches}}
+            - <a onclick="gui.patch().setCurrentSubPatch('{{id}}');">{{name}}</a>
+            <br/>
+        {{/each}}
+
+
 </script>

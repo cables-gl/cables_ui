@@ -14,13 +14,9 @@ CABLES.UI.ServerOps=function(gui)
     var openEditors=[];
     var lastTab=CABLES.UI.userSettings.get('editortab');
 
-    console.log('lasttab',lastTab);
-
-
     function removeOpenEditor(obj)
     {
         var index=-1;
-
         var found=true;
 
         while(found)
@@ -34,20 +30,15 @@ CABLES.UI.ServerOps=function(gui)
                     found=true;
                     openEditors.splice(index, 1);
                     CABLES.UI.userSettings.set("openEditors",openEditors);
-
-                    console.log("FOUND CLOSED");
                     break;
                 }
             }
-
         }
 
         if(index==-1)
         {
             console.log('not found! ',obj.name,obj.type);
         }
-
-
     }
 
     function saveOpenEditor(obj)
@@ -58,13 +49,10 @@ CABLES.UI.ServerOps=function(gui)
             if(openEditors[i].name==obj.name && openEditors[i].type==obj.type )return;
         }
 
-
         openEditors.push(obj);
 
         CABLES.UI.userSettings.set("openEditors",openEditors);
         CABLES.UI.userSettings.set("editortab",obj.name);
-
-        console.log("openEditors",openEditors.length);
     }
 
     this.load=function(cb)
@@ -81,13 +69,10 @@ CABLES.UI.ServerOps=function(gui)
 
                 var edits=CABLES.UI.userSettings.get("openEditors");
 
-                console.log(edits);
                 if(edits)
                 {
-                    console.log('open editors...',edits.length);
                     for(var i=0;i<edits.length;i++)
                     {
-                        console.log(edits[i].type,edits[i].name);
                         if(edits[i].type=="op")
                         {
                             this.edit(edits[i].name);
@@ -512,8 +497,6 @@ CABLES.UI.ServerOps=function(gui)
 
     this.loadProjectLibs=function(proj,next)
     {
-        console.log('loading project libs...');
-
         var libsToLoad=[];
         var i=0;
 
@@ -523,8 +506,6 @@ CABLES.UI.ServerOps=function(gui)
         }
 
         libsToLoad=CABLES.uniqueArray(libsToLoad);
-
-        console.log(libsToLoad);
 
         if(libsToLoad.length===0)
         {

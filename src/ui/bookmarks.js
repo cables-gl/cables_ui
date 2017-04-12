@@ -7,7 +7,7 @@ CABLES.UI.Bookmarks=function()
 
     this.show=function()
     {
-
+        var subs=gui.patch().getSubPatches();
 
         var bm=[];
         for(var i in bookmarks)
@@ -32,16 +32,12 @@ CABLES.UI.Bookmarks=function()
             }
         }
 
-        var html = CABLES.UI.getHandleBarHtml('bookmarks', { "bookmarks":bm });
+        var html = CABLES.UI.getHandleBarHtml('bookmarks', { "bookmarks":bm,"subPatches":subs });
         $('#meta_content_bookmarks').html(html);
     };
 
     this.set=function(arr)
     {
-
-        console.log('setting bookmarks',arr);
-        // bookmarks.length=0;
-
         if(arr)
         {
             bookmarks=arr;

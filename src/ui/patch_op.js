@@ -75,15 +75,18 @@ function UiLink(port1, port2)
 
     this.hideAddButton=function()
     {
-        if(addCircle)addCircle.remove();
-        addCircle=null;
+        if(addCircle)
+        {
+            addCircle.remove();
+            addCircle=null;
 
-        if(this.linkLine)
-            this.linkLine.attr(
-            {
-                "stroke-opacity": 1, //0.4,
-                "stroke-width": 0.7
-            });
+            if(this.linkLine)
+                this.linkLine.attr(
+                {
+                    "stroke-opacity": 1, //0.4,
+                    "stroke-width": 0.7
+                });
+        }
     };
 
     this.showAddButton=function()
@@ -488,7 +491,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 lastShakeDir=false;
                 shakeCountP++;
                 clearTimeout(shakeTimeOut);
-                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },250);
+                shakeTimeOut=setTimeout(function(){ shakeCountP=0; shakeCountN=0; },250);
             }
             else
             if(shakeLastX-a<30 && !lastShakeDir)
@@ -496,7 +499,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 lastShakeDir=true;
                 shakeCountN++;
                 clearTimeout(shakeTimeOut);
-                shakeTimeOut=setTimeout(function(){ console.log('reset');shakeCountP=0; shakeCountN=0; },250);
+                shakeTimeOut=setTimeout(function(){ shakeCountP=0; shakeCountN=0; },250);
             }
             if(shakeCountP + shakeCountN>=5)
             {
@@ -750,6 +753,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
     this.setSelected=function(sel)
     {
+        if(isSelected==sel)return;
         group.toFront();
         isSelected=sel;
 
@@ -964,13 +968,13 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     this.showAddButtons=function()
     {
         if(this.isHidden())return;
-        self.removeDeadLinks();
+        // self.removeDeadLinks();
         for(var j in self.links) self.links[j].showAddButton();
     };
 
     this.hideAddButtons=function()
     {
-        self.removeDeadLinks();
+        // self.removeDeadLinks();
         for(var j in self.links) self.links[j].hideAddButton();
     };
 

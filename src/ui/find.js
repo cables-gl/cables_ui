@@ -32,7 +32,7 @@ CABLES.UI.Find=function()
     {
         var html='';
 
-        html+='<div onclick="gui.patch().setCurrentSubPatch('+op.getSubPatch()+');gui.patch().centerViewBox('+op.op.uiAttribs.translate.x+','+op.op.uiAttribs.translate.y+');gui.patch().setSelectedOpById(\''+op.op.id+'\');">';
+        html+='<div onclick="gui.patch().setCurrentSubPatch(\''+op.getSubPatch()+'\');gui.patch().centerViewBox('+op.op.uiAttribs.translate.x+','+op.op.uiAttribs.translate.y+');gui.patch().setSelectedOpById(\''+op.op.id+'\');$(\'#patch\').focus();">';
         html+='<h3>'+op.op.name+'</h3>';
         html+=''+op.op.objName;
         html+='</div>';
