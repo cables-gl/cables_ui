@@ -37,6 +37,7 @@ CABLES.UI.GUI=function()
 
     this.profiler=null;
     this.user=null;
+    this.onSaveProject=null;
 
 
     this.project=function()

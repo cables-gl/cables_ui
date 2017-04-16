@@ -745,7 +745,10 @@ console.log(URL.createObjectURL(screenBlob));
                             },
                             function(r)
                             {
-                                console.log(r);
+                                // console.log(r);
+
+                                if(gui.onSaveProject)gui.onSaveProject();
+
                                 gui.jobs().finish('uploadscreenshot');
                             });
                     };
@@ -1251,7 +1254,7 @@ console.log(URL.createObjectURL(screenBlob));
         {
             e=mouseEvent(e);
 
-            if(e.buttons!==CABLES.UI.MOUSE_BUTTON_LEFT) return;
+            // if(e.buttons!=CABLES.UI.MOUSE_BUTTON_LEFT) return;
 
             var x=gui.patch().getCanvasCoordsMouse(e).x;
             var y=gui.patch().getCanvasCoordsMouse(e).y;
@@ -1267,10 +1270,11 @@ console.log(URL.createObjectURL(screenBlob));
             }
             else
             {
-                viewBox.x=minimapBounds.x;
-                viewBox.y=minimapBounds.y;
-                viewBox.w=size;
-                viewBox.h=size;
+                self.centerViewBoxOps();
+                // viewBox.x=minimapBounds.x;
+                // viewBox.y=minimapBounds.y;
+                // viewBox.w=size;
+                // viewBox.h=size;
             }
             self.updateViewBox();
         };

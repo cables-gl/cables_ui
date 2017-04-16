@@ -5,6 +5,9 @@
 
     </body>
 
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+
 <script async type="text/javascript" src="/ui/js/libs.core.min.js"></script>
     <script>
         var CABLES = CABLES || {};
@@ -99,7 +102,11 @@
                                         setTimeout(waitForAce,100);
                                     }
                                     else
-                                    startUi();
+                                    {
+                                        if (window.module) module = window.module;
+                                        startUi();
+                                    }
+
 
                                 }
 

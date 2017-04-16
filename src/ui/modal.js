@@ -191,3 +191,27 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
     });
 
 };
+
+CABLES.UI.MODAL.showCode=function(title,code)
+{
+
+
+    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+    $('#modalcontent').append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
+
+    $('#modalcontent').append('<b>'+title+'</b> ');
+
+
+    $('#modalcontent').append('<br/><br/>');
+
+    $('#modalcontent').append('<br/><br/>');
+
+    $('#modalcontent').append('<div class="shaderErrorCode">'+code+'</div>');
+    $('#modalcontent').show();
+    $('#modalbg').show();
+
+    $('#modalbg').on('click',function(){
+        CABLES.UI.MODAL.hide(true);
+    });
+
+};
