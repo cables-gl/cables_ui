@@ -21,6 +21,8 @@ CABLES.UI.GUI=function()
     var _find=new CABLES.UI.Find();
     var _opselect=new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
+
+    this.patchConnection=new CABLES.PatchConnectionSender();
     this.opDocs=new CABLES.UI.OpDocs();
     // var _socket=null;
     var _connection=null;
@@ -565,7 +567,6 @@ CABLES.UI.GUI=function()
             CABLES.api.post('project',{"name":name },function(d)
             {
                 CABLES.UI.SELECTPROJECT.doReload=true;
-
                 document.location.href='#/project/'+d._id;
             });
 
@@ -1308,6 +1309,7 @@ CABLES.UI.GUI=function()
 
         window.onbeforeunload = function (event)
         {
+
             var message = 'unsaved content!';
             if(typeof event == 'undefined')
             {
@@ -1334,7 +1336,11 @@ CABLES.UI.GUI=function()
         favIconLink.href = '/favicon/favicon.ico';
 
         document.title=''+gui.patch().getCurrentProject().name;
-        window.onbeforeunload = null;
+        window.onbeforeunload = function()
+        {
+            gui.patchConnection.send(CABLES.PACO_CLEAR);
+
+        };
     };
 
     this.init=function()
