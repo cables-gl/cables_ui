@@ -1408,6 +1408,13 @@ console.log(URL.createObjectURL(screenBlob));
                 });
 
             }(op.id,op.objName);
+
+            gui.patchConnection.send(CABLES.PACO_OP_CREATE,
+                {
+                    "opId":op.id,
+                    "objName":op.objName
+                });
+
         }
 
         op.onAddPort=function(p)
