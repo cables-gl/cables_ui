@@ -1261,8 +1261,12 @@ console.log(URL.createObjectURL(screenBlob));
 
             var sizeSmall=650;
             var size=Math.max(minimapBounds.w,minimapBounds.h);
+
+            console.log("size",size);
+
             if(viewBox.w>=sizeSmall*2)
             {
+                console.log("zoom");
                 viewBox.x=x-sizeSmall/2;
                 viewBox.y=y-sizeSmall/2;
                 viewBox.w=sizeSmall;
@@ -1270,6 +1274,7 @@ console.log(URL.createObjectURL(screenBlob));
             }
             else
             {
+                console.log("center");
                 self.centerViewBoxOps();
                 // viewBox.x=minimapBounds.x;
                 // viewBox.y=minimapBounds.y;
