@@ -101,6 +101,8 @@ CABLES.UI.Port=function(thePort)
         else
         {
             self.opUi.isDragging=true;
+
+
             event=mouseEvent(event);
 
             linkingLine.updateEnd(
@@ -305,23 +307,37 @@ CABLES.UI.Port=function(thePort)
                         var isDragging=self.opUi.isDragging;
                         var selectedStartPort=CABLES.UI.selectedStartPort;
 
+                        var dist=Math.abs(coords.x-self.op.uiAttribs.translate.x )+Math.abs(coords.y-self.op.uiAttribs.translate.y );
+
                         if(Math.abs(coords.x-self.op.uiAttribs.translate.x )<50) coords.x=self.op.uiAttribs.translate.x;
                         if(Math.abs(coords.y-self.op.uiAttribs.translate.y )<40) coords.y=self.op.uiAttribs.translate.y+40;
 
                         var showSelect=function()
                         {
-                            if(links.length==1 && !isDragging) gui.opSelect().show(coords,null,selectedStartPort,links[0]);
-                                else gui.opSelect().show(coords,self.op,selectedStartPort);
+                            if( dist <10)
+                            {
+                                // port was clicked, not dragged, insert op directly into link
+                                gui.opSelect().show(coords,null,selectedStartPort,links[0]);
+                            }
+                            else
+                            {
+                                gui.opSelect().show(coords,self.op,selectedStartPort);
+                            }
                         };
 
-                        if( Math.abs(coords.x-self.op.uiAttribs.translate.x )+Math.abs(coords.y-self.op.uiAttribs.translate.y ) >30)
+                        if( dist >30)
                         {
-                            new CABLES.UI.SuggestOpDialog(self.op,CABLES.UI.selectedStartPort.name,event,coords,showSelect,function()
-                        {
-                            console.log('cancval');
-                        });
+                            new CABLES.UI.SuggestOpDialog(self.op,CABLES.UI.selectedStartPort.name,event,coords,showSelect,
+                                function()
+                                {
+                                    console.log('cancval');
+                                });
                         }
-                        else showSelect();
+                        else
+                        {
+
+                            showSelect();
+                        }
 
                     }
                 }

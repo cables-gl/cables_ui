@@ -1069,6 +1069,10 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         this.op.enabled=en;
         this.oprect.setEnabled(en);
 
+        if(en)gui.patchConnection.send(CABLES.PACO_OP_ENABLE, { "op":this.op.id });
+            else gui.patchConnection.send(CABLES.PACO_OP_DISABLE, { "op":this.op.id });
+
+
         // if(!en) this.op.unLinkTemporary();
         //     else this.op.preUnLinkTemporary();
 

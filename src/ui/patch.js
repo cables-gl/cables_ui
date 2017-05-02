@@ -1089,6 +1089,13 @@ console.log(URL.createObjectURL(screenBlob));
             CABLES.UI.MODAL.hideLoading();
             self.updateSubPatches();
 
+            gui.patchConnection.send(CABLES.PACO_LOAD,
+                {
+                    "patch":JSON.stringify(proj),
+                });
+
+
+
         });
 
     };
@@ -1406,6 +1413,13 @@ console.log(URL.createObjectURL(screenBlob));
                 });
 
             }(op.id,op.objName);
+
+            gui.patchConnection.send(CABLES.PACO_OP_CREATE,
+                {
+                    "opId":op.id,
+                    "objName":op.objName
+                });
+
         }
 
         op.onAddPort=function(p)
@@ -1647,6 +1661,15 @@ console.log(URL.createObjectURL(screenBlob));
                                 self.ops[i].links[j].p2.thePort.parent.id
                                 );
 
+                            gui.patchConnection.send(CABLES.PACO_UNLINK,
+                                {
+                                    "op1":self.ops[i].links[j].p1.thePort.parent.id,
+                                    "op2":self.ops[i].links[j].p2.thePort.parent.id,
+                                    "port1":self.ops[i].links[j].p1.thePort.getName(),
+                                    "port2":self.ops[i].links[j].p2.thePort.getName(),
+                                });
+
+
                             self.ops[i].links[j].hideAddButton();
 
                             self.ops[i].links[j].p1.updateUI();
@@ -1695,6 +1718,13 @@ console.log(URL.createObjectURL(screenBlob));
 
             if(!uiPort1.opUi.isHidden()) thelink.show();
 
+            gui.patchConnection.send(CABLES.PACO_LINK,
+                {
+                    "op1":p1.parent.id,
+                    "op2":p2.parent.id,
+                    "port1":p1.name,
+                    "port2":p2.name,
+                });
 
 
             // todo: update is too often ?? check if current op is linked else do not update!!!
@@ -1731,6 +1761,12 @@ console.log(URL.createObjectURL(screenBlob));
                     }
                 });
             }(op.objName,op.id);
+
+            gui.patchConnection.send(CABLES.PACO_OP_DELETE,
+                {
+                    "op":op.id,
+                });
+
 
             for(var i in self.ops)
             {
@@ -2668,7 +2704,14 @@ console.log(URL.createObjectURL(screenBlob));
                     }
 
 
-                    op.portsIn[index].val=v;
+                    op.portsIn[index].set(v);
+                    gui.patchConnection.send(CABLES.PACO_VALUECHANGE,
+                        {
+                            "op":op.id,
+                            "port":op.portsIn[index].name,
+                            "v":v
+                        });
+                    // console.log("val...",v,op.portsIn[index]);
 
                     checkDefaultValue(op,index);
 
