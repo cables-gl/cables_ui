@@ -172,6 +172,7 @@ CABLES.UI.Port=function(thePort)
 
             if(txt=='can link') txt='<i class="fa fa-check"></i>';
                 else txt='<i class="fa fa-times"></i> '+txt;
+
             CABLES.UI.showToolTip(event,txt+' '+getPortDescription(selectedEndPort.thePort));
         }
 

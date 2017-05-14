@@ -43,6 +43,15 @@
 }
 
 
+    .port_color_function { fill:$color_port_function; stroke:$color_port_function; }
+    .port_color_value { fill:$color_port_value; stroke:$color_port_value; }
+    .port_color_object { fill:$color_port_object; stroke:$color_port_object; }
+    .port_color_array { fill:$color_port_array; stroke:$color_port_array; }
+    .port_color_dynamic { fill:$color_port_dynamic; stroke:$color_port_dynamic;}
+    .port_color_unknown { fill:#0f0; }
+
+
+
 #patch
 {
     outline:none;
@@ -128,14 +137,6 @@
             // stroke-opacity:0.5;
         }
     }
-
-    .port_color_function { fill:$color_port_function; stroke:$color_port_function; }
-    .port_color_value { fill:$color_port_value; stroke:$color_port_value; }
-    .port_color_object { fill:$color_port_object; stroke:$color_port_object; }
-    .port_color_array { fill:$color_port_array; stroke:$color_port_array; }
-    .port_color_dynamic { fill:$color_port_dynamic; stroke:$color_port_dynamic;}
-    .port_color_unknown { fill:#0f0; }
-
     .addCircle
     {
         fill:#222;

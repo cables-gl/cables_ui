@@ -28,6 +28,7 @@ CABLES.UI.GUI=function()
     var _connection=null;
     var savedState=true;
     var metaCode=new CABLES.UI.MetaCode();
+    this.metaPaco=new CABLES.UI.Paco();
     this.metaKeyframes=new CABLES.UI.MetaKeyframes();
     this.bookmarks=new CABLES.UI.Bookmarks();
     this.preview=new CABLES.UI.Preview();
@@ -1200,6 +1201,11 @@ CABLES.UI.GUI=function()
         self.profiler.show();
     };
 
+    this.showMetaPaco=function()
+    {
+        this.metaPaco.show();
+    };
+
     this.showMetaCode=function()
     {
         metaCode.show();
@@ -1213,7 +1219,7 @@ CABLES.UI.GUI=function()
 
     this.showOpDoc=function(opname)
     {
-        var docOpHead='<div>';
+        var docOpHead='<div><img src="/api/op/layout/'+opname+'"/>';
         var docOpFooter='<br/><br/><a onclick="gui.editOpDoc(\''+opname+'\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
 
         this.getOpDoc(opname,true,function(html)
@@ -1287,6 +1293,7 @@ CABLES.UI.GUI=function()
 
         if(which=='code') self.showMetaCode();
         if(which=='keyframes') self.metaKeyframes.show();
+        if(which=='paco') self.showMetaPaco();
 
         if(which=='profiler') self.showProfiler();
         if(which=='debug') self.showMetaUiDebug();
@@ -1300,6 +1307,24 @@ CABLES.UI.GUI=function()
 
     };
 
+    this.startPacoSender=function()
+    {
+        this.patchConnection.connectors.push(new CABLES.PatchConnectorSocketIO());
+    };
+
+    this.startPacoReceiver=function()
+    {
+        this.patch().scene.clear();
+
+        var conn=new CABLES.PatchConnectionReceiver(
+            this.patch().scene,
+            {},
+            new CABLES.PatchConnectorSocketIO()
+        );
+
+
+
+    };
 
     this.setStateUnsaved=function()
     {

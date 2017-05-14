@@ -143,6 +143,7 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
 
         var content=gui.opDocs.get(opname);
         $('#searchinfo').html(content+htmlFoot);
+        gui.opDocs.opLayoutSVG(opname,"opselect-layout");
     }
 };
 
