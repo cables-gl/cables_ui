@@ -159,8 +159,36 @@ CABLES.UI.ServerOps=function(gui)
 
             }
         );
-
     };
+
+    this.saveOpLayout=function(op)
+    {
+        var opObj=
+            {
+                portsIn:[],
+                portsOut:[],
+                name:op.objName
+            };
+
+        for(var i=0;i<op.portsIn.length;i++)
+        {
+            opObj.portsIn.push(
+                {
+                    "type":op.portsIn[i].type,
+                    "name":op.portsIn[i].name
+                })
+        }
+        for(var i=0;i<op.portsOut.length;i++)
+        {
+            opObj.portsOut.push(
+                {
+                    "type":op.portsOut[i].type,
+                    "name":op.portsOut[i].name
+                })
+        }
+
+        CABLES.api.post('op/layout/'+op.objName,{layout:opObj});
+    }
 
     this.execute=function(name)
     {
@@ -170,13 +198,14 @@ CABLES.UI.ServerOps=function(gui)
         s.setAttribute( 'src', '/api/op/'+name+'?nocache='+CABLES.generateUUID() );
         s.onload=function()
         {
-            gui.patch().scene.reloadOp(name,function(num)
+            gui.patch().scene.reloadOp(name,function(num,ops)
             {
                 CABLES.UI.notify(num+' ops reloaded');
-            });
+                if(ops.length>0)this.saveOpLayout(ops[0]);
+            }.bind(this));
 
             CABLES.UI.MODAL.hideLoading();
-        };
+        }.bind(this);
         document.body.appendChild( s );
 
     };
