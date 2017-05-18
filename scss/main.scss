@@ -1,5 +1,5 @@
+@import 'fonts';
 @import 'introjs.min';
-@import 'typo';
 @import 'colors';
 @import 'patch';
 
@@ -52,7 +52,7 @@ p {
 .fleft { float:left; }
 .fright { float:right !important; }
 .mainColor { color:$mainColor; }
-.monospace { font-family: monospace;}
+.SourceCodePro,monospace { font-family: SourceCodePro,monospace;}
 
 
 a
@@ -92,7 +92,7 @@ a
 
 #timing
 {
-    font-family: monospace;
+    font-family: SourceCodePro,monospace;
 }
 
 
@@ -140,7 +140,6 @@ a
 {
     position:absolute;
     background-color: #222;
-    font-size: 12px;
     overflow: scroll;
     overflow-x: hidden;
 
@@ -150,7 +149,6 @@ a
 
     td
     {
-        font-size: 12px;
         vertical-align:top;
     }
 
@@ -185,7 +183,6 @@ input[type="text"]
     outline: none;
     font-size: $text-input-font-size;
     border-radius: 0;
-    font-family: arial;
     //border: none;
 }
 
@@ -222,7 +219,7 @@ td.head
     #button_toggleTiming
     {
         float: left;
-        // font-family: arial;
+        // ily: arial;
         margin-left: 10px;
         padding-top: 5px;
         cursor: pointer;
@@ -387,7 +384,7 @@ padding:10px;
         background-color: #444;
         border: 1px solid $background-color-brighter;
         float:left;
-        font-family: monospace;
+        font-family: SourceCodePro,monospace;
         font-size: 13px;
         &:focus
         {
@@ -398,7 +395,7 @@ padding:10px;
 
     .value
     {
-        //font-family: monospace;
+        //font-family: SourceCodePro,monospace;
         width: 140px;
 
         display: block;
@@ -480,19 +477,19 @@ padding:10px;
 
 .button,.bluebutton
 {
+	display:inline-block;
+
     text-transform: capitalize;
-    //font-family: arial;
-    cursor:pointer;
-    // background-color: $button-background-color;
+	text-align: center;
+
+	color: $button-text-color;
+	background-color: #333;
+
     border: 1px solid $button-border-color;
-    color: $button-text-color;
-    min-width: 14px;
-    text-align: center;
-    font-size: 13px;
-    font-family: futura-pt, arial;
-    padding:5px 7px;
+	border-radius: 20px;
+	padding: 5px 16px;
+
     cursor:pointer !important;
-    background-color: #1a1a1a;
 
     &.fa:before
     {
@@ -503,7 +500,6 @@ padding:10px;
     &:hover
     {
         cursor:pointer !important;
-        //background-color:#444;
         background-color: inherit;
         border: 1px solid $highlight-color;
         color:#eee;
@@ -517,7 +513,7 @@ padding:10px;
 }
 
 .button.fa {
-  font: normal normal normal 14px/1 FontAwesome, futura-pt, arial;
+  font: normal normal normal 14px/1 FontAwesome, arial;
   background-color: $button-background-color;
 }
 
@@ -1326,7 +1322,7 @@ input[type=text]:active, input[type=text]:focus {
 
         &:before
         {
-            font-family: fontawesome,futura-pt,arial;
+            font-family: fontawesome,arial;
             content:"\f08e";
             margin-right: 5px;
             display:inline-block;
@@ -1381,7 +1377,7 @@ input[type=text]:active, input[type=text]:focus {
 
 .shaderErrorCode
 {
-    font-family: monospace;
+    font-family: SourceCodePro,monospace;
     white-space: pre;
     background-color: #222;
     padding:10px;
@@ -1551,7 +1547,7 @@ input[type=text]:active, input[type=text]:focus {
 
         .ace_content *
         {
-            font-family: monospace, monospace;
+            font-family: SourceCodePro,monospace, SourceCodePro,monospace;
         }
 
         .ace_search_field
@@ -1596,7 +1592,7 @@ hr
     background-color: #1d1d1d;
 
     div.message {
-        font-family: monospace !important;
+        font-family: SourceCodePro,monospace !important;
         font-size: 10pt;
         padding: 0 0 4px 0;
 
@@ -1611,7 +1607,7 @@ hr
         }
 
         span {
-            font-family: monospace !important;
+            font-family: SourceCodePro,monospace !important;
             padding: 0;
         }
 
@@ -2240,7 +2236,7 @@ rect
 
     &:before
     {
-        font-family: fontawesome,futura-pt,arial;
+        font-family: fontawesome,arial;
         content:"\f107";
         margin-right: 5px;
         display:inline-block;
@@ -2250,7 +2246,7 @@ rect
     {
         &:before
         {
-            font-family: fontawesome,futura-pt,arial;
+            font-family: fontawesome,arial;
             content:"\f106";
             margin-right: 5px;
             display:inline-block;
