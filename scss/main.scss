@@ -387,6 +387,8 @@ padding:10px;
         background-color: #444;
         border: 1px solid $background-color-brighter;
         float:left;
+        font-family: monospace;
+        font-size: 13px;
         &:focus
         {
             background-color: #666;
@@ -437,6 +439,16 @@ padding:10px;
         }
     }
 
+}
+
+.params_op_head
+{
+    text-align: center;
+
+    input
+    {
+        text-align: center;
+    }
 }
 
 .paramsPortLink

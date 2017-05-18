@@ -3,18 +3,20 @@
 <script id="params_op_head" type="text/x-handlebars-template">
 
     <div class="selectable">
-        <div class="panel">
+        <div class="panel params_op_head">
             <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
 
+<br/><br/>
+            <a href="/op/{{op.objName}}" target="blank"></i>&nbsp;{{op.objName}}</a>
+            <br/><br/>
+
             {{#if op.summary }}
-                <br/>
-                <br/>
                 {{op.summary}}
             {{/if}}
 
             <br/><br/>
 
-            <a href="/op/{{op.objName}}" target="blank"><i class="fa fa-external-link"></i>&nbsp;{{op.objName}}</a>
+            <a href="/op/{{op.objName}}" target="blank">&nbsp;view example patches <i class="fa fa-external-link"></i></a>
             <br/><br/>
 
             {{#if op.isDeprecated }}
