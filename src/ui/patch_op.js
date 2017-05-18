@@ -602,8 +602,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         resizeHandle.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
         resizeHandle.node.classList.add('op_handle');
 
-
         label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+		// label.attr({"font-family": "SourceSansPro, sans-serif" });
 
         CABLES.UI.cleanRaphael(label);
 
