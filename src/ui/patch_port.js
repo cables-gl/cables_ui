@@ -29,7 +29,15 @@ CABLES.UI.Port=function(thePort)
     {
         cancelDeleteLink=false;
 
-        if(event.which==3)
+
+		// if(event.which==1 && event.ctrlKey)
+		// {
+		// 	self.thePort.removeLinks();
+		// 	updateUI();
+		// 	linkingLine=null;
+		// }
+
+        if(event.which==3 || (event.which==1 && event.ctrlKey))
         {
             if(thePort.isLinked && thePort.links.length===1)
             {
@@ -281,7 +289,9 @@ CABLES.UI.Port=function(thePort)
 
         if(!foundAutoOp)
         {
-            if(event.which==3 && !cancelDeleteLink)
+
+
+            if( (event.which==3 && !cancelDeleteLink) || (event.which==1 && event.ctrlKey))
             {
                 removeLinkingLine();
                 self.thePort.removeLinks();
@@ -318,7 +328,18 @@ CABLES.UI.Port=function(thePort)
                             if( dist <10)
                             {
                                 // port was clicked, not dragged, insert op directly into link
-                                gui.opSelect().show(coords,null,selectedStartPort,links[0]);
+// console.log(123);
+
+								// if(event.which==1 && event.ctrlKey)
+								// {
+								// 	self.thePort.removeLinks();
+								// 	removeLinkingLine();
+								// 	console.log('remove!!!');
+								// 	return;
+								//
+								// }
+                                // else
+								gui.opSelect().show(coords,null,selectedStartPort,links[0]);
                             }
                             else
                             {

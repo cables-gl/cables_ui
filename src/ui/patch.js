@@ -500,6 +500,8 @@ CABLES.UI.Patch=function(_gui)
         {
             case 32:
                 spacePressed=false;
+				gui.cursor="auto";
+				$('#patch').css({"cursor":"auto"});
             break;
         }
     });
@@ -509,8 +511,14 @@ CABLES.UI.Patch=function(_gui)
         switch(e.which)
         {
             case 32:
-
                 spacePressed=true;
+
+				if(gui.cursor!="hand")
+				{
+					gui.cursor="hand";
+					$('#patch').css({"cursor":"url(/ui/img/grab.png) 0 0, auto"});
+
+				}
             break;
 
             case 46: case 8: // delete
@@ -1331,6 +1339,13 @@ console.log(URL.createObjectURL(screenBlob));
         {
             rubberBandHide();
             lastZoomDrag=-1;
+
+			if(gui.cursor!="auto")
+			{
+				gui.cursor="audo";
+				$('#patch').css({"cursor":"auto"});
+			}
+
         });
 
         $('#patch svg').bind("mousemove touchmove", function (e)
@@ -1345,8 +1360,15 @@ console.log(URL.createObjectURL(screenBlob));
                 return;
             }
 
+
             if(lastMouseMoveEvent && ( e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
+				if(gui.cursor!="hand")
+				{
+					gui.cursor="hand";
+					$('#patch').css({"cursor":"url(/ui/img/grab.png) 0 0, auto"});
+				}
+
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
                 var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 

@@ -170,7 +170,6 @@ CABLES.UI.GUI=function()
             $('#username').hide();
             $('.projectname').hide();
             $('.naventry').hide();
-
         }
         else
         {
@@ -402,14 +401,9 @@ CABLES.UI.GUI=function()
         return _userOpManager;
     };
 
-
-
-
     var oldRendwerWidth,oldRendwerHeight,oldShowingEditor;
     this.cycleRendererSize=function()
     {
-
-
         if(self.rendererWidth!==0)
         {
             oldRendwerWidth=self.rendererWidth;
@@ -418,15 +412,12 @@ CABLES.UI.GUI=function()
 
             self.rendererWidth=0;
             showingEditor=false;
-
         }
         else
         {
             self.rendererWidth=oldRendwerWidth;
             self.rendererHeight=oldRendwerHeight;
             showingEditor=oldShowingEditor;
-
-
         }
 
         self.setLayout();
@@ -506,7 +497,6 @@ CABLES.UI.GUI=function()
 
     this.showMetaUiDebug=function()
     {
-
         var numVisibleOps=0;
         for(var i in self.ops)
         {
@@ -514,8 +504,8 @@ CABLES.UI.GUI=function()
         }
 
         var canvass=[];
-
         var canvs=$('canvas');
+
         for(i=0;i<canvs.length;i++)
         {
             canvass.push(
@@ -531,7 +521,6 @@ CABLES.UI.GUI=function()
         var gl_renderer="unknown";
         if(dbgRenderInfo) gl_renderer= gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
 
-
         var html = CABLES.UI.getHandleBarHtml(
             'uiDebug',
             {
@@ -546,8 +535,6 @@ CABLES.UI.GUI=function()
             });
 
         $('#meta_content_debug').html(html);
-
-
     };
 
     this.showLibrary=function(inputId,filterType,opid)
@@ -686,7 +673,6 @@ CABLES.UI.GUI=function()
         $('.nav_patch_resolve_subpatch').bind("click",function(event){ self.patch().resolveSubpatch(); });
 
         $('.nav_patch_profile').bind("click", self.showProfiler);
-
 
         // --- Help menu
         // Documentation
