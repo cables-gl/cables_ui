@@ -5,6 +5,8 @@
 <br/>
 <div class="panel">
     <input type="checkbox" {{#if userSettings.touchpadmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('touchpadmode',this.checked)"> touchpad mode
+    <br/><br/>
+    <input type="checkbox" {{#if userSettings.theme-bright }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('theme-bright',this.checked);document.location.reload();"> high contrast mode
 </div>
 
 </script>

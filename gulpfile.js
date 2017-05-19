@@ -91,9 +91,16 @@ gulp.task('html_ui', function() {
 });
 
 gulp.task('sass', function() {
-    return gulp.src('scss/main.scss')
+    return gulp.src('scss/style-dark.scss')
         .pipe(sass())
-        .pipe(rename('ui.css'))
+        .pipe(rename('style-dark.css'))
+        .pipe(gulp.dest('dist/css'));
+});
+
+gulp.task('sass-bright', function() {
+    return gulp.src('scss/style-bright.scss')
+        .pipe(sass())
+        .pipe(rename('style-bright.css'))
         .pipe(gulp.dest('dist/css'));
 });
 
@@ -102,10 +109,10 @@ gulp.task('watch', function() {
     gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);
     gulp.watch('src/ui/**/*.js', ['scripts_ui']);
-    gulp.watch('scss/*.scss', ['sass']);
+    gulp.watch('scss/*.scss', ['sass','sass-bright']);
     gulp.watch('html/**/*.html', ['html_ui']);
 });
 
 
-gulp.task('default', ['scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','watch']);
-gulp.task('build', ['html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass']);
+gulp.task('default', ['scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright','watch']);
+gulp.task('build', ['html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','sass-bright']);

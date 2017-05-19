@@ -981,7 +981,11 @@ console.log(URL.createObjectURL(screenBlob));
 
             mouseRubberBandPos=gui.patch().getCanvasCoordsMouse(e);//e.offsetX,e.offsetY);
 
-            if(!rubberBandRect) rubberBandRect=self.paper.rect( 0,0,10,10).attr({ });
+            if(!rubberBandRect)
+            {
+                rubberBandRect=self.paper.rect( 0,0,10,10).attr({ });
+                rubberBandRect.node.classList.add("rubberband");
+            }
             rubberBandRect.show();
             var start={x:mouseRubberBandStartPos.x,y:mouseRubberBandStartPos.y};
             var end={x:mouseRubberBandPos.x,y:mouseRubberBandPos.y};
@@ -1004,15 +1008,11 @@ console.log(URL.createObjectURL(screenBlob));
                     x:start.x,
                     y:start.y,
                     width:end.x-start.x,
-                    height:end.y-start.y,
-                    "stroke": CABLES.UI.uiConfig.colorRubberBand,
-                    "fill": CABLES.UI.uiConfig.colorRubberBand,
-                    "stroke-width": 1,
-                    "fill-opacity": 0.08
+                    height:end.y-start.y
                });
+            rubberBandRect.toFront();
 
-
-             if(timeoutRubberBand==-1)
+            if(timeoutRubberBand==-1)
                  timeoutRubberBand=setTimeout(function()
                  {
                       for(var i in self.ops)
@@ -1047,8 +1047,7 @@ console.log(URL.createObjectURL(screenBlob));
                       if(selectedOps.length!==0) setStatusSelectedOps();
                       timeoutRubberBand=-1;
 
-                  },100);
-
+                },100);
 
 
         }
@@ -1081,8 +1080,8 @@ console.log(URL.createObjectURL(screenBlob));
             }
 
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
-
         }
+
         self.updateViewBox();
         currentSubPatch=0;
         gui.setProjectName(proj.name);
@@ -1101,8 +1100,6 @@ console.log(URL.createObjectURL(screenBlob));
                 {
                     "patch":JSON.stringify(proj),
                 });
-
-
 
         });
 
@@ -1239,7 +1236,8 @@ console.log(URL.createObjectURL(screenBlob));
         });
 
         this.background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
-            // fill: CABLES.UI.uiConfig.colorBackground,
+            fill: CABLES.UI.uiConfig.colorBackground,
+            opacity:0.01,
             "stroke-width":0
         });
 
@@ -1375,8 +1373,8 @@ console.log(URL.createObjectURL(screenBlob));
                 viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
                 viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
-                if(self.scene.config.fpsLimit!=10)fpsLimitBefore=self.scene.config.fpsLimit;
-                self.scene.config.fpsLimit=10;
+                // if(self.scene.config.fpsLimit!=10)fpsLimitBefore=self.scene.config.fpsLimit;
+                // self.scene.config.fpsLimit=10;
                 // self.updateViewBox();
 
                 clearTimeout(timeoutFpsLimit);

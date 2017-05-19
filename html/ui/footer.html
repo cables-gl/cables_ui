@@ -124,7 +124,13 @@
 
         var resource = document.createElement('link');
         resource.setAttribute("rel", "stylesheet");
-        resource.setAttribute("href","css/ui.css");
+
+        var settings=JSON.parse(localStorage.getItem("cables.usersettings"))||{};
+
+        if(settings["theme-bright"]) resource.setAttribute("href","css/style-bright.css");
+            else resource.setAttribute("href","css/style-dark.css");
+
+        // resource.setAttribute("href","css/style-bright.css");
         resource.setAttribute("type","text/css");
         var head = document.getElementsByTagName('head')[0];
         head.appendChild(resource);

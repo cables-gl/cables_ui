@@ -1,5 +1,3 @@
-@import 'colors';
-
 
 #minimapContainer
 {
@@ -107,7 +105,6 @@
         }
     }
 
-
     .op_handle
     {
         stroke-width:0;
@@ -118,6 +115,14 @@
     {
         stroke:$color_op_handle_default !important;
         stroke-width:2;
+    }
+
+    .rubberband
+    {
+        stroke: $color-rubberband;
+        fill: $color-rubberband;
+        stroke-width: 1;
+        fill-opacity: 0.08;
     }
 
 
@@ -150,7 +155,7 @@
     }
     .addCircle
     {
-        fill:#222;
+        fill:$background-color-dark;
         stroke-width:2;
         stroke-opacity:1;
 
