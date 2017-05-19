@@ -274,8 +274,8 @@ textarea
 
 #modalbg
 {
-    background-color: #111;
-    opacity: 0.5;
+    background-color: #333;
+    opacity: 0.8;
     top:0px;
     left:0px;
     width:100%;
@@ -298,7 +298,7 @@ textarea
     left:20%;
     top:10%;
     padding:15px;
-    background-color: #444;
+    background-color: $background-color-dark;
     color:#ddd;
     z-index: 9999;
     min-width: 550px;
@@ -649,7 +649,7 @@ a.button.fa-times:before {
         width:100%;
         border:none;
         outline: none;
-        background-color: #222;
+        background-color: $color-background-input;
     }
 
     .searchbrowser
@@ -673,7 +673,8 @@ a.button.fa-times:before {
 
     .searchresult
     {
-        background-color: #333;
+        // background-color: #333;
+		background-color: $background-color-dark;
         font-size: 16px;
         padding:5px;
 
