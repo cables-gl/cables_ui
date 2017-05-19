@@ -6,17 +6,17 @@
         <div class="panel params_op_head">
             <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
 
-<br/><br/>
+			<br/>
             <a href="/op/{{op.objName}}" target="blank"></i>&nbsp;{{op.objName}}</a>
-            <br/><br/>
+            <br/>
 
-            {{#if op.summary }}
-                {{op.summary}}
-            {{/if}}
+			<div class="summary">
+	            {{#if op.summary }}
+	                {{op.summary}}
+	            {{/if}}
+			</div>
 
-            <br/><br/>
-
-            <a href="/op/{{op.objName}}" target="blank">&nbsp;view example patches <i class="fa fa-external-link"></i></a>
+            <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="blank">view example patches <i class="fa fa-external-link"></i></a>
             <br/><br/>
 
             {{#if op.isDeprecated }}

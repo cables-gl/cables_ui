@@ -32,7 +32,7 @@ p {
 
 *
 {
-    color:#aaa;
+    color:$text-color;
     user-select:none;
     -webkit-user-select: none;  /* Chrome all / Safari all */
     -moz-user-select: none;     /* Firefox all */
@@ -57,7 +57,7 @@ p {
 
 a
 {
-    color:#ccc;
+    color:$color-text-link;
     text-decoration: none;
     cursor: pointer;
 }
@@ -139,7 +139,6 @@ a
 #options
 {
     position:absolute;
-    background-color: #222;
     overflow: scroll;
     overflow-x: hidden;
 
@@ -155,7 +154,7 @@ a
     select
     {
         border: 1px solid #222;
-        background-color: #444;
+        background-color: $color-background-input;
         padding:2px;
 
     }
@@ -194,10 +193,19 @@ td.head
 {
     padding-right:10px;
     position:absolute;
-    background-color: #111;
+    background-color: $color-menubar-background;
     overflow: hidden;
     display:none;
 
+	li
+	{
+		color:$color-menubar-text;
+
+		&:hover
+		{
+			color: $color-menubar-hover;
+		}
+	}
     .button
     {
         background-color: transparent;
@@ -325,11 +333,11 @@ h2
 
 input[type="text"]
 {
-    background-color: #888;
+    background-color: $color-background-input;
     border-radius: 4px;
     padding:0px;
     padding-left:4px;
-    border:1px solid #aaa;
+    border:1px solid $text-color;
     margin-bottom: 3px;
     border-radius: 0;
     border: none;
@@ -361,7 +369,7 @@ input[type="text"]
 
     td.port
     {
-        // border-left:4px solid #aaa;
+        // border-left:4px solid $text-color;
         padding-left: 10px;
         //font-family: arial;
         text-transform: capitalize;
@@ -380,20 +388,20 @@ input[type="text"]
 
 	textarea
 	{
-		background-color: #444;
+		background-color: $color-background-input;
         border: 1px solid $background-color-brighter;
 	}
 
     input.value
     {
-        background-color: #444;
+		background-color: $color-background-input;
         border: 1px solid $background-color-brighter;
         float:left;
         font-family: SourceCodePro,monospace;
         font-size: 13px;
         &:focus
         {
-            background-color: #666;
+            background-color: $color-background-input-focussed;
             outline: none;
         }
     }
@@ -447,9 +455,21 @@ input[type="text"]
 {
     text-align: center;
 
+	.summary
+	{
+		font-size: $font-size-default+2;
+		padding:5px;
+	}
+
+	a
+	{
+		opacity: 0.6;
+	}
+
     input
     {
         text-align: center;
+		margin-bottom: 5px;
     }
 }
 
@@ -508,7 +528,7 @@ input[type="text"]
         cursor:pointer !important;
         background-color: inherit;
         border: 1px solid $highlight-color;
-        color:#eee;
+        color:$button-text-color-hover;
     }
 
     &.warn
@@ -695,7 +715,7 @@ a.button.fa-times:before {
     }
     .score
     {
-        color:#aaa;
+        color:$text-color;
         padding-left: 5px;
     }
     .selected
@@ -777,7 +797,7 @@ a.button.fa-times:before {
         {
             text-decoration: underline;
             font-style: normal;
-            color:#aaa;
+            // color:$text-color;
         }
     }
 
@@ -790,7 +810,7 @@ a.button.fa-times:before {
         {
             text-decoration: underline;
             font-style: normal;
-            color:#aaa;
+            // color:$text-color;
         }
     }
 
@@ -900,7 +920,7 @@ input[type=text]:active, input[type=text]:focus {
 {
     position: absolute;
     z-index: 99999;
-    background-color: #aaa;
+    background-color: $text-color;
     color:black;
     padding:7px;
     border-radius: 0px;
@@ -983,7 +1003,7 @@ input[type=text]:active, input[type=text]:focus {
 {
     a
     {
-        color:ccc;
+        color:$color-text-link;
     }
 
     td
@@ -1243,7 +1263,8 @@ input[type=text]:active, input[type=text]:focus {
             height:40px;
             overflow: hidden;
             clear: both;
-            background-color: #000;
+            background-color: $color-menubar-background;
+
 
             .tab
             {
@@ -1257,17 +1278,17 @@ input[type=text]:active, input[type=text]:focus {
                 margin-bottom: 10px;
                 cursor:pointer;
                 max-height:100%;
+				color:$color-menubar-text;
 
                 &:hover
                 {
-                    color: #fff;
+                    color: $color-menubar-hover;
                 }
             }
 
             .active
             {
-                background-color: #222;
-                color:white;
+                background-color: $color-menubar-background-active;
             }
         }
 
@@ -1402,7 +1423,7 @@ input[type=text]:active, input[type=text]:focus {
 
 .splitter
 {
-    background-color:#111;
+    background-color:$color-splitter;
     z-index: 98;
     position: absolute;
     display: block;
@@ -1418,7 +1439,6 @@ input[type=text]:active, input[type=text]:focus {
 {
     height:2px;
     padding:4px !important;
-    background-color: #000;
     cursor:ns-resize;
 }
 
@@ -1558,7 +1578,7 @@ input[type=text]:active, input[type=text]:focus {
 
         .ace_search_field
         {
-            color:#aaa;
+            color:$text-color;
         }
         .ace_search
         {
@@ -1661,7 +1681,7 @@ hr
     position: absolute;
     min-width: 10px !important;
     display:none;
-    background-color:#222;
+    background-color:$background-color-dark;
     padding:10px;
     padding-top:20px !important;
     height:240px;
@@ -1728,7 +1748,7 @@ hr
     .logo
     {
         position: absolute;
-        // color:#aaa;
+        // color:$text-color;
         width:25px;
         text-align: center;
     }
@@ -1777,7 +1797,7 @@ hr
 
 .filename
 {
-    // border-left:2px solid #aaa;
+    // border-left:2px solid $text-color;
     cursor:pointer;
     text-overflow:ellipsis;
     word-wrap:break-word;
@@ -1897,7 +1917,7 @@ nav
         ul li ul#jobs li
         {
             background-color: #222;
-            color:#aaa;
+            color:$text-color;
             width:250px;
             font-weight: normal;
         }
@@ -1992,7 +2012,7 @@ nav
     ul li ul#jobs li
     {
         background-color: #222;
-        color:#aaa;
+        color:$text-color;
         width:250px;
         font-weight: normal;
     }
@@ -2060,7 +2080,7 @@ rect
 {
     textarea,input
     {
-        background-color: #222;
+        background-color: $color-background-input;
         width:100%;
     }
 }
@@ -2088,10 +2108,9 @@ rect
 }
 .tabs
 {
-    background-color: #111;
+    background-color: $color-menubar-background;
     display: block;
     padding: 0px !important;
-    // padding-left: 10px !important;
     width:100%;
 
     a
@@ -2100,11 +2119,12 @@ rect
         padding-bottom:8px !important;
         padding-left:5px !important;
         padding-right:5px !important;
+		color: $color-menubar-text;
     }
 
     a.active
     {
-        background-color: #2a2a2a;
+        background-color: $color-menubar-background-active;
         color:#fff;
     }
 }
@@ -2223,7 +2243,7 @@ rect
 
 .panelhead
 {
-    background-color: #1d1d1d;
+    background-color: $color-panelhead;
     padding: 6px !important;
     font-family: Arial;
     text-transform: capitalize;
@@ -2237,7 +2257,7 @@ rect
     &:hover
     {
         color:#fff;
-        background-color: #1a1a1a;
+		background-color: $color-panelhead-hover;
     }
 
     &:before

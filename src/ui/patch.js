@@ -1239,7 +1239,7 @@ console.log(URL.createObjectURL(screenBlob));
         });
 
         this.background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
-            fill: CABLES.UI.uiConfig.colorBackground,
+            // fill: CABLES.UI.uiConfig.colorBackground,
             "stroke-width":0
         });
 

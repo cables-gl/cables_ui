@@ -1,0 +1,84 @@
+
+// main colors ----------------------------------------------------------------
+
+$text-color:#222;
+$color-text-link:#333;
+
+$highlight-color: #000; // not so bright red
+$highlight-color-dark: #444;
+
+$mainColor: $highlight-color; // todo replace in code with $highlight-color
+$background-color-dark: #eee;
+$background-color-brighter: #262626;
+
+$color-menubar-background:#888;
+$color-menubar-background-active:$background-color-dark;
+$color-menubar-background-hover:$color-menubar-background;
+$color-menubar-text:$text-color;
+$color-menubar-hover:#666;
+
+$color-panelhead: #888;
+$color-panelhead-hover: #aaa;
+
+$color-background-input:#aaa;
+$color-background-input-focussed:#ccc;
+
+$color-splitter:#999;
+
+// patch ------------------------------------------------------------------------
+
+$color_op_bg:#aaa;
+$color_op_bg_active:#999;
+$color_op_text:#000;
+
+$color_op_handle_default:#969696;
+$color_op_handle_gl:#88A61B;
+$color_op_handle_audio:#A32BD9;
+$color_op_handle_devices:#F25C05;
+$color_op_handle_html:#1e9ae3;
+
+$color_port_function: #F0D165;
+$color_port_value: #5CB59E;
+$color_port_object: #AB5A94;
+$color_port_array: #8084D4;
+$color_port_dynamic: #FFF6E5;
+
+$color_link_function: $color_port_function;
+$color_link_value: $color_port_value;
+$color_link_object: $color_port_object;
+$color_link_array: $color_port_array;
+$color_link_dynamic: $color_port_dynamic;
+
+$button-text-color: #000;
+$button-background-color: #aaa;
+
+$button-border-color: $background-color-dark;
+// hover
+$button-text-color-hover: $highlight-color;
+$button-background-color-hover: $background-color-dark;
+$button-border-color-hover: $background-color-dark;
+
+// Button with icon only (no text)
+// normal
+$icon-button-color: #fff;
+$icon-button-background-color: $background-color-dark;
+$icon-button-border-color: $icon-button-background-color;
+// hover / active
+$icon-button-color-hover: $highlight-color;
+$icon-button-background-color-hover: $background-color-dark;
+$icon-button-border-color-hover: $highlight-color;
+
+// input[text]
+// normal
+$text-input-color: 000;
+$text-input-background-color: #aaa;
+$text-input-border-color: $text-input-background-color;
+// hover
+$text-input-color-hover: $text-input-color;
+$text-input-background-color-hover: #ccc;
+$text-input-border-color-hover: $highlight-color;
+
+// active / focus
+$text-input-color-focus: black;
+$text-input-background-color-focus: ;
+$text-input-border-color-focus: $highlight-color;

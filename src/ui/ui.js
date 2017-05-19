@@ -318,7 +318,7 @@ CABLES.UI.GUI=function()
         $('#options').css('width',optionsWidth);
         $('#options').css('height',window.innerHeight-self.rendererHeight);
 
-        var metaWidth=self.rendererWidth-optionsWidth;
+        var metaWidth=self.rendererWidth-optionsWidth+1;
         $('#meta').css('right',0);
         $('#meta').css('top',self.rendererHeight);
         $('#meta').css('width',metaWidth);
