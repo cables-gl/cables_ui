@@ -15,7 +15,10 @@ CABLES.ProjectSettings=function(project)
                 "tags":project.tags.join()
             });
 
-        CABLES.UI.MODAL.show(html);
+        CABLES.UI.MODAL.show(html,
+			{
+				"title":"Settings"
+			});
 
         this.loadUsers();
         this.updateIcons();

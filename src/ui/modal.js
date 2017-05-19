@@ -24,25 +24,42 @@ CABLES.UI.MODAL.hide=function(force)
     mouseNewOPX=0;
     mouseNewOPY=0;
 
+	$('#modalclose').hide();
     $('#modalcontent').html('');
-    $('#modalcontent').hide();
+    $('#modalcontainer').hide();
     $('#modalbg').hide();
     $('.tooltip').hide();
 };
 
 CABLES.UI.MODAL.showTop=function(content,options)
 {
-    $('#modalcontent').css({"top":0});
-    CABLES.UI.MODAL.show(content,{ignoreTop:true});
+    // $('#modalcontainer').css({"top":0});
+	// options=options||{};
+	// options.ignoreTop=true;
+    CABLES.UI.MODAL.show(content,options);
+};
+
+CABLES.UI.MODAL.setTitle=function(title)
+{
+	if(title)
+	{
+		$('#modalheader').html(title);
+		$('#modalheader').show();
+	}
+	else $('#modalheader').hide();
+
 };
 
 
 CABLES.UI.MODAL.show=function(content,options)
 {
     if(options && !options.ignoreTop)$('#modalcontent').css({"top":"10%"});
-    $('#modalcontent').html('<div class="modalclose"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+
+
+	if(options)CABLES.UI.MODAL.setTitle(options.title);
+	CABLES.UI.MODAL.showClose();
     $('#modalcontent').append(content);
-    $('#modalcontent').show();
+    $('#modalcontainer').show();
     $('#modalbg').show();
 
     $('#modalbg').on('click',function(){
@@ -54,16 +71,24 @@ CABLES.UI.MODAL.showLoading=function(title,content)
 {
     $('#modalcontent').html('<div class="modalLoading" style="text-align:center;"><h3>'+title+'</h3><div class="loading" style="margin-top:0px;"><br/><br/><div>');
     $('#modalcontent').append(content);
-    $('#modalcontent').show();
+    $('#modalcontainer').show();
     $('#modalbg').show();
+};
+
+
+CABLES.UI.MODAL.showClose=function()
+{
+	$('#modalclose').show();
+
 };
 
 CABLES.UI.MODAL.showError=function(title,content)
 {
-    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
-    $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;'+title+'!</h2>');
+    CABLES.UI.MODAL.showClose();
+	$('#modalcontent').html('');
+    $('#modalcontent').append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;'+title+'!</h2>');
     $('#modalcontent').append(content);
-    $('#modalcontent').show();
+    $('#modalcontainer').show();
     $('#modalbg').show();
 
     $('#modalbg').on('click',function(){
@@ -75,24 +100,25 @@ CABLES.UI.MODAL.showError=function(title,content)
 CABLES.UI.MODAL.showOpException=function(ex,opName)
 {
     console.log(ex.stack);
-    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
-    $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
+    CABLES.UI.MODAL.showClose();
+	$('#modalcontent').html('');
+	CABLES.UI.MODAL.setTitle('cablefail :/');
+    // $('#modalcontent').append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;</h2>');
 
-    $('#modalcontent').append('in op: <b>'+opName+'</b><br/><br/>');
+    $('#modalcontent').append('Error in op: <b>'+opName+'</b><br/><br/>');
 
     CABLES.api.sendErrorReport(ex);
 
     $('#modalcontent').append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
 
-    if(gui.user.isAdmin || opName.startsWith("Op.User."+gui.user.username))
-    {
-        $('#modalcontent').append('<a class="bluebutton fa fa-edit" onclick="gui.serverOps.edit(\''+opName+'\');CABLES.UI.MODAL.hide(true);">Edit op</a><br/><br/>');
-    }
-
     $('#modalcontent').append('<div class="shaderErrorCode">'+ex.stack+'</div>');
-    $('#modalcontent').show();
+    $('#modalcontainer').show();
     $('#modalbg').show();
 
+    if(gui.user.isAdmin || opName.startsWith("Op.User."+gui.user.username))
+    {
+        $('#modalcontent').append('<br/><a class="bluebutton fa fa-edit" onclick="gui.serverOps.edit(\''+opName+'\');CABLES.UI.MODAL.hide(true);">Edit op</a>');
+    }
     $('#modalbg').on('click',function(){
         CABLES.UI.MODAL.hide(true);
     });
@@ -102,7 +128,9 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 CABLES.UI.MODAL.showException=function(ex,op)
 {
     console.log(ex.stack);
-    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+    CABLES.UI.MODAL.showClose();
+
+	$('#modalcontent').html('');
     $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
 
     if(op)
@@ -115,7 +143,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
     $('#modalcontent').append(''+ex.message+'<br/><br/>');
     $('#modalcontent').append('<div class="shaderErrorCode">'+ex.stack+'</div>');
     // $('#modalcontent').append('<br/><a onclick="gui.sendErrorReport();" id="errorReportButton" class="button">send error report</a><div id="errorReportSent" class="hidden">Report sent.</div>');
-    $('#modalcontent').show();
+    $('#modalcontainer').show();
     $('#modalbg').show();
 
     $('#modalbg').on('click',function(){
@@ -162,7 +190,8 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
 
     CABLES.UI.MODAL.PORTPREVIEW=port;
 
-    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+    CABLES.UI.MODAL.showClose();
+
     $('#modalcontent').append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
 
     $('#modalcontent').append('port: <b>'+title+'</b> of <b>'+port.parent.name+'</b> ');
@@ -183,7 +212,7 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
     $('#modalcontent').append('<br/><br/>');
 
     $('#modalcontent').append('<div class="shaderErrorCode">'+JSON.stringify(thing ,null, 4)+'</div>');
-    $('#modalcontent').show();
+    $('#modalcontainer').show();
     $('#modalbg').show();
 
     $('#modalbg').on('click',function(){
@@ -196,7 +225,9 @@ CABLES.UI.MODAL.showCode=function(title,code)
 {
 
 
-    $('#modalcontent').html('<div class="modalclose modalerror"><a class="button fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a></div>');
+
+    CABLES.UI.MODAL.showClose();
+
     $('#modalcontent').append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
 
     $('#modalcontent').append('<b>'+title+'</b> ');
@@ -207,7 +238,7 @@ CABLES.UI.MODAL.showCode=function(title,code)
     $('#modalcontent').append('<br/><br/>');
 
     $('#modalcontent').append('<div class="shaderErrorCode">'+code+'</div>');
-    $('#modalcontent').show();
+    $('#modalcontainer').show();
     $('#modalbg').show();
 
     $('#modalbg').on('click',function(){

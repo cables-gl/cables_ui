@@ -284,40 +284,62 @@ textarea
     z-index: 999;
 }
 
-#modalcontent
+#modalcontainer
 {
-    // border-radius: 10px;
-    -webkit-box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
+	position: absolute;
+	display: none;
+	left:20%;
+    top:10%;
+	width:auto;
+    height:auto;
+	min-width: 550px;
+    max-height: 75%;
+	overflow: auto;
+	z-index: 9999;
+	background-color: $background-color-dark;
+
+	-webkit-box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
     -moz-box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
     box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
 
+	padding-bottom: 15px;
 
-    width:auto;
-    height:auto;
-    position: absolute;
-    left:20%;
-    top:10%;
+	.modalclose
+    {
+        right:15px;
+        margin-top: 5px;
+		background-color: transparent;
+        position: absolute;
+		display: none;
+		.fa
+		{
+			font-size: 23px;
+		}
+    }
+
+}
+
+#modalcontent
+{
     padding:15px;
-    background-color: $background-color-dark;
-    color:#ddd;
-    z-index: 9999;
-    min-width: 550px;
-    max-height: 75%;
-    overflow: auto;
+
+	font-size: $font-size-default+3;
 
     user-select:text;
     -webkit-user-select: text;  /* Chrome all / Safari all */
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
-
-    .modalclose
-    {
-        right:15px;
-        margin-top: -4px;
-        position: absolute;
-    }
-
 }
+
+#modalheader
+{
+	background-color: $color-background-input;
+	color:$highlight-color;
+	text-align: center;
+	font-size: 17px;
+	padding:5px;
+}
+
 
 h1,h2,h3,h4
 {
@@ -1407,7 +1429,7 @@ input[type=text]:active, input[type=text]:focus {
 {
     font-family: SourceCodePro,monospace;
     white-space: pre;
-    background-color: #222;
+    background-color: #111;
     padding:10px;
     max-height: 600px;
     overflow: auto;
@@ -1556,6 +1578,11 @@ input[type=text]:active, input[type=text]:focus {
     .iconbar
     {
         padding-left: 10px;
+
+		a
+		{
+			margin-bottom: 4px;
+		}
     }
 
     #editorstatus

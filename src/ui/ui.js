@@ -185,7 +185,7 @@ CABLES.UI.GUI=function()
                 self.rendererWidth=window.innerWidth-self.editorWidth;
 
 
-            var editorbarHeight=70;
+            var editorbarHeight=77;
             $('#editor').show();
             $('#editorbar').css('height',editorbarHeight);
             $('#editorbar').css('top',menubarHeight+2);

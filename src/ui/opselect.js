@@ -246,7 +246,7 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     // console.log(CABLES.UI.OPSELECT.getOpList());
 
     var html = CABLES.UI.getHandleBarHtml('op_select',{ops: this._list });
-    CABLES.UI.MODAL.showTop(html);
+    CABLES.UI.MODAL.showTop(html,{"title":"Add Op"});
 
     $('#clearsearch').hide();
     $('#opsearch').focus();
