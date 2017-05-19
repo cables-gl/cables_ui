@@ -43,19 +43,21 @@ CABLES.UI.OpDocs=function()
                 var bg=p.rect(0,0,150,50);
                 bg.attr("fill","#333");
 
-                for(var j=0;j<opDocs[i].layout.portsIn.length;j++)
-                {
-                    var port=p.rect(j*14,0,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
-                    // port.attr("fill","#f00");
-                    port.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsIn[j].type));
-                }
+				if(opDocs[i].layout.portsIn)
+	                for(var j=0;j<opDocs[i].layout.portsIn.length;j++)
+	                {
+	                    var port=p.rect(j*14,0,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
+	                    // port.attr("fill","#f00");
+	                    port.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsIn[j].type));
+	                }
 
-                for(var j=0;j<opDocs[i].layout.portsOut.length;j++)
-                {
-                    var port=p.rect(j*14,40-7,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
-                    // port.attr("fill","#f00");
-                    port.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsOut[j].type));
-                }
+				if(opDocs[i].layout.portsOut)
+	                for(var j=0;j<opDocs[i].layout.portsOut.length;j++)
+	                {
+	                    var port=p.rect(j*14,40-7,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
+	                    // port.attr("fill","#f00");
+	                    port.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsOut[j].type));
+	                }
 
                 this.layoutPaper=p;
                 return;

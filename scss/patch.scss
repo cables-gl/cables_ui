@@ -63,10 +63,22 @@
         border:1px solid $highlight-color-dark;
     }
 
-    .comment
+	.commentTitle
     {
-        font-size: 70px;
+        font-size: 70px !important;
+	    letter-spacing: 3px;
+		font-family: SourceSansProLight !important;
     }
+	.commentText
+    {
+        font-size: 15px !important;
+		font-family: SourceSansPro !important;
+    }
+
+	.Ops_Ui_Comment
+	{
+		fill:red !important;
+	}
 
     svg
     {
@@ -77,7 +89,7 @@
         {
             text-transform: capitalize;
             font-size: 14px !important;
-			font-family: SourceSansPro;
+			font-family: SourceSansPro !important;
             pointer-events:none;
             fill:$color_op_text;
         }

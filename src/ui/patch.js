@@ -2303,7 +2303,7 @@ console.log(URL.createObjectURL(screenBlob));
     {
         var i=0;
         if(selectedOps.length==1)
-            for(i in self.ops)
+            for(var i=0;i<self.ops.length;i++)
                 if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
                     for(var j in self.ops[i].links)
                         self.ops[i].links[j].showAddButton();
@@ -2311,6 +2311,16 @@ console.log(URL.createObjectURL(screenBlob));
         for(i in selectedOps)
             selectedOps[i].doMove(dx,dy,a,b,e);
     };
+
+	this.getUiOp=function(op)
+	{
+		for(var i=0;i<self.ops.length;i++)
+		{
+			if(self.ops[i].op==op)return self.ops[i];
+		}
+		return null;
+
+	};
 
     this.updateOpParams=function(id)
     {

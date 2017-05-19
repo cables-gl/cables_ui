@@ -121,6 +121,11 @@
                         <div id="portpreview_{{ portnum }}" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" style="padding:0px;"></div>
                     {{/compare}}
 
+					{{#compare port.uiAttribs.display '==' 'text' }}
+						</td><td>
+							<textarea class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}">{{port.val}}</textarea>
+
+					{{/compare}}
                 {{else}}
 
                         {{#compare port.type '==' '1' }} </td><td>[function]

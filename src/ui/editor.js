@@ -10,6 +10,9 @@ CABLES.Editor=function()
     editor.setValue('');
 
     editor.setOptions({
+		"fontFamily": "SourceCodePro",
+		"fontSize": "14px",
+
         "enableBasicAutocompletion": true,
         "enableSnippets": true,
         "enableLiveAutocompletion": true,

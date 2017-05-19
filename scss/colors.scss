@@ -8,7 +8,7 @@ $color_theme:34;
 
 // main colors ----------------------------------------------------------------
 
-$highlight-color: #52FDE1; // not so bright red
+$highlight-color: #fff; // not so bright red
 $highlight-color-dark: #5CB59E;
 
 $mainColor: $highlight-color; // todo replace in code with $highlight-color
@@ -281,7 +281,8 @@ $background-color-brighter: #262626;
 // Button with Text and (optional icon)
 // normal
 $button-text-color: #aaa;
-$button-background-color: #2f2f2f;
+$button-background-color: #3d3d3a;
+
 $button-border-color: $background-color-dark;
 // hover
 $button-text-color-hover: $highlight-color;

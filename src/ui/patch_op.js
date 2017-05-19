@@ -265,7 +265,6 @@ function UiLink(port1, port2)
         self.hide();
         if(port1)port1.updateUI();
         if(port2)port2.updateUI();
-
     };
 
 
@@ -336,7 +335,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var title=_text;
     var shownTitle=_text;
     var backgroundResize=null;
-    var backgroundComment=null;
+    var commentText=null;
 
     this.getHeight=function()
     {
@@ -369,11 +368,11 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         if(background)background.remove();
         if(label)label.remove();
-        if(backgroundComment)backgroundComment.remove();
+        if(commentText)commentText.remove();
         if(backgroundResize)backgroundResize.remove();
         if(resizeHandle)resizeHandle.remove();
         if(miniRect)miniRect.remove();
-        label=background=backgroundComment=backgroundResize=null;
+        label=background=commentText=backgroundResize=null;
     };
 
     this.removeUi=function()
@@ -405,23 +404,27 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         }
         else
         {
-            var labelWidth=label.getBBox().width+20;
-            // if(Math.abs(labelWidth-w)>15) labelWidth+=Math.abs(labelWidth-w);
+			if(!commentText)
+			{
+				var labelWidth=label.getBBox().width+20;
+	            // if(Math.abs(labelWidth-w)>15) labelWidth+=Math.abs(labelWidth-w);
 
-            var setw=w;
+	            var setw=w;
 
-            if(labelWidth>w)
-            {
-                setw=labelWidth+20;
-            }
-            if(this.isVisible())
-            {
-                background.attr({"width":setw});
-                label.attr({x:setw/2});
-                resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
-                if(miniRect) miniRect.attr({ width:setw, height:10 });
+	            if(labelWidth>w)
+	            {
+	                setw=labelWidth+20;
+	            }
+	            if(this.isVisible())
+	            {
+	                background.attr({"width":setw});
+	                label.attr({x:setw/2});
+	                resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
+	                if(miniRect) miniRect.attr({ width:setw, height:10 });
 
-            }
+	            }
+
+			}
 
         }
     };
@@ -574,6 +577,80 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     //     return fill;
     // };
 
+	this.updateComment=function()
+	{
+		if(objName=='Ops.Ui.Comment')
+        {
+			if(commentText)
+			{
+				commentText.attr({
+				'text':opui.op.text.get(),
+				'text-anchor': 'start',
+				'x':0,
+				});
+
+			}
+			if(label)
+			{
+				label.attr({
+					'text':opui.op.inTitle.get(),
+	                'x':0,
+					'text-anchor': 'start'
+				});
+
+			}
+			this.updateSize();
+
+		}
+	};
+
+	this.updateSize=function()
+	{
+		if(objName=='Ops.Ui.Comment')
+        {
+            var sw=150;
+            var sh=100;
+            var resizeSize=20;
+			if(!label)return;
+
+            if(opui.op.uiAttribs.size)
+            {
+                sw=opui.op.uiAttribs.size[0];
+                sh=opui.op.uiAttribs.size[1];
+            }
+
+			if(resizeHandle)resizeHandle.remove();
+			var commentWidth=label.getBBox().width;
+			var commentHeight=label.getBBox().height+20;
+
+            label.attr({
+				'y':40,
+            });
+			if(commentText)
+			{
+				CABLES.UI.SVGParagraph(commentText,sw*2);
+				commentText.toFront();
+				commentText.attr({
+					'y':commentText.getBBox().height/2+76,
+
+	            });
+
+				commentHeight+=commentText.getBBox().height;
+				commentWidth=Math.max(commentWidth,commentText.getBBox().width);
+			}
+			background.attr({
+				'x':0,
+				'width':commentWidth||10,
+				'height':commentHeight||10,
+                'opacity':0.001,
+                "fill": '#f00',
+            });
+
+
+		}
+
+	};
+
     this.addUi=function()
     {
         if(this.isVisible())return;
@@ -641,30 +718,17 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 sh=opui.op.uiAttribs.size[1];
             }
 
-            label.attr({
-                'x':Math.round(sw/2),
-                'y':45,
-            });
+			resizeHandle.remove();
 
-            background.attr({
-                'width':sw,
-                'height':resizeSize,
-                'opacity':0.2,
-                "fill": '#000',
-            });
+			label.node.setAttribute("class","commentTitle");
 
-            backgroundComment=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
-            {
-                "x":0,
-                "y":0,
-                'width':sw,
-                'height':sh,
-                "fill": '#000',
-                "stroke": CABLES.UI.uiConfig.colorPatchStroke,
-                "stroke-width":0,
-                'opacity':0.3,
-            });
-            CABLES.UI.cleanRaphael(backgroundComment);
+			CABLES.UI.cleanRaphael(label);
+
+			commentText=gui.patch().getPaper().text(0,0, "opui.op.text.get()"+opui.op.text.get());
+			commentText.attr({"width":sw});
+			commentText.node.setAttribute("class","commentText");
+            // CABLES.UI.cleanRaphael(commentText);
+			console.log('addui');
 
             backgroundResize=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
             {
@@ -703,45 +767,48 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 if(width<50)width=50;
                 if(height<50)height=50;
 
-                label.attr({
-                    x:backgroundComment.attrs.x+width/2
-                });
-
-                background.attr({
-                    width:width+resizeSize
-                });
-
-                backgroundResize.attr({
-                    x:oldPosX+dx,
-                    y:oldPosY+dy
-                });
-
-                backgroundComment.attr({
-                    x:background.attrs.x,
-                    y:background.attrs.y,
-                    width:width+resizeSize,
-                    height:height+resizeSize
-                });
-
+                // label.attr({
+                //     x:0
+                // });
+				//
+                // background.attr({
+                //     width:width+resizeSize
+                // });
+				//
+                // backgroundResize.attr({
+                //     x:oldPosX+dx,
+                //     y:oldPosY+dy
+                // });
+				//
+                // commentText.attr({
+                //     x:background.attrs.x,
+                //     y:background.attrs.y,
+                //     width:width+resizeSize,
+                //     height:height+resizeSize
+                // });
+				//
                 _opui.op.uiAttribs.size=[width,height];
 
-                backgroundComment.toBack();
                 gui.patch().background.toBack();
                 background.toFront();
                 backgroundResize.toFront();
+				commentText.toFront();
             };
+			this.updateComment();
 
             backgroundResize.drag(resizeCommentMove, resizeCommentStart,resizeCommentEnd);
 
-            group.push(backgroundResize,backgroundComment);
-            backgroundComment.toBack();
+            group.push(backgroundResize,commentText);
             gui.patch().background.toBack();
             backgroundResize.toFront();
             background.toFront();
+			label.toFront();
+			if(commentText)commentText.toFront();
         }
 
         group.push(background,label,resizeHandle);
         resizeHandle.toFront();
+		this.updateSize();
     };
 
     this.setEnabled=function(enabled)
@@ -757,7 +824,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         group.toFront();
         isSelected=sel;
 
-        if(this.isVisible() && !backgroundComment)
+        if(this.isVisible() && !commentText)
         if(sel)
         {
             background.node.classList.add("active");
@@ -789,12 +856,14 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             label.attr({text:shownTitle});
 
             this.setWidth();
+			this.addUi();
 // label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
             // while(label.node.getComputedTextLength()>background.attr("width"))
             // {
             //     shownTitle=shownTitle.substr(0,shownTitle.length-1);
             //     label.attr({'text': shownTitle+'...  '});
             // }
+			this.updateSize();
         }
     };
 
