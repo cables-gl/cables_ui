@@ -73,7 +73,7 @@ gulp.task('scripts_ops', function()
 
 gulp.task('scripts_ui', function()
 {
-    return gulp.src(['src/ui/*.js'])
+    return gulp.src(['src/ui/**/*.js'])
         .pipe(sourcemaps.init())
         .pipe(concat('cablesui.max.js'))
         .pipe(gulp.dest('dist/js'))

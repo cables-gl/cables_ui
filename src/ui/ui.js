@@ -146,6 +146,7 @@ CABLES.UI.GUI=function()
         var optionsWidth=400;
 
         var timelineUiHeight=40;
+		if(self.timeLine().hidden)timelineUiHeight=0;
         var timedisplayheight=25;
 
         var patchHeight=window.innerHeight-menubarHeight-2;
@@ -462,28 +463,25 @@ CABLES.UI.GUI=function()
         self.setLayout();
     };
 
+
+	this.hideTiming=function()
+    {
+		self.timeLine().hidden=true;
+		showTiming=false;
+		$('#timing').hide();
+		gui.setLayout();
+    };
+
     this.toggleTiming=function()
     {
+		self.timeLine().hidden=false;
+		$('#timing').show();
+
         showTiming=!showTiming;
         updateTimingIcon();
         self.setLayout();
     };
 
-    this.toggleMute=function()
-    {
-        if(_scene.config.masterVolume>0.0)
-        {
-            $('#timelineVolume').removeClass('fa-volume-up');
-            $('#timelineVolume').addClass('fa-volume-off');
-            _scene.setVolume(0.0);
-        }
-        else
-        {
-            $('#timelineVolume').addClass('fa-volume-up');
-            $('#timelineVolume').removeClass('fa-volume-off');
-            _scene.setVolume(1.0);
-        }
-    };
 
     this.showMetaScreen=function()
     {
@@ -659,14 +657,14 @@ CABLES.UI.GUI=function()
         $('#button_cycleRenderSize').bind("click", function (event) { self.cycleRendererSize(); });
 
         // $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
-        $('.nav_patch_save').bind("click", function (event) { self.patch().saveCurrentProject(); });
+        $('.nav_patch_save').bind("click", function (event) { CABLES.CMD.PATCH.save(); });
         $('.nav_patch_saveas').bind("click", function (event) { self.patch().saveCurrentProjectAs(); });
         $('.nav_patch_new').bind("click", function (event) { self.createProject(); });
         $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))gui.scene().clear(); });
         $('.nav_patch_export').bind("click", function (event) { gui.patch().exportStatic(); });
         $('.nav_patch_export_ignoreAssets').bind("click", function (event) { gui.patch().exportStatic(true); });
 
-        $('.nav_patch_settings').bind("click", function (event) { self.showSettings(); });
+        $('.nav_patch_settings').bind("click", function (event) { CABLES.CMD.UI.settings(); });
         $('.nav_patch_browse_examples').bind("click", function (event) { var win = window.open('https://cables.gl/examples', '_blank'); win.focus(); });
         $('.nav_patch_browse_favourites').bind("click", function (event) { var win = window.open('https://cables.gl/myfavs', '_blank'); win.focus(); });
         $('.nav_patch_browse_public').bind("click", function (event) { var win = window.open('https://cables.gl/projects', '_blank'); win.focus(); });
@@ -696,7 +694,7 @@ CABLES.UI.GUI=function()
         $('.nav_op_addOp').bind("click", function (event) { gui.opSelect().showOpSelect({x:0,y:0}); });
         $('.nav_op_createOp').bind("click", function (event) { self.serverOps.createDialog(); });
 
-        $('.nav_files').bind("click", function (event) { self.showLibrary(); });
+        $('.nav_files').bind("click", function (event) { CABLES.CMD.UI.files() });
 
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });

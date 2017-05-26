@@ -2173,6 +2173,11 @@ console.log(URL.createObjectURL(screenBlob));
 
     this.selectChilds=function(id)
     {
+		if(!id)
+		{
+			if(selectedOps.length===0)return;
+			id=selectedOps[0].op.id;
+		}
         var op=gui.scene().getOpById(id);
         gui.jobs().start(
             {id:'selectchilds',title:'selecting child ops'},
@@ -2221,7 +2226,6 @@ console.log(URL.createObjectURL(screenBlob));
     this.unlinkSelectedOps=function()
     {
         for(var i in selectedOps) selectedOps[i].op.unLinkTemporary();
-
     };
 
     this.deleteSelectedOps=function()
@@ -2236,7 +2240,6 @@ console.log(URL.createObjectURL(screenBlob));
         {
             if(selectedOps[i]==uiop)
             {
-
                 selectedOps.splice(i,1);
                 return;
             }
