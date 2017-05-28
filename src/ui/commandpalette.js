@@ -1,7 +1,7 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-CABLES.UI.Find=function()
+CABLES.UI.CommandPalette=function()
 {
     var lastSearch='';
     var html = CABLES.UI.getHandleBarHtml(
@@ -26,7 +26,6 @@ CABLES.UI.Find=function()
         {
             self.search(lastSearch);
         },100);
-
     };
 
     function addResultOp(op)
@@ -38,14 +37,11 @@ CABLES.UI.Find=function()
         html+=''+op.op.objName;
         html+='</div>';
 
-
         setTimeout(
             function()
             {
                 $('#searchresult').append(html);
             },1);
-
-
     }
 
     var canceledSearch=0;

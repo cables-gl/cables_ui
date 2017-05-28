@@ -5,6 +5,13 @@
 
 
 
+html,body { // ipad overscroll fix...
+  position: fixed;
+  overflow: hidden;
+  width:100vw;
+  height:100vh;
+}
+
 
 body
 {
@@ -2361,4 +2368,17 @@ rect
 #preview_img_container canvas
 {
     border: 2px dashed #777;
+}
+
+#searchbox
+{
+    position: absolute;
+    top:30px;
+    z-index: 99999999;
+    display:none;
+
+    #searchresult
+    {
+        background-color: $background-color-dark;
+    }
 }

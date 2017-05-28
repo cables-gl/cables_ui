@@ -19,6 +19,7 @@ CABLES.UI.GUI=function()
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
     var _find=new CABLES.UI.Find();
+    this._cmdPalette=new CABLES.UI.CommandPalette();
     var _opselect=new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
 
@@ -781,20 +782,22 @@ CABLES.UI.GUI=function()
                     }
                     break;
 
+                case 80:
+                    if(e.ctrlKey || e.metaKey)
+                    {
+                        e.preventDefault();
+                        self._cmdPalette.show();
+                    }
+                break;
+
                 case 70:
                     if(e.metaKey || e.ctrlKey)
                     {
-                         if(!$('#ace_editor textarea').is(":focus"))
-                         {
-                             _find.show();
-                             self.setMetaTab('find');
-                             e.preventDefault();
-
-                         }
-                        if(!showingEditor)
+                        if(!$('#ace_editor textarea').is(":focus"))
                         {
+                            _find.show();
+                            e.preventDefault();
                         }
-
                     }
                 break;
                 case 79: // o - open
@@ -878,6 +881,11 @@ CABLES.UI.GUI=function()
                         console.log(CABLES.UI.suggestions);
                         CABLES.UI.suggestions.close();
                         CABLES.UI.suggestions=null;
+                    }
+                    else
+                    if( $('#searchbox').is(':visible') )
+                    {
+                        $('#searchbox').hide();
                     }
                     else
                     if( $('#library').is(':visible') )
@@ -1291,7 +1299,7 @@ CABLES.UI.GUI=function()
         if(which=='bookmarks') self.bookmarks.show();
         if(which=='preview') self.preview.show();
         else self.preview.hide();
-        if(which=='find') self.find().show();
+        // if(which=='find') self.find().show();
 
         CABLES.UI.userSettings.set("metatab",which);
 
