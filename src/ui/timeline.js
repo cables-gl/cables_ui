@@ -415,6 +415,11 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
 };
 
 
+
+
+
+
+
 CABLES.TL.UI.TimeLineUI=function()
 {
     var self=this;
@@ -425,7 +430,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var fps=30;
     var cursorTime=0.0;
     var centerCursorTimeout=-1;
-
+	this.hidden=false;
     var anims=[];
 
     var paper= Raphael("timeline", 0,0);
@@ -1564,7 +1569,9 @@ catch(e)
         return time;
     };
 
-    this.toggleTimeDisplayMode=function()
+
+
+	this.toggleTimeDisplayMode=function()
     {
         timeDisplayMode=!timeDisplayMode;
         console.log('timeDisplayMode',timeDisplayMode);

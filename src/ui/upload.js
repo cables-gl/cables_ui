@@ -14,12 +14,7 @@ CABLES.handleFileInputUpload=function(files)
 
 CABLES.uploadSelectFile=function()
 {
-    var fileElem = document.getElementById("hiddenfileElem");
-
-    if (fileElem)
-    {
-        fileElem.click();
-    }
+	CABLES.CMD.PATCH.uploadFile();
 };
 
 
