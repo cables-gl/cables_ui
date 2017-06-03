@@ -4,17 +4,14 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.Find=function()
 {
     var lastSearch='';
-    var html = CABLES.UI.getHandleBarHtml(
-        'params_find',
-        {
-        });
+
 
     var findTimeoutId=0;
 
     this.show=function()
     {
         $('#searchbox').show();
-        $('#meta_content_find').html(html);
+        // $('#meta_content_find').html(html+"!!!");
         $('#findinput').focus();
 
         $('#findinput').val(lastSearch);

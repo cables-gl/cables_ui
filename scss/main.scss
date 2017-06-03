@@ -700,7 +700,7 @@ a.button.fa-times:before {
 
     }
 
-    .searchresult
+    .searchresult,.searchresult_cmd
     {
         // background-color: #333;
 		background-color: $background-color-dark;
@@ -1807,7 +1807,7 @@ hr
 
 }
 
-#searchresult
+#searchresult,#searchresult_cmd
 {
     h3
     {
@@ -2370,7 +2370,7 @@ rect
     border: 2px dashed #777;
 }
 
-#searchbox
+#searchbox,#cmdpalette
 {
     position: absolute;
     top:30px;

@@ -148,6 +148,11 @@ CABLES.UI.GUI=function()
 
         var timelineUiHeight=40;
 		if(self.timeLine().hidden)timelineUiHeight=0;
+
+        var filesHeight=0;
+		if(CABLES.UI.fileSelect.visible)filesHeight=$('#library').height();
+
+
         var timedisplayheight=25;
 
         var patchHeight=window.innerHeight-menubarHeight-2;
@@ -241,9 +246,6 @@ CABLES.UI.GUI=function()
         $('#patch').css('left',patchLeft);
 
 
-        $('#library').css('left',0);
-        $('#library').css('width',window.innerWidth-self.rendererWidth);
-        $('#library').css('top',0);
 
         $('#minimapContainer').show();
         $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-4);
@@ -263,10 +265,14 @@ CABLES.UI.GUI=function()
             $('#minimap').hide();
         }
 
-        $('#timelineui').css('width',window.innerWidth-self.rendererWidth-2);
 
+        $('#library').css('left',0);
+        $('#library').css('width',window.innerWidth-self.rendererWidth);
+        $('#library').css('bottom',0);
+
+        $('#timelineui').css('width',window.innerWidth-self.rendererWidth-2);
         $('#timing').css('width',window.innerWidth-self.rendererWidth-2);
-        $('#timing').css('bottom',0);
+        $('#timing').css('bottom',filesHeight);
 
         if(showTiming)
         {
@@ -880,26 +886,11 @@ CABLES.UI.GUI=function()
                         CABLES.UI.suggestions.close();
                         CABLES.UI.suggestions=null;
                     }
-                    else
-                    if( $('#searchbox').is(':visible') )
-                    {
-                        $('#searchbox').hide();
-                    }
-                    else
-                    if( $('#library').is(':visible') )
-                    {
-                        $('#library').hide();
-                    }
-                    else
-                    if( $('#sidebar').is(':visible') )
-                    {
-                        $('#sidebar').animate({width:'toggle'},200);
-                    }
-                    else
-                    if( $('.easingselect').is(':visible') )
-                    {
-                        $('.easingselect').hide();
-                    }
+                    else if( $('#cmdpalette').is(':visible') ) $('#cmdpalette').hide();
+                    else if( $('#searchbox').is(':visible') ) $('#searchbox').hide();
+                    else if( $('#library').is(':visible') ) $('#library').hide();
+                    else if( $('#sidebar').is(':visible') ) $('#sidebar').animate({width:'toggle'},200);
+                    else if( $('.easingselect').is(':visible') ) $('.easingselect').hide();
                     else
                     if( $('#modalcontent').is(':visible') )
                     {

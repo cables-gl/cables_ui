@@ -13,6 +13,7 @@ CABLES.UI.FileSelect=function()
     this._viewClass='icon';
     var self=this;
     this.currentOpid=null;
+    this.visible=false;
 
     this.setFile=function(_id,_url,fileid)
     {
@@ -107,23 +108,29 @@ CABLES.UI.FileSelect=function()
         this.load();
     };
 
+    this.hide=function()
+    {
+        $('#library').hide();
+        this.visible=false;
+        gui.setLayout();
+    };
+
     this.show=function(_inputId,_filterType,_opid)
     {
-        $('#library').toggle();
+        this.visible=true;
+        $('#library').show();
         this.currentOpid=_opid;
 
-        if( $('#library').is(':visible') )
-        {
-            $('#lib_head').html( CABLES.UI.getHandleBarHtml('library_head') );
+        $('#lib_head').html( CABLES.UI.getHandleBarHtml('library_head') );
 
-            inputId=_inputId;
-            filterType=_filterType;
+        inputId=_inputId;
+        filterType=_filterType;
 
-            this.load();
+        this.load();
 
-            var val=$(_inputId).val();
-            this.showPreview(val);
-        }
+        var val=$(_inputId).val();
+        this.showPreview(val);
+        gui.setLayout();
     };
 
     this.load=function()

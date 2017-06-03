@@ -49,15 +49,22 @@
 
     <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:50px;"></div></div>
 
-    <div id="mainContainer">
-
     <div id="cablescanvas" style="overflow:hidden;width:640px;height:300px;z-index:999;position:absolute;right:0px;">
         <canvas id="glcanvas" width="0" height="0"></canvas>
     </div>
 
+    <div id="mainContainer">
+
+
     <div id="searchbox">
-        <input class="medium info" id="findinput" oninput="gui.find().search(this.value);" placeholder="search" >
+        search
+        <input class="medium info" id="findinput" oninput="gui.find().search(this.value);" placeholder="search" />
         <br/>
-        <div id="searchresult">
-        </div>
+        <div id="searchresult"></div>
+    </div>
+    <div id="cmdpalette">
+        cmd
+        <input class="medium info" id="cmdinput" oninput="gui._cmdPalette.doSearch(this.value);" placeholder="search" />
+        <br/>
+        <div id="searchresult_cmd"></div>
     </div>
