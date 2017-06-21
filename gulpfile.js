@@ -1,6 +1,4 @@
 var gulp = require('gulp');
-
-
 var jshint = require('gulp-jshint');
 var sass = require('gulp-sass');
 var concat = require('gulp-concat');
@@ -8,7 +6,16 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var sourcemaps = require('gulp-sourcemaps');
 var gutil = require('gulp-util');
+var fs = require("fs");
+var browserify = require('browserify');
+var vueify = require('vueify');
 
+gulp.task('vueify', function() {
+  browserify('vue-src/main.js')
+    .transform(vueify)
+    .bundle()
+    .pipe(fs.createWriteStream("dist/js/bundle.js"));
+});
 
 gulp.task('lint', function()
 {
@@ -111,8 +118,9 @@ gulp.task('watch', function() {
     gulp.watch('src/ui/**/*.js', ['scripts_ui']);
     gulp.watch('scss/*.scss', ['sass','sass-bright']);
     gulp.watch('html/**/*.html', ['html_ui']);
+    gulp.watch('vue-src/**/*', ['vueify']);
 });
 
 
-gulp.task('default', ['scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright','watch']);
-gulp.task('build', ['html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','sass-bright']);
+gulp.task('default', ['scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright', 'vueify', 'watch']);
+gulp.task('build', ['html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','sass-bright', 'vueify']);
