@@ -1,26 +1,28 @@
-// var Vue = require('vue')
+// Vue entry, no ES6 in this file
 var Vue = require('../node_modules/vue/dist/vue.common.js');
 var App = require('./App.vue');
 
+var store = require('./store/store.js');
+
 Vue.config.productionTip = false;
 
-var iconBarData = [
-  {
-    'icon': 'fa-play',
-    'title': 'Play',
-    'action': 'play'
-  },
-  {
-    'icon': 'fa-forward',
-    'title': 'Forward',
-    'action': 'forward'
-  },
-  {
-    'icon': 'fa-backward',
-    'title': 'Backward',
-    'action': 'backward'
-  }
-];
+// var iconBarData = [
+//   {
+//     'icon': 'fa-play',
+//     'title': 'Play',
+//     'action': 'play'
+//   },
+//   {
+//     'icon': 'fa-forward',
+//     'title': 'Forward',
+//     'action': 'forward'
+//   },
+//   {
+//     'icon': 'fa-backward',
+//     'title': 'Backward',
+//     'action': 'backward'
+//   }
+// ];
 
 window.cablesFunctions = {
   'play': function() {
@@ -34,11 +36,17 @@ window.cablesFunctions = {
   }
 };
 
+window.callCablesFunction = function(functionName) {
+    if(window.cablesFunctions.hasOwnProperty(functionName)) {
+      window.cablesFunctions[functionName]();
+    }
+};
+
 new Vue({
   el: '#vue-app',
-  template: '<App :icon-bar-data="iconBarData" :title="title" />',
+  store,
+  template: '<App :title="title" />',
   data: {
-    'iconBarData': iconBarData,
     'title': 'Heloo???'
   },
   components: { App }

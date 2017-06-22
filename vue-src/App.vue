@@ -1,10 +1,10 @@
 <template>
-  <div id="icon-bar">
+  <div id="icon-bar" :class="{hidden: !isVisible}">
     <!-- <hello></hello> -->
     <ul>
-      <li v-for="iconData in iconBarData" @click='callFunction(iconData.action)'>
-        <span class="fa icon" :class="[iconData.icon]"></span>
-        <span>{{ iconData.title }}</span>
+      <li v-for="item in items" @click='callFunction(item.action)'>
+        <span class="fa icon" :class="[item.icon]"></span>
+        <span>{{ item.title }}</span>
       </li>
     </ul>
   </div>
@@ -19,13 +19,20 @@ export default {
     Hello
   },
   props: [
-    'title',
-    'iconBarData'
+    'title'
   ],
+  computed: {
+    items() {
+      return this.$store.state.iconBar.items;
+    },
+    isVisible() {
+      return this.$store.state.iconBar.visible;
+    }
+  },
   methods : {
     callFunction : function(action){
-      console.log(action);
-      cablesFunctions[action]();
+      // cablesFunctions[action]();
+      callCablesFunction(action);
     }
   }
 }
