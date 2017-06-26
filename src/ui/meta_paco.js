@@ -19,4 +19,4 @@ CABLES.UI.Paco.prototype.show=function()
     });
     $('#meta_content_paco').html(html);
 
-}
+};

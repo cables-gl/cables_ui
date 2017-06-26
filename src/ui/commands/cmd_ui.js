@@ -1,10 +1,9 @@
-var CABLES =CABLES||{};
-CABLES.CMD=CABLES.CMD||{};
-CABLES.CMD.UI={};
+var CABLES = CABLES || {};
+CABLES.CMD = CABLES.CMD || {};
+CABLES.CMD.UI = {};
 
-CABLES.CMD.UI.settings=function()
-{
-	gui.showSettings();
+CABLES.CMD.UI.settings = function () {
+  gui.showSettings();
 };
 
 CABLES.CMD.UI.files=function()
@@ -13,14 +12,11 @@ CABLES.CMD.UI.files=function()
 };
 CABLES.CMD.UI.toggleMute=function()
 {
-	if(gui.scene().config.masterVolume>0.0)
-	{
+	if(gui.scene().config.masterVolume>0.0){
 		$('#timelineVolume').removeClass('fa-volume-up');
 		$('#timelineVolume').addClass('fa-volume-off');
 		gui.scene().setVolume(0.0);
-	}
-	else
-	{
+	} else {
 		$('#timelineVolume').addClass('fa-volume-up');
 		$('#timelineVolume').removeClass('fa-volume-off');
 		gui.scene().setVolume(1.0);
@@ -36,6 +32,18 @@ CABLES.CMD.UI.hideTimeline=function()
 {
 	gui.hideTiming();
 };
+
+
+CABLES.CMD.UI.hideMinimap=function()
+{
+	gui.hideMiniMap();
+};
+
+CABLES.CMD.UI.showMinimap=function()
+{
+	gui.showMiniMap();
+};
+
 
 
 
@@ -67,5 +75,18 @@ CABLES.CMD.commands.push(
 		cmd:"hide timeline",
 		category:"ui",
 		func:CABLES.CMD.UI.hideTimeline
+	},
+	{
+		cmd:"hide minimap",
+		category:"ui",
+		func:CABLES.CMD.UI.hideMinimap
+	},
+	{
+		cmd:"show minimap",
+		category:"ui",
+		func:CABLES.CMD.UI.showMinimap
 	}
+
+
+
 );

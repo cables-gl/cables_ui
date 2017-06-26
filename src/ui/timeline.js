@@ -1,5 +1,4 @@
 
-
 CABLES.TL.UI=CABLES.TL.UI || {};
 
 CABLES.TL.Key.prototype.isUI=true;
@@ -430,7 +429,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var fps=30;
     var cursorTime=0.0;
     var centerCursorTimeout=-1;
-	this.hidden=false;
+	this.hidden=true;
     var anims=[];
 
     var paper= Raphael("timeline", 0,0);

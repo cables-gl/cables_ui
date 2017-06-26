@@ -137,7 +137,7 @@ function UiLink(port1, port2)
 
             addCircle.node.onmousedown = function (event)
             {
-                $('#library').hide();
+                // $('#library').hide();
                 $('#patch').focus();
 
                 if(self.p1!==null)
