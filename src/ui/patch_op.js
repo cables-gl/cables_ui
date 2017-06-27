@@ -325,7 +325,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var group = Raphael.fn.set();
     var background = null;
     var miniRect = null;
-    var resizeHandle = null;
+    // var resizeHandle = null;
     var label=null;
     var w=_w;
     var h=_h;
@@ -370,7 +370,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(label)label.remove();
         if(commentText)commentText.remove();
         if(backgroundResize)backgroundResize.remove();
-        if(resizeHandle)resizeHandle.remove();
+        // if(resizeHandle)resizeHandle.remove();
         if(miniRect)miniRect.remove();
         label=background=commentText=backgroundResize=null;
     };
@@ -413,13 +413,13 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
 	            if(labelWidth>w)
 	            {
-	                setw=labelWidth+20;
+	                setw=labelWidth;
 	            }
 	            if(this.isVisible())
 	            {
 	                background.attr({"width":setw});
 	                label.attr({x:setw/2});
-	                resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
+	                // resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
 	                if(miniRect) miniRect.attr({ width:setw, height:10 });
 
 	            }
@@ -517,6 +517,9 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         gui.patch().moveSelectedOps(dx,dy,a,b,e);
         gui.patch().updateBounds=true;
         gui.setStateUnsaved();
+
+
+
     };
 
     var up = function ()
@@ -610,7 +613,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         {
             var sw=150;
             var sh=100;
-            var resizeSize=20;
+            var resizeSize=0;
 			if(!label)return;
 
             if(opui.op.uiAttribs.size)
@@ -619,7 +622,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 sh=opui.op.uiAttribs.size[1];
             }
 
-			if(resizeHandle)resizeHandle.remove();
+			// if(resizeHandle)resizeHandle.remove();
 			var commentWidth=label.getBBox().width;
 			var commentHeight=label.getBBox().height+20;
 
@@ -666,7 +669,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         CABLES.UI.cleanRaphael(miniRect);
 
 
-        background=gui.patch().getPaper().rect(0, 0, w, h);
+        background=gui.patch().getPaper().rect(0, 3, w, h-6);
         CABLES.UI.cleanRaphael(background);
         background.node.classList.add('op_background');
         var objNameClassNameified = opui.op.objName.replace(/[\W_]+/g,"_");
@@ -674,12 +677,15 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         background.node.setAttribute('data-info', CABLES.UI.TEXTS.op_background);
 
 
-        resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, h);
-        CABLES.UI.cleanRaphael(resizeHandle);
-        resizeHandle.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
-        resizeHandle.node.classList.add('op_handle');
+        // resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, 0);
+        // CABLES.UI.cleanRaphael(resizeHandle);
+        // resizeHandle.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
+        // resizeHandle.node.classList.add('op_handle');
 
         label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+
+		label.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
+
 		// label.attr({"font-family": "SourceSansPro, sans-serif" });
 
         CABLES.UI.cleanRaphael(label);
@@ -718,7 +724,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 sh=opui.op.uiAttribs.size[1];
             }
 
-			resizeHandle.remove();
+			// resizeHandle.remove();
 
 			label.node.setAttribute("class","commentTitle");
 
@@ -806,8 +812,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 			if(commentText)commentText.toFront();
         }
 
-        group.push(background,label,resizeHandle);
-        resizeHandle.toFront();
+        group.push(background,label);//,resizeHandle);
+        // resizeHandle.toFront();
 		this.updateSize();
     };
 
