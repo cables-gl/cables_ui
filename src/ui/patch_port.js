@@ -1,5 +1,6 @@
 CABLES.UI.MOUSEOVERPORT=false;
 CABLES.UI.selectedStartPort=null;
+CABLES.UI.selectedEndPort=null;
 
 CABLES.UI.Port=function(thePort)
 {
@@ -121,13 +122,13 @@ CABLES.UI.Port=function(thePort)
 
         if(window.CABLES.UI.selectedEndOp)
         {
-            for(var i=0;i<CABLES.UI.selectedEndOp.op.portsIn.length;i++)
-            {
-                if(CABLES.UI.selectedEndOp.op.portsIn[i].type==CABLES.UI.selectedStartPort.type)
-                {
-                    // console.log(CABLES.UI.selectedEndOp.op.portsIn[i].name);
-                }
-            }
+            // for(var i=0;i<CABLES.UI.selectedEndOp.op.portsIn.length;i++)
+            // {
+            //     if(CABLES.UI.selectedEndOp.op.portsIn[i].type==CABLES.UI.selectedStartPort.type)
+            //     {
+            //         // console.log(CABLES.UI.selectedEndOp.op.portsIn[i].name);
+            //     }
+            // }
             // console.log(  );
             // console.log();
 
@@ -164,34 +165,47 @@ CABLES.UI.Port=function(thePort)
 
 
 
+			$('#drop-op-cursor').hide();
+
+			$('#patch').css({cursor:"url(/img/circle.png) 10 10, auto"});
 
         }
+		else
+		{
 
+			$('#drop-op-cursor').css({top:b-12,left:a-37});
+			$('#patch').css({cursor:"url(/img/add.png) 10 10, auto"});
 
-        if(!selectedEndPort || !selectedEndPort.thePort)
+			$('#drop-op-cursor').show();
+		}
+
+        if(!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort)
         {
             // CABLES.UI.setStatusText('select a port to link...');
         }
         else
         {
-            var txt=CABLES.Link.canLinkText(selectedEndPort.thePort,CABLES.UI.selectedStartPort);
-            if(txt=='can link') getPortDescription(selectedEndPort.thePort);
+			$('#patch').css({cursor:"default"});
+
+            var txt=CABLES.Link.canLinkText(CABLES.UI.selectedEndPort.thePort,CABLES.UI.selectedStartPort);
+            if(txt=='can link') getPortDescription(CABLES.UI.selectedEndPort.thePort);
                 else CABLES.UI.hideInfo();
 
             if(txt=='can link') txt='<i class="fa fa-check"></i>';
                 else txt='<i class="fa fa-times"></i> '+txt;
 
-            CABLES.UI.showToolTip(event,txt+' '+getPortDescription(selectedEndPort.thePort));
-        }
+            CABLES.UI.showToolTip(event,txt+' '+getPortDescription(CABLES.UI.selectedEndPort.thePort));
 
-        if(selectedEndPort && selectedEndPort.thePort && CABLES.Link.canLink(selectedEndPort.thePort,CABLES.UI.selectedStartPort))
-        {
-            linkingLine.thisLine.node.classList.add( CABLES.UI.uiConfig.getLinkClass(selectedEndPort.thePort));
-            linkingLine.thisLine.node.classList.remove( 'link_color_error');
-        }
-        else
-            linkingLine.thisLine.node.classList.add( 'link_color_error');
-            // linkingLine.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLinkInvalid });
+
+	        if(CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort,CABLES.UI.selectedStartPort))
+	        {
+	            linkingLine.thisLine.node.classList.add( CABLES.UI.uiConfig.getLinkClass(CABLES.UI.selectedEndPort.thePort));
+	            linkingLine.thisLine.node.classList.remove( 'link_color_error');
+	        }
+	        else
+	            linkingLine.thisLine.node.classList.add( 'link_color_error');
+	            // linkingLine.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLinkInvalid });
+		}
     }
 
     function removeLinkingLine()
@@ -202,6 +216,7 @@ CABLES.UI.Port=function(thePort)
 
     function finishDragUI()
     {
+		$('#drop-op-cursor').hide();
         CABLES.UI.selectedEndOp=null;
         removeLinkingLine();
         self.opUi.isDragging=false;
@@ -244,7 +259,7 @@ CABLES.UI.Port=function(thePort)
         // }
 
         var foundAutoOp=false;
-        if(CABLES.UI.selectedEndOp && !selectedEndPort)
+        if(CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
         {
             var i=0;
             var numFitting=CABLES.UI.selectedEndOp.op.countFittingPorts(CABLES.UI.selectedStartPort);
@@ -299,19 +314,19 @@ CABLES.UI.Port=function(thePort)
             }
 
 
-            if(selectedEndPort && selectedEndPort.thePort && CABLES.Link.canLink(selectedEndPort.thePort,CABLES.UI.selectedStartPort))
+            if(CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort,CABLES.UI.selectedStartPort))
             {
-                var link=gui.patch().scene.link(selectedEndPort.op, selectedEndPort.thePort.getName() , CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
+                var link=gui.patch().scene.link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName() , CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
 
                 // CABLES.UI.selectedStartPort.updateUI();
-                selectedEndPort.updateUI();
+                CABLES.UI.selectedEndPort.updateUI();
             }
             else
             {
                 if(event.which!=3)
                 {
                     event=mouseEvent(event);
-                    if(!selectedEndPort || !selectedEndPort.thePort || !linkingLine)
+                    if(!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort || !linkingLine)
                     {
                         var links=self.opUi.getPortLinks(CABLES.UI.selectedStartPort.id);
                         var coords=gui.patch().getCanvasCoordsMouse(event);
@@ -412,7 +427,7 @@ CABLES.UI.Port=function(thePort)
 
     function hover(event)
     {
-        selectedEndPort=self;
+        CABLES.UI.selectedEndPort=self;
         self.rect.toFront();
         // self.rect.node.classList.add('active');
         hovering=true;
@@ -447,7 +462,7 @@ CABLES.UI.Port=function(thePort)
     function hoverOut()
     {
         CABLES.UI.hideToolTip();
-        selectedEndPort=null;
+        CABLES.UI.selectedEndPort=null;
         gui.patch().hoverPort=null;
 
         hovering=false;

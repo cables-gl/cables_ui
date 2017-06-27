@@ -1,4 +1,17 @@
 
+
+#drop-op-cursor
+{
+	position: absolute;
+	display:none;
+	width:75px;
+	height:20px;
+	z-index: 88999;
+	background-image: url(/img/dragicon.png);
+	background-size: 100% 100%;
+	pointer-events: none;
+}
+
 #minimapContainer
 {
     border:1px solid red;
@@ -98,7 +111,7 @@
     {
         fill: $color_op_bg;
         stroke-width:0;
-        cursor: move;
+        // cursor: move;
 
         &.active
         {
