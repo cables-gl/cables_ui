@@ -1,11 +1,8 @@
-
-
-CABLES.UI=CABLES.UI|| {};
+CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
 CABLES.UI.GUI=function()
 {
-
     var self=this;
     var userOpsLoaded=false;
     var showTiming=false;
@@ -128,6 +125,7 @@ CABLES.UI.GUI=function()
 
     this.setLayout=function()
     {
+        console.log('setlayout');
         $('#menubar').show();
         $('#timelineui').show();
 
@@ -258,10 +256,10 @@ CABLES.UI.GUI=function()
         }
         else
         {
-            $('#minimapContainer .title_closed').show();
-            $('#minimapContainer .title_opened').hide();
-            $('#minimapContainer').css('top',menubarHeight+patchHeight-24);
-            $('#minimapContainer').css('width',CABLES.UI.uiConfig.miniMapWidth);
+            $('#minimapContainer').hide();
+            // $('#minimapContainer .title_opened').hide();
+            // $('#minimapContainer').css('top',menubarHeight+patchHeight-24);
+            // $('#minimapContainer').css('width',CABLES.UI.uiConfig.miniMapWidth);
             $('#minimap').hide();
         }
 
@@ -456,12 +454,17 @@ CABLES.UI.GUI=function()
         self.setLayout();
     };
 
-
-    this.toggleMiniMap=function()
+    this.hideMiniMap=function()
     {
-        showMiniMap=!showMiniMap;
+        showMiniMap=false;
         self.setLayout();
     };
+
+    // this.toggleMiniMap=function()
+    // {
+    //     showMiniMap=!showMiniMap;
+    //     self.setLayout();
+    // };
 
     this.showTiming=function()
     {

@@ -13,9 +13,6 @@ CABLES.CMD.RENDERER.fullscreen=function()
 };
 
 
-
-
-
 CABLES.CMD.commands.push(
 	{
 		cmd:"save screenshot",
