@@ -1106,7 +1106,7 @@ console.log(URL.createObjectURL(screenBlob));
     };
 
 
-    function dragMiniMap(e)
+    function dragMiniMap (e)
     {
         if(mouseRubberBandPos)return;
 
@@ -1251,7 +1251,7 @@ console.log(URL.createObjectURL(screenBlob));
         this.background.node.onmousedown = function (ev)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
-            $('#library').hide();
+            // $('#library').hide();
             $('#patch').focus();
 
             if(!ev.shiftKey) gui.patch().setSelectedOp(null);
@@ -1338,8 +1338,7 @@ console.log(URL.createObjectURL(screenBlob));
             rubberBandHide();
             lastZoomDrag=-1;
 
-			if(gui.cursor!="auto")
-			{
+			if(gui.cursor!="auto"){
 				gui.cursor="audo";
 				$('#patch').css({"cursor":"auto"});
 			}
