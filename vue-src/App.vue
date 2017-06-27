@@ -32,7 +32,8 @@ export default {
   methods : {
     callFunction : function(action){
       // cablesFunctions[action]();
-      callCablesFunction(action);
+      // callCablesFunction(action);
+      CABLES.CMD.exec(action);
     }
   }
 }

@@ -8,20 +8,20 @@ Vue.use(Vuex);
 // var exports = module.exports= {};
 var store = new Vuex.Store({
   state: {
-    counter: 1,
+    /* icon bar displays action-items with an icon and text */
     iconBar: {
       visible: true,
-      displayText: true,
+      displayText: true, // shows text under the item
       items: [
         {
           'icon': 'fa-play',
-          'title': 'Play',
-          'action': 'play'
+          'title': 'Save Patch',
+          'action': 'save patch'
         },
         {
           'icon': 'fa-forward',
-          'title': 'Forward',
-          'action': 'forward'
+          'title': 'Select All Ops',
+          'action': 'select all ops'
         },
         {
           'icon': 'fa-backward',
@@ -29,6 +29,11 @@ var store = new Vuex.Store({
           'action': 'backward'
         }
       ]
+    }
+  },
+  mutations: {
+     addIconBarItem (state, item) {
+      state.iconBar.items.push(item)
     }
   }
 });
