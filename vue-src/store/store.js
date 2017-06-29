@@ -5,7 +5,6 @@ var Vuex = require('vuex');
 
 Vue.use(Vuex);
 
-// var exports = module.exports= {};
 var store = new Vuex.Store({
   state: {
     /* icon bar displays action-items with an icon and text */
