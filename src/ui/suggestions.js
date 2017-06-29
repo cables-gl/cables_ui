@@ -9,14 +9,13 @@ CABLES.UI.SuggestPortDialog=function(op,port,mouseEvent,cb,cbCancel)
 
     function addPort(p)
     {
+		var name=p.name;
+		if(p.isLinked())name+=" [..]";
         suggestions.push({
             p:p,
-            name:p.name,
+            name:name,
         });
     }
-
-
-
 
     //linkRecommendations
 

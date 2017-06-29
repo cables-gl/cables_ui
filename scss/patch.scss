@@ -104,6 +104,11 @@
 			font-family: SourceSansPro !important;
             pointer-events:none;
             fill:$color_op_text;
+
+			&.active
+			{
+				fill:$color_op_text_active;
+			}
         }
     }
 

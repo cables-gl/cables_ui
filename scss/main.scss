@@ -1087,6 +1087,7 @@ input[type=text]:active, input[type=text]:focus {
 @import 'font-awesome.scss';
 @import 'cables_icons.scss';
 @import 'jcolorpicker.scss';
+@import 'searchbox.scss';
 
 
 .easingselect
@@ -1807,28 +1808,6 @@ hr
 
 }
 
-#searchresult,#searchresult_cmd
-{
-    h3
-    {
-        margin:0px;
-    }
-    padding:0px;
-
-    div
-    {
-        padding:10px;
-        border-bottom:1px solid #444;
-        cursor:pointer;
-
-        &:hover
-        {
-            cursor:pointer;
-            background-color: #1a1a1a;
-        }
-    }
-}
-
 
 .filename
 {
@@ -2369,17 +2348,4 @@ rect
 #preview_img_container canvas
 {
     border: 2px dashed #777;
-}
-
-#searchbox,#cmdpalette
-{
-    position: absolute;
-    top:30px;
-    z-index: 99999999;
-    display:none;
-
-    #searchresult
-    {
-        background-color: $background-color-dark;
-    }
 }
