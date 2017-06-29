@@ -9,3 +9,4 @@ dist/js/*.map
 *.max.js
 dist/css
 dist/index.html
+scss/svgicons.scss
