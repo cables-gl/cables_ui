@@ -12,19 +12,20 @@
 
         <div class="searchbrowser">
           {{#each ops}}
-            <div id="result_{{id}}" class="searchresult clickable searchable item_color_{{ nscolor }}" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" >
-                <div class="graphbutton fright insertbutton" style="display:none;" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
+
+            <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" >
+                <div class="graphbutton icon icon-plus  fright insertbutton" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();"></div>
 
                 <a>
                     {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
-                    <span class="shortname">{{shortName}}</span>
+                    <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
                     <span class="namespace" onClick="CABLES.UI.OPSELECT.searchFor('{{nameSpace}}');">{{nameSpace}}
-                    <span class="score"></span>
+                    / score: <span class="score"></span>
                 </span>{{isFunction}}
 
-                    {{#if summary}}
-                        <div class="summary"> {{summary}}</div>
-                    {{/if}}
+
+                <div class="summary">{{summary}}&nbsp;</div>
+
                 </a>
 
             </div>
@@ -37,7 +38,6 @@
               <a class="bluebutton" id="createuserop">create <span class="userCreateOpName" style="color:#222"></span></a>
           </div>
         </div>
-        <div id="opselect-layout" ></div>
         <div id="searchinfo" class="searchinfo"></div>
 
     </div>

@@ -38,7 +38,7 @@ CABLES.UI.OpDocs=function()
             {
                 if(!opDocs[i].layout) return;
 
-                var p = this.layoutPaper||Raphael(document.getElementById(elementId), 150, 40);
+                var p = Raphael(document.getElementById(elementId), 150, 40);
 
                 var bg=p.rect(0,0,150,50);
                 bg.attr("fill","#333");

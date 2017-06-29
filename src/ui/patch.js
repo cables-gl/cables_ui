@@ -1329,6 +1329,8 @@ console.log(URL.createObjectURL(screenBlob));
 
                     }
 
+
+
                 rubberBandMove(e);
             }
         });
@@ -1369,8 +1371,13 @@ console.log(URL.createObjectURL(screenBlob));
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
                 var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 
+
+
+
                 viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
                 viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
+
+$('body').css({"background-position":""+(-0.2*viewBox.x)+" "+(-0.2*viewBox.y)});
 
                 // if(self.scene.config.fpsLimit!=10)fpsLimitBefore=self.scene.config.fpsLimit;
                 // self.scene.config.fpsLimit=10;
@@ -2391,7 +2398,7 @@ console.log(URL.createObjectURL(screenBlob));
         else
         {
             $('#options_warning').show();
-            $('#options_warning').html(currentOp.op.uiAttribs.warning);
+            $('#options_warning').html('<div style="float:left;width:15%;padding-top: 10px;"><i class="fa fa-2x fa-exclamation-triangle" aria-hidden="true"></i></div><div style="float:left;width:85%;">'+currentOp.op.uiAttribs.warning+'</div>');
         }
 
         if(!currentOp.op.uiAttribs.error || currentOp.op.uiAttribs.error.length===0)
