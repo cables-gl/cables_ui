@@ -58,14 +58,18 @@
 
     <div id="searchbox">
 		<div class="inputcontainer">
-        	search
-			<a class="fa fa-times fright" onclick="$('#searchbox').hide();"></a>
-        	<input class="medium info" id="findinput" oninput="gui.find().search(this.value);" placeholder="search" />
+			<div style="width:85%;float:left">
+				<input class="medium info" id="findinput" oninput="gui.find().search(this.value);" placeholder="search" style="margin:0px;"/>
+			</div>
+			<div style="width:15%;float:left">
+				<a class="fa fa-2x fa-times fright" onclick="$('#searchbox').hide();"></a>
+			</div>
+			<div style="clear:both"></div>
 		</div>
         <div id="searchresult"></div>
     </div>
+
     <div id="cmdpalette">
-        cmd
         <input class="medium info" id="cmdinput" oninput="gui._cmdPalette.doSearch(this.value);" placeholder="search" />
         <br/>
         <div id="searchresult_cmd"></div>

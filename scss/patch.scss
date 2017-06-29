@@ -52,16 +52,25 @@
     .op_minirect_audio { fill:$color_op_handle_audio; }
     .op_minirect_devices { fill:$color_op_handle_devices; }
     .op_minirect_html { fill:$color_op_handle_html; }
+	.op_minirect_math { fill:$color_op_handle_math; }
 }
 
 
-    .port_color_function { fill:$color_port_function; stroke:$color_port_function; }
-    .port_color_value { fill:$color_port_value; stroke:$color_port_value; }
-    .port_color_object { fill:$color_port_object; stroke:$color_port_object; }
-    .port_color_array { fill:$color_port_array; stroke:$color_port_array; }
-    .port_color_dynamic { fill:$color_port_dynamic; stroke:$color_port_dynamic;}
-    .port_color_unknown { fill:#0f0; }
+.port_color_function { fill:$color_port_function; stroke:$color_port_function; }
+.port_color_value { fill:$color_port_value; stroke:$color_port_value; }
+.port_color_object { fill:$color_port_object; stroke:$color_port_object; }
+.port_color_array { fill:$color_port_array; stroke:$color_port_array; }
+.port_color_dynamic { fill:$color_port_dynamic; stroke:$color_port_dynamic;}
+.port_color_unknown { fill:#0f0; }
 
+
+.op_color_default { color:$color_op_handle_default;}
+.op_color_gl { color:$color_op_handle_gl; }
+.op_color_audio { color:$color_op_handle_audio; }
+.op_color_devices { color:$color_op_handle_devices; }
+.op_color_html { color:$color_op_handle_html; }
+.op_color_math { color:$color_op_handle_math; }
+.op_color_math { color:$color_op_handle_math; }
 
 
 #patch
@@ -145,11 +154,13 @@
     }
 
 
-    .op_handle_default { fill:$color_op_handle_default;}
+	.op_handle_default { fill:$color_op_handle_default;}
     .op_handle_gl { fill:$color_op_handle_gl; }
     .op_handle_audio { fill:$color_op_handle_audio; }
     .op_handle_devices { fill:$color_op_handle_devices; }
     .op_handle_html { fill:$color_op_handle_html; }
+	.op_handle_math { fill:$color_op_handle_math; }
+	.op_handle_math { fill:$color_op_handle_math; }
 
     .port
     {

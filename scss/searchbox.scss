@@ -2,7 +2,7 @@
 #searchbox,#cmdpalette
 {
     position: absolute;
-    top:30px;
+    top:31px;
     z-index: 99999999;
     display:none;
 
@@ -22,6 +22,8 @@
 
     #searchresult
     {
+		max-height: 75vh;
+	    overflow-y: auto;
     }
 }
 
@@ -44,7 +46,7 @@
         &:hover
         {
             cursor:pointer;
-			background-color: #777;
+			background-color: $color_op_bg_active;
 
             // background-color: #1a1a1a;
         }

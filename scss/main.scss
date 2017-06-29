@@ -340,7 +340,7 @@ textarea
 
 #modalheader
 {
-	background-color: $color-background-input;
+	// background-color: $color-background-input;
 	color:$highlight-color;
 	text-align: center;
 	font-size: 17px;
@@ -490,10 +490,10 @@ input[type="text"]
 		padding:5px;
 	}
 
-	a
-	{
-		opacity: 0.6;
-	}
+	// a
+	// {
+	// 	opacity: 0.6;
+	// }
 
     input
     {
@@ -2087,6 +2087,7 @@ rect
     .item_color_audio { border-left:15px solid $color_op_handle_audio; }
     .item_color_devices { border-left:15px solid $color_op_handle_devices; }
     .item_color_html { border-left:15px solid $color_op_handle_html; }
+	.item_color_math { border-left:15px solid $color_op_handle_math; }
 }
 
 

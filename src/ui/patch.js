@@ -2509,7 +2509,13 @@ console.log(URL.createObjectURL(screenBlob));
         if(op.objName.startsWith('Ops.Deprecated.')) op.isDeprecated=true;
         if(op.objName.startsWith('Ops.Exp.')) op.isExperimental=true;
 
-        var html = CABLES.UI.getHandleBarHtml('params_op_head',{op: op,texts:CABLES.UI.TEXTS,user:gui.user,ownsOp:ownsOp});
+        var html = CABLES.UI.getHandleBarHtml('params_op_head',
+			{
+				"op": op,
+				"colorClass":"op_color_"+CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
+				"texts":CABLES.UI.TEXTS,
+				"user":gui.user,ownsOp:ownsOp
+			});
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);
 

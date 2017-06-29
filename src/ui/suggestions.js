@@ -10,10 +10,10 @@ CABLES.UI.SuggestPortDialog=function(op,port,mouseEvent,cb,cbCancel)
     function addPort(p)
     {
 		var name=p.name;
-		if(p.isLinked())name+=" [..]";
         suggestions.push({
             p:p,
-            name:name,
+            name:p.name,
+			isLinked:p.isLinked()
         });
     }
 
@@ -67,6 +67,7 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
                     {
                         "name":recs[i].name,
                         "port":recs[i].port,
+						"isLinked":recs[i].isLinked,
                         "recommended":true,
                     });
 
