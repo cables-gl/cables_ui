@@ -2,6 +2,8 @@
 @import 'fonts';
 @import 'introjs.min';
 @import 'patch';
+@import 'svgicons';
+@import 'icons';
 
 
 
@@ -23,6 +25,8 @@ body
     font-size: $font-size-default;
     -webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	background-image: url(/img/noise_sm.jpg);
+
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -340,7 +344,7 @@ textarea
 
 #modalheader
 {
-	background-color: $color-background-input;
+	// background-color: $color-background-input;
 	color:$highlight-color;
 	text-align: center;
 	font-size: 17px;
@@ -490,10 +494,10 @@ input[type="text"]
 		padding:5px;
 	}
 
-	a
-	{
-		opacity: 0.6;
-	}
+	// a
+	// {
+	// 	opacity: 0.6;
+	// }
 
     input
     {
@@ -663,193 +667,6 @@ a.button.fa-times:before {
 .opOptions
 {
     padding-top:14px;
-}
-
-.opsearch
-{
-    width:800px;
-    height:480px;
-    overflow: hidden;
-
-    input
-    {
-        font-size: 20px;
-        padding:10px;
-        width:100%;
-        border:none;
-        outline: none;
-        background-color: $color-background-input;
-    }
-
-    .searchbrowser
-    {
-        float:left;
-        width:48%;
-    }
-
-    .shortname
-    {
-        color:white;
-
-        i
-        {
-            text-decoration: underline;
-            font-style: normal;
-            color:white;
-        }
-
-    }
-
-    .searchresult,.searchresult_cmd
-    {
-        // background-color: #333;
-		background-color: $background-color-dark;
-        font-size: 16px;
-        padding:5px;
-
-    }
-
-    .searchbrowser
-    {
-        height:377px;
-        overflow:auto;
-    }
-
-    .searchinfo
-    {
-        float:left;
-        width:49%;
-        padding-left: 20px;
-        overflow-x: hidden;
-        overflow-y: auto;
-        height:420px;
-
-        /* enable text selection on all elements except svg */
-        * {
-          -webkit-user-select: text;
-          -khtml-user-select: text;
-          -moz-user-select: text;
-          -o-user-select: text;
-          user-select: text;
-        }
-
-        h1
-        {
-            margin-top: 0px;
-        }
-
-        p
-        {
-          line-height: 21px;
-        }
-    }
-    .score
-    {
-        color:$text-color;
-        padding-left: 5px;
-    }
-    .selected
-    {
-        background-color: $highlight-color-dark;
-        a
-        {
-            color:white;
-        }
-
-        .insertbutton
-        {
-            display:inline-block !important;
-            background-color:rgba(40,40,40,0.5);
-            padding-left:4px;
-            padding-right:4px;
-            padding-bottom:1px;
-            color:#ddd !important;;
-
-            &:hover
-            {
-                background-color:rgba(40,40,40,0.7);
-                color:white !important;;
-            }
-        }
-
-        .summary
-        {
-            color:#222;
-            i
-            {
-                text-decoration: underline;
-                font-style: normal;
-                color:#222;
-            }
-        }
-
-        .score
-        {
-            color:#222;
-        }
-
-        .namespace
-        {
-            color:#222;
-
-            i
-            {
-                text-decoration: underline;
-                font-style: normal;
-                color:#222;
-            }
-
-            &:hover
-            {
-                font-weight: bold;
-                color:white;
-                i
-                {
-                    text-decoration: underline;
-                    font-style: bold;
-                    color:white;
-                }
-
-            }
-        }
-    }
-
-    .namespace
-    {
-        font-size: 11px;
-        font-style: normal;
-        &:hover
-        {
-            font-weight: bold;
-            color:$highlight-color-dark;
-        }
-        i
-        {
-            text-decoration: underline;
-            font-style: normal;
-            // color:$text-color;
-        }
-    }
-
-    .summary
-    {
-        font-size: 12px;
-        font-style: normal;
-        margin-top: 5px;
-        i
-        {
-            text-decoration: underline;
-            font-style: normal;
-            // color:$text-color;
-        }
-    }
-
-    #opselect-layout
-    {
-        position: absolute;
-        right: 40px;
-
-    }
 }
 
 input.medium
@@ -1087,6 +904,8 @@ input[type=text]:active, input[type=text]:focus {
 @import 'font-awesome.scss';
 @import 'cables_icons.scss';
 @import 'jcolorpicker.scss';
+@import 'searchbox.scss';
+@import 'opsearch.scss';
 
 
 .easingselect
@@ -1418,9 +1237,14 @@ input[type=text]:active, input[type=text]:focus {
 
 .warning
 {
-    background-color: #ec9213;
-    color:white;
+	div,i
+	{
+		color: #ec9213 !important;
+	}
+
     padding:10px;
+	font-size: 16px;
+	text-align: left;
 }
 
 .warning-dark
@@ -1807,28 +1631,6 @@ hr
 
 }
 
-#searchresult,#searchresult_cmd
-{
-    h3
-    {
-        margin:0px;
-    }
-    padding:0px;
-
-    div
-    {
-        padding:10px;
-        border-bottom:1px solid #444;
-        cursor:pointer;
-
-        &:hover
-        {
-            cursor:pointer;
-            background-color: #1a1a1a;
-        }
-    }
-}
-
 
 .filename
 {
@@ -2108,6 +1910,7 @@ rect
     .item_color_audio { border-left:15px solid $color_op_handle_audio; }
     .item_color_devices { border-left:15px solid $color_op_handle_devices; }
     .item_color_html { border-left:15px solid $color_op_handle_html; }
+	.item_color_math { border-left:15px solid $color_op_handle_math; }
 }
 
 
@@ -2369,17 +2172,4 @@ rect
 #preview_img_container canvas
 {
     border: 2px dashed #777;
-}
-
-#searchbox,#cmdpalette
-{
-    position: absolute;
-    top:30px;
-    z-index: 99999999;
-    display:none;
-
-    #searchresult
-    {
-        background-color: $background-color-dark;
-    }
 }

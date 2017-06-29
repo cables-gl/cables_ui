@@ -77,6 +77,7 @@ CABLES.UI.uiConfig=
         if( opName.startsWith('Ops.Devices') ) return 'devices';
         if( opName.startsWith('Ops.Html') ) return 'html';
         if( opName.startsWith('Ops.Sidebar') ) return 'html';
+		if( opName.startsWith('Ops.Math') ) return 'math';
         return 'default';
 
     },

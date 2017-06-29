@@ -186,6 +186,7 @@ CABLES.UI.Port=function(thePort)
         else
         {
 			$('#patch').css({cursor:"default"});
+			$('#drop-op-cursor').hide();
 
             var txt=CABLES.Link.canLinkText(CABLES.UI.selectedEndPort.thePort,CABLES.UI.selectedStartPort);
             if(txt=='can link') getPortDescription(CABLES.UI.selectedEndPort.thePort);

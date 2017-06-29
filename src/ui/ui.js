@@ -245,6 +245,10 @@ CABLES.UI.GUI=function()
 
 
 
+
+		$('#searchbox').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth+1);
+		$('#searchbox').css('width',CABLES.UI.uiConfig.miniMapWidth);
+
         $('#minimapContainer').show();
         $('#minimapContainer').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth-4);
         if(showMiniMap)

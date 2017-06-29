@@ -522,7 +522,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
     };
 
-    var up = function ()
+    var up = function (e)
     {
         shakeCount=0;
         shakeCountP=0;
@@ -556,7 +556,10 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                         opui.op,
                         opui.op.portsOut[0].getName() , portIn.thePort.parent, portIn.thePort.getName());
 
-                    opui.setPos(portOut.thePort.parent.uiAttribs.translate.x,opui.op.uiAttribs.translate.y);
+					var pos=gui.patch().getCanvasCoordsMouse(e);
+
+                    // opui.setPos(portOut.thePort.parent.uiAttribs.translate.x,opui.op.uiAttribs.translate.y);
+					opui.setPos(pos.x,opui.op.uiAttribs.translate.y);
                 }
                 else
                 {
@@ -834,12 +837,14 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(sel)
         {
             background.node.classList.add("active");
+			label.node.classList.add("active");
             // background.attr( { "fill": CABLES.UI.uiConfig.colorOpBgSelected,"stroke-width":0,"stroke":"#fff" });
             // label.attr( { "font-weight": "bold" });
         }
         else
         {
             background.node.classList.remove("active");
+			label.node.classList.remove("active");
             // background.attr( { "fill": this.getBgColor(),"stroke-width":0 });
             // label.attr( { "font-weight": "normal" });
         }

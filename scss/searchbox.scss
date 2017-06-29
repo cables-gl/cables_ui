@@ -1,0 +1,55 @@
+
+#searchbox,#cmdpalette
+{
+    position: absolute;
+    top:31px;
+    z-index: 99999999;
+    display:none;
+
+	background-color: $color-menubar-background;
+	border-radius: 4px;
+	padding:0px;
+
+	.inputcontainer
+	{
+		padding:10px;
+	}
+
+	input
+	{
+		margin-bottom: 15px;
+	}
+
+    #searchresult
+    {
+		max-height: 75vh;
+	    overflow-y: auto;
+    }
+}
+
+#searchresult,#searchresult_cmd
+{
+	background-color: $background-color-brighter;
+
+    h3
+    {
+        margin:0px;
+    }
+    padding:0px;
+
+    div
+    {
+        padding:10px;
+        border-bottom:1px solid #444;
+        cursor:pointer;
+
+        &:hover
+        {
+            cursor:pointer;
+			background-color: $color_op_bg_active;
+
+            // background-color: #1a1a1a;
+        }
+
+    }
+}

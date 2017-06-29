@@ -57,13 +57,19 @@
 
 
     <div id="searchbox">
-        search
-        <input class="medium info" id="findinput" oninput="gui.find().search(this.value);" placeholder="search" />
-        <br/>
+		<div class="inputcontainer">
+			<div style="width:85%;float:left">
+				<input class="medium info" id="findinput" oninput="gui.find().search(this.value);" placeholder="search" style="margin:0px;"/>
+			</div>
+			<div style="width:15%;float:left">
+				<a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
+			</div>
+			<div style="clear:both"></div>
+		</div>
         <div id="searchresult"></div>
     </div>
+
     <div id="cmdpalette">
-        cmd
         <input class="medium info" id="cmdinput" oninput="gui._cmdPalette.doSearch(this.value);" placeholder="search" />
         <br/>
         <div id="searchresult_cmd"></div>

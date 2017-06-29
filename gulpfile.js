@@ -6,6 +6,8 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var sourcemaps = require('gulp-sourcemaps');
 var gutil = require('gulp-util');
+var svgcss = require('gulp-svg-css');
+var svgmin = require('gulp-svgmin');
 var fs = require("fs");
 var browserify = require('browserify');
 var vueify = require('vueify');
@@ -112,15 +114,30 @@ gulp.task('sass-bright', function() {
 });
 
 
+gulp.task('svgcss', function () {
+    return gulp
+        .src('icons/**/*.svg')
+        .pipe(svgmin())
+        .pipe(svgcss({
+            fileName: 'icons',
+            cssPrefix: 'icon-',
+            addSize: false
+        }))
+        .pipe(rename('svgicons.scss'))
+        .pipe(gulp.dest('scss/'));
+});
+
+
 gulp.task('watch', function() {
     gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);
     gulp.watch('src/ui/**/*.js', ['scripts_ui']);
     gulp.watch('scss/*.scss', ['sass','sass-bright']);
     gulp.watch('html/**/*.html', ['html_ui']);
+    gulp.watch('icons/**/*.svg', ['svgcss']);
     gulp.watch('vue-src/**/*', ['vueify']);
 });
 
 
-gulp.task('default', ['scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright', 'vueify', 'watch']);
-gulp.task('build', ['html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','sass-bright', 'vueify']);
+gulp.task('default', ['svgcss','scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright', 'vueify', 'watch']);
+gulp.task('build', ['svgcss','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','sass-bright', 'vueify']);
