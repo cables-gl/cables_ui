@@ -12,11 +12,11 @@ var fs = require("fs");
 var browserify = require('browserify');
 var vueify = require('vueify');
 
-gulp.task('vueify', function() {
-  browserify('vue-src/main.js')
-    .transform(vueify)
-    .bundle()
-    .pipe(fs.createWriteStream("dist/js/bundle.js"));
+gulp.task('vueify', function(){
+	browserify('vue-src/main.js')
+	    .transform(vueify)
+	    .bundle()
+	    .pipe(fs.createWriteStream("dist/js/bundle.js"));
 });
 
 gulp.task('lint', function()

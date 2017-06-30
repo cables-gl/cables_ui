@@ -31,8 +31,6 @@ export default {
   },
   methods : {
     callFunction : function(action){
-      // cablesFunctions[action]();
-      // callCablesFunction(action);
       CABLES.CMD.exec(action);
     }
   }
@@ -72,6 +70,7 @@ export default {
         text-align: center;
 
         &.icon {
+		  margin: 0 auto;
           margin-bottom: 6px;
         }
       }

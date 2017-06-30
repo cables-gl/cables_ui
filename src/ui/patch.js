@@ -39,6 +39,10 @@ CABLES.UI.Patch=function(_gui)
 
     this.background=null;
 
+	this._elPatchSvg=null;
+	this._elPatch=null;
+	this._elBody=null;
+
     this.isLoading=function()
     {
         return isLoading;
@@ -1012,6 +1016,7 @@ console.log(URL.createObjectURL(screenBlob));
                });
             rubberBandRect.toFront();
 
+
             if(timeoutRubberBand==-1)
                  timeoutRubberBand=setTimeout(function()
                  {
@@ -1047,7 +1052,7 @@ console.log(URL.createObjectURL(screenBlob));
                       if(selectedOps.length!==0) setStatusSelectedOps();
                       timeoutRubberBand=-1;
 
-                },100);
+                },50);
 
 
         }
@@ -1166,7 +1171,11 @@ console.log(URL.createObjectURL(screenBlob));
         // });
 
 
-        $('#patch svg').bind("mousewheel", function (event,delta,nbr)
+		this._elPatchSvg=this._elPatchSvg||$('#patch svg');
+		this._elPatch=this._elPatch||$('#patch');
+		this._elBody=this._elBody||$('body');
+
+        this._elPatchSvg.bind("mousewheel", function (event,delta,nbr)
         {
 
             if(!event.metaKey && !event.altKey && !event.ctrlKey && CABLES.UI.userSettings.get("touchpadmode"))
@@ -1252,12 +1261,13 @@ console.log(URL.createObjectURL(screenBlob));
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             // $('#library').hide();
-            $('#patch').focus();
+            this._elPatch.focus();
+
 
             if(!ev.shiftKey) gui.patch().setSelectedOp(null);
 
             self.showProjectParams();
-        };
+        }.bind(this);
 
         var lastZoomDrag=-1;
 
@@ -1328,26 +1338,25 @@ console.log(URL.createObjectURL(screenBlob));
                         return;
 
                     }
-
-
-
                 rubberBandMove(e);
             }
         });
 
-        $('#patch svg').bind("mouseup", function (event)
+        // $('#patch svg').bind("mouseup", function (event)
+		this._elPatchSvg.bind("mouseup", function (event)
         {
             rubberBandHide();
             lastZoomDrag=-1;
 
 			if(gui.cursor!="auto"){
 				gui.cursor="audo";
-				$('#patch').css({"cursor":"auto"});
+				this._elPatch.css({"cursor":"auto"});
 			}
 
-        });
+        }.bind(this));
 
-        $('#patch svg').bind("mousemove touchmove", function (e)
+
+        this._elPatchSvg.bind("mousemove touchmove", function (e)
         {
 
 
@@ -1365,19 +1374,17 @@ console.log(URL.createObjectURL(screenBlob));
 				if(gui.cursor!="hand")
 				{
 					gui.cursor="hand";
-					$('#patch').css({"cursor":"url(/ui/img/grab.png) 0 0, auto"});
+					this._elPatch.css({"cursor":"url(/ui/img/grab.png) 0 0, auto"});
 				}
 
                 var mouseX=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
                 var mouseY=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 
-
-
-
                 viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
                 viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
-$('body').css({"background-position":""+(-0.2*viewBox.x)+" "+(-0.2*viewBox.y)});
+
+				this._elBody.css({"background-position":""+(-1*viewBox.x)+" "+(-1*viewBox.y)});
 
                 // if(self.scene.config.fpsLimit!=10)fpsLimitBefore=self.scene.config.fpsLimit;
                 // self.scene.config.fpsLimit=10;
@@ -1399,7 +1406,7 @@ $('body').css({"background-position":""+(-0.2*viewBox.x)+" "+(-0.2*viewBox.y)});
 
             lastMouseMoveEvent=e;
 
-        });
+        }.bind(this));
 
         this.timeLine=new CABLES.TL.UI.TimeLineUI();
 
@@ -2928,20 +2935,23 @@ $('body').css({"background-position":""+(-0.2*viewBox.x)+" "+(-0.2*viewBox.y)});
             setTimeout( doWatchPorts,CABLES.UI.uiConfig.watchValuesInterval);
     }
 
+	// var tempRes={x:0,y:0};
+	var uupos=null;
+	var ctm;
+
     this.getCanvasCoordsMouse=function(evt)
     {
-        var ctm = $('#patch svg')[0].getScreenCTM();
-
+        ctm = this._elPatchSvg[0].getScreenCTM();
         ctm = ctm.inverse();
-        var uupos = $('#patch svg')[0].createSVGPoint();
+
+		uupos = this._elPatchSvg[0].createSVGPoint();
 
         uupos.x = evt.clientX || 0;
         uupos.y = evt.clientY || 0;
 
         uupos = uupos.matrixTransform(ctm);
 
-        var res={x:uupos.x,y:uupos.y};
-        return res;
+        return uupos;
     };
 
     this.addAssetOpAuto=function(filename,event)
@@ -3028,7 +3038,6 @@ $('body').css({"background-position":""+(-0.2*viewBox.x)+" "+(-0.2*viewBox.y)});
                 }
             }
         }
-
     };
 
     var lastTempOP=null;
