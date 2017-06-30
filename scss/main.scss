@@ -80,6 +80,7 @@ a
     position:absolute;
     overflow: auto;
     overflow-x: hidden;
+	background-color: $background-color-dark;
 
     div
     {
@@ -107,29 +108,29 @@ a
 }
 
 
-#statusbar
-{
-    height:20px;
-    width:100%;
-    padding:3px;
-    background-color: black;
-    position: absolute;
-    bottom:0px;
-    overflow: hidden;
-    z-index:999;
-
-    div
-    {
-        float:left;
-    }
-
-    a
-    {
-        background-color: #444;
-        color:white;
-        padding:2px;
-    }
-}
+// #statusbar
+// {
+//     height:20px;
+//     width:100%;
+//     padding:3px;
+//     background-color: black;
+//     position: absolute;
+//     bottom:0px;
+//     overflow: hidden;
+//     z-index:999;
+//
+//     div
+//     {
+//         float:left;
+//     }
+//
+//     a
+//     {
+//         background-color: #444;
+//         color:white;
+//         padding:2px;
+//     }
+// }
 
 #glcanvas
 {
@@ -152,6 +153,7 @@ a
     position:absolute;
     overflow: scroll;
     overflow-x: hidden;
+	background-color: $background-color-dark;
 
     &:focus {
       border: 1px solid $highlight-color;
@@ -344,6 +346,7 @@ textarea
 
 #modalheader
 {
+	// position: absolute;
 	// background-color: $color-background-input;
 	color:$highlight-color;
 	text-align: center;
@@ -545,7 +548,7 @@ input[type="text"]
 	background-color: $button-background-color;
 
     border: 1px solid $button-border-color;
-	border-radius: 20px;
+	border-radius: 9px;
 	padding: 5px 16px;
 
     cursor:pointer !important;
@@ -559,8 +562,7 @@ input[type="text"]
     &:hover
     {
         cursor:pointer !important;
-        background-color: inherit;
-        border: 1px solid $highlight-color;
+        background-color: $button-background-color-hover !important;
         color:$button-text-color-hover;
     }
 
@@ -1594,6 +1596,7 @@ hr
 
 #options input:active, #options input:focus {
   border-bottom: 1px solid $highlight-color-dark;
+
 }
 
 .cables
@@ -1923,9 +1926,19 @@ rect
     }
 }
 
+.settings_content
+{
+	background-color: $background-color-brighter;
+	padding:20px;
+	min-height: 400px;
+}
 
 .settings_tabs
 {
+	background-color: $background-color-dark;
+	padding-left: 30px;
+	padding-right: 30px;
+
     a
     {
         display: block;
@@ -1935,7 +1948,7 @@ rect
 
     .active
     {
-        color: #fff;
+        color: $color-special;
     }
 }
 

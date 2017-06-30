@@ -11,9 +11,13 @@ $color-background-input-focussed:#666;
 $highlight-color: #fff; // not so bright red
 $highlight-color-dark: #5CB59E;
 
+$color-special: #07F78C;
+
 $mainColor: $highlight-color; // todo replace in code with $highlight-color
+
+
 $background-color-dark: #222222;
-$background-color-brighter: #262626;
+$background-color-brighter: #333333;
 
 $color-menubar-background:#111;
 $color-menubar-background-active:$background-color-dark;
@@ -55,14 +59,14 @@ $color_link_object: $color_port_object;
 $color_link_array: $color_port_array;
 $color_link_dynamic: $color_port_dynamic;
 
-$button-text-color: #aaa;
-$button-background-color: #3d3d3a;
-$button-text-color-hover: $highlight-color;
+$button-text-color: #bbb;
+$button-background-color: $color_op_bg_active;
+$button-text-color-hover: $color_op_text_active;
+$button-background-color-hover: #888;
 
 $button-border-color: $background-color-dark;
 // hover
 
-$button-background-color-hover: $background-color-dark;
 $button-border-color-hover: $background-color-dark;
 
 // Button with icon only (no text)

@@ -17,7 +17,8 @@ CABLES.ProjectSettings=function(project)
 
         CABLES.UI.MODAL.show(html,
 			{
-				"title":"Settings"
+				"title":"Settings",
+				"nopadding":true
 			});
 
         this.loadUsers();

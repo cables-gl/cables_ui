@@ -55,8 +55,16 @@ CABLES.UI.MODAL.show=function(content,options)
 {
     if(options && !options.ignoreTop)$('#modalcontent').css({"top":"10%"});
 
-
 	if(options)CABLES.UI.MODAL.setTitle(options.title);
+	if(options.nopadding)
+	{
+		$('#modalcontent').css({padding:"0px"});
+	}
+	else
+	{
+		$('#modalcontent').css({padding:"15px"});
+	}
+
 	CABLES.UI.MODAL.showClose();
     $('#modalcontent').append(content);
     $('#modalcontainer').show();

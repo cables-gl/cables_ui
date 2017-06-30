@@ -73,6 +73,7 @@
 .op_color_math { color:$color_op_handle_math; }
 
 
+
 #patch
 {
     outline:none;
@@ -81,7 +82,10 @@
 
     &:focus
     {
-        border:1px solid $highlight-color-dark;
+        // border:1px solid $highlight-color-dark;
+		// transition: ease-in-out, border .1s ease-in-out;
+		border: 1px solid #444;
+
     }
 
 	.commentTitle

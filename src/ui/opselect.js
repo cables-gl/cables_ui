@@ -126,9 +126,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
     return result;
 };
 
-
-
-
 CABLES.UI.OpSelect.prototype.updateInfo=function()
 {
     var opname=$('.selected').data('opname');
@@ -138,7 +135,6 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
 
     if(opname)
     {
-
         $('#searchinfo').html('');
 
         var content=gui.opDocs.get(opname);
@@ -147,24 +143,24 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
     }
 };
 
-
-
 CABLES.UI.OpSelect.prototype.search=function()
 {
     var result=this._search($('#opsearch').val());
     var i=0;
-
     var html='';
 
     for(i=0;i<this._list.length;i++)
     {
+		this._list[i].element=this._list[i].element||$('#result_'+this._list[i].id);
+		this._list[i].elementScore=this._list[i].elementScore||$('#result_'+this._list[i].id+' .score');
+
         if(this._list[i].score>0)
         {
-            $('#result_'+this._list[i].id).show();
-            $('#result_'+this._list[i].id+' .score').html( Math.round(100*this._list[i].score)/100 );
-            $('#result_'+this._list[i].id)[0].dataset.score=this._list[i].score;
+            this._list[i].element.show();
+            this._list[i].elementScore.html( Math.round(100*this._list[i].score)/100 );
+            this._list[i].element[0].dataset.score=this._list[i].score;
         }
-        else $('#result_'+this._list[i].id).hide();
+        else this._list[i].element.hide();
     }
 
     // sort html elements
@@ -177,7 +173,6 @@ CABLES.UI.OpSelect.prototype.search=function()
         }).appendTo( $wrapper );
 
     this.Navigate(0);
-
 
 };
 
