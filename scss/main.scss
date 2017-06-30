@@ -1977,13 +1977,14 @@ rect
     {
         margin-bottom: 10px;
         padding:5px;
-        color:#bbb;
+        // color:#bbb;
         text-overflow: ellipsis;
         position: absolute;
         font-size: 13px;
         min-width: 50px;
         white-space: nowrap;
         background-color: rgba(20,20,20,0.7);
+        border-radius: 4px;
 
         &:hover
         {

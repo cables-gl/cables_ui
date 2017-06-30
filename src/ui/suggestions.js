@@ -63,6 +63,7 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
 
             for(var i=0;i<recs.length;i++)
             {
+
                 suggestions.push(
                     {
                         "name":recs[i].name,
@@ -73,8 +74,11 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
 
             }
         }
-
     }
+
+    if(suggestions)
+        for(var i=0;i<suggestions.length;i++)
+            suggestions[i].classname="op_color_"+CABLES.UI.uiConfig.getNamespaceClassName(suggestions[i].name||"");
 
 
 
