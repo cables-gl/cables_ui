@@ -123,11 +123,29 @@ CABLES.UI.GUI=function()
         }
     };
 
+
+
     this.setLayout=function()
     {
-        console.log('setlayout');
-        $('#menubar').show();
-        $('#timelineui').show();
+		var startTime=performance.now();
+
+		this._elAceEditor=this._elAceEditor||$('#ace_editor');
+		this._elSplitterPatch=this._elSplitterPatch||$('#splitterPatch');
+		this._elSplitterRenderer=this._elSplitterRenderer||$('#splitterRenderer');
+		this._elSplitterRendererWH=this._elSplitterRendererWH||$('#splitterRendererWH');
+		this._elPatch=this._elPatch||$('#patch');
+		this._elOptions=this._elOptions||$('#options');
+		this._elMeta=this._elMeta||$('#meta');
+		this._elMenubar=this._elMenubar||$('#menubar');
+		this._elSplitterMeta=this._elSplitterMeta||$('#splitterMeta');
+		this._elInforArea=this._elInforArea||$('#infoArea');
+		this._elGlCanvas=this._elGlCanvas||$('#glcanvas');
+		this._elCablesCanvas=this._elCablesCanvas||$('#cablescanvas');
+		this._elEditorBar=this._elEditorBar||$('#editorbar');
+		this._elSplitterEditor=this._elSplitterEditor||$('#splitterEditor');
+
+        this._elMenubar.show();
+        // $('#timelineui').show();
 
         if(self.rendererWidth===undefined || self.rendererHeight===undefined || self.rendererWidth>window.innerWidth*0.99 || self.rendererHeight>window.innerHeight*0.99)
         {
@@ -149,7 +167,6 @@ CABLES.UI.GUI=function()
 
         var filesHeight=0;
 		if(CABLES.UI.fileSelect.visible)filesHeight=$('#library').height();
-
 
         var timedisplayheight=25;
 
@@ -183,33 +200,30 @@ CABLES.UI.GUI=function()
             $('.naventry').show();
         }
 
-
         if(showingEditor)
         {
             if(self.editorWidth>window.innerWidth-self.rendererWidth)
                 self.rendererWidth=window.innerWidth-self.editorWidth;
 
-
             var editorbarHeight=77;
             $('#editor').show();
-            $('#editorbar').css('height',editorbarHeight);
-            $('#editorbar').css('top',menubarHeight+2);
+            this._elEditorBar.css('height',editorbarHeight);
+            this._elEditorBar.css('top',menubarHeight+2);
 
             var editorHeight=patchHeight-2-editorbarHeight;
 
             $('#ace_editor').css('height',editorHeight);
 
+            this._elAceEditor.css('width',self.editorWidth);
+            this._elAceEditor.css('top',menubarHeight+2+editorbarHeight);
+            this._elAceEditor.css('left',0);
 
-            $('#ace_editor').css('width',self.editorWidth);
-            $('#ace_editor').css('top',menubarHeight+2+editorbarHeight);
-            $('#ace_editor').css('left',0);
-
-            $('#editorbar').css('width',self.editorWidth);
-            $('#splitterEditor').show();
-            $('#splitterEditor').css('left',self.editorWidth);
-            $('#splitterEditor').css('height',patchHeight-2);
-            $('#splitterEditor').css('width',5);
-            $('#splitterEditor').css('top',menubarHeight);
+            this._elEditorBar.css('width',self.editorWidth);
+            this._elSplitterEditor.show();
+            this._elSplitterEditor.css('left',self.editorWidth);
+            this._elSplitterEditor.css('height',patchHeight-2);
+            this._elSplitterEditor.css('width',5);
+            this._elSplitterEditor.css('top',menubarHeight);
 
             _editor.resize();
 
@@ -227,24 +241,20 @@ CABLES.UI.GUI=function()
         $('#patch svg').css('height',patchHeight);
         $('#patch svg').css('width',patchWidth);
 
-        $('#splitterPatch').css('left',window.innerWidth-self.rendererWidth-4);
-        $('#splitterPatch').css('height',patchHeight+timelineUiHeight+2);
-        $('#splitterPatch').css('top',menubarHeight);
-        $('#splitterRenderer').css('top',self.rendererHeight);
-        $('#splitterRenderer').css('width',self.rendererWidth);
-        $('#splitterRendererWH').css('right',self.rendererWidth-35);
-        $('#splitterRendererWH').css('top',self.rendererHeight-30);
+        this._elSplitterPatch.css('left',window.innerWidth-self.rendererWidth-4);
+        this._elSplitterPatch.css('height',patchHeight+timelineUiHeight+2);
+        this._elSplitterPatch.css('top',menubarHeight);
+        this._elSplitterRenderer.css('top',self.rendererHeight);
+        this._elSplitterRenderer.css('width',self.rendererWidth);
+        this._elSplitterRendererWH.css('right',self.rendererWidth-35);
+        this._elSplitterRendererWH.css('top',self.rendererHeight-30);
 
         $('#button_subPatchBack').css('margin-right',self.rendererWidth+20);
 
-
-        $('#patch').css('height',patchHeight);
-        $('#patch').css('width',patchWidth);
-        $('#patch').css('top',menubarHeight);
-        $('#patch').css('left',patchLeft);
-
-
-
+        this._elPatch.css('height',patchHeight);
+        this._elPatch.css('width',patchWidth);
+        this._elPatch.css('top',menubarHeight);
+        this._elPatch.css('left',patchLeft);
 
 		$('#searchbox').css('left',patchLeft+patchWidth-CABLES.UI.uiConfig.miniMapWidth+1);
 		$('#searchbox').css('width',CABLES.UI.uiConfig.miniMapWidth);
@@ -278,10 +288,8 @@ CABLES.UI.GUI=function()
 
         if(showTiming)
         {
+			$('#timelineui').show();
             $('#timing').css('height',this.timingHeight);
-
-            // $('#timetimeline').css('width',window.innerWidth-self.rendererWidth-2);
-            // $('#timetimeline').css('height',this.timingHeight-timedisplayheight);
 
             $('#overviewtimeline').css('margin-top',timelineUiHeight);
             $('#overviewtimeline svg').css('width',window.innerWidth-self.rendererWidth-2);
@@ -323,66 +331,72 @@ CABLES.UI.GUI=function()
 
         $('#delayed').css('left',window.innerWidth-self.rendererWidth+10);
 
-        $('#options').css('left',window.innerWidth-self.rendererWidth-1);
-        $('#options').css('top',self.rendererHeight);
-        $('#options').css('width',optionsWidth);
-        $('#options').css('height',window.innerHeight-self.rendererHeight);
+        this._elOptions.css('left',window.innerWidth-self.rendererWidth-1);
+        this._elOptions.css('top',self.rendererHeight);
+        this._elOptions.css('width',optionsWidth);
+        this._elOptions.css('height',window.innerHeight-self.rendererHeight);
 
         var metaWidth=self.rendererWidth-optionsWidth+1;
-        $('#meta').css('right',0);
-        $('#meta').css('top',self.rendererHeight);
-        $('#meta').css('width',metaWidth);
-        $('#meta').css('height',window.innerHeight-self.rendererHeight);
+        this._elMeta.css('right',0);
+        this._elMeta.css('top',self.rendererHeight);
+        this._elMeta.css('width',metaWidth);
+        this._elMeta.css('height',window.innerHeight-self.rendererHeight);
 
         $('#performance_glcanvas').css('bottom',0);
         // $('#performance_glcanvas').css('right',($('#performance_glcanvas').width()-(self.rendererWidth+optionsWidth))) ;
         $('#performance_glcanvas').css('right',self.rendererWidth-optionsWidth-$('#performance_glcanvas').width()+1 );
         // $('#performance_glcanvas').css('max-width',self.rendererWidth-optionsWidth);
 
-        $('#menubar').css('top',0);
-        $('#menubar').css('width',window.innerWidth-self.rendererWidth-10);
-        $('#menubar').css('height',menubarHeight);
+        this._elMenubar.css('top',0);
+        this._elMenubar.css('width',window.innerWidth-self.rendererWidth-10);
+        this._elMenubar.css('height',menubarHeight);
 
-        $('#splitterMeta').css('bottom',self.infoHeight+30+'px');
-        $('#splitterMeta').css('width',metaWidth-22+'px');
+        this._elSplitterMeta.css('bottom',self.infoHeight+30+'px');
+        this._elSplitterMeta.css('width',metaWidth-22+'px');
 
         if(self.infoHeight===0)
         {
-            $('#infoArea').hide();
+            this._elInforArea.hide();
             $('#splitterMeta').hide();
         }
         else
         {
-            $('#infoArea').css('width',(metaWidth-20)+'px');
-            $('#infoArea').css('height',(self.infoHeight)+'px');
-            $('#infoArea').css('bottom','0px');
+            this._elInforArea.css('width',(metaWidth-20)+'px');
+            this._elInforArea.css('height',(self.infoHeight)+'px');
+            this._elInforArea.css('bottom','0px');
         }
 
         $('#meta_content').css('height',window.innerHeight-self.rendererHeight-self.infoHeight-50);
 
         if(self.rendererWidth===0)
         {
-            $('#glcanvas').attr('width',window.innerWidth);
-            $('#glcanvas').attr('height',window.innerHeight);
-            $('#glcanvas').css('z-index',9999);
+            this._elGlCanvas.attr('width',window.innerWidth);
+            this._elGlCanvas.attr('height',window.innerHeight);
+            this._elGlCanvas.css('z-index',9999);
         }
         else
         {
-            $('#glcanvas').attr('width',self.rendererWidth);
-            $('#glcanvas').attr('height',self.rendererHeight-2);
-            $('#cablescanvas').attr('width',self.rendererWidth);
-            $('#cablescanvas').attr('height',self.rendererHeight);
-            $('#cablescanvas').css('width',self.rendererWidth+'px');
-            $('#cablescanvas').css('height',self.rendererHeight+'px');
+            this._elGlCanvas.attr('width',self.rendererWidth);
+            this._elGlCanvas.attr('height',self.rendererHeight-2);
+            this._elCablesCanvas.attr('width',self.rendererWidth);
+            this._elCablesCanvas.attr('height',self.rendererHeight);
+            this._elCablesCanvas.css('width',self.rendererWidth+'px');
+            this._elCablesCanvas.css('height',self.rendererHeight+'px');
         }
         // CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
-        $('#glcanvas').hover(function (e)
+        this._elGlCanvas.hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
         },function()
         {
             CABLES.UI.hideInfo();
         });
+
+		window.avg=window.avg || (performance.now()-startTime);
+		window.avg+=(performance.now()-startTime);
+		window.avg/=2;
+
+		console.log('layout ',window.avg);
     };
 
     this.importDialog=function()

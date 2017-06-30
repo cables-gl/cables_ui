@@ -8,7 +8,6 @@ CABLES.UI.Patch=function(_gui)
     this.ops=[];
     this.scene=null;
     var gui=_gui;
-    // this.modeTouchPad=false;
 
     var watchPorts=[];
     var currentProject=null;
@@ -97,13 +96,7 @@ CABLES.UI.Patch=function(_gui)
             // console.log(maxValue);
         }
         console.log('biggest port:',maxName,max);
-
-
-
     };
-
-
-
 
     this.paste=function(e)
     {
@@ -168,7 +161,6 @@ CABLES.UI.Patch=function(_gui)
                                 }
                             }
                         }
-
                     { // set correct subpatch
 
                         var fixedSubPatches=[];
@@ -240,7 +232,6 @@ CABLES.UI.Patch=function(_gui)
                         {
                             if(json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
                             {
-
                                 var mouseX=0,
                                     mouseY=0;
                                 if(lastMouseMoveEvent)
@@ -256,10 +247,8 @@ CABLES.UI.Patch=function(_gui)
                     }
 
                     CABLES.UI.notify('Pasted '+json.ops.length+' ops');
-                    // CABLES.UI.setStatusText('pasted '+json.ops.length+' ops...');
                     self.setSelectedOp(null);
                     gui.patch().scene.deSerialize(json,false);
-
 
                     return;
                 });
@@ -267,7 +256,6 @@ CABLES.UI.Patch=function(_gui)
 
             }
             CABLES.UI.notify('Paste failed');
-            // CABLES.UI.setStatusText("paste failed / not cables data format...");
         }
 
     };
@@ -275,7 +263,6 @@ CABLES.UI.Patch=function(_gui)
     this.createCommentFromSelection=function()
     {
         var bounds=this.getSelectionBounds();
-
         var padding=100;
 
         gui.scene().addOp('Ops.Ui.Comment',
@@ -292,13 +279,11 @@ CABLES.UI.Patch=function(_gui)
                 }
             });
 
-
     };
 
     this.unPatchSubPatch=function(patchId)
     {
         var toSelect=[];
-        // this.selectAllOpsSubPatch(patchId);
         for(var i in this.ops)
         {
             if(this.ops[i].op.uiAttribs.subPatch == patchId)
@@ -317,18 +302,14 @@ CABLES.UI.Patch=function(_gui)
         }
     };
 
-
     this.resolveSubpatch=function()
     {
-
         console.log('resolve!');
 
         if(currentSubPatch!==0)
         {
             for(var i in self.ops)
-            {
                 self.ops[i].op.uiAttribs.subPatch=0;
-            }
 
             this.setCurrentSubPatch(0);
         }
@@ -350,9 +331,7 @@ CABLES.UI.Patch=function(_gui)
                 y:bounds.miny
             };
 
-
         var patchOp=gui.scene().addOp('Ops.Ui.SubPatch',{"translate":trans});
-
         var patchId=patchOp.patchId.get();
 
         patchOp.uiAttr({"translate":trans});
@@ -362,9 +341,6 @@ CABLES.UI.Patch=function(_gui)
         {
             selectedOps[i].op.uiAttribs.subPatch=patchId;
         }
-
-
-
 
         for(i=0;i<selectedOps.length;i++)
         {
@@ -410,7 +386,6 @@ CABLES.UI.Patch=function(_gui)
                                 );
                             patchOp.addSubLink(theOp.portsOut[j],otherPortOut);
                         }
-
                     }
                 }
             }
@@ -472,31 +447,22 @@ CABLES.UI.Patch=function(_gui)
             }
         }
 
-        var obj={"ops":ops};
-        var objStr=JSON.stringify(obj);
-        // var objNew=JSON.parse(objStr);
-        // for(i=0;i<objNew.ops.length;i++)
-        // {
-        //     objNew.ops[i].id=CABLES.generateUUID();
-        // }
-        //
-        // objStr=JSON.stringify(objNew);
-
-
-        // CABLES.UI.setStatusText('copied '+selectedOps.length+' ops...');
+        var objStr=JSON.stringify({"ops":ops});
         CABLES.UI.notify('Copied '+selectedOps.length+' ops');
 
         e.clipboardData.setData('text/plain', objStr);
         e.preventDefault();
     };
 
-    $('#patch').hover(function (e)
-    {
-        CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
-    },function()
-    {
-        CABLES.UI.hideInfo();
-    });
+    $('#patch').hover(
+		function (e)
+	    {
+	        CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
+	    },
+		function()
+	    {
+	        CABLES.UI.hideInfo();
+	    });
 
     $('#patch').keyup(function(e)
     {
@@ -521,7 +487,6 @@ CABLES.UI.Patch=function(_gui)
 				{
 					gui.cursor="hand";
 					$('#patch').css({"cursor":"url(/ui/img/grab.png) 0 0, auto"});
-
 				}
             break;
 
@@ -567,8 +532,6 @@ CABLES.UI.Patch=function(_gui)
                     else CABLES.undo.undo();
                 }
             break;
-
-
 
             case 65: // a - align
                 if(e.metaKey || e.ctrlKey)
@@ -741,15 +704,12 @@ CABLES.UI.Patch=function(_gui)
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
 
-
-console.log(URL.createObjectURL(screenBlob));
                     console.log("uploading screenshot");
 
                     var reader = new FileReader();
 
                     reader.onload = function(event)
                     {
-
                         CABLES.api.put(
                             'project/'+id+'/screenshot',
                             {
@@ -879,7 +839,6 @@ console.log(URL.createObjectURL(screenBlob));
         bounds.w=Math.abs(bounds.maxx-bounds.minx)+300;
         bounds.h=Math.abs(bounds.maxy-bounds.miny)+300;
         return bounds;
-
     };
 
 
@@ -908,15 +867,6 @@ console.log(URL.createObjectURL(screenBlob));
     var oldVBY=0;
     this.updateViewBox=function()
     {
-
-        // if(viewBox.w<300)
-        // {
-        //     viewBox.w=oldVBW;
-        //     viewBox.h=oldVBH;
-        //     viewBox.x=oldVBX;
-        //     viewBox.y=oldVBY;
-        // }
-
         oldVBW=viewBox.w;
         oldVBH=viewBox.h;
         oldVBX=viewBox.x;
@@ -1014,8 +964,8 @@ console.log(URL.createObjectURL(screenBlob));
                     width:end.x-start.x,
                     height:end.y-start.y
                });
-            rubberBandRect.toFront();
 
+            rubberBandRect.toFront();
 
             if(timeoutRubberBand==-1)
                  timeoutRubberBand=setTimeout(function()
@@ -1053,7 +1003,6 @@ console.log(URL.createObjectURL(screenBlob));
                       timeoutRubberBand=-1;
 
                 },50);
-
 
         }
     }
@@ -1157,10 +1106,8 @@ console.log(URL.createObjectURL(screenBlob));
         this.paper=Raphael("patch",0, 0);
         this.bindScene(self.scene);
 
-
         viewBox={x:0,y:0,w:$('#patch svg').width(),h:$('#patch svg').height()};
         self.updateViewBox();
-
 
         // $('#patch svg').bind("touchmove", function (event,delta,nbr)
         // {
@@ -1170,14 +1117,12 @@ console.log(URL.createObjectURL(screenBlob));
         //
         // });
 
-
 		this._elPatchSvg=this._elPatchSvg||$('#patch svg');
 		this._elPatch=this._elPatch||$('#patch');
 		this._elBody=this._elBody||$('body');
 
         this._elPatchSvg.bind("mousewheel", function (event,delta,nbr)
         {
-
             if(!event.metaKey && !event.altKey && !event.ctrlKey && CABLES.UI.userSettings.get("touchpadmode"))
             {
                 if(Math.abs(event.deltaX)>Math.abs(event.deltaY)) event.deltaY*=0.5;
@@ -1194,13 +1139,10 @@ console.log(URL.createObjectURL(screenBlob));
                 return;
             }
 
-
-
             delta=CGL.getWheelSpeed(event);
             delta=Math.min(delta,10);
             delta=Math.max(delta,-10);
             if(!CABLES.UI.userSettings.get("touchpadmode"))delta*=13;
-
 
             event=mouseEvent(event);
 
@@ -1208,28 +1150,14 @@ console.log(URL.createObjectURL(screenBlob));
 
             if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
             {
-                // viewBox.x+=delta/2;
-                // viewBox.y+=delta/2;
                 var oldWidth = viewBox.w;
                 var oldHeight = viewBox.h;
 
                 viewBox.w-=delta;
                 viewBox.h-=delta;
 
-                // viewbox.width *= this._zoomStep;
-                // viewbox.height *= this._zoomStep;
-                //  this._zoom += this._zoomStep;
-
-                // if(typeof point != 'undefined') {
-                     viewBox.x -= (event.offsetX / 1000 * (viewBox.w - oldWidth));
-                     viewBox.y -= (event.offsetY / 1000 * (viewBox.h - oldHeight));
-                // }
-
-                // this.update();
-                // return this;
-
-
-
+				viewBox.x -= (event.offsetX / 1000 * (viewBox.w - oldWidth));
+				viewBox.y -= (event.offsetY / 1000 * (viewBox.h - oldHeight));
             }
 
             self.setMinimapBounds();
@@ -1263,7 +1191,6 @@ console.log(URL.createObjectURL(screenBlob));
             // $('#library').hide();
             this._elPatch.focus();
 
-
             if(!ev.shiftKey) gui.patch().setSelectedOp(null);
 
             self.showProjectParams();
@@ -1276,8 +1203,6 @@ console.log(URL.createObjectURL(screenBlob));
         this.background.node.ondblclick= function(e)
         {
             e=mouseEvent(e);
-
-            // if(e.buttons!=CABLES.UI.MOUSE_BUTTON_LEFT) return;
 
             var x=gui.patch().getCanvasCoordsMouse(e).x;
             var y=gui.patch().getCanvasCoordsMouse(e).y;
@@ -1299,10 +1224,6 @@ console.log(URL.createObjectURL(screenBlob));
             {
                 console.log("center");
                 self.centerViewBoxOps();
-                // viewBox.x=minimapBounds.x;
-                // viewBox.y=minimapBounds.y;
-                // viewBox.w=size;
-                // viewBox.h=size;
             }
             self.updateViewBox();
         };
@@ -1355,11 +1276,8 @@ console.log(URL.createObjectURL(screenBlob));
 
         }.bind(this));
 
-
         this._elPatchSvg.bind("mousemove touchmove", function (e)
         {
-
-
             e=mouseEvent(e);
 
             if(CABLES.UI.MOUSEOVERPORT || (mouseRubberBandStartPos && e.buttons!=CABLES.UI.MOUSE_BUTTON_LEFT))
@@ -1367,7 +1285,6 @@ console.log(URL.createObjectURL(screenBlob));
                 rubberBandHide();
                 return;
             }
-
 
             if(lastMouseMoveEvent && ( e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) ) && !CABLES.UI.MOUSEOVERPORT)
             {
@@ -1383,12 +1300,7 @@ console.log(URL.createObjectURL(screenBlob));
                 viewBox.x+=mouseX-gui.patch().getCanvasCoordsMouse(e).x;//.offsetX,e.offsetY).x;
                 viewBox.y+=mouseY-gui.patch().getCanvasCoordsMouse(e).y;//e.offsetX,e.offsetY).y;
 
-
 				this._elBody.css({"background-position":""+(-1*viewBox.x)+" "+(-1*viewBox.y)});
-
-                // if(self.scene.config.fpsLimit!=10)fpsLimitBefore=self.scene.config.fpsLimit;
-                // self.scene.config.fpsLimit=10;
-                // self.updateViewBox();
 
                 clearTimeout(timeoutFpsLimit);
                 timeoutFpsLimit=setTimeout(function()
@@ -1396,12 +1308,7 @@ console.log(URL.createObjectURL(screenBlob));
                   self.scene.config.fpsLimit=fpsLimitBefore;
                 },100);
 
-                // timeoutPan=setTimeout(function()
-                // {
-
                 self.updateViewBox();
-                // clearTimeout(timeoutPan);
-                // },25);
             }
 
             lastMouseMoveEvent=e;
