@@ -127,10 +127,18 @@ if(thePort.links.length>1)
         }
 		else
 		{
-			$('#drop-op-cursor').css({top:b-12,left:a-37});
-			$('#patch').css({cursor:"url(/img/add.png) 10 10, auto"});
 
-			$('#drop-op-cursor').show();
+			if(event.which==3)
+			{
+				$('#patch').css({cursor:"url(/img/remove.png) 10 10, auto"});
+			}
+			else {
+				$('#drop-op-cursor').css({top:b-12,left:a-37});
+				$('#patch').css({cursor:"url(/img/add.png) 10 10, auto"});
+
+				$('#drop-op-cursor').show();
+
+			}
 		}
 
         if(!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort)

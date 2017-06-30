@@ -130,7 +130,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
     console.log(ex.stack);
     CABLES.UI.MODAL.showClose();
 
-	$('#modalcontent').html('');
+	$('#modalcontent').empty();
     $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
 
     if(op)
