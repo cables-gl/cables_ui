@@ -381,13 +381,26 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         this.deleteUi();
     };
 
+
+this.showCopyAnim=function()
+{
+    background.node.classList.add('copyOp');
+    background.node.addEventListener("animationend", function()
+    {
+        background.node.classList.remove('copyOp');
+    }, false);
+
+};
+
     this.showFocus=function()
     {
         background.node.classList.add('focusOp');
-        setTimeout(function()
+
+        background.node.addEventListener("animationend", function()
         {
             background.node.classList.remove('focusOp');
-        },500);
+        }, false);
+
     };
 
     this.getWidth=function()

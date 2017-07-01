@@ -73,6 +73,26 @@
 .op_color_math { color:$color_op_handle_math; }
 
 
+@keyframes copyAnim
+{
+    0%
+	{
+		stroke-width:4px;
+	}
+    100%
+	{
+		stroke-width:0px;
+	}
+}
+
+.copyOp
+{
+	stroke:$color-special;
+	stroke-width:0px !important;
+	animation: copyAnim 0.1s;
+}
+
+
 @keyframes focusAnim
 {
     0%

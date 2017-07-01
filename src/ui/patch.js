@@ -416,6 +416,7 @@ CABLES.UI.Patch=function(_gui)
             {
                 console.log('selecting subpatch',selectedOps[i].op.patchId.get() );
                 self.selectAllOpsSubPatch(selectedOps[i].op.patchId.get());
+
             }
         }
 
@@ -423,6 +424,7 @@ CABLES.UI.Patch=function(_gui)
         {
             ops.push( selectedOps[i].op.getSerialized() );
             opIds.push(selectedOps[i].op.id);
+            selectedOps[i].oprect.showCopyAnim();
         }
 
         // remove links that are not fully copied...
