@@ -1516,6 +1516,7 @@ CABLES.UI.Patch=function(_gui)
                     gui.patch().setSelectedOp(null);
                     gui.patch().setSelectedOp(uiOp);
                     gui.patch().showOpParams(op);
+                    uiOp.oprect.showFocus();
                 },30);
             },30);
         }
@@ -1531,6 +1532,7 @@ CABLES.UI.Patch=function(_gui)
                 uiOp.show();
                 setStatusSelectedOps();
                 self.updateSubPatches();
+                uiOp.oprect.showFocus();
             }
         } ,30);
 
@@ -1738,6 +1740,7 @@ CABLES.UI.Patch=function(_gui)
             gui.patch().updateBounds=true;
 
             doAddOp(uiOp);
+
 
         };
     };
@@ -2165,6 +2168,17 @@ CABLES.UI.Patch=function(_gui)
             }
         }
     };
+
+    this.focusOp=function(id)
+    {
+        for(var i in gui.patch().ops)
+        {
+            if(gui.patch().ops[i].op.id==id)
+            {
+                gui.patch().ops[i].oprect.showFocus();
+            }
+        }
+    }
 
     this.setSelectedOpById=function(id)
     {

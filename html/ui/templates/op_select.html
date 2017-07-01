@@ -3,44 +3,53 @@
 <script id="op_select" type="text/x-handlebars-template">
 
     <div class="opsearch">
-        <input id="opsearch"/>
-        <div id="clearsearch" style="position:absolute;margin-top:-34px;margin-left:760px;"><a class="button fa fa-times" onclick="CABLES.UI.OPSELECT.clear();"></a></div>
 
-        <br/><br/>
-        <style id="search_style"></style>
-
-
-        <div class="searchbrowser">
-          {{#each ops}}
-
-            <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" >
-                <div class="graphbutton icon icon-plus  fright insertbutton" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();"></div>
-
-                <a>
-                    {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
-                    <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
-                    <span class="namespace" onClick="CABLES.UI.OPSELECT.searchFor('{{nameSpace}}');">{{nameSpace}}
-                    / score: <span class="score"></span>
-                </span>{{isFunction}}
-
-
-                <div class="summary">{{summary}}&nbsp;</div>
-
-                </a>
-
-            </div>
-
-          {{/each}}
-
-          <div id="search_noresults" class="hidden">
-              &nbsp;no ops found
-              <br/><br/><br/>
-              <a class="bluebutton" id="createuserop">create <span class="userCreateOpName" style="color:#222"></span></a>
-          </div>
-        </div>
         <div id="searchinfo" class="searchinfo"></div>
 
+        <header>
+            <input id="opsearch" placeholder="search"/>
+        </header>
+
+        <style id="search_style"></style>
+
+        <div class="searchbrowserContainer">
+            <div class="searchbrowser">
+              {{#each ops}}
+
+                <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" >
+                    <div class="graphbutton icon icon-plus  fright insertbutton" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();"></div>
+
+                    <a>
+                        {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
+                        <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
+                        - <span class="namespace" onClick="CABLES.UI.OPSELECT.searchFor('{{nameSpace}}');">{{nameSpace}}
+                        / score: <span class="score"></span>
+                    </span>{{isFunction}}
+
+
+                    <div class="summary">{{summary}}&nbsp;</div>
+
+                    </a>
+
+                </div>
+
+              {{/each}}
+
+              <div id="search_noresults" class="hidden">
+                  &nbsp;no ops found
+                  <br/><br/><br/>
+                  <a class="bluebutton" id="createuserop">create <span class="userCreateOpName" style="color:#222"></span></a>
+              </div>
+          </div>
+
+
+
+          <div id="opOptions" class="opOptions">.</div>
+        </div>
+
     </div>
-    <div id="opOptions" class="opOptions"></div>
+
+
+
 
 </script>

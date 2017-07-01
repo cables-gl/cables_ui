@@ -381,6 +381,15 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         this.deleteUi();
     };
 
+    this.showFocus=function()
+    {
+        background.node.classList.add('focusOp');
+        setTimeout(function()
+        {
+            background.node.classList.remove('focusOp');
+        },500);
+    };
+
     this.getWidth=function()
     {
         return w;
@@ -929,6 +938,11 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     {
         if(!op.uiAttribs.subPatch)return 0;
         else return op.uiAttribs.subPatch;
+    };
+
+    this.showFocus=function()
+    {
+        this.oprect.showFocus();
     };
 
     this.isSelected=function()

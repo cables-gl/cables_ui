@@ -8,14 +8,12 @@ CABLES.UI.OPSELECT.linkNewOpToOp=null;
 CABLES.UI.OPSELECT.newOpPos={x:0,y:0};
 CABLES.UI.OPSELECT.maxPop=0;
 
-
 CABLES.UI.OpSelect=function()
 {
     this._list=null;
     this.displayBoxIndex=0;
     this.itemHeight=0;
 };
-
 
 CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 {
@@ -45,7 +43,6 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 
     $('#opOptions').html(optionsHtml);
 };
-
 
 CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 {
@@ -151,8 +148,8 @@ CABLES.UI.OpSelect.prototype.search=function()
 
     for(i=0;i<this._list.length;i++)
     {
-		this._list[i].element=this._list[i].element||$('#result_'+this._list[i].id);
-		this._list[i].elementScore=this._list[i].elementScore||$('#result_'+this._list[i].id+' .score');
+		this._list[i].element=$('#result_'+this._list[i].id);
+		this._list[i].elementScore=$('#result_'+this._list[i].id+' .score');
 
         if(this._list[i].score>0)
         {
@@ -173,7 +170,6 @@ CABLES.UI.OpSelect.prototype.search=function()
         }).appendTo( $wrapper );
 
     this.Navigate(0);
-
 };
 
 CABLES.UI.OpSelect.prototype.Navigate = function(diff)
@@ -191,10 +187,8 @@ CABLES.UI.OpSelect.prototype.Navigate = function(diff)
     oBoxCollectionAll.removeClass(cssClass);
     oBoxCollection.removeClass(cssClass).eq(this.displayBoxIndex).addClass(cssClass);
 
-    if(this.displayBoxIndex>12)
-        $('.searchbrowser').scrollTop( (this.displayBoxIndex-12)*this.itemHeight );
-    else
-        $('.searchbrowser').scrollTop( 1 );
+    if(this.displayBoxIndex>12) $('.searchbrowser').scrollTop( (this.displayBoxIndex-12)*this.itemHeight );
+        else $('.searchbrowser').scrollTop( 1 );
 
     this.updateInfo();
 };
@@ -237,18 +231,18 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
         CABLES.UI.OPSELECT.maxPop=maxPop;
     }
 
-
-    // console.log(CABLES.UI.OPSELECT.getOpList());
-
-    var html = CABLES.UI.getHandleBarHtml('op_select',{ops: this._list });
-    CABLES.UI.MODAL.showTop(html,{"title":"Add Op"});
+    this._html = this._html||CABLES.UI.getHandleBarHtml('op_select',{ops: this._list });
+    CABLES.UI.MODAL.showTop(this._html,
+        {
+            "title":null,
+            "transparent":true
+        });
 
     $('#clearsearch').hide();
     $('#opsearch').focus();
-
     $( ".searchresult:first" ).addClass( "selected" );
-    this.itemHeight=$( ".searchresult:first" ).height()+10+1;
 
+    this.itemHeight=$( ".searchresult:first" ).height()+10+1;
     this.displayBoxIndex=0;
 
     var infoTimeout=-1;
@@ -280,7 +274,6 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     this.searchFor=function(what)
     {
         $('#opsearch').val(what);
-
     };
 
     this.selectOp=function(name)

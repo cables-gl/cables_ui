@@ -73,6 +73,27 @@
 .op_color_math { color:$color_op_handle_math; }
 
 
+@keyframes focusAnim
+{
+    0%
+	{
+		stroke-width:6px;
+		fill: $color-special;
+	}
+    100%
+	{
+		stroke-width:0px;
+		fill: $color_op_bg;
+	}
+}
+
+.focusOp
+{
+	stroke:$color-special;
+	stroke-width:0px !important;
+	fill: $color_op_bg;
+	animation: focusAnim 0.4s;
+}
 
 #patch
 {

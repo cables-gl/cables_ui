@@ -25,7 +25,7 @@ body
     font-size: $font-size-default;
     -webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background-image: url(/img/noise_sm.jpg);
+	// background-image: url(/img/noise_sm.jpg);
 
 }
 
@@ -283,76 +283,6 @@ textarea
     height:300px;
 }
 
-
-
-#modalbg
-{
-    background-color: #333;
-    opacity: 0.8;
-    top:0px;
-    left:0px;
-    width:100%;
-    height:100%;
-    position: absolute;
-    z-index: 999;
-}
-
-#modalcontainer
-{
-	position: absolute;
-	display: none;
-	left:20%;
-    top:10%;
-	width:auto;
-    height:auto;
-	min-width: 550px;
-    max-height: 75%;
-	overflow: auto;
-	z-index: 9999;
-	background-color: $background-color-dark;
-
-	-webkit-box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
-    -moz-box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
-    box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
-
-	padding-bottom: 15px;
-
-	.modalclose
-    {
-        right:15px;
-        margin-top: 5px;
-		background-color: transparent;
-        position: absolute;
-		display: none;
-		.fa
-		{
-			font-size: 23px;
-		}
-    }
-
-}
-
-#modalcontent
-{
-    padding:15px;
-
-	font-size: $font-size-default+3;
-
-    user-select:text;
-    -webkit-user-select: text;  /* Chrome all / Safari all */
-    -moz-user-select: text;     /* Firefox all */
-    -ms-user-select: text;      /* IE 10+ */
-}
-
-#modalheader
-{
-	// position: absolute;
-	// background-color: $color-background-input;
-	color:$highlight-color;
-	text-align: center;
-	font-size: 17px;
-	padding:5px;
-}
 
 
 h1,h2,h3,h4
@@ -875,7 +805,8 @@ input[type=text]:active, input[type=text]:focus {
 ::-webkit-scrollbar {
     height: 12px;
     width: 12px;
-    background: #1a1a1a;
+    // background: #1a1a1a;
+    background: transparent;
     opacity: 0.5;
 }
 
@@ -908,6 +839,7 @@ input[type=text]:active, input[type=text]:focus {
 @import 'jcolorpicker.scss';
 @import 'searchbox.scss';
 @import 'opsearch.scss';
+@import 'modal.scss';
 
 
 .easingselect
