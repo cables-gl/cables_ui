@@ -15,6 +15,8 @@ CABLES.UI.MODAL.hideLoading=function()
 
 CABLES.UI.MODAL.hide=function(force)
 {
+    if(CABLES.UI.MODAL.onClose)CABLES.UI.MODAL.onClose();
+
     if(!force && $('.modalerror').length>0)
     {
         return;
@@ -55,19 +57,20 @@ CABLES.UI.MODAL.show=function(content,options)
 {
     if(options && !options.ignoreTop)$('#modalcontent').css({"top":"10%"});
 
-	if(options)CABLES.UI.MODAL.setTitle(options.title);
+	if(options)
+    {
+        CABLES.UI.MODAL.setTitle(options.title);
+        CABLES.UI.MODAL.onClose=options.onClose;
 
-    if(options.transparent)$('#modalcontainer').addClass("transparent");
-        else $('#modalcontainer').removeClass("transparent");
-
-	if(options.nopadding)
-	{
-		$('#modalcontent').css({padding:"0px"});
-	}
-	else
-	{
-		$('#modalcontent').css({padding:"15px"});
-	}
+        if(options.transparent)$('#modalcontainer').addClass("transparent");
+        if(options.nopadding) $('#modalcontent').css({padding:"0px"});
+    }
+    else
+    {
+        CABLES.UI.MODAL.onClose=null;
+        $('#modalcontent').css({padding:"15px"});
+        $('#modalcontainer').removeClass("transparent");
+    }
 
 	CABLES.UI.MODAL.showClose();
     $('#modalcontent').append(content);

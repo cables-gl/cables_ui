@@ -35,15 +35,15 @@ CABLES.UI.Port=function(thePort)
             if(thePort.isLinked ) //&& thePort.links.length===1
             {
 
-CABLES.UI.selectedStartPortMulti=[];
-if(thePort.links.length>1)
-{
-	for(var i=0;i<thePort.links.length;i++)
-	{
-		var other=thePort.links[i].getOtherPort(thePort);
-		CABLES.UI.selectedStartPortMulti.push(other);
-	}
-}
+                CABLES.UI.selectedStartPortMulti=[];
+                if(thePort.links.length>1)
+                {
+                	for(var i=0;i<thePort.links.length;i++)
+                	{
+                		var other=thePort.links[i].getOtherPort(thePort);
+                		CABLES.UI.selectedStartPortMulti.push(other);
+                	}
+                }
 
                 var otherPort=self.thePort.links[0].getOtherPort(self.thePort);
                 CABLES.UI.selectedStartPort=otherPort;

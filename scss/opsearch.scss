@@ -40,12 +40,6 @@
         background-color: $background-color-brighter;
     }
 
-    .searchbrowser
-    {
-        // float:left;
-        // width:48%;
-    }
-
     .shortname
     {
         // color:white;
@@ -75,7 +69,7 @@
 
     .searchbrowser
     {
-        height:377px;
+        height:520px;
         overflow:auto;
     }
 
@@ -140,7 +134,7 @@
 
             &:hover
             {
-                color:$highlight-color;
+                color:$color-special;
             }
         }
 

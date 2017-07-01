@@ -22,6 +22,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     if(num===0)
     {
         $('#search_noresults').show();
+        $('#searchinfo').empty();
         var userOpName='Ops.User.'+gui.user.username+'.'+$('#opsearch').val();
         $('.userCreateOpName').html(userOpName);
         $('#createuserop').attr('onclick','gui.serverOps.create(\''+userOpName+'\');');
@@ -132,7 +133,7 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
 
     if(opname)
     {
-        $('#searchinfo').html('');
+        $('#searchinfo').empty();
 
         var content=gui.opDocs.get(opname);
         $('#searchinfo').html('<div id="opselect-layout"></div>'+content+htmlFoot);
@@ -187,10 +188,16 @@ CABLES.UI.OpSelect.prototype.Navigate = function(diff)
     oBoxCollectionAll.removeClass(cssClass);
     oBoxCollection.removeClass(cssClass).eq(this.displayBoxIndex).addClass(cssClass);
 
-    if(this.displayBoxIndex>12) $('.searchbrowser').scrollTop( (this.displayBoxIndex-12)*this.itemHeight );
+    if(this.displayBoxIndex>5) $('.searchbrowser').scrollTop( (this.displayBoxIndex-5)*this.itemHeight );
         else $('.searchbrowser').scrollTop( 1 );
 
     this.updateInfo();
+};
+
+CABLES.UI.OpSelect.prototype.close=function()
+{
+    $('body').off( "keydown", this.keyDown);
+    console.log('opselect close');
 };
 
 CABLES.UI.OpSelect.prototype.show=
@@ -235,14 +242,15 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     CABLES.UI.MODAL.showTop(this._html,
         {
             "title":null,
-            "transparent":true
+            "transparent":true,
+            "onClose":this.close
         });
 
     $('#clearsearch').hide();
     $('#opsearch').focus();
     $( ".searchresult:first" ).addClass( "selected" );
 
-    this.itemHeight=$( ".searchresult:first" ).height()+10+1;
+    this.itemHeight=$( ".searchresult:first" ).outerHeight();
     this.displayBoxIndex=0;
 
     var infoTimeout=-1;
@@ -302,44 +310,45 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     }
 
     $('#opsearch').on('input',onInput.bind(this));
+    $('body').on( "keydown", this.keyDown.bind(this));
 
-    $('#opsearch').keydown(function(e)
-    {
-        switch(e.which)
-        {
-            case 13:
-                var opname=$('.selected').data('opname');
-
-                if(opname && opname.length>2)
-                {
-                    CABLES.UI.MODAL.hide();
-                    gui.serverOps.loadOpLibs(opname,function()
-                    {
-                        gui.scene().addOp(opname);
-                    });
-
-                }
-            break;
-
-            case 8:
-                onInput();
-                return true;
-            case 38: // up
-                $('.selected').removeClass('selected');
-                this.Navigate(-1);
-            break;
-
-            case 40: // down
-                $('.selected').removeClass('selected');
-                this.Navigate(1);
-            break;
-
-            default: return; // exit this handler for other keys
-        }
-        e.preventDefault(); // prevent the default action (scroll / move caret)
-    }.bind(this));
 
     setTimeout(function(){$('#opsearch').focus();},100);
+};
+
+CABLES.UI.OpSelect.prototype.keyDown=function(e)
+{
+    switch(e.which)
+    {
+        case 13:
+            var opname=$('.selected').data('opname');
+
+            if(opname && opname.length>2)
+            {
+                CABLES.UI.MODAL.hide();
+                gui.serverOps.loadOpLibs(opname,function()
+                {
+                    gui.scene().addOp(opname);
+                });
+            }
+        break;
+
+        case 8:
+            onInput();
+            return true;
+        case 38: // up
+            $('.selected').removeClass('selected');
+            this.Navigate(-1);
+        break;
+
+        case 40: // down
+            $('.selected').removeClass('selected');
+            this.Navigate(1);
+        break;
+
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
 };
 
 CABLES.UI.OpSelect.prototype.getOpList=function()
