@@ -296,24 +296,20 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     };
 
 
-    function onInput(e)
-    {
-        self.displayBoxIndex=0;
 
-        self.updateInfo();
 
-        // clearTimeout(this.searchTimeout);
-        // this.searchTimeout=setTimeout( search,75);
-
-        self.search();
-
-    }
-
-    $('#opsearch').on('input',onInput.bind(this));
+    $('#opsearch').on('input',this.onInput.bind(this));
     $('body').on( "keydown", this.keyDown.bind(this));
 
 
     setTimeout(function(){$('#opsearch').focus();},100);
+};
+
+CABLES.UI.OpSelect.prototype.onInput=function(e)
+{
+    this.displayBoxIndex=0;
+    this.updateInfo();
+    this.search();
 };
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
@@ -334,7 +330,7 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
         break;
 
         case 8:
-            onInput();
+            this.onInput();
             return true;
         case 38: // up
             $('.selected').removeClass('selected');
