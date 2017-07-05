@@ -47,6 +47,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 
 CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 {
+    var startTime=CABLES.now();
     var result=[];
 
     for(var i=0;i<list.length;i++)
@@ -93,6 +94,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
         if(points===0 && list[i].score>0) list[i].score=0;
             else list[i].score+=points;
     }
+
+    console.log(CABLES.now()-startTime+' ms search');
 
     return result;
 };
@@ -141,6 +144,22 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
     }
 };
 
+
+
+
+CABLES.UI.OpSelect.setItemScore=function(item)
+{
+    setTimeout(function()
+    {
+        var score=Math.round(100*item.score)/100;
+        var id='#result_'+item.id+' .score';
+        item.elementScore=$(id);
+        item.elementScore.html( score );
+
+    },1);
+};
+
+
 CABLES.UI.OpSelect.prototype.search=function()
 {
     var result=this._search($('#opsearch').val());
@@ -149,17 +168,25 @@ CABLES.UI.OpSelect.prototype.search=function()
 
     for(i=0;i<this._list.length;i++)
     {
+
 		this._list[i].element=$('#result_'+this._list[i].id);
-		this._list[i].elementScore=$('#result_'+this._list[i].id+' .score');
 
         if(this._list[i].score>0)
         {
             this._list[i].element.show();
-            this._list[i].elementScore.html( Math.round(100*this._list[i].score)/100 );
+
+            CABLES.UI.OpSelect.setItemScore(this._list[i]);
+
             this._list[i].element[0].dataset.score=this._list[i].score;
         }
-        else this._list[i].element.hide();
+        else
+        {
+            this._list[i].element.hide();
+        }
     }
+
+
+
 
     // sort html elements
     var $wrapper = $('.searchbrowser');
