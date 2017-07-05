@@ -95,7 +95,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             else list[i].score+=points;
     }
 
-    console.log(CABLES.now()-startTime+' ms search');
+    // console.log(CABLES.now()-startTime+' ms search');
 
     return result;
 };
@@ -138,13 +138,20 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
     {
         $('#searchinfo').empty();
 
+
         var content=gui.opDocs.get(opname);
+
+        if(content.length<3)
+        {
+            content="<h1>"+opname.split(".")[opname.split(".").length-1]+"</h1>";
+            content+='<p><em>'+opname+'</em></p>';
+            content+='<p>'+gui.opDocs.getSummary(opname)+'</p>';
+        }
+
         $('#searchinfo').html('<div id="opselect-layout"></div>'+content+htmlFoot);
         gui.opDocs.opLayoutSVG(opname,"opselect-layout");
     }
 };
-
-
 
 
 CABLES.UI.OpSelect.setItemScore=function(item)
@@ -168,15 +175,12 @@ CABLES.UI.OpSelect.prototype.search=function()
 
     for(i=0;i<this._list.length;i++)
     {
-
 		this._list[i].element=$('#result_'+this._list[i].id);
 
         if(this._list[i].score>0)
         {
             this._list[i].element.show();
-
             CABLES.UI.OpSelect.setItemScore(this._list[i]);
-
             this._list[i].element[0].dataset.score=this._list[i].score;
         }
         else
@@ -184,9 +188,6 @@ CABLES.UI.OpSelect.prototype.search=function()
             this._list[i].element.hide();
         }
     }
-
-
-
 
     // sort html elements
     var $wrapper = $('.searchbrowser');
