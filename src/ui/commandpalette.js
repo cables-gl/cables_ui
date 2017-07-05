@@ -4,11 +4,17 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.CommandPalette=function()
 {
     var lastSearch='';
-
     var findTimeoutId=0;
+
+	this.isVisible=function()
+	{
+		return $("#cmdpalette").is(":visible");
+	};
 
     this.show=function()
     {
+
+		$('#modalbg').show();
         $('#cmdpalette').show();
         $('#cmdinput').focus();
 
@@ -78,6 +84,7 @@ CABLES.UI.CommandPalette=function()
     {
         $('#searchresult_cmd').html('');
         $('#cmdpalette').hide();
-    }
+		$('#modalbg').hide();
+    };
 
 };

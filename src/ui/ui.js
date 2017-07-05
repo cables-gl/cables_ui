@@ -907,7 +907,7 @@ CABLES.UI.GUI=function()
                         CABLES.UI.suggestions.close();
                         CABLES.UI.suggestions=null;
                     }
-                    else if( $('#cmdpalette').is(':visible') ) $('#cmdpalette').hide();
+                    else if( $('#cmdpalette').is(':visible') ) gui._cmdPalette.close();
                     else if( $('#searchbox').is(':visible') ) $('#searchbox').hide();
                     else if( $('#library').is(':visible') ) $('#library').hide();
                     else if( $('#sidebar').is(':visible') ) $('#sidebar').animate({width:'toggle'},200);
