@@ -1,0 +1,49 @@
+#cmdpalette
+{
+	position: absolute;
+	width:400px;
+	left:50%;
+	margin-left: -200px;
+	top:100px;
+
+
+	.input-container
+	{
+		padding:20px;
+
+		input
+		{
+			margin-bottom: 0px;
+		}
+	}
+
+	.result
+	{
+		padding-right: 20px;
+
+		.title
+		{
+			font-size: 20px;
+			color: $highlight-color;
+		}
+
+		.icon
+		{
+			margin-left: 10px;
+			margin-right: 10px;
+			margin-top: 5px;
+		}
+
+		.hotkey
+		{
+			text-transform: uppercase;
+			float:right;
+			font-family: monospace;
+
+		}
+
+
+	}
+
+
+}

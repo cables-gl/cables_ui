@@ -43,12 +43,15 @@ CABLES.CMD.commands.push(
 	{
 		cmd:"select all ops",
 		category:"patch",
-		func:CABLES.CMD.PATCH.selectAllOps
+		func:CABLES.CMD.PATCH.selectAllOps,
+		hotkey:'CMD + a'
 	},
 	{
 		cmd:"delete selected ops",
 		category:"patch",
-		func:CABLES.CMD.PATCH.deleteSelectedOps
+		func:CABLES.CMD.PATCH.deleteSelectedOps,
+		icon:'trash',
+		hotkey:'DEL'
 	},
 	{
 		cmd:"reload patch",
@@ -58,19 +61,21 @@ CABLES.CMD.commands.push(
 	{
 		cmd:"save patch",
 		category:"patch",
-		func:CABLES.CMD.PATCH.save
+		func:CABLES.CMD.PATCH.save,
+		icon:'save',
+		hotkey:'CMD + s'
 	},
 	{
 		cmd:"upload file",
 		category:"patch",
-		func:CABLES.CMD.PATCH.uploadFile
+		func:CABLES.CMD.PATCH.uploadFile,
+		icon:'file'
 	},
-
-
 	{
 		cmd:"select child ops",
 		category:"op",
 		func:CABLES.CMD.PATCH.selectChilds
+
 	}
 
 

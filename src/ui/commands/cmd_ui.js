@@ -1,6 +1,7 @@
 var CABLES = CABLES || {};
 CABLES.CMD = CABLES.CMD || {};
 CABLES.CMD.UI = {};
+CABLES.CMD.commands=CABLES.CMD.commands||[];
 
 CABLES.CMD.UI.settings = function () {
   gui.showSettings();
@@ -54,12 +55,14 @@ CABLES.CMD.commands.push(
 	{
 		cmd:"show settings",
 		category:"ui",
-		func:CABLES.CMD.UI.settings
+		func:CABLES.CMD.UI.settings,
+		icon:'settings'
 	},
 	{
 		cmd:"show files",
 		category:"ui",
-		func:CABLES.CMD.UI.files
+		func:CABLES.CMD.UI.files,
+		icon:'file'
 	},
 	{
 		cmd:"toggle mute",

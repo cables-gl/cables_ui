@@ -17,12 +17,14 @@ CABLES.CMD.commands.push(
 	{
 		cmd:"save screenshot",
 		category:"renderer",
-		func:CABLES.CMD.RENDERER.screenshot
+		func:CABLES.CMD.RENDERER.screenshot,
+		icon:'monitor'
 	},
 	{
 		cmd:"toggle fullscreen",
 		category:"renderer",
-		func:CABLES.CMD.RENDERER.fullscreen
+		func:CABLES.CMD.RENDERER.fullscreen,
+		icon:'monitor'
 	}
 
 );

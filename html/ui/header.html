@@ -70,7 +70,13 @@
     </div>
 
     <div id="cmdpalette">
-        <input class="medium info" id="cmdinput" oninput="gui._cmdPalette.doSearch(this.value);" placeholder="search" />
-        <br/>
+		<div class="input-container">
+        	<input class="medium info" id="cmdinput" oninput="gui._cmdPalette.doSearch(this.value);" placeholder="search" style="width:90%;float:left;"/>
+			<div style="width:10%;float:left">
+				<a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
+			</div>
+			<div class="clear"></div>
+
+		</div>
         <div id="searchresult_cmd"></div>
     </div>

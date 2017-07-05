@@ -19,7 +19,7 @@ CABLES.UI.CommandPalette=function()
         clearTimeout(findTimeoutId);
         findTimeoutId=setTimeout(function()
         {
-            console.log(1);
+            // console.log(1);
             self.doSearch(lastSearch);
         },100);
     };
@@ -28,8 +28,18 @@ CABLES.UI.CommandPalette=function()
     {
         var html='';
 
-        html+='<div onclick="CABLES.CMD.exec(\''+cmd+'\');gui._cmdPalette.close()">';
-        html+='<h3>'+cmd+'</h3>';
+        html+='<div class="result" onclick="CABLES.CMD.exec(\''+cmd.cmd+'\');gui._cmdPalette.close()">';
+
+		// <a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
+
+		html+='<span class="icon icon-'+(cmd.icon||'square')+'"/>';
+
+        html+='<span class="title">'+cmd.cmd+'</span> - '+cmd.category;
+
+		if(cmd.hotkey)
+		{
+			html+='<span class="hotkey">[ '+cmd.hotkey+' ]</span>';
+		}
         html+='</div>';
 
         setTimeout(
@@ -55,8 +65,8 @@ CABLES.UI.CommandPalette=function()
             var cmd=CABLES.CMD.commands[i].cmd;
             if(cmd.toLowerCase().indexOf(str)>=0)
             {
-                addResult(cmd);
-                console.log('!'+cmd);
+                addResult(CABLES.CMD.commands[i]);
+                // console.log('!'+cmd);
 
             }
 

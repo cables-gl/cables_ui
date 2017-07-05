@@ -28,6 +28,11 @@ CABLES.UI.OpDocs=function()
         return 0;
     };
 
+	this.getAll=function()
+	{
+		return opDocs;
+	};
+
     this.opLayoutSVG=function(opname,elementId)
     {
         if(this.layoutPaper)this.layoutPaper.clear();
