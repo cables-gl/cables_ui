@@ -25,6 +25,12 @@
         }
     }
 
+	#opselect-layout
+	{
+		min-width: 200px;
+		min-height: 40px;
+	}
+
 
     .opOptions
     {
@@ -100,6 +106,7 @@
 			position: absolute;
 			margin-top:-33px;
 			font-size: 19px;
+			margin-left: 10px;
         }
 
         p
