@@ -13,6 +13,11 @@
 			<div class="summary">
 	            {{#if op.summary }}
 	                {{op.summary}}
+
+					&nbsp;<a onclick="gui.opDocs.writeSummary('{{op.objName}}','{{op.summary}}')">[edit]</a>
+
+				{{else}}
+					no summary! <a onclick="gui.opDocs.writeSummary('{{op.objName}}')">click to write one!</a>
 	            {{/if}}
 			</div>
 
@@ -39,10 +44,10 @@
         </div>
     </div>
 
-
-
     <div id="opparams" class="panel" style="padding:0px;">
         <table>
+
+
 
 </script>
 

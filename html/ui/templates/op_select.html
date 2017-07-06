@@ -22,7 +22,7 @@
                     <a>
                         {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
                         <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
-                        - <span class="namespace" onClick="CABLES.UI.OPSELECT.searchFor('{{nameSpace}}');">{{nameSpace}}
+                        - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
                         / score: <span class="score"></span>
                     </span>{{isFunction}}
 

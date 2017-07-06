@@ -113,6 +113,19 @@ CABLES.UI.OpDocs=function()
         }
     };
 
+	this.writeSummary=function(opname,summary)
+	{
+		CABLES.UI.MODAL.prompt(
+			"Summary",
+			"write a summary (oneliner) for "+opname,
+			summary||"",
+			function(v)
+			{
+				gui.serverOps.addOpSummary(opname, v );
+			});
+
+	};
+
 
 
 };

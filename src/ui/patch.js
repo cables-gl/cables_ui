@@ -607,21 +607,29 @@ CABLES.UI.Patch=function(_gui)
 
     this.saveCurrentProjectAs=function(cb,_id,_name)
     {
-        CABLES.api.post('project',{name: prompt('projectname','') },function(d)
-        {
-            CABLES.UI.SELECTPROJECT.doReload=true;
 
-            gui.scene().settings.isPublic=false;
-            gui.scene().settings.secret='';
-            gui.scene().settings.isExample=false;
-            gui.scene().settings.isTest=false;
+		CABLES.UI.MODAL.prompt(
+			"Save As...",
+			"Enter a name for the copy of this Project ",
+			"My new Project",
+			function(name)
+			{
+		        CABLES.api.post('project',{name: name },function(d)
+		        {
+		            CABLES.UI.SELECTPROJECT.doReload=true;
 
-            self.saveCurrentProject(function()
-            {
-                document.location.href='#/project/'+d._id;
-            },d._id,d.name);
+		            gui.scene().settings.isPublic=false;
+		            gui.scene().settings.secret='';
+		            gui.scene().settings.isExample=false;
+		            gui.scene().settings.isTest=false;
 
-        });
+		            self.saveCurrentProject(function()
+		            {
+		                document.location.href='#/project/'+d._id;
+		            },d._id,d.name);
+
+		        });
+			});
     };
 
 

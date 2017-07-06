@@ -468,7 +468,7 @@ input[type="text"]
     padding: 5px !important;
 }
 
-.button,.bluebutton
+.button,.bluebutton,.greybutton
 {
 	display:inline-block;
 
@@ -505,6 +505,7 @@ input[type="text"]
 
 }
 
+
 .button.fa {
   font: normal normal normal 14px/1 FontAwesome, arial;
   background-color: $button-background-color;
@@ -532,9 +533,21 @@ a.button.fa-times:before {
         background-color: $highlight-color-dark;
         color:#fff;
     }
-
 }
 
+.greybutton
+{
+	color:#eee;
+    background-color: #555;
+    padding:10px;
+
+    &:hover
+    {
+        cursor:pointer !important;
+        background-color: #666;
+        color:#fff;
+    }
+}
 
 .timingbutton,.showgraphbutton
 {
@@ -1500,6 +1513,13 @@ hr
 #options td, #meta td
 {
     padding-top: 4px;
+}
+
+.meta_content *,.meta_content div,.params_op_head,pre,
+{
+	pointer-events: all !important;
+    user-select: initial !important;
+    -webkit-user-select: initialm !important;
 }
 
 .valueDragger

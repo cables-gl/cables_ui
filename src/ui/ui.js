@@ -575,16 +575,23 @@ CABLES.UI.GUI=function()
 
     this.createProject=function()
     {
-        var name=prompt('projectname','');
-        if(name)
-        {
-            CABLES.api.post('project',{"name":name },function(d)
-            {
-                CABLES.UI.SELECTPROJECT.doReload=true;
-                document.location.href='#/project/'+d._id;
-            });
+		CABLES.UI.MODAL.prompt(
+			"New Project",
+			"Enter a name for your new Project",
+			"My new Project",
+			function(name)
+			{
+        // var name=prompt('projectname','');
+		        if(name)
+		        {
+		            CABLES.api.post('project',{"name":name },function(d)
+		            {
+		                CABLES.UI.SELECTPROJECT.doReload=true;
+		                document.location.href='#/project/'+d._id;
+		            });
 
-        }
+		        }
+			});
     };
 
     this.deleteCurrentProject=function()

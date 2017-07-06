@@ -262,6 +262,9 @@ CABLES.UI.Port=function(thePort)
 
         if(!foundAutoOp)
         {
+
+			if(CABLES.UI.selectedStartPort.type==OP_PORT_TYPE_DYNAMIC)return;
+
             if( (event.which==3 && !cancelDeleteLink) || (event.which==1 && event.ctrlKey))
             {
                 removeLinkingLine();
@@ -307,7 +310,7 @@ CABLES.UI.Port=function(thePort)
                             if( dist <10)
                             {
                                 // port was clicked, not dragged, insert op directly into link
-// console.log(123);
+
 
 								// if(event.which==1 && event.ctrlKey)
 								// {

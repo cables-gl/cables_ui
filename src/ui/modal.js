@@ -294,10 +294,12 @@ CABLES.UI.MODAL.prompt=function(title,text,value,callback)
     $('#modalcontent').append('<input id="modalpromptinput" class="medium" value="'+(value||'')+'"/>');
     $('#modalcontent').append('<br/><br/>');
     $('#modalcontent').append('<a class="bluebutton" onclick="CABLES.UI.MODAL.promptCallbackExec()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>');
+	$('#modalcontent').append('&nbsp;&nbsp;<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>');
 
 
     $('#modalcontainer').show();
     $('#modalbg').show();
+	$("#modalpromptinput").focus();
 
     $('#modalbg').on('click',function(){
         CABLES.UI.MODAL.hide(true);

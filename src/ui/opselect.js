@@ -307,10 +307,8 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     };
 
     this.searchTimeout=0;
-    this.searchFor=function(what)
-    {
-        $('#opsearch').val(what);
-    };
+
+
 
     this.selectOp=function(name)
     {
@@ -331,6 +329,12 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
 
 
     setTimeout(function(){$('#opsearch').focus();},100);
+};
+
+CABLES.UI.OpSelect.prototype.searchFor=function(what)
+{
+	$('#opsearch').val(what);
+    this.onInput();
 };
 
 CABLES.UI.OpSelect.prototype.onInput=function(e)
