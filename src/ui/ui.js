@@ -1234,7 +1234,7 @@ CABLES.UI.GUI=function()
 
     this.showOpDoc=function(opname)
     {
-        var docOpHead='<div><img src="/api/op/layout/'+opname+'"/>';
+        var docOpHead='<div>'; //<img src="/api/op/layout/'+opname+'"/>
         var docOpFooter='<br/><br/><a onclick="gui.editOpDoc(\''+opname+'\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
 
         this.getOpDoc(opname,true,function(html)

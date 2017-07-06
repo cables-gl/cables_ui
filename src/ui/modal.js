@@ -245,12 +245,8 @@ CABLES.UI.MODAL.showCode=function(title,code)
     CABLES.UI.MODAL.init();
 
     $('#modalcontent').append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
-
     $('#modalcontent').append('<b>'+title+'</b> ');
-
-
     $('#modalcontent').append('<br/><br/>');
-
     $('#modalcontent').append('<br/><br/>');
 
     $('#modalcontent').append('<div class="shaderErrorCode">'+code+'</div>');
@@ -260,7 +256,6 @@ CABLES.UI.MODAL.showCode=function(title,code)
     $('#modalbg').on('click',function(){
         CABLES.UI.MODAL.hide(true);
     });
-
 };
 
 CABLES.UI.MODAL.promptCallbackExec=function()
@@ -274,9 +269,7 @@ CABLES.UI.MODAL.promptCallbackExec=function()
     {
         console.log("no callback found for prompt");
     }
-
 };
-
 
 CABLES.UI.MODAL.prompt=function(title,text,value,callback)
 {
