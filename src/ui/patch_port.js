@@ -2,6 +2,8 @@ CABLES.UI.MOUSEOVERPORT=false;
 CABLES.UI.selectedStartPort=null;
 CABLES.UI.selectedEndPort=null;
 
+CABLES.UI.selectedStartPortMulti=[];
+
 CABLES.UI.Port=function(thePort)
 {
     var self=this;
@@ -35,7 +37,7 @@ CABLES.UI.Port=function(thePort)
             if(thePort.isLinked ) //&& thePort.links.length===1
             {
 
-                CABLES.UI.selectedStartPortMulti=[];
+                CABLES.UI.selectedStartPortMulti.length=0;
                 if(thePort.links.length>1)
                 {
                 	for(var i=0;i<thePort.links.length;i++)

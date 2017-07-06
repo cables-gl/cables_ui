@@ -13,6 +13,12 @@ CABLES.UI.MODAL.hideLoading=function()
     }
 };
 
+CABLES.UI.MODAL.init=function(force)
+{
+    $('#modalcontent').empty();
+
+};
+
 CABLES.UI.MODAL.hide=function(force)
 {
     if(CABLES.UI.MODAL.onClose)CABLES.UI.MODAL.onClose();
@@ -27,7 +33,7 @@ CABLES.UI.MODAL.hide=function(force)
     mouseNewOPY=0;
 
 	$('#modalclose').hide();
-    $('#modalcontent').html('');
+    CABLES.UI.MODAL.init();
     $('#modalcontainer').hide();
     $('#modalbg').hide();
     $('.tooltip').hide();
@@ -73,6 +79,7 @@ CABLES.UI.MODAL.show=function(content,options)
     }
 
 	CABLES.UI.MODAL.showClose();
+    CABLES.UI.MODAL.init();
     $('#modalcontent').append(content);
     $('#modalcontainer').show();
     $('#modalbg').show();
@@ -100,7 +107,7 @@ CABLES.UI.MODAL.showClose=function()
 CABLES.UI.MODAL.showError=function(title,content)
 {
     CABLES.UI.MODAL.showClose();
-	$('#modalcontent').html('');
+	CABLES.UI.MODAL.init();
     $('#modalcontent').append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;'+title+'!</h2>');
     $('#modalcontent').append(content);
     $('#modalcontainer').show();
@@ -116,7 +123,7 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 {
     console.log(ex.stack);
     CABLES.UI.MODAL.showClose();
-	$('#modalcontent').html('');
+	CABLES.UI.MODAL.init();
 	CABLES.UI.MODAL.setTitle('cablefail :/');
     // $('#modalcontent').append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;</h2>');
 
@@ -145,7 +152,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
     console.log(ex.stack);
     CABLES.UI.MODAL.showClose();
 
-	$('#modalcontent').empty();
+    CABLES.UI.MODAL.init();
     $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
 
     if(op)
@@ -202,19 +209,15 @@ CABLES.UI.MODAL.updatePortValuePreview=function(title)
 
 CABLES.UI.MODAL.showPortValue=function(title,port)
 {
-
     CABLES.UI.MODAL.PORTPREVIEW=port;
-
     CABLES.UI.MODAL.showClose();
-
+    CABLES.UI.MODAL.init();
     $('#modalcontent').append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
 
     $('#modalcontent').append('port: <b>'+title+'</b> of <b>'+port.parent.name+'</b> ');
 
 
     $('#modalcontent').append('<br/><br/>');
-
-
 
     $('#modalcontent').append('<a class="button fa fa-refresh" onclick="CABLES.UI.MODAL.updatePortValuePreview(\''+title+'\')">update</a>');
 
@@ -238,10 +241,8 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
 
 CABLES.UI.MODAL.showCode=function(title,code)
 {
-
-
-
     CABLES.UI.MODAL.showClose();
+    CABLES.UI.MODAL.init();
 
     $('#modalcontent').append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
 
@@ -253,6 +254,48 @@ CABLES.UI.MODAL.showCode=function(title,code)
     $('#modalcontent').append('<br/><br/>');
 
     $('#modalcontent').append('<div class="shaderErrorCode">'+code+'</div>');
+    $('#modalcontainer').show();
+    $('#modalbg').show();
+
+    $('#modalbg').on('click',function(){
+        CABLES.UI.MODAL.hide(true);
+    });
+
+};
+
+CABLES.UI.MODAL.promptCallbackExec=function()
+{
+    if(CABLES.UI.MODAL.promptCallback)
+    {
+        CABLES.UI.MODAL.promptCallback( $("#modalpromptinput").val() );
+        CABLES.UI.MODAL.hide();
+    }
+    else
+    {
+        console.log("no callback found for prompt");
+    }
+
+};
+
+
+CABLES.UI.MODAL.prompt=function(title,text,value,callback)
+{
+    CABLES.UI.MODAL.showClose();
+    CABLES.UI.MODAL.init();
+
+    CABLES.UI.MODAL.promptCallback=callback;
+
+    $('#modalcontent').append('<h2>'+title+'</h2>');
+
+    $('#modalcontent').append('<b>'+text+'</b> ');
+
+    $('#modalcontent').append('<br/><br/>');
+
+    $('#modalcontent').append('<input id="modalpromptinput" class="medium" value="'+(value||'')+'"/>');
+    $('#modalcontent').append('<br/><br/>');
+    $('#modalcontent').append('<a class="bluebutton" onclick="CABLES.UI.MODAL.promptCallbackExec()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>');
+
+
     $('#modalcontainer').show();
     $('#modalbg').show();
 

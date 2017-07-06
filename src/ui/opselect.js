@@ -47,6 +47,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 
 CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 {
+    var startTime=CABLES.now();
     var result=[];
 
     for(var i=0;i<list.length;i++)
@@ -94,6 +95,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             else list[i].score+=points;
     }
 
+    // console.log(CABLES.now()-startTime+' ms search');
+
     return result;
 };
 
@@ -135,11 +138,34 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
     {
         $('#searchinfo').empty();
 
+
         var content=gui.opDocs.get(opname);
+
+        if(content.length<3)
+        {
+            content="<h1>"+opname.split(".")[opname.split(".").length-1]+"</h1>";
+            content+='<p><em>'+opname+'</em></p>';
+            content+='<p>'+gui.opDocs.getSummary(opname)+'</p>';
+        }
+
         $('#searchinfo').html('<div id="opselect-layout"></div>'+content+htmlFoot);
         gui.opDocs.opLayoutSVG(opname,"opselect-layout");
     }
 };
+
+
+CABLES.UI.OpSelect.setItemScore=function(item)
+{
+    setTimeout(function()
+    {
+        var score=Math.round(100*item.score)/100;
+        var id='#result_'+item.id+' .score';
+        item.elementScore=$(id);
+        item.elementScore.html( score );
+
+    },1);
+};
+
 
 CABLES.UI.OpSelect.prototype.search=function()
 {
@@ -150,15 +176,17 @@ CABLES.UI.OpSelect.prototype.search=function()
     for(i=0;i<this._list.length;i++)
     {
 		this._list[i].element=$('#result_'+this._list[i].id);
-		this._list[i].elementScore=$('#result_'+this._list[i].id+' .score');
 
         if(this._list[i].score>0)
         {
             this._list[i].element.show();
-            this._list[i].elementScore.html( Math.round(100*this._list[i].score)/100 );
+            CABLES.UI.OpSelect.setItemScore(this._list[i]);
             this._list[i].element[0].dataset.score=this._list[i].score;
         }
-        else this._list[i].element.hide();
+        else
+        {
+            this._list[i].element.hide();
+        }
     }
 
     // sort html elements
@@ -296,24 +324,20 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     };
 
 
-    function onInput(e)
-    {
-        self.displayBoxIndex=0;
 
-        self.updateInfo();
 
-        // clearTimeout(this.searchTimeout);
-        // this.searchTimeout=setTimeout( search,75);
-
-        self.search();
-
-    }
-
-    $('#opsearch').on('input',onInput.bind(this));
+    $('#opsearch').on('input',this.onInput.bind(this));
     $('body').on( "keydown", this.keyDown.bind(this));
 
 
     setTimeout(function(){$('#opsearch').focus();},100);
+};
+
+CABLES.UI.OpSelect.prototype.onInput=function(e)
+{
+    this.displayBoxIndex=0;
+    this.updateInfo();
+    this.search();
 };
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
@@ -334,7 +358,7 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
         break;
 
         case 8:
-            onInput();
+            this.onInput();
             return true;
         case 38: // up
             $('.selected').removeClass('selected');
