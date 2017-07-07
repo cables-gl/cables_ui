@@ -18,7 +18,7 @@ CABLES.CMD.commands.push(
 		cmd:"save screenshot",
 		category:"renderer",
 		func:CABLES.CMD.RENDERER.screenshot,
-		icon:'monitor'
+		icon:'image'
 	},
 	{
 		cmd:"toggle fullscreen",

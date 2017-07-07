@@ -39,7 +39,11 @@
 			text-transform: uppercase;
 			float:right;
 			font-family: monospace;
+		}
 
+		&.selected
+		{
+			background-color: $color-background-input;
 		}
 
 

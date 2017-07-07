@@ -6,6 +6,8 @@ CABLES.UI.CommandPalette=function()
     var lastSearch='';
     var findTimeoutId=0;
 
+	this._cursorIndex=0;
+
 	this.isVisible=function()
 	{
 		return $("#cmdpalette").is(":visible");
@@ -13,7 +15,7 @@ CABLES.UI.CommandPalette=function()
 
     this.show=function()
     {
-
+		this._cursorIndex=0;
 		$('#modalbg').show();
         $('#cmdpalette').show();
         $('#cmdinput').focus();
@@ -28,13 +30,15 @@ CABLES.UI.CommandPalette=function()
             // console.log(1);
             self.doSearch(lastSearch);
         },100);
+
+		$('body').on( "keydown", this.keyDown);
     };
 
-    function addResult(cmd)
+    function addResult(cmd,num)
     {
         var html='';
 
-        html+='<div class="result" onclick="CABLES.CMD.exec(\''+cmd.cmd+'\');gui._cmdPalette.close()">';
+        html+='<div class="result" id="result'+num+'" onclick="CABLES.CMD.exec(\''+cmd.cmd+'\');gui._cmdPalette.close()">';
 
 		// <a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
 
@@ -60,28 +64,73 @@ CABLES.UI.CommandPalette=function()
     this.doSearch=function(str,searchId)
     {
         lastSearch=str;
+		this._cursorIndex=0;
         $('#searchresult_cmd').html('');
         if(str.length<2)return;
 
+
         str=str.toLowerCase();
+
+		var count=0;
 
         for(var i=0;i<CABLES.CMD.commands.length;i++)
         {
-            // console.log('.');
+            // .log('.');
             var cmd=CABLES.CMD.commands[i].cmd;
             if(cmd.toLowerCase().indexOf(str)>=0)
             {
-                addResult(CABLES.CMD.commands[i]);
-                // console.log('!'+cmd);
+                addResult(CABLES.CMD.commands[i],count);
+				count++;
 
             }
-
         }
+
+		setTimeout(function()
+		{
+			$('#result0').addClass("selected");
+		},10);
 
     };
 
+	this.navigate=function(dir)
+	{
+		this._cursorIndex+=dir;
+		if(this._cursorIndex<0)this._cursorIndex=0;
+
+
+		$('.result').removeClass("selected");
+		$('#result'+this._cursorIndex).addClass("selected");
+	};
+
+
+	var self=this;
+	this.keyDown=function(e)
+	{
+	    switch(e.which)
+	    {
+	        case 13:
+	    		$('#result'+self._cursorIndex).click();
+	        break;
+
+	        case 38: // up
+	            self.navigate(-1);
+	        break;
+
+	        case 40: // down
+	            self.navigate(1);
+	        break;
+
+	        default: return;
+	    }
+	    e.preventDefault();
+	};
+
+
+
     this.close=function()
     {
+		$('body').off( "keydown", this.keyDown);
+
         $('#searchresult_cmd').html('');
         $('#cmdpalette').hide();
 		$('#modalbg').hide();

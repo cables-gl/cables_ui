@@ -11,7 +11,7 @@ CABLES.CMD.exec=function(cmd)
 	{
 		if(CABLES.CMD.commands[i].cmd==cmd)
 		{
-			console.log("CMD found!");
+			console.log("CMD found!"+cmd);
 			CABLES.CMD.commands[i].func();
 		}
 	}

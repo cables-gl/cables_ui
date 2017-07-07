@@ -29,11 +29,28 @@ CABLES.CMD.PATCH.selectChilds=function()
 };
 
 
+CABLES.CMD.PATCH.createSubPatchFromSelection=function()
+{
+	gui.patch().createSubPatchFromSelection();
+};
+
+
 
 CABLES.CMD.PATCH.uploadFile=function()
 {
 	var fileElem = document.getElementById("hiddenfileElem");
 	if (fileElem) fileElem.click();
+};
+
+
+CABLES.CMD.PATCH.opsAlignHorizontal=function()
+{
+	gui.patch().alignSelectedOps();
+};
+
+CABLES.CMD.PATCH.opsCompress=function()
+{
+	gui.patch().compressSelectedOps();
 };
 
 
@@ -75,8 +92,28 @@ CABLES.CMD.commands.push(
 		cmd:"select child ops",
 		category:"op",
 		func:CABLES.CMD.PATCH.selectChilds
-
+	},
+	{
+		cmd:"align selected ops",
+		category:"op",
+		func:CABLES.CMD.PATCH.opsAlignHorizontal,
+		hotkey:'a',
+		icon:"align-left"
+	},
+	{
+		cmd:"compress selected ops",
+		category:"op",
+		func:CABLES.CMD.PATCH.opsCompress,
+		hotkey:'SHIFT + a',
+		icon:"align-justify"
+	},
+	{
+		cmd:"create subpatch",
+		category:"op",
+		func:CABLES.CMD.PATCH.createSubPatchFromSelection,
+		icon:"maximize"
 	}
+
 
 
 );
