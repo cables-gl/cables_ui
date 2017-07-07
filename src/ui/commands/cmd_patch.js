@@ -23,6 +23,13 @@ CABLES.CMD.PATCH.save=function()
 	gui.patch().saveCurrentProject();
 };
 
+CABLES.CMD.PATCH.saveAs=function()
+{
+	self.patch().saveCurrentProjectAs();
+};
+
+
+
 CABLES.CMD.PATCH.selectChilds=function()
 {
 	gui.patch().selectChilds();
@@ -54,6 +61,25 @@ CABLES.CMD.PATCH.opsCompress=function()
 };
 
 
+CABLES.CMD.PATCH.export=function()
+{
+	gui.patch().exportStatic();
+};
+
+CABLES.CMD.PATCH.newPatch=function()
+{
+	gui.createProject();
+};
+
+CABLES.CMD.PATCH.addOp=function()
+{
+	gui.opSelect().showOpSelect({x:0,y:0});
+};
+
+CABLES.CMD.PATCH.renameOp=function()
+{
+	CABLES.UI.MetaCode.rename();
+};
 
 
 CABLES.CMD.commands.push(
@@ -71,6 +97,15 @@ CABLES.CMD.commands.push(
 		hotkey:'DEL'
 	},
 	{
+		cmd:"rename op",
+		category:"op",
+		func:CABLES.CMD.PATCH.renameOp,
+		icon:'edit'
+	},
+
+
+
+	{
 		cmd:"reload patch",
 		category:"patch",
 		func:CABLES.CMD.PATCH.reload
@@ -81,6 +116,13 @@ CABLES.CMD.commands.push(
 		func:CABLES.CMD.PATCH.save,
 		icon:'save',
 		hotkey:'CMD + s'
+	},
+	{
+		cmd:"save patch as...",
+		category:"patch",
+		func:CABLES.CMD.PATCH.saveAs,
+		icon:'save',
+		hotkey:'CMD + SHIFT + s'
 	},
 	{
 		cmd:"upload file",
@@ -109,10 +151,30 @@ CABLES.CMD.commands.push(
 	},
 	{
 		cmd:"create subpatch",
-		category:"op",
+		category:"patch",
 		func:CABLES.CMD.PATCH.createSubPatchFromSelection,
 		icon:"maximize"
+	},
+	{
+		cmd:"export static html",
+		category:"patch",
+		func:CABLES.CMD.PATCH.export,
+		icon:"download"
+	},
+	{
+		cmd:"create new patch",
+		category:"patch",
+		func:CABLES.CMD.PATCH.newPatch,
+		icon:"file"
+	},
+	{
+		cmd:"add op",
+		category:"patch",
+		func:CABLES.CMD.PATCH.addOp,
+		icon:"plus"
 	}
+
+
 
 
 

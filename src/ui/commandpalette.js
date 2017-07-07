@@ -7,6 +7,7 @@ CABLES.UI.CommandPalette=function()
     var findTimeoutId=0;
 
 	this._cursorIndex=0;
+	this._numResults=0;
 
 	this.isVisible=function()
 	{
@@ -38,6 +39,7 @@ CABLES.UI.CommandPalette=function()
     {
         var html='';
 
+
         html+='<div class="result" id="result'+num+'" onclick="CABLES.CMD.exec(\''+cmd.cmd+'\');gui._cmdPalette.close()">';
 
 		// <a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
@@ -64,7 +66,6 @@ CABLES.UI.CommandPalette=function()
     this.doSearch=function(str,searchId)
     {
         lastSearch=str;
-		this._cursorIndex=0;
         $('#searchresult_cmd').html('');
         if(str.length<2)return;
 
@@ -81,25 +82,28 @@ CABLES.UI.CommandPalette=function()
             {
                 addResult(CABLES.CMD.commands[i],count);
 				count++;
-
             }
         }
 
+		this._numResults=count;
+
 		setTimeout(function()
 		{
-			$('#result0').addClass("selected");
-		},10);
+			this._cursorIndex=0;
+			this.navigate();
+		}.bind(this),10);
 
     };
 
 	this.navigate=function(dir)
 	{
-		this._cursorIndex+=dir;
-		if(this._cursorIndex<0)this._cursorIndex=0;
+		if(dir) self._cursorIndex+=dir;
+		if(self._cursorIndex<0)self._cursorIndex=this._numResults-1;
+		if(self._cursorIndex>=this._numResults)self._cursorIndex=0;
 
 
 		$('.result').removeClass("selected");
-		$('#result'+this._cursorIndex).addClass("selected");
+		$('#result'+self._cursorIndex).addClass("selected");
 	};
 
 
