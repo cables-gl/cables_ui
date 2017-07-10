@@ -1242,6 +1242,8 @@ CABLES.UI.Patch=function(_gui)
         {
             e=mouseEvent(e);
 
+			if(CABLES.UI.MOUSEOVERPORT) return; // cancel when dragging port...
+
 
             if(e.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL)
             {

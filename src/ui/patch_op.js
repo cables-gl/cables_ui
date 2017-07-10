@@ -13,18 +13,11 @@ CABLES.UI.cleanRaphael=function(el)
     el.node.removeAttribute('stroke-opacity');
 };
 
-// function getPortOpacity(port)
-// {
-//     if(!port)return;
-//     if(port.direction==PORT_DIR_IN && (port.isAnimated()))return 0.25;
-//     return 0.5;
-// }
-
 function getPortDescription(thePort)
 {
     var str='<b>'+thePort.getName()+'</b> (' + thePort.getTypeString() + ')';
-
     var strInfo='';
+
     if(thePort.direction==PORT_DIR_IN)strInfo+=CABLES.UI.TEXTS.portDirIn;
     if(thePort.direction==PORT_DIR_OUT)strInfo+=CABLES.UI.TEXTS.portDirOut;
     if(thePort.isLinked() )strInfo+=CABLES.UI.TEXTS.portMouseUnlink;
@@ -167,8 +160,6 @@ function UiLink(port1, port2)
 
         }
     };
-
-
 
     this.getPath = function()
     {
@@ -382,25 +373,23 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     };
 
 
-this.showCopyAnim=function()
-{
-    background.node.classList.add('copyOp');
-    background.node.addEventListener("animationend", function()
-    {
-        background.node.classList.remove('copyOp');
-    }, false);
+	this.showCopyAnim=function()
+	{
+	    background.node.classList.add('copyOp');
+	    background.node.addEventListener("animationend", function()
+	    {
+	        background.node.classList.remove('copyOp');
+	    }, false);
 
-};
+	};
 
     this.showFocus=function()
     {
         background.node.classList.add('focusOp');
-
         background.node.addEventListener("animationend", function()
         {
             background.node.classList.remove('focusOp');
         }, false);
-
     };
 
     this.getWidth=function()
@@ -443,16 +432,14 @@ this.showCopyAnim=function()
 	                label.attr({x:setw/2});
 	                // resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
 	                if(miniRect) miniRect.attr({ width:setw, height:10 });
-
 	            }
-
 			}
-
         }
     };
 
     function hover()
     {
+		console.log('opover');
         CABLES.UI.selectedEndOp=opui;
         opui.isMouseOver=true;
     }
@@ -539,9 +526,6 @@ this.showCopyAnim=function()
         gui.patch().moveSelectedOps(dx,dy,a,b,e);
         gui.patch().updateBounds=true;
         gui.setStateUnsaved();
-
-
-
     };
 
     var up = function (e)
@@ -694,7 +678,8 @@ this.showCopyAnim=function()
         CABLES.UI.cleanRaphael(miniRect);
 
 
-        background=gui.patch().getPaper().rect(0, 3, w, h-6);
+        // background=gui.patch().getPaper().rect(0, 3, w, h-6);
+		background=gui.patch().getPaper().rect(0, 0, w, h);
         CABLES.UI.cleanRaphael(background);
         background.node.classList.add('op_background');
         var objNameClassNameified = opui.op.objName.replace(/[\W_]+/g,"_");

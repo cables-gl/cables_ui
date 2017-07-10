@@ -129,17 +129,15 @@ CABLES.UI.Port=function(thePort)
         }
 		else
 		{
-
 			if(event.which==3)
 			{
 				$('#patch').css({cursor:"url(/img/remove.png) 10 10, auto"});
 			}
-			else {
+			else
+			{
 				$('#drop-op-cursor').css({top:b-12,left:a-37});
 				$('#patch').css({cursor:"url(/img/add.png) 10 10, auto"});
-
 				$('#drop-op-cursor').show();
-
 			}
 		}
 
@@ -160,7 +158,6 @@ CABLES.UI.Port=function(thePort)
                 else txt='<i class="fa fa-times"></i> '+txt;
 
             CABLES.UI.showToolTip(event,txt+' '+getPortDescription(CABLES.UI.selectedEndPort.thePort));
-
 
 	        if(CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort,CABLES.UI.selectedStartPort))
 	        {
@@ -210,15 +207,15 @@ CABLES.UI.Port=function(thePort)
                     CABLES.UI.selectedStartPort.name
                     );
 
-					for(var j=0;j<CABLES.UI.selectedStartPortMulti.length;j++)
-					{
-						gui.patch().scene.link(
-							CABLES.UI.selectedEndOp.op,
-							p.name,
-							CABLES.UI.selectedStartPortMulti[j].parent,
-							CABLES.UI.selectedStartPortMulti[j].name
-							);
-					}
+				for(var j=0;j<CABLES.UI.selectedStartPortMulti.length;j++)
+				{
+					gui.patch().scene.link(
+						CABLES.UI.selectedEndOp.op,
+						p.name,
+						CABLES.UI.selectedStartPortMulti[j].parent,
+						CABLES.UI.selectedStartPortMulti[j].name
+						);
+				}
 
 
                 foundAutoOp=true;
@@ -235,7 +232,6 @@ CABLES.UI.Port=function(thePort)
                         console.log('final', portName);
                         if(CABLES.UI.selectedEndOp)
 						{
-
 							gui.patch().scene.link(
                                 CABLES.UI.selectedEndOp.op,
                                 portName,
@@ -311,14 +307,12 @@ CABLES.UI.Port=function(thePort)
                             {
                                 // port was clicked, not dragged, insert op directly into link
 
-
 								// if(event.which==1 && event.ctrlKey)
 								// {
 								// 	self.thePort.removeLinks();
 								// 	removeLinkingLine();
 								// 	console.log('remove!!!');
 								// 	return;
-								//
 								// }
                                 // else
 								gui.opSelect().show(coords,null,selectedStartPort,links[0]);
@@ -345,7 +339,6 @@ CABLES.UI.Port=function(thePort)
                 }
             }
         }
-
 
         finishDragUI();
     }
