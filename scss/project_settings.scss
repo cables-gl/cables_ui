@@ -18,11 +18,20 @@
 	textarea
 	{
 		height:150px !important;
+		outline: none;
+	    border: none;
 	}
 
 	.taginputcontainer
 	{
-		border:10px solid $color-background-input;
+		margin-top: 5px;
+		border:7px solid $color-background-input;
+		border-bottom:3px solid $color-background-input;
+	}
+
+	h2
+	{
+		text-transform: uppercase;
 	}
 }
 
