@@ -439,7 +439,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
     function hover()
     {
-		console.log('opover');
         CABLES.UI.selectedEndOp=opui;
         opui.isMouseOver=true;
     }
@@ -678,8 +677,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         CABLES.UI.cleanRaphael(miniRect);
 
 
-        // background=gui.patch().getPaper().rect(0, 3, w, h-6);
-		background=gui.patch().getPaper().rect(0, 0, w, h);
+        background=gui.patch().getPaper().rect(0, 3, w, h-6);
+		// background=gui.patch().getPaper().rect(0, 0, w, h);
         CABLES.UI.cleanRaphael(background);
         background.node.classList.add('op_background');
         var objNameClassNameified = opui.op.objName.replace(/[\W_]+/g,"_");

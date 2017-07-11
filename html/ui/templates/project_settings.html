@@ -104,14 +104,26 @@
             <hr/>
 
             <h2>Tags</h2>
-            comma seperated tags<br/>
-            <input type="text" id="settings_tags" value="{{ tags }}" />
+            enter some tags<br/>
+
+			<div class="taginputcontainer">
+				<div id="taginput"></div>
+				<div class="clear"></div>
+			</div>
+
+
+			<br/>
+			<input type="text" id="settings_tags" value="{{ tags }}" readonly style="opacity:0.5"/>
+
 
             <hr/>
 
             <h2>Description</h2>
 
-            <textarea type="text" id="settings_description" style="height:200px;" >{{ project.description }}</textarea>
+            <textarea type="text" id="settings_description">{{ project.description }}</textarea>
+
+
+
 
 <br/><br/>
 <div class="bluebutton" onclick="gui.projectSettings().saveParams();">Save Settings</div>

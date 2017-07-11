@@ -4,6 +4,11 @@ CABLES.ProjectSettings=function(project)
     var self=this;
 
     this.userManager=new CABLES.UI.UserManager(project._id);
+	var taggle=null;
+
+
+
+
 
     this.show=function()
     {
@@ -12,18 +17,68 @@ CABLES.ProjectSettings=function(project)
             {
                 "user":gui.user,
                 "project":project,
-                "tags":project.tags.join()
+                // "tags":project.tags.join()
             });
 
         CABLES.UI.MODAL.show(html,
 			{
-				"title":"Settings",
-				"nopadding":true
+				// "title":"Settings",
+				"nopadding":true,
+				"transparent":true
 			});
 
         this.loadUsers();
         this.updateIcons();
+		$('#settings_tags').val(project.tags.join(",") );
+
+
+		taggle=new Taggle('taginput', {
+		    tags: project.tags,
+			onTagAdd:function()
+			{
+				$('#settings_tags').val(taggle.getTags().values.join(",") );
+				self.resize();
+				setTimeout(self.resize,100);
+			},
+			onTagRemove:function()
+			{
+				$('#settings_tags').val(taggle.getTags().values.join(",") );
+				self.resize();
+				setTimeout(self.resize,100);
+			}
+		});
+
+		CABLES.api.get('tags/',
+			function(r)
+			{
+				var input=$('.taggle_input')[0];
+				new Awesomplete(input, {
+					list: r.tags
+				});
+
+				window.addEventListener("awesomplete-selectcomplete",
+					function(e)
+					{
+						console.log(e);
+						if(e.text && e.text.value) taggle.add(e.text.value);
+						self.resize();
+					}, false);
+
+				self.resize();
+
+			});
+
+		self.resize();
     };
+
+	this.resize=function()
+	{
+		var h=$('.settings_content').outerHeight();
+		$('.settings_tabs').css({
+			'height':h+"px"
+		});
+	};
+
 
     this.loadUsers=function()
     {
@@ -116,7 +171,6 @@ CABLES.ProjectSettings=function(project)
 
         gui.scene().settings.manualScreenshot=proj_autoscreenshot;
 
-console.log('saving');
         this.saveTags(function()
         {
             console.log('saving1');
@@ -276,6 +330,8 @@ console.log('saving');
         $('.settings_tabs .tab_'+oldTab).removeClass('active');
         $('.settings_tabs .tab_'+which).addClass('active');
         oldTab=which;
+
+		this.resize();
     };
 
     function loadFPSReports()

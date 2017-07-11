@@ -1,0 +1,48 @@
+
+.projectsettings
+{
+    textarea,input
+    {
+        background-color: $color-background-input;
+        width:100%;
+    }
+}
+
+.settings_content
+{
+	background-color: $background-color-brighter;
+	padding:20px;
+	min-height: 540px;
+
+
+	textarea
+	{
+		height:150px !important;
+	}
+
+	.taginputcontainer
+	{
+		border:10px solid $color-background-input;
+	}
+}
+
+.settings_tabs
+{
+	background-color: $background-color-dark;
+	padding-left: 30px;
+	padding-right: 30px;
+	min-height: 580px;
+
+    a
+    {
+        display: block;
+        padding:4px;
+        padding-left: 5px;
+    }
+
+    .active
+    {
+        color: $color-special;
+    }
+
+}

@@ -856,7 +856,8 @@ input[type=text]:active, input[type=text]:focus {
 @import 'opsearch.scss';
 @import 'modal.scss';
 @import 'cmdpalette.scss';
-
+@import 'project_settings.scss';
+@import 'taggle.scss';
 
 .easingselect
 {
@@ -1871,41 +1872,6 @@ rect
 	.item_color_math { border-left:15px solid $color_op_handle_math; }
 }
 
-
-.projectsettings
-{
-    textarea,input
-    {
-        background-color: $color-background-input;
-        width:100%;
-    }
-}
-
-.settings_content
-{
-	background-color: $background-color-brighter;
-	padding:20px;
-	min-height: 400px;
-}
-
-.settings_tabs
-{
-	background-color: $background-color-dark;
-	padding-left: 30px;
-	padding-right: 30px;
-
-    a
-    {
-        display: block;
-        padding:4px;
-        padding-left: 5px;
-    }
-
-    .active
-    {
-        color: $color-special;
-    }
-}
 
 
 #metatabs

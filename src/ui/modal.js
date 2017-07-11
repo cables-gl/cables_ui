@@ -17,6 +17,7 @@ CABLES.UI.MODAL.init=function(force)
 {
     $('#modalcontent').empty();
 
+
 };
 
 CABLES.UI.MODAL.hide=function(force)
@@ -63,19 +64,22 @@ CABLES.UI.MODAL.show=function(content,options)
 {
     if(options && !options.ignoreTop)$('#modalcontent').css({"top":"10%"});
 
+
+
 	if(options)
     {
         CABLES.UI.MODAL.setTitle(options.title);
         CABLES.UI.MODAL.onClose=options.onClose;
 
         if(options.transparent)$('#modalcontainer').addClass("transparent");
+
         if(options.nopadding) $('#modalcontent').css({padding:"0px"});
     }
     else
     {
         CABLES.UI.MODAL.onClose=null;
         $('#modalcontent').css({padding:"15px"});
-        $('#modalcontainer').removeClass("transparent");
+
     }
 
 	CABLES.UI.MODAL.showClose();
@@ -279,9 +283,7 @@ CABLES.UI.MODAL.prompt=function(title,text,value,callback)
     CABLES.UI.MODAL.promptCallback=callback;
 
     $('#modalcontent').append('<h2>'+title+'</h2>');
-
     $('#modalcontent').append('<b>'+text+'</b> ');
-
     $('#modalcontent').append('<br/><br/>');
 
     $('#modalcontent').append('<input id="modalpromptinput" class="medium" value="'+(value||'')+'"/>');
@@ -290,7 +292,9 @@ CABLES.UI.MODAL.prompt=function(title,text,value,callback)
 	$('#modalcontent').append('&nbsp;&nbsp;<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>');
 
 
+
     $('#modalcontainer').show();
+	$('#modalcontainer').removeClass("transparent");
     $('#modalbg').show();
 	$("#modalpromptinput").focus();
 

@@ -225,7 +225,6 @@ CABLES.UI.OpSelect.prototype.Navigate = function(diff)
 CABLES.UI.OpSelect.prototype.close=function()
 {
     $('body').off( "keydown", this.keyDown);
-    console.log('opselect close');
 };
 
 CABLES.UI.OpSelect.prototype.show=
