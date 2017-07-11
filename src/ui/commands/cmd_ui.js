@@ -46,6 +46,12 @@ CABLES.CMD.UI.showMinimap=function()
 };
 
 
+CABLES.CMD.UI.showSearch=function()
+{
+	gui.find().show();
+};
+
+
 
 
 
@@ -88,6 +94,13 @@ CABLES.CMD.commands.push(
 		cmd:"show minimap",
 		category:"ui",
 		func:CABLES.CMD.UI.showMinimap
+	},
+	{
+		cmd:"search",
+		category:"ui",
+		func:CABLES.CMD.UI.showSearch,
+		icon:'search',
+		hotkey:'CMD + f',
 	}
 
 

@@ -6,7 +6,10 @@
 @import 'icons';
 
 
-
+#icon-bar
+{
+	display: none;
+}
 html,body { // ipad overscroll fix...
   position: fixed;
   overflow: hidden;
@@ -480,7 +483,7 @@ input[type="text"]
 	background-color: $button-background-color;
 
     border: 1px solid $button-border-color;
-	border-radius: 9px;
+	border-radius: 29px;
 	padding: 5px 16px;
 
     cursor:pointer !important;
@@ -525,7 +528,8 @@ a.button.fa-times:before {
 {
     color:#eee;
     background-color: $highlight-color-dark;
-    padding:10px;
+    // padding:10px;
+	padding: 10px 20px;
 
     &:hover
     {

@@ -395,8 +395,7 @@ CABLES.UI.GUI=function()
 		window.avg=window.avg || (performance.now()-startTime);
 		window.avg+=(performance.now()-startTime);
 		window.avg/=2;
-
-		console.log('layout ',window.avg);
+		// console.log('layout ',window.avg);
     };
 
     this.importDialog=function()
@@ -827,7 +826,8 @@ CABLES.UI.GUI=function()
                     {
                         if(!$('#ace_editor textarea').is(":focus"))
                         {
-                            _find.show();
+							CABLES.CMD.UI.showSearch();
+
                             e.preventDefault();
                         }
                     }

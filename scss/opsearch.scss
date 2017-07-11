@@ -83,13 +83,15 @@
     {
         margin-top: 70px;
         background-color: $background-color-dark;
+		border-bottom:10px solid $background-color-dark;
+		border-top:10px solid $background-color-dark;
         margin-left: 510px;
         position: absolute;
         width:480px;
         padding: 20px;
         overflow-x: hidden;
         overflow-y: auto;
-        height:390px;
+        height:440px;
 
         /* enable text selection on all elements except svg */
         * {

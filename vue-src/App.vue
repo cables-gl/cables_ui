@@ -39,6 +39,7 @@ export default {
 
 <style lang="scss">
 #icon-bar {
+
   padding-top: 28px;
   background-color: black;
   position: fixed;
