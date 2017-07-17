@@ -1,0 +1,60 @@
+@import 'fonts';
+
+.introjs-helperLayer {
+  background: rgba(255, 255, 255, 0.2) !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border: 1px solid white !important;
+}
+
+.introjs-tooltip {
+  font-family: $text-font;
+  background-color: white !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.introjs-tooltipReferenceLayer {
+  border: 1px solid white !important;
+  border-radius: 0 !important;
+  z-index: 1000000 !important;
+}
+
+.introjs-tooltiptext {
+  font-family: $text-font;
+  color: black !important;
+}
+
+.introjs-helperNumberLayer {
+  padding: 20px !important;
+  display: none !important;
+  background-color: black !important;
+  background: black !important;
+  text-shadow: none !important;
+  color: white !important;
+  box-shadow: none !important;
+  border-radius: 1px solid white !important;
+  left: -13px !important;
+  top: -13px !important;
+}
+
+.introjs-button {
+  font-family: $text-font;
+  border-radius: 0 !important;
+  padding: 4px 10px !important;
+  text-shadow: none;
+  border: none;
+}
+
+.introjs-skipbutton {
+  color: #333;
+}
+
+.introjs-showElement {
+  z-index: 1000 !important;
+}
