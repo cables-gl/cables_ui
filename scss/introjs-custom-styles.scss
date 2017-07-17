@@ -55,6 +55,10 @@
   color: #333;
 }
 
+.introjs-progressbar {
+  background-color: #5CB59E; // TODO: Use $highlight-color - import correct color.scss - where??
+}
+
 .introjs-showElement {
   z-index: 1000 !important;
 }
