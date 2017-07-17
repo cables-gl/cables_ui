@@ -398,7 +398,7 @@ CABLES.UI.ServerOps=function(gui)
     };
 
 
-
+    // Shows the editor and displays the code of an op in it
     this.edit=function(name,readOnly)
     {
         var op=null;
