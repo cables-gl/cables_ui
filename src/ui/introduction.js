@@ -12,11 +12,10 @@ function() {
   }
 
   function defineIntroSteps(){
-    $('#patch')
-      .attr("data-step", 1)
-      .attr("data-intro", "Press the Escape-key to insert your first op (operator)")
-      .attr("data-position", "right");
-    /*
+    // $('#patch')
+    //   .attr("data-step", 1)
+    //   .attr("data-intro", "Press the Escape-key to insert your first op (operator)")
+    //   .attr("data-position", "right");
     $('#project_settings').parent().parent().parent()
       .attr("data-step", 1)
       .attr("data-intro", "Settings panel, where you can access all project settings. If you select an op in the patch panel you will see its settings here instead.")
@@ -40,20 +39,17 @@ function() {
     $('.cables')
       .attr("data-step", 6)
       .attr("data-intro", "On the main cables site you can browse through public projects / examples and get some inspiration.")
-      .attr("data-position", "bottom");
-      */
+      .attr("data-position", "right");
   }
-
 
   this.showIntroduction = function(){
     console.log("Introduction started");
     defineIntroSteps();
-    addIntroJsStyles();
     introJs()
       .oncomplete(disableIntroForUser)
-      .onafterchange(function(targetElement) {
-        addIntroJsStyles();
-      })
+      // .onafterchange(function(targetElement) {
+      //   // addIntroJsStyles();
+      // })
       .setOptions({
           'showBullets': false,
           'skipLabel': 'Close',
@@ -61,64 +57,5 @@ function() {
           'tooltipPosition': "left"
       })
       .start();
-    addIntroJsStyles();
-};
-
- /*
-  * Because styles do not apply when we add them to the stylesheet we need to define them here...
-  */
-  function addIntroJsStyles(){
-    /*$('.introjs-overlay')
-      .css("display", "none")
-      .css("background", "rgba(0, 0, 0, 0.2) !important")
-      .css("background-color", "rgba(0, 0, 0, 0.2) !important")
-      ;*/
-    $('.introjs-helperLayer')
-      .css("background", "rgba(255, 255, 255, 0.2)")
-      .css("background-color", "rgba(255, 255, 255, 0.2)")
-      .css("background-color", "transparent")
-      /*.css("transition", "none")
-      .css("-moz-transition", "none")
-      .css("-webkit-transition", "none")*/
-      .css("border-radius", "0")
-      .css("border-top-left-radius", "0")
-      .css("border-top-right-radius", "0")
-      .css("border-bottom-right-radius", "0")
-      .css("border-bottom-left-radius", "0")
-      .css("border", "1px solid white")
-      ;
-    $('.introjs-tooltip')
-      .css("background-color", "white")
-      .css("border", "none")
-      .css("border-radius", "0")
-      .css("box-shadow", "none")
-      ;
-    $('.introjs-tooltipReferenceLayer')
-      .css("border","1px solid white")
-      .css("border-radius", "0")
-      .css("z-index", "1000000")
-      ;
-    $('.introjs-tooltiptext')
-      .css("color", "black")
-      ;
-    $('.introjs-helperNumberLayer')
-      .css("padding", "20px")
-      .css("display", "none")
-      .css("background-color", "black")
-      .css("background", "black")
-      .css("text-shadow", "none")
-      .css("color", "white")
-      .css("box-shadow", "none")
-      .css("border-radius", "1px solid white")
-      .css("left", "-13")
-      .css("top", "-13")
-      ;
-    $('.introjs-button')
-      .css("border-radius", "0")
-      .css("padding", "4px 10px")
-      ;
-    $('.introjs-showElement')
-      .css("z-index", "1000")
-      ;
-  }
+  };
 };

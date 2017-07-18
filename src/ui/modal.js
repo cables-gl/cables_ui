@@ -94,6 +94,7 @@ CABLES.UI.MODAL.show=function(content,options)
     {
         CABLES.UI.MODAL.onClose=null;
         $('#modalcontent').css({padding:"15px"});
+        $('#modalcontainer').removeClass("transparent");
 
     }
 

@@ -1,15 +1,12 @@
 
 @import 'fonts';
 @import 'introjs.min';
+@import 'introjs-custom-styles';
 @import 'patch';
 @import 'svgicons';
 @import 'icons';
 
 
-#icon-bar
-{
-	display: none;
-}
 html,body { // ipad overscroll fix...
   position: fixed;
   overflow: hidden;
