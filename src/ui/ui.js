@@ -928,6 +928,7 @@ CABLES.UI.GUI=function()
                     else
                     {
                         gui.opSelect().showOpSelect({x:0,y:0});
+
                     }
                 break;
             }

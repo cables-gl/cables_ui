@@ -95,7 +95,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             else list[i].score+=points;
     }
 
-    // console.log(CABLES.now()-startTime+' ms search');
+    console.log( CABLES.now()-startTime+' ms search');
 
     return result;
 };
@@ -238,6 +238,7 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
     CABLES.UI.OPSELECT.newOpPos=options;
 
+
     if(options.search)
     {
         $('#opsearch').val(options.search);
@@ -266,6 +267,8 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     }
 
     this._html = this._html||CABLES.UI.getHandleBarHtml('op_select',{ops: this._list });
+
+
     CABLES.UI.MODAL.showTop(this._html,
         {
             "title":null,
@@ -273,15 +276,26 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
             "onClose":this.close
         });
 
+
     $('#clearsearch').hide();
-    $('#opsearch').focus();
+
+setTimeout(function()
+{
+	$('#opsearch').focus();
+
     $( ".searchresult:first" ).addClass( "selected" );
 
-    this.itemHeight=$( ".searchresult:first" ).outerHeight();
+},50)
+
+    if(this.itemHeight===0)this.itemHeight=$( ".searchresult:first" ).outerHeight();
+
+
     this.displayBoxIndex=0;
 
     var infoTimeout=-1;
     var lastInfoOpName='';
+
+
 
     this.clear=function()
     {
