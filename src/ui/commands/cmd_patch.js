@@ -28,6 +28,11 @@ CABLES.CMD.PATCH.saveAs=function()
 	self.patch().saveCurrentProjectAs();
 };
 
+CABLES.CMD.PATCH.clear=function()
+{
+	gui.scene().clear();
+};
+
 
 
 CABLES.CMD.PATCH.selectChilds=function()
@@ -172,6 +177,11 @@ CABLES.CMD.commands.push(
 		category:"patch",
 		func:CABLES.CMD.PATCH.addOp,
 		icon:"plus"
+	},
+	{
+		cmd:"clear patch",
+		category:"patch",
+		func:CABLES.CMD.PATCH.clear
 	}
 
 
