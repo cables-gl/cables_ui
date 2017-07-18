@@ -79,15 +79,12 @@ CABLES.UI.MODAL.show=function(content,options)
 {
     if(options && !options.ignoreTop)$('#modalcontent').css({"top":"10%"});
 
-
-
 	if(options)
     {
         CABLES.UI.MODAL.setTitle(options.title);
         CABLES.UI.MODAL.onClose=options.onClose;
 
         if(options.transparent)$('#modalcontainer').addClass("transparent");
-
         if(options.nopadding) $('#modalcontent').css({padding:"0px"});
     }
     else
@@ -95,7 +92,6 @@ CABLES.UI.MODAL.show=function(content,options)
         CABLES.UI.MODAL.onClose=null;
         $('#modalcontent').css({padding:"15px"});
         $('#modalcontainer').removeClass("transparent");
-
     }
 
 	CABLES.UI.MODAL.showClose();

@@ -7,6 +7,13 @@ CABLES.CMD.UI.settings = function () {
   gui.showSettings();
 };
 
+CABLES.CMD.UI.settingsContributors = function () {
+  gui.showSettings();
+  gui.projectSettings().setTab('users');
+};
+
+
+
 CABLES.CMD.UI.files=function()
 {
 	gui.showLibrary();
@@ -62,6 +69,12 @@ CABLES.CMD.commands.push(
 		cmd:"show settings",
 		category:"ui",
 		func:CABLES.CMD.UI.settings,
+		icon:'settings'
+	},
+	{
+		cmd:"manage patch contributors",
+		category:"ui",
+		func:CABLES.CMD.UI.settingsContributors,
 		icon:'settings'
 	},
 	{

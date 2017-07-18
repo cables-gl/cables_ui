@@ -704,7 +704,7 @@ CABLES.UI.GUI=function()
         $('.nav_patch_browse_public').bind("click", function (event) { var win = window.open('https://cables.gl/projects', '_blank'); win.focus(); });
         $('.nav_patch_resolve_subpatch').bind("click",function(event){ self.patch().resolveSubpatch(); });
 
-        $('.nav_patch_profile').bind("click", self.showProfiler);
+        $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
 
         // --- Help menu
         // Documentation
@@ -724,6 +724,12 @@ CABLES.UI.GUI=function()
 
         // Introduction
         $('.nav_help_introduction').bind("click", function (event) { self.introduction().showIntroduction(); });
+		$('.nav_help_video').bind("click", function (event)
+			{
+				var html='<iframe width="800" height="640" src="https://www.youtube.com/embed/videoseries?list=PLYimpE2xWgBveaPOiV_2_42kZEl_1ExB0&showinfo=1" frameborder="0" allowfullscreen></iframe>';
+				CABLES.UI.MODAL.show(html);
+			});
+
 
         $('.nav_op_addOp').bind("click", function (event) { CABLES.CMD.PATCH.addOp(); });
         $('.nav_op_createOp').bind("click", function (event) { self.serverOps.createDialog(); });
