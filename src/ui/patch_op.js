@@ -362,6 +362,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(label)label.remove();
         if(commentText)commentText.remove();
         if(backgroundResize)backgroundResize.remove();
+		if(this._errorIndicator)this._errorIndicator.remove();
         // if(resizeHandle)resizeHandle.remove();
         if(miniRect)miniRect.remove();
         label=background=commentText=backgroundResize=null;
@@ -638,6 +639,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             label.attr({
 				'y':40,
             });
+
 			if(commentText)
 			{
 				CABLES.UI.SVGParagraph(commentText,sw*2);
@@ -658,45 +660,48 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 "fill": '#f00',
             });
 
-
 		}
+
+
 
 	};
 
 	this.updateErrorIndicator=function()
 	{
-
-		console.log('opui.op.uiAttribs.error',opui.op.uiAttribs.error);
-
-		if(opui.op.uiAttribs.error)
+		if(opui.op.uiAttribs.error)// || opui.op.uiAttribs.warning)
 		{
 			if(!this._errorIndicator)
 			{
 				this._errorIndicator = gui.patch().getPaper().circle(w,h/2,4);
 
-				this._errorIndicator.node.classList.add('error-indicator');
+				if(opui.op.uiAttribs.warning) this._errorIndicator.node.classList.add('error-indicator-warning');
+				if(opui.op.uiAttribs.error) this._errorIndicator.node.classList.add('error-indicator');
+
+				this._errorIndicator.node.classList.add('tt');
+				this._errorIndicator.node.setAttribute("data-tt",opui.op.uiAttribs.error);
 
 				group.push(this._errorIndicator);
 			}
 
-
-
-			// this._errorIndicator.attr(
-			// {
-			// 	"fill": '#f00',
-			// 	'stroke-width':0
-			// });
-
 			opui.setPos();
+
+			console.log('update error indicator ',this.getWidth());
+
+			if(background) this._errorIndicator.attr({cx: background.getBBox().width });
+			// this._errorIndicator.attr({cx:Math.random()*50});
+			// this._errorIndicator.toFront();
+
+
+
 		}
 		else
 		{
-			console.log('NO ERROR ATTR!!!');
-			this._errorIndicator.remove();
-			this._errorIndicator=null;
+			if(this._errorIndicator)
+			{
+				this._errorIndicator.remove();
+				this._errorIndicator=null;
+			}
 		}
-
-
 	};
 
     this.addUi=function()
@@ -856,6 +861,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             backgroundResize.toFront();
             background.toFront();
 			label.toFront();
+			if(this._errorIndicator)this._errorIndicator.toFront();
 			if(commentText)commentText.toFront();
         }
 
@@ -875,6 +881,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         if(isSelected==sel)return;
         group.toFront();
+		if(this._errorIndicator)this._errorIndicator.toFront();
         isSelected=sel;
 
         if(this.isVisible() && !commentText)
@@ -893,10 +900,10 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             // label.attr( { "font-weight": "normal" });
         }
 
-        if(opui.op.uiAttribs.error && opui.op.uiAttribs.error.length>0)
-        {
-            if(background)background.attr({"fill":"#f88"});
-        }
+        // if(opui.op.uiAttribs.error && opui.op.uiAttribs.error.length>0)
+        // {
+        //     if(background)background.attr({"fill":"#f88"});
+        // }
 
         // if(sel) background.attr( { stroke: '#fff', "stroke-width": 10});
         //     else background.attr( { stroke: '#fff', "stroke-width": 0});
@@ -919,6 +926,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             //     label.attr({'text': shownTitle+'...  '});
             // }
 			this.updateSize();
+			this.updateErrorIndicator();
         }
     };
 
@@ -961,6 +969,12 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
 	op.onUiAttrChange=function(attribs)
 	{
+		if(attribs && attribs.hasOwnProperty('warning'))
+		{
+			// console.log('warning',attribs.warning);
+			this.oprect.updateErrorIndicator();
+
+		}
 		if(attribs && attribs.hasOwnProperty('error'))
 		{
 			console.log("uiattr change!",attribs);

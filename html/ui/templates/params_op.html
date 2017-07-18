@@ -30,24 +30,27 @@
             {{/if}}
 
             {{#if op.isExperimental }}
-                <div class="warning-dark" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
+                <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
                 <br/><br/>
             {{/if}}
 
 
-            <div class="warning" id="options_warning" >
-            {{op.uiAttribs.warning}}
+			<div class="warning" id="options_warning" >
+            	{{op.uiAttribs.warning}}
             </div>
-            <div class="warning" id="options_error" >
-            {{op.uiAttribs.error}}
+            <div class="warning-error" id="options_error" >
+            	{{op.uiAttribs.error}}
             </div>
+
+			<div class="hint" id="options_warning" >
+            	{{op.uiAttribs.hint}}
+            </div>
+
         </div>
     </div>
 
     <div id="opparams" class="panel" style="padding:0px;">
         <table>
-
-
 
 </script>
 
