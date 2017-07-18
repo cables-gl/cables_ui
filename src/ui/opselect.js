@@ -285,7 +285,7 @@ setTimeout(function()
 
     $( ".searchresult:first" ).addClass( "selected" );
 
-},50)
+},50);
 
     if(this.itemHeight===0)this.itemHeight=$( ".searchresult:first" ).outerHeight();
 

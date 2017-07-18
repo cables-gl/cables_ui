@@ -176,7 +176,7 @@ CABLES.UI.ServerOps=function(gui)
                 {
                     "type":op.portsIn[i].type,
                     "name":op.portsIn[i].name
-                })
+                });
         }
         for(var i=0;i<op.portsOut.length;i++)
         {
@@ -184,11 +184,11 @@ CABLES.UI.ServerOps=function(gui)
                 {
                     "type":op.portsOut[i].type,
                     "name":op.portsOut[i].name
-                })
+                });
         }
 
         CABLES.api.post('op/layout/'+op.objName,{layout:opObj});
-    }
+    };
 
     this.execute=function(name)
     {

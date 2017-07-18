@@ -1389,7 +1389,7 @@ catch(e)
         if(e.which==3)
         {
             var l=prompt("projectlength",Math.floor(projectLength*gui.timeLine().getFPS()));
-            if(l==null)return;
+            if(l===null)return;
             projectLength=parseInt(l)/gui.timeLine().getFPS();
         }
         else
@@ -1473,7 +1473,7 @@ catch(e)
         var count=0;
         for(var i=startFrame;i<endFrame;i++)
         {
-            if(i%step==0)
+            if(i%step===0)
             {
                 var frame=i;
                 if(frame<0)continue;

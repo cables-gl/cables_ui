@@ -31,7 +31,7 @@ CABLES.UI.MetaKeyframes.prototype.show=function()
 CABLES.UI.MetaKeyframes.prototype.addKey=function()
 {
     var v=prompt("New Keyframe [frame value]");
-    if(v==null)return;
+    if(v===null)return;
 
     var values=v.split(" ");
 

@@ -692,10 +692,10 @@ CABLES.UI.GUI=function()
 
         // $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
         $('.nav_patch_save').bind("click", function (event) { CABLES.CMD.PATCH.save(); });
-        $('.nav_patch_saveas').bind("click", function (event) { CABLES.CMD.PATCH.saveAs() });
+        $('.nav_patch_saveas').bind("click", function (event) { CABLES.CMD.PATCH.saveAs(); });
         $('.nav_patch_new').bind("click", function (event) { CABLES.CMD.PATCH.newPatch(); });
-        $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))gui.scene().clear(); });
-        $('.nav_patch_export').bind("click", function (event) { CABLES.CMD.PATCH.export() });
+        $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?')) gui.scene().clear(); });
+        $('.nav_patch_export').bind("click", function (event) { CABLES.CMD.PATCH.export(); });
         $('.nav_patch_export_ignoreAssets').bind("click", function (event) { gui.patch().exportStatic(true); });
 
         $('.nav_patch_settings').bind("click", function (event) { CABLES.CMD.UI.settings(); });
@@ -728,7 +728,7 @@ CABLES.UI.GUI=function()
         $('.nav_op_addOp').bind("click", function (event) { CABLES.CMD.PATCH.addOp(); });
         $('.nav_op_createOp').bind("click", function (event) { self.serverOps.createDialog(); });
 
-        $('.nav_files').bind("click", function (event) { CABLES.CMD.UI.files() });
+        $('.nav_files').bind("click", function (event) { CABLES.CMD.UI.files(); });
 
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });

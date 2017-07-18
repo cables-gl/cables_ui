@@ -2190,7 +2190,7 @@ CABLES.UI.Patch=function(_gui)
                 gui.patch().ops[i].oprect.showFocus();
             }
         }
-    }
+    };
 
     this.setSelectedOpById=function(id)
     {
