@@ -2413,31 +2413,29 @@ CABLES.UI.Patch=function(_gui)
     }
     this._showOpParams=function(op)
     {
-
         var i=0;
-
         callEvent('opSelected',op);
 
-        // console.log('showOpParams',op.name);
-
         if(gui.serverOps.isServerOp(op.objName)) op.isServerOp=true;
+        // if(currentOp)currentOp.onUiAttrChange=function()
+		// {
+		//
+		// };
 
-        if(currentOp)currentOp.onUiAttrChange=null;
-        { // show first anim in timeline
-            if(self.timeLine)
+        // show first anim in timeline
+        if(self.timeLine)
+        {
+            var foundAnim=false;
+            for(i in op.portsIn)
             {
-                var foundAnim=false;
-                for(i in op.portsIn)
+                if(op.portsIn[i].isAnimated())
                 {
-                    if(op.portsIn[i].isAnimated())
-                    {
-                        self.timeLine.setAnim(op.portsIn[i].anim,{name:op.portsIn[i].name});
-                        foundAnim=true;
-                        continue;
-                    }
+                    self.timeLine.setAnim(op.portsIn[i].anim,{name:op.portsIn[i].name});
+                    foundAnim=true;
+                    continue;
                 }
-                if(!foundAnim) self.timeLine.setAnim(null);
             }
+            if(!foundAnim) self.timeLine.setAnim(null);
         }
 
         for(var iops in this.ops)
