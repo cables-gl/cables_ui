@@ -903,45 +903,7 @@ CABLES.UI.GUI=function()
 
                 break;
                 case 27:
-                    if(e.metaKey || e.ctrlKey)
-                    {
-                        CABLES.UI.SELECTPROJECT.show();
-                        return;
-                    }
-
-                    $('.tooltip').hide();
-
-                    if(self.rendererWidth>window.innerWidth*0.9)
-                    {
-                        self.rendererWidth=window.innerWidth*0.4;
-                        self.rendererHeight=window.innerHeight*0.25;
-                        showingEditor=oldShowingEditor;
-
-                        self.setLayout();
-                    }
-                    else
-                    if(CABLES.UI.suggestions)
-                    {
-                        console.log(CABLES.UI.suggestions);
-                        CABLES.UI.suggestions.close();
-                        CABLES.UI.suggestions=null;
-                    }
-                    else if( $('#cmdpalette').is(':visible') ) gui._cmdPalette.close();
-                    else if( $('#searchbox').is(':visible') ) $('#searchbox').hide();
-                    else if( $('#library').is(':visible') ) $('#library').hide();
-                    else if( $('#sidebar').is(':visible') ) $('#sidebar').animate({width:'toggle'},200);
-                    else if( $('.easingselect').is(':visible') ) $('.easingselect').hide();
-                    else
-                    if( $('#modalcontent').is(':visible') )
-                    {
-                        CABLES.UI.MODAL.hide();
-                        if(showingEditor) self.editor().focus();
-                    }
-                    else
-                    {
-                        gui.opSelect().showOpSelect({x:0,y:0});
-
-                    }
+                    gui.pressedEscape(e);
                 break;
             }
         });
@@ -966,6 +928,48 @@ CABLES.UI.GUI=function()
         initRouting(cb);
     };
 
+    this.pressedEscape=function(e)
+    {
+        if(e && (e.metaKey || e.ctrlKey))
+        {
+            CABLES.UI.SELECTPROJECT.show();
+            return;
+        }
+
+
+        $('.tooltip').hide();
+
+        if(self.rendererWidth>window.innerWidth*0.9)
+        {
+            self.rendererWidth=window.innerWidth*0.4;
+            self.rendererHeight=window.innerHeight*0.25;
+            showingEditor=oldShowingEditor;
+
+            self.setLayout();
+        }
+        else
+        if(CABLES.UI.suggestions)
+        {
+            console.log(CABLES.UI.suggestions);
+            CABLES.UI.suggestions.close();
+            CABLES.UI.suggestions=null;
+        }
+        else if( $('#cmdpalette').is(':visible') ) gui._cmdPalette.close();
+        else if( $('#searchbox').is(':visible') ) $('#searchbox').hide();
+        else if( $('#library').is(':visible') ) $('#library').hide();
+        else if( $('#sidebar').is(':visible') ) $('#sidebar').animate({width:'toggle'},200);
+        else if( $('.easingselect').is(':visible') ) $('.easingselect').hide();
+        else
+        if( $('#modalcontent').is(':visible') )
+        {
+            CABLES.UI.MODAL.hide();
+            if(showingEditor) self.editor().focus();
+        }
+        else
+        {
+            if(e)gui.opSelect().showOpSelect({x:0,y:0});
+        }
+    };
 
     this.waitToShowUI=function()
     {

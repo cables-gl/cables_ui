@@ -18,6 +18,12 @@ CABLES.UI.MODAL.init=function(force)
 
     $('#modalcontent').empty();
     $('#modalcontainer').removeClass("transparent");
+    $('#modalbg').on('click',
+        function()
+        {
+            CABLES.UI.MODAL.hide(true);
+            gui.pressedEscape();
+        });
 
 
 };
@@ -103,9 +109,7 @@ CABLES.UI.MODAL.show=function(content,options)
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
 
-    $('#modalbg').on('click',function(){
-        CABLES.UI.MODAL.hide(true);
-    });
+
 };
 
 CABLES.UI.MODAL.showLoading=function(title,content)
@@ -134,9 +138,6 @@ CABLES.UI.MODAL.showError=function(title,content)
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
 
-    $('#modalbg').on('click',function(){
-        CABLES.UI.MODAL.hide(true);
-    });
 };
 
 
@@ -173,9 +174,6 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
     $('#modalcontent').append('<a class="bluebutton fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>&nbsp;&nbsp;');
 
 
-    $('#modalbg').on('click',function(){
-        CABLES.UI.MODAL.hide(true);
-    });
 
 };
 
@@ -208,9 +206,6 @@ CABLES.UI.MODAL.showException=function(ex,op)
 
     $('#modalbg').show();
 
-    $('#modalbg').on('click',function(){
-        CABLES.UI.MODAL.hide(true);
-    });
 };
 
 
@@ -274,9 +269,6 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
 
-    $('#modalbg').on('click',function(){
-        CABLES.UI.MODAL.hide(true);
-    });
 
 };
 
@@ -295,9 +287,6 @@ CABLES.UI.MODAL.showCode=function(title,code)
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
 
-    $('#modalbg').on('click',function(){
-        CABLES.UI.MODAL.hide(true);
-    });
 };
 
 CABLES.UI.MODAL.promptCallbackExec=function()
@@ -336,10 +325,6 @@ CABLES.UI.MODAL.prompt=function(title,text,value,callback)
 
     $('#modalbg').show();
 	$("#modalpromptinput").focus();
-
-    $('#modalbg').on('click',function(){
-        CABLES.UI.MODAL.hide(true);
-    });
 
 };
 
