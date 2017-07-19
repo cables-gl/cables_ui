@@ -4,7 +4,7 @@
     <ul>
       <li v-for="item in items" @click='callFunction(item.cmd)'>
         <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
-        <span v-if="displayIconLabel">{{ item.cmd }}</span>
+        <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>
     </ul>
   </div>
@@ -70,8 +70,11 @@ export default {
       padding: 8px;
 
       &:hover {
-        * {
+        .label {
           color: cyan;
+        }
+        .icon {
+          background-color: cyan;
         }
       }
 
