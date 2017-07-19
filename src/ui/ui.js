@@ -1294,7 +1294,7 @@ CABLES.UI.GUI=function()
                     self.user=data.user;
                     $('#loggedout').hide();
                     $('#loggedin').show();
-                    $('#username').html(data.user.username);
+                    $('#username').html('&nbsp;&nbsp;'+data.user.username);
                     incrementStartup();
                     self.serverOps=new CABLES.UI.ServerOps(self);
 

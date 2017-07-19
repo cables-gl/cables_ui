@@ -149,7 +149,7 @@
 
     <div id="" style="float:right;">
 
-        <a target="blank" class="viewProjectLink button fa fa-external-link"></a>
+
 
         <!-- <a id="button_cycleRenderSize" class="button fa fa-expand tt"  data-tt="toggle fullscreen (esc to exit fullscreen)"></a> -->
         &nbsp;
@@ -164,12 +164,13 @@
 
 
     <div id="loggedin">
-        <div class="button projectname fa fa-cog" style="margin-right:20px;margin-top:2px;" onclick="gui.showSettings();"></div>
-        <div id="username" class="clickable"></div>
+        <div class="button projectname fa fa-cog"  onclick="gui.showSettings();"></div>
+        <a target="blank" class="viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;"></a>
+        <div id="username" class="button fa fa-user "></div>
     </div>
 
     <div id="loggedout">
-        <div id="username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a>
+        <div id="button username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a>
     </div>
 
 </div>
