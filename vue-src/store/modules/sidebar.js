@@ -2,39 +2,42 @@
 const state = {
   visible: true,
   displayText: true, // shows text under the item
-  items: [
-    {
-      cmd: 'search',
-      category: 'ui',
-      iconClass: 'icon-search',
-      hotkey: 'CMD + f'
-    }
-  ]
+  defaultIcon: 'icon-square',
+  defaultItems: ['search', 'select child ops'],
+  items: []
 }
 
 // getters
 const getters = {
-  iconBarContainsCmd(state, cmd) {
-    return state.items.filter(function(e) { return e.cmd === cmd }).length > 0
+  iconBarContainsCmd(state) {
+    return (cmd) => state.items.filter(function(e) { return e.cmd === cmd }).length > 0
   }
 }
 
 // actions
 const actions = {
+  setDefaultItems(context) {
+    for(let i=0; i<context.state.defaultItems.length; i++) {
+      context.commit('addItem', context.state.defaultItems[i]);
+    }
+  },
   loadLocalStorage(context) {
-    console.log("CABLES: ", CABLES);
-    console.log("CABLES.UI: ", CABLES.UI);
     const sidebarSettings = CABLES.UI.userSettings.get('sidebar');
     if(sidebarSettings) {
       if(sidebarSettings.visible) { context.commit('visible', sidebarSettings.visible); }
       if(sidebarSettings.displayText) { context.commit('displayText', sidebarSettings.displayText); }
       if(sidebarSettings.items) {
         for(let i=0; i<sidebarSettings.items.length; i++) {
-          context.commit('addItem', sidebarSettings.items[i]);
+          const item = sidebarSettings.items[i];
+          var cmdObj = CABLES.CMD.getCmd(item.cmd);
+          if(item.userAction === 'add') {
+            context.commit('addItem', item.cmd);
+          } else {
+            context.commit('removeItem', item.cmd);
+          }
         }
       }
     }
-    // context.commit('addItem', foo);
   }
 }
 
@@ -46,12 +49,30 @@ const mutations = {
   visible(state, b) {
     state.visible = b;
   },
-  addItem(state, item) {
-   if(!item) { return; }
-   if(state.items.filter(function(e) { return e.cmd === item.cmd }).length === 0) { // only add if it does not exist
-     state.items.push(item);
-     CABLES.UI.userSettings.set('sidebar', state);
+  addItem(state, cmdName) {
+   if(!cmdName) { return; }
+   if(state.items.filter(function(e) { return e.cmd === cmdName }).length === 0) { // only add if it does not exist
+     var item = CABLES.CMD.getCmd(cmdName);
+     if(!item) {
+       console.error('Could not add command to sidebar - not found! Command name: ', cmdName);
+       return;
+     }
+     var itemToAdd = {
+       cmd: item.cmd,
+       category: item.category,
+       iconClass: (item.icon ? 'icon-' + item.icon : state.defaultIcon),
+       cmd: item.cmd
+     };
+     state.items.push(itemToAdd);
    }
+  },
+  removeItem(state, cmdName) {
+    for(let i=0; i<state.items.length; i++) {
+      if(state.items[i].cmd === cmdName) {
+        state.items.splice(i, 1);
+        break;
+      }
+    }
   }
 }
 

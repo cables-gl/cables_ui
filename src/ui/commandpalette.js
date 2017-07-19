@@ -9,6 +9,10 @@ CABLES.UI.CommandPalette=function()
 	this._cursorIndex=0;
 	this._numResults=0;
 
+  this._bookmarkActiveIcon = 'icon-pin-filled';
+  this._bookmarkInactiveIcon = 'icon-pin-outline';
+  this._defaultIcon = 'square';
+
 	this.isVisible=function()
 	{
 		return $("#cmdpalette").is(":visible");
@@ -39,22 +43,41 @@ CABLES.UI.CommandPalette=function()
       ev.stopPropagation();
       var el = $(ev.target);
       var cmd = el.closest('.result').data('cmd');
-      console.log('cmd: ', cmd);
-      var cmdObj = CABLES.CMD.getCmd(cmd);
-      console.log("cmdObj: ", cmdObj);
-      if(!cmdObj) {
-        console.error("Could not find a cmd with name: ", cmd);
-        return;
+
+      // replace the pin-icon / set / remove icon from sidebar
+      var addToSidebar = !isCmdInSidebar(cmd);
+      if(addToSidebar) {
+        el.removeClass(self._bookmarkInactiveIcon);
+        el.addClass(self._bookmarkActiveIcon);
+        vueStore.commit("sidebar/addItem", cmd); // add item to icon bar if it does not exist already
+      } else { // remove from sidebar
+        el.removeClass(self._bookmarkActiveIcon);
+        el.addClass(self._bookmarkInactiveIcon);
+        vueStore.commit("sidebar/removeItem", cmd);
       }
-      var hotkey = '';
-      if(typeof cmdObj.hotkey !== 'undefined') { hotkey = cmdObj.hotkey; }
-      var sidebarItem = {
-        cmd: cmdObj.cmd,
-        category: cmdObj.category,
-        iconClass: 'icon-' + cmdObj.icon,
-        hotkey: hotkey
+      var newItem = {
+        userAction: addToSidebar ? 'add' : 'remove',
+        cmd: cmd
       };
-      vueStore.commit("sidebar/addItem", sidebarItem); // add item to icon bar if it does not exist already
+      var sidebarObj = CABLES.UI.userSettings.get('sidebar') || {};
+      sidebarObj.items = sidebarObj.items || [];
+      var items = sidebarObj.items;
+      var itemFound = false;
+      if(items) {
+        for(var i=0; i<items.length; i++) {
+          if(items[i].cmd === newItem.cmd) {
+            if(!items[i].userAction && items[i].userAction !== newItem.userAction) {
+              items[i].userAction = newItem.userAction; // item existed, just chenge user action
+              itemFound = true;
+              break;
+            }
+          }
+        }
+      }
+      if(!itemFound) {
+        items.push(newItem);
+      }
+      CABLES.UI.userSettings.set('sidebar', sidebarObj);
     };
 
     this.onResultClick = function(ev) {
@@ -63,6 +86,21 @@ CABLES.UI.CommandPalette=function()
       CABLES.CMD.exec(cmd);
       gui._cmdPalette.close();
     };
+
+    function isCmdInSidebar(cmdName) {
+      return vueStore.getters['sidebar/iconBarContainsCmd'](cmdName);
+    }
+
+    /*
+     * Checks if a commad is currently in the sidebar and returns the fitting icon (class name)
+     * (filled pin or outline pin)
+     */
+    function getBookmarkIconForCmd(cmdName) {
+      if(isCmdInSidebar(cmdName)) {
+          return self._bookmarkActiveIcon
+      }
+      return self._bookmarkInactiveIcon;
+    }
 
     function addResult(cmd,num)
     {
@@ -79,13 +117,8 @@ CABLES.UI.CommandPalette=function()
         html+='<span class="title">'+cmd.cmd+'</span>';
         html+='<span class="category"> – ' + cmd.category + '</span>';
 
-        // var cmdIsInSideBar = vueStore.state.sidebar.iconBarContainsCmd;
-        // if(cmdObj && cmdObj.) {
-        //
-        // }
-        // var isInSidebar =
-
-        html+='<span class="icon icon-bookmark bookmark" onclick=gui._cmdPalette.onBookmarkIconClick(event)></span>';
+        var bookmarkIcon = getBookmarkIconForCmd(cmd.cmd);
+        html+='<span class="icon ' + bookmarkIcon + ' bookmark" onclick=gui._cmdPalette.onBookmarkIconClick(event)></span>';
 		if(cmd.hotkey)
 		{
 			html+='<span class="hotkey">[ '+cmd.hotkey+' ]</span>';
