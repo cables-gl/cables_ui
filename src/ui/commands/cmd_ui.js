@@ -13,6 +13,12 @@ CABLES.CMD.UI.settingsContributors = function () {
 };
 
 
+CABLES.CMD.UI.userSettings=function()
+{
+	var settings=new CABLES.UserSettings();
+    settings.show();
+};
+
 
 CABLES.CMD.UI.files=function()
 {
@@ -114,6 +120,13 @@ CABLES.CMD.commands.push(
 		func:CABLES.CMD.UI.showSearch,
 		icon:'search',
 		hotkey:'CMD + f',
+	},
+	{
+		cmd:"user settings",
+		category:"ui",
+		func:CABLES.CMD.UI.userSettings,
+		icon:'settings',
+
 	}
 
 

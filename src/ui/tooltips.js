@@ -1,10 +1,5 @@
-
-
-
 CABLES.UI=CABLES.UI || {};
-
 CABLES.UI.tooltipTimeout=null;
-
 
 CABLES.UI.showToolTip=function(e,txt)
 {
@@ -12,9 +7,7 @@ CABLES.UI.showToolTip=function(e,txt)
     $('.tooltip').css('top',e.clientY+12);
     $('.tooltip').css('left',e.clientX+25);
     $('.tooltip').html(txt);
-
 };
-
 
 CABLES.UI.hideToolTip=function()
 {
@@ -41,9 +34,9 @@ $(document).on('mouseout', '.tt', function()
 
 CABLES.UI.showInfo=function(txt)
 {
-  return;
-  // if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
-  // $('#infoArea').html(mmd(txt)+'<a class="button" onclick="gui.closeInfo();">close</a>');
+  // return;
+  if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
+  $('#infoArea').html(mmd(txt)+'<a class="button" onclick="gui.closeInfo();">close</a>');
 };
 
 CABLES.UI.hideInfo=function()

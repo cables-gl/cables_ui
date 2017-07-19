@@ -712,6 +712,11 @@ CABLES.UI.GUI=function()
 
         $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
 
+        $('#username').bind("click", CABLES.CMD.UI.userSettings);
+
+
+
+
         // --- Help menu
         // Documentation
         $('.nav_help_about').bind("click", function (event) {
