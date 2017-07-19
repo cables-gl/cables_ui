@@ -746,6 +746,8 @@ CABLES.UI.GUI=function()
         $('.nav_op_createOp').bind("click", function (event) { self.serverOps.createDialog(); });
 
         $('.nav_files').bind("click", function (event) { CABLES.CMD.UI.files(); });
+        $('.nav_timeline').bind("click", function (event) { CABLES.CMD.UI.toggleTimeline(); });
+
 
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
