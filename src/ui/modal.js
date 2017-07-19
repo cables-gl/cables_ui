@@ -80,6 +80,9 @@ CABLES.UI.MODAL.show=function(content,options)
 {
     if(options && !options.ignoreTop)$('#modalcontent').css({"top":"10%"});
 
+    CABLES.UI.MODAL.showClose();
+    CABLES.UI.MODAL.init();
+
 	if(options)
     {
         CABLES.UI.MODAL.setTitle(options.title);
@@ -95,8 +98,6 @@ CABLES.UI.MODAL.show=function(content,options)
         $('#modalcontainer').removeClass("transparent");
     }
 
-	CABLES.UI.MODAL.showClose();
-    CABLES.UI.MODAL.init();
     $('#modalcontent').append(content);
     // $('#modalcontainer').show();
 	CABLES.UI.MODAL._setVisible(true);

@@ -15,7 +15,7 @@
         CABLES.uiLoadStart=performance.now();
         CABLES.startup={};
         CABLES.startup.log=[];
-        CABLES.startup.maxEvents=11-1;
+        CABLES.startup.maxEvents=12-1;
         CABLES.startup.numEvents=0;
 
         function incrementStartup()
@@ -37,7 +37,7 @@
 
         CABLES.noCacheUrl=function(url)
         {
-            return url+'?nocache='+Date.now();
+            return url+'?nc='+(Date.now()+'').substr(-6);
         }
 
         incrementStartup();
@@ -86,31 +86,40 @@
                         {
                             incrementStartup();
                             logStartup('loaded cables ops');
-                            loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
 
-                            loadjs.ready('cablesui', function()
+                            loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
+
+                            loadjs.ready('cables_vue', function()
                             {
+                                logStartup('loaded cables vue');
                                 incrementStartup();
-                                logStartup('loaded ui');
 
+                                loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
 
-                                function waitForAce()
+                                loadjs.ready('cablesui', function()
                                 {
-                                    if(!window.ace || !ace.define || !ace.edit)
+                                    incrementStartup();
+                                    logStartup('loaded ui');
+
+
+                                    function waitForAce()
                                     {
-                                        console.log("tim waits for ace...");
-                                        setTimeout(waitForAce,100);
+                                        if(!window.ace || !ace.define || !ace.edit)
+                                        {
+                                            console.log("tim waits for ace...");
+                                            setTimeout(waitForAce,100);
+                                        }
+                                        else
+                                        {
+                                            if (window.module) module = window.module;
+                                            startUi();
+                                        }
+
+
                                     }
-                                    else
-                                    {
-                                        if (window.module) module = window.module;
-                                        startUi();
-                                    }
 
-
-                                }
-
-                                waitForAce();
+                                    waitForAce();
+                                });
                             });
                         });
                     });
@@ -137,6 +146,6 @@
 
     </script>
 
-    <script src="js/bundle.js"></script>
+    <!-- <script src="js/bundle.js"></script> -->
 
 </html>

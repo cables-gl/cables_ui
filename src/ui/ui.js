@@ -95,7 +95,7 @@ CABLES.UI.GUI=function()
     this.timingHeight=250;
     this.rendererWidth=640;
     this.rendererHeight=360;
-    this.editorWidth=CABLES.UI.userSettings.get("editorWidth")||700;
+    this.editorWidth=CABLES.UI.userSettings.get("editorWidth")||400;
 
     this.toggleEditor=function()
     {
@@ -143,6 +143,10 @@ CABLES.UI.GUI=function()
 		this._elCablesCanvas=this._elCablesCanvas||$('#cablescanvas');
 		this._elEditorBar=this._elEditorBar||$('#editorbar');
 		this._elSplitterEditor=this._elSplitterEditor||$('#splitterEditor');
+        this._elIconBar=this._elIconBar||$('#icon-bar');
+
+        var iconBarWidth=this._elIconBar.outerWidth();
+
 
         this._elMenubar.show();
         // $('#timelineui').show();
@@ -205,30 +209,32 @@ CABLES.UI.GUI=function()
             if(self.editorWidth>window.innerWidth-self.rendererWidth)
                 self.rendererWidth=window.innerWidth-self.editorWidth;
 
-            var editorbarHeight=77;
+            var editorbarHeight=76;
             $('#editor').show();
+            $('#editor').css('left',iconBarWidth);
+
             this._elEditorBar.css('height',editorbarHeight);
-            this._elEditorBar.css('top',menubarHeight+2);
+            this._elEditorBar.css('top',menubarHeight+1);
 
             var editorHeight=patchHeight-2-editorbarHeight;
 
             $('#ace_editor').css('height',editorHeight);
 
             this._elAceEditor.css('width',self.editorWidth);
-            this._elAceEditor.css('top',menubarHeight+2+editorbarHeight);
+            this._elAceEditor.css('top',menubarHeight+1+editorbarHeight);
             this._elAceEditor.css('left',0);
 
             this._elEditorBar.css('width',self.editorWidth);
             this._elSplitterEditor.show();
-            this._elSplitterEditor.css('left',self.editorWidth);
+            this._elSplitterEditor.css('left',self.editorWidth+iconBarWidth);
             this._elSplitterEditor.css('height',patchHeight-2);
             this._elSplitterEditor.css('width',5);
             this._elSplitterEditor.css('top',menubarHeight);
 
             _editor.resize();
 
-            patchWidth-=self.editorWidth-5;
-            patchLeft=self.editorWidth+5;
+            // patchWidth-=self.editorWidth-5;
+            // patchLeft=self.editorWidth+5;
         }
         else
         {
@@ -278,8 +284,8 @@ CABLES.UI.GUI=function()
         }
 
 
-        $('#library').css('left',0);
-        $('#library').css('width',window.innerWidth-self.rendererWidth);
+        $('#library').css('left',iconBarWidth);
+        $('#library').css('width',window.innerWidth-self.rendererWidth-iconBarWidth);
         $('#library').css('bottom',0);
 
         $('#timelineui').css('width',window.innerWidth-self.rendererWidth-2);
@@ -977,7 +983,16 @@ CABLES.UI.GUI=function()
         }
 
 
-
+        if(!window.chrome)
+        {
+            html='<center>';
+            html+='<h2>yikes!</h2>';
+            html+='cables is optimized for chrome, you are using something else<br/>';
+            html+='feel free to continue, but be warned, it might behave strange<br/><br/>';
+            html+='<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>';
+            html+='</center>';
+            CABLES.UI.MODAL.show(html);
+        }
     };
 
     function initRouting(cb)
@@ -1546,4 +1561,7 @@ function startUi(event)
 
 
     logStartup('Init UI done');
+
+
+
 }
