@@ -12,6 +12,8 @@ var fs = require("fs");
 var browserify = require('browserify');
 var babelify = require('babelify');
 var vueify = require('vueify');
+var replace = require('gulp-replace');
+var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('vueify', function(){
 	browserify('vue-src/main.js')
@@ -126,6 +128,12 @@ gulp.task('svgcss', function () {
             addSize: false
         }))
         .pipe(rename('svgicons.scss'))
+        .pipe(replace('background-image', 'mask'))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+
         .pipe(gulp.dest('scss/'));
 });
 

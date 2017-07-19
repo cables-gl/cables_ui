@@ -3,10 +3,16 @@
 .icon
 {
 	display: inline-block;
-	background-size: 100%;
+	-webkit-mask-size: 100%;
 	width: 16px;
 	height: 16px;
-	background-repeat: no-repeat;
+	-webkit-mask-repeat: no-repeat;
+    background-color: white;
+}
+
+.icon-active
+{
+    background-color:$color-special;
 }
 
 .icon-2x
