@@ -138,7 +138,7 @@ CABLES.UI.CommandPalette=function()
     {
         lastSearch=str;
         $('#searchresult_cmd').html('');
-        if(str.length<2)return;
+        // if(str.length<2)return;
 
 
         str=str.toLowerCase();
