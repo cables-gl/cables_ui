@@ -23,7 +23,7 @@ $( document ).ready(function()
         {
             e.preventDefault();
 
-            gui.editorWidth=e.clientX;
+            gui.editorWidth=e.clientX-gui._elIconBar.outerWidth();
 
             if(gui.editorWidth<30)gui.editorWidth=30;
 
