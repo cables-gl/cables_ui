@@ -983,11 +983,11 @@ CABLES.UI.GUI=function()
         }
 
 
-        // load vue...
-        var script = document.createElement( 'script' );
-        script.type = 'text/javascript';
-        script.src = 'js/bundle.js';
-        $("body").append( script );
+        // // load vue...
+        // var script = document.createElement( 'script' );
+        // script.type = 'text/javascript';
+        // script.src = 'js/bundle.js';
+        // $("body").append( script );
 
 
         if(!window.chrome)
