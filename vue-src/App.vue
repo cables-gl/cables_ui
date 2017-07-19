@@ -2,9 +2,9 @@
   <div id="icon-bar" :class="{hidden: !isVisible}">
     <!-- <hello></hello> -->
     <ul>
-      <li v-for="item in items" @click='callFunction(item.action)'>
-        <span class="fa icon" :class="[item.icon]"></span>
-        <span>{{ item.title }}</span>
+      <li v-for="item in items" @click='callFunction(item.cmd)'>
+        <span class="icon" :class="[item.iconClass]"></span>
+        <span v-if="displayIconLabel">{{ item.cmd }}</span>
       </li>
     </ul>
   </div>
@@ -23,10 +23,13 @@ export default {
   ],
   computed: {
     items() {
-      return this.$store.state.iconBar.items;
+      return this.$store.state.sidebar.items;
     },
     isVisible() {
-      return this.$store.state.iconBar.visible;
+      return this.$store.state.sidebar.visible;
+    },
+    displayIconLabel() {
+      return this.$store.state.sidebar.displayText;
     }
   },
   methods : {
@@ -39,7 +42,7 @@ export default {
 
 <style lang="scss">
 #icon-bar {
-  display: none;
+  // display: none;
   padding-top: 28px;
   background-color: black;
   position: fixed;

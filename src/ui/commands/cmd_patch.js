@@ -183,9 +183,16 @@ CABLES.CMD.commands.push(
 		category:"patch",
 		func:CABLES.CMD.PATCH.clear
 	}
-
-
-
-
-
 );
+
+/*
+ * Returns a command-object by its name
+ */
+CABLES.CMD.getCmd = function(cmd) {
+	var commands = CABLES.CMD.commands;
+	for(var i=0; i<commands.length; i++) {
+		if(commands[i].cmd === cmd) {
+			return commands[i];
+		}
+	}
+};

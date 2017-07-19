@@ -10,11 +10,13 @@ var svgcss = require('gulp-svg-css');
 var svgmin = require('gulp-svgmin');
 var fs = require("fs");
 var browserify = require('browserify');
+var babelify = require('babelify');
 var vueify = require('vueify');
 
 gulp.task('vueify', function(){
 	browserify('vue-src/main.js')
 	    .transform(vueify)
+			.transform(babelify)
 	    .bundle()
 	    .pipe(fs.createWriteStream("dist/js/bundle.js"));
 });

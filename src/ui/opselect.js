@@ -273,9 +273,6 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     $('#opsearch').focus();
 
 
-
-
-
     this._html = this._html||CABLES.UI.getHandleBarHtml('op_select_ops',{ops: this._list });
     $('#searchbrowserContainer').html(this._html);
 

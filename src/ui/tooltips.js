@@ -41,9 +41,9 @@ $(document).on('mouseout', '.tt', function()
 
 CABLES.UI.showInfo=function(txt)
 {
-    return;
-  if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
-  $('#infoArea').html(mmd(txt)+'<a class="button" onclick="gui.closeInfo();">close</a>');
+  return;
+  // if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
+  // $('#infoArea').html(mmd(txt)+'<a class="button" onclick="gui.closeInfo();">close</a>');
 };
 
 CABLES.UI.hideInfo=function()
