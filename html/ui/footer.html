@@ -95,12 +95,12 @@
                                     incrementStartup();
                                     logStartup('loaded ui');
 
-                                    loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
-
-                                    loadjs.ready('cables_vue', function()
-                                    {
-                                        logStartup('loaded cables vue');
-                                        incrementStartup();
+                                    // loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
+                                    //
+                                    // loadjs.ready('cables_vue', function()
+                                    // {
+                                    //     logStartup('loaded cables vue');
+                                    //     incrementStartup();
 
                                         function waitForAce()
                                         {
@@ -117,7 +117,8 @@
                                         }
 
                                         waitForAce();
-                                });
+
+                                // });
                             });
                         });
                     });
