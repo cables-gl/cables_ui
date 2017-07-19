@@ -3,7 +3,7 @@ const state = {
   visible: true,
   displayText: true, // shows text under the item
   defaultIcon: 'icon-square',
-  defaultItems: ['search', 'select child ops'],
+  defaultItems: ['create new patch', 'save patch', 'add op', 'show settings'],
   items: []
 }
 
