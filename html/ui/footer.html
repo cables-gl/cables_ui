@@ -87,12 +87,6 @@
                             incrementStartup();
                             logStartup('loaded cables ops');
 
-                            // loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
-                            //
-                            // loadjs.ready('cables_vue', function()
-                            // {
-                            //     logStartup('loaded cables vue');
-                            //     incrementStartup();
 
                                 loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
 
@@ -101,26 +95,30 @@
                                     incrementStartup();
                                     logStartup('loaded ui');
 
+                                    loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
 
-                                    function waitForAce()
+                                    loadjs.ready('cables_vue', function()
                                     {
-                                        if(!window.ace || !ace.define || !ace.edit)
+                                        logStartup('loaded cables vue');
+                                        incrementStartup();
+
+                                        function waitForAce()
                                         {
-                                            console.log("tim waits for ace...");
-                                            setTimeout(waitForAce,100);
+                                            if(!window.ace || !ace.define || !ace.edit)
+                                            {
+                                                console.log("tim waits for ace...");
+                                                setTimeout(waitForAce,100);
+                                            }
+                                            else
+                                            {
+                                                if (window.module) module = window.module;
+                                                startUi();
+                                            }
                                         }
-                                        else
-                                        {
-                                            if (window.module) module = window.module;
-                                            startUi();
-                                        }
 
-
-                                    }
-
-                                    waitForAce();
+                                        waitForAce();
                                 });
-                            // });
+                            });
                         });
                     });
                 });
@@ -146,6 +144,5 @@
 
     </script>
 
-    <script src="js/bundle.js"></script>
 
 </html>
