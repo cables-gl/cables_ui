@@ -12,9 +12,20 @@
 	pointer-events: none;
 }
 
+.error-indicator
+{
+	fill:$color-error;
+	stroke-width:0;
+}
+.error-indicator-warning
+{
+	fill:$color-warning;
+	stroke-width:0;
+}
+
 #minimapContainer
 {
-    border:1px solid red;
+    // border:1px solid red;
     border:2px solid #111;
     position: absolute;
     display: none;
@@ -256,5 +267,5 @@
 		fill: $color_op_bg;
 		animation: focusAnim 0.4s;
 	}
-	
+
 }

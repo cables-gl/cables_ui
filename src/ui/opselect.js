@@ -47,7 +47,6 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 
 CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 {
-    var startTime=CABLES.now();
     var result=[];
 
     for(var i=0;i<list.length;i++)
@@ -94,8 +93,6 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
         if(points===0 && list[i].score>0) list[i].score=0;
             else list[i].score+=points;
     }
-
-    console.log( CABLES.now()-startTime+' ms search');
 
     return result;
 };
@@ -266,26 +263,26 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
         CABLES.UI.OPSELECT.maxPop=maxPop;
     }
 
-    this._html = this._html||CABLES.UI.getHandleBarHtml('op_select',{ops: this._list });
-
-
-    CABLES.UI.MODAL.showTop(this._html,
+    var head = CABLES.UI.getHandleBarHtml('op_select');
+    CABLES.UI.MODAL.showTop(head,
         {
             "title":null,
             "transparent":true,
             "onClose":this.close
         });
+    $('#opsearch').focus();
+
+
+    this._html = this._html||CABLES.UI.getHandleBarHtml('op_select_ops',{ops: this._list });
+    $('#searchbrowserContainer').html(this._html);
 
 
     $('#clearsearch').hide();
 
-setTimeout(function()
-{
-	$('#opsearch').focus();
-
-    $( ".searchresult:first" ).addClass( "selected" );
-
-},50);
+	setTimeout(function()
+	{
+	    $( ".searchresult:first" ).addClass( "selected" );
+	},50);
 
     if(this.itemHeight===0)this.itemHeight=$( ".searchresult:first" ).outerHeight();
 

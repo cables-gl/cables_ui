@@ -327,6 +327,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var shownTitle=_text;
     var backgroundResize=null;
     var commentText=null;
+	this._errorIndicator=null;
 
     this.getHeight=function()
     {
@@ -361,6 +362,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(label)label.remove();
         if(commentText)commentText.remove();
         if(backgroundResize)backgroundResize.remove();
+		if(this._errorIndicator)this._errorIndicator.remove();
         // if(resizeHandle)resizeHandle.remove();
         if(miniRect)miniRect.remove();
         label=background=commentText=backgroundResize=null;
@@ -637,6 +639,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             label.attr({
 				'y':40,
             });
+
 			if(commentText)
 			{
 				CABLES.UI.SVGParagraph(commentText,sw*2);
@@ -657,9 +660,48 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 "fill": '#f00',
             });
 
-
 		}
 
+
+
+	};
+
+	this.updateErrorIndicator=function()
+	{
+		if(opui.op.uiAttribs.error)// || opui.op.uiAttribs.warning)
+		{
+			if(!this._errorIndicator)
+			{
+				this._errorIndicator = gui.patch().getPaper().circle(w,h/2,4);
+
+				if(opui.op.uiAttribs.warning) this._errorIndicator.node.classList.add('error-indicator-warning');
+				if(opui.op.uiAttribs.error) this._errorIndicator.node.classList.add('error-indicator');
+
+				this._errorIndicator.node.classList.add('tt');
+				this._errorIndicator.node.setAttribute("data-tt",opui.op.uiAttribs.error);
+
+				group.push(this._errorIndicator);
+			}
+
+			opui.setPos();
+
+			console.log('update error indicator ',this.getWidth());
+
+			if(background) this._errorIndicator.attr({cx: background.getBBox().width });
+			// this._errorIndicator.attr({cx:Math.random()*50});
+			// this._errorIndicator.toFront();
+
+
+
+		}
+		else
+		{
+			if(this._errorIndicator)
+			{
+				this._errorIndicator.remove();
+				this._errorIndicator=null;
+			}
+		}
 	};
 
     this.addUi=function()
@@ -691,7 +733,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         // resizeHandle.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
         // resizeHandle.node.classList.add('op_handle');
 
-        label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+        label = gui.patch().getPaper().text(0+w/2,0+h/2-0.8, title);
 
 		label.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
 
@@ -755,6 +797,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 'opacity':0.2,
                 "cursor": "se-resize"
             });
+
             CABLES.UI.cleanRaphael(backgroundResize);
 
             var oldPosX,oldPosY;
@@ -818,6 +861,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             backgroundResize.toFront();
             background.toFront();
 			label.toFront();
+			if(this._errorIndicator)this._errorIndicator.toFront();
 			if(commentText)commentText.toFront();
         }
 
@@ -837,6 +881,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         if(isSelected==sel)return;
         group.toFront();
+		if(this._errorIndicator)this._errorIndicator.toFront();
         isSelected=sel;
 
         if(this.isVisible() && !commentText)
@@ -855,10 +900,10 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             // label.attr( { "font-weight": "normal" });
         }
 
-        if(opui.op.uiAttribs.error && opui.op.uiAttribs.error.length>0)
-        {
-            if(background)background.attr({"fill":"#f88"});
-        }
+        // if(opui.op.uiAttribs.error && opui.op.uiAttribs.error.length>0)
+        // {
+        //     if(background)background.attr({"fill":"#f88"});
+        // }
 
         // if(sel) background.attr( { stroke: '#fff', "stroke-width": 10});
         //     else background.attr( { stroke: '#fff', "stroke-width": 0});
@@ -881,6 +926,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             //     label.attr({'text': shownTitle+'...  '});
             // }
 			this.updateSize();
+			this.updateErrorIndicator();
         }
     };
 
@@ -892,6 +938,12 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     // group.push(background);
     group.transform('t'+x+','+y);
 };
+
+
+
+// --------------------------------------------------------------------------------------
+
+
 
 var OpUi=function(paper,op,x,y,w,h,txt)
 {
@@ -912,7 +964,23 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     var olsPosY=0;
     var posx=0;
     var posy=0;
+
     this.isMouseOver=false;
+
+	op.onUiAttrChange=function(attribs)
+	{
+		if(attribs && attribs.hasOwnProperty('warning'))
+		{
+			// console.log('warning',attribs.warning);
+			this.oprect.updateErrorIndicator();
+
+		}
+		if(attribs && attribs.hasOwnProperty('error'))
+		{
+			console.log("uiattr change!",attribs);
+			this.oprect.updateErrorIndicator();
+		}
+	}.bind(this);
 
     this.remove=function()
     {
@@ -926,6 +994,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     {
         return this.oprect.getHeight();
     };
+
     this.getWidth=function()
     {
         return this.oprect.getWidth();
@@ -934,7 +1003,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
     this.getSubPatch=function()
     {
         if(!op.uiAttribs.subPatch)return 0;
-        else return op.uiAttribs.subPatch;
+        	else return op.uiAttribs.subPatch;
     };
 
     this.showFocus=function()
@@ -1104,6 +1173,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
         self.oprect.setPosition(posx,posy);
         self.op.uiAttr({"translate":{x:posx,y:posy}});
+
 
         for(var j in self.links)
             self.links[j].redraw();

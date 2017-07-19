@@ -34,7 +34,7 @@ CABLES.UI.Port=function(thePort)
 
         if(event.which==3 || (event.which==1 && event.ctrlKey))
         {
-            if(thePort.isLinked ) //&& thePort.links.length===1
+            if(thePort.isLinked && self.thePort.links.length>0 ) //&& thePort.links.length===1
             {
 
                 CABLES.UI.selectedStartPortMulti.length=0;
@@ -259,7 +259,7 @@ CABLES.UI.Port=function(thePort)
         if(!foundAutoOp)
         {
 
-			if(CABLES.UI.selectedStartPort.type==OP_PORT_TYPE_DYNAMIC)return;
+			if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==OP_PORT_TYPE_DYNAMIC)return;
 
             if( (event.which==3 && !cancelDeleteLink) || (event.which==1 && event.ctrlKey))
             {

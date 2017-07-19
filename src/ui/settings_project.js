@@ -7,9 +7,6 @@ CABLES.ProjectSettings=function(project)
 	var taggle=null;
 
 
-
-
-
     this.show=function()
     {
         var html = CABLES.UI.getHandleBarHtml(
@@ -52,6 +49,7 @@ CABLES.ProjectSettings=function(project)
 			function(r)
 			{
 				var input=$('.taggle_input')[0];
+				if(!input)return;
 				new Awesomplete(input, {
 					list: r.tags
 				});
@@ -304,7 +302,7 @@ CABLES.ProjectSettings=function(project)
 
 
     var oldTab="params";
-    this.tab=function(which)
+    this.tab=this.setTab=function(which)
     {
         $('#settings_tab_users').hide();
         $('#settings_tab_params').hide();

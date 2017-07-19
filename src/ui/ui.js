@@ -694,8 +694,8 @@ CABLES.UI.GUI=function()
         $('.nav_patch_save').bind("click", function (event) { CABLES.CMD.PATCH.save(); });
         $('.nav_patch_saveas').bind("click", function (event) { CABLES.CMD.PATCH.saveAs(); });
         $('.nav_patch_new').bind("click", function (event) { CABLES.CMD.PATCH.newPatch(); });
-        $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?')) gui.scene().clear(); });
-        $('.nav_patch_export').bind("click", function (event) { CABLES.CMD.PATCH.export(); });
+        $('.nav_patch_clear').bind("click", function (event) { if(confirm('really?'))CABLES.CMD.PATCH.clear(); });
+        $('.nav_patch_export').bind("click", function (event) { CABLES.CMD.PATCH.export() });
         $('.nav_patch_export_ignoreAssets').bind("click", function (event) { gui.patch().exportStatic(true); });
 
         $('.nav_patch_settings').bind("click", function (event) { CABLES.CMD.UI.settings(); });
@@ -704,7 +704,7 @@ CABLES.UI.GUI=function()
         $('.nav_patch_browse_public').bind("click", function (event) { var win = window.open('https://cables.gl/projects', '_blank'); win.focus(); });
         $('.nav_patch_resolve_subpatch').bind("click",function(event){ self.patch().resolveSubpatch(); });
 
-        $('.nav_patch_profile').bind("click", self.showProfiler);
+        $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
 
         // --- Help menu
         // Documentation
@@ -724,6 +724,12 @@ CABLES.UI.GUI=function()
 
         // Introduction
         $('.nav_help_introduction').bind("click", function (event) { self.introduction().showIntroduction(); });
+		$('.nav_help_video').bind("click", function (event)
+			{
+				var html='<iframe width="800" height="640" src="https://www.youtube.com/embed/videoseries?list=PLYimpE2xWgBveaPOiV_2_42kZEl_1ExB0&showinfo=1" frameborder="0" allowfullscreen></iframe>';
+				CABLES.UI.MODAL.show(html);
+			});
+
 
         $('.nav_op_addOp').bind("click", function (event) { CABLES.CMD.PATCH.addOp(); });
         $('.nav_op_createOp').bind("click", function (event) { self.serverOps.createDialog(); });

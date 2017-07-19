@@ -2338,7 +2338,7 @@ CABLES.UI.Patch=function(_gui)
         else
         {
             $('#options_warning').show();
-            $('#options_warning').html('<div style="float:left;width:15%;padding-top: 10px;"><i class="fa fa-2x fa-exclamation-triangle" aria-hidden="true"></i></div><div style="float:left;width:85%;">'+currentOp.op.uiAttribs.warning+'</div>');
+            $('#options_warning').html(currentOp.op.uiAttribs.warning);
         }
 
         if(!currentOp.op.uiAttribs.error || currentOp.op.uiAttribs.error.length===0)
@@ -2413,31 +2413,29 @@ CABLES.UI.Patch=function(_gui)
     }
     this._showOpParams=function(op)
     {
-
         var i=0;
-
         callEvent('opSelected',op);
 
-        // console.log('showOpParams',op.name);
-
         if(gui.serverOps.isServerOp(op.objName)) op.isServerOp=true;
+        // if(currentOp)currentOp.onUiAttrChange=function()
+		// {
+		//
+		// };
 
-        if(currentOp)currentOp.onUiAttrChange=null;
-        { // show first anim in timeline
-            if(self.timeLine)
+        // show first anim in timeline
+        if(self.timeLine)
+        {
+            var foundAnim=false;
+            for(i in op.portsIn)
             {
-                var foundAnim=false;
-                for(i in op.portsIn)
+                if(op.portsIn[i].isAnimated())
                 {
-                    if(op.portsIn[i].isAnimated())
-                    {
-                        self.timeLine.setAnim(op.portsIn[i].anim,{name:op.portsIn[i].name});
-                        foundAnim=true;
-                        continue;
-                    }
+                    self.timeLine.setAnim(op.portsIn[i].anim,{name:op.portsIn[i].name});
+                    foundAnim=true;
+                    continue;
                 }
-                if(!foundAnim) self.timeLine.setAnim(null);
             }
+            if(!foundAnim) self.timeLine.setAnim(null);
         }
 
         for(var iops in this.ops)
@@ -2519,7 +2517,7 @@ CABLES.UI.Patch=function(_gui)
             {
                 if(op.portsIn[i].get() && ((op.portsIn[i].get()+'').endsWith('.jpg') || (op.portsIn[i].get()+'').endsWith('.png')) )
                 {
-                    console.log( op.portsIn[i].get() );
+                    // console.log( op.portsIn[i].get() );
                     $('#portpreview_'+i).css('background-color','black');
                     $('#portpreview_'+i).css('max-width','100%');
                     $('#portpreview_'+i).html('<img src="'+op.portsIn[i].get()+'" style="max-width:100%"/>');
