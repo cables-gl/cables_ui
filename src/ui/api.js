@@ -148,9 +148,9 @@ CABLES.API=function()
 
             var html='';
             html+='<center>';
-            html+='<i class="fa fa-bug fa-6" aria-hidden="true" style="font-size:200px;"></i><br/>';
-            html+='<h2>thanks</h2>';
-            html+='<br/>we will look into it<br/>';
+            html+='<img src="/img/bug.gif"/><br/><br/>';
+            html+='<h2>thank you</h2>';
+            html+='we will look into it<br/>';
             html+='<br/>';
         	html+='&nbsp;&nbsp;<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>';
             html+='</center>';
