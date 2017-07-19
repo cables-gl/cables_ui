@@ -26,13 +26,15 @@ const actions = {
 
 // mutations
 const mutations = {
-  displayIconBarText(state, b) {
+  displayText(state, b) {
     state.displayText = b;
   },
-   addIconBarItem (state, item) {
+   addItem(state, item) {
     //  if(!item) { return; }
-     if(state.items.filter(function(e) { return e.cmd === item.cmd }).length > 0) { // only add if it does not exist
+    console.log("trying to add item: ", item);
+     if(state.items.filter(function(e) { return e.cmd === item.cmd }).length === 0) { // only add if it does not exist
        state.items.push(item);
+       console.log("added successfully!");
      }
   }
 }

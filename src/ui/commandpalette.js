@@ -35,19 +35,57 @@ CABLES.UI.CommandPalette=function()
 		$('body').on( "keydown", this.keyDown);
     };
 
+    this.onBookmarkIconClick = function(ev) {
+      ev.stopPropagation();
+      var el = $(ev.target);
+      var cmd = el.closest('.result').data('cmd');
+      console.log('cmd: ', cmd);
+      var cmdObj = CABLES.CMD.getCmd(cmd);
+      console.log("cmdObj: ", cmdObj);
+      if(!cmdObj) {
+        console.error("Could not find a cmd with name: ", cmd);
+        return;
+      }
+      var hotkey = '';
+      if(typeof cmdObj.hotkey !== 'undefined') { hotkey = cmdObj.hotkey; }
+      var sidebarItem = {
+        cmd: cmdObj.cmd,
+        category: cmdObj.category,
+        iconClass: 'icon-' + cmdObj.icon,
+        hotkey: hotkey
+      };
+      vueStore.commit("sidebar/addItem", sidebarItem); // add item to icon bar if it does not exist already
+    };
+
+    this.onResultClick = function(ev) {
+      var el = $(ev.target);
+      var cmd = el.data("cmd");
+      CABLES.CMD.exec(cmd);
+      gui._cmdPalette.close();
+    };
+
     function addResult(cmd,num)
     {
         var html='';
 
 
-        html+='<div class="result" id="result'+num+'" onclick="CABLES.CMD.exec(\''+cmd.cmd+'\');gui._cmdPalette.close()">';
+        html+='<div class="result" id="result'+num+'" data-cmd="' + cmd.cmd + '" onclick=gui._cmdPalette.onResultClick(event)>';
+        // html+='<div class="result" id="result'+num+'" >';
 
 		// <a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
 
 		html+='<span class="icon icon-'+(cmd.icon||'square')+'"/>';
 
-        html+='<span class="title">'+cmd.cmd+'</span> - '+cmd.category;
+        html+='<span class="title">'+cmd.cmd+'</span>';
+        html+='<span class="category"> – ' + cmd.category + '</span>';
 
+        // var cmdIsInSideBar = vueStore.state.sidebar.iconBarContainsCmd;
+        // if(cmdObj && cmdObj.) {
+        //
+        // }
+        // var isInSidebar =
+
+        html+='<span class="icon icon-bookmark bookmark" onclick=gui._cmdPalette.onBookmarkIconClick(event)></span>';
 		if(cmd.hotkey)
 		{
 			html+='<span class="hotkey">[ '+cmd.hotkey+' ]</span>';

@@ -2,7 +2,7 @@
 var Vue = require('../node_modules/vue/dist/vue.common.js');
 var App = require('./App.vue');
 
-var store = require('./store/store.js');
+var store = require('./store/index.js');
 
 Vue.config.productionTip = false;
 
