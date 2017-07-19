@@ -811,7 +811,7 @@ CABLES.UI.GUI=function()
                 break;
 
                 case 13:
-                    if(e.ctrlKey || e.metaKey)self.toggleEditor();
+                    if(e.ctrlKey || e.metaKey)self.cycleRendererSize();
                     break;
                 case 112:  // f1
                     self.toggleEditor();
