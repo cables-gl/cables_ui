@@ -517,7 +517,7 @@ CABLES.UI.Patch=function(_gui)
             break;
 
             case 69: // e - edit
-                if(selectedOps.length>0) gui.serverOps.edit(selectedOps[0].op.objName);
+                CABLES.CMD.PATCH.editOp();
             break;
 
             case 68: // d - disable

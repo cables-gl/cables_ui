@@ -57,7 +57,7 @@ CABLES.UI.Find=function()
         str=str.toLowerCase();
         // console.log('--- ',str);
 
-
+        var foundNum=0;
         for(var i=0;i<gui.patch().ops.length;i++)
         {
             if(canceledSearch==searchId)
@@ -73,16 +73,27 @@ CABLES.UI.Find=function()
                 )
                 {
                     addResultOp(gui.patch().ops[i]);
+                    foundNum++;
                 }
                 else
                 {
                     var op=gui.patch().ops[i].op;
                     for(var j=0;j<op.portsIn.length;j++)
                     {
-                        if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1) addResultOp(gui.patch().ops[i]);
+                        if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1)
+                        {
+                            addResultOp(gui.patch().ops[i]);
+                            foundNum++;
+                        }
                     }
                 }
             }
+        }
+
+        if(foundNum===0)
+        {
+            $('#searchresult').html('<br/><center>no ops found</center><br/>');
+
         }
 
     };

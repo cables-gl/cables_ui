@@ -1949,3 +1949,11 @@ rect
 {
     border: 2px dashed #777;
 }
+
+
+input
+{
+    &::placeholder{
+    	color:$color-input-placeholder;
+    }
+}

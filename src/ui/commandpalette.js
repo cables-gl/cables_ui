@@ -21,6 +21,7 @@ CABLES.UI.CommandPalette=function()
     this.show=function()
     {
 		this._cursorIndex=0;
+        CABLES.UI.MODAL.hide(true);
 		$('#modalbg').show();
         $('#cmdpalette').show();
         $('#cmdinput').focus();
@@ -32,7 +33,6 @@ CABLES.UI.CommandPalette=function()
         clearTimeout(findTimeoutId);
         findTimeoutId=setTimeout(function()
         {
-            // console.log(1);
             self.doSearch(lastSearch);
         },100);
 

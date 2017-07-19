@@ -977,7 +977,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 		}
 		if(attribs && attribs.hasOwnProperty('error'))
 		{
-			console.log("uiattr change!",attribs);
+			// console.log("uiattr change!",attribs);
 			this.oprect.updateErrorIndicator();
 		}
 	}.bind(this);

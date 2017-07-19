@@ -86,6 +86,27 @@ CABLES.CMD.PATCH.renameOp=function()
 	CABLES.UI.MetaCode.rename();
 };
 
+CABLES.CMD.PATCH.editOp=function()
+{
+
+    var selops=gui.patch().getSelectedOps();
+
+    if(selops && selops.length>0)
+    {
+        console.log('edit op!');
+
+        for(var i=0;i<selops.length;i++)
+        {
+            gui.serverOps.edit(selops[i].op.objName);
+        }
+    }
+    else
+    {
+        console.log('no ops selected');
+    }
+
+};
+
 
 CABLES.CMD.commands.push(
 	{
@@ -177,6 +198,12 @@ CABLES.CMD.commands.push(
 		category:"patch",
 		func:CABLES.CMD.PATCH.addOp,
 		icon:"plus"
+	},
+	{
+		cmd:"edit op",
+		category:"op",
+		func:CABLES.CMD.PATCH.editOp,
+		icon:"edit"
 	},
 	{
 		cmd:"clear patch",
