@@ -87,12 +87,12 @@
                             incrementStartup();
                             logStartup('loaded cables ops');
 
-                            loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
-
-                            loadjs.ready('cables_vue', function()
-                            {
-                                logStartup('loaded cables vue');
-                                incrementStartup();
+                            // loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
+                            //
+                            // loadjs.ready('cables_vue', function()
+                            // {
+                            //     logStartup('loaded cables vue');
+                            //     incrementStartup();
 
                                 loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
 
@@ -120,7 +120,7 @@
 
                                     waitForAce();
                                 });
-                            });
+                            // });
                         });
                     });
                 });
@@ -146,6 +146,6 @@
 
     </script>
 
-    <!-- <script src="js/bundle.js"></script> -->
+    <script src="js/bundle.js"></script>
 
 </html>
