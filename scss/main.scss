@@ -57,6 +57,7 @@ p {
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
 }
+.selectable {user-select:all; *{user-select:all;}}
 .clickable {cursor:pointer;}
 .hidden { display:none;}
 .clear { clear:both; }

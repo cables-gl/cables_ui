@@ -10,18 +10,18 @@
             <a href="/op/{{op.objName}}" class="{{colorClass}}" target="blank"></i>&nbsp;{{op.objName}}</a>
             <br/>
 
-			<div class="summary">
+			<div class="summary selectable">
 	            {{#if op.summary }}
 	                {{op.summary}}
 
-					&nbsp;<a onclick="gui.opDocs.writeSummary('{{op.objName}}','{{op.summary}}')">[edit]</a>
+					&nbsp;<a onclick="gui.opDocs.writeSummary('{{op.objName}}','{{op.summary}}')"><i class="fa fa-pencil"></i></a>
 
 				{{else}}
-					no summary! <a onclick="gui.opDocs.writeSummary('{{op.objName}}')">click to write one!</a>
+					<a onclick="gui.opDocs.writeSummary('{{op.objName}}')">no summary - click to write one! <i class="fa fa-pencil"></i></a>
 	            {{/if}}
 			</div>
 
-            <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="blank">view example patches <i class="fa fa-external-link"></i></a>
+            <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="blank">view example patches</a>&nbsp;&nbsp;<i class="fa fa-external-link"></i>
             <br/><br/>
 
             {{#if op.isDeprecated }}

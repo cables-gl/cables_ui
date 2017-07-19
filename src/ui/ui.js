@@ -977,7 +977,16 @@ CABLES.UI.GUI=function()
         }
 
 
-
+        if(!window.chrome)
+        {
+            html='<center>';
+            html+='<h2>yikes!</h2>';
+            html+='cables is optimized for chrome, you are using something else<br/>';
+            html+='feel free to continue, but be warned, it might behave strange<br/><br/>';
+            html+='<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>';
+            html+='</center>';
+            CABLES.UI.MODAL.show(html);
+        }
     };
 
     function initRouting(cb)
@@ -1546,4 +1555,7 @@ function startUi(event)
 
 
     logStartup('Init UI done');
+
+
+
 }
