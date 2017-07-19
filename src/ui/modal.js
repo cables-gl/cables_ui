@@ -15,7 +15,9 @@ CABLES.UI.MODAL.hideLoading=function()
 
 CABLES.UI.MODAL.init=function(force)
 {
+
     $('#modalcontent').empty();
+    $('#modalcontainer').removeClass("transparent");
 
 
 };
@@ -71,7 +73,6 @@ CABLES.UI.MODAL.setTitle=function(title)
 		$('#modalheader').show();
 	}
 	else $('#modalheader').hide();
-
 };
 
 
@@ -143,24 +144,34 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
     console.log(ex.stack);
     CABLES.UI.MODAL.showClose();
 	CABLES.UI.MODAL.init();
-	CABLES.UI.MODAL.setTitle('cablefail :/');
+	CABLES.UI.MODAL.setTitle('op cablefail :/');
     // $('#modalcontent').append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;</h2>');
 
     $('#modalcontent').append('Error in op: <b>'+opName+'</b><br/><br/>');
 
-    CABLES.api.sendErrorReport(ex);
 
     $('#modalcontent').append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
 
-    $('#modalcontent').append('<div class="shaderErrorCode">'+ex.stack+'</div>');
+    $('#modalcontent').append('<div class="shaderErrorCode">'+ex.stack+'</div><br/>');
     // $('#modalcontainer').show();
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
 
+    var ops=gui.patch().scene.getOpsByObjName(opName);
+    for(var i=0;i<ops.length;i++)
+    {
+        ops[i].uiAttr({"error":"exception"});
+    }
+
     if(gui.user.isAdmin || opName.startsWith("Op.User."+gui.user.username))
     {
-        $('#modalcontent').append('<br/><a class="bluebutton fa fa-edit" onclick="gui.serverOps.edit(\''+opName+'\');CABLES.UI.MODAL.hide(true);">Edit op</a>');
+        $('#modalcontent').append('<a class="bluebutton fa fa-edit" onclick="gui.serverOps.edit(\''+opName+'\');CABLES.UI.MODAL.hide(true);">Edit op</a> &nbsp;&nbsp;');
     }
+
+    CABLES.lastError=ex;
+    $('#modalcontent').append('<a class="bluebutton fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>&nbsp;&nbsp;');
+
+
     $('#modalbg').on('click',function(){
         CABLES.UI.MODAL.hide(true);
     });
@@ -169,24 +180,30 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 
 CABLES.UI.MODAL.showException=function(ex,op)
 {
+    if(op)
+    {
+        CABLES.UI.MODAL.showOpException(ex,op.objName);
+        return;
+    }
     console.log(ex.stack);
     CABLES.UI.MODAL.showClose();
 
     CABLES.UI.MODAL.init();
-    $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
+    $('#modalcontent').append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail 123 :/</h2>');
 
-    if(op)
-    {
-        $('#modalcontent').append('<h3>in op:'+op.name+'</h3>');
-    }
+    $('#modalcontent').append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
 
-    CABLES.api.sendErrorReport(ex);
-
-    $('#modalcontent').append(''+ex.message+'<br/><br/>');
     $('#modalcontent').append('<div class="shaderErrorCode">'+ex.stack+'</div>');
     // $('#modalcontent').append('<br/><a onclick="gui.sendErrorReport();" id="errorReportButton" class="button">send error report</a><div id="errorReportSent" class="hidden">Report sent.</div>');
     // $('#modalcontainer').show();
+
+    CABLES.lastError=ex;
+    $('#modalcontent').append('<br/><a class="bluebutton fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>');
+
+
 	CABLES.UI.MODAL._setVisible(true);
+
+
 
     $('#modalbg').show();
 
@@ -315,7 +332,7 @@ CABLES.UI.MODAL.prompt=function(title,text,value,callback)
 
     // $('#modalcontainer').show();
 	CABLES.UI.MODAL._setVisible(true);
-	$('#modalcontainer').removeClass("transparent");
+
     $('#modalbg').show();
 	$("#modalpromptinput").focus();
 
@@ -323,4 +340,18 @@ CABLES.UI.MODAL.prompt=function(title,text,value,callback)
         CABLES.UI.MODAL.hide(true);
     });
 
+};
+
+
+
+window.onerror=function(err,file,row)
+{
+    setTimeout(function()
+    {
+        if(!CABLES.lastError)
+        {
+            CABLES.UI.MODAL.showException({message:err,stack:"file:"+file+" / row:"+row});
+        }
+
+    },100);
 };

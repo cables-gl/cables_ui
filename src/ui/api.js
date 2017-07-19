@@ -1,6 +1,7 @@
 
 var CABLES=CABLES || {};
 
+CABLES.lastError=null;
 
 CABLES.API=function()
 {
@@ -104,47 +105,64 @@ CABLES.API=function()
     var lastErrorReport=0;
     this.sendErrorReport=function(exc)
     {
+        exc=exc||CABLES.lastError;
         var report={};
-        if(Date.now()-lastErrorReport<1000)
+        report.time=Date.now();
+
+        lastErrorReport=Date.now();
+        if(window.gui)report.projectId=gui.patch().getCurrentProject()._id;
+        if(window.gui)report.username=gui.user.username;
+        if(window.gui)report.userId=gui.user.id;
+        report.url=document.location.href;
+
+        report.infoPlatform=navigator.platform;
+        report.infoLanguage=navigator.language;
+        report.infoUserAgent=navigator.userAgent;
+
+        if(window.gui)
         {
-            report.time=Date.now();
-
-            lastErrorReport=Date.now();
-            if(window.gui)report.projectId=gui.patch().getCurrentProject()._id;
-            if(window.gui)report.username=gui.user.username;
-            if(window.gui)report.userId=gui.user.id;
-            report.url=document.location.href;
-
-            report.infoPlatform=navigator.platform;
-            report.infoLanguage=navigator.language;
-            report.infoUserAgent=navigator.userAgent;
-
-            if(window.gui)
+            try
             {
-                try
-                {
-                    var dbgRenderInfo = gui.patch().scene.cgl.gl.getExtension("WEBGL_debug_renderer_info");
-                    report.glRenderer=gui.patch().scene.cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
-                }
-                catch(e)
-                {
-                    console.log(e);
-                }
+                var dbgRenderInfo = gui.patch().scene.cgl.gl.getExtension("WEBGL_debug_renderer_info");
+                report.glRenderer=gui.patch().scene.cgl.gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
             }
-
-            if(exc)
+            catch(e)
             {
-                report.stack=exc.stack;
-                report.exception=exc;
+                console.log(e);
             }
-
-            console.log('error report sent.');
-
-            CABLES.api.post('errorReport',report,function(d)
-            {
-                $('#errorReportSent').show();
-            });
         }
+
+        if(exc)
+        {
+            report.stack=exc.stack;
+            report.exception=exc;
+        }
+
+        console.log('error report sent.');
+        console.log(report);
+
+        CABLES.api.post('errorReport',report,function(d)
+        {
+            CABLES.UI.MODAL.showClose();
+            CABLES.UI.MODAL.init();
+
+            var html='';
+            html+='<center>';
+            html+='<i class="fa fa-bug fa-6" aria-hidden="true" style="font-size:200px;"></i><br/>';
+            html+='<h2>thanks</h2>';
+            html+='<br/>we will look into it<br/>';
+            html+='<br/>';
+        	html+='&nbsp;&nbsp;<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>';
+            html+='</center>';
+
+            CABLES.UI.MODAL.show(html,{title:''});
+            CABLES.lastError=null;
+
+            $('#modalbg').on('click',function(){
+                CABLES.UI.MODAL.hide(true);
+            });
+
+        });
     };
 
 };
