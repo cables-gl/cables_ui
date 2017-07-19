@@ -36,6 +36,12 @@ export default {
     callFunction : function(action){
       CABLES.CMD.exec(action);
     }
+  },
+  mounted: function () {
+    this.$nextTick(function () {
+      // code that assumes this.$el is in-document
+      this.$store.dispatch('sidebar/loadLocalStorage'); // read sidebar settings from local storage
+    })
   }
 }
 </script>

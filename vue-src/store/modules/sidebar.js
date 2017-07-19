@@ -21,7 +21,21 @@ const getters = {
 
 // actions
 const actions = {
-
+  loadLocalStorage(context) {
+    console.log("CABLES: ", CABLES);
+    console.log("CABLES.UI: ", CABLES.UI);
+    const sidebarSettings = CABLES.UI.userSettings.get('sidebar');
+    if(sidebarSettings) {
+      if(sidebarSettings.visible) { context.commit('visible', sidebarSettings.visible); }
+      if(sidebarSettings.displayText) { context.commit('displayText', sidebarSettings.displayText); }
+      if(sidebarSettings.items) {
+        for(let i=0; i<sidebarSettings.items.length; i++) {
+          context.commit('addItem', sidebarSettings.items[i]);
+        }
+      }
+    }
+    // context.commit('addItem', foo);
+  }
 }
 
 // mutations
@@ -29,13 +43,15 @@ const mutations = {
   displayText(state, b) {
     state.displayText = b;
   },
-   addItem(state, item) {
-    //  if(!item) { return; }
-    console.log("trying to add item: ", item);
-     if(state.items.filter(function(e) { return e.cmd === item.cmd }).length === 0) { // only add if it does not exist
-       state.items.push(item);
-       console.log("added successfully!");
-     }
+  visible(state, b) {
+    state.visible = b;
+  },
+  addItem(state, item) {
+   if(!item) { return; }
+   if(state.items.filter(function(e) { return e.cmd === item.cmd }).length === 0) { // only add if it does not exist
+     state.items.push(item);
+     CABLES.UI.userSettings.set('sidebar', state);
+   }
   }
 }
 
