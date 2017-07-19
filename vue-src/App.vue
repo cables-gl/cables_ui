@@ -3,7 +3,7 @@
     <!-- <hello></hello> -->
     <ul>
       <li v-for="item in items" @click='callFunction(item.cmd)'>
-        <span class="icon" :class="[item.iconClass]"></span>
+        <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
         <span v-if="displayIconLabel">{{ item.cmd }}</span>
       </li>
     </ul>
@@ -66,8 +66,7 @@ export default {
 
     li {
       cursor: pointer;
-      margin-bottom: 20px;
-      margin-top: 20px;
+      margin-top: 12px;
       padding: 8px;
 
       &:hover {
