@@ -48,7 +48,7 @@
 
 .taggle_list .taggle_hot
 {
-	background: #cac8c4;
+	background: $color-c2;
 }
 
 .taggle_list .taggle .close
@@ -61,7 +61,7 @@
 	padding-left: 4px;
 	padding-right: 4px;
 	line-height: 0.5;
-	color: #000;
+	color: $color-cz;
 	font-size: 20px;
 	padding-bottom: 4px;
 	display: block;
@@ -72,7 +72,7 @@
 .taggle_list .taggle {
   padding: 3px;
   padding-right: 15px;
-  background: #666;
+  background: $color-c7;
 }
 
 // .taggle_list .taggle:hover > .close {
@@ -137,7 +137,7 @@ visibility: hidden;
     list-style: none;
     padding: 0;
     margin: 0;
-    background: #fff;
+    background: $color-ca;
 }
 
 .awesomplete > ul:empty {
@@ -147,7 +147,7 @@ visibility: hidden;
 .awesomplete > ul {
 	border-radius: .3em;
 	margin: .2em 0 0;
-	background: #333;
+	background: $color-c9;
 	// background: linear-gradient(to bottom right, white, hsla(0,0%,100%,.8));
 	border: none;//1px solid rgba(0,0,0,.3);
 	box-shadow: none;//.05em .2em .6em rgba(0,0,0,.2);
