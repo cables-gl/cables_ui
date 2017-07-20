@@ -22,6 +22,7 @@ CABLES.UI.Bookmarks=function()
                     {
                         id:bookmarks[i],
                         name:op.name,
+                        objName:op.objName,
                         class:CABLES.UI.uiConfig.getNamespaceClassName(op.objName)
                     });
             }

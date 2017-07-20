@@ -3,17 +3,24 @@
 
 <script id="bookmarks" type="text/x-handlebars-template">
 
+
+    {{#if bookmarks}}
+
         <h3>Bookmarks</h3>
 
-        <a onclick="gui.bookmarks.add()" class="button fa fa-bookmark-o">add</a>
-
-        <br/><br/>
-
         {{#each bookmarks}}
-            - <a onclick="gui.bookmarks.goto('{{id}}');" class="op_color_{{class}}">{{name}} </a>
-            <a class=" fa fa-trash-o" onclick="gui.bookmarks.remove('{{id}}');"></a>
-            <br/>
+            <div class="list">
+                <div onclick="gui.bookmarks.goto('{{id}}');" >
+
+                    <h3 class="op_color_{{class}}">{{name}}</h3>
+                    {{objName}}
+                    <a class="fa fa-trash-o fright" onclick="gui.bookmarks.remove('{{id}}');"></a>
+
+                </div>
+            </div>
         {{/each}}
+
+        <br/>
 
         <h3>Subpatches</h3>
 
@@ -22,5 +29,5 @@
             <br/>
         {{/each}}
 
-
+{{/if}}
 </script>
