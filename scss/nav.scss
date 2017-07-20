@@ -1,0 +1,308 @@
+
+#menubar,#timelineui
+{
+    padding-right:10px;
+    position:absolute;
+    background-color: $color-menubar-background;
+    overflow: hidden;
+    display:none;
+
+	li
+	{
+		color:$color-menubar-text;
+
+		&:hover
+		{
+			color: $color-menubar-hover;
+		}
+	}
+    .button
+    {
+        background-color: transparent;
+    }
+
+}
+
+#menubar
+{
+    overflow: visible;
+}
+
+
+
+#loggedin,#loggedout
+{
+    float:right;
+    display:none;
+}
+
+#menubar,#timing
+{
+    .button
+    {
+        display: block;
+        float: left;
+        padding: 5px;
+        padding-left: 5px;
+        margin-left: 4px;
+        margin-top: 3px;
+
+        &.fa:before
+        {
+            margin-right: 0px;
+        }
+
+        &:hover
+        {
+            background-color: $icon-button-background-color-hover !important;
+        }
+
+        &:active
+        {
+            background-color: $icon-button-background-color-hover;
+        }
+    }
+}
+
+.cables
+{
+    a
+    {
+        display: block;
+        margin-left: 25px;
+    }
+
+    .logo
+    {
+        position: absolute;
+        // color:$text-color;
+        width:25px;
+        text-align: center;
+    }
+
+    .fa
+    {
+        margin-top: 4px;
+        margin-left: -5px;
+    }
+
+    .cablesLogo
+    {
+        background-image: url(/logo.png);
+        background-repeat: no-repeat;
+        background-size:auto 80%;
+        background-position:0px center;
+        display:block;
+        height:20px;
+        float:left;
+    }
+}
+
+
+nav
+{
+    float:left;
+    z-index: 9999;
+
+        li
+        {
+          font-family: $headline-font, arial;
+          font-weight: 400;
+        }
+
+        a
+        {
+            &:hover
+            {
+                color: $color-ca;
+            }
+        }
+        ul
+        {
+            text-align: left;
+            display: inline;
+            margin: 0;
+            padding: 5px 4px 5px 0;
+            list-style: none;
+            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        }
+        ul li
+        {
+            //font: bold 12px/18px arial;
+            display: inline-block;
+            margin-right: -4px;
+            position: relative;
+            padding: 7px 20px;
+            cursor: pointer;
+
+            &.inactive
+            {
+              color: $color-c7;
+            }
+
+            .shortcut {
+                  float: right;
+            }
+
+            span
+            {
+                margin-left: 20px;
+            }
+        }
+        ul li:hover
+        {
+            background: $highlight-color-dark;
+            color: $color-ca;
+            a
+            {
+                color:white;
+            }
+        }
+        ul li ul
+        {
+            z-index: 9999;
+            padding: 0;
+            position: absolute;
+            top: 28px;
+            left: 0;
+            width: 200px;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            -webkit-transiton: opacity 0.1s;
+            -moz-transition: opacity 0.1s;
+            -ms-transition: opacity 0.1s;
+            -o-transition: opacity 0.1s;
+            -transition: opacity 0.1s;
+        }
+        ul li ul li
+        {
+            background: $color-c9;
+            display: block;
+            color: $color-ca;
+        }
+        ul li ul li:hover
+        {
+            background: $highlight-color-dark;
+            cursor:pointer;
+        }
+        ul li:hover ul
+        {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        ul li ul#jobs li
+        {
+            background-color: $color-c10;
+            color:$text-color;
+            width:250px;
+            font-weight: normal;
+        }
+
+        .divide
+        {
+            padding:0px;
+            border-bottom: 1px solid $color-c9;
+        }
+
+
+    a
+    {
+        &:hover
+        {
+            color: $color-ca;
+        }
+    }
+    ul
+    {
+        text-align: left;
+        display: inline;
+        margin: 0;
+        padding: 5px 4px 5px 0;
+        list-style: none;
+        -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+    }
+    ul li
+    {
+        //font: bold 12px/18px arial;
+        display: inline-block;
+        margin-right: -4px;
+        position: relative;
+        padding: 7px 20px;
+        cursor: pointer;
+
+        span
+        {
+            margin-left: 20px;
+        }
+    }
+    ul li:hover
+    {
+        background: $highlight-color-dark;
+        color: $color-ca;
+        a
+        {
+            color:white;
+        }
+    }
+    ul li ul
+    {
+        z-index: 9999;
+        padding: 0;
+        position: absolute;
+        top: 28px;
+        left: 0;
+        // width: 150px;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        display: none;
+        opacity: 0;
+        visibility: hidden;
+        -webkit-transiton: opacity 0.1s;
+        -moz-transition: opacity 0.1s;
+        -ms-transition: opacity 0.1s;
+        -o-transition: opacity 0.1s;
+        -transition: opacity 0.1s;
+    }
+    ul li ul li
+    {
+        background: $color-c9;
+        display: block;
+        color: $color-ca;
+    }
+    ul li ul li:hover
+    {
+        background: $highlight-color-dark;
+        cursor:pointer;
+    }
+    ul li:hover ul
+    {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    ul li ul#jobs li
+    {
+        background-color: $color-c10;
+        color:$text-color;
+        width:250px;
+        font-weight: normal;
+    }
+
+    .divide
+    {
+        padding:0px;
+        border-bottom: 1px solid $color-c9;
+    }
+}

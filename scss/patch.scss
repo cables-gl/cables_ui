@@ -269,3 +269,131 @@
 	}
 
 }
+
+
+#suggestionDialog
+{
+    position: absolute;
+    z-index: 1000;
+    bottom: 100px;
+
+    .suggestion
+    {
+        margin-bottom: 10px;
+        padding:5px;
+        text-overflow: ellipsis;
+        position: absolute;
+        font-size: 13px;
+        min-width: 50px;
+        white-space: nowrap;
+        background-color: rgba(20,20,20,0.7);
+        border-radius: 4px;
+
+        &:hover
+        {
+            cursor:pointer !important;
+            background-color: $highlight-color-dark;
+            color: $color-ca;
+        }
+    }
+
+    .recommended-suggestion
+    {
+        border-left:10px solid white;
+    }
+
+    .opSelect
+    {
+		cursor:pointer;
+        margin-left: -15px;
+        margin-top: -15px;
+        width: 30px;
+        height: 30px;
+        background-color: $color-ca;
+        color: $color-c10;
+        border-radius: 100px;
+        text-align: center;
+        font-size: 25px;
+        font-weight: bold;
+
+        &:hover
+        {
+            cursor:pointer !important;
+            background-color: $highlight-color-dark;
+            color: $color-ca;
+        }
+    }
+}
+
+#button_subPatchBack
+{
+    position: absolute;
+    margin-top: 45px;
+    right:0px;
+    background-color: $color-c9;
+    opacity: 0.8;
+    padding:10px;
+    border-radius: 5px;
+
+    cursor: pointer;
+    z-index: 99999;
+    width:30px;
+    height:30px;
+
+    &:hover
+    {
+        opacity: 1;
+    }
+}
+
+
+
+
+
+@keyframes pathSpeedAnim
+{
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 200; }
+}
+
+.pathSpeed0,.pathSpeed1,.pathSpeed2,.pathSpeed3,.pathSpeed4
+{
+    stroke-dashoffset: 0;
+    stroke-dasharray: 5;
+    stroke-width:2px;
+    -webkit-animation: pathSpeedAnim 10s;
+    animation-iteration-count:infinite;
+}
+
+.pathSpeed0
+{
+    animation-iteration-count:0;
+}
+
+.pathSpeed1
+{
+    -webkit-animation: pathSpeedAnim 10s;
+    animation-iteration-count:infinite;
+    // animation-timing-function: linear;
+}
+
+.pathSpeed2
+{
+    -webkit-animation: pathSpeedAnim 5s;
+    animation-iteration-count:infinite;
+    animation-timing-function: linear;
+}
+
+.pathSpeed3
+{
+    -webkit-animation: pathSpeedAnim 2.5s;
+    animation-iteration-count:infinite;
+    animation-timing-function: linear;
+}
+
+.pathSpeed4
+{
+    -webkit-animation: pathSpeedAnim 1.25s;
+    animation-iteration-count:infinite;
+    animation-timing-function: linear;
+}

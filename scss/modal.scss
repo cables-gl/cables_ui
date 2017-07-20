@@ -78,3 +78,25 @@
 	padding:5px;
     text-transform: uppercase;
 }
+
+
+
+
+.shaderErrorCode
+{
+    font-family: SourceCodePro,monospace;
+    white-space: pre;
+    background-color: $color-c9;
+    padding:10px;
+    max-height: 600px;
+    overflow: auto;
+    user-select:text;
+    -webkit-user-select: text;  /* Chrome all / Safari all */
+    -moz-user-select: text;     /* Firefox all */
+    -ms-user-select: text;      /* IE 10+ */
+
+    .error
+    {
+        color: $color-error;
+    }
+}

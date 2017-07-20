@@ -1,0 +1,54 @@
+
+
+#infoArea
+{
+    width: 100%;
+    position: absolute;
+    min-width: 10px !important;
+    display:none;
+    background-color:$background-color-dark;
+    padding:10px;
+    padding-top:20px !important;
+    height:240px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 13px;
+
+    h2
+    {
+        font-size: 15px;
+    }
+
+    ul
+    {
+        margin-left: 15px;
+        padding-left: 0px;
+    }
+}
+
+.tooltip
+{
+    position: absolute;
+    z-index: 99999;
+    background-color: $text-color;
+    color:black;
+    padding:7px;
+    border-radius: 0px;
+    opacity:0.96;
+    display:none;
+    &:hover
+    {
+        display: none;
+    }
+
+    b
+    {
+        font-weight: bold;
+        color:black;
+        font-size: 14px;
+    }
+    i
+    {
+        color:black;
+    }
+}
