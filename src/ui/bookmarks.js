@@ -21,7 +21,8 @@ CABLES.UI.Bookmarks=function()
                 bm.push(
                     {
                         id:bookmarks[i],
-                        name:op.name
+                        name:op.name,
+                        class:CABLES.UI.uiConfig.getNamespaceClassName(op.objName)
                     });
             }
             else
@@ -61,25 +62,33 @@ CABLES.UI.Bookmarks=function()
         this.show();
     };
 
-    this.add=function()
+    this.add=function(id)
     {
-        var ops=gui.patch().getSelectedOps();
-        if(ops.length>0)
-        {
-            var id=ops[0].op.id;
 
+        var ops=gui.patch().getSelectedOps();
+        if(!id && ops.length>0)
+        {
+            id=ops[0].op.id;
+        }
+
+        if(id)
+        {
             for(var i in bookmarks) if(bookmarks[i]==id)return;
 
             console.log(id);
             bookmarks.push(id);
             this.show();
+            gui.patch().focusOp(id);
+            CABLES.UI.notify("Bookmark added!");
         }
+
     };
 
     this.goto=function(id)
     {
         gui.patch().setSelectedOpById(id);
         gui.patch().centerViewBoxOps();
+        gui.patch().focusOp(id);
 
     };
 

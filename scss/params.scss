@@ -89,7 +89,7 @@
     td.port
     {
         // border-left:4px solid $text-color;
-        padding-left: 10px;
+        padding-left: 15px;
         //font-family: arial;
         text-transform: capitalize;
         align:top;
@@ -100,10 +100,15 @@
     }
     /* 90 degree border */
 
-    td.portType_0 { box-shadow: inset 5px 0 0 $color_link_value !important; }
+	td.portType_0 { box-shadow: inset 5px 0 0 $color_link_value !important; }
     td.portType_1 { box-shadow: inset 5px 0 0 $color_link_function !important; }
     td.portType_2 { box-shadow: inset 5px 0 0 $color_link_object !important; }
     td.portType_3 { box-shadow: inset 5px 0 0 $color_link_array !important; }
+
+	td.portType_0_linked { box-shadow: inset 11px 0 0 $color_link_value !important; }
+    td.portType_1_linked { box-shadow: inset 11px 0 0 $color_link_function !important; }
+    td.portType_2_linked { box-shadow: inset 11px 0 0 $color_link_object !important; }
+    td.portType_3_linked { box-shadow: inset 11px 0 0 $color_link_array !important; }
 
 	textarea
 	{

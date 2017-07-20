@@ -794,8 +794,8 @@ CABLES.UI.Patch=function(_gui)
                 maxY=Math.max(maxY,arr[i].op.uiAttribs.translate.y);
             }
         }
-        viewBox.x=minX-30;
-        viewBox.y=minY-30;
+        viewBox.x=minX-viewBox.w/2;
+        viewBox.y=minY-viewBox.h/2;
         var w=1*(Math.abs(maxX-minX));
         var h=1*(Math.abs(maxY-minY));
 

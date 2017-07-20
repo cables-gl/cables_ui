@@ -17,7 +17,7 @@ CABLES.UI.TEXTS=
 
     portFloatInput:"* use mousewheel or up/down keys to inc/decrement by 0.1",
     portFloatDrag:"* hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
-    portUnlink:"unlink port",
+    portUnlink:"Click to unlink port",
     portCreateOp:"create and connect new texture op",
     portAnimKeep:"keep in keyframing view",
     portAnimToggle:"toggle parameter animation. enable to keyframe parameter",

@@ -5,11 +5,11 @@
     <div class="selectable params">
         <div class="panel params_op_head">
             <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
+            <a onclick="gui.bookmarks.add()" class="fa fa-bookmark-o info" data-info="Add Bookmark"></a>
 
 			<br/>
             <a href="/op/{{op.objName}}" class="{{colorClass}}" target="blank"></i>&nbsp;{{op.objName}}</a>
             <br/>
-
 			<div class="summary selectable">
 	            {{#if op.summary }}
 	                {{op.summary}}

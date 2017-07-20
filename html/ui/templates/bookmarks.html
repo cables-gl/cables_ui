@@ -10,8 +10,8 @@
         <br/><br/>
 
         {{#each bookmarks}}
-            - <a onclick="gui.bookmarks.goto('{{id}}');">{{name}}</a>
-            <a class="button fa fa-trash-o" onclick="gui.bookmarks.remove('{{id}}');"></a>
+            - <a onclick="gui.bookmarks.goto('{{id}}');" class="op_color_{{class}}">{{name}} </a>
+            <a class=" fa fa-trash-o" onclick="gui.bookmarks.remove('{{id}}');"></a>
             <br/>
         {{/each}}
 

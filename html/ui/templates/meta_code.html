@@ -37,10 +37,10 @@
 <br/>
     <h3>attachments</h3>
     {{#each doc.attachmentFiles}}
-        <a class="button fa fa-edit" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');"></a>
+        <a class=" fa fa-edit" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');"></a>
 
         {{.}}
-        <a class="button fa fa-trash" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
+        <a class=" fa fa-trash" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
         <br/>
     {{/each}}
     <a class="button fa fa-plus-o" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>

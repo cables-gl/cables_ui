@@ -693,6 +693,9 @@ CABLES.UI.GUI=function()
     {
         $('#glcanvas').attr('tabindex','3');
 
+
+        $('.nav_cables').bind("click", function (event) { var win = window.open('/'); win.focus(); });
+
         $('#button_toggleTiming').bind("click", function (event) { self.toggleTiming(); });
         $('#button_cycleRenderSize').bind("click", function (event) { self.cycleRendererSize(); });
 
@@ -751,8 +754,6 @@ CABLES.UI.GUI=function()
 
         $('#button_subPatchBack').bind("click", function (event) { self.patch().setCurrentSubPatch(0); });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
-
-
 
         window.addEventListener( 'resize', self.setLayout, false );
 
