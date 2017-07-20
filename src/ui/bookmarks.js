@@ -38,11 +38,7 @@ CABLES.UI.Bookmarks=function()
 
     this.set=function(arr)
     {
-        if(arr)
-        {
-            bookmarks=arr;
-            for(var i in bookmarks) console.log(bookmarks[i]);
-        }
+        if(arr) bookmarks=arr;
     };
 
     this.remove=function(id)
