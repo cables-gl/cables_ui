@@ -90,6 +90,7 @@ CABLES.CMD.UI.showChangelog=function(since)
         if(obj.items.length===0)return;
         var html = CABLES.UI.getHandleBarHtml('changelog',obj);
         CABLES.UI.MODAL.show(html,{'title':'Changelog'});
+        CABLES.UI.userSettings.set('changelogLastView',obj.ts);
     });
 
 };

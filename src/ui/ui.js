@@ -1022,7 +1022,6 @@ CABLES.UI.GUI=function()
             {
                 CABLES.CMD.UI.showChangelog(CABLES.UI.userSettings.get('changelogLastView'));
             }
-            CABLES.UI.userSettings.set('changelogLastView',Date.now());
 
         }
     };
