@@ -5,11 +5,13 @@
     height:620px;
     overflow: hidden;
 
+
+
     header
     {
         width:480px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
+        border-top-left-radius: $border-radius-popups;
+        border-top-right-radius: $border-radius-popups;
         background-color: $background-color-dark;
         padding:15px;
 
@@ -92,6 +94,8 @@
         overflow-x: hidden;
         overflow-y: auto;
         height:440px;
+        border-top-right-radius: $border-radius-popups;
+        border-bottom-right-radius: $border-radius-popups;
 
         /* enable text selection on all elements except svg */
         * {
@@ -133,6 +137,15 @@
 		padding: 10px;
 		background-position: center;
 		border-radius: 20px;
+
+        &:hover
+        {
+            background-color: $color-c10;
+            *
+            {
+                background-color:$color-special !important;
+            }
+        }
 	}
 
     .selected
@@ -145,13 +158,16 @@
 
         .insertbutton
         {
-            // background-color:rgba(40,40,40,0.5);
             color: $color-c2 !important;
 			background-color: $color_op_bg;
 
             &:hover
             {
-                color:$color-special;
+                background-color: $color-c10;
+                *
+                {
+                    background-color:$color-special !important;
+                }
             }
         }
 

@@ -954,7 +954,6 @@ CABLES.UI.GUI=function()
             return;
         }
 
-
         $('.tooltip').hide();
 
         if(self.rendererWidth>window.innerWidth*0.9)

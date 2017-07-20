@@ -38,6 +38,12 @@ CABLES.UI.Preview=function()
         setTimeout(updatePreview,interval);
     }
 
+    this.toggleBackground=function()
+    {
+        $('#preview_img').toggleClass('dark');
+        $('#preview_img').toggleClass('bright');
+    };
+
     this.setTexture=function(opid,portName)
     {
         previewDataOp=gui.scene().getOpById(opid);
@@ -91,19 +97,14 @@ CABLES.UI.Preview=function()
         {
             canvas = document.getElementById('preview_img');
             canvasContainer = document.getElementById('preview_img_container');
-            // infoContainer = document.getElementById('preview_img_info');
             $('#meta_content_preview .opname').html(previewDataPort.parent.name);
-
-$('#preview_img_container').data('info','<pre>'+JSON.stringify(texture.getInfo(),false,2)+'</pre>');
-
-            // infoContainer.innerHTML=;
+            $('#preview_img_container').data('info',texture.getInfoReadable());
 
             lastWidth =width;
             lastHeight=height;
 
             canvasContainer.style['max-width']=width+'px';
             canvasContainer.style['max-height']=height+'px';
-            // canvasContainer.style['padding-top']=height/width*100+'%';
 
             imageData=null;
             if(!canvas)

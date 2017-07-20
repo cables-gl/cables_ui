@@ -28,7 +28,7 @@
       {{#each ops}}
 
         <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" >
-            <div class="graphbutton icon icon-plus  fright insertbutton" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();"></div>
+            <div class="insertbutton fright"><div class="icon icon-plus" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();"></div></div>
 
             <a>
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}

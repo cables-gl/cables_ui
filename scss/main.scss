@@ -1,4 +1,7 @@
 
+
+$border-radius-popups:13px;
+
 @import 'fonts';
 @import 'libs/introjs.min';
 @import 'libs/introjs-custom-styles';
@@ -23,6 +26,9 @@
 @import 'components/changelog';
 @import 'components/tooltip';
 @import 'components/meta';
+
+
+
 
 
 html,body { // ipad overscroll fix...
