@@ -42,6 +42,7 @@
         padding:10px;
         border-bottom:1px solid $color-list-border;
         cursor:pointer;
+        overflow-x: hidden;
 
         &:hover
         {
