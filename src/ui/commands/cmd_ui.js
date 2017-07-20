@@ -69,6 +69,11 @@ CABLES.CMD.UI.toggleMaxRenderer=function()
 	gui.cycleRendererSize();
 };
 
+CABLES.CMD.UI.showCommandPalette=function()
+{
+	gui.cmdPalette.show();
+};
+
 
 
 
@@ -138,6 +143,13 @@ CABLES.CMD.commands.push(
 		func:CABLES.CMD.UI.toggleMaxRenderer,
 		icon:'monitor',
         hotkey:'CMD + ENTER',
+	},
+	{
+		cmd:"show command palette",
+		category:"ui",
+		func:CABLES.CMD.UI.showCommandPalette,
+		icon:'search',
+        hotkey:'CMD + P',
 	}
 
 

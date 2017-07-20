@@ -5,7 +5,7 @@ CABLES.UI.Bookmarks=function()
 {
     var bookmarks=[];
 
-    this.show=function()
+    this.getHtml=function()
     {
         var subs=gui.patch().getSubPatches();
 
@@ -13,8 +13,6 @@ CABLES.UI.Bookmarks=function()
         for(var i in bookmarks)
         {
             var op=gui.patch().scene.getOpById(bookmarks[i]);
-
-
 
             if(op)
             {
@@ -30,12 +28,12 @@ CABLES.UI.Bookmarks=function()
             {
                 console.log("op not found",bookmarks[i]);
                 bookmarks[i]=null;
-
             }
         }
 
         var html = CABLES.UI.getHandleBarHtml('bookmarks', { "bookmarks":bm,"subPatches":subs });
-        $('#meta_content_bookmarks').html(html);
+        // $('#meta_content_bookmarks').html(html);
+        return html;
     };
 
     this.set=function(arr)
@@ -59,13 +57,10 @@ CABLES.UI.Bookmarks=function()
 
         while(bookmarks.indexOf(null)>=0)
             bookmarks.splice(bookmarks.indexOf(null),1);
-
-        this.show();
     };
 
     this.add=function(id)
     {
-
         var ops=gui.patch().getSelectedOps();
         if(!id && ops.length>0)
         {
@@ -74,13 +69,16 @@ CABLES.UI.Bookmarks=function()
 
         if(id)
         {
-            for(var i in bookmarks) if(bookmarks[i]==id)return;
+            for(var i in bookmarks) if(bookmarks[i]==id)
+            {
+                this.remove(id);
+                CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_removed);
+                return;
+            }
 
-            console.log(id);
             bookmarks.push(id);
-            this.show();
             gui.patch().focusOp(id);
-            CABLES.UI.notify("Bookmark added!");
+            CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_added);
         }
 
     };

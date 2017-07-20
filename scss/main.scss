@@ -1947,7 +1947,13 @@ rect
 
 #preview_img_container canvas
 {
-    border: 2px dashed #777;
+    border: 1px solid transparent;
+
+    &:hover
+    {
+        border: 1px dashed #777;
+    }
+
 }
 
 

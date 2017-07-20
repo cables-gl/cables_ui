@@ -215,12 +215,12 @@ CABLES.UI.notify=function(title)
 {
     $('#notify').html(title);
     $('#notify').show();
-    $('#notify' ).css({top: "0px" ,opacity: 0 });
+    $('#notify').css({top: "0px" ,opacity: 0 });
 
     $('#notify').animate(
         {
             top: "20px",
-            opacity:0.8
+            opacity:1
         }, 150);
 
     setTimeout(function()
@@ -232,7 +232,7 @@ CABLES.UI.notify=function(title)
        {
            $('#notify').hide();
        });
-    },800);
+    },1200);
 };
 
 

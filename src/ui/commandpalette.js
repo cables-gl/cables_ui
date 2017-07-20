@@ -83,8 +83,8 @@ CABLES.UI.CommandPalette=function()
     this.onResultClick = function(ev) {
       var el = $(ev.target);
       var cmd = el.data("cmd");
+      gui.cmdPalette.close();
       CABLES.CMD.exec(cmd);
-      gui._cmdPalette.close();
     };
 
     function isCmdInSidebar(cmdName) {
@@ -107,7 +107,7 @@ CABLES.UI.CommandPalette=function()
         var html='';
 
 
-        html+='<div class="result" id="result'+num+'" data-cmd="' + cmd.cmd + '" onclick=gui._cmdPalette.onResultClick(event)>';
+        html+='<div class="result" id="result'+num+'" data-cmd="' + cmd.cmd + '" onclick=gui.cmdPalette.onResultClick(event)>';
         // html+='<div class="result" id="result'+num+'" >';
 
 		// <a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
@@ -118,7 +118,7 @@ CABLES.UI.CommandPalette=function()
         html+='<span class="category"> – ' + cmd.category + '</span>';
 
         var bookmarkIcon = getBookmarkIconForCmd(cmd.cmd);
-        html+='<span class="icon ' + bookmarkIcon + ' bookmark" onclick=gui._cmdPalette.onBookmarkIconClick(event)></span>';
+        html+='<span class="icon ' + bookmarkIcon + ' bookmark" onclick=gui.cmdPalette.onBookmarkIconClick(event)></span>';
 		if(cmd.hotkey)
 		{
 			html+='<span class="hotkey">[ '+cmd.hotkey+' ]</span>';

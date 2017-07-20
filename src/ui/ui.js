@@ -16,7 +16,7 @@ CABLES.UI.GUI=function()
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
     var _find=new CABLES.UI.Find();
-    this._cmdPalette=new CABLES.UI.CommandPalette();
+    this.cmdPalette=new CABLES.UI.CommandPalette();
     var _opselect=new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
 
@@ -526,7 +526,7 @@ CABLES.UI.GUI=function()
         $('#meta_content_screen').html(html);
     };
 
-    this.showMetaUiDebug=function()
+    this.showUiDebug=function()
     {
         var numVisibleOps=0;
         for(var i in self.ops)
@@ -565,7 +565,8 @@ CABLES.UI.GUI=function()
                 "startup":CABLES.startup.log
             });
 
-        $('#meta_content_debug').html(html);
+        // $('#meta_content_debug').html(html);
+        CABLES.UI.MODAL.show(html);
     };
 
     this.showLibrary=function(inputId,filterType,opid)
@@ -837,7 +838,7 @@ CABLES.UI.GUI=function()
                     if(e.ctrlKey || e.metaKey)
                     {
                         e.preventDefault();
-                        self._cmdPalette.show();
+                        self.cmdPalette.show();
                     }
                 break;
 
@@ -962,7 +963,7 @@ CABLES.UI.GUI=function()
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions=null;
         }
-        else if( $('#cmdpalette').is(':visible') ) gui._cmdPalette.close();
+        else if( $('#cmdpalette').is(':visible') ) gui.cmdPalette.close();
         else if( $('#searchbox').is(':visible') ) $('#searchbox').hide();
         else if( $('#library').is(':visible') ) $('#library').hide();
         else if( $('#sidebar').is(':visible') ) $('#sidebar').animate({width:'toggle'},200);
@@ -1070,6 +1071,7 @@ CABLES.UI.GUI=function()
                     if(proj.ui)
                     {
                         self.bookmarks.set(proj.ui.bookmarks);
+                        $('#options').html(gui.bookmarks.getHtml());
                     }
                     metaCode.init();
                     self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
@@ -1352,12 +1354,9 @@ CABLES.UI.GUI=function()
         if(which=='paco') self.showMetaPaco();
 
         if(which=='profiler') self.showProfiler();
-        if(which=='debug') self.showMetaUiDebug();
         if(which=='screen') self.showMetaScreen();
-        if(which=='bookmarks') self.bookmarks.show();
         if(which=='preview') self.preview.show();
         else self.preview.hide();
-        // if(which=='find') self.find().show();
 
         CABLES.UI.userSettings.set("metatab",which);
 
@@ -1462,20 +1461,6 @@ CABLES.UI.GUI=function()
         $('.tab_profiler').hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_profiler);
-        },function()
-        {
-            CABLES.UI.hideInfo();
-        });
-        $('.tab_bookmarks').hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_bookmarks);
-        },function()
-        {
-            CABLES.UI.hideInfo();
-        });
-        $('.tab_debug').hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_debug);
         },function()
         {
             CABLES.UI.hideInfo();

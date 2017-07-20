@@ -2309,20 +2309,20 @@ CABLES.UI.Patch=function(_gui)
             if(!self.ops[i].isHidden())numVisibleOps++;
         }
 
-        var html = CABLES.UI.getHandleBarHtml(
-            'params_project',
-            {
-                texts:CABLES.UI.TEXTS,
-                project: s,
-                descr:currentProject.descriptionHTML,
-                user:gui.user,
-                userSettings:CABLES.UI.userSettings.getAll(),
-                debug:
-                {
-                }
-            });
+        // var html = CABLES.UI.getHandleBarHtml(
+        //     'params_project',
+        //     {
+        //         texts:CABLES.UI.TEXTS,
+        //         project: s,
+        //         descr:currentProject.descriptionHTML,
+        //         user:gui.user,
+        //         userSettings:CABLES.UI.userSettings.getAll(),
+        //         debug:
+        //         {
+        //         }
+        //     });
 
-        $('#options').html(html);
+        $('#options').html(gui.bookmarks.getHtml());
     };
 
 
