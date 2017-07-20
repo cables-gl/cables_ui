@@ -6,6 +6,9 @@
         <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
         <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>
+      <li class="menu" @click='callFunction("show settings")'>
+        <span class="icon icon-1.5x icon-three-dots tt" data-tt="Add / remove icons"></span>
+      </li>
     </ul>
   </div>
 </template>
@@ -60,6 +63,8 @@ export default {
   color: #2c3e50;
 
   ul {
+    height: 100%;
+    position: relative;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -76,6 +81,14 @@ export default {
         .icon {
           background-color: cyan;
         }
+      }
+
+      &.menu {
+        position: absolute;
+        width: 100%;
+        bottom: 54px;
+        display: block;
+        box-sizing: border-box;
       }
 
       span {
