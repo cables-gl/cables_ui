@@ -43,7 +43,7 @@ CABLES.UI.TEXTS=
     // infoArea: "## Info Panel \n\nHover over an element to see some infos here.",
     infoArea: "",
     projectFiles: "## Project Files \n\nOverview over your uploaded files",
-    undevLogo: "## Undev \n\nCables was made by **Undefined Development**, come visit us in our office in Berlin and have a coffee with us! ",
+    undevLogo: "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
 
     tab_files: "## Files \n\nUpload and manage your files",
     tab_profiler: "## Profiler \n\nFind out which ops require most processing time",

@@ -212,3 +212,65 @@
     }
 
 }
+
+#options
+{
+    position:absolute;
+    overflow: scroll;
+    overflow-x: hidden;
+	background-color: $background-color-dark;
+
+    &:focus {
+      border: 1px solid $highlight-color;
+    }
+
+    td
+    {
+        vertical-align:top;
+    }
+
+    select
+    {
+        border: 1px solid $color-c10;
+        background-color: $color-background-input;
+        padding:2px;
+    }
+}
+
+
+.valueDragger
+{
+    margin-left: -1px;
+    height: 17px;
+    background-color: $color-c9;
+    padding-left: 5px;
+    margin-top: 1px;
+    padding-right: 6px;
+    padding-top: 5px;
+}
+
+
+#options td, #meta td
+{
+    padding-top: 4px;
+}
+
+#options td, #meta td,#options input
+{
+    line-height: 18px !important;
+    border-bottom: 1px solid $background-color-dark;
+}
+
+#options input[type="text"]
+{
+    padding:0px;
+    padding-left:5px;
+}
+
+#options input:hover {
+  background-color: $color-c8;
+}
+
+#options input:active, #options input:focus {
+  border-bottom: 1px solid $highlight-color-dark;
+}

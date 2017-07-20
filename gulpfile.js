@@ -144,7 +144,6 @@ gulp.task('svgcss', function () {
         .pipe(gulp.dest('scss/'));
 });
 
-
 gulp.task('watch', function() {
     gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);

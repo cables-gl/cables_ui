@@ -74,7 +74,6 @@ p {
     }
 
 }
-// .selectable {user-select:all; *{user-select:all;}}
 .clickable {cursor:pointer;}
 .hidden { display:none;}
 .clear { clear:both; }
@@ -118,10 +117,6 @@ a
     }
 }
 
-#timing
-{
-    font-family: SourceCodePro,monospace;
-}
 
 #glcanvas
 {
@@ -139,29 +134,7 @@ a
     }
 }
 
-#options
-{
-    position:absolute;
-    overflow: scroll;
-    overflow-x: hidden;
-	background-color: $background-color-dark;
 
-    &:focus {
-      border: 1px solid $highlight-color;
-    }
-
-    td
-    {
-        vertical-align:top;
-    }
-
-    select
-    {
-        border: 1px solid $color-c10;
-        background-color: $color-background-input;
-        padding:2px;
-    }
-}
 
 input
 {
@@ -440,18 +413,6 @@ input[type=text]:active, input[type=text]:focus {
 
 }
 
-#undev
-{
-    background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAyMDIuNiA1My44IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAyMDIuNiA1My44OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPg0KCS5zdDB7ZmlsbDojNkI2QjZCO30NCjwvc3R5bGU+DQo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMjAyLjEsMC41aC01NC43djBoLTYuM3YwYy0wLjIsMC0wLjQsMC0wLjYsMGMtOC45LDAtMTYuNCw1LjctMTkuMiwxMy41Yy0yLjYtNy41LTkuNy0xMy0xOC4yLTEzLjRWMC41aC0yMg0KCXYxNS40SDgxQzc5LjIsNy4zLDcxLjcsMC43LDYyLjYsMC4xVjBoLTEuMmMtMC4xLDAtMC4xLDAtMC4yLDBjLTAuMSwwLTAuMSwwLTAuMiwwSDB2MzMuMmgwYzAsMCwwLDAuMSwwLDAuMUMwLDQ0LjIsOS4xLDUzLDIwLjMsNTMNCgljMTAsMCwxOC4zLTcuMSwyMC0xNi40djE2LjdIMTAzdi0wLjFjOC41LTAuMywxNS42LTUuOCwxOC4zLTEzLjNjMi43LDcuOCwxMC4zLDEzLjUsMTkuMiwxMy41YzAuMywwLDAuNiwwLDAuOSwwaDIwLjlWMzYuMQ0KCUwxODEuOSw1M2wxOS45LTE3aDAuM1YwLjV6IE0xMjEuNCwyN0MxMjEuNCwyNywxMjEuNCwyNywxMjEuNCwyN2MwLDAsMC0wLjEtMC4xLTAuMWMwLDAsMCwwLDAsMEMxMjEuMywyNi45LDEyMS4zLDI2LjksMTIxLjQsMjd6Ig0KCS8+DQo8L3N2Zz4NCg==");
-    position: absolute;
-    right: 0px;
-    bottom:3px;
-    width:68px;
-    height:19px;
-    background-size: 100% 100%;
-    display: block;
-    z-index:99;
-}
 
 .help
 {
@@ -587,11 +548,6 @@ hr
     height:1px;
 }
 
-#options td, #meta td
-{
-    padding-top: 4px;
-}
-
 .meta_content *,.meta_content div,.params_op_head,pre,
 {
 	pointer-events: all !important;
@@ -599,36 +555,6 @@ hr
     -webkit-user-select: initialm !important;
 }
 
-.valueDragger
-{
-    margin-left: -1px;
-    height: 17px;
-    background-color: $color-c9;
-    padding-left: 5px;
-    margin-top: 1px;
-    padding-right: 6px;
-    padding-top: 5px;
-}
-
-#options td, #meta td,#options input
-{
-    line-height: 18px !important;
-    border-bottom: 1px solid $background-color-dark;
-}
-
-#options input[type="text"]
-{
-    padding:0px;
-    padding-left:5px;
-}
-
-#options input:hover {
-  background-color: $color-c8;
-}
-
-#options input:active, #options input:focus {
-  border-bottom: 1px solid $highlight-color-dark;
-}
 
 .clone
 {
@@ -748,4 +674,17 @@ input
     &::placeholder{
     	color:$color-input-placeholder;
     }
+}
+
+#undev
+{
+    position: absolute;
+    right: 8px;
+    bottom: 4px;
+    width: 68px;
+    height: 19px;
+    background-color: $color-c6;
+    mask-repeat: no-repeat;
+    display: block;
+    z-index: 99;
 }
