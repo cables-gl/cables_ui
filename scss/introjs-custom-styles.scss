@@ -52,11 +52,11 @@
 }
 
 .introjs-skipbutton {
-  color: #333;
+  color: $color-introjs-skipbutton;
 }
 
 .introjs-progressbar {
-  background-color: #5CB59E; // TODO: Use $highlight-color - import correct color.scss - where??
+  background-color: $color-introjs-progressbar;
 }
 
 .introjs-showElement {

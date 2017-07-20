@@ -37,7 +37,22 @@ $color-warning: #ec9213;
 
 $color-list-border:#444;
 
-// patch ------------------------------------------------------------------------
+// ui elements -----------------------------------------------------------------
+
+// command pallet
+$color-cmd-pallet-hotkey: #525252;
+
+// intro.js
+$color-introjs-skipbutton: #333;
+$color-introjs-progressbar: #5CB59E;
+
+// color picker
+$color-color-picker-input-background: #333;
+$color-color-picker-input-label: #bbb;
+$color-color-picker-input-text: #bbb;
+$color-color-picker-separator: #333;
+
+// patch -----------------------------------------------------------------------
 
 $color_op_bg:#333;
 $color_op_bg_active:#555;
