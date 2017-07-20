@@ -124,7 +124,16 @@ a
 
     &:focus
     {
-        border-bottom:1px solid $mainColor;
+        border-bottom:1px solid $color-c8;
+    }
+
+    &.maximized
+    {
+        &:focus
+        {
+            border-bottom:none;
+        }
+
     }
 }
 
@@ -368,8 +377,7 @@ input[type=text]:active, input[type=text]:focus {
     border-radius: 6px;
 }
 
-::-webkit-scrollbar-corner {
-}
+::-webkit-scrollbar-corner {}
 
 .help
 {

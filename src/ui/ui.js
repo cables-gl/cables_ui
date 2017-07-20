@@ -379,6 +379,7 @@ CABLES.UI.GUI=function()
             this._elGlCanvas.attr('width',window.innerWidth);
             this._elGlCanvas.attr('height',window.innerHeight);
             this._elGlCanvas.css('z-index',9999);
+
         }
         else
         {
@@ -435,18 +436,24 @@ CABLES.UI.GUI=function()
     {
         if(self.rendererWidth!==0)
         {
+            this._elGlCanvas.addClass('maximized');
+
             oldRendwerWidth=self.rendererWidth;
             oldRendwerHeight=self.rendererHeight;
             oldShowingEditor=showingEditor;
 
             self.rendererWidth=0;
+            // $('#glcanvas').addClass('maximized');
+
             showingEditor=false;
         }
         else
         {
+            this._elGlCanvas.removeClass('maximized');
             self.rendererWidth=oldRendwerWidth;
             self.rendererHeight=oldRendwerHeight;
             showingEditor=oldShowingEditor;
+            // $('#glcanvas').removeClass('maximized');
         }
 
         self.setLayout();
@@ -955,7 +962,7 @@ CABLES.UI.GUI=function()
             self.rendererWidth=window.innerWidth*0.4;
             self.rendererHeight=window.innerHeight*0.25;
             showingEditor=oldShowingEditor;
-
+            this._elGlCanvas.removeClass('maximized');
             self.setLayout();
         }
         else
