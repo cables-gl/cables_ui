@@ -1,7 +1,7 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-CABLES.UI.CommandPalette=function()
+CABLES.UI.CommandPallet=function()
 {
     var lastSearch='';
     var findTimeoutId=0;
@@ -83,7 +83,7 @@ CABLES.UI.CommandPalette=function()
     this.onResultClick = function(ev) {
       var el = $(ev.target);
       var cmd = el.data("cmd");
-      gui.cmdPalette.close();
+      gui.cmdPallet.close();
       CABLES.CMD.exec(cmd);
     };
 
@@ -107,7 +107,7 @@ CABLES.UI.CommandPalette=function()
         var html='';
 
 
-        html+='<div class="result" id="result'+num+'" data-cmd="' + cmd.cmd + '" onclick=gui.cmdPalette.onResultClick(event)>';
+        html+='<div class="result" id="result'+num+'" data-cmd="' + cmd.cmd + '" onclick=gui.cmdPallet.onResultClick(event)>';
         // html+='<div class="result" id="result'+num+'" >';
 
 		// <a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
@@ -118,7 +118,7 @@ CABLES.UI.CommandPalette=function()
         html+='<span class="category"> – ' + cmd.category + '</span>';
 
         var bookmarkIcon = getBookmarkIconForCmd(cmd.cmd);
-        html+='<span class="icon ' + bookmarkIcon + ' bookmark" onclick=gui.cmdPalette.onBookmarkIconClick(event)></span>';
+        html+='<span class="icon ' + bookmarkIcon + ' bookmark" onclick=gui.cmdPallet.onBookmarkIconClick(event)></span>';
 		if(cmd.hotkey)
 		{
 			html+='<span class="hotkey">[ '+cmd.hotkey+' ]</span>';

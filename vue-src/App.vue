@@ -6,7 +6,7 @@
         <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
         <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>
-      <li class="menu" @click='callFunction("show settings")'>
+      <li class="menu" @click='callFunction("show command pallet")'>
         <span class="icon icon-1.5x icon-three-dots tt" data-tt="Add / remove icons"></span>
       </li>
     </ul>

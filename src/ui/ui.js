@@ -16,7 +16,7 @@ CABLES.UI.GUI=function()
     var _userOpManager=null;
     var _jobs=new CABLES.UI.Jobs();
     var _find=new CABLES.UI.Find();
-    this.cmdPalette=new CABLES.UI.CommandPalette();
+    this.cmdPallet=new CABLES.UI.CommandPallet();
     var _opselect=new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
 
@@ -838,7 +838,7 @@ CABLES.UI.GUI=function()
                     if(e.ctrlKey || e.metaKey)
                     {
                         e.preventDefault();
-                        self.cmdPalette.show();
+                        self.cmdPallet.show();
                     }
                 break;
 
@@ -963,7 +963,7 @@ CABLES.UI.GUI=function()
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions=null;
         }
-        else if( $('#cmdpalette').is(':visible') ) gui.cmdPalette.close();
+        else if( $('#cmdpalette').is(':visible') ) gui.cmdPallet.close();
         else if( $('#searchbox').is(':visible') ) $('#searchbox').hide();
         else if( $('#library').is(':visible') ) $('#library').hide();
         else if( $('#sidebar').is(':visible') ) $('#sidebar').animate({width:'toggle'},200);
