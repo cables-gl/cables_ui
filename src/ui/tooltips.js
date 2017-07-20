@@ -36,7 +36,7 @@ CABLES.UI.showInfo=function(txt)
 {
   // return;
   if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
-  $('#infoArea').html(mmd(txt)+'<a class="button" onclick="gui.closeInfo();">close</a>');
+  $('#infoArea').html('<a class="icon-x icon fright" style="margin-right:10px;" onclick="gui.closeInfo();">sss</a>'+mmd(txt));
 };
 
 CABLES.UI.hideInfo=function()
