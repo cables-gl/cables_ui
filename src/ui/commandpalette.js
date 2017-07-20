@@ -97,7 +97,7 @@ CABLES.UI.CommandPallet=function()
      */
     function getBookmarkIconForCmd(cmdName) {
       if(isCmdInSidebar(cmdName)) {
-          return self._bookmarkActiveIcon
+          return self._bookmarkActiveIcon;
       }
       return self._bookmarkInactiveIcon;
     }
