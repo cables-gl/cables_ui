@@ -6,48 +6,9 @@ var store = require('./store/index.js');
 
 Vue.config.productionTip = false;
 
-// var iconBarData = [
-//   {
-//     'icon': 'fa-play',
-//     'title': 'Play',
-//     'action': 'play'
-//   },
-//   {
-//     'icon': 'fa-forward',
-//     'title': 'Forward',
-//     'action': 'forward'
-//   },
-//   {
-//     'icon': 'fa-backward',
-//     'title': 'Backward',
-//     'action': 'backward'
-//   }
-// ];
-
-window.cablesFunctions = {
-  'play': function() {
-    alert("play");
-  },
-  'forward': function() {
-    alert("forward");
-  },
-  'backward': function() {
-    alert("backward");
-  }
-};
-
-window.callCablesFunction = function(functionName) {
-    if(window.cablesFunctions.hasOwnProperty(functionName)) {
-      window.cablesFunctions[functionName]();
-    }
-};
-
 new Vue({
   el: '#vue-app',
   store,
-  template: '<App :title="title" />',
-  data: {
-    'title': 'Heloo???'
-  },
+  template: '<App />',
   components: { App }
 })

@@ -14,16 +14,16 @@
 </template>
 
 <script>
-import Hello from './components/Hello.vue'
+// import Hello from './components/Hello.vue'
 
 export default {
   name: 'app',
   components: {
-    Hello
+    // Hello
   },
-  props: [
-    'title'
-  ],
+  // props: [
+  //   'title'
+  // ],
   computed: {
     items() {
       return this.$store.state.sidebar.items;
