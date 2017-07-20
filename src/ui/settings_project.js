@@ -156,6 +156,7 @@ CABLES.ProjectSettings=function(project)
         var proj_secret=$('#projectsettings_secret').val();
         var proj_example=$('#projectsettings_example').val();
         var proj_test=$('#projectsettings_test').val();
+        var proj_template=$('#projectsettings_template').val();
         var proj_autoscreenshot=$('#projectsettings_autoscreenshot').val();
 
         gui.setProjectName(proj_name);
@@ -166,6 +167,7 @@ CABLES.ProjectSettings=function(project)
         gui.scene().settings.secret=proj_secret;
         gui.scene().settings.isExample=proj_example;
         gui.scene().settings.isTest=proj_test;
+        gui.scene().settings.isTemplate=proj_template;
 
         gui.scene().settings.manualScreenshot=proj_autoscreenshot;
 
@@ -270,6 +272,17 @@ CABLES.ProjectSettings=function(project)
             $('#projectsettings_test_icon').addClass('fa-square-o');
         }
 
+        if($('#projectsettings_template').val()=='true')
+        {
+            $('#projectsettings_template_icon').addClass('fa-check-square-o');
+            $('#projectsettings_template_icon').removeClass('fa-square-o');
+        }
+        else
+        {
+            $('#projectsettings_template_icon').removeClass('fa-check-square-o');
+            $('#projectsettings_template_icon').addClass('fa-square-o');
+        }
+
     };
 
     this.togglePublic=function()
@@ -296,6 +309,13 @@ CABLES.ProjectSettings=function(project)
     this.toggleTest=function()
     {
         $('#projectsettings_test').val(''+!($('#projectsettings_test').val()=='true'));
+
+        self.updateIcons();
+    };
+
+    this.toggleTemplate=function()
+    {
+        $('#projectsettings_template').val(''+!($('#projectsettings_template').val()=='true'));
 
         self.updateIcons();
     };
