@@ -17,7 +17,7 @@ CABLES.UI.TEXTS=
 
     portFloatInput:"* use mousewheel or up/down keys to inc/decrement by 0.1",
     portFloatDrag:"* hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
-    portUnlink:"unlink port",
+    portUnlink:"Click to unlink port",
     portCreateOp:"create and connect new texture op",
     portAnimKeep:"keep in keyframing view",
     portAnimToggle:"toggle parameter animation. enable to keyframe parameter",
@@ -39,7 +39,7 @@ CABLES.UI.TEXTS=
 
     editor: "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
     patch: "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n### Shortcuts \n\n* `[esc]: Quick-add op` \n* `[space] + mouse drag:`: Scroll \n* `[mod] + s`: Save patch \n* `[mod] + v`: Paste \n* `[mod] + a`: Select all ops",
-    canvas: "## Renderer \n\nHere you can see the visual output of your patch.",
+    canvas: "## Renderer \n\nHere you can see the visual output of your patch.\n[CMD] + [ENTER] - Maximize renderer",
     // infoArea: "## Info Panel \n\nHover over an element to see some infos here.",
     infoArea: "",
     projectFiles: "## Project Files \n\nOverview over your uploaded files",
@@ -55,6 +55,9 @@ CABLES.UI.TEXTS=
     minimapContainer: "## Minimap \n\nShows an overview over your patch. Click inside the map to navigate.",
     project_settings_btn: "## project Settings \n\nEdit project name, make it private / public, add collaborators.",
     timelineui: "## Timeline \n\nIn the timeline you can animate ports over time.",
-    op_background: "## Op \n\n"
+    op_background: "## Op \n\n",
+
+    bookmark_added: "Bookmark added!",
+    bookmark_removed: "Bookmark removed!",
 
 };

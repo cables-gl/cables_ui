@@ -86,6 +86,15 @@ CABLES.CMD.PATCH.renameOp=function()
 	CABLES.UI.MetaCode.rename();
 };
 
+CABLES.CMD.PATCH.patchWebsite=function()
+{
+	window.open("/p/"+gui.patch().getCurrentProject()._id);
+
+
+	// console.log(gui.patch().getCurrentProject()._id);
+};
+
+
 CABLES.CMD.PATCH.editOp=function()
 {
 
@@ -209,5 +218,12 @@ CABLES.CMD.commands.push(
 		cmd:"clear patch",
 		category:"patch",
 		func:CABLES.CMD.PATCH.clear
+	},
+	{
+		cmd:"open patch website",
+		category:"patch",
+		func:CABLES.CMD.PATCH.patchWebsite,
+		icon:"link"
 	}
+
 );

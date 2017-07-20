@@ -61,8 +61,8 @@
     <nav>
         <ul>
             <li class="cables">
-                <div class="logo cablesLogo"></div>
-                <a href="/" target="blank">cables</a>
+                <div class="logo cablesLogo nav_cables"></div>
+                <a class="nav_cables" >cables</a>
                 <ul id="jobs"></ul>
             </li>
             <li>
@@ -149,9 +149,9 @@
 
     <div id="" style="float:right;">
 
-        <a target="blank" class="viewProjectLink button fa fa-external-link"></a>
 
-        <a id="button_cycleRenderSize" class="button fa fa-expand tt"  data-tt="toggle fullscreen (esc to exit fullscreen)"></a>
+
+        <!-- <a id="button_cycleRenderSize" class="button fa fa-expand tt"  data-tt="toggle fullscreen (esc to exit fullscreen)"></a> -->
         &nbsp;
     </div>
 
@@ -164,12 +164,13 @@
 
 
     <div id="loggedin">
-        <div class="button projectname fa fa-cog" style="margin-right:20px;margin-top:2px;" onclick="gui.showSettings();"></div>
-        <div id="username" class="clickable"></div>
+        <div class="button projectname fa fa-cog"  onclick="gui.showSettings();"></div>
+        <a target="blank" class="viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;"></a>
+        <div id="username" class="button fa fa-user "></div>
     </div>
 
     <div id="loggedout">
-        <div id="username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a>
+        <div id="button username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a>
     </div>
 
 </div>
@@ -181,10 +182,8 @@
             <a class="tab_doc active fa fa-book" data-info="{{ texts.tab_doc }}" onclick="gui.setMetaTab('doc')"> </i> </a>
             <a class="tab_code fa fa-code" data-info="{{ texts.tab_code }}" onclick="gui.setMetaTab('code')"> </i> </a>
             <a class="tab_profiler fa fa-pie-chart" data-info="{{ texts.tab_profiler }}" onclick="gui.setMetaTab('profiler')"></a>
-            <a class="tab_bookmarks fa fa-bookmark-o" data-info="{{ texts.tab_bookmarks }}" onclick="gui.setMetaTab('bookmarks')"></a>
             <a class="tab_preview fa fa-eye" data-info="{{ texts.tab_preview }}" onclick="gui.setMetaTab('preview')"></a>
 
-            <a class="tab_debug fa fa-info-circle" onclick="gui.setMetaTab('debug')"></a>
             <a class="tab_keyframes fa fa-clock-o" onclick="gui.setMetaTab('keyframes')"></a>
             <a class="tab_screen fa fa-television" onclick="gui.setMetaTab('screen')"></a>
             <a class="tab_paco fa fa-youtube-play" onclick="gui.setMetaTab('paco')"></a>
@@ -195,8 +194,6 @@
         <div id="meta_content_preview" class="meta_content"></div>
         <div id="meta_content_code" class="meta_content"></div>
         <div id="meta_content_profiler" class="meta_content"></div>
-        <div id="meta_content_debug" class="meta_content"></div>
-        <div id="meta_content_bookmarks" class="meta_content"></div>
         <div id="meta_content_screen" class="meta_content"></div>
         <div id="meta_content_keyframes" class="meta_content"></div>
         <div id="meta_content_paco" class="meta_content"></div>

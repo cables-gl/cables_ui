@@ -794,8 +794,8 @@ CABLES.UI.Patch=function(_gui)
                 maxY=Math.max(maxY,arr[i].op.uiAttribs.translate.y);
             }
         }
-        viewBox.x=minX-30;
-        viewBox.y=minY-30;
+        viewBox.x=minX-viewBox.w/2;
+        viewBox.y=minY-viewBox.h/2;
         var w=1*(Math.abs(maxX-minX));
         var h=1*(Math.abs(maxY-minY));
 
@@ -2309,20 +2309,20 @@ CABLES.UI.Patch=function(_gui)
             if(!self.ops[i].isHidden())numVisibleOps++;
         }
 
-        var html = CABLES.UI.getHandleBarHtml(
-            'params_project',
-            {
-                texts:CABLES.UI.TEXTS,
-                project: s,
-                descr:currentProject.descriptionHTML,
-                user:gui.user,
-                userSettings:CABLES.UI.userSettings.getAll(),
-                debug:
-                {
-                }
-            });
+        // var html = CABLES.UI.getHandleBarHtml(
+        //     'params_project',
+        //     {
+        //         texts:CABLES.UI.TEXTS,
+        //         project: s,
+        //         descr:currentProject.descriptionHTML,
+        //         user:gui.user,
+        //         userSettings:CABLES.UI.userSettings.getAll(),
+        //         debug:
+        //         {
+        //         }
+        //     });
 
-        $('#options').html(html);
+        $('#options').html(gui.bookmarks.getHtml());
     };
 
 

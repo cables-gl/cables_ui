@@ -12,13 +12,23 @@ CABLES.CMD.DEBUG.testAllOps=function()
 
 };
 
-
+CABLES.CMD.DEBUG.showUiDebug=function()
+{
+    gui.showUiDebug();
+};
 
 CABLES.CMD.commands.push(
-	{
+    {
 		cmd:"test all ops",
 		category:"debug",
-		func:CABLES.CMD.DEBUG.testAllOps
+		func:CABLES.CMD.DEBUG.testAllOps,
+        icon:'command'
+	},
+    {
+		cmd:"cables ui debug",
+		category:"debug",
+		func:CABLES.CMD.DEBUG.showUiDebug,
+        icon:'command'
 	}
 
 );

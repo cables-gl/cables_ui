@@ -7,7 +7,6 @@ CABLES.UI.Preview=function()
     var interval=defaultInterval;
     var paused=false;
 
-
     this.show=function()
     {
         paused=false;
@@ -92,9 +91,12 @@ CABLES.UI.Preview=function()
         {
             canvas = document.getElementById('preview_img');
             canvasContainer = document.getElementById('preview_img_container');
-            infoContainer = document.getElementById('preview_img_info');
+            // infoContainer = document.getElementById('preview_img_info');
+            $('#meta_content_preview .opname').html(previewDataPort.parent.name);
 
-            infoContainer.innerHTML='<pre>'+JSON.stringify(texture.getInfo(),false,2)+'</pre>';
+$('#preview_img_container').data('info','<pre>'+JSON.stringify(texture.getInfo(),false,2)+'</pre>');
+
+            // infoContainer.innerHTML=;
 
             lastWidth =width;
             lastHeight=height;

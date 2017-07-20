@@ -64,6 +64,16 @@ CABLES.CMD.UI.showSearch=function()
 	gui.find().show();
 };
 
+CABLES.CMD.UI.toggleMaxRenderer=function()
+{
+	gui.cycleRendererSize();
+};
+
+CABLES.CMD.UI.showCommandPalette=function()
+{
+	gui.cmdPalette.show();
+};
+
 
 
 
@@ -126,8 +136,22 @@ CABLES.CMD.commands.push(
 		category:"ui",
 		func:CABLES.CMD.UI.userSettings,
 		icon:'settings',
-
+	},
+	{
+		cmd:"maximize renderer",
+		category:"ui",
+		func:CABLES.CMD.UI.toggleMaxRenderer,
+		icon:'monitor',
+        hotkey:'CMD + ENTER',
+	},
+	{
+		cmd:"show command palette",
+		category:"ui",
+		func:CABLES.CMD.UI.showCommandPalette,
+		icon:'search',
+        hotkey:'CMD + P',
 	}
+
 
 
 

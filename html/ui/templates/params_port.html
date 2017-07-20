@@ -11,7 +11,7 @@
 <script id="params_port" type="text/x-handlebars-template">
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}">
-    <td class="port portType_{{ port.type }} ">
+    <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}">
         {{port.name}}
         </span>
@@ -33,7 +33,7 @@
                 {{#each port.links}}
                     <tr>
                         <td>
-                            <a class="info graphbutton fa fa-chain-broken" data-info="{{ texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
+                            <a class="info graphbutton fa fa-chain-broken" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
                             <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portIn.parent.id}}');">{{{ portIn.parent.name }}} - {{{portIn.name}}}</span><br/>
                         </td>
                     </tr>
@@ -42,7 +42,7 @@
             {{else}}
                 {{#each port.links}}
                     </td><td>
-                        <a class="info graphbutton fa fa-chain-broken" data-info="{{ texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
+                        <a class="info graphbutton fa fa-chain-broken" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
                         <span class="paramsPortLink" onclick="gui.patch().setSelectedOpById('{{portOut.parent.id}}');">{{{ portOut.parent.name }}} - {{{portOut.name}}}</span><br/>
                 {{/each}}
             {{/if}}

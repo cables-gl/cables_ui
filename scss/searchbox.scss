@@ -20,14 +20,14 @@
 		margin-bottom: 15px;
 	}
 
-    #searchresult
+    #searchresult_cmd
     {
-		max-height: 75vh;
+		max-height: 30vh;
 	    overflow-y: auto;
     }
 }
 
-#searchresult,#searchresult_cmd
+#searchresult,#searchresult_cmd,.list
 {
 	background-color: $background-color-brighter;
 
@@ -40,7 +40,7 @@
     div
     {
         padding:10px;
-        border-bottom:1px solid #444;
+        border-bottom:1px solid $color-list-border;
         cursor:pointer;
 
         &:hover
