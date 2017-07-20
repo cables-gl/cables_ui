@@ -1,0 +1,106 @@
+
+.meta_content *,.meta_content div,.params_op_head,pre,
+{
+	pointer-events: all !important;
+    user-select: initial !important;
+    -webkit-user-select: initialm !important;
+}
+
+
+#meta
+{
+    position:absolute;
+    overflow: auto;
+    overflow-x: hidden;
+	background-color: $background-color-dark;
+
+    div
+    {
+        min-width: 250px;
+    }
+}
+
+#meta_content
+{
+    overflow:scroll;
+    padding:10px;
+    font-size: 12px;
+
+    h3
+    {
+        font-size: 16px;
+        margin-top: 0px;
+    }
+}
+
+#doc_op
+{
+    padding:10px;
+    padding-top: 0px;
+    overflow: auto;
+
+    /* enable text selection */
+    * {
+      -webkit-user-select: text;
+      -khtml-user-select: text;
+      -moz-user-select: text;
+      -o-user-select: text;
+      user-select: text;
+    }
+
+    li
+    {
+        padding-left: 0px;
+    }
+    ul
+    {
+        padding-left: 20px;
+    }
+    a
+    {
+        text-decoration: underline;
+    }
+    .button
+    {
+        text-decoration: none;
+    }
+}
+
+
+#metatabs
+{
+    padding: 0px !important;
+}
+
+.tabs
+{
+    background-color: $color-menubar-background;
+    display: block;
+    padding: 0px !important;
+    width:100%;
+
+    a
+    {
+        padding:8px !important;
+        padding-bottom:8px !important;
+        padding-left:5px !important;
+        padding-right:5px !important;
+		color: $color-menubar-text;
+    }
+
+    a.active
+    {
+        background-color: $color-menubar-background-active;
+        color: $color-ca;
+    }
+}
+
+
+#preview_img_container canvas
+{
+    border: 1px solid transparent;
+    &:hover
+    {
+        border: 1px dashed $color-c7;
+    }
+}

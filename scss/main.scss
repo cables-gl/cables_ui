@@ -22,6 +22,7 @@
 @import 'components/timeline';
 @import 'components/changelog';
 @import 'components/tooltip';
+@import 'components/meta';
 
 
 html,body { // ipad overscroll fix...
@@ -89,32 +90,6 @@ a
     color:$color-text-link;
     text-decoration: none;
     cursor: pointer;
-}
-
-#meta
-{
-    position:absolute;
-    overflow: auto;
-    overflow-x: hidden;
-	background-color: $background-color-dark;
-
-    div
-    {
-        min-width: 250px;
-    }
-}
-
-#meta_content
-{
-    overflow:scroll;
-    padding:10px;
-    font-size: 12px;
-
-    h3
-    {
-        font-size: 16px;
-        margin-top: 0px;
-    }
 }
 
 
@@ -508,53 +483,12 @@ input[type=text]:active, input[type=text]:focus {
     position:absolute;
 }
 
-#doc_op
-{
-    padding:10px;
-    padding-top: 0px;
-    overflow: auto;
-
-    /* enable text selection */
-    * {
-      -webkit-user-select: text;
-      -khtml-user-select: text;
-      -moz-user-select: text;
-      -o-user-select: text;
-      user-select: text;
-    }
-
-    li
-    {
-        padding-left: 0px;
-    }
-    ul
-    {
-        padding-left: 20px;
-    }
-    a
-    {
-        text-decoration: underline;
-    }
-    .button
-    {
-        text-decoration: none;
-    }
-}
-
 hr
 {
     border:none;
     border-top: 1px solid $color-c10;
     height:1px;
 }
-
-.meta_content *,.meta_content div,.params_op_head,pre,
-{
-	pointer-events: all !important;
-    user-select: initial !important;
-    -webkit-user-select: initialm !important;
-}
-
 
 .clone
 {
@@ -587,39 +521,6 @@ hr
         background-color: $color-c10;
         color: $color-c1;
         float:right
-    }
-}
-
-rect
-{
-    -webkit-tap-highlight-color:rgba(0,0,0,0);
-}
-
-#metatabs
-{
-    padding: 0px !important;
-}
-
-.tabs
-{
-    background-color: $color-menubar-background;
-    display: block;
-    padding: 0px !important;
-    width:100%;
-
-    a
-    {
-        padding:8px !important;
-        padding-bottom:8px !important;
-        padding-left:5px !important;
-        padding-right:5px !important;
-		color: $color-menubar-text;
-    }
-
-    a.active
-    {
-        background-color: $color-menubar-background-active;
-        color: $color-ca;
     }
 }
 
@@ -660,14 +561,6 @@ rect
     }
 }
 
-#preview_img_container canvas
-{
-    border: 1px solid transparent;
-    &:hover
-    {
-        border: 1px dashed $color-c7;
-    }
-}
 
 input
 {

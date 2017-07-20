@@ -397,3 +397,9 @@
     animation-iteration-count:infinite;
     animation-timing-function: linear;
 }
+
+
+rect
+{
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
