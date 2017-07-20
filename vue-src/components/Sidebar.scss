@@ -1,6 +1,8 @@
+@import '../../scss/colors_dark';
+
 #icon-bar {
   padding-top: 28px;
-  background-color: black;
+  background-color: $color-cz;
   position: fixed;
   top: 0;
   left: 0;

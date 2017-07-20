@@ -26,14 +26,14 @@
 #minimapContainer
 {
     // border:1px solid red;
-    border:2px solid #111;
+    border:2px solid $color-cz;
     position: absolute;
     display: none;
 
     .title
     {
         cursor:pointer;
-        background-color: rgba(15, 15, 15, 0.9);
+        background-color: $color-c5;
     }
 }
 
@@ -48,7 +48,7 @@
 
     svg
     {
-        background-color: rgba(15, 15, 15, 0.9);
+        background-color: $color-cz;
         cursor: pointer;
     }
 
@@ -96,7 +96,7 @@
     {
         // border:1px solid $highlight-color-dark;
 		// transition: ease-in-out, border .1s ease-in-out;
-		border: 1px solid #444;
+		border: 1px solid $color-c8;
 
     }
 
@@ -195,7 +195,7 @@
         {
             stroke-width:1;
             fill-opacity:1;
-            stroke:#fff !important;
+            stroke: $color-ca !important;
             // stroke-opacity:0.5;
         }
     }
@@ -216,11 +216,11 @@
     .link_color_object { stroke:$color_link_object; }
     .link_color_array { stroke:$color_link_array; }
     .link_color_dynamic { stroke:$color_link_dynamic; }
-    .link_color_unknown,.link_color_error { stroke:#666; }
+    .link_color_unknown,.link_color_error { stroke: $color-c7; }
 
     .link_hover
     {
-        stroke:#fff !important;
+        stroke: $color-ca !important;
         stroke-width:3;
     }
 

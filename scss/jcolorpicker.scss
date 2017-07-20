@@ -1,28 +1,70 @@
-.cp-color-picker{
-    box-sizing:border-box; width:226px;
+.cp-color-picker {
+    box-sizing: border-box;
+    width: 226px;
+    height: 176px;
     z-index: 200;
     border-radius: 0px !important;
     padding: 10px 10px 10px !important;
 
-    input
-    {
-        padding: 4px;
-        border: none !important;
-        background: #333 !important;
-        padding-left: 3px !important;
-        padding-right: 3px !important;
+    input {
+      padding: 4px;
+      border: none !important;
+      background: $color-color-picker-input-background !important;
+      color: $color-color-picker-input-text;
+      padding-left: 3px !important;
+      padding-right: 3px !important;
 
+      font-family: monospace, "Courier New",Courier,mono; // TODO: Replace
+      font-size: 12px;
     }
 }
-.cp-color-picker .cp-panel {line-height: 21px; float:right;
-    padding:0 1px 0 8px; margin-top:-1px; overflow:visible}
-.cp-xy-slider:active {cursor:none;}
-.cp-panel, .cp-panel input {color:#bbb; font-family:monospace,
-    "Courier New",Courier,mono; font-size:12px; }
-.cp-panel input {width:28px;  padding:2px 3px 1px !important;
-    text-align:right; line-height:12px; background:transparent;
-    border:1px solid; border-color:#222 #666 #666 #222;}
-.cp-panel hr {margin:0 -2px 2px; height:1px; border:0;
-    background:#666; border-top:1px solid #222;}
-.cp-panel .cp-HEX {width:44px; position:absolute; margin:1px -3px 0 -2px;}
-.cp-alpha {width:100px !important;}
+
+.cp-color-picker .cp-panel {
+  line-height: 21px;
+  float: right;
+  padding: 0 1px 0 8px;
+  margin-top: -1px;
+  overflow: visible
+}
+
+.cp-xy-slider:active {
+  cursor: none;
+}
+
+.cp-panel {
+  color: $color-color-picker-input-label;
+  font-family: monospace, "Courier New",Courier,mono; // TODO: Replace
+  font-size: 12px;
+
+  input {
+    width: 28px;
+    padding: 2px 3px 1px !important;
+    text-align: right;
+    line-height: 12px;
+    border: 1px solid;
+  }
+
+  hr {
+    margin: 0 -2px 2px;
+    height: 1px;
+    border: 0;
+    background: $color-color-picker-separator;
+  }
+
+  .cp-HEX {
+    width: 70px;
+    left: -18px;
+    position: absolute;
+    margin:1px -3px 0 -2px;
+
+    &::before {
+      content: "Hex";
+    }
+  }
+}
+
+.cp-alpha {
+  display: none !important;
+  // width: 100px !important;
+  // width: 128px !important;
+}

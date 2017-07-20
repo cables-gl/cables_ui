@@ -63,13 +63,11 @@
 
     .searchresult //,.searchresult_cmd
     {
-        // background-color: #333;
-		// background-color: $background-color-dark;
         font-size: 16px;
         padding:15px;
         padding-top:10px;
         padding-bottom:10px;
-		border-bottom: 1px solid #444;
+		border-bottom: 1px solid $color-c8;
 		background-color: $background-color-brighter;
 
     }
@@ -147,7 +145,7 @@
         .insertbutton
         {
             // background-color:rgba(40,40,40,0.5);
-            color:#ddd !important;
+            color: $color-c2 !important;
 			background-color: $color_op_bg;
 
             &:hover
@@ -158,34 +156,27 @@
 
         .summary
         {
-            color:#fff;
+            color: $color-ca;
             i
             {
                 text-decoration: underline;
                 font-style: normal;
-                color:#222;
+                color: $color-c9;
             }
         }
 
-        // .score
-        // {
-        //     color:#222;
-        // }
-
 		.op_color_default
 		{
-			color:#fff;
+			color: $color-ca;
 		}
 
         .namespace
         {
-            // color:#222;
 
             i
             {
                 text-decoration: underline;
                 font-style: normal;
-                // color:#222;
             }
 
             &:hover
@@ -222,7 +213,7 @@
 
     .summary
     {
-        color:#fff;
+        color: $color-ca;
         font-size: 13px;
         font-style: normal;
         margin-top: 5px;

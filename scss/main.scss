@@ -119,31 +119,6 @@ a
     font-family: SourceCodePro,monospace;
 }
 
-
-// #statusbar
-// {
-//     height:20px;
-//     width:100%;
-//     padding:3px;
-//     background-color: black;
-//     position: absolute;
-//     bottom:0px;
-//     overflow: hidden;
-//     z-index:999;
-//
-//     div
-//     {
-//         float:left;
-//     }
-//
-//     a
-//     {
-//         background-color: #444;
-//         color:white;
-//         padding:2px;
-//     }
-// }
-
 #glcanvas
 {
     background-color: black;
@@ -178,7 +153,7 @@ a
 
     select
     {
-        border: 1px solid #222;
+        border: 1px solid $color-c10;
         background-color: $color-background-input;
         padding:2px;
 
@@ -188,8 +163,8 @@ a
 
 input
 {
-    background-color: #888;
-    color:#fff;
+    background-color: $color-c6;
+    color: $color-ca;
     border:none;
 
     &.invalid
@@ -211,7 +186,7 @@ input[type="text"]
 
 td.head
 {
-    background-color: #000;
+    background-color: $color-cz;
 }
 
 #menubar,#timelineui
@@ -257,7 +232,7 @@ td.head
         cursor: pointer;
         height:30px;
         padding-right: 10px;
-        color:#fff;
+        color: $color-ca;
         opacity: 0.5;
 
         i
@@ -339,19 +314,14 @@ input[type="text"]
 .button,.bluebutton,.greybutton
 {
 	display:inline-block;
-
-    text-transform: capitalize;
+  text-transform: capitalize;
 	text-align: center;
 	margin-bottom: 2px;
-
-	color: $button-text-color;
+  color: $button-text-color;
 	background-color: $button-background-color;
-
-    border: 1px solid $button-border-color;
 	border-radius: 29px;
 	padding: 5px 16px;
-
-    cursor:pointer !important;
+  cursor:pointer !important;
 
     &.fa:before
     {
@@ -368,7 +338,7 @@ input[type="text"]
 
     &.warn
     {
-        background-color:#ea6638;
+        background-color: $color-warning;
     }
 
 }
@@ -386,12 +356,12 @@ a.button.fa-times:before {
 .fa-sort {
   margin-left: 0px;
   height: 25px;
-  background-color: #383838;
+  background-color: $color-c9;
 }
 
 .bluebutton
 {
-    color:#eee;
+    color: $color-c1;
     background-color: $highlight-color-dark;
     // padding:10px;
 	padding: 10px 20px;
@@ -400,21 +370,21 @@ a.button.fa-times:before {
     {
         cursor:pointer !important;
         background-color: $highlight-color-dark;
-        color:#fff;
+        color: $color-ca;
     }
 }
 
 .greybutton
 {
-	color:#eee;
-    background-color: #555;
+	color: $color-c1;
+    background-color: $color-c8;
     padding:10px;
 
     &:hover
     {
         cursor:pointer !important;
-        background-color: #666;
-        color:#fff;
+        background-color: $color-c7;
+        color: $color-ca;
     }
 }
 
@@ -436,7 +406,7 @@ a.button.fa-times:before {
     display:block;
     float:left;
     padding:0px;
-    color:#999;
+    color: $color-c5;
     padding-left:2px;
     padding-top: 2px;
     font-size: 14px !important;
@@ -448,7 +418,7 @@ a.button.fa-times:before {
     &:hover
     {
         opacity: 1;
-        color:#eee;
+        color: $color-c1;
     }
 }
 
@@ -493,14 +463,14 @@ input.medium
     border:none;
     border-radius: 3px;
     outline: none;
-    background-color: #444;
+    background-color: $color-c9;
     color:$mainColor;
 
     &:focus
     {
-        background-color: #666;
+        background-color: $color-c7;
         outline: none;
-        color:#fff;
+        color: $color-ca;
     }
 }
 
@@ -512,13 +482,13 @@ input[type=range]{
 input[type=range]::-webkit-slider-runnable-track {
     width: 300px;
     height: 5px;
-    background: #666;
+    background: $color-c7;
     border: none;
     border-radius: 3px;
     padding:none !important;
     padding-left:0px;
     height: 17px;
-    background-color: #666;
+    background-color: $color-c7;
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -527,7 +497,7 @@ input[type=range]::-webkit-slider-thumb {
     height: 16px;
     width: 16px;
     // border-radius: 50%;
-    background: #fff;
+    background: $color-ca;
     // margin-top: -4px;
 }
 
@@ -622,7 +592,7 @@ input[type=text]:active, input[type=text]:focus {
 {
     border:none;
     position: absolute;
-    background-color: #222;
+    background-color: #222; // TODO: Change color
     height:25px;
     max-height:25px;
     overflow: hidden;
@@ -636,7 +606,7 @@ input[type=text]:active, input[type=text]:focus {
 {
     border:1px solid transparent;
     position: absolute;
-    background-color: #2a2a2a;
+    background-color: #2a2a2a; // TODO: Change color
     height:25px;
     max-height:25px;
     overflow: hidden;
@@ -671,7 +641,7 @@ input[type=text]:active, input[type=text]:focus {
 
     td
     {
-        border-bottom: 1px solid #222;
+        border-bottom: 1px solid $color-c10;
         padding-bottom: 4px;
         padding-top: 4px;
     }
@@ -689,19 +659,17 @@ input[type=text]:active, input[type=text]:focus {
 ::-webkit-scrollbar {
     height: 12px;
     width: 12px;
-    // background: #1a1a1a;
-    background: transparent;
+    background: $color-scrollbar-background;
     opacity: 0.5;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #2a2a2a;
+    background: $color-scrollbar-thumb;
     -webkit-border-radius: 1px;
-    // -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
 }
 
 ::-webkit-scrollbar-corner {
-    // background: #000;
+
 }
 
 
@@ -736,7 +704,7 @@ input[type=text]:active, input[type=text]:focus {
     right:0px;
     width:240px;
     height:260px;
-    background-color: #1a1a1a;
+    background-color: $color-c10;
     z-index: 99999999;
 
     .title
@@ -791,7 +759,7 @@ input[type=text]:active, input[type=text]:focus {
 {
     display:none;
     position: absolute;
-    background-color: #222;
+    background-color: $color-c9;
     z-index: 99999;
 
     .libleft
@@ -818,7 +786,6 @@ input[type=text]:active, input[type=text]:focus {
 
     .previewImage
     {
-        // border:4px solid #666;
         background-color:000;
         background-repeat:no-repeat;
         background-position:center center;
@@ -843,11 +810,11 @@ input[type=text]:active, input[type=text]:focus {
 
         &:hover
         {
-            background-color: #111;
+            background-color: $color-cz;
 
             .filename
             {
-                color:#fff;
+                color: $color-ca;
             }
         }
 
@@ -867,7 +834,7 @@ input[type=text]:active, input[type=text]:focus {
         .library-file-icon,i
         {
             margin-top:10px;
-            background-color: #111;
+            background-color: $color-cz;
             margin-left: 10px;
             background-repeat:no-repeat;
             background-size:100% auto;
@@ -894,7 +861,7 @@ input[type=text]:active, input[type=text]:focus {
 
         i
         {
-            background-color: #111;
+            background-color: $color-cz;
             opacity: 0.5;
             // background-color: transparent !important;
         }
@@ -921,8 +888,8 @@ input[type=text]:active, input[type=text]:focus {
 
         &:hover
         {
-            background-color: #444;
-            color:#fff;
+            background-color: $color-c9;
+            color: $color-ca;
         }
     }
 
@@ -979,7 +946,7 @@ input[type=text]:active, input[type=text]:focus {
 
         .unselectable
         {
-            color:#666;
+            color: $color-c7;
         }
 
         .filename
@@ -999,7 +966,7 @@ input[type=text]:active, input[type=text]:focus {
             &:hover
             {
                 text-decoration: underline;
-                background-color: #222;
+                background-color: $color-c10;
                 color:white;
             }
         }
@@ -1031,12 +998,12 @@ input[type=text]:active, input[type=text]:focus {
 
         tr
         {
-            border-bottom: #444;
+            border-bottom: $color-c9;
 
             td
             {
                 vertical-align:top;
-                border-bottom: 1px solid #222;
+                border-bottom: 1px solid $color-c10;
                 padding-bottom: 7px;
                 padding-left: 6px;
                 padding-right: 6px;
@@ -1061,7 +1028,7 @@ input[type=text]:active, input[type=text]:focus {
 {
     font-family: SourceCodePro,monospace;
     white-space: pre;
-    background-color: #111;
+    background-color: $color-c9;
     padding:10px;
     max-height: 600px;
     overflow: auto;
@@ -1072,7 +1039,7 @@ input[type=text]:active, input[type=text]:focus {
 
     .error
     {
-        color:#ea6638;
+        color: $color-error;
     }
 }
 
@@ -1172,7 +1139,7 @@ input[type=text]:active, input[type=text]:focus {
     #editorbar
     {
         position: absolute;
-        background-color: #222;
+        background-color: $color-c10;
 
         .tabs
         {
@@ -1181,7 +1148,7 @@ input[type=text]:active, input[type=text]:focus {
             height:32px;
             overflow: hidden;
 
-            background-color:#444;
+            background-color: $color-c9;
 
             .tab
             {
@@ -1195,13 +1162,13 @@ input[type=text]:active, input[type=text]:focus {
 
                 &.active
                 {
-                    background-color: #222;
-                    color: #ccc;
+                    background-color: $color-c10;
+                    color: $color-c2;
                 }
 
                 &:hover
                 {
-                    color: #fff;
+                    color: $color-ca;
                 }
             }
         }
@@ -1242,7 +1209,7 @@ input[type=text]:active, input[type=text]:focus {
         }
         .ace_search
         {
-            background-color: #444;
+            background-color: $color-c9;
             border: none;
 
             .ace_search_form
@@ -1252,8 +1219,8 @@ input[type=text]:active, input[type=text]:focus {
 
             .ace_search_form *
             {
-                background-color: #222;
-                border-color: #000;
+                background-color: $color-c10;
+                border-color: $color-cz;
             }
         }
     }
@@ -1262,7 +1229,7 @@ input[type=text]:active, input[type=text]:focus {
 hr
 {
     border:none;
-    border-top: 1px solid #222;
+    border-top: 1px solid $color-c10;
     height:1px;
 }
 
@@ -1310,7 +1277,7 @@ hr
 {
     margin-left: -1px;
     height: 17px;
-    background-color: #383838;
+    background-color: $color-c9;
     padding-left: 5px;
     margin-top: 1px;
     padding-right: 6px;
@@ -1330,7 +1297,7 @@ hr
 }
 
 #options input:hover {
-  background-color: #555;
+  background-color: $color-c8;
 }
 
 #options input:active, #options input:focus {
@@ -1408,7 +1375,7 @@ nav
         {
             &:hover
             {
-                color:#fff;
+                color: $color-ca;
             }
         }
         ul
@@ -1433,7 +1400,7 @@ nav
 
             &.inactive
             {
-              color: #737373;
+              color: $color-c7;
             }
 
             .shortcut {
@@ -1448,7 +1415,7 @@ nav
         ul li:hover
         {
             background: $highlight-color-dark;
-            color: #fff;
+            color: $color-ca;
             a
             {
                 color:white;
@@ -1476,10 +1443,9 @@ nav
         }
         ul li ul li
         {
-            background: #444;
+            background: $color-c9;
             display: block;
-            color: #fff;
-            // text-shadow: 0 -1px 0 #000;
+            color: $color-ca;
         }
         ul li ul li:hover
         {
@@ -1495,7 +1461,7 @@ nav
 
         ul li ul#jobs li
         {
-            background-color: #222;
+            background-color: $color-c10;
             color:$text-color;
             width:250px;
             font-weight: normal;
@@ -1504,7 +1470,7 @@ nav
         .divide
         {
             padding:0px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid $color-c9;
         }
 
 
@@ -1512,7 +1478,7 @@ nav
     {
         &:hover
         {
-            color:#fff;
+            color: $color-ca;
         }
     }
     ul
@@ -1543,7 +1509,7 @@ nav
     ul li:hover
     {
         background: $highlight-color-dark;
-        color: #fff;
+        color: $color-ca;
         a
         {
             color:white;
@@ -1571,10 +1537,9 @@ nav
     }
     ul li ul li
     {
-        background: #444;
+        background: $color-c9;
         display: block;
-        color: #fff;
-        // text-shadow: 0 -1px 0 #000;
+        color: $color-ca;
     }
     ul li ul li:hover
     {
@@ -1590,7 +1555,7 @@ nav
 
     ul li ul#jobs li
     {
-        background-color: #222;
+        background-color: $color-c10;
         color:$text-color;
         width:250px;
         font-weight: normal;
@@ -1599,18 +1564,18 @@ nav
     .divide
     {
         padding:0px;
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid $color-c9;
     }
 }
 
 .clone
 {
-    background-color: #2a2a2a;
+    background-color: $color-c10;
     width:500px;
     padding:0px;
     padding-left: 10px;
     font-size: 13px;
-    color:#bbb;
+    color: $color-c3;
     height:38px;
     line-height: 40px;
     text-align: right;
@@ -1631,8 +1596,8 @@ nav
         padding-left:5px;
         height:100%;
         width:350px;
-        background-color: #222;
-        color:#eee;
+        background-color: $color-c10;
+        color: $color-c1;
         float:right
     }
 }
@@ -1680,7 +1645,7 @@ rect
     a.active
     {
         background-color: $color-menubar-background-active;
-        color:#fff;
+        color: $color-ca;
     }
 }
 
@@ -1694,7 +1659,6 @@ rect
     {
         margin-bottom: 10px;
         padding:5px;
-        // color:#bbb;
         text-overflow: ellipsis;
         position: absolute;
         font-size: 13px;
@@ -1707,7 +1671,7 @@ rect
         {
             cursor:pointer !important;
             background-color: $highlight-color-dark;
-            color:#fff;
+            color: $color-ca;
         }
     }
 
@@ -1723,8 +1687,8 @@ rect
         margin-top: -15px;
         width: 30px;
         height: 30px;
-        background-color: #fff;
-        color:#222;
+        background-color: $color-ca;
+        color: $color-c10;
         border-radius: 100px;
         text-align: center;
         font-size: 25px;
@@ -1734,7 +1698,7 @@ rect
         {
             cursor:pointer !important;
             background-color: $highlight-color-dark;
-            color:#fff;
+            color: $color-ca;
         }
     }
 }
@@ -1744,7 +1708,7 @@ rect
     position: absolute;
     top:55px;
     right:20px;
-    background-color: #333;
+    background-color: $color-c9;
     padding:10px;
     opacity: 0.8;
     border-radius: 5px;
@@ -1756,7 +1720,7 @@ rect
 {
     position: absolute;
     top:20px;
-    background-color: #333;
+    background-color: $color-c9;
     padding:10px;
     border-radius: 5px;
     z-index: 9999;
@@ -1768,7 +1732,7 @@ rect
     position: absolute;
     margin-top: 45px;
     right:0px;
-    background-color: #333;
+    background-color: $color-c9;
     opacity: 0.8;
     padding:10px;
     border-radius: 5px;
@@ -1813,7 +1777,7 @@ rect
 
     &:hover
     {
-        color:#fff;
+        color: $color-ca;
 		background-color: $color-panelhead-hover;
     }
 
@@ -1893,7 +1857,7 @@ rect
 
     &:hover
     {
-        border: 1px dashed #777;
+        border: 1px dashed $color-c7;
     }
 
 }
