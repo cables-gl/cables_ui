@@ -668,6 +668,7 @@ input[type=text]:active, input[type=text]:focus {
 ::-webkit-scrollbar-thumb {
     background: $color-scrollbar-thumb;
     -webkit-border-radius: 1px;
+    border-radius: 6px;
 }
 
 ::-webkit-scrollbar-corner {
