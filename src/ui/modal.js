@@ -18,6 +18,8 @@ CABLES.UI.MODAL.init=function(force)
 
     $('#modalcontent').empty();
     $('#modalcontainer').removeClass("transparent");
+    $('#modalcontent').css({padding:"15px"});
+
     $('#modalbg').on('click',
         function()
         {
@@ -100,7 +102,6 @@ CABLES.UI.MODAL.show=function(content,options)
     else
     {
         CABLES.UI.MODAL.onClose=null;
-        $('#modalcontent').css({padding:"15px"});
         $('#modalcontainer').removeClass("transparent");
     }
 
