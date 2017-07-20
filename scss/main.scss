@@ -1,27 +1,27 @@
 
 @import 'fonts';
-@import 'introjs.min';
-@import 'introjs-custom-styles';
-@import 'patch';
+@import 'libs/introjs.min';
+@import 'libs/introjs-custom-styles';
+@import 'components/patch';
 @import 'svgicons';
 @import 'icons';
 
-@import 'font-awesome.scss';
+@import 'libs/font-awesome.scss';
 @import 'cables_icons.scss';
-@import 'jcolorpicker.scss';
-@import 'searchbox.scss';
-@import 'opsearch.scss';
-@import 'modal.scss';
-@import 'cmdpalette.scss';
-@import 'project_settings.scss';
-@import 'taggle.scss';
-@import 'params.scss';
-@import 'nav';
-@import 'files';
-@import 'editor';
-@import 'timeline';
-@import 'changelog';
-@import 'tooltip';
+@import 'libs/jcolorpicker-custom.scss';
+@import 'components/searchbox.scss';
+@import 'components/opsearch.scss';
+@import 'components/modal.scss';
+@import 'components/cmdpalette.scss';
+@import 'components/project_settings.scss';
+@import 'libs/taggle-custom.scss';
+@import 'components/params.scss';
+@import 'components/nav';
+@import 'components/files';
+@import 'components/editor';
+@import 'components/timeline';
+@import 'components/changelog';
+@import 'components/tooltip';
 
 
 html,body { // ipad overscroll fix...
