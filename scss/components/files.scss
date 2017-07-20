@@ -1,0 +1,242 @@
+
+
+#library
+{
+    display:none;
+    position: absolute;
+    background-color: $color-c9;
+    z-index: 99999;
+
+    .libleft
+    {
+        width:70%;
+        float:left;
+    }
+
+    .libright
+    {
+        float:right;
+        width:30%;
+        overflow: scroll;
+        max-height: 100%;
+        overflow-x: hidden;
+        background-color: 1b1b1b;
+    }
+
+    .libContentContainer
+    {
+        overflow: hidden;
+        height:440px;
+    }
+
+    .previewImage
+    {
+        background-color:000;
+        background-repeat:no-repeat;
+        background-position:center center;
+        background-size:100% auto;
+        width:60%;
+        padding-top:60%;
+    }
+
+    #lib_preview
+    {
+        padding-top: 10px;
+        margin-left: 10px;
+        min-height: 100%;
+    }
+
+    .iconcontainer
+    {
+        width:120px;
+        height:140px;
+        float:left;
+        cursor:pointer;
+
+        &:hover
+        {
+            background-color: $color-cz;
+
+            .filename
+            {
+                color: $color-ca;
+            }
+        }
+
+        .filename
+        {
+            overflow: hidden;
+            font-size: 11px;
+            text-transform: none;
+            text-overflow: ellipsis;
+            max-width:100px;
+            margin-left: 10px;
+            text-align: center;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        .library-file-icon,i
+        {
+            margin-top:10px;
+            background-color: $color-cz;
+            margin-left: 10px;
+            background-repeat:no-repeat;
+            background-size:100% auto;
+            width:100px;
+            height:100px;
+            background-position:center center;
+        }
+
+        i
+        {
+            height:70px;
+            padding-top: 30px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+    }
+
+    .iconcontainer_dir
+    {
+        .iconcontainer
+        {
+        }
+
+        i
+        {
+            background-color: $color-cz;
+            opacity: 0.5;
+            // background-color: transparent !important;
+        }
+    }
+
+    .uploadFile
+    {
+        text-align:center;
+        opacity:0.5;
+        border:2px dashed white;
+        border-radius:10px;
+    }
+
+
+    .library-file-list
+    {
+        padding:4px;
+        cursor:pointer;
+
+        i
+        {
+            margin-right: 3px;
+        }
+
+        &:hover
+        {
+            background-color: $color-c9;
+            color: $color-ca;
+        }
+    }
+
+    #lib_head
+    {
+        .tabs
+        {
+            height:40px;
+            overflow: hidden;
+            clear: both;
+            background-color: $color-menubar-background;
+
+
+            .tab
+            {
+                float: left;
+                padding-top:13px;
+                padding-bottom:9px;
+                padding-left:20px;
+                padding-right:20px;
+                background-color: transparent;
+                margin-right: 5px;
+                margin-bottom: 10px;
+                cursor:pointer;
+                max-height:100%;
+				color:$color-menubar-text;
+
+                &:hover
+                {
+                    color: $color-menubar-hover;
+                }
+            }
+
+            .active
+            {
+                background-color: $color-menubar-background-active;
+            }
+        }
+
+    }
+
+    #lib_files
+    {
+        height:100%;
+        overflow: auto;
+        font-size: 12px;
+        padding-left: 5px;
+        padding-top: 5px;
+
+        .lvl0{}
+        .lvl1{ margin-left: 20px;}
+        .lvl2{ margin-left: 40px;}
+        .lvl3{ margin-left: 60px;}
+
+        .unselectable
+        {
+            color: $color-c7;
+        }
+
+        .filename
+        {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+            overflow: hidden;
+            padding-top:5px !important;
+        }
+
+        .selectable
+        {
+            text-overflow: ellipsis;
+
+            color:$mainColor;
+            &:hover
+            {
+                text-decoration: underline;
+                background-color: $color-c10;
+                color:white;
+            }
+        }
+
+        .type_image,.type_mesh,.type_audio,
+        {
+            cursor:pointer;
+        }
+    }
+}
+
+
+.filename
+{
+    cursor:pointer;
+    text-overflow:ellipsis;
+    word-wrap:break-word;
+    padding-left:4px !important;
+    padding-right:0px !important;
+    padding-top:0px !important;
+    padding-bottom:0px !important;
+    margin-bottom:3px;
+
+    &:hover
+    {
+        color:white;
+    }
+}

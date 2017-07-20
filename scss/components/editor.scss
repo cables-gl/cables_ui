@@ -1,0 +1,99 @@
+
+#editor
+{
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    z-index: 99;
+
+    #editorbar
+    {
+        position: absolute;
+        background-color: $color-c10;
+
+        .tabs
+        {
+            width:100%;
+            margin-bottom: 11px;
+            height:32px;
+            overflow: hidden;
+
+            background-color: $color-c9;
+
+            .tab
+            {
+                float:left;
+                font-size: 13px;
+                padding:5px;
+                cursor:pointer;
+                padding-left: 8px;
+                padding-right: 8px;
+                margin-top: 7px;
+
+                &.active
+                {
+                    background-color: $color-c10;
+                    color: $color-c2;
+                }
+
+                &:hover
+                {
+                    color: $color-ca;
+                }
+            }
+        }
+    }
+
+    .iconbar
+    {
+        padding-left: 10px;
+
+		a
+		{
+			margin-bottom: 4px;
+		}
+    }
+
+    #editorstatus
+    {
+        padding-left: 10px;
+    }
+
+    #ace_editor
+    {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        .ace_content *
+        {
+            font-family: SourceCodePro,monospace, SourceCodePro,monospace;
+        }
+
+        .ace_search_field
+        {
+            color:$text-color;
+        }
+        .ace_search
+        {
+            background-color: $color-c9;
+            border: none;
+
+            .ace_search_form
+            {
+                border: none;
+            }
+
+            .ace_search_form *
+            {
+                background-color: $color-c10;
+                border-color: $color-cz;
+            }
+        }
+    }
+}

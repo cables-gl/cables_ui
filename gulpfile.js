@@ -107,6 +107,10 @@ gulp.task('sass', function() {
     return gulp.src('scss/style-dark.scss')
         .pipe(sass())
         .pipe(rename('style-dark.css'))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
         .pipe(gulp.dest('dist/css'));
 });
 
@@ -114,6 +118,10 @@ gulp.task('sass-bright', function() {
     return gulp.src('scss/style-bright.scss')
         .pipe(sass())
         .pipe(rename('style-bright.css'))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
         .pipe(gulp.dest('dist/css'));
 });
 
@@ -133,7 +141,6 @@ gulp.task('svgcss', function () {
             browsers: ['last 2 versions'],
             cascade: false
         }))
-
         .pipe(gulp.dest('scss/'));
 });
 

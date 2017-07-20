@@ -172,3 +172,43 @@
     }
 
 }
+
+.panelhead
+{
+    background-color: $color-panelhead;
+    padding: 6px !important;
+    font-family: Arial;
+    text-transform: capitalize;
+    font-size: 14px !important;
+    font-style: normal;
+    cursor:pointer;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 1px;
+
+    &:hover
+    {
+        color: $color-ca;
+		background-color: $color-panelhead-hover;
+    }
+
+    &:before
+    {
+        font-family: fontawesome,arial;
+        content:"\f107";
+        margin-right: 5px;
+        display:inline-block;
+    }
+
+    &.closed
+    {
+        &:before
+        {
+            font-family: fontawesome,arial;
+            content:"\f106";
+            margin-right: 5px;
+            display:inline-block;
+        }
+    }
+
+}
