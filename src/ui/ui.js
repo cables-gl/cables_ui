@@ -1015,6 +1015,16 @@ CABLES.UI.GUI=function()
             html+='</center>';
             CABLES.UI.MODAL.show(html);
         }
+        else
+        {
+            var lastView=CABLES.UI.userSettings.get('changelogLastView');
+            if(lastView)
+            {
+                CABLES.CMD.UI.showChangelog(CABLES.UI.userSettings.get('changelogLastView'));
+            }
+            CABLES.UI.userSettings.set('changelogLastView',Date.now());
+
+        }
     };
 
     function initRouting(cb)
