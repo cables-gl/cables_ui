@@ -685,7 +685,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
 			opui.setPos();
 
-			console.log('update error indicator ',this.getWidth());
+			// console.log('update error indicator ',this.getWidth());
 
 			if(background) this._errorIndicator.attr({cx: background.getBBox().width });
 			// this._errorIndicator.attr({cx:Math.random()*50});
@@ -785,7 +785,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 			commentText.attr({"width":sw});
 			commentText.node.setAttribute("class","commentText");
             // CABLES.UI.cleanRaphael(commentText);
-			console.log('addui');
+			// console.log('addui');
 
             backgroundResize=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
             {
