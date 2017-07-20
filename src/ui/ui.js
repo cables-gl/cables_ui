@@ -715,6 +715,8 @@ CABLES.UI.GUI=function()
         $('.nav_patch_resolve_subpatch').bind("click",function(event){ self.patch().resolveSubpatch(); });
 
         $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
+        $('.nav_changelog').bind("click", CABLES.CMD.UI.showChangelog);
+
 
         $('#username').bind("click", CABLES.CMD.UI.userSettings);
 
@@ -1012,6 +1014,15 @@ CABLES.UI.GUI=function()
             html+='<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>';
             html+='</center>';
             CABLES.UI.MODAL.show(html);
+        }
+        else
+        {
+            var lastView=CABLES.UI.userSettings.get('changelogLastView');
+            if(lastView)
+            {
+                CABLES.CMD.UI.showChangelog(CABLES.UI.userSettings.get('changelogLastView'));
+            }
+
         }
     };
 
