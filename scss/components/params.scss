@@ -274,3 +274,8 @@
 #options input:active, #options input:focus {
   border-bottom: 1px solid $highlight-color-dark;
 }
+
+td.head
+{
+    background-color: $color-cz;
+}

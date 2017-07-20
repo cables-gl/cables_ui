@@ -48,12 +48,27 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: $font-weight-headline;
   font-family: $headline-font, arial;
   font-style: normal;
+  color: $highlight-color;
+  text-transform: capitalize;
+}
+
+h2
+{
+    margin-top: 0px;
+    margin-bottom: 8px;
 }
 
 p {
   font-style: normal;
   line-height: $line-height-text;
   font-weight: 400;
+}
+
+hr
+{
+    border:none;
+    border-top: 1px solid $color-c10;
+    height:1px;
 }
 
 *
@@ -73,8 +88,8 @@ p {
     {
         user-select:auto;
     }
-
 }
+
 .clickable {cursor:pointer;}
 .hidden { display:none;}
 .clear { clear:both; }
@@ -93,6 +108,10 @@ a
 }
 
 
+
+
+
+
 #glcanvas
 {
     background-color: black;
@@ -109,8 +128,6 @@ a
     }
 }
 
-
-
 input
 {
     background-color: $color-c6;
@@ -121,7 +138,6 @@ input
     {
         border:1px solid red
     }
-
 }
 
 input[type="text"]
@@ -134,10 +150,6 @@ input[type="text"]
     //border: none;
 }
 
-td.head
-{
-    background-color: $color-cz;
-}
 
 
 textarea
@@ -147,18 +159,6 @@ textarea
 }
 
 
-
-h1,h2,h3,h4
-{
-    color: $highlight-color;
-    text-transform: capitalize;
-}
-
-h2
-{
-    margin-top: 0px;
-    margin-bottom: 8px;
-}
 
 input[type="text"]
 {
@@ -237,7 +237,6 @@ a.button.fa-times:before {
 {
     color: $color-c1;
     background-color: $highlight-color-dark;
-    // padding:10px;
 	padding: 10px 20px;
 
     &:hover
@@ -263,12 +262,6 @@ a.button.fa-times:before {
 }
 
 
-
-.opOptions
-{
-    padding-top:14px;
-}
-
 input.medium
 {
     font-size: 18px;
@@ -291,7 +284,6 @@ input.medium
 input[type=range]{
     -webkit-appearance: none;
 }
-
 
 input[type=range]::-webkit-slider-runnable-track {
     width: 300px;
@@ -339,14 +331,6 @@ input[type=text]:active, input[type=text]:focus {
   border: 1px solid $text-input-border-color-focus;
 }
 
-
-
-
-
-
-
-
-
 .list
 {
     a
@@ -385,9 +369,7 @@ input[type=text]:active, input[type=text]:focus {
 }
 
 ::-webkit-scrollbar-corner {
-
 }
-
 
 .help
 {
@@ -483,12 +465,7 @@ input[type=text]:active, input[type=text]:focus {
     position:absolute;
 }
 
-hr
-{
-    border:none;
-    border-top: 1px solid $color-c10;
-    height:1px;
-}
+
 
 .clone
 {
@@ -548,18 +525,6 @@ hr
     display: block;
 }
 
-#settings_error
-{
-    b
-    {
-        color:white;
-    }
-    ul,li
-    {
-        color:black;
-        margin-bottom: 0px;
-    }
-}
 
 
 input

@@ -153,6 +153,7 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
 
 CABLES.UI.OpSelect.setItemScore=function(item)
 {
+    return;
     setTimeout(function()
     {
         var score=Math.round(100*item.score)/100;
