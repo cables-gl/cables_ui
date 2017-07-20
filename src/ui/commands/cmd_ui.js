@@ -74,9 +74,16 @@ CABLES.CMD.UI.showCommandPallet=function()
 	gui.cmdPallet.show();
 };
 
+CABLES.CMD.UI.showChangelog=function()
+{
+    CABLES.api.get('changelog',function(obj)
+    {
+        console.log(obj);
+        var html = CABLES.UI.getHandleBarHtml('changelog',obj);
+        CABLES.UI.MODAL.show(html,{'title':'Changelog'});
+    });
 
-
-
+};
 
 
 
@@ -150,6 +157,12 @@ CABLES.CMD.commands.push(
 		func:CABLES.CMD.UI.showCommandPallet,
 		icon:'search',
         hotkey:'CMD + P',
+	},
+	{
+		cmd:"show changelog",
+		category:"cables",
+		func:CABLES.CMD.UI.showChangelog,
+		icon:'info',
 	}
 
 

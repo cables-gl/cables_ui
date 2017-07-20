@@ -1,0 +1,11 @@
+<script id="changelog" type="text/x-handlebars-template">
+    <div class="changelog">
+        {{#each items}}
+            <div class="item selectable">
+                {{{html}}}
+                <div class="date">{{dateReadable}}</div>
+                <div class="clear"></div>
+            </div>
+        {{/each}}
+    </div>
+</script>

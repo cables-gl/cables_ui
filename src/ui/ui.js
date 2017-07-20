@@ -715,6 +715,8 @@ CABLES.UI.GUI=function()
         $('.nav_patch_resolve_subpatch').bind("click",function(event){ self.patch().resolveSubpatch(); });
 
         $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
+        $('.nav_changelog').bind("click", CABLES.CMD.UI.showChangelog);
+
 
         $('#username').bind("click", CABLES.CMD.UI.userSettings);
 
