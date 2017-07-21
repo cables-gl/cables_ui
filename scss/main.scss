@@ -11,7 +11,6 @@ $border-radius-popups:13px;
 
 @import 'libs/font-awesome.scss';
 @import 'cables_icons.scss';
-@import 'libs/jcolorpicker-custom.scss';
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';
 @import 'components/modal.scss';
@@ -560,3 +559,5 @@ input
     display: block;
     z-index: 99;
 }
+
+@import 'libs/jcolorpicker-custom.scss';
