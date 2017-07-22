@@ -317,13 +317,10 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     $('#opsearch').focus();
     $('#opsearch').select();
     $('body').on( "keydown", this.keyDown.bind(this));
-    $( ".searchresult:first" ).addClass( "selected" );
+    // $( ".searchresult:first" ).addClass( "selected" );
 
 
     if(this.itemHeight===0)this.itemHeight=$( ".searchresult:first" ).outerHeight();
-
-    var infoTimeout=-1;
-    var lastInfoOpName='';
 
     this.clear=function()
     {
@@ -349,8 +346,6 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
 
     this.searchTimeout=0;
 
-
-
     this.selectOp=function(name)
     {
         var oBoxCollectionAll = $(".searchresult");
@@ -362,8 +357,7 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
         this.updateInfo();
     };
 
-
-    // setTimeout(function(){$('#opsearch').focus();},100);
+    setTimeout(function(){$('#opsearch').focus();},50);
 };
 
 CABLES.UI.OpSelect.prototype.searchFor=function(what)
@@ -385,6 +379,9 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
     switch(e.which)
     {
         case 13:
+
+        console.log( $('.selected') );
+
             var opname=$('.selected').data('opname');
 
             if(opname && opname.length>2)

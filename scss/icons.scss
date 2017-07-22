@@ -3,10 +3,15 @@
 .icon
 {
 	display: inline-block;
-	mask-size: 100%;
 	width: 16px;
 	height: 16px;
+
 	mask-repeat: no-repeat;
+	-webkit-mask-repeat: no-repeat;
+	
+	mask-size: 100%;
+	-webkit-mask-size: 100%;
+
     background-color: white;
 }
 
