@@ -67,6 +67,13 @@
 }
 
 
+.port_text_color_function { color::$color_port_function;}
+.port_text_color_value { color::$color_port_value; }
+.port_text_color_object { color::$color_port_object;}
+.port_text_color_array { color::$color_port_array;  }
+.port_text_color_dynamic { color::$color_port_dynamic;}
+
+
 .port_color_function { fill:$color_port_function; stroke:$color_port_function; }
 .port_color_value { fill:$color_port_value; stroke:$color_port_value; }
 .port_color_object { fill:$color_port_object; stroke:$color_port_object; }

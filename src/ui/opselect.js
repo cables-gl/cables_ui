@@ -398,7 +398,7 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
 
         case 8:
             this.onInput();
-            e.preventDefault();
+            // e.preventDefault();
             return true;
         case 38: // up
             $('.selected').removeClass('selected');

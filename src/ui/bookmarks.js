@@ -76,7 +76,6 @@ CABLES.UI.Bookmarks=function()
             gui.patch().focusOp(id);
             CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_added);
         }
-
     };
 
     this.goto=function(id)
@@ -84,11 +83,16 @@ CABLES.UI.Bookmarks=function()
         gui.patch().setSelectedOpById(id);
         gui.patch().centerViewBoxOps();
         gui.patch().focusOp(id);
-
     };
 
     this.getBookmarks=function()
     {
-        return bookmarks;
+        var bm=[];
+        for (var i = 0; i < bookmarks.length; i++)
+        {
+            if(bookmarks[i]!=null)bm.push(bookmarks[i]);
+        }
+
+        return bm;
     };
 };

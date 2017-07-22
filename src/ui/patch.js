@@ -3090,6 +3090,114 @@ CABLES.UI.Patch=function(_gui)
         return subPatches;
     };
 
+this.linkTwoOps=function(op1,op2)
+{
+    var suggestions=[];
+
+
+    function findFittingPorts(p,portsIn)
+    {
+        var suggestions=[];
+
+        for (var i = 0; i < portsIn.length; i++)
+        {
+            if(p.type==portsOut[j].type)
+            {
+
+            }
+        }
+
+    }
+
+
+
+    for (var j=0;j<op1.portsOut.length;j++)
+    {
+        var p=op1.portsOut[j].thePort;
+        console.log(p);
+        suggestions.push(
+            {
+                p:p,
+                name:p.name,
+                classname:"port_text_color_"+p.getTypeString()
+            });
+    }
+
+    console.log(suggestions);
+
+
+
+    var fakeMouseEvent=
+    {
+        clientX:lastMouseMoveEvent.clientX,
+        clientY:lastMouseMoveEvent.clientY
+    };
+    // CABLES.UI.SuggestionDialog=function(suggestions,op,mouseEvent,cb,_action,showSelect,cbCancel)
+
+    new CABLES.UI.SuggestionDialog(suggestions,op1,fakeMouseEvent,null,
+        function(id)
+        {
+            console.log(id);
+
+            console.log('NAM ',suggestions[id].name);
+            var p=suggestions[id].p;
+            var sugIn=[];
+
+            for (var i = 0; i < op2.portsIn.length; i++)
+            {
+                // var p=op2.portsIn[i];
+                // if(p.type==op2.portsIn[i].thePort.type)
+                if(CABLES.Link.canLink(op2.portsIn[i].thePort,p))
+                {
+                    sugIn.push(
+                        {
+                            p:op2.portsIn[i].thePort,
+                            name:op2.portsIn[i].thePort.name,
+                            classname:"port_text_color_"+op2.portsIn[i].thePort.getTypeString()
+                        });
+                }
+            }
+
+            if(sugIn.length==1)
+            {
+                gui.patch().scene.link(
+                    p.parent,
+                    p.name,
+                    sugIn[0].p.parent,
+                    sugIn[0].p.name);
+                    return;
+
+            }
+            console.log('second!!!');
+
+
+
+            new CABLES.UI.SuggestionDialog(sugIn,op2,fakeMouseEvent,null,
+                function(id)
+                {
+                    console.log('yay?'+id);
+
+                    gui.patch().scene.link(
+                        p.parent,
+                        p.name,
+                        sugIn[id].p.parent,
+                        sugIn[id].p.name);
+                        return;
+                });
+
+
+        },false);
+
+
+    //
+    //
+    // findFittingPorts(op1.op.portsIn,op2.op.portsOut);
+
+
+    // findFittingPorts(op2.op.portsIn,op1.op.portsOut);
+
+
+};
 
 // var speedCycle=true;
 // setInterval(function()

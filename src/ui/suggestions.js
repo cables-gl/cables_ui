@@ -124,8 +124,8 @@ CABLES.UI.SuggestionDialog=function(suggestions,op,mouseEvent,cb,_action,showSel
 
     this.action=function(id)
     {
-        _action(id);
         this.close();
+        _action(id);
     };
 
 
@@ -154,6 +154,11 @@ CABLES.UI.SuggestionDialog=function(suggestions,op,mouseEvent,cb,_action,showSel
 
     }
 
+if(suggestions.length==1)
+{
+    _action(0);
+    return;
+}
 
 
     var html = CABLES.UI.getHandleBarHtml('suggestions',{suggestions: suggestions,showSelect:showSelect });

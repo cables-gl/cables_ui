@@ -332,19 +332,29 @@ CABLES.UI.MODAL.prompt=function(title,text,value,callback)
     CABLES.UI.MODAL.contentElement.append('<h2>'+title+'</h2>');
     CABLES.UI.MODAL.contentElement.append('<b>'+text+'</b> ');
     CABLES.UI.MODAL.contentElement.append('<br/><br/>');
-
     CABLES.UI.MODAL.contentElement.append('<input id="modalpromptinput" class="medium" value="'+(value||'')+'"/>');
     CABLES.UI.MODAL.contentElement.append('<br/><br/>');
     CABLES.UI.MODAL.contentElement.append('<a class="bluebutton" onclick="CABLES.UI.MODAL.promptCallbackExec()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>');
 	CABLES.UI.MODAL.contentElement.append('&nbsp;&nbsp;<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>');
-
-
-
-    // $('#modalcontainer').show();
 	CABLES.UI.MODAL._setVisible(true);
 
     $('#modalbg').show();
-	$("#modalpromptinput").focus();
+
+    setTimeout(function()
+    {
+        $("#modalpromptinput").focus();
+        $("#modalpromptinput").select();
+    },100);
+
+    $('#modalpromptinput').on( "keydown",
+        function(e)
+        {
+            if(e.which==13)
+            {
+                CABLES.UI.MODAL.promptCallbackExec();
+                e.preventDefault();
+            }
+        });
 
 };
 

@@ -947,7 +947,7 @@ CABLES.UI.GUI=function()
         });
 
         initRouting(cb);
-        gui.opSelect().prepare();
+        
     };
 
     this.pressedEscape=function(e)

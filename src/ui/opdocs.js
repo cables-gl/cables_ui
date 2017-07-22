@@ -15,6 +15,7 @@ CABLES.UI.OpDocs=function()
             logStartup('Op docs loaded');
             opDocs=res.opDocs;
             self.libs=res.libs;
+            gui.opSelect().prepare();
         },
         function(res){ console.log('err',res); }
         );

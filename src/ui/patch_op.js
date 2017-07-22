@@ -130,6 +130,8 @@ function UiLink(port1, port2)
 
             addCircle.node.onmousedown = function (event)
             {
+
+
                 // $('#library').hide();
                 $('#patch').focus();
 
@@ -226,7 +228,7 @@ function UiLink(port1, port2)
             str="M "+fromX+" "+fromY+" L "+ toX + " " + toY;
         else
             str="M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
-        //  str="M "+fromX+" "+fromY+" L " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
+            //  str="M "+fromX+" "+fromY+" L " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
 
         return str;
     };
@@ -467,6 +469,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var shakeCountP=0;
     var shakeCountN=0;
     var shakeLastX=-1;
+    var shakeStartTime=0;
     var shakeTimeOut=0;
     var lastShakeDir=false;
 
@@ -495,6 +498,13 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         opui.showAddButtons();
 
+
+        if(ev.metaKey && gui.patch().getSelectedOps().length==1)
+        {
+            gui.patch().linkTwoOps(gui.patch().getSelectedOps()[0], opui);
+            return;
+        }
+        else
         if(!ev.shiftKey)
         {
             gui.patch().setSelectedOp(null);
@@ -516,6 +526,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             {
                 lastShakeDir=false;
                 shakeCountP++;
+                shakeLastX=a;
                 clearTimeout(shakeTimeOut);
                 shakeTimeOut=setTimeout(function(){ shakeCountP=0; shakeCountN=0; },250);
             }
@@ -524,16 +535,28 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             {
                 lastShakeDir=true;
                 shakeCountN++;
+                shakeLastX=a;
                 clearTimeout(shakeTimeOut);
                 shakeTimeOut=setTimeout(function(){ shakeCountP=0; shakeCountN=0; },250);
             }
-            if(shakeCountP + shakeCountN>=5)
+            if(shakeCountP + shakeCountN==1)
+            {
+                shakeStartTime=CABLES.now();
+            }
+            // if(shakeCountP + shakeCountN>=5 && CABLES.now()-shakeStartTime<100)
+            // {
+            //     shakeCount=0;
+            //     console.log('shake cancel to slow');
+            // }
+            if(shakeCountP + shakeCountN>=5 && CABLES.now()-shakeStartTime>100)
             {
                 opui.op.unLinkTemporary();
                 shakeCount=0;
                 shakeLastX=-1;
             }
-            shakeLastX=-1;
+            // shakeLastX=-1;
+
+            // console.log('shake',shakeCountP + shakeCountN);
         }
         shakeLastX=a;
 
@@ -763,6 +786,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         background.node.ondblclick = function (ev)
         {
+
             gui.patch().setSelectedOp(null);
             if(CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
         };
