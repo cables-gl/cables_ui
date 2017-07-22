@@ -110,7 +110,7 @@ CABLES.UI.MODAL.show=function(content,options)
         CABLES.UI.MODAL.onClose=options.onClose;
 
         if(options.transparent)$('#modalcontainer').addClass("transparent");
-        if(options.nopadding) element.css({padding:"0px"});
+        if(options.nopadding) CABLES.UI.MODAL.contentElement.css({padding:"0px"});
     }
     else
     {
