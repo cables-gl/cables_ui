@@ -2,6 +2,8 @@
 var CABLES=CABLES || {};
 CABLES.UI= CABLES.UI || {};
 
+CABLES.UI.OPNAME_SUBPATCH='Ops.Ui.SubPatch';
+
 CABLES.UI.Patch=function(_gui)
 {
     var self=this;
@@ -317,7 +319,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.createSubPatchFromSelection=function()
     {
-        if(selectedOps.length==1 && selectedOps[0].op.objName=='Ops.Ui.SubPatch')
+        if(selectedOps.length==1 && selectedOps[0].op.objName==CABLES.UI.OPNAME_SUBPATCH)
         {
             this.unPatchSubPatch(selectedOps[0].op.patchId.val);
             return;
@@ -331,7 +333,7 @@ CABLES.UI.Patch=function(_gui)
                 y:bounds.miny
             };
 
-        var patchOp=gui.scene().addOp('Ops.Ui.SubPatch',{"translate":trans});
+        var patchOp=gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH,{"translate":trans});
         var patchId=patchOp.patchId.get();
 
         patchOp.uiAttr({"translate":trans});
@@ -412,7 +414,7 @@ CABLES.UI.Patch=function(_gui)
 
         for(i in selectedOps)
         {
-            if(selectedOps[i].op.objName=='Ops.Ui.Patch')
+            if(selectedOps[i].op.objName==CABLES.UI.OPNAME_SUBPATCH)
             {
                 console.log('selecting subpatch',selectedOps[i].op.patchId.get() );
                 self.selectAllOpsSubPatch(selectedOps[i].op.patchId.get());
@@ -1799,8 +1801,8 @@ CABLES.UI.Patch=function(_gui)
 
         for(var i in self.ops) self.ops[i].isDragging = self.ops[i].isMouseOver=false;
 
-        if(which===0) $('#button_subPatchBack').hide();
-            else $('#button_subPatchBack').show();
+        if(which===0) $('#subpatch_nav').hide();
+            else $('#subpatch_nav').show();
 
         currentSubPatch=which;
         self.updateSubPatches();
@@ -1813,6 +1815,45 @@ CABLES.UI.Patch=function(_gui)
 
         $('#patch').focus();
         self.updateBounds=true;
+        self.updateSubPatchBreadCrumb();
+    };
+
+    this.updateSubPatchBreadCrumb=function()
+    {
+        function findSubpatchOp(subId,arr)
+        {
+            arr=arr||[];
+            for(var i in self.ops)
+            {
+                if(self.ops[i].op.objName==CABLES.UI.OPNAME_SUBPATCH && self.ops[i].op.patchId )
+                {
+                    if(self.ops[i].op.patchId.get()==subId)
+                    {
+                        arr.push(
+                            {
+                                name:self.ops[i].op.name,
+                                id:self.ops[i].op.patchId.get()
+                            });
+                        if(self.ops[i].op.uiAttribs.subPatch!==0)
+                        {
+                            findSubpatchOp(self.ops[i].op.uiAttribs.subPatch,arr);
+                        }
+                    }
+                }
+            }
+            return arr;
+        }
+
+        var names=findSubpatchOp(currentSubPatch);
+        var str='<a onclick="gui.patch().setCurrentSubPatch(0)">root</a>';
+
+        for(var i=names.length-1;i>=0;i--)
+        {
+            str+='<a onclick="gui.patch().setCurrentSubPatch(\''+names[i].id+'\')">'+names[i].name+'</a>';
+        }
+
+        $('#subpatch_breadcrumb').html(str);
+
     };
 
     this.getSelectedOps=function()

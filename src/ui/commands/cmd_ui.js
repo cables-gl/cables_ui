@@ -74,6 +74,16 @@ CABLES.CMD.UI.showCommandPallet=function()
 	gui.cmdPallet.show();
 };
 
+
+CABLES.CMD.UI.centerPatchOps=function()
+{
+    gui.patch().centerViewBoxOps();
+	// gui.cmdPallet.show();
+};
+
+
+
+
 CABLES.CMD.UI.showChangelog=function(since)
 {
     CABLES.api.get('changelog',function(obj)
@@ -173,9 +183,13 @@ CABLES.CMD.commands.push(
 		category:"cables",
 		func:CABLES.CMD.UI.showChangelog,
 		icon:'info',
+	},
+	{
+		cmd:"center patch",
+		category:"patch",
+		func:CABLES.CMD.UI.centerPatchOps,
+        hotkey:'c'
 	}
-
-
 
 
 );

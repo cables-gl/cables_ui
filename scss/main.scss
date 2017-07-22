@@ -8,23 +8,7 @@ $border-radius-popups:13px;
 @import 'components/patch';
 @import 'svgicons';
 @import 'icons';
-
 @import 'libs/font-awesome.scss';
-@import 'cables_icons.scss';
-@import 'components/searchbox.scss';
-@import 'components/opsearch.scss';
-@import 'components/modal.scss';
-@import 'components/cmdpalette.scss';
-@import 'components/project_settings.scss';
-@import 'libs/taggle-custom.scss';
-@import 'components/params.scss';
-@import 'components/nav';
-@import 'components/files';
-@import 'components/editor';
-@import 'components/timeline';
-@import 'components/changelog';
-@import 'components/tooltip';
-@import 'components/meta';
 
 
 
@@ -561,3 +545,20 @@ input
 }
 
 @import 'libs/jcolorpicker-custom.scss';
+@import 'cables_icons.scss';
+@import 'components/searchbox.scss';
+@import 'components/opsearch.scss';
+@import 'components/modal.scss';
+@import 'components/cmdpalette.scss';
+@import 'components/project_settings.scss';
+@import 'libs/taggle-custom.scss';
+
+@import 'components/nav';
+@import 'components/files';
+@import 'components/editor';
+@import 'components/timeline';
+@import 'components/changelog';
+@import 'components/tooltip';
+@import 'components/meta';
+
+@import 'components/params.scss';

@@ -377,21 +377,34 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
 	this.showCopyAnim=function()
 	{
+        if(!background || !background.node)return;
 	    background.node.classList.add('copyOp');
-	    background.node.addEventListener("animationend", function()
-	    {
-	        background.node.classList.remove('copyOp');
-	    }, false);
+
+        if(!background.node.hasAnimEndListenerCopy)
+        {
+            background.node.addEventListener("animationend", function()
+    	    {
+    	        background.node.classList.remove('copyOp');
+    	    }, false);
+            background.node.hasAnimEndListenerCopy=true;
+        }
 
 	};
 
     this.showFocus=function()
     {
+        if(!background || !background.node)return;
+
         background.node.classList.add('focusOp');
-        background.node.addEventListener("animationend", function()
+
+        if(!background.node.hasAnimEndListenerFocus)
         {
-            background.node.classList.remove('focusOp');
-        }, false);
+            background.node.addEventListener("animationend", function()
+            {
+                background.node.classList.remove('focusOp');
+            }, false);
+            background.node.hasAnimEndListenerFocus=true;
+        }
     };
 
     this.getWidth=function()

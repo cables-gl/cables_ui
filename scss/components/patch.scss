@@ -325,25 +325,56 @@
     }
 }
 
-#button_subPatchBack
+#subpatch_nav
 {
-    position: absolute;
-    margin-top: 45px;
-    right:0px;
-    background-color: $color-c9;
-    opacity: 0.8;
-    padding:10px;
-    border-radius: 5px;
+	position: absolute;
+	margin-top: 35px;
+	right:200px;
+	z-index: 99999;
+	display: none;
 
-    cursor: pointer;
-    z-index: 99999;
-    width:30px;
-    height:30px;
+	#subpatch_breadcrumb
+	{
+		float:left;
+		margin-top: 14px;
+	    margin-left: 14px;
 
-    &:hover
-    {
-        opacity: 1;
-    }
+		a
+		{
+			font-size: 15px;
+			background-color: $color_op_bg;
+			padding: 2px;
+			padding-left: 8px;
+			padding-right: 8px;
+			border-radius: 4px;
+			margin-right: 10px;
+
+			&:hover
+		    {
+				background-color: $color_op_bg_active;
+		    }
+
+		}
+	}
+
+	#button_subPatchBack
+	{
+		float:left;
+	    background-color: $color_op_bg;
+	    padding:10px;
+	    border-radius: 100px;
+
+	    cursor: pointer;
+
+	    width:30px;
+	    height:30px;
+
+	    &:hover
+	    {
+			background-color: $color_op_bg_active;
+	    }
+	}
+
 }
 
 

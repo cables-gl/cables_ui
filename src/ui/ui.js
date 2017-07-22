@@ -204,6 +204,7 @@ CABLES.UI.GUI=function()
             $('.naventry').show();
         }
 
+        var editorWidth=self.editorWidth;
         if(showingEditor)
         {
             if(self.editorWidth>window.innerWidth-self.rendererWidth)
@@ -240,6 +241,7 @@ CABLES.UI.GUI=function()
         {
             $('#splitterEditor').hide();
             $('#editor').hide();
+            editorWidth=0;
         }
 
         if(self.rendererWidth<100)self.rendererWidth=100;
@@ -255,7 +257,7 @@ CABLES.UI.GUI=function()
         this._elSplitterRendererWH.css('right',self.rendererWidth-35);
         this._elSplitterRendererWH.css('top',self.rendererHeight-30);
 
-        $('#button_subPatchBack').css('margin-right',self.rendererWidth+20);
+        $('#subpatch_nav').css('left',editorWidth+iconBarWidth+15);
 
         this._elPatch.css('height',patchHeight);
         this._elPatch.css('width',patchWidth);
