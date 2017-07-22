@@ -80,9 +80,6 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
         for(var i=0;i<suggestions.length;i++)
             suggestions[i].classname="op_color_"+CABLES.UI.uiConfig.getNamespaceClassName(suggestions[i].name||"");
 
-
-
-
     CABLES.UI.OPSELECT.newOpPos=coords;
 
     new CABLES.UI.SuggestionDialog(suggestions,op,mouseEvent,cb,

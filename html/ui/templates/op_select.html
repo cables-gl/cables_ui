@@ -7,7 +7,7 @@
         <div id="searchinfo" class="searchinfo"></div>
 
         <header>
-            <input id="opsearch" placeholder="search"/>
+            <input id="opsearch" placeholder="search for op" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
         </header>
 
         <style id="search_style"></style>
@@ -44,6 +44,22 @@
         </div>
 
       {{/each}}
+
+
+
+      <div id="search_startType" class="hidden">
+          <div class="padded text-center">
+              <br/>
+              <h2>&nbsp;start typing!</h2>
+          </div>
+      </div>
+
+      <div id="search_startTypeMore" class="hidden">
+          <div class="padded text-center">
+              <br/>
+              <h2>&nbsp;type some more!</h2>
+          </div>
+      </div>
 
       <div id="search_noresults" class="hidden">
           <div class="padded text-center">

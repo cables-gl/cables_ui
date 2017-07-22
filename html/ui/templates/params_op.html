@@ -105,7 +105,7 @@
 
         gui.showOpDoc('{{{op.objName}}}');
 
-        $("input").keydown(function(e)
+        $("#options input").keydown(function(e)
         {
             switch(e.which)
             {
@@ -126,7 +126,7 @@
             e.preventDefault(); // prevent the default action (scroll / move caret)
         });
 
-        $("input").bind("mousewheel", function(event, delta)
+        $("#options input").bind("mousewheel", function(event, delta)
         {
             if($(this).is(":focus") )
             {

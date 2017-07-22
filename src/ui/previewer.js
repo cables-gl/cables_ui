@@ -1,6 +1,8 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
+CABLES.UI.currentPreviewTimeout=-1;
+
 CABLES.UI.Preview=function()
 {
     var defaultInterval=120;
@@ -12,15 +14,18 @@ CABLES.UI.Preview=function()
         paused=false;
         var html = CABLES.UI.getHandleBarHtml('preview', {} );
         $('#meta_content_preview').html(html);
-        updatePreview();
+        updatePreview(true);
+
     };
 
     this.hide=function()
     {
+        clearTimeout(CABLES.UI.currentPreviewTimeout);
         canvas=null;
         paused=true;
     };
 
+    // var psc=new CABLES.perSecondCounter("previewer");
     var previewDataPort=null;
     var previewDataOp=null;
 
@@ -28,14 +33,15 @@ CABLES.UI.Preview=function()
     {
         if(paused || !previewDataOp || !previewDataPort)return;
 
-        // console.log(previewDataPort.get());
-
         if(previewDataPort.get())
             createImageFromTexture(
                 previewDataOp.patch.cgl.gl,
                 previewDataPort.get());
 
-        setTimeout(updatePreview,interval);
+
+        CABLES.UI.currentPreviewTimeout=setTimeout(updatePreview,interval);
+
+        // psc.count();
     }
 
     this.toggleBackground=function()
@@ -46,6 +52,7 @@ CABLES.UI.Preview=function()
 
     this.setTexture=function(opid,portName)
     {
+        clearTimeout(CABLES.UI.currentPreviewTimeout);
         previewDataOp=gui.scene().getOpById(opid);
         if(!previewDataOp)
         {

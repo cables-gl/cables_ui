@@ -6,7 +6,7 @@
     z-index: 99999999;
     display:none;
 
-	background-color: $color-menubar-background;
+	background-color: $color-searchInputContainer;
 	border-radius: 4px;
 	padding:0px;
 
@@ -29,7 +29,7 @@
 
 #searchresult {
   $search-result-border-radius: 8px; // TODO: Move to main.scss
-  
+
   border-bottom-left-radius: $search-result-border-radius;
   border-bottom-right-radius: $search-result-border-radius;
 
@@ -47,12 +47,12 @@
 #searchresult,#searchresult_cmd,.list
 {
 	background-color: $background-color-brighter;
+    padding:0px;
 
     h3
     {
         margin:0px;
     }
-    padding:0px;
 
     div
     {

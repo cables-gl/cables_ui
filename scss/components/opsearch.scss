@@ -1,18 +1,26 @@
 
+#opsearchmodal
+{
+    z-index: 999999999;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    display: none;
+    transform: translateX(-50%);
+}
+
 .opsearch
 {
     width:1024px;
     height:620px;
     overflow: hidden;
 
-
-
     header
     {
         width:480px;
         border-top-left-radius: $border-radius-popups;
         border-top-right-radius: $border-radius-popups;
-        background-color: $background-color-dark;
+        background-color: $color-searchInputContainer;
         padding:15px;
 
         input
@@ -40,7 +48,7 @@
         padding:0px;
         padding-left: 15px;
         text-align: center;
-        padding-top:14px;
+        // padding-top:14px;
     }
 
     .searchbrowserContainer

@@ -13,13 +13,23 @@ CABLES.UI.OpSelect=function()
     this._list=null;
     this.displayBoxIndex=0;
     this.itemHeight=0;
+    this.firstTime=true;
 };
 
 CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 {
     var num=$('.searchbrowser .searchable:visible').length;
 
-    if(num===0)
+    var query=$('#opsearch').val();
+
+    if(query.length==0) $('#search_startType').show();
+    else $('#search_startType').hide();
+
+    if(query.length==1) $('#search_startTypeMore').show();
+    else $('#search_startTypeMore').hide();
+
+
+    if(num===0 && query.length>1)
     {
         $('#search_noresults').show();
         $('#searchinfo').empty();
@@ -27,7 +37,6 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
         $('.userCreateOpName').html(userOpName);
         $('#createuserop').attr('onclick','gui.serverOps.create(\''+userOpName+'\');');
     }
-
     else $('#search_noresults').hide();
 
     var optionsHtml='&nbsp;found '+num+' ops.';
@@ -99,7 +108,9 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 
 CABLES.UI.OpSelect.prototype._search=function(q)
 {
+    this.firstTime=false;
     var query=q.toLowerCase();
+
     var i=0;
     for(i=0;i<this._list.length;i++)
     {
@@ -107,18 +118,22 @@ CABLES.UI.OpSelect.prototype._search=function(q)
     }
     var result=null;
 
-    if(query.indexOf(" ")>-1)
+    if(query.length>1)
     {
-        var words=query.split(" ");
-
-        for(i=0;i<words.length;i++)
+        if(query.indexOf(" ")>-1)
         {
-            result=this._searchWord(result||this._list,words[i]);
+            var words=query.split(" ");
+
+            for(i=0;i<words.length;i++)
+            {
+                result=this._searchWord(result||this._list,words[i]);
+            }
         }
-    }
-    else
-    {
-        result=this._searchWord(this._list,query);
+        else
+        {
+            result=this._searchWord(this._list,query);
+        }
+
     }
 
     return result;
@@ -222,27 +237,13 @@ CABLES.UI.OpSelect.prototype.Navigate = function(diff)
 
 CABLES.UI.OpSelect.prototype.close=function()
 {
+    // console.log('opselect close');
     $('body').off( "keydown", this.keyDown);
 };
 
-CABLES.UI.OpSelect.prototype.show=
-CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
+
+CABLES.UI.OpSelect.prototype.prepare=function()
 {
-    var markHighlightTimeout=0;
-    var self=this;
-
-    CABLES.UI.OPSELECT.linkNewLink=link;
-    CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
-    CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
-    CABLES.UI.OPSELECT.newOpPos=options;
-
-
-    if(options.search)
-    {
-        $('#opsearch').val(options.search);
-        this.search();
-    }
-
     if(!this._list)
     {
         this._list=this.getOpList();
@@ -264,36 +265,65 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
         CABLES.UI.OPSELECT.maxPop=maxPop;
     }
 
-    var head = CABLES.UI.getHandleBarHtml('op_select');
-    CABLES.UI.MODAL.showTop(head,
+    if(!this._html)
+    {
+        var head = CABLES.UI.getHandleBarHtml('op_select');
+
+        $('#opsearchmodal').html(head);
+
+        this._html = CABLES.UI.getHandleBarHtml('op_select_ops',{ops: this._list });
+        $('#searchbrowserContainer').html(this._html);
+
+        $('#opsearch').on('input',this.onInput.bind(this));
+
+
+    }
+
+};
+
+CABLES.UI.OpSelect.prototype.show=
+CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
+{
+
+    var markHighlightTimeout=0;
+    var self=this;
+
+    CABLES.UI.OPSELECT.linkNewLink=link;
+    CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
+    CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
+    CABLES.UI.OPSELECT.newOpPos=options;
+
+
+    if(options.search)
+    {
+        $('#opsearch').val(options.search);
+        this.search();
+    }
+    if(this.firstTime)this.search();
+
+    if(!this._list || !this._html)this.prepare();
+
+    $('#search_noresults').hide();
+
+    CABLES.UI.MODAL.show(null,
         {
             "title":null,
+            "element":'#opsearchmodal',
             "transparent":true,
             "onClose":this.close
         });
+
+
     $('#opsearch').focus();
+    $('#opsearch').select();
+    $('body').on( "keydown", this.keyDown.bind(this));
+    $( ".searchresult:first" ).addClass( "selected" );
 
-
-    this._html = this._html||CABLES.UI.getHandleBarHtml('op_select_ops',{ops: this._list });
-    $('#searchbrowserContainer').html(this._html);
-
-
-    $('#clearsearch').hide();
-
-	setTimeout(function()
-	{
-	    $( ".searchresult:first" ).addClass( "selected" );
-	},50);
 
     if(this.itemHeight===0)this.itemHeight=$( ".searchresult:first" ).outerHeight();
 
-
-    this.displayBoxIndex=0;
-
     var infoTimeout=-1;
     var lastInfoOpName='';
-
-
 
     this.clear=function()
     {
@@ -333,13 +363,7 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     };
 
 
-
-
-    $('#opsearch').on('input',this.onInput.bind(this));
-    $('body').on( "keydown", this.keyDown.bind(this));
-
-
-    setTimeout(function(){$('#opsearch').focus();},100);
+    // setTimeout(function(){$('#opsearch').focus();},100);
 };
 
 CABLES.UI.OpSelect.prototype.searchFor=function(what)
@@ -357,6 +381,7 @@ CABLES.UI.OpSelect.prototype.onInput=function(e)
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
 {
+
     switch(e.which)
     {
         case 13:
@@ -370,24 +395,29 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
                     gui.scene().addOp(opname);
                 });
             }
+
+            e.preventDefault();
         break;
 
         case 8:
             this.onInput();
+            e.preventDefault();
             return true;
         case 38: // up
             $('.selected').removeClass('selected');
+            e.preventDefault();
             this.Navigate(-1);
         break;
 
         case 40: // down
             $('.selected').removeClass('selected');
+            e.preventDefault();
             this.Navigate(1);
         break;
 
         default: return; // exit this handler for other keys
     }
-    e.preventDefault(); // prevent the default action (scroll / move caret)
+     // prevent the default action (scroll / move caret)
 };
 
 CABLES.UI.OpSelect.prototype.getOpList=function()

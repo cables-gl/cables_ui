@@ -946,10 +946,12 @@ CABLES.UI.GUI=function()
         });
 
         initRouting(cb);
+        gui.opSelect().prepare();
     };
 
     this.pressedEscape=function(e)
     {
+
         if(e && (e.metaKey || e.ctrlKey))
         {
             CABLES.UI.SELECTPROJECT.show();
@@ -979,8 +981,10 @@ CABLES.UI.GUI=function()
         else if( $('#sidebar').is(':visible') ) $('#sidebar').animate({width:'toggle'},200);
         else if( $('.easingselect').is(':visible') ) $('.easingselect').hide();
         else
-        if( $('#modalcontent').is(':visible') )
+        if( CABLES.UI.MODAL._visible )
         {
+
+
             CABLES.UI.MODAL.hide();
             if(showingEditor) self.editor().focus();
         }

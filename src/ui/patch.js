@@ -1518,6 +1518,8 @@ CABLES.UI.Patch=function(_gui)
         //     // op.onLoaded=null;
         // }
 
+
+
         if(!isLoading)
         {
             setTimeout(function()
@@ -1754,8 +1756,6 @@ CABLES.UI.Patch=function(_gui)
             gui.patch().updateBounds=true;
 
             doAddOp(uiOp);
-
-
         };
     };
 
@@ -2431,7 +2431,7 @@ CABLES.UI.Patch=function(_gui)
         delayedShowOpParams=setTimeout(function()
         {
             self._showOpParams(op);
-        },60);
+        },30);
 
     };
 
@@ -2454,6 +2454,7 @@ CABLES.UI.Patch=function(_gui)
     }
     this._showOpParams=function(op)
     {
+
         var i=0;
         callEvent('opSelected',op);
 
@@ -2549,8 +2550,14 @@ CABLES.UI.Patch=function(_gui)
 
         html += CABLES.UI.getHandleBarHtml('params_op_foot',{"op": op,"user":gui.user});
 
+
+
         $('#options').html(html);
+
+
         updateUiAttribs();
+
+
 
         for(i=0;i<op.portsIn.length;i++)
         {

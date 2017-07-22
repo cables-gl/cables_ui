@@ -1,8 +1,8 @@
 
 #modalbg
 {
-    background-color: $color-c9;
-    opacity: 0.7;
+    background-color: $color-c8;
+    opacity: 0.45;
     top:0px;
     left:0px;
     width:100%;
@@ -14,7 +14,7 @@
 #modalcontainer
 {
 	position: absolute;
-	display: none;
+	display: block;
 	left:50%;
     transform: translateX(-50%);
     top:10%;
@@ -59,13 +59,17 @@
 #modalcontent
 {
     padding:15px;
-
 	font-size: $font-size-default+3;
-
     user-select:text;
     -webkit-user-select: text;  /* Chrome all / Safari all */
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
+
+    pre
+    {
+        max-width: 700px;
+        overflow: auto;
+    }
 }
 
 #modalheader
