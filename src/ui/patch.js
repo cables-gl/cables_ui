@@ -3094,7 +3094,6 @@ this.linkTwoOps=function(op1,op2)
 {
     var suggestions=[];
 
-
     function findFittingPorts(p,portsIn)
     {
         var suggestions=[];
@@ -3106,10 +3105,7 @@ this.linkTwoOps=function(op1,op2)
 
             }
         }
-
     }
-
-
 
     for (var j=0;j<op1.portsOut.length;j++)
     {
@@ -3118,41 +3114,33 @@ this.linkTwoOps=function(op1,op2)
         suggestions.push(
             {
                 p:p,
-                name:p.name,
+                name:p.name+'<span class="icon icon-arrow-right"></span>',
                 classname:"port_text_color_"+p.getTypeString()
             });
     }
 
     console.log(suggestions);
 
-
-
     var fakeMouseEvent=
     {
         clientX:lastMouseMoveEvent.clientX,
         clientY:lastMouseMoveEvent.clientY
     };
-    // CABLES.UI.SuggestionDialog=function(suggestions,op,mouseEvent,cb,_action,showSelect,cbCancel)
 
     new CABLES.UI.SuggestionDialog(suggestions,op1,fakeMouseEvent,null,
         function(id)
         {
-            console.log(id);
-
-            console.log('NAM ',suggestions[id].name);
             var p=suggestions[id].p;
             var sugIn=[];
 
             for (var i = 0; i < op2.portsIn.length; i++)
             {
-                // var p=op2.portsIn[i];
-                // if(p.type==op2.portsIn[i].thePort.type)
                 if(CABLES.Link.canLink(op2.portsIn[i].thePort,p))
                 {
                     sugIn.push(
                         {
                             p:op2.portsIn[i].thePort,
-                            name:op2.portsIn[i].thePort.name,
+                            name:'<span class="icon icon-arrow-left"></span>'+op2.portsIn[i].thePort.name,
                             classname:"port_text_color_"+op2.portsIn[i].thePort.getTypeString()
                         });
                 }
@@ -3166,11 +3154,7 @@ this.linkTwoOps=function(op1,op2)
                     sugIn[0].p.parent,
                     sugIn[0].p.name);
                     return;
-
             }
-            console.log('second!!!');
-
-
 
             new CABLES.UI.SuggestionDialog(sugIn,op2,fakeMouseEvent,null,
                 function(id)
