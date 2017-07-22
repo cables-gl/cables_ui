@@ -176,8 +176,7 @@ CABLES.UI.GUI=function()
 
         var patchHeight=window.innerHeight-menubarHeight-2;
 
-        var patchWidth=window.innerWidth-self.rendererWidth-6;
-        var patchLeft=0;
+        var patchWidth=window.innerWidth-self.rendererWidth-6-iconBarWidth;
 
         if(showTiming)
         {
@@ -205,6 +204,8 @@ CABLES.UI.GUI=function()
         }
 
         var editorWidth=self.editorWidth;
+        var patchLeft=iconBarWidth;
+
         if(showingEditor)
         {
             if(self.editorWidth>window.innerWidth-self.rendererWidth)
