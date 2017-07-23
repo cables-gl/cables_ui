@@ -287,35 +287,35 @@ CABLES.ProjectSettings=function(project)
 
     this.togglePublic=function()
     {
-        $('#projectsettings_public').val(''+!($('#projectsettings_public').val()=='true'));
+        $('#projectsettings_public').val(''+($('#projectsettings_public').val()!='true'));
 
         self.updateIcons();
     };
 
     this.toggleAutoScreenshot=function()
     {
-        $('#projectsettings_autoscreenshot').val(''+!($('#projectsettings_autoscreenshot').val()=='true'));
+        $('#projectsettings_autoscreenshot').val(''+($('#projectsettings_autoscreenshot').val()!='true'));
 
         self.updateIcons();
     };
 
     this.toggleExample=function()
     {
-        $('#projectsettings_example').val(''+!($('#projectsettings_example').val()=='true'));
+        $('#projectsettings_example').val(''+($('#projectsettings_example').val()!='true'));
 
         self.updateIcons();
     };
 
     this.toggleTest=function()
     {
-        $('#projectsettings_test').val(''+!($('#projectsettings_test').val()=='true'));
+        $('#projectsettings_test').val(''+($('#projectsettings_test').val()!='true'));
 
         self.updateIcons();
     };
 
     this.toggleTemplate=function()
     {
-        $('#projectsettings_template').val(''+!($('#projectsettings_template').val()=='true'));
+        $('#projectsettings_template').val(''+($('#projectsettings_template').val()!='true'));
 
         self.updateIcons();
     };

@@ -154,6 +154,12 @@ CABLES.Editor=function()
     {
         // $('#editorstatus').html('<i class="fa fa-spinner fa-pulse"></i>');
 
+        function onSaveCb(txt)
+        {
+            gui.jobs().finish('saveeditorcontent');
+            CABLES.UI.notify(txt);
+        }
+
         this.setCurrentTabContent();
         for(var i=0;i<contents.length;i++)
         {
@@ -161,12 +167,7 @@ CABLES.Editor=function()
             {
                 gui.jobs().start({id:'saveeditorcontent',title:'saving editor content'});
 
-                contents[i].onSave(
-                    function(txt,stay)
-                    {
-                        gui.jobs().finish('saveeditorcontent');
-                        CABLES.UI.notify(txt);
-                    },editor.getValue());
+                contents[i].onSave(onSaveCb,editor.getValue());
             }
         }
     };

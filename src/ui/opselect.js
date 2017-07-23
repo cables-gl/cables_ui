@@ -442,7 +442,8 @@ CABLES.UI.OpSelect.prototype.getOpList=function()
 
                     var isOp=false;
                     var isFunction=false;
-                    if(eval('typeof('+opname+')')=="function") isFunction=true;
+
+                    if(typeof(CABLES.Patch.getOpClass(opname))=="function") isFunction=true;
 
                     var parts=opname.split('.');
                     var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();

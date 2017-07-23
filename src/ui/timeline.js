@@ -380,6 +380,22 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
 {
     var found=true;
 
+    function undofunc(anim,objKey)
+    {
+        CABLES.undo.add({
+            undo: function(){
+                anim.addKey(new CABLES.TL.Key(objKey));
+                anim.sortKeys();
+                gui.timeLine().refresh();
+            },
+            redo: function(){
+
+                anim.deleteKeyAt(objKey.t);
+                gui.timeLine().refresh();
+            }
+        });
+    }
+
     while(found)
     {
         found=false;
@@ -387,21 +403,7 @@ CABLES.TL.Anim.prototype.deleteSelectedKeys=function()
         {
             if(this.keys[i].selected && this.keys[i].showCircle)
             {
-                var undofunc=function(anim,objKey)
-                {
-                    CABLES.undo.add({
-                        undo: function(){
-                            anim.addKey(new CABLES.TL.Key(objKey));
-                            anim.sortKeys();
-                            gui.timeLine().refresh();
-                        },
-                        redo: function(){
-
-                            anim.deleteKeyAt(objKey.t);
-                            gui.timeLine().refresh();
-                        }
-                    });
-                }(this,this.keys[i].getSerialized());
+                undofunc(this,this.keys[i].getSerialized());
 
                 this.keys[i].removeUi();
                 this.keys.splice(i, 1);

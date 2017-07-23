@@ -451,7 +451,7 @@ CABLES.UI.ServerOps=function(gui)
                                 }
                                 else
                                 {
-                                    if(!gui.patch().scene.getOpClass(op.name))
+                                    if(!CABLES.Patch.getOpClass(op.name))
                                     {
                                         console.log('execute first time...');
                                         gui.serverOps.execute(op.name);
@@ -597,6 +597,19 @@ CABLES.UI.ServerOps=function(gui)
 
     this.loadOpLibs=function(opName,next)
     {
+        function libReady()
+        {
+            console.log('finished loading libs for '+opName);
+
+            var libsToLoad=this.getOpLibs(opName);
+            for(var i=0;i<libsToLoad.length;i++)
+            {
+                this._loadedLibs.push(libsToLoad[i]);
+            }
+
+            next();
+        }
+
         var libsToLoad=this.getOpLibs(opName);
 
         if(libsToLoad.length===0)
@@ -609,23 +622,10 @@ CABLES.UI.ServerOps=function(gui)
         {
             var lid='oplibs'+libsToLoad[0];
 
-            function libReady()
+            try
             {
-                console.log('finished loading libs for '+opName);
-
-                var libsToLoad=this.getOpLibs(opName);
-                for(var i=0;i<libsToLoad.length;i++)
-                {
-                    this._loadedLibs.push(libsToLoad[i]);
-                }
-
-                next();
-            }
-
-            try{
                 loadjs.ready(lid, libReady.bind(this));
                 loadjs(libsToLoad,lid);
-
             }catch(e)
             {
                 console.log('...',e);

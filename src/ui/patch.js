@@ -2607,16 +2607,20 @@ CABLES.UI.Patch=function(_gui)
             }
         }
 
+
+
+        function cbPortDelete(index)
+        {
+            $('#portdelete_out_'+index).on('click',function(e)
+            {
+                op.portsOut[index].removeLinks();
+                self.showOpParams(op);
+            });
+        }
+
         for(var ipo in op.portsOut)
         {
-            (function (index)
-            {
-                $('#portdelete_out_'+index).on('click',function(e)
-                {
-                    op.portsOut[index].removeLinks();
-                    self.showOpParams(op);
-                });
-            })(ipo);
+            cbPortDelete(ipo);
         }
 
         for(var ipi in op.portsIn)
@@ -2848,12 +2852,6 @@ CABLES.UI.Patch=function(_gui)
                             $('#portval_'+portNum+'_range').val(colors.rgb.r).trigger('input');
                             $('#portval_'+(portNum+1)+'_range').val(colors.rgb.g).trigger('input');
                             $('#portval_'+(portNum+2)+'_range').val(colors.rgb.b).trigger('input');
-
-                            // console.log(id);
-                            // id="portval_{{ portnum }}"
-                            // $(id).parent().parent().find('input.range').val(colors.rgb.r).trigger('input');
-                            // $(id).parent().parent().next('tr').find('input.range').val(colors.rgb.g).trigger('input');
-                            // $(id).parent().parent().next('tr').next('tr').find('input.range').val(colors.rgb.b).trigger('input');
                         }
                         else
                         {
@@ -3006,7 +3004,6 @@ CABLES.UI.Patch=function(_gui)
                 op.portsIn[i].set(filename);
             }
         }
-
     };
 
 
