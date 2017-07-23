@@ -24,13 +24,6 @@ CABLES.UI.MODAL.init=function(options)
 
     $('#modalcontainer').removeClass("transparent");
     CABLES.UI.MODAL.contentElement.css({padding:"15px"});
-
-    $('#modalbg').on('click',
-        function()
-        {
-            CABLES.UI.MODAL.hide(true);
-            gui.pressedEscape();
-        });
 };
 
 CABLES.UI.MODAL._setVisible=function(visible)
