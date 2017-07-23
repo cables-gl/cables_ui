@@ -1002,6 +1002,8 @@ CABLES.UI.GUI=function()
         // self.setMetaTab('doc');
         self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
 
+        if(CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();;
+
         if(_scene.cgl.aborted)
         {
             console.log('errror...');

@@ -12,8 +12,6 @@ CABLES.UI.Keypresenter=function()
     this._lastWheel=0;
     this._lineCounter=0;
     $('body').append('<div id="keypresenter"></div>');
-
-
 };
 
 CABLES.UI.Keypresenter.prototype.addLine=function(title)
@@ -24,34 +22,28 @@ CABLES.UI.Keypresenter.prototype.addLine=function(title)
         {
             $(id).fadeOut(400,function()
             {
-                $(id).remove();
+                $(id).css('opacity',0.01);
+                $(id).show();
+                $(id).slideUp(400,function()
+                {
+                    $(id).remove();
+                });
             });
         },2000);
     }
 
     if(Date.now()-this._lastKeyEvent>500)
     {
-
         setUpDeath('#kp-line'+this._lineCounter);
-
         this._lineCounter++;
         $('#keypresenter').append('<div class="kp-line" id="kp-line'+this._lineCounter+'"></div>');
     }
-
-
 };
 
-CABLES.UI.Keypresenter.prototype.showMetaKey=function(title)
+CABLES.UI.Keypresenter.prototype.showAction=function(title)
 {
-
     var id="kp-ele-"+this.counter;
-
-    // if(Date.now()-this._lastKeyEvent>500)$('#keypresenter').append('<br/>');
-
     $('#kp-line'+this._lineCounter).append('<span id="'+id+'" class="kp-ele">'+title+'</span>');
-
-    // setUpDeath(id);
-
     this.counter++;
     return id;
 };
@@ -63,11 +55,12 @@ CABLES.UI.Keypresenter.prototype.start=function()
 
     $(document).keydown(function(e)
     {
-        console.log(e.key);
+        var str=e.key;
+
         if(e.key.length==1)
         {
-            var str=e.key;
             if(e.key==' ')str="_";
+            str=str.toUpperCase();
 
             if(this._lastTextElement!==null && Date.now()-this._lastKeyEvent<300)
             {
@@ -75,12 +68,19 @@ CABLES.UI.Keypresenter.prototype.start=function()
                 this._lastTextElement.remove();
             }
 
-            var id=this.showMetaKey(str);
+            var id=this.showAction(str);
             this._lastTextElement=$('#'+id);
         }
         else
         {
-            this.showMetaKey(e.key);
+            str='['+e.key+']';
+            if(e.key=='ArrowUp')str='<span class="icon icon-arrow-up"></span>';
+            if(e.key=='ArrowDown')str='<span class="icon icon-arrow-down"></span>';
+            if(e.key=='ArrowLeft')str='<span class="icon icon-arrow-left"></span>';
+            if(e.key=='ArrowRight')str='<span class="icon icon-arrow-right"></span>';
+            if(e.key=='Enter')str='<span class="icon icon-corner-down-left"></span>';
+            if(e.key=='Meta')str='<span class="icon icon-command"></span>';
+            this.showAction(str);
             this._lastTextElement=null;
         }
 
@@ -93,7 +93,7 @@ CABLES.UI.Keypresenter.prototype.start=function()
         var which="left";
         if(e.buttons==4)which="middle";
         if(e.buttons==2)which="right";
-        this.showMetaKey('click '+which);
+        this.showAction('[click '+which+']');
         this._lastKeyEvent=Date.now();
     }.bind(this));
 
@@ -101,7 +101,7 @@ CABLES.UI.Keypresenter.prototype.start=function()
     {
         if(Date.now()-this._lastWheel>1000)
         {
-            this.showMetaKey('mousewheel');
+            this.showAction('[mousewheel]');
             this._lastWheel=Date.now();
         }
 

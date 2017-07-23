@@ -83,8 +83,11 @@ CABLES.CMD.UI.centerPatchOps=function()
 
 CABLES.CMD.UI.startPresentationMode=function()
 {
-    var pres=new CABLES.UI.Keypresenter();
-    pres.start();
+    if(!CABLES.UI.keyPresenter)
+    {
+        CABLES.UI.keyPresenter=new CABLES.UI.Keypresenter();
+        CABLES.UI.keyPresenter.start();
+    }
 };
 
 CABLES.CMD.UI.showChangelog=function(since)

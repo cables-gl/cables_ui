@@ -5,7 +5,9 @@
 
     <input type="checkbox" {{#if userSettings.touchpadmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('touchpadmode',this.checked)"> touchpad mode
     <br/><br/>
-    <input type="checkbox" {{#if userSettings.theme-bright }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('theme-bright',this.checked);document.location.reload();"> high contrast mode
+    <input type="checkbox" {{#if userSettings.theme-bright }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('theme-bright',this.checked);document.location.reload();"> high contrast theme
+    <br/><br/>
+    <input type="checkbox" {{#if userSettings.presentationmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('presentationmode',this.checked);CABLES.CMD.UI.startPresentationMode();"> presentation mode
 
 
 <br/><br/>
