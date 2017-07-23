@@ -375,9 +375,13 @@ CABLES.UI.OpSelect.prototype.onInput=function(e)
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
 {
-
     switch(e.which)
     {
+        case 27:
+            this.close();
+            e.preventDefault();
+        break;
+
         case 13:
 
         console.log( $('.selected') );

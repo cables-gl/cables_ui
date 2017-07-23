@@ -27,7 +27,7 @@ function getPortDescription(thePort)
     return str;
 }
 
-function Line(startX, startY)
+CABLES.UI.SVGLine=function(startX, startY)
 {
     var start={ x:startX,y:startY};
 
@@ -53,7 +53,12 @@ function Line(startX, startY)
     this.thisLine = gui.patch().getPaper().path(this.getPath());
     this.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLink, "stroke-width": 2});
     this.redraw = function() { this.thisLine.attr("path", this.getPath()); };
-}
+
+    this.remove=function()
+    {
+        this.thisLine.remove();
+    };
+};
 
 function UiLink(port1, port2)
 {
@@ -473,22 +478,30 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var shakeTimeOut=0;
     var lastShakeDir=false;
 
-    var dragger = function(x,y,ev)
+    var down = function(x,y,e)
     {
         shakeCount=0;
         shakeCountP=0;
         shakeCountN=0;
+
+        if(e.metaKey)
+        {
+            CABLES.UI.quickAddOpStart=opui;
+            return;
+        }
+
         $('#patch').focus();
 
-        if(ev.buttos==2)
+        if(e.buttos==2)
         {
             //show context menu...
             return;
         }
 
+
         if(opui.isSelected())
         {
-            if(ev.shiftKey)
+            if(e.shiftKey)
             {
                 gui.patch().removeSelectedOp(opui);
                 opui.setSelected(false);
@@ -499,13 +512,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         opui.showAddButtons();
 
 
-        if(ev.metaKey && gui.patch().getSelectedOps().length==1)
-        {
-            gui.patch().linkTwoOps(gui.patch().getSelectedOps()[0], opui);
-            return;
-        }
-        else
-        if(!ev.shiftKey)
+        if(!e.shiftKey)
         {
             gui.patch().setSelectedOp(null);
             gui.patch().setSelectedOp(opui);
@@ -516,10 +523,15 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             opui.setSelected(true);
         }
 
+
     };
 
     var move = function (dx, dy,a,b,e)
     {
+        if(e.metaKey && gui.patch().getSelectedOps().length==1)
+        {
+            return;
+        }
         if(shakeLastX!=-1)
         {
             if(shakeLastX-a>30 && lastShakeDir)
@@ -565,8 +577,24 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         gui.setStateUnsaved();
     };
 
-    var up = function (e)
+    var up=function(e)
     {
+        if(e.metaKey && CABLES.UI.quickAddOpStart)
+        {
+            console.log("YES THATS IT!",gui.patch().getSelectedOps().length);
+            console.log('opui',opui);
+
+            gui.patch().linkTwoOps(
+                CABLES.UI.quickAddOpStart,
+                CABLES.UI.selectedEndOp
+            );
+
+            CABLES.UI.quickAddOpStart=null;
+            CABLES.UI.selectedEndOp=null;
+
+            return;
+        }
+
         shakeCount=0;
         shakeCountP=0;
         shakeCountN=0;
@@ -781,7 +809,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         // $(label.node).css({'pointer-events': 'none'});
 
-        background.drag(move, dragger, up);
+        background.drag(move, down, up);
         background.hover(hover,unhover);
 
         background.node.ondblclick = function (ev)

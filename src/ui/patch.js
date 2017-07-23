@@ -1246,22 +1246,42 @@ CABLES.UI.Patch=function(_gui)
         {
             e=mouseEvent(e);
 
-			if(CABLES.UI.MOUSEOVERPORT) return; // cancel when dragging port...
+            if(e.metaKey)
+            {
+                if(CABLES.UI.quickAddOpStart)
+                {
 
+                    if(!self.quickLinkLine) self.quickLinkLine=new CABLES.UI.SVGLine(
+                        CABLES.UI.quickAddOpStart.op.uiAttribs.translate.x+30,
+                        CABLES.UI.quickAddOpStart.op.uiAttribs.translate.y+15);
+                    self.quickLinkLine.updateEnd(
+                            gui.patch().getCanvasCoordsMouse(e).x,
+                            gui.patch().getCanvasCoordsMouse(e).y
+                    );
+
+                    console.log('yay');
+                    return;
+                }
+
+            }
+            else if(self.quickLinkLine)
+            {
+                self.removeQuickLinkLine();
+            }
+
+			if(CABLES.UI.MOUSEOVERPORT) return; // cancel when dragging port...
 
             if(e.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL)
             {
                 if(lastZoomDrag!=-1)
                 {
                     var delta=lastZoomDrag-e.clientY;
-                    // if(viewBox.w-delta >0 &&  viewBox.h-delta >0 )
-                    {
-                        viewBox.x+=delta/2;
-                        viewBox.y+=delta/2;
-                        viewBox.w-=delta;
-                        viewBox.h-=delta;
-                        self.updateViewBox();
-                    }
+
+                    viewBox.x+=delta/2;
+                    viewBox.y+=delta/2;
+                    viewBox.w-=delta;
+                    viewBox.h-=delta;
+                    self.updateViewBox();
                 }
                 lastZoomDrag=e.clientY;
             }
@@ -1340,6 +1360,15 @@ CABLES.UI.Patch=function(_gui)
     {
 
     }
+
+    this.removeQuickLinkLine=function()
+    {
+        if(self.quickLinkLine)
+        {
+            self.quickLinkLine.remove();
+            self.quickLinkLine=null;
+        }
+    };
 
     this.removeDeadLinks=function()
     {
@@ -3092,34 +3121,38 @@ CABLES.UI.Patch=function(_gui)
 
 this.linkTwoOps=function(op1,op2)
 {
+    this.removeQuickLinkLine();
+
     var suggestions=[];
+    if(!op1 || !op2)return;
 
-    function findFittingPorts(p,portsIn)
-    {
-        var suggestions=[];
-
-        for (var i = 0; i < portsIn.length; i++)
-        {
-            if(p.type==portsOut[j].type)
-            {
-
-            }
-        }
-    }
+    console.log('op1',op1.op.name);
+    console.log('op2',op2.op.name);
 
     for (var j=0;j<op1.portsOut.length;j++)
     {
         var p=op1.portsOut[j].thePort;
-        console.log(p);
-        suggestions.push(
-            {
-                p:p,
-                name:p.name+'<span class="icon icon-arrow-right"></span>',
-                classname:"port_text_color_"+p.getTypeString()
-            });
+
+        if(op2.op.countFittingPorts(p)>0)
+        {
+            suggestions.push(
+                {
+                    p:p,
+                    name:p.name+'<span class="icon icon-arrow-right"></span>',
+                    classname:"port_text_color_"+p.getTypeString()
+                });
+
+        }
+
     }
 
-    console.log(suggestions);
+    if(suggestions.length==0)
+    {
+        CABLES.UI.notify("can not link!");
+        return;
+    }
+    if(suggestions.length>1)
+        op1.oprect.showFocus();
 
     var fakeMouseEvent=
     {
@@ -3140,7 +3173,7 @@ this.linkTwoOps=function(op1,op2)
                     sugIn.push(
                         {
                             p:op2.portsIn[i].thePort,
-                            name:'<span class="icon icon-arrow-left"></span>'+op2.portsIn[i].thePort.name,
+                            name:'<span class="icon icon-arrow-right"></span>'+op2.portsIn[i].thePort.name,
                             classname:"port_text_color_"+op2.portsIn[i].thePort.getTypeString()
                         });
                 }
@@ -3155,6 +3188,8 @@ this.linkTwoOps=function(op1,op2)
                     sugIn[0].p.name);
                     return;
             }
+
+            op2.oprect.showFocus();
 
             new CABLES.UI.SuggestionDialog(sugIn,op2,fakeMouseEvent,null,
                 function(id)
@@ -3172,13 +3207,6 @@ this.linkTwoOps=function(op1,op2)
 
         },false);
 
-
-    //
-    //
-    // findFittingPorts(op1.op.portsIn,op2.op.portsOut);
-
-
-    // findFittingPorts(op2.op.portsIn,op1.op.portsOut);
 
 
 };

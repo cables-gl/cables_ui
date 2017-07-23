@@ -72,7 +72,7 @@ CABLES.UI.Port=function(thePort)
                     }
                 }
 
-                linkingLine = new Line(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
+                linkingLine = new CABLES.UI.SVGLine(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
                 self.thePort.removeLinks();
                 updateUI();
             }
@@ -109,7 +109,7 @@ CABLES.UI.Port=function(thePort)
 
         if(!linkingLine)
         {
-            linkingLine = new Line(this.startx+CABLES.UI.uiConfig.portSize/2,this.starty+CABLES.UI.uiConfig.portHeight);
+            linkingLine = new CABLES.UI.SVGLine(this.startx+CABLES.UI.uiConfig.portSize/2,this.starty+CABLES.UI.uiConfig.portHeight);
         }
         else
         {
