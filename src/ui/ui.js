@@ -947,7 +947,7 @@ CABLES.UI.GUI=function()
         });
 
         initRouting(cb);
-        
+
     };
 
     this.pressedEscape=function(e)
@@ -1586,10 +1586,6 @@ function startUi(event)
 
     CABLES.watchPortVisualize.init();
 
-
-
     logStartup('Init UI done');
-
-
 
 }

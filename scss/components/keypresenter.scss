@@ -1,0 +1,34 @@
+
+
+
+#keypresenter
+{
+    position: absolute;
+    left:90px;
+    bottom:20px;
+    // border:1px solid red;
+    width:500px;
+    height:170px;
+    z-index: 9999999999;
+    pointer-events: none;
+
+    .kp-line
+    {
+        margin:0;
+        padding:0;
+    }
+
+    .kp-ele
+    {
+        background-color: black;
+        border-radius: 8px;
+        margin:5px;
+        padding:10px;
+        padding-left:15px;
+        padding-right:15px;
+        font-size: 20px;
+        pointer-events: none;
+        display: inline-block;
+    }
+
+}

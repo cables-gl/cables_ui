@@ -81,8 +81,11 @@ CABLES.CMD.UI.centerPatchOps=function()
 	// gui.cmdPallet.show();
 };
 
-
-
+CABLES.CMD.UI.startPresentationMode=function()
+{
+    var pres=new CABLES.UI.Keypresenter();
+    pres.start();
+};
 
 CABLES.CMD.UI.showChangelog=function(since)
 {
@@ -184,12 +187,18 @@ CABLES.CMD.commands.push(
 		func:CABLES.CMD.UI.showChangelog,
 		icon:'info',
 	},
-	{
+    {
 		cmd:"center patch",
 		category:"patch",
 		func:CABLES.CMD.UI.centerPatchOps,
         hotkey:'c'
-	}
+	},
+    {
+        cmd:"start presentation mode",
+        category:"ui",
+        func:CABLES.CMD.UI.startPresentationMode
+    }
+
 
 
 );

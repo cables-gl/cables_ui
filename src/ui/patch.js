@@ -39,26 +39,13 @@ CABLES.UI.Patch=function(_gui)
     var miniMapBounding=null;
 
     this.background=null;
-
 	this._elPatchSvg=null;
 	this._elPatch=null;
 	this._elBody=null;
 
-    this.isLoading=function()
-    {
-        return isLoading;
-    };
-
-    this.getPaper=function()
-    {
-        return self.paper;
-    };
-
-
-    this.getPaperMap=function()
-    {
-        return self.paperMap;
-    };
+    this.isLoading=function(){ return isLoading; };
+    this.getPaper=function(){ return self.paper; };
+    this.getPaperMap=function(){ return self.paperMap; };
 
     this.getLargestPort=function()
     {
@@ -168,10 +155,8 @@ CABLES.UI.Patch=function(_gui)
                         var fixedSubPatches=[];
                         for(i=0;i<json.ops.length;i++)
                         {
-
                             if(CABLES.Op.isSubpatchOp(json.ops[i].objName))
                             {
-
                                 for(k in json.ops[i].portsIn)
                                 {
                                     if(json.ops[i].portsIn[k].name=='patchId')
@@ -326,23 +311,14 @@ CABLES.UI.Patch=function(_gui)
         }
 
         var bounds=this.getSelectionBounds();
-
-        var trans=
-            {
-                x:bounds.minx+(bounds.maxx-bounds.minx)/2,
-                y:bounds.miny
-            };
-
+        var trans= { x:bounds.minx+(bounds.maxx-bounds.minx)/2,y:bounds.miny };
         var patchOp=gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH,{"translate":trans});
         var patchId=patchOp.patchId.get();
 
         patchOp.uiAttr({"translate":trans});
 
         var i,j,k;
-        for( i in selectedOps)
-        {
-            selectedOps[i].op.uiAttribs.subPatch=patchId;
-        }
+        for( i in selectedOps) selectedOps[i].op.uiAttribs.subPatch=patchId;
 
         for(i=0;i<selectedOps.length;i++)
         {
@@ -357,7 +333,6 @@ CABLES.UI.Patch=function(_gui)
                     {
                         console.log('found outside connection!! ',otherPort.name);
                         theOp.portsIn[j].links[k].remove();
-                        // patchOp.routeLink(theOp.portsIn[j].links[k]);
                         gui.scene().link(
                             otherPort.parent,
                             otherPort.getName(),
@@ -365,7 +340,6 @@ CABLES.UI.Patch=function(_gui)
                             patchOp.dyn.name
                             );
                         patchOp.addSubLink(theOp.portsIn[j],otherPort);
-
                     }
                 }
 
@@ -394,11 +368,8 @@ CABLES.UI.Patch=function(_gui)
         }
 
         self.setSelectedOpById(patchOp.id);
-        // self.setCurrentSubPatch(patchId);
         self.updateSubPatches();
-
     };
-
 
     this.cut=function(e)
     {
@@ -418,7 +389,6 @@ CABLES.UI.Patch=function(_gui)
             {
                 console.log('selecting subpatch',selectedOps[i].op.patchId.get() );
                 self.selectAllOpsSubPatch(selectedOps[i].op.patchId.get());
-
             }
         }
 
@@ -507,8 +477,6 @@ CABLES.UI.Patch=function(_gui)
                 if(CABLES.UI.LINKHOVER)
                 {
                     CABLES.UI.LINKHOVER.p1.thePort.removeLinkTo( CABLES.UI.LINKHOVER.p2.thePort );
-
-                    // CABLES.UI.LINKHOVER.remove();
                     return;
                 }
 
@@ -523,10 +491,8 @@ CABLES.UI.Patch=function(_gui)
             break;
 
             case 68: // d - disable
-            if(e.shiftKey)
-                self.tempUnlinkOp();
-            else
-                self.disableEnableOps();
+                if(e.shiftKey) self.tempUnlinkOp();
+                    else self.disableEnableOps();
             break;
 
             case 90: // z undo
@@ -687,7 +653,6 @@ CABLES.UI.Patch=function(_gui)
             {
                 "name":name,
                 "data":data,
-                // "screenshot":gui.patch().scene.cgl.screenShotDataURL
             },
             function(r)
             {
@@ -699,7 +664,6 @@ CABLES.UI.Patch=function(_gui)
                 {
                     $('#glcanvas').attr('width',w);
                     $('#glcanvas').attr('height',h);
-                    // gui.patch().scene.cgl.onScreenShot=null;
                     gui.patch().scene.cgl.doScreenshot=false;
 
                     gui.jobs().finish('uploadscreenshot');
@@ -729,18 +693,13 @@ CABLES.UI.Patch=function(_gui)
                             },
                             function(r)
                             {
-                                // console.log(r);
-
                                 if(gui.onSaveProject)gui.onSaveProject();
-
                                 gui.jobs().finish('uploadscreenshot');
                             });
                     };
                     reader.readAsDataURL(screenBlob);
-
                 };
                 gui.patch().scene.cgl.doScreenshot=true;
-
         });
     };
 
@@ -756,7 +715,6 @@ CABLES.UI.Patch=function(_gui)
         currentProject=proj;
         if(currentProject===null)
         {
-            // $('#serverproject').hide();
             $('#meta_content_files').hide();
         }
         else
@@ -774,7 +732,6 @@ CABLES.UI.Patch=function(_gui)
             CABLES.UI.hideInfo();
         });
     };
-
 
     this.centerViewBoxOps=function()
     {
@@ -836,11 +793,9 @@ CABLES.UI.Patch=function(_gui)
         for(var j=0;j<self.ops.length;j++)
             if(self.ops[j].op.objName.indexOf("Ops.Ui.")==-1)
             {
-
                 if(self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
                     if(self.ops[j].op.uiAttribs.subPatch==subPatch)
                     {
-
                         bounds.minx=Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
                         bounds.maxx=Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
                         bounds.miny=Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
@@ -855,10 +810,8 @@ CABLES.UI.Patch=function(_gui)
         return bounds;
     };
 
-
     this.setMinimapBounds=function()
     {
-        // console.log('minimapBounds');
         if(!self.updateBounds)return;
         self.updateBounds=false;
 
@@ -870,10 +823,7 @@ CABLES.UI.Patch=function(_gui)
             minimapBounds.w,
             minimapBounds.h
         );
-        // return bounds;
-
     };
-
 
     var oldVBW=0;
     var oldVBH=0;
@@ -1027,7 +977,6 @@ CABLES.UI.Patch=function(_gui)
 
     this.setProject=function(proj)
     {
-
         this.loadingError=false;
         if(proj.ui)
         {
@@ -1054,7 +1003,6 @@ CABLES.UI.Patch=function(_gui)
         currentSubPatch=0;
         gui.setProjectName(proj.name);
         self.setCurrentProject(proj);
-
         gui.scene().clear();
 
         gui.serverOps.loadProjectLibs(proj,function()
@@ -1068,16 +1016,12 @@ CABLES.UI.Patch=function(_gui)
                 {
                     "patch":JSON.stringify(proj),
                 });
-
         });
-
     };
-
 
     function dragMiniMap (e)
     {
         if(mouseRubberBandPos)return;
-
         e=mouseEvent(e);
 
         if(e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT)
@@ -1090,8 +1034,6 @@ CABLES.UI.Patch=function(_gui)
             self.updateViewBox();
         }
     }
-
-
 
     this.show=function(_scene)
     {
@@ -1108,28 +1050,17 @@ CABLES.UI.Patch=function(_gui)
         miniMapBounding=this.paperMap.rect(0,0,10,10).attr({
             "stroke": "#666",
             "fill": "#1a1a1a",
-            // "vector-effect":"non-scaling-stroke"
             "stroke-width":1
         });
 
-
         $('#minimap svg').on("mousemove touchmove", dragMiniMap);
         $('#minimap svg').on("mousedown", dragMiniMap);
-
 
         this.paper=Raphael("patch",0, 0);
         this.bindScene(self.scene);
 
         viewBox={x:0,y:0,w:$('#patch svg').width(),h:$('#patch svg').height()};
         self.updateViewBox();
-
-        // $('#patch svg').bind("touchmove", function (event,delta,nbr)
-        // {
-        //     // console.log(event);
-        //     console.log(123);
-        //     console.log(event.changedTouches);
-        //
-        // });
 
 		this._elPatchSvg=this._elPatchSvg||$('#patch svg');
 		this._elPatch=this._elPatch||$('#patch');
@@ -1287,13 +1218,7 @@ CABLES.UI.Patch=function(_gui)
 
             if(e.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed)
             {
-                for(var i in self.ops)
-                    if(!self.ops[i].isHidden() && ( self.ops[i].isDragging || self.ops[i].isMouseOver))
-                    {
-                        // console.log('rubberband canceled/op in action...',);
-                        return;
-
-                    }
+                for(var i in self.ops) if(!self.ops[i].isHidden() && ( self.ops[i].isDragging || self.ops[i].isMouseOver)) return;
                 rubberBandMove(e);
             }
         });
@@ -1357,7 +1282,6 @@ CABLES.UI.Patch=function(_gui)
 
     function doLink()
     {
-
     }
 
     this.removeQuickLinkLine=function()
@@ -1403,7 +1327,6 @@ CABLES.UI.Patch=function(_gui)
                     "opId":op.id,
                     "objName":op.objName
                 });
-
         }
 
         op.onAddPort=function(p)
