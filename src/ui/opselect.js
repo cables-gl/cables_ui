@@ -22,7 +22,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 
     var query=$('#opsearch').val();
 
-    if(query.length==0) $('#search_startType').show();
+    if(query.length===0) $('#search_startType').show();
     else $('#search_startType').hide();
 
     if(query.length==1) $('#search_startTypeMore').show();
@@ -168,15 +168,19 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
 
 CABLES.UI.OpSelect.setItemScore=function(item)
 {
-    return;
-    setTimeout(function()
+    var showScore=false;
+    if(showScore)
     {
-        var score=Math.round(100*item.score)/100;
-        var id='#result_'+item.id+' .score';
-        item.elementScore=$(id);
-        item.elementScore.html( score );
+        setTimeout(function()
+        {
+            var score=Math.round(100*item.score)/100;
+            var id='#result_'+item.id+' .score';
+            item.elementScore=$(id);
+            item.elementScore.html( score );
 
-    },1);
+        },1);
+
+    }
 };
 
 

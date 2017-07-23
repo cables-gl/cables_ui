@@ -163,6 +163,7 @@ CABLES.UI.ServerOps=function(gui)
 
     this.saveOpLayout=function(op)
     {
+        var i=0;
         var opObj=
             {
                 portsIn:[],
@@ -170,7 +171,7 @@ CABLES.UI.ServerOps=function(gui)
                 name:op.objName
             };
 
-        for(var i=0;i<op.portsIn.length;i++)
+        for(i=0;i<op.portsIn.length;i++)
         {
             opObj.portsIn.push(
                 {
@@ -178,7 +179,7 @@ CABLES.UI.ServerOps=function(gui)
                     "name":op.portsIn[i].name
                 });
         }
-        for(var i=0;i<op.portsOut.length;i++)
+        for(i=0;i<op.portsOut.length;i++)
         {
             opObj.portsOut.push(
                 {

@@ -1259,7 +1259,6 @@ CABLES.UI.Patch=function(_gui)
                             gui.patch().getCanvasCoordsMouse(e).y
                     );
 
-                    console.log('yay');
                     return;
                 }
 
@@ -1522,7 +1521,7 @@ CABLES.UI.Patch=function(_gui)
 
             if(foundPort)
             {
-                var link=gui.patch().scene.link(
+                gui.patch().scene.link(
                     CABLES.UI.OPSELECT.linkNewOpToOp,
                     CABLES.UI.OPSELECT.linkNewOpToPort.getName(),
                     op,
@@ -2344,7 +2343,7 @@ CABLES.UI.Patch=function(_gui)
     {
         var i=0;
         if(selectedOps.length==1)
-            for(var i=0;i<self.ops.length;i++)
+            for(i=0;i<self.ops.length;i++)
                 if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
                     for(var j in self.ops[i].links)
                         self.ops[i].links[j].showAddButton();
@@ -3146,7 +3145,7 @@ this.linkTwoOps=function(op1,op2)
 
     }
 
-    if(suggestions.length==0)
+    if(suggestions.length===0)
     {
         CABLES.UI.notify("can not link!");
         return;
@@ -3194,8 +3193,6 @@ this.linkTwoOps=function(op1,op2)
             new CABLES.UI.SuggestionDialog(sugIn,op2,fakeMouseEvent,null,
                 function(id)
                 {
-                    console.log('yay?'+id);
-
                     gui.patch().scene.link(
                         p.parent,
                         p.name,

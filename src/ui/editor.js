@@ -161,7 +161,8 @@ CABLES.Editor=function()
             {
                 gui.jobs().start({id:'saveeditorcontent',title:'saving editor content'});
 
-                contents[i].onSave(function(txt,stay)
+                contents[i].onSave(
+                    function(txt,stay)
                     {
                         gui.jobs().finish('saveeditorcontent');
                         CABLES.UI.notify(txt);

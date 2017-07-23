@@ -5,7 +5,7 @@
     <div class="selectable params">
         <div class="panel params_op_head">
             <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
-            <a onclick="gui.bookmarks.add()" class="fa fa-bookmark-o info" data-info="Add Bookmark"></a>
+            <a onclick="gui.bookmarks.add()" class="icon icon-bookmark info" data-info="Add Bookmark"></a>
 
 			<br/>
             <a href="/op/{{op.objName}}" class="{{colorClass}}" target="blank"></i>&nbsp;{{op.objName}}</a>
@@ -14,14 +14,14 @@
 	            {{#if op.summary }}
 	                {{op.summary}}
 
-					&nbsp;<a onclick="gui.opDocs.writeSummary('{{op.objName}}','{{op.summary}}')"><i class="fa fa-pencil"></i></a>
+					&nbsp;<a onclick="gui.opDocs.writeSummary('{{op.objName}}','{{op.summary}}')"><i class="icon icon-edit"></i></a>
 
 				{{else}}
-					<a onclick="gui.opDocs.writeSummary('{{op.objName}}')">no summary - click to write one! <i class="fa fa-pencil"></i></a>
+					<a onclick="gui.opDocs.writeSummary('{{op.objName}}')">no summary - click to write one! <i class="icon icon-edit"></i></a>
 	            {{/if}}
 			</div>
 
-            <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="blank">view example patches</a>&nbsp;&nbsp;<i class="fa fa-external-link"></i>
+            <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="blank">view example patches</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
             <br/><br/>
 
             {{#if op.isDeprecated }}

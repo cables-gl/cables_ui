@@ -75,9 +75,8 @@
     .logo
     {
         position: absolute;
-        // color:$text-color;
-        width:25px;
         text-align: center;
+        height:20px;
     }
 
     .fa
@@ -86,16 +85,16 @@
         margin-left: -5px;
     }
 
-    .cablesLogo
-    {
-        background-image: url(/logo.png);
-        background-repeat: no-repeat;
-        background-size:auto 80%;
-        background-position:0px center;
-        display:block;
-        height:20px;
-        float:left;
-    }
+    // .cablesLogo
+    // {
+    //     background-image: url(/logo.png);
+    //     background-repeat: no-repeat;
+    //     background-size:auto 80%;
+    //     background-position:0px center;
+    //     display:block;
+    //     height:20px;
+    //     float:left;
+    // }
 }
 
 

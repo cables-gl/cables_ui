@@ -52,6 +52,7 @@ CABLES.UI.SuggestPortDialog=function(op,port,mouseEvent,cb,cbCancel)
 
 CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
 {
+    var i=0;
     var suggestions=gui.opDocs.getSuggestions(op.objName,portname);
 
     if(op.getPort(portname).uiAttribs && op.getPort(portname).uiAttribs.linkRecommendations)
@@ -61,9 +62,8 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
         {
             suggestions=suggestions||[];
 
-            for(var i=0;i<recs.length;i++)
+            for(i=0;i<recs.length;i++)
             {
-
                 suggestions.push(
                     {
                         "name":recs[i].name,
@@ -71,13 +71,12 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
 						"isLinked":recs[i].isLinked,
                         "recommended":true,
                     });
-
             }
         }
     }
 
     if(suggestions)
-        for(var i=0;i<suggestions.length;i++)
+        for(i=0;i<suggestions.length;i++)
             suggestions[i].classname="op_color_"+CABLES.UI.uiConfig.getNamespaceClassName(suggestions[i].name||"");
 
     CABLES.UI.OPSELECT.newOpPos=coords;

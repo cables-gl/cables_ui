@@ -188,6 +188,7 @@ CABLES.UI.Port=function(thePort)
 
     function dragEnd(event)
     {
+        var j=0;
         CABLES.UI.MOUSEOVERPORT=false;
 
         var foundAutoOp=false;
@@ -207,7 +208,7 @@ CABLES.UI.Port=function(thePort)
                     CABLES.UI.selectedStartPort.name
                     );
 
-				for(var j=0;j<CABLES.UI.selectedStartPortMulti.length;j++)
+				for(j=0;j<CABLES.UI.selectedStartPortMulti.length;j++)
 				{
 					gui.patch().scene.link(
 						CABLES.UI.selectedEndOp.op,
@@ -272,7 +273,7 @@ CABLES.UI.Port=function(thePort)
             {
                 var link=gui.patch().scene.link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName() , CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
 
-				for(var j=0;j<CABLES.UI.selectedStartPortMulti.length;j++)
+				for(j=0;j<CABLES.UI.selectedStartPortMulti.length;j++)
 				{
 					gui.patch().scene.link(
 						CABLES.UI.selectedEndPort.op,

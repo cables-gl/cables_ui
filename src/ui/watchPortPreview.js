@@ -26,12 +26,13 @@ CABLES.WatchPortVisualizer=function()
 
     this.update=function(classname,id,value)
     {
+        var i=0;
         if(!this._visible)return;
         if(!self._ele.hasClass(classname.substr(1)))return;
         if(this._lastId!=classname)
         {
             // console.log('reset',this._lastId,id);
-            for(var i=0;i<this._buff.length;i++) this._buff[i]=Number.MAX_VALUE;
+            for(i=0;i<this._buff.length;i++) this._buff[i]=Number.MAX_VALUE;
             this._position=0;
             this._lastId=classname;
 
@@ -81,7 +82,7 @@ CABLES.WatchPortVisualizer=function()
 
         this.ctx.lineWidth = 2;
         // for(var i=position;i<this._buff.length;i++)
-        for(var i=0;i<this._num;i++)
+        for(i=0;i<this._num;i++)
         {
             var v=this._buff[(this._position+i)%this._num];
             if(this._buff[(this._position+i)%this._num]!=Number.MAX_VALUE)

@@ -147,14 +147,14 @@
     position: absolute;
     right:0px;
     width:240px;
-    height:260px;
-    background-color: $color-c10;
+    // height:260px;
+    background-color: $color-cz;
     z-index: 99999999;
 
     .title
     {
         display:inline-block;
-        width:120px;
+        width:60px;
     }
 
     div,span

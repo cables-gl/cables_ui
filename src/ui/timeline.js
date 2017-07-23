@@ -1452,6 +1452,7 @@ catch(e)
     var timeDisplayTexts=[];
     function updateTimeDisplay()
     {
+        var i=0;
         var step=1;
 
         var start=(viewBox.x/CABLES.TL.TIMESCALE);
@@ -1465,13 +1466,13 @@ catch(e)
         var startFrame=Math.floor( (start*self.getFPS() ) )-5;
         var endFrame=Math.floor( ((start+width)*self.getFPS() ) )+5;
 
-        for(var i=0;i<timeDisplayTexts.length;i++)
+        for(i=0;i<timeDisplayTexts.length;i++)
         {
             timeDisplayTexts[i].hide();
         }
 
         var count=0;
-        for(var i=startFrame;i<endFrame;i++)
+        for(i=startFrame;i<endFrame;i++)
         {
             if(i%step===0)
             {
