@@ -454,6 +454,7 @@ CABLES.UI.ServerOps=function(gui)
                                     if(!CABLES.Patch.getOpClass(op.name))
                                     {
                                         console.log('execute first time...');
+                                        gui.opSelect().reload();
                                         gui.serverOps.execute(op.name);
                                     }
 

@@ -85,7 +85,7 @@ CABLES.UI.Keypresenter.prototype.start=function()
         }
 
         this._lastKeyEvent=Date.now();
-        console.log(e);
+        // console.log(e);
     }.bind(this));
 
     $(document).on("mousedown", function(e)
