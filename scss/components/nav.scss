@@ -1,4 +1,22 @@
 
+
+#jobs
+{
+    position: absolute;
+    z-index: 9999;
+    top:40px;
+    li
+    {
+        background-color: $color-c10;
+        color:$text-color;
+        width:250px;
+        font-weight: normal;
+        list-style-type: none;
+        padding:10px;
+    }
+}
+
+
 #menubar,#timelineui
 {
     padding-right:10px;
@@ -64,42 +82,53 @@
     }
 }
 
-.cables
+.cables-logo
 {
-    a
-    {
-        display: block;
-        margin-left: 25px;
-    }
+    position: absolute;
+    text-align: center;
+    height:20px;
+    width:80px;
+    height:80px;
+    background-color: $color-menubar-background;
+    top:0px;
+    left:0px;
+    z-index: 99;
+    // border-bottom: 1px solid $color-c7;
 
-    .logo
+    .icon-cables
     {
-        position: absolute;
-        text-align: center;
-        height:20px;
+        margin-top:15px;
+        width:40px;
+        height:60px;
     }
-
-    .fa
-    {
-        margin-top: 4px;
-        margin-left: -5px;
-    }
-
-    // .cablesLogo
-    // {
-    //     background-image: url(/logo.png);
-    //     background-repeat: no-repeat;
-    //     background-size:auto 80%;
-    //     background-position:0px center;
-    //     display:block;
-    //     height:20px;
-    //     float:left;
-    // }
 }
+
+
+
+
+// .cables
+// {
+//
+//     a
+//     {
+//         display: block;
+//         margin-left: 80px;
+//     }
+//
+//
+//
+//     .fa
+//     {
+//         margin-top: 4px;
+//         margin-left: -5px;
+//     }
+//
+// }
 
 
 nav
 {
+    margin-left: 80px;
     float:left;
     z-index: 9999;
 
@@ -197,13 +226,13 @@ nav
             visibility: visible;
         }
 
-        ul li ul#jobs li
-        {
-            background-color: $color-c10;
-            color:$text-color;
-            width:250px;
-            font-weight: normal;
-        }
+        // ul li ul#jobs li
+        // {
+        //     background-color: $color-c10;
+        //     color:$text-color;
+        //     width:250px;
+        //     font-weight: normal;
+        // }
 
         .divide
         {
@@ -291,13 +320,6 @@ nav
         visibility: visible;
     }
 
-    ul li ul#jobs li
-    {
-        background-color: $color-c10;
-        color:$text-color;
-        width:250px;
-        font-weight: normal;
-    }
 
     .divide
     {

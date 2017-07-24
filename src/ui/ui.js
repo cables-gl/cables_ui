@@ -208,8 +208,7 @@ CABLES.UI.GUI=function()
 
         if(showingEditor)
         {
-            if(self.editorWidth>window.innerWidth-self.rendererWidth)
-                self.rendererWidth=window.innerWidth-self.editorWidth;
+            if(self.editorWidth>window.innerWidth-self.rendererWidth) self.rendererWidth=window.innerWidth-self.editorWidth;
 
             var editorbarHeight=76;
             $('#editor').show();
@@ -234,9 +233,6 @@ CABLES.UI.GUI=function()
             this._elSplitterEditor.css('top',menubarHeight);
 
             _editor.resize();
-
-            // patchWidth-=self.editorWidth-5;
-            // patchLeft=self.editorWidth+5;
         }
         else
         {
@@ -244,6 +240,13 @@ CABLES.UI.GUI=function()
             $('#editor').hide();
             editorWidth=0;
         }
+
+
+        this._elIconBar.css('height',window.innerHeight-60);
+        this._elIconBar.css('top',60);
+
+        $('#jobs').css('left',iconBarWidth);
+
 
         if(self.rendererWidth<100)self.rendererWidth=100;
 
@@ -729,6 +732,17 @@ CABLES.UI.GUI=function()
 
 
         $('#username').bind("click", CABLES.CMD.UI.userSettings);
+
+
+
+
+        $('.cables-logo').hover(function (e)
+        {
+            $('#jobs').show();
+        },function()
+        {
+            $('#jobs').hide();
+        });
 
 
 
@@ -1521,9 +1535,8 @@ CABLES.UI.GUI=function()
 
     this.init=function()
     {
-
-
         $('#infoArea').show();
+
         $('#infoArea').hover(function (e)
         {
             CABLES.UI.showInfo();
