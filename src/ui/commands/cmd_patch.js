@@ -20,7 +20,11 @@ CABLES.CMD.PATCH.reload=function()
 
 CABLES.CMD.PATCH.save=function()
 {
-	gui.patch().saveCurrentProject();
+    if(!CABLES.UI.lastSave || Date.now()-CABLES.UI.lastSave>1000)
+    {
+        gui.patch().saveCurrentProject();
+        CABLES.UI.lastSave=Date.now();
+    }
 };
 
 CABLES.CMD.PATCH.saveAs=function()

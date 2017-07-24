@@ -87,15 +87,14 @@ CABLES.API.Connection=function(ui)
     client.on('error', function()
     {
         connected=false;
-        // console.log('simpleio error...');
         ui.jobs().start({id:'connecting',title:'reconnecting to server'});
+
         clearTimeout(checkTimeout);
     });
 
     client.on('success', function()
     {
         connected=true;
-        // console.log('success');
         ui.jobs().finish('connecting');
     });
 

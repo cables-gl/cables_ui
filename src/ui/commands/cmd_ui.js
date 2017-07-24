@@ -92,23 +92,7 @@ CABLES.CMD.UI.startPresentationMode=function()
 
 CABLES.CMD.UI.showChangelog=function(since)
 {
-    CABLES.api.get('changelog',function(obj)
-    {
-
-        if(since)
-        {
-            for(var i=0;i<obj.items.length;i++)
-            {
-                if(obj.items[i].date<since)obj.items.length=i;
-            }
-            obj.onlyLatest=true;
-        }
-        if(obj.items.length===0)return;
-        var html = CABLES.UI.getHandleBarHtml('changelog',obj);
-        CABLES.UI.MODAL.show(html,{'title':'Changelog'});
-        CABLES.UI.userSettings.set('changelogLastView',obj.ts);
-    });
-
+    CABLES.CHANGELOG.show(since);
 };
 
 

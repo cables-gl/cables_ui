@@ -208,8 +208,7 @@ CABLES.UI.GUI=function()
 
         if(showingEditor)
         {
-            if(self.editorWidth>window.innerWidth-self.rendererWidth)
-                self.rendererWidth=window.innerWidth-self.editorWidth;
+            if(self.editorWidth>window.innerWidth-self.rendererWidth) self.rendererWidth=window.innerWidth-self.editorWidth;
 
             var editorbarHeight=76;
             $('#editor').show();
@@ -234,9 +233,6 @@ CABLES.UI.GUI=function()
             this._elSplitterEditor.css('top',menubarHeight);
 
             _editor.resize();
-
-            // patchWidth-=self.editorWidth-5;
-            // patchLeft=self.editorWidth+5;
         }
         else
         {
@@ -244,6 +240,13 @@ CABLES.UI.GUI=function()
             $('#editor').hide();
             editorWidth=0;
         }
+
+
+        this._elIconBar.css('height',window.innerHeight-60);
+        this._elIconBar.css('top',60);
+
+        $('#jobs').css('left',iconBarWidth);
+
 
         if(self.rendererWidth<100)self.rendererWidth=100;
 
@@ -733,6 +736,17 @@ CABLES.UI.GUI=function()
 
 
 
+        $('.cables-logo').hover(function (e)
+        {
+            $('#jobs').show();
+        },function()
+        {
+            $('#jobs').hide();
+        });
+
+
+
+
         // --- Help menu
         // Documentation
         $('.nav_help_about').bind("click", function (event) {
@@ -888,7 +902,8 @@ CABLES.UI.GUI=function()
                         {
                             if($('#patch').is(":focus"))
                             {
-                                self.patch().saveCurrentProject();
+                                // self.patch().saveCurrentProject();
+                                CABLES.CMD.PATCH.save();
                                 CABLES.UI.SELECTPROJECT.doReload=true;
                             }
                             else
@@ -898,7 +913,8 @@ CABLES.UI.GUI=function()
                             }
                             else
                             {
-                                self.patch().saveCurrentProject();
+                                CABLES.CMD.PATCH.save();
+                                // self.patch().saveCurrentProject();
                             }
                             e.preventDefault();
                         }
@@ -1020,25 +1036,88 @@ CABLES.UI.GUI=function()
         // $("body").append( script );
 
 
-        if(!window.chrome)
+
+
+
+
+    };
+
+    this.showWelcomeNotifications=function()
+    {
+        function show(html)
         {
-            html='<center>';
-            html+='<h2>yikes!</h2>';
-            html+='cables is optimized for chrome, you are using something else<br/>';
-            html+='feel free to continue, but be warned, it might behave strange<br/><br/>';
-            html+='<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>';
-            html+='</center>';
-            CABLES.UI.MODAL.show(html);
-        }
-        else
-        {
-            var lastView=CABLES.UI.userSettings.get('changelogLastView');
-            if(lastView)
-            {
-                CABLES.CMD.UI.showChangelog(CABLES.UI.userSettings.get('changelogLastView'));
-            }
+            if(html && html.length>0)CABLES.UI.MODAL.show(
+                '<div style="min-height:30px;max-height:500px;overflow-y:scroll;">'+html+'</div>'+
+                '<center><a class="bluebutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a></center>'
+            );
 
         }
+
+
+        var html='';
+
+        if(this.project().userList.indexOf(this.user.username)==-1)
+        {
+
+
+            iziToast.show(
+                {
+                    position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                    theme: 'dark',
+                    title: 'not your patch',
+                    message: 'you can play around in this patch but not overwrite it. <br/> to save use menubar "save as..." ',
+                    progressBar:false,
+                    animateInside:false,
+                    close:true,
+                    timeout:false
+                });
+
+
+        }
+
+        if(!window.chrome)
+        {
+
+            iziToast.error(
+            {
+                position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                theme: 'dark',
+                title: 'yikes!',
+                message: 'cables is optimized for chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange',
+                progressBar:false,
+                animateInside:false,
+                close:true,
+                timeout:false
+            });
+        }
+
+        var lastView=CABLES.UI.userSettings.get('changelogLastView');
+
+        CABLES.CHANGELOG.getHtml(function(clhtml)
+        {
+            if(clhtml!==null)
+            {
+                iziToast.show(
+                    {
+                        position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                        theme: 'dark',
+                        title: 'update',
+                        message: 'cables has been updated! ',
+                        progressBar:false,
+                        animateInside:false,
+                        close:true,
+                        timeout:false,
+                        buttons: [
+                            ['<button>read more</button>', function (instance, toast) { CABLES.CMD.UI.showChangelog(); iziToast.hide( {},toast); }]]
+
+                    });
+                // if(html.length>0)html+='<hr/><br/><br/>';
+                // html+=clhtml;
+            }
+            // show(html);
+        },CABLES.UI.userSettings.get('changelogLastView'));
+
+
     };
 
     function initRouting(cb)
@@ -1082,6 +1161,8 @@ CABLES.UI.GUI=function()
                 for(var i in proj.userList)
                 {
                     userOpsUrls.push('/api/ops/code/'+proj.userList[i]);
+
+
                 }
 
                 var lid='userops'+proj._id+CABLES.generateUUID();
@@ -1100,7 +1181,10 @@ CABLES.UI.GUI=function()
                         $('#options').html(gui.bookmarks.getHtml());
                     }
                     metaCode.init();
+                    gui.opSelect().reload();
                     self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
+
+                    self.showWelcomeNotifications();
                 });
             },function()
             {
@@ -1451,9 +1535,8 @@ CABLES.UI.GUI=function()
 
     this.init=function()
     {
-
-
         $('#infoArea').show();
+
         $('#infoArea').hover(function (e)
         {
             CABLES.UI.showInfo();

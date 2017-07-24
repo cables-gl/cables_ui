@@ -108,6 +108,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 
 CABLES.UI.OpSelect.prototype._search=function(q)
 {
+    if(!this._list || !this._html)this.prepare();
     this.firstTime=false;
     var query=q.toLowerCase();
 
@@ -245,6 +246,12 @@ CABLES.UI.OpSelect.prototype.close=function()
     $('body').off( "keydown", this.keyDown);
 };
 
+
+CABLES.UI.OpSelect.prototype.reload=function()
+{
+    this._list=null;
+    this._html=null;
+};
 
 CABLES.UI.OpSelect.prototype.prepare=function()
 {
