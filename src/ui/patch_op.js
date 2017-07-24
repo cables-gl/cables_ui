@@ -332,7 +332,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     var opui=_opui;
     var title=_text;
     var shownTitle=_text;
-    var backgroundResize=null;
+    // var backgroundResize=null;
     var commentText=null;
 	this._errorIndicator=null;
 
@@ -368,11 +368,12 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         if(background)background.remove();
         if(label)label.remove();
         if(commentText)commentText.remove();
-        if(backgroundResize)backgroundResize.remove();
+        // if(backgroundResize)backgroundResize.remove();
 		if(this._errorIndicator)this._errorIndicator.remove();
         // if(resizeHandle)resizeHandle.remove();
         if(miniRect)miniRect.remove();
-        label=background=commentText=backgroundResize=null;
+        // label=background=commentText=backgroundResize=null;
+        label=background=commentText=null;
     };
 
     this.removeUi=function()
@@ -852,78 +853,79 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             // CABLES.UI.cleanRaphael(commentText);
 			// console.log('addui');
 
-            backgroundResize=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
-            {
-                "x":sw-resizeSize,
-                "y":sh-resizeSize,
-                "fill": '#000',
-                "stroke": CABLES.UI.uiConfig.colorPatchStroke,
-                "stroke-width":0,
-                'opacity':0.2,
-                "cursor": "se-resize"
-            });
+            // backgroundResize=gui.patch().getPaper().rect(0, 0, resizeSize, resizeSize).attr(
+            // {
+            //     "x":sw-resizeSize,
+            //     "y":sh-resizeSize,
+            //     "fill": '#000',
+            //     "stroke": CABLES.UI.uiConfig.colorPatchStroke,
+            //     "stroke-width":0,
+            //     'opacity':0.2,
+            //     "cursor": "se-resize"
+            // });
 
-            CABLES.UI.cleanRaphael(backgroundResize);
+            // CABLES.UI.cleanRaphael(backgroundResize);
 
             var oldPosX,oldPosY;
-            var resizeCommentStart = function(dx, dy,a,b,e)
-            {
-                oldPosX=backgroundResize.attrs.x;
-                oldPosY=backgroundResize.attrs.y;
-                opui.isDragging=true;
-            };
+            // var resizeCommentStart = function(dx, dy,a,b,e)
+            // {
+            //     oldPosX=backgroundResize.attrs.x;
+            //     oldPosY=backgroundResize.attrs.y;
+            //     opui.isDragging=true;
+            // };
 
-            var resizeCommentEnd = function(dx, dy,a,b,e)
-            {
-                oldPosX=-1;
-                oldPosY=-1;
-                opui.isDragging=false;
-            };
+            // var resizeCommentEnd = function(dx, dy,a,b,e)
+            // {
+            //     oldPosX=-1;
+            //     oldPosY=-1;
+            //     opui.isDragging=false;
+            // };
 
-            var resizeCommentMove = function(dx, dy,a,b,e)
-            {
-                if(oldPosX<0)return;
-
-                var width=backgroundResize.attrs.x-background.attrs.x;
-                var height=backgroundResize.attrs.y-background.attrs.y;
-
-                if(width<50)width=50;
-                if(height<50)height=50;
-
-                // label.attr({
-                //     x:0
-                // });
-				//
-                // background.attr({
-                //     width:width+resizeSize
-                // });
-				//
-                // backgroundResize.attr({
-                //     x:oldPosX+dx,
-                //     y:oldPosY+dy
-                // });
-				//
-                // commentText.attr({
-                //     x:background.attrs.x,
-                //     y:background.attrs.y,
-                //     width:width+resizeSize,
-                //     height:height+resizeSize
-                // });
-				//
-                _opui.op.uiAttribs.size=[width,height];
-
-                gui.patch().background.toBack();
-                background.toFront();
-                backgroundResize.toFront();
-				commentText.toFront();
-            };
+        //     var resizeCommentMove = function(dx, dy,a,b,e)
+        //     {
+        //         if(oldPosX<0)return;
+        //
+        //         var width=backgroundResize.attrs.x-background.attrs.x;
+        //         var height=backgroundResize.attrs.y-background.attrs.y;
+        //
+        //         if(width<50)width=50;
+        //         if(height<50)height=50;
+        //
+        //         // label.attr({
+        //         //     x:0
+        //         // });
+				// //
+        //         // background.attr({
+        //         //     width:width+resizeSize
+        //         // });
+				// //
+        //         // backgroundResize.attr({
+        //         //     x:oldPosX+dx,
+        //         //     y:oldPosY+dy
+        //         // });
+				// //
+        //         // commentText.attr({
+        //         //     x:background.attrs.x,
+        //         //     y:background.attrs.y,
+        //         //     width:width+resizeSize,
+        //         //     height:height+resizeSize
+        //         // });
+				// //
+        //         _opui.op.uiAttribs.size=[width,height];
+        //
+        //         gui.patch().background.toBack();
+        //         background.toFront();
+        //         backgroundResize.toFront();
+				// commentText.toFront();
+        //     };
 			this.updateComment();
 
-            backgroundResize.drag(resizeCommentMove, resizeCommentStart,resizeCommentEnd);
+            // backgroundResize.drag(resizeCommentMove, resizeCommentStart,resizeCommentEnd);
 
-            group.push(backgroundResize,commentText);
+            // group.push(backgroundResize,commentText);
+            group.push(commentText);
             gui.patch().background.toBack();
-            backgroundResize.toFront();
+            // backgroundResize.toFront();
             background.toFront();
 			label.toFront();
 			if(this._errorIndicator)this._errorIndicator.toFront();
