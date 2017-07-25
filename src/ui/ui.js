@@ -390,7 +390,7 @@ CABLES.UI.GUI=function()
         else
         {
             this._elGlCanvas.attr('width',self.rendererWidth);
-            this._elGlCanvas.attr('height',self.rendererHeight-2);
+            this._elGlCanvas.attr('height',self.rendererHeight);
             this._elCablesCanvas.attr('width',self.rendererWidth);
             this._elCablesCanvas.attr('height',self.rendererHeight);
             this._elCablesCanvas.css('width',self.rendererWidth+'px');
@@ -1271,12 +1271,28 @@ CABLES.UI.GUI=function()
         cb(this.opDocs.get(opname));
     };
 
-    this.saveScreenshot=function(filename,cb)
+    this.saveScreenshotRenderer=function(filename,cb)
     {
+
+        this.saveScreenshot( null,null,$('#render_width').val() , $('#render_height').val());
+    };
+
+    this.saveScreenshot=function(filename,cb,pw,ph)
+    {
+        console.log(pw,ph);
         var w=$('#glcanvas').attr('width');
         var h=$('#glcanvas').attr('height');
-        $('#glcanvas').attr('width',$('#render_width').val());
-        $('#glcanvas').attr('height',$('#render_height').val());
+
+        if(pw)
+        {
+            $('#glcanvas').attr('width',pw);
+            w=pw;
+        }
+        if(ph)
+        {
+            $('#glcanvas').attr('height',ph);
+            h=ph;
+        }
 
         function padLeft(nr, n, str){
             return Array(n-String(nr).length+1).join(str||'0')+nr;

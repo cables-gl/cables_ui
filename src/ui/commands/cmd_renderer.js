@@ -12,6 +12,29 @@ CABLES.CMD.RENDERER.fullscreen=function()
 	gui.cycleRendererSize();
 };
 
+CABLES.CMD.RENDERER.changeSize=function()
+{
+
+
+	CABLES.UI.MODAL.prompt(
+		"Change Renderersize",
+		"Enter a new size",
+		gui.rendererWidth+' x '+gui.rendererHeight,
+		function(r)
+		{
+			var matches = r.match(/\d+/g)
+			if(matches.length>0)
+			{
+				gui.rendererWidth=matches[0];
+				gui.rendererHeight=matches[1];
+				gui.setLayout();
+			}
+		});
+
+
+
+};
+
 
 CABLES.CMD.commands.push(
 	{
@@ -25,6 +48,14 @@ CABLES.CMD.commands.push(
 		category:"renderer",
 		func:CABLES.CMD.RENDERER.fullscreen,
 		icon:'monitor'
+	},
+	{
+		cmd:"change renderer size",
+		category:"renderer",
+		func:CABLES.CMD.RENDERER.changeSize,
+		icon:'monitor'
 	}
+
+
 
 );
