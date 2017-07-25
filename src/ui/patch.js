@@ -102,6 +102,7 @@ CABLES.UI.Patch=function(_gui)
             catch(exp)
             {
                 CABLES.UI.notify("Paste failed");
+                console.log(exp);
             }
 
             var k=0;
@@ -242,7 +243,7 @@ CABLES.UI.Patch=function(_gui)
                 }
 
             }
-            CABLES.UI.notify('Paste failed');
+            // CABLES.UI.notify('Paste failed');
         }
 
     };
@@ -705,6 +706,7 @@ CABLES.UI.Patch=function(_gui)
 
     this.getCurrentProject=function()
     {
+
         return currentProject;
     };
 

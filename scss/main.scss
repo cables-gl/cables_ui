@@ -60,6 +60,11 @@ hr
     height:1px;
 }
 
+#modalcontent hr
+{
+    border-top: 1px solid $color-c5 !important;
+}
+
 *
 {
     color:$text-color;
@@ -556,6 +561,7 @@ input
 @import 'components/project_settings.scss';
 @import 'libs/taggle-custom.scss';
 
+
 @import 'components/nav';
 @import 'components/files';
 @import 'components/editor';
@@ -566,3 +572,4 @@ input
 @import 'components/keypresenter';
 
 @import 'components/params.scss';
+@import 'libs/iztoast.scss';

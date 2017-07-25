@@ -224,28 +224,41 @@ CABLES.UI.MODAL.showException=function(ex,op)
 
 
 
-CABLES.UI.notify=function(title)
+CABLES.UI.notify=function(title,text)
 {
-    $('#notify').html(title);
-    $('#notify').show();
-    $('#notify').css({top: "0px" ,opacity: 0 });
+    // $('#notify').html(title);
+    // $('#notify').show();
+    // $('#notify').css({top: "0px" ,opacity: 0 });
+    //
+    // $('#notify').animate(
+    //     {
+    //         top: "20px",
+    //         opacity:1
+    //     }, 150);
+    //
+    // setTimeout(function()
+    // {
+    //     $( "#notify" ).animate({
+    //        top: "40px",
+    //        opacity:0
+    //    }, 150,function()
+    //    {
+    //        $('#notify').hide();
+    //    });
+    // },1200);
 
-    $('#notify').animate(
+    iziToast.show(
         {
-            top: "20px",
-            opacity:1
-        }, 150);
+            position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            theme: 'dark',
+            title: title,
+            message: text||'',
+            progressBar:false,
+            animateInside:false,
+            close:false,
+            timeout:2000
+        });
 
-    setTimeout(function()
-    {
-        $( "#notify" ).animate({
-           top: "40px",
-           opacity:0
-       }, 150,function()
-       {
-           $('#notify').hide();
-       });
-    },1200);
 };
 
 

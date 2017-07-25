@@ -54,7 +54,7 @@ const mutations = {
    if(state.items.filter(function(e) { return e.cmd === cmdName }).length === 0) { // only add if it does not exist
      var item = CABLES.CMD.getCmd(cmdName);
      if(!item) {
-       console.error('Could not add command to sidebar - not found! Command name: ', cmdName);
+      //  console.error('Could not add command to sidebar - not found! Command name: ', cmdName); // TODO: log
        return;
      }
      var itemToAdd = {
