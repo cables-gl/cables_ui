@@ -16,7 +16,7 @@ function()
         if(jobs.length==0)
         {
             str+='<li>no background jobs...</li>';
-            $('.icon-cables').removeClass('blinkanim');
+            $('.cables-logo .icon-cables').removeClass('blinkanim');
         }
 
         $('#jobs').html(str);
@@ -46,7 +46,7 @@ function()
             }
         }
 
-        $('.icon-cables').addClass('blinkanim');
+        $('.cables-logo .icon-cables').addClass('blinkanim');
 
         // $('.cables .logo').addClass('fa fa-circle-o-notch fa-spin');
 
@@ -87,7 +87,7 @@ function()
             }
             updateJobListing();
 
-        },111000);
+        },500);
 
     };
 };
