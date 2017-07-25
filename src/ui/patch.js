@@ -2337,6 +2337,16 @@ CABLES.UI.Patch=function(_gui)
             $('#options_warning').html(currentOp.op.uiAttribs.warning);
         }
 
+        if(!currentOp.op.uiAttribs.hint || currentOp.op.uiAttribs.hint.length===0)
+        {
+            $('#options_hint').hide();
+        }
+        else
+        {
+            $('#options_hint').show();
+            $('#options_hint').html(currentOp.op.uiAttribs.hint);
+        }
+
         if(!currentOp.op.uiAttribs.error || currentOp.op.uiAttribs.error.length===0)
         {
             $('#options_error').hide();
