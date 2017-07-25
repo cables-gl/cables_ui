@@ -1241,7 +1241,6 @@ var OpUi=function(paper,op,x,y,w,h,txt)
         self.oprect.setPosition(posx,posy);
         self.op.uiAttr({"translate":{x:posx,y:posy}});
 
-
         for(var j in self.links)
             self.links[j].redraw();
     };

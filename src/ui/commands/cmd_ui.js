@@ -78,7 +78,11 @@ CABLES.CMD.UI.showCommandPallet=function()
 CABLES.CMD.UI.centerPatchOps=function()
 {
     gui.patch().centerViewBoxOps();
-	// gui.cmdPallet.show();
+};
+
+CABLES.CMD.UI.flowVis=function()
+{
+    gui.patch().toggleFlowVis();
 };
 
 CABLES.CMD.UI.startPresentationMode=function()
@@ -184,7 +188,15 @@ CABLES.CMD.commands.push(
         cmd:"start presentation mode",
         category:"ui",
         func:CABLES.CMD.UI.startPresentationMode
+    },
+    {
+        cmd:"toggle flow visualization",
+        category:"ui",
+        func:CABLES.CMD.UI.flowVis,
+        icon:"cables"
     }
+
+
 
 
 

@@ -307,7 +307,7 @@
 		{
 			margin-left:5px;
 			margin-right:5px;
-		    -webkit-mask-position-y: 2px;
+		    mask-position-y: 2px;
 		}
     }
 
@@ -401,12 +401,24 @@
   to { stroke-dashoffset: 200; }
 }
 
+@keyframes pathSpeedAnimFast
+{
+  from { stroke-dashoffset: 0; stroke-width: 5;}
+  to { stroke-dashoffset: 200;stroke-width: 5}
+}
+
+@keyframes pathSpeedAnimFlash
+{
+  from { stroke-width: 10; stroke-dashoffset: 0; }
+  to { stroke-width: 2; stroke-dashoffset: 9;}
+}
+
 .pathSpeed0,.pathSpeed1,.pathSpeed2,.pathSpeed3,.pathSpeed4
 {
     stroke-dashoffset: 0;
     stroke-dasharray: 5;
     stroke-width:2px;
-    -webkit-animation: pathSpeedAnim 10s;
+    animation: pathSpeedAnim 10s;
     animation-iteration-count:infinite;
 }
 
@@ -417,28 +429,28 @@
 
 .pathSpeed1
 {
-    -webkit-animation: pathSpeedAnim 10s;
+    animation: pathSpeedAnimFlash 0.2s;
     animation-iteration-count:infinite;
     // animation-timing-function: linear;
 }
 
 .pathSpeed2
 {
-    -webkit-animation: pathSpeedAnim 5s;
+    animation: pathSpeedAnim 5s;
     animation-iteration-count:infinite;
     animation-timing-function: linear;
 }
 
 .pathSpeed3
 {
-    -webkit-animation: pathSpeedAnim 2.5s;
+    animation: pathSpeedAnim 2.5s;
     animation-iteration-count:infinite;
     animation-timing-function: linear;
 }
 
 .pathSpeed4
 {
-    -webkit-animation: pathSpeedAnim 1.25s;
+    animation: pathSpeedAnimFast 1.25s;
     animation-iteration-count:infinite;
     animation-timing-function: linear;
 }
@@ -446,5 +458,5 @@
 
 rect
 {
-    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    tap-highlight-color:rgba(0,0,0,0);
 }

@@ -75,6 +75,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             points+=1;
         }
 
+
         if(list[i]._nameSpaceFull.indexOf(query)>-1)
         {
             found=true;
@@ -93,11 +94,18 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             points+=2;
         }
 
+
         if(found && list[i].pop)
         {
             points+=(list[i].pop||2)/CABLES.UI.OPSELECT.maxPop||1;
             result.push(list[i]);
         }
+
+        // if(found && list[i]._nameSpace.indexOf("ops.math")>-1)
+        // {
+        //     console.log('MATH '+list[i]._shortName);
+        //     points+=13;
+        // }
 
         if(points===0 && list[i].score>0) list[i].score=0;
             else list[i].score+=points;
@@ -169,19 +177,19 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
 
 CABLES.UI.OpSelect.setItemScore=function(item)
 {
-    var showScore=false;
-    if(showScore)
-    {
-        setTimeout(function()
-        {
-            var score=Math.round(100*item.score)/100;
-            var id='#result_'+item.id+' .score';
-            item.elementScore=$(id);
-            item.elementScore.html( score );
-
-        },1);
-
-    }
+    // var showScore=true;
+    // if(showScore)
+    // {
+    //     setTimeout(function()
+    //     {
+    //         var score=Math.round(100*item.score)/100;
+    //         var id='#result_'+item.id+' .score';
+    //         item.elementScore=$(id);
+    //         item.elementScore.html( score );
+    //
+    //     },1);
+    //
+    // }
 };
 
 
