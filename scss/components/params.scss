@@ -1,7 +1,5 @@
 .params
 {
-
-
 	.warning,.warning-experimental,.warning-error
 	{
 		padding:5px;
@@ -19,19 +17,44 @@
 		color:black;
 	}
 
+	.icon-link {
+		position: relative;
+    top: 4px;
+	}
+
 	.hint
 	{
 		background-color: $background-color-brighter;
+	}
+
+	.toggle-bookmark-button {
+		background-color: $color-c3;
+		position: absolute;
+		top: 4px;
+		height: 29px;
+		right: 23px;
+		width: 26px;
 	}
 
 	.params_op_head
 	{
 	    text-align: center;
 
+			#opname {
+				width: 77%;
+				background-color: transparent;
+				margin-bottom: 0;
+
+				&:hover {
+					background-color: $color-c7;
+				}
+			}
+
 		.summary
 		{
 			font-size: $font-size-default+2;
 			padding:5px;
+			margin: 10px 0;
 		}
 
 		// a

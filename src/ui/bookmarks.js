@@ -5,6 +5,16 @@ CABLES.UI.Bookmarks=function()
 {
     var bookmarks=[];
 
+    this.hasBookmarkWithId = function(id) {
+      for(var i=0; i<bookmarks.length; i++) {
+        var bm = bookmarks[i];
+        if(bm === id) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     this.getHtml=function()
     {
         var subs=gui.patch().getSubPatches();
@@ -68,11 +78,17 @@ CABLES.UI.Bookmarks=function()
             for(var i in bookmarks) if(bookmarks[i]==id)
             {
                 this.remove(id);
+                $('.toggle-bookmark-button')
+                  .removeClass('icon-bookmark-filled')
+                  .addClass('icon-bookmark');
                 CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_removed);
                 return;
             }
 
             bookmarks.push(id);
+            $('.toggle-bookmark-button')
+              .removeClass('icon-bookmark')
+              .addClass('icon-bookmark-filled');
             gui.patch().focusOp(id);
             CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_added);
         }
