@@ -2410,6 +2410,8 @@ CABLES.UI.Patch=function(_gui)
     this._showOpParams=function(op)
     {
 
+        console.log(this.getUiOp(op).links);
+
         var i=0;
         callEvent('opSelected',op);
 
@@ -3130,10 +3132,52 @@ this.linkTwoOps=function(op1,op2)
 
 };
 
-this.startFlowVis=function()
+this.flowvis=-1;
+
+this.toggleFlowVis=function()
 {
+    if(this.flowvis==-1)
+    {
+        console.log('start');
+        this.startflowVis();
+    }
+    else
+    {
+        console.log('stop');
+        clearInterval(this.flowvis);
+        this.stopFlowVis();
+        this.flowvis=-1;
+    }
+};
+
+this.stopFlowVis=function()
+{
+    for(var i=0;i<this.ops.length;i++)
+    {
+        for(var j=0;j<this.ops[i].links.length;j++)
+        {
+            if(this.ops[i].links[j] && this.ops[i].links[j].linkLine )
+            {
+                var link=this.ops[i].links[j].p2.thePort.getLinkTo( this.ops[i].links[j].p1.thePort );
+                if(!link) link=this.ops[i].links[j].p1.thePort.getLinkTo( this.ops[i].links[j].p2.thePort );
+
+                if(link)
+                {
+                    this.ops[i].links[j].linkLine.node.classList.remove( this.ops[i].links[j].linkLine.speedClass);
+                    this.ops[i].links[j].linkLine.speedClass='nospeed';
+                }
+            }
+        }
+    }
+};
+
+
+
+this.startflowVis=function()
+{
+
     var speedCycle=true;
-    setInterval(function()
+    this.flowvis=setInterval(function()
     {
         speedCycle=!speedCycle;
 
@@ -3141,33 +3185,47 @@ this.startFlowVis=function()
         {
         }
 
+        var count=0;
+        var countInvalid=0;
+
         for(var i=0;i<this.ops.length;i++)
         {
             // this.ops[i].removeDeadLinks();
 
-            for(var j=0;j<this.ops[j].links.length;j++)
+            for(var j=0;j<this.ops[i].links.length;j++)
             {
                 if(this.ops[i].links[j] && this.ops[i].links[j].linkLine )
                 {
                     // var link=this.ops[i].links[j];
                     var link=this.ops[i].links[j].p2.thePort.getLinkTo( this.ops[i].links[j].p1.thePort );
+                    if(!link) link=this.ops[i].links[j].p1.thePort.getLinkTo( this.ops[i].links[j].p2.thePort );
 
                     if(link)
-                    if(link.speedCycle!=speedCycle)
                     {
-
-                        link.speedCycle=speedCycle;
-
-                        var newClass="pathSpeed0";
-                        if(link.activityCounter>=1) newClass="pathSpeed3";
-
-                        if(this.ops[i].links[j].linkLine.speedClass!=newClass)
+                        if(link.speedCycle!=speedCycle)
                         {
-                            this.ops[i].links[j].linkLine.node.classList.remove( this.ops[i].links[j].linkLine.speedClass);
-                            this.ops[i].links[j].linkLine.speedClass=newClass;
-                            this.ops[i].links[j].linkLine.node.classList.add(newClass);
+
+                            count++;
+
+                            link.speedCycle=speedCycle;
+
+                            var newClass="pathSpeed0";
+                            if(link.activityCounter>=1) newClass="pathSpeed2";
+
+                            if(this.ops[i].links[j].linkLine.speedClass!=newClass)
+                            {
+                                this.ops[i].links[j].linkLine.node.classList.remove( this.ops[i].links[j].linkLine.speedClass);
+                                this.ops[i].links[j].linkLine.speedClass=newClass;
+                                this.ops[i].links[j].linkLine.node.classList.add(newClass);
+                            }
+                            link.activityCounter=0;
                         }
-                        link.activityCounter=0;
+
+                    }
+                    else
+                    {
+                        countInvalid++;
+
                     }
 
                 }
@@ -3176,10 +3234,12 @@ this.startFlowVis=function()
             }
         }
 
+        // console.log('links',count,countInvalid);
+
 
     }.bind(this),100);
 
-}
+};
 
 
 };

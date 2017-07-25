@@ -82,7 +82,7 @@ CABLES.CMD.UI.centerPatchOps=function()
 
 CABLES.CMD.UI.flowVis=function()
 {
-    gui.patch().startFlowVis();
+    gui.patch().toggleFlowVis();
 };
 
 CABLES.CMD.UI.startPresentationMode=function()
@@ -190,7 +190,7 @@ CABLES.CMD.commands.push(
         func:CABLES.CMD.UI.startPresentationMode
     },
     {
-        cmd:"flow visualization",
+        cmd:"toggle flow visualization",
         category:"ui",
         func:CABLES.CMD.UI.flowVis,
         icon:"cables"
