@@ -2,60 +2,41 @@
 
 <script id="select_project" type="text/x-handlebars-template">
 
-<style>
 
-.thumbcont .title
-{
-    background-color:#222;
-    padding:10px;
+    <div class="projectsearch">
 
-}
-
-.searchresult
-{
-    width:180px;
-    height:130px;
-    float:left;
-    cursor:pointer;
-}
-
-.thumbcont
-{
-    border:none !important;
-}
-
-.searchresult img
-{
-    max-width:180px;
-    max-height:100px;
-}
-
-</style>
-
-    
-<div class="opsearch" style="height:auto;">
-    <h2>load project</h2>
-
-    <input id="projectsearch"/>
-
-    <br/><br/>
-    <style id="search_style"></style>
-
-
-    <div style="height:600px;overflow:auto">
-      {{#each projects}}
-
-
-        <div class="thumbcont searchresult searchable" data-projid="{{ _id }}" data-index="{{name}}" onclick="document.location.href='#/project/{{_id}}'">
-            <div style="background-color:black;width:180px;height:100px;background-image:url(/api/project/{{_id}}/screenshot);background-repeat:no-repeat;background-size:100%;background-position:center center;"></div>
-            <div class="title">
-                {{name}}
-            </div>
+        <div style="padding-left:25px;padding-right:25px;">
+            <input id="projectsearch" class="medium info" placeholder="filter patches"/>
         </div>
 
-      {{/each}}
-    </div>
+        <br/>
+        <style id="search_style"></style>
 
-</div>
+
+        <div class="projectsearchresults">
+          {{#each projects}}
+            <div class="thumbcont searchresult searchable" data-projid="{{ _id }}" data-index="{{name}}" onclick="document.location.href='#/project/{{_id}}'">
+                <div style="background-color:black;width:180px;height:100px;background-image:url(/api/project/{{_id}}/screenshot);background-repeat:no-repeat;background-size:100%;background-position:center center;"></div>
+                <div class="title">
+                    {{name}}
+
+                    {{#if isPrivate}}
+                    &nbsp;<span class="icon icon-lock"></span>
+                    {{/if}}
+
+                </div>
+            </div>
+          {{/each}}
+        </div>
+
+
+        <!-- <div style="padding-left:25px;padding-right:25px;" class="text-right">
+            <br/>
+            <a class="button ">cancel</a>&nbsp;&nbsp;
+            <a class="bluebutton ">open</a>&nbsp;&nbsp;
+        </div> -->
+
+
+    </div>
 
 </script>

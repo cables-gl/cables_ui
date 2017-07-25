@@ -1,0 +1,49 @@
+.projectsearch
+{
+    height:auto;
+    width:830px;
+
+    .icon
+	{
+		background-color: $color-c3;
+	}
+
+    .projectsearchresults
+    {
+        height:600px;
+        overflow:auto;
+        background-color: $background-color-brighter;
+        padding:20px;
+
+        .thumbcont .title
+        {
+            background-color:#222;
+            padding:10px;
+        }
+
+        .searchresult
+        {
+            width:180px;
+            height:130px;
+            float:left;
+            cursor:pointer;
+            margin:7px;
+            margin-bottom:15px;
+            text-align: center;
+        }
+
+        .thumbcont
+        {
+            border:none !important;
+        }
+
+        .searchresult img
+        {
+            max-width:180px;
+            max-height:100px;
+        }
+
+
+    }
+
+}
