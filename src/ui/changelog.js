@@ -6,7 +6,6 @@ CABLES.CHANGELOG.getHtml=function(cb,since)
 {
     CABLES.api.get('changelog',function(obj)
     {
-
         if(since)
         {
             for(var i=0;i<obj.items.length;i++)
@@ -47,7 +46,9 @@ CABLES.CHANGELOG.show=function(since)
 {
     CABLES.CHANGELOG.getHtml(function(html)
     {
-        CABLES.UI.MODAL.show(html,{'title':'Changelog'});
+        CABLES.UI.MODAL.show(html,{title:'changelog',nopadding:true});
+
+        // CABLES.UI.MODAL.show(html,{'title':'Changelog'});
     },since);
 
 };

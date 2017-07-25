@@ -8,7 +8,6 @@ CABLES.UI.SELECTPROJECT.doReload=true;
 
 CABLES.UI.SELECTPROJECT.showSelectProjects=function(html)
 {
-
     CABLES.UI.MODAL.show(html,{title:'open patch',nopadding:true});
 
     $('#projectsearch').focus();

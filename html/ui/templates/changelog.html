@@ -7,14 +7,16 @@
             <h2 style="text-transform:lowercase;">cables changelog</h2>
         </div>
 
-        {{#each items}}
-            {{#if html}}
-                <div class="item selectable">
-                    {{{html}}}
-                    <div class="date">{{dateReadable}}</div>
-                    <div class="clear"></div>
-                </div>
-            {{/if}}
-        {{/each}}
+        <div class="log">
+            {{#each items}}
+                {{#if html}}
+                    <div class="item selectable">
+                        {{{html}}}
+                        <div class="date">{{dateReadable}}</div>
+                        <div class="clear"></div>
+                    </div>
+                {{/if}}
+            {{/each}}
+        </div>
     </div>
 </script>
