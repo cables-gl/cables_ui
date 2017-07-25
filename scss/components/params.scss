@@ -2,19 +2,30 @@
 {
 	.warning,.warning-experimental,.warning-error
 	{
-		padding:5px;
+		border: 1px solid;
+    padding: 21px;
+
+		a {
+			text-decoration: underline;
+		}
 	}
 
-	.warning ,.warning-experimental
+	.hint
 	{
-		background-color: $color-warning;
-		color:black;
+		padding: 14px;
+		background-color: transparent;
+		border: 1px solid;
+		display: none;
 	}
 
-	.warning-error
+	.warning ,.warning-experimental, .warning a, .warning-experimental a
 	{
-		background-color: $color-error;
-		color:black;
+		color: $color-warning;
+	}
+
+	.warning-error, .warning-error a
+	{
+		color: $color-error;
 	}
 
 	.icon-link {
