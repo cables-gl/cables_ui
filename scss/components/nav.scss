@@ -2,14 +2,22 @@
 
 #jobs
 {
+    display: none;
     position: absolute;
     z-index: 9999;
-    top:40px;
+    top:20px;
+    background-color: $color-menubar-background;
+
+    ul,li
+    {
+        padding:0;
+        margin:0;
+    }
+
     li
     {
-        background-color: $color-c10;
+        background-color: $color-menubar-background;
         color:$text-color;
-        width:250px;
         font-weight: normal;
         list-style-type: none;
         padding:10px;
@@ -225,14 +233,6 @@ nav
             opacity: 1;
             visibility: visible;
         }
-
-        // ul li ul#jobs li
-        // {
-        //     background-color: $color-c10;
-        //     color:$text-color;
-        //     width:250px;
-        //     font-weight: normal;
-        // }
 
         .divide
         {

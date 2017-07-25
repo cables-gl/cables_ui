@@ -3032,7 +3032,6 @@ CABLES.UI.Patch=function(_gui)
             {
                 if(this.ops[j].op.patchId && this.ops[j].op.patchId.get()==foundPatchIds[i])
                 {
-                    console.log("found real patch");
                     subPatches.push({"name":this.ops[j].op.name,"id":foundPatchIds[i]});
                     found=true;
                 }

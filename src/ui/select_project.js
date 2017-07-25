@@ -9,7 +9,7 @@ CABLES.UI.SELECTPROJECT.doReload=true;
 CABLES.UI.SELECTPROJECT.showSelectProjects=function(html)
 {
 
-    CABLES.UI.MODAL.show(html);
+    CABLES.UI.MODAL.show(html,{title:'open patch',nopadding:true});
 
     $('#projectsearch').focus();
     $('#projectsearch').on('input',function(e)
@@ -85,7 +85,7 @@ CABLES.UI.SELECTPROJECT.show=function()
         CABLES.api.get('myprojects',function(data)
         {
             CABLES.UI.MODAL.showLoading('loading projectlist...');
-            CABLES.UI.SELECTPROJECT.projectsHtml = CABLES.UI.getHandleBarHtml('select_project',{projects:data });
+            CABLES.UI.SELECTPROJECT.projectsHtml = CABLES.UI.getHandleBarHtml('select_project',{"projects":data });
             CABLES.UI.SELECTPROJECT.showSelectProjects(CABLES.UI.SELECTPROJECT.projectsHtml);
             CABLES.UI.SELECTPROJECT.doReload=false;
         });

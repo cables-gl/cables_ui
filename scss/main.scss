@@ -11,9 +11,6 @@ $border-radius-popups:13px;
 @import 'libs/font-awesome.scss';
 
 
-
-
-
 html,body { // ipad overscroll fix...
   position: fixed;
   overflow: hidden;
@@ -93,6 +90,7 @@ hr
 .SourceCodePro,monospace { font-family: SourceCodePro,monospace;}
 .padded { padding:15px; }
 .text-center { text-align: center; }
+.text-right { text-align: right; }
 
 a
 {
@@ -572,4 +570,5 @@ input
 @import 'components/keypresenter';
 
 @import 'components/params.scss';
+@import 'components/projectsearch.scss';
 @import 'libs/iztoast.scss';
