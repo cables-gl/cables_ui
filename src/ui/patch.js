@@ -2410,8 +2410,6 @@ CABLES.UI.Patch=function(_gui)
     this._showOpParams=function(op)
     {
 
-        console.log(this.getUiOp(op).links);
-
         var i=0;
         callEvent('opSelected',op);
 
