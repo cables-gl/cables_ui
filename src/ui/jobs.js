@@ -11,8 +11,12 @@ function()
         var str='';
 
         for(var i in jobs)
-        {
             str+='<li><i class="fa fa-circle-o-notch fa-spin"></i>&nbsp;&nbsp;'+jobs[i].title+'</li>';
+
+        if(jobs.length==0)
+        {
+            str+='<li>no background jobs...</li>';
+            $('.icon-cables').removeClass('blinkanim');
         }
 
         $('#jobs').html(str);
@@ -42,8 +46,9 @@ function()
             }
         }
 
-        $('.cables .logo').removeClass('cablesLogo');
-        $('.cables .logo').addClass('fa fa-circle-o-notch fa-spin');
+        $('.icon-cables').addClass('blinkanim');
+
+        // $('.cables .logo').addClass('fa fa-circle-o-notch fa-spin');
 
         jobs.push(job);
         updateJobListing();
@@ -56,28 +61,33 @@ function()
 
     this.finish=function(jobId)
     {
-        for(var i in jobs)
+
+        setTimeout(function()
         {
-            if(jobs[i].id==jobId)
+            for(var i in jobs)
             {
-                if(jobs[i].title.indexOf('file')>=0)
+                if(jobs[i].id==jobId)
                 {
-                    // gui.updateProjectFiles();
-                    CABLES.UI.fileSelect.load();
+                    if(jobs[i].title.indexOf('file')>=0)
+                    {
+                        // gui.updateProjectFiles();
+                        CABLES.UI.fileSelect.load();
+                    }
+                    jobs.splice(i,1);
+                    break;
                 }
-                jobs.splice(i,1);
-                break;
             }
-        }
 
 
 
-        if(jobs.length===0)
-        {
-            $('.cables .logo').addClass('cablesLogo');
-            $('.cables .logo').removeClass('fa fa-circle-o-notch fa-spin');
-        }
-        updateJobListing();
+            if(jobs.length===0)
+            {
+                $('.cables .logo').addClass('cablesLogo');
+                $('.cables .logo').removeClass('fa fa-circle-o-notch fa-spin');
+            }
+            updateJobListing();
+
+        },111000);
 
     };
 };
