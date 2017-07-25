@@ -46,7 +46,7 @@ CABLES.CHANGELOG.show=function(since)
 {
     CABLES.CHANGELOG.getHtml(function(html)
     {
-        CABLES.UI.MODAL.show(html,{title:'changelog',nopadding:true});
+        CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
 
         // CABLES.UI.MODAL.show(html,{'title':'Changelog'});
     },since);
