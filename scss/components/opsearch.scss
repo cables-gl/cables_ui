@@ -46,16 +46,20 @@
     .opOptions
     {
         background-color: $background-color-brighter;
-        padding:0px;
+        padding:5px;
         padding-left: 15px;
         text-align: center;
-        // padding-top:14px;
+
+        border-bottom-left-radius: $border-radius-popups;
+        border-bottom-right-radius: $border-radius-popups;
+        background-color: $color-searchInputContainer;
+
     }
 
     .searchbrowserContainer
     {
         width:510px;
-        height:100%;
+        height: 521px;
         background-color: $background-color-brighter;
     }
 
@@ -102,7 +106,7 @@
         padding: 20px;
         overflow-x: hidden;
         overflow-y: auto;
-        height:440px;
+        height:462px;
         border-top-right-radius: $border-radius-popups;
         border-bottom-right-radius: $border-radius-popups;
 
