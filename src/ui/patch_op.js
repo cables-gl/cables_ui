@@ -1144,6 +1144,7 @@ var OpUi=function(paper,op,x,y,w,h,txt)
                     if(port.links[j].portIn===null || port.links[j].portOut===null )
                     {
                         port.links[j].remove();
+                        console.log('found zombie link');
                         found=true;
                     }
                 }

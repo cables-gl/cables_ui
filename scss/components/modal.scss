@@ -99,6 +99,8 @@
     -webkit-user-select: text;  /* Chrome all / Safari all */
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
+    max-width: 800px;
+    overflow: auto;
 
     .error
     {

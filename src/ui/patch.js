@@ -611,6 +611,13 @@ CABLES.UI.Patch=function(_gui)
             return;
         }
 
+        for(var i=0;i<this.ops.length;i++)
+        {
+            this.ops[i].removeDeadLinks();
+            if(this.ops[i].op.uiAttribs.error) delete this.ops[i].op.uiAttribs.error;
+            if(this.ops[i].op.uiAttribs.warning) delete this.ops[i].op.uiAttribs.warning;
+        }
+
         gui.jobs().start({id:'projectsave',title:'saving project'});
 
         var w=$('#glcanvas').attr('width');
