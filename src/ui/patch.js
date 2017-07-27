@@ -764,18 +764,27 @@ CABLES.UI.Patch=function(_gui)
             }
         }
 
+        if(selectedOps.length>0)
+        {
+            viewBox.x=minX-viewBox.w/2;
+            viewBox.y=minY-viewBox.h/2;
+        }
+        else
+        {
+            viewBox.x=minX;
+            viewBox.y=minY;
 
-        viewBox.x=minX-viewBox.w/2;
-        viewBox.y=minY-viewBox.h/2;
+        }
+
         var w=1*(Math.abs(maxX-minX));
         var h=1*(Math.abs(maxY-minY));
 
-        w=Math.max(500,w);
-        h=Math.max(500,h);
-        // viewBox.w=100;
-        // viewBox.h=100;
-        // if(w>h)viewBox.w=w;
-        //     else viewBox.h=h;
+        if(selectedOps.length>0)
+        {
+            w=Math.max(500,w);
+            h=Math.max(500,h);
+        }
+
         viewBox.w=w;
         viewBox.h=h;
         self.updateViewBox();
