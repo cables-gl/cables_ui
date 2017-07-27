@@ -499,7 +499,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             return;
         }
 
-
         if(opui.isSelected())
         {
             if(e.shiftKey)

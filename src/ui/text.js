@@ -29,7 +29,7 @@ CABLES.UI.TEXTS=
     portObjectSnapshot:'see at object data snapshot',
 
     patchSelectedMultiOps:'## Selected Multiple Ops\n\n* `[d]` disable ops and their childs\n* `[a]` align ops left\n* `[shift+a]` reduce vertical spacing\n* `[del]` delete selcted ops\n* `[mod] + c`: Copy selected op ',
-    patchSelectedOp:'## Selected Single Op\n\n* `[d]` disable op and childs\n* `[shift+d]` temporary unlink op \n* `[del]` delete op',
+    patchSelectedOp:'## Selected Single Op\n\n* `[d]` disable op and childs\n* `[shift+d]` temporary unlink op \n* `[del]` delete op\n* `[page up/down]` snap to parent/child op',
 
     projectSettingsPublic:"make patch public - everyone can see it",
     projectSettingsTitle:"## Patch Name \n\nIf this is your op, click to edit",
