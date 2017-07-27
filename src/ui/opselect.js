@@ -48,8 +48,10 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 
     if(opname && (gui.user.isAdmin || opname.startsWith('Ops.User.'+gui.user.username)) && gui.serverOps.isServerOp(opname))
     {
-        optionsHtml+='&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit '+opname+'</a>';
+        optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit op</a>';
     }
+
+    optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;score: '+(Math.round(100*$('.selected').data('score'))/100);
 
     $('#opOptions').html(optionsHtml);
 };
@@ -94,6 +96,11 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             points+=2;
         }
 
+        if(found)
+        {
+            if(list[i]._summary.length>0) points+=1;
+            if(list[i]._nameSpace.indexOf("ops.math")>-1) points+=3;
+        }
 
         if(found && list[i].pop)
         {
@@ -101,11 +108,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             result.push(list[i]);
         }
 
-        // if(found && list[i]._nameSpace.indexOf("ops.math")>-1)
-        // {
-        //     console.log('MATH '+list[i]._shortName);
-        //     points+=13;
-        // }
+
+
 
         if(points===0 && list[i].score>0) list[i].score=0;
             else list[i].score+=points;
@@ -175,22 +179,7 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
 };
 
 
-CABLES.UI.OpSelect.setItemScore=function(item)
-{
-    // var showScore=true;
-    // if(showScore)
-    // {
-    //     setTimeout(function()
-    //     {
-    //         var score=Math.round(100*item.score)/100;
-    //         var id='#result_'+item.id+' .score';
-    //         item.elementScore=$(id);
-    //         item.elementScore.html( score );
-    //
-    //     },1);
-    //
-    // }
-};
+
 
 
 CABLES.UI.OpSelect.prototype.search=function()
@@ -206,7 +195,6 @@ CABLES.UI.OpSelect.prototype.search=function()
         if(this._list[i].score>0)
         {
             this._list[i].element.show();
-            CABLES.UI.OpSelect.setItemScore(this._list[i]);
             this._list[i].element[0].dataset.score=this._list[i].score;
         }
         else

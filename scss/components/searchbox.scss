@@ -27,6 +27,11 @@
     }
 }
 
+#searchbox .inputcontainer
+{
+    background-color: $color-cz;
+}
+
 #searchresult {
   $search-result-border-radius: 8px; // TODO: Move to main.scss
 

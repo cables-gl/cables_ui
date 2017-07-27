@@ -504,6 +504,14 @@ CABLES.UI.Patch=function(_gui)
                 }
             break;
 
+            case 33: // snapto pageUp
+                self.snapToNextOp(-1);
+            break;
+
+            case 34: // snapto pageDown
+                self.snapToNextOp(1);
+            break;
+
             case 65: // a - align
                 if(e.metaKey || e.ctrlKey)
                 {
@@ -530,7 +538,7 @@ CABLES.UI.Patch=function(_gui)
             break;
 
             default:
-                // console.log('key ',e.which);
+                // console.log('key ',e.which,e.key);
             break;
 
         }
@@ -763,18 +771,27 @@ CABLES.UI.Patch=function(_gui)
             }
         }
 
+        if(selectedOps.length>0)
+        {
+            viewBox.x=minX-viewBox.w/2;
+            viewBox.y=minY-viewBox.h/2;
+        }
+        else
+        {
+            viewBox.x=minX;
+            viewBox.y=minY;
 
-        viewBox.x=minX-30;//-viewBox.w/2;
-        viewBox.y=minY-30;//-viewBox.h/2;
-        var w=1.3*(Math.abs(maxX-minX));
-        var h=1.3*(Math.abs(maxY-minY));
+        }
 
-        // w=Math.max(500,w);
-        // h=Math.max(500,h);
-        // viewBox.w=100;
-        // viewBox.h=100;
-        // if(w>h)viewBox.w=w;
-        //     else viewBox.h=h;
+        var w=1*(Math.abs(maxX-minX));
+        var h=1*(Math.abs(maxY-minY));
+
+        if(selectedOps.length>0)
+        {
+            w=Math.max(500,w);
+            h=Math.max(500,h);
+        }
+
         viewBox.w=w;
         viewBox.h=h;
         self.updateViewBox();
@@ -1998,6 +2015,35 @@ CABLES.UI.Patch=function(_gui)
         //
         //     selectedOps[i].setPos(newpos.x,newpos.y);
         // }
+    };
+
+
+    this.snapToNextOp=function(dir)
+    {
+        if(!selectedOps || selectedOps.length===0)return;
+
+        for(var j=0;j<selectedOps.length;j++)
+        {
+            var uiop=selectedOps[j];
+            var startPort=uiop.op.portsIn[0];
+
+            if(dir>0)
+                startPort=uiop.op.portsOut[0];
+
+            if(startPort.links.length>0)
+            {
+                otherport=startPort.links[0].getOtherPort( startPort );
+                if(startPort.isLinked())
+                {
+                    var transNextOp=otherport.parent.uiAttribs.translate;
+
+                    var y=transNextOp.y;
+                    if(dir>0) y-=(uiop.getHeight()+10);
+                        else y+=(uiop.getHeight()+10);
+                    uiop.setPos(transNextOp.x,y);
+                }
+            }
+        }
     };
 
 
