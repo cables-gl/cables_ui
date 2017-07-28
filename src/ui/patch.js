@@ -453,6 +453,7 @@ CABLES.UI.Patch=function(_gui)
 
     $('#patch').keydown(function(e)
     {
+        
         switch(e.which)
         {
             case 32:
@@ -464,6 +465,12 @@ CABLES.UI.Patch=function(_gui)
 					$('#patch').css({"cursor":"url(/ui/img/grab.png) 0 0, auto"});
 				}
             break;
+
+            case 70:
+                gui.patch().toggleFlowVis();
+            break;
+
+            
 
             case 46: case 8: // delete
 

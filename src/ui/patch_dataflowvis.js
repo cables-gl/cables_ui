@@ -1,25 +1,30 @@
 
 
-CABLES.UI.Patch.prototype.flowvis=-1;
+CABLES.UI.Patch.prototype.flowvis=false;
+CABLES.UI.Patch.prototype.flowvisStartFrame=0;
+
 
 CABLES.UI.Patch.prototype.toggleFlowVis=function()
 {
-    if(this.flowvis==-1)
+
+
+    if(!this.flowvis)
     {
-        console.log('start');
+        CABLES.UI.Patch.prototype.flowvisStartFrame=0;
         this.startflowVis();
+        this.flowvis=true;
     }
     else
     {
-        console.log('stop');
-        clearInterval(this.flowvis);
         this.stopFlowVis();
-        this.flowvis=-1;
+        this.flowvis=false;
     }
 };
 
 CABLES.UI.Patch.prototype.stopFlowVis=function()
 {
+    this.scene.removeOnAnimCallback(this.updateFlowVis);
+
     for(var i=0;i<this.ops.length;i++)
     {
         for(var j=0;j<this.ops[i].links.length;j++)
@@ -37,81 +42,102 @@ CABLES.UI.Patch.prototype.stopFlowVis=function()
             }
         }
     }
+
+    
+
 };
 
+var speedCycle=true;
 
+CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
+{
+
+    if(CABLES.UI.Patch.prototype.flowvisStartFrame==0)CABLES.UI.Patch.prototype.flowvisStartFrame=frame;
+
+    if(frame-CABLES.UI.Patch.prototype.flowvisStartFrame<5)return;
+    if(frame%5!=0)
+    {
+        return;
+    }
+    speedCycle=!speedCycle;
+
+    var count=0;
+    var countInvalid=0;
+
+    var patch=gui.patch();
+
+    for(var i=0;i<patch.ops.length;i++)
+    {
+        // patch.ops[i].removeDeadLinks();
+
+        for(var j=0;j<patch.ops[i].links.length;j++)
+        {
+            if(patch.ops[i].links[j] && patch.ops[i].links[j].linkLine )
+            {
+                // var link=patch.ops[i].links[j];
+                var link=patch.ops[i].links[j].p2.thePort.getLinkTo( patch.ops[i].links[j].p1.thePort );
+                if(!link) link=patch.ops[i].links[j].p1.thePort.getLinkTo( patch.ops[i].links[j].p2.thePort );
+
+                if(link)
+                {
+                    if(link.speedCycle!=speedCycle)
+                    {
+                        count++;
+
+                        link.speedCycle=speedCycle;
+
+                        var newClass="pathSpeed0";
+                        if(link.activityCounter>=1)
+                        {
+                            newClass="pathSpeed1";
+                        }
+                        if(link.activityCounter>=5) newClass="pathSpeed2";
+                        if(link.activityCounter>=10) newClass="pathSpeed3";
+                        if(link.activityCounter>=20) newClass="pathSpeed4";
+
+                        if(patch.ops[i].links[j].linkLine.speedClass!=newClass)
+                        {
+                            patch.ops[i].links[j].linkLine.node.classList.remove( patch.ops[i].links[j].linkLine.speedClass);
+                            patch.ops[i].links[j].linkLine.speedClass=newClass;
+                            patch.ops[i].links[j].linkLine.node.classList.add(newClass);
+                        }
+                        link.activityCounter=0;
+                    }
+
+                }
+                else
+                {
+                    countInvalid++;
+
+                }
+
+            }
+            else {
+            }
+        }
+    }
+}
 
 CABLES.UI.Patch.prototype.startflowVis=function()
 {
 
-    var speedCycle=true;
-    this.flowvis=setInterval(function()
+
+    for(var i=0;i<this.ops.length;i++)
     {
-        speedCycle=!speedCycle;
-
-        function setClass(link)
+        for(var j=0;j<this.ops[i].links.length;j++)
         {
-        }
-
-        var count=0;
-        var countInvalid=0;
-
-        for(var i=0;i<this.ops.length;i++)
-        {
-            // this.ops[i].removeDeadLinks();
-
-            for(var j=0;j<this.ops[i].links.length;j++)
+            if(this.ops[i].links[j] && this.ops[i].links[j].linkLine )
             {
-                if(this.ops[i].links[j] && this.ops[i].links[j].linkLine )
-                {
-                    // var link=this.ops[i].links[j];
-                    var link=this.ops[i].links[j].p2.thePort.getLinkTo( this.ops[i].links[j].p1.thePort );
-                    if(!link) link=this.ops[i].links[j].p1.thePort.getLinkTo( this.ops[i].links[j].p2.thePort );
-
-                    if(link)
-                    {
-                        // if(!link.lastVis || CABLES.now()-link.lastVis>200)
-                        if(link.speedCycle!=speedCycle)
-                        {
-
-                            count++;
-
-                            link.speedCycle=speedCycle;
-
-                            var newClass="pathSpeed0";
-                            if(link.activityCounter>=1)
-                            {
-                                newClass="pathSpeed1";
-                            }
-                            if(link.activityCounter>=6) newClass="pathSpeed3";
-                            if(link.activityCounter>=20) newClass="pathSpeed4";
-
-                            if(this.ops[i].links[j].linkLine.speedClass!=newClass)
-                            {
-                                this.ops[i].links[j].linkLine.node.classList.remove( this.ops[i].links[j].linkLine.speedClass);
-                                this.ops[i].links[j].linkLine.speedClass=newClass;
-                                this.ops[i].links[j].linkLine.node.classList.add(newClass);
-                            }
-                            link.activityCounter=0;
-                            link.lastVis=CABLES.now();
-                        }
-
-                    }
-                    else
-                    {
-                        countInvalid++;
-
-                    }
-
-                }
-                else {
-                }
+                var link=this.ops[i].links[j].p2.thePort.getLinkTo( this.ops[i].links[j].p1.thePort );
+                if(!link) link=this.ops[i].links[j].p1.thePort.getLinkTo( this.ops[i].links[j].p2.thePort );
+                if(link) link.activityCounter=0;
             }
         }
+    }
 
-        // console.log('links',count,countInvalid);
 
+    this.scene.removeOnAnimCallback(this.updateFlowVis);
+    this.scene.addOnAnimFrameCallback(this.updateFlowVis);
 
-    }.bind(this),200);
 
 };
