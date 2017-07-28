@@ -55,10 +55,8 @@ CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
     if(CABLES.UI.Patch.prototype.flowvisStartFrame==0)CABLES.UI.Patch.prototype.flowvisStartFrame=frame;
 
     if(frame-CABLES.UI.Patch.prototype.flowvisStartFrame<5)return;
-    if(frame%5!=0)
-    {
-        return;
-    }
+    if(frame%5!=0) return;
+
     speedCycle=!speedCycle;
 
     var count=0;

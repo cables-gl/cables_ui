@@ -193,7 +193,9 @@ CABLES.CMD.commands.push(
         cmd:"toggle flow visualization",
         category:"ui",
         func:CABLES.CMD.UI.flowVis,
-        icon:"cables"
+		icon:"cables",
+		hotkey:"f"
+		
     }
 
 
