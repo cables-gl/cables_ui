@@ -13,15 +13,14 @@ CABLES.UI.cleanRaphael=function(el)
     el.node.removeAttribute('stroke-opacity');
 };
 
-function getPortDescription(thePort)
-{
+function getPortDescription(thePort){
     var str='<b>'+thePort.getName()+'</b> (' + thePort.getTypeString() + ')';
     var strInfo='';
 
     if(thePort.direction==PORT_DIR_IN)strInfo+=CABLES.UI.TEXTS.portDirIn;
     if(thePort.direction==PORT_DIR_OUT)strInfo+=CABLES.UI.TEXTS.portDirOut;
     if(thePort.isLinked() )strInfo+=CABLES.UI.TEXTS.portMouseUnlink;
-    else strInfo+=CABLES.UI.TEXTS.portMouseCreate;
+    	else strInfo+=CABLES.UI.TEXTS.portMouseCreate;
     CABLES.UI.showInfo(strInfo);
 
     return str;
@@ -73,14 +72,12 @@ function UiLink(port1, port2)
 
     this.hideAddButton=function()
     {
-        if(addCircle)
-        {
+        if(addCircle){
             addCircle.remove();
             addCircle=null;
 
             if(this.linkLine)
-                this.linkLine.attr(
-                {
+                this.linkLine.attr({
                     "stroke-opacity": 1, //0.4,
                     "stroke-width": 0.7
                 });
@@ -534,6 +531,9 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         }
         if(shakeLastX!=-1)
         {
+
+            // console.log('shake diff',shakeLastX-a);
+
             if(shakeLastX-a>30 && lastShakeDir)
             {
                 lastShakeDir=false;
@@ -543,7 +543,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 shakeTimeOut=setTimeout(function(){ shakeCountP=0; shakeCountN=0; },250);
             }
             else
-            if(shakeLastX-a<30 && !lastShakeDir)
+            if(shakeLastX-a<-30 && !lastShakeDir)
             {
                 lastShakeDir=true;
                 shakeCountN++;
@@ -555,20 +555,15 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             {
                 shakeStartTime=CABLES.now();
             }
-            // if(shakeCountP + shakeCountN>=5 && CABLES.now()-shakeStartTime<100)
-            // {
-            //     shakeCount=0;
-            //     console.log('shake cancel to slow');
-            // }
-            if(shakeCountP + shakeCountN>=5 && CABLES.now()-shakeStartTime>100)
+
+            if(shakeCountP + shakeCountN>=6 && CABLES.now()-shakeStartTime>100)
             {
                 opui.op.unLinkTemporary();
                 shakeCount=0;
                 shakeLastX=-1;
             }
-            // shakeLastX=-1;
 
-            // console.log('shake',shakeCountP + shakeCountN);
+
         }
         shakeLastX=a;
 
