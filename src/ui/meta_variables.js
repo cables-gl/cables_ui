@@ -5,7 +5,7 @@ CABLES.UI=CABLES.UI || {};
 CABLES.UI.Variables=function()
 {
 
-
+    this._lastTimeout=0;
 
 };
 
@@ -17,6 +17,7 @@ CABLES.UI.Variables.prototype.show=function()
     });
     $('#meta_content_variables').html(html);
 
-    if(CABLES.UI.userSettings.get("metatab")=='variables') setTimeout(this.show.bind(this),100);
+    clearTimeout(this._lastTimeout);
+    if(CABLES.UI.userSettings.get("metatab")=='variables') this._lastTimeout=setTimeout(this.show.bind(this),300);
 
 };

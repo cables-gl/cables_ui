@@ -8,7 +8,7 @@ CABLES.UI.Find=function()
 
     var findTimeoutId=0;
 
-    this.show=function()
+    this.show=function(str)
     {
         $('#searchbox').show();
         // $('#meta_content_find').html(html+"!!!");
@@ -23,6 +23,12 @@ CABLES.UI.Find=function()
         {
             self.search(lastSearch);
         },100);
+
+        if(str)
+        {
+            $('#searchbox input').val(str);
+            this.search(str);
+        }
 
     };
 

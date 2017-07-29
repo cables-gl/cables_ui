@@ -59,9 +59,9 @@ CABLES.CMD.UI.showMinimap=function()
 };
 
 
-CABLES.CMD.UI.showSearch=function()
+CABLES.CMD.UI.showSearch=function(str)
 {
-	gui.find().show();
+	gui.find().show(str);
 };
 
 CABLES.CMD.UI.toggleMaxRenderer=function()
@@ -195,7 +195,7 @@ CABLES.CMD.commands.push(
         func:CABLES.CMD.UI.flowVis,
 		icon:"cables",
 		hotkey:"f"
-		
+
     }
 
 

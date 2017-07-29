@@ -9,7 +9,7 @@
 
         {{#each vars}}
         <tr>
-            <td>{{getName}}&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td><a onclick="CABLES.CMD.UI.showSearch('{{getName}}');">#{{getName}}&nbsp;&nbsp;&nbsp;&nbsp;</a></td>
             <td class="monospace">{{getValue}}</td>
         </tr>
         {{/each}}
