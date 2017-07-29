@@ -451,7 +451,7 @@ CABLES.UI.Patch=function(_gui)
 
 		$('#patch').keydown(function(e)
 		{
-				
+
 				switch(e.which)
 				{
 						case 32:
@@ -468,7 +468,7 @@ CABLES.UI.Patch=function(_gui)
 								gui.patch().toggleFlowVis();
 						break;
 
-						
+
 
 						case 46: case 8: // delete
 
@@ -1411,6 +1411,7 @@ CABLES.UI.Patch=function(_gui)
 
 				if(op.uiAttribs.hasOwnProperty('title'))
 				{
+					console.log(123);
 						gui.patch().setOpTitle(uiOp,op.uiAttribs.title);
 				}
 
@@ -1745,14 +1746,15 @@ CABLES.UI.Patch=function(_gui)
 
 		this.setOpTitle=function(uiop,t)
 		{
-				uiop.op.uiAttribs.title=t;
-				uiop.op.name=t;
-				uiop.oprect.setTitle(t);
+			uiop.op.uiAttribs.title=t;
+			uiop.op.name=t;
+			console.log('patch setOpTitle',t);
+			uiop.oprect.setTitle(t);
 		};
 
 		this.setCurrentOpTitle=function(t)
 		{
-				if(currentOp) this.setOpTitle(currentOp,t);
+			if(currentOp) this.setOpTitle(currentOp,t);
 		};
 
 		this.updateSubPatches=function()

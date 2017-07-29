@@ -10,6 +10,10 @@
 
 <script id="params_port" type="text/x-handlebars-template">
 
+
+
+
+
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}">
@@ -122,7 +126,6 @@
 					{{#compare port.uiAttribs.display '==' 'text' }}
 						</td><td>
 							<textarea class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}">{{port.val}}</textarea>
-
 					{{/compare}}
                 {{else}}
 

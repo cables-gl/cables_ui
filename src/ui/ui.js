@@ -8,7 +8,7 @@ CABLES.UI.GUI=function()
     var showTiming=false;
     var showingEditor=false;
     var showMiniMap=false;
-    var _scene=new Scene();
+    var _scene=new CABLES.Patch();
     _scene.gui=true;
     var _patch=null;
     var _editor=new CABLES.Editor();
@@ -1018,7 +1018,7 @@ CABLES.UI.GUI=function()
         // self.setMetaTab('doc');
         self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
 
-        if(CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();;
+        if(CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
 
         if(_scene.cgl.aborted)
         {
@@ -1035,9 +1035,12 @@ CABLES.UI.GUI=function()
         // script.src = 'js/bundle.js';
         // $("body").append( script );
 
+        logStartup('finished loading cables');
 
-
-
+        console.groupCollapsed('welcome to cables!');
+        console.log("start up times:");
+        console.table(CABLES.startup.log);
+        console.groupEnd();
 
 
     };

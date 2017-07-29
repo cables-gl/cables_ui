@@ -31,5 +31,3 @@ CABLES.CMD.getCmd = function(cmd) {
 		}
 	}
 };
-
-console.log('init commands');

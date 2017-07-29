@@ -8,7 +8,10 @@ CABLES.API.Connection=function(ui)
 
     var pingStart=0;
     var simpleio = window.simpleio;
-    var client = simpleio.create({ajax: jQuery.ajax});
+    var client = simpleio.create(
+        {
+            ajax: jQuery.ajax
+        });
     var connected=false;
 
     function ping()
