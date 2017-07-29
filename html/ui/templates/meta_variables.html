@@ -10,7 +10,7 @@
         {{#each vars}}
         <tr>
             <td><a onclick="CABLES.CMD.UI.showSearch('{{getName}}');">#{{getName}}&nbsp;&nbsp;&nbsp;&nbsp;</a></td>
-            <td class="monospace">{{getValue}}</td>
+            <td id="varval{{getName}}" class="monospace">{{getValue}}</td>
         </tr>
         {{/each}}
 
