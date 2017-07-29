@@ -1411,7 +1411,6 @@ CABLES.UI.Patch=function(_gui)
 
 				if(op.uiAttribs.hasOwnProperty('title'))
 				{
-					console.log(123);
 						gui.patch().setOpTitle(uiOp,op.uiAttribs.title);
 				}
 
@@ -1748,7 +1747,6 @@ CABLES.UI.Patch=function(_gui)
 		{
 			uiop.op.uiAttribs.title=t;
 			uiop.op.name=t;
-			console.log('patch setOpTitle',t);
 			uiop.oprect.setTitle(t);
 		};
 

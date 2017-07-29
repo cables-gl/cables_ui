@@ -98,6 +98,23 @@ CABLES.CMD.PATCH.patchWebsite=function()
 	// console.log(gui.patch().getCurrentProject()._id);
 };
 
+CABLES.CMD.PATCH.createVariable=function(op)
+{
+	CABLES.UI.MODAL.prompt("New Variable","enter a name for the new variable",'',
+		function(str)
+		{
+			if(op)
+			{
+				op.setTitle(str);
+				op.varName.set(str);
+				gui.patch().showOpParams(op);
+			}
+
+
+		});
+
+};
+
 
 CABLES.CMD.PATCH.editOp=function()
 {
@@ -228,6 +245,11 @@ CABLES.CMD.commands.push(
 		category:"patch",
 		func:CABLES.CMD.PATCH.patchWebsite,
 		icon:"link"
+	},
+	{
+		cmd:"create variable",
+		category:"patch",
+		func:CABLES.CMD.PATCH.createVariable
 	}
 
 );

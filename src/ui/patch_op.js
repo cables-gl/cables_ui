@@ -295,8 +295,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
     {
         if(e.metaKey && CABLES.UI.quickAddOpStart)
         {
-            console.log("YES THATS IT!",gui.patch().getSelectedOps().length);
-            console.log('opui',opui);
+            // console.log("YES THATS IT!",gui.patch().getSelectedOps().length);
+            // console.log('opui',opui);
 
             gui.patch().linkTwoOps(
                 CABLES.UI.quickAddOpStart,
@@ -508,7 +508,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 
         CABLES.UI.cleanRaphael(label);
 
-        console.log('addui settitle...',title);
         this.setTitle(title);
 
         // $(label.node).css({'pointer-events': 'none'});
@@ -684,7 +683,6 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         title=t;
         if(label)
         {
-            console.log('set label title',title);
 
             label.attr({text:title});
 
@@ -756,7 +754,6 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 
         if(attribs.title)
         {
-            console.log('ui attr onchange!!!',attribs);
             this.oprect.setTitle(attribs.title);
         }
 
