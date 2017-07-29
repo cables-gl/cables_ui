@@ -20,6 +20,7 @@ CABLES.UI.GUI=function()
     var _opselect=new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
 
+    this.variables=new CABLES.UI.Variables();
     this.patchConnection=new CABLES.PatchConnectionSender();
     this.opDocs=new CABLES.UI.OpDocs();
     // var _socket=null;
@@ -1472,6 +1473,8 @@ CABLES.UI.GUI=function()
 
     this.setMetaTab=function(which)
     {
+        CABLES.UI.userSettings.set("metatab",which);
+
         $('.meta_content').hide();
         $('#metatabs a').removeClass('active');
         $('#metatabs .tab_'+which).addClass('active');
@@ -1485,9 +1488,9 @@ CABLES.UI.GUI=function()
         if(which=='profiler') self.showProfiler();
         if(which=='screen') self.showMetaScreen();
         if(which=='preview') self.preview.show();
+        if(which=='variables') self.variables.show();
         else self.preview.hide();
 
-        CABLES.UI.userSettings.set("metatab",which);
 
     };
 

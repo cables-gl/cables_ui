@@ -192,14 +192,15 @@
 <div id="meta">
     <div id="metatabs">
         <div class="tabs">
-            <a class="tab_doc active fa fa-book" data-info="{{ texts.tab_doc }}" onclick="gui.setMetaTab('doc')"> </i> </a>
-            <a class="tab_code fa fa-code" data-info="{{ texts.tab_code }}" onclick="gui.setMetaTab('code')"> </i> </a>
+            <a class="tab_doc active fa fa-book" data-info="{{ texts.tab_doc }}" onclick="gui.setMetaTab('doc')">  </a>
+            <a class="tab_code fa fa-code" data-info="{{ texts.tab_code }}" onclick="gui.setMetaTab('code')">  </a>
             <a class="tab_profiler fa fa-pie-chart" data-info="{{ texts.tab_profiler }}" onclick="gui.setMetaTab('profiler')"></a>
             <a class="tab_preview fa fa-eye" data-info="{{ texts.tab_preview }}" onclick="gui.setMetaTab('preview')"></a>
 
             <a class="tab_keyframes fa fa-clock-o" onclick="gui.setMetaTab('keyframes')"></a>
             <a class="tab_screen fa fa-television" onclick="gui.setMetaTab('screen')"></a>
             <a class="tab_paco fa fa-youtube-play" onclick="gui.setMetaTab('paco')"></a>
+            <a class="tab_variables" onclick="gui.setMetaTab('variables')">&nbsp;&nbsp;#&nbsp;&nbsp;</a>
         </div>
     </div>
     <div id="meta_content">
@@ -210,6 +211,7 @@
         <div id="meta_content_screen" class="meta_content"></div>
         <div id="meta_content_keyframes" class="meta_content"></div>
         <div id="meta_content_paco" class="meta_content"></div>
+        <div id="meta_content_variables" class="meta_content"></div>
 
     </div>
     <div id="splitterMeta" class="splitter"></div>
