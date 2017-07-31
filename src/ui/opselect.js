@@ -51,7 +51,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
         optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit op</a>';
     }
 
-    optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;score: '+(Math.round(100*$('.selected').data('score'))/100);
+    optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<span class="tt" data-tt="'+$('.selected').data('scoreDebug')+'"> score: '+(Math.round(100*$('.selected').data('score'))/100)+'</span>';
 
     $('#opOptions').html(optionsHtml);
 };
@@ -62,6 +62,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 
     for(var i=0;i<list.length;i++)
     {
+        var scoreDebug=query+' - '+list[i]._shortName+'<br/><br/>';
+
         var found=false;
         var points=0;
 
@@ -69,50 +71,62 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
         {
             found=true;
             points+=1;
+            scoreDebug+='+1 summary<br/>';
         }
 
         if(list[i]._nameSpace.indexOf(query)>-1)
         {
             found=true;
             points+=1;
+            scoreDebug+='+1 namespace<br/>';
         }
 
 
-        if(list[i]._nameSpaceFull.indexOf(query)>-1)
-        {
-            found=true;
-            points+=0.1;
-        }
+        // if(list[i]._nameSpaceFull.indexOf(query)>-1)
+        // {
+        //     found=true;
+        //     points+=0.1;
+        //     scoreDebug+='+1 namespacefull<br/>';
+        // }
 
         if(list[i]._shortName.indexOf(query)>-1)
         {
             found=true;
             points+=4;
+            scoreDebug+='+1 shortname<br/>';
         }
 
         if(list[i]._shortName.indexOf(query)===0)
         {
             found=true;
             points+=2;
+            scoreDebug+='+1 shortname at beginning<br/>';
         }
 
         if(found)
         {
-            if(list[i]._summary.length>0) points+=1;
-            if(list[i]._nameSpace.indexOf("ops.math")>-1) points+=3;
+            if(list[i]._summary.length>0)
+            {
+                points+=0.5;
+                scoreDebug+='+0.5 has summary<br/>';
+            }
+            if(list[i]._nameSpace.indexOf("ops.math")>-1)
+            {
+                points+=1;
+                scoreDebug+='+1 is math<br/>';
+            }
         }
 
-        if(found && list[i].pop)
+        if(found && list[i].pop>0)
         {
             points+=(list[i].pop||2)/CABLES.UI.OPSELECT.maxPop||1;
             result.push(list[i]);
         }
 
-
-
-
         if(points===0 && list[i].score>0) list[i].score=0;
             else list[i].score+=points;
+
+        list[i].scoreDebug=scoreDebug;
     }
 
     return result;
@@ -121,6 +135,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 CABLES.UI.OpSelect.prototype._search=function(q)
 {
     if(!this._list || !this._html)this.prepare();
+
     this.firstTime=false;
     var query=q.toLowerCase();
 
@@ -185,6 +200,7 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
 CABLES.UI.OpSelect.prototype.search=function()
 {
     var result=this._search($('#opsearch').val());
+
     var i=0;
     var html='';
 
@@ -196,9 +212,12 @@ CABLES.UI.OpSelect.prototype.search=function()
         {
             this._list[i].element.show();
             this._list[i].element[0].dataset.score=this._list[i].score;
+            this._list[i].element[0].dataset.scoreDebug=this._list[i].scoreDebug;
+
         }
         else
         {
+            this._list[i].element[0].dataset.score=0.0;
             this._list[i].element.hide();
         }
     }
@@ -350,8 +369,6 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
             this.search();
         }
     };
-
-    this.searchTimeout=0;
 
     this.selectOp=function(name)
     {

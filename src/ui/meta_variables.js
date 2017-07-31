@@ -9,7 +9,6 @@ CABLES.UI.Variables=function()
 
 CABLES.UI.Variables.prototype.update=function()
 {
-    console.log(CABLES.UI.userSettings.get("metatab"));
     if(CABLES.UI.userSettings.get("metatab")=='variables')
     {
         clearTimeout(this._lastTimeout);

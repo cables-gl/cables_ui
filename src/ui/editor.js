@@ -130,6 +130,7 @@ CABLES.Editor=function()
                 return;
             }
         }
+
         c.id=CABLES.generateUUID();
 
         contents.push(c);
@@ -206,7 +207,10 @@ CABLES.Editor=function()
                 if(contents[i].syntax=='md')  editor.session.setMode("ace/mode/Markdown");
                 else if(contents[i].syntax=='js')  editor.session.setMode("ace/mode/javascript");
                 else if(contents[i].syntax=='glsl')  editor.session.setMode("ace/mode/glsl");
+                else if(contents[i].syntax=='css')  editor.session.setMode("ace/mode/css");
                 else editor.session.setMode("ace/mode/Text");
+
+                console.log('editor syntax:',contents[i].syntax);
 
                 editor.setValue(contents[i].content,-1);
                 editor.setReadOnly(contents[i].readOnly);
