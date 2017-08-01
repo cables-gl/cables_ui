@@ -1,9 +1,9 @@
 <template>
-  <div class="sidebar-customizer">
+  <div v-show="visible" class="sidebar-customizer">
     <ul v-dragula="items" id="sidebar-customizer-list" bag="sidebar-bag">
       <li v-for="item in items" :key="getKey(item)" >
         <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
-        <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
+        <span class="label">{{ item.cmd }}</span>
       </li>
     </ul>
   </div>
@@ -25,6 +25,9 @@ export default {
     })
   },
   computed: {
+    visible() {
+      return this.$store.state.sidebar.customizerVisible;
+    },
     key() {
       return Math.random() * 10000000;
     },
@@ -39,3 +42,4 @@ export default {
 </script>
 
 <style lang="scss" src="./SidebarCustomizer.scss"></style>
+<!-- <style lang="scss" src="./Sidebar.scss"></style> -->

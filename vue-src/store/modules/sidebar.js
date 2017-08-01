@@ -1,6 +1,7 @@
 // initial state
 const state = {
-  visible: true,
+  visible: true, // if sidebar is visible
+  customizerVisible: false, // if customizer is visible
   displayText: true, // shows text under the item
   defaultIcon: 'icon-square',
   defaultItems: ['create new patch', 'save patch', 'add op', 'show settings'],
@@ -12,7 +13,7 @@ const state = {
 const getters = {
   iconBarContainsCmd(state) {
     return (cmd) => state.items.filter(function(e) { return e.cmd === cmd }).length > 0
-  }
+  },
 }
 
 // actions
@@ -21,6 +22,9 @@ const actions = {
     for(let i=0; i<context.state.defaultItems.length; i++) {
       context.commit('addItem', context.state.defaultItems[i]);
     }
+  },
+  toggleCustomizerVisibility(context) {
+    context.commit('setCustomizerVisible', !context.state.customizerVisible);
   },
   loadLocalStorage(context) {
     const sidebarSettings = CABLES.UI.userSettings.get('sidebar');
@@ -44,6 +48,9 @@ const actions = {
 
 // mutations
 const mutations = {
+  setCustomizerVisible(state, b) {
+    state.customizerVisible = b;
+  },
   setAllItems(state, items) {
     items.forEach(item => {
       state.allItems.push({

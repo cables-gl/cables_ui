@@ -1,19 +1,33 @@
+@import '../../scss/colors_dark';
+
+// list also uses styles from ./Sidebar.scss
+
 .sidebar-customizer {
   position: fixed;
   top: 40px;
   left: 100px;
   width: 400px;
   min-height: 400px;
-  background-color: blue;
+  background-color: $color-cz;
+  color: #2c3e50;
+  max-height: 80vh;
+  overflow-y: scroll;
 
-  .sidebar-icon-list {
-    min-width: 40px;
-    min-height: 40px;
-    background-color: red;
+  // special rules, will overwrite the rules for the list from Sidebar.scss
+  #sidebar-customizer-list {
 
-    .list-item {
-      background-color: white;
-      width: 40px;
+    &:after {
+      clear: both;
+    }
+
+    li {
+        float: left;
+        width: 80px;
+        height: 100px;
+
+        .label {
+          height: 34px;
+        }
     }
   }
 }

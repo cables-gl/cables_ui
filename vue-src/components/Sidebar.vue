@@ -6,7 +6,7 @@
         <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>
     </ul>
-    <div class="menu" @click='callFunction("show command pallet")'>
+    <div class="menu" @click='toggleCustomizer'>
       <span class="icon icon-1.5x icon-three-dots tt" data-tt="Add / remove icons"></span>
     </div>
   </div>
@@ -27,6 +27,9 @@ export default {
     }
   },
   methods : {
+    toggleCustomizer() {
+      this.$store.dispatch('sidebar/toggleCustomizerVisibility');
+    },
     getKey: (item) => `${item.cmd}-origin-sidebar`,
     callFunction : function(action){
       CABLES.CMD.exec(action);
