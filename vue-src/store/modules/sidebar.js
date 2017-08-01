@@ -4,7 +4,8 @@ const state = {
   displayText: true, // shows text under the item
   defaultIcon: 'icon-square',
   defaultItems: ['create new patch', 'save patch', 'add op', 'show settings'],
-  items: []
+  items: [],
+  allItems: [],
 }
 
 // getters
@@ -43,6 +44,15 @@ const actions = {
 
 // mutations
 const mutations = {
+  setAllItems(state, items) {
+    items.forEach(item => {
+      state.allItems.push({
+        cmd: item.cmd,
+        category: item.category,
+        iconClass: (item.icon ? `icon-${item.icon}` : state.defaultIcon),
+      });
+    });
+  },
   displayText(state, b) {
     state.displayText = b;
   },
@@ -61,7 +71,6 @@ const mutations = {
        cmd: item.cmd,
        category: item.category,
        iconClass: (item.icon ? 'icon-' + item.icon : state.defaultIcon),
-       cmd: item.cmd
      };
      state.items.push(itemToAdd);
    }

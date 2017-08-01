@@ -1,0 +1,19 @@
+.sidebar-customizer {
+  position: fixed;
+  top: 40px;
+  left: 100px;
+  width: 400px;
+  min-height: 400px;
+  background-color: blue;
+
+  .sidebar-icon-list {
+    min-width: 40px;
+    min-height: 40px;
+    background-color: red;
+
+    .list-item {
+      background-color: white;
+      width: 40px;
+    }
+  }
+}
