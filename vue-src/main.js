@@ -17,8 +17,36 @@ new Vue({
   template: '<App />',
   components: { App },
   created: function () {
-    Vue.vueDragula.options([document.querySelector('#sidebar-list'), document.querySelector('#sidebar-customizer-list')], {
-      direction: 'vertical'
+    Vue.vueDragula.options('sidebar-bag', {
+      direction: 'vertical',
+      revertOnSpill: true,
+      accepts: acceptsDrop,
+      // copySortSource: false,
+      // moves: function (el, source, handle, sibling) {
+      //   console.log("moves");
+      //   return false; // elements are always draggable by default
+      // },
+      // invalid: function (el, handle) {
+      //   //return false; // don't prevent any drags from initiating by default
+      //   return true;
+      // },
     })
   }
 })
+
+function acceptsDrop(el, target, source, sibling) {
+  let sourceId = source.getAttribute('id');
+  let targetId = target.getAttribute('id');
+  if(sourceId === 'sidebar-list') {
+    if(targetId === sourceId) {
+      return true;
+    }
+    return false;
+  } else if(sourceId === 'sidebar-customizer-list') {
+    if(targetId === 'sidebar-list') {
+      return true;
+    }
+    return false;
+  }
+  return false;
+}

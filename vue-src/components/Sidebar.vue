@@ -1,7 +1,7 @@
 <template>
   <div id="icon-bar" :class="{hidden: !isVisible}">
-    <ul v-dragula="items" id="sidebar-list">
-      <li v-for="item in items" :key="key" @click='callFunction(item.cmd)'>
+    <ul v-dragula="items" id="sidebar-list" bag="sidebar-bag">
+      <li v-for="item in items" :key="getKey(item)" @click='callFunction(item.cmd)'>
         <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
         <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>
@@ -16,9 +16,6 @@
 export default {
   name: 'sidebar',
   computed: {
-    key() {
-      return Math.random() * 10000000;
-    },
     items() {
       return this.$store.state.sidebar.items;
     },
@@ -30,6 +27,7 @@ export default {
     }
   },
   methods : {
+    getKey: (item) => `${item.cmd}-origin-sidebar`,
     callFunction : function(action){
       CABLES.CMD.exec(action);
     }

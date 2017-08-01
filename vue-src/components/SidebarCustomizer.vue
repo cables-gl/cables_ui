@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-customizer">
-    <ul v-dragula="items" id="sidebar-customizer-list">
-      <li v-for="item in items" :key="key" >
+    <ul v-dragula="items" id="sidebar-customizer-list" bag="sidebar-bag">
+      <li v-for="item in items" :key="getKey(item)" >
         <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
         <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>
@@ -13,10 +13,15 @@
 export default {
   mounted: function () {
     this.$nextTick(function () {
-      let bag = Vue.vueDragula.find('sidebar-list');
-      console.log(bag);
-      let bag2 = Vue.vueDragula.find('first-bag');
-      console.log(bag2);
+      let drake = Vue.vueDragula.find("sidebar-bag").drake;
+      drake.on('droppp', (el, target, source, sibling) => {
+        console.log("drop:---------------------");
+        console.log("target", target);
+        console.log("target id: ", target.getAttribute('id'));
+        console.log("source", source);
+        console.log("source id: ", source.getAttribute('id'));
+        console.log("sibling", sibling);
+      });
     })
   },
   computed: {
@@ -27,6 +32,9 @@ export default {
       return this.$store.state.sidebar.allItems;
     },
   },
+  methods: {
+    getKey: (item) => `${item.cmd}-origin-sidebar`,
+  }
 }
 </script>
 
