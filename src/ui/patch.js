@@ -1534,10 +1534,11 @@ CABLES.UI.Patch=function(_gui)
 								self.updateSubPatches();
 								uiOp.oprect.showFocus();
 
-                                if(uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({error:"Op is deprecated"});
+
 						}
 				} ,30);
 
+                if(uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({error:"Op is deprecated"});
 				uiOp.wasAdded=true;
 		}
 
