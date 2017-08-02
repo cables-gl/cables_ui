@@ -1739,6 +1739,9 @@ CABLES.UI.Patch=function(_gui)
 						uiOp.wasAdded=false;
 						gui.patch().updateBounds=true;
 
+                        if(op.objName.startsWith('Ops.Deprecated.')) op.uiAttr({error:"Op is deprecated"});
+
+
 						doAddOp(uiOp);
 				};
 		};
@@ -2516,11 +2519,7 @@ CABLES.UI.Patch=function(_gui)
 
 				var ownsOp=false;
 				if(op.objName.startsWith('Ops.User.'+gui.user.username)) ownsOp=true;
-				if(op.objName.startsWith('Ops.Deprecated.'))
-                {
-                    op.isDeprecated=true;
-                    op.uiAttr({error:"Op is deprecated"});
-                }
+				if(op.objName.startsWith('Ops.Deprecated.'))op.isDeprecated=true;
 				if(op.objName.startsWith('Ops.Exp.')) op.isExperimental=true;
 
 				if(op) {
