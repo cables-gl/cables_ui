@@ -1533,6 +1533,8 @@ CABLES.UI.Patch=function(_gui)
 								setStatusSelectedOps();
 								self.updateSubPatches();
 								uiOp.oprect.showFocus();
+
+                                if(uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({error:"Op is deprecated"});
 						}
 				} ,30);
 
@@ -1738,9 +1740,6 @@ CABLES.UI.Patch=function(_gui)
 
 						uiOp.wasAdded=false;
 						gui.patch().updateBounds=true;
-
-                        if(op.objName.startsWith('Ops.Deprecated.')) op.uiAttr({error:"Op is deprecated"});
-
 
 						doAddOp(uiOp);
 				};
