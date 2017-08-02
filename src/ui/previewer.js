@@ -110,6 +110,12 @@ CABLES.UI.Preview=function()
             lastWidth =width;
             lastHeight=height;
 
+            if(!canvasContainer)
+            {
+                console.log('previewer no canvasContainer!');
+                return;
+            }
+
             canvasContainer.style['max-width']=width+'px';
             canvasContainer.style['max-height']=height+'px';
 

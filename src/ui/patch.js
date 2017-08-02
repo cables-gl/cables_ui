@@ -480,7 +480,7 @@ CABLES.UI.Patch=function(_gui)
 										return;
 								}
 
-								if(CABLES.UI.LINKHOVER)
+								if(CABLES.UI.LINKHOVER && CABLES.UI.LINKHOVER.p2)
 								{
 										CABLES.UI.LINKHOVER.p1.thePort.removeLinkTo( CABLES.UI.LINKHOVER.p2.thePort );
 										return;
@@ -2516,7 +2516,11 @@ CABLES.UI.Patch=function(_gui)
 
 				var ownsOp=false;
 				if(op.objName.startsWith('Ops.User.'+gui.user.username)) ownsOp=true;
-				if(op.objName.startsWith('Ops.Deprecated.')) op.isDeprecated=true;
+				if(op.objName.startsWith('Ops.Deprecated.'))
+                {
+                    op.isDeprecated=true;
+                    op.uiAttr({error:"Op is deprecated"});
+                }
 				if(op.objName.startsWith('Ops.Exp.')) op.isExperimental=true;
 
 				if(op) {
