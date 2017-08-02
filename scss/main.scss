@@ -99,10 +99,12 @@ a
 
 
 
-
+#cablescanvas
+{
+    display: none;
+}
 #glcanvas
 {
-    background-color: black;
     position:absolute;
     top:0px;
     right:0px;

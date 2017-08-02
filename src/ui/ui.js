@@ -1014,6 +1014,8 @@ CABLES.UI.GUI=function()
 
     this.waitToShowUI=function()
     {
+        $('#cablescanvas').show();
+
         $('#loadingstatus').hide();
         $('#mainContainer').show();
         // self.setMetaTab('doc');
