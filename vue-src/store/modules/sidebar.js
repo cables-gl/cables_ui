@@ -8,6 +8,7 @@ const state = {
   defaultItems: ['create new patch', 'save patch', 'add op', 'show settings'],
   items: [],
   allItems: [],
+  customizerItems: [], // items currently being displayed in customizer
   trashedItems: [], // items dropped into the trash can, needed by dragula lib
 }
 
@@ -56,13 +57,36 @@ const mutations = {
   setTrashCanVisible(state, b) {
     state.customizerTrashCanVisible = b;
   },
+  filterCustomizerItems(state, searchText) {
+    state.customizerItems.splice(0, state.customizerItems.length); // clear
+    state.allItems.forEach(item => {
+
+    });
+    if(!searchText) {
+      state.allItems.forEach((item) => {
+        state.customizerItems.push(Object.assign({}, item));
+      });
+    } else {
+      function contains(text) {
+        return function(element) {
+          return element.cmd.indexOf(text) > -1 || element.category.indexOf(text) > -1;
+        }
+      }
+
+      state.allItems.filter(contains(searchText)).forEach((item) => {
+        state.customizerItems.push(Object.assign({}, item));  
+      });
+    }
+  },
   setAllItems(state, items) {
     items.forEach(item => {
-      state.allItems.push({
+      const cmdObj = {
         cmd: item.cmd,
         category: item.category,
         iconClass: (item.icon ? `icon-${item.icon}` : state.defaultIcon),
-      });
+      };
+      state.customizerItems.push(cmdObj);
+      state.allItems.push(Object.assign({}, cmdObj));
     });
   },
   displayText(state, b) {

@@ -1,14 +1,24 @@
 <template>
   <div v-show="visible" class="sidebar-customizer">
     <div v-dragula="trashedItems" bag="sidebar-bag" id="sidebar-customizer-trash-can" v-show="trashCanVisible">
-      trashhhhhhhhhhhh
+      <div class="icon-wrapper">
+        <div class="icon icon-trash"></div>
+      </div>
     </div>
-    <ul v-dragula="items" id="sidebar-customizer-list" bag="sidebar-bag">
-      <li v-for="item in items" :key="getKey(item)" @click="callFunction(item.cmd)" >
-        <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
-        <span class="label">{{ item.cmd }}</span>
-      </li>
-    </ul>
+    <div v-show="!trashCanVisible" class="sidebar-main">
+      <div class="close-wrapper">
+        <a class="icon-x icon icon-1_5x" @click="toggleCustomizer"></a>
+      </div>
+      <header>
+        <input type="text" id="customizer-search" v-on:keyup="search($event.target.value)" placeholder="search for a command" />
+      </header>
+      <ul v-dragula="items" id="sidebar-customizer-list" bag="sidebar-bag">
+        <li v-for="item in items" :key="getKey(item)" @click="callFunction(item.cmd)" >
+          <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
+          <span class="label">{{ item.cmd }}</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -21,17 +31,23 @@ export default {
         console.log("drop:---------------------");
         console.log("el: ", el);
         console.log("target", target);
-        console.log("target id: ", target.getAttribute('id'));
+        const targetId = target.getAttribute('id');
+        console.log("target id: ", targetId);
         console.log("source", source);
         const sourceId = source.getAttribute('id');
         console.log("source id: ", sourceId);
         console.log("sibling", sibling);
-        if(sourceId === 'sidebar-list') {
+        if(sourceId === 'sidebar-list' && targetId === 'sidebar-customizer-trash-can') {
           console.log("dropped on trash");
           const elCmd = el.getAttribute('data-cmd');
           console.log("cmd to delete: ", elCmd);
           this.$store.commit('sidebar/removeItem', elCmd);
         }
+      });
+      drake.on('dragend', (el) => {
+        this.$store.commit('sidebar/setTrashCanVisible', false);
+        var trashContainer = document.getElementById("sidebar-customizer-trash-can");
+        trashContainer.classList.remove("drag-over");
       });
       drake.on('drag', (el, source) => {
         console.log("drag:---------------------");
@@ -46,10 +62,20 @@ export default {
       drake.on('over', (el, container, source) => {
         console.log("over:---------------------");
         console.log("el", el);
-        console.log("container: ", container.getAttribute('id'));
+        const containerId = container.getAttribute('id');
+        console.log("container: ", containerId);
         console.log("source", source);
         const sourceId = source.getAttribute('id');
         console.log("source id: ", sourceId);
+        if(containerId === 'sidebar-customizer-trash-can') {
+          container.classList.add("drag-over");
+        }
+      });
+      drake.on('out', (el, container, source) => {
+        const containerId = container.getAttribute('id');
+        if(containerId === 'sidebar-customizer-trash-can') {
+          container.classList.remove("drag-over");
+        }
       });
     })
   },
@@ -67,14 +93,21 @@ export default {
       return this.$store.state.sidebar.trashedItems;
     },
     items() {
-      return this.$store.state.sidebar.allItems;
+      return this.$store.state.sidebar.customizerItems;
     },
   },
   methods: {
+    search(text) {
+      console.log("search:", text);
+      this.$store.commit('sidebar/filterCustomizerItems', text);
+    },
     getKey: (item) => `${item.cmd}-origin-sidebar`,
     callFunction : function(action){
       CABLES.CMD.exec(action);
-    }
+    },
+    toggleCustomizer() {
+      this.$store.dispatch('sidebar/toggleCustomizerVisibility');
+    },
   }
 }
 

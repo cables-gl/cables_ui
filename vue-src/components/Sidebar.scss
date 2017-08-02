@@ -25,10 +25,10 @@
 
     &:hover {
       .label {
-        color: cyan;
+        color: $color-special;
       }
       .icon {
-        background-color: cyan;
+        background-color: $color-special;
       }
     }
 
@@ -56,7 +56,7 @@
 
     &:hover {
       .icon {
-        background-color: cyan;
+        background-color: $color-special;
       }
     }
   }

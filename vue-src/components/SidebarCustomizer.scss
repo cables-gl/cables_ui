@@ -10,10 +10,40 @@
   height: calc(100vh - 70px);
   background-color: $color-cz;
   color: #2c3e50;
-  overflow-y: scroll;
+
+  .close-wrapper {
+    padding: 6px;
+    text-align: right;
+  }
+
+  header {
+    padding: 10px 24px;
+
+    #customizer-search {
+      width: 100%;
+      &::-webkit-input-placeholder {
+        color: $color-c8;
+      }
+      :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+         color: $color-c8;
+         opacity:  1;
+      }
+      ::-moz-placeholder { /* Mozilla Firefox 19+ */
+         color: $color-c8;
+         opacity:  1;
+      }
+      :-ms-input-placeholder { /* Internet Explorer 10-11 */
+         color: $color-c8;
+      }
+      ::-ms-input-placeholder { /* Microsoft Edge */
+         color: $color-c8;
+      }
+    }
+  }
 
   // special rules, will overwrite the rules for the list from Sidebar.scss
   #sidebar-customizer-list {
+    overflow-y: scroll;
 
     &:after {
       clear: both;
@@ -24,15 +54,52 @@
         width: 80px;
         height: 60px;
 
+        .icon {
+          background-color: $color-c5;
+        }
+
         .label {
           height: 34px;
+          color: $color-c5;
+        }
+
+        &:hover {
+          .icon { background-color: $color-special; }
+          .label { color: $color-special; }
         }
     }
   }
 }
 
 #sidebar-customizer-trash-can {
-  background-color: red;
-  height: 100px;
+  height: 100%;
   width: 100%;
+  position: relative;
+  opacity: 0.3;
+
+  &.drag-over {
+      opacity: 1.0;
+  }
+
+  li {
+    display: none;
+  }
+
+  .icon-wrapper {
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px dashed white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140px;
+    height: 140px;
+    margin-top: -90px;
+    margin-left: -90px;
+
+    .icon {
+      width: 140px;
+      height: 140px;
+    }
+  }
 }

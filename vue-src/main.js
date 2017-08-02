@@ -18,23 +18,27 @@ new Vue({
   components: { App },
   created: function () {
     Vue.vueDragula.options('sidebar-bag', {
-      direction: 'vertical',
-      copy: true,
-      revertOnSpill: true,
-      accepts: acceptsDrop,
-      // copySortSource: false,
-      // moves: function (el, source, handle, sibling) {
-      //   console.log("moves");
-      //   return false; // elements are always draggable by default
-      // },
-      // invalid: function (el, handle) {
-      //   //return false; // don't prevent any drags from initiating by default
-      //   return true;
-      // },
+      direction: 'vertical', // append new items vertically
+      revertOnSpill: true, // move back when dropped in nomansland
+      copySortSource: false, // forbid sorting in customizer
+      accepts: acceptsDrop, // decides if container accepts dragged element
+      copy: copy, // decides if dragged element should be copied or moved
     })
   }
 })
 
+/*
+ * Called for every dragged element, customizer->sidebar will be copied,
+ * items dragged to the trash will be moved
+ */
+function copy(el, source) {
+  const sourceId = source.getAttribute('id');
+  return sourceId === 'sidebar-customizer-list'; // if source is customizer copy, else move
+}
+
+/*
+ * Called on drag, decides if the container acceps a dragged element
+ */
 function acceptsDrop(el, target, source, sibling) {
   let sourceId = source.getAttribute('id');
   let targetId = target.getAttribute('id');
