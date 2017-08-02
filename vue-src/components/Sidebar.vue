@@ -1,7 +1,7 @@
 <template>
   <div id="icon-bar" :class="{hidden: !isVisible}">
     <ul v-dragula="items" id="sidebar-list" bag="sidebar-bag">
-      <li v-for="item in items" :key="getKey(item)" @click='callFunction(item.cmd)'>
+      <li :data-cmd="item.cmd" v-for="item in items" :key="getKey(item)" @click='callFunction(item.cmd)'>
         <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
         <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>

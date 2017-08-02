@@ -19,6 +19,7 @@ new Vue({
   created: function () {
     Vue.vueDragula.options('sidebar-bag', {
       direction: 'vertical',
+      copy: true,
       revertOnSpill: true,
       accepts: acceptsDrop,
       // copySortSource: false,
@@ -39,6 +40,8 @@ function acceptsDrop(el, target, source, sibling) {
   let targetId = target.getAttribute('id');
   if(sourceId === 'sidebar-list') {
     if(targetId === sourceId) {
+      return true;
+    } else if(targetId === 'sidebar-customizer-trash-can') {
       return true;
     }
     return false;

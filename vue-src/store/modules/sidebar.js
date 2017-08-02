@@ -2,11 +2,13 @@
 const state = {
   visible: true, // if sidebar is visible
   customizerVisible: false, // if customizer is visible
+  customizerTrashCanVisible: false, // shows the trashcan on drop over, so items can be removed
   displayText: true, // shows text under the item
   defaultIcon: 'icon-square',
   defaultItems: ['create new patch', 'save patch', 'add op', 'show settings'],
   items: [],
   allItems: [],
+  trashedItems: [], // items dropped into the trash can, needed by dragula lib
 }
 
 // getters
@@ -51,6 +53,9 @@ const mutations = {
   setCustomizerVisible(state, b) {
     state.customizerVisible = b;
   },
+  setTrashCanVisible(state, b) {
+    state.customizerTrashCanVisible = b;
+  },
   setAllItems(state, items) {
     items.forEach(item => {
       state.allItems.push({
@@ -65,6 +70,15 @@ const mutations = {
   },
   visible(state, b) {
     state.visible = b;
+  },
+  removeItem(state, cmdName) {
+    if(!cmdName) { return; }
+    for(let i=0; i<state.items.length; i++) {
+      if(state.items.length[i].cmd === cmdName) {
+        state.items.splice(i, 1);
+        break;
+      }
+    }
   },
   addItem(state, cmdName) {
    if(!cmdName) { return; }
