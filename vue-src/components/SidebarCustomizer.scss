@@ -4,13 +4,12 @@
 
 .sidebar-customizer {
   position: fixed;
-  top: 40px;
+  top: 50px;
   left: 100px;
   width: 400px;
-  min-height: 400px;
+  height: calc(100vh - 70px);
   background-color: $color-cz;
   color: #2c3e50;
-  max-height: 80vh;
   overflow-y: scroll;
 
   // special rules, will overwrite the rules for the list from Sidebar.scss
@@ -23,7 +22,7 @@
     li {
         float: left;
         width: 80px;
-        height: 100px;
+        height: 60px;
 
         .label {
           height: 34px;
