@@ -465,7 +465,7 @@ CABLES.UI.Patch=function(_gui)
 						break;
 
 						case 70:
-								gui.patch().toggleFlowVis();
+                            if(!e.metaKey && !e.ctrlKey) gui.patch().toggleFlowVis();
 						break;
 
 

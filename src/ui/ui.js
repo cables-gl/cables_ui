@@ -1001,8 +1001,6 @@ CABLES.UI.GUI=function()
         else
         if( CABLES.UI.MODAL._visible )
         {
-
-
             CABLES.UI.MODAL.hide();
             if(showingEditor) self.editor().focus();
         }
