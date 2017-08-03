@@ -1014,7 +1014,7 @@ CABLES.UI.GUI=function()
 
     this.waitToShowUI=function()
     {
-        $('#cablescanvas').show();
+        $('#cablescanvas    ').show();
 
         $('#loadingstatus').hide();
         $('#mainContainer').show();

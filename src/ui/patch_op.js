@@ -410,12 +410,13 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
                 sh=opui.op.uiAttribs.size[1];
             }
 
-			// if(resizeHandle)resizeHandle.remove();
-			var commentWidth=label.getBBox().width;
-			var commentHeight=label.getBBox().height+20;
+            var commentWidth=label.getBBox().width;
+            var commentHeight=label.getBBox().height+20;
+
 
             label.attr({
-				'y':40,
+                'y':40,
+                'x':-5
             });
 
 			if(commentText)
@@ -430,13 +431,23 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 				commentHeight+=commentText.getBBox().height;
 				commentWidth=Math.max(commentWidth,commentText.getBBox().width);
 			}
+
+
+            var y=0;
+            if(label.getBBox().height==0)
+            {
+                y=60;
+                commentHeight+=30;
+            }
+
 			background.attr({
-				'x':0,
-				'width':commentWidth||10,
-				'height':commentHeight||10,
-                'opacity':0.001,
-                "fill": '#f00',
+				'x':-20,
+                'y':y,
+				'width':commentWidth+40||10,
+				'height':commentHeight-20||10,
+                "fill": '#000'
             });
+
 		}
 	};
 
@@ -448,7 +459,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 			{
 				this._errorIndicator = gui.patch().getPaper().circle(w,h/2,4);
 
-				if(opui.op.uiAttribs.warning) this._errorIndicator.node.classList.add('error-indicator-warning');
+				if(opui.op.objName.indexOf("Deprecated")>-1) this._errorIndicator.node.classList.add('error-indicator-warning');
 				if(opui.op.uiAttribs.error) this._errorIndicator.node.classList.add('error-indicator');
 
 				this._errorIndicator.node.classList.add('tt');
@@ -460,6 +471,7 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 			opui.setPos();
 
 			if(background) this._errorIndicator.attr({cx: background.getBBox().width });
+            this._errorIndicator.toFront();
 		}
 		else
 		{
@@ -552,6 +564,8 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
 			commentText=gui.patch().getPaper().text(0,0, "opui.op.text.get()"+opui.op.text.get());
 			commentText.attr({"width":sw});
 			commentText.node.setAttribute("class","commentText");
+            background.attr({ 'opacity':0.001 });
+
             // CABLES.UI.cleanRaphael(commentText);
 			// console.log('addui');
 
@@ -669,6 +683,21 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
             // label.attr( { "font-weight": "normal" });
         }
 
+
+        if(commentText)
+        {
+
+            if(sel)
+            {
+                this.updateSize();
+                background.attr({ 'opacity':0.3 });
+            }
+            else
+            {
+                background.attr({ 'opacity':0.001 });
+            }
+
+        }
         // if(opui.op.uiAttribs.error && opui.op.uiAttribs.error.length>0)
         // {
         //     if(background)background.attr({"fill":"#f88"});
@@ -740,13 +769,11 @@ var OpUi=function(paper,op,x,y,w,h,txt)
 	{
 		if(attribs && attribs.hasOwnProperty('warning'))
 		{
-			// console.log('warning',attribs.warning);
 			this.oprect.updateErrorIndicator();
 
 		}
 		if(attribs && attribs.hasOwnProperty('error'))
 		{
-			// console.log("uiattr change!",attribs);
 			this.oprect.updateErrorIndicator();
 		}
 

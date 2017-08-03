@@ -16,9 +16,7 @@
 			<div class="summary selectable">
 	            {{#if op.summary }}
 	                {{op.summary}}
-
 					&nbsp;<a onclick="gui.opDocs.writeSummary('{{op.objName}}','{{op.summary}}')"><i class="icon icon-edit"></i></a>
-
 				{{else}}
 					<a onclick="gui.opDocs.writeSummary('{{op.objName}}')">no summary - click to write one! <i class="icon icon-edit"></i></a>
 	            {{/if}}
@@ -28,8 +26,18 @@
             <br/><br/>
 
             {{#if op.isDeprecated }}
-                <div class="warning" id="">This operator is deprecated. Please use another one.</div>
+                <div class="warning" id="">
+                    This operator is outdated.
+                    {{#if op.isDeprecatedAlternative }}
+                        <br/>
+                        we recommend to use the new version: <a onclick="gui.scene().addOp('{{op.isDeprecatedAlternative}}');">{{ op.isDeprecatedAlternative }}</a>
+                    {{/if}}
+                </div>
                 <br/><br/>
+            {{else}}
+                <div class="warning-error" id="options_error" >
+                	<i>Error:</i> {{op.uiAttribs.error}}
+                </div>
             {{/if}}
 
             {{#if op.isExperimental }}
@@ -37,15 +45,11 @@
                 <br/><br/>
             {{/if}}
 
-
-			<div class="warning" id="options_warning" >
+            <div class="warning" id="options_warning" >
             	<i>Warning:</i> {{op.uiAttribs.warning}}
             </div>
-            <div class="warning-error" id="options_error" >
-            	<i>Error:</i> {{op.uiAttribs.error}}
-            </div>
 
-			<div class="hint" id="options_hint" >
+            <div class="hint" id="options_hint" >
             	<i>Hint:</i> {{op.uiAttribs.hint}}
             </div>
 

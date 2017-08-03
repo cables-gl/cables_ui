@@ -2519,7 +2519,19 @@ CABLES.UI.Patch=function(_gui)
 
 				var ownsOp=false;
 				if(op.objName.startsWith('Ops.User.'+gui.user.username)) ownsOp=true;
-				if(op.objName.startsWith('Ops.Deprecated.'))op.isDeprecated=true;
+				if(op.objName.startsWith('Ops.Deprecated.'))
+                {
+                    op.isDeprecated=true;
+
+                    var notDeprecatedName=op.objName.replace("Deprecated.",'');
+
+                    var alt=CABLES.Patch.getOpClass(notDeprecatedName);
+                    if(alt)
+                    {
+                        op.isDeprecatedAlternative=notDeprecatedName;
+                    }
+
+                }
 				if(op.objName.startsWith('Ops.Exp.')) op.isExperimental=true;
 
 				if(op) {
