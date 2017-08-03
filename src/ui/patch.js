@@ -465,7 +465,7 @@ CABLES.UI.Patch=function(_gui)
 						break;
 
 						case 70:
-								gui.patch().toggleFlowVis();
+                            if(!e.metaKey && !e.ctrlKey) gui.patch().toggleFlowVis();
 						break;
 
 
@@ -480,7 +480,7 @@ CABLES.UI.Patch=function(_gui)
 										return;
 								}
 
-								if(CABLES.UI.LINKHOVER)
+								if(CABLES.UI.LINKHOVER && CABLES.UI.LINKHOVER.p2)
 								{
 										CABLES.UI.LINKHOVER.p1.thePort.removeLinkTo( CABLES.UI.LINKHOVER.p2.thePort );
 										return;
@@ -1533,9 +1533,12 @@ CABLES.UI.Patch=function(_gui)
 								setStatusSelectedOps();
 								self.updateSubPatches();
 								uiOp.oprect.showFocus();
+
+
 						}
 				} ,30);
 
+                if(uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({error:"Op is deprecated"});
 				uiOp.wasAdded=true;
 		}
 
@@ -2516,7 +2519,19 @@ CABLES.UI.Patch=function(_gui)
 
 				var ownsOp=false;
 				if(op.objName.startsWith('Ops.User.'+gui.user.username)) ownsOp=true;
-				if(op.objName.startsWith('Ops.Deprecated.')) op.isDeprecated=true;
+				if(op.objName.startsWith('Ops.Deprecated.'))
+                {
+                    op.isDeprecated=true;
+
+                    var notDeprecatedName=op.objName.replace("Deprecated.",'');
+
+                    var alt=CABLES.Patch.getOpClass(notDeprecatedName);
+                    if(alt)
+                    {
+                        op.isDeprecatedAlternative=notDeprecatedName;
+                    }
+
+                }
 				if(op.objName.startsWith('Ops.Exp.')) op.isExperimental=true;
 
 				if(op) {

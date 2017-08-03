@@ -36,7 +36,6 @@ CABLES.UI.Port=function(thePort)
         {
             if(thePort.isLinked && self.thePort.links.length>0 ) //&& thePort.links.length===1
             {
-
                 CABLES.UI.selectedStartPortMulti.length=0;
                 if(thePort.links.length>1)
                 {
@@ -74,6 +73,7 @@ CABLES.UI.Port=function(thePort)
 
                 linkingLine = new CABLES.UI.SVGLine(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
                 self.thePort.removeLinks();
+                CABLES.UI.selectedStartPortMulti.length=0;
                 updateUI();
             }
             else
@@ -100,7 +100,8 @@ CABLES.UI.Port=function(thePort)
         if(event.which==2) return;
         if(!CABLES.UI.selectedStartPort) return;
 
-        if(self.thePort.direction==PORT_DIR_IN && (self.thePort.isLinked() || self.thePort.isAnimated()) )
+        // if(self.thePort.direction==PORT_DIR_IN && (self.thePort.isLinked() || self.thePort.isAnimated()) )
+        if(self.thePort.direction==PORT_DIR_IN && self.thePort.isAnimated())
         {
             return;
         }
@@ -266,6 +267,7 @@ CABLES.UI.Port=function(thePort)
             {
                 removeLinkingLine();
                 self.thePort.removeLinks();
+                CABLES.UI.selectedStartPortMulti.length=0;
                 return;
             }
 
