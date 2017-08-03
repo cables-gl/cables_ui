@@ -93,7 +93,7 @@ export default {
     },
     handleDragEnd (el) {
       // console.log("DRAG END");
-      this.$store.commit('sidebar/setTrashCanVisible', false);
+      if(this.$store.state.sidebar.customizerTrashCanVisible) this.$store.commit('sidebar/setTrashCanVisible', false);
       var trashContainer = document.getElementById("sidebar-customizer-trash-can");
       trashContainer.classList.remove("drag-over");
     },

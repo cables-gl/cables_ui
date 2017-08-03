@@ -51,6 +51,9 @@ function acceptsDrop(el, target, source, sibling) {
     return false;
   } else if(sourceId === 'sidebar-customizer-list') {
     if(targetId === 'sidebar-list') {
+      // duplicate check
+      const cmdName = el.getAttribute('data-cmd');
+      console.log(cmdName);
       return true;
     }
     return false;
