@@ -998,6 +998,7 @@ CABLES.UI.GUI=function()
         else if( $('#library').is(':visible') ) $('#library').hide();
         else if( $('#sidebar').is(':visible') ) $('#sidebar').animate({width:'toggle'},200);
         else if( $('.easingselect').is(':visible') ) $('.easingselect').hide();
+        else if(vueStore.getters['sidebar/sidebarCustomizerVisible']) vueStore.commit('sidebar/setCustomizerVisible', false);
         else
         if( CABLES.UI.MODAL._visible )
         {

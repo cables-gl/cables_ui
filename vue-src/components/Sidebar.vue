@@ -37,9 +37,9 @@ export default {
   },
   mounted: function () {
     this.$nextTick(function () {
-      // code that assumes this.$el is in-document
-      this.$store.dispatch('sidebar/setDefaultItems'); // add default items to sidebar
-      this.$store.dispatch('sidebar/loadLocalStorage'); // add / remove items based on local storage
+      this.$store.dispatch('sidebar/initSidebar');
+      // add / remove items based on local storage, set default items, which were not removed
+      this.$store.dispatch('sidebar/loadLocalStorage');
     })
   }
 }

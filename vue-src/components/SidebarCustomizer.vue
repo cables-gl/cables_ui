@@ -38,57 +38,11 @@ export default {
   mounted: function () {
     this.$nextTick(function () {
       let drake = Vue.vueDragula.find("sidebar-bag").drake;
-      drake.on('drop', (el, target, source, sibling) => {
-        console.log("drop:---------------------");
-        console.log("el: ", el);
-        console.log("target", target);
-        const targetId = target.getAttribute('id');
-        console.log("target id: ", targetId);
-        console.log("source", source);
-        const sourceId = source.getAttribute('id');
-        console.log("source id: ", sourceId);
-        console.log("sibling", sibling);
-        if(sourceId === 'sidebar-list' && targetId === 'sidebar-customizer-trash-can') {
-          console.log("dropped on trash");
-          const elCmd = el.getAttribute('data-cmd');
-          console.log("cmd to delete: ", elCmd);
-          this.$store.commit('sidebar/removeItem', elCmd);
-        }
-      });
-      drake.on('dragend', (el) => {
-        this.$store.commit('sidebar/setTrashCanVisible', false);
-        var trashContainer = document.getElementById("sidebar-customizer-trash-can");
-        trashContainer.classList.remove("drag-over");
-      });
-      drake.on('drag', (el, source) => {
-        console.log("drag:---------------------");
-        console.log("el", el);
-        console.log("source", source);
-        const sourceId = source.getAttribute('id');
-        console.log("source id: ", sourceId);
-        if(sourceId === 'sidebar-list') {
-          this.$store.commit('sidebar/setTrashCanVisible', true);
-        }
-      });
-      drake.on('over', (el, container, source) => {
-        console.log("over:---------------------");
-        console.log("el", el);
-        const containerId = container.getAttribute('id');
-        console.log("container: ", containerId);
-        console.log("source", source);
-        const sourceId = source.getAttribute('id');
-        console.log("source id: ", sourceId);
-        if(containerId === 'sidebar-customizer-trash-can') {
-          container.classList.add("drag-over");
-        }
-      });
-      drake.on('out', (el, container, source) => {
-        const containerId = container.getAttribute('id');
-        if(containerId === 'sidebar-customizer-trash-can') {
-          container.classList.remove("drag-over");
-        }
-      });
-      //window.addEventListener('keyup', this.checkEscapeKey)
+      drake.on('drop', this.handleDrop);
+      drake.on('dragend', this.handleDragEnd);
+      drake.on('drag', this.handleDrag);
+      drake.on('over', this.handleDragOver);
+      drake.on('out', this.handleDragOut);
     })
   },
   computed: {
@@ -116,22 +70,47 @@ export default {
     },
   },
   methods: {
-    checkEscapeKey(e) {
-      console.log("escape");
-      if(e.keyCode === 27) { // escape
-        this.$store.dispatch('sidebar/toggleCustomizerVisibility');
-        e.preventDefault();
-        e.stopPropagation();
+    search(text) { this.$store.commit('sidebar/filterCustomizerItems', text); },
+    getKey: (item) => `${item.cmd}-origin-sidebar`,
+    toggleCustomizer() { this.$store.dispatch('sidebar/toggleCustomizerVisibility'); },
+    handleDrag (el, source) {
+      const sourceId = source.getAttribute('id');
+      if(sourceId === 'sidebar-list') {
+        this.$store.commit('sidebar/setTrashCanVisible', true);
       }
     },
-    search(text) {
-      console.log("search:", text);
-      // TODO: Erase text on Escape
-      this.$store.commit('sidebar/filterCustomizerItems', text);
+    handleDrop (el, target, source, sibling) {
+      console.log("DROP");
+      const targetId = target.getAttribute('id');
+      const sourceId = source.getAttribute('id');
+      if(sourceId === 'sidebar-list' && targetId === 'sidebar-customizer-trash-can') {
+        const elCmd = el.getAttribute('data-cmd');
+        console.log("Drop! Remove item: ", elCmd);
+        this.$store.commit('sidebar/removeItem', elCmd);
+      } else { // reorder in sidebar or new item added
+
+      }
+      this.$store.dispatch('sidebar/writeLocalStorage');
     },
-    getKey: (item) => `${item.cmd}-origin-sidebar`,
-    toggleCustomizer() {
-      this.$store.dispatch('sidebar/toggleCustomizerVisibility');
+    handleDragEnd (el) {
+      console.log("DRAG END");
+      this.$store.commit('sidebar/setTrashCanVisible', false);
+      var trashContainer = document.getElementById("sidebar-customizer-trash-can");
+      trashContainer.classList.remove("drag-over");
+    },
+    handleDragOver (el, container, source) {
+      console.log("DRAG OVER");
+      const containerId = container.getAttribute('id');
+      if(containerId === 'sidebar-customizer-trash-can') {
+        container.classList.add("drag-over");
+      }
+    },
+    handleDragOut (el, container, source) {
+      console.log("DRAG OUT");
+      const containerId = container.getAttribute('id');
+      if(containerId === 'sidebar-customizer-trash-can') {
+        container.classList.remove("drag-over");
+      }
     },
   },
   components: {
@@ -139,9 +118,6 @@ export default {
   },
 }
 
-function dropOnTrashCan() {
-
-}
 </script>
 
 <style lang="scss" src="./SidebarCustomizer.scss"></style>
