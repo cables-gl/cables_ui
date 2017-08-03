@@ -80,12 +80,11 @@ export default {
       }
     },
     handleDrop (el, target, source, sibling) {
-      console.log("DROP");
+      // console.log("DROP");
       const targetId = target.getAttribute('id');
       const sourceId = source.getAttribute('id');
       if(sourceId === 'sidebar-list' && targetId === 'sidebar-customizer-trash-can') {
         const elCmd = el.getAttribute('data-cmd');
-        console.log("Drop! Remove item: ", elCmd);
         this.$store.commit('sidebar/removeItem', elCmd);
       } else { // reorder in sidebar or new item added
 
@@ -93,20 +92,20 @@ export default {
       this.$store.dispatch('sidebar/writeLocalStorage');
     },
     handleDragEnd (el) {
-      console.log("DRAG END");
+      // console.log("DRAG END");
       this.$store.commit('sidebar/setTrashCanVisible', false);
       var trashContainer = document.getElementById("sidebar-customizer-trash-can");
       trashContainer.classList.remove("drag-over");
     },
     handleDragOver (el, container, source) {
-      console.log("DRAG OVER");
+      // console.log("DRAG OVER");
       const containerId = container.getAttribute('id');
       if(containerId === 'sidebar-customizer-trash-can') {
         container.classList.add("drag-over");
       }
     },
     handleDragOut (el, container, source) {
-      console.log("DRAG OUT");
+      // console.log("DRAG OUT");
       const containerId = container.getAttribute('id');
       if(containerId === 'sidebar-customizer-trash-can') {
         container.classList.remove("drag-over");

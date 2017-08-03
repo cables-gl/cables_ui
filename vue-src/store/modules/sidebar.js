@@ -50,12 +50,12 @@ const actions = {
       items: context.state.items.map((item) => item.cmd),
       removedDefaultItems: uniqArr(context.state.removedDefaultItems.filter((cmd) => !context.state.items.some((item) => cmd === item.cmd))), // only add items which are not in the items list right now
     };
-    console.log("wrting to local storage: ", obj);
+    // console.log("wrting to local storage: ", obj);
     CABLES.UI.userSettings.set('sidebar', obj);
   },
   loadLocalStorage(context) {
     const sidebarSettings = CABLES.UI.userSettings.get('sidebar');
-    console.log("sidebarSettings", sidebarSettings);
+    // console.log("sidebarSettings", sidebarSettings);
     if(sidebarSettings) {
       if(sidebarSettings.visible) { context.commit('visible', sidebarSettings.visible); }
       if(sidebarSettings.displayText) { context.commit('displayText', sidebarSettings.displayText); }
@@ -165,7 +165,6 @@ const mutations = {
    }
   },
   removeItem(state, cmdName) {
-    console.log("Remove item called", cmdName);
     if(!cmdName) { return; }
     for(let i=0; i<state.items.length; i++) {
       if(state.items[i].cmd === cmdName) {
