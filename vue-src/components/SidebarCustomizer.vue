@@ -1,28 +1,39 @@
 <template>
-  <div v-show="visible" class="sidebar-customizer">
-    <div v-dragula="trashedItems" bag="sidebar-bag" id="sidebar-customizer-trash-can" v-show="trashCanVisible">
-      <div class="icon-wrapper">
-        <div class="icon icon-trash"></div>
+  <transition name="customizer-animation">
+    <div v-show="visible" ref="sidebar-customizer" class="sidebar-customizer">
+      <div v-dragula="trashedItems" bag="sidebar-bag" id="sidebar-customizer-trash-can" v-show="trashCanVisible">
+        <div class="icon-wrapper">
+          <div class="icon icon-trash"></div>
+        </div>
+      </div>
+      <div v-show="!trashCanVisible" class="sidebar-customizer-main">
+        <div class="close-wrapper">
+          <a class="icon-x icon icon-1_5x" @click="toggleCustomizer"></a>
+        </div>
+        <header>
+          <input type="search" id="customizer-search" @keyup="search($event.target.value)" @search="search($event.target.value)" placeholder="search for a command" />
+          <div class="sidebar-option">
+            <span>Display:</span> <app-switch id="display-text-icon-switch" classes="" v-model="displayLabel" checked>{{ displayLabelStateText }}</app-switch>
+          </div>
+        </header>
+        <ul v-dragula="items" id="sidebar-customizer-list" bag="sidebar-bag">
+          <li v-for="item in items" :key="getKey(item)" >
+            <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
+            <span class="label">{{ item.cmd }}</span>
+          </li>
+        </ul>
+        <p id="ux-hint">
+          Drag’n’drop any icon to the sidebar to add it, <br />
+          drag an icon here to remove it.
+        </p>
       </div>
     </div>
-    <div v-show="!trashCanVisible" class="sidebar-main">
-      <div class="close-wrapper">
-        <a class="icon-x icon icon-1_5x" @click="toggleCustomizer"></a>
-      </div>
-      <header>
-        <input type="text" id="customizer-search" v-on:keyup="search($event.target.value)" placeholder="search for a command" />
-      </header>
-      <ul v-dragula="items" id="sidebar-customizer-list" bag="sidebar-bag">
-        <li v-for="item in items" :key="getKey(item)" @click="callFunction(item.cmd)" >
-          <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
-          <span class="label">{{ item.cmd }}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
+  </transition>
 </template>
 
 <script>
+import Switch from './Switch.vue';
+
 export default {
   mounted: function () {
     this.$nextTick(function () {
@@ -77,9 +88,17 @@ export default {
           container.classList.remove("drag-over");
         }
       });
+      //window.addEventListener('keyup', this.checkEscapeKey)
     })
   },
   computed: {
+    displayLabelStateText() {
+      return this.$store.state.sidebar.displayText ? 'Text & Icon' : 'Icon only'
+    },
+    displayLabel: {
+      get() { return this.$store.state.sidebar.displayText },
+      set(value) { this.$store.commit('sidebar/displayText', value); },
+    },
     visible() {
       return this.$store.state.sidebar.customizerVisible;
     },
@@ -97,18 +116,27 @@ export default {
     },
   },
   methods: {
+    checkEscapeKey(e) {
+      console.log("escape");
+      if(e.keyCode === 27) { // escape
+        this.$store.dispatch('sidebar/toggleCustomizerVisibility');
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
     search(text) {
       console.log("search:", text);
+      // TODO: Erase text on Escape
       this.$store.commit('sidebar/filterCustomizerItems', text);
     },
     getKey: (item) => `${item.cmd}-origin-sidebar`,
-    callFunction : function(action){
-      CABLES.CMD.exec(action);
-    },
     toggleCustomizer() {
       this.$store.dispatch('sidebar/toggleCustomizerVisibility');
     },
-  }
+  },
+  components: {
+    'AppSwitch': Switch,
+  },
 }
 
 function dropOnTrashCan() {

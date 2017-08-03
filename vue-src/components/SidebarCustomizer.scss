@@ -2,22 +2,76 @@
 
 // list also uses styles from ./Sidebar.scss
 
+$customizer-side-padding: 24px;
+
+.customizer-animation-enter-active {
+  animation: customizer-slide-in .3s;
+}
+
+.customizer-animation-leave-active {
+  animation: customizer-slide-in .3s reverse;
+}
+
+@keyframes customizer-slide-in {
+  0% {
+    left: -300px;
+  }
+  100% {
+    left: 80px;
+  }
+}
+
+.sidebar-option {
+  margin: 24px 0px;
+
+  #display-text-icon-switch {
+    padding-left: 10px;
+  }
+}
+
+
 .sidebar-customizer {
   position: fixed;
-  top: 50px;
-  left: 100px;
-  width: 400px;
-  height: calc(100vh - 70px);
-  background-color: $color-cz;
+  top: 80px;
+  left: 80px;
+  width: 445px;
+  height: calc(100vh - 130px);
+  background-color: $color-c9;
   color: #2c3e50;
+  box-sizing: border-box;
+  border-left: 1px solid $color-c9;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+
+  .sidebar-customizer-main {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    box-sizing: border-box;
+    border-top-right-radius: 12px;
+  }
 
   .close-wrapper {
     padding: 6px;
     text-align: right;
+    background-color: $color-cz;
+    border-top-right-radius: 12px;
+  }
+
+  #ux-hint {
+    font-style: italic;
+    text-align: center;
+    margin-top: 20px;
+    color: $color-c8;
+    border-bottom-right-radius: 12px;
+    background-color: $color-cz;
+    margin: 0;
+    padding: 16px;
   }
 
   header {
-    padding: 10px 24px;
+    background-color: $color-cz;
+    padding: 10px $customizer-side-padding 6px $customizer-side-padding;
 
     #customizer-search {
       width: 100%;
@@ -44,6 +98,7 @@
   // special rules, will overwrite the rules for the list from Sidebar.scss
   #sidebar-customizer-list {
     overflow-y: scroll;
+    padding: $customizer-side-padding;
 
     &:after {
       clear: both;
@@ -53,6 +108,8 @@
         float: left;
         width: 80px;
         height: 60px;
+        margin-top: 0;
+        margin-bottom: 12px;
 
         .icon {
           background-color: $color-c5;
@@ -64,8 +121,8 @@
         }
 
         &:hover {
-          .icon { background-color: $color-special; }
-          .label { color: $color-special; }
+          .icon { background-color: $color-c5; }
+          .label { color: $color-c5; }
         }
     }
   }

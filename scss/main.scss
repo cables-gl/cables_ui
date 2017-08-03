@@ -309,7 +309,7 @@ input[type=range]:focus {
     outline: none;
 }
 
-input[type=text] {
+input[type=text], input[type=search] {
   background-color: $text-input-background-color;
   color: $text-input-color;
   border: 1px solid $text-input-border-color;
@@ -317,13 +317,14 @@ input[type=text] {
   width: auto;
 }
 
-input[type=text]:hover {
+input[type=text]:hover, input[type=search]:hover {
   background-color: $text-input-background-color-hover;
   color: $text-input-color-hover;
   border: 1px solid $text-input-border-color-hover;
 }
 
-input[type=text]:active, input[type=text]:focus {
+input[type=text]:active, input[type=text]:focus, input[type=search]:active, input[type=search]:focus {
+  outline: none;
   background-color: $text-input-background-color-focus;
   color: $text-input-color-focus;
   border: 1px solid $text-input-border-color-focus;

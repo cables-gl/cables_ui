@@ -74,7 +74,7 @@ const mutations = {
       }
 
       state.allItems.filter(contains(searchText)).forEach((item) => {
-        state.customizerItems.push(Object.assign({}, item));  
+        state.customizerItems.push(Object.assign({}, item));
       });
     }
   },

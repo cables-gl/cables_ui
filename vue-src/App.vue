@@ -13,7 +13,7 @@ export default {
   name: 'app',
   components: {
     Sidebar,
-    SidebarCustomizer
+    SidebarCustomizer,
   }
 }
 </script>
