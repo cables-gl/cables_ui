@@ -39,6 +39,7 @@ CABLES.Editor=function()
                 "inValueBool",
                 "inValueString",
                 "inObject",
+                "inTexture",
                 "inArray",
                 "inValueSlider",
                 "inFile",

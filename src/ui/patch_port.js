@@ -36,7 +36,7 @@ CABLES.UI.Port=function(thePort)
         {
             if(thePort.isLinked && self.thePort.links.length>0 ) //&& thePort.links.length===1
             {
-                CABLES.UI.selectedStartPortMulti.length=0;
+
                 if(thePort.links.length>1)
                 {
                 	for(var i=0;i<thePort.links.length;i++)
@@ -73,7 +73,7 @@ CABLES.UI.Port=function(thePort)
 
                 linkingLine = new CABLES.UI.SVGLine(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
                 self.thePort.removeLinks();
-                CABLES.UI.selectedStartPortMulti.length=0;
+                // CABLES.UI.selectedStartPortMulti.length=0;
                 updateUI();
             }
             else
@@ -144,6 +144,7 @@ CABLES.UI.Port=function(thePort)
 
         if(!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort)
         {
+            // CABLES.UI.selectedStartPortMulti.length=0;
             // CABLES.UI.setStatusText('select a port to link...');
         }
         else
@@ -343,6 +344,7 @@ CABLES.UI.Port=function(thePort)
             }
         }
 
+        CABLES.UI.selectedStartPortMulti.length=0;
         finishDragUI();
     }
 

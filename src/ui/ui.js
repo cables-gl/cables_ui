@@ -1488,9 +1488,9 @@ CABLES.UI.GUI=function()
 
         if(which=='profiler') self.showProfiler();
         if(which=='screen') self.showMetaScreen();
-        if(which=='preview') self.preview.show();
         if(which=='variables') self.variables.show();
-        else self.preview.hide();
+
+        if(which=='preview') self.preview.show(); else self.preview.hide();
 
 
     };

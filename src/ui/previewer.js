@@ -18,7 +18,7 @@ CABLES.UI.Preview=function()
 
     };
 
-    this.hide=function()
+    this.ahide=function()
     {
         clearTimeout(CABLES.UI.currentPreviewTimeout);
         canvas=null;
@@ -38,10 +38,8 @@ CABLES.UI.Preview=function()
                 previewDataOp.patch.cgl.gl,
                 previewDataPort.get());
 
-
         CABLES.UI.currentPreviewTimeout=setTimeout(updatePreview,interval);
 
-        // psc.count();
     }
 
     this.toggleBackground=function()
@@ -98,7 +96,8 @@ CABLES.UI.Preview=function()
 
         if(gui.rendererWidth>window.innerWidth*0.9)return;
 
-        interval=Math.min(2000,width*height/(256*256)*defaultInterval);
+        interval=Math.min(2000,width*height/(512*512)*defaultInterval);
+        console.log(interval);
 
         if(!canvas || lastWidth !=width || lastHeight!=height)
         {
