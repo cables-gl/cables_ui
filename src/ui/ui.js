@@ -1490,7 +1490,8 @@ CABLES.UI.GUI=function()
         if(which=='screen') self.showMetaScreen();
         if(which=='variables') self.variables.show();
 
-        if(which=='preview') self.preview.show(); else self.preview.hide();
+        if(which=='preview') self.preview.show();
+            else if(self.preview)self.preview.hide();
 
 
     };
