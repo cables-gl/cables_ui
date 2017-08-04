@@ -776,6 +776,7 @@ CABLES.UI.Patch=function(_gui)
 						}
 				}
 
+
                 var vb={};
 				vb.w=1*(Math.abs(maxX-minX));
 				vb.h=1*(Math.abs(maxY-minY));
