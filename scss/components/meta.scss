@@ -134,3 +134,18 @@ img.dark,#cablescanvas
 		max-width: 100%;
 	}
 }
+
+
+#progresscontainer
+{
+	background-color: $color-c9;
+	min-height:20px;
+	width:100%;
+
+	.progress
+	{
+		background-color: $color-c8;
+		height: 20px;
+		min-width: 0px;
+	}
+}

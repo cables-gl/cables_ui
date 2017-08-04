@@ -530,16 +530,6 @@ CABLES.UI.GUI=function()
     };
 
 
-    this.showMetaScreen=function()
-    {
-        var html = CABLES.UI.getHandleBarHtml(
-            'meta_screen',
-            {
-            });
-
-        $('#meta_content_screen').html(html);
-    };
-
     this.showUiDebug=function()
     {
         var numVisibleOps=0;
@@ -1017,7 +1007,7 @@ CABLES.UI.GUI=function()
 
         $('#loadingstatus').hide();
         $('#mainContainer').show();
-        // self.setMetaTab('doc');
+
         self.setMetaTab(CABLES.UI.userSettings.get("metatab")||'doc');
 
         if(CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
@@ -1284,7 +1274,7 @@ CABLES.UI.GUI=function()
 
     this.saveScreenshot=function(filename,cb,pw,ph)
     {
-        console.log(pw,ph);
+        // console.log(pw,ph);
         var w=$('#glcanvas').attr('width');
         var h=$('#glcanvas').attr('height');
 
@@ -1374,15 +1364,6 @@ CABLES.UI.GUI=function()
 
     };
 
-    this.renderScreenshots=function()
-    {
-        var startTime=parseFloat($('#render_start').val());
-        var endTime=parseFloat($('#render_end').val());
-        var fps=parseFloat($('#render_fps').val());
-        var filename=$('#filename').val();
-
-        new CABLES.UI.ImageSequenceExport(filename,startTime,endTime,fps);
-    };
 
     this.showProfiler=function()
     {
@@ -1487,7 +1468,6 @@ CABLES.UI.GUI=function()
         if(which=='paco') self.showMetaPaco();
 
         if(which=='profiler') self.showProfiler();
-        if(which=='screen') self.showMetaScreen();
         if(which=='variables') self.variables.show();
 
         if(which=='preview') self.preview.show();

@@ -12,6 +12,12 @@ CABLES.CMD.RENDERER.fullscreen=function()
 	gui.cycleRendererSize();
 };
 
+CABLES.CMD.RENDERER.animRenderer=function()
+{
+	CABLES.animRenderer.show();
+};
+
+
 CABLES.CMD.RENDERER.changeSize=function()
 {
 
@@ -54,7 +60,15 @@ CABLES.CMD.commands.push(
 		category:"renderer",
 		func:CABLES.CMD.RENDERER.changeSize,
 		icon:'monitor'
+	},
+	{
+		cmd:"animation renderer",
+		category:"renderer",
+		func:CABLES.CMD.RENDERER.animRenderer,
+		icon:'monitor'
 	}
+
+
 
 
 
