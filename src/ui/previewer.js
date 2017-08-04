@@ -15,7 +15,6 @@ CABLES.UI.Preview=function()
         var html = CABLES.UI.getHandleBarHtml('preview', {} );
         $('#meta_content_preview').html(html);
         updatePreview(true);
-
     };
 
     this.hide=function()
@@ -97,7 +96,6 @@ CABLES.UI.Preview=function()
         if(gui.rendererWidth>window.innerWidth*0.9)return;
 
         interval=Math.min(2000,width*height/(512*512)*defaultInterval);
-        console.log(interval);
 
         if(!canvas || lastWidth !=width || lastHeight!=height)
         {
