@@ -44,19 +44,19 @@ const actions = {
     context.commit('setCustomizerVisible', !context.state.customizerVisible);
   },
   writeLocalStorage(context) {
-    console.log("context.state.removedDefaultItems: ", context.state.removedDefaultItems);
+    // console.log("context.state.removedDefaultItems: ", context.state.removedDefaultItems);
     const obj = {
       visible: context.state.visible,
       displayText: context.state.displayText,
       items: context.state.items.map((item) => item.cmd),
       removedDefaultItems: uniqArr(context.state.removedDefaultItems.filter((cmd) => !context.state.items.some((item) => cmd === item.cmd))), // only add items which are not in the items list right now
     };
-    console.log("wrting to local storage: ", obj);
+    // console.log("wrting to local storage: ", obj);
     CABLES.UI.userSettings.set('sidebar', obj);
   },
   loadLocalStorage(context) {
     const sidebarSettings = CABLES.UI.userSettings.get('sidebar');
-    console.log("sidebarSettings", sidebarSettings);
+    // console.log("sidebarSettings", sidebarSettings);
     if(sidebarSettings) {
       if(sidebarSettings.visible) { context.commit('visible', sidebarSettings.visible); }
       if(sidebarSettings.displayText) { context.commit('displayText', sidebarSettings.displayText); }
@@ -100,7 +100,7 @@ const actions = {
 // mutations
 const mutations = {
   setRemovedDefaultItems(state, cmds) {
-    console.log("setRemovedDefaultItems: ", cmds);
+    // console.log("setRemovedDefaultItems: ", cmds);
     if(!cmds) { return; }
     cmds.forEach((cmd) => {
       if(state.defaultItems.some((defaultItem) => defaultItem === cmd) // if it really is a default item
@@ -167,21 +167,29 @@ const mutations = {
    }
   },
   removeItem(state, cmdName) {
-    console.log("remove item: ", cmdName);
+    // console.log("remove item: ", cmdName);
     if(!cmdName) { return; }
     for(let i=0; i<state.items.length; i++) {
       if(state.items[i].cmd === cmdName) {
-        state.items.splice(i, 1);
         function isDefaultItem (cmd) { return state.defaultItems.some((defaultItem) => defaultItem === cmdName); }
-        console.log("isDefaultItem(cmdName): ", isDefaultItem(cmdName));
-        console.log("state.removedDefaultItems.indexOf(cmdName) === -1: ", state.removedDefaultItems.indexOf(cmdName) === -1);
+        // console.log("isDefaultItem(cmdName): ", isDefaultItem(cmdName));
+        // console.log("state.removedDefaultItems.indexOf(cmdName) === -1: ", state.removedDefaultItems.indexOf(cmdName) === -1);
         if(isDefaultItem(cmdName) && state.removedDefaultItems.indexOf(cmdName) === -1) {
           state.removedDefaultItems.push(cmdName);
         }
+        // printItems("before splice", state.items);
+        //state.items.splice(i, 1); // deletes the wrong one
+        // printItems("after splice", state.items);
         break;
       }
     }
+    // console.log("state after remove", state.items);
   }
+}
+
+function printItems(text, items) {
+  console.log(text);
+  items.forEach((item) => { console.log("Item: ", item); } );
 }
 
 export default {

@@ -30,7 +30,7 @@ export default {
     toggleCustomizer() {
       this.$store.dispatch('sidebar/toggleCustomizerVisibility');
     },
-    getKey: (item) => `${item.cmd}-origin-sidebar-${Math.floor(Math.random() * 1000000)}`,
+    getKey: (item) => `${item.cmd}-sb-${Math.floor(Math.random()*10000)}`,
     callFunction : function(action){
       CABLES.CMD.exec(action);
     }

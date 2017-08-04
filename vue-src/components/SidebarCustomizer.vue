@@ -17,7 +17,7 @@
           </div>
         </header>
         <ul v-dragula="items" id="sidebar-customizer-list" bag="sidebar-bag">
-          <li v-for="item in items" :key="getKey(item)" >
+          <li :data-cmd="item.cmd" v-for="item in items" :key="getKey(item)" >
             <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
             <span class="label">{{ item.cmd }}</span>
           </li>
@@ -39,6 +39,7 @@ export default {
     this.$nextTick(function () {
       let drake = Vue.vueDragula.find("sidebar-bag").drake;
       drake.on('drop', this.handleDrop);
+      Vue.vueDragula.eventBus.$on('dropModel', this.handleDropModel);
       drake.on('dragend', this.handleDragEnd);
       drake.on('drag', this.handleDrag);
       drake.on('over', this.handleDragOver);
@@ -71,7 +72,7 @@ export default {
   },
   methods: {
     search(text) { this.$store.commit('sidebar/filterCustomizerItems', text); },
-    getKey: (item) => `${item.cmd}-origin-sidebar`,
+    getKey: (item) => `${item.cmd}-custo-${Math.floor(Math.random()*10000)}`,
     toggleCustomizer() { this.$store.dispatch('sidebar/toggleCustomizerVisibility'); },
     handleDrag (el, source) {
       const sourceId = source.getAttribute('id');
@@ -83,13 +84,41 @@ export default {
       // console.log("DROP");
       const targetId = target.getAttribute('id');
       const sourceId = source.getAttribute('id');
+      // if(sourceId === 'sidebar-list' && targetId === 'sidebar-customizer-trash-can') {
+      //   const elCmd = el.getAttribute('data-cmd');
+      //   console.log("items before remove: ", this.$store.state.sidebar.items);
+      //   this.$store.commit('sidebar/removeItem', elCmd);
+      //   console.log("items after remove: ", this.$store.state.sidebar.items);
+      // } else { // reorder in sidebar or new item added
+      //
+      // }
+      // this.$store.state.sidebar.items.forEach((item) => { console.log("end of drop, item: ", item); });
+      // hack: when not wrapped in a setTtimout "items" will still contain the last item....
+      setTimeout(() => {
+        this.$store.dispatch('sidebar/writeLocalStorage');
+      }, 500)
+    },
+    handleDropModel (args) { // special event by vue-dragula, called when model is synced
+      if(!args.length >= 5) { console.log("handleDropModel error, argument count does not match!"); return; }
+      let bagName = args[0];
+      let el = args[1];
+      let target = args[2];
+      let source = args[3];
+      let dropIndex = args[4];
+      // console.log("DROP MODEL");
+      const targetId = target.getAttribute('id');
+      const sourceId = source.getAttribute('id');
       if(sourceId === 'sidebar-list' && targetId === 'sidebar-customizer-trash-can') {
         const elCmd = el.getAttribute('data-cmd');
         this.$store.commit('sidebar/removeItem', elCmd);
       } else { // reorder in sidebar or new item added
 
       }
-      this.$store.dispatch('sidebar/writeLocalStorage');
+      // this.$store.state.sidebar.items.forEach((item) => { console.log("end of dm, item: ", item); });
+      // hack: when not wrapped in a setTtimout "items" will still contain the last item....
+      setTimeout(() => {
+        this.$store.dispatch('sidebar/writeLocalStorage');
+      }, 500)
     },
     handleDragEnd (el) {
       // console.log("DRAG END");
