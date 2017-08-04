@@ -54,7 +54,6 @@ function acceptsDrop(el, target, source, sibling) {
       // duplicate check
       // TODO: dupe check
       const cmdName = el.getAttribute('data-cmd');
-      console.log("vueStore.state.getters['sidebar/iconBarContainsCmd']", cmdName, vueStore.getters['sidebar/iconBarContainsCmd'](cmdName));
       if(!vueStore.getters['sidebar/iconBarContainsCmd'](cmdName)) {
           return true;
       }
