@@ -1146,6 +1146,9 @@ CABLES.UI.Patch=function(_gui)
 								return;
 						}
 
+
+                        callEvent('patch_zoom');
+
 				});
 
 				this.background = self.paper.rect(-99999, -99999, 2*99999, 2*99999).attr({
@@ -1300,6 +1303,7 @@ CABLES.UI.Patch=function(_gui)
 								},100);
 
 								self.updateViewBox();
+                                callEvent('patch_pan');
 						}
 
 						lastMouseMoveEvent=e;

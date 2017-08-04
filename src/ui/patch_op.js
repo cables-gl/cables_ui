@@ -98,6 +98,11 @@ var OpRect = function (_opui,_x, _y, _w, _h, _text,objName)
         this.deleteUi();
     };
 
+    this.getScreenCTM=function()
+    {
+        if(background && background.node) return background.node.getScreenCTM();
+    };
+
 
 	this.showCopyAnim=function()
 	{

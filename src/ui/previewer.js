@@ -5,41 +5,105 @@ CABLES.UI.currentPreviewTimeout=-1;
 
 CABLES.UI.Preview=function()
 {
-    var defaultInterval=120;
-    var interval=defaultInterval;
     var paused=false;
 
     this.show=function()
     {
+        previewCanvas=null;
         paused=false;
         var html = CABLES.UI.getHandleBarHtml('preview', {} );
         $('#meta_content_preview').html(html);
-        updatePreview(true);
     };
 
     this.hide=function()
     {
-        clearTimeout(CABLES.UI.currentPreviewTimeout);
-        canvas=null;
         paused=true;
     };
 
-    // var psc=new CABLES.perSecondCounter("previewer");
     var previewDataPort=null;
     var previewDataOp=null;
+    var mesh=null;
+    var shader=null;
+    var previewCanvas=null;
 
-    function updatePreview()
+    this.render=function()
     {
-        if(paused || !previewDataOp || !previewDataPort)return;
+        if(paused)return;
+        if(!previewCanvas && document.getElementById('preview_img'))
+        {
+            previewCanvasEle=document.getElementById('preview_img');
+            previewCanvas=document.getElementById('preview_img').getContext("2d");
+        }
 
-        if(previewDataPort.get())
-            createImageFromTexture(
-                previewDataOp.patch.cgl.gl,
-                previewDataPort.get());
+        if(previewCanvas && previewDataOp && previewDataPort && previewDataPort.get())
+        {
+            var cgl=previewDataOp.patch.cgl;
 
-        CABLES.UI.currentPreviewTimeout=setTimeout(updatePreview,interval);
+            if(!mesh)
+            {
+                var geom=new CGL.Geometry("preview op rect");
 
-    }
+                geom.vertices = [
+                     1.0,  1.0,  0.0,
+                    -1.0,  1.0,  0.0,
+                     1.0, -1.0,  0.0,
+                    -1.0, -1.0,  0.0
+                ];
+
+                geom.texCoords = [
+                     1.0, 1.0,
+                     0.0, 1.0,
+                     1.0, 0.0,
+                     0.0, 0.0
+                ];
+
+                geom.verticesIndices = [
+                    0, 1, 2,
+                    3, 1, 2
+                ];
+
+                mesh=new CGL.Mesh(cgl,geom);
+
+            }
+            if(!shader)
+            {
+                shader=new CGL.Shader(cgl,'MinimalMaterial');
+                shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
+                shader.setSource(vert,frag);
+            }
+
+            // mat4.perspective(cgl.pMatrix,45, 1, 0.1, 1100.0);
+
+            cgl.pushPMatrix();
+            mat4.ortho(cgl.pMatrix,
+                -1,
+                1,
+                1,
+                -1,
+                0.001,
+                11
+                );
+
+            cgl.setTexture(0,previewDataPort.get().tex);
+
+            mesh.render(shader);
+
+            cgl.popPMatrix();
+            cgl.resetViewPort();
+
+            var containerEle=document.getElementById("preview_img_container");
+
+            previewCanvasEle.style.width=containerEle.offsetWidth;
+            previewCanvasEle.style.height=containerEle.offsetWidth*(previewDataPort.get().height/previewDataPort.get().width);
+
+            previewCanvas.clearRect(0, 0,previewCanvasEle.width, previewCanvasEle.height);
+            previewCanvas.drawImage(cgl.canvas, 0, 0,previewCanvasEle.width, previewCanvasEle.height);
+
+            cgl.gl.clearColor(0,0,0,0.0);
+            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+        }
+    };
 
     this.toggleBackground=function()
     {
@@ -49,7 +113,6 @@ CABLES.UI.Preview=function()
 
     this.setTexture=function(opid,portName)
     {
-        clearTimeout(CABLES.UI.currentPreviewTimeout);
         previewDataOp=gui.scene().getOpById(opid);
         if(!previewDataOp)
         {
@@ -63,95 +126,36 @@ CABLES.UI.Preview=function()
             return;
         }
 
-        imageData=null;
-        canvas=null;
-        if(framebuffer)
-        {
-            reset();
-        }
+        $('#meta_content_preview .opname').html(previewDataOp.name);
 
-        updatePreview();
+        // updatePreview();
     };
 
-    function reset()
-    {
-        previewDataOp.patch.cgl.gl.deleteFramebuffer(framebuffer);
-        framebuffer=null;
-    }
 
-    var pixelData = new Uint8Array(2 * 2 * 4);
-    var canvas = null;
-    var canvasContainer = null;
-    var context = null;
-    var imageData = null;
-    var framebuffer = null;
+var frag=''.endl()
+.endl()+'varying vec2 texCoord;'
+.endl()+'uniform sampler2D tex;'
+.endl()+'void main()'
+.endl()+'{'
+.endl()+'    vec4 col=vec4(1.0,1.0,1.0,1.0);'
+.endl()+'    col=texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y)));'
+.endl()+'    outColor = col;'
+.endl()+'}';
 
-    var lastWidth,lastHeight;
-
-    function createImageFromTexture(gl, texture)
-    {
-        var width=texture.width;
-        var height=texture.height;
-
-        if(gui.rendererWidth>window.innerWidth*0.9)return;
-
-        interval=Math.min(2000,width*height/(128*128)*defaultInterval);
-
-        if(!canvas || lastWidth !=width || lastHeight!=height)
-        {
-            canvas = document.getElementById('preview_img');
-            canvasContainer = document.getElementById('preview_img_container');
-            $('#meta_content_preview .opname').html(previewDataPort.parent.name);
-            $('#preview_img_container').data('info',texture.getInfoReadable());
-
-            lastWidth =width;
-            lastHeight=height;
-
-            if(!canvasContainer)
-            {
-                console.log('previewer no canvasContainer!');
-                return;
-            }
-
-            canvasContainer.style['max-width']=width+'px';
-            canvasContainer.style['max-height']=height+'px';
-
-            imageData=null;
-            if(!canvas)
-            {
-                console.log('no canvas...');
-                return;
-            }
-            context = canvas.getContext('2d');
-        }
-
-        if(!framebuffer) framebuffer = gl.createFramebuffer();
-        // Create a framebuffer backed by the texture
-
-        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture.tex, 0);
-
-        // Read the contents of the framebuffer
-        if(pixelData.length!=width*height*4) pixelData = new Uint8Array(width * height * 4);
-        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixelData);
-
-        // Create a 2D canvas to store the result
-        canvas.width = width;
-        canvas.height = height;
-
-        // Copy the pixels to a 2D canvas
-        if(!imageData)imageData = context.createImageData(width, height);
-        try
-        {
-            imageData.data.set(pixelData);
-            context.putImageData(imageData, 0, 0);
-        }
-        catch(e)
-        {
-            reset();
-        }
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    }
+var vert=''.endl()
+.endl()+'attribute vec3 vPosition;'
+.endl()+'attribute vec2 attrTexCoord;'
+.endl()+'varying vec2 texCoord;'
+.endl()+'uniform mat4 projMatrix;'
+.endl()+'uniform mat4 modelMatrix;'
+.endl()+'uniform mat4 viewMatrix;'
+.endl()+'void main()'
+.endl()+'{'
+.endl()+'    texCoord=attrTexCoord;'
+.endl()+'    vec4 pos = vec4( vPosition, 1. );'
+.endl()+'    mat4 mvMatrix=viewMatrix * modelMatrix;'
+.endl()+'    gl_Position = projMatrix * mvMatrix * pos;'
+.endl()+'}';
 
 
 };
