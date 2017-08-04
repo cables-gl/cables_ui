@@ -769,44 +769,43 @@ CABLES.UI.Patch=function(_gui)
 				{
 						if(arr[i].getSubPatch()==currentSubPatch)
 						{
-								minX=Math.min(minX,arr[i].op.uiAttribs.translate.x);
-								maxX=Math.max(maxX,arr[i].op.uiAttribs.translate.x);
+								minX=Math.min(minX,arr[i].op.uiAttribs.translate.x-40);
+								maxX=Math.max(maxX,arr[i].op.uiAttribs.translate.x+150);
 								minY=Math.min(minY,arr[i].op.uiAttribs.translate.y);
 								maxY=Math.max(maxY,arr[i].op.uiAttribs.translate.y);
 						}
 				}
 
+                var vb={};
+				vb.w=1*(Math.abs(maxX-minX));
+				vb.h=1*(Math.abs(maxY-minY));
+
 				if(selectedOps.length>0)
 				{
-						viewBox.x=minX-viewBox.w/2;
-						viewBox.y=minY-viewBox.h/2;
+						vb.w=Math.max(600,vb.w);
+						vb.h=Math.max(600,vb.h);
+				}
+
+                if(selectedOps.length>0)
+				{
+						vb.x=minX-vb.w/2;
+						vb.y=minY-vb.h/2;
 				}
 				else
 				{
-						viewBox.x=minX;
-						viewBox.y=minY;
-
+						vb.x=minX;
+						vb.y=minY;
 				}
 
-				var w=1*(Math.abs(maxX-minX));
-				var h=1*(Math.abs(maxY-minY));
-
-				if(selectedOps.length>0)
-				{
-						w=Math.max(500,w);
-						h=Math.max(500,h);
-				}
-
-				viewBox.w=w;
-				viewBox.h=h;
-				self.updateViewBox();
+                self.animViewBox(vb.x,vb.y,vb.w,vb.h);
 		};
 
 		this.centerViewBox=function(x,y)
 		{
-				viewBox.x=x-viewBox.w/2;
-				viewBox.y=y-viewBox.h/2;
-				self.updateViewBox();
+                self.animViewBox(
+                    x-viewBox.w/2,
+                    y-viewBox.h/2,
+                    viewBox.w,viewBox.h);
 		};
 
 		var minimapBounds={x:0,y:0,w:0,h:0};
@@ -860,6 +859,57 @@ CABLES.UI.Patch=function(_gui)
 		var oldVBH=0;
 		var oldVBX=0;
 		var oldVBY=0;
+
+
+        var viewBoxAnim={
+            x:new CABLES.TL.Anim(),
+            y:new CABLES.TL.Anim(),
+            w:new CABLES.TL.Anim(),
+            h:new CABLES.TL.Anim()
+        };
+
+        this._animViewBox=function()
+        {
+            var t=(CABLES.now()-viewBoxAnim.start)/1000;
+
+            viewBox.x=viewBoxAnim.x.getValue(t);
+            viewBox.y=viewBoxAnim.y.getValue(t);
+            viewBox.w=viewBoxAnim.w.getValue(t);
+            viewBox.h=viewBoxAnim.h.getValue(t);
+            self.updateViewBox();
+
+            if(viewBoxAnim.x.isFinished(t))return;
+
+            setTimeout(self._animViewBox,20);
+        };
+
+        this.animViewBox=function(x,y,w,h)
+        {
+            viewBoxAnim.start=CABLES.now();
+            viewBoxAnim.x.clear();
+
+            viewBoxAnim.x.defaultEasing=
+            viewBoxAnim.y.defaultEasing=
+            viewBoxAnim.w.defaultEasing=
+            viewBoxAnim.h.defaultEasing=CABLES.TL.EASING_CUBIC_OUT;
+
+            viewBoxAnim.y.clear();
+            viewBoxAnim.w.clear();
+            viewBoxAnim.h.clear();
+
+            viewBoxAnim.x.setValue(0,viewBox.x);
+            viewBoxAnim.y.setValue(0,viewBox.y);
+            viewBoxAnim.w.setValue(0,viewBox.w);
+            viewBoxAnim.h.setValue(0,viewBox.h);
+
+            viewBoxAnim.x.setValue(0.25,x);
+            viewBoxAnim.y.setValue(0.25,y);
+            viewBoxAnim.w.setValue(0.25,w);
+            viewBoxAnim.h.setValue(0.25,h);
+
+            this._animViewBox();
+        };
+
 		this.updateViewBox=function()
 		{
 				oldVBW=viewBox.w;

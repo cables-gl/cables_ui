@@ -368,6 +368,15 @@ CABLES.UI.Port=function(thePort)
             self.rect.node.classList.remove('connected');
         }
 
+        if(thePort.isAnimated())
+        {
+            self.rect.node.classList.add('animated');
+        }
+        else
+        {
+            self.rect.node.classList.remove('animated');
+        }
+
         if(hovering)
         {
             self.rect.node.classList.add('active');

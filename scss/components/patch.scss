@@ -198,6 +198,14 @@
             height:9px;
         }
 
+        &.animated
+        {
+            // stroke-width:1;
+            fill-opacity:0.5;
+            // stroke: $color-ca !important;
+            // stroke-opacity:0.5;
+        }
+
 
         &.active
         {
