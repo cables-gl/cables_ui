@@ -51,7 +51,13 @@ function acceptsDrop(el, target, source, sibling) {
     return false;
   } else if(sourceId === 'sidebar-customizer-list') {
     if(targetId === 'sidebar-list') {
-      return true;
+      // duplicate check
+      // TODO: dupe check
+      const cmdName = el.getAttribute('data-cmd');
+      if(!vueStore.getters['sidebar/iconBarContainsCmd'](cmdName)) {
+          return true;
+      }
+      return false;
     }
     return false;
   }
