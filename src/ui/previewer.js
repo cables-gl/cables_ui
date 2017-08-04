@@ -18,7 +18,7 @@ CABLES.UI.Preview=function()
 
     };
 
-    this.ahide=function()
+    this.hide=function()
     {
         clearTimeout(CABLES.UI.currentPreviewTimeout);
         canvas=null;
