@@ -95,7 +95,7 @@ CABLES.UI.Preview=function()
 
         if(gui.rendererWidth>window.innerWidth*0.9)return;
 
-        interval=Math.min(2000,width*height/(256*256)*defaultInterval);
+        interval=Math.min(2000,width*height/(128*128)*defaultInterval);
 
         if(!canvas || lastWidth !=width || lastHeight!=height)
         {
