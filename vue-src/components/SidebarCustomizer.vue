@@ -13,7 +13,8 @@
         <header>
           <input type="search" id="customizer-search" @keyup="search($event.target.value)" @search="search($event.target.value)" placeholder="search for a command" />
           <div class="sidebar-option">
-            <span>Display:</span> <app-switch id="display-text-icon-switch" classes="" v-model="displayLabel" checked>{{ displayLabelStateText }}</app-switch>
+            <span>Display:</span>
+            <app-switch id="display-text-icon-switch" v-model="displayLabel" :checked="displayLabel">{{ displayLabelStateText }}</app-switch>
           </div>
         </header>
         <ul v-dragula="items" id="sidebar-customizer-list" bag="sidebar-bag">
@@ -45,6 +46,14 @@ export default {
       drake.on('over', this.handleDragOver);
       drake.on('out', this.handleDragOut);
     })
+  },
+  watch: {
+    displayLabel: function (b) {
+      //  console.log("Dispaly label toggled, ", b);
+      setTimeout(() => {
+        this.$store.dispatch('sidebar/writeLocalStorage');
+      }, 500);
+     }
   },
   computed: {
     displayLabelStateText() {
