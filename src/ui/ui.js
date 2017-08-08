@@ -957,6 +957,7 @@ CABLES.UI.GUI = function() {
         // $("body").append( script );
 
         logStartup('finished loading cables');
+        CABLES.UI.loaded=true;
 
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");

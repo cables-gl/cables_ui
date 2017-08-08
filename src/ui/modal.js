@@ -191,9 +191,6 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
     CABLES.lastError=ex;
     CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>&nbsp;&nbsp;');
     CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
-
-
-
 };
 
 CABLES.UI.MODAL.showException=function(ex,op)
@@ -204,6 +201,16 @@ CABLES.UI.MODAL.showException=function(ex,op)
         return;
     }
     console.log(ex.stack);
+    if(!CABLES.UI.loaded)
+    {
+        var html='';
+        html+='<div class="startuperror"><b>error</b>\n';
+        html+='<br/>';
+        html+=ex.message;
+        html+='</div>';
+
+        $('body').append(html);
+    }
     CABLES.UI.MODAL.showClose();
 
     CABLES.UI.MODAL.init();
