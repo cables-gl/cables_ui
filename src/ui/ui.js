@@ -723,7 +723,7 @@ CABLES.UI.GUI = function() {
         });
 
         $('.nav_files').bind("click", function(event) {
-            CABLES.CMD.UI.files();
+            CABLES.CMD.UI.toggleFiles();
         });
         $('.nav_timeline').bind("click", function(event) {
             CABLES.CMD.UI.toggleTimeline();
