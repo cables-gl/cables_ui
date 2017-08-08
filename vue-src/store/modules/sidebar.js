@@ -58,8 +58,11 @@ const actions = {
     const sidebarSettings = CABLES.UI.userSettings.get('sidebar');
     // console.log("sidebarSettings", sidebarSettings);
     if(sidebarSettings) {
-      if(sidebarSettings.visible) { context.commit('visible', sidebarSettings.visible); }
-      if(sidebarSettings.displayText) { context.commit('displayText', sidebarSettings.displayText); }
+      if(typeof sidebarSettings.visible !== 'undefined') { context.commit('visible', sidebarSettings.visible); }
+      if(typeof sidebarSettings.displayText !== 'undefined') {
+        // console.log("commiting displayText", sidebarSettings.displayText);
+        context.commit('displayText', sidebarSettings.displayText);
+      }
       if(sidebarSettings.removedDefaultItems) { context.commit('setRemovedDefaultItems', sidebarSettings.removedDefaultItems); }
       if(sidebarSettings.items) {
         // first version, changed structure, userAction no longer exists
