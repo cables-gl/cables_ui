@@ -1494,6 +1494,30 @@ function startUi(event) {
     });
 
 
+    $('#glcanvas').on("focus", function() {
+        console.log('FOCUSSS');
+        $('#canvasmodal').show();
+        $('#canvasicons').show();
+        var posCanvas = $('#glcanvas').offset();
+        console.log(posCanvas);
+        $('#canvasicons').css({
+            width: $('#glcanvas').width(),
+            top: $('#glcanvas').height() + 1,
+            left: posCanvas.left
+        });
+
+
+    });
+
+    $('#glcanvas').on("blur", function() {
+        setTimeout(function() {
+            $('#canvasicons').hide();
+            $('#canvasmodal').hide();
+            console.log("BLURRRR");
+
+        }, 100);
+
+    });
 
     $(document).on("click", '.panelhead', function(e) {
         var panelselector = $(this).data("panelselector");

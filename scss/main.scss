@@ -100,33 +100,6 @@ a
 
 
 
-#cablescanvas
-{
-    display: none;
-}
-#glcanvas
-{
-    position:absolute;
-    top:0px;
-    right:0px;
-    border:1px solid black;
-    outline: none;
-    z-index: 100;
-
-    &:focus
-    {
-        border-bottom:1px solid $color-c8;
-    }
-
-    &.maximized
-    {
-        &:focus
-        {
-            border-bottom:none;
-        }
-
-    }
-}
 
 input
 {
@@ -571,4 +544,5 @@ input
 
 @import 'components/params.scss';
 @import 'components/projectsearch.scss';
+@import 'components/canvas.scss';
 @import 'libs/iztoast.scss';
