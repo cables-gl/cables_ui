@@ -48,7 +48,7 @@ CABLES.CMD.commands.push({
         cmd: "change renderer size",
         category: "renderer",
         func: CABLES.CMD.RENDERER.changeSize,
-        icon: 'monitor'
+        icon: 'maximize2'
     }, {
         cmd: "animation renderer",
         category: "renderer",

@@ -147,7 +147,7 @@ CABLES.CMD.commands.push({
         cmd: "maximize renderer",
         category: "ui",
         func: CABLES.CMD.UI.toggleMaxRenderer,
-        icon: 'monitor',
+        icon: 'maximize2',
         hotkey: 'CMD + ENTER',
     }, {
         cmd: "show command pallet",
