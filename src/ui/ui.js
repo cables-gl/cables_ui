@@ -978,9 +978,8 @@ CABLES.UI.GUI = function() {
 
 
         var html = '';
-
         if (this.project().users.indexOf(this.user.id) == -1 &&
-            this.project().usersId!=this.user.id ){
+            this.project().userId+''!=''+this.user.id ){
             iziToast.show({
                 position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
                 theme: 'dark',
