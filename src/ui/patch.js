@@ -82,10 +82,8 @@ CABLES.UI.Patch = function(_gui) {
             }
         }
 
-        if (max > 10000) {
-            alert('warning big port: ' + maxName + ' / ' + max + ' chars');
-            // console.log(maxValue);
-        }
+        if (max > 10000) CABLES.UI.notify('warning big port: ' + maxName + ' / ' + max + ' chars');
+
         console.log('biggest port:', maxName, max);
     };
 
