@@ -237,6 +237,22 @@ CABLES.UI.MODAL.showException=function(ex,op)
 
 
 
+
+CABLES.UI.notifyError=function(title,text)
+{
+    iziToast.error(
+        {
+            position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            theme: 'dark',
+            title: title,
+            message: text||'',
+            progressBar:false,
+            animateInside:false,
+            close:false,
+            timeout:2000
+        });
+
+};
 CABLES.UI.notify=function(title,text)
 {
     // $('#notify').html(title);

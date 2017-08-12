@@ -836,6 +836,7 @@ CABLES.UI.GUI = function() {
                     break;
                 case 83: // s - save
                         if (e.metaKey || e.ctrlKey) {
+                            e.preventDefault();
                             if (!e.shiftKey) {
                                 if ($('#patch').is(":focus")) {
                                     // self.patch().saveCurrentProject();
@@ -848,7 +849,7 @@ CABLES.UI.GUI = function() {
                                     CABLES.CMD.PATCH.save();
                                     // self.patch().saveCurrentProject();
                                 }
-                                e.preventDefault();
+
                             } else {
                                 self.patch().saveCurrentProjectAs();
                             }

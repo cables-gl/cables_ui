@@ -63,28 +63,35 @@ CABLES.UI.Patch = function(_gui) {
         var ser = '';
         var maxValue = '';
 
-        for (var i in this.ops) {
-            for (j in this.ops[i].op.portsIn) {
-                ser = JSON.stringify(this.ops[i].op.portsIn[j].getSerialized());
-                if (ser.length > max) {
-                    max = ser.length;
-                    maxValue = ser;
-                    maxName = this.ops[i].op.name + ' - in: ' + this.ops[i].op.portsIn[j].name;
+        try {
+            for (var i in this.ops) {
+                for (j in this.ops[i].op.portsIn) {
+                    ser = JSON.stringify(this.ops[i].op.portsIn[j].getSerialized());
+                    if (ser.length > max) {
+                        max = ser.length;
+                        maxValue = ser;
+                        maxName = this.ops[i].op.name + ' - in: ' + this.ops[i].op.portsIn[j].name;
+                    }
+                }
+                for (j in this.ops[i].op.portsOut) {
+                    ser = JSON.stringify(this.ops[i].op.portsOut[j].getSerialized());
+                    if (ser.length > max) {
+                        max = ser.length;
+                        maxValue = ser;
+                        maxName = this.ops[i].op.name + ' - out: ' + this.ops[i].op.portsOut[j].name;
+                    }
                 }
             }
-            for (j in this.ops[i].op.portsOut) {
-                ser = JSON.stringify(this.ops[i].op.portsOut[j].getSerialized());
-                if (ser.length > max) {
-                    max = ser.length;
-                    maxValue = ser;
-                    maxName = this.ops[i].op.name + ' - out: ' + this.ops[i].op.portsOut[j].name;
-                }
-            }
+
+            if (max > 10000) CABLES.UI.notify('warning big port: ' + maxName + ' / ' + max + ' chars');
+
+            console.log('biggest port:', maxName, max);
+
+        } catch (e) {
+
+        } finally {
+
         }
-
-        if (max > 10000) CABLES.UI.notify('warning big port: ' + maxName + ' / ' + max + ' chars');
-
-        console.log('biggest port:', maxName, max);
     };
 
     this.paste = function(e) {
@@ -96,7 +103,7 @@ CABLES.UI.Patch = function(_gui) {
             try {
                 json = JSON.parse(str);
             } catch (exp) {
-                CABLES.UI.notify("Paste failed");
+                CABLES.UI.notifyError("Paste failed");
                 console.log(exp);
             }
 
@@ -595,62 +602,73 @@ CABLES.UI.Patch = function(_gui) {
         data.ui.renderer.w = gui.rendererWidth;
         data.ui.renderer.h = gui.rendererHeight;
 
-        data = JSON.stringify(data);
-        console.log('data.length', data.length);
+        try {
+            data = JSON.stringify(data);
+            console.log('data.length', data.length);
 
-        gui.patch().getLargestPort();
 
-        CABLES.UI.notify('patch saved');
 
-        CABLES.api.put(
-            'project/' + id, {
-                "name": name,
-                "data": data,
-            },
-            function(r) {
-                gui.jobs().finish('projectsave');
-                gui.setStateSaved();
-                if (cb) cb();
+            gui.patch().getLargestPort();
 
-                var screenshotTimeout = setTimeout(function() {
-                    $('#glcanvas').attr('width', w);
-                    $('#glcanvas').attr('height', h);
-                    gui.patch().scene.cgl.doScreenshot = false;
+            CABLES.UI.notify('patch saved');
 
-                    gui.jobs().finish('uploadscreenshot');
-                    console.log('screenshot timed out...');
-                }, 2000);
+            CABLES.api.put(
+                'project/' + id, {
+                    "name": name,
+                    "data": data,
+                },
+                function(r) {
+                    gui.jobs().finish('projectsave');
+                    gui.setStateSaved();
+                    if (cb) cb();
 
-                gui.jobs().start({
-                    id: 'uploadscreenshot',
-                    title: 'uploading screenshot'
-                });
+                    var screenshotTimeout = setTimeout(function() {
+                        $('#glcanvas').attr('width', w);
+                        $('#glcanvas').attr('height', h);
+                        gui.patch().scene.cgl.doScreenshot = false;
 
-                gui.patch().scene.cgl.onScreenShot = function(screenBlob) {
-                    clearTimeout(screenshotTimeout);
-                    gui.patch().scene.cgl.onScreenShot = null;
+                        gui.jobs().finish('uploadscreenshot');
+                        console.log('screenshot timed out...');
+                    }, 2000);
 
-                    $('#glcanvas').attr('width', w);
-                    $('#glcanvas').attr('height', h);
+                    gui.jobs().start({
+                        id: 'uploadscreenshot',
+                        title: 'uploading screenshot'
+                    });
 
-                    console.log("uploading screenshot");
+                    gui.patch().scene.cgl.onScreenShot = function(screenBlob) {
+                        clearTimeout(screenshotTimeout);
+                        gui.patch().scene.cgl.onScreenShot = null;
 
-                    var reader = new FileReader();
+                        $('#glcanvas').attr('width', w);
+                        $('#glcanvas').attr('height', h);
 
-                    reader.onload = function(event) {
-                        CABLES.api.put(
-                            'project/' + id + '/screenshot', {
-                                "screenshot": event.target.result //gui.patch().scene.cgl.screenShotDataURL
-                            },
-                            function(r) {
-                                if (gui.onSaveProject) gui.onSaveProject();
-                                gui.jobs().finish('uploadscreenshot');
-                            });
+                        console.log("uploading screenshot");
+
+                        var reader = new FileReader();
+
+                        reader.onload = function(event) {
+                            CABLES.api.put(
+                                'project/' + id + '/screenshot', {
+                                    "screenshot": event.target.result //gui.patch().scene.cgl.screenShotDataURL
+                                },
+                                function(r) {
+                                    if (gui.onSaveProject) gui.onSaveProject();
+                                    gui.jobs().finish('uploadscreenshot');
+                                });
+                        };
+                        reader.readAsDataURL(screenBlob);
                     };
-                    reader.readAsDataURL(screenBlob);
-                };
-                gui.patch().scene.cgl.doScreenshot = true;
-            });
+                    gui.patch().scene.cgl.doScreenshot = true;
+                });
+        } catch (e) {
+
+        console.log('jajaja');
+CABLES.UI.notifyError('error saving patch');
+        } finally {
+
+
+        }
     };
 
     this.getCurrentProject = function() {
