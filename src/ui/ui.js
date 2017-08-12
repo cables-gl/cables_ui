@@ -144,6 +144,9 @@ CABLES.UI.GUI = function() {
             self.rendererHeight = window.innerHeight;
         }
 
+
+        this.showCanvasModal(false);
+
         // var statusBarHeight=26;
         var menubarHeight = 30;
         var optionsWidth = 400;
@@ -1402,6 +1405,32 @@ CABLES.UI.GUI = function() {
         };
     };
 
+    this.showCanvasModal=function(_show)
+    {
+        if(_show)
+        {
+            $('#canvasmodal').show();
+            $('#canvasicons').show();
+            var posCanvas = $('#glcanvas').offset();
+
+            $('#canvasicons').css({
+                width: $('#glcanvas').width(),
+                top: $('#glcanvas').height() + 1,
+                left: posCanvas.left
+            });
+
+        }
+        else
+        {
+            setTimeout(function() {
+                $('#canvasicons').hide();
+                $('#canvasmodal').hide();
+            }, 100);
+
+        }
+
+    };
+
     this.init = function() {
         $('#infoArea').show();
 
@@ -1467,9 +1496,6 @@ CABLES.UI.GUI = function() {
         gui.replaceNavShortcuts();
     };
     self.loadUser();
-
-
-
 };
 
 function startUi(event) {
@@ -1494,22 +1520,11 @@ function startUi(event) {
 
 
     $('#glcanvas').on("focus", function() {
-        $('#canvasmodal').show();
-        $('#canvasicons').show();
-        var posCanvas = $('#glcanvas').offset();
-
-        $('#canvasicons').css({
-            width: $('#glcanvas').width(),
-            top: $('#glcanvas').height() + 1,
-            left: posCanvas.left
-        });
+        gui.showCanvasModal(true);
     });
 
     $('#glcanvas').on("blur", function() {
-        setTimeout(function() {
-            $('#canvasicons').hide();
-            $('#canvasmodal').hide();
-        }, 100);
+        gui.showCanvasModal(false);
 
     });
 
