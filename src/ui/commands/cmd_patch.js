@@ -29,7 +29,7 @@ CABLES.CMD.PATCH.save=function()
 
 CABLES.CMD.PATCH.saveAs=function()
 {
-	self.patch().saveCurrentProjectAs();
+	gui.patch().saveCurrentProjectAs();
 };
 
 CABLES.CMD.PATCH.clear=function()
