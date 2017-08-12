@@ -662,9 +662,7 @@ CABLES.UI.Patch = function(_gui) {
                     gui.patch().scene.cgl.doScreenshot = true;
                 });
         } catch (e) {
-
-        console.log('jajaja');
-CABLES.UI.notifyError('error saving patch');
+            CABLES.UI.notifyError('error saving patch - try to delete disables ops');
         } finally {
 
 
