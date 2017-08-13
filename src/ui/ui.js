@@ -129,7 +129,7 @@ CABLES.UI.GUI = function() {
         this._elSplitterEditor = this._elSplitterEditor || $('#splitterEditor');
         this._elIconBar = this._elIconBar || $('#icon-bar');
 
-        var iconBarWidth = this._elIconBar.outerWidth();
+        var iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
 
         this._elMenubar.show();
@@ -144,8 +144,10 @@ CABLES.UI.GUI = function() {
             self.rendererHeight = window.innerHeight;
         }
 
+        var iconBarWidth=iconBarWidth||80;
 
-        this.showCanvasModal(false);
+
+        self.showCanvasModal(false);
 
         // var statusBarHeight=26;
         var menubarHeight = 30;
@@ -160,7 +162,6 @@ CABLES.UI.GUI = function() {
         var timedisplayheight = 25;
 
         var patchHeight = window.innerHeight - menubarHeight - 2;
-
         var patchWidth = window.innerWidth - self.rendererWidth - 6 - iconBarWidth;
 
         if (showTiming) {

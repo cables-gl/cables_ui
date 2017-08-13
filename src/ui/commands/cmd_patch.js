@@ -37,27 +37,21 @@ CABLES.CMD.PATCH.clear=function()
 	gui.scene().clear();
 };
 
-
-
 CABLES.CMD.PATCH.selectChilds=function()
 {
 	gui.patch().selectChilds();
 };
-
 
 CABLES.CMD.PATCH.createSubPatchFromSelection=function()
 {
 	gui.patch().createSubPatchFromSelection();
 };
 
-
-
 CABLES.CMD.PATCH.uploadFile=function()
 {
 	var fileElem = document.getElementById("hiddenfileElem");
 	if (fileElem) fileElem.click();
 };
-
 
 CABLES.CMD.PATCH.opsAlignHorizontal=function()
 {
