@@ -169,19 +169,23 @@ const mutations = {
      state.items.push(itemToAdd);
    }
   },
+  /*
+   * Removes an item from the sidebar, used by sidebar customizer and command pallet
+   * Might make troubles because of the way items are removed by dragula (the drag'd'drop library),
+   * Actually removing the idem from the array resolved in wrong items being picked when dragging.
+   * Seems to be fixed now...
+   */
   removeItem(state, cmdName) {
     // console.log("remove item: ", cmdName);
     if(!cmdName) { return; }
     for(let i=0; i<state.items.length; i++) {
       if(state.items[i].cmd === cmdName) {
         function isDefaultItem (cmd) { return state.defaultItems.some((defaultItem) => defaultItem === cmdName); }
-        // console.log("isDefaultItem(cmdName): ", isDefaultItem(cmdName));
-        // console.log("state.removedDefaultItems.indexOf(cmdName) === -1: ", state.removedDefaultItems.indexOf(cmdName) === -1);
         if(isDefaultItem(cmdName) && state.removedDefaultItems.indexOf(cmdName) === -1) {
           state.removedDefaultItems.push(cmdName);
         }
         // printItems("before splice", state.items);
-        //state.items.splice(i, 1); // deletes the wrong one
+        state.items.splice(i, 1); // might be making problems - deletes the wrong one
         // printItems("after splice", state.items);
         break;
       }
