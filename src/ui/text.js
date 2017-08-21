@@ -59,5 +59,6 @@ CABLES.UI.TEXTS=
 
     bookmark_added: "Bookmark added!",
     bookmark_removed: "Bookmark removed!",
+    sidebarMenu: "## Customize sidebar \n\nOpen the sidebar customizer to add / remove menu items by dragging them to / from the sidebar. \nDrag menu items vertically to change their order. \nYou can also press `cmd + p` to show the command pallet – there you can press the bookmark icon to add / remove menu items as well. ",
 
 };

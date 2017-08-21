@@ -1454,6 +1454,11 @@ CABLES.UI.GUI = function() {
         }, function() {
             CABLES.UI.hideInfo();
         });
+        $('#sidebar-menu').hover(function(e) {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.sidebarMenu);
+        }, function() {
+            CABLES.UI.hideInfo();
+        });
         /* Tab pane on the right */
         $('.tab_files').hover(function(e) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_files);
