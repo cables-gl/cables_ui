@@ -12,7 +12,7 @@
         <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>
     </ul>
-    <div class="menu" @click='toggleCustomizer'>
+    <div class="menu" id="sidebar-menu" @click='toggleCustomizer'>
       <span class="icon icon-1.5x icon-three-dots tt" data-tt="Add / remove icons"></span>
     </div>
   </div>
