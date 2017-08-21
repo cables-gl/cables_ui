@@ -13,7 +13,7 @@ CABLES.UI.Bookmarks=function()
         }
       }
       return false;
-    }
+    },
 
     this.getHtml=function()
     {
