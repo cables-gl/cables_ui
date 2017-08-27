@@ -1091,6 +1091,7 @@ CABLES.UI.GUI = function() {
                     if (proj.ui) {
                         self.bookmarks.set(proj.ui.bookmarks);
                         $('#options').html(gui.bookmarks.getHtml());
+
                     }
                     metaCode.init();
                     gui.opSelect().reload();
@@ -1413,6 +1414,7 @@ CABLES.UI.GUI = function() {
         {
             $('#canvasmodal').show();
             $('#canvasicons').show();
+            $('#canvasicons').css({opacity:1});
             var posCanvas = $('#glcanvas').offset();
 
             $('#canvasicons').css({
@@ -1424,10 +1426,13 @@ CABLES.UI.GUI = function() {
         }
         else
         {
+            $('#canvasmodal').hide();
+            $('#canvasicons').css({opacity:0.01});
+
             setTimeout(function() {
                 $('#canvasicons').hide();
-                $('#canvasmodal').hide();
-            }, 100);
+
+            }, 400);
 
         }
 

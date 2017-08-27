@@ -5,15 +5,18 @@ CABLES.UI.Bookmarks=function()
 {
     var bookmarks=[];
 
-    this.hasBookmarkWithId = function(id) {
-      for(var i=0; i<bookmarks.length; i++) {
-        var bm = bookmarks[i];
-        if(bm === id) {
-          return true;
+    this.hasBookmarkWithId = function(id)
+    {
+        for(var i=0; i<bookmarks.length; i++)
+        {
+            var bm = bookmarks[i];
+            if(bm === id)
+            {
+                return true;
+            }
         }
-      }
-      return false;
-    }
+        return false;
+    };
 
     this.getHtml=function()
     {

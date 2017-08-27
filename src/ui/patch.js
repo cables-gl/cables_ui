@@ -2181,9 +2181,21 @@ CABLES.UI.Patch = function(_gui) {
         s.settings = gui.scene().settings;
 
         var numVisibleOps = 0;
+        var errorOps=[];
+
         for (var i in self.ops) {
             if (!self.ops[i].isHidden()) numVisibleOps++;
+
+            if (self.ops[i].op.uiAttribs.error)
+            {
+
+                errorOps.push(self.ops[i].op);
+                if(self.ops[i].op.objName.toLowerCase().indexOf("Deprecated")>-1)self.ops[i].op.isDeprecated=true;
+            }
         }
+
+        console.log('errorOps',errorOps);
+        console.log('errorOps'+errorOps.length);
 
         // var html = CABLES.UI.getHandleBarHtml(
         //     'params_project',
@@ -2198,7 +2210,16 @@ CABLES.UI.Patch = function(_gui) {
         //         }
         //     });
 
-        $('#options').html(gui.bookmarks.getHtml());
+        var html=gui.bookmarks.getHtml();
+
+        if(errorOps.length==0)errorOps=null;
+
+        html += CABLES.UI.getHandleBarHtml('error_ops', { "errorOps":errorOps });
+
+        $('#options').html(html);
+
+
+        // $('#options').html(gui.bookmarks.getHtml());
     };
 
 
