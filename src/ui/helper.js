@@ -149,7 +149,9 @@ CABLES.UI.inputIncrement=function(v,dir,e)
     var val=parseFloat(v);
     if(val!=val)return v;
 
+
     var add=0.1;
+    if(e.target.classList.contains('inc_int'))add=1;
 
     if(e && e.altKey && e.shiftKey) add=10;
         else if(e && e.shiftKey)add=0.01;
@@ -246,6 +248,7 @@ function valueChanger(ele)
     var isDown=false;
     var startVal=$('#'+ele).val();
     var el=document.getElementById(ele);
+    var incMode=0;
 
     function keydown(e)
     {
@@ -260,6 +263,8 @@ function valueChanger(ele)
         document.addEventListener('webkitpointerlockchange', lockChange, false);
 
         document.addEventListener('keydown', keydown, false);
+
+        if (el.classList.contains('inc_int')) incMode=1;
 
         el.requestPointerLock = el.requestPointerLock ||
                                     el.mozRequestPointerLock ||
@@ -288,10 +293,23 @@ function valueChanger(ele)
     {
         gui.setStateUnsaved();
         var v=parseFloat( $('#'+ele).val() ,10);
-        var inc=e.movementY*-0.5;
-        if(e.shiftKey || e.which==3)inc*=0.005;
 
-        v+=inc;
+        if(incMode==0)
+        {
+            var inc=e.movementY*-0.01;
+            if(e.shiftKey || e.which==3)inc=e.movementY*-0.5;
+
+            v+=inc;
+            v=Math.round(v*1000)/1000;
+        }
+        else
+        {
+            var inc=e.movementY*-1;
+            if(e.shiftKey || e.which==3)inc=e.movementY*-5;
+
+            v+=inc;
+            v=Math.floor(v);
+        }
 
         $('#'+ele).val(v);
         $('#'+ele).trigger('input');
