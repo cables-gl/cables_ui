@@ -62,6 +62,7 @@ CABLES.UI.CommandPallet=function()
         el.addClass(self._bookmarkInactiveIcon);
         vueStore.commit("sidebar/removeItem", cmd);
       }
+      vueStore.dispatch('sidebar/writeLocalStorage'); // update local storage
       var newItem = {
         userAction: addToSidebar ? 'add' : 'remove',
         cmd: cmd

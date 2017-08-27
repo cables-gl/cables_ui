@@ -1,12 +1,18 @@
 <template>
   <div id="icon-bar" :class="{hidden: !isVisible}">
     <ul v-dragula="items" id="sidebar-list" bag="sidebar-bag">
-      <li :data-cmd="item.cmd" v-for="item in items" :key="getKey(item)" @click='callFunction(item.cmd)'>
+      <li 
+          :data-cmd="item.cmd" 
+          :data-tt="displayIconLabel ? null : item.cmd" 
+          :class="{ tt: !displayIconLabel }"
+          v-for="item in items" 
+          :key="getKey(item)" 
+          @click='callFunction(item.cmd)'>
         <span class="icon icon-1_5x" :class="[item.iconClass]"></span>
         <span v-if="displayIconLabel" class="label">{{ item.cmd }}</span>
       </li>
     </ul>
-    <div class="menu" @click='toggleCustomizer'>
+    <div class="menu" id="sidebar-menu" @click='toggleCustomizer'>
       <span class="icon icon-1.5x icon-three-dots tt" data-tt="Add / remove icons"></span>
     </div>
   </div>

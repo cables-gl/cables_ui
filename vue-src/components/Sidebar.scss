@@ -12,7 +12,7 @@
   z-index: 1;
 }
 
-#icon-bar ul, .sidebar-customizer ul, .gu-unselectable {
+#icon-bar ul, .sidebar-customizer ul{
   height: 100%;
   position: relative;
   list-style: none;
@@ -45,14 +45,25 @@
   }
 }
 
-/* dragged list elements */
-.gu-unselectable {
-  li:hover {
-    .label {
-      color: $color-ca;
-    }
-    .icon {
-      background-color: $color-ca;
+body {
+  list-style: none; /* needed because li being dragged is temporarily added as child of the body */
+}
+
+/* list elements being dragged */
+li.gu-mirror {
+  cursor: move;
+  margin-top: 12px;
+  padding: 8px;
+  width: 64px;
+  box-sizing: border-box;
+
+  span {
+    display: block;
+    text-align: center;
+
+    &.icon {
+      margin: 0 auto;
+      margin-bottom: 6px;
     }
   }
 }
