@@ -76,9 +76,10 @@ $( document ).ready(function()
         {
             e.preventDefault();
 
-            gui.rendererWidth=window.innerWidth - e.clientX;
-            gui.rendererHeight= e.clientY;
+            gui.rendererWidth=window.innerWidth - e.clientX+20;
+            gui.rendererHeight= e.clientY-20;
             gui.setLayout();
+            $('#glcanvas').focus();
         });
     });
 

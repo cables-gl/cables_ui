@@ -116,7 +116,7 @@ CABLES.UI.GUI = function() {
         this._elAceEditor = this._elAceEditor || $('#ace_editor');
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
         this._elSplitterRenderer = this._elSplitterRenderer || $('#splitterRenderer');
-        this._elSplitterRendererWH = this._elSplitterRendererWH || $('#splitterRendererWH');
+        // this._elSplitterRendererWH = this._elSplitterRendererWH || $('#splitterRendererWH');
         this._elPatch = this._elPatch || $('#patch');
         this._elOptions = this._elOptions || $('#options');
         this._elMeta = this._elMeta || $('#meta');
@@ -147,7 +147,7 @@ CABLES.UI.GUI = function() {
         var iconBarWidth=iconBarWidth||80;
 
 
-        self.showCanvasModal(false);
+        // self.showCanvasModal(false);
 
         // var statusBarHeight=26;
         var menubarHeight = 30;
@@ -235,8 +235,8 @@ CABLES.UI.GUI = function() {
         this._elSplitterPatch.css('top', menubarHeight);
         this._elSplitterRenderer.css('top', self.rendererHeight);
         this._elSplitterRenderer.css('width', self.rendererWidth);
-        this._elSplitterRendererWH.css('right', self.rendererWidth - 35);
-        this._elSplitterRendererWH.css('top', self.rendererHeight - 30);
+        // this._elSplitterRendererWH.css('right', self.rendererWidth - 35);
+        // this._elSplitterRendererWH.css('top', self.rendererHeight - 30);
 
         $('#subpatch_nav').css('left', editorWidth + iconBarWidth + 15);
 
@@ -1224,7 +1224,7 @@ CABLES.UI.GUI = function() {
             setTimeout(
                 function() {
                     anchor.click();
-                    if (cb) cb();
+                    if (cb) cb(blob);
                 }, 33);
         };
     };
@@ -1421,13 +1421,12 @@ CABLES.UI.GUI = function() {
                 left: posCanvas.left
             });
 
+
         }
         else
         {
-            setTimeout(function() {
-                $('#canvasicons').hide();
-                $('#canvasmodal').hide();
-            }, 100);
+            $('#canvasicons').hide();
+            $('#canvasmodal').hide();
 
         }
 
@@ -1441,8 +1440,17 @@ CABLES.UI.GUI = function() {
         }, function() {
             CABLES.UI.hideInfo();
         });
+
+        $('#canvasmodal').on('mousedown',function()
+        {
+            gui.showCanvasModal(false);
+        });
+
+
+
         _patch = new CABLES.UI.Patch(this);
         _patch.show(_scene);
+
 
 
 
@@ -1530,10 +1538,10 @@ function startUi(event) {
         gui.showCanvasModal(true);
     });
 
-    $('#glcanvas').on("blur", function() {
-        gui.showCanvasModal(false);
-
-    });
+    // $('#glcanvas').on("blur", function() {
+    //     gui.showCanvasModal(false);
+    //
+    // });
 
     $(document).on("click", '.panelhead', function(e) {
         var panelselector = $(this).data("panelselector");
