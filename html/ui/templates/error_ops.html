@@ -1,0 +1,25 @@
+
+<script id="error_ops" type="text/x-handlebars-template">
+
+    {{#if errorOps}}
+        <div class="panel">
+            <h3>Error Ops</h3>
+
+            {{#each errorOps}}
+                <div class="list">
+                    <div onclick="gui.bookmarks.goto('{{id}}');" >
+
+                        <h3 class="op_color_{{class}}">{{name}}</h3>
+                        {{objName}}
+                        {{#if isDeprecated}}deprecated{{/if}}
+
+
+                    </div>
+                </div>
+            {{/each}}
+
+            <br/>
+
+        </div>
+    {{/if}}
+</script>
