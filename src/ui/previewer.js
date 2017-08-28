@@ -133,8 +133,9 @@ CABLES.UI.Preview=function()
 
 
 var frag=''.endl()
-.endl()+'varying vec2 texCoord;'
-.endl()+'uniform sampler2D tex;'
+.endl()+'IN vec2 texCoord;'
+.endl()+'UNI sampler2D tex;'
+
 .endl()+'void main()'
 .endl()+'{'
 .endl()+'    vec4 col=vec4(1.0,1.0,1.0,1.0);'
@@ -143,12 +144,15 @@ var frag=''.endl()
 .endl()+'}';
 
 var vert=''.endl()
-.endl()+'attribute vec3 vPosition;'
-.endl()+'attribute vec2 attrTexCoord;'
-.endl()+'varying vec2 texCoord;'
-.endl()+'uniform mat4 projMatrix;'
-.endl()+'uniform mat4 modelMatrix;'
-.endl()+'uniform mat4 viewMatrix;'
+.endl()+'IN vec3 vPosition;'
+.endl()+'IN vec2 attrTexCoord;'
+
+.endl()+'OUT vec2 texCoord;'
+
+.endl()+'UNI mat4 projMatrix;'
+.endl()+'UNI mat4 modelMatrix;'
+.endl()+'UNI mat4 viewMatrix;'
+
 .endl()+'void main()'
 .endl()+'{'
 .endl()+'    texCoord=attrTexCoord;'

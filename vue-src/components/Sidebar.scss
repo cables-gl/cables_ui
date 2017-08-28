@@ -45,6 +45,11 @@
   }
 }
 
+#sidebar-list {
+  height: calc(100% - 96px) !important;
+  overflow-y: scroll;
+}
+
 body {
   list-style: none; /* needed because li being dragged is temporarily added as child of the body */
 }

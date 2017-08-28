@@ -415,9 +415,9 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
 
 #splitterRendererWH
 {
-    height:40px;
-    width:40px;
-    background-color: transparent;
+    // height:40px;
+    // width:40px;
+    // background-color: transparent;
     z-index: 99;
     cursor:ne-resize;
 }
@@ -522,6 +522,11 @@ input
     mask-repeat: no-repeat;
     display: block;
     z-index: 99;
+}
+
+.shaderErrorCode
+{
+    user-select: text !important;
 }
 
 @import 'libs/jcolorpicker-custom.scss';
