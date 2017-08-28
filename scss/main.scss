@@ -11,6 +11,11 @@ $border-radius-popups:12px;
 @import 'libs/font-awesome.scss';
 @import 'libs/dragula.scss';
 
+// vue-components
+@import 'components/vue/CookieWarning.scss';
+@import 'components/vue/Sidebar.scss';
+@import 'components/vue/SidebarCustomizer.scss';
+@import 'components/vue/Switch.scss';
 
 html,body { // ipad overscroll fix...
   position: fixed;

@@ -157,5 +157,3 @@ export default {
 
 </script>
 
-<style lang="scss" src="./SidebarCustomizer.scss"></style>
-<!-- <style lang="scss" src="./Sidebar.scss"></style> -->
