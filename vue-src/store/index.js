@@ -5,6 +5,7 @@ var Vuex = require('vuex');
 // import * as getters from './getters';
 // modules stores
 import sidebar from './modules/sidebar';
+import cookies from './modules/cookies';
 
 Vue.use(Vuex);
 
@@ -12,6 +13,10 @@ var store = new Vuex.Store({
   modules: {
     sidebar: {
       ...sidebar,
+      namespaced: true,
+    },
+    cookies: {
+      ...cookies,
       namespaced: true,
     }
   },
