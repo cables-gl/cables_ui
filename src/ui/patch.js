@@ -515,14 +515,14 @@ CABLES.UI.Patch = function(_gui) {
 
                 if (r.error) {
                     msg = "<h2>export error</h2>";
-                    msg += '<div class="shaderErrorCode">' + JSON.stringify(r) + '<div>';
+                    msg += '<pre class="shaderErrorCode">' + JSON.stringify(r) + '<pre>';
                 } else {
                     msg = "<h2>export finished</h2>";
                     msg += 'size: ' + r.size + ' mb';
                     msg += '<br/><br/><br/>';
                     msg += '<a class="bluebutton" href="' + r.path + '">download</a>';
                     msg += '<br/><br/>';
-                    msg += '<pre>' + r.log + '<pre>';
+                    msg += '<div class="shaderErrorCode">' + r.log + '</div>';
                 }
 
                 CABLES.UI.MODAL.show(msg);

@@ -55,6 +55,8 @@ CABLES.uploadFiles=function(files)
         formData.append(key, value);
     });
 
+    console.log(files);
+
     // now post a new XHR request
     var xhr = new XMLHttpRequest();
     xhr.open('POST', url);
