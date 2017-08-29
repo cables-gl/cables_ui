@@ -129,6 +129,8 @@ CABLES.ProjectSettings=function(project)
             {content:$("#settings_description").val()},
             function(res)
             {
+                project.description=$("#settings_description").val();
+
                 cb();
                 // setStatus('saved');
                 console.log('res',res);
