@@ -93,7 +93,29 @@ CABLES.UI.OpDocs=function()
     {
         for(var i=0;i<opDocs.length;i++)
             if(opDocs[i].name==opname)
-                return opDocs[i].content;
+            {
+                var html=opDocs[i].content;
+                if( (!html || html.length==0) && opDocs[i].name )
+                {
+                    html='<h1>'+opDocs[i].name+'</h1>';
+                    html+=opDocs[i].summary;
+                }
+
+                if(opDocs[i].credits)
+                {
+                    html+='<br/><h3>credits</h3><ul>';
+
+                    for(var j in opDocs[i].credits)
+                    {
+                        if(opDocs[i].credits[j].url && opDocs[i].credits[j].url.length>0)html+='<a href="'+opDocs[i].credits[j].url+'" target="_blank">';
+                        html+='<li>'+opDocs[i].credits[j].title+' by '+opDocs[i].credits[j].author+'</li>';
+                        if(opDocs[i].credits[j].url && opDocs[i].credits[j].url.length>0)html+='</a>';
+                    }
+                    html+='</ul>';
+                }
+
+                return html;
+            }
 
         return '';
     };

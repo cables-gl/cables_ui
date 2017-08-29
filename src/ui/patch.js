@@ -1143,15 +1143,17 @@ CABLES.UI.Patch = function(_gui) {
 
             if (viewBox.w >= sizeSmall * 2) {
                 console.log("zoom");
-                viewBox.x = x - sizeSmall / 2;
-                viewBox.y = y - sizeSmall / 2;
-                viewBox.w = sizeSmall;
-                viewBox.h = sizeSmall;
+                var vb={};
+                vb.x = x - sizeSmall / 2;
+                vb.y = y - sizeSmall / 2;
+                vb.w = sizeSmall;
+                vb.h = sizeSmall;
+                self.animViewBox(vb.x, vb.y, vb.w, vb.h);
             } else {
                 console.log("center");
                 self.centerViewBoxOps();
             }
-            self.updateViewBox();
+            // self.updateViewBox();
         };
 
         $('#patch').on("mousemove touchmove", function(e) {
