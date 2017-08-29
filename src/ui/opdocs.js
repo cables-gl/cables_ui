@@ -97,8 +97,11 @@ CABLES.UI.OpDocs=function()
                 var html=opDocs[i].content;
                 if( (!html || html.length==0) && opDocs[i].name )
                 {
-                    html='<h1>'+opDocs[i].name+'</h1>';
-                    html+=opDocs[i].summary;
+                    var nameParts=opDocs[i].name.split('.');
+                    html='<h1>'+nameParts[nameParts.length-1]+'</h1>';
+
+                    html+='<p><em>' + ( opDocs[i].name || '' ) + '</em></p>';
+                    html+='<p>' + ( opDocs[i].summary || '' ) + '</p>';
                 }
 
                 if(opDocs[i].credits)
