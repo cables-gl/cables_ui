@@ -6,11 +6,25 @@
     display: none;
     position: absolute;
     z-index: 9999;
-    padding:10px;
+    padding: 6px;
+    padding-left: 28px; /* to give resize-window icon some space */
 
     a
     {
         margin-right: 10px;
+        position: relative;
+        top: -2px;
+    }
+
+    .icon-resize-window {
+        position: relative;
+        width: 10px;
+        height: 10px;
+        top: 26px;
+        left: -28px;
+        display: block;
+        opacity: 0.3;
+        cursor: nesw-resize;
     }
 }
 

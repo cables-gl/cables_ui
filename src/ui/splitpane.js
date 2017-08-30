@@ -76,8 +76,8 @@ $( document ).ready(function()
         {
             e.preventDefault();
 
-            gui.rendererWidth=window.innerWidth - e.clientX+20;
-            gui.rendererHeight= e.clientY-20;
+            gui.rendererWidth=window.innerWidth - e.clientX+3;
+            gui.rendererHeight= e.clientY-38;
             gui.setLayout();
             $('#glcanvas').focus();
         });
