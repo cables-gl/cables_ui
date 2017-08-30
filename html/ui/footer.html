@@ -7,8 +7,6 @@
 
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
-
-<script async type="text/javascript" src="/ui/js/libs.core.min.js"></script>
     <script>
         var CABLES = CABLES || {};
 
@@ -39,6 +37,10 @@
         {
             return url+'?nc='+(Date.now()+'').substr(-6);
         }
+
+        var scriptTag = document.createElement('script');
+        scriptTag.setAttribute('src',CABLES.noCacheUrl('/ui/js/libs.core.min.js'));
+        document.body.appendChild(scriptTag);
 
         incrementStartup();
         logStartup("Start");
@@ -137,8 +139,8 @@
 
     var settings=JSON.parse(localStorage.getItem("cables.usersettings"))||{};
 
-    if(settings["theme-bright"]) resource.setAttribute("href","css/style-bright.css");
-        else resource.setAttribute("href","css/style-dark.css");
+    if(settings["theme-bright"]) resource.setAttribute("href",CABLES.noCacheUrl("css/style-bright.css"));
+        else resource.setAttribute("href",CABLES.noCacheUrl("css/style-dark.css"));
 
     // resource.setAttribute("href","css/style-bright.css");
     resource.setAttribute("type","text/css");
