@@ -293,10 +293,11 @@ function valueChanger(ele)
     {
         gui.setStateUnsaved();
         var v=parseFloat( $('#'+ele).val() ,10);
+        var inc=0;
 
         if(incMode==0)
         {
-            var inc=e.movementY*-0.01;
+            inc=e.movementY*-0.01;
             if(e.shiftKey || e.which==3)inc=e.movementY*-0.5;
 
             v+=inc;
@@ -304,7 +305,7 @@ function valueChanger(ele)
         }
         else
         {
-            var inc=e.movementY*-1;
+            inc=e.movementY*-1;
             if(e.shiftKey || e.which==3)inc=e.movementY*-5;
 
             v+=inc;

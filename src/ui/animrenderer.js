@@ -28,6 +28,14 @@ CABLES.AnimRenderer.prototype.update = function() {
         'number of frames: ' + frames + '<br/>'
     );
 
+    for(var i in gui.patch().ops)
+    {
+        if(gui.patch().ops[i].op.objName=='Ops.Anim.Timer' || gui.patch().ops[i].op.objName=='Ops.Anim.RelativeTime ')
+        {
+            $('.modalScrollContent').html( 'WARNING: you are using timing Ops that are not bound to the timeline (e.g. Ops.Anim.Timer or Ops.Anim.RelativeTime ). To render an animation, you should only use time from Ops.TimeLineTime ');
+        }
+    }
+
 };
 
 CABLES.AnimRenderer.prototype.show = function(since) {
@@ -40,6 +48,11 @@ CABLES.AnimRenderer.prototype.show = function(since) {
 
     $('#animRendererSettings').show();
     $('#progresscontainer').hide();
+
+
+
+
+
     this.update();
 };
 
