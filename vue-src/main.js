@@ -6,7 +6,10 @@ var App = require('./App.vue');
 
 var store = require('./store/index.js');
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false; // TODO: we should address this later and create a proper production-build
+Vue.config.devtools = false;
+// Vue.config.debug = false;
+// Vue.config.silent = true;
 window.Vue = Vue;
 
 Vue.use(VueDragula);

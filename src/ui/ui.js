@@ -1064,19 +1064,17 @@ CABLES.UI.GUI = function() {
                 return;
             }
 
-            if (ver) ver = '/version/' + ver;
+            if(ver) ver = '/version/' + ver;
             else ver = "";
 
             CABLES.UI.MODAL.showLoading('Loading');
-            CABLES.api.get('project/' + id, function(proj) {
+            CABLES.api.get('project/' + id + ver, function(proj) {
                 incrementStartup();
                 var userOpsUrls = [];
                 // console.log(proj.userList[i]+'!!!',proj);
 
                 for (var i in proj.userList) {
                     userOpsUrls.push('/api/ops/code/' + proj.userList[i]);
-
-
                 }
 
                 var lid = 'userops' + proj._id + CABLES.generateUUID();
@@ -1105,7 +1103,9 @@ CABLES.UI.GUI = function() {
             });
         }
 
-        router.addRoute('/project/:id/v/:ver').get(function(event, params) {
+        router.addRoute('/project/:id/v/:ver').get(function(event, params)
+        {
+            console.log('load version ',params.ver);
             loadProject(params.id, params.ver);
             // CABLES.UI.MODAL.showLoading('Loading');
             // CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
@@ -1119,6 +1119,7 @@ CABLES.UI.GUI = function() {
         });
 
         router.addRoute('/project/:id').get(function(event, params) {
+            console.log('load project');
             loadProject(params.id);
         });
 
