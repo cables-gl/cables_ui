@@ -159,6 +159,34 @@ CABLES.UI.MODAL.showError=function(title,content)
 };
 
 
+
+CABLES.UI.MODAL.getFileSnippet=function(url,line,cb)
+{
+    CABLES.ajax(
+        url,
+        function(err,_data,xhr)
+        {
+            if(err)
+            {
+                cb('err');
+            }
+            var lines=_data.split('\n');
+            var linesAround=4;
+            var sliced = lines.slice(line-(linesAround+1), line+linesAround);
+            var html='';
+            for(var i in sliced)
+            {
+                if(i==linesAround)html+='<span class="error">';
+                html+=sliced[i];
+                html+='</span>';
+                html+='<br/>';
+            }
+            cb(html);
+        });
+
+
+}
+
 CABLES.UI.MODAL.showOpException=function(ex,opName)
 {
     console.log(ex.stack);
@@ -169,11 +197,21 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 
     CABLES.UI.MODAL.contentElement.append('Error in op: <b>'+opName+'</b><br/><br/>');
 
-
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
-
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.stack+'</div><br/>');
-    // $('#modalcontainer').show();
+    CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode hidden" id="stackFileContent"></div><br/>');
+
+    var info = stackinfo(ex);
+    console.log('This is line '+(info[0].line + 1));
+    console.log('This is file '+(info[0].file));
+
+    CABLES.UI.MODAL.getFileSnippet(info[0].file,info[0].line,function(html)
+        {
+            $('#stackFileContent').show();
+            $('#stackFileContent').html(html);
+        });
+
+
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
 
