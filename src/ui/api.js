@@ -103,9 +103,9 @@ CABLES.API=function()
 
 
     var lastErrorReport=0;
-    this.sendErrorReport=function(exc)
+    this.sendErrorReport=function(err)
     {
-        exc=exc||CABLES.lastError;
+        err=err||CABLES.lastError;
         var report={};
         report.time=Date.now();
 
@@ -132,11 +132,13 @@ CABLES.API=function()
             }
         }
 
-        if(exc)
-        {
-            report.stack=exc.stack;
-            report.exception=exc;
-        }
+
+        report.exception=err.exception;
+        if(err.exception && err.exception.stack)
+            report.stack=err.exception.stack;
+
+        report.opName=err.opName;
+        report.errorLine=err.errorLine;
 
         console.log('error report sent.');
         console.log(report);
