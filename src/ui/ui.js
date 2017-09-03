@@ -18,6 +18,7 @@ CABLES.UI.GUI = function() {
     this.cmdPallet = new CABLES.UI.CommandPallet();
     var _opselect = new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
+    this._gizmo=new CABLES.Gizmo();
 
     this.variables = new CABLES.UI.Variables();
     this.patchConnection = new CABLES.PatchConnectionSender();
@@ -1316,6 +1317,11 @@ CABLES.UI.GUI = function() {
     this.getSavedState = function() {
         return savedState;
     };
+
+    this.setTransformGizmo=function(params)
+    {
+        this._gizmo.set(params);
+    }
 
     // this.updateProjectFiles=function(proj)
     // {

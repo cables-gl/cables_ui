@@ -1,5 +1,26 @@
 
 
+.gizmo
+{
+    position: absolute;
+    z-index: 999999;
+    border-radius:5px;
+    width:12px;
+    height:12px;
+    margin-left:-6px;
+    margin-top:-6px;
+    cursor:pointer;
+    position:absolute;
+    z-index:9999;
+
+    &:hover
+    {
+        border:1px solid white;
+    }
+
+}
+
+
 #canvasicons
 {
     background-color: black;
