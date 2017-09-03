@@ -907,7 +907,8 @@ CABLES.UI.GUI = function() {
 
         $('.tooltip').hide();
 
-        if (self.rendererWidth > window.innerWidth * 0.9) {
+        if (self.rendererWidth > window.innerWidth * 0.9)
+        {
             self.rendererWidth = window.innerWidth * 0.4;
             self.rendererHeight = window.innerHeight * 0.25;
             showingEditor = oldShowingEditor;

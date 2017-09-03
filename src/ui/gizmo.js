@@ -9,11 +9,15 @@ CABLES.Gizmo=function()
     this._params=null;
     this._origValue=0;
     this._dragSum=0;
+    this._dir=1;
 }
 
 CABLES.Gizmo.prototype.drawLine=function(x,y,z)
 {
     var cgl=gui.scene().cgl;
+    cgl.gl.disable(cgl.gl.DEPTH_TEST);
+
+
     if(!this.geom)
     {
         this.geom=new CGL.Geometry("gizmoline");
@@ -62,8 +66,22 @@ CABLES.Gizmo.prototype.drawLine=function(x,y,z)
     this.mesh.render(shader);
 
     cgl.setPreviousShader();
+    cgl.gl.enable(cgl.gl.DEPTH_TEST);
 
 };
+
+
+CABLES.Gizmo.prototype.getDir=function(x2,y2)
+{
+    var xd = this._params.x-x2;
+    var yd = this._params.y-y2;
+    var dist=(xd+yd)/2;
+
+    // console.log('dist',dist);
+    if(dist<0)return 1;
+    return -1;
+
+}
 
 CABLES.Gizmo.prototype.set=function(params)
 {
@@ -76,6 +94,7 @@ CABLES.Gizmo.prototype.set=function(params)
         this._eleCenter = document.createElement('div');
         this._eleCenter.id="gizmo";
         this._eleCenter.style.background="#fff";
+        this._eleCenter.style.opacity="0.5";
         this._eleCenter.classList.add('gizmo');
         container.appendChild(this._eleCenter);
 
@@ -105,6 +124,8 @@ CABLES.Gizmo.prototype.set=function(params)
             this._origValue=this._params.posX.get();
             this._dragSum=0;
             this.dragger(this._eleCenter);
+
+            this._dir=this.getDir(this._params.xx,this._params.xy);
         }.bind(this));
 
         this._eleY.addEventListener("mousedown",function()
@@ -114,6 +135,8 @@ CABLES.Gizmo.prototype.set=function(params)
             this._origValue=this._params.posY.get();
             this._dragSum=0;
             this.dragger(this._eleCenter);
+
+            this._dir=this.getDir(this._params.yx,this._params.yy);
         }.bind(this));
 
         this._eleZ.addEventListener("mousedown",function()
@@ -123,6 +146,7 @@ CABLES.Gizmo.prototype.set=function(params)
             this._origValue=this._params.posZ.get();
             this._dragSum=0;
             this.dragger(this._eleCenter);
+            this._dir=this.getDir(this._params.zx,this._params.zy);
         }.bind(this));
 
 
@@ -130,11 +154,14 @@ CABLES.Gizmo.prototype.set=function(params)
 
     if(!params)
     {
-        this._eleCenter.style.display="none";
-        this._eleX.style.display="none";
-        this._eleZ.style.display="none";
-        this._eleY.style.display="none";
-
+        var self=this;
+        setTimeout(function()
+        {
+            self._eleCenter.style.display="none";
+            self._eleX.style.display="none";
+            self._eleZ.style.display="none";
+            self._eleY.style.display="none";
+        },1);
         return;
     }
 
@@ -155,9 +182,9 @@ CABLES.Gizmo.prototype.set=function(params)
     this._eleZ.style.left=params.zx+"px";
     this._eleZ.style.top=params.zy+"px";
 
-        this.drawLine(2,0,0);
-        this.drawLine(0,2,0);
-        this.drawLine(0,0,2);
+    this.drawLine(2,0,0);
+    this.drawLine(0,2,0);
+    this.drawLine(0,0,2);
 
 
 }
@@ -212,33 +239,8 @@ CABLES.Gizmo.prototype.dragger=function(el)
     {
         gui.setStateUnsaved();
 
-        console.log();
-
-        self._dragSum+=e.movementY*-0.01;
+        self._dragSum+=(e.movementY+e.movementX)*(self._dir*0.01);
         self._draggingPort.set(self._origValue+self._dragSum);
-
-        // var v=parseFloat( $('#'+ele).val() ,10);
-        // var inc=0;
-        //
-        // if(incMode==0)
-        // {
-        //     inc=e.movementY*-0.01;
-        //     if(e.shiftKey || e.which==3)inc=e.movementY*-0.5;
-        //
-        //     v+=inc;
-        //     v=Math.round(v*1000)/1000;
-        // }
-        // else
-        // {
-        //     inc=e.movementY*-1;
-        //     if(e.shiftKey || e.which==3)inc=e.movementY*-5;
-        //
-        //     v+=inc;
-        //     v=Math.floor(v);
-        // }
-
-        // $('#'+ele).val(v);
-        // $('#'+ele).trigger('input');
     }
 
      function lockChange(e)
@@ -249,9 +251,6 @@ CABLES.Gizmo.prototype.dragger=function(el)
         }
         else
         {
-            //propably cancled by escape key / reset value
-            // $('#'+ele).val(startVal);
-            // $('#'+ele).trigger('input');
             up();
         }
 
