@@ -40,6 +40,7 @@ CABLES.UI.GUI = function() {
     this.profiler = null;
     this.user = null;
     this.onSaveProject = null;
+    this.lastNotIdle=CABLES.now();
 
 
     this.project = function() {
@@ -1322,7 +1323,7 @@ CABLES.UI.GUI = function() {
     this.setTransformGizmo=function(params)
     {
         this._gizmo.set(params);
-    }
+    };
 
     // this.updateProjectFiles=function(proj)
     // {
@@ -1342,6 +1343,28 @@ CABLES.UI.GUI = function() {
     //             $('#meta_content_files').html(html);
     //         });
     // };
+
+
+
+    this.notIdling=function()
+    {
+        this.lastNotIdle=CABLES.now();
+        if(!_connection.isConnected())_connection.connect();
+    };
+
+    this.checkIdle=function()
+    {
+        var idling=(CABLES.now()-self.lastNotIdle)/1000;
+        if(idling>10)
+        {
+            _connection.disconnect();
+            console.log('idle mode simpleio disconnected!');
+        }
+        else
+        {
+            setTimeout(gui.checkIdle,1000*2);
+        }
+    };
 
     this.setMetaTab = function(which) {
         CABLES.UI.userSettings.set("metatab", which);
@@ -1376,9 +1399,6 @@ CABLES.UI.GUI = function() {
             this.patch().scene, {},
             new CABLES.PatchConnectorSocketIO()
         );
-
-
-
     };
 
     this.setStateUnsaved = function() {
@@ -1533,11 +1553,12 @@ function startUi(event) {
     });
 
 
+
     gui = new CABLES.UI.GUI();
 
 
     gui.init();
-
+    gui.checkIdle();
 
     gui.bind(function() {
         gui.waitToShowUI();

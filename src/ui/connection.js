@@ -100,11 +100,16 @@ CABLES.API.Connection=function(ui)
         connected=true;
         ui.jobs().finish('connecting');
     });
+    client.on('disconnect', function()
+    {
+        console.log('disconnect!!!');
+    });
 
 
     window.onbeforeunload = function(e)
     {
         client.disconnect();
+        connected=false;
     };
 
 
@@ -118,5 +123,21 @@ CABLES.API.Connection=function(ui)
         });
 
     // checkTimeout=setTimeout(checkConnection,500);
+
+    this.disconnect=function()
+    {
+        client.disconnect();
+    };
+
+    this.connect=function()
+    {
+        client.connect();
+    };
+
+    this.isConnected=function()
+    {
+        return connected;
+    };
+
 
 };
