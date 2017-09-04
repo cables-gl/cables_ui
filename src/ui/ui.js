@@ -1355,18 +1355,19 @@ CABLES.UI.GUI = function() {
     this.checkIdle=function()
     {
         var idling=(CABLES.now()-self.lastNotIdle)/1000;
-        if(idling>10)
+        if(idling>30*60)
         {
             _connection.disconnect();
             console.log('idle mode simpleio disconnected!');
         }
         else
         {
-            setTimeout(gui.checkIdle,1000*2);
+            setTimeout(gui.checkIdle,1000*60*2);
         }
     };
 
-    this.setMetaTab = function(which) {
+    this.setMetaTab = function(which)
+    {
         CABLES.UI.userSettings.set("metatab", which);
 
         $('.meta_content').hide();
@@ -1384,8 +1385,6 @@ CABLES.UI.GUI = function() {
 
         if (which == 'preview') self.preview.show();
         else if (self.preview) self.preview.hide();
-
-
     };
 
     this.startPacoSender = function() {
