@@ -56,6 +56,12 @@ CABLES.UI.Patch = function(_gui) {
         return self.paperMap;
     };
 
+    this.isCurrentOp=function(op)
+    {
+        if(!currentOp)return false;
+        return currentOp.op==op;
+    }
+
     this.getLargestPort = function() {
         var max = 0;
         var maxName = 'unknown';
@@ -870,6 +876,7 @@ CABLES.UI.Patch = function(_gui) {
             });
 
         $('#options').html(html);
+        gui.setTransformGizmo(null);
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
     }
@@ -890,6 +897,7 @@ CABLES.UI.Patch = function(_gui) {
 
     function rubberBandMove(e) {
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
+            gui.setTransformGizmo(null);
             if (!mouseRubberBandStartPos) {
                 gui.patch().setSelectedOp(null);
                 mouseRubberBandStartPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
@@ -2173,11 +2181,13 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.updateOpParams = function(id) {
+        gui.setTransformGizmo(null);
         self.showOpParams(gui.scene().getOpById(id));
     };
 
     this.showProjectParams = function() {
         var s = {};
+        gui.setTransformGizmo(null);
 
         s.name = currentProject.name;
         s.settings = gui.scene().settings;
@@ -2260,9 +2270,11 @@ CABLES.UI.Patch = function(_gui) {
 
     var delayedShowOpParams = 0;
     this.showOpParams = function(op) {
+        gui.setTransformGizmo(null);
         clearTimeout(delayedShowOpParams);
         delayedShowOpParams = setTimeout(function() {
             self._showOpParams(op);
+
         }, 30);
 
     };
@@ -2281,10 +2293,13 @@ CABLES.UI.Patch = function(_gui) {
     }
     this._showOpParams = function(op) {
 
+        gui.setTransformGizmo(null);
+
         var i = 0;
         callEvent('opSelected', op);
 
-        if (gui.serverOps.isServerOp(op.objName)) op.isServerOp = true;
+
+        op.isServerOp=gui.serverOps.isServerOp(op.objName);
         // if(currentOp)currentOp.onUiAttrChange=function()
         // {
         //

@@ -18,6 +18,7 @@ CABLES.UI.GUI = function() {
     this.cmdPallet = new CABLES.UI.CommandPallet();
     var _opselect = new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
+    this._gizmo=new CABLES.Gizmo();
 
     this.variables = new CABLES.UI.Variables();
     this.patchConnection = new CABLES.PatchConnectionSender();
@@ -906,7 +907,8 @@ CABLES.UI.GUI = function() {
 
         $('.tooltip').hide();
 
-        if (self.rendererWidth > window.innerWidth * 0.9) {
+        if (self.rendererWidth > window.innerWidth * 0.9)
+        {
             self.rendererWidth = window.innerWidth * 0.4;
             self.rendererHeight = window.innerHeight * 0.25;
             showingEditor = oldShowingEditor;
@@ -1316,6 +1318,11 @@ CABLES.UI.GUI = function() {
     this.getSavedState = function() {
         return savedState;
     };
+
+    this.setTransformGizmo=function(params)
+    {
+        this._gizmo.set(params);
+    }
 
     // this.updateProjectFiles=function(proj)
     // {

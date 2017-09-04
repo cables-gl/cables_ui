@@ -176,10 +176,14 @@ CABLES.UI.MODAL.getFileSnippet=function(url,line,cb)
             var html='';
             for(var i in sliced)
             {
-                if(i==linesAround)html+='<span class="error">';
+                if(i==linesAround)
+                {
+                    html+='<span class="error">';
+                    CABLES.lastError.errorLine=sliced[i];
+                }
                 html+=sliced[i];
                 html+='</span>';
-                html+='<br/>';
+                // html+='<br/>';
             }
             cb(html);
         });
@@ -226,7 +230,8 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
         CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-edit" onclick="gui.serverOps.edit(\''+opName+'\');CABLES.UI.MODAL.hide(true);">Edit op</a> &nbsp;&nbsp;');
     }
 
-    CABLES.lastError=ex;
+    CABLES.lastError={exception:ex,opName:opName};
+
     CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>&nbsp;&nbsp;');
     CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
 };
@@ -258,10 +263,8 @@ CABLES.UI.MODAL.showException=function(ex,op)
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
 
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.stack+'</div>');
-    // CABLES.UI.MODAL.contentElement.append('<br/><a onclick="gui.sendErrorReport();" id="errorReportButton" class="button">send error report</a><div id="errorReportSent" class="hidden">Report sent.</div>');
-    // $('#modalcontainer').show();
 
-    CABLES.lastError=ex;
+    CABLES.lastError={exception:ex};
     CABLES.UI.MODAL.contentElement.append('<br/><a class="bluebutton fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>');
 
 
