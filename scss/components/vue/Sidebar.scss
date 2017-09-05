@@ -8,6 +8,10 @@
   // height: 100vh;
   color: #2c3e50;
   z-index: 1;
+
+  ul {
+    left: 5px;
+  }
 }
 
 #icon-bar ul, .sidebar-customizer ul{
@@ -20,7 +24,6 @@
   li {
     cursor: pointer;
     margin-top: 12px;
-    padding: 8px;
 
     &:hover {
       .label {

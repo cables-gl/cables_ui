@@ -1166,6 +1166,7 @@ CABLES.UI.Patch = function(_gui) {
 
         $('#patch').on("mousemove touchmove", function(e) {
             e = mouseEvent(e);
+            gui.notIdling();
 
             if (e.metaKey) {
                 if (CABLES.UI.quickAddOpStart) {

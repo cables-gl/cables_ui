@@ -250,6 +250,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
         html+='<div class="startuperror"><b>error</b>\n';
         html+='<br/>';
         html+=ex.message;
+        html+='<br/><br/><a class="button" onclick="document.location.reload();">reload</a>';
         html+='</div>';
 
         $('body').append(html);

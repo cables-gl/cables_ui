@@ -159,7 +159,9 @@ CABLES.Editor=function()
         function onSaveCb(txt)
         {
             gui.jobs().finish('saveeditorcontent');
-            CABLES.UI.notify(txt);
+            if(txt.toLowerCase().indexOf('error')==0) CABLES.UI.notifyError(txt);
+            else CABLES.UI.notify(txt);
+
         }
 
         this.setCurrentTabContent();

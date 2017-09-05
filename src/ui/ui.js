@@ -40,6 +40,7 @@ CABLES.UI.GUI = function() {
     this.profiler = null;
     this.user = null;
     this.onSaveProject = null;
+    this.lastNotIdle=CABLES.now();
 
 
     this.project = function() {
@@ -113,6 +114,7 @@ CABLES.UI.GUI = function() {
 
     this.setLayout = function() {
         var startTime = performance.now();
+
 
         this._elAceEditor = this._elAceEditor || $('#ace_editor');
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
@@ -400,6 +402,7 @@ CABLES.UI.GUI = function() {
 
     var oldRendwerWidth, oldRendwerHeight, oldShowingEditor;
     this.cycleRendererSize = function() {
+        this.showCanvasModal(false);
         if (self.rendererWidth !== 0) {
             this._elGlCanvas.addClass('maximized');
 
@@ -740,7 +743,12 @@ CABLES.UI.GUI = function() {
         });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
-        window.addEventListener('resize', self.setLayout, false);
+        window.addEventListener('resize', function()
+        {
+            self.showCanvasModal(false);
+            $('#glcanvas').blur();
+            self.setLayout();
+        }, false);
 
         document.addEventListener('copy', function(e) {
             if ($('#patch').is(":focus")) self.patch().copy(e);
@@ -1322,7 +1330,7 @@ CABLES.UI.GUI = function() {
     this.setTransformGizmo=function(params)
     {
         this._gizmo.set(params);
-    }
+    };
 
     // this.updateProjectFiles=function(proj)
     // {
@@ -1342,6 +1350,28 @@ CABLES.UI.GUI = function() {
     //             $('#meta_content_files').html(html);
     //         });
     // };
+
+
+
+    this.notIdling=function()
+    {
+        this.lastNotIdle=CABLES.now();
+        if(!_connection.isConnected())_connection.connect();
+    };
+
+    this.checkIdle=function()
+    {
+        var idling=(CABLES.now()-self.lastNotIdle)/1000;
+        if(idling>30*60)
+        {
+            _connection.disconnect();
+            console.log('idle mode simpleio disconnected!');
+        }
+        else
+        {
+            setTimeout(gui.checkIdle,1000*60*2);
+        }
+    };
 
     this.setMetaTab = function(which) {
         CABLES.UI.userSettings.set("metatab", which);
@@ -1376,9 +1406,6 @@ CABLES.UI.GUI = function() {
             this.patch().scene, {},
             new CABLES.PatchConnectorSocketIO()
         );
-
-
-
     };
 
     this.setStateUnsaved = function() {
@@ -1404,7 +1431,6 @@ CABLES.UI.GUI = function() {
         this.setLayout();
     };
 
-
     this.setStateSaved = function() {
         savedState = true;
         favIconLink.href = '/favicon/favicon.ico';
@@ -1412,7 +1438,6 @@ CABLES.UI.GUI = function() {
         document.title = '' + gui.patch().getCurrentProject().name;
         window.onbeforeunload = function() {
             gui.patchConnection.send(CABLES.PACO_CLEAR);
-
         };
     };
 
@@ -1430,16 +1455,12 @@ CABLES.UI.GUI = function() {
                 top: $('#glcanvas').height() + 1,
                 left: posCanvas.left
             });
-
-
         }
         else
         {
             $('#canvasicons').hide();
             $('#canvasmodal').hide();
-
         }
-
     };
 
     this.init = function() {
@@ -1533,11 +1554,12 @@ function startUi(event) {
     });
 
 
+
     gui = new CABLES.UI.GUI();
 
 
     gui.init();
-
+    gui.checkIdle();
 
     gui.bind(function() {
         gui.waitToShowUI();
