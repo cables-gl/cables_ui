@@ -115,6 +115,7 @@ CABLES.UI.GUI = function() {
     this.setLayout = function() {
         var startTime = performance.now();
 
+
         this._elAceEditor = this._elAceEditor || $('#ace_editor');
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
         this._elSplitterRenderer = this._elSplitterRenderer || $('#splitterRenderer');
@@ -401,6 +402,7 @@ CABLES.UI.GUI = function() {
 
     var oldRendwerWidth, oldRendwerHeight, oldShowingEditor;
     this.cycleRendererSize = function() {
+        this.showCanvasModal(false);
         if (self.rendererWidth !== 0) {
             this._elGlCanvas.addClass('maximized');
 
@@ -741,7 +743,12 @@ CABLES.UI.GUI = function() {
         });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
-        window.addEventListener('resize', self.setLayout, false);
+        window.addEventListener('resize', function()
+        {
+            self.showCanvasModal(false);
+            $('#glcanvas').blur();
+            self.setLayout();
+        }, false);
 
         document.addEventListener('copy', function(e) {
             if ($('#patch').is(":focus")) self.patch().copy(e);
@@ -1366,8 +1373,7 @@ CABLES.UI.GUI = function() {
         }
     };
 
-    this.setMetaTab = function(which)
-    {
+    this.setMetaTab = function(which) {
         CABLES.UI.userSettings.set("metatab", which);
 
         $('.meta_content').hide();
@@ -1385,6 +1391,8 @@ CABLES.UI.GUI = function() {
 
         if (which == 'preview') self.preview.show();
         else if (self.preview) self.preview.hide();
+
+
     };
 
     this.startPacoSender = function() {
@@ -1423,7 +1431,6 @@ CABLES.UI.GUI = function() {
         this.setLayout();
     };
 
-
     this.setStateSaved = function() {
         savedState = true;
         favIconLink.href = '/favicon/favicon.ico';
@@ -1431,7 +1438,6 @@ CABLES.UI.GUI = function() {
         document.title = '' + gui.patch().getCurrentProject().name;
         window.onbeforeunload = function() {
             gui.patchConnection.send(CABLES.PACO_CLEAR);
-
         };
     };
 
@@ -1449,16 +1455,12 @@ CABLES.UI.GUI = function() {
                 top: $('#glcanvas').height() + 1,
                 left: posCanvas.left
             });
-
-
         }
         else
         {
             $('#canvasicons').hide();
             $('#canvasmodal').hide();
-
         }
-
     };
 
     this.init = function() {
