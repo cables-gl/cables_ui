@@ -377,7 +377,7 @@ CABLES.UI.ServerOps = function(gui) {
                         },
                         function(res) {
                             if (!res.success) {
-                                if (res.error) setStatus('error: Line ' + res.error.lineNumber + ' : ' + res.error.description, true);
+                                if (res.error) setStatus('Error: Line ' + res.error.lineNumber + ' : ' + res.error.description, true);
                                 else setStatus('error: unknown error', true);
                             } else {
                                 if (!CABLES.Patch.getOpClass(op.name)) {
