@@ -4,7 +4,7 @@
 {
     display: none;
     position: absolute;
-    z-index: 9999;
+    z-index: $z-index-background-jobs;
     top:20px;
     background-color: $color-menubar-background;
 
@@ -100,7 +100,7 @@
     background-color: $color-menubar-background;
     top:0px;
     left:0px;
-    z-index: 99;
+    z-index: $z-index-cables-logo;
     // border-bottom: 1px solid $color-c7;
 
     .icon-cables
@@ -138,7 +138,7 @@ nav
 {
     margin-left: 80px;
     float:left;
-    z-index: 9999;
+    z-index: $z-index-nav;
 
         li
         {
@@ -196,9 +196,10 @@ nav
                 color:white;
             }
         }
-        ul li ul
+        //ul li ul
+        .nav-submenu
         {
-            z-index: 9999;
+            z-index: $z-index-nav-submenu;
             padding: 0;
             position: absolute;
             top: 28px;

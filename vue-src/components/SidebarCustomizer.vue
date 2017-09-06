@@ -11,7 +11,16 @@
           <a class="icon-x icon icon-1_5x" @click="toggleCustomizer"></a>
         </div>
         <header>
-          <input type="search" id="customizer-search" @keyup="search($event.target.value)" @search="search($event.target.value)" placeholder="search for a command" />
+          <input 
+              type="search" 
+              id="customizer-search" 
+              ref="search" 
+              @keyup="search($event.target.value)" 
+              @search="search($event.target.value)" 
+              autocomplete="off" 
+              autocorrect="off" 
+              spellcheck="false" 
+              placeholder="search for a command" />
           <div class="sidebar-option">
             <span>Display:</span>
             <app-switch id="display-text-icon-switch" v-model="displayLabel" :checked="displayLabel">{{ displayLabelStateText }}</app-switch>
@@ -53,7 +62,15 @@ export default {
       setTimeout(() => {
         this.$store.dispatch('sidebar/writeLocalStorage');
       }, 500);
-     }
+     },
+     visible(b) {
+       if(b) {
+         setTimeout(() => {
+          this.$refs.search.focus(); // focus search when component mounted
+        }, 100);
+         
+       }
+     },
   },
   computed: {
     displayLabelStateText() {

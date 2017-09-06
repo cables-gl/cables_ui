@@ -29,7 +29,7 @@
 .tooltip
 {
     position: absolute;
-    z-index: 99999;
+    z-index: $z-index-tooltip;
     background-color: $text-color;
     color:black;
     padding:7px;

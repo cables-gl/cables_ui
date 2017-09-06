@@ -10,15 +10,13 @@
 .gizmo
 {
     position: absolute;
-    z-index: 999999;
+    z-index: $z-index-canvas-gizmo;
     border-radius:5px;
     width:12px;
     height:12px;
     margin-left:-6px;
     margin-top:-6px;
     cursor:pointer;
-    position:absolute;
-    z-index:9999;
 
     &:hover
     {
@@ -33,7 +31,7 @@
     background-color: black;
     display: none;
     position: absolute;
-    z-index: 9999;
+    z-index: $z-index-canvas-icons;
     padding: 6px;
     padding-left: 28px; /* to give resize-window icon some space */
 
@@ -65,7 +63,7 @@
     bottom:0px;
     background-color: black;
     opacity: 0.3;
-    z-index: 99;
+    z-index: $z-index-canvas-modal;
     // pointer-events: none;
     display: none;
 }
@@ -73,6 +71,7 @@
 #cablescanvas
 {
     display: none;
+    z-index: $z-index-canvas-wrapper;
 }
 
 #glcanvas
@@ -81,7 +80,7 @@
     top:0px;
     right:0px;
     outline: none;
-    z-index: 100;
+    z-index: $z-index-canvas;
 
     &.maximized
     {

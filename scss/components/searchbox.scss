@@ -3,7 +3,7 @@
 {
     position: absolute;
     top:31px;
-    z-index: 99999999;
+    z-index: $z-index-searchbox;
     display:none;
 
 	background-color: $color-searchInputContainer;

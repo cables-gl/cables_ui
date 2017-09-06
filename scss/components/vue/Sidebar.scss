@@ -7,7 +7,7 @@
   width: 80px;
   // height: 100vh;
   color: #2c3e50;
-  z-index: 1;
+  z-index: $z-index-sidebar;
 
   ul {
     left: 5px;
