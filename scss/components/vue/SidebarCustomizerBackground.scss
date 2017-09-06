@@ -1,0 +1,16 @@
+.sidebar-customizer-background {
+    position: fixed;
+    top: 0;
+    left: 80px;
+    width: calc(100vw - 80px);
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.3);
+    z-index: $z-index-sidebar-customizer-bg;
+}
+
+.sidebar-customizer-bg-fade-enter-active, .sidebar-customizer-bg-fade-leave-active {
+    transition: opacity .5s
+  }
+  .sidebar-customizer-bg-fade-enter, .sidebar-customizer-bg-fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0
+  }
