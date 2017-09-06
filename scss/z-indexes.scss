@@ -1,0 +1,76 @@
+// nav
+$z-index-nav: 9999; // has a margin to the left, so does not overlay the cables-logo 
+$z-index-nav-submenu: 9999;
+$z-index-cables-logo: 99;
+$z-index-background-jobs: 9999;
+
+// patch
+$z-index-patch-drop-op: 88999;
+$z-index-patch-suggestion-dialog: 1000; // dialog when dragging out of a port
+$z-index-patch-subpatch-nav: 99999;
+
+// timeline
+$z-index-timeline-title: 9999;
+$z-index-timeline-easing: 99999999;
+
+// canvas
+$z-index-canvas-wrapper: 999;
+$z-index-canvas: 100;
+$z-index-canvas-gizmo: 999999;
+$z-index-canvas-icons: 9999;
+$z-index-canvas-modal: 99;
+$z-index-canvas-iconbar-bottom-splitter: 99;
+
+// modal
+$z-index-modal-bg: 2000;//999;
+$z-index-modal-container: 9999; // ???
+$z-index-op-search: 999999999;
+$z-index-searchbox: 99999999; // also command-pallet
+
+/*
+ * ----------------------------------------------------------------------------------------
+ * Various
+ * ----------------------------------------------------------------------------------------
+ */
+
+$z-index-editor: 99;
+$z-index-library: 99999;
+$z-index-key-presenter: 9999999999; // presentation tool, shows keystrokes
+$z-index-tooltip: 99999;
+$z-index-colorpicker: 200; // color-picker
+$z-index-section-splitter: 98; // lines between sections
+$z-index-notify: 9999; // ???
+$z-index-delayed: 9999; // ???
+$z-index-undev-logo: 99;
+
+/*
+ * ----------------------------------------------------------------------------------------
+ * Vue
+ * ----------------------------------------------------------------------------------------
+ */
+
+// sidebar / icon-bar / iconbar
+$z-index-sidebar: 1002;
+$z-index-sidebar-customizer: 1001; // must be below sidebar, because of slide-in animation
+$z-index-sidebar-customizer-bg: 1000;
+$z-index-sidebar-dragged-element: 9999 !important; 
+
+/*
+ * ----------------------------------------------------------------------------------------
+ * Libraries
+ * ----------------------------------------------------------------------------------------
+ */
+
+// intro.js
+$z-index-intro-tooltip: 1000000 !important;
+$z-index-intro-element-to-be-explained: $z-index-intro-tooltip;
+
+// iziToast
+$z-index-izitoast-capsule: 999999;
+$z-index-izitoast-wrapper: 99999;
+$z-index-izitoast-after: -1;
+$z-index-izitoast-progressbar: 1;
+
+// taggle / tags in patch settings
+$z-index-taggle-sizer: -1;
+$z-index-taggle-awesomeplete-ul: 1;

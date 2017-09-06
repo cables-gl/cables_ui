@@ -30,6 +30,7 @@ $customizer-side-padding: 24px;
 
 .sidebar-customizer {
   position: fixed;
+  z-index: $z-index-sidebar-customizer;
   top: 80px;
   left: 80px;
   width: 445px;

@@ -11,7 +11,7 @@
   transform: translateZ(0);
   backface-visibility: hidden;
   transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-  z-index: 999999;
+  z-index: $z-index-izitoast-capsule;
 }
 .iziToast {
   display: inline-block;
@@ -41,7 +41,7 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  z-index: 1;
+  z-index: $z-index-izitoast-progressbar;
   background: rgba(255,255,255,0.2);
 }
 .iziToast > .iziToast-progressbar > div {
@@ -214,7 +214,7 @@
   float: left;
 }
 .iziToast-wrapper {
-  z-index: 99999;
+  z-index: $z-index-izitoast-wrapper;
   position: fixed;
   width: 100%;
   pointer-events: none;
@@ -323,7 +323,7 @@
   }
   .iziToast::after {
     content: '';
-    z-index: -1;
+    z-index: $z-index-izitoast-after;
     position: absolute;
     top: 0;
     left: 0;

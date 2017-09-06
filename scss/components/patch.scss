@@ -6,7 +6,7 @@
 	display:none;
 	width:75px;
 	height:20px;
-	z-index: 88999;
+	z-index: $z-index-patch-drop-op;
 	background-image: url(/img/dragicon.png);
 	background-size: 100% 100%;
 	pointer-events: none;
@@ -291,7 +291,7 @@
 #suggestionDialog
 {
     position: absolute;
-    z-index: 1000;
+    z-index: $z-index-patch-suggestion-dialog;
     bottom: 100px;
 
     .suggestion
@@ -354,7 +354,7 @@
 	position: absolute;
 	margin-top: 35px;
 	right:200px;
-	z-index: 99999;
+	z-index: $z-index-patch-subpatch-nav;
 	display: none;
 
 	#subpatch_breadcrumb

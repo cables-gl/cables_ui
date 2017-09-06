@@ -22,7 +22,7 @@
 .introjs-tooltipReferenceLayer {
   border: 1px solid white !important;
   border-radius: 0 !important;
-  z-index: 1000000 !important;
+  z-index: $z-index-intro-tooltip;
 }
 
 .introjs-tooltiptext {
@@ -60,5 +60,5 @@
 }
 
 .introjs-showElement {
-  z-index: 1000 !important;
+  z-index: $z-index-intro-element-to-be-explained;
 }
