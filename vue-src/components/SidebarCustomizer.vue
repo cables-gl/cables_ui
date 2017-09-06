@@ -14,12 +14,12 @@
           <input 
               type="search" 
               id="customizer-search" 
+              ref="search" 
               @keyup="search($event.target.value)" 
               @search="search($event.target.value)" 
               autocomplete="off" 
               autocorrect="off" 
               spellcheck="false" 
-              autofocus 
               placeholder="search for a command" />
           <div class="sidebar-option">
             <span>Display:</span>
@@ -62,7 +62,15 @@ export default {
       setTimeout(() => {
         this.$store.dispatch('sidebar/writeLocalStorage');
       }, 500);
-     }
+     },
+     visible(b) {
+       if(b) {
+         setTimeout(() => {
+          this.$refs.search.focus(); // focus search when component mounted
+        }, 100);
+         
+       }
+     },
   },
   computed: {
     displayLabelStateText() {
