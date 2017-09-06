@@ -948,12 +948,15 @@ CABLES.UI.GUI = function() {
     };
 
     this.waitToShowUI = function() {
-        $('#cablescanvas    ').show();
+        
+        $('#cablescanvas').show();
 
         $('#loadingstatus').hide();
         $('#mainContainer').show();
 
         self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+
+        CABLES.showPacoRenderer();
 
         if (CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
 
