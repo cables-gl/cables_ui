@@ -430,6 +430,8 @@ CABLES.Gizmo.prototype.dragger=function(el)
         $( document ).unbind( "mousedown", down );
 
         document.removeEventListener("mousemove", move, false);
+
+        gui.patch().showOpParams(self._params.posX.parent);
     }
 
     function move(e)
