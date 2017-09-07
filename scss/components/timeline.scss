@@ -89,7 +89,7 @@
 #timelineTitle
 {
     position: absolute;
-    z-index: 9999;
+    z-index: $z-index-timeline-title;
     bottom:10px;
     left:10px;
 }
@@ -150,7 +150,7 @@
     width:240px;
     // height:260px;
     background-color: $color-cz;
-    z-index: 99999999;
+    z-index: $z-index-timeline-easing;
 
     .title
     {

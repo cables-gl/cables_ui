@@ -1,0 +1,17 @@
+// color and opacity defined in "modal.scss"
+
+.sidebar-customizer-background {
+    position: fixed;
+    top: 0;
+    left: 80px;
+    width: calc(100vw - 80px);
+    height: 100vh;
+    z-index: $z-index-sidebar-customizer-bg;
+}
+
+.sidebar-customizer-bg-fade-enter-active, .sidebar-customizer-bg-fade-leave-active {
+    transition: opacity .5s
+  }
+  .sidebar-customizer-bg-fade-enter, .sidebar-customizer-bg-fade-leave-to {
+    opacity: 0
+  }

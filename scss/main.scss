@@ -3,13 +3,20 @@
 $border-radius-popups:12px;
 
 @import 'fonts';
-@import 'libs/introjs.min';
-@import 'libs/introjs-custom-styles';
-@import 'components/patch';
 @import 'svgicons';
 @import 'icons';
+
+@import 'libs/introjs.min';
 @import 'libs/font-awesome.scss';
+
+@import 'z-indexes';
+
+@import 'components/patch';
+
+// import last
 @import 'libs/dragula.scss';
+@import 'libs/introjs-custom-styles';
+
 
 html,body { // ipad overscroll fix...
   position: fixed;
@@ -394,7 +401,7 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
 .splitter
 {
     background-color:$color-splitter;
-    z-index: 98;
+    z-index: $z-index-section-splitter;
     position: absolute;
     display: block;
 }
@@ -417,7 +424,7 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
     // height:40px;
     // width:40px;
     // background-color: transparent;
-    z-index: 99;
+    z-index: $z-index-canvas-iconbar-bottom-splitter;
     cursor:ne-resize;
 }
 
@@ -486,7 +493,7 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
     padding:10px;
     opacity: 0.8;
     border-radius: 5px;
-    z-index: 9999;
+    z-index: $z-index-notify;
     display: none;
 }
 
@@ -497,7 +504,7 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
     background-color: $color-c9;
     padding:10px;
     border-radius: 5px;
-    z-index: 9999;
+    z-index: $z-index-delayed;
     display: block;
 }
 
@@ -520,7 +527,7 @@ input
     background-color: $color-c6;
     mask-repeat: no-repeat;
     display: block;
-    z-index: 99;
+    z-index: $z-index-undev-logo;
 }
 
 .shaderErrorCode
@@ -553,5 +560,6 @@ input
 
 // vue-components
 @import 'components/vue/Sidebar.scss';
+@import 'components/vue/SidebarCustomizerBackground.scss';
 @import 'components/vue/SidebarCustomizer.scss';
 @import 'components/vue/Switch.scss';

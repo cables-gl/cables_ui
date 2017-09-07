@@ -55,12 +55,12 @@ CABLES.htmlLine=function(parentElement,color)
     this.hide=function()
     {
         if(line)line.style.display='none';
-    }
+    };
     
     this.show=function()
     {
         if(line)line.style.display='block';
-    }
+    };
     
     parentElement.appendChild(createLineElement(100, 100, 200, 200));
     this.hide();
@@ -87,7 +87,7 @@ CABLES.Gizmo=function()
     this._origValue=0;
     this._dragSum=0;
     this._dir=1;
-}
+};
 
 
 
@@ -160,7 +160,7 @@ CABLES.Gizmo.prototype.getDir=function(x2,y2)
     if(dist<0)return 1;
     return -1;
 
-}
+};
 
 CABLES.Gizmo.prototype.set=function(params)
 {
@@ -384,7 +384,7 @@ CABLES.Gizmo.prototype.setParams=function(params)
     this.lineZ.set(params.x,params.y,params.zx,params.zy);
 
 
-}
+};
 
 
 CABLES.Gizmo.prototype.dragger=function(el)
@@ -456,4 +456,4 @@ CABLES.Gizmo.prototype.dragger=function(el)
     $( document ).bind( "mouseup", up );
     $( document ).bind( "mousedown", down );
 
-}
+};

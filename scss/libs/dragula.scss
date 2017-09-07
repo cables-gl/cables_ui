@@ -1,7 +1,7 @@
 .gu-mirror {
   position: fixed !important;
   margin: 0 !important;
-  z-index: 9999 !important;
+  z-index: $z-index-sidebar-dragged-element;
   opacity: 0.8;
 }
 
