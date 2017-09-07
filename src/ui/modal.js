@@ -17,6 +17,8 @@ CABLES.UI.MODAL.hideLoading=function()
 
 CABLES.UI.MODAL.init=function(options)
 {
+    gui.showCanvasModal(false);
+
     if(CABLES.UI.MODAL.contentElement)CABLES.UI.MODAL.contentElement.hide();
     CABLES.UI.MODAL.contentElement=$('#modalcontent');
     if(options && options.element)CABLES.UI.MODAL.contentElement=$(options.element);
