@@ -183,7 +183,7 @@ CABLES.UI.MODAL.getFileSnippet=function(url,line,cb)
                 }
                 html+=sliced[i];
                 html+='</span>';
-                // html+='<br/>';
+                html+='<br/>';
             }
             cb(html);
         });
