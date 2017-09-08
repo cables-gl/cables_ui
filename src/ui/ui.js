@@ -147,6 +147,11 @@ CABLES.UI.GUI = function() {
             self.rendererHeight = window.innerHeight;
         }
 
+        self.rendererWidth=Math.floor(self.rendererWidth);
+        self.rendererHeight=Math.floor(self.rendererHeight);
+
+        $('#canvasInfoSize').html('size: '+self.rendererWidth+' x '+self.rendererHeight);
+
         var iconBarWidth=iconBarWidth||80;
 
 
@@ -907,6 +912,8 @@ CABLES.UI.GUI = function() {
     };
 
     this.pressedEscape = function(e) {
+
+        this.showCanvasModal(false);
 
         if (e && (e.metaKey || e.ctrlKey)) {
             CABLES.UI.SELECTPROJECT.show();

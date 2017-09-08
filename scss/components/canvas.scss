@@ -52,6 +52,17 @@
         opacity: 0.3;
         cursor: nesw-resize;
     }
+
+    #canvasInfoSize
+    {
+        font-family: monospace;
+    }
+
+    .canvasInfo
+    {
+        position: absolute;
+        margin-top: -2px;
+    }
 }
 
 #canvasmodal

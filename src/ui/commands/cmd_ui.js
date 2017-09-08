@@ -30,12 +30,12 @@ CABLES.CMD.UI.toggleFiles = function() {
 
 CABLES.CMD.UI.toggleMute = function() {
     if (gui.scene().config.masterVolume > 0.0) {
-        $('#timelineVolume').removeClass('fa-volume-up');
-        $('#timelineVolume').addClass('fa-volume-off');
+        $('#timelineVolume').removeClass('icon-volume-2');
+        $('#timelineVolume').addClass('icon-volume-x');
         gui.scene().setVolume(0.0);
     } else {
-        $('#timelineVolume').addClass('fa-volume-up');
-        $('#timelineVolume').removeClass('fa-volume-off');
+        $('#timelineVolume').addClass('icon-volume-2');
+        $('#timelineVolume').removeClass('icon-volume-x');
         gui.scene().setVolume(1.0);
     }
 };
