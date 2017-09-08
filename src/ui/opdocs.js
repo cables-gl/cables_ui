@@ -104,6 +104,11 @@ CABLES.UI.OpDocs=function()
                     html+='<p>' + ( opDocs[i].summary || '' ) + '</p>';
                 }
 
+                if(opDocs[i].authorName)
+                {
+                    html+='<br/>op author: <a href="/user/'+opDocs[i].authorName+'">'+opDocs[i].authorName+'</a><br/><br/>';
+                }
+
                 if(opDocs[i].credits)
                 {
                     html+='<br/><h3>credits</h3><ul>';
