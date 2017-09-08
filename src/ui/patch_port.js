@@ -2,6 +2,8 @@ CABLES.UI.MOUSEOVERPORT=false;
 CABLES.UI.selectedStartPort=null;
 CABLES.UI.selectedEndPort=null;
 
+CABLES.UI.hoverInterval=-1;
+
 CABLES.UI.selectedStartPortMulti=[];
 
 CABLES.UI.Port=function(thePort)
@@ -395,6 +397,34 @@ CABLES.UI.Port=function(thePort)
     }
     this.updateUI=updateUI;
 
+    function updateHoverToolTip(event)
+    {
+        var thePort=gui.patch().hoverPort;
+
+        if(!thePort)return;
+
+        var txt=getPortDescription(thePort);
+        if(thePort && thePort.type==OP_PORT_TYPE_VALUE)
+        {
+            var val=thePort.get();
+            if(isNumeric(val))val=Math.round(val*1000)/1000;
+            txt+=': <span class="code">'+val+'</span>';
+        }
+
+        if(thePort && thePort.type==OP_PORT_TYPE_ARRAY)
+        {
+            var val=thePort.get();
+            txt+=': <span class="code">#'+val.length+'</span>';
+        }
+
+        CABLES.UI.showToolTip(event,txt);
+        if(CABLES.UI.hoverInterval==-1)
+        {
+            CABLES.UI.hoverInterval=setInterval(updateHoverToolTip,50);
+        }
+        
+    }
+
     function hover(event)
     {
         CABLES.UI.selectedEndPort=self;
@@ -404,9 +434,11 @@ CABLES.UI.Port=function(thePort)
 
         gui.patch().hoverPort=thePort;
 
-        var txt=getPortDescription(thePort);
+        
+
         // CABLES.UI.setStatusText(txt);
-        CABLES.UI.showToolTip(event,txt);
+        // CABLES.UI.showToolTip(event,txt);
+        updateHoverToolTip(event);
         updateUI();
 
         // hover link
@@ -429,6 +461,9 @@ CABLES.UI.Port=function(thePort)
 
     function hoverOut()
     {
+        clearInterval(CABLES.UI.hoverInterval);
+        CABLES.UI.hoverInterval=-1;
+        
         CABLES.UI.hideToolTip();
         CABLES.UI.selectedEndPort=null;
         gui.patch().hoverPort=null;

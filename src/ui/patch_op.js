@@ -12,7 +12,7 @@ CABLES.UI.cleanRaphael = function(el) {
 };
 
 function getPortDescription(thePort) {
-    var str = '<b>' + thePort.getName() + '</b> (' + thePort.getTypeString() + ')';
+    var str = thePort.getTypeString()+' <b>' + thePort.getName() + '</b> ';
     var strInfo = '';
 
     if (thePort.direction == PORT_DIR_IN) strInfo += CABLES.UI.TEXTS.portDirIn;

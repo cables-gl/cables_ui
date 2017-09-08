@@ -4,8 +4,11 @@ CABLES.UI.tooltipTimeout=null;
 CABLES.UI.showToolTip=function(e,txt)
 {
     $('.tooltip').show();
-    $('.tooltip').css('top',e.clientY+12);
-    $('.tooltip').css('left',e.clientX+25);
+    if(e)
+    {
+        $('.tooltip').css('top',e.clientY+12);
+        $('.tooltip').css('left',e.clientX+25);
+    }
     $('.tooltip').html(txt);
 };
 
