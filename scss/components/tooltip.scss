@@ -57,3 +57,10 @@
         color:#000;
     }
 }
+
+#hoverPreviewer
+{
+    position: absolute;
+    z-index: 99999999;
+    border:2px solid red;
+}

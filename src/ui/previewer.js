@@ -7,6 +7,14 @@ CABLES.UI.Preview=function()
 {
     var paused=false;
 
+
+    var previewDataPort=null;
+    var previewDataOp=null;
+    var mesh=null;
+    var shader=null;
+    var previewCanvas=null;
+
+
     this.show=function()
     {
         previewCanvas=null;
@@ -15,16 +23,27 @@ CABLES.UI.Preview=function()
         $('#meta_content_preview').html(html);
     };
 
+    // this.showHover=function(event)
+    // {
+    //     previewCanvas=null;
+    //     paused=false;
+    //     var html = CABLES.UI.getHandleBarHtml('preview', {} );
+
+
+    //     $('#hoverPreviewer').html(html);
+
+    //     if(event)
+    //     {
+    //         $('#hoverPreviewer').css('top',event.clientY+50);
+    //         $('#hoverPreviewer').css('left',event.clientX+25);
+    //     }
+    // };
+
+
     this.hide=function()
     {
         paused=true;
     };
-
-    var previewDataPort=null;
-    var previewDataOp=null;
-    var mesh=null;
-    var shader=null;
-    var previewCanvas=null;
 
     this.render=function()
     {

@@ -22,9 +22,9 @@ CABLES.CMD.RENDERER.screenshotUpload = function() {
             var file = new File([blob], "screenshot.png",{ type: "image/png" });
 
 
-file.type='hund';
-            console.log('filetype',file.type);
-            console.log('blobtype',blob.type);
+            // file.type='hund';
+            // console.log('filetype',file.type);
+            // console.log('blobtype',blob.type);
 
 
             var fd = new FormData();
