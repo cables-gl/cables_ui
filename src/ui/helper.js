@@ -153,10 +153,10 @@ CABLES.UI.inputIncrement=function(v,dir,e)
     var add=0.1;
     if(e.target.classList.contains('inc_int'))add=1;
 
-    if(e && e.altKey && e.shiftKey) add=10;
+    if(e && e.shiftKey&& e.metaKey)add=0.001;
+        else if(e && e.altKey && e.shiftKey) add=10;
         else if(e && e.shiftKey)add=0.01;
         else if(e && e.altKey) add=1;
-
 
     var r=val+add*dir;
 
