@@ -5,6 +5,7 @@ CABLES.AnimRenderer = function() {
     var endTime = 0;
     var fps = 0;
     var filename = '';
+    var leftpad=true;
 
 };
 
@@ -12,15 +13,19 @@ CABLES.AnimRenderer.prototype.start = function() {
     $('#animRendererSettings').hide();
     $('#progresscontainer').show();
 
-    new CABLES.UI.ImageSequenceExport(filename, startTime, endTime, fps);
+    console.log(filename, startTime, endTime, fps);
+
+    new CABLES.UI.ImageSequenceExport(filename, startTime, endTime, fps,{leftpad:leftpad});
 };
 
 
-CABLES.AnimRenderer.prototype.update = function() {
+CABLES.AnimRenderer.prototype.update = function()
+{
     startTime = parseFloat($('#render_start').val());
     endTime = parseFloat($('#render_end').val());
     fps = parseFloat($('#render_fps').val());
-    filename = $('#filename').val();
+    filename = $('#render_filename').val();
+    leftpad = $('#render_leftpad').is(':checked');
 
     var frames = (endTime - startTime) * fps;
 
@@ -48,10 +53,6 @@ CABLES.AnimRenderer.prototype.show = function(since) {
 
     $('#animRendererSettings').show();
     $('#progresscontainer').hide();
-
-
-
-
 
     this.update();
 };

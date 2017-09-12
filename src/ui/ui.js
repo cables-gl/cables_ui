@@ -31,6 +31,7 @@ CABLES.UI.GUI = function() {
     this.metaKeyframes = new CABLES.UI.MetaKeyframes();
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.preview = new CABLES.UI.Preview();
+    this.hoverPreview = new CABLES.UI.Preview();
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);

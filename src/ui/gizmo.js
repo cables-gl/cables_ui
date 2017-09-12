@@ -171,13 +171,11 @@ CABLES.Gizmo.prototype.set=function(params)
     function toScreen(trans)
     {
         var vp=cgl.getViewPort();
-
         var x=( vp[2]-( vp[2]  * 0.5 - trans[0] * vp[2] * 0.5 / trans[2] ));
         var y=( vp[3]-( vp[3]  * 0.5 + trans[1] * vp[3] * 0.5 / trans[2] ));
         
         return {x:x,y:y};
     }
-
 
     function distance(x1,y1,x2,y2)
     {
@@ -185,7 +183,6 @@ CABLES.Gizmo.prototype.set=function(params)
         var yd = y2-y1;
         return Math.sqrt(xd*xd + yd*yd);
     }
-
     
     var m=mat4.create();
     var pos=vec3.create();
@@ -218,14 +215,8 @@ CABLES.Gizmo.prototype.set=function(params)
     var d3=distance(zero.x, zero.y, screenDist.x, screenDist.y);
 
     var d=Math.max(d3,Math.max(d1,d2));
-
-    // console.log('d',d,zero,screenDist);
-    var w=1/d*50;
-
-
-
-
-
+    var w=1/(d+0.00000001)*50;
+    this._multi=w;
 
     vec3.transformMat4(pos, [w,0,0], m);
     vec3.transformMat4(transX, pos, cgl.pMatrix);
@@ -337,8 +328,6 @@ CABLES.Gizmo.prototype.setParams=function(params)
             this.dragger(this._eleCenter);
             this._dir=this.getDir(this._params.zx,this._params.zy);
         }.bind(this));
-
-
     }
 
     if(!params)
@@ -362,7 +351,6 @@ CABLES.Gizmo.prototype.setParams=function(params)
     this.lineZ.show();
     this.lineY.show();
 
-
     this._eleCenter.style.display="block";
     this._eleCenter.style.left=params.x+"px";
     this._eleCenter.style.top=params.y+"px";
@@ -382,8 +370,6 @@ CABLES.Gizmo.prototype.setParams=function(params)
     this.lineX.set(params.x,params.y,params.xx,params.xy);
     this.lineY.set(params.x,params.y,params.yx,params.yy);
     this.lineZ.set(params.x,params.y,params.zx,params.zy);
-
-
 };
 
 
@@ -391,8 +377,6 @@ CABLES.Gizmo.prototype.dragger=function(el)
 {
     var isDown=false;
     var self=this;
-    // var startVal=$('#'+ele).val();
-    // var el=document.getElementById(ele);
     var incMode=0;
 
     function keydown(e)
@@ -406,12 +390,8 @@ CABLES.Gizmo.prototype.dragger=function(el)
         document.addEventListener('pointerlockchange', lockChange, false);
         document.addEventListener('mozpointerlockchange', lockChange, false);
         document.addEventListener('webkitpointerlockchange', lockChange, false);
-
         document.addEventListener('keydown', keydown, false);
-
-        el.requestPointerLock = el.requestPointerLock ||
-                                    el.mozRequestPointerLock ||
-                                    el.webkitRequestPointerLock;
+        el.requestPointerLock = el.requestPointerLock || el.mozRequestPointerLock || el.webkitRequestPointerLock;
         if(el.requestPointerLock) el.requestPointerLock();
     }
 
@@ -431,31 +411,32 @@ CABLES.Gizmo.prototype.dragger=function(el)
 
         document.removeEventListener("mousemove", move, false);
 
-        gui.patch().showOpParams(self._params.posX.parent);
+        gui.patch().showOpParams(self._draggingPort.parent);
     }
 
     function move(e)
     {
         gui.setStateUnsaved();
-
-        self._dragSum+=(e.movementY+e.movementX)*(self._dir*0.01);
+        var v=(e.movementY+e.movementX)*(self._dir*((self._multi||1)/100));
+        if(e.shiftKey)v*=0.025;
+        self._dragSum+=v;
         self._draggingPort.set(self._origValue+self._dragSum);
     }
 
-     function lockChange(e)
-     {
+    function lockChange(e)
+    {
         if (document.pointerLockElement === el || document.mozPointerLockElement === el || document.webkitPointerLockElement === el)
         {
             document.addEventListener("mousemove", move, false);
         }
         else
         {
+            // escape clicked...
+            self._draggingPort.set(self._origValue);
             up();
         }
-
     }
 
     $( document ).bind( "mouseup", up );
     $( document ).bind( "mousedown", down );
-
 };

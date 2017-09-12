@@ -1,21 +1,20 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.ImageSequenceExport = function(filename, start, end, fps) {
+CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
     var currentNum = start * fps;
     var endNum = end * fps;
     var startNum = start * fps;
     var frameDuration = 1 / fps;
     var startTime = CABLES.now();
+
+console.log("IMAFGESEQ filename",filename);
+
     $('#progresscontainer').show();
-
-
-
     var fileNum = 0;
 
     currentNum--;
     fileNum--;
-
 
     render();
 
@@ -48,13 +47,24 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps) {
 
         gui.patch().scene.timer.pause();
         gui.patch().scene.freeTimer.pause();
-        console.log('time', time);
+        // console.log('time', time);
         gui.patch().scene.timer.setTime(time);
         gui.patch().scene.freeTimer.setTime(time);
 
         var str = "" + fileNum;
         var pad = "0000";
+        
         var strCurrentNum = '_' + pad.substring(0, pad.length - str.length) + str;
+        if(settings)
+        {
+            console.log("has settings",settings);
+            if(!settings.leftpad) 
+            {
+                strCurrentNum = '_' + str;
+                console.log("not leftpad");
+            }
+        }
+
 
         var left = Math.ceil((Math.round((CABLES.now() - startTime) / 1000) / (currentNum - 1)) * (endNum - currentNum));
         $('.modalScrollContent').html('frame ' + (currentNum - startNum) + ' of ' + (endNum - startNum) + '<br/>' + left + ' seconds left...');

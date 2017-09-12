@@ -417,6 +417,16 @@ CABLES.UI.Port=function(thePort)
             txt+=': <span class="code">#'+val.length+'</span>';
         }
 
+        // if(thePort && thePort.type==OP_PORT_TYPE_OBJECT)
+        // {
+        //     var val=thePort.get();
+        //     if(val.tex)
+        //     {
+        //         gui.hoverPreview.showHover(event);
+        //         gui.hoverPreview.setTexture(thePort.parent.id,thePort.name);
+        //     }
+        // }
+
         CABLES.UI.showToolTip(event,txt);
         if(CABLES.UI.hoverInterval==-1)
         {
@@ -429,15 +439,10 @@ CABLES.UI.Port=function(thePort)
     {
         CABLES.UI.selectedEndPort=self;
         self.rect.toFront();
-        // self.rect.node.classList.add('active');
         hovering=true;
 
         gui.patch().hoverPort=thePort;
 
-        
-
-        // CABLES.UI.setStatusText(txt);
-        // CABLES.UI.showToolTip(event,txt);
         updateHoverToolTip(event);
         updateUI();
 

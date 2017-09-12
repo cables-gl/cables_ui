@@ -120,6 +120,7 @@ CABLES.UI.FileSelect = function() {
         gui.setLayout();
     };
 
+    this.refresh =
     this.load = function() {
         if (currentTab === '') {
             this.setTab('projectfiles');

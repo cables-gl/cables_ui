@@ -2188,6 +2188,7 @@ CABLES.UI.Patch = function(_gui) {
 
     this.showProjectParams = function() {
         var s = {};
+        if(currentOp && currentOp)currentOp=null;
         gui.setTransformGizmo(null);
 
         s.name = currentProject.name;
@@ -2271,6 +2272,7 @@ CABLES.UI.Patch = function(_gui) {
 
     var delayedShowOpParams = 0;
     this.showOpParams = function(op) {
+
         gui.setTransformGizmo(null);
         clearTimeout(delayedShowOpParams);
         delayedShowOpParams = setTimeout(function() {
