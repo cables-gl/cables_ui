@@ -3,14 +3,13 @@
     <div class="panel">
 
         <h2>{{ converterName }}</h2>
-
+        <br/>
         <i id="converterprogress" class="fa fa-circle-o-notch fa-spin" style="display:none;"></i>
 
         <form id="converterform">
             {{#compare converterId '==' 'pcconv' }}
 
             <div>
-
                 <table>
                     <tr>
                         <td>Center Points</td>
@@ -21,7 +20,6 @@
                             </select>
                         </td>
                     </tr>
-
                     <tr>
                         <td>Reduce Points Num</td>
                         <td>
@@ -30,16 +28,19 @@
                         </td>
                     </tr>
                 </table>
-
             </div>
 
             {{/compare}}
 
-            <a class="button fa fa-retweet" onclick="$('#converterprogress').show();$('#converterform').hide();CABLES.api.post('project/{{ projectId }}/file/convert/{{ fileId }}/{{ converterId }}',{options:CABLES.serializeForm('#converterform')},function(){$('#converterprogress').hide();CABLES.UI.fileSelect.refresh();});">&nbsp;{{ converterName }}</a>
+            <a class="button fa fa-retweet" onclick="gui.converterStart('{{ projectId }}','{{ fileId }}','{{ converterId }}')">&nbsp;start {{ converterName }}</a>
             <br/><br/>
 
 
         </form>
 
     </div>
+    <div class="modalScrollContent hidden" id="converteroutput">
+            
+    </div>
+            
 </script>
