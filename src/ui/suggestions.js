@@ -55,7 +55,7 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
     var i=0;
     var suggestions=gui.opDocs.getSuggestions(op.objName,portname);
 
-    if(op.getPort(portname).uiAttribs && op.getPort(portname).uiAttribs.linkRecommendations)
+    if(op && op.getPort(portname) && op.getPort(portname).uiAttribs && op.getPort(portname).uiAttribs.linkRecommendations)
     {
         var recs=op.getPort(portname).uiAttribs.linkRecommendations.ops;
         if(recs)
