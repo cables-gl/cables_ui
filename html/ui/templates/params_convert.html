@@ -35,7 +35,7 @@
 
             {{/compare}}
 
-            <a class="button fa fa-retweet" onclick="$('#converterprogress').show();$('#converterform').hide();CABLES.api.post('project/{{ projectId }}/file/convert/{{ fileId }}/{{ converterId }}',{options:CABLES.serializeForm('#converterform')},function(){$('#converterprogress').hide();gui.updateProjectFiles();});">&nbsp;{{ converterName }}</a>
+            <a class="button fa fa-retweet" onclick="$('#converterprogress').show();$('#converterform').hide();CABLES.api.post('project/{{ projectId }}/file/convert/{{ fileId }}/{{ converterId }}',{options:CABLES.serializeForm('#converterform')},function(){$('#converterprogress').hide();CABLES.UI.fileSelect.refresh();});">&nbsp;{{ converterName }}</a>
             <br/><br/>
 
 
