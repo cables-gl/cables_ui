@@ -27,9 +27,23 @@
     }
 }
 
-#searchbox .inputcontainer
-{
-    background-color: $color-cz;
+#searchbox {
+    .inputcontainer {
+        background-color: $color-cz;
+
+        .icon {
+            margin-left: 5px;
+        }
+        
+        input {
+            background-color: $color-c7 !important;
+            border: 1px solid transparent;
+
+            &:focus {
+                border: 1px solid $color-ca;
+            }
+        }
+    }
 }
 
 #searchresult {
