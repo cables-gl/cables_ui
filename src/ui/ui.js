@@ -196,7 +196,7 @@ CABLES.UI.GUI = function() {
         var patchLeft = iconBarWidth;
 
         if (showingEditor) {
-            if (self.editorWidth > window.innerWidth - self.rendererWidth) self.rendererWidth = window.innerWidth - self.editorWidth;
+            if (self.editorWidth > window.innerWidth - self.rendererWidth) self.rendererWidth = window.innerWidth - self.editorWidth - iconBarWidth -40;
 
             var editorbarHeight = 76;
             $('#editor').show();

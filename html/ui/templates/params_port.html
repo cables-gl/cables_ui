@@ -170,12 +170,15 @@
 
             <!-- {{#compare port.type '==' '1' }}[function]{{/compare}}-->
             {{#compare port.type '==' 0 }}
+        </td><td>
                 <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}" >{{port.val}}</span>
+                
                 <span class="button fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');">inspect</span><br/>
             {{/compare}}
 
             {{#compare port.type '==' 3 }}
                 <!-- Array -->
+            </td><td>
                 <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}" >{{port.val.length}}</span><br/><br/>
             </td>
             <td>
