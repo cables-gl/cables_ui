@@ -1696,8 +1696,7 @@ catch(e)
                 }
             }
 
-            // CABLES.UI.setStatusText(count+' keys selected');
-            CABLES.UI.notify(count+' keys selected');
+            if(count>0)CABLES.UI.notify(count+' keys selected');
         }
     }
 

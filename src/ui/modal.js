@@ -298,28 +298,25 @@ CABLES.UI.notifyError=function(title,text)
         });
 
 };
+
+CABLES.UI.lastNotify='';
+CABLES.UI.lastText='';
+
 CABLES.UI.notify=function(title,text)
 {
-    // $('#notify').html(title);
-    // $('#notify').show();
-    // $('#notify').css({top: "0px" ,opacity: 0 });
-    //
-    // $('#notify').animate(
-    //     {
-    //         top: "20px",
-    //         opacity:1
-    //     }, 150);
-    //
-    // setTimeout(function()
-    // {
-    //     $( "#notify" ).animate({
-    //        top: "40px",
-    //        opacity:0
-    //    }, 150,function()
-    //    {
-    //        $('#notify').hide();
-    //    });
-    // },1200);
+    if(title==CABLES.UI.lastNotify && text==CABLES.UI.lastText)
+    {
+        setTimeout(function()
+        {
+            CABLES.UI.lastNotify='';
+            CABLES.UI.lastText='';
+            
+        },1000);
+        return;
+    }
+
+    CABLES.UI.lastNotify=title;
+    CABLES.UI.lastText=text;
 
     iziToast.show(
         {
@@ -332,10 +329,7 @@ CABLES.UI.notify=function(title,text)
             close:false,
             timeout:2000
         });
-
 };
-
-
 
 CABLES.UI.MODAL.updatePortValuePreview=function(title)
 {
