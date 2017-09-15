@@ -17,7 +17,7 @@ CABLES.UI.MODAL.hideLoading=function()
 
 CABLES.UI.MODAL.init=function(options)
 {
-    gui.showCanvasModal(false);
+    if(window.gui)gui.showCanvasModal(false);
 
     if(CABLES.UI.MODAL.contentElement)CABLES.UI.MODAL.contentElement.hide();
     CABLES.UI.MODAL.contentElement=$('#modalcontent');
@@ -255,6 +255,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
         html+='<br/><br/><a class="button" onclick="document.location.reload();">reload</a>';
         html+='</div>';
 
+
         $('body').append(html);
     }
     CABLES.UI.MODAL.showClose();
@@ -371,7 +372,7 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
 
 };
 
-CABLES.UI.MODAL.showCode=function(title,code)
+CABLES.UI.MODAL.showCode=function(title,code,type)
 {
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
@@ -381,10 +382,14 @@ CABLES.UI.MODAL.showCode=function(title,code)
     CABLES.UI.MODAL.contentElement.append('<br/><br/>');
     CABLES.UI.MODAL.contentElement.append('<br/><br/>');
 
-    CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+code+'</div>');
+    CABLES.UI.MODAL.contentElement.append('<pre><code class="'+(type||'javascript')+'">'+code+'</code></pre>');
     // $('#modalcontainer').show();
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
+    $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    
 
 };
 
