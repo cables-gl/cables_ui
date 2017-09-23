@@ -414,7 +414,7 @@ CABLES.UI.Port=function(thePort)
         if(thePort && thePort.type==OP_PORT_TYPE_ARRAY)
         {
             var val=thePort.get();
-            txt+=': <span class="code">#'+val.length+'</span>';
+            if(val && val.hasOwnProperty('val')) txt+=': <span class="code">#'+val.length+'</span>';
         }
 
         // if(thePort && thePort.type==OP_PORT_TYPE_OBJECT)
