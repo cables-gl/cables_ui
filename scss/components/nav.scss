@@ -139,6 +139,7 @@ nav
     margin-left: 80px;
     float:left;
     z-index: $z-index-nav;
+    $nav-li-padding: 6px 14px;
 
         li
         {
@@ -170,7 +171,7 @@ nav
             display: inline-block;
             margin-right: -4px;
             position: relative;
-            padding: 7px 20px;
+            padding: $nav-li-padding;
             cursor: pointer;
 
             &.inactive
@@ -202,7 +203,7 @@ nav
             z-index: $z-index-nav-submenu;
             padding: 0;
             position: absolute;
-            top: 28px;
+            top: 29px;
             left: 0;
             width: 200px;
             -webkit-box-shadow: none;
@@ -228,7 +229,7 @@ nav
             background: $highlight-color-dark;
             cursor:pointer;
         }
-        ul li:hover ul
+        ul li:hover > ul
         {
             display: block;
             opacity: 1;
@@ -238,7 +239,7 @@ nav
         .divide
         {
             padding:0px;
-            border-bottom: 1px solid $color-c9;
+            border-bottom: 1px solid $color-c85;
         }
 
 
@@ -266,7 +267,7 @@ nav
         display: inline-block;
         margin-right: -4px;
         position: relative;
-        padding: 7px 20px;
+        padding: $nav-li-padding;
         cursor: pointer;
 
         span
@@ -314,7 +315,7 @@ nav
         background: $highlight-color-dark;
         cursor:pointer;
     }
-    ul li:hover ul
+    ul li:hover > ul
     {
         display: block;
         opacity: 1;
@@ -325,6 +326,38 @@ nav
     .divide
     {
         padding:0px;
-        border-bottom: 1px solid $color-c9;
+        border-bottom: 1px solid $color-c85;
+    }
+    /* sub-sub-menu, e.g. New from template -> 2d, 3d, ... */
+    .nav-sub-submenu {
+        .icon {
+            background-color: $color-c3;
+            float: right;
+            position: relative;
+            right: -3px;
+
+            &:after {
+                clear: both;
+            }
+        }
+
+        ul {
+            position: absolute;
+            left: 204px;
+            visibility: hidden;
+
+            li {
+                position: relative;
+                right: 0;
+                top: -28px;
+                padding: 0;
+                white-space: nowrap;
+
+                a {
+                    display: block;
+                    padding: $nav-li-padding;
+                }
+            }
+        }
     }
 }
