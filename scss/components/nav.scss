@@ -108,6 +108,7 @@
         margin-top:15px;
         width:40px;
         height:60px;
+        background-color: $color-ca;
     }
 }
 
@@ -194,7 +195,7 @@ nav
             color: $color-ca;
             a
             {
-                color:white;
+                color:$color-ca;
             }
         }
         //ul li ul
@@ -281,7 +282,7 @@ nav
         color: $color-ca;
         a
         {
-            color:white;
+            color: $color-ca;
         }
     }
     ul li ul
