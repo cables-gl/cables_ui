@@ -43,11 +43,6 @@
         
         input {
             background-color: $color-c7 !important;
-            border: 1px solid transparent;
-
-            &:focus {
-                border: 1px solid $color-ca;
-            }
         }
     }
 }

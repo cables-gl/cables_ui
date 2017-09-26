@@ -14,6 +14,7 @@
           <input 
               type="search" 
               id="customizer-search" 
+              class="big-search"
               ref="search" 
               @keyup="search($event.target.value)" 
               @search="search($event.target.value)" 
