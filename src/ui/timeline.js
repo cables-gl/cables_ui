@@ -682,23 +682,21 @@ CABLES.TL.UI.TimeLineUI=function()
         if(time<0)time=0;
         if(isNaN(time))time=0;
 
-
-
         var pixel=$('#timeline').width()* (time/projectLength);
 
         cursorLineOverview.attr({path: "M "+pixel+" -1000 L" + pixel + " " + 100 });
 
-// console.log('time',time);
-// console.log('projectLength',projectLength);
-// console.log('time/projectLength*100',time/projectLength*100);
+        // console.log('time',time);
+        // console.log('projectLength',projectLength);
+        // console.log('time/projectLength*100',time/projectLength*100);
 
-var start=(viewBox.x/CABLES.TL.TIMESCALE)/projectLength;
-var width=(viewBox.w/CABLES.TL.TIMESCALE)/projectLength;
-overviewRect.attr(
-    {
-        "x":start*$('#timeline').width(),
-        "width":width*$('#timeline').width(),
-    });
+        var start=(viewBox.x/CABLES.TL.TIMESCALE)/projectLength;
+        var width=(viewBox.w/CABLES.TL.TIMESCALE)/projectLength;
+        overviewRect.attr(
+            {
+                "x":start*$('#timeline').width(),
+                "width":width*$('#timeline').width(),
+            });
 
 
 
@@ -1121,10 +1119,13 @@ catch(e)
             if(mint<0) mint=0;
         }
 
-        CABLES.TL.TIMESCALE=viewBox.w/(maxt-mint)*0.9;
-        viewBox.x=mint*CABLES.TL.TIMESCALE-(maxt-mint)*0.05*CABLES.TL.TIMESCALE;
+        var padVal=(maxt-mint)*0.025;
+        mint-=padVal;
+        maxt+=padVal;
+        CABLES.TL.TIMESCALE=viewBox.w/(maxt-mint)*1;
+        var padding=padVal*CABLES.TL.TIMESCALE;
+        viewBox.x=mint*CABLES.TL.TIMESCALE;
         console.log('CABLES.TL.TIMESCALE ',mint,maxt,count);
-
 
         self.updateViewBox();
         updateTimeDisplay();
@@ -1136,7 +1137,6 @@ catch(e)
         clearTimeout(delayedScaleHeight);
         delayedScaleHeight = setTimeout(self.scaleHeight, 150);
     };
-
 
     var lastScaleHeightMax=0;
     var lastScaleHeightMin=0;
@@ -1164,7 +1164,8 @@ catch(e)
             }
         }
 
-        if( lastScaleHeightMax!=maxv ||lastScaleHeightMin!=minv )
+        console.log(111);
+        // if( lastScaleHeightMax!=maxv ||lastScaleHeightMin!=minv )
         {
             lastScaleHeightMax=maxv;
             lastScaleHeightMin=minv;
@@ -1182,11 +1183,12 @@ catch(e)
             }
 
             var s=Math.abs(maxv)+Math.abs(minv);
-            self.setValueScale( $('#timeline').height()/2.3/( s-Math.abs(s)*0.2) );
+            self.setValueScale( $('#timeline svg').height()/2.3/( s-Math.abs(s)*0.2) );
 
+            console.log('before',viewBox.y);
             viewBox.y=-maxv*1.1*CABLES.TL.VALUESCALE;
+            console.log('after',viewBox.y);
             self.updateViewBox();
-
         }
     };
 
@@ -1239,6 +1241,7 @@ catch(e)
         }
         updateKeyLine();
     };
+
 
     function toggleMultiGraphKeyDisplay(e)
     {
@@ -1341,7 +1344,7 @@ catch(e)
     function scrollTimeOverview(e)
     {
         isScrollingOverview=true;
-        var time=e.clientX/$('#timeline').width();
+        var time=e.offsetX/$('#timeline').width();
         time=projectLength*time;
 
         gui.scene().timer.setTime(time);

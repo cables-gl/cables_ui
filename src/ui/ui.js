@@ -277,23 +277,27 @@ CABLES.UI.GUI = function() {
         $('#library').css('width', window.innerWidth - self.rendererWidth - iconBarWidth);
         $('#library').css('bottom', 0);
 
-        $('#timelineui').css('width', window.innerWidth - self.rendererWidth - 2);
-        $('#timing').css('width', window.innerWidth - self.rendererWidth - 2);
+        var timelineWidth= window.innerWidth - self.rendererWidth - 2 - iconBarWidth;
+        
+        $('#timelineui').css('width', timelineWidth);
+        $('#timing').css('width', timelineWidth);
         $('#timing').css('bottom', filesHeight);
 
-        if (showTiming) {
+        if (showTiming)
+        {
             $('#timelineui').show();
             $('#timing').css('height', this.timingHeight);
+            $('#timing').css('left', iconBarWidth);
 
             $('#overviewtimeline').css('margin-top', timelineUiHeight);
-            $('#overviewtimeline svg').css('width', window.innerWidth - self.rendererWidth - 2);
+            $('#overviewtimeline svg').css('width', timelineWidth);
             $('#overviewtimeline svg').css('height', 25);
 
             $('#timetimeline').css('margin-top', timelineUiHeight + timedisplayheight);
-            $('#timetimeline svg').css('width', window.innerWidth - self.rendererWidth - 2);
+            $('#timetimeline svg').css('width', timelineWidth);
             $('#timetimeline svg').css('height', this.timingHeight - timedisplayheight - timelineUiHeight);
 
-            $('#timeline svg').css('width', window.innerWidth - self.rendererWidth - 2);
+            $('#timeline svg').css('width', timelineWidth);
             $('#timeline svg').css('height', this.timingHeight - timedisplayheight);
             $('#timeline svg').css('margin-top', timelineUiHeight + timedisplayheight + timedisplayheight);
 
@@ -318,7 +322,7 @@ CABLES.UI.GUI = function() {
 
         if (self.timeLine()) self.timeLine().updateViewBox();
 
-        $('#splitterTimeline').css('width', window.innerWidth - self.rendererWidth - 2);
+        $('#splitterTimeline').css('width', timelineWidth);
 
 
         $('#delayed').css('left', window.innerWidth - self.rendererWidth + 10);
@@ -462,11 +466,11 @@ CABLES.UI.GUI = function() {
     // };
 
     this.showTiming = function() {
+        self.timeLine().hidden = false;
         showTiming = true;
-        updateTimingIcon();
-        self.setLayout();
+        $('#timing').show();
+        gui.setLayout();
     };
-
 
     this.hideTiming = function() {
         self.timeLine().hidden = true;
