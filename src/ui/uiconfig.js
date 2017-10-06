@@ -25,10 +25,10 @@ CABLES.UI.uiConfig=
     colorPortHover:'#f00',
     colorPatchStroke:'#6c9fde',
 
-    colorSelected:'#fff',
-    colorKey:'#6c9fde',
-    colorKeyOther:'#ea6638',
-    colorCursor:'#ea6638',
+    // colorSelected:'#fff',
+    // colorKey:'#5CB59E',
+    // colorKeyOther:'#ea6638',
+    // colorCursor:'#52FDE1',
 
     highlight:'#52FDE1',
 

@@ -75,26 +75,6 @@ $customizer-side-padding: 24px;
     #customizer-search {
       width: 100%;
       background-color: $color-c8;
-      border-radius: 4px;
-      font-size: 20px;
-
-      &::-webkit-input-placeholder {
-        color: $color-c4;
-      }
-      :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-         color: $color-c4;
-         opacity:  1;
-      }
-      ::-moz-placeholder { /* Mozilla Firefox 19+ */
-         color: $color-c4;
-         opacity:  1;
-      }
-      :-ms-input-placeholder { /* Internet Explorer 10-11 */
-         color: $color-c4;
-      }
-      ::-ms-input-placeholder { /* Microsoft Edge */
-         color: $color-c4;
-      }
     }
   }
 

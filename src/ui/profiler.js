@@ -24,7 +24,6 @@ CABLES.UI.Profiler=function(projectId)
         var allTimes=0;
         var i=0;
         var sortedItems = [];
-
         var htmlData='';
 
         for(i in items)
@@ -38,7 +37,6 @@ CABLES.UI.Profiler=function(projectId)
         {
             items[i].percent=Math.round(items[i].timeUsed/allTimes*100);
             allPortTriggers+=items[i].numTriggers;
-
         }
         var colorCounter=0;
 
@@ -64,11 +62,23 @@ CABLES.UI.Profiler=function(projectId)
             }
         }
 
-        $('#profilerlist').html(html);
+        // peak list
+        var htmlPeaks='';
+        sortedItems.sort(function(a, b) {return b.peak - a.peak; });
+
+        for(i in sortedItems)
+        {
+            var item=sortedItems[i];
+            var pad='';
+            if(sortedItems.length>0)for(i=0;i<2-(item.peak+'').length;i++)pad+='&nbsp;';
+            htmlPeaks+=pad+(Math.round(96*item.peak)/100)+'ms '+item.title+'<br/>';
+        }
+        
+        $('#profilerlistPeaks').html(htmlPeaks);
         $('#profilerbar').html(htmlBar);
-
+        $('#profilerlist').html(html);
+        
     };
-
 
     this.start=function()
     {

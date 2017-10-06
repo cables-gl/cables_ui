@@ -48,6 +48,10 @@ CABLES.CMD.UI.hideTimeline = function() {
     gui.hideTiming();
 };
 
+CABLES.CMD.UI.showTimeline = function() {
+    gui.showTiming();
+};
+
 
 CABLES.CMD.UI.hideMinimap = function() {
     gui.hideMiniMap();
@@ -124,6 +128,10 @@ CABLES.CMD.commands.push({
         cmd: "hide timeline",
         category: "ui",
         func: CABLES.CMD.UI.hideTimeline
+    }, {
+        cmd: "show timeline",
+        category: "ui",
+        func: CABLES.CMD.UI.showTimeline
     }, {
         cmd: "hide minimap",
         category: "ui",
