@@ -470,24 +470,14 @@ CABLES.TL.UI.TimeLineUI=function()
     overviewRect.drag(
         function(dx,dy,x,y,e)
         {
-            // var time=e.offsetX/$('#timeline').width();
             var time=(oldPos+dx)/$('#timeline').width();
             time=projectLength*time;
-            console.log(dx,time);
 
-            // gui.scene().timer.setTime(time);
-            // cursorTime=time;
-            // clearTimeout(centerCursorTimeout);
-            // centerCursorTimeout=setTimeout(function()
-            // {
-                // self.centerCursor();
             viewBox.x=time*CABLES.TL.TIMESCALE;
     
             updateTimeDisplay();
             self.updateOverviewLine();
             self.updateViewBox();
-                
-            // },10);
         }, 
         function()
         {
@@ -513,14 +503,7 @@ CABLES.TL.UI.TimeLineUI=function()
         {
             var time=(e.offsetX/$('#timeline').width())*projectLength;
 
-            // if(e.shiftKey)
-            // {
-            //     gui.scene().timer.setTime(time);
-            //     self.updateTime();
-            //     self.centerCursor();
-            //     return;
-            // }
-    
+
             var lengthSeconds=(oldEndSeconds-time);
 
             CABLES.TL.TIMESCALE=$('#timeline').width()/lengthSeconds;
@@ -1497,6 +1480,30 @@ catch(e)
         $('#timeline').focus();
         if(e.target.nodeName!='INPUT')e.preventDefault();
     });
+
+
+    $("#overviewtimeline").bind("mousemove", function(e)
+    {
+
+        if(e.which==2)
+        {
+            var time=(e.offsetX/$('#timeline').width())*projectLength;
+            
+            gui.scene().timer.setTime(time);
+            self.updateTime();
+            self.centerCursor();
+
+            e.preventDefault();
+            return;
+        }
+    
+        // $(document).bind("mousemove",mousemoveTime);
+        // $('#timeline').focus();
+        // e=mouseEvent(e);
+        // scrollTime(e);
+        // e.preventDefault();
+    });
+
 
     $("#timetimeline").bind("mousedown", function(e)
     {
