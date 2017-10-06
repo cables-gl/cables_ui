@@ -363,12 +363,27 @@ CABLES.UI.GUI = function() {
             this._elGlCanvas.css('z-index', 9999);
 
         } else {
-            this._elGlCanvas.attr('width', self.rendererWidth);
-            this._elGlCanvas.attr('height', self.rendererHeight);
-            this._elCablesCanvas.attr('width', self.rendererWidth);
-            this._elCablesCanvas.attr('height', self.rendererHeight);
+
+            var density=1;
+            if(CABLES.UI.userSettings.get('hiresDisplays'))
+            {
+                density=window.devicePixelRatio;
+            }
+            gui.patch().scene.cgl.pixelDensity=density;
+            
+            // this._elGlCanvas.css('transform',"scale("+(1/density)+")");
+            // this._elCablesCanvas.css('transform-origin',"top right");
+
+            this._elGlCanvas.attr('width', self.rendererWidth*density);
+            this._elGlCanvas.attr('height', self.rendererHeight*density);
+            this._elGlCanvas.css('width', self.rendererWidth);
+            this._elGlCanvas.css('height', self.rendererHeight);
+            // this._elCablesCanvas.attr('width', self.rendererWidth);
+            // this._elCablesCanvas.attr('height', self.rendererHeight);
             this._elCablesCanvas.css('width', self.rendererWidth + 'px');
             this._elCablesCanvas.css('height', self.rendererHeight + 'px');
+
+            gui.patch().scene.cgl.updateSize();
         }
         // CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
         this._elGlCanvas.hover(function(e) {

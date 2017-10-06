@@ -8,6 +8,8 @@
     <input type="checkbox" {{#if userSettings.theme-bright }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('theme-bright',this.checked);document.location.reload();"> high contrast theme
     <br/><br/>
     <input type="checkbox" {{#if userSettings.presentationmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('presentationmode',this.checked);CABLES.CMD.UI.startPresentationMode();"> presentation mode
+    <br/><br/>
+    <input type="checkbox" {{#if userSettings.hiresDisplays }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('hiresDisplays',this.checked);gui.setLayout();"> use hires display
 
 
 <br/><br/>
