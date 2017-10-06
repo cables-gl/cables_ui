@@ -2793,7 +2793,7 @@ CABLES.UI.Patch = function(_gui) {
 
         for (var i = 0; i < op.portsIn.length; i++) {
             if (op.portsIn[i].uiAttribs.display == 'file') {
-                console.log('yeah');
+
                 op.portsIn[i].set(filename);
             }
         }

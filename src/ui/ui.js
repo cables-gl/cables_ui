@@ -802,19 +802,27 @@ CABLES.UI.GUI = function() {
         });
 
         var spaceBarStart = 0;
-
+        const spacebarPlayDelay=150
 
         $('#timeline, #patch').keyup(function(e) {
             switch (e.which) {
                 case 32: // space play
                     var timeused = Date.now() - spaceBarStart;
-                    if (timeused < 150) self.timeLine().togglePlay();
+                    if (timeused < spacebarPlayDelay) self.timeLine().togglePlay();
                     spaceBarStart = 0;
                     break;
             }
         });
 
-        $(document).keydown(function(e) {
+        $(document).keydown(function(e)
+        {
+            
+            if(gui.scene().timer.isPlaying())
+            {
+                self.timeLine().togglePlay();
+                spaceBarStart=0;
+            }
+
             if (CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91)) {
                 if (CABLES.UI.suggestions) {
                     var suggs = CABLES.UI.suggestions;

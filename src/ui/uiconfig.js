@@ -26,9 +26,9 @@ CABLES.UI.uiConfig=
     colorPatchStroke:'#6c9fde',
 
     colorSelected:'#fff',
-    colorKey:'#6c9fde',
+    colorKey:'#5CB59E',
     colorKeyOther:'#ea6638',
-    colorCursor:'#ea6638',
+    colorCursor:'#52FDE1',
 
     highlight:'#52FDE1',
 
