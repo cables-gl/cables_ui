@@ -369,12 +369,7 @@ CABLES.UI.GUI = function() {
 
         } else {
 
-            var density=1;
-            if(CABLES.UI.userSettings.get('hiresDisplays'))
-            {
-                density=window.devicePixelRatio;
-            }
-            gui.patch().scene.cgl.pixelDensity=density;
+            var density=gui.patch().scene.cgl.pixelDensity;
             
             // this._elGlCanvas.css('transform',"scale("+(1/density)+")");
             // this._elCablesCanvas.css('transform-origin',"top right");
