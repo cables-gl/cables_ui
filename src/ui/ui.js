@@ -151,7 +151,8 @@ CABLES.UI.GUI = function() {
         self.rendererWidth=Math.floor(self.rendererWidth);
         self.rendererHeight=Math.floor(self.rendererHeight);
 
-        $('#canvasInfoSize').html('size: '+self.rendererWidth+' x '+self.rendererHeight);
+        if(gui.patch().scene.cgl.canvasWidth)
+        $('#canvasInfoSize').html('size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight);
 
         var iconBarWidth=iconBarWidth||80;
 
@@ -1519,6 +1520,7 @@ CABLES.UI.GUI = function() {
                 top: $('#glcanvas').height() + 1,
                 left: posCanvas.left
             });
+            $('#canvasInfoSize').html('size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight);
         }
         else
         {
