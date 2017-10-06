@@ -177,8 +177,8 @@ CABLES.UI.GUI = function() {
         if (showTiming) {
             patchHeight = patchHeight - this.timingHeight - 2;
 
-            $('.easingselect').css('bottom', 40);
-            $('.easingselect').css('left', patchWidth + 30);
+            $('.easingselect').css('bottom', 0);
+            $('.easingselect').css('left', patchWidth + iconBarWidth);
         } else {
             patchHeight -= timelineUiHeight;
         }

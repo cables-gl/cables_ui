@@ -998,6 +998,12 @@ catch(e)
         return res;
     };
 
+    this.cycleEasing=function(dir)
+    {
+
+
+    };
+
     var spacePressed=false;
 
     this.jumpKey=function(dir)
@@ -1125,8 +1131,17 @@ catch(e)
                 gui.scene().timer.setTime(rNewTime/fps);
             break;
 
+            case 33: // pg up
+                self.cycleEasing(-1);
+            break;
+
+            case 34: // pg down
+                self.cycleEasing(1);
+            break;
+
+
             default:
-                // console.log('key ',e.which);
+                console.log('key ',e.which);
             break;
         }
     });
@@ -1484,7 +1499,6 @@ catch(e)
 
     $("#overviewtimeline").bind("mousemove", function(e)
     {
-
         if(e.which==2)
         {
             var time=(e.offsetX/$('#timeline').width())*projectLength;
@@ -1496,12 +1510,6 @@ catch(e)
             e.preventDefault();
             return;
         }
-    
-        // $(document).bind("mousemove",mousemoveTime);
-        // $('#timeline').focus();
-        // e=mouseEvent(e);
-        // scrollTime(e);
-        // e.preventDefault();
     });
 
 
@@ -1846,7 +1854,15 @@ catch(e)
                 }
             }
 
-            if(count>0)CABLES.UI.notify(count+' keys selected');
+            if(count>0)
+            {
+                // CABLES.UI.notify(count+' keys selected');
+                $('.easingselect').show();
+            }
+            else
+            {
+                $('.easingselect').hide();
+            }
         }
     }
 
