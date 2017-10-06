@@ -461,6 +461,8 @@ CABLES.TL.UI.TimeLineUI=function()
     var cursorLineDisplay = paperTime.path("M 0 0 L 0 10");
     cursorLineDisplay.node.classList.add('timeline-cursor');
 
+
+    var oldPos=0;
     overviewRect=paperOverview.rect( 0,0,10,10).attr({
         x:0,y:0,width:20,height:30
     });
@@ -468,19 +470,29 @@ CABLES.TL.UI.TimeLineUI=function()
     overviewRect.drag(
         function(dx,dy,x,y,e)
         {
-            var time=e.offsetX/$('#timeline').width();
+            // var time=e.offsetX/$('#timeline').width();
+            var time=(oldPos+dx)/$('#timeline').width();
             time=projectLength*time;
+            console.log(dx,time);
 
-            gui.scene().timer.setTime(time);
-            cursorTime=time;
-            clearTimeout(centerCursorTimeout);
-            centerCursorTimeout=setTimeout(function()
-            {
-                self.centerCursor();
-                self.updateOverviewLine();
-            },10);
+            // gui.scene().timer.setTime(time);
+            // cursorTime=time;
+            // clearTimeout(centerCursorTimeout);
+            // centerCursorTimeout=setTimeout(function()
+            // {
+                // self.centerCursor();
+            viewBox.x=time*CABLES.TL.TIMESCALE;
+    
+            updateTimeDisplay();
+            self.updateOverviewLine();
+            self.updateViewBox();
+                
+            // },10);
         }, 
-        function(){}, 
+        function()
+        {
+            oldPos=overviewRect.attr('x');
+        }, 
         function(){}
     );
 
@@ -501,13 +513,13 @@ CABLES.TL.UI.TimeLineUI=function()
         {
             var time=(e.offsetX/$('#timeline').width())*projectLength;
 
-            if(e.shiftKey)
-            {
-                gui.scene().timer.setTime(time);
-                self.updateTime();
-                self.centerCursor();
-                return;
-            }
+            // if(e.shiftKey)
+            // {
+            //     gui.scene().timer.setTime(time);
+            //     self.updateTime();
+            //     self.centerCursor();
+            //     return;
+            // }
     
             var lengthSeconds=(oldEndSeconds-time);
 
