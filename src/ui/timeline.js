@@ -166,7 +166,7 @@ CABLES.TL.Key.prototype.initUI=function()
             this.bezierControlLineIn = gui.timeLine().getPaper().path("M 0 0 ");
     }
 
-    this.circle=gui.timeLine().getPaper().circle(this.x, this.y, 7);
+    this.circle=gui.timeLine().getPaper().circle(this.x, this.y, 5);
     this.circle.attr(discattr);
     this.circle.toFront();
 
