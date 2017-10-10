@@ -166,7 +166,7 @@ CABLES.TL.Key.prototype.initUI=function()
             this.bezierControlLineIn = gui.timeLine().getPaper().path("M 0 0 ");
     }
 
-    this.circle=gui.timeLine().getPaper().circle(this.x, this.y, 7);
+    this.circle=gui.timeLine().getPaper().circle(this.x, this.y, 5);
     this.circle.attr(discattr);
     this.circle.toFront();
 
@@ -461,6 +461,8 @@ CABLES.TL.UI.TimeLineUI=function()
     var cursorLineDisplay = paperTime.path("M 0 0 L 0 10");
     cursorLineDisplay.node.classList.add('timeline-cursor');
 
+
+    var oldPos=0;
     overviewRect=paperOverview.rect( 0,0,10,10).attr({
         x:0,y:0,width:20,height:30
     });
@@ -468,19 +470,19 @@ CABLES.TL.UI.TimeLineUI=function()
     overviewRect.drag(
         function(dx,dy,x,y,e)
         {
-            var time=e.offsetX/$('#timeline').width();
+            var time=(oldPos+dx)/$('#timeline').width();
             time=projectLength*time;
 
-            gui.scene().timer.setTime(time);
-            cursorTime=time;
-            clearTimeout(centerCursorTimeout);
-            centerCursorTimeout=setTimeout(function()
-            {
-                self.centerCursor();
-                self.updateOverviewLine();
-            },10);
+            viewBox.x=time*CABLES.TL.TIMESCALE;
+    
+            updateTimeDisplay();
+            self.updateOverviewLine();
+            self.updateViewBox();
         }, 
-        function(){}, 
+        function()
+        {
+            oldPos=overviewRect.attr('x');
+        }, 
         function(){}
     );
 
@@ -501,14 +503,7 @@ CABLES.TL.UI.TimeLineUI=function()
         {
             var time=(e.offsetX/$('#timeline').width())*projectLength;
 
-            if(e.shiftKey)
-            {
-                gui.scene().timer.setTime(time);
-                self.updateTime();
-                self.centerCursor();
-                return;
-            }
-    
+
             var lengthSeconds=(oldEndSeconds-time);
 
             CABLES.TL.TIMESCALE=$('#timeline').width()/lengthSeconds;
@@ -1003,6 +998,12 @@ catch(e)
         return res;
     };
 
+    this.cycleEasing=function(dir)
+    {
+
+
+    };
+
     var spacePressed=false;
 
     this.jumpKey=function(dir)
@@ -1130,8 +1131,17 @@ catch(e)
                 gui.scene().timer.setTime(rNewTime/fps);
             break;
 
+            case 33: // pg up
+                self.cycleEasing(-1);
+            break;
+
+            case 34: // pg down
+                self.cycleEasing(1);
+            break;
+
+
             default:
-                // console.log('key ',e.which);
+                console.log('key ',e.which);
             break;
         }
     });
@@ -1486,6 +1496,23 @@ catch(e)
         if(e.target.nodeName!='INPUT')e.preventDefault();
     });
 
+
+    $("#overviewtimeline").bind("mousemove", function(e)
+    {
+        if(e.which==2)
+        {
+            var time=(e.offsetX/$('#timeline').width())*projectLength;
+            
+            gui.scene().timer.setTime(time);
+            self.updateTime();
+            self.centerCursor();
+
+            e.preventDefault();
+            return;
+        }
+    });
+
+
     $("#timetimeline").bind("mousedown", function(e)
     {
         $(document).bind("mousemove",mousemoveTime);
@@ -1827,7 +1854,15 @@ catch(e)
                 }
             }
 
-            if(count>0)CABLES.UI.notify(count+' keys selected');
+            if(count>0)
+            {
+                // CABLES.UI.notify(count+' keys selected');
+                $('.easingselect').show();
+            }
+            else
+            {
+                $('.easingselect').hide();
+            }
         }
     }
 

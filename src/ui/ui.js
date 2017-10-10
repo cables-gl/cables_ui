@@ -151,7 +151,8 @@ CABLES.UI.GUI = function() {
         self.rendererWidth=Math.floor(self.rendererWidth);
         self.rendererHeight=Math.floor(self.rendererHeight);
 
-        $('#canvasInfoSize').html('size: '+self.rendererWidth+' x '+self.rendererHeight);
+        if(gui.patch().scene.cgl.canvasWidth)
+        $('#canvasInfoSize').html('size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight);
 
         var iconBarWidth=iconBarWidth||80;
 
@@ -176,8 +177,8 @@ CABLES.UI.GUI = function() {
         if (showTiming) {
             patchHeight = patchHeight - this.timingHeight - 2;
 
-            $('.easingselect').css('bottom', 40);
-            $('.easingselect').css('left', patchWidth + 30);
+            $('.easingselect').css('bottom', 0);
+            $('.easingselect').css('left', patchWidth + iconBarWidth);
         } else {
             patchHeight -= timelineUiHeight;
         }
@@ -367,12 +368,22 @@ CABLES.UI.GUI = function() {
             this._elGlCanvas.css('z-index', 9999);
 
         } else {
-            this._elGlCanvas.attr('width', self.rendererWidth);
-            this._elGlCanvas.attr('height', self.rendererHeight);
-            this._elCablesCanvas.attr('width', self.rendererWidth);
-            this._elCablesCanvas.attr('height', self.rendererHeight);
+
+            var density=gui.patch().scene.cgl.pixelDensity;
+            
+            // this._elGlCanvas.css('transform',"scale("+(1/density)+")");
+            // this._elCablesCanvas.css('transform-origin',"top right");
+
+            this._elGlCanvas.attr('width', self.rendererWidth*density);
+            this._elGlCanvas.attr('height', self.rendererHeight*density);
+            this._elGlCanvas.css('width', self.rendererWidth);
+            this._elGlCanvas.css('height', self.rendererHeight);
+            // this._elCablesCanvas.attr('width', self.rendererWidth);
+            // this._elCablesCanvas.attr('height', self.rendererHeight);
             this._elCablesCanvas.css('width', self.rendererWidth + 'px');
             this._elCablesCanvas.css('height', self.rendererHeight + 'px');
+
+            gui.patch().scene.cgl.updateSize();
         }
         // CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
         this._elGlCanvas.hover(function(e) {
@@ -1504,6 +1515,7 @@ CABLES.UI.GUI = function() {
                 top: $('#glcanvas').height() + 1,
                 left: posCanvas.left
             });
+            $('#canvasInfoSize').html('size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight);
         }
         else
         {
