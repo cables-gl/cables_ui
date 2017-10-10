@@ -251,7 +251,7 @@ CABLES.UI.ServerOps = function(gui) {
         if (name.indexOf('Ops.') === 0) newName = name.substr(4, name.length);
 
         var html = '<h2>' + title + '</h2>';
-        html += '<div class="clone"><span>Ops.User.' + gui.user.username + '.</span><input id="opNameDialogInput" value="' + newName + '"/></div></div>';
+        html += '<div class="clone"><span>Ops.User.' + gui.user.username + '.&nbsp;&nbsp;</span><input type="text" id="opNameDialogInput" value="' + newName + '"/></div></div>';
         html += '<br/>';
         html += 'Your op will be private. Only you can see and use them.';
         html += '<br/><br/>';
@@ -259,10 +259,17 @@ CABLES.UI.ServerOps = function(gui) {
         html += '<br/><br/>';
 
         CABLES.UI.MODAL.show(html);
-        $('#cloneOpName').focus();
+
+        $('#opNameDialogInput').focus();
+        
 
         $('#opNameDialogSubmit').bind("click",
             function(event) {
+                if($('#opNameDialogInput').val()=="")
+                {
+                    alert("please enter a name for your op!");
+                    return;
+                }
                 cb($('#opNameDialogInput').val());
             });
     };

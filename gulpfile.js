@@ -135,12 +135,12 @@ gulp.task('svgcss', function () {
             cssPrefix: 'icon-',
             addSize: false
         }))
-        .pipe(rename('svgicons.scss'))
         .pipe(replace('background-image', 'mask'))
         .pipe(autoprefixer({
             browsers: ['last 2 versions'],
             cascade: false
         }))
+        .pipe(rename('svgicons.scss'))
         .pipe(gulp.dest('scss/'));
 });
 

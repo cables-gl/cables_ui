@@ -495,10 +495,6 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
 
     input
     {
-        &:focus
-        {
-            outline: none;
-        }
         font-size: 13px;
         padding:10px;
         padding-left:5px;
@@ -506,7 +502,7 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
         width:350px;
         background-color: $color-c10;
         color: $color-c1;
-        float:right
+        // float:right
     }
 }
 
