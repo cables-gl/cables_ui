@@ -251,7 +251,7 @@ CABLES.UI.ServerOps = function(gui) {
         if (name.indexOf('Ops.') === 0) newName = name.substr(4, name.length);
 
         var html = '<h2>' + title + '</h2>';
-        html += '<div class="clone"><span>Ops.User.' + gui.user.username + '.&nbsp;&nbsp;</span><input type="text" id="opNameDialogInput" value="' + newName + '"/></div></div>';
+        html += '<div class="clone"><span>Ops.User.' + gui.user.usernameLowercase + '.&nbsp;&nbsp;</span><input type="text" id="opNameDialogInput" value="' + newName + '"/></div></div>';
         html += '<br/>';
         html += 'Your op will be private. Only you can see and use them.';
         html += '<br/><br/>';
@@ -277,7 +277,7 @@ CABLES.UI.ServerOps = function(gui) {
     this.createDialog = function() {
         this.opNameDialog('Create operator', name, function(newname) {
             console.log(newname);
-            self.create('Ops.User.' + gui.user.username + '.' + newname, function() {
+            self.create('Ops.User.' + gui.user.usernameLowercase + '.' + newname, function() {
                 CABLES.UI.MODAL.hide();
             });
         });
