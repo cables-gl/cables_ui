@@ -53,7 +53,7 @@ CABLES.CMD.RENDERER.changeSize = function()
         Math.round(gui.rendererWidth) + ' x ' + Math.round(gui.rendererHeight),
         function(r)
         {
-            var matches = r.match(/\d+/g)
+            var matches = r.match(/\d+/g);
             if (matches.length > 0)
             {
                 gui.rendererWidth = matches[0];

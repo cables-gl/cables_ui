@@ -114,7 +114,7 @@ CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
             }
         }
     }
-}
+};
 
 CABLES.UI.Patch.prototype.startflowVis=function()
 {

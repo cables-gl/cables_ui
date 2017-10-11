@@ -60,7 +60,7 @@ CABLES.UI.Patch = function(_gui) {
     {
         if(!currentOp)return false;
         return currentOp.op==op;
-    }
+    };
 
     this.getLargestPort = function() {
         var max = 0;

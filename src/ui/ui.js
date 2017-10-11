@@ -813,7 +813,7 @@ CABLES.UI.GUI = function() {
         });
 
         var spaceBarStart = 0;
-        const spacebarPlayDelay=150
+        const spacebarPlayDelay = 150;
 
         $('#timeline, #patch').keyup(function(e) {
             switch (e.which) {
