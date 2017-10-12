@@ -1451,8 +1451,6 @@ CABLES.UI.GUI = function() {
 
         if (which == 'preview') self.preview.show();
         else if (self.preview) self.preview.hide();
-
-
     };
 
     this.startPacoSender = function() {
@@ -1524,27 +1522,26 @@ CABLES.UI.GUI = function() {
         }
     };
 
-    this.init = function() {
+    this.init = function()
+    {
         $('#infoArea').show();
 
-        $('#infoArea').hover(function(e) {
-            CABLES.UI.showInfo();
-        }, function() {
-            CABLES.UI.hideInfo();
-        });
+        $('#infoArea').hover(
+            function(e)
+            {
+                CABLES.UI.showInfo();
+            }, function() {
+                CABLES.UI.hideInfo();
+            });
 
-        $('#canvasmodal').on('mousedown',function()
-        {
-            gui.showCanvasModal(false);
-        });
-
-
+        $('#canvasmodal').on('mousedown',
+            function()
+            {
+                gui.showCanvasModal(false);
+            });
 
         _patch = new CABLES.UI.Patch(this);
         _patch.show(_scene);
-
-
-
 
         // _socket=new CABLES.API.Socket(this);
         // _socket = new CABLES.API.Socket();

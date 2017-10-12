@@ -998,12 +998,6 @@ catch(e)
         return res;
     };
 
-    this.cycleEasing=function(dir)
-    {
-
-
-    };
-
     var spacePressed=false;
 
     this.jumpKey=function(dir)
@@ -1122,6 +1116,10 @@ catch(e)
                 if(e.shiftKey)num=10;
                 var newTime=getFrame((self.getTime()-1.0/fps*num)+0.001);
                 gui.scene().timer.setTime(newTime/fps);
+                setCursor(newTime/fps);
+                updateTimeDisplay();
+                self.updateTime();
+                
             break;
 
             case 39: // right
@@ -1129,14 +1127,16 @@ catch(e)
                 if(e.shiftKey)numr=10;
                 var rNewTime=getFrame((self.getTime()+1.0/fps*numr)+0.001);
                 gui.scene().timer.setTime(rNewTime/fps);
+                setCursor(rNewTime/fps);
+                updateTimeDisplay();
+                self.updateTime();
+
             break;
 
             case 33: // pg up
-                self.cycleEasing(-1);
             break;
 
             case 34: // pg down
-                self.cycleEasing(1);
             break;
 
 

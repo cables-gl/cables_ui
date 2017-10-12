@@ -22,7 +22,6 @@ CABLES.uploadDragOver=function(event)
 {
     CABLES.uploadDropEvent=event.originalEvent;
 
-
     if(CABLES.DragNDrop.internal)
     {
         console.log('cancel because internal');
