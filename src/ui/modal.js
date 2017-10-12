@@ -189,9 +189,7 @@ CABLES.UI.MODAL.getFileSnippet=function(url,line,cb)
             }
             cb(html);
         });
-
-
-}
+};
 
 CABLES.UI.MODAL.showOpException=function(ex,opName)
 {

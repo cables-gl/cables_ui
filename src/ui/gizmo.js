@@ -47,7 +47,7 @@ CABLES.htmlLine=function(parentElement,color)
     
         setPos(x, y, c, alpha);
 
-    }
+    };
     
 
     
@@ -74,7 +74,7 @@ CABLES.htmlLine=function(parentElement,color)
 
             // document.body.appendChild(createLineElement(100, 100, 200, 200));
         
-}
+};
 
 
 CABLES.Gizmo=function()
