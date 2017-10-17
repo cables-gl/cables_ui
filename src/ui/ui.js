@@ -564,28 +564,10 @@ CABLES.UI.GUI = function() {
             });
     };
 
-    this.deleteCurrentProject = function() {
-        if (confirm('delete ?')) {
-            CABLES.api.delete('project/' + self.patch().getCurrentProject()._id, {},
-                function() {
-                    // CABLES.UI.SELECTPROJECT.doReload=true;
-                    document.location.href = "/";
-                });
-        }
+    this.deleteCurrentProject = function()
+    {
+        if(confirm('delete ?')) CABLES.sandbox.deleteProject(self.patch().getCurrentProject()._id);
     };
-
-    // this.convertFile=function(fileId)
-    // {
-    //     CABLES.api.post('project/'+self.patch().getCurrentProject()._id+'/file/convert/'+fileId,{options:
-    //         {
-    //             removeTangents:$('#convert_remove_tangents').is(':checked'),
-    //             removeTexcoords:$('#convert_remove_texcoords').is(':checked'),
-    //         }},
-    //         function(r)
-    //         {
-    //             CABLES.UI.MODAL.show('<pre>'+JSON.stringify(r,null,4)+'</pre>');
-    //         });
-    // };
 
     this.getUserOs = function() {
         var OSName = "Unknown OS";

@@ -20,9 +20,17 @@ CABLES.SandboxBrowser.prototype.loadUser=function(cb,cbError)
         function(data) {
             gui.redirectNotLoggedIn();
         });
-    
+
+   
 };
 
 
 
-
+CABLES.SandboxBrowser.prototype.deleteProject=function(id)
+{
+    CABLES.api.delete('project/' + id, {},
+    function() {
+        // CABLES.UI.SELECTPROJECT.doReload=true;
+        document.location.href = "/";
+    });
+};
