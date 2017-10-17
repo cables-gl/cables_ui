@@ -38,6 +38,7 @@
             return url+'?nc='+(Date.now()+'').substr(-6);
         }
 
+
         var scriptTag = document.createElement('script');
         scriptTag.setAttribute('src',CABLES.noCacheUrl('/ui/js/libs.core.min.js'));
         document.body.appendChild(scriptTag);

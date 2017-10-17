@@ -499,7 +499,6 @@ CABLES.UI.GUI = function() {
         self.setLayout();
     };
 
-
     this.showUiDebug = function() {
         var numVisibleOps = 0;
         for (var i in self.ops) {
@@ -653,12 +652,10 @@ CABLES.UI.GUI = function() {
 
                 CABLES.UI.fileSelect.refresh();
             });
-
     };
-    this.showConverter = 
-        function(converterId, projectId, fileId, converterName)
+
+    this.showConverter = function(converterId, projectId, fileId, converterName)
         {
-            
             var html = CABLES.UI.getHandleBarHtml(
                 'params_convert', {
                     "converterId": converterId,
@@ -668,7 +665,6 @@ CABLES.UI.GUI = function() {
                 });
 
             CABLES.UI.MODAL.show(html);
-            // $('#options').html(html);
         };
 
     this.bind = function(cb) {
@@ -827,7 +823,6 @@ CABLES.UI.GUI = function() {
 
         $(document).keydown(function(e)
         {
-            
             if(gui.scene().timer.isPlaying())
             {
                 self.timeLine().togglePlay();
@@ -1048,9 +1043,7 @@ CABLES.UI.GUI = function() {
                 '<div style="min-height:30px;max-height:500px;overflow-y:scroll;">' + html + '</div>' +
                 '<center><a class="bluebutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a></center>'
             );
-
         }
-
 
         var html = '';
         if (this.project().users.indexOf(this.user.id) == -1 &&
@@ -1065,8 +1058,6 @@ CABLES.UI.GUI = function() {
                 close: true,
                 timeout: false
             });
-
-
         }
 
         if (!window.chrome) {
@@ -1357,25 +1348,6 @@ CABLES.UI.GUI = function() {
     };
 
 
-    this.loadUser = function() {
-        CABLES.api.get('user/me',
-            function(data) {
-                if (data.user) {
-                    self.user = data.user;
-                    $('#loggedout').hide();
-                    $('#loggedin').show();
-                    $('#username').html('&nbsp;&nbsp;' + data.user.username);
-                    incrementStartup();
-                    self.serverOps = new CABLES.UI.ServerOps(self);
-
-                    logStartup('User Data loaded');
-                }
-            },
-            function(data) {
-                self.redirectNotLoggedIn();
-
-            });
-    };
 
     this.redirectNotLoggedIn = function() {
         var theUrl = document.location.href;
@@ -1601,10 +1573,26 @@ CABLES.UI.GUI = function() {
         gui.replaceNavShortcuts();
     };
     
-    self.loadUser();
-};
+    CABLES.sandbox.loadUser(
+        function(user)
+        {
+            self.user = user;
+            $('#loggedout').hide();
+            $('#loggedin').show();
+            $('#username').html('&nbsp;&nbsp;' + user.usernameLowercase);
+            incrementStartup();
+            self.serverOps = new CABLES.UI.ServerOps(self);
 
-function startUi(event) {
+            logStartup('User Data loaded');
+        });
+}
+
+
+function startUi(event)
+{
+    if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
+        else CABLES.sandbox=new CABLES.SandboxBrowser();
+
     logStartup('Init UI');
 
     CABLES.UI.initHandleBarsHelper();
@@ -1613,13 +1601,9 @@ function startUi(event) {
         if (e.preventDefault) e.preventDefault();
     });
 
-
-
     gui = new CABLES.UI.GUI();
 
-
     gui.init();
-    
     gui.checkIdle();
 
     gui.bind(function() {
@@ -1627,15 +1611,9 @@ function startUi(event) {
         gui.setLayout();
     });
 
-
     $('#glcanvas').on("focus", function() {
         gui.showCanvasModal(true);
     });
-
-    // $('#glcanvas').on("blur", function() {
-    //     gui.showCanvasModal(false);
-    //
-    // });
 
     $(document).on("click", '.panelhead', function(e) {
         var panelselector = $(this).data("panelselector");
