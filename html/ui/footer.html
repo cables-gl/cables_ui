@@ -40,7 +40,7 @@
 
 
         var scriptTag = document.createElement('script');
-        scriptTag.setAttribute('src',CABLES.noCacheUrl('/ui/js/libs.core.min.js'));
+        scriptTag.setAttribute('src',CABLES.noCacheUrl('js/libs.core.min.js'));
         document.body.appendChild(scriptTag);
 
         incrementStartup();
@@ -67,6 +67,7 @@
 
             loadjs.ready('libs', function()
             {
+
                 incrementStartup();
                 logStartup('loaded libs');
 
@@ -80,25 +81,28 @@
 
                     loadjs.ready('cables_core', function()
                     {
+                        
                         logStartup('loaded cables core');
-
+                        
                         incrementStartup();
-                        loadjs([CABLES.noCacheUrl('/api/ops/code')],'cables_ops');
 
-                        loadjs.ready('cables_ops', function()
+                        loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
+
+                        loadjs.ready('cablesui', function()
                         {
                             incrementStartup();
-                            logStartup('loaded cables ops');
+                            logStartup('loaded ui');
 
+                            loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
+                            if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
+                                else CABLES.sandbox=new CABLES.SandboxBrowser();
 
-                                loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
+                            loadjs([CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsCode())],'cables_ops');
 
-                                loadjs.ready('cablesui', function()
-                                {
-                                    incrementStartup();
-                                    logStartup('loaded ui');
-
-                                    loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
+                            loadjs.ready('cables_ops', function()
+                            {
+                                incrementStartup();
+                                logStartup('loaded cables ops');
 
                                     loadjs.ready('cables_vue', function()
                                     {

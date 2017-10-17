@@ -1505,8 +1505,8 @@ CABLES.UI.GUI = function() {
 
 function startUi(event)
 {
-    if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
-        else CABLES.sandbox=new CABLES.SandboxBrowser();
+    // if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
+    //     else CABLES.sandbox=new CABLES.SandboxBrowser();
 
     logStartup('Init UI');
 

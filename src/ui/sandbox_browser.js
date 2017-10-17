@@ -34,6 +34,12 @@ CABLES.SandboxBrowser.prototype.deleteProject=function(id)
     });
 };
 
+CABLES.SandboxBrowser.prototype.getUrlOpsCode=function(id)
+{
+    return '/api/ops/code';
+};
+
+
 
 
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)

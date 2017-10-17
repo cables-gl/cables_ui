@@ -14,6 +14,8 @@ var babelify = require('babelify');
 var vueify = require('vueify');
 var replace = require('gulp-replace');
 var autoprefixer = require('gulp-autoprefixer');
+var merge = require('merge-stream');
+
 
 gulp.task('vueify', function(){
 	browserify('vue-src/main.js')
@@ -144,6 +146,23 @@ gulp.task('svgcss', function () {
         .pipe(gulp.dest('scss/'));
 });
 
+
+gulp.task('electronapp', function () {
+
+    var copydist = gulp.src('dist/**/*.*').pipe(gulp.dest('dist-electron/'));
+
+    var electronsrc = gulp.src('src-electron/**/*.*').pipe(gulp.dest('dist-electron/'));
+    // var someOtherOperation = gulp.src('./assets').pipe(gulp.dest('out/assets'));
+    
+    return merge(copydist, electronsrc);
+
+    
+
+    });
+
+
+
+
 gulp.task('watch', function() {
     gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);
@@ -157,3 +176,5 @@ gulp.task('watch', function() {
 
 gulp.task('default', ['svgcss','scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright', 'vueify', 'watch']);
 gulp.task('build', ['svgcss','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','sass-bright', 'vueify']);
+
+gulp.task('electron', ['electronapp']);
