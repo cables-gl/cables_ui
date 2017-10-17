@@ -934,7 +934,17 @@ CABLES.UI.GUI = function() {
             }
         });
 
-        initRouting(cb);
+        
+        if(CABLES.sandbox.initRouting)
+        {
+            console.log("ROUETETETETE");
+            CABLES.sandbox.initRouting(cb);
+        }
+        else
+        {
+            userOpsLoaded=true;
+            cb();
+        }
 
     };
 
@@ -1086,88 +1096,6 @@ CABLES.UI.GUI = function() {
 
     };
 
-    function initRouting(cb) {
-        if (!self.serverOps || !self.serverOps.finished()) {
-            // wait for userops finished loading....
-            setTimeout(function() {
-                initRouting(cb);
-            }, 100);
-            return;
-        }
-
-        logStartup('init routing...');
-        var router = new Simrou();
-
-        router.addRoute('/').get(function(event, params) {});
-
-
-        function loadProject(id, ver) {
-            if (_scene.cgl.aborted) {
-                cb();
-                return;
-            }
-
-            if(ver) ver = '/version/' + ver;
-            else ver = "";
-
-            CABLES.UI.MODAL.showLoading('Loading');
-            CABLES.api.get('project/' + id + ver, function(proj) {
-                incrementStartup();
-                var userOpsUrls = [];
-                // console.log(proj.userList[i]+'!!!',proj);
-
-                for (var i in proj.userList) {
-                    userOpsUrls.push('/api/ops/code/' + proj.userList[i]);
-                }
-
-                var lid = 'userops' + proj._id + CABLES.generateUUID();
-                loadjs(userOpsUrls, lid);
-                loadjs.ready(lid, function() {
-                    userOpsLoaded = true;
-                    incrementStartup();
-                    logStartup('User Ops loaded');
-                    cb();
-
-                    self.patch().setProject(proj);
-                    if (proj.ui) {
-                        self.bookmarks.set(proj.ui.bookmarks);
-                        $('#options').html(gui.bookmarks.getHtml());
-
-                    }
-                    metaCode.init();
-                    gui.opSelect().reload();
-                    self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-
-                    self.showWelcomeNotifications();
-                });
-            }, function() {
-                $('#loadingInfo').append('Error: Unknown Project');
-
-            });
-        }
-
-        router.addRoute('/project/:id/v/:ver').get(function(event, params)
-        {
-            console.log('load version ',params.ver);
-            loadProject(params.id, params.ver);
-            // CABLES.UI.MODAL.showLoading('Loading');
-            // CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
-            // {
-            //     self.patch().setProject(proj);
-            // });
-        });
-        router.addRoute('/project').get(function(event, params) {
-            console.log('no projectid?');
-            $('#loadingInfo').append('Error: No Project ID in URL');
-        });
-
-        router.addRoute('/project/:id').get(function(event, params) {
-            console.log('load project');
-            loadProject(params.id);
-        });
-
-        router.start('/');
-    }
 
     this.importJson3D = function(id) {
         CABLES.api.get('json3dimport/' + id,
@@ -1310,6 +1238,11 @@ CABLES.UI.GUI = function() {
     this.showMetaPaco = function() {
         this.metaPaco.show();
     };
+
+    this.metaCode = function() {
+        return metaCode;
+    };
+
 
     this.showMetaCode = function() {
         metaCode.show();
@@ -1589,8 +1522,16 @@ function startUi(event)
     gui.checkIdle();
 
     gui.bind(function() {
+
+        console.log("BIND FINISHED!");
+        gui.metaCode().init();
+        gui.opSelect().reload();
+        gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+        gui.showWelcomeNotifications();
+
         gui.waitToShowUI();
         gui.setLayout();
+        gui.patch().fixTitlePositions();
     });
 
     $('#glcanvas').on("focus", function() {

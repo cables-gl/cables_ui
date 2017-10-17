@@ -739,6 +739,15 @@ CABLES.UI.Patch = function(_gui) {
         self.animViewBox(vb.x, vb.y, vb.w, vb.h);
     };
 
+    this.fixTitlePositions=function()
+    {
+        for(var i in this.ops)
+        {
+            this.ops[i].fixTitle();
+        }
+
+    }
+
     this.centerViewBox = function(x, y) {
         self.animViewBox(
             x - viewBox.w / 2,

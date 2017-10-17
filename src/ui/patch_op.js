@@ -662,7 +662,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     this.setTitle = function(t) {
-        title = t;
+        title = t||title;
         if (label) {
             label.attr({
                 text: title
@@ -733,6 +733,11 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
 
     }.bind(this);
+
+    this.fixTitle=function()
+    {
+        this.oprect.setTitle();
+    }
 
     this.remove = function() {
         deleted = true;
