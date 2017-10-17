@@ -1542,6 +1542,7 @@ CABLES.UI.GUI = function() {
 
         _patch = new CABLES.UI.Patch(this);
         _patch.show(_scene);
+        
 
         // _socket=new CABLES.API.Socket(this);
         // _socket = new CABLES.API.Socket();
@@ -1599,6 +1600,7 @@ CABLES.UI.GUI = function() {
         });
         gui.replaceNavShortcuts();
     };
+    
     self.loadUser();
 };
 
@@ -1617,10 +1619,12 @@ function startUi(event) {
 
 
     gui.init();
+    
     gui.checkIdle();
 
     gui.bind(function() {
         gui.waitToShowUI();
+        gui.setLayout();
     });
 
 
