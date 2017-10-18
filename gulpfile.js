@@ -166,15 +166,16 @@ gulp.task('electronapp', function () {
 gulp.task('watch', function() {
     gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);
-    gulp.watch('src/ui/**/*.js', ['scripts_ui']);
+    gulp.watch('src/ui/**/*.js', ['scripts_ui','electron']);
     gulp.watch('scss/**/*.scss', ['sass','sass-bright']);
     gulp.watch('html/**/*.html', ['html_ui']);
     gulp.watch('icons/**/*.svg', ['svgcss']);
     gulp.watch('vue-src/**/*', ['vueify']);
+    gulp.watch('src-electron/**/*', ['electron']);
 });
 
 
-gulp.task('default', ['svgcss','scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright', 'vueify', 'watch']);
+gulp.task('default', ['svgcss','scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright', 'vueify','electron', 'watch']);
 gulp.task('build', ['svgcss','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','sass-bright', 'vueify']);
 
 gulp.task('electron', ['electronapp']);

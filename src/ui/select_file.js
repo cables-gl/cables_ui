@@ -35,7 +35,7 @@ CABLES.UI.FileSelect = function() {
     };
 
     this.setTab = function(which) {
-        if (!gui.patch().getCurrentProject()) return;
+        if (!gui.patch().getCurrentProject() || !gui.patch().getCurrentProject()._id) return;
 
         if (which == 'projectfiles') {
             assetPath = '/assets/' + gui.patch().getCurrentProject()._id;
@@ -62,6 +62,7 @@ CABLES.UI.FileSelect = function() {
 
         } else
         if (id) {
+            if(window.process && window.process.versions['electron']) return;
             CABLES.api.get(
                 'project/' + gui.patch().getCurrentProject()._id + '/file/info/' + id,
                 function(r) {

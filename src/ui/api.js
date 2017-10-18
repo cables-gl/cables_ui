@@ -9,10 +9,13 @@ CABLES.API=function()
 
     function request(method,url,data,cbSuccess,cbError,doCache)
     {
+
+        url= CABLES.sandbox.getUrlApiPrefix()+url;
+
         $.ajax(
         {
             method: method,
-            url: "/api/"+url,
+            url:url,
             data: data
         })
         .done(function(data)

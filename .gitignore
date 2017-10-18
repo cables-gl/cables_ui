@@ -10,3 +10,4 @@ dist/js/*.map
 dist/css
 dist/index.html
 scss/svgicons.scss
+dist-electron

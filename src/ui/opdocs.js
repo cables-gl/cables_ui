@@ -8,11 +8,18 @@ CABLES.UI.OpDocs=function()
     this.layoutPaper=null;
     this.libs=[];
 
+    console.log('op docs');
+
     CABLES.api.get(
-        CABLES.noCacheUrl('doc/ops/all'),
+        CABLES.noCacheUrl(CABLES.sandbox.getUrlDocOpsAll()),
         function(res)
         {
             logStartup('Op docs loaded');
+            
+            console.log('op docs response');
+
+            if(window.process && window.process.versions['electron'])  res=JSON.parse(res);
+            
             opDocs=res.opDocs;
             self.libs=res.libs;
             gui.opSelect().prepare();

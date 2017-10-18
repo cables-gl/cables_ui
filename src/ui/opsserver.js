@@ -48,7 +48,7 @@ CABLES.UI.ServerOps = function(gui) {
     }
 
     this.load = function(cb) {
-        CABLES.api.get(CABLES.noCacheUrl('ops/'), function(res) {
+        CABLES.api.get(CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsList()), function(res) {
             if (res) {
                 ops = res;
 

@@ -39,6 +39,23 @@ CABLES.SandboxBrowser.prototype.getUrlOpsCode=function(id)
     return '/api/ops/code';
 };
 
+CABLES.SandboxBrowser.prototype.getUrlDocOpsAll=function(id)
+{
+    return 'doc/ops/all';
+};
+
+CABLES.SandboxBrowser.prototype.getUrlApiPrefix=function(id)
+{
+    return "/api/";
+};
+
+CABLES.SandboxBrowser.prototype.getUrlOpsList=function(id)
+{
+    return 'ops/';
+};
+
+
+
 
 CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
 {

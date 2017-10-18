@@ -13,6 +13,15 @@ CABLES.SandboxElectron.prototype.getUrlOpsCode=function()
 
 CABLES.SandboxElectron.prototype.initRouting=function(cb)
 {
+    if (!gui.serverOps || !gui.serverOps.finished()) {
+        // wait for userops finished loading....
+        setTimeout(function() {
+            CABLES.sandbox.initRouting(cb);
+        }, 100);
+        // console.log("wait...");
+        return;
+    }
+
     gui.patch().setProject(
         {
             users:[],
@@ -21,6 +30,23 @@ CABLES.SandboxElectron.prototype.initRouting=function(cb)
         });
     cb();
 }
+
+CABLES.SandboxElectron.prototype.getUrlDocOpsAll=function(id)
+{
+    return 'docops.json';
+};
+
+CABLES.SandboxElectron.prototype.getUrlApiPrefix=function(id)
+{
+    return "";
+};
+
+CABLES.SandboxElectron.prototype.getUrlOpsList=function(id)
+{
+    return 'ops.json';
+};
+
+
 
 CABLES.SandboxElectron.prototype.loadUser=function(cb,cbError)
 {
