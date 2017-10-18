@@ -40,7 +40,21 @@ CABLES.SandboxBrowser.prototype.getUrlOpsCode=function(id)
 };
 
 
-
+CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
+{
+    if (!window.chrome) {
+        iziToast.error({
+            position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            theme: 'dark',
+            title: 'yikes!',
+            message: 'cables is optimized for chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange',
+            progressBar: false,
+            animateInside: false,
+            close: true,
+            timeout: false
+        });
+    }
+}    
 
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)
 {

@@ -137,6 +137,7 @@ CABLES.UI.OpSelect.prototype._search=function(q)
     if(!this._list || !this._html)this.prepare();
 
     this.firstTime=false;
+    q=q||'';
     var query=q.toLowerCase();
 
     var i=0;

@@ -24,7 +24,7 @@ CABLES.UI.GUI = function() {
     this.patchConnection = new CABLES.PatchConnectionSender();
     this.opDocs = new CABLES.UI.OpDocs();
     // var _socket=null;
-    var _connection = null;
+    // var _connection = null;
     var savedState = true;
     var metaCode = new CABLES.UI.MetaCode();
     this.metaPaco = new CABLES.UI.Paco();
@@ -1052,19 +1052,7 @@ CABLES.UI.GUI = function() {
             });
         }
 
-        if (!window.chrome) {
-
-            iziToast.error({
-                position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-                theme: 'dark',
-                title: 'yikes!',
-                message: 'cables is optimized for chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange',
-                progressBar: false,
-                animateInside: false,
-                close: true,
-                timeout: false
-            });
-        }
+        if(CABLES.sandbox.showBrowserWarning)CABLES.sandbox.showBrowserWarning();
 
         var lastView = CABLES.UI.userSettings.get('changelogLastView');
 
@@ -1079,7 +1067,7 @@ CABLES.UI.GUI = function() {
                     animateInside: false,
                     close: true,
                     timeout: false,
-                    buttons: [        
+                    buttons: [
                         ['<button>read more</button>', function(instance, toast) {
                             CABLES.CMD.UI.showChangelog();
                             iziToast.hide({}, toast);
@@ -1303,7 +1291,7 @@ CABLES.UI.GUI = function() {
     this.notIdling=function()
     {
         this.lastNotIdle=CABLES.now();
-        if(!_connection.isConnected())_connection.connect();
+        // if(!_connection.isConnected())_connection.connect();
     };
 
     this.checkIdle=function()
@@ -1311,7 +1299,7 @@ CABLES.UI.GUI = function() {
         var idling=(CABLES.now()-self.lastNotIdle)/1000;
         if(idling>30*60)
         {
-            _connection.disconnect();
+            // _connection.disconnect();
             console.log('idle mode simpleio disconnected!');
         }
         else
@@ -1433,7 +1421,7 @@ CABLES.UI.GUI = function() {
 
         // _socket=new CABLES.API.Socket(this);
         // _socket = new CABLES.API.Socket();
-        _connection = new CABLES.API.Connection(this);
+        // _connection = new CABLES.API.Connection(this);
         $('#undev').hover(function(e) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
         }, function() {
