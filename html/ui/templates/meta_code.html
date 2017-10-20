@@ -4,16 +4,20 @@
 <h4>{{op.objName}}</h4>
 
 
+
 {{#if user.isAdmin}}
-<h3>Admin</h3>
+    <h3>Admin</h3>
 
-<span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
-<!-- <br/> -->
-<!-- <span class="button fa fa-lock" onclick="CABLES.UI.MetaCode.rename('{{op.objName}}');">rename</span> -->
-<br/>
-<span class="button fa fa-lock" onclick="">move from/to experimental</span>
+    <br/>
+    <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
+    <br/>
+    <span class="button fa fa-lock" onclick="">move from/to experimental</span>
+    <br/>
+    {{#if op.github}}
+    <a class="button fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
+    {{/if}}
 
-<br/><br/>
+    <br/><br/>
 
 {{/if}}
 
@@ -28,7 +32,6 @@
 
 <h3>Code</h3>
 
-<br/>
 <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
 <br/>
 <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
@@ -36,14 +39,21 @@
 
 <br/>
     <h3>attachments</h3>
-    {{#each doc.attachmentFiles}}
-        <a class=" fa fa-edit" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');"></a>
 
-        {{.}}
-        <a class=" fa fa-trash" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
-        <br/>
+    <table style="margin-bottom:10px;">
+    {{#each doc.attachmentFiles}}
+        <tr>
+            <td  onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');">
+                <a class="button fa fa-edit"></a>
+                {{.}}
+            </td>
+            <td>
+                <a class="button fa fa-times" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
+            </td>
+        </tr>
     {{/each}}
-    <a class="button fa fa-plus-o" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>
+</table>
+<a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>
 
 
     <br/><br/>
