@@ -15,6 +15,7 @@ function UiLink(port1, port2)
     this.p1=port1;
     this.p2=port2;
 
+
     this.hideAddButton=function()
     {
         for(var i=0;i<this._addCircles.length;i++)
@@ -34,6 +35,7 @@ function UiLink(port1, port2)
     {
         CABLES.UI.LINKHOVER=self;
 
+        var addCircle=this._addCircles[0];
         addCircle.node.classList.add('active');
         self.linkLine.node.classList.add('link_hover');
 
@@ -42,6 +44,7 @@ function UiLink(port1, port2)
 
     var onUnHover=function()
     {
+        var addCircle=this._addCircles[0];
         CABLES.UI.LINKHOVER=null;
         addCircle.node.classList.remove('active');
         self.linkLine.node.classList.remove('link_hover');
@@ -72,7 +75,7 @@ function UiLink(port1, port2)
     this._addAddCircle=function()
     {
         if(!self.p1)return;
-        console.log('addcircle');
+        
 
         var addCircle = gui.patch().getPaper().circle(
             middlePosX,
@@ -81,10 +84,12 @@ function UiLink(port1, port2)
 
         this._addCircles.push(addCircle);
 
+        console.log('new addcircle',this._addCircles.length);
+
         addCircle.node.classList.add(CABLES.UI.uiConfig.getLinkClass(self.p1.thePort ));
         addCircle.node.classList.add('addCircle');
 
-        addCircle.hover(onHover,onUnHover);
+        addCircle.hover(onHover.bind(this),onUnHover.bind(this));
         addCircle.toFront();
 
         addCircle.node.onmousedown = onMouseDown;
@@ -109,7 +114,7 @@ function UiLink(port1, port2)
         {
             // for(var i=0;i<this._addCircles.length;i++)
             // {
-            this._addCircles[0].attr({
+                this._addCircles[0].attr({
                 cx:middlePosX,
                 cy:middlePosY-CABLES.UI.uiConfig.portSize*0.5*0.5
             });
