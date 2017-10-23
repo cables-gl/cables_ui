@@ -111,11 +111,6 @@ CABLES.UI.OpDocs=function()
                     html+='<p>' + ( opDocs[i].summary || '' ) + '</p>';
                 }
 
-                if(opDocs[i].authorName)
-                {
-                    html+='<br/>op author: <a href="/user/'+opDocs[i].authorName+'">'+opDocs[i].authorName+'</a><br/><br/>';
-                }
-
                 if(opDocs[i].credits)
                 {
                     html+='<br/><h3>credits</h3><ul>';
@@ -126,6 +121,13 @@ CABLES.UI.OpDocs=function()
                         html+='<li>'+opDocs[i].credits[j].title+' by '+opDocs[i].credits[j].author+'</li>';
                         if(opDocs[i].credits[j].url && opDocs[i].credits[j].url.length>0)html+='</a>';
                     }
+                    html+='</ul>';
+                }
+
+                if(opDocs[i].author)
+                {
+                    html+='<br/><h3>author</h3><ul>';
+                    html+='<li><a href="https://cables.gl/admin/user/'+opDocs[i].authorName+'">'+opDocs[i].authorName+'</a></li>';
                     html+='</ul>';
                 }
 
