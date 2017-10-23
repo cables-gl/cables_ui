@@ -2723,6 +2723,7 @@ CABLES.UI.Patch = function(_gui) {
     var cycleWatchPort = false;
 
     function doWatchPorts() {
+
         cycleWatchPort = !cycleWatchPort;
 
         for (var i in watchPorts) {

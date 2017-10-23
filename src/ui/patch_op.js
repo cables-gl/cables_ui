@@ -438,6 +438,17 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
     };
 
+    var dblClick=function(ev)
+    {
+        gui.patch().setSelectedOp(null);
+        if (CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
+    };
+
+    var mouseUp=function(ev) {
+        opui.isDragging = false;
+    };
+
+
     this.addUi = function() {
         if (this.isVisible()) return;
 
@@ -478,18 +489,11 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         // $(label.node).css({'pointer-events': 'none'});
 
+
         background.drag(move, down, up);
         background.hover(hover, unhover);
-
-        background.node.ondblclick = function(ev) {
-
-            gui.patch().setSelectedOp(null);
-            if (CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
-        };
-
-        background.onmouseup = function(ev) {
-            opui.isDragging = false;
-        };
+        background.node.ondblclick = dblClick;
+        background.onmouseup = mouseUp;
 
         if (CABLES.Op.isSubpatchOp(opui.op.objName)) background.node.classList.add('op_subpatch');
         if (opui.op.objName == "Ops.Ui.PatchInput") background.node.classList.add('op_subpatch_in');
@@ -992,6 +996,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
 
     this.addPort = function(_inout, thePort) {
+        
         var inout = _inout;
         var portIndex = this.portsIn.length;
         if (inout == PORT_DIR_OUT) portIndex = this.portsOut.length;

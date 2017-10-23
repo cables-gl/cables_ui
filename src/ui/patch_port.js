@@ -352,6 +352,7 @@ CABLES.UI.Port=function(thePort)
 
     function updateUI()
     {
+        
         if(!self.rect)return;
         var offY=0;
         if(self.direction==PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
@@ -393,7 +394,6 @@ CABLES.UI.Port=function(thePort)
                 x:xpos,
                 y:ypos+offY,
             });
-
     }
     this.updateUI=updateUI;
 
@@ -504,6 +504,13 @@ CABLES.UI.Port=function(thePort)
         thePort.onUiActiveStateChange=null;
     };
 
+    var contextMenu=function(e)
+    {
+        if(e.stopPropagation) e.stopPropagation();
+        if(e.preventDefault) e.preventDefault();
+        e.cancelBubble = false;
+    };
+
     this.addUi=function(group)
     {
         thePort.onUiActiveStateChange=changeActiveState;
@@ -527,23 +534,12 @@ CABLES.UI.Port=function(thePort)
         CABLES.UI.cleanRaphael(this.rect);
 
         this.rect.attr({ width:10, height:6, }); // for firefox compatibility: ff seems to ignore css width/height of svg rect?!
-        // this.rect.attr(height=9;
-        // this.rect.attr({
-        //     "fill-opacity": getPortOpacity(self.thePort ),
-        // });
         this.rect.node.classList.add(CABLES.UI.uiConfig.getPortClass(self.thePort));
         this.rect.node.classList.add('port');
 
-
         group.push(this.rect);
-        // group.push(this.hover);
 
-        $(self.rect.node).bind("contextmenu", function(e)
-        {
-            if(e.stopPropagation) e.stopPropagation();
-            if(e.preventDefault) e.preventDefault();
-            e.cancelBubble = false;
-        });
+        $(self.rect.node).bind("contextmenu", contextMenu);
 
         self.rect.hover(hover, hoverOut);
         self.rect.drag(dragMove,dragStart,dragEnd);
