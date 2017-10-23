@@ -75,7 +75,6 @@ function UiLink(port1, port2)
     this._addAddCircle=function()
     {
         if(!self.p1)return;
-        
 
         var addCircle = gui.patch().getPaper().circle(
             middlePosX,
