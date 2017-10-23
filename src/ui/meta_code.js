@@ -48,10 +48,15 @@ CABLES.UI.MetaCode=function(projectId)
                 {
                     var doc={};
                     var summary="";
-                        // doc.attachmentFiles=gui.opDocs.getAttachmentFiles(op.objName);
-                        doc.attachmentFiles=res.attachmentFiles;
-                        doc.libs=gui.serverOps.getOpLibs(op.objName,false);
-                        summary=gui.opDocs.getSummary(op.objName);
+                    // doc.attachmentFiles=gui.opDocs.getAttachmentFiles(op.objName);
+                    doc.attachmentFiles=res.attachmentFiles;
+                    doc.libs=gui.serverOps.getOpLibs(op.objName,false);
+                    summary=gui.opDocs.getSummary(op.objName);
+
+                    if(op.objName.indexOf("User.")==-1)
+                    {
+                        op.github='https://github.com/pandrr/cables/tree/master/src/ops/base/'+op.objName;
+                    }
 
                     var html = CABLES.UI.getHandleBarHtml('meta_code',
                     {

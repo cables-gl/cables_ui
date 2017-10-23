@@ -15,6 +15,7 @@ function UiLink(port1, port2)
     this.p1=port1;
     this.p2=port2;
 
+
     this.hideAddButton=function()
     {
         for(var i=0;i<this._addCircles.length;i++)
@@ -30,6 +31,47 @@ function UiLink(port1, port2)
         this._addCircles.length=0;
     };
 
+    var onHover=function (e)
+    {
+        CABLES.UI.LINKHOVER=self;
+
+        var addCircle=this._addCircles[0];
+        addCircle.node.classList.add('active');
+        self.linkLine.node.classList.add('link_hover');
+
+        CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
+    };
+
+    var onUnHover=function()
+    {
+        var addCircle=this._addCircles[0];
+        CABLES.UI.LINKHOVER=null;
+        addCircle.node.classList.remove('active');
+        self.linkLine.node.classList.remove('link_hover');
+
+        CABLES.UI.hideInfo();
+    };
+
+    var onMouseDown=function (event)
+    {
+        $('#patch').focus();
+
+        if(self.p1!==null)
+        {
+            if(event.which==3)
+            {
+                self.p1.thePort.removeLinkTo( self.p2.thePort );
+            }
+            else
+            {
+                event=mouseEvent(event);
+                var coords=gui.patch().getCanvasCoordsMouse(event);
+                coords.x=self.p1.op.uiAttribs.translate.x;
+                gui.opSelect().show(coords,null,null,self);
+            }
+        }
+    };
+
     this._addAddCircle=function()
     {
         if(!self.p1)return;
@@ -41,47 +83,15 @@ function UiLink(port1, port2)
 
         this._addCircles.push(addCircle);
 
+        console.log('new addcircle',this._addCircles.length);
+
         addCircle.node.classList.add(CABLES.UI.uiConfig.getLinkClass(self.p1.thePort ));
         addCircle.node.classList.add('addCircle');
 
-        addCircle.hover(function (e)
-        {
-            CABLES.UI.LINKHOVER=self;
-
-            addCircle.node.classList.add('active');
-            self.linkLine.node.classList.add('link_hover');
-
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
-        },function()
-        {
-            CABLES.UI.LINKHOVER=null;
-            addCircle.node.classList.remove('active');
-            self.linkLine.node.classList.remove('link_hover');
-
-            CABLES.UI.hideInfo();
-        });
+        addCircle.hover(onHover.bind(this),onUnHover.bind(this));
         addCircle.toFront();
 
-        addCircle.node.onmousedown = function (event)
-        {
-            $('#patch').focus();
-
-            if(self.p1!==null)
-            {
-                if(event.which==3)
-                {
-                    self.p1.thePort.removeLinkTo( self.p2.thePort );
-                }
-                else
-                {
-                    event=mouseEvent(event);
-                    var coords=gui.patch().getCanvasCoordsMouse(event);
-                    coords.x=self.p1.op.uiAttribs.translate.x;
-                    gui.opSelect().show(coords,null,null,self);
-                }
-            }
-        };
-
+        addCircle.node.onmousedown = onMouseDown;
     };
 
 
@@ -103,7 +113,7 @@ function UiLink(port1, port2)
         {
             // for(var i=0;i<this._addCircles.length;i++)
             // {
-            this._addCircles[0].attr({
+                this._addCircles[0].attr({
                 cx:middlePosX,
                 cy:middlePosY-CABLES.UI.uiConfig.portSize*0.5*0.5
             });
@@ -231,6 +241,7 @@ function UiLink(port1, port2)
 
     this.redraw = function()
     {
+
         if(!this.linkLine)
         {
             this.linkLine = gui.patch().getPaper().path(this.getPath());
@@ -275,7 +286,7 @@ function UiLink(port1, port2)
 CABLES.UI.SVGLine=function(startX, startY)
 {
     var start={ x:startX,y:startY};
-
+    
     this.updateEnd=function(x, y)
     {
         end.x = x;

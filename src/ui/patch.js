@@ -1573,12 +1573,13 @@ CABLES.UI.Patch = function(_gui) {
 
             var uiPort1 = null;
             var uiPort2 = null;
-            for (var i in self.ops) {
-                for (var j in self.ops[i].portsIn) {
+            for (var i=0;i<self.ops.length;i++) {
+                for (var j=0;j<self.ops[i].portsIn.length;j++) {
                     if (self.ops[i].portsIn[j].thePort == p1) uiPort1 = self.ops[i].portsIn[j];
                     if (self.ops[i].portsIn[j].thePort == p2) uiPort2 = self.ops[i].portsIn[j];
                 }
-                for (var jo in self.ops[i].portsOut) {
+                // for (var jo in self.ops[i].portsOut) {
+                for (var jo=0;jo<self.ops[i].portsOut.length;jo++) {
                     if (self.ops[i].portsOut[jo].thePort == p1) uiPort1 = self.ops[i].portsOut[jo];
                     if (self.ops[i].portsOut[jo].thePort == p2) uiPort2 = self.ops[i].portsOut[jo];
                 }
@@ -1593,7 +1594,7 @@ CABLES.UI.Patch = function(_gui) {
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
 
-            if (!uiPort1.opUi.isHidden()) thelink.show();
+            if(!isLoading && !uiPort1.opUi.isHidden()) thelink.show();
 
             gui.patchConnection.send(CABLES.PACO_LINK, {
                 "op1": p1.parent.id,
@@ -1602,26 +1603,29 @@ CABLES.UI.Patch = function(_gui) {
                 "port2": p2.name,
             });
 
+            if (!isLoading)
+            {
+                // todo: update is too often ?? check if current op is linked else do not update!!!
+                self.updateCurrentOpParams();
 
-            // todo: update is too often ?? check if current op is linked else do not update!!!
-            self.updateCurrentOpParams();
-
-            var undofunc = function(p1Name, p2Name, op1Id, op2Id) {
-                CABLES.undo.add({
-                    undo: function() {
-                        var op1 = scene.getOpById(op1Id);
-                        var op2 = scene.getOpById(op2Id);
-                        if (!op1 || !op2) {
-                            console.warn('undo: op not found');
-                            return;
+                var undofunc = function(p1Name, p2Name, op1Id, op2Id) {
+                    CABLES.undo.add({
+                        undo: function() {
+                            var op1 = scene.getOpById(op1Id);
+                            var op2 = scene.getOpById(op2Id);
+                            if (!op1 || !op2) {
+                                console.warn('undo: op not found');
+                                return;
+                            }
+                            op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+                        },
+                        redo: function() {
+                            scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
                         }
-                        op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                    },
-                    redo: function() {
-                        scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
-                    }
-                });
-            }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id);
+                    });
+                }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id);
+    
+            }
         };
 
         scene.onDelete = function(op) {
@@ -1683,7 +1687,7 @@ CABLES.UI.Patch = function(_gui) {
 
     this.updateSubPatches = function() {
         if (isLoading) return;
-        for (var i in self.ops) {
+        for (var i=0;i<self.ops.length;i++) {
             if (!self.ops[i].op.uiAttribs.subPatch) self.ops[i].op.uiAttribs.subPatch = 0;
             if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch) self.ops[i].show();
             else self.ops[i].hide();
@@ -1704,7 +1708,7 @@ CABLES.UI.Patch = function(_gui) {
             h: viewBox.h
         };
 
-        for (var i in self.ops) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+        for (var i=0;i<self.ops.length;i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
 
         if (which === 0) $('#subpatch_nav').hide();
         else $('#subpatch_nav').show();
@@ -1804,7 +1808,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.opCollisionTest = function(uiOp) {
-        for (var i in this.ops) {
+        for (var i =0;i<this.ops.length;i++) {
             var testOp = this.ops[i];
             if (!testOp.op.deleted &&
                 uiOp.op.id != testOp.op.id && uiOp.getSubPatch() == testOp.getSubPatch()) {
@@ -2103,7 +2107,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.focusOp = function(id) {
-        for (var i in gui.patch().ops) {
+        for (var i =0;i<gui.patch().ops.length;i++) {
             if (gui.patch().ops[i].op.id == id) {
                 gui.patch().ops[i].oprect.showFocus();
             }
@@ -2166,12 +2170,10 @@ CABLES.UI.Patch = function(_gui) {
         //             for(var j in self.ops[i].links)
         //                 self.ops[i].links[j].hideAddButton();
 
-        if (selectedOps.length == 1) {
+        if (selectedOps.length == 1)
             this.opCollisionTest(selectedOps[0]);
 
-        }
-
-        for (i in selectedOps)
+            for (i in selectedOps)
             selectedOps[i].doMoveFinished();
     };
 
@@ -2180,10 +2182,10 @@ CABLES.UI.Patch = function(_gui) {
         if (selectedOps.length == 1)
             for (i = 0; i < self.ops.length; i++)
                 if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
-                    for (var j in self.ops[i].links)
+                    for (var j=0;j< self.ops[i].links.length;j++)
                         self.ops[i].links[j].showAddButton();
 
-        for (i in selectedOps)
+        for (i =0;i<selectedOps.length;i++)
             selectedOps[i].doMove(dx, dy, a, b, e);
     };
 
@@ -2211,7 +2213,7 @@ CABLES.UI.Patch = function(_gui) {
         var numVisibleOps = 0;
         var errorOps=[];
 
-        for (var i in self.ops) {
+        for (var i =0;i< self.ops.length;i++) {
             if (!self.ops[i].isHidden()) numVisibleOps++;
             if (self.ops[i].op.uiAttribs.error)
             {
@@ -2325,7 +2327,7 @@ CABLES.UI.Patch = function(_gui) {
         // show first anim in timeline
         if (self.timeLine) {
             var foundAnim = false;
-            for (i in op.portsIn) {
+            for (i =0;i<op.portsIn.length;i++) {
                 if (op.portsIn[i].isAnimated()) {
                     self.timeLine.setAnim(op.portsIn[i].anim, {
                         name: op.portsIn[i].name
@@ -2337,7 +2339,7 @@ CABLES.UI.Patch = function(_gui) {
             if (!foundAnim) self.timeLine.setAnim(null);
         }
 
-        for (var iops in this.ops)
+        for (var iops =0; iops<this.ops.length;iops++)
             if (this.ops[iops].op == op)
                 currentOp = this.ops[iops];
         op.summary = gui.opDocs.getSummary(op.objName);
@@ -2727,9 +2729,11 @@ CABLES.UI.Patch = function(_gui) {
     var cycleWatchPort = false;
 
     function doWatchPorts() {
+
         cycleWatchPort = !cycleWatchPort;
 
-        for (var i in watchPorts) {
+        for (var i=0;i< watchPorts.length;i++)
+        {
             if (watchPorts[i].type != OP_PORT_TYPE_VALUE && watchPorts[i].type != OP_PORT_TYPE_ARRAY) continue;
             var id = '.watchPortValue_' + watchPorts[i].watchId;
 
@@ -2762,12 +2766,9 @@ CABLES.UI.Patch = function(_gui) {
         ctm = ctm.inverse();
 
         uupos = this._elPatchSvg[0].createSVGPoint();
-
         uupos.x = evt.clientX || 0;
         uupos.y = evt.clientY || 0;
-
         uupos = uupos.matrixTransform(ctm);
-
 
         return uupos;
     };

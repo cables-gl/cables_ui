@@ -1342,21 +1342,25 @@ CABLES.UI.GUI = function() {
     };
 
     this.setStateUnsaved = function() {
-        document.title = gui.patch().getCurrentProject().name + ' *';
-        favIconLink.href = '/favicon/favicon_orange.ico';
-        savedState = false;
-
-        window.onbeforeunload = function(event) {
-
-            var message = 'unsaved content!';
-            if (typeof event == 'undefined') {
-                event = window.event;
-            }
-            if (event) {
-                event.returnValue = message;
-            }
-            return message;
-        };
+        if(savedState)
+        {
+            document.title = gui.patch().getCurrentProject().name + ' *';
+            favIconLink.href = '/favicon/favicon_orange.ico';
+            savedState = false;
+    
+            window.onbeforeunload = function(event) {
+    
+                var message = 'unsaved content!';
+                if (typeof event == 'undefined') {
+                    event = window.event;
+                }
+                if (event) {
+                    event.returnValue = message;
+                }
+                return message;
+            };
+    
+        }
     };
 
     this.closeInfo = function() {
