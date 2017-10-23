@@ -2103,7 +2103,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.focusOp = function(id) {
-        for (var i in gui.patch().ops) {
+        for (var i =0;i<gui.patch().ops.length;i++) {
             if (gui.patch().ops[i].op.id == id) {
                 gui.patch().ops[i].oprect.showFocus();
             }
@@ -2166,12 +2166,10 @@ CABLES.UI.Patch = function(_gui) {
         //             for(var j in self.ops[i].links)
         //                 self.ops[i].links[j].hideAddButton();
 
-        if (selectedOps.length == 1) {
+        if (selectedOps.length == 1)
             this.opCollisionTest(selectedOps[0]);
 
-        }
-
-        for (i in selectedOps)
+            for (i in selectedOps)
             selectedOps[i].doMoveFinished();
     };
 
@@ -2180,10 +2178,10 @@ CABLES.UI.Patch = function(_gui) {
         if (selectedOps.length == 1)
             for (i = 0; i < self.ops.length; i++)
                 if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
-                    for (var j in self.ops[i].links)
+                    for (var j=0;j< self.ops[i].links.length;j++)
                         self.ops[i].links[j].showAddButton();
 
-        for (i in selectedOps)
+        for (i =0;i<selectedOps.length;i++)
             selectedOps[i].doMove(dx, dy, a, b, e);
     };
 
@@ -2211,7 +2209,7 @@ CABLES.UI.Patch = function(_gui) {
         var numVisibleOps = 0;
         var errorOps=[];
 
-        for (var i in self.ops) {
+        for (var i =0;i< self.ops.length;i++) {
             if (!self.ops[i].isHidden()) numVisibleOps++;
             if (self.ops[i].op.uiAttribs.error)
             {
@@ -2325,7 +2323,7 @@ CABLES.UI.Patch = function(_gui) {
         // show first anim in timeline
         if (self.timeLine) {
             var foundAnim = false;
-            for (i in op.portsIn) {
+            for (i =0;i<op.portsIn.length;i++) {
                 if (op.portsIn[i].isAnimated()) {
                     self.timeLine.setAnim(op.portsIn[i].anim, {
                         name: op.portsIn[i].name
@@ -2337,7 +2335,7 @@ CABLES.UI.Patch = function(_gui) {
             if (!foundAnim) self.timeLine.setAnim(null);
         }
 
-        for (var iops in this.ops)
+        for (var iops =0; iops<this.ops.length;iops++)
             if (this.ops[iops].op == op)
                 currentOp = this.ops[iops];
         op.summary = gui.opDocs.getSummary(op.objName);
@@ -2730,7 +2728,8 @@ CABLES.UI.Patch = function(_gui) {
 
         cycleWatchPort = !cycleWatchPort;
 
-        for (var i in watchPorts) {
+        for (var i=0;i< watchPorts.length;i++)
+        {
             if (watchPorts[i].type != OP_PORT_TYPE_VALUE && watchPorts[i].type != OP_PORT_TYPE_ARRAY) continue;
             var id = '.watchPortValue_' + watchPorts[i].watchId;
 
@@ -2763,12 +2762,9 @@ CABLES.UI.Patch = function(_gui) {
         ctm = ctm.inverse();
 
         uupos = this._elPatchSvg[0].createSVGPoint();
-
         uupos.x = evt.clientX || 0;
         uupos.y = evt.clientY || 0;
-
         uupos = uupos.matrixTransform(ctm);
-
 
         return uupos;
     };
