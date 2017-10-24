@@ -37,7 +37,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
             $('.modalScrollContent').append(Math.round((window.performance.now() - startTime) / (fileNum)) / 1000 + ' seconds per frame<br/>');
 
             var ffmpgCmd='ffmpeg -y -framerate 30 -f image2 -i "'+filename+'_%04d.png"  -b 9999k -vcodec mpeg4 '+filename+'.mp4<br/>';
-            ffmpgCmd+='rm '+filename+'_*.png;open '+filename+'.mp4';
+            // ffmpgCmd+='rm '+filename+'_*.png;open '+filename+'.mp4';
 
             $('.modalScrollContent').append('<br/><br/>ffmpeg command to convert to mp4:<br/><code class="selectable">'+ffmpgCmd+'</code>');
 
