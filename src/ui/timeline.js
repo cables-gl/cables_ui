@@ -1008,7 +1008,11 @@ CABLES.TL.UI.TimeLineUI=function()
         for(var anii in anims)
         {
             var index=anims[anii].getKeyIndex(cursorTime);
+            
+            if(dir==-1 && anims[anii].keys[index].time!=cursorTime)dir=0;
+            
             var newIndex=parseInt(index,10)+parseInt(dir,10);
+
 
             if(newIndex==1 && cursorTime<anims[anii].keys[0].time)newIndex=0;
             if(newIndex==anims[anii].keys.length-2 && cursorTime>anims[anii].keys[anims[anii].keys.length-1].time)newIndex=anims[anii].keys.length-1;
