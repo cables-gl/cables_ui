@@ -124,7 +124,7 @@ CABLES.UI.OpDocs=function()
                     html+='</ul>';
                 }
 
-                if(opDocs[i].author)
+                if(opDocs[i].authorName)
                 {
                     html+='<br/><h3>author</h3><ul>';
                     html+='<li><a href="https://cables.gl/admin/user/'+opDocs[i].authorName+'">'+opDocs[i].authorName+'</a></li>';

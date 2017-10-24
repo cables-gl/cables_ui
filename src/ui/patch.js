@@ -728,9 +728,6 @@ CABLES.UI.Patch = function(_gui) {
             vb.h = Math.max(600, vb.h);
         }
 
-        vb.w = Math.min(999999, vb.w);
-        vb.h = Math.min(999999, vb.h);
-        
 
         if (selectedOps.length > 0) {
             vb.x = minX - vb.w / 2;
@@ -2329,7 +2326,7 @@ CABLES.UI.Patch = function(_gui) {
             var foundAnim = false;
             for (i =0;i<op.portsIn.length;i++) {
                 if (op.portsIn[i].isAnimated()) {
-                    self.timeLine.setAnim(op.portsIn[i].anim, {
+                        self.timeLine.setAnim(op.portsIn[i].anim, {
                         name: op.portsIn[i].name
                     });
                     foundAnim = true;
