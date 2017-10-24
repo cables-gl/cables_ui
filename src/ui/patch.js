@@ -728,9 +728,6 @@ CABLES.UI.Patch = function(_gui) {
             vb.h = Math.max(600, vb.h);
         }
 
-        vb.w = Math.min(999999, vb.w);
-        vb.h = Math.min(999999, vb.h);
-        
 
         if (selectedOps.length > 0) {
             vb.x = minX - vb.w / 2;
