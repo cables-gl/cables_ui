@@ -1100,6 +1100,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
             case 65: // a
                 if(e.metaKey || e.ctrlKey) self.selectAllKeys();
+                e.preventDefault();
             break;
 
             case 68: // d
