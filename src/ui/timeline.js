@@ -1783,22 +1783,25 @@ CABLES.TL.UI.TimeLineUI=function()
         if(gui.scene().timer.isPlaying()) setTimeout(self.updateTime,30);
     };
 
-    this.togglePlay=function(patch)
+    this.updatePlayIcon=function()
     {
-        gui.scene().timer.togglePlay();
-
         if(!gui.scene().timer.isPlaying())
         {
             $('#timelineplay').removeClass('fa-pause');
             $('#timelineplay').addClass('fa-play');
-            this.updateTime();
         }
         else
         {
             $('#timelineplay').removeClass('fa-play');
             $('#timelineplay').addClass('fa-pause');
-            this.updateTime();
         }
+    }
+    
+    this.togglePlay=function(patch)
+    {
+        gui.scene().timer.togglePlay();
+        this.updatePlayIcon();
+        this.updateTime();
     };
 
     // ------------------
@@ -2061,6 +2064,7 @@ CABLES.TL.UI.TimeLineUI=function()
         updateKeyLine();
         setCursor(cursorTime);
         self.updateTime();
+        this.updatePlayIcon();
 
     };
 
