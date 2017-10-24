@@ -1761,17 +1761,13 @@ CABLES.TL.UI.TimeLineUI=function()
     var lastTime=-1;
     this.updateTime=function()
     {
-        console.log("isShowingTiming ",gui.isShowingTiming() );
         if(gui.isShowingTiming())
         {
-            console.log("updatetime1!");
-
             var time=gui.scene().timer.getTime();
             setCursor(time);
             if(doCenter)self.centerCursor();
             if(lastTime!=time)
             {
-                console.log("updatetime!");
                 lastTime=time;
 
                 if(timeDisplayMode)
