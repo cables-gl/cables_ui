@@ -26,7 +26,7 @@
 
             <tr>
                 <td>Resolution:</td>
-                <td><input type="text" id="render_width" value="1920" style="width:60px;" oninput="CABLES.animRenderer.update()"/> x <input type="text" id="render_height" value="1080" style="width:60px;" oninput="CABLES.animRenderer.update()"/></td>
+                <td><input type="text" id="render_width" value="640" style="width:60px;" oninput="CABLES.animRenderer.update()"/> x <input type="text" id="render_height" value="360" style="width:60px;" oninput="CABLES.animRenderer.update()"/></td>
             </tr>
             <tr>
                 <td>Remove<br/>Alpha Channel:</td>
@@ -35,8 +35,8 @@
             <tr>
                 <td>Filename:</td>
                 <td>
-                    <input type="text" id="render_filename" value="cables"/>
-                    <input type="checkbox" id="render_leftpad" checked/>leftpad
+                    <input type="text" id="render_filename" value="cables"  oninput="CABLES.animRenderer.update()"/>
+                    <input type="checkbox" id="render_leftpad" checked  oninput="CABLES.animRenderer.update()"/>leftpad
                 </td>
             </tr>
 
