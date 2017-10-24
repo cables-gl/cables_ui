@@ -502,8 +502,6 @@ CABLES.TL.UI.TimeLineUI=function()
         function(dx,dy,x,y,e)
         {
             var time=(e.offsetX/$('#timeline').width())*projectLength;
-
-
             var lengthSeconds=(oldEndSeconds-time);
 
             CABLES.TL.TIMESCALE=$('#timeline').width()/lengthSeconds;
@@ -1397,15 +1395,6 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#keyscalewidth").bind("click", this.scaleWidth);
     $(".timelinetime").bind("click", this.timeLineTimeClick);
 
-
-
-    // $("#ease_linear").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_LINEAR); } );
-    // $("#ease_absolute").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_ABSOLUTE); } );
-    // $("#ease_smoothstep").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHSTEP); } );
-    // $("#ease_smootherstep").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_SMOOTHERSTEP); } );
-    // $("#ease_bezier").bind("click", function(){ self.setSelectedKeysEasing(CABLES.TL.EASING_BEZIER); } );
-
-
     $("#loop").bind("click", this.toggleLoop);
     $("#centercursor").bind("click", this.centerCursor);
     $("#centercursor").bind("mousedown", function(){doCenter=true;} );
@@ -1413,14 +1402,6 @@ CABLES.TL.UI.TimeLineUI=function()
 
     $("#toggleMultiGraphKeyDisplay").bind("mousedown", toggleMultiGraphKeyDisplay );
 
-
-    // $('#timeline').bind("mousewheel", function (event,delta,nbr)
-    // {
-    //     CABLES.TL.VALUESCALE+=delta;
-
-    //     if(CABLES.TL.VALUESCALE<10)CABLES.TL.VALUESCALE=10;
-    //     self.updateViewBox();
-    // });
 
     $(".timeLineInsert").bind("click", function (e)
     {
@@ -1453,6 +1434,29 @@ CABLES.TL.UI.TimeLineUI=function()
     $("#overviewtimeline").bind("mouseup", function(e)
     {
         isScrollingOverview=false;
+    });
+
+    var oldDoubleClickx=-1;
+    var oldDoubleClickTimescale=-1;
+    $("#overviewtimeline").bind("dblclick", function(e)
+    {
+        if(oldDoubleClickTimescale==-1)
+        {
+            oldDoubleClickTimescale=CABLES.TL.TIMESCALE;
+            oldDoubleClickx=viewBox.x;
+            CABLES.TL.TIMESCALE=$('#timeline').width()/(projectLength);
+            viewBox.x=0;
+            self.redraw();
+        }
+        else
+        {
+            CABLES.TL.TIMESCALE=oldDoubleClickTimescale;
+            viewBox.x=oldDoubleClickx;
+            oldDoubleClickx=-1;
+            oldDoubleClickTimescale=-1;
+            self.redraw();
+        }
+
     });
 
     window.addEventListener('resize', function(event)

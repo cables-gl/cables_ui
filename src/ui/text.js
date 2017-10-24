@@ -61,7 +61,7 @@ CABLES.UI.TEXTS=
     bookmark_removed: "Bookmark removed!",
     sidebarMenu: "## Customize sidebar \n\nOpen the sidebar customizer to add / remove menu items by dragging them to / from the sidebar. \nDrag menu items vertically to change their order. \nYou can also press `cmd + p` to show the command pallet – there you can press the bookmark icon to add / remove menu items as well. ",
 
-    timeline_overview:"## timeline overview \n\nshows the current visible area\n\ndrag borders to resize\n\n* `[drag left click]` move area\n* `[drag right click]` move area and change time",
+    timeline_overview:"## timeline overview \n\nshows the current visible area\n\ndrag borders to resize\n\n* `[drag left click]` move area\n* `[drag right click]` move area and change time\n* `[double click]` toggle show full project length",
     timeline_frames:"## timeline \n\n* `[click]` move cursor",
     timeline_time:"`[click]` jump to frame",
     timeline_progress:"`[click]` set project duration",
