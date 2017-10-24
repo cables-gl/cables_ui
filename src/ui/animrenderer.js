@@ -52,7 +52,7 @@ CABLES.AnimRenderer.prototype.show = function(since) {
     });
 
     $('#render_fps').val( gui.timeLine().getFPS()||30 ) ;
-    $('#render_end').val( (gui.timeLine().getTimeLineLength()||5 )*(gui.timeLine().getFPS()||30));
+    $('#render_end').val( (gui.timeLine().getTimeLineLength()||5 ));
     
 
     $('#animRendererSettings').show();
