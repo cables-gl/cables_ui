@@ -99,6 +99,21 @@
         // border:1px solid red;
     }
 
+
+    .timelineprogress
+    {
+        display: block;
+        font-size: $timeline-font-size;
+        line-height: 12px;
+        float:left;
+        padding:4px;
+        width:33px;
+        height:32px;
+        margin-top: -1px;
+        margin-left: 0px;
+        text-align: left;
+    }
+
     .timelinetime
     {
         display: block;
