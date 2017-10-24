@@ -1501,6 +1501,13 @@ CABLES.TL.UI.TimeLineUI=function()
         if(e.target.nodeName!='INPUT')e.preventDefault();
     });
 
+    $('#overviewtimeline').hover( function(e) { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_overview); }, CABLES.UI.hideInfo);
+    $('#timetimeline').hover( function(e) { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_frames); }, CABLES.UI.hideInfo);
+    $('#timeline').hover( function(e) { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_keys); }, CABLES.UI.hideInfo);
+    
+    $('.timelineprogress').hover( function(e) { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_progress); }, CABLES.UI.hideInfo);
+    $('.timelinetime').hover( function(e) { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_time); }, CABLES.UI.hideInfo);
+    
 
     $("#overviewtimeline,#timetimeline").contextmenu(function(e)
     {
@@ -1767,7 +1774,7 @@ CABLES.TL.UI.TimeLineUI=function()
                 else
                     $('.timelinetime').html( '<b class="mainColor">'+(time+'').substr(0, 4)+'s </b><br/>'+getFrame(time)+' ' );
 
-                $('.timelineprogress').html( ''+(Math.round(time/projectLength*100))+'%' );
+                $('.timelineprogress').html( ''+(Math.round(time/projectLength*100))+'%<br/>'+(projectLength*self.getFPS())+'' );
                 
             }
         }
@@ -2061,7 +2068,7 @@ CABLES.TL.UI.TimeLineUI=function()
         var l=prompt("project length in frames:",Math.floor(projectLength*gui.timeLine().getFPS()));
         if(l===null)return;
         projectLength=parseInt(l)/gui.timeLine().getFPS();
-
+        self.redraw();
     }
 
 };
