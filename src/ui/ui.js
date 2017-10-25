@@ -446,9 +446,6 @@ CABLES.UI.GUI = function() {
         self.setLayout();
     };
 
-    this.isShowingTiming = function() {
-        return showTiming;
-    };
 
     function updateTimingIcon() {
         if (showTiming) {
@@ -475,6 +472,9 @@ CABLES.UI.GUI = function() {
     //     showMiniMap=!showMiniMap;
     //     self.setLayout();
     // };
+    this.isShowingTiming = function() {
+        return showTiming;
+    };
 
     this.showTiming = function() {
         self.timeLine().hidden = false;
@@ -497,6 +497,8 @@ CABLES.UI.GUI = function() {
         showTiming = !showTiming;
         updateTimingIcon();
         self.setLayout();
+        self.timeLine().redraw();
+
     };
 
     this.showUiDebug = function() {

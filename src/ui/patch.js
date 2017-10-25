@@ -2326,7 +2326,7 @@ CABLES.UI.Patch = function(_gui) {
             var foundAnim = false;
             for (i =0;i<op.portsIn.length;i++) {
                 if (op.portsIn[i].isAnimated()) {
-                    self.timeLine.setAnim(op.portsIn[i].anim, {
+                        self.timeLine.setAnim(op.portsIn[i].anim, {
                         name: op.portsIn[i].name
                     });
                     foundAnim = true;
