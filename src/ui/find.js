@@ -40,16 +40,19 @@ CABLES.UI.Find=function()
         html+='<div onclick="gui.patch().setCurrentSubPatch(\''+op.getSubPatch()+'\');gui.patch().focusOp(\''+op.op.id+'\');gui.patch().centerViewBox('+op.op.uiAttribs.translate.x+','+op.op.uiAttribs.translate.y+');gui.patch().setSelectedOpById(\''+op.op.id+'\');$(\'#patch\').focus();">';
         html+='<h3 class="'+colorClass+'">'+op.op.name+'</h3>';
         html+=''+op.op.objName;
-        html+='</div>';
+        
+        if(op.op.uiAttribs.subPatch!=0)
+        {
+            html+='<br/> subpatch: '+gui.patch().getSubPatchPathString(op.op.uiAttribs.subPatch);
+        }
 
+        html+='</div>';
 
         setTimeout(
             function()
             {
                 $('#searchresult').append(html);
             },1);
-
-
     }
 
     var canceledSearch=0;

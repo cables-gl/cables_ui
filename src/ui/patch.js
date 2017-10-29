@@ -1723,26 +1723,39 @@ CABLES.UI.Patch = function(_gui) {
         self.updateSubPatchBreadCrumb();
     };
 
-    this.updateSubPatchBreadCrumb = function() {
-        function findSubpatchOp(subId, arr) {
-            arr = arr || [];
-            for (var i in self.ops) {
-                if (self.ops[i].op.objName == CABLES.UI.OPNAME_SUBPATCH && self.ops[i].op.patchId) {
-                    if (self.ops[i].op.patchId.get() == subId) {
-                        arr.push({
-                            name: self.ops[i].op.name,
-                            id: self.ops[i].op.patchId.get()
-                        });
-                        if (self.ops[i].op.uiAttribs.subPatch !== 0) {
-                            findSubpatchOp(self.ops[i].op.uiAttribs.subPatch, arr);
-                        }
+    this.getSubPatchPathString=function(subId)
+    {
+        var arr=this.findSubpatchOp(subId);
+
+        var str=''
+        for(var i=0;i<arr.length;i++)
+        {
+            str+=arr[i].name+' ';
+        }
+        return str;
+    }
+
+    this.findSubpatchOp=function(subId, arr) {
+        arr = arr || [];
+        for (var i=0;i< self.ops.length;i++) {
+            if (self.ops[i].op.objName == CABLES.UI.OPNAME_SUBPATCH && self.ops[i].op.patchId) {
+                if (self.ops[i].op.patchId.get() == subId) {
+                    arr.push({
+                        name: self.ops[i].op.name,
+                        id: self.ops[i].op.patchId.get()
+                    });
+                    if (self.ops[i].op.uiAttribs.subPatch !== 0) {
+                        self.findSubpatchOp(self.ops[i].op.uiAttribs.subPatch, arr);
                     }
                 }
             }
-            return arr;
         }
+        return arr;
+    }
 
-        var names = findSubpatchOp(currentSubPatch);
+    this.updateSubPatchBreadCrumb = function()
+    {
+        var names = this.findSubpatchOp(currentSubPatch);
         var str = '<a onclick="gui.patch().setCurrentSubPatch(0)">root</a>';
 
         for (var i = names.length - 1; i >= 0; i--) {

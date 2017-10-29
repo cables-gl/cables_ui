@@ -351,9 +351,8 @@
 
 #subpatch_nav
 {
-	position: absolute;
-	margin-top: 35px;
-	right:200px;
+    // background-color: $color-cz;
+	position: relative;
 	z-index: $z-index-patch-subpatch-nav;
 	display: none;
 

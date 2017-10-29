@@ -193,6 +193,14 @@ CABLES.UI.GUI = function() {
             $('.naventry').show();
         }
 
+        $('#subpatch_nav').css(
+            {
+                width:patchWidth+'px',
+                left:iconBarWidth+'px',
+                top:menubarHeight + 1
+            });
+        
+
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
 
@@ -762,6 +770,9 @@ CABLES.UI.GUI = function() {
         });
         $('.nav_timeline').bind("click", function(event) {
             CABLES.CMD.UI.toggleTimeline();
+        });
+        $('.nav_editor').bind("click", function(event) {
+            CABLES.CMD.UI.toggleEditor();
         });
 
 
