@@ -8,6 +8,7 @@
   // height: 100vh;
   color: #2c3e50;
   z-index: $z-index-sidebar;
+  overflow-x: hidden;
 
   ul {
     left: 5px;
@@ -20,6 +21,9 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  // firefox fix: hide scrollbars, see: https://stackoverflow.com/a/16671476/1052107
+  padding-right: 17px;
+  width: 100%;
 
   li {
     cursor: pointer;
