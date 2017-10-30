@@ -286,7 +286,7 @@ CABLES.UI.ServerOps = function(gui) {
 
     this.cloneDialog = function(oldName) {
         this.opNameDialog('Clone operator', name, function(newname) {
-            gui.serverOps.clone(oldName, 'Ops.User.' + gui.user.username + '.' + newname);
+            gui.serverOps.clone(oldName, 'Ops.User.' +gui.user.usernameLowercase + '.' + newname);
         });
     };
 

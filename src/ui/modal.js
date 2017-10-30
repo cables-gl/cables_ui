@@ -225,7 +225,7 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
         ops[i].uiAttr({"error":"exception"});
     }
 
-    if(gui.user.isAdmin || opName.startsWith("Op.User."+gui.user.username))
+    if(gui.user.isAdmin || opName.startsWith("Op.User."+gui.user.usernameLowercase))
     {
         CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-edit" onclick="gui.serverOps.edit(\''+opName+'\');CABLES.UI.MODAL.hide(true);">Edit op</a> &nbsp;&nbsp;');
     }

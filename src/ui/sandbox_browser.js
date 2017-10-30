@@ -107,7 +107,7 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
             // console.log(proj.userList[i]+'!!!',proj);
 
             for (var i in proj.userList) {
-                userOpsUrls.push('/api/ops/code/' + proj.userList[i]);
+                userOpsUrls.push('/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
             }
 
             var lid = 'userops' + proj._id + CABLES.generateUUID();

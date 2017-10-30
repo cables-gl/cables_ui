@@ -11,6 +11,16 @@ CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
 CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
 
+CABLES.UI.sanitizeUsername=function(name)
+{
+    name=name.toLowerCase();
+    name = name.split(' ').join('_');
+    name=name.replace(/\./g, '_');
+    if (name.match(/^\d/))name='u_'+name; 
+    return name;
+}
+
+
 
 CABLES.uniqueArray=function(arr)
 {

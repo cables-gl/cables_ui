@@ -936,10 +936,8 @@ CABLES.UI.GUI = function() {
             }
         });
 
-        
         if(CABLES.sandbox.initRouting)
         {
-            console.log("ROUETETETETE");
             CABLES.sandbox.initRouting(cb);
         }
         else
