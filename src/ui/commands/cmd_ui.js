@@ -40,6 +40,23 @@ CABLES.CMD.UI.toggleMute = function() {
     }
 };
 
+
+
+CABLES.CMD.UI.toggleEditor = function() {
+    gui.toggleEditor();
+};
+
+CABLES.CMD.UI.hideEditor = function() {
+    gui.closeEditor();
+};
+
+CABLES.CMD.UI.showEditor = function() {
+    gui.showEditor();
+};
+
+
+
+
 CABLES.CMD.UI.toggleTimeline = function() {
     gui.toggleTiming();
 };
@@ -51,6 +68,9 @@ CABLES.CMD.UI.hideTimeline = function() {
 CABLES.CMD.UI.showTimeline = function() {
     gui.showTiming();
 };
+
+
+
 
 
 CABLES.CMD.UI.hideMinimap = function() {
@@ -132,6 +152,18 @@ CABLES.CMD.commands.push({
         cmd: "show timeline",
         category: "ui",
         func: CABLES.CMD.UI.showTimeline
+    }, {
+        cmd: "toggle editor",
+        category: "ui",
+        func: CABLES.CMD.UI.toggleEditor
+    }, {
+        cmd: "hide editor",
+        category: "ui",
+        func: CABLES.CMD.UI.hideEditor
+    }, {
+        cmd: "show editor",
+        category: "ui",
+        func: CABLES.CMD.UI.showEditor
     }, {
         cmd: "hide minimap",
         category: "ui",

@@ -50,6 +50,7 @@
 #searchresult {
   $search-result-border-radius: 8px; // TODO: Move to main.scss
 
+  box-shadow: 1px 0px 10px #000;
   border-bottom-left-radius: $search-result-border-radius;
   border-bottom-right-radius: $search-result-border-radius;
 

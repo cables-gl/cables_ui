@@ -306,6 +306,7 @@ CABLES.UI.ServerOps = function(gui) {
         var toolbarHtml = '';
         if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
+        console.log("edit att"+attachmentname);
 
         CABLES.api.get(
             'op/' + opname + '/attachment/' + attachmentname,
@@ -344,7 +345,12 @@ CABLES.UI.ServerOps = function(gui) {
                     },
 
                 });
-            });
+            },function()
+        {
+            console.error("err..."+attachmentname);
+            removeOpenEditor(editorObj);
+        }
+        );
     };
 
 
