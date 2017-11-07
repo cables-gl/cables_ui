@@ -15,10 +15,10 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow(
     {
-      width: 1280, 
+      width: 1480, 
       height: 720
     });
-  // mainWindow.setFullScreen(true);
+  mainWindow.setFullScreen(true);
 
 
 
