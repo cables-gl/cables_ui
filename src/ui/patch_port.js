@@ -186,7 +186,7 @@ CABLES.UI.Port=function(thePort)
         CABLES.UI.selectedEndOp=null;
         removeLinkingLine();
         self.opUi.isDragging=false;
-        CABLES.UI.selectedStartPort=false;
+        CABLES.UI.selectedStartPort=null;
         updateUI();
     }
 

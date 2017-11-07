@@ -83,7 +83,7 @@ function UiLink(port1, port2)
 
         this._addCircles.push(addCircle);
 
-        console.log('new addcircle',this._addCircles.length);
+        // console.log('new addcircle',this._addCircles.length);
 
         addCircle.node.classList.add(CABLES.UI.uiConfig.getLinkClass(self.p1.thePort ));
         addCircle.node.classList.add('addCircle');

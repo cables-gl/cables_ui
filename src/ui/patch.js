@@ -564,6 +564,8 @@ CABLES.UI.Patch = function(_gui) {
 
 
     this.saveCurrentProject = function(cb, _id, _name) {
+
+
         if (this.loadingError) {
             CABLES.UI.MODAL.showError('project not saved', 'could not save project: had errors while loading!');
             return;
@@ -1141,13 +1143,12 @@ CABLES.UI.Patch = function(_gui) {
         this.background.node.onmousedown = function(ev) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             this._elPatch.focus();
+            CABLES.UI.OPSELECT.linkNewOpToPort=null;
             if (!ev.shiftKey) gui.patch().setSelectedOp(null);
             self.showProjectParams();
         }.bind(this);
 
         var lastZoomDrag = -1;
-
-
 
         this.background.node.ondblclick = function(e) {
             e = mouseEvent(e);
@@ -1373,6 +1374,7 @@ CABLES.UI.Patch = function(_gui) {
 
 
         if (CABLES.UI.OPSELECT.linkNewOpToSuggestedPort) {
+            console.log('CABLES.UI.OPSELECT.linkNewOpToSuggestedPort');
             var link = gui.patch().scene.link(
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op,
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName,
@@ -1415,6 +1417,7 @@ CABLES.UI.Patch = function(_gui) {
             }
         } else
         if (CABLES.UI.OPSELECT.linkNewOpToPort) {
+
             var foundPort = op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
 
             if (foundPort) {
