@@ -609,6 +609,43 @@ CABLES.UI.Patch = function(_gui) {
         data.ui.renderer.w = gui.rendererWidth;
         data.ui.renderer.h = gui.rendererHeight;
 
+        // electron
+        if(window.process && window.process.versions['electron']) {
+            var electron = require('electron');
+            var ipcRenderer = electron.ipcRenderer;
+            var remote = electron.remote; 
+            var fs = require('fs');
+            var os = require('os');
+            var path = require('path');
+            // TODO: Store last saved position and filename, overwrite file
+            var dialog = remote.dialog;
+            dialog.showSaveDialog(
+                {
+                    filters: [{
+                        name: 'cables',
+                        extensions: ['cables']
+                    }]
+                },
+                function(filePath) {
+                    console.log('Saving patch to: ', filePath);
+                    if (filePath) {
+                        fs.writeFile(filePath, JSON.stringify(data, null, 2), function(err) {
+                            if(err) {
+                                CABLES.UI.notifyError('Error saving patch');
+                                return console.log(err);
+                            }
+                            console.log('Patch successfully saved');
+                            CABLES.UI.notify('patch saved');
+                            gui.jobs().finish('projectsave');
+                            gui.setStateSaved();
+                        }); 
+                    }
+                }
+            );
+            
+            return;
+        }
+
         try {
             data = JSON.stringify(data);
             console.log('data.length', data.length);
