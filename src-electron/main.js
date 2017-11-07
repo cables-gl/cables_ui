@@ -4,6 +4,9 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
+const { Menu, dialog } = electron;
+
+const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
@@ -41,6 +44,113 @@ function createWindow () {
   });
 }
 
+const menuTemplate = [
+  {
+      label: 'cables', /* the name is only correct when building / bundling the app */
+      submenu: [
+          {label: 'About'},
+          {
+              label: 'Greet',
+              click: () => { console.log('Hi'); },
+              accelerator: 'Shift+Alt+g',
+          },
+          {
+              label: 'Greet in Renderer',
+              click: () => { 
+                  mainWindow.webContents.send('ping', 'whoooooooh!'); 
+              },
+              accelerator: 'Shift+Alt+e',
+          },
+      ],
+  },
+  {
+    label: 'Patch',
+    submenu: [
+      {
+        label: 'New',
+        enabled: false,
+        click: () => {
+          console.log('New patch clicked');
+        },
+      },
+      { type: 'separator' },
+      {
+        label: 'Open',
+        click: () => {
+          console.log('open clicked');
+          openPatch();
+        },
+      },
+      { type: 'separator' },
+      {
+        label: 'Save',
+        enabled: false,
+        click: () => {
+          console.log('Save patch clicked');
+          newPatch();
+        },
+      },
+      {
+        label: 'Save As',
+        enabled: false,
+        click: () => {
+          console.log('Save patch as clicked');
+        },
+      },
+      { type: 'separator' },
+      {
+        label: 'Settings',
+        enabled: false,
+        click: () => {
+          console.log('Settings clicked');
+        },
+      },
+    ],
+  },
+  {
+      label: 'edit',
+      submenu: [
+          {label: 'Copy'},
+          {label: 'Paste'},
+      ],
+  },
+];
+
+function openPatch() {
+  dialog.showOpenDialog(
+    {
+        filters: [{
+            name: 'cables',
+            extensions: ['cables']
+        }]
+    },
+    function(filePathes) {
+        if(filePathes && filePathes.length > 0) {
+          console.log('Opening patch: ', filePathes);
+          var filePath = filePathes[0]
+          if (filePath) {
+            fs.readFile(filePath, function(err, fileContent) {
+              if(err) {
+                  CABLES.UI.notifyError('Error loading patch');
+                  return console.log(err);
+              }
+              if(fileContent) {
+                // var patch = JSON.parse(fileContent); // to reduce chances of errors with ipc-sending, we send the patch as string
+                mainWindow.webContents.send('loadPatch', fileContent); 
+              }
+            }); 
+          }
+        }
+      }
+  );
+}
+
+let mainMenu = Menu.buildFromTemplate(menuTemplate);
+
+function createMenu() {
+  Menu.setApplicationMenu(mainMenu);
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -49,6 +159,7 @@ function createWindow () {
 app.on('ready', function()
 {
   createWindow();
+  createMenu();
   // const ret = electron.globalShortcut.register(
   //   'Escape',
   //   function()

@@ -4,6 +4,15 @@ var CABLES=CABLES||{};
 CABLES.SandboxElectron=function()
 {
     console.log("starting electron sandbox");
+
+    var ipc = require('electron').ipcRenderer; // for communication with electron main thread
+    
+    // called when open patch was clicked
+    ipc.on('loadPatch', function(event, patchContentAsString) {
+      console.log('patchContentAsString: ', patchContentAsString);
+      var patch = JSON.parse(patchContentAsString);
+      gui.patch().setProject(patch);
+    });
 };
 
 CABLES.SandboxElectron.prototype.getUrlOpsCode=function()
