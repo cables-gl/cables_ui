@@ -33,10 +33,13 @@ function createWindow () {
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
+    console.log('closed');
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null;
+    
+    // app.quit(); // until we supported multiple windows, let's just quit the app
+    app.exit();
   });
 }
 
@@ -239,11 +242,22 @@ app.on('ready', function()
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
+  console.log('window-all-closed');
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  // if (process.platform !== 'darwin') {
+  //   app.quit();
+  // }
+  // app.quit(); // for now let's just quit the app
+  app.exit();
+});
+
+app.on('before-quit', function() {
+  // hacky. because the window rejects to be closed we kill the app
+  // TODO: 
+  //    - properly close the window(s)
+  //    - check if patch is unsaved and ask user to save
+  app.exit();
 });
 
 app.on('activate', function () {
