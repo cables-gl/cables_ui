@@ -15,6 +15,10 @@ CABLES.SandboxElectron=function()
     });
 };
 
+CABLES.SandboxElectron.prototype.showStartupChangelog = function() {
+    CABLES.UI.MODAL.hide(); // quickfix to hide empty modal on startup
+};
+
 CABLES.SandboxElectron.prototype.getUrlOpsCode=function()
 {
     return 'code.js';
