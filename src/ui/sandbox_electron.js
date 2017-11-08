@@ -17,6 +17,8 @@ CABLES.SandboxElectron=function()
       var patch = JSON.parse(message.patchAsString);
       gui.patch().setProject(patch);
       gui.patch().filename = message.path; // store the path, so we can oversave it without a select-file prompt later
+      var projectName = gui.patch().getProjectnameFromFilename(message.path);
+      gui.setProjectName(projectName);
     });
 };
 
