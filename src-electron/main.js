@@ -87,7 +87,7 @@ const menuTemplate = [
         },
       },
       {
-        label: 'Save As',
+        label: 'Save As…',
         enabled: false,
         click: () => {
           console.log('Save patch as clicked');
@@ -96,7 +96,7 @@ const menuTemplate = [
       { type: 'separator' },
       {
         label: 'Settings',
-        enabled: false,
+        accelerator: 'Cmd+,',
         click: () => {
           console.log('Settings clicked');
         },
@@ -104,11 +104,61 @@ const menuTemplate = [
     ],
   },
   {
-      label: 'edit',
-      submenu: [
-          {label: 'Copy'},
-          {label: 'Paste'},
-      ],
+    label: 'Op',
+    submenu: [
+      {
+        label: 'Add',
+        accelerator: 'Esc',
+        click: () => {
+          console.log('Add clicked');
+          // we will not implement anything else here, because cables will deal with the shortcut
+        },
+      },
+      {
+        label: 'Create',
+        click: () => {
+          console.log('Create clicked');
+        },
+      },
+    ],
+  },
+  {
+    label: 'Edit',
+    submenu: [
+        {label: 'Copy'},
+        {label: 'Paste'},
+    ],
+  },
+  {
+    label: 'Help',
+    submenu: [
+      {
+        label: 'Documentation',
+        click: () => {
+          shell.openExternal('https://docs.cables.gl');
+        },
+      },
+      {
+        label: 'Introduction',
+        enabled: false,
+        click: () => {
+          console.log('Introduction clicked');
+        },
+      },
+      {
+        label: 'Video Tutorials',
+        click: () => {
+          shell.openExternal('https://www.youtube.com/watch?list=PLYimpE2xWgBveaPOiV_2_42kZEl_1ExB0&v=KPTGFM177HU');
+        },
+      },
+      {
+        label: 'Changelog',
+        enabled: false,
+        click: () => {
+          console.log('Changelog clicked');
+        },
+      },
+    ],
   },
 ];
 
