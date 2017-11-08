@@ -44,11 +44,14 @@ const menuTemplate = [
   {
       label: 'cables', /* the name is only correct when building / bundling the app */
       submenu: [
-          {label: 'About'},
+          { label: 'About',
+            // role: 'about', // this will not work on Win / Linux, but we should display the version number somehow
+            enabled: false,
+            click: () => { console.log('About clicked'); },
+          }, /* Mac only, TODO: Hide on win / linux, Info.plist (in packaged version!?) must be edited to change the content, see https://github.com/electron/electron/issues/2219 */
           {
               label: 'Greet',
               click: () => { console.log('Hi'); },
-              accelerator: 'Shift+Alt+g',
           },
           {
               label: 'Greet in Renderer',
@@ -57,6 +60,14 @@ const menuTemplate = [
               },
               accelerator: 'Shift+Alt+e',
           },
+          // {
+          //   label: 'Quit',
+          //   accelerator: 'Cmd+Q',
+          //   click: () => {
+          //     console.log('Quit clicked');
+          //   },
+          // },
+          {role: 'quit'},
       ],
   },
   {
@@ -71,7 +82,8 @@ const menuTemplate = [
       },
       { type: 'separator' },
       {
-        label: 'Open',
+        label: 'Open…',
+        accelerator: 'CmdOrCtrl+O',
         click: () => {
           console.log('open clicked');
           openPatch();
@@ -182,7 +194,7 @@ function openPatch() {
               }
               if(fileContent) {
                 // var patch = JSON.parse(fileContent); // to reduce chances of errors with ipc-sending, we send the patch as string
-                mainWindow.webContents.send('loadPatch', fileContent); 
+                mainWindow.webContents.send('loadPatch', { path: filePath, patchAsString: fileContent }); 
               }
             }); 
           }
