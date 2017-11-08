@@ -19,9 +19,10 @@ function createWindow () {
   mainWindow = new BrowserWindow(
     {
       width: 1480, 
-      height: 720
+      height: 720,
+      titleBarStyle: 'hidden',
     });
-  mainWindow.setFullScreen(true);
+  // mainWindow.setFullScreen(true);
 
 
 
