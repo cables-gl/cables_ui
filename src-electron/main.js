@@ -29,7 +29,7 @@ function createWindow () {
   }));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -142,6 +142,18 @@ const menuTemplate = [
     submenu: [
         {label: 'Copy'},
         {label: 'Paste'},
+    ],
+  },
+  {
+    label: 'Window',
+    submenu: [
+      {
+        label: 'Toggle Dev Tools',
+        accelerator: 'Cmd+Alt+I',
+        click: () => {
+          mainWindow.webContents.toggleDevTools();
+        },
+      },
     ],
   },
   {
