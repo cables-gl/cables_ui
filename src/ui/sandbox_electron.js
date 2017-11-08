@@ -7,11 +7,16 @@ CABLES.SandboxElectron=function()
 
     var ipc = require('electron').ipcRenderer; // for communication with electron main thread
     
-    // called when open patch was clicked
-    ipc.on('loadPatch', function(event, patchContentAsString) {
-      console.log('patchContentAsString: ', patchContentAsString);
-      var patch = JSON.parse(patchContentAsString);
+    /**
+     * called when open patch was clicked
+     * @param event
+     * @param message Object with filepath of patch and patch data as string – { path: '/Users/Ulf/somePatch.cables', patchAsString: '...'}
+     */
+    ipc.on('loadPatch', function(event, message) {
+      console.log('patchContentAsString: ', message.patchAsString);
+      var patch = JSON.parse(message.patchAsString);
       gui.patch().setProject(patch);
+      gui.patch().filename = message.path; // store the path, so we can oversave it without a select-file prompt later
     });
 };
 
@@ -53,6 +58,10 @@ CABLES.SandboxElectron.prototype.getUrlApiPrefix=function(id)
 {
     return "";
 };
+
+// CABLES.SandboxElectron.prototype.changelog = function() {
+//     console.log('fake changelog called...'); // not called
+// };
 
 CABLES.SandboxElectron.prototype.getUrlOpsList=function(id)
 {
