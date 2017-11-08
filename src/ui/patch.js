@@ -619,29 +619,42 @@ CABLES.UI.Patch = function(_gui) {
             var path = require('path');
             // TODO: Store last saved position and filename, overwrite file
             var dialog = remote.dialog;
-            dialog.showSaveDialog(
-                {
-                    filters: [{
-                        name: 'cables',
-                        extensions: ['cables']
-                    }]
-                },
-                function(filePath) {
-                    console.log('Saving patch to: ', filePath);
-                    if (filePath) {
-                        fs.writeFile(filePath, JSON.stringify(data, null, 2), function(err) {
-                            if(err) {
-                                CABLES.UI.notifyError('Error saving patch');
-                                return console.log(err);
-                            }
-                            console.log('Patch successfully saved');
-                            CABLES.UI.notify('patch saved');
-                            gui.jobs().finish('projectsave');
-                            gui.setStateSaved();
-                        }); 
-                    }
+
+            function writePatchToFile(patchData, path) {
+                console.log('Saving patch to: ', path);
+                if (path) {
+                    fs.writeFile(path, JSON.stringify(patchData, null, 2), function(err) {
+                        if(err) {
+                            CABLES.UI.notifyError('Error saving patch');
+                            return console.log(err);
+                        }
+                        console.log('Patch successfully saved');
+                        CABLES.UI.notify('patch saved');
+                        gui.jobs().finish('projectsave');
+                        gui.setStateSaved();
+                    }); 
                 }
-            );
+            }
+            console.log('gui.patch().filename before check: ', gui.patch().filename);
+            // patch has been saved before, overwrite the patch
+            if(gui.patch().filename) {
+                writePatchToFile(data, gui.patch().filename);
+            } else {
+                dialog.showSaveDialog(
+                    {
+                        // file filters, only display files with these extensions
+                        filters: [{
+                            name: 'cables',
+                            extensions: ['cables']
+                        }]
+                    },
+                    function(filePath) {
+                        writePatchToFile(data, filePath);
+                        gui.patch().filename = filePath; // store the path so we don't have to ask on next save
+                        console.log('gui.patch().filename saved: ', gui.patch().filename);
+                    }
+                );
+            }
             
             return;
         }
