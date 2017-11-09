@@ -245,6 +245,34 @@ CABLES.UI.Patch = function(_gui) {
 
     };
 
+
+    this.highlightNamespace =function(ns)
+    {
+        for (var i=0;i<self.ops.length;i++)
+        {
+            if(self.ops[i].op.objName.startsWith(ns))
+            {
+                
+                self.ops[i].highlight(true);
+            }
+            else self.ops[i].highlight(false);
+        }
+
+    };
+
+    this.highlightOpNamespace =function(op)
+    {
+
+        console.log('highlightOpNamespace',op.objName);
+
+        var parts=op.objName.split('.');
+        parts.length=parts.length-1;
+        var ns=parts.join(".");
+        self.highlightNamespace(ns);
+    };
+
+
+
     this.unPatchSubPatch = function(patchId) {
         var toSelect = [];
         for (var i in this.ops) {
@@ -2212,7 +2240,8 @@ CABLES.UI.Patch = function(_gui) {
 
     this.updateOpParams = function(id) {
         gui.setTransformGizmo(null);
-        self.showOpParams(gui.scene().getOpById(id));
+        var op=gui.scene().getOpById(id);
+        self.showOpParams(op);
     };
 
     this.showProjectParams = function() {
@@ -2302,6 +2331,7 @@ CABLES.UI.Patch = function(_gui) {
     var delayedShowOpParams = 0;
     this.showOpParams = function(op) {
 
+        // self.highlightOpNamespace(op);
         gui.setTransformGizmo(null);
         clearTimeout(delayedShowOpParams);
         delayedShowOpParams = setTimeout(function() {

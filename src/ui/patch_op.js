@@ -688,6 +688,13 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         return group;
     };
 
+    this.highlight=function(b)
+    {
+        if(b) background.node.classList.add("op_highlight")
+            else background.node.classList.remove("op_highlight")
+    }
+
+
     // group.push(background);
     group.transform('t' + x + ',' + y);
 };
@@ -993,6 +1000,11 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         self.isDragging = false;
         this.oprect.setSelected(sel);
     };
+
+    this.highlight=function(b)
+    {
+        this.oprect.highlight(b);
+    }
 
 
     this.addPort = function(_inout, thePort) {
