@@ -31,6 +31,52 @@ CABLES.SandboxElectron.prototype.getUrlOpsCode=function()
     return 'code.js';
 }
 
+/**
+ * Returns the local cables folder if it is set in user settings or the default one if not set
+ * e.g. `Users/ulf/cables`
+ */
+CABLES.SandboxElectron.prototype.getLocalCablesFolder = function() {
+    // TODO: Let users define their cables-home dir
+    const os = require('os');
+    const path = require('path');
+
+    const homeDir = os.homedir();
+    return path.join(homeDir, 'cables');
+};
+
+CABLES.SandboxElectron.prototype.getLocalOpCode = function() {
+    const fs = require('fs');
+    const path = require('path');
+    
+    const cablesFolder = this.getLocalCablesFolder();
+    const cablesOpsFolder = path.join(cablesFolder, 'ops');
+
+    if (fs.existsSync(cablesOpsFolder)) {
+        var localOpCode = '';
+        fs.readdirSync(cablesOpsFolder).forEach(function(opName) {
+            console.log('cables op: ', opName);
+            const opJsPath =  path.join(cablesOpsFolder, opName, opName + '.js'); // e.g. /Users/ulf/cables/ops/Ops.Foo/Ops.Foo.js
+            if (fs.existsSync(opJsPath)) {
+                var opCode = fs.readFileSync(opJsPath, 'utf8')
+                console.log('opCode: ', opCode);
+                // localOpCode += '\n/*\n';
+                // localOpCode += ' * -----------------------------------------\n';
+                // localOpCode += ' * ' + opName.toUpperCase + ' START\n';
+                // localOpCode += ' * -----------------------------------------\n\n';
+
+                localOpCode += opCode;
+
+                // localOpCode += '\n/*\n';
+                // localOpCode += ' * -----------------------------------------\n';
+                // localOpCode += ' * ' + opName.toUpperCase + ' END\n';
+                // localOpCode += ' * -----------------------------------------\n\n';
+            }
+        });
+        return localOpCode;
+    }
+    return null;
+};
+
 CABLES.SandboxElectron.prototype.initRouting=function(cb)
 {
     if (!gui.serverOps || !gui.serverOps.finished()) {

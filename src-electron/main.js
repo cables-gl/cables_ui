@@ -1,3 +1,15 @@
+// require('app-module-path').addPath('/Users/tim/cables/node_modules');
+// global.__base = __dirname + '/';
+// process.env.NODE_PATH = "/Users/tim/cables/node_modules";
+// require("module").Module._initPaths();
+
+// require('module').globalPaths.push('/Users/tim/cables/node_modules');
+// require("module").Module._initPaths();
+
+process.env['CABLES_MODULES'] = '/Users/tim/cables/node_modules';
+
+//console.log("require('module').globalPaths: ", require('module').globalPaths);
+
 const electron = require('electron');
 const { app, BrowserWindow, Menu, dialog, shell } = electron;
 

@@ -155,19 +155,17 @@ gulp.task('electronapp', function () {
     // var someOtherOperation = gulp.src('./assets').pipe(gulp.dest('out/assets'));
     
     return merge(copydist, electronsrc);
-
-    
-
-    });
+});
 
 
+// TODO: Electron-specific task
 
 
 gulp.task('watch', function() {
     gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);
     gulp.watch('src/ui/**/*.js', ['scripts_ui','electron']);
-    gulp.watch('scss/**/*.scss', ['sass','sass-bright']);
+    gulp.watch('scss/**/*.scss', ['sass','sass-bright', 'electron']); // <–– TODO: Move to electron-specific task
     gulp.watch('html/**/*.html', ['html_ui']);
     gulp.watch('icons/**/*.svg', ['svgcss']);
     gulp.watch('vue-src/**/*', ['vueify']);
