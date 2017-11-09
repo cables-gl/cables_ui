@@ -1004,8 +1004,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
     this.initPorts=function()
     {
-
-        console.log('links!!!',this.links.length);
         
         for(var i=0;i<this.portsIn.length;i++)
         {

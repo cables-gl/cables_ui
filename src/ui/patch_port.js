@@ -24,17 +24,16 @@ CABLES.UI.Port=function(thePort)
 
     thePort.onUiAttrChange=function(attribs)
     {
-        // if(attribs.hidePort==true)
-        // {
-            
+        if(attribs.hasOwnProperty('hidePort'))
+        {
             self.thePort.removeLinks();
             self.opUi.initPorts();
     
+            console.log('uiattribs changed!');
             gui.patch().updateOpParams(self.opUi.op.id);
 
             self.opUi.setPos();
-
-        // }
+        }
 
     };
 

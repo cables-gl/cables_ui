@@ -14,8 +14,8 @@
 
 
 
-<tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" {{#if port.uiAttribs.greyout }}style="opacity:0.5;"{{/if}}>
-    <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}">
+<tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}>
+    <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}">
         {{port.name}}
         </span>
