@@ -22,6 +22,22 @@ CABLES.UI.Port=function(thePort)
     var linkingLine=null;
     var cancelDeleteLink=false;
 
+    thePort.onUiAttrChange=function(attribs)
+    {
+        // if(attribs.hidePort==true)
+        // {
+            
+            self.thePort.removeLinks();
+            self.opUi.initPorts();
+    
+            gui.patch().updateOpParams(self.opUi.op.id);
+
+            self.opUi.setPos();
+
+        // }
+
+    };
+
     function changeActiveState()
     {
         for(var i=0;i<self.opUi.links.length;i++)
@@ -38,7 +54,6 @@ CABLES.UI.Port=function(thePort)
         {
             if(thePort.isLinked && self.thePort.links.length>0 ) //&& thePort.links.length===1
             {
-
                 if(thePort.links.length>1)
                 {
                 	for(var i=0;i<thePort.links.length;i++)

@@ -1354,24 +1354,7 @@ CABLES.UI.Patch = function(_gui) {
             if (op.uiAttribs.subPatch != currentSubPatch) uiOp.hide();
         }
 
-        for (var i in op.portsIn) {
-            var p = op.portsIn[i];
-
-            if (!p.uiAttribs) p.uiAttribs = {};
-
-            if (p.uiAttribs.display != 'readonly' && !p.uiAttribs.hidePort)
-                uiOp.addPort(PORT_DIR_IN, p);
-
-            if (p.uiAttribs.hasOwnProperty('display')) {
-                if (p.uiAttribs.display == 'dropdown') p.uiAttribs.type = 'string';
-                if (p.uiAttribs.display == 'file') p.uiAttribs.type = 'string';
-                if (p.uiAttribs.display == 'bool') p.uiAttribs.type = 'bool';
-            }
-        }
-
-        for (var i2 in op.portsOut) {
-            uiOp.addPort(PORT_DIR_OUT, op.portsOut[i2]);
-        }
+        uiOp.initPorts();
 
         if (!op.uiAttribs) {
             op.uiAttribs = {};

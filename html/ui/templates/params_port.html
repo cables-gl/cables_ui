@@ -14,7 +14,7 @@
 
 
 
-<tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}">
+<tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" {{#if port.uiAttribs.greyout }}style="opacity:0.5;"{{/if}}>
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}">
         {{port.name}}
