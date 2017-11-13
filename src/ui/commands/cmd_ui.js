@@ -27,6 +27,11 @@ CABLES.CMD.UI.toggleFiles = function() {
     CABLES.UI.fileSelect.toggle();
 };
 
+CABLES.CMD.UI.windowFullscreen = function() {
+    document.documentElement.webkitRequestFullScreen();
+};
+
+
 
 CABLES.CMD.UI.toggleMute = function() {
     if (gui.scene().config.masterVolume > 0.0) {
@@ -216,7 +221,14 @@ CABLES.CMD.commands.push({
         icon: "cables",
         hotkey: "f"
 
+    },{
+        cmd: "toggle window fullscreen",
+        category: "ui",
+        func: CABLES.CMD.UI.windowFullscreen,
+        icon: "cables"
+
     }
+    
 
 
 
