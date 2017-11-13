@@ -24,7 +24,7 @@ CABLES.UI.TEXTS=
 
     portDirIn:'## Input Port \n\n',
     portDirOut:'## Output Port\n\n',
-    portMouseUnlink:'* press right mouse button to unlink port\n\n* drag while holding right mouse button to move link',
+    portMouseUnlink:'* press right mouse button to unlink port\n\n* drag while holding right mouse button to move link\n\n* [ALT]+drag while holding right mouse button to copy link',
     portMouseCreate:'* press left mousebutton (or press and drag) to create and link new op',
     portObjectSnapshot:'see at object data snapshot',
 
