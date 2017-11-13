@@ -818,11 +818,7 @@ CABLES.UI.GUI = function() {
 
         $(document).keydown(function(e)
         {
-            if(gui.scene().timer.isPlaying())
-            {
-                self.timeLine().togglePlay();
-                spaceBarStart=0;
-            }
+
 
             if (CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91)) {
                 if (CABLES.UI.suggestions) {
@@ -840,6 +836,13 @@ CABLES.UI.GUI = function() {
                     // console.log('e.which',e.which);
                     break;
 
+                case 32:
+                    if(gui.scene().timer.isPlaying())
+                    {
+                        self.timeLine().togglePlay();
+                        spaceBarStart=0;
+                    }
+                break;
                 case 13:
                         if (e.ctrlKey || e.metaKey) self.cycleRendererSize();
                     break;
