@@ -27,8 +27,13 @@ CABLES.CMD.UI.toggleFiles = function() {
     CABLES.UI.fileSelect.toggle();
 };
 
+
 CABLES.CMD.UI.downloadSVG = function() {
     gui.patch().downloadSVG();
+};
+
+CABLES.CMD.UI.windowFullscreen = function() {
+    document.documentElement.webkitRequestFullScreen();
 };
 
 CABLES.CMD.UI.toggleMute = function() {
@@ -224,7 +229,13 @@ CABLES.CMD.commands.push({
         category: "ui",
         func: CABLES.CMD.UI.downloadSVG,
         icon: "cables"
+    },{
+        cmd: "toggle window fullscreen",
+        category: "ui",
+        func: CABLES.CMD.UI.windowFullscreen,
+        icon: "cables"
     }
+    
 
     
 

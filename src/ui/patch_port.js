@@ -88,7 +88,9 @@ CABLES.UI.Port=function(thePort)
                 }
 
                 linkingLine = new CABLES.UI.SVGLine(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
-                self.thePort.removeLinks();
+
+                if(!event.altKey)
+                    self.thePort.removeLinks();
                 // CABLES.UI.selectedStartPortMulti.length=0;
                 updateUI();
             }
