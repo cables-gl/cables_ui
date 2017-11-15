@@ -26,7 +26,10 @@ new Vue({
       copySortSource: false, // forbid sorting in customizer
       accepts: acceptsDrop, // decides if container accepts dragged element
       copy: copy, // decides if dragged element should be copied or moved
-    })
+      moves: function(item) { // asks for permission for each item to be dragged
+        return store.state.sidebar.customizerVisible; // only allow dragging when customizer is visible
+      },
+    });
   }
 })
 
