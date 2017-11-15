@@ -39,8 +39,8 @@ CABLES.SandboxBrowser.prototype.getUrlOpsCode=function(id)
     return '/api/ops/code';
 };
 
-CABLES.SandboxBrowser.prototype.getLocalOpPaths = function() {
-    return; // no local ops in browser version
+CABLES.SandboxBrowser.prototype.getLocalOpCode = function() {
+    return ''; // no local ops in browser version
 };
 
 CABLES.SandboxBrowser.prototype.getUrlDocOpsAll=function(id)
