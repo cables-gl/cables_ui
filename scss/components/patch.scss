@@ -158,6 +158,13 @@
         }
     }
 
+    .op_highlight
+    {
+        stroke-width:2;
+        stroke:$color-c5;
+        color:#fff !important;
+    }
+
     .op_handle
     {
         stroke-width:0;

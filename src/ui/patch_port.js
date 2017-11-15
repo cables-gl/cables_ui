@@ -22,6 +22,21 @@ CABLES.UI.Port=function(thePort)
     var linkingLine=null;
     var cancelDeleteLink=false;
 
+    thePort.onUiAttrChange=function(attribs)
+    {
+        if(attribs.hasOwnProperty('hidePort'))
+        {
+            self.thePort.removeLinks();
+            self.opUi.initPorts();
+    
+            console.log('uiattribs changed!');
+            gui.patch().updateOpParams(self.opUi.op.id);
+
+            self.opUi.setPos();
+        }
+
+    };
+
     function changeActiveState()
     {
         for(var i=0;i<self.opUi.links.length;i++)
@@ -38,7 +53,6 @@ CABLES.UI.Port=function(thePort)
         {
             if(thePort.isLinked && self.thePort.links.length>0 ) //&& thePort.links.length===1
             {
-
                 if(thePort.links.length>1)
                 {
                 	for(var i=0;i<thePort.links.length;i++)
@@ -74,7 +88,9 @@ CABLES.UI.Port=function(thePort)
                 }
 
                 linkingLine = new CABLES.UI.SVGLine(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
-                self.thePort.removeLinks();
+
+                if(!event.altKey)
+                    self.thePort.removeLinks();
                 // CABLES.UI.selectedStartPortMulti.length=0;
                 updateUI();
             }
@@ -186,7 +202,7 @@ CABLES.UI.Port=function(thePort)
         CABLES.UI.selectedEndOp=null;
         removeLinkingLine();
         self.opUi.isDragging=false;
-        CABLES.UI.selectedStartPort=false;
+        CABLES.UI.selectedStartPort=null;
         updateUI();
     }
 

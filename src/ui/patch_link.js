@@ -16,6 +16,11 @@ function UiLink(port1, port2)
     this.p2=port2;
 
 
+    this.unlink=function()
+    {
+        self.p1.thePort.removeLinkTo( self.p2.thePort );
+    }
+
     this.hideAddButton=function()
     {
         for(var i=0;i<this._addCircles.length;i++)
@@ -52,6 +57,7 @@ function UiLink(port1, port2)
         CABLES.UI.hideInfo();
     };
 
+   
     var onMouseDown=function (event)
     {
         $('#patch').focus();
@@ -60,7 +66,8 @@ function UiLink(port1, port2)
         {
             if(event.which==3)
             {
-                self.p1.thePort.removeLinkTo( self.p2.thePort );
+                // self.p1.thePort.removeLinkTo( self.p2.thePort );
+                self.unlink();
             }
             else
             {
@@ -83,7 +90,7 @@ function UiLink(port1, port2)
 
         this._addCircles.push(addCircle);
 
-        console.log('new addcircle',this._addCircles.length);
+        // console.log('new addcircle',this._addCircles.length);
 
         addCircle.node.classList.add(CABLES.UI.uiConfig.getLinkClass(self.p1.thePort ));
         addCircle.node.classList.add('addCircle');

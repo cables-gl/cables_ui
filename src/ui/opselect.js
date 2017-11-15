@@ -408,8 +408,7 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
         break;
 
         case 13:
-
-        console.log( $('.selected') );
+            console.log( $('.selected') );
 
             var opname=$('.selected').data('opname');
 

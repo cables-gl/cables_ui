@@ -28,6 +28,14 @@ CABLES.CMD.UI.toggleFiles = function() {
 };
 
 
+CABLES.CMD.UI.downloadSVG = function() {
+    gui.patch().downloadSVG();
+};
+
+CABLES.CMD.UI.windowFullscreen = function() {
+    document.documentElement.webkitRequestFullScreen();
+};
+
 CABLES.CMD.UI.toggleMute = function() {
     if (gui.scene().config.masterVolume > 0.0) {
         $('#timelineVolume').removeClass('icon-volume-2');
@@ -215,10 +223,19 @@ CABLES.CMD.commands.push({
         func: CABLES.CMD.UI.flowVis,
         icon: "cables",
         hotkey: "f"
-
+    },
+    {
+        cmd: "download patch svg",
+        category: "ui",
+        func: CABLES.CMD.UI.downloadSVG,
+        icon: "cables"
+    },{
+        cmd: "toggle window fullscreen",
+        category: "ui",
+        func: CABLES.CMD.UI.windowFullscreen,
+        icon: "cables"
     }
-
-
+    
 
 
 );

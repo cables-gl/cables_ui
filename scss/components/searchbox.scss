@@ -53,6 +53,8 @@
   box-shadow: 1px 0px 10px #000;
   border-bottom-left-radius: $search-result-border-radius;
   border-bottom-right-radius: $search-result-border-radius;
+  max-height: 90vh;
+  overflow-y: scroll;
 
   div {
     border-bottom: 1px solid $color-list-border;

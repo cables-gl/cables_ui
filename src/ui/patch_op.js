@@ -688,6 +688,13 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         return group;
     };
 
+    this.highlight=function(b)
+    {
+        if(b) background.node.classList.add("op_highlight")
+            else background.node.classList.remove("op_highlight")
+    }
+
+
     // group.push(background);
     group.transform('t' + x + ',' + y);
 };
@@ -728,13 +735,9 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             this.oprect.updateErrorIndicator();
         }
 
-
-
         if (attribs.title) {
             this.oprect.setTitle(attribs.title);
         }
-
-
 
     }.bind(this);
 
@@ -910,7 +913,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         });
 
         for (var j in self.links)
-            self.links[j].redraw();
+        self.links[j].redraw();
     };
 
     this.doMove = function(dx, dy, a, b, e) {
@@ -994,6 +997,90 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         this.oprect.setSelected(sel);
     };
 
+    this.highlight=function(b)
+    {
+        this.oprect.highlight(b);
+    }
+
+    this.initPorts=function()
+    {
+        
+        for(var i=0;i<this.portsIn.length;i++)
+        {
+            this.portsIn[i].removeUi();
+        }
+
+        for(var i=0;i<this.portsOut.length;i++)
+        {
+            this.portsOut[i].removeUi();
+        }
+
+        this.portsIn.length=0;
+        this.portsOut.length=0;
+
+        for (var i in self.op.portsIn) {
+            var p = self.op.portsIn[i];
+
+            if (!p.uiAttribs) p.uiAttribs = {};
+
+            var uiPort=null;
+
+            if (p.uiAttribs.display != 'readonly' && !p.uiAttribs.hidePort)
+            {
+                uiPort=self.addPort(PORT_DIR_IN, p);
+            }
+            else
+            {
+                p.onUiAttrChange=function()
+                {
+                    gui.patch().updateOpParams(self.op.id);
+                    self.initPorts();
+                    self.setPos();
+                }.bind(self);
+            }
+
+            if (p.uiAttribs.hasOwnProperty('display')) {
+                if (p.uiAttribs.display == 'dropdown') p.uiAttribs.type = 'string';
+                if (p.uiAttribs.display == 'file') p.uiAttribs.type = 'string';
+                if (p.uiAttribs.display == 'bool') p.uiAttribs.type = 'bool';
+            }
+
+        }
+
+        for (var i2 in op.portsOut)
+            self.addPort(PORT_DIR_OUT, op.portsOut[i2]);
+
+        var ops1=[];
+        var ops2=[];
+        var ps1=[];
+        var ps2=[];
+        for(var j=0;j<this.links.length;j++)
+        {
+            ops1.push(this.links[j].p1.thePort.parent);
+            ops2.push(this.links[j].p2.thePort.parent);
+
+            ps1.push(this.links[j].p1.thePort.getName());
+            ps2.push(this.links[j].p2.thePort.getName());
+        }
+
+        while(this.links.length>0)
+        {
+            this.links[0].unlink();
+        }
+
+        for(var i=0;i<ops1.length;i++)
+        {
+            var l=gui.scene().link(
+                ops1[i],ps1[i],
+                ops2[i],ps2[i]
+            );
+            
+        }
+
+        
+        
+    };
+
 
     this.addPort = function(_inout, thePort) {
         
@@ -1016,5 +1103,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
         if (inout == PORT_DIR_OUT) this.portsOut.push(port);
         else this.portsIn.push(port);
+
+        return port;
     };
 };

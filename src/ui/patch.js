@@ -245,6 +245,34 @@ CABLES.UI.Patch = function(_gui) {
 
     };
 
+
+    this.highlightNamespace =function(ns)
+    {
+        for (var i=0;i<self.ops.length;i++)
+        {
+            if(self.ops[i].op.objName.startsWith(ns))
+            {
+                
+                self.ops[i].highlight(true);
+            }
+            else self.ops[i].highlight(false);
+        }
+
+    };
+
+    this.highlightOpNamespace =function(op)
+    {
+
+        console.log('highlightOpNamespace',op.objName);
+
+        var parts=op.objName.split('.');
+        parts.length=parts.length-1;
+        var ns=parts.join(".");
+        self.highlightNamespace(ns);
+    };
+
+
+
     this.unPatchSubPatch = function(patchId) {
         var toSelect = [];
         for (var i in this.ops) {
@@ -653,6 +681,8 @@ CABLES.UI.Patch = function(_gui) {
 
 
     this.saveCurrentProject = function(cb, _id, _name) {
+
+
         if (this.loadingError) {
             CABLES.UI.MODAL.showError('project not saved', 'could not save project: had errors while loading!');
             return;
@@ -1264,13 +1294,12 @@ CABLES.UI.Patch = function(_gui) {
         this.background.node.onmousedown = function(ev) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             this._elPatch.focus();
+            CABLES.UI.OPSELECT.linkNewOpToPort=null;
             if (!ev.shiftKey) gui.patch().setSelectedOp(null);
             self.showProjectParams();
         }.bind(this);
 
         var lastZoomDrag = -1;
-
-
 
         this.background.node.ondblclick = function(e) {
             e = mouseEvent(e);
@@ -1448,24 +1477,7 @@ CABLES.UI.Patch = function(_gui) {
             if (op.uiAttribs.subPatch != currentSubPatch) uiOp.hide();
         }
 
-        for (var i in op.portsIn) {
-            var p = op.portsIn[i];
-
-            if (!p.uiAttribs) p.uiAttribs = {};
-
-            if (p.uiAttribs.display != 'readonly' && !p.uiAttribs.hidePort)
-                uiOp.addPort(PORT_DIR_IN, p);
-
-            if (p.uiAttribs.hasOwnProperty('display')) {
-                if (p.uiAttribs.display == 'dropdown') p.uiAttribs.type = 'string';
-                if (p.uiAttribs.display == 'file') p.uiAttribs.type = 'string';
-                if (p.uiAttribs.display == 'bool') p.uiAttribs.type = 'bool';
-            }
-        }
-
-        for (var i2 in op.portsOut) {
-            uiOp.addPort(PORT_DIR_OUT, op.portsOut[i2]);
-        }
+        uiOp.initPorts();
 
         if (!op.uiAttribs) {
             op.uiAttribs = {};
@@ -1496,6 +1508,7 @@ CABLES.UI.Patch = function(_gui) {
 
 
         if (CABLES.UI.OPSELECT.linkNewOpToSuggestedPort) {
+            console.log('CABLES.UI.OPSELECT.linkNewOpToSuggestedPort');
             var link = gui.patch().scene.link(
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op,
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName,
@@ -1538,6 +1551,7 @@ CABLES.UI.Patch = function(_gui) {
             }
         } else
         if (CABLES.UI.OPSELECT.linkNewOpToPort) {
+
             var foundPort = op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
 
             if (foundPort) {
@@ -2332,7 +2346,8 @@ CABLES.UI.Patch = function(_gui) {
 
     this.updateOpParams = function(id) {
         gui.setTransformGizmo(null);
-        self.showOpParams(gui.scene().getOpById(id));
+        var op=gui.scene().getOpById(id);
+        self.showOpParams(op);
     };
 
     this.showProjectParams = function() {
@@ -2422,6 +2437,7 @@ CABLES.UI.Patch = function(_gui) {
     var delayedShowOpParams = 0;
     this.showOpParams = function(op) {
 
+        // self.highlightOpNamespace(op);
         gui.setTransformGizmo(null);
         clearTimeout(delayedShowOpParams);
         delayedShowOpParams = setTimeout(function() {
@@ -3005,6 +3021,20 @@ CABLES.UI.Patch = function(_gui) {
         else op.op.undoUnLinkTemporary();
     };
 
+
+    this.downloadSVG=function()
+    {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent($('#patch').html()));
+        element.setAttribute('download', 'patch.svg');
+      
+        element.style.display = 'none';
+        document.body.appendChild(element);
+      
+        element.click();
+      
+        document.body.removeChild(element);
+    }
 
     this.getSubPatches = function() {
         var foundPatchIds = [];
