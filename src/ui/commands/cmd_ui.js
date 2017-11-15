@@ -27,6 +27,9 @@ CABLES.CMD.UI.toggleFiles = function() {
     CABLES.UI.fileSelect.toggle();
 };
 
+CABLES.CMD.UI.downloadSVG = function() {
+    gui.patch().downloadSVG();
+};
 
 CABLES.CMD.UI.toggleMute = function() {
     if (gui.scene().config.masterVolume > 0.0) {
@@ -215,8 +218,15 @@ CABLES.CMD.commands.push({
         func: CABLES.CMD.UI.flowVis,
         icon: "cables",
         hotkey: "f"
-
+    },
+    {
+        cmd: "download patch svg",
+        category: "ui",
+        func: CABLES.CMD.UI.downloadSVG,
+        icon: "cables"
     }
+
+    
 
 
 

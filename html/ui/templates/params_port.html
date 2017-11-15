@@ -16,10 +16,10 @@
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}>
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
-        <span id="portTitle_{{ dirStr }}_{{ portnum }}">
+        <span id="portTitle_{{ dirStr }}_{{ portnum }}" ondblclick="gui.opDocs.editPortDoc('{{op.objName}}','{{port.name}}');" onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
         {{port.name}}
         </span>
-
+    
         {{#compare port.uiAttribs.colorPick '==' 'true' }}
         <div class="button_colorpick button fa fa-eyedropper fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/compare}}

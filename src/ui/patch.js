@@ -2899,6 +2899,20 @@ CABLES.UI.Patch = function(_gui) {
     };
 
 
+    this.downloadSVG=function()
+    {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent($('#patch').html()));
+        element.setAttribute('download', 'patch.svg');
+      
+        element.style.display = 'none';
+        document.body.appendChild(element);
+      
+        element.click();
+      
+        document.body.removeChild(element);
+    }
+
     this.getSubPatches = function() {
         var foundPatchIds = [];
         var subPatches = [];
