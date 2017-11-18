@@ -818,22 +818,17 @@ CABLES.UI.GUI = function() {
 
         $(document).keydown(function(e)
         {
-
-
             if (CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91)) {
                 if (CABLES.UI.suggestions) {
                     var suggs = CABLES.UI.suggestions;
                     CABLES.UI.suggestions.close();
                     suggs.showSelect();
-
-                    // CABLES.UI.suggestions=null;
                 }
                 return;
             }
 
             switch (e.which) {
                 default:
-                    // console.log('e.which',e.which);
                     break;
 
                 case 32:
