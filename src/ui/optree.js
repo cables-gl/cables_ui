@@ -52,7 +52,7 @@ CABLES.OpTree.prototype.itemHtml=function(item,html,level)
     html+=''+item.name;
     html+='</a>'
 
-    if(item.childs && item.childs.length>0)html+=' ('+item.childs.length+')';
+    // if(item.childs && item.childs.length>0)html+=' ('+item.childs.length+')';
     html+='<br/>';
 
     if(item.childs)
