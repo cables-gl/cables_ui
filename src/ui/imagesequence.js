@@ -15,10 +15,15 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
 
     currentNum--;
     fileNum--;
+    var oldInternalNow=null
 
     render();
 
-    function render() {
+    function render()
+    {
+
+        if(!oldInternalNow) oldInternalNow=CABLES.internalNow;
+
         currentNum++;
         fileNum++;
 
@@ -41,6 +46,8 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
 
             $('.modalScrollContent').append('<br/><br/>ffmpeg command to convert to mp4:<br/><code class="selectable">'+ffmpgCmd+'</code>');
             gui.patch().scene.resume();
+            CABLES.internalNow=oldInternalNow;
+            oldInternalNow=null;
 
             return;
         }

@@ -660,27 +660,38 @@ CABLES.UI.Patch = function(_gui) {
                     if (cb) cb();
 
                     var screenshotTimeout = setTimeout(function() {
-                        $('#glcanvas').attr('width', w);
-                        $('#glcanvas').attr('height', h);
-                        gui.patch().scene.cgl.doScreenshot = false;
+                        // $('#glcanvas').attr('width', w);
+                        // $('#glcanvas').attr('height', h);
+                        // gui.patch().scene.cgl.doScreenshot = false;
+                        
+                        // gui.jobs().finish('uploadscreenshot');
+                        // console.log('screenshot timed out...');
+                        
+                        gui.patch().scene.cgl.setSize(w,h);
+                        gui.patch().scene.resume();
+                    }, 1000);
 
-                        gui.jobs().finish('uploadscreenshot');
-                        console.log('screenshot timed out...');
-                    }, 2000);
+                    // gui.jobs().start({
+                    //     id: 'uploadscreenshot',
+                    //     title: 'uploading screenshot'
+                    // });
+                    gui.patch().scene.pause();
+                    gui.patch().scene.cgl.setSize(640,360);
+                    gui.patch().scene.renderOneFrame();
+                    gui.patch().scene.renderOneFrame();
 
-                    gui.jobs().start({
-                        id: 'uploadscreenshot',
-                        title: 'uploading screenshot'
-                    });
-
-                    gui.patch().scene.cgl.onScreenShot = function(screenBlob) {
+                    gui.patch().scene.cgl.screenShot(function(screenBlob) {
                         clearTimeout(screenshotTimeout);
-                        gui.patch().scene.cgl.onScreenShot = null;
 
-                        $('#glcanvas').attr('width', w);
-                        $('#glcanvas').attr('height', h);
+                        gui.patch().scene.cgl.setSize(w,h);
+                        gui.patch().scene.resume();
 
-                        console.log("uploading screenshot");
+                        // gui.patch().scene.cgl.onScreenShot = null;
+
+                        // $('#glcanvas').attr('width', w);
+                        // $('#glcanvas').attr('height', h);
+
+                        // console.log("uploading screenshot");
 
                         var reader = new FileReader();
 
@@ -691,12 +702,14 @@ CABLES.UI.Patch = function(_gui) {
                                 },
                                 function(r) {
                                     if (gui.onSaveProject) gui.onSaveProject();
-                                    gui.jobs().finish('uploadscreenshot');
+                                    // console.log('screenshot uploaded!');
+                                    // gui.jobs().finish('uploadscreenshot');
                                 });
                         };
                         reader.readAsDataURL(screenBlob);
-                    };
-                    gui.patch().scene.cgl.doScreenshot = true;
+
+                    });
+                    // gui.patch().scene.cgl.doScreenshot = true;
                 });
         } catch (e) {
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
