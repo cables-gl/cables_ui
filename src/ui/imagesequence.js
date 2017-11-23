@@ -22,9 +22,10 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         currentNum++;
         fileNum++;
 
+        gui.patch().scene.pause();
         var time = currentNum * frameDuration;
 
-        console.log(currentNum);
+        console.log(currentNum,frameDuration);
 
         if (time > end) {
             $('#progresscontainer').hide();
@@ -39,16 +40,16 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
             var ffmpgCmd='ffmpeg -y -framerate 30 -f image2 -i "'+filename+'_%04d.png"  -b 9999k -vcodec mpeg4 '+filename+'.mp4<br/>';
 
             $('.modalScrollContent').append('<br/><br/>ffmpeg command to convert to mp4:<br/><code class="selectable">'+ffmpgCmd+'</code>');
-
+            gui.patch().scene.resume();
 
             return;
         }
 
         $('#glcanvas').css({
             width:$('#render_width').val(),
-            height:$('#render_height').val()});
-        
-            gui.patch().scene.cgl.updateSize();
+            height:$('#render_height').val()
+        });
+        gui.patch().scene.cgl.updateSize();
 
         var prog = Math.round(fileNum / (endNum - startNum) * 100);
         $('#progresscontainer .progress').css({
@@ -81,22 +82,31 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
             }
         }
 
+        gui.patch().scene.renderOneFrame();
 
         var left = Math.ceil((Math.round((window.performance.now() - startTime) / 1000) / (currentNum - 1)) * (endNum - currentNum));
         $('.modalScrollContent').html('frame ' + (currentNum - startNum) + ' of ' + (endNum - startNum) + '<br/>' + left + ' seconds left...');
 
-        setTimeout(function() {
-            console.log(''+filename + strCurrentNum+' . '+CABLES.now()+'  '+gui.patch().scene.timer.getTime() );
+        // setTimeout(function() {
+        // gui.patch().scene.onOneFrameRendered=function()
+        // {
 
-            
+        //     console.log(''+filename + strCurrentNum+' . '+CABLES.now()+'  '+gui.patch().scene.timer.getTime() );
 
-            gui.saveScreenshot(
-                filename + strCurrentNum,
-                render.bind(this),
-                $('#render_width').val(),
-                $('#render_height').val()
-            );
-        }.bind(this), 100);
+        gui.patch().scene.cgl.saveScreenshot(
+            filename + strCurrentNum,
+            render.bind(this),
+            $('#render_width').val(),
+            $('#render_height').val()
+        );
+        
+
+        // setTimeout(function()
+        // {
+        //     render();
+        // },100);
+        // }.bind(this);
+        //, 100);
 
 
 
