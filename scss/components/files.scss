@@ -1,5 +1,26 @@
 
 
+#uploadprogresscontainer
+{
+    display:none;
+    border:1px solid $color-c5;
+    background-color:$color-c9;
+    width:50px;
+    height:5px;
+    position:absolute;
+    top:70px;
+    left:12px;
+    z-index:99999;
+    overflow:hidden;
+}
+#uploadprogress
+{
+    background-color:$color-c2;
+    width:50%;
+    height:100%;
+}
+
+
 #library
 {
     display:none;
@@ -20,7 +41,7 @@
         overflow: scroll;
         max-height: 100%;
         overflow-x: hidden;
-        background-color: 1b1b1b;
+        background-color: #1b1b1b;
     }
 
     .libContentContainer

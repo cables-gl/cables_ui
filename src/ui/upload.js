@@ -62,19 +62,23 @@ CABLES.uploadFiles=function(files)
 
     xhr.upload.onprogress = function (event)
     {
+        $('#uploadprogresscontainer').show();
         if (event.lengthComputable)
         {
             var complete = (event.loaded / event.total * 100 | 0);
+            $('#uploadprogress').css({width:complete+'%'});
             if(complete==100)
             {
                 // gui.jobs().start({id:'processingfiles',title:'processing files...'});
                 gui.jobs().finish('uploadingfiles');
 
                 CABLES.UI.notify("File Uploaded");
+                $('#uploadprogresscontainer').hide();
 
                 // console.log(files);
                 setTimeout(function()
                 {
+
                     for(var i in files)
                     {
                         var file=files[i];
