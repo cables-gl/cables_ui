@@ -69,13 +69,13 @@
                 {{#if port.uiAttribs.display}}
 
                     {{#compare port.uiAttribs.display '==' 'bool' }}
-                        </td><td>
+                        </td><td colspan="3">
                         <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-right:10px;"></span>
                         <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'button' }}
-                    </td><td>
+                    </td><td colspan="3">
                         <span class="button" id="portbutton_{{ portnum }}" >{{port.name}}</span>
                     {{/compare}}
 
@@ -84,20 +84,20 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
-                        </td><td>
+                        </td><td colspan="3">
                         <a class="info graphbutton fa fa-plus-circle" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ></a>
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'range' }}
                         <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
-                        </td><td>
+                        </td><td colspan="3">
 
                         <input type ="range" class="range" id="portval_{{ portnum }}_range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.max }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
                         <input class="value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
-                        </td><td>
+                        </td><td colspan="3">
                             <select oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');">
                                 {{#compare '' '==' port.val }}
                                     <option value="">...</option>
@@ -115,7 +115,7 @@
                     {{#compare port.uiAttribs.display '==' 'file' }}
                             <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a>
                             <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
-                        </td><td>
+                        </td><td colspan="3">
 
                         <input class="value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;"/>
                         <br/><br/>
@@ -124,7 +124,7 @@
                     {{/compare}}
 
 					{{#compare port.uiAttribs.display '==' 'text' }}
-						</td><td>
+                </td><td colspan="3">
 							<textarea class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}">{{port.val}}</textarea>
 					{{/compare}}
                 {{else}}
@@ -135,7 +135,7 @@
                         {{else}}
                             <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                         {{/if}}
-                        </td><td>
+                        </td><td colspan="3">
 
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
 
