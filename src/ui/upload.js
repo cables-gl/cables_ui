@@ -62,6 +62,7 @@ CABLES.uploadFiles=function(files)
 
     xhr.upload.onprogress = function (event)
     {
+        $('#uploadprogresscontainer').css({"opacity":1.0});
         $('#uploadprogresscontainer').show();
         if (event.lengthComputable)
         {
@@ -73,7 +74,8 @@ CABLES.uploadFiles=function(files)
                 gui.jobs().finish('uploadingfiles');
 
                 CABLES.UI.notify("File Uploaded");
-                $('#uploadprogresscontainer').hide();
+                $('#uploadprogresscontainer').css({"opacity":0.5});
+                
 
                 // console.log(files);
                 setTimeout(function()
@@ -91,6 +93,7 @@ CABLES.uploadFiles=function(files)
                             }
                         }
                     }
+                    $('#uploadprogresscontainer').hide();
 
                 },800);
 
@@ -125,12 +128,9 @@ CABLES.uploadFiles=function(files)
         CABLES.UI.fileSelect.load();
         CABLES.UI.fileSelect.show();
 
-
-
-        console.log(res);
+        console.log('upload response: ', res);
 
         gui.patch().addAssetOpAuto('/assets/'+gui.patch().getCurrentProject()._id+'/'+res.filename,CABLES.uploadDropEvent);
-
 
         if (xhr.status === 502)
         {
@@ -152,6 +152,12 @@ CABLES.uploadFiles=function(files)
 
             CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
         }
+
+        if(res.hasOwnProperty("success") && !res.success)
+        {
+            CABLES.UI.MODAL.show('upload error: '+res.msg);
+        }
+
     };
 
     xhr.send(formData);

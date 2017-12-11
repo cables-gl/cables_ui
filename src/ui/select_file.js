@@ -109,7 +109,13 @@ CABLES.UI.FileSelect = function() {
         $('#library').show();
         this.currentOpid = _opid;
 
-        $('#lib_head').html(CABLES.UI.getHandleBarHtml('library_head'));
+        var filter='';
+        if(_filterType)filter="filter: "+_filterType;
+
+        $('#lib_head').html(CABLES.UI.getHandleBarHtml('library_head',
+            {
+                "filter":filter
+            }));
 
         inputId = _inputId;
         filterType = _filterType;

@@ -8,6 +8,14 @@
 
 
         <div style="float:right">
+
+            
+            <div class="tab" onclick="CABLES.UI.fileSelect.show();">
+                {{#if filter  }}
+                    {{filter}} &nbsp;<i class="fa fa-times" aria-hidden="true"></i>
+                {{/if}}
+            </div>
+
             <div onclick="CABLES.UI.fileSelect.setView('list');" class="tab tab_library">
                 <i class="fa fa-list" aria-hidden="true"></i>
             </div>
@@ -16,8 +24,11 @@
             </div>
 
             <div onclick="CABLES.UI.fileSelect.hide();" class="tab">
-                <i class="fa fa-times" aria-hidden="true"></i>
+                    <i class="fa fa-times" aria-hidden="true"></i>
             </div>
+
+        
+            
     </div>
 
 
