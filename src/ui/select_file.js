@@ -110,7 +110,13 @@ CABLES.UI.FileSelect = function() {
         this.currentOpid = _opid;
 
         var filter='';
-        if(_filterType)filter="filter: "+_filterType;
+
+        if(_opid) filter+='click a file to apply to op '+gui.scene().getOpById(this.currentOpid).objName+' ';
+        if(_filterType) 
+        {
+            filter+=" - filter: "+_filterType;
+        }
+
 
         $('#lib_head').html(CABLES.UI.getHandleBarHtml('library_head',
             {
