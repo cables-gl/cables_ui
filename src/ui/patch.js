@@ -793,6 +793,7 @@ CABLES.UI.Patch = function(_gui) {
 
     }
 
+
     this.centerViewBox = function(x, y) {
         self.animViewBox(
             x - viewBox.w / 2,
@@ -2144,10 +2145,23 @@ CABLES.UI.Patch = function(_gui) {
         }
     };
 
-    this.focusOp = function(id) {
-        for (var i =0;i<gui.patch().ops.length;i++) {
-            if (gui.patch().ops[i].op.id == id) {
+    this.focusOp = function(id,center) {
+        for (var i =0;i<gui.patch().ops.length;i++)
+        {
+            if (gui.patch().ops[i].op.id == id)
+            {
                 gui.patch().ops[i].oprect.showFocus();
+
+                if(center)
+                {
+
+                    self.animViewBox(
+                        gui.patch().ops[i].op.uiAttribs.translate.x - viewBox.w / 2,
+                        gui.patch().ops[i].op.uiAttribs.translate.y - viewBox.h / 2,
+                        viewBox.w, viewBox.h);
+            
+                }
+
             }
         }
     };
