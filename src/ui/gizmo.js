@@ -4,16 +4,16 @@ CABLES.htmlLine=function(parentElement,color)
     var line=null;
     function createLineElement(x, y, length, angle) {
         line = document.createElement("div");
-        var styles = 'border: 1px solid '+color+'; '
-                   + 'width: ' + length + 'px; '
-                   + 'height: 0px; '
-                   + '-moz-transform: rotate(' + angle + 'rad); '
-                   + '-webkit-transform: rotate(' + angle + 'rad); '
-                   + '-o-transform: rotate(' + angle + 'rad); '  
-                   + '-ms-transform: rotate(' + angle + 'rad); '  
-                   + 'position: absolute; '
-                   + 'top: ' + y + 'px; '
-                   + 'left: ' + x + 'px; ';
+        var styles = 'border: 1px solid '+color+'; '+
+                   'width: ' + length + 'px; '+
+                   'height: 0px; '+
+                   '-moz-transform: rotate(' + angle + 'rad); '+
+                   '-webkit-transform: rotate(' + angle + 'rad); '+
+                   '-o-transform: rotate(' + angle + 'rad); '+
+                   '-ms-transform: rotate(' + angle + 'rad); '+
+                   'position: absolute; '+
+                   'top: ' + y + 'px; '+
+                   'left: ' + x + 'px; ';
         line.setAttribute('style', styles);  
         line.classList.add('gizmoline');
         return line;

@@ -153,7 +153,7 @@ input[type="text"]
 
 .valuetext
 {
-    width:75px !important;
+    // width:75px !important;
     overflow: hidden;
     text-overflow: ellipsis;
     float:left;
@@ -166,7 +166,7 @@ input[type="text"]
     padding: 5px !important;
 }
 
-.button,.bluebutton,.greybutton
+.button,.bluebutton,.greybutton,.smallbutton
 {
 	display:inline-block;
     text-transform: capitalize;
@@ -196,6 +196,19 @@ input[type="text"]
         background-color: $color-warning;
     }
 }
+
+
+.smallbutton
+{
+    padding:4px 10px !important;
+    &.fa:before
+    {
+        margin-right: 0px !important;
+    }
+
+}
+
+
 
 .button.fa {
   font: normal normal normal 14px/1 FontAwesome, arial;
@@ -260,35 +273,6 @@ input.medium
     }
 }
 
-input[type=range]{
-    -webkit-appearance: none;
-}
-
-input[type=range]::-webkit-slider-runnable-track {
-    width: 300px;
-    height: 5px;
-    background: $color-c7;
-    border: none;
-    border-radius: 3px;
-    padding:none !important;
-    padding-left:0px;
-    height: 17px;
-    background-color: $color-c7;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: none;
-    height: 16px;
-    width: 16px;
-    // border-radius: 50%;
-    background: $color-ca;
-    // margin-top: -4px;
-}
-
-input[type=range]:focus {
-    outline: none;
-}
 
 input[type=search] {
     border-radius: 4px;
@@ -378,7 +362,7 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
     border-radius: 6px;
 }
 
-::-webkit-scrollbar-corner {}
+// ::-webkit-scrollbar-corner {}
 
 .help
 {
@@ -538,6 +522,70 @@ input
     	color:$color-input-placeholder;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+input[type=range]{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-radius: 4px;
+}
+
+input[type=range]::-webkit-slider-runnable-track//, input[type=range]::-moz-range-track
+ {
+    width: 300px;
+    // height: 5px;
+    // background: $color-c7;
+    border: none;
+    border-radius: 3px;
+    padding:none;
+    padding-left:0px;
+    height: 18px;
+    background-color: $color-c7;
+}
+
+input[type=range]::-webkit-slider-thumb//, input[type=range]::-moz-range-thumb
+{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    height: 18px;
+    width: 16px;
+    border-radius: 2px;
+    background: $color-c4;
+    // margin-top: -4px;
+}
+
+
+input[type=range]:focus {
+    outline: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #undev
 {

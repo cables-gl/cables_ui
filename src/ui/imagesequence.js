@@ -15,7 +15,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
 
     currentNum--;
     fileNum--;
-    var oldInternalNow=null
+    var oldInternalNow=null;
 
     render();
 
@@ -73,7 +73,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         CABLES.internalNow=function()
         {
             return CABLES.UI.IMGSEQUENCETIME;
-        }
+        };
 
         var str = "" + fileNum;
         var pad = "0000";

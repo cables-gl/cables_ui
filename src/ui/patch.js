@@ -1756,7 +1756,7 @@ CABLES.UI.Patch = function(_gui) {
     {
         var arr=this.findSubpatchOp(subId);
 
-        var str=''
+        var str='';
         for(var i=0;i<arr.length;i++)
         {
             str+=arr[i].name+' ';

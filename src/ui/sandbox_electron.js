@@ -9,7 +9,7 @@ CABLES.SandboxElectron=function()
 CABLES.SandboxElectron.prototype.getUrlOpsCode=function()
 {
     return 'code.js';
-}
+};
 
 CABLES.SandboxElectron.prototype.initRouting=function(cb)
 {
@@ -29,7 +29,7 @@ CABLES.SandboxElectron.prototype.initRouting=function(cb)
             ops:[]
         });
     cb();
-}
+};
 
 CABLES.SandboxElectron.prototype.getUrlDocOpsAll=function(id)
 {

@@ -62,7 +62,7 @@ CABLES.UI.FileSelect = function() {
 
         } else
         if (id) {
-            if(window.process && window.process.versions['electron']) return;
+            if(window.process && window.process.versions.electron) return;
             CABLES.api.get(
                 'project/' + gui.patch().getCurrentProject()._id + '/file/info/' + id,
                 function(r) {

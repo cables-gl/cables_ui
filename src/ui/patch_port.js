@@ -420,16 +420,17 @@ CABLES.UI.Port=function(thePort)
         if(!thePort)return;
 
         var txt=getPortDescription(thePort);
+        var val=null;
         if(thePort && thePort.type==OP_PORT_TYPE_VALUE)
         {
-            var val=thePort.get();
+            val=thePort.get();
             if(isNumeric(val))val=Math.round(val*1000)/1000;
             txt+=': <span class="code">'+val+'</span>';
         }
 
         if(thePort && thePort.type==OP_PORT_TYPE_ARRAY)
         {
-            var val=thePort.get();
+            val=thePort.get();
             if(val && val.hasOwnProperty('val')) txt+=': <span class="code">#'+val.length+'</span>';
         }
 
