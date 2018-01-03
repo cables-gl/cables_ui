@@ -200,10 +200,14 @@ input[type="text"]
 
 .smallbutton
 {
-    padding:4px 10px !important;
+    padding:4px 4px !important;
+    width: 16px;
+    height: 16px;
     &.fa:before
     {
         margin-right: 0px !important;
+        position: relative;
+        top: 1px;
     }
 
 }
