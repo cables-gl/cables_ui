@@ -1069,7 +1069,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             this.links[0].unlink();
         }
 
-        for(var i3=0;i<ops1.length;i3++)
+        for(var i3=0;i3<ops1.length;i3++)
         {
             var l=gui.scene().link(
                 ops1[i3],ps1[i3],
