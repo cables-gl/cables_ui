@@ -1,11 +1,12 @@
 var CABLES = CABLES || {};
 
 CABLES.AnimRenderer = function() {
-    var startTime0;
-    var endTime = 0;
-    var fps = 0;
-    var filename = '';
-    var leftpad=true;
+    this.startTime=0;
+    this.endTime = 0;
+    this.fps = 0;
+    this.filename = '';
+    this.leftpad=true;
+
 
 };
 
@@ -13,21 +14,25 @@ CABLES.AnimRenderer.prototype.start = function() {
     $('#animRendererSettings').hide();
     $('#progresscontainer').show();
 
-    console.log(filename, startTime, endTime, fps);
+    // this.format = $('#render_format').val();
+    
+    console.log(this.filename, this.startTime, this.endTime, this.fps,this.format);
 
-    new CABLES.UI.ImageSequenceExport(filename, startTime, endTime, fps,{leftpad:leftpad});
+    new CABLES.UI.ImageSequenceExport(this.filename, this.startTime, this.endTime, this.fps,{leftpad:this.leftpad,format:this.format});
 };
 
 
 CABLES.AnimRenderer.prototype.update = function()
 {
-    startTime = parseFloat($('#render_start').val());
-    endTime = parseFloat($('#render_end').val());
-    fps = parseFloat($('#render_fps').val());
-    filename = $('#render_filename').val();
+    this.startTime = parseFloat($('#render_start').val());
+    this.endTime = parseFloat($('#render_end').val());
+    this.fps = parseFloat($('#render_fps').val());
+    this.filename = $('#render_filename').val();
+    this.format = $('#render_format').val();
+    
     leftpad = $('#render_leftpad').is(':checked');
 
-    var frames = (endTime - startTime) * fps;
+    var frames = (this.endTime - this.startTime) * this.fps;
 
     $('.modalScrollContent').html(
         'number of frames: ' + frames + '<br/>'

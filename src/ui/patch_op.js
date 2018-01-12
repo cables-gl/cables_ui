@@ -1075,13 +1075,8 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
                 ops1[i3],ps1[i3],
                 ops2[i3],ps2[i3]
             );
-            
         }
-
-        
-        
     };
-
 
     this.addPort = function(_inout, thePort) {
         

@@ -16,6 +16,11 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
     currentNum--;
     fileNum--;
     var oldInternalNow=null;
+    var frames=[];
+
+    var format=settings.format;//=true;
+
+
 
     render();
 
@@ -30,9 +35,61 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         gui.patch().scene.pause();
         var time = currentNum * frameDuration;
 
-        console.log(currentNum,frameDuration);
+        console.log(currentNum,time);
 
-        if (time > end) {
+        if (time > end)
+        {
+            console.log("FORMAT",format);
+            if(format=='gif')
+            {
+                $('.modalScrollContent').append('encoding gif...<br/>');
+                var gif = new GIF({
+                    workers: 2,
+                    quality: 10
+                  });
+
+                for(var i=0;i<frames.length;i++)
+                {
+                    gif.addFrame(frames[i]);
+                }
+
+                gif.on('finished', function(blob) {
+                    console.log("FINISHED GIFFFF");
+                    var url=URL.createObjectURL(blob);
+                    // window.open(url);
+                    $('.modalScrollContent').append('finished gif...<br/>');
+
+                    var anchor = document.createElement('a');
+
+                    anchor.setAttribute('download', filename);
+                    anchor.setAttribute('href', url);
+                    document.body.appendChild(anchor);
+                    anchor.click();
+                    });
+                gif.render();
+            }
+            else if(format=='webm')
+            {
+                $('.modalScrollContent').html('compiling video...');
+
+console.log("webm frames",frames.length);
+                // var video=new Whammy.Video(30);
+                var video = Whammy.fromImageArray( frames, 30 )
+
+                // console.log('gui.patch().scene.cgl.canvas',gui.patch().scene.cgl.canvas);
+                // video.add(document.getElementById("glcanvas").toDataURL('image/webp'));
+
+// console.log(video);
+
+                var url = window.URL.createObjectURL(video);
+                var anchor = document.createElement('a');
+
+                anchor.setAttribute('download', filename);
+                anchor.setAttribute('href', url);
+                document.body.appendChild(anchor);
+                anchor.click();
+            }
+
             $('#progresscontainer').hide();
             $('#animRendererSettings').show();
             // gui.patch().scene.freeTimer.play();
@@ -89,6 +146,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
             }
         }
 
+        // if(time==0)gui.patch().scene.renderOneFrame();
         gui.patch().scene.renderOneFrame();
 
         var left = Math.ceil((Math.round((window.performance.now() - startTime) / 1000) / (currentNum - 1)) * (endNum - currentNum));
@@ -97,15 +155,32 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         // setTimeout(function() {
         // gui.patch().scene.onOneFrameRendered=function()
         // {
-
         //     console.log(''+filename + strCurrentNum+' . '+CABLES.now()+'  '+gui.patch().scene.timer.getTime() );
 
-        gui.patch().scene.cgl.saveScreenshot(
-            filename + strCurrentNum,
-            render.bind(this),
-            $('#render_width').val(),
-            $('#render_height').val()
-        );
+        // if(format=='gif')
+        // {
+        //     console.log("add gif frame...");
+        //     // gif.addFrame(ctx, {copy: true});
+
+        //     gif.addFrame(gui.patch().scene.cgl.canvas, {delay: 200,copy:true});
+        //     render();
+        // }
+        if(format=='webm' || format=='gif')
+        {
+            gui.patch().scene.renderOneFrame();
+            console.log('strCurrentNum',strCurrentNum);
+            frames.push( gui.patch().scene.cgl.canvas.toDataURL('image/webp', 0.9) );
+            render();
+        }
+        else
+        {
+            gui.patch().scene.cgl.saveScreenshot(
+                filename + strCurrentNum,
+                render.bind(this),
+                $('#render_width').val(),
+                $('#render_height').val()
+            );
+        }
         
 
         // setTimeout(function()

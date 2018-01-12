@@ -524,6 +524,11 @@ CABLES.UI.Patch = function(_gui) {
                 self.setCurrentSubPatch(0);
                 break;
 
+            // case 38: // arrow up
+            //     break;
+            // case 40: // arrow down
+            //     break;
+
             default:
                 // console.log('key ',e.which,e.key);
                 break;
@@ -954,10 +959,14 @@ CABLES.UI.Patch = function(_gui) {
     function rubberBandMove(e) {
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
             gui.setTransformGizmo(null);
-            if (!mouseRubberBandStartPos) {
+            
+            if(!mouseRubberBandStartPos && !e.shiftKey)
+            {
                 gui.patch().setSelectedOp(null);
-                mouseRubberBandStartPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
+                
             }
+            
+            if(!mouseRubberBandStartPos) mouseRubberBandStartPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
 
             mouseRubberBandPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
 
@@ -1168,7 +1177,6 @@ CABLES.UI.Patch = function(_gui) {
 
 
             callEvent('patch_zoom');
-
         });
 
         this.background = self.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
@@ -1187,7 +1195,10 @@ CABLES.UI.Patch = function(_gui) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             this._elPatch.focus();
             CABLES.UI.OPSELECT.linkNewOpToPort=null;
-            if (!ev.shiftKey) gui.patch().setSelectedOp(null);
+            if (!ev.shiftKey && !spacePressed && ev.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
+            {
+                gui.patch().setSelectedOp(null);
+            }
             self.showProjectParams();
         }.bind(this);
 
@@ -1260,6 +1271,7 @@ CABLES.UI.Patch = function(_gui) {
                 for (var i in self.ops)
                     if (!self.ops[i].isHidden() && (self.ops[i].isDragging || self.ops[i].isMouseOver)) return;
                 rubberBandMove(e);
+
             }
         });
 
