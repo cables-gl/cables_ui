@@ -35,52 +35,47 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         gui.patch().scene.pause();
         var time = currentNum * frameDuration;
 
-        console.log(currentNum,time);
+        console.log(currentNum,time,document.getElementById("glcanvas").width,document.getElementById("glcanvas").height);
 
         if (time > end)
         {
             console.log("FORMAT",format);
-            if(format=='gif')
-            {
-                $('.modalScrollContent').append('encoding gif...<br/>');
-                var gif = new GIF({
-                    workers: 2,
-                    quality: 10
-                  });
+            // if(format=='gif')
+            // {
+            //     $('.modalScrollContent').append('encoding gif...<br/>');
+            //     var gif = new GIF({
+            //         workers: 2,
+            //         quality: 10
+            //       });
 
-                for(var i=0;i<frames.length;i++)
-                {
-                    gif.addFrame(frames[i]);
-                }
+            //     for(var i=0;i<frames.length;i++)
+            //     {
+            //         gif.addFrame(frames[i]);
+            //     }
 
-                gif.on('finished', function(blob) {
-                    console.log("FINISHED GIFFFF");
-                    var url=URL.createObjectURL(blob);
-                    // window.open(url);
-                    $('.modalScrollContent').append('finished gif...<br/>');
+            //     gif.on('finished', function(blob) {
+            //         console.log("FINISHED GIFFFF");
+            //         var url=URL.createObjectURL(blob);
+            //         // window.open(url);
+            //         $('.modalScrollContent').append('finished gif...<br/>');
 
-                    var anchor = document.createElement('a');
+            //         var anchor = document.createElement('a');
 
-                    anchor.setAttribute('download', filename);
-                    anchor.setAttribute('href', url);
-                    document.body.appendChild(anchor);
-                    anchor.click();
-                    });
-                gif.render();
-            }
-            else if(format=='webm')
+            //         anchor.setAttribute('download', filename);
+            //         anchor.setAttribute('href', url);
+            //         document.body.appendChild(anchor);
+            //         anchor.click();
+            //         });
+            //     gif.render();
+            // }
+            // else 
+            if(format=='webm')
             {
                 $('.modalScrollContent').html('compiling video...');
 
 console.log("webm frames",frames.length);
                 // var video=new Whammy.Video(30);
                 var video = Whammy.fromImageArray( frames, 30 )
-
-                // console.log('gui.patch().scene.cgl.canvas',gui.patch().scene.cgl.canvas);
-                // video.add(document.getElementById("glcanvas").toDataURL('image/webp'));
-
-// console.log(video);
-
                 var url = window.URL.createObjectURL(video);
                 var anchor = document.createElement('a');
 
@@ -109,11 +104,11 @@ console.log("webm frames",frames.length);
             return;
         }
 
-        $('#glcanvas').css({
-            width:$('#render_width').val(),
-            height:$('#render_height').val()
-        });
-        gui.patch().scene.cgl.updateSize();
+        // $('#glcanvas').css({
+        //     width:$('#render_width').val(),
+        //     height:$('#render_height').val()
+        // });
+        // gui.patch().scene.cgl.updateSize();
 
         var prog = Math.round(fileNum / (endNum - startNum) * 100);
         $('#progresscontainer .progress').css({
@@ -169,7 +164,7 @@ console.log("webm frames",frames.length);
         {
             gui.patch().scene.renderOneFrame();
             console.log('strCurrentNum',strCurrentNum);
-            frames.push( gui.patch().scene.cgl.canvas.toDataURL('image/webp', 0.9) );
+            frames.push( gui.patch().scene.cgl.canvas.toDataURL('image/webp', 0.99) );
             render();
         }
         else

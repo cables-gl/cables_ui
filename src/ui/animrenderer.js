@@ -38,6 +38,12 @@ CABLES.AnimRenderer.prototype.update = function()
         'number of frames: ' + frames + '<br/>'
     );
 
+    $('#glcanvas').css({
+        width:$('#render_width').val(),
+        height:$('#render_height').val()
+    });
+    gui.patch().scene.cgl.updateSize();
+
     // for(var i in gui.patch().ops)
     // {
     //     if(gui.patch().ops[i].op.objName=='Ops.Anim.Timer' || gui.patch().ops[i].op.objName=='Ops.Anim.RelativeTime ')
