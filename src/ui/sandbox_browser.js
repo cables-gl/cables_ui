@@ -71,7 +71,7 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
             timeout: false
         });
     }
-}    
+};
 
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)
 {
@@ -155,4 +155,4 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
     });
 
     router.start('/');
-}
+};

@@ -690,9 +690,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this.highlight=function(b)
     {
-        if(b) background.node.classList.add("op_highlight")
-            else background.node.classList.remove("op_highlight")
-    }
+        if(b) background.node.classList.add("op_highlight");
+            else background.node.classList.remove("op_highlight");
+    };
 
 
     // group.push(background);
@@ -744,7 +744,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     this.fixTitle=function()
     {
         this.oprect.setTitle();
-    }
+    };
 
     this.remove = function() {
         deleted = true;
@@ -1000,17 +1000,18 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     this.highlight=function(b)
     {
         this.oprect.highlight(b);
-    }
+    };
 
     this.initPorts=function()
     {
+        var i=0;
         
-        for(var i=0;i<this.portsIn.length;i++)
+        for(i=0;i<this.portsIn.length;i++)
         {
             this.portsIn[i].removeUi();
         }
 
-        for(var i=0;i<this.portsOut.length;i++)
+        for(i=0;i<this.portsOut.length;i++)
         {
             this.portsOut[i].removeUi();
         }
@@ -1018,7 +1019,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         this.portsIn.length=0;
         this.portsOut.length=0;
 
-        for (var i in self.op.portsIn) {
+        for (i in self.op.portsIn) {
             var p = self.op.portsIn[i];
 
             if (!p.uiAttribs) p.uiAttribs = {};
@@ -1068,19 +1069,14 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             this.links[0].unlink();
         }
 
-        for(var i=0;i<ops1.length;i++)
+        for(var i3=0;i3<ops1.length;i3++)
         {
             var l=gui.scene().link(
-                ops1[i],ps1[i],
-                ops2[i],ps2[i]
+                ops1[i3],ps1[i3],
+                ops2[i3],ps2[i3]
             );
-            
         }
-
-        
-        
     };
-
 
     this.addPort = function(_inout, thePort) {
         

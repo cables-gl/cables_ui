@@ -24,7 +24,7 @@ CABLES.SerializeOps=function(root,prefix)
                 });
 
     return items;
-}
+};
 
 CABLES.OpTree=function(config)
 {
@@ -41,37 +41,33 @@ CABLES.OpTree.prototype.itemHtml=function(item,html,level)
 {
     if(!item.childs || item.childs.length==0)return '';
     if(!item)return '';
-    var html='';
+    html='';
 
-    for(var i=0;i<level;i++)
-        html+='&nbsp;&nbsp;&nbsp;';
+    var i=0;
+    for(i=0;i<level;i++) html+='&nbsp;&nbsp;&nbsp;';
 
     var style=CABLES.UI.uiConfig.getNamespaceClassName(item.fullname);
 
     html+='<a class="op_color_'+style+'" onclick="gui.opSelect().tree.searchFor(\''+item.fullname+'\')">';
     html+=''+item.name;
-    html+='</a>'
+    html+='</a>';
 
     // if(item.childs && item.childs.length>0)html+=' ('+item.childs.length+')';
     html+='<br/>';
 
     if(item.childs)
-    {
-        for(var i=0;i<item.childs.length;i++)
+        for(i=0;i<item.childs.length;i++)
             html+=this.itemHtml(item.childs[i],html,level+1);
-    }
 
     return html;
-}
+};
 
 CABLES.OpTree.prototype.html=function()
 {
     var html='';
 
     for(var i =0;i<this.data.length;i++)
-    {
         html+=this.itemHtml(this.data[i],html,0);
-    }
 
     return html;
 };

@@ -336,30 +336,38 @@ CABLES.UI.MODAL.updatePortValuePreview=function(title)
 
 CABLES.UI.MODAL.showPortValue=function(title,port)
 {
-    CABLES.UI.MODAL.PORTPREVIEW=port;
-    CABLES.UI.MODAL.showClose();
-    CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
-
-    CABLES.UI.MODAL.contentElement.append('port: <b>'+title+'</b> of <b>'+port.parent.name+'</b> ');
-
-
-    CABLES.UI.MODAL.contentElement.append('<br/><br/>');
-
-    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="CABLES.UI.MODAL.updatePortValuePreview(\''+title+'\')">update</a>');
-
-    CABLES.UI.MODAL.contentElement.append('<br/><br/>');
-    var thing=port.get();
-    CABLES.UI.MODAL.contentElement.append(''+thing.constructor.name+' \n');
-    if(thing.constructor.name=="Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
-    if(thing.constructor.name=="Float32Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
-
-    CABLES.UI.MODAL.contentElement.append('<br/><br/>');
-
-    CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+JSON.stringify(thing ,null, 4)+'</div>');
-    // $('#modalcontainer').show();
-	CABLES.UI.MODAL._setVisible(true);
-    $('#modalbg').show();
+    try
+    {
+        CABLES.UI.MODAL.PORTPREVIEW=port;
+        CABLES.UI.MODAL.showClose();
+        CABLES.UI.MODAL.init();
+        CABLES.UI.MODAL.contentElement.append('<h2><span class="fa fa-search"></span>&nbsp;inspect</h2>');
+    
+        CABLES.UI.MODAL.contentElement.append('port: <b>'+title+'</b> of <b>'+port.parent.name+'</b> ');
+    
+    
+        CABLES.UI.MODAL.contentElement.append('<br/><br/>');
+    
+        CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="CABLES.UI.MODAL.updatePortValuePreview(\''+title+'\')">update</a>');
+    
+        CABLES.UI.MODAL.contentElement.append('<br/><br/>');
+        var thing=port.get();
+        CABLES.UI.MODAL.contentElement.append(''+thing.constructor.name+' \n');
+        if(thing.constructor.name=="Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
+        if(thing.constructor.name=="Float32Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
+    
+        CABLES.UI.MODAL.contentElement.append('<br/><br/>');
+    
+        CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+JSON.stringify(thing ,null, 4)+'</div>');
+        // $('#modalcontainer').show();
+        CABLES.UI.MODAL._setVisible(true);
+        $('#modalbg').show();
+    
+    }
+    catch(ex)
+    {
+        console.log(ex);
+    }
 
 
 };
