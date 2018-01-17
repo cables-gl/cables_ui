@@ -112,7 +112,6 @@ CABLES.CMD.PATCH.createVariable=function(op)
 
 CABLES.CMD.PATCH.editOp=function()
 {
-
     var selops=gui.patch().getSelectedOps();
 
     if(selops && selops.length>0)
@@ -128,8 +127,109 @@ CABLES.CMD.PATCH.editOp=function()
     {
         console.log('no ops selected');
     }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CABLES.CMD.PATCH.tidyChildOps=function()
+{
+	var selops=gui.patch().getSelectedOps();
+	
+	var opWidth=150;
+	var opHeight=40;
+
+	function getChildColumns(op,depth)
+	{
+		depth=depth||0;
+		var childs=op.getOutChilds();
+		// num=Math.max(num,childs.length);
+		for(var i=0;i<childs.length;i++)
+		{
+			
+			depth=getChildColumns(childs[i],depth);
+			if(i>0)depth++;
+		}
+
+		return depth;
+	}
+
+
+	function tidyChilds(op,parentX,parentY)
+	{
+		var childs=op.getOutChilds();
+		var addY=0;
+		if(childs.length>1) addY=opHeight*0.5;
+
+		console.log(op.name+' child columns:',getChildColumns(op))
+
+		var childWidth=0;
+		for(var i=0;i<childs.length;i++)
+		{
+			if(i>0)childWidth+=getChildColumns(childs[i-1])*opWidth;
+
+			childs[i].uiAttr({
+				translate:{
+					x:parentX+childWidth+(i*opWidth),
+					y:parentY+opHeight+addY
+				}
+			});
+		}
+
+		for(var i=0;i<childs.length;i++)
+		{
+			tidyChilds(childs[i],childs[i].uiAttribs.translate.x,childs[i].uiAttribs.translate.y);
+		}
+	}
+
+    if(selops && selops.length>0)
+    {
+        console.log('tidy!');
+
+        for(var i=0;i<selops.length;i++)
+        {
+			var op=selops[i].op;
+			var y=op.uiAttribs.translate.y;
+			var x=op.uiAttribs.translate.x;
+	
+			tidyChilds(op,x,y);
+
+        }
+    }
+	
+	for(var i=0;i<gui.patch().ops.length;i++)
+	{
+		gui.patch().ops[i].setPosFromUiAttr();
+	}
+
 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 CABLES.CMD.commands.push(
@@ -244,6 +344,11 @@ CABLES.CMD.commands.push(
 		cmd:"create variable",
 		category:"patch",
 		func:CABLES.CMD.PATCH.createVariable
+	},
+	{
+		cmd:"tidy selected ops",
+		category:"patch",
+		func:CABLES.CMD.PATCH.tidyChildOps
 	}
 
 );

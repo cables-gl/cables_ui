@@ -898,6 +898,12 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         return posy;
     };
 
+    this.setPosFromUiAttr=function()
+    {
+        self.oprect.setPosition(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+        for (var j in self.links)self.links[j].redraw();
+    }
+
     this.setPos = function(x, y) {
         if (isNumber(x)) {
             posx = x;
@@ -913,7 +919,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         });
 
         for (var j in self.links)
-        self.links[j].redraw();
+            self.links[j].redraw();
     };
 
     this.doMove = function(dx, dy, a, b, e) {
