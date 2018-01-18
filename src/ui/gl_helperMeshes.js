@@ -116,6 +116,15 @@ CABLES.GL_MARKER.drawSphere=function(cgl,size)
     CABLES.GL_MARKER.endFramebuffer(cgl);
 };
 
+
+
+
+
+
+
+
+
+
 CABLES.GL_MARKER.drawAxisMarker=function(cgl,size)
 {
     if(!CABLES.GL_MARKER.MARKER)
@@ -199,6 +208,7 @@ CABLES.GL_MARKER.drawAxisMarker=function(cgl,size)
 
 CABLES.GL_MARKER.drawCube=function(cgl,sizeX,sizeY,sizeZ)
 {
+
     if(!CABLES.GL_MARKER.CUBE)
     {
         CABLES.GL_MARKER.CUBE={};      
@@ -232,14 +242,44 @@ CABLES.GL_MARKER.drawCube=function(cgl,sizeX,sizeY,sizeZ)
             verts.push(1,-1, 1);
             verts.push(1,-1,-1);
 
+            var tc=[];
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+            tc.push(0,0);
+
             var geom=new CGL.Geometry();
             geom.vertices=verts;
-            geom.resetTextureCoords();
+            geom.setTexCoords(tc);
+            geom.vertexNormals=verts.slice();
+
 
             CABLES.GL_MARKER.CUBE.cube =new CGL.Mesh(cgl,geom,cgl.gl.LINE_STRIP);
         }
         bufferData();
     }
+
+
+
 
     if(cgl.lastMesh)cgl.lastMesh.unBind();
 
@@ -268,7 +308,6 @@ CABLES.GL_MARKER.drawCube=function(cgl,sizeX,sizeY,sizeZ)
 
 CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
 {
-    return;
     
     if(!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
     {
@@ -276,14 +315,16 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     }
 
     var currentViewPort=cgl.getViewPort();
-    // if(currentViewPort[2]==w && currentViewPort[3]==h)return;
     var w=currentViewPort[2];
     var h=currentViewPort[3];
+
     
-    if(!CABLES.GL_MARKER.fullscreenRectMesh)
+    if(!CABLES.GL_MARKER.fullscreenRectMesh || CABLES.GL_MARKER.FSWIDTH!=w || CABLES.GL_MARKER.FSHEIGHT!=h)
     {
-        console.log("init overlay mesh and layer");
         var fsGeom=new CGL.Geometry("fullscreen rectangle");
+
+        CABLES.GL_MARKER.FSWIDTH=w;
+        CABLES.GL_MARKER.FSHEIGHT=h;
 
         fsGeom.vertices = new Float32Array([
             w, h, 0,
@@ -311,46 +352,50 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
             3, 1, 2
         ]);
 
-        CABLES.GL_MARKER.fsGeom=fsGeom;
-        CABLES.GL_MARKER.fullscreenRectMesh=new CGL.Mesh(cgl,fsGeom);
-        // CABLES.GL_MARKER.fullscreenRectMesh.setGeom(fsGeom);
+        // CABLES.GL_MARKER.fsGeom=fsGeom;
+        if(!CABLES.GL_MARKER.fullscreenRectMesh) CABLES.GL_MARKER.fullscreenRectMesh=new CGL.Mesh(cgl,fsGeom);
+            else CABLES.GL_MARKER.fullscreenRectMesh.setGeom(fsGeom);
 
         // ------------
 
-        var shader=new CGL.Shader(cgl,'marker overlay');
-
-        var shader_frag=''
-            .endl()+'UNI sampler2D tex;'
-            .endl()+'IN vec2 texCoord;'
-
-            .endl()+'void main()'
-            .endl()+'{'
-            .endl()+'   gl_FragColor = texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y)));'
-            .endl()+'}';
-
-        var shader_vert=''
-            .endl()+'IN vec3 vPosition;'
-            .endl()+'UNI mat4 projMatrix;'
-            .endl()+'UNI mat4 mvMatrix;'
-            .endl()+'OUT vec2 texCoord;'
-            .endl()+'IN vec2 attrTexCoord;'
-
-            .endl()+'void main()'
-            .endl()+'{'
-            .endl()+'   vec4 pos=vec4(vPosition, 1.0);'
-            .endl()+'   texCoord=attrTexCoord;'
-            .endl()+'   gl_Position = projMatrix * mvMatrix * pos;'
-            .endl()+'}';
-
-        shader.setSource(shader_vert,shader_frag);
-        shader.texUniform=new CGL.Uniform(shader,'t','tex',0);
-
-        CABLES.GL_MARKER.fullscreenRectShader=shader;
-
-        shader.bindTextures=function()
+        if(!CABLES.GL_MARKER.fullscreenRectShader)
         {
-            cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-            cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, CABLES.GL_MARKER.FB.fb.getTextureColor().tex);
+            var shader=new CGL.Shader(cgl,'marker overlay');
+
+            var shader_frag=''
+                .endl()+'UNI sampler2D tex;'
+                .endl()+'IN vec2 texCoord;'
+    
+                .endl()+'void main()'
+                .endl()+'{'
+                .endl()+'   gl_FragColor = texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y)));'
+                .endl()+'}';
+    
+            var shader_vert=''
+                .endl()+'IN vec3 vPosition;'
+                .endl()+'UNI mat4 projMatrix;'
+                .endl()+'UNI mat4 mvMatrix;'
+                .endl()+'OUT vec2 texCoord;'
+                .endl()+'IN vec2 attrTexCoord;'
+    
+                .endl()+'void main()'
+                .endl()+'{'
+                .endl()+'   vec4 pos=vec4(vPosition, 1.0);'
+                .endl()+'   texCoord=attrTexCoord;'
+                .endl()+'   gl_Position = projMatrix * mvMatrix * pos;'
+                .endl()+'}';
+    
+            shader.setSource(shader_vert,shader_frag);
+            shader.texUniform=new CGL.Uniform(shader,'t','tex',0);
+    
+            CABLES.GL_MARKER.fullscreenRectShader=shader;
+    
+            shader.bindTextures=function()
+            {
+                cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+                cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, CABLES.GL_MARKER.FB.fb.getTextureColor().tex);
+            }
+
         }
     }
 
@@ -365,14 +410,20 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     cgl.pushViewMatrix();
     mat4.identity(cgl.vMatrix);
 
-    // cgl.setShader(CABLES.GL_MARKER.fullscreenRectShader);
+    cgl.setShader(CABLES.GL_MARKER.fullscreenRectShader);
     // CABLES.GL_MARKER.fullscreenRectShader.bind();
     // cgl.getShader().bind
+
+    // for (var i =0;i< cgl.gl.getProgramParameter(cgl.getShader().getProgram(), cgl.gl.ACTIVE_ATTRIBUTES) ; i++)
+    // {
+    //     console.log(i, cgl.gl.getActiveAttrib(cgl.getShader().getProgram(), i) );
+    // }
 
     CABLES.GL_MARKER.fullscreenRectMesh.render(cgl.getShader());
 
     cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
-    // cgl.setPreviousShader();
+
+    cgl.setPreviousShader();
 
     cgl.popPMatrix();
     cgl.popModelMatrix();
