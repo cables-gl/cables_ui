@@ -94,7 +94,7 @@
                             logStartup('loaded ui');
 
                             loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
-                            if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
+                            if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
                                 else CABLES.sandbox=new CABLES.SandboxBrowser();
 
                             loadjs([CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsCode())],'cables_ops');
