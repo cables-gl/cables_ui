@@ -14,6 +14,7 @@ CABLES.GL_MARKER.startFramebuffer=function(cgl)
                 isFloatingPointTexture:false,
                 depth:true,
                 clear:false,
+                multisampling:true,
                 multisamplingSamples:4
             });
     }
@@ -24,6 +25,7 @@ CABLES.GL_MARKER.startFramebuffer=function(cgl)
             CABLES.GL_MARKER.FB.fb.setSize(cgl.getViewPort()[2],cgl.getViewPort()[3]);
             CABLES.GL_MARKER.FB.oldWidth=cgl.getViewPort()[2];
             CABLES.GL_MARKER.FB.oldHeight=cgl.getViewPort()[3];
+            console.log("resize");
         }
 
     CABLES.GL_MARKER.FB.fb.renderStart(cgl);
@@ -38,82 +40,126 @@ CABLES.GL_MARKER.startFramebuffer=function(cgl)
 
 CABLES.GL_MARKER.endFramebuffer=function(cgl)
 {
-    CABLES.GL_MARKER.FB.fb.renderEnd(cgl);
+    // CABLES.GL_MARKER.FB.fb.pop();
+    CABLES.GL_MARKER.FB.fb.renderEnd();
 };
 
-
-CABLES.GL_MARKER.drawSphere=function(cgl,size)
+CABLES.GL_MARKER.getDefaultShader=function(cgl)
 {
+    if(!CABLES.GL_MARKER.defaultShader)
+    {
+        CABLES.GL_MARKER.defaultShader=new CGL.Shader(cgl, "marker shader");
+        CABLES.GL_MARKER.defaultShader.setSource(CGL.Shader.getDefaultVertexShader(), CGL.Shader.getDefaultFragmentShader(0.6,0.6,0.6));
+    }
+    return CABLES.GL_MARKER.defaultShader;
+}
+
+CABLES.GL_MARKER.getSelectedShader=function(cgl)
+{
+    if(!CABLES.GL_MARKER.selectedShader)
+    {
+        CABLES.GL_MARKER.selectedShader=new CGL.Shader(cgl, "marker shader");
+        CABLES.GL_MARKER.selectedShader.setSource(CGL.Shader.getDefaultVertexShader(), CGL.Shader.getDefaultFragmentShader(0,1,1));
+    }
+    return CABLES.GL_MARKER.selectedShader;
+}
+
+CABLES.GL_MARKER.drawSphere=function(op,size)
+{
+    var cgl=op.patch.cgl;
 
     if(!CABLES.GL_MARKER.SPHERE)
     {
         CABLES.GL_MARKER.SPHERE={};
-        CABLES.GL_MARKER.SPHERE.buffer = cgl.gl.createBuffer();
+
         CABLES.GL_MARKER.SPHERE.vScale=vec3.create();
         function bufferData()
         {
-            var points=[];
+            var verts=[];
+            var tc=[];
             var segments=24;
             var i=0,degInRad=0;
-            var radius=0.5;
+            var radius=1;
     
             for (i=0; i <= Math.round(segments); i++)
             {
                 degInRad = (360.0/Math.round(segments))*i*CGL.DEG2RAD;
-                points.push(Math.cos(degInRad)*radius);
-                points.push(0);
-                points.push(Math.sin(degInRad)*radius);
+                verts.push(Math.cos(degInRad)*radius);
+                verts.push(0);
+                verts.push(Math.sin(degInRad)*radius);
+                tc.push(0,0);
             }
-    
+
+            var geom=new CGL.Geometry("sphere marker");
+            geom.setPointVertices(verts);
+            geom.setTexCoords(tc);
+            geom.vertexNormals=verts.slice();
+            CABLES.GL_MARKER.SPHERE.mesh=new CGL.Mesh(cgl, geom);
+
+            //---
+
+            verts=[];
+            tc=[];
             for (i=0; i <= Math.round(segments); i++)
             {
                 degInRad = (360.0/Math.round(segments))*i*CGL.DEG2RAD;
-                points.push(Math.cos(degInRad)*radius);
-                points.push(Math.sin(degInRad)*radius);
-                points.push(0);
+                verts.push(Math.cos(degInRad)*radius);
+                verts.push(Math.sin(degInRad)*radius);
+                verts.push(0);
+                tc.push(0,0);
             }
-    
+
+            var geom=new CGL.Geometry("sphere marker");
+            geom.setPointVertices(verts);
+            geom.setTexCoords(tc);
+            geom.vertexNormals=verts.slice();
+            CABLES.GL_MARKER.SPHERE.mesh2=new CGL.Mesh(cgl, geom);
+
+            //---
+
+            verts=[];
+            tc=[];
             for (i=0; i <= Math.round(segments); i++)
             {
                 degInRad = (360.0/Math.round(segments))*i*CGL.DEG2RAD;
-                points.push(0);
-                points.push(Math.cos(degInRad)*radius);
-                points.push(Math.sin(degInRad)*radius);
+                verts.push(0);
+                verts.push(Math.cos(degInRad)*radius);
+                verts.push(Math.sin(degInRad)*radius);
+                tc.push(0,0);
             }
-    
-            cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, CABLES.GL_MARKER.SPHERE.buffer);
-            cgl.gl.bufferData(cgl.gl.ARRAY_BUFFER, new Float32Array(points), cgl.gl.STATIC_DRAW);
-            CABLES.GL_MARKER.SPHERE.buffer.itemSize = 3;
-            CABLES.GL_MARKER.SPHERE.buffer.numItems = points.length/CABLES.GL_MARKER.SPHERE.buffer.itemSize;
+
+            var geom=new CGL.Geometry("sphere marker");
+            geom.setPointVertices(verts);
+            geom.setTexCoords(tc);
+            geom.vertexNormals=verts.slice();
+            CABLES.GL_MARKER.SPHERE.mesh3=new CGL.Mesh(cgl, geom);
+
+
+
         }
         bufferData();
-
     }
 
-    CABLES.GL_MARKER.startFramebuffer(cgl);
-    
+    if(cgl.lastMesh)cgl.lastMesh.unBind();
 
     cgl.pushModelMatrix();
+    CABLES.GL_MARKER.startFramebuffer(cgl);
 
-    vec3.set(CABLES.GL_MARKER.SPHERE.vScale, size,size,size);
+    vec3.set(CABLES.GL_MARKER.SPHERE.vScale, size, size, size);
     mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.SPHERE.vScale);
 
-    var shader=cgl.getDefaultShader();
-    // var shader=cgl.getShader();
-    if(cgl.lastMesh)cgl.lastMesh.unBind();
-    shader.bind();
-    cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, CABLES.GL_MARKER.SPHERE.buffer);
+    var shader=CABLES.GL_MARKER.getDefaultShader(cgl);
+    if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
+    shader.glPrimitive=cgl.gl.LINE_STRIP;
 
-    cgl.gl.vertexAttribPointer(shader.getAttrVertexPos(),CABLES.GL_MARKER.SPHERE.buffer.itemSize, cgl.gl.FLOAT, false, 0, 0);
-    cgl.gl.enableVertexAttribArray(shader.getAttrVertexPos());
-
-
-    cgl.gl.bindBuffer(cgl.gl.ARRAY_BUFFER, CABLES.GL_MARKER.SPHERE.buffer);
-    cgl.gl.drawArrays(cgl.gl.LINE_STRIP, 0, CABLES.GL_MARKER.SPHERE.buffer.numItems);
+    CABLES.GL_MARKER.SPHERE.mesh.render(shader);
+    CABLES.GL_MARKER.SPHERE.mesh2.render(shader);
+    CABLES.GL_MARKER.SPHERE.mesh3.render(shader);
 
     cgl.popModelMatrix();
-    
     CABLES.GL_MARKER.endFramebuffer(cgl);
+
+
 };
 
 
@@ -125,8 +171,10 @@ CABLES.GL_MARKER.drawSphere=function(cgl,size)
 
 
 
-CABLES.GL_MARKER.drawAxisMarker=function(cgl,size)
+CABLES.GL_MARKER.drawAxisMarker=function(op,size)
 {
+    var cgl=op.patch.cgl;
+
     if(!CABLES.GL_MARKER.MARKER)
     {
         CABLES.GL_MARKER.MARKER={};
@@ -144,32 +192,30 @@ CABLES.GL_MARKER.drawAxisMarker=function(cgl,size)
         CABLES.GL_MARKER.MARKER.mesh.setGeom(geom);
        
         var frag=''
-        .endl()+'precision highp float;'
-        .endl()+'IN vec3 axisColor;'
-        
-        .endl()+'void main()'
-        .endl()+'{'
-        .endl()+'    vec4 col=vec4(axisColor,1.0);'
-        .endl()+'    outColor = col;'
-        .endl()+'}';
+            .endl()+'IN vec3 axisColor;'
+            
+            .endl()+'void main()'
+            .endl()+'{'
+            .endl()+'    vec4 col=vec4(axisColor,1.0);'
+            .endl()+'    outColor = col;'
+            .endl()+'}';
         
         var vert=''
-        .endl()+'IN vec3 vPosition;'
-        .endl()+'UNI mat4 projMatrix;'
-        .endl()+'UNI mat4 mvMatrix;'
-        .endl()+'OUT vec3 axisColor;'
-        
-        .endl()+'void main()'
-        .endl()+'{'
-        .endl()+'   vec4 pos=vec4(vPosition, 1.0);'
-        .endl()+'   if(pos.x!=0.0)axisColor=vec3(1.0,0.3,0.0);'
-        .endl()+'   if(pos.y!=0.0)axisColor=vec3(0.0,1.0,0.2);'
-        .endl()+'   if(pos.z!=0.0)axisColor=vec3(0.0,0.5,1.0);'
-        
-        .endl()+'   gl_Position = projMatrix * mvMatrix * pos;'
-        .endl()+'}';
-        
-        
+            .endl()+'IN vec3 vPosition;'
+            .endl()+'UNI mat4 projMatrix;'
+            .endl()+'UNI mat4 mvMatrix;'
+            .endl()+'OUT vec3 axisColor;'
+            
+            .endl()+'void main()'
+            .endl()+'{'
+            .endl()+'   vec4 pos=vec4(vPosition, 1.0);'
+            .endl()+'   if(pos.x!=0.0)axisColor=vec3(1.0,0.3,0.0);'
+            .endl()+'   if(pos.y!=0.0)axisColor=vec3(0.0,1.0,0.2);'
+            .endl()+'   if(pos.z!=0.0)axisColor=vec3(0.0,0.5,1.0);'
+            
+            .endl()+'   gl_Position = projMatrix * mvMatrix * pos;'
+            .endl()+'}';
+
         CABLES.GL_MARKER.MARKER.shader=new CGL.Shader(cgl,'markermaterial');
         CABLES.GL_MARKER.MARKER.shader.setSource(vert,frag);
     
@@ -206,8 +252,9 @@ CABLES.GL_MARKER.drawAxisMarker=function(cgl,size)
 
 
 
-CABLES.GL_MARKER.drawCube=function(cgl,sizeX,sizeY,sizeZ)
+CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 {
+    var cgl=op.patch.cgl;
 
     if(!CABLES.GL_MARKER.CUBE)
     {
@@ -272,14 +319,10 @@ CABLES.GL_MARKER.drawCube=function(cgl,sizeX,sizeY,sizeZ)
             geom.setTexCoords(tc);
             geom.vertexNormals=verts.slice();
 
-
             CABLES.GL_MARKER.CUBE.cube =new CGL.Mesh(cgl,geom,cgl.gl.LINE_STRIP);
         }
         bufferData();
     }
-
-
-
 
     if(cgl.lastMesh)cgl.lastMesh.unBind();
 
@@ -292,15 +335,13 @@ CABLES.GL_MARKER.drawCube=function(cgl,sizeX,sizeY,sizeZ)
     vec3.set(CABLES.GL_MARKER.CUBE.vScale, sizeX,sizeY,sizeZ);
     mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.CUBE.vScale);
 
-    var shader=cgl.getDefaultShader();
-
-    shader.bind();
+    var shader=CABLES.GL_MARKER.getDefaultShader(cgl);
+    if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
 
     CABLES.GL_MARKER.CUBE.cube.render(shader);
 
     cgl.popModelMatrix();
     CABLES.GL_MARKER.endFramebuffer(cgl);
-
 };
 
 
@@ -318,7 +359,7 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     var w=currentViewPort[2];
     var h=currentViewPort[3];
 
-    
+
     if(!CABLES.GL_MARKER.fullscreenRectMesh || CABLES.GL_MARKER.FSWIDTH!=w || CABLES.GL_MARKER.FSHEIGHT!=h)
     {
         var fsGeom=new CGL.Geometry("fullscreen rectangle");
@@ -368,7 +409,13 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     
                 .endl()+'void main()'
                 .endl()+'{'
+                // .endl()+'   vec3 gray = vec3(dot( vec3(0.2126,0.7152,0.0722),  texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y))).rgb ));'
+                // .endl()+'   gl_FragColor = vec4(gray,1.0);'
+
                 .endl()+'   gl_FragColor = texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y)));'
+                // .endl()+'   if(gl_FragColor.a<0.5)gl_FragColor.a=0.7;'
+
+
                 .endl()+'}';
     
             var shader_vert=''
@@ -419,7 +466,10 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     //     console.log(i, cgl.gl.getActiveAttrib(cgl.getShader().getProgram(), i) );
     // }
 
+    cgl.gl.blendFunc(cgl.gl.ONE, cgl.gl.ONE_MINUS_SRC_ALPHA);
+        
     CABLES.GL_MARKER.fullscreenRectMesh.render(cgl.getShader());
+    cgl.gl.blendFunc(cgl.gl.SRC_ALPHA,cgl.gl.ONE_MINUS_SRC_ALPHA);
 
     cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
 
@@ -428,4 +478,7 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     cgl.popPMatrix();
     cgl.popModelMatrix();
     cgl.popViewMatrix();
+
+    cgl.frameCycler=!cgl.frameCycler;
+    // console.log('---');
 };
