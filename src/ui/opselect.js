@@ -14,6 +14,7 @@ CABLES.UI.OpSelect=function()
     this.displayBoxIndex=0;
     this.itemHeight=0;
     this.firstTime=true;
+    this.tree=new CABLES.OpTree();
 };
 
 CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
@@ -51,7 +52,13 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
         optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit op</a>';
     }
 
-    optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<span class="tt" data-tt="'+$('.selected').data('scoreDebug')+'"> score: '+(Math.round(100*$('.selected').data('score'))/100)+'</span>';
+    var score=Math.round(100*$('.selected').data('score'))/100;
+    if(score && score==score)
+    {
+        optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<span class="tt" data-tt="'+$('.selected').data('scoreDebug')+'">';
+        optionsHtml+='score: '+score;
+        optionsHtml+='</span>';
+    }
 
     $('#opOptions').html(optionsHtml);
 };
@@ -179,7 +186,6 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
     {
         $('#searchinfo').empty();
 
-
         var content=gui.opDocs.get(opname);
 
         if(content.length<3)
@@ -189,6 +195,9 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
             content+='<p>'+gui.opDocs.getSummary(opname)+'</p>';
         }
 
+        content=content.replace(opname,'<a href="/op/'+opname+'" target="_blank">'+opname+'</a>&nbsp;&nbsp;&nbsp;<i class="icon icon-link"></i>');
+
+        
         $('#searchinfo').html('<div id="opselect-layout"></div>'+content+htmlFoot);
         gui.opDocs.opLayoutSVG(opname,"opselect-layout");
     }
@@ -381,6 +390,14 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
 
         this.updateInfo();
     };
+
+
+
+
+    // var t=new CABLES.Tree();
+    $('#optree').html(this.tree.html());
+
+
 
     setTimeout(function(){$('#opsearch').focus();},50);
 };

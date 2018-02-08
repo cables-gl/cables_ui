@@ -1,3 +1,6 @@
+
+
+
 .params
 {
 	.warning,.warning-experimental,.warning-error
@@ -80,21 +83,21 @@
 	    }
 	}
 
-	.paramsPortLink
-	{
-	    text-decoration: underline;
-	    margin-right: 5px;
-	    cursor:pointer;
-
-	    &:hover
-	    {
-	        color: $color-ca;
-	    }
-	}
 
 
 }
 
+.paramsPortLink
+{
+    text-decoration: underline;
+    margin-right: 5px;
+    cursor:pointer;
+
+    &:hover
+    {
+        color: $color-ca;
+    }
+}
 
 
 .panel
@@ -281,7 +284,7 @@
 {
     margin-left: -1px;
     height: 17px;
-    background-color: $color-c9;
+    background-color: $color-c85;
     padding-left: 5px;
     margin-top: 1px;
     padding-right: 6px;
@@ -299,6 +302,8 @@
     line-height: 18px !important;
     border-bottom: 1px solid $background-color-dark;
 }
+
+
 
 #options input[type="text"]
 {
@@ -318,3 +323,5 @@ td.head
 {
     background-color: $color-cz;
 }
+
+

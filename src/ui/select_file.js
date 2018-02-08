@@ -62,7 +62,7 @@ CABLES.UI.FileSelect = function() {
 
         } else
         if (id) {
-            if(window.process && window.process.versions['electron']) return;
+            if(window.process && window.process.versions.electron) return;
             CABLES.api.get(
                 'project/' + gui.patch().getCurrentProject()._id + '/file/info/' + id,
                 function(r) {
@@ -109,7 +109,19 @@ CABLES.UI.FileSelect = function() {
         $('#library').show();
         this.currentOpid = _opid;
 
-        $('#lib_head').html(CABLES.UI.getHandleBarHtml('library_head'));
+        var filter='';
+
+        if(_opid) filter+='click a file to apply to op '+gui.scene().getOpById(this.currentOpid).objName+' ';
+        if(_filterType) 
+        {
+            filter+=" - filter: "+_filterType;
+        }
+
+
+        $('#lib_head').html(CABLES.UI.getHandleBarHtml('library_head',
+            {
+                "filter":filter
+            }));
 
         inputId = _inputId;
         filterType = _filterType;

@@ -139,7 +139,8 @@ CABLES.UI.GUI = function() {
         this._elMenubar.show();
         // $('#timelineui').show();
 
-        if (self.rendererWidth === undefined || self.rendererHeight === undefined || self.rendererWidth > window.innerWidth * 0.99 || self.rendererHeight > window.innerHeight * 0.99) {
+        //|| self.rendererWidth > window.innerWidth * 0.99 || self.rendererHeight > window.innerHeight * 0.99
+        if (self.rendererWidth === undefined || self.rendererHeight === undefined ) {
             self.rendererWidth = window.innerWidth * 0.4;
             self.rendererHeight = window.innerHeight * 0.25;
         }
@@ -804,7 +805,7 @@ CABLES.UI.GUI = function() {
         });
 
         var spaceBarStart = 0;
-        const spacebarPlayDelay = 150;
+        var spacebarPlayDelay = 150;
 
         $('#timeline, #patch').keyup(function(e) {
             switch (e.which) {
@@ -1114,62 +1115,6 @@ CABLES.UI.GUI = function() {
     };
 
 
-    this.saveScreenshot = function(filename, cb, pw, ph) {
-        // console.log(pw,ph);
-        var w = $('#glcanvas').attr('width');
-        var h = $('#glcanvas').attr('height');
-
-        if (pw) {
-            $('#glcanvas').attr('width', pw);
-            w = pw;
-        }
-        if (ph) {
-            $('#glcanvas').attr('height', ph);
-            h = ph;
-        }
-
-        function padLeft(nr, n, str) {
-            return Array(n - String(nr).length + 1).join(str || '0') + nr;
-        }
-
-        var d = new Date();
-
-        var dateStr = String(d.getFullYear()) +
-            String(d.getMonth() + 1) +
-            String(d.getDate()) + '_' +
-            padLeft(d.getHours(), 2) +
-            padLeft(d.getMinutes(), 2) +
-            padLeft(d.getSeconds(), 2);
-
-        var projectStr = this.project().name;
-        projectStr = projectStr.split(' ').join('_');
-
-        if (!filename) filename = 'cables_' + projectStr + '_' + dateStr + '.png';
-        else filename += '.png';
-
-        gui.patch().scene.cgl.doScreenshotClearAlpha = $('#render_removeAlpha').is(':checked');
-
-        // console.log('gui.patch().scene.cgl.doScreenshotClearAlpha ',gui.patch().scene.cgl.doScreenshotClearAlpha);
-        gui.patch().scene.cgl.doScreenshot = true;
-
-        gui.patch().scene.cgl.onScreenShot = function(blob) {
-            $('#glcanvas').attr('width', w);
-            $('#glcanvas').attr('height', h);
-            gui.patch().scene.cgl.onScreenShot = null;
-
-            var anchor = document.createElement('a');
-
-            anchor.setAttribute('download', filename);
-            anchor.setAttribute('href', URL.createObjectURL(blob));
-            document.body.appendChild(anchor);
-
-            setTimeout(
-                function() {
-                    anchor.click();
-                    if (cb) cb(blob);
-                }, 33);
-        };
-    };
 
     this.liveRecord = function() {
         $('#glcanvas').attr('width', parseFloat($('#render_width').val()));
@@ -1473,7 +1418,7 @@ CABLES.UI.GUI = function() {
 
             logStartup('User Data loaded');
         });
-}
+};
 
 
 function startUi(event)

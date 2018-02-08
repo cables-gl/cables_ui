@@ -13,7 +13,7 @@
 .opsearch
 {
     width:1024px;
-    height:620px;
+    height:630px;
     overflow: hidden;
 
     header
@@ -89,6 +89,23 @@
     {
         height:520px;
         overflow:auto;
+    }
+
+    .optree
+    {
+        position: absolute;
+        margin-left:-190px;
+        width:150px;
+        overflow-y: scroll;
+        height:462px;
+        // left:0;
+        background-color: $background-color-dark;
+		border-bottom:10px solid $background-color-dark;
+		border-top:10px solid $background-color-dark;
+        border-top-left-radius: $border-radius-popups;
+        border-bottom-left-radius: $border-radius-popups;
+        padding: 20px;
+        margin-top: 70px;
     }
 
     .searchinfo

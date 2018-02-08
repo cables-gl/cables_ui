@@ -41,6 +41,7 @@
     <a class="tt icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize renderer"></a>
     <a class="tt icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot"></a>
     <a class="tt icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound"></a>
+    <a class="tt icon icon-command iconhover" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper"></a>
 
     <span id="canvasInfoSize" class="canvasInfo" onclick="CABLES.CMD.RENDERER.changeSize()" ></span>
 </div>
@@ -77,6 +78,9 @@
 
 <div class="cables-logo cables">
     <div class="icon icon-cables"></div>
+</div>
+<div id="uploadprogresscontainer" style="">
+    <div id="uploadprogress" style=""></div>
 </div>
 
 <ul id="jobs"></ul>

@@ -4,6 +4,8 @@
 
     <div class="opsearch">
 
+        
+        <div id="optree" class="optree">hallo</div>
         <div id="searchinfo" class="searchinfo"></div>
 
         <header>
@@ -34,9 +36,9 @@
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
                 <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
                 - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
-            </span>{{isFunction}}
+                </span>{{isFunction}}
 
-            <div class="summary">{{summary}}&nbsp;</div>
+                <div class="summary">{{summary}}&nbsp;</div>
 
             </a>
 

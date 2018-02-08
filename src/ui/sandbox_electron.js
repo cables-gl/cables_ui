@@ -29,7 +29,7 @@ CABLES.SandboxElectron.prototype.showStartupChangelog = function() {
 CABLES.SandboxElectron.prototype.getUrlOpsCode=function()
 {
     return 'code.js';
-}
+};
 
 /**
  * Returns the local cables folder if it is set in user settings or the default one if not set
@@ -95,7 +95,7 @@ CABLES.SandboxElectron.prototype.initRouting=function(cb)
             ops:[]
         });
     cb();
-}
+};
 
 CABLES.SandboxElectron.prototype.getUrlDocOpsAll=function(id)
 {

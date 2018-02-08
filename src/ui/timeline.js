@@ -453,7 +453,7 @@ CABLES.TL.UI.TimeLineUI=function()
     var firstTimeLine=true;
     var updateTimer=null;
     var timeDisplayMode=true;
-    const overviewAreaResizeWidth=6;
+    var overviewAreaResizeWidth=6;
 
     var cursorLine = paper.path("M 0 0 L 0 10");
     cursorLine.node.classList.add('timeline-cursor');
@@ -510,7 +510,7 @@ CABLES.TL.UI.TimeLineUI=function()
             updateTimeDisplay();
             self.updateOverviewLine();
             self.updateViewBox();
-            gui.timeLine().updateTime()
+            gui.timeLine().updateTime();
         }, 
         function()
         {
@@ -535,7 +535,7 @@ CABLES.TL.UI.TimeLineUI=function()
             updateTimeDisplay();
             self.updateOverviewLine();
             self.updateViewBox();
-            gui.timeLine().updateTime()
+            gui.timeLine().updateTime();
         }, 
         function()
         {
@@ -1799,7 +1799,7 @@ CABLES.TL.UI.TimeLineUI=function()
             $('#timelineplay').removeClass('fa-play');
             $('#timelineplay').addClass('fa-pause');
         }
-    }
+    };
     
     this.togglePlay=function(patch)
     {
@@ -1895,7 +1895,7 @@ CABLES.TL.UI.TimeLineUI=function()
 
         if(count>0) $('.easingselect').show();
             else $('.easingselect').hide();
-    }
+    };
 
     // ---------------------------------
 
@@ -2078,6 +2078,6 @@ CABLES.TL.UI.TimeLineUI=function()
         if(l===null)return;
         projectLength=parseInt(l)/gui.timeLine().getFPS();
         self.redraw();
-    }
+    };
 
 };

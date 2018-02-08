@@ -47,10 +47,14 @@ CABLES.UI.Profiler=function(projectId)
 
         $('#profilerdata').html(htmlData);
 
+
+        var item=null;
+        var pad='';
+
         for(i in sortedItems)
         {
-            var item=sortedItems[i];
-            var pad='';
+            item=sortedItems[i];
+            pad='';
             if(sortedItems.length>0)for(i=0;i<2-(item.percent+'').length;i++)pad+='&nbsp;';
             html+=pad+item.percent+'% '+item.title+': '+item.numTriggers+' / '+Math.round(item.timeUsed)+'ms <br/>';
 
@@ -68,8 +72,8 @@ CABLES.UI.Profiler=function(projectId)
 
         for(i in sortedItems)
         {
-            var item=sortedItems[i];
-            var pad='';
+            item=sortedItems[i];
+            pad='';
             if(sortedItems.length>0)for(i=0;i<2-(item.peak+'').length;i++)pad+='&nbsp;';
             htmlPeaks+=pad+(Math.round(96*item.peak)/100)+'ms '+item.title+'<br/>';
         }

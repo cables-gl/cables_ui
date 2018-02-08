@@ -122,6 +122,11 @@ CABLES.CMD.UI.showChangelog = function(since) {
     CABLES.CHANGELOG.show(since);
 };
 
+CABLES.CMD.UI.toggleHelper = function(since) {
+    CABLES.UI.renderHelper=!CABLES.UI.renderHelper;
+};
+
+
 
 
 CABLES.CMD.commands.push({
@@ -234,6 +239,11 @@ CABLES.CMD.commands.push({
         category: "ui",
         func: CABLES.CMD.UI.windowFullscreen,
         icon: "cables"
+    },{
+        cmd: "toggle helper",
+        category: "ui",
+        func: CABLES.CMD.UI.toggleHelper,
+        icon: "command"
     }
     
 

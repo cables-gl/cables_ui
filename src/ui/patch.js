@@ -524,6 +524,11 @@ CABLES.UI.Patch = function(_gui) {
                 self.setCurrentSubPatch(0);
                 break;
 
+            // case 38: // arrow up
+            //     break;
+            // case 40: // arrow down
+            //     break;
+
             default:
                 // console.log('key ',e.which,e.key);
                 break;
@@ -664,11 +669,12 @@ CABLES.UI.Patch = function(_gui) {
                 }, function(d) {
                     CABLES.UI.SELECTPROJECT.doReload = true;
 
+                    gui.scene().settings=gui.scene().settings||{};
                     gui.scene().settings.isPublic = false;
                     gui.scene().settings.secret = '';
                     gui.scene().settings.isExample = false;
                     gui.scene().settings.isTest = false;
-
+                    gui.scene().settings.isFeatured = false;
 
                     self.saveCurrentProject(function() {
                         document.location.href = '#/project/' + d._id;
@@ -783,27 +789,38 @@ CABLES.UI.Patch = function(_gui) {
                     if (cb) cb();
 
                     var screenshotTimeout = setTimeout(function() {
-                        $('#glcanvas').attr('width', w);
-                        $('#glcanvas').attr('height', h);
-                        gui.patch().scene.cgl.doScreenshot = false;
+                        // $('#glcanvas').attr('width', w);
+                        // $('#glcanvas').attr('height', h);
+                        // gui.patch().scene.cgl.doScreenshot = false;
+                        
+                        // gui.jobs().finish('uploadscreenshot');
+                        // console.log('screenshot timed out...');
+                        
+                        gui.patch().scene.cgl.setSize(w,h);
+                        gui.patch().scene.resume();
+                    }, 1000);
 
-                        gui.jobs().finish('uploadscreenshot');
-                        console.log('screenshot timed out...');
-                    }, 2000);
+                    // gui.jobs().start({
+                    //     id: 'uploadscreenshot',
+                    //     title: 'uploading screenshot'
+                    // });
+                    gui.patch().scene.pause();
+                    gui.patch().scene.cgl.setSize(640,360);
+                    gui.patch().scene.renderOneFrame();
+                    gui.patch().scene.renderOneFrame();
 
-                    gui.jobs().start({
-                        id: 'uploadscreenshot',
-                        title: 'uploading screenshot'
-                    });
-
-                    gui.patch().scene.cgl.onScreenShot = function(screenBlob) {
+                    gui.patch().scene.cgl.screenShot(function(screenBlob) {
                         clearTimeout(screenshotTimeout);
-                        gui.patch().scene.cgl.onScreenShot = null;
 
-                        $('#glcanvas').attr('width', w);
-                        $('#glcanvas').attr('height', h);
+                        gui.patch().scene.cgl.setSize(w,h);
+                        gui.patch().scene.resume();
 
-                        console.log("uploading screenshot");
+                        // gui.patch().scene.cgl.onScreenShot = null;
+
+                        // $('#glcanvas').attr('width', w);
+                        // $('#glcanvas').attr('height', h);
+
+                        // console.log("uploading screenshot");
 
                         var reader = new FileReader();
 
@@ -814,12 +831,14 @@ CABLES.UI.Patch = function(_gui) {
                                 },
                                 function(r) {
                                     if (gui.onSaveProject) gui.onSaveProject();
-                                    gui.jobs().finish('uploadscreenshot');
+                                    // console.log('screenshot uploaded!');
+                                    // gui.jobs().finish('uploadscreenshot');
                                 });
                         };
                         reader.readAsDataURL(screenBlob);
-                    };
-                    gui.patch().scene.cgl.doScreenshot = true;
+
+                    });
+                    // gui.patch().scene.cgl.doScreenshot = true;
                 });
         } catch (e) {
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
@@ -901,6 +920,7 @@ CABLES.UI.Patch = function(_gui) {
         }
 
     }
+
 
     this.centerViewBox = function(x, y) {
         self.animViewBox(
@@ -1062,10 +1082,14 @@ CABLES.UI.Patch = function(_gui) {
     function rubberBandMove(e) {
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
             gui.setTransformGizmo(null);
-            if (!mouseRubberBandStartPos) {
+            
+            if(!mouseRubberBandStartPos && !e.shiftKey)
+            {
                 gui.patch().setSelectedOp(null);
-                mouseRubberBandStartPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
+                
             }
+            
+            if(!mouseRubberBandStartPos) mouseRubberBandStartPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
 
             mouseRubberBandPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
 
@@ -1276,7 +1300,6 @@ CABLES.UI.Patch = function(_gui) {
 
 
             callEvent('patch_zoom');
-
         });
 
         this.background = self.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
@@ -1295,7 +1318,10 @@ CABLES.UI.Patch = function(_gui) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             this._elPatch.focus();
             CABLES.UI.OPSELECT.linkNewOpToPort=null;
-            if (!ev.shiftKey) gui.patch().setSelectedOp(null);
+            if (!ev.shiftKey && !spacePressed && ev.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
+            {
+                gui.patch().setSelectedOp(null);
+            }
             self.showProjectParams();
         }.bind(this);
 
@@ -1368,6 +1394,7 @@ CABLES.UI.Patch = function(_gui) {
                 for (var i in self.ops)
                     if (!self.ops[i].isHidden() && (self.ops[i].isDragging || self.ops[i].isMouseOver)) return;
                 rubberBandMove(e);
+
             }
         });
 
@@ -1864,7 +1891,7 @@ CABLES.UI.Patch = function(_gui) {
     {
         var arr=this.findSubpatchOp(subId);
 
-        var str=''
+        var str='';
         for(var i=0;i<arr.length;i++)
         {
             str+=arr[i].name+' ';
@@ -2253,10 +2280,23 @@ CABLES.UI.Patch = function(_gui) {
         }
     };
 
-    this.focusOp = function(id) {
-        for (var i =0;i<gui.patch().ops.length;i++) {
-            if (gui.patch().ops[i].op.id == id) {
+    this.focusOp = function(id,center) {
+        for (var i =0;i<gui.patch().ops.length;i++)
+        {
+            if (gui.patch().ops[i].op.id == id)
+            {
                 gui.patch().ops[i].oprect.showFocus();
+
+                if(center)
+                {
+
+                    self.animViewBox(
+                        gui.patch().ops[i].op.uiAttribs.translate.x - viewBox.w / 2,
+                        gui.patch().ops[i].op.uiAttribs.translate.y - viewBox.h / 2,
+                        viewBox.w, viewBox.h);
+            
+                }
+
             }
         }
     };

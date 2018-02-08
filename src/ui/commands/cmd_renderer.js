@@ -3,7 +3,8 @@ CABLES.CMD = CABLES.CMD || {};
 CABLES.CMD.RENDERER = {};
 
 CABLES.CMD.RENDERER.screenshot = function() {
-    gui.saveScreenshot();
+    gui.patch().scene.cgl.saveScreenshot();
+    gui.patch().scene.resume();
 };
 
 CABLES.CMD.RENDERER.fullscreen = function() {
@@ -15,7 +16,7 @@ CABLES.CMD.RENDERER.animRenderer = function() {
 };
 
 CABLES.CMD.RENDERER.screenshotUpload = function() {
-    gui.saveScreenshot(null,
+    gui.patch().scene.cgl.saveScreenshot(null,
         function(blob)
         {
 
@@ -42,7 +43,16 @@ CABLES.CMD.RENDERER.screenshotUpload = function() {
                     console.log('upload DONE!');
                     console.log(data);
                 });
+                gui.patch().scene.resume();
         });
+};
+
+CABLES.CMD.RENDERER.resetSize = function()
+{
+    gui.rendererWidth = 640;
+    gui.rendererHeight = 360;
+    gui.setLayout();
+
 };
 
 CABLES.CMD.RENDERER.changeSize = function()
@@ -78,6 +88,11 @@ CABLES.CMD.commands.push({
         cmd: "change renderer size",
         category: "renderer",
         func: CABLES.CMD.RENDERER.changeSize,
+        icon: 'maximize'
+    }, {
+        cmd: "reset renderer size",
+        category: "renderer",
+        func: CABLES.CMD.RENDERER.resetSize,
         icon: 'maximize'
     }, {
         cmd: "animation renderer",

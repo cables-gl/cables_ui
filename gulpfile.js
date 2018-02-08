@@ -15,7 +15,7 @@ var vueify = require('vueify');
 var replace = require('gulp-replace');
 var autoprefixer = require('gulp-autoprefixer');
 var merge = require('merge-stream');
-
+var notifier = require('node-notifier');
 
 gulp.task('vueify', function(){
 	browserify('vue-src/main.js')
@@ -64,8 +64,8 @@ gulp.task('scripts_core', function()
         .pipe(gulp.dest('dist/js'))
         .pipe(rename('cables.min.js'))
         .pipe(uglify())
-        .on('error', function(){ console.log('error.....'); })
-
+        // .on('error', function(error){ console.log(`gulp error: ${error}`); notifier.notify(error);  })
+        
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('dist/js'));
 });
