@@ -10,26 +10,29 @@
             {{#each bookmarks}}
                 <div class="list">
                     <div onclick="gui.bookmarks.goto('{{id}}');" >
-
                         <h3 class="op_color_{{class}}">{{name}}</h3>
                         {{objName}}
                         <a class="icon icon-x fright tt" data-tt="remove bookmark" onclick="gui.bookmarks.remove('{{id}}');"></a>
+                    </div>
+                </div>
+            {{/each}}
+            <br/>
+        </div>
+    {{/if}}
 
+    {{#if subPatches}}
+        <div class="panel">
+            <h3>Subpatches</h3>
+
+            {{#each subPatches}}
+                <div class="list">
+                    <div onclick="gui.patch().setCurrentSubPatch('{{id}}');">
+                        <h3 class="op_color_default">{{name}}</h3>
                     </div>
                 </div>
             {{/each}}
 
-            <br/>
-
-            {{#if subPatches}}
-
-                <h3>Subpatches</h3>
-
-                {{#each subPatches}}
-                    - <a onclick="gui.patch().setCurrentSubPatch('{{id}}');">{{name}}</a>
-                    <br/>
-                {{/each}}
-            {{/if}}
         </div>
     {{/if}}
+
 </script>

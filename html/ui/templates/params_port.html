@@ -140,7 +140,7 @@
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
 
                         <input class="value watchPort watchPortValue_{{ port.watchId }} info {{#if port.uiAttribs.increment }}inc_int{{/if}}" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}"
-                        {{#if port.uiAttribs.type }} type="search" style="width:100%" {{/if}} />
+                        {{#if port.uiAttribs.type }} type="search" style="width:100%"{{/if}} />
                         {{#if port.uiAttribs.type }}
                         {{else}}
                             <a class="valueDragger graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');"  data-info="{{ texts.portFloatDrag }}"></a>
