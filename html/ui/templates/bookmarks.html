@@ -26,7 +26,7 @@
 
             {{#each subPatches}}
                 <div class="list">
-                    <div onclick="gui.patch().setCurrentSubPatch('{{id}}');">
+                    <div onclick="gui.patch().setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps()">
                         <h3 class="op_color_default">{{name}}</h3>
                     </div>
                 </div>
