@@ -160,6 +160,7 @@ CABLES.ProjectSettings=function(project)
         var proj_test=$('#projectsettings_test').val();
         var proj_template=$('#projectsettings_template').val();
         var proj_autoscreenshot=$('#projectsettings_autoscreenshot').val();
+        var proj_opExample=$('#projectsettings_opExample').val();
 
         gui.setProjectName(proj_name);
 
@@ -170,6 +171,8 @@ CABLES.ProjectSettings=function(project)
         gui.scene().settings.isExample=proj_example;
         gui.scene().settings.isTest=proj_test;
         gui.scene().settings.isTemplate=proj_template;
+        gui.scene().settings.opExample=proj_opExample;
+        
 
         gui.scene().settings.manualScreenshot=proj_autoscreenshot;
 
