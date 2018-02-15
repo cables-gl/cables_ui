@@ -6,7 +6,6 @@
     </body>
 
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-
     <script>
         var CABLES = CABLES || {};
 
@@ -97,7 +96,26 @@
                             if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
                                 else CABLES.sandbox=new CABLES.SandboxBrowser();
 
-                            loadjs([CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsCode())],'cables_ops');
+                            // local ops are only available in electron version
+                            var localOpCode = CABLES.sandbox.getLocalOpCode();
+                            // var opPathsToLoad = [CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
+                            
+                            // if(localOpPaths && localOpPaths.length > 0) {
+                            //     localOpPaths = localOpPaths.concat(opPathsToLoad);
+                            // }
+
+                            // append the local-op-code to document
+                            function addJS(jsCode) {
+                                var s = document.createElement('script');
+
+                                s.type = 'text/javascript';
+                                s.innerText = jsCode;
+                                document.getElementsByTagName('head')[0].appendChild(s);
+                            }
+
+                            addJS(localOpCode);
+
+                            loadjs([CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
 
                             loadjs.ready('cables_ops', function()
                             {

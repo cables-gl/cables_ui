@@ -568,7 +568,96 @@ CABLES.UI.Patch = function(_gui) {
             });
     };
 
+
+    /**
+     * Saves a patch to a file, overwrites the file it exists
+     * 
+     * @param {object} patchData The data-object to be saved
+     * @param string} path The file-path to store the patch, e.g. '/Users/ulf/myPatch.cables'
+     */
+    this.nativeWritePatchToFile = function(patchData, path) {
+        console.log('Saving patch to: ', path);
+        var fs = require('fs');
+        // var os = require('os');
+        // var path = require('path');
+        if (path) {
+            fs.writeFile(path, JSON.stringify(patchData, null, 2), function(err) {
+                if(err) {
+                    CABLES.UI.notifyError('Error saving patch');
+                    return console.log(err);
+                }
+                console.log('Patch successfully saved');
+                CABLES.UI.notify('patch saved');
+                gui.jobs().finish('projectsave');
+                gui.setStateSaved();
+            }); 
+        }
+    }
+
+
+    /**
+     * Extracts the postfix-filename from a full filename
+     * 
+     * @param {string} filename e.g. '/Users/Ulf/foo.cables'
+     * @returns {string} filename prefix, e.g. 'foo'
+     */
+    this.getProjectnameFromFilename = function(filename) {
+        if(!filename) { return ''; }
+        var lastDotIndex = filename.lastIndexOf('.');
+        var separator = filename.indexOf('/') > -1 ? '/' : '\\';
+        var lastSeparatorIndex = filename.lastIndexOf(separator);
+        var name = filename.substring(lastSeparatorIndex + 1, lastDotIndex);
+        return name;
+    };
+
+
+
     this.saveCurrentProjectAs = function(cb, _id, _name) {
+
+        if(window.process && window.process.versions['electron']) {
+            var electron = require('electron');
+            var ipcRenderer = electron.ipcRenderer;
+            var remote = electron.remote; 
+            var dialog = remote.dialog;
+
+            var data = gui.patch().scene.serialize(true);
+            
+            data.ui = {
+                "viewBox": {},
+                "timeLineLength": gui.timeLine().getTimeLineLength()
+            };
+    
+    
+            data.ui.bookmarks = gui.bookmarks.getBookmarks();
+    
+            data.ui.viewBox.w = viewBox.w;
+            data.ui.viewBox.h = viewBox.h;
+            data.ui.viewBox.x = viewBox.x;
+            data.ui.viewBox.y = viewBox.y;
+            data.ui.subPatchViewBoxes = subPatchViewBoxes;
+    
+            data.ui.renderer = {};
+            data.ui.renderer.w = gui.rendererWidth;
+            data.ui.renderer.h = gui.rendererHeight;
+
+            dialog.showSaveDialog(
+                {
+                    // file filters, only display files with these extensions
+                    filters: [{
+                        name: 'cables',
+                        extensions: ['cables']
+                    }]
+                },
+                function(filePath) {
+                    self.nativeWritePatchToFile(data, filePath);
+                    gui.patch().filename = filePath; // store the path so we don't have to ask on next save
+                    console.log('gui.patch().filename saved: ', gui.patch().filename);
+                    var projectName = self.getProjectnameFromFilename(filePath);
+                    gui.setProjectName(projectName);
+                }
+            );
+            return;
+        }
 
         CABLES.UI.MODAL.prompt(
             "Save As...",
@@ -644,6 +733,40 @@ CABLES.UI.Patch = function(_gui) {
         data.ui.renderer = {};
         data.ui.renderer.w = gui.rendererWidth;
         data.ui.renderer.h = gui.rendererHeight;
+
+        // electron
+        if(window.process && window.process.versions['electron']) {
+            var electron = require('electron');
+            var ipcRenderer = electron.ipcRenderer;
+            var remote = electron.remote; 
+            var dialog = remote.dialog;
+
+            
+            console.log('gui.patch().filename before check: ', gui.patch().filename);
+            // patch has been saved before, overwrite the patch
+            if(gui.patch().filename) {
+                self.nativeWritePatchToFile(data, gui.patch().filename);
+            } else {
+                dialog.showSaveDialog(
+                    {
+                        // file filters, only display files with these extensions
+                        filters: [{
+                            name: 'cables',
+                            extensions: ['cables']
+                        }]
+                    },
+                    function(filePath) {
+                        self.nativeWritePatchToFile(data, filePath);
+                        gui.patch().filename = filePath; // store the path so we don't have to ask on next save
+                        console.log('gui.patch().filename saved: ', gui.patch().filename);
+                        var projectName = self.getProjectnameFromFilename(filePath);
+                        gui.setProjectName(projectName);
+                    }
+                );
+            }
+            
+            return;
+        }
 
         try {
             data = JSON.stringify(data);

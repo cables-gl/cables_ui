@@ -666,7 +666,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     this.setTitle = function(t) {
-        title = t||title;
+        if(typeof t !== 'undefined') {
+            if(t === null) { title = ""; } 
+            else { title = t; }
+        }
         if (label) {
             label.attr({
                 text: title
@@ -734,8 +737,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         if (attribs && attribs.hasOwnProperty('error')) {
             this.oprect.updateErrorIndicator();
         }
-
-        if (attribs.title) {
+        if (typeof attribs.title !== 'undefined' && attribs.title !== null) {
             this.oprect.setTitle(attribs.title);
         }
 

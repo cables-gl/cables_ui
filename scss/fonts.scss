@@ -1,4 +1,5 @@
-$text-font: "SourceSansPro";
+//$text-font: "SourceSansPro";
+$text-font: "SourceSansPro", sans-serif;
 $headline-font: "SourceSansPro";
 
 $font-size-default: 13px;
@@ -16,21 +17,21 @@ $panelhead-font-weight: 400;
 
 @font-face {
   font-family: 'SourceCodePro';
-  src: url('/ui/fonts/SourceCodePro-Regular.ttf');
+  src: url('../fonts/SourceCodePro-Regular.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'SourceSansPro';
-  src: url('/ui/fonts/SourceSansPro-Regular.ttf');
+  src: url('../fonts/SourceSansPro-Regular.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'SourceSansProLight';
-  src: url('/ui/fonts/SourceSansPro-Light.ttf');
+  src: url('../fonts/SourceSansPro-Light.ttf');
   font-weight: normal;
   font-style: normal;
 }

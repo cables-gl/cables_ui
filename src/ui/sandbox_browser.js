@@ -39,6 +39,10 @@ CABLES.SandboxBrowser.prototype.getUrlOpsCode=function(id)
     return '/api/ops/code';
 };
 
+CABLES.SandboxBrowser.prototype.getLocalOpCode = function() {
+    return ''; // no local ops in browser version
+};
+
 CABLES.SandboxBrowser.prototype.getUrlDocOpsAll=function(id)
 {
     return 'doc/ops/all';
@@ -52,6 +56,35 @@ CABLES.SandboxBrowser.prototype.getUrlApiPrefix=function(id)
 CABLES.SandboxBrowser.prototype.getUrlOpsList=function(id)
 {
     return 'ops/';
+};
+
+CABLES.SandboxBrowser.prototype.showStartupChangelog = function() {
+    var lastView = CABLES.UI.userSettings.get('changelogLastView');
+    
+    CABLES.CHANGELOG.getHtml(function(clhtml) {
+        if (clhtml !== null) {
+            iziToast.show({
+                position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                theme: 'dark',
+                title: 'update',
+                message: 'cables has been updated! ',
+                progressBar: false,
+                animateInside: false,
+                close: true,
+                timeout: false,
+                buttons: [
+                    ['<button>read more</button>', function(instance, toast) {
+                        CABLES.CMD.UI.showChangelog();
+                        iziToast.hide({}, toast);
+                    }]
+                ]
+
+            });
+            // if(html.length>0)html+='<hr/><br/><br/>';
+            // html+=clhtml;
+        }
+        // show(html);
+    }, CABLES.UI.userSettings.get('changelogLastView'));
 };
 
 

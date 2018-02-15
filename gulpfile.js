@@ -148,19 +148,11 @@ gulp.task('svgcss', function () {
 
 
 gulp.task('electronapp', function () {
-
     var copydist = gulp.src('dist/**/*.*').pipe(gulp.dest('dist-electron/'));
-
     var electronsrc = gulp.src('src-electron/**/*.*').pipe(gulp.dest('dist-electron/'));
     // var someOtherOperation = gulp.src('./assets').pipe(gulp.dest('out/assets'));
-    
     return merge(copydist, electronsrc);
-
-    
-
-    });
-
-
+});
 
 
 gulp.task('watch', function() {
@@ -175,7 +167,77 @@ gulp.task('watch', function() {
 });
 
 
-gulp.task('default', ['svgcss','scripts_ui','lint','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','sass','sass-bright', 'vueify','electron', 'watch']);
-gulp.task('build', ['svgcss','html_ui','scripts_core','scripts_libs_ui','scripts_libs_core','scripts_ops','scripts_ui','sass','sass-bright', 'vueify']);
+gulp.task('electron-watch', function() {
+    gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
+    gulp.watch('src/ops/**/*.js', ['scripts_ops']);
+    gulp.watch('src/ui/**/*.js', ['scripts_ui','electronapp']);
+    gulp.watch('scss/**/*.scss', ['sass','sass-bright', 'electronapp']);
+    gulp.watch('html/**/*.html', ['html_ui']);
+    gulp.watch('icons/**/*.svg', ['svgcss']);
+    gulp.watch('vue-src/**/*', ['vueify']);
+    gulp.watch('src-electron/**/*', ['electronapp']);
+});
 
-gulp.task('electron', ['electronapp']);
+
+/*
+ * -------------------------------------------------------------------------------------------
+ * MAIN TASKS
+ * -------------------------------------------------------------------------------------------
+ */
+
+/**
+ * Default Task, for development
+ * Run "gulp"
+ */
+gulp.task('default', [
+    'svgcss',
+    'scripts_ui',
+    'lint',
+    'html_ui',
+    'scripts_core',
+    'scripts_libs_ui',
+    'scripts_libs_core',
+    'scripts_ops',
+    'sass',
+    'sass-bright',
+    'vueify',
+    'watch',
+]);
+
+/**
+ * Is this still used?
+ * Run "gulp build"
+ */
+gulp.task('build', [
+    'svgcss',
+    'html_ui',
+    'scripts_core',
+    'scripts_libs_ui',
+    'scripts_libs_core',
+    'scripts_ops',
+    'scripts_ui',
+    'sass',
+    'sass-bright',
+    'vueify',
+]);
+
+/**
+ * Electron development
+ * Run "gulp electron"
+ */
+gulp.task('electron', [
+    'svgcss',
+    'scripts_ui',
+    'lint',
+    'html_ui',
+    'scripts_core',
+    'scripts_libs_ui',
+    'scripts_libs_core',
+    'scripts_ops',
+    'sass',
+    'sass-bright',
+    'vueify',
+    'electron',
+    'electronapp', 
+    'electron-watch',
+]);
