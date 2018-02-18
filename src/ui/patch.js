@@ -769,6 +769,8 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         try {
+            
+            console.log(data);
             data = JSON.stringify(data);
             console.log('data.length', data.length);
 

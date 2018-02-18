@@ -1077,38 +1077,38 @@ CABLES.UI.GUI = function() {
 
     var infoTimeout = -1;
 
-    this.editOpDoc = function(objName) {
-        CABLES.api.clearCache();
+    // this.editOpDoc = function(objName) {
+    //     CABLES.api.clearCache();
 
-        this.showEditor();
+    //     this.showEditor();
 
-        CABLES.api.get(
-            'doc/ops/md/' + objName,
-            function(res) {
-                var content = res.content || '';
+    //     CABLES.api.get(
+    //         'doc/ops/md/' + objName,
+    //         function(res) {
+    //             var content = res.content || '';
 
-                self.editor().addTab({
-                    content: content,
-                    title: objName,
-                    syntax: 'Markdown',
-                    onSave: function(setStatus, content) {
-                        CABLES.api.post(
-                            'doc/ops/edit/' + objName, {
-                                content: content
-                            },
-                            function(res) {
-                                setStatus('saved');
-                                // console.log('res',res);
-                            },
-                            function(res) {
-                                setStatus('error: not saved');
-                                console.log('err res', res);
-                            }
-                        );
-                    }
-                });
-            });
-    };
+    //             self.editor().addTab({
+    //                 content: content,
+    //                 title: objName,
+    //                 syntax: 'Markdown',
+    //                 onSave: function(setStatus, content) {
+    //                     CABLES.api.post(
+    //                         'doc/ops/edit/' + objName, {
+    //                             content: content
+    //                         },
+    //                         function(res) {
+    //                             setStatus('saved');
+    //                             // console.log('res',res);
+    //                         },
+    //                         function(res) {
+    //                             setStatus('error: not saved');
+    //                             console.log('err res', res);
+    //                         }
+    //                     );
+    //                 }
+    //             });
+    //         });
+    // };
 
     this.getOpDoc = function(opname, html, cb) {
         cb(this.opDocs.get(opname));
@@ -1169,10 +1169,11 @@ CABLES.UI.GUI = function() {
 
     this.showOpDoc = function(opname) {
         var docOpHead = '<div>'; //<img src="/api/op/layout/'+opname+'"/>
-        var docOpFooter = '<br/><br/><a onclick="gui.editOpDoc(\'' + opname + '\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
+        // var docOpFooter = '<br/><br/><a onclick="gui.editOpDoc(\'' + opname + '\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
 
+        
         this.getOpDoc(opname, true, function(html) {
-            $('#meta_content_doc').html(docOpHead + html + docOpFooter);
+            $('#meta_content_doc').html(docOpHead + html);// + docOpFooter);
         });
     };
 

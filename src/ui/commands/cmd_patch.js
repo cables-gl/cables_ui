@@ -174,10 +174,10 @@ CABLES.CMD.PATCH.tidyChildOps=function()
 		var addY=0;
 		if(childs.length>1) addY=opHeight*0.5;
 
-		console.log(op.name+' child columns:',getChildColumns(op))
-
+		console.log(op.name+' child columns:',getChildColumns(op));
+		var i=0;
 		var childWidth=0;
-		for(var i=0;i<childs.length;i++)
+		for(i=0;i<childs.length;i++)
 		{
 			if(i>0)childWidth+=getChildColumns(childs[i-1])*opWidth;
 
@@ -189,7 +189,7 @@ CABLES.CMD.PATCH.tidyChildOps=function()
 			});
 		}
 
-		for(var i=0;i<childs.length;i++)
+		for(i=0;i<childs.length;i++)
 		{
 			tidyChilds(childs[i],childs[i].uiAttribs.translate.x,childs[i].uiAttribs.translate.y);
 		}
@@ -199,7 +199,7 @@ CABLES.CMD.PATCH.tidyChildOps=function()
     {
         console.log('tidy!');
 
-        for(var i=0;i<selops.length;i++)
+        for(i=0;i<selops.length;i++)
         {
 			var op=selops[i].op;
 			var y=op.uiAttribs.translate.y;
@@ -210,7 +210,7 @@ CABLES.CMD.PATCH.tidyChildOps=function()
         }
     }
 	
-	for(var i=0;i<gui.patch().ops.length;i++)
+	for(i=0;i<gui.patch().ops.length;i++)
 	{
 		gui.patch().ops[i].setPosFromUiAttr();
 	}

@@ -167,7 +167,7 @@ CABLES.Gizmo.prototype.set=function(params)
     if(!params)return this.setParams(params);
 
     var cgl=gui.scene().cgl;
-    cgl.pushMvMatrix();
+    cgl.pushModelMatrix();
     function toScreen(trans)
     {
         var vp=cgl.getViewPort();
@@ -231,7 +231,7 @@ CABLES.Gizmo.prototype.set=function(params)
     var screenY=toScreen(transY);
     var screenZ=toScreen(transZ);
     
-    cgl.popMvMatrix();
+    cgl.popModelMatrix();
     
     this.setParams(
         {

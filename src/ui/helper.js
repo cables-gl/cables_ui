@@ -18,9 +18,7 @@ CABLES.UI.sanitizeUsername=function(name)
     name=name.replace(/\./g, '_');
     if (name.match(/^\d/))name='u_'+name; 
     return name;
-}
-
-
+};
 
 CABLES.uniqueArray=function(arr)
 {

@@ -225,20 +225,21 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
     CABLES.GL_MARKER.startFramebuffer(cgl);
 
     if(!size)size=2;
-    cgl.pushMvMatrix();
+    cgl.pushModelMatrix();
     
     cgl.setShader(CABLES.GL_MARKER.MARKER.shader);
 
     vec3.set(CABLES.GL_MARKER.MARKER.vScale, size,size,size);
     mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.MARKER.vScale);
 
-    cgl.gl.disable(cgl.gl.DEPTH_TEST);
+    cgl.pushDepthTest(false);
+
 
     CABLES.GL_MARKER.MARKER.mesh.render(cgl.getShader());
 
-    cgl.gl.enable(cgl.gl.DEPTH_TEST);
+    cgl.popDepthTest();
     cgl.setPreviousShader();
-    cgl.popMvMatrix();
+    cgl.popModelMatrix();
 
     CABLES.GL_MARKER.endFramebuffer(cgl);
 };
