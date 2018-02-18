@@ -187,45 +187,45 @@ CABLES.UI.OpDocs=function()
 
     }
     
-    this.editPortDoc=function(opname,portname)
-    {
-        var txt='';
+    // this.editPortDoc=function(opname,portname)
+    // {
+    //     var txt='';
 
-        for(var i=0;i<opDocs.length;i++)
-        {
-            if(opDocs[i].name==opname)
-            {
-                if(opDocs[i].docs)
-                {
-                    for(var j=0;j<opDocs[i].docs.ports.length;j++)
-                    {
-                        if(opDocs[i].docs.ports[j].name==portname)
-                        {
-                            txt=opDocs[i].docs.ports[j].text;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+    //     for(var i=0;i<opDocs.length;i++)
+    //     {
+    //         if(opDocs[i].name==opname)
+    //         {
+    //             if(opDocs[i].docs)
+    //             {
+    //                 for(var j=0;j<opDocs[i].docs.ports.length;j++)
+    //                 {
+    //                     if(opDocs[i].docs.ports[j].name==portname)
+    //                     {
+    //                         txt=opDocs[i].docs.ports[j].text;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        CABLES.UI.MODAL.prompt('port doc '+portname,'enter here:',txt,
-        function(txt)
-        {
-            console.log('new text:',txt);
+    //     CABLES.UI.MODAL.prompt('port doc '+portname,'enter here:',txt,
+    //     function(txt)
+    //     {
+    //         console.log('new text:',txt);
 
-            CABLES.api.put(
-                'doc/' + opname + '/' + portname, {
-                    "summary": txt
-                },
-                function(res) {
-                    console.log(res);
-                });
-        })
+    //         CABLES.api.put(
+    //             'doc/' + opname + '/' + portname, {
+    //                 "summary": txt
+    //             },
+    //             function(res) {
+    //                 console.log(res);
+    //             });
+    //     })
 
 
 
-    }
+    // }
 
 
 

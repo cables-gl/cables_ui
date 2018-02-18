@@ -200,19 +200,6 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
 
-    // this.addOpSummary = function(opName, summary) {
-    //     // if(summary) summary = summary.replace(/[^a-z0-9]/gi, ' '); // remove non-url-save characters
-
-    //     CABLES.api.put(
-    //         'op/' + opName + '/summary', {
-    //             "summary": summary
-    //         },
-    //         function(res) {
-    //             console.log(res);
-    //         });
-    // };
-
-
     this.addOpLib = function(opName, libName) {
 
         CABLES.api.put(
