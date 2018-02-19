@@ -10,9 +10,9 @@ CABLES.UI.MetaKeyframes.prototype.update=
 CABLES.UI.MetaKeyframes.prototype.show=function()
 {
     var anims=[];
-
+    var i=0;
     var ops=gui.patch().scene.ops;
-    for(var i=0;i<ops.length;i++)
+    for(i=0;i<ops.length;i++)
     {
         // console.log(gui.patch().scene.ops[i].name);
         for(var j=0;j<ops[i].portsIn.length;j++)
@@ -31,7 +31,7 @@ CABLES.UI.MetaKeyframes.prototype.show=function()
 
     if(self.anim)
     {
-        for(var i=0;i<self.anim.keys.length;i++)
+        for(i=0;i<self.anim.keys.length;i++)
         {
             self.anim.keys[i].frame=self.anim.keys[i].time*gui.timeLine().getFPS();
         }
