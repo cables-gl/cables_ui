@@ -195,7 +195,7 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
             content+='<p>'+gui.opDocs.getSummary(opname)+'</p>';
         }
 
-        content=content.replace(opname,'<a href="/op/'+opname+'" target="_blank">'+opname+'</a>&nbsp;&nbsp;&nbsp;<i class="icon icon-link"></i>');
+        // content=content.replace(opname,'<a href="/op/'+opname+'" target="_blank">'+opname+'</a>&nbsp;&nbsp;&nbsp;<i class="icon icon-link"></i>');
 
         
         $('#searchinfo').html('<div id="opselect-layout"></div>'+content+htmlFoot);

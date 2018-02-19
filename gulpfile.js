@@ -15,7 +15,7 @@ var vueify = require('vueify');
 var replace = require('gulp-replace');
 var autoprefixer = require('gulp-autoprefixer');
 var merge = require('merge-stream');
-var notifier = require('node-notifier');
+// var notifier = require('node-notifier');
 
 gulp.task('vueify', function(){
 	browserify('vue-src/main.js')

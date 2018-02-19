@@ -99,15 +99,26 @@ CABLES.UI.OpDocs=function()
         for(var i=0;i<opDocs.length;i++)
             if(opDocs[i].name==opname)
             {
-                var html=opDocs[i].content;
-                if( (!html || html.length==0) && opDocs[i].name )
+                var html='';
+                // if( (!html || html.length==0) && opDocs[i].name )
                 {
                     var nameParts=opDocs[i].name.split('.');
                     html='<h1>'+nameParts[nameParts.length-1]+'</h1>';
 
-                    html+='<p><em>' + ( opDocs[i].name || '' ) + '</em></p>';
+
+                    if(opDocs[i].hasScreenshot)
+                    {
+                        console.log("has screenshot!",opDocs[i].name);
+                        
+                        html+='<img src="/op/screenshot/'+opDocs[i].name+'.png"/>';
+                        
+                    }
+// content=content.replace(opname,'<a href="/op/'+opname+'" target="_blank">'+opname+'</a>&nbsp;&nbsp;&nbsp;<i class="icon icon-link"></i>');
+                    html+='<p><em><a href="' + ( opDocs[i].name || '' ) + '"><i class="icon icon-link"></i>' + ( opDocs[i].name || '' ) + '</a></em></p>';
                     html+='<p>' + ( opDocs[i].summary || '' ) + '</p>';
                 }
+
+                html+=opDocs[i].content;
 
                 if(opDocs[i].credits)
                 {
