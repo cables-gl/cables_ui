@@ -32,17 +32,20 @@ CABLES.UI.SVGParagraph = function(t, width) {
     t.attr({'text-anchor': 'start', "text": abc});
     var letterWidth=t.getBBox().width / abc.length;
     t.attr({"text": content});
-    var words = content.split(" "), x=0, s=[];
-    for ( var i = 0; i < words.length; i++) {
-        var l = words[i].length;
-        if(x+l>width) {
-            s.push("\n");
-            x=0;
+    if(content)
+    {
+        var words = content.split(" "), x=0, s=[];
+        for ( var i = 0; i < words.length; i++) {
+            var l = words[i].length;
+            if(x+l>width) {
+                s.push("\n");
+                x=0;
+            }
+            else {
+                x+=l*letterWidth;
+            }
+            s.push(words[i]+" ");
         }
-        else {
-            x+=l*letterWidth;
-        }
-        s.push(words[i]+" ");
+        t.attr({"text": s.join("")});
     }
-    t.attr({"text": s.join("")});
 };

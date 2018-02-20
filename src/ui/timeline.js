@@ -1992,8 +1992,10 @@ CABLES.TL.UI.TimeLineUI=function()
                         key.doMoveFinished();
                     }
                 }
+                anims[i].forceChangeCallback();
             }
         }
+
     };
 
     this.moveSelectedKeys=function(dx,dy,a,b,e)
@@ -2016,8 +2018,10 @@ CABLES.TL.UI.TimeLineUI=function()
                         key.doMove(dx,dy,a,b,e,newPos);
                     }
                 }
+                anims[i].forceChangeCallback();
             }
         }
+
     };
 
     this.unselectKeys=function()

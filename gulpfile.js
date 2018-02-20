@@ -192,7 +192,7 @@ gulp.task('electron-watch', function() {
 gulp.task('default', [
     'svgcss',
     'scripts_ui',
-    'lint',
+    // 'lint',
     'html_ui',
     'scripts_core',
     'scripts_libs_ui',
