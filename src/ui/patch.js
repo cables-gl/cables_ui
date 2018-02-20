@@ -675,6 +675,7 @@ CABLES.UI.Patch = function(_gui) {
                     gui.scene().settings.isExample = false;
                     gui.scene().settings.isTest = false;
                     gui.scene().settings.isFeatured = false;
+                    gui.scene().settings.opExample = '';
 
                     self.saveCurrentProject(function() {
                         document.location.href = '#/project/' + d._id;
