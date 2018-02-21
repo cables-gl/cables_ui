@@ -855,7 +855,9 @@ CABLES.UI.GUI = function() {
 
                 case 67: //c center
                         if ($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey) {
-                            self.patch().centerViewBoxOps();
+                            
+                            if(self.patch().getSelectedOps().length>0) self.patch().centerViewBoxOps();
+                            else self.patch().toggleCenterZoom();
                         }
                     break;
 
