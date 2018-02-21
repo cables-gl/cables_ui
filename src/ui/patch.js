@@ -975,12 +975,13 @@ CABLES.UI.Patch = function(_gui) {
 
         minimapBounds = this.getSubPatchBounds(currentSubPatch);
 
-        self.paperMap.setViewBox(
-            minimapBounds.x,
-            minimapBounds.y,
-            minimapBounds.w,
-            minimapBounds.h
-        );
+        if(self.paperMap)
+            self.paperMap.setViewBox(
+                minimapBounds.x,
+                minimapBounds.y,
+                minimapBounds.w,
+                minimapBounds.h
+            );
     };
 
     var oldVBW = 0;
@@ -1045,12 +1046,13 @@ CABLES.UI.Patch = function(_gui) {
         if (!isNaN(viewBox.x) && !isNaN(viewBox.y) && !isNaN(viewBox.w) && !isNaN(viewBox.h))
             self.paper.setViewBox(viewBox.x, viewBox.y, viewBox.w, viewBox.h);
 
-        miniMapBounding.attr({
-            x: viewBox.x,
-            y: viewBox.y,
-            width: viewBox.w,
-            height: viewBox.h
-        });
+        if(miniMapBounding)
+            miniMapBounding.attr({
+                x: viewBox.x,
+                y: viewBox.y,
+                width: viewBox.w,
+                height: viewBox.h
+            });
 
     };
 
@@ -1230,19 +1232,21 @@ CABLES.UI.Patch = function(_gui) {
         $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'), {});
         $('#meta').append();
 
-        this.paperMap = Raphael("minimap", CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
-
-        // setInterval(self.setMinimapBounds.bind(self),500);
-        self.paperMap.setViewBox(-500, -500, 4000, 4000);
-
-        miniMapBounding = this.paperMap.rect(0, 0, 10, 10).attr({
-            "stroke": "#666",
-            "fill": "#1a1a1a",
-            "stroke-width": 1
-        });
-
-        $('#minimap svg').on("mousemove touchmove", dragMiniMap);
-        $('#minimap svg').on("mousedown", dragMiniMap);
+        if (!CABLES.UI.userSettings.get("hideMinimap"))
+        {
+            this.paperMap = Raphael("minimap", CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
+            this.paperMap.setViewBox(-500, -500, 4000, 4000);
+    
+            miniMapBounding = this.paperMap.rect(0, 0, 10, 10).attr({
+                "stroke": "#666",
+                "fill": "#1a1a1a",
+                "stroke-width": 1
+            });
+    
+            $('#minimap svg').on("mousemove touchmove", dragMiniMap);
+            $('#minimap svg').on("mousedown", dragMiniMap);
+    
+        }
 
         this.paper = Raphael("patch", 0, 0);
         this.bindScene(self.scene);
