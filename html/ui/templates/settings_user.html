@@ -2,6 +2,8 @@
 
 
 <script id="settings_user" type="text/x-handlebars-template">
+    <input type="checkbox" {{#if userSettings.hideMinimap }}checked="checked"{{/if}} id="showMwitchminimap" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('hideMinimap',this.checked)"> hide minimap
+    <br/><br/>
 
     <input type="checkbox" {{#if userSettings.touchpadmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('touchpadmode',this.checked)"> touchpad mode
     <br/><br/>
@@ -10,6 +12,8 @@
     <input type="checkbox" {{#if userSettings.presentationmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('presentationmode',this.checked);CABLES.CMD.UI.startPresentationMode();"> presentation mode
 
 <br/><br/>
+<a onclick="CABLES.UI.MODAL.hide()" target="_blank" class="bluebutton button">close</a>
+&nbsp;&nbsp;
 <a href="/user/{{user.username}}" target="_blank" class="button">view my profile page</a>
 
 

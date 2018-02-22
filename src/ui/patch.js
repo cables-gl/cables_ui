@@ -442,6 +442,12 @@ CABLES.UI.Patch = function(_gui) {
     $('#patch').keydown(function(e) {
 
         switch (e.which) {
+
+            case 27:
+            $('#patch').css({
+                "cursor": "auto"
+            });
+            break;
             case 32:
                 spacePressed = true;
 
@@ -456,8 +462,6 @@ CABLES.UI.Patch = function(_gui) {
             case 70:
                 if (!e.metaKey && !e.ctrlKey) gui.patch().toggleFlowVis();
                 break;
-
-
 
             case 46:
             case 8: // delete
@@ -972,12 +976,13 @@ CABLES.UI.Patch = function(_gui) {
 
         minimapBounds = this.getSubPatchBounds(currentSubPatch);
 
-        self.paperMap.setViewBox(
-            minimapBounds.x,
-            minimapBounds.y,
-            minimapBounds.w,
-            minimapBounds.h
-        );
+        if(self.paperMap)
+            self.paperMap.setViewBox(
+                minimapBounds.x,
+                minimapBounds.y,
+                minimapBounds.w,
+                minimapBounds.h
+            );
     };
 
     var oldVBW = 0;
@@ -1042,12 +1047,13 @@ CABLES.UI.Patch = function(_gui) {
         if (!isNaN(viewBox.x) && !isNaN(viewBox.y) && !isNaN(viewBox.w) && !isNaN(viewBox.h))
             self.paper.setViewBox(viewBox.x, viewBox.y, viewBox.w, viewBox.h);
 
-        miniMapBounding.attr({
-            x: viewBox.x,
-            y: viewBox.y,
-            width: viewBox.w,
-            height: viewBox.h
-        });
+        if(miniMapBounding)
+            miniMapBounding.attr({
+                x: viewBox.x,
+                y: viewBox.y,
+                width: viewBox.w,
+                height: viewBox.h
+            });
 
     };
 
@@ -1227,19 +1233,21 @@ CABLES.UI.Patch = function(_gui) {
         $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'), {});
         $('#meta').append();
 
-        this.paperMap = Raphael("minimap", CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
-
-        // setInterval(self.setMinimapBounds.bind(self),500);
-        self.paperMap.setViewBox(-500, -500, 4000, 4000);
-
-        miniMapBounding = this.paperMap.rect(0, 0, 10, 10).attr({
-            "stroke": "#666",
-            "fill": "#1a1a1a",
-            "stroke-width": 1
-        });
-
-        $('#minimap svg').on("mousemove touchmove", dragMiniMap);
-        $('#minimap svg').on("mousedown", dragMiniMap);
+        if (!CABLES.UI.userSettings.get("hideMinimap"))
+        {
+            this.paperMap = Raphael("minimap", CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
+            this.paperMap.setViewBox(-500, -500, 4000, 4000);
+    
+            miniMapBounding = this.paperMap.rect(0, 0, 10, 10).attr({
+                "stroke": "#666",
+                "fill": "#1a1a1a",
+                "stroke-width": 1
+            });
+    
+            $('#minimap svg').on("mousemove touchmove", dragMiniMap);
+            $('#minimap svg').on("mousedown", dragMiniMap);
+    
+        }
 
         this.paper = Raphael("patch", 0, 0);
         this.bindScene(self.scene);
@@ -1331,9 +1339,9 @@ CABLES.UI.Patch = function(_gui) {
 
         var lastZoomDrag = -1;
 
-        this.background.node.ondblclick = function(e) {
-            e = mouseEvent(e);
-
+        this.toggleCenterZoom=function(e)
+        {
+            e=e||lastMouseMoveEvent;
             var x = gui.patch().getCanvasCoordsMouse(e).x;
             var y = gui.patch().getCanvasCoordsMouse(e).y;
 
@@ -1354,6 +1362,13 @@ CABLES.UI.Patch = function(_gui) {
                 console.log("center");
                 self.centerViewBoxOps();
             }
+
+        }
+
+        this.background.node.ondblclick = function(e) {
+            e = mouseEvent(e);
+
+            self.toggleCenterZoom(e);
             // self.updateViewBox();
         };
 
@@ -1419,12 +1434,14 @@ CABLES.UI.Patch = function(_gui) {
         this._elPatchSvg.bind("mousemove touchmove", function(e) {
             e = mouseEvent(e);
 
-            if (CABLES.UI.MOUSEOVERPORT || (mouseRubberBandStartPos && e.buttons != CABLES.UI.MOUSE_BUTTON_LEFT)) {
+
+            if ( (CABLES.UI.MOUSEOVERPORT && !spacePressed) || (mouseRubberBandStartPos && e.buttons != CABLES.UI.MOUSE_BUTTON_LEFT) ) {
                 rubberBandHide();
+                lastMouseMoveEvent = e;
                 return;
             }
 
-            if (lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed)) && !CABLES.UI.MOUSEOVERPORT) {
+            if (lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEOVERPORT
                 if (gui.cursor != "hand") {
                     gui.cursor = "hand";
                     this._elPatch.css({
@@ -2480,13 +2497,11 @@ CABLES.UI.Patch = function(_gui) {
 
     var delayedShowOpParams = 0;
     this.showOpParams = function(op) {
-
         // self.highlightOpNamespace(op);
         gui.setTransformGizmo(null);
         clearTimeout(delayedShowOpParams);
         delayedShowOpParams = setTimeout(function() {
             self._showOpParams(op);
-
         }, 30);
 
     };

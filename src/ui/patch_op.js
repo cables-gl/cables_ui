@@ -452,15 +452,18 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     this.addUi = function() {
         if (this.isVisible()) return;
 
-        miniRect = gui.patch().getPaperMap().rect(x, y, w, h);
-        miniRect.attr({
-            "width": w,
-            "height": 32,
-            "fill-opacity": 1
-        });
-
-        miniRect.node.classList.add(CABLES.UI.uiConfig.getOpMiniRectClassName(opui.op.objName));
-        CABLES.UI.cleanRaphael(miniRect);
+        if(gui.patch().getPaperMap())
+        {
+            miniRect = gui.patch().getPaperMap().rect(x, y, w, h);
+            miniRect.attr({
+                "width": w,
+                "height": 32,
+                "fill-opacity": 1
+            });
+    
+            miniRect.node.classList.add(CABLES.UI.uiConfig.getOpMiniRectClassName(opui.op.objName));
+            CABLES.UI.cleanRaphael(miniRect);
+        }
 
 
         background = gui.patch().getPaper().rect(0, 3, w, h - 6);
