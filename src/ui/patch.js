@@ -628,6 +628,7 @@ CABLES.UI.Patch = function(_gui) {
             };
     
     
+            gui.bookmarks.cleanUp();
             data.ui.bookmarks = gui.bookmarks.getBookmarks();
     
             data.ui.viewBox.w = viewBox.w;

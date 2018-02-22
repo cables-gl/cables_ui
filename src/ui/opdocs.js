@@ -192,7 +192,6 @@ CABLES.UI.OpDocs=function()
                 }
             }
         }
-
     }
     
     // this.editPortDoc=function(opname,portname)

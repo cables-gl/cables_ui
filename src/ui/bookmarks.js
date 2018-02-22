@@ -18,6 +18,17 @@ CABLES.UI.Bookmarks=function()
         return false;
     };
 
+    this.cleanUp=function()
+    {
+        for(var i in bookmarks)
+        {
+            var op=gui.patch().scene.getOpById(bookmarks[i]);
+
+            if(!op)
+                bookmarks[i]=null;
+        }
+    }
+
     this.getHtml=function()
     {
         var subs=gui.patch().getSubPatches();
@@ -39,8 +50,7 @@ CABLES.UI.Bookmarks=function()
             }
             else
             {
-                console.log("op not found",bookmarks[i]);
-                bookmarks[i]=null;
+                // console.log("op not found",bookmarks[i]);
             }
         }
 
