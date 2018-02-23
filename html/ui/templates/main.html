@@ -43,7 +43,11 @@
     <a class="tt icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound"></a>
     <a class="tt icon icon-command iconhover" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper"></a>
 
-    <span id="canvasInfoSize" class="canvasInfo" onclick="CABLES.CMD.RENDERER.changeSize()" ></span>
+    <div class="canvasInfo">
+        <span id="canvasInfoSize" class="" onclick="CABLES.CMD.RENDERER.changeSize()" ></span>
+        <span id="canvasInfoFPS" class="" ></span>
+    </div>
+
 </div>
 
 <div id="notify"></div>

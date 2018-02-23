@@ -435,8 +435,8 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
 
 #splitterRendererWH
 {
-    // height:40px;
-    // width:40px;
+    height:15px !important;
+    width:15px !important;
     // background-color: transparent;
     z-index: $z-index-canvas-iconbar-bottom-splitter;
     cursor:ne-resize;

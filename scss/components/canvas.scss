@@ -60,15 +60,19 @@
         cursor: nesw-resize;
     }
 
-    #canvasInfoSize
-    {
-        font-family: monospace;
-    }
 
     .canvasInfo
     {
         position: absolute;
         margin-top: -2px;
+        display: inline-block;
+        width:100%;
+
+        span
+        {
+            font-family: monospace;
+        }
+    
     }
 }
 
