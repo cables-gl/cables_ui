@@ -143,6 +143,7 @@ CABLES.UI.OpDocs=function()
         return '';
     };
 
+
     this.getSuggestions=function(objName,portName)
     {
         for(var i=0;i<opDocs.length;i++)
