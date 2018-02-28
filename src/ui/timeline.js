@@ -1,5 +1,4 @@
 
-
 CABLES.ANIM.UI=CABLES.ANIM.UI || {};
 
 CABLES.ANIM.Key.prototype.isUI=true;
@@ -13,6 +12,7 @@ CABLES.ANIM.MultiGraphKeyDisplayMode=true;
 CABLES.ANIM.MoveMode=0;
 CABLES.ANIM.TIMESCALE=100;
 CABLES.ANIM.VALUESCALE=100;
+
 
 CABLES.ANIM.Key.prototype.setAttribs=function(sel)
 {
@@ -324,12 +324,20 @@ CABLES.ANIM.Key.prototype.initUI=function()
 
 };
 
+<<<<<<< HEAD
 CABLES.ANIM.Anim.prototype.hasSelectedKeys=function()
+=======
+CABLES.Anim.prototype.hasSelectedKeys=function()
+>>>>>>> d2abc731e2eb5e282e1e0bb3bdf6038d6a6dddd1
 {
     for(var i in this.keys)if(this.keys[i].selected)return true;
 };
 
+<<<<<<< HEAD
 CABLES.ANIM.Anim.prototype.moveKeyAt=function(t,nt)
+=======
+CABLES.Anim.prototype.moveKeyAt=function(t,nt)
+>>>>>>> d2abc731e2eb5e282e1e0bb3bdf6038d6a6dddd1
 {
     for(var i in this.keys)
         if(this.keys[i].time==t)
@@ -339,14 +347,22 @@ CABLES.ANIM.Anim.prototype.moveKeyAt=function(t,nt)
         }
 };
 
+<<<<<<< HEAD
 CABLES.ANIM.Anim.prototype.show=function()
+=======
+CABLES.Anim.prototype.show=function()
+>>>>>>> d2abc731e2eb5e282e1e0bb3bdf6038d6a6dddd1
 {
     if(gui.timeLine())
         if(!this.keyLine)
             this.keyLine = gui.timeLine().getPaper().path("M 0 0 L 0 1");
 };
 
+<<<<<<< HEAD
 CABLES.ANIM.Anim.prototype.removeUi=function()
+=======
+CABLES.Anim.prototype.removeUi=function()
+>>>>>>> d2abc731e2eb5e282e1e0bb3bdf6038d6a6dddd1
 {
     if(this.keyLine)
     {
@@ -359,13 +375,21 @@ CABLES.ANIM.Anim.prototype.removeUi=function()
         this.keys[i].removeUi();
 };
 
+<<<<<<< HEAD
 CABLES.ANIM.Anim.prototype.unselectKeys=function()
+=======
+CABLES.Anim.prototype.unselectKeys=function()
+>>>>>>> d2abc731e2eb5e282e1e0bb3bdf6038d6a6dddd1
 {
     for(var i in this.keys)
         this.keys[i].setSelected(false);
 };
 
+<<<<<<< HEAD
 CABLES.ANIM.Anim.prototype.deleteKeyAt=function(t)
+=======
+CABLES.Anim.prototype.deleteKeyAt=function(t)
+>>>>>>> d2abc731e2eb5e282e1e0bb3bdf6038d6a6dddd1
 {
     for(var i in this.keys)
     {
@@ -379,7 +403,11 @@ CABLES.ANIM.Anim.prototype.deleteKeyAt=function(t)
     gui.metaKeyframes.update();
 };
 
+<<<<<<< HEAD
 CABLES.ANIM.Anim.prototype.deleteSelectedKeys=function()
+=======
+CABLES.Anim.prototype.deleteSelectedKeys=function()
+>>>>>>> d2abc731e2eb5e282e1e0bb3bdf6038d6a6dddd1
 {
     var found=true;
 
@@ -428,8 +456,13 @@ CABLES.ANIM.UI.TimeLineUI=function()
 {
     var self=this;
     var projectLength=20;
+<<<<<<< HEAD
     var tlEmpty=new CABLES.ANIM.Anim();
     var anim=null;//tlEmpty;//new CABLES.ANIM.Anim();
+=======
+    var tlEmpty=new CABLES.Anim();
+    var anim=null;//tlEmpty;//new CABLES.Anim();
+>>>>>>> d2abc731e2eb5e282e1e0bb3bdf6038d6a6dddd1
     var viewBox={x:-10,y:-170,w:1200,h:400};
     var fps=30;
     var cursorTime=0.0;

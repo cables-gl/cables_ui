@@ -94,6 +94,26 @@ CABLES.UI.OpDocs=function()
         return [];
     };
 
+
+    this.getPortDoc=function(op_docs,portname,type)
+    {
+        var html='';
+        var className=CABLES.UI.uiConfig.getPortTypeClassHtml(type);
+        html+='<li>';
+        html+='<span class="'+className+'">'+portname+'</span>';
+        
+        for(var j=0;j<op_docs.ports.length;j++)
+        {
+            if(op_docs.ports[j].name==portname)
+            {
+                html+=':<br/> '+op_docs.ports[j].text;
+            }
+        }
+        html+='</li>';
+
+        return html;
+    }
+
     this.get=function(opname)
     {
         for(var i=0;i<opDocs.length;i++)
@@ -117,6 +137,28 @@ CABLES.UI.OpDocs=function()
                 html+='</div>';
                 html+=opDocs[i].content;
 
+                if(opDocs[i].docs && opDocs[i].docs.ports)
+                {
+                    html+='<br/><h3>ports</h3><ul>';
+                    html+='<h4>Input</h4>';
+
+                    for(var j=0;j<opDocs[i].layout.portsIn.length;j++)
+                    {
+                        html+=this.getPortDoc(opDocs[i].docs,opDocs[i].layout.portsIn[j].name,opDocs[i].layout.portsIn[j].type);
+                    }
+
+                    html+='<h4>Output</h4>';
+                    for(var j=0;j<opDocs[i].layout.portsOut.length;j++)
+                    {
+                        html+=this.getPortDoc(opDocs[i].docs,opDocs[i].layout.portsOut[j].name,opDocs[i].layout.portsOut[j].type);
+                    }
+
+
+
+
+                    html+='</ul>';
+    
+                }
                 if(opDocs[i].credits)
                 {
                     html+='<br/><h3>credits</h3><ul>';
@@ -142,6 +184,7 @@ CABLES.UI.OpDocs=function()
 
         return '';
     };
+
 
     this.getSuggestions=function(objName,portName)
     {
@@ -185,7 +228,7 @@ CABLES.UI.OpDocs=function()
                     {
                         if(opDocs[i].docs.ports[j].name==portname)
                         {
-                            CABLES.UI.showInfo(portname+': '+opDocs[i].docs.ports[j].text);
+                            CABLES.UI.showInfo('<b>'+portname+'</b>:<br/> '+opDocs[i].docs.ports[j].text);
                             break;
                         }
                     }
