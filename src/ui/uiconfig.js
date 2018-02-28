@@ -40,6 +40,16 @@ CABLES.UI.uiConfig=
     rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}],
 
 
+    
+    getPortTypeClassHtml:function(type)
+    {
+        if(type==OP_PORT_TYPE_VALUE) return 'port_text_color_value';
+        else if(type==OP_PORT_TYPE_FUNCTION) return 'port_text_color_function';
+        else if(type==OP_PORT_TYPE_OBJECT)  return 'port_text_color_object';
+        else if(type==OP_PORT_TYPE_ARRAY)  return 'port_text_color_array';
+        else if(type==OP_PORT_TYPE_DYNAMIC)  return 'port_text_color_dynamic';
+        else return 'port_text_color_unknown';
+    },
     getPortTypeClass:function(type)
     {
         if(type==OP_PORT_TYPE_VALUE) return 'port_color_value';
@@ -48,9 +58,7 @@ CABLES.UI.uiConfig=
         else if(type==OP_PORT_TYPE_ARRAY)  return 'port_color_array';
         else if(type==OP_PORT_TYPE_DYNAMIC)  return 'port_color_dynamic';
         else return 'port_color_unknown';
-
     },
-
     getPortClass:function(port)
     {
         return CABLES.UI.uiConfig.getPortTypeClass( port.getType() );
