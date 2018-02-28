@@ -186,7 +186,7 @@ CABLES.UI.OpDocs=function()
                     {
                         if(opDocs[i].docs.ports[j].name==portname)
                         {
-                            CABLES.UI.showInfo(portname+': '+opDocs[i].docs.ports[j].text);
+                            CABLES.UI.showInfo('<b>'+portname+'</b>:<br/> '+opDocs[i].docs.ports[j].text);
                             break;
                         }
                     }
