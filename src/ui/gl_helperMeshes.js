@@ -481,5 +481,4 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     cgl.popViewMatrix();
 
     cgl.frameCycler=!cgl.frameCycler;
-    // console.log('---');
 };
