@@ -137,20 +137,26 @@ CABLES.UI.OpDocs=function()
                 html+='</div>';
                 html+=opDocs[i].content;
 
-                if(opDocs[i].docs && opDocs[i].docs.ports)
+                if(opDocs[i] && opDocs[i].layout && opDocs[i].docs && opDocs[i].docs.ports && opDocs[i].layout)
                 {
                     html+='<br/><h3>ports</h3><ul>';
                     html+='<h4>Input</h4>';
 
-                    for(var j=0;j<opDocs[i].layout.portsIn.length;j++)
+                    if(opDocs[i].layout.portsIn)
                     {
-                        html+=this.getPortDoc(opDocs[i].docs,opDocs[i].layout.portsIn[j].name,opDocs[i].layout.portsIn[j].type);
+                        for(var j=0;j<opDocs[i].layout.portsIn.length;j++)
+                        {
+                            html+=this.getPortDoc(opDocs[i].docs,opDocs[i].layout.portsIn[j].name,opDocs[i].layout.portsIn[j].type);
+                        }
                     }
 
-                    html+='<h4>Output</h4>';
-                    for(var j=0;j<opDocs[i].layout.portsOut.length;j++)
+                    if(opDocs[i].layout.portsOut)
                     {
-                        html+=this.getPortDoc(opDocs[i].docs,opDocs[i].layout.portsOut[j].name,opDocs[i].layout.portsOut[j].type);
+                        html+='<h4>Output</h4>';
+                        for(var j=0;j<opDocs[i].layout.portsOut.length;j++)
+                        {
+                            html+=this.getPortDoc(opDocs[i].docs,opDocs[i].layout.portsOut[j].name,opDocs[i].layout.portsOut[j].type);
+                        }
                     }
 
 
