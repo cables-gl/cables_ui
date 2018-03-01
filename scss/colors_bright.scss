@@ -219,3 +219,16 @@ $text-input-border-color-focus: $highlight-color;
 // // $text-input-color-focus: black;
 // // $text-input-background-color-focus: ;
 // // $text-input-border-color-focus: $highlight-color;
+
+
+.ace_scroller
+{
+    background-color:#fff !important;
+    color:black !important;
+}
+
+.ace_gutter
+{
+    background-color:#ccc !important;
+    color:black !important;
+}
