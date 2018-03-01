@@ -129,11 +129,11 @@ $text-input-border-color-hover: $highlight-color;
 
 // active / focus
 $text-input-color-focus: $color-ca;
-$text-input-background-color-focus: ;
+$text-input-background-color-focus: $color-c8;
 $text-input-border-color-focus: $highlight-color;
 
 
-
+ 
 .ace_content *
 {
     color:#fff !important;

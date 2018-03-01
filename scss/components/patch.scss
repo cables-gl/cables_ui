@@ -112,18 +112,21 @@
         font-size: 70px !important;
 	    letter-spacing: 3px;
 		font-family: SourceSansProLight !important;
-		text-transform: none;
+        text-transform: none;
+        fill:$color-c1;
     }
 	.commentText
     {
         font-size: 15px !important;
 		font-family: SourceSansPro !important;
-		text-transform: none;
+        text-transform: none;
+        fill:$color-c1;
     }
 
 	.Ops_Ui_Comment
 	{
-		fill:$color_op_bg_active !important;
+        fill:$color_op_bg_active !important;
+        
 	}
 
     svg
@@ -368,12 +371,14 @@
 	{
 		float:left;
 		margin-top: 14px;
-	    margin-left: 14px;
+        margin-left: 14px;
+        color: $color_op_text_active;
 
-		a
+        a
 		{
 			font-size: 15px;
-			background-color: $color_op_bg;
+            background-color: $color_op_bg;
+            color: $color_op_text_active;
 			padding: 2px;
 			padding-left: 8px;
 			padding-right: 8px;
