@@ -974,7 +974,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     this.oprect = new OpRect(this, x, y, w, h, txt, self.op.objName);
 
     this.setEnabled = function(en) {
-        this.op.enabled = en;
+        this.op.setEnabled(en);
         this.oprect.setEnabled(en);
 
         if (en) gui.patchConnection.send(CABLES.PACO_OP_ENABLE, {
