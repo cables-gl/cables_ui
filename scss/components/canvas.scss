@@ -35,7 +35,8 @@
 
 #canvasicons
 {
-    background-color: black;
+    background-color: $color-cz;
+    color:$color-ca;
     display: none;
     position: absolute;
     z-index: $z-index-canvas-icons;

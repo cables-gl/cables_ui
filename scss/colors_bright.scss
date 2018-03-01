@@ -20,7 +20,7 @@ $color-warning: #ec9213;
 
 // main colors ----------------------------------------------------------------
 
-$text-color: $color-c3;
+$text-color: $color-c1;
 $color-text-link: $color-c2;
 
 $color-background-input: $color-c8;
@@ -46,7 +46,7 @@ $color-rubberband: $color-special;
 $color-panelhead: $color-cz;
 $color-panelhead-hover: $color-c9;
 
-$color-splitter: $color-ca;
+$color-splitter: $color-cz;
 
 $color-list-border: $color-c8;
 
@@ -98,7 +98,7 @@ $color_link_object: $color_port_object;
 $color_link_array: $color_port_array;
 $color_link_dynamic: $color_port_dynamic;
 
-$button-text-color: $color-c3;
+$button-text-color: $color-ca;
 $button-background-color: $color_op_bg_active;
 $button-text-color-hover: $color_op_text_active;
 $button-background-color-hover: $color-c6;
@@ -133,6 +133,7 @@ $text-input-background-color-focus: ;
 $text-input-border-color-focus: $highlight-color;
 
 
+<<<<<<< HEAD
 //
 // // main colors ----------------------------------------------------------------
 //
@@ -231,4 +232,14 @@ $text-input-border-color-focus: $highlight-color;
 {
     background-color:#ccc !important;
     color:black !important;
+
+.ace_content *
+{
+    color:#fff !important;
+}
+
+.ace_gutter-layer
+{
+    background-color:#fff;
+    color:#000;
 }

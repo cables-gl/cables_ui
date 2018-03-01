@@ -30,12 +30,13 @@
 {
     position: absolute;
     z-index: $z-index-tooltip;
-    background-color: $text-color;
-    color:black;
+    background-color: $color-cz;
+    color: $color-ca;
     padding:7px;
     border-radius: 0px;
     opacity:0.96;
     display:none;
+
     &:hover
     {
         display: none;
@@ -44,17 +45,18 @@
     b
     {
         font-weight: bold;
-        color:black;
+        color:$color-ca;
         font-size: 14px;
     }
+
     i
     {
-        color:black;
+        color:$color-ca;
     }
     .code
     {
         font-family: monospace;
-        color:#000;
+        color:$color-ca;
     }
 }
 
