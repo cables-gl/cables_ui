@@ -2666,7 +2666,7 @@ CABLES.UI.Patch = function(_gui) {
                 var shortName=op.portsIn[i].get()||'none';
                 if(shortName.indexOf("/")>-1) shortName=shortName.substr(shortName.lastIndexOf("/")+1);
 
-                $('#portFilename_' + i).html('<span class="button fa fa-folder-open-o monospace" style="text-transform:none;font-family:monospace;">'+shortName+'</span>');
+                $('#portFilename_' + i).html('<span class="button fa fa-folder-open-o monospace" style="text-transform:none;font-family:monospace;font-size: 13px;">'+shortName+'</span>');
 
 {/* <a class="graphbutton " onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> --> */}
 
