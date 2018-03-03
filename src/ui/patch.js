@@ -2661,14 +2661,23 @@ CABLES.UI.Patch = function(_gui) {
 
 
         for (i = 0; i < op.portsIn.length; i++) {
-            if (op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display == 'file') {
+            if (op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display == 'file')
+            {
+                var shortName=op.portsIn[i].get()||'none';
+                if(shortName.indexOf("/")>-1) shortName=shortName.substr(shortName.lastIndexOf("/")+1);
+
+                $('#portFilename_' + i).html('<span class="button fa fa-folder-open-o monospace" style="text-transform:none;font-family:monospace;">'+shortName+'</span>');
+
+{/* <a class="graphbutton " onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> --> */}
+
+
                 if (op.portsIn[i].get() && ((op.portsIn[i].get() + '').endsWith('.jpg') || (op.portsIn[i].get() + '').endsWith('.png'))) {
-                    // console.log( op.portsIn[i].get() );
-                    // $('#portpreview_'+i).css('background-color','black');
-                    $('#portpreview_' + i).css('max-width', '100%');
-                    $('#portpreview_' + i).html('<img class="dark" src="' + op.portsIn[i].get() + '" style="max-width:100%"/>');
+                    $('#portFileVal_' + i+'_preview').css('max-width', '100%');
+                    $('#portFileVal_' + i+'_preview').html('<img class="dark" src="' + op.portsIn[i].get() + '" style="max-width:100%"/>');
+                    
                 } else {
-                    $('#portpreview_' + i).html('');
+
+                    $('#portFileVal_' + i+'_preview').html('');
                 }
             }
         }

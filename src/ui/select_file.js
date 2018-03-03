@@ -28,6 +28,7 @@ CABLES.UI.FileSelect = function() {
         if (this.currentOpid) {
             // console.log(this.currentOpid);
             // console.log(gui.scene().getOpById(this.currentOpid));
+            console.log("setfile!!!");
             gui.patch().showOpParams(gui.scene().getOpById(this.currentOpid));
         }
 
