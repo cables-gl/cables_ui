@@ -163,9 +163,10 @@ input[type="text"]
 .button_colorpick
 {
     width: 15px;
-    height: 15px;
+    height: 12px;
     padding: 5px !important;
     border-radius: 4px;
+    margin-right: 5px;
     cursor:pointer;
     border:1px solid $color-c4;
 }

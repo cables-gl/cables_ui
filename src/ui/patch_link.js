@@ -209,7 +209,10 @@ function UiLink(port1, port2)
         cp2X=toX+0;
 
         var str='';
-        if(Math.abs(fromY-toY)<60 && Math.abs(fromX-toX)<60 || fromX==toX)
+        
+        
+
+        if(Math.abs(fromY-toY)<60 && Math.abs(fromX-toX)<60 || fromX==toX || CABLES.UI.userSettings.straightLines)
             str="M "+fromX+" "+fromY+" L "+ toX + " " + toY;
         else
             str="M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;

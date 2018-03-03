@@ -2673,7 +2673,7 @@ CABLES.UI.Patch = function(_gui) {
 
                 if (op.portsIn[i].get() && ((op.portsIn[i].get() + '').endsWith('.jpg') || (op.portsIn[i].get() + '').endsWith('.png'))) {
                     $('#portFileVal_' + i+'_preview').css('max-width', '100%');
-                    $('#portFileVal_' + i+'_preview').html('<img class="dark" src="' + op.portsIn[i].get() + '" style="max-width:100%"/>');
+                    $('#portFileVal_' + i+'_preview').html('<img class="dark" src="' + op.portsIn[i].get() + '" style="max-width:100%;margin-top:10px;"/>');
                     
                 } else {
 

@@ -27,5 +27,5 @@ CABLES.UI.UserSettings=function()
 
 
 CABLES.UI.userSettings=new CABLES.UI.UserSettings();
-
+CABLES.UI.userSettings.straightLines=CABLES.UI.userSettings.get("straightLines");
 
