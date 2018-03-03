@@ -23,7 +23,7 @@ CABLES.UI.MetaCode=function(projectId)
             clearTimeout(CABLES.UI.OpShowMetaCode);
             CABLES.UI.OpShowMetaCode=setTimeout(function()
                 {
-                    self.show();
+                    if($('#meta_content_code').is(":visible")) self.show();
                 },100);
         });
 
@@ -36,6 +36,8 @@ CABLES.UI.MetaCode=function(projectId)
             $('#meta_content_code').html('<h3>Code</h3>Select any Op');
             return;
         }
+
+        console.log('show meta code');
 
         $('#meta_content_code').html('<div class="loading" style="width:40px;height:40px;"></div>');
 
