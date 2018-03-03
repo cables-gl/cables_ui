@@ -13,6 +13,7 @@
 		}
 	}
 
+
 	.hint
 	{
 		padding: 10px;
@@ -167,6 +168,21 @@
             background-color: $color-background-input-focussed;
             outline: none;
         }
+    }
+
+
+    .ccheckbox
+    {
+        padding-right:10px;
+        font-size:17px;
+        cursor:pointer;
+        color:$color-c7;
+    }
+
+    .fa-check-square:before
+    {
+        color:$color-c2 !important;
+
     }
 
     .value

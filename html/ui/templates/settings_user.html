@@ -5,6 +5,8 @@
 
     <input type="checkbox" {{#if userSettings.straightLines }}checked="checked"{{/if}} id="switchStraightlines" onChange="CABLES.UI.userSettings.set('straightLines',this.checked);document.location.reload();"> straight lines
     <br/><br/>
+    <input type="checkbox" {{#if userSettings.nobrowserWarning }}checked="checked"{{/if}} id="switchnobrowserWarning" onChange="CABLES.UI.userSettings.set('nobrowserWarning',this.checked);"> hide browser warning
+    <br/><br/>
     
     <input type="checkbox" {{#if userSettings.hideMinimap }}checked="checked"{{/if}} id="showMwitchminimap" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('hideMinimap',this.checked)"> hide minimap
     <br/><br/>
