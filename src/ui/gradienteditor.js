@@ -118,12 +118,14 @@ CABLES.GradientEditor.prototype.addKey=function(pos)
     {
         CABLES.currentKey=key;
         this._movingkey=true;
-        var attribs={"x":e.offsetX-(this._keyWidth/2)};
+        var attribs={};
         attribs.stroke="#000";
 
-        
-
-        key.pos=(attribs.x+this._keyWidth/2)/this._width;
+        if(e.target == key.rect.node ||e.target.tagName == 'svg' )
+        {
+            attribs.x=e.offsetX-(this._keyWidth/2);
+            key.pos=(attribs.x+this._keyWidth/2)/this._width;
+        } 
 
         if(Math.abs(this._startMouseY-y)>this._dragDownDeleteThreshold)
         {
