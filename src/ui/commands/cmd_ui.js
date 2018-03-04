@@ -122,9 +122,17 @@ CABLES.CMD.UI.showChangelog = function(since) {
     CABLES.CHANGELOG.show(since);
 };
 
-CABLES.CMD.UI.toggleHelper = function(since) {
+CABLES.CMD.UI.toggleHelper = function() {
     CABLES.UI.renderHelper=!CABLES.UI.renderHelper;
 };
+
+
+CABLES.CMD.UI.gradientTest = function() {
+    var ge=new CABLES.GradientEditor();
+    ge.show();
+};
+
+
 
 
 
@@ -243,6 +251,11 @@ CABLES.CMD.commands.push({
         cmd: "toggle helper",
         category: "ui",
         func: CABLES.CMD.UI.toggleHelper,
+        icon: "command"
+    },{
+        cmd: "gradient test",
+        category: "ui",
+        func: CABLES.CMD.UI.gradientTest,
         icon: "command"
     }
     

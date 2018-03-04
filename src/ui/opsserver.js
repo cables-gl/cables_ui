@@ -143,17 +143,40 @@ CABLES.UI.ServerOps = function(gui) {
             name: op.objName
         };
 
-        for (i = 0; i < op.portsIn.length; i++) {
-            opObj.portsIn.push({
-                "type": op.portsIn[i].type,
-                "name": op.portsIn[i].name
-            });
+        for (i = 0; i < op.portsIn.length; i++)
+        {
+            var l=
+                {
+                    "type": op.portsIn[i].type,
+                    "name": op.portsIn[i].name
+                };
+            
+            if(op.portsIn[i].type==OP_PORT_TYPE_VALUE)
+            {
+                if(op.portsIn[i].uiAttribs.display=='bool')l.subType="boolean";
+                else if(op.portsIn[i].uiAttribs.type=='string')l.subType="string";
+                else if(op.portsIn[i].uiAttribs.increment=='integer')l.subType="integer";
+                else if(op.portsIn[i].uiAttribs.display=='dropdown')l.subType="select box";
+                else l.subType="number";
+            }
+
+            opObj.portsIn.push(l);
         }
         for (i = 0; i < op.portsOut.length; i++) {
-            opObj.portsOut.push({
+            var l={
                 "type": op.portsOut[i].type,
                 "name": op.portsOut[i].name
-            });
+            }
+            
+            if(op.portsOut[i].type==OP_PORT_TYPE_VALUE)
+            {
+                if(op.portsOut[i].uiAttribs.display=='bool')l.subType="boolean";
+                else if(op.portsOut[i].uiAttribs.type=='string')l.subType="string";
+                else l.subType="number";
+            }
+
+            opObj.portsOut.push(l);
+
         }
 
         CABLES.api.post('op/layout/' + op.objName, {
