@@ -92,7 +92,7 @@ CABLES.SandboxBrowser.prototype.showStartupChangelog = function() {
 
 CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
 {
-    if (!window.chrome) {
+    if (!window.chrome && !CABLES.UI.userSettings.get('nobrowserWarning')) {
         iziToast.error({
             position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             theme: 'dark',

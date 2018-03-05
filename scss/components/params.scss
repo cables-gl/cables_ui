@@ -13,6 +13,7 @@
 		}
 	}
 
+
 	.hint
 	{
 		padding: 10px;
@@ -169,6 +170,21 @@
         }
     }
 
+
+    .ccheckbox
+    {
+        padding-right:10px;
+        font-size:17px;
+        cursor:pointer;
+        color:$color-c7;
+    }
+
+    .fa-check-square:before
+    {
+        color:$color-c2 !important;
+
+    }
+
     .value
     {
         //font-family: SourceCodePro,monospace;
@@ -276,6 +292,7 @@
         border: 1px solid $color-c10;
         background-color: $color-background-input;
         padding:2px;
+        border: 3px solid #444;
     }
 }
 

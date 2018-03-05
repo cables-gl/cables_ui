@@ -23,11 +23,7 @@ CABLES.UI.FileSelect = function() {
             "opacity": 1
         }, 1000);
 
-        // $(_id).animate({backgroundColor:'#fff'}, 300);//.animate({backgroundColor:'#555'}, 100);
-
         if (this.currentOpid) {
-            // console.log(this.currentOpid);
-            // console.log(gui.scene().getOpById(this.currentOpid));
             gui.patch().showOpParams(gui.scene().getOpById(this.currentOpid));
         }
 

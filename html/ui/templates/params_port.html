@@ -16,12 +16,12 @@
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}  onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
-        <span id="portTitle_{{ dirStr }}_{{ portnum }}">
+        <span id="portTitle_{{ dirStr }}_{{ portnum }}" >
         {{port.name}}
         </span>
     
         {{#compare port.uiAttribs.colorPick '==' 'true' }}
-        <div class="button_colorpick button fa fa-eyedropper fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
+        <div class="button_colorpick fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/compare}}
     </td>
     <td class="">
@@ -70,7 +70,7 @@
 
                     {{#compare port.uiAttribs.display '==' 'bool' }}
                         </td><td colspan="3">
-                        <span id="portcheckbox_{{ portnum }}" class="graphbutton fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square-o{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" style="padding-right:10px;"></span>
+                        <span id="portcheckbox_{{ portnum }}" class="ccheckbox fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
                         <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
                     {{/compare}}
 
@@ -113,14 +113,16 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'file' }}
-                            <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a>
+                            <!-- <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> -->
                             <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
-                        </td><td colspan="3">
-
-                        <input class="value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;"/>
-                        <br/><br/>
-
-                        <div id="portpreview_{{ portnum }}" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}');" style="padding:0px;"></div>
+                        </td>
+                        <td colspan="3">
+                            <div id="fileInputContainer_{{portnum}}" style="display:none">
+                                <input class="hidden value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;display:block;"/>
+                                <br/><br/>
+                            </div>
+                            <div id="portFilename_{{ portnum }}" onclick="$('#fileInputContainer_{{ portnum }}').show();$(this).hide();gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="cursor:pointer;">[???]</div>
+                            <div id="portFileVal_{{ portnum }}_preview" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="padding:0px;"></div>
                     {{/compare}}
 
 					{{#compare port.uiAttribs.display '==' 'text' }}

@@ -135,11 +135,11 @@ CABLES.UI.togglePortValBool=function(which,checkbox)
     if(bool_value)
     {
         $('#'+checkbox).addClass('fa-check-square');
-        $('#'+checkbox).removeClass('fa-square-o');
+        $('#'+checkbox).removeClass('fa-square');
     }
     else
     {
-        $('#'+checkbox).addClass('fa-square-o');
+        $('#'+checkbox).addClass('fa-square');
         $('#'+checkbox).removeClass('fa-check-square');
     }
 

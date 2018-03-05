@@ -2,9 +2,14 @@
 
 
 <script id="settings_user" type="text/x-handlebars-template">
+
+    <input type="checkbox" {{#if userSettings.straightLines }}checked="checked"{{/if}} id="switchStraightlines" onChange="CABLES.UI.userSettings.set('straightLines',this.checked);document.location.reload();"> straight lines
+    <br/><br/>
+    <input type="checkbox" {{#if userSettings.nobrowserWarning }}checked="checked"{{/if}} id="switchnobrowserWarning" onChange="CABLES.UI.userSettings.set('nobrowserWarning',this.checked);"> hide browser warning
+    <br/><br/>
+    
     <input type="checkbox" {{#if userSettings.hideMinimap }}checked="checked"{{/if}} id="showMwitchminimap" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('hideMinimap',this.checked)"> hide minimap
     <br/><br/>
-
     <input type="checkbox" {{#if userSettings.touchpadmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('touchpadmode',this.checked)"> touchpad mode
     <br/><br/>
     <input type="checkbox" {{#if userSettings.theme-bright }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('theme-bright',this.checked);document.location.reload();"> high contrast theme

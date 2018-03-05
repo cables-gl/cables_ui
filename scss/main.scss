@@ -23,6 +23,7 @@ html,body { // ipad overscroll fix...
   overflow: hidden;
   width:100vw;
   height:100vh;
+  overscroll-behavior:none;
 }
 
 body
@@ -162,8 +163,12 @@ input[type="text"]
 .button_colorpick
 {
     width: 15px;
-    height: 15px;
+    height: 12px;
     padding: 5px !important;
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor:pointer;
+    border:1px solid $color-c4;
 }
 
 .button,.bluebutton,.greybutton,.smallbutton

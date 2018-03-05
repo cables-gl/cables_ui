@@ -78,7 +78,7 @@ CABLES.UI.Find=function()
             {
                 if(
                     gui.patch().ops[i].op.objName.toLowerCase().indexOf(str)>-1 ||
-                    gui.patch().ops[i].op.name.toLowerCase().indexOf(str)>-1
+                    (gui.patch().ops[i].op.name||'').toLowerCase().indexOf(str)>-1
                 )
                 {
                     addResultOp(gui.patch().ops[i]);

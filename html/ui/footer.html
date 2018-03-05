@@ -64,9 +64,11 @@
                 'js/ace/ace.js'
             ], 'libs');
 
+            if(document.location.href.indexOf('https://cables.gl')!=-1) jsType='min';
+                else jsType='max';
+
             loadjs.ready('libs', function()
             {
-
                 incrementStartup();
                 logStartup('loaded libs');
 
@@ -76,7 +78,7 @@
                 {
                     logStartup('loaded ace');
                     incrementStartup();
-                    loadjs([CABLES.noCacheUrl('js/cables.max.js')],'cables_core');
+                    loadjs([CABLES.noCacheUrl('js/cables.'+jsType+'.js')],'cables_core');
 
                     loadjs.ready('cables_core', function()
                     {
@@ -85,7 +87,7 @@
                         
                         incrementStartup();
 
-                        loadjs([CABLES.noCacheUrl('js/cablesui.max.js')], 'cablesui');
+                        loadjs([CABLES.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');
 
                         loadjs.ready('cablesui', function()
                         {
