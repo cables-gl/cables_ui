@@ -112,6 +112,17 @@
                         {{ port.val }}
                     {{/compare}}
 
+                    {{#compare port.uiAttribs.display '==' 'gradient' }}
+                        </td>
+                        <td colspan="3">
+                            <span class="button" onclick="var ge=new CABLES.GradientEditor('{{op.id}}','{{port.name}}');ge.show();">edit</span>
+
+                            
+                        
+
+                    {{/compare}}
+
+
                     {{#compare port.uiAttribs.display '==' 'file' }}
                             <!-- <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> -->
                             <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>

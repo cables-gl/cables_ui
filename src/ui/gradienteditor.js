@@ -1,8 +1,10 @@
 
 var CABLES=CABLES||{};
 
-CABLES.GradientEditor=function()
+CABLES.GradientEditor=function(opid,portname)
 {
+    this._opId=opid;
+    this._portName=portname;
     
     this._keyWidth=15;
     this._dragDownDeleteThreshold=40;
@@ -54,8 +56,13 @@ CABLES.GradientEditor.prototype.updateCanvas=function()
     {
         this._ctx.putImageData(imageData, 0, i);
     }
-console.log("updatecanvas",this._keys.length);
-    
+
+    if(this._opId && this._portName)
+    {
+        var op=gui.patch().scene.getOpById(this._opId);
+        op.getPort(this._portName).set({keys:keys});
+    }
+
 
 }
 
@@ -85,6 +92,7 @@ CABLES.GradientEditor.prototype.onChange=function()
 
     
     // console.log(arr);
+
 
     if(this._callback)this._callback();
 }
