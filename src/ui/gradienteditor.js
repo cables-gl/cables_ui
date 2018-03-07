@@ -16,6 +16,11 @@ CABLES.GradientEditor=function(opid,portname)
     this._movingkey=false;
     this._callback=null;
     this._ctx=null;
+
+    this._previousContent='';
+
+
+
 };
 
 
@@ -30,12 +35,14 @@ CABLES.GradientEditor.prototype.updateCanvas=function()
 
     var imageData=this._ctx.createImageData(500,1);
 
+
     var keys=[{pos:0,r:this._keys[0].r,g:this._keys[0].g,b:this._keys[0].b}].concat(this._keys);
     var last=keys[keys.length-1];
     keys.push({pos:1,r:last.r,g:last.g,b:last.b});
 
     for(var i=0;i<keys.length-1;i++)
     {
+   
         if(keys[i].rect)keys[i].rect.attr({"fill":"rgba("+Math.round(keys[i].r*255)+","+Math.round(keys[i].g*255)+","+Math.round(keys[i].b*255)+",1)"});
 
         var keyA=keys[i];
@@ -59,8 +66,22 @@ CABLES.GradientEditor.prototype.updateCanvas=function()
 
     if(this._opId && this._portName)
     {
+        var keyData=[];
+        for(var i=0;i<keys.length;i++)
+        {
+            keyData[i]=
+                {
+                    pos:keys[i].pos,
+                    r:keys[i].r,
+                    g:keys[i].g,
+                    b:keys[i].b
+
+                };
+        }
+    
         var op=gui.patch().scene.getOpById(this._opId);
-        op.getPort(this._portName).set({keys:keys});
+        // console.log(keyData);
+        op.getPort(this._portName).set(JSON.stringify({"keys":keyData}));
     }
 
 
@@ -69,7 +90,7 @@ CABLES.GradientEditor.prototype.updateCanvas=function()
 CABLES.GradientEditor.prototype.onChange=function()
 {
     
-    console.log('onchange');
+    // console.log('onchange');
     function compare(a,b) {
         return a.pos-b.pos;
       }
@@ -100,27 +121,31 @@ CABLES.GradientEditor.prototype.onChange=function()
 CABLES.GradientEditor.prototype.deleteKey=function(k)
 {
     this._keys.splice(this._keys.indexOf(k),1);
-    console.log(this._keys.length+' keys');
+    // console.log(this._keys.length+' keys');
     this.onChange();
 }
 
-CABLES.GradientEditor.prototype.addKey=function(pos)
+CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
 {
     
-    var r=this._paper.rect( pos*this._width,1,this._keyWidth,this._keyWidth).attr(
+    var rect=this._paper.rect( pos*this._width,1,this._keyWidth,this._keyWidth).attr(
         {
             stroke:"#000",
         });
 
-    var key={pos:pos,rect:r,
-        r:Math.random(),
-        g:Math.random(),
-        b:Math.random()
-    };
+    if(r==undefined)
+    {
+        r=Math.random();
+        g=Math.random();
+        b=Math.random();
+    }
 
-    r.attr({"fill":"rgba("+Math.round(key.r*255)+","+Math.round(key.g*255)+","+Math.round(key.b*255)+",1)"});
+    var key={pos:pos,rect:rect,r:r,g:g,b:b };
+
+    rect.attr({"fill":"rgba("+Math.round(key.r*255)+","+Math.round(key.g*255)+","+Math.round(key.b*255)+",1)"});
 
     this._keys.push(key);
+    var shouldDelete=false;
 
     function move(dx,dy,x,y,e)
     {
@@ -139,13 +164,20 @@ CABLES.GradientEditor.prototype.addKey=function(pos)
         {
             attribs['fill-opacity']=0.3;
             attribs.stroke="#f00";
+            shouldDelete=true;
+
         }
-        else  attribs['fill-opacity']=1.0;
+        else 
+        {
+            attribs['fill-opacity']=1.0;
+            shouldDelete=false;
+        }
         
-        r.attr(attribs);
+        rect.attr(attribs);
         
         this.onChange();
     }
+
     function down(x,y,e)
     {
         this._startMouseY=y;
@@ -186,7 +218,7 @@ CABLES.GradientEditor.prototype.addKey=function(pos)
             this._movingkey=false;    
         }.bind(this),100);
         
-        if(e.offsetY>this._dragDownDeleteThreshold)
+        if(shouldDelete)
         {
             key.rect.remove();
             this.deleteKey(key);
@@ -194,7 +226,7 @@ CABLES.GradientEditor.prototype.addKey=function(pos)
         }
     }
 
-    r.drag(move.bind(this),down.bind(this),up.bind(this));
+    rect.drag(move.bind(this),down.bind(this),up.bind(this));
 }
 
 CABLES.GradientEditor.prototype.show=function(cb)
@@ -210,25 +242,63 @@ CABLES.GradientEditor.prototype.show=function(cb)
 
     this._paper= Raphael("gradienteditorbar", 0,0);
 
+    
     $("#gradienteditorbar svg").click(function(e)
     {
         if(this._movingkey)return;
         // console.log();
         // console.log("CLICK");
         this.addKey(e.offsetX/this._width);
-        console.log(this._keys.length+' keys');
+        // console.log(this._keys.length+' keys');
         this.onChange();
     }.bind(this));
 
-    this.addKey(0.25);
-    this.addKey(0.75);
+    
+
+    if(this._opId && this._portName)
+    {
+        var op=gui.patch().scene.getOpById(this._opId);
+        var data=op.getPort(this._portName).get();
+        try
+        {
+            this._previousContent=data;
+            var keys=JSON.parse(data).keys;
+            for(var i=1;i<keys.length-1;i++)
+            {
+                console.log('addddd',keys[i]);
+                this.addKey(keys[i].pos,keys[i].r,keys[i].g,keys[i].b);
+            }
+        }
+        catch(e)
+        {
+            console.log(e);
+        }
+    }
+
+    if(this._keys.length==0)
+    {
+        this.addKey(0.25,0,0,0);
+        this.addKey(0.75,1,1,1);
+    }
 
     this.onChange();
     CABLES.GradientEditor.editor=this;
 
     this._bindColorPicker();
 
-    // console.log(cp);
+    $('#gradientSaveButton').click(function()
+    {
+        console.log("save!");
+        CABLES.UI.MODAL.hide();
+    });
+    $('#gradientCancelButton').click(function()
+    {
+        var op=gui.patch().scene.getOpById(this._opId);
+        op.getPort(this._portName).set(this._previousContent);
+        CABLES.UI.MODAL.hide();
+
+    }.bind(this));
+
 }
 
 
