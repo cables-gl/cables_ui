@@ -6,21 +6,15 @@ CABLES.AnimRenderer = function() {
     this.fps = 0;
     this.filename = '';
     this.leftpad=true;
-
-
 };
 
 CABLES.AnimRenderer.prototype.start = function() {
     $('#animRendererSettings').hide();
     $('#progresscontainer').show();
-
-    // this.format = $('#render_format').val();
     
     console.log(this.filename, this.startTime, this.endTime, this.fps,this.format);
-
     new CABLES.UI.ImageSequenceExport(this.filename, this.startTime, this.endTime, this.fps,{leftpad:this.leftpad,format:this.format});
 };
-
 
 CABLES.AnimRenderer.prototype.update = function()
 {
@@ -51,10 +45,10 @@ CABLES.AnimRenderer.prototype.update = function()
     //         $('.modalScrollContent').html( 'WARNING: you are using timing Ops that are not bound to the timeline (e.g. Ops.Anim.Timer or Ops.Anim.RelativeTime ). To render an animation, you should only use time from Ops.TimeLineTime ');
     //     }
     // }
-
 };
 
-CABLES.AnimRenderer.prototype.show = function(since) {
+CABLES.AnimRenderer.prototype.show = function(since)
+{
     var html = CABLES.UI.getHandleBarHtml('AnimRenderer', {});
 
     CABLES.UI.MODAL.show(html, {
@@ -64,7 +58,6 @@ CABLES.AnimRenderer.prototype.show = function(since) {
 
     $('#render_fps').val( gui.timeLine().getFPS()||30 ) ;
     $('#render_end').val( (gui.timeLine().getTimeLineLength()||5 ));
-    
 
     $('#animRendererSettings').show();
     $('#progresscontainer').hide();

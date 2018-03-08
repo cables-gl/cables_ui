@@ -115,7 +115,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
                 scoreDebug+='+1 is math<br/>';
             }
 
-            var shortnessPoints=Math.round( (1.0-Math.min(1,list[i]._nameSpace.length/20))*100)/100;
+            var shortnessPoints=Math.round( (1.0-Math.min(1,(list[i]._nameSpace+list[i]._shortName).length/20))*100)/100;
             points+=shortnessPoints;
             scoreDebug+='+'+shortnessPoints+' shortness namespace<br/>';
         }

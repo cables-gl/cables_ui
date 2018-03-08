@@ -20,13 +20,10 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
 
     var format=settings.format;//=true;
 
-
-
     render();
 
     function render()
     {
-
         if(!oldInternalNow) oldInternalNow=CABLES.internalNow;
 
         currentNum++;
@@ -73,7 +70,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
             {
                 $('.modalScrollContent').html('compiling video...');
 
-console.log("webm frames",frames.length);
+                console.log("webm frames",frames.length);
                 // var video=new Whammy.Video(30);
                 var video = Whammy.fromImageArray( frames, 30 )
                 var url = window.URL.createObjectURL(video);
@@ -160,6 +157,7 @@ console.log("webm frames",frames.length);
         //     gif.addFrame(gui.patch().scene.cgl.canvas, {delay: 200,copy:true});
         //     render();
         // }
+
         if(format=='webm' || format=='gif')
         {
             gui.patch().scene.renderOneFrame();
@@ -176,7 +174,6 @@ console.log("webm frames",frames.length);
                 $('#render_height').val()
             );
         }
-        
 
         // setTimeout(function()
         // {
@@ -184,9 +181,5 @@ console.log("webm frames",frames.length);
         // },100);
         // }.bind(this);
         //, 100);
-
-
-
     }
-
 };
