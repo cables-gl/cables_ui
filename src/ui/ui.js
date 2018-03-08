@@ -1453,6 +1453,8 @@ function startUi(event)
         gui.waitToShowUI();
         gui.setLayout();
         gui.patch().fixTitlePositions();
+        gui.opSelect().prepare();
+        gui.opSelect().search();
     });
 
     $('#glcanvas').on("focus", function() {

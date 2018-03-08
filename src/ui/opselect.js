@@ -15,6 +15,7 @@ CABLES.UI.OpSelect=function()
     this.itemHeight=0;
     this.firstTime=true;
     this.tree=new CABLES.OpTree();
+    this._sortTimeout=0;
 };
 
 CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
@@ -29,7 +30,6 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     if(query.length==1) $('#search_startTypeMore').show();
     else $('#search_startTypeMore').hide();
 
-
     if(num===0 && query.length>1)
     {
         $('#search_noresults').show();
@@ -40,7 +40,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     }
     else $('#search_noresults').hide();
 
-    var optionsHtml='&nbsp;found '+num+' ops.';
+    var optionsHtml='&nbsp;found '+num+' ops. in '+Math.round(this._timeUsed)+'ms ';
 
     if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
     {
@@ -78,40 +78,32 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
         {
             found=true;
             points+=1;
-            scoreDebug+='+1 summary<br/>';
+            scoreDebug+='+1 found in summary<br/>';
         }
 
         if(list[i]._nameSpace.indexOf(query)>-1)
         {
             found=true;
             points+=1;
-            scoreDebug+='+1 namespace<br/>';
+            scoreDebug+='+1 found in namespace<br/>';
         }
-
-
-        // if(list[i]._nameSpaceFull.indexOf(query)>-1)
-        // {
-        //     found=true;
-        //     points+=0.1;
-        //     scoreDebug+='+1 namespacefull<br/>';
-        // }
 
         if(list[i]._shortName.indexOf(query)>-1)
         {
             found=true;
             points+=4;
-            scoreDebug+='+1 shortname<br/>';
-        }
-
-        if(list[i]._shortName.indexOf(query)===0)
-        {
-            found=true;
-            points+=2;
-            scoreDebug+='+1 shortname at beginning<br/>';
+            scoreDebug+='+4 found in shortname<br/>';
         }
 
         if(found)
         {
+            if(list[i]._shortName.indexOf(query)===0)
+            {
+                found=true;
+                points+=2;
+                scoreDebug+='+2 found in shortname at beginning<br/>';
+            }
+
             if(list[i]._summary.length>0)
             {
                 points+=0.5;
@@ -122,6 +114,10 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
                 points+=1;
                 scoreDebug+='+1 is math<br/>';
             }
+
+            var shortnessPoints=Math.round( (1.0-Math.min(1,list[i]._nameSpace.length/20))*100)/100;
+            points+=shortnessPoints;
+            scoreDebug+='+'+shortnessPoints+' shortness namespace<br/>';
         }
 
         if(found && list[i].pop>0)
@@ -141,6 +137,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 
 CABLES.UI.OpSelect.prototype._search=function(q)
 {
+    
     if(!this._list || !this._html)this.prepare();
 
     this.firstTime=false;
@@ -148,10 +145,7 @@ CABLES.UI.OpSelect.prototype._search=function(q)
     var query=q.toLowerCase();
 
     var i=0;
-    for(i=0;i<this._list.length;i++)
-    {
-        this._list[i].score=0;
-    }
+    for(i=0;i<this._list.length;i++) this._list[i].score=0;
     var result=null;
 
     if(query.length>1)
@@ -169,7 +163,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         {
             result=this._searchWord(this._list,query);
         }
-
     }
 
     return result;
@@ -180,7 +173,10 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
     var opname=$('.selected').data('opname');
     var htmlFoot='';
 
-    this.updateOptions(opname);
+    setTimeout(function()
+        {
+            this.updateOptions(opname);
+        }.bind(this),50);
 
     if(opname)
     {
@@ -195,22 +191,19 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
             content+='<p>'+gui.opDocs.getSummary(opname)+'</p>';
         }
 
-        // content=content.replace(opname,'<a href="/op/'+opname+'" target="_blank">'+opname+'</a>&nbsp;&nbsp;&nbsp;<i class="icon icon-link"></i>');
-
-        
         $('#searchinfo').html('<div id="opselect-layout"></div>'+content+htmlFoot);
         gui.opDocs.opLayoutSVG(opname,"opselect-layout");
     }
 };
 
 
-
-
-
 CABLES.UI.OpSelect.prototype.search=function()
 {
-    var result=this._search($('#opsearch').val());
-
+    var startTime=CABLES.now();
+    var q=$('#opsearch').val();
+    if(q==this.lastQuery)return;
+    this.lastQuery=q;
+    var result=this._search(q);
     var i=0;
     var html='';
 
@@ -223,7 +216,6 @@ CABLES.UI.OpSelect.prototype.search=function()
             this._list[i].element.show();
             this._list[i].element[0].dataset.score=this._list[i].score;
             this._list[i].element[0].dataset.scoreDebug=this._list[i].scoreDebug;
-
         }
         else
         {
@@ -235,13 +227,23 @@ CABLES.UI.OpSelect.prototype.search=function()
     // sort html elements
     var $wrapper = $('.searchbrowser');
 
-    $wrapper.find('.searchresult').sort(
-        function (a, b)
-        {
-            return b.dataset.score - a.dataset.score;
-        }).appendTo( $wrapper );
 
-    this.Navigate(0);
+    // sorting takes long time. so do it asynchronous
+    clearTimeout(this._sortTimeout);
+    this._sortTimeout=setTimeout(function()
+        {
+            $wrapper.find('.searchresult').sort(
+                function (a, b)
+                {
+                    var diff=b.dataset.score - a.dataset.score;
+                    return diff;
+                }).appendTo( $wrapper );
+            this.Navigate(0);
+        }.bind(this),50);
+
+    var timeUsed= CABLES.now()-startTime;
+    this._timeUsed=timeUsed
+
 };
 
 CABLES.UI.OpSelect.prototype.Navigate = function(diff)
@@ -280,6 +282,8 @@ CABLES.UI.OpSelect.prototype.reload=function()
 
 CABLES.UI.OpSelect.prototype.prepare=function()
 {
+    // var timeStart=CABLES.now();
+
     if(!this._list)
     {
         this._list=this.getOpList();
@@ -311,9 +315,8 @@ CABLES.UI.OpSelect.prototype.prepare=function()
         $('#searchbrowserContainer').html(this._html);
 
         $('#opsearch').on('input',this.onInput.bind(this));
-
-
     }
+    // console.log('prepared', (CABLES.now()-timeStart) );
 
 };
 
