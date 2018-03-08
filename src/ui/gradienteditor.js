@@ -105,6 +105,7 @@ CABLES.GradientEditor.prototype.deleteKey=function(k)
 
 CABLES.GradientEditor.prototype.setCurrentKey=function(key)
 {
+    CABLES.currentKey=key;
     var hex=rgbToHex(Math.round(key.r*255),Math.round(key.g*255),Math.round(key.b*255));
 
     $('#gradientColorInput').unbind();
@@ -138,7 +139,8 @@ CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
 
     function move(dx,dy,x,y,e)
     {
-        CABLES.currentKey=key;
+        // CABLES.currentKey=key;
+        this.setCurrentKey(key);
         this._movingkey=true;
         var attribs={};
         attribs.stroke="#000";
@@ -172,7 +174,6 @@ CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
         this._startMouseY=y;
 
         this._movingkey=true;
-        CABLES.currentKey=key;
 
         this.setCurrentKey(key);
 
@@ -183,12 +184,12 @@ CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
         //     this._cp.setColor('#'+hex);
         // // $('#gradientPickerDiv').ColorPickerSetColor('#'+hex);
         // console.log(hex);
-        $('#gradientColorInput').css(
-            {
-                'background-color':'rgba('+Math.round(key.r*255)+','+Math.round(key.g*255)+','+Math.round(key.b*255)+',1)'
-            });
+        // $('#gradientColorInput').css(
+        //     {
+        //         'background-color':'rgba('+Math.round(key.r*255)+','+Math.round(key.g*255)+','+Math.round(key.b*255)+',1)'
+        //     });
             
-        this._bindColorPicker();
+        // this._bindColorPicker();
 
         // window.cppp.colorPicker.color.setColor("#ff0000")
         // window.cppp.colorPicker.render();
