@@ -89,32 +89,10 @@ CABLES.GradientEditor.prototype.updateCanvas=function()
 
 CABLES.GradientEditor.prototype.onChange=function()
 {
-    
-    // console.log('onchange');
-    function compare(a,b) {
-        return a.pos-b.pos;
-      }
+    function compare(a,b) { return a.pos-b.pos; }
       
     this._keys.sort(compare);
-      
-
-
     this.updateCanvas();
-    // var arr=[];
-    // arr.length=this._keys.length*4;
-
-    // for(var i=0;i<this._keys.length;i++)
-    // {
-    //     arr[i*4+0]=this._keys[i].pos;
-    //     arr[i*4+1]=this._keys[i].r;
-    //     arr[i*4+2]=this._keys[i].g;
-    //     arr[i*4+3]=this._keys[i].b;
-    // }
-
-    
-    // console.log(arr);
-
-
     if(this._callback)this._callback();
 }
 
@@ -124,6 +102,16 @@ CABLES.GradientEditor.prototype.deleteKey=function(k)
     // console.log(this._keys.length+' keys');
     this.onChange();
 }
+
+CABLES.GradientEditor.prototype.setCurrentKey=function(key)
+{
+    var hex=rgbToHex(Math.round(key.r*255),Math.round(key.g*255),Math.round(key.b*255));
+
+    $('#gradientColorInput').unbind();
+    $('#gradientColorInput').val('rgb('+Math.round(key.r*255)+','+Math.round(key.g*255)+','+Math.round(key.b*255)+')');
+    this._bindColorPicker();
+}
+
 
 CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
 {
@@ -146,6 +134,7 @@ CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
 
     this._keys.push(key);
     var shouldDelete=false;
+    this.setCurrentKey(key);
 
     function move(dx,dy,x,y,e)
     {
@@ -185,10 +174,8 @@ CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
         this._movingkey=true;
         CABLES.currentKey=key;
 
-        var hex=rgbToHex(Math.round(key.r*255),Math.round(key.g*255),Math.round(key.b*255));
+        this.setCurrentKey(key);
 
-        $('#gradientColorInput').unbind();
-        $('#gradientColorInput').val('rgb('+Math.round(key.r*255)+','+Math.round(key.g*255)+','+Math.round(key.b*255)+')');
         
         
         // console.log(this._cp);
@@ -284,7 +271,6 @@ CABLES.GradientEditor.prototype.show=function(cb)
     this.onChange();
     CABLES.GradientEditor.editor=this;
 
-    this._bindColorPicker();
 
     $('#gradientSaveButton').click(function()
     {
