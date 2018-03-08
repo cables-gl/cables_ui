@@ -111,6 +111,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         $('#progresscontainer .progress').css({
             width: prog + '%'
         });
+        if(settings.onProgress) settings.onProgress(prog/100);
 
         gui.patch().scene.timer.pause();
         gui.patch().scene.freeTimer.pause();
