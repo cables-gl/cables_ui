@@ -405,48 +405,48 @@ CABLES.UI.OpSelect.prototype.onInput=function(e)
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
 {
     console.log("keydown");
-    // switch(e.which)
-    // {
-    //     case 27:
-    //         this.close();
-    //         e.preventDefault();
-    //     break;
+    switch(e.which)
+    {
+        case 27:
+            this.close();
+            e.preventDefault();
+        break;
 
-    //     case 13:
-    //         console.log( $('.selected') );
+        case 13:
+            console.log( $('.selected') );
 
-    //         var opname=$('.selected').data('opname');
+            var opname=$('.selected').data('opname');
 
-    //         if(opname && opname.length>2)
-    //         {
-    //             CABLES.UI.MODAL.hide();
-    //             gui.serverOps.loadOpLibs(opname,function()
-    //             {
-    //                 gui.scene().addOp(opname);
-    //             });
-    //         }
+            if(opname && opname.length>2)
+            {
+                CABLES.UI.MODAL.hide();
+                gui.serverOps.loadOpLibs(opname,function()
+                {
+                    gui.scene().addOp(opname);
+                });
+            }
 
-    //         e.preventDefault();
-    //     break;
+            e.preventDefault();
+        break;
 
-    //     case 8:
-    //         this.onInput();
-    //         // e.preventDefault();
-    //         return true;
-    //     case 38: // up
-    //         $('.selected').removeClass('selected');
-    //         e.preventDefault();
-    //         this.Navigate(-1);
-    //     break;
+        case 8:
+            this.onInput();
+            // e.preventDefault();
+            return true;
+        case 38: // up
+            $('.selected').removeClass('selected');
+            e.preventDefault();
+            this.Navigate(-1);
+        break;
 
-    //     case 40: // down
-    //         $('.selected').removeClass('selected');
-    //         e.preventDefault();
-    //         this.Navigate(1);
-    //     break;
+        case 40: // down
+            $('.selected').removeClass('selected');
+            e.preventDefault();
+            this.Navigate(1);
+        break;
 
-    //     default: return true; // exit this handler for other keys
-    // }
+        default: return true; // exit this handler for other keys
+    }
      // prevent the default action (scroll / move caret)
 };
 
