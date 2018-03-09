@@ -17,6 +17,8 @@
 
 	input
 	{
+        -webkit-appearance: none;
+        -webkit-user-select: auto;
         margin-bottom: 15px;
         background-color: $color-c7;
         border: 1px solid transparent;
@@ -34,6 +36,9 @@
 }
 
 #searchbox {
+    -webkit-appearance: none;
+    
+
     .inputcontainer {
         background-color: $color-cz;
 
@@ -42,6 +47,8 @@
         }
         
         input {
+            -webkit-appearance: none;
+            -webkit-user-select: auto;
             background-color: $color-c7 !important;
         }
     }

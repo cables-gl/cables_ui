@@ -316,14 +316,12 @@ CABLES.UI.OpSelect.prototype.prepare=function()
 
         $('#opsearch').on('input',this.onInput.bind(this));
     }
-    // console.log('prepared', (CABLES.now()-timeStart) );
 
 };
 
 CABLES.UI.OpSelect.prototype.show=
 CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
 {
-
     var markHighlightTimeout=0;
     var self=this;
 
@@ -331,7 +329,6 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
     CABLES.UI.OPSELECT.newOpPos=options;
-
 
     if(options.search)
     {
@@ -352,12 +349,9 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
             "onClose":this.close
         });
 
-
-    $('#opsearch').focus();
     $('#opsearch').select();
+    $('#opsearch').focus();
     $('body').on( "keydown", this.keyDown.bind(this));
-    // $( ".searchresult:first" ).addClass( "selected" );
-
 
     if(this.itemHeight===0)this.itemHeight=$( ".searchresult:first" ).outerHeight();
 
@@ -386,22 +380,12 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     this.selectOp=function(name)
     {
         var oBoxCollectionAll = $(".searchresult");
-
         oBoxCollectionAll.removeClass('selected');
         $('.searchresult[data-opname="'+name+'"]').addClass('selected');
-        // oBoxCollection.removeClass(cssClass).eq(this.displayBoxIndex).addClass('selected');
-
         this.updateInfo();
     };
 
-
-
-
-    // var t=new CABLES.Tree();
     $('#optree').html(this.tree.html());
-
-
-
     setTimeout(function(){$('#opsearch').focus();},50);
 };
 
@@ -420,48 +404,49 @@ CABLES.UI.OpSelect.prototype.onInput=function(e)
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
 {
-    switch(e.which)
-    {
-        case 27:
-            this.close();
-            e.preventDefault();
-        break;
+    console.log("keydown");
+    // switch(e.which)
+    // {
+    //     case 27:
+    //         this.close();
+    //         e.preventDefault();
+    //     break;
 
-        case 13:
-            console.log( $('.selected') );
+    //     case 13:
+    //         console.log( $('.selected') );
 
-            var opname=$('.selected').data('opname');
+    //         var opname=$('.selected').data('opname');
 
-            if(opname && opname.length>2)
-            {
-                CABLES.UI.MODAL.hide();
-                gui.serverOps.loadOpLibs(opname,function()
-                {
-                    gui.scene().addOp(opname);
-                });
-            }
+    //         if(opname && opname.length>2)
+    //         {
+    //             CABLES.UI.MODAL.hide();
+    //             gui.serverOps.loadOpLibs(opname,function()
+    //             {
+    //                 gui.scene().addOp(opname);
+    //             });
+    //         }
 
-            e.preventDefault();
-        break;
+    //         e.preventDefault();
+    //     break;
 
-        case 8:
-            this.onInput();
-            // e.preventDefault();
-            return true;
-        case 38: // up
-            $('.selected').removeClass('selected');
-            e.preventDefault();
-            this.Navigate(-1);
-        break;
+    //     case 8:
+    //         this.onInput();
+    //         // e.preventDefault();
+    //         return true;
+    //     case 38: // up
+    //         $('.selected').removeClass('selected');
+    //         e.preventDefault();
+    //         this.Navigate(-1);
+    //     break;
 
-        case 40: // down
-            $('.selected').removeClass('selected');
-            e.preventDefault();
-            this.Navigate(1);
-        break;
+    //     case 40: // down
+    //         $('.selected').removeClass('selected');
+    //         e.preventDefault();
+    //         this.Navigate(1);
+    //     break;
 
-        default: return; // exit this handler for other keys
-    }
+    //     default: return true; // exit this handler for other keys
+    // }
      // prevent the default action (scroll / move caret)
 };
 

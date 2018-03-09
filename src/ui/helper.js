@@ -173,12 +173,8 @@ CABLES.UI.inputIncrement=function(v,dir,e)
     return r;
 };
 
-
-
-
 function mouseEvent(event)
 {
-
     if(event.buttons===undefined) // safari
     {
         event.buttons=event.which;
