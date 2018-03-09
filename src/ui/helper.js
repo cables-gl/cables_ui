@@ -182,17 +182,10 @@ function mouseEvent(event)
     if(event.buttons===undefined) // safari
     {
         event.buttons=event.which;
-        if(event.buttons==3)event.buttons=CABLES.UI.MOUSE_BUTTON_WHEEL;
+
+        if(event.which==3)event.buttons=CABLES.UI.MOUSE_BUTTON_RIGHT;
+        if(event.which==2)event.buttons=CABLES.UI.MOUSE_BUTTON_WHEEL;
     }
-
-
-    // if(!event.buttons)
-    // {
-    //     event.buttons=event.which || event.buttons;
-    //
-    //     console.log(event.buttons);
-    //
-    // }
 
     if(event.type=="touchmove" && event.originalEvent)
     {
