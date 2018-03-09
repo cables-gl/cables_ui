@@ -1602,16 +1602,10 @@ CABLES.ANIM.UI.TimeLineUI=function()
     $("#timeline").bind("mousewheel", function(e)
     {
         var delta = CGL.getWheelSpeed(event);
-        console.log('wheel',delta);
-
-        // viewBox.y-=delta;
         CABLES.ANIM.VALUESCALE+=delta/5;
         if(CABLES.ANIM.VALUESCALE<1)CABLES.ANIM.VALUESCALE=1;
-   
         self.updateViewBox();
     });
-
-
 
     $("#timeline").bind("mousemove", function(e)
     {
