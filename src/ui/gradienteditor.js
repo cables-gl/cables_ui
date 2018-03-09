@@ -298,6 +298,9 @@ CABLES.GradientEditor.prototype._bindColorPicker=function()
     window.cppp=$('#gradientColorInput').colorPicker({
         opacity: true,
         animationSpeed:0,
+        // dark: '#0f0',
+        // light: '#f00',
+    
         // margin: '-80px -40px 0',
         // doRender: 'div div',
         renderCallback: function(res, toggled) {
@@ -328,6 +331,8 @@ CABLES.GradientEditor.prototype._bindColorPicker=function()
             //     $('#portval_' + (portNum + 2) + '_range').val(colors.rgb.b).trigger('input');
             // } else {
             //     updateColorPickerButton(id);
+
+                // $('#gradientColorInput').css({"color":"transparent !important"});;
             }
 
         },

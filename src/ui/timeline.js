@@ -113,7 +113,6 @@ CABLES.ANIM.Key.prototype.updateCircle=function(_isMainAnim)
         this.bezierControlLineIn.attr({ path:pathIn, stroke: "#888", "stroke-width": 1});
     }
 
-
     if(isNaN(this.x))
     {
         this.x=0;
@@ -831,16 +830,19 @@ CABLES.ANIM.UI.TimeLineUI=function()
             viewBox.x,
             viewBox.y,
             $('#timeline').width(),
-            viewBox.h,false
+            $('#timeline').height(),
+            false
         );
 
+        // var viewBox={x:-10,y:-170,w:1200,h:400};
         try
         {
             paperTime.setViewBox(
                 viewBox.x,
-                -200,
+                0,
                 $('#timeline').width(),
-                400,false
+                25,
+                false
             );
 
         }
@@ -855,6 +857,9 @@ CABLES.ANIM.UI.TimeLineUI=function()
 
         }
         viewBox.w=$('#timeline').width();
+
+        // paperTime.canvas.setAttribute('preserveAspectRatio', 'yMinXMin meet');
+        // paper.canvas.setAttribute('preserveAspectRatio', 'yMinXMin meet');
 
         paperTime.canvas.setAttribute('preserveAspectRatio', 'xMinYMin slice');
         paper.canvas.setAttribute('preserveAspectRatio', 'xMinYMin slice');
@@ -1594,6 +1599,20 @@ CABLES.ANIM.UI.TimeLineUI=function()
         rubberBandHide();
     });
 
+    $("#timeline").bind("mousewheel", function(e)
+    {
+        var delta = CGL.getWheelSpeed(event);
+        console.log('wheel',delta);
+
+        // viewBox.y-=delta;
+        CABLES.ANIM.VALUESCALE+=delta/5;
+        if(CABLES.ANIM.VALUESCALE<1)CABLES.ANIM.VALUESCALE=1;
+   
+        self.updateViewBox();
+    });
+
+
+
     $("#timeline").bind("mousemove", function(e)
     {
         if(isScrollingTime)return;
@@ -1659,7 +1678,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
 
                 if(count>timeDisplayTexts.length-1)
                 {
-                    t = paperTime.text(10, -80, "");
+                    t = paperTime.text(10, 0, "");
                     timeDisplayTexts.push(t);
                     l = paper.path("M 0 0 L 0 10");
                     l.node.classList.add("timeline-timesteplines");
@@ -1675,7 +1694,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
                 t.attr({
                     "text":""+txt,
                     "x":time,
-                    "y":-187,
+                    "y":13,
                     "fill":'#aaa',
                     "font-size": 12 });
                 

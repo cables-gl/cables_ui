@@ -305,7 +305,7 @@ CABLES.UI.GUI = function() {
 
             $('#timetimeline').css('margin-top', timelineUiHeight + timedisplayheight);
             $('#timetimeline svg').css('width', timelineWidth);
-            $('#timetimeline svg').css('height', this.timingHeight - timedisplayheight - timelineUiHeight);
+            $('#timetimeline svg').css('height', 25);
 
             $('#timeline svg').css('width', timelineWidth);
             $('#timeline svg').css('height', this.timingHeight - timedisplayheight);
