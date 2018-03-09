@@ -156,7 +156,7 @@
         border: 1px solid $background-color-brighter;
 	}
 
-    input.value
+    input.value,.linkedValue
     {
 		background-color: $color-background-input;
         border: 1px solid $background-color-brighter;
@@ -169,6 +169,14 @@
             outline: none;
         }
     }
+
+    .linkedValue
+    {
+        background-color:$color-cz;
+        margin-top:4px;
+        
+    }
+
 
 
     .ccheckbox
