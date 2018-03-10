@@ -150,6 +150,8 @@ CABLES.UI.togglePortValBool=function(which,checkbox)
 
 CABLES.UI.inputIncrement=function(v,dir,e)
 {
+    // console.log(e.target.type=="search");
+    if(e.target.type=="search")return v;
     gui.setStateUnsaved();
     if(v=='true') return 'false';
     if(v=='false') return 'true';
@@ -159,6 +161,7 @@ CABLES.UI.inputIncrement=function(v,dir,e)
 
 
     var add=0.1;
+    
     if(e.target.classList.contains('inc_int'))add=1;
 
     if(e && e.shiftKey&& e.metaKey)add=0.001;
