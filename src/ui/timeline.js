@@ -927,6 +927,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
                 timePoints.push(1000);
 
 
+
                 for(var i=0;i<timePoints.length;i++)
                 {
                     // var t=start+i*width/numSteps;
@@ -936,6 +937,10 @@ CABLES.ANIM.UI.TimeLineUI=function()
                         else str+="L ";
                     str+=t*CABLES.ANIM.TIMESCALE+" "+v*-CABLES.ANIM.VALUESCALE;
                 }
+
+                ani.keyLine.attr({ path:str });
+                ani.keyLine.toFront();
+                ani.keyLine.node.classList.add("timeline-keyline");
 
                 for(ik=0;ik<ani.keys.length;ik++)
                 {
@@ -952,9 +957,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
                     if(ani.keys[ik].onChange===null) ani.keys[ik].onChange=updateKeyLineDelayed;
                 }
 
-                ani.keyLine.attr({ path:str });
-                ani.keyLine.toFront();
-                ani.keyLine.node.classList.add("timeline-keyline");
 
                 // if(ani.keyLine)
                 //     if(ani==anim) ani.keyLine.attr({ stroke: "#fff", "stroke-width": 2 });
@@ -1602,9 +1604,13 @@ CABLES.ANIM.UI.TimeLineUI=function()
     $("#timeline").bind("mousewheel", function(e)
     {
         var delta = CGL.getWheelSpeed(event);
-        CABLES.ANIM.VALUESCALE+=delta/5;
-        if(CABLES.ANIM.VALUESCALE<1)CABLES.ANIM.VALUESCALE=1;
-        self.updateViewBox();
+        self.setValueScale(CABLES.ANIM.VALUESCALE+delta/2);
+        
+        if(CABLES.ANIM.VALUESCALE<1)
+        {
+            self.setValueScale(1);
+        }
+        // self.updateViewBox();
     });
 
     $("#timeline").bind("mousemove", function(e)
