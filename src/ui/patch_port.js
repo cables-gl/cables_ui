@@ -541,13 +541,16 @@ CABLES.UI.Port=function(thePort)
         if(self.opUi.isHidden())return;
         var yp=0;
         var offY=0;
-        var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*self.portIndex;
+        // var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*self.portPosX;
+        var w=self.portPosX;
 
         if(self.direction==PORT_DIR_OUT)
         {
             offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
             yp=21;
         }
+
+
 
         this._posX=0+w;
         this._posY=0+yp;

@@ -1197,19 +1197,44 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     this.addPort = function(_inout, thePort) {
         
         var inout = _inout;
+        // var portIndex = this.portsIn.length;
+        // if (inout == PORT_DIR_OUT) portIndex = this.portsOut.length;
+
+        // var w = (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding) * portIndex;
+
         var portIndex = this.portsIn.length;
         if (inout == PORT_DIR_OUT) portIndex = this.portsOut.length;
 
-        var w = (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding) * portIndex;
-        if (self.oprect.getWidth() < w + CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.resizeBarWidth * 2)
-            self.oprect.setWidth(w + CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.resizeBarWidth * 2);
+        var portPosX=0;
+
+        if (inout == PORT_DIR_OUT) 
+        {
+            portPosX = (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding) * portIndex;
+
+        }
+        else
+        {
+            for(var i=0;i<this.portsIn.length;i++)
+            {
+                portPosX+=(CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding);
+                if(this.portsIn[i].thePort.uiAttribs.spaceBefore) portPosX+=2;
+                if(this.portsIn[i].thePort.uiAttribs.spaceAfter) portPosX+=2;
+            }
+            if(thePort.uiAttribs && thePort.uiAttribs.spaceBefore) portPosX+=2;
+    
+        }
+
+        // var w=portPosX;
+
+        if (self.oprect.getWidth() < portPosX + CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.resizeBarWidth * 2)
+            self.oprect.setWidth(portPosX + CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.resizeBarWidth * 2);
 
         var port = new CABLES.UI.Port(thePort);
 
         port.direction = inout;
         port.op = self.op;
         port.opUi = self;
-        port.portIndex = portIndex;
+        port.portPosX = portPosX;
 
         if (this.oprect.getRect()) port.addUi(this.oprect.getGroup());
 
