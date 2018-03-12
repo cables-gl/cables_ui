@@ -9,6 +9,7 @@ CABLES.UI.cleanRaphael = function(el) {
     el.node.removeAttribute('fill');
     el.node.removeAttribute('fill-opacity');
     el.node.removeAttribute('stroke-opacity');
+    
 };
 
 function getPortDescription(thePort) {
@@ -63,9 +64,16 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     this.setPosition = function(posx, posy) {
+
+        // round for performane
+        posx=Math.round(posx);
+        posy=Math.round(posy);
+
         if (this.getGroup()) {
             this.getGroup().transform('t' + posx + ',' + posy);
         }
+
+
 
         if (miniRect) miniRect.attr({
             x: posx,

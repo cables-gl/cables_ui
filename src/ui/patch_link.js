@@ -15,7 +15,6 @@ function UiLink(port1, port2)
     this.p1=port1;
     this.p2=port2;
 
-
     this.unlink=function()
     {
         self.p1.thePort.removeLinkTo( self.p2.thePort );
@@ -150,11 +149,11 @@ function UiLink(port1, port2)
 
     this.getPath = function()
     {
-        if(!port2.rect)return '';
-        if(!port1.rect)return '';
+        // if(!port2.rect)return '';
+        // if(!port1.rect)return '';
 
-        if(!port2.rect.attrs)return '';
-        if(!port1.rect.attrs)return '';
+        // if(!port2.rect.attrs)return '';
+        // if(!port1.rect.attrs)return '';
 
         if(port2.direction==PORT_DIR_IN)
         {
@@ -163,10 +162,10 @@ function UiLink(port1, port2)
             port2=temp;
         }
 
-        fromX=port1.rect.matrix.e+port1.rect.attrs.x+CABLES.UI.uiConfig.portSize/2;
-        fromY=port1.rect.matrix.f+port1.rect.attrs.y;
-        toX=port2.rect.matrix.e+port2.rect.attrs.x+CABLES.UI.uiConfig.portSize/2;
-        toY=port2.rect.matrix.f+port2.rect.attrs.y+CABLES.UI.uiConfig.portHeight*1.5;
+        fromX=port1.getParentPosX()+port1.getPosX()+CABLES.UI.uiConfig.portSize/2;
+        fromY=port1.getParentPosY()+port1.getPosY();
+        toX=port2.getParentPosX()+port2.getPosX()+CABLES.UI.uiConfig.portSize/2;
+        toY=port2.getParentPosY()+port2.getPosY()+CABLES.UI.uiConfig.portHeight*1.5;
 
         middlePosX=0.5*(fromX+toX);
         middlePosY=0.5*(fromY+toY+CABLES.UI.uiConfig.portSize*0.5);
@@ -210,6 +209,15 @@ function UiLink(port1, port2)
 
         var str='';
         
+        // round for performane
+        fromX=Math.round(fromX);
+        fromY=Math.round(fromY);
+        cp1X=Math.round(cp1X);
+        cp1Y=Math.round(cp1Y);
+        cp2X=Math.round(cp2X);
+        cp2Y=Math.round(cp2Y);
+        toX=Math.round(toX);
+        toY=Math.round(toY);
         
 
         if(Math.abs(fromY-toY)<60 && Math.abs(fromX-toX)<60 || fromX==toX || CABLES.UI.userSettings.straightLines)
