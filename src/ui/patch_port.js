@@ -15,8 +15,8 @@ CABLES.UI.Port=function(thePort)
     this.portIndex=0;
     this.thePort=thePort;
     this.opUi=null;
-    var xpos=0,
-        ypos=0;
+    this._posX=0;
+    this._posY=0;
 
     var hovering=false;
     var linkingLine=null;
@@ -34,8 +34,9 @@ CABLES.UI.Port=function(thePort)
 
             self.opUi.setPos();
         }
-
     };
+
+    
 
     function changeActiveState()
     {
@@ -370,6 +371,7 @@ CABLES.UI.Port=function(thePort)
     {
         
         if(!self.rect)return;
+
         var offY=0;
         if(self.direction==PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
 
@@ -407,8 +409,8 @@ CABLES.UI.Port=function(thePort)
 
         self.rect.attr(
             {
-                x:xpos,
-                y:ypos+offY,
+                x:self._posX,
+                y:self._posY+offY,
             });
     }
     this.updateUI=updateUI;
@@ -528,15 +530,19 @@ CABLES.UI.Port=function(thePort)
         e.cancelBubble = false;
     };
 
+
+
     this.addUi=function(group)
     {
+        
         thePort.onUiActiveStateChange=changeActiveState;
 
         if(self.isVisible())return;
         if(self.opUi.isHidden())return;
         var yp=0;
         var offY=0;
-        var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*self.portIndex;
+        // var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*self.portPosX;
+        var w=self.portPosX;
 
         if(self.direction==PORT_DIR_OUT)
         {
@@ -544,10 +550,13 @@ CABLES.UI.Port=function(thePort)
             yp=21;
         }
 
-        xpos=0+w;
-        ypos=0+yp;
 
-        this.rect = gui.patch().getPaper().rect(xpos,offY+ypos);
+
+        this._posX=0+w;
+        this._posY=0+yp;
+
+        
+        this.rect = gui.patch().getPaper().rect(this._posX,offY+this._posY);
         CABLES.UI.cleanRaphael(this.rect);
 
         this.rect.attr({ width:10, height:6, }); // for firefox compatibility: ff seems to ignore css width/height of svg rect?!
@@ -564,3 +573,24 @@ CABLES.UI.Port=function(thePort)
     };
 
 };
+
+CABLES.UI.Port.prototype.getPosX=function()
+{
+    return this._posX;
+}
+
+CABLES.UI.Port.prototype.getPosY=function()
+{
+    return this._posY;
+}
+
+CABLES.UI.Port.prototype.getParentPosX=function()
+{
+    return this.opUi.getPosX();
+}
+
+CABLES.UI.Port.prototype.getParentPosY=function()
+{
+    return this.opUi.getPosY();
+}
+
