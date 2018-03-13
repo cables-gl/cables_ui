@@ -334,10 +334,12 @@ CABLES.ProjectSettings=function(project)
         $('#settings_tab_delete').hide();
         $('#settings_tab_reports').hide();
         $('#settings_tab_versions').hide();
+        $('#settings_tab_secret').hide();
 
         if(which=='users') $('#settings_tab_users').show();
         if(which=='params') $('#settings_tab_params').show();
         if(which=='delete') $('#settings_tab_delete').show();
+        if(which=='secret') $('#settings_tab_secret').show();
         if(which=='reports')
         {
             $('#settings_tab_reports').show();
