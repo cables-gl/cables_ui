@@ -49,7 +49,7 @@ CABLES.UI.MetaKeyframes.prototype.show=function()
 CABLES.UI.MetaKeyframes.prototype.showAnim=function(opid,portname)
 {
     CABLES.CMD.UI.showTimeline();
-    gui.patch().focusOp(opid);
+    gui.patch().focusOp(opid,true);
     var op=gui.patch().scene.getOpById(opid);
     var p=op.getPort(portname);
     console.log(p);
