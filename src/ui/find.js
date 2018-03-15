@@ -47,7 +47,6 @@ CABLES.UI.Find=function()
         }
         html+='<br/>score:'+score;
 
-
         html+='</div>';
 
         setTimeout(
