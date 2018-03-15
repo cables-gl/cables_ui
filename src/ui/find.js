@@ -32,7 +32,7 @@ CABLES.UI.Find=function()
 
     };
 
-    function addResultOp(op)
+    function addResultOp(op,score)
     {
         var html='';
 
@@ -45,6 +45,8 @@ CABLES.UI.Find=function()
         {
             html+='<br/> subpatch: '+gui.patch().getSubPatchPathString(op.op.uiAttribs.subPatch);
         }
+        html+='<br/>score:'+score;
+
 
         html+='</div>';
 
@@ -67,6 +69,8 @@ CABLES.UI.Find=function()
         // console.log('--- ',str);
 
         var foundNum=0;
+        var results=[];
+
         for(var i=0;i<gui.patch().ops.length;i++)
         {
             if(canceledSearch==searchId)
@@ -76,33 +80,47 @@ CABLES.UI.Find=function()
             }
             if(gui.patch().ops[i].op)
             {
-                if(
-                    gui.patch().ops[i].op.objName.toLowerCase().indexOf(str)>-1 ||
-                    String((gui.patch().ops[i].op.name||'')).toLowerCase().indexOf(str)>-1
-                )
+                var score=0;
+                
+                if(gui.patch().ops[i].op.objName.toLowerCase().indexOf(str)>-1) score+=1;
+
+                if(String((gui.patch().ops[i].op.name||'')).toLowerCase().indexOf(str)>-1)
                 {
-                    addResultOp(gui.patch().ops[i]);
+                    if( gui.patch().ops[i].op.objName.indexOf( gui.patch().ops[i].op.name )==-1 ) score+=2; // extra points if non default name
+                    score+=2;
+                }
+
+                var op=gui.patch().ops[i].op;
+                for(var j=0;j<op.portsIn.length;j++)
+                {
+                    if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1) score+=2;
+                }
+
+                if(score>0)
+                {
+                    results.push({"op":gui.patch().ops[i],"score":score})
                     foundNum++;
                 }
-                else
-                {
-                    var op=gui.patch().ops[i].op;
-                    for(var j=0;j<op.portsIn.length;j++)
-                    {
-                        if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1)
-                        {
-                            addResultOp(gui.patch().ops[i]);
-                            foundNum++;
-                        }
-                    }
-                }
+
             }
         }
+
 
         if(foundNum===0)
         {
             $('#searchresult').html('<br/><center>no ops found</center><br/>');
+        }
+        else
+        {
 
+            results.sort(function(a,b)
+            {
+                return b.score-a.score;
+            })
+            for(var i=0;i<results.length;i++)
+            {
+                addResultOp(results[i].op,results[i].score);
+            }
         }
 
     };

@@ -7,7 +7,7 @@ CABLES.UI.GUI = function() {
     var showTiming = false;
     var showingEditor = false;
     var showMiniMap = false;
-    var _scene = new CABLES.Patch();
+    var _scene = CABLES.patch=new CABLES.Patch();
     _scene.gui = true;
     var _patch = null;
     var _editor = new CABLES.Editor();

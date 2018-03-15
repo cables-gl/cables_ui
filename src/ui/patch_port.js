@@ -88,6 +88,8 @@ CABLES.UI.Port=function(thePort)
                     }
                 }
 
+                
+                removeLinkingLine();
                 linkingLine = new CABLES.UI.SVGLine(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
 
                 if(!event.altKey)
@@ -115,6 +117,7 @@ CABLES.UI.Port=function(thePort)
 
     function dragMove(dx, dy,a,b,event)
     {
+        
         cancelDeleteLink=true;
         if(event.which==2) return;
         if(!CABLES.UI.selectedStartPort) return;
@@ -211,7 +214,8 @@ CABLES.UI.Port=function(thePort)
     {
         var j=0;
         CABLES.UI.MOUSEOVERPORT=false;
-
+        removeLinkingLine();
+        
         var foundAutoOp=false;
         if(CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
         {
@@ -238,10 +242,8 @@ CABLES.UI.Port=function(thePort)
 						CABLES.UI.selectedStartPortMulti[j].name
 						);
 				}
-
-
+                
                 foundAutoOp=true;
-
             }
             else
             if(numFitting>0)
@@ -274,6 +276,7 @@ CABLES.UI.Port=function(thePort)
 						}
                         finishDragUI();
                     },finishDragUI);
+                    
                 return;
             }
         }
