@@ -100,8 +100,16 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
             if(list[i]._shortName.indexOf(query)===0)
             {
                 found=true;
-                points+=2;
-                scoreDebug+='+2 found in shortname at beginning<br/>';
+                points+=2.5;
+                scoreDebug+='+2.5 found in shortname at beginning<br/>';
+
+                if(list[i]._shortName==query)
+                {
+                    found=true;
+                    points+=2;
+                    scoreDebug+='+2 exact name<br/>';
+                }
+    
             }
 
             if(list[i]._summary.length>0)
