@@ -6,6 +6,7 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.MODAL=CABLES.UI.MODAL || {};
 CABLES.UI.MODAL._visible=false;
 CABLES.UI.MODAL.contentElement=null;
+CABLES.UI.MODAL.headerElement = null; // the (small) header shown in the title bar of the modal
 
 CABLES.UI.MODAL.hideLoading=function()
 {
@@ -21,6 +22,8 @@ CABLES.UI.MODAL.init=function(options)
 
     if(CABLES.UI.MODAL.contentElement)CABLES.UI.MODAL.contentElement.hide();
     CABLES.UI.MODAL.contentElement=$('#modalcontent');
+    CABLES.UI.MODAL.headerElement = $('#modalheader');
+    CABLES.UI.MODAL.headerElement.empty();
     if(options && options.element)CABLES.UI.MODAL.contentElement=$(options.element);
         else CABLES.UI.MODAL.contentElement.empty();
 

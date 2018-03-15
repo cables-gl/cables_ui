@@ -157,6 +157,9 @@
             <br/><br/>
         {{/each}}
 
+        <a class="button fa fa-search" onclick="gui.find().show('{{file.fileDb.fileName}}')">&nbsp;search ops</a>
+        <br/><br/>
+
         {{#if file.converters  }}
             {{#each file.converters}}
                 <a class="button fa fa-retweet" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');">&nbsp;{{ name }}</a>

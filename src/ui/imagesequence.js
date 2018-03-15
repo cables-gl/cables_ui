@@ -29,6 +29,8 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         currentNum++;
         fileNum++;
 
+
+
         gui.patch().scene.pause();
         var time = currentNum * frameDuration;
 
@@ -94,9 +96,13 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
             var ffmpgCmd='ffmpeg -y -framerate 30 -f image2 -i "'+filename+'_%04d.png"  -b 9999k -vcodec mpeg4 '+filename+'.mp4<br/>';
 
             $('.modalScrollContent').append('<br/><br/>ffmpeg command to convert to mp4:<br/><code class="selectable">'+ffmpgCmd+'</code>');
-            gui.patch().scene.resume();
             CABLES.internalNow=oldInternalNow;
             oldInternalNow=null;
+            gui.patch().scene.pause();
+            setTimeout(function()
+            {
+                gui.patch().scene.resume();
+            },500);
 
             return;
         }
