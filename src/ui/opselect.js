@@ -306,7 +306,7 @@ CABLES.UI.OpSelect.prototype.prepare=function()
             this._list[i].summary=this._list[i].summary||'';
             this._list[i]._summary=this._list[i].summary.toLowerCase();
             this._list[i]._shortName=this._list[i].shortName.toLowerCase();
-            this._list[i]._nameSpace=this._list[i].nameSpace.toLowerCase();
+            this._list[i]._nameSpace=this._list[i].nameSpace.toLowerCase()+'.';
             this._list[i]._nameSpaceFull=this._list[i].nameSpace.toLowerCase()+'.'+this._list[i].shortName.toLowerCase();
         }
 
