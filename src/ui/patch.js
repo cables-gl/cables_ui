@@ -695,20 +695,20 @@ CABLES.UI.Patch = function(_gui) {
     {
         this._serverDate=updated;
         CABLES.UI.MODAL.hide(true);
-        console.log('---');
-        console.log(this._serverDate+'________'+updated);
-        console.log('---');
         CABLES.CMD.PATCH.save();
-        // CABLES.UI.MODAL.hide(true);
     }
 
     this.checkUpdated=function(cb)
     {
+        gui.jobs().start({
+            id: 'checkupdated',
+            title: 'saving project'
+        });
+        
         CABLES.api.get('project/' + gui.project()._id+'/updated',
             function(data)
             {
-                // console.log('data', data);
-                console.log('dates',this._serverDate,data.updated);
+                gui.jobs().finish('projectsave');
 
                 if(this._serverDate!=data.updated)
                 {

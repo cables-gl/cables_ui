@@ -1480,9 +1480,14 @@ function startUi(event)
 
     CABLES.watchPortVisualize.init();
 
-    window.onfocus = function() {
-        gui.patch().checkUpdated();
-    };
+    document.addEventListener("visibilitychange", function()
+    {
+        if(!document.hidden)
+        {
+            gui.patch().checkUpdated();
+        }
+        
+    }, false);
 
 
     logStartup('Init UI done');
