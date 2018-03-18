@@ -691,19 +691,36 @@ CABLES.UI.Patch = function(_gui) {
             });
     };
 
+    this.checkUpdatedSaveForce=function(updated)
+    {
+        this._serverDate=updated;
+        CABLES.UI.MODAL.hide(true);
+        console.log('---');
+        console.log(this._serverDate+'________'+updated);
+        console.log('---');
+        CABLES.CMD.PATCH.save();
+        // CABLES.UI.MODAL.hide(true);
+    }
+
     this.checkUpdated=function(cb)
     {
         CABLES.api.get('project/' + gui.project()._id+'/updated',
             function(data)
             {
-                console.log('data', data);
+                // console.log('data', data);
+                console.log('dates',this._serverDate,data.updated);
+
                 if(this._serverDate!=data.updated)
                 {
-                    CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown') );
+                    CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
+                    CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide();">close</a>&nbsp;&nbsp;');
+                    CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="gui.patch().checkUpdatedSaveForce(\''+data.updated+'\');">save anyway</a>&nbsp;&nbsp;');
+                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
                 }
                 else
                 {
-                    if(cb)cb();
+                    CABLES.UI.MODAL.hide(true);
+                    if(cb)cb(null);
                 }
                 
             }.bind(this)
@@ -719,9 +736,9 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         this.checkUpdated(
-            function()
+            function(err)
             {
-                this._saveCurrentProject(cb,_id,_name);
+                if(!err)this._saveCurrentProject(cb,_id,_name);
                 
             }.bind(this)
         );
