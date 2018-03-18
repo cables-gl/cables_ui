@@ -1292,6 +1292,8 @@ CABLES.UI.GUI = function() {
         }
     };
 
+
+    
     this.closeInfo = function() {
         this.infoHeight = 0;
         this.setLayout();
@@ -1477,6 +1479,11 @@ function startUi(event)
     });
 
     CABLES.watchPortVisualize.init();
+
+    window.onfocus = function() {
+        gui.patch().checkUpdated();
+    };
+
 
     logStartup('Init UI done');
 

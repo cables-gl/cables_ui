@@ -37,6 +37,7 @@ CABLES.UI.Patch = function(_gui) {
     var timeoutRubberBand = -1;
 
     var subPatchViewBoxes = [];
+    this._serverDate='';
 
     this.updateBounds = false;
     var miniMapBounding = null;
@@ -690,16 +691,45 @@ CABLES.UI.Patch = function(_gui) {
             });
     };
 
+    this.checkUpdated=function(cb)
+    {
+        CABLES.api.get('project/' + gui.project()._id+'/updated',
+            function(data)
+            {
+                console.log('data', data);
+                if(this._serverDate!=data.updated)
+                {
+                    CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown') );
+                }
+                else
+                {
+                    if(cb)cb();
+                }
+                
+            }.bind(this)
+        );
 
+    };
 
-    this.saveCurrentProject = function(cb, _id, _name) {
-
-
+    this.saveCurrentProject = function(cb, _id, _name)
+    {
         if (this.loadingError) {
             CABLES.UI.MODAL.showError('project not saved', 'could not save project: had errors while loading!');
             return;
         }
 
+        this.checkUpdated(
+            function()
+            {
+                this._saveCurrentProject(cb,_id,_name);
+                
+            }.bind(this)
+        );
+
+    }
+
+    this._saveCurrentProject = function(cb, _id, _name)
+    {
         for (var i = 0; i < this.ops.length; i++) {
             this.ops[i].removeDeadLinks();
             if (this.ops[i].op.uiAttribs.error) delete this.ops[i].op.uiAttribs.error;
@@ -795,6 +825,12 @@ CABLES.UI.Patch = function(_gui) {
                     gui.jobs().finish('projectsave');
                     gui.setStateSaved();
                     if (cb) cb();
+
+                    self._serverDate=r.updated;
+                    if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
+
+
+                    console.log(r);
 
                     var screenshotTimeout = setTimeout(function() {
                         // $('#glcanvas').attr('width', w);
@@ -1200,6 +1236,7 @@ CABLES.UI.Patch = function(_gui) {
         currentSubPatch = 0;
         gui.setProjectName(proj.name);
         self.setCurrentProject(proj);
+        this._serverDate=proj.updated;
         gui.scene().clear();
 
         gui.serverOps.loadProjectLibs(proj, function() {
