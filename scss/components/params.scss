@@ -81,7 +81,9 @@
 	    {
 	        text-align: center;
 			margin-bottom: 5px;
-	    }
+        }
+        
+
 	}
 
 
@@ -168,6 +170,16 @@
             background-color: $color-background-input-focussed;
             outline: none;
         }
+
+        -moz-appearance:textfield;
+        
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+        
+
+
     }
 
     .linkedValue
