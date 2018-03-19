@@ -31,26 +31,35 @@ CABLES.Editor=function()
         getCompletions: function(editor, session, pos, prefix, callback) {
             var wordList = [
                 "op.log",
+
                 "onChange",
                 "onTriggered",
+                /* in functions */
                 "inFunction",
                 "inFunctionButton",
+                /* in number / string / bool  */
                 "inValue",
                 "inValueBool",
+                "inValueInt",
                 "inValueString",
+                "inValueSlider",
+                "inValueSelect",
+                /* in object / texture / array / file  */
                 "inObject",
                 "inTexture",
                 "inArray",
-                "inValueSlider",
                 "inFile",
-                "inValueSelect",
-                "inValueInt",
-
-                "outTexture",
+                /* out functions */
                 "outFunction",
+                /* out number / string / bool  */
                 "outValue",
+                "outValueBool",
+                "outValueString",
+                /* out object / texture / array  */
                 "outObject",
+                "outTexture",
                 "outArray",
+
                 "patch.cgl",
             ];
             callback(null, wordList.map(function(word) {
