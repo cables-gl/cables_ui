@@ -467,12 +467,17 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     //     console.log(i, cgl.gl.getActiveAttrib(cgl.getShader().getProgram(), i) );
     // }
 
+    cgl.pushBlend(true);
+
+    cgl.gl.blendEquation( cgl.gl.FUNC_ADD );
     cgl.gl.blendFunc(cgl.gl.ONE, cgl.gl.ONE_MINUS_SRC_ALPHA);
-        
+
     CABLES.GL_MARKER.fullscreenRectMesh.render(cgl.getShader());
     cgl.gl.blendFunc(cgl.gl.SRC_ALPHA,cgl.gl.ONE_MINUS_SRC_ALPHA);
 
     cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);
+    cgl.popBlend();
+
 
     cgl.setPreviousShader();
 

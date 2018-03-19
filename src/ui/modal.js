@@ -155,15 +155,11 @@ CABLES.UI.MODAL.showError=function(title,content)
 {
     CABLES.UI.MODAL.showClose();
 	CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;'+title+'!</h2>');
+    CABLES.UI.MODAL.contentElement.append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;'+title+'</h2>');
     CABLES.UI.MODAL.contentElement.append(content);
-    // $('#modalcontainer').show();
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
-
 };
-
-
 
 CABLES.UI.MODAL.getFileSnippet=function(url,line,cb)
 {

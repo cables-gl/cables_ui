@@ -749,6 +749,10 @@ CABLES.UI.GUI = function() {
             }
         });
 
+        $('.nav_help_forum').bind("click", function(event) {
+            var win = window.open('https://forum.cables.gl', '_blank');
+        });
+
         // Introduction
         $('.nav_help_introduction').bind("click", function(event) {
             self.introduction().showIntroduction();

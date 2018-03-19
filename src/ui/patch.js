@@ -702,13 +702,13 @@ CABLES.UI.Patch = function(_gui) {
     {
         gui.jobs().start({
             id: 'checkupdated',
-            title: 'saving project'
+            title: 'check if patch was updated'
         });
         
         CABLES.api.get('project/' + gui.project()._id+'/updated',
             function(data)
             {
-                gui.jobs().finish('projectsave');
+                gui.jobs().finish('checkupdated');
 
                 if(this._serverDate!=data.updated)
                 {
@@ -1507,8 +1507,8 @@ CABLES.UI.Patch = function(_gui) {
                 var mouseX = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
                 var mouseY = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 
-                viewBox.x += mouseX - gui.patch().getCanvasCoordsMouse(e).x; //.offsetX,e.offsetY).x;
-                viewBox.y += mouseY - gui.patch().getCanvasCoordsMouse(e).y; //e.offsetX,e.offsetY).y;
+                viewBox.x += mouseX - gui.patch().getCanvasCoordsMouse(e).x;
+                viewBox.y += mouseY - gui.patch().getCanvasCoordsMouse(e).y;
 
                 this._elBody.css({
                     "background-position": "" + (-1 * viewBox.x) + " " + (-1 * viewBox.y)
@@ -1608,7 +1608,6 @@ CABLES.UI.Patch = function(_gui) {
         if (!op.uiAttribs.hasOwnProperty('subPatch')) {
             op.uiAttribs.subPatch = currentSubPatch;
         }
-
 
         if (CABLES.UI.OPSELECT.linkNewOpToSuggestedPort) {
             console.log('CABLES.UI.OPSELECT.linkNewOpToSuggestedPort');
