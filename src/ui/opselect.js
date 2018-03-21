@@ -190,17 +190,19 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
     {
         $('#searchinfo').empty();
 
-        var content=gui.opDocs.get(opname);
+        // var content=gui.opDocs.get(opname);
+        var opDoc = gui.opDocs.get2(opname);
 
-        if(content.length<3)
-        {
-            content="<h1>"+opname.split(".")[opname.split(".").length-1]+"</h1>";
-            content+='<p><em>'+opname+'</em></p>';
-            content+='<p>'+gui.opDocs.getSummary(opname)+'</p>';
-        }
+        // var html = '<div id="opselect-layout"><a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">Open Examples Page <i class="icon icon-link"></i></a></div>'+content+htmlFoot;
 
-        $('#searchinfo').html('<div id="opselect-layout"></div>'+content+htmlFoot);
-        gui.opDocs.opLayoutSVG(opname,"opselect-layout");
+        var html = '<div id="opselect-layout">';
+        html +=        '<a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">Open Examples Page <i class="icon icon-link"></i></a>';
+        html +=    '</div>';
+        html +=    opDoc;
+        html +=    htmlFoot;
+
+        $('#searchinfo').html(html);
+        gui.opDocs.opLayoutSVG(opname, "opselect-layout"); /* create op-svg image inside #opselect-layout */
     }
 };
 

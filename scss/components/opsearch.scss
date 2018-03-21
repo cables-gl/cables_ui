@@ -14,15 +14,15 @@
 {
     width:1024px;
     height:630px;
-    overflow: hidden;
+    // overflow: hidden;
 
     header
     {
-        width:480px;
+        width:420px;
         border-top-left-radius: $border-radius-popups;
         border-top-right-radius: $border-radius-popups;
         background-color: $color-searchInputContainer;
-        padding:15px;
+        padding: 30px;
 
         input
         {
@@ -35,10 +35,24 @@
         }
     }
 
+    // documentation in the op add modal
+    .op-doc {
+        h3 {
+
+        }
+
+        .op-summary {
+            font-style: italic;
+            font-size: 20px;
+        }
+    }
+
 	#opselect-layout
 	{
 		min-width: 200px;
-		min-height: 40px;
+        min-height: 40px;
+        display: inline-block;
+        width: 100%;
 	}
 
 
@@ -57,7 +71,7 @@
 
     .searchbrowserContainer
     {
-        width:510px;
+        width:480px;
         height: 521px;
         background-color: $background-color-brighter;
     }
@@ -79,12 +93,9 @@
     .searchresult //,.searchresult_cmd
     {
         font-size: 16px;
-        padding:15px;
-        padding-top:10px;
-        padding-bottom:10px;
+        padding: 20px 30px;
 		border-bottom: 1px solid $color-c8;
-		background-color: $background-color-brighter;
-
+        background-color: $background-color-brighter;
     }
 
     .searchbrowser
@@ -97,32 +108,33 @@
     {
         position: absolute;
         margin-left:-190px;
-        width:150px;
+        width:130px;
         overflow-y: scroll;
-        height:462px;
+        height: 460px;
         // left:0;
         background-color: $background-color-dark;
-		border-bottom:10px solid $background-color-dark;
-		border-top:10px solid $background-color-dark;
+		border-bottom:30px solid $background-color-dark;
+		border-top:30px solid $background-color-dark;
         border-top-left-radius: $border-radius-popups;
         border-bottom-left-radius: $border-radius-popups;
-        padding: 20px;
-        margin-top: 70px;
+        padding: 0 30px;
+        margin-top: 109px;
     }
 
     .searchinfo
     {
-        margin-top: 70px;
+        margin-top: 109px;
         background-color: $background-color-dark;
-		border-bottom:10px solid $background-color-dark;
-		border-top:10px solid $background-color-dark;
-        margin-left: 510px;
+		border-bottom:30px solid $background-color-dark;
+		border-top:30px solid $background-color-dark;
+        margin-left: 480px;
         position: absolute;
         width:480px;
-        padding: 20px;
+        // padding: 20px;
+        padding: 0 30px;
         overflow-x: hidden;
         overflow-y: auto;
-        height:462px;
+        height:460px;
         border-top-right-radius: $border-radius-popups;
         border-bottom-right-radius: $border-radius-popups;
 
@@ -135,22 +147,36 @@
           user-select: text;
         }
 
+        .open-docs-button {
+            float: right;
+            margin-top: 7px;
+        }
+
         .opTitleSvg
         {
             margin-top: 0px;
 			position: absolute;
 			margin-top:-33px;
 			font-size: 19px;
-			margin-left: 10px;
+            margin-left: 10px;
         }
 
-        img
-        {
-            max-width: 100%;
-            max-height: 200px;
-            margin-top:10px;
-            margin-bottom:10px;
+        .op-svg-shortname {
+            font-size: 18px;
+            font-family: $text-font;
         }
+
+        .namespace-wrapper {
+            margin-top: 30px;
+        }
+
+        // img
+        // {
+        //     max-width: 100%;
+        //     max-height: 200px;
+        //     margin-top:10px;
+        //     margin-bottom:10px;
+        // }
 
         p
         {
@@ -173,7 +199,10 @@
 		background-size: 50%;
 		padding: 10px;
 		background-position: center;
-		border-radius: 20px;
+        border-radius: 20px;
+        margin-top: 3px;
+        position: relative;
+        right: -7px;
 
         &:hover
         {
@@ -290,7 +319,7 @@
 .searchbrowser
 {
     .searchable{
-        margin-bottom: 1px;
+        // margin-bottom: 1px;
     }
     .item_color_default { border-left:15px solid $color_op_handle_default;}
     .item_color_gl { border-left:15px solid $color_op_handle_gl; }

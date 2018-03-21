@@ -9,7 +9,10 @@ CABLES.UI.cleanRaphael = function(el) {
     el.node.removeAttribute('fill');
     el.node.removeAttribute('fill-opacity');
     el.node.removeAttribute('stroke-opacity');
-    
+    el.node.style.removeProperty('-webkit-tap-highlight-color');
+    el.node.style.removeProperty('font-family');
+    el.node.style.removeProperty('font-size');
+    el.node.style.removeProperty('text-anchor'); // set as: "text-anchor: middle"
 };
 
 function getPortDescription(thePort) {

@@ -1,0 +1,136 @@
+/*
+ * GENERAL STYLES
+ */
+
+ /*
+  * PORT COLORS - BACKGROUND COLOR
+  */
+
+.bg-color-port-function { background-color: $color_port_function; }
+.bg-color-port-value { background-color: $color_port_value; }
+.bg-color-port-object { background-color: $color_port_object; }
+.bg-color-port-array { background-color: $color_port_array; }
+.bg-color-port-dynamic { background-color: $color_port_dynamic; }
+
+ /*
+  * PORT COLORS - COLOR
+  */
+
+  .color-port-function { color: $color_port_function; }
+  .color-port-value { color: $color_port_value; }
+  .color-port-object { color: $color_port_object; }
+  .color-port-array { color: $color_port_array; }
+  .color-port-dynamic { color: $color_port_dynamic; }
+
+/*
+ * OP DOC SPECIFIC
+ */
+
+.op-doc {
+  .op-doc__port-bullet {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+  }
+
+  .op-doc__port-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .op-doc__headline {
+    font-size: 22px;
+    margin-top: 30px;
+    margin-bottom: 13px;
+    font-weight: bold;
+    color: $color-c2;
+  }
+
+  .op-doc__namespace {
+    margin-top: 4px;
+    color: $color-c6;
+  }
+
+  .op-doc__summary, .op-doc__summary p {
+    color: $color-c2;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.2em;
+    text-transform: capitalize;
+    margin-bottom: 0px;
+    margin-top: 30px;
+
+    code, pre {
+      color: white;
+      // background-color: $color-c85;
+      font-family: SourceCodePro, monospace;
+    }
+  }
+
+  .op-doc__screenshot {
+    margin-bottom: 0;
+    margin-top: 28px;
+    max-width: 100%;
+    max-height: 200px;
+  }
+
+  .op-doc__description {
+    a {
+      text-decoration: underline;
+      color: $color-special;
+    }
+
+    code, pre {
+      font-family: SourceCodePro, monospace;
+      font-size: 11px;
+      background-color: $color-c85;
+      padding: 1px 2px;
+    }
+  }
+
+  .op-doc__description p:first-child {
+    margin-top: 6px; // distance between summary and first paragraph of description
+  }
+
+  .op-doc__port + .op-doc__port {
+    margin-top: 10px;
+  }
+
+  .op-doc__port-name {
+    color: $color-c2;
+    text-transform: capitalize;
+    font-size: 16px;
+    margin-left: 4px;
+    font-weight: bold;
+  }
+
+  .op-doc__port-doc {
+    margin-top: 5px;
+    padding-left: 17px;
+
+    p {
+      text-transform: capitalize;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    a {
+      text-decoration: underline;
+      color: $color-special;
+    }
+
+    code, pre {
+      font-family: SourceCodePro, monospace;
+      font-size: 11px;
+      background-color: $color-c85;
+      padding: 1px 2px;
+    }
+  }
+}
+
