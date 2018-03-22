@@ -39,7 +39,7 @@
   }
 
   .op-doc__headline {
-    font-size: 22px;
+    font-size: 16px;
     margin-top: 30px;
     margin-bottom: 13px;
     font-weight: bold;
@@ -51,14 +51,27 @@
     color: $color-c6;
   }
 
+  .op-doc__name {
+    margin-top: 0;
+    display: none; /* only show in meta-tab */
+  }
+
+  .op-doc__summary {
+    // margin-bottom: 28px;
+    margin-bottom: 15px;
+  }
+
   .op-doc__summary, .op-doc__summary p {
     color: $color-c2;
     font-style: italic;
-    font-size: 22px;
+    font-size: 18px;
     line-height: 1.2em;
     text-transform: capitalize;
-    margin-bottom: 0px;
     margin-top: 30px;
+
+    p {
+      margin-bottom: 0px;
+    }
 
     code, pre {
       color: white;
@@ -69,23 +82,19 @@
 
   .op-doc__screenshot {
     margin-bottom: 0;
-    margin-top: 28px;
+    margin-top: 11px;
     max-width: 100%;
     max-height: 200px;
   }
 
-  .op-doc__description {
-    a {
-      text-decoration: underline;
-      color: $color-special;
-    }
+  .op-doc__screenshot + .op-doc__description {
+    margin-top: 32px;
+  }
 
-    code, pre {
-      font-family: SourceCodePro, monospace;
-      font-size: 11px;
-      background-color: $color-c85;
-      padding: 1px 2px;
-    }
+  // .op-doc__description {}
+
+  .op-doc__description p:last-child {
+    margin-bottom: 0; // distance between last paragraph of input port headline
   }
 
   .op-doc__description p:first-child {
@@ -99,7 +108,7 @@
   .op-doc__port-name {
     color: $color-c2;
     text-transform: capitalize;
-    font-size: 16px;
+    font-size: 13px;
     margin-left: 4px;
     font-weight: bold;
   }
@@ -108,10 +117,6 @@
     margin-top: 5px;
     padding-left: 17px;
 
-    p {
-      text-transform: capitalize;
-    }
-
     p:first-child {
       margin-top: 0;
     }
@@ -119,10 +124,22 @@
     p:last-child {
       margin-bottom: 0;
     }
+  }
+
+  /* Rules for markdown formatted elements in description and port description */
+  .op-doc__port-doc, .op-doc__description {
+    p {
+      text-transform: capitalize;
+    }
 
     a {
       text-decoration: underline;
-      color: $color-special;
+      text-decoration-color: $color-c7;
+
+      &:hover {
+        color: $color-special;
+        text-decoration-color: $color-special;
+      }
     }
 
     code, pre {
@@ -131,6 +148,30 @@
       background-color: $color-c85;
       padding: 1px 2px;
     }
+  }
+}
+
+/* special rules for the docs in the meta-tab */
+
+#meta_content_doc {
+  .op-doc {
+    .op-doc__name {
+      display: block;
+      color: $color-ca;
+      font-size: 18px;
+    }
+
+    .op-doc__namespace {
+      display: none;
+    }
+
+    // .op-doc__headline {
+    //   font-size: 16px;
+    // }
+
+    // .op-doc__port-name {
+    //   font-size: 13px;
+    // }
   }
 }
 

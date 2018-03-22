@@ -66,7 +66,6 @@ CABLES.UI.OpDocs=function()
      * @param {array} opDocs - The array of op docs
      */
     function extendOpDocs(opDocs) {
-        console.log('opDocs: ', opDocs);
         if(!opDocs) { console.error('No op docs found!'); return; }
         for(var i=0; i<opDocs.length; i++) {
             var opDoc = opDocs[i];
