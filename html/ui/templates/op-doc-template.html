@@ -1,0 +1,52 @@
+<script id="op-doc-template" type="text/x-handlebars-template">
+    <div class="op-doc">
+        <base target="_blank"> <!-- open links in new window -->
+        {{#if opDoc}}
+            <p class="op-doc__name">{{opDoc.shortName}}</p>
+            <p class="op-doc__namespace">{{opDoc.name}}</p>
+            {{#if opDoc.summary}}
+                <div class="op-doc__summary">{{{opDoc.summaryHtml}}}</div>
+            {{/if}}
+            {{#if opDoc.hasScreenshot}}
+                <img class="op-doc__screenshot" src="/op/screenshot/{{ opDoc.name }}.png"/>
+            {{/if}}
+            {{#if opDoc.content}}
+                <div class="op-doc__description">
+                    {{{opDoc.content}}}
+                </div>
+            {{/if}}
+            {{#if opDoc.layout.portsIn}}
+                <h3 class="op-doc__headline">Inputs</h3>
+                <ul class="op-doc__port-list">
+                {{#each opDoc.layout.portsIn}}
+                    <li class="op-doc__port">
+                        <span class="op-doc__port-bullet bg-color-port-{{typeString}}"></span>
+                        <span class="op-doc__port-name">{{name}}</span>
+                        {{#if text}}
+                            <div class="op-doc__port-doc">
+                                {{{text}}}
+                            </div>
+                        {{/if}}
+                    </li>
+                {{/each}}
+                </ul>
+            {{/if}}
+            {{#if opDoc.layout.portsOut}}
+                <h3 class="op-doc__headline">Outputs</h3>
+                <ul class="op-doc__port-list">
+                {{#each opDoc.layout.portsOut}}
+                    <li class="op-doc__port">
+                        <span class="op-doc__port-bullet bg-color-port-{{typeString}}"></span>
+                        <span class="op-doc__port-name">{{name}}</span>
+                        {{#if text}}
+                            <div class="op-doc__port-doc">
+                                {{{text}}}
+                            </div>
+                        {{/if}}
+                    </li>
+                {{/each}}
+                </ul>
+            {{/if}}
+        {{/if}}
+    </div>
+</script>

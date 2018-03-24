@@ -189,13 +189,6 @@
     }
 
 
-	.op_handle_default { fill:$color_op_handle_default;}
-    .op_handle_gl { fill:$color_op_handle_gl; }
-    .op_handle_audio { fill:$color_op_handle_audio; }
-    .op_handle_devices { fill:$color_op_handle_devices; }
-    .op_handle_html { fill:$color_op_handle_html; }
-	.op_handle_math { fill:$color_op_handle_math; }
-	.op_handle_math { fill:$color_op_handle_math; }
 
     .port
     {
@@ -297,6 +290,23 @@
 
 }
 
+#patch,#opselect-layout
+{
+    .op_handle_default { fill:$color_op_handle_default;}
+    .op_handle_gl { fill:$color_op_handle_gl; }
+    .op_handle_audio { fill:$color_op_handle_audio; }
+    .op_handle_devices { fill:$color_op_handle_devices; }
+    .op_handle_html { fill:$color_op_handle_html; }
+	.op_handle_math { fill:$color_op_handle_math; }
+
+}
+
+.color-op-category-default { color: $color_op_handle_audio; }
+.color-op-category-gl { color: $color_op_handle_gl; }
+.color-op-category-audio { color: $color_op_handle_audio; }
+.color-op-category-devices { color: $color_op_handle_devices; }
+.color-op-category-html { color: $color_op_handle_html; }
+.color-op-category-math { color: $color_op_handle_math; }
 
 #suggestionDialog
 {

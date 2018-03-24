@@ -8,7 +8,82 @@ CABLES.UI.OpDocs=function()
     this.layoutPaper=null;
     this.libs=[];
 
-    console.log('op docs');
+    /**
+     * Creates a "typeString" attribute for each port-object in the array (e.g. "Value")
+     * @param {array} ports - Array of port objects with a "type" attribute
+     */
+    function addTypeStringToPorts(ports) {
+        if(!ports) { console.warn('addTypeStringToPorts(): ports is not defined'); return; }
+        for(var i=0; i<ports.length; i++) {
+            var port = ports[i];
+            if(port && typeof port.type !== 'undefined') {
+                port.typeString = CABLES.Port.portTypeNumberToString(port.type);   
+            }
+        }
+    }
+
+    /**
+     * Checks for the existence of a documentation text for the port with name `port.name`
+     * @param {object} port - The port-object containing a `name` property to look for
+     * @param {object} opDoc - The doc object of the op
+     * @returns {string} - The documeentation for the port as html (markdown parsed)
+     */
+    function getPortDocText(port, opDoc) {
+        if(!port || !opDoc || !opDoc.docs || !opDoc.docs.ports) { return; }
+        for(var i=0; i<opDoc.docs.ports.length; i++) {
+            if(opDoc.docs.ports[i].name === port.name) {
+                var html = mmd(opDoc.docs.ports[i].text.trim()); // parse markdown
+                return html;
+            }
+        }
+    }
+
+    /**
+     * Sets a `text` property for each port with the documentation
+     * @param {object} ports - Array-like object with ports 
+     * @param {object} opDoc - The op doc
+     */
+    function setPortDocTexts(ports, opDoc) {
+        if(!ports) { console.warn('getPortDocText called with empty argument!'); return; }
+        for(var i=0; i<ports.length; i++) {
+            var port = ports[i];
+            var portDocText = getPortDocText(port, opDoc);
+            if(portDocText) {
+                port.text = portDocText;
+            } else {
+                port.text = '';
+            }
+        }
+    }
+
+    function parseMarkdown(mdText) {
+        if(!mdText) { return ''; }
+        return mmd(mdText);
+    }
+
+    /**
+     * Adds some properties to each doc in the op docs array
+     * @param {array} opDocs - The array of op docs
+     */
+    function extendOpDocs(opDocs) {
+        if(!opDocs) { console.error('No op docs found!'); return; }
+        for(var i=0; i<opDocs.length; i++) {
+            var opDoc = opDocs[i];
+            opDoc.category = CABLES.Op.getNamespaceClassName(opDoc.name);
+            if(opDoc.layout) {
+                if(opDoc.layout.portsIn) {
+                    addTypeStringToPorts(opDoc.layout.portsIn);
+                    setPortDocTexts(opDoc.layout.portsIn, opDoc);
+                    opDoc.summaryHtml = parseMarkdown(opDoc.summary);
+                }
+                if(opDoc.layout.portsOut) {
+                    addTypeStringToPorts(opDoc.layout.portsOut);
+                    setPortDocTexts(opDoc.layout.portsOut, opDoc);
+                    opDoc.summaryHtml = parseMarkdown(opDoc.summary);
+                }
+            }
+        }
+    }
 
     CABLES.api.get(
         CABLES.noCacheUrl(CABLES.sandbox.getUrlDocOpsAll()),
@@ -21,6 +96,7 @@ CABLES.UI.OpDocs=function()
             if(window.process && window.process.versions['electron'])  res=JSON.parse(res);
             
             opDocs=res.opDocs;
+            extendOpDocs(opDocs); /* add attributes to the docs / parse markdown, ... */
             self.libs=res.libs;
             gui.opSelect().prepare();
         },
@@ -51,26 +127,35 @@ CABLES.UI.OpDocs=function()
             {
                 if(!opDocs[i].layout) return;
 
-                var p = Raphael(document.getElementById(elementId), 150, 40);
+                var opHeight=40;
+                var opWidth=250;
+                var p = Raphael(document.getElementById(elementId), opWidth, opHeight);
 
-                var bg=p.rect(0,0,150,50);
+                var bg=p.rect(0,0,opWidth,opHeight);
                 bg.attr("fill","#333");
                 var j=0;
 
                 if(opDocs[i].layout.portsIn)
 	                for(j=0;j<opDocs[i].layout.portsIn.length;j++)
 	                {
-	                    var portIn=p.rect(j*14,0,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
+	                    var portIn=p.rect(j*(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding*2),0,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
 	                    portIn.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsIn[j].type));
 	                }
 
                 if(opDocs[i].layout.portsOut)
 	                for(j=0;j<opDocs[i].layout.portsOut.length;j++)
 	                {
-	                    var portOut=p.rect(j*14,40-7,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
+	                    var portOut=p.rect(j*(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding*2),opHeight-CABLES.UI.uiConfig.portHeight,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
 	                    portOut.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsOut[j].type));
 	                }
 
+                    // label = gui.patch().getPaper().text();
+
+                var visualYOffset = 2;
+                var label= p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset,opDocs[i].shortName);
+                label.node.classList.add("op_handle_"+CABLES.UI.uiConfig.getNamespaceClassName(opname));
+                label.node.classList.add('op-svg-shortname');
+                CABLES.UI.cleanRaphael(label);
                 this.layoutPaper=p;
                 return;
             }
@@ -114,19 +199,51 @@ CABLES.UI.OpDocs=function()
         return html;
     }
 
+    /**
+     * Returns the op documentation object for an op
+     * @param {string} opName - Complete op name (long form), e.g. "Ops.Value"
+     */
+    this.getOpDocByName = function(opName) {
+        for(var i=0; i<opDocs.length; i++) {
+            if(opDocs[i].name === opName) {
+                return opDocs[i];
+            }
+        }
+    };
+
+    /**
+     * Returns the documentation for an op as Html, replaces `get` function.
+     * Does not render the op-svg (layout).
+     * @param {string} opName - The name of the op to get the documantation as Html for
+     */
+    this.get2 = function(opName) {
+        var opDoc = this.getOpDocByName(opName);
+        if(!opDoc) { console.error('Op doc not found: ' + opName); return; }
+
+        var html = CABLES.UI.getHandleBarHtml('op-doc-template', {
+            opDoc: opDoc
+        });
+        return html;
+    };
+
+    /**
+     * OLD! Use `get2` instead! This can be removed...
+     * @param {string} opname - The op name to get the documentation as Html for
+     */
     this.get=function(opname)
     {
         for(var i=0;i<opDocs.length;i++)
             if(opDocs[i].name==opname)
             {
-                var html='<div>';
+                var html='<div class="op-doc">';
                 // if( (!html || html.length==0) && opDocs[i].name )
                 {
                     var nameParts=opDocs[i].name.split('.');
-                    html='<h1 class="opTitleSvg">'+nameParts[nameParts.length-1]+'</h1>';
-
-                    html+='<p><em><a target="_blank" href="/op/' + ( opDocs[i].name || '' ) + '"><i class="icon icon-link"></i>' + ( opDocs[i].name || '' ) + '</a></em></p>';
-                    html+='<p>' + ( opDocs[i].summary || '' ) + '</p>';
+                    // html='<h1 class="opTitleSvg">'+nameParts[nameParts.length-1]+'</h1>';
+                    var namespaceClass = 'color-op-category-' + CABLES.UI.uiConfig.getNamespaceClassName(opname);
+                    // html+='<p><em><a class="namespace-link ' + namespaceClass + '" target="_blank" href="/op/' + ( opDocs[i].name || '' ) + '"><i class="icon icon-link"></i>' + ( opDocs[i].name || '' ) + '</a></em></p>';
+                    html+='<p class="namespace-wrapper"><span class="namespace ' + namespaceClass + '">' + ( opDocs[i].name || '' ) + '</span></p>';
+                    html+='<p class="op-summary">' + ( opDocs[i].summary || '' ) + '</p>';
                 }
 
                 if(opDocs[i].hasScreenshot)

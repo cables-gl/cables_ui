@@ -201,6 +201,23 @@ input[type="text"]
     }
 }
 
+.button--with-icon {
+    .icon {
+        position: relative;
+        width: 12px;
+        height: 12px;
+        top: 2px;
+        margin-left: 4px;
+        background-color: $color-c6;
+    }
+
+    &:hover {
+        .icon {
+            background-color: $color-c3;
+        }
+    }
+}
+
 
 .smallbutton
 {
@@ -634,6 +651,7 @@ input[type=range]:focus {
 @import 'components/params.scss';
 @import 'components/projectsearch.scss';
 @import 'components/canvas.scss';
+@import 'components/op-doc.scss';
 @import 'libs/iztoast.scss';
 @import 'libs/highlightjs-monokai';
 // vue-components

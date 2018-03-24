@@ -1117,7 +1117,7 @@ CABLES.UI.GUI = function() {
     // };
 
     this.getOpDoc = function(opname, html, cb) {
-        cb(this.opDocs.get(opname));
+        cb(this.opDocs.get2(opname));
     };
 
 
