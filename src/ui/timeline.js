@@ -773,7 +773,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
     function setCursor(time)
     {
 
-        if(gui.scene().timer.isPlaying() && time>self._loopEnd && self_loopBegin!=-1)
+        if(gui.scene().timer.isPlaying() && ((time>self._loopEnd && self._loopBegin!=-1) || (time<self._loopBegin && self._loopBegin!=-1)))
         {
             gui.scene().timer.setTime(self._loopBegin);
         }
