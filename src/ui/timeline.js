@@ -461,6 +461,12 @@ CABLES.ANIM.UI.TimeLineUI=function()
     var cursorLineDisplay = paperTime.path("M 0 0 L 0 10");
     cursorLineDisplay.node.classList.add('timeline-cursor');
 
+    this._loopAreaRect=paperTime.rect(0,1140,110,0);
+    // this._loopAreaRect.node.classList.add("timeline-overview-area");
+    this._loopAreaRect.attr({"fill":'#fff'});
+    this._loopBegin=-1;
+    this._loopEnd=0;
+
 
     var oldPos=0;
     overviewRect=paperOverview.rect( 0,0,10,10).attr({
@@ -766,6 +772,14 @@ CABLES.ANIM.UI.TimeLineUI=function()
 
     function setCursor(time)
     {
+
+        if(time>self._loopEnd)
+        {
+
+            gui.scene().timer.setTime(self._loopBegin);
+        }
+        
+
         if(time<0)time=0;
         if(isNaN(time))time=0;
 
@@ -1154,6 +1168,24 @@ CABLES.ANIM.UI.TimeLineUI=function()
             case 34: // pg down
             break;
 
+
+            case 66: // b BEGIN 
+                if(self._loopBegin==self.getTime() || self._loopBegin>self._loopEnd)
+                {
+                    self._loopBegin=-1;
+                    self._loopEnd=0;
+                    self._loopAreaRect.hide();
+                    updateTimeDisplay();
+                    return;
+                }
+                self._loopBegin=self.getTime();
+                updateTimeDisplay();
+            break;
+
+            case 78: // n end loop
+                self._loopEnd=self.getTime();
+                updateTimeDisplay();
+            break;
 
             default:
                 // console.log('key ',e.which);
@@ -1704,6 +1736,24 @@ CABLES.ANIM.UI.TimeLineUI=function()
                 count++;
 
             }
+        }
+
+        if(self._loopBegin!=-1)
+        {
+            var time=self._loopBegin*CABLES.ANIM.TIMESCALE;
+            var w=(self._loopEnd-self._loopBegin)*CABLES.ANIM.TIMESCALE;
+
+            self._loopAreaRect.attr({
+                "x":time,
+                "y":0,
+                "width":w,
+                "opacity":0.15,
+                "height":1000
+            });
+            self._loopAreaRect.show();
+            self._loopAreaRect.toFront();
+
+
         }
     }
 

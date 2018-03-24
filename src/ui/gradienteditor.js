@@ -47,9 +47,13 @@ CABLES.GradientEditor.prototype.updateCanvas=function()
 
         var keyA=keys[i];
         var keyB=keys[i+1];
-        
+    
+        // console.log('----------');
         for(var x=keyA.pos*this._width;x<keyB.pos*this._width;x++)
         {
+
+// console.log(keyA.r);
+
             var p=CABLES.map(x,keyA.pos*this._width,keyB.pos*this._width,0,1);
 
             imageData.data[x*4+0]=( (p*keyB.r)+ (1.0-p)*(keyA.r))*255;
@@ -313,6 +317,7 @@ CABLES.GradientEditor.prototype._bindColorPicker=function()
                 // colors = this.color.colors;
                 ignoreColorChanges = false;
             }
+
 
             if (!ignoreColorChanges && CABLES.currentKey)
             {
