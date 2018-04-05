@@ -1635,13 +1635,31 @@ CABLES.ANIM.UI.TimeLineUI=function()
     $("#timeline").bind("mousewheel", function(e)
     {
         var delta = CGL.getWheelSpeed(event);
-        self.setValueScale(CABLES.ANIM.VALUESCALE+delta/2);
-        
-        if(CABLES.ANIM.VALUESCALE<1)
+
+        if(e.metaKey)
         {
-            self.setValueScale(1);
+            self.setValueScale(CABLES.ANIM.VALUESCALE+delta/2);
+        
+            if(CABLES.ANIM.VALUESCALE<1)
+            {
+                self.setValueScale(1);
+            }
+
+            return;
         }
-        // self.updateViewBox();
+
+
+        var oldTime=self.getTimeLeft();
+        // CABLES.ANIM.TIMESCALE=$('#timeline').width()/(time-oldStartSeconds);
+        CABLES.ANIM.TIMESCALE+=CABLES.ANIM.TIMESCALE*delta*0.01;
+        viewBox.x=oldTime*CABLES.ANIM.TIMESCALE;
+
+
+
+        self.updateViewBox();
+        updateTimeDisplay();
+        self.updateOverviewLine();
+
     });
 
     $("#timeline").bind("mousemove", function(e)
@@ -1679,7 +1697,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
     {
         var i=0;
         var step=1;
-
         var start=(viewBox.x/CABLES.ANIM.TIMESCALE);
         var width=viewBox.w/CABLES.ANIM.TIMESCALE;
 
@@ -1687,6 +1704,11 @@ CABLES.ANIM.UI.TimeLineUI=function()
         if(width>5.5)step=10;
         if(width>13)step=20;
         if(width>20)step=100;
+        if(width>30)step=200;
+        if(width>60)step=250;
+        if(width>100)step=500;
+        if(width>200)step=1000;
+        if(width>400)step=10000;
 
         var startFrame=Math.floor( (start*self.getFPS() ) )-5;
         var endFrame=Math.floor( ((start+width)*self.getFPS() ) )+5;
