@@ -360,9 +360,6 @@ CABLES.UI.GUI = function() {
         this._elSplitterMeta.css('bottom', self.infoHeight + 'px');
         this._elSplitterMeta.css('width', metaWidth - 22 + 'px');
 
-
-console.log(self.infoHeight);
-
         if (self.infoHeight === 0) {
             this._elInforArea.hide();
             $('#splitterMeta').hide();

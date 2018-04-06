@@ -71,7 +71,10 @@ CABLES.UI.MetaCode=function(projectId)
                     $('#meta_content_code').html(html);
 
 
-                });
+                },function()
+            {
+                console.log('error api?');
+            });
         }
 
     };
