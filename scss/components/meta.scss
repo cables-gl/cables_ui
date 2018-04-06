@@ -10,8 +10,9 @@
 #meta
 {
     position:absolute;
-    overflow: auto;
-    overflow-x: hidden;
+    // overflow: auto;
+    // overflow-x: hidden;
+    overflow: hidden;
 	background-color: $background-color-dark;
 
     div
