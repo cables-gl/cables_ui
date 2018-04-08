@@ -754,10 +754,7 @@ CABLES.UI.Patch = function(_gui) {
             if (this.ops[i].op.uiAttribs.warning) delete this.ops[i].op.uiAttribs.warning;
         }
 
-        gui.jobs().start({
-            id: 'projectsave',
-            title: 'saving project'
-        });
+        gui.jobs().start({ id: 'projectsave', title: 'saving project' });
 
         var w = $('#glcanvas').attr('width');
         var h = $('#glcanvas').attr('height');
@@ -832,8 +829,7 @@ CABLES.UI.Patch = function(_gui) {
 
             gui.patch().getLargestPort();
 
-            CABLES.UI.notify('patch saved');
-
+            
             CABLES.api.put(
                 'project/' + id, {
                     "name": name,
@@ -843,12 +839,13 @@ CABLES.UI.Patch = function(_gui) {
                     gui.jobs().finish('projectsave');
                     gui.setStateSaved();
                     if (cb) cb();
-
+                    
                     self._serverDate=r.updated;
                     if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
+                    else CABLES.UI.notify('patch saved');
 
 
-                    console.log(r);
+                    // console.log(r);
 
                     var screenshotTimeout = setTimeout(function() {
                         // $('#glcanvas').attr('width', w);
@@ -862,27 +859,18 @@ CABLES.UI.Patch = function(_gui) {
                         gui.patch().scene.resume();
                     }, 1000);
 
-                    // gui.jobs().start({
-                    //     id: 'uploadscreenshot',
-                    //     title: 'uploading screenshot'
-                    // });
+
                     gui.patch().scene.pause();
                     gui.patch().scene.cgl.setSize(640,360);
                     gui.patch().scene.renderOneFrame();
                     gui.patch().scene.renderOneFrame();
 
+                    gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
                     gui.patch().scene.cgl.screenShot(function(screenBlob) {
                         clearTimeout(screenshotTimeout);
 
                         gui.patch().scene.cgl.setSize(w,h);
                         gui.patch().scene.resume();
-
-                        // gui.patch().scene.cgl.onScreenShot = null;
-
-                        // $('#glcanvas').attr('width', w);
-                        // $('#glcanvas').attr('height', h);
-
-                        // console.log("uploading screenshot");
 
                         var reader = new FileReader();
 
@@ -892,8 +880,8 @@ CABLES.UI.Patch = function(_gui) {
                                     "screenshot": event.target.result //gui.patch().scene.cgl.screenShotDataURL
                                 },
                                 function(r) {
+                                    gui.jobs().finish('screenshotsave');
                                     if (gui.onSaveProject) gui.onSaveProject();
-                                    // console.log('screenshot uploaded!');
                                     // gui.jobs().finish('uploadscreenshot');
                                 });
                         };
@@ -953,7 +941,6 @@ CABLES.UI.Patch = function(_gui) {
             }
         }
 
-
         var vb = {};
         vb.w = 1 * (Math.abs(maxX - minX));
         vb.h = 1 * (Math.abs(maxY - minY));
@@ -962,7 +949,6 @@ CABLES.UI.Patch = function(_gui) {
             vb.w = Math.max(600, vb.w);
             vb.h = Math.max(600, vb.h);
         }
-
 
         if (selectedOps.length > 0) {
             vb.x = minX - vb.w / 2;
@@ -981,9 +967,7 @@ CABLES.UI.Patch = function(_gui) {
         {
             this.ops[i].fixTitle();
         }
-
     }
-
 
     this.centerViewBox = function(x, y) {
         self.animViewBox(
@@ -1044,7 +1028,6 @@ CABLES.UI.Patch = function(_gui) {
     var oldVBH = 0;
     var oldVBX = 0;
     var oldVBY = 0;
-
 
     var viewBoxAnim = {
         x: new CABLES.TL.Anim(),
@@ -1788,7 +1771,6 @@ CABLES.UI.Patch = function(_gui) {
                             "port2": self.ops[i].links[j].p2.thePort.getName(),
                         });
 
-
                         self.ops[i].links[j].hideAddButton();
 
                         self.ops[i].links[j].p1.updateUI();
@@ -1799,10 +1781,7 @@ CABLES.UI.Patch = function(_gui) {
                     }
                 }
                 self.ops[i].removeDeadLinks();
-
             }
-
-
         };
 
         scene.onLink = function(p1, p2) {
@@ -1861,7 +1840,6 @@ CABLES.UI.Patch = function(_gui) {
                         }
                     });
                 }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id);
-    
             }
         };
 
@@ -1880,7 +1858,6 @@ CABLES.UI.Patch = function(_gui) {
             gui.patchConnection.send(CABLES.PACO_OP_DELETE, {
                 "op": op.id,
             });
-
 
             for (var i in self.ops) {
                 if (self.ops[i].op == op) {
@@ -2003,7 +1980,6 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         $('#subpatch_breadcrumb').html(str);
-
     };
 
     this.getSelectedOps = function() {
@@ -2027,8 +2003,6 @@ CABLES.UI.Patch = function(_gui) {
                 bounds.maxy = Math.max(bounds.maxy, selectedOps[j].op.uiAttribs.translate.y);
             }
         }
-
-        // console.log(bounds);
 
         return bounds;
     };
@@ -2535,7 +2509,6 @@ CABLES.UI.Patch = function(_gui) {
         if (currentOp) self.showOpParams(currentOp.op);
     };
 
-
     var eventListeners = {};
     this.addEventListener = function(name, cb) {
         eventListeners[name] = eventListeners[name] || [];
@@ -2558,9 +2531,7 @@ CABLES.UI.Patch = function(_gui) {
         delayedShowOpParams = setTimeout(function() {
             self._showOpParams(op);
         }, 30);
-
     };
-
 
     function checkDefaultValue(op, index) {
         if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null) {
@@ -2580,12 +2551,7 @@ CABLES.UI.Patch = function(_gui) {
         var i = 0;
         callEvent('opSelected', op);
 
-
         op.isServerOp=gui.serverOps.isServerOp(op.objName);
-        // if(currentOp)currentOp.onUiAttrChange=function()
-        // {
-        //
-        // };
 
         // show first anim in timeline
         if (self.timeLine) {
@@ -2761,7 +2727,6 @@ CABLES.UI.Patch = function(_gui) {
                         gui.scene().addOp('Ops.Gl.Texture', {}, function(newop) {
                             gui.scene().link(op, thePort.name, newop, newop.getFistOutPortByType(thePort.type).name);
                         });
-
                     }
                 });
 
@@ -2780,11 +2745,8 @@ CABLES.UI.Patch = function(_gui) {
                             console.log('setvalue...');
                             gui.jobs().finish('saveeditorcontent');
                             thePort.set(content);
-
-
                         }
                     });
-                    // console.log('edit clicked...ja...');
                 });
 
                 $('#portbutton_' + index).on('click', function(e) {
@@ -2853,6 +2815,7 @@ CABLES.UI.Patch = function(_gui) {
                             v = parseFloat(v);
                         }
                     }
+
                     if (op.portsIn[index].uiAttribs.type == 'int') {
                         if (isNaN(v) || v === '') {
                             $('#portval_' + index).addClass('invalid');
@@ -2861,7 +2824,6 @@ CABLES.UI.Patch = function(_gui) {
                             $('#portval_' + index).removeClass('invalid');
                             v = parseInt(v, 10);
                         }
-
                     }
 
                     if (op.portsIn[index].uiAttribs.display == 'bool') {
@@ -2879,7 +2841,6 @@ CABLES.UI.Patch = function(_gui) {
                         "port": op.portsIn[index].name,
                         "v": v
                     });
-                    // console.log("val...",v,op.portsIn[index]);
 
                     checkDefaultValue(op, index);
 
@@ -3024,12 +2985,10 @@ CABLES.UI.Patch = function(_gui) {
             CABLES.watchPortVisualize.update(id, watchPorts[i].watchId, watchPorts[i].get());
         }
 
-
         if (CABLES.UI.uiConfig.watchValuesInterval > 0)
             setTimeout(doWatchPorts, CABLES.UI.uiConfig.watchValuesInterval);
     }
 
-    // var tempRes={x:0,y:0};
     var uupos = null;
     var ctm;
 
@@ -3044,7 +3003,6 @@ CABLES.UI.Patch = function(_gui) {
 
         return uupos;
     };
-
 
     this.addAssetOpAuto = function(filename, event) {
         if (!event) return;
@@ -3222,7 +3180,6 @@ CABLES.UI.Patch = function(_gui) {
                 });
 
             }
-
         }
 
         if (suggestions.length === 0) {
@@ -3272,14 +3229,7 @@ CABLES.UI.Patch = function(_gui) {
                             sugIn[id].p.name);
                         return;
                     });
-
-
             }, false);
-
-
-
     };
-
-
 
 };
