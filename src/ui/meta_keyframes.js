@@ -77,7 +77,6 @@ CABLES.UI.MetaKeyframes.prototype.setAnim=function(anim)
     if(CABLES.UI.userSettings.get("metatab")=="keyframes")
     {
         self.anim=anim;
-        console.log(anim);
         this.show();
     }
 

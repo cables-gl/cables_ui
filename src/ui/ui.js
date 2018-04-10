@@ -364,7 +364,7 @@ CABLES.UI.GUI = function() {
         this._elMenubar.css('width', window.innerWidth - self.rendererWidthScaled - 10);
         this._elMenubar.css('height', menubarHeight);
 
-        this._elSplitterMeta.css('bottom', self.infoHeight + 30 + 'px');
+        this._elSplitterMeta.css('bottom', self.infoHeight + 'px');
         this._elSplitterMeta.css('width', metaWidth - 22 + 'px');
 
         if (self.infoHeight === 0) {
@@ -373,7 +373,7 @@ CABLES.UI.GUI = function() {
         } else {
             this._elInforArea.css('width', (metaWidth - 20) + 'px');
             this._elInforArea.css('height', (self.infoHeight) + 'px');
-            this._elInforArea.css('bottom', '0px');
+            this._elInforArea.css('top', (window.innerHeight - self.rendererHeight - self.infoHeight)+'px');
         }
 
         $('#meta_content').css('height', window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
@@ -1472,6 +1472,8 @@ function startUi(event)
         gui.patch().fixTitlePositions();
         gui.opSelect().prepare();
         gui.opSelect().search();
+        self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
+
     });
 
     $('#glcanvas').on("focus", function() {
@@ -1501,6 +1503,7 @@ function startUi(event)
         {
             gui.patch().checkUpdated();
         }
+
         
     }, false);
 

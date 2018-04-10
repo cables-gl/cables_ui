@@ -112,7 +112,6 @@ CABLES.UI.MODAL.show=function(content,options)
         {
             CABLES.UI.MODAL.contentElement.css({padding:"0px"});
             $('#modalcontainer').css({padding:"0px"});
-
         }
     }
     else
@@ -159,6 +158,11 @@ CABLES.UI.MODAL.showError=function(title,content)
     CABLES.UI.MODAL.contentElement.append(content);
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
+
+    $('.shadererrorcode').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+
 };
 
 CABLES.UI.MODAL.getFileSnippet=function(url,line,cb)

@@ -10,8 +10,9 @@
 #meta
 {
     position:absolute;
-    overflow: auto;
-    overflow-x: hidden;
+    // overflow: auto;
+    // overflow-x: hidden;
+    overflow: hidden;
 	background-color: $background-color-dark;
 
     div
@@ -79,20 +80,24 @@
     display: block;
     padding: 0px !important;
     width:100%;
+    border-bottom: 2px solid $color-menubar-background-active;
 
     a
     {
         padding:8px !important;
         padding-bottom:8px !important;
-        padding-left:5px !important;
-        padding-right:5px !important;
-		color: $color-menubar-text;
+        padding-left:10px !important;
+        padding-right:10px !important;
+        color: $color-menubar-text;
+        opacity: 0.5;
     }
 
     a.active
     {
         background-color: $color-menubar-background-active;
         color: $color-ca;
+        opacity: 1.0;
+        border-bottom:1px solid $color-special;
     }
 }
 

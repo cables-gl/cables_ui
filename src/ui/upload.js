@@ -106,14 +106,12 @@ CABLES.uploadFiles=function(files)
     };
 
 
-
-
     xhr.onload = function (e,r)
     {
         var msg='';
         var res='';
 
-        console.log(e.target.response);
+        // console.log(e.target.response);
 
         try
         {
@@ -128,7 +126,7 @@ CABLES.uploadFiles=function(files)
         CABLES.UI.fileSelect.load();
         CABLES.UI.fileSelect.show();
 
-        console.log('upload response: ', res);
+        // console.log('upload response: ', res);
 
         gui.patch().addAssetOpAuto('/assets/'+gui.patch().getCurrentProject()._id+'/'+res.filename,CABLES.uploadDropEvent);
 

@@ -38,8 +38,7 @@ CABLES.API=function()
                 }
                 else
                 {
-                    CABLES.UI.MODAL.show('ajax error: '+data.statusText+'<br/><br/>'+url+'<br/><br/><a class="bluebutton" style="background-color:#222" onclick="CABLES.UI.MODAL.hide()">ok</a> <br/><br/>'
-                    );
+                    if(!cbError) CABLES.UI.MODAL.show('ajax error: '+data.statusText+'<br/><br/>'+url+'<br/><br/><a class="bluebutton" style="background-color:#222" onclick="CABLES.UI.MODAL.hide()">ok</a> <br/><br/>');
                 }
 
             }

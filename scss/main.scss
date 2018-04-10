@@ -387,7 +387,10 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
     border-radius: 6px;
 }
 
-// ::-webkit-scrollbar-corner {}
+::-webkit-scrollbar-corner {
+    background: $color-scrollbar-background;
+}
+
 
 .help
 {

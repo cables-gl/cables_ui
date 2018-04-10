@@ -112,15 +112,15 @@ CABLES.UI.Preview=function()
 
             var containerEle=document.getElementById("preview_img_container");
 
-            previewCanvasEle.style.width=containerEle.offsetWidth;
-            previewCanvasEle.style.height=containerEle.offsetWidth*(previewDataPort.get().height/previewDataPort.get().width);
+            var w=Math.min(containerEle.offsetWidth,previewDataPort.get().width||256);
+            previewCanvasEle.style.width=w;
+            previewCanvasEle.style.height=w*(previewDataPort.get().height/previewDataPort.get().width);
 
             previewCanvas.clearRect(0, 0,previewCanvasEle.width, previewCanvasEle.height);
             previewCanvas.drawImage(cgl.canvas, 0, 0,previewCanvasEle.width, previewCanvasEle.height);
 
             cgl.gl.clearColor(0,0,0,0.0);
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-
         }
     };
 
