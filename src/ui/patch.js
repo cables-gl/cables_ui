@@ -631,20 +631,21 @@ CABLES.UI.Patch = function(_gui) {
                 "viewBox": {},
                 "timeLineLength": gui.timeLine().getTimeLineLength()
             };
-    
-    
+
+
             gui.bookmarks.cleanUp();
             data.ui.bookmarks = gui.bookmarks.getBookmarks();
-    
+
             data.ui.viewBox.w = viewBox.w;
             data.ui.viewBox.h = viewBox.h;
             data.ui.viewBox.x = viewBox.x;
             data.ui.viewBox.y = viewBox.y;
             data.ui.subPatchViewBoxes = subPatchViewBoxes;
-    
+
             data.ui.renderer = {};
             data.ui.renderer.w = gui.rendererWidth;
             data.ui.renderer.h = gui.rendererHeight;
+            data.ui.renderer.s = gui.patch().scene.cgl.canvasScale||1;
 
             dialog.showSaveDialog(
                 {
@@ -787,6 +788,7 @@ CABLES.UI.Patch = function(_gui) {
         data.ui.renderer = {};
         data.ui.renderer.w = gui.rendererWidth;
         data.ui.renderer.h = gui.rendererHeight;
+        data.ui.renderer.s = data.ui.renderer.s = gui.patch().scene.cgl.canvasScale||1;
 
         // electron
         if(window.process && window.process.versions['electron']) {
@@ -1244,6 +1246,7 @@ CABLES.UI.Patch = function(_gui) {
             if (proj.ui.renderer) {
                 gui.rendererWidth = proj.ui.renderer.w;
                 gui.rendererHeight = proj.ui.renderer.h;
+                gui.patch().scene.cgl.canvasScale=proj.ui.renderer.s||1;
                 gui.setLayout();
             }
 

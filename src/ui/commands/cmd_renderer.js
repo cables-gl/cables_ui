@@ -55,6 +55,21 @@ CABLES.CMD.RENDERER.resetSize = function()
 
 };
 
+CABLES.CMD.RENDERER.scaleCanvas = function()
+{
+    CABLES.UI.MODAL.prompt(
+        "Change Scale of Renderer ",
+        "Enter a new scale",
+        gui.patch().scene.cgl.canvasScale,
+        function(r)
+        {
+            var s=parseFloat(r);
+            gui.patch().scene.cgl.canvasScale = s;
+            gui.setLayout();
+        });
+
+};
+
 CABLES.CMD.RENDERER.changeSize = function()
 {
     CABLES.UI.MODAL.prompt(
@@ -104,7 +119,12 @@ CABLES.CMD.commands.push({
         category: "renderer",
         func: CABLES.CMD.RENDERER.screenshotUpload,
         icon: 'image'
+    }, {
+        cmd: "scale renderer",
+        category: "renderer",
+        func: CABLES.CMD.RENDERER.scaleCanvas,
+        icon: 'image'
     }
-
+    
 
 );

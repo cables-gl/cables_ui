@@ -88,6 +88,7 @@ CABLES.UI.GUI = function() {
     this.timingHeight = 250;
     this.rendererWidth = 640;
     this.rendererHeight = 360;
+    
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 400;
 
     this.toggleEditor = function() {
@@ -149,14 +150,20 @@ CABLES.UI.GUI = function() {
             self.rendererHeight = window.innerHeight;
         }
 
+        self.rendererWidthScaled=self.rendererWidth*gui.patch().scene.cgl.canvasScale;
+        self.rendererHeightScaled=self.rendererHeight*gui.patch().scene.cgl.canvasScale;
+
         self.rendererWidth=Math.floor(self.rendererWidth);
         self.rendererHeight=Math.floor(self.rendererHeight);
 
         if(gui.patch().scene.cgl.canvasWidth)
-        $('#canvasInfoSize').html('size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight);
+        {
+            var sizeStr='size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight;
+            if(gui.patch().scene.cgl.canvasScale!=1)sizeStr+=' (scale '+gui.patch().scene.cgl.canvasScale+')';
+            $('#canvasInfoSize').html(sizeStr);
+        }
 
         var iconBarWidth=iconBarWidth||80;
-
 
         // self.showCanvasModal(false);
 
@@ -173,7 +180,7 @@ CABLES.UI.GUI = function() {
         var timedisplayheight = 25;
 
         var patchHeight = window.innerHeight - menubarHeight - 2;
-        var patchWidth = window.innerWidth - self.rendererWidth - 6 - iconBarWidth;
+        var patchWidth = window.innerWidth - self.rendererWidthScaled - 6 - iconBarWidth;
 
         if (showTiming) {
             patchHeight = patchHeight - this.timingHeight - 2;
@@ -249,11 +256,11 @@ CABLES.UI.GUI = function() {
         $('#patch svg').css('height', patchHeight);
         $('#patch svg').css('width', patchWidth);
 
-        this._elSplitterPatch.css('left', window.innerWidth - self.rendererWidth - 4);
+        this._elSplitterPatch.css('left', window.innerWidth - self.rendererWidthScaled - 4);
         this._elSplitterPatch.css('height', patchHeight + timelineUiHeight + 2);
         this._elSplitterPatch.css('top', menubarHeight);
-        this._elSplitterRenderer.css('top', self.rendererHeight);
-        this._elSplitterRenderer.css('width', self.rendererWidth);
+        this._elSplitterRenderer.css('top', self.rendererHeightScaled);
+        this._elSplitterRenderer.css('width', self.rendererWidthScaled);
         // this._elSplitterRendererWH.css('right', self.rendererWidth - 35);
         // this._elSplitterRendererWH.css('top', self.rendererHeight - 30);
 
@@ -337,24 +344,24 @@ CABLES.UI.GUI = function() {
 
         $('#delayed').css('left', window.innerWidth - self.rendererWidth + 10);
 
-        this._elOptions.css('left', window.innerWidth - self.rendererWidth - 1);
-        this._elOptions.css('top', self.rendererHeight);
+        this._elOptions.css('left', window.innerWidth - self.rendererWidthScaled - 1);
+        this._elOptions.css('top', self.rendererHeightScaled);
         this._elOptions.css('width', optionsWidth);
-        this._elOptions.css('height', window.innerHeight - self.rendererHeight);
+        this._elOptions.css('height', window.innerHeight - self.rendererHeightScaled);
 
-        var metaWidth = self.rendererWidth - optionsWidth + 1;
+        var metaWidth = self.rendererWidthScaled - optionsWidth + 1;
         this._elMeta.css('right', 0);
-        this._elMeta.css('top', self.rendererHeight);
+        this._elMeta.css('top', self.rendererHeightScaled);
         this._elMeta.css('width', metaWidth);
-        this._elMeta.css('height', window.innerHeight - self.rendererHeight);
+        this._elMeta.css('height', window.innerHeight - self.rendererHeightScaled);
 
         $('#performance_glcanvas').css('bottom', 0);
         // $('#performance_glcanvas').css('right',($('#performance_glcanvas').width()-(self.rendererWidth+optionsWidth))) ;
-        $('#performance_glcanvas').css('right', self.rendererWidth - optionsWidth - $('#performance_glcanvas').width() + 1);
+        $('#performance_glcanvas').css('right', self.rendererWidthScaled - optionsWidth - $('#performance_glcanvas').width() + 1);
         // $('#performance_glcanvas').css('max-width',self.rendererWidth-optionsWidth);
 
         this._elMenubar.css('top', 0);
-        this._elMenubar.css('width', window.innerWidth - self.rendererWidth - 10);
+        this._elMenubar.css('width', window.innerWidth - self.rendererWidthScaled - 10);
         this._elMenubar.css('height', menubarHeight);
 
         this._elSplitterMeta.css('bottom', self.infoHeight + 30 + 'px');
@@ -369,7 +376,7 @@ CABLES.UI.GUI = function() {
             this._elInforArea.css('bottom', '0px');
         }
 
-        $('#meta_content').css('height', window.innerHeight - self.rendererHeight - self.infoHeight - 50);
+        $('#meta_content').css('height', window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
 
         if (self.rendererWidth === 0) {
             this._elGlCanvas.attr('width', window.innerWidth);
@@ -391,6 +398,10 @@ CABLES.UI.GUI = function() {
             // this._elCablesCanvas.attr('height', self.rendererHeight);
             this._elCablesCanvas.css('width', self.rendererWidth + 'px');
             this._elCablesCanvas.css('height', self.rendererHeight + 'px');
+
+            this._elCablesCanvas.css('transform-origin', 'top right' );
+            this._elCablesCanvas.css('transform', 'scale('+gui.patch().scene.cgl.canvasScale+')' );
+             
 
             gui.patch().scene.cgl.updateSize();
         }
@@ -975,7 +986,7 @@ CABLES.UI.GUI = function() {
 
         $('.tooltip').hide();
 
-        if (self.rendererWidth > window.innerWidth * 0.9)
+        if (self.rendererWidth*gui.patch().scene.cgl.canvasScale > window.innerWidth * 0.9)
         {
             self.rendererWidth = window.innerWidth * 0.4;
             self.rendererHeight = window.innerHeight * 0.25;
@@ -1292,11 +1303,8 @@ CABLES.UI.GUI = function() {
                 }
                 return message;
             };
-    
         }
     };
-
-
     
     this.closeInfo = function() {
         this.infoHeight = 0;
@@ -1323,11 +1331,14 @@ CABLES.UI.GUI = function() {
             var posCanvas = $('#glcanvas').offset();
 
             $('#canvasicons').css({
-                width: $('#glcanvas').width(),
-                top: $('#glcanvas').height() + 1,
+                width: self.rendererWidth*gui.patch().scene.cgl.canvasScale,
+                top: self.rendererHeight*gui.patch().scene.cgl.canvasScale+1,
                 left: posCanvas.left
             });
-            $('#canvasInfoSize').html('size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight);
+
+            var sizeStr='size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight;
+            if(gui.patch().scene.cgl.canvasScale!=1)sizeStr+=' (scale: '+gui.patch().scene.cgl.canvasScale+') '
+            $('#canvasInfoSize').html(sizeStr);
         }
         else
         {

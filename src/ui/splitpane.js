@@ -11,7 +11,7 @@ $( document ).ready(function()
         {
             e.preventDefault();
 
-            gui.rendererWidth=window.innerWidth - e.clientX;
+            gui.rendererWidth=(window.innerWidth - e.clientX)*(1/gui.patch().scene.cgl.canvasScale);
             gui.setLayout();
         });
     });
@@ -40,7 +40,7 @@ $( document ).ready(function()
         {
             e.preventDefault();
 
-            gui.rendererHeight= e.clientY;
+            gui.rendererHeight= e.clientY*(1/gui.patch().scene.cgl.canvasScale);
             gui.setLayout();
         });
     });
@@ -76,8 +76,8 @@ $( document ).ready(function()
         {
             e.preventDefault();
 
-            gui.rendererWidth=window.innerWidth - e.clientX+3;
-            gui.rendererHeight= e.clientY-38;
+            gui.rendererWidth=(window.innerWidth - e.clientX)*(1/gui.patch().scene.cgl.canvasScale)+3;
+            gui.rendererHeight= e.clientY*(1/gui.patch().scene.cgl.canvasScale)-38;
             gui.setLayout();
             $('#glcanvas').focus();
         });
