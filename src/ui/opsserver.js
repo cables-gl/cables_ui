@@ -444,8 +444,6 @@ CABLES.UI.ServerOps = function(gui) {
 
     };
 
-
-
     this._loadedLibs = [];
 
     this.getOpLibs = function(opname, checkLoaded) {
@@ -454,7 +452,7 @@ CABLES.UI.ServerOps = function(gui) {
                 if (ops[i].libs) {
                     var libs = [];
                     for (var j = 0; j < ops[i].libs.length; j++) {
-                        var libName = '/libs/' + ops[i].libs[j];
+                        var libName = ops[i].libs[j];
                         if (!checkLoaded) {
                             libs.push(libName);
                         } else
@@ -485,25 +483,27 @@ CABLES.UI.ServerOps = function(gui) {
             return;
         }
 
-        var id = CABLES.generateUUID();
-        loadjs(libsToLoad, 'oplibs' + id);
+        var loader=new CABLES.libLoader(libsToLoad,
+            function()
+            {
+                next();
+                
+            });
 
+        // var id = CABLES.generateUUID();
+        // loadjs(libsToLoad, 'oplibs' + id);
 
+        // loadjs.ready('oplibs' + id, function() {
+        //     for (var i = 0; i < libsToLoad.length; i++) {
+        //         this._loadedLibs.push(libsToLoad[i]);
 
-        loadjs.ready('oplibs' + id, function() {
-            for (var i = 0; i < libsToLoad.length; i++) {
-                this._loadedLibs.push(libsToLoad[i]);
+        //         console.log('loaded libs...', this._loadedLibs);
 
-                console.log('loaded libs...', this._loadedLibs);
+        //     }
 
-            }
-
-
-            // console.log(this._loadedLibs);
-            next();
-        }.bind(this));
-
-
+        //     // console.log(this._loadedLibs);
+        //     next();
+        // }.bind(this));
     };
 
     this.isLibLoaded = function(libName) {
@@ -546,21 +546,25 @@ CABLES.UI.ServerOps = function(gui) {
             return;
         }
 
-        if (!this.isLibLoaded(libsToLoad[0])) {
-            var lid = 'oplibs' + libsToLoad[0];
 
-            try {
-                loadjs.ready(lid, libReady.bind(this));
-                loadjs(libsToLoad, lid);
-            } catch (e) {
-                console.log('...', e);
-            }
+        var loader=new CABLES.libLoader(libsToLoad,
+            function()
+            {
+                next();
+            });
+        // if (!this.isLibLoaded(libsToLoad[0])) {
+        //     var lid = 'oplibs' + libsToLoad[0];
 
-        } else {
-            next();
-        }
+        //     try {
+        //         loadjs.ready(lid, libReady.bind(this));
+        //         loadjs(libsToLoad, lid);
+        //     } catch (e) {
+        //         console.log('...', e);
+        //     }
 
-
+        // } else {
+        //     next();
+        // }
 
     };
 
