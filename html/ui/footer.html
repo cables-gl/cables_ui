@@ -64,7 +64,7 @@
                 'js/ace/ace.js'
             ], 'libs');
 
-            if(document.location.href.indexOf('https://cables.gl')!=-1) jsType='min';
+            if(document.location.href.indexOf('https://cables.gl')!=-1 || document.location.href.indexOf('https://move.cables.gl')!=-1) jsType='min';
                 else jsType='max';
 
             loadjs.ready('libs', function()
