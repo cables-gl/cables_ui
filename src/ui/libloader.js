@@ -1,29 +1,30 @@
+CABLES.UI.loadedLibs=[];
 CABLES.libLoader=function(libnames,cb)
 {
     this.libsToLoad=libnames;
     this._cb=cb;
-    console.log('libsToLoad: '+this.libsToLoad.length);
+    // console.log('libsToLoad: '+this.libsToLoad.length);
 
     gui.jobs().start({
         id: 'loadlibs',
         title: 'loading libs'
     });
 
-
-
     for(var i in libnames)
     {
-
         this.loadLib(libnames[i]);
     }
-
-      
-
 
 };
 
 CABLES.libLoader.prototype.loadLib=function(name)
 {
+    if(CABLES.UI.loadedLibs.indexOf(name)>-1)
+    {
+        console.log("lib already loaded: "+name);
+        gui.jobs().finish('loadlibs');
+        return;
+    }
 
     CABLES.onLoadedLib[name]=function(name)
     {
@@ -31,6 +32,7 @@ CABLES.libLoader.prototype.loadLib=function(name)
         this.libsToLoad.splice(i, 1);
         console.log('libsToLoad: '+this.libsToLoad.length);
         console.log('loaded lib: '+name);
+        CABLES.UI.loadedLibs.push(name);
 
         if(this.libsToLoad.length==0)
         {
