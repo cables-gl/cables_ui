@@ -17,12 +17,24 @@ CABLES.libLoader=function(libnames,cb)
 
 };
 
+CABLES.libLoader.prototype.checkAllLoaded=function(name)
+{
+    if(this.libsToLoad.length==0)
+    {
+        if(this._cb)this._cb();
+        gui.jobs().finish('loadlibs');
+    }
+}
+
 CABLES.libLoader.prototype.loadLib=function(name)
 {
     if(CABLES.UI.loadedLibs.indexOf(name)>-1)
     {
+        var i=this.libsToLoad.indexOf(name);
+        this.libsToLoad.splice(i, 1);
+
         console.log("lib already loaded: "+name);
-        gui.jobs().finish('loadlibs');
+        this.checkAllLoaded();
         return;
     }
 
@@ -34,11 +46,7 @@ CABLES.libLoader.prototype.loadLib=function(name)
         console.log('finished loading lib: '+name);
         CABLES.UI.loadedLibs.push(name);
 
-        if(this.libsToLoad.length==0)
-        {
-            if(this._cb)this._cb();
-            gui.jobs().finish('loadlibs');
-        }
+        this.checkAllLoaded();
         
         
     }.bind(this);
