@@ -30,8 +30,8 @@ CABLES.libLoader.prototype.loadLib=function(name)
     {
         var i=this.libsToLoad.indexOf(name);
         this.libsToLoad.splice(i, 1);
-        console.log('libsToLoad: '+this.libsToLoad.length);
-        console.log('loaded lib: '+name);
+        // console.log('libsToLoad: '+this.libsToLoad.length);
+        console.log('finished loading lib: '+name);
         CABLES.UI.loadedLibs.push(name);
 
         if(this.libsToLoad.length==0)
