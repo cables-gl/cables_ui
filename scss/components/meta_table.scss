@@ -1,0 +1,30 @@
+
+.table
+{
+    border:0;
+    padding:0;
+    border-spacing: 0px;
+    margin-bottom:20px;
+    width:100%;
+    max-width: 400px;;
+
+    th
+    {
+        background-color: $color-cz;
+        text-align: left;
+    }
+
+    tr:hover, tr td:hover
+    {
+        background-color: $color-c8;
+        color:#fff;
+    }
+
+    td,th
+    {
+        padding-top: 3px !important;
+        padding-bottom: 3px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}

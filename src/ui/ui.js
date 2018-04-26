@@ -117,7 +117,6 @@ CABLES.UI.GUI = function() {
     this.setLayout = function() {
         var startTime = performance.now();
 
-
         this._elAceEditor = this._elAceEditor || $('#ace_editor');
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
         this._elSplitterRenderer = this._elSplitterRenderer || $('#splitterRenderer');

@@ -38,21 +38,29 @@
 <br/>
     <h3>attachments</h3>
 
-    <table style="margin-bottom:10px;">
-    {{#each doc.attachmentFiles}}
-        <tr>
-            <td  onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');">
-                <a class="button fa fa-edit"></a>
-                {{.}}
-            </td>
-            <td>
-                <a class="button fa fa-times" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
-            </td>
-        </tr>
-    {{/each}}
-</table>
-<a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">add</a>
+    {{#if doc.attachmentFiles}}
+        <table class="table">
+            <tr>
+                <th>filename</th>
+            </tr>
+            {{#each doc.attachmentFiles}}
+                <tr>
+                    <td onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');">
+                        <a class=" fa fa-edit" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');"></a>
+                        {{.}}
+                    </td>
+                    <td>
+                        <a class=" fa fa-times" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+    {{else}}
+    no attachments...<br/>
+    <br/>
+    {{/if}}
 
+    <a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">create</a>
 
     <br/><br/>
 

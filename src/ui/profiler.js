@@ -35,7 +35,7 @@ CABLES.UI.Profiler=function(projectId)
         var allPortTriggers=0;
         for(i in items)
         {
-            items[i].percent=Math.round(items[i].timeUsed/allTimes*100);
+            items[i].percent=Math.floor(items[i].timeUsed/allTimes*100);
             allPortTriggers+=items[i].numTriggers;
         }
         var colorCounter=0;
@@ -78,14 +78,18 @@ CABLES.UI.Profiler=function(projectId)
             htmlPeaks+=pad+(Math.round(96*item.peak)/100)+'ms '+item.title+'<br/>';
         }
         
+        $('#profilerui').show();
         $('#profilerlistPeaks').html(htmlPeaks);
         $('#profilerbar').html(htmlBar);
         $('#profilerlist').html(html);
+        $('#profilerstartbutton').hide();
+        
         
     };
 
     this.start=function()
     {
+        
         gui.patch().scene.profile(true);
         if(!intervalId) intervalId=setInterval(this.update,1000);
     };

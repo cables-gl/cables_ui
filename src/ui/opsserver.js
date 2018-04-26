@@ -328,6 +328,7 @@ CABLES.UI.ServerOps = function(gui) {
                 if (attachmentname.endsWith(".frag")) syntax = "glsl";
                 if (attachmentname.endsWith(".vert")) syntax = "glsl";
                 if (attachmentname.endsWith(".json")) syntax = "json";
+                if (attachmentname.endsWith(".css")) syntax = "css";
 
                 gui.editor().addTab({
                     content: content,

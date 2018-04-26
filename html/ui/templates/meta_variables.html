@@ -1,21 +1,24 @@
 
 <script id="meta_variables" type="text/x-handlebars-template">
 
+    <h3>Variables</h3>
 
-
-    <h3>Variables<h3>
-
-    <table>
-
-        {{#each vars}}
-        <tr>
-            <td><a onclick="CABLES.CMD.UI.showSearch('{{getName}}');">#{{getName}}&nbsp;&nbsp;&nbsp;&nbsp;</a></td>
-            <td id="varval{{getName}}" class="monospace">{{getValue}}</td>
-        </tr>
-        {{/each}}
-
-    </table>
-
+    {{#if vars}}
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+            </tr>
+            {{#each vars}}
+            <tr>
+                <td><a onclick="CABLES.CMD.UI.showSearch('{{getName}}');">#{{getName}}&nbsp;&nbsp;&nbsp;&nbsp;</a></td>
+                <td id="varval{{getName}}" class="monospace">{{getValue}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    {{else}}
+        no variables found in patch...<br/><br/>
+    {{/if}}
 
 
 
