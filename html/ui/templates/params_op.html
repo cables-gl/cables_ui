@@ -24,6 +24,8 @@
                     <a onclick="gui.opDocs.writeSummary('{{op.objName}}')">no summary - click to write one! <i class="icon icon-edit"></i></a>
                     {{/if}}
                 {{/if}} -->
+
+
 			</div>
 
             <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="_blank">view example patches</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
@@ -80,11 +82,12 @@
             {{#if op.isServerOp }}
                 {{#if user.isAdmin}}
                 <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
-
                 <span class="button fa fa-lock" onclick="CABLES.UI.MetaCode.rename('{{op.objName}}');">rename</span>
-                <br/>
-                <span class="button fa fa-lock" onclick="">move from/to experimental</span>
                 <br/><br/>
+
+                <a onclick="CABLES.contextMenu.show({items:[{title:'hund'},{title:'elefant'},{title:'katze'},{title:'maus'}]},this);" class="button">test...</a>
+                <br/><br/>
+
                 {{/if}}
                 <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
                 <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>

@@ -1,0 +1,38 @@
+
+
+
+.contextmenu
+{
+    z-index: 9999999999;
+    border:1px solid #444;
+    background-color: #000;
+    position: absolute;
+    padding:0px !important;
+
+    .cm_item
+    {
+        padding:3px;
+        padding-left:10px;
+        padding-right:10px;
+        cursor:pointer;
+        list-style-type: none;
+
+        &:hover
+        {
+            background-color: #444;
+        }
+    }
+
+}
+
+.contextmenu_modal
+{
+    position: absolute;
+    background-color: red;
+    opacity: 0.0;
+    z-index: 9999999998;
+    width:100vw;
+    height:100vh;
+    top:0px;
+    left:0px;
+}
