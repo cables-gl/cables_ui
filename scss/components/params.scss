@@ -356,6 +356,28 @@
   border-bottom: 1px solid $highlight-color-dark;
 }
 
+#options input[type=range] {
+    background-color: $color-c8;
+    --slider-height: 18px;
+    height: var(--slider-height);
+    border-radius: 0;
+    margin: 0;
+
+    &::-moz-range-track {
+        background-color: transparent;
+        border: none;
+        height: var(--slider-height);
+    }
+
+    &::-moz-range-thumb {
+        border: none;
+        border-radius: 0;
+        background-color: $color-c4;
+        height: var(--slider-height);
+        width: var(--slider-height);
+    }
+}
+
 td.head
 {
     background-color: $color-cz;
