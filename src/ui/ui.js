@@ -657,6 +657,22 @@ CABLES.UI.GUI = function() {
             });
     };
 
+    this.rendererContextMenu=function(ele)
+    {
+        CABLES.contextMenu.show(
+            {items:
+                [
+                    {
+                        title:'set renderer size',
+                        func:CABLES.CMD.RENDERER.changeSize
+                    },
+                    {
+                        title:'set renderer scale',
+                        func:CABLES.CMD.RENDERER.scaleCanvas
+                    }
+                ]},ele);
+    }
+
     this.showConverter = function(converterId, projectId, fileId, converterName)
         {
             var html = CABLES.UI.getHandleBarHtml(
@@ -983,6 +999,7 @@ CABLES.UI.GUI = function() {
             return;
         }
 
+
         $('.tooltip').hide();
 
         if (self.rendererWidth*gui.patch().scene.cgl.canvasScale > window.innerWidth * 0.9)
@@ -998,6 +1015,7 @@ CABLES.UI.GUI = function() {
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         } else if ($('#cmdpalette').is(':visible')) gui.cmdPallet.close();
+        else if ($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
         else if ($('#searchbox').is(':visible')) $('#searchbox').hide();
         else if ($('#library').is(':visible')) $('#library').hide();
         else if ($('#sidebar').is(':visible')) $('#sidebar').animate({

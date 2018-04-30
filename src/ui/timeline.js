@@ -2164,14 +2164,13 @@ CABLES.ANIM.UI.TimeLineUI=function()
         setCursor(cursorTime);
         self.updateTime();
         this.updatePlayIcon();
-
     };
 
     this.setProjectLength=function()
     {
         var l=prompt("project length in frames:",Math.floor(projectLength*gui.timeLine().getFPS()));
         if(l===null)return;
-        projectLength=parseInt(l)/gui.timeLine().getFPS();
+        projectLength=Math.floor((parseFloat(l))/gui.timeLine().getFPS());
         self.redraw();
     };
 

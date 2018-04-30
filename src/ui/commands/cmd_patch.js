@@ -1,6 +1,7 @@
 var CABLES =CABLES||{};
 CABLES.CMD=CABLES.CMD||{};
 CABLES.CMD.PATCH={};
+CABLES.CMD.TIMELINE={};
 CABLES.CMD.commands=CABLES.CMD.commands||[];
 
 CABLES.CMD.PATCH.selectAllOps=function()
@@ -226,7 +227,10 @@ CABLES.CMD.PATCH.tidyChildOps=function()
 
 
 
-
+CABLES.CMD.TIMELINE.setLength=function()
+{
+	gui.timeLine().setProjectLength();
+};
 
 
 
@@ -349,6 +353,11 @@ CABLES.CMD.commands.push(
 		cmd:"tidy selected ops",
 		category:"patch",
 		func:CABLES.CMD.PATCH.tidyChildOps
+	},
+	{
+		cmd:"set timeline length",
+		category:"timeline",
+		func:CABLES.CMD.TIMELINE.setLength
 	}
 
 );
