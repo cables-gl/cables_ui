@@ -87,12 +87,23 @@ function() {
     );
   }
 
+  var introStepsDefined = false;
+
   this.showIntroduction = function(){
     console.log("Introduction started");
-    defineIntroSteps();
+    if(!introStepsDefined) {
+      defineIntroSteps();
+      introStepsDefined = true;
+    }
     introJs()
-      .oncomplete(disableIntroForUser)
-      .onskip(function() {}) /* needed because of introjs 2.9.0 bug: https://github.com/usablica/intro.js/issues/848 */
+      .oncomplete(function() {
+        // console.log('intro completed');
+        disableIntroForUser();
+      })
+      .onskip(function() { /* needed because of introjs 2.9.0 bug: https://github.com/usablica/intro.js/issues/848 */
+        // console.log('intro skipped');
+        disableIntroForUser();
+      })
       .setOptions({
           'showBullets': false,
           'skipLabel': 'Close',
