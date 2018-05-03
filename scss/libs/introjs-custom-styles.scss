@@ -21,6 +21,7 @@
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
+  padding: 20px !important;
 }
 
 .introjs-tooltipReferenceLayer {
@@ -47,16 +48,30 @@
   top: -13px !important;
 }
 
+.introjs-tooltipbuttons {
+  margin-top: 16px;
+}
+
 .introjs-button {
   font-family: $text-font;
-  border-radius: 0 !important;
-  padding: 4px 10px !important;
-  text-shadow: none;
+  padding: 8px 14px !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
   border: none;
+  border-radius: 20px !important;
 }
 
 .introjs-skipbutton {
   color: $color-introjs-skipbutton;
+  float: left;
+
+  &:after {
+    clear: both;
+  }
+}
+
+.introjs-progress {
+  margin: 23px 0 5px 0 !important;
 }
 
 .introjs-progressbar {
