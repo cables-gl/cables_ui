@@ -87,9 +87,14 @@ function() {
     );
   }
 
+  var introStepsDefined = false;
+
   this.showIntroduction = function(){
     console.log("Introduction started");
-    defineIntroSteps();
+    if(!introStepsDefined) {
+      defineIntroSteps();
+      introStepsDefined = true;
+    }
     introJs()
       .oncomplete(function() {
         // console.log('intro completed');

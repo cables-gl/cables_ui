@@ -8,7 +8,7 @@
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
-  border: 1px solid white !important;
+  border: 1px solid $color-special !important;
 }
 
 .introjs-overlay {
@@ -17,22 +17,24 @@
 
 .introjs-tooltip {
   font-family: $text-font;
-  background-color: white !important;
-  border: none !important;
+  // background-color: white !important;
+  background-color: $color-cz !important;
+  border: 1px solid $color-special !important;
+  // border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   padding: 20px !important;
 }
 
 .introjs-tooltipReferenceLayer {
-  border: 1px solid white !important;
+  border: none !important;
   border-radius: 0 !important;
   z-index: $z-index-intro-tooltip;
 }
 
 .introjs-tooltiptext {
   font-family: $text-font;
-  color: black !important;
+  color: #EEE !important;
 }
 
 .introjs-helperNumberLayer {
@@ -43,7 +45,7 @@
   text-shadow: none !important;
   color: white !important;
   box-shadow: none !important;
-  border-radius: 1px solid white !important;
+  border-radius: 1px solid $color-special !important;
   left: -13px !important;
   top: -13px !important;
 }
@@ -59,6 +61,26 @@
   box-shadow: none !important;
   border: none;
   border-radius: 20px !important;
+  cursor: pointer !important;
+  background-image: none !important;
+  background-color: $color-c8 !important;
+  color: $color-c3 !important;
+
+  &:hover {
+    background-color: $color-c6 !important;
+    color: $color-ca !important;
+  }
+
+  &.introjs-disabled {
+    cursor: not-allowed !important;
+    color: $color-c6 !important;
+    background-color: $color-c9 !important;
+
+    &:hover {
+      color: $color-c6 !important;
+      background-color: $color-c9 !important;
+    }
+  }
 }
 
 .introjs-skipbutton {
@@ -72,6 +94,7 @@
 
 .introjs-progress {
   margin: 23px 0 5px 0 !important;
+  background-color: $color-c85;
 }
 
 .introjs-progressbar {
@@ -80,4 +103,22 @@
 
 .introjs-showElement {
   z-index: $z-index-intro-element-to-be-explained;
+}
+
+.introjs-arrow {
+  &.right {
+    border-left-color: $color-special !important;
+  }
+
+  &.left {
+    border-right-color: $color-special !important;
+  }
+
+  &.top {
+    border-bottom-color: $color-special !important;
+  }
+
+  &.bottom {
+    border-top-color: $color-special !important;
+  }
 }
