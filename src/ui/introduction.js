@@ -5,41 +5,86 @@ CABLES.UI.Introduction = CABLES.UI.Introduction ||
 function() {
   /* Disables intro.js for the current logged-in user */
   function disableIntroForUser(){
-    console.log("Intro completed");
     CABLES.api.put('user/introCompleted',function(result) {
         console.log(result);
     });
   }
 
+  var stepTmp = 1; /* the introjs position when it is explained */
+
+  /**
+   * Defines a intro step, performs check if element exists
+   * @param {string} selector - Selector, can be class, id or element, first element picked 
+   * @param {string} text - The text to show for the element
+   * @param {string} position - Where to show the intro for the element, either 'left', 'right', 'top' or 'bottom'
+   */
+  function defineIntroStep(selector, text, position) {
+      if(!selector || !text || !position) {
+        console.error('defineIntroStep called with empty argument(s)');
+        return;
+      }
+      var el = $(selector).first();
+      if(el.length) { /* if element exists */
+        el.attr("data-step", stepTmp)
+        el.attr("data-intro", text);
+        stepTmp++;
+      } else {
+        console.error('introduction step missing, selector: ', selector); 
+        return;
+      }
+  }
+
   function defineIntroSteps(){
-    // $('#patch')
-    //   .attr("data-step", 1)
-    //   .attr("data-intro", "Press the Escape-key to insert your first op (operator)")
-    //   .attr("data-position", "right");
-    $('#project_settings').parent().parent().parent()
-      .attr("data-step", 1)
-      .attr("data-intro", "Settings panel, where you can access all project settings. If you select an op in the patch panel you will see its settings here instead.")
-      .attr("data-position", "left");
-    $('#glcanvas')
-      .attr("data-step", 2)
-      .attr("data-intro", "WebGL canvas where the visual output will be rendered to.")
-      .attr("data-position", "bottom");
-    $('#infoArea')
-      .attr("data-step", 3)
-      .attr("data-intro", "Hover over any element on the page to receive some information in the info panel.")
-      .attr("data-position", "left");
-    $('#projectfiles')
-      .attr("data-step", 4)
-      .attr("data-intro", "Easily upload project files (images, 3D-models, audio-files) by drag and dropping them to the files panel.")
-      .attr("data-position", "left");
-    $('#patch')
-      .attr("data-step", 5)
-      .attr("data-intro", "This is the most important part of <i>cables</i> – the patch panel – here you can connect ops together and create something.")
-      .attr("data-position", "right");
-    $('.cables')
-      .attr("data-step", 6)
-      .attr("data-intro", "On the main cables site you can browse through public projects / examples and get some inspiration.")
-      .attr("data-position", "right");
+    defineIntroStep(
+      '#patch',
+      'Hi and welcome to cables! <br />This is the the patch panel. Here you can connect ops (operators) to create a patch.<br />Now press <code>Enter</code> to move on with the introduction.',
+      'right'
+    );
+    defineIntroStep(
+      '#glcanvas', 
+      'This is the WebGL canvas where the visual output will be rendered to.',
+      'bottom'
+    );
+    defineIntroStep(
+      '#infoArea',
+      'In the info area you get help. Hover over any element on the page to receive information about it.',
+      'left'
+    );
+    defineIntroStep(
+      '#options',
+      'When you select an op in the patch panel its parameters will be shown here.',
+      'left'
+    );
+    defineIntroStep(
+      '#metatabs',
+      'In these tabs you can access additional features, e.g. the documentation for the currently selected op.',
+      'left'
+    );
+    defineIntroStep(
+      '.button.projectname',
+      'Click on the patch name to access the settings, here you can e.g. publish a patch or invite collaborators.',
+      'bottom'
+    );
+    defineIntroStep(
+      '.nav-item-help',
+      'Make sure to check out the video tutorials and documentation, these will help you get started in a blink!',
+      'bottom'
+    );
+    defineIntroStep(
+      '#icon-bar',
+      'In the sidebar you can access often used features.',
+      'right'
+    );
+    defineIntroStep(
+      '#icon-bar .icon-three-dots',
+      'Feel free to customize it by pressing the <i>…</i> icon.',
+      'top'
+    );
+    defineIntroStep(
+      '#icon-bar li[data-cmd="add op"]',
+      'To add your first op to the patch you can press the <i>Add Op</i> icon, but it is much faster to just press the <code>Esc</code> key.<br />Happy patching!',
+      'right'
+    );
   }
 
   this.showIntroduction = function(){
@@ -47,9 +92,7 @@ function() {
     defineIntroSteps();
     introJs()
       .oncomplete(disableIntroForUser)
-      // .onafterchange(function(targetElement) {
-      //   // addIntroJsStyles();
-      // })
+      .onskip(function() {}) /* needed because of introjs 2.9.0 bug: https://github.com/usablica/intro.js/issues/848 */
       .setOptions({
           'showBullets': false,
           'skipLabel': 'Close',
