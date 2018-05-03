@@ -1453,7 +1453,7 @@ CABLES.UI.GUI = function() {
             incrementStartup();
             self.serverOps = new CABLES.UI.ServerOps(self);
 
-            if(!user.introCompleted)self.introduction().showIntroduction();
+            
 
             logStartup('User Data loaded');
             
@@ -1493,6 +1493,8 @@ function startUi(event)
         gui.opSelect().prepare();
         gui.opSelect().search();
         self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
+        if(!gui.user.introCompleted)gui.introduction().showIntroduction();
+
     });
 
     $('#glcanvas').on("focus", function() {
