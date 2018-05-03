@@ -1442,7 +1442,7 @@ CABLES.UI.GUI = function() {
         });
         gui.replaceNavShortcuts();
     };
-    
+
     CABLES.sandbox.loadUser(
         function(user)
         {
@@ -1453,7 +1453,10 @@ CABLES.UI.GUI = function() {
             incrementStartup();
             self.serverOps = new CABLES.UI.ServerOps(self);
 
+            if(!user.introCompleted)self.introduction().showIntroduction();
+
             logStartup('User Data loaded');
+            
         });
 };
 
@@ -1490,7 +1493,6 @@ function startUi(event)
         gui.opSelect().prepare();
         gui.opSelect().search();
         self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
-
     });
 
     $('#glcanvas').on("focus", function() {
