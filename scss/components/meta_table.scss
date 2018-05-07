@@ -1,4 +1,10 @@
 
+
+#meta_content .table
+{
+    max-width: 400px;;
+}
+
 .table
 {
     border:0;
@@ -6,7 +12,6 @@
     border-spacing: 0px;
     margin-bottom:20px;
     width:100%;
-    max-width: 400px;;
 
     th
     {

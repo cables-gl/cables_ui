@@ -28,6 +28,7 @@ CABLES.CMD.UI.toggleFiles = function() {
 };
 
 
+
 CABLES.CMD.UI.downloadSVG = function() {
     gui.patch().downloadSVG();
 };
@@ -258,7 +259,5 @@ CABLES.CMD.commands.push({
         func: CABLES.CMD.UI.gradientTest,
         icon: "command"
     }
-    
-
 
 );

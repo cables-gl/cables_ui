@@ -16,8 +16,15 @@
                 {{/if}}
             </div>
 
+            <div class="tab ">
+                <!-- <i class="fa fa-new-file" aria-hidden="true" onclick="CABLES.uploadSelectFile();"></i> -->
+                <i class="icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenu(this)" ></i>
+
+            </div>
+
+
             <div onclick="CABLES.UI.fileSelect.setView('list');" class="tab tab_library">
-                <i class="fa fa-list" aria-hidden="true"></i>
+                    <i class="fa fa-list" aria-hidden="true"></i>
             </div>
             <div onclick="CABLES.UI.fileSelect.setView('icon');" class="tab tab_library">
                 <i class="fa fa-th" aria-hidden="true"></i>
@@ -37,31 +44,29 @@
 
 
 <script id="library_file_list" type="text/x-handlebars-template">
-    <div class="library-file-list lvl{{file.l}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}');">
+    <tr class=" lvl{{file.l}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}','{{file._id}}');">
+        <td>
+            {{#compare file.t '==' 'image' }}<i class="fa fa-1x fa-file-image-o" ></i>{{/compare}}
+            {{#compare file.t '==' 'video' }}<i class="fa fa-1x fa-file-video-o" >dscscdcd</i>{{/compare}}
+            {{#compare file.t '==' 'audio' }}<i class="fa fa-1x fa-file-audio-o" ></i>{{/compare}}
+            {{#compare file.t '==' 'dir' }}<i class="fa fa-1x fa-folder-open-o" ></i>{{/compare}}
+            {{#compare file.t '==' 'unknown' }}<i class="fa fa-1x fa-file-o" ></i>{{/compare}}
+            {{#compare file.t '==' 'mesh' }}<i class="fa fa-1x fa-cube" ></i>{{/compare}}
+            {{#compare file.t '==' 'json' }}<i class="fa fa-1x fa-file-code-o" ></i>{{/compare}}
+        </td>
+        <td style="width:75%"> {{file.n}} </td>
+        <td> {{file.t}} </td>
+        <td>
+            {{#if file._id}}
+                <a class="tt icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenuFile(this,'{{file._id}}','{{file.n}}','{{file.t}}');" data-tt="more options"></a>
+            {{/if}}
 
-        {{#compare file.t '==' 'image' }}<i class="fa fa-1x fa-file-image-o" ></i>{{/compare}}
-        {{#compare file.t '==' 'video' }}<i class="fa fa-1x fa-file-video-o" >dscscdcd</i>{{/compare}}
-        {{#compare file.t '==' 'audio' }}<i class="fa fa-1x fa-file-audio-o" ></i>{{/compare}}
-        {{#compare file.t '==' 'dir' }}<i class="fa fa-1x fa-folder-open-o" ></i>{{/compare}}
-        {{#compare file.t '==' 'unknown' }}<i class="fa fa-1x fa-file-o" ></i>{{/compare}}
-        {{#compare file.t '==' 'mesh' }}<i class="fa fa-1x fa-cube" ></i>{{/compare}}
-        {{#compare file.t '==' 'json' }}<i class="fa fa-1x fa-file-code-o" ></i>{{/compare}}
-
-        {{file.n}} - {{file.t}}
-    </div>
+        </td>
+    </tr>
 </script>
 
 <script type="text/x-handlebars-template" id="library_uploadfile">
 
-    <div class="iconcontainer iconcontainer_image" onclick="CABLES.uploadSelectFile();" style="opacity:0.5;" >
-        <div class="library-file-icon uploadfile">
-            <br/><br/>
-            <span class="fa fa-3x fa-upload" aria-hidden="true"></span>
-
-        </div>
-        <div class="filename">Upload File
-        </div>
-    </div>
 
 
 </script>

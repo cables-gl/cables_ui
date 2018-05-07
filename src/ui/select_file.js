@@ -85,12 +85,15 @@ CABLES.UI.FileSelect = function() {
     };
 
     this.setView = function(v) {
+        CABLES.UI.userSettings.set("fileListClass",v);
+
         this._viewClass = v;
         this.load();
     };
 
     this.hide = function() {
         $('#library').hide();
+        CABLES.UI.userSettings.set("fileViewOpen",false);
         this.visible = false;
         gui.setLayout();
     };
@@ -101,6 +104,7 @@ CABLES.UI.FileSelect = function() {
     };
 
     this.show = function(_inputId, _filterType, _opid) {
+        CABLES.UI.userSettings.set("fileViewOpen",true);
         this.visible = true;
         $('#library').show();
         this.currentOpid = _opid;
@@ -113,6 +117,7 @@ CABLES.UI.FileSelect = function() {
             filter+=" - filter: "+_filterType;
         }
 
+        this.setView(CABLES.UI.userSettings.get("fileListClass")||'list');
 
         $('#lib_head').html(CABLES.UI.getHandleBarHtml('library_head',
             {
@@ -149,6 +154,7 @@ CABLES.UI.FileSelect = function() {
                 inputId: inputId,
                 filterType: filterType
             });
+            if(self._viewClass=='list')html+='<table class="table">';
 
             for (var i in files) {
                 if (!files[i]) continue;
@@ -165,6 +171,7 @@ CABLES.UI.FileSelect = function() {
 
                 if (!files[i].p) files[i].p = p + files[i].n;
 
+
                 html += CABLES.UI.getHandleBarHtml('library_file_' + self._viewClass, {
                     file: files[i],
                     inputId: inputId,
@@ -173,7 +180,9 @@ CABLES.UI.FileSelect = function() {
                 if (files[i].d) {
                     html += getFileList(filterType, files[i].c, p + files[i].n + '/');
                 }
+
             }
+            if(self._viewClass=='list')html+='</table>';
             return html;
         }
 
@@ -190,6 +199,121 @@ CABLES.UI.FileSelect = function() {
     };
 
 
+    this.contextMenu=function(ele)
+    {
+        CABLES.contextMenu.show(
+            {items:
+                [
+                    {
+                        title:'upload file',
+                        func:CABLES.CMD.PATCH.uploadFile
+                    }
+                ]},ele);
+
+    };
+
+    this.contextMenuFile=function(e,fileid,filename,filetype)
+    {
+        var items=[
+        ];
+
+        if(filetype=='json')
+        {
+            items.push(
+                {
+                    title:'edit file',
+                    func:function()
+                    {
+                        console.log(1234);
+                        CABLES.UI.fileSelect.editFile(fileid,filename);
+                    }
+                });
+        }
+
+        items.push(
+            {
+                title:'delete file',
+                func:CABLES.CMD.PATCH.uploadFile
+            });
+
+        CABLES.contextMenu.show({"items":items},e);
+    };
+
+
+    this.editFile = function(fileid,filename) {
+        var editorObj = {
+            "type": 'file',
+            "fileid": fileid,
+            "name": filename
+        };
+        // saveOpenEditor(editorObj);
+
+        CABLES.api.clearCache();
+
+        gui.showEditor();
+
+        var toolbarHtml = '';
+        // if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
+
+        console.log("edit att"+filename);
+
+
+        CABLES.ajax(
+            '/assets/' + gui.patch().getCurrentProject()._id + '/' + filename,
+            function(err,_data,xhr)
+            {
+    
+
+        // CABLES.api.get(
+        //     'assets/' + fileid + '/' + filename,
+        //     function(res) {
+                var content = _data || '';
+
+                var syntax = "text";
+
+                if (filename.endsWith(".frag")) syntax = "glsl";
+                if (filename.endsWith(".vert")) syntax = "glsl";
+                if (filename.endsWith(".json")) syntax = "json";
+                if (filename.endsWith(".css")) syntax = "css";
+
+                gui.editor().addTab({
+                    content: content,
+                    title: filename,
+                    syntax: syntax,
+                    editorObj: editorObj,
+                    toolbarHtml: toolbarHtml,
+                    onSave: function(setStatus, content) {
+                        CABLES.api.put(
+
+                            'project/' + gui.patch().getCurrentProject()._id + '/file', {
+                                content: content
+                            },
+                            function(res) {
+                                setStatus('saved');
+                                console.log('res', res);
+                            },
+                            function(res) {
+                                setStatus('error: not saved');
+                                console.log('err res', res);
+                            }
+                        );
+                    },
+                    onClose: function(which) {
+                        // removeOpenEditor(which.editorObj);
+                    },
+
+                });
+            },"GET",function()
+        {
+            console.error("err..."+filename);
+            // removeOpenEditor(editorObj);
+        }
+        );
+    };
+
+
 };
 
 CABLES.UI.fileSelect = new CABLES.UI.FileSelect();
+
+    

@@ -500,6 +500,8 @@ CABLES.UI.GUI = function() {
         showTiming = true;
         $('#timing').show();
         gui.setLayout();
+        CABLES.UI.userSettings.set("timelineOpened",showTiming);
+
     };
 
     this.hideTiming = function() {
@@ -507,11 +509,13 @@ CABLES.UI.GUI = function() {
         showTiming = false;
         $('#timing').hide();
         gui.setLayout();
+        CABLES.UI.userSettings.set("timelineOpened",showTiming);
     };
 
     this.toggleTiming = function() {
         self.timeLine().hidden = false;
         $('#timing').show();
+        CABLES.UI.userSettings.set("timelineOpened",true);
 
         showTiming = !showTiming;
         updateTimingIcon();
@@ -717,6 +721,9 @@ CABLES.UI.GUI = function() {
         });
         $('.nav_patch_export').bind("click", function(event) {
             CABLES.CMD.PATCH.export();
+        });
+        $('.nav_uploadfile').bind("click", function(event) {
+            CABLES.CMD.PATCH.uploadFile();
         });
         $('.nav_patch_export_ignoreAssets').bind("click", function(event) {
             gui.patch().exportStatic(true);
@@ -1017,7 +1024,7 @@ CABLES.UI.GUI = function() {
         } else if ($('#cmdpalette').is(':visible')) gui.cmdPallet.close();
         else if ($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
         else if ($('#searchbox').is(':visible')) $('#searchbox').hide();
-        else if ($('#library').is(':visible')) $('#library').hide();
+        else if ($('#library').is(':visible')) CABLES.UI.fileSelect.hide();//$('#library').hide();
         else if ($('#sidebar').is(':visible')) $('#sidebar').animate({
             width: 'toggle'
         }, 200);
@@ -1064,6 +1071,12 @@ CABLES.UI.GUI = function() {
 
         logStartup('finished loading cables');
         CABLES.UI.loaded=true;
+
+        if(CABLES.UI.userSettings.get("fileViewOpen")==true)this.showLibrary();
+        if(CABLES.UI.userSettings.get("timelineOpened")==true)this.showTiming();
+
+        console.log('tl',CABLES.UI.userSettings.get("timelineOpened"));
+
 
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");
