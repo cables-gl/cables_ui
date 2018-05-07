@@ -20,10 +20,12 @@
             </div>
 
             <div onclick="CABLES.UI.fileSelect.setView('list');" class="tab tab_library">
-                    <i class="fa fa-list" aria-hidden="true"></i>
+                    <!-- <i class="fa fa-list" aria-hidden="true"></i> -->
+                    <i class="icon icon-menu iconhover"></i>
             </div>
             <div onclick="CABLES.UI.fileSelect.setView('icon');" class="tab tab_library">
-                <i class="fa fa-th" aria-hidden="true"></i>
+                <!-- <i class="fa fa-th" aria-hidden="true"></i> -->
+                <i class="icon icon-grid iconhover"></i>
             </div>
 
             <div onclick="CABLES.UI.fileSelect.hide();" class="tab">
@@ -106,50 +108,51 @@
 
 <script id="library_preview_full" type="text/x-handlebars-template">
 
-        <a class="tt icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenuFile(this,'{{file.fileDb._id}}','{{file.fileDb.fileName}}','{{file.type}}');" data-tt="options"></a>
+    <table>
+        <tr>
+            <td>
+                <a class="tt icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenuFile(this,'{{file.fileDb._id}}','{{file.fileDb.fileName}}','{{file.type}}');" data-tt="options"></a>
+            </td>
+            <td class="selectable">
+                {{file.fileDb.fileName}}
+            </td>
+        </tr>
+    </table>
+    <br/>
 
-        {{file.fileDb.fileName}}
+    {{#if file.imgPreview  }}
+        <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" style="width:100%;"/>
         <br/><br/>
-        <!-- <a href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" target="_blank" class="button fa fa-external-link" >open</a> -->
-        <a download href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" target="_blank" class="button fa fa-download" >download</a>
-        &nbsp;&nbsp;&nbsp;
-        <a class="button fa fa-trash-o" style="float:right;" onclick="if(confirm('really delete {{file.fileDb.fileName}} ?')){CABLES.api.delete('project/{{projectId}}/file/{{file.fileDb._id}}',null,function(){ CABLES.UI.fileSelect.load(); });$('#lib_preview').html('');}">delete</a>
+    {{/if}}
 
+    {{#if file.imgSizeWidth  }}
+        {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} -->
+    {{/if}}
+
+    - {{file.sizeKb}}kb - {{file.fileDb.type}}
+
+    <br/>changed {{file.readableDateSince}} <br/>
+    {{file.readableDate}}
+
+
+    <br/><br/>
+
+    {{#each file.ops}}
+        <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
         <br/><br/>
+    {{/each}}
 
-        {{#if file.imgPreview  }}
-            <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" style="width:100%;"/>
-            <br/><br/>
-        {{/if}}
+    <a class="button fa fa-search" onclick="gui.find().show('{{file.fileDb.fileName}}')">&nbsp;search ops</a>
+    <br/><br/>
 
-        {{#if file.imgSizeWidth  }}
-            {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} -->
-        {{/if}}
-
-        - {{file.sizeKb}}kb - {{file.fileDb.type}}
-
-        <br/>changed {{file.readableDateSince}} <br/>
-        {{file.readableDate}}
-
-
-        <br/><br/>
-
-        {{#each file.ops}}
-            <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
-            <br/><br/>
+    {{#if file.converters  }}
+        {{#each file.converters}}
+            <a class="button fa fa-retweet" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');">&nbsp;{{ name }}</a>
+            <br/>
         {{/each}}
-
-        <a class="button fa fa-search" onclick="gui.find().show('{{file.fileDb.fileName}}')">&nbsp;search ops</a>
         <br/><br/>
 
-        {{#if file.converters  }}
-            {{#each file.converters}}
-                <a class="button fa fa-retweet" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');">&nbsp;{{ name }}</a>
-                <br/>
-            {{/each}}
-            <br/><br/>
-
-        {{/if}}
+    {{/if}}
 
 
 

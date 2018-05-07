@@ -67,10 +67,9 @@ CABLES.UI.FileSelect = function() {
                         "file": r
                     });
 
-                    console.log(r);
+                    // console.log(r);
                     // console.log(r);
                     $('#lib_preview').html(html);
-
                 });
         } else {
             var opts = {};
@@ -173,7 +172,8 @@ CABLES.UI.FileSelect = function() {
 
                 files[i].selectableClass = '';
                 if (!files[i].d) {
-                    if (files[i].t == filterType) {
+                    if (filterType && files[i].t && files[i].t.toLowerCase().indexOf( filterType.toLowerCase()) !=-1)
+                    {
                         files[i].selectableClass = 'selectable';
                     } else {
                         if (filterType) continue;
@@ -250,11 +250,42 @@ CABLES.UI.FileSelect = function() {
                 title:'open file in new window',
                 func:function()
                 {
-                    // 'project/' +  + '/file/info/' + id,
-
                     window.open('/assets/'+gui.patch().getCurrentProject()._id+'/'+filename,'_blank');
                 }
             });
+
+        items.push(
+            {
+                title:'download file',
+                func:function()
+                {
+                    var link = document.createElement("a");
+                    link.download = filename;
+                    link.href = '/assets/'+gui.patch().getCurrentProject()._id+'/'+filename;
+                    link.click();
+                }
+            });
+
+        items.push(
+            {
+                title:'delete file',
+                func:function()
+                {
+                    if(confirm('really delete '+filename+' ?'))
+                    {
+                        CABLES.api.delete('project/'+gui.patch().getCurrentProject()._id+'/file/'+fileid,null,
+                            function()
+                            {
+                                CABLES.UI.fileSelect.refresh();
+                            });
+                            $('#lib_preview').html('');
+                    }
+                }
+            });
+        
+
+                
+
 
         CABLES.contextMenu.show({"items":items},e);
     };
