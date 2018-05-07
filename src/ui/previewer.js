@@ -146,8 +146,6 @@ CABLES.UI.Preview=function()
         }
 
         $('#meta_content_preview .opname').html(previewDataOp.name);
-
-        // updatePreview();
     };
 
 
