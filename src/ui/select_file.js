@@ -118,7 +118,7 @@ CABLES.UI.FileSelect = function() {
             filter+=" - filter: "+_filterType;
         }
 
-        this.setView(CABLES.UI.userSettings.get("fileListClass")||'list');
+        this.setView(CABLES.UI.userSettings.get("fileListClass")||'icon');
 
         $('#lib_head').html(CABLES.UI.getHandleBarHtml('library_head',
             {
