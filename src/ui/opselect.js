@@ -63,7 +63,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     $('#opOptions').html(optionsHtml);
 };
 
-CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
+CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
 {
     var result=[];
 
@@ -73,6 +73,9 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 
         var found=false;
         var points=0;
+
+        // console.log( CABLES.UI.OPSELECT.linkNewOpToOp.objName);
+
 
         if(list[i]._summary.indexOf(query)>-1)
         {
@@ -97,19 +100,28 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 
         if(found)
         {
+            // if(!options.linkNamespaceIsTextureEffects && list[i]._nameSpace.indexOf('textureeffects')>-1)
+            // {
+            //     points-=0.5;
+            //     scoreDebug+='-0.5 textureeffect penalty<br/>';
+            // }
+                
+            // if(options.linkNamespaceIsTextureEffects && list[i]._nameSpace.indexOf('textureeffects')>-1)
+            // {
+            //     points+=0.5;
+            //     scoreDebug+='+0.5 textureeffect bonus<br/>';
+            // }
+
             if(list[i]._shortName.indexOf(query)===0)
             {
-                found=true;
                 points+=2.5;
                 scoreDebug+='+2.5 found in shortname at beginning<br/>';
 
                 if(list[i]._shortName==query)
                 {
-                    found=true;
                     points+=2;
                     scoreDebug+='+2 exact name<br/>';
                 }
-    
             }
 
             if(list[i]._summary.length>0)
@@ -123,7 +135,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
                 scoreDebug+='+1 is math<br/>';
             }
 
-            var shortnessPoints=Math.round( (1.0-Math.min(1,(list[i]._nameSpace+list[i]._shortNamope).length/20))*100)/100;
+            var shortnessPoints=Math.round( (1.0-Math.min(1,(list[i]._nameSpace+list[i]._shortName).length/20))*100)/100;
             points+=shortnessPoints;
             scoreDebug+='+'+shortnessPoints+' shortness namespace<br/>';
         }
@@ -145,7 +157,6 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query)
 
 CABLES.UI.OpSelect.prototype._search=function(q)
 {
-    
     if(!this._list || !this._html)this.prepare();
 
     this.firstTime=false;
@@ -155,6 +166,18 @@ CABLES.UI.OpSelect.prototype._search=function(q)
     var i=0;
     for(i=0;i<this._list.length;i++) this._list[i].score=0;
     var result=null;
+    var options=
+    {
+        linkNamespaceIsTextureEffects:false
+    };
+
+    if(CABLES.UI.OPSELECT.linkNewOpToOp)
+    {
+        if(CABLES.UI.OPSELECT.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects")>-1 )
+            options.linkNamespaceIsTextureEffects=true
+    }
+
+    console.log(options);
 
     if(query.length>1)
     {
@@ -164,12 +187,12 @@ CABLES.UI.OpSelect.prototype._search=function(q)
 
             for(i=0;i<words.length;i++)
             {
-                result=this._searchWord(result||this._list,words[i]);
+                result=this._searchWord(result||this._list,words[i],options);
             }
         }
         else
         {
-            result=this._searchWord(this._list,query);
+            result=this._searchWord(this._list,query,options);
         }
     }
 
@@ -181,10 +204,10 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
     var opname=$('.selected').data('opname');
     var htmlFoot='';
 
-    setTimeout(function()
-        {
+    // setTimeout(function()
+        // {
             this.updateOptions(opname);
-        }.bind(this),50);
+        // }.bind(this),50);
 
     if(opname)
     {
@@ -211,7 +234,7 @@ CABLES.UI.OpSelect.prototype.search=function()
 {
     var startTime=CABLES.now();
     var q=$('#opsearch').val();
-    if(q==this.lastQuery)return;
+    // if(q==this.lastQuery)return;
     this.lastQuery=q;
     var result=this._search(q);
     var i=0;
@@ -219,6 +242,7 @@ CABLES.UI.OpSelect.prototype.search=function()
 
     for(i=0;i<this._list.length;i++)
     {
+        // can we cache this ?
 		this._list[i].element=$('#result_'+this._list[i].id);
 
         if(this._list[i].score>0)
@@ -230,6 +254,7 @@ CABLES.UI.OpSelect.prototype.search=function()
         else
         {
             this._list[i].element[0].dataset.score=0.0;
+            this._list[i].element[0].dataset.scoreDebug='???';
             this._list[i].element.hide();
         }
     }
@@ -239,21 +264,22 @@ CABLES.UI.OpSelect.prototype.search=function()
 
 
     // sorting takes long time. so do it asynchronous
-    clearTimeout(this._sortTimeout);
-    this._sortTimeout=setTimeout(function()
-        {
+    // clearTimeout(this._sortTimeout);
+    // this._sortTimeout=setTimeout(function()
+    //     {
             $wrapper.find('.searchresult').sort(
                 function (a, b)
                 {
-                    var diff=b.dataset.score - a.dataset.score;
+                    var diff=parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
                     return diff;
                 }).appendTo( $wrapper );
             this.Navigate(0);
-        }.bind(this),50);
+        // }.bind(this),50);
 
-    var timeUsed= CABLES.now()-startTime;
+    this.updateOptions();
+
+    var timeUsed=CABLES.now()-startTime;
     this._timeUsed=timeUsed
-
 };
 
 CABLES.UI.OpSelect.prototype.Navigate = function(diff)
@@ -414,7 +440,7 @@ CABLES.UI.OpSelect.prototype.onInput=function(e)
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
 {
-    console.log("keydown");
+    // console.log("keydown");
     switch(e.which)
     {
         case 27:
