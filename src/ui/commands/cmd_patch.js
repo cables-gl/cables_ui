@@ -48,6 +48,32 @@ CABLES.CMD.PATCH.createSubPatchFromSelection=function()
 	gui.patch().createSubPatchFromSelection();
 };
 
+CABLES.CMD.PATCH.createFile=function()
+{
+    CABLES.UI.MODAL.prompt(
+        "Create new file",
+        "Enter filename",
+        "newfile.txt",
+        function(fn)
+        {
+			CABLES.api.put(
+				'project/' + gui.patch().getCurrentProject()._id + '/'+fn, {
+					content: 'this is an empty file...'
+				},
+				function(res) {
+					CABLES.UI.notify("file created");
+					CABLES.UI.fileSelect.refresh();
+				},
+				function(res) {
+					CABLES.UI.notifyError("error: file not created");
+					CABLES.UI.fileSelect.refresh();
+					console.log('err res', res);
+				}
+			);
+		});
+
+};
+
 CABLES.CMD.PATCH.uploadFile=function()
 {
 	var fileElem = document.getElementById("hiddenfileElem");
@@ -282,6 +308,12 @@ CABLES.CMD.commands.push(
 		cmd:"upload file",
 		category:"patch",
 		func:CABLES.CMD.PATCH.uploadFile,
+		icon:'file'
+	},
+	{
+		cmd:"create new file",
+		category:"patch",
+		func:CABLES.CMD.PATCH.createFile,
 		icon:'file'
 	},
 	{

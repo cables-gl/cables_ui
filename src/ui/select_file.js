@@ -66,9 +66,10 @@ CABLES.UI.FileSelect = function() {
                         "projectId": gui.patch().getCurrentProject()._id,
                         "file": r
                     });
+
+                    // console.log(r);
                     // console.log(r);
                     $('#lib_preview').html(html);
-
                 });
         } else {
             var opts = {};
@@ -117,7 +118,7 @@ CABLES.UI.FileSelect = function() {
             filter+=" - filter: "+_filterType;
         }
 
-        this.setView(CABLES.UI.userSettings.get("fileListClass")||'list');
+        this.setView(CABLES.UI.userSettings.get("fileListClass")||'icon');
 
         $('#lib_head').html(CABLES.UI.getHandleBarHtml('library_head',
             {
@@ -159,9 +160,20 @@ CABLES.UI.FileSelect = function() {
             for (var i in files) {
                 if (!files[i]) continue;
 
+                if(files[i].t=='image')files[i].icon="file-image-o";
+                else if(files[i].t=='video')files[i].icon="file-video-o";
+                else if(files[i].t=='audio')files[i].icon="file-audio-o";
+                else if(files[i].t=='dir')files[i].icon="file-folder-open-o";
+                else if(files[i].t=='font')files[i].icon="file-excel-o";
+                else if(files[i].t.indexOf('3d')>-1)files[i].icon="cube";
+                else if(files[i].t=='JSON' || files[i].t.indexOf('shader')>-1)files[i].icon="file-code-o";
+                else files[i].icon="file-o";
+
+
                 files[i].selectableClass = '';
                 if (!files[i].d) {
-                    if (files[i].t == filterType) {
+                    if (filterType && files[i].t && files[i].t.toLowerCase().indexOf( filterType.toLowerCase()) !=-1)
+                    {
                         files[i].selectableClass = 'selectable';
                     } else {
                         if (filterType) continue;
@@ -207,6 +219,10 @@ CABLES.UI.FileSelect = function() {
                     {
                         title:'upload file',
                         func:CABLES.CMD.PATCH.uploadFile
+                    },
+                    {
+                        title:'create new file',
+                        func:CABLES.CMD.PATCH.createFile
                     }
                 ]},ele);
 
@@ -214,27 +230,62 @@ CABLES.UI.FileSelect = function() {
 
     this.contextMenuFile=function(e,fileid,filename,filetype)
     {
-        var items=[
-        ];
+        var items=[];
 
-        if(filetype=='json')
+        if(filetype=='JSON' || filetype=='CSV' || filetype=='shader' || filetype=='textfile')
         {
             items.push(
                 {
                     title:'edit file',
                     func:function()
                     {
-                        console.log(1234);
                         CABLES.UI.fileSelect.editFile(fileid,filename);
                     }
-                });
+                }
+            );
         }
 
         items.push(
             {
-                title:'delete file',
-                func:CABLES.CMD.PATCH.uploadFile
+                title:'open file in new window',
+                func:function()
+                {
+                    window.open('/assets/'+gui.patch().getCurrentProject()._id+'/'+filename,'_blank');
+                }
             });
+
+        items.push(
+            {
+                title:'download file',
+                func:function()
+                {
+                    var link = document.createElement("a");
+                    link.download = filename;
+                    link.href = '/assets/'+gui.patch().getCurrentProject()._id+'/'+filename;
+                    link.click();
+                }
+            });
+
+        items.push(
+            {
+                title:'delete file',
+                func:function()
+                {
+                    if(confirm('really delete '+filename+' ?'))
+                    {
+                        CABLES.api.delete('project/'+gui.patch().getCurrentProject()._id+'/file/'+fileid,null,
+                            function()
+                            {
+                                CABLES.UI.fileSelect.refresh();
+                            });
+                            $('#lib_preview').html('');
+                    }
+                }
+            });
+        
+
+                
+
 
         CABLES.contextMenu.show({"items":items},e);
     };
@@ -262,13 +313,7 @@ CABLES.UI.FileSelect = function() {
             '/assets/' + gui.patch().getCurrentProject()._id + '/' + filename,
             function(err,_data,xhr)
             {
-    
-
-        // CABLES.api.get(
-        //     'assets/' + fileid + '/' + filename,
-        //     function(res) {
                 var content = _data || '';
-
                 var syntax = "text";
 
                 if (filename.endsWith(".frag")) syntax = "glsl";
@@ -285,7 +330,7 @@ CABLES.UI.FileSelect = function() {
                     onSave: function(setStatus, content) {
                         CABLES.api.put(
 
-                            'project/' + gui.patch().getCurrentProject()._id + '/file', {
+                            'project/' + gui.patch().getCurrentProject()._id + '/'+filename, {
                                 content: content
                             },
                             function(res) {

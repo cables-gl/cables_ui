@@ -77,11 +77,11 @@ hr
 
 .selectable
 {
-    user-select:auto;
+    user-select:text !important;
 
     *
     {
-        user-select:auto;
+        user-select:text !important;
     }
 }
 
@@ -550,20 +550,6 @@ input
     	color:$color-input-placeholder;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 input[type=range]{

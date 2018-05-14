@@ -1100,8 +1100,8 @@ CABLES.UI.GUI = function() {
             iziToast.show({
                 position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
                 theme: 'dark',
-                title: 'not your patch',
-                message: 'you can play around in this patch but not overwrite it. <br/> to save use menubar "save as..." ',
+                title: 'Not your patch',
+                message: 'Feel free to play around tho!<br />You cannot overwrite the patch, use «save as» in the menu bar instead.',
                 progressBar: false,
                 animateInside: false,
                 close: true,

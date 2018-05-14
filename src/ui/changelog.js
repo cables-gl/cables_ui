@@ -30,23 +30,26 @@ CABLES.CHANGELOG.getHtml=function(cb,since)
             cb(null);
             return;
         }
-        var html = CABLES.UI.getHandleBarHtml('changelog',obj);
+        // var html = CABLES.UI.getHandleBarHtml('changelog',obj);
 
         if(firstTime)
         {
             cb(null);
             return;
         }
-        cb(html);
+        cb();
     });
 
 };
 
 CABLES.CHANGELOG.show=function(since)
 {
-    CABLES.CHANGELOG.getHtml(function(html)
+    CABLES.CHANGELOG.getHtml(function()
     {
-        CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
+        console.log("HALLO");
+        var win = window.open('https://cables.gl/changelog', '_blank');
+
+        // CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
     },since);
 
 };
