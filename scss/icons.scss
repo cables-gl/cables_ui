@@ -17,6 +17,7 @@
 
 .iconhover
 {
+	cursor:pointer;
 	&:hover
 	{
 		background-color:$color-special;

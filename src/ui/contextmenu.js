@@ -52,7 +52,7 @@ CABLES.ContextMenu.prototype.show=function(obj,parent)
             item.addEventListener("click", function()
             {
                 CABLES.contextMenu.close();
-                setTimeout(this.func,50);
+                setTimeout(this.func.bind(this),20);
             }.bind(obj.items[i]));
         }
     }

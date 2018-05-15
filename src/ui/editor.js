@@ -100,6 +100,7 @@ CABLES.Editor=function()
     {
         var html='';
         html+=CABLES.UI.getHandleBarHtml('editor_bar',{contents:contents});
+
         $('#editorbar').html(html);
     }
 
@@ -222,7 +223,7 @@ CABLES.Editor=function()
                 else if(contents[i].syntax=='css')  editor.session.setMode("ace/mode/css");
                 else editor.session.setMode("ace/mode/Text");
 
-                console.log('editor syntax:',contents[i].syntax);
+                // console.log('editor syntax:',contents[i].syntax);
 
                 editor.setValue(contents[i].content,-1);
                 editor.setReadOnly(contents[i].readOnly);
@@ -239,15 +240,32 @@ CABLES.Editor=function()
         }
     };
 
-    // this.addTab({
-    //     title:'nothing',
-    //     content:'empty'
-    // });
-    // this.closeCurrentTab();
-
     this.focus=function()
     {
         editor.focus();
     };
+
+    this.contextMenu=function(ele)
+    {
+        var items=[];
+
+        for(var i=0;i<contents.length;i++)
+        {
+            var mItem=
+                {
+                    "title":contents[i].title,
+                    "fileId":contents[i].id,
+                    "func":
+                        function()
+                        {
+                            console.log(this);
+                            gui.editor().setTab(this.fileId);
+                        }
+                };
+            items.push(mItem);
+        }
+
+        CABLES.contextMenu.show({items: items},ele);
+    }
 
 };

@@ -7,6 +7,9 @@
     {{#each contents}}
     <div id="editortab{{id}}" class="tab" onclick="gui.editor().setTab('{{id}}')">{{title}}</div>
     {{/each}}
+    <div class="fright">
+        <span class="tt icon icon-triple-dot iconhover" style="margin:7px;margin-right:12px;" onclick="gui.editor().contextMenu(this)" data-tt="more options"></span>
+    </div>
     <div style="clear:both;"></div>
 </div>
 
@@ -18,7 +21,9 @@
 
 <span id="editorstatus"></span>
 
-    <div style="margin-right:10px;" class="graphbutton fa fa-times fright" onclick="gui.editor().closeCurrentTab()"></div>
+    <!-- <div style="margin-right:10px;" class="graphbutton fa fa-times fright" onclick="gui.editor().closeCurrentTab()"></div> -->
+    <div style="margin-right:10px;" class="icon-x icon icon-1_5x fright iconhover" onclick="gui.editor().closeCurrentTab()"></div>
+    
 </div>
 
 

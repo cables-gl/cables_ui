@@ -16,7 +16,7 @@
         .tabs
         {
             width:100%;
-            margin-bottom: 11px;
+            margin-bottom: 7px;
             height:32px;
             overflow: hidden;
 
@@ -26,7 +26,8 @@
             {
                 float:left;
                 font-size: 13px;
-                padding:5px;
+                padding:4px;
+                padding-top:3px;
                 cursor:pointer;
                 padding-left: 8px;
                 padding-right: 8px;
@@ -37,6 +38,7 @@
                     background-color: $color-c10;
                     color: $color-ca;
                     font-weight: bold;
+                    border-bottom: 1px solid $color-special;
                 }
 
                 &:hover
