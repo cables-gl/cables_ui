@@ -189,21 +189,25 @@
 
 <script id="settings_users" type="text/x-handlebars-template">
 
-    <ul>
-    {{#each userData.users}}
-    <li>
-        {{username }}
-        {{#if owner }}(owner)
-        {{else}}
-        |
-        <a onclick="gui.projectSettings().userManager.removeFromProject( '{{id}}' );">remove</a>
-        {{/if}}
-    </li>
-    {{/each}}
-    </ul>
+    <table class="table">
+        {{#each userData.users}}
+            <tr>
+                <td>
+                    {{username }}
+                </td>
+                <td>
+                    {{#if owner }}
+                        patch owner
+                    {{else}}
+                        <a class="button" onclick="gui.projectSettings().userManager.removeFromProject('{{id}}');">remove</a>
+                        <a class="button" onclick="gui.projectSettings().userManager.setOwner('{{id}}');">make owner</a>
+                    {{/if}}
+                </td>
+            </tr>
+        {{/each}}
+    </table>
 
     <div id="adduserdialog" class="hidden">
-
         <input type="text" id="userid" class="hidden" />
         <select id="userAddSelectBox" onchange="$('#userid').val($(this).val());">
             <option value="">Select</option>

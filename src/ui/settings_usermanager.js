@@ -34,9 +34,14 @@ CABLES.UI.UserManager=function(projectId)
             });
     };
 
+    this.setOwner=function(userid)
+    {
+        var doUpdate=gui.projectSettings().loadUsers;
+        CABLES.api.put( 'project/'+projectId+'/owner/'+userid, {}, doUpdate );
+    };
+
     this.removeFromProject=function(userid)
     {
-        // CABLES.UI.MODAL.showLoading();
         var doUpdate=gui.projectSettings().loadUsers;
         CABLES.api.delete( 'project/'+projectId+'/user/'+userid, {}, doUpdate );
     };
@@ -51,6 +56,8 @@ CABLES.UI.UserManager=function(projectId)
             
         }
     };
+
+
 
 
     this.getData=function(cb)
