@@ -67,4 +67,6 @@ CABLES.UI.TEXTS=
     timeline_progress:"`[click]` set project duration",
     timeline_keys:"## timeline  \n\n* `[drag right click]` move visible area\n* `[drag left click]` select keys\n* `[h]` center all keys\n* `[j/k]` jump to next/previous key\n* `[DEL]` delete selected keys",
 
+    usersettings:"## User Settings\n\nchange editor settings ",
+
 };
