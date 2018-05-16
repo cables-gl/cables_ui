@@ -157,19 +157,23 @@ CABLES.CMD.PATCH.editOp=function()
 };
 
 
+CABLES.CMD.PATCH.setOpTitle=function()
+{
+	var ops=gui.patch().getSelectedOps();
+	if(ops.length!=1)
+	{
+		console.log("rename canceled - select one op!");
+		return;
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
+	CABLES.UI.MODAL.prompt(
+		"Set Title",
+		"Enter a title for this op",
+		ops[0].op.name,
+		function(name) {
+			gui.patch().setCurrentOpTitle(name); 
+		});
+}
 
 
 CABLES.CMD.PATCH.tidyChildOps=function()
@@ -363,6 +367,12 @@ CABLES.CMD.commands.push(
 		cmd:"edit op",
 		category:"op",
 		func:CABLES.CMD.PATCH.editOp,
+		icon:"edit"
+	},
+	{
+		cmd:"set title",
+		category:"op",
+		func:CABLES.CMD.PATCH.setOpTitle,
 		icon:"edit"
 	},
 	{

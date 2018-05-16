@@ -34,7 +34,7 @@
 
 	.icon-link {
 		position: relative;
-    top: 4px;
+        top: 4px;
 	}
 
 	.hint
@@ -42,13 +42,10 @@
 		background-color: $background-color-brighter;
 	}
 
-	.toggle-bookmark-button {
-		background-color: $color-c3;
+	.op-contextmenu {
 		position: absolute;
-		top: 4px;
-		height: 29px;
-		right: 23px;
-		width: 26px;
+		top: 15px;
+		right: 10px;
 	}
 
 	.params_op_head

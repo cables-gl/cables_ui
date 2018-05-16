@@ -47,7 +47,23 @@ CABLES.ContextMenu.prototype.show=function(obj,parent)
         {
             var item = document.createElement('li');
             item.classList.add("cm_item");
+
+            
             item.innerText=obj.items[i].title;
+
+            if(obj.items[i].iconClass)
+            {
+                var icon = document.createElement('span');
+                // icon.classList.add("fa");
+                icon.classList.add("cm_icon");
+                var classes=obj.items[i].iconClass.split(' ');
+                for(var ii in classes) icon.classList.add(classes[ii]);
+                
+                icon.style.float="left";
+                item.appendChild(icon);
+            }
+
+
             this._element.appendChild(item);
             item.addEventListener("click", function()
             {

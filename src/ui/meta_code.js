@@ -78,9 +78,6 @@ CABLES.UI.MetaCode=function(projectId)
         }
 
     };
-
-
-
 };
 
 CABLES.UI.MetaCode.rename=function(oldName)
@@ -90,7 +87,7 @@ CABLES.UI.MetaCode.rename=function(oldName)
 		var ops=gui.patch().getSelectedOps();
 		if(ops.length!=1)
 		{
-			console.log("rename canceled - only select one op!");
+			console.log("rename canceled - select one op!");
 			return;
 		}
 		oldName=ops[0].op.objName;

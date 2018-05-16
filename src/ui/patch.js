@@ -3235,4 +3235,58 @@ CABLES.UI.Patch = function(_gui) {
             }, false);
     };
 
+    this.opContextMenu=function(ele)
+    {
+        var items=[];
+
+        var opname=selectedOps[0].op.objName;
+
+        items.push(
+            {
+                title:'set title',
+                func:CABLES.CMD.PATCH.setOpTitle
+            });
+
+        items.push(
+            {
+                title:'bookmark',
+                func:function(){ gui.bookmarks.add(); }
+            });
+
+        items.push(
+            {
+                title:'clone op code',
+                "func":function(){ gui.serverOps.cloneDialog(opname); }
+            });
+
+        items.push(
+            {
+                title:'view op code',
+                "func":function(){ gui.serverOps.edit(opname); }
+            });
+
+        if(gui.user.isAdmin)
+        {
+            items.push(
+                {
+                    "title":'edit op ',
+                    "iconClass":'fa fa-lock',
+                    "func":function(){ gui.serverOps.edit(opname); }
+                });
+
+            items.push(
+                {
+                    "title":'rename op ',
+                    "iconClass":'fa fa-lock',
+                    "func":function(){ CABLES.UI.MetaCode.rename(opname); }
+                });
+        }
+
+        CABLES.contextMenu.show(
+            {"items":items},ele);
+    
+    };
+
+
+
 };

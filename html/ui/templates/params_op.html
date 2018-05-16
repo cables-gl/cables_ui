@@ -3,11 +3,16 @@
 <script id="params_op_head" type="text/x-handlebars-template">
 
     <div class="selectable params">
-      {{#if isBookmarked}}
+
+        <a onclick="gui.patch().opContextMenu(this)" class="tt icon icon-triple-dot iconhover op-contextmenu" data-info="Add Bookmark"></a>
+
+
+      <!-- {{#if isBookmarked}}
         <a onclick="gui.bookmarks.add()" class="icon icon-bookmark-filled info toggle-bookmark-button" data-info="Add Bookmark"></a>
       {{else}}
         <a onclick="gui.bookmarks.add()" class="icon icon-bookmark info toggle-bookmark-button" data-info="Add Bookmark"></a>
       {{/if}}
+       -->
         <div class="panel params_op_head">
             <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
 			<br/>
@@ -76,7 +81,7 @@
         {{{op.uiAttribs.info}}}
     </div>
 
-    <div class="panelhead" data-panelselector="#opcode">Code</div>
+    <!-- <div class="panelhead" data-panelselector="#opcode">Code</div>
     <div id="opcode" class="panel" style="padding:0px;">
         <div class="panel">
             {{#if op.isServerOp }}
@@ -88,12 +93,12 @@
                 <a onclick="CABLES.contextMenu.show({items:[{title:'hund'},{title:'elefant'},{title:'katze'},{title:'maus'}]},this);" class="button">test...</a>
                 <br/><br/>
 
-                {{/if}}
+                {{/if}} 
                 <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
                 <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
             {{/if}}
         </div>
-    </div>
+    </div> -->
 
 
 
