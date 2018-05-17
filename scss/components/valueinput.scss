@@ -1,0 +1,56 @@
+
+    .numberinput-value
+    {
+        position: absolute;
+        display: none;
+        outline: none;
+        border:none;
+        background-color: transparent !important;
+        padding:0px;
+        width:100%;
+
+        &:hover
+        {
+            background-color: transparent !important;
+        }
+    }
+
+    .numberinput,.numberinput-value
+    {
+        position: relative;
+        font-family: monospace;
+        font-size: 14px;
+        color:$color-ca;
+        border:none;
+        outline: none;
+    }
+
+    .numberinput
+    {
+        // background-color: #666;
+        background-color: $color-background-input;
+
+        width:140px;
+        padding:1px;
+        padding-top:1px;
+        height:18px;
+        padding-left: 5px;
+        color:$color-c2;
+        border-radius: 2px;
+        user-select: none;
+        cursor:ew-resize;
+        // margin-bottom: 5px;
+    }
+
+    .valueinputtype-string
+    {
+        cursor:pointer !important;
+    }
+
+    // .numberinput-progress
+    // {
+    //     width:50%;
+    //     background-color: red;
+    //     height:100%;
+    //     position: relative;
+    // }
