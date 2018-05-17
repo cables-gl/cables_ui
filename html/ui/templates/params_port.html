@@ -10,11 +10,11 @@
 
 <script id="params_port" type="text/x-handlebars-template">
 
+{{#if port.uiAttribs.spaceBefore }}
+    <tr><td></td></tr>
+{{/if}}
 
-
-
-
-<tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}  onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
+<tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" data-portname="{{port.name}}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}  onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" >
         {{port.name}}
@@ -93,8 +93,16 @@
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
                         </td><td colspan="3">
 
-                        <input type ="range" class="range" id="portval_{{ portnum }}_range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.max }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
-                        <input class="value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/>
+                        <!-- old value input -->
+                        <!-- <input type ="range" class="range" id="portval_{{ portnum }}_range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.max }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
+                        <input class="value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/> -->
+
+<!-- new value input -->
+<div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');">
+    <span class="numberinput-display">{{ port.val }}</span>
+    <input class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+</div>
+    
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
                         </td><td colspan="3">
@@ -152,12 +160,20 @@
 
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
 
-                        <input class="value watchPort watchPortValue_{{ port.watchId }} info {{#if port.uiAttribs.increment }}inc_int{{/if}}" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}"
+                        <!-- <input class="value watchPort watchPortValue_{{ port.watchId }} info {{#if port.uiAttribs.increment }}inc_int{{/if}}" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}"
                         {{#if port.uiAttribs.type }} type="search" style="width:100%"{{/if}} />
                         {{#if port.uiAttribs.type }}
                         {{else}}
                             <a class="valueDragger graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');"  data-info="{{ texts.portFloatDrag }}"></a>
-                        {{/if}}
+                        {{/if}} -->
+
+<!-- new value input -->
+<div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}"  id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');">
+    <span class="numberinput-display">{{ port.val }}</span>
+    <input class="numberinput-value watchPort watchPortValue_{{ port.watchId }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+</div>
+
+
                     {{/compare}}
                     <!-- dynamic port -->
                     {{#compare port.type '==' 4}}

@@ -2536,6 +2536,55 @@ CABLES.UI.Patch = function(_gui) {
         }, 30);
     };
 
+    // function paramsAddAutoSpacers()
+    // {
+    //     var lastName='';
+    //     var groupCount=0;
+    //     var dir=0;
+
+    //     function testSpacers()
+    //     {
+    //         var name=$(this).data("portname");
+    //         if(name.substring(0,3) == lastName.substring(0,3))
+    //         {
+    //             groupCount++;
+    //         }
+    //         else
+    //         {
+    //             if(groupCount>0)
+    //             {
+    //                 groupCount=0;
+    //                 // $(this).css({"background-color":"red"});
+    //                 // $(this).addClass("paramGroupSpacer");
+    //                 if(dir==0)
+    //                 {
+    //                     $(this).before("<tr><td></td></tr>");
+    //                     $(this).data('hasBefore',true);
+    //                 }
+    //                 else
+    //                 {
+    //                     $(this).after("<tr><td></td></tr>");
+    //                     $(this).data('hasAfter',true);
+    //                 }
+                    
+    //                 console.log("----");
+    //             }
+    //         }
+    //         console.log(name);
+    //         lastName=name;
+    //     }
+
+    //     $('.opports_in').each(testSpacers);
+
+    //     lastName='';
+    //     groupCount=0;
+    //     dir=1;
+
+    //     jQuery.fn.reverse = [].reverse;
+    //     $('.opports_in').reverse().each(testSpacers);
+
+    // }
+
     function checkDefaultValue(op, index) {
         if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null) {
             var titleEl = $('#portTitle_in_' + index);
@@ -2675,10 +2724,9 @@ CABLES.UI.Patch = function(_gui) {
             "user": gui.user
         });
 
-
-
         $('#options').html(html);
-
+        CABLES.valueChangerInitSliders();
+        // paramsAddAutoSpacers();
 
         updateUiAttribs();
 

@@ -76,8 +76,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             this.getGroup().transform('t' + posx + ',' + posy);
         }
 
-
-
         if (miniRect) miniRect.attr({
             x: posx,
             y: posy
@@ -1121,6 +1119,91 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         this.oprect.highlight(b);
     };
 
+
+    this._setAutoPortSpacing=function(ports)
+    {
+        var lastName='';
+        var groupCount=0;
+        var dir=0;
+        for(i=0;i<ports.length;i++)
+        {
+            var name=ports[i].name;
+            if(name.substring(0,3) == lastName.substring(0,3))
+            {
+                if(i>0 && groupCount==0)ports[i-1].setUiAttribs({"spaceBefore":true});
+                groupCount++;
+                
+            }
+            else
+            {
+                if(groupCount>0)
+                {
+                    groupCount=0;
+                    // if(dir==0)
+                    // {
+                    //     $(this).before("<tr><td></td></tr>");
+                    //     $(this).data('hasBefore',true);
+                    // }
+                    // else
+                    // {
+                    //     $(this).after("<tr><td></td></tr>");
+                    //     $(this).data('hasAfter',true);
+                    // }
+                    ports[i].setUiAttribs({"spaceBefore":true});
+                    
+                    console.log("----");
+                }
+            }
+            console.log(name);
+            lastName=name;
+        }
+
+
+
+    //     function testSpacers()
+    //     {
+    //         var name=$(this).data("portname");
+    //         if(name.substring(0,3) == lastName.substring(0,3))
+    //         {
+    //             groupCount++;
+    //         }
+    //         else
+    //         {
+    //             if(groupCount>0)
+    //             {
+    //                 groupCount=0;
+    //                 // $(this).css({"background-color":"red"});
+    //                 // $(this).addClass("paramGroupSpacer");
+    //                 if(dir==0)
+    //                 {
+    //                     $(this).before("<tr><td></td></tr>");
+    //                     $(this).data('hasBefore',true);
+    //                 }
+    //                 else
+    //                 {
+    //                     $(this).after("<tr><td></td></tr>");
+    //                     $(this).data('hasAfter',true);
+    //                 }
+                    
+    //                 console.log("----");
+    //             }
+    //         }
+    //         console.log(name);
+    //         lastName=name;
+    //     }
+
+    //     $('.opports_in').each(testSpacers);
+
+    //     lastName='';
+    //     groupCount=0;
+    //     dir=1;
+
+    //     jQuery.fn.reverse = [].reverse;
+    //     $('.opports_in').reverse().each(testSpacers);
+
+
+    }
+
     this.initPorts=function()
     {
         var i=0;
@@ -1137,6 +1220,8 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
         this.portsIn.length=0;
         this.portsOut.length=0;
+
+        this._setAutoPortSpacing(self.op.portsIn);
 
         for (i in self.op.portsIn) {
             var p = self.op.portsIn[i];
@@ -1220,10 +1305,10 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             for(var i=0;i<this.portsIn.length;i++)
             {
                 portPosX+=(CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding);
-                if(this.portsIn[i].thePort.uiAttribs.spaceBefore) portPosX+=2;
-                if(this.portsIn[i].thePort.uiAttribs.spaceAfter) portPosX+=2;
+                // if(this.portsIn[i].thePort.uiAttribs.spaceBefore) portPosX+=2;
+                // if(this.portsIn[i].thePort.uiAttribs.spaceAfter) portPosX+=2;
             }
-            if(thePort.uiAttribs && thePort.uiAttribs.spaceBefore) portPosX+=2;
+            // if(thePort.uiAttribs && thePort.uiAttribs.spaceBefore) portPosX+=2;
     
         }
 

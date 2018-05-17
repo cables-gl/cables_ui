@@ -243,43 +243,201 @@ CABLES.UI.initHandleBarsHelper=function ()
 
 
 
-function valueChanger(ele)
+// function valueChanger(ele)
+// {
+//     var isDown=false;
+//     var startVal=$('#'+ele).val();
+//     var el=document.getElementById(ele);
+//     var incMode=0;
+
+//     function keydown(e)
+//     {
+//     }
+
+//     function down(e)
+//     {
+//         gui.setStateUnsaved();
+//         isDown=true;
+//         document.addEventListener('pointerlockchange', lockChange, false);
+//         document.addEventListener('mozpointerlockchange', lockChange, false);
+//         document.addEventListener('webkitpointerlockchange', lockChange, false);
+
+//         document.addEventListener('keydown', keydown, false);
+
+//         if (el.classList.contains('inc_int')) incMode=1;
+
+//         el.requestPointerLock = el.requestPointerLock ||
+//                                     el.mozRequestPointerLock ||
+//                                     el.webkitRequestPointerLock;
+//         if(el.requestPointerLock) el.requestPointerLock();
+//     }
+
+//     function up(e)
+//     {
+//         gui.setStateUnsaved();
+//         isDown=false;
+//         document.removeEventListener('pointerlockchange', lockChange, false);
+//         document.removeEventListener('mozpointerlockchange', lockChange, false);
+//         document.removeEventListener('webkitpointerlockchange', lockChange, false);
+//         document.removeEventListener('keydown', keydown, false);
+
+//         if(document.exitPointerLock)document.exitPointerLock();
+
+//         $( document ).unbind( "mouseup", up );
+//         $( document ).unbind( "mousedown", down );
+
+//         document.removeEventListener("mousemove", move, false);
+//     }
+
+//     function move(e)
+//     {
+//         gui.setStateUnsaved();
+//         var v=parseFloat( $('#'+ele).val() ,10);
+//         var inc=0;
+
+//         if(incMode==0)
+//         {
+//             inc=e.movementY*-0.01;
+//             if(e.shiftKey || e.which==3)inc=e.movementY*-0.5;
+
+//             v+=inc;
+//             v=Math.round(v*1000)/1000;
+//         }
+//         else
+//         {
+//             inc=e.movementY*-1;
+//             if(e.shiftKey || e.which==3)inc=e.movementY*-5;
+
+//             v+=inc;
+//             v=Math.floor(v);
+//         }
+
+//         $('#'+ele).val(v);
+//         $('#'+ele).trigger('input');
+//     }
+
+//      function lockChange(e)
+//      {
+//         if (document.pointerLockElement === el || document.mozPointerLockElement === el || document.webkitPointerLockElement === el)
+//         {
+//             document.addEventListener("mousemove", move, false);
+//         }
+//         else
+//         {
+//             //propably cancled by escape key / reset value
+//             $('#'+ele).val(startVal);
+//             $('#'+ele).trigger('input');
+//             up();
+//         }
+
+//     }
+
+//     $( document ).bind( "mouseup", up );
+//     $( document ).bind( "mousedown", down );
+
+// }
+
+
+
+// NEW
+CABLES.valueChangerInitSliders=function()
+{
+    $('.valuesliderinput input').each(function(e)
+    {
+        var grad=CABLES.valueChangerGetSliderCss( $(this).val() );
+        $(this).parent().css({"background":grad});
+    });
+};
+
+CABLES.valueChangerGetSliderCss=function(v)
+{
+    v=Math.max(0,v);
+    v=Math.min(1,v);
+    const cssv=v*100;
+    return "linear-gradient(0.25turn,#5a5a5a, #5a5a5a "+cssv+"%, #444 "+cssv+"%)";
+}
+
+CABLES.valueChanger=function(ele)
 {
     var isDown=false;
     var startVal=$('#'+ele).val();
+    // console.log(ele);
     var el=document.getElementById(ele);
     var incMode=0;
+    var mouseDownTime=0;
 
-    function keydown(e)
+    function onInput(e)
     {
+        if($('#'+ele+'-container').hasClass('valuesliderinput'))
+        {
+            const grad=CABLES.valueChangerGetSliderCss( $('#'+ele).val() );
+            $('#'+ele+'-container').css( { "background": grad } );
+        }
+
     }
+
+    function setTextEdit(enabled)
+    {
+        if(enabled)
+        {
+            $('#'+ele).bind("input",onInput);
+            $('#'+ele+'-container .numberinput-display').hide();
+            $('#'+ele).show();
+            $('#'+ele).focus();
+
+            var vv=$('#'+ele).val()
+            $('#'+ele).val('')
+            $('#'+ele).val(vv); // workaround to set cursor to end of line
+        }
+        else
+        {
+            $('#'+ele).unbind("input",onInput);
+            
+            $('#'+ele+'-container .numberinput-display').show();
+            $('#'+ele).hide();
+            $('#'+ele).blur();
+            // $('#'+ele+'-value').hide();
+        }
+    }
+
 
     function down(e)
     {
-        gui.setStateUnsaved();
+        if($('#'+ele).is(":focus")) return;
+        
+
+        mouseDownTime=performance.now();
         isDown=true;
-        document.addEventListener('pointerlockchange', lockChange, false);
-        document.addEventListener('mozpointerlockchange', lockChange, false);
-        document.addEventListener('webkitpointerlockchange', lockChange, false);
+        
+        var isString= $('#'+ele).data("valuetype")=="string";
 
-        document.addEventListener('keydown', keydown, false);
-
-        if (el.classList.contains('inc_int')) incMode=1;
-
-        el.requestPointerLock = el.requestPointerLock ||
-                                    el.mozRequestPointerLock ||
-                                    el.webkitRequestPointerLock;
-        if(el.requestPointerLock) el.requestPointerLock();
+        if(!isString)
+        {
+            document.addEventListener('pointerlockchange', lockChange, false);
+            document.addEventListener('mozpointerlockchange', lockChange, false);
+            document.addEventListener('webkitpointerlockchange', lockChange, false);
+            
+    
+            if (el.classList.contains('inc_int')) incMode=1;
+    
+            el.requestPointerLock = el.requestPointerLock || el.mozRequestPointerLock || el.webkitRequestPointerLock;
+            if(el.requestPointerLock) el.requestPointerLock();
+    
+        }
     }
 
     function up(e)
     {
+        if($('#'+ele).is(":focus")) return;
+        var isString= $('#'+ele).data("valuetype")=="string";
+        
         gui.setStateUnsaved();
         isDown=false;
+
+
         document.removeEventListener('pointerlockchange', lockChange, false);
         document.removeEventListener('mozpointerlockchange', lockChange, false);
         document.removeEventListener('webkitpointerlockchange', lockChange, false);
-        document.removeEventListener('keydown', keydown, false);
 
         if(document.exitPointerLock)document.exitPointerLock();
 
@@ -287,37 +445,65 @@ function valueChanger(ele)
         $( document ).unbind( "mousedown", down );
 
         document.removeEventListener("mousemove", move, false);
+
+        if(performance.now()-mouseDownTime<200)
+        {
+            setTextEdit(true);
+            return;
+        }
+    }
+
+    function setProgress(v)
+    {
+        const grad=CABLES.valueChangerGetSliderCss(v);
+        $('#'+ele+'-container').css( { "background": grad } );
+        return v;
     }
 
     function move(e)
     {
+        if($('#'+ele).is(":focus")) return;
+        
         gui.setStateUnsaved();
         var v=parseFloat( $('#'+ele).val() ,10);
         var inc=0;
 
+        if(Math.abs(e.movementX)>5) mouseDownTime=0;
+
+        if($('#'+ele+'-container').hasClass('valuesliderinput'))
+        {
+            inc=e.movementX*0.001;
+            v+=inc;
+            v=Math.max(0,v);
+            v=Math.min(1,v);
+            v=Math.round(v*1000)/1000;
+            v=setProgress(v);
+        }
+        else
         if(incMode==0)
         {
-            inc=e.movementY*-0.01;
-            if(e.shiftKey || e.which==3)inc=e.movementY*-0.5;
+            inc=e.movementX*0.01;
+            if(e.shiftKey || e.which==3)inc=e.movementX*0.5;
 
             v+=inc;
             v=Math.round(v*1000)/1000;
         }
         else
         {
-            inc=e.movementY*-1;
-            if(e.shiftKey || e.which==3)inc=e.movementY*-5;
+            inc=e.movementX*1;
+            if(e.shiftKey || e.which==3)inc=e.movementX*5;
 
             v+=inc;
             v=Math.floor(v);
         }
 
         $('#'+ele).val(v);
+        $('#'+ele+'-container .numberinput-display').html(v);
         $('#'+ele).trigger('input');
     }
 
-     function lockChange(e)
-     {
+    function lockChange(e)
+    {
         if (document.pointerLockElement === el || document.mozPointerLockElement === el || document.webkitPointerLockElement === el)
         {
             document.addEventListener("mousemove", move, false);
@@ -326,13 +512,26 @@ function valueChanger(ele)
         {
             //propably cancled by escape key / reset value
             $('#'+ele).val(startVal);
+            $('#'+ele+'-container .numberinput-display').html(startVal);
             $('#'+ele).trigger('input');
             up();
         }
-
     }
 
     $( document ).bind( "mouseup", up );
     $( document ).bind( "mousedown", down );
+    // $( '#'+ele ).bind( "click", click );
+    $( '#'+ele ).bind( "blur", 
+        function()
+        {
+            $( '#'+ele ).unbind( "blur");
 
-}
+            // console.log("BLUR");
+            
+            $('#'+ele+'-container .numberinput-display').html($('#'+ele).val());
+            setTextEdit(false);
+            // $(document).focus();
+            if($('#'+ele).hasClass('valuesliderinput'))setProgress();
+
+        });
+};

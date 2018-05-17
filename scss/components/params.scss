@@ -85,6 +85,10 @@
 
 
 
+
+
+
+
 }
 
 .paramsPortLink
@@ -112,7 +116,8 @@
 
     .invalid
     {
-        border:1px solid red;
+        border:1px solid $color-error;
+        background-color:$color-error !important;
     }
 
     .nonDefaultValue
@@ -286,6 +291,20 @@
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
 }
 
 #options
@@ -381,3 +400,11 @@ td.head
 }
 
 
+.paramGroupSpacer
+{
+    :before
+    {
+        border:2px solid red;
+
+    }
+}
