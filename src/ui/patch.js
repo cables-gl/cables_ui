@@ -1375,8 +1375,9 @@ CABLES.UI.Patch = function(_gui) {
             if (!ev.shiftKey && !spacePressed && ev.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
             {
                 gui.patch().setSelectedOp(null);
+                self.showProjectParams();
             }
-            self.showProjectParams();
+            
         }.bind(this);
 
         var lastZoomDrag = -1;
@@ -2954,9 +2955,9 @@ CABLES.UI.Patch = function(_gui) {
                         }
 
                         if (!ignoreColorChanges) {
-                            $('#portval_' + portNum + '_range').val(colors.rgb.r).trigger('input');
-                            $('#portval_' + (portNum + 1) + '_range').val(colors.rgb.g).trigger('input');
-                            $('#portval_' + (portNum + 2) + '_range').val(colors.rgb.b).trigger('input');
+                            $('#portval_' + portNum + '').val(colors.rgb.r).trigger('input');
+                            $('#portval_' + (portNum + 1) + '').val(colors.rgb.g).trigger('input');
+                            $('#portval_' + (portNum + 2) + '').val(colors.rgb.b).trigger('input');
                         } else {
                             updateColorPickerButton(id);
                         }
