@@ -98,7 +98,7 @@
                         <input class="value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/> -->
 
 <!-- new value input -->
-<div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');">
+<div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');">
     <span class="numberinput-display">{{ port.val }}</span>
     <input class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
 </div>
@@ -168,7 +168,7 @@
                         {{/if}} -->
 
 <!-- new value input -->
-<div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}"  id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');">
+<div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-portnum="{{ portnum }}"  id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');">
     <span class="numberinput-display">{{ port.val }}</span>
     <input class="numberinput-value watchPort watchPortValue_{{ port.watchId }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
 </div>
