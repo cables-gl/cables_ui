@@ -1352,7 +1352,6 @@ CABLES.UI.Patch = function(_gui) {
                 return;
             }
 
-
             callEvent('patch_zoom');
         });
 
@@ -1404,7 +1403,6 @@ CABLES.UI.Patch = function(_gui) {
                 console.log("center");
                 self.centerViewBoxOps();
             }
-
         }
 
         this.background.node.ondblclick = function(e) {

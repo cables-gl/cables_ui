@@ -1127,12 +1127,12 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         var dir=0;
         for(i=0;i<ports.length;i++)
         {
+            if(ports[i].hidePort)continue;
             var name=ports[i].name;
             if(name.substring(0,3) == lastName.substring(0,3))
             {
                 if(i>0 && groupCount==0)ports[i-1].setUiAttribs({"spaceBefore":true});
                 groupCount++;
-                
             }
             else
             {
