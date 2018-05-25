@@ -442,12 +442,17 @@ CABLES.UI.Patch = function(_gui) {
 
     $('#patch').keydown(function(e) {
 
+
+
         switch (e.which) {
 
             case 27:
             $('#patch').css({
                 "cursor": "auto"
             });
+            break;
+            case 84:
+                CABLES.CMD.PATCH.setOpTitle();
             break;
             case 32:
                 spacePressed = true;
@@ -1642,7 +1647,16 @@ CABLES.UI.Patch = function(_gui) {
 
             var foundPort = op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
 
-            if (foundPort) {
+            if (foundPort)
+            {
+                console.log(op.objName,'op.objName');
+                if(op.objName=='Ops.Value.Value')
+                {
+                    var oldValue=CABLES.UI.OPSELECT.linkNewOpToPort.get();
+                    op.getPort("value").set(oldValue);
+                    op.setTitle(CABLES.UI.OPSELECT.linkNewOpToPort.getName());
+                }
+
                 gui.patch().scene.link(
                     CABLES.UI.OPSELECT.linkNewOpToOp,
                     CABLES.UI.OPSELECT.linkNewOpToPort.getName(),

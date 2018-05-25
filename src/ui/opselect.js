@@ -21,7 +21,6 @@ CABLES.UI.OpSelect=function()
 CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 {
     var num=$('.searchbrowser .searchable:visible').length;
-
     var query=$('#opsearch').val();
 
     if(query.length===0) $('#search_startType').show();
