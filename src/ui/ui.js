@@ -1505,7 +1505,7 @@ function startUi(event)
         gui.patch().fixTitlePositions();
         gui.opSelect().prepare();
         gui.opSelect().search();
-        self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
+        // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
         if(!gui.user.introCompleted)gui.introduction().showIntroduction();
 
     });
