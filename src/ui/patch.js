@@ -1906,8 +1906,10 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.setOpTitle = function(uiop, t) {
-        uiop.op.uiAttribs.title = t;
-        uiop.op.name = t;
+
+        uiop.op.setTitle(t);
+        // uiop.op.uiAttribs.title = t;
+        // uiop.op.name = t;
         uiop.oprect.setTitle(t);
     };
 
