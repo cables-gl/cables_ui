@@ -122,11 +122,8 @@ CABLES.uploadFiles=function(files)
             console.log(ex);
         }
 
-        // gui.updateProjectFiles();
         CABLES.UI.fileSelect.load();
         CABLES.UI.fileSelect.show();
-
-        // console.log('upload response: ', res);
 
         gui.patch().addAssetOpAuto('/assets/'+gui.patch().getCurrentProject()._id+'/'+res.filename,CABLES.uploadDropEvent);
 
