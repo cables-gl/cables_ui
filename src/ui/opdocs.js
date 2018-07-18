@@ -91,8 +91,6 @@ CABLES.UI.OpDocs=function()
         {
             logStartup('Op docs loaded');
             
-            console.log('op docs response');
-
             if(window.process && window.process.versions['electron'])  res=JSON.parse(res);
             
             opDocs=res.opDocs;

@@ -1075,15 +1075,10 @@ CABLES.UI.GUI = function() {
         if(CABLES.UI.userSettings.get("fileViewOpen")==true)this.showLibrary();
         if(CABLES.UI.userSettings.get("timelineOpened")==true)this.showTiming();
 
-        console.log('tl',CABLES.UI.userSettings.get("timelineOpened"));
-
-
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");
         console.table(CABLES.startup.log);
         console.groupEnd();
-
-
     };
 
     this.showWelcomeNotifications = function() {
@@ -1494,7 +1489,6 @@ function startUi(event)
 
     gui.bind(function() {
 
-        console.log("BIND FINISHED!");
         gui.metaCode().init();
         gui.opSelect().reload();
         gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');

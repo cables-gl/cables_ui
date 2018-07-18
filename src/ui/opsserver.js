@@ -366,37 +366,47 @@ CABLES.UI.ServerOps = function(gui) {
 
 
     // Shows the editor and displays the code of an op in it
-    this.edit = function(name, readOnly) {
-        var op = null;
+    this.edit = function(opname, readOnly) {
+        // var op = null;
 
-        for (var i = 0; i < ops.length; i++) {
-            if (ops[i].name == name) {
-                op = ops[i];
-            }
-        }
-        if (!op) {
-            console.log('server op not found ' + name);
+
+
+        if(!opname || opname=='')
+        {
+            console.log("UNKNOWN OPNAME ",opname);
             return;
+
         }
+
+
+        // for (var i = 0; i < ops.length; i++) {
+        //     if (ops[i].name == name) {
+        //         op = ops[i];
+        //     }
+        // }
+        // if (!op) {
+        //     console.log('server op not found ' + name);
+        //     return;
+        // }
         CABLES.api.get(
-            'ops/' + op.name,
+            'ops/' + opname,
             function(res) {
                 gui.showEditor();
                 CABLES.UI.MODAL.hide();
 
                 var editorObj = {
                     "type": "op",
-                    "name": name
+                    "name": opname
                 };
                 saveOpenEditor(editorObj);
 
                 var html = '';
-                if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + op.name + '\');">execute</a>';
+                if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
                 var save = null;
                 if (!readOnly) save = function(setStatus, content) {
                     CABLES.api.put(
-                        'ops/' + op.name, {
+                        'ops/' + opname, {
                             code: content
                         },
                         function(res) {
@@ -404,14 +414,14 @@ CABLES.UI.ServerOps = function(gui) {
                                 if (res.error) setStatus('Error: Line ' + res.error.lineNumber + ' : ' + res.error.description, true);
                                 else setStatus('error: unknown error', true);
                             } else {
-                                if (!CABLES.Patch.getOpClass(op.name)) {
+                                if (!CABLES.Patch.getOpClass(opname)) {
                                     console.log('execute first time...');
                                     gui.opSelect().reload();
-                                    gui.serverOps.execute(op.name);
+                                    gui.serverOps.execute(opname);
                                 }
 
                                 // exec ???
-                                setStatus('saved ' + op.name);
+                                setStatus('saved ' + opname);
                             }
                             console.log('res', res);
                         },
@@ -423,13 +433,13 @@ CABLES.UI.ServerOps = function(gui) {
                 };
 
 
-                var parts = op.name.split(".");
+                var parts = opname.split(".");
                 var title = 'Op ' + parts[parts.length - 1];
                 gui.editor().addTab({
                     content: res.code,
                     title: title,
                     editorObj: editorObj,
-                    opname: op.name,
+                    opname: opname,
                     syntax: 'js',
                     readOnly: readOnly,
                     toolbarHtml: html,

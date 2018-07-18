@@ -3,7 +3,7 @@ var CABLES=CABLES||{};
 
 CABLES.SandboxBrowser=function()
 {
-    console.log("starting browser sandbox");
+    // console.log("starting browser sandbox");
 };
 
 
@@ -139,8 +139,11 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
             var userOpsUrls = [];
             // console.log(proj.userList[i]+'!!!',proj);
 
+console.log(proj);
+
             for (var i in proj.userList) {
                 userOpsUrls.push('/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
+                console.log("loading user ops "+proj.userList[i]);
             }
 
             var lid = 'userops' + proj._id + CABLES.generateUUID();
@@ -183,7 +186,6 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
     });
 
     router.addRoute('/project/:id').get(function(event, params) {
-        console.log('load project');
         loadProject(params.id);
     });
 

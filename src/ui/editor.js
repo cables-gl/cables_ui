@@ -225,7 +225,7 @@ CABLES.Editor=function()
 
                 // console.log('editor syntax:',contents[i].syntax);
 
-                editor.setValue(contents[i].content,-1);
+                editor.setValue(String(contents[i].content),-1);
                 editor.setReadOnly(contents[i].readOnly);
 
                 if(contents[i].readOnly)$('.editorsavebutton').hide();

@@ -9,7 +9,7 @@ CABLES.GL_MARKER.startFramebuffer=function(cgl)
     if(!CABLES.GL_MARKER.FB)
     {
         CABLES.GL_MARKER.FB={};
-        CABLES.GL_MARKER.FB.fb=new CGL.Framebuffer2(cgl,8,8,
+        CABLES.GL_MARKER.FB.fb=CGL.createFramebuffer(cgl,8,8,
             {
                 isFloatingPointTexture:false,
                 depth:true,

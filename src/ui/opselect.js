@@ -176,8 +176,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
             options.linkNamespaceIsTextureEffects=true
     }
 
-    console.log(options);
-
     if(query.length>1)
     {
         if(query.indexOf(" ")>-1)
@@ -448,8 +446,6 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
         break;
 
         case 13:
-            console.log( $('.selected') );
-
             var opname=$('.selected').data('opname');
 
             if(opname && opname.length>2)
