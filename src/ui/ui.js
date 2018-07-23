@@ -117,7 +117,7 @@ CABLES.UI.GUI = function() {
     this.setLayout = function() {
         var startTime = performance.now();
 
-        this._elAceEditor = this._elAceEditor || $('#ace_editor');
+        this._elAceEditor = this._elAceEditor || $('#ace_editors');
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
         this._elSplitterRenderer = this._elSplitterRenderer || $('#splitterRenderer');
         // this._elSplitterRendererWH = this._elSplitterRendererWH || $('#splitterRendererWH');
@@ -223,10 +223,10 @@ CABLES.UI.GUI = function() {
 
             var editorHeight = patchHeight - 2 - editorbarHeight;
 
-            $('#ace_editor').css('height', editorHeight);
+            this._elAceEditor.css('height', editorHeight);
 
             this._elAceEditor.css('width', self.editorWidth);
-            this._elAceEditor.css('top', menubarHeight + 1 + editorbarHeight);
+            $('#ace_editors .ace_tab_content').css('top', menubarHeight + 1 + editorbarHeight);
             this._elAceEditor.css('left', 0);
 
             this._elEditorBar.css('width', self.editorWidth);
@@ -907,7 +907,7 @@ CABLES.UI.GUI = function() {
 
                 case 70:
                         if (e.metaKey || e.ctrlKey) {
-                        if (!$('#ace_editor textarea').is(":focus")) {
+                        if (!$('#ace_editors textarea').is(":focus")) {
                             CABLES.CMD.UI.showSearch();
 
                             e.preventDefault();
