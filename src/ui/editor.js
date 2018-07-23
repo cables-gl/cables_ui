@@ -1,12 +1,185 @@
-
 CABLES = CABLES || {};
 
 CABLES.Editor=function()
 {
-    var contents=[];
-    var currentTabId='';
+    this._tabs=[];
+    this._currentTabId='';
 
-    var editor = ace.edit("ace_editor");
+    this._editor=CABLES.Editor.createEditor("ace_editor");
+
+    // Hover text
+    $('#ace_editor').hover(function (e)
+    {
+        CABLES.UI.showInfo(CABLES.UI.TEXTS.editor);
+    },function()
+    {
+        CABLES.UI.hideInfo();
+    });
+
+    this.resize=function()
+    {
+        this._editor.resize();
+    };
+
+    this._updateTabs=function()
+    {
+        var html='';
+        html+=CABLES.UI.getHandleBarHtml('editor_bar',{contents:this._tabs});
+        $('#editorbar').html(html);
+    }
+
+    this.closeCurrentTab=function()
+    {
+        for(var i=0;i<this._tabs.length;i++)
+        {
+            if(this._tabs[i].id==this._currentTabId)
+            {
+                if(this._tabs[i].onClose)
+                    this._tabs[i].onClose(this._tabs[i]);
+
+                this._tabs.splice(i,1);
+
+                this._updateTabs();
+                if(this._tabs.length>0)
+                {
+                    this.setTab(this._tabs[0].id);
+                }
+                else
+                {
+                    $('#editorbar').html('');
+                    this._editor.setValue('nothing to edit right now :/',-1);
+                    gui.closeEditor();
+                }
+                return;
+            }
+        }
+    };
+
+    this.addTab=function(c)
+    {
+        for(var i in this._tabs)
+        {
+            if(this._tabs[i].title==c.title)
+            {
+                this.setTab(this._tabs[i].id);
+                return;
+            }
+        }
+
+        c.id=CABLES.generateUUID();
+
+        this._tabs.push(c);
+        this._updateTabs();
+        this.setTab(c.id);
+        return c;
+    };
+
+    this.save=function()
+    {
+        function onSaveCb(txt)
+        {
+            gui.jobs().finish('saveeditorcontent');
+            if(txt.toLowerCase().indexOf('error')==0) CABLES.UI.notifyError(txt);
+            else CABLES.UI.notify(txt);
+        }
+
+        this.setCurrentTabContent();
+        for(var i=0;i<this._tabs.length;i++)
+        {
+            if(this._tabs[i].onSave && this._tabs[i].id==this._currentTabId)
+            {
+                gui.jobs().start({id:'saveeditorcontent',title:'saving editor content'});
+
+                this._tabs[i].onSave(onSaveCb,this._editor.getValue());
+            }
+        }
+    };
+
+    this.setCurrentTabContent=function()
+    {
+        for(var i=0;i<this._tabs.length;i++)
+        {
+            if(this._tabs[i].id==this._currentTabId)
+            {
+                this._tabs[i].content=this._editor.getValue();
+            }
+        }
+    };
+
+    this.setTabByTitle=function(title)
+    {
+        for(var i=0;i<this._tabs.length;i++)
+            if(this._tabs[i].title==title)
+                this.setTab(this._tabs[i].id);
+    };
+
+    this.setTab=function(id)
+    {
+        this.setCurrentTabContent();
+
+        for(var i=0;i<this._tabs.length;i++)
+        {
+            if(this._tabs[i].id==id)
+            {
+                this._currentTabId=id;
+                CABLES.UI.userSettings.set('editortab',this._tabs[i].title);
+
+                $('#editortab'+this._tabs[i].id).addClass('active');
+
+                if(this._tabs[i].syntax=='md')  this._editor.session.setMode("ace/mode/Markdown");
+                else if(this._tabs[i].syntax=='js')  this._editor.session.setMode("ace/mode/javascript");
+                else if(this._tabs[i].syntax=='glsl')  this._editor.session.setMode("ace/mode/glsl");
+                else if(this._tabs[i].syntax=='css')  this._editor.session.setMode("ace/mode/css");
+                else this._editor.session.setMode("ace/mode/Text");
+
+                // console.log('editor syntax:',contents[i].syntax);
+
+                this._editor.setValue(String(this._tabs[i].content),-1);
+                this._editor.setReadOnly(this._tabs[i].readOnly);
+
+                if(this._tabs[i].readOnly)$('.editorsavebutton').hide();
+                    else $('.editorsavebutton').show();
+
+                $('#editorbar .iconbar .editortoolbar').html(this._tabs[i].toolbarHtml || '');
+            }
+            else
+            {
+                $('#editortab'+this._tabs[i].id).removeClass('active');
+            }
+        }
+    };
+
+    this.focus=function()
+    {
+        this._editor.focus();
+    };
+
+    this.contextMenu=function(ele)
+    {
+        var items=[];
+
+        for(var i=0;i<this._tabs.length;i++)
+        {
+            var mItem=
+                {
+                    "title":this._tabs[i].title,
+                    "fileId":this._tabs[i].id,
+                    "func":
+                        function()
+                        {
+                            console.log(this);
+                            gui.editor().setTab(this.fileId);
+                        }
+                };
+            items.push(mItem);
+        }
+        CABLES.contextMenu.show({items: items},ele);
+    }
+};
+
+CABLES.Editor.createEditor=function(id)
+{
+    var editor = ace.edit(id);
     editor.setValue('');
 
     editor.setOptions({
@@ -75,197 +248,8 @@ CABLES.Editor=function()
 
     // or
     editor.completers = [staticWordCompleter];
-
-
-
-
     editor.resize();
     editor.focus();
+    return editor;
 
-    // Hover text
-    $('#ace_editor').hover(function (e)
-    {
-        CABLES.UI.showInfo(CABLES.UI.TEXTS.editor);
-    },function()
-    {
-        CABLES.UI.hideInfo();
-    });
-
-    this.resize=function()
-    {
-        editor.resize();
-    };
-
-    function updateTabs()
-    {
-        var html='';
-        html+=CABLES.UI.getHandleBarHtml('editor_bar',{contents:contents});
-
-        $('#editorbar').html(html);
-    }
-
-    this.closeCurrentTab=function()
-    {
-        for(var i=0;i<contents.length;i++)
-        {
-            if(contents[i].id==currentTabId)
-            {
-                if(contents[i].onClose)
-                    contents[i].onClose(contents[i]);
-
-                contents.splice(i,1);
-
-                updateTabs();
-                if(contents.length>0)
-                {
-                    this.setTab(contents[0].id);
-                }
-                else
-                {
-                    $('#editorbar').html('');
-                    editor.setValue('nothing to edit right now :/',-1);
-                    gui.closeEditor();
-                }
-                return;
-            }
-        }
-    };
-
-    this.addTab=function(c)
-    {
-        for(var i in contents)
-        {
-            if(contents[i].title==c.title)
-            {
-                this.setTab(contents[i].id);
-                return;
-            }
-        }
-
-        c.id=CABLES.generateUUID();
-
-        contents.push(c);
-        updateTabs();
-        this.setTab(c.id);
-        return c;
-    };
-
-    // function setStatus(txt,stay)
-    // {
-    //     $('#editorstatus').html(txt);
-    //
-    //     if(!stay)
-    //         setTimeout(function()
-    //         {
-    //             $('#editorstatus').html('');
-    //         },500);
-    // }
-    // this.setStatus=setStatus;
-
-    this.save=function()
-    {
-        // $('#editorstatus').html('<i class="fa fa-spinner fa-pulse"></i>');
-
-        function onSaveCb(txt)
-        {
-            gui.jobs().finish('saveeditorcontent');
-            if(txt.toLowerCase().indexOf('error')==0) CABLES.UI.notifyError(txt);
-            else CABLES.UI.notify(txt);
-
-        }
-
-        this.setCurrentTabContent();
-        for(var i=0;i<contents.length;i++)
-        {
-            if(contents[i].onSave && contents[i].id==currentTabId)
-            {
-                gui.jobs().start({id:'saveeditorcontent',title:'saving editor content'});
-
-                contents[i].onSave(onSaveCb,editor.getValue());
-            }
-        }
-    };
-
-    this.setCurrentTabContent=function()
-    {
-        for(var i=0;i<contents.length;i++)
-        {
-            if(contents[i].id==currentTabId)
-            {
-                contents[i].content=editor.getValue();
-            }
-        }
-    };
-
-    this.setTabByTitle=function(title)
-    {
-        for(var i=0;i<contents.length;i++)
-            if(contents[i].title==title)
-                this.setTab(contents[i].id);
-    };
-
-    this.setTab=function(id)
-    {
-        this.setCurrentTabContent();
-
-        for(var i=0;i<contents.length;i++)
-        {
-            if(contents[i].id==id)
-            {
-                currentTabId=id;
-                CABLES.UI.userSettings.set('editortab',contents[i].title);
-
-                $('#editortab'+contents[i].id).addClass('active');
-
-                if(contents[i].syntax=='md')  editor.session.setMode("ace/mode/Markdown");
-                else if(contents[i].syntax=='js')  editor.session.setMode("ace/mode/javascript");
-                else if(contents[i].syntax=='glsl')  editor.session.setMode("ace/mode/glsl");
-                else if(contents[i].syntax=='css')  editor.session.setMode("ace/mode/css");
-                else editor.session.setMode("ace/mode/Text");
-
-                // console.log('editor syntax:',contents[i].syntax);
-
-                editor.setValue(String(contents[i].content),-1);
-                editor.setReadOnly(contents[i].readOnly);
-
-                if(contents[i].readOnly)$('.editorsavebutton').hide();
-                    else $('.editorsavebutton').show();
-
-                $('#editorbar .iconbar .editortoolbar').html(contents[i].toolbarHtml || '');
-            }
-            else
-            {
-                $('#editortab'+contents[i].id).removeClass('active');
-            }
-        }
-    };
-
-    this.focus=function()
-    {
-        editor.focus();
-    };
-
-    this.contextMenu=function(ele)
-    {
-        var items=[];
-
-        for(var i=0;i<contents.length;i++)
-        {
-            var mItem=
-                {
-                    "title":contents[i].title,
-                    "fileId":contents[i].id,
-                    "func":
-                        function()
-                        {
-                            console.log(this);
-                            gui.editor().setTab(this.fileId);
-                        }
-                };
-            items.push(mItem);
-        }
-
-        CABLES.contextMenu.show({items: items},ele);
-    }
-
-};
+}
