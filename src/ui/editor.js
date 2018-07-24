@@ -72,15 +72,13 @@ CABLES.Editor=function()
         $('#ace_editors').append('<div class="ace_tab_content" style="height:100%;width:100%;" id="tab_'+c.id+'"></div>');
         c.editor=CABLES.Editor.createEditor('tab_'+c.id);
         c.editor.setValue(c.content,-1);
+        c.editor.resize();
 
         const session = c.editor.getSession();
         const undoManager = session.getUndoManager();
         undoManager.reset();
         session.setUndoManager(undoManager);
     
-
-        console.log('addtab!!!',c);
-
         this._tabs.push(c);
         this._updateTabs();
         this.setTab(c.id);
@@ -160,6 +158,7 @@ CABLES.Editor=function()
                 else tab.editor.session.setMode("ace/mode/Text");
 
                 tab.editor.focus();
+                tab.editor.resize();
 
                 // console.log('editor syntax:',contents[i].syntax);
 
