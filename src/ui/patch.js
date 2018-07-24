@@ -754,6 +754,8 @@ CABLES.UI.Patch = function(_gui) {
 
     this._saveCurrentProject = function(cb, _id, _name)
     {
+        const doSaveScreenshot=gui.patch().scene.isPlaying();
+
         for (var i = 0; i < this.ops.length; i++) {
             this.ops[i].removeDeadLinks();
             if (this.ops[i].op.uiAttribs.error) delete this.ops[i].op.uiAttribs.error;
@@ -764,8 +766,12 @@ CABLES.UI.Patch = function(_gui) {
 
         var w = $('#glcanvas').attr('width');
         var h = $('#glcanvas').attr('height');
-        $('#glcanvas').attr('width', 640);
-        $('#glcanvas').attr('height', 360);
+
+        if(doSaveScreenshot)
+        {
+            $('#glcanvas').attr('width', 640);
+            $('#glcanvas').attr('height', 360);
+        }
 
         var id = currentProject._id;
         var name = currentProject.name;
@@ -777,7 +783,6 @@ CABLES.UI.Patch = function(_gui) {
             "viewBox": {},
             "timeLineLength": gui.timeLine().getTimeLineLength()
         };
-
 
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
 
@@ -798,7 +803,6 @@ CABLES.UI.Patch = function(_gui) {
             var ipcRenderer = electron.ipcRenderer;
             var remote = electron.remote; 
             var dialog = remote.dialog;
-
             
             console.log('gui.patch().filename before check: ', gui.patch().filename);
             // patch has been saved before, overwrite the patch
@@ -849,52 +853,56 @@ CABLES.UI.Patch = function(_gui) {
                     
                     self._serverDate=r.updated;
                     if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
-                    else CABLES.UI.notify('patch saved');
+                        else CABLES.UI.notify('patch saved');
 
 
                     // console.log(r);
 
-                    var screenshotTimeout = setTimeout(function() {
-                        // $('#glcanvas').attr('width', w);
-                        // $('#glcanvas').attr('height', h);
-                        // gui.patch().scene.cgl.doScreenshot = false;
-                        
-                        // gui.jobs().finish('uploadscreenshot');
-                        // console.log('screenshot timed out...');
-                        
-                        gui.patch().scene.cgl.setSize(w,h);
-                        gui.patch().scene.resume();
-                    }, 1000);
-
-
-                    gui.patch().scene.pause();
-                    gui.patch().scene.cgl.setSize(640,360);
-                    gui.patch().scene.renderOneFrame();
-                    gui.patch().scene.renderOneFrame();
-
-                    gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
-                    gui.patch().scene.cgl.screenShot(function(screenBlob) {
-                        clearTimeout(screenshotTimeout);
-
-                        gui.patch().scene.cgl.setSize(w,h);
-                        gui.patch().scene.resume();
-
-                        var reader = new FileReader();
-
-                        reader.onload = function(event) {
-                            CABLES.api.put(
-                                'project/' + id + '/screenshot', {
-                                    "screenshot": event.target.result //gui.patch().scene.cgl.screenShotDataURL
-                                },
-                                function(r) {
-                                    gui.jobs().finish('screenshotsave');
-                                    if (gui.onSaveProject) gui.onSaveProject();
-                                    // gui.jobs().finish('uploadscreenshot');
-                                });
-                        };
-                        reader.readAsDataURL(screenBlob);
-
-                    });
+                    if(doSaveScreenshot)
+                    {
+                        var screenshotTimeout = setTimeout(function() {
+                            // $('#glcanvas').attr('width', w);
+                            // $('#glcanvas').attr('height', h);
+                            // gui.patch().scene.cgl.doScreenshot = false;
+                            
+                            // gui.jobs().finish('uploadscreenshot');
+                            // console.log('screenshot timed out...');
+                            
+                            gui.patch().scene.cgl.setSize(w,h);
+                            gui.patch().scene.resume();
+                        }, 1000);
+    
+    
+                        gui.patch().scene.pause();
+                        gui.patch().scene.cgl.setSize(640,360);
+                        gui.patch().scene.renderOneFrame();
+                        gui.patch().scene.renderOneFrame();
+    
+                        gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
+                        gui.patch().scene.cgl.screenShot(function(screenBlob) {
+                            clearTimeout(screenshotTimeout);
+    
+                            gui.patch().scene.cgl.setSize(w,h);
+                            gui.patch().scene.resume();
+    
+                            var reader = new FileReader();
+    
+                            reader.onload = function(event) {
+                                CABLES.api.put(
+                                    'project/' + id + '/screenshot', {
+                                        "screenshot": event.target.result //gui.patch().scene.cgl.screenShotDataURL
+                                    },
+                                    function(r) {
+                                        gui.jobs().finish('screenshotsave');
+                                        if (gui.onSaveProject) gui.onSaveProject();
+                                        // gui.jobs().finish('uploadscreenshot');
+                                    });
+                            };
+                            reader.readAsDataURL(screenBlob);
+    
+                        });
+    
+                    }
                     // gui.patch().scene.cgl.doScreenshot = true;
                 });
         } catch (e) {
@@ -2671,7 +2679,7 @@ CABLES.UI.Patch = function(_gui) {
             "colorClass": "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
             "texts": CABLES.UI.TEXTS,
             "user": gui.user,
-            ownsOp: ownsOp
+            "ownsOp": ownsOp
         });
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);

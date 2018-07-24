@@ -249,20 +249,20 @@ CABLES.CMD.PATCH.tidyChildOps=function()
 
 };
 
-
-
-
-
-
-
-
-
 CABLES.CMD.TIMELINE.setLength=function()
 {
 	gui.timeLine().setProjectLength();
 };
 
+CABLES.CMD.PATCH.resume=function()
+{
+	gui.patch().scene.resume();
+};
 
+CABLES.CMD.PATCH.pause=function()
+{
+	gui.patch().scene.pause();
+};
 
 
 
@@ -400,6 +400,16 @@ CABLES.CMD.commands.push(
 		cmd:"set timeline length",
 		category:"timeline",
 		func:CABLES.CMD.TIMELINE.setLength
+	},
+	{
+		cmd:"pause patch execution",
+		category:"patch",
+		func:CABLES.CMD.PATCH.pause
+	},
+	{
+		cmd:"resume patch execution",
+		category:"patch",
+		func:CABLES.CMD.PATCH.resume
 	}
 
 );

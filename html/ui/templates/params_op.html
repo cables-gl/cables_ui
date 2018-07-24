@@ -29,12 +29,19 @@
                     <a onclick="gui.opDocs.writeSummary('{{op.objName}}')">no summary - click to write one! <i class="icon icon-edit"></i></a>
                     {{/if}}
                 {{/if}} -->
-
-
 			</div>
+
+
+            {{#if ownsOp }}
+                <a class="button tt" data-tt="[e] - edit op " onclick="gui.serverOps.edit('{{op.objName}}');">edit op</a>
+                <br/><br/>
+            {{/if}}
+            
 
             <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="_blank">view example patches</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
             <br/><br/>
+
+
 
             {{#if op.isDeprecated }}
                 <div class="warning" id="">

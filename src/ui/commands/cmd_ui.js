@@ -206,7 +206,7 @@ CABLES.CMD.commands.push({
         func: CABLES.CMD.UI.userSettings,
         icon: 'settings',
     }, {
-        cmd: "maximize renderer",
+        cmd: "maximize renderer [CMD+ENTER]",
         category: "ui",
         func: CABLES.CMD.UI.toggleMaxRenderer,
         icon: 'maximize',

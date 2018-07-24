@@ -329,7 +329,6 @@ CABLES.UI.FileSelect = function() {
                     toolbarHtml: toolbarHtml,
                     onSave: function(setStatus, content) {
                         CABLES.api.put(
-
                             'project/' + gui.patch().getCurrentProject()._id + '/'+filename, {
                                 content: content
                             },
@@ -338,7 +337,8 @@ CABLES.UI.FileSelect = function() {
                                 console.log('res', res);
                             },
                             function(res) {
-                                setStatus('error: not saved');
+                                setStatus('ERROR: not saved '+res.msg);
+                                
                                 console.log('err res', res);
                             }
                         );

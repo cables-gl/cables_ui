@@ -346,7 +346,7 @@ CABLES.UI.ServerOps = function(gui) {
                                 console.log('res', res);
                             },
                             function(res) {
-                                setStatus('error: not saved');
+                                setStatus('ERROR: not saved - '+res.msg);
                                 console.log('err res', res);
                             }
                         );
@@ -426,7 +426,7 @@ CABLES.UI.ServerOps = function(gui) {
                             console.log('res', res);
                         },
                         function(res) {
-                            setStatus('error: not saved');
+                            setStatus('ERROR: not saved - '+res.msg);
                             console.log('err res', res);
                         }
                     );
