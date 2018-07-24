@@ -61,6 +61,7 @@ CABLES.UI.MODAL.hide=function(force)
 
     if(!force && $('.modalerror').length>0)
     {
+        console.log('not forcing close');
         return;
     }
 

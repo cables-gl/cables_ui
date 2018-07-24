@@ -1032,6 +1032,8 @@ CABLES.UI.GUI = function() {
         else if (vueStore.getters['sidebar/sidebarCustomizerVisible']) vueStore.commit('sidebar/setCustomizerVisible', false);
         else
         if (CABLES.UI.MODAL._visible) {
+            console.log("hiding modal!");
+            CABLES.UI.MODAL.hide(true)
             CABLES.UI.MODAL.hide();
             if (showingEditor) self.editor().focus();
         } else {

@@ -71,7 +71,7 @@ CABLES.Editor=function()
 
         $('#ace_editors').append('<div class="ace_tab_content" style="height:100%;width:100%;" id="tab_'+c.id+'"></div>');
         c.editor=CABLES.Editor.createEditor('tab_'+c.id);
-        c.editor.setValue(c.content+'HUND',-1);
+        c.editor.setValue(c.content,-1);
 
         const session = c.editor.getSession();
         const undoManager = session.getUndoManager();
