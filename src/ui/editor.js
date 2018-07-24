@@ -63,6 +63,7 @@ CABLES.Editor=function()
             if(this._tabs[i].title==c.title)
             {
                 this.setTab(this._tabs[i].id);
+                this._tabs[i].editor.resize();
                 return;
             }
         }

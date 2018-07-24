@@ -226,7 +226,7 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
     var ops=gui.patch().scene.getOpsByObjName(opName);
     for(var i=0;i<ops.length;i++)
     {
-        ops[i].uiAttr({"error":"exception"});
+        ops[i].uiAttr({"error":"exception occured - op stopped - reload to run again"});
     }
 
     if(gui.user.isAdmin || opName.startsWith("Op.User."+gui.user.usernameLowercase))

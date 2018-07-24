@@ -294,7 +294,7 @@ CABLES.UI.OpSelect.prototype.Navigate = function(diff)
     oBoxCollectionAll.removeClass(cssClass);
     oBoxCollection.removeClass(cssClass).eq(this.displayBoxIndex).addClass(cssClass);
 
-    if(this.displayBoxIndex>7) $('.searchbrowser').scrollTop( (this.displayBoxIndex-7)*(this.itemHeight+1) );
+    if(this.displayBoxIndex>5) $('.searchbrowser').scrollTop( (this.displayBoxIndex-5)*(this.itemHeight+1) );
         else $('.searchbrowser').scrollTop( 1 );
 
     this.updateInfo();
