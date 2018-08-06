@@ -224,10 +224,11 @@ CABLES.UI.GUI = function() {
             var editorHeight = patchHeight - 2 - editorbarHeight;
 
             this._elAceEditor.css('height', editorHeight);
-
             this._elAceEditor.css('width', self.editorWidth);
             $('#ace_editors .ace_tab_content').css('top', menubarHeight + 1 + editorbarHeight);
             this._elAceEditor.css('left', 0);
+
+            $('#editorfoot').css('width', self.editorWidth);
 
             this._elEditorBar.css('width', self.editorWidth);
             this._elSplitterEditor.show();
@@ -290,10 +291,10 @@ CABLES.UI.GUI = function() {
 
 
         $('#library').css('left', iconBarWidth);
-        $('#library').css('width', window.innerWidth - self.rendererWidth - iconBarWidth);
+        $('#library').css('width', window.innerWidth - self.rendererWidthScaled - iconBarWidth);
         $('#library').css('bottom', 0);
 
-        var timelineWidth= window.innerWidth - self.rendererWidth - 2 - iconBarWidth;
+        var timelineWidth= window.innerWidth - self.rendererWidthScaled - 2 - iconBarWidth;
         
         $('#timelineui').css('width', timelineWidth);
         $('#timing').css('width', timelineWidth);
