@@ -1,3 +1,10 @@
+
+
+// error line marker
+// var Range = ace.require('ace/range').Range;
+// c.editor.getSession().addMarker(new Range(9, 0, 9, 2000), "warning", "line", true);
+
+
 CABLES = CABLES || {};
 
 CABLES.Editor=function()
@@ -73,6 +80,7 @@ CABLES.Editor=function()
         $('#ace_editors').append('<div class="ace_tab_content" style="height:100%;width:100%;" id="tab_'+c.id+'"></div>');
         c.editor=CABLES.Editor.createEditor('tab_'+c.id);
         c.editor.setValue(c.content,-1);
+    
         c.editor.resize();
 
         const session = c.editor.getSession();
@@ -206,6 +214,8 @@ CABLES.Editor=function()
         CABLES.contextMenu.show({items: items},ele);
     }
 };
+
+
 
 CABLES.Editor.prototype.getCurrentTab=function()
 {

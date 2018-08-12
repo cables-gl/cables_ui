@@ -8,6 +8,16 @@
     position: absolute;
     z-index: $z-index-editor;
 
+    .warning
+    {
+        background: rgba(200, 10, 10, 0.5);
+        position: absolute;
+        width: 100% !important;
+        left: 0 !important;
+    }
+    
+
+
     #editorbar
     {
         position: absolute;

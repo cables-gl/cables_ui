@@ -720,7 +720,7 @@ CABLES.UI.Patch = function(_gui) {
                     if(this._serverDate!=data.updated)
                     {
                         CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
-                        CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide();">close</a>&nbsp;&nbsp;');
+                        CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);">close</a>&nbsp;&nbsp;');
                         CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="gui.patch().checkUpdatedSaveForce(\''+data.updated+'\');">save anyway</a>&nbsp;&nbsp;');
                         CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
                     }
@@ -904,6 +904,21 @@ CABLES.UI.Patch = function(_gui) {
     
                     }
                     // gui.patch().scene.cgl.doScreenshot = true;
+                },
+                function(response,data) // ERROR CALLBACK    
+                {
+                    if(data.status==401)
+                    {
+                        var msg='could not save patch. you do not have the required rights. you can save a copy of this patch.<br/><br/>'
+                        msg+='<a class="bluebutton" onclick="gui.patch().saveCurrentProjectAs();">copy patch</a>&nbsp;&nbsp;';
+                        msg+='<a class="greybutton" onclick="CABLES.UI.MODAL.hide(true);">close</a>';
+                        CABLES.UI.MODAL.showError('Could not save',msg);
+                        console.log('no rights');
+                    }
+                    else
+                    {
+                        CABLES.UI.MODAL.showError('Could not save','unknown error while saving patch. please try again later...');
+                    }
                 });
         } catch (e) {
             console.log(e);
@@ -2816,7 +2831,9 @@ CABLES.UI.Patch = function(_gui) {
                         onSave: function(setStatus, content) {
                             // gui.editor().setStatus('ok');
                             // setStatus('value set');
+
                             console.log('setvalue...');
+                            gui.setStateUnsaved();
                             gui.jobs().finish('saveeditorcontent');
                             thePort.set(content);
                         }
