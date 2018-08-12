@@ -108,7 +108,7 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
 
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)
 {
-    if (!gui.serverOps || !gui.serverOps.finished() || !gui.project()) {
+    if (!gui.serverOps || !gui.serverOps.finished()) {
         // wait for userops finished loading....
         setTimeout(function() {
             CABLES.sandbox.initRouting(cb);
