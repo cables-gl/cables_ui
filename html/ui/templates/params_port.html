@@ -80,7 +80,9 @@
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'editor' }}
-                        <a class="graphbutton fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" ></a>
+                    </td><td colspan="3">
+                        <!-- <span class="button" id="portbutton_{{ portnum }}" >{{port.name}}</span> -->
+                        <a class="button fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" >edit</a>
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'createOpHelper' }}

@@ -39,11 +39,12 @@ CABLES.API=function()
                 else
                 {
                     if(!cbError) CABLES.UI.MODAL.show('ajax error: '+data.statusText+'<br/><br/>'+url+'<br/><br/><a class="bluebutton" style="background-color:#222" onclick="CABLES.UI.MODAL.hide()">ok</a> <br/><br/>');
+                    console.log(data);
                 }
 
             }
 
-            if(cbError)cbError(data.responseJSON);
+            if(cbError)cbError(data.responseJSON,data);
         })
         .always(function()
         {

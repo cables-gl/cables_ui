@@ -694,7 +694,6 @@ CABLES.UI.GUI = function() {
     this.bind = function(cb) {
         $('#glcanvas').attr('tabindex', '3');
 
-
         $('.nav_cables').bind("click", function(event) {
             var win = window.open('/');
             win.focus();

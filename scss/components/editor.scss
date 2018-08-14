@@ -8,17 +8,26 @@
     position: absolute;
     z-index: $z-index-editor;
 
-    #editorfoot
+    .warning
     {
+        background: rgba(200, 10, 10, 0.5);
         position: absolute;
-        color:$color-c1;
-        font-family: monospace;
-        background-color: $color-c9;
-        overflow: hidden;
-        z-index: 9;
-        bottom:0px;
-        user-select: all;
+        width: 100% !important;
+        left: 0 !important;
     }
+    
+
+    // #editorfoot
+    // {
+    //     position: absolute;
+    //     color:$color-c1;
+    //     font-family: monospace;
+    //     background-color: $color-c9;
+    //     overflow: hidden;
+    //     z-index: 9;
+    //     bottom:0px;
+    //     user-select: all;
+    // }
 
     #editorbar
     {
