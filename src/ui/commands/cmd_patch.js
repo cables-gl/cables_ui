@@ -264,6 +264,46 @@ CABLES.CMD.PATCH.pause=function()
 	gui.patch().scene.pause();
 };
 
+CABLES.CMD.PATCH.replaceFilePath=function()
+{
+    CABLES.UI.MODAL.prompt(
+        "Replace String Values",
+        "Search for...",
+        "assets/",
+        function(srch)
+        {
+			CABLES.UI.MODAL.prompt(
+				"Replace String Values",
+				"...replace with",
+				"/assets/"+gui.project()._id+'/',
+				function(rplc)
+				{
+					var ops=gui.patch().ops;
+					for(var i=0;i<ops.length;i++)
+					{
+						for(var j=0;j<ops[i].portsIn.length;j++)
+						{
+							if(ops[i].portsIn[j].thePort.uiAttribs && ops[i].portsIn[j].thePort.uiAttribs.display && ops[i].portsIn[j].thePort.uiAttribs.display=='file')
+							{
+								console.log("filename:",ops[i].portsIn[j].thePort.get());
+								console.log('srch',srch);
+								console.log('rplc',rplc);
+								var v=ops[i].portsIn[j].thePort.get();
+
+								if(v) console.log('srch index',v.indexOf(srch));
+								if(v && v.indexOf(srch)==0)
+								{
+									v=rplc+v.substring(srch.length);
+									ops[i].portsIn[j].thePort.set(v);
+									console.log('result filename:',v);
+								}
+							}
+						}
+					}
+				});
+		});
+};
+
 
 
 CABLES.CMD.commands.push(
@@ -410,6 +450,11 @@ CABLES.CMD.commands.push(
 		cmd:"resume patch execution",
 		category:"patch",
 		func:CABLES.CMD.PATCH.resume
+	},
+	{
+		cmd:"replace file path",
+		category:"patch",
+		func:CABLES.CMD.PATCH.replaceFilePath
 	}
 
 );

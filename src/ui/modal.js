@@ -401,8 +401,10 @@ CABLES.UI.MODAL.promptCallbackExec=function()
 {
     if(CABLES.UI.MODAL.promptCallback)
     {
-        CABLES.UI.MODAL.promptCallback( $("#modalpromptinput").val() );
+        var v=$("#modalpromptinput").val();
         CABLES.UI.MODAL.hide();
+        CABLES.UI.MODAL.promptCallback( v );
+        
     }
     else
     {
