@@ -248,10 +248,6 @@ CABLES.UI.FileSelect = function() {
                     func:function()
                     {
                         CABLES.UI.fileSelect.editFile(fileid,filename);
-
-                        
-
-
                     }
                 }
             );
