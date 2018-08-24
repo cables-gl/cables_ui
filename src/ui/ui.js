@@ -217,15 +217,16 @@ CABLES.UI.GUI = function() {
             var editorbarHeight = 76;
             $('#editor').show();
             $('#editor').css('left', iconBarWidth);
+            $('#editor').css('top', menubarHeight);
 
             this._elEditorBar.css('height', editorbarHeight);
-            this._elEditorBar.css('top', menubarHeight + 1);
+            this._elEditorBar.css('top',  1);
 
             var editorHeight = patchHeight - 2 - editorbarHeight;
 
             this._elAceEditor.css('height', editorHeight);
             this._elAceEditor.css('width', self.editorWidth);
-            $('#ace_editors .ace_tab_content').css('top', menubarHeight + 1 + editorbarHeight);
+            $('#ace_editors .ace_tab_content').css('top',  1 + editorbarHeight);
             this._elAceEditor.css('left', 0);
 
             $('#editorfoot').css('width', self.editorWidth);
