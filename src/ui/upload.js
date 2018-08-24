@@ -85,13 +85,8 @@ CABLES.uploadFiles=function(files)
                     {
                         var file=files[i];
                         if(!file || !file.name || file.name=='item')continue;
-                        for(var j=0;j<gui.patch().ops.length;j++)
-                        {
-                            if(gui.patch().ops[j].op && gui.patch().ops[j].op.onFileUploaded)
-                            {
-                                gui.patch().ops[j].op.onFileUploaded(files[i].name);
-                            }
-                        }
+
+                        CABLES.UI.fileSelect.triggerFileUpdate(files[i].name);
                     }
                     $('#uploadprogresscontainer').hide();
 

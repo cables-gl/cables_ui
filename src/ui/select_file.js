@@ -232,7 +232,7 @@ CABLES.UI.FileSelect = function() {
     {
         var items=[];
 
-        if(filetype=='JSON' || filetype=='CSV' || filetype=='shader' || filetype=='textfile')
+        if(filetype=='JSON' || filetype=='CSV' || filetype=='shader' || filetype=='textfile' || filetype=='CSS')
         {
             items.push(
                 {
@@ -309,8 +309,9 @@ CABLES.UI.FileSelect = function() {
         console.log("edit att"+filename);
 
 
+        var fullpath='/assets/' + gui.patch().getCurrentProject()._id + '/'+filename;
         CABLES.ajax(
-            '/assets/' + gui.patch().getCurrentProject()._id + '/' + filename,
+            CABLES.cacheBust(fullpath),
             function(err,_data,xhr)
             {
                 var content = _data || '';
@@ -334,11 +335,10 @@ CABLES.UI.FileSelect = function() {
                             },
                             function(res) {
                                 setStatus('saved');
-                                console.log('res', res);
+                                CABLES.UI.fileSelect.triggerFileUpdate(fullpath);
                             },
                             function(res) {
                                 setStatus('ERROR: not saved '+res.msg);
-                                
                                 console.log('err res', res);
                             }
                         );
@@ -359,6 +359,17 @@ CABLES.UI.FileSelect = function() {
 
 };
 
+CABLES.UI.FileSelect.prototype.triggerFileUpdate=function(fn)
+{
+    for(var j=0;j<gui.patch().ops.length;j++)
+    {
+        if(gui.patch().ops[j].op)
+        {
+            if(gui.patch().ops[j].op.onFileChanged) gui.patch().ops[j].op.onFileChanged(fn);
+                else if(gui.patch().ops[j].op.onFileUploaded) gui.patch().ops[j].op.onFileUploaded(fn); // todo deprecate , rename to onFileChanged
+        }
+    }
+}
+
 CABLES.UI.fileSelect = new CABLES.UI.FileSelect();
 
-    

@@ -215,7 +215,10 @@ CABLES.Editor=function()
     }
 };
 
+CABLES.Editor.prototype.remembetOpenTab=function()
+{
 
+}
 
 CABLES.Editor.prototype.getCurrentTab=function()
 {
@@ -228,6 +231,8 @@ CABLES.Editor.prototype.getCurrentTab=function()
     }
     return null;
 }
+
+// ---------------------------------------------------------------------------------------------
 
 CABLES.Editor.createEditor=function(id)
 {
