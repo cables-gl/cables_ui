@@ -33,7 +33,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     {
         $('#search_noresults').show();
         $('#searchinfo').empty();
-        var userOpName='Ops.User.'+gui.user.username+'.'+$('#opsearch').val();
+        var userOpName='Ops.User.'+gui.user.usernameLowercase+'.'+$('#opsearch').val();
         $('.userCreateOpName').html(userOpName);
         $('#createuserop').attr('onclick','gui.serverOps.create(\''+userOpName+'\');');
     }
