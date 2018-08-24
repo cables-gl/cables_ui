@@ -102,8 +102,6 @@ CABLES.UI.Patch = function(_gui) {
 
             if (max > 10000) CABLES.UI.notify('warning big port: ' + maxName + ' / ' + max + ' chars');
 
-            console.log('biggest port:', maxName, max);
-
         } catch (e) {
 
         } finally {
@@ -841,15 +839,8 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         try {
-            
-            console.log(data);
             data = JSON.stringify(data);
-            console.log('data.length', data.length);
-
-
-
             gui.patch().getLargestPort();
-
             
             CABLES.api.put(
                 'project/' + id, {
@@ -2586,9 +2577,11 @@ CABLES.UI.Patch = function(_gui) {
 
     this.openParamEditor=function(opid,portname)
     {
-
         var op=self.scene.getOpById(opid);
+        if(!op) return;
+        
         var port=op.getPortByName(portname);
+        if(!port) return;
 
         var editorObj=CABLES.editorSession.rememberOpenEditor("param",opid+portname,{"opid":opid,"portname":portname} );
 
@@ -2603,6 +2596,10 @@ CABLES.UI.Patch = function(_gui) {
                 gui.setStateUnsaved();
                 gui.jobs().finish('saveeditorcontent');
                 port.set(content);
+            },
+            onClose: function(which)
+            {
+                CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
             }
         });
 

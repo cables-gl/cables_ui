@@ -7,7 +7,7 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.ServerOps = function(gui) {
     var ops = [];
     var self = this;
-    var lastTab = CABLES.UI.userSettings.get('editortab');
+    
 
     CABLES.editorSession.addListener("op",
         function(name,data)
@@ -392,7 +392,6 @@ CABLES.UI.ServerOps = function(gui) {
                     },
                     onSave: save
                 });
-                gui.editor().setTabByTitle(lastTab);
 
             });
 

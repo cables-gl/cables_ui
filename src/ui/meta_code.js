@@ -37,8 +37,6 @@ CABLES.UI.MetaCode=function(projectId)
             return;
         }
 
-        console.log('show meta code');
-
         $('#meta_content_code').html('<div class="loading" style="width:40px;height:40px;"></div>');
 
         if(window.process && window.process.versions['electron']) return;

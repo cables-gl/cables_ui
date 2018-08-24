@@ -157,8 +157,6 @@ CABLES.Editor=function()
                 
                 $('.ace_tab_content').hide();
                 $('#tab_'+tab.id).show();
-
-
                 $('#editortab'+tab.id).addClass('active');
 
                 if(tab.syntax=='md') tab.editor.session.setMode("ace/mode/Markdown");
@@ -171,8 +169,8 @@ CABLES.Editor=function()
                 tab.editor.resize();
 
                 // console.log('editor syntax:',contents[i].syntax);
-
                 // tab.editor.setValue(String(tab.content),-1);
+
                 tab.editor.setReadOnly(tab.readOnly);
 
                 if(tab.readOnly)$('.editorsavebutton').hide();

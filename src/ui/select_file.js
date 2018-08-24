@@ -75,8 +75,6 @@ CABLES.UI.FileSelect = function() {
                         "file": r
                     });
 
-                    // console.log(r);
-                    // console.log(r);
                     $('#lib_preview').html(html);
                 });
         } else {
@@ -306,9 +304,6 @@ CABLES.UI.FileSelect = function() {
         var toolbarHtml = '';
         // if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
-        console.log("edit att"+filename);
-
-
         var fullpath='/assets/' + gui.patch().getCurrentProject()._id + '/'+filename;
         CABLES.ajax(
             CABLES.cacheBust(fullpath),
@@ -351,7 +346,6 @@ CABLES.UI.FileSelect = function() {
             },"GET",function()
         {
             console.error("err..."+filename);
-            // removeOpenEditor(editorObj);
         }
         );
     };

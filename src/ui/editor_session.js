@@ -13,9 +13,15 @@ CABLES.EditorSession=function()
     this._listeners={};
 }
 
-CABLES.EditorSession.prototype._store=function()
+CABLES.EditorSession.prototype.store=function()
 {
     CABLES.UI.userSettings.set("openEditors", this._openEditors);
+
+    
+    // console.log('tab.title',tab.title);
+    // var tab=gui.editor().getCurrentTab();
+    // console.log(tab);
+
 }
 
 /**
@@ -44,7 +50,7 @@ CABLES.EditorSession.prototype.remove=function(name,type)
     
     if(!found)console.log("remove fail",name);
 
-    this._store();
+    this.store();
 }
 
 /**
@@ -62,7 +68,7 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
     }
     var obj={"name":name,"type":type,"data":data||{}};
     this._openEditors.push(obj);
-    this._store();
+    this.store();
     CABLES.UI.userSettings.set("editortab", name);
 
     return obj;
@@ -76,6 +82,8 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
 CABLES.EditorSession.prototype.open=function()
 {
     var sessions = CABLES.UI.userSettings.get("openEditors");
+    var lastTab = CABLES.UI.userSettings.get('editortab');
+    console.log('lasttab',lastTab);
 
     if (sessions)
     {
@@ -87,6 +95,14 @@ CABLES.EditorSession.prototype.open=function()
             }
         }
     }
+    console.log('lasttab',lastTab);
+
+    setTimeout(function()
+    {
+        gui.editor().setTabByTitle(lastTab);
+    },100);
+    
+
 }
 
 /**
