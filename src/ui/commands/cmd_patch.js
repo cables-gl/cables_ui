@@ -130,30 +130,25 @@ CABLES.CMD.PATCH.createVariable=function(op)
 				op.varName.set(str);
 				gui.patch().showOpParams(op);
 			}
-
-
 		});
-
 };
 
 
 CABLES.CMD.PATCH.editOp=function()
 {
-    var selops=gui.patch().getSelectedOps();
+	var selops=gui.patch().getSelectedOps();
 
-    if(selops && selops.length>0)
-    {
-        console.log('edit op!');
-
-        for(var i=0;i<selops.length;i++)
-        {
-            gui.serverOps.edit(selops[i].op.objName);
-        }
-    }
-    else
-    {
-        console.log('no ops selected');
-    }
+	if(selops && selops.length>0)
+	{
+		for(var i=0;i<selops.length;i++)
+		{
+			gui.serverOps.edit(selops[i].op.objName);
+		}
+	}
+	else
+	{
+		console.log('no ops selected');
+	}
 };
 
 

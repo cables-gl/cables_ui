@@ -47,6 +47,16 @@ CABLES.UI.Patch = function(_gui) {
     this._elPatch = null;
     this._elBody = null;
 
+
+
+    CABLES.editorSession.addListener("param",
+        function(name,data)
+        {
+            if(data && data.opid && data.portname) this.openParamEditor(data.opid,data.portname)
+        }.bind(this));
+
+
+
     this.isLoading = function() {
         return isLoading;
     };
@@ -2574,6 +2584,30 @@ CABLES.UI.Patch = function(_gui) {
         }, 30);
     };
 
+    this.openParamEditor=function(opid,portname)
+    {
+
+        var op=self.scene.getOpById(opid);
+        var port=op.getPortByName(portname);
+
+        var editorObj=CABLES.editorSession.rememberOpenEditor("param",opid+portname,{"opid":opid,"portname":portname} );
+
+        gui.showEditor();
+        gui.editor().addTab({
+            content: port.get() + '',
+            editorObj:editorObj,
+            title: '' + port.name,
+            syntax: port.uiAttribs.editorSyntax,
+            onSave: function(setStatus, content) {
+                // console.log('setvalue...');
+                gui.setStateUnsaved();
+                gui.jobs().finish('saveeditorcontent');
+                port.set(content);
+            }
+        });
+
+    }
+
     // function paramsAddAutoSpacers()
     // {
     //     var lastName='';
@@ -2823,21 +2857,20 @@ CABLES.UI.Patch = function(_gui) {
                     var thePort = op.portsIn[index];
                     // console.log('thePort.uiAttribs.editorSyntax',thePort.uiAttribs.editorSyntax);
 
-                    gui.showEditor();
-                    gui.editor().addTab({
-                        content: op.portsIn[index].get() + '',
-                        title: '' + op.portsIn[index].name,
-                        syntax: thePort.uiAttribs.editorSyntax,
-                        onSave: function(setStatus, content) {
-                            // gui.editor().setStatus('ok');
-                            // setStatus('value set');
+                    self.openParamEditor(op.id,op.portsIn[index].name)
 
-                            console.log('setvalue...');
-                            gui.setStateUnsaved();
-                            gui.jobs().finish('saveeditorcontent');
-                            thePort.set(content);
-                        }
-                    });
+                    // gui.showEditor();
+                    // gui.editor().addTab({
+                    //     content: op.portsIn[index].get() + '',
+                    //     title: '' + op.portsIn[index].name,
+                    //     syntax: thePort.uiAttribs.editorSyntax,
+                    //     onSave: function(setStatus, content) {
+                    //         // console.log('setvalue...');
+                    //         gui.setStateUnsaved();
+                    //         gui.jobs().finish('saveeditorcontent');
+                    //         thePort.set(content);
+                    //     }
+                    // });
                 });
 
                 $('#portbutton_' + index).on('click', function(e) {

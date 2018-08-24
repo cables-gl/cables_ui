@@ -12,6 +12,7 @@ CABLES.Editor=function()
     this._tabs=[];
     this._currentTabId='';
 
+
     // this._editor=CABLES.Editor.createEditor("ace_editor");
 
     // Hover text
@@ -215,10 +216,6 @@ CABLES.Editor=function()
     }
 };
 
-CABLES.Editor.prototype.remembetOpenTab=function()
-{
-
-}
 
 CABLES.Editor.prototype.getCurrentTab=function()
 {

@@ -1077,6 +1077,8 @@ CABLES.UI.GUI = function() {
         if(CABLES.UI.userSettings.get("fileViewOpen")==true)this.showLibrary();
         if(CABLES.UI.userSettings.get("timelineOpened")==true)this.showTiming();
 
+        CABLES.editorSession.open();
+
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");
         console.table(CABLES.startup.log);

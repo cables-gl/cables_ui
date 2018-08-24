@@ -1,51 +1,28 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-// localStorage.cables=localStorage.cables || {};
-// localStorage.cables.editor=localStorage.cables.editor || {};
-// localStorage.cables.editor.serverops= [];
 
 // todo: merge serverops and opdocs.js ....
 
 CABLES.UI.ServerOps = function(gui) {
     var ops = [];
     var self = this;
-    var openEditors = [];
     var lastTab = CABLES.UI.userSettings.get('editortab');
 
-    function removeOpenEditor(obj) {
-        var index = -1;
-        var found = true;
+    CABLES.editorSession.addListener("op",
+        function(name,data)
+        {
+            console.log('editor open for op',name,data);
+            this.edit(name);
+        }.bind(this));
 
-        while (found) {
-            found = false;
-            for (var i = 0; i < openEditors.length; i++) {
-                if (openEditors[i].name == obj.name && openEditors[i].type == obj.type) {
-                    index = i;
-                    found = true;
-                    openEditors.splice(index, 1);
-                    CABLES.UI.userSettings.set("openEditors", openEditors);
-                    break;
-                }
-            }
-        }
+    CABLES.editorSession.addListener("attachment",
+        function(name,data)
+        {
+            console.log('editor open for editAttachment',name,data);
+            if(data && data.opname) this.editAttachment(data.opname, name);
+        }.bind(this));
 
-        if (index == -1) {
-            console.log('not found! ', obj.name, obj.type);
-        }
-    }
-
-    function saveOpenEditor(obj) {
-
-        for (var i = 0; i < openEditors.length; i++) {
-            if (openEditors[i].name == obj.name && openEditors[i].type == obj.type) return;
-        }
-
-        openEditors.push(obj);
-
-        CABLES.UI.userSettings.set("openEditors", openEditors);
-        CABLES.UI.userSettings.set("editortab", obj.name);
-    }
 
     this.load = function(cb) {
         CABLES.api.get(CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsList()), function(res) {
@@ -56,34 +33,9 @@ CABLES.UI.ServerOps = function(gui) {
 
                 if (cb) cb(ops);
 
-                var edits = CABLES.UI.userSettings.get("openEditors");
-
-                if (edits) {
-                    for (var i = 0; i < edits.length; i++) {
-                        if (edits[i].type == "op") {
-                            this.edit(edits[i].name);
-                        } else if (edits[i].type == "attachment") {
-                            this.editAttachment(edits[i].opname, edits[i].name);
-                        }
-                    }
-                }
-                // storedOps=JSON.parse(localStorage.getItem("cables.editor.serverops"));
-                //
-                // console.log('storedOps',storedOps);
-                //
-                //
-                // updateStoredOps();
                 self.loaded = true;
                 incrementStartup();
-                // gui.editor().setTabByTitle(lastTab);
-                //
-                // if(storedOps && storedOps.length>0)
-                // {
-                //     for(var i in storedOps)
-                //     {
-                //         self.edit(storedOps[i]);
-                //     }
-                // }
+
 
             }
         }.bind(this));
@@ -301,13 +253,7 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
     this.editAttachment = function(opname, attachmentname, readOnly) {
-        var editorObj = {
-            "type": 'attachment',
-
-            "opname": opname,
-            "name": attachmentname
-        };
-        saveOpenEditor(editorObj);
+        var editorObj=CABLES.editorSession.rememberOpenEditor("attachment",attachmentname,{"opname":opname} );
 
         CABLES.api.clearCache();
 
@@ -352,14 +298,14 @@ CABLES.UI.ServerOps = function(gui) {
                         );
                     },
                     onClose: function(which) {
-                        removeOpenEditor(which.editorObj);
+                        CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
                     },
 
                 });
             },function()
         {
-            console.error("err..."+attachmentname);
-            removeOpenEditor(editorObj);
+            console.error("error opening attachment "+attachmentname);
+            CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
         }
         );
     };
@@ -394,11 +340,7 @@ CABLES.UI.ServerOps = function(gui) {
                 gui.showEditor();
                 CABLES.UI.MODAL.hide();
 
-                var editorObj = {
-                    "type": "op",
-                    "name": opname
-                };
-                saveOpenEditor(editorObj);
+                var editorObj=CABLES.editorSession.rememberOpenEditor("op",opname);
 
                 var html = '';
                 if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
@@ -444,7 +386,9 @@ CABLES.UI.ServerOps = function(gui) {
                     readOnly: readOnly,
                     toolbarHtml: html,
                     onClose: function(which) {
-                        removeOpenEditor(which.editorObj);
+                        CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                        // removeOpenEditor(which.editorObj);
+
                     },
                     onSave: save
                 });
