@@ -248,6 +248,7 @@ CABLES.Editor.createEditor=function(id)
     editor.session.setMode("ace/mode/javascript");
     editor.$blockScrolling = Infinity;
 
+    editor.commands.bindKey("Ctrl-D", "selectMoreAfter");
     editor.commands.bindKey("Cmd-D", "selectMoreAfter");
     editor.commands.bindKey("Cmd-Ctrl-Up", "movelinesup");
     editor.commands.bindKey("Cmd-Ctrl-Down", "movelinesdown");

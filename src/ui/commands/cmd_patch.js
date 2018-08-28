@@ -240,6 +240,7 @@ CABLES.CMD.PATCH.tidyChildOps=function()
 	{
 		gui.patch().ops[i].setPosFromUiAttr();
 	}
+	gui.patch().updateSubPatches();
 
 
 };

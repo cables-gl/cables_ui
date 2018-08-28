@@ -34,6 +34,10 @@ CABLES.UI.Port=function(thePort)
 
             self.opUi.setPos();
         }
+        if(attribs.hasOwnProperty('greyout'))
+        {
+            gui.patch().updateOpParams(self.opUi.op.id);
+        }
     };
 
     

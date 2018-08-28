@@ -841,7 +841,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     op.onUiAttrChange = function(attribs) {
         if (attribs && attribs.hasOwnProperty('warning')) {
             this.oprect.updateErrorIndicator();
-
         }
         if (attribs && attribs.hasOwnProperty('error')) {
             this.oprect.updateErrorIndicator();
@@ -1011,7 +1010,8 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
     this.setPosFromUiAttr=function()
     {
-        self.oprect.setPosition(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+        this.setPos(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
+        // console.log(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
         for (var j in self.links)self.links[j].redraw();
     }
 
