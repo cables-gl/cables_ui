@@ -1,4 +1,3 @@
-"use strict";
 
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
@@ -96,7 +95,7 @@ CABLES.UI.Preview.prototype.render=function()
                 3, 1, 2
             ];
 
-            _mesh=new CGL.Mesh(cgl,geom);
+            this._mesh=new CGL.Mesh(cgl,geom);
 
         }
         if(!this._shader)
@@ -118,7 +117,7 @@ CABLES.UI.Preview.prototype.render=function()
 
         cgl.setTexture(0,this._previewDataPort.get().tex);
 
-        _mesh.render(this._shader);
+        this._mesh.render(this._shader);
 
         cgl.popPMatrix();
         cgl.resetViewPort();
