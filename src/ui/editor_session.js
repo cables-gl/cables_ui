@@ -42,13 +42,12 @@ CABLES.EditorSession.prototype.remove=function(name,type)
                 index = i;
                 found = true;
                 this._openEditors.splice(index, 1);
-                console.log("remove success",name);
                 break;
             }
         }
     }
     
-    if(!found)console.log("remove fail",name);
+    // if(!found)console.log("remove fail",name);
 
     this.store();
 }
@@ -83,7 +82,6 @@ CABLES.EditorSession.prototype.open=function()
 {
     var sessions = CABLES.UI.userSettings.get("openEditors");
     var lastTab = CABLES.UI.userSettings.get('editortab');
-    console.log('lasttab',lastTab);
 
     if (sessions)
     {
@@ -95,7 +93,6 @@ CABLES.EditorSession.prototype.open=function()
             }
         }
     }
-    console.log('lasttab',lastTab);
 
     setTimeout(function()
     {

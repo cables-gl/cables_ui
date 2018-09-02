@@ -1430,7 +1430,7 @@ CABLES.UI.Patch = function(_gui) {
                 vb.h = sizeSmall;
                 self.animViewBox(vb.x, vb.y, vb.w, vb.h);
             } else {
-                console.log("center");
+                // console.log("center");
                 self.centerViewBoxOps();
             }
         }
@@ -1493,13 +1493,15 @@ CABLES.UI.Patch = function(_gui) {
             lastZoomDrag = -1;
 
             if (gui.cursor != "auto") {
-                gui.cursor = "audo";
-                this._elPatch.css({
-                    "cursor": "auto"
-                });
+                gui.cursor = "audt";
+                this._elPatch.css({"cursor": "auto"});
             }
 
         }.bind(this));
+
+        this._elPatchSvg.bind("mouseenter", function(event) { this._elPatch.css({"cursor": "auto"}); }.bind(this));
+        this._elPatchSvg.bind("mouseleave", function(event) { this._elPatch.css({"cursor": "auto"}); }.bind(this));
+
 
         this._elPatchSvg.bind("mousemove touchmove", function(e) {
             e = mouseEvent(e);

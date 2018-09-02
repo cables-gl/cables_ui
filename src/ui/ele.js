@@ -1,5 +1,0 @@
-
-function el(id)
-{
-    
-}

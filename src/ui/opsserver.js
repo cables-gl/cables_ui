@@ -12,14 +12,14 @@ CABLES.UI.ServerOps = function(gui) {
     CABLES.editorSession.addListener("op",
         function(name,data)
         {
-            console.log('editor open for op',name,data);
+            // console.log('editor open for op',name,data);
             this.edit(name);
         }.bind(this));
 
     CABLES.editorSession.addListener("attachment",
         function(name,data)
         {
-            console.log('editor open for editAttachment',name,data);
+            // console.log('editor open for editAttachment',name,data);
             if(data && data.opname) this.editAttachment(data.opname, name);
         }.bind(this));
 
@@ -289,7 +289,6 @@ CABLES.UI.ServerOps = function(gui) {
                             },
                             function(res) {
                                 setStatus('saved');
-                                console.log('res', res);
                             },
                             function(res) {
                                 setStatus('ERROR: not saved - '+res.msg);

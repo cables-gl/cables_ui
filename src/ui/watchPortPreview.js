@@ -3,7 +3,6 @@ var CABLES=CABLES||{};
 
 CABLES.WatchPortVisualizer=function()
 {
-
     this._canvasWidth=300;
     this._canvasHeight=120;
 

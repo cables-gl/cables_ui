@@ -8,17 +8,16 @@ CABLES.UI.CommandPallet=function()
 
 	this._cursorIndex=0;
 	this._numResults=0;
+    this._bookmarkActiveIcon = 'icon-pin-filled';
+    this._bookmarkInactiveIcon = 'icon-pin-outline';
+    this._defaultIcon = 'square';
 
-  this._bookmarkActiveIcon = 'icon-pin-filled';
-  this._bookmarkInactiveIcon = 'icon-pin-outline';
-  this._defaultIcon = 'square';
-
-  // TODO: Maybe move to sidebar-customizer created function!?
-  this.initVueSidebarCustomizer = function() {
+    // TODO: Maybe move to sidebar-customizer created function!?
+    this.initVueSidebarCustomizer = function() {
     vueStore.commit("sidebar/setAllItems", CABLES.CMD.commands); // set all commands to be used in the customizer
-  };
+    };
 
-  this.initVueSidebarCustomizer();
+    this.initVueSidebarCustomizer();
 
 	this.isVisible=function()
 	{

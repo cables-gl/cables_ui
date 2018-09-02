@@ -4,16 +4,14 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.Find=function()
 {
     var lastSearch='';
-
-
     var findTimeoutId=0;
+    var canceledSearch=0;
+    var idSearch=1;
 
     this.show=function(str)
     {
         $('#searchbox').show();
-        // $('#meta_content_find').html(html+"!!!");
         $('#findinput').focus();
-
         $('#findinput').val(lastSearch);
         document.getElementById('findinput').setSelectionRange(0, lastSearch.length);
         var self=this;
@@ -56,8 +54,6 @@ CABLES.UI.Find=function()
             },1);
     }
 
-    var canceledSearch=0;
-    var idSearch=1;
     this.doSearch=function(str,searchId)
     {
         lastSearch=str;
@@ -100,7 +96,6 @@ CABLES.UI.Find=function()
                     results.push({"op":gui.patch().ops[i],"score":score})
                     foundNum++;
                 }
-
             }
         }
 

@@ -137,13 +137,9 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
         {
             incrementStartup();
             var userOpsUrls = [];
-            // console.log(proj.userList[i]+'!!!',proj);
-
-console.log(proj);
 
             for (var i in proj.userList) {
                 userOpsUrls.push('/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
-                console.log("loading user ops "+proj.userList[i]);
             }
 
             var lid = 'userops' + proj._id + CABLES.generateUUID();
