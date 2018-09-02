@@ -162,6 +162,7 @@ CABLES.UI.Preview.prototype.setTexture=function(opid,portName)
         return;
     }
 
-    $('#meta_content_preview .opname').html(this._previewDataOp.name+' - '+this._previewDataPort.get().width+'x'+this._previewDataPort.get().height);
+    // +' - '+this._previewDataPort.get().width+'x'+this._previewDataPort.get().height
+    $('#meta_content_preview .opname').html(this._previewDataOp.name);
 };
 
