@@ -525,7 +525,7 @@ CABLES.UI.OpSelect.prototype.getOpList=function()
                         ops.push(op);
                     }
 
-                    found=getop(ns,val[propertyName],parentname+propertyName+'.');
+                    var found=getop(ns,val[propertyName],parentname+propertyName+'.');
                 }
             }
         }

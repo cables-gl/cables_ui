@@ -145,7 +145,6 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
             var lid = 'userops' + proj._id + CABLES.generateUUID();
             loadjs.ready(lid, function()
                 {
-                    userOpsLoaded = true;
                     incrementStartup();
                     logStartup('User Ops loaded');
                     

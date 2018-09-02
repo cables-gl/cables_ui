@@ -194,7 +194,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var lastShakeDir = false;
 
     var down = function(x, y, e) {
-        shakeCount = 0;
         shakeCountP = 0;
         shakeCountN = 0;
 
@@ -266,7 +265,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             if (shakeCountP + shakeCountN >= 6 && CABLES.now() - shakeStartTime > 100) {
                 opui.op.unLinkTemporary();
-                shakeCount = 0;
                 shakeLastX = -1;
             }
 
@@ -292,11 +290,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             return;
         }
 
-        shakeCount = 0;
         shakeCountP = 0;
         shakeCountN = 0;
 
-        lastX = -1;
+        // lastX = -1;
 
         if (CABLES.UI.LINKHOVER) {
             var oldLink = CABLES.UI.LINKHOVER;
@@ -1125,7 +1122,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         var lastName='';
         var groupCount=0;
         var dir=0;
-        for(i=0;i<ports.length;i++)
+        for(var i=0;i<ports.length;i++)
         {
             if(ports[i].hidePort)continue;
             var name=ports[i].name;

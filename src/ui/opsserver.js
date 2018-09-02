@@ -400,7 +400,7 @@ CABLES.UI.ServerOps = function(gui) {
     this._loadedLibs = [];
 
     this.getOpLibs = function(opname, checkLoaded) {
-        for (i = 0; i < ops.length; i++) {
+        for (var i = 0; i < ops.length; i++) {
             if (ops[i].name == opname) {
                 if (ops[i].libs) {
                     var libs = [];

@@ -10,6 +10,8 @@ CABLES.UI.Patch = function(_gui) {
     var gui = _gui;
 
     var watchPorts = [];
+    var watchAnimPorts=[];
+    var watchColorPicker=[];
     var currentProject = null;
     var currentOp = null;
     var spacePressed = false;
@@ -1635,8 +1637,6 @@ CABLES.UI.Patch = function(_gui) {
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName);
         } else
         if (CABLES.UI.OPSELECT.linkNewLink) {
-            console.log('add into link...');
-
             var op1 = CABLES.UI.OPSELECT.linkNewLink.p1.op;
             var port1 = CABLES.UI.OPSELECT.linkNewLink.p1.thePort;
             var op2 = CABLES.UI.OPSELECT.linkNewLink.p2.op;
@@ -1675,7 +1675,7 @@ CABLES.UI.Patch = function(_gui) {
 
             if (foundPort)
             {
-                console.log(op.objName,'op.objName');
+                // console.log(op.objName,'op.objName');
                 if(op.objName=='Ops.Value.Value')
                 {
                     var oldValue=CABLES.UI.OPSELECT.linkNewOpToPort.get();

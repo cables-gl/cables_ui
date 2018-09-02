@@ -12,7 +12,8 @@ CABLES.UI.Preview=function()
     this._mesh=null;
     this._shader=null;
     this._previewCanvas=null;
-    this._previewCanvasEle=null
+    this._previewCanvasEle=null;
+    this._lastTime=0;
 };
 
 
@@ -62,6 +63,10 @@ CABLES.UI.Preview.prototype.hide=function()
 CABLES.UI.Preview.prototype.render=function()
 {
     if(this._paused)return;
+    var now=performance.now();
+    if(now-this._lastTime<30)return;
+    this._lastTime=now;
+
     if(!this._previewCanvas && document.getElementById('preview_img'))
     {
         this._previewCanvasEle=document.getElementById('preview_img');
@@ -77,9 +82,9 @@ CABLES.UI.Preview.prototype.render=function()
             var geom=new CGL.Geometry("preview op rect");
 
             geom.vertices = [
-                    1.0,  1.0,  0.0,
+                1.0,  1.0,  0.0,
                 -1.0,  1.0,  0.0,
-                    1.0, -1.0,  0.0,
+                1.0, -1.0,  0.0,
                 -1.0, -1.0,  0.0
             ];
 

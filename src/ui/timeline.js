@@ -492,11 +492,11 @@ CABLES.ANIM.UI.TimeLineUI=function()
         function(){}
     );
 
-    ovAreaPos=paperOverview.rect( 0,0,10,10).attr({
+    this._ovAreaPos=paperOverview.rect( 0,0,10,10).attr({
         x:0,y:0,width:overviewAreaResizeWidth,height:30
     });
 
-    ovAreaPosR=paperOverview.rect( 0,0,10,10).attr({
+    this._ovAreaPosR=paperOverview.rect( 0,0,10,10).attr({
         x:0,y:0,width:overviewAreaResizeWidth,height:30
     });
     
@@ -504,7 +504,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
     // -- resize handle left
 
     var oldEndSeconds=0;
-    ovAreaPos.drag(
+    this._ovAreaPos.drag(
         function(dx,dy,x,y,e)
         {
             var time=(e.offsetX/$('#timeline').width())*projectLength;
@@ -529,7 +529,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
     // -- resize handle right
 
     var oldStartSeconds=0;
-    ovAreaPosR.drag(
+    this._ovAreaPosR.drag(
         function(dx,dy,x,y,e)
         {
             var time=e.offsetX/$('#timeline').width();
@@ -550,8 +550,8 @@ CABLES.ANIM.UI.TimeLineUI=function()
         function(){}
     );
 
-    ovAreaPosR.node.classList.add("timeline-overview-area-resize");
-    ovAreaPos.node.classList.add("timeline-overview-area-resize");
+    this._ovAreaPosR.node.classList.add("timeline-overview-area-resize");
+    this._ovAreaPos.node.classList.add("timeline-overview-area-resize");
 
     // -----------
 
@@ -809,16 +809,16 @@ CABLES.ANIM.UI.TimeLineUI=function()
                 "width":width*$('#timeline').width(),
             });
 
-        ovAreaPos.attr(
+        this._ovAreaPos.attr(
             {
                 "x":start*$('#timeline').width(),
             });
 
-        ovAreaPosR.attr(
+        this._ovAreaPosR.attr(
             {
                 "x":(start+width)*($('#timeline').width()-1),
             });
-        // ovAreaPosR.toFront();
+        this._// ovAreaPosR.toFront();
     
         };
 

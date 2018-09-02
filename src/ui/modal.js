@@ -66,8 +66,8 @@ CABLES.UI.MODAL.hide=function(force)
     }
 
     // console.log('modal hide ',$('.modalLoading').length);
-    mouseNewOPX=0;
-    mouseNewOPY=0;
+    // mouseNewOPX=0;
+    // mouseNewOPY=0;
 
 	$('#modalclose').hide();
     CABLES.UI.MODAL.init();

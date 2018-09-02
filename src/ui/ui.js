@@ -1487,7 +1487,7 @@ function startUi(event)
         if (e.preventDefault) e.preventDefault();
     });
 
-    gui = new CABLES.UI.GUI();
+    window.gui = new CABLES.UI.GUI();
 
     gui.init();
     gui.checkIdle();
