@@ -16,11 +16,13 @@ CABLES.UI.OpSelect=function()
     this.firstTime=true;
     this.tree=new CABLES.OpTree();
     this._sortTimeout=0;
+    this._numFound=0;
+    this._delayedsearch=-1;
+    this.lastQuery='';
 };
 
 CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 {
-    var num=$('.searchbrowser .searchable:visible').length;
     var query=$('#opsearch').val();
 
     if(query.length===0) $('#search_startType').show();
@@ -29,7 +31,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     if(query.length==1) $('#search_startTypeMore').show();
     else $('#search_startTypeMore').hide();
 
-    if(num===0 && query.length>1)
+    if(this._numFound===0 && query.length>1)
     {
         $('#search_noresults').show();
         $('#searchinfo').empty();
@@ -39,7 +41,8 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     }
     else $('#search_noresults').hide();
 
-    var optionsHtml='&nbsp;found '+num+' ops. in '+Math.round(this._timeUsed)+'ms ';
+
+    var optionsHtml='&nbsp;found '+this._numFound+' ops. in '+Math.round(this._timeUsed)+'ms '+this.lastQuery;
 
     if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
     {
@@ -69,12 +72,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
     for(var i=0;i<list.length;i++)
     {
         var scoreDebug=query+' - '+list[i]._shortName+'<br/><br/>';
-
         var found=false;
         var points=0;
-
-        // console.log( CABLES.UI.OPSELECT.linkNewOpToOp.objName);
-
 
         if(list[i]._summary.indexOf(query)>-1)
         {
@@ -134,7 +133,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
                 scoreDebug+='+1 is math<br/>';
             }
 
-            var shortnessPoints=Math.round( (1.0-Math.min(1,(list[i]._nameSpace+list[i]._shortName).length/20))*100)/100;
+            var shortnessPoints=Math.round( (1.0-Math.min(1,(list[i]._nameSpace+list[i]._shortName).length/100))*100)/100;
             points+=shortnessPoints;
             scoreDebug+='+'+shortnessPoints+' shortness namespace<br/>';
         }
@@ -151,6 +150,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
         list[i].scoreDebug=scoreDebug;
     }
 
+    // console.log('search for',query,this._timeUsed);
+    
     return result;
 };
 
@@ -231,19 +232,29 @@ CABLES.UI.OpSelect.prototype.search=function()
 {
     var startTime=CABLES.now();
     var q=$('#opsearch').val();
-    // if(q==this.lastQuery)return;
+    if(q==this.lastQuery)
+    {
+        // console.log("cancel same search");
+        return;
+    }
     this.lastQuery=q;
     var result=this._search(q);
     var i=0;
     var html='';
 
+    
+
+    this._numFound=0;
+
+    
+
     for(i=0;i<this._list.length;i++)
     {
-        // can we cache this ?
-		this._list[i].element=$('#result_'+this._list[i].id);
+		if(!this._list[i].element)this._list[i].element=$('#result_'+this._list[i].id);
 
         if(this._list[i].score>0)
         {
+            this._numFound++;
             this._list[i].element.show();
             this._list[i].element[0].dataset.score=this._list[i].score;
             this._list[i].element[0].dataset.scoreDebug=this._list[i].scoreDebug;
@@ -253,8 +264,10 @@ CABLES.UI.OpSelect.prototype.search=function()
             this._list[i].element[0].dataset.score=0.0;
             this._list[i].element[0].dataset.scoreDebug='???';
             this._list[i].element.hide();
+            
         }
     }
+
 
     // sort html elements
     var $wrapper = $('.searchbrowser');
@@ -264,16 +277,20 @@ CABLES.UI.OpSelect.prototype.search=function()
     // clearTimeout(this._sortTimeout);
     // this._sortTimeout=setTimeout(function()
     //     {
-            $wrapper.find('.searchresult').sort(
+
+
+    $wrapper.find('.searchresult:visible').sort(
                 function (a, b)
                 {
                     var diff=parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
                     return diff;
                 }).appendTo( $wrapper );
-            this.Navigate(0);
         // }.bind(this),50);
 
+
+    this.Navigate(0);
     this.updateOptions();
+
 
     var timeUsed=CABLES.now()-startTime;
     this._timeUsed=timeUsed
@@ -369,7 +386,6 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
         this.search();
     }
     if(this.firstTime)this.search();
-
     if(!this._list || !this._html)this.prepare();
 
     $('#search_noresults').hide();
@@ -432,7 +448,23 @@ CABLES.UI.OpSelect.prototype.onInput=function(e)
 {
     this.displayBoxIndex=0;
     this.updateInfo();
-    this.search();
+    
+
+    // var q=$('#opsearch').val();
+    // if(q.length<4)
+    // {
+    //     console.log('delayed')
+    //     if(this._delayedsearch!=-1)
+    //     {
+    //         console.log("CANCEL OLD SEARCH");
+    //         clearTimeout(this._delayedsearch);
+    //         this._delayedsearch=-1;
+    //     }
+    //     this._delayedsearch=setTimeout(function(){this._delayedsearch=-1;this.search();}.bind(this),100);
+    // }
+    // else 
+        this.search();
+
 };
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
@@ -495,7 +527,6 @@ CABLES.UI.OpSelect.prototype.getOpList=function()
                 {
                     var html='';
                     var opname=ns+'.'+ parentname + propertyName + '';
-
                     var isOp=false;
                     var isFunction=false;
 
