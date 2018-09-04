@@ -836,7 +836,7 @@ CABLES.UI.Patch = function(_gui) {
                     }
                 );
             }
-            
+
             return;
         }
 
@@ -847,6 +847,7 @@ CABLES.UI.Patch = function(_gui) {
             CABLES.api.put(
                 'project/' + id, {
                     "name": name,
+                    "namespace": currentProject.namespace,
                     "data": data,
                 },
                 function(r) {

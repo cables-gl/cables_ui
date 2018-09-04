@@ -96,7 +96,14 @@
                     </td>
                 </tr>
 
-
+                <tr>
+                    <td>
+                        Namespace
+                    </td>
+                    <td style="width: 75%;">
+                        <input type="text" class="" id="projectsettings_namespace" onblur="" value="{{project.namespace}}" data-info="{{ texts.projectSettingsNamespace }}"></input>
+                    </td>
+                </tr>
             </table>
 
             <hr/>
@@ -118,6 +125,10 @@
             <h2>Description</h2>
 
             <textarea type="text" id="settings_description">{{ project.description }}</textarea>
+
+            <h2>Namespace</h2>
+
+
 
             <br/><br/>
             <div class="bluebutton" onclick="gui.projectSettings().saveParams();">Save Settings</div>

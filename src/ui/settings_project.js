@@ -161,10 +161,12 @@ CABLES.ProjectSettings=function(project)
         var proj_template=$('#projectsettings_template').val();
         var proj_autoscreenshot=$('#projectsettings_autoscreenshot').val();
         var proj_opExample=$('#projectsettings_opExample').val();
+        var proj_namespace=$('#projectsettings_namespace').val();
 
         gui.setProjectName(proj_name);
 
         gui.patch().getCurrentProject().name=proj_name;
+        gui.patch().getCurrentProject().namespace=proj_namespace;
         gui.scene().settings=gui.scene().settings || {};
         gui.scene().settings.isPublic=proj_public;
         gui.scene().settings.secret=proj_secret;
@@ -172,7 +174,6 @@ CABLES.ProjectSettings=function(project)
         gui.scene().settings.isTest=proj_test;
         gui.scene().settings.isTemplate=proj_template;
         gui.scene().settings.opExample=proj_opExample;
-        
 
         gui.scene().settings.manualScreenshot=proj_autoscreenshot;
 
