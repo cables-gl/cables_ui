@@ -840,6 +840,8 @@ CABLES.UI.Patch = function(_gui) {
             return;
         }
 
+CABLES.patch.namespace=currentProject.namespace;
+
         try {
             data = JSON.stringify(data);
             gui.patch().getLargestPort();
@@ -865,13 +867,6 @@ CABLES.UI.Patch = function(_gui) {
                     if(doSaveScreenshot)
                     {
                         var screenshotTimeout = setTimeout(function() {
-                            // $('#glcanvas').attr('width', w);
-                            // $('#glcanvas').attr('height', h);
-                            // gui.patch().scene.cgl.doScreenshot = false;
-                            
-                            // gui.jobs().finish('uploadscreenshot');
-                            // console.log('screenshot timed out...');
-                            
                             gui.patch().scene.cgl.setSize(w,h);
                             gui.patch().scene.resume();
                         }, 1000);

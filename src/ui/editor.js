@@ -24,6 +24,8 @@ CABLES.Editor=function()
     //     CABLES.UI.hideInfo();
     // });
 
+
+
     this.resize=function()
     {
         for(var i=0;i<this._tabs.length;i++)
@@ -306,3 +308,8 @@ CABLES.Editor.createEditor=function(id)
     return editor;
 
 }
+
+CABLES.Editor.prototype.getNumTabs=function()
+{
+    return this._tabs.length;
+};

@@ -97,8 +97,10 @@ CABLES.EditorSession.prototype.open=function()
     setTimeout(function()
     {
         gui.editor().setTabByTitle(lastTab);
+        
     },100);
-    
+
+   
 
 }
 

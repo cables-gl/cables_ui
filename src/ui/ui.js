@@ -6,6 +6,8 @@ CABLES.UI.GUI = function() {
     var userOpsLoaded = false;
     var showTiming = false;
     var showingEditor = false;
+    
+    
     var showMiniMap = false;
     var _scene = CABLES.patch=new CABLES.Patch();
     _scene.gui = true;
@@ -92,8 +94,14 @@ CABLES.UI.GUI = function() {
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 400;
 
     this.toggleEditor = function() {
+
+        
+
         if (showingEditor) self.closeEditor();
         else self.showEditor();
+
+        
+
         self.setLayout();
     };
 
@@ -102,6 +110,7 @@ CABLES.UI.GUI = function() {
             showingEditor = true;
             _editor.focus();
             this.setLayout();
+            CABLES.UI.userSettings.set("editorMinimized",false);
         }
     };
 
@@ -109,6 +118,7 @@ CABLES.UI.GUI = function() {
         if (showingEditor) {
             showingEditor = false;
             this.setLayout();
+            CABLES.UI.userSettings.set("editorMinimized",true);
         }
     };
 
@@ -211,8 +221,11 @@ CABLES.UI.GUI = function() {
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
 
-        if (showingEditor) {
-            if (self.editorWidth > window.innerWidth - self.rendererWidth) self.rendererWidth = window.innerWidth - self.editorWidth - iconBarWidth -40;
+        if (showingEditor )
+        {
+            $('#editorminimized').hide();
+            var editWidth=self.editorWidth;
+            if (editWidth > window.innerWidth - self.rendererWidth) self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -40;
 
             var editorbarHeight = 76;
             $('#editor').show();
@@ -225,24 +238,35 @@ CABLES.UI.GUI = function() {
             var editorHeight = patchHeight - 2 - editorbarHeight;
 
             this._elAceEditor.css('height', editorHeight);
-            this._elAceEditor.css('width', self.editorWidth);
+            this._elAceEditor.css('width', editWidth);
             $('#ace_editors .ace_tab_content').css('top',  1 + editorbarHeight);
             this._elAceEditor.css('left', 0);
 
-            $('#editorfoot').css('width', self.editorWidth);
+            $('#editorfoot').css('width', editWidth);
 
-            this._elEditorBar.css('width', self.editorWidth);
+            this._elEditorBar.css('width', editWidth);
             this._elSplitterEditor.show();
-            this._elSplitterEditor.css('left', self.editorWidth + iconBarWidth);
+            this._elSplitterEditor.css('left', editWidth + iconBarWidth);
             this._elSplitterEditor.css('height', patchHeight - 2);
             this._elSplitterEditor.css('width', 5);
             this._elSplitterEditor.css('top', menubarHeight);
 
             _editor.resize();
+            
         } else {
+
             $('#splitterEditor').hide();
             $('#editor').hide();
             editorWidth = 0;
+
+            if(_editor.getNumTabs()>0)
+            {
+                minEl=$('#editorminimized');
+                minEl.show();
+                minEl.css('left',iconBarWidth);
+                minEl.css('top',patchHeight/2-100);
+            }
+            else $('#editorminimized').hide();
         }
 
 
@@ -1023,6 +1047,7 @@ CABLES.UI.GUI = function() {
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         } else if ($('#cmdpalette').is(':visible')) gui.cmdPallet.close();
+        else if (showingEditor) this.closeEditor();
         else if ($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
         else if ($('#searchbox').is(':visible')) $('#searchbox').hide();
         else if ($('#library').is(':visible')) CABLES.UI.fileSelect.hide();//$('#library').hide();
@@ -1504,6 +1529,40 @@ function startUi(event)
         gui.patch().fixTitlePositions();
         gui.opSelect().prepare();
         gui.opSelect().search();
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
         if(!gui.user.introCompleted)gui.introduction().showIntroduction();
 
