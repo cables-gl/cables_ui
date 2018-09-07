@@ -81,6 +81,7 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
 CABLES.EditorSession.prototype.open=function()
 {
     var sessions = CABLES.UI.userSettings.get("openEditors");
+
     var lastTab = CABLES.UI.userSettings.get('editortab');
 
     if (sessions)
@@ -97,7 +98,7 @@ CABLES.EditorSession.prototype.open=function()
     setTimeout(function()
     {
         gui.editor().setTabByTitle(lastTab);
-        
+        gui._ignoreOpenEditor=false;
     },100);
 
    

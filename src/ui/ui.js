@@ -7,7 +7,6 @@ CABLES.UI.GUI = function() {
     var showTiming = false;
     var showingEditor = false;
     
-    
     var showMiniMap = false;
     var _scene = CABLES.patch=new CABLES.Patch();
     _scene.gui = true;
@@ -90,6 +89,8 @@ CABLES.UI.GUI = function() {
     this.timingHeight = 250;
     this.rendererWidth = 640;
     this.rendererHeight = 360;
+
+    this._ignoreOpenEditor=false;
     
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 400;
 
@@ -106,6 +107,11 @@ CABLES.UI.GUI = function() {
     };
 
     this.showEditor = function() {
+        if(this._ignoreOpenEditor)
+        {
+            showingEditor = false;
+            return;
+        } 
         if (!showingEditor) {
             showingEditor = true;
             _editor.focus();
@@ -121,8 +127,6 @@ CABLES.UI.GUI = function() {
             CABLES.UI.userSettings.set("editorMinimized",true);
         }
     };
-
-
 
     this.setLayout = function() {
         var startTime = performance.now();
@@ -145,11 +149,8 @@ CABLES.UI.GUI = function() {
 
         var iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
-
         this._elMenubar.show();
-        // $('#timelineui').show();
 
-        //|| self.rendererWidth > window.innerWidth * 0.99 || self.rendererHeight > window.innerHeight * 0.99
         if (self.rendererWidth === undefined || self.rendererHeight === undefined ) {
             self.rendererWidth = window.innerWidth * 0.4;
             self.rendererHeight = window.innerHeight * 0.25;
@@ -173,10 +174,6 @@ CABLES.UI.GUI = function() {
         }
 
         var iconBarWidth=iconBarWidth||80;
-
-        // self.showCanvasModal(false);
-
-        // var statusBarHeight=26;
         var menubarHeight = 30;
         var optionsWidth = 400;
 
@@ -1404,6 +1401,7 @@ CABLES.UI.GUI = function() {
 
     this.init = function()
     {
+        if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
         $('#infoArea').show();
 
         $('#infoArea').hover(
@@ -1506,6 +1504,7 @@ function startUi(event)
 
     logStartup('Init UI');
 
+    
     CABLES.UI.initHandleBarsHelper();
 
     $("#patch").bind("contextmenu", function(e) {
@@ -1514,10 +1513,13 @@ function startUi(event)
 
     window.gui = new CABLES.UI.GUI();
 
+    
     gui.init();
     gui.checkIdle();
 
     gui.bind(function() {
+
+        
 
         gui.metaCode().init();
         gui.opSelect().reload();
@@ -1532,40 +1534,12 @@ function startUi(event)
 
 
 
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
         // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
         if(!gui.user.introCompleted)gui.introduction().showIntroduction();
-
+        
     });
 
     $('#glcanvas').on("focus", function() {
@@ -1599,7 +1573,8 @@ function startUi(event)
         
     }, false);
 
-
+    
+    
     logStartup('Init UI done');
 
 }
