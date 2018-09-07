@@ -209,15 +209,19 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.stack+'</div><br/>');
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode hidden" id="stackFileContent"></div><br/>');
 
-    var info = stackinfo(ex);
-    console.log('This is line '+(info[0].line + 1));
-    console.log('This is file '+(info[0].file));
-
-    CABLES.UI.MODAL.getFileSnippet(info[0].file,info[0].line,function(html)
-        {
-            $('#stackFileContent').show();
-            $('#stackFileContent').html(html);
-        });
+    if(ex)
+    {
+        var info = stackinfo(ex);
+        console.log('This is line '+(info[0].line + 1));
+        console.log('This is file '+(info[0].file));
+    
+        CABLES.UI.MODAL.getFileSnippet(info[0].file,info[0].line,function(html)
+            {
+                $('#stackFileContent').show();
+                $('#stackFileContent').html(html);
+            });
+    
+    }
 
 
 	CABLES.UI.MODAL._setVisible(true);

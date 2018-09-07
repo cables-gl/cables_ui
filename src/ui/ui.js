@@ -6,7 +6,6 @@ CABLES.UI.GUI = function() {
     var userOpsLoaded = false;
     var showTiming = false;
     var showingEditor = false;
-    
     var showMiniMap = false;
     var _scene = CABLES.patch=new CABLES.Patch();
     _scene.gui = true;
@@ -213,7 +212,6 @@ CABLES.UI.GUI = function() {
                 left:iconBarWidth+'px',
                 top:menubarHeight + 1
             });
-        
 
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
@@ -1055,7 +1053,6 @@ CABLES.UI.GUI = function() {
         else if (vueStore.getters['sidebar/sidebarCustomizerVisible']) vueStore.commit('sidebar/setCustomizerVisible', false);
         else
         if (CABLES.UI.MODAL._visible) {
-            console.log("hiding modal!");
             CABLES.UI.MODAL.hide(true)
             CABLES.UI.MODAL.hide();
             if (showingEditor) self.editor().focus();

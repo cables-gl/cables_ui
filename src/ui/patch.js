@@ -1417,10 +1417,7 @@ CABLES.patch.namespace=currentProject.namespace;
             var sizeSmall = 650;
             var size = Math.max(minimapBounds.w, minimapBounds.h);
 
-            console.log("size", size);
-
             if (viewBox.w >= sizeSmall * 2) {
-                console.log("zoom");
                 var vb={};
                 vb.x = x - sizeSmall / 2;
                 vb.y = y - sizeSmall / 2;
