@@ -216,7 +216,11 @@ CABLES.UI.OpDocs=function()
      */
     this.get2 = function(opName) {
         var opDoc = this.getOpDocByName(opName);
-        if(!opDoc) { console.error('Op doc not found: ' + opName); return; }
+        if(!opDoc)
+        {
+            // console.error('Op doc not found: ' + opName); 
+            return;
+        }
 
         var html = CABLES.UI.getHandleBarHtml('op-doc-template', {
             opDoc: opDoc

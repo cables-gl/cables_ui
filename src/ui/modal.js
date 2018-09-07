@@ -121,14 +121,10 @@ CABLES.UI.MODAL.show=function(content,options)
         $('#modalcontainer').removeClass("transparent");
     }
 
-
-
     if(content)
         CABLES.UI.MODAL.contentElement.append(content);
 
-
-    // $('#modalcontainer').show();
-	CABLES.UI.MODAL._setVisible(true);
+    CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
 
 
@@ -200,7 +196,8 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
     console.log(ex.stack);
     CABLES.UI.MODAL.showClose();
 	CABLES.UI.MODAL.init();
-	CABLES.UI.MODAL.setTitle('op cablefail :/');
+    CABLES.UI.MODAL.setTitle('op cablefail :/');
+    
     // CABLES.UI.MODAL.contentElement.append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;</h2>');
 
     CABLES.UI.MODAL.contentElement.append('Error in op: <b>'+opName+'</b><br/><br/>');
@@ -222,7 +219,6 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
             });
     
     }
-
 
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();

@@ -747,6 +747,12 @@ CABLES.UI.Patch = function(_gui) {
 
     this.saveCurrentProject = function(cb, _id, _name)
     {
+        if(this.scene._crashedOps.length>0)
+        {
+            CABLES.UI.MODAL.showError('ops crashed, cannot save patch.');
+            return;
+        }
+
         if (this.loadingError) {
             CABLES.UI.MODAL.showError('project not saved', 'could not save project: had errors while loading!');
             return;
@@ -1562,6 +1568,15 @@ CABLES.patch.namespace=currentProject.namespace;
     };
 
     function doAddOp(uiOp) {
+
+        function checkDuplicatePorts(op)
+        {
+            for(var j=0;j<op.portsIn.length;j++)
+                for(var i=0;i<op.portsIn.length;i++)
+                    if(i!=j)
+                        if(op.portsIn[i].name==op.portsIn[j].name)
+                            console.error('op has duplicate port names ('+op.portsIn[j].name+'), they must be unique. ');
+        }
         var op = uiOp.op;
 
         if (!isLoading) {
@@ -1582,6 +1597,7 @@ CABLES.patch.namespace=currentProject.namespace;
                 "objName": op.objName
             });
         }
+        
 
         op.onAddPort = function(p) {
             uiOp.addPort(p.direction, p);
@@ -1592,7 +1608,12 @@ CABLES.patch.namespace=currentProject.namespace;
             if (op.uiAttribs.subPatch != currentSubPatch) uiOp.hide();
         }
 
+        
+        
         uiOp.initPorts();
+
+
+        checkDuplicatePorts(op);
 
         if (!op.uiAttribs) {
             op.uiAttribs = {};
@@ -2690,6 +2711,8 @@ CABLES.patch.namespace=currentProject.namespace;
             if (this.ops[iops].op == op)
                 currentOp = this.ops[iops];
         op.summary = gui.opDocs.getSummary(op.objName);
+        var doc = gui.opDocs.getOpDocByName(op.objName);
+        var hasScreenshot=(doc && doc.hasScreenshot);
 
         if (!currentOp) return;
 
@@ -2701,20 +2724,14 @@ CABLES.patch.namespace=currentProject.namespace;
         if (op.objName.startsWith('Ops.User.' + gui.user.username)) ownsOp = true;
         if (op.objName.startsWith('Ops.Deprecated.')) {
             op.isDeprecated = true;
-
             var notDeprecatedName = op.objName.replace("Deprecated.", '');
-
             var alt = CABLES.Patch.getOpClass(notDeprecatedName);
-            if (alt) {
-                op.isDeprecatedAlternative = notDeprecatedName;
-            }
-
+            if (alt) op.isDeprecatedAlternative = notDeprecatedName;
         }
         if (op.objName.startsWith('Ops.Exp.')) op.isExperimental = true;
 
-        if (op) {
-            var isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
-        }
+        var isBookmarked=false;
+        if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
         var html = CABLES.UI.getHandleBarHtml('params_op_head', {
             "op": op,
@@ -2722,7 +2739,8 @@ CABLES.patch.namespace=currentProject.namespace;
             "colorClass": "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
             "texts": CABLES.UI.TEXTS,
             "user": gui.user,
-            "ownsOp": ownsOp
+            "ownsOp": ownsOp,
+            "hasExample":hasScreenshot
         });
         var sourcePort = $("#params_port").html();
         var templatePort = Handlebars.compile(sourcePort);

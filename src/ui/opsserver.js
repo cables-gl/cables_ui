@@ -137,7 +137,24 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
     this.execute = function(name) {
-        // console.log(name);
+        
+        console.log('exe',name);
+        if(gui.patch().scene._crashedOps.indexOf(name)>-1)
+        {
+            console.log("JA NE IS NICH!");
+
+            html='';
+            html+='<h1>can not execute op</h1>';
+            html+='this op crashed before, you should reload the page.<br/><br/>';
+            html+='<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;';
+
+            CABLES.UI.MODAL.show(html, {
+                title: 'need to reload page'
+            });
+
+            return;
+        }
+
         CABLES.UI.MODAL.showLoading('executing...');
         var s = document.createElement('script');
         s.setAttribute('src', CABLES.noCacheUrl('/api/op/' + name));
@@ -152,8 +169,6 @@ CABLES.UI.ServerOps = function(gui) {
         document.body.appendChild(s);
 
     };
-
-
 
     this.clone = function(oldname, name) {
 
