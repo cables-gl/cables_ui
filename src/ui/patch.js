@@ -747,11 +747,11 @@ CABLES.UI.Patch = function(_gui) {
 
     this.saveCurrentProject = function(cb, _id, _name)
     {
-        if(this.scene._crashedOps.length>0)
-        {
-            CABLES.UI.MODAL.showError('ops crashed, cannot save patch.');
-            return;
-        }
+        // if(this.scene._crashedOps.length>0)
+        // {
+        //     CABLES.UI.MODAL.showError('ops crashed, are you sure?');
+        //     return;
+        // }
 
         if (this.loadingError) {
             CABLES.UI.MODAL.showError('project not saved', 'could not save project: had errors while loading!');
