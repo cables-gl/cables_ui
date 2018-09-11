@@ -742,7 +742,6 @@ CABLES.UI.Patch = function(_gui) {
                     
                 }.bind(this)
             );
-
     };
 
     this.saveCurrentProject = function(cb, _id, _name)

@@ -65,20 +65,23 @@
 
         <div class="iconcontainer iconcontainer_{{file.t}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}','{{file._id}}');"   draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{file.p}}');">
 
-            {{#compare file.t '==' 'image' }}
-                <div class="library-file-icon" style="background-image:url('{{file.p}}');">
-                </div>
-            {{else}}
-            <i class="fa fa-4x fa-{{file.icon}}" ></i>
-            {{/compare}}
+
+            <div class="file-icon-container">
+                <div class="suffix">{{file.suffix}}</div>
+                {{#compare file.t '==' 'image' }}
+                    <div class="library-file-icon" style="background-image:url('{{file.p}}');"></div>
+                {{else}}
+                    <i class="fa fa-4x fa-{{file.icon}}" ></i>
+                {{/compare}}
+            </div>
+
             <div class="filename">
 
                 {{#compare file.t '==' 'dir' }}<h2>{{/compare}}
-
                 {{file.n}}
-
                 {{#compare file.t '==' 'dir' }}</h2>{{/compare}}
             </div>
+
 
 
         </div>

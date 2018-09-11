@@ -28,6 +28,25 @@
     background-color: $color-c9;
     z-index: $z-index-library;
 
+    .suffix
+    {
+        position: absolute;
+        background-color: rgba(0,0,0,0.8);
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-left: 0px;
+        padding-right: 4px;
+        font-family: monospace;
+    }    
+
+    .file-icon-container
+    {
+        background-color: $color-cz;
+        // border:1px solid red;
+        margin-top:10px;
+        margin-left: 10px;
+    }
+
     .libleft
     {
         width:70%;
@@ -99,9 +118,6 @@
 
         .library-file-icon,i
         {
-            margin-top:10px;
-            background-color: $color-cz;
-            margin-left: 10px;
             background-repeat:no-repeat;
             background-size:100% auto;
             width:100px;
