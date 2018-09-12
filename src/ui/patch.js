@@ -2027,6 +2027,13 @@ CABLES.patch.namespace=currentProject.namespace;
         return arr;
     }
 
+    this.subpatchBack=function()
+    {
+        var names = this.findSubpatchOp(currentSubPatch);
+        if(names[1]) this.setCurrentSubPatch(names[1].id);
+            else this.setCurrentSubPatch(0);
+    };
+
     this.updateSubPatchBreadCrumb = function()
     {
         var names = this.findSubpatchOp(currentSubPatch);

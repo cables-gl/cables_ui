@@ -833,9 +833,10 @@ CABLES.UI.GUI = function() {
             CABLES.CMD.UI.toggleEditor();
         });
 
-
         $('#button_subPatchBack').bind("click", function(event) {
-            self.patch().setCurrentSubPatch(0);
+
+            self.patch().subpatchBack();
+            
         });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 

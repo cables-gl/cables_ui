@@ -90,7 +90,6 @@ CABLES.CMD.PATCH.opsCompress=function()
 	gui.patch().compressSelectedOps();
 };
 
-
 CABLES.CMD.PATCH.export=function()
 {
 	gui.patch().exportStatic();
@@ -114,8 +113,6 @@ CABLES.CMD.PATCH.renameOp=function()
 CABLES.CMD.PATCH.patchWebsite=function()
 {
 	window.open("/p/"+gui.patch().getCurrentProject()._id);
-
-
 	// console.log(gui.patch().getCurrentProject()._id);
 };
 
@@ -132,7 +129,6 @@ CABLES.CMD.PATCH.createVariable=function(op)
 			}
 		});
 };
-
 
 CABLES.CMD.PATCH.editOp=function()
 {
@@ -174,7 +170,6 @@ CABLES.CMD.PATCH.setOpTitle=function()
 CABLES.CMD.PATCH.tidyChildOps=function()
 {
 	var selops=gui.patch().getSelectedOps();
-	
 	var opWidth=150;
 	var opHeight=40;
 
@@ -182,10 +177,8 @@ CABLES.CMD.PATCH.tidyChildOps=function()
 	{
 		depth=depth||0;
 		var childs=op.getOutChilds();
-		// num=Math.max(num,childs.length);
 		for(var i=0;i<childs.length;i++)
 		{
-			
 			depth=getChildColumns(childs[i],depth);
 			if(i>0)depth++;
 		}
@@ -200,7 +193,6 @@ CABLES.CMD.PATCH.tidyChildOps=function()
 		var addY=0;
 		if(childs.length>1) addY=opHeight*0.5;
 
-		console.log(op.name+' child columns:',getChildColumns(op));
 		var i=0;
 		var childWidth=0;
 		for(i=0;i<childs.length;i++)
