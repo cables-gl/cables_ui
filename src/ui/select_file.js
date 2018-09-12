@@ -79,13 +79,8 @@ CABLES.UI.FileSelect = function() {
                 });
         } else {
             var opts = {};
-
-            if (val.endsWith('.jpg') || val.endsWith('.png')) {
-                opts.previewImageUrl = val;
-            }
-
+            if (val.endsWith('.jpg') || val.endsWith('.png') || val.endsWith('.svg'))opts.previewImageUrl = val;
             html = CABLES.UI.getHandleBarHtml('library_preview', opts);
-
         }
 
         $('#lib_preview').html(html);
@@ -119,10 +114,7 @@ CABLES.UI.FileSelect = function() {
         var filter='';
 
         if(_opid) filter+='click a file to apply to op '+gui.scene().getOpById(this.currentOpid).objName+' ';
-        if(_filterType) 
-        {
-            filter+=" - filter: "+_filterType;
-        }
+        if(_filterType)  filter+=" - filter: "+_filterType;
 
         this.setView(CABLES.UI.userSettings.get("fileListClass")||'icon');
 

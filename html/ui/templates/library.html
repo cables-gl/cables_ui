@@ -71,7 +71,11 @@
                 {{#compare file.t '==' 'image' }}
                     <div class="library-file-icon" style="background-image:url('{{file.p}}');"></div>
                 {{else}}
+                    {{#compare file.t '==' 'SVG' }}
+                        <div class="library-file-icon" style="background-image:url('{{file.p}}');"></div>
+                    {{else}}
                     <i class="fa fa-4x fa-{{file.icon}}" ></i>
+                    {{/compare}}
                 {{/compare}}
             </div>
 
@@ -129,10 +133,10 @@
     {{/if}}
 
     {{#if file.imgSizeWidth  }}
-        {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} -->
+        {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} --> - 
     {{/if}}
 
-    - {{file.sizeKb}}kb - {{file.fileDb.type}}
+    {{file.sizeReadable}} - {{file.fileDb.type}}
 
     <br/>changed {{file.readableDateSince}} <br/>
     {{file.readableDate}}
