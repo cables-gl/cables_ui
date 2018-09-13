@@ -3282,7 +3282,7 @@ CABLES.patch.namespace=currentProject.namespace;
         for (i = 0; i < foundPatchIds.length; i++) {
             var found = false;
             for (var j = 0; j < this.ops.length; j++) {
-                if (this.ops[j].op.patchId && this.ops[j].op.patchId.get() == foundPatchIds[i]) {
+                if (this.ops[j].op.patchId!=0 && this.ops[j].op.patchId && this.ops[j].op.patchId.get() == foundPatchIds[i]) {
                     subPatches.push({
                         "name": this.ops[j].op.name,
                         "id": foundPatchIds[i]
