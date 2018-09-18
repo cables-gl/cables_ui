@@ -263,8 +263,8 @@ CABLES.Editor.createEditor=function(id)
                 "onChange",
                 "onTriggered",
                 /* in functions */
-                "inFunction",
-                "inFunctionButton",
+                "inTrigger",
+                "inTriggerButton",
                 /* in number / string / bool  */
                 "inValue",
                 "inValueBool",
@@ -278,7 +278,7 @@ CABLES.Editor.createEditor=function(id)
                 "inArray",
                 "inFile",
                 /* out functions */
-                "outFunction",
+                "outTrigger",
                 /* out number / string / bool  */
                 "outValue",
                 "outValueBool",
