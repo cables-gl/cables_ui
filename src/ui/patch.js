@@ -58,6 +58,7 @@ CABLES.UI.Patch = function(_gui) {
         }.bind(this));
 
 
+    
 
     this.isLoading = function() {
         return isLoading;
@@ -257,6 +258,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
 
+
     this.highlightNamespace =function(ns)
     {
         for (var i=0;i<self.ops.length;i++)
@@ -442,10 +444,7 @@ CABLES.UI.Patch = function(_gui) {
         switch (e.which) {
             case 32:
                 spacePressed = false;
-                gui.cursor = "auto";
-                $('#patch').css({
-                    "cursor": "auto"
-                });
+                gui.setCursor();
                 break;
         }
     });
@@ -457,22 +456,14 @@ CABLES.UI.Patch = function(_gui) {
         switch (e.which) {
 
             case 27:
-            $('#patch').css({
-                "cursor": "auto"
-            });
+            gui.setCursor();
             break;
             case 84:
                 CABLES.CMD.PATCH.setOpTitle();
             break;
             case 32:
                 spacePressed = true;
-
-                if (gui.cursor != "hand") {
-                    gui.cursor = "hand";
-                    $('#patch').css({
-                        "cursor": "url(/ui/img/grab.png) 0 0, auto"
-                    });
-                }
+                gui.setCursor("grab");
                 break;
 
             case 70:
@@ -716,32 +707,34 @@ CABLES.UI.Patch = function(_gui) {
 
     this.checkUpdated=function(cb)
     {
+        if(!gui.project())return;
+
         gui.jobs().start({
             id: 'checkupdated',
-            title: 'check if patch was updated'
+            title: 'check if patch was updated',
+            indicator:'canvas'
         });
-        
-        if(gui.project())
-            CABLES.api.get('project/' + gui.project()._id+'/updated',
-                function(data)
-                {
-                    gui.jobs().finish('checkupdated');
 
-                    if(this._serverDate!=data.updated)
-                    {
-                        CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
-                        CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);">close</a>&nbsp;&nbsp;');
-                        CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="gui.patch().checkUpdatedSaveForce(\''+data.updated+'\');">save anyway</a>&nbsp;&nbsp;');
-                        CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
-                    }
-                    else
-                    {
-                        CABLES.UI.MODAL.hide(true);
-                        if(cb)cb(null);
-                    }
-                    
-                }.bind(this)
-            );
+        CABLES.api.get('project/' + gui.project()._id+'/updated',
+            function(data)
+            {
+                
+                if(this._serverDate!=data.updated)
+                {
+                    CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
+                    CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);">close</a>&nbsp;&nbsp;');
+                    CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="gui.patch().checkUpdatedSaveForce(\''+data.updated+'\');">save anyway</a>&nbsp;&nbsp;');
+                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
+                }
+                else
+                {
+                    CABLES.UI.MODAL.hide(true);
+                    if(cb)cb(null);
+                }
+                gui.jobs().finish('checkupdated');
+                
+            }.bind(this)
+        );
     };
 
     this.saveCurrentProject = function(cb, _id, _name)
@@ -769,6 +762,7 @@ CABLES.UI.Patch = function(_gui) {
 
     this._saveCurrentProject = function(cb, _id, _name)
     {
+        
         const doSaveScreenshot=gui.patch().scene.isPlaying();
 
         for (var i = 0; i < this.ops.length; i++) {
@@ -777,7 +771,8 @@ CABLES.UI.Patch = function(_gui) {
             if (this.ops[i].op.uiAttribs.warning) delete this.ops[i].op.uiAttribs.warning;
         }
 
-        gui.jobs().start({ id: 'projectsave', title: 'saving project' });
+        gui.jobs().start({ id: 'projectsave', title: 'saving project',indicator:'canvas' });
+        
 
         var w = $('#glcanvas').attr('width');
         var h = $('#glcanvas').attr('height');
@@ -845,12 +840,14 @@ CABLES.UI.Patch = function(_gui) {
             return;
         }
 
-CABLES.patch.namespace=currentProject.namespace;
+        CABLES.patch.namespace=currentProject.namespace;
 
         try {
             data = JSON.stringify(data);
             gui.patch().getLargestPort();
             
+            
+
             CABLES.api.put(
                 'project/' + id, {
                     "name": name,
@@ -859,6 +856,7 @@ CABLES.patch.namespace=currentProject.namespace;
                 },
                 function(r) {
                     gui.jobs().finish('projectsave');
+
                     gui.setStateSaved();
                     if (cb) cb();
                     
@@ -866,14 +864,12 @@ CABLES.patch.namespace=currentProject.namespace;
                     if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
                         else CABLES.UI.notify('patch saved');
 
-
-                    // console.log(r);
-
                     if(doSaveScreenshot)
                     {
                         var screenshotTimeout = setTimeout(function() {
                             gui.patch().scene.cgl.setSize(w,h);
                             gui.patch().scene.resume();
+                            
                         }, 1000);
     
     
@@ -899,10 +895,12 @@ CABLES.patch.namespace=currentProject.namespace;
                                     function(r) {
                                         gui.jobs().finish('screenshotsave');
                                         if (gui.onSaveProject) gui.onSaveProject();
+                                        
                                         // gui.jobs().finish('uploadscreenshot');
                                     });
                             };
                             reader.readAsDataURL(screenBlob);
+                            
     
                         });
     
@@ -923,6 +921,7 @@ CABLES.patch.namespace=currentProject.namespace;
                     {
                         CABLES.UI.MODAL.showError('Could not save','unknown error while saving patch. please try again later...');
                     }
+                    
                 });
         } catch (e) {
             console.log(e);
@@ -1492,15 +1491,12 @@ CABLES.patch.namespace=currentProject.namespace;
             rubberBandHide();
             lastZoomDrag = -1;
 
-            if (gui.cursor != "auto") {
-                gui.cursor = "audt";
-                this._elPatch.css({"cursor": "auto"});
-            }
-
+            gui.setCursor();
+            
         }.bind(this));
 
-        this._elPatchSvg.bind("mouseenter", function(event) { this._elPatch.css({"cursor": "auto"}); }.bind(this));
-        this._elPatchSvg.bind("mouseleave", function(event) { this._elPatch.css({"cursor": "auto"}); }.bind(this));
+        this._elPatchSvg.bind("mouseenter", function(event) { gui.setCursor(); }.bind(this));
+        this._elPatchSvg.bind("mouseleave", function(event) { gui.setCursor(); }.bind(this));
 
 
         this._elPatchSvg.bind("mousemove touchmove", function(e) {
@@ -1514,13 +1510,9 @@ CABLES.patch.namespace=currentProject.namespace;
             }
 
             if (lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEOVERPORT
-                if (gui.cursor != "hand") {
-                    gui.cursor = "hand";
-                    this._elPatch.css({
-                        "cursor": "url(/ui/img/grab.png) 0 0, auto"
-                    });
-                }
 
+                gui.setCursor("grab");
+                
                 var mouseX = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
                 var mouseY = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 
@@ -1972,29 +1964,40 @@ CABLES.patch.namespace=currentProject.namespace;
     this.setCurrentSubPatch = function(which) {
         if (currentSubPatch == which) return;
 
-        subPatchViewBoxes[currentSubPatch] = {
-            x: viewBox.x,
-            y: viewBox.y,
-            w: viewBox.w,
-            h: viewBox.h
-        };
+        gui.setWorking(true,'patch');
 
-        for (var i=0;i<self.ops.length;i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+        setTimeout(function()
+        {
+            subPatchViewBoxes[currentSubPatch] = {
+                x: viewBox.x,
+                y: viewBox.y,
+                w: viewBox.w,
+                h: viewBox.h
+            };
+    
+            for (var i=0;i<self.ops.length;i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+    
+            if (which === 0) $('#subpatch_nav').hide();
+            else $('#subpatch_nav').show();
+    
+            currentSubPatch = which;
+            self.updateSubPatches();
+    
+            if (subPatchViewBoxes[which]) {
+                viewBox = subPatchViewBoxes[which];
+                this.updateViewBox();
+            }
+    
+            $('#patch').focus();
+            self.updateBounds = true;
+            self.updateSubPatchBreadCrumb();
+    
+            gui.setWorking(false,'patch');
+            
+        }.bind(this),10);
 
-        if (which === 0) $('#subpatch_nav').hide();
-        else $('#subpatch_nav').show();
+        
 
-        currentSubPatch = which;
-        self.updateSubPatches();
-
-        if (subPatchViewBoxes[which]) {
-            viewBox = subPatchViewBoxes[which];
-            this.updateViewBox();
-        }
-
-        $('#patch').focus();
-        self.updateBounds = true;
-        self.updateSubPatchBreadCrumb();
     };
 
     this.getSubPatchPathString=function(subId)
@@ -2567,7 +2570,7 @@ CABLES.patch.namespace=currentProject.namespace;
         if (!currentOp.op.uiAttribs.info) $('#options_info').hide();
         else {
             $('#options_info').show();
-            $('#options_info').html('<div class="panelhead">info</div><div>' + currentOp.op.uiAttribs.info + '</div>');
+            $('#options_info').html('<div class="panelhead">info</div><div class="panel">' + currentOp.op.uiAttribs.info + '</div>');
         }
     }
 

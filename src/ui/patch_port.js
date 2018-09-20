@@ -149,18 +149,18 @@ CABLES.UI.Port=function(thePort)
         if(window.CABLES.UI.selectedEndOp)
         {
 			$('#drop-op-cursor').hide();
-			$('#patch').css({cursor:"url(/img/circle.png) 10 10, auto"});
+            gui.setCursor("port_circle");
         }
 		else
 		{
 			if(event.which==3)
 			{
-				$('#patch').css({cursor:"url(/img/remove.png) 10 10, auto"});
+                gui.setCursor("port_remove");
 			}
 			else
 			{
 				$('#drop-op-cursor').css({top:b-12,left:a-37});
-				$('#patch').css({cursor:"url(/img/add.png) 10 10, auto"});
+                gui.setCursor("port_add");
 				$('#drop-op-cursor').show();
 			}
 		}
@@ -172,7 +172,7 @@ CABLES.UI.Port=function(thePort)
         }
         else
         {
-			$('#patch').css({cursor:"default"});
+            gui.setCursor();
 			$('#drop-op-cursor').hide();
 
             var txt=CABLES.Link.canLinkText(CABLES.UI.selectedEndPort.thePort,CABLES.UI.selectedStartPort);
@@ -554,11 +554,8 @@ CABLES.UI.Port=function(thePort)
             yp=21;
         }
 
-
-
         this._posX=0+w;
         this._posY=0+yp;
-
         
         this.rect = gui.patch().getPaper().rect(this._posX,offY+this._posY);
         CABLES.UI.cleanRaphael(this.rect);

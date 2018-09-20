@@ -5,19 +5,37 @@ CABLES.UI.Jobs=CABLES.UI.Jobs ||
 function()
 {
     var jobs=[];
+    var lastIndicator=null;
 
     function updateJobListing()
     {
         var str='';
+        var indicator=null;
 
         for(var i in jobs)
+        {
+            if(jobs[i].indicator)indicator=jobs[i].indicator;
             str+='<li><i class="fa fa-circle-o-notch fa-spin"></i>&nbsp;&nbsp;'+jobs[i].title+'</li>';
+        }
+            
 
         if(jobs.length==0)
         {
             str+='<li>no background jobs...</li>';
             $('.cables-logo .icon-cables').removeClass('blinkanim');
         }
+
+
+        if(indicator)
+        {
+            gui.setWorking(true,indicator);
+            lastIndicator=indicator;
+        }
+        else
+        {
+            if(lastIndicator) gui.setWorking(false,lastIndicator);
+        }
+
 
         $('#jobs').html(str);
     }
@@ -37,6 +55,8 @@ function()
 
     this.start=function(job,func)
     {
+
+
         for(var i in jobs)
         {
             if(jobs[i].id==job.id)
@@ -61,6 +81,10 @@ function()
 
     this.finish=function(jobId)
     {
+
+
+
+
 
         setTimeout(function()
         {
@@ -87,7 +111,7 @@ function()
             }
             updateJobListing();
 
-        },500);
+        },250);
 
     };
 };

@@ -1245,6 +1245,46 @@ CABLES.UI.GUI = function() {
     };
 
 
+    this.setWorking=function(active,where)
+    {
+        if(active)
+        {
+            var posX=0;
+            var posY=0;
+            var r=null
+            if(where=='patch') r=document.getElementById("patch").getBoundingClientRect();
+            else if(where=='canvas')
+            {
+                r=document.getElementById("cablescanvas").getBoundingClientRect();
+                $('#glcanvas').css({opacity:0.7});
+            }
+            else r=document.body.getBoundingClientRect();
+
+            posX=r.width/2+r.left;
+            posY=r.height/2+r.top;
+
+            $('.workingindicator').css(
+                {
+                    left:posX,
+                    top:posY,
+                    display:"block"
+                });
+        }
+        else
+        {
+            if(where=='canvas')$('#glcanvas').css({opacity:1});
+            $('.workingindicator').hide();
+        }
+    }
+
+    this._cursor='';
+    this.setCursor=function(str)
+    {
+        if(!str)str='auto';
+        document.body.classList.remove("cursor_"+this._cursor);
+        document.body.classList.add("cursor_"+str);
+        this._cursor=str;
+    }
 
     this.redirectNotLoggedIn = function() {
         var theUrl = document.location.href;
@@ -1285,7 +1325,6 @@ CABLES.UI.GUI = function() {
     this.notIdling=function()
     {
         this.lastNotIdle=CABLES.now();
-        // if(!_connection.isConnected())_connection.connect();
     };
 
     this.checkIdle=function()
@@ -1293,7 +1332,6 @@ CABLES.UI.GUI = function() {
         var idling=(CABLES.now()-self.lastNotIdle)/1000;
         if(idling>30*60)
         {
-            // _connection.disconnect();
             console.log('idle mode simpleio disconnected!');
         }
         else
@@ -1501,7 +1539,6 @@ function startUi(event)
     //     else CABLES.sandbox=new CABLES.SandboxBrowser();
 
     logStartup('Init UI');
-
     
     CABLES.UI.initHandleBarsHelper();
 
@@ -1516,9 +1553,6 @@ function startUi(event)
     gui.checkIdle();
 
     gui.bind(function() {
-
-        
-
         gui.metaCode().init();
         gui.opSelect().reload();
         gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
@@ -1529,11 +1563,6 @@ function startUi(event)
         gui.patch().fixTitlePositions();
         gui.opSelect().prepare();
         gui.opSelect().search();
-
-
-
-
-
 
         // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
         if(!gui.user.introCompleted)gui.introduction().showIntroduction();
@@ -1560,6 +1589,8 @@ function startUi(event)
     });
 
     CABLES.watchPortVisualize.init();
+
+    
 
     document.addEventListener("visibilitychange", function()
     {

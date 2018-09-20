@@ -1,5 +1,16 @@
 
 
+.cursor_pointer{ cursor:pointer; }
+.cursor_grab{ cursor:url(/ui/img/grab.png) 0 0, auto; }
+.cursor_wait{ cursor:progress; }
+.cursor_auto{ cursor:auto; }
+
+.cursor_port_circle{ cursor:url(/img/circle.png) 10 10, auto }
+.cursor_port_remove{ cursor:url(/img/remove.png) 10 10, auto }
+.cursor_port_add{ cursor:url(/img/add.png) 10 10, auto }
+
+
+
 #drop-op-cursor
 {
 	position: absolute;

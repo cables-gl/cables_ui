@@ -25,7 +25,7 @@
               }
             }
 
-            .loading
+            .loading,.workingindicator
             {
                 /*border:2px solid #444;*/
                 /*border-top:2px solid #aaa;*/
@@ -46,6 +46,18 @@
                 margin-bottom:20px;
             }
 
+            .workingindicator
+            {
+                margin-left: 0;
+                margin-right: 0;
+                z-index: 999999999;
+                position: absolute;
+                display: none;
+                margin-top:-40px !important;
+                border:10px solid #aaa;
+
+            }
+
             .startUpError
             {
                 padding:30px;
@@ -58,6 +70,10 @@
 <body>
 
     <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:50px;"></div></div>
+
+
+    <div class="workingindicator" style="margin-top:50px;"></div>
+
 
     <div id="cablescanvas" style="overflow:hidden;width:640px;height:300px;position:absolute;right:0px;">
         <canvas id="glcanvas" width="0" height="0"></canvas>
