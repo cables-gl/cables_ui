@@ -38,6 +38,14 @@ CABLES.UI.TexturePreviewer.VERTSHADER=''.endl()
     .endl()+'    gl_Position = projMatrix * mvMatrix * pos;'
     .endl()+'}';
 
+CABLES.UI.TexturePreviewer.prototype.clear=function(tp)
+{
+    $('#meta_preview_textures').html('');
+    this._texturePorts.length=0;
+    this._updateHtml();
+
+}
+
 
 CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
 {
@@ -47,7 +55,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
     var previewCanvasEle=document.getElementById('preview_img_'+id);
     if(!previewCanvasEle)
     {
-        console.log("no previewCanvasEle");
+        // console.log("no previewCanvasEle");
         return;
     }
     var previewCanvas=document.getElementById('preview_img_'+id).getContext("2d");
@@ -118,7 +126,6 @@ CABLES.UI.TexturePreviewer.prototype._htmlDataObject=function(o)
         opid:o.opid,
         order:parseInt(o.lastTimeClicked,10),
         size:o.port.get().width+' x '+o.port.get().height
-
     };
 }
 
@@ -152,7 +159,6 @@ CABLES.UI.TexturePreviewer.prototype.show=function()
     previewCanvas=null;
     this._paused=false;
 
-    this._updateHtml();
 };
 
 CABLES.UI.TexturePreviewer.prototype.hide=function()
@@ -205,7 +211,8 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
     {
         if(now-this._texturePorts[i].updated<300 || this._texturePorts[i].renderedWidth!=this._texturePorts[i].port.get().width  || this._texturePorts[i].renderedHeight!=this._texturePorts[i].port.get().height )
         {
-            if(CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
+
+            if(this._texturePorts[i].lastTimeClicked!=-1 && this._texturePorts[i].element && CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
             {
                 count++;
                 this._renderTexture(this._texturePorts[i]);
@@ -265,6 +272,7 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
                 opid:port.parent.id,
                 port:p,
                 updated:CABLES.now(),
+                lastTimeClicked:-1,
                 activity:1
             });
         }
@@ -274,6 +282,8 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
             this._texturePorts[idx].activity++;
         }
     }
+
+    // console.log(this._texturePorts.length);
 
     if(doUpdateHtml) if(!this._paused)this._updateHtml();
 }
