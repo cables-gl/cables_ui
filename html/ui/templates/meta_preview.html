@@ -1,6 +1,3 @@
-
-
-
 <script id="meta_preview" type="text/x-handlebars-template">
 
     <style>
@@ -28,17 +25,15 @@
         }
     </style>
 
-
     <h3>Texture Preview {{numTextures}}</h3>
     
-    <div style="display:flex;flex-flow: column-reverse;" id="meta_preview_textures">
-    </div>
+    <div style="display:flex;flex-flow: column-reverse;" id="meta_preview_textures"></div>
 
 </script>
 
 <script id="meta_preview_texture" type="text/x-handlebars-template">
     <div id="preview{{tex.id}}" onclick="gui.patch().focusOp('{{tex.opid}}');gui.patch().setSelectedOpById('{{tex.opid}}');" class="previewcontainer tt" data-tt="{{tex.title}} {{tex.size}}" data-sort="0">
-        <div id="activity{{tex.id}}"></div>
         <canvas id="preview_img_{{tex.id}}" style="transform:scale(1 -1)" class="dark" ></canvas>
+        <div id="activity{{tex.id}}"></div>
     </div>
 </script>

@@ -143,8 +143,8 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml=function()
             $('#meta_preview_textures').append(html);
             this._texturePorts[i].element=document.getElementById('preview'+this._texturePorts[i].id)
         }
+        this._texturePorts[i].updated=CABLES.now();
     }
-
 }
 
 CABLES.UI.TexturePreviewer.prototype.show=function()
@@ -164,8 +164,12 @@ CABLES.UI.TexturePreviewer.prototype.showActivity=function()
 {
     for(var i=0;i<this._texturePorts.length;i++)
     {
-        var activeIndic=document.getElementById('activity'+i);
-        if(activeIndic) activeIndic.innerHTML= this._texturePorts[i].activity+" FPS" ;
+        var activeIndic=document.getElementById('activity'+this._texturePorts[i].id);
+        if(activeIndic) 
+        {
+            if(this._texturePorts[i].activity>0) activeIndic.innerHTML=this._texturePorts[i].activity+" FPS";
+            else activeIndic.innerHTML="";
+        }
         this._texturePorts[i].activity=0;
     }
 }
@@ -199,15 +203,19 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
 
     for(var i=0;i<this._texturePorts.length;i++)
     {
-        if(now-this._texturePorts[i].updated<300)
+        if(now-this._texturePorts[i].updated<300 || this._texturePorts[i].renderedWidth!=this._texturePorts[i].port.get().width  || this._texturePorts[i].renderedHeight!=this._texturePorts[i].port.get().height )
         {
             if(CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
             {
                 count++;
                 this._renderTexture(this._texturePorts[i]);
+
+                this._texturePorts[i].renderedWidth=this._texturePorts[i].port.get().width;
+                this._texturePorts[i].renderedHeight=this._texturePorts[i].port.get().height;
             }
         }
     }
+    // console.log("tex preview updated "+count);
 };
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
