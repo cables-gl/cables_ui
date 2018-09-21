@@ -2799,7 +2799,8 @@ CABLES.UI.Patch = function(_gui) {
                 // set auto preview
                 if (!foundPreview && op.portsOut[i2].uiAttribs.preview) {
                     foundPreview = true;
-                    gui.preview.setTexture(op.id, op.portsOut[i2].getName());
+                    gui.texturePreview().selectTexturePort(op.portsOut[i2]);
+                    
                 }
 
                 html += templatePort({

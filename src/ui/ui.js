@@ -30,8 +30,9 @@ CABLES.UI.GUI = function() {
     this.metaPaco = new CABLES.UI.Paco();
     this.metaKeyframes = new CABLES.UI.MetaKeyframes();
     this.bookmarks = new CABLES.UI.Bookmarks();
-    this.preview = new CABLES.UI.Preview();
-    this.hoverPreview = new CABLES.UI.Preview();
+    // this.preview = new CABLES.UI.Preview();
+    // this.hoverPreview = new CABLES.UI.Preview();
+    this._texturePreviewer = new CABLES.UI.TexturePreviewer();
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);
@@ -75,6 +76,11 @@ CABLES.UI.GUI = function() {
     this.find = function() {
         return _find;
     };
+
+    this.texturePreview=function()
+    {
+        return this._texturePreviewer;
+    }
 
     this.introduction = function() {
         return _introduction;
@@ -1356,8 +1362,8 @@ CABLES.UI.GUI = function() {
         if (which == 'profiler') self.showProfiler();
         if (which == 'variables') self.variables.show();
 
-        if (which == 'preview') self.preview.show();
-        else if (self.preview) self.preview.hide();
+        if (which == 'preview') self._texturePreviewer.show();
+        else if (self._texturePreviewer) self._texturePreviewer.hide();
     };
 
     this.startPacoSender = function() {
