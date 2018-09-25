@@ -237,7 +237,6 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
                     this._texturePorts[i].updated=this._texturePorts[i].lastTimeClicked=CABLES.now();
                     ele.style.order=parseInt(this._texturePorts[i].lastTimeClicked,10);
                     ele.classList.add('activePreview');
-                    // document.getElementById('meta_content').parentElement.scrollTop=0;
                 }
     }
 

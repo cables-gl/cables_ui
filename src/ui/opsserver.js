@@ -295,6 +295,7 @@ CABLES.UI.ServerOps = function(gui) {
                     content: content,
                     title: attachmentname,
                     syntax: syntax,
+                    id:'editattach_'+opname+attachmentname,
                     editorObj: editorObj,
                     toolbarHtml: toolbarHtml,
                     onSave: function(setStatus, content) {
@@ -312,7 +313,8 @@ CABLES.UI.ServerOps = function(gui) {
                         );
                     },
                     onClose: function(which) {
-                        CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                        if(which.editorObj && which.editorObj.name)
+                            CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
                     },
 
                 });
@@ -326,18 +328,13 @@ CABLES.UI.ServerOps = function(gui) {
 
 
     // Shows the editor and displays the code of an op in it
-    this.edit = function(opname, readOnly) {
-        // var op = null;
-
-
-
+    this.edit = function(opname, readOnly)
+    {
         if(!opname || opname=='')
         {
             console.log("UNKNOWN OPNAME ",opname);
             return;
-
         }
-
 
         // for (var i = 0; i < ops.length; i++) {
         //     if (ops[i].name == name) {
@@ -389,20 +386,21 @@ CABLES.UI.ServerOps = function(gui) {
                 };
 
 
+                console.log(res.code);
                 var parts = opname.split(".");
                 var title = 'Op ' + parts[parts.length - 1];
                 gui.editor().addTab({
                     content: res.code,
                     title: title,
+                    // id:'editop_'+opname,
                     editorObj: editorObj,
                     opname: opname,
                     syntax: 'js',
                     readOnly: readOnly,
                     toolbarHtml: html,
-                    onClose: function(which) {
+                    onClose: function(which)
+                    {
                         CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                        // removeOpenEditor(which.editorObj);
-
                     },
                     onSave: save
                 });

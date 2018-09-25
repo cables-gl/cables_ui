@@ -2616,6 +2616,7 @@ CABLES.UI.Patch = function(_gui) {
         gui.editor().addTab({
             content: port.get() + '',
             editorObj:editorObj,
+            id:'editparam_'+opid+'_'+port.name,
             title: '' + port.name,
             syntax: port.uiAttribs.editorSyntax,
             onSave: function(setStatus, content) {

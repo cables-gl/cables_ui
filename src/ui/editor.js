@@ -70,7 +70,7 @@ CABLES.Editor=function()
     {
         for(var i in this._tabs)
         {
-            if(this._tabs[i].title==c.title)
+            if(this._tabs[i].id==c.id)
             {
                 this.setTab(this._tabs[i].id);
                 this._tabs[i].editor.resize();
@@ -78,12 +78,14 @@ CABLES.Editor=function()
             }
         }
 
-        c.id=CABLES.generateUUID();
+        
+        if(!c.id)c.id=CABLES.generateUUID();
+        
+        console.log("addtab ",c.id);
 
         $('#ace_editors').append('<div class="ace_tab_content" style="height:100%;width:100%;" id="tab_'+c.id+'"></div>');
         c.editor=CABLES.Editor.createEditor('tab_'+c.id);
         c.editor.setValue(c.content,-1);
-    
         c.editor.resize();
 
         const session = c.editor.getSession();
@@ -147,11 +149,13 @@ CABLES.Editor=function()
 
     this.setTab=function(id)
     {
+        console.log("settab ",id);
         this.setCurrentTabContent();
 
         for(var i=0;i<this._tabs.length;i++)
         {
             var tab=this._tabs[i];
+
             if(tab && tab.id==id)
             {
                 this._currentTabId=id;

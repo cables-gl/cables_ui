@@ -96,7 +96,7 @@ CABLES.valueChanger=function(ele,focus)
     {
         
         var portNum=$('#'+ele+'-container').data('portnum');
-        console.log("this is "+portNum);
+        // console.log("this is "+portNum);
 
         // for(var i=portNum+1;i<portNum+dir*10;i+=dir)
         var count=0;
@@ -106,7 +106,7 @@ CABLES.valueChanger=function(ele,focus)
             var i=(portNum+dir)+count*dir;
             if($('#portval_'+i+'-container').length)
             {
-                console.log("found "+i);
+                // console.log("found "+i);
                 setTextEdit(false);
                 $('#'+ele).unbind("keydown",tabKeyListener);
 
