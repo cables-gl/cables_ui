@@ -156,8 +156,12 @@ CABLES.Editor=function()
         {
             var tab=this._tabs[i];
 
+            console.log("  tab ",tab.id);
+
             if(tab && tab.id==id)
             {
+                console.log("FOUND TAB!");
+
                 this._currentTabId=id;
                 CABLES.UI.userSettings.set('editortab',tab.title);
                 
@@ -317,3 +321,13 @@ CABLES.Editor.prototype.getNumTabs=function()
 {
     return this._tabs.length;
 };
+
+CABLES.Editor.sanitizeId=function(str)
+{
+    str=str.replace(/\./g, '_');
+
+    console.log("SANITIZE",str);
+
+    return str;
+};
+

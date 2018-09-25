@@ -313,6 +313,7 @@ CABLES.UI.FileSelect = function() {
                     content: content,
                     title: filename,
                     syntax: syntax,
+                    id:CABLES.Editor.sanitizeId('editfile_'+fileid+filename),
                     editorObj: editorObj,
                     toolbarHtml: toolbarHtml,
                     onSave: function(setStatus, content) {

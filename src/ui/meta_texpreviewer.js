@@ -1,13 +1,17 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
+
 CABLES.UI.TexturePreviewer=function()
 {
     this._texturePorts=[];
     this._showing=false;
     this._lastTimeActivity=0;
+    this._mode=0;
 };
 
+CABLES.UI.TexturePreviewer.MODE_CLICKED=0;
+CABLES.UI.TexturePreviewer.MODE_ACTIVE=1;
 
 CABLES.UI.TexturePreviewer.FRAGSHADER=''.endl()
     .endl()+'IN vec2 texCoord;'
@@ -37,15 +41,6 @@ CABLES.UI.TexturePreviewer.VERTSHADER=''.endl()
     .endl()+'    mat4 mvMatrix=viewMatrix * modelMatrix;'
     .endl()+'    gl_Position = projMatrix * mvMatrix * pos;'
     .endl()+'}';
-
-CABLES.UI.TexturePreviewer.prototype.clear=function(tp)
-{
-    $('#meta_preview_textures').html('');
-    this._texturePorts.length=0;
-    this._updateHtml();
-
-}
-
 
 CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
 {
@@ -121,7 +116,7 @@ CABLES.UI.TexturePreviewer.prototype._getCanvasSize=function(tex)
 CABLES.UI.TexturePreviewer.prototype._htmlDataObject=function(o)
 {
     return{
-        title:o.port.get().name,
+        title:o.port.parent.getName()+' - '+o.port.name,
         id:o.id,
         opid:o.opid,
         order:parseInt(o.lastTimeClicked,10),
@@ -137,14 +132,14 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml=function()
     {
         var html = CABLES.UI.getHandleBarHtml('meta_preview', {} );
         $('#meta_content_preview').html(html);
-    
+
         containerEle=document.getElementById("meta_preview_textures");
     }
 
 
     for(var i=0;i<this._texturePorts.length;i++)
     {
-        if(!document.getElementById('preview'+this._texturePorts[i].id))
+        if(this._texturePorts[i].doShow && !document.getElementById('preview'+this._texturePorts[i].id))
         {
             var html = CABLES.UI.getHandleBarHtml('meta_preview_texture', {tex:this._htmlDataObject(this._texturePorts[i])} );
             $('#meta_preview_textures').append(html);
@@ -156,9 +151,9 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml=function()
 
 CABLES.UI.TexturePreviewer.prototype.show=function()
 {
-    previewCanvas=null;
     this._paused=false;
-
+    this._updateHtml();
+    this.clear();
 };
 
 CABLES.UI.TexturePreviewer.prototype.hide=function()
@@ -212,45 +207,84 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
         if(now-this._texturePorts[i].updated<300 || this._texturePorts[i].renderedWidth!=this._texturePorts[i].port.get().width  || this._texturePorts[i].renderedHeight!=this._texturePorts[i].port.get().height )
         {
 
-            if(this._texturePorts[i].lastTimeClicked!=-1 && this._texturePorts[i].element && CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
+            if(this._texturePorts[i].doShow && this._texturePorts[i].element && CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
             {
                 count++;
                 this._renderTexture(this._texturePorts[i]);
-
                 this._texturePorts[i].renderedWidth=this._texturePorts[i].port.get().width;
                 this._texturePorts[i].renderedHeight=this._texturePorts[i].port.get().height;
             }
         }
     }
-    // console.log("tex preview updated "+count);
 };
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
 {
+    var tp=this.updateTexturePort(p);
+
+    if(this._mode==CABLES.UI.TexturePreviewer.MODE_CLICKED) 
+    {
+        console.log("HUIII");
+        tp.doShow=true;
+
+        this._updateHtml();
+
+        for(var i=0;i<this._texturePorts.length;i++)
+        {
+            var ele=document.getElementById('preview'+this._texturePorts[i].id);
+            if(ele && this._texturePorts[i].port.parent==p.parent)
+            {
+                this._texturePorts[i].updated=this._texturePorts[i].lastTimeClicked=CABLES.now();
+                ele.style.order=parseInt(this._texturePorts[i].lastTimeClicked,10);
+                // ele.classList.add('activePreview');
+            }
+        }
+
+        this._texturePorts.sort(function(a,b)
+        {
+            return a.lastTimeClicked-b.lastTimeClicked;
+        });
+
+        while(this._texturePorts.length>3 )
+        {
+            var ele=document.getElementById('preview'+this._texturePorts[0].id);
+            if(ele) ele.remove();
+
+            this._texturePorts.splice(0,1);
+        }
+
+        document.getElementById('meta_content').scrollTop=0;
+    }
+
     for(var i=0;i<this._texturePorts.length;i++)
     {
         var ele=document.getElementById('preview'+this._texturePorts[i].id);
         if(ele)
-            if(this._texturePorts[i].port!=p) ele.classList.remove('activePreview');
-                else 
-                {
-                    this._texturePorts[i].updated=this._texturePorts[i].lastTimeClicked=CABLES.now();
-                    ele.style.order=parseInt(this._texturePorts[i].lastTimeClicked,10);
-                    ele.classList.add('activePreview');
-                }
+            if(this._texturePorts[i].port.parent!=p.parent) ele.classList.remove('activePreview');
+                else ele.classList.add('activePreview');
     }
-
-    document.getElementById('meta_content').scrollTop=0;
 
 };
 
+CABLES.UI.TexturePreviewer.prototype.clear=function(tp)
+{
+    $('#meta_preview_textures').html('');
+    this._texturePorts.length=0;
+    this._updateHtml();
+}
+
+CABLES.UI.TexturePreviewer.prototype.setMode=function(m)
+{
+    this.clear();
+    this._mode=m;
+}
 
 CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
 {
     var doUpdateHtml=false;
     var p=port;
 
-    if(p && p.get() && p.get().tex && port.direction==PORT_DIR_OUT)
+    if(p && p.get() && p.get().tex && port.direction==PORT_DIR_OUT )
     {
         var id=port.parent.id+port.name;
 
@@ -270,19 +304,19 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
                 id:id,
                 opid:port.parent.id,
                 port:p,
-                updated:CABLES.now(),
                 lastTimeClicked:-1,
-                activity:1
+                doShow:false,
+                activity:0
             });
+            idx=this._texturePorts.length-1;
         }
-        else
-        {
-            this._texturePorts[idx].updated=CABLES.now();
-            this._texturePorts[idx].activity++;
-        }
+
+        this._texturePorts[idx].updated=CABLES.now();
+        this._texturePorts[idx].activity++;
+
+        if(this._mode==CABLES.UI.TexturePreviewer.MODE_ACTIVE) this._texturePorts[idx].doShow=true;
     }
 
-    // console.log(this._texturePorts.length);
-
     if(doUpdateHtml) if(!this._paused)this._updateHtml();
+    return this._texturePorts[idx];
 }

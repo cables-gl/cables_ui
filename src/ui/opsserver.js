@@ -295,7 +295,7 @@ CABLES.UI.ServerOps = function(gui) {
                     content: content,
                     title: attachmentname,
                     syntax: syntax,
-                    id:'editattach_'+opname+attachmentname,
+                    id:CABLES.Editor.sanitizeId('editattach_'+opname+attachmentname),
                     editorObj: editorObj,
                     toolbarHtml: toolbarHtml,
                     onSave: function(setStatus, content) {
@@ -385,14 +385,12 @@ CABLES.UI.ServerOps = function(gui) {
                     );
                 };
 
-
-                console.log(res.code);
                 var parts = opname.split(".");
                 var title = 'Op ' + parts[parts.length - 1];
                 gui.editor().addTab({
                     content: res.code,
                     title: title,
-                    // id:'editop_'+opname,
+                    id:CABLES.Editor.sanitizeId('editop_'+opname),
                     editorObj: editorObj,
                     opname: opname,
                     syntax: 'js',
