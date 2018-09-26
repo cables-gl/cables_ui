@@ -222,9 +222,9 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
 {
     var tp=this.updateTexturePort(p);
 
+    if(!tp)return;
     if(this._mode==CABLES.UI.TexturePreviewer.MODE_CLICKED) 
     {
-        console.log("HUIII");
         tp.doShow=true;
 
         this._updateHtml();

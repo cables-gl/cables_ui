@@ -81,8 +81,6 @@ CABLES.Editor=function()
         
         if(!c.id)c.id=CABLES.generateUUID();
         
-        console.log("addtab ",c.id);
-
         $('#ace_editors').append('<div class="ace_tab_content" style="height:100%;width:100%;" id="tab_'+c.id+'"></div>');
         c.editor=CABLES.Editor.createEditor('tab_'+c.id);
         c.editor.setValue(c.content,-1);
@@ -149,19 +147,14 @@ CABLES.Editor=function()
 
     this.setTab=function(id)
     {
-        console.log("settab ",id);
         this.setCurrentTabContent();
 
         for(var i=0;i<this._tabs.length;i++)
         {
             var tab=this._tabs[i];
 
-            console.log("  tab ",tab.id);
-
             if(tab && tab.id==id)
             {
-                console.log("FOUND TAB!");
-
                 this._currentTabId=id;
                 CABLES.UI.userSettings.set('editortab',tab.title);
                 
@@ -214,7 +207,7 @@ CABLES.Editor=function()
                     "func":
                         function()
                         {
-                            console.log(this);
+                            // console.log(this);
                             gui.editor().setTab(this.fileId);
                         }
                 };
@@ -325,9 +318,6 @@ CABLES.Editor.prototype.getNumTabs=function()
 CABLES.Editor.sanitizeId=function(str)
 {
     str=str.replace(/\./g, '_');
-
-    console.log("SANITIZE",str);
-
     return str;
 };
 
