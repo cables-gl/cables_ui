@@ -141,8 +141,6 @@ CABLES.UI.ServerOps = function(gui) {
         console.log('exe',name);
         if(gui.patch().scene._crashedOps.indexOf(name)>-1)
         {
-            console.log("JA NE IS NICH!");
-
             html='';
             html+='<h1>can not execute op</h1>';
             html+='this op crashed before, you should reload the page.<br/><br/>';
