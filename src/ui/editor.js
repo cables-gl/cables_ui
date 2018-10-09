@@ -103,6 +103,7 @@ CABLES.Editor=function()
                 gui.jobs().start({id:'saveeditorcontent',title:'saving editor content'});
 
                 tab.onSave(onSaveCb,tab.editor.getValue());
+                gui.editor().focus();
             }
         // }
     };
