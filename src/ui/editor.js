@@ -12,20 +12,6 @@ CABLES.Editor=function()
     this._tabs=[];
     this._currentTabId='';
 
-
-    // this._editor=CABLES.Editor.createEditor("ace_editor");
-
-    // Hover text
-    // $('#ace_editor').hover(function (e)
-    // {
-    //     CABLES.UI.showInfo(CABLES.UI.TEXTS.editor);
-    // },function()
-    // {
-    //     CABLES.UI.hideInfo();
-    // });
-
-
-
     this.resize=function()
     {
         for(var i=0;i<this._tabs.length;i++)
@@ -309,6 +295,13 @@ CABLES.Editor.createEditor=function(id)
     return editor;
 
 }
+CABLES.Editor.prototype.focus=function()
+{
+    const tab=this.getCurrentTab();
+    tab.editor.focus();
+    console.log('focus');
+
+};
 
 CABLES.Editor.prototype.getNumTabs=function()
 {

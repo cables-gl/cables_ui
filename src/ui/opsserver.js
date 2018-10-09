@@ -137,8 +137,7 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
     this.execute = function(name) {
-        
-        console.log('exe',name);
+        // console.log('exe',name);
         if(gui.patch().scene._crashedOps.indexOf(name)>-1)
         {
             html='';
@@ -160,12 +159,12 @@ CABLES.UI.ServerOps = function(gui) {
             gui.patch().scene.reloadOp(name, function(num, ops) {
                 CABLES.UI.notify(num + ' ops reloaded');
                 if (ops.length > 0) this.saveOpLayout(ops[0]);
+                gui.editor().focus();
             }.bind(this));
 
             CABLES.UI.MODAL.hideLoading();
         }.bind(this);
         document.body.appendChild(s);
-
     };
 
     this.clone = function(oldname, name) {
@@ -365,14 +364,18 @@ CABLES.UI.ServerOps = function(gui) {
                                 if (res.error) setStatus('Error: Line ' + res.error.lineNumber + ' : ' + res.error.description, true);
                                 else setStatus('error: unknown error', true);
                             } else {
-                                if (!CABLES.Patch.getOpClass(opname)) {
+                                
+                                if (!CABLES.Patch.getOpClass(opname))
+                                {
                                     console.log('execute first time...');
                                     gui.opSelect().reload();
                                     gui.serverOps.execute(opname);
+                                    
                                 }
 
                                 // exec ???
                                 setStatus('saved ' + opname);
+
                             }
                             console.log('res', res);
                         },
