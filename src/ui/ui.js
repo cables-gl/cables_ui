@@ -1071,6 +1071,28 @@ CABLES.UI.GUI = function() {
         }
     };
 
+
+    this.showOpCrash=function(op)
+    {
+        iziToast.error({
+            position: 'topRight',
+            theme: 'dark',
+            title: 'error',
+            message: 'an operator has crashed',
+            progressBar: false,
+            animateInside: false,
+            close: true,
+            timeout: false,
+            buttons: [
+                ['<button>reload</button>', function(instance, toast) {
+                    document.location.reload();
+                }]
+            ]
+        });
+    
+    };
+
+
     this.waitToShowUI = function() {
         
         $('#cablescanvas').show();

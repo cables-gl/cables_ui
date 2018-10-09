@@ -475,15 +475,15 @@ CABLES.UI.Patch = function(_gui) {
 
                 if ($("input").is(":focus")) return;
 
-                if (gui.patch().hoverPort) {
-                    gui.patch().hoverPort.removeLinks();
-                    return;
-                }
+                // if (gui.patch().hoverPort) {
+                //     gui.patch().hoverPort.removeLinks();
+                //     return;
+                // }
 
-                if (CABLES.UI.LINKHOVER && CABLES.UI.LINKHOVER.p2) {
-                    CABLES.UI.LINKHOVER.p1.thePort.removeLinkTo(CABLES.UI.LINKHOVER.p2.thePort);
-                    return;
-                }
+                // if (CABLES.UI.LINKHOVER && CABLES.UI.LINKHOVER.p2) {
+                //     CABLES.UI.LINKHOVER.p1.thePort.removeLinkTo(CABLES.UI.LINKHOVER.p2.thePort);
+                //     return;
+                // }
 
                 self.deleteSelectedOps();
                 if (e.stopPropagation) e.stopPropagation();
