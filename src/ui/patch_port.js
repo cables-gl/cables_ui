@@ -108,7 +108,8 @@ CABLES.UI.Port=function(thePort)
                 removeLinkingLine();
                 // linkingLine = new CABLES.UI.SVGMultiLine(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
                 linkingLine = new CABLES.UI.SVGMultiLine(points);
-
+                linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x+2,gui.patch().getCanvasCoordsMouse(event).y-2);
+    
                 if(!event.altKey)
                     self.thePort.removeLinks();
                 // CABLES.UI.selectedStartPortMulti.length=0;
@@ -156,8 +157,8 @@ CABLES.UI.Port=function(thePort)
             event=mouseEvent(event);
 
             linkingLine.updateEnd(
-                gui.patch().getCanvasCoordsMouse(event).x,
-                gui.patch().getCanvasCoordsMouse(event).y
+                gui.patch().getCanvasCoordsMouse(event).x+2,
+                gui.patch().getCanvasCoordsMouse(event).y-2
                 );
         }
 
@@ -340,7 +341,17 @@ CABLES.UI.Port=function(thePort)
                         var dist=Math.abs(coords.x-self.op.uiAttribs.translate.x )+Math.abs(coords.y-self.op.uiAttribs.translate.y );
 
                         if(Math.abs(coords.x-self.op.uiAttribs.translate.x )<50) coords.x=self.op.uiAttribs.translate.x;
-                        if(Math.abs(coords.y-self.op.uiAttribs.translate.y )<40) coords.y=self.op.uiAttribs.translate.y+40;
+                        if(Math.abs(coords.y-self.op.uiAttribs.translate.y )<40) 
+                        {
+                            console.log("HELLO 40");
+                            if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction==PORT_DIR_IN)
+                            coords.y=self.op.uiAttribs.translate.y-40;
+                            else
+                            coords.y=self.op.uiAttribs.translate.y+40;
+                        }
+
+
+                        console.log("coords",coords);
 
                         var showSelect=function()
                         {

@@ -49,6 +49,7 @@ CABLES.UI.Patch = function(_gui) {
     this._elPatch = null;
     this._elBody = null;
 
+    var pastedupdateTimeout=null;
 
 
     CABLES.editorSession.addListener("param",
@@ -1615,10 +1616,15 @@ CABLES.UI.Patch = function(_gui) {
                 x: viewBox.x + viewBox.w / 2,
                 y: viewBox.y + viewBox.h / 2
             };
-            else op.uiAttribs.translate = {
+            else 
+            {
+                op.uiAttribs.translate = {
+                
                 x: CABLES.UI.OPSELECT.newOpPos.x,
                 y: CABLES.UI.OPSELECT.newOpPos.y
             };
+            console.log("GOT NEW OPPPOAS!",CABLES.UI.OPSELECT.newOpPos.y);
+            }
         }
 
         if (op.uiAttribs.hasOwnProperty('translate')) {
@@ -1698,25 +1704,27 @@ CABLES.UI.Patch = function(_gui) {
 
         // uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
 
+        var dir=null;
+        if(CABLES.UI.OPSELECT.linkNewOpToPort)dir=CABLES.UI.OPSELECT.linkNewOpToPort.direction;
+
         CABLES.UI.OPSELECT.linkNewOpToOp = null;
         CABLES.UI.OPSELECT.linkNewLink = null;
-        CABLES.UI.OPSELECT.linkNewOpToPort = null;
         CABLES.UI.OPSELECT.newOpPos = {
             x: 0,
             y: 0
         };
         CABLES.UI.OPSELECT.linkNewOpToSuggestedPort = null;
-
+        CABLES.UI.OPSELECT.linkNewOpToPort = null;
+        
         uiOp.setPos();
-        var pos = self.findNonCollidingPosition(uiOp.getPosX(), uiOp.getPosY(), uiOp.op.id);
 
-        uiOp.setPos(pos.x, pos.y);
+        
+        var pos = self.findNonCollidingPosition(uiOp.getPosX(), uiOp.getPosY(), uiOp.op.id,dir);
+        
+        // uiOp.setPos(pos.x, pos.y);
+        uiOp.setPos( uiOp.getPosX(), uiOp.getPosY() );
+        
 
-        // if(!self.scene.isLoading)
-        // {
-        //     // if(op.onLoaded)op.onLoaded();
-        //     // op.onLoaded=null;
-        // }
 
 
 
@@ -1735,7 +1743,8 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         // select ops after pasting...
-        setTimeout(function() {
+        clearTimeout(pastedupdateTimeout);
+        pastedupdateTimeout=setTimeout(function() {
             if (uiOp.op.uiAttribs.pasted) {
                 delete uiOp.op.uiAttribs.pasted;
                 gui.patch().addSelectedOpById(uiOp.op.id);
@@ -1744,8 +1753,6 @@ CABLES.UI.Patch = function(_gui) {
                 setStatusSelectedOps();
                 self.updateSubPatches();
                 uiOp.oprect.showFocus();
-
-
             }
         }, 30);
 
@@ -1966,8 +1973,6 @@ CABLES.UI.Patch = function(_gui) {
         return op.uiAttribs.subPatch==currentSubPatch;
     }
             
-
-
     this.setCurrentSubPatch = function(which) {
         if (currentSubPatch == which) return;
 
@@ -2169,12 +2174,20 @@ CABLES.UI.Patch = function(_gui) {
         return false;
     };
 
-    this.findNonCollidingPosition = function(x, y, opid) {
-        var count = 0;
-        while (this.testCollisionOpPosition(x, y, opid) && count < 400) {
-            y += 17;
-            count++;
-        }
+    this.findNonCollidingPosition = function(x, y, opid,dir) {
+
+        // var ystep=17;
+        // if(dir==PORT_DIR_IN)ystep*=-1;
+
+        // console.log('ystep',ystep);
+
+        // var count = 0;
+        // console.log(y);
+        // while (this.testCollisionOpPosition(x, y, opid) && count < 400) {
+        //     y +=ystep;
+        //     console.log(y);
+        //     count++;
+        // }
 
         var pos = {
             "x": x,
@@ -2690,6 +2703,24 @@ CABLES.UI.Patch = function(_gui) {
     //     $('.opports_in').reverse().each(testSpacers);
 
     // }
+
+    this.resetOpValues=function(opid)
+    {
+        var op=this.scene.getOpById(opid);
+        if(!op)
+        {
+            console.error('reset op values: op not found...',opid);
+            return;
+        }
+        for(var i=0;i<op.portsIn.length;i++)
+        {
+            if(op.portsIn[i].defaultValue!=null)
+            {
+                op.portsIn[i].set(op.portsIn[i].defaultValue);
+            }
+        }
+        gui.patch().showOpParams(op);
+    }
 
     function checkDefaultValue(op, index) {
         if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null) {
@@ -3393,11 +3424,21 @@ CABLES.UI.Patch = function(_gui) {
         var items=[];
 
         var opname=selectedOps[0].op.objName;
+        var opid=selectedOps[0].op.id;
 
         items.push(
             {
                 title:'set title',
                 func:CABLES.CMD.PATCH.setOpTitle
+            });
+
+        items.push(
+            {
+                title:'set default values',
+                func:function()
+                {
+                    gui.patch().resetOpValues(opid);
+                }
             });
 
         items.push(

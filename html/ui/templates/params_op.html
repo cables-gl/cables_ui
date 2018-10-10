@@ -123,11 +123,16 @@
 
     <div class="panelhead " data-panelselector="#opdebug">Debug</div>
     <div id="opdebug" class="panel" >
-        {{{op.id}}}
-        <pre>{{{ json op.uiAttribs }}}</pre>
+            {{{op.id}}}
+            <pre>{{{ json op.uiAttribs }}}</pre>
     </div>
 
 
+    <div  class="panel" >
+        
+        <a onclick="gui.patch().resetOpValues('{{{op.id}}}');" class="button">reset input parameters</a>
+    </div>
+        
 
 
     <script>
