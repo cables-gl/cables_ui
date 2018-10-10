@@ -377,7 +377,7 @@ CABLES.UI.ServerOps = function(gui) {
                                 setStatus('saved ' + opname);
 
                             }
-                            console.log('res', res);
+                            // console.log('res', res);
                         },
                         function(res) {
                             setStatus('ERROR: not saved - '+res.msg);

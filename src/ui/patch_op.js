@@ -306,7 +306,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                     portOut = oldLink.p1;
                 }
 
-                portIn.thePort.removeLinks();
+                // portIn.thePort.removeLinks();
+                oldLink.unlink();
+                
 
                 if (CABLES.Link.canLink(opui.op.portsIn[0], portOut.thePort)) {
                     gui.patch().scene.link(
@@ -1086,10 +1088,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         else gui.patchConnection.send(CABLES.PACO_OP_DISABLE, {
             "op": this.op.id
         });
-
-
-        // if(!en) this.op.unLinkTemporary();
-        //     else this.op.preUnLinkTemporary();
 
     };
 

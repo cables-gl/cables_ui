@@ -44,6 +44,10 @@ CABLES.UI.GUI = function() {
     this.onSaveProject = null;
     this.lastNotIdle=CABLES.now();
 
+    this._oldCanvasWidth=0;
+    this._oldCanvasHeight=0;
+    this._oldShowingEditor;
+
 
     this.project = function() {
         return self.patch().getCurrentProject();
@@ -467,15 +471,14 @@ CABLES.UI.GUI = function() {
         return _userOpManager;
     };
 
-    var oldRendwerWidth, oldRendwerHeight, oldShowingEditor;
     this.cycleRendererSize = function() {
         this.showCanvasModal(false);
         if (self.rendererWidth !== 0) {
             this._elGlCanvas.addClass('maximized');
 
-            oldRendwerWidth = self.rendererWidth;
-            oldRendwerHeight = self.rendererHeight;
-            oldShowingEditor = showingEditor;
+            this._oldCanvasWidth = self.rendererWidth;
+            this._oldCanvasHeight = self.rendererHeight;
+            this._oldShowingEditor = showingEditor;
 
             self.rendererWidth = 0;
             // $('#glcanvas').addClass('maximized');
@@ -483,10 +486,10 @@ CABLES.UI.GUI = function() {
             showingEditor = false;
         } else {
             this._elGlCanvas.removeClass('maximized');
-            self.rendererWidth = oldRendwerWidth;
-            self.rendererHeight = oldRendwerHeight;
-            showingEditor = oldShowingEditor;
-            // $('#glcanvas').removeClass('maximized');
+            self.rendererWidth = this._oldCanvasWidth;
+            self.rendererHeight = this._oldCanvasHeight;
+            showingEditor = this._oldShowingEditor;
+            this.showCanvasModal(true);
         }
 
         self.setLayout();
@@ -1033,16 +1036,26 @@ CABLES.UI.GUI = function() {
             return;
         }
 
-
         $('.tooltip').hide();
 
         if (self.rendererWidth*gui.patch().scene.cgl.canvasScale > window.innerWidth * 0.9)
         {
-            self.rendererWidth = window.innerWidth * 0.4;
-            self.rendererHeight = window.innerHeight * 0.25;
-            showingEditor = oldShowingEditor;
+
+            if(this._elGlCanvas.hasClass('maximized'))
+            {
+                this.rendererWidth=this._oldCanvasWidth;
+                this.rendererHeight=this._oldCanvasHeight;
+            }
+            else
+            {
+                this.rendererWidth = window.innerWidth * 0.4;
+                this.rendererHeight = window.innerHeight * 0.25;
+            }
+            
+            showingEditor = this._oldShowingEditor;
             this._elGlCanvas.removeClass('maximized');
             self.setLayout();
+            this.showCanvasModal(true);
         } else
         if (CABLES.UI.suggestions) {
             console.log(CABLES.UI.suggestions);
@@ -1439,14 +1452,15 @@ CABLES.UI.GUI = function() {
 
     this.showCanvasModal=function(_show)
     {
+        const canvasIconbar=$('#canvasicons')
         if(_show)
         {
             $('#canvasmodal').show();
-            $('#canvasicons').show();
-            $('#canvasicons').css({opacity:1});
+            canvasIconbar.show();
+            canvasIconbar.css({opacity:1});
             var posCanvas = $('#glcanvas').offset();
 
-            $('#canvasicons').css({
+            canvasIconbar.css({
                 width: self.rendererWidth*gui.patch().scene.cgl.canvasScale,
                 top: self.rendererHeight*gui.patch().scene.cgl.canvasScale+1,
                 left: posCanvas.left
@@ -1458,7 +1472,7 @@ CABLES.UI.GUI = function() {
         }
         else
         {
-            $('#canvasicons').hide();
+            canvasIconbar.hide();
             $('#canvasmodal').hide();
         }
     };
