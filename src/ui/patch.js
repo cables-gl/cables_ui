@@ -1961,6 +1961,13 @@ CABLES.UI.Patch = function(_gui) {
         return currentSubPatch;
     };
 
+    this.isOpCurrentSubpatch=function(op)
+    {
+        return op.uiAttribs.subPatch==currentSubPatch;
+    }
+            
+
+
     this.setCurrentSubPatch = function(which) {
         if (currentSubPatch == which) return;
 
@@ -2480,6 +2487,8 @@ CABLES.UI.Patch = function(_gui) {
             for (i in selectedOps)
             selectedOps[i].doMoveFinished();
     };
+
+
 
     this.moveSelectedOps = function(dx, dy, a, b, e) {
         var i = 0;

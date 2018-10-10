@@ -420,7 +420,14 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
     };
 
-    this.updateErrorIndicator = function() {
+    this.updateErrorIndicator = function()
+    {
+        if(!gui.patch().isOpCurrentSubpatch(opui.op))
+        {
+            if(this._errorIndicator)this._errorIndicator.remove();
+            return;
+        }
+
         if (opui.op.uiAttribs.error) // || opui.op.uiAttribs.warning)
         {
             if (!this._errorIndicator) {
@@ -1011,7 +1018,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     {
         this.setPos(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
         // console.log(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
-        for (var j in self.links)self.links[j].redraw();
+        for (var j in self.links) self.links[j].redraw();
     }
 
     this.setPos = function(x, y) {

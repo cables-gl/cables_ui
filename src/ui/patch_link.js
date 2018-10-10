@@ -301,6 +301,8 @@ function UiLink(port1, port2)
 
 
 
+
+
 CABLES.UI.SVGLine=function(startX, startY)
 {
     var start={ x:startX,y:startY};
@@ -333,3 +335,57 @@ CABLES.UI.SVGLine=function(startX, startY)
         this.thisLine.remove();
     };
 };
+
+
+CABLES.UI.SVGMultiLine=function(points)
+{
+    this._endX=points[0];
+    this._endY=points[1];
+    this._svgLines=[];
+    this._points=points;
+
+    this._getPath = function(x,y,x2,y2)
+    {
+        var str="M "+x+" "+y+" L" + x2 + " " + y2;
+        return str;
+    };
+
+    for(var i=0;i<points.length/2;i++)
+    {
+        var l=gui.patch().getPaper().path(this._getPath(points[i*2],points[i*2+1],points[i*2],points[i*2+1] ));
+        l.attr({ stroke: CABLES.UI.uiConfig.colorLink, "stroke-width": 2});
+        this._svgLines.push( l );
+    }
+};
+
+
+
+
+CABLES.UI.SVGMultiLine.prototype.updateEnd=function(x,y)
+{
+    for(var i=0;i<this._svgLines.length;i++)
+    {
+        this._svgLines[i].attr({"path": this._getPath( this._getPath(this._points[i*2],this._points[i*2+1],x,y ) )});
+    }
+}
+
+CABLES.UI.SVGMultiLine.prototype.remove=function()
+{
+    for(var i=0;i<this._svgLines.length;i++)
+    {
+        this._svgLines[i].remove();
+    }
+    this._svgLines.length=0;
+};
+
+CABLES.UI.SVGMultiLine.prototype.addClass=function(classname)
+{
+    for(var i=0;i<this._svgLines.length;i++)
+        this._svgLines[i].node.classList.add(classname);
+}
+
+CABLES.UI.SVGMultiLine.prototype.removeClass=function(classname)
+{
+    for(var i=0;i<this._svgLines.length;i++)
+        this._svgLines[i].node.classList.remove(classname);
+}

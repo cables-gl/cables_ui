@@ -24,7 +24,7 @@ CABLES.UI.SuggestPortDialog=function(op,port,mouseEvent,cb,cbCancel)
         if(CABLES.Link.canLink(op.portsIn[i],port))
         {
             addPort(op.portsIn[i]);
-            console.log('  - ',op.portsIn[i].name);
+            // console.log('  - ',op.portsIn[i].name);
         }
     }
 
