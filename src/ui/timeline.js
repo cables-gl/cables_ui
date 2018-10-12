@@ -1856,7 +1856,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
     var lastTime=-1;
     this.updateTime=function()
     {
-        if(gui.isShowingTiming())
+        if(!this.hidden)
         {
             var time=gui.scene().timer.getTime();
             setCursor(time);
@@ -1864,7 +1864,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
             if(lastTime!=time)
             {
                 lastTime=time;
-
                 if(timeDisplayMode)
                     $('.timelinetime').html( '<b class="mainColor">'+getFrame(time)+'</b><br/>'+(time+'').substr(0, 4)+'s ' );
                 else
@@ -1892,7 +1891,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
         }
     };
     
-    this.togglePlay=function(patch)
+    this.togglePlay=function()
     {
         gui.scene().timer.togglePlay();
         this.updatePlayIcon();

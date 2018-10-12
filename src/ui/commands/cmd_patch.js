@@ -48,6 +48,13 @@ CABLES.CMD.PATCH.createSubPatchFromSelection=function()
 	gui.patch().createSubPatchFromSelection();
 };
 
+CABLES.CMD.PATCH.findUnconnectedOps=function()
+{
+	gui.find().show(':unconnected');
+};
+
+
+
 CABLES.CMD.PATCH.createFile=function()
 {
     CABLES.UI.MODAL.prompt(
@@ -443,6 +450,11 @@ CABLES.CMD.commands.push(
 		cmd:"replace file path",
 		category:"patch",
 		func:CABLES.CMD.PATCH.replaceFilePath
+	},
+	{
+		cmd:"find unconnected ops",
+		category:"patch",
+		func:CABLES.CMD.PATCH.findUnconnectedOps
 	}
 
 );

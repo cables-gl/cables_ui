@@ -872,17 +872,7 @@ CABLES.UI.GUI = function() {
         });
 
         var spaceBarStart = 0;
-        var spacebarPlayDelay = 150;
 
-        $('#timeline, #patch').keyup(function(e) {
-            switch (e.which) {
-                case 32: // space play
-                    var timeused = Date.now() - spaceBarStart;
-                    if (timeused < spacebarPlayDelay) self.timeLine().togglePlay();
-                    spaceBarStart = 0;
-                    break;
-            }
-        });
 
         $(document).keydown(function(e)
         {
@@ -899,13 +889,14 @@ CABLES.UI.GUI = function() {
                 default:
                     break;
 
-                case 32:
-                    if(gui.scene().timer.isPlaying())
-                    {
-                        self.timeLine().togglePlay();
-                        spaceBarStart=0;
-                    }
-                break;
+                // case 32:
+                //     if(!$('#timeline').is(":focus"))
+                //         if(gui.scene().timer.isPlaying())
+                //         {
+                //             self.timeLine().togglePlay();
+                //         }
+                //     spaceBarStart=0;
+                // break;
                 case 13:
                         if (e.ctrlKey || e.metaKey) self.cycleRendererSize();
                     break;
@@ -1000,7 +991,7 @@ CABLES.UI.GUI = function() {
             }
         });
 
-        $('#timeline, #patch').keydown(function(e) {
+        $('#patch').keydown(function(e) {
             switch (e.which) {
                 case 32: // space play
                     if (spaceBarStart === 0) spaceBarStart = Date.now();
@@ -1011,6 +1002,25 @@ CABLES.UI.GUI = function() {
                     break;
                 case 75: // k
                     self.timeLine().jumpKey(1);
+                    break;
+            }
+        });
+
+
+        $('#patch').keyup(function(e) {
+            switch (e.which) {
+                case 32: // space play
+                    var timeused = Date.now() - spaceBarStart;
+                    if (timeused < 500) self.timeLine().togglePlay();
+                    spaceBarStart = 0;
+                    break;
+            }
+        });
+
+        $('#timeline').keydown(function(e) {
+            switch (e.which) {
+                case 32: // space play
+                    self.timeLine().togglePlay();
                     break;
             }
         });

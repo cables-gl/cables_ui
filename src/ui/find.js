@@ -66,37 +66,65 @@ CABLES.UI.Find=function()
         var foundNum=0;
         var results=[];
 
-        for(var i=0;i<gui.patch().ops.length;i++)
+        if(str.indexOf(':')==0)
         {
-            if(canceledSearch==searchId)
+            if(str==':unconnected')
             {
-                console.log("canceled search...");
-                return;
+                for(var i=0;i<gui.patch().ops.length;i++)
+                {
+                    var op=gui.patch().ops[i];
+                    var count=0;
+                    for(var j=0;j<op.portsIn.length;j++) 
+                    {
+                        if(op.portsIn[j].thePort.isLinked()){count++;}
+                    }
+                    if(count==0) for(var j=0;j<op.portsOut.length;j++) if(op.portsOut[j].thePort.isLinked()){count++;}
+
+                    if(count==0)
+                    {
+                        results.push({"op":op,"score":1});
+                        foundNum++;
+                    }
+
+                }
+    
             }
-            if(gui.patch().ops[i].op)
+        }
+        else
+        {
+            for(var i=0;i<gui.patch().ops.length;i++)
             {
-                var score=0;
-                
-                if(gui.patch().ops[i].op.objName.toLowerCase().indexOf(str)>-1) score+=1;
-
-                if(String((gui.patch().ops[i].op.name||'')).toLowerCase().indexOf(str)>-1)
+                if(canceledSearch==searchId)
                 {
-                    if( gui.patch().ops[i].op.objName.indexOf( gui.patch().ops[i].op.name )==-1 ) score+=2; // extra points if non default name
-                    score+=2;
+                    console.log("canceled search...");
+                    return;
                 }
-
-                var op=gui.patch().ops[i].op;
-                for(var j=0;j<op.portsIn.length;j++)
+                if(gui.patch().ops[i].op)
                 {
-                    if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1) score+=2;
-                }
-
-                if(score>0)
-                {
-                    results.push({"op":gui.patch().ops[i],"score":score})
-                    foundNum++;
+                    var score=0;
+                    
+                    if(gui.patch().ops[i].op.objName.toLowerCase().indexOf(str)>-1) score+=1;
+    
+                    if(String((gui.patch().ops[i].op.name||'')).toLowerCase().indexOf(str)>-1)
+                    {
+                        if( gui.patch().ops[i].op.objName.indexOf( gui.patch().ops[i].op.name )==-1 ) score+=2; // extra points if non default name
+                        score+=2;
+                    }
+    
+                    var op=gui.patch().ops[i].op;
+                    for(var j=0;j<op.portsIn.length;j++)
+                    {
+                        if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1) score+=2;
+                    }
+    
+                    if(score>0)
+                    {
+                        results.push({"op":gui.patch().ops[i],"score":score})
+                        foundNum++;
+                    }
                 }
             }
+    
         }
 
 
