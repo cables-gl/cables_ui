@@ -343,15 +343,9 @@ CABLES.UI.Port=function(thePort)
                         if(Math.abs(coords.x-self.op.uiAttribs.translate.x )<50) coords.x=self.op.uiAttribs.translate.x;
                         if(Math.abs(coords.y-self.op.uiAttribs.translate.y )<40) 
                         {
-                            console.log("HELLO 40");
-                            if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction==PORT_DIR_IN)
-                            coords.y=self.op.uiAttribs.translate.y-40;
-                            else
-                            coords.y=self.op.uiAttribs.translate.y+40;
+                            if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction==PORT_DIR_IN) coords.y=self.op.uiAttribs.translate.y-40;
+                                else coords.y=self.op.uiAttribs.translate.y+40;
                         }
-
-
-                        console.log("coords",coords);
 
                         var showSelect=function()
                         {

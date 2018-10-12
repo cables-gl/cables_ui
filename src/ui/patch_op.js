@@ -197,7 +197,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         shakeCountP = 0;
         shakeCountN = 0;
 
-        if (e.metaKey) {
+        if (e.metaKey || e.altKey) {
             CABLES.UI.quickAddOpStart = opui;
             return;
         }
@@ -232,7 +232,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     var move = function(dx, dy, a, b, e) {
-        if (e.metaKey && gui.patch().getSelectedOps().length == 1) {
+        if ( (e.metaKey|| e.altKey) && gui.patch().getSelectedOps().length == 1) {
             return;
         }
         if (shakeLastX != -1) {
@@ -278,7 +278,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     var up = function(e) {
-        if (e.metaKey && CABLES.UI.quickAddOpStart) {
+        if ( (e.metaKey || e.altKey) && CABLES.UI.quickAddOpStart) {
             gui.patch().linkTwoOps(
                 CABLES.UI.quickAddOpStart,
                 CABLES.UI.selectedEndOp
@@ -1028,12 +1028,8 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         }
 
         self.oprect.setPosition(posx, posy);
-        self.op.uiAttr({
-            "translate": {
-                x: posx,
-                y: posy
-            }
-        });
+        if(!self.op.uiAttribs.translate || self.op.uiAttribs.translate.x!=posx || self.op.uiAttribs.translate.y!=posy)
+            self.op.uiAttr({ "translate": { x: posx, y: posy } });
 
         for (var j in self.links)
             self.links[j].redraw();
@@ -1064,20 +1060,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         pos.x = pos.x - startMoveX;
         pos.y = pos.y - startMoveY;
 
-        // var snapRange=10;
-        // var snap=(pos.x%65)-snapRange;
-        // if(snap>0 && snap<snapRange) pos.x-=snap;
-        // if(snap<0 && snap>-snapRange) pos.x-=snap;
-        //
-        // snap=(pos.y%50)-snapRange;
-        // if(snap>0 && snap<snapRange) pos.y-=snap;
-        // if(snap<0 && snap>-snapRange) pos.y-=snap;
-
-        // if(e.shiftKey===true)
-        // {
-        //     pos.x=parseInt(pos.x/25,10)*25;
-        //     pos.y=parseInt(pos.y/25,10)*25;
-        // }
 
         self.setPos(pos.x, pos.y);
         self.isDragging = true;

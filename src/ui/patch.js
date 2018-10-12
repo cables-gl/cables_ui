@@ -468,7 +468,7 @@ CABLES.UI.Patch = function(_gui) {
                 break;
 
             case 70:
-                if (!e.metaKey && !e.ctrlKey) gui.patch().toggleFlowVis();
+                if (!e.metaKey && !e.ctrlKey && !e.altKey) gui.patch().toggleFlowVis();
                 break;
 
             case 46:
@@ -1446,7 +1446,7 @@ CABLES.UI.Patch = function(_gui) {
             e = mouseEvent(e);
             gui.notIdling();
 
-            if (e.metaKey) {
+            if (e.metaKey || e.altKey) {
                 if (CABLES.UI.quickAddOpStart) {
 
                     if (!self.quickLinkLine) self.quickLinkLine = new CABLES.UI.SVGLine(
@@ -1611,20 +1611,10 @@ CABLES.UI.Patch = function(_gui) {
             op.uiAttribs = {};
         }
 
-        if (!op.uiAttribs.translate) {
-            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = {
-                x: viewBox.x + viewBox.w / 2,
-                y: viewBox.y + viewBox.h / 2
-            };
-            else 
-            {
-                op.uiAttribs.translate = {
-                
-                x: CABLES.UI.OPSELECT.newOpPos.x,
-                y: CABLES.UI.OPSELECT.newOpPos.y
-            };
-            console.log("GOT NEW OPPPOAS!",CABLES.UI.OPSELECT.newOpPos.y);
-            }
+        if (!op.uiAttribs.translate)
+        {
+            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { x: viewBox.x + viewBox.w / 2, y: viewBox.y + viewBox.h / 2 };
+                else  op.uiAttribs.translate = { x: CABLES.UI.OPSELECT.newOpPos.x, y: CABLES.UI.OPSELECT.newOpPos.y };
         }
 
         if (op.uiAttribs.hasOwnProperty('translate')) {
@@ -1960,7 +1950,7 @@ CABLES.UI.Patch = function(_gui) {
         for (var i=0;i<self.ops.length;i++) {
             if (!self.ops[i].op.uiAttribs.subPatch) self.ops[i].op.uiAttribs.subPatch = 0;
             if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch) self.ops[i].show();
-            else self.ops[i].hide();
+                else self.ops[i].hide();
         }
     };
 
