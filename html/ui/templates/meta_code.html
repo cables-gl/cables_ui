@@ -36,21 +36,22 @@
 <br/>
 
 <br/>
-    <h3>attachments</h3>
+    <h3>Attachments</h3>
 
     {{#if doc.attachmentFiles}}
         <table class="table">
             <tr>
-                <th>filename</th>
+                <th>Filename</th>
+                <th> </th>
             </tr>
             {{#each doc.attachmentFiles}}
                 <tr>
-                    <td onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');">
-                        <a class=" fa fa-edit" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{.}}');"></a>
-                        {{.}}
+                    <td onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{original}}');" style="cursor:pointer">
+                        <a class="icon icon-edit iconhover" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{original}}');"></a>
+                        {{readable}}
                     </td>
                     <td>
-                        <a class=" fa fa-times" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{.}}');"></a>
+                        <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{original}}');"></a>
                     </td>
                 </tr>
             {{/each}}

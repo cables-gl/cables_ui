@@ -48,8 +48,22 @@ CABLES.UI.MetaCode=function(projectId)
                 {
                     var doc={};
                     var summary="";
-                    // doc.attachmentFiles=gui.opDocs.getAttachmentFiles(op.objName);
-                    doc.attachmentFiles=res.attachmentFiles;
+                    // doc.attachmentFiles=res.attachmentFiles;
+
+                    if(res.attachmentFiles)
+                    {
+                        var attachmentFiles=[];
+                        for(var i=0;i<res.attachmentFiles.length;i++)
+                        {
+                            attachmentFiles.push(
+                                {
+                                    "readable":res.attachmentFiles[i].substr(4),
+                                    "original":res.attachmentFiles[i],
+                                })
+                        }
+                        doc.attachmentFiles=attachmentFiles;
+                    }
+
                     doc.libs=gui.serverOps.getOpLibs(op.objName,false);
                     summary=gui.opDocs.getSummary(op.objName);
 

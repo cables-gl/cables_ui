@@ -11,7 +11,6 @@ $( document ).ready(function()
         $(document).mousemove(function (e)
         {
             e.preventDefault();
-
             gui.rendererWidth=(window.innerWidth - e.clientX)*(1/gui.patch().scene.cgl.canvasScale);
             gui.setLayout();
             gui.updateCanvasIconBar();
@@ -25,13 +24,9 @@ $( document ).ready(function()
         $(document).mousemove(function (e)
         {
             e.preventDefault();
-
             gui.editorWidth=e.clientX-gui._elIconBar.outerWidth();
-
             if(gui.editorWidth<30)gui.editorWidth=30;
-
             CABLES.UI.userSettings.set("editorWidth",gui.editorWidth);
-
             gui.setLayout();
         });
     });
@@ -61,7 +56,6 @@ $( document ).ready(function()
         });
     });
 
-
     $('#splitterMeta').mousedown(function (e)
     {
         e.preventDefault();
@@ -73,7 +67,6 @@ $( document ).ready(function()
             gui.setLayout();
         });
     });
-
 
     $('#splitterRendererWH').mousedown(function (e)
     {
@@ -90,15 +83,13 @@ $( document ).ready(function()
         });
     });
 
-
-    $(document).mouseup(function (e) {
+    $(document).mouseup(function (e)
+    {
         if(CABLES.SPLITPANE.bound)
         {
             $(document).unbind('mousemove');
-            console.log('unbind!');
             CABLES.SPLITPANE.bound=false;
             gui.setLayout();
-
         }
     });
 

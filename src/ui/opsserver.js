@@ -272,7 +272,7 @@ CABLES.UI.ServerOps = function(gui) {
         gui.showEditor();
 
         var toolbarHtml = '';
-        if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
+        // if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
         console.log("edit att"+attachmentname);
 
@@ -301,7 +301,8 @@ CABLES.UI.ServerOps = function(gui) {
                                 content: content
                             },
                             function(res) {
-                                setStatus('saved');
+                                // setStatus('saved');
+                                gui.serverOps.execute( opname );
                             },
                             function(res) {
                                 setStatus('ERROR: not saved - '+res.msg);
@@ -315,11 +316,12 @@ CABLES.UI.ServerOps = function(gui) {
                     },
 
                 });
-            },function()
-        {
-            console.error("error opening attachment "+attachmentname);
-            CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-        }
+            },function(which)
+            {
+                console.error("error opening attachment "+attachmentname);
+                console.log(which);
+                if(which && which.editorObj) CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+            }
         );
     };
 
@@ -351,7 +353,7 @@ CABLES.UI.ServerOps = function(gui) {
                 var editorObj=CABLES.editorSession.rememberOpenEditor("op",opname);
 
                 var html = '';
-                if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
+                // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
                 var save = null;
                 if (!readOnly) save = function(setStatus, content) {
@@ -369,12 +371,13 @@ CABLES.UI.ServerOps = function(gui) {
                                 {
                                     console.log('execute first time...');
                                     gui.opSelect().reload();
-                                    gui.serverOps.execute(opname);
+                                    
                                     
                                 }
 
                                 // exec ???
-                                setStatus('saved ' + opname);
+                                gui.serverOps.execute(opname);
+                                // setStatus('saved ' + opname);
 
                             }
                             // console.log('res', res);
