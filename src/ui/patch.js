@@ -2531,26 +2531,30 @@ CABLES.UI.Patch = function(_gui) {
 
         var numVisibleOps = 0;
         var errorOps=[];
+        var warnOps=[];
 
-        for (var i =0;i< self.ops.length;i++) {
-            if (!self.ops[i].isHidden()) numVisibleOps++;
-            if (self.ops[i].op.uiAttribs.error)
+        for (var i =0;i< self.ops.length;i++)
+        {
+            if (!this.ops[i].isHidden()) numVisibleOps++;
+            if (this.ops[i].op.uiAttribs.error)
             {
-                errorOps.push(self.ops[i].op);
-                if(self.ops[i].op.objName.toLowerCase().indexOf("Deprecated")>-1)self.ops[i].op.isDeprecated=true;
+                errorOps.push(this.ops[i].op);
+                if(this.ops[i].op.objName.toLowerCase().indexOf("Deprecated")>-1)this.ops[i].op.isDeprecated=true;
+            }
+            if (this.ops[i].op.uiAttribs.warning)
+            {
+                warnOps.push(this.ops[i].op);
             }
         }
 
         var html=gui.bookmarks.getHtml();
 
         if(errorOps.length==0)errorOps=null;
+        if(warnOps.length==0)warnOps=null;
 
-        html += CABLES.UI.getHandleBarHtml('error_ops', { "errorOps":errorOps });
+        html += CABLES.UI.getHandleBarHtml('error_ops', { "errorOps":errorOps, "warnOps":warnOps });
 
         $('#options').html(html);
-
-
-        // $('#options').html(gui.bookmarks.getHtml());
     };
 
 
