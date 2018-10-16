@@ -104,13 +104,8 @@ CABLES.UI.GUI = function() {
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 400;
 
     this.toggleEditor = function() {
-
-        
-
         if (showingEditor) self.closeEditor();
         else self.showEditor();
-
-        
 
         self.setLayout();
     };
@@ -140,10 +135,10 @@ CABLES.UI.GUI = function() {
     this.setLayout = function() {
         var startTime = performance.now();
 
+        this._elCanvasIconbar=this._elCanvasIconbar||$('#canvasicons');
         this._elAceEditor = this._elAceEditor || $('#ace_editors');
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
         this._elSplitterRenderer = this._elSplitterRenderer || $('#splitterRenderer');
-        // this._elSplitterRendererWH = this._elSplitterRendererWH || $('#splitterRendererWH');
         this._elPatch = this._elPatch || $('#patch');
         this._elOptions = this._elOptions || $('#options');
         this._elMeta = this._elMeta || $('#meta');
@@ -226,11 +221,17 @@ CABLES.UI.GUI = function() {
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
 
-        if (showingEditor )
+        if(showingEditor)
         {
             $('#editorminimized').hide();
             var editWidth=self.editorWidth;
-            if (editWidth > window.innerWidth - self.rendererWidth) self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -40;
+            
+            if (editWidth > window.innerWidth - self.rendererWidth -iconBarWidth)
+            {
+                self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
+                this.updateCanvasIconBar();
+                // this.closeEditor();
+            }
 
             var editorbarHeight = 76;
             $('#editor').show();
@@ -274,12 +275,10 @@ CABLES.UI.GUI = function() {
             else $('#editorminimized').hide();
         }
 
-
         this._elIconBar.css('height', window.innerHeight - 60);
         this._elIconBar.css('top', 60);
 
         $('#jobs').css('left', iconBarWidth);
-
 
         if (self.rendererWidth < 100) self.rendererWidth = 100;
 
@@ -291,8 +290,6 @@ CABLES.UI.GUI = function() {
         this._elSplitterPatch.css('top', menubarHeight);
         this._elSplitterRenderer.css('top', self.rendererHeightScaled);
         this._elSplitterRenderer.css('width', self.rendererWidthScaled);
-        // this._elSplitterRendererWH.css('right', self.rendererWidth - 35);
-        // this._elSplitterRendererWH.css('top', self.rendererHeight - 30);
 
         $('#subpatch_nav').css('left', editorWidth + iconBarWidth + 15);
 
@@ -313,12 +310,8 @@ CABLES.UI.GUI = function() {
             $('#minimapContainer .title_opened').show();
         } else {
             $('#minimapContainer').hide();
-            // $('#minimapContainer .title_opened').hide();
-            // $('#minimapContainer').css('top',menubarHeight+patchHeight-24);
-            // $('#minimapContainer').css('width',CABLES.UI.uiConfig.miniMapWidth);
             $('#minimap').hide();
         }
-
 
         $('#library').css('left', iconBarWidth);
         $('#library').css('width', window.innerWidth - self.rendererWidthScaled - iconBarWidth);
@@ -356,22 +349,21 @@ CABLES.UI.GUI = function() {
             $('#splitterTimeline').show();
             $('#splitterTimeline').css('bottom', this.timingHeight - 4);
             $('#timelineTitle').show();
-        } else {
+        }
+        else
+        {
             $('#overviewtimeline').hide();
             $('#timelineTitle').hide();
             $('#keycontrols').hide();
             $('#timetimeline').hide();
             $('#timeline svg').hide();
             $('#timing').css('height', timelineUiHeight);
-
             $('#splitterTimeline').hide();
         }
 
         if (self.timeLine()) self.timeLine().updateViewBox();
 
         $('#splitterTimeline').css('width', timelineWidth);
-
-
         $('#delayed').css('left', window.innerWidth - self.rendererWidth + 10);
 
         this._elOptions.css('left', window.innerWidth - self.rendererWidthScaled - 1);
@@ -386,9 +378,7 @@ CABLES.UI.GUI = function() {
         this._elMeta.css('height', window.innerHeight - self.rendererHeightScaled);
 
         $('#performance_glcanvas').css('bottom', 0);
-        // $('#performance_glcanvas').css('right',($('#performance_glcanvas').width()-(self.rendererWidth+optionsWidth))) ;
         $('#performance_glcanvas').css('right', self.rendererWidthScaled - optionsWidth - $('#performance_glcanvas').width() + 1);
-        // $('#performance_glcanvas').css('max-width',self.rendererWidth-optionsWidth);
 
         this._elMenubar.css('top', 0);
         this._elMenubar.css('width', window.innerWidth - self.rendererWidthScaled - 10);
@@ -412,30 +402,25 @@ CABLES.UI.GUI = function() {
             this._elGlCanvas.attr('width', window.innerWidth);
             this._elGlCanvas.attr('height', window.innerHeight);
             this._elGlCanvas.css('z-index', 9999);
-
-        } else {
-
+        }
+        else
+        {
             var density=gui.patch().scene.cgl.pixelDensity;
             
-            // this._elGlCanvas.css('transform',"scale("+(1/density)+")");
-            // this._elCablesCanvas.css('transform-origin',"top right");
-
             this._elGlCanvas.attr('width', self.rendererWidth*density);
             this._elGlCanvas.attr('height', self.rendererHeight*density);
             this._elGlCanvas.css('width', self.rendererWidth);
             this._elGlCanvas.css('height', self.rendererHeight);
-            // this._elCablesCanvas.attr('width', self.rendererWidth);
-            // this._elCablesCanvas.attr('height', self.rendererHeight);
+
             this._elCablesCanvas.css('width', self.rendererWidth + 'px');
             this._elCablesCanvas.css('height', self.rendererHeight + 'px');
 
             this._elCablesCanvas.css('transform-origin', 'top right' );
             this._elCablesCanvas.css('transform', 'scale('+gui.patch().scene.cgl.canvasScale+')' );
-             
 
             gui.patch().scene.cgl.updateSize();
         }
-        // CABLES.UI.setStatusText('webgl renderer set to size: '+self.rendererWidth+' x '+self.rendererHeight+' ESC to exit fullscreen');
+
         this._elGlCanvas.hover(function(e) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
         }, function() {
@@ -445,7 +430,6 @@ CABLES.UI.GUI = function() {
         window.avg = window.avg || (performance.now() - startTime);
         window.avg += (performance.now() - startTime);
         window.avg /= 2;
-        // console.log('layout ',window.avg);
     };
 
     this.importDialog = function() {
@@ -481,8 +465,6 @@ CABLES.UI.GUI = function() {
             this._oldShowingEditor = showingEditor;
 
             self.rendererWidth = 0;
-            // $('#glcanvas').addClass('maximized');
-
             showingEditor = false;
         } else {
             this._elGlCanvas.removeClass('maximized');
@@ -516,11 +498,6 @@ CABLES.UI.GUI = function() {
         self.setLayout();
     };
 
-    // this.toggleMiniMap=function()
-    // {
-    //     showMiniMap=!showMiniMap;
-    //     self.setLayout();
-    // };
     this.isShowingTiming = function() {
         return showTiming;
     };
@@ -588,7 +565,6 @@ CABLES.UI.GUI = function() {
                 "startup": CABLES.startup.log
             });
 
-        // $('#meta_content_debug').html(html);
         CABLES.UI.MODAL.show(html);
     };
 
@@ -779,12 +755,7 @@ CABLES.UI.GUI = function() {
 
         $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
         $('.nav_changelog').bind("click", CABLES.CMD.UI.showChangelog);
-
-
         $('#username').bind("click", CABLES.CMD.UI.userSettings);
-
-
-
 
         $('.cables-logo').hover(function(e) {
             $('#jobs').show();
@@ -1307,7 +1278,7 @@ CABLES.UI.GUI = function() {
             else if(where=='canvas')
             {
                 r=document.getElementById("cablescanvas").getBoundingClientRect();
-                $('#glcanvas').css({opacity:0.7});
+                this._elGlCanvas.css({opacity:0.7});
             }
             else r=document.body.getBoundingClientRect();
 
@@ -1323,7 +1294,7 @@ CABLES.UI.GUI = function() {
         }
         else
         {
-            if(where=='canvas')$('#glcanvas').css({opacity:1});
+            if(where=='canvas')this._elGlCanvas.css({opacity:1});
             $('.workingindicator').hide();
         }
     }
@@ -1460,29 +1431,49 @@ CABLES.UI.GUI = function() {
         };
     };
 
+    this.updateCanvasIconBar=function()
+    {
+        if(!this._elCanvasIconbar)return;
+
+        const posCanvas=this._elGlCanvas.offset();
+
+        this._elCanvasIconbar.css({
+            width: this.rendererWidth*gui.patch().scene.cgl.canvasScale,
+            top: this.rendererHeight*gui.patch().scene.cgl.canvasScale+1,
+            left: posCanvas.left
+        });
+
+    }
+
     this.showCanvasModal=function(_show)
     {
-        const canvasIconbar=$('#canvasicons')
+        if(!this._elCanvasIconbar)return;
+        // const canvasIconbar=$('#canvasicons')
         if(_show)
         {
             $('#canvasmodal').show();
-            canvasIconbar.show();
-            canvasIconbar.css({opacity:1});
-            var posCanvas = $('#glcanvas').offset();
+            this._elCanvasIconbar.show();
+            this._elCanvasIconbar.css({opacity:1});
+            // var posCanvas = $('#glcanvas').offset();
+            
+            
+            const cgl=gui.patch().scene.cgl;
 
-            canvasIconbar.css({
-                width: self.rendererWidth*gui.patch().scene.cgl.canvasScale,
-                top: self.rendererHeight*gui.patch().scene.cgl.canvasScale+1,
-                left: posCanvas.left
-            });
+            this.updateCanvasIconBar();
 
-            var sizeStr='size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight;
-            if(gui.patch().scene.cgl.canvasScale!=1)sizeStr+=' (scale: '+gui.patch().scene.cgl.canvasScale+') '
+            // this._elCanvasIconbar.css({
+            //     width: self.rendererWidth*cgl.canvasScale,
+            //     top: self.rendererHeight*cgl.canvasScale+1,
+            //     left: posCanvas.left
+            // });
+
+            var sizeStr='size: '+cgl.canvasWidth+' x '+cgl.canvasHeight;
+            if(cgl.canvasScale!=1)sizeStr+=' (scale: '+cgl.canvasScale+') '
             $('#canvasInfoSize').html(sizeStr);
         }
         else
         {
-            canvasIconbar.hide();
+            this._elCanvasIconbar.hide();
             $('#canvasmodal').hide();
         }
     };

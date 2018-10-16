@@ -1,24 +1,27 @@
-var min = 300;
-var max = 3600;
-var mainmin = 200;
+
+CABLES=CABLES||{};
+CABLES.SPLITPANE={};
 
 $( document ).ready(function()
 {
     $('#splitterPatch').mousedown(function (e)
     {
         e.preventDefault();
+        CABLES.SPLITPANE.bound=true;
         $(document).mousemove(function (e)
         {
             e.preventDefault();
 
             gui.rendererWidth=(window.innerWidth - e.clientX)*(1/gui.patch().scene.cgl.canvasScale);
             gui.setLayout();
+            gui.updateCanvasIconBar();
         });
     });
 
     $('#splitterEditor').mousedown(function (e)
     {
         e.preventDefault();
+        CABLES.SPLITPANE.bound=true;
         $(document).mousemove(function (e)
         {
             e.preventDefault();
@@ -36,18 +39,20 @@ $( document ).ready(function()
     $('#splitterRenderer').mousedown(function (e)
     {
         e.preventDefault();
+        CABLES.SPLITPANE.bound=true;
         $(document).mousemove(function (e)
         {
             e.preventDefault();
-
-            gui.rendererHeight= e.clientY*(1/gui.patch().scene.cgl.canvasScale);
+            gui.rendererHeight=e.clientY*(1/gui.patch().scene.cgl.canvasScale);
             gui.setLayout();
+            gui.updateCanvasIconBar();
         });
     });
 
     $('#splitterTimeline').mousedown(function (e)
     {
         e.preventDefault();
+        CABLES.SPLITPANE.bound=true;
         $(document).mousemove(function (e)
         {
             e.preventDefault();
@@ -60,6 +65,7 @@ $( document ).ready(function()
     $('#splitterMeta').mousedown(function (e)
     {
         e.preventDefault();
+        CABLES.SPLITPANE.bound=true;
         $(document).mousemove(function (e)
         {
             e.preventDefault();
@@ -72,6 +78,7 @@ $( document ).ready(function()
     $('#splitterRendererWH').mousedown(function (e)
     {
         e.preventDefault();
+        CABLES.SPLITPANE.bound=true;
         $(document).mousemove(function (e)
         {
             e.preventDefault();
@@ -85,7 +92,14 @@ $( document ).ready(function()
 
 
     $(document).mouseup(function (e) {
-        $(document).unbind('mousemove');
+        if(CABLES.SPLITPANE.bound)
+        {
+            $(document).unbind('mousemove');
+            console.log('unbind!');
+            CABLES.SPLITPANE.bound=false;
+            gui.setLayout();
+
+        }
     });
 
 
