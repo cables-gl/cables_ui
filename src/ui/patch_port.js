@@ -553,11 +553,8 @@ CABLES.UI.Port=function(thePort)
         e.cancelBubble = false;
     };
 
-
-
     this.addUi=function(group)
     {
-        
         thePort.onUiActiveStateChange=changeActiveState;
 
         if(self.isVisible())return;

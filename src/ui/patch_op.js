@@ -42,6 +42,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var background = null;
     var miniRect = null;
     var backgroundResize=null;
+    // var colorHandle=null;
     // var resizeHandle = null;
     var label = null;
     var w = _w;
@@ -53,6 +54,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var commentText = null;
     this._errorIndicator = null;
+    this._colorHandle=null;
 
     this.getHeight = function() {
         return h;
@@ -91,6 +93,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if(backgroundResize)backgroundResize.remove();
         if (this._errorIndicator) this._errorIndicator.remove();
         // if(resizeHandle)resizeHandle.remove();
+        if(this._colorHandle)colorHandle.remove();
         if (miniRect) miniRect.remove();
         // label=background=commentText=backgroundResize=null;
         label = background = commentText = null;
@@ -163,6 +166,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                     background.attr({
                         "width": setw
                     });
+
+                    if(this._colorHandle) this._colorHandle.attr({"x":setw-CABLES.UI.uiConfig.resizeBarWidth});
+
                     label.attr({
                         x: setw / 2
                     });
@@ -368,8 +374,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     this.updateSize = function() {
-
-        
         if (objName == 'Ops.Ui.Comment') {
             var sw = 150;
             var sh = 100;
@@ -384,7 +388,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             var commentWidth = label.getBBox().width;
             var commentHeight = label.getBBox().height + 20;
 
-
             label.attr({
                 'y': 40,
                 'x': -5
@@ -393,15 +396,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             if (commentText) {
                 CABLES.UI.SVGParagraph(commentText, sw * 2);
                 commentText.toFront();
-                commentText.attr({
-                    'y': commentText.getBBox().height / 2 + 76,
-
-                });
-
+                commentText.attr({'y': commentText.getBBox().height / 2 + 76 });
                 commentHeight += commentText.getBBox().height;
                 commentWidth = Math.max(commentWidth, commentText.getBBox().width);
             }
-
 
             var y = 0;
             if (label.getBBox().height == 0) {
@@ -417,6 +415,48 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 "fill": '#000'
             });
 
+        }
+    };
+
+
+    this.updateColorHandle = function()
+    {
+        if(!gui.patch().isOpCurrentSubpatch(opui.op))
+        {
+            if(this._errorIndicator)this._errorIndicator.remove();
+            return;
+        }
+
+        if (opui.op.uiAttribs.color) // || opui.op.uiAttribs.warning)
+        {
+            if (!this._colorHandle)
+            {
+                this._colorHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 3, CABLES.UI.uiConfig.resizeBarWidth, h-6);
+                CABLES.UI.cleanRaphael(this._colorHandle);
+        
+                group.push(this._colorHandle);
+            }
+
+            opui.setPos();
+
+            this._colorHandle.attr({"fill":opui.op.uiAttribs.color});
+            // this._colorHandle.attr({"x":w-CABLES.UI.uiConfig.resizeBarWidth});
+            this.setWidth();
+
+            // if (background) this._errorIndicator.attr({
+            //     cx: background.getBBox().width
+            // });
+            // this._errorIndicator.toFront();
+
+            this._colorHandle.toFront();
+        }
+        else
+        {
+            if(this._colorHandle)
+            {
+                this._colorHandle.remove();
+                this._colorHandle = null;
+            }
         }
     };
 
@@ -483,15 +523,12 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             CABLES.UI.cleanRaphael(miniRect);
         }
 
-
         background = gui.patch().getPaper().rect(0, 3, w, h - 6);
-        // background=gui.patch().getPaper().rect(0, 0, w, h);
         CABLES.UI.cleanRaphael(background);
         background.node.classList.add('op_background');
         var objNameClassNameified = opui.op.objName.replace(/[\W_]+/g, "_");
         background.node.classList.add(objNameClassNameified);
         background.node.setAttribute('data-info', CABLES.UI.TEXTS.op_background);
-
 
         // resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, 0);
         // CABLES.UI.cleanRaphael(resizeHandle);
@@ -621,10 +658,13 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             group.push(commentText);
             gui.patch().background.toBack();
             // backgroundResize.toFront();
+            
             background.toFront();
             label.toFront();
+
             if (this._errorIndicator) this._errorIndicator.toFront();
             if (commentText) commentText.toFront();
+
         }
 
 
@@ -720,9 +760,13 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             label.toFront();
         }
 
-        group.push(background, label); //,resizeHandle);
+        group.push(background, label);
+
         // resizeHandle.toFront();
         this.updateSize();
+
+        this.updateColorHandle();
+
     };
 
     this.setEnabled = function(enabled) {
@@ -850,6 +894,11 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         }
         if (attribs && attribs.hasOwnProperty('error')) {
             this.oprect.updateErrorIndicator();
+        }
+        if (attribs && attribs.hasOwnProperty('color')) {
+            console.log("COLOR UI ATTR CHANGE!!!!");
+            // this.oprect.addUi();
+            this.oprect.updateColorHandle();
         }
         if (typeof attribs.title !== 'undefined' && attribs.title !== null) {
             this.oprect.setTitle(attribs.title);

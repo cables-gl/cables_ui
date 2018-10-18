@@ -1931,6 +1931,14 @@ CABLES.UI.Patch = function(_gui) {
         };
     };
 
+    this.setOpColor=function(col)
+    {
+        for(var i=0;i<selectedOps.length;i++)
+        {
+            selectedOps[i].op.uiAttr({"color":col});
+        }
+    }
+
     this.setOpTitle = function(uiop, t) {
 
         uiop.op.setTitle(t);

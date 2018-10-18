@@ -3,7 +3,10 @@
 
 .params
 {
-	.warning,.warning-experimental,.warning-error
+
+
+
+    .warning,.warning-experimental,.warning-error
 	{
 		border: 1px solid;
     padding: 21px;
@@ -329,6 +332,15 @@
         background-color: $color-background-input;
         padding:2px;
         border: 3px solid #444;
+    }
+
+    .colorButton
+    {
+        width:20px;
+        height:20px;
+        display:block;
+        border:3px solid black;
+        float:left;
     }
 }
 

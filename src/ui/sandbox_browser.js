@@ -6,10 +6,8 @@ CABLES.SandboxBrowser=function()
     // console.log("starting browser sandbox");
 };
 
-
 CABLES.SandboxBrowser.prototype.loadUser=function(cb,cbError)
 {
-
     CABLES.api.get('user/me',
         function(data) {
             if (data.user)
@@ -136,13 +134,9 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
         CABLES.UI.MODAL.showLoading('Loading');
         CABLES.api.get('project/' + id + ver, function(proj)
         {
-
-
             CABLES.api.get('project/'+id+'/users',
                 function(userData)
                 {
-                    console.log('userData',userData);
-
                     gui.user.isPatchOwner=true;
                     for(var i=0;i<userData.length;i++)
                     {
