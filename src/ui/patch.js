@@ -544,10 +544,8 @@ CABLES.UI.Patch = function(_gui) {
             default:
                 // console.log('key ',e.which,e.key);
                 break;
-
         }
     });
-
 
     this.exportStatic = function(ignoreAssets) {
         if (!gui.getSavedState()) {
@@ -2547,7 +2545,14 @@ CABLES.UI.Patch = function(_gui) {
             }
         }
 
-        var html=gui.bookmarks.getHtml();
+        var html='';
+
+        if(!gui.user.isPatchOwner)
+        {
+            html+=CABLES.UI.getHandleBarHtml('clonepatch', {});
+        }
+
+        html+=gui.bookmarks.getHtml();
 
         if(errorOps.length==0)errorOps=null;
         if(warnOps.length==0)warnOps=null;

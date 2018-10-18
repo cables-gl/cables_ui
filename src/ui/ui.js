@@ -528,7 +528,6 @@ CABLES.UI.GUI = function() {
         updateTimingIcon();
         self.setLayout();
         self.timeLine().redraw();
-
     };
 
     this.showUiDebug = function() {
@@ -1043,7 +1042,7 @@ CABLES.UI.GUI = function() {
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         } else if ($('#cmdpalette').is(':visible')) gui.cmdPallet.close();
-        else if (showingEditor) this.closeEditor();
+        else if (showingEditor && e) this.closeEditor();
         else if ($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
         else if ($('#searchbox').is(':visible')) $('#searchbox').hide();
         else if ($('#library').is(':visible')) CABLES.UI.fileSelect.hide();//$('#library').hide();
@@ -1083,19 +1082,15 @@ CABLES.UI.GUI = function() {
                 }]
             ]
         });
-    
     };
 
 
     this.waitToShowUI = function() {
-        
         $('#cablescanvas').show();
-
         $('#loadingstatus').hide();
         $('#mainContainer').show();
 
         self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-
         CABLES.showPacoRenderer();
 
         if (CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
@@ -1246,7 +1241,6 @@ CABLES.UI.GUI = function() {
         return metaCode;
     };
 
-
     this.showMetaCode = function() {
         metaCode.show();
     };
@@ -1259,13 +1253,11 @@ CABLES.UI.GUI = function() {
     this.showOpDoc = function(opname) {
         var docOpHead = '<div>'; //<img src="/api/op/layout/'+opname+'"/>
         // var docOpFooter = '<br/><br/><a onclick="gui.editOpDoc(\'' + opname + '\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
-
         
         this.getOpDoc(opname, true, function(html) {
             $('#meta_content_doc').html(docOpHead + html);// + docOpFooter);
         });
     };
-
 
     this.setWorking=function(active,where)
     {
@@ -1368,7 +1360,6 @@ CABLES.UI.GUI = function() {
         $('.meta_content').hide();
         $('#metatabs a').removeClass('active');
         $('#metatabs .tab_' + which).addClass('active');
-
         $('#meta_content_' + which).show();
 
         if (which == 'code') self.showMetaCode();
@@ -1442,7 +1433,6 @@ CABLES.UI.GUI = function() {
             top: this.rendererHeight*gui.patch().scene.cgl.canvasScale+1,
             left: posCanvas.left
         });
-
     }
 
     this.showCanvasModal=function(_show)
@@ -1567,11 +1557,7 @@ CABLES.UI.GUI = function() {
             $('#username').html('&nbsp;&nbsp;' + user.usernameLowercase);
             incrementStartup();
             self.serverOps = new CABLES.UI.ServerOps(self);
-
-            
-
             logStartup('User Data loaded');
-            
         });
 };
 

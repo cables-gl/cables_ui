@@ -16,14 +16,15 @@ CABLES.SandboxBrowser.prototype.loadUser=function(cb,cbError)
             {
                 if(cb)cb(data.user);
             }
+            else
+            {
+                console.log("not logged in ???");
+            }
         },
         function(data) {
             gui.redirectNotLoggedIn();
         });
-
 };
-
-
 
 CABLES.SandboxBrowser.prototype.deleteProject=function(id)
 {
@@ -135,29 +136,49 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
         CABLES.UI.MODAL.showLoading('Loading');
         CABLES.api.get('project/' + id + ver, function(proj)
         {
-            incrementStartup();
-            var userOpsUrls = [];
 
-            for (var i in proj.userList) {
-                userOpsUrls.push('/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
-            }
 
-            var lid = 'userops' + proj._id + CABLES.generateUUID();
-            loadjs.ready(lid, function()
+            CABLES.api.get('project/'+id+'/users',
+                function(userData)
                 {
-                    incrementStartup();
-                    logStartup('User Ops loaded');
-                    
-                    gui.patch().setProject(proj);
-                    
-                    if (proj.ui)
+                    console.log('userData',userData);
+
+                    gui.user.isPatchOwner=true;
+                    for(var i=0;i<userData.length;i++)
                     {
-                        gui.bookmarks.set(proj.ui.bookmarks);
-                        $('#options').html(gui.bookmarks.getHtml());
+                        if(userData[i].owner && userData[i]._id!=gui.user.id)
+                        {
+                            gui.user.isPatchOwner=false;
+                        }
                     }
-                    cb();
+            
+                    incrementStartup();
+                    var userOpsUrls = [];
+
+                    for (var i in proj.userList) {
+                        userOpsUrls.push('/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
+                    }
+
+                    var lid = 'userops' + proj._id + CABLES.generateUUID();
+                    loadjs.ready(lid, function()
+                        {
+                            incrementStartup();
+                            logStartup('User Ops loaded');
+                            
+                            gui.patch().setProject(proj);
+                            
+                            if (proj.ui)
+                            {
+                                gui.bookmarks.set(proj.ui.bookmarks);
+                                $('#options').html(gui.bookmarks.getHtml());
+                            }
+
+                            gui.patch().showProjectParams();
+                            cb();
+                        });
+                    loadjs(userOpsUrls, lid);
                 });
-            loadjs(userOpsUrls, lid);
+    
                 
         }, function(){
             $('#loadingInfo').append('Error: Unknown Project');

@@ -25,7 +25,6 @@ CABLES.UI.UserManager=function(projectId)
                 var sel = document.getElementById( selectId );
                 for(var i=0;i<users.length;i++)
                 {
-
                     var opt = document.createElement('option');
                     opt.innerHTML = users[i].username;
                     opt.value = users[i]._id;
@@ -50,15 +49,10 @@ CABLES.UI.UserManager=function(projectId)
     {
         if(userid)
         {
-            // CABLES.UI.MODAL.showLoading();
             var doUpdate=gui.projectSettings().loadUsers;
             CABLES.api.put( 'project/'+projectId+'/user/'+userid, {}, doUpdate );
-            
         }
     };
-
-
-
 
     this.getData=function(cb)
     {
@@ -109,15 +103,10 @@ CABLES.UI.UserManager=function(projectId)
                 //
                 // CABLES.UI.MODAL.show(html);
             });
-
-
-
     };
-
 
     this.show=function() // delete ....
     {
-
         CABLES.UI.MODAL.showLoading();
         CABLES.api.get(
             'project/'+projectId+'/users',
@@ -154,11 +143,9 @@ CABLES.UI.UserManager=function(projectId)
                             opt.value = users[i]._id;
                             sel.appendChild(opt);
                         }
-
                     });
 
                 CABLES.UI.MODAL.show(html);
             });
-
     };
 };
