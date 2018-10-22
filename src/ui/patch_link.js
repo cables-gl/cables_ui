@@ -55,7 +55,6 @@ function UiLink(port1, port2)
 
         CABLES.UI.hideInfo();
     };
-
    
     var onMouseDown=function (event)
     {

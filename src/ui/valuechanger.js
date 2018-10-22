@@ -6,22 +6,25 @@ CABLES.UI=CABLES.UI||{};
 CABLES.UI.togglePortValBool=function(which,checkbox)
 {
     gui.setStateUnsaved();
-    var bool_value = $('#'+which).val() == 'true';
+    const inputEle=$('#'+which);
+    const checkBoxEle=$('#'+checkbox);
+
+    var bool_value = inputEle.val() == 'true';
     bool_value=!bool_value;
 
     if(bool_value)
     {
-        $('#'+checkbox).addClass('fa-check-square');
-        $('#'+checkbox).removeClass('fa-square');
+        checkBoxEle.addClass('fa-check-square');
+        checkBoxEle.removeClass('fa-square');
     }
     else
     {
-        $('#'+checkbox).addClass('fa-square');
-        $('#'+checkbox).removeClass('fa-check-square');
+        checkBoxEle.addClass('fa-square');
+        checkBoxEle.removeClass('fa-check-square');
     }
 
-    $('#'+which).val(bool_value);
-    $('#'+which).trigger('input');
+    inputEle.val(bool_value);
+    inputEle.trigger('input');
 };
 
 
@@ -35,7 +38,6 @@ CABLES.UI.inputIncrement=function(v,dir,e)
 
     var val=parseFloat(v);
     if(val!=val)return v;
-
 
     var add=0.1;
     
@@ -74,42 +76,41 @@ CABLES.valueChangerGetSliderCss=function(v)
 
 CABLES.valueChanger=function(ele,focus)
 {
+    const elem=$ ('#'+ele);
+    const elemContainer=$('#'+ele+'-container');
+
     var isDown=false;
-    var startVal=$('#'+ele).val();
-    // console.log(ele);
+    var startVal=elem.val();
     var el=document.getElementById(ele);
     var incMode=0;
     var mouseDownTime=0;
-
     if(focus)setTextEdit(true);
+
+    var usePointerLock=false;
+    
 
     function onInput(e)
     {
-        if($('#'+ele+'-container').hasClass('valuesliderinput'))
+        console.log('oninput!');
+        if(elemContainer.hasClass('valuesliderinput'))
         {
-            const grad=CABLES.valueChangerGetSliderCss( $('#'+ele).val() );
-            $('#'+ele+'-container').css( { "background": grad } );
+            const grad=CABLES.valueChangerGetSliderCss( elem.val() );
+            elemContainer.css( { "background": grad } );
         }
+        return true;
     }
 
     function switchToNextInput(dir)
     {
-        
-        var portNum=$('#'+ele+'-container').data('portnum');
-        // console.log("this is "+portNum);
-
-        // for(var i=portNum+1;i<portNum+dir*10;i+=dir)
+        var portNum=elemContainer.data('portnum');
         var count=0;
         while(count<10)
-        {
-            
+        {           
             var i=(portNum+dir)+count*dir;
             if($('#portval_'+i+'-container').length)
             {
-                // console.log("found "+i);
                 setTextEdit(false);
-                $('#'+ele).unbind("keydown",tabKeyListener);
-
+                elem.unbind("keydown",tabKeyListener);
                 CABLES.valueChanger('portval_'+i,true);
                 
                 return;
@@ -127,84 +128,74 @@ CABLES.valueChanger=function(ele,focus)
                 else switchToNextInput(1);
             return;
         }
-        // console.log('klkk',event.which);
     }
 
     function setTextEdit(enabled)
     {
         if(enabled)
         {
-            $('#'+ele).bind("input",onInput);
+            elem.bind("input",onInput);
             $('#'+ele+'-container .numberinput-display').hide();
-
             $('.numberinput').removeClass('numberinputFocussed');
-            $('#'+ele+'-container').addClass('numberinputFocussed');
-            
-            $('#'+ele).show();
-            $('#'+ele).focus();
-            
+            elemContainer.addClass('numberinputFocussed');
+            elem.show();
+            elem.focus();
 
-            var vv=$('#'+ele).val();
-            // $('#'+ele).val('')
-            // $('#'+ele).val(vv); // workaround to set cursor to end of line
-            $('#'+ele)[0].setSelectionRange(0, vv.length);
-
-            $( '#'+ele ).bind("keydown",tabKeyListener);
+            var vv=elem.val();
+            elem[0].setSelectionRange(0, vv.length);
+            elem.bind("keydown",tabKeyListener);
         }
         else
         {
-            $('#'+ele).unbind("input",onInput);
+            elem.unbind("input",onInput);
             $('.numberinput').removeClass('numberinputFocussed');
-            
             $('#'+ele+'-container .numberinput-display').show();
-            $('#'+ele).hide();
-            $('#'+ele).blur();
+            elem.hide();
+            elem.blur();
             $( document ).unbind( "mouseup", up );
             $( document ).unbind( "mousedown", down );
-    
         }
     }
 
 
     function down(e)
     {
-        if($('#'+ele).is(":focus")) return;
-        
+        if(elem.is(":focus")) return;
 
         mouseDownTime=performance.now();
         isDown=true;
         
-        var isString= $('#'+ele).data("valuetype")=="string";
+        var isString= elem.data("valuetype")=="string";
 
-        if(!isString)
+        if(!isString && usePointerLock)
         {
             document.addEventListener('pointerlockchange', lockChange, false);
             document.addEventListener('mozpointerlockchange', lockChange, false);
             document.addEventListener('webkitpointerlockchange', lockChange, false);
-            
     
             if (el.classList.contains('inc_int')) incMode=1;
     
             el.requestPointerLock = el.requestPointerLock || el.mozRequestPointerLock || el.webkitRequestPointerLock;
             if(el.requestPointerLock) el.requestPointerLock();
-    
         }
     }
 
     function up(e)
     {
-        if($('#'+ele).is(":focus")) return;
-        var isString= $('#'+ele).data("valuetype")=="string";
+        if(elem.is(":focus")) return;
+        var isString= elem.data("valuetype")=="string";
         
         gui.setStateUnsaved();
         isDown=false;
 
-
-        document.removeEventListener('pointerlockchange', lockChange, false);
-        document.removeEventListener('mozpointerlockchange', lockChange, false);
-        document.removeEventListener('webkitpointerlockchange', lockChange, false);
-
-        if(document.exitPointerLock)document.exitPointerLock();
+        if(usePointerLock)
+        {
+            document.removeEventListener('pointerlockchange', lockChange, false);
+            document.removeEventListener('mozpointerlockchange', lockChange, false);
+            document.removeEventListener('webkitpointerlockchange', lockChange, false);
+    
+            if(document.exitPointerLock)document.exitPointerLock();
+        }
 
         $( document ).unbind( "mouseup", up );
         $( document ).unbind( "mousedown", down );
@@ -221,21 +212,21 @@ CABLES.valueChanger=function(ele,focus)
     function setProgress(v)
     {
         const grad=CABLES.valueChangerGetSliderCss(v);
-        $('#'+ele+'-container').css( { "background": grad } );
+        elemContainer.css( { "background": grad } );
         return v;
     }
 
     function move(e)
     {
-        if($('#'+ele).is(":focus")) return;
+        if(elem.is(":focus")) return;
         
         gui.setStateUnsaved();
-        var v=parseFloat( $('#'+ele).val() ,10);
+        var v=parseFloat( elem.val() ,10);
         var inc=0;
 
         if(Math.abs(e.movementX)>5) mouseDownTime=0;
 
-        if($('#'+ele+'-container').hasClass('valuesliderinput'))
+        if(elemContainer.hasClass('valuesliderinput'))
         {
             inc=e.movementX*0.001;
             v+=inc;
@@ -262,9 +253,9 @@ CABLES.valueChanger=function(ele,focus)
             v=Math.floor(v);
         }
 
-        $('#'+ele).val(v);
+        elem.val(v);
         $('#'+ele+'-container .numberinput-display').html(v);
-        $('#'+ele).trigger('input');
+        elem.trigger('input');
     }
 
     function lockChange(e)
@@ -276,27 +267,22 @@ CABLES.valueChanger=function(ele,focus)
         else
         {
             //propably cancled by escape key / reset value
-            $('#'+ele).val(startVal);
+            elem.val(startVal);
             $('#'+ele+'-container .numberinput-display').html(startVal);
-            $('#'+ele).trigger('input');
+            elem.trigger('input');
             up();
         }
     }
 
-    $( document ).bind( "mouseup", up );
-    $( document ).bind( "mousedown", down );
-    // $( '#'+ele ).bind( "click", click );
-    $( '#'+ele ).bind( "blur", 
+    $(document).bind("mouseup",up);
+    $(document).bind("mousedown",down);
+
+    elem.bind( "blur", 
         function()
         {
-            $( '#'+ele ).unbind( "blur");
-
-            // console.log("BLUR");
-            
-            $('#'+ele+'-container .numberinput-display').html($('#'+ele).val());
+            elem.unbind( "blur");
+            $('#'+ele+'-container .numberinput-display').html(elem.val());
             setTextEdit(false);
-            // $(document).focus();
-            if($('#'+ele).hasClass('valuesliderinput'))setProgress();
-
+            if(elem.hasClass('valuesliderinput'))setProgress();
         });
 };

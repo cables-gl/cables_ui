@@ -37,8 +37,6 @@ CABLES.UI.Port=function(thePort)
         }
     };
 
-    
-
     function changeActiveState()
     {
         for(var i=0;i<self.opUi.links.length;i++)
@@ -55,7 +53,6 @@ CABLES.UI.Port=function(thePort)
         {
             if(thePort.isLinked && self.thePort.links.length>0 ) //&& thePort.links.length===1
             {
-
                 var otherPorts=[];
                 if(thePort.links.length>1)
                 {
@@ -98,21 +95,15 @@ CABLES.UI.Port=function(thePort)
     
                             points.push(xs);
                             points.push(ys);
-    
                         }
                     }
-    
                 }
 
-                
                 removeLinkingLine();
-                // linkingLine = new CABLES.UI.SVGMultiLine(xs+CABLES.UI.uiConfig.portSize/2,ys+CABLES.UI.uiConfig.portHeight);
                 linkingLine = new CABLES.UI.SVGMultiLine(points);
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x+2,gui.patch().getCanvasCoordsMouse(event).y-2);
     
-                if(!event.altKey)
-                    self.thePort.removeLinks();
-                // CABLES.UI.selectedStartPortMulti.length=0;
+                if(!event.altKey) self.thePort.removeLinks();
                 updateUI();
             }
             else
@@ -139,11 +130,7 @@ CABLES.UI.Port=function(thePort)
         if(event.which==2) return;
         if(!CABLES.UI.selectedStartPort) return;
 
-        // if(self.thePort.direction==PORT_DIR_IN && (self.thePort.isLinked() || self.thePort.isAnimated()) )
-        if(self.thePort.direction==PORT_DIR_IN && self.thePort.isAnimated())
-        {
-            return;
-        }
+        if(self.thePort.direction==PORT_DIR_IN && self.thePort.isAnimated()) return;
 
         CABLES.UI.MOUSEOVERPORT=true;
 
@@ -214,6 +201,7 @@ CABLES.UI.Port=function(thePort)
     {
         if(linkingLine) linkingLine.remove();
         linkingLine=null;
+        $('#drop-op-cursor').hide();
     }
 
     function finishDragUI()
