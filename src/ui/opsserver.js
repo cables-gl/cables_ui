@@ -266,28 +266,27 @@ CABLES.UI.ServerOps = function(gui) {
 
     this.editAttachment = function(opname, attachmentname, readOnly) {
         var editorObj=CABLES.editorSession.rememberOpenEditor("attachment",attachmentname,{"opname":opname} );
-
         CABLES.api.clearCache();
-
-        gui.showEditor();
+        
 
         var toolbarHtml = '';
-        // if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
-        console.log("edit att"+attachmentname);
+        gui.jobs().start({id:'load_attachment_'+attachmentname,title:'loading attachment '+attachmentname});
 
         CABLES.api.get(
             'op/' + opname + '/attachment/' + attachmentname,
             function(res) {
                 var content = res.content || '';
-
                 var syntax = "text";
 
                 if (attachmentname.endsWith(".frag")) syntax = "glsl";
                 if (attachmentname.endsWith(".vert")) syntax = "glsl";
                 if (attachmentname.endsWith(".json")) syntax = "json";
                 if (attachmentname.endsWith(".css")) syntax = "css";
+                
+                gui.jobs().finish('load_attachment_'+attachmentname);
 
+                gui.showEditor();
                 gui.editor().addTab({
                     content: content,
                     title: attachmentname,
@@ -301,7 +300,7 @@ CABLES.UI.ServerOps = function(gui) {
                                 content: content
                             },
                             function(res) {
-                                // setStatus('saved');
+                                setStatus('saved');
                                 gui.serverOps.execute( opname );
                             },
                             function(res) {
@@ -316,11 +315,12 @@ CABLES.UI.ServerOps = function(gui) {
                     },
 
                 });
-            },function(which)
+            },function(err)
             {
+                gui.jobs().finish('load_attachment_'+attachmentname);
                 console.error("error opening attachment "+attachmentname);
-                console.log(which);
-                if(which && which.editorObj) CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                console.log(err);
+                if(editorObj) CABLES.editorSession.remove(editorObj.name,editorObj.type);
             }
         );
     };

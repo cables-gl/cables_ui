@@ -2634,10 +2634,18 @@ CABLES.UI.Patch = function(_gui) {
     this.openParamEditor=function(opid,portname)
     {
         var op=self.scene.getOpById(opid);
-        if(!op) return;
-        
+        if(!op)
+        {
+            console.log('paramedit op not found');
+            return;
+        }
+
         var port=op.getPortByName(portname);
-        if(!port) return;
+        if(!port)
+        {
+            console.log('paramedit port not found');
+            return;
+        }
 
         var editorObj=CABLES.editorSession.rememberOpenEditor("param",opid+portname,{"opid":opid,"portname":portname} );
 
@@ -2650,6 +2658,7 @@ CABLES.UI.Patch = function(_gui) {
             syntax: port.uiAttribs.editorSyntax,
             onSave: function(setStatus, content) {
                 // console.log('setvalue...');
+                setStatus('saved');
                 gui.setStateUnsaved();
                 gui.jobs().finish('saveeditorcontent');
                 port.set(content);

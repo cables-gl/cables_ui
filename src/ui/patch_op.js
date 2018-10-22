@@ -93,7 +93,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if(backgroundResize)backgroundResize.remove();
         if (this._errorIndicator) this._errorIndicator.remove();
         // if(resizeHandle)resizeHandle.remove();
-        if(this._colorHandle)colorHandle.remove();
+        if(this._colorHandle)this._colorHandle.remove();
         if (miniRect) miniRect.remove();
         // label=background=commentText=backgroundResize=null;
         label = background = commentText = null;
@@ -896,8 +896,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             this.oprect.updateErrorIndicator();
         }
         if (attribs && attribs.hasOwnProperty('color')) {
-            console.log("COLOR UI ATTR CHANGE!!!!");
-            // this.oprect.addUi();
             this.oprect.updateColorHandle();
         }
         if (typeof attribs.title !== 'undefined' && attribs.title !== null) {

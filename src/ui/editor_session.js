@@ -46,9 +46,6 @@ CABLES.EditorSession.prototype.remove=function(name,type)
             }
         }
     }
-    
-    // if(!found)console.log("remove fail",name);
-
     this.store();
 }
 
