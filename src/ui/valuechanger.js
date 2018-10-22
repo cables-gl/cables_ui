@@ -86,7 +86,7 @@ CABLES.valueChanger=function(ele,focus)
     var mouseDownTime=0;
     if(focus)setTextEdit(true);
 
-    var usePointerLock=false;
+    var usePointerLock=true;
     
 
     function onInput(e)
