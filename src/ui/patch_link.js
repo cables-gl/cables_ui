@@ -154,7 +154,7 @@ function UiLink(port1, port2)
         // if(!port2.rect.attrs)return '';
         // if(!port1.rect.attrs)return '';
 
-        if(port2.direction==PORT_DIR_IN)
+        if(port2.direction==CABLES.PORT_DIR_IN)
         {
             var temp=port1;
             port1=port2;

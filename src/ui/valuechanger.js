@@ -91,7 +91,6 @@ CABLES.valueChanger=function(ele,focus)
 
     function onInput(e)
     {
-        console.log('oninput!');
         if(elemContainer.hasClass('valuesliderinput'))
         {
             const grad=CABLES.valueChangerGetSliderCss( elem.val() );

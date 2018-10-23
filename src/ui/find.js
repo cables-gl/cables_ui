@@ -36,7 +36,11 @@ CABLES.UI.Find=function()
 
 		var colorClass="op_color_"+CABLES.UI.uiConfig.getNamespaceClassName(op.op.objName);
         html+='<div onclick="gui.patch().setCurrentSubPatch(\''+op.getSubPatch()+'\');gui.patch().focusOp(\''+op.op.id+'\');gui.patch().centerViewBox('+op.op.uiAttribs.translate.x+','+op.op.uiAttribs.translate.y+');gui.patch().setSelectedOpById(\''+op.op.id+'\');$(\'#patch\').focus();">';
-        html+='<h3 class="'+colorClass+'">'+op.op.name+'</h3>';
+
+        var colorHandle='';
+        if(op.op.uiAttribs.color) colorHandle='<span style="background-color:'+op.op.uiAttribs.color+';">&nbsp;&nbsp;</span>&nbsp;&nbsp;';
+
+        html+='<h3 class="'+colorClass+'">'+colorHandle+op.op.name+'</h3>';
         html+=''+op.op.objName;
         
         if(op.op.uiAttribs.subPatch!=0)
@@ -116,6 +120,8 @@ CABLES.UI.Find=function()
                     {
                         if((op.portsIn[j].get()+'').toLowerCase().indexOf(str)>-1) score+=2;
                     }
+
+                    if(score>0 && gui.patch().isOpCurrentSubpatch(op))score++;
     
                     if(score>0)
                     {

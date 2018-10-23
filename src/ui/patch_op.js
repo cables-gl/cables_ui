@@ -19,8 +19,8 @@ function getPortDescription(thePort) {
     var str = thePort.getTypeString()+' <b>' + thePort.getName() + '</b> ';
     var strInfo = '';
 
-    if (thePort.direction == PORT_DIR_IN) strInfo += CABLES.UI.TEXTS.portDirIn;
-    if (thePort.direction == PORT_DIR_OUT) strInfo += CABLES.UI.TEXTS.portDirOut;
+    if (thePort.direction == CABLES.PORT_DIR_IN) strInfo += CABLES.UI.TEXTS.portDirIn;
+    if (thePort.direction == CABLES.PORT_DIR_OUT) strInfo += CABLES.UI.TEXTS.portDirOut;
     if (thePort.isLinked()) strInfo += CABLES.UI.TEXTS.portMouseUnlink;
     else strInfo += CABLES.UI.TEXTS.portMouseCreate;
     CABLES.UI.showInfo(strInfo);
@@ -307,7 +307,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 var portIn = oldLink.p1;
                 var portOut = oldLink.p2;
 
-                if (oldLink.p2.thePort.direction == PORT_DIR_IN) {
+                if (oldLink.p2.thePort.direction == CABLES.PORT_DIR_IN) {
                     portIn = oldLink.p2;
                     portOut = oldLink.p1;
                 }
@@ -1263,7 +1263,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
             if (p.uiAttribs.display != 'readonly' && !p.uiAttribs.hidePort)
             {
-                uiPort=self.addPort(PORT_DIR_IN, p);
+                uiPort=self.addPort(CABLES.PORT_DIR_IN, p);
             }
             else
             {
@@ -1284,7 +1284,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         }
 
         for (var i2 in op.portsOut)
-            self.addPort(PORT_DIR_OUT, op.portsOut[i2]);
+            self.addPort(CABLES.PORT_DIR_OUT, op.portsOut[i2]);
 
         var ops1=[];
         var ops2=[];
@@ -1317,16 +1317,16 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         
         var inout = _inout;
         // var portIndex = this.portsIn.length;
-        // if (inout == PORT_DIR_OUT) portIndex = this.portsOut.length;
+        // if (inout == CABLES.PORT_DIR_OUT) portIndex = this.portsOut.length;
 
         // var w = (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding) * portIndex;
 
         var portIndex = this.portsIn.length;
-        if (inout == PORT_DIR_OUT) portIndex = this.portsOut.length;
+        if (inout == CABLES.PORT_DIR_OUT) portIndex = this.portsOut.length;
 
         var portPosX=0;
 
-        if (inout == PORT_DIR_OUT) 
+        if (inout == CABLES.PORT_DIR_OUT) 
         {
             portPosX = (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding) * portIndex;
 
@@ -1357,7 +1357,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
         if (this.oprect.getRect()) port.addUi(this.oprect.getGroup());
 
-        if (inout == PORT_DIR_OUT) this.portsOut.push(port);
+        if (inout == CABLES.PORT_DIR_OUT) this.portsOut.push(port);
         else this.portsIn.push(port);
 
         return port;

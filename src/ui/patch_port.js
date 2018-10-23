@@ -130,7 +130,7 @@ CABLES.UI.Port=function(thePort)
         if(event.which==2) return;
         if(!CABLES.UI.selectedStartPort) return;
 
-        if(self.thePort.direction==PORT_DIR_IN && self.thePort.isAnimated()) return;
+        if(self.thePort.direction==CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
 
         CABLES.UI.MOUSEOVERPORT=true;
 
@@ -288,7 +288,7 @@ CABLES.UI.Port=function(thePort)
         if(!foundAutoOp)
         {
 
-			if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==OP_PORT_TYPE_DYNAMIC)return;
+			if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
             if( (event.which==3 && !cancelDeleteLink) || (event.which==1 && event.ctrlKey))
             {
@@ -331,7 +331,7 @@ CABLES.UI.Port=function(thePort)
                         if(Math.abs(coords.x-self.op.uiAttribs.translate.x )<50) coords.x=self.op.uiAttribs.translate.x;
                         if(Math.abs(coords.y-self.op.uiAttribs.translate.y )<40) 
                         {
-                            if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction==PORT_DIR_IN) coords.y=self.op.uiAttribs.translate.y-40;
+                            if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction==CABLES.PORT_DIR_IN) coords.y=self.op.uiAttribs.translate.y-40;
                                 else coords.y=self.op.uiAttribs.translate.y+40;
                         }
 
@@ -384,11 +384,11 @@ CABLES.UI.Port=function(thePort)
         if(!self.rect)return;
 
         var offY=0;
-        if(self.direction==PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
+        if(self.direction==CABLES.PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
 
         if(thePort.isLinked())
         {
-            if(self.direction==PORT_DIR_IN)offY-=3;
+            if(self.direction==CABLES.PORT_DIR_IN)offY-=3;
         }
 
         if(thePort.isLinked())
@@ -434,20 +434,20 @@ CABLES.UI.Port=function(thePort)
 
         var txt=getPortDescription(thePort);
         var val=null;
-        if(thePort && thePort.type==OP_PORT_TYPE_VALUE)
+        if(thePort && thePort.type==CABLES.OP_PORT_TYPE_VALUE)
         {
             val=thePort.get();
-            if(isNumeric(val))val=Math.round(val*1000)/1000;
+            if(CABLES.UTILS.isNumeric(val))val=Math.round(val*1000)/1000;
             txt+=': <span class="code">'+val+'</span>';
         }
 
-        if(thePort && thePort.type==OP_PORT_TYPE_ARRAY)
+        if(thePort && thePort.type==CABLES.OP_PORT_TYPE_ARRAY)
         {
             val=thePort.get();
             if(val && val.hasOwnProperty('val')) txt+=': <span class="code">#'+val.length+'</span>';
         }
 
-        // if(thePort && thePort.type==OP_PORT_TYPE_OBJECT)
+        // if(thePort && thePort.type==CABLES.OP_PORT_TYPE_OBJECT)
         // {
         //     var val=thePort.get();
         //     if(val.tex)
@@ -552,7 +552,7 @@ CABLES.UI.Port=function(thePort)
         // var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*self.portPosX;
         var w=self.portPosX;
 
-        if(self.direction==PORT_DIR_OUT)
+        if(self.direction==CABLES.PORT_DIR_OUT)
         {
             offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
             yp=21;
