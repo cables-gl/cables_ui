@@ -2268,27 +2268,26 @@ CABLES.UI.Patch = function(_gui) {
 
     this.alignSelectedOps = function() {
         var sumX = 0,
-            minX = 0;
-        var sumY = 0,
-            minY = 0;
+            minX = 9999999,
+            sumY = 0,
+            minY = 9999999,
+            maxX = -9999999,
+            maxY= -9999999
+
         var j = 0;
 
         this.saveUndoSelectedOpsPositions();
 
         for (j in selectedOps) {
-            minX = Math.min(9999999, selectedOps[j].op.uiAttribs.translate.x);
-            minY = Math.min(9999999, selectedOps[j].op.uiAttribs.translate.y);
+            minX = Math.min(minX, selectedOps[j].op.uiAttribs.translate.x);
+            minY = Math.min(minY, selectedOps[j].op.uiAttribs.translate.y);
+
+            maxX = Math.max(maxX, selectedOps[j].op.uiAttribs.translate.x);
+            maxY = Math.max(maxY, selectedOps[j].op.uiAttribs.translate.y);
         }
 
-        for (j in selectedOps) {
-            sumX += (selectedOps[j].op.uiAttribs.translate.x - minX);
-            sumY += (selectedOps[j].op.uiAttribs.translate.y - minY);
-        }
-
-        sumY *= 3.5;
-
-        if (Math.abs(sumX) > Math.abs(sumY)) self.alignSelectedOpsHor();
-        else self.alignSelectedOpsVert();
+        if (Math.abs(maxX-minX) > Math.abs(maxY-minY)) self.alignSelectedOpsHor();
+            else self.alignSelectedOpsVert();
     };
 
     this.saveUndoSelectedOpsPositions = function() {
