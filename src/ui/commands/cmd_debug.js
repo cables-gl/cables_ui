@@ -17,6 +17,13 @@ CABLES.CMD.DEBUG.showUiDebug=function()
     gui.showUiDebug();
 };
 
+CABLES.CMD.DEBUG.globalVarDump=function()
+{
+    CABLES.GlobalVarTester.after(window);
+};
+
+
+
 CABLES.CMD.commands.push(
     {
 		cmd:"test all ops",
@@ -25,9 +32,9 @@ CABLES.CMD.commands.push(
         icon:'command'
 	},
     {
-		cmd:"cables ui debug",
+		cmd:"dump global vars",
 		category:"debug",
-		func:CABLES.CMD.DEBUG.showUiDebug,
+		func:CABLES.CMD.DEBUG.globalVarDump,
         icon:'command'
 	}
 

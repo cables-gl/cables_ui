@@ -1,13 +1,9 @@
-
-
 CABLES.UI.Patch.prototype.flowvis=false;
 CABLES.UI.Patch.prototype.flowvisStartFrame=0;
-
+CABLES.UI.speedCycle=true;
 
 CABLES.UI.Patch.prototype.toggleFlowVis=function()
 {
-
-
     if(!this.flowvis)
     {
         CABLES.UI.Patch.prototype.flowvisStartFrame=0;
@@ -42,47 +38,36 @@ CABLES.UI.Patch.prototype.stopFlowVis=function()
             }
         }
     }
-
-    
-
 };
-
-var speedCycle=true;
 
 CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
 {
-
     if(CABLES.UI.Patch.prototype.flowvisStartFrame==0)CABLES.UI.Patch.prototype.flowvisStartFrame=frame;
-
     if(frame-CABLES.UI.Patch.prototype.flowvisStartFrame<5)return;
     if(frame%5!=0) return;
 
-    speedCycle=!speedCycle;
+    CABLES.UI.speedCycle=!CABLES.UI.speedCycle;
 
     var count=0;
     var countInvalid=0;
-
     var patch=gui.patch();
 
     for(var i=0;i<patch.ops.length;i++)
     {
-        // patch.ops[i].removeDeadLinks();
-
         for(var j=0;j<patch.ops[i].links.length;j++)
         {
             if(patch.ops[i].links[j] && patch.ops[i].links[j].linkLine )
             {
-                // var link=patch.ops[i].links[j];
                 var link=patch.ops[i].links[j].p2.thePort.getLinkTo( patch.ops[i].links[j].p1.thePort );
                 if(!link) link=patch.ops[i].links[j].p1.thePort.getLinkTo( patch.ops[i].links[j].p2.thePort );
 
                 if(link)
                 {
-                    if(link.speedCycle!=speedCycle)
+                    if(link.CABLES.UI.speedCycle!=CABLES.UI.speedCycle)
                     {
                         count++;
 
-                        link.speedCycle=speedCycle;
+                        link.CABLES.UI.speedCycle=CABLES.UI.speedCycle;
 
                         var newClass="pathSpeed0";
                         if(link.activityCounter>=1)
@@ -101,16 +86,11 @@ CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
                         }
                         link.activityCounter=0;
                     }
-
                 }
                 else
                 {
                     countInvalid++;
-
                 }
-
-            }
-            else {
             }
         }
     }
@@ -118,8 +98,6 @@ CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
 
 CABLES.UI.Patch.prototype.startflowVis=function()
 {
-
-
     for(var i=0;i<this.ops.length;i++)
     {
         for(var j=0;j<this.ops[i].links.length;j++)
@@ -133,9 +111,6 @@ CABLES.UI.Patch.prototype.startflowVis=function()
         }
     }
 
-
     this.scene.removeOnAnimCallback(this.updateFlowVis);
     this.scene.addOnAnimFrameCallback(this.updateFlowVis);
-
-
 };

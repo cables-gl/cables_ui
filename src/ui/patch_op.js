@@ -1069,7 +1069,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     }
 
     this.setPos = function(x, y) {
-        if (isNumber(x)) {
+        if (CABLES.UTILS.isNumber(x)) {
             posx = x;
             posy = y;
         }
