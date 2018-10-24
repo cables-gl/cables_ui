@@ -87,7 +87,6 @@ CABLES.valueChanger=function(ele,focus)
     if(focus)setTextEdit(true);
 
     var usePointerLock=true;
-    
 
     function onInput(e)
     {
@@ -197,8 +196,8 @@ CABLES.valueChanger=function(ele,focus)
             if(document.exitPointerLock)document.exitPointerLock();
         }
 
-        $( document ).unbind( "mouseup", up );
-        $( document ).unbind( "mousedown", down );
+        $(document).unbind( "mouseup", up );
+        $(document).unbind( "mousedown", down );
 
         document.removeEventListener("mousemove", move, false);
 
