@@ -51,15 +51,11 @@ CABLES.UI.Patch = function(_gui) {
 
     var pastedupdateTimeout=null;
 
-
     CABLES.editorSession.addListener("param",
         function(name,data)
         {
             if(data && data.opid && data.portname) this.openParamEditor(data.opid,data.portname)
         }.bind(this));
-
-
-    
 
     this.isLoading = function() {
         return isLoading;
@@ -107,7 +103,7 @@ CABLES.UI.Patch = function(_gui) {
             if (max > 10000) CABLES.UI.notify('warning big port: ' + maxName + ' / ' + max + ' chars');
 
         } catch (e) {
-
+            console.error(e);
         } finally {
 
         }
@@ -2451,8 +2447,7 @@ CABLES.UI.Patch = function(_gui) {
         for (var i in gui.patch().ops) {
             if (gui.patch().ops[i].op.id == id) {
                 self.addSelectedOp(gui.patch().ops[i]);
-                console.log('found sel op by id !');
-
+                // console.log('found sel op by id !');
                 return;
             }
         }
