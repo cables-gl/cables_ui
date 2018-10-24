@@ -284,7 +284,7 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
     var doUpdateHtml=false;
     var p=port;
 
-    if(p && p.get() && p.get().tex && port.direction==PORT_DIR_OUT )
+    if(p && p.get() && p.get().tex && port.direction==CABLES.PORT_DIR_OUT )
     {
         var id=port.parent.id+port.name;
 

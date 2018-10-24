@@ -2848,7 +2848,7 @@ CABLES.UI.Patch = function(_gui) {
 
             var foundPreview = false;
             for (var i2 in op.portsOut) {
-                if (op.portsOut[i2].getType() == OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == OP_PORT_TYPE_ARRAY) {
+                if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY) {
                     op.portsOut[i2].watchId = 'out_' + i2;
                     watchPorts.push(op.portsOut[i2]);
                 }
@@ -2925,7 +2925,7 @@ CABLES.UI.Patch = function(_gui) {
 
                 $('#portCreateOp_in_' + index).on('click', function(e) {
                     var thePort = op.portsIn[index];
-                    if (thePort.type == OP_PORT_TYPE_TEXTURE) {
+                    if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE) {
                         gui.scene().addOp('Ops.Gl.Texture', {}, function(newop) {
                             gui.scene().link(op, thePort.name, newop, newop.getFistOutPortByType(thePort.type).name);
                         });
@@ -3170,7 +3170,7 @@ CABLES.UI.Patch = function(_gui) {
 
         for (var i=0;i< watchPorts.length;i++)
         {
-            if (watchPorts[i].type != OP_PORT_TYPE_VALUE && watchPorts[i].type != OP_PORT_TYPE_ARRAY) continue;
+            if (watchPorts[i].type != CABLES.OP_PORT_TYPE_VALUE && watchPorts[i].type != CABLES.OP_PORT_TYPE_ARRAY) continue;
             var id = '.watchPortValue_' + watchPorts[i].watchId;
 
             var el = $(id);
@@ -3178,7 +3178,7 @@ CABLES.UI.Patch = function(_gui) {
             if (watchPorts[i].isAnimated()) {
                 if (el.val() != watchPorts[i].get()) el.val(watchPorts[i].get());
             } else
-            if (watchPorts[i].type == OP_PORT_TYPE_ARRAY) {
+            if (watchPorts[i].type == CABLES.OP_PORT_TYPE_ARRAY) {
                 if (watchPorts[i].get())
                     el.html('length: ' + String(watchPorts[i].get().length));
             } else {

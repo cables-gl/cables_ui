@@ -103,7 +103,7 @@ CABLES.UI.ServerOps = function(gui) {
                     "name": op.portsIn[i].name
                 };
             
-            if(op.portsIn[i].type==OP_PORT_TYPE_VALUE)
+            if(op.portsIn[i].type==CABLES.OP_PORT_TYPE_VALUE)
             {
                 if(op.portsIn[i].uiAttribs.display=='bool')l.subType="boolean";
                 else if(op.portsIn[i].uiAttribs.type=='string')l.subType="string";
@@ -120,7 +120,7 @@ CABLES.UI.ServerOps = function(gui) {
                 "name": op.portsOut[i].name
             }
             
-            if(op.portsOut[i].type==OP_PORT_TYPE_VALUE)
+            if(op.portsOut[i].type==CABLES.OP_PORT_TYPE_VALUE)
             {
                 if(op.portsOut[i].uiAttribs.display=='bool')l.subType="boolean";
                 else if(op.portsOut[i].uiAttribs.type=='string')l.subType="string";

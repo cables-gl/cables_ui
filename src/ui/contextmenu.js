@@ -30,7 +30,7 @@ CABLES.ContextMenu.prototype.show=function(obj,parent)
     }
 
     var rect = parent.getBoundingClientRect();
-    
+
     if(!this._element)
     {
         this._element = document.createElement('ul');
@@ -47,8 +47,6 @@ CABLES.ContextMenu.prototype.show=function(obj,parent)
         {
             var item = document.createElement('li');
             item.classList.add("cm_item");
-
-            
             item.innerText=obj.items[i].title;
 
             if(obj.items[i].iconClass)

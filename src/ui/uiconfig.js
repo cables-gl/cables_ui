@@ -43,20 +43,20 @@ CABLES.UI.uiConfig=
     
     getPortTypeClassHtml:function(type)
     {
-        if(type==OP_PORT_TYPE_VALUE) return 'port_text_color_value';
-        else if(type==OP_PORT_TYPE_FUNCTION) return 'port_text_color_function';
-        else if(type==OP_PORT_TYPE_OBJECT)  return 'port_text_color_object';
-        else if(type==OP_PORT_TYPE_ARRAY)  return 'port_text_color_array';
-        else if(type==OP_PORT_TYPE_DYNAMIC)  return 'port_text_color_dynamic';
+        if(type==CABLES.OP_PORT_TYPE_VALUE) return 'port_text_color_value';
+        else if(type==CABLES.OP_PORT_TYPE_FUNCTION) return 'port_text_color_function';
+        else if(type==CABLES.OP_PORT_TYPE_OBJECT)  return 'port_text_color_object';
+        else if(type==CABLES.OP_PORT_TYPE_ARRAY)  return 'port_text_color_array';
+        else if(type==CABLES.OP_PORT_TYPE_DYNAMIC)  return 'port_text_color_dynamic';
         else return 'port_text_color_unknown';
     },
     getPortTypeClass:function(type)
     {
-        if(type==OP_PORT_TYPE_VALUE) return 'port_color_value';
-        else if(type==OP_PORT_TYPE_FUNCTION) return 'port_color_function';
-        else if(type==OP_PORT_TYPE_OBJECT)  return 'port_color_object';
-        else if(type==OP_PORT_TYPE_ARRAY)  return 'port_color_array';
-        else if(type==OP_PORT_TYPE_DYNAMIC)  return 'port_color_dynamic';
+        if(type==CABLES.OP_PORT_TYPE_VALUE) return 'port_color_value';
+        else if(type==CABLES.OP_PORT_TYPE_FUNCTION) return 'port_color_function';
+        else if(type==CABLES.OP_PORT_TYPE_OBJECT)  return 'port_color_object';
+        else if(type==CABLES.OP_PORT_TYPE_ARRAY)  return 'port_color_array';
+        else if(type==CABLES.OP_PORT_TYPE_DYNAMIC)  return 'port_color_dynamic';
         else return 'port_color_unknown';
     },
     getPortClass:function(port)
@@ -67,11 +67,11 @@ CABLES.UI.uiConfig=
     getLinkClass:function(port)
     {
         var type=port.getType();
-        if(type==OP_PORT_TYPE_VALUE) return 'link_color_value';
-        else if(type==OP_PORT_TYPE_FUNCTION) return 'link_color_function';
-        else if(type==OP_PORT_TYPE_OBJECT)  return 'link_color_object';
-        else if(type==OP_PORT_TYPE_ARRAY)  return 'link_color_array';
-        else if(type==OP_PORT_TYPE_DYNAMIC)  return 'link_color_dynamic';
+        if(type==CABLES.OP_PORT_TYPE_VALUE) return 'link_color_value';
+        else if(type==CABLES.OP_PORT_TYPE_FUNCTION) return 'link_color_function';
+        else if(type==CABLES.OP_PORT_TYPE_OBJECT)  return 'link_color_object';
+        else if(type==CABLES.OP_PORT_TYPE_ARRAY)  return 'link_color_array';
+        else if(type==CABLES.OP_PORT_TYPE_DYNAMIC)  return 'link_color_dynamic';
         else return 'link_color_unknown';
 
     },
