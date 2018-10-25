@@ -1875,8 +1875,13 @@ CABLES.UI.Patch = function(_gui) {
             gui.patch().updateBounds = true;
 
             doAddOp(uiOp);
-        };
+            
+            this.opCollisionTest(uiOp);
+
+        }.bind(this);
     };
+
+
 
     this.setOpColor=function(col)
     {
@@ -2053,47 +2058,58 @@ CABLES.UI.Patch = function(_gui) {
         if (!doShow) gui.timeLine().clear();
     };
 
-    this.opCollisionTest = function(uiOp) {
-        for (var i =0;i<this.ops.length;i++) {
-            var testOp = this.ops[i];
-            if (!testOp.op.deleted &&
-                uiOp.op.id != testOp.op.id && uiOp.getSubPatch() == testOp.getSubPatch()) {
-                // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
-                // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
-                var spacing = 8;
-                var detectionSpacing = 0;
+    this.opCollisionTest = function(uiOp)
+    {
+        var found=false;
+
+        do
+        {
+            found=false;
+            for (var i =0;i<this.ops.length;i++)
+            {
+                var testOp = this.ops[i];
+                if (!testOp.op.deleted &&
+                    uiOp.op.id != testOp.op.id && uiOp.getSubPatch() == testOp.getSubPatch()) {
+                    // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
+                    // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
+                    var spacing = 8;
+                    var detectionSpacing = 0;
 
 
-                if ((uiOp.op.uiAttribs.translate.x >= testOp.op.uiAttribs.translate.x &&
-                        uiOp.op.uiAttribs.translate.x <= testOp.op.uiAttribs.translate.x + testOp.getWidth() + detectionSpacing)
-                    // ||
-                    // (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
-                    //     uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing)
-                ) {
+                    if ((uiOp.op.uiAttribs.translate.x >= testOp.op.uiAttribs.translate.x &&
+                            uiOp.op.uiAttribs.translate.x <= testOp.op.uiAttribs.translate.x + testOp.getWidth() + detectionSpacing)
+                        // ||
+                        // (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
+                        //     uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing)
+                    ) {
 
-                    var fixPos = false;
-                    if (uiOp.op.uiAttribs.translate.y >= testOp.op.uiAttribs.translate.y &&
-                        uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight() + detectionSpacing) {
-                        fixPos = true;
-                        uiOp.setPos(
-                            testOp.op.uiAttribs.translate.x,
-                            testOp.op.uiAttribs.translate.y + testOp.getHeight() + spacing);
-                        return true;
-                    }
+                        var fixPos = false;
+                        if (uiOp.op.uiAttribs.translate.y >= testOp.op.uiAttribs.translate.y &&
+                            uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight() + detectionSpacing) {
+                            fixPos = true;
+                            uiOp.setPos(
+                                testOp.op.uiAttribs.translate.x,
+                                testOp.op.uiAttribs.translate.y + testOp.getHeight() + spacing);
+                            // return true;
+                            found=true;
+                            break;
+                        }
 
-                    if (uiOp.op.uiAttribs.translate.y + testOp.getHeight() >= testOp.op.uiAttribs.translate.y &&
-                        uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight() + detectionSpacing) {
-                        fixPos = true;
-                        uiOp.setPos(
-                            testOp.op.uiAttribs.translate.x,
-                            testOp.op.uiAttribs.translate.y - testOp.getHeight() - spacing);
-                        return true;
+                        if (uiOp.op.uiAttribs.translate.y + testOp.getHeight() >= testOp.op.uiAttribs.translate.y &&
+                            uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight() + detectionSpacing) {
+                            fixPos = true;
+                            uiOp.setPos(
+                                testOp.op.uiAttribs.translate.x,
+                                testOp.op.uiAttribs.translate.y - testOp.getHeight() - spacing);
+                            found=true;
+                            break;
+                            // return true;
+                        }
                     }
                 }
-
             }
         }
-        return false;
+        while(found)
     };
 
 

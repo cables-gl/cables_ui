@@ -156,8 +156,12 @@ CABLES.UI.ServerOps = function(gui) {
         var s = document.createElement('script');
         s.setAttribute('src', CABLES.noCacheUrl('/api/op/' + name));
         s.onload = function() {
-            gui.patch().scene.reloadOp(name, function(num, ops) {
+            gui.patch().scene.reloadOp(name, function(num, ops)
+            {
                 CABLES.UI.notify(num + ' ops reloaded');
+
+                for(var i=0;i<ops.length;i++) gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
+
                 if (ops.length > 0) this.saveOpLayout(ops[0]);
                 gui.editor().focus();
             }.bind(this));
@@ -186,15 +190,12 @@ CABLES.UI.ServerOps = function(gui) {
         );
     };
 
-
     this.addOpLib = function(opName, libName) {
-
         CABLES.api.put(
             'op/' + opName + '/libs/' + libName,
             function(res) {
                 console.log(res);
             });
-
     };
 
     this.deleteAttachment = function(opName, attName) {
@@ -268,7 +269,6 @@ CABLES.UI.ServerOps = function(gui) {
         var editorObj=CABLES.editorSession.rememberOpenEditor("attachment",attachmentname,{"opname":opname} );
         CABLES.api.clearCache();
         
-
         var toolbarHtml = '';
 
         gui.jobs().start({id:'load_attachment_'+attachmentname,title:'loading attachment '+attachmentname});

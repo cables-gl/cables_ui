@@ -109,18 +109,6 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
 
         if(found)
         {
-            // if(!options.linkNamespaceIsTextureEffects && list[i]._nameSpace.indexOf('textureeffects')>-1)
-            // {
-            //     points-=0.5;
-            //     scoreDebug+='-0.5 textureeffect penalty<br/>';
-            // }
-                
-            // if(options.linkNamespaceIsTextureEffects && list[i]._nameSpace.indexOf('textureeffects')>-1)
-            // {
-            //     points+=0.5;
-            //     scoreDebug+='+0.5 textureeffect bonus<br/>';
-            // }
-
             if(list[i]._shortName.indexOf(query)===0)
             {
                 points+=2.5;
