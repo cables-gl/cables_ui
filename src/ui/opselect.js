@@ -99,12 +99,11 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
 
         if(points==0)
         {
-            // console.log(list[i].name);
             if(list[i]._lowerCaseName.indexOf(query)>-1)
             {
                 found=true;
-                points+=4;
-                scoreDebug+='+4 found full namespace<br/>';
+                points+=2;
+                scoreDebug+='+2 found full namespace<br/>';
             }
         }
 
