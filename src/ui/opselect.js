@@ -97,6 +97,17 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
             scoreDebug+='+4 found in shortname<br/>';
         }
 
+        if(points==0)
+        {
+            // console.log(list[i].name);
+            if(list[i]._lowerCaseName.indexOf(query)>-1)
+            {
+                found=true;
+                points+=4;
+                scoreDebug+='+4 found full namespace<br/>';
+            }
+        }
+
         if(found)
         {
             // if(!options.linkNamespaceIsTextureEffects && list[i]._nameSpace.indexOf('textureeffects')>-1)
@@ -331,6 +342,7 @@ CABLES.UI.OpSelect.prototype.prepare=function()
             this._list[i].summary=this._list[i].summary||'';
             this._list[i]._summary=this._list[i].summary.toLowerCase();
             this._list[i]._shortName=this._list[i].shortName.toLowerCase();
+            this._list[i]._lowerCaseName=this._list[i].name.toLowerCase();
             this._list[i]._nameSpace=this._list[i].nameSpace.toLowerCase()+'.';
             this._list[i]._nameSpaceFull=this._list[i].nameSpace.toLowerCase()+'.'+this._list[i].shortName.toLowerCase();
         }
