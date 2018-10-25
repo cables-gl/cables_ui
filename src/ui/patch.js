@@ -2061,6 +2061,7 @@ CABLES.UI.Patch = function(_gui) {
     this.opCollisionTest = function(uiOp)
     {
         var found=false;
+        var count=1;
 
         do
         {
@@ -2073,34 +2074,33 @@ CABLES.UI.Patch = function(_gui) {
                     // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
                     // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
                     var spacing = 8;
-                    var detectionSpacing = 0;
 
 
                     if ((uiOp.op.uiAttribs.translate.x >= testOp.op.uiAttribs.translate.x &&
-                            uiOp.op.uiAttribs.translate.x <= testOp.op.uiAttribs.translate.x + testOp.getWidth() + detectionSpacing)
+                            uiOp.op.uiAttribs.translate.x <= testOp.op.uiAttribs.translate.x + testOp.getWidth())
                         // ||
                         // (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
-                        //     uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth()+detectionSpacing)
+                        //     uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth)
                     ) {
 
                         var fixPos = false;
                         if (uiOp.op.uiAttribs.translate.y >= testOp.op.uiAttribs.translate.y &&
-                            uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight() + detectionSpacing) {
+                            uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight()) {
                             fixPos = true;
                             uiOp.setPos(
                                 testOp.op.uiAttribs.translate.x,
-                                testOp.op.uiAttribs.translate.y + testOp.getHeight() + spacing);
+                                testOp.op.uiAttribs.translate.y + (count*testOp.getHeight()) + spacing);
                             // return true;
                             found=true;
                             break;
                         }
 
                         if (uiOp.op.uiAttribs.translate.y + testOp.getHeight() >= testOp.op.uiAttribs.translate.y &&
-                            uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight() + detectionSpacing) {
+                            uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight()) {
                             fixPos = true;
                             uiOp.setPos(
                                 testOp.op.uiAttribs.translate.x,
-                                testOp.op.uiAttribs.translate.y - testOp.getHeight() - spacing);
+                                testOp.op.uiAttribs.translate.y - (count*testOp.getHeight()) - spacing);
                             found=true;
                             break;
                             // return true;
@@ -2108,6 +2108,7 @@ CABLES.UI.Patch = function(_gui) {
                     }
                 }
             }
+            count++;
         }
         while(found)
     };
@@ -2209,6 +2210,7 @@ CABLES.UI.Patch = function(_gui) {
                     if (dir > 0) y -= (uiop.getHeight() + 10);
                     else y += (uiop.getHeight() + 10);
                     uiop.setPos(transNextOp.x, y);
+                    this.opCollisionTest(uiop);
                 }
             }
         }
