@@ -53,6 +53,11 @@ CABLES.CMD.PATCH.findUnconnectedOps=function()
 	gui.find().show(':unconnected');
 };
 
+CABLES.CMD.PATCH.findUserOps=function()
+{
+	gui.find().show(':user');
+};
+
 
 
 CABLES.CMD.PATCH.createFile=function()
@@ -455,6 +460,12 @@ CABLES.CMD.commands.push(
 		cmd:"find unconnected ops",
 		category:"patch",
 		func:CABLES.CMD.PATCH.findUnconnectedOps
+	},
+	{
+		cmd:"find user ops",
+		category:"patch",
+		func:CABLES.CMD.PATCH.findUserOps
 	}
+
 
 );

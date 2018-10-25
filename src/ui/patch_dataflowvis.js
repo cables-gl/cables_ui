@@ -63,11 +63,11 @@ CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
 
                 if(link)
                 {
-                    if(link.CABLES.UI.speedCycle!=CABLES.UI.speedCycle)
+                    if(link.speedCycle!=CABLES.UI.speedCycle)
                     {
                         count++;
 
-                        link.CABLES.UI.speedCycle=CABLES.UI.speedCycle;
+                        link.speedCycle=CABLES.UI.speedCycle;
 
                         var newClass="pathSpeed0";
                         if(link.activityCounter>=1)

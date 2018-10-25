@@ -72,7 +72,19 @@ CABLES.UI.Find=function()
 
         if(str.indexOf(':')==0)
         {
-            if(str==':unconnected')
+            if(str==':user')
+            {
+                for(var i=0;i<gui.patch().ops.length;i++)
+                {
+                    var op=gui.patch().ops[i];
+                    if(op.op.objName.indexOf("Ops.User")==0) 
+                    {
+                        results.push({"op":op,"score":1});
+                        foundNum++;
+                    }
+                }
+            }
+            else if(str==':unconnected')
             {
                 for(var i=0;i<gui.patch().ops.length;i++)
                 {
@@ -89,9 +101,7 @@ CABLES.UI.Find=function()
                         results.push({"op":op,"score":1});
                         foundNum++;
                     }
-
                 }
-    
             }
         }
         else
