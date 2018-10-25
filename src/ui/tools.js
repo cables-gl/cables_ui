@@ -1,6 +1,6 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
-
+CABLES.UTILS=CABLES.UTILS||{};
 CABLES.UI.getHandleBarHtml=function(name,obj)
 {
     var source   = $("#"+name).html();
@@ -15,7 +15,21 @@ CABLES.UI.getHandleBarHtml=function(name,obj)
     return template(context);
 };
 
-function isNumber (o) {
+CABLES.UTILS.arrayContains = function(arr,obj)
+{
+    var i = arr.length;
+    while (i--)
+    {
+        if (arr[i] === obj)
+        {
+            return true;
+        }
+    }
+    return false;
+};
+
+
+CABLES.UTILS.isNumber=function(o) {
   return ! isNaN (o-0) && o !== null && o !== "" && o !== false;
 }
 
