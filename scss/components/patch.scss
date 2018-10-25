@@ -99,7 +99,7 @@
 .op_color_devices { color:$color_op_handle_devices; }
 .op_color_html { color:$color_op_handle_html; }
 .op_color_math { color:$color_op_handle_math; }
-.op_color_math { color:$color_op_handle_math; }
+.op_color_user { color:$color_op_handle_user; }
 
 
 
@@ -308,7 +308,8 @@
     .op_handle_audio { fill:$color_op_handle_audio; }
     .op_handle_devices { fill:$color_op_handle_devices; }
     .op_handle_html { fill:$color_op_handle_html; }
-	.op_handle_math { fill:$color_op_handle_math; }
+    .op_handle_math { fill:$color_op_handle_math; }
+    .op_handle_user { fill:$color_op_handle_user; }
 
 }
 
@@ -318,6 +319,7 @@
 .color-op-category-devices { color: $color_op_handle_devices; }
 .color-op-category-html { color: $color_op_handle_html; }
 .color-op-category-math { color: $color_op_handle_math; }
+.color-op-category-user { color: $color_op_handle_user; }
 
 #suggestionDialog
 {

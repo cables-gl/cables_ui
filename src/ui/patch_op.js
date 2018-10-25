@@ -831,9 +831,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             else { title = t; }
         }
         if (label) {
-            label.attr({
-                text: title
-            });
+            label.attr({ text: title });
+            // if(objName.indexOf("Ops.User") == 0) label.attr({ text: '• '+title });
+            
             this.setWidth();
             this.addUi();
             // label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
