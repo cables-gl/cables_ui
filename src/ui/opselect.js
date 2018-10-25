@@ -69,12 +69,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
     for(var i=0;i<list.length;i++)
     {
         var scoreDebug=query+' - '+list[i]._shortName+'<br/><br/>';
-
         var found=false;
         var points=0;
-
-        // console.log( CABLES.UI.OPSELECT.linkNewOpToOp.objName);
-
 
         if(list[i]._summary.indexOf(query)>-1)
         {
@@ -313,13 +309,9 @@ CABLES.UI.OpSelect.prototype.reload=function()
 
 CABLES.UI.OpSelect.prototype.prepare=function()
 {
-    // var timeStart=CABLES.now();
-
     if(!this._list)
     {
         this._list=this.getOpList();
-
-        // list=CABLES.UI.OPSELECT.getOpList();
         var maxPop=0;
 
         for(var i=0;i<this._list.length;i++)
@@ -345,7 +337,6 @@ CABLES.UI.OpSelect.prototype.prepare=function()
 
         this._html = CABLES.UI.getHandleBarHtml('op_select_ops',{ops: this._list });
         $('#searchbrowserContainer').html(this._html);
-
         $('#opsearch').on('input',this.onInput.bind(this));
     }
 

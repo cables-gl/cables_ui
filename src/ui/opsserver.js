@@ -8,7 +8,6 @@ CABLES.UI.ServerOps = function(gui) {
     var ops = [];
     var self = this;
     
-
     CABLES.editorSession.addListener("op",
         function(name,data)
         {
@@ -335,15 +334,6 @@ CABLES.UI.ServerOps = function(gui) {
             return;
         }
 
-        // for (var i = 0; i < ops.length; i++) {
-        //     if (ops[i].name == name) {
-        //         op = ops[i];
-        //     }
-        // }
-        // if (!op) {
-        //     console.log('server op not found ' + name);
-        //     return;
-        // }
         CABLES.api.get(
             'ops/' + opname,
             function(res) {
