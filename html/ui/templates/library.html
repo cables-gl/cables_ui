@@ -47,7 +47,6 @@
             {{#if file._id}}
                 <a class="tt icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenuFile(this,'{{file._id}}','{{file.n}}','{{file.t}}');" data-tt="more options"></a>
             {{/if}}
-
         </td>
     </tr>
 </script>
@@ -65,14 +64,13 @@
 
         <div class="iconcontainer iconcontainer_{{file.t}}" onclick="CABLES.UI.fileSelect.setFile('{{inputId}}','{{file.p}}','{{file._id}}');"   draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{file.p}}');">
 
-
             <div class="file-icon-container">
                 <div class="suffix">{{file.suffix}}</div>
                 {{#compare file.t '==' 'image' }}
-                    <div class="library-file-icon" style="background-image:url('{{file.p}}');"></div>
+                    <div class="library-file-icon" style="background-image:url('{{file.p}}?rnd={{file.cachebuster}}');"></div>
                 {{else}}
                     {{#compare file.t '==' 'SVG' }}
-                        <div class="library-file-icon" style="background-image:url('{{file.p}}');"></div>
+                        <div class="library-file-icon" style="background-image:url('{{file.p}}?rnd={{file.cachebuster}}');"></div>
                     {{else}}
                     <i class="fa fa-4x fa-{{file.icon}}" ></i>
                     {{/compare}}
@@ -80,7 +78,6 @@
             </div>
 
             <div class="filename">
-
                 {{#compare file.t '==' 'dir' }}<h2>{{/compare}}
                 {{file.n}}
                 {{#compare file.t '==' 'dir' }}</h2>{{/compare}}
@@ -128,7 +125,7 @@
     <br/>
 
     {{#if file.imgPreview  }}
-        <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}" style="width:100%;"/>
+        <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}" style="width:100%;"/>
         <br/><br/>
     {{/if}}
 
