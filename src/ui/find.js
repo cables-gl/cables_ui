@@ -84,6 +84,20 @@ CABLES.UI.Find=function()
                     }
                 }
             }
+            else if(str.indexOf(':color=')==0)
+            {
+                var col=str.substr(7).toLowerCase();
+
+                for(var i=0;i<gui.patch().ops.length;i++)
+                {
+                    var op=gui.patch().ops[i];
+                    if(op.op.uiAttribs.color && op.op.uiAttribs.color.toLowerCase()==col)
+                    {
+                        results.push({"op":op,"score":1});
+                        foundNum++;
+                    }
+                }
+            }
             else if(str==':unconnected')
             {
                 for(var i=0;i<gui.patch().ops.length;i++)

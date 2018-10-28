@@ -1,0 +1,15 @@
+
+<script id="filter_colors" type="text/x-handlebars-template">
+
+    {{#if colors}}
+        <div class="panel">
+            <h3>Filter by Color</h3>
+
+            {{#each colors}}
+                <a onclick="gui.find().show(':color={{.}}')" style="background-color:{{.}}" class="colorbutton"></a>
+            {{/each}}
+            <br/>
+        </div>
+    {{/if}}
+
+</script>

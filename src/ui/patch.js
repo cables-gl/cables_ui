@@ -2501,19 +2501,19 @@ CABLES.UI.Patch = function(_gui) {
         var numVisibleOps = 0;
         var errorOps=[];
         var warnOps=[];
+        var colors=[];
 
         for (var i =0;i< self.ops.length;i++)
         {
+            var op=this.ops[i].op;
             if (!this.ops[i].isHidden()) numVisibleOps++;
-            if (this.ops[i].op.uiAttribs.error)
+            if (op.uiAttribs.error)
             {
-                errorOps.push(this.ops[i].op);
-                if(this.ops[i].op.objName.toLowerCase().indexOf("Deprecated")>-1)this.ops[i].op.isDeprecated=true;
+                errorOps.push(op);
+                if(op.objName.toLowerCase().indexOf("Deprecated")>-1)op.isDeprecated=true;
             }
-            if (this.ops[i].op.uiAttribs.warning)
-            {
-                warnOps.push(this.ops[i].op);
-            }
+            if (op.uiAttribs.warning) warnOps.push(op);
+            if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
         }
 
         var html='';
@@ -2527,12 +2527,13 @@ CABLES.UI.Patch = function(_gui) {
 
         if(errorOps.length==0)errorOps=null;
         if(warnOps.length==0)warnOps=null;
+        colors = CABLES.uniqueArray(colors);
 
         html += CABLES.UI.getHandleBarHtml('error_ops', { "errorOps":errorOps, "warnOps":warnOps });
+        html += CABLES.UI.getHandleBarHtml('filter_colors', { "colors":colors });
 
         $('#options').html(html);
     };
-
 
     function updateUiAttribs() {
 
