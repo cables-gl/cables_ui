@@ -291,34 +291,49 @@ CABLES.UI.Patch = function(_gui) {
             x: bounds.minx + (bounds.maxx - bounds.minx) / 2,
             y: bounds.miny
         };
-        var patchOp = gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH, {
-            "translate": trans
-        });
+        var patchOp = gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH, { "translate": trans });
         var patchId = patchOp.patchId.get();
 
-        patchOp.uiAttr({
-            "translate": trans
-        });
+        patchOp.uiAttr({ "translate": trans });
 
         var i, j, k;
         for (i in selectedOps) selectedOps[i].op.uiAttribs.subPatch = patchId;
 
-        for (i = 0; i < selectedOps.length; i++) {
-            for (j = 0; j < selectedOps[i].op.portsIn.length; j++) {
+        for (i = 0; i < selectedOps.length; i++)
+        {
+            for (j = 0; j < selectedOps[i].op.portsIn.length; j++)
+            {
                 var theOp = selectedOps[i].op;
-                for (k = 0; k < theOp.portsIn[j].links.length; k++) {
+                var found=null;
+                for (k = 0; k < theOp.portsIn[j].links.length; k++)
+                {
                     var otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
                     var otherOp = otherPort.parent;
-                    if (otherOp.uiAttribs.subPatch != patchId) {
-                        console.log('found outside connection!! ', otherPort.name);
+                    if (otherOp.uiAttribs.subPatch != patchId)
+                    {
                         theOp.portsIn[j].links[k].remove();
-                        gui.scene().link(
-                            otherPort.parent,
-                            otherPort.getName(),
-                            patchOp,
-                            patchOp.dyn.name
-                        );
-                        patchOp.addSubLink(theOp.portsIn[j], otherPort);
+                        k--;
+
+                        if(found)
+                        {
+                            gui.scene().link(
+                                otherPort.parent,
+                                otherPort.getName(),
+                                patchOp,
+                                found
+                            );
+                        }
+                        else
+                        {
+                            gui.scene().link(
+                                otherPort.parent,
+                                otherPort.getName(),
+                                patchOp,
+                                patchOp.dyn.name
+                            );
+                            
+                            found=patchOp.addSubLink(theOp.portsIn[j], otherPort);
+                        }
                     }
                 }
 
