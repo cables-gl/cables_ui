@@ -215,8 +215,18 @@ CABLES.UI.Patch = function(_gui) {
 
                         CABLES.UI.notify('Pasted ' + json.ops.length + ' ops');
                         self.setSelectedOp(null);
+
                         gui.patch().scene.deSerialize(json, false);
 
+                        for(var i=0;i<json.ops.length;i++) 
+                        {                            
+                            var uiop=self.addSelectedOpById(json.ops[i].id);
+
+                            uiop.setSelected(false);
+                            uiop.setSelected(true);
+                            uiop.oprect.setSelected
+                        }
+                        
                         return;
                     });
                 }
@@ -1678,8 +1688,8 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         // select ops after pasting...
-        clearTimeout(pastedupdateTimeout);
-        pastedupdateTimeout=setTimeout(function() {
+        // clearTimeout(pastedupdateTimeout);
+        // pastedupdateTimeout=setTimeout(function() {
             if (uiOp.op.uiAttribs.pasted) {
                 delete uiOp.op.uiAttribs.pasted;
                 gui.patch().addSelectedOpById(uiOp.op.id);
@@ -1689,7 +1699,7 @@ CABLES.UI.Patch = function(_gui) {
                 self.updateSubPatches();
                 uiOp.oprect.showFocus();
             }
-        }, 30);
+        // }, 30);
 
         if (uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({
             error: "Op is deprecated"
@@ -2416,7 +2426,7 @@ CABLES.UI.Patch = function(_gui) {
             if (gui.patch().ops[i].op.id == id) {
                 self.addSelectedOp(gui.patch().ops[i]);
                 // console.log('found sel op by id !');
-                return;
+                return gui.patch().ops[i];
             }
         }
     };
