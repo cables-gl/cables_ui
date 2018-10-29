@@ -301,34 +301,49 @@ CABLES.UI.Patch = function(_gui) {
             x: bounds.minx + (bounds.maxx - bounds.minx) / 2,
             y: bounds.miny
         };
-        var patchOp = gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH, {
-            "translate": trans
-        });
+        var patchOp = gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH, { "translate": trans });
         var patchId = patchOp.patchId.get();
 
-        patchOp.uiAttr({
-            "translate": trans
-        });
+        patchOp.uiAttr({ "translate": trans });
 
         var i, j, k;
         for (i in selectedOps) selectedOps[i].op.uiAttribs.subPatch = patchId;
 
-        for (i = 0; i < selectedOps.length; i++) {
-            for (j = 0; j < selectedOps[i].op.portsIn.length; j++) {
+        for (i = 0; i < selectedOps.length; i++)
+        {
+            for (j = 0; j < selectedOps[i].op.portsIn.length; j++)
+            {
                 var theOp = selectedOps[i].op;
-                for (k = 0; k < theOp.portsIn[j].links.length; k++) {
+                var found=null;
+                for (k = 0; k < theOp.portsIn[j].links.length; k++)
+                {
                     var otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
                     var otherOp = otherPort.parent;
-                    if (otherOp.uiAttribs.subPatch != patchId) {
-                        console.log('found outside connection!! ', otherPort.name);
+                    if (otherOp.uiAttribs.subPatch != patchId)
+                    {
                         theOp.portsIn[j].links[k].remove();
-                        gui.scene().link(
-                            otherPort.parent,
-                            otherPort.getName(),
-                            patchOp,
-                            patchOp.dyn.name
-                        );
-                        patchOp.addSubLink(theOp.portsIn[j], otherPort);
+                        k--;
+
+                        if(found)
+                        {
+                            gui.scene().link(
+                                otherPort.parent,
+                                otherPort.getName(),
+                                patchOp,
+                                found
+                            );
+                        }
+                        else
+                        {
+                            gui.scene().link(
+                                otherPort.parent,
+                                otherPort.getName(),
+                                patchOp,
+                                patchOp.dyn.name
+                            );
+                            
+                            found=patchOp.addSubLink(theOp.portsIn[j], otherPort);
+                        }
                     }
                 }
 
@@ -2511,19 +2526,19 @@ CABLES.UI.Patch = function(_gui) {
         var numVisibleOps = 0;
         var errorOps=[];
         var warnOps=[];
+        var colors=[];
 
         for (var i =0;i< self.ops.length;i++)
         {
+            var op=this.ops[i].op;
             if (!this.ops[i].isHidden()) numVisibleOps++;
-            if (this.ops[i].op.uiAttribs.error)
+            if (op.uiAttribs.error)
             {
-                errorOps.push(this.ops[i].op);
-                if(this.ops[i].op.objName.toLowerCase().indexOf("Deprecated")>-1)this.ops[i].op.isDeprecated=true;
+                errorOps.push(op);
+                if(op.objName.toLowerCase().indexOf("Deprecated")>-1)op.isDeprecated=true;
             }
-            if (this.ops[i].op.uiAttribs.warning)
-            {
-                warnOps.push(this.ops[i].op);
-            }
+            if (op.uiAttribs.warning) warnOps.push(op);
+            if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
         }
 
         var html='';
@@ -2537,12 +2552,13 @@ CABLES.UI.Patch = function(_gui) {
 
         if(errorOps.length==0)errorOps=null;
         if(warnOps.length==0)warnOps=null;
+        colors = CABLES.uniqueArray(colors);
 
         html += CABLES.UI.getHandleBarHtml('error_ops', { "errorOps":errorOps, "warnOps":warnOps });
+        html += CABLES.UI.getHandleBarHtml('filter_colors', { "colors":colors });
 
         $('#options').html(html);
     };
-
 
     function updateUiAttribs() {
 
