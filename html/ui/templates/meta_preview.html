@@ -7,6 +7,23 @@
             padding:10px;
             border-left:1px solid #000;
             margin-bottom:5px;
+            position: relative;
+            width:100%;
+        }
+
+        .previewcontainer.paused canvas
+        {
+            opacity: 0.25;
+        }
+
+        .previewcontainer.paused:before
+        {
+            position: absolute;
+            content:"paused";
+            font-size:20px;
+            padding:10px;
+            color:red;
+            z-index: 99999;
         }
 
         .activePreview
@@ -17,6 +34,11 @@
         .previewcontainer canvas
         {
             transform: scale(1,-1);
+        }
+
+        .previewcontainer canvas
+        {
+            max-height: 200px;
         }
 
         .previewcontainer:hover
@@ -31,15 +53,12 @@
     <a class="button" onclick="gui.texturePreview().setMode(0)">clicked texture ops</a>
     <a class="button" onclick="gui.texturePreview().setMode(1)">active texture ops</a>
 
-
     <div style="display:flex;flex-flow: column-reverse;" id="meta_preview_textures"></div>
-
-    <!-- <a class="button" onclick="gui.texturePreview().clear()">clear</a> -->
 
 </script>
 
 <script id="meta_preview_texture" type="text/x-handlebars-template">
-    <div id="preview{{tex.id}}" onclick="gui.patch().focusOp('{{tex.opid}}');gui.patch().setSelectedOpById('{{tex.opid}}');" class="previewcontainer tt" data-tt="{{tex.title}} {{tex.size}}" data-sort="0">
+    <div id="preview{{tex.id}}" onclick="gui.patch().focusOp('{{tex.opid}}');gui.patch().centerViewBoxOp('{{tex.opid}}');gui.patch().setSelectedOpById('{{tex.opid}}');" class="previewcontainer tt" data-tt="{{tex.title}} {{tex.size}}" data-sort="0">
         <canvas id="preview_img_{{tex.id}}" style="transform:scale(1 -1)" class="dark" ></canvas>
         <div>
             {{tex.title}} | <span id="activity{{tex.id}}"></span>

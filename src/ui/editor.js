@@ -88,6 +88,7 @@ CABLES.Editor=function()
         function onSaveCb(txt)
         {
             gui.jobs().finish('saveeditorcontent');
+
             if(txt.toLowerCase().indexOf('error')==0) CABLES.UI.notifyError(txt);
                 else CABLES.UI.notify(txt);
         }

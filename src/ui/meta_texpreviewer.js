@@ -104,7 +104,6 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
 
 CABLES.UI.TexturePreviewer.prototype._getCanvasSize=function(tex)
 {
-    
     var maxWidth=document.getElementById("meta_preview_textures").offsetWidth-30;
     var aspect=tex.height/tex.width;
 
@@ -135,7 +134,6 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml=function()
 
         containerEle=document.getElementById("meta_preview_textures");
     }
-
 
     for(var i=0;i<this._texturePorts.length;i++)
     {
@@ -177,6 +175,7 @@ CABLES.UI.TexturePreviewer.prototype.showActivity=function()
 
 CABLES.UI.TexturePreviewer.isScrolledIntoView=function(elem)
 {
+
     var docViewTop = $(window).scrollTop();
     var docViewBottom = docViewTop + $(window).height();
 
@@ -207,15 +206,19 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
         if(now-this._texturePorts[i].updated<300 || this._texturePorts[i].renderedWidth!=this._texturePorts[i].port.get().width  || this._texturePorts[i].renderedHeight!=this._texturePorts[i].port.get().height )
         {
 
-            if(this._texturePorts[i].doShow && this._texturePorts[i].element && CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
+            if(this._texturePorts[i].element)
+            if(this._texturePorts[i].doShow && CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
             {
                 count++;
                 this._renderTexture(this._texturePorts[i]);
                 this._texturePorts[i].renderedWidth=this._texturePorts[i].port.get().width;
                 this._texturePorts[i].renderedHeight=this._texturePorts[i].port.get().height;
+                this._texturePorts[i].element.classList.remove("paused");
             }
+            else this._texturePorts[i].element.classList.add("paused");
         }
     }
+
 };
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)

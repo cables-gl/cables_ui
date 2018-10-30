@@ -974,6 +974,13 @@ CABLES.UI.Patch = function(_gui) {
         }
     }
 
+    this.centerViewBoxOp=function(opid)
+    {
+        this.centerViewBox(
+            this.scene.getOpById(opid).uiAttribs.translate.x,
+            this.scene.getOpById(opid).uiAttribs.translate.y);
+    }
+
     this.centerViewBox = function(x, y) {
         self.animViewBox(
             x - viewBox.w / 2,
