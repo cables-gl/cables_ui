@@ -1715,12 +1715,13 @@ CABLES.UI.Patch = function(_gui) {
             setStatusSelectedOps();
             self.updateSubPatches();
             uiOp.oprect.showFocus();
-            
+
+            setTimeout(function() {
+                // this fixes links not showing up after pasting
+                uiOp.setPos();
+            }, 30);
         }
 
-        setTimeout(function() {
-            uiOp.setPos();
-        }, 30);
 
         if (uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({
             error: "Op is deprecated"
