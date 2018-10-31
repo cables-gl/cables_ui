@@ -77,8 +77,11 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
 
         cgl.pushPMatrix();
         mat4.ortho(cgl.pMatrix,-1,1,1,-1,0.001,11);
+        var oldTex=cgl.getTexture(texSlot);
         cgl.setTexture(texSlot,port.get().tex);
         this._mesh.render(this._shader);
+        cgl.setTexture(texSlot,oldTex);
+        
         cgl.popPMatrix();
         cgl.resetViewPort();
 

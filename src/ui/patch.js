@@ -1577,10 +1577,7 @@ CABLES.UI.Patch = function(_gui) {
             if (op.uiAttribs.subPatch != currentSubPatch) uiOp.hide();
         }
 
-        
-        
         uiOp.initPorts();
-
 
         checkDuplicatePorts(op);
 
@@ -1710,18 +1707,20 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         // select ops after pasting...
-        // clearTimeout(pastedupdateTimeout);
-        // pastedupdateTimeout=setTimeout(function() {
-            if (uiOp.op.uiAttribs.pasted) {
-                delete uiOp.op.uiAttribs.pasted;
-                gui.patch().addSelectedOpById(uiOp.op.id);
-                uiOp.setSelected(true);
-                uiOp.show();
-                setStatusSelectedOps();
-                self.updateSubPatches();
-                uiOp.oprect.showFocus();
-            }
-        // }, 30);
+        if (uiOp.op.uiAttribs.pasted) {
+            delete uiOp.op.uiAttribs.pasted;
+            gui.patch().addSelectedOpById(uiOp.op.id);
+            uiOp.setSelected(true);
+            uiOp.show();
+            setStatusSelectedOps();
+            self.updateSubPatches();
+            uiOp.oprect.showFocus();
+            
+        }
+
+        setTimeout(function() {
+            uiOp.setPos();
+        }, 30);
 
         if (uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({
             error: "Op is deprecated"
