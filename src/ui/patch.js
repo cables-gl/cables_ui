@@ -1544,7 +1544,7 @@ CABLES.UI.Patch = function(_gui) {
                 for(var i=0;i<op.portsIn.length;i++)
                     if(i!=j)
                         if(op.portsIn[i].name==op.portsIn[j].name)
-                            console.error('op has duplicate port names ('+op.portsIn[j].name+'), they must be unique. ');
+                            console.error('op '+op.objName+' has duplicate port names ('+op.portsIn[j].name+'), they must be unique. ');
         }
         var op = uiOp.op;
 
