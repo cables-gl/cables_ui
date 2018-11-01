@@ -16,7 +16,7 @@
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" data-portname="{{port.name}}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}  onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
-        <span id="portTitle_{{ dirStr }}_{{ portnum }}" >
+        <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}}">
         {{port.name}}
         </span>
     
@@ -41,7 +41,7 @@
                     </tr>
                 {{/each}}
                 </table>
-            {{else}}
+                {{else}}
                 {{#each port.links}}
                     </td><td>
                         <a class="info graphbutton fa fa-chain-broken" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
@@ -66,7 +66,7 @@
 
                 {{/compare}}
             {{else}}
-                {{#if port.uiAttribs.display}}
+            {{#if port.uiAttribs.display}}
 
                     {{#compare port.uiAttribs.display '==' 'bool' }}
                         </td><td colspan="3">

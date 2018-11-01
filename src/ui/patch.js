@@ -1720,6 +1720,7 @@ CABLES.UI.Patch = function(_gui) {
                 // this fixes links not showing up after pasting
                 uiOp.setPos();
             }, 30);
+    
         }
 
 
@@ -2919,6 +2920,20 @@ CABLES.UI.Patch = function(_gui) {
                 if (op.portsIn[index].isAnimated()) $('#portanim_in_' + index).addClass('timingbutton_active');
                 if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $('#portgraph_in_' + index).addClass('timingbutton_active');
 
+                $('#portTitle_in_' + index).on('click', function(e) {
+                    const p=op.portsIn[index];
+
+                    if(!p.uiAttribs.hidePort)
+                    {
+                        gui.opSelect().show(
+                            {
+                                x:p.parent.uiAttribs.translate.x+(index*(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)),
+                                y:p.parent.uiAttribs.translate.y-50,
+                            },op,p);
+                    }
+                });
+
+                
                 $('#portCreateOp_in_' + index).on('click', function(e) {
                     var thePort = op.portsIn[index];
                     if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE) {

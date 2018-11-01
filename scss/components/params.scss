@@ -9,13 +9,12 @@
     .warning,.warning-experimental,.warning-error
 	{
 		border: 1px solid;
-    padding: 21px;
+        padding: 21px;
 
 		a {
 			text-decoration: underline;
 		}
 	}
-
 
 	.hint
 	{
@@ -85,14 +84,20 @@
         
 
 	}
-
-
-
-
-
-
-
 }
+
+
+.paramsPortTitleClickable
+{
+    cursor:pointer;
+
+    &:hover
+    {
+        text-decoration: underline;
+    }
+}
+
+
 
 .paramsPortLink
 {
