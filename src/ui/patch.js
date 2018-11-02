@@ -2103,7 +2103,9 @@ CABLES.UI.Patch = function(_gui) {
             {
                 var testOp = this.ops[i];
                 if (!testOp.op.deleted &&
-                    uiOp.op.id != testOp.op.id && uiOp.getSubPatch() == testOp.getSubPatch()) {
+                    (uiOp.op.objName.indexOf("Comment")==-1) && 
+                    uiOp.op.id != testOp.op.id && 
+                    uiOp.getSubPatch() == testOp.getSubPatch()) {
                     // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
                     // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
                     var spacing = 8;

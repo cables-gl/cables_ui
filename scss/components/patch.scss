@@ -115,7 +115,6 @@
         // border:1px solid $highlight-color-dark;
 		// transition: ease-in-out, border .1s ease-in-out;
 		border: 1px solid $color-c8;
-
 	}
 
 	.commentTitle
@@ -124,14 +123,14 @@
 	    letter-spacing: 3px;
 		font-family: SourceSansProLight !important;
         text-transform: none;
-        fill:$color-c1;
+        // fill:$color-c1;
     }
 	.commentText
     {
         font-size: 15px !important;
 		font-family: SourceSansPro !important;
         text-transform: none;
-        fill:$color-c1;
+        // fill:$color-c1;
     }
 
 	.Ops_Ui_Comment
@@ -151,7 +150,7 @@
             font-size: 14px !important;
 			font-family: SourceSansPro !important;
             pointer-events:none;
-            fill:$color_op_text;
+            // fill:$color_op_text;
 
 			&.active
 			{
