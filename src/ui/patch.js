@@ -2915,6 +2915,20 @@ CABLES.UI.Patch = function(_gui) {
 
         for (var ipo in op.portsOut) {
             cbPortDelete(ipo);
+
+            (function (index) {
+
+            $('#portTitle_out_' + index).on('click', function (e) {
+                const p = op.portsOut[index];
+                if (!p.uiAttribs.hidePort)
+                    gui.opSelect().show(
+                        {
+                            x: p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
+                            y: p.parent.uiAttribs.translate.y + 50,
+                        }, op, p);
+            });
+        }) (ipo);
+
         }
 
         for (var ipi in op.portsIn) {
@@ -2924,15 +2938,12 @@ CABLES.UI.Patch = function(_gui) {
 
                 $('#portTitle_in_' + index).on('click', function(e) {
                     const p=op.portsIn[index];
-
                     if(!p.uiAttribs.hidePort)
-                    {
                         gui.opSelect().show(
                             {
                                 x:p.parent.uiAttribs.translate.x+(index*(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)),
                                 y:p.parent.uiAttribs.translate.y-50,
                             },op,p);
-                    }
                 });
 
                 
@@ -3390,6 +3401,8 @@ CABLES.UI.Patch = function(_gui) {
                     classname: "port_text_color_" + p.getTypeString()
                 });
             }
+
+
         }
 
         if (suggestions.length === 0) {
