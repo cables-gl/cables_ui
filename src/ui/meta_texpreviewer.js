@@ -8,6 +8,8 @@ CABLES.UI.TexturePreviewer=function()
     this._showing=false;
     this._lastTimeActivity=0;
     this._mode=0;
+    this._shader=null;
+    this._shaderTexUniform=null;
 };
 
 CABLES.UI.TexturePreviewer.MODE_CLICKED=0;
@@ -16,7 +18,6 @@ CABLES.UI.TexturePreviewer.MODE_ACTIVE=1;
 CABLES.UI.TexturePreviewer.FRAGSHADER=''.endl()
     .endl()+'IN vec2 texCoord;'
     .endl()+'UNI sampler2D tex;'
-
     .endl()+'void main()'
     .endl()+'{'
     .endl()+'    vec4 col=vec4(1.0,1.0,1.0,1.0);'
@@ -27,13 +28,10 @@ CABLES.UI.TexturePreviewer.FRAGSHADER=''.endl()
 CABLES.UI.TexturePreviewer.VERTSHADER=''.endl()
     .endl()+'IN vec3 vPosition;'
     .endl()+'IN vec2 attrTexCoord;'
-
     .endl()+'OUT vec2 texCoord;'
-
     .endl()+'UNI mat4 projMatrix;'
     .endl()+'UNI mat4 modelMatrix;'
     .endl()+'UNI mat4 viewMatrix;'
-
     .endl()+'void main()'
     .endl()+'{'
     .endl()+'    texCoord=attrTexCoord;'
@@ -46,6 +44,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
 {
     var port=tp.port;
     const id=tp.id;
+    const texSlot=5;
 
     var previewCanvasEle=document.getElementById('preview_img_'+id);
     if(!previewCanvasEle)
@@ -53,7 +52,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
         // console.log("no previewCanvasEle");
         return;
     }
-    var previewCanvas=document.getElementById('preview_img_'+id).getContext("2d");
+    var previewCanvas=previewCanvasEle.getContext("2d");
 
     if(previewCanvas && port && port.get())
     {
@@ -72,12 +71,17 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
             this._shader=new CGL.Shader(cgl,'MinimalMaterial');
             this._shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
             this._shader.setSource(CABLES.UI.TexturePreviewer.VERTSHADER,CABLES.UI.TexturePreviewer.FRAGSHADER);
+            this._shader.add
+            this._shaderTexUniform=new CGL.Uniform(this._shader,'t','tex',texSlot);
         }
 
         cgl.pushPMatrix();
         mat4.ortho(cgl.pMatrix,-1,1,1,-1,0.001,11);
-        cgl.setTexture(0,port.get().tex);
+        var oldTex=cgl.getTexture(texSlot);
+        cgl.setTexture(texSlot,port.get().tex);
         this._mesh.render(this._shader);
+        cgl.setTexture(texSlot,oldTex);
+        
         cgl.popPMatrix();
         cgl.resetViewPort();
 
@@ -92,7 +96,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
         previewCanvas.clearRect(0, 0,previewCanvasEle.width, previewCanvasEle.height);
         previewCanvas.drawImage(cgl.canvas, 0, 0,previewCanvasEle.width, previewCanvasEle.height);
 
-        cgl.gl.clearColor(0,0,0,0.0);
+        cgl.gl.clearColor(0,0,0,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
     }
     else
@@ -104,7 +108,6 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
 
 CABLES.UI.TexturePreviewer.prototype._getCanvasSize=function(tex)
 {
-    
     var maxWidth=document.getElementById("meta_preview_textures").offsetWidth-30;
     var aspect=tex.height/tex.width;
 
@@ -135,7 +138,6 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml=function()
 
         containerEle=document.getElementById("meta_preview_textures");
     }
-
 
     for(var i=0;i<this._texturePorts.length;i++)
     {
@@ -177,6 +179,7 @@ CABLES.UI.TexturePreviewer.prototype.showActivity=function()
 
 CABLES.UI.TexturePreviewer.isScrolledIntoView=function(elem)
 {
+
     var docViewTop = $(window).scrollTop();
     var docViewBottom = docViewTop + $(window).height();
 
@@ -207,15 +210,19 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
         if(now-this._texturePorts[i].updated<300 || this._texturePorts[i].renderedWidth!=this._texturePorts[i].port.get().width  || this._texturePorts[i].renderedHeight!=this._texturePorts[i].port.get().height )
         {
 
-            if(this._texturePorts[i].doShow && this._texturePorts[i].element && CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
+            if(this._texturePorts[i].element)
+            if(this._texturePorts[i].doShow && CABLES.UI.TexturePreviewer.isScrolledIntoView( this._texturePorts[i].element ))
             {
                 count++;
                 this._renderTexture(this._texturePorts[i]);
                 this._texturePorts[i].renderedWidth=this._texturePorts[i].port.get().width;
                 this._texturePorts[i].renderedHeight=this._texturePorts[i].port.get().height;
+                this._texturePorts[i].element.classList.remove("paused");
             }
+            else this._texturePorts[i].element.classList.add("paused");
         }
     }
+
 };
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)

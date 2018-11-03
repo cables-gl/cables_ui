@@ -68,6 +68,20 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         return label !== null;
     };
 
+    // var lastRotation=0;
+    this._updateRotation=function()
+    {
+
+        if(this.getGroup() && opui.op.uiAttribs.rotate)
+        {
+            // this.getGroup().rotate();
+            // this.getGroup().rotate(-1*lastRotation,w/2,h/2);
+            // if(this.getGroup()) this.getGroup().node.style.transform='rotate('+opui.op.uiAttribs.rotate+'deg)';
+            this.getGroup().rotate(opui.op.uiAttribs.rotate,0,0);
+            // lastRotation=opui.op.uiAttribs.rotate;
+        }
+    }
+
     this.setPosition = function(posx, posy) {
 
         // round for performane
@@ -76,6 +90,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         if (this.getGroup()) {
             this.getGroup().transform('t' + posx + ',' + posy);
+            this._updateRotation();
         }
 
         if (miniRect) miniRect.attr({
@@ -112,6 +127,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     this.showCopyAnim = function() {
         if (!background || !background.node) return;
         background.node.classList.add('copyOp');
+        
 
         if (!background.node.hasAnimEndListenerCopy) {
             background.node.addEventListener("animationend", function() {
@@ -352,23 +368,31 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this.updateComment = function() {
         if (objName == 'Ops.Ui.Comment') {
-            if (commentText) {
+            if (commentText)
+            {
                 commentText.attr({
                     'text': opui.op.text.get(),
                     'text-anchor': 'start',
-                    'x': 0,
+                    'fill':"#eee",
+                    'x': 0
                 });
 
             }
+
+            var color=opui.op.uiAttribs.color||"#eee";
+
             if (label) {
                 label.attr({
                     'text': opui.op.inTitle.get(),
                     'x': 0,
+                    'stroke':color,
+                    'fill':color,
                     'text-anchor': 'start'
                 });
 
             }
             this.updateSize();
+            this._updateRotation();
 
         }
     };
@@ -427,7 +451,14 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             return;
         }
 
-        if (opui.op.uiAttribs.color) // || opui.op.uiAttribs.warning)
+        if(objName == 'Ops.Ui.Comment')
+        {
+            this.updateComment();
+            return;
+
+        }
+
+        if (opui.op.uiAttribs.color )
         {
             if (!this._colorHandle)
             {
@@ -443,6 +474,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             // this._colorHandle.attr({"x":w-CABLES.UI.uiConfig.resizeBarWidth});
             this.setWidth();
 
+            
+
             // if (background) this._errorIndicator.attr({
             //     cx: background.getBBox().width
             // });
@@ -452,6 +485,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
         else
         {
+
             if(this._colorHandle)
             {
                 this._colorHandle.remove();
@@ -761,6 +795,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
 
         group.push(background, label);
+
+        
 
         // resizeHandle.toFront();
         this.updateSize();

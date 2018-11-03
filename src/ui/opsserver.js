@@ -361,14 +361,11 @@ CABLES.UI.ServerOps = function(gui) {
                                 {
                                     console.log('execute first time...');
                                     gui.opSelect().reload();
-                                    
-                                    
                                 }
 
                                 // exec ???
                                 gui.serverOps.execute(opname);
-                                // setStatus('saved ' + opname);
-
+                                setStatus('saved ' + opname);
                             }
                             // console.log('res', res);
                         },

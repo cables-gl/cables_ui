@@ -215,8 +215,18 @@ CABLES.UI.Patch = function(_gui) {
 
                         CABLES.UI.notify('Pasted ' + json.ops.length + ' ops');
                         self.setSelectedOp(null);
+
                         gui.patch().scene.deSerialize(json, false);
 
+                        for(var i=0;i<json.ops.length;i++) 
+                        {                            
+                            var uiop=self.addSelectedOpById(json.ops[i].id);
+
+                            uiop.setSelected(false);
+                            uiop.setSelected(true);
+                            uiop.oprect.setSelected
+                        }
+                        
                         return;
                     });
                 }
@@ -964,6 +974,13 @@ CABLES.UI.Patch = function(_gui) {
         }
     }
 
+    this.centerViewBoxOp=function(opid)
+    {
+        this.centerViewBox(
+            this.scene.getOpById(opid).uiAttribs.translate.x,
+            this.scene.getOpById(opid).uiAttribs.translate.y);
+    }
+
     this.centerViewBox = function(x, y) {
         self.animViewBox(
             x - viewBox.w / 2,
@@ -1527,7 +1544,7 @@ CABLES.UI.Patch = function(_gui) {
                 for(var i=0;i<op.portsIn.length;i++)
                     if(i!=j)
                         if(op.portsIn[i].name==op.portsIn[j].name)
-                            console.error('op has duplicate port names ('+op.portsIn[j].name+'), they must be unique. ');
+                            console.error('op '+op.objName+' has duplicate port names ('+op.portsIn[j].name+'), they must be unique. ');
         }
         var op = uiOp.op;
 
@@ -1560,10 +1577,7 @@ CABLES.UI.Patch = function(_gui) {
             if (op.uiAttribs.subPatch != currentSubPatch) uiOp.hide();
         }
 
-        
-        
         uiOp.initPorts();
-
 
         checkDuplicatePorts(op);
 
@@ -1693,18 +1707,22 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         // select ops after pasting...
-        clearTimeout(pastedupdateTimeout);
-        pastedupdateTimeout=setTimeout(function() {
-            if (uiOp.op.uiAttribs.pasted) {
-                delete uiOp.op.uiAttribs.pasted;
-                gui.patch().addSelectedOpById(uiOp.op.id);
-                uiOp.setSelected(true);
-                uiOp.show();
-                setStatusSelectedOps();
-                self.updateSubPatches();
-                uiOp.oprect.showFocus();
-            }
-        }, 30);
+        if (uiOp.op.uiAttribs.pasted) {
+            delete uiOp.op.uiAttribs.pasted;
+            gui.patch().addSelectedOpById(uiOp.op.id);
+            uiOp.setSelected(true);
+            uiOp.show();
+            setStatusSelectedOps();
+            self.updateSubPatches();
+            uiOp.oprect.showFocus();
+
+            setTimeout(function() {
+                // this fixes links not showing up after pasting
+                uiOp.setPos();
+            }, 30);
+    
+        }
+
 
         if (uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({
             error: "Op is deprecated"
@@ -2085,7 +2103,9 @@ CABLES.UI.Patch = function(_gui) {
             {
                 var testOp = this.ops[i];
                 if (!testOp.op.deleted &&
-                    uiOp.op.id != testOp.op.id && uiOp.getSubPatch() == testOp.getSubPatch()) {
+                    (uiOp.op.objName.indexOf("Comment")==-1) && 
+                    uiOp.op.id != testOp.op.id && 
+                    uiOp.getSubPatch() == testOp.getSubPatch()) {
                     // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
                     // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
                     var spacing = 8;
@@ -2431,7 +2451,7 @@ CABLES.UI.Patch = function(_gui) {
             if (gui.patch().ops[i].op.id == id) {
                 self.addSelectedOp(gui.patch().ops[i]);
                 // console.log('found sel op by id !');
-                return;
+                return gui.patch().ops[i];
             }
         }
     };
@@ -2902,6 +2922,20 @@ CABLES.UI.Patch = function(_gui) {
                 if (op.portsIn[index].isAnimated()) $('#portanim_in_' + index).addClass('timingbutton_active');
                 if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $('#portgraph_in_' + index).addClass('timingbutton_active');
 
+                $('#portTitle_in_' + index).on('click', function(e) {
+                    const p=op.portsIn[index];
+
+                    if(!p.uiAttribs.hidePort)
+                    {
+                        gui.opSelect().show(
+                            {
+                                x:p.parent.uiAttribs.translate.x+(index*(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)),
+                                y:p.parent.uiAttribs.translate.y-50,
+                            },op,p);
+                    }
+                });
+
+                
                 $('#portCreateOp_in_' + index).on('click', function(e) {
                     var thePort = op.portsIn[index];
                     if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE) {
