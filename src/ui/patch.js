@@ -2906,8 +2906,9 @@ CABLES.UI.Patch = function(_gui) {
                     var thePort = op.portsIn[index];
                     if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE) {
                         gui.scene().addOp('Ops.Gl.Texture', {}, function(newop) {
-                            gui.scene().link(op, thePort.name, newop, newop.getFistOutPortByType(thePort.type).name);
+                            gui.scene().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                         });
+                        
                     }
                 });
 
