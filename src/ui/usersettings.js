@@ -36,12 +36,12 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('showMinimap'))
     {
         $('.nav_usersettings_showMinimap i').removeClass('unchecked');
-        if(gui)gui.showMiniMap();
+        if(window.gui)gui.showMiniMap();
     }
     else
     {
         $('.nav_usersettings_showMinimap i').addClass('unchecked');
-        if(gui)gui.hideMiniMap();
+        if (window.gui)gui.hideMiniMap();
     }
 
     CABLES.UI.userSettings.straightLines = CABLES.UI.userSettings.get("straightLines");
@@ -49,3 +49,4 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
 }
 
 CABLES.UI.userSettings=new CABLES.UI.UserSettings();
+CABLES.UI.userSettings.updateNavBar();

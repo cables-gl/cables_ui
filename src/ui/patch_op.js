@@ -554,6 +554,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         if(gui.patch().getPaperMap())
         {
+            console.log("MINIRECT!");
             miniRect = gui.patch().getPaperMap().rect(x, y, w, h);
             miniRect.attr({
                 "width": w,

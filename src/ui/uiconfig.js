@@ -10,7 +10,7 @@ CABLES.UI.uiConfig=
     resizeBarWidth:6,
 
     snapX:12,
-    snapY:40,
+    snapY:20,
 
     opHeight:31,
     opWidth:20,
