@@ -7,8 +7,6 @@
     <br/><br/>
     <input type="checkbox" {{#if userSettings.nobrowserWarning }}checked="checked"{{/if}} id="switchnobrowserWarning" onChange="CABLES.UI.userSettings.set('nobrowserWarning',this.checked);"> hide browser warning
     <br/><br/>
-    <input type="checkbox" {{#if userSettings.snapToGrid }}checked="checked"{{/if}} id="switchsnapToGrid" onChange="CABLES.UI.userSettings.set('snapToGrid',this.checked);"> snap ops to grid
-    <br/><br/>
     
     <input type="checkbox" {{#if userSettings.touchpadmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('touchpadmode',this.checked)"> touchpad mode
     <br/><br/>

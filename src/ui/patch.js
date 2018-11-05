@@ -2329,6 +2329,9 @@ CABLES.UI.Patch = function(_gui) {
 
             var avg = sum / selectedOps.length;
 
+            if(CABLES.UI.userSettings.snapToGrid) avg = Math.round(avg / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX;
+
+
             for (j in selectedOps) selectedOps[j].setPos(avg, selectedOps[j].op.uiAttribs.translate.y);
         }
     };
@@ -2341,6 +2344,9 @@ CABLES.UI.Patch = function(_gui) {
                 sum += selectedOps[j].op.uiAttribs.translate.y;
 
             var avg = sum / selectedOps.length;
+
+            if (CABLES.UI.userSettings.snapToGrid) avg = Math.round(avg / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
+
 
             for (j in selectedOps)
                 selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x, avg);

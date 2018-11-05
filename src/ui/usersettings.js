@@ -6,6 +6,8 @@ CABLES.UI.UserSettings=function()
 {
     var settings=JSON.parse(localStorage.getItem("cables.usersettings"))||{};
 
+    
+
     this.set=function(key,value)
     {
         settings[key]=value;
@@ -24,7 +26,6 @@ CABLES.UI.UserSettings=function()
         return settings;
     };
 
-
 };
 
 CABLES.UI.UserSettings.prototype.updateNavBar=function()
@@ -35,18 +36,16 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('showMinimap'))
     {
         $('.nav_usersettings_showMinimap i').removeClass('unchecked');
-        gui.showMiniMap();
+        if(gui)gui.showMiniMap();
     }
     else
     {
         $('.nav_usersettings_showMinimap i').addClass('unchecked');
-        gui.hideMiniMap();
+        if(gui)gui.hideMiniMap();
     }
-        
 
+    CABLES.UI.userSettings.straightLines = CABLES.UI.userSettings.get("straightLines");
+    CABLES.UI.userSettings.snapToGrid = CABLES.UI.userSettings.get("snapToGrid");
 }
 
 CABLES.UI.userSettings=new CABLES.UI.UserSettings();
-CABLES.UI.userSettings.straightLines=CABLES.UI.userSettings.get("straightLines");
-CABLES.UI.userSettings.snapToGrid = CABLES.UI.userSettings.get("snapToGrid");
-
