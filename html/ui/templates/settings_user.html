@@ -10,8 +10,6 @@
     <input type="checkbox" {{#if userSettings.snapToGrid }}checked="checked"{{/if}} id="switchsnapToGrid" onChange="CABLES.UI.userSettings.set('snapToGrid',this.checked);"> snap ops to grid
     <br/><br/>
     
-    <input type="checkbox" {{#if userSettings.hideMinimap }}checked="checked"{{/if}} id="showMwitchminimap" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('hideMinimap',this.checked)"> hide minimap
-    <br/><br/>
     <input type="checkbox" {{#if userSettings.touchpadmode }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="gui.patch().modeTouchPad=this.checked;CABLES.UI.userSettings.set('touchpadmode',this.checked)"> touchpad mode
     <br/><br/>
     <input type="checkbox" {{#if userSettings.theme-bright }}checked="checked"{{/if}} id="switchTouchPadMode" onChange="CABLES.UI.userSettings.set('theme-bright',this.checked);document.location.reload();"> high contrast theme

@@ -1285,7 +1285,7 @@ CABLES.UI.Patch = function(_gui) {
         $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'), {});
         $('#meta').append();
 
-        if (!CABLES.UI.userSettings.get("hideMinimap"))
+        if (CABLES.UI.userSettings.get("showMinimap"))
         {
             this.paperMap = Raphael("minimap", CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
             this.paperMap.setViewBox(-500, -500, 4000, 4000);
@@ -1743,9 +1743,9 @@ CABLES.UI.Patch = function(_gui) {
             self.showProjectParams();
             gui.setStateSaved();
 
-            if (self.ops.length > CABLES.UI.uiConfig.miniMapShowAutomaticallyNumOps) {
-                gui.showMiniMap();
-            }
+            // if (self.ops.length > CABLES.UI.uiConfig.miniMapShowAutomaticallyNumOps) {
+            //     gui.showMiniMap();
+            // }
 
             logStartup('Patch loaded');
         };

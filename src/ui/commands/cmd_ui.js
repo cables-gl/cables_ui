@@ -83,11 +83,17 @@ CABLES.CMD.UI.showTimeline = function() {
 
 
 CABLES.CMD.UI.hideMinimap = function() {
+    CABLES.UI.userSettings.set('showMinimap', false);
     gui.hideMiniMap();
 };
 
 CABLES.CMD.UI.showMinimap = function() {
+    CABLES.UI.userSettings.set('showMinimap', true);
     gui.showMiniMap();
+};
+CABLES.CMD.UI.toggleMinimap = function () {
+    CABLES.UI.userSettings.set('showMinimap', !CABLES.UI.userSettings.get('showMinimap'));
+    if (CABLES.UI.userSettings.get('showMinimap'))document.location.reload();
 };
 
 
@@ -127,10 +133,13 @@ CABLES.CMD.UI.toggleHelper = function() {
     CABLES.UI.renderHelper=!CABLES.UI.renderHelper;
 };
 
-
 CABLES.CMD.UI.gradientTest = function() {
     var ge=new CABLES.GradientEditor();
     ge.show();
+};
+
+CABLES.CMD.UI.toggleSnapToGrid = function () {
+    CABLES.UI.userSettings.set('snapToGrid', !CABLES.UI.userSettings.get('snapToGrid'));
 };
 
 
@@ -253,10 +262,20 @@ CABLES.CMD.commands.push({
         category: "ui",
         func: CABLES.CMD.UI.toggleHelper,
         icon: "command"
-    },{
+    }, {
         cmd: "gradient test",
         category: "ui",
         func: CABLES.CMD.UI.gradientTest,
+        icon: "command"
+    }, {
+        cmd: "toggle snap to grid",
+        category: "ui",
+        func: CABLES.CMD.UI.toggleSnapToGrid,
+        icon: "command"
+    }, {
+        cmd: "toggle mini map",
+        category: "ui",
+        func: CABLES.CMD.UI.toggleMinimap,
         icon: "command"
     }
 

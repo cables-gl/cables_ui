@@ -207,7 +207,7 @@ nav
             position: absolute;
             top: 29px;
             left: 0;
-            width: 200px;
+            width: 235px;
             -webkit-box-shadow: none;
             -moz-box-shadow: none;
             box-shadow: none;
@@ -361,5 +361,19 @@ nav
                 }
             }
         }
+    }
+
+
+    .checked,.unchecked
+    {
+        margin-bottom: -3px;
+        width: 14px;
+        height: 14px;
+        margin-right: 8px;
+    }
+
+    .unchecked
+    {
+        opacity: 0;
     }
 }
