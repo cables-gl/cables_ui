@@ -20,9 +20,9 @@
         {{port.name}}
         </span>
     
-        {{#compare port.uiAttribs.colorPick '==' 'true' }}
+        {{#if port.uiAttribs.colorPick }}
         <div class="button_colorpick fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
-        {{/compare}}
+        {{/if}}
     </td>
     <td class="">
         {{#if port.links}}

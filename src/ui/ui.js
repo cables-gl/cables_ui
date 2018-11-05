@@ -754,7 +754,7 @@ CABLES.UI.GUI = function() {
 
         $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
         $('.nav_changelog').bind("click", CABLES.CMD.UI.showChangelog);
-        $('#username').bind("click", CABLES.CMD.UI.userSettings);
+        // $('#username').bind("click", CABLES.CMD.UI.userSettings);
 
         $('.cables-logo').hover(function(e) {
             $('#jobs').show();
@@ -1554,7 +1554,7 @@ CABLES.UI.GUI = function() {
             self.user = user;
             $('#loggedout').hide();
             $('#loggedin').show();
-            $('#username').html('&nbsp;&nbsp;' + user.usernameLowercase);
+            $('#username').html(user.usernameLowercase);
             incrementStartup();
             self.serverOps = new CABLES.UI.ServerOps(self);
             logStartup('User Data loaded');

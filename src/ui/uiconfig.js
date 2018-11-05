@@ -9,6 +9,9 @@ CABLES.UI.uiConfig=
     portPadding:2,
     resizeBarWidth:6,
 
+    snapX:12,
+    snapY:40,
+
     opHeight:31,
     opWidth:20,
     opWidthSmall:40,

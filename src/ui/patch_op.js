@@ -1,6 +1,11 @@
 var CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
+CABLES.UI.DRAGGINGOPS_STARTX=0;
+CABLES.UI.DRAGGINGOPS_STARTY=0;
+CABLES.UI.DRAGGINGOPS=false;
+CABLES.UI.DRAGGINGOPSDIR=-1;
+
 CABLES.UI.cleanRaphael = function(el) {
     el.node.removeAttribute('font-family');
     el.node.removeAttribute('font-size');
@@ -295,6 +300,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         shakeLastX = a;
 
         gui.patch().moveSelectedOps(dx, dy, a, b, e);
+
+        // gui.patch().moveSelectedOps(dx, dy, a, b, e);
         gui.patch().updateBounds = true;
         gui.setStateUnsaved();
     };
@@ -538,6 +545,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var mouseUp=function(ev) {
         opui.isDragging = false;
+        CABLES.UI.DRAGGINGOPS=false;
     };
 
 
@@ -1088,6 +1096,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         startMoveX = -1;
         startMoveY = -1;
         self.isDragging = false;
+        CABLES.UI.DRAGGINGOPS=false;
     };
 
     this.getPosX = function() {
@@ -1143,9 +1152,39 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         pos.x = pos.x - startMoveX;
         pos.y = pos.y - startMoveY;
 
+        if(e.ctrlKey || CABLES.UI.userSettings.snapToGrid)
+        {
+            pos.x=Math.round(pos.x/CABLES.UI.uiConfig.snapX)*CABLES.UI.uiConfig.snapX;
+            pos.y=Math.round(pos.y/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
+        }
+
+        if(e.shiftKey)
+        {
+            var diffX=Math.abs(CABLES.UI.DRAGGINGOPS_STARTX-pos.x);
+            var diffY=Math.abs(CABLES.UI.DRAGGINGOPS_STARTY-pos.y);
+
+            if(CABLES.UI.DRAGGINGOPS && Math.max(diffX,diffY)>10 && CABLES.UI.DRAGGINGOPSDIR==-1 )
+            {
+                if(diffX>diffY)CABLES.UI.DRAGGINGOPSDIR=0;
+                    else CABLES.UI.DRAGGINGOPSDIR=1;
+            }
+
+            if(CABLES.UI.DRAGGINGOPSDIR==-1){}
+                else if(CABLES.UI.DRAGGINGOPSDIR==0) pos.y=CABLES.UI.DRAGGINGOPS_STARTY;
+                    else pos.x=CABLES.UI.DRAGGINGOPS_STARTX;
+        }
+
 
         self.setPos(pos.x, pos.y);
+        if(!CABLES.UI.DRAGGINGOPS)
+        {
+            CABLES.UI.DRAGGINGOPSDIR=-1;
+            CABLES.UI.DRAGGINGOPS=true;
+            CABLES.UI.DRAGGINGOPS_STARTX=pos.x;
+            CABLES.UI.DRAGGINGOPS_STARTY=pos.y;
+        }
         self.isDragging = true;
+        
     };
 
     this.oprect = new OpRect(this, x, y, w, h, txt, self.op.objName);
