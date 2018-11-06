@@ -565,7 +565,6 @@ CABLES.UI.Patch = function(_gui) {
             });
     };
 
-
     /**
      * Saves a patch to a file, overwrites the file it exists
      * 
@@ -2891,12 +2890,12 @@ CABLES.UI.Patch = function(_gui) {
         for (i = 0; i < op.portsIn.length; i++) {
             if (op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display == 'file')
             {
-                var shortName=op.portsIn[i].get()||'none';
+                var shortName=String(op.portsIn[i].get()||'none');
                 if(shortName.indexOf("/")>-1) shortName=shortName.substr(shortName.lastIndexOf("/")+1);
 
                 $('#portFilename_' + i).html('<span class="button fa fa-folder-open-o monospace" style="text-transform:none;font-family:monospace;font-size: 13px;">'+shortName+'</span>');
 
-{/* <a class="graphbutton " onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> --> */}
+                {/* <a class="graphbutton " onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> --> */}
 
 
                 if (op.portsIn[i].get() && ((op.portsIn[i].get() + '').endsWith('.jpg') || (op.portsIn[i].get() + '').endsWith('.png'))) {
