@@ -207,8 +207,17 @@ CABLES.UI.Patch = function(_gui) {
                                         mouseY = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
                                     }
 
-                                    json.ops[i].uiAttribs.translate.x = json.ops[i].uiAttribs.translate.x + mouseX - minx;
-                                    json.ops[i].uiAttribs.translate.y = json.ops[i].uiAttribs.translate.y + mouseY - miny;
+                                    var x=json.ops[i].uiAttribs.translate.x + mouseX - minx;
+                                    var y=json.ops[i].uiAttribs.translate.y + mouseY - miny;
+                                    if(CABLES.UI.userSettings.snapToGrid)
+                                    {
+                                        console.log("SNAP!!!!");
+                                        x=CABLES.UI.snapOpPosX(x);
+                                        y=CABLES.UI.snapOpPosY(y);
+                                    }
+                                    json.ops[i].uiAttribs.translate.x = x;
+                                    json.ops[i].uiAttribs.translate.y = y;
+                                    
                                 }
                             }
                         }
@@ -1580,9 +1589,7 @@ CABLES.UI.Patch = function(_gui) {
 
         checkDuplicatePorts(op);
 
-        if (!op.uiAttribs) {
-            op.uiAttribs = {};
-        }
+        if (!op.uiAttribs) op.uiAttribs = {};
 
         if (!op.uiAttribs.translate)
         {
@@ -1590,17 +1597,16 @@ CABLES.UI.Patch = function(_gui) {
                 else  op.uiAttribs.translate = { x: CABLES.UI.OPSELECT.newOpPos.x, y: CABLES.UI.OPSELECT.newOpPos.y };
         }
 
-        if (op.uiAttribs.hasOwnProperty('translate')) {
+        if (op.uiAttribs.hasOwnProperty('translate'))
+        {
+            if(CABLES.UI.userSettings.snapToGrid) op.uiAttribs.translate.x=CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
+            if(CABLES.UI.userSettings.snapToGrid) op.uiAttribs.translate.y=CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
             uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
         }
 
-        if (op.uiAttribs.hasOwnProperty('title')) {
-            gui.patch().setOpTitle(uiOp, op.uiAttribs.title);
-        }
+        if (op.uiAttribs.hasOwnProperty('title')) gui.patch().setOpTitle(uiOp, op.uiAttribs.title);
 
-        if (!op.uiAttribs.hasOwnProperty('subPatch')) {
-            op.uiAttribs.subPatch = currentSubPatch;
-        }
+        if (!op.uiAttribs.hasOwnProperty('subPatch')) op.uiAttribs.subPatch = currentSubPatch;
 
         if (CABLES.UI.OPSELECT.linkNewOpToSuggestedPort) {
             console.log('CABLES.UI.OPSELECT.linkNewOpToSuggestedPort');
@@ -1672,10 +1678,7 @@ CABLES.UI.Patch = function(_gui) {
 
         CABLES.UI.OPSELECT.linkNewOpToOp = null;
         CABLES.UI.OPSELECT.linkNewLink = null;
-        CABLES.UI.OPSELECT.newOpPos = {
-            x: 0,
-            y: 0
-        };
+        CABLES.UI.OPSELECT.newOpPos = { x: 0, y: 0 };
         CABLES.UI.OPSELECT.linkNewOpToSuggestedPort = null;
         CABLES.UI.OPSELECT.linkNewOpToPort = null;
         
@@ -1683,13 +1686,8 @@ CABLES.UI.Patch = function(_gui) {
 
         
         var pos = self.findNonCollidingPosition(uiOp.getPosX(), uiOp.getPosY(), uiOp.op.id,dir);
-        
-        // uiOp.setPos(pos.x, pos.y);
+
         uiOp.setPos( uiOp.getPosX(), uiOp.getPosY() );
-        
-
-
-
 
         if (!isLoading) {
             setTimeout(function() {
@@ -1899,7 +1897,11 @@ CABLES.UI.Patch = function(_gui) {
             var width = CABLES.UI.uiConfig.opWidth;
             if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
 
-            var uiOp = new OpUi(self.paper, op, CABLES.UI.OPSELECT.newOpPos.x, CABLES.UI.OPSELECT.newOpPos.y, width, CABLES.UI.uiConfig.opHeight, op.name);
+
+            var x=CABLES.UI.OPSELECT.newOpPos.x;
+            var y=CABLES.UI.OPSELECT.newOpPos.y;
+
+            var uiOp = new OpUi(self.paper, op, x,y, width, CABLES.UI.uiConfig.opHeight, op.name);
 
             self.ops.push(uiOp);
 
@@ -2328,8 +2330,7 @@ CABLES.UI.Patch = function(_gui) {
 
             var avg = sum / selectedOps.length;
 
-            if(CABLES.UI.userSettings.snapToGrid) avg = Math.round(avg / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX;
-
+            if(CABLES.UI.userSettings.snapToGrid) avg=CABLES.UI.snapOpPosX(avg);
 
             for (j in selectedOps) selectedOps[j].setPos(avg, selectedOps[j].op.uiAttribs.translate.y);
         }
@@ -2344,8 +2345,7 @@ CABLES.UI.Patch = function(_gui) {
 
             var avg = sum / selectedOps.length;
 
-            if (CABLES.UI.userSettings.snapToGrid) avg = Math.round(avg / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
-
+            if(CABLES.UI.userSettings.snapToGrid) avg=CABLES.UI.snapOpPosY(avg);
 
             for (j in selectedOps)
                 selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x, avg);
