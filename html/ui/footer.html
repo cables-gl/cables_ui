@@ -66,7 +66,6 @@
             return url+'?nc='+(Date.now()+'').substr(-6);
         }
 
-
         var scriptTag = document.createElement('script');
         scriptTag.setAttribute('src',CABLES.noCacheUrl('js/libs.core.min.js'));
         document.body.appendChild(scriptTag);
@@ -115,9 +114,8 @@
 
                     loadjs.ready('cables_core', function()
                     {
-                        
                         logStartup('loaded cables core');
-                        
+
                         incrementStartup();
 
                         loadjs([CABLES.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');
