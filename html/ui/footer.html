@@ -97,7 +97,7 @@
                 'js/ace/ace.js'
             ], 'libs');
 
-            if(CABLES.isDevEnv()) jsType='min';
+            if(!CABLES.isDevEnv()) jsType='min';
                 else jsType='max';
 
             loadjs.ready('libs', function()
