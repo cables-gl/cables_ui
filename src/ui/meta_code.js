@@ -78,7 +78,8 @@ CABLES.UI.MetaCode=function(projectId)
                         doc:doc,
                         summary:summary,
                         libs:gui.opDocs.libs,
-                        user:gui.user
+                        user:gui.user,
+                        opserialized:op.getSerialized()
                     });
                     $('#meta_content_code').html(html);
 

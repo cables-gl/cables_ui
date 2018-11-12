@@ -120,12 +120,13 @@
         <span class="button  fa fa-remove" onclick="gui.patch().deleteChilds('{{op.id}}');">delete all children </span>
     </div> -->
 
-
+<!--
     <div class="panelhead " data-panelselector="#opdebug">Debug</div>
-    <div id="opdebug" class="panel" >
-            {{{op.id}}}
-            <pre>{{{ json op.uiAttribs }}}</pre>
-    </div>
+        <div id="opdebug" class="panel selectable" style="overflow:auto">
+            op id: {{{op.opIid}}}<br />
+            op instance id:{{{op.id}}}<br />
+            <pre>{{{ json opserialized }}}</pre>
+    </div> -->
 
 
     <div  class="panel" >

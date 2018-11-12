@@ -2876,6 +2876,7 @@ CABLES.UI.Patch = function(_gui) {
 
         html += CABLES.UI.getHandleBarHtml('params_op_foot', {
             "op": op,
+            "opserialized":op.getSerialized(),
             "user": gui.user
         });
 
