@@ -1389,7 +1389,11 @@ CABLES.UI.GUI = function() {
     this.setStateUnsaved = function() {
         if(savedState)
         {
-            document.title = gui.patch().getCurrentProject().name + ' *';
+            var title='';
+            if(CABLES.isDevEnv())title="DEV ";
+            title+=gui.patch().getCurrentProject().name + ' *';
+            document.title = title;
+            
             favIconLink.href = '/favicon/favicon_orange.ico';
             savedState = false;
     
@@ -1416,7 +1420,10 @@ CABLES.UI.GUI = function() {
         savedState = true;
         favIconLink.href = '/favicon/favicon.ico';
 
-        document.title = '' + gui.patch().getCurrentProject().name;
+        var title='';
+        if(CABLES.isDevEnv())title="DEV ";
+        title+=gui.patch().getCurrentProject().name;
+        document.title = title;;
         window.onbeforeunload = function() {
             gui.patchConnection.send(CABLES.PACO_CLEAR);
         };

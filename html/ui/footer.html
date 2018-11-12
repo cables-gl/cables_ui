@@ -66,7 +66,6 @@
             return url+'?nc='+(Date.now()+'').substr(-6);
         }
 
-
         var scriptTag = document.createElement('script');
         scriptTag.setAttribute('src',CABLES.noCacheUrl('js/libs.core.min.js'));
         document.body.appendChild(scriptTag);
@@ -74,6 +73,10 @@
         incrementStartup();
         logStartup("Start");
 
+        CABLES.isDevEnv=function()
+        {
+            return (document.location.href.indexOf('https://cables.gl')==-1);
+        }
 
         CABLES.loadAll=function()
         {
@@ -93,7 +96,7 @@
                 'js/ace/ace.js'
             ], 'libs');
 
-            if(document.location.href.indexOf('https://cables.gl')!=-1 || document.location.href.indexOf('https://move.cables.gl')!=-1) jsType='min';
+            if(!CABLES.isDevEnv()) jsType='min';
                 else jsType='max';
 
             loadjs.ready('libs', function()
@@ -111,9 +114,8 @@
 
                     loadjs.ready('cables_core', function()
                     {
-                        
                         logStartup('loaded cables core');
-                        
+
                         incrementStartup();
 
                         loadjs([CABLES.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');

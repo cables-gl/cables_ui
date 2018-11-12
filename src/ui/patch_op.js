@@ -20,6 +20,16 @@ CABLES.UI.cleanRaphael = function(el) {
     el.node.style.removeProperty('text-anchor'); // set as: "text-anchor: middle"
 };
 
+CABLES.UI.snapOpPosX = function(posX)
+{
+    return Math.round(posX/CABLES.UI.uiConfig.snapX)*CABLES.UI.uiConfig.snapX;
+}
+
+CABLES.UI.snapOpPosY = function(posY)
+{
+    return Math.round(posY/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
+}
+
 function getPortDescription(thePort) {
     var str = thePort.getTypeString()+' <b>' + thePort.getName() + '</b> ';
     var strInfo = '';
@@ -554,7 +564,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         if(gui.patch().getPaperMap())
         {
-            console.log("MINIRECT!");
             miniRect = gui.patch().getPaperMap().rect(x, y, w, h);
             miniRect.attr({
                 "width": w,
@@ -1153,10 +1162,10 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         pos.x = pos.x - startMoveX;
         pos.y = pos.y - startMoveY;
 
-        if(e.ctrlKey || CABLES.UI.userSettings.snapToGrid)
+        if(CABLES.UI.userSettings.snapToGrid)
         {
-            pos.x=Math.round(pos.x/CABLES.UI.uiConfig.snapX)*CABLES.UI.uiConfig.snapX;
-            pos.y=Math.round(pos.y/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
+            pos.x=CABLES.UI.snapOpPosX(pos.x);
+            pos.y=CABLES.UI.snapOpPosY(pos.y);
         }
 
         if(e.shiftKey)
