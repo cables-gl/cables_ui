@@ -2,21 +2,17 @@
 
 var CABLES=CABLES||{};
 
-
 CABLES.handleFileInputUpload=function(files)
 {
     CABLES.uploadFiles(files);
-
     CABLES.UI.fileSelect.load();
     CABLES.UI.fileSelect.show();
-
 };
 
 CABLES.uploadSelectFile=function()
 {
 	CABLES.CMD.PATCH.uploadFile();
 };
-
 
 CABLES.uploadDragOver=function(event)
 {
@@ -75,12 +71,10 @@ CABLES.uploadFiles=function(files)
 
                 CABLES.UI.notify("File Uploaded");
                 $('#uploadprogresscontainer').css({"opacity":0.5});
-                
 
                 // console.log(files);
                 setTimeout(function()
                 {
-
                     for(var i in files)
                     {
                         var file=files[i];
@@ -91,7 +85,6 @@ CABLES.uploadFiles=function(files)
                     $('#uploadprogresscontainer').hide();
 
                 },800);
-
             }
             else
             {
@@ -99,7 +92,6 @@ CABLES.uploadFiles=function(files)
             }
         }
     };
-
 
     xhr.onload = function (e,r)
     {

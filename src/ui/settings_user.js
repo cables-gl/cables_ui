@@ -1,11 +1,7 @@
 CABLES.UserSettings=function(project)
 {
-
-
     this.show=function()
     {
-
-
         var html = CABLES.UI.getHandleBarHtml(
             'settings_user',
             {
@@ -18,10 +14,5 @@ CABLES.UserSettings=function(project)
             });
 
         CABLES.UI.MODAL.show(html,{'title':'User Settings'});
-
-
     };
-
-
-
 };

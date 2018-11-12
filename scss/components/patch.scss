@@ -83,6 +83,7 @@
 .port_text_color_object { color::$color_port_object;}
 .port_text_color_array { color::$color_port_array;  }
 .port_text_color_dynamic { color::$color_port_dynamic;}
+.port_text_color_string { color::$color_port_string;}
 
 
 .port_color_function { fill:$color_port_function; stroke:$color_port_function; }
@@ -90,6 +91,7 @@
 .port_color_object { fill:$color_port_object; stroke:$color_port_object; }
 .port_color_array { fill:$color_port_array; stroke:$color_port_array; }
 .port_color_dynamic { fill:$color_port_dynamic; stroke:$color_port_dynamic;}
+.port_color_string { fill:$color_port_string; stroke:$color_port_string;}
 .port_color_unknown { fill:#0f0; }
 
 
@@ -246,6 +248,7 @@
     .link_color_object { stroke:$color_link_object; }
     .link_color_array { stroke:$color_link_array; }
     .link_color_dynamic { stroke:$color_link_dynamic; }
+    .link_color_string { stroke:$color_link_string; }
     .link_color_unknown,.link_color_error { stroke: $color-c7; }
 
     .link_hover

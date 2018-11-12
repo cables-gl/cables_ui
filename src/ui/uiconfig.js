@@ -3,7 +3,6 @@ CABLES.UI=CABLES.UI|| {};
 
 CABLES.UI.uiConfig=
 {
-
     portSize:10,
     portHeight:6,
     portPadding:2,
@@ -41,15 +40,14 @@ CABLES.UI.uiConfig=
 
     watchValuesInterval:33,
     rendererSizes:[{w:640,h:360},{w:1024,h:768},{w:1280,h:720},{w:0,h:0}],
-
-
     
     getPortTypeClassHtml:function(type)
     {
         if(type==CABLES.OP_PORT_TYPE_VALUE) return 'port_text_color_value';
         else if(type==CABLES.OP_PORT_TYPE_FUNCTION) return 'port_text_color_function';
         else if(type==CABLES.OP_PORT_TYPE_OBJECT)  return 'port_text_color_object';
-        else if(type==CABLES.OP_PORT_TYPE_ARRAY)  return 'port_text_color_array';
+        else if (type == CABLES.OP_PORT_TYPE_ARRAY) return 'port_text_color_array';
+        else if (type == CABLES.OP_PORT_TYPE_STRING) return 'port_text_color_string';
         else if(type==CABLES.OP_PORT_TYPE_DYNAMIC)  return 'port_text_color_dynamic';
         else return 'port_text_color_unknown';
     },
@@ -58,7 +56,8 @@ CABLES.UI.uiConfig=
         if(type==CABLES.OP_PORT_TYPE_VALUE) return 'port_color_value';
         else if(type==CABLES.OP_PORT_TYPE_FUNCTION) return 'port_color_function';
         else if(type==CABLES.OP_PORT_TYPE_OBJECT)  return 'port_color_object';
-        else if(type==CABLES.OP_PORT_TYPE_ARRAY)  return 'port_color_array';
+        else if (type == CABLES.OP_PORT_TYPE_ARRAY) return 'port_color_array';
+        else if (type == CABLES.OP_PORT_TYPE_STRING) return 'port_color_string';
         else if(type==CABLES.OP_PORT_TYPE_DYNAMIC)  return 'port_color_dynamic';
         else return 'port_color_unknown';
     },
@@ -66,20 +65,17 @@ CABLES.UI.uiConfig=
     {
         return CABLES.UI.uiConfig.getPortTypeClass( port.getType() );
     },
-
     getLinkClass:function(port)
     {
         var type=port.getType();
         if(type==CABLES.OP_PORT_TYPE_VALUE) return 'link_color_value';
-        else if(type==CABLES.OP_PORT_TYPE_FUNCTION) return 'link_color_function';
-        else if(type==CABLES.OP_PORT_TYPE_OBJECT)  return 'link_color_object';
-        else if(type==CABLES.OP_PORT_TYPE_ARRAY)  return 'link_color_array';
-        else if(type==CABLES.OP_PORT_TYPE_DYNAMIC)  return 'link_color_dynamic';
+        else if (type==CABLES.OP_PORT_TYPE_FUNCTION) return 'link_color_function';
+        else if (type==CABLES.OP_PORT_TYPE_OBJECT) return 'link_color_object';
+        else if (type==CABLES.OP_PORT_TYPE_ARRAY) return 'link_color_array';
+        else if (type==CABLES.OP_PORT_TYPE_STRING) return 'link_color_string';
+        else if (type==CABLES.OP_PORT_TYPE_DYNAMIC) return 'link_color_dynamic';
         else return 'link_color_unknown';
-
     },
-
-
     getNamespaceClassName:function(opName)
     {
         if(!opName) return 'default';
@@ -91,23 +87,18 @@ CABLES.UI.uiConfig=
         if( opName.startsWith('Ops.Math') ) return 'math';
         if( opName.startsWith('Ops.User') ) return 'user';
         return 'default';
-
     },
-
     getOpMiniRectClassName:function(opName)
     {
         return 'op_minirect_'+this.getNamespaceClassName(opName);
     },
-
     getOpHandleClassName:function(opName)
     {
         return 'op_handle_'+this.getNamespaceClassName(opName);
     },
-
     linkingLine:
     {
         "stroke-width": 1,
-    },
-
+    }
 
 };

@@ -124,7 +124,6 @@ CABLES.ANIM.Key.prototype.updateCircle=function(_isMainAnim)
         console.log('key this.x NaN');
     }
 
-
     this.setAttribs();
     if(this.isMainAnim)this.circle.toFront();
 };

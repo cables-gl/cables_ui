@@ -207,7 +207,8 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
 
     for(var i=0;i<this._texturePorts.length;i++)
     {
-        if(now-this._texturePorts[i].updated<300 || this._texturePorts[i].renderedWidth!=this._texturePorts[i].port.get().width  || this._texturePorts[i].renderedHeight!=this._texturePorts[i].port.get().height )
+        if ( this._texturePorts[i].port.get() )
+        if ( now-this._texturePorts[i].updated<300 || this._texturePorts[i].renderedWidth!=this._texturePorts[i].port.get().width  || this._texturePorts[i].renderedHeight!=this._texturePorts[i].port.get().height )
         {
 
             if(this._texturePorts[i].element)

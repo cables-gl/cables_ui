@@ -92,12 +92,15 @@ $color_port_value: #5CB59E;
 $color_port_object: #AB5A94;
 $color_port_array: #8084D4;
 $color_port_dynamic: #FFF6E5;
+$color_port_string: #06d32c;
+
 
 $color_link_function: $color_port_function;
 $color_link_value: $color_port_value;
 $color_link_object: $color_port_object;
 $color_link_array: $color_port_array;
 $color_link_dynamic: $color_port_dynamic;
+$color_link_string: $color_port_string;
 
 $button-text-color: $color-c3;
 $button-background-color: $color_op_bg_active;

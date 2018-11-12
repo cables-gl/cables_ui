@@ -4,28 +4,22 @@ CABLES.UI=CABLES.UI ||{};
 
 CABLES.UI.UserSettings=function()
 {
-    var settings=JSON.parse(localStorage.getItem("cables.usersettings"))||{};
+    this._settings=JSON.parse(localStorage.getItem("cables.usersettings"))||{};
+};
 
-    
+CABLES.UI.UserSettings.prototype.set = function (key, value) {
+    this._settings[key] = value;
+    localStorage.setItem("cables.usersettings", JSON.stringify(this._settings));
+    this.updateNavBar();
+};
 
-    this.set=function(key,value)
-    {
-        settings[key]=value;
-        localStorage.setItem("cables.usersettings",JSON.stringify(settings));
-        this.updateNavBar();
-    };
+CABLES.UI.UserSettings.prototype.get = function (key) {
+    if (!this._settings || !this._settings.hasOwnProperty(key)) return null;
+    return this._settings[key];
+};
 
-    this.get=function(key)
-    {
-        if(!settings || !settings.hasOwnProperty(key))return null;
-        return settings[key];
-    };
-
-    this.getAll=function()
-    {
-        return settings;
-    };
-
+CABLES.UI.UserSettings.prototype.getAll = function () {
+    return this._settings;
 };
 
 CABLES.UI.UserSettings.prototype.updateNavBar=function()

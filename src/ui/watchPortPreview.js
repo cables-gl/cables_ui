@@ -145,10 +145,7 @@ CABLES.WatchPortVisualizer=function()
                 self._visible=false;
                 self._lastId="xxx";
             });
-
     };
-
-
 };
 
 CABLES.watchPortVisualize=new CABLES.WatchPortVisualizer();

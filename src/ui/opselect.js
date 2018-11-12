@@ -16,6 +16,7 @@ CABLES.UI.OpSelect=function()
     this.firstTime=true;
     this.tree=new CABLES.OpTree();
     this._sortTimeout=0;
+    this._backspaceDelay=-1;
 };
 
 CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
@@ -345,9 +346,6 @@ CABLES.UI.OpSelect.prototype.prepare=function()
 CABLES.UI.OpSelect.prototype.show=
 CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
 {
-    var markHighlightTimeout=0;
-    var self=this;
-
     CABLES.UI.OPSELECT.linkNewLink=link;
     CABLES.UI.OPSELECT.linkNewOpToPort=linkPort;
     CABLES.UI.OPSELECT.linkNewOpToOp=linkOp;
@@ -451,8 +449,12 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
         break;
 
         case 8:
-            this.onInput();
-            // e.preventDefault();
+            clearTimeout(this._backspaceDelay);
+            this._backspaceDelay=setTimeout(function()
+            {
+                this.onInput();
+            }.bind(this),300);
+                
             return true;
         case 38: // up
             $('.selected').removeClass('selected');

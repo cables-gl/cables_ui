@@ -17,7 +17,7 @@
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" data-portname="{{port.name}}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}  onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}}">
-        {{port.name}}
+        {{port.name}} 
         </span>
     
         {{#if port.uiAttribs.colorPick }}
@@ -90,6 +90,8 @@
                         <a class="info graphbutton fa fa-plus-circle" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ></a>
                     {{/compare}}
 
+
+
                     {{#compare port.uiAttribs.display '==' 'range' }}
                         <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
@@ -99,11 +101,11 @@
                         <!-- <input type ="range" class="range" id="portval_{{ portnum }}_range" min ="{{#if port.uiAttribs.min}}{{ port.uiAttribs.min }}{{ else }}0{{/if}}" max="{{#if port.uiAttribs.max }}{{ port.uiAttribs.max }}{{else}}1.0{{/if}}" value="{{ port.val }}" step ="0.001" oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');" style=""/>
                         <input class="value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/> -->
 
-<!-- new value input -->
-<div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');">
-    <span class="numberinput-display">{{ port.val }}</span>
-    <input class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
-</div>
+                        <!-- new value input -->
+                        <div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');">
+                            <span class="numberinput-display">{{ port.val }}</span>
+                            <input class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                        </div>
     
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
@@ -126,12 +128,7 @@
                         </td>
                         <td colspan="3">
                             <span class="button" onclick="var ge=new CABLES.GradientEditor('{{op.id}}','{{port.name}}');ge.show();">edit</span>
-
-                            
-                        
-
                     {{/compare}}
-
 
                     {{#compare port.uiAttribs.display '==' 'file' }}
                             <!-- <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> -->
@@ -146,11 +143,18 @@
                             <div id="portFileVal_{{ portnum }}_preview" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="padding:0px;"></div>
                     {{/compare}}
 
+
 					{{#compare port.uiAttribs.display '==' 'text' }}
-                </td><td colspan="3">
+                        </td><td colspan="3">
 							<textarea class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}">{{port.val}}</textarea>
 					{{/compare}}
                 {{else}}
+
+                        {{#compare port.type '==' '5' }}
+                                </td>
+                            <td colspan="3">
+                            <input class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{port.val}}"/>
+                        {{/compare}}
 
                         {{#compare port.type '==' '1' }} </td><td>[function]
                         {{/compare}}{{#compare port.type '==' 0 }}
@@ -204,10 +208,13 @@
             {{/if}}
 
             {{#compare port.type '==' 0 }}
-                <!-- </td><td> -->
                 <span class="value valuetext watchPort linkedValue monospace watchPortValue_{{ port.watchId }}" >{{port.val}}</span>
-                
                 <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br/>
+            {{/compare}}
+
+            {{#compare port.type '==' 5 }}
+                <span class="value valuetext watchPort linkedValue monospace watchPortValue_{{ port.watchId }}">{{port.val}}</span>
+                <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br />
             {{/compare}}
 
             {{#compare port.type '==' 3 }}
@@ -220,8 +227,7 @@
                 <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br/>
             </td>
             <td>
-
-                
+               
             {{/compare}}
             {{#compare port.type '==' '2' }}
 
@@ -236,6 +242,8 @@
                     <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br/>
                 {{/if}}
             {{/compare}}
+
+
         {{/if}}
     </td>
 

@@ -3,8 +3,6 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.UserOpManager=function(projectId)
 {
-
-
     this.removeFromProject=function(userid)
     {
         CABLES.UI.MODAL.showLoading();
