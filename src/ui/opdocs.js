@@ -216,15 +216,21 @@ CABLES.UI.OpDocs=function()
      */
     this.get2 = function(opName) {
         var opDoc = this.getOpDocByName(opName);
+
         if(!opDoc)
         {
-            // console.error('Op doc not found: ' + opName); 
-            return;
+            opDoc=
+                {
+                    name:opName,
+                    summaryHtml:"No Op Documentation found",
+                    summary:"No Op Documentation found"
+                };
         }
 
         var html = CABLES.UI.getHandleBarHtml('op-doc-template', {
             opDoc: opDoc
         });
+
         return html;
     };
 
@@ -303,6 +309,7 @@ CABLES.UI.OpDocs=function()
                     html+='<li><a href="https://cables.gl/admin/user/'+opDocs[i].authorName+'">'+opDocs[i].authorName+'</a></li>';
                     html+='</ul>';
                 }
+
 
                 return html;
             }
