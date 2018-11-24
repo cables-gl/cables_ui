@@ -253,10 +253,14 @@ CABLES.Editor.createEditor=function(id)
                 "inTrigger",
                 "inTriggerButton",
                 /* in number / string / bool  */
-                "inValue",
+                "inValueFloat",
                 "inValueBool",
                 "inValueInt",
-                "inValueString",
+                // "inValueString",
+                "inString",
+                "inStringEditor",
+
+
                 "inValueSlider",
                 "inValueSelect",
                 /* in object / texture / array / file  */
