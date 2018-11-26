@@ -4,7 +4,7 @@
 
     <div class="selectable params">
 
-        <a onclick="gui.patch().opContextMenu(this)" class="tt icon icon-triple-dot iconhover op-contextmenu" data-info="Add Bookmark"></a>
+        <a onclick="gui.patch().opContextMenu(this)" class="tt icon icon-triple-dot iconhover op-contextmenu info" data-info="More Options"></a>
 
 
       <!-- {{#if isBookmarked}}
@@ -14,7 +14,7 @@
       {{/if}}
        -->
         <div class="panel params_op_head">
-            <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-info="op title - click to edit">
+            <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-infotext="op_title">
 			<br/>
             <a href="/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
             <br/>

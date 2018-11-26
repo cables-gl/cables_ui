@@ -7,9 +7,6 @@
     min-width: 10px !important;
     display:none;
     background-color:$background-color-dark;
-    padding:10px;
-    padding-top:20px !important;
-    padding-left:20px !important;
     height:240px;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -24,6 +21,15 @@
     {
         margin-left: 15px;
         padding-left: 0px;
+    }
+
+    .infoareaContent
+    {
+        padding:10px;
+        height:100%;
+        padding-top:20px !important;
+        padding-left:20px !important;
+        background-color:$color-c9;
     }
 }
 

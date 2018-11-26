@@ -385,7 +385,7 @@ CABLES.UI.GUI = function() {
         this._elMenubar.css('height', menubarHeight);
 
         this._elSplitterMeta.css('bottom', self.infoHeight + 'px');
-        this._elSplitterMeta.css('width', metaWidth - 22 + 'px');
+        this._elSplitterMeta.css('width', metaWidth - 28 + 'px');
 
         if (self.infoHeight === 0) {
             this._elInforArea.hide();
@@ -1251,8 +1251,7 @@ CABLES.UI.GUI = function() {
     };
 
     this.showOpDoc = function(opname) {
-        var docOpHead = '<div>'; //<img src="/api/op/layout/'+opname+'"/>
-        // var docOpFooter = '<br/><br/><a onclick="gui.editOpDoc(\'' + opname + '\')" class="button fa fa-pencil" target="_blankkk">&nbsp;edit</a></div>';
+        var docOpHead = '<div><a href="/op/'+opname+'" style="text-decoration:underline;">view examples</a>&nbsp;<i class="icon icon-link"></i><br/><br/>'; //<img src="/api/op/layout/'+opname+'"/>
         
         this.getOpDoc(opname, true, function(html) {
             $('#meta_content_doc').html(docOpHead + html);// + docOpFooter);
@@ -1365,10 +1364,8 @@ CABLES.UI.GUI = function() {
         if (which == 'code') self.showMetaCode();
         if (which == 'keyframes') self.metaKeyframes.show();
         if (which == 'paco') self.showMetaPaco();
-
         if (which == 'profiler') self.showProfiler();
         if (which == 'variables') self.variables.show();
-
         if (which == 'preview') self._texturePreviewer.show();
         else if (self._texturePreviewer) self._texturePreviewer.hide();
     };

@@ -298,27 +298,12 @@
             display:inline-block;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
 }
 
 #options
 {
     position:absolute;
-    overflow: scroll;
+    overflow: auto;
     overflow-x: hidden;
 	background-color: $background-color-dark;
 

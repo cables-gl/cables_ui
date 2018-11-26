@@ -103,11 +103,16 @@ CABLES.UI.Patch = function(_gui) {
             var str = e.clipboardData.getData('text/plain');
             e.preventDefault();
 
+            
+            str=str.replace("```",'');
+            str=str.replace("```",'');
+
             var json = null;
             try {
                 json = JSON.parse(str);
             } catch (exp) {
                 CABLES.UI.notifyError("Paste failed");
+                console.log(str);
                 console.log(exp);
             }
 

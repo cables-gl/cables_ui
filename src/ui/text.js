@@ -7,6 +7,13 @@ CABLES.UI.TEXTS=
 {
     /* Menu ------------------ */
     /* Patch */
+
+    save_screenshot:"## save screenshot\n\ndownload renderer output as an image file",
+    toggle_sound:"## toggle sound\n\nturn sound on or off",
+    renderer_maximize:"## maximize_renderer",
+    renderer_setsize:"## Renderer Size \n\n* click to et renderer size",
+    infoarea:"## infoarea\n\nlook here for contextual information",
+
     nav_patch_new: "## New Patch\n\nCreates a new patch",
     nav_patch_open: "## Open Patch\n\nLoad an existing patch",
 
@@ -38,14 +45,18 @@ CABLES.UI.TEXTS=
     projectExportNotSaved:"patch not saved - save patch before exporting",
 
     editor: "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-    patch: "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n### Shortcuts \n\n* `[esc]: Quick-add op` \n* `[space] + mouse drag:`: Scroll \n* `[mod] + s`: Save patch \n* `[mod] + v`: Paste \n* `[mod] + a`: Select all ops",
-    canvas: "## Renderer \n\nHere you can see the visual output of your patch.\n[CMD] + [ENTER] - Maximize renderer",
-    // infoArea: "## Info Panel \n\nHover over an element to see some infos here.",
-    infoArea: "",
+    patch: "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `[esc]: Quick-add op` \n* `[space] + mouse drag:`: Scroll \n* `[right click] + mouse drag:`: Scroll \n* `[mod] + s`: Save patch \n* `[mod] + v`: Paste \n* `[mod] + a`: Select all ops",
+    canvas: "## Renderer \n\nHere you can see the visual output of your patch.\n\n[CMD] + [ENTER] - Maximize renderer",
     projectFiles: "## Project Files \n\nOverview over your uploaded files",
     undevLogo: "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
 
     tab_files: "## Files \n\nUpload and manage your files",
+    tab_code: "## Code\n\noperator code",
+    tab_doc: "## Documentation\n\noperator documentation",
+    tab_preview: "## Preview\n\npreview you generated textures",
+    tab_keyframes: "## Keyframes\n\n",
+    tab_variables: "## Variables\n\n",
+    tab_patchconnection: "## Patch Connection\n\n",
     tab_profiler: "## Profiler \n\nFind out which ops require most processing time",
     tab_bookmarks: "## Bookmarks \n\nBookmark ops in a big patch to easily locate them",
     tab_debug: "## Debug \n\n",
@@ -56,6 +67,7 @@ CABLES.UI.TEXTS=
     project_settings_btn: "## project Settings \n\nEdit project name, make it private / public, add collaborators.",
     timelineui: "## Timeline \n\nIn the timeline you can animate ports over time.",
     op_background: "## Op \n\n",
+    op_title:'## Op Title \n\n* click to edit title',
 
     bookmark_added: "Bookmark added!",
     bookmark_removed: "Bookmark removed!",
@@ -69,4 +81,8 @@ CABLES.UI.TEXTS=
 
     usersettings:"## User Settings\n\nchange editor settings ",
 
+    valueChangerHover:'## Number Input \n\n* [drag mouse left right] - change value slowly \n* [shift + drag mouse left right] - change value fast',
+    valueChangerInput:'## Number Input Focussed \n\n* [up / down / mousewheel] - change value +/- 0.1\n* [shift + up / down / mousewheel] - change value +/- 0.01\n* [alt + up / down / mousewheel] - change value +/- 1',
+    open_new_window:'## View Patch\n\nopen patch viewer in new window',
+    settings:'## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate',
 };

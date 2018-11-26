@@ -35,11 +35,11 @@ $(document).on('mouseout', '.tt', function()
 
 // --------------------------
 
+
 CABLES.UI.showInfo=function(txt)
 {
-  // return;
-  if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
-  $('#infoArea').html('<a class="icon-x icon fright" style="margin-right:10px;" onclick="gui.closeInfo();">sss</a>'+mmd(txt));
+    if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
+    $('#infoArea').html('<div class="infoareaContent"><a class="icon-x icon fright" style="margin-right:10px;" onclick="gui.closeInfo();">sss</a>'+mmd(txt||'')+'</div>');
 };
 
 CABLES.UI.hideInfo=function()
@@ -53,6 +53,7 @@ $(document).on('mouseover mousemove', '.info', function(e)
 {
     clearTimeout(CABLES.UI.tooltipTimeout);
     var txt=$(this).data('info');
+    if( $(this).data('infotext') ) txt=CABLES.UI.TEXTS[$(this).data('infotext')];
     if(!txt) { txt = $('infoArea').data('info');}
     CABLES.UI.showInfo(txt);
 });

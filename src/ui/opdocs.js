@@ -348,7 +348,7 @@ CABLES.UI.OpDocs=function()
 
     this.showPortDoc=function(opname,portname)
     {
-        CABLES.UI.showInfo('');
+        // CABLES.UI.showInfo('');
         
         for(var i=0;i<opDocs.length;i++)
         {

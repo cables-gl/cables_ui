@@ -38,15 +38,15 @@
 <div id="canvasmodal"></div>
 <div id="canvasicons">
     <a class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></a>
-    <a class="tt icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize renderer"></a>
-    <a class="tt icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot"></a>
-    <a class="tt icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound"></a>
-    <a class="tt icon icon-command iconhover" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper"></a>
+    <a class="tt info icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize renderer" data-infotext="renderer_maximize"></a>
+    <a class="tt info icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></a>
+    <a class="tt info icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound" data-infotext="toggle_sound"></a>
+    <a class="tt icon icon-command iconhover" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper" data-infotext="toggle_helper"></a>
 
     <a class="tt icon icon-triple-dot iconhover" onclick="gui.rendererContextMenu(this)" data-tt="more options"></a>
 
     <div class="canvasInfo">
-        <span id="canvasInfoSize" class="" onclick="CABLES.CMD.RENDERER.changeSize()" ></span>
+        <span id="canvasInfoSize" class="info" onclick="CABLES.CMD.RENDERER.changeSize()" data-infotext="renderer_setsize"></span>
         <span id="canvasInfoFPS" class="" ></span>
     </div>
 
@@ -237,8 +237,8 @@
 
 
     <div id="loggedin">
-        <div class="button projectname fa fa-cog"  onclick="gui.showSettings();"></div>
-        <a target="_blank" class="viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;"></a>
+        <div class="info button projectname fa fa-cog" onclick="gui.showSettings();" data-infotext="settings"></div>
+        <a target="_blank" class="info viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;" data-infotext="open_new_window"></a>
     </div>
 
     <div id="loggedout">
@@ -251,14 +251,13 @@
 <div id="meta">
     <div id="metatabs">
         <div class="tabs">
-            <a class="tab_doc active fa fa-book" data-info="{{ texts.tab_doc }}" onclick="gui.setMetaTab('doc')">  </a>
-            <a class="tab_code fa fa-code" data-info="{{ texts.tab_code }}" onclick="gui.setMetaTab('code')">  </a>
-            <a class="tab_profiler fa fa-pie-chart" data-info="{{ texts.tab_profiler }}" onclick="gui.setMetaTab('profiler')"></a>
-            <a class="tab_preview fa fa-eye" data-info="{{ texts.tab_preview }}" onclick="gui.setMetaTab('preview')"></a>
-
-            <a class="tab_keyframes fa fa-clock-o" onclick="gui.setMetaTab('keyframes')"></a>
-            <a class="tab_paco fa fa-youtube-play" onclick="gui.setMetaTab('paco')"></a>
-            <a class="tab_variables" onclick="gui.setMetaTab('variables')">&nbsp;&nbsp;#&nbsp;&nbsp;</a>
+            <a class="info tab_doc active fa fa-book" data-infotext="tab_doc" onclick="gui.setMetaTab('doc')">  </a>
+            <a class="info tab_code fa fa-code" data-infotext="tab_code" onclick="gui.setMetaTab('code')">  </a>
+            <a class="info tab_profiler fa fa-pie-chart" data-infotext="tab_profiler" onclick="gui.setMetaTab('profiler')"></a>
+            <a class="info tab_preview fa fa-eye" data-infotext="tab_preview" onclick="gui.setMetaTab('preview')"></a>
+            <a class="info tab_keyframes fa fa-clock-o" data-infotext="tab_keyframes" onclick="gui.setMetaTab('keyframes')"></a>
+            <a class="info tab_paco fa fa-youtube-play" data-infotext="tab_patchconnection" onclick="gui.setMetaTab('paco')"></a>
+            <a class="info tab_variables" data-infotext="tab_variables" onclick="gui.setMetaTab('variables')">&nbsp;&nbsp;#&nbsp;&nbsp;</a>
         </div>
     </div>
     <div id="meta_content">

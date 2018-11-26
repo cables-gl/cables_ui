@@ -1,4 +1,4 @@
-
+"use strict";
 
 var CABLES=CABLES||{};
 CABLES.UI=CABLES.UI||{};
@@ -74,8 +74,19 @@ CABLES.valueChangerGetSliderCss=function(v)
     return "linear-gradient(0.25turn,#5a5a5a, #5a5a5a "+cssv+"%, #444 "+cssv+"%)";
 }
 
+// CABLES.UI.lastValueChanger=null;
+
+CABLES.UI.showInputFieldInfo=function()
+{
+    if(document.activeElement.tagName=='INPUT') CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerInput);
+        else CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerHover);
+}
+
+
 CABLES.valueChanger=function(ele,focus)
 {
+    CABLES.UI.showInputFieldInfo();
+
     const elem=$ ('#'+ele);
     const elemContainer=$('#'+ele+'-container');
 
