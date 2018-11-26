@@ -1555,7 +1555,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
     
     $('.timelineprogress').hover( function(e) { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_progress); }, CABLES.UI.hideInfo);
     $('.timelinetime').hover( function(e) { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_time); }, CABLES.UI.hideInfo);
-    
 
     $("#overviewtimeline,#timetimeline,#timelineui").contextmenu(function(e)
     {
@@ -1566,7 +1565,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
 
     $("#overviewtimeline").bind("mousemove", function(e)
     {
-
         if(e.which>1)
         {
             var time=(e.offsetX/$('#timeline').width())*projectLength;
@@ -1578,10 +1576,8 @@ CABLES.ANIM.UI.TimeLineUI=function()
         }
     });
 
-
     $("#timetimeline").bind("mousedown", function(e)
     {
-
         $(document).bind("mousemove",mousemoveTime);
         $('#timeline').focus();
         e=mouseEvent(e);
@@ -1652,8 +1648,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
         // CABLES.ANIM.TIMESCALE=$('#timeline').width()/(time-oldStartSeconds);
         CABLES.ANIM.TIMESCALE+=CABLES.ANIM.TIMESCALE*delta*0.01;
         viewBox.x=oldTime*CABLES.ANIM.TIMESCALE;
-
-
 
         self.updateViewBox();
         updateTimeDisplay();
@@ -1754,7 +1748,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
                 l.attr({path: "M "+time+" -1000 L" + time + " " + 1110 });
 
                 count++;
-
             }
         }
 
@@ -1772,8 +1765,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
             });
             self._loopAreaRect.show();
             self._loopAreaRect.toFront();
-
-
         }
     }
 
@@ -1841,8 +1832,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
         time/=CABLES.ANIM.TIMESCALE;
         return time;
     };
-
-
 
 	this.toggleTimeDisplayMode=function()
     {

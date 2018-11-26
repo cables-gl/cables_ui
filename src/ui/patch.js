@@ -1049,16 +1049,11 @@ CABLES.UI.Patch = function(_gui) {
             );
     };
 
-    var oldVBW = 0;
-    var oldVBH = 0;
-    var oldVBX = 0;
-    var oldVBY = 0;
-
     var viewBoxAnim = {
-        x: new CABLES.TL.Anim(),
-        y: new CABLES.TL.Anim(),
-        w: new CABLES.TL.Anim(),
-        h: new CABLES.TL.Anim()
+        x: new CABLES.Anim(),
+        y: new CABLES.Anim(),
+        w: new CABLES.Anim(),
+        h: new CABLES.Anim()
     };
 
     this._animViewBox = function() {
