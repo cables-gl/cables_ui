@@ -64,7 +64,7 @@
         CABLES.noCacheUrl=function(url)
         {
             return url+'?nc='+(Date.now()+'').substr(-6);
-        }
+        };
 
         var scriptTag = document.createElement('script');
         scriptTag.setAttribute('src',CABLES.noCacheUrl('js/libs.core.min.js'));
@@ -76,7 +76,7 @@
         CABLES.isDevEnv=function()
         {
             return (document.location.href.indexOf('https://cables.gl')==-1);
-        }
+        };
 
         CABLES.loadAll=function()
         {
@@ -184,30 +184,9 @@
             });
 
 
-        }
+        };
 
-// try
-// {
-    CABLES.loadAll();
-
-    var resource = document.createElement('link');
-    resource.setAttribute("rel", "stylesheet");
-
-    var settings=JSON.parse(localStorage.getItem("cables.usersettings"))||{};
-
-    if(settings["theme-bright"]) resource.setAttribute("href",CABLES.noCacheUrl("css/style-bright.css"));
-        else resource.setAttribute("href",CABLES.noCacheUrl("css/style-dark.css"));
-
-    // resource.setAttribute("href","css/style-bright.css");
-    resource.setAttribute("type","text/css");
-    var head = document.getElementsByTagName('head')[0];
-    head.appendChild(resource);
-
-// }
-// catch(e)
-// {
-// console.log('AHJA ERROR');
-// }
+        CABLES.loadAll();
 
     </script>
 

@@ -27,6 +27,13 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('snapToGrid')) $('.nav_usersettings_snaptogrid i').removeClass('unchecked');
         else $('.nav_usersettings_snaptogrid i').addClass('unchecked');
 
+    if (this.get('theme-bright')) $('.nav_usersettings_theme-bright i').removeClass('unchecked');
+        else $('.nav_usersettings_theme-bright i').addClass('unchecked');
+
+    if (this.get('straightLines')) $('.nav_usersettings_straightLines i').removeClass('unchecked');
+        else $('.nav_usersettings_straightLines i').addClass('unchecked');
+    
+
     if (this.get('showMinimap'))
     {
         $('.nav_usersettings_showMinimap i').removeClass('unchecked');

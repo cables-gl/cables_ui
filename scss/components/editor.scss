@@ -8,10 +8,10 @@
     z-index:99;
     cursor:pointer;
     background-color: $button-background-color;
-    background-color: $color-cz;
-    border-top: 50px solid $color-cz;
+    background-color: var(--color-01);
+    border-top: 50px solid var(--color-01);
     padding: 10px;
-    border-bottom: 50px solid $color-cz;
+    border-bottom: 50px solid var(--color-01);
 }
 
 #editor
@@ -34,9 +34,9 @@
     // #editorfoot
     // {
     //     position: absolute;
-    //     color:$color-c1;
+    //     color:var(--color-12);
     //     font-family: monospace;
-    //     background-color: $color-c9;
+    //     background-color: var(--color-03);
     //     overflow: hidden;
     //     z-index: 9;
     //     bottom:0px;
@@ -46,7 +46,7 @@
     #editorbar
     {
         position: absolute;
-        background-color: $color-c10;
+        background-color: var(--color-02);
 
         .tabs
         {
@@ -54,7 +54,7 @@
             margin-bottom: 7px;
             height:32px;
             overflow: hidden;
-            background-color: $color-c9;
+            background-color: var(--color-03);
 
             .tab
             {
@@ -69,15 +69,15 @@
 
                 &.active
                 {
-                    background-color: $color-c10;
-                    color: $color-ca;
+                    background-color: var(--color-02);
+                    color: var(--color-13);
                     font-weight: bold;
                     border-bottom: 1px solid $color-special;
                 }
 
                 &:hover
                 {
-                    color: $color-ca;
+                    color: var(--color-13);
                 }
             }
         }
@@ -118,7 +118,7 @@
         }
         .ace_search
         {
-            background-color: $color-c9;
+            background-color: var(--color-03);
             border: none;
 
             .ace_search_form
@@ -128,8 +128,8 @@
 
             .ace_search_form *
             {
-                background-color: $color-c10;
-                border-color: $color-cz;
+                background-color: var(--color-02);
+                border-color: var(--color-01);
             }
         }
     }

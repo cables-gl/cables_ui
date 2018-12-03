@@ -95,7 +95,7 @@
     a.active
     {
         background-color: $color-menubar-background-active;
-        color: $color-ca;
+        color: var(--color-13);
         opacity: 1.0;
         border-bottom:1px solid $color-special;
     }
@@ -143,13 +143,13 @@ img.dark,#cablescanvas
 
 #progresscontainer
 {
-	background-color: $color-c9;
+	background-color: var(--color-03);
 	min-height:20px;
 	width:100%;
 
 	.progress
 	{
-		background-color: $color-c8;
+		background-color: var(--color-05);
 		height: 20px;
 		min-width: 0px;
 	}

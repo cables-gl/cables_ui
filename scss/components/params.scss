@@ -60,7 +60,7 @@
 				margin-bottom: 0;
 
 				&:hover {
-					background-color: $color-c7;
+					background-color: var(--color-06);
 				}
 			}
 
@@ -107,7 +107,7 @@
 
     &:hover
     {
-        color: $color-ca;
+        color: var(--color-13);
     }
 }
 
@@ -130,12 +130,12 @@
 
     .nonDefaultValue
     {
-        color: $color-ca;
+        color: var(--color-13);
     }
 
 	.icon
 	{
-		background-color: $color-c3;
+		background-color: var(--color-10);
 	}
 
     td.port
@@ -194,7 +194,7 @@
 
     .linkedValue
     {
-        background-color:$color-cz;
+        background-color:var(--color-01);
         margin-top:4px;
         
     }
@@ -206,12 +206,12 @@
         padding-right:10px;
         font-size:17px;
         cursor:pointer;
-        color:$color-c7;
+        color:var(--color-06);
     }
 
     .fa-check-square:before
     {
-        color:$color-c2 !important;
+        color:var(--color-11) !important;
 
     }
 
@@ -276,7 +276,7 @@
 
     &:hover
     {
-        color: $color-ca;
+        color: var(--color-13);
 		background-color: $color-panelhead-hover;
     }
 
@@ -318,7 +318,7 @@
 
     select
     {
-        border: 1px solid $color-c10;
+        border: 1px solid var(--color-02);
         background-color: $color-background-input;
         padding:2px;
         border: 3px solid #444;
@@ -339,7 +339,7 @@
 {
     margin-left: -1px;
     height: 17px;
-    background-color: $color-c85;
+    background-color: var(--color-04);
     padding-left: 5px;
     margin-top: 1px;
     padding-right: 6px;
@@ -367,7 +367,7 @@
 }
 
 #options input:hover {
-  background-color: $color-c8;
+  background-color: var(--color-05);
 }
 
 #options input:active, #options input:focus {
@@ -375,7 +375,7 @@
 }
 
 #options input[type=range] {
-    background-color: $color-c8;
+    background-color: var(--color-05);
     --slider-height: 18px;
     height: var(--slider-height);
     border-radius: 0;
@@ -390,7 +390,7 @@
     &::-moz-range-thumb {
         border: none;
         border-radius: 0;
-        background-color: $color-c4;
+        background-color: var(--color-09);
         height: var(--slider-height);
         width: var(--slider-height);
     }
@@ -398,7 +398,7 @@
 
 td.head
 {
-    background-color: $color-cz;
+    background-color: var(--color-01);
 }
 
 

@@ -29,7 +29,7 @@
         height:100%;
         padding-top:20px !important;
         padding-left:20px !important;
-        background-color:$color-c9;
+        background-color:var(--color-03);
     }
 }
 
@@ -37,8 +37,8 @@
 {
     position: absolute;
     z-index: $z-index-tooltip;
-    background-color: $color-cz;
-    color: $color-ca;
+    background-color: var(--color-01);
+    color: var(--color-13);
     padding:7px;
     border-radius: 0px;
     opacity:0.96;
@@ -52,18 +52,18 @@
     b
     {
         font-weight: bold;
-        color:$color-ca;
+        color:var(--color-13);
         font-size: 14px;
     }
 
     i
     {
-        color:$color-ca;
+        color:var(--color-13);
     }
     .code
     {
         font-family: monospace;
-        color:$color-ca;
+        color:var(--color-13);
     }
 }
 

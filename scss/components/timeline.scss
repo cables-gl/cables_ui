@@ -19,7 +19,7 @@
     fill-opacity: 0.6;
     fill:$color_port_value;
     stroke-width: 1px;
-    stroke:$color-ca;
+    stroke:var(--color-13);
     cursor:col-resize;
 }
 
@@ -41,15 +41,15 @@
 
 .timeline-overview-area
 {
-    fill:$color-c8;
-    stroke:$color-c8;
+    fill:var(--color-05);
+    stroke:var(--color-05);
     cursor:grab;   
 }
 
 .timeline-overview-area-resize
 {
-    fill:$color-c85;
-    stroke:$color-c85;
+    fill:var(--color-04);
+    stroke:var(--color-04);
     stroke-width: 0;
     cursor:col-resize; 
 }
@@ -83,7 +83,7 @@
         cursor: pointer;
         height:30px;
         padding-right: 10px;
-        color: $color-ca;
+        color: var(--color-13);
         opacity: 0.5;
 
         i
@@ -150,7 +150,7 @@
     display:block;
     float:left;
     padding:0px;
-    color: $color-c5;
+    color: var(--color-08);
     padding-left:2px;
     padding-top: 2px;
     font-size: 14px !important;
@@ -162,7 +162,7 @@
     &:hover
     {
         opacity: 1;
-        color: $color-c1;
+        color: var(--color-12);
     }
 }
 
@@ -209,11 +209,11 @@
 {
     border:1px solid transparent;
     outline:none;
-    background-color: $color-c10;
+    background-color: var(--color-02);
 
     &:focus
     {
-        border: 1px solid $color-c8;
+        border: 1px solid var(--color-05);
     }
     svg
     {
@@ -230,7 +230,7 @@
     right:0px;
     width:240px;
     // height:260px;
-    background-color: $color-cz;
+    background-color: var(--color-01);
     z-index: $z-index-timeline-easing;
 
     .title

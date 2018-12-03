@@ -102,14 +102,14 @@
     top:0px;
     left:0px;
     z-index: $z-index-cables-logo;
-    // border-bottom: 1px solid $color-c7;
+    // border-bottom: 1px solid var(--color-06);
 
     .icon-cables
     {
         margin-top:15px;
         width:40px;
         height:60px;
-        background-color: $color-ca;
+        background-color: var(--color-13);
     }
 }
 
@@ -153,7 +153,7 @@ nav
         {
             &:hover
             {
-                color: $color-ca;
+                color: var(--color-13);
             }
         }
         ul
@@ -178,7 +178,7 @@ nav
 
             &.inactive
             {
-              color: $color-c7;
+              color: var(--color-06);
             }
 
             .shortcut {
@@ -193,10 +193,10 @@ nav
         ul li:hover
         {
             background: $highlight-color-dark;
-            color: $color-ca;
+            color: var(--color-13);
             a
             {
-                color:$color-ca;
+                color:var(--color-13);
             }
         }
         //ul li ul
@@ -222,9 +222,9 @@ nav
         }
         ul li ul li
         {
-            background: $color-c9;
+            background: var(--color-03);
             display: block;
-            color: $color-ca;
+            color: var(--color-13);
         }
         ul li ul li:hover
         {
@@ -241,7 +241,7 @@ nav
         .divide
         {
             padding:0px;
-            border-bottom: 1px solid $color-c85;
+            border-bottom: 1px solid var(--color-04);
         }
 
 
@@ -249,7 +249,7 @@ nav
     {
         &:hover
         {
-            color: $color-ca;
+            color: var(--color-13);
         }
     }
     ul
@@ -280,10 +280,10 @@ nav
     ul li:hover
     {
         background: $highlight-color-dark;
-        color: $color-ca;
+        color: var(--color-13);
         a
         {
-            color: $color-ca;
+            color: var(--color-13);
         }
     }
     ul li ul
@@ -308,9 +308,9 @@ nav
     }
     ul li ul li
     {
-        background: $color-c9;
+        background: var(--color-03);
         display: block;
-        color: $color-ca;
+        color: var(--color-13);
     }
     ul li ul li:hover
     {
@@ -328,12 +328,12 @@ nav
     .divide
     {
         padding:0px;
-        border-bottom: 1px solid $color-c85;
+        border-bottom: 1px solid var(--color-04);
     }
     /* sub-sub-menu, e.g. New from template -> 2d, 3d, ... */
     .nav-sub-submenu {
         .icon {
-            background-color: $color-c3;
+            background-color: var(--color-10);
             float: right;
             position: relative;
             right: -3px;

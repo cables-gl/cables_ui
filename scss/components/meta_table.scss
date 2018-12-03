@@ -15,13 +15,13 @@
 
     th
     {
-        background-color: $color-cz;
+        background-color: var(--color-01);
         text-align: left;
     }
 
     tr:hover, tr td:hover
     {
-        background-color: $color-c8;
+        background-color: var(--color-05);
         color:#fff;
     }
 

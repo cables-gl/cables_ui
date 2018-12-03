@@ -1,6 +1,7 @@
 CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
+
 CABLES.UI.GUI = function() {
     var self = this;
     var userOpsLoaded = false;
@@ -102,6 +103,8 @@ CABLES.UI.GUI = function() {
     this._ignoreOpenEditor=false;
     
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 400;
+    this.updateTheme();
+
 
     this.toggleEditor = function() {
         if (showingEditor) self.closeEditor();
@@ -1564,6 +1567,13 @@ CABLES.UI.GUI = function() {
             logStartup('User Data loaded');
         });
 };
+
+CABLES.UI.GUI.prototype.updateTheme = function () {
+    if (CABLES.UI.userSettings.get("theme-bright")) document.body.classList.add("bright");
+    else document.body.classList.remove("bright");
+};
+
+
 
 
 function startUi(event)

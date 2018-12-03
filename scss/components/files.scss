@@ -3,8 +3,8 @@
 #uploadprogresscontainer
 {
     display:none;
-    border:1px solid $color-ca;
-    background-color:$color-c9;
+    border:1px solid var(--color-13);
+    background-color:var(--color-03);
     width:50px;
     height:5px;
     position:absolute;
@@ -15,7 +15,7 @@
 }
 #uploadprogress
 {
-    background-color:$color-c4;
+    background-color:var(--color-09);
     width:50%;
     height:100%;
 }
@@ -25,7 +25,7 @@
 {
     display:none;
     position: absolute;
-    background-color: $color-c9;
+    background-color: var(--color-03);
     z-index: $z-index-library;
 
     .suffix
@@ -41,7 +41,7 @@
 
     .file-icon-container
     {
-        background-color: $color-cz;
+        background-color: var(--color-01);
         // border:1px solid red;
         margin-top:10px;
         margin-left: 10px;
@@ -95,11 +95,11 @@
 
         &:hover
         {
-            background-color: $color-cz;
+            background-color: var(--color-01);
 
             .filename
             {
-                color: $color-ca;
+                color: var(--color-13);
             }
         }
 
@@ -143,7 +143,7 @@
 
         i
         {
-            background-color: $color-cz;
+            background-color: var(--color-01);
             opacity: 0.5;
             // background-color: transparent !important;
         }
@@ -170,8 +170,8 @@
 
         &:hover
         {
-            background-color: $color-c9;
-            color: $color-ca;
+            background-color: var(--color-03);
+            color: var(--color-13);
         }
     }
 
@@ -229,7 +229,7 @@
 
         .unselectable
         {
-            color: $color-c7;
+            color: var(--color-06);
         }
 
         .filename
@@ -249,7 +249,7 @@
             &:hover
             {
                 text-decoration: underline;
-                background-color: $color-c10;
+                background-color: var(--color-02);
                 color:white;
             }
         }

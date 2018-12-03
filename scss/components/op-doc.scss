@@ -43,12 +43,12 @@
     margin-top: 30px;
     margin-bottom: 13px;
     font-weight: bold;
-    color: $color-c2;
+    color: var(--color-11);
   }
 
   .op-doc__namespace {
     margin-top: 4px;
-    color: $color-c6;
+    color: var(--color-07);
   }
 
   .op-doc__name {
@@ -62,7 +62,7 @@
   }
 
   .op-doc__summary, .op-doc__summary p {
-    color: $color-c2;
+    color: var(--color-11);
     font-style: italic;
     font-size: 18px;
     line-height: 1.2em;
@@ -82,7 +82,7 @@
 
     code, pre {
       color: white;
-      // background-color: $color-c85;
+      // background-color: var(--color-04);
       font-family: SourceCodePro, monospace;
     }
   }
@@ -113,7 +113,7 @@
   }
 
   .op-doc__port-name {
-    color: $color-c2;
+    color: var(--color-11);
     text-transform: capitalize;
     font-size: 13px;
     margin-left: 4px;
@@ -141,7 +141,7 @@
 
     a {
       text-decoration: underline;
-      text-decoration-color: $color-c7;
+      text-decoration-color: var(--color-06);
 
       &:hover {
         color: $color-special;
@@ -152,7 +152,7 @@
     code, pre {
       font-family: SourceCodePro, monospace;
       font-size: 11px;
-      background-color: $color-c85;
+      background-color: var(--color-04);
       padding: 1px 2px;
     }
   }
@@ -164,7 +164,7 @@
   .op-doc {
     .op-doc__name {
       display: block;
-      color: $color-ca;
+      color: var(--color-13);
       font-size: 18px;
     }
 

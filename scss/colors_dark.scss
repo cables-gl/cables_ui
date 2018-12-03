@@ -1,18 +1,22 @@
 // color pallet
+:root
+{
+    --color-13: #FFFFFF; // 13
+    --color-12: #EEEEEE; // 12
+    --color-11: #CCCCCC; // 11
+    --color-10: #BBBBBB; // 10
+    --color-09: #AAAAAA; // 09
+    --color-08: #969696; // 08
+    --color-07: #888888; // 07
+    --color-06: #555555; // 06
+    --color-05: #444444; // 05
+    --color-04: #333333; // 04
+    --color-03: #222222;  // 03
+    --color-02: #1A1A1A; // 02
+    --color-01: #111111;  // 01
 
-$color-ca: #FFFFFF;
-$color-c1: #EEEEEE;
-$color-c2: #CCCCCC;
-$color-c3: #BBBBBB;
-$color-c4: #AAAAAA;
-$color-c5: #969696;
-$color-c6: #888888;
-$color-c7: #555555;
-$color-c8: #444444;
-$color-c85: #333333;
-$color-c9: #222222;
-$color-c10: #1A1A1A;
-$color-cz: #111111;
+}
+
 
 $color-special: #07F78C;
 $color-error: #dc5751;
@@ -20,64 +24,69 @@ $color-warning: #ec9213;
 
 // main colors ----------------------------------------------------------------
 
-$text-color: $color-c3;
-$color-text-link: $color-c2;
+$text-color: var(--color-10);
+$color-text-link: var(--color-11);
 
-$color-background-input: $color-c8;
-$color-background-input-focussed: $color-c7;
-$color-background-input-selected: $color-c9;
+$color-background-input: var(--color-05);
+$color-background-input-focussed: var(--color-06);
+$color-background-input-selected: var(--color-03);
 
-$highlight-color: $color-ca; // TODO: Create $color-headline, remove
-$highlight-color-dark: $color-c7; // TODO: Delete / replace!?
+$highlight-color: var(--color-13); // TODO: Create $color-headline, remove
+$highlight-color-dark: var(--color-06); // TODO: Delete / replace!?
 
-$mainColor: $color-ca; // TODO: replace in code with $highlight-color
+$mainColor: var(--color-13); // TODO: replace in code with $highlight-color
 
-$background-color-dark: $color-c10;
-$background-color-brighter: $color-c9;
+$background-color-dark: var(--color-02);
+$background-color-brighter: var(--color-03);
 
-$color-menubar-background: $color-cz;
+$color-menubar-background: var(--color-01);
 $color-menubar-background-active: $background-color-dark;
 $color-menubar-background-hover: $color-menubar-background;
 $color-menubar-text: $text-color;
-$color-menubar-hover: $color-ca;
+$color-menubar-hover: var(--color-13);
 
 $color-rubberband: $color-special;
 
-$color-panelhead: $color-cz;
-$color-panelhead-hover: $color-c9;
+$color-panelhead: var(--color-01);
+$color-panelhead-hover: var(--color-03);
 
-$color-splitter: $color-cz;
+$color-splitter: var(--color-01);
 
-$color-list-border: $color-c8;
+$color-list-border: var(--color-05);
 
 // ui elements -----------------------------------------------------------------
 
 
-$color-searchInputContainer: $color-c10;
+$color-searchInputContainer: var(--color-02);
 
 // scrollbar
 $color-scrollbar-thumb: #2a2a2a;
 $color-scrollbar-background: transparent;
    
 // command pallet
-$color-cmd-pallet-hotkey: $color-c6;
+$color-cmd-pallet-hotkey: var(--color-07);
 
 // intro.js
-$color-introjs-skipbutton: $color-c9;
+$color-introjs-skipbutton: var(--color-03);
 $color-introjs-progressbar: $color-special;
 
 // color picker
-$color-color-picker-input-background: $color-c9;
-$color-color-picker-input-label: $color-c3;
-$color-color-picker-input-text: $color-c3;
-$color-color-picker-separator: $color-c9;
+$color-color-picker-input-background: var(--color-03);
+$color-color-picker-input-label: var(--color-10);
+$color-color-picker-input-text: var(--color-10);
+$color-color-picker-separator: var(--color-03);
 
 // patch -----------------------------------------------------------------------
 
-$color_op_bg: $color-c85;
-$color_op_bg_active: $color-c7;
-$color_op_text: $color-c1;
-$color_op_text_active: $color-ca;
+:root
+{
+    --color_op_bg: var(--color-04);
+    --color_op_bg_active: var(--color-06);
+    --color_op_text: var(--color-12);
+    --color_op_text_active: var(--color-13);
+
+}
+
 
 $color_op_handle_default: #5dc0fd;
 $color_op_handle_gl: #c0e04d;
@@ -94,7 +103,6 @@ $color_port_array: #8084D4;
 $color_port_dynamic: #FFF6E5;
 $color_port_string: #d57272;
 
-
 $color_link_function: $color_port_function;
 $color_link_value: $color_port_value;
 $color_link_object: $color_port_object;
@@ -102,17 +110,17 @@ $color_link_array: $color_port_array;
 $color_link_dynamic: $color_port_dynamic;
 $color_link_string: $color_port_string;
 
-$button-text-color: $color-c3;
-$button-background-color: $color_op_bg_active;
-$button-text-color-hover: $color_op_text_active;
-$button-background-color-hover: $color-c6;
+$button-text-color: var(--color_op_text);
+$button-background-color: var(--color_op_bg_active);
+$button-text-color-hover: var(--color_op_text_active);
+$button-background-color-hover: var(--color-07);
 
 $button-border-color: $background-color-dark;
 $button-border-color-hover: $background-color-dark;
 
 // Button with icon only (no text)
 // normal
-$icon-button-color: $color-ca;
+$icon-button-color: var(--color-13);
 $icon-button-background-color: $background-color-dark;
 $icon-button-border-color: $icon-button-background-color;
 // hover / active
@@ -122,16 +130,41 @@ $icon-button-border-color-hover: $highlight-color;
 
 // input[text]
 // normal
-$text-input-color: $color-ca;
-$color-input-placeholder: $color-c4;
-$text-input-background-color: $color-c9;
+$text-input-color: var(--color-13);
+$color-input-placeholder: var(--color-09);
+$text-input-background-color: var(--color-03);
 $text-input-border-color: $text-input-background-color;
 // hover
 $text-input-color-hover: $text-input-color;
-$text-input-background-color-hover: $color-c8;
+$text-input-background-color-hover: var(--color-05);
 $text-input-border-color-hover: $highlight-color;
 
 // active / focus
-$text-input-color-focus: $color-ca;
+$text-input-color-focus: var(--color-13);
 $text-input-background-color-focus: ;
 $text-input-border-color-focus: $highlight-color;
+
+
+body.bright
+{
+    --color-13: #111111;  // 01
+    --color-12: #1A1A1A; // 02
+    --color-11: #222222;  // 03
+    --color-10: #333333; // 04
+    --color-09: #444444; // 05
+    --color-08: #555555; // 06
+    --color-07: #888888; // 07
+    --color-06: #969696; // 08
+    --color-05: #AAAAAA; // 09
+    --color-04: #BBBBBB; // 10
+    --color-03: #CCCCCC; // 11
+    --color-02: #EEEEEE; // 12
+    --color-01: #FFFFFF; // 13
+
+    --color_op_bg: var(--color-13);
+    --color_op_bg_active: var(--color-12);
+    --color_op_text: var(--color-01);
+    --color_op_text_active: var(--color-01);
+
+}
+

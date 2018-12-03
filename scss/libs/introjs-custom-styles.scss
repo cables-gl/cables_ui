@@ -18,7 +18,7 @@
 .introjs-tooltip {
   font-family: $text-font;
   // background-color: white !important;
-  background-color: $color-cz !important;
+  background-color: var(--color-01) !important;
   border: 1px solid $color-special !important;
   // border: none !important;
   border-radius: 0 !important;
@@ -63,22 +63,22 @@
   border-radius: 20px !important;
   cursor: pointer !important;
   background-image: none !important;
-  background-color: $color-c8 !important;
-  color: $color-c3 !important;
+  background-color: var(--color-05) !important;
+  color: var(--color-10) !important;
 
   &:hover {
-    background-color: $color-c6 !important;
-    color: $color-ca !important;
+    background-color: var(--color-07) !important;
+    color: var(--color-13) !important;
   }
 
   &.introjs-disabled {
     cursor: not-allowed !important;
-    color: $color-c6 !important;
-    background-color: $color-c9 !important;
+    color: var(--color-07) !important;
+    background-color: var(--color-03) !important;
 
     &:hover {
-      color: $color-c6 !important;
-      background-color: $color-c9 !important;
+      color: var(--color-07) !important;
+      background-color: var(--color-03) !important;
     }
   }
 }
@@ -94,7 +94,7 @@
 
 .introjs-progress {
   margin: 23px 0 5px 0 !important;
-  background-color: $color-c85;
+  background-color: var(--color-04);
 }
 
 .introjs-progressbar {

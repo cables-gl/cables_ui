@@ -48,7 +48,7 @@
 
 .taggle_list .taggle_hot
 {
-	background: $color-c2;
+	background: var(--color-11);
 }
 
 .taggle_list .taggle .close
@@ -61,7 +61,7 @@
 	padding-left: 4px;
 	padding-right: 4px;
 	line-height: 0.5;
-	color: $color-cz;
+	color: var(--color-01);
 	font-size: 20px;
 	padding-bottom: 4px;
 	display: block;
@@ -72,7 +72,7 @@
 .taggle_list .taggle {
   padding: 3px;
   padding-right: 15px;
-  background: $color-c7;
+  background: var(--color-06);
 }
 
 // .taggle_list .taggle:hover > .close {
@@ -140,7 +140,7 @@ visibility: hidden;
 	margin-top: 30px;
 	border-radius: .3em;
 	margin: .2em 0 0;
-	background: $color-c9;
+	background: var(--color-03);
 	border: none;//1px solid rgba(0,0,0,.3);
 	box-shadow: none;//.05em .2em .6em rgba(0,0,0,.2);
 	text-shadow: none;

@@ -116,16 +116,6 @@ gulp.task('sass', function() {
         .pipe(gulp.dest('dist/css'));
 });
 
-gulp.task('sass-bright', function() {
-    return gulp.src('scss/style-bright.scss')
-        .pipe(sass())
-        .pipe(rename('style-bright.css'))
-        .pipe(autoprefixer({
-            browsers: ['last 2 versions'],
-            cascade: false
-        }))
-        .pipe(gulp.dest('dist/css'));
-});
 
 
 gulp.task('svgcss', function () {
@@ -159,7 +149,7 @@ gulp.task('watch', function() {
     gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);
     gulp.watch('src/ui/**/*.js', ['scripts_ui']); //,'electron' // electron broke the watch SOMEHOW
-    gulp.watch('scss/**/*.scss', ['sass','sass-bright']);
+    gulp.watch('scss/**/*.scss', ['sass']);
     gulp.watch('html/**/*.html', ['html_ui']);
     gulp.watch('icons/**/*.svg', ['svgcss']);
     gulp.watch('vue-src/**/*', ['vueify']);
@@ -171,7 +161,7 @@ gulp.task('electron-watch', function() {
     gulp.watch('../cables/src/core/**/*.js', ['scripts_core']);
     gulp.watch('src/ops/**/*.js', ['scripts_ops']);
     gulp.watch('src/ui/**/*.js', ['scripts_ui','electronapp']);
-    gulp.watch('scss/**/*.scss', ['sass','sass-bright', 'electronapp']);
+    gulp.watch('scss/**/*.scss', ['sass', 'electronapp']);
     gulp.watch('html/**/*.html', ['html_ui']);
     gulp.watch('icons/**/*.svg', ['svgcss']);
     gulp.watch('vue-src/**/*', ['vueify']);
@@ -199,7 +189,6 @@ gulp.task('default', [
     'scripts_libs_core',
     'scripts_ops',
     'sass',
-    'sass-bright',
     'vueify',
     'watch',
 ]);
@@ -217,7 +206,6 @@ gulp.task('build', [
     'scripts_ops',
     'scripts_ui',
     'sass',
-    'sass-bright',
     'vueify',
 ]);
 
@@ -235,7 +223,6 @@ gulp.task('electron', [
     'scripts_libs_core',
     'scripts_ops',
     'sass',
-    'sass-bright',
     'vueify',
     'electron',
     'electronapp', 

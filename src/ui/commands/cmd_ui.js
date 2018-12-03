@@ -144,9 +144,16 @@ CABLES.CMD.UI.toggleSnapToGrid = function () {
 
 
 
+CABLES.CMD.UI.toggleTheme = function () {
+    CABLES.UI.userSettings.set('theme-bright', !CABLES.UI.userSettings.get('theme-bright'));
+    gui.updateTheme();
+};
 
-
-
+    
+    
+    
+    
+    
 CABLES.CMD.commands.push({
         cmd: "show settings",
         category: "ui",

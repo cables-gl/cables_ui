@@ -346,8 +346,8 @@
   }
 }
 .iziToast.iziToast-theme-dark {
-  background: $color-c7;
-  border-color: $color-c7;
+  background: var(--color-06);
+  border-color: var(--color-06);
 }
 .iziToast.iziToast-theme-dark strong {
   color: #fff;

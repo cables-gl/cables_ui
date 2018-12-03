@@ -94,7 +94,7 @@
     {
         font-size: 16px;
         padding: 20px 30px;
-		border-bottom: 1px solid $color-c8;
+		border-bottom: 1px solid var(--color-05);
         background-color: $background-color-brighter;
     }
 
@@ -206,7 +206,7 @@
 
         &:hover
         {
-            background-color: $color-c10;
+            background-color: var(--color-02);
             *
             {
                 background-color:$color-special !important;
@@ -216,7 +216,7 @@
 
     .selected
     {
-		background-color: $color_op_bg_active;
+		background-color: var(--color_op_bg_active);
         a
         {
             color:white;
@@ -224,12 +224,12 @@
 
         .insertbutton
         {
-            color: $color-c2 !important;
-			background-color: $color_op_bg;
+            color: var(--color-11) !important;
+			background-color: var(--color_op_bg);
 
             &:hover
             {
-                background-color: $color-c10;
+                background-color: var(--color-02);
                 *
                 {
                     background-color:$color-special !important;
@@ -239,18 +239,18 @@
 
         .summary
         {
-            color: $color-ca;
+            color: var(--color-13);
             i
             {
                 text-decoration: underline;
                 font-style: normal;
-                color: $color-c9;
+                color: var(--color-03);
             }
         }
 
 		.op_color_default
 		{
-			color: $color-ca;
+			color: var(--color-13);
 		}
 
         .namespace
@@ -296,7 +296,7 @@
 
     .summary
     {
-        color: $color-ca;
+        color: var(--color-13);
         font-size: 13px;
         font-style: normal;
         margin-top: 5px;

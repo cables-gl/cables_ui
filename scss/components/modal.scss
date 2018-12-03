@@ -1,7 +1,7 @@
 
 /* shared between vue / normal cables, should only contain color and opacity */
 .modal-bg-look {
-    background-color: $color-c8;
+    background-color: var(--color-05);
     opacity: 0.45;
 }
 
@@ -95,7 +95,7 @@
 {
     font-family: SourceCodePro,monospace;
     white-space: pre;
-    background-color: $color-c9;
+    background-color: var(--color-03);
     padding:10px;
     max-height: 600px;
     overflow: auto;

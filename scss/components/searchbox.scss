@@ -20,11 +20,11 @@
         -webkit-appearance: none;
         -webkit-user-select: auto;
         margin-bottom: 15px;
-        background-color: $color-c7;
+        background-color: var(--color-06);
         border: 1px solid transparent;
 
         &:focus {
-            border-color: $color-ca;
+            border-color: var(--color-13);
         }
 	}
 
@@ -40,7 +40,7 @@
     
 
     .inputcontainer {
-        background-color: $color-cz;
+        background-color: var(--color-01);
 
         .icon {
             margin-left: 5px;
@@ -49,7 +49,7 @@
         input {
             -webkit-appearance: none;
             -webkit-user-select: auto;
-            background-color: $color-c7 !important;
+            background-color: var(--color-06) !important;
         }
     }
 }
@@ -93,7 +93,7 @@
         &:hover
         {
             cursor:pointer;
-			background-color: $color_op_bg_active;
+			background-color: var(--color_op_bg_active);
         }
     }
 }

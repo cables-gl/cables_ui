@@ -1,6 +1,6 @@
 #icon-bar {
   padding-top: 28px;
-  background-color: $color-cz;
+  background-color: var(--color-01);
   position: fixed;
   top: 0;
   left: 0;
@@ -45,7 +45,7 @@
       &.icon {
         margin: 0 auto;
         margin-bottom: 6px;
-        background-color: $color-ca;
+        background-color: var(--color-13);
       }
     }
   }
@@ -90,7 +90,7 @@ li.gu-mirror {
     cursor: pointer;
 
     .icon {
-      background-color: $color-ca;
+      background-color: var(--color-13);
     }
 
     &:hover {
