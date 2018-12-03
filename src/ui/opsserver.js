@@ -224,18 +224,44 @@ CABLES.UI.ServerOps = function(gui) {
         var newName = name;
         if (name.indexOf('Ops.') === 0) newName = name.substr(4, name.length);
 
+        var usernamespace = 'Ops.User.' + gui.user.usernameLowercase;
+
         var html = '<h2>' + title + '</h2>';
-        html += '<div class="clone"><span>Ops.User.' + gui.user.usernameLowercase + '.&nbsp;&nbsp;</span><input type="text" id="opNameDialogInput" value="' + newName + '"/></div></div>';
+        html += 'Your op will be private. Only you can see and use it.<br/><br/>';
+        html += 'Enter a name:<br/><br/>';
+        html += '<div class="clone"><span>'+usernamespace + '.&nbsp;&nbsp;</span><input type="text" id="opNameDialogInput" value="' + newName + '" placeholder="MyAwesomeOpName"/></div></div>';
         html += '<br/>';
-        html += 'Your op will be private. Only you can see and use them.';
         html += '<br/><br/>';
+        html += '<div id="opcreateerrors"></div>';
         html += '<a id="opNameDialogSubmit" class="bluebutton fa fa-clone">create</a>';
         html += '<br/><br/>';
 
         CABLES.UI.MODAL.show(html);
 
         $('#opNameDialogInput').focus();
-        
+        $('#opNameDialogInput').bind('input',function()
+        {
+            var v=$('#opNameDialogInput').val();
+            console.log("INPUT!",v);
+            CABLES.api.get(
+                'op/checkname/' + usernamespace+'.'+v ,
+                function (res) {
+                    console.log(res);
+                    if (res.problems.length>0)
+                    {
+                        var html = '<b>your op name has issues:</b><br/><ul>';
+                        for (var i = 0; i < res.problems.length;i++) html += '<li>' + res.problems[i]+'</li>';
+                        html += '</ul><br/><br/>';
+                        $('#opcreateerrors').html(html);
+                        $('#opNameDialogSubmit').hide();
+                    }
+                    else
+                    {
+                        $('#opcreateerrors').html('');
+                        $('#opNameDialogSubmit').show();
+                    }
+                });
+        });
 
         $('#opNameDialogSubmit').bind("click",
             function(event) {
