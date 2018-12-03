@@ -20,13 +20,13 @@
 	cursor:pointer;
 	&:hover
 	{
-		background-color:$color-special;
+		background-color:var(--color-special);
 	}
 }
 
 .icon-active
 {
-    background-color:$color-special;
+    background-color:var(--color-special);
 }
 
 .icon-2x

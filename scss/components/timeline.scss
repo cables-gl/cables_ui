@@ -9,7 +9,7 @@
 
 .timeline-cursor
 {
-    stroke:$color-special;
+    stroke:var(--color-special);
     stroke-width: 2px;
     z-index: 1000;
 }
@@ -17,7 +17,7 @@
 .timeline-key
 {
     fill-opacity: 0.6;
-    fill:$color_port_value;
+    fill:var(--color_port_value);
     stroke-width: 1px;
     stroke:var(--color-13);
     cursor:col-resize;
@@ -31,7 +31,7 @@
 
 .timeline-keyline
 {
-    stroke:$color_port_value;
+    stroke:var(--color_port_value);
 }
 
 .timeline-timesteplines

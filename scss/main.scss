@@ -68,7 +68,7 @@ hr
 
 *
 {
-    color:$text-color;
+    color:var(--text-color);
     user-select:none;
     -webkit-user-select: none;  /* Chrome all / Safari all */
     -moz-user-select: none;     /* Firefox all */
@@ -137,7 +137,7 @@ input[type="text"]
     border-radius: 4px;
     padding:0px;
     padding-left:4px;
-    border:1px solid $text-color;
+    border:1px solid var(--text-color);
     margin-bottom: 3px;
     border-radius: 0;
     border: none;
@@ -193,7 +193,7 @@ input[type="text"]
 
     &.warn
     {
-        background-color: $color-warning;
+        background-color: var(--color-warning);
     }
 }
 
@@ -249,7 +249,7 @@ a.button.fa-times:before {
 .bluebutton
 {
     color: var(--color-02);
-    background-color: $color-special;
+    background-color: var(--color-special);
 	padding: 10px 20px;
 
     &:hover
@@ -337,10 +337,12 @@ input[type=search].big-search {
 
 input[type=text]:active, input[type=text]:focus, input[type=search]:active, input[type=search]:focus {
   outline: none;
-  background-color: $text-input-background-color-focus;
-  color: $text-input-color-focus;
-  border: 1px solid $text-input-border-color-focus;
+//   background-color: $text-input-background-color-focus;
+  color: var(--color-13);
+  border: 1px solid $highlight-color;
 }
+
+
 
 .list
 {
@@ -434,7 +436,7 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
 
 .splitter
 {
-    background-color:$color-splitter;
+    background-color:var(--color-01);
     z-index: $z-index-section-splitter;
     position: absolute;
     display: block;
@@ -457,7 +459,6 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
 {
     height:15px !important;
     width:15px !important;
-    // background-color: transparent;
     z-index: $z-index-canvas-iconbar-bottom-splitter;
     cursor:ne-resize;
 }

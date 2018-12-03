@@ -4,7 +4,7 @@
         background-color: white
     }
     50% {
-        background-color: $color-special;
+        background-color: var(--color-special);
     }
     100% {
         background-color: white;

@@ -26,12 +26,12 @@
 
 	.warning ,.warning-experimental, .warning a, .warning-experimental a
 	{
-		color: $color-warning;
+		color: var(--color-warning);
 	}
 
 	.warning-error, .warning-error a
 	{
-		color: $color-error;
+		color: var(--color-error);
 	}
 
 	.icon-link {
@@ -124,8 +124,8 @@
 
     .invalid
     {
-        border:1px solid $color-error;
-        background-color:$color-error !important;
+        border:1px solid var(--color-error);
+        background-color:var(--color-error) !important;
     }
 
     .nonDefaultValue
@@ -140,7 +140,7 @@
 
     td.port
     {
-        // border-left:4px solid $text-color;
+        // border-left:4px solid var(--text-color);
         padding-left: 15px;
         //font-family: arial;
         text-transform: capitalize;
@@ -152,15 +152,15 @@
     }
     /* 90 degree border */
 
-	td.portType_0 { box-shadow: inset 5px 0 0 $color_link_value !important; }
-    td.portType_1 { box-shadow: inset 5px 0 0 $color_link_function !important; }
-    td.portType_2 { box-shadow: inset 5px 0 0 $color_link_object !important; }
-    td.portType_3 { box-shadow: inset 5px 0 0 $color_link_array !important; }
+	td.portType_0 { box-shadow: inset 5px 0 0 var(--color_link_value) !important; }
+    td.portType_1 { box-shadow: inset 5px 0 0 var(--color_link_function) !important; }
+    td.portType_2 { box-shadow: inset 5px 0 0 var(--color_link_object) !important; }
+    td.portType_3 { box-shadow: inset 5px 0 0 var(--color_link_array) !important; }
 
-	td.portType_0_linked { box-shadow: inset 11px 0 0 $color_link_value !important; }
-    td.portType_1_linked { box-shadow: inset 11px 0 0 $color_link_function !important; }
-    td.portType_2_linked { box-shadow: inset 11px 0 0 $color_link_object !important; }
-    td.portType_3_linked { box-shadow: inset 11px 0 0 $color_link_array !important; }
+	td.portType_0_linked { box-shadow: inset 11px 0 0 var(--color_link_value) !important; }
+    td.portType_1_linked { box-shadow: inset 11px 0 0 var(--color_link_function) !important; }
+    td.portType_2_linked { box-shadow: inset 11px 0 0 var(--color_link_object) !important; }
+    td.portType_3_linked { box-shadow: inset 11px 0 0 var(--color_link_array) !important; }
 
 	textarea
 	{
@@ -263,7 +263,7 @@
 
 .panelhead
 {
-    background-color: $color-panelhead;
+    background-color: var(--color-01);
     padding: 6px !important;
     font-family: Arial;
     text-transform: capitalize;
@@ -277,7 +277,7 @@
     &:hover
     {
         color: var(--color-13);
-		background-color: $color-panelhead-hover;
+		background-color: var(--color-04);
     }
 
     &:before
@@ -321,7 +321,7 @@
         border: 1px solid var(--color-02);
         background-color: $color-background-input;
         padding:2px;
-        border: 3px solid #444;
+        border: 2px solid transparent;
     }
 
     .colorButton
@@ -402,11 +402,10 @@ td.head
 }
 
 
-.paramGroupSpacer
+.groupSpacer
 {
-    :before
-    {
-        border:2px solid red;
+    padding-top:3px;
+    border-bottom:2px solid var(--color-03);
+    margin-bottom:3px;
 
-    }
 }

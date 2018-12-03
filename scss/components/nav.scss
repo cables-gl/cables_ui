@@ -17,7 +17,7 @@
     li
     {
         background-color: $color-menubar-background;
-        color:$text-color;
+        color:var(--text-color);
         font-weight: normal;
         list-style-type: none;
         padding:10px;
@@ -81,7 +81,7 @@
         &:hover
         {
             background-color: $icon-button-background-color-hover !important;
-            color: $color-special;
+            color: var(--color-special);
         }
 
         &:active

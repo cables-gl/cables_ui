@@ -31,10 +31,10 @@
 
     &:hover {
       .label {
-        color: $color-special;
+        color: var(--color-special);
       }
       .icon {
-        background-color: $color-special;
+        background-color: var(--color-special);
       }
     }
 
@@ -95,7 +95,7 @@ li.gu-mirror {
 
     &:hover {
       .icon {
-        background-color: $color-special;
+        background-color: var(--color-special);
       }
     }
   }

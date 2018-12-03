@@ -190,7 +190,7 @@
     }
     .score
     {
-        color:$text-color;
+        color:var(--text-color);
     }
 
 	.insertbutton
@@ -209,7 +209,7 @@
             background-color: var(--color-02);
             *
             {
-                background-color:$color-special !important;
+                background-color:var(--color-special) !important;
             }
         }
 	}
@@ -232,7 +232,7 @@
                 background-color: var(--color-02);
                 *
                 {
-                    background-color:$color-special !important;
+                    background-color:var(--color-special) !important;
                 }
             }
         }
@@ -290,7 +290,7 @@
         {
             text-decoration: underline;
             font-style: normal;
-            // color:$text-color;
+            // color:var(--text-color);
         }
     }
 
@@ -321,11 +321,11 @@
     .searchable{
         // margin-bottom: 1px;
     }
-    .item_color_default { border-left:15px solid $color_op_handle_default;}
-    .item_color_gl { border-left:15px solid $color_op_handle_gl; }
-    .item_color_audio { border-left:15px solid $color_op_handle_audio; }
-    .item_color_devices { border-left:15px solid $color_op_handle_devices; }
-    .item_color_html { border-left:15px solid $color_op_handle_html; }
-    .item_color_math { border-left:15px solid $color_op_handle_math; }
-    .item_color_user { border-left:15px solid $color_op_handle_user; }
+    .item_color_default { border-left:15px solid var(--color_op_handle_default);}
+    .item_color_gl { border-left:15px solid var(--color_op_handle_gl); }
+    .item_color_audio { border-left:15px solid var(--color_op_handle_audio); }
+    .item_color_devices { border-left:15px solid var(--color_op_handle_devices); }
+    .item_color_html { border-left:15px solid var(--color_op_handle_html); }
+    .item_color_math { border-left:15px solid var(--color_op_handle_math); }
+    .item_color_user { border-left:15px solid var(--color_op_handle_user); }
 }

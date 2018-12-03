@@ -2824,7 +2824,24 @@ CABLES.UI.Patch = function(_gui) {
                 "texts": CABLES.UI.TEXTS
             });
 
-            for (i in op.portsIn) {
+            var lastGroup=null;
+            for (i in op.portsIn)
+            {
+                var startGroup = null;
+                var groupSpacer = false;
+
+                var opGroup = op.portsIn[i].uiAttribs.group;
+                if (lastGroup != opGroup && !opGroup) groupSpacer=true;
+
+                if (lastGroup != opGroup)
+                {
+                    groupSpacer = true;
+                    // console.log(opGroup);
+                    lastGroup = opGroup;
+                    startGroup = lastGroup;
+                }
+
+
                 op.portsIn[i].watchId = 'in_' + i;
                 watchAnimPorts.push(op.portsIn[i]);
 
@@ -2833,6 +2850,8 @@ CABLES.UI.Patch = function(_gui) {
 
                 html += templatePort({
                     port: op.portsIn[i],
+                    "startGroup": startGroup,
+                    "groupSpacer": groupSpacer,
                     "dirStr": "in",
                     "portnum": i,
                     "isInput": true,

@@ -51,7 +51,7 @@
 
     .active
     {
-        color: $color-special;
+        color: var(--color-special);
     }
 
 }
@@ -64,7 +64,7 @@
     }
     ul,li
     {
-        color: $color-error;
+        color: var(--color-error);
         margin-bottom: 0px;
     }
 }

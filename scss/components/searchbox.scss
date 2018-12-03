@@ -64,7 +64,7 @@
   overflow-y: scroll;
 
   div {
-    border-bottom: 1px solid $color-list-border;
+    border-bottom: 1px solid var(--color-05);
 
     &:last-child {
       border-bottom: none;

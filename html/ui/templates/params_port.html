@@ -11,12 +11,31 @@
 <script id="params_port" type="text/x-handlebars-template">
 
 {{#if port.uiAttribs.spaceBefore }}
-    <tr><td></td></tr>
+    <tr>
+        <td></td>
+    </tr>
 {{/if}}
 
-<tr id="tr_{{ dirStr }}_{{ portnum }}" class="opports_{{ dirStr }}" data-portname="{{port.name}}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}  onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
+
+{{#if groupSpacer}}
+<tr>
+    <td colspan="11" ><div class="groupSpacer"></div></td>
+</tr>
+{{/if}}
+<!-- {{#if startGroup}}
+<tr>
+    <td colspan="11" class="groupSpacer groupSpacerTitle"></td>
+
+</tr>
+{{/if}} -->
+
+
+
+
+<tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}" {{#if port.uiAttribs.greyout }}style="opacity:0.3;"{{/if}}  onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}}">
+
         {{port.name}} 
         </span>
     
@@ -153,7 +172,7 @@
                         {{#compare port.type '==' '5' }}
                                 </td>
                             <td colspan="3">
-                            <input class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{port.val}}" />
+                            <input class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{port.val}}" style="width:100%;"/>
                         {{/compare}}
 
                         {{#compare port.type '==' '1' }} </td><td>[function]
@@ -181,8 +200,8 @@
 
 
                     {{/compare}}
-                    <!-- dynamic port -->
                     {{#compare port.type '==' 4}}
+                    <!-- dynamic port? -->
                     {{#if port.uiAttribs.type }}
                     {{else}}
                         <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>

@@ -1,3 +1,10 @@
+// color picker
+$color-color-picker-input-background: var(--color-03);
+$color-color-picker-input-label: var(--color-10);
+$color-color-picker-input-text: var(--color-10);
+$color-color-picker-separator: var(--color-03);
+
+
 .cp-color-picker {
     box-sizing: border-box;
     width: 226px;
