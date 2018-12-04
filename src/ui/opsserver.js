@@ -102,7 +102,9 @@ CABLES.UI.ServerOps = function(gui) {
                     "name": op.portsIn[i].name
                 };
             
-            if(op.portsIn[i].type==CABLES.OP_PORT_TYPE_VALUE)
+            if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
+
+            if (op.portsIn[i].type == CABLES.OP_PORT_TYPE_VALUE)
             {
                 if(op.portsIn[i].uiAttribs.display=='bool')l.subType="boolean";
                 else if(op.portsIn[i].uiAttribs.type=='string')l.subType="string";
