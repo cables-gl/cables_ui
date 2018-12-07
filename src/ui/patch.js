@@ -2523,11 +2523,14 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.updateOpParams = function(id) {
+        if (CABLES.UI.DRAGGINGOPS || CABLES.UI.selectedEndOp || CABLES.UI.selectedStartOp) return false;
+
         if(selectedOps.length!=1)return;
         if(selectedOps[0].op.id!=id)return;
         gui.setTransformGizmo(null);
         var op=gui.scene().getOpById(id);
         self.showOpParams(op);
+        return true;
     };
 
     this.showProjectParams = function() {

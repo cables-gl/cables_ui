@@ -372,12 +372,18 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
   background: $color-background-input-selected;
 }
 
+
+// scrollbar
+$color-scrollbar-thumb: #2a2a2a;
+$color-scrollbar-background: transparent;
+
 ::-webkit-scrollbar {
     height: 12px;
     width: 12px;
     background: $color-scrollbar-background;
     opacity: 0.5;
 }
+
 
 ::-webkit-scrollbar-thumb {
     background: $color-scrollbar-thumb;

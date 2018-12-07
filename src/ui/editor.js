@@ -279,6 +279,8 @@ CABLES.Editor.createEditor=function(id)
                 "outTexture",
                 "outArray",
 
+                "setUiAttribs",
+                "setPortGroup",
                 "patch.cgl",
             ];
             callback(null, wordList.map(function(word) {

@@ -1363,9 +1363,12 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             {
                 p.onUiAttrChange=function()
                 {
-                    gui.patch().updateOpParams(self.op.id);
-                    self.initPorts();
-                    self.setPos();
+                    var doit=gui.patch().updateOpParams(self.op.id);
+                    if (doit)
+                    {
+                        self.initPorts();
+                        self.setPos();
+                    }
                 }.bind(self);
             }
 
@@ -1391,7 +1394,19 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             ps2.push(this.links[j].p2.thePort.getName());
         }
 
-        while(this.links.length>0) this.links[0].unlink();
+        var count=0;
+        while(this.links.length>0)
+        {
+            this.links[0].unlink();
+            count++;
+            if(count>1000)
+            {
+
+                console.log("unlinking fail");
+                break;
+            }
+        }
+        this.links=[];
 
         for(var i3=0;i3<ops1.length;i3++) gui.scene().link( ops1[i3],ps1[i3], ops2[i3],ps2[i3] );
     };

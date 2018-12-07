@@ -137,6 +137,12 @@
 	{
 		background-color: var(--color-10);
 	}
+    
+    tr.greyedout
+    {
+        opacity:0.3 !important;
+    }
+
 
     td.port
     {

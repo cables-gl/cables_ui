@@ -12,7 +12,6 @@ CABLES.UI.GUI = function() {
     _scene.gui = true;
     var _patch = null;
     var _editor = new CABLES.Editor();
-    var _projectSettings = null;
     var _userOpManager = null;
     var _jobs = new CABLES.UI.Jobs();
     var _find = new CABLES.UI.Find();
@@ -89,10 +88,6 @@ CABLES.UI.GUI = function() {
 
     this.introduction = function() {
         return _introduction;
-    };
-
-    this.projectSettings = function() {
-        return _projectSettings;
     };
 
     this.infoHeight = 200;
@@ -1249,8 +1244,10 @@ CABLES.UI.GUI = function() {
     };
 
     this.showSettings = function() {
-        _projectSettings = new CABLES.ProjectSettings(self.patch().getCurrentProject());
-        _projectSettings.show();
+
+        var html = '';
+        html += '<iframe style="border:none;width:100%;height:620px;" src="/patch/' + self.project()._id+'/settings"></iframe';
+        CABLES.UI.MODAL.show(html);
     };
 
     this.showOpDoc = function(opname) {

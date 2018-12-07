@@ -1,5 +1,3 @@
-"use strict";
-
 CABLES.UI.MOUSEOVERPORT=false;
 CABLES.UI.selectedStartPort=null;
 CABLES.UI.selectedEndPort=null;
@@ -385,13 +383,13 @@ CABLES.UI.Port=function(thePort)
         
         if(!self.rect)return;
 
-        // var offY=0;
-        // if(self.direction==CABLES.PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
+        var offY=0;
+        if(self.direction==CABLES.PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
 
-        // if(thePort.isLinked())
-        // {
-        //     if(self.direction==CABLES.PORT_DIR_IN)offY-=3;
-        // }
+        if(thePort.isLinked())
+        {
+            if(self.direction==CABLES.PORT_DIR_IN)offY-=3;
+        }
 
         if(thePort.isLinked())
         {
@@ -423,10 +421,8 @@ CABLES.UI.Port=function(thePort)
         self.rect.attr(
             {
                 x:self._posX,
-                // y:self._posY+offY,
+                y:self._posY+offY,
             });
-
-        self._updatePosY();
     }
     this.updateUI=updateUI;
 
@@ -528,11 +524,6 @@ CABLES.UI.Port=function(thePort)
         return this.rect!==null;
     };
 
-    this.getPosY=function()
-    {
-        return this._posY;//sthis.opUi.getHeight() - CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portHeight;
-    }
-
     this.removeUi=function()
     {
         if(!self.isVisible())return;
@@ -557,23 +548,21 @@ CABLES.UI.Port=function(thePort)
         if(self.isVisible())return;
         if(self.opUi.isHidden())return;
         var yp=0;
-        // var offY=0;
+        var offY=0;
         // var w=(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)*self.portPosX;
         var w=self.portPosX;
 
-        // if(self.direction==CABLES.PORT_DIR_OUT)
-        // {
-        //     offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
-        //     yp=21;
-        // }
+        if(self.direction==CABLES.PORT_DIR_OUT)
+        {
+            offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
+            yp=21;
+        }
 
         this._posX=0+w;
         this._posY=0+yp;
         
-        this.rect = gui.patch().getPaper().rect(this._posX,0);
+        this.rect = gui.patch().getPaper().rect(this._posX,offY+this._posY);
         CABLES.UI.cleanRaphael(this.rect);
-
-        this._updatePosY();
 
         this.rect.attr({ width:10, height:6, }); // for firefox compatibility: ff seems to ignore css width/height of svg rect?!
         this.rect.node.classList.add(CABLES.UI.uiConfig.getPortClass(self.thePort));
@@ -595,21 +584,9 @@ CABLES.UI.Port.prototype.getPosX=function()
     return this._posX;
 }
 
-CABLES.UI.Port.prototype._updatePosY=function()
+CABLES.UI.Port.prototype.getPosY=function()
 {
-    if (this.direction == CABLES.PORT_DIR_IN)
-    {
-        var offY=0;
-        if (this.thePort.isLinked()) offY -= 3;
-        this._posY = offY;
-        this.rect.attr({ y: this._posY });
-    }
-    else
-    {
-        var offY =  CABLES.UI.uiConfig.portHeight;
-        this._posY = this.opUi.getHeight() - offY-1;
-        this.rect.attr({ y: this._posY });
-    }
+    return this._posY;
 }
 
 CABLES.UI.Port.prototype.getParentPosX=function()
@@ -622,8 +599,3 @@ CABLES.UI.Port.prototype.getParentPosY=function()
     return this.opUi.getPosY();
 }
 
-CABLES.UI.Port.prototype.updateOnChangeOpHeight = function ()
-{
-    this._updatePosY();
-    // return this.rect.attr({ y: this.getPosY();});
-}
