@@ -281,6 +281,7 @@ CABLES.Editor.createEditor=function(id)
 
                 "setUiAttribs",
                 "setPortGroup",
+                "CGL.TextureEffect.checkOpNotInTextureEffect",
                 "patch.cgl",
             ];
             callback(null, wordList.map(function(word) {

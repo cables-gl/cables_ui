@@ -141,8 +141,8 @@
     tr.greyedout
     {
         opacity:0.3 !important;
+        pointer-events: none;
     }
-
 
     td.port
     {
