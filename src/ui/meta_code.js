@@ -93,30 +93,30 @@ CABLES.UI.MetaCode=function(projectId)
     };
 };
 
-CABLES.UI.MetaCode.rename=function(oldName)
-{
-	if(!oldName)
-	{
-		var ops=gui.patch().getSelectedOps();
-		if(ops.length!=1)
-		{
-			console.log("rename canceled - select one op!");
-			return;
-		}
-		oldName=ops[0].op.objName;
-		console.log(oldName);
-	}
+// CABLES.UI.MetaCode.rename=function(oldName)
+// {
+// 	if(!oldName)
+// 	{
+// 		var ops=gui.patch().getSelectedOps();
+// 		if(ops.length!=1)
+// 		{
+// 			console.log("rename canceled - select one op!");
+// 			return;
+// 		}
+// 		oldName=ops[0].op.objName;
+// 		console.log(oldName);
+// 	}
 
-    var newName=prompt('rename '+oldName+':',oldName);
+//     var newName=prompt('rename '+oldName+':',oldName);
 
-    if(newName)
-        CABLES.api.get(
-            'admin/op/rename/'+oldName+'/'+newName,
-            function(res)
-            {
-                var html='<h2>Rename</h2><br/> <a class="bluebutton" onclick="document.location.reload();">reload now</a><br/><br/><br/><div>'+JSON.stringify(res)+'</div>';
-                CABLES.UI.MODAL.show(html);
+//     if(newName)
+//         CABLES.api.get(
+//             'admin/op/rename/'+oldName+'/'+newName,
+//             function(res)
+//             {
+//                 var html='<h2>Rename</h2><br/> <a class="bluebutton" onclick="document.location.reload();">reload now</a><br/><br/><br/><div>'+JSON.stringify(res)+'</div>';
+//                 CABLES.UI.MODAL.show(html);
 
-            });
+//             });
 
-};
+// };

@@ -3528,7 +3528,11 @@ CABLES.UI.Patch = function(_gui) {
                 {
                     "title":'rename op ',
                     "iconClass":'fa fa-lock',
-                    "func":function(){ CABLES.UI.MetaCode.rename(opname); }
+                    // "func":function(){ CABLES.UI.MetaCode.rename(opname); }
+                    "func":function(){ 
+                        window.open("/admin/op/rename?op="+opname+"&new="+opname, "_blank");
+
+                        }
                 });
         }
         CABLES.contextMenu.show({"items":items},ele);

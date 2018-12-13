@@ -117,10 +117,10 @@ CABLES.CMD.PATCH.addOp=function()
 	gui.opSelect().showOpSelect({x:0,y:0});
 };
 
-CABLES.CMD.PATCH.renameOp=function()
-{
-	CABLES.UI.MetaCode.rename();
-};
+// CABLES.CMD.PATCH.renameOp=function()
+// {
+// 	CABLES.UI.MetaCode.rename();
+// };
 
 CABLES.CMD.PATCH.patchWebsite=function()
 {

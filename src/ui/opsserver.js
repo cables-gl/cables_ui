@@ -283,7 +283,6 @@ CABLES.UI.ServerOps = function(gui) {
                 CABLES.UI.MODAL.hide();
             });
         });
-
     };
 
     this.cloneDialog = function(oldName) {
