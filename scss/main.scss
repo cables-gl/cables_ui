@@ -396,6 +396,22 @@ $color-scrollbar-background: transparent;
 }
 
 
+
+body,div
+{
+    scrollbar-color:$color-scrollbar-thumb $color-scrollbar-background;
+}
+
+
+
+
+
+
+
+
+
+
+
 .help
 {
     a

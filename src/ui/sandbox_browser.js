@@ -91,12 +91,14 @@ CABLES.SandboxBrowser.prototype.showStartupChangelog = function() {
 
 CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
 {
-    if (!window.chrome && !CABLES.UI.userSettings.get('nobrowserWarning')) {
+    var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
+    if ( !window.chrome && !isFirefox && !CABLES.UI.userSettings.get('nobrowserWarning')) {
         iziToast.error({
             position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             theme: 'dark',
-            title: 'yikes!',
-            message: 'cables is optimized for chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange',
+            title: 'oops!', //yikes!
+            message: 'cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange',
             progressBar: false,
             animateInside: false,
             close: true,

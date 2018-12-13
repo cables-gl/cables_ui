@@ -273,7 +273,7 @@ CABLES.Editor.createEditor=function(id)
                 /* out number / string / bool  */
                 "outValue",
                 "outValueBool",
-                "outValueString",
+                "outString",
                 /* out object / texture / array  */
                 "outObject",
                 "outTexture",

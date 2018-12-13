@@ -7,10 +7,10 @@ CABLES.CMD.UI.settings = function() {
     gui.showSettings();
 };
 
-CABLES.CMD.UI.settingsContributors = function() {
-    gui.showSettings();
-    gui.projectSettings().setTab('users');
-};
+// CABLES.CMD.UI.settingsContributors = function() {
+//     gui.showSettings();
+//     gui.projectSettings().setTab('users');
+// };
 
 
 CABLES.CMD.UI.userSettings = function() {
@@ -159,12 +159,14 @@ CABLES.CMD.commands.push({
         category: "ui",
         func: CABLES.CMD.UI.settings,
         icon: 'settings'
-    }, {
-        cmd: "manage patch contributors",
-        category: "ui",
-        func: CABLES.CMD.UI.settingsContributors,
-        icon: 'settings'
-    }, {
+    }, 
+    // {
+    //     cmd: "manage patch contributors",
+    //     category: "ui",
+    //     func: CABLES.CMD.UI.settingsContributors,
+    //     icon: 'settings'
+    // },
+    {
         cmd: "show files",
         category: "ui",
         func: CABLES.CMD.UI.files,
