@@ -1,7 +1,6 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-
 CABLES.UI.TexturePreviewer=function()
 {
     this._texturePorts=[];
@@ -18,6 +17,7 @@ CABLES.UI.TexturePreviewer.MODE_ACTIVE=1;
 CABLES.UI.TexturePreviewer.FRAGSHADER=''.endl()
     .endl()+'IN vec2 texCoord;'
     .endl()+'UNI sampler2D tex;'
+
     .endl()+'void main()'
     .endl()+'{'
     .endl()+'    vec4 col=vec4(1.0,1.0,1.0,1.0);'
@@ -32,6 +32,7 @@ CABLES.UI.TexturePreviewer.VERTSHADER=''.endl()
     .endl()+'UNI mat4 projMatrix;'
     .endl()+'UNI mat4 modelMatrix;'
     .endl()+'UNI mat4 viewMatrix;'
+
     .endl()+'void main()'
     .endl()+'{'
     .endl()+'    texCoord=attrTexCoord;'

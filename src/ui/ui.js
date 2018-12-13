@@ -584,8 +584,7 @@ CABLES.UI.GUI = function() {
                     CABLES.api.post('project', {
                         "name": name
                     }, function(d) {
-                        CABLES.UI.SELECTPROJECT.doReload = true;
-                        document.location.href = '#/project/' + d._id;
+                        document.location.href = '?rnd='+Math.round(Math.random()*10000)+'#/project/' + d._id;
                     });
 
                 }
@@ -903,12 +902,12 @@ CABLES.UI.GUI = function() {
                         }
                     }
                     break;
-                case 79: // o - open
-                        if (e.metaKey || e.ctrlKey) {
-                            CABLES.UI.SELECTPROJECT.show();
-                            e.preventDefault();
-                        }
-                    break;
+                // case 79: // o - open
+                //         if (e.metaKey || e.ctrlKey) {
+                //             CABLES.UI.SELECTPROJECT.show();
+                //             e.preventDefault();
+                //         }
+                //     break;
                 case 69: // e - editor save/execute/build
                         if (e.metaKey || e.ctrlKey) {
                             if (showingEditor) {
@@ -921,15 +920,12 @@ CABLES.UI.GUI = function() {
                             e.preventDefault();
                             if (!e.shiftKey) {
                                 if ($('#patch').is(":focus")) {
-                                    // self.patch().saveCurrentProject();
                                     CABLES.CMD.PATCH.save();
-                                    CABLES.UI.SELECTPROJECT.doReload = true;
                                 } else
                                 if (showingEditor) {
                                     self.editor().save();
                                 } else {
                                     CABLES.CMD.PATCH.save();
-                                    // self.patch().saveCurrentProject();
                                 }
 
                             } else {
@@ -1009,10 +1005,10 @@ CABLES.UI.GUI = function() {
 
         this.showCanvasModal(false);
 
-        if (e && (e.metaKey || e.ctrlKey)) {
-            CABLES.UI.SELECTPROJECT.show();
-            return;
-        }
+        // if (e && (e.metaKey || e.ctrlKey)) {
+        //     CABLES.UI.SELECTPROJECT.show();
+        //     return;
+        // }
 
         $('.tooltip').hide();
 
@@ -1254,7 +1250,7 @@ CABLES.UI.GUI = function() {
         };
 
         var html = '';
-        html += '<iframe style="border:none;width:100%;height:620px;" src="/patch/' + self.project()._id+'/settings"></iframe';
+        html += '<iframe style="border:none;width:100%;height:620px;" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
         CABLES.UI.MODAL.show(html);
     };
 
@@ -1644,6 +1640,7 @@ function startUi(event)
     {
         if(!document.hidden)
         {
+            gui.setLayout();
             gui.patch().checkUpdated();
         }
 

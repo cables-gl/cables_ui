@@ -256,7 +256,9 @@
                     {{/if}}
 
                 {{#if port.uiAttribs.preview}}
-                    <span class="button fa fa-eye" onclick="gui.setMetaTab('preview');gui.texturePreview().setTexture('{{op.id}}','{{port.name}}');">preview</span>
+                <!-- gui.texturePreview().selectTexturePort(op.portsOut[i2]); -->
+
+                    <span class="button fa fa-eye" onclick="gui.setMetaTab('preview');gui.patch().updateOpParams('{{op.id}}');">preview</span>
                 {{else}}
                     <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br/>
                 {{/if}}

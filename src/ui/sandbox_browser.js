@@ -28,7 +28,6 @@ CABLES.SandboxBrowser.prototype.deleteProject=function(id)
 {
     CABLES.api.delete('project/' + id, {},
     function() {
-        // CABLES.UI.SELECTPROJECT.doReload=true;
         document.location.href = "/";
     });
 };
