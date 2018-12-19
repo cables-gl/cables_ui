@@ -219,6 +219,13 @@ CABLES.UI.GUI = function() {
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
 
+
+        // $('#bgpreview').css('width', self.rendererWidth+'px');
+        // $('#bgpreview').css('height', self.rendererHeight+'px');
+        // $('#bgpreview').css('left', (patchWidth-$('#bgpreview').width())/2 + iconBarWidth  +'px');
+        // $('#bgpreview').css('top', (patchHeight-$('#bgpreview').height())/2 + menubarHeight  +'px');
+
+
         if(showingEditor)
         {
             $('#editorminimized').hide();
@@ -230,6 +237,9 @@ CABLES.UI.GUI = function() {
                 this.updateCanvasIconBar();
                 // this.closeEditor();
             }
+
+
+            
 
             var editorbarHeight = 76;
             $('#editor').show();
@@ -1010,6 +1020,7 @@ CABLES.UI.GUI = function() {
         //     return;
         // }
 
+        this._texturePreviewer.pressedEscape();
         $('.tooltip').hide();
 
         if (self.rendererWidth*gui.patch().scene.cgl.canvasScale > window.innerWidth * 0.9)
@@ -1370,8 +1381,8 @@ CABLES.UI.GUI = function() {
         if (which == 'paco') self.showMetaPaco();
         if (which == 'profiler') self.showProfiler();
         if (which == 'variables') self.variables.show();
-        if (which == 'preview') self._texturePreviewer.show();
-        else if (self._texturePreviewer) self._texturePreviewer.hide();
+        if (which == 'preview') this._texturePreviewer.show();
+        else if (this._texturePreviewer) this._texturePreviewer.hide();
     };
 
     this.startPacoSender = function() {

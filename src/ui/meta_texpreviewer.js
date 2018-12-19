@@ -6,7 +6,8 @@ CABLES.UI.TexturePreviewer=function()
     this._texturePorts=[];
     this._showing=false;
     this._lastTimeActivity=0;
-    this._mode=0;
+    this._mode=1;
+    this._paused=false;
     this._shader=null;
     this._shaderTexUniform=null;
 };
@@ -41,13 +42,18 @@ CABLES.UI.TexturePreviewer.VERTSHADER=''.endl()
     .endl()+'    gl_Position = projMatrix * mvMatrix * pos;'
     .endl()+'}';
 
-CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
+CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 {
     var port=tp.port;
     const id=tp.id;
     const texSlot=5;
 
-    var previewCanvasEle=document.getElementById('preview_img_'+id);
+    var meta=true;
+    if(ele)meta=false;
+
+    var previewCanvasEle=ele||document.getElementById('preview_img_'+id);
+
+    // var previewCanvasEle=document.getElementById('bgpreview');
     if(!previewCanvasEle)
     {
         // console.log("no previewCanvasEle");
@@ -90,9 +96,11 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
         // const w=Math.min(containerEle.offsetWidth,port.get().width||256);
         // const h=w*(port.get().height/port.get().width);
 
-        var s=this._getCanvasSize(port.get());
+        var s=this._getCanvasSize(port,port.get(),meta);
+
         previewCanvasEle.width=s[0];
         previewCanvasEle.height=s[1];
+
 
         previewCanvas.clearRect(0, 0,previewCanvasEle.width, previewCanvasEle.height);
         previewCanvas.drawImage(cgl.canvas, 0, 0,previewCanvasEle.width, previewCanvasEle.height);
@@ -107,13 +115,29 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp)
 };
 
 
-CABLES.UI.TexturePreviewer.prototype._getCanvasSize=function(tex)
+CABLES.UI.TexturePreviewer.prototype._getCanvasSize=function(port,tex,meta)
 {
     var maxWidth=document.getElementById("meta_preview_textures").offsetWidth-30;
-    var aspect=tex.height/tex.width;
+    var maxHeight=200;
 
-    var w=Math.min(maxWidth,tex.width);
+    if(!meta)
+    {
+        maxWidth=port.parent.patch.cgl.canvas.width;
+        maxHeight=port.parent.patch.cgl.canvas.height;
+    }
+
+    var aspect=tex.height/tex.width;
+    var w=tex.width;
+    
+    if(w>maxWidth)w=maxWidth;
     var h=w*aspect;
+
+    if(h>maxHeight)
+    {
+        w=maxHeight/aspect;
+        h=maxHeight;
+    }
+
     return [w,h];
 }
 
@@ -188,11 +212,46 @@ CABLES.UI.TexturePreviewer.isScrolledIntoView=function(elem)
     var elemBottom = elemTop + $(elem).height();
 
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    return true;
+}
+
+CABLES.UI.TexturePreviewer.prototype.pressedEscape=function()
+{
+    this._lastClicked=null;
+    var ele=document.getElementById('bgpreview');
+    if(ele)ele.style.display="none";
 }
 
 CABLES.UI.TexturePreviewer.prototype.render=function()
 {
+
+    if(this._lastClicked)
+    {
+        var ele=document.getElementById('bgpreview');
+        ele.style.display="block";
+        this._renderTexture(this._lastClicked,ele);
+
+        // var s=this._getCanvasSize(port.get());
+
+        if(ele.width+'px'!=ele.style.width || ele.height+'px'!=ele.style.height)
+        {
+            console.log('resize,',ele.width,ele.height,this._lastClicked);
+            ele.style.width=ele.width+'px';
+            ele.style.height=ele.height+'px';
+
+            $('#bgpreview').css('left', ( $('#patch').width() -ele.width)/2 + 'px');
+            $('#bgpreview').css('top', ( $('#patch').height() -ele.height)/2 + 'px');
+        
+        }
+
+    }
+
+
     if(this._paused)return;
+
+
+    // this._renderTexture(this._texturePorts[i]);
+
 
     var now=CABLES.now();
     if(now-this._lastTimeActivity>=1000)
@@ -229,41 +288,46 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
 {
+
+    this._lastClicked=this.updateTexturePort(p);
+    
     var tp=this.updateTexturePort(p);
 
     if(!tp)return;
-    if(this._mode==CABLES.UI.TexturePreviewer.MODE_CLICKED) 
-    {
-        tp.doShow=true;
+    // if(this._mode==CABLES.UI.TexturePreviewer.MODE_CLICKED) 
+    // {
+    //     tp.doShow=true;
 
-        this._updateHtml();
+    //     this._updateHtml();
 
-        for(var i=0;i<this._texturePorts.length;i++)
-        {
-            var ele=document.getElementById('preview'+this._texturePorts[i].id);
-            if(ele && this._texturePorts[i].port.parent==p.parent)
-            {
-                this._texturePorts[i].updated=this._texturePorts[i].lastTimeClicked=CABLES.now();
-                ele.style.order=parseInt(this._texturePorts[i].lastTimeClicked,10);
-                // ele.classList.add('activePreview');
-            }
-        }
+    //     for(var i=0;i<this._texturePorts.length;i++)
+    //     {
+    //         // var ele=document.getElementById('preview'+this._texturePorts[i].id);
+    //         var ele=document.getElementById('bgpreview');
 
-        this._texturePorts.sort(function(a,b)
-        {
-            return a.lastTimeClicked-b.lastTimeClicked;
-        });
+    //         if(ele && this._texturePorts[i].port.parent==p.parent)
+    //         {
+    //             this._texturePorts[i].updated=this._texturePorts[i].lastTimeClicked=CABLES.now();
+    //             ele.style.order=parseInt(this._texturePorts[i].lastTimeClicked,10);
+    //             // ele.classList.add('activePreview');
+    //         }
+    //     }
 
-        while(this._texturePorts.length>3 )
-        {
-            var ele=document.getElementById('preview'+this._texturePorts[0].id);
-            if(ele) ele.remove();
+    //     this._texturePorts.sort(function(a,b)
+    //     {
+    //         return a.lastTimeClicked-b.lastTimeClicked;
+    //     });
 
-            this._texturePorts.splice(0,1);
-        }
+    //     while(this._texturePorts.length>3 )
+    //     {
+    //         var ele=document.getElementById('preview'+this._texturePorts[0].id);
+    //         if(ele) ele.remove();
 
-        document.getElementById('meta_content').scrollTop=0;
-    }
+    //         this._texturePorts.splice(0,1);
+    //     }
+
+    //     document.getElementById('meta_content').scrollTop=0;
+    // }
 
     for(var i=0;i<this._texturePorts.length;i++)
     {
