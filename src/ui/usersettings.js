@@ -33,6 +33,8 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('straightLines')) $('.nav_usersettings_straightLines i').removeClass('unchecked');
         else $('.nav_usersettings_straightLines i').addClass('unchecked');
     
+    if (this.get('bgpreview')) $('.nav_usersettings_bgpreview i').removeClass('unchecked');
+        else $('.nav_usersettings_bgpreview i').addClass('unchecked');
 
     if (this.get('showMinimap'))
     {
@@ -50,4 +52,7 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
 }
 
 CABLES.UI.userSettings=new CABLES.UI.UserSettings();
+
+if(CABLES.UI.userSettings.get("bgpreview")===null) CABLES.UI.userSettings.set("bgpreview",true);
+
 CABLES.UI.userSettings.updateNavBar();

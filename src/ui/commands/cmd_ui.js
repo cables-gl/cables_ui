@@ -78,6 +78,19 @@ CABLES.CMD.UI.showTimeline = function() {
     gui.showTiming();
 };
 
+CABLES.CMD.UI.toggleBgTexturePreview=function()
+{
+    CABLES.UI.userSettings.set('bgpreview', !CABLES.UI.userSettings.get('bgpreview'));
+    if (CABLES.UI.userSettings.get('bgpreview'))
+    {
+        gui.texturePreview().enableBgPreview(true);
+    }
+    else
+    {
+        gui.texturePreview().enableBgPreview(false);
+    }
+
+};
 
 
 
@@ -286,6 +299,11 @@ CABLES.CMD.commands.push({
         category: "ui",
         func: CABLES.CMD.UI.toggleMinimap,
         icon: "command"
+    }, {
+        cmd: "toggle texture preview",
+        category: "ui",
+        func: CABLES.CMD.UI.toggleBgTexturePreview,
+        icon: "monitor"
     }
 
 );

@@ -215,6 +215,19 @@ CABLES.UI.TexturePreviewer.isScrolledIntoView=function(elem)
     return true;
 }
 
+
+CABLES.UI.TexturePreviewer.prototype.enableBgPreview=function(enabled)
+{
+    if(!enabled)
+    {
+        this.pressedEscape();
+    }
+    else
+    {
+        if(this._lastClicked)this.selectTexturePort(this._lastClickedP);
+    }
+}
+
 CABLES.UI.TexturePreviewer.prototype.pressedEscape=function()
 {
     this._lastClicked=null;
@@ -224,34 +237,23 @@ CABLES.UI.TexturePreviewer.prototype.pressedEscape=function()
 
 CABLES.UI.TexturePreviewer.prototype.render=function()
 {
-
-    if(this._lastClicked)
+    if(this._lastClicked && CABLES.UI.userSettings.get("bgpreview"))
     {
         var ele=document.getElementById('bgpreview');
         ele.style.display="block";
         this._renderTexture(this._lastClicked,ele);
 
-        // var s=this._getCanvasSize(port.get());
-
         if(ele.width+'px'!=ele.style.width || ele.height+'px'!=ele.style.height)
         {
-            console.log('resize,',ele.width,ele.height,this._lastClicked);
             ele.style.width=ele.width+'px';
             ele.style.height=ele.height+'px';
 
             $('#bgpreview').css('left', ( $('#patch').width() -ele.width)/2 + 'px');
             $('#bgpreview').css('top', ( $('#patch').height() -ele.height)/2 + 'px');
-        
         }
-
     }
 
-
     if(this._paused)return;
-
-
-    // this._renderTexture(this._texturePorts[i]);
-
 
     var now=CABLES.now();
     if(now-this._lastTimeActivity>=1000)
@@ -289,6 +291,7 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
 {
 
+    this._lastClickedP=p;
     this._lastClicked=this.updateTexturePort(p);
     
     var tp=this.updateTexturePort(p);
@@ -354,8 +357,12 @@ CABLES.UI.TexturePreviewer.prototype.setMode=function(m)
 
 CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
 {
+    // if(this._paused || port!=this._lastClicked)return;
+    // console.log(port);
     var doUpdateHtml=false;
     var p=port;
+
+
 
     if(p && p.get() && p.get().tex && port.direction==CABLES.PORT_DIR_OUT )
     {
@@ -389,6 +396,7 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
 
         if(this._mode==CABLES.UI.TexturePreviewer.MODE_ACTIVE) this._texturePorts[idx].doShow=true;
     }
+
 
     if(doUpdateHtml) if(!this._paused)this._updateHtml();
     return this._texturePorts[idx];
