@@ -117,13 +117,17 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
 CABLES.UI.TexturePreviewer.prototype._getCanvasSize=function(port,tex,meta)
 {
-    var maxWidth=document.getElementById("meta_preview_textures").offsetWidth-30;
+    var maxWidth=300;
     var maxHeight=200;
 
     if(!meta)
     {
-        maxWidth=port.parent.patch.cgl.canvas.width;
-        maxHeight=port.parent.patch.cgl.canvas.height;
+        maxWidth=Math.min($('#patch').width(), port.parent.patch.cgl.canvas.width);
+        maxHeight=Math.min($('#patch').height(), port.parent.patch.cgl.canvas.height);
+    }
+    else
+    {
+        document.getElementById("meta_preview_textures").offsetWidth-30;
     }
 
     var aspect=tex.height/tex.width;
@@ -248,8 +252,18 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
             ele.style.width=ele.width+'px';
             ele.style.height=ele.height+'px';
 
-            $('#bgpreview').css('left', ( $('#patch').width() -ele.width)/2 + 'px');
-            $('#bgpreview').css('top', ( $('#patch').height() -ele.height)/2 + 'px');
+            var iconbarWidth=80;
+
+            //centered
+            // $('#bgpreview').css('left', ( $('#patch').width() -ele.width)/2 +iconbarWidth+ 'px');
+            // $('#bgpreview').css('top', ( $('#patch').height() -ele.height)/2 + 'px');
+            
+            
+            // right
+            $('#bgpreview').css('left', ( $('#patch').width() )-ele.width +iconbarWidth+ 'px');
+            // $('#bgpreview').css('top', 20 + 'px');
+            $('#bgpreview').css('top', ( $('#patch').height() )-ele.height +20+ 'px');
+
         }
     }
 

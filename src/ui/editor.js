@@ -279,6 +279,8 @@ CABLES.Editor.createEditor=function(id)
                 "outTexture",
                 "outArray",
 
+                "onLinkChanged",
+
                 "setUiAttribs",
                 "setPortGroup",
                 "CGL.TextureEffect.checkOpNotInTextureEffect",
