@@ -701,9 +701,14 @@ CABLES.UI.Patch = function(_gui) {
 
     this.checkLinkTimeWarnings=function()
     {
+        var start=Date.now();
+
         for(var i=0;i<self.ops.length;i++)
             self.ops[i].op.checkLinkTimeWarnings();
-    }
+
+            var timespent=(Date.now()-start);
+            console.log('check ui',timespent+'ms');
+        }
 
     this.checkUpdatedSaveForce=function(updated)
     {
