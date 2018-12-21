@@ -55,6 +55,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var isSelected = true;
     var group = Raphael.fn.set();
     var background = null;
+
+    this._striked = null;
+
     var miniRect = null;
     var backgroundResize=null;
     // var colorHandle=null;
@@ -126,6 +129,12 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if(this._colorHandle)this._colorHandle.remove();
         if (miniRect) miniRect.remove();
         // label=background=commentText=backgroundResize=null;
+
+        if(this._striked)this._striked.remove();
+        if(this._striked2)this._striked2.remove();
+
+
+        
         label = background = commentText = null;
     };
 
@@ -385,7 +394,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                     'fill':"#eee",
                     'x': 0
                 });
-
             }
 
             var color=opui.op.uiAttribs.color||"#eee";
@@ -402,7 +410,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             }
             this.updateSize();
             this._updateRotation();
-
         }
     };
 
@@ -447,10 +454,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 'height': commentHeight - 20 || 10,
                 "fill": '#000'
             });
-
         }
     };
-
 
     this.updateColorHandle = function()
     {
@@ -472,17 +477,13 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             {
                 this._colorHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 3, CABLES.UI.uiConfig.resizeBarWidth, h-6);
                 CABLES.UI.cleanRaphael(this._colorHandle);
-        
                 group.push(this._colorHandle);
             }
 
             opui.setPos();
 
             this._colorHandle.attr({"fill":opui.op.uiAttribs.color});
-            // this._colorHandle.attr({"x":w-CABLES.UI.uiConfig.resizeBarWidth});
             this.setWidth();
-
-            
 
             // if (background) this._errorIndicator.attr({
             //     cx: background.getBBox().width
@@ -493,7 +494,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
         else
         {
-
             if(this._colorHandle)
             {
                 this._colorHandle.remove();
@@ -549,6 +549,43 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         CABLES.UI.DRAGGINGOPS=false;
     };
 
+    this._updateStriked=function()
+    {
+        if(opui.op.uiAttribs.working==true && this._striked)
+        {
+            this._striked.remove();
+            this._striked2.remove();
+            this._striked=null;
+            this._striked2=null;
+            return;
+        }
+        if(opui.op.uiAttribs.working!==false)return;
+
+        
+        if(!this._striked)
+        {
+            this._striked = gui.patch().getPaper().path( "M0,0 L20,20" );
+            this._striked.node.classList.add('op_striked');
+            
+            this._striked2 = gui.patch().getPaper().path( "M0,0 L20,20" );
+            this._striked2.node.classList.add('op_striked');
+            
+            group.push(this._striked,this._striked2);
+        }
+        
+        opui.setPos();
+        
+        var bb={width:0,height:30};
+        if(background)bb=background.getBBox();
+        var strX=bb.width;
+        var strY=bb.height/2+3;
+        
+        this._striked.attr("path","M"+(strX-5)+","+(strY-5)+" L"+(strX+5)+","+(strY+5) );
+        this._striked2.attr("path","M"+(strX+5)+","+(strY-5)+" L"+(strX-5)+","+(strY+5) );
+
+        this._striked.toFront();
+        this._striked2.toFront();
+    }
 
     this.addUi = function() {
         if (this.isVisible()) return;
@@ -578,6 +615,11 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         background.node.classList.add(objNameClassNameified);
         background.node.setAttribute('data-info', CABLES.UI.TEXTS.op_background);
 
+
+
+        
+
+
         // resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, 0);
         // CABLES.UI.cleanRaphael(resizeHandle);
         // resizeHandle.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
@@ -592,9 +634,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         CABLES.UI.cleanRaphael(label);
 
         this.setTitle(title);
-
-        // $(label.node).css({'pointer-events': 'none'});
-
+        
+        // striked = gui.patch().getPaper().path( "M20,10 L"+(w-20)+","+(h-10) );
 
         background.drag(move, down, up);
         background.hover(hover, unhover);
@@ -710,8 +751,15 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             background.toFront();
             label.toFront();
 
+            if(this._striked)
+            {
+                this._striked.toFront();
+                this._striked2.toFront();
+            }
+
             if (this._errorIndicator) this._errorIndicator.toFront();
             if (commentText) commentText.toFront();
+            this._updateStriked();
 
         }
 
@@ -801,6 +849,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         // resizeHandle.toFront();
         this.updateSize();
         this.updateColorHandle();
+        this._updateStriked();
     };
 
     this.setEnabled = function(enabled) {
@@ -878,6 +927,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             // }
             this.updateSize();
             this.updateErrorIndicator();
+            this._updateStriked();
         }
     };
 
@@ -891,10 +941,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             else background.node.classList.remove("op_highlight");
     };
 
-    // group.push(background);
     group.transform('t' + x + ',' + y);
 };
-
 
 
 // --------------------------------------------------------------------------------------
@@ -970,6 +1018,9 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         }
         if (attribs && attribs.hasOwnProperty('color')) {
             this.oprect.updateColorHandle();
+        }
+        if (attribs && attribs.hasOwnProperty('working')) {
+            this.oprect._updateStriked();
         }
         if (typeof attribs.title !== 'undefined' && attribs.title !== null) {
             this.oprect.setTitle(attribs.title);

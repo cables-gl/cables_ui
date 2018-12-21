@@ -380,7 +380,6 @@ CABLES.UI.Port=function(thePort)
 
     function updateUI()
     {
-        
         if(!self.rect)return;
 
         var offY=0;

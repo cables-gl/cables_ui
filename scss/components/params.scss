@@ -26,12 +26,14 @@
 
 	.warning ,.warning-experimental, .warning a, .warning-experimental a
 	{
-		color: var(--color-warning);
+        color: var(--color-warning);
+        font-size: $font-size-default+2;
 	}
 
 	.warning-error, .warning-error a
 	{
-		color: var(--color-error);
+        color: var(--color-error);
+        font-size: $font-size-default+2;
 	}
 
 	.icon-link {

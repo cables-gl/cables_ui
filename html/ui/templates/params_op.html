@@ -74,6 +74,12 @@
             	<i>Hint:</i> {{op.uiAttribs.hint}}
             </div>
 
+            {{#if op.uiAttribs.notWorkingMsg }}
+                <div class="warning" id="options_warning" >
+                    {{op.uiAttribs.notWorkingMsg}}
+                </div>
+            {{/if}}
+
         </div>
     </div>
 

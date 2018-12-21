@@ -18,12 +18,22 @@ CABLES.UI.TexturePreviewer.MODE_ACTIVE=1;
 CABLES.UI.TexturePreviewer.FRAGSHADER=''.endl()
     .endl()+'IN vec2 texCoord;'
     .endl()+'UNI sampler2D tex;'
+    .endl()+'UNI float width;'
+    .endl()+'UNI float height;'
+
+    .endl()+'float checkerboard()'
+    .endl()+'{'
+    .endl()+'    float num=40.0;'
+    .endl()+'    float h=(height/width)*num;'
+    .endl()+'    float total = floor(texCoord.x*num) +floor(texCoord.y*h);'
+    .endl()+'    return mod(total,2.0)*0.1+0.05;'
+    .endl()+'}'
 
     .endl()+'void main()'
     .endl()+'{'
-    .endl()+'    vec4 col=vec4(1.0,1.0,1.0,1.0);'
-    .endl()+'    col=texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y)));'
-    .endl()+'    outColor = col;'
+    .endl()+'    vec4 col=vec4(vec3(checkerboard()),1.0);'
+    .endl()+'    vec4 colTex=texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y)));'
+    .endl()+'    outColor = mix(col,colTex,colTex.a);'
     .endl()+'}';
 
 CABLES.UI.TexturePreviewer.VERTSHADER=''.endl()
@@ -80,6 +90,8 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
             this._shader.setSource(CABLES.UI.TexturePreviewer.VERTSHADER,CABLES.UI.TexturePreviewer.FRAGSHADER);
             this._shader.add
             this._shaderTexUniform=new CGL.Uniform(this._shader,'t','tex',texSlot);
+            this._shaderTexUniformW=new CGL.Uniform(this._shader,'f','width',port.get().width);
+            this._shaderTexUniformH=new CGL.Uniform(this._shader,'f','height',port.get().height);
         }
 
         cgl.pushPMatrix();
