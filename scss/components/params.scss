@@ -402,6 +402,25 @@
     }
 }
 
+#options .axisX:after
+{
+    color: rgb(255,0,0);
+    content:"•";
+    font-weight: bold;
+}
+#options .axisY:after
+{
+    color: rgb(0,255,0);
+    content:"•";
+    font-weight: bold;
+}
+#options .axisZ:after
+{
+    color: rgb(0,0,255);
+    content:"•";
+    font-weight: bold;
+}
+
 td.head
 {
     background-color: var(--color-01);

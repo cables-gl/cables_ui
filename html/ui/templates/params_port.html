@@ -34,7 +34,7 @@
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
-        <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}}">
+        <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
 
         {{port.name}} 
         </span>

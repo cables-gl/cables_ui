@@ -60,9 +60,6 @@ CABLES.libLoader.prototype.loadLib=function(name)
 
 };
 
-
-
-
 CABLES.onLoadedLib={};
 
 CABLES.loadedLib=function(name)

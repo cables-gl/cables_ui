@@ -162,6 +162,8 @@ CABLES.Gizmo.prototype.getDir=function(x2,y2)
 
 };
 
+CABLES.Gizmo.tempParams={};
+
 CABLES.Gizmo.prototype.set=function(params)
 {
     if(!params)return this.setParams(params);
@@ -233,28 +235,32 @@ CABLES.Gizmo.prototype.set=function(params)
     
     cgl.popModelMatrix();
     
-    this.setParams(
-        {
-            x:zero.x,
-            y:zero.y,
-            xx:screenX.x,
-            xy:screenX.y,
-            yx:screenY.x,
-            yy:screenY.y,
-            zx:screenZ.x,
-            zy:screenZ.y,
-            
-            coord:trans,
-            coordX:transX,
-            coordY:transY,
-            coordZ:transZ,
 
-            posX:params.posX,
-            posY:params.posY,
-            posZ:params.posZ,
-            dist:w
-        });
+    CABLES.Gizmo.tempParams.x=zero.x;
+    CABLES.Gizmo.tempParams.y=zero.y;
+    CABLES.Gizmo.tempParams.xx=screenX.x;
+    CABLES.Gizmo.tempParams.xy=screenX.y;
+    CABLES.Gizmo.tempParams.yx=screenY.x;
+    CABLES.Gizmo.tempParams.yy=screenY.y;
+    CABLES.Gizmo.tempParams.zx=screenZ.x;
+    CABLES.Gizmo.tempParams.zy=screenZ.y;
+    
+    CABLES.Gizmo.tempParams.coord=trans;
+    CABLES.Gizmo.tempParams.coordX=transX;
+    CABLES.Gizmo.tempParams.coordY=transY;
+    CABLES.Gizmo.tempParams.coordZ=transZ;
+    
+    CABLES.Gizmo.tempParams.posX=params.posX;
+    CABLES.Gizmo.tempParams.posY=params.posY;
+    CABLES.Gizmo.tempParams.posZ=params.posZ;
+    CABLES.Gizmo.tempParams.dist=w;
+
+    this.setParams(CABLES.Gizmo.tempParams);
+
 };
+
+
+
 
 CABLES.Gizmo.prototype.setParams=function(params)
 {
@@ -266,6 +272,7 @@ CABLES.Gizmo.prototype.setParams=function(params)
 
         this._eleCenter = document.createElement('div');
         this._eleCenter.id="gizmo";
+
         this._eleCenter.style.background="#fff";
         this._eleCenter.style.opacity="0.9";
         // this._eleCenter.style['border-radius']="1130px";

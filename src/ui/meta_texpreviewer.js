@@ -262,7 +262,7 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
             // right
             $('#bgpreview').css('left', ( $('#patch').width() )-ele.width +iconbarWidth+ 'px');
             // $('#bgpreview').css('top', 20 + 'px');
-            $('#bgpreview').css('top', ( $('#patch').height() )-ele.height +20+ 'px');
+            $('#bgpreview').css('bottom', '2px');
 
         }
     }
