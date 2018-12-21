@@ -699,6 +699,12 @@ CABLES.UI.Patch = function(_gui) {
             });
     };
 
+    this.checkLinkTimeWarnings=function()
+    {
+        for(var i=0;i<self.ops.length;i++)
+            self.ops[i].op.checkLinkTimeWarnings();
+    }
+
     this.checkUpdatedSaveForce=function(updated)
     {
         this._serverDate=updated;
@@ -1915,6 +1921,8 @@ CABLES.UI.Patch = function(_gui) {
             doAddOp(uiOp);
             
             this.opCollisionTest(uiOp);
+            op._checkLinksNeededToWork();
+
 
         }.bind(this);
     };

@@ -435,7 +435,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             if (commentText) {
                 CABLES.UI.SVGParagraph(commentText, sw * 2);
-                commentText.toFront();
+                // commentText.toFront();
                 commentText.attr({'y': commentText.getBBox().height / 2 + 76 });
                 commentHeight += commentText.getBBox().height;
                 commentWidth = Math.max(commentWidth, commentText.getBBox().width);
@@ -490,7 +490,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             // });
             // this._errorIndicator.toFront();
 
-            this._colorHandle.toFront();
         }
         else
         {
@@ -549,6 +548,28 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         CABLES.UI.DRAGGINGOPS=false;
     };
 
+
+    this._updateElementOrder=function()
+    {
+
+        background.toFront();
+        label.toFront();
+
+        for(var i=0;i<opui.portsIn.length;i++) if(opui.portsIn[i].rect) opui.portsIn[i].rect.toFront();
+        for(var i=0;i<opui.portsOut.length;i++) if(opui.portsOut[i].rect) opui.portsOut[i].rect.toFront();
+    
+        if(backgroundResize) backgroundResize.toFront();
+        if(this._colorHandle) this._colorHandle.toFront();
+
+        if(this._striked) this._striked.toFront();
+        if(this._striked2) this._striked2.toFront();
+        
+        if (commentText) commentText.toFront();
+        if (this._errorIndicator) this._errorIndicator.toFront();
+    
+    }
+
+
     this._updateStriked=function()
     {
         if(opui.op.uiAttribs.working==true && this._striked)
@@ -561,7 +582,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
         if(opui.op.uiAttribs.working!==false)return;
 
-        
         if(!this._striked)
         {
             this._striked = gui.patch().getPaper().path( "M0,0 L20,20" );
@@ -572,9 +592,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             
             group.push(this._striked,this._striked2);
         }
-        
+
         opui.setPos();
-        
+
         var bb={width:0,height:30};
         if(background)bb=background.getBBox();
         var strX=bb.width;
@@ -582,12 +602,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         
         this._striked.attr("path","M"+(strX-5)+","+(strY-5)+" L"+(strX+5)+","+(strY+5) );
         this._striked2.attr("path","M"+(strX+5)+","+(strY-5)+" L"+(strX-5)+","+(strY+5) );
-
-        this._striked.toFront();
-        this._striked2.toFront();
     }
 
-    this.addUi = function() {
+    this.addUi = function()
+    {
         if (this.isVisible()) return;
 
         if (opui.op.uiAttribs.size) {
@@ -745,23 +763,25 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             // group.push(backgroundResize,commentText);
             group.push(commentText);
-            gui.patch().background.toBack();
-            // backgroundResize.toFront();
+            // gui.patch().background.toBack();
+            // // backgroundResize.toFront();
             
-            background.toFront();
-            label.toFront();
+            // background.toFront();
+            // label.toFront();
 
-            if(this._striked)
-            {
-                this._striked.toFront();
-                this._striked2.toFront();
-            }
+            // if(this._striked)
+            // {
+            //     this._striked.toFront();
+            //     this._striked2.toFront();
+            // }
 
-            if (this._errorIndicator) this._errorIndicator.toFront();
-            if (commentText) commentText.toFront();
+            // if (this._errorIndicator) this._errorIndicator.toFront();
+            // if (commentText) commentText.toFront();
             this._updateStriked();
 
+            this._updateElementOrder();
         }
+
 
 
         if (objName == 'Ops.Ui.CommentArea')
@@ -826,9 +846,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
                 _opui.updateHeight();
 
-                backgroundResize.toFront();
+                
                 group.toBack();
                 this.updateColorHandle();
+                // this._updateElementOrder();
             };
 
             this.updateComment();
@@ -838,10 +859,11 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             group.push(backgroundResize,commentText);
             // group.push(commentText);
             // gui.patch().background.toBack();
-            background.toBack();
-            group.toBack();
-            backgroundResize.toFront();
-            label.toFront();
+            // background.toBack();
+            // group.toBack();
+            // backgroundResize.toFront();
+            // label.toFront();
+            // this._updateElementOrder();
         }
 
         group.push(background, label);
@@ -850,6 +872,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         this.updateSize();
         this.updateColorHandle();
         this._updateStriked();
+        this._updateElementOrder();
     };
 
     this.setEnabled = function(enabled) {
@@ -864,8 +887,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this.setSelected = function(sel) {
         if (isSelected == sel) return;
-        group.toFront();
-        if (this._errorIndicator) this._errorIndicator.toFront();
+        
+
+        // if (this._errorIndicator) this._errorIndicator.toFront();
         isSelected = sel;
 
         if (this.isVisible() && !commentText)
@@ -895,9 +919,14 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             }
         }
 
-        if (backgroundResize) {
-            backgroundResize.toFront();
-        }
+        // if (backgroundResize) {
+            // backgroundResize.toFront();
+        // }
+        
+        // gui.patch().background.toBack();
+        // group.toFront();
+        this._updateElementOrder();
+
 
         // if(opui.op.uiAttribs.error && opui.op.uiAttribs.error.length>0)
         // {

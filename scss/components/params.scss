@@ -8,7 +8,7 @@
 
     .warning,.warning-experimental,.warning-error
 	{
-		border: 1px solid;
+		border: 3px solid;
         padding: 21px;
 
 		a {
@@ -26,13 +26,13 @@
 
 	.warning ,.warning-experimental, .warning a, .warning-experimental a
 	{
-        color: var(--color-warning);
+        border-color: var(--color-warning);
         font-size: $font-size-default+2;
 	}
 
 	.warning-error, .warning-error a
 	{
-        color: var(--color-error);
+        border-color: var(--color-error);
         font-size: $font-size-default+2;
 	}
 
