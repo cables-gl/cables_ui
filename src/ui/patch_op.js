@@ -259,6 +259,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             return;
         }
 
+        gui.patch().prepareMovingOps();
+        
         opui.showAddButtons();
 
         if (!e.shiftKey) {
@@ -276,9 +278,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             return;
         }
         if (shakeLastX != -1) {
-
-            // console.log('shake diff',shakeLastX-a);
-
             if (shakeLastX - a > 30 && lastShakeDir) {
                 lastShakeDir = false;
                 shakeCountP++;
@@ -311,13 +310,16 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         shakeLastX = a;
 
         gui.patch().moveSelectedOps(dx, dy, a, b, e);
-
+        // group.toBack();
+        this._updateElementOrder(true);
         // gui.patch().moveSelectedOps(dx, dy, a, b, e);
         gui.patch().updateBounds = true;
         gui.setStateUnsaved();
     };
 
     var up = function(e) {
+        this._updateElementOrder(false);
+
         if ( (e.metaKey || e.altKey) && CABLES.UI.quickAddOpStart) {
             gui.patch().linkTwoOps(
                 CABLES.UI.quickAddOpStart,
@@ -329,6 +331,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             return;
         }
+
 
         shakeCountP = 0;
         shakeCountN = 0;
@@ -549,25 +552,46 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
 
-    this._updateElementOrder=function()
+    this._updateElementOrder = function (reverse)
     {
         var perf = CABLES.uiperf.start('_updateElementOrder');
 
-        background.toFront();
-        label.toFront();
+        if(reverse)
+        {
+            for (var i = 0; i < opui.portsIn.length; i++) if (opui.portsIn[i].rect) opui.portsIn[i].rect.toBack();
+            for (var i = 0; i < opui.portsOut.length; i++) if (opui.portsOut[i].rect) opui.portsOut[i].rect.toBack();
 
-        for(var i=0;i<opui.portsIn.length;i++) if(opui.portsIn[i].rect) opui.portsIn[i].rect.toFront();
-        for(var i=0;i<opui.portsOut.length;i++) if(opui.portsOut[i].rect) opui.portsOut[i].rect.toFront();
-    
-        if(backgroundResize) backgroundResize.toFront();
-        if(this._colorHandle) this._colorHandle.toFront();
+            if (backgroundResize) backgroundResize.toBack();
+            if (this._colorHandle) this._colorHandle.toBack();
 
-        if(this._striked) this._striked.toFront();
-        if(this._striked2) this._striked2.toFront();
-        
-        if (commentText) commentText.toFront();
-        if (this._errorIndicator) this._errorIndicator.toFront();
+            if (this._striked) this._striked.toBack();
+            if (this._striked2) this._striked2.toBack();
 
+            if (commentText) commentText.toBack();
+            if (this._errorIndicator) this._errorIndicator.toBack();
+
+            label.toBack();
+            background.toBack();
+
+        }
+        else
+        {
+
+            background.toFront();
+            label.toFront();
+
+            for (var i = 0; i < opui.portsIn.length; i++) if (opui.portsIn[i].rect) opui.portsIn[i].rect.toFront();
+            for (var i = 0; i < opui.portsOut.length; i++) if (opui.portsOut[i].rect) opui.portsOut[i].rect.toFront();
+
+            if (backgroundResize) backgroundResize.toFront();
+            if (this._colorHandle) this._colorHandle.toFront();
+
+            if (this._striked) this._striked.toFront();
+            if (this._striked2) this._striked2.toFront();
+
+            if (commentText) commentText.toFront();
+            if (this._errorIndicator) this._errorIndicator.toFront();
+        }
         perf.finish();
     }
 
@@ -659,7 +683,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         
         // striked = gui.patch().getPaper().path( "M20,10 L"+(w-20)+","+(h-10) );
 
-        background.drag(move, down, up);
+        background.drag(move.bind(this), down.bind(this), up.bind(this));
         background.hover(hover, unhover);
         background.node.ondblclick = dblClick;
         background.onmouseup = mouseUp;

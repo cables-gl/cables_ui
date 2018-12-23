@@ -2541,8 +2541,17 @@ this._timeoutLinkWarnings=null;
     };
 
 
+    this.prepareMovingOps = function ()
+    {
+        if (selectedOps.length == 1)
+            for (i = 0; i < self.ops.length; i++)
+                if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
+                    for (var j = 0; j < self.ops[i].links.length; j++)
+                        self.ops[i].links[j].setElementOrder();
 
-    this.moveSelectedOps = function(dx, dy, a, b, e) {
+    }
+
+    this.moveSelectedOps = function (dx, dy, a, b, e) {
         var i = 0;
         if (selectedOps.length == 1)
             for (i = 0; i < self.ops.length; i++)

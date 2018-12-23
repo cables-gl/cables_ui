@@ -24,7 +24,8 @@ function UiLink(port1, port2)
     {
         for(var i=0;i<this._addCircles.length;i++)
         {
-            this._addCircles[i].remove();
+            this._addCircles[i].hide();
+            this._addCircleVisible=false;
 
             const llWidth = 0.5;
             if (this.linkLine && this._lastLinkLineWidth!=llWidth) 
@@ -33,7 +34,7 @@ function UiLink(port1, port2)
                 this._lastLinkLineWidth = llWidth;
             }
         }
-        this._addCircles.length=0;
+        // this._addCircles.length=0;
     };
 
     var onHover=function (e)
@@ -52,7 +53,7 @@ function UiLink(port1, port2)
         var addCircle=this._addCircles[0];
         CABLES.UI.LINKHOVER=null;
         addCircle.node.classList.remove('active');
-        self.linkLine.node.classList.remove('link_hover');
+        if (self.linkLine && self.linkLine.node )self.linkLine.node.classList.remove('link_hover');
 
         CABLES.UI.hideInfo();
     };
@@ -78,6 +79,16 @@ function UiLink(port1, port2)
         }
     };
 
+
+    this.setElementOrder=function()
+    {
+        if (this.linkLine && this._addCircles[0])
+        {
+            this.linkLine.toFront();
+            this._addCircles[0].toFront();
+        }
+    }
+
     this._addAddCircle=function()
     {
         if(!self.p1)return;
@@ -95,15 +106,17 @@ function UiLink(port1, port2)
         addCircle.node.classList.add('addCircle');
 
         addCircle.hover(onHover.bind(this),onUnHover.bind(this));
-        addCircle.toFront();
+        // addCircle.toFront();
 
         addCircle.node.onmousedown = onMouseDown;
+        this.setElementOrder();
     };
 
 
     this._lastMiddlePosX = -1;
     this._lastMiddlePosY = -1;
-    this._linkLineWidth =-1;
+    this._linkLineWidth = -1;
+    this._addCircleVisible = false;
 
     this.showAddButton=function()
     {
@@ -122,11 +135,13 @@ function UiLink(port1, port2)
         if(this._addCircles.length===0)
         {
             this._addAddCircle();
+            
         }
         else
         {
             // for(var i=0;i<this._addCircles.length;i++)
             // {
+
 
             var pY = middlePosY - CABLES.UI.uiConfig.portSize * 0.5 * 0.5;
             if (this._lastMiddlePosX != middlePosX || this._lastMiddlePosY != pY )
@@ -140,7 +155,14 @@ function UiLink(port1, port2)
                 
             }
             
-
+            if (!this._addCircleVisible)
+            {
+                this._addCircles[0].show();
+                this.setElementOrder();
+                this._addCircleVisible=true;
+            }
+            
+            
             //
             // this._addCircles[1].attr({
             //     cx:fromX,
@@ -260,23 +282,33 @@ function UiLink(port1, port2)
     {
         if(!this.isVisible())return;
         this.hideAddButton();
-        this.linkLine.remove();
-        this.linkLine=null;
+        this._addCircleVisible=false;
+        this.linkLine.hide();
     };
 
     self.show=function()
     {
         if(this.isVisible())return;
+        if (this.linkLine)this.linkLine.show();
         this.redraw();
     };
 
     this.remove=function()
     {
         self.hide();
+        
         if(port1)port1.updateUI();
         if(port2)port2.updateUI();
-    };
+        if (this.linkLine) this.linkLine.remove();
+        this.linkLine=null;
+        console.log('patch link remove!');
 
+        for (var i = 0; i < this._addCircles.length; i++)
+        {
+            this._addCircles[i].remove();
+            this._addCircles[i] = null;
+        }
+    };
 
     this.redraw = function()
     {
@@ -306,7 +338,7 @@ function UiLink(port1, port2)
         this.linkLine.attr({"path": this.getPath()});
         this.linkLine.toFront();
         this.showAddButton();
-        if (this._addCircles && this._addCircles.length>0)this._addCircles[0].toFront();
+        this.setElementOrder();
 
         perf.finish();
     };
