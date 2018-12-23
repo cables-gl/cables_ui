@@ -551,6 +551,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this._updateElementOrder=function()
     {
+        var perf = CABLES.uiperf.start('_updateElementOrder');
 
         background.toFront();
         label.toFront();
@@ -566,7 +567,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         
         if (commentText) commentText.toFront();
         if (this._errorIndicator) this._errorIndicator.toFront();
-    
+
+        perf.finish();
     }
 
 
@@ -607,6 +609,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     this.addUi = function()
     {
         if (this.isVisible()) return;
+
+        var perf = CABLES.uiperf.start('patchOpaddUi');
 
         if (opui.op.uiAttribs.size) {
             w = opui.op.uiAttribs.size[0];
@@ -780,6 +784,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             this._updateStriked();
 
             this._updateElementOrder();
+
         }
 
 
@@ -873,6 +878,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         this.updateColorHandle();
         this._updateStriked();
         this._updateElementOrder();
+
+        perf.finish();
+
     };
 
     this.setEnabled = function(enabled) {
@@ -909,13 +917,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if (commentText) {
             if (sel) {
                 this.updateSize();
-                background.attr({
-                    'opacity': 0.3
-                });
+                background.attr({ 'opacity': 0.3 });
             } else {
-                background.attr({
-                    'opacity': 0.001
-                });
+                background.attr({ 'opacity': 0.001 });
             }
         }
 

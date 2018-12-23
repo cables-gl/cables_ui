@@ -26,11 +26,12 @@ function UiLink(port1, port2)
         {
             this._addCircles[i].remove();
 
-            if(this.linkLine)
-                this.linkLine.attr({
-                    "stroke-opacity": 1, //0.4,
-                    "stroke-width": 0.7
-                });
+            const llWidth = 0.5;
+            if (this.linkLine && this._lastLinkLineWidth!=llWidth) 
+            {
+                this.linkLine.attr({ "stroke-width": llWidth });
+                this._lastLinkLineWidth = llWidth;
+            }
         }
         this._addCircles.length=0;
     };
@@ -100,15 +101,23 @@ function UiLink(port1, port2)
     };
 
 
+    this._lastMiddlePosX = -1;
+    this._lastMiddlePosY = -1;
+    this._linkLineWidth =-1;
+
     this.showAddButton=function()
     {
         if(!this.isVisible())return;
 
-        this.linkLine.attr(
+        var perf = CABLES.uiperf.start('link showadd');
+
+
+        const llWidth=1.5;
+        if (this._lastLinkLineWidth != llWidth)
         {
-            "stroke-opacity": 1, //0.6,
-            "stroke-width": 1.5
-        });
+            this.linkLine.attr( { "stroke-width": llWidth });
+            this._lastLinkLineWidth = llWidth;
+        }
 
         if(this._addCircles.length===0)
         {
@@ -118,12 +127,19 @@ function UiLink(port1, port2)
         {
             // for(var i=0;i<this._addCircles.length;i++)
             // {
+
+            var pY = middlePosY - CABLES.UI.uiConfig.portSize * 0.5 * 0.5;
+            if (this._lastMiddlePosX != middlePosX || this._lastMiddlePosY != pY )
+            {
+                this._lastMiddlePosX = middlePosX;
+                this._lastMiddlePosY = pY;
                 this._addCircles[0].attr({
-                cx:middlePosX,
-                cy:middlePosY-CABLES.UI.uiConfig.portSize*0.5*0.5
-            });
-
-
+                    cx: middlePosX,
+                    cy: pY
+                });
+                
+            }
+            
 
             //
             // this._addCircles[1].attr({
@@ -138,16 +154,20 @@ function UiLink(port1, port2)
             //     r:CABLES.UI.uiConfig.portSize*0.35
             // });
 
-            this._addCircles[0].toFront();
+            
             // this._addCircles[1].toFront();
 
             // }
 
         }
+
+        perf.finish();
+
     };
 
     this.getPath = function()
     {
+        var perf = CABLES.uiperf.start('link getpath');
         // if(!port2.rect)return '';
         // if(!port1.rect)return '';
 
@@ -225,6 +245,8 @@ function UiLink(port1, port2)
             str="M "+fromX+" "+fromY+" C " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
             //  str="M "+fromX+" "+fromY+" L " + (cp1X) + " " + (cp1Y) +" "+ (cp2X) + " " + (cp2Y) +" "+ toX + " " + toY;
 
+    perf.finish();
+
         return str;
     };
 
@@ -258,6 +280,7 @@ function UiLink(port1, port2)
 
     this.redraw = function()
     {
+        var perf = CABLES.uiperf.start('link redraw');
 
         if(!this.linkLine)
         {
@@ -281,9 +304,11 @@ function UiLink(port1, port2)
             // this.linkLine.animate({"path":this.getPath()},80);
         }
         this.linkLine.attr({"path": this.getPath()});
-
         this.linkLine.toFront();
         this.showAddButton();
+        if (this._addCircles && this._addCircles.length>0)this._addCircles[0].toFront();
+
+        perf.finish();
     };
 
     this.setEnabled=function(enabled)

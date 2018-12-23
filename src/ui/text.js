@@ -85,4 +85,7 @@ CABLES.UI.TEXTS=
     valueChangerInput:'## Number Input Focussed \n\n* [up / down / mousewheel] - change value +/- 0.1\n* [shift + up / down / mousewheel] - change value +/- 0.01\n* [alt + up / down / mousewheel] - change value +/- 1',
     open_new_window:'## View Patch\n\nopen patch viewer in new window',
     settings:'## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate',
+
+    working_connected_to: 'to work this op needs to be connected to: ',
+    working_connected_needs_connections_to: 'this op can not do anything without at least linking those ports: ',
 };

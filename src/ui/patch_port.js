@@ -1,4 +1,5 @@
-CABLES.UI.MOUSEOVERPORT=false;
+CABLES.UI.MOUSEDRAGGINGPORT = false;
+CABLES.UI.MOUSEOVERPORT = false;
 CABLES.UI.selectedStartPort=null;
 CABLES.UI.selectedEndPort=null;
 
@@ -53,6 +54,8 @@ CABLES.UI.Port=function(thePort)
         {
             if(thePort.isLinked && self.thePort.links.length>0 ) //&& thePort.links.length===1
             {
+                CABLES.UI.MOUSEDRAGGINGPORT = true;
+
                 var otherPorts=[];
                 if(thePort.links.length>1)
                 {
@@ -132,7 +135,7 @@ CABLES.UI.Port=function(thePort)
 
         if(self.thePort.direction==CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
 
-        CABLES.UI.MOUSEOVERPORT=true;
+        CABLES.UI.MOUSEDRAGGINGPORT=true;
 
         if(!linkingLine)
         {
@@ -218,7 +221,7 @@ CABLES.UI.Port=function(thePort)
     function dragEnd(event)
     {
         var j=0;
-        CABLES.UI.MOUSEOVERPORT=false;
+        CABLES.UI.MOUSEDRAGGINGPORT=false;
         removeLinkingLine();
         
         var foundAutoOp=false;
@@ -382,6 +385,10 @@ CABLES.UI.Port=function(thePort)
     {
         if(!self.rect)return;
 
+
+        var perf = CABLES.uiperf.start('port updateUI');
+        
+
         var offY=0;
         if(self.direction==CABLES.PORT_DIR_OUT) offY=CABLES.UI.uiConfig.portSize-CABLES.UI.uiConfig.portHeight;
 
@@ -422,6 +429,8 @@ CABLES.UI.Port=function(thePort)
                 x:self._posX,
                 y:self._posY+offY,
             });
+
+        perf.finish();
     }
     this.updateUI=updateUI;
 
@@ -466,6 +475,7 @@ CABLES.UI.Port=function(thePort)
 
     function hover(event)
     {
+        CABLES.UI.MOUSEOVERPORT = true;
         CABLES.UI.selectedEndPort=self;
         self.rect.toFront();
         hovering=true;
@@ -516,6 +526,8 @@ CABLES.UI.Port=function(thePort)
                     else
                         if(self.opUi.links[i].linkLine)
                             self.opUi.links[i].linkLine.node.classList.remove('link_hover');
+
+        CABLES.UI.MOUSEOVERPORT = false;
     }
 
     this.isVisible=function()

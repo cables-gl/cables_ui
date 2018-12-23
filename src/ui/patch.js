@@ -699,16 +699,39 @@ CABLES.UI.Patch = function(_gui) {
             });
     };
 
-    this.checkLinkTimeWarnings=function()
+this._timeoutLinkWarnings=null;
+    this._checkLinkCounter=-1;
+
+    this.checkLinkTimeWarnings=function(cont)
     {
-        var start=Date.now();
+        if (!cont) self._checkLinkCounter=-1;
 
-        for(var i=0;i<self.ops.length;i++)
-            self.ops[i].op.checkLinkTimeWarnings();
+        clearTimeout(this._timeoutLinkWarnings)
+        this._timeoutLinkWarnings = setTimeout(function()
+        {
+            var perf = CABLES.uiperf.start('checkLinkTimeWarnings');
 
-            var timespent=(Date.now()-start);
-            console.log('check ui',timespent+'ms');
-        }
+            self._checkLinkCounter++;
+            if (self._checkLinkCounter >= self.ops.length)
+            {
+                self._checkLinkCounter=-1;
+            }
+            else
+            {
+                // console.log(self._checkLinkCounter);
+                var op = self.ops[self._checkLinkCounter];
+
+                if (op.op.uiAttribs.subPatch == currentSubPatch) {
+                    op.op.checkLinkTimeWarnings();
+                    op.op._checkLinksNeededToWork();
+                }
+
+                self.checkLinkTimeWarnings(true);
+            }
+            perf.finish();
+        },2);
+
+    }
 
     this.checkUpdatedSaveForce=function(updated)
     {
@@ -750,12 +773,6 @@ CABLES.UI.Patch = function(_gui) {
 
     this.saveCurrentProject = function(cb, _id, _name)
     {
-        // if(this.scene._crashedOps.length>0)
-        // {
-        //     CABLES.UI.MODAL.showError('ops crashed, are you sure?');
-        //     return;
-        // }
-
         if (this.loadingError) {
             CABLES.UI.MODAL.showError('project not saved', 'could not save project: had errors while loading!');
             return;
@@ -1166,12 +1183,7 @@ CABLES.UI.Patch = function(_gui) {
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
             gui.setTransformGizmo(null);
             
-            if(!mouseRubberBandStartPos && !e.shiftKey)
-            {
-                gui.patch().setSelectedOp(null);
-                
-            }
-            
+            if(!mouseRubberBandStartPos && !e.shiftKey) gui.patch().setSelectedOp(null);
             if(!mouseRubberBandStartPos) mouseRubberBandStartPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
 
             mouseRubberBandPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
@@ -1444,6 +1456,8 @@ CABLES.UI.Patch = function(_gui) {
 
         $('#patch').on("mousemove touchmove", function(e) {
             e = mouseEvent(e);
+
+            if (CABLES.UI.MOUSEOVERPORT )return;
             gui.notIdling();
 
             if (e.metaKey || e.altKey) {
@@ -1464,7 +1478,7 @@ CABLES.UI.Patch = function(_gui) {
                 self.removeQuickLinkLine();
             }
 
-            if (CABLES.UI.MOUSEOVERPORT) return; // cancel when dragging port...
+            if (CABLES.UI.MOUSEDRAGGINGPORT) return; // cancel when dragging port...
 
             if (e.buttons == CABLES.UI.MOUSE_BUTTON_WHEEL) {
                 if (lastZoomDrag != -1) {
@@ -1503,14 +1517,17 @@ CABLES.UI.Patch = function(_gui) {
         this._elPatchSvg.bind("mousemove touchmove", function(e) {
             e = mouseEvent(e);
 
+            if (CABLES.UI.MOUSEOVERPORT)return;
 
-            if ( (CABLES.UI.MOUSEOVERPORT && !spacePressed) || (mouseRubberBandStartPos && e.buttons != CABLES.UI.MOUSE_BUTTON_LEFT) ) {
+
+            if ((CABLES.UI.MOUSEDRAGGINGPORT && !spacePressed) || (mouseRubberBandStartPos && e.buttons != CABLES.UI.MOUSE_BUTTON_LEFT) ) {
                 rubberBandHide();
                 lastMouseMoveEvent = e;
                 return;
             }
 
-            if (lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEOVERPORT
+            if (lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEDRAGGINGPORT
+
 
                 gui.setCursor("grab");
                 
@@ -1816,6 +1833,7 @@ CABLES.UI.Patch = function(_gui) {
                 }
                 self.ops[i].removeDeadLinks();
             }
+            self.checkLinkTimeWarnings();
         };
 
         scene.onLink = function(p1, p2) {
@@ -1875,6 +1893,7 @@ CABLES.UI.Patch = function(_gui) {
                     });
                 }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id);
             }
+            self.checkLinkTimeWarnings();
         };
 
         scene.onDelete = function(op) {
@@ -1903,7 +1922,7 @@ CABLES.UI.Patch = function(_gui) {
                 }
             }
             gui.setStateUnsaved();
-
+            self.checkLinkTimeWarnings();
         };
 
         scene.onAdd = function(op) {
@@ -1926,8 +1945,8 @@ CABLES.UI.Patch = function(_gui) {
             doAddOp(uiOp);
             
             this.opCollisionTest(uiOp);
-            op._checkLinksNeededToWork();
-
+            
+            self.checkLinkTimeWarnings();
 
         }.bind(this);
     };
@@ -2111,6 +2130,8 @@ CABLES.UI.Patch = function(_gui) {
 
     this.opCollisionTest = function(uiOp)
     {
+        var perf = CABLES.uiperf.start('opCollisionTest');
+
         var found=false;
         var count=1;
 
@@ -2164,6 +2185,8 @@ CABLES.UI.Patch = function(_gui) {
             count++;
         }
         while(found)
+
+        perf.finish();
     };
 
 
@@ -2551,6 +2574,9 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.showProjectParams = function() {
+
+        var perf = CABLES.uiperf.start('showProjectParams');
+
         var s = {};
         if(currentOp && currentOp)currentOp=null;
         gui.setTransformGizmo(null);
@@ -2593,6 +2619,8 @@ CABLES.UI.Patch = function(_gui) {
         html += CABLES.UI.getHandleBarHtml('filter_colors', { "colors":colors });
 
         $('#options').html(html);
+
+        perf.finish();
     };
 
     function updateUiAttribs() {
@@ -2774,6 +2802,9 @@ CABLES.UI.Patch = function(_gui) {
 
     }
     this._showOpParams = function(op) {
+
+        var perf = CABLES.uiperf.start('_showOpParams');
+        
 
         gui.setTransformGizmo(null);
 
@@ -3056,7 +3087,7 @@ CABLES.UI.Patch = function(_gui) {
             })(ipi);
         }
 
-        for (var ipip in op.portsIn) {
+        for (var ipip = 0; ipip < op.portsIn; ipip++) {
             (function(index) {
                 $('#portdelete_in_' + index).on('click', function(e) {
                     op.portsIn[index].removeLinks();
@@ -3065,29 +3096,30 @@ CABLES.UI.Patch = function(_gui) {
             })(ipip);
         }
 
-        for (var ipii in op.portsIn) {
+        // for (var ipii in op.portsIn) {
+        for (var ipii = 0; ipii < op.portsIn; ipii++) {
             (function(index) {
                 checkDefaultValue(op, index);
-
-                $('#portval_' + index).on('input', function(e) {
-                    var v = '' + $('#portval_' + index).val();
+                var ele = $('#portval_' + index);
+                ele.on('input', function(e) {
+                    var v = '' + ele.val();
 
                     if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number') {
                         if (isNaN(v) || v === '') {
-                            $('#portval_' + index).addClass('invalid');
+                            ele.addClass('invalid');
                             return;
                         } else {
-                            $('#portval_' + index).removeClass('invalid');
+                            ele.removeClass('invalid');
                             v = parseFloat(v);
                         }
                     }
 
                     if (op.portsIn[index].uiAttribs.type == 'int') {
                         if (isNaN(v) || v === '') {
-                            $('#portval_' + index).addClass('invalid');
+                            ele.addClass('invalid');
                             return;
                         } else {
-                            $('#portval_' + index).removeClass('invalid');
+                            ele.removeClass('invalid');
                             v = parseInt(v, 10);
                         }
                     }
@@ -3095,7 +3127,7 @@ CABLES.UI.Patch = function(_gui) {
                     if (op.portsIn[index].uiAttribs.display == 'bool') {
                         if (v != 'true' && v != 'false') {
                             v = false;
-                            $('#portval_' + index).val('false');
+                            ele.val('false');
                         }
                         if (v == 'true') v = true;
                         else v = false;
@@ -3222,6 +3254,8 @@ CABLES.UI.Patch = function(_gui) {
 
             })(thePort2);
         }
+
+        perf.finish();
     };
 
 

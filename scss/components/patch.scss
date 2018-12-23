@@ -163,9 +163,9 @@
 
     .op_striked
     {
-        stroke-opacity: 0.7;
-        stroke-width: 1;
-        stroke: #aaa;
+        stroke-opacity: 1;
+        stroke-width: 2;
+        stroke: var(--color-08);
     }
 
     .op_background

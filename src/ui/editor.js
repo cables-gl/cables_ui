@@ -281,6 +281,12 @@ CABLES.Editor.createEditor=function(id)
 
                 "onLinkChanged",
 
+
+                "toWorkNeedsParent",
+                "toWorkPortsNeedToBeLinked",
+
+
+
                 "setUiAttribs",
                 "setPortGroup",
                 "CGL.TextureEffect.checkOpNotInTextureEffect",
