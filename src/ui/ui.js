@@ -788,9 +788,14 @@ CABLES.UI.GUI = function() {
             }
         });
 
-        $('.nav_help_forum').bind("click", function(event) {
+        $('.nav_help_forum').bind("click", function (event) {
             var win = window.open('https://forum.cables.gl', '_blank');
         });
+
+        $('.nav_help_tipps').bind("click", function (event) {
+            CABLES.UI.tipps.show();
+        });
+        
 
         // Introduction
         $('.nav_help_introduction').bind("click", function(event) {
@@ -1100,6 +1105,7 @@ CABLES.UI.GUI = function() {
 
         if (CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
 
+
         if (_scene.cgl.aborted) {
             console.log('errror...');
             CABLES.UI.MODAL.showError('no webgl', 'your browser does not support webgl');
@@ -1121,6 +1127,10 @@ CABLES.UI.GUI = function() {
         if(CABLES.UI.userSettings.get("timelineOpened")==true)this.showTiming();
 
         CABLES.editorSession.open();
+
+        console.log('showtipps', CABLES.UI.userSettings.get('showTipps'));
+        if (CABLES.UI.userSettings.get('showTipps')) CABLES.UI.tipps.show();
+
 
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");

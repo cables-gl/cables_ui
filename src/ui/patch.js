@@ -3096,7 +3096,7 @@ this._timeoutLinkWarnings=null;
             })(ipi);
         }
 
-        for (var ipip = 0; ipip < op.portsIn; ipip++) {
+        for (var ipip = 0; ipip < op.portsIn.length; ipip++) {
             (function(index) {
                 $('#portdelete_in_' + index).on('click', function(e) {
                     op.portsIn[index].removeLinks();
@@ -3106,7 +3106,7 @@ this._timeoutLinkWarnings=null;
         }
 
         // for (var ipii in op.portsIn) {
-        for (var ipii = 0; ipii < op.portsIn; ipii++) {
+        for (var ipii = 0; ipii < op.portsIn.length; ipii++) {
             (function(index) {
                 checkDefaultValue(op, index);
                 var ele = $('#portval_' + index);
@@ -3278,7 +3278,6 @@ this._timeoutLinkWarnings=null;
         {
             if (watchPorts[i].type != CABLES.OP_PORT_TYPE_VALUE && watchPorts[i].type != CABLES.OP_PORT_TYPE_ARRAY) continue;
             var id = '.watchPortValue_' + watchPorts[i].watchId;
-
             var el = $(id);
 
             if (watchPorts[i].isAnimated()) {
@@ -3482,8 +3481,6 @@ this._timeoutLinkWarnings=null;
                     classname: "port_text_color_" + p.getTypeString()
                 });
             }
-
-
         }
 
         if (suggestions.length === 0) {

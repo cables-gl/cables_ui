@@ -53,6 +53,7 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
 
 CABLES.UI.userSettings=new CABLES.UI.UserSettings();
 
-if(CABLES.UI.userSettings.get("bgpreview")===null) CABLES.UI.userSettings.set("bgpreview",true);
+if (CABLES.UI.userSettings.get("bgpreview") === null) CABLES.UI.userSettings.set("bgpreview", true);
+if (CABLES.UI.userSettings.get("showTipps") === null) CABLES.UI.userSettings.set("showTipps", true);
 
 CABLES.UI.userSettings.updateNavBar();
