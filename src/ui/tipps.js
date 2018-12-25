@@ -87,6 +87,8 @@ CABLES.UI.Tipps = function ()
             }
         ];
 
+        // todo tipps: c for centering / shift/alt mods for input fields / up/down in input fields 
+
 
     index = Math.round(tipps.length * Math.random());
     console.log(index, tipps.length);
@@ -133,17 +135,15 @@ CABLES.UI.Tipps = function ()
 
         html += '<div style="clear:both;padding:20px;">';
         html += '  <a onclick="CABLES.UI.MODAL.hide();" class="bluebutton">close</a>&nbsp;&nbsp;&nbsp;';
-        html += '  <a onclick="CABLES.UI.tipps.next();" class="greybutton">next tipp</a>';
+        html += '  <a onclick="CABLES.UI.tipps.next();" class="greybutton">next tip</a>';
 
         html += '  <div style="float:right;"><br/>';
         if (CABLES.UI.userSettings.get("showTipps")) html += '<a onclick="CABLES.UI.tipps.neverShow();" class="">do not show this on startup</a>';
             else html += '<a onclick="CABLES.UI.tipps.showAlways();" class="">show on startup again</a>';
         html += '  </div">';
 
-
         html += '</div>';
 
-        // CABLES.UI.MODAL.show(html);
         CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
 
     };

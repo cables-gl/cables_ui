@@ -86,11 +86,20 @@ CABLES.CMD.PATCH.createFile=function()
 
 };
 
-CABLES.CMD.PATCH.uploadFile=function()
-{
-	var fileElem = document.getElementById("hiddenfileElem");
-	if (fileElem) fileElem.click();
+CABLES.CMD.PATCH.uploadFile = function () {
+    var fileElem = document.getElementById("hiddenfileElem");
+    if (fileElem) fileElem.click();
 };
+
+CABLES.CMD.PATCH.uploadFileDialog = function () {
+
+    var html = CABLES.UI.getHandleBarHtml('upload');
+
+    CABLES.UI.MODAL.show(html,{title:"Upload File"});
+        // CABLES.UI.showUploadDialog
+};
+
+
 
 CABLES.CMD.PATCH.opsAlignHorizontal=function()
 {
@@ -348,6 +357,12 @@ CABLES.CMD.commands.push(
 		icon:'save',
 		hotkey:'CMD + SHIFT + s'
 	},
+	{
+        cmd: "upload file dialog",
+        category: "patch",
+        func: CABLES.CMD.PATCH.uploadFileDialog,
+        icon: 'file'
+    },
 	{
 		cmd:"upload file",
 		category:"patch",

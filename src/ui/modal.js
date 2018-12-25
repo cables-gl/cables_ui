@@ -31,7 +31,13 @@ CABLES.UI.MODAL.init=function(options)
     CABLES.UI.MODAL.contentElement.css({padding:"15px"});
 };
 
-CABLES.UI.MODAL._setVisible=function(visible)
+
+CABLES.UI.MODAL.isVisible = function ()
+{
+    return CABLES.UI.MODAL._visible;
+}
+
+CABLES.UI.MODAL._setVisible = function (visible)
 {
 	if(visible)
 	{

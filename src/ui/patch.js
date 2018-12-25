@@ -762,7 +762,7 @@ this._timeoutLinkWarnings=null;
                 }
                 else
                 {
-                    CABLES.UI.MODAL.hide(true);
+                    // CABLES.UI.MODAL.hide(true);
                     if(cb)cb(null);
                 }
                 gui.jobs().finish('checkupdated');

@@ -1,6 +1,7 @@
 //http://html5doctor.com/drag-and-drop-to-server/
 
 var CABLES=CABLES||{};
+CABLES.UI = CABLES.UI||{};
 
 CABLES.handleFileInputUpload=function(files)
 {
@@ -14,6 +15,8 @@ CABLES.uploadSelectFile=function()
 	CABLES.CMD.PATCH.uploadFile();
 };
 
+
+
 CABLES.uploadDragOver=function(event)
 {
     CABLES.uploadDropEvent=event.originalEvent;
@@ -26,8 +29,19 @@ CABLES.uploadDragOver=function(event)
 
     event.preventDefault();
     event.stopPropagation();
+    
+    var el = document.getElementById("uploadarea");
+    if(el)
+    {
+        if (event.target.classList.contains("uploadarea")) el.classList.add("uploadareaActive");
+            else el.classList.remove("uploadareaActive");
+    }
 
-    CABLES.UI.MODAL.show("drop files to upload!");
+    var openDialog=true;
+    
+    if(el) openDialog = window.getComputedStyle(el).display === 'none';
+    if(openDialog) CABLES.CMD.PATCH.uploadFileDialog();
+    
     jQuery.event.props.push('dataTransfer');
 
 };
