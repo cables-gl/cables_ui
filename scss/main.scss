@@ -648,11 +648,6 @@ input[type=range]:focus {
     padding-bottom:100px;
     border-radius: 15px;
     margin-bottom: 20px;
-
-    // &:hover
-    // {
-    //     border:2px dashed var(--color-05);
-    // }
 }
 
 .uploadareaActive
@@ -661,6 +656,30 @@ input[type=range]:focus {
     // background-color: red !important;
     color: var(--color-special);
 }
+
+.tip
+{
+    background-color:var(--color-01);
+
+    p
+    {
+        line-height:25px;
+    }
+    
+    code
+    {
+        background-color: var(--color-04);
+        border: 1px solid var(--color-06);
+        // margin-left:3px;
+        // margin-right:3px;
+        border-radius: 4px;        
+        padding:2px;
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+
+}
+
 
 @import 'libs/jcolorpicker-custom.scss';
 @import 'components/searchbox.scss';
