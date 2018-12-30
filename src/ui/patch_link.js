@@ -301,7 +301,6 @@ function UiLink(port1, port2)
         if(port2)port2.updateUI();
         if (this.linkLine) this.linkLine.remove();
         this.linkLine=null;
-        console.log('patch link remove!');
 
         for (var i = 0; i < this._addCircles.length; i++)
         {

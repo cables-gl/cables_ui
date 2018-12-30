@@ -188,6 +188,7 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         }
     }
 
+
     return result;
 };
 
@@ -230,12 +231,10 @@ CABLES.UI.OpSelect.prototype.search=function()
     this.lastQuery=q;
     var result=this._search(q);
     var i=0;
-    var html='';
 
     for(i=0;i<this._list.length;i++)
     {
-        // can we cache this ?
-		this._list[i].element=$('#result_'+this._list[i].id);
+        this._list[i].element = this._list[i].element||$('#result_'+this._list[i].id);
 
         if(this._list[i].score>0)
         {
@@ -252,23 +251,34 @@ CABLES.UI.OpSelect.prototype.search=function()
     }
 
     // sort html elements
-    var $wrapper = $('.searchbrowser');
+    // var $wrapper = $('.searchbrowser');
 
-
-    // sorting takes long time. so do it asynchronous
-    // clearTimeout(this._sortTimeout);
-    // this._sortTimeout=setTimeout(function()
-    //     {
-            $wrapper.find('.searchresult').sort(
-                function (a, b)
-                {
-                    var diff=parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
-                    return diff;
-                }).appendTo( $wrapper );
-            this.Navigate(0);
+    // // sorting takes long time. so do it asynchronous
+    // // clearTimeout(this._sortTimeout);
+    // // this._sortTimeout=setTimeout(function()
+    //     // {
+    //         $wrapper.find('.searchresult').sort(
+    //             function (a, b)
+    //             {
+    //                 var diff=parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
+    //                 return diff;
+    //             }).appendTo( $wrapper );
+            // this.Navigate(0);
         // }.bind(this),50);
 
-    this.updateOptions();
+
+
+
+    tinysort.defaults.order = 'desc';
+
+    clearTimeout(this._sortTimeout);
+    this._sortTimeout=setTimeout(
+        function()
+        {
+            tinysort('.searchresult', { data: 'score' });
+            this.Navigate(0);
+            this.updateOptions();
+        }.bind(this),150);
 
     var timeUsed=CABLES.now()-startTime;
     this._timeUsed=timeUsed
@@ -449,9 +459,14 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
         break;
 
         case 8:
-            clearTimeout(this._backspaceDelay);
+            if (this._backspaceDelay)
+            {
+                clearTimeout(this._backspaceDelay);
+            }
+            
             this._backspaceDelay=setTimeout(function()
             {
+                this._backspaceDelay=null;
                 this.onInput();
             }.bind(this),300);
                 
