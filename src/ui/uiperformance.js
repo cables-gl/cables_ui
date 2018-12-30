@@ -1,4 +1,3 @@
-
 var CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -13,15 +12,18 @@ CABLES.UiPerformance = function ()
 
 CABLES.UiPerformance.prototype.print = function ()
 {
-
-
-    // var people = [["John", "Smith"], ["Jane", "Doe"], ["Emily", "Jones"]]
     var data=[];
 
     for(var i in this._measures)
     {
+        var lastTime=Math.round( this._measures[i].times[this._measures[i].times.length - 1]*1000 )/1000;
+        var avg=0;
+        for (var j = 0; j < this._measures[i].times.length ; j++) avg += this._measures[i].times[j];
+        avg /= this._measures[i].times.length;
+        avg=Math.round(avg*1000)/1000;
+
         data.push(
-            [i, 'count '+this._measures[i].count, this._measures[i].times[this._measures[i].times.length-1] ]
+            [i, 'count ' + this._measures[i].count, lastTime, '~' + avg ]
         );
     }
 

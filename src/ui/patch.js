@@ -1176,6 +1176,7 @@ this._timeoutLinkWarnings=null;
     };
 
     this.selectAllOps = function() {
+
         this.selectAllOpsSubPatch(currentSubPatch);
     };
 
@@ -2633,6 +2634,8 @@ this._timeoutLinkWarnings=null;
     };
 
     function updateUiAttribs() {
+        
+        var perf = CABLES.uiperf.start('updateUiAttribs');
 
         self.setCurrentOpTitle(currentOp.op.name);
 
@@ -2640,28 +2643,30 @@ this._timeoutLinkWarnings=null;
             $('#options_warning').hide();
         } else {
             $('#options_warning').show();
-            $('#options_warning').html(currentOp.op.uiAttribs.warning);
+            document.getElementById('options_warning').innerHTML=currentOp.op.uiAttribs.warning;
         }
 
         if (!currentOp.op.uiAttribs.hint || currentOp.op.uiAttribs.hint.length === 0) {
             $('#options_hint').hide();
         } else {
             $('#options_hint').show();
-            $('#options_hint').html(currentOp.op.uiAttribs.hint);
+            document.getElementById('options_hint').innerHTML=currentOp.op.uiAttribs.hint;
         }
 
         if (!currentOp.op.uiAttribs.error || currentOp.op.uiAttribs.error.length === 0) {
             $('#options_error').hide();
         } else {
             $('#options_error').show();
-            $('#options_error').html(currentOp.op.uiAttribs.error);
+            document.getElementById('options_error').innerHTML=currentOp.op.uiAttribs.error;
         }
 
         if (!currentOp.op.uiAttribs.info) $('#options_info').hide();
         else {
             $('#options_info').show();
-            $('#options_info').html('<div class="panelhead">info</div><div class="panel">' + currentOp.op.uiAttribs.info + '</div>');
+            document.getElementById('options_info').innerHTML='<div class="panelhead">info</div><div class="panel">' + currentOp.op.uiAttribs.info + '</div>';
         }
+
+        perf.finish();
     }
 
     this.updateCurrentOpParams = function() {
@@ -2732,54 +2737,6 @@ this._timeoutLinkWarnings=null;
 
     }
 
-    // function paramsAddAutoSpacers()
-    // {
-    //     var lastName='';
-    //     var groupCount=0;
-    //     var dir=0;
-
-    //     function testSpacers()
-    //     {
-    //         var name=$(this).data("portname");
-    //         if(name.substring(0,3) == lastName.substring(0,3))
-    //         {
-    //             groupCount++;
-    //         }
-    //         else
-    //         {
-    //             if(groupCount>0)
-    //             {
-    //                 groupCount=0;
-    //                 // $(this).css({"background-color":"red"});
-    //                 // $(this).addClass("paramGroupSpacer");
-    //                 if(dir==0)
-    //                 {
-    //                     $(this).before("<tr><td></td></tr>");
-    //                     $(this).data('hasBefore',true);
-    //                 }
-    //                 else
-    //                 {
-    //                     $(this).after("<tr><td></td></tr>");
-    //                     $(this).data('hasAfter',true);
-    //                 }
-                    
-    //                 console.log("----");
-    //             }
-    //         }
-    //         console.log(name);
-    //         lastName=name;
-    //     }
-
-    //     $('.opports_in').each(testSpacers);
-
-    //     lastName='';
-    //     groupCount=0;
-    //     dir=1;
-
-    //     jQuery.fn.reverse = [].reverse;
-    //     $('.opports_in').reverse().each(testSpacers);
-
-    // }
 
     this.resetOpValues=function(opid)
     {
@@ -2799,22 +2756,24 @@ this._timeoutLinkWarnings=null;
         gui.patch().showOpParams(op);
     }
 
-    function checkDefaultValue(op, index) {
-        if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null) {
-            var titleEl = $('#portTitle_in_' + index);
-            if (op.portsIn[index].val != op.portsIn[index].defaultValue) {
-                if (!titleEl.hasClass('nonDefaultValue')) titleEl.addClass('nonDefaultValue');
-            } else {
-                if (titleEl.hasClass('nonDefaultValue')) titleEl.removeClass('nonDefaultValue');
-            }
-        }
 
+
+
+    this._showOpParamsCbPortDelete=function(index) {
+        $('#portdelete_out_' + index).on('click', function (e) {
+            op.portsOut[index].removeLinks();
+            self.showOpParams(op);
+        });
     }
+    var sourcePort = $("#params_port").html();
+    var templatePort = Handlebars.compile(sourcePort);
+
+
     this._showOpParams = function(op) {
 
         var perf = CABLES.uiperf.start('_showOpParams');
+        var perfHtml = CABLES.uiperf.start('_showOpParamsHTML');
         
-
         gui.setTransformGizmo(null);
 
         var i = 0;
@@ -2872,9 +2831,6 @@ this._timeoutLinkWarnings=null;
             "ownsOp": ownsOp,
             "hasExample":hasScreenshot
         });
-        var sourcePort = $("#params_port").html();
-        var templatePort = Handlebars.compile(sourcePort);
-
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
 
         if (op.portsIn.length > 0) {
@@ -2885,7 +2841,10 @@ this._timeoutLinkWarnings=null;
             });
 
             var lastGroup=null;
-            for (i in op.portsIn)
+
+            var perfLoop = CABLES.uiperf.start('_showOpParamsLOOP');
+
+            for(i=0;i<op.portsIn.length;i++)
             {
                 var startGroup = null;
                 var groupSpacer = false;
@@ -2896,11 +2855,9 @@ this._timeoutLinkWarnings=null;
                 if (lastGroup != opGroup)
                 {
                     groupSpacer = true;
-                    // console.log(opGroup);
                     lastGroup = opGroup;
                     startGroup = lastGroup;
                 }
-
 
                 op.portsIn[i].watchId = 'in_' + i;
                 watchAnimPorts.push(op.portsIn[i]);
@@ -2919,15 +2876,21 @@ this._timeoutLinkWarnings=null;
                     "texts": CABLES.UI.TEXTS
                 });
             }
+            perfLoop.finish();
         }
 
-        if (op.portsOut.length > 0) {
-            html += CABLES.UI.getHandleBarHtml('params_ports_head', {
+        if (op.portsOut.length > 0)
+        {
+            html += CABLES.UI.getHandleBarHtml('params_ports_head',
+            {
                 "dirStr": 'out',
                 "title": 'Output Parameters',
                 "op": op,
                 texts: CABLES.UI.TEXTS
             });
+
+            var perfLoopOut = CABLES.uiperf.start('_showOpParamsLOOP OUT');
+
 
             var foundPreview = false;
             for (var i2 in op.portsOut) {
@@ -2950,6 +2913,8 @@ this._timeoutLinkWarnings=null;
                     "op": op
                 });
             }
+
+            perfLoopOut.finish();
         }
 
         html += CABLES.UI.getHandleBarHtml('params_op_foot', {
@@ -2958,10 +2923,14 @@ this._timeoutLinkWarnings=null;
             "user": gui.user
         });
 
-        $('#options').html(html);
+        // $('#options').html(html);
+        document.getElementById("options").innerHTML=html;
+        perfHtml.finish();
+
         CABLES.valueChangerInitSliders();
 
         updateUiAttribs();
+        
 
         for (i = 0; i < op.portsIn.length; i++)
         {
@@ -2970,8 +2939,6 @@ this._timeoutLinkWarnings=null;
                 var shortName=String(op.portsIn[i].get()||'none');
                 if(shortName.indexOf("/")>-1) shortName=shortName.substr(shortName.lastIndexOf("/")+1);
                 $('#portFilename_' + i).html('<span class="button fa fa-folder-open-o monospace" style="text-transform:none;font-family:monospace;font-size: 13px;">'+shortName+'</span>');
-
-                {/* <a class="graphbutton " onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> --> */}
 
                 if (op.portsIn[i].get() && ((op.portsIn[i].get() + '').endsWith('.jpg') || (op.portsIn[i].get() + '').endsWith('.png'))) {
                     $('#portFileVal_' + i+'_preview').css('max-width', '100%');
@@ -2983,16 +2950,8 @@ this._timeoutLinkWarnings=null;
         }
 
 
-
-        function cbPortDelete(index) {
-            $('#portdelete_out_' + index).on('click', function(e) {
-                op.portsOut[index].removeLinks();
-                self.showOpParams(op);
-            });
-        }
-
         for (var ipo in op.portsOut) {
-            cbPortDelete(ipo);
+            this._showOpParamsCbPortDelete(ipo);
 
             (function (index) {
 
@@ -3009,91 +2968,8 @@ this._timeoutLinkWarnings=null;
 
         }
 
-        for (var ipi in op.portsIn) {
-            (function(index) {
-                if (op.portsIn[index].isAnimated()) $('#portanim_in_' + index).addClass('timingbutton_active');
-                if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $('#portgraph_in_' + index).addClass('timingbutton_active');
-
-                $('#portTitle_in_' + index).on('click', function(e) {
-                    const p=op.portsIn[index];
-                    if(!p.uiAttribs.hidePort)
-                        gui.opSelect().show(
-                            {
-                                x:p.parent.uiAttribs.translate.x+(index*(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding)),
-                                y:p.parent.uiAttribs.translate.y-50,
-                            },op,p);
-                });
-
-                
-                $('#portCreateOp_in_' + index).on('click', function(e) {
-                    var thePort = op.portsIn[index];
-                    if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE) {
-                        gui.scene().addOp('Ops.Gl.Texture', {}, function(newop) {
-                            gui.scene().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
-                        });
-                        
-                    }
-                });
-
-                $('#portedit_in_' + index).on('click', function(e) {
-                    var thePort = op.portsIn[index];
-                    // console.log('thePort.uiAttribs.editorSyntax',thePort.uiAttribs.editorSyntax);
-
-                    self.openParamEditor(op.id,op.portsIn[index].name)
-
-                    // gui.showEditor();
-                    // gui.editor().addTab({
-                    //     content: op.portsIn[index].get() + '',
-                    //     title: '' + op.portsIn[index].name,
-                    //     syntax: thePort.uiAttribs.editorSyntax,
-                    //     onSave: function(setStatus, content) {
-                    //         // console.log('setvalue...');
-                    //         gui.setStateUnsaved();
-                    //         gui.jobs().finish('saveeditorcontent');
-                    //         thePort.set(content);
-                    //     }
-                    // });
-                });
-
-                $('#portbutton_' + index).on('click', function(e) {
-                    op.portsIn[index]._onTriggered();
-                });
-
-
-                $('#portgraph_in_' + index).on('click', function(e) {
-                    if (op.portsIn[index].isAnimated()) {
-                        op.portsIn[index].anim.stayInTimeline = !op.portsIn[index].anim.stayInTimeline;
-                        $('#portgraph_in_' + index).toggleClass('timingbutton_active');
-                        self.timeLine.setAnim(op.portsIn[index].anim, {
-                            name: op.portsIn[index].name,
-                            defaultValue: parseFloat($('#portval_' + index).val())
-                        });
-                    }
-                });
-
-                $('#portanim_in_' + index).on('click', function(e) {
-                    if ($('#portanim_in_' + index).hasClass('timingbutton_active')) {
-                        var val = self.timeLine.removeAnim(op.portsIn[index].anim);
-                        op.portsIn[index].setAnimated(false);
-
-                        self.timeLine.setAnim(null);
-                        // op.portsIn[index].anim=null;
-                        $('#portanim_in_' + index).removeClass('timingbutton_active');
-                        $('#portval_' + index).val(val);
-                        $('#portval_' + index).trigger('input');
-                        $('#portval_' + index).focus();
-                        return;
-                    }
-
-                    $('#portanim_in_' + index).addClass('timingbutton_active');
-
-                    op.portsIn[index].toggleAnim();
-                    self.timeLine.setAnim(op.portsIn[index].anim, {
-                        name: op.portsIn[index].name,
-                        defaultValue: parseFloat($('#portval_' + index).val())
-                    });
-                });
-            })(ipi);
+        for (var ipi =0;ipi<op.portsIn.length;ipi++) {
+            CABLES.UI.initPortClickListener(op,ipi);
         }
 
         for (var ipip = 0; ipip < op.portsIn.length; ipip++) {
@@ -3107,53 +2983,11 @@ this._timeoutLinkWarnings=null;
 
         // for (var ipii in op.portsIn) {
         for (var ipii = 0; ipii < op.portsIn.length; ipii++) {
-            (function(index) {
-                checkDefaultValue(op, index);
-                var ele = $('#portval_' + index);
-                ele.on('input', function(e) {
-                    var v = '' + ele.val();
 
-                    if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number') {
-                        if (isNaN(v) || v === '') {
-                            ele.addClass('invalid');
-                            return;
-                        } else {
-                            ele.removeClass('invalid');
-                            v = parseFloat(v);
-                        }
-                    }
+            CABLES.UI.initPortInputListener(op, ipii);
+            // (function(index) {
 
-                    if (op.portsIn[index].uiAttribs.type == 'int') {
-                        if (isNaN(v) || v === '') {
-                            ele.addClass('invalid');
-                            return;
-                        } else {
-                            ele.removeClass('invalid');
-                            v = parseInt(v, 10);
-                        }
-                    }
-
-                    if (op.portsIn[index].uiAttribs.display == 'bool') {
-                        if (v != 'true' && v != 'false') {
-                            v = false;
-                            ele.val('false');
-                        }
-                        if (v == 'true') v = true;
-                        else v = false;
-                    }
-
-                    op.portsIn[index].set(v);
-                    gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
-                        "op": op.id,
-                        "port": op.portsIn[index].name,
-                        "v": v
-                    });
-
-                    checkDefaultValue(op, index);
-
-                    if (op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
-                });
-            })(ipii);
+            // })(ipii);
         }
 
         for (var iwap in watchAnimPorts) {

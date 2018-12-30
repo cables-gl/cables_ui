@@ -3,6 +3,8 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UTILS=CABLES.UTILS||{};
 CABLES.UI.getHandleBarHtml=function(name,obj)
 {
+    // var perf = CABLES.uiperf.start('getHandleBarHtml');
+
     var source   = $("#"+name).html();
     if(!source)
     {
@@ -12,6 +14,9 @@ CABLES.UI.getHandleBarHtml=function(name,obj)
     }
     var template = Handlebars.compile(source);
     var context = obj;
+
+    // perf.finish();
+
     return template(context);
 };
 

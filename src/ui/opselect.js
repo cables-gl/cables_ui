@@ -266,9 +266,6 @@ CABLES.UI.OpSelect.prototype.search=function()
             // this.Navigate(0);
         // }.bind(this),50);
 
-
-
-
     tinysort.defaults.order = 'desc';
 
     clearTimeout(this._sortTimeout);
