@@ -1129,6 +1129,9 @@ this._timeoutLinkWarnings=null;
     };
 
     this.updateViewBox = function() {
+
+        var perf = CABLES.uiperf.start('patch.updateViewBox');
+
         oldVBW = viewBox.w;
         oldVBH = viewBox.h;
         oldVBX = viewBox.x;
@@ -1144,6 +1147,8 @@ this._timeoutLinkWarnings=null;
                 width: viewBox.w,
                 height: viewBox.h
             });
+
+        perf.finish();
 
     };
 

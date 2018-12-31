@@ -131,7 +131,7 @@ CABLES.UI.GUI = function() {
     };
 
     this.setLayout = function() {
-        var startTime = performance.now();
+        var perf = CABLES.uiperf.start('gui.setlayout');
 
         this._elCanvasIconbar=this._elCanvasIconbar||$('#canvasicons');
         this._elAceEditor = this._elAceEditor || $('#ace_editors');
@@ -238,9 +238,6 @@ CABLES.UI.GUI = function() {
                 // this.closeEditor();
             }
 
-
-            
-
             var editorbarHeight = 76;
             $('#editor').show();
             $('#editor').css('left', iconBarWidth);
@@ -309,9 +306,10 @@ CABLES.UI.GUI = function() {
         $('#searchbox').css('left', patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth + 1);
         $('#searchbox').css('width', CABLES.UI.uiConfig.miniMapWidth);
 
-        $('#minimapContainer').show();
-        $('#minimapContainer').css('left', patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4);
         if (showMiniMap) {
+            $('#minimapContainer').show();
+            $('#minimapContainer').css('left', patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4);
+
             $('#minimapContainer').css('top', menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24);
             $('#minimap').show();
             $('#minimapContainer .title_closed').hide();
@@ -435,10 +433,10 @@ CABLES.UI.GUI = function() {
             CABLES.UI.hideInfo();
         });
 
-        window.avg = window.avg || (performance.now() - startTime);
-        window.avg += (performance.now() - startTime);
-        window.avg /= 2;
+        perf.finish();
     };
+
+
 
     this.importDialog = function() {
         var html = '';
