@@ -681,6 +681,24 @@ input[type=range]:focus {
 }
 
 
+#uiperf
+{
+    z-index: 9999999999999;
+    padding:20px;
+    position:absolute;
+    // background-color: rgba(0,0,0,1);
+    background-color: #000;
+    bottom:0px;
+    display:none;
+
+    font-family: monospace;
+
+    td
+    {
+        color:#fff;
+    }
+}
+
 @import 'libs/jcolorpicker-custom.scss';
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';

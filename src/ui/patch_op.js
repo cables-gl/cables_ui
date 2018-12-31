@@ -68,7 +68,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var x = _x;
     var y = _y;
     var opui = _opui;
-    var title = _text;
+    var title = null;
 
     var commentText = null;
     this._errorIndicator = null;
@@ -966,26 +966,36 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     this.setTitle = function(t) {
-        if(typeof t !== 'undefined') {
-            if(t === null) { title = ""; } 
-            else { title = t; }
+
+        var perf = CABLES.uiperf.start('op.setTitle');
+
+        if(title!=t)
+        {
+            if (typeof t !== 'undefined') {
+                if (t === null) { title = ""; }
+                else { title = t; }
+            }
+            if (label) {
+                label.attr({ text: title });
+                // if(objName.indexOf("Ops.User") == 0) label.attr({ text: '• '+title });
+
+                this.setWidth();
+                this.addUi();
+                // label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
+                // while(label.node.getComputedTextLength()>background.attr("width"))
+                // {
+                //     shownTitle=shownTitle.substr(0,shownTitle.length-1);
+                //     label.attr({'text': shownTitle+'...  '});
+                // }
+                this.updateSize();
+                this.updateErrorIndicator();
+                this._updateStriked();
+            }
+
         }
-        if (label) {
-            label.attr({ text: title });
-            // if(objName.indexOf("Ops.User") == 0) label.attr({ text: '• '+title });
-            
-            this.setWidth();
-            this.addUi();
-            // label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
-            // while(label.node.getComputedTextLength()>background.attr("width"))
-            // {
-            //     shownTitle=shownTitle.substr(0,shownTitle.length-1);
-            //     label.attr({'text': shownTitle+'...  '});
-            // }
-            this.updateSize();
-            this.updateErrorIndicator();
-            this._updateStriked();
-        }
+
+        perf.finish();
+
     };
 
     this.getGroup = function() {

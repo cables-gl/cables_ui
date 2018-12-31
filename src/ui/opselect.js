@@ -17,10 +17,14 @@ CABLES.UI.OpSelect=function()
     this.tree=new CABLES.OpTree();
     this._sortTimeout=0;
     this._backspaceDelay=-1;
+
+    this._eleSearchinfo=null
 };
 
 CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 {
+    var perf = CABLES.uiperf.start('opselect.udpateOptions');
+
     var num=$('.searchbrowser .searchable:visible').length;
     var query=$('#opsearch').val();
 
@@ -61,10 +65,13 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     }
 
     $('#opOptions').html(optionsHtml);
+    perf.finish();
 };
 
 CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
 {
+    var perf = CABLES.uiperf.start('opselect._searchWord');
+
     var result=[];
 
     for(var i=0;i<list.length;i++)
@@ -146,6 +153,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
         list[i].scoreDebug=scoreDebug;
     }
 
+    perf.finish();
+
     return result;
 };
 
@@ -202,9 +211,13 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
             this.updateOptions(opname);
         // }.bind(this),50);
 
-    if(opname)
+    if (opname && this._currentSearchInfo!=opname)
     {
-        $('#searchinfo').empty();
+        var perf = CABLES.uiperf.start('opselect.updateInfo');
+
+        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+        this._eleSearchinfo.innerHTML = '';
+        // $('#searchinfo').empty();
 
         // var content=gui.opDocs.get(opname);
         var opDoc = gui.opDocs.get2(opname);
@@ -217,20 +230,29 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
         html +=    opDoc;
         html +=    htmlFoot;
 
-        $('#searchinfo').html(html);
-        gui.opDocs.opLayoutSVG(opname, "opselect-layout"); /* create op-svg image inside #opselect-layout */
+        // $('#searchinfo').html(html);
+        this._eleSearchinfo.innerHTML = html;
+        setTimeout(function()
+        {
+            gui.opDocs.opLayoutSVG(opname, "opselect-layout"); /* create op-svg image inside #opselect-layout */
+        },50);
+
+        perf.finish();
     }
+    this._currentSearchInfo = opname;
 };
 
 
 CABLES.UI.OpSelect.prototype.search=function()
 {
-    var startTime=CABLES.now();
     var q=$('#opsearch').val();
     // if(q==this.lastQuery)return;
     this.lastQuery=q;
     var result=this._search(q);
     var i=0;
+
+
+    var perf = CABLES.uiperf.start('opselect.searchLoop');
 
     for(i=0;i<this._list.length;i++)
     {
@@ -238,7 +260,7 @@ CABLES.UI.OpSelect.prototype.search=function()
 
         if(this._list[i].score>0)
         {
-            this._list[i].element.show();
+            this._list[i].element[0].style.display = "block";
             this._list[i].element[0].dataset.score=this._list[i].score;
             this._list[i].element[0].dataset.scoreDebug=this._list[i].scoreDebug;
         }
@@ -246,7 +268,7 @@ CABLES.UI.OpSelect.prototype.search=function()
         {
             this._list[i].element[0].dataset.score=0.0;
             this._list[i].element[0].dataset.scoreDebug='???';
-            this._list[i].element.hide();
+            this._list[i].element[0].style.display = "none";
         }
     }
 
@@ -263,8 +285,8 @@ CABLES.UI.OpSelect.prototype.search=function()
     //                 var diff=parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
     //                 return diff;
     //             }).appendTo( $wrapper );
-            // this.Navigate(0);
-        // }.bind(this),50);
+    //         this.Navigate(0);
+    //     // }.bind(this),50);
 
     tinysort.defaults.order = 'desc';
 
@@ -277,8 +299,9 @@ CABLES.UI.OpSelect.prototype.search=function()
             this.updateOptions();
         }.bind(this),150);
 
-    var timeUsed=CABLES.now()-startTime;
-    this._timeUsed=timeUsed
+
+    perf.finish();
+
 };
 
 CABLES.UI.OpSelect.prototype.Navigate = function(diff)

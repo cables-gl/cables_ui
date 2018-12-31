@@ -1,23 +1,28 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 CABLES.UTILS=CABLES.UTILS||{};
+
+
+CABLES.UI.handleBarsPrecompiled={};
 CABLES.UI.getHandleBarHtml=function(name,obj)
 {
-    // var perf = CABLES.uiperf.start('getHandleBarHtml');
+    var perf = CABLES.uiperf.start('getHandleBarHtml');
 
-    var source   = $("#"+name).html();
-    if(!source)
+    var template = CABLES.UI.handleBarsPrecompiled[name];
+    if(!template)
     {
-        CABLES.UI.MODAL.showError('template not found','template '+name+' not found...');
-
-        return;
+        var source = document.getElementById(name).innerHTML;
+        if (!source) {
+            CABLES.UI.MODAL.showError('template not found', 'template ' + name + ' not found...');
+            return;
+        }
+        template = CABLES.UI.handleBarsPrecompiled[name] = Handlebars.compile(source);
     }
-    var template = Handlebars.compile(source);
-    var context = obj;
+    
+    var html = template(obj);
+    perf.finish();
 
-    // perf.finish();
-
-    return template(context);
+    return html;
 };
 
 CABLES.UTILS.arrayContains = function(arr,obj)

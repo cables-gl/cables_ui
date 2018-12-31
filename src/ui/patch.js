@@ -2616,7 +2616,7 @@ this._timeoutLinkWarnings=null;
 
         if(!gui.user.isPatchOwner)
         {
-            html+=CABLES.UI.getHandleBarHtml('clonepatch', {});
+            html += CABLES.UI.getHandleBarHtml('clonepatch', {});
         }
 
         html+=gui.bookmarks.getHtml();
@@ -2636,34 +2636,49 @@ this._timeoutLinkWarnings=null;
     function updateUiAttribs() {
         
         var perf = CABLES.uiperf.start('updateUiAttribs');
+        var el=null;
 
         self.setCurrentOpTitle(currentOp.op.name);
 
-        if (!currentOp.op.uiAttribs.warning || currentOp.op.uiAttribs.warning.length === 0) {
-            $('#options_warning').hide();
-        } else {
-            $('#options_warning').show();
-            document.getElementById('options_warning').innerHTML=currentOp.op.uiAttribs.warning;
+        el = document.getElementById('options_warning');
+        if(el)
+        {
+            if (!currentOp.op.uiAttribs.warning || currentOp.op.uiAttribs.warning.length === 0) el.style.display = "none";
+            else {
+                el.style.display = "block";
+                if (el) el.innerHTML = currentOp.op.uiAttribs.warning;
+            }
         }
 
-        if (!currentOp.op.uiAttribs.hint || currentOp.op.uiAttribs.hint.length === 0) {
-            $('#options_hint').hide();
-        } else {
-            $('#options_hint').show();
-            document.getElementById('options_hint').innerHTML=currentOp.op.uiAttribs.hint;
+        el = document.getElementById('options_hint');
+        if(el)
+        {
+            if (!currentOp.op.uiAttribs.hint || currentOp.op.uiAttribs.hint.length === 0) el.style.display = "none";
+            else {
+                el.style.display = "block";
+                if (el) el.innerHTML = currentOp.op.uiAttribs.hint;
+            }
         }
 
-        if (!currentOp.op.uiAttribs.error || currentOp.op.uiAttribs.error.length === 0) {
-            $('#options_error').hide();
-        } else {
-            $('#options_error').show();
-            document.getElementById('options_error').innerHTML=currentOp.op.uiAttribs.error;
+        el = document.getElementById('options_error');
+        if(el)
+        {
+            if (!currentOp.op.uiAttribs.error || currentOp.op.uiAttribs.error.length === 0) el.style.display = "none";
+            else {
+                el.style.display = "block";
+                if (el) el.innerHTML = currentOp.op.uiAttribs.error;
+            }
         }
 
-        if (!currentOp.op.uiAttribs.info) $('#options_info').hide();
-        else {
-            $('#options_info').show();
-            document.getElementById('options_info').innerHTML='<div class="panelhead">info</div><div class="panel">' + currentOp.op.uiAttribs.info + '</div>';
+        el = document.getElementById('options_info');
+        if (el) 
+        {
+            if (!currentOp.op.uiAttribs.info) el.style.display = "none";
+                else
+                {
+                    el.style.display = "block";
+                    el.innerHTML = '<div class="panelhead">info</div><div class="panel">' + currentOp.op.uiAttribs.info + '</div>';
+                }
         }
 
         perf.finish();

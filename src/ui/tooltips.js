@@ -1,20 +1,28 @@
 CABLES.UI=CABLES.UI || {};
 CABLES.UI.tooltipTimeout=null;
 
+CABLES.UI.eleInfoArea = null;
+CABLES.UI.eleTooltip = null;
+
 CABLES.UI.showToolTip=function(e,txt)
 {
-    $('.tooltip').show();
+    CABLES.UI.eleTooltip = CABLES.UI.eleTooltip || document.getElementById("cbltooltip");
+    if (!CABLES.UI.eleTooltip) return;
+    
+    CABLES.UI.eleTooltip.style.display = "block";
     if(e)
     {
-        $('.tooltip').css('top',e.clientY+12);
-        $('.tooltip').css('left',e.clientX+25);
+        CABLES.UI.eleTooltip.style.top = e.clientY + 12;
+        CABLES.UI.eleTooltip.style.left = e.clientX + 25;
     }
-    $('.tooltip').html(txt);
+
+    CABLES.UI.eleTooltip.innerHTML = txt;
 };
 
 CABLES.UI.hideToolTip=function()
 {
-    $('.tooltip').hide();
+    if (!CABLES.UI.eleTooltip) return;
+    CABLES.UI.eleTooltip.style.display = "none";
 };
 
 $(document).on('mouseover mousemove', '.tt', function(e)
@@ -38,14 +46,15 @@ $(document).on('mouseout', '.tt', function()
 
 CABLES.UI.showInfo=function(txt)
 {
-    if(!txt) { txt = CABLES.UI.TEXTS.infoArea; }
-    $('#infoArea').html('<div class="infoareaContent"><a class="icon-x icon fright" style="margin-right:10px;" onclick="gui.closeInfo();">sss</a>'+mmd(txt||'')+'</div>');
+    txt = txt||CABLES.UI.TEXTS.infoArea;
+    CABLES.UI.eleInfoArea = CABLES.UI.eleInfoArea || document.getElementById("infoArea");
+    CABLES.UI.eleInfoArea.innerHTML = '<div class="infoareaContent"><a class="icon-x icon fright" style="margin-right:10px;" onclick="gui.closeInfo();">sss</a>' + mmd(txt || '') + '</div>';
 };
 
 CABLES.UI.hideInfo=function()
 {
-  var txt = CABLES.UI.TEXTS.infoArea;
-  $('#infoArea').html('');
+    CABLES.UI.eleInfoArea = CABLES.UI.eleInfoArea || document.getElementById("infoArea");
+    CABLES.UI.eleInfoArea.innerHTML='';
 };
 
 

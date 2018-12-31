@@ -162,6 +162,10 @@ CABLES.CMD.UI.toggleTheme = function () {
     gui.updateTheme();
 };
 
+CABLES.CMD.UI.profileUI = function () {
+    CABLES.uiperf.show();
+};
+
     
     
     
@@ -304,6 +308,13 @@ CABLES.CMD.commands.push({
         category: "ui",
         func: CABLES.CMD.UI.toggleBgTexturePreview,
         icon: "monitor"
+    },
+    {
+        cmd: "ui profiler",
+        category: "ui",
+        func: CABLES.CMD.UI.profileUI,
+        icon: "command"
+        
     }
 
 );
