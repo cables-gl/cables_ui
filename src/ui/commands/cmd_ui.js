@@ -89,9 +89,7 @@ CABLES.CMD.UI.toggleBgTexturePreview=function()
     {
         gui.texturePreview().enableBgPreview(false);
     }
-
 };
-
 
 
 
@@ -107,7 +105,11 @@ CABLES.CMD.UI.showMinimap = function() {
 CABLES.CMD.UI.toggleMinimap = function () {
     CABLES.UI.userSettings.set('showMinimap', !CABLES.UI.userSettings.get('showMinimap'));
     if (CABLES.UI.userSettings.get('showMinimap'))document.location.reload();
+        else CABLES.CMD.UI.hideMinimap();
 };
+
+
+
 
 
 CABLES.CMD.UI.showSearch = function(str) {

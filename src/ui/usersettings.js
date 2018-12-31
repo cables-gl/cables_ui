@@ -5,7 +5,20 @@ CABLES.UI=CABLES.UI ||{};
 CABLES.UI.UserSettings=function()
 {
     this._settings=JSON.parse(localStorage.getItem("cables.usersettings"))||{};
+    this.init();
 };
+
+CABLES.UI.UserSettings.prototype.init = function ()
+{
+    if (this.get("bgpreview") === null) this.set("bgpreview", true);
+    if (this.get("showTipps") === null) this.set("showTipps", true);
+
+    this.updateNavBar();
+
+    
+}
+
+
 
 CABLES.UI.UserSettings.prototype.set = function (key, value) {
     this._settings[key] = value;
@@ -39,21 +52,15 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('showMinimap'))
     {
         $('.nav_usersettings_showMinimap i').removeClass('unchecked');
-        if(window.gui)gui.showMiniMap();
     }
     else
     {
         $('.nav_usersettings_showMinimap i').addClass('unchecked');
-        if (window.gui)gui.hideMiniMap();
     }
 
-    CABLES.UI.userSettings.straightLines = CABLES.UI.userSettings.get("straightLines");
-    CABLES.UI.userSettings.snapToGrid = CABLES.UI.userSettings.get("snapToGrid");
+    this.straightLines = this.get("straightLines");
+    this.snapToGrid = this.get("snapToGrid");
 }
 
 CABLES.UI.userSettings=new CABLES.UI.UserSettings();
 
-if (CABLES.UI.userSettings.get("bgpreview") === null) CABLES.UI.userSettings.set("bgpreview", true);
-if (CABLES.UI.userSettings.get("showTipps") === null) CABLES.UI.userSettings.set("showTipps", true);
-
-CABLES.UI.userSettings.updateNavBar();

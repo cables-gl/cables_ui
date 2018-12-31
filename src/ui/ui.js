@@ -132,7 +132,6 @@ CABLES.UI.GUI = function() {
 
     this.setLayout = function() {
         var perf = CABLES.uiperf.start('gui.setlayout');
-
         this._elCanvasIconbar=this._elCanvasIconbar||$('#canvasicons');
         this._elAceEditor = this._elAceEditor || $('#ace_editors');
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
@@ -146,8 +145,23 @@ CABLES.UI.GUI = function() {
         this._elGlCanvas = this._elGlCanvas || $('#glcanvas');
         this._elCablesCanvas = this._elCablesCanvas || $('#cablescanvas');
         this._elEditorBar = this._elEditorBar || $('#editorbar');
-        this._elSplitterEditor = this._elSplitterEditor || $('#splitterEditor');
         this._elIconBar = this._elIconBar || $('#icon-bar');
+
+        this._elEditor = this._elEditor || document.getElementById("editor");
+        this._elLibrary = this._elLibrary || document.getElementById("library");
+        this._elCanvasInfoSize = this._elCanvasInfoSize || document.getElementById("canvasInfoSize");
+        this._elSplitterEditor = this._elSplitterEditor || document.getElementById('splitterEditor');
+        this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
+        
+        this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
+        this._elMiniMap = this._elMiniMap || document.getElementById("minimap");
+        
+        this._elTLoverviewtimeline = document.getElementById('overviewtimeline');
+        this._elTLtimelineTitle = document.getElementById('timelineTitle');
+        this._elTLkeycontrols = document.getElementById('keycontrols');
+        this._elTLtimetimeline = document.getElementById('timetimeline');
+        this._elTLsplitterTimeline = document.getElementById('splitterTimeline');
+
 
         var iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
@@ -172,7 +186,8 @@ CABLES.UI.GUI = function() {
         {
             var sizeStr='size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight;
             if(gui.patch().scene.cgl.canvasScale!=1)sizeStr+=' (scale '+gui.patch().scene.cgl.canvasScale+')';
-            $('#canvasInfoSize').html(sizeStr);
+            // $('#canvasInfoSize').html(sizeStr);
+            this._elCanvasInfoSize.innerHTML = sizeStr;
         }
 
         var iconBarWidth=iconBarWidth||80;
@@ -219,16 +234,14 @@ CABLES.UI.GUI = function() {
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
 
-
         // $('#bgpreview').css('width', self.rendererWidth+'px');
         // $('#bgpreview').css('height', self.rendererHeight+'px');
         // $('#bgpreview').css('left', (patchWidth-$('#bgpreview').width())/2 + iconBarWidth  +'px');
         // $('#bgpreview').css('top', (patchHeight-$('#bgpreview').height())/2 + menubarHeight  +'px');
 
-
         if(showingEditor)
         {
-            $('#editorminimized').hide();
+            this._elEditorMinimized.style.display = "none";
             var editWidth=self.editorWidth;
             
             if (editWidth > window.innerWidth - self.rendererWidth -iconBarWidth)
@@ -239,9 +252,12 @@ CABLES.UI.GUI = function() {
             }
 
             var editorbarHeight = 76;
-            $('#editor').show();
-            $('#editor').css('left', iconBarWidth);
-            $('#editor').css('top', menubarHeight);
+            // $('#editor').show();
+            // $('#editor').css('left', iconBarWidth);
+            // $('#editor').css('top', menubarHeight);
+            this._elEditor.style.display = "block";
+            this._elEditor.style.left = iconBarWidth;
+            this._elEditor.style.top = menubarHeight;
 
             this._elEditorBar.css('height', editorbarHeight);
             this._elEditorBar.css('top',  1);
@@ -256,28 +272,33 @@ CABLES.UI.GUI = function() {
             $('#editorfoot').css('width', editWidth);
 
             this._elEditorBar.css('width', editWidth);
-            this._elSplitterEditor.show();
-            this._elSplitterEditor.css('left', editWidth + iconBarWidth);
-            this._elSplitterEditor.css('height', patchHeight - 2);
-            this._elSplitterEditor.css('width', 5);
-            this._elSplitterEditor.css('top', menubarHeight);
+
+            this._elSplitterEditor.style.display = "block";
+            this._elSplitterEditor.style.left= editWidth + iconBarWidth;
+            this._elSplitterEditor.style.height= patchHeight - 2;
+            this._elSplitterEditor.style.width= 5;
+            this._elSplitterEditor.style.top= menubarHeight;
 
             _editor.resize();
             
         } else {
 
-            $('#splitterEditor').hide();
-            $('#editor').hide();
+            this._elSplitterEditor.style.display = "none";
+            this._elEditor.style.display = "none";
             editorWidth = 0;
 
             if(_editor.getNumTabs()>0)
             {
-                minEl=$('#editorminimized');
-                minEl.show();
-                minEl.css('left',iconBarWidth);
-                minEl.css('top',patchHeight/2-100);
+                // minEl=$('#editorminimized');
+                // minEl.show();
+                this._elEditorMinimized.style.display = "block";
+                this._elEditorMinimized.style.left = iconBarWidth;
+                this._elEditorMinimized.style.top = patchHeight / 2 - 100;
+                // minEl.css('left', iconBarWidth);
+                // minEl.css('top',patchHeight/2-100);
             }
-            else $('#editorminimized').hide();
+            else this._elEditorMinimized.style.display = "none";
+            //$('#editorminimized').hide();
         }
 
         this._elIconBar.css('height', window.innerHeight - 60);
@@ -307,30 +328,32 @@ CABLES.UI.GUI = function() {
         $('#searchbox').css('width', CABLES.UI.uiConfig.miniMapWidth);
 
         if (showMiniMap) {
-            $('#minimapContainer').show();
-            $('#minimapContainer').css('left', patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4);
+            this._elMiniMapContainer.style.display = "block";
+            this._elMiniMap.style.display="block";
 
-            $('#minimapContainer').css('top', menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24);
-            $('#minimap').show();
+            this._elMiniMapContainer.style.left= patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4;
+            this._elMiniMapContainer.style.top= menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24;
+            
             $('#minimapContainer .title_closed').hide();
             $('#minimapContainer .title_opened').show();
         } else {
-            $('#minimapContainer').hide();
-            $('#minimap').hide();
+            this._elMiniMapContainer.style.display = "none";
+            this._elMiniMap.style.display="none";
         }
 
-        $('#library').css('left', iconBarWidth);
-        $('#library').css('width', window.innerWidth - self.rendererWidthScaled - iconBarWidth);
-        $('#library').css('bottom', 0);
+        this._elLibrary.style.left= iconBarWidth;
+        this._elLibrary.style.width= window.innerWidth - self.rendererWidthScaled - iconBarWidth;
+        this._elLibrary.style.bottom= 0;
 
         var timelineWidth= window.innerWidth - self.rendererWidthScaled - 2 - iconBarWidth;
         
-        $('#timelineui').css('width', timelineWidth);
-        $('#timing').css('width', timelineWidth);
-        $('#timing').css('bottom', filesHeight);
 
         if (showTiming)
         {
+            $('#timelineui').css('width', timelineWidth);
+            $('#timing').css('width', timelineWidth);
+            $('#timing').css('bottom', filesHeight);
+
             $('#timelineui').show();
             $('#timing').css('height', this.timingHeight);
             $('#timing').css('left', iconBarWidth);
@@ -348,20 +371,23 @@ CABLES.UI.GUI = function() {
             $('#timeline svg').css('margin-top', timelineUiHeight + timedisplayheight + timedisplayheight);
 
             $('#timeline svg').show();
-            $('#timetimeline').show();
-            $('#overviewtimeline').show();
-            $('#keycontrols').show();
 
-            $('#splitterTimeline').show();
+            this._elTLoverviewtimeline.style.display = "block";
+            this._elTLtimetimeline.style.display = "block";
+            this._elTLkeycontrols.style.display = "block";
+            this._elTLsplitterTimeline.style.display = "block";
+            this._elTLtimelineTitle.style.display = "block";
+
             $('#splitterTimeline').css('bottom', this.timingHeight - 4);
-            $('#timelineTitle').show();
         }
         else
         {
-            $('#overviewtimeline').hide();
-            $('#timelineTitle').hide();
-            $('#keycontrols').hide();
-            $('#timetimeline').hide();
+            this._elTLoverviewtimeline.style.display = "none";
+            this._elTLtimetimeline.style.display = "none";
+            this._elTLkeycontrols.style.display = "none";
+            this._elTLtimelineTitle.style.display = "none";
+            this._elTLsplitterTimeline.style.display = "none";
+
             $('#timeline svg').hide();
             $('#timing').css('height', timelineUiHeight);
             $('#splitterTimeline').hide();
@@ -427,11 +453,6 @@ CABLES.UI.GUI = function() {
             gui.patch().scene.cgl.updateSize();
         }
 
-        this._elGlCanvas.hover(function(e) {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
-        }, function() {
-            CABLES.UI.hideInfo();
-        });
 
         perf.finish();
     };
@@ -1098,8 +1119,18 @@ CABLES.UI.GUI = function() {
         $('#loadingstatus').hide();
         $('#mainContainer').show();
 
+        if (CABLES.UI.userSettings.get("showUIPerf")) CABLES.uiperf.show();
+        if (CABLES.UI.userSettings.get("showMinimap")) CABLES.CMD.UI.showMinimap();
+
+
         self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
         CABLES.showPacoRenderer();
+
+        this._elGlCanvas.hover(function (e) {
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
+        }, function () {
+            CABLES.UI.hideInfo();
+        });
 
         if (CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
 
@@ -1486,7 +1517,8 @@ CABLES.UI.GUI = function() {
 
             var sizeStr='size: '+cgl.canvasWidth+' x '+cgl.canvasHeight;
             if(cgl.canvasScale!=1)sizeStr+=' (scale: '+cgl.canvasScale+') '
-            $('#canvasInfoSize').html(sizeStr);
+            // $('#canvasInfoSize').html(sizeStr);
+            this._elCanvasInfoSize.innerHTML = sizeStr;
         }
         else
         {

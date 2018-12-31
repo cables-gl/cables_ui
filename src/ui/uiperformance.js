@@ -5,12 +5,40 @@ CABLES.UiPerformance = function ()
 {
     this._measures={};
     this._ele=null;
+    this._timeout=null;
+
+    this._currentHighlight = CABLES.UI.userSettings.get("uiPerfLastHighlight");
+    console.log(this._currentHighlight);
+    this._ignore = false;
 };
+
+CABLES.UiPerformance.prototype.hide = function ()
+{
+    this._ele.style.display="none";
+    CABLES.UI.userSettings.set("showUIPerf", false);
+}
+
+CABLES.UiPerformance.prototype.highlight = function (name)
+{
+    for (var i in this._measures) this._measures[i].highlight=false
+
+    this._currentHighlight=name;
+
+    console.log(this._currentHighlight);
+    // this._measures[name].highlight = !this._measures[name].highlight;
+    // console.log(this._measures[name].highlight);
+
+    CABLES.UI.userSettings.set("uiPerfLastHighlight", name);
+
+    this.show();
+    
+}
 
 CABLES.UiPerformance.prototype.show = function ()
 {
     this._ele = this._ele|| document.getElementById("uiperf");
 
+    CABLES.UI.userSettings.set("showUIPerf", true);
 
     var data = [];
 
@@ -25,27 +53,42 @@ CABLES.UiPerformance.prototype.show = function ()
         avg /= this._measures[i].times.length;
         avg = Math.round(avg * 1000) / 1000;
 
+        if (this._currentHighlight && this._currentHighlight==i) {
+            this._measures[i].highlight=true;
+        }
+
+        var color = 'col_recent';
+        const dist=performance.now() - this._measures[i].date;
+        if (dist > 2000) color = 'col_inactive';
+        if (dist < 600) color = 'col_active'
+
         data.push(
             {
                 name:i,
-                count:this._measures[i].count,
+                color:color,
+                count: this._measures[i].count,
+                highlight: this._measures[i].highlight,
                 last:lastTime,
                 avg:avg
             });
+        // console.log(i, this._measures[i].highlight);
     }
 
     data.sort(function (a, b) {
         return a.name.localeCompare(b.name);
     });
 
+    this._ignore = true;
     var html = CABLES.UI.getHandleBarHtml('uiperformance', { measures: data});
     
     this._ele.innerHTML=html;
     this._ele.style.display="block";
+    this._ignore = false;
 
-    setTimeout(function()
+    clearTimeout(this._timeout);
+    this._timeout =setTimeout(function()
     {
-        CABLES.uiperf.show();
+        if (CABLES.UI.userSettings.get("showUIPerf")) CABLES.uiperf.show();
     },500);
 
 }
@@ -77,12 +120,14 @@ CABLES.UiPerformance.prototype.clear = function ()
 }
 
 CABLES.UiPerformance.prototype.start = function (name) {
+    const ignorethis=this._ignore;
     var perf=this;
     var r=
     {
         start: performance.now(),
         finish:function()
         {
+            if (ignorethis)return;
             var time=performance.now()-this.start
             // console.log(name,time);
 
@@ -93,18 +138,13 @@ CABLES.UiPerformance.prototype.start = function (name) {
             perf._measures[name].times = perf._measures[name].times || [];
             perf._measures[name].times.push(time);
 
+            perf._measures[name].date = performance.now();
+
         }
     }
     return r;
 
 }
-
-// CABLES.UiPerformance.finish = function (name) {
-//     this._running[name] = performance.now();
-// }
-
-
-CABLES.uiperf=new CABLES.UiPerformance();
 
 
 

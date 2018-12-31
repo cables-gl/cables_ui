@@ -697,6 +697,29 @@ input[type=range]:focus {
     {
         color:#fff;
     }
+
+    .highlighted
+    {
+        td
+        {
+            color:var(--color-special) !important;
+            background-color: #444;
+        }
+    }
+
+    .col_inactive
+    {
+        color:#777;
+    }
+    .col_recent
+    {
+        color:#bbb;
+    }
+    .col_active
+    {
+        color:#fff;
+    }
+
 }
 
 @import 'libs/jcolorpicker-custom.scss';
