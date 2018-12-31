@@ -2967,19 +2967,17 @@ this._timeoutLinkWarnings=null;
 
         for (var ipo in op.portsOut) {
             this._showOpParamsCbPortDelete(ipo);
-
             (function (index) {
-
-            $('#portTitle_out_' + index).on('click', function (e) {
-                const p = op.portsOut[index];
-                if (!p.uiAttribs.hidePort)
-                    gui.opSelect().show(
-                        {
-                            x: p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
-                            y: p.parent.uiAttribs.translate.y + 50,
-                        }, op, p);
-            });
-        }) (ipo);
+                $('#portTitle_out_' + index).on('click', function (e) {
+                    const p = op.portsOut[index];
+                    if (!p.uiAttribs.hidePort)
+                        gui.opSelect().show(
+                            {
+                                x: p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
+                                y: p.parent.uiAttribs.translate.y + 50,
+                            }, op, p);
+                });
+            }) (ipo);
 
         }
 
@@ -2996,13 +2994,8 @@ this._timeoutLinkWarnings=null;
             })(ipip);
         }
 
-        // for (var ipii in op.portsIn) {
         for (var ipii = 0; ipii < op.portsIn.length; ipii++) {
-
             CABLES.UI.initPortInputListener(op, ipii);
-            // (function(index) {
-
-            // })(ipii);
         }
 
         for (var iwap in watchAnimPorts) {
@@ -3019,98 +3012,9 @@ this._timeoutLinkWarnings=null;
             })(thePort);
         }
 
-        var ignoreColorChanges = true;
-        var colors;
-
         for (var iwcp in watchColorPicker) {
             var thePort2 = watchColorPicker[iwcp];
-            (function(thePort) {
-                function updateColorPickerButton(id) {
-                    var splits = id.split('_');
-                    var portNum = parseInt(splits[splits.length - 1]);
-
-                    var c1 = Math.round(255 * $('#portval_' + portNum).val());
-                    var c2 = Math.round(255 * $('#portval_' + (portNum + 1)).val());
-                    var c3 = Math.round(255 * $('#portval_' + (portNum + 2)).val());
-
-                    $(id).css('background-color', 'rgb(' + c1 + ',' + c2 + ',' + c3 + ')');
-                }
-
-                var id = '#watchcolorpick_' + thePort.watchId;
-                updateColorPickerButton(id);
-
-                $(id).colorPicker({
-                    opacity: true,
-                    animationSpeed: 0,
-                    margin: '-80px -40px 0',
-                    doRender: 'div div',
-                    renderCallback: function(res, toggled) {
-                        var id = res[0].id;
-                        var splits = id.split('_');
-                        var portNum = parseInt(splits[splits.length - 1]);
-
-                        if (toggled === false) {
-                            ignoreColorChanges = true;
-                        }
-                        if (toggled === true) {
-                            updateColorPickerButton(id);
-                            colors = this.color.colors;
-                            ignoreColorChanges = false;
-                        }
-
-                        if (!ignoreColorChanges) {
-                            $('#portval_' + portNum + '').val(colors.rgb.r).trigger('input');
-                            $('#portval_' + (portNum + 1) + '').val(colors.rgb.g).trigger('input');
-                            $('#portval_' + (portNum + 2) + '').val(colors.rgb.b).trigger('input');
-                        } else {
-                            updateColorPickerButton(id);
-                        }
-
-                        modes = {
-                            r: Math.round(colors.rgb.r * 255),
-                            g: Math.round(colors.rgb.g * 255),
-                            b: Math.round(colors.rgb.b * 255),
-                            h: colors.hsv.h,
-                            s: colors.hsv.s,
-                            v: colors.hsv.v,
-                            HEX: this.color.colors.HEX
-                        };
-
-                        $('input', '.cp-panel').each(function() {
-                            this.value = modes[this.className.substr(3)];
-                        });
-
-                    },
-                    buildCallback: function($elm) {
-                        var colorInstance = this.color,
-                            colorPicker = this;
-
-                        $elm.prepend('<div class="cp-panel">' +
-                                'R <input type="text" class="cp-r" /><br>' +
-                                'G <input type="text" class="cp-g" /><br>' +
-                                'B <input type="text" class="cp-b" /><hr>' +
-                                'H <input type="text" class="cp-h" /><br>' +
-                                'S <input type="text" class="cp-s" /><br>' +
-                                'B <input type="text" class="cp-v" /><hr>' +
-                                '<input type="text" class="cp-HEX" />' +
-                                '</div>')
-                            .on('change', 'input',
-                                function(e) {
-                                    var value = this.value,
-                                        className = this.className,
-                                        type = className.split('-')[1],
-                                        color = {};
-
-                                    color[type] = value;
-                                    colorInstance.setColor(type === 'HEX' ? value : color,
-                                        type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
-                                    colorPicker.render();
-                                    this.blur();
-                                });
-                    }
-                });
-
-            })(thePort2);
+            CABLES.UI.watchColorPickerPort(thePort2);
         }
 
         perf.finish();
