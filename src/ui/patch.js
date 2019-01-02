@@ -1357,7 +1357,9 @@ this._timeoutLinkWarnings=null;
         this._elBody = this._elBody || $('body');
 
         this._elPatchSvg.bind("mousewheel", function(event, delta, nbr) {
-            if (!event.metaKey && !event.altKey && !event.ctrlKey && CABLES.UI.userSettings.get("touchpadmode")) {
+
+            var touchpadMode = CABLES.UI.userSettings.get("touchpadmode");
+            if (!event.metaKey && !event.altKey && !event.ctrlKey && touchpadMode) {
                 if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.deltaY *= 0.5;
                 else event.deltaX *= 0.5;
 
@@ -1375,11 +1377,10 @@ this._timeoutLinkWarnings=null;
             delta = CGL.getWheelSpeed(event);
             delta = Math.min(delta, 10);
             delta = Math.max(delta, -10);
-            if (!CABLES.UI.userSettings.get("touchpadmode")) delta *= 13;
+            if (!touchpadMode) delta *= 13;
 
             event = mouseEvent(event);
-
-            delta = (viewBox.w / delta) * 10;
+            delta = (viewBox.w / delta) * 15;
 
             if (viewBox.w - delta > 0 && viewBox.h - delta > 0) {
                 var oldWidth = viewBox.w;

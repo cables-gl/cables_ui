@@ -152,16 +152,14 @@ CABLES.UI.GUI = function() {
         this._elCanvasInfoSize = this._elCanvasInfoSize || document.getElementById("canvasInfoSize");
         this._elSplitterEditor = this._elSplitterEditor || document.getElementById('splitterEditor');
         this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
-        
+       
         this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
         this._elMiniMap = this._elMiniMap || document.getElementById("minimap");
-        
-        this._elTLoverviewtimeline = document.getElementById('overviewtimeline');
-        this._elTLtimelineTitle = document.getElementById('timelineTitle');
-        this._elTLkeycontrols = document.getElementById('keycontrols');
-        this._elTLtimetimeline = document.getElementById('timetimeline');
-        this._elTLsplitterTimeline = document.getElementById('splitterTimeline');
-
+        this._elTLoverviewtimeline = this._elTLoverviewtimeline || document.getElementById('overviewtimeline');
+        this._elTLtimelineTitle = this._elTLtimelineTitle || document.getElementById('timelineTitle');
+        this._elTLkeycontrols = this._elTLkeycontrols || document.getElementById('keycontrols');
+        this._elTLtimetimeline = this._elTLtimetimeline || document.getElementById('timetimeline');
+        this._elTLsplitterTimeline = this._elTLsplitterTimeline || document.getElementById('splitterTimeline');
 
         var iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
@@ -234,11 +232,6 @@ CABLES.UI.GUI = function() {
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
 
-        // $('#bgpreview').css('width', self.rendererWidth+'px');
-        // $('#bgpreview').css('height', self.rendererHeight+'px');
-        // $('#bgpreview').css('left', (patchWidth-$('#bgpreview').width())/2 + iconBarWidth  +'px');
-        // $('#bgpreview').css('top', (patchHeight-$('#bgpreview').height())/2 + menubarHeight  +'px');
-
         if(showingEditor)
         {
             this._elEditorMinimized.style.display = "none";
@@ -248,13 +241,10 @@ CABLES.UI.GUI = function() {
             {
                 self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
                 this.updateCanvasIconBar();
-                // this.closeEditor();
             }
 
             var editorbarHeight = 76;
-            // $('#editor').show();
-            // $('#editor').css('left', iconBarWidth);
-            // $('#editor').css('top', menubarHeight);
+
             this._elEditor.style.display = "block";
             this._elEditor.style.left = iconBarWidth;
             this._elEditor.style.top = menubarHeight;
@@ -289,16 +279,11 @@ CABLES.UI.GUI = function() {
 
             if(_editor.getNumTabs()>0)
             {
-                // minEl=$('#editorminimized');
-                // minEl.show();
                 this._elEditorMinimized.style.display = "block";
                 this._elEditorMinimized.style.left = iconBarWidth;
                 this._elEditorMinimized.style.top = patchHeight / 2 - 100;
-                // minEl.css('left', iconBarWidth);
-                // minEl.css('top',patchHeight/2-100);
             }
             else this._elEditorMinimized.style.display = "none";
-            //$('#editorminimized').hide();
         }
 
         this._elIconBar.css('height', window.innerHeight - 60);
@@ -453,11 +438,8 @@ CABLES.UI.GUI = function() {
             gui.patch().scene.cgl.updateSize();
         }
 
-
         perf.finish();
     };
-
-
 
     this.importDialog = function() {
         var html = '';
@@ -535,7 +517,6 @@ CABLES.UI.GUI = function() {
         $('#timing').show();
         gui.setLayout();
         CABLES.UI.userSettings.set("timelineOpened",showTiming);
-
     };
 
     this.hideTiming = function() {
@@ -608,7 +589,6 @@ CABLES.UI.GUI = function() {
             "Enter a name for your new Project",
             "My new Project",
             function(name) {
-                // var name=prompt('projectname','');
                 if (name) {
                     CABLES.api.post('project', {
                         "name": name
@@ -736,7 +716,6 @@ CABLES.UI.GUI = function() {
             self.cycleRendererSize();
         });
 
-        // $('.button_saveCurrentProject').bind("mousedown", function (event) { self.patch().saveCurrentProject(); });
         $('.nav_patch_save').bind("click", function(event) {
             CABLES.CMD.PATCH.save();
         });

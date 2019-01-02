@@ -8,7 +8,6 @@ CABLES.UiPerformance = function ()
     this._timeout=null;
 
     this._currentHighlight = CABLES.UI.userSettings.get("uiPerfLastHighlight");
-    console.log(this._currentHighlight);
     this._ignore = false;
 };
 
@@ -23,10 +22,6 @@ CABLES.UiPerformance.prototype.highlight = function (name)
     for (var i in this._measures) this._measures[i].highlight=false
 
     this._currentHighlight=name;
-
-    console.log(this._currentHighlight);
-    // this._measures[name].highlight = !this._measures[name].highlight;
-    // console.log(this._measures[name].highlight);
 
     CABLES.UI.userSettings.set("uiPerfLastHighlight", name);
 
