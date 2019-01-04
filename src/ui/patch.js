@@ -1456,9 +1456,7 @@ this._timeoutLinkWarnings=null;
 
         this.background.node.ondblclick = function(e) {
             e = mouseEvent(e);
-
             self.toggleCenterZoom(e);
-            // self.updateViewBox();
         };
 
         $('#patch').on("mousemove touchmove", function(e) {

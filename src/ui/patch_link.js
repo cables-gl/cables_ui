@@ -120,7 +120,7 @@ function UiLink(port1, port2)
 
     this.showAddButton=function()
     {
-        if(!this.isVisible())return;
+        // if(!this.isVisible())return;
 
         var perf = CABLES.uiperf.start('link showadd');
 
@@ -288,15 +288,14 @@ function UiLink(port1, port2)
 
     self.show=function()
     {
-        if(this.isVisible())return;
-        if (this.linkLine)this.linkLine.show();
+        // if(this.isVisible())return;
         this.redraw();
+        if (this.linkLine)this.linkLine.show();
     };
 
     this.remove=function()
     {
         self.hide();
-        
         if(port1)port1.updateUI();
         if(port2)port2.updateUI();
         if (this.linkLine) this.linkLine.remove();

@@ -542,6 +542,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var dblClick=function(ev)
     {
+        console.log("dblclick");
         gui.patch().setSelectedOp(null);
         if (CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
     };
@@ -549,6 +550,14 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var mouseUp=function(ev) {
         opui.isDragging = false;
         CABLES.UI.DRAGGINGOPS=false;
+    };
+
+    var lastMouseDown=0;
+
+    var mouseDown=function(ev) {
+        const diff=performance.now()-lastMouseDown;
+        if(diff<400) dblClick();
+        lastMouseDown=performance.now();
     };
 
 
@@ -685,13 +694,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         this.setTitle(title);
 
-        
-        // striked = gui.patch().getPaper().path( "M20,10 L"+(w-20)+","+(h-10) );
-
-        background.drag(move.bind(this), down.bind(this), up.bind(this));
         background.hover(hover, unhover);
-        background.node.ondblclick = dblClick;
         background.onmouseup = mouseUp;
+        background.drag(move.bind(this), down.bind(this), up.bind(this));
+        background.mousedown(mouseDown);
 
         if (CABLES.Op.isSubpatchOp(opui.op.objName)) background.node.classList.add('op_subpatch');
         if (opui.op.objName == "Ops.Ui.PatchInput") background.node.classList.add('op_subpatch_in');
