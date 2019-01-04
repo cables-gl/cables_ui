@@ -10,6 +10,14 @@ CABLES.UI.TexturePreviewer=function()
     this._paused=false;
     this._shader=null;
     this._shaderTexUniform=null;
+
+    var ele=document.getElementById('bgpreview');
+
+    ele.addEventListener("click",function()
+    {
+        gui.patch().focusOp(this._lastClicked.opid);
+    }.bind(this));
+
 };
 
 CABLES.UI.TexturePreviewer.MODE_CLICKED=0;
@@ -241,6 +249,7 @@ CABLES.UI.TexturePreviewer.prototype.enableBgPreview=function(enabled)
     else
     {
         if(this._lastClicked)this.selectTexturePort(this._lastClickedP);
+
     }
 }
 
@@ -251,6 +260,8 @@ CABLES.UI.TexturePreviewer.prototype.pressedEscape=function()
     if(ele)ele.style.display="none";
 }
 
+
+
 CABLES.UI.TexturePreviewer.prototype.render=function()
 {
     if(this._lastClicked && CABLES.UI.userSettings.get("bgpreview"))
@@ -258,6 +269,12 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
         var ele=document.getElementById('bgpreview');
         ele.style.display="block";
         this._renderTexture(this._lastClicked,ele);
+        // $('#bgpreview').bind("click", function(event) {
+
+        //     console.log(this._lastClickedP);
+        //     // 
+        // });
+
 
         if(ele.width+'px'!=ele.style.width || ele.height+'px'!=ele.style.height)
         {
@@ -272,9 +289,6 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
             
             
             // right
-            $('#bgpreview').css('left', ( $('#patch').width() )-ele.width +iconbarWidth+ 'px');
-            // $('#bgpreview').css('top', 20 + 'px');
-            $('#bgpreview').css('bottom', '2px');
 
         }
     }

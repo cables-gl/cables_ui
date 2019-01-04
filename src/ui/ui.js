@@ -438,6 +438,13 @@ CABLES.UI.GUI = function() {
             gui.patch().scene.cgl.updateSize();
         }
 
+
+        // $('#bgpreview').css('left', ( $('#patch').width() )-ele.width +iconbarWidth+ 'px');
+        $('#bgpreview').css('right', self.rendererWidth+'px');
+        $('#bgpreview').css('top', menubarHeight+'px');
+
+
+
         perf.finish();
     };
 
@@ -703,6 +710,7 @@ CABLES.UI.GUI = function() {
 
     this.bind = function(cb) {
         $('#glcanvas').attr('tabindex', '3');
+
 
         $('.nav_cables').bind("click", function(event) {
             var win = window.open('/');

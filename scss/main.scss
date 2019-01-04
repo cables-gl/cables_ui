@@ -722,6 +722,19 @@ input[type=range]:focus {
 
 }
 
+
+#bgpreview
+{
+    position:absolute;
+    cursor:pointer;
+    z-index: 9999999999;
+    transform: scale(0.5, -0.5) translate(50%, 50%);
+    margin-right: 5px;
+    margin-top:1px;
+    display:none;
+    border:2px solid black;
+}
+
 @import 'libs/jcolorpicker-custom.scss';
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';
