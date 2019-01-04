@@ -127,7 +127,10 @@ CABLES.UI.OpDocs=function()
 
                 var opHeight=40;
                 var opWidth=250;
-                var p = Raphael(document.getElementById(elementId), opWidth, opHeight);
+                var ele=document.getElementById(elementId);
+                if(!ele)return;
+
+                var p = Raphael(ele, opWidth, opHeight);
 
                 var bg=p.rect(0,0,opWidth,opHeight);
                 bg.attr("fill","#333");
