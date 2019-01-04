@@ -2791,7 +2791,7 @@ this._timeoutLinkWarnings=null;
 
 
     this._showOpParams = function(op) {
-
+        if(!op)return;
         var perf = CABLES.uiperf.start('_showOpParams');
         var perfHtml = CABLES.uiperf.start('_showOpParamsHTML');
         

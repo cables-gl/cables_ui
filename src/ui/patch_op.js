@@ -554,7 +554,11 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this._updateElementOrder = function (reverse)
     {
+        if(!background)return;
+
         var perf = CABLES.uiperf.start('_updateElementOrder');
+
+
 
         if(reverse)
         {
@@ -671,7 +675,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         // resizeHandle.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
         // resizeHandle.node.classList.add('op_handle');
 
-        label = gui.patch().getPaper().text(0 + w / 2, 0 + h / 2 - 0.8, title);
+        label = gui.patch().getPaper().text(0 + w / 2, 0 + h / 2 - 0.8, '??!');
 
         label.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
 
@@ -680,6 +684,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         CABLES.UI.cleanRaphael(label);
 
         this.setTitle(title);
+
         
         // striked = gui.patch().getPaper().path( "M20,10 L"+(w-20)+","+(h-10) );
 
@@ -806,6 +811,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             // if (this._errorIndicator) this._errorIndicator.toFront();
             // if (commentText) commentText.toFront();
             this._updateStriked();
+            // this.updateSize();
 
             this._updateElementOrder();
 
@@ -967,14 +973,18 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this.setTitle = function(t) {
 
+        title=t||title;
+        // if(!label)return;
         var perf = CABLES.uiperf.start('op.setTitle');
 
-        if(title!=t)
+        if(!label)return;
+        if(title!=t || label.attr("text")!=t)
         {
             if (typeof t !== 'undefined') {
                 if (t === null) { title = ""; }
                 else { title = t; }
             }
+
             if (label) {
                 label.attr({ text: title });
                 // if(objName.indexOf("Ops.User") == 0) label.attr({ text: '• '+title });
