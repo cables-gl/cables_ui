@@ -1026,11 +1026,6 @@ CABLES.UI.GUI = function() {
 
         this.showCanvasModal(false);
 
-        // if (e && (e.metaKey || e.ctrlKey)) {
-        //     CABLES.UI.SELECTPROJECT.show();
-        //     return;
-        // }
-
         this._texturePreviewer.pressedEscape();
         $('.tooltip').hide();
 

@@ -2589,6 +2589,7 @@ this._timeoutLinkWarnings=null;
 
     this.showProjectParams = function() {
 
+        gui.texturePreview().pressedEscape();
         var perf = CABLES.uiperf.start('showProjectParams');
 
         var s = {};

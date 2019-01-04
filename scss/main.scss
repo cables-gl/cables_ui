@@ -727,10 +727,10 @@ input[type=range]:focus {
 {
     position:absolute;
     cursor:pointer;
-    z-index: 9999999999;
+    z-index: 1999;
     transform: scale(0.5, -0.5) translate(50%, 50%);
     margin-right: 5px;
-    margin-top:1px;
+    margin-top:0px;
     display:none;
     border:2px solid black;
 }
