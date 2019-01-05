@@ -842,6 +842,7 @@ CABLES.UI.GUI = function() {
             self.showCanvasModal(false);
             $('#glcanvas').blur();
             self.setLayout();
+            self.patch().getViewBox().update();
         }, false);
 
         document.addEventListener('copy', function(e) {
@@ -1103,7 +1104,7 @@ CABLES.UI.GUI = function() {
 
         if (CABLES.UI.userSettings.get("showUIPerf")) CABLES.uiperf.show();
         if (CABLES.UI.userSettings.get("showMinimap")) CABLES.CMD.UI.showMinimap();
-
+        self.patch().getViewBox().update();
 
         self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
         CABLES.showPacoRenderer();

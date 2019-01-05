@@ -78,7 +78,7 @@ CABLES.UI.PatchViewBox.prototype._fixAspectRatio = function (vb)
     if (this._elePatch.offsetWidth != 0) {
         if (vb.w / vb.h != this._elePatch.offsetWidth / this._elePatch.offsetHeight) {
 
-            console.log("fix aspect!!", vb, this._elePatch.offsetHeight, this._elePatch.offsetWidth);
+            // console.log("fix aspect!!", vb, this._elePatch.offsetHeight, this._elePatch.offsetWidth);
 
             if (vb.w > vb.h) {
                 vb.h = vb.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
@@ -120,15 +120,18 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
     perf.finish();
 };
 
-CABLES.UI.PatchViewBox.prototype.centerAllOps = function (e)
+CABLES.UI.PatchViewBox.prototype.centerSelectedOps = function ()
 {
-    var bounds=this._patch.getSubPatchBounds();
+    var bounds = this._patch.getSelectionBounds();
+    this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
+}
 
-    if (this._viewBox.x == bounds.x && this._viewBox.y == bounds.y && this._viewBox.w == bounds.w && this._viewBox.h == bounds.h)
-    {
-        console.log("now zoom in!");
-    }
-    else this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
+
+
+CABLES.UI.PatchViewBox.prototype.centerAllOps = function ()
+{
+    var bounds = this._patch.getSubPatchBounds();
+    this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
 }
 
 CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
@@ -255,6 +258,7 @@ CABLES.UI.PatchViewBox.prototype.animate = function (x, y, w, h)
     var newvb={x:x,y:y,w:w,h:h};
 
     newvb=this._fixAspectRatio(newvb);
+
 
     this._viewBoxAnim.x.setValue(duration, newvb.x);
     this._viewBoxAnim.y.setValue(duration, newvb.y);

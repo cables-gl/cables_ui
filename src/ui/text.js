@@ -80,7 +80,7 @@ CABLES.UI.TEXTS=
     timeline_keys:"## timeline  \n\n* `[drag right click]` move visible area\n* `[drag left click]` select keys\n* `[h]` center all keys\n* `[j/k]` jump to next/previous key\n* `[DEL]` delete selected keys",
 
     usersettings:"## User Settings\n\nchange editor settings ",
-    texpreview:"## Texture Preview\n\nshows result of last clicked texture outputing operator.\n\nclick patch background to hide",
+    texpreview:"## Texture Preview\n\nshows result of last clicked texture outputing operator.\n\nclick to see focus operator\n\nclick patch background to hide",
 
     valueChangerHover:'## Number Input \n\n* [drag mouse left right] - change value slowly \n* [shift + drag mouse left right] - change value fast',
     valueChangerInput:'## Number Input Focussed \n\n* [up / down / mousewheel] - change value +/- 0.1\n* [shift + up / down / mousewheel] - change value +/- 0.01\n* [alt + up / down / mousewheel] - change value +/- 1',

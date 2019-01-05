@@ -970,9 +970,6 @@ this._timeoutLinkWarnings=null;
         });
     };
 
-    this.centerViewBoxOps = function() {
-        this._viewBox.centerAllOps();
-    };
 
     this.fixTitlePositions=function()
     {
@@ -982,12 +979,59 @@ this._timeoutLinkWarnings=null;
         }
     }
 
+    this.centerViewBoxOps = function() {
+        
+        if(selectedOps.length>0) this._viewBox.centerSelectedOps();
+        else this._viewBox.centerAllOps();
+    };
+
     this.centerViewBoxOp=function(opid)
     {
         this._viewBox.center(
             this.scene.getOpById(opid).uiAttribs.translate.x,
             this.scene.getOpById(opid).uiAttribs.translate.y);
     }
+
+
+    this._setBoundsXYWH=function(bounds)
+    {
+        bounds.x = bounds.minx - 100;
+        bounds.y = bounds.miny - 100;
+        bounds.w = Math.abs(bounds.maxx - bounds.minx) ;
+        bounds.h = Math.abs(bounds.maxy - bounds.miny) ;
+
+        if (bounds.h > bounds.w) {
+            bounds.x -= Math.abs(bounds.maxx - bounds.minx) / 2;
+            console.log('center x!');
+        }
+
+        bounds.w += 200;
+        bounds.h += 200;
+    }
+
+    this.getSelectionBounds = function () {
+        var bounds = {
+            minx: 9999999,
+            maxx: -9999999,
+            miny: 9999999,
+            maxy: -9999999,
+        };
+
+        for (var j = 0; j < selectedOps.length; j++) {
+            if (selectedOps[j].op.uiAttribs && selectedOps[j].op.uiAttribs.translate) {
+                // console.log(selectedOps[j].op.uiAttribs.translate.x);
+                bounds.minx = Math.min(bounds.minx, selectedOps[j].op.uiAttribs.translate.x);
+                bounds.maxx = Math.max(bounds.maxx, selectedOps[j].op.uiAttribs.translate.x);
+                bounds.miny = Math.min(bounds.miny, selectedOps[j].op.uiAttribs.translate.y);
+                bounds.maxy = Math.max(bounds.maxy, selectedOps[j].op.uiAttribs.translate.y);
+            }
+        }
+
+        this._setBoundsXYWH(bounds);
+
+        return bounds;
+    };
+
 
 
     this.getSubPatchBounds = function(subPatch) {
@@ -1011,10 +1055,8 @@ this._timeoutLinkWarnings=null;
                     }
             }
 
-        bounds.x = bounds.minx - 100;
-        bounds.y = bounds.miny - 100;
-        bounds.w = Math.abs(bounds.maxx - bounds.minx) + 400;
-        bounds.h = Math.abs(bounds.maxy - bounds.miny) + 400;
+        this._setBoundsXYWH(bounds);
+
         return bounds;
     };
 
@@ -1819,26 +1861,6 @@ this._timeoutLinkWarnings=null;
         return selectedOps;
     };
 
-    this.getSelectionBounds = function() {
-        var bounds = {
-            minx: 9999999,
-            maxx: -9999999,
-            miny: 9999999,
-            maxy: -9999999,
-        };
-
-        for (var j = 0; j < selectedOps.length; j++) {
-            if (selectedOps[j].op.uiAttribs && selectedOps[j].op.uiAttribs.translate) {
-                // console.log(selectedOps[j].op.uiAttribs.translate.x);
-                bounds.minx = Math.min(bounds.minx, selectedOps[j].op.uiAttribs.translate.x);
-                bounds.maxx = Math.max(bounds.maxx, selectedOps[j].op.uiAttribs.translate.x);
-                bounds.miny = Math.min(bounds.miny, selectedOps[j].op.uiAttribs.translate.y);
-                bounds.maxy = Math.max(bounds.maxy, selectedOps[j].op.uiAttribs.translate.y);
-            }
-        }
-
-        return bounds;
-    };
 
     this.showSelectedOpsGraphs = function() {
         gui.timeLine().clear();
