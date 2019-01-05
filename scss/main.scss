@@ -725,14 +725,12 @@ input[type=range]:focus {
 
 #bgpreview
 {
+    display:none;
     position:absolute;
-    cursor:pointer;
+    margin-right: 5px;
     z-index: 1999;
     transform: scale(0.5, -0.5) translate(50%, 50%);
-    margin-right: 5px;
-    margin-top:0px;
-    display:none;
-    border:2px solid black;
+    cursor:pointer;
 }
 
 @import 'libs/jcolorpicker-custom.scss';

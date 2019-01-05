@@ -3,6 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.OPNAME_SUBPATCH = 'Ops.Ui.SubPatch';
 
+
 CABLES.UI.Patch = function(_gui) {
     var self = this;
     this.ops = [];
@@ -43,6 +44,9 @@ CABLES.UI.Patch = function(_gui) {
     this._elPatchSvg = null;
     this._elPatch = null;
     this._elBody = null;
+
+    var zoom=null;
+    
 
     var pastedupdateTimeout=null;
 
@@ -985,7 +989,7 @@ this._timeoutLinkWarnings=null;
         for (var i in arr) {
             if (arr[i].getSubPatch() == currentSubPatch) {
                 minX = Math.min(minX, arr[i].op.uiAttribs.translate.x - 40);
-                maxX = Math.max(maxX, arr[i].op.uiAttribs.translate.x + 150);
+                maxX = Math.max(maxX, arr[i].op.uiAttribs.translate.x + 40);
                 minY = Math.min(minY, arr[i].op.uiAttribs.translate.y);
                 maxY = Math.max(maxY, arr[i].op.uiAttribs.translate.y);
             }
@@ -993,7 +997,11 @@ this._timeoutLinkWarnings=null;
 
         var vb = {};
         vb.w = 1 * (Math.abs(maxX - minX));
-        vb.h = 1 * (Math.abs(maxY - minY));
+        // vb.h = 1 * (Math.abs(maxY - minY));
+
+        var elePatch = document.getElementById("patch");
+
+        vb.h = vb.w * (elePatch.offsetHeight / elePatch.offsetWidth);
 
         if (selectedOps.length > 0) {
             vb.w = Math.max(600, vb.w);
@@ -1089,6 +1097,7 @@ this._timeoutLinkWarnings=null;
     };
 
     this._animViewBox = function() {
+        zoom=null;
         var t = (CABLES.now() - viewBoxAnim.start) / 1000;
 
         viewBox.x = viewBoxAnim.x.getValue(t);
@@ -1275,6 +1284,7 @@ this._timeoutLinkWarnings=null;
                 viewBox.y = proj.ui.viewBox.y;
                 viewBox.w = proj.ui.viewBox.w;
                 viewBox.h = proj.ui.viewBox.h;
+                self.updateViewBox();
             }
 
             if (proj.ui.renderer) {
@@ -1375,23 +1385,48 @@ this._timeoutLinkWarnings=null;
             }
 
             delta = CGL.getWheelSpeed(event);
-            delta = Math.min(delta, 10);
-            delta = Math.max(delta, -10);
-            if (!touchpadMode) delta *= 13;
 
-            event = mouseEvent(event);
-            delta = (viewBox.w / delta) * 15;
+            console.log(viewBox);
+            // delta = Math.min(delta, 10);
+            // delta = Math.max(delta, -10);
+            console.log('delta',delta);
 
-            if (viewBox.w - delta > 0 && viewBox.h - delta > 0) {
-                var oldWidth = viewBox.w;
-                var oldHeight = viewBox.h;
-
-                viewBox.w -= delta;
-                viewBox.h -= delta;
-
-                viewBox.x -= (event.offsetX / 1000 * (viewBox.w - oldWidth));
-                viewBox.y -= (event.offsetY / 1000 * (viewBox.h - oldHeight));
+            if (delta < 0) {
+                delta = 0.8;
+            } else {
+                delta = 1.2;
             }
+
+            var elePatch = document.getElementById("patch");
+            var patchWidth = elePatch.offsetWidth;
+            var patchHeight = elePatch.offsetHeight;
+
+            if(zoom==null) 
+            {
+                zoom = patchWidth / viewBox.w;
+                console.log('viewBox.h', viewBox.h);
+                viewBox.h = viewBox.w * (elePatch.offsetHeight / elePatch.offsetWidth);
+                console.log('viewBox.h', viewBox.h);
+                // self.updateViewBox();
+                // return;
+
+            }
+            event = mouseEvent(event);
+
+            // console.log('viewBox.x', viewBox.x);
+
+            var oldx = (event.clientX - elePatch.offsetLeft);
+            var oldy = (event.clientY - elePatch.offsetTop);
+            var x = (viewBox.x) + Number(oldx / zoom);
+            var y = (viewBox.y) + Number(oldy / zoom);
+
+            zoom = ((zoom || 1) * delta) || 1;
+
+            viewBox.w = patchWidth  / zoom;
+            viewBox.h = patchHeight / zoom;
+            viewBox.x = x - (oldx / zoom);
+            viewBox.y = y - (oldy / zoom);
+
 
             self.setMinimapBounds();
             self.updateViewBox();
@@ -1435,6 +1470,7 @@ this._timeoutLinkWarnings=null;
         this.toggleCenterZoom=function(e)
         {
             e=e||lastMouseMoveEvent;
+            if(!e)return;
             var x = gui.patch().getCanvasCoordsMouse(e).x;
             var y = gui.patch().getCanvasCoordsMouse(e).y;
 
@@ -1451,6 +1487,8 @@ this._timeoutLinkWarnings=null;
             } else {
                 // console.log("center");
                 self.centerViewBoxOps();
+
+                
             }
         }
 
