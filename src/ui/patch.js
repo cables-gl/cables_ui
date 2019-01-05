@@ -2688,7 +2688,25 @@ this._timeoutLinkWarnings=null;
 
         // $('#options').html(html);
         document.getElementById("options").innerHTML=html;
+
+
+
+
+
+
+
+
+
+
+        gui.showOpDoc(op.objName);
+
+        CABLES.UI.bindInputListeners();
+
+
         perfHtml.finish();
+
+
+
 
         CABLES.valueChangerInitSliders();
 

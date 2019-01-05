@@ -15,7 +15,7 @@ CABLES.UI.TexturePreviewer=function()
 
     ele.addEventListener("click",function()
     {
-        gui.patch().focusOp(this._lastClicked.opid);
+        gui.patch().focusOp(this._lastClicked.opid,true);
     }.bind(this));
 
 };
@@ -269,12 +269,6 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
         var ele=document.getElementById('bgpreview');
         ele.style.display="block";
         this._renderTexture(this._lastClicked,ele);
-        // $('#bgpreview').bind("click", function(event) {
-
-        //     console.log(this._lastClickedP);
-        //     // 
-        // });
-
 
         if(ele.width+'px'!=ele.style.width || ele.height+'px'!=ele.style.height)
         {
@@ -282,14 +276,6 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
             ele.style.height=ele.height+'px';
 
             var iconbarWidth=80;
-
-            //centered
-            // $('#bgpreview').css('left', ( $('#patch').width() -ele.width)/2 +iconbarWidth+ 'px');
-            // $('#bgpreview').css('top', ( $('#patch').height() -ele.height)/2 + 'px');
-            
-            
-            // right
-
         }
     }
 

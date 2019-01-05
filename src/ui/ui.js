@@ -438,12 +438,8 @@ CABLES.UI.GUI = function() {
             gui.patch().scene.cgl.updateSize();
         }
 
-
-        // $('#bgpreview').css('left', ( $('#patch').width() )-ele.width +iconbarWidth+ 'px');
         $('#bgpreview').css('right', self.rendererWidth+'px');
         $('#bgpreview').css('top', menubarHeight+'px');
-
-
 
         perf.finish();
     };
@@ -1288,10 +1284,10 @@ CABLES.UI.GUI = function() {
     };
 
     this.showOpDoc = function(opname) {
-        var docOpHead = '<div><a href="/op/'+opname+'" style="text-decoration:underline;">view examples</a>&nbsp;<i class="icon icon-link"></i><br/><br/>'; //<img src="/api/op/layout/'+opname+'"/>
-        
-        this.getOpDoc(opname, true, function(html) {
-            $('#meta_content_doc').html(docOpHead + html);// + docOpFooter);
+        this.getOpDoc(opname, true, function(html)
+        {
+            var docOpHead = '<div><a href="/op/' + opname + '" style="text-decoration:underline;">view examples</a>&nbsp;<i class="icon icon-link"></i><br/><br/>';
+            $('#meta_content_doc').html(docOpHead + html);
         });
     };
 

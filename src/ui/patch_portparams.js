@@ -2,6 +2,46 @@
 var CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
+CABLES.UI.bindInputListeners = function ()
+{
+    $("#options input").keydown(function (e) {
+        switch (e.which) {
+            case 38: // up
+                this.value = CABLES.UI.inputIncrement(this.value, 1, e);
+                $(this).trigger('input');
+                return false;
+                break;
+
+            case 40: // down
+                this.value = CABLES.UI.inputIncrement(this.value, -1, e);
+                $(this).trigger('input');
+                return false;
+                break;
+
+            default: return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+
+    $("#options input").bind("mousewheel", function (event, delta) {
+        if ($(this).is(":focus")) {
+            if (delta > 0) {
+                if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, 0.1, event);
+                else this.value = CABLES.UI.inputIncrement(this.value, 1, event);
+            }
+            else {
+                if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, -0.1, event);
+                else this.value = CABLES.UI.inputIncrement(this.value, -1, event);
+            }
+
+            $(this).trigger('input');
+            return false;
+        }
+    });
+
+
+}
+
 
 CABLES.UI.checkDefaultValue=function (op, index) {
     if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null) {
@@ -19,7 +59,6 @@ CABLES.UI.watchColorPickerPort = function (thePort)
 {
     var ignoreColorChanges = true;
     var colors;
-
 
     function updateColorPickerButton(id) {
         var splits = id.split('_');
@@ -158,6 +197,8 @@ CABLES.UI.initPortInputListener=function(op,index)
         if (op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
     });
 }
+
+
 CABLES.UI.initPortClickListener=function(op,index)
 {
     if (op.portsIn[index].isAnimated()) $('#portanim_in_' + index).addClass('timingbutton_active');

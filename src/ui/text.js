@@ -87,7 +87,7 @@ CABLES.UI.TEXTS=
     open_new_window:'## View Patch\n\nopen patch viewer in new window',
     settings:'## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate',
 
-    working_connected_to: 'to work this op needs to be connected to: ',
+    working_connected_to: 'to work, this op needs to be a child of: ',
     working_connected_needs_connections_to: 'this op can not do anything without at least linking those ports: ',
 };
 
