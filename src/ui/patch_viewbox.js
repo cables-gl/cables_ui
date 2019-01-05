@@ -106,8 +106,7 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
     this._paperPatch.setViewBox(this._viewBox.x, this._viewBox.y, this._viewBox.w, this._viewBox.h);
 
     // remove this later!!!
-    $('#patch svg')[0].setAttribute("preserveAspectRatio", "none");
-
+    // $('#patch svg')[0].setAttribute("preserveAspectRatio", "none");
 
     if (this._miniMapRect)
     {

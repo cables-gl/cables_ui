@@ -2118,8 +2118,6 @@ this._timeoutLinkWarnings=null;
                 gui.scene().addOp(objName, op.uiAttribs, opid);
             }
         });
-
-
     };
 
     this.alignSelectedOpsVert = function() {
@@ -2181,7 +2179,6 @@ this._timeoutLinkWarnings=null;
                 setStatusSelectedOps();
 
                 gui.jobs().finish('selectchilds');
-
             }
         );
     };
@@ -2269,9 +2266,6 @@ this._timeoutLinkWarnings=null;
     };
 
     this.addSelectedOp = function(uiop) {
-        // if(uiop.op.objName=='Ops.Ui.Patch')
-        // self.selectAllOpsSubPatch(uiop.op.patchId.val);
-
         uiop.oprect.setSelected(true);
         for (var i in selectedOps)
             if (selectedOps[i] == uiop) return;
@@ -2280,11 +2274,6 @@ this._timeoutLinkWarnings=null;
 
     this.moveSelectedOpsFinished = function() {
         var i = 0;
-        // if(selectedOps.length==1)
-        //     for(i in self.ops)
-        //         if(self.ops[i].op.uiAttribs.subPatch==currentSubPatch)
-        //             for(var j in self.ops[i].links)
-        //                 self.ops[i].links[j].hideAddButton();
 
         if (selectedOps.length == 1)
             this.opCollisionTest(selectedOps[0]);
@@ -2497,9 +2486,7 @@ this._timeoutLinkWarnings=null;
                 CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
             }
         });
-
     }
-
 
     this.resetOpValues=function(opid)
     {
@@ -2518,9 +2505,6 @@ this._timeoutLinkWarnings=null;
         }
         gui.patch().showOpParams(op);
     }
-
-
-
 
     this._showOpParamsCbPortDelete=function(index) {
         $('#portdelete_out_' + index).on('click', function (e) {
@@ -2689,24 +2673,9 @@ this._timeoutLinkWarnings=null;
         // $('#options').html(html);
         document.getElementById("options").innerHTML=html;
 
-
-
-
-
-
-
-
-
-
         gui.showOpDoc(op.objName);
-
         CABLES.UI.bindInputListeners();
-
-
         perfHtml.finish();
-
-
-
 
         CABLES.valueChangerInitSliders();
 

@@ -2,44 +2,57 @@
 var CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.bindInputListeners = function ()
+
+
+CABLES.UI.inputListenerCursorKeys = function (e)
 {
-    $("#options input").keydown(function (e) {
-        switch (e.which) {
-            case 38: // up
-                this.value = CABLES.UI.inputIncrement(this.value, 1, e);
-                $(this).trigger('input');
-                return false;
-                break;
-
-            case 40: // down
-                this.value = CABLES.UI.inputIncrement(this.value, -1, e);
-                $(this).trigger('input');
-                return false;
-                break;
-
-            default: return; // exit this handler for other keys
-        }
-        e.preventDefault(); // prevent the default action (scroll / move caret)
-    });
-
-    $("#options input").bind("mousewheel", function (event, delta) {
-        if ($(this).is(":focus")) {
-            if (delta > 0) {
-                if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, 0.1, event);
-                else this.value = CABLES.UI.inputIncrement(this.value, 1, event);
-            }
-            else {
-                if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, -0.1, event);
-                else this.value = CABLES.UI.inputIncrement(this.value, -1, event);
-            }
-
+    switch (e.which) {
+        case 38: // up
+            this.value = CABLES.UI.inputIncrement(this.value, 1, e);
             $(this).trigger('input');
             return false;
+            break;
+
+        case 40: // down
+            this.value = CABLES.UI.inputIncrement(this.value, -1, e);
+            $(this).trigger('input');
+            return false;
+            break;
+
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+}
+
+CABLES.UI.inputListenerMousewheel = function (event, delta)
+{
+    if ($(this).is(":focus"))
+    {
+        if (delta > 0) {
+            if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, 0.1, event);
+            else this.value = CABLES.UI.inputIncrement(this.value, 1, event);
         }
-    });
+        else {
+            if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, -0.1, event);
+            else this.value = CABLES.UI.inputIncrement(this.value, -1, event);
+        }
 
+        $(this).trigger('input');
+        return false;
+    }
+}
 
+CABLES.UI.bindInputListeners = function ()
+{
+    // setTimeout(function(){
+    //     var perf = CABLES.uiperf.start('bindInputListeners');
+
+    //     $("#options input").keydown(CABLES.UI.inputListenerCursorKeys);
+    //     $("#options input").bind("mousewheel", CABLES.UI.inputListenerMousewheel);
+
+    //     perf.finish();
+
+    // },20);
 }
 
 

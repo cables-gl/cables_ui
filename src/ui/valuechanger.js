@@ -194,6 +194,10 @@ CABLES.valueChanger=function(ele,focus)
     {
         if(elem.is(":focus")) return;
 
+        elem.bind("mousewheel", CABLES.UI.inputListenerMousewheel);
+        elem.keydown(CABLES.UI.inputListenerCursorKeys);
+
+
         mouseDownTime=performance.now();
         isDown=true;
         
