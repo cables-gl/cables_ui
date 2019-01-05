@@ -351,25 +351,39 @@ CABLES.UI.OpDocs=function()
 
     this.showPortDoc=function(opname,portname)
     {
-        // CABLES.UI.showInfo('');
-        
+        var perf = CABLES.uiperf.start('opdocs.portdoc');
+
         for(var i=0;i<opDocs.length;i++)
         {
             if(opDocs[i].name==opname)
             {
-                if(opDocs[i].docs)
+                var group=null;
+                for (var k = 0; k < opDocs[i].layout.portsIn.length;k++)
+                    if (opDocs[i].layout.portsIn[k].name == portname)
+                        group = opDocs[i].layout.portsIn[k].group;
+
+                if (group) group+=' - ';
+                    else group='';
+
+                if (opDocs[i].docs)
                 {
-                    for(var j=0;j<opDocs[i].docs.ports.length;j++)
-                    {
-                        if(opDocs[i].docs.ports[j].name==portname)
-                        {
-                            CABLES.UI.showInfo('<b>'+portname+'</b>:<br/> '+opDocs[i].docs.ports[j].text);
-                            break;
+                    for (var j = 0; j < opDocs[i].docs.ports.length; j++) {
+                        if (opDocs[i].docs.ports[j].name == portname) {
+                            CABLES.UI.showInfo('<b>' + group + portname + '</b>:<br/>' + opDocs[i].docs.ports[j].text);
+                            perf.finish();
+                            return;
                         }
                     }
                 }
+
+                CABLES.UI.showInfo('<b>' + group+portname + '</b><br/> ');
+                perf.finish();
+                return;
             }
         }
+
+        perf.finish();
+
     }
     
     // this.editPortDoc=function(opname,portname)
