@@ -3,7 +3,6 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.OPNAME_SUBPATCH = 'Ops.Ui.SubPatch';
 
-
 CABLES.UI.Patch = function(_gui) {
     var self = this;
     this.ops = [];
@@ -19,7 +18,6 @@ CABLES.UI.Patch = function(_gui) {
     var selectedOps = [];
     var currentSubPatch = 0;
 
-    var viewBox = {x: 0,y: 0,w: 1100,h: 1010 };
     var lastMouseMoveEvent = null;
 
     var rubberBandStartPos = null;
@@ -38,14 +36,15 @@ CABLES.UI.Patch = function(_gui) {
     this._serverDate='';
 
     this.updateBounds = false;
-    var miniMapBounding = null;
+    // var miniMapBounding = null;
 
     this.background = null;
     this._elPatchSvg = null;
     this._elPatch = null;
     this._elBody = null;
+    this._viewBox=null;
 
-    var zoom=null;
+    // var zoom=null;
     
 
     var pastedupdateTimeout=null;
@@ -58,7 +57,7 @@ CABLES.UI.Patch = function(_gui) {
 
     this.isLoading = function() { return isLoading; };
     this.getPaper = function() { return self.paper; };
-    this.getPaperMap = function() { return self.paperMap; };
+    // this.getPaperMap = function() { return self.paperMap; };
 
     this.isCurrentOp=function(op)
     {
@@ -648,10 +647,8 @@ CABLES.UI.Patch = function(_gui) {
             gui.bookmarks.cleanUp();
             data.ui.bookmarks = gui.bookmarks.getBookmarks();
 
-            data.ui.viewBox.w = viewBox.w;
-            data.ui.viewBox.h = viewBox.h;
-            data.ui.viewBox.x = viewBox.x;
-            data.ui.viewBox.y = viewBox.y;
+            data.ui.viewBox = this._viewBox.serialize();
+
             data.ui.subPatchViewBoxes = subPatchViewBoxes;
 
             data.ui.renderer = {};
@@ -825,11 +822,7 @@ this._timeoutLinkWarnings=null;
         };
 
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
-
-        data.ui.viewBox.w = viewBox.w;
-        data.ui.viewBox.h = viewBox.h;
-        data.ui.viewBox.x = viewBox.x;
-        data.ui.viewBox.y = viewBox.y;
+        data.ui.viewBox=this._viewBox.serialize();
         data.ui.subPatchViewBoxes = subPatchViewBoxes;
 
         data.ui.renderer = {};
@@ -978,45 +971,7 @@ this._timeoutLinkWarnings=null;
     };
 
     this.centerViewBoxOps = function() {
-        var minX = 99999;
-        var minY = 99999;
-        var maxX = -99999;
-        var maxY = -99999;
-
-        var arr = self.ops;
-        if (selectedOps.length > 0) arr = selectedOps;
-
-        for (var i in arr) {
-            if (arr[i].getSubPatch() == currentSubPatch) {
-                minX = Math.min(minX, arr[i].op.uiAttribs.translate.x - 40);
-                maxX = Math.max(maxX, arr[i].op.uiAttribs.translate.x + 40);
-                minY = Math.min(minY, arr[i].op.uiAttribs.translate.y);
-                maxY = Math.max(maxY, arr[i].op.uiAttribs.translate.y);
-            }
-        }
-
-        var vb = {};
-        vb.w = 1 * (Math.abs(maxX - minX));
-        // vb.h = 1 * (Math.abs(maxY - minY));
-
-        var elePatch = document.getElementById("patch");
-
-        vb.h = vb.w * (elePatch.offsetHeight / elePatch.offsetWidth);
-
-        if (selectedOps.length > 0) {
-            vb.w = Math.max(600, vb.w);
-            vb.h = Math.max(600, vb.h);
-        }
-
-        if (selectedOps.length > 0) {
-            vb.x = minX - vb.w / 2;
-            vb.y = minY - vb.h / 2;
-        } else {
-            vb.x = minX;
-            vb.y = minY;
-        }
-
-        self.animViewBox(vb.x, vb.y, vb.w, vb.h);
+        this._viewBox.centerAllOps();
     };
 
     this.fixTitlePositions=function()
@@ -1029,26 +984,15 @@ this._timeoutLinkWarnings=null;
 
     this.centerViewBoxOp=function(opid)
     {
-        this.centerViewBox(
+        this._viewBox.center(
             this.scene.getOpById(opid).uiAttribs.translate.x,
             this.scene.getOpById(opid).uiAttribs.translate.y);
     }
 
-    this.centerViewBox = function(x, y) {
-        self.animViewBox(
-            x - viewBox.w / 2,
-            y - viewBox.h / 2,
-            viewBox.w, viewBox.h);
-    };
-
-    var minimapBounds = {
-        x: 0,
-        y: 0,
-        w: 0,
-        h: 0
-    };
 
     this.getSubPatchBounds = function(subPatch) {
+        if (subPatch === undefined) subPatch=currentSubPatch;
+
         var bounds = {
             minx: 9999999,
             maxx: -9999999,
@@ -1069,96 +1013,13 @@ this._timeoutLinkWarnings=null;
 
         bounds.x = bounds.minx - 100;
         bounds.y = bounds.miny - 100;
-        bounds.w = Math.abs(bounds.maxx - bounds.minx) + 300;
-        bounds.h = Math.abs(bounds.maxy - bounds.miny) + 300;
+        bounds.w = Math.abs(bounds.maxx - bounds.minx) + 400;
+        bounds.h = Math.abs(bounds.maxy - bounds.miny) + 400;
         return bounds;
     };
 
-    this.setMinimapBounds = function() {
-        if (!self.updateBounds) return;
-        self.updateBounds = false;
-
-        minimapBounds = this.getSubPatchBounds(currentSubPatch);
-
-        if(self.paperMap)
-            self.paperMap.setViewBox(
-                minimapBounds.x,
-                minimapBounds.y,
-                minimapBounds.w,
-                minimapBounds.h
-            );
-    };
-
-    var viewBoxAnim = {
-        x: new CABLES.Anim(),
-        y: new CABLES.Anim(),
-        w: new CABLES.Anim(),
-        h: new CABLES.Anim()
-    };
-
-    this._animViewBox = function() {
-        zoom=null;
-        var t = (CABLES.now() - viewBoxAnim.start) / 1000;
-
-        viewBox.x = viewBoxAnim.x.getValue(t);
-        viewBox.y = viewBoxAnim.y.getValue(t);
-        viewBox.w = viewBoxAnim.w.getValue(t);
-        viewBox.h = viewBoxAnim.h.getValue(t);
-        self.updateViewBox();
-
-        if (viewBoxAnim.x.isFinished(t)) return;
-
-        setTimeout(self._animViewBox, 20);
-    };
-
-    this.animViewBox = function(x, y, w, h) {
-        viewBoxAnim.start = CABLES.now();
-        viewBoxAnim.x.clear();
-
-        viewBoxAnim.x.defaultEasing =
-            viewBoxAnim.y.defaultEasing =
-            viewBoxAnim.w.defaultEasing =
-            viewBoxAnim.h.defaultEasing = CABLES.TL.EASING_CUBIC_OUT;
-
-        viewBoxAnim.y.clear();
-        viewBoxAnim.w.clear();
-        viewBoxAnim.h.clear();
-
-        viewBoxAnim.x.setValue(0, viewBox.x);
-        viewBoxAnim.y.setValue(0, viewBox.y);
-        viewBoxAnim.w.setValue(0, viewBox.w);
-        viewBoxAnim.h.setValue(0, viewBox.h);
-
-        viewBoxAnim.x.setValue(0.25, x);
-        viewBoxAnim.y.setValue(0.25, y);
-        viewBoxAnim.w.setValue(0.25, w);
-        viewBoxAnim.h.setValue(0.25, h);
-
-        this._animViewBox();
-    };
-
     this.updateViewBox = function() {
-
-        var perf = CABLES.uiperf.start('patch.updateViewBox');
-
-        oldVBW = viewBox.w;
-        oldVBH = viewBox.h;
-        oldVBX = viewBox.x;
-        oldVBY = viewBox.y;
-
-        if (!isNaN(viewBox.x) && !isNaN(viewBox.y) && !isNaN(viewBox.w) && !isNaN(viewBox.h))
-            self.paper.setViewBox(viewBox.x, viewBox.y, viewBox.w, viewBox.h);
-
-        if(miniMapBounding)
-            miniMapBounding.attr({
-                x: viewBox.x,
-                y: viewBox.y,
-                width: viewBox.w,
-                height: viewBox.h
-            });
-
-        perf.finish();
-
+        this._viewBox.update();
     };
 
     function rubberBandHide() {
@@ -1280,11 +1141,7 @@ this._timeoutLinkWarnings=null;
         if (proj.ui) {
             if (proj.ui.subPatchViewBoxes) subPatchViewBoxes = proj.ui.subPatchViewBoxes;
             if (proj.ui.viewBox) {
-                viewBox.x = proj.ui.viewBox.x;
-                viewBox.y = proj.ui.viewBox.y;
-                viewBox.w = proj.ui.viewBox.w;
-                viewBox.h = proj.ui.viewBox.h;
-                self.updateViewBox();
+                this._viewBox.deSerialize(proj.ui.viewBox);
             }
 
             if (proj.ui.renderer) {
@@ -1316,132 +1173,30 @@ this._timeoutLinkWarnings=null;
         });
     };
 
-    function dragMiniMap(e) {
-        if (mouseRubberBandPos) return;
-        e = mouseEvent(e);
-
-        if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT) {
-            var p = e.offsetX / CABLES.UI.uiConfig.miniMapWidth;
-            var ph = e.offsetY / CABLES.UI.uiConfig.miniMapHeight;
-
-            viewBox.x = (minimapBounds.x + p * minimapBounds.w) - viewBox.w / 3;
-            viewBox.y = (minimapBounds.y + ph * minimapBounds.h) - viewBox.h / 3;
-            self.updateViewBox();
-        }
-    }
-
     this.show = function(_scene) {
         this.scene = _scene;
 
         $('#timing').append(CABLES.UI.getHandleBarHtml('timeline_controler'), {});
         $('#meta').append();
 
-        if (CABLES.UI.userSettings.get("showMinimap"))
-        {
-            this.paperMap = Raphael("minimap", CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
-            this.paperMap.setViewBox(-500, -500, 4000, 4000);
-    
-            miniMapBounding = this.paperMap.rect(0, 0, 10, 10).attr({
-                "stroke": "#666",
-                "fill": "#1a1a1a",
-                "stroke-width": 1
-            });
-    
-            $('#minimap svg').on("mousemove touchmove", dragMiniMap);
-            $('#minimap svg').on("mousedown", dragMiniMap);
-        }
-
         this.paper = Raphael("patch", 0, 0);
+        this._viewBox = new CABLES.UI.PatchViewBox(this, this.paper);
         this.bindScene(self.scene);
 
-        viewBox = {
-            x: 0,
-            y: 0,
-            w: $('#patch svg').width(),
-            h: $('#patch svg').height()
-        };
-        self.updateViewBox();
+        // this.paper.node.preserveAspectRatio='none';
+
 
         this._elPatchSvg = this._elPatchSvg || $('#patch svg');
         this._elPatch = this._elPatch || $('#patch');
         this._elBody = this._elBody || $('body');
 
-        this._elPatchSvg.bind("mousewheel", function(event, delta, nbr) {
-
-            var touchpadMode = CABLES.UI.userSettings.get("touchpadmode");
-            if (!event.metaKey && !event.altKey && !event.ctrlKey && touchpadMode) {
-                if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.deltaY *= 0.5;
-                else event.deltaX *= 0.5;
-
-                viewBox.x += event.deltaX;
-                viewBox.y += -1 * event.deltaY;
-
-                self.updateViewBox();
-
-                event.preventDefault();
-                event.stopImmediatePropagation();
-
-                return;
-            }
-
-            delta = CGL.getWheelSpeed(event);
-
-            console.log(viewBox);
-            // delta = Math.min(delta, 10);
-            // delta = Math.max(delta, -10);
-            console.log('delta',delta);
-
-            if (delta < 0) {
-                delta = 0.8;
-            } else {
-                delta = 1.2;
-            }
-
-            var elePatch = document.getElementById("patch");
-            var patchWidth = elePatch.offsetWidth;
-            var patchHeight = elePatch.offsetHeight;
-
-            if(zoom==null) 
-            {
-                zoom = patchWidth / viewBox.w;
-                console.log('viewBox.h', viewBox.h);
-                viewBox.h = viewBox.w * (elePatch.offsetHeight / elePatch.offsetWidth);
-                console.log('viewBox.h', viewBox.h);
-                // self.updateViewBox();
-                // return;
-
-            }
-            event = mouseEvent(event);
-
-            // console.log('viewBox.x', viewBox.x);
-
-            var oldx = (event.clientX - elePatch.offsetLeft);
-            var oldy = (event.clientY - elePatch.offsetTop);
-            var x = (viewBox.x) + Number(oldx / zoom);
-            var y = (viewBox.y) + Number(oldy / zoom);
-
-            zoom = ((zoom || 1) * delta) || 1;
-
-            viewBox.w = patchWidth  / zoom;
-            viewBox.h = patchHeight / zoom;
-            viewBox.x = x - (oldx / zoom);
-            viewBox.y = y - (oldy / zoom);
+        // this._elPatchSvg[0].preserveAspectRatio = 'none';
+        
 
 
-            self.setMinimapBounds();
-            self.updateViewBox();
+        this._viewBox.bindWheel(this._elPatchSvg);
 
-            if (event.ctrlKey) // disable chrome pinch/zoom gesture
-            {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-                return;
-            }
-
-            callEvent('patch_zoom');
-        });
-
-        this.background = self.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
+        this.background = this.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
             fill: CABLES.UI.uiConfig.colorBackground,
             opacity: 0.01,
             "stroke-width": 0
@@ -1469,27 +1224,7 @@ this._timeoutLinkWarnings=null;
 
         this.toggleCenterZoom=function(e)
         {
-            e=e||lastMouseMoveEvent;
-            if(!e)return;
-            var x = gui.patch().getCanvasCoordsMouse(e).x;
-            var y = gui.patch().getCanvasCoordsMouse(e).y;
-
-            var sizeSmall = 650;
-            var size = Math.max(minimapBounds.w, minimapBounds.h);
-
-            if (viewBox.w >= sizeSmall * 2) {
-                var vb={};
-                vb.x = x - sizeSmall / 2;
-                vb.y = y - sizeSmall / 2;
-                vb.w = sizeSmall;
-                vb.h = sizeSmall;
-                self.animViewBox(vb.x, vb.y, vb.w, vb.h);
-            } else {
-                // console.log("center");
-                self.centerViewBoxOps();
-
-                
-            }
+            this._viewBox.centerAllOps();
         }
 
         this.background.node.ondblclick = function(e) {
@@ -1523,45 +1258,27 @@ this._timeoutLinkWarnings=null;
 
             if (CABLES.UI.MOUSEDRAGGINGPORT) return; // cancel when dragging port...
 
-            if (e.buttons == CABLES.UI.MOUSE_BUTTON_WHEEL) {
-                if (lastZoomDrag != -1) {
-                    var delta = lastZoomDrag - e.clientY;
-
-                    viewBox.x += delta / 2;
-                    viewBox.y += delta / 2;
-                    viewBox.w -= delta;
-                    viewBox.h -= delta;
-                    self.updateViewBox();
-                }
-                lastZoomDrag = e.clientY;
-            }
-
             if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
                 for (var i in self.ops)
                     if (!self.ops[i].isHidden() && (self.ops[i].isDragging || self.ops[i].isMouseOver)) return;
                 rubberBandMove(e);
-
             }
         });
 
-        // $('#patch svg').bind("mouseup", function (event)
         this._elPatchSvg.bind("mouseup", function(event) {
             rubberBandHide();
             lastZoomDrag = -1;
-
             gui.setCursor();
-            
+           
         }.bind(this));
 
         this._elPatchSvg.bind("mouseenter", function(event) { gui.setCursor(); }.bind(this));
         this._elPatchSvg.bind("mouseleave", function(event) { gui.setCursor(); }.bind(this));
 
-
         this._elPatchSvg.bind("mousemove touchmove", function(e) {
             e = mouseEvent(e);
 
             if (CABLES.UI.MOUSEOVERPORT)return;
-
 
             if ((CABLES.UI.MOUSEDRAGGINGPORT && !spacePressed) || (mouseRubberBandStartPos && e.buttons != CABLES.UI.MOUSE_BUTTON_LEFT) ) {
                 rubberBandHide();
@@ -1570,26 +1287,14 @@ this._timeoutLinkWarnings=null;
             }
 
             if (lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEDRAGGINGPORT
-
-
                 gui.setCursor("grab");
-                
-                var mouseX = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
-                var mouseY = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
 
-                viewBox.x += mouseX - gui.patch().getCanvasCoordsMouse(e).x;
-                viewBox.y += mouseY - gui.patch().getCanvasCoordsMouse(e).y;
+                const mouseCoord=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent)
 
-                this._elBody.css({
-                    "background-position": "" + (-1 * viewBox.x) + " " + (-1 * viewBox.y)
-                });
+                this._viewBox.setXY(
+                    this._viewBox.getX() + mouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
+                    this._viewBox.getY() + mouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
 
-                clearTimeout(timeoutFpsLimit);
-                timeoutFpsLimit = setTimeout(function() {
-                    self.scene.config.fpsLimit = fpsLimitBefore;
-                }, 100);
-
-                self.updateViewBox();
                 callEvent('patch_pan');
             }
 
@@ -1600,6 +1305,7 @@ this._timeoutLinkWarnings=null;
         this.timeLine = new CABLES.TL.UI.TimeLineUI();
 
         gui.setLayout();
+        
     };
 
     function doLink() {}
@@ -1668,7 +1374,7 @@ this._timeoutLinkWarnings=null;
 
         if (!op.uiAttribs.translate)
         {
-            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { x: viewBox.x + viewBox.w / 2, y: viewBox.y + viewBox.h / 2 };
+            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)  op.uiAttribs.translate = { x: self._viewBox.getCenterX(), y: self._viewBox.getCenterY()  };
                 else  op.uiAttribs.translate = { x: CABLES.UI.OPSELECT.newOpPos.x, y: CABLES.UI.OPSELECT.newOpPos.y };
         }
 
@@ -1999,16 +1705,11 @@ this._timeoutLinkWarnings=null;
     this.setOpColor=function(col)
     {
         for(var i=0;i<selectedOps.length;i++)
-        {
             selectedOps[i].op.uiAttr({"color":col});
-        }
     }
 
     this.setOpTitle = function(uiop, t) {
-
         uiop.op.setTitle(t);
-        // uiop.op.uiAttribs.title = t;
-        // uiop.op.name = t;
         uiop.oprect.setTitle(t);
     };
 
@@ -2041,12 +1742,7 @@ this._timeoutLinkWarnings=null;
 
         setTimeout(function()
         {
-            subPatchViewBoxes[currentSubPatch] = {
-                x: viewBox.x,
-                y: viewBox.y,
-                w: viewBox.w,
-                h: viewBox.h
-            };
+            subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
     
             for (var i=0;i<self.ops.length;i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
     
@@ -2057,7 +1753,8 @@ this._timeoutLinkWarnings=null;
             self.updateSubPatches();
     
             if (subPatchViewBoxes[which]) {
-                viewBox = subPatchViewBoxes[which];
+                // viewBox = subPatchViewBoxes[which];
+                this._viewBox.deSerialize(subPatchViewBoxes[which]);
                 this.updateViewBox();
             }
     
@@ -2068,20 +1765,16 @@ this._timeoutLinkWarnings=null;
             gui.setWorking(false,'patch');
             
         }.bind(this),10);
-
-        
-
     };
 
     this.getSubPatchPathString=function(subId)
     {
         var arr=this.findSubpatchOp(subId);
-
         var str='';
+
         for(var i=0;i<arr.length;i++)
-        {
             str+=arr[i].name+' ';
-        }
+
         return str;
     }
 
@@ -2228,6 +1921,8 @@ this._timeoutLinkWarnings=null;
             count++;
         }
         while(found)
+
+        this._viewBox.setMinimapBounds();
 
         perf.finish();
     };
@@ -2508,15 +2203,9 @@ this._timeoutLinkWarnings=null;
                 gui.patch().ops[i].oprect.showFocus();
 
                 if(center)
-                {
-
-                    self.animViewBox(
-                        gui.patch().ops[i].op.uiAttribs.translate.x - viewBox.w / 2,
-                        gui.patch().ops[i].op.uiAttribs.translate.y - viewBox.h / 2,
-                        viewBox.w, viewBox.h);
-            
-                }
-
+                    self._viewBox.center(
+                        gui.patch().ops[i].op.uiAttribs.translate.x,
+                        gui.patch().ops[i].op.uiAttribs.translate.y);
             }
         }
     };
@@ -2538,7 +2227,6 @@ this._timeoutLinkWarnings=null;
         for (var i in gui.patch().ops) {
             if (gui.patch().ops[i].op.id == id) {
                 self.addSelectedOp(gui.patch().ops[i]);
-                // console.log('found sel op by id !');
                 return gui.patch().ops[i];
             }
         }
@@ -2579,10 +2267,9 @@ this._timeoutLinkWarnings=null;
         if (selectedOps.length == 1)
             this.opCollisionTest(selectedOps[0]);
 
-            for (i in selectedOps)
+        for (i in selectedOps)
             selectedOps[i].doMoveFinished();
     };
-
 
     this.prepareMovingOps = function ()
     {
@@ -2591,7 +2278,6 @@ this._timeoutLinkWarnings=null;
                 if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
                     for (var j = 0; j < self.ops[i].links.length; j++)
                         self.ops[i].links[j].setElementOrder();
-
     }
 
     this.moveSelectedOps = function (dx, dy, a, b, e) {
@@ -2611,7 +2297,6 @@ this._timeoutLinkWarnings=null;
             if (self.ops[i].op == op) return self.ops[i];
         }
         return null;
-
     };
 
     this.updateOpParams = function(id) {
@@ -2658,9 +2343,7 @@ this._timeoutLinkWarnings=null;
         var html='';
 
         if(!gui.user.isPatchOwner)
-        {
             html += CABLES.UI.getHandleBarHtml('clonepatch', {});
-        }
 
         html+=gui.bookmarks.getHtml();
 
@@ -3154,8 +2837,8 @@ this._timeoutLinkWarnings=null;
         var uiAttr = {
             'title': title,
             translate: {
-                x: viewBox.x + viewBox.w / 2,
-                y: viewBox.y + viewBox.h / 2
+                x: this._viewBox.getCenterX(),
+                y: this._viewBox.getCenterY()
             }
         };
         gui.scene().addOp(opname, uiAttr, function(op) {
@@ -3392,3 +3075,8 @@ this._timeoutLinkWarnings=null;
         CABLES.contextMenu.show({"items":items},ele);
     };
 };
+
+CABLES.UI.Patch.prototype.getViewBox=function()
+{
+    return this._viewBox;
+}

@@ -35,7 +35,7 @@ CABLES.UI.Find=function()
         var html='';
 
 		var colorClass="op_color_"+CABLES.UI.uiConfig.getNamespaceClassName(op.op.objName);
-        html+='<div onclick="gui.patch().setCurrentSubPatch(\''+op.getSubPatch()+'\');gui.patch().focusOp(\''+op.op.id+'\');gui.patch().centerViewBox('+op.op.uiAttribs.translate.x+','+op.op.uiAttribs.translate.y+');gui.patch().setSelectedOpById(\''+op.op.id+'\');$(\'#patch\').focus();">';
+        html+='<div onclick="gui.patch().setCurrentSubPatch(\''+op.getSubPatch()+'\');gui.patch().focusOp(\''+op.op.id+'\');gui.patch().getViewBox().center('+op.op.uiAttribs.translate.x+','+op.op.uiAttribs.translate.y+');gui.patch().setSelectedOpById(\''+op.op.id+'\');$(\'#patch\').focus();">';
 
         var colorHandle='';
         if(op.op.uiAttribs.color) colorHandle='<span style="background-color:'+op.op.uiAttribs.color+';">&nbsp;&nbsp;</span>&nbsp;&nbsp;';

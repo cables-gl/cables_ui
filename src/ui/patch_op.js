@@ -654,9 +654,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             h = opui.op.uiAttribs.size[1];
         }
 
-        if(gui.patch().getPaperMap())
+        var mmPaper=gui.patch().getViewBox().getMiniMapPaper();
+        if (mmPaper)
         {
-            miniRect = gui.patch().getPaperMap().rect(x, y, w, h);
+            miniRect = mmPaper.rect(x, y, w, h);
             miniRect.attr({
                 "width": w,
                 "height": 32,
