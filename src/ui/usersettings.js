@@ -12,9 +12,6 @@ CABLES.UI.UserSettings.prototype.init = function ()
     if (this.get("bgpreview") === null) this.set("bgpreview", true);
     if (this.get("showTipps") === null) this.set("showTipps", true);
 
-
-    console.log('uiperf', this.get('showUIPerf'));
-
     this.updateNavBar();
 }
 
@@ -22,8 +19,6 @@ CABLES.UI.UserSettings.prototype.set = function (key, value) {
     this._settings[key] = value||false;
     localStorage.setItem("cables.usersettings", JSON.stringify(this._settings));
     this.updateNavBar();
-
-    console.log('uiperf', this.get('showUIPerf'));
 };
 
 CABLES.UI.UserSettings.prototype.get = function (key) {

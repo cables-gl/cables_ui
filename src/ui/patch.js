@@ -1543,7 +1543,7 @@ this._timeoutLinkWarnings=null;
             setStatusSelectedOps();
             self.updateSubPatches();
             uiOp.oprect.showFocus();
-            this.updateBounds();
+            self.updateBounds();
 
             setTimeout(function() {
                 // this fixes links not showing up after pasting
@@ -2228,7 +2228,7 @@ this._timeoutLinkWarnings=null;
                 return;
             }
         }
-        this.updateBounds();
+        self.updateBounds();
     };
 
     this.focusOp = function(id,center) {
