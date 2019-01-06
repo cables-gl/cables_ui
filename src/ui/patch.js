@@ -999,10 +999,7 @@ this._timeoutLinkWarnings=null;
         bounds.w = Math.abs(bounds.maxx - bounds.minx) ;
         bounds.h = Math.abs(bounds.maxy - bounds.miny) ;
 
-        if (bounds.h > bounds.w) {
-            bounds.x -= Math.abs(bounds.maxx - bounds.minx) / 2;
-            console.log('center x!');
-        }
+        if (bounds.h > bounds.w) bounds.x -= Math.abs(bounds.maxx - bounds.minx) / 2;
 
         bounds.w += 200;
         bounds.h += 200;
@@ -1529,6 +1526,7 @@ this._timeoutLinkWarnings=null;
                     gui.patch().setSelectedOp(uiOp);
                     gui.patch().showOpParams(op);
                     gui.patch().updateBounds();
+                    gui.patch().getViewBox().update();
                     uiOp.oprect.showFocus();
                 }, 30);
             }, 30);
@@ -1548,9 +1546,11 @@ this._timeoutLinkWarnings=null;
             setTimeout(function() {
                 // this fixes links not showing up after pasting
                 uiOp.setPos();
+                gui.patch().getViewBox().update();
             }, 30);
     
         }
+
 
 
         if (uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({
@@ -3105,4 +3105,8 @@ CABLES.UI.Patch.prototype.getViewBox=function()
 
 CABLES.UI.Patch.prototype.updateBounds = function () {
     this.currentPatchBounds = this.getSubPatchBounds();
+}
+
+CABLES.UI.Patch.prototype.getNumOps = function () {
+    return this.ops.length;
 }

@@ -9,9 +9,8 @@ CABLES.CHANGELOG.getHtml=function(cb,since)
         if(since)
         {
             for(var i=0;i<obj.items.length;i++)
-            {
                 if(obj.items[i].date<since)obj.items.length=i;
-            }
+
             obj.onlyLatest=true;
         }
 
@@ -22,7 +21,7 @@ CABLES.CHANGELOG.getHtml=function(cb,since)
             firstTime=true;
             console.log('first time changelog!');
         }
-console.log('11234');
+
         CABLES.UI.userSettings.set('changelogLastView',obj.ts);
 
         if(obj.items.length===0)
@@ -30,7 +29,6 @@ console.log('11234');
             cb(null);
             return;
         }
-        // var html = CABLES.UI.getHandleBarHtml('changelog',obj);
 
         if(firstTime)
         {

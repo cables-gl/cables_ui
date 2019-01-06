@@ -515,7 +515,7 @@ rect
     tap-highlight-color:rgba(0,0,0,0);
 }
 
-#patchnavhelper
+#patchnavhelper,#patchnavhelperEmpty
 {
     display:none;
     z-index: 99999999999;
@@ -525,7 +525,8 @@ rect
     bottom:40px;
     border-radius: 5px;
     position: absolute;
+    pointer-events: none;
     cursor:pointer;
     margin-left: 120px;
-    text-align: center;
+    text-align: center; 
 }

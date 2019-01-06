@@ -18,6 +18,10 @@ CABLES.UI.PatchViewBox=function(patch,paper)
     this._eleNavHelper = document.getElementById("patchnavhelper");
     this._showingNavHelper=false;
 
+    this._eleNavHelperEmpty = document.getElementById("patchnavhelperEmpty");
+    this._showingNavHelperEmpty = false;
+
+
     this._init();
     this.update();
 }
@@ -88,6 +92,27 @@ CABLES.UI.PatchViewBox.prototype._fixAspectRatio = function (vb)
 
 CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
 {
+
+    if (this._patch.getNumOps() == 0)
+    {
+        if (!this._showingNavHelperEmpty)
+        {
+            this._showingNavHelperEmpty = true;
+            this._eleNavHelperEmpty.style.display = "block";
+            this.set(-200, -200, 400, 400);
+        }
+
+        return;
+    }
+    else
+    {
+        if (this._showingNavHelperEmpty)
+        {
+            this._showingNavHelperEmpty = false;
+            this._eleNavHelperEmpty.style.display = "none";
+        }
+    }
+    
     if (gui.patch().currentPatchBounds) {
         var showHelper = false;
         if (this._viewBox.x < gui.patch().currentPatchBounds.x - this._viewBox.w) showHelper = true;
