@@ -14,7 +14,15 @@ CABLES.UiPerformance = function ()
 CABLES.UiPerformance.prototype.hide = function ()
 {
     this._ele.style.display="none";
+    clearTimeout(this._timeout);
+
     CABLES.UI.userSettings.set("showUIPerf", false);
+}
+
+CABLES.UiPerformance.prototype.show = function ()
+{
+    CABLES.UI.userSettings.set("showUIPerf", true);
+    this.update();
 }
 
 CABLES.UiPerformance.prototype.highlight = function (name)
@@ -25,15 +33,14 @@ CABLES.UiPerformance.prototype.highlight = function (name)
 
     CABLES.UI.userSettings.set("uiPerfLastHighlight", name);
 
-    this.show();
-    
+    if (CABLES.UI.userSettings.get("showUIPerf")) this.show();
 }
 
-CABLES.UiPerformance.prototype.show = function ()
+
+
+CABLES.UiPerformance.prototype.update = function ()
 {
     this._ele = this._ele|| document.getElementById("uiperf");
-
-    CABLES.UI.userSettings.set("showUIPerf", true);
 
     var data = [];
 
@@ -83,7 +90,7 @@ CABLES.UiPerformance.prototype.show = function ()
     clearTimeout(this._timeout);
     this._timeout =setTimeout(function()
     {
-        if (CABLES.UI.userSettings.get("showUIPerf")) CABLES.uiperf.show();
+        if (CABLES.UI.userSettings.get("showUIPerf")) CABLES.uiperf.update();
     },500);
 
 }

@@ -165,6 +165,7 @@ CABLES.CMD.UI.toggleTheme = function () {
 };
 
 CABLES.CMD.UI.profileUI = function () {
+    console.log('CABLES.CMD.UI.profileUI');
     CABLES.uiperf.show();
 };
 

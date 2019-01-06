@@ -98,37 +98,49 @@
         padding-left: 10px;
     }
 
-    #ace_editor
+    #ace_editors
     {
-        margin: 0;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-
-        .ace_content *
+        .ace_content
         {
-            font-family: SourceCodePro,monospace, SourceCodePro,monospace;
-        }
-
-        .ace_search
-        {
-            // background-color: var(--color-03);
-            border: none;
-
-            .ace_search_form
-            {
-                border: none;
-            }
-
-            .ace_search_form *
-            {
-                background-color: var(--color-02);
-                border-color: var(--color-01);
-            }
+            -webkit-font-smoothing: subpixel-antialiased;
         }
     }
+
+
+    // #ace_editor
+    // {
+    //     margin: 0;
+    //     position: absolute;
+    //     top: 0;
+    //     bottom: 0;
+    //     left: 0;
+    //     right: 0;
+
+
+    //     .ace_content *
+    //     {
+    //         font-family: SourceCodePro,monospace;
+    //         -webkit-font-smoothing: subpixel-antialiased;
+
+    //     }
+
+    //     .ace_search
+    //     {
+    //         // background-color: var(--color-03);
+    //         border: none;
+
+    //         .ace_search_form
+    //         {
+    //             border: none;
+    //         }
+
+    //         .ace_search_form *
+    //         {
+    //             background-color: var(--color-02);
+    //             border-color: var(--color-01);
+    //         }
+    //     }
+    // }
 }
 
 .ace_search_field

@@ -15,6 +15,9 @@ CABLES.UI.PatchViewBox=function(patch,paper)
 
     this._viewBoxAnim = { start:0, x: new CABLES.Anim(),y: new CABLES.Anim(),w: new CABLES.Anim(),h: new CABLES.Anim() };
 
+    this._eleNavHelper = document.getElementById("patchnavhelper");
+    this._showingNavHelper=false;
+
     this._init();
     this.update();
 }
@@ -75,21 +78,33 @@ CABLES.UI.PatchViewBox.prototype._fixAspectRatio = function (vb)
 {
     vb=vb||this._viewBox;
 
-    if (this._elePatch.offsetWidth != 0) {
-        if (vb.w / vb.h != this._elePatch.offsetWidth / this._elePatch.offsetHeight) {
+    if (this._elePatch.offsetWidth != 0)
+        if (vb.w / vb.h != this._elePatch.offsetWidth / this._elePatch.offsetHeight)
+            if (vb.w > vb.h) vb.h = vb.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
+                else vb.w = vb.h * (this._elePatch.offsetWidth / this._elePatch.offsetHeight);
 
-            // console.log("fix aspect!!", vb, this._elePatch.offsetHeight, this._elePatch.offsetWidth);
+    return vb;
+}
 
-            if (vb.w > vb.h) {
-                vb.h = vb.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
-            }
-            else {
-                vb.w = vb.h * (this._elePatch.offsetWidth / this._elePatch.offsetHeight);
+CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
+{
+    if (gui.patch().currentPatchBounds) {
+        var showHelper = false;
+        if (this._viewBox.x < gui.patch().currentPatchBounds.x - this._viewBox.w) showHelper = true;
+            else if (this._viewBox.x > gui.patch().currentPatchBounds.x + gui.patch().currentPatchBounds.w) showHelper = true;
+            else if (this._viewBox.y > gui.patch().currentPatchBounds.y + gui.patch().currentPatchBounds.h) showHelper = true;
+            else if (this._viewBox.y < gui.patch().currentPatchBounds.y - this._viewBox.h) showHelper = true;
+
+        if (showHelper || this._viewBox.w > 20000 || this._viewBox.w < 30) {
+            this._eleNavHelper.style.display = "block";
+            this._showingNavHelper = true;
+        }
+        else {
+            if (this._showingNavHelper) {
+                this._eleNavHelper.style.display = "none";
             }
         }
     }
-    return vb;
-
 }
 
 CABLES.UI.PatchViewBox.prototype.update = function ()
@@ -105,8 +120,7 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
 
     this._paperPatch.setViewBox(this._viewBox.x, this._viewBox.y, this._viewBox.w, this._viewBox.h);
 
-    // remove this later!!!
-    // $('#patch svg')[0].setAttribute("preserveAspectRatio", "none");
+    this._updateNavHelper();
 
     if (this._miniMapRect)
     {
@@ -164,9 +178,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
         if (this._zoom == null)
         {
             this._zoom = patchWidth / this._viewBox.w;
-            console.log('this._viewBox.h', this._viewBox.h);
             this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
-            console.log('this._viewBox.h', this._viewBox.h);
         }
 
         event = mouseEvent(event);

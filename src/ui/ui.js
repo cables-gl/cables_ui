@@ -1098,8 +1098,8 @@ CABLES.UI.GUI = function() {
         $('#loadingstatus').hide();
         $('#mainContainer').show();
 
-        if (CABLES.UI.userSettings.get("showUIPerf")) CABLES.uiperf.show();
-        if (CABLES.UI.userSettings.get("showMinimap")) CABLES.CMD.UI.showMinimap();
+        if (CABLES.UI.userSettings.get("showUIPerf")==true) CABLES.uiperf.show();
+        if (CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
         self.patch().getViewBox().update();
 
         self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');

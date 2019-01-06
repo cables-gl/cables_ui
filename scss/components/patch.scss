@@ -514,3 +514,18 @@ rect
 {
     tap-highlight-color:rgba(0,0,0,0);
 }
+
+#patchnavhelper
+{
+    display:none;
+    z-index: 99999999999;
+    color:var(--text-color);
+    background-color: var(--color-04);
+    padding:20px;
+    bottom:40px;
+    border-radius: 5px;
+    position: absolute;
+    cursor:pointer;
+    margin-left: 120px;
+    text-align: center;
+}

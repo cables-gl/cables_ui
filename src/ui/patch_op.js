@@ -312,6 +312,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         gui.patch().moveSelectedOps(dx, dy, a, b, e);
         // group.toBack();
         this._updateElementOrder(true);
+        
         // gui.patch().moveSelectedOps(dx, dy, a, b, e);
         gui.patch().updateBounds = true;
         gui.setStateUnsaved();

@@ -35,7 +35,6 @@ CABLES.UI.Patch = function(_gui) {
     var subPatchViewBoxes = [];
     this._serverDate='';
 
-    this.updateBounds = false;
     // var miniMapBounding = null;
 
     this.background = null;
@@ -43,7 +42,7 @@ CABLES.UI.Patch = function(_gui) {
     this._elPatch = null;
     this._elBody = null;
     this._viewBox=null;
-
+    this.currentPatchBounds=null;
     // var zoom=null;
     
 
@@ -1035,6 +1034,9 @@ this._timeoutLinkWarnings=null;
 
 
     this.getSubPatchBounds = function(subPatch) {
+
+        var perf = CABLES.uiperf.start('patch.getSubPatchBounds');
+
         if (subPatch === undefined) subPatch=currentSubPatch;
 
         var bounds = {
@@ -1056,6 +1058,8 @@ this._timeoutLinkWarnings=null;
             }
 
         this._setBoundsXYWH(bounds);
+
+        perf.finish();
 
         return bounds;
     };
@@ -1194,6 +1198,7 @@ this._timeoutLinkWarnings=null;
             }
 
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
+            
         }
 
         self.updateViewBox();
@@ -1202,12 +1207,14 @@ this._timeoutLinkWarnings=null;
         self.setCurrentProject(proj);
         this._serverDate=proj.updated;
         gui.scene().clear();
+        gui.patch().updateBounds();
 
         gui.serverOps.loadProjectLibs(proj, function() {
             gui.scene().deSerialize(proj);
             CABLES.undo.clear();
             CABLES.UI.MODAL.hideLoading();
             self.updateSubPatches();
+            gui.patch().updateBounds();
 
             gui.patchConnection.send(CABLES.PACO_LOAD, {
                 "patch": JSON.stringify(proj),
@@ -1521,6 +1528,7 @@ this._timeoutLinkWarnings=null;
                     gui.patch().setSelectedOp(null);
                     gui.patch().setSelectedOp(uiOp);
                     gui.patch().showOpParams(op);
+                    gui.patch().updateBounds();
                     uiOp.oprect.showFocus();
                 }, 30);
             }, 30);
@@ -1535,6 +1543,7 @@ this._timeoutLinkWarnings=null;
             setStatusSelectedOps();
             self.updateSubPatches();
             uiOp.oprect.showFocus();
+            this.updateBounds();
 
             setTimeout(function() {
                 // this fixes links not showing up after pasting
@@ -1552,6 +1561,10 @@ this._timeoutLinkWarnings=null;
 
     var showAddedOpTimeout = -1;
 
+    this.updateBounds=function()
+    {
+        this.currentPatchBounds = this.getSubPatchBounds();
+    }
 
     this.bindScene = function(scene) {
         scene.onLoadStart = function() {
@@ -1731,7 +1744,6 @@ this._timeoutLinkWarnings=null;
             self.ops.push(uiOp);
 
             uiOp.wasAdded = false;
-            gui.patch().updateBounds = true;
 
             doAddOp(uiOp);
             
@@ -1801,10 +1813,11 @@ this._timeoutLinkWarnings=null;
             }
     
             $('#patch').focus();
-            self.updateBounds = true;
             self.updateSubPatchBreadCrumb();
     
             gui.setWorking(false,'patch');
+
+            this.currentPatchBounds = this.getSubPatchBounds();
             
         }.bind(this),10);
     };
@@ -2194,6 +2207,7 @@ this._timeoutLinkWarnings=null;
                 gui.jobs().finish('deletechilds');
             }
         );
+        
     };
 
     this.unlinkSelectedOps = function() {
@@ -2203,6 +2217,8 @@ this._timeoutLinkWarnings=null;
     this.deleteSelectedOps = function() {
         for (var i in selectedOps)
             gui.patch().scene.deleteOp(selectedOps[i].op.id, true);
+        
+        this.updateBounds();
     };
 
     this.removeSelectedOp = function(uiop) {
@@ -2212,6 +2228,7 @@ this._timeoutLinkWarnings=null;
                 return;
             }
         }
+        this.updateBounds();
     };
 
     this.focusOp = function(id,center) {

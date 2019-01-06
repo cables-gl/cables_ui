@@ -22,7 +22,7 @@ CABLES.CHANGELOG.getHtml=function(cb,since)
             firstTime=true;
             console.log('first time changelog!');
         }
-
+console.log('11234');
         CABLES.UI.userSettings.set('changelogLastView',obj.ts);
 
         if(obj.items.length===0)
