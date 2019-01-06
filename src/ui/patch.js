@@ -1515,7 +1515,7 @@ this._timeoutLinkWarnings=null;
         uiOp.setPos();
 
         
-        var pos = self.findNonCollidingPosition(uiOp.getPosX(), uiOp.getPosY(), uiOp.op.id,dir);
+        // var pos = self.findNonCollidingPosition(uiOp.getPosX(), uiOp.getPosY(), uiOp.op.id,dir);
 
         uiOp.setPos( uiOp.getPosX(), uiOp.getPosY() );
 
@@ -1543,7 +1543,7 @@ this._timeoutLinkWarnings=null;
             setStatusSelectedOps();
             self.updateSubPatches();
             uiOp.oprect.showFocus();
-            self.updateBounds();
+            gui.patch().updateBounds();
 
             setTimeout(function() {
                 // this fixes links not showing up after pasting
@@ -1561,10 +1561,6 @@ this._timeoutLinkWarnings=null;
 
     var showAddedOpTimeout = -1;
 
-    this.updateBounds=function()
-    {
-        this.currentPatchBounds = this.getSubPatchBounds();
-    }
 
     this.bindScene = function(scene) {
         scene.onLoadStart = function() {
@@ -3105,4 +3101,8 @@ this._timeoutLinkWarnings=null;
 CABLES.UI.Patch.prototype.getViewBox=function()
 {
     return this._viewBox;
+}
+
+CABLES.UI.Patch.prototype.updateBounds = function () {
+    this.currentPatchBounds = this.getSubPatchBounds();
 }
