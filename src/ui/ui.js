@@ -1520,9 +1520,12 @@ CABLES.UI.GUI = function() {
             });
 
         $('#canvasmodal').on('mousedown',
-            function()
+            function(e)
             {
+                gui.patch().lastMouseMoveEvent=null;
                 gui.showCanvasModal(false);
+                // $('#patch').focus();
+                e.preventDefault();
             });
 
         _patch = new CABLES.UI.Patch(this);

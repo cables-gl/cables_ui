@@ -18,7 +18,7 @@ CABLES.UI.Patch = function(_gui) {
     var selectedOps = [];
     var currentSubPatch = 0;
 
-    var lastMouseMoveEvent = null;
+    this.lastMouseMoveEvent = null;
 
     var rubberBandStartPos = null;
     var rubberBandPos = null;
@@ -209,9 +209,9 @@ CABLES.UI.Patch = function(_gui) {
                                 if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate) {
                                     var mouseX = 0,
                                         mouseY = 0;
-                                    if (lastMouseMoveEvent) {
-                                        mouseX = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).x;
-                                        mouseY = gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent).y;
+                                    if (self.lastMouseMoveEvent) {
+                                        mouseX = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).x;
+                                        mouseY = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).y;
                                     }
 
                                     var x=json.ops[i].uiAttribs.translate.x + mouseX - minx;
@@ -1328,23 +1328,23 @@ this._timeoutLinkWarnings=null;
 
             if ((CABLES.UI.MOUSEDRAGGINGPORT && !spacePressed) || (mouseRubberBandStartPos && e.buttons != CABLES.UI.MOUSE_BUTTON_LEFT) ) {
                 rubberBandHide();
-                lastMouseMoveEvent = e;
+                self.lastMouseMoveEvent = e;
                 return;
             }
 
-            if (lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEDRAGGINGPORT
+            if (self.lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEDRAGGINGPORT
                 gui.setCursor("grab");
-
-                const mouseCoord=gui.patch().getCanvasCoordsMouse(lastMouseMoveEvent)
+                $('#patch').focus();
+                const lastMouseCoord=gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent)
 
                 this._viewBox.setXY(
-                    this._viewBox.getX() + mouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
-                    this._viewBox.getY() + mouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
+                    this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
+                    this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
 
                 callEvent('patch_pan');
             }
 
-            lastMouseMoveEvent = e;
+            self.lastMouseMoveEvent = e;
 
         }.bind(this));
 
@@ -2992,8 +2992,8 @@ this._timeoutLinkWarnings=null;
             op1.oprect.showFocus();
 
         var fakeMouseEvent = {
-            clientX: lastMouseMoveEvent.clientX,
-            clientY: lastMouseMoveEvent.clientY
+            clientX: self.lastMouseMoveEvent.clientX,
+            clientY: self.lastMouseMoveEvent.clientY
         };
 
         new CABLES.UI.SuggestionDialog(suggestions, op1, fakeMouseEvent, null,
