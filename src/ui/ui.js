@@ -1121,13 +1121,6 @@ CABLES.UI.GUI = function() {
             return;
         }
 
-
-        // // load vue...
-        // var script = document.createElement( 'script' );
-        // script.type = 'text/javascript';
-        // script.src = 'js/bundle.js';
-        // $("body").append( script );
-
         logStartup('finished loading cables');
         CABLES.UI.loaded=true;
 
@@ -1135,10 +1128,7 @@ CABLES.UI.GUI = function() {
         if(CABLES.UI.userSettings.get("timelineOpened")==true)this.showTiming();
 
         CABLES.editorSession.open();
-
-        console.log('showtipps', CABLES.UI.userSettings.get('showTipps'));
         if (CABLES.UI.userSettings.get('showTipps')) CABLES.UI.tipps.show();
-
 
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");

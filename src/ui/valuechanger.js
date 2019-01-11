@@ -175,6 +175,7 @@ CABLES.valueChanger=function(ele,focus)
 
             var vv=elem.val();
             elem[0].setSelectionRange(0, vv.length);
+
             elem.bind("keydown",tabKeyListener);
         }
         else
@@ -194,6 +195,8 @@ CABLES.valueChanger=function(ele,focus)
     {
         if(elem.is(":focus")) return;
 
+        elem.unbind("mousewheel");
+        elem.unbind("keydown");
         elem.bind("mousewheel", CABLES.UI.inputListenerMousewheel);
         elem.keydown(CABLES.UI.inputListenerCursorKeys);
 
