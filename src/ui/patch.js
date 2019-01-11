@@ -2596,7 +2596,7 @@ this._timeoutLinkWarnings=null;
         if (op.portsIn.length > 0) {
             html += CABLES.UI.getHandleBarHtml('params_ports_head', {
                 "dirStr": 'in',
-                "title": 'Input Parameters',
+                "title": 'Input',
                 "texts": CABLES.UI.TEXTS
             });
 
@@ -2644,7 +2644,7 @@ this._timeoutLinkWarnings=null;
             html += CABLES.UI.getHandleBarHtml('params_ports_head',
             {
                 "dirStr": 'out',
-                "title": 'Output Parameters',
+                "title": 'Output',
                 "op": op,
                 texts: CABLES.UI.TEXTS
             });
