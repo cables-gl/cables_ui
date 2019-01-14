@@ -357,6 +357,8 @@ CABLES.UI.OpDocs=function()
         {
             if(opDocs[i].name==opname)
             {
+                if(!opDocs[i].layout)return;
+                
                 var group=null;
                 for (var k = 0; k < opDocs[i].layout.portsIn.length;k++)
                     if (opDocs[i].layout.portsIn[k].name == portname)
