@@ -1266,7 +1266,8 @@ CABLES.UI.GUI = function() {
             if (c[0] == 'projectname') gui.setProjectName(c[1]);
             if (c[0] == 'notify') CABLES.UI.notify(c[1]);
             if (c[0] == 'notifyerror') CABLES.UI.notifyError(c[1]);
-        };
+            if (c[0] == 'cmd' && c[1] == 'saveproject') this.patch().saveCurrentProject();
+        }.bind(this);
 
         var html = '';
         html += '<iframe style="border:none;width:100%;height:620px;" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
