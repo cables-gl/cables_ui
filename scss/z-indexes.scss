@@ -23,7 +23,7 @@ $z-index-canvas-iconbar-bottom-splitter: 99;
 
 // modal
 $z-index-modal-bg: 2000;//999;
-$z-index-modal-container: 9999; // ???
+$z-index-modal-container: 19999; // ???
 $z-index-op-search: 999999999;
 $z-index-searchbox: 99999999; // also command-pallet
 
@@ -34,7 +34,7 @@ $z-index-searchbox: 99999999; // also command-pallet
  */
 
 $z-index-editor: 99;
-$z-index-library: 99999;
+$z-index-library: 1900;
 $z-index-key-presenter: 9999999999; // presentation tool, shows keystrokes
 $z-index-tooltip: 99999;
 $z-index-colorpicker: 99999; // color-picker
