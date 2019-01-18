@@ -7,6 +7,7 @@ CABLES.GradientEditor=function(opid,portname)
     this._portName=portname;
     
     this._keyWidth=15;
+    this._keyHeight=25;
     this._dragDownDeleteThreshold=40;
     this._width=500;
 
@@ -48,6 +49,8 @@ CABLES.GradientEditor.prototype.updateCanvas=function()
         for(var x=keyA.pos*this._width;x<keyB.pos*this._width;x++)
         {
             var p=CABLES.map(x,keyA.pos*this._width,keyB.pos*this._width,0,1);
+            
+            p=CABLES.smoothStep(p);
 
             imageData.data[x*4+0]=( (p*keyB.r)+ (1.0-p)*(keyA.r))*255;
             imageData.data[x*4+1]=( (p*keyB.g)+ (1.0-p)*(keyA.g))*255;
@@ -110,7 +113,7 @@ CABLES.GradientEditor.prototype.setCurrentKey=function(key)
 CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
 {
     
-    var rect=this._paper.rect( pos*this._width,1,this._keyWidth,this._keyWidth).attr(
+    var rect=this._paper.rect( pos*this._width,0,this._keyWidth,this._keyHeight).attr(
         {
             stroke:"#000",
         });
