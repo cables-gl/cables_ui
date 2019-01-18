@@ -24,9 +24,12 @@ CABLES.GradientEditor.prototype.updateCanvas=function()
 {
     if(!this._ctx)
     {
-        console.log("get canvas...");
         var canvas = document.getElementById('gradientEditorCanvas');
-        if(!canvas)return;
+        if(!canvas)
+        {
+            console.log("[gradienteditor] no canvas found");
+            return;
+        }
         this._ctx = canvas.getContext('2d');
     }
 
