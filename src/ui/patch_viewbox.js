@@ -21,7 +21,6 @@ CABLES.UI.PatchViewBox=function(patch,paper)
     this._eleNavHelperEmpty = document.getElementById("patchnavhelperEmpty");
     this._showingNavHelperEmpty = false;
 
-
     this._init();
     this.update();
 }
