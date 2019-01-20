@@ -87,27 +87,8 @@ CABLES.UI.showInputFieldInfo=function()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 CABLES.valueChanger=function(ele,focus)
 {
-    console.log("CABLES.valueChanger!",ele);
     CABLES.UI.showInputFieldInfo();
 
     const elem=$ ('#'+ele);

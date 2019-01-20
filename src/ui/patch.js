@@ -122,6 +122,8 @@ CABLES.UI.Patch = function(_gui) {
 
             if (json) {
                 if (json.ops) {
+
+
                     gui.serverOps.loadProjectLibs(json, function() {
                         var i = 0,
                             j = 0; { // change ids
@@ -231,6 +233,7 @@ CABLES.UI.Patch = function(_gui) {
 
                         CABLES.UI.notify('Pasted ' + json.ops.length + ' ops');
                         self.setSelectedOp(null);
+                        
 
                         gui.patch().scene.deSerialize(json, false);
 
@@ -240,6 +243,7 @@ CABLES.UI.Patch = function(_gui) {
 
                             uiop.setSelected(false);
                             uiop.setSelected(true);
+                            gui.setStateUnsaved();
                             // uiop.oprect.setSelected
                         }
                         
@@ -762,7 +766,6 @@ this._timeoutLinkWarnings=null;
                 }
                 else
                 {
-                    // CABLES.UI.MODAL.hide(true);
                     if(cb)cb(null);
                 }
                 gui.jobs().finish('checkupdated');
