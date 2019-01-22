@@ -90,7 +90,7 @@
                     {{#compare port.uiAttribs.display '==' 'bool' }}
                         </td><td colspan="3">
                         <span id="portcheckbox_{{ portnum }}" class="ccheckbox fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
-                        <input class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
+                        <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
                     {{/compare}}
 
                     {{#compare port.uiAttribs.display '==' 'button' }}
@@ -121,9 +121,9 @@
                         <input class="value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/> -->
 
                         <!-- new value input -->
-                        <div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');" onmouseover="CABLES.UI.showInputFieldInfo();">
+                        <div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" onmouseover="CABLES.UI.showInputFieldInfo();">
                             <span class="numberinput-display">{{ port.val }}</span>
-                            <input class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                            <input autocomplete="off" class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
                         </div>
     
                     {{/compare}}
@@ -155,7 +155,7 @@
                         </td>
                         <td colspan="3">
                             <div id="fileInputContainer_{{portnum}}" style="display:none">
-                                <input class="hidden value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;display:block;"/>
+                                <input autocomplete="off" class="hidden value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;display:block;"/>
                                 <br/><br/>
                             </div>
                             <div id="portFilename_{{ portnum }}" onclick="$('#fileInputContainer_{{ portnum }}').show();$(this).hide();gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="cursor:pointer;">[???]</div>
@@ -193,9 +193,9 @@
                         {{/if}} -->
 
                         <!-- new value input -->
-                        <div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-portnum="{{ portnum }}"  id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}');"  onmouseover="CABLES.UI.showInputFieldInfo();">
+                        <div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-portnum="{{ portnum }}"  id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');"  onmouseover="CABLES.UI.showInputFieldInfo();">
                             <span class="numberinput-display">{{ port.val }}</span>
-                            <input class="numberinput-value watchPort watchPortValue_{{ port.watchId }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
+                            <input autocomplete="off" class="numberinput-value watchPort watchPortValue_{{ port.watchId }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
                         </div>
 
 
@@ -210,7 +210,7 @@
 
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
 
-                    <input class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}" />
+                    <input autocomplete="off" class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}" value="{{ port.val }}"  data-info="{{ texts.portFloatInput }}" />
                     {{#if port.uiAttribs.type }}
                     {{else}}
                         <a class="valueDragger graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');"  data-info="{{ texts.portFloatDrag }}"></a>
