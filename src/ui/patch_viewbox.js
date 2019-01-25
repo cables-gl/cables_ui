@@ -102,6 +102,11 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
             this.set(-200, -200, 400, 400);
         }
 
+        setTimeout(function()
+        {
+            gui.patch().updateViewBox();
+        },500);
+
         return;
     }
     else

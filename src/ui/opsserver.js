@@ -60,11 +60,9 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
     this.isServerOp = function(name) {
-        for (var i = 0; i < ops.length; i++) {
-            if (ops[i].name == name) {
+        for (var i = 0; i < ops.length; i++)
+            if (ops[i].name == name)
                 return true;
-            }
-        }
 
         return false;
     };
@@ -75,8 +73,10 @@ CABLES.UI.ServerOps = function(gui) {
             function(res) {
                 self.load(
                     function() {
-                        console.log('now edit...');
                         self.edit(name);
+
+                        gui.opSelect().reload();
+                        gui.serverOps.execute(name);
                     });
             },
             function(res) {
