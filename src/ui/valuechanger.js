@@ -87,7 +87,11 @@ CABLES.UI.showInputFieldInfo=function()
 
 
 
-CABLES.valueChanger=function(ele,focus)
+
+
+
+
+CABLES.valueChanger=function(ele,focus,portName,opid)
 {
     CABLES.UI.showInputFieldInfo();
 
@@ -205,6 +209,33 @@ CABLES.valueChanger=function(ele,focus)
         if(elem.is(":focus")) return;
         var isString= elem.data("valuetype")=="string";
         
+
+        
+        if(opid && portName)
+        {
+            var undofunc = function(portName,opId,oldVal,newVal) {
+                CABLES.undo.add({
+                    undo: function() {
+                        const op=gui.patch().scene.getOpById(opid);
+                        const p=op.getPort(portName);
+                        gui.patch().showProjectParams();
+                        p.set(oldVal);
+                        gui.patch().showOpParams(op);
+                    },
+                    redo: function() {
+                        const op=gui.patch().scene.getOpById(opid);
+                        const p=op.getPort(portName);
+                        gui.patch().showProjectParams();
+                        p.set(newVal);
+                        gui.patch().showOpParams(op);
+                    }
+                });
+            }(portName,opid,startVal,elem.val());
+        }
+
+
+
+
         gui.setStateUnsaved();
         isDown=false;
 
@@ -300,6 +331,39 @@ CABLES.valueChanger=function(ele,focus)
     elem.bind( "blur", 
         function()
         {
+
+            // value changed after blur
+            if(startVal!=elem.val())
+            {
+                console.log("value changed after blur!",startVal,elem.val());
+
+                console.log(portName,opid);
+
+
+
+                if(opid && portName)
+                {
+                    var undofunc = function(portName,opId,oldVal,newVal) {
+                        CABLES.undo.add({
+                            undo: function() {
+                                const op=gui.patch().scene.getOpById(opid);
+                                const p=op.getPort(portName);
+                                gui.patch().showProjectParams();
+                                p.set(oldVal);
+                                gui.patch().showOpParams(op);
+                            },
+                            redo: function() {
+                                const op=gui.patch().scene.getOpById(opid);
+                                const p=op.getPort(portName);
+                                gui.patch().showProjectParams();
+                                p.set(newVal);
+                                gui.patch().showOpParams(op);
+                            }
+                        });
+                    }(portName,opid,startVal,elem.val());
+                }
+            }
+
             elem.unbind( "blur");
             $('#'+ele+'-container .numberinput-display').html(elem.val());
             setTextEdit(false);

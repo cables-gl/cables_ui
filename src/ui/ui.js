@@ -904,6 +904,16 @@ CABLES.UI.GUI = function() {
                         }
                     break;
 
+
+                case 90: // z undo
+                    if(e.metaKey || e.ctrlKey)
+                    {
+                        if(e.shiftKey) CABLES.undo.redo();
+                        else CABLES.undo.undo();
+                    }
+                break;
+    
+
                 case 80:
                         if (e.ctrlKey || e.metaKey) {
                         e.preventDefault();
