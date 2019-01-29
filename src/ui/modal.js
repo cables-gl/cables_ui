@@ -208,8 +208,11 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 
     CABLES.UI.MODAL.contentElement.append('Error in op: <b>'+opName+'</b><br/><br/>');
 
-    CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
-    CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.stack+'</div><br/>');
+    if(ex)
+    {
+        CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">' + ex.message + '</div><br/>');
+        CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">' + ex.stack + '</div><br/>');
+    }
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode hidden" id="stackFileContent"></div><br/>');
 
     if(ex)

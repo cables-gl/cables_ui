@@ -336,33 +336,22 @@ CABLES.UI.OpDocs=function()
         }
     };
 
-	// this.writeSummary=function(opname,summary)
-	// {
-	// 	CABLES.UI.MODAL.prompt(
-	// 		"Summary",
-	// 		"write a summary (oneliner) for "+opname,
-	// 		summary||"",
-	// 		function(v)
-	// 		{
-	// 			gui.serverOps.addOpSummary(opname, v );
-	// 		});
-
-    // };
-
     this.showPortDoc=function(opname,portname)
     {
         var perf = CABLES.uiperf.start('opdocs.portdoc');
 
         for(var i=0;i<opDocs.length;i++)
         {
-            if(opDocs[i].name==opname)
+            if (opDocs[i].name == opname && opDocs[i].layout)
             {
                 if(!opDocs[i].layout)return;
                 
                 var group=null;
-                for (var k = 0; k < opDocs[i].layout.portsIn.length;k++)
-                    if (opDocs[i].layout.portsIn[k].name == portname)
-                        group = opDocs[i].layout.portsIn[k].group;
+
+                if (opDocs[i].layout.portsIn)
+                    for (var k = 0; k < opDocs[i].layout.portsIn.length;k++)
+                        if (opDocs[i].layout.portsIn[k].name == portname)
+                            group = opDocs[i].layout.portsIn[k].group;
 
                 if (group) group+=' - ';
                     else group='';
@@ -385,49 +374,6 @@ CABLES.UI.OpDocs=function()
         }
 
         perf.finish();
-
     }
-    
-    // this.editPortDoc=function(opname,portname)
-    // {
-    //     var txt='';
-
-    //     for(var i=0;i<opDocs.length;i++)
-    //     {
-    //         if(opDocs[i].name==opname)
-    //         {
-    //             if(opDocs[i].docs)
-    //             {
-    //                 for(var j=0;j<opDocs[i].docs.ports.length;j++)
-    //                 {
-    //                     if(opDocs[i].docs.ports[j].name==portname)
-    //                     {
-    //                         txt=opDocs[i].docs.ports[j].text;
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     CABLES.UI.MODAL.prompt('port doc '+portname,'enter here:',txt,
-    //     function(txt)
-    //     {
-    //         console.log('new text:',txt);
-
-    //         CABLES.api.put(
-    //             'doc/' + opname + '/' + portname, {
-    //                 "summary": txt
-    //             },
-    //             function(res) {
-    //                 console.log(res);
-    //             });
-    //     })
-
-
-
-    // }
-
-
 
 };

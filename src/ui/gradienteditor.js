@@ -102,7 +102,6 @@ CABLES.GradientEditor.prototype.deleteKey=function(k)
 CABLES.GradientEditor.prototype.setCurrentKey=function(key)
 {
     CABLES.currentKey=key;
-    var hex=rgbToHex(Math.round(key.r*255),Math.round(key.g*255),Math.round(key.b*255));
 
     $('#gradientColorInput').unbind();
     $('#gradientColorInput').val('rgb('+Math.round(key.r*255)+','+Math.round(key.g*255)+','+Math.round(key.b*255)+')');
@@ -112,11 +111,7 @@ CABLES.GradientEditor.prototype.setCurrentKey=function(key)
 
 CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
 {
-    
-    var rect=this._paper.rect( pos*this._width,0,this._keyWidth,this._keyHeight).attr(
-        {
-            stroke:"#000",
-        });
+    var rect=this._paper.rect( pos*this._width,0,this._keyWidth,this._keyHeight).attr({ stroke:"#000" });
 
     if(r==undefined)
     {
@@ -135,7 +130,6 @@ CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
 
     function move(dx,dy,x,y,e)
     {
-        // CABLES.currentKey=key;
         this.setCurrentKey(key);
         this._movingkey=true;
         var attribs={};
@@ -168,24 +162,8 @@ CABLES.GradientEditor.prototype.addKey=function(pos,r,g,b)
         this._startMouseY=y;
         this._movingkey=true;
         this.setCurrentKey(key);
-        
-        // console.log(this._cp);
-        // if(this._cp)
-        //     this._cp.setColor('#'+hex);
-        // // $('#gradientPickerDiv').ColorPickerSetColor('#'+hex);
-        // console.log(hex);
-        // $('#gradientColorInput').css(
-        //     {
-        //         'background-color':'rgba('+Math.round(key.r*255)+','+Math.round(key.g*255)+','+Math.round(key.b*255)+',1)'
-        //     });
-            
-        // this._bindColorPicker();
-
-        // window.cppp.colorPicker.color.setColor("#ff0000")
-        // window.cppp.colorPicker.render();
-
-        // $('#gradientColorInput').trigger( "focus" );
     }
+
     function up(e)
     {
         setTimeout(function()
@@ -265,16 +243,10 @@ CABLES.GradientEditor.prototype.show=function(cb)
         CABLES.UI.MODAL.hide();
 
     }.bind(this));
-
 }
-
-
-
 
 CABLES.GradientEditor.prototype._bindColorPicker=function()
 {
-    
-    // $('#gradientColorInput').unbind();
     window.cppp=$('#gradientColorInput').colorPicker({
         opacity: true,
         animationSpeed:0,
@@ -315,20 +287,10 @@ CABLES.GradientEditor.prototype._bindColorPicker=function()
 
                 // $('#gradientColorInput').css({"color":"transparent !important"});;
             }
-
         },
         buildCallback: function($elm) {
-
         }
     });
-
-    // $("#gradientColorInput").on("change paste keyup", function() {
-    //     // alert($(this).val()); 
-    // //  });
-     
-    // // $('#gradientColorInput').input(function(){
-    //     console.log("INPUT");
-    // });
 
 };
 
