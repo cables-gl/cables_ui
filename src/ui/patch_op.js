@@ -69,7 +69,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var y = _y;
     var opui = _opui;
     var title = null;
-
+    this._attachedComment=null;
     var commentText = null;
     this._errorIndicator = null;
     this._colorHandle=null;
@@ -384,6 +384,27 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     //     return fill;
     // };
 
+    this.updateAttachedComment=function()
+    {
+        if(!opui.op.uiAttribs.comment)return;
+
+        if(!this._attachedComment) 
+        {
+            this._attachedComment= gui.patch().getPaper().text(w+20, 0 + h / 2 - 0.8, opui.op.uiAttribs.comment);
+            this._attachedComment.attr({'fill':"#ccc",
+            'text-anchor': 'start'});
+            group.push(this._attachedComment);
+        }
+        else
+        {
+            this._attachedComment.attr(
+                {
+                    'x': w+20,
+                    'text':opui.op.uiAttribs.comment
+                });
+        }
+    }
+
     this.updateComment = function() {
         if (objName == 'Ops.Ui.Comment') {
             if (commentText)
@@ -651,6 +672,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             h = opui.op.uiAttribs.size[1];
         }
 
+
+        
+
         var mmPaper=gui.patch().getViewBox().getMiniMapPaper();
         if (mmPaper)
         {
@@ -895,6 +919,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             backgroundResize.drag(resizeCommentMove.bind(this), resizeCommentStart,resizeCommentEnd);
 
+            
+
             group.push(backgroundResize,commentText);
             // group.push(commentText);
             // gui.patch().background.toBack();
@@ -904,6 +930,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             // label.toFront();
             // this._updateElementOrder();
         }
+
+
+        this.updateAttachedComment();
 
         group.push(background, label);
 

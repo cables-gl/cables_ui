@@ -1766,6 +1766,15 @@ this._timeoutLinkWarnings=null;
         uiop.oprect.setTitle(t);
     };
 
+    this.setCurrentOpComment = function(v) {
+        if (currentOp) 
+        {
+            currentOp.op.uiAttr({"comment":v});
+            currentOp.oprect.updateAttachedComment();
+        }
+    };
+    
+
     this.setCurrentOpTitle = function(t) {
         if (currentOp) this.setOpTitle(currentOp, t);
     };
