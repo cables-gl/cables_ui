@@ -69,7 +69,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var y = _y;
     var opui = _opui;
     var title = null;
-
+    this._attachedComment=null;
     var commentText = null;
     this._errorIndicator = null;
     this._colorHandle=null;
@@ -128,6 +128,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         // if(resizeHandle)resizeHandle.remove();
         if(this._colorHandle)this._colorHandle.remove();
         if (miniRect) miniRect.remove();
+        if (this._attachedComment) this._attachedComment.remove();
         // label=background=commentText=backgroundResize=null;
 
         if(this._striked)this._striked.remove();
@@ -135,7 +136,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
 
         
-        label = background = commentText = null;
+        this._attachedComment = label = background = commentText = null;
     };
 
     this.removeUi = function() {
@@ -190,32 +191,34 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             //     });
             // }
         } else {
-            if (!commentText && !backgroundResize) {
-                var labelWidth = label.getBBox().width + 20;
-                // if(Math.abs(labelWidth-w)>15) labelWidth+=Math.abs(labelWidth-w);
 
-                var setw = w;
+            if (commentText || backgroundResize)return;
 
-                if (labelWidth > w) {
-                    setw = labelWidth;
-                }
-                if (this.isVisible()) {
-                    background.attr({
-                        "width": setw
-                    });
+            var labelWidth = label.getBBox().width + 20;
+            // if(Math.abs(labelWidth-w)>15) labelWidth+=Math.abs(labelWidth-w);
 
-                    if(this._colorHandle) this._colorHandle.attr({"x":setw-CABLES.UI.uiConfig.resizeBarWidth});
+            var setw = w;
 
-                    label.attr({
-                        x: setw / 2
-                    });
-                    // resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
-                    if (miniRect) miniRect.attr({
-                        width: setw,
-                        height: 10
-                    });
-                }
+            if (labelWidth > w) {
+                setw = labelWidth;
             }
+            if (this.isVisible()) {
+                background.attr({
+                    "width": setw
+                });
+
+                if(this._colorHandle) this._colorHandle.attr({"x":setw-CABLES.UI.uiConfig.resizeBarWidth});
+
+                label.attr({
+                    x: setw / 2
+                });
+                // resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
+                if (miniRect) miniRect.attr({
+                    width: setw,
+                    height: 10
+                });
+            }
+            w=setw;
         }
     };
 
@@ -383,6 +386,36 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     //     // else if( objName.startsWith('Ops.WebAudio') ) fill='#bbeeff';
     //     return fill;
     // };
+
+    this.updateAttachedComment=function()
+    {
+        if(!opui.op.uiAttribs.comment && this._attachedComment)
+        {
+            this._attachedComment.remove();
+            this._attachedComment=null;
+            return;
+        }
+        if(!opui.op.uiAttribs.comment)return;
+
+        if(!this._attachedComment) this.setWidth();
+
+        const y=h/2-0.8;
+        const x=w+10;
+
+        if(!this._attachedComment) 
+        {
+            this._attachedComment=gui.patch().getPaper().text(x, y, '...');
+            group.push(this._attachedComment);
+            this._attachedComment.attr({'fill':"#ccc",'text-anchor': 'start'});
+        }
+
+        this._attachedComment.attr(
+            {
+                x:x,
+                y:y,
+                text:opui.op.uiAttribs.comment
+            });
+    }
 
     this.updateComment = function() {
         if (objName == 'Ops.Ui.Comment') {
@@ -652,6 +685,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             h = opui.op.uiAttribs.size[1];
         }
 
+
+        
+
         var mmPaper=gui.patch().getViewBox().getMiniMapPaper();
         if (mmPaper)
         {
@@ -897,6 +933,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             backgroundResize.drag(resizeCommentMove.bind(this), resizeCommentStart,resizeCommentEnd);
 
+            
+
             group.push(backgroundResize,commentText);
             // group.push(commentText);
             // gui.patch().background.toBack();
@@ -906,6 +944,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             // label.toFront();
             // this._updateElementOrder();
         }
+
+
+        this.updateAttachedComment();
 
         group.push(background, label);
 
@@ -1010,6 +1051,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         }
 
+        this.updateAttachedComment();
         perf.finish();
 
     };

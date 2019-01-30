@@ -314,9 +314,21 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
 
 };
 
+CABLES.UI.TexturePreviewer.prototype.selectTexturePortId=function(opid,portid)
+{
+    const op=gui.patch().scene.getOpById(opid);
+    if(!op)return;
+
+    const p=op.getPortById(portid);
+
+    if(!p || p.links.length<1)return;
+    
+    const thePort=p.links[0].getOtherPort(p);
+    this.selectTexturePort(thePort);
+}
+
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
 {
-
     this._lastClickedP=p;
     this._lastClicked=this.updateTexturePort(p);
     

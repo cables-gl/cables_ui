@@ -465,3 +465,13 @@ td.head
     line-height: 20px;
     min-height:10px;
 }
+
+.port2previewbutton
+{
+    padding: 5px 10px;
+    &::before
+    {
+        margin:0px !important;
+
+    }
+}

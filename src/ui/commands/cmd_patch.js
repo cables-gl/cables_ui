@@ -48,6 +48,11 @@ CABLES.CMD.PATCH.createSubPatchFromSelection=function()
 	gui.patch().createSubPatchFromSelection();
 };
 
+CABLES.CMD.PATCH.findCommentedOps=function()
+{
+	gui.find().show(':commented');
+};
+
 CABLES.CMD.PATCH.findUnconnectedOps=function()
 {
 	gui.find().show(':unconnected');
@@ -510,7 +515,12 @@ CABLES.CMD.commands.push(
         cmd: "find user ops",
         category: "patch",
         func: CABLES.CMD.PATCH.findUserOps
-    }
+    },
+	{
+		cmd:"find commented ops",
+		category:"patch",
+		func:CABLES.CMD.PATCH.findCommentedOps
+	}
 
 
 );

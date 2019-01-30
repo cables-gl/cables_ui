@@ -1766,6 +1766,18 @@ this._timeoutLinkWarnings=null;
         uiop.oprect.setTitle(t);
     };
 
+    this.setCurrentOpComment = function(v)
+    {
+        if (currentOp) 
+        {
+            currentOp.op.uiAttr({"comment":v});
+            if(v.length==0)currentOp.op.uiAttr({"comment":null});
+            currentOp.oprect.updateAttachedComment();
+            currentOp.setPos();
+        }
+    };
+    
+
     this.setCurrentOpTitle = function(t) {
         if (currentOp) this.setOpTitle(currentOp, t);
     };
@@ -3041,8 +3053,8 @@ this._timeoutLinkWarnings=null;
     {
         var items=[];
 
-        var opname=selectedOps[0].op.objName;
-        var opid=selectedOps[0].op.id;
+        var opname=currentOp.op.objName;
+        var opid=currentOp.op.id;
 
         items.push(
             {
