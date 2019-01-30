@@ -43,13 +43,15 @@
         <div class="button_colorpick fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/if}}
 
-        {{#compare port.type '==' '2' }}
-            {{#if port.uiAttribs.preview}}
-            <div class="fright" >
-                <span class="button fa fa-eye port2previewbutton" onclick="gui.texturePreview().selectTexturePortId('{{op.id}}','{{port.id}}');" ></span>
-            </div>
+        {{#if port.links}}
+            {{#compare port.type '==' '2' }}
+                {{#if port.uiAttribs.preview}}
+                <div class="fright" >
+                    <span class="button fa fa-eye port2previewbutton" onclick="gui.texturePreview().selectTexturePortId('{{op.id}}','{{port.id}}');" ></span>
+                </div>
+                {{/if}}
+            {{/compare}}
         {{/if}}
-    {{/compare}}
 
     </td>
     <td class="">
