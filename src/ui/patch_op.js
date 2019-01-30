@@ -128,6 +128,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         // if(resizeHandle)resizeHandle.remove();
         if(this._colorHandle)this._colorHandle.remove();
         if (miniRect) miniRect.remove();
+        if (this._attachedComment) this._attachedComment.remove();
         // label=background=commentText=backgroundResize=null;
 
         if(this._striked)this._striked.remove();
@@ -135,7 +136,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
 
         
-        label = background = commentText = null;
+        this._attachedComment = label = background = commentText = null;
     };
 
     this.removeUi = function() {
