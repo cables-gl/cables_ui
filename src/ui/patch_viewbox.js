@@ -309,7 +309,6 @@ CABLES.UI.PatchViewBox.prototype.animate = function (x, y, w, h)
 };
 
 CABLES.UI.PatchViewBox.prototype.center = function (x, y) {
-    console.log("viuewbox center!");
     this.animate(x - this._viewBox.w / 2, y - this._viewBox.h / 2, this._viewBox.w, this._viewBox.h);
 }
 

@@ -3053,8 +3053,8 @@ this._timeoutLinkWarnings=null;
     {
         var items=[];
 
-        var opname=selectedOps[0].op.objName;
-        var opid=selectedOps[0].op.id;
+        var opname=currentOp.op.objName;
+        var opid=currentOp.op.id;
 
         items.push(
             {

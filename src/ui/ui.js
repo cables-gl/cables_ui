@@ -47,6 +47,7 @@ CABLES.UI.GUI = function() {
     this._oldCanvasWidth=0;
     this._oldCanvasHeight=0;
     this._oldShowingEditor;
+    this._eventListeners = {};
 
 
     this.project = function() {
@@ -827,9 +828,7 @@ CABLES.UI.GUI = function() {
         });
 
         $('#button_subPatchBack').bind("click", function(event) {
-
             self.patch().subpatchBack();
-            
         });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
@@ -1033,12 +1032,13 @@ CABLES.UI.GUI = function() {
 
         this.showCanvasModal(false);
 
+        this.callEvent("pressedEscape");
+        
         this._texturePreviewer.pressedEscape();
         $('.tooltip').hide();
 
         if (self.rendererWidth*gui.patch().scene.cgl.canvasScale > window.innerWidth * 0.9)
         {
-
             if(this._elGlCanvas.hasClass('maximized'))
             {
                 this.rendererWidth=this._oldCanvasWidth;
@@ -1049,7 +1049,7 @@ CABLES.UI.GUI = function() {
                 this.rendererWidth = window.innerWidth * 0.4;
                 this.rendererHeight = window.innerHeight * 0.25;
             }
-            
+
             showingEditor = this._oldShowingEditor;
             this._elGlCanvas.removeClass('maximized');
             self.setLayout();
@@ -1060,11 +1060,11 @@ CABLES.UI.GUI = function() {
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         } else if ($('#cmdpalette').is(':visible')) gui.cmdPallet.close();
-        else if (showingEditor && e) this.closeEditor();
-        else if ($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
-        else if ($('#searchbox').is(':visible')) $('#searchbox').hide();
-        else if ($('#library').is(':visible')) CABLES.UI.fileSelect.hide();//$('#library').hide();
-        else if ($('#sidebar').is(':visible')) $('#sidebar').animate({
+        else if(showingEditor && e) this.closeEditor();
+        else if($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
+        // else if(gui.find().isVisible()) gui.find().close();
+        else if($('#library').is(':visible')) CABLES.UI.fileSelect.hide();//$('#library').hide();
+        else if($('#sidebar').is(':visible')) $('#sidebar').animate({
             width: 'toggle'
         }, 200);
         else if ($('.easingselect').is(':visible')) $('.easingselect').hide();
@@ -1476,28 +1476,16 @@ CABLES.UI.GUI = function() {
     this.showCanvasModal=function(_show)
     {
         if(!this._elCanvasIconbar)return;
-        // const canvasIconbar=$('#canvasicons')
         if(_show)
         {
             $('#canvasmodal').show();
             this._elCanvasIconbar.show();
             this._elCanvasIconbar.css({opacity:1});
-            // var posCanvas = $('#glcanvas').offset();
-            
-            
             const cgl=gui.patch().scene.cgl;
-
             this.updateCanvasIconBar();
-
-            // this._elCanvasIconbar.css({
-            //     width: self.rendererWidth*cgl.canvasScale,
-            //     top: self.rendererHeight*cgl.canvasScale+1,
-            //     left: posCanvas.left
-            // });
 
             var sizeStr='size: '+cgl.canvasWidth+' x '+cgl.canvasHeight;
             if(cgl.canvasScale!=1)sizeStr+=' (scale: '+cgl.canvasScale+') '
-            // $('#canvasInfoSize').html(sizeStr);
             this._elCanvasInfoSize.innerHTML = sizeStr;
         }
         else
@@ -1531,11 +1519,7 @@ CABLES.UI.GUI = function() {
 
         _patch = new CABLES.UI.Patch(this);
         _patch.show(_scene);
-        
 
-        // _socket=new CABLES.API.Socket(this);
-        // _socket = new CABLES.API.Socket();
-        // _connection = new CABLES.API.Connection(this);
         $('#undev').hover(function(e) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
         }, function() {
@@ -1611,6 +1595,28 @@ CABLES.UI.GUI.prototype.updateTheme = function () {
 
 
 
+
+
+CABLES.UI.GUI.prototype.addEventListener = function(name, cb)
+{
+    this._eventListeners[name] = this._eventListeners[name] || [];
+    this._eventListeners[name].push(cb);
+};
+
+CABLES.UI.GUI.prototype.callEvent=function(name, params)
+{
+    if (this._eventListeners.hasOwnProperty(name)) {
+        for (var i in this._eventListeners[name]) {
+            this._eventListeners[name][i](params);
+        }
+    }
+}
+
+
+
+
+
+
 function startUi(event)
 {
     // if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
@@ -1677,8 +1683,6 @@ function startUi(event)
             gui.setLayout();
             gui.patch().checkUpdated();
         }
-
-        
     }, false);
 
     

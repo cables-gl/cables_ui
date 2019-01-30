@@ -103,7 +103,7 @@ CABLES.UI.MODAL.setTitle=function(title)
 
 CABLES.UI.MODAL.show=function(content,options)
 {
-
+    
     if(options && !options.ignoreTop)CABLES.UI.MODAL.contentElement.css({"top":"10%"});
 
     CABLES.UI.MODAL.showClose();
@@ -132,7 +132,7 @@ CABLES.UI.MODAL.show=function(content,options)
 
     CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
-
+    gui.callEvent("showModal");
 
 };
 

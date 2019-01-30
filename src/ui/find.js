@@ -7,9 +7,29 @@ CABLES.UI.Find=function()
     var findTimeoutId=0;
     var canceledSearch=0;
     var idSearch=1;
+    var boundEscape=false;
+
+    this.isVisible=function()
+    {
+        return $('#searchbox').is(':visible');
+    };
+
+    this.hide=function()
+    {
+        $('#searchbox').hide();
+    };
 
     this.show=function(str)
     {
+        if(!boundEscape)
+        {
+            gui.addEventListener("pressedEscape",function()
+            {
+                if(this.isVisible)this.hide();
+            }.bind(this));
+            boundEscape=true;
+        }
+
         $('#searchbox').show();
         $('#findinput').focus();
         $('#findinput').val(lastSearch);
@@ -72,7 +92,27 @@ CABLES.UI.Find=function()
 
         if(str.indexOf(':')==0)
         {
-            if(str==':user')
+            if(str==':commented')
+            {
+                for(var i=0;i<gui.patch().ops.length;i++)
+                {
+                    var op=gui.patch().ops[i];
+
+                    if(gui.patch().ops[i].op.uiAttribs.comment && gui.patch().ops[i].op.uiAttribs.comment.length>0)
+                    {
+                        results.push({"op":op,"score":1});
+                        foundNum++;
+                    }
+
+                    // if(op.op.objName.indexOf("Ops.User")==0) 
+                    // {
+                    //     results.push({"op":op,"score":1});
+                    //     foundNum++;
+                    // }
+                }
+
+            }
+            else if(str==':user')
             {
                 for(var i=0;i<gui.patch().ops.length;i++)
                 {
@@ -132,6 +172,8 @@ CABLES.UI.Find=function()
                     var score=0;
                     
                     if(gui.patch().ops[i].op.objName.toLowerCase().indexOf(str)>-1) score+=1;
+
+                    if(gui.patch().ops[i].op.uiAttribs.comment && gui.patch().ops[i].op.uiAttribs.comment.toLowerCase().indexOf(str)>-1) score+=1;
     
                     if(String((gui.patch().ops[i].op.name||'')).toLowerCase().indexOf(str)>-1)
                     {
