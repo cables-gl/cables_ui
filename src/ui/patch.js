@@ -1771,6 +1771,7 @@ this._timeoutLinkWarnings=null;
         {
             currentOp.op.uiAttr({"comment":v});
             currentOp.oprect.updateAttachedComment();
+            currentOp.setPos();
         }
     };
     

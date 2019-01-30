@@ -190,32 +190,34 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             //     });
             // }
         } else {
-            if (!commentText && !backgroundResize) {
-                var labelWidth = label.getBBox().width + 20;
-                // if(Math.abs(labelWidth-w)>15) labelWidth+=Math.abs(labelWidth-w);
 
-                var setw = w;
+            if (commentText || backgroundResize)return;
 
-                if (labelWidth > w) {
-                    setw = labelWidth;
-                }
-                if (this.isVisible()) {
-                    background.attr({
-                        "width": setw
-                    });
+            var labelWidth = label.getBBox().width + 20;
+            // if(Math.abs(labelWidth-w)>15) labelWidth+=Math.abs(labelWidth-w);
 
-                    if(this._colorHandle) this._colorHandle.attr({"x":setw-CABLES.UI.uiConfig.resizeBarWidth});
+            var setw = w;
 
-                    label.attr({
-                        x: setw / 2
-                    });
-                    // resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
-                    if (miniRect) miniRect.attr({
-                        width: setw,
-                        height: 10
-                    });
-                }
+            if (labelWidth > w) {
+                setw = labelWidth;
             }
+            if (this.isVisible()) {
+                background.attr({
+                    "width": setw
+                });
+
+                if(this._colorHandle) this._colorHandle.attr({"x":setw-CABLES.UI.uiConfig.resizeBarWidth});
+
+                label.attr({
+                    x: setw / 2
+                });
+                // resizeHandle.attr({x:setw-CABLES.UI.uiConfig.resizeBarWidth});
+                if (miniRect) miniRect.attr({
+                    width: setw,
+                    height: 10
+                });
+            }
+            w=setw;
         }
     };
 
@@ -388,21 +390,24 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     {
         if(!opui.op.uiAttribs.comment)return;
 
+        if(!this._attachedComment) this.setWidth();
+
+        const y=h/2-0.8;
+        const x=w+10;
+
         if(!this._attachedComment) 
         {
-            this._attachedComment= gui.patch().getPaper().text(w+20, 0 + h / 2 - 0.8, opui.op.uiAttribs.comment);
-            this._attachedComment.attr({'fill':"#ccc",
-            'text-anchor': 'start'});
+            this._attachedComment=gui.patch().getPaper().text(x, y, '...');
             group.push(this._attachedComment);
+            this._attachedComment.attr({'fill':"#ccc",'text-anchor': 'start'});
         }
-        else
-        {
-            this._attachedComment.attr(
-                {
-                    'x': w+20,
-                    'text':opui.op.uiAttribs.comment
-                });
-        }
+
+        this._attachedComment.attr(
+            {
+                x:x,
+                y:y,
+                text:opui.op.uiAttribs.comment
+            });
     }
 
     this.updateComment = function() {
@@ -1037,6 +1042,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         }
 
+        this.updateAttachedComment();
         perf.finish();
 
     };
