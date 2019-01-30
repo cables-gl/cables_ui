@@ -1766,10 +1766,12 @@ this._timeoutLinkWarnings=null;
         uiop.oprect.setTitle(t);
     };
 
-    this.setCurrentOpComment = function(v) {
+    this.setCurrentOpComment = function(v)
+    {
         if (currentOp) 
         {
             currentOp.op.uiAttr({"comment":v});
+            if(v.length==0)currentOp.op.uiAttr({"comment":null});
             currentOp.oprect.updateAttachedComment();
             currentOp.setPos();
         }

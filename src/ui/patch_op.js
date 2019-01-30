@@ -388,6 +388,12 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this.updateAttachedComment=function()
     {
+        if(!opui.op.uiAttribs.comment && this._attachedComment)
+        {
+            this._attachedComment.remove();
+            this._attachedComment=null;
+            return;
+        }
         if(!opui.op.uiAttribs.comment)return;
 
         if(!this._attachedComment) this.setWidth();
