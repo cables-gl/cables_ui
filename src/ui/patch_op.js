@@ -602,6 +602,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             if (commentText) commentText.toFront();
             if (this._errorIndicator) this._errorIndicator.toFront();
         }
+
         perf.finish();
     }
 
@@ -800,6 +801,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             // group.push(backgroundResize,commentText);
             group.push(commentText);
+
             // gui.patch().background.toBack();
             // // backgroundResize.toFront();
             
