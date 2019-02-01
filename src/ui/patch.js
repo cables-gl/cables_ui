@@ -1703,9 +1703,14 @@ this._timeoutLinkWarnings=null;
 
         scene.onDelete = function(op) {
             var undofunc = function(opname, opid) {
+                var oldValues={};
+                for(var i=0;i<op.portsIn.length;i++) oldValues[ op.portsIn[i].name ]=op.portsIn[i].get();
+
                 CABLES.undo.add({
                     undo: function() {
-                        gui.scene().addOp(opname, op.uiAttribs, opid);
+                        var newop=gui.scene().addOp(opname, op.uiAttribs, opid);
+                        
+                        for(var i in oldValues) if(newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
                     },
                     redo: function() {
                         gui.scene().deleteOp(opid, false);
