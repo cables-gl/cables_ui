@@ -159,7 +159,7 @@ CABLES.UI.Port=function(thePort)
         }
 		else
 		{
-			if(event.which==3)
+            if(event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT)
 			{
                 gui.setCursor("port_remove");
 			}
@@ -257,7 +257,6 @@ CABLES.UI.Port=function(thePort)
             if(numFitting>0)
             {
                 foundAutoOp=true;
-                // console.log(numFitting+' numFitting ports...');
                 new CABLES.UI.SuggestPortDialog(CABLES.UI.selectedEndOp.op,CABLES.UI.selectedStartPort,event,
                     function(portName)
                     {
@@ -293,7 +292,8 @@ CABLES.UI.Port=function(thePort)
 
 			if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
-            if( (event.which==3 && !cancelDeleteLink) || (event.which==1 && event.ctrlKey))
+            
+            if( (event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink) || (event.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
                 removeLinkingLine();
                 self.thePort.removeLinks();

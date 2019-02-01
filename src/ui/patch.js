@@ -1452,18 +1452,20 @@ this._timeoutLinkWarnings=null;
             var op2 = CABLES.UI.OPSELECT.linkNewLink.p2.op;
             var port2 = CABLES.UI.OPSELECT.linkNewLink.p2.thePort;
 
-            for (var il in port1.links) {
-                if (
-                    port1.links[il].portIn == port1 && port1.links[il].portOut == port2 ||
-                    port1.links[il].portOut == port1 && port1.links[il].portIn == port2) {
-                    port1.links[il].remove();
-                }
-            }
 
             var foundPort1 = op.findFittingPort(port1);
             var foundPort2 = op.findFittingPort(port2);
 
             if (foundPort2 && foundPort1) {
+
+                for (var il in port1.links) {
+                    if (
+                        port1.links[il].portIn == port1 && port1.links[il].portOut == port2 ||
+                        port1.links[il].portOut == port1 && port1.links[il].portIn == port2) {
+                        port1.links[il].remove();
+                    }
+                }
+    
                 gui.scene().link(
                     op,
                     foundPort1.getName(),
@@ -1513,7 +1515,6 @@ this._timeoutLinkWarnings=null;
         CABLES.UI.OPSELECT.linkNewOpToPort = null;
         
         uiOp.setPos();
-
         
         // var pos = self.findNonCollidingPosition(uiOp.getPosX(), uiOp.getPosY(), uiOp.op.id,dir);
 
@@ -1589,6 +1590,7 @@ this._timeoutLinkWarnings=null;
 
             // console.log('unlink',p1,p2 );
             // todo: check if needs to be updated ?
+
             self.updateCurrentOpParams();
 
             for (var i in self.ops) {

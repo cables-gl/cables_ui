@@ -338,7 +338,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         // lastX = -1;
 
-        if (CABLES.UI.LINKHOVER) {
+        if (CABLES.UI.LINKHOVER)
+        {
             var oldLink = CABLES.UI.LINKHOVER;
             if (oldLink.p1 && oldLink.p2) {
                 var portIn = oldLink.p1;

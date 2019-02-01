@@ -64,9 +64,8 @@ function UiLink(port1, port2)
 
         if(self.p1!==null)
         {
-            if(event.which==3)
+            if(event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT)
             {
-                // self.p1.thePort.removeLinkTo( self.p2.thePort );
                 self.unlink();
             }
             else
@@ -78,7 +77,6 @@ function UiLink(port1, port2)
             }
         }
     };
-
 
     this.setElementOrder=function()
     {
