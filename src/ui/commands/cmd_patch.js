@@ -58,11 +58,9 @@ CABLES.CMD.PATCH.findUnconnectedOps=function()
 	gui.find().show(':unconnected');
 };
 
-CABLES.CMD.PATCH.findUserOps=function()
-{
-	gui.find().show(':user');
+CABLES.CMD.PATCH.findUserOps = function () {
+    gui.find().show(':user');
 };
-
 
 
 CABLES.CMD.PATCH.createFile=function()
@@ -131,15 +129,9 @@ CABLES.CMD.PATCH.addOp=function()
 	gui.opSelect().showOpSelect({x:0,y:0});
 };
 
-// CABLES.CMD.PATCH.renameOp=function()
-// {
-// 	CABLES.UI.MetaCode.rename();
-// };
-
 CABLES.CMD.PATCH.patchWebsite=function()
 {
 	window.open("/p/"+gui.patch().getCurrentProject()._id);
-	// console.log(gui.patch().getCurrentProject()._id);
 };
 
 CABLES.CMD.PATCH.createVariable=function(op)
@@ -151,10 +143,53 @@ CABLES.CMD.PATCH.createVariable=function(op)
 			{
 				op.setTitle(str);
 				op.varName.set(str);
-				gui.patch().showOpParams(op);
+                gui.patch().showOpParams(op);
 			}
 		});
 };
+
+CABLES.CMD.PATCH.createAutoVariable=function()
+{
+    var p = CABLES.UI.OPSELECT.linkNewOpToPort;
+
+    CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
+        function (str)
+        {
+            var opSetter;
+            var opGetter;
+
+            const x = CABLES.UI.OPSELECT.newOpPos.x;
+            const y = CABLES.UI.OPSELECT.newOpPos.y;
+            if(p.type==0)
+            {
+                opSetter = gui.patch().scene.addOp("Ops.Vars.SetVariable");
+
+                CABLES.UI.OPSELECT.newOpPos.x=x;
+                CABLES.UI.OPSELECT.newOpPos.y=y;
+
+                opGetter = gui.patch().scene.addOp("Ops.Vars.Variable");
+            }
+
+            opSetter.varName.set(str);
+            opGetter.varName.set(str);
+
+            if (p.direction == 0)
+            {
+                opSetter.getPort("Value").set(p.get());
+                p.parent.patch.link(opGetter, 'Value', p.parent, p.name);
+            }
+            else
+            {
+                opSetter.getPort("Value").set(p.get());
+                p.parent.patch.link(opSetter, 'Value', p.parent, p.name);
+            }
+
+        });
+
+
+}
+
+
 
 CABLES.CMD.PATCH.editOp=function()
 {
@@ -447,11 +482,6 @@ CABLES.CMD.commands.push(
 		icon:"link"
 	},
 	{
-		cmd:"create variable",
-		category:"patch",
-		func:CABLES.CMD.PATCH.createVariable
-	},
-	{
 		cmd:"tidy selected ops",
 		category:"patch",
 		func:CABLES.CMD.PATCH.tidyChildOps
@@ -480,16 +510,16 @@ CABLES.CMD.commands.push(
 		cmd:"find unconnected ops",
 		category:"patch",
 		func:CABLES.CMD.PATCH.findUnconnectedOps
-	},
+    },
+    {
+        cmd: "find user ops",
+        category: "patch",
+        func: CABLES.CMD.PATCH.findUserOps
+    },
 	{
 		cmd:"find commented ops",
 		category:"patch",
 		func:CABLES.CMD.PATCH.findCommentedOps
-	},
-	{
-		cmd:"find user ops",
-		category:"patch",
-		func:CABLES.CMD.PATCH.findUserOps
 	}
 
 
