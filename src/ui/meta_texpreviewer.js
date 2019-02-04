@@ -10,6 +10,8 @@ CABLES.UI.TexturePreviewer=function()
     this._paused=false;
     this._shader=null;
     this._shaderTexUniform=null;
+    this._tempTexturePort=null;
+    this._hoveringTexPort=false;
 
     var ele=document.getElementById('bgpreview');
 
@@ -327,48 +329,44 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePortId=function(opid,portid)
     this.selectTexturePort(thePort);
 }
 
+CABLES.UI.TexturePreviewer.prototype.hover=function(p)
+{
+    var thePort=p;
+    if(p.direction==CABLES.PORT_DIR_IN)
+        thePort=p.links[0].getOtherPort(p);
+
+    if(this._lastClickedP!=thePort)
+    {
+        this._hoveringTexPort=true;
+        this._tempOldTexPort=this._lastClickedP;
+        this.selectTexturePort(thePort);
+    }
+}
+
+CABLES.UI.TexturePreviewer.prototype.hoverEnd=function()
+{
+    if(this._hoveringTexPort)
+    {
+        if(!this._tempOldTexPort) this.enableBgPreview(false);
+            else this.selectTexturePort(this._tempOldTexPort);
+        this._hoveringTexPort=false;
+        this._tempOldTexPort=null;
+        this._lastClickedP=null;
+    }
+}
+
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
 {
     this._lastClickedP=p;
     this._lastClicked=this.updateTexturePort(p);
-    
+
     var tp=this.updateTexturePort(p);
 
-    if(!tp)return;
-    // if(this._mode==CABLES.UI.TexturePreviewer.MODE_CLICKED) 
-    // {
-    //     tp.doShow=true;
-
-    //     this._updateHtml();
-
-    //     for(var i=0;i<this._texturePorts.length;i++)
-    //     {
-    //         // var ele=document.getElementById('preview'+this._texturePorts[i].id);
-    //         var ele=document.getElementById('bgpreview');
-
-    //         if(ele && this._texturePorts[i].port.parent==p.parent)
-    //         {
-    //             this._texturePorts[i].updated=this._texturePorts[i].lastTimeClicked=CABLES.now();
-    //             ele.style.order=parseInt(this._texturePorts[i].lastTimeClicked,10);
-    //             // ele.classList.add('activePreview');
-    //         }
-    //     }
-
-    //     this._texturePorts.sort(function(a,b)
-    //     {
-    //         return a.lastTimeClicked-b.lastTimeClicked;
-    //     });
-
-    //     while(this._texturePorts.length>3 )
-    //     {
-    //         var ele=document.getElementById('preview'+this._texturePorts[0].id);
-    //         if(ele) ele.remove();
-
-    //         this._texturePorts.splice(0,1);
-    //     }
-
-    //     document.getElementById('meta_content').scrollTop=0;
-    // }
+    if(!tp)
+    {
+        console.log("no tp!");
+        return;
+    }
 
     for(var i=0;i<this._texturePorts.length;i++)
     {
@@ -399,7 +397,6 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
     // console.log(port);
     var doUpdateHtml=false;
     var p=port;
-
 
 
     if(p && p.get() && p.get().tex && port.direction==CABLES.PORT_DIR_OUT )
