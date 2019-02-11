@@ -20,16 +20,16 @@ CABLES.UI.Patch = function(_gui) {
 
     this.lastMouseMoveEvent = null;
 
-    var rubberBandStartPos = null;
-    var rubberBandPos = null;
+    // var rubberBandStartPos = null;
+    // var rubberBandPos = null;
     var mouseRubberBandStartPos = null;
     var mouseRubberBandPos = null;
     var rubberBandRect = null;
     var isLoading = false;
 
-    var timeoutPan = 0;
-    var timeoutFpsLimit = 0;
-    var fpsLimitBefore = 0;
+    // var timeoutPan = 0;
+    // var timeoutFpsLimit = 0;
+    // var fpsLimitBefore = 0;
     var timeoutRubberBand = -1;
 
     var subPatchViewBoxes = [];
@@ -461,6 +461,7 @@ CABLES.UI.Patch = function(_gui) {
     });
 
     $('#patch').keydown(function(e) {
+        
         switch (e.which)
         {
             case 27:
@@ -543,16 +544,18 @@ CABLES.UI.Patch = function(_gui) {
                 self.setCurrentSubPatch(0);
                 break;
 
-            // case 38: // arrow up
-            //     break;
-            // case 40: // arrow down
-            //     break;
+            case 187:
+                this._viewBox.zoomStep(-1);
+                break;
+            case 189:
+                this._viewBox.zoomStep(1);
+                break;
 
             default:
                 // console.log('key ',e.which,e.key);
                 break;
         }
-    });
+    }.bind(this));
 
     this.exportStatic = function(ignoreAssets) {
         if (!gui.getSavedState()) {

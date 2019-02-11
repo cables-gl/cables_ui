@@ -35,6 +35,9 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('snapToGrid')) $('.nav_usersettings_snaptogrid i').removeClass('unchecked');
         else $('.nav_usersettings_snaptogrid i').addClass('unchecked');
 
+    if (this.get('touchpadmode')) $('.nav_usersettings_touchpadmode i').removeClass('unchecked');
+        else $('.nav_usersettings_touchpadmode i').addClass('unchecked');
+
     if (this.get('theme-bright')) $('.nav_usersettings_theme-bright i').removeClass('unchecked');
         else $('.nav_usersettings_theme-bright i').addClass('unchecked');
 

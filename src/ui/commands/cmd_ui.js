@@ -169,7 +169,16 @@ CABLES.CMD.UI.profileUI = function () {
     CABLES.uiperf.show();
 };
 
-    
+CABLES.CMD.UI.toggleTouchpadMode = function () {
+
+    gui.patch().modeTouchPad= !CABLES.UI.userSettings.get('touchpadmode');
+    CABLES.UI.userSettings.set('touchpadmode',gui.patch().modeTouchPad);
+
+    if(gui.patch().modeTouchPad) CABLES.UI.notify("Touchpad Mode enabled");
+        else CABLES.UI.notify("Touchpad Mode disabled");
+
+};
+
     
     
     
@@ -317,7 +326,12 @@ CABLES.CMD.commands.push({
         category: "ui",
         func: CABLES.CMD.UI.profileUI,
         icon: "command"
-        
+    },
+    {
+        cmd: "toggle touchpad mode",
+        category: "ui",
+        func: CABLES.CMD.UI.toggleTouchpadMode,
+        icon: "command"
     }
 
 );

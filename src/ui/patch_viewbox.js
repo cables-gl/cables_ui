@@ -236,9 +236,21 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
     }.bind(this));
 }
 
+CABLES.UI.PatchViewBox.prototype.zoomStep=function(dir)
+{
+    const amount=dir*80;
+
+    this.animate(
+        this._viewBox.x-amount,
+        this._viewBox.y-amount,
+        this._viewBox.w+amount*2,
+        this._viewBox.h+amount*2
+    );
+
+}
+
 CABLES.UI.PatchViewBox.prototype._dragMiniMap = function (e)
 {
-    // if (mouseRubberBandPos) return;
     e = mouseEvent(e);
 
     if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
@@ -266,7 +278,6 @@ CABLES.UI.PatchViewBox.prototype.setMinimapBounds = function ()
         this._viewBoxMiniMap.h
     );
 };
-
 
 CABLES.UI.PatchViewBox.prototype._animViewBox = function ()
 {
