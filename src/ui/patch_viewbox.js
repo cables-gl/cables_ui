@@ -199,7 +199,6 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 
         if (delta < 0) delta = 0.8;
             else delta = 1.2;
-
         
         var patchWidth = this._elePatch.offsetWidth;
         var patchHeight = this._elePatch.offsetHeight;
@@ -246,7 +245,6 @@ CABLES.UI.PatchViewBox.prototype.zoomStep=function(dir)
         this._viewBox.w+amount*2,
         this._viewBox.h+amount*2
     );
-
 }
 
 CABLES.UI.PatchViewBox.prototype._dragMiniMap = function (e)
@@ -322,6 +320,20 @@ CABLES.UI.PatchViewBox.prototype.animate = function (x, y, w, h)
 CABLES.UI.PatchViewBox.prototype.center = function (x, y) {
     this.animate(x - this._viewBox.w / 2, y - this._viewBox.h / 2, this._viewBox.w, this._viewBox.h);
 }
+
+CABLES.UI.PatchViewBox.prototype.centerIfNotVisible = function (opui) {
+    if(
+        opui.getPosX()<this._viewBox.x ||
+        opui.getPosX()+opui.getWidth()>this._viewBox.x+this._viewBox.w ||
+        opui.getPosY()<this._viewBox.y ||
+        opui.getPosY()+opui.getHeight()>this._viewBox.y+this._viewBox.h
+    )
+    {
+        this.center(opui.getPosX(),opui.getPosY());
+    }
+}
+
+
 
 CABLES.UI.PatchViewBox.prototype.deSerialize = function (o) {
     this.set(o.x, o.y, o.w, o.h);

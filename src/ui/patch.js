@@ -392,6 +392,86 @@ CABLES.UI.Patch = function(_gui) {
         self.updateSubPatches();
     };
 
+
+    this._distance2dDir=function (x1,y1,x2,y2)
+    {
+        const xd = x2-x1;
+        const yd = y2-y1;
+        var d= Math.sqrt(xd*xd + yd*yd);
+        if(xd<0)return 0-d;
+        return d;
+    }
+    
+    this.cursorNavigateHor=function(dir)
+    {
+        if(selectedOps.length==0)return;
+
+        var nextOp=null;
+        var nextOpDist=999999;
+
+        for(var i=0;i<this.ops.length;i++)
+        {
+            // var dist=selectedOps[0].getPosX()-this.ops[i].getPosX();
+
+            var startx=selectedOps[0].getPosX();
+            if(dir==1) startx+=selectedOps[0].getWidth();
+            var starty=selectedOps[0].getPosY();
+
+            var endx=this.ops[i].getPosX();
+            if(dir==0) endx+=this.ops[i].getWidth();
+
+
+            var dist=this._distance2dDir(
+                startx,
+                starty,
+                endx,
+                this.ops[i].getPosY()
+
+            );
+            
+            if(selectedOps[0].getPosX()==this.ops[i].getPosX())continue;
+
+            if(dir==0 && dist<0 || dir==1 && dist>0)
+            {
+                dist=Math.abs(dist);
+                if(dist<nextOpDist)
+                {
+                    nextOpDist=dist;
+                    nextOp=this.ops[i];
+                }
+            }
+        }
+
+        if(nextOp)
+        {
+
+            this.setSelectedOp(null);
+            this.setSelectedOp(nextOp);
+            self._viewBox.centerIfNotVisible(selectedOps[0]);
+        }
+
+    };
+
+    this.cursorNavigate=function(dir)
+    {
+        if(selectedOps.length==0)return;
+        
+        var ports=selectedOps[0].op.portsIn;
+        if(dir==0)ports=selectedOps[0].op.portsOut;
+
+        for(var i=0;i<ports.length;i++)
+        {
+            if(ports[i].isLinked())
+            {
+                var otherPort=ports[i].links[0].getOtherPort(ports[i]);
+                this.setSelectedOpById(otherPort.parent.id);
+                self._viewBox.centerIfNotVisible(selectedOps[0]);
+    
+                break;
+            }
+        }
+    };
+
     this.cut = function(e) {
         self.copy(e);
         self.deleteSelectedOps();
@@ -460,10 +540,25 @@ CABLES.UI.Patch = function(_gui) {
         }
     });
 
-    $('#patch').keydown(function(e) {
-        
+    $('#patch').keydown(function(e)
+    {
         switch (e.which)
         {
+
+            case 38: // up
+            this.cursorNavigate(1);
+            break;
+            case 40: // down
+            this.cursorNavigate(0);
+            break;
+            case 37: // left
+            this.cursorNavigateHor(0);
+            break;
+            case 39: // right
+            this.cursorNavigateHor(1);
+            break;
+
+
             case 27:
             gui.setCursor();
             break;
