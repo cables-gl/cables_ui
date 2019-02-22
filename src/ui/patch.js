@@ -444,7 +444,6 @@ CABLES.UI.Patch = function(_gui) {
 
         if(nextOp)
         {
-
             this.setSelectedOp(null);
             this.setSelectedOp(nextOp);
             self._viewBox.centerIfNotVisible(selectedOps[0]);
@@ -984,33 +983,37 @@ this._timeoutLinkWarnings=null;
                     self._serverDate=r.updated;
                     if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
                         else CABLES.UI.notify('patch saved');
-
+                    
+                    const thePatch=gui.patch().scene;
+                    const cgl=thePatch.cgl;
+                    
                     if(doSaveScreenshot)
                     {
                         var screenshotTimeout = setTimeout(function() {
-                            gui.patch().scene.cgl.setSize(w,h);
-                            gui.patch().scene.resume();
+                            cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
+                            thePatch.resume();
                             
                         }, 1000);
 
-                        gui.patch().scene.pause();
-                        gui.patch().scene.cgl.setSize(640,360);
-                        gui.patch().scene.renderOneFrame();
-                        gui.patch().scene.renderOneFrame();
-    
+                        thePatch.pause();
+                        cgl.setSize(640,360);
+                        thePatch.renderOneFrame();
+                        thePatch.renderOneFrame();
                         gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
-                        gui.patch().scene.cgl.screenShot(function(screenBlob) {
+
+                        cgl.screenShot(function(screenBlob)
+                        {
                             clearTimeout(screenshotTimeout);
-    
-                            gui.patch().scene.cgl.setSize(w,h);
-                            gui.patch().scene.resume();
-    
+
+                            cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
+                            thePatch.resume();
+
                             var reader = new FileReader();
-    
+
                             reader.onload = function(event) {
                                 CABLES.api.put(
                                     'project/' + id + '/screenshot', {
-                                        "screenshot": event.target.result //gui.patch().scene.cgl.screenShotDataURL
+                                        "screenshot": event.target.result //cgl.screenShotDataURL
                                     },
                                     function(r) {
                                         gui.jobs().finish('screenshotsave');
@@ -1035,15 +1038,12 @@ this._timeoutLinkWarnings=null;
                     {
                         CABLES.UI.MODAL.showError('Could not save','unknown error while saving patch. please try again later...');
                     }
-                    
+
                 });
         } catch (e) {
             console.log(e);
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
-        } finally {
-
-
-        }
+        } finally {}
     };
 
     this.getCurrentProject = function() {
