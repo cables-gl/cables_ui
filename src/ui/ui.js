@@ -18,7 +18,7 @@ CABLES.UI.GUI = function() {
     this.cmdPallet = new CABLES.UI.CommandPallet();
     var _opselect = new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
-    this._gizmo=new CABLES.Gizmo();
+    this._gizmo=null;
 
     this.variables = new CABLES.UI.Variables();
     this.patchConnection = new CABLES.PatchConnectionSender();
@@ -1344,6 +1344,7 @@ CABLES.UI.GUI = function() {
 
     this.setTransformGizmo=function(params)
     {
+        if(!this._gizmo)this._gizmo=new CABLES.Gizmo(this.scene().cgl);
         this._gizmo.set(params);
     };
 
