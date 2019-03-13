@@ -2673,10 +2673,12 @@ this._timeoutLinkWarnings=null;
 
             var perfLoopOut = CABLES.uiperf.start('_showOpParamsLOOP OUT');
 
-
             var foundPreview = false;
             for (var i2 in op.portsOut) {
-                if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY) {
+                if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY 
+                
+                || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING
+                ) {
                     op.portsOut[i2].watchId = 'out_' + i2;
                     watchPorts.push(op.portsOut[i2]);
                 }
@@ -2799,7 +2801,10 @@ this._timeoutLinkWarnings=null;
 
         for (var i=0;i< watchPorts.length;i++)
         {
-            if (watchPorts[i].type != CABLES.OP_PORT_TYPE_VALUE && watchPorts[i].type != CABLES.OP_PORT_TYPE_ARRAY) continue;
+            if (watchPorts[i].type != CABLES.OP_PORT_TYPE_VALUE && 
+                watchPorts[i].type != CABLES.OP_PORT_TYPE_STRING && 
+                watchPorts[i].type != CABLES.OP_PORT_TYPE_ARRAY) continue;
+
             var id = '.watchPortValue_' + watchPorts[i].watchId;
             var el = $(id);
 
