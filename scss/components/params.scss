@@ -176,6 +176,14 @@
         border: 1px solid $background-color-brighter;
 	}
 
+    textarea,input
+    {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+    }
+
+
     input.value,.linkedValue
     {
 		background-color: $color-background-input;
@@ -195,19 +203,13 @@
         &::-webkit-inner-spin-button {
             -webkit-appearance: none;
         }
-        
-
-
     }
 
     .linkedValue
     {
         background-color:var(--color-01);
         margin-top:4px;
-        
     }
-
-
 
     .ccheckbox
     {
@@ -220,14 +222,11 @@
     .fa-check-square:before
     {
         color:var(--color-11) !important;
-
     }
 
     .value
     {
-        //font-family: SourceCodePro,monospace;
         width: 120px;
-
         display: block;
         padding-top:2px !important;
         padding-bottom:2px !important;
