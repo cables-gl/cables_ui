@@ -220,7 +220,6 @@ CABLES.UI.Patch = function(_gui) {
                                     var y=json.ops[i].uiAttribs.translate.y + mouseY - miny;
                                     if(CABLES.UI.userSettings.snapToGrid)
                                     {
-                                        console.log("SNAP!!!!");
                                         x=CABLES.UI.snapOpPosX(x);
                                         y=CABLES.UI.snapOpPosY(y);
                                     }
@@ -631,9 +630,10 @@ CABLES.UI.Patch = function(_gui) {
         return name;
     };
 
-    this.saveCurrentProjectAs = function(cb, _id, _name) {
-
-        if(window.process && window.process.versions['electron']) {
+    this.saveCurrentProjectAs = function(cb, _id, _name)
+    {
+        if(window.process && window.process.versions['electron'])
+        {
             var electron = require('electron');
             var ipcRenderer = electron.ipcRenderer;
             var remote = electron.remote; 
@@ -892,7 +892,6 @@ this._timeoutLinkWarnings=null;
                         var screenshotTimeout = setTimeout(function() {
                             gui.patch().scene.cgl.setSize(w,h);
                             gui.patch().scene.resume();
-                            
                         }, 1000);
 
                         gui.patch().scene.pause();
@@ -943,8 +942,6 @@ this._timeoutLinkWarnings=null;
             console.log(e);
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
         } finally {
-
-
         }
     };
 
@@ -1030,8 +1027,6 @@ this._timeoutLinkWarnings=null;
 
         return bounds;
     };
-
-
 
     this.getSubPatchBounds = function(subPatch) {
 
@@ -1920,7 +1915,6 @@ this._timeoutLinkWarnings=null;
     this.opCollisionTest = function(uiOp)
     {
         var perf = CABLES.uiperf.start('opCollisionTest');
-
         var found=false;
         var count=1;
 
@@ -1930,6 +1924,8 @@ this._timeoutLinkWarnings=null;
             for (var i =0;i<this.ops.length;i++)
             {
                 var testOp = this.ops[i];
+                if(testOp.op.objName.indexOf("Ui.Comment"!=-1))continue;
+
                 if (!testOp.op.deleted &&
                     (uiOp.op.objName.indexOf("Comment")==-1) && 
                     uiOp.op.id != testOp.op.id && 
@@ -2097,7 +2093,6 @@ this._timeoutLinkWarnings=null;
         for (var j = 0; j < selectedOps.length; j++) {
             if (j > 0) y += selectedOps[j].getHeight() + 10;
             selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x, y);
-
         }
     };
 
@@ -2225,7 +2220,6 @@ this._timeoutLinkWarnings=null;
                 gui.jobs().finish('deletechilds');
             }
         );
-        
     };
 
     this.unlinkSelectedOps = function() {
@@ -2235,7 +2229,6 @@ this._timeoutLinkWarnings=null;
     this.deleteSelectedOps = function() {
         for (var i in selectedOps)
             gui.patch().scene.deleteOp(selectedOps[i].op.id, true);
-        
         this.updateBounds();
     };
 
@@ -2310,11 +2303,8 @@ this._timeoutLinkWarnings=null;
     this.moveSelectedOpsFinished = function() {
         var i = 0;
 
-        if (selectedOps.length == 1)
-            this.opCollisionTest(selectedOps[0]);
-
-        for (i in selectedOps)
-            selectedOps[i].doMoveFinished();
+        if (selectedOps.length == 1) this.opCollisionTest(selectedOps[0]);
+        for (i in selectedOps) selectedOps[i].doMoveFinished();
     };
 
     this.prepareMovingOps = function ()
@@ -2339,15 +2329,13 @@ this._timeoutLinkWarnings=null;
     };
 
     this.getUiOp = function(op) {
-        for (var i = 0; i < self.ops.length; i++) {
+        for (var i = 0; i < self.ops.length; i++)
             if (self.ops[i].op == op) return self.ops[i];
-        }
         return null;
     };
 
     this.updateOpParams = function(id) {
         if (CABLES.UI.DRAGGINGOPS || CABLES.UI.selectedEndOp || CABLES.UI.selectedStartOp) return false;
-
         if(selectedOps.length!=1)return;
         if(selectedOps[0].op.id!=id)return;
         gui.setTransformGizmo(null);
@@ -2356,8 +2344,8 @@ this._timeoutLinkWarnings=null;
         return true;
     };
 
-    this.showProjectParams = function() {
-
+    this.showProjectParams = function()
+    {
         gui.texturePreview().pressedEscape();
         var perf = CABLES.uiperf.start('showProjectParams');
 
@@ -2675,10 +2663,8 @@ this._timeoutLinkWarnings=null;
 
             var foundPreview = false;
             for (var i2 in op.portsOut) {
-                if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY 
-                
-                || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING
-                ) {
+                if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING)
+                {
                     op.portsOut[i2].watchId = 'out_' + i2;
                     watchPorts.push(op.portsOut[i2]);
                 }
@@ -2753,9 +2739,7 @@ this._timeoutLinkWarnings=null;
 
         }
 
-        for (var ipi =0;ipi<op.portsIn.length;ipi++) {
-            CABLES.UI.initPortClickListener(op,ipi);
-        }
+        for (var ipi =0;ipi<op.portsIn.length;ipi++) CABLES.UI.initPortClickListener(op,ipi);
 
         for (var ipip = 0; ipip < op.portsIn.length; ipip++) {
             (function(index) {
@@ -2766,9 +2750,7 @@ this._timeoutLinkWarnings=null;
             })(ipip);
         }
 
-        for (var ipii = 0; ipii < op.portsIn.length; ipii++) {
-            CABLES.UI.initPortInputListener(op, ipii);
-        }
+        for (var ipii = 0; ipii < op.portsIn.length; ipii++) CABLES.UI.initPortInputListener(op, ipii);
 
         for (var iwap in watchAnimPorts) {
             var thePort = watchAnimPorts[iwap];
@@ -2792,11 +2774,10 @@ this._timeoutLinkWarnings=null;
         perf.finish();
     };
 
-
     var cycleWatchPort = false;
 
-    function doWatchPorts() {
-
+    function doWatchPorts()
+    {
         cycleWatchPort = !cycleWatchPort;
 
         for (var i=0;i< watchPorts.length;i++)

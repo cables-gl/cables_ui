@@ -123,10 +123,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if (background) background.remove();
         if (label) label.remove();
         if (commentText) commentText.remove();
-        if(backgroundResize)backgroundResize.remove();
+        if (backgroundResize)backgroundResize.remove();
         if (this._errorIndicator) this._errorIndicator.remove();
         // if(resizeHandle)resizeHandle.remove();
-        if(this._colorHandle)this._colorHandle.remove();
+        if (this._colorHandle)this._colorHandle.remove();
         if (miniRect) miniRect.remove();
         if (this._attachedComment) this._attachedComment.remove();
         // label=background=commentText=backgroundResize=null;
