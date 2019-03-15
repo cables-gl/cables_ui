@@ -1579,10 +1579,10 @@ this._timeoutLinkWarnings=null;
                 );
             }
         } else
-        if (CABLES.UI.OPSELECT.linkNewOpToPort) {
-
-            var foundPort = op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
-
+        
+        if (CABLES.UI.OPSELECT.linkNewOpToPort)
+        {
+            const foundPort = op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
             if (foundPort)
             {
                 // console.log(op.objName,'op.objName');
@@ -1601,9 +1601,7 @@ this._timeoutLinkWarnings=null;
             }
         }
 
-        // uiOp.setPos(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
-
-        var dir=null;
+        // var dir=null;
         if(CABLES.UI.OPSELECT.linkNewOpToPort)dir=CABLES.UI.OPSELECT.linkNewOpToPort.direction;
 
         CABLES.UI.OPSELECT.linkNewOpToOp = null;
@@ -1839,7 +1837,6 @@ this._timeoutLinkWarnings=null;
             var width = CABLES.UI.uiConfig.opWidth;
             if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
 
-
             var x=CABLES.UI.OPSELECT.newOpPos.x;
             var y=CABLES.UI.OPSELECT.newOpPos.y;
 
@@ -1850,15 +1847,10 @@ this._timeoutLinkWarnings=null;
             uiOp.wasAdded = false;
 
             doAddOp(uiOp);
-            
             this.opCollisionTest(uiOp);
-            
             self.checkLinkTimeWarnings();
-
         }.bind(this);
     };
-
-
 
     this.setOpColor=function(col)
     {
@@ -1881,7 +1873,6 @@ this._timeoutLinkWarnings=null;
             currentOp.setPos();
         }
     };
-    
 
     this.setCurrentOpTitle = function(t) {
         if (currentOp) this.setOpTitle(currentOp, t);
@@ -1917,7 +1908,7 @@ this._timeoutLinkWarnings=null;
             for (var i=0;i<self.ops.length;i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
     
             if (which === 0) $('#subpatch_nav').hide();
-            else $('#subpatch_nav').show();
+                else $('#subpatch_nav').show();
     
             currentSubPatch = which;
             self.updateSubPatches();
@@ -2885,24 +2876,28 @@ this._timeoutLinkWarnings=null;
 
         for (var i=0;i< watchPorts.length;i++)
         {
-            if (watchPorts[i].type != CABLES.OP_PORT_TYPE_VALUE && 
-                watchPorts[i].type != CABLES.OP_PORT_TYPE_STRING && 
-                watchPorts[i].type != CABLES.OP_PORT_TYPE_ARRAY) continue;
+            const thePort=watchPorts[i];
 
-            var id = '.watchPortValue_' + watchPorts[i].watchId;
+            if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && 
+                thePort.type != CABLES.OP_PORT_TYPE_STRING && 
+                thePort.type != CABLES.OP_PORT_TYPE_ARRAY) continue;
+
+            var id = '.watchPortValue_' + thePort.watchId;
             var el = $(id);
 
-            if (watchPorts[i].isAnimated()) {
-                if (el.val() != watchPorts[i].get()) el.val(watchPorts[i].get());
-            } else
-            if (watchPorts[i].type == CABLES.OP_PORT_TYPE_ARRAY) {
-                if (watchPorts[i].get())
-                    el.html('length: ' + String(watchPorts[i].get().length));
+            if (thePort.isAnimated()) {
+                if (el.val() != thePort.get()) el.val(thePort.get());
+            }
+            else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY) {
+                if (thePort.get()) el.html('length: ' + String(thePort.get().length));
+            }
+            else if (thePort.type == CABLES.OP_PORT_TYPE_STRING) {
+                el.html('\"'+thePort.get()+'\"');
             } else {
-                el.html(String(watchPorts[i].get()));
+                el.html(String(thePort.get()));
             }
 
-            CABLES.watchPortVisualize.update(id, watchPorts[i].watchId, watchPorts[i].get());
+            CABLES.watchPortVisualize.update(id, thePort.watchId, thePort.get());
         }
 
         if (CABLES.UI.uiConfig.watchValuesInterval > 0)
