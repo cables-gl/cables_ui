@@ -20,16 +20,16 @@ CABLES.UI.Patch = function(_gui) {
 
     this.lastMouseMoveEvent = null;
 
-    var rubberBandStartPos = null;
-    var rubberBandPos = null;
+    // var rubberBandStartPos = null;
+    // var rubberBandPos = null;
     var mouseRubberBandStartPos = null;
     var mouseRubberBandPos = null;
     var rubberBandRect = null;
     var isLoading = false;
 
-    var timeoutPan = 0;
-    var timeoutFpsLimit = 0;
-    var fpsLimitBefore = 0;
+    // var timeoutPan = 0;
+    // var timeoutFpsLimit = 0;
+    // var fpsLimitBefore = 0;
     var timeoutRubberBand = -1;
 
     var subPatchViewBoxes = [];
@@ -391,6 +391,85 @@ CABLES.UI.Patch = function(_gui) {
         self.updateSubPatches();
     };
 
+
+    this._distance2dDir=function (x1,y1,x2,y2)
+    {
+        const xd = x2-x1;
+        const yd = y2-y1;
+        var d= Math.sqrt(xd*xd + yd*yd);
+        if(xd<0)return 0-d;
+        return d;
+    }
+    
+    this.cursorNavigateHor=function(dir)
+    {
+        if(selectedOps.length==0)return;
+
+        var nextOp=null;
+        var nextOpDist=999999;
+
+        for(var i=0;i<this.ops.length;i++)
+        {
+            // var dist=selectedOps[0].getPosX()-this.ops[i].getPosX();
+
+            var startx=selectedOps[0].getPosX();
+            if(dir==1) startx+=selectedOps[0].getWidth();
+            var starty=selectedOps[0].getPosY();
+
+            var endx=this.ops[i].getPosX();
+            if(dir==0) endx+=this.ops[i].getWidth();
+
+
+            var dist=this._distance2dDir(
+                startx,
+                starty,
+                endx,
+                this.ops[i].getPosY()
+
+            );
+            
+            if(selectedOps[0].getPosX()==this.ops[i].getPosX())continue;
+
+            if(dir==0 && dist<0 || dir==1 && dist>0)
+            {
+                dist=Math.abs(dist);
+                if(dist<nextOpDist)
+                {
+                    nextOpDist=dist;
+                    nextOp=this.ops[i];
+                }
+            }
+        }
+
+        if(nextOp)
+        {
+            this.setSelectedOp(null);
+            this.setSelectedOp(nextOp);
+            self._viewBox.centerIfNotVisible(selectedOps[0]);
+        }
+
+    };
+
+    this.cursorNavigate=function(dir)
+    {
+        if(selectedOps.length==0)return;
+        
+        var ports=selectedOps[0].op.portsIn;
+        if(dir==0)ports=selectedOps[0].op.portsOut;
+
+        for(var i=0;i<ports.length;i++)
+        {
+            if(ports[i].isLinked())
+            {
+                var otherPort=ports[i].links[0].getOtherPort(ports[i]);
+                this.setSelectedOpById(otherPort.parent.id);
+                self._viewBox.centerIfNotVisible(selectedOps[0]);
+    
+                break;
+            }
+        }
+    };
+
     this.cut = function(e) {
         self.copy(e);
         self.deleteSelectedOps();
@@ -459,9 +538,25 @@ CABLES.UI.Patch = function(_gui) {
         }
     });
 
-    $('#patch').keydown(function(e) {
+    $('#patch').keydown(function(e)
+    {
         switch (e.which)
         {
+
+            case 38: // up
+            this.cursorNavigate(1);
+            break;
+            case 40: // down
+            this.cursorNavigate(0);
+            break;
+            case 37: // left
+            this.cursorNavigateHor(0);
+            break;
+            case 39: // right
+            this.cursorNavigateHor(1);
+            break;
+
+
             case 27:
             gui.setCursor();
             break;
@@ -542,16 +637,18 @@ CABLES.UI.Patch = function(_gui) {
                 self.setCurrentSubPatch(0);
                 break;
 
-            // case 38: // arrow up
-            //     break;
-            // case 40: // arrow down
-            //     break;
+            case 187:
+                this._viewBox.zoomStep(-1);
+                break;
+            case 189:
+                this._viewBox.zoomStep(1);
+                break;
 
             default:
                 // console.log('key ',e.which,e.key);
                 break;
         }
-    });
+    }.bind(this));
 
     this.exportStatic = function(ignoreAssets) {
         if (!gui.getSavedState()) {
@@ -886,32 +983,39 @@ this._timeoutLinkWarnings=null;
                     self._serverDate=r.updated;
                     if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
                         else CABLES.UI.notify('patch saved');
-
+                    
+                    const thePatch=gui.patch().scene;
+                    const cgl=thePatch.cgl;
+                    
                     if(doSaveScreenshot)
                     {
                         var screenshotTimeout = setTimeout(function() {
-                            gui.patch().scene.cgl.setSize(w,h);
-                            gui.patch().scene.resume();
+//                             gui.patch().scene.cgl.setSize(w,h);
+//                             gui.patch().scene.resume();
+                            cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
+                            thePatch.resume();
+                            
                         }, 1000);
 
-                        gui.patch().scene.pause();
-                        gui.patch().scene.cgl.setSize(640,360);
-                        gui.patch().scene.renderOneFrame();
-                        gui.patch().scene.renderOneFrame();
-    
+                        thePatch.pause();
+                        cgl.setSize(640,360);
+                        thePatch.renderOneFrame();
+                        thePatch.renderOneFrame();
                         gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
-                        gui.patch().scene.cgl.screenShot(function(screenBlob) {
+
+                        cgl.screenShot(function(screenBlob)
+                        {
                             clearTimeout(screenshotTimeout);
-    
-                            gui.patch().scene.cgl.setSize(w,h);
-                            gui.patch().scene.resume();
-    
+
+                            cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
+                            thePatch.resume();
+
                             var reader = new FileReader();
-    
+
                             reader.onload = function(event) {
                                 CABLES.api.put(
                                     'project/' + id + '/screenshot', {
-                                        "screenshot": event.target.result //gui.patch().scene.cgl.screenShotDataURL
+                                        "screenshot": event.target.result //cgl.screenShotDataURL
                                     },
                                     function(r) {
                                         gui.jobs().finish('screenshotsave');
@@ -936,13 +1040,17 @@ this._timeoutLinkWarnings=null;
                     {
                         CABLES.UI.MODAL.showError('Could not save','unknown error while saving patch. please try again later...');
                     }
-                    
+
                 });
         } catch (e) {
             console.log(e);
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
+<<<<<<< HEAD
         } finally {
         }
+=======
+        } finally {}
+>>>>>>> 7dcd1fd3d009d98575c0e613425f7bcc5939aa97
     };
 
     this.getCurrentProject = function() {

@@ -18,7 +18,7 @@ CABLES.UI.GUI = function() {
     this.cmdPallet = new CABLES.UI.CommandPallet();
     var _opselect = new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
-    this._gizmo=new CABLES.Gizmo();
+    this._gizmo=null;
 
     this.variables = new CABLES.UI.Variables();
     this.patchConnection = new CABLES.PatchConnectionSender();
@@ -181,12 +181,11 @@ CABLES.UI.GUI = function() {
         self.rendererWidth=Math.floor(self.rendererWidth);
         self.rendererHeight=Math.floor(self.rendererHeight);
 
-        if(gui.patch().scene.cgl.canvasWidth)
+        var cgl=gui.patch().scene.cgl;
+        if(cgl.canvasWidth)
         {
-            var sizeStr='size: '+gui.patch().scene.cgl.canvasWidth+' x '+gui.patch().scene.cgl.canvasHeight;
-            if(gui.patch().scene.cgl.canvasScale!=1)sizeStr+=' (scale '+gui.patch().scene.cgl.canvasScale+')';
-            // $('#canvasInfoSize').html(sizeStr);
-            this._elCanvasInfoSize.innerHTML = sizeStr;
+
+            this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
 
         var iconBarWidth=iconBarWidth||80;
@@ -1345,6 +1344,7 @@ CABLES.UI.GUI = function() {
 
     this.setTransformGizmo=function(params)
     {
+        if(!this._gizmo)this._gizmo=new CABLES.Gizmo(this.scene().cgl);
         this._gizmo.set(params);
     };
 
@@ -1473,6 +1473,14 @@ CABLES.UI.GUI = function() {
         });
     }
 
+    this.getCanvasSizeString=function (cgl)
+    {
+        var sizeStr='size: '+cgl.canvasWidth+'x'+cgl.canvasHeight;
+        if(cgl.canvasScale!=1)sizeStr+=' (scale '+cgl.canvasScale+')';
+        if(cgl.pixelDensity)sizeStr+=' ('+(cgl.canvasWidth/cgl.pixelDensity)+'x'+(cgl.canvasHeight/cgl.pixelDensity)+'x'+cgl.pixelDensity+')';
+        return sizeStr;
+    }
+
     this.showCanvasModal=function(_show)
     {
         if(!this._elCanvasIconbar)return;
@@ -1484,9 +1492,9 @@ CABLES.UI.GUI = function() {
             const cgl=gui.patch().scene.cgl;
             this.updateCanvasIconBar();
 
-            var sizeStr='size: '+cgl.canvasWidth+' x '+cgl.canvasHeight;
-            if(cgl.canvasScale!=1)sizeStr+=' (scale: '+cgl.canvasScale+') '
-            this._elCanvasInfoSize.innerHTML = sizeStr;
+            // var sizeStr='size: '+cgl.canvasWidth+' x '+cgl.canvasHeight;
+            // if(cgl.canvasScale!=1)sizeStr+=' (scale: '+cgl.canvasScale+') '
+            this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
         else
         {
