@@ -98,8 +98,6 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
     const elem=$ ('#'+ele);
     const elemContainer=$('#'+ele+'-container');
 
-    console.log("valuechanger",ele);
-
     var isDown=false;
     var startVal=elem.val();
     var el=document.getElementById(ele);

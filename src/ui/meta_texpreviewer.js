@@ -238,7 +238,6 @@ CABLES.UI.TexturePreviewer.isScrolledIntoView=function(elem)
     var elemBottom = elemTop + $(elem).height();
 
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
-    return true;
 }
 
 
