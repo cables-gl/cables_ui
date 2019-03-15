@@ -1045,12 +1045,7 @@ this._timeoutLinkWarnings=null;
         } catch (e) {
             console.log(e);
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
-<<<<<<< HEAD
-        } finally {
-        }
-=======
         } finally {}
->>>>>>> 7dcd1fd3d009d98575c0e613425f7bcc5939aa97
     };
 
     this.getCurrentProject = function() {
