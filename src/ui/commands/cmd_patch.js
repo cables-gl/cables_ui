@@ -116,7 +116,9 @@ CABLES.CMD.PATCH.opsCompress=function()
 
 CABLES.CMD.PATCH.export=function()
 {
-	gui.patch().exportStatic();
+	var exporter=new CABLES.UI.Exporter();
+	exporter.show();
+	// gui.patch().exportStatic();
 };
 
 CABLES.CMD.PATCH.newPatch=function()

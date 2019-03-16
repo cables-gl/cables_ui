@@ -14,7 +14,7 @@ CABLES.CMD.UI.settings = function() {
 
 
 CABLES.CMD.UI.userSettings = function() {
-    var settings = new CABLES.UserSettings();
+    var settings = new CABLES.UI.UserSettingsDialog();
     settings.show();
 };
 
