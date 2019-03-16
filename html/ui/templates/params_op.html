@@ -134,14 +134,14 @@
             <pre>{{{ json opserialized }}}</pre>
     </div> -->
 
-    <div  class="panel" >
+    <div class="panel" >
         <a onclick="gui.patch().resetOpValues('{{{op.id}}}');" class="button">reset input parameters</a>
     </div>
 
     
-    <div  class="panel" >
+    <div class="panel" >
         comment:
-        <textarea style="height:60px;width:100%;" onInput="gui.patch().setCurrentOpComment(this.value);" onInput="gui.patch().setCurrentOpComment(this.value);">{{op.uiAttribs.comment}}</textarea>
+        <textarea id="commentTextarea" spellcheck="false" style="height:60px;width:100%;" onInput="gui.patch().setCurrentOpComment(this.value);" >{{op.uiAttribs.comment}}</textarea>
     </div>
         
 

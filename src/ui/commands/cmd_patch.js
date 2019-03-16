@@ -157,14 +157,14 @@ CABLES.CMD.PATCH.createAutoVariable=function()
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
         function (str)
         {
-            var opSetter;
-            var opGetter;
+			var opSetter;
+			var opGetter;
 
-            const x = CABLES.UI.OPSELECT.newOpPos.x;
-            const y = CABLES.UI.OPSELECT.newOpPos.y;
-            if(p.type==0)
-            {
-                opSetter = gui.patch().scene.addOp("Ops.Vars.SetVariable");
+			const x = CABLES.UI.OPSELECT.newOpPos.x;
+			const y = CABLES.UI.OPSELECT.newOpPos.y;
+			if(p.type==0)
+			{
+				opSetter = gui.patch().scene.addOp("Ops.Vars.SetVariable");
 
                 CABLES.UI.OPSELECT.newOpPos.x=x;
                 CABLES.UI.OPSELECT.newOpPos.y=y;
@@ -185,13 +185,8 @@ CABLES.CMD.PATCH.createAutoVariable=function()
                 opSetter.getPort("Value").set(p.get());
                 p.parent.patch.link(opSetter, 'Value', p.parent, p.name);
             }
-
         });
-
-
 }
-
-
 
 CABLES.CMD.PATCH.editOp=function()
 {
