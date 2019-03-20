@@ -277,7 +277,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     var move = function(dx, dy, a, b, e) {
-        if ( (e.metaKey|| e.altKey) && gui.patch().getSelectedOps().length == 1) {
+        if((e.metaKey || e.altKey) && gui.patch().getSelectedOps().length == 1) {
             return;
         }
         if (shakeLastX != -1) {

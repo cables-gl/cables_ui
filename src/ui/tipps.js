@@ -6,7 +6,7 @@ CABLES.UI.Tipps = function ()
     this._index=0;
     this._wasShown=false;    
 
-    index = Math.round(CABLES.UI.TIPS.length * Math.random());
+    var index = Math.round(CABLES.UI.TIPS.length * Math.random());
 
     this.next=function()
     {

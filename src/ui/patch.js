@@ -1172,6 +1172,7 @@ this._timeoutLinkWarnings=null;
         if (rubberBandRect) rubberBandRect.hide();
     }
 
+    
     function setStatusSelectedOps() {
         var html = CABLES.UI.getHandleBarHtml(
             'params_ops', {
@@ -1183,6 +1184,7 @@ this._timeoutLinkWarnings=null;
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
     }
+    this.setStatusSelectedOps=setStatusSelectedOps;
 
     this.selectAllOpsSubPatch = function(subPatch) {
         for (var i in self.ops) {
@@ -2389,6 +2391,7 @@ this._timeoutLinkWarnings=null;
 
     this.addSelectedOp = function(uiop) {
         uiop.oprect.setSelected(true);
+        uiop.setSelected(true);
         for (var i in selectedOps)
             if (selectedOps[i] == uiop) return;
         selectedOps.push(uiop);
@@ -2403,6 +2406,7 @@ this._timeoutLinkWarnings=null;
 
     this.prepareMovingOps = function ()
     {
+        var i=0;
         if (selectedOps.length == 1)
             for (i = 0; i < self.ops.length; i++)
                 if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
@@ -2429,7 +2433,7 @@ this._timeoutLinkWarnings=null;
     };
 
     this.updateOpParams = function(id) {
-        if (CABLES.UI.DRAGGINGOPS || CABLES.UI.selectedEndOp || CABLES.UI.selectedStartOp) return false;
+        if(CABLES.UI.DRAGGINGOPS || CABLES.UI.selectedEndOp || CABLES.UI.selectedStartOp) return false;
         if(selectedOps.length!=1)return;
         if(selectedOps[0].op.id!=id)return;
         gui.setTransformGizmo(null);
