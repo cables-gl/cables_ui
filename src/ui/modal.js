@@ -281,18 +281,13 @@ CABLES.UI.MODAL.showException=function(ex,op)
 
     CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.contentElement.append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
-
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
-
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.stack+'</div>');
 
     CABLES.lastError={exception:ex};
     CABLES.UI.MODAL.contentElement.append('<br/><a class="bluebutton fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>');
 
-
 	CABLES.UI.MODAL._setVisible(true);
-
-
 
     $('#modalbg').show();
 
@@ -421,7 +416,6 @@ CABLES.UI.MODAL.promptCallbackExec=function()
         var v=$("#modalpromptinput").val();
         CABLES.UI.MODAL.hide();
         CABLES.UI.MODAL.promptCallback( v );
-        
     }
     else
     {

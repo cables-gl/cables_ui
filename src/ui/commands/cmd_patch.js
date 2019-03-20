@@ -136,6 +136,12 @@ CABLES.CMD.PATCH.patchWebsite=function()
 	window.open("/p/"+gui.patch().getCurrentProject()._id);
 };
 
+CABLES.CMD.PATCH.analyzePatch=function()
+{
+	CABLES.UI.AnalyzePatch();
+};
+
+
 CABLES.CMD.PATCH.createVariable=function(op)
 {
 	CABLES.UI.MODAL.prompt("New Variable","enter a name for the new variable",'',
@@ -517,7 +523,13 @@ CABLES.CMD.commands.push(
 		cmd:"find commented ops",
 		category:"patch",
 		func:CABLES.CMD.PATCH.findCommentedOps
+	},
+	{
+		cmd:"analyze patch",
+		category:"patch",
+		func:CABLES.CMD.PATCH.analyzePatch
 	}
+	
 
 
 );
