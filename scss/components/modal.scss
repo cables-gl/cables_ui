@@ -15,6 +15,34 @@
     z-index: $z-index-modal-bg;
 }
 
+.nopadding
+{
+    padding:0px !important;
+    
+    .top
+    {
+        padding:20px;
+        background-color: var(--color-01);
+
+        h3
+        {
+            margin-top:0px;
+        }
+
+        a
+        {
+            color:$highlight-color;
+            text-decoration: underline;
+        }
+    }
+
+    .bottom
+    {
+        padding:20px;
+    }
+
+}
+
 #modalcontainer
 {
     border-radius: $border-radius-popups;
@@ -75,6 +103,8 @@
         max-width: 700px;
         overflow: auto;
     }
+
+
 }
 
 #modalheader

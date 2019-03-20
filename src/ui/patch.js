@@ -650,41 +650,6 @@ CABLES.UI.Patch = function(_gui) {
         }
     }.bind(this));
 
-    this.exportStatic = function(ignoreAssets) {
-        if (!gui.getSavedState()) {
-            CABLES.UI.MODAL.show(CABLES.UI.TEXTS.projectExportNotSaved);
-            return;
-        }
-        CABLES.UI.MODAL.showLoading('exporting project');
-
-        var apiUrl = 'project/' + currentProject._id + '/export';
-        if (ignoreAssets) apiUrl += '?ignoreAssets=true';
-
-        CABLES.api.get(
-            apiUrl,
-            function(r) {
-                var msg = '';
-
-                if (r.error)
-                {
-                    msg = "<h2>export error</h2>";
-                    msg += '<pre class="shaderErrorCode">' + JSON.stringify(r) + '<pre>';
-                }
-                else
-                {
-                    msg = "<h2>export finished</h2>";
-                    msg += '<div style="max-width:800px">Cables has been built by a team of dedicated developers who have invested a huge amount of time and effort. Right now cables is free, so please support us by linking back to cables in any web page or piece work that uses it. Thank you';
-                    msg += '<br/><br/>If this is a copy of another patch then please do the right thing and ask the original author for permission. In general it\'s a good idea to give them credits by mentioning their user name and a link to the original patch</div><br/>';
-
-                    msg += '<br/><br/><br/>';
-                    msg += '<a class="bluebutton" href="' + r.path + '">Download '+ Math.round(r.size*100)/100 + ' mb</a>';
-                    msg += '<br/><br/>';
-                    msg += '<div class="shaderErrorCode">' + r.log + '</div>';
-                }
-
-                CABLES.UI.MODAL.show(msg);
-            });
-    };
 
     /**
      * Saves a patch to a file, overwrites the file it exists

@@ -312,6 +312,14 @@
     // }
 }
 
+select
+{
+    border: 1px solid var(--color-02);
+    background-color: $color-background-input;
+    padding:2px;
+    border: 1px solid transparent;
+}
+
 #options
 {
     position:absolute;
@@ -328,13 +336,7 @@
         vertical-align:top;
     }
 
-    select
-    {
-        border: 1px solid var(--color-02);
-        background-color: $color-background-input;
-        padding:2px;
-        border: 2px solid transparent;
-    }
+
 
     .colorButton
     {

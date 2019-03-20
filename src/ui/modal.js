@@ -77,7 +77,8 @@ CABLES.UI.MODAL.hide=function(force)
 
 	$('#modalclose').hide();
     CABLES.UI.MODAL.init();
-	CABLES.UI.MODAL._setVisible(false);
+    CABLES.UI.MODAL._setVisible(false);
+    CABLES.UI.MODAL.contentElement.removeClass('nopadding');
     $('#modalbg').hide();
     $('.tooltip').hide();
 };
@@ -117,8 +118,10 @@ CABLES.UI.MODAL.show=function(content,options)
         if(options.transparent)$('#modalcontainer').addClass("transparent");
         if(options.nopadding)
         {
-            CABLES.UI.MODAL.contentElement.css({padding:"0px"});
+            // CABLES.UI.MODAL.contentElement.css({padding:"0px"});
             $('#modalcontainer').css({padding:"0px"});
+            CABLES.UI.MODAL.contentElement.addClass('nopadding');
+
         }
     }
     else
