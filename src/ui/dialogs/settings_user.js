@@ -1,4 +1,7 @@
-CABLES.UserSettings=function(project)
+CABLES =CABLES || {};
+CABLES.UI =CABLES.UI || {};
+
+CABLES.UI.UserSettingsDialog=function(project)
 {
     this.show=function()
     {

@@ -738,9 +738,9 @@ CABLES.UI.GUI = function() {
         $('.nav_uploadfile').bind("click", function(event) {
             CABLES.CMD.PATCH.uploadFile();
         });
-        $('.nav_patch_export_ignoreAssets').bind("click", function(event) {
-            gui.patch().exportStatic(true);
-        });
+        // $('.nav_patch_export_ignoreAssets').bind("click", function(event) {
+        //     gui.patch().exportStatic(true);
+        // });
 
         $('.nav_patch_settings').bind("click", function(event) {
             CABLES.CMD.UI.settings();
