@@ -21,20 +21,32 @@ CABLES.UI.Exporter=function(project)
 
         document.getElementById("doExportButton").addEventListener("click",function()
         {
+
+            const options={};
+            const e = document.getElementById("export_settings_assets");
+            options.assets = e.options[e.selectedIndex].value;
+
+            const e2 = document.getElementById("export_settings_combine");
+            options.combine = e2.options[e2.selectedIndex].value;
+
             CABLES.UI.MODAL.hide();
-            this.exportStatic();
+
+            this.exportStatic(options);
         }.bind(this));
 
     };
 
-    this.exportStatic = function() {
+    this.exportStatic = function(options) {
 
         var ignoreAssets=false;
         CABLES.UI.MODAL.showLoading('exporting project');
 
-        var apiUrl = 'project/' + gui.patch().getCurrentProject()._id + '/export';
-        if (ignoreAssets) apiUrl += '?ignoreAssets=true';
+        var apiUrl = 'project/' + gui.patch().getCurrentProject()._id + '/export?a=1';
+        
+        if (options.assets=="none") apiUrl += '&ignoreAssets=true';
+        if (options.combine=="single") apiUrl += '&combineJS=true';
 
+console.log(apiUrl);
         CABLES.api.get(
             apiUrl,
             function(r) {
