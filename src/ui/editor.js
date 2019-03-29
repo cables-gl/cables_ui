@@ -281,16 +281,18 @@ CABLES.Editor.createEditor=function(id)
 
                 "onLinkChanged",
 
-
                 "toWorkNeedsParent",
                 "toWorkPortsNeedToBeLinked",
-
-
 
                 "setUiAttribs",
                 "setPortGroup",
                 "CGL.TextureEffect.checkOpNotInTextureEffect",
                 "patch.cgl",
+                "CABLES.shuffleArray(arr);",
+                "CABLES.map=function(value,oldMin,oldMax,newMin,newMax,easing);",
+                "Math.seededRandom();",
+                "Math.randomSeed=1;",
+                "CABLES.now();"
             ];
             callback(null, wordList.map(function(word) {
                 return {

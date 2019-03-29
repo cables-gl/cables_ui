@@ -145,7 +145,10 @@ CABLES.CMD.UI.showChangelog = function(since) {
 };
 
 CABLES.CMD.UI.toggleHelper = function() {
-    CABLES.UI.renderHelper=!CABLES.UI.renderHelper;
+    CABLES.UI.userSettings.set('helperMode', !CABLES.UI.userSettings.get('helperMode'));
+    // CABLES.UI.renderHelper=CABLES.UI.userSettings.get('helperMode');
+    console.log("helper",CABLES.UI.userSettings.get('helperMode'));
+    
 };
 
 CABLES.CMD.UI.gradientTest = function() {

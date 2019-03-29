@@ -49,6 +49,9 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('bgpreview')) $('.nav_usersettings_bgpreview i').removeClass('unchecked');
         else $('.nav_usersettings_bgpreview i').addClass('unchecked');
 
+    if (this.get('helperMode')) $('.nav_usersettings_helpermode i').removeClass('unchecked');
+        else $('.nav_usersettings_helpermode i').addClass('unchecked');
+
     if (this.get('showMinimap'))
     {
         $('.nav_usersettings_showMinimap i').removeClass('unchecked');

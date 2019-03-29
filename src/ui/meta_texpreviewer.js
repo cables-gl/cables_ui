@@ -331,7 +331,7 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePortId=function(opid,portid)
 CABLES.UI.TexturePreviewer.prototype.hover=function(p)
 {
     var thePort=p;
-    if(p.direction==CABLES.PORT_DIR_IN)
+    if(p.direction==CABLES.PORT_DIR_IN && p.links && p.links.length>0)
         thePort=p.links[0].getOtherPort(p);
 
     if(this._lastClickedP!=thePort)
