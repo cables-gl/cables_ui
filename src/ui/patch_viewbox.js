@@ -91,6 +91,7 @@ CABLES.UI.PatchViewBox.prototype._fixAspectRatio = function (vb)
 
 CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
 {
+    var perf = CABLES.uiperf.start('PatchViewBox._updateNavHelper');
 
     if (this._patch.getNumOps() == 0)
     {
@@ -134,6 +135,8 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
             }
         }
     }
+
+    perf.finish();
 }
 
 CABLES.UI.PatchViewBox.prototype.update = function ()
@@ -145,7 +148,7 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
     if (isNaN(this._viewBox.w)) console.warn("viewbox w NaN");
     if (isNaN(this._viewBox.h)) console.warn("viewbox h NaN");
 
-    this._fixAspectRatio();
+    // this._fixAspectRatio();
 
     this._paperPatch.setViewBox(this._viewBox.x, this._viewBox.y, this._viewBox.w, this._viewBox.h);
 

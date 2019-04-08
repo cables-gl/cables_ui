@@ -7,7 +7,7 @@ CABLES.GL_MARKER.startFramebuffer=function(cgl)
 {
     if(!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
     {
-        console.log("CREATE FB!");
+        // console.log("CREATE FB!");
         CABLES.GL_MARKER.FB={};
         CABLES.GL_MARKER.FB.fb=new CGL.Framebuffer2(cgl,8,8,
             {
@@ -17,17 +17,15 @@ CABLES.GL_MARKER.startFramebuffer=function(cgl)
                 multisampling:true,
                 multisamplingSamples:4
             });
-        console.log("CREATE FB!",CABLES.GL_MARKER.FB.fb);
+        // console.log("CREATE FB!",CABLES.GL_MARKER.FB.fb);
     }
 
     if( CABLES.GL_MARKER.FB.oldWidth!=cgl.getViewPort()[2] ||
         CABLES.GL_MARKER.FB.oldHeight!=cgl.getViewPort()[3] )
         {
-            console.log(CABLES.GL_MARKER.FB.fb);
             CABLES.GL_MARKER.FB.fb.setSize(cgl.getViewPort()[2],cgl.getViewPort()[3]);
             CABLES.GL_MARKER.FB.oldWidth=cgl.getViewPort()[2];
             CABLES.GL_MARKER.FB.oldHeight=cgl.getViewPort()[3];
-            console.log("resize");
         }
 
     CABLES.GL_MARKER.FB.fb.renderStart(cgl);
@@ -135,9 +133,6 @@ CABLES.GL_MARKER.drawSphere=function(op,size)
             geom.setTexCoords(tc);
             geom.vertexNormals=verts.slice();
             CABLES.GL_MARKER.SPHERE.mesh3=new CGL.Mesh(cgl, geom);
-
-
-
         }
         bufferData();
     }
@@ -160,15 +155,7 @@ CABLES.GL_MARKER.drawSphere=function(op,size)
 
     cgl.popModelMatrix();
     CABLES.GL_MARKER.endFramebuffer(cgl);
-
-
 };
-
-
-
-
-
-
 
 
 
