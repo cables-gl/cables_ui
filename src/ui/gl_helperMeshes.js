@@ -175,7 +175,7 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
                 0, 0.00001, 0,   0,1,0,
                 0, 0, 0.00001,   0,0,1,
             ]);
-        geom.resetTextureCoords();
+        // geom.resetTextureCoords();
         
         CABLES.GL_MARKER.MARKER.mesh=new CGL.Mesh(cgl, geom, cgl.gl.LINES);
         CABLES.GL_MARKER.MARKER.mesh.setGeom(geom);
