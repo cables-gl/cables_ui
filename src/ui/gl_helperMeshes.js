@@ -251,14 +251,14 @@ CABLES.GL_MARKER.drawArrow=function(op,sizeX,rotX,rotY,rotZ)
         {
             var verts=[];
 
-            verts.push(0,0,0);
-            verts.push(0.25,-0.25,0);
-
-            verts.push(0,0,0);
-            verts.push(-0.25,-0.25,0);
-
-            verts.push(0,0,0);
             verts.push(0,-1,0);
+            verts.push(0.25,-0.75,0);
+
+            verts.push(0,-1,0);
+            verts.push(-0.25,-0.75,0);
+
+            verts.push(0,-1,0);
+            verts.push(0,0,0);
 
             var tc=[0,0,0,0,0,0,0,0,0,0,0,0];
 
@@ -315,16 +315,15 @@ CABLES.GL_MARKER.drawXPlane=function(op,sizeX,rotX,rotY,rotZ)
 
         function bufferData()
         {
-            var verts=[];
-
-            verts.push(-1,-1, 0);
-            verts.push( 1, 1, 0);
-            verts.push(-1, 1, 0);
-            verts.push( 1,-1, 0);
-            verts.push( 1, 1, 0);
-            verts.push(-1, 1, 0);
-            verts.push(-1,-1, 0);
-            verts.push( 1,-1, 0);
+            var verts=[
+                -1,-1, 0,
+                1, 1, 0,
+                -1, 1, 0,
+                1,-1, 0,
+                1, 1, 0,
+                -1, 1, 0,
+                -1,-1, 0,
+                1,-1, 0];
 
             var tc=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
