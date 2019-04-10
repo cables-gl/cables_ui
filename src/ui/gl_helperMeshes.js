@@ -77,7 +77,7 @@ CABLES.GL_MARKER.drawSphere=function(op,size)
         {
             var verts=[];
             var tc=[];
-            var segments=24;
+            var segments=80;
             var i=0,degInRad=0;
             var radius=1;
     
@@ -237,6 +237,66 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
 
 
 
+CABLES.GL_MARKER.drawArrow=function(op,sizeX,rotX,rotY,rotZ)
+{
+    var cgl=op.patch.cgl;
+
+    if(!CABLES.GL_MARKER.ARROW)
+    {
+        CABLES.GL_MARKER.ARROW={};      
+        CABLES.GL_MARKER.ARROW.vScale=vec3.create();
+        
+
+        function bufferData()
+        {
+            var verts=[];
+
+            verts.push(0,0,0);
+            verts.push(0.25,-0.25,0);
+
+            verts.push(0,0,0);
+            verts.push(-0.25,-0.25,0);
+
+            verts.push(0,0,0);
+            verts.push(0,-1,0);
+
+            var tc=[0,0,0,0,0,0,0,0,0,0,0,0];
+
+            var geom=new CGL.Geometry();
+            geom.vertices=verts;
+            geom.setTexCoords(tc);
+            geom.vertexNormals=verts.slice();
+
+            CABLES.GL_MARKER.ARROW.cube =new CGL.Mesh(cgl,geom,cgl.gl.LINES);
+        }
+        bufferData();
+    }
+
+    if(cgl.lastMesh)cgl.lastMesh.unBind();
+
+    cgl.pushModelMatrix();
+    CABLES.GL_MARKER.startFramebuffer(cgl);
+
+    vec3.set(CABLES.GL_MARKER.ARROW.vScale, sizeX,sizeX,sizeX);
+    mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.ARROW.vScale);
+
+    if(rotX)mat4.rotateX(cgl.mvMatrix,cgl.mvMatrix, rotX*CGL.DEG2RAD);
+    if(rotY)mat4.rotateY(cgl.mvMatrix,cgl.mvMatrix, rotY*CGL.DEG2RAD);
+    if(rotZ)mat4.rotateZ(cgl.mvMatrix,cgl.mvMatrix, rotZ*CGL.DEG2RAD);
+
+
+    var shader=CABLES.GL_MARKER.getDefaultShader(cgl);
+    if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
+
+    CABLES.GL_MARKER.ARROW.cube.render(shader);
+
+    cgl.popModelMatrix();
+    CABLES.GL_MARKER.endFramebuffer(cgl);
+};
+
+
+
+
 
 
 
@@ -315,33 +375,32 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 
         function bufferData()
         {
-            var verts=[];
+            var verts=new Float32Array([
+                -1,-1, 1,
+                1,-1, 1,
+                1, 1, 1,
+                -1, 1, 1,
+                -1,-1, 1,
 
-            verts.push(-1,-1, 1);
-            verts.push( 1,-1, 1);
-            verts.push( 1, 1, 1);
-            verts.push(-1, 1, 1);
-            verts.push(-1,-1, 1);
+                -1,-1,-1,
+                1,-1,-1,
+                1, 1,-1,
+                -1, 1,-1,
+                -1,-1,-1,
 
-            verts.push(-1,-1,-1);
-            verts.push( 1,-1,-1);
-            verts.push( 1, 1,-1);
-            verts.push(-1, 1,-1);
-            verts.push(-1,-1,-1);
+                -1,-1,-1,
+                -1, 1,-1,
+                -1, 1, 1,
+                -1,-1, 1,
+                -1,-1,-1,
 
-            verts.push(-1,-1,-1);
-            verts.push(-1, 1,-1);
-            verts.push(-1, 1, 1);
-            verts.push(-1,-1, 1);
-            verts.push(-1,-1,-1);
+                1,-1,-1,
+                1, 1,-1,
+                1, 1, 1,
+                1,-1, 1,
+                1,-1,-1]);
 
-            verts.push(1,-1,-1);
-            verts.push(1, 1,-1);
-            verts.push(1, 1, 1);
-            verts.push(1,-1, 1);
-            verts.push(1,-1,-1);
-
-            var tc=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            var tc=new Float32Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
 
             var geom=new CGL.Geometry();
             geom.vertices=verts;
