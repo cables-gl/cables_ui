@@ -242,6 +242,68 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
 
 
 
+
+CABLES.GL_MARKER.drawXPlane=function(op,sizeX,rotX,rotY,rotZ)
+{
+    var cgl=op.patch.cgl;
+
+    if(!CABLES.GL_MARKER.XPLANE)
+    {
+        CABLES.GL_MARKER.XPLANE={};      
+        CABLES.GL_MARKER.XPLANE.vScale=vec3.create();
+        
+
+        function bufferData()
+        {
+            var verts=[];
+
+            verts.push(-1,-1, 0);
+            verts.push( 1, 1, 0);
+            verts.push(-1, 1, 0);
+            verts.push( 1,-1, 0);
+            verts.push( 1, 1, 0);
+            verts.push(-1, 1, 0);
+            verts.push(-1,-1, 0);
+            verts.push( 1,-1, 0);
+
+            var tc=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+            var geom=new CGL.Geometry();
+            geom.vertices=verts;
+            geom.setTexCoords(tc);
+            geom.vertexNormals=verts.slice();
+
+            CABLES.GL_MARKER.XPLANE.cube =new CGL.Mesh(cgl,geom,cgl.gl.LINE_STRIP);
+        }
+        bufferData();
+    }
+
+    if(cgl.lastMesh)cgl.lastMesh.unBind();
+
+    cgl.pushModelMatrix();
+    CABLES.GL_MARKER.startFramebuffer(cgl);
+
+    vec3.set(CABLES.GL_MARKER.XPLANE.vScale, sizeX,sizeX,sizeX);
+    mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.XPLANE.vScale);
+
+    if(rotX)mat4.rotateX(cgl.mvMatrix,cgl.mvMatrix, rotX*CGL.DEG2RAD);
+    if(rotY)mat4.rotateY(cgl.mvMatrix,cgl.mvMatrix, rotY*CGL.DEG2RAD);
+    if(rotZ)mat4.rotateZ(cgl.mvMatrix,cgl.mvMatrix, rotZ*CGL.DEG2RAD);
+
+
+    var shader=CABLES.GL_MARKER.getDefaultShader(cgl);
+    if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
+
+    CABLES.GL_MARKER.XPLANE.cube.render(shader);
+
+    cgl.popModelMatrix();
+    CABLES.GL_MARKER.endFramebuffer(cgl);
+};
+
+
+
+
+
 CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 {
     var cgl=op.patch.cgl;
@@ -279,30 +341,7 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
             verts.push(1,-1, 1);
             verts.push(1,-1,-1);
 
-            var tc=[];
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
-            tc.push(0,0);
+            var tc=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
             var geom=new CGL.Geometry();
             geom.vertices=verts;
