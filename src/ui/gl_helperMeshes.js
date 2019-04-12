@@ -441,11 +441,7 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
 {
     CABLES.UI.renderHelper=CABLES.UI.userSettings.get('helperMode');
-    if(CABLES.GL_MARKER.count==0)
-    {
-        console.log("nothing");
-        return;
-    }
+    if(CABLES.GL_MARKER.count==0) return;
     CABLES.GL_MARKER.count=0;
 
     if(!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
