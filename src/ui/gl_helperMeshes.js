@@ -2,6 +2,7 @@
 var CABLES=CABLES||{};
 
 CABLES.GL_MARKER={};
+CABLES.GL_MARKER.count=0;
 
 CABLES.GL_MARKER.startFramebuffer=function(cgl)
 {
@@ -152,7 +153,7 @@ CABLES.GL_MARKER.drawSphere=function(op,size)
     CABLES.GL_MARKER.SPHERE.mesh.render(shader);
     CABLES.GL_MARKER.SPHERE.mesh2.render(shader);
     CABLES.GL_MARKER.SPHERE.mesh3.render(shader);
-
+    CABLES.GL_MARKER.count++;
     cgl.popModelMatrix();
     CABLES.GL_MARKER.endFramebuffer(cgl);
 };
@@ -226,6 +227,7 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
 
     CABLES.GL_MARKER.MARKER.mesh.render(cgl.getShader());
 
+    CABLES.GL_MARKER.count++;
     cgl.popDepthTest();
     cgl.setPreviousShader();
     cgl.popModelMatrix();
@@ -289,6 +291,7 @@ CABLES.GL_MARKER.drawArrow=function(op,sizeX,rotX,rotY,rotZ)
     if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
 
     CABLES.GL_MARKER.ARROW.cube.render(shader);
+    CABLES.GL_MARKER.count++;
 
     cgl.popModelMatrix();
     CABLES.GL_MARKER.endFramebuffer(cgl);
@@ -332,7 +335,7 @@ CABLES.GL_MARKER.drawXPlane=function(op,sizeX,rotX,rotY,rotZ)
             geom.setTexCoords(tc);
             geom.vertexNormals=verts.slice();
 
-            CABLES.GL_MARKER.XPLANE.cube =new CGL.Mesh(cgl,geom,cgl.gl.LINE_STRIP);
+            CABLES.GL_MARKER.XPLANE.mesh =new CGL.Mesh(cgl,geom,cgl.gl.LINE_STRIP);
         }
         bufferData();
     }
@@ -353,7 +356,8 @@ CABLES.GL_MARKER.drawXPlane=function(op,sizeX,rotX,rotY,rotZ)
     var shader=CABLES.GL_MARKER.getDefaultShader(cgl);
     if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
 
-    CABLES.GL_MARKER.XPLANE.cube.render(shader);
+    CABLES.GL_MARKER.XPLANE.mesh.render(shader);
+    CABLES.GL_MARKER.count++;
 
     cgl.popModelMatrix();
     CABLES.GL_MARKER.endFramebuffer(cgl);
@@ -406,7 +410,7 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
             geom.setTexCoords(tc);
             geom.vertexNormals=verts.slice();
 
-            CABLES.GL_MARKER.CUBE.cube =new CGL.Mesh(cgl,geom,cgl.gl.LINE_STRIP);
+            CABLES.GL_MARKER.CUBE.mesh =new CGL.Mesh(cgl,geom,cgl.gl.LINE_STRIP);
         }
         bufferData();
     }
@@ -418,14 +422,14 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 
     if(sizeY==undefined)sizeY=sizeX;
     if(sizeZ==undefined)sizeZ=sizeX;
-
     vec3.set(CABLES.GL_MARKER.CUBE.vScale, sizeX,sizeY,sizeZ);
     mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.CUBE.vScale);
-
+    
     var shader=CABLES.GL_MARKER.getDefaultShader(cgl);
     if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
-
-    CABLES.GL_MARKER.CUBE.cube.render(shader);
+    
+    CABLES.GL_MARKER.CUBE.mesh.render(shader);
+    CABLES.GL_MARKER.count++;
 
     cgl.popModelMatrix();
     CABLES.GL_MARKER.endFramebuffer(cgl);
@@ -436,12 +440,19 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 
 CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
 {
-    
+    CABLES.UI.renderHelper=CABLES.UI.userSettings.get('helperMode');
+    if(CABLES.GL_MARKER.count==0)
+    {
+        console.log("nothing");
+        return;
+    }
+    CABLES.GL_MARKER.count=0;
+
     if(!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
     {
         return;
     }
-
+    
     var currentViewPort=cgl.getViewPort();
     var w=currentViewPort[2];
     var h=currentViewPort[3];
