@@ -1062,7 +1062,7 @@ CABLES.UI.GUI = function() {
         else if(showingEditor && e) this.closeEditor();
         else if($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
         // else if(gui.find().isVisible()) gui.find().close();
-        else if($('#library').is(':visible')) CABLES.UI.fileSelect.hide();//$('#library').hide();
+        // else if($('#library').is(':visible')) CABLES.UI.fileSelect.hide();
         else if($('#sidebar').is(':visible')) $('#sidebar').animate({
             width: 'toggle'
         }, 200);

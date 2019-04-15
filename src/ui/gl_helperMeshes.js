@@ -247,7 +247,6 @@ CABLES.GL_MARKER.drawArrow=function(op,sizeX,rotX,rotY,rotZ)
     {
         CABLES.GL_MARKER.ARROW={};      
         CABLES.GL_MARKER.ARROW.vScale=vec3.create();
-        
 
         function bufferData()
         {
