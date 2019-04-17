@@ -8,7 +8,7 @@ CABLES.UI.GUI = function() {
     var showTiming = false;
     var showingEditor = false;
     var showMiniMap = false;
-    var _scene = CABLES.patch=new CABLES.Patch();
+    var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true}});
     _scene.gui = true;
     var _patch = null;
     var _editor = new CABLES.Editor();
@@ -184,7 +184,6 @@ CABLES.UI.GUI = function() {
         var cgl=gui.patch().scene.cgl;
         if(cgl.canvasWidth)
         {
-
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
 
