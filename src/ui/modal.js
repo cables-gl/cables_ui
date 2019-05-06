@@ -400,8 +400,9 @@ CABLES.UI.MODAL.showCode=function(title,code,type)
     CABLES.UI.MODAL.contentElement.append('<br/><br/>');
     CABLES.UI.MODAL.contentElement.append('<br/><br/>');
 
-    code = code.replace(/\</g,"&lt;")   //for <
-    code = code.replace(/\>/g,"&gt;")   //for >
+    code=code||'';
+    code=code.replace(/\</g,"&lt;");   //for <
+    code=code.replace(/\>/g,"&gt;");   //for >
     
     CABLES.UI.MODAL.contentElement.append('<pre><code class="'+(type||'javascript')+'">'+code+'</code></pre>');
 	CABLES.UI.MODAL._setVisible(true);

@@ -1646,22 +1646,18 @@ this._timeoutLinkWarnings=null;
             logStartup('Patch loaded');
         };
 
-        scene.onUnLink = function(p1, p2) {
+        scene.addEventListener("onUnLink",function(p1, p2) {
             gui.setStateUnsaved();
 
-            // console.log('onunlink',p1,p2);
-
-            // console.log('unlink',p1,p2 );
             // todo: check if needs to be updated ?
-
             self.updateCurrentOpParams();
 
-            for (var i in self.ops) {
+            for (var i in this.ops) {
 
-                for (var j in self.ops[i].links) {
-                    if (self.ops[i].links[j].p1 && self.ops[i].links[j].p2 &&
-                        ((self.ops[i].links[j].p1.thePort == p1 && self.ops[i].links[j].p2.thePort == p2) ||
-                            (self.ops[i].links[j].p1.thePort == p2 && self.ops[i].links[j].p2.thePort == p1))) {
+                for (var j in this.ops[i].links) {
+                    if (this.ops[i].links[j].p1 && this.ops[i].links[j].p2 &&
+                        ((this.ops[i].links[j].p1.thePort == p1 && this.ops[i].links[j].p2.thePort == p2) ||
+                            (this.ops[i].links[j].p1.thePort == p2 && this.ops[i].links[j].p2.thePort == p1))) {
                         var undofunc = function(p1Name, p2Name, op1Id, op2Id) {
                             CABLES.undo.add({
                                 undo: function() {
@@ -1677,47 +1673,51 @@ this._timeoutLinkWarnings=null;
                                     op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
                                 }
                             });
-                        }(self.ops[i].links[j].p1.thePort.getName(),
-                            self.ops[i].links[j].p2.thePort.getName(),
-                            self.ops[i].links[j].p1.thePort.parent.id,
-                            self.ops[i].links[j].p2.thePort.parent.id
+                        }(this.ops[i].links[j].p1.thePort.getName(),
+                            this.ops[i].links[j].p2.thePort.getName(),
+                            this.ops[i].links[j].p1.thePort.parent.id,
+                            this.ops[i].links[j].p2.thePort.parent.id
                         );
 
                         gui.patchConnection.send(CABLES.PACO_UNLINK, {
-                            "op1": self.ops[i].links[j].p1.thePort.parent.id,
-                            "op2": self.ops[i].links[j].p2.thePort.parent.id,
-                            "port1": self.ops[i].links[j].p1.thePort.getName(),
-                            "port2": self.ops[i].links[j].p2.thePort.getName(),
+                            "op1": this.ops[i].links[j].p1.thePort.parent.id,
+                            "op2": this.ops[i].links[j].p2.thePort.parent.id,
+                            "port1": this.ops[i].links[j].p1.thePort.getName(),
+                            "port2": this.ops[i].links[j].p2.thePort.getName(),
                         });
 
-                        self.ops[i].links[j].hideAddButton();
+                        this.ops[i].links[j].hideAddButton();
 
-                        self.ops[i].links[j].p1.updateUI();
-                        self.ops[i].links[j].p2.updateUI();
-                        self.ops[i].links[j].p1 = null;
-                        self.ops[i].links[j].p2 = null;
-                        self.ops[i].links[j].remove();
+                        this.ops[i].links[j].p1.updateUI();
+                        this.ops[i].links[j].p2.updateUI();
+                        this.ops[i].links[j].p1 = null;
+                        this.ops[i].links[j].p2 = null;
+                        this.ops[i].links[j].remove();
                     }
                 }
-                self.ops[i].removeDeadLinks();
+                this.ops[i].removeDeadLinks();
             }
-            self.checkLinkTimeWarnings();
-        };
+            this.checkLinkTimeWarnings();
+        }.bind(this));
 
-        scene.onLink = function(p1, p2) {
+        scene.addEventListener("onLink",function(p1, p2) {
             gui.setStateUnsaved();
 
             var uiPort1 = null;
             var uiPort2 = null;
             for (var i=0;i<self.ops.length;i++) {
                 for (var j=0;j<self.ops[i].portsIn.length;j++) {
-                    if (self.ops[i].portsIn[j].thePort == p1) uiPort1 = self.ops[i].portsIn[j];
-                    if (self.ops[i].portsIn[j].thePort == p2) uiPort2 = self.ops[i].portsIn[j];
+                    if (this.ops[i].portsIn[j].thePort == p1) 
+                    {
+                        uiPort1 = this.ops[i].portsIn[j];
+                        break;
+                    }
+                    if (this.ops[i].portsIn[j].thePort == p2) uiPort2 = this.ops[i].portsIn[j];
                 }
-                // for (var jo in self.ops[i].portsOut) {
-                for (var jo=0;jo<self.ops[i].portsOut.length;jo++) {
-                    if (self.ops[i].portsOut[jo].thePort == p1) uiPort1 = self.ops[i].portsOut[jo];
-                    if (self.ops[i].portsOut[jo].thePort == p2) uiPort2 = self.ops[i].portsOut[jo];
+                // for (var jo in this.ops[i].portsOut) {
+                for (var jo=0;jo<this.ops[i].portsOut.length;jo++) {
+                    if (this.ops[i].portsOut[jo].thePort == p1) uiPort1 = this.ops[i].portsOut[jo];
+                    if (this.ops[i].portsOut[jo].thePort == p2) uiPort2 = this.ops[i].portsOut[jo];
                 }
             }
 
@@ -1727,6 +1727,7 @@ this._timeoutLinkWarnings=null;
                 console.log('no uiport found');
                 return;
             }
+
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
 
@@ -1742,7 +1743,7 @@ this._timeoutLinkWarnings=null;
             if (!isLoading)
             {
                 // todo: update is too often ?? check if current op is linked else do not update!!!
-                self.updateCurrentOpParams();
+                this.updateCurrentOpParams();
 
                 var undofunc = function(p1Name, p2Name, op1Id, op2Id) {
                     CABLES.undo.add({
@@ -1761,10 +1762,10 @@ this._timeoutLinkWarnings=null;
                     });
                 }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id);
             }
-            self.checkLinkTimeWarnings();
-        };
+            this.checkLinkTimeWarnings();
+        }.bind(this));
 
-        scene.onDelete = function(op) {
+        scene.addEventListener("onOpDelete",function(op) {
             var undofunc = function(opname, opid) {
                 var oldValues={};
                 for(var i=0;i<op.portsIn.length;i++) oldValues[ op.portsIn[i].name ]=op.portsIn[i].get();
@@ -1796,27 +1797,29 @@ this._timeoutLinkWarnings=null;
             }
             gui.setStateUnsaved();
             self.checkLinkTimeWarnings();
-        };
+        });
 
-        scene.onAdd = function(op) {
-            gui.setStateUnsaved();
-            $('#patch').focus();
-            var width = CABLES.UI.uiConfig.opWidth;
-            if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
+        scene.addEventListener("onOpAdd",
+            function(op)
+            {
+                gui.setStateUnsaved();
+                $('#patch').focus();
+                var width = CABLES.UI.uiConfig.opWidth;
+                if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
 
-            var x=CABLES.UI.OPSELECT.newOpPos.x;
-            var y=CABLES.UI.OPSELECT.newOpPos.y;
+                var x=CABLES.UI.OPSELECT.newOpPos.x;
+                var y=CABLES.UI.OPSELECT.newOpPos.y;
 
-            var uiOp = new OpUi(self.paper, op, x,y, width, CABLES.UI.uiConfig.opHeight, op.name);
+                var uiOp = new OpUi(self.paper, op, x,y, width, CABLES.UI.uiConfig.opHeight, op.name);
 
-            self.ops.push(uiOp);
+                self.ops.push(uiOp);
 
-            uiOp.wasAdded = false;
+                uiOp.wasAdded = false;
 
-            doAddOp(uiOp);
-            this.opCollisionTest(uiOp);
-            self.checkLinkTimeWarnings();
-        }.bind(this);
+                doAddOp(uiOp);
+                this.opCollisionTest(uiOp);
+                self.checkLinkTimeWarnings();
+            }.bind(this));
     };
 
     this.setOpColor=function(col)
