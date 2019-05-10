@@ -349,6 +349,7 @@ CABLES.UI.OpSelect.prototype.prepare=function()
     if(!this._list)
     {
         this._list=this.getOpList();
+
         var maxPop=0;
 
         for(var i=0;i<this._list.length;i++)
@@ -464,7 +465,6 @@ CABLES.UI.OpSelect.prototype.onInput=function(e)
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
 {
-    // console.log("keydown");
     switch(e.which)
     {
         case 27:
@@ -540,11 +540,22 @@ CABLES.UI.OpSelect.prototype.getOpList=function()
                     var parts=opname.split('.');
                     var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();
 
-                    var shortName=parts[parts.length-1];
+                    var opdoc=gui.opDocs.getOpDocByName(opname);
+
+                    var shortName=shortName=parts[parts.length-1];
+                    var isDeprecated=opname.startsWith('Ops.Deprecated');
+
+                    if(opdoc)
+                    {
+                        shortName=opdoc.shortNameDisplay
+                        if(opdoc.oldVersion)isDeprecated=true;
+                        // console.log(opdoc)
+                    }
+
                     parts.length=parts.length-1;
                     var nameSpace=parts.join('.');
 
-                    if(isFunction && !opname.startsWith('Ops.Deprecated'))
+                    if(isFunction && !isDeprecated)
                     {
                         var op=
                         {

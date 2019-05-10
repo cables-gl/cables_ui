@@ -153,7 +153,7 @@ CABLES.UI.OpDocs=function()
                     // label = gui.patch().getPaper().text();
 
                 var visualYOffset = 2;
-                var label= p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset,opDocs[i].shortName);
+                var label= p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset,opDocs[i].shortNameDisplay);
                 label.node.classList.add("op_handle_"+CABLES.UI.uiConfig.getNamespaceClassName(opname));
                 label.node.classList.add('op-svg-shortname');
                 CABLES.UI.cleanRaphael(label);

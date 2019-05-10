@@ -2,8 +2,13 @@
     <div class="op-doc">
         <base target="_blank"> <!-- open links in new window -->
         {{#if opDoc}}
-            <p class="op-doc__name">{{opDoc.shortName}}</p>
-            <p class="op-doc__namespace">{{opDoc.name}}</p>
+            <p class="op-doc__name">{{opDoc.shortNameDisplay}}</p>
+            <p class="">
+                {{opDoc.name}}
+                {{#if opDoc.version}}(v{{opDoc.version}}){{/if}}
+                {{#if opDoc.oldVersion}} OLD {{/if}}
+            </p>
+
             {{#if opDoc.summary}}
                 <div class="op-doc__summary">{{{opDoc.summaryHtml}}}</div>
             {{/if}}
