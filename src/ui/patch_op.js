@@ -1650,7 +1650,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
     op.addEventListener("onPortsChanged",function()
     {
-        console.log("PORTS CHANGEEED;");
         this.initPorts();
     }.bind(this));
 
