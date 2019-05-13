@@ -74,6 +74,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     this._errorIndicator = null;
     this._colorHandle=null;
 
+
+
+
     this.getHeight = function() {
         return h;
     };
@@ -1642,4 +1645,13 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
         return port;
     };
+
+
+
+    op.addEventListener("onPortsChanged",function()
+    {
+        console.log("PORTS CHANGEEED;");
+        this.initPorts.bind(this);
+    });
+
 };
