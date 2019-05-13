@@ -1652,6 +1652,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     {
         console.log("PORTS CHANGEEED;");
         this.initPorts();
-    });
+    }.bind(this));
 
 };
