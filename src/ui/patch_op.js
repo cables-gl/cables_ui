@@ -1393,7 +1393,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             CABLES.UI.DRAGGINGOPS_STARTY=pos.y;
         }
         self.isDragging = true;
-        
     };
 
     this.oprect = new OpRect(this, x, y, w, h, txt, self.op.objName);
@@ -1651,6 +1650,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     op.addEventListener("onPortsChanged",function()
     {
         this.initPorts();
+        self.setPos();
     }.bind(this));
 
 };
