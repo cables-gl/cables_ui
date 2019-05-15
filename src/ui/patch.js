@@ -3188,3 +3188,6 @@ CABLES.UI.Patch.prototype.updateBounds = function () {
 CABLES.UI.Patch.prototype.getNumOps = function () {
     return this.ops.length;
 }
+
+
+// eof
