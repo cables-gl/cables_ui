@@ -1580,7 +1580,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             count++;
             if(count>1000)
             {
-
                 console.log("unlinking fail");
                 break;
             }
@@ -1647,10 +1646,9 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
 
 
-    op.addEventListener("onPortsChanged",function()
+    op.addEventListener("onPortRemoved",function()
     {
         this.initPorts();
-        self.setPos();
     }.bind(this));
 
 };
