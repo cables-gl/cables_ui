@@ -74,6 +74,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     this._errorIndicator = null;
     this._colorHandle=null;
 
+
+
+
     this.getHeight = function() {
         return h;
     };
@@ -123,10 +126,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if (background) background.remove();
         if (label) label.remove();
         if (commentText) commentText.remove();
-        if(backgroundResize)backgroundResize.remove();
+        if (backgroundResize)backgroundResize.remove();
         if (this._errorIndicator) this._errorIndicator.remove();
         // if(resizeHandle)resizeHandle.remove();
-        if(this._colorHandle)this._colorHandle.remove();
+        if (this._colorHandle)this._colorHandle.remove();
         if (miniRect) miniRect.remove();
         if (this._attachedComment) this._attachedComment.remove();
         // label=background=commentText=backgroundResize=null;
@@ -277,7 +280,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     var move = function(dx, dy, a, b, e) {
-        if ( (e.metaKey|| e.altKey) && gui.patch().getSelectedOps().length == 1) {
+        if((e.metaKey || e.altKey) && gui.patch().getSelectedOps().length == 1) {
             return;
         }
         if (shakeLastX != -1) {
@@ -1390,7 +1393,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             CABLES.UI.DRAGGINGOPS_STARTY=pos.y;
         }
         self.isDragging = true;
-        
     };
 
     this.oprect = new OpRect(this, x, y, w, h, txt, self.op.objName);
@@ -1578,7 +1580,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             count++;
             if(count>1000)
             {
-
                 console.log("unlinking fail");
                 break;
             }
@@ -1642,4 +1643,12 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
         return port;
     };
+
+
+
+    op.addEventListener("onPortRemoved",function()
+    {
+        this.initPorts();
+    }.bind(this));
+
 };

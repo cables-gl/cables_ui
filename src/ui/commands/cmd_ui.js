@@ -14,7 +14,7 @@ CABLES.CMD.UI.settings = function() {
 
 
 CABLES.CMD.UI.userSettings = function() {
-    var settings = new CABLES.UserSettings();
+    var settings = new CABLES.UI.UserSettingsDialog();
     settings.show();
 };
 
@@ -145,7 +145,10 @@ CABLES.CMD.UI.showChangelog = function(since) {
 };
 
 CABLES.CMD.UI.toggleHelper = function() {
-    CABLES.UI.renderHelper=!CABLES.UI.renderHelper;
+    CABLES.UI.userSettings.set('helperMode', !CABLES.UI.userSettings.get('helperMode'));
+    // CABLES.UI.renderHelper=CABLES.UI.userSettings.get('helperMode');
+    console.log("helper",CABLES.UI.userSettings.get('helperMode'));
+    
 };
 
 CABLES.CMD.UI.gradientTest = function() {
@@ -169,7 +172,16 @@ CABLES.CMD.UI.profileUI = function () {
     CABLES.uiperf.show();
 };
 
-    
+CABLES.CMD.UI.toggleTouchpadMode = function () {
+
+    gui.patch().modeTouchPad= !CABLES.UI.userSettings.get('touchpadmode');
+    CABLES.UI.userSettings.set('touchpadmode',gui.patch().modeTouchPad);
+
+    if(gui.patch().modeTouchPad) CABLES.UI.notify("Touchpad Mode enabled");
+        else CABLES.UI.notify("Touchpad Mode disabled");
+
+};
+
     
     
     
@@ -317,7 +329,12 @@ CABLES.CMD.commands.push({
         category: "ui",
         func: CABLES.CMD.UI.profileUI,
         icon: "command"
-        
+    },
+    {
+        cmd: "toggle touchpad mode",
+        category: "ui",
+        func: CABLES.CMD.UI.toggleTouchpadMode,
+        icon: "command"
     }
 
 );

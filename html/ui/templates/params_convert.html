@@ -31,8 +31,35 @@
                 </div>
 
             {{/compare}}
+            {{#compare converterId '==' 'assimpfile' }}
 
-            <a class="button fa fa-retweet" onclick="gui.converterStart('{{ projectId }}','{{ fileId }}','{{ converterId }}')">&nbsp;start {{ converterName }}</a>
+            <div>
+                <table>
+                    <tr>
+                        <td>Assimp Options</td>
+                        <td>
+                            <select name="optimize">
+                                <option value="optimize">optimize</option>
+                                <option value="noopt">do not optimize</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Float Arrays as Base64</td>
+                        <td>
+                            <select name="floatbase64">
+                                <option value="true">true</option>
+                                <option value="false">false</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+
+            {{/compare}}
+
+            <a class="button fa fa-retweet" onclick="gui.converterStart('{{ projectId }}','{{ fileId }}','{{ converterId }}')">&nbsp;start converter {{ converterName }}</a>
             <br/><br/>
 
 

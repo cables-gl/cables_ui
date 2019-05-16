@@ -77,7 +77,8 @@ CABLES.UI.MODAL.hide=function(force)
 
 	$('#modalclose').hide();
     CABLES.UI.MODAL.init();
-	CABLES.UI.MODAL._setVisible(false);
+    CABLES.UI.MODAL._setVisible(false);
+    CABLES.UI.MODAL.contentElement.removeClass('nopadding');
     $('#modalbg').hide();
     $('.tooltip').hide();
 };
@@ -117,8 +118,10 @@ CABLES.UI.MODAL.show=function(content,options)
         if(options.transparent)$('#modalcontainer').addClass("transparent");
         if(options.nopadding)
         {
-            CABLES.UI.MODAL.contentElement.css({padding:"0px"});
+            // CABLES.UI.MODAL.contentElement.css({padding:"0px"});
             $('#modalcontainer').css({padding:"0px"});
+            CABLES.UI.MODAL.contentElement.addClass('nopadding');
+
         }
     }
     else
@@ -278,18 +281,13 @@ CABLES.UI.MODAL.showException=function(ex,op)
 
     CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.contentElement.append('<h2><span class="fa fa-exclamation-triangle"></span>&nbsp;cablefail :/</h2>');
-
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.message+'</div><br/>');
-
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.stack+'</div>');
 
     CABLES.lastError={exception:ex};
     CABLES.UI.MODAL.contentElement.append('<br/><a class="bluebutton fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>');
 
-
 	CABLES.UI.MODAL._setVisible(true);
-
-
 
     $('#modalbg').show();
 
@@ -371,16 +369,18 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
         CABLES.UI.MODAL.contentElement.append('<br/><br/>');
         var thing=port.get();
         CABLES.UI.MODAL.contentElement.append(''+thing.constructor.name+' \n');
-        if(thing.constructor.name=="Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
-        if(thing.constructor.name=="Float32Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
+
+        if(thing.constructor)
+        {
+            if(thing.constructor.name=="Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
+            if(thing.constructor.name=="Float32Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
+        }
     
         CABLES.UI.MODAL.contentElement.append('<br/><br/>');
-    
         CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+JSON.stringify(thing ,null, 4)+'</div>');
-        // $('#modalcontainer').show();
+
         CABLES.UI.MODAL._setVisible(true);
         $('#modalbg').show();
-    
     }
     catch(ex)
     {
@@ -400,8 +400,11 @@ CABLES.UI.MODAL.showCode=function(title,code,type)
     CABLES.UI.MODAL.contentElement.append('<br/><br/>');
     CABLES.UI.MODAL.contentElement.append('<br/><br/>');
 
+    code=code||'';
+    code=code.replace(/\</g,"&lt;");   //for <
+    code=code.replace(/\>/g,"&gt;");   //for >
+    
     CABLES.UI.MODAL.contentElement.append('<pre><code class="'+(type||'javascript')+'">'+code+'</code></pre>');
-    // $('#modalcontainer').show();
 	CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
     $('pre code').each(function(i, block) {
@@ -418,7 +421,6 @@ CABLES.UI.MODAL.promptCallbackExec=function()
         var v=$("#modalpromptinput").val();
         CABLES.UI.MODAL.hide();
         CABLES.UI.MODAL.promptCallback( v );
-        
     }
     else
     {

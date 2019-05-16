@@ -6,7 +6,7 @@ CABLES.UI.Tipps = function ()
     this._index=0;
     this._wasShown=false;    
 
-    index = Math.round(CABLES.UI.TIPS.length * Math.random());
+    var index = Math.round(CABLES.UI.TIPS.length * Math.random());
 
     this.next=function()
     {
@@ -47,7 +47,7 @@ CABLES.UI.Tipps = function ()
         html += '</div>';
 
         html += '<div style="clear:both;padding:20px;">';
-        html += '  <a onclick="CABLES.UI.MODAL.hide();" class="bluebutton">close</a>&nbsp;&nbsp;&nbsp;';
+        html += '  <a onclick="CABLES.UI.MODAL.hide();" class="bluebutton">close</a>';
         html += '  <a onclick="CABLES.UI.tipps.next();" class="greybutton">next tip</a>';
 
         html += '  <div style="float:right;"><br/>';
