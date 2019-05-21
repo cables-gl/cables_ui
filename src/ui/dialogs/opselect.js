@@ -354,6 +354,13 @@ CABLES.UI.OpSelect.prototype.prepare=function()
 
         for(var i=0;i<this._list.length;i++)
         {
+
+            if(!this._list[i].shortName)
+            {
+                console.log("has no shortname",this._list[i]);
+                continue;
+            }
+
             maxPop=Math.max(this._list[i].pop||0,maxPop);
             this._list[i].id=i;
             this._list[i].summary=this._list[i].summary||'';
