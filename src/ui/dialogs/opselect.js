@@ -541,21 +541,27 @@ CABLES.UI.OpSelect.prototype.getOpList=function()
                     var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();
 
                     var opdoc=gui.opDocs.getOpDocByName(opname);
-
                     var shortName=shortName=parts[parts.length-1];
-                    var isDeprecated=opname.startsWith('Ops.Deprecated');
 
+                    var hidden=false;
                     if(opdoc)
                     {
+                        hidden=opdoc.hidden;
                         shortName=opdoc.shortNameDisplay
-                        if(opdoc.oldVersion)isDeprecated=true;
-                        // console.log(opdoc)
+                    }
+
+                    if(hidden)
+                    {
+                        if(opname.indexOf("Ops.Admin")==0 && gui.user.isAdmin )
+                        {
+                            hidden=false;
+                        }
                     }
 
                     parts.length=parts.length-1;
                     var nameSpace=parts.join('.');
 
-                    if(isFunction && !isDeprecated)
+                    if(isFunction && !hidden)
                     {
                         var op=
                         {
