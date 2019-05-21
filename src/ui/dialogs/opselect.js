@@ -357,8 +357,7 @@ CABLES.UI.OpSelect.prototype.prepare=function()
 
             if(!this._list[i].shortName)
             {
-                console.log("has no shortname",this._list[i]);
-                continue;
+                this._list[i].shortName=this._list[i].name;
             }
 
             maxPop=Math.max(this._list[i].pop||0,maxPop);
