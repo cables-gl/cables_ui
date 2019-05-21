@@ -548,13 +548,13 @@ CABLES.UI.OpSelect.prototype.getOpList=function()
                     var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();
 
                     var opdoc=gui.opDocs.getOpDocByName(opname);
-                    var shortName=shortName=parts[parts.length-1];
+                    var shortName=parts[parts.length-1];
 
                     var hidden=false;
                     if(opdoc)
                     {
                         hidden=opdoc.hidden;
-                        shortName=opdoc.shortNameDisplay
+                        shortName=opdoc.shortNameDisplay;
                     }
 
                     if(hidden)
