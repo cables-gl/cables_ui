@@ -354,7 +354,6 @@ CABLES.UI.OpSelect.prototype.prepare=function()
 
         for(var i=0;i<this._list.length;i++)
         {
-
             if(!this._list[i].shortName)
             {
                 this._list[i].shortName=this._list[i].name;
