@@ -13,9 +13,9 @@ CABLES.UI.TexturePreviewer=function()
     this._tempTexturePort=null;
     this._hoveringTexPort=false;
 
-    var ele=document.getElementById('bgpreview');
-
-    ele.addEventListener("click",function()
+    this._ele=document.getElementById('bgpreview');
+    this.setSize();
+    this._ele.addEventListener("click",function()
     {
         gui.patch().focusOp(this._lastClicked.opid,true);
     }.bind(this));
@@ -73,7 +73,6 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
     var previewCanvasEle=ele||document.getElementById('preview_img_'+id);
 
-    // var previewCanvasEle=document.getElementById('bgpreview');
     if(!previewCanvasEle)
     {
         // console.log("no previewCanvasEle");
@@ -124,6 +123,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
         previewCanvasEle.height=s[1];
 
 
+
         previewCanvas.clearRect(0, 0,previewCanvasEle.width, previewCanvasEle.height);
         previewCanvas.drawImage(cgl.canvas, 0, 0,previewCanvasEle.width, previewCanvasEle.height);
 
@@ -136,6 +136,23 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
     }
 };
 
+CABLES.UI.TexturePreviewer.prototype.setSize=function(size)
+{
+    if(size==undefined)
+    {
+        size=CABLES.UI.userSettings.get("texpreviewSize");
+        if(!size)size=50;
+    }
+
+    this._ele.classList.remove('bgpreviewScale25');
+    this._ele.classList.remove('bgpreviewScale33');
+    this._ele.classList.remove('bgpreviewScale50');
+    this._ele.classList.remove('bgpreviewScale100');
+
+    this._ele.classList.add('bgpreviewScale'+size);
+
+    CABLES.UI.userSettings.set("texpreviewSize",size);
+};
 
 CABLES.UI.TexturePreviewer.prototype._getCanvasSize=function(port,tex,meta)
 {
@@ -250,7 +267,6 @@ CABLES.UI.TexturePreviewer.prototype.enableBgPreview=function(enabled)
     else
     {
         if(this._lastClicked)this.selectTexturePort(this._lastClickedP);
-
     }
 }
 
@@ -260,8 +276,6 @@ CABLES.UI.TexturePreviewer.prototype.pressedEscape=function()
     var ele=document.getElementById('bgpreview');
     if(ele)ele.style.display="none";
 }
-
-
 
 CABLES.UI.TexturePreviewer.prototype.render=function()
 {
@@ -275,8 +289,6 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
         {
             ele.style.width=ele.width+'px';
             ele.style.height=ele.height+'px';
-
-            var iconbarWidth=80;
         }
     }
 
