@@ -1304,6 +1304,13 @@ this._timeoutLinkWarnings=null;
         this._elPatch = this._elPatch || $('#patch');
         this._elBody = this._elBody || $('body');
 
+        this._elPatchSvg.oncontextmenu =
+        this._elPatch.oncontextmenu = function(e){
+            console.log("context menu canceled!");
+            e.preventDefault();
+        }
+
+
         // this._elPatchSvg[0].preserveAspectRatio = 'none';
         
 
