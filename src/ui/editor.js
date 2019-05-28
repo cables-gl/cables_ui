@@ -290,7 +290,7 @@ CABLES.Editor.createEditor=function(id)
                 "CGL.TextureEffect.checkOpNotInTextureEffect",
                 "patch.cgl",
                 "CABLES.shuffleArray(arr);",
-                "CABLES.map=function(value,oldMin,oldMax,newMin,newMax,easing);",
+                "CABLES.map(value,oldMin,oldMax,newMin,newMax,easing);",
                 "Math.seededRandom();",
                 "Math.randomSeed=1;",
                 "CABLES.now();"
