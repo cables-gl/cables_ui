@@ -354,6 +354,11 @@ CABLES.UI.OpSelect.prototype.prepare=function()
 
         for(var i=0;i<this._list.length;i++)
         {
+            if(!this._list[i].shortName)
+            {
+                this._list[i].shortName=this._list[i].name;
+            }
+
             maxPop=Math.max(this._list[i].pop||0,maxPop);
             this._list[i].id=i;
             this._list[i].summary=this._list[i].summary||'';
@@ -541,21 +546,27 @@ CABLES.UI.OpSelect.prototype.getOpList=function()
                     var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();
 
                     var opdoc=gui.opDocs.getOpDocByName(opname);
+                    var shortName=parts[parts.length-1];
 
-                    var shortName=shortName=parts[parts.length-1];
-                    var isDeprecated=opname.startsWith('Ops.Deprecated');
-
+                    var hidden=false;
                     if(opdoc)
                     {
-                        shortName=opdoc.shortNameDisplay
-                        if(opdoc.oldVersion)isDeprecated=true;
-                        // console.log(opdoc)
+                        hidden=opdoc.hidden;
+                        shortName=opdoc.shortNameDisplay;
+                    }
+
+                    if(hidden)
+                    {
+                        if(opname.indexOf("Ops.Admin")==0 && gui.user.isAdmin )
+                        {
+                            hidden=false;
+                        }
                     }
 
                     parts.length=parts.length-1;
                     var nameSpace=parts.join('.');
 
-                    if(isFunction && !isDeprecated)
+                    if(isFunction && !hidden)
                     {
                         var op=
                         {

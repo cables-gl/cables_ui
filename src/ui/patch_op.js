@@ -715,9 +715,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
 
 
-        
-
-
         // resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, 0);
         // CABLES.UI.cleanRaphael(resizeHandle);
         // resizeHandle.node.classList.add(CABLES.UI.uiConfig.getOpHandleClassName(opui.op.objName));
