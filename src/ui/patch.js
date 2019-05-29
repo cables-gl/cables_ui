@@ -766,7 +766,7 @@ CABLES.UI.Patch = function(_gui) {
             });
     };
 
-this._timeoutLinkWarnings=null;
+    this._timeoutLinkWarnings=null;
     this._checkLinkCounter=-1;
 
     this.checkLinkTimeWarnings=function(cont)
@@ -3195,4 +3195,23 @@ CABLES.UI.Patch.prototype.updateBounds = function () {
 
 CABLES.UI.Patch.prototype.getNumOps = function () {
     return this.ops.length;
+}
+
+CABLES.UI.Patch.prototype.createOpAndLink=function(opname,opid,portname)
+{
+    var oldOp=this.scene.getOpById(opid);
+    var trans=
+        {
+            "translate":
+            {
+                "x":oldOp.uiAttribs.translate.x,
+                "y":oldOp.uiAttribs.translate.y-100
+            }
+        };
+
+    const newOp=this.scene.addOp(opname,trans);
+    var newPort=newOp.getFistOutPortByType(oldOp.getPortByName(portname).type);
+    this.scene.link(oldOp,portname,newOp,newPort.name);
+
+    newOp.setUiAttrib({"translate":trans});
 }

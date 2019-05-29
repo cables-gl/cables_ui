@@ -148,6 +148,13 @@
                             <span class="button" onclick="var ge=new CABLES.GradientEditor('{{op.id}}','{{port.name}}');ge.show();">edit</span>
                     {{/compare}}
 
+                    {{#compare port.uiAttribs.display '==' 'texture' }}
+                        </td>
+                        <td colspan="3">
+                            <a class="info graphbutton fa fa-plus-circle" onclick="gui.patch().createOpAndLink('Ops.Gl.Texture','{{op.id}}','{{port.name}}');"></a>
+                        </td>
+                    {{/compare}}
+
                     {{#compare port.uiAttribs.display '==' 'file' }}
                             <!-- <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> -->
                             <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
@@ -251,9 +258,9 @@
             {{#compare port.type '==' '2' }}
 
                 {{#if port.links}}
-                <br/>
-                {{else}}
-                    {{/if}}
+                    <br/>
+                    {{else}}
+                {{/if}}
 
                 {{#if port.uiAttribs.preview}}
                     <!-- <span class="button fa fa-eye" onclick="gui.setMetaTab('preview');gui.patch().updateOpParams('{{op.id}}');">preview</span> -->
@@ -261,13 +268,8 @@
                     <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br/>
                 {{/if}}
             {{/compare}}
-
-
         {{/if}}
     </td>
-
-
 </tr>
-
 
 </script>
