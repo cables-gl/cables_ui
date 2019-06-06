@@ -105,6 +105,7 @@ CABLES.UI.Port=function(thePort)
                 removeLinkingLine();
                 linkingLine = new CABLES.UI.SVGMultiLine(points);
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x+2,gui.patch().getCanvasCoordsMouse(event).y-2);
+                linkingLine.addClass("link");
     
                 if(!event.altKey) self.thePort.removeLinks();
                 updateUI();
