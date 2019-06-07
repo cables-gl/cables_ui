@@ -324,7 +324,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     {
         this._updateElementOrder(false);
 
-        if ( (e.metaKey || e.altKey) && CABLES.UI.quickAddOpStart)
+        if((e.metaKey||e.altKey)&&CABLES.UI.quickAddOpStart)
         {
             gui.patch().linkTwoOps(CABLES.UI.quickAddOpStart,CABLES.UI.selectedEndOp);
 
@@ -333,6 +333,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             e.stopPropagation();
             e.preventDefault();
+            console.log('cancel contextmenu?');
             return false;
         }
 
