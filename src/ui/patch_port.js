@@ -286,6 +286,7 @@ CABLES.UI.Port=function(thePort)
                     
                 if(event.stopPropagation)event.stopPropagation();
                 if(event.preventDefault)event.preventDefault();
+                console.log("AAA");
         
                 return false;
             }
