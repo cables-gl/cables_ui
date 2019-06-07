@@ -3200,14 +3200,9 @@ CABLES.UI.Patch.prototype.getNumOps = function () {
 CABLES.UI.Patch.prototype.createOpAndLink=function(opname,opid,portname)
 {
     var oldOp=this.scene.getOpById(opid);
-    var trans=
-        {
-            "translate":
-            {
-                "x":oldOp.uiAttribs.translate.x,
-                "y":oldOp.uiAttribs.translate.y-100
-            }
-        };
+    var trans={"translate": {
+        "x":oldOp.uiAttribs.translate.x,
+        "y":oldOp.uiAttribs.translate.y-100 }};
 
     const newOp=this.scene.addOp(opname,trans);
     var newPort=newOp.getFistOutPortByType(oldOp.getPortByName(portname).type);

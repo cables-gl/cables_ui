@@ -109,7 +109,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
         cgl.setTexture(texSlot,port.get().tex);
         this._mesh.render(this._shader);
         cgl.setTexture(texSlot,oldTex);
-        
+
         cgl.popPMatrix();
         cgl.resetViewPort();
 
@@ -121,8 +121,6 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
         previewCanvasEle.width=s[0];
         previewCanvasEle.height=s[1];
-
-
 
         previewCanvas.clearRect(0, 0,previewCanvasEle.width, previewCanvasEle.height);
         previewCanvas.drawImage(cgl.canvas, 0, 0,previewCanvasEle.width, previewCanvasEle.height);
