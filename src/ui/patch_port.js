@@ -286,18 +286,14 @@ CABLES.UI.Port=function(thePort)
                         finishDragUI();
                     },finishDragUI);
                     
-
-        
                 return false;
             }
         }
 
         if(!foundAutoOp)
         {
-
 			if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
-            
             if( (event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink) || (event.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
                 removeLinkingLine();

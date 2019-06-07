@@ -1301,6 +1301,8 @@ CABLES.UI.Patch = function(_gui) {
         // this.paper.node.preserveAspectRatio='none';
 
 
+
+
         this._elPatchSvg = this._elPatchSvg || $('#patch svg');
         this._elPatch = this._elPatch || $('#patch');
         this._elBody = this._elBody || $('body');
@@ -1311,7 +1313,11 @@ CABLES.UI.Patch = function(_gui) {
             e.preventDefault();
         }
 
-
+        this._elPatchSvg[0].addEventListener("contextmenu", function(e){
+            console.log("cancel contextmenu");
+            e.preventDefault();
+        }, false);
+        
         // this._elPatchSvg[0].preserveAspectRatio = 'none';
         
 
