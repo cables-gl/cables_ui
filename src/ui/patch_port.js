@@ -224,7 +224,9 @@ CABLES.UI.Port=function(thePort)
         var j=0;
         CABLES.UI.MOUSEDRAGGINGPORT=false;
         removeLinkingLine();
-        
+        if(event.stopPropagation)event.stopPropagation();
+        if(event.preventDefault)event.preventDefault();
+
         var foundAutoOp=false;
         if(CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
         {
@@ -284,9 +286,7 @@ CABLES.UI.Port=function(thePort)
                         finishDragUI();
                     },finishDragUI);
                     
-                if(event.stopPropagation)event.stopPropagation();
-                if(event.preventDefault)event.preventDefault();
-                console.log("AAA");
+
         
                 return false;
             }
