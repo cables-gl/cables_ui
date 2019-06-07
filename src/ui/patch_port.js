@@ -284,7 +284,11 @@ CABLES.UI.Port=function(thePort)
                         finishDragUI();
                     },finishDragUI);
                     
-                return;
+                console.log("PORTDIAL")
+                e.stopPropagation();
+                e.preventDefault();
+        
+                return false;
             }
         }
 
