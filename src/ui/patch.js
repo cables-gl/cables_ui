@@ -1307,21 +1307,11 @@ CABLES.UI.Patch = function(_gui) {
         this._elPatch = this._elPatch || $('#patch');
         this._elBody = this._elBody || $('body');
 
+        this._elBody.oncontextmenu =
         this._elPatchSvg.oncontextmenu =
-        this._elPatch.oncontextmenu = function(e){
-            console.log("context menu canceled!");
-            e.preventDefault();
-        }
-
-        this._elPatchSvg[0].addEventListener("contextmenu", function(e){
-            console.log("cancel contextmenu");
-            e.preventDefault();
-        }, false);
+        this._elPatch.oncontextmenu = function(e){ e.preventDefault(); }
+        document.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
         
-        // this._elPatchSvg[0].preserveAspectRatio = 'none';
-        
-
-
         this._viewBox.bindWheel(this._elPatchSvg);
 
         this.background = this.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
