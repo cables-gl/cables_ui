@@ -20,6 +20,9 @@
     --color-special: #07F78C;
     --color-error: #dc5751;
     --color-warning: #ec9213;
+
+    --linkline-default:1.5;
+    --linkline-thin:0.5;
 }
 
 
@@ -137,11 +140,15 @@ body.bright
     --color-02: #EEEEEE;
     --color-01: #FFFFFF;
 
+    --text-color: var(--color-13);
     --color_op_bg: var(--color-13);
     --color_op_bg_active: var(--color-12);
     --color_op_text: var(--color-01);
     --color_op_text_active: var(--color-01);
     --color_port_function:#8a7f00;
     --color_link_function: #8a7f00;
+
+    --linkline-default:3;
+    --linkline-thin:2;
 }
 

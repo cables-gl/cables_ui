@@ -287,11 +287,7 @@ CABLES.UI.OpDocs=function()
                         }
                     }
 
-
-
-
                     html+='</ul>';
-    
                 }
                 if(opDocs[i].credits)
                 {
@@ -312,7 +308,6 @@ CABLES.UI.OpDocs=function()
                     html+='<li><a href="https://cables.gl/admin/user/'+opDocs[i].authorName+'">'+opDocs[i].authorName+'</a></li>';
                     html+='</ul>';
                 }
-
 
                 return html;
             }

@@ -469,6 +469,7 @@ CABLES.UI.GUI = function() {
     this.cycleRendererSize = function() {
         this.showCanvasModal(false);
         if (self.rendererWidth !== 0) {
+            CABLES.UI.fileSelect.hide();
             this._elGlCanvas.addClass('maximized');
 
             this._oldCanvasWidth = self.rendererWidth;

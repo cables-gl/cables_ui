@@ -320,26 +320,22 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         gui.setStateUnsaved();
     };
 
-    var up = function(e) {
+    var up = function(e)
+    {
         this._updateElementOrder(false);
 
-        if ( (e.metaKey || e.altKey) && CABLES.UI.quickAddOpStart) {
-            gui.patch().linkTwoOps(
-                CABLES.UI.quickAddOpStart,
-                CABLES.UI.selectedEndOp
-            );
+        if((e.metaKey || e.altKey) && CABLES.UI.quickAddOpStart)
+        {
+            gui.patch().linkTwoOps(CABLES.UI.quickAddOpStart,CABLES.UI.selectedEndOp);
 
             CABLES.UI.quickAddOpStart = null;
             CABLES.UI.selectedEndOp = null;
 
-            return;
+            return false;
         }
-
 
         shakeCountP = 0;
         shakeCountN = 0;
-
-        // lastX = -1;
 
         if (CABLES.UI.LINKHOVER)
         {
@@ -353,9 +349,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                     portOut = oldLink.p1;
                 }
 
-                // portIn.thePort.removeLinks();
                 oldLink.unlink();
-                
 
                 if (CABLES.Link.canLink(opui.op.portsIn[0], portOut.thePort)) {
                     gui.patch().scene.link(
@@ -713,9 +707,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         background.node.classList.add(objNameClassNameified);
         background.node.setAttribute('data-info', CABLES.UI.TEXTS.op_background);
 
-
-
-        
 
 
         // resizeHandle=gui.patch().getPaper().rect(w-CABLES.UI.uiConfig.resizeBarWidth, 0, CABLES.UI.uiConfig.resizeBarWidth, 0);
