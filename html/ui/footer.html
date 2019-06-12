@@ -192,6 +192,7 @@
 
         if("serviceWorker" in navigator)
         {
+            return;
             console.log("registering PWA service worker...");
             navigator.serviceWorker.register('/pwasw.js',
             {
