@@ -810,6 +810,11 @@ CABLES.UI.Patch = function(_gui) {
     this.checkUpdated=function(cb)
     {
         if(!gui.project())return;
+        if(CABLES.sandbox.isOffline())
+        {
+            if(cb)cb();
+            return;
+        }
 
         gui.jobs().start({
             id: 'checkupdated',

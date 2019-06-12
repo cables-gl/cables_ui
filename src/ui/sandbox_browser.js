@@ -6,6 +6,12 @@ CABLES.SandboxBrowser=function()
     // console.log("starting browser sandbox");
 };
 
+CABLES.SandboxBrowser.prototype.isOffline=function()
+{
+    return false;
+}
+
+
 CABLES.SandboxBrowser.prototype.loadUser=function(cb,cbError)
 {
     CABLES.api.get('user/me',
