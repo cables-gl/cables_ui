@@ -105,6 +105,7 @@ CABLES.UI.Port=function(thePort)
                 removeLinkingLine();
                 linkingLine = new CABLES.UI.SVGMultiLine(points);
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x+2,gui.patch().getCanvasCoordsMouse(event).y-2);
+                linkingLine.addClass("link");
     
                 if(!event.altKey) self.thePort.removeLinks();
                 updateUI();
@@ -223,7 +224,9 @@ CABLES.UI.Port=function(thePort)
         var j=0;
         CABLES.UI.MOUSEDRAGGINGPORT=false;
         removeLinkingLine();
-        
+        if(event.stopPropagation)event.stopPropagation();
+        if(event.preventDefault)event.preventDefault();
+
         var foundAutoOp=false;
         if(CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
         {
@@ -283,16 +286,14 @@ CABLES.UI.Port=function(thePort)
                         finishDragUI();
                     },finishDragUI);
                     
-                return;
+                return false;
             }
         }
 
         if(!foundAutoOp)
         {
-
 			if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
-            
             if( (event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink) || (event.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
                 removeLinkingLine();

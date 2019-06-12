@@ -766,7 +766,7 @@ CABLES.UI.Patch = function(_gui) {
             });
     };
 
-this._timeoutLinkWarnings=null;
+    this._timeoutLinkWarnings=null;
     this._checkLinkCounter=-1;
 
     this.checkLinkTimeWarnings=function(cont)
@@ -1298,24 +1298,15 @@ this._timeoutLinkWarnings=null;
         this._viewBox = new CABLES.UI.PatchViewBox(this, this.paper);
         this.bindScene(self.scene);
 
-        // this.paper.node.preserveAspectRatio='none';
-
-
         this._elPatchSvg = this._elPatchSvg || $('#patch svg');
         this._elPatch = this._elPatch || $('#patch');
         this._elBody = this._elBody || $('body');
 
+        this._elBody.oncontextmenu =
         this._elPatchSvg.oncontextmenu =
-        this._elPatch.oncontextmenu = function(e){
-            console.log("context menu canceled!");
-            e.preventDefault();
-        }
-
-
-        // this._elPatchSvg[0].preserveAspectRatio = 'none';
+        this._elPatch.oncontextmenu = function(e){ e.preventDefault(); }
+        document.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
         
-
-
         this._viewBox.bindWheel(this._elPatchSvg);
 
         this.background = this.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
@@ -3195,4 +3186,18 @@ CABLES.UI.Patch.prototype.updateBounds = function () {
 
 CABLES.UI.Patch.prototype.getNumOps = function () {
     return this.ops.length;
+}
+
+CABLES.UI.Patch.prototype.createOpAndLink=function(opname,opid,portname)
+{
+    var oldOp=this.scene.getOpById(opid);
+    var trans={"translate": {
+        "x":oldOp.uiAttribs.translate.x,
+        "y":oldOp.uiAttribs.translate.y-100 }};
+
+    const newOp=this.scene.addOp(opname,trans);
+    var newPort=newOp.getFistOutPortByType(oldOp.getPortByName(portname).type);
+    this.scene.link(oldOp,portname,newOp,newPort.name);
+
+    newOp.setUiAttrib({"translate":trans});
 }

@@ -233,7 +233,8 @@ CABLES.Editor.createEditor=function(id)
         "showPrintMargin": false
     });
 
-    editor.setTheme("ace/theme/cables");
+    if(!CABLES.UI.userSettings.get('theme-bright'))editor.setTheme("ace/theme/cables");
+
     editor.session.setMode("ace/mode/javascript");
     editor.$blockScrolling = Infinity;
 
