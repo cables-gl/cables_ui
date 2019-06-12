@@ -1298,11 +1298,6 @@ CABLES.UI.Patch = function(_gui) {
         this._viewBox = new CABLES.UI.PatchViewBox(this, this.paper);
         this.bindScene(self.scene);
 
-        // this.paper.node.preserveAspectRatio='none';
-
-
-
-
         this._elPatchSvg = this._elPatchSvg || $('#patch svg');
         this._elPatch = this._elPatch || $('#patch');
         this._elBody = this._elBody || $('body');
