@@ -184,7 +184,8 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
     ele.bind("mousewheel", function (event, delta, nbr)
     {
         var touchpadMode = CABLES.UI.userSettings.get("touchpadmode");
-        if (!event.metaKey && !event.altKey && !event.ctrlKey && touchpadMode) {
+        if (touchpadMode && !event.metaKey && !event.altKey && !event.ctrlKey) 
+        {
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.deltaY *= 0.5;
                 else event.deltaX *= 0.5;
 
@@ -200,34 +201,56 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 
         delta = CGL.getWheelSpeed(event);
 
-        if (delta < 0) delta = 0.8;
-            else delta = 1.2;
-        
-        var patchWidth = this._elePatch.offsetWidth;
-        var patchHeight = this._elePatch.offsetHeight;
-
-        if (this._zoom == null)
-        {
-            this._zoom = patchWidth / this._viewBox.w;
-            this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
-        }
-
         event = mouseEvent(event);
 
-        var oldx = (event.clientX - this._elePatch.offsetLeft);
-        var oldy = (event.clientY - this._elePatch.offsetTop);
-        var x = (this._viewBox.x) + Number(oldx / this._zoom);
-        var y = (this._viewBox.y) + Number(oldy / this._zoom);
+        if(event.altKey)
+        {
+            this.set(
+                this._viewBox.x,
+                this._viewBox.y-delta,
+                this._viewBox.w,
+                this._viewBox.h
+                );
+        }
+        else
+        if(event.shiftKey)
+        {
+            this.set(
+                this._viewBox.x-delta,
+                this._viewBox.y,
+                this._viewBox.w,
+                this._viewBox.h
+                );
+        }
+        else
+        {
+            if (delta < 0) delta = 0.8;
+            else delta = 1.2;
+            
+            var patchWidth = this._elePatch.offsetWidth;
+            var patchHeight = this._elePatch.offsetHeight;
 
-        this._zoom = ((this._zoom || 1) * delta) || 1;
+            if (this._zoom == null)
+            {
+                this._zoom = patchWidth / this._viewBox.w;
+                this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
+            }
 
-        this.set(
-            x - (oldx / this._zoom),
-            y - (oldy / this._zoom),
-            patchWidth / this._zoom,
-            patchHeight / this._zoom
-            );
 
+            var oldx = (event.clientX - this._elePatch.offsetLeft);
+            var oldy = (event.clientY - this._elePatch.offsetTop);
+            var x = (this._viewBox.x) + Number(oldx / this._zoom);
+            var y = (this._viewBox.y) + Number(oldy / this._zoom);
+    
+            this._zoom = ((this._zoom || 1) * delta) || 1;
+    
+            this.set(
+                x - (oldx / this._zoom),
+                y - (oldy / this._zoom),
+                patchWidth / this._zoom,
+                patchHeight / this._zoom
+                );
+        }
         if (event.ctrlKey) // disable chrome pinch/zoom gesture
         {
             event.preventDefault();
