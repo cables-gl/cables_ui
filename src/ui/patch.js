@@ -246,7 +246,7 @@ CABLES.UI.Patch = function(_gui) {
                             gui.setStateUnsaved();
                             // uiop.oprect.setSelected
                         }
-                        
+
                         return;
                     });
                 }
@@ -838,7 +838,7 @@ CABLES.UI.Patch = function(_gui) {
                 }
                 gui.jobs().finish('checkupdated');
                 
-            }.bind(this)
+            }.bind(this),function(){/*ignore errors*/}
         );
     };
 
@@ -1983,6 +1983,7 @@ CABLES.UI.Patch = function(_gui) {
     this.opCollisionTest = function(uiOp)
     {
         var perf = CABLES.uiperf.start('opCollisionTest');
+
         var found=false;
         var count=1;
 
@@ -1992,7 +1993,7 @@ CABLES.UI.Patch = function(_gui) {
             for (var i =0;i<this.ops.length;i++)
             {
                 var testOp = this.ops[i];
-                if(testOp.op.objName.indexOf("Ui.Comment"!=-1))continue;
+                if(testOp.op.objName.indexOf("Ui.Comment")!=-1) continue;
 
                 if (!testOp.op.deleted &&
                     (uiOp.op.objName.indexOf("Comment")==-1) && 
@@ -2040,10 +2041,41 @@ CABLES.UI.Patch = function(_gui) {
         while(found)
 
         this._viewBox.setMinimapBounds();
-
         perf.finish();
     };
 
+    this.checkCollisionsEdge = function()
+    {
+        var perf = CABLES.uiperf.start('checkCollisionsEdge');
+        
+        for(var i=0;i<this.ops.length;i++)
+        {
+            for(var j=0;j<this.ops.length;j++)
+            {
+                if(i==j)continue;
+                
+                var a=this.ops[i].op;
+                var b=this.ops[j].op;
+                
+                if(
+                    a.uiAttribs.translate.x==b.uiAttribs.translate.x &&
+                    a.uiAttribs.translate.y==b.uiAttribs.translate.y
+                    )
+                    {
+                        console.log("colliding!");
+                        this.ops[j].setPos(
+                            a.uiAttribs.translate.x,
+                            a.uiAttribs.translate.y+50
+                            );
+                    }
+                        
+            }
+                
+        }
+        perf.finish();
+    }
+            
+            
 
     this.testCollisionOpPosition = function(x, y, opid) {
         // for(var i in this.ops)

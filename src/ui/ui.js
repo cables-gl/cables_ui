@@ -1059,7 +1059,7 @@ CABLES.UI.GUI = function() {
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         } else if ($('#cmdpalette').is(':visible')) gui.cmdPallet.close();
-        else if(showingEditor && e) this.closeEditor();
+        
         else if($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
         // else if(gui.find().isVisible()) gui.find().close();
         // else if($('#library').is(':visible')) CABLES.UI.fileSelect.hide();
@@ -1073,7 +1073,9 @@ CABLES.UI.GUI = function() {
             CABLES.UI.MODAL.hide(true)
             CABLES.UI.MODAL.hide();
             if (showingEditor) self.editor().focus();
-        } else {
+        } 
+        else if(showingEditor && e) this.closeEditor();
+        else {
             if (e) gui.opSelect().showOpSelect({
                 x: 0,
                 y: 0

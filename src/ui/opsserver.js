@@ -81,7 +81,6 @@ CABLES.UI.ServerOps = function(gui) {
             },
             function(res) {
                 console.log('err res', res);
-
             }
         );
     };
@@ -125,11 +124,12 @@ CABLES.UI.ServerOps = function(gui) {
             {
                 if(op.portsOut[i].uiAttribs.display=='bool')l.subType="boolean";
                 else if(op.portsOut[i].uiAttribs.type=='string')l.subType="string";
+                else if(op.portsOut[i].uiAttribs.display=='dropdown')l.subType="dropdown";
+                else if(op.portsOut[i].uiAttribs.display=='file')l.subType="url";
                 else l.subType="number";
             }
 
             opObj.portsOut.push(l);
-
         }
 
         CABLES.api.post('op/layout/' + op.objName, {
@@ -164,12 +164,15 @@ CABLES.UI.ServerOps = function(gui) {
                 for(var i=0;i<ops.length;i++) gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
 
                 if (ops.length > 0) this.saveOpLayout(ops[0]);
+                gui.patch().checkCollisionsEdge();
                 gui.editor().focus();
+                
             }.bind(this));
 
             CABLES.UI.MODAL.hideLoading();
         }.bind(this);
         document.body.appendChild(s);
+        
     };
 
     this.clone = function(oldname, name) {
