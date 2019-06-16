@@ -1288,8 +1288,8 @@ CABLES.UI.GUI = function() {
     this.showOpDoc = function(opname) {
         this.getOpDoc(opname, true, function(html)
         {
-            var docOpHead = '<div><a href="/op/' + opname + '" style="text-decoration:underline;">view examples</a>&nbsp;<i class="icon icon-link"></i><br/><br/>';
-            $('#meta_content_doc').html(docOpHead + html);
+            var doclink = '<div><a href="/op/' + opname + '" class="button ">view documentation</a>&nbsp;<br/><br/>';
+            $('#meta_content_doc').html(html+doclink);
         });
     };
 

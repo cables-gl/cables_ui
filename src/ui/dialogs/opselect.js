@@ -231,7 +231,7 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
         // var html = '<div id="opselect-layout"><a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">Open Examples Page <i class="icon icon-link"></i></a></div>'+content+htmlFoot;
 
         var html = '<div id="opselect-layout">';
-        html +=        '<a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">Open Examples Page <i class="icon icon-link"></i></a>';
+        html +=        '<a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">View Documentation <i class="icon icon-link"></i></a>';
         html +=    '</div>';
         html +=    opDoc;
         html +=    htmlFoot;
