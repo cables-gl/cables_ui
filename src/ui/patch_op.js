@@ -1016,7 +1016,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     this.setTitle = function(t) {
 
         title=t||title;
-        // if(!label)return;
+
+        var suffix='';
+        if(opui.op.uiAttribs.hasOwnProperty("extendTitle") && opui.op.uiAttribs.extendTitle) suffix+=' | '+opui.op.uiAttribs.extendTitle;
+
         var perf = CABLES.uiperf.start('op.setTitle');
 
         if(!label)return;
@@ -1028,7 +1031,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             }
 
             if (label) {
-                label.attr({ text: title });
+                label.attr({ text: title+suffix });
                 // if(objName.indexOf("Ops.User") == 0) label.attr({ text: '• '+title });
 
                 this.setWidth();
@@ -1145,6 +1148,11 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         if (typeof attribs.title !== 'undefined' && attribs.title !== null) {
             this.oprect.setTitle(attribs.title);
         }
+        if (attribs && attribs.hasOwnProperty('extendTitle')) {
+            this.oprect.setTitle();
+        }
+        
+
 
     }.bind(this);
 
