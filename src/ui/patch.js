@@ -2771,6 +2771,19 @@ CABLES.UI.Patch = function(_gui) {
                     watchPorts.push(op.portsOut[i2]);
                 }
 
+                var startGroup = null;
+                var groupSpacer = false;
+
+                var opGroup = op.portsOut[i2].uiAttribs.group;
+                if (lastGroup != opGroup && !opGroup) groupSpacer=true;
+
+                if (lastGroup != opGroup)
+                {
+                    groupSpacer = true;
+                    lastGroup = opGroup;
+                    startGroup = lastGroup;
+                }
+                
                 // set auto preview
                 if (!foundPreview && op.portsOut[i2].uiAttribs.preview) {
                     foundPreview = true;
@@ -2780,6 +2793,8 @@ CABLES.UI.Patch = function(_gui) {
                 html += templatePort({
                     "port": op.portsOut[i2],
                     "dirStr": "out",
+                    "groupSpacer":groupSpacer,
+                    "startGroup":startGroup,
                     "portnum": i2,
                     "isInput": false,
                     "op": op
