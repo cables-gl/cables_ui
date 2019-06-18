@@ -74,9 +74,8 @@ CABLES.UI.ServerOps = function(gui) {
                 self.load(
                     function() {
                         self.edit(name);
-
-                        gui.opSelect().reload();
                         gui.serverOps.execute(name);
+                        gui.opSelect().reload();
                     });
             },
             function(res) {
