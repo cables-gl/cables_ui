@@ -245,40 +245,40 @@ CABLES.Editor.createEditor=function(id)
     var staticWordCompleter = {
         getCompletions: function(editor, session, pos, prefix, callback) {
             
+            console.log("prefix",prefix);
+            
+            
             var wordList = [
                 "op.log",
 
                 "onChange",
                 "onTriggered",
-                /* in functions */
-                "inTrigger",
-                "inTriggerButton",
-                /* in number / string / bool  */
-                "inValueFloat",
-                "inValueBool",
-                "inValueInt",
-                // "inValueString",
-                "inString",
-                "inStringEditor",
+                
+                "op.inTrigger",
+                "op.inTriggerButton",
+                "op.inFloat",
+                "op.inBool",
+                "op.inInt",
+                "op.inString",
+                "op.inStringEditor",
 
+                "op.inFloatSlider",
+                "op.inDropDown",
 
-                "inValueSlider",
-                "inValueSelect",
-                /* in object / texture / array / file  */
-                "inObject",
-                "inTexture",
-                "inArray",
-                "inFile",
+                "op.inObject",
+                "op.inTexture",
+                "op.inArray",
+                "op.inFile",
                 /* out functions */
-                "outTrigger",
+                "op.outTrigger",
                 /* out number / string / bool  */
-                "outValue",
-                "outValueBool",
-                "outString",
+                "op.outNumber",
+                "op.outBool",
+                "op.outString",
                 /* out object / texture / array  */
-                "outObject",
-                "outTexture",
-                "outArray",
+                "op.outObject",
+                "op.outTexture",
+                "op.outArray",
 
                 "onLinkChanged",
 
