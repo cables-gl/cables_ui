@@ -245,9 +245,6 @@ CABLES.Editor.createEditor=function(id)
     var staticWordCompleter = {
         getCompletions: function(editor, session, pos, prefix, callback) {
             
-            console.log("prefix",prefix);
-            
-            
             var wordList = [
                 "op.log",
 
@@ -307,7 +304,7 @@ CABLES.Editor.createEditor=function(id)
     };
 
     // or
-    editor.completers = [staticWordCompleter];
+    editor.completers.push(staticWordCompleter);
     editor.resize();
     editor.focus();
     return editor;
