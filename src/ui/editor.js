@@ -279,13 +279,13 @@ CABLES.Editor.createEditor=function(id)
 
                 "onLinkChanged",
 
-                "toWorkNeedsParent",
-                "toWorkPortsNeedToBeLinked",
+                "op.toWorkNeedsParent",
+                "op.toWorkPortsNeedToBeLinked",
 
                 "setUiAttribs",
-                "setPortGroup",
+                "op.setPortGroup",
                 "CGL.TextureEffect.checkOpNotInTextureEffect",
-                "patch.cgl",
+                "op.patch.cgl",
                 "CABLES.shuffleArray(arr);",
                 "CABLES.map(value,oldMin,oldMax,newMin,newMax,easing);",
                 "Math.seededRandom();",
