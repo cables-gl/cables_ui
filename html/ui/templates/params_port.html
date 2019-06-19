@@ -60,7 +60,7 @@
                 {{#each port.links}}
                     <tr>
                         <td>
-                            <a class="info graphbutton fa fa-chain-broken" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
+                            <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
                             <span class="paramsPortLink" onclick="gui.patch().focusOp('{{portIn.parent.id}}',true);gui.patch().setSelectedOpById('{{portIn.parent.id}}');">{{{ portIn.parent.name }}}</span><br/>
                         </td>
                     </tr>
@@ -69,7 +69,7 @@
                 {{else}}
                 {{#each port.links}}
                     </td><td>
-                        <a class="info graphbutton fa fa-chain-broken" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" ></a>
+                        <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
                         <span class="paramsPortLink" onclick="gui.patch().focusOp('{{portOut.parent.id}}',true);gui.patch().setSelectedOpById('{{portOut.parent.id}}');">{{{ portOut.parent.name }}}</span><br/>
                 {{/each}}
             {{/if}}

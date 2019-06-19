@@ -15,20 +15,21 @@
     background-color: var(--color-13);
 }
 
-.iconhover
-{
-	cursor:pointer;
-	&:hover
-	{
-		background-color:var(--color-special);
-	}
-}
 
 .icon-active
 {
     background-color:var(--color-special);
 }
 
+
+.iconhover
+{
+	cursor:pointer;
+	&:hover
+	{
+		background-color:var(--color-special) !important;
+	}
+}
 .icon-2x
 {
 	width: 32px;
