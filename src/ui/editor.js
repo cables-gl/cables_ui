@@ -1,9 +1,6 @@
-
-
 // error line marker
 // var Range = ace.require('ace/range').Range;
 // c.editor.getSession().addMarker(new Range(9, 0, 9, 2000), "warning", "line", true);
-
 
 CABLES = CABLES || {};
 
@@ -232,7 +229,7 @@ CABLES.Editor.createEditor=function(id)
         "showPrintMargin": false
     });
 
-    if(!CABLES.UI.userSettings.get('theme-bright'))editor.setTheme("ace/theme/cables");
+    if(!CABLES.UI.userSettings.get('theme-bright')) editor.setTheme("ace/theme/cables");
 
     editor.session.setMode("ace/mode/javascript");
     editor.$blockScrolling = Infinity;
@@ -242,52 +239,129 @@ CABLES.Editor.createEditor=function(id)
     editor.commands.bindKey("Cmd-Ctrl-Up", "movelinesup");
     editor.commands.bindKey("Cmd-Ctrl-Down", "movelinesdown");
 
+
+
+
+    var snippetManager = ace.require("ace/snippets").snippetManager;
+    var snippets = snippetManager.parseSnippetFile("");
+    
+    snippets.push(
+
+        {
+            content: "op.inTriggerButton(\"${1:name}\")",
+            name: "op.inTriggerButton",
+        },
+        {
+            content: "op.inTrigger(\"${1:name}\")",
+            name: "op.inTrigger",
+        },
+        {
+            content: "op.outTrigger(\"${1:name}\")",
+            name: "op.outTrigger",
+        },
+        {
+            content: "op.inBool(\"${1:name}\",${2:false})",
+            name: "op.inBool",
+        },
+        {
+            content: "op.inInt(\"${1:name}\",${2:0})",
+            name: "op.inInt",
+        },
+        {
+            content: "op.inFloatSlider(\"${1:name}\",${2:0})",
+            name: "op.inFloatSlider",
+        },
+        {
+            content: "op.inFloat(\"${1:name}\",${2:0})",
+            name: "op.inFloat",
+        },
+        {
+            content: "op.inDropDown(\"${1:name}\",\"${2:['option a','option b']}\")",
+            name: "op.inDropDown",
+        },
+        {
+            content: "op.inStringEditor(\"${1:name}\",\"${2:default}\")",
+            name: "op.inStringEditor",
+        },
+        {
+            content: "op.inString(\"${1:name}\",\"${2:default}\")",
+            name: "op.inString",
+        },
+        {
+            content: "op.inObject(\"${1:name}\")",
+            name: "op.inObject",
+        },
+        {
+            content: "op.inTexture(\"${1:name}\")",
+            name: "op.inTexture",
+        },
+        {
+            content: "op.inArray(\"${1:name}\")",
+            name: "op.inArray",
+        },
+        {
+            content: "op.inFile(\"${1:name}\")",
+            name: "op.inFile",
+        },
+        {
+            content: "op.outNumber(\"${1:name}\")",
+            name: "op.outNumber",
+        },
+        {
+            content: "op.outBool(\"${1:name}\")",
+            name: "op.outBool",
+        },
+        {
+            content: "op.outString(\"${1:name}\")",
+            name: "op.outString",
+        },
+        {
+            content: "op.outObject(\"${1:name}\")",
+            name: "op.outObject",
+        },
+        {
+            content: "op.outArray(\"${1:name}\")",
+            name: "op.outArray",
+        },
+        {
+            content: "op.outTexture(\"${1:name}\")",
+            name: "op.outTexture",
+        },
+        {
+            content: "CABLES.map(${1:name})",
+            name: "CABLES.map",
+        },
+        {
+            content: "console.log(\"${1:text}\");",
+            name: "console.log",
+        },
+        {
+            content: "op.setPortGroup(\"${1:name}\",[${2:port},${3:port}]);",
+            name: "op.setPortGroup",
+        },
+        {
+            content: "CABLES.map(${1:value},${2:oldMin},${3:oldMax},${4:newMin},${5:newMax});",
+            name: "CABLES.map",
+        },
+        {
+            content: "op.toWorkPortsNeedToBeLinked(${1:port1},${2:port2});",
+            name: "op.toWorkPortsNeedToBeLinked",
+        }
+    );
+    snippetManager.register(snippets, "javascript");
+
     var staticWordCompleter = {
         getCompletions: function(editor, session, pos, prefix, callback) {
-            
             var wordList = [
                 "op.log",
-
-                "onChange",
-                "onTriggered",
-                
-                "op.inTrigger",
-                "op.inTriggerButton",
-                "op.inFloat",
-                "op.inBool",
-                "op.inInt",
-                "op.inString",
-                "op.inStringEditor",
-
-                "op.inFloatSlider",
-                "op.inDropDown",
-
-                "op.inObject",
-                "op.inTexture",
-                "op.inArray",
-                "op.inFile",
-                /* out functions */
-                "op.outTrigger",
-                /* out number / string / bool  */
-                "op.outNumber",
-                "op.outBool",
-                "op.outString",
-                /* out object / texture / array  */
-                "op.outObject",
-                "op.outTexture",
-                "op.outArray",
-
-                "onLinkChanged",
-
+                "onChange=",
+                "onTriggered=",
+                "onLinkChanged=",
                 "op.toWorkNeedsParent",
-                "op.toWorkPortsNeedToBeLinked",
-
+                // "op.toWorkPortsNeedToBeLinked",
                 "setUiAttribs",
-                "op.setPortGroup",
-                "CGL.TextureEffect.checkOpNotInTextureEffect",
                 "op.patch.cgl",
                 "CABLES.shuffleArray(arr);",
-                "CABLES.map(value,oldMin,oldMax,newMin,newMax,easing);",
                 "Math.seededRandom();",
                 "Math.randomSeed=1;",
                 "CABLES.now();"
@@ -299,7 +373,6 @@ CABLES.Editor.createEditor=function(id)
                     meta: "static"
                 };
             }));
-
         }
     };
 

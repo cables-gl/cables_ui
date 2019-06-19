@@ -16,7 +16,6 @@
     </tr>
 {{/if}}
 
-
 {{#if groupSpacer}}
 <tr>
     <td colspan="11" ><div class="groupSpacer">{{startGroup}}</div></td>
@@ -29,13 +28,9 @@
 </tr>
 {{/if}} -->
 
-
-
-
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
-
         {{port.name}} 
         </span>
     
@@ -108,8 +103,6 @@
                         <a class="info graphbutton fa fa-plus-circle" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ></a>
                     {{/compare}}
 
-
-
                     {{#compare port.uiAttribs.display '==' 'range' }}
                         <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
                         <!-- <a class="info graphbutton showgraphbutton fa fa-line-chart" data-info="{{ texts.portAnimKeep }}" id="portgraph_{{ dirStr }}_{{ portnum }}" ></a> -->
@@ -124,7 +117,6 @@
                             <span class="numberinput-display">{{ port.val }}</span>
                             <input autocomplete="off" class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
                         </div>
-    
                     {{/compare}}
                     {{#compare port.uiAttribs.display '==' 'dropdown' }}
                         </td><td colspan="3">
@@ -138,6 +130,18 @@
                             </select>
                             <input type="hidden" class="value" id="portval_{{ portnum }}" value="{{ port.val }}" />
                     {{/compare}}
+                    {{#compare port.uiAttribs.display '==' 'switch' }}
+                        </td><td colspan="3">
+                            <input class="value hide" type="hidden" id="portval_{{ portnum }}" style="width:40px;" value="{{port.val}}"/>
+                            <div class="radioToggle">
+                                {{#each port.uiAttribs.values}}
+                                    <label><input type="radio" name="radio_portval_{{ ../portnum }}" value="{{ this }}" oninput="$('#portval_{{ ../portnum }}').val(this.value);$('#portval_{{ ../portnum }}').trigger('input');" {{#compare this '==' ../port.val }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
+                                {{/each}}
+                            </div>
+                            <!-- <br/>!<input type="" class="watchPort watchPortValue_in_{{ portnum }}" id="portval_{{ portnum }}" value="{{ port.val }}"  oninput=""/> -->
+                            
+                    {{/compare}}
+
                     {{#compare port.uiAttribs.display '==' 'readonly' }}
                         {{ port.val }}
                     {{/compare}}
@@ -168,13 +172,11 @@
                             <div id="portFileVal_{{ portnum }}_preview" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="padding:0px;"></div>
                     {{/compare}}
 
-
 					{{#compare port.uiAttribs.display '==' 'text' }}
                         </td><td colspan="3">
 							<textarea class="value watchPort watchPortValue_{{ port.watchId }} info" id="portval_{{ portnum }}">{{port.val}}</textarea>
                     {{/compare}}
                     
-
                 {{else}}
 
                         {{#compare port.type '==' '5' }}

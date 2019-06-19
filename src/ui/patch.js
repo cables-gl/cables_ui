@@ -2764,7 +2764,8 @@ CABLES.UI.Patch = function(_gui) {
             var perfLoopOut = CABLES.uiperf.start('_showOpParamsLOOP OUT');
 
             var foundPreview = false;
-            for (var i2 in op.portsOut) {
+            for (var i2 in op.portsOut)
+            {
                 if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING)
                 {
                     op.portsOut[i2].watchId = 'out_' + i2;
