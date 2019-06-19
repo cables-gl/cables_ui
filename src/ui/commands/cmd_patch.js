@@ -168,28 +168,45 @@ CABLES.CMD.PATCH.createAutoVariable=function()
 
 			const x = CABLES.UI.OPSELECT.newOpPos.x;
 			const y = CABLES.UI.OPSELECT.newOpPos.y;
-			if(p.type==0)
+			var portName="Value"
+			if(p.type==CABLES.OP_PORT_TYPE_VALUE)
 			{
-				opSetter = gui.patch().scene.addOp("Ops.Vars.SetVariable");
-
-                CABLES.UI.OPSELECT.newOpPos.x=x;
-                CABLES.UI.OPSELECT.newOpPos.y=y;
-
-                opGetter = gui.patch().scene.addOp("Ops.Vars.Variable");
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetNumber");
+                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
             }
+			else if(p.type==CABLES.OP_PORT_TYPE_OBJECT)
+			{
+				portName="Object";
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetObject");
+                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetObject");
+            }
+			else if(p.type==CABLES.OP_PORT_TYPE_ARRAY)
+			{
+				portName="Array";
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetArray");
+                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetArray");
+            }
+			else if(p.type==CABLES.OP_PORT_TYPE_STRING)
+			{
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetString");
+                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
+            }
+
+			CABLES.UI.OPSELECT.newOpPos.x=x;
+			CABLES.UI.OPSELECT.newOpPos.y=y;
 
             opSetter.varName.set(str);
             opGetter.varName.set(str);
 
             if (p.direction == 0)
             {
-                opSetter.getPort("Value").set(p.get());
-                p.parent.patch.link(opGetter, 'Value', p.parent, p.name);
+                opSetter.getPort(portName).set(p.get());
+                p.parent.patch.link(opGetter, portName, p.parent, p.name);
             }
             else
             {
-                opSetter.getPort("Value").set(p.get());
-                p.parent.patch.link(opSetter, 'Value', p.parent, p.name);
+                opSetter.getPort(portName).set(p.get());
+                p.parent.patch.link(opSetter, portName, p.parent, p.name);
             }
         });
 }
