@@ -2329,6 +2329,7 @@ CABLES.UI.Patch = function(_gui) {
     this.deleteSelectedOps = function() {
         for (var i in selectedOps)
             gui.patch().scene.deleteOp(selectedOps[i].op.id, true);
+
         this.updateBounds();
     };
 
