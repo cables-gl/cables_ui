@@ -171,12 +171,11 @@ CABLES.UI.PatchViewBox.prototype.centerSelectedOps = function ()
     this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
 }
 
-
-
 CABLES.UI.PatchViewBox.prototype.centerAllOps = function ()
 {
     var bounds = this._patch.getSubPatchBounds();
     this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
+    console.log(bounds);
 }
 
 CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
