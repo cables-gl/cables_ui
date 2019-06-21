@@ -1550,14 +1550,13 @@ CABLES.UI.Patch = function(_gui) {
                 );
             }
         } else
-        
         if (CABLES.UI.OPSELECT.linkNewOpToPort)
         {
             const foundPort = op.findFittingPort(CABLES.UI.OPSELECT.linkNewOpToPort);
             if (foundPort)
             {
                 // console.log(op.objName,'op.objName');
-                if(op.objName=='Ops.Value.Value')
+                if(op.objName=='Ops.Value.Number')
                 {
                     var oldValue=CABLES.UI.OPSELECT.linkNewOpToPort.get();
                     op.getPort("value").set(oldValue);
