@@ -1118,7 +1118,7 @@ CABLES.UI.Patch = function(_gui) {
         for (var j = 0; j < self.ops.length; j++)
             if (self.ops[j].op.objName.indexOf("Ops.Ui.") == -1) {
                 if (self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
-                    if (self.ops[j].op.uiAttribs.subPatch == subPatch) {
+                    if (!self.ops[j].op.uiAttribs.subPatch || self.ops[j].op.uiAttribs.subPatch == subPatch) {
                         bounds.minx = Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
                         bounds.maxx = Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
                         bounds.miny = Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
