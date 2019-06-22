@@ -1,0 +1,36 @@
+
+<script id="export" type="text/x-handlebars-template">
+
+<div class="top">
+    <h3>Export</h3>
+    Export patch as static website. can be direclty uploaded to a server.<br/>
+    For command line export see <a href="https://github.com/pandrr/cables-cli">cables-cli</a> project
+    <br/><br/>
+    <table>
+        <tr>
+            <td>Include assets</td>
+            <td>
+                <select id="export_settings_assets">
+                    <option value="auto">Automatic</option>
+                    <!-- <option>All</option> -->
+                    <option value="none">None</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Package</td>
+            <td>
+                <select id="export_settings_combine">
+                    <option value="single">Single Javascript File</option>
+                    <option value="multi">Multiple Files</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="bottom">
+    <a class="bluebutton" id="doExportButton">export</a>
+    <a class="greybutton"onclick="CABLES.UI.MODAL.hide()">cancel</a>
+</div>
+
+</script>

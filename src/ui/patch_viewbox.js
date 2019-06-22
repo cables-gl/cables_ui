@@ -91,6 +91,7 @@ CABLES.UI.PatchViewBox.prototype._fixAspectRatio = function (vb)
 
 CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
 {
+    var perf = CABLES.uiperf.start('PatchViewBox._updateNavHelper');
 
     if (this._patch.getNumOps() == 0)
     {
@@ -100,6 +101,11 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
             this._eleNavHelperEmpty.style.display = "block";
             this.set(-200, -200, 400, 400);
         }
+
+        setTimeout(function()
+        {
+            gui.patch().updateViewBox();
+        },500);
 
         return;
     }
@@ -129,6 +135,8 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
             }
         }
     }
+
+    perf.finish();
 }
 
 CABLES.UI.PatchViewBox.prototype.update = function ()
@@ -140,7 +148,7 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
     if (isNaN(this._viewBox.w)) console.warn("viewbox w NaN");
     if (isNaN(this._viewBox.h)) console.warn("viewbox h NaN");
 
-    this._fixAspectRatio();
+    // this._fixAspectRatio();
 
     this._paperPatch.setViewBox(this._viewBox.x, this._viewBox.y, this._viewBox.w, this._viewBox.h);
 
@@ -163,12 +171,11 @@ CABLES.UI.PatchViewBox.prototype.centerSelectedOps = function ()
     this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
 }
 
-
-
 CABLES.UI.PatchViewBox.prototype.centerAllOps = function ()
 {
     var bounds = this._patch.getSubPatchBounds();
     this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
+    console.log(bounds);
 }
 
 CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
@@ -176,7 +183,8 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
     ele.bind("mousewheel", function (event, delta, nbr)
     {
         var touchpadMode = CABLES.UI.userSettings.get("touchpadmode");
-        if (!event.metaKey && !event.altKey && !event.ctrlKey && touchpadMode) {
+        if (touchpadMode && !event.metaKey && !event.altKey && !event.ctrlKey) 
+        {
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.deltaY *= 0.5;
                 else event.deltaX *= 0.5;
 
@@ -192,35 +200,56 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 
         delta = CGL.getWheelSpeed(event);
 
-        if (delta < 0) delta = 0.8;
-            else delta = 1.2;
-
-        
-        var patchWidth = this._elePatch.offsetWidth;
-        var patchHeight = this._elePatch.offsetHeight;
-
-        if (this._zoom == null)
-        {
-            this._zoom = patchWidth / this._viewBox.w;
-            this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
-        }
-
         event = mouseEvent(event);
 
-        var oldx = (event.clientX - this._elePatch.offsetLeft);
-        var oldy = (event.clientY - this._elePatch.offsetTop);
-        var x = (this._viewBox.x) + Number(oldx / this._zoom);
-        var y = (this._viewBox.y) + Number(oldy / this._zoom);
+        if(event.altKey)
+        {
+            this.set(
+                this._viewBox.x,
+                this._viewBox.y-delta,
+                this._viewBox.w,
+                this._viewBox.h
+                );
+        }
+        else
+        if(event.shiftKey)
+        {
+            this.set(
+                this._viewBox.x-delta,
+                this._viewBox.y,
+                this._viewBox.w,
+                this._viewBox.h
+                );
+        }
+        else
+        {
+            if (delta < 0) delta = 0.8;
+            else delta = 1.2;
+            
+            var patchWidth = this._elePatch.offsetWidth;
+            var patchHeight = this._elePatch.offsetHeight;
 
-        this._zoom = ((this._zoom || 1) * delta) || 1;
+            if (this._zoom == null)
+            {
+                this._zoom = patchWidth / this._viewBox.w;
+                this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
+            }
 
-        this.set(
-            x - (oldx / this._zoom),
-            y - (oldy / this._zoom),
-            patchWidth / this._zoom,
-            patchHeight / this._zoom
-            );
 
+            var oldx = (event.clientX - this._elePatch.offsetLeft);
+            var oldy = (event.clientY - this._elePatch.offsetTop);
+            var x = (this._viewBox.x) + Number(oldx / this._zoom);
+            var y = (this._viewBox.y) + Number(oldy / this._zoom);
+    
+            this._zoom = ((this._zoom || 1) * delta) || 1;
+    
+            this.set(
+                x - (oldx / this._zoom),
+                y - (oldy / this._zoom),
+                patchWidth / this._zoom,
+                patchHeight / this._zoom
+                );
+        }
         if (event.ctrlKey) // disable chrome pinch/zoom gesture
         {
             event.preventDefault();
@@ -231,9 +260,20 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
     }.bind(this));
 }
 
+CABLES.UI.PatchViewBox.prototype.zoomStep=function(dir)
+{
+    const amount=dir*80;
+
+    this.animate(
+        this._viewBox.x-amount,
+        this._viewBox.y-amount,
+        this._viewBox.w+amount*2,
+        this._viewBox.h+amount*2
+    );
+}
+
 CABLES.UI.PatchViewBox.prototype._dragMiniMap = function (e)
 {
-    // if (mouseRubberBandPos) return;
     e = mouseEvent(e);
 
     if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
@@ -261,7 +301,6 @@ CABLES.UI.PatchViewBox.prototype.setMinimapBounds = function ()
         this._viewBoxMiniMap.h
     );
 };
-
 
 CABLES.UI.PatchViewBox.prototype._animViewBox = function ()
 {
@@ -304,9 +343,22 @@ CABLES.UI.PatchViewBox.prototype.animate = function (x, y, w, h)
 };
 
 CABLES.UI.PatchViewBox.prototype.center = function (x, y) {
-    console.log("viuewbox center!");
     this.animate(x - this._viewBox.w / 2, y - this._viewBox.h / 2, this._viewBox.w, this._viewBox.h);
 }
+
+CABLES.UI.PatchViewBox.prototype.centerIfNotVisible = function (opui) {
+    if(
+        opui.getPosX()<this._viewBox.x ||
+        opui.getPosX()+opui.getWidth()>this._viewBox.x+this._viewBox.w ||
+        opui.getPosY()<this._viewBox.y ||
+        opui.getPosY()+opui.getHeight()>this._viewBox.y+this._viewBox.h
+    )
+    {
+        this.center(opui.getPosX(),opui.getPosY());
+    }
+}
+
+
 
 CABLES.UI.PatchViewBox.prototype.deSerialize = function (o) {
     this.set(o.x, o.y, o.w, o.h);

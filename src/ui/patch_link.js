@@ -15,6 +15,12 @@ function UiLink(port1, port2)
     this.p1=port1;
     this.p2=port2;
 
+    this._cleanRaphael=function(el)
+    {
+        el.node.removeAttribute('stroke');
+        el.node.style.removeProperty('-webkit-tap-highlight-color');
+    }
+
     this.unlink=function()
     {
         self.p1.thePort.removeLinkTo( self.p2.thePort );
@@ -27,12 +33,14 @@ function UiLink(port1, port2)
             this._addCircles[i].hide();
             this._addCircleVisible=false;
 
-            const llWidth = 0.5;
-            if (this.linkLine && this._lastLinkLineWidth!=llWidth) 
-            {
-                this.linkLine.attr({ "stroke-width": llWidth });
-                this._lastLinkLineWidth = llWidth;
-            }
+            this.linkLine.node.classList.add('link-thin');
+            
+            // const llWidth = 0.5;
+            // if (this.linkLine && this._lastLinkLineWidth!=llWidth) 
+            // {
+            //     this.linkLine.attr({ "stroke-width": llWidth });
+            //     this._lastLinkLineWidth = llWidth;
+            // }
         }
         // this._addCircles.length=0;
     };
@@ -64,9 +72,8 @@ function UiLink(port1, port2)
 
         if(self.p1!==null)
         {
-            if(event.which==3)
+            if(event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT)
             {
-                // self.p1.thePort.removeLinkTo( self.p2.thePort );
                 self.unlink();
             }
             else
@@ -78,7 +85,6 @@ function UiLink(port1, port2)
             }
         }
     };
-
 
     this.setElementOrder=function()
     {
@@ -126,12 +132,13 @@ function UiLink(port1, port2)
         var perf = CABLES.uiperf.start('link showadd');
 
 
-        const llWidth=1.5;
-        if (this._lastLinkLineWidth != llWidth)
-        {
-            this.linkLine.attr( { "stroke-width": llWidth });
-            this._lastLinkLineWidth = llWidth;
-        }
+        this.linkLine.node.classList.remove('link-thin');
+        // const llWidth=1.5;
+        // if (this._lastLinkLineWidth != llWidth)
+        // {
+        //     this.linkLine.attr( { "stroke-width": llWidth });
+        //     this._lastLinkLineWidth = llWidth;
+        // }
 
         if(this._addCircles.length===0)
         {
@@ -316,23 +323,12 @@ function UiLink(port1, port2)
         if(!this.linkLine)
         {
             this.linkLine = gui.patch().getPaper().path(this.getPath());
-
-            // this.linkLine = gui.patch().getPaper().path(this.getPath());
             this.linkLine.attr( CABLES.UI.uiConfig.linkingLine );
-            // this.linkLine.attr({ "stroke": CABLES.UI.uiConfig.getPortColor(port1.thePort) });
+            this._cleanRaphael(this.linkLine);
 
             this.linkLine.node.classList.add(CABLES.UI.uiConfig.getLinkClass(port1.thePort));
-
-            // this.linkLine.hover(function ()
-            // {
-            //     this.attr({stroke:CABLES.UI.uiConfig.colorLinkHover});
-            // }, function ()
-            // {
-            //     this.attr({stroke:CABLES.UI.uiConfig.getPortColor(self.p1.thePort)});
-            // });
-
-            // this.linkLine.attr("path", this.getPathStraight());
-            // this.linkLine.animate({"path":this.getPath()},80);
+            this.linkLine.node.classList.add('link-line');
+            
         }
         this.linkLine.attr({"path": this.getPath()});
         this.linkLine.toFront();

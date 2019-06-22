@@ -258,6 +258,15 @@
     .link_color_string { stroke:var(--color_link_string); }
     .link_color_unknown,.link_color_error { stroke: var(--color-06); }
 
+    .link-line
+    {
+        stroke-width:var(--linkline-default);
+    }
+    .link-thin
+    {
+        stroke-width:var(--linkline-thin);
+    }
+
     .link_hover
     {
         stroke: var(--color-13) !important;

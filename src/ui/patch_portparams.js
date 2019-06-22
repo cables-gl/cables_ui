@@ -166,7 +166,8 @@ CABLES.UI.initPortInputListener=function(op,index)
 {
     CABLES.UI.checkDefaultValue(op, index);
     var ele = $('#portval_' + index);
-    ele.on('input', function (e) {
+    ele.on('input', function (e)
+    {
         var v = '' + ele.val();
 
         if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number') {

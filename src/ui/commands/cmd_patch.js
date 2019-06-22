@@ -48,16 +48,19 @@ CABLES.CMD.PATCH.createSubPatchFromSelection=function()
 	gui.patch().createSubPatchFromSelection();
 };
 
+CABLES.CMD.PATCH.findCommentedOps=function()
+{
+	gui.find().show(':commented');
+};
+
 CABLES.CMD.PATCH.findUnconnectedOps=function()
 {
 	gui.find().show(':unconnected');
 };
 
-CABLES.CMD.PATCH.findUserOps=function()
-{
-	gui.find().show(':user');
+CABLES.CMD.PATCH.findUserOps = function () {
+    gui.find().show(':user');
 };
-
 
 
 CABLES.CMD.PATCH.createFile=function()
@@ -113,7 +116,9 @@ CABLES.CMD.PATCH.opsCompress=function()
 
 CABLES.CMD.PATCH.export=function()
 {
-	gui.patch().exportStatic();
+	var exporter=new CABLES.UI.Exporter();
+	exporter.show();
+	// gui.patch().exportStatic();
 };
 
 CABLES.CMD.PATCH.newPatch=function()
@@ -126,16 +131,16 @@ CABLES.CMD.PATCH.addOp=function()
 	gui.opSelect().showOpSelect({x:0,y:0});
 };
 
-// CABLES.CMD.PATCH.renameOp=function()
-// {
-// 	CABLES.UI.MetaCode.rename();
-// };
-
 CABLES.CMD.PATCH.patchWebsite=function()
 {
 	window.open("/p/"+gui.patch().getCurrentProject()._id);
-	// console.log(gui.patch().getCurrentProject()._id);
 };
+
+CABLES.CMD.PATCH.analyzePatch=function()
+{
+	CABLES.UI.AnalyzePatch();
+};
+
 
 CABLES.CMD.PATCH.createVariable=function(op)
 {
@@ -146,10 +151,65 @@ CABLES.CMD.PATCH.createVariable=function(op)
 			{
 				op.setTitle(str);
 				op.varName.set(str);
-				gui.patch().showOpParams(op);
+                gui.patch().showOpParams(op);
 			}
 		});
 };
+
+CABLES.CMD.PATCH.createAutoVariable=function()
+{
+    var p = CABLES.UI.OPSELECT.linkNewOpToPort;
+
+    CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
+        function (str)
+        {
+			var opSetter;
+			var opGetter;
+
+			const x = CABLES.UI.OPSELECT.newOpPos.x;
+			const y = CABLES.UI.OPSELECT.newOpPos.y;
+			var portName="Value"
+			if(p.type==CABLES.OP_PORT_TYPE_VALUE)
+			{
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetNumber");
+                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
+            }
+			else if(p.type==CABLES.OP_PORT_TYPE_OBJECT)
+			{
+				portName="Object";
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetObject");
+                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetObject");
+            }
+			else if(p.type==CABLES.OP_PORT_TYPE_ARRAY)
+			{
+				portName="Array";
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetArray");
+                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetArray");
+            }
+			else if(p.type==CABLES.OP_PORT_TYPE_STRING)
+			{
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetString");
+                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
+            }
+
+			CABLES.UI.OPSELECT.newOpPos.x=x;
+			CABLES.UI.OPSELECT.newOpPos.y=y;
+
+            opSetter.varName.set(str);
+            opGetter.varName.set(str);
+
+            if (p.direction == 0)
+            {
+                opSetter.getPort(portName).set(p.get());
+                p.parent.patch.link(opGetter, portName, p.parent, p.name);
+            }
+            else
+            {
+                opSetter.getPort(portName).set(p.get());
+                p.parent.patch.link(opSetter, portName, p.parent, p.name);
+            }
+        });
+}
 
 CABLES.CMD.PATCH.editOp=function()
 {
@@ -442,11 +502,6 @@ CABLES.CMD.commands.push(
 		icon:"link"
 	},
 	{
-		cmd:"create variable",
-		category:"patch",
-		func:CABLES.CMD.PATCH.createVariable
-	},
-	{
 		cmd:"tidy selected ops",
 		category:"patch",
 		func:CABLES.CMD.PATCH.tidyChildOps
@@ -475,12 +530,23 @@ CABLES.CMD.commands.push(
 		cmd:"find unconnected ops",
 		category:"patch",
 		func:CABLES.CMD.PATCH.findUnconnectedOps
+    },
+    {
+        cmd: "find user ops",
+        category: "patch",
+        func: CABLES.CMD.PATCH.findUserOps
+    },
+	{
+		cmd:"find commented ops",
+		category:"patch",
+		func:CABLES.CMD.PATCH.findCommentedOps
 	},
 	{
-		cmd:"find user ops",
+		cmd:"analyze patch",
 		category:"patch",
-		func:CABLES.CMD.PATCH.findUserOps
+		func:CABLES.CMD.PATCH.analyzePatch
 	}
+	
 
 
 );

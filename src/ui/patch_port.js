@@ -105,6 +105,7 @@ CABLES.UI.Port=function(thePort)
                 removeLinkingLine();
                 linkingLine = new CABLES.UI.SVGMultiLine(points);
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x+2,gui.patch().getCanvasCoordsMouse(event).y-2);
+                linkingLine.addClass("link");
     
                 if(!event.altKey) self.thePort.removeLinks();
                 updateUI();
@@ -159,7 +160,7 @@ CABLES.UI.Port=function(thePort)
         }
 		else
 		{
-			if(event.which==3)
+            if(event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT)
 			{
                 gui.setCursor("port_remove");
 			}
@@ -223,7 +224,9 @@ CABLES.UI.Port=function(thePort)
         var j=0;
         CABLES.UI.MOUSEDRAGGINGPORT=false;
         removeLinkingLine();
-        
+        if(event.stopPropagation)event.stopPropagation();
+        if(event.preventDefault)event.preventDefault();
+
         var foundAutoOp=false;
         if(CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
         {
@@ -257,7 +260,6 @@ CABLES.UI.Port=function(thePort)
             if(numFitting>0)
             {
                 foundAutoOp=true;
-                // console.log(numFitting+' numFitting ports...');
                 new CABLES.UI.SuggestPortDialog(CABLES.UI.selectedEndOp.op,CABLES.UI.selectedStartPort,event,
                     function(portName)
                     {
@@ -284,16 +286,15 @@ CABLES.UI.Port=function(thePort)
                         finishDragUI();
                     },finishDragUI);
                     
-                return;
+                return false;
             }
         }
 
         if(!foundAutoOp)
         {
-
 			if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
-            if( (event.which==3 && !cancelDeleteLink) || (event.which==1 && event.ctrlKey))
+            if( (event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink) || (event.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
                 removeLinkingLine();
                 self.thePort.removeLinks();
@@ -455,15 +456,7 @@ CABLES.UI.Port=function(thePort)
             if(val && val.hasOwnProperty('val')) txt+=': <span class="code">#'+val.length+'</span>';
         }
 
-        // if(thePort && thePort.type==CABLES.OP_PORT_TYPE_OBJECT)
-        // {
-        //     var val=thePort.get();
-        //     if(val.tex)
-        //     {
-        //         gui.hoverPreview.showHover(event);
-        //         gui.hoverPreview.setTexture(thePort.parent.id,thePort.name);
-        //     }
-        // }
+
 
         CABLES.UI.showToolTip(event,txt);
         if(CABLES.UI.hoverInterval==-1)
@@ -481,6 +474,7 @@ CABLES.UI.Port=function(thePort)
         hovering=true;
 
         gui.patch().hoverPort=thePort;
+
 
         updateHoverToolTip(event);
         updateUI();
@@ -501,6 +495,12 @@ CABLES.UI.Port=function(thePort)
                         }
                 }
 
+        if(thePort && thePort.type==CABLES.OP_PORT_TYPE_OBJECT)
+        {
+            var val=thePort.get();
+            if(val && val.tex)
+                gui.texturePreview().hover(thePort);
+        }
     }
 
     function hoverOut()
@@ -511,6 +511,9 @@ CABLES.UI.Port=function(thePort)
         CABLES.UI.hideToolTip();
         CABLES.UI.selectedEndPort=null;
         gui.patch().hoverPort=null;
+
+        gui.texturePreview().hoverEnd();
+
 
         hovering=false;
 

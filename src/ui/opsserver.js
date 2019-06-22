@@ -60,11 +60,9 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
     this.isServerOp = function(name) {
-        for (var i = 0; i < ops.length; i++) {
-            if (ops[i].name == name) {
+        for (var i = 0; i < ops.length; i++)
+            if (ops[i].name == name)
                 return true;
-            }
-        }
 
         return false;
     };
@@ -75,13 +73,13 @@ CABLES.UI.ServerOps = function(gui) {
             function(res) {
                 self.load(
                     function() {
-                        console.log('now edit...');
                         self.edit(name);
+                        gui.serverOps.execute(name);
+                        gui.opSelect().reload();
                     });
             },
             function(res) {
                 console.log('err res', res);
-
             }
         );
     };
@@ -125,11 +123,12 @@ CABLES.UI.ServerOps = function(gui) {
             {
                 if(op.portsOut[i].uiAttribs.display=='bool')l.subType="boolean";
                 else if(op.portsOut[i].uiAttribs.type=='string')l.subType="string";
+                else if(op.portsOut[i].uiAttribs.display=='dropdown')l.subType="dropdown";
+                else if(op.portsOut[i].uiAttribs.display=='file')l.subType="url";
                 else l.subType="number";
             }
 
             opObj.portsOut.push(l);
-
         }
 
         CABLES.api.post('op/layout/' + op.objName, {
@@ -164,12 +163,15 @@ CABLES.UI.ServerOps = function(gui) {
                 for(var i=0;i<ops.length;i++) gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
 
                 if (ops.length > 0) this.saveOpLayout(ops[0]);
+                gui.patch().checkCollisionsEdge();
                 gui.editor().focus();
+                
             }.bind(this));
 
             CABLES.UI.MODAL.hideLoading();
         }.bind(this);
         document.body.appendChild(s);
+        
     };
 
     this.clone = function(oldname, name) {
@@ -287,7 +289,12 @@ CABLES.UI.ServerOps = function(gui) {
 
     this.cloneDialog = function(oldName) {
         this.opNameDialog('Clone operator', name, function(newname) {
-            gui.serverOps.clone(oldName, 'Ops.User.' +gui.user.usernameLowercase + '.' + newname);
+
+            const opname='Ops.User.' +gui.user.usernameLowercase + '.' + newname;
+            gui.serverOps.clone(oldName, opname);
+            gui.opSelect().reload();
+            gui.serverOps.execute(opname);
+
         });
     };
 
@@ -380,7 +387,7 @@ CABLES.UI.ServerOps = function(gui) {
                         },
                         function(res) {
                             if (!res.success) {
-                                if (res.error) setStatus('Error: Line ' + res.error.lineNumber + ' : ' + res.error.description, true);
+                                if (res.error) setStatus('Error: Line ' + res.error.line + ' : ' + res.error.message, true);
                                 else setStatus('error: unknown error', true);
                             } else {
                                 

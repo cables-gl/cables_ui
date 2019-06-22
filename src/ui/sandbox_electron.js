@@ -31,6 +31,11 @@ CABLES.SandboxElectron.prototype.getUrlOpsCode=function()
     return 'code.js';
 };
 
+CABLES.SandboxElectron.prototype.isOffline=function()
+{
+    return true;
+};
+
 /**
  * Returns the local cables folder if it is set in user settings or the default one if not set
  * e.g. `Users/ulf/cables`

@@ -1,9 +1,11 @@
 var CABLES=CABLES||{};
 CABLES.UI=CABLES.UI ||{};
 
+CABLES.UI.LOCALSTORAGE_KEY="cables.usersettings";
+
 CABLES.UI.UserSettings=function()
 {
-    this._settings=JSON.parse(localStorage.getItem("cables.usersettings"))||{};
+    this._settings=JSON.parse(localStorage.getItem(CABLES.UI.LOCALSTORAGE_KEY))||{};
     this.init();
 };
 
@@ -17,7 +19,7 @@ CABLES.UI.UserSettings.prototype.init = function ()
 
 CABLES.UI.UserSettings.prototype.set = function (key, value) {
     this._settings[key] = value||false;
-    localStorage.setItem("cables.usersettings", JSON.stringify(this._settings));
+    localStorage.setItem(CABLES.UI.LOCALSTORAGE_KEY, JSON.stringify(this._settings));
     this.updateNavBar();
 };
 
@@ -35,6 +37,9 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('snapToGrid')) $('.nav_usersettings_snaptogrid i').removeClass('unchecked');
         else $('.nav_usersettings_snaptogrid i').addClass('unchecked');
 
+    if (this.get('touchpadmode')) $('.nav_usersettings_touchpadmode i').removeClass('unchecked');
+        else $('.nav_usersettings_touchpadmode i').addClass('unchecked');
+
     if (this.get('theme-bright')) $('.nav_usersettings_theme-bright i').removeClass('unchecked');
         else $('.nav_usersettings_theme-bright i').addClass('unchecked');
 
@@ -43,6 +48,9 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     
     if (this.get('bgpreview')) $('.nav_usersettings_bgpreview i').removeClass('unchecked');
         else $('.nav_usersettings_bgpreview i').addClass('unchecked');
+
+    if (this.get('helperMode')) $('.nav_usersettings_helpermode i').removeClass('unchecked');
+        else $('.nav_usersettings_helpermode i').addClass('unchecked');
 
     if (this.get('showMinimap'))
     {

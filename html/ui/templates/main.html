@@ -129,7 +129,7 @@
                     <li class="divide"></li>
 
                     <li class="nav_patch_export">Export</li>
-                    <li class="nav_patch_export_ignoreAssets">Export without files</li>
+                    <!-- <li class="nav_patch_export_ignoreAssets">Export without files</li> -->
                     <li class="divide"></li>
 
                     <li class="nav_patch_settings">Settings</li>
@@ -201,6 +201,23 @@
 
                     <li class="nav_usersettings_straightLines" onclick="CABLES.UI.userSettings.set('straightLines',!CABLES.UI.userSettings.get('straightLines'));document.location.reload();"><i class="icon icon-check checked"></i>Straight Lines <span class="shortcut">needs reload</span> </li>
 
+                    <li class="nav_usersettings_helpermode" onclick="CABLES.CMD.UI.toggleHelper()"><i class="icon icon-check checked"></i>Helper Mode</li>
+
+                    <li class="nav_usersettings_touchpadmode" onclick="CABLES.CMD.UI.toggleTouchpadMode()"><i class="icon icon-check checked"></i>Touchpad mode </li>
+
+                    <li class="nav-sub-submenu">
+                        Texture Preview Size
+                        <span class="icon icon-chevron-right"></span>
+                        <ul>
+                            <li><a onClick="gui.texturePreview().setSize(25);">25%</a></li>
+                            <li><a onClick="gui.texturePreview().setSize(33);">33%</a></li>
+                            <li><a onClick="gui.texturePreview().setSize(50);">50%</a></li>
+                            <li><a onClick="gui.texturePreview().setSize(100);">100%</a></li>
+                        </ul>
+                    </li>
+
+                    
+                    
 
                     <li class="nav_usersettings" onclick="CABLES.CMD.UI.userSettings()">More User Settings...</li>
 

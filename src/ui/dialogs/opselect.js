@@ -68,14 +68,14 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     perf.finish();
 };
 
-CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
+CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,list,query,options)
 {
     var perf = CABLES.uiperf.start('opselect._searchWord');
 
-    var result=[];
-
     for(var i=0;i<list.length;i++)
     {
+        if(wordIndex>0 && list[i].score==0 )continue; // when second word was found, but first was not
+
         var scoreDebug=query+' - '+list[i]._shortName+'<br/><br/>';
         var found=false;
         var points=0;
@@ -84,21 +84,21 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
         {
             found=true;
             points+=1;
-            scoreDebug+='+1 found in summary<br/>';
+            scoreDebug+='+1 found in summary ('+query+')<br/>';
         }
 
         if(list[i]._nameSpace.indexOf(query)>-1)
         {
             found=true;
             points+=1;
-            scoreDebug+='+1 found in namespace<br/>';
+            scoreDebug+='+1 found in namespace ('+query+')<br/>';
         }
 
         if(list[i]._shortName.indexOf(query)>-1)
         {
             found=true;
             points+=4;
-            scoreDebug+='+4 found in shortname<br/>';
+            scoreDebug+='+4 found in shortname ('+query+')<br/>';
         }
 
         if(points==0)
@@ -107,7 +107,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
             {
                 found=true;
                 points+=2;
-                scoreDebug+='+2 found full namespace<br/>';
+                scoreDebug+='+2 found full namespace ('+query+')<br/>';
             }
         }
 
@@ -116,24 +116,24 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
             if(list[i]._shortName.indexOf(query)===0)
             {
                 points+=2.5;
-                scoreDebug+='+2.5 found in shortname at beginning<br/>';
+                scoreDebug+='+2.5 found in shortname at beginning ('+query+')<br/>';
 
                 if(list[i]._shortName==query)
                 {
                     points+=2;
-                    scoreDebug+='+2 exact name<br/>';
+                    scoreDebug+='+2 exact name ('+query+')<br/>';
                 }
             }
 
             if(list[i]._summary.length>0)
             {
                 points+=0.5;
-                scoreDebug+='+0.5 has summary<br/>';
+                scoreDebug+='+0.5 has summary ('+query+')<br/>';
             }
             if(list[i]._nameSpace.indexOf("ops.math")>-1)
             {
                 points+=1;
-                scoreDebug+='+1 is math<br/>';
+                scoreDebug+='+1 is math ('+query+')<br/>';
             }
 
             var shortnessPoints=Math.round( (1.0-Math.min(1,(list[i]._nameSpace+list[i]._shortName).length/100))*100)/100;
@@ -144,18 +144,20 @@ CABLES.UI.OpSelect.prototype._searchWord=function(list,query,options)
         if(found && list[i].pop>0)
         {
             points+=(list[i].pop||2)/CABLES.UI.OPSELECT.maxPop||1;
-            result.push(list[i]);
         }
+
+
+        if(!found) points=0;
+        // if(points && wordIndex>0 && list[i].score==0) points=0; // e.g. when second word was found, but first was not
 
         if(points===0 && list[i].score>0) list[i].score=0;
             else list[i].score+=points;
 
-        list[i].scoreDebug=scoreDebug;
+        list[i].scoreDebug=(list[i].scoreDebug||'')+scoreDebug;
     }
 
-    perf.finish();
 
-    return result;
+    perf.finish();
 };
 
 CABLES.UI.OpSelect.prototype._search=function(q)
@@ -167,7 +169,11 @@ CABLES.UI.OpSelect.prototype._search=function(q)
     var query=q.toLowerCase();
 
     var i=0;
-    for(i=0;i<this._list.length;i++) this._list[i].score=0;
+    for(i=0;i<this._list.length;i++)
+    {
+        this._list[i].score=0;
+        this._list[i].scoreDebug='';
+    }
     var result=null;
     var options=
     {
@@ -188,17 +194,17 @@ CABLES.UI.OpSelect.prototype._search=function(q)
 
             for(i=0;i<words.length;i++)
             {
-                result=this._searchWord(result||this._list,words[i],options);
+                this._searchWord(i,this._list,words[i],options);
             }
         }
         else
         {
-            result=this._searchWord(this._list,query,options);
+            this._searchWord(0,this._list,query,options);
         }
     }
 
 
-    return result;
+    // return result;
 };
 
 CABLES.UI.OpSelect.prototype.updateInfo=function()
@@ -225,7 +231,7 @@ CABLES.UI.OpSelect.prototype.updateInfo=function()
         // var html = '<div id="opselect-layout"><a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">Open Examples Page <i class="icon icon-link"></i></a></div>'+content+htmlFoot;
 
         var html = '<div id="opselect-layout">';
-        html +=        '<a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">Open Examples Page <i class="icon icon-link"></i></a>';
+        html +=        '<a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">View Documentation <i class="icon icon-link"></i></a>';
         html +=    '</div>';
         html +=    opDoc;
         html +=    htmlFoot;
@@ -248,7 +254,7 @@ CABLES.UI.OpSelect.prototype.search=function()
     var q=$('#opsearch').val();
     // if(q==this.lastQuery)return;
     this.lastQuery=q;
-    var result=this._search(q);
+    this._search(q);
     var i=0;
 
 
@@ -343,10 +349,16 @@ CABLES.UI.OpSelect.prototype.prepare=function()
     if(!this._list)
     {
         this._list=this.getOpList();
+
         var maxPop=0;
 
         for(var i=0;i<this._list.length;i++)
         {
+            if(!this._list[i].shortName)
+            {
+                this._list[i].shortName=this._list[i].name;
+            }
+
             maxPop=Math.max(this._list[i].pop||0,maxPop);
             this._list[i].id=i;
             this._list[i].summary=this._list[i].summary||'';
@@ -399,6 +411,9 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
             "transparent":true,
             "onClose":this.close
         });
+
+    if (CABLES.UI.OPSELECT.linkNewOpToPort) $('#opselect_createVar').show();
+        else $('#opselect_createVar').hide();
 
     $('#opsearch').select();
     $('#opsearch').focus();
@@ -455,7 +470,6 @@ CABLES.UI.OpSelect.prototype.onInput=function(e)
 
 CABLES.UI.OpSelect.prototype.keyDown=function(e)
 {
-    // console.log("keydown");
     switch(e.which)
     {
         case 27:
@@ -531,11 +545,28 @@ CABLES.UI.OpSelect.prototype.getOpList=function()
                     var parts=opname.split('.');
                     var lowercasename=opname.toLowerCase()+'_'+parts.join('').toLowerCase();
 
+                    var opdoc=gui.opDocs.getOpDocByName(opname);
                     var shortName=parts[parts.length-1];
+
+                    var hidden=false;
+                    if(opdoc)
+                    {
+                        hidden=opdoc.hidden;
+                        shortName=opdoc.shortNameDisplay;
+                    }
+
+                    if(hidden)
+                    {
+                        if(opname.indexOf("Ops.Admin")==0 && gui.user.isAdmin )
+                        {
+                            hidden=false;
+                        }
+                    }
+
                     parts.length=parts.length-1;
                     var nameSpace=parts.join('.');
 
-                    if(isFunction && !opname.startsWith('Ops.Deprecated'))
+                    if(isFunction && !hidden)
                     {
                         var op=
                         {

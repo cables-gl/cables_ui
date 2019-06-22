@@ -1,12 +1,10 @@
 
-
 <script id="op_select" type="text/x-handlebars-template">
 
     <div class="opsearch">
-
-        
         <div id="optree" class="optree">hallo</div>
         <div id="searchinfo" class="searchinfo"></div>
+        <div id="closearea" onclick="CABLES.UI.MODAL.hide();" style="width:100px;height:50px;position: absolute;left:500px;height:100px;width:500px;"></div>
 
         <header>
             <input id="opsearch" placeholder="search for op" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search"/>
@@ -16,11 +14,7 @@
 
         <div class="searchbrowserContainer" id="searchbrowserContainer">
       </div>
-
     </div>
-
-
-
 
 </script>
 
@@ -50,13 +44,21 @@
 
       <div id="search_startType" class="hidden">
           <div class="padded text-center">
-              <br/>
-              <h2>&nbsp;start typing!</h2>
-              <br/>
-              <br/>
-              ...then press <span class="icon icon-arrow-up"></span> and <span class="icon icon-arrow-down"></span> to navigate.
-              <br/><br/>
-              finally press <span class="icon icon-corner-down-left"></span> to create the selected op
+                <br/>
+                <h2>&nbsp;start typing!</h2>
+                <br/>
+
+                You can search for multiple words at once, e.g.: "interpolate array"
+
+                <br/><br/>
+
+                ...then press <span class="icon icon-arrow-up"></span> and <span class="icon icon-arrow-down"></span> to navigate.
+                <br/><br/>
+                finally press <span class="icon icon-corner-down-left"></span> to create the selected op
+
+                <div id="opselect_createVar" style="display:none;position:absolute;bottom:40px;width:460px;text-align:center;">
+                    <a class="button" onclick="CABLES.CMD.PATCH.createAutoVariable();">create variable</a>
+                </div>
           </div>
       </div>
 

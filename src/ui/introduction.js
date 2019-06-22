@@ -5,9 +5,9 @@ CABLES.UI.Introduction = CABLES.UI.Introduction ||
 function() {
   /* Disables intro.js for the current logged-in user */
   function disableIntroForUser(){
-    CABLES.api.put('user/introCompleted',function(result) {
-        console.log(result);
-    });
+
+    if(!CABLES.sandbox.isOffline())
+      CABLES.api.put('user/introCompleted',function(result) { console.log(result); },function(){});
   }
 
   var stepTmp = 1; /* the introjs position when it is explained */

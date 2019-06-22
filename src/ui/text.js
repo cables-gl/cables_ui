@@ -176,5 +176,7 @@ CABLES.UI.TIPS =
         }
     ];
 
+    // todo tipps: create variable command
     // todo tipps: c for centering / shift/alt mods for input fields / up/down in input fields 
+    // todo tipps: attached comments
     // todo tipps: youtube channel

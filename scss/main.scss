@@ -250,7 +250,8 @@ a.button.fa-times:before {
 {
     color: var(--color-02);
     background-color: var(--color-special);
-	padding: 10px 20px;
+    padding: 10px 20px;
+    margin-right:10px;
 
     &:hover
     {
@@ -264,7 +265,8 @@ a.button.fa-times:before {
 {
 	color: var(--color-12);
     background-color: var(--color-05);
-    padding:10px;
+    padding: 10px 20px;
+    margin-right:10px;
 
     &:hover
     {
@@ -727,8 +729,24 @@ input[type=range]:focus {
     position:absolute;
     margin-right: 5px;
     z-index: 1999;
-    transform: scale(0.5, -0.5) translate(50%, 50%);
     cursor:pointer;
+}
+
+.bgpreviewScale50
+{
+    transform: scale(0.5, -0.5) translate(50%, 50%);
+}
+.bgpreviewScale25
+{
+    transform: scale(0.25, -0.25) translate(150%,150%);
+}
+.bgpreviewScale33
+{
+    transform: scale(0.33, -0.33) translate(100%,100%);
+}
+.bgpreviewScale100
+{
+    transform: scale(1, -1);
 }
 
 @import 'libs/jcolorpicker-custom.scss';

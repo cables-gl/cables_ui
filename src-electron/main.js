@@ -27,7 +27,7 @@ function createWindow () {
     {
       width: 1480, 
       height: 720,
-      titleBarStyle: 'hidden',
+      // titleBarStyle: 'hidden',
     });
   // mainWindow.setFullScreen(true);
 

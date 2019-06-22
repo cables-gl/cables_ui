@@ -66,7 +66,7 @@ CABLES.API=function()
 
     this.clearCache=function()
     {
-        console.log('cache cleared....');
+        // console.log('cache cleared....');
         cache.length=0;
     };
 

@@ -10,10 +10,12 @@ CABLES.UI.TexturePreviewer=function()
     this._paused=false;
     this._shader=null;
     this._shaderTexUniform=null;
+    this._tempTexturePort=null;
+    this._hoveringTexPort=false;
 
-    var ele=document.getElementById('bgpreview');
-
-    ele.addEventListener("click",function()
+    this._ele=document.getElementById('bgpreview');
+    this.setSize();
+    this._ele.addEventListener("click",function()
     {
         gui.patch().focusOp(this._lastClicked.opid,true);
     }.bind(this));
@@ -71,7 +73,6 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
     var previewCanvasEle=ele||document.getElementById('preview_img_'+id);
 
-    // var previewCanvasEle=document.getElementById('bgpreview');
     if(!previewCanvasEle)
     {
         // console.log("no previewCanvasEle");
@@ -108,7 +109,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
         cgl.setTexture(texSlot,port.get().tex);
         this._mesh.render(this._shader);
         cgl.setTexture(texSlot,oldTex);
-        
+
         cgl.popPMatrix();
         cgl.resetViewPort();
 
@@ -120,7 +121,6 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
         previewCanvasEle.width=s[0];
         previewCanvasEle.height=s[1];
-
 
         previewCanvas.clearRect(0, 0,previewCanvasEle.width, previewCanvasEle.height);
         previewCanvas.drawImage(cgl.canvas, 0, 0,previewCanvasEle.width, previewCanvasEle.height);
@@ -134,6 +134,23 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
     }
 };
 
+CABLES.UI.TexturePreviewer.prototype.setSize=function(size)
+{
+    if(size==undefined)
+    {
+        size=CABLES.UI.userSettings.get("texpreviewSize");
+        if(!size)size=50;
+    }
+
+    this._ele.classList.remove('bgpreviewScale25');
+    this._ele.classList.remove('bgpreviewScale33');
+    this._ele.classList.remove('bgpreviewScale50');
+    this._ele.classList.remove('bgpreviewScale100');
+
+    this._ele.classList.add('bgpreviewScale'+size);
+
+    CABLES.UI.userSettings.set("texpreviewSize",size);
+};
 
 CABLES.UI.TexturePreviewer.prototype._getCanvasSize=function(port,tex,meta)
 {
@@ -236,7 +253,6 @@ CABLES.UI.TexturePreviewer.isScrolledIntoView=function(elem)
     var elemBottom = elemTop + $(elem).height();
 
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
-    return true;
 }
 
 
@@ -249,7 +265,6 @@ CABLES.UI.TexturePreviewer.prototype.enableBgPreview=function(enabled)
     else
     {
         if(this._lastClicked)this.selectTexturePort(this._lastClickedP);
-
     }
 }
 
@@ -259,8 +274,6 @@ CABLES.UI.TexturePreviewer.prototype.pressedEscape=function()
     var ele=document.getElementById('bgpreview');
     if(ele)ele.style.display="none";
 }
-
-
 
 CABLES.UI.TexturePreviewer.prototype.render=function()
 {
@@ -274,8 +287,6 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
         {
             ele.style.width=ele.width+'px';
             ele.style.height=ele.height+'px';
-
-            var iconbarWidth=80;
         }
     }
 
@@ -314,49 +325,57 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
 
 };
 
+CABLES.UI.TexturePreviewer.prototype.selectTexturePortId=function(opid,portid)
+{
+    const op=gui.patch().scene.getOpById(opid);
+    if(!op)return;
+
+    const p=op.getPortById(portid);
+
+    if(!p || p.links.length<1)return;
+    
+    const thePort=p.links[0].getOtherPort(p);
+    this.selectTexturePort(thePort);
+}
+
+CABLES.UI.TexturePreviewer.prototype.hover=function(p)
+{
+    var thePort=p;
+    if(p.direction==CABLES.PORT_DIR_IN && p.isLinked())
+        thePort=p.links[0].getOtherPort(p);
+
+    if(this._lastClickedP!=thePort)
+    {
+        this._hoveringTexPort=true;
+        this._tempOldTexPort=this._lastClickedP;
+        this.selectTexturePort(thePort);
+    }
+}
+
+CABLES.UI.TexturePreviewer.prototype.hoverEnd=function()
+{
+    if(this._hoveringTexPort)
+    {
+        if(!this._tempOldTexPort) this.enableBgPreview(false);
+            else this.selectTexturePort(this._tempOldTexPort);
+        this._hoveringTexPort=false;
+        this._tempOldTexPort=null;
+        this._lastClickedP=null;
+    }
+}
+
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
 {
-
     this._lastClickedP=p;
     this._lastClicked=this.updateTexturePort(p);
-    
+
     var tp=this.updateTexturePort(p);
 
-    if(!tp)return;
-    // if(this._mode==CABLES.UI.TexturePreviewer.MODE_CLICKED) 
-    // {
-    //     tp.doShow=true;
-
-    //     this._updateHtml();
-
-    //     for(var i=0;i<this._texturePorts.length;i++)
-    //     {
-    //         // var ele=document.getElementById('preview'+this._texturePorts[i].id);
-    //         var ele=document.getElementById('bgpreview');
-
-    //         if(ele && this._texturePorts[i].port.parent==p.parent)
-    //         {
-    //             this._texturePorts[i].updated=this._texturePorts[i].lastTimeClicked=CABLES.now();
-    //             ele.style.order=parseInt(this._texturePorts[i].lastTimeClicked,10);
-    //             // ele.classList.add('activePreview');
-    //         }
-    //     }
-
-    //     this._texturePorts.sort(function(a,b)
-    //     {
-    //         return a.lastTimeClicked-b.lastTimeClicked;
-    //     });
-
-    //     while(this._texturePorts.length>3 )
-    //     {
-    //         var ele=document.getElementById('preview'+this._texturePorts[0].id);
-    //         if(ele) ele.remove();
-
-    //         this._texturePorts.splice(0,1);
-    //     }
-
-    //     document.getElementById('meta_content').scrollTop=0;
-    // }
+    if(!tp)
+    {
+        console.log("no tp!");
+        return;
+    }
 
     for(var i=0;i<this._texturePorts.length;i++)
     {
@@ -387,7 +406,6 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort=function(port)
     // console.log(port);
     var doUpdateHtml=false;
     var p=port;
-
 
 
     if(p && p.get() && p.get().tex && port.direction==CABLES.PORT_DIR_OUT )
