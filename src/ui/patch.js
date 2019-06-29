@@ -1805,6 +1805,7 @@ CABLES.UI.Patch = function(_gui) {
         scene.addEventListener("onOpAdd",
             function(op)
             {
+                console.log("onopadd!");
                 gui.setStateUnsaved();
                 $('#patch').focus();
                 var width = CABLES.UI.uiConfig.opWidth;
@@ -1812,6 +1813,8 @@ CABLES.UI.Patch = function(_gui) {
 
                 var x=CABLES.UI.OPSELECT.newOpPos.x;
                 var y=CABLES.UI.OPSELECT.newOpPos.y;
+
+                console.log("new oppos ",x,y);
 
                 var uiOp = new OpUi(self.paper, op, x,y, width, CABLES.UI.uiConfig.opHeight, op.name);
 
@@ -3249,7 +3252,7 @@ CABLES.UI.Patch.prototype.createOpAndLink=function(opname,opid,portname)
         "y":oldOp.uiAttribs.translate.y-100 }};
 
     const newOp=this.scene.addOp(opname,trans);
-    var newPort=newOp.getFistOutPortByType(oldOp.getPortByName(portname).type);
+    var newPort=newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
     this.scene.link(oldOp,portname,newOp,newPort.name);
 
     newOp.setUiAttrib({"translate":trans});
