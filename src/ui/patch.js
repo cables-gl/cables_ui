@@ -1805,7 +1805,6 @@ CABLES.UI.Patch = function(_gui) {
         scene.addEventListener("onOpAdd",
             function(op)
             {
-                console.log("onopadd!");
                 gui.setStateUnsaved();
                 $('#patch').focus();
                 var width = CABLES.UI.uiConfig.opWidth;
@@ -1813,8 +1812,6 @@ CABLES.UI.Patch = function(_gui) {
 
                 var x=CABLES.UI.OPSELECT.newOpPos.x;
                 var y=CABLES.UI.OPSELECT.newOpPos.y;
-
-                console.log("new oppos ",x,y);
 
                 var uiOp = new OpUi(self.paper, op, x,y, width, CABLES.UI.uiConfig.opHeight, op.name);
 
