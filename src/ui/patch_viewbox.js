@@ -157,8 +157,6 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
 
     this._paperPatch.setViewBox(this._viewBox.x, this._viewBox.y, this._viewBox.w, this._viewBox.h);
 
-console.log(this._viewBox);
-
     this._updateNavHelper();
 
     if (this._miniMapRect)
@@ -188,7 +186,6 @@ CABLES.UI.PatchViewBox.prototype.centerAllOps = function ()
 
     var bounds = this._patch.getSubPatchBounds();
     this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
-    console.log(bounds);
 }
 
 CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
