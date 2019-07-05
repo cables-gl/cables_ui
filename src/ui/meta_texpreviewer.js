@@ -20,6 +20,7 @@ CABLES.UI.TexturePreviewer=function()
         gui.patch().focusOp(this._lastClicked.opid,true);
     }.bind(this));
 
+
 };
 
 CABLES.UI.TexturePreviewer.MODE_CLICKED=0;
