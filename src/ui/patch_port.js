@@ -36,6 +36,10 @@ CABLES.UI.Port=function(thePort)
         {
             gui.patch().updateOpParams(self.opUi.op.id);
         }
+        if(attribs.hasOwnProperty('title'))
+        {
+            gui.patch().updateOpParams(self.opUi.op.id);
+        }
     };
 
     function changeActiveState()
