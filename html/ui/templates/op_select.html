@@ -23,8 +23,8 @@
     <div class="searchbrowser">
       {{#each ops}}
 
-        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" >
-            <div class="insertbutton fright"><div class="icon icon-plus" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();"></div></div>
+        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">
+            <div class="insertbutton fright" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
 
             <a>
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}

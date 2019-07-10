@@ -204,7 +204,8 @@
 
         &:hover
         {
-            background-color: var(--color-02);
+            background-color: var(--color-05);
+            color:var(--color-special) !important; 
             *
             {
                 background-color:var(--color-special) !important;
@@ -222,7 +223,7 @@
 
         .insertbutton
         {
-            color: var(--color-11) !important;
+            color: var(--color-11);
 			background-color: var(--color_op_bg);
 
             &:hover

@@ -151,7 +151,7 @@ CABLES.CMD.PATCH.createVariable=function(op)
 			{
 				op.setTitle(str);
 				op.varName.set(str);
-                gui.patch().showOpParams(op);
+				gui.patch().showOpParams(op);
 			}
 		});
 };
