@@ -1,11 +1,8 @@
 
-
 <script id="params_ports_head" type="text/x-handlebars-template">
-
     <tr>
         <td colspan="11" class="panelhead" data-panelselector=".opports_{{dirStr}}">{{title}}</td>
     </tr>
-
 </script>
 
 <script id="params_port" type="text/x-handlebars-template">
@@ -21,14 +18,8 @@
     <td colspan="11" ><div class="groupSpacer">{{startGroup}}</div></td>
 </tr>
 {{/if}}
-<!-- {{#if startGroup}}
-<tr>
-    <td colspan="11" class="groupSpacer groupSpacerTitle"></td>
 
-</tr>
-{{/if}} -->
-
-<tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
+<tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}hide {{/if}}{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
         {{port.name}} 
@@ -47,7 +38,6 @@
                 {{/if}}
             {{/compare}}
         {{/if}}
-
     </td>
     <td class="">
         {{#if port.links}}
