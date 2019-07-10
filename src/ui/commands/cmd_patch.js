@@ -172,23 +172,31 @@ CABLES.CMD.PATCH.createAutoVariable=function()
 			if(p.type==CABLES.OP_PORT_TYPE_VALUE)
 			{
 				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetNumber");
+				CABLES.UI.OPSELECT.newOpPos.x=x;
+				CABLES.UI.OPSELECT.newOpPos.y=y+50;
                 opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
             }
 			else if(p.type==CABLES.OP_PORT_TYPE_OBJECT)
 			{
 				portName="Object";
 				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetObject");
+				CABLES.UI.OPSELECT.newOpPos.x=x;
+				CABLES.UI.OPSELECT.newOpPos.y=y+50;
                 opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetObject");
             }
 			else if(p.type==CABLES.OP_PORT_TYPE_ARRAY)
 			{
 				portName="Array";
 				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetArray");
+				CABLES.UI.OPSELECT.newOpPos.x=x;
+				CABLES.UI.OPSELECT.newOpPos.y=y+50;
                 opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetArray");
             }
 			else if(p.type==CABLES.OP_PORT_TYPE_STRING)
 			{
 				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetString");
+				CABLES.UI.OPSELECT.newOpPos.x=x;
+				CABLES.UI.OPSELECT.newOpPos.y=y+50;
                 opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
             }
 
@@ -197,6 +205,23 @@ CABLES.CMD.PATCH.createAutoVariable=function()
 
             opSetter.varName.set(str);
             opGetter.varName.set(str);
+
+
+			opSetter.uiAttr({
+				translate:{
+					x:x,
+					y:y
+				}
+			});
+
+			opGetter.uiAttr({
+				translate:{
+					x:x,
+					y:y+100
+				}
+			});
+
+
 
             if (p.direction == 0)
             {

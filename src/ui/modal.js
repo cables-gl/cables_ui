@@ -105,7 +105,7 @@ CABLES.UI.MODAL.setTitle=function(title)
 CABLES.UI.MODAL.show=function(content,options)
 {
     
-    if(options && !options.ignoreTop)CABLES.UI.MODAL.contentElement.css({"top":"10%"});
+    if(options && !options.ignoreTop)CABLES.UI.MODAL.contentElement.css({"top":"5%"});
 
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init(options);
