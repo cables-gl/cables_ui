@@ -21,13 +21,18 @@
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hideParam}}hide {{/if}}{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
+
+        {{#if port.uiAttribs.editableTitle}}
+            <a class="icon icon-edit iconhover" onclick="CABLES.UI.SetPortTitle('{{op.id}}','{{port.name}}');"></a>
+        {{/if}}
+
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
+
             {{#if port.uiAttribs.title }}
                 {{port.uiAttribs.title}}
             {{else}}
                 {{port.name}} 
             {{/if}}
-            
         </span>
     
         {{#if port.uiAttribs.colorPick }}

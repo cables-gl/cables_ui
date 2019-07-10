@@ -31,7 +31,10 @@ CABLES.UI.snapOpPosY = function(posY)
 }
 
 function getPortDescription(thePort) {
-    var str = thePort.getTypeString()+' <b>' + thePort.getName() + '</b> ';
+    var str = thePort.getTypeString();
+    
+    if(thePort.uiAttribs.title) str+=' <b>' + thePort.uiAttribs.title +" ("+ thePort.getName() + ') </b> ';
+        else str+=' <b>' + thePort.getName() + '</b> ';
     var strInfo = '';
 
     if (thePort.direction == CABLES.PORT_DIR_IN) strInfo += CABLES.UI.TEXTS.portDirIn;

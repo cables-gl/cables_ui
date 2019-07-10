@@ -7,6 +7,26 @@ CABLES.UI.hoverInterval=-1;
 
 CABLES.UI.selectedStartPortMulti=[];
 
+CABLES.UI.SetPortTitle=function(opId,portId,oldtitle)
+{
+    CABLES.UI.MODAL.prompt(
+        "Set Title",
+        "Enter a custom title for this port",
+        oldtitle,
+        function(name) {
+            console.log("jaja!",opId,portId,oldtitle);
+
+            var op = gui.scene().getOpById(opId);
+            var p=op.getPort(portId);
+            p.setUiAttribs({"title":name});
+
+            // gui.patch().setCurrentOpTitle(name); 
+        });
+    
+}
+
+
+
 CABLES.UI.Port=function(thePort)
 {
     var self=this;
@@ -23,7 +43,8 @@ CABLES.UI.Port=function(thePort)
     var linkingLine=null;
     var cancelDeleteLink=false;
 
-    thePort.onUiAttrChange=function(attribs)
+    
+    thePort.addEventListener("onUiAttrChange",function(attribs)
     {
         if(attribs.hasOwnProperty('hidePort'))
         {
@@ -40,7 +61,7 @@ CABLES.UI.Port=function(thePort)
         {
             gui.patch().updateOpParams(self.opUi.op.id);
         }
-    };
+    });
 
     function changeActiveState()
     {
