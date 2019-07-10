@@ -3,6 +3,8 @@
 var CABLES=CABLES||{};
 CABLES.UI=CABLES.UI||{};
 
+CABLES.UI.pointerLockFirstTime=true;
+
 CABLES.UI.togglePortValBool=function(which,checkbox)
 {
     gui.setStateUnsaved();
@@ -269,6 +271,11 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
 
     function move(e)
     {
+        if(CABLES.UI.pointerLockFirstTime)
+        {
+            CABLES.UI.pointerLockFirstTime=false;
+            return;
+        }
         if(elem.is(":focus")) return;
         
         gui.setStateUnsaved();
@@ -313,6 +320,8 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
     {
         if (document.pointerLockElement === el || document.mozPointerLockElement === el || document.webkitPointerLockElement === el)
         {
+
+            CABLES.UI.pointerLockFirstTime=true;
             document.addEventListener("mousemove", move, false);
         }
         else

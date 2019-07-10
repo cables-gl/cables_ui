@@ -89,19 +89,24 @@ CABLES.UI.PatchViewBox.prototype._fixAspectRatio = function (vb)
     return vb;
 }
 
+CABLES.UI.PatchViewBox.prototype._setDefaultViewbox = function ()
+{
+    if (!this._showingNavHelperEmpty)
+    {
+        this._showingNavHelperEmpty = true;
+        this._eleNavHelperEmpty.style.display = "block";
+        this.set(-200, -200, 400, 400);
+    }
+
+}
+
 CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
 {
     var perf = CABLES.uiperf.start('PatchViewBox._updateNavHelper');
 
     if (this._patch.getNumOps() == 0)
     {
-        if (!this._showingNavHelperEmpty)
-        {
-            this._showingNavHelperEmpty = true;
-            this._eleNavHelperEmpty.style.display = "block";
-            this.set(-200, -200, 400, 400);
-        }
-
+        this._setDefaultViewbox();
         setTimeout(function()
         {
             gui.patch().updateViewBox();
@@ -171,10 +176,14 @@ CABLES.UI.PatchViewBox.prototype.centerSelectedOps = function ()
     this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
 }
 
-
-
 CABLES.UI.PatchViewBox.prototype.centerAllOps = function ()
 {
+    if (this._patch.getNumOps() == 0)
+    {
+        this._setDefaultViewbox();
+        return;
+    }
+
     var bounds = this._patch.getSubPatchBounds();
     this.animate(bounds.x, bounds.y, bounds.w, bounds.h);
 }
