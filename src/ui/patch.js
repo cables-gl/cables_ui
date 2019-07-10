@@ -119,6 +119,8 @@ CABLES.UI.Patch = function(_gui) {
                 console.log(exp);
             }
 
+
+            var oldSub=currentSubPatch;
             var k = 0;
 
             if (json) {
@@ -167,6 +169,9 @@ CABLES.UI.Patch = function(_gui) {
 
                                             console.log('oldSubPatchId', oldSubPatchId);
                                             console.log('newSubPatchId', newSubPatchId);
+
+
+gui.patch().setCurrentSubPatch(newSubPatchId);
 
                                             for (j = 0; j < json.ops.length; j++) {
                                                 // console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
@@ -244,8 +249,11 @@ CABLES.UI.Patch = function(_gui) {
                             uiop.setSelected(false);
                             uiop.setSelected(true);
                             gui.setStateUnsaved();
-                            // uiop.oprect.setSelected
                         }
+
+                        setTimeout(function(){
+                            gui.patch().setCurrentSubPatch(oldSub);
+                        },10);
 
                         return;
                     });
