@@ -194,7 +194,7 @@ CABLES.CMD.PATCH.createAutoVariable=function()
             }
 			else if(p.type==CABLES.OP_PORT_TYPE_STRING)
 			{
-				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetString");
+				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetString_v2");
 				CABLES.UI.OPSELECT.newOpPos.x=x;
 				CABLES.UI.OPSELECT.newOpPos.y=y+50;
                 opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
