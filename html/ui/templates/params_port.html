@@ -124,8 +124,9 @@
                                 {{#compare '' '==' port.val }}
                                     <option value="">...</option>
                                 {{/compare}}
+
                                 {{#each port.uiAttribs.values}}
-                                    <option {{#compare this '==' ../port.val }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{#if port.uiAttribs.showIndex}}{{@key}} - {{/if}}{{ this }}</option>
+                                    <option {{#compare this '==' ../port.val }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{#if ../port.uiAttribs.showIndex}}{{@key}} - {{/if}}{{ this }}</option>
                                 {{/each}}
                             </select>
                             <input type="hidden" class="value" id="portval_{{ portnum }}" value="{{ port.val }}" />
