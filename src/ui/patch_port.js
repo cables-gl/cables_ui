@@ -246,11 +246,17 @@ CABLES.UI.Port=function(thePort)
 
     function dragEnd(event)
     {
+
+
         var j=0;
         CABLES.UI.MOUSEDRAGGINGPORT=false;
         removeLinkingLine();
         if(event.stopPropagation)event.stopPropagation();
         if(event.preventDefault)event.preventDefault();
+
+
+
+
 
         var foundAutoOp=false;
         if(CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
@@ -317,7 +323,9 @@ CABLES.UI.Port=function(thePort)
 
         if(!foundAutoOp)
         {
-			if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
+
+
+			// if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
             if( (event.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink) || (event.buttons==CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
