@@ -2503,8 +2503,13 @@ gui.patch().setCurrentSubPatch(newSubPatchId);
         perf.finish();
     };
 
-    function updateUiAttribs() {
-        
+
+    
+    this.updateUiAttribs=function()
+    {
+ 
+        if(!currentOp)return;
+
         var perf = CABLES.uiperf.start('updateUiAttribs');
         var el=null;
 
@@ -2569,6 +2574,14 @@ gui.patch().setCurrentSubPatch(newSubPatchId);
             for (var i in eventListeners[name]) {
                 eventListeners[name][i](params);
             }
+        }
+    }
+
+    this.refreshOpParams=function(op)
+    {
+        if(currentOp && currentOp.op==op)
+        {
+            this.showOpParams(op);
         }
     }
 
@@ -2828,7 +2841,7 @@ gui.patch().setCurrentSubPatch(newSubPatchId);
 
         CABLES.valueChangerInitSliders();
 
-        updateUiAttribs();
+        this.updateUiAttribs();
         
 
         for (i = 0; i < op.portsIn.length; i++)

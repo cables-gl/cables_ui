@@ -41,9 +41,8 @@
             <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
             {{#if hasExample}}
                 | &nbsp; <a href="/op/example/{{op.objName}}" style="text-decoration: underline;" target="_blank">view example</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
-                <br/>
             {{/if}}
-            <br/>
+            <br/><br/>
 
 
 
@@ -56,11 +55,10 @@
                     {{/if}}
                 </div>
                 <br/><br/>
-            {{else}}
-                <div class="warning-error" id="options_error" >
-                	<i>Error:</i> {{op.uiAttribs.error}}
-                </div>
             {{/if}}
+            <div class="warning-error" id="options_error" >
+                <i>Error:</i> {{op.uiAttribs.error}}
+            </div>
 
             {{#if op.isExperimental }}
                 <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>

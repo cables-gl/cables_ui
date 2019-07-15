@@ -537,6 +537,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
     };
 
+
+    
     this.updateErrorIndicator = function()
     {
         if(!gui.patch().isOpCurrentSubpatch(opui.op))
@@ -571,6 +573,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 this._errorIndicator = null;
             }
         }
+
     };
 
     var dblClick=function(ev)
@@ -1140,9 +1143,11 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     op.onUiAttrChange = function(attribs) {
         if (attribs && attribs.hasOwnProperty('warning')) {
             this.oprect.updateErrorIndicator();
+            if(selected) gui.patch().updateUiAttribs();
         }
         if (attribs && attribs.hasOwnProperty('error')) {
             this.oprect.updateErrorIndicator();
+            if(selected) gui.patch().updateUiAttribs();
         }
         if (attribs && attribs.hasOwnProperty('color')) {
             this.oprect.updateColorHandle();
