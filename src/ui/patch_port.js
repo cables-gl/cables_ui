@@ -208,13 +208,13 @@ CABLES.UI.Port=function(thePort)
 			$('#drop-op-cursor').hide();
 
             var txt=CABLES.Link.canLinkText(CABLES.UI.selectedEndPort.thePort,CABLES.UI.selectedStartPort);
-            if(txt=='can link') getPortDescription(CABLES.UI.selectedEndPort.thePort);
+            if(txt=='can link') CABLES.UI.getPortDescription(CABLES.UI.selectedEndPort.thePort);
                 else CABLES.UI.hideInfo();
 
             if(txt=='can link') txt='<i class="fa fa-check"></i>';
                 else txt='<i class="fa fa-times"></i> '+txt;
 
-            CABLES.UI.showToolTip(event,txt+' '+getPortDescription(CABLES.UI.selectedEndPort.thePort));
+            CABLES.UI.showToolTip(event,txt+' '+CABLES.UI.getPortDescription(CABLES.UI.selectedEndPort.thePort));
 
 	        if(CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort,CABLES.UI.selectedStartPort))
 	        {
@@ -466,21 +466,41 @@ CABLES.UI.Port=function(thePort)
 
         if(!thePort)return;
 
-        var txt=getPortDescription(thePort);
+        var txt=CABLES.UI.getPortDescription(thePort);
         var val=null;
-        if(thePort && thePort.type==CABLES.OP_PORT_TYPE_VALUE)
+        if(thePort)
         {
-            val=thePort.get();
-            if(CABLES.UTILS.isNumeric(val))val=Math.round(val*1000)/1000;
-            txt+=': <span class="code">'+val+'</span>';
-        }
+            if(thePort.type==CABLES.OP_PORT_TYPE_VALUE || thePort.type==CABLES.OP_PORT_TYPE_STRING)
+            {
+                val=thePort.get();
+                if(CABLES.UTILS.isNumeric(val))val=Math.round(val*1000)/1000;
+                else val='"'+val+'"';
+                txt+=': <span class="code">'+val+'</span>';
+            }
+            else if(thePort.type==CABLES.OP_PORT_TYPE_ARRAY)
+            {
+                val=thePort.get();
+                if(val)
+                {
+                    txt+=' (total:'+val.length+') <span class=""> [';
+                    for(var i=0;i<Math.min(3,val.length);i++)
+                    {
+                        if(i!=0)txt+=', ';
+                        
+                        if(CABLES.UTILS.isNumeric(val[i]))txt+=Math.round(val[i]*1000)/1000;
+                        else if(typeof val[i]=='string')txt+='"'+val[i]+'"';
+                        else if(typeof val[i]=='object')txt+='[object]';
+                        else JSON.stringify(val[i]);
 
-        if(thePort && thePort.type==CABLES.OP_PORT_TYPE_ARRAY)
-        {
-            val=thePort.get();
-            if(val && val.hasOwnProperty('val')) txt+=': <span class="code">#'+val.length+'</span>';
-        }
+                    }
+                    
+                    txt+=' ...] </span>';
 
+                }
+                else txt+='no array';
+            }
+    
+        }
 
 
         CABLES.UI.showToolTip(event,txt);
