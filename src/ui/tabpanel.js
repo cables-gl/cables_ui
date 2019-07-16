@@ -13,6 +13,21 @@ CABLES.UI.Tab=function(title)
     this.id=CABLES.uuid();
 }
 
+CABLES.UI.Tab.prototype.initHtml=function(eleContainer)
+{
+    this.contentEle=document.createElement("div");
+    this.contentEle.id="content"+this.id;
+    this.contentEle.classList.add("tabcontent");
+    this.contentEle.innerHTML="hello<br/><br/>the tab "+this.id;
+    eleContainer.appendChild(this.contentEle);
+}
+
+CABLES.UI.Tab.prototype.remove=function()
+{
+    this.contentEle.remove();
+}
+
+
 // -----------------
 
 CABLES.UI.TabPanel=function(eleId)
@@ -92,10 +107,16 @@ CABLES.UI.TabPanel.prototype.updateHtml=function(name)
     {
         document.getElementById("editortab"+this._tabs[i].id).addEventListener("click",
             function(e){
-                // console.log('yoyo',e.target.dataset.id);
                 if(e.target.dataset.id) this.activateTab(e.target.dataset.id);
 
             }.bind(this));
+
+        if(document.getElementById("closetab"+this._tabs[i].id))
+            document.getElementById("closetab"+this._tabs[i].id).addEventListener("click",
+                function(e){
+                    if(e.target.dataset.closeid) this.closeTab(e.target.dataset.closeid);
+
+                }.bind(this));
     }
 }
 
@@ -119,17 +140,40 @@ CABLES.UI.TabPanel.prototype.activateTab=function(id)
 
 }
 
+CABLES.UI.TabPanel.prototype.closeTab=function(id)
+{
+    console.log("num tabs before",this._tabs.length);
+    var tab=null;
+    for(var i=0;i<this._tabs.length;i++)
+    {
+        if(this._tabs[i].id==id)
+        {
+            tab=this._tabs[i];
+            this._tabs.splice(i,1);
+            break;
+        }
+    }
+
+    tab.remove();
+
+    if(this._tabs.length>0) this.activateTab(this._tabs[0].id);
+    // this.updateHtml();
+
+    console.log("num tabs",this._tabs.length);
+
+    
+}
+
+
+
 CABLES.UI.TabPanel.prototype.addTab=function(tab)
 {
-    var contentEle=document.createElement("div");
-    contentEle.id="content"+tab.id;
-    contentEle.classList.add("tabcontent");
-    contentEle.innerHTML="hello<br/><br/>the tab "+tab.id;
-    this._eleContentContainer.appendChild(contentEle);
-    tab.contentEle=contentEle;
+
+    tab.initHtml(this._eleContentContainer);
 
     this._tabs.push(tab);
     this.activateTab(tab.id);
     return tab;
 }
+
 
