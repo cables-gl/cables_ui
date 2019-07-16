@@ -1,0 +1,22 @@
+
+<script id="tabpanel_bar" type="text/x-handlebars-template">
+    
+    <div class="tabs">
+        {{#each tabs}}
+            <div class="tabcontainer">
+                <div id="editortab{{id}}" data-id="{{id}}" class="tab {{#if active}}active{{/if}}" style="{{#if title}}{{else}} min-width:19px !important;max-width:19px !important;padding-left: 10px; {{/if}}">
+                    {{#if icon}} <span class="tabicon icon-{{icon}} icon fleft"></span> &nbsp;{{/if}}
+                    {{title}}
+                    {{#if unsaved}} ! {{/if}}
+                    {{#if closable}}&nbsp;<span class="icon-x icon fright iconhover"></span>{{/if}}
+                </div>
+            </div>
+        {{/each}}
+        <!-- <div class="fright">
+            <div class="tt icon icon-chevron-left iconhover" style="margin:7px;margin-right:12px;" onclick="CABLES.CMD.UI.toggleEditor()" data-tt="minimize editor"></div>
+            <div class="tt icon icon-triple-dot iconhover" style="margin:7px;margin-right:12px;" onclick="gui.editor().contextMenu(this)" data-tt="more options"></div>
+        </div> -->
+        <div style="clear:both;"></div>
+    </div>
+
+</script>
