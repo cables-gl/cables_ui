@@ -64,7 +64,6 @@ CABLES.UI.TabPanel=function(eleId)
     this._eleContentContainer=null;
     this._eleTabPanel=null;
 
-
     //////
 
     if(!this._eleTabPanel)
@@ -119,14 +118,18 @@ CABLES.UI.TabPanel.prototype.updateHtml=function(name)
         document.getElementById("editortab"+this._tabs[i].id).addEventListener("click",
             function(e){
                 if(e.target.dataset.id) this.activateTab(e.target.dataset.id);
-
+                console.log(e);
+                console.log('isclosable: ',e.target.classList.contains("closable"))
             }.bind(this));
 
-        if(document.getElementById("closetab"+this._tabs[i].id))
-            document.getElementById("closetab"+this._tabs[i].id).addEventListener("click",
-                function(e){
-                    if(e.target.dataset.closeid) this.closeTab(e.target.dataset.closeid);
-
+        
+        if(this._tabs[i].options.closable)
+            document.getElementById("editortab"+this._tabs[i].id).addEventListener("mousedown",
+                function(e)
+                {
+                    if(e.button==1)
+                        if(e.target.dataset.id) 
+                            this.closeTab(e.target.dataset.id); 
                 }.bind(this));
     }
 }
@@ -135,19 +138,15 @@ CABLES.UI.TabPanel.prototype.activateTab=function(id)
 {
     for(var i=0;i<this._tabs.length;i++)
     {
-        if(this._tabs[i].id==id)
-            this._tabs[i].activate();
-        else
-            this._tabs[i].deactivate();
-            
+        if(this._tabs[i].id==id)this._tabs[i].activate();
+            else this._tabs[i].deactivate();
+
         this.updateHtml();
     }
-
 }
 
 CABLES.UI.TabPanel.prototype.closeTab=function(id)
 {
-    console.log("num tabs before",this._tabs.length);
     var tab=null;
     for(var i=0;i<this._tabs.length;i++)
     {
@@ -158,31 +157,53 @@ CABLES.UI.TabPanel.prototype.closeTab=function(id)
             break;
         }
     }
+    if(!tab) return;
 
+    this.emitEvent("onTabRemoved",tab);
     tab.remove();
 
     if(this._tabs.length>0) this.activateTab(this._tabs[0].id);
     // this.updateHtml();
 
     console.log("num tabs",this._tabs.length);
-
     
+    this.updateHtml();
 }
+
 CABLES.UI.TabPanel.prototype.setTabNum=function(num)
 {
     var tab=this._tabs[Math.min(this._tabs.length,num)];
     this.activateTab(tab.id);
 }
 
+CABLES.UI.TabPanel.prototype.getNumTabs=function()
+{
+    return this._tabs.length;
+};
+
+
 
 CABLES.UI.TabPanel.prototype.addTab=function(tab)
 {
-
     tab.initHtml(this._eleContentContainer);
-
     this._tabs.push(tab);
     this.activateTab(tab.id);
+    this.emitEvent("onTabAdded",tab);
+
     return tab;
 }
 
+CABLES.UI.TabPanel.prototype.addIframeTab=function(title,url,options)
+{
+    var settingsTab=this.addTab(new CABLES.UI.Tab(title,options));
+    // settingsTab.initHtml(this._eleContentContainer);
 
+    var html = '<iframe style="border:none;width:100%;height:100%" src="'+url+'"></iframe';
+    // CABLES.UI.MODAL.show(html);
+    settingsTab.contentEle.innerHTML=html;
+    settingsTab.contentEle.style.padding="0px";
+
+    this.activateTab(settingsTab.id);
+    return settingsTab;
+    
+}
