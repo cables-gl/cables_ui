@@ -17,6 +17,29 @@ $( document ).ready(function()
         });
     });
 
+    
+    $('#splitterMaintabs').mouseup(function (e)
+    {
+        $( "iframe" ).each(function() { $('iframe').css("pointer-events","initial"); });
+    });
+
+
+    $('#splitterMaintabs').mousedown(function (e)
+    {
+        e.preventDefault();
+        CABLES.SPLITPANE.bound=true;
+        $(document).mousemove(function (e)
+        {
+            $( "iframe" ).each(function() { $('iframe').css("pointer-events","none"); });
+            
+            e.preventDefault();
+            gui.maintabPanel.width=e.clientX-gui._elIconBar.outerWidth();
+            if(gui.maintabPanel.width<30)gui.maintabPanel.width=30;
+            CABLES.UI.userSettings.set("editorWidth",gui.maintabPanel.width);
+            gui.setLayout();
+        });
+    });
+
     $('#splitterEditor').mousedown(function (e)
     {
         e.preventDefault();
@@ -30,6 +53,7 @@ $( document ).ready(function()
             gui.setLayout();
         });
     });
+
 
     $('#splitterRenderer').mousedown(function (e)
     {

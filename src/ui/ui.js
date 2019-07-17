@@ -7,6 +7,7 @@ CABLES.UI.GUI = function() {
     var userOpsLoaded = false;
     var showTiming = false;
     var showingEditor = false;
+    
     var showMiniMap = false;
     var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true}});
     _scene.gui = true;
@@ -24,6 +25,17 @@ CABLES.UI.GUI = function() {
     this.opDocs = new CABLES.UI.OpDocs();
     
     
+    
+    this.mainTabs=new CABLES.UI.TabPanel('maintabs');
+    this.maintabPanel=new CABLES.UI.MainTabPanel(this.mainTabs);
+
+
+    
+    
+ 
+
+
+
     this.metaTabs=new CABLES.UI.TabPanel('metatabpanel');
     // var _socket=null;
     // var _connection = null;
@@ -106,7 +118,19 @@ CABLES.UI.GUI = function() {
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 400;
     this.updateTheme();
 
+    // this.toggleMaintabs=function()
+    // {
+    //     if (this.showingMaintabs) this.closeMaintabs();
+    //     else this.showMaintabs();
 
+    //     this.setLayout();
+    // }
+
+
+
+    // 
+
+    
     this.toggleEditor = function() {
         if (showingEditor) self.closeEditor();
         else self.showEditor();
@@ -114,6 +138,7 @@ CABLES.UI.GUI = function() {
         self.setLayout();
     };
 
+    // todo remove later
     this.showEditor = function() {
         if(this._ignoreOpenEditor)
         {
@@ -128,6 +153,7 @@ CABLES.UI.GUI = function() {
         }
     };
 
+    // todo remove later
     this.closeEditor = function() {
         if (showingEditor) {
             showingEditor = false;
@@ -153,10 +179,12 @@ CABLES.UI.GUI = function() {
         this._elEditorBar = this._elEditorBar || $('#editorbar');
         this._elIconBar = this._elIconBar || $('#icon-bar');
 
+        this._elMaintab = this._elMaintab || document.getElementById("maintabs");
         this._elEditor = this._elEditor || document.getElementById("editor");
         this._elLibrary = this._elLibrary || document.getElementById("library");
         this._elCanvasInfoSize = this._elCanvasInfoSize || document.getElementById("canvasInfoSize");
         this._elSplitterEditor = this._elSplitterEditor || document.getElementById('splitterEditor');
+        this._elSplitterMaintabs = this._elSplitterMaintabs || document.getElementById('splitterMaintabs');
         this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
        
         this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
@@ -233,8 +261,28 @@ CABLES.UI.GUI = function() {
                 top:menubarHeight + 1
             });
 
+
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
+        
+        if(this.maintabPanel.isVisible())
+        {
+            this._elMaintab.style.left = iconBarWidth+'px';
+            this._elMaintab.style.top = menubarHeight;
+            this._elMaintab.style.height = editorHeight;
+
+            this._elMaintab.style.width = this.maintabPanel.width;
+
+            var editorHeight = patchHeight - 2 - editorbarHeight;
+            // this._elAceEditor.css('height', editorHeight);
+            this._elSplitterMaintabs.style.display = "block";
+            this._elSplitterMaintabs.style.left= this.maintabPanel.width + iconBarWidth;
+            this._elSplitterMaintabs.style.height= patchHeight - 2;
+            this._elSplitterMaintabs.style.width= 5;
+            this._elSplitterMaintabs.style.top= menubarHeight;
+        } else {
+            this._elSplitterMaintabs.style.display = "none";
+        }
 
         if(showingEditor)
         {
@@ -1038,6 +1086,14 @@ CABLES.UI.GUI = function() {
 
         this.callEvent("pressedEscape");
         
+        if(e && (e.ctrlKey || e.altKey || e.metaKey))
+        {
+            this.maintabPanel.toggle();
+            this.setLayout();
+            return;
+        }
+
+
         this.metaTexturePreviewer.pressedEscape();
         $('.tooltip').hide();
 
@@ -1283,9 +1339,17 @@ CABLES.UI.GUI = function() {
             if (c[0] == 'cmd' && c[1] == 'saveproject') this.patch().saveCurrentProject();
         }.bind(this);
 
-        var html = '';
-        html += '<iframe style="border:none;width:100%;height:620px;" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
-        CABLES.UI.MODAL.show(html);
+        // var html = '<iframe style="border:none;width:100%;height:100%" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
+        // // CABLES.UI.MODAL.show(html);
+
+        const url='/patch/' + self.project()._id+'/settingsiframe';
+
+        // var settingsTab=this.mainTabs.addTab(new CABLES.UI.Tab("Patch Settings",{icon:"settings",closable:true}));
+        // settingsTab.contentEle.innerHTML=html;
+
+        gui.mainTabs.addIframeTab("Patch Settings",url,{icon:"settings",closable:true});
+
+
     };
 
     // this.showOpDoc = function(opname) {

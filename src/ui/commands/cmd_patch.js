@@ -420,9 +420,6 @@ CABLES.CMD.commands.push(
 		func:CABLES.CMD.PATCH.renameOp,
 		icon:'edit'
 	},
-
-
-
 	{
 		cmd:"reload patch",
 		category:"patch",
