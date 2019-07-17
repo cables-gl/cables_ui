@@ -56,7 +56,7 @@ function() {
       'left'
     );
     defineIntroStep(
-      '#metatabs',
+      '#metatabpanel',
       'In these tabs you can access additional features, e.g. the documentation for the currently selected op.',
       'left'
     );

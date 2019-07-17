@@ -8,12 +8,14 @@ function UiLink(port1, port2)
     var middlePosX=30;
     var middlePosY=30;
     var fromX,fromY,toX,toY;
+    this.removed=false;
 
     this._addCircles=[];
 
     this.linkLine=null;
     this.p1=port1;
     this.p2=port2;
+
 
     this._cleanRaphael=function(el)
     {
@@ -126,6 +128,7 @@ function UiLink(port1, port2)
 
     this.showAddButton=function()
     {
+
         if(!this.linkLine)return;
         // if(!this.isVisible())return;
 
@@ -149,7 +152,6 @@ function UiLink(port1, port2)
         {
             // for(var i=0;i<this._addCircles.length;i++)
             // {
-
 
             var pY = middlePosY - CABLES.UI.uiConfig.portSize * 0.5 * 0.5;
             if (this._lastMiddlePosX != middlePosX || this._lastMiddlePosY != pY )
@@ -314,10 +316,15 @@ function UiLink(port1, port2)
             this._addCircles[i].remove();
             this._addCircles[i] = null;
         }
+
+        this.removed=true;
     };
 
     this.redraw = function()
     {
+
+
+
         var perf = CABLES.uiperf.start('link redraw');
 
         if(!this.linkLine)

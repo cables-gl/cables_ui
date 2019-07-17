@@ -30,8 +30,13 @@ CABLES.UI.snapOpPosY = function(posY)
     return Math.round(posY/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
 }
 
-function getPortDescription(thePort) {
-    var str = thePort.getTypeString()+' <b>' + thePort.getName() + '</b> ';
+CABLES.UI.getPortDescription=function(thePort) {
+    var str = ''
+
+    str+='['+thePort.getTypeString()+'] ';
+
+    if(thePort.uiAttribs.title) str+=' <b>' + thePort.uiAttribs.title +" ("+ thePort.getName() + ') </b> ';
+        else str+=' <b>' + thePort.getName() + '</b> ';
     var strInfo = '';
 
     if (thePort.direction == CABLES.PORT_DIR_IN) strInfo += CABLES.UI.TEXTS.portDirIn;
@@ -532,6 +537,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
     };
 
+
+    
     this.updateErrorIndicator = function()
     {
         if(!gui.patch().isOpCurrentSubpatch(opui.op))
@@ -566,6 +573,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 this._errorIndicator = null;
             }
         }
+
     };
 
     var dblClick=function(ev)
@@ -1135,9 +1143,11 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     op.onUiAttrChange = function(attribs) {
         if (attribs && attribs.hasOwnProperty('warning')) {
             this.oprect.updateErrorIndicator();
+            if(selected) gui.patch().updateUiAttribs();
         }
         if (attribs && attribs.hasOwnProperty('error')) {
             this.oprect.updateErrorIndicator();
+            if(selected) gui.patch().updateUiAttribs();
         }
         if (attribs && attribs.hasOwnProperty('color')) {
             this.oprect.updateColorHandle();

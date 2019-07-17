@@ -4,11 +4,16 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.OpShowMetaCode=0;
 
-CABLES.UI.MetaCode=function(projectId)
+CABLES.UI.MetaCode=function(tabs)
 {
-    var self=this;
-    var initialized=false;
+    this._tab=new CABLES.UI.Tab("",{"icon":"code","infotext":"tab_code"});
+    tabs.addTab(this._tab);
+    this._tab.addEventListener("onactivate",function()
+    {
+        this.show();
+    }.bind(this));
 
+    var initialized=false;
     var op=null;
 
     this.init=function()
@@ -23,9 +28,9 @@ CABLES.UI.MetaCode=function(projectId)
             clearTimeout(CABLES.UI.OpShowMetaCode);
             CABLES.UI.OpShowMetaCode=setTimeout(function()
                 {
-                    if($('#meta_content_code').is(":visible")) self.show();
-                },100);
-        });
+                    if(this._tab.isVisible()) this.show();
+                }.bind(this),100);
+        }.bind(this));
 
     };
 
@@ -33,11 +38,11 @@ CABLES.UI.MetaCode=function(projectId)
     {
         if(!op)
         {
-            $('#meta_content_code').html('<h3>Code</h3>Select any Op');
+            this._tab.html('<h3>Code</h3>Select any Op');
             return;
         }
 
-        $('#meta_content_code').html('<div class="loading" style="width:40px;height:40px;"></div>');
+        this._tab.html('<div class="loading" style="width:40px;height:40px;"></div>');
 
         if(window.process && window.process.versions['electron']) return;
         if(op)
@@ -81,10 +86,10 @@ CABLES.UI.MetaCode=function(projectId)
                         user:gui.user,
                         opserialized:op.getSerialized()
                     });
-                    $('#meta_content_code').html(html);
+                    this._tab.html(html);
 
 
-                },function()
+                }.bind(this),function()
             {
                 console.log('error api?');
             });
@@ -92,31 +97,3 @@ CABLES.UI.MetaCode=function(projectId)
 
     };
 };
-
-// CABLES.UI.MetaCode.rename=function(oldName)
-// {
-// 	if(!oldName)
-// 	{
-// 		var ops=gui.patch().getSelectedOps();
-// 		if(ops.length!=1)
-// 		{
-// 			console.log("rename canceled - select one op!");
-// 			return;
-// 		}
-// 		oldName=ops[0].op.objName;
-// 		console.log(oldName);
-// 	}
-
-//     var newName=prompt('rename '+oldName+':',oldName);
-
-//     if(newName)
-//         CABLES.api.get(
-//             'admin/op/rename/'+oldName+'/'+newName,
-//             function(res)
-//             {
-//                 var html='<h2>Rename</h2><br/> <a class="bluebutton" onclick="document.location.reload();">reload now</a><br/><br/><br/><div>'+JSON.stringify(res)+'</div>';
-//                 CABLES.UI.MODAL.show(html);
-
-//             });
-
-// };

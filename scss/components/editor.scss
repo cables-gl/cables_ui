@@ -1,5 +1,7 @@
 
 
+// todo: all tab stuff should be removed when new tabbar
+
 #editorminimized
 {
     position:absolute;
@@ -43,7 +45,7 @@
     //     user-select: all;
     // }
 
-    #editorbar
+    #editorbar, .tabBar
     {
         position: absolute;
         background-color: var(--color-02);

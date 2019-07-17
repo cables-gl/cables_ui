@@ -1,30 +1,36 @@
 CABLES=CABLES || {};
 CABLES.UI=CABLES.UI || {};
 
-
-CABLES.UI.Variables=function()
+CABLES.UI.MetaVars=function(tabs)
 {
+    this._tab=new CABLES.UI.Tab("",{"icon":"hash","infotext":"tab_variables"});
+    tabs.addTab(this._tab);
+    this._tab.addEventListener("onactivate",function()
+    {
+        this.update();
+        this.show();
+    }.bind(this));
+
     this._lastTimeout=0;
 };
 
-CABLES.UI.Variables.prototype.update=function()
+CABLES.UI.MetaVars.prototype.update=function()
 {
-    if(CABLES.UI.userSettings.get("metatab")=='variables')
+    if(!this._tab.isVisible())return;
+
+    clearTimeout(this._lastTimeout);
+
+    var vars=gui.patch().scene.getVars();
+
+    for(var i in vars)
     {
-        clearTimeout(this._lastTimeout);
-
-        var vars=gui.patch().scene.getVars();
-
-        for(var i in vars)
-        {
-            $('#varval'+i).html(vars[i].getValue());
-        }
-
-        this._lastTimeout=setTimeout(this.update.bind(this),250);
+        $('#varval'+i).html(vars[i].getValue());
     }
+
+    this._lastTimeout=setTimeout(this.update.bind(this),250);
 };
 
-CABLES.UI.Variables.prototype.show=function()
+CABLES.UI.MetaVars.prototype.show=function()
 {
     var vars=gui.patch().scene.getVars();
     if(Object.keys(vars).length==0)vars=null;
@@ -32,8 +38,7 @@ CABLES.UI.Variables.prototype.show=function()
     {
         vars:vars
     });
-    $('#meta_content_variables').html(html);
 
+    this._tab.html(html);
     this.update();
-
 };

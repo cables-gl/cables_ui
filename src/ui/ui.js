@@ -20,26 +20,31 @@ CABLES.UI.GUI = function() {
     var _introduction = new CABLES.UI.Introduction();
     this._gizmo=null;
 
-    this.variables = new CABLES.UI.Variables();
     this.patchConnection = new CABLES.PatchConnectionSender();
     this.opDocs = new CABLES.UI.OpDocs();
+    
+    
+    this.metaTabs=new CABLES.UI.TabPanel('metatabpanel');
     // var _socket=null;
     // var _connection = null;
     var savedState = true;
-    var metaCode = new CABLES.UI.MetaCode();
-    this.metaPaco = new CABLES.UI.Paco();
-    this.metaKeyframes = new CABLES.UI.MetaKeyframes();
+    this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
+    var metaCode = new CABLES.UI.MetaCode(this.metaTabs);
+    this.profiler = new CABLES.UI.Profiler(this.metaTabs);
+    this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs);
+    this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
+    this.variables = new CABLES.UI.MetaVars(this.metaTabs);
+    this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     // this.preview = new CABLES.UI.Preview();
     // this.hoverPreview = new CABLES.UI.Preview();
-    this._texturePreviewer = new CABLES.UI.TexturePreviewer();
+    this.metaTabs.setTabNum(0);
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);
     favIconLink.type = 'image/x-icon';
     favIconLink.rel = 'shortcut icon';
 
-    this.profiler = null;
     this.user = null;
     this.onSaveProject = null;
     this.lastNotIdle=CABLES.now();
@@ -84,7 +89,7 @@ CABLES.UI.GUI = function() {
 
     this.texturePreview=function()
     {
-        return this._texturePreviewer;
+        return this.metaTexturePreviewer;
     }
 
     this.introduction = function() {
@@ -412,7 +417,7 @@ CABLES.UI.GUI = function() {
             this._elInforArea.css('top', (window.innerHeight - self.rendererHeight - self.infoHeight)+'px');
         }
 
-        $('#meta_content').css('height', window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
+        $('#metatabpanel .contentcontainer').css('height', window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
 
         if (self.rendererWidth === 0) {
             this._elGlCanvas.attr('width', window.innerWidth);
@@ -1033,7 +1038,7 @@ CABLES.UI.GUI = function() {
 
         this.callEvent("pressedEscape");
         
-        this._texturePreviewer.pressedEscape();
+        this.metaTexturePreviewer.pressedEscape();
         $('.tooltip').hide();
 
         if (self.rendererWidth*gui.patch().scene.cgl.canvasScale > window.innerWidth * 0.9)
@@ -1265,9 +1270,7 @@ CABLES.UI.GUI = function() {
         return metaCode;
     };
 
-    this.showMetaCode = function() {
-        metaCode.show();
-    };
+
 
     this.showSettings = function()
     {
@@ -1285,13 +1288,13 @@ CABLES.UI.GUI = function() {
         CABLES.UI.MODAL.show(html);
     };
 
-    this.showOpDoc = function(opname) {
-        this.getOpDoc(opname, true, function(html)
-        {
-            var doclink = '<div><a href="/op/' + opname + '" class="button ">view documentation</a>&nbsp;<br/><br/>';
-            $('#meta_content_doc').html(html+doclink);
-        });
-    };
+    // this.showOpDoc = function(opname) {
+    //     this.getOpDoc(opname, true, function(html)
+    //     {
+    //         var doclink = '<div><a href="/op/' + opname + '" class="button ">view documentation</a>&nbsp;<br/><br/>';
+    //         $('#meta_content_doc').html(html+doclink);
+    //     });
+    // };
 
     this.setWorking=function(active,where)
     {
@@ -1397,13 +1400,13 @@ CABLES.UI.GUI = function() {
         $('#metatabs .tab_' + which).addClass('active');
         $('#meta_content_' + which).show();
 
-        if (which == 'code') self.showMetaCode();
+        // if (which == 'code') self.showMetaCode();
         if (which == 'keyframes') self.metaKeyframes.show();
         if (which == 'paco') self.showMetaPaco();
-        if (which == 'profiler') self.showProfiler();
-        if (which == 'variables') self.variables.show();
-        if (which == 'preview') this._texturePreviewer.show();
-        else if (this._texturePreviewer) this._texturePreviewer.hide();
+        // if (which == 'profiler') self.showProfiler();
+        // if (which == 'variables') self.variables.show();
+        if (which == 'preview') this.metaTexturePreviewer.show();
+        else if (this.metaTexturePreviewer) this.metaTexturePreviewer.hide();
     };
 
     this.startPacoSender = function() {
@@ -1648,6 +1651,7 @@ function startUi(event)
 
     gui.bind(function() {
         gui.metaCode().init();
+        gui.metaDoc.init();
         gui.opSelect().reload();
         gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
         gui.showWelcomeNotifications();

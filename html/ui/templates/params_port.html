@@ -1,11 +1,8 @@
 
-
 <script id="params_ports_head" type="text/x-handlebars-template">
-
     <tr>
         <td colspan="11" class="panelhead" data-panelselector=".opports_{{dirStr}}">{{title}}</td>
     </tr>
-
 </script>
 
 <script id="params_port" type="text/x-handlebars-template">
@@ -21,22 +18,21 @@
     <td colspan="11" ><div class="groupSpacer">{{startGroup}}</div></td>
 </tr>
 {{/if}}
-<!-- {{#if startGroup}}
-<tr>
-    <td colspan="11" class="groupSpacer groupSpacerTitle"></td>
 
-</tr>
-{{/if}} -->
-
-<tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
+<tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hideParam}}hide {{/if}}{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}">
+
+        {{#if port.uiAttribs.editableTitle}}
+            <a class="icon icon-edit iconhover" onclick="CABLES.UI.SetPortTitle('{{op.id}}','{{port.name}}');"></a>
+        {{/if}}
+
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
+
             {{#if port.uiAttribs.title }}
                 {{port.uiAttribs.title}}
             {{else}}
                 {{port.name}} 
             {{/if}}
-            
         </span>
     
         {{#if port.uiAttribs.colorPick }}
@@ -52,7 +48,6 @@
                 {{/if}}
             {{/compare}}
         {{/if}}
-
     </td>
     <td class="">
         {{#if port.links}}
@@ -129,8 +124,9 @@
                                 {{#compare '' '==' port.val }}
                                     <option value="">...</option>
                                 {{/compare}}
+
                                 {{#each port.uiAttribs.values}}
-                                    <option {{#compare this '==' ../port.val }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{ this }}</option>
+                                    <option {{#compare this '==' ../port.val }} SELECTED="SELECTED" {{/compare}} value="{{ this }}">{{#if ../port.uiAttribs.showIndex}}{{@key}} - {{/if}}{{ this }}</option>
                                 {{/each}}
                             </select>
                             <input type="hidden" class="value" id="portval_{{ portnum }}" value="{{ port.val }}" />

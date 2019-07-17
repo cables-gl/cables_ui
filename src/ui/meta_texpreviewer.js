@@ -1,8 +1,15 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-CABLES.UI.TexturePreviewer=function()
+CABLES.UI.TexturePreviewer=function(tabs)
 {
+    this._tab=new CABLES.UI.Tab("",{"icon":"eye","infotext":"tab_preview"});
+    tabs.addTab(this._tab);
+    this._tab.addEventListener("onactivate",function()
+    {
+        this.show();
+    }.bind(this));
+
     this._texturePorts=[];
     this._showing=false;
     this._lastTimeActivity=0;
@@ -201,7 +208,7 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml=function()
     if(!containerEle)
     {
         var html = CABLES.UI.getHandleBarHtml('meta_preview', {} );
-        $('#meta_content_preview').html(html);
+        this._tab.html(html);
 
         containerEle=document.getElementById("meta_preview_textures");
     }
@@ -278,7 +285,7 @@ CABLES.UI.TexturePreviewer.prototype.pressedEscape=function()
 
 CABLES.UI.TexturePreviewer.prototype.render=function()
 {
-    if(this._lastClicked && CABLES.UI.userSettings.get("bgpreview"))
+    if(this._lastClicked && this._tab.isVisible())
     {
         var ele=document.getElementById('bgpreview');
         ele.style.display="block";

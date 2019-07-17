@@ -91,6 +91,7 @@ $color-searchInputContainer: var(--color-02);
     --color_link_array: var(--color_port_array);
     --color_link_dynamic: var(--color_port_dynamic);
     --color_link_string: var(--color_port_string);
+    --color-splitter:var(--color-01);
 }
 
 $button-text-color: var(--color_op_text);
@@ -147,6 +148,7 @@ body.bright
     --color_op_text_active: var(--color-01);
     --color_port_function:#8a7f00;
     --color_link_function: #8a7f00;
+    --color-splitter:var(--color-13);
 
     --linkline-default:3;
     --linkline-thin:2;

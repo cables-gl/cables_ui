@@ -1,8 +1,14 @@
 CABLES=CABLES || {};
 CABLES.UI=CABLES.UI || {};
 
-CABLES.UI.Paco=function()
+CABLES.UI.Paco=function(tabs)
 {
+    this._tab=new CABLES.UI.Tab("",{"icon":"play","infotext":"tab_paco"});
+    tabs.addTab(this._tab);
+    this._tab.addEventListener("onactivate",function()
+    {
+        this.show();
+    }.bind(this));
 };
 
 CABLES.UI.Paco.prototype.open=function()
@@ -35,6 +41,6 @@ CABLES.UI.Paco.prototype.show=function()
         // libs:gui.opDocs.libs,
         user:gui.user
     });
-    $('#meta_content_paco').html(html);
+    this._tab.html(html);
 
 };
