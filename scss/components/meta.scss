@@ -69,37 +69,37 @@
 }
 
 
-#metatabs
-{
-    padding: 0px !important;
-}
+// #metatabs
+// {
+//     padding: 0px !important;
+// }
 
-.tabs
-{
-    background-color: $color-menubar-background;
-    display: block;
-    padding: 0px !important;
-    width:100%;
-    border-bottom: 2px solid $color-menubar-background-active;
+// .tabs
+// {
+//     background-color: $color-menubar-background;
+//     display: block;
+//     padding: 0px !important;
+//     width:100%;
+//     border-bottom: 2px solid $color-menubar-background-active;
 
-    a
-    {
-        padding:8px !important;
-        padding-bottom:8px !important;
-        padding-left:10px !important;
-        padding-right:10px !important;
-        color: $color-menubar-text;
-        opacity: 0.5;
-    }
+//     a
+//     {
+//         padding:8px !important;
+//         padding-bottom:8px !important;
+//         padding-left:10px !important;
+//         padding-right:10px !important;
+//         color: $color-menubar-text;
+//         opacity: 0.5;
+//     }
 
-    a.active
-    {
-        background-color: $color-menubar-background-active;
-        color: var(--color-13);
-        opacity: 1.0;
-        border-bottom:1px solid var(--color-special);
-    }
-}
+//     a.active
+//     {
+//         background-color: $color-menubar-background-active;
+//         color: var(--color-13);
+//         opacity: 1.0;
+//         border-bottom:1px solid var(--color-special);
+//     }
+// }
 
 
 

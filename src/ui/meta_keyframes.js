@@ -1,9 +1,16 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-CABLES.UI.MetaKeyframes=function(projectId)
+CABLES.UI.MetaKeyframes=function(tabs)
 {
-  this.anim=null;
+    this.anim=null;
+    this._tab=new CABLES.UI.Tab("",{"icon":"clock","infotext":"tab_keyframes"});
+    tabs.addTab(this._tab);
+    this._tab.addEventListener("onactivate",function()
+    {
+        this.show();
+    }.bind(this));
+
 };
 
 CABLES.UI.MetaKeyframes.prototype.update=
@@ -43,7 +50,7 @@ CABLES.UI.MetaKeyframes.prototype.show=function()
         anims:anims
     });
 
-    $('#meta_content_keyframes').html(html);
+    this._tab.html(html);
 };
 
 CABLES.UI.MetaKeyframes.prototype.showAnim=function(opid,portname)

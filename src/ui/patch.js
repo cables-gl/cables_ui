@@ -2835,7 +2835,7 @@ gui.patch().setCurrentSubPatch(newSubPatchId);
         // $('#options').html(html);
         document.getElementById("options").innerHTML=html;
 
-        gui.showOpDoc(op.objName);
+        // gui.showOpDoc(op.objName);
         CABLES.UI.bindInputListeners();
         perfHtml.finish();
 

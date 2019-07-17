@@ -1,8 +1,17 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-CABLES.UI.Profiler=function(projectId)
+CABLES.UI.Profiler=function(tabs)
 {
+
+    this._tab=new CABLES.UI.Tab("",{"icon":"pie-chart","infotext":"tab_profiler"});
+    tabs.addTab(this._tab);
+    this._tab.addEventListener("onactivate",function()
+    {
+        this.show();
+    }.bind(this));
+
+
     var colors=["#7AC4E0","#D183BF","#9091D6","#FFC395","#F0D165","#63A8E8","#CF5D9D","#66C984","#D66AA6","#515151"];
 
     var intervalId=null;
@@ -10,7 +19,7 @@ CABLES.UI.Profiler=function(projectId)
     this.show=function()
     {
         var html = CABLES.UI.getHandleBarHtml('meta_profiler',{});
-        $('#meta_content_profiler').html(html);
+        this._tab.html(html);
     };
 
     var lastPortTriggers=0;
@@ -82,16 +91,13 @@ CABLES.UI.Profiler=function(projectId)
         $('#profilerlistPeaks').html(htmlPeaks);
         $('#profilerbar').html(htmlBar);
         $('#profilerlist').html(html);
-        $('#profilerstartbutton').hide();
-        
-        
+        $('#profilerstartbutton').hide();        
     };
 
     this.start=function()
     {
-        
         gui.patch().scene.profile(true);
-        if(!intervalId) intervalId=setInterval(this.update,1000);
+        if(!intervalId) intervalId=setInterval(this.update.bind(this),1000);
     };
 
 };
