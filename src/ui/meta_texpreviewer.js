@@ -19,6 +19,7 @@ CABLES.UI.TexturePreviewer=function(tabs)
     this._shaderTexUniform=null;
     this._tempTexturePort=null;
     this._hoveringTexPort=false;
+    // this._eleBgPreview=null;
 
     this._ele=document.getElementById('bgpreview');
     this.setSize();
@@ -285,20 +286,20 @@ CABLES.UI.TexturePreviewer.prototype.pressedEscape=function()
 
 CABLES.UI.TexturePreviewer.prototype.render=function()
 {
-    if(this._lastClicked && this._tab.isVisible())
+    if(this._lastClicked)
     {
-        var ele=document.getElementById('bgpreview');
-        ele.style.display="block";
-        this._renderTexture(this._lastClicked,ele);
+        // this._ele=document.getElementById('bgpreview');
+        this._ele.style.display="block";
+        this._renderTexture(this._lastClicked,this._ele);
 
-        if(ele.width+'px'!=ele.style.width || ele.height+'px'!=ele.style.height)
+        if(this._ele.width+'px'!=this._ele.style.width || this._ele.height+'px'!=this._ele.style.height)
         {
-            ele.style.width=ele.width+'px';
-            ele.style.height=ele.height+'px';
+            this._ele.style.width=this._ele.width+'px';
+            this._ele.style.height=this._ele.height+'px';
         }
     }
 
-    if(this._paused)return;
+    if(this._paused || !this._tab.isVisible()) return;
 
     var now=CABLES.now();
     if(now-this._lastTimeActivity>=1000)

@@ -1118,7 +1118,7 @@ CABLES.UI.GUI = function() {
         if (CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
         self.patch().getViewBox().update();
 
-        self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+        // self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
         CABLES.showPacoRenderer();
 
         this._elGlCanvas.hover(function (e) {
@@ -1392,22 +1392,22 @@ CABLES.UI.GUI = function() {
         }
     };
 
-    this.setMetaTab = function(which) {
-        CABLES.UI.userSettings.set("metatab", which);
+    // this.setMetaTab = function(which) {
+    //     CABLES.UI.userSettings.set("metatab", which);
 
-        $('.meta_content').hide();
-        $('#metatabs a').removeClass('active');
-        $('#metatabs .tab_' + which).addClass('active');
-        $('#meta_content_' + which).show();
+    //     $('.meta_content').hide();
+    //     $('#metatabs a').removeClass('active');
+    //     $('#metatabs .tab_' + which).addClass('active');
+    //     $('#meta_content_' + which).show();
 
-        // if (which == 'code') self.showMetaCode();
-        if (which == 'keyframes') self.metaKeyframes.show();
-        if (which == 'paco') self.showMetaPaco();
-        // if (which == 'profiler') self.showProfiler();
-        // if (which == 'variables') self.variables.show();
-        if (which == 'preview') this.metaTexturePreviewer.show();
-        else if (this.metaTexturePreviewer) this.metaTexturePreviewer.hide();
-    };
+    //     // if (which == 'code') self.showMetaCode();
+    //     if (which == 'keyframes') self.metaKeyframes.show();
+    //     if (which == 'paco') self.showMetaPaco();
+    //     // if (which == 'profiler') self.showProfiler();
+    //     // if (which == 'variables') self.variables.show();
+    //     if (which == 'preview') this.metaTexturePreviewer.show();
+    //     else if (this.metaTexturePreviewer) this.metaTexturePreviewer.hide();
+    // };
 
     this.startPacoSender = function() {
         this.patchConnection.connectors.push(new CABLES.PatchConnectorSocketIO());
@@ -1653,7 +1653,7 @@ function startUi(event)
         gui.metaCode().init();
         gui.metaDoc.init();
         gui.opSelect().reload();
-        gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+        // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
         gui.showWelcomeNotifications();
 
         gui.waitToShowUI();
