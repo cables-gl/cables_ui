@@ -85,11 +85,12 @@ CABLES.UI.TabPanel=function(eleId)
     /////////
 
     
-    // var t4=new CABLES.UI.Tab("");
+    // var t4=new CABLES.UI.Tab("hello world");
     // t4.icon="eye";
+    // t4.closable=true;
     // this.addTab(t4);
 
-    // var t5=new CABLES.UI.Tab("");
+    // var t5=new CABLES.UI.Tab("cdscsdcsd");
     // t5.icon="clock";
     // this.addTab(t5);
 

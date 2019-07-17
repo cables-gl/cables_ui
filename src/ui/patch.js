@@ -126,7 +126,7 @@ CABLES.UI.Patch = function(_gui) {
             if (json) {
                 if (json.ops) {
 
-
+                    var focusop=null;
                     gui.serverOps.loadProjectLibs(json, function() {
                         var i = 0,
                             j = 0; { // change ids
@@ -160,10 +160,14 @@ CABLES.UI.Patch = function(_gui) {
                         } { // set correct subpatch
 
                             var fixedSubPatches = [];
-                            for (i = 0; i < json.ops.length; i++) {
-                                if (CABLES.Op.isSubpatchOp(json.ops[i].objName)) {
-                                    for (k in json.ops[i].portsIn) {
-                                        if (json.ops[i].portsIn[k].name == 'patchId') {
+                            for (i = 0; i < json.ops.length; i++)
+                            {
+                                if (CABLES.Op.isSubpatchOp(json.ops[i].objName))
+                                {
+                                    for (k in json.ops[i].portsIn)
+                                    {
+                                        if (json.ops[i].portsIn[k].name == 'patchId')
+                                        {
                                             var oldSubPatchId = json.ops[i].portsIn[k].value;
                                             var newSubPatchId = json.ops[i].portsIn[k].value = CABLES.generateUUID();
 
@@ -171,7 +175,7 @@ CABLES.UI.Patch = function(_gui) {
                                             console.log('newSubPatchId', newSubPatchId);
 
 
-gui.patch().setCurrentSubPatch(newSubPatchId);
+                                            focusop=json.ops[i];
 
                                             for (j = 0; j < json.ops.length; j++) {
                                                 // console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
@@ -240,6 +244,10 @@ gui.patch().setCurrentSubPatch(newSubPatchId);
                         self.setSelectedOp(null);
                         
 
+                        if(focusop)
+                        {
+                            gui.patch().focusOp(focusop);
+                        }
                         gui.patch().scene.deSerialize(json, false);
 
                         for(var i=0;i<json.ops.length;i++) 
