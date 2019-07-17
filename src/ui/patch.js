@@ -3009,6 +3009,9 @@ CABLES.UI.Patch = function(_gui) {
         } else if (filename.endsWith(".3d.json")) {
             opname = "Ops.Json3d.Json3dMesh";
             title = "Json: " + title;
+        } else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) {
+            opname = "Ops.Gl.Textures.VideoTexture";
+            title = "Video: " + title;
         } else {
             CABLES.UI.notify("no known operator found");
             return;
