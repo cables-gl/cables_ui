@@ -119,14 +119,13 @@ CABLES.UI.Patch = function(_gui) {
                 console.log(exp);
             }
 
-
             var oldSub=currentSubPatch;
             var k = 0;
 
             if (json) {
                 if (json.ops) {
 
-                    var focusop=null;
+                    var focusSubpatchop=null;
                     gui.serverOps.loadProjectLibs(json, function() {
                         var i = 0,
                             j = 0; { // change ids
@@ -159,6 +158,8 @@ CABLES.UI.Patch = function(_gui) {
                             }
                         } { // set correct subpatch
 
+
+                            var subpatchIds = [];
                             var fixedSubPatches = [];
                             for (i = 0; i < json.ops.length; i++)
                             {
@@ -173,9 +174,9 @@ CABLES.UI.Patch = function(_gui) {
 
                                             console.log('oldSubPatchId', oldSubPatchId);
                                             console.log('newSubPatchId', newSubPatchId);
+                                            subpatchIds.push(newSubPatchId);
 
-
-                                            focusop=json.ops[i];
+                                            focusSubpatchop=json.ops[i];
 
                                             for (j = 0; j < json.ops.length; j++) {
                                                 // console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
@@ -204,7 +205,15 @@ CABLES.UI.Patch = function(_gui) {
                                     json.ops[i].uiAttribs.subPatch = currentSubPatch;
                                 }
                             }
+
+
+                            for(i in subpatchIds)
+                            {
+                                gui.patch().setCurrentSubPatch(subpatchIds[i]);
+
+                            }
                         }
+
 
                         { // change position of ops to paste
                             var minx = Number.MAX_VALUE;
@@ -244,10 +253,6 @@ CABLES.UI.Patch = function(_gui) {
                         self.setSelectedOp(null);
                         
 
-                        if(focusop)
-                        {
-                            gui.patch().focusOp(focusop);
-                        }
                         gui.patch().scene.deSerialize(json, false);
 
                         for(var i=0;i<json.ops.length;i++) 
@@ -261,7 +266,23 @@ CABLES.UI.Patch = function(_gui) {
 
                         setTimeout(function(){
                             gui.patch().setCurrentSubPatch(oldSub);
-                        },10);
+
+                            if(focusSubpatchop)
+                            {
+                                console.log(focusSubpatchop,mouseX,mouseY);
+                                var op=gui.patch().scene.getOpById(focusSubpatchop.id);
+                                // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+
+                                var uiop=gui.patch().getUiOp(op);
+                                uiop.setPos(mouseX,mouseY);
+
+                                // gui.patch().focusOp(op.id,true);
+
+                                console.log(op);
+                                // gui.patch().centerViewBoxOps();
+                            }
+
+                        },100);
 
                         return;
                     });
@@ -1887,6 +1908,8 @@ CABLES.UI.Patch = function(_gui) {
             
     this.setCurrentSubPatch = function(which) {
         if (currentSubPatch == which) return;
+
+        console.log("switch subpatch:",which);
 
         gui.setWorking(true,'patch');
 
