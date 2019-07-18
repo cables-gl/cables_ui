@@ -29,11 +29,7 @@ CABLES.UI.MainTabPanel=function(tabs)
             this.hide();
             gui.setLayout();
         }
-
-
     }.bind(this));
-
-
 };
 
 CABLES.UI.MainTabPanel.prototype.isVisible=function()
@@ -53,6 +49,7 @@ CABLES.UI.MainTabPanel.prototype.hide=function()
     this._visible=false;
     this._ele.style.display="none";
     CABLES.UI.userSettings.set("editorMinimized",!this._visible);
+    if(window.gui)gui.setLayout();
 }
 
 CABLES.UI.MainTabPanel.prototype.toggle=function()

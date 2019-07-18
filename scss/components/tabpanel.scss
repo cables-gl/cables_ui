@@ -4,6 +4,16 @@
     // position: absolute;
     background-color: var(--color-02);
 
+    
+    .toolbar
+    {
+        a
+        {
+            border-radius: 5px;
+            border:1px solid red;
+        }    
+    }
+
     .tabs
     {
         // border:1px solid green;

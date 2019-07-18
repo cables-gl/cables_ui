@@ -6,18 +6,32 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.Tab=function(title,options)
 {
     CABLES.EventTarget.apply(this);
+    this.id=CABLES.uuid();
     this.options=options||{};
     if(!options.hasOwnProperty("showTitle"))this.options.showTitle=true;
+    if(!options.hasOwnProperty("hideToolbar"))this.options.hideToolbar=false;
+    if(!options.hasOwnProperty("closable"))this.options.closable=true;
+    
     this.icon=this.options.icon||null;
     this.title=title;
     this.active=false;
     this.unsaved=false;
-    this.id=CABLES.uuid();
+    this.toolbarContainerEle=document.createElement("div");
+    this.contentEle=document.createElement("div");
+    this.toolbarEle=document.createElement("div");
 }
 
 CABLES.UI.Tab.prototype.initHtml=function(eleContainer)
 {
-    this.contentEle=document.createElement("div");
+    if(!this.options.hideToolbar)
+    {
+        this.toolbarContainerEle.id="toolbar"+this.id;
+        this.toolbarContainerEle.classList.add("toolbar");
+        this.toolbarContainerEle.innerHTML=CABLES.UI.getHandleBarHtml('tabpanel_toolbar',{"options":this.options,"id":this.id,"title":this.title,"hideToolbar":true});
+        eleContainer.appendChild(this.toolbarContainerEle);
+        document.getElementById("toolbarContent"+this.id).appendChild(this.toolbarEle);
+    }
+
     this.contentEle.id="content"+this.id;
     this.contentEle.classList.add("tabcontent");
     this.contentEle.innerHTML="hello "+this.title+"<br/><br/>the tab "+this.id;
@@ -27,6 +41,7 @@ CABLES.UI.Tab.prototype.initHtml=function(eleContainer)
 CABLES.UI.Tab.prototype.remove=function()
 {
     this.contentEle.remove();
+    this.toolbarContainerEle.remove();
 }
 
 CABLES.UI.Tab.prototype.html=function(html)
@@ -43,20 +58,17 @@ CABLES.UI.Tab.prototype.activate=function()
 {
     this.active=true;
     this.contentEle.style.display="block";
+    this.toolbarContainerEle.style.display="block";
     this.emitEvent("onactivate");
-    // CABLES.UI.userSettings.set("tabsLastTitle", this.title);
-    
-    // console.log("set active",this.title);
-
 }
 
 CABLES.UI.Tab.prototype.deactivate=function()
 {
     this.active=false;
     this.contentEle.style.display="none";
+    this.toolbarContainerEle.style.display="none";
     this.emitEvent("ondeactivate");
 }
-
 
 // -----------------
 
@@ -69,14 +81,12 @@ CABLES.UI.TabPanel=function(eleId)
     this._eleContentContainer=null;
     this._eleTabPanel=null;
 
-    //////
-
     if(!this._eleTabPanel)
     {
         this._eleTabPanel=document.createElement("div");
         this._eleTabPanel.classList.add("tabpanel")
         this._eleTabPanel.innerHTML="";
-        
+
         const ele=document.querySelector('#'+this._eleId);
         ele.appendChild(this._eleTabPanel);
 
@@ -85,31 +95,6 @@ CABLES.UI.TabPanel=function(eleId)
         this._eleContentContainer.innerHTML="";
         ele.appendChild(this._eleContentContainer);
     }
-
-    /////////
-
-    
-    // var t4=new CABLES.UI.Tab("hello world");
-    // t4.icon="eye";
-    // t4.closable=true;
-    // this.addTab(t4);
-
-    // var t5=new CABLES.UI.Tab("cdscsdcsd");
-    // t5.icon="clock";
-    // this.addTab(t5);
-
-    // var t6=new CABLES.UI.Tab("");
-    // t6.icon="code";
-    // this.addTab(t6);
-
-    // var t7=new CABLES.UI.Tab("");
-    // t7.icon="pie-chart";
-    // this.addTab(t7);
-
-    // var t8=new CABLES.UI.Tab("");
-    // t8.icon="book-open";
-    // this.addTab(t8);
-
 }
 
 CABLES.UI.TabPanel.prototype.updateHtml=function(name)
@@ -136,6 +121,16 @@ CABLES.UI.TabPanel.prototype.updateHtml=function(name)
                         if(e.target.dataset.id) 
                             this.closeTab(e.target.dataset.id); 
                 }.bind(this));
+
+        if(document.getElementById("closetab"+this._tabs[i].id))
+        {
+            document.getElementById("closetab"+this._tabs[i].id).addEventListener("click",
+                function(e)
+                {
+                    this.closeTab(e.target.dataset.id); 
+                }.bind(this));
+                console.log("add toolbarrr list");
+        }
     }
 }
 
@@ -204,8 +199,6 @@ CABLES.UI.TabPanel.prototype.addTab=function(tab,activate)
     {
         for(var i=0;i<this._tabs.length;i++)
         {
-
-
             if(CABLES.UI.userSettings.get("tabsLastTitle_"+this._eleId)==this._tabs[i].title)
             {
                 this.activateTab(this._tabs[i].id);
@@ -225,15 +218,18 @@ CABLES.UI.TabPanel.prototype.addTab=function(tab,activate)
 
 CABLES.UI.TabPanel.prototype.addIframeTab=function(title,url,options)
 {
-    var settingsTab=this.addTab(new CABLES.UI.Tab(title,options));
-    // settingsTab.initHtml(this._eleContentContainer);
+    var iframeTab=this.addTab(new CABLES.UI.Tab(title,options));
+    // iframeTab.initHtml(this._eleContentContainer);
 
     var html = '<iframe style="border:none;width:100%;height:100%" src="'+url+'"></iframe';
     // CABLES.UI.MODAL.show(html);
-    settingsTab.contentEle.innerHTML=html;
-    settingsTab.contentEle.style.padding="0px";
+    iframeTab.contentEle.innerHTML=html;
+    iframeTab.contentEle.style.padding="0px";
+    // window.open('https://www.codexworld.com', '_blank');
 
-    this.activateTab(settingsTab.id);
-    return settingsTab;
+    iframeTab.toolbarEle.innerHTML='<a href="'+url+'" target="_blank">open this in a new browser window</a>';
+
+    this.activateTab(iframeTab.id);
+    return iframeTab;
     
 }

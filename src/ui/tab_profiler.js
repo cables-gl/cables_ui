@@ -3,14 +3,12 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.Profiler=function(tabs)
 {
-
-    this._tab=new CABLES.UI.Tab("profiler",{"icon":"pie-chart","infotext":"tab_profiler","showTitle":false});
+    this._tab=new CABLES.UI.Tab("profiler",{"icon":"pie-chart","infotext":"tab_profiler","showTitle":false,"hideToolbar":true});
     tabs.addTab(this._tab);
     this._tab.addEventListener("onactivate",function()
     {
         this.show();
     }.bind(this));
-
 
     var colors=["#7AC4E0","#D183BF","#9091D6","#FFC395","#F0D165","#63A8E8","#CF5D9D","#66C984","#D66AA6","#515151"];
 
@@ -86,7 +84,7 @@ CABLES.UI.Profiler=function(tabs)
             if(sortedItems.length>0)for(i=0;i<2-(item.peak+'').length;i++)pad+='&nbsp;';
             htmlPeaks+=pad+(Math.round(96*item.peak)/100)+'ms '+item.title+'<br/>';
         }
-        
+
         $('#profilerui').show();
         $('#profilerlistPeaks').html(htmlPeaks);
         $('#profilerbar').html(htmlBar);

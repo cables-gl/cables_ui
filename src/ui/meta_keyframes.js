@@ -4,7 +4,7 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.MetaKeyframes=function(tabs)
 {
     this.anim=null;
-    this._tab=new CABLES.UI.Tab("keyframes",{"icon":"clock","infotext":"tab_keyframes","showTitle":false});
+    this._tab=new CABLES.UI.Tab("keyframes",{"icon":"clock","infotext":"tab_keyframes","showTitle":false,"hideToolbar":true});
     tabs.addTab(this._tab);
     this._tab.addEventListener("onactivate",function()
     {

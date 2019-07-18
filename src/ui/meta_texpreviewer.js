@@ -3,7 +3,7 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.TexturePreviewer=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("preview",{"icon":"eye","infotext":"tab_preview","showTitle":false});
+    this._tab=new CABLES.UI.Tab("preview",{"icon":"eye","infotext":"tab_preview","showTitle":false,"hideToolbar":true});
     tabs.addTab(this._tab);
     this._tab.addEventListener("onactivate",function()
     {
