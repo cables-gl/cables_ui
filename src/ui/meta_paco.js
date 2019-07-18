@@ -3,7 +3,7 @@ CABLES.UI=CABLES.UI || {};
 
 CABLES.UI.Paco=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("",{"icon":"play","infotext":"tab_paco"});
+    this._tab=new CABLES.UI.Tab("paco",{"icon":"play","infotext":"tab_paco","showTitle":false});
     tabs.addTab(this._tab);
     this._tab.addEventListener("onactivate",function()
     {

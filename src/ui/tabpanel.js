@@ -7,6 +7,7 @@ CABLES.UI.Tab=function(title,options)
 {
     CABLES.EventTarget.apply(this);
     this.options=options||{};
+    if(!options.hasOwnProperty("showTitle"))this.options.showTitle=true;
     this.icon=this.options.icon||null;
     this.title=title;
     this.active=false;
@@ -19,7 +20,7 @@ CABLES.UI.Tab.prototype.initHtml=function(eleContainer)
     this.contentEle=document.createElement("div");
     this.contentEle.id="content"+this.id;
     this.contentEle.classList.add("tabcontent");
-    this.contentEle.innerHTML="hello<br/><br/>the tab "+this.id;
+    this.contentEle.innerHTML="hello "+this.title+"<br/><br/>the tab "+this.id;
     eleContainer.appendChild(this.contentEle);
 }
 
@@ -43,6 +44,10 @@ CABLES.UI.Tab.prototype.activate=function()
     this.active=true;
     this.contentEle.style.display="block";
     this.emitEvent("onactivate");
+    // CABLES.UI.userSettings.set("tabsLastTitle", this.title);
+    
+    // console.log("set active",this.title);
+
 }
 
 CABLES.UI.Tab.prototype.deactivate=function()
@@ -138,8 +143,13 @@ CABLES.UI.TabPanel.prototype.activateTab=function(id)
 {
     for(var i=0;i<this._tabs.length;i++)
     {
-        if(this._tabs[i].id==id)this._tabs[i].activate();
-            else this._tabs[i].deactivate();
+        if(this._tabs[i].id==id)
+        {
+            this._tabs[i].activate();
+            CABLES.UI.userSettings.set("tabsLastTitle_"+this._eleId,this._tabs[i].title);
+
+        }
+        else this._tabs[i].deactivate();
 
         this.updateHtml();
     }
@@ -163,7 +173,8 @@ CABLES.UI.TabPanel.prototype.closeTab=function(id)
     tab.remove();
 
     if(this._tabs.length>0) this.activateTab(this._tabs[0].id);
-    // this.updateHtml();
+    
+
 
     console.log("num tabs",this._tabs.length);
     
@@ -183,11 +194,30 @@ CABLES.UI.TabPanel.prototype.getNumTabs=function()
 
 
 
-CABLES.UI.TabPanel.prototype.addTab=function(tab)
+CABLES.UI.TabPanel.prototype.addTab=function(tab,activate)
 {
     tab.initHtml(this._eleContentContainer);
     this._tabs.push(tab);
-    this.activateTab(tab.id);
+    
+    if(activate) this.activateTab(tab.id);
+    else
+    {
+        for(var i=0;i<this._tabs.length;i++)
+        {
+
+
+            if(CABLES.UI.userSettings.get("tabsLastTitle_"+this._eleId)==this._tabs[i].title)
+            {
+                this.activateTab(this._tabs[i].id);
+            }
+            else
+            {
+                this._tabs[i].deactivate();
+            }
+        }
+    }
+
+    this.updateHtml();
     this.emitEvent("onTabAdded",tab);
 
     return tab;
