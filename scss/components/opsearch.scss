@@ -92,7 +92,7 @@
     {
         font-size: 16px;
         padding: 20px 30px;
-		border-bottom: 1px solid var(--color-05);
+		border-bottom: 1px solid var(--color-07);
         background-color: $background-color-brighter;
     }
 
@@ -238,7 +238,8 @@
 
         .summary
         {
-            color: var(--color-13);
+            // color: var(--color-13);
+            color:var(--text-color-textOpselectSelected);
             i
             {
                 text-decoration: underline;
@@ -254,7 +255,8 @@
 
         .namespace
         {
-
+            color:var(--text-color-textOpselectSelected);
+            
             i
             {
                 text-decoration: underline;
@@ -280,13 +282,15 @@
     {
         font-size: 11px;
         font-style: normal;
+        color:var(--text-color-textOpselect);
+
         &:hover
         {
             font-weight: bold;
             color:$highlight-color-dark;
         }
-        i
-        {
+
+        i {
             text-decoration: underline;
             font-style: normal;
             // color:var(--text-color);
@@ -295,7 +299,7 @@
 
     .summary
     {
-        color: var(--color-13);
+        color:var(--text-color-textOpselect);
         font-size: 13px;
         font-style: normal;
         margin-top: 5px;

@@ -23,6 +23,9 @@
 
     --linkline-default:1.5;
     --linkline-thin:1.0;
+
+    --text-color-textOpselect: var(--color-10);
+    --text-color-textOpselectSelected: var(--color-13);
 }
 
 
@@ -150,6 +153,9 @@ body.bright
     --color_link_function: #8a7f00;
     --color-splitter:var(--color-13);
 
+    --text-color-textOpselect: var(--color-12);
+    --text-color-textOpselectSelected: var(--color-01);
+    
     --linkline-default:3;
     --linkline-thin:2;
 }
