@@ -1090,7 +1090,7 @@ CABLES.UI.GUI = function() {
 
         this.callEvent("pressedEscape");
         
-        if(e && (e.ctrlKey || e.altKey || e.metaKey))
+        if(e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey))
         {
             this.maintabPanel.toggle();
             this.setLayout();
@@ -1118,8 +1118,7 @@ CABLES.UI.GUI = function() {
             this._elGlCanvas.removeClass('maximized');
             self.setLayout();
             this.showCanvasModal(true);
-        } else
-        if (CABLES.UI.suggestions) {
+        } else if (CABLES.UI.suggestions) {
             console.log(CABLES.UI.suggestions);
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
@@ -1134,7 +1133,11 @@ CABLES.UI.GUI = function() {
         else if ($('.easingselect').is(':visible')) $('.easingselect').hide();
         else if (vueStore.getters['sidebar/sidebarCustomizerVisible']) vueStore.commit('sidebar/setCustomizerVisible', false);
         else
-        if (CABLES.UI.MODAL._visible) {
+        if(this.maintabPanel.isVisible())
+        {
+            this.maintabPanel.hide();
+        }
+        else if (CABLES.UI.MODAL._visible) {
             CABLES.UI.MODAL.hide(true)
             CABLES.UI.MODAL.hide();
             if (showingEditor) self.editor().focus();

@@ -3,7 +3,7 @@ CABLES.UI=CABLES.UI || {};
 
 CABLES.UI.MetaVars=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("variables",{"icon":"hash","infotext":"tab_variables","showTitle":false});
+    this._tab=new CABLES.UI.Tab("variables",{"icon":"hash","infotext":"tab_variables","showTitle":false,"hideToolbar":true});
     tabs.addTab(this._tab);
     this._tab.addEventListener("onactivate",function()
     {
