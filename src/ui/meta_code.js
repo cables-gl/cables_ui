@@ -6,7 +6,7 @@ CABLES.UI.OpShowMetaCode=0;
 
 CABLES.UI.MetaCode=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("",{"icon":"code","infotext":"tab_code"});
+    this._tab=new CABLES.UI.Tab("code",{"icon":"code","infotext":"tab_code","showTitle":false});
     tabs.addTab(this._tab);
     this._tab.addEventListener("onactivate",function()
     {

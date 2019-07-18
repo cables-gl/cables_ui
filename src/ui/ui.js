@@ -50,7 +50,11 @@ CABLES.UI.GUI = function() {
     this.bookmarks = new CABLES.UI.Bookmarks();
     // this.preview = new CABLES.UI.Preview();
     // this.hoverPreview = new CABLES.UI.Preview();
-    this.metaTabs.setTabNum(0);
+    
+    if(!CABLES.UI.userSettings.get("tabsLastTitle"))
+    {
+        this.metaTabs.setTabNum(0);
+    }
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);

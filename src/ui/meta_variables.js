@@ -3,7 +3,7 @@ CABLES.UI=CABLES.UI || {};
 
 CABLES.UI.MetaVars=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("",{"icon":"hash","infotext":"tab_variables"});
+    this._tab=new CABLES.UI.Tab("variables",{"icon":"hash","infotext":"tab_variables","showTitle":false});
     tabs.addTab(this._tab);
     this._tab.addEventListener("onactivate",function()
     {
@@ -20,7 +20,8 @@ CABLES.UI.MetaVars.prototype.update=function()
 
     clearTimeout(this._lastTimeout);
 
-    var vars=gui.patch().scene.getVars();
+    var vars={};
+    if(CABLES.UI && window.gui) vars=gui.patch().scene.getVars();
 
     for(var i in vars)
     {
@@ -32,12 +33,14 @@ CABLES.UI.MetaVars.prototype.update=function()
 
 CABLES.UI.MetaVars.prototype.show=function()
 {
-    var vars=gui.patch().scene.getVars();
+    var vars={};
+    if(CABLES.UI && window.gui) vars=gui.patch().scene.getVars();
     if(Object.keys(vars).length==0)vars=null;
     var html = CABLES.UI.getHandleBarHtml('meta_variables',
     {
         vars:vars
     });
+
 
     this._tab.html(html);
     this.update();
