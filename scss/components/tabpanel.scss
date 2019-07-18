@@ -16,8 +16,6 @@
         .tabcontainer
         {
             display:inline;
-            
-
         }
 
         .taboptions
@@ -44,15 +42,13 @@
             padding-right: 8px;
             margin-top: 7px;
             min-width: 70px !important;
-
             opacity:0.4;
             color: var(--color-13);
-
 
             &:hover
             {
                 opacity:0.6;
-                border-bottom: 1px solid var(--color-06);
+                border-bottom: 1px solid var(--color-08);
             }
 
             &.active
@@ -82,13 +78,35 @@
 {
     .tabcontent
     {
-        // border:1px solid green;
-        // width:100%;
+        background-color:$background-color-dark;
         max-height:100%;
         padding:10px;
         height:auto;
         overflow-x:hidden;
         overflow-y:scroll;
     }
+}
 
+
+#maintabs
+{
+    background-color:$background-color-dark;
+    margin: 0;
+    // background-color: blue;
+    z-index: 2000;
+    position: absolute;
+    // top: 50;
+    // bottom: 0;
+    // left: 200;
+    // right: 0;
+    // border:2px solid red;
+    // width:40%;
+    height:100%;
+
+    .ace_content *
+    {
+        font-family: sourceCodePro;
+        -webkit-font-smoothing: subpixel-antialiased;
+
+    }
 }

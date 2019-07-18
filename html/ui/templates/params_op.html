@@ -38,7 +38,9 @@
             {{/if}}
             
 
-            <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
+            <!-- href="/op/{{op.objName}}"  -->
+            
+            <a onclick="gui.mainTabs.addIframeTab('doc {{op.objName}}','/op/{{op.objName}}',{icon:'settings',closable:true});" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
             {{#if hasExample}}
                 | &nbsp; <a href="/op/example/{{op.objName}}" style="text-decoration: underline;" target="_blank">view example</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
             {{/if}}
