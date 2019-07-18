@@ -9,7 +9,7 @@ CABLES.UI.getHandleBarHtml=function(name,obj)
     var perf = CABLES.uiperf.start('getHandleBarHtml');
 
     var template = CABLES.UI.handleBarsPrecompiled[name];
-    if(!template)
+    if(!template && document.getElementById(name))
     {
         var source = document.getElementById(name).innerHTML;
         if (!source) {
