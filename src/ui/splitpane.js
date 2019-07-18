@@ -54,7 +54,6 @@ $( document ).ready(function()
         });
     });
 
-
     $('#splitterRenderer').mousedown(function (e)
     {
         e.preventDefault();
