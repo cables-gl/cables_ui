@@ -320,36 +320,39 @@ CABLES.UI.ServerOps = function(gui) {
                 if (attachmentname.endsWith(".css")) syntax = "css";
                 
                 gui.jobs().finish('load_attachment_'+attachmentname);
-                new CABLES.UI.EditorTab(
-                    {
-                        "title":attachmentname,
-                        "name":editorObj.name,
-                        "content":content,
-                        "syntax": syntax,
-                        "editorObj":editorObj,
-                        "onClose":function(which)
+
+                if(editorObj)
+                    new CABLES.UI.EditorTab(
                         {
-                            console.log('close!!! missing infos...');
-                            if(which.editorObj && which.editorObj.name)
-                                CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                        },
-                        "onSave":function(setStatus, content) {
-                            CABLES.api.post(
-                                'op/' + opname + '/attachment/' + attachmentname, {
-                                    content: content
-                                },
-                                function(res) {
-                                    setStatus('saved');
-                                    gui.serverOps.execute( opname );
-                                },
-                                function(res) {
-                                    setStatus('ERROR: not saved - '+res.msg);
-                                    console.log('err res', res);
-                                }
-                            );}
-                    });
+                            "title":attachmentname,
+                            "name":editorObj.name,
+                            "content":content,
+                            "syntax": syntax,
+                            "editorObj":editorObj,
+                            "onClose":function(which)
+                            {
+                                console.log('close!!! missing infos...');
+                                if(which.editorObj && which.editorObj.name)
+                                    CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                            },
+                            "onSave":function(setStatus, content) {
+                                CABLES.api.post(
+                                    'op/' + opname + '/attachment/' + attachmentname, {
+                                        content: content
+                                    },
+                                    function(res) {
+                                        setStatus('saved');
+                                        gui.serverOps.execute( opname );
+                                    },
+                                    function(res) {
+                                        setStatus('ERROR: not saved - '+res.msg);
+                                        console.log('err res', res);
+                                    }
+                                );}
+                        });
 
                     if(cb)cb();
+                    else gui.maintabPanel.show(); 
                 // gui.showEditor();
                 // gui.editor().addTab({
                 //     content: content,

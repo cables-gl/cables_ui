@@ -22,7 +22,7 @@ CABLES.UI.GUI = function() {
     this._gizmo=null;
 
     this.patchConnection = new CABLES.PatchConnectionSender();
-    this.opDocs = new CABLES.UI.OpDocs();
+    this.opDocs = null;
     
     
     
@@ -189,6 +189,7 @@ CABLES.UI.GUI = function() {
         this._elSplitterEditor = this._elSplitterEditor || document.getElementById('splitterEditor');
         this._elSplitterMaintabs = this._elSplitterMaintabs || document.getElementById('splitterMaintabs');
         this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
+        this._elEditorMaximized = this._elEditorMaximized || document.getElementById("editormaximized");
        
         this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
         this._elMiniMap = this._elMiniMap || document.getElementById("minimap");
@@ -285,14 +286,26 @@ CABLES.UI.GUI = function() {
             this._elSplitterMaintabs.style.width= 5;
             this._elSplitterMaintabs.style.top= menubarHeight;
             
-            this._elEditorMinimized.style.display = "block";
+            this._elEditorMinimized.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
-            this._elEditorMinimized.style.top = patchHeight / 2 - 100;
+            this._elEditorMinimized.style.top = menubarHeight;
 
+            this._elEditorMaximized.style.display = "block";
+            this._elEditorMaximized.style.left = editorWidth + iconBarWidth+3;
+            this._elEditorMaximized.style.top = menubarHeight;
+
+            
 
         } else {
-            this._elEditorMinimized.style.display = "none";
+            this._elEditorMaximized.style.display = "none";
+
+            if(this.mainTabs.getNumTabs()>0) this._elEditorMinimized.style.display = "block";
+                else this._elEditorMinimized.style.display = "none";
+
             this._elSplitterMaintabs.style.display = "none";
+            this._elEditorMinimized.style.left = iconBarWidth;
+            this._elEditorMinimized.style.top = menubarHeight;
+
         }
 
         // if(showingEditor)
@@ -1743,6 +1756,7 @@ function startUi(event)
             gui.checkIdle();
 
             gui.bind(function() {
+                gui.opDocs=new CABLES.UI.OpDocs();
                 gui.metaCode().init();
                 gui.metaDoc.init();
                 gui.opSelect().reload();

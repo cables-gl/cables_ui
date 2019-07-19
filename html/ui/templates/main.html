@@ -63,7 +63,11 @@
     <div id="ace_editors" style="padding:0;height:300px;"></div>
     <div id="editorfoot"><pre></pre></div>
 </div> -->
-<div id="editorminimized"  onclick="CABLES.CMD.UI.toggleEditor()">
+<div id="editormaximized"  onclick="gui.maintabPanel.toggle();gui.setLayout();">
+    <span class="icon icon-chevron-left"></span>
+</div>
+    
+<div id="editorminimized"  onclick="gui.maintabPanel.toggle();gui.setLayout();">
     <span class="icon icon-chevron-right"></span>
 </div>
 
