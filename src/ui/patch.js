@@ -1210,6 +1210,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     function rubberBandMove(e) {
+        if(CABLES.SPLITPANE.bound)return;
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
             gui.setTransformGizmo(null);
             
@@ -1388,6 +1389,9 @@ CABLES.UI.Patch = function(_gui) {
         };
 
         $('#patch').on("mousemove touchmove", function(e) {
+
+            if(CABLES.SPLITPANE.bound)return;
+            
             e = mouseEvent(e);
 
             if (CABLES.UI.MOUSEOVERPORT )return;

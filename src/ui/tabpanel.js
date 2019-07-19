@@ -108,10 +108,7 @@ CABLES.UI.TabPanel.prototype.updateHtml=function(name)
         document.getElementById("editortab"+this._tabs[i].id).addEventListener("click",
             function(e){
                 if(e.target.dataset.id) this.activateTab(e.target.dataset.id);
-                console.log(e);
-                console.log('isclosable: ',e.target.classList.contains("closable"))
             }.bind(this));
-
         
         if(this._tabs[i].options.closable)
             document.getElementById("editortab"+this._tabs[i].id).addEventListener("mousedown",
@@ -129,7 +126,6 @@ CABLES.UI.TabPanel.prototype.updateHtml=function(name)
                 {
                     this.closeTab(e.target.dataset.id); 
                 }.bind(this));
-                console.log("add toolbarrr list");
         }
     }
 }
@@ -148,6 +144,13 @@ CABLES.UI.TabPanel.prototype.activateTab=function(id)
 
         this.updateHtml();
     }
+}
+
+CABLES.UI.TabPanel.prototype.getTabByTitle=function(title)
+{
+    for(var i=0;i<this._tabs.length;i++)
+        if(this._tabs[i].title==title) return this._tabs[i];
+
 }
 
 CABLES.UI.TabPanel.prototype.closeTab=function(id)
@@ -187,10 +190,19 @@ CABLES.UI.TabPanel.prototype.getNumTabs=function()
     return this._tabs.length;
 };
 
-
-
 CABLES.UI.TabPanel.prototype.addTab=function(tab,activate)
 {
+    if(tab.options.singleton)
+    {
+        var t=this.getTabByTitle(tab.title);
+        if(t)
+        {
+            this.activateTab(t.id);
+            this.emitEvent("onTabAdded",tab);
+            return t;
+        }
+    }
+
     tab.initHtml(this._eleContentContainer);
     this._tabs.push(tab);
     
