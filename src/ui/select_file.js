@@ -287,60 +287,60 @@ CABLES.UI.FileSelect = function() {
 
     this.editFile = function(fileid,filename) {
 
-        var editorObj=CABLES.editorSession.rememberOpenEditor("file",filename,{"fileid":fileid} );
+        // var editorObj=CABLES.editorSession.rememberOpenEditor("file",filename,{"fileid":fileid} );
 
-        CABLES.api.clearCache();
+        // CABLES.api.clearCache();
 
-        // gui.showEditor();
+        // // gui.showEditor();
 
-        var toolbarHtml = '';
-        // if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
+        // var toolbarHtml = '';
+        // // if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
-        var fullpath='/assets/' + gui.patch().getCurrentProject()._id + '/'+filename;
-        CABLES.ajax(
-            CABLES.cacheBust(fullpath),
-            function(err,_data,xhr)
-            {
-                var content = _data || '';
-                var syntax = "text";
+        // var fullpath='/assets/' + gui.patch().getCurrentProject()._id + '/'+filename;
+        // CABLES.ajax(
+        //     CABLES.cacheBust(fullpath),
+        //     function(err,_data,xhr)
+        //     {
+        //         var content = _data || '';
+        //         var syntax = "text";
 
-                if (filename.endsWith(".frag")) syntax = "glsl";
-                if (filename.endsWith(".vert")) syntax = "glsl";
-                if (filename.endsWith(".json")) syntax = "json";
-                if (filename.endsWith(".css")) syntax = "css";
+        //         if (filename.endsWith(".frag")) syntax = "glsl";
+        //         if (filename.endsWith(".vert")) syntax = "glsl";
+        //         if (filename.endsWith(".json")) syntax = "json";
+        //         if (filename.endsWith(".css")) syntax = "css";
 
-                gui.editor().addTab({
-                    content: content,
-                    title: filename,
-                    syntax: syntax,
-                    id:CABLES.Editor.sanitizeId('editfile_'+fileid+filename),
-                    editorObj: editorObj,
-                    toolbarHtml: toolbarHtml,
-                    onSave: function(setStatus, content) {
-                        CABLES.api.put(
-                            'project/' + gui.patch().getCurrentProject()._id + '/'+filename, {
-                                content: content
-                            },
-                            function(res) {
-                                setStatus('saved');
-                                CABLES.UI.fileSelect.triggerFileUpdate(fullpath);
-                            },
-                            function(res) {
-                                setStatus('ERROR: not saved '+res.msg);
-                                console.log('err res', res);
-                            }
-                        );
-                    },
-                    onClose: function(which) {
-                        CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                    },
+        //         gui.editor().addTab({
+        //             content: content,
+        //             title: filename,
+        //             syntax: syntax,
+        //             id:CABLES.Editor.sanitizeId('editfile_'+fileid+filename),
+        //             editorObj: editorObj,
+        //             toolbarHtml: toolbarHtml,
+        //             onSave: function(setStatus, content) {
+        //                 CABLES.api.put(
+        //                     'project/' + gui.patch().getCurrentProject()._id + '/'+filename, {
+        //                         content: content
+        //                     },
+        //                     function(res) {
+        //                         setStatus('saved');
+        //                         CABLES.UI.fileSelect.triggerFileUpdate(fullpath);
+        //                     },
+        //                     function(res) {
+        //                         setStatus('ERROR: not saved '+res.msg);
+        //                         console.log('err res', res);
+        //                     }
+        //                 );
+        //             },
+        //             onClose: function(which) {
+        //                 CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+        //             },
 
-                });
-            },"GET",function()
-        {
-            console.error("err..."+filename);
-        }
-        );
+        //         });
+        //     },"GET",function()
+        // {
+        //     console.error("err..."+filename);
+        // }
+        // );
     };
 
 

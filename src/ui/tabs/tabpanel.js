@@ -37,6 +37,7 @@ CABLES.UI.Tab.prototype.initHtml=function(eleContainer)
     if(this.options.padding)this.contentEle.classList.add("padding");
     this.contentEle.innerHTML="hello "+this.title+"<br/><br/>the tab "+this.id;
     eleContainer.appendChild(this.contentEle);
+
 }
 
 CABLES.UI.Tab.prototype.addButton=function(title,cb)
@@ -51,10 +52,8 @@ CABLES.UI.Tab.prototype.addButton=function(title,cb)
 CABLES.UI.Tab.prototype.getSaveButton=function()
 {
     for(var i=0;i<this.buttons.length;i++)
-    {
-        console.log(this.buttons[i]);
-        if(this.buttons[i].title=='save')return this.buttons[i];
-    }
+        if(this.buttons[i].title=='save')
+            return this.buttons[i];
 }
 
 CABLES.UI.Tab.prototype.remove=function()
@@ -150,6 +149,15 @@ CABLES.UI.TabPanel.prototype.updateHtml=function(name)
     }
 }
 
+CABLES.UI.TabPanel.prototype.activateTabByName=function(name)
+{
+    for(var i=0;i<this._tabs.length;i++)
+        if(this._tabs[i].options.name==name) this._tabs[i].activate();
+            else this._tabs[i].deactivate();
+
+    this.updateHtml();
+}
+
 CABLES.UI.TabPanel.prototype.activateTab=function(id)
 {
     for(var i=0;i<this._tabs.length;i++)
@@ -158,12 +166,10 @@ CABLES.UI.TabPanel.prototype.activateTab=function(id)
         {
             this._tabs[i].activate();
             CABLES.UI.userSettings.set("tabsLastTitle_"+this._eleId,this._tabs[i].title);
-
         }
         else this._tabs[i].deactivate();
-
-        this.updateHtml();
     }
+    this.updateHtml();
 }
 
 CABLES.UI.TabPanel.prototype.getTabByTitle=function(title)
@@ -200,8 +206,6 @@ CABLES.UI.TabPanel.prototype.closeTab=function(id)
 
     if(idx>this._tabs.length-1)idx=this._tabs.length-1;
     if(this._tabs[idx])this.activateTab(this._tabs[idx].id);
-
-    console.log("num tabs",this._tabs.length);
     
     this.updateHtml();
 }
@@ -253,7 +257,7 @@ CABLES.UI.TabPanel.prototype.addTab=function(tab,activate)
 
     tab.initHtml(this._eleContentContainer);
     this._tabs.push(tab);
-    
+
     if(activate) this.activateTab(tab.id);
     else
     {

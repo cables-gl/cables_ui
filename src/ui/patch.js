@@ -52,7 +52,14 @@ CABLES.UI.Patch = function(_gui) {
     CABLES.editorSession.addListener("param",
         function(name,data)
         {
-            if(data && data.opid && data.portname) this.openParamEditor(data.opid,data.portname)
+            var lastTab=CABLES.UI.userSettings.get('editortab');
+            
+            if(data && data.opid && data.portname) this.openParamEditor(data.opid,data.portname,
+                function()
+                {
+                    gui.mainTabs.activateTabByName(lastTab);
+                    CABLES.UI.userSettings.set('editortab',lastTab);
+                });
         }.bind(this));
 
     this.isLoading = function() { return isLoading; };
@@ -2630,7 +2637,7 @@ CABLES.UI.Patch = function(_gui) {
         }, 10);
     };
 
-    this.openParamEditor=function(opid,portname)
+    this.openParamEditor=function(opid,portname,cb)
     {
         var op=self.scene.getOpById(opid);
         if(!op)
@@ -2645,29 +2652,35 @@ CABLES.UI.Patch = function(_gui) {
             console.log('paramedit port not found');
             return;
         }
+        var name=opid+portname;
+        var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname} );
 
-        var editorObj=CABLES.editorSession.rememberOpenEditor("param",opid+portname,{"opid":opid,"portname":portname} );
 
-
-        new CABLES.UI.EditorTab(
-            {
-                "title":'' + port.name,
-                "content":port.get() + '',
-                "syntax": port.uiAttribs.editorSyntax,
-                "editorObj":editorObj,
-                "onClose":function(which)
+        if(editorObj)
+            new CABLES.UI.EditorTab(
                 {
-                    console.log('close!!! missing infos...');
-                    CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                },
-                "onSave":function(setStatus, content) {
-                            setStatus('saved');
-                            gui.setStateUnsaved();
-                            gui.jobs().finish('saveeditorcontent');
-                            port.set(content);
-                        }
-            });
+                    "title":'' + port.name,
+                    "content":port.get() + '',
+                    "name":editorObj.name,
+                    "syntax": port.uiAttribs.editorSyntax,
+                    "editorObj":editorObj,
+                    "onClose":function(which)
+                    {
+                        console.log('close!!! missing infos...');
+                        CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                    },
+                    "onSave":function(setStatus, content) {
+                                setStatus('saved');
+                                gui.setStateUnsaved();
+                                gui.jobs().finish('saveeditorcontent');
+                                port.set(content);
+                            }
+                });
+            else gui.mainTabs.activateTabByName(name);
 
+
+
+        if(cb)cb();
         // gui.showEditor();
         // gui.editor().addTab({
         //     content: port.get() + '',
