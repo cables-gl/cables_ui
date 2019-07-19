@@ -119,7 +119,7 @@ CABLES.UI.GUI = function() {
 
     this._ignoreOpenEditor=false;
     
-    this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 400;
+    this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
 
     // this.toggleMaintabs=function()
@@ -268,19 +268,19 @@ CABLES.UI.GUI = function() {
 
         var editorWidth = self.editorWidth;
         var patchLeft = iconBarWidth;
-        
+
         if(this.maintabPanel.isVisible())
         {
             this._elMaintab.style.left = iconBarWidth+'px';
             this._elMaintab.style.top = menubarHeight;
             this._elMaintab.style.height = editorHeight;
 
-            this._elMaintab.style.width = this.maintabPanel.width;
+            this._elMaintab.style.width = editorWidth;
 
             var editorHeight = patchHeight - 2 - editorbarHeight;
             // this._elAceEditor.css('height', editorHeight);
             this._elSplitterMaintabs.style.display = "block";
-            this._elSplitterMaintabs.style.left= this.maintabPanel.width + iconBarWidth;
+            this._elSplitterMaintabs.style.left= editorWidth + iconBarWidth;
             this._elSplitterMaintabs.style.height= patchHeight - 2;
             this._elSplitterMaintabs.style.width= 5;
             this._elSplitterMaintabs.style.top= menubarHeight;
@@ -1087,7 +1087,6 @@ CABLES.UI.GUI = function() {
     this.pressedEscape = function(e) {
 
         this.showCanvasModal(false);
-
         this.callEvent("pressedEscape");
         
         if(e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey))
@@ -1096,7 +1095,6 @@ CABLES.UI.GUI = function() {
             this.setLayout();
             return;
         }
-
 
         this.metaTexturePreviewer.pressedEscape();
         $('.tooltip').hide();
@@ -1354,7 +1352,7 @@ CABLES.UI.GUI = function() {
         // var settingsTab=this.mainTabs.addTab(new CABLES.UI.Tab("Patch Settings",{icon:"settings",closable:true}));
         // settingsTab.contentEle.innerHTML=html;
 
-        gui.mainTabs.addIframeTab("Patch Settings",url,{icon:"settings",closable:true});
+        gui.mainTabs.addIframeTab("Patch Settings",url,{"icon":"settings","closable":true,"singleton":true});
 
 
     };
@@ -1728,6 +1726,7 @@ function startUi(event)
         gui.showWelcomeNotifications();
 
         gui.waitToShowUI();
+        gui.maintabPanel.init();
         gui.setLayout();
         gui.patch().fixTitlePositions();
         gui.opSelect().prepare();

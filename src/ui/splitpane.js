@@ -31,11 +31,10 @@ $( document ).ready(function()
         $(document).mousemove(function (e)
         {
             $( "iframe" ).each(function() { $('iframe').css("pointer-events","none"); });
-            
             e.preventDefault();
-            gui.maintabPanel.width=e.clientX-gui._elIconBar.outerWidth();
-            if(gui.maintabPanel.width<30)gui.maintabPanel.width=30;
-            CABLES.UI.userSettings.set("editorWidth",gui.maintabPanel.width);
+            gui.editorWidth=e.clientX-gui._elIconBar.outerWidth();
+            if(gui.editorWidth<30)gui.editorWidth=30;
+            CABLES.UI.userSettings.set("editorWidth",gui.editorWidth);
             gui.setLayout();
         });
     });

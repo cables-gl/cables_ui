@@ -18,7 +18,7 @@ CABLES.UI.getHandleBarHtml=function(name,obj)
         }
         template = CABLES.UI.handleBarsPrecompiled[name] = Handlebars.compile(source);
     }
-    
+
     var html = template(obj);
     perf.finish();
 
