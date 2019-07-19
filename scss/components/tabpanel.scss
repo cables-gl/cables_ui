@@ -25,15 +25,10 @@
 
 .tabpanel
 {
-    // position: absolute;
     background-color: var(--color-02);
-
-    
-
 
     .tabs
     {
-        // border:1px solid green;
         width:100%;
         margin-bottom: 3px;
         height:32px;
@@ -58,6 +53,8 @@
             z-index: 2;
         }
 
+        
+
         .tab
         {
             float:left;
@@ -69,7 +66,7 @@
             padding-right: 8px;
             margin-top: 7px;
             min-width: 70px !important;
-            opacity:0.4;
+            opacity:0.5;
             color: var(--color-13);
 
             &:hover
@@ -98,6 +95,11 @@
             }
 
         }
+
+        .unsaved
+        {
+            color:var(--color-warning);
+        }
     }
 }
 
@@ -107,10 +109,14 @@
     {
         background-color:$background-color-dark;
         max-height:100%;
-        padding:10px;
         height:auto;
         overflow-x:hidden;
         overflow-y:scroll;
+    }
+
+    .padding
+    {
+        padding:10px;
     }
 }
 

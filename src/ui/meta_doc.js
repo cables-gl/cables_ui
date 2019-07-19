@@ -3,14 +3,14 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.MetaDoc=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("doc",{"icon":"book-open","infotext":"tab_doc","showTitle":false,"hideToolbar":true});
+    this._tab=new CABLES.UI.Tab("doc",{"icon":"book-open","infotext":"tab_doc","showTitle":false,"hideToolbar":true,"padding":true});
     tabs.addTab(this._tab);
     
     this._op=null;
     this.html='';
 
 
-    this._tab.addEventListener("onactivate",function()
+    this._tab.addEventListener("onActivate",function()
     {
         this.update();
         this.show();

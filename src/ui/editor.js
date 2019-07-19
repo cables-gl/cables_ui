@@ -381,8 +381,8 @@ CABLES.Editor.createEditor=function(id)
     editor.resize();
     editor.focus();
     return editor;
-
 }
+
 CABLES.Editor.prototype.focus=function()
 {
     const tab=this.getCurrentTab();

@@ -2648,25 +2648,45 @@ CABLES.UI.Patch = function(_gui) {
 
         var editorObj=CABLES.editorSession.rememberOpenEditor("param",opid+portname,{"opid":opid,"portname":portname} );
 
-        gui.showEditor();
-        gui.editor().addTab({
-            content: port.get() + '',
-            editorObj:editorObj,
-            id:CABLES.Editor.sanitizeId('editparam_'+opid+'_'+port.name),
-            title: '' + port.name,
-            syntax: port.uiAttribs.editorSyntax,
-            onSave: function(setStatus, content) {
-                // console.log('setvalue...');
-                setStatus('saved');
-                gui.setStateUnsaved();
-                gui.jobs().finish('saveeditorcontent');
-                port.set(content);
-            },
-            onClose: function(which)
+
+        new CABLES.UI.EditorTab(
             {
-                CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-            }
-        });
+                "title":'' + port.name,
+                "content":port.get() + '',
+                "syntax": port.uiAttribs.editorSyntax,
+                "editorObj":editorObj,
+                "onClose":function(which)
+                {
+                    console.log('close!!! missing infos...');
+                    CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                },
+                "onSave":function(setStatus, content) {
+                            setStatus('saved');
+                            gui.setStateUnsaved();
+                            gui.jobs().finish('saveeditorcontent');
+                            port.set(content);
+                        }
+            });
+
+        // gui.showEditor();
+        // gui.editor().addTab({
+        //     content: port.get() + '',
+        //     editorObj:editorObj,
+        //     id:CABLES.Editor.sanitizeId('editparam_'+opid+'_'+port.name),
+        //     title: '' + port.name,
+        //     syntax: port.uiAttribs.editorSyntax,
+        //     onSave: function(setStatus, content) {
+        //         // console.log('setvalue...');
+        //         setStatus('saved');
+        //         gui.setStateUnsaved();
+        //         gui.jobs().finish('saveeditorcontent');
+        //         port.set(content);
+        //     },
+        //     onClose: function(which)
+        //     {
+        //         CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+        //     }
+        // });
     }
 
     this.resetOpValues=function(opid)

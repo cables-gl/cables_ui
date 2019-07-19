@@ -3,9 +3,9 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.Profiler=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("profiler",{"icon":"pie-chart","infotext":"tab_profiler","showTitle":false,"hideToolbar":true});
+    this._tab=new CABLES.UI.Tab("profiler",{"icon":"pie-chart","infotext":"tab_profiler","showTitle":false,"hideToolbar":true,"padding":true});
     tabs.addTab(this._tab);
-    this._tab.addEventListener("onactivate",function()
+    this._tab.addEventListener("onActivate",function()
     {
         this.show();
     }.bind(this));

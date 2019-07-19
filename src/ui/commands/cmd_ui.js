@@ -60,7 +60,8 @@ CABLES.CMD.UI.hideEditor = function() {
 };
 
 CABLES.CMD.UI.showEditor = function() {
-    gui.showEditor();
+    // gui.showEditor();
+    console.log("todo: add showeditor for maintabs");
 };
 
 

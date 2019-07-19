@@ -6,9 +6,9 @@ CABLES.UI.OpShowMetaCode=0;
 
 CABLES.UI.MetaCode=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("code",{"icon":"code","infotext":"tab_code","showTitle":false,"hideToolbar":true});
+    this._tab=new CABLES.UI.Tab("code",{"icon":"code","infotext":"tab_code","showTitle":false,"hideToolbar":true,"padding":true});
     tabs.addTab(this._tab);
-    this._tab.addEventListener("onactivate",function()
+    this._tab.addEventListener("onActivate",function()
     {
         this.show();
     }.bind(this));
