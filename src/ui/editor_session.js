@@ -60,7 +60,10 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
 {
     for (var i = 0; i < this._openEditors.length; i++)
     {
-        if (this._openEditors[i].name == name && this._openEditors[i].type == type) return;
+        if (this._openEditors[i].name == name && this._openEditors[i].type == type)
+        {
+            return;
+        }
     }
     var obj={"name":name,"type":type,"data":data||{}};
     this._openEditors.push(obj);
@@ -78,27 +81,20 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
 CABLES.EditorSession.prototype.open=function()
 {
     var sessions = CABLES.UI.userSettings.get("openEditors");
-
-    var lastTab = CABLES.UI.userSettings.get('editortab');
+    
 
     if (sessions)
-    {
         for (var i = 0; i < sessions.length; i++)
         {
-            if(this._listeners[sessions[i].type])
-            {
-                this._listeners[sessions[i].type]( sessions[i].name , sessions[i].data||{} );
-            }
+            if(this._listeners[sessions[i].type]) this._listeners[sessions[i].type]( sessions[i].name, sessions[i].data||{} );
+            console.log('session',sessions[i].name);
         }
-    }
 
-    setTimeout(function()
-    {
-        gui.editor().setTabByTitle(lastTab);
-        gui._ignoreOpenEditor=false;
-    },100);
-
-   
+    // setTimeout(function()
+    // {
+        // console.log(sessions,lastTab);
+    
+    // },100);
 
 }
 

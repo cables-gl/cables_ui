@@ -10,17 +10,24 @@ CABLES.UI.ServerOps = function(gui) {
     CABLES.editorSession.addListener("op",
         function(name,data)
         {
-            // console.log('editor open for op',name,data);
-            this.edit(name);
+            var lastTab=CABLES.UI.userSettings.get('editortab');
+            this.edit(name,false,function()
+            {
+                gui.mainTabs.activateTabByName(lastTab);
+                CABLES.UI.userSettings.set('editortab',lastTab);
+            });
         }.bind(this));
 
     CABLES.editorSession.addListener("attachment",
         function(name,data)
         {
-            // console.log('editor open for editAttachment',name,data);
-            if(data && data.opname) this.editAttachment(data.opname, name);
+            var lastTab=CABLES.UI.userSettings.get('editortab');
+            if(data && data.opname) this.editAttachment(data.opname, name,false,function()
+            {
+                gui.mainTabs.activateTabByName(lastTab);
+                CABLES.UI.userSettings.set('editortab',lastTab);
+            });
         }.bind(this));
-
 
     this.load = function(cb) {
         CABLES.api.get(CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsList()), function(res) {
@@ -33,8 +40,6 @@ CABLES.UI.ServerOps = function(gui) {
 
                 self.loaded = true;
                 incrementStartup();
-
-
             }
         }.bind(this));
     };
@@ -163,7 +168,7 @@ CABLES.UI.ServerOps = function(gui) {
 
                 if (ops.length > 0) this.saveOpLayout(ops[0]);
                 gui.patch().checkCollisionsEdge();
-                gui.editor().focus();
+                // gui.editor().focus();
                 
             }.bind(this));
 
@@ -297,12 +302,10 @@ CABLES.UI.ServerOps = function(gui) {
         });
     };
 
-    this.editAttachment = function(opname, attachmentname, readOnly) {
+    this.editAttachment = function(opname, attachmentname, readOnly,cb) {
         var editorObj=CABLES.editorSession.rememberOpenEditor("attachment",attachmentname,{"opname":opname} );
         CABLES.api.clearCache();
         
-        var toolbarHtml = '';
-
         gui.jobs().start({id:'load_attachment_'+attachmentname,title:'loading attachment '+attachmentname});
 
         CABLES.api.get(
@@ -317,10 +320,10 @@ CABLES.UI.ServerOps = function(gui) {
                 if (attachmentname.endsWith(".css")) syntax = "css";
                 
                 gui.jobs().finish('load_attachment_'+attachmentname);
-
                 new CABLES.UI.EditorTab(
                     {
                         "title":attachmentname,
+                        "name":editorObj.name,
                         "content":content,
                         "syntax": syntax,
                         "editorObj":editorObj,
@@ -346,6 +349,7 @@ CABLES.UI.ServerOps = function(gui) {
                             );}
                     });
 
+                    if(cb)cb();
                 // gui.showEditor();
                 // gui.editor().addTab({
                 //     content: content,
@@ -387,7 +391,7 @@ CABLES.UI.ServerOps = function(gui) {
 
 
     // Shows the editor and displays the code of an op in it
-    this.edit = function(opname, readOnly)
+    this.edit = function(opname, readOnly,cb)
     {
         if(!opname || opname=='')
         {
@@ -401,15 +405,14 @@ CABLES.UI.ServerOps = function(gui) {
                 // gui.showEditor();
                 // CABLES.UI.MODAL.hide();
 
-                console.log("loaded opcode",opname);
-
                 var editorObj=CABLES.editorSession.rememberOpenEditor("op",opname);
 
                 // var html = '';
                 // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
                 var save = null;
-                if (!readOnly) save = function(setStatus, content) {
+                if (!readOnly) save = function(setStatus, content) 
+                {
                     CABLES.api.put(
                         'ops/' + opname, {
                             code: content
@@ -459,21 +462,32 @@ CABLES.UI.ServerOps = function(gui) {
 
                 // gui.mainTabs.addTag(new )
 
-                new CABLES.UI.EditorTab(
-                    {
-                        "title":title,
-                        "content":res.code,
-                        "syntax": 'js',
-                        "onSave":save,
-                        "editorObj":editorObj,
-                        "onClose":function(which)
+                // console.log('editorObj',editorObj);
+
+
+                if(editorObj)
+                    new CABLES.UI.EditorTab(
                         {
-                            console.log('close!!! missing infos...');
-                            CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                        }
-                    });
+                            "title":title,
+                            "name":editorObj.name,
+                            "content":res.code,
+                            "singleton":true,
+                            "syntax": 'js',
+                            "onSave":save,
+                            "editorObj":editorObj,
+                            "onClose":function(which)
+                            {
+                                if(which.editorObj)
+                                    CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                            }
+                        });
+                    else
+                    {
+                        console.log("no editorobj!");
+                        gui.mainTabs.activateTabByName(opname);
+                    }
 
-
+                if(cb)cb();
 
 
 

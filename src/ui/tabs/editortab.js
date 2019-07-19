@@ -15,17 +15,27 @@ CABLES.UI.EditorTab=function(options)
 
     this._tab=new CABLES.UI.Tab(options.title,{
         "icon":icon,
-        "infotext":"a code editor"
+        "name":options.name,
+        "infotext":"a code editor",
+        "singleton":options.singleton
     });
-    gui.mainTabs.addTab(this._tab);
+
+    var existing=gui.mainTabs.getTabByTitle(options.title);
+    if(existing)
+    {
+        gui.mainTabs.activateTab(existing.id);
+        return;
+    }
+    gui.mainTabs.addTab(this._tab,CABLES.UI.tabsAutoActivate);
 
     this._tab.editorObj=options.editorObj;
 
     var html='<div id="editorcontent'+this._tab.id+'" style="width:100%;height:100%"></div>';
     this._tab.html(html);
 
-    this._editor=CABLES.UI.createEditor('editorcontent'+this._tab.id);
-    this._editor.setValue(options.content,-1);
+    this._editor=CABLES.UI.createEditor('editorcontent'+this._tab.id,options.content);
+    
+    // this._editor.setValue(options.content,-1);
     this._editor.resize();
 
     const undoManager = this._editor.session.getUndoManager();
@@ -37,14 +47,21 @@ CABLES.UI.EditorTab=function(options)
     }.bind(this));
 
     if(options.syntax=='md') this._editor.session.setMode("ace/mode/Markdown");
-    else if(options.syntax=='js') this._editor.session.setMode("ace/mode/javascript");
-    else if(options.syntax=='glsl') this._editor.session.setMode("ace/mode/glsl");
-    else if(options.syntax=='css') this._editor.session.setMode("ace/mode/css");
-    else this._editor.session.setMode("ace/mode/Text");
+        else if(options.syntax=='js') this._editor.session.setMode("ace/mode/javascript");
+        else if(options.syntax=='glsl') this._editor.session.setMode("ace/mode/glsl");
+        else if(options.syntax=='css') this._editor.session.setMode("ace/mode/css");
+        else this._editor.session.setMode("ace/mode/Text");
 
     this._tab.addButton("save",this.save.bind(this));
     this._tab.addEventListener("onClose",options.onClose);
-    this._tab.addEventListener("onActivate",function(){this._editor.focus();}.bind(this));
+    this._tab.addEventListener("onActivate",function()
+    {
+        this._editor.resize(true)
+        this._editor.focus();
+        CABLES.UI.userSettings.set("editortab",this._tab.editorObj.name);
+    }.bind(this));
+    
+    // }.bind(this),50);
 };
 
 
@@ -70,22 +87,21 @@ CABLES.UI.EditorTab.prototype.save=function()
     }
 
     var anns=this._editor.getSession().getAnnotations();
-    console.log('annotations',anns);
+    console.log("annotations",anns)
+
 
     if(this._options.onSave)
     {
         gui.jobs().start({id:'saveeditorcontent',title:'saving editor content'});
         this._options.onSave(onSaveCb.bind(this),this._editor.getValue());
-        gui.editor().focus();
     }
-
 
 };
 
-CABLES.UI.createEditor=function(id)
+CABLES.UI.createEditor=function(id,val)
 {
     var editor = ace.edit(id);
-    editor.setValue('');
+    editor.setValue(""); // need to do this 
 
     editor.setOptions({
 		"fontFamily": "SourceCodePro",
@@ -106,8 +122,7 @@ CABLES.UI.createEditor=function(id)
     editor.commands.bindKey("Cmd-Ctrl-Up", "movelinesup");
     editor.commands.bindKey("Cmd-Ctrl-Down", "movelinesdown");
 
-
-
+    editor.setValue(val,-1);
 
     var snippetManager = ace.require("ace/snippets").snippetManager;
     var snippets = snippetManager.parseSnippetFile("");

@@ -12,7 +12,7 @@ CABLES.UI.GUI = function() {
     var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true}});
     _scene.gui = true;
     var _patch = null;
-    var _editor = new CABLES.Editor();
+    // var _editor = new CABLES.Editor();
     var _userOpManager = null;
     var _jobs = new CABLES.UI.Jobs();
     var _find = new CABLES.UI.Find();
@@ -51,10 +51,10 @@ CABLES.UI.GUI = function() {
     // this.preview = new CABLES.UI.Preview();
     // this.hoverPreview = new CABLES.UI.Preview();
     
-    if(!CABLES.UI.userSettings.get("tabsLastTitle"))
-    {
-        this.metaTabs.setTabNum(0);
-    }
+    // if(!CABLES.UI.userSettings.get("tabsLastTitle"))
+    // {
+    //     this.metaTabs.setTabNum(0);
+    // }
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);
@@ -91,9 +91,9 @@ CABLES.UI.GUI = function() {
         return _patch;
     };
 
-    this.editor = function() {
-        return _editor;
-    };
+    // this.editor = function() {
+    //     return _editor;
+    // };
 
     this.jobs = function() {
         return _jobs;
@@ -117,7 +117,6 @@ CABLES.UI.GUI = function() {
     this.rendererWidth = 640;
     this.rendererHeight = 360;
 
-    this._ignoreOpenEditor=false;
     
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
@@ -273,74 +272,82 @@ CABLES.UI.GUI = function() {
         {
             this._elMaintab.style.left = iconBarWidth+'px';
             this._elMaintab.style.top = menubarHeight;
-            this._elMaintab.style.height = editorHeight;
+            // this._elMaintab.style.height = editorHeight;
 
             this._elMaintab.style.width = editorWidth;
+            var editorbarHeight = 76;
 
             var editorHeight = patchHeight - 2 - editorbarHeight;
-            // this._elAceEditor.css('height', editorHeight);
+            this._elAceEditor.css('height', editorHeight);
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left= editorWidth + iconBarWidth;
             this._elSplitterMaintabs.style.height= patchHeight - 2;
             this._elSplitterMaintabs.style.width= 5;
             this._elSplitterMaintabs.style.top= menubarHeight;
+            
+            this._elEditorMinimized.style.display = "block";
+            this._elEditorMinimized.style.left = iconBarWidth;
+            this._elEditorMinimized.style.top = patchHeight / 2 - 100;
+
+
         } else {
+            this._elEditorMinimized.style.display = "none";
             this._elSplitterMaintabs.style.display = "none";
         }
 
-        if(showingEditor)
-        {
-            this._elEditorMinimized.style.display = "none";
-            var editWidth=self.editorWidth;
+        // if(showingEditor)
+        // {
+        //     this._elEditorMinimized.style.display = "none";
+        //     var editWidth=self.editorWidth;
             
-            if (editWidth > window.innerWidth - self.rendererWidth -iconBarWidth)
-            {
-                self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
-                this.updateCanvasIconBar();
-            }
+        //     if (editWidth > window.innerWidth - self.rendererWidth -iconBarWidth)
+        //     {
+        //         self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
+        //         this.updateCanvasIconBar();
+        //     }
 
-            var editorbarHeight = 76;
+        //     var editorbarHeight = 76;
 
-            this._elEditor.style.display = "block";
-            this._elEditor.style.left = iconBarWidth;
-            this._elEditor.style.top = menubarHeight;
+        //     this._elEditor.style.display = "block";
+        //     this._elEditor.style.left = iconBarWidth;
+        //     this._elEditor.style.top = menubarHeight;
 
-            this._elEditorBar.css('height', editorbarHeight);
-            this._elEditorBar.css('top',  1);
+        //     this._elEditorBar.css('height', editorbarHeight);
+        //     this._elEditorBar.css('top',  1);
 
-            var editorHeight = patchHeight - 2 - editorbarHeight;
+        //     var editorHeight = patchHeight - 2 - editorbarHeight;
 
-            this._elAceEditor.css('height', editorHeight);
-            this._elAceEditor.css('width', editWidth);
-            $('#ace_editors .ace_tab_content').css('top',  1 + editorbarHeight);
-            this._elAceEditor.css('left', 0);
+        //     this._elAceEditor.css('height', editorHeight);
+        //     this._elAceEditor.css('width', editWidth);
+        //     $('#ace_editors .ace_tab_content').css('top',  1 + editorbarHeight);
+        //     this._elAceEditor.css('left', 0);
 
-            $('#editorfoot').css('width', editWidth);
+        //     $('#editorfoot').css('width', editWidth);
 
-            this._elEditorBar.css('width', editWidth);
+        //     this._elEditorBar.css('width', editWidth);
 
-            this._elSplitterEditor.style.display = "block";
-            this._elSplitterEditor.style.left= editWidth + iconBarWidth;
-            this._elSplitterEditor.style.height= patchHeight - 2;
-            this._elSplitterEditor.style.width= 5;
-            this._elSplitterEditor.style.top= menubarHeight;
+        //     this._elSplitterEditor.style.display = "block";
+        //     this._elSplitterEditor.style.left= editWidth + iconBarWidth;
+        //     this._elSplitterEditor.style.height= patchHeight - 2;
+        //     this._elSplitterEditor.style.width= 5;
+        //     this._elSplitterEditor.style.top= menubarHeight;
 
-            _editor.resize();
+        //     _editor.resize();
             
-        } else {
+        // } else {
 
-            this._elSplitterEditor.style.display = "none";
-            this._elEditor.style.display = "none";
-            editorWidth = 0;
+        //     this._elSplitterEditor.style.display = "none";
+        //     this._elEditor.style.display = "none";
+        //     editorWidth = 0;
 
-            if(_editor.getNumTabs()>0)
-            {
-                this._elEditorMinimized.style.display = "block";
-                this._elEditorMinimized.style.left = iconBarWidth;
-                this._elEditorMinimized.style.top = patchHeight / 2 - 100;
-            }
-            else this._elEditorMinimized.style.display = "none";
-        }
+        //     if(_editor.getNumTabs()>0)
+        //     {
+        //         this._elEditorMinimized.style.display = "block";
+        //         this._elEditorMinimized.style.left = iconBarWidth;
+        //         this._elEditorMinimized.style.top = patchHeight / 2 - 100;
+        //     }
+        //     else this._elEditorMinimized.style.display = "none";
+        // }
 
         this._elIconBar.css('height', window.innerHeight - 60);
         this._elIconBar.css('top', 60);
@@ -1211,7 +1218,8 @@ CABLES.UI.GUI = function() {
         if(CABLES.UI.userSettings.get("fileViewOpen")==true)this.showLibrary();
         if(CABLES.UI.userSettings.get("timelineOpened")==true)this.showTiming();
 
-        CABLES.editorSession.open();
+        setTimeout(function(){ CABLES.editorSession.open(); },100);
+        
         if (CABLES.UI.userSettings.get('showTipps')) CABLES.UI.tipps.show();
 
         console.groupCollapsed('welcome to cables!');
@@ -1586,7 +1594,7 @@ CABLES.UI.GUI = function() {
 
     this.init = function(next)
     {
-        if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
+        // if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
         $('#infoArea').show();
 
         $('#infoArea').hover(

@@ -7,7 +7,7 @@ CABLES.UI.MainTabPanel=function(tabs)
     this._visible=false;
     this._ele=document.getElementById("maintabs");
     this._ele.style.display="none";
-    this._tabs.addTab(new CABLES.UI.Tab("welcome",{"icon":"cables","closable":true}));
+    // this._tabs.addTab(new CABLES.UI.Tab("welcome",{"icon":"cables","closable":true}));
 
     this._tabs.addEventListener("onTabAdded",function(tab)
     {
@@ -32,7 +32,6 @@ CABLES.UI.MainTabPanel=function(tabs)
 
 CABLES.UI.MainTabPanel.prototype.init=function()
 {
-    console.log(CABLES.UI.userSettings.get("maintabsVisible"));
     if(CABLES.UI.userSettings.get("maintabsVisible"))
         this.show();
 }
@@ -47,8 +46,6 @@ CABLES.UI.MainTabPanel.prototype.show=function()
     this._visible=true;
     this._ele.style.display="block";
     CABLES.UI.userSettings.set("maintabsVisible",true);
-
-    console.log(CABLES.UI.userSettings.get("maintabsVisible"));
 }
 
 CABLES.UI.MainTabPanel.prototype.hide=function()
