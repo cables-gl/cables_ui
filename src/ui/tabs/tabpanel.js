@@ -297,6 +297,7 @@ CABLES.UI.TabPanel.prototype.addIframeTab=function(title,url,options)
     iframeTab.toolbarEle.innerHTML='<a href="'+url+'" target="_blank">open this in a new browser window</a>';
 
     this.activateTab(iframeTab.id);
+    gui.maintabPanel.show();
     return iframeTab;
     
 }
