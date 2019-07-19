@@ -152,10 +152,11 @@ CABLES.UI.TabPanel.prototype.updateHtml=function(name)
 CABLES.UI.TabPanel.prototype.activateTabByName=function(name)
 {
     for(var i=0;i<this._tabs.length;i++)
-        if(this._tabs[i].options.name==name) this._tabs[i].activate();
+        if(this._tabs[i].options.name==name) this.activateTab(this._tabs[i].id);
             else this._tabs[i].deactivate();
 
     this.updateHtml();
+
 }
 
 CABLES.UI.TabPanel.prototype.activateTab=function(id)
@@ -164,6 +165,8 @@ CABLES.UI.TabPanel.prototype.activateTab=function(id)
     {
         if(this._tabs[i].id==id)
         {
+            this.emitEvent("onTabActivated",this._tabs[i]);
+
             this._tabs[i].activate();
             CABLES.UI.userSettings.set("tabsLastTitle_"+this._eleId,this._tabs[i].title);
         }

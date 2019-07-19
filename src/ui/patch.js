@@ -2678,9 +2678,10 @@ CABLES.UI.Patch = function(_gui) {
                 });
             else gui.mainTabs.activateTabByName(name);
 
-
+            
 
         if(cb)cb();
+        else gui.maintabPanel.show();
         // gui.showEditor();
         // gui.editor().addTab({
         //     content: port.get() + '',
