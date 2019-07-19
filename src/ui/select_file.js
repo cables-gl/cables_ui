@@ -291,7 +291,7 @@ CABLES.UI.FileSelect = function() {
 
         CABLES.api.clearCache();
 
-        gui.showEditor();
+        // gui.showEditor();
 
         var toolbarHtml = '';
         // if (!readOnly) toolbarHtml += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';

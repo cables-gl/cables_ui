@@ -135,36 +135,36 @@ CABLES.UI.GUI = function() {
     // 
 
     
-    this.toggleEditor = function() {
-        if (showingEditor) self.closeEditor();
-        else self.showEditor();
+    // this.toggleEditor = function() {
+    //     if (showingEditor) self.closeEditor();
+    //     else self.showEditor();
 
-        self.setLayout();
-    };
-
-    // todo remove later
-    this.showEditor = function() {
-        if(this._ignoreOpenEditor)
-        {
-            showingEditor = false;
-            return;
-        } 
-        if (!showingEditor) {
-            showingEditor = true;
-            _editor.focus();
-            this.setLayout();
-            CABLES.UI.userSettings.set("editorMinimized",false);
-        }
-    };
+    //     self.setLayout();
+    // };
 
     // todo remove later
-    this.closeEditor = function() {
-        if (showingEditor) {
-            showingEditor = false;
-            this.setLayout();
-            CABLES.UI.userSettings.set("editorMinimized",true);
-        }
-    };
+    // this.showEditor = function() {
+    //     if(this._ignoreOpenEditor)
+    //     {
+    //         showingEditor = false;
+    //         return;
+    //     } 
+    //     if (!showingEditor) {
+    //         showingEditor = true;
+    //         _editor.focus();
+    //         this.setLayout();
+    //         CABLES.UI.userSettings.set("editorMinimized",false);
+    //     }
+    // };
+
+    // todo remove later
+    // this.closeEditor = function() {
+    //     if (showingEditor) {
+    //         showingEditor = false;
+    //         this.setLayout();
+    //         CABLES.UI.userSettings.set("editorMinimized",true);
+    //     }
+    // };
 
     this.setLayout = function() {
         var perf = CABLES.uiperf.start('gui.setlayout');
@@ -999,14 +999,19 @@ CABLES.UI.GUI = function() {
                         }
                     break;
                 case 83: // s - save
-                        if (e.metaKey || e.ctrlKey) {
+                        if (e.metaKey || e.ctrlKey)
+                        {
                             e.preventDefault();
                             if (!e.shiftKey) {
                                 if ($('#patch').is(":focus")) {
                                     CABLES.CMD.PATCH.save();
                                 } else
-                                if (showingEditor) {
-                                    self.editor().save();
+                                if (gui.mainTabs.getSaveButton()) {
+                                    // self.editor().save();
+                                    console.log("found savebutton",gui.mainTabs.getSaveButton());
+
+                                    gui.mainTabs.getSaveButton().cb();
+                                    //gui.mainTabs.editorSave();
                                 } else {
                                     CABLES.CMD.PATCH.save();
                                 }
@@ -1079,6 +1084,8 @@ CABLES.UI.GUI = function() {
         else
         {
             userOpsLoaded=true;
+
+            
             cb();
         }
 
@@ -1577,7 +1584,7 @@ CABLES.UI.GUI = function() {
         }
     };
 
-    this.init = function()
+    this.init = function(next)
     {
         if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
         $('#infoArea').show();
@@ -1656,17 +1663,7 @@ CABLES.UI.GUI = function() {
         gui.replaceNavShortcuts();
     };
 
-    CABLES.sandbox.loadUser(
-        function(user)
-        {
-            self.user = user;
-            $('#loggedout').hide();
-            $('#loggedin').show();
-            $('#username').html(user.usernameLowercase);
-            incrementStartup();
-            self.serverOps = new CABLES.UI.ServerOps(self);
-            logStartup('User Data loaded');
-        });
+
 };
 
 CABLES.UI.GUI.prototype.updateTheme = function () {
@@ -1706,36 +1703,57 @@ function startUi(event)
 
     logStartup('Init UI');
     
-    CABLES.UI.initHandleBarsHelper();
 
-    $("#patch").bind("contextmenu", function(e) {
-        if (e.preventDefault) e.preventDefault();
-    });
+
 
     window.gui = new CABLES.UI.GUI();
 
-    
-    gui.init();
-    gui.checkIdle();
 
-    gui.bind(function() {
-        gui.metaCode().init();
-        gui.metaDoc.init();
-        gui.opSelect().reload();
-        // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-        gui.showWelcomeNotifications();
 
-        gui.waitToShowUI();
-        gui.maintabPanel.init();
-        gui.setLayout();
-        gui.patch().fixTitlePositions();
-        gui.opSelect().prepare();
-        gui.opSelect().search();
+    CABLES.sandbox.loadUser(
+        function(user)
+        {
+            gui.user = user;
+            $('#loggedout').hide();
+            $('#loggedin').show();
+            $('#username').html(user.usernameLowercase);
+            incrementStartup();
+            gui.serverOps = new CABLES.UI.ServerOps(gui);
+            logStartup('User Data loaded');
+            
 
-        // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
-        if(!gui.user.introCompleted)gui.introduction().showIntroduction();
+            CABLES.UI.initHandleBarsHelper();
+
+            $("#patch").bind("contextmenu", function(e) {
+                if (e.preventDefault) e.preventDefault();
+            });
         
-    });
+
+
+
+            gui.init();
+            gui.checkIdle();
+
+            gui.bind(function() {
+                gui.metaCode().init();
+                gui.metaDoc.init();
+                gui.opSelect().reload();
+                // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+                gui.showWelcomeNotifications();
+
+                gui.waitToShowUI();
+                gui.maintabPanel.init();
+                gui.setLayout();
+                gui.patch().fixTitlePositions();
+                gui.opSelect().prepare();
+                gui.opSelect().search();
+
+                // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
+                if(!gui.user.introCompleted)gui.introduction().showIntroduction();
+                
+            });
+        });
+
 
     $('#glcanvas').on("focus", function() {
         gui.showCanvasModal(true);

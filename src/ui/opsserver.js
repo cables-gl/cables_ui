@@ -1,7 +1,6 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-
 // todo: merge serverops and opdocs.js ....
 
 CABLES.UI.ServerOps = function(gui) {
@@ -319,35 +318,63 @@ CABLES.UI.ServerOps = function(gui) {
                 
                 gui.jobs().finish('load_attachment_'+attachmentname);
 
-                gui.showEditor();
-                gui.editor().addTab({
-                    content: content,
-                    title: attachmentname,
-                    syntax: syntax,
-                    id:CABLES.Editor.sanitizeId('editattach_'+opname+attachmentname),
-                    editorObj: editorObj,
-                    toolbarHtml: toolbarHtml,
-                    onSave: function(setStatus, content) {
-                        CABLES.api.post(
-                            'op/' + opname + '/attachment/' + attachmentname, {
-                                content: content
-                            },
-                            function(res) {
-                                setStatus('saved');
-                                gui.serverOps.execute( opname );
-                            },
-                            function(res) {
-                                setStatus('ERROR: not saved - '+res.msg);
-                                console.log('err res', res);
-                            }
-                        );
-                    },
-                    onClose: function(which) {
-                        if(which.editorObj && which.editorObj.name)
-                            CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                    },
+                new CABLES.UI.EditorTab(
+                    {
+                        "title":attachmentname,
+                        "content":content,
+                        "syntax": syntax,
+                        "editorObj":editorObj,
+                        "onClose":function(which)
+                        {
+                            console.log('close!!! missing infos...');
+                            if(which.editorObj && which.editorObj.name)
+                                CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                        },
+                        "onSave":function(setStatus, content) {
+                            CABLES.api.post(
+                                'op/' + opname + '/attachment/' + attachmentname, {
+                                    content: content
+                                },
+                                function(res) {
+                                    setStatus('saved');
+                                    gui.serverOps.execute( opname );
+                                },
+                                function(res) {
+                                    setStatus('ERROR: not saved - '+res.msg);
+                                    console.log('err res', res);
+                                }
+                            );}
+                    });
 
-                });
+                // gui.showEditor();
+                // gui.editor().addTab({
+                //     content: content,
+                //     title: attachmentname,
+                //     syntax: syntax,
+                //     id:CABLES.Editor.sanitizeId('editattach_'+opname+attachmentname),
+                //     editorObj: editorObj,
+                //     toolbarHtml: toolbarHtml,
+                //     onSave: function(setStatus, content) {
+                //         CABLES.api.post(
+                //             'op/' + opname + '/attachment/' + attachmentname, {
+                //                 content: content
+                //             },
+                //             function(res) {
+                //                 setStatus('saved');
+                //                 gui.serverOps.execute( opname );
+                //             },
+                //             function(res) {
+                //                 setStatus('ERROR: not saved - '+res.msg);
+                //                 console.log('err res', res);
+                //             }
+                //         );
+                //     },
+                //     onClose: function(which) {
+                //         if(which.editorObj && which.editorObj.name)
+                //             CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                //     },
+
+                // });
             },function(err)
             {
                 gui.jobs().finish('load_attachment_'+attachmentname);
@@ -371,12 +398,14 @@ CABLES.UI.ServerOps = function(gui) {
         CABLES.api.get(
             'ops/' + opname,
             function(res) {
-                gui.showEditor();
-                CABLES.UI.MODAL.hide();
+                // gui.showEditor();
+                // CABLES.UI.MODAL.hide();
+
+                console.log("loaded opcode",opname);
 
                 var editorObj=CABLES.editorSession.rememberOpenEditor("op",opname);
 
-                var html = '';
+                // var html = '';
                 // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
                 var save = null;
@@ -412,21 +441,41 @@ CABLES.UI.ServerOps = function(gui) {
 
                 var parts = opname.split(".");
                 var title = 'Op ' + parts[parts.length - 1];
-                gui.editor().addTab({
-                    content: res.code,
-                    title: title,
-                    id:CABLES.Editor.sanitizeId('editop_'+opname),
-                    editorObj: editorObj,
-                    opname: opname,
-                    syntax: 'js',
-                    readOnly: readOnly,
-                    toolbarHtml: html,
-                    onClose: function(which)
+                // gui.editor().addTab({
+                //     content: res.code,
+                //     title: title,
+                //     id:CABLES.Editor.sanitizeId('editop_'+opname),
+                //     editorObj: editorObj,
+                //     opname: opname,
+                //     syntax: 'js',
+                //     readOnly: readOnly,
+                //     toolbarHtml: html,
+                //     onClose: function(which)
+                //     {
+                //         CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                //     },
+                //     onSave: save
+                // });
+
+                // gui.mainTabs.addTag(new )
+
+                new CABLES.UI.EditorTab(
                     {
-                        CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                    },
-                    onSave: save
-                });
+                        "title":title,
+                        "content":res.code,
+                        "syntax": 'js',
+                        "onSave":save,
+                        "editorObj":editorObj,
+                        "onClose":function(which)
+                        {
+                            console.log('close!!! missing infos...');
+                            CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                        }
+                    });
+
+
+
+
 
             });
 
