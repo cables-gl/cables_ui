@@ -346,13 +346,13 @@ CABLES.UI.Patch = function(_gui) {
         }
     };
 
-    this.resolveSubpatch = function() {
-        if (currentSubPatch == 0) return;
-        for (var i in self.ops)
-            self.ops[i].op.uiAttribs.subPatch = 0;
+    // this.resolveSubpatch = function() {
+    //     if (currentSubPatch == 0) return;
+    //     for (var i in self.ops)
+    //         self.ops[i].op.uiAttribs.subPatch = 0;
 
-        this.setCurrentSubPatch(0);
-    };
+    //     this.setCurrentSubPatch(0);
+    // };
 
     this.createSubPatchFromSelection = function() {
         if (selectedOps.length == 1 && selectedOps[0].op.objName == CABLES.UI.OPNAME_SUBPATCH) {
