@@ -44,6 +44,7 @@ CABLES.UI.MetaCode=function(tabs)
 
         this._tab.html('<div class="loading" style="width:40px;height:40px;"></div>');
 
+
         if(window.process && window.process.versions['electron']) return;
         if(op)
         {
@@ -87,7 +88,6 @@ CABLES.UI.MetaCode=function(tabs)
                         opserialized:op.getSerialized()
                     });
                     this._tab.html(html);
-
 
                 }.bind(this),function()
             {

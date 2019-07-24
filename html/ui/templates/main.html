@@ -139,16 +139,9 @@
                     <li class="divide"></li>
 
                     <li class="nav_patch_settings">Settings</li>
-                    <li class="nav_patch_contributors" >Manage Contributors</li>
                     <li class="divide"></li>
                     <li class="nav_uploadfile">Upload file</li>
                     <li class="divide"></li>
-
-                    
-
-                    <li class="divide"></li>
-                    <li class="nav_patch_profile">Profiler</li>
-                    <li class="nav_patch_resolve_subpatch">Resolve Subpatch</li>
 
                     <li class="divide"></li>
                     <li class="nav_patch_clear">Clear</li>
@@ -175,7 +168,7 @@
                 <ul class="nav-submenu">
                     <li class="nav_files">Files</li>
                     <li class="nav_timeline">Timeline</li>
-                    <li class="nav_editor">Editor</li>
+                    <li class="nav_profiler">Profiler</li>
                 </ul>
             </li>
 
@@ -193,6 +186,9 @@
                     <li class="nav_changelog">View Changelog</li>
                 </ul>
             </li>
+
+
+
 
             <li >
                 <section id="username">???</section>
@@ -231,6 +227,20 @@
             </li>
 
 
+            <li class="nav-item-help">
+                <b id="patchname">my new patch</b>
+                <ul class="nav-submenu">
+                    <li class="nav_patch_settings">Settings</li>
+                    <li class="nav_viewProjectLink viewProjectLink">Open in new window</li>
+
+                    <li class="divide"></li>
+                    <li class="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li>
+                    <li class="nav_patch_saveas">Save As</li>
+                    <li class="nav_patch_export">Export</li>
+                </ul>
+            </li>
+
+
         </ul>
     </nav>
 
@@ -264,14 +274,14 @@
     </div> -->
 
 
-    <div id="loggedin">
-        <div class="info button projectname fa fa-cog" onclick="gui.showSettings();" data-infotext="settings"></div>
-        <a target="_blank" class="info viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;" data-infotext="open_new_window"></a>
-    </div>
+    <!-- <div id="loggedin"> -->
+        <!-- <div class="info button projectname fa fa-cog" onclick="gui.showSettings();" data-infotext="settings"></div> -->
+        <!-- <a target="_blank" class="info viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;" data-infotext="open_new_window"></a> -->
+    <!-- </div> -->
 
-    <div id="loggedout">
-        <div id="button username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a>
-    </div>
+    <!-- <div id="loggedout"> -->
+        <!-- <div id="button username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a> -->
+    <!-- </div> -->
 
 </div>
 
