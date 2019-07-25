@@ -18,8 +18,6 @@ CABLES.UI.FileSelect = function() {
             if(data && data.fileid) this.editFile(data.fileid,name);
         }.bind(this));
 
-
-
     this.setFile = function(_id, _url, fileid) {
         $(_id).val(_url);
         $(_id).trigger('input');
