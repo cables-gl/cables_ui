@@ -656,7 +656,11 @@ CABLES.UI.GUI = function() {
     };
 
     this.showLibrary = function(inputId, filterType, opid) {
+        
         CABLES.UI.fileSelect.show(inputId, filterType, opid);
+
+
+
     };
 
     this.setProjectName = function(name) {
@@ -893,7 +897,11 @@ CABLES.UI.GUI = function() {
             self.serverOps.createDialog();
         });
 
+        
         $('.nav_files').bind("click", function(event) {
+            CABLES.CMD.UI.toggleFiles();
+        });
+        $('.nav_filemanager').bind("click", function(event) {
             CABLES.CMD.UI.toggleFiles();
         });
         $('.nav_timeline').bind("click", function(event) {

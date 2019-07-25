@@ -120,13 +120,12 @@
     }
 }
 
-
 #maintabs
 {
     background-color:$background-color-dark;
     margin: 0;
     // background-color: blue;
-    z-index: 2000;
+    z-index: $z-index-editor;
     position: absolute;
     // top: 50;
     // bottom: 0;
