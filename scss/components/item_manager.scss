@@ -1,0 +1,49 @@
+.item_manager
+{
+
+
+    .item-container
+    {
+        width:150px;
+        height:150px;
+        text-align:center;
+        float:left;
+        padding:10px;
+        margin-right:5px;
+        margin-top:5px;
+        border-radius:10px;
+        overflow: hidden;
+        border:2px solid transparent;
+
+        &:hover
+        {
+            background-color: #444;
+            // border:2px solid var(--text-color-textOpselect);
+        }
+        
+        +.selected
+        {
+            border:2px solid var(--color-special);
+        }
+    }
+
+    .preview
+    {
+        background-repeat:no-repeat;
+        background-size:100% auto;
+        width:100px;
+        height:100px;
+        background-position:center center;
+        margin-left: 5%;
+    }
+
+
+    .filemanager-detail-element
+    {
+        float:left;
+        width:33%;
+    }
+}
+
+
+

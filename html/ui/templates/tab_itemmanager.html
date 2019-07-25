@@ -1,0 +1,92 @@
+
+<script id="tab_itemmanager" type="text/x-handlebars-template">
+    <div id="filemanagercontainer" style="height:99%">
+        <div class="filelistcontainer" style="height:calc(100% - 200px);;overflow-y:auto;">
+            {{#each items}}
+                <div class="item-container {{#if selected}} selected {{/if}}" id="item{{id}}">
+                    <div>
+                        {{#if preview}}
+                            <div class="preview" style="width:90%;height:90%;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
+                                <div style="background-image:url({{preview}});width:100%;height:100%;background-size:100%;background-repeat:no-repeat;background-position:0 center;">
+                                </div>
+                            </div>
+                        {{else}}
+                            <div class="preview text-center" style="width:90%;height:90%;background-color:#555;" >
+                                <br/><br/>
+                                <span class="icon icon-{{icon}} icon-4x"></span>
+                            </div>
+                        {{/if}}
+                    </div>
+                    <span>{{title}}</span>
+                </div>
+            {{/each}}
+            <div style="clear:both"></div>
+        </div>
+
+        <div id="item_details" style="width:100%;height:200px;overflow-y:auto;">this is the preview...</div>
+    </div>
+
+</script>
+
+
+<script id="tab_filemanager_details" type="text/x-handlebars-template">
+
+    <div class="filemanager-detail-element">
+
+        {{#if file.imgPreview}}
+            <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}" style="height:100%;max-width:100%;"/>
+        {{else}}
+            no preview!!
+        {{/if}}
+
+    </div>
+    <div class="filemanager-detail-element">
+
+        <a class="tt icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenuFile(this,'{{file.fileDb._id}}','{{file.fileDb.fileName}}','{{file.type}}');" data-tt="options"></a>
+        {{file.fileDb.fileName}}
+
+        {{#if file.imgSizeWidth  }}
+            {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} --> - 
+        {{/if}}
+    
+        {{file.sizeReadable}} - {{file.fileDb.type}}
+    
+        <br/>changed {{file.readableDateSince}} <br/>
+        {{file.readableDate}}
+    
+    </div>
+    <div class="filemanager-detail-element">
+        
+            {{#if file.converters}}
+                <hr/>
+                File Ops
+                <br/>
+                {{#each file.ops}}
+                    <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
+                    <br/><br/>
+                {{/each}}
+            {{/if}}
+        
+            {{#if file.converters}}
+                <hr/>
+                File Convertes
+                <br/>
+                {{#each file.converters}}
+                    <a class="button fa fa-retweet" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');">&nbsp;{{ name }}</a>
+                    <br/>
+                {{/each}}
+                <br/><br/>
+            {{/if}}
+        
+            <hr/>
+            Tools
+            <br/>
+            <a class="button fa fa-search" onclick="gui.find().show('{{file.fileDb.fileName}}')">&nbsp;Search ops</a>
+            <br/><br/>
+
+    </div>
+    <div style="clear:both;"></div>
+
+
+
+</script>

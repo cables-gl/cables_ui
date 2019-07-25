@@ -271,14 +271,14 @@ CABLES.UI.GUI = function() {
 
         if(this.maintabPanel.isVisible())
         {
+            var editorbarHeight = 76;
+            const editorHeight = patchHeight - 2 - editorbarHeight;
+
             this._elMaintab.style.left = iconBarWidth+'px';
             this._elMaintab.style.top = menubarHeight;
-            // this._elMaintab.style.height = editorHeight;
-
+            this._elMaintab.style.height = (editorHeight-2)+"px";
             this._elMaintab.style.width = editorWidth;
-            var editorbarHeight = 76;
 
-            var editorHeight = patchHeight - 2 - editorbarHeight;
             this._elAceEditor.css('height', editorHeight);
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left= editorWidth + iconBarWidth;
@@ -911,7 +911,8 @@ CABLES.UI.GUI = function() {
             CABLES.CMD.UI.toggleFiles();
         });
         $('.nav_filemanager').bind("click", function(event) {
-            CABLES.CMD.UI.toggleFiles();
+            // CABLES.CMD.UI.toggleFiles();
+            new CABLES.UI.FileManager();
         });
         $('.nav_timeline').bind("click", function(event) {
             CABLES.CMD.UI.toggleTimeline();
