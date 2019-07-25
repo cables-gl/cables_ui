@@ -42,7 +42,7 @@ CABLES.UI.GUI = function() {
     var savedState = true;
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
     var metaCode = new CABLES.UI.MetaCode(this.metaTabs);
-    this.profiler = new CABLES.UI.Profiler(this.metaTabs);
+    // this.profiler = new CABLES.UI.Profiler(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs);
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.variables = new CABLES.UI.MetaVars(this.metaTabs);
@@ -664,7 +664,7 @@ CABLES.UI.GUI = function() {
     };
 
     this.setProjectName = function(name) {
-        $('.projectname').html('&nbsp;&nbsp;' + name);
+        $('#patchname').html(name);
     };
 
     this.createProject = function() {
@@ -801,6 +801,15 @@ CABLES.UI.GUI = function() {
             self.cycleRendererSize();
         });
 
+        $('.nav_viewProjectLink').bind("click", function(event) {
+            
+            var url=$('.viewProjectLink').attr('href');
+            console.log("url",url);
+            var win = window.open(url, '_blank');
+            win.focus();
+
+        });
+
         $('.nav_patch_save').bind("click", function(event) {
             CABLES.CMD.PATCH.save();
         });
@@ -838,9 +847,9 @@ CABLES.UI.GUI = function() {
             var win = window.open('https://cables.gl/projects', '_blank');
             win.focus();
         });
-        $('.nav_patch_resolve_subpatch').bind("click", function(event) {
-            self.patch().resolveSubpatch();
-        });
+        // $('.nav_patch_resolve_subpatch').bind("click", function(event) {
+        //     self.patch().resolveSubpatch();
+        // });
 
         $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
         $('.nav_changelog').bind("click", CABLES.CMD.UI.showChangelog);
@@ -906,6 +915,10 @@ CABLES.UI.GUI = function() {
         });
         $('.nav_timeline').bind("click", function(event) {
             CABLES.CMD.UI.toggleTimeline();
+        });
+        $('.nav_profiler').bind("click", function(event) {
+            new CABLES.UI.Profiler(gui.mainTabs);
+            gui.maintabPanel.show();
         });
         $('.nav_editor').bind("click", function(event) {
             CABLES.CMD.UI.toggleEditor();
@@ -1354,10 +1367,10 @@ CABLES.UI.GUI = function() {
     };
 
 
-    this.showProfiler = function() {
-        if (!self.profiler) self.profiler = new CABLES.UI.Profiler();
-        self.profiler.show();
-    };
+    // this.showProfiler = function() {
+    //     if (!self.profiler) self.profiler = new CABLES.UI.Profiler();
+    //     self.profiler.show();
+    // };
 
     this.showMetaPaco = function() {
         this.metaPaco.show();
@@ -1537,6 +1550,9 @@ CABLES.UI.GUI = function() {
             
             favIconLink.href = '/favicon/favicon_orange.ico';
             savedState = false;
+
+            $('#patchname').addClass("warning");
+
     
             window.onbeforeunload = function(event) {
     
@@ -1560,6 +1576,7 @@ CABLES.UI.GUI = function() {
     this.setStateSaved = function() {
         savedState = true;
         favIconLink.href = '/favicon/favicon.ico';
+        $('#patchname').removeClass("warning");
 
         var title='';
         if(CABLES.isDevEnv())title="DEV ";
@@ -1649,21 +1666,21 @@ CABLES.UI.GUI = function() {
             CABLES.UI.hideInfo();
         });
         /* Tab pane on the right */
-        $('.tab_files').hover(function(e) {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_files);
-        }, function() {
-            CABLES.UI.hideInfo();
-        });
-        $('.tab_profiler').hover(function(e) {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_profiler);
-        }, function() {
-            CABLES.UI.hideInfo();
-        });
-        $('.tab_screen').hover(function(e) {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_screen);
-        }, function() {
-            CABLES.UI.hideInfo();
-        });
+        // $('.tab_files').hover(function(e) {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_files);
+        // }, function() {
+        //     CABLES.UI.hideInfo();
+        // });
+        // $('.tab_profiler').hover(function(e) {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_profiler);
+        // }, function() {
+        //     CABLES.UI.hideInfo();
+        // });
+        // $('.tab_screen').hover(function(e) {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_screen);
+        // }, function() {
+        //     CABLES.UI.hideInfo();
+        // });
         $('.download_screenshot').hover(function(e) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.download_screenshot);
         }, function() {

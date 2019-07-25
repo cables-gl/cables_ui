@@ -33,6 +33,11 @@
     overflow: hidden;
     display:none;
 
+    .warning
+    {
+        color:var(--color-warning);
+    }
+
 	li
 	{
 		color:$color-menubar-text;

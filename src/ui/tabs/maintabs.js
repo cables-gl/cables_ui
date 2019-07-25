@@ -50,11 +50,20 @@ CABLES.UI.MainTabPanel.prototype.isVisible=function()
 
 CABLES.UI.MainTabPanel.prototype.show=function()
 {
+
+    if(this._tabs.getNumTabs()==0)
+    {
+        CABLES.UI.userSettings.set("maintabsVisible",false);
+        this.hide();
+        return;
+    }
     this._visible=true;
     this._ele.style.display="block";
     document.getElementById("editorminimized").style.display="none";
     CABLES.UI.userSettings.set("maintabsVisible",true);
     gui.setLayout();
+
+
 }
 
 CABLES.UI.MainTabPanel.prototype.hide=function()
