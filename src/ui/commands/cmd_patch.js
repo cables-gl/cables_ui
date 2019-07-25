@@ -244,8 +244,10 @@ CABLES.CMD.PATCH.editOp=function()
 	{
 		for(var i=0;i<selops.length;i++)
 		{
-			gui.serverOps.edit(selops[i].op.objName);
-			gui.maintabPanel.show();
+			gui.serverOps.edit(selops[i].op.objName,false,function()
+			{
+				gui.maintabPanel.show();
+			});
 		}
 	}
 	else

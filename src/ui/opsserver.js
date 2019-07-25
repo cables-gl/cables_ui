@@ -402,6 +402,9 @@ CABLES.UI.ServerOps = function(gui) {
             return;
         }
 
+        gui.jobs().start({id:'load_opcode_'+opname,title:'loading op code '+opname});
+
+
         CABLES.api.get(
             'ops/' + opname,
             function(res) {
@@ -409,6 +412,7 @@ CABLES.UI.ServerOps = function(gui) {
                 // CABLES.UI.MODAL.hide();
 
                 var editorObj=CABLES.editorSession.rememberOpenEditor("op",opname);
+                gui.jobs().finish('load_opcode_'+opname);
 
                 // var html = '';
                 // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
