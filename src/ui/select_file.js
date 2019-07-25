@@ -113,7 +113,10 @@ CABLES.UI.FileSelect = function() {
 
         var filter='';
 
-        if(_opid) filter+='click a file to apply to op '+gui.scene().getOpById(this.currentOpid).objName+' ';
+        if(_opid)
+        {
+            filter+='click a file to apply to op '+gui.scene().getOpById(this.currentOpid).objName+' ';
+        } 
         if(_filterType)  filter+=" - filter: "+_filterType;
 
         this.setView(CABLES.UI.userSettings.get("fileListClass")||'icon');
@@ -126,7 +129,8 @@ CABLES.UI.FileSelect = function() {
         inputId = _inputId;
         filterType = _filterType;
 
-        this.load();
+        this.load(_opid);
+        
 
         var val = $(_inputId).val();
         this.showPreview(val);
@@ -134,7 +138,8 @@ CABLES.UI.FileSelect = function() {
     };
 
     this.refresh =
-    this.load = function() {
+    this.load = function(opid)
+    {
         if (currentTab === '') {
             this.setTab('projectfiles');
             return;
@@ -155,7 +160,8 @@ CABLES.UI.FileSelect = function() {
             });
             if(self._viewClass=='list')html+='<table class="table">';
 
-            for (var i in files) {
+            for (var i in files)
+            {
                 if (!files[i]) continue;
 
                 if(files[i].t=='image')files[i].icon="file-image-o";
@@ -193,6 +199,8 @@ CABLES.UI.FileSelect = function() {
 
             }
             if(self._viewClass=='list')html+='</table>';
+
+    
             return html;
         }
 
@@ -200,7 +208,13 @@ CABLES.UI.FileSelect = function() {
             setTimeout(function() {
                 var html = getFileList(filterType, files);
 
+                if(opid && files.length==0)
+                {
+                    console.log("switch to lib tab!");
+                    CABLES.UI.fileSelect.setTab('library');
 
+                }
+    
                 $('#lib_files').html(html);
 
             }, 0);
