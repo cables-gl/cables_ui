@@ -23,7 +23,7 @@
             <div style="clear:both"></div>
         </div>
 
-        <div id="item_details" style="width:100%;height:200px;overflow-y:auto;">this is the preview...</div>
+        <div id="item_details" style="width:100%;height:200px;overflow-y:auto;padding:10px;background-color:var(--color-03)">this is the preview...</div>
     </div>
 
 </script>
@@ -41,19 +41,19 @@
 
     </div>
     <div class="filemanager-detail-element">
+        <div style="padding:10px;">
+            <a class="tt icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenuFile(this,'{{file.fileDb._id}}','{{file.fileDb.fileName}}','{{file.type}}');" data-tt="options"></a>
+            {{file.fileDb.fileName}}
 
-        <a class="tt icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenuFile(this,'{{file.fileDb._id}}','{{file.fileDb.fileName}}','{{file.type}}');" data-tt="options"></a>
-        {{file.fileDb.fileName}}
-
-        {{#if file.imgSizeWidth  }}
-            {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} --> - 
-        {{/if}}
-    
-        {{file.sizeReadable}} - {{file.fileDb.type}}
-    
-        <br/>changed {{file.readableDateSince}} <br/>
-        {{file.readableDate}}
-    
+            {{#if file.imgSizeWidth  }}
+                {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} --> - 
+            {{/if}}
+        
+            {{file.sizeReadable}} - {{file.fileDb.type}}
+        
+            <br/>changed {{file.readableDateSince}} <br/>
+            {{file.readableDate}}
+        </div>
     </div>
     <div class="filemanager-detail-element">
         
