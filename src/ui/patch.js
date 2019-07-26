@@ -46,6 +46,7 @@ CABLES.UI.Patch = function(_gui) {
     this.currentPatchBounds=null;
     // var zoom=null;
     
+    this._oldOpParamsId=null;
 
     var pastedupdateTimeout=null;
 
@@ -2498,6 +2499,7 @@ CABLES.UI.Patch = function(_gui) {
 
     this.showProjectParams = function()
     {
+        if(gui.fileManager)gui.fileManager.setFilePort(null);
         gui.texturePreview().pressedEscape();
         var perf = CABLES.uiperf.start('showProjectParams');
 
@@ -2733,6 +2735,11 @@ CABLES.UI.Patch = function(_gui) {
 
     this._showOpParams = function(op) {
         if(!op)return;
+        if(op.id!=self._oldOpParamsId)
+        {
+            if(gui.fileManager)gui.fileManager.setFilePort(null);
+            self._oldOpParamsId=op.id;
+        }
         var perf = CABLES.uiperf.start('_showOpParams');
         var perfHtml = CABLES.uiperf.start('_showOpParamsHTML');
         
