@@ -179,7 +179,7 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
 
         if(this._filePortEle)
         {
-            console.log("SET port");
+            // console.log("SET port");
             this._filePortEle.value=detailItems[0].p;
             var event = document.createEvent('Event');
             event.initEvent('input', true, true);
