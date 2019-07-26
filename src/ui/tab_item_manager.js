@@ -125,14 +125,13 @@ CABLES.UI.ItemManager.prototype.setItems=function(items)
     this._items=items;
     this.updateHtml();
 
-    console.log(items);
     for(var i=0;i<this._items.length;i++)
     {
         const id=this._items[i].id;
         const item=this._items[i];
-
         const ele=document.getElementById("item"+id);
-        if(ele)ele.addEventListener("click",
+
+        if(ele) ele.addEventListener("click",
             function(e)
             {
                 if(!e.shiftKey)
