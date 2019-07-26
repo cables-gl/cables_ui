@@ -4,60 +4,17 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.FileManager=function(cb)
 {
     this._manager=new CABLES.UI.ItemManager("Files",gui.mainTabs);
-
     this._filePortEle=null;
+    
 
     gui.maintabPanel.show();
 
-    var which='projectfiles';
-
-    if (which == 'projectfiles') {
-        assetPath = '/assets/' + gui.patch().getCurrentProject()._id;
-        apiPath = 'project/' + gui.patch().getCurrentProject()._id + '/files/';
-    }
-    if (which == 'library') {
-        assetPath = '/assets/library/';
-        apiPath = 'library/';
-    }
+    this.reload(cb);
 
     this._manager.addEventListener("onItemsSelected",function(items)
     {
         this.setDetail(items);
     }.bind(this));
-
-    CABLES.api.get(apiPath, 
-        function(files)
-        {
-            var items=[];
-
-            for(var i=0;i<files.length;i++)
-            {
-                var file=files[i];
-                var item={
-                    "title":file.name,
-                    "id":file._id,
-                    "p":file.p
-                };
-
-                item.icon="file";
-                
-                if(file.t=='SVG') item.preview=file.p;
-                else if(file.t=='image') item.preview=file.p;
-                else if(file.t=='3d json') item.icon="cube";
-                else if(file.t=='video') item.icon="film";
-                else if(file.t=='audio') item.icon="headphones";
-                
-                // if(Math.random()>0.5)item.selected=true;
-                items.push(item);
-                
-            }
-
-            this._manager.setItems(items);
-            if(cb)cb();
-
-        }.bind(this));
-
-
 
 };
 
@@ -80,20 +37,109 @@ CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
     this.updateHeader();
 }
 
-CABLES.UI.FileManager.prototype.selectFile=function(filename)
+
+CABLES.UI.FileManager.prototype.reload=function(cb)
+{
+    function createItem(items,file)
+    {
+        var item={
+            "title":file.n,
+            "id":file._id||'lib'+CABLES.uuid(),
+            "p":file.p
+        };
+
+        item.icon="file";
+        
+        if(file.t=='SVG') item.preview=file.p;
+        else if(file.t=='image') item.preview=file.p;
+        else if(file.t=='3d json') item.icon="cube";
+        else if(file.t=='video') item.icon="film";
+        else if(file.t=='audio') item.icon="headphones";
+        else if(file.t=='dir') item.divider=file.n;
+        
+        // if(Math.random()>0.5)item.selected=true;
+        items.push(item);
+        if(file.c) for(var i=0;i<file.c.length;i++) createItem(items,file.c[i]);
+    }
+
+
+    this._manager.clear();
+    var assetPath = '/assets/library/';
+    var apiPath = 'library/';
+
+    if (this._fileSource == 'patch')
+    {
+        assetPath = '/assets/' + gui.patch().getCurrentProject()._id;
+        apiPath = 'project/' + gui.patch().getCurrentProject()._id + '/files/';
+    }
+
+    CABLES.api.get(apiPath, 
+        function(files)
+        {
+            var items=[];
+
+            for(var i=0;i<files.length;i++)
+            {
+                var file=files[i];
+
+                createItem(items,file);
+                
+            }
+
+            this._manager.setItems(items);
+            this.updateHeader();
+            if(cb)cb();
+
+        }.bind(this));
+
+}
+
+CABLES.UI.FileManager.prototype.setSource=function(s,cb)
+{
+    this._fileSource=s;
+    this.reload(cb);
+    this.updateHeader();
+}
+
+CABLES.UI.FileManager.prototype._selectFile=function(filename)
 {
     this._manager.unselectAll();
-    var item=this._manager.getItemByTitleContains(filename);
+    const item=this._manager.getItemByTitleContains(filename);
     if(!item)return;
     this._manager.selectItemById(item.id);
-    document.getElementById("item"+item.id).scrollIntoView();
+    const el=document.getElementById("item"+item.id)
+    if(el)el.scrollIntoView();
+
+}
+
+CABLES.UI.FileManager.prototype.selectFile=function(filename)
+{
+    console.log('--------------------',filename.indexOf(gui.patch().getCurrentProject()._id) );
+
+    if(this._fileSource!="patch") 
+    {
+        if(filename.indexOf(gui.patch().getCurrentProject()._id)>-1)
+            this.setSource("patch",function()
+            {
+                this._selectFile(filename);
+            }.bind(this));
+    }
+    else 
+    {
+        console.log("egal");
+        this._selectFile(filename);
+    }
+        
+
+    
 }
 
 CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
 {
     
     const html = CABLES.UI.getHandleBarHtml('filemanager_header', {
-        "fileSelectOp": this._filePortOp
+        "fileSelectOp": this._filePortOp,
+        "source":this._fileSource
     });
     $('#itemmanager_header').html(html);
 
@@ -123,14 +169,9 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
                     CABLES.api.delete('project/'+gui.patch().getCurrentProject()._id+'/file/'+r.fileDb._id,null,
                     function(r)
                     {
-                        if(r.success)
-                        {
-                            this._manager.removeItem(itemId);
-                        }
-                        else
-                        {
-                            CABLES.UI.notifyError("error: could not delete file");
-                        }
+                        if(r.success) this._manager.removeItem(itemId);
+                            else CABLES.UI.notifyError("error: could not delete file");
+
                     }.bind(this));
                 }.bind(this));
             }.bind(this));
@@ -163,13 +204,18 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
     
     else if(detailItems.length>1)
     {
-        html='<center><br/><br/>'+detailItems.length+' files selected<br/><br/><br/><a class="button" id="filesdeletmulti">delete '+detailItems.length+' files</a></center>';
+        html='<center><br/><br/>'+detailItems.length+' files selected<br/><br/><br/>';
+        if(this._fileSource=="patch") html+='<a class="button" id="filesdeletmulti">delete '+detailItems.length+' files</a>';
+        html+='</center>';
+
+
         document.getElementById("item_details").innerHTML=html;
 
-        document.getElementById("filesdeletmulti").addEventListener("click",function(e)
+        const elDelMulti=document.getElementById("filesdeletmulti");
+        if(elDelMulti) elDelMulti.addEventListener("click",function(e)
         {
             console.log(detailItems);
-            
+
             this._manager.unselectAll();
 
             for(var i=0;i<detailItems.length;i++)

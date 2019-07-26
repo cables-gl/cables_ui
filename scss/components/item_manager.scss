@@ -43,6 +43,18 @@
         float:left;
         width:33%;
     }
+
+    .fileManagerSource
+    {
+        padding-left:15px;
+        padding-right:15px;
+        padding:5px;
+        border-bottom:1px solid transparent;
+    }
+    .activeFileManagerSource
+    {
+        border-bottom:1px solid var(--color-special);
+    }
 }
 
 

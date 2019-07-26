@@ -658,7 +658,11 @@ CABLES.UI.GUI = function() {
 
     this.showFileManager=function(cb)
     {
-        if(this.fileManager) this.fileManager.show();
+        if(this.fileManager)
+        {
+            this.fileManager.show();
+            cb();
+        }
         if(!this.fileManager) this.fileManager=new CABLES.UI.FileManager(cb);
         else if(cb)cb();
     }

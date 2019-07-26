@@ -3,7 +3,6 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.ItemManager=function(title,tabs)
 {
-
     CABLES.EventTarget.apply(this);
 
     this._tab=new CABLES.UI.Tab(title,
@@ -24,7 +23,10 @@ CABLES.UI.ItemManager=function(title,tabs)
 
 };
 
-
+CABLES.UI.ItemManager.prototype.clear=function()
+{
+    this._items.length=0;
+}
 
 CABLES.UI.ItemManager.prototype.removeItem=function(id)
 {
@@ -123,12 +125,14 @@ CABLES.UI.ItemManager.prototype.setItems=function(items)
     this._items=items;
     this.updateHtml();
 
+    console.log(items);
     for(var i=0;i<this._items.length;i++)
     {
         const id=this._items[i].id;
         const item=this._items[i];
 
-        document.getElementById("item"+id).addEventListener("click",
+        const ele=document.getElementById("item"+id);
+        if(ele)ele.addEventListener("click",
             function(e)
             {
                 if(!e.shiftKey)
