@@ -6,22 +6,30 @@
 
         <div class="filelistcontainer" style="height:calc(100% - 260px);overflow-y:auto;">
             {{#each items}}
+
+            {{#if divider}}
+                <div style="clear:both"></div>
+                <div style="border-bottom:1px solid var(--color-07);margin-bottom:20px;" class="text-center">
+                    <h1>{{divider}}</h1>
+                </div>
+            {{else}}
                 <div class="item-container {{#if selected}} selected {{/if}}" id="item{{id}}">
                     <div style="margin-bottom: 8px;">
                         {{#if preview}}
-                            <div class="preview" style="width:90%;height:70%;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
-                                <div style="background-image:url({{preview}}?rnd={{file.cachebuster}});width:100%;height:100%;background-size:100%;background-repeat:no-repeat;background-position:0 center;">
-                                </div>
+                        <div class="preview" style="width:90%;height:70%;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
+                            <div style="background-image:url({{preview}}?rnd={{file.cachebuster}});width:100%;height:100%;background-size:100%;background-repeat:no-repeat;background-position:0 center;">
                             </div>
+                        </div>
                         {{else}}
-                            <div class="preview text-center" style="width:90%;height:70%;background-color:#555;" >
-                                <br/>
-                                <span class="icon icon-{{icon}} icon-4x"></span>
-                            </div>
+                        <div class="preview text-center" style="width:90%;height:70%;background-color:#555;" >
+                            <br/>
+                            <span class="icon icon-{{icon}} icon-4x"></span>
+                        </div>
                         {{/if}}
                     </div>
                     <span>{{title}}</span>
                 </div>
+                {{/if}}
             {{/each}}
             <div style="clear:both"></div>
         </div>
@@ -32,6 +40,10 @@
 </script>
 
 <script id="filemanager_header" type="text/x-handlebars-template">
+
+    <a class="fileManagerSource {{#compare source '==' 'patch' }}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('patch');">Patch Files</a>
+    <a class="fileManagerSource {{#compare source '==' 'patch' }}{{else}}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('lib');">Library Files</a>
+
     {{#if fileSelectOp}}
         <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;" onclick="gui.fileManager.setFilePort(null);">
             Selection mode for: {{fileSelectOp.objName}} 
