@@ -655,13 +655,30 @@ CABLES.UI.GUI = function() {
         CABLES.UI.MODAL.show(html);
     };
 
-    this.showLibrary = function(inputId, filterType, opid) {
-        
+
+    this.showFileManager=function(cb)
+    {
+        if(!this.fileManager) this.fileManager=new CABLES.UI.FileManager(cb);
+        else if(cb)cb();
+    }
+
+    this.showFileSelect=function(inputId, filterType, opid)
+    {
+        this.showFileManager(function()
+        {
+            var fn=document.querySelector(inputId).value;
+            console.log("filename",inputId,fn);
+    
+            this.fileManager.selectFile(fn);
+    
+        }.bind(this));
+
+    }
+    this.showLibrary=function(inputId, filterType, opid)
+    {
         CABLES.UI.fileSelect.show(inputId, filterType, opid);
 
-
-
-    };
+    }
 
     this.setProjectName = function(name) {
         $('#patchname').html(name);
@@ -912,7 +929,7 @@ CABLES.UI.GUI = function() {
         });
         $('.nav_filemanager').bind("click", function(event) {
             // CABLES.CMD.UI.toggleFiles();
-            new CABLES.UI.FileManager();
+            gui.showFileManager()
         });
         $('.nav_timeline').bind("click", function(event) {
             CABLES.CMD.UI.toggleTimeline();

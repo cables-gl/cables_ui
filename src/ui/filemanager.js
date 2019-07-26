@@ -1,7 +1,7 @@
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
 
-CABLES.UI.FileManager=function()
+CABLES.UI.FileManager=function(cb)
 {
     this._manager=new CABLES.UI.ItemManager("Files",gui.mainTabs);
     gui.maintabPanel.show();
@@ -45,15 +45,26 @@ CABLES.UI.FileManager=function()
                 
                 // if(Math.random()>0.5)item.selected=true;
                 items.push(item);
+                
             }
 
             this._manager.setItems(items);
+            if(cb)cb();
 
         }.bind(this));
 
 
 
 };
+
+CABLES.UI.FileManager.prototype.selectFile=function(filename)
+{
+    this._manager.unselectAll();
+    var item=this._manager.getItemByTitleContains(filename);
+    if(!item)return;
+    this._manager.selectItemById(item.id);
+    document.getElementById("item"+item.id).scrollIntoView();
+}
 
 
 CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
