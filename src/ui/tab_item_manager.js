@@ -24,6 +24,8 @@ CABLES.UI.ItemManager=function(title,tabs)
 
 };
 
+
+
 CABLES.UI.ItemManager.prototype.removeItem=function(id)
 {
     var nextId=null;
@@ -43,7 +45,7 @@ CABLES.UI.ItemManager.prototype.removeItem=function(id)
     if(ele) 
     {
         ele.remove();
-        if(nextId) this.selectFile(nextId);
+        if(nextId) this.selectItemById(nextId);
     }
     this.updateDetailHtml();
 };
@@ -52,6 +54,19 @@ CABLES.UI.ItemManager.prototype.updateHtml=function()
 {
     var html = CABLES.UI.getHandleBarHtml('tab_itemmanager',{"items":this._items});
     this._tab.html('<div id="item_manager" class="item_manager">'+html+'</div>');
+}
+
+CABLES.UI.ItemManager.prototype.getItemByTitleContains=function(t)
+{
+    for(var i=0;i<this._items.length;i++)
+    {
+        if(t.indexOf(this._items[i].title)>-1)
+        {
+            return this._items[i];
+        }
+
+    }
+
 }
 
 CABLES.UI.ItemManager.prototype.getItemById=function(id)
@@ -87,7 +102,7 @@ CABLES.UI.ItemManager.prototype.toggleSelection=function(id)
     this.updateSelectionHtml();
 }
 
-CABLES.UI.ItemManager.prototype.selectFile=function(id)
+CABLES.UI.ItemManager.prototype.selectItemById=function(id)
 {
     var item=this.getItemById(id);
     if(item)item.selected=true;
@@ -119,7 +134,7 @@ CABLES.UI.ItemManager.prototype.setItems=function(items)
                 if(!e.shiftKey)
                 {
                     this.unselectAll();
-                    this.selectFile(item.id);
+                    this.selectItemById(item.id);
                 }
                 else 
                 {
