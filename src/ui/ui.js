@@ -658,6 +658,7 @@ CABLES.UI.GUI = function() {
 
     this.showFileManager=function(cb)
     {
+        if(this.fileManager) this.fileManager.show();
         if(!this.fileManager) this.fileManager=new CABLES.UI.FileManager(cb);
         else if(cb)cb();
     }
@@ -666,9 +667,12 @@ CABLES.UI.GUI = function() {
     {
         this.showFileManager(function()
         {
-            var fn=document.querySelector(inputId).value;
+            const portInputEle=document.querySelector(inputId);
+            if(!portInputEle)return;
+            var fn=portInputEle.value;
             console.log("filename",inputId,fn);
     
+            this.fileManager.setFilePort(portInputEle,gui.scene().getOpById(opid));
             this.fileManager.selectFile(fn);
     
         }.bind(this));
@@ -1143,8 +1147,6 @@ CABLES.UI.GUI = function() {
         else
         {
             userOpsLoaded=true;
-
-            
             cb();
         }
 
@@ -1154,6 +1156,7 @@ CABLES.UI.GUI = function() {
 
         this.showCanvasModal(false);
         this.callEvent("pressedEscape");
+        if(this.fileManager) this.fileManager.setFilePort(null);
         
         if(e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey))
         {

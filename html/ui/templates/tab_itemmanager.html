@@ -1,7 +1,10 @@
 
 <script id="tab_itemmanager" type="text/x-handlebars-template">
     <div id="filemanagercontainer" style="height:99%">
-        <div class="filelistcontainer" style="height:calc(100% - 210px);overflow-y:auto;">
+
+        <div id="itemmanager_header" style="width:100%;height:50px;"></div>
+
+        <div class="filelistcontainer" style="height:calc(100% - 260px);overflow-y:auto;">
             {{#each items}}
                 <div class="item-container {{#if selected}} selected {{/if}}" id="item{{id}}">
                     <div>
@@ -28,8 +31,16 @@
 
 </script>
 
+<script id="filemanager_header" type="text/x-handlebars-template">
+    {{#if fileSelectOp}}
+        <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;" onclick="gui.fileManager.setFilePort(null);">
+            Selection mode for: {{fileSelectOp.objName}}
+        </span>
+    {{/if}}
 
-<script id="tab_filemanager_details" type="text/x-handlebars-template">
+</script>
+
+<script id="filemanager_details" type="text/x-handlebars-template">
 
     <div class="filemanager-detail-element">
 

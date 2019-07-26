@@ -4,6 +4,9 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.FileManager=function(cb)
 {
     this._manager=new CABLES.UI.ItemManager("Files",gui.mainTabs);
+
+    this._filePortEle=null;
+
     gui.maintabPanel.show();
 
     var which='projectfiles';
@@ -32,7 +35,8 @@ CABLES.UI.FileManager=function(cb)
                 var file=files[i];
                 var item={
                     "title":file.name,
-                    "id":file._id
+                    "id":file._id,
+                    "p":file.p
                 };
 
                 item.icon="file";
@@ -57,6 +61,25 @@ CABLES.UI.FileManager=function(cb)
 
 };
 
+CABLES.UI.FileManager.prototype.show=function()
+{
+    gui.maintabPanel.show();
+}
+
+CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
+{
+    if(!portEle)
+    {
+        this._filePortEle=null;
+        this._filePortOp=null;
+        this.updateHeader();
+        return;
+    }
+    this._filePortEle=portEle;
+    this._filePortOp=op;
+    this.updateHeader();
+}
+
 CABLES.UI.FileManager.prototype.selectFile=function(filename)
 {
     this._manager.unselectAll();
@@ -66,6 +89,15 @@ CABLES.UI.FileManager.prototype.selectFile=function(filename)
     document.getElementById("item"+item.id).scrollIntoView();
 }
 
+CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
+{
+    
+    const html = CABLES.UI.getHandleBarHtml('filemanager_header', {
+        "fileSelectOp": this._filePortOp
+    });
+    $('#itemmanager_header').html(html);
+
+}
 
 CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
 {
@@ -79,11 +111,11 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
             'project/' + gui.patch().getCurrentProject()._id + '/file/info/' + itemId,
             function(r) {
 
-                html = CABLES.UI.getHandleBarHtml('tab_filemanager_details', {
+                html = CABLES.UI.getHandleBarHtml('filemanager_details', {
                     "projectId": gui.patch().getCurrentProject()._id,
                     "file": r
                 });
-    
+                
                 $('#item_details').html(html);
 
                 document.getElementById("filedelete"+itemId).addEventListener("click",function(e)
@@ -102,6 +134,31 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
                     }.bind(this));
                 }.bind(this));
             }.bind(this));
+
+
+        if(this._filePortEle)
+        {
+            console.log("SET port");
+            this._filePortEle.value=detailItems[0].p;
+            var event = document.createEvent('Event');
+            event.initEvent('input', true, true);
+            this._filePortEle.dispatchEvent(event);
+            gui.patch().showOpParams(this._filePortOp);
+        }
+
+        // var highlightBg = "#fff";
+        // var originalBg = $(_id).css("background-color");
+        // $(_id).stop().css("opacity", 0);
+        // $(_id).animate({
+        //     "opacity": 1
+        // }, 1000);
+
+        // if (this.currentOpid) {
+        //     gui.patch().showOpParams(gui.scene().getOpById(this.currentOpid));
+        // }
+
+        // CABLES.UI.fileSelect.showPreview(_url, fileid);
+        
     }
     
     else if(detailItems.length>1)
