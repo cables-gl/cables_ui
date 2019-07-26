@@ -7,15 +7,15 @@
         <div class="filelistcontainer" style="height:calc(100% - 260px);overflow-y:auto;">
             {{#each items}}
                 <div class="item-container {{#if selected}} selected {{/if}}" id="item{{id}}">
-                    <div>
+                    <div style="margin-bottom: 8px;">
                         {{#if preview}}
-                            <div class="preview" style="width:90%;height:90%;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
+                            <div class="preview" style="width:90%;height:70%;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
                                 <div style="background-image:url({{preview}}?rnd={{file.cachebuster}});width:100%;height:100%;background-size:100%;background-repeat:no-repeat;background-position:0 center;">
                                 </div>
                             </div>
                         {{else}}
-                            <div class="preview text-center" style="width:90%;height:90%;background-color:#555;" >
-                                <br/><br/>
+                            <div class="preview text-center" style="width:90%;height:70%;background-color:#555;" >
+                                <br/>
                                 <span class="icon icon-{{icon}} icon-4x"></span>
                             </div>
                         {{/if}}
@@ -33,8 +33,9 @@
 
 <script id="filemanager_header" type="text/x-handlebars-template">
     {{#if fileSelectOp}}
-        <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;" onclick="gui.fileManager.setFilePort(null);">
-            Selection mode for: {{fileSelectOp.objName}}
+        <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;" onclick="gui.fileManager.setFilePort(null);">
+            Selection mode for: {{fileSelectOp.objName}} 
+            <span class="icon icon-x"></span>
         </span>
     {{/if}}
 
