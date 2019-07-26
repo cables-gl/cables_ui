@@ -1,13 +1,13 @@
 
 <script id="tab_itemmanager" type="text/x-handlebars-template">
     <div id="filemanagercontainer" style="height:99%">
-        <div class="filelistcontainer" style="height:calc(100% - 200px);;overflow-y:auto;">
+        <div class="filelistcontainer" style="height:calc(100% - 210px);overflow-y:auto;">
             {{#each items}}
                 <div class="item-container {{#if selected}} selected {{/if}}" id="item{{id}}">
                     <div>
                         {{#if preview}}
                             <div class="preview" style="width:90%;height:90%;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
-                                <div style="background-image:url({{preview}});width:100%;height:100%;background-size:100%;background-repeat:no-repeat;background-position:0 center;">
+                                <div style="background-image:url({{preview}}?rnd={{file.cachebuster}});width:100%;height:100%;background-size:100%;background-repeat:no-repeat;background-position:0 center;">
                                 </div>
                             </div>
                         {{else}}
@@ -23,7 +23,7 @@
             <div style="clear:both"></div>
         </div>
 
-        <div id="item_details" style="width:100%;height:200px;overflow-y:auto;padding:10px;background-color:var(--color-03)">this is the preview...</div>
+        <div id="item_details" style="width:100%;height:200px;overflow-y:auto;padding:10px;background-color:var(--color-03)"></div>
     </div>
 
 </script>
@@ -36,54 +36,58 @@
         {{#if file.imgPreview}}
             <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}" style="height:100%;max-width:100%;"/>
         {{else}}
-            no preview!!
+            No preview!!
         {{/if}}
 
     </div>
     <div class="filemanager-detail-element">
         <div style="padding:10px;">
-            <a class="tt icon icon-triple-dot iconhover" onclick="CABLES.UI.fileSelect.contextMenuFile(this,'{{file.fileDb._id}}','{{file.fileDb.fileName}}','{{file.type}}');" data-tt="options"></a>
-            {{file.fileDb.fileName}}
 
+            <a class="tt icon icon-1x icon-download iconhover" data-tt="download file" data-infotext="file_download" download href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}"></a>
+            &nbsp;&nbsp;<a class="tt icon icon-1x icon-external iconhover" data-tt="open in new window" data-infotext="file_open" target="_blank" href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}"></a>
+            <!-- &nbsp;&nbsp;<a class="tt icon icon-1x icon-editbox iconhover" data-tt="edit file" data-infotext="file_edit"></a> -->
+            &nbsp;&nbsp;<a class="tt icon icon-1x icon-search iconhover" data-tt="search in patch" data-infotext="file_search" onclick="gui.find().show('{{file.fileDb.fileName}}')"></a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="tt icon icon-1x icon-trash iconhover" data-tt="delete file" id="filedelete{{file.fileDb._id}}" data-infotext="file_delete"></a>
+
+            <br/><br/>
+
+            <b>{{file.fileDb.fileName}}</b>
+            
+            <br/><br/>
             {{#if file.imgSizeWidth  }}
-                {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} <!-- - {{ file.imgSizePower }} --> - 
+                    {{file.fileDb.type}}: {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} ({{file.sizeReadable}})
+                {{else}}
+                    {{file.fileDb.type}} ({{file.sizeReadable}})
             {{/if}}
-        
-            {{file.sizeReadable}} - {{file.fileDb.type}}
-        
-            <br/>changed {{file.readableDateSince}} <br/>
+
+            <br/><br/>
+            last change: {{file.readableDateSince}}<br/>
             {{file.readableDate}}
+            <br/><br/>
+
         </div>
     </div>
     <div class="filemanager-detail-element">
         
-            {{#if file.converters}}
-                <hr/>
-                File Ops
-                <br/>
-                {{#each file.ops}}
-                    <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
-                    <br/><br/>
-                {{/each}}
-            {{/if}}
-        
-            {{#if file.converters}}
-                <hr/>
-                File Convertes
-                <br/>
-                {{#each file.converters}}
-                    <a class="button fa fa-retweet" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');">&nbsp;{{ name }}</a>
-                    <br/>
-                {{/each}}
-                <br/><br/>
-            {{/if}}
-        
-            <hr/>
-            Tools
-            <br/>
-            <a class="button fa fa-search" onclick="gui.find().show('{{file.fileDb.fileName}}')">&nbsp;Search ops</a>
+        {{#if file.ops}}
+            File Ops
             <br/><br/>
-
+            {{#each file.ops}}
+                <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
+                <br/><br/>
+            {{/each}}
+        {{/if}}
+    
+        {{#if file.converters}}
+            File Tools
+            <br/><br/>
+            {{#each file.converters}}
+                <a class="button fa fa-retweet" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');">&nbsp;{{ name }}</a>
+                <br/>
+            {{/each}}
+        {{/if}}
+        
     </div>
     <div style="clear:both;"></div>
 

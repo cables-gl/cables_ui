@@ -81,7 +81,6 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
 CABLES.EditorSession.prototype.open=function()
 {
     var sessions = CABLES.UI.userSettings.get("openEditors");
-    
 
     if (sessions)
         for (var i = 0; i < sessions.length; i++)
