@@ -665,6 +665,9 @@ CABLES.UI.GUI = function() {
 
     this.showFileSelect=function(inputId, filterType, opid)
     {
+
+console.log(filterType);
+
         this.showFileManager(function()
         {
             const portInputEle=document.querySelector(inputId);
