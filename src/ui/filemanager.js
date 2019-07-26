@@ -3,7 +3,7 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.FileManager=function()
 {
-    this._manager=new CABLES.UI.ItemManager(gui.mainTabs);
+    this._manager=new CABLES.UI.ItemManager("Files",gui.mainTabs);
     gui.maintabPanel.show();
 
     var which='projectfiles';
@@ -56,36 +56,72 @@ CABLES.UI.FileManager=function()
 };
 
 
-
 CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
 {
-
     var html = "";
-    if(detailItems.length==0)
-    {
-        html="no file selected...";
-    }
-    else
+    document.getElementById("item_details").innerHTML='';
+    
     if(detailItems.length==1)
     {
+        const itemId=detailItems[0].id;
         CABLES.api.get(
-            'project/' + gui.patch().getCurrentProject()._id + '/file/info/' + detailItems[0].id,
+            'project/' + gui.patch().getCurrentProject()._id + '/file/info/' + itemId,
             function(r) {
-            
+
                 html = CABLES.UI.getHandleBarHtml('tab_filemanager_details', {
                     "projectId": gui.patch().getCurrentProject()._id,
                     "file": r
                 });
     
                 $('#item_details').html(html);
-            });
 
+                document.getElementById("filedelete"+itemId).addEventListener("click",function(e)
+                {
+                    CABLES.api.delete('project/'+gui.patch().getCurrentProject()._id+'/file/'+r.fileDb._id,null,
+                    function(r)
+                    {
+                        if(r.success)
+                        {
+                            this._manager.removeItem(itemId);
+                        }
+                        else
+                        {
+                            CABLES.UI.notifyError("error: could not delete file");
+                        }
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
     }
-    else
+    
+    else if(detailItems.length>1)
     {
-        html="<center><br/><br/><br/>"+detailItems.length+" files selected"+"</center>";
+        html='<center><br/><br/>'+detailItems.length+' files selected<br/><br/><br/><a class="button" id="filesdeletmulti">delete '+detailItems.length+' files</a></center>';
+        document.getElementById("item_details").innerHTML=html;
+
+        document.getElementById("filesdeletmulti").addEventListener("click",function(e)
+        {
+            console.log(detailItems);
+            
+            this._manager.unselectAll();
+
+            for(var i=0;i<detailItems.length;i++)
+            {
+                const detailItem=detailItems[i];
+                CABLES.api.delete('project/'+gui.patch().getCurrentProject()._id+'/file/'+detailItem.id,null,
+                    function(r)
+                    {
+                        if(r.success) this._manager.removeItem(detailItem.id);
+                            else CABLES.UI.notifyError("error: could not delete file");
+
+                        this._manager.unselectAll();
+                    }.bind(this)
+                    ,function(r)
+                    {
+                        console.log("api err",r);
+                    });
+            }
+        }.bind(this));
     }
-    document.getElementById("item_details").innerHTML=html;
 
 
 }
