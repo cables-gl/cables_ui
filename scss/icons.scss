@@ -6,7 +6,7 @@
 
 	border-radius: 8px;
 	padding-left:8px;
-	padding-right:8px;
+	padding-right:7px;
 	padding-top:8px;
 	margin-right:4px;
 	cursor:pointer;
@@ -42,7 +42,6 @@
     background-color:var(--color-special);
 }
 
-
 .iconhover
 {
 	cursor:pointer;
@@ -51,6 +50,7 @@
 		background-color:var(--color-special) !important;
 	}
 }
+
 .icon-2x
 {
 	width: 32px;
