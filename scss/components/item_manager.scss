@@ -57,5 +57,28 @@
     }
 }
 
+.switch
+{
+    background-color:#444;
+    padding:4px;
+    cursor:pointer;
+}
+
+.switch-active
+{
+    background-color:#888;
+}
+
+.switch-left
+{
+    border-top-left-radius:5px;
+    border-bottom-left-radius:5px;
+}
+.switch-right
+{
+    border-top-right-radius:5px;
+    border-bottom-right-radius:5px;
+}
+
 
 

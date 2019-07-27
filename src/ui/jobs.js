@@ -95,7 +95,9 @@ function()
                     if(jobs[i].title.indexOf('file')>=0)
                     {
                         // gui.updateProjectFiles();
-                        CABLES.UI.fileSelect.load();
+                        // CABLES.UI.fileSelect.load();
+                        gui.showFileManager();
+                
                     }
                     jobs.splice(i,1);
                     break;

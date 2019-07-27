@@ -77,11 +77,13 @@ CABLES.CMD.PATCH.createFile=function()
 				},
 				function(res) {
 					CABLES.UI.notify("file created");
-					CABLES.UI.fileSelect.refresh();
+					// CABLES.UI.fileSelect.refresh();
+					gui.refreshFileManager();
 				},
 				function(res) {
 					CABLES.UI.notifyError("error: file not created");
-					CABLES.UI.fileSelect.refresh();
+					// CABLES.UI.fileSelect.refresh();
+					gui.refreshFileManager();
 					console.log('err res', res);
 				}
 			);

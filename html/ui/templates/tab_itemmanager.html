@@ -39,10 +39,67 @@
 
 </script>
 
+
+
+<script id="tab_itemmanager_list" type="text/x-handlebars-template">
+
+
+    <table>
+        {{#each items}}
+
+            {{#if divider}}
+            <tr>
+                <td colspan="100">
+                    <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
+                        <h1>{{divider}}</h1>
+                    </div>
+                </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td>{{title}}</td>
+                <td></td>
+            </tr>
+            {{/if}}
+        {{/each}}
+    </table>
+
+
+</script>
+
+
+
+
+
+
 <script id="filemanager_header" type="text/x-handlebars-template">
 
-    <a class="fileManagerSource {{#compare source '==' 'patch' }}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('patch');">Patch Files</a>
-    <a class="fileManagerSource {{#compare source '==' 'patch' }}{{else}}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('lib');">Library Files</a>
+    <a class="fileManagerSource {{#compare source '==' 'patch' }}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('patch');" class="info" data-info="file_source_patch">Patch Files</a>
+    <a class="fileManagerSource {{#compare source '==' 'patch' }}{{else}}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('lib');" class="info" data-info="file_source_lib">Library Files</a>
+
+
+    <span class="iconbutton info" data-info="file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
+        <i class="icon icon-upload"></i>
+    </span>
+    <span class="iconbutton info" data-info="file_create" onclick="CABLES.CMD.PATCH.createFile();" >
+        <i class="icon icon-file-plus"></i>
+    </span>
+    
+    {{#compare source '==' 'patch' }}
+
+    <!-- / sort [type][data][size][name] -->
+    <!-- / display [icons][list] -->
+
+
+    {{/compare}}
+
+    <!-- <span id="switch-display-icons" class="switch switch-left switch-active">
+        <i class="icon icon-grid"></i>
+    </span>
+    <span id="switch-display-list" class="switch switch-right">
+        <i class="icon icon-menu"></i>
+    </span> -->
+
 
     {{#if fileSelectOp}}
         <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;" onclick="gui.fileManager.setFilePort(null);">

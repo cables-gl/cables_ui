@@ -5,9 +5,10 @@ CABLES.UI.FileManager=function(cb)
 {
     this._manager=new CABLES.UI.ItemManager("Files",gui.mainTabs);
     this._filePortEle=null;
-    
+    this._firstTimeOpening=true;
 
     gui.maintabPanel.show();
+    CABLES.UI.userSettings.set("fileManagerOpened",true);
 
     this.reload(cb);
 
@@ -16,11 +17,23 @@ CABLES.UI.FileManager=function(cb)
         this.setDetail(items);
     }.bind(this));
 
+    this._manager.addEventListener("onClose",function()
+    {
+        CABLES.UI.userSettings.set("fileManagerOpened",false);
+        gui.fileManager=null;
+        console.log("filemanager close!!");
+    });
+
 };
 
 CABLES.UI.FileManager.prototype.show=function()
 {
     gui.maintabPanel.show();
+}
+
+CABLES.UI.FileManager.prototype.refresh=function()
+{
+    this.setSource("patch");
 }
 
 CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
@@ -67,6 +80,8 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
     var assetPath = '/assets/library/';
     var apiPath = 'library/';
 
+    if(this._firstTimeOpening)this._fileSource = 'patch';
+
     if (this._fileSource == 'patch')
     {
         assetPath = '/assets/' + gui.patch().getCurrentProject()._id;
@@ -76,6 +91,16 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
     CABLES.api.get(apiPath, 
         function(files)
         {
+            if(this._firstTimeOpening && files.length==0)
+            {
+                this._firstTimeOpening=false;
+                this._fileSource = 'lib';
+                this.reload();
+                return;
+            }
+
+            this._firstTimeOpening=false;
+
             var items=[];
 
             for(var i=0;i<files.length;i++)
@@ -83,7 +108,6 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
                 var file=files[i];
 
                 createItem(items,file);
-                
             }
 
             this._manager.setItems(items);
@@ -91,8 +115,8 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
             if(cb)cb();
 
         }.bind(this));
-
 }
+
 
 CABLES.UI.FileManager.prototype.setSource=function(s,cb)
 {
@@ -129,10 +153,14 @@ CABLES.UI.FileManager.prototype.selectFile=function(filename)
         console.log("egal");
         this._selectFile(filename);
     }
-        
-
-    
 }
+
+
+CABLES.UI.FileManager.prototype.setDisplay=function(type)
+{
+    this._manager.setDisplay(type);
+}
+
 
 CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
 {
@@ -142,6 +170,24 @@ CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
         "source":this._fileSource
     });
     $('#itemmanager_header').html(html);
+
+    const elSwitchIcons=document.getElementById("switch-display-icons");
+    const elSwitchList=document.getElementById("switch-display-list");
+    
+
+    if(elSwitchIcons) elSwitchIcons.addEventListener("click",function()
+    {
+        elSwitchIcons.classList.add("switch-active");
+        elSwitchList.classList.remove("switch-active");
+        this.setDisplay("icons");
+    }.bind(this));
+    if(elSwitchList) elSwitchList.addEventListener("click",function()
+    {
+        elSwitchList.classList.add("switch-active");
+        elSwitchIcons.classList.remove("switch-active");
+        this.setDisplay("list");
+    }.bind(this));
+    
 
 }
 

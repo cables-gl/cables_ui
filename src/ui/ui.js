@@ -232,7 +232,7 @@ CABLES.UI.GUI = function() {
         if (self.timeLine().hidden) timelineUiHeight = 0;
 
         var filesHeight = 0;
-        if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
+        // if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
 
         var timedisplayheight = 25;
 
@@ -546,7 +546,7 @@ CABLES.UI.GUI = function() {
     this.cycleRendererSize = function() {
         this.showCanvasModal(false);
         if (self.rendererWidth !== 0) {
-            CABLES.UI.fileSelect.hide();
+            // CABLES.UI.fileSelect.hide();
             this._elGlCanvas.addClass('maximized');
 
             this._oldCanvasWidth = self.rendererWidth;
@@ -655,22 +655,29 @@ CABLES.UI.GUI = function() {
         CABLES.UI.MODAL.show(html);
     };
 
+    this.refreshFileManager=function()
+    {
+        if(this.fileManager)this.fileManager.refresh();
+        else this.showFileManager();
+    }
 
     this.showFileManager=function(cb)
     {
         if(this.fileManager)
         {
             this.fileManager.show();
-            cb();
+            if(cb)cb();
+            return;
         }
-        if(!this.fileManager) this.fileManager=new CABLES.UI.FileManager(cb);
-        else if(cb)cb();
+        else
+        {
+            this.fileManager=new CABLES.UI.FileManager(cb);
+        }
     }
 
     this.showFileSelect=function(inputId, filterType, opid)
     {
-
-console.log(filterType);
+        console.log("filter:",filterType);
 
         this.showFileManager(function()
         {
@@ -685,11 +692,10 @@ console.log(filterType);
         }.bind(this));
 
     }
-    this.showLibrary=function(inputId, filterType, opid)
-    {
-        CABLES.UI.fileSelect.show(inputId, filterType, opid);
-
-    }
+//     this.showLibrary=function(inputId, filterType, opid)
+//     {
+//         CABLES.UI.fileSelect.show(inputId, filterType, opid);
+    // }
 
     this.setProjectName = function(name) {
         $('#patchname').html(name);
@@ -780,7 +786,7 @@ console.log(filterType);
                 if(res.info) $('#converteroutput').html(res.info);
                     else $('#converteroutput').html('finished!');
 
-                CABLES.UI.fileSelect.refresh();
+                // CABLES.UI.fileSelect.refresh();
             });
     };
 
@@ -1277,8 +1283,9 @@ console.log(filterType);
         logStartup('finished loading cables');
         CABLES.UI.loaded=true;
 
-        if(CABLES.UI.userSettings.get("fileViewOpen")==true)this.showLibrary();
-        if(CABLES.UI.userSettings.get("timelineOpened")==true)this.showTiming();
+        // if(CABLES.UI.userSettings.get("fileViewOpen")==true) this.showLibrary(); //old
+        if(CABLES.UI.userSettings.get("fileManagerOpened")==true) this.showFileManager();
+        if(CABLES.UI.userSettings.get("timelineOpened")==true) this.showTiming();
 
         setTimeout(function(){ CABLES.editorSession.open(); },100);
         
