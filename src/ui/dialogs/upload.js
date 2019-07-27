@@ -6,8 +6,9 @@ CABLES.UI = CABLES.UI||{};
 CABLES.handleFileInputUpload=function(files)
 {
     CABLES.uploadFiles(files);
-    CABLES.UI.fileSelect.load();
-    CABLES.UI.fileSelect.show();
+    gui.showFileManager();
+    // CABLES.UI.fileSelect.load();
+    // CABLES.UI.fileSelect.show();
 };
 
 CABLES.uploadSelectFile=function()
@@ -94,7 +95,9 @@ CABLES.uploadFiles=function(files)
                         var file=files[i];
                         if(!file || !file.name || file.name=='item')continue;
 
-                        CABLES.UI.fileSelect.triggerFileUpdate(files[i].name);
+                        gui.refreshFileManager();
+
+                        // CABLES.UI.fileSelect.triggerFileUpdate(files[i].name);
                     }
                     $('#uploadprogresscontainer').hide();
 
@@ -123,8 +126,9 @@ CABLES.uploadFiles=function(files)
             console.log(ex);
         }
 
-        CABLES.UI.fileSelect.load();
-        CABLES.UI.fileSelect.show();
+        // CABLES.UI.fileSelect.load();
+        // CABLES.UI.fileSelect.show();
+        gui.showFileManager();
 
         gui.patch().addAssetOpAuto('/assets/'+gui.patch().getCurrentProject()._id+'/'+res.filename,CABLES.uploadDropEvent);
 

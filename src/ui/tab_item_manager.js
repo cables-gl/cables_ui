@@ -4,28 +4,33 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.ItemManager=function(title,tabs)
 {
     CABLES.EventTarget.apply(this);
-
+    this._display="icons";
     this._tab=new CABLES.UI.Tab(title,
         {
             "icon":"folder",
-            "infotext":"tab_profiler",
             "singleton":"true",
-            "padding":true});
+            "padding":true
+        });
     tabs.addTab(this._tab);
+
+    this._tab.addEventListener("onClose",function()
+    {
+        this.emitEvent("onClose");
+    }.bind(this));
 
     this._items=[];
     this.updateHtml();
-
-    // this._tab.addEventListener("onActivate",function()
-    // {
-    //     this.show();
-    // }.bind(this));
-
 };
 
 CABLES.UI.ItemManager.prototype.clear=function()
 {
     this._items.length=0;
+}
+
+CABLES.UI.ItemManager.prototype.setDisplay=function(t)
+{
+    this._display=t;
+    this.updateHtml();
 }
 
 CABLES.UI.ItemManager.prototype.removeItem=function(id)
@@ -54,7 +59,12 @@ CABLES.UI.ItemManager.prototype.removeItem=function(id)
 
 CABLES.UI.ItemManager.prototype.updateHtml=function()
 {
-    var html = CABLES.UI.getHandleBarHtml('tab_itemmanager',{"items":this._items});
+    var html = '';
+    
+    if(this._display=='icons') html=CABLES.UI.getHandleBarHtml('tab_itemmanager',{"items":this._items});
+        else html=CABLES.UI.getHandleBarHtml('tab_itemmanager_list',{"items":this._items});
+
+
     this._tab.html('<div id="item_manager" class="item_manager">'+html+'</div>');
 }
 
@@ -66,9 +76,7 @@ CABLES.UI.ItemManager.prototype.getItemByTitleContains=function(t)
         {
             return this._items[i];
         }
-
     }
-
 }
 
 CABLES.UI.ItemManager.prototype.getItemById=function(id)
@@ -148,5 +156,4 @@ CABLES.UI.ItemManager.prototype.setItems=function(items)
                 
             }.bind(this));
     }
-
 };

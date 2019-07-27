@@ -1,4 +1,25 @@
 
+.iconbutton
+{
+	padding:3px;
+	background-color: $button-background-color;
+
+	border-radius: 8px;
+	padding-left:8px;
+	padding-right:8px;
+	padding-top:8px;
+	margin-right:4px;
+	cursor:pointer;
+
+	&:hover
+	{
+		background-color:$button-background-color-hover;
+		.icon
+		{
+			background-color:var(--color-special) !important;
+		}
+	}
+}
 
 .icon
 {

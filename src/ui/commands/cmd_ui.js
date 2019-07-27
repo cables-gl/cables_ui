@@ -24,7 +24,8 @@ CABLES.CMD.UI.files = function() {
 };
 
 CABLES.CMD.UI.toggleFiles = function() {
-    CABLES.UI.fileSelect.toggle();
+    // CABLES.UI.fileSelect.toggle();
+    gui.showFileManager();
 };
 
 
