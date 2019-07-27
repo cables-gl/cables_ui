@@ -40,7 +40,8 @@
 
             <!-- href="/op/{{op.objName}}"  -->
             
-            <a onclick="gui.mainTabs.addIframeTab('doc {{op.objName}}','/op/{{op.objName}}',{'icon':'settings','closable':true,'singleton':true});" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
+            <!-- <a onclick="gui.mainTabs.addIframeTab('doc {{op.objName}}','/op/{{op.objName}}?dark=1&hdl=1',{'icon':'settings','closable':true,'singleton':true});" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i> -->
+            <a href="/op/{{op.objName}}" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
             {{#if hasExample}}
                 | &nbsp; <a href="/op/example/{{op.objName}}" style="text-decoration: underline;" target="_blank">view example</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
             {{/if}}
