@@ -749,6 +749,11 @@ input[type=range]:focus {
     transform: scale(1, -1);
 }
 
+.draggable
+{
+    cursor: grab;
+}
+
 @import 'libs/jcolorpicker-custom.scss';
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';
