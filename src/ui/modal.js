@@ -45,6 +45,8 @@ CABLES.UI.MODAL._setVisible = function (visible)
 
         CABLES.UI.MODAL.contentElement.show();
 
+        $('#modalcontainer').css({"display":"block"});
+
 		// $('#modalcontainer').show();
 		$('#modalcontainer').css({top:"10%"});
         CABLES.UI.MODAL.contentElement.css({top:"10%"});
@@ -56,7 +58,8 @@ CABLES.UI.MODAL._setVisible = function (visible)
         CABLES.UI.MODAL.contentElement.css({top:"-999100px"});
 
 		// $('#modalcontainer').hide();
-		$('#modalcontainer').css({top:"-999100px"});
+        // $('#modalcontainer').css({top:"-999100px"});
+        $('#modalcontainer').css({"display":"none"});
 	}
 
 };
@@ -114,14 +117,16 @@ CABLES.UI.MODAL.show=function(content,options)
     {
         CABLES.UI.MODAL.setTitle(options.title);
         CABLES.UI.MODAL.onClose=options.onClose;
-
+        
+        
+        
         if(options.transparent)$('#modalcontainer').addClass("transparent");
         if(options.nopadding)
         {
             // CABLES.UI.MODAL.contentElement.css({padding:"0px"});
             $('#modalcontainer').css({padding:"0px"});
             CABLES.UI.MODAL.contentElement.addClass('nopadding');
-
+            
         }
     }
     else
@@ -129,10 +134,11 @@ CABLES.UI.MODAL.show=function(content,options)
         CABLES.UI.MODAL.onClose=null;
         $('#modalcontainer').removeClass("transparent");
     }
-
+    
     if(content)
-        CABLES.UI.MODAL.contentElement.append(content);
-
+    CABLES.UI.MODAL.contentElement.append(content);
+    
+    
     CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
     gui.callEvent("showModal");

@@ -141,7 +141,7 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
     this.execute = function(name) {
-        // console.log('exe',name);
+
         if(gui.patch().scene._crashedOps.indexOf(name)>-1)
         {
             html='';
