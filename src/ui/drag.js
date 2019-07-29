@@ -3,7 +3,7 @@ var CABLES=CABLES||{};
 
 
 CABLES.dragImage = new Image();
-CABLES.dragImage.src = '/img/dragicon.png';
+CABLES.dragImage.src = '/ui/img/dragicon.png';
 
 
 CABLES.DragNDrop=function()

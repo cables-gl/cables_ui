@@ -984,10 +984,14 @@ CABLES.UI.Patch = function(_gui) {
                     "namespace":currentProject.namespace,
                     "data":data,
                 },   
-                function(r)
+                function(err,r)
                 {
-            
-                    console.log("finished saving yay!",r);
+                    if(err)
+                    {
+                        console.warn('[save patch error]',err)
+                    }
+
+                    console.log("finished saving yay!",r,err);
                     gui.jobs().finish('projectsave');
             
                     gui.setStateSaved();
@@ -1020,7 +1024,7 @@ CABLES.UI.Patch = function(_gui) {
                             cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
                             thePatch.resume();
                             
-                        }, 1000);
+                        }, 300);
             
                         thePatch.pause();
                         cgl.setSize(640,360);
@@ -1037,15 +1041,32 @@ CABLES.UI.Patch = function(_gui) {
             
                             var reader = new FileReader();
             
-                            reader.onload = function(event) {
-                                CABLES.api.put(
-                                    'project/' + currentProject._id + '/screenshot', {
-                                        "screenshot": event.target.result //cgl.screenShotDataURL
+                            reader.onload = function(event)
+                            {
+                                CABLES.talkerAPI.send(
+                                    "saveScreenshot",
+                                    {
+                                        "id":currentProject._id,
+                                        "screenshot":event.target.result
                                     },
-                                    function(r) {
+                                    function(err,r)
+                                    {
+                                        if(err)
+                                        {
+                                            console.warn('[screenshot save error]',err)
+                                        }
+                                        console.log("screenshot saved!");
                                         gui.jobs().finish('screenshotsave');
                                         if (gui.onSaveProject) gui.onSaveProject();
                                     });
+                                // CABLES.api.put(
+                                //     'project/' + currentProject._id + '/screenshot', {
+                                //         "screenshot": event.target.result //cgl.screenShotDataURL
+                                //     },
+                                //     function(r) {
+                                //         gui.jobs().finish('screenshotsave');
+                                //         if (gui.onSaveProject) gui.onSaveProject();
+                                //     });
                             };
                             reader.readAsDataURL(screenBlob);
                         });

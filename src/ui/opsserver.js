@@ -158,7 +158,7 @@ CABLES.UI.ServerOps = function(gui) {
 
         CABLES.UI.MODAL.showLoading('executing...');
         var s = document.createElement('script');
-        s.setAttribute('src', CABLES.noCacheUrl('/api/op/' + name));
+        s.setAttribute('src', CABLES.noCacheUrl(CABLES.sandbox.getCablesUrl()+'/api/op/' + name));
         s.onload = function() {
             gui.patch().scene.reloadOp(name, function(num, ops)
             {
@@ -404,13 +404,13 @@ CABLES.UI.ServerOps = function(gui) {
 
         gui.jobs().start({id:'load_opcode_'+opname,title:'loading op code '+opname});
 
-
-        CABLES.api.get(
-            'ops/' + opname,
-            function(res) {
-                // gui.showEditor();
-                // CABLES.UI.MODAL.hide();
-
+        CABLES.talkerAPI.send(
+            "getOpCode",
+            {
+                "opname":opname
+            },
+            function(err,res)
+            {
                 var editorObj=CABLES.editorSession.rememberOpenEditor("op",opname);
                 gui.jobs().finish('load_opcode_'+opname);
 
@@ -420,11 +420,19 @@ CABLES.UI.ServerOps = function(gui) {
                 var save = null;
                 if (!readOnly) save = function(setStatus, content) 
                 {
-                    CABLES.api.put(
-                        'ops/' + opname, {
-                            code: content
+                    CABLES.talkerAPI.send(
+                        "saveOpCode",
+                        {
+                            "opname":opname,
+                            "code":content
                         },
-                        function(res) {
+                        function(err,res)
+                        {
+                    // CABLES.api.put(
+                    //     'ops/' + opname, {
+                    //         code: content
+                    //     },
+                    //     function(res) {
                             if (!res.success) {
                                 if (res.error) setStatus('Error: Line ' + res.error.line + ' : ' + res.error.message, true);
                                 else setStatus('error: unknown error', true);
