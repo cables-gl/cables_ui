@@ -265,8 +265,10 @@ CABLES.UI.GUI = function() {
                 top:menubarHeight + 1
             });
 
-
         var editorWidth = self.editorWidth;
+        if(editorWidth>patchWidth-50)
+            editorWidth=patchWidth-50;
+
         var patchLeft = iconBarWidth;
 
         if(this.maintabPanel.isVisible())

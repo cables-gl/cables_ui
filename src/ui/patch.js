@@ -2922,6 +2922,11 @@ CABLES.UI.Patch = function(_gui) {
         this.updateUiAttribs();
         
 
+
+
+
+
+
         for (i = 0; i < op.portsIn.length; i++)
         {
             if (op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display == 'file')
@@ -3356,3 +3361,4 @@ CABLES.UI.Patch.prototype.createOpAndLink=function(opname,opid,portname)
 
     newOp.setUiAttrib({"translate":trans});
 }
+
