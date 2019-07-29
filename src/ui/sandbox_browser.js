@@ -42,7 +42,6 @@ CABLES.SandboxBrowser.prototype.getUrlDocOpsAll=function()
 CABLES.SandboxBrowser.prototype.getAssetPrefix=function()
 {
     const url=this._cfg.urlCables+"/assets/"+this._cfg.patch._id;
-    console.log("asset prefix",url);
     return url;
 };
 
