@@ -112,6 +112,15 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
     }
 };
 
+
+CABLES.SandboxBrowser.prototype._loadPatch=function(proj,cb)
+{
+    gui.patch().setProject(proj);
+
+    if(cb)cb();
+}
+
+
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)
 {
     if (!gui.serverOps || !gui.serverOps.finished()) {
@@ -119,92 +128,110 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
         setTimeout(function() {
             CABLES.sandbox.initRouting(cb);
         }, 100);
-        // console.log("wait...");
         return;
     }
 
-    logStartup('init routing...');
-    var router = new Simrou();
+    console.log("hallo route!");
 
-    router.addRoute('/').get(function(event, params) {});
+    this._talker = new Talker(window.parent, '*');  
 
+    console.log('viewer requesting patch!');
+    this._talker.send('cables', {"cmd":"sendpatch"} );
 
-    function loadProject(id, ver) {
-        if (gui.patch().scene.cgl.aborted) {
-            cb();
-            return;
-        }
-
-        if(ver) ver = '/version/' + ver;
-        else ver = "";
-
-        CABLES.UI.MODAL.showLoading('Loading');
-        CABLES.api.get('project/' + id + ver, function(proj)
+    this._talker.onMessage = function(message)
+    {
+        console.log('sandbox received', message.data);
+        if(message.data.cmd=='patch')
         {
-            CABLES.api.get('project/'+id+'/users',
-                function(userData)
-                {
-                    gui.user.isPatchOwner=true;
-                    for(var i=0;i<userData.length;i++)
-                    {
-                        if(userData[i].owner && userData[i]._id!=gui.user.id)
-                        {
-                            gui.user.isPatchOwner=false;
-                        }
-                    }
+            this._loadPatch(message.data.patch,cb);
+        }
+    }.bind(this);
+
+
+
+
+
+    // logStartup('init routing...');
+    // var router = new Simrou();
+
+    // router.addRoute('/').get(function(event, params) {});
+
+    // function loadProject(id, ver) {
+    //     if (gui.patch().scene.cgl.aborted) {
+    //         cb();
+    //         return;
+    //     }
+
+    //     if(ver) ver = '/version/' + ver;
+    //     else ver = "";
+
+    //     CABLES.UI.MODAL.showLoading('Loading');
+    //     CABLES.api.get('project/' + id + ver, function(proj)
+    //     {
+    //         CABLES.api.get('project/'+id+'/users',
+    //             function(userData)
+    //             {
+    //                 gui.user.isPatchOwner=true;
+    //                 for(var i=0;i<userData.length;i++)
+    //                 {
+    //                     if(userData[i].owner && userData[i]._id!=gui.user.id)
+    //                     {
+    //                         gui.user.isPatchOwner=false;
+    //                     }
+    //                 }
             
-                    incrementStartup();
-                    var userOpsUrls = [];
+    //                 incrementStartup();
+    //                 var userOpsUrls = [];
 
-                    for (var i in proj.userList) {
-                        userOpsUrls.push('/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
-                    }
+    //                 for (var i in proj.userList) {
+    //                     userOpsUrls.push('/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
+    //                 }
 
-                    var lid = 'userops' + proj._id + CABLES.generateUUID();
-                    loadjs.ready(lid, function()
-                        {
-                            incrementStartup();
-                            logStartup('User Ops loaded');
+    //                 var lid = 'userops' + proj._id + CABLES.generateUUID();
+    //                 loadjs.ready(lid, function()
+    //                     {
+    //                         incrementStartup();
+    //                         logStartup('User Ops loaded');
                             
-                            gui.patch().setProject(proj);
+    //                         gui.patch().setProject(proj);
                             
-                            if (proj.ui)
-                            {
-                                gui.bookmarks.set(proj.ui.bookmarks);
-                                $('#options').html(gui.bookmarks.getHtml());
-                            }
+    //                         if (proj.ui)
+    //                         {
+    //                             gui.bookmarks.set(proj.ui.bookmarks);
+    //                             $('#options').html(gui.bookmarks.getHtml());
+    //                         }
 
-                            gui.patch().showProjectParams();
-                            cb();
-                        });
-                    loadjs(userOpsUrls, lid);
-                });
+    //                         gui.patch().showProjectParams();
+    //                         cb();
+    //                     });
+    //                 loadjs(userOpsUrls, lid);
+    //             });
     
                 
-        }, function(){
-            $('#loadingInfo').append('Error: Unknown Project');
-        });
-    }
+    //     }, function(){
+    //         $('#loadingInfo').append('Error: Unknown Project');
+    //     });
+    // }
 
-    router.addRoute('/project/:id/v/:ver').get(function(event, params)
-    {
-        console.log('load version ',params.ver);
-        loadProject(params.id, params.ver);
-        // CABLES.UI.MODAL.showLoading('Loading');
-        // CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
-        // {
-        //     self.patch().setProject(proj);
-        // });
-    });
+    // router.addRoute('/project/:id/v/:ver').get(function(event, params)
+    // {
+    //     console.log('load version ',params.ver);
+    //     loadProject(params.id, params.ver);
+    //     // CABLES.UI.MODAL.showLoading('Loading');
+    //     // CABLES.api.get('project/'+params.id+'/version/'+params.ver,function(proj)
+    //     // {
+    //     //     self.patch().setProject(proj);
+    //     // });
+    // });
 
-    router.addRoute('/project').get(function(event, params) {
-        console.log('no projectid?');
-        $('#loadingInfo').append('Error: No Project ID in URL');
-    });
+    // router.addRoute('/project').get(function(event, params) {
+    //     console.log('no projectid?');
+    //     $('#loadingInfo').append('Error: No Project ID in URL');
+    // });
 
-    router.addRoute('/project/:id').get(function(event, params) {
-        loadProject(params.id);
-    });
+    // router.addRoute('/project/:id').get(function(event, params) {
+    //     loadProject(params.id);
+    // });
 
-    router.start('/');
+    // router.start('/');
 };
