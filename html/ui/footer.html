@@ -31,12 +31,6 @@
 
         CABLES.GlobalVarTester.before(window);
 
-
-    
-
-
-        
-
         CABLES.uiLoadStart=performance.now();
         CABLES.startup={};
         CABLES.startup.log=[];
@@ -52,8 +46,8 @@
 
         function logStartup(title)
         {
-            // console.log('logStartup',title);
-            var timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
+            //console.log('[startup] ',title);
+            const timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
             CABLES.startup.log.push(
             {
                 "title":title,
@@ -66,9 +60,11 @@
             return url+'?nc='+(Date.now()+'').substr(-6);
         };
 
+        /*
         var scriptTag = document.createElement('script');
         scriptTag.setAttribute('src',CABLES.noCacheUrl('js/libs.core.min.js'));
         document.body.appendChild(scriptTag);
+        */
 
         incrementStartup();
         logStartup("Start");
@@ -78,11 +74,12 @@
             return (document.location.href.indexOf('https://cables.gl')==-1);
         };
 
-        CABLES.loadAll=function()
+        CABLES.loadAll=function(cfg)
         {
             if(!window.hasOwnProperty('loadjs'))
             {
                 setTimeout(CABLES.loadAll,100);
+                console.log("wait for loadjs...");
                 return;
             }
 
@@ -91,7 +88,6 @@
             incrementStartup();
 
             loadjs([
-                CABLES.noCacheUrl('js/libs.ui.min.js'),
                 CABLES.noCacheUrl('js/libs.core.min.js'),
                 'js/ace/ace.js'
             ], 'libs');
@@ -127,7 +123,7 @@
 
                             loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
                             if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
-                                else CABLES.sandbox=new CABLES.SandboxBrowser();
+                                else CABLES.sandbox=new CABLES.SandboxBrowser(cfg);
 
                             // local ops are only available in electron version
                             var localOpCode = CABLES.sandbox.getLocalOpCode();
@@ -188,7 +184,43 @@
 
         };
 
-        CABLES.loadAll();
+
+        
+        var CABLES=CABLES||{};
+
+
+        document.addEventListener('DOMContentLoaded', function(event)
+        {
+            CABLES.talkerAPI=new CABLES.TalkerAPI(window.parent);
+            
+            CABLES.talkerAPI.send("requestPatchData",{},function(response)
+            {
+                console.log("YESSSSSSSSS~!!!");
+                console.log(response);
+                CABLES.loadAll(response);
+                
+            });
+        });
+            
+        /*
+        CABLES.UI.talker.onMessage=function(msg)
+        {
+            console.log('startup talker',msg);
+            if(msg.namespace=="cables.config")
+            {
+                console.log(msg.data,msg.data.urlCables);
+                CABLES.loadAll(msg.data);
+                
+            }
+        };
+        CABLES.UI.talker.send('cables', {"cmd":"sendConfig"} );
+        */
+
+
+        console.log("started...");
+
+
+
 
     </script>
 

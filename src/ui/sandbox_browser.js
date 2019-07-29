@@ -1,9 +1,28 @@
 
 var CABLES=CABLES||{};
 
-CABLES.SandboxBrowser=function()
+CABLES.SandboxBrowser=function(cfg)
 {
-    // console.log("starting browser sandbox");
+    CABLES.EventTarget.apply(this);
+
+    this._cfg=cfg;
+    console.log("starting browser sandbox",cfg,window.gui);
+
+    // CABLES.UI.talker.onMessage=function(msg)
+    // {
+    //     console.log('[sandbox talker]',msg);
+    //     // if(msg.namespace=="onPatchSaved")
+    //     // {
+    //     //     // console.log(msg.data,msg.data.urlCables);
+    //     //     // CABLES.loadAll(msg.data);
+    //     //     console.log("yay saved!");
+            
+    //     // }
+
+    //     if(msg.data.event)
+    //         this.emitEvent(msg.data.event,msg.data);
+    // }.bind(this);
+
 };
 
 CABLES.SandboxBrowser.prototype.isOffline=function()
@@ -12,24 +31,6 @@ CABLES.SandboxBrowser.prototype.isOffline=function()
 }
 
 
-CABLES.SandboxBrowser.prototype.loadUser=function(cb,cbError)
-{
-    CABLES.api.get('user/me',
-        function(data) {
-            if (data.user)
-            {
-                if(cb)cb(data.user);
-            }
-            else
-            {
-                console.log("not logged in ???");
-            }
-        },
-        function(data) {
-            gui.redirectNotLoggedIn();
-        });
-};
-
 CABLES.SandboxBrowser.prototype.deleteProject=function(id)
 {
     CABLES.api.delete('project/' + id, {},
@@ -37,27 +38,38 @@ CABLES.SandboxBrowser.prototype.deleteProject=function(id)
         document.location.href = "/";
     });
 };
-
-CABLES.SandboxBrowser.prototype.getUrlOpsCode=function(id)
+CABLES.SandboxBrowser.prototype.getCablesUrl=function()
 {
-    return '/api/ops/code';
+    return this._cfg.urlCables;
+};
+
+CABLES.SandboxBrowser.prototype.getUrlOpsCode=function()
+{
+    return this._cfg.urlCables+'/api/ops/code';
 };
 
 CABLES.SandboxBrowser.prototype.getLocalOpCode = function() {
     return ''; // no local ops in browser version
 };
 
-CABLES.SandboxBrowser.prototype.getUrlDocOpsAll=function(id)
+CABLES.SandboxBrowser.prototype.getUrlDocOpsAll=function()
 {
     return 'doc/ops/all';
 };
 
-CABLES.SandboxBrowser.prototype.getUrlApiPrefix=function(id)
+CABLES.SandboxBrowser.prototype.getAssetPrefix=function()
 {
-    return "/api/";
+    const url=this._cfg.urlCables+"/assets/"+this._cfg.patch._id;
+    console.log("asset prefix",url);
+    return url;
 };
 
-CABLES.SandboxBrowser.prototype.getUrlOpsList=function(id)
+CABLES.SandboxBrowser.prototype.getUrlApiPrefix=function()
+{
+    return this._cfg.urlCables+"/api/";
+};
+
+CABLES.SandboxBrowser.prototype.getUrlOpsList=function()
 {
     return 'ops/';
 };
@@ -66,24 +78,26 @@ CABLES.SandboxBrowser.prototype.showStartupChangelog = function() {
     var lastView = CABLES.UI.userSettings.get('changelogLastView');
     
     CABLES.CHANGELOG.getHtml(function(clhtml) {
-        if (clhtml !== null) {
-            iziToast.show({
-                position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-                theme: 'dark',
-                title: 'update',
-                message: 'cables has been updated! ',
-                progressBar: false,
-                animateInside: false,
-                close: true,
-                timeout: false,
-                buttons: [
-                    ['<button>read more</button>', function(instance, toast) {
-                        CABLES.CMD.UI.showChangelog();
-                        iziToast.hide({}, toast);
-                    }]
-                ]
+        if (clhtml !== null)
+        {
+            iziToast.show(
+                {
+                    position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                    theme: 'dark',
+                    title: 'update',
+                    message: 'cables has been updated! ',
+                    progressBar: false,
+                    animateInside: false,
+                    close: true,
+                    timeout: false,
+                    buttons: [
+                        ['<button>read more</button>', function(instance, toast) {
+                            CABLES.CMD.UI.showChangelog();
+                            iziToast.hide({}, toast);
+                        }]
+                    ]
 
-            });
+                });
             // if(html.length>0)html+='<hr/><br/><br/>';
             // html+=clhtml;
         }
@@ -113,39 +127,64 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
 };
 
 
-CABLES.SandboxBrowser.prototype._loadPatch=function(proj,cb)
+CABLES.SandboxBrowser.prototype.savePatch=function(options,cb)
 {
-    gui.patch().setProject(proj);
+    console.log("sandbox save patch");
+    CABLES.talkerAPI.send("savePatch",options,cb);
 
-    if(cb)cb();
+    // CABLES.UI.talker.send('cables', 
+    // {
+    //     "cmd":"savePatch",
+    //     "options":options
+    // } );
+
+
 }
 
 
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)
 {
-    if (!gui.serverOps || !gui.serverOps.finished()) {
-        // wait for userops finished loading....
-        setTimeout(function() {
-            CABLES.sandbox.initRouting(cb);
-        }, 100);
-        return;
-    }
+    // if (!gui.serverOps || !gui.serverOps.finished()) {
+    //     // wait for userops finished loading....
+    //     setTimeout(function() {
+    //         CABLES.sandbox.initRouting(cb);
+    //     }, 100);
+    //     return;
+    // }
 
-    console.log("hallo route!");
+    // console.log("hallo route!");
 
-    this._talker = new Talker(window.parent, '*');  
 
-    console.log('viewer requesting patch!');
-    this._talker.send('cables', {"cmd":"sendpatch"} );
+    // console.log('viewer requesting patch!');
 
-    this._talker.onMessage = function(message)
-    {
-        console.log('sandbox received', message.data);
-        if(message.data.cmd=='patch')
-        {
-            this._loadPatch(message.data.patch,cb);
-        }
-    }.bind(this);
+    // CABLES.UI.talker.onMessage = function(message)
+    // {
+    //     console.log('sandbox received', message.data);
+    //     if(message.data.cmd=='patch')
+    //     {
+    //         this._loadPatch(message.data.patch,cb);
+    //     }
+    //     if(message.data.cmd=='cables.config')
+    //     {
+    //         console.log('got config!',message.data);
+            // this._loadPatch(message.data.patch,cb);
+    //     }
+    // }.bind(this);
+
+    // CABLES.UI.talker.send('cables', {"cmd":"sendpatch"} );
+    // CABLES.UI.talker.send('cables', {"cmd":"sendConfig"} );
+
+
+    gui.user=this._cfg.user;
+    gui.patch().setProject(this._cfg.patch);
+
+    if(cb)cb();
+
+
+
+
+
+
 
 
 

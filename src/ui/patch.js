@@ -905,25 +905,17 @@ CABLES.UI.Patch = function(_gui) {
 
     this._saveCurrentProject = function(cb, _id, _name)
     {
-        const doSaveScreenshot=gui.patch().scene.isPlaying();
-
+        this._savedPatchCallback=cb;
+        
         for (var i = 0; i < this.ops.length; i++) {
             this.ops[i].removeDeadLinks();
             if (this.ops[i].op.uiAttribs.error) delete this.ops[i].op.uiAttribs.error;
             if (this.ops[i].op.uiAttribs.warning) delete this.ops[i].op.uiAttribs.warning;
         }
-
+        
         gui.jobs().start({ id: 'projectsave', title: 'saving project',indicator:'canvas' });
         
-
-        var w = $('#glcanvas').attr('width');
-        var h = $('#glcanvas').attr('height');
-
-        if(doSaveScreenshot)
-        {
-            $('#glcanvas').attr('width', 640);
-            $('#glcanvas').attr('height', 360);
-        }
+        
 
         var id = currentProject._id;
         var name = currentProject.name;
@@ -980,57 +972,74 @@ CABLES.UI.Patch = function(_gui) {
 
         CABLES.patch.namespace=currentProject.namespace;
 
-        try {
+        try
+        {
             data = JSON.stringify(data);
             gui.patch().getLargestPort();
 
-            CABLES.api.put(
-                'project/' + id, {
-                    "name": name,
-                    "namespace": currentProject.namespace,
-                    "data": data,
-                },
-                function(r) {
+            CABLES.sandbox.savePatch(
+                {
+                    "id":id,
+                    "name":name,
+                    "namespace":currentProject.namespace,
+                    "data":data,
+                },   
+                function(r)
+                {
+            
+                    console.log("finished saving yay!",r);
                     gui.jobs().finish('projectsave');
-
+            
                     gui.setStateSaved();
-                    if (cb) cb();
+                    if(this._savedPatchCallback) this._savedPatchCallback();
+                    this._savedPatchCallback=null;
                     
-                    self._serverDate=r.updated;
                     if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
                         else CABLES.UI.notify('patch saved');
                     
+                    self._serverDate=r.updated;
+                    
                     const thePatch=gui.patch().scene;
                     const cgl=thePatch.cgl;
-                    
+            
+                    const doSaveScreenshot=gui.patch().scene.isPlaying();
+                    var w = $('#glcanvas').attr('width');
+                    var h = $('#glcanvas').attr('height');
+            
+                    if(doSaveScreenshot)
+                    {
+                        $('#glcanvas').attr('width', 640);
+                        $('#glcanvas').attr('height', 360);
+                    }
+            
                     if(doSaveScreenshot)
                     {
                         var screenshotTimeout = setTimeout(function() {
-//                             gui.patch().scene.cgl.setSize(w,h);
-//                             gui.patch().scene.resume();
+            //                             gui.patch().scene.cgl.setSize(w,h);
+            //                             gui.patch().scene.resume();
                             cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
                             thePatch.resume();
                             
                         }, 1000);
-
+            
                         thePatch.pause();
                         cgl.setSize(640,360);
                         thePatch.renderOneFrame();
                         thePatch.renderOneFrame();
                         gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
-
+            
                         cgl.screenShot(function(screenBlob)
                         {
                             clearTimeout(screenshotTimeout);
-
+            
                             cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
                             thePatch.resume();
-
+            
                             var reader = new FileReader();
-
+            
                             reader.onload = function(event) {
                                 CABLES.api.put(
-                                    'project/' + id + '/screenshot', {
+                                    'project/' + currentProject._id + '/screenshot', {
                                         "screenshot": event.target.result //cgl.screenShotDataURL
                                     },
                                     function(r) {
@@ -1041,28 +1050,24 @@ CABLES.UI.Patch = function(_gui) {
                             reader.readAsDataURL(screenBlob);
                         });
                     }
-                },
-                function(response,data) // ERROR CALLBACK    
-                {
-                    if(data.status==401)
-                    {
-                        var msg='could not save patch. you do not have the required rights. you can save a copy of this patch.<br/><br/>'
-                        msg+='<a class="bluebutton" onclick="gui.patch().saveCurrentProjectAs();">copy patch</a>&nbsp;&nbsp;';
-                        msg+='<a class="greybutton" onclick="CABLES.UI.MODAL.hide(true);">close</a>';
-                        CABLES.UI.MODAL.showError('Could not save',msg);
-                        console.log('no rights');
-                    }
-                    else
-                    {
-                        CABLES.UI.MODAL.showError('Could not save','unknown error while saving patch. please try again later...');
-                    }
-
-                });
+            
+                }.bind(this)
+                
+                
+                
+                
+                
+                );
         } catch (e) {
             console.log(e);
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
         } finally {}
     };
+
+
+    
+
+
 
     this.getCurrentProject = function() {
 

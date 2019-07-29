@@ -4,12 +4,12 @@ CABLES.undo = new UndoManager();
 
 CABLES.UI.GUI = function() {
     var self = this;
-    var userOpsLoaded = false;
+    // var userOpsLoaded = false;
     var showTiming = false;
     var showingEditor = false;
     
     var showMiniMap = false;
-    var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true}});
+    var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true,prefixAssetPath:CABLES.sandbox.getAssetPrefix()}});
     _scene.gui = true;
     var _patch = null;
     // var _editor = new CABLES.Editor();
@@ -821,7 +821,8 @@ CABLES.UI.GUI = function() {
             CABLES.UI.MODAL.show(html);
         };
 
-    this.bind = function(cb) {
+    this.bind = function(cb)
+    {
         $('#glcanvas').attr('tabindex', '3');
 
 
@@ -1155,15 +1156,15 @@ CABLES.UI.GUI = function() {
             }
         });
 
-        if(CABLES.sandbox.initRouting)
-        {
-            CABLES.sandbox.initRouting(cb);
-        }
-        else
-        {
-            userOpsLoaded=true;
+        // if(CABLES.sandbox.initRouting)
+        // {
+            
+        // }
+        // else
+        // {
+        //     // userOpsLoaded=true;
             cb();
-        }
+        // }
 
     };
 
@@ -1433,7 +1434,9 @@ CABLES.UI.GUI = function() {
         // var html = '<iframe style="border:none;width:100%;height:100%" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
         // // CABLES.UI.MODAL.show(html);
 
-        const url='/patch/' + self.project()._id+'/settingsiframe';
+        const url=CABLES.sandbox.getCablesUrl()+'/patch/' + self.project()._id+'/settingsiframe';
+
+        console.log("settings iframe",url);
 
         // var settingsTab=this.mainTabs.addTab(new CABLES.UI.Tab("Patch Settings",{icon:"settings",closable:true}));
         // settingsTab.contentEle.innerHTML=html;
@@ -1492,11 +1495,6 @@ CABLES.UI.GUI = function() {
         this._cursor=str;
     }
 
-    this.redirectNotLoggedIn = function() {
-        var theUrl = document.location.href;
-        theUrl = theUrl.replace('#', '@HASH@');
-        document.location.href = '/login?redir=' + theUrl;
-    };
 
     this.getSavedState = function() {
         return savedState;
@@ -1787,76 +1785,76 @@ function startUi(event)
     logStartup('Init UI');
     
 
-
-
     window.gui = new CABLES.UI.GUI();
 
 
 
-    CABLES.sandbox.loadUser(
-        function(user)
-        {
-            gui.user = user;
-            $('#loggedout').hide();
-            $('#loggedin').show();
-            $('#username').html(user.usernameLowercase);
+    // CABLES.sandbox.loadUser(
+    //     function(user)
+    //     {
+            // gui.user = user;
+            // $('#loggedout').hide();
+            // $('#loggedin').show();
             incrementStartup();
             gui.serverOps = new CABLES.UI.ServerOps(gui);
-            logStartup('User Data loaded');
-            
 
             CABLES.UI.initHandleBarsHelper();
 
             $("#patch").bind("contextmenu", function(e) {
                 if (e.preventDefault) e.preventDefault();
             });
-        
-
-
 
             gui.init();
             gui.checkIdle();
 
-            gui.bind(function() {
-                gui.opDocs=new CABLES.UI.OpDocs();
-                gui.metaCode().init();
-                gui.metaDoc.init();
-                gui.opSelect().reload();
-                // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-                gui.showWelcomeNotifications();
-
-                gui.waitToShowUI();
-                gui.maintabPanel.init();
-                gui.setLayout();
-                gui.patch().fixTitlePositions();
-                gui.opSelect().prepare();
-                gui.opSelect().search();
-
-                // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
-                if(!gui.user.introCompleted)gui.introduction().showIntroduction();
+            gui.bind(function()
+            {
+                CABLES.sandbox.initRouting(function()
+                {
+                    $('#username').html(gui.user.usernameLowercase);
+                    gui.opDocs=new CABLES.UI.OpDocs();
+                    gui.metaCode().init();
+                    gui.metaDoc.init();
+                    gui.opSelect().reload();
+                    // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+                    gui.showWelcomeNotifications();
+    
+                    gui.waitToShowUI();
+                    gui.maintabPanel.init();
+                    gui.setLayout();
+                    gui.patch().fixTitlePositions();
+                    gui.opSelect().prepare();
+                    gui.opSelect().search();
+    
+                    if(!gui.user.introCompleted)gui.introduction().showIntroduction();
+                });
                 
             });
+        // });
+
+
+    $('#glcanvas').on("focus",
+        function()
+        {
+            gui.showCanvasModal(true);
         });
 
+    $(document).on("click", '.panelhead',
+        function(e)
+        {
+            var panelselector = $(this).data("panelselector");
+            if (panelselector) {
+                $(panelselector).toggle();
 
-    $('#glcanvas').on("focus", function() {
-        gui.showCanvasModal(true);
-    });
-
-    $(document).on("click", '.panelhead', function(e) {
-        var panelselector = $(this).data("panelselector");
-        if (panelselector) {
-            $(panelselector).toggle();
-
-            if ($(panelselector).is(":visible")) {
-                $(this).addClass("opened");
-                $(this).removeClass("closed");
-            } else {
-                $(this).addClass("closed");
-                $(this).removeClass("opened");
+                if ($(panelselector).is(":visible")) {
+                    $(this).addClass("opened");
+                    $(this).removeClass("closed");
+                } else {
+                    $(this).addClass("closed");
+                    $(this).removeClass("opened");
+                }
             }
-        }
-    });
+        });
 
     CABLES.watchPortVisualize.init();
 
@@ -1871,8 +1869,6 @@ function startUi(event)
         }
     }, false);
 
-    
-    
     logStartup('Init UI done');
 
 }
