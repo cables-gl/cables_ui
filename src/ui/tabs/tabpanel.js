@@ -11,6 +11,7 @@ CABLES.UI.Tab=function(title,options)
     if(!options.hasOwnProperty("showTitle"))this.options.showTitle=true;
     if(!options.hasOwnProperty("hideToolbar"))this.options.hideToolbar=false;
     if(!options.hasOwnProperty("closable"))this.options.closable=true;
+    if(!options.hasOwnProperty("name"))this.options.name=title;
     
     this.icon=this.options.icon||null;
     this.title=title;
@@ -116,7 +117,10 @@ CABLES.UI.TabPanel=function(eleId)
     }
 }
 
-CABLES.UI.TabPanel.prototype.updateHtml=function(name)
+
+
+
+CABLES.UI.TabPanel.prototype.updateHtml=function()
 {
     var html='';
     html+=CABLES.UI.getHandleBarHtml('tabpanel_bar',{tabs:this._tabs});
@@ -149,15 +153,21 @@ CABLES.UI.TabPanel.prototype.updateHtml=function(name)
     }
 }
 
+
+
 CABLES.UI.TabPanel.prototype.activateTabByName=function(name)
 {
     for(var i=0;i<this._tabs.length;i++)
-        if(this._tabs[i].options.name==name) this.activateTab(this._tabs[i].id);
-            else this._tabs[i].deactivate();
+        if(this._tabs[i].options.name==name)
+        {
+            this.activateTab(this._tabs[i].id);
+        }
+        else this._tabs[i].deactivate();
 
     this.updateHtml();
-
 }
+
+
 
 CABLES.UI.TabPanel.prototype.activateTab=function(id)
 {

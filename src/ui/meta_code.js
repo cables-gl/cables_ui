@@ -36,6 +36,7 @@ CABLES.UI.MetaCode=function(tabs)
 
     this.show=function()
     {
+        // this._tab.activate();
         if(!op)
         {
             this._tab.html('<h3>Code</h3>Select any Op');

@@ -46,10 +46,6 @@ CABLES.UI.Exporter=function(project)
             },
             function(err,r)
             {
-
-        // CABLES.api.get(
-        //     apiUrl,
-        //     function(r) {
                 var msg = '';
 
                 if (r.error || err)

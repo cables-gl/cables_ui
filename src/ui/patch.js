@@ -991,7 +991,6 @@ CABLES.UI.Patch = function(_gui) {
                         console.warn('[save patch error]',err)
                     }
 
-                    console.log("finished saving yay!",r,err);
                     gui.jobs().finish('projectsave');
             
                     gui.setStateSaved();
@@ -1059,14 +1058,6 @@ CABLES.UI.Patch = function(_gui) {
                                         gui.jobs().finish('screenshotsave');
                                         if (gui.onSaveProject) gui.onSaveProject();
                                     });
-                                // CABLES.api.put(
-                                //     'project/' + currentProject._id + '/screenshot', {
-                                //         "screenshot": event.target.result //cgl.screenShotDataURL
-                                //     },
-                                //     function(r) {
-                                //         gui.jobs().finish('screenshotsave');
-                                //         if (gui.onSaveProject) gui.onSaveProject();
-                                //     });
                             };
                             reader.readAsDataURL(screenBlob);
                         });

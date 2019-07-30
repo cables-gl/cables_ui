@@ -210,22 +210,25 @@ CABLES.UI.ServerOps = function(gui) {
             CABLES.api.delete(
                 'op/' + opName + '/attachments/' + attName, {},
                 function(res) {
-                    gui.showMetaCode();
+                    gui.metaTabs.activateTabByName("code")
                     console.log(res);
                 });
         }
     };
 
-    this.addAttachmentDialog = function(name) {
+    this.addAttachmentDialog = function(opname) {
         var attName = prompt('Attachment name');
 
-        CABLES.api.post(
-            'op/' + name + '/attachments/' + attName, {},
-            function(res) {
-                console.log(name, attName);
-                gui.showMetaCode();
-            }
-        );
+        CABLES.talkerAPI.send(
+            "opAttachmentAdd",
+            {
+                "opname":opname,
+                "name":attName,
+            },
+            function(err,res)
+            {
+                gui.metaTabs.activateTabByName("code")
+            });
     };
 
     this.opNameDialog = function(title, name, cb) {
@@ -391,7 +394,6 @@ CABLES.UI.ServerOps = function(gui) {
             }
         );
     };
-
 
     // Shows the editor and displays the code of an op in it
     this.edit = function(opname, readOnly,cb)

@@ -12,8 +12,7 @@ CABLES.UI.GUI = function() {
     var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true,prefixAssetPath:CABLES.sandbox.getAssetPrefix()}});
     _scene.gui = true;
     var _patch = null;
-    // var _editor = new CABLES.Editor();
-    var _userOpManager = null;
+
     var _jobs = new CABLES.UI.Jobs();
     var _find = new CABLES.UI.Find();
     this.cmdPallet = new CABLES.UI.CommandPallet();
@@ -24,17 +23,8 @@ CABLES.UI.GUI = function() {
     this.patchConnection = new CABLES.PatchConnectionSender();
     this.opDocs = null;
     
-    
-    
     this.mainTabs=new CABLES.UI.TabPanel('maintabs');
     this.maintabPanel=new CABLES.UI.MainTabPanel(this.mainTabs);
-
-
-    
-    
- 
-
-
 
     this.metaTabs=new CABLES.UI.TabPanel('metatabpanel');
     // var _socket=null;
@@ -540,17 +530,12 @@ CABLES.UI.GUI = function() {
         $('#serialized').val(self.patch().scene.serialize());
     };
 
-    this.userOpManager = function() {
-        _userOpManager = _userOpManager || new CABLES.UI.UserOpManager(self.project()._id);
-        return _userOpManager;
-    };
-
-    this.cycleRendererSize = function() {
+    this.cycleRendererSize = function()
+    {
         this.showCanvasModal(false);
-        if (self.rendererWidth !== 0) {
-            // CABLES.UI.fileSelect.hide();
+        if (self.rendererWidth !== 0)
+        {
             this._elGlCanvas.addClass('maximized');
-
             this._oldCanvasWidth = self.rendererWidth;
             this._oldCanvasHeight = self.rendererHeight;
             this._oldShowingEditor = showingEditor;
@@ -694,10 +679,6 @@ CABLES.UI.GUI = function() {
         }.bind(this));
 
     }
-//     this.showLibrary=function(inputId, filterType, opid)
-//     {
-//         CABLES.UI.fileSelect.show(inputId, filterType, opid);
-    // }
 
     this.setProjectName = function(name) {
         $('#patchname').html(name);
