@@ -14,6 +14,7 @@ CABLES.SandboxBrowser.prototype.isOffline=function()
 
 CABLES.SandboxBrowser.prototype.deleteProject=function(id)
 {
+    // TODO API
     CABLES.api.delete('project/' + id, {},
     function() {
         document.location.href = "/";

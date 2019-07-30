@@ -82,10 +82,6 @@ function()
     this.finish=function(jobId)
     {
 
-
-
-
-
         setTimeout(function()
         {
             for(var i in jobs)

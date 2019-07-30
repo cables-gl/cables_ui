@@ -259,6 +259,7 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 
     CABLES.lastError={exception:ex,opName:opName};
 
+    // TODO API?
     CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>&nbsp;&nbsp;');
     CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
 };
@@ -291,6 +292,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.stack+'</div>');
 
     CABLES.lastError={exception:ex};
+    // TODO API
     CABLES.UI.MODAL.contentElement.append('<br/><a class="bluebutton fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>');
 
 	CABLES.UI.MODAL._setVisible(true);

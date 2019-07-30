@@ -755,6 +755,7 @@ CABLES.UI.GUI = function() {
         $('#converterprogress').show();
         $('#converterform').hide();
         
+        // TODO API
         CABLES.api.post(
             'project/'+projectId+'/file/convert/'+fileId+'/'+converterId,
             {
@@ -1565,10 +1566,9 @@ CABLES.UI.GUI = function() {
             savedState = false;
 
             $('#patchname').addClass("warning");
-
     
-            window.onbeforeunload = function(event) {
-    
+            window.onbeforeunload = function(event)
+            {
                 var message = 'unsaved content!';
                 if (typeof event == 'undefined') {
                     event = window.event;
@@ -1586,12 +1586,10 @@ CABLES.UI.GUI = function() {
         this.setLayout();
     };
 
-
     this.reloadDocs=function(cb)
     {
         gui.opDocs=new CABLES.UI.OpDocs(cb);
     }
-
 
     this.setStateSaved = function() {
         savedState = true;
@@ -1741,13 +1739,14 @@ CABLES.UI.GUI.prototype.updateTheme = function () {
 
 
 
-
+// todo use eventtarget...
 CABLES.UI.GUI.prototype.addEventListener = function(name, cb)
 {
     this._eventListeners[name] = this._eventListeners[name] || [];
     this._eventListeners[name].push(cb);
 };
 
+// todo use eventtarget...
 CABLES.UI.GUI.prototype.callEvent=function(name, params)
 {
     if (this._eventListeners.hasOwnProperty(name)) {
@@ -1764,59 +1763,51 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
 
 function startUi(event)
 {
-    // if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
-    //     else CABLES.sandbox=new CABLES.SandboxBrowser();
-
     logStartup('Init UI');
-    
 
     window.gui = new CABLES.UI.GUI();
 
+    incrementStartup();
+    gui.serverOps = new CABLES.UI.ServerOps(gui);
 
+    CABLES.UI.initHandleBarsHelper();
 
-    // CABLES.sandbox.loadUser(
-    //     function(user)
-    //     {
-            // gui.user = user;
-            // $('#loggedout').hide();
-            // $('#loggedin').show();
+    $("#patch").bind("contextmenu", function(e) {
+        if (e.preventDefault) e.preventDefault();
+    });
+
+    gui.init();
+    gui.checkIdle();
+
+    gui.bind(function()
+    {
+        incrementStartup();
+        CABLES.sandbox.initRouting(function()
+        {
             incrementStartup();
-            gui.serverOps = new CABLES.UI.ServerOps(gui);
-
-            CABLES.UI.initHandleBarsHelper();
-
-            $("#patch").bind("contextmenu", function(e) {
-                if (e.preventDefault) e.preventDefault();
-            });
-
-            gui.init();
-            gui.checkIdle();
-
-            gui.bind(function()
+            gui.opDocs=new CABLES.UI.OpDocs(function()
             {
-                CABLES.sandbox.initRouting(function()
-                {
-                    $('#username').html(gui.user.usernameLowercase);
-                    gui.opDocs=new CABLES.UI.OpDocs();
-                    gui.metaCode().init();
-                    gui.metaDoc.init();
-                    gui.opSelect().reload();
-                    // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-                    gui.showWelcomeNotifications();
-    
-                    gui.waitToShowUI();
-                    gui.maintabPanel.init();
-                    gui.setLayout();
-                    gui.patch().fixTitlePositions();
-                    gui.opSelect().prepare();
-                    gui.opSelect().search();
-    
-                    if(!gui.user.introCompleted)gui.introduction().showIntroduction();
-                });
-                
-            });
-        // });
+                incrementStartup();
+                $('#username').html(gui.user.usernameLowercase);
 
+                gui.metaCode().init();
+                gui.metaDoc.init();
+                gui.opSelect().reload();
+                // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+                gui.showWelcomeNotifications();
+                incrementStartup();
+                gui.waitToShowUI();
+                gui.maintabPanel.init();
+                gui.setLayout();
+                gui.patch().fixTitlePositions();
+                gui.opSelect().prepare();
+                incrementStartup();
+                gui.opSelect().search();
+                
+                if(!gui.user.introCompleted)gui.introduction().showIntroduction();
+            });
+        });
+    });
 
     $('#glcanvas').on("focus",
         function()
@@ -1842,8 +1833,6 @@ function startUi(event)
         });
 
     CABLES.watchPortVisualize.init();
-
-    
 
     document.addEventListener("visibilitychange", function()
     {

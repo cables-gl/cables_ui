@@ -15,9 +15,6 @@ CABLES.UI.MetaDoc=function(tabs)
         this.update();
         this.show();
     }.bind(this));
-
-
-
 };
 
 CABLES.UI.MetaDoc.prototype.init=function()

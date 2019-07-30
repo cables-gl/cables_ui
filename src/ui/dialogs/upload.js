@@ -57,6 +57,8 @@ CABLES.uploadDragLeave=function(event)
 
 CABLES.uploadFiles=function(files)
 {
+
+    // TODO API
     var url='/api/project/'+gui.patch().getCurrentProject()._id+'/file';
 
     var formData = new FormData();

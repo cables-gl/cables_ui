@@ -55,7 +55,6 @@ CABLES.UI.Profiler.prototype.update=function()
 
     $('#profilerdata').html(htmlData);
 
-
     var item=null;
     var pad='';
 

@@ -97,6 +97,7 @@ CABLES.UI.OpDocs=function(cb)
             extendOpDocs(opDocs); /* add attributes to the docs / parse markdown, ... */
             self.libs=res.libs;
             gui.opSelect().prepare();
+
             if(cb)cb();
         },
         function(res){ console.log('err',res); }
@@ -218,102 +219,27 @@ CABLES.UI.OpDocs=function(cb)
      * Does not render the op-svg (layout).
      * @param {string} opName - The name of the op to get the documantation as Html for
      */
-    this.get2 = function(opName) {
+    this.get2 = function(opName)
+    {
         var opDoc = this.getOpDocByName(opName);
+
+        console.log(opDoc);
 
         if(!opDoc)
         {
             opDoc=
                 {
-                    name:opName,
-                    summaryHtml:"No Op Documentation found",
-                    summary:"No Op Documentation found"
+                    "name":opName,
+                    "summaryHtml":"No Op Documentation found",
+                    "summary":"No Op Documentation found"
                 };
         }
 
         var html = CABLES.UI.getHandleBarHtml('op-doc-template', {
-            opDoc: opDoc
+            "opDoc": opDoc
         });
 
         return html;
-    };
-
-    /**
-     * OLD! Use `get2` instead! This can be removed...
-     * @param {string} opname - The op name to get the documentation as Html for
-     */
-    this.get=function(opname)
-    {
-        for(var i=0;i<opDocs.length;i++)
-            if(opDocs[i].name==opname)
-            {
-                var html='<div class="op-doc">';
-                // if( (!html || html.length==0) && opDocs[i].name )
-                {
-                    var nameParts=opDocs[i].name.split('.');
-                    // html='<h1 class="opTitleSvg">'+nameParts[nameParts.length-1]+'</h1>';
-                    var namespaceClass = 'color-op-category-' + CABLES.UI.uiConfig.getNamespaceClassName(opname);
-                    // html+='<p><em><a class="namespace-link ' + namespaceClass + '" target="_blank" href="/op/' + ( opDocs[i].name || '' ) + '"><i class="icon icon-link"></i>' + ( opDocs[i].name || '' ) + '</a></em></p>';
-                    html+='<p class="namespace-wrapper"><span class="namespace ' + namespaceClass + '">' + ( opDocs[i].name || '' ) + '</span></p>';
-                    html+='<p class="op-summary">' + ( opDocs[i].summary || '' ) + '</p>';
-                }
-
-                if(opDocs[i].hasScreenshot)
-                {
-                    html+='<img src="/op/screenshot/'+opDocs[i].name+'.png"/>';
-                }
-
-                html+='</div>';
-                html+=opDocs[i].content;
-
-                if(opDocs[i] && opDocs[i].layout && opDocs[i].docs && opDocs[i].docs.ports && opDocs[i].layout)
-                {
-                    html+='<br/><h3>ports</h3><ul>';
-                    html+='<h4>Input</h4>';
-
-                    if(opDocs[i].layout.portsIn)
-                    {
-                        for(var j=0;j<opDocs[i].layout.portsIn.length;j++)
-                        {
-                            html+=this.getPortDoc(opDocs[i].docs,opDocs[i].layout.portsIn[j].name,opDocs[i].layout.portsIn[j].type);
-                        }
-                    }
-
-                    if(opDocs[i].layout.portsOut)
-                    {
-                        html+='<h4>Output</h4>';
-                        for(var j=0;j<opDocs[i].layout.portsOut.length;j++)
-                        {
-                            html+=this.getPortDoc(opDocs[i].docs,opDocs[i].layout.portsOut[j].name,opDocs[i].layout.portsOut[j].type);
-                        }
-                    }
-
-                    html+='</ul>';
-                }
-                if(opDocs[i].credits)
-                {
-                    html+='<br/><h3>credits</h3><ul>';
-
-                    for(var j in opDocs[i].credits)
-                    {
-                        if(opDocs[i].credits[j].url && opDocs[i].credits[j].url.length>0)html+='<a href="'+opDocs[i].credits[j].url+'" target="_blank">';
-                        html+='<li>'+opDocs[i].credits[j].title+' by '+opDocs[i].credits[j].author+'</li>';
-                        if(opDocs[i].credits[j].url && opDocs[i].credits[j].url.length>0)html+='</a>';
-                    }
-                    html+='</ul>';
-                }
-
-                if(opDocs[i].authorName)
-                {
-                    html+='<br/><h3>author</h3><ul>';
-                    html+='<li><a href="https://cables.gl/admin/user/'+opDocs[i].authorName+'">'+opDocs[i].authorName+'</a></li>';
-                    html+='</ul>';
-                }
-
-                return html;
-            }
-
-        return '';
     };
 
 

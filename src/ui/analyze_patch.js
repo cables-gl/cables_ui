@@ -24,14 +24,10 @@ CABLES.UI.AnalyzePatch=function()
         }
 
         if(op.uiAttribs.warning)
-        {
             htmlWarnings+=op.objName+' - '+op.uiAttribs.warning+'<br/>';
-        }
 
         if(op.uiAttribs.hint)
-        {
             htmlHints+=op.objName+' - '+op.uiAttribs.hint+'<br/>';
-        }
     }
 
     var html='';
@@ -44,9 +40,7 @@ CABLES.UI.AnalyzePatch=function()
 
         var onclick='';
         for(var j=0;j<notWorkings[i].ops.length;j++)
-        {
             onclick+="gui.patch().addSelectedOpById('"+notWorkings[i].ops[j].id+"');";
-        }
 
         onclick+='gui.patch().setStatusSelectedOps();';
         onclick+='console.log(gui.patch().getSelectedOps());';
@@ -54,9 +48,6 @@ CABLES.UI.AnalyzePatch=function()
         html+='<a onclick="CABLES.UI.MODAL.hide(true);'+onclick+'" class="greybutton">select ops</a><br/>'
     }
     html+='<br/>';
-
-
-
 
     html+='<h3>Warnings</h3>';
     html+=htmlWarnings;

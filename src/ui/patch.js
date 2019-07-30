@@ -870,6 +870,8 @@ CABLES.UI.Patch = function(_gui) {
             indicator:'canvas'
         });
 
+        // TODO API
+        // todo is this protected ?
         CABLES.api.get('project/' + gui.project()._id+'/updated',
             function(data)
             {

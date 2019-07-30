@@ -71,6 +71,7 @@ CABLES.CMD.PATCH.createFile=function()
         "newfile.txt",
         function(fn)
         {
+			// TODO API
 			CABLES.api.put(
 				'project/' + gui.patch().getCurrentProject()._id + '/'+fn, {
 					content: 'this is an empty file...'

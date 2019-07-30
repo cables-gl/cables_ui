@@ -6,6 +6,7 @@ function() {
   /* Disables intro.js for the current logged-in user */
   function disableIntroForUser(){
 
+    // TODO API
     if(!CABLES.sandbox.isOffline())
       CABLES.api.put('user/introCompleted',function(result) { console.log(result); },function(){});
   }
