@@ -54,7 +54,7 @@ CABLES.libLoader.prototype.loadLib=function(name)
     var newscript = document.createElement('script');
     newscript.type = 'text/javascript';
     newscript.async = true;
-    newscript.src = '/api/lib/'+name;
+    newscript.src = CABLES.sandbox.getCablesUrl()+'/api/lib/'+name;
     (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(newscript);
 
 

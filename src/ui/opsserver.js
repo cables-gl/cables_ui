@@ -182,7 +182,6 @@ CABLES.UI.ServerOps = function(gui) {
 
                 if (ops.length > 0) this.saveOpLayout(ops[0]);
                 gui.patch().checkCollisionsEdge();
-                // gui.editor().focus();
                 
             }.bind(this));
 
@@ -195,28 +194,51 @@ CABLES.UI.ServerOps = function(gui) {
     this.clone = function(oldname, name) {
 
         console.log('clone', name, oldname);
-        CABLES.api.get(
-            'ops/clone/' + oldname + '/' + name,
-            function(res) {
-                self.load(
-                    function() {
-                        console.log('now edit...');
-                        self.edit(name);
-                    });
+
+        CABLES.talkerAPI.send(
+            "opClone",
+            {
+                "opname":oldname,
+                "name":name
             },
-            function(res) {
-                console.log('err res', res);
-                CABLES.UI.MODAL.showError('op name invalid', '');
+            (err,res) =>
+            {
+                if(err)
+                {
+                    console.log('err res', res);
+                    CABLES.UI.MODAL.showError('could not clone op', '');
+                    return;
+                }
+                this.load(
+                    () => {
+                        this.edit(name);
+                        gui.serverOps.execute(name);
+                        gui.opSelect().reload();
+                    });
             }
         );
     };
 
     this.addOpLib = function(opName, libName) {
-        CABLES.api.put(
-            'op/' + opName + '/libs/' + libName,
-            function(res) {
-                console.log(res);
+
+        console.log("opaddlib");
+        CABLES.talkerAPI.send(
+            "opAddLib",
+            {
+                "opname":opName,
+                "name":libName,
+            },
+            function(err,res)
+            {
+                console.log("lib added!");
+                gui.reloadDocs(function()
+                {
+                    console.log("docs reloaded");
+                    gui.metaTabs.activateTabByName("code")
+                });
+                
             });
+
     };
 
     this.deleteAttachment = function(opName, attName) {
@@ -306,7 +328,6 @@ CABLES.UI.ServerOps = function(gui) {
 
     this.createDialog = function() {
         this.opNameDialog('Create operator', name, function(newname) {
-            console.log(newname);
             self.create('Ops.User.' + gui.user.usernameLowercase + '.' + newname, function() {
                 CABLES.UI.MODAL.hide();
             });
@@ -324,15 +345,12 @@ CABLES.UI.ServerOps = function(gui) {
         });
     };
 
-    this.editAttachment = function(opname, attachmentName, readOnly,cb) {
+    this.editAttachment = function(opname, attachmentName, readOnly,cb)
+    {
         var editorObj=CABLES.editorSession.rememberOpenEditor("attachment",attachmentName,{"opname":opname} );
         CABLES.api.clearCache();
         
         gui.jobs().start({id:'load_attachment_'+attachmentName,title:'loading attachment '+attachmentName});
-
-        // CABLES.api.get(
-        //     'op/' + opname + '/attachment/' + attachmentName,
-        //     function(res) {
 
         CABLES.talkerAPI.send(
             "opAttachmentGet",
@@ -516,34 +534,30 @@ CABLES.UI.ServerOps = function(gui) {
 
 
                 if(editorObj)
+                {
                     new CABLES.UI.EditorTab(
-                        {
-                            "title":title,
-                            "name":editorObj.name,
-                            "content":res.code,
-                            "singleton":true,
-                            "syntax": 'js',
-                            "onSave":save,
-                            "editorObj":editorObj,
-                            "onClose":function(which)
-                            {
-                                if(which.editorObj)
-                                    CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                            }
-                        });
-                    else
                     {
-                        console.log("no editorobj!");
-                        gui.mainTabs.activateTabByName(opname);
-                    }
+                        "title":title,
+                        "name":editorObj.name,
+                        "content":res.code,
+                        "singleton":true,
+                        "syntax": 'js',
+                        "onSave":save,
+                        "editorObj":editorObj,
+                        "onClose":function(which)
+                        {
+                            if(which.editorObj) CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                        }
+                    });
+                }
+                else
+                {
+                    console.log("no editorobj!");
+                    gui.mainTabs.activateTabByName(opname);
+                }
 
                 if(cb)cb();
-
-
-
             });
-
-
     };
 
     this._loadedLibs = [];
@@ -570,7 +584,8 @@ CABLES.UI.ServerOps = function(gui) {
         return [];
     };
 
-    this.loadProjectLibs = function(proj, next) {
+    this.loadProjectLibs = function(proj, next)
+    {
         var libsToLoad = [];
         var i = 0;
 
@@ -589,7 +604,6 @@ CABLES.UI.ServerOps = function(gui) {
             function()
             {
                 next();
-                
             });
 
         // var id = CABLES.generateUUID();
@@ -613,7 +627,6 @@ CABLES.UI.ServerOps = function(gui) {
         var isloaded = this._loadedLibs.indexOf(libName) != -1;
         // console.log(libName,isloaded);
         return isloaded;
-
     };
 
     this.opHasLibs = function(opName) {
@@ -626,7 +639,6 @@ CABLES.UI.ServerOps = function(gui) {
             if (!this.isLibLoaded(libsToLoad[i])) return false;
         }
         return true;
-
     };
 
     this.loadOpLibs = function(opName, next) {
@@ -648,7 +660,6 @@ CABLES.UI.ServerOps = function(gui) {
             return;
         }
 
-
         var loader=new CABLES.libLoader(libsToLoad,
             function()
             {
@@ -669,7 +680,6 @@ CABLES.UI.ServerOps = function(gui) {
         // }
 
     };
-
 
     this.loaded = false;
     this.finished = function() {

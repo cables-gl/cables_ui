@@ -58,9 +58,23 @@
 
     <h3>Libs</h3>
 
-    {{#each doc.libs}}
-        {{.}}<br/>
-    {{/each}}
+    {{#if doc.libs}}
+        <table class="table">
+            <tr>
+                <th>Filename</th>
+                <th> </th>
+            </tr>
+
+            {{#each doc.libs}}
+                <tr>
+                    <td>{{.}}</td>
+                    <td>
+                        <!-- <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeLib('{{../op.objName}}','{{.}}');"></a> -->
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+    {{/if}}
 
     <select id="addoplib">
         <option value="">---</option>

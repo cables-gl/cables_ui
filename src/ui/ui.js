@@ -689,15 +689,14 @@ CABLES.UI.GUI = function() {
             "New Project",
             "Enter a name for your new Project",
             "My new Project",
-            function(name) {
-                if (name) {
-                    CABLES.api.post('project', {
-                        "name": name
-                    }, function(d) {
-                        document.location.href = '?rnd='+Math.round(Math.random()*10000)+'#/project/' + d._id;
+            function(name)
+            {
+                if(name)
+                    CABLES.talkerAPI.send("newPatch",{"name":name}, function(err,d)
+                    {
+                        console.log("newpatch",d);
+                        CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
                     });
-
-                }
             });
     };
 
@@ -1586,6 +1585,13 @@ CABLES.UI.GUI = function() {
         this.infoHeight = 0;
         this.setLayout();
     };
+
+
+    this.reloadDocs=function(cb)
+    {
+        gui.opDocs=new CABLES.UI.OpDocs(cb);
+    }
+
 
     this.setStateSaved = function() {
         savedState = true;

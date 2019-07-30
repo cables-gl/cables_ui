@@ -90,7 +90,8 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
 {
     var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
-    if ( !window.chrome && !isFirefox && !CABLES.UI.userSettings.get('nobrowserWarning')) {
+    if(!window.chrome && !isFirefox && !CABLES.UI.userSettings.get('nobrowserWarning'))
+    {
         iziToast.error({
             position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             theme: 'dark',
@@ -119,7 +120,8 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
         incrementStartup();
         this.loadUserOps(function()
         {
-            gui.patch().setProject(this._cfg.patch);
+            console.log("setpatch...");
+            // gui.patch().setProject(this._cfg.patch);
             if(cb)cb();
         }.bind(this));
     }.bind(this));

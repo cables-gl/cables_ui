@@ -1,7 +1,7 @@
 
 CABLES =CABLES || {};
 CABLES.UI =CABLES.UI || {};
-CABLES.UI.OpDocs=function()
+CABLES.UI.OpDocs=function(cb)
 {
     var self=this;
     var opDocs=[];
@@ -97,6 +97,7 @@ CABLES.UI.OpDocs=function()
             extendOpDocs(opDocs); /* add attributes to the docs / parse markdown, ... */
             self.libs=res.libs;
             gui.opSelect().prepare();
+            if(cb)cb();
         },
         function(res){ console.log('err',res); }
         );

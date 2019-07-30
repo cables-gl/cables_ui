@@ -233,27 +233,21 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
         const elDelMulti=document.getElementById("filesdeletmulti");
         if(elDelMulti) elDelMulti.addEventListener("click",function(e)
         {
-            console.log(detailItems);
-
             this._manager.unselectAll();
 
             for(var i=0;i<detailItems.length;i++)
             {
                 const detailItem=detailItems[i];
 
-                CABLES.talkerAPI.send("deleteFile",
-                {
-                    "fileid":detailItem.id
-                },
-                function(err,r)
-                {
-
-                // CABLES.api.delete('project/'+gui.patch().getCurrentProject()._id+'/file/'+detailItem.id,null,
-                //     function(r)
-                //     {
-                        if(r.success) this._manager.removeItem(detailItem.id);
-                            else CABLES.UI.notifyError("error: could not delete file");
-
+                CABLES.talkerAPI.send(
+                    "deleteFile",
+                    {
+                        "fileid":detailItem.id
+                    },
+                    function(err,r)
+                    {
+                        if(!err && r.success) this._manager.removeItem(detailItem.id);
+                            else CABLES.UI.notifyError("error: could not delete file",err);
                         this._manager.unselectAll();
                     }.bind(this)
                     ,function(r)
@@ -263,6 +257,5 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
             }
         }.bind(this));
     }
-
 
 }

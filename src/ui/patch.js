@@ -743,7 +743,6 @@ CABLES.UI.Patch = function(_gui) {
         if(window.process && window.process.versions['electron'])
         {
             var electron = require('electron');
-            var ipcRenderer = electron.ipcRenderer;
             var remote = electron.remote; 
             var dialog = remote.dialog;
 
@@ -754,14 +753,10 @@ CABLES.UI.Patch = function(_gui) {
                 "timeLineLength": gui.timeLine().getTimeLineLength()
             };
 
-
             gui.bookmarks.cleanUp();
             data.ui.bookmarks = gui.bookmarks.getBookmarks();
-
             data.ui.viewBox = this._viewBox.serialize();
-
             data.ui.subPatchViewBoxes = subPatchViewBoxes;
-
             data.ui.renderer = {};
             data.ui.renderer.w = gui.rendererWidth;
             data.ui.renderer.h = gui.rendererHeight;
@@ -791,9 +786,15 @@ CABLES.UI.Patch = function(_gui) {
             "Enter a name for the copy of this Project ",
             "My new Project",
             function(name) {
-                CABLES.api.post('project', {
-                    name: name
-                }, function(d) {
+
+
+                CABLES.talkerAPI.send("newPatch",{"name":name}, 
+                    function(err,d)
+                    {
+
+                // CABLES.api.post('project', {
+                    // name: name
+                // }, function(d) {
 
                     gui.scene().settings=gui.scene().settings||{};
                     gui.scene().settings.isPublic = false;
@@ -803,9 +804,11 @@ CABLES.UI.Patch = function(_gui) {
                     gui.scene().settings.isFeatured = false;
                     gui.scene().settings.opExample = '';
 
-                    self.saveCurrentProject(function() {
-                        document.location.href = '#/project/' + d._id;
-                    }, d._id, d.name);
+                    self.saveCurrentProject(
+                        function()
+                        {
+                            CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
+                        }, d._id, d.name);
 
                 });
             });
@@ -3304,10 +3307,7 @@ CABLES.UI.Patch = function(_gui) {
         items.push(
             {
                 title:'set default values',
-                func:function()
-                {
-                    gui.patch().resetOpValues(opid);
-                }
+                func:function(){ gui.patch().resetOpValues(opid); }
             });
 
         items.push(
@@ -3341,11 +3341,10 @@ CABLES.UI.Patch = function(_gui) {
                 {
                     "title":'rename op ',
                     "iconClass":'fa fa-lock',
-                    // "func":function(){ CABLES.UI.MetaCode.rename(opname); }
-                    "func":function(){ 
-                        window.open("/admin/op/rename?op="+opname+"&new="+opname, "_blank");
-
-                        }
+                    "func":function()
+                    {
+                        window.open(CABLES.sandbox.getCablesUrl()+"/admin/op/rename?op="+opname+"&new="+opname, "_blank");
+                    }
                 });
         }
         CABLES.contextMenu.show({"items":items},ele);
