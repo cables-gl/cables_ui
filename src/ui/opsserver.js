@@ -305,29 +305,39 @@ CABLES.UI.ServerOps = function(gui) {
         });
     };
 
-    this.editAttachment = function(opname, attachmentname, readOnly,cb) {
-        var editorObj=CABLES.editorSession.rememberOpenEditor("attachment",attachmentname,{"opname":opname} );
+    this.editAttachment = function(opname, attachmentName, readOnly,cb) {
+        var editorObj=CABLES.editorSession.rememberOpenEditor("attachment",attachmentName,{"opname":opname} );
         CABLES.api.clearCache();
         
-        gui.jobs().start({id:'load_attachment_'+attachmentname,title:'loading attachment '+attachmentname});
+        gui.jobs().start({id:'load_attachment_'+attachmentName,title:'loading attachment '+attachmentName});
 
-        CABLES.api.get(
-            'op/' + opname + '/attachment/' + attachmentname,
-            function(res) {
+        // CABLES.api.get(
+        //     'op/' + opname + '/attachment/' + attachmentName,
+        //     function(res) {
+
+        CABLES.talkerAPI.send(
+            "opAttachmentGet",
+            {
+                "opname":opname,
+                "name":attachmentName
+            },
+            function(err,res)
+            {
+
                 var content = res.content || '';
                 var syntax = "text";
 
-                if (attachmentname.endsWith(".frag")) syntax = "glsl";
-                if (attachmentname.endsWith(".vert")) syntax = "glsl";
-                if (attachmentname.endsWith(".json")) syntax = "json";
-                if (attachmentname.endsWith(".css")) syntax = "css";
+                if (attachmentName.endsWith(".frag")) syntax = "glsl";
+                if (attachmentName.endsWith(".vert")) syntax = "glsl";
+                if (attachmentName.endsWith(".json")) syntax = "json";
+                if (attachmentName.endsWith(".css")) syntax = "css";
                 
-                gui.jobs().finish('load_attachment_'+attachmentname);
+                gui.jobs().finish('load_attachment_'+attachmentName);
 
                 if(editorObj)
                     new CABLES.UI.EditorTab(
                         {
-                            "title":attachmentname,
+                            "title":attachmentName,
                             "name":editorObj.name,
                             "content":content,
                             "syntax": syntax,
@@ -340,7 +350,7 @@ CABLES.UI.ServerOps = function(gui) {
                             },
                             "onSave":function(setStatus, content) {
                                 CABLES.api.post(
-                                    'op/' + opname + '/attachment/' + attachmentname, {
+                                    'op/' + opname + '/attachment/' + attachmentName, {
                                         content: content
                                     },
                                     function(res) {
@@ -359,14 +369,14 @@ CABLES.UI.ServerOps = function(gui) {
                 // gui.showEditor();
                 // gui.editor().addTab({
                 //     content: content,
-                //     title: attachmentname,
+                //     title: attachmentName,
                 //     syntax: syntax,
-                //     id:CABLES.Editor.sanitizeId('editattach_'+opname+attachmentname),
+                //     id:CABLES.Editor.sanitizeId('editattach_'+opname+attachmentName),
                 //     editorObj: editorObj,
                 //     toolbarHtml: toolbarHtml,
                 //     onSave: function(setStatus, content) {
                 //         CABLES.api.post(
-                //             'op/' + opname + '/attachment/' + attachmentname, {
+                //             'op/' + opname + '/attachment/' + attachmentName, {
                 //                 content: content
                 //             },
                 //             function(res) {
@@ -387,8 +397,8 @@ CABLES.UI.ServerOps = function(gui) {
                 // });
             },function(err)
             {
-                gui.jobs().finish('load_attachment_'+attachmentname);
-                console.error("error opening attachment "+attachmentname);
+                gui.jobs().finish('load_attachment_'+attachmentName);
+                console.error("error opening attachment "+attachmentName);
                 console.log(err);
                 if(editorObj) CABLES.editorSession.remove(editorObj.name,editorObj.type);
             }
