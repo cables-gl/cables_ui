@@ -72,20 +72,24 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
     this.create = function(name, cb) {
-        CABLES.api.get(
-            'ops/create/' + name,
-            function(res) {
+
+
+        CABLES.talkerAPI.send(
+            "opCreate",
+            {
+                "opname":name            },
+            function(err,res)
+            {
+                if(err)console.err(err);
+
                 self.load(
                     function() {
                         self.edit(name);
                         gui.serverOps.execute(name);
                         gui.opSelect().reload();
                     });
-            },
-            function(res) {
-                console.log('err res', res);
-            }
-        );
+            });
+
     };
 
     this.saveOpLayout = function(op) {
@@ -135,9 +139,19 @@ CABLES.UI.ServerOps = function(gui) {
             opObj.portsOut.push(l);
         }
 
-        CABLES.api.post('op/layout/' + op.objName, {
-            layout: opObj
-        });
+
+        CABLES.talkerAPI.send(
+            "opSaveLayout",
+            {
+                "opname":op.objName,
+                "layout":opObj,
+            },
+            function(err,res)
+            {
+                if(err)console.err(err);
+            });
+
+
     };
 
     this.execute = function(name) {
@@ -375,20 +389,6 @@ CABLES.UI.ServerOps = function(gui) {
                                         setStatus('saved');
                                         gui.serverOps.execute( opname );
                                     });                        
-
-
-                                // CABLES.api.post(
-                                //     'op/' + opname + '/attachment/' + attachmentName, {
-                                //         content: content
-                                //     },
-                                //     function(res) {
-                                //         setStatus('saved');
-                                //         gui.serverOps.execute( opname );
-                                //     },
-                                //     function(res) {
-                                //         setStatus('ERROR: not saved - '+res.msg);
-                                //         console.log('err res', res);
-                                //     }
                         }
                     });
 

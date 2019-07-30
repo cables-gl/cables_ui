@@ -41,7 +41,7 @@ CABLES.SandboxBrowser.prototype.getUrlDocOpsAll=function()
 
 CABLES.SandboxBrowser.prototype.getAssetPrefix=function()
 {
-    const url=this._cfg.urlCables+"/assets/"+this._cfg.patch._id;
+    const url=this._cfg.urlCables+"/assets/"+this._cfg.patchId;
     return url;
 };
 
@@ -112,7 +112,49 @@ CABLES.SandboxBrowser.prototype.savePatch=function(options,cb)
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)
 {
     gui.user=this._cfg.user;
-    gui.patch().setProject(this._cfg.patch);
 
-    if(cb)cb();
+    CABLES.talkerAPI.send("getPatch",{},function(err,r)
+    {
+        this._cfg.patch=r;
+        incrementStartup();
+        this.loadUserOps(function()
+        {
+            gui.patch().setProject(this._cfg.patch);
+            if(cb)cb();
+        }.bind(this));
+    }.bind(this));
+    
 };
+
+CABLES.SandboxBrowser.prototype.loadUserOps=function(cb)
+{
+    var userOpsUrls = [];
+    var proj=this._cfg.patch;
+
+    for (var i in proj.userList)
+        userOpsUrls.push(this.getCablesUrl()+'/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
+
+    var lid = 'userops' + proj._id + CABLES.generateUUID();
+    loadjs.ready(lid, 
+        function()
+        {
+            incrementStartup();
+            logStartup('User Ops loaded');
+
+            gui.patch().setProject(proj);
+
+            if (proj.ui)
+            {
+                gui.bookmarks.set(proj.ui.bookmarks);
+                $('#options').html(gui.bookmarks.getHtml());
+            }
+
+            gui.patch().showProjectParams();
+            cb();
+        }.bind(this));
+
+    loadjs(userOpsUrls, lid);
+    
+    
+}
+

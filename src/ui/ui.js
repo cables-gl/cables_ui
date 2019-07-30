@@ -1289,7 +1289,6 @@ CABLES.UI.GUI = function() {
             );
         }
 
-        var html = '';
         if (this.project().users.indexOf(this.user.id) == -1 &&
             this.project().userId+''!=''+this.user.id ){
             iziToast.show({
@@ -1309,15 +1308,14 @@ CABLES.UI.GUI = function() {
     };
 
 
-    this.importJson3D = function(id) {
-        CABLES.api.get('json3dimport/' + id,
-            function(data) {
-                console.log('data', data);
-            }
-        );
-    };
-
-    var infoTimeout = -1;
+    // this.importJson3D = function(id) {
+    //     CABLES.api.get('json3dimport/' + id,
+    //         function(data) {
+    //             console.log('data', data);
+    //         }
+    //     );
+    // };
+    // var infoTimeout = -1;
 
     // this.editOpDoc = function(objName) {
     //     CABLES.api.clearCache();

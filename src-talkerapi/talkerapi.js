@@ -12,8 +12,8 @@ CABLES.TalkerAPI=function(target)
     {
         if(msg.data.cmd=="callback")
         {
-            if(this._callbacks[msg.data.cb])
-                this._callbacks[msg.data.cb](msg.data.error,msg.data.response);
+            if(this._callbacks[msg.data.cb]) this._callbacks[msg.data.cb](msg.data.error,msg.data.response);
+                else console.warn("talkerAPI: could not find callback",msg);
         }
         else
             this.emitEvent(msg.data.cmd,msg.data.data,function(error,r)
