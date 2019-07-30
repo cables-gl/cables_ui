@@ -206,12 +206,17 @@ CABLES.UI.ServerOps = function(gui) {
     };
 
     this.deleteAttachment = function(opName, attName) {
-        if (confirm("really ?")) {
-            CABLES.api.delete(
-                'op/' + opName + '/attachments/' + attName, {},
-                function(res) {
+        if (confirm("really ?"))
+        {
+            CABLES.talkerAPI.send(
+                "opAttachmentDelete",
+                {
+                    "opname":opName,
+                    "name":attName,
+                },
+                function(err,res)
+                {
                     gui.metaTabs.activateTabByName("code")
-                    console.log(res);
                 });
         }
     };
@@ -258,7 +263,7 @@ CABLES.UI.ServerOps = function(gui) {
                 'op/checkname/' + usernamespace+'.'+v ,
                 function (res) {
                     console.log(res);
-                    if (res.problems.length>0)
+                    if(res.problems.length>0)
                     {
                         var html = '<b>your op name has issues:</b><br/><ul>';
                         for (var i = 0; i < res.problems.length;i++) html += '<li>' + res.problems[i]+'</li>';
@@ -348,23 +353,46 @@ CABLES.UI.ServerOps = function(gui) {
                                 if(which.editorObj && which.editorObj.name)
                                     CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
                             },
-                            "onSave":function(setStatus, content) {
-                                CABLES.api.post(
-                                    'op/' + opname + '/attachment/' + attachmentName, {
-                                        content: content
+                            "onSave":function(setStatus, content)
+                            {
+                                CABLES.talkerAPI.send(
+                                    "opAttachmentSave",
+                                    {
+                                        "opname":opname,
+                                        "name":attachmentName,
+                                        "content":content
                                     },
-                                    function(res) {
+                                    function(err,res)
+                                    {
+                                        if(err)
+                                        {
+                                            CABLES.UI.notifyError("error: op not saved");
+                                            // setStatus('ERROR: not saved - '+res.msg);
+                                            console.warn('[opAttachmentSave]', err);
+                                            return;
+                                        }
+
                                         setStatus('saved');
                                         gui.serverOps.execute( opname );
-                                    },
-                                    function(res) {
-                                        setStatus('ERROR: not saved - '+res.msg);
-                                        console.log('err res', res);
-                                    }
-                                );}
-                        });
+                                    });                        
 
-                    if(cb)cb();
+
+                                // CABLES.api.post(
+                                //     'op/' + opname + '/attachment/' + attachmentName, {
+                                //         content: content
+                                //     },
+                                //     function(res) {
+                                //         setStatus('saved');
+                                //         gui.serverOps.execute( opname );
+                                //     },
+                                //     function(res) {
+                                //         setStatus('ERROR: not saved - '+res.msg);
+                                //         console.log('err res', res);
+                                //     }
+                        }
+                    });
+
+                if(cb)cb();
                     else gui.maintabPanel.show(); 
                 // gui.showEditor();
                 // gui.editor().addTab({
@@ -440,11 +468,6 @@ CABLES.UI.ServerOps = function(gui) {
                         },
                         function(err,res)
                         {
-                    // CABLES.api.put(
-                    //     'ops/' + opname, {
-                    //         code: content
-                    //     },
-                    //     function(res) {
                             if (!res.success) {
                                 if (res.error) setStatus('Error: Line ' + res.error.line + ' : ' + res.error.message, true);
                                 else setStatus('error: unknown error', true);
