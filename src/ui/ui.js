@@ -751,22 +751,28 @@ CABLES.UI.GUI = function() {
     {
         $('#converterprogress').show();
         $('#converterform').hide();
-        
-        // TODO API
-        CABLES.api.post(
-            'project/'+projectId+'/file/convert/'+fileId+'/'+converterId,
-            {
-                options:CABLES.serializeForm('#converterform')
-            },
-            function(res)
-            {
-                $('#converteroutput').show();
-                console.log(res);
-                $('#converterprogress').hide();
-                if(res.info) $('#converteroutput').html(res.info);
-                    else $('#converteroutput').html('finished!');
 
-                // CABLES.UI.fileSelect.refresh();
+        CABLES.talkerAPI.send("fileConvert",
+            {
+                "fileId":fileId,
+                "converterId":converterId,
+                "options":CABLES.serializeForm('#converterform')
+            }, 
+            function(err,res)
+            {
+                console.log(err,res);
+                $('#converterprogress').hide();
+                $('#converteroutput').show();
+
+                if(err)
+                {
+                    $('#converteroutput').html('Error: something went wrong while converting...'+(err.msg||''));
+                }
+                else
+                {
+                    if(res.info) $('#converteroutput').html(res.info);
+                        else $('#converteroutput').html('finished!');
+                }
             });
     };
 
