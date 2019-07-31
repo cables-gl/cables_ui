@@ -133,26 +133,31 @@
             <span class="iconbutton info" data-tt="search in patch" data-infotext="file_search" onclick="gui.find().show('{{file.fileDb.fileName}}')">
                 <a class="tt icon icon-1x icon-search"></a>
             </span>
+
+            {{#compare source '==' 'patch' }}
             <span class="iconbutton info" data-tt="delete file" id="filedelete{{file.fileDb._id}}" data-infotext="file_delete">
                 <a class="tt icon icon-1x icon-trash" ></a>
             </span>
+            {{/compare}}
                 
             <!-- &nbsp;&nbsp;<a class="tt icon icon-1x icon-editbox" data-tt="edit file" data-infotext="file_edit"></a> -->
             <br/><br/>
 
             <b>{{file.fileDb.fileName}}</b>
             
-            <br/><br/>
-            {{#if file.imgSizeWidth}}
-                    {{file.fileDb.type}}: {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} ({{file.sizeReadable}})
-                {{else}}
-                    {{file.fileDb.type}} ({{file.sizeReadable}})
-            {{/if}}
+            {{#compare source '==' 'patch' }}
+                <br/><br/>
+                {{#if file.imgSizeWidth}}
+                        {{file.fileDb.type}}: {{ file.imgSizeWidth }} x {{ file.imgSizeHeight }} ({{file.sizeReadable}})
+                    {{else}}
+                        {{file.fileDb.type}} ({{file.sizeReadable}})
+                {{/if}}
 
-            <br/><br/>
-            last change: {{file.readableDateSince}}<br/>
-            {{file.readableDate}}
-            <br/><br/>
+                <br/><br/>
+                last change: {{file.readableDateSince}}<br/>
+                {{file.readableDate}}
+                <br/><br/>
+            {{/compare}}
 
         </div>
     </div>

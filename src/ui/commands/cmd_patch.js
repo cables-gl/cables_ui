@@ -65,30 +65,10 @@ CABLES.CMD.PATCH.findUserOps = function () {
 
 CABLES.CMD.PATCH.createFile=function()
 {
-    CABLES.UI.MODAL.prompt(
-        "Create new file",
-        "Enter filename",
-        "newfile.txt",
-        function(fn)
-        {
-			// TODO API
-			CABLES.api.put(
-				'project/' + gui.patch().getCurrentProject()._id + '/'+fn, {
-					content: 'this is an empty file...'
-				},
-				function(res) {
-					CABLES.UI.notify("file created");
-					// CABLES.UI.fileSelect.refresh();
-					gui.refreshFileManager();
-				},
-				function(res) {
-					CABLES.UI.notifyError("error: file not created");
-					// CABLES.UI.fileSelect.refresh();
-					gui.refreshFileManager();
-					console.log('err res', res);
-				}
-			);
-		});
+	gui.showFileManager(function()
+	{
+		gui.fileManager.createFile();
+	});
 
 };
 

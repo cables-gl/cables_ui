@@ -785,32 +785,26 @@ CABLES.UI.Patch = function(_gui) {
             "Save As...",
             "Enter a name for the copy of this Project ",
             "My new Project",
-            function(name) {
-
-
+            function(name)
+            {
                 CABLES.talkerAPI.send("newPatch",{"name":name}, 
                     function(err,d)
                     {
+                        gui.scene().settings=gui.scene().settings||{};
+                        gui.scene().settings.isPublic = false;
+                        gui.scene().settings.secret = '';
+                        gui.scene().settings.isExample = false;
+                        gui.scene().settings.isTest = false;
+                        gui.scene().settings.isFeatured = false;
+                        gui.scene().settings.opExample = '';
 
-                // CABLES.api.post('project', {
-                    // name: name
-                // }, function(d) {
+                        self.saveCurrentProject(
+                            function()
+                            {
+                                CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
+                            }, d._id, d.name);
 
-                    gui.scene().settings=gui.scene().settings||{};
-                    gui.scene().settings.isPublic = false;
-                    gui.scene().settings.secret = '';
-                    gui.scene().settings.isExample = false;
-                    gui.scene().settings.isTest = false;
-                    gui.scene().settings.isFeatured = false;
-                    gui.scene().settings.opExample = '';
-
-                    self.saveCurrentProject(
-                        function()
-                        {
-                            CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
-                        }, d._id, d.name);
-
-                });
+                    });
             });
     };
 

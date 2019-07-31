@@ -12,12 +12,13 @@ CABLES.UI.FileManager=function(cb)
 
     this.reload(cb);
 
-    this._manager.addEventListener("onItemsSelected",function(items)
+    this._manager.addEventListener("onItemsSelected",
+    (items) =>
     {
         this.setDetail(items);
-    }.bind(this));
+    });
 
-    this._manager.addEventListener("onClose",function()
+    this._manager.addEventListener("onClose",() =>
     {
         CABLES.UI.userSettings.set("fileManagerOpened",false);
         gui.fileManager=null;
@@ -53,7 +54,7 @@ CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
 
 CABLES.UI.FileManager.prototype.reload=function(cb)
 {
-    function createItem(items,file)
+    function createItem(items,file,source)
     {
         var item={
             "title":file.n,
@@ -62,6 +63,7 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         };
 
         item.icon="file";
+        item.source=source||'lib';
         
         if(file.t=='SVG') item.preview=file.p;
         else if(file.t=='image') item.preview=file.p;
@@ -75,17 +77,20 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
     }
 
     this._manager.clear();
-
+    this._fileSource=this._fileSource||'lib';
     if(this._firstTimeOpening)this._fileSource = 'patch';
 
     CABLES.talkerAPI.send("getFilelist",
     {
         "source":this._fileSource
     },
-    function(err,files)
+    (err,files) =>
     {
         if(err)
+        {
             console.err(err);
+            return;
+        }
 
         if(this._firstTimeOpening && files.length==0)
         {
@@ -102,14 +107,14 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         for(var i=0;i<files.length;i++)
         {
             var file=files[i];
-            createItem(items,file);
+            createItem(items,file,this._fileSource);
         }
 
         this._manager.setItems(items);
         this.updateHeader();
         if(cb)cb();
 
-    }.bind(this));
+    });
 }
 
 CABLES.UI.FileManager.prototype.setSource=function(s,cb)
@@ -185,6 +190,9 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
     {
         const itemId=detailItems[0].id;
 
+        console.log(detailItems);
+
+
         CABLES.talkerAPI.send("getFileDetails",
         {
             "fileid":itemId
@@ -198,7 +206,8 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
             
             $('#item_details').html(html);
 
-            document.getElementById("filedelete"+itemId).addEventListener("click",function(e)
+            var delEle=document.getElementById("filedelete"+itemId);
+            if(delEle)delEle.addEventListener("click",function(e)
             {
                 CABLES.talkerAPI.send("deleteFile",
                 {
@@ -257,5 +266,34 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
             }
         }.bind(this));
     }
-
 }
+
+CABLES.UI.FileManager.prototype.createFile=function()
+{
+    CABLES.UI.MODAL.prompt(
+        "Create new file",
+        "Enter filename",
+        "newfile.txt",
+        function(fn)
+        {
+            CABLES.talkerAPI.send(
+                "createFile", 
+                { "name":fn },
+                (err,res) =>
+                {
+                    if(err)
+                    {
+                        CABLES.UI.notifyError("Error: "+err.msg);
+                        console.log('[createfile]', res);
+                        gui.refreshFileManager();
+                        return;
+                    }
+                    CABLES.UI.notify("file created");
+                    gui.refreshFileManager();
+                });
+        });
+    
+}
+
+
+
