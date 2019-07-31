@@ -261,7 +261,7 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 
     // TODO API?
     CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>&nbsp;&nbsp;');
-    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
+    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="CABLES.CMD.PATCH.reload();">reload patch</a>&nbsp;&nbsp;');
 };
 
 CABLES.UI.MODAL.showException=function(ex,op)
@@ -278,7 +278,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
         html+='<div class="startuperror"><b>error</b>\n';
         html+='<br/>';
         html+=ex.message;
-        html+='<br/><br/><a class="button" onclick="document.location.reload();">reload</a>';
+        html+='<br/><br/><a class="button" onclick="CABLES.CMD.PATCH.reload();">reload</a>';
         html+='</div>';
 
 
@@ -324,6 +324,9 @@ CABLES.UI.notifyError=function(title,text)
 CABLES.UI.lastNotify='';
 CABLES.UI.lastText='';
 
+
+
+
 CABLES.UI.notify=function(title,text)
 {
     if(title==CABLES.UI.lastNotify && text==CABLES.UI.lastText)
@@ -332,7 +335,6 @@ CABLES.UI.notify=function(title,text)
         {
             CABLES.UI.lastNotify='';
             CABLES.UI.lastText='';
-            
         },1000);
         return;
     }

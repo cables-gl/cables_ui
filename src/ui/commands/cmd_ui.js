@@ -106,7 +106,7 @@ CABLES.CMD.UI.showMinimap = function() {
 };
 CABLES.CMD.UI.toggleMinimap = function () {
     CABLES.UI.userSettings.set('showMinimap', !CABLES.UI.userSettings.get('showMinimap'));
-    if (CABLES.UI.userSettings.get('showMinimap'))document.location.reload();
+    if (CABLES.UI.userSettings.get('showMinimap'))CABLES.CMD.PATCH.reload();
         else CABLES.CMD.UI.hideMinimap();
 };
 

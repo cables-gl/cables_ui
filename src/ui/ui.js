@@ -700,10 +700,7 @@ CABLES.UI.GUI = function() {
             });
     };
 
-    this.deleteCurrentProject = function()
-    {
-        if(confirm('delete ?')) CABLES.sandbox.deleteProject(self.patch().getCurrentProject()._id);
-    };
+
 
     this.getUserOs = function() {
         var OSName = "Unknown OS";
@@ -754,22 +751,28 @@ CABLES.UI.GUI = function() {
     {
         $('#converterprogress').show();
         $('#converterform').hide();
-        
-        // TODO API
-        CABLES.api.post(
-            'project/'+projectId+'/file/convert/'+fileId+'/'+converterId,
-            {
-                options:CABLES.serializeForm('#converterform')
-            },
-            function(res)
-            {
-                $('#converteroutput').show();
-                console.log(res);
-                $('#converterprogress').hide();
-                if(res.info) $('#converteroutput').html(res.info);
-                    else $('#converteroutput').html('finished!');
 
-                // CABLES.UI.fileSelect.refresh();
+        CABLES.talkerAPI.send("fileConvert",
+            {
+                "fileId":fileId,
+                "converterId":converterId,
+                "options":CABLES.serializeForm('#converterform')
+            }, 
+            function(err,res)
+            {
+                console.log(err,res);
+                $('#converterprogress').hide();
+                $('#converteroutput').show();
+
+                if(err)
+                {
+                    $('#converteroutput').html('Error: something went wrong while converting...'+(err.msg||''));
+                }
+                else
+                {
+                    if(res.info) $('#converteroutput').html(res.info);
+                        else $('#converteroutput').html('finished!');
+                }
             });
     };
 
@@ -1229,51 +1232,46 @@ CABLES.UI.GUI = function() {
             timeout: false,
             buttons: [
                 ['<button>reload</button>', function(instance, toast) {
-                    document.location.reload();
+                    CABLES.CMD.PATCH.reload();
                 }]
             ]
         });
     };
 
 
-    this.waitToShowUI = function() {
+    this.showUiElements = function() {
         $('#cablescanvas').show();
         $('#loadingstatus').hide();
         $('#mainContainer').show();
 
-        if (CABLES.UI.userSettings.get("showUIPerf")==true) CABLES.uiperf.show();
-        if (CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
+        if(CABLES.UI.userSettings.get("showUIPerf")==true) CABLES.uiperf.show();
+        if(CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
         self.patch().getViewBox().update();
 
-        // self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
         CABLES.showPacoRenderer();
 
-        this._elGlCanvas.hover(function (e) {
+        this._elGlCanvas.hover(function (e){
             CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
         }, function () {
             CABLES.UI.hideInfo();
         });
 
-        if (CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
+        if(CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
 
-
-        if (_scene.cgl.aborted) {
+        if(_scene.cgl.aborted) {
             console.log('errror...');
             CABLES.UI.MODAL.showError('no webgl', 'your browser does not support webgl');
-            // _scene.pause();
             return;
         }
 
-        logStartup('finished loading cables');
-        CABLES.UI.loaded=true;
 
-        // if(CABLES.UI.userSettings.get("fileViewOpen")==true) this.showLibrary(); //old
+
         if(CABLES.UI.userSettings.get("fileManagerOpened")==true) this.showFileManager();
         if(CABLES.UI.userSettings.get("timelineOpened")==true) this.showTiming();
 
         setTimeout(function(){ CABLES.editorSession.open(); },100);
         
-        if (CABLES.UI.userSettings.get('showTipps')) CABLES.UI.tipps.show();
+        if(CABLES.UI.userSettings.get('showTipps') && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");
@@ -1796,7 +1794,7 @@ function startUi(event)
                 // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
                 gui.showWelcomeNotifications();
                 incrementStartup();
-                gui.waitToShowUI();
+                gui.showUiElements();
                 gui.maintabPanel.init();
                 gui.setLayout();
                 gui.patch().fixTitlePositions();
@@ -1804,7 +1802,11 @@ function startUi(event)
                 incrementStartup();
                 gui.opSelect().search();
                 
-                if(!gui.user.introCompleted)gui.introduction().showIntroduction();
+                if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
+
+                logStartup('finished loading cables');
+                CABLES.UI.loaded=true;
+
             });
         });
     });

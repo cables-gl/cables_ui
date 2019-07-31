@@ -785,32 +785,26 @@ CABLES.UI.Patch = function(_gui) {
             "Save As...",
             "Enter a name for the copy of this Project ",
             "My new Project",
-            function(name) {
-
-
+            function(name)
+            {
                 CABLES.talkerAPI.send("newPatch",{"name":name}, 
                     function(err,d)
                     {
+                        gui.scene().settings=gui.scene().settings||{};
+                        gui.scene().settings.isPublic = false;
+                        gui.scene().settings.secret = '';
+                        gui.scene().settings.isExample = false;
+                        gui.scene().settings.isTest = false;
+                        gui.scene().settings.isFeatured = false;
+                        gui.scene().settings.opExample = '';
 
-                // CABLES.api.post('project', {
-                    // name: name
-                // }, function(d) {
+                        self.saveCurrentProject(
+                            function()
+                            {
+                                CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
+                            }, d._id, d.name);
 
-                    gui.scene().settings=gui.scene().settings||{};
-                    gui.scene().settings.isPublic = false;
-                    gui.scene().settings.secret = '';
-                    gui.scene().settings.isExample = false;
-                    gui.scene().settings.isTest = false;
-                    gui.scene().settings.isFeatured = false;
-                    gui.scene().settings.opExample = '';
-
-                    self.saveCurrentProject(
-                        function()
-                        {
-                            CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
-                        }, d._id, d.name);
-
-                });
+                    });
             });
     };
 
@@ -870,17 +864,16 @@ CABLES.UI.Patch = function(_gui) {
             indicator:'canvas'
         });
 
-        // TODO API
         // todo is this protected ?
         CABLES.api.get('project/' + gui.project()._id+'/updated',
             function(data)
             {
                 if(this._serverDate!=data.updated)
                 {
-                    CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
+                    CABLES.UI.MODAL.showError('meanwhile...', 'This patch was changed. Your version is out of date. <br/><br/>Last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
                     CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);">close</a>&nbsp;&nbsp;');
                     CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="gui.patch().checkUpdatedSaveForce(\''+data.updated+'\');">save anyway</a>&nbsp;&nbsp;');
-                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
+                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="CABLES.CMD.PATCH.reload();">reload patch</a>&nbsp;&nbsp;');
                 }
                 else
                 {

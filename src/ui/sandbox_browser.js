@@ -12,15 +12,6 @@ CABLES.SandboxBrowser.prototype.isOffline=function()
     return false;
 }
 
-CABLES.SandboxBrowser.prototype.deleteProject=function(id)
-{
-    // TODO API
-    CABLES.api.delete('project/' + id, {},
-    function() {
-        document.location.href = "/";
-    });
-};
-
 CABLES.SandboxBrowser.prototype.getCablesUrl=function()
 {
     return this._cfg.urlCables;
@@ -114,6 +105,49 @@ CABLES.SandboxBrowser.prototype.savePatch=function(options,cb)
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)
 {
     gui.user=this._cfg.user;
+
+
+    CABLES.talkerAPI.addEventListener(
+        "notify",
+        function(options,next)
+        {
+            CABLES.UI.notify(options.msg);
+        });
+
+    CABLES.talkerAPI.addEventListener(
+        "notifyError",
+        function(options,next)
+        {
+            CABLES.UI.notifyError(options.msg);
+        });
+
+    CABLES.talkerAPI.addEventListener(
+        "refreshFileManager",
+        function(options,next)
+        {
+            CABLES.UI.MODAL.hide();
+            gui.refreshFileManager();
+        });
+
+    CABLES.talkerAPI.addEventListener(
+        "uploadProgress",
+        function(options,next)
+        {
+            if(options.complete>=100)
+            {
+                $('#uploadprogresscontainer').hide();
+                CABLES.UI.notify("File Uploaded");
+            }
+            else $('#uploadprogresscontainer').show();
+
+
+            console.log("file upl!",options.complete);
+            $('#uploadprogress').css({"width":options.complete+'%'});
+    
+            gui.refreshFileManager();
+        });
+
+
 
     CABLES.talkerAPI.send("getPatch",{},function(err,r)
     {

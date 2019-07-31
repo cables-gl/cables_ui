@@ -161,7 +161,7 @@ CABLES.UI.ServerOps = function(gui) {
             html='';
             html+='<h1>can not execute op</h1>';
             html+='this op crashed before, you should reload the page.<br/><br/>';
-            html+='<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;';
+            html+='<a class="button fa fa-refresh" onclick="CABLES.CMD.PATCH.reload();">reload patch</a>&nbsp;&nbsp;';
 
             CABLES.UI.MODAL.show(html, {
                 title: 'need to reload page'

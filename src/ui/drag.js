@@ -1,10 +1,8 @@
 
 var CABLES=CABLES||{};
 
-
 CABLES.dragImage = new Image();
 CABLES.dragImage.src = '/ui/img/dragicon.png';
-
 
 CABLES.DragNDrop=function()
 {
@@ -40,7 +38,12 @@ CABLES.DragNDrop.startDragLibraryFile=function(event,p)
 
     function drop(event)
     {
-        if(!self.internal)return;
+        if(!self.internal)
+        {
+            console.log("not internal!");
+            return;
+        }
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -53,6 +56,8 @@ CABLES.DragNDrop.startDragLibraryFile=function(event,p)
         $("#patch").off("dragover",dragover);
         $("#patch").off("dragleave", dragleave);
         $("#patch").off("dragend", dragleave);
+        
+        CABLES.unBindUploadDragNDrop();
         CABLES.bindUploadDragNDrop();
         self.internal=false;
     }
