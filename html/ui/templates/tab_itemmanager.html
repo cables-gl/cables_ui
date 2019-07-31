@@ -13,7 +13,7 @@
                     <h1>{{divider}}</h1>
                 </div>
             {{else}}
-                <div class="item-container {{#if selected}} selected {{/if}} draggable" id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');">
+                <div class="info item-container {{#if selected}} selected {{/if}} draggable" id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="Drag this File to the patchfield to create op!">
                     <div style="">
                         {{#if preview}}
                         <div class="preview" style="width:90%;height:90%;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">

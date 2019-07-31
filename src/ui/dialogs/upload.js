@@ -20,6 +20,7 @@ CABLES.uploadSelectFile=function()
 CABLES.uploadDragOver=function(event)
 {
     // CABLES.uploadDropEvent=event.originalEvent;
+    // jQuery.event.props.push('dataTransfer');
 
     if(CABLES.DragNDrop.internal)
     {
@@ -41,7 +42,7 @@ CABLES.uploadDragOver=function(event)
     // if(el) openDialog = window.getComputedStyle(el).display === 'none';
     CABLES.CMD.PATCH.uploadFileDialog();
     
-    // jQuery.event.props.push('dataTransfer');
+    jQuery.event.props.push('dataTransfer');
 };
 
 
@@ -77,17 +78,13 @@ CABLES.uploadDragLeave=function(event)
     // console.log("leave");
 };
 
-CABLES.uploadDragEnter=function(event)
-{
-    console.log("Drag enter!");
-};
 
 CABLES.bindUploadDragNDrop=function()
 {
     $("body").on("drop", CABLES.uploadDrop);
-    $("body").on("dragover",CABLES.uploadDragOver );
+    $("body").on("dragover",CABLES.uploadDragOver);
     $("body").on("dragleave",CABLES.uploadDragLeave);
-    window.addEventListener("dragenter",CABLES.uploadDragEnter);
+    // window.addEventListener("dragenter",CABLES.uploadDragEnter);
 };
 
 CABLES.unBindUploadDragNDrop=function()

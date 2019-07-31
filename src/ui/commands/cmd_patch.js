@@ -84,6 +84,7 @@ CABLES.CMD.PATCH.uploadFile = function () {
 CABLES.CMD.PATCH.uploadFileDialog = function () {
 
 	var fileElem = document.getElementById("uploaddialog");
+	jQuery.event.props.push('dataTransfer');
 	
 	if(!fileElem)
 	{

@@ -133,9 +133,15 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
         "uploadProgress",
         function(options,next)
         {
-            if(options.complete==100) $('#uploadprogresscontainer').hide();
-                else $('#uploadprogresscontainer').show();
+            if(options.complete>=100)
+            {
+                $('#uploadprogresscontainer').hide();
+                CABLES.UI.notify("File Uploaded");
+            }
+            else $('#uploadprogresscontainer').show();
 
+
+            console.log("file upl!",options.complete);
             $('#uploadprogress').css({"width":options.complete+'%'});
     
             gui.refreshFileManager();
