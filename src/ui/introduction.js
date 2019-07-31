@@ -5,10 +5,8 @@ CABLES.UI.Introduction = CABLES.UI.Introduction ||
 function() {
 
     /* Disables intro.js for the current logged-in user */
-    function disableIntroForUser(){
-        // TODO API
-        // if(!CABLES.sandbox.isOffline())
-        // CABLES.api.put('user/introCompleted',function(result) { console.log(result); },function(){});
+    function disableIntroForUser()
+    {
         CABLES.UI.userSettings.set("introCompleted",true);
     }
 

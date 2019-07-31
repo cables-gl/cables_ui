@@ -874,7 +874,7 @@ CABLES.UI.Patch = function(_gui) {
                     CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
                     CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);">close</a>&nbsp;&nbsp;');
                     CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="gui.patch().checkUpdatedSaveForce(\''+data.updated+'\');">save anyway</a>&nbsp;&nbsp;');
-                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
+                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="CABLES.CMD.PATCH.reload();">reload patch</a>&nbsp;&nbsp;');
                 }
                 else
                 {

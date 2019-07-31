@@ -54,7 +54,7 @@ CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
 
 CABLES.UI.FileManager.prototype.reload=function(cb)
 {
-    function createItem(items,file,source)
+    function createItem(items,file)
     {
         var item={
             "title":file.n,
@@ -63,7 +63,6 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         };
 
         item.icon="file";
-        item.source=source||'lib';
         
         if(file.t=='SVG') item.preview=file.p;
         else if(file.t=='image') item.preview=file.p;
@@ -107,7 +106,7 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         for(var i=0;i<files.length;i++)
         {
             var file=files[i];
-            createItem(items,file,this._fileSource);
+            createItem(items,file);
         }
 
         this._manager.setItems(items);
@@ -190,8 +189,6 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
     {
         const itemId=detailItems[0].id;
 
-        console.log(detailItems);
-
 
         CABLES.talkerAPI.send("getFileDetails",
         {
@@ -201,7 +198,8 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
         {
             html = CABLES.UI.getHandleBarHtml('filemanager_details', {
                 "projectId": gui.patch().getCurrentProject()._id,
-                "file": r
+                "file": r,
+                "source":this._fileSource
             });
             
             $('#item_details').html(html);
@@ -255,8 +253,16 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
                     },
                     function(err,r)
                     {
-                        if(!err && r.success) this._manager.removeItem(detailItem.id);
-                            else CABLES.UI.notifyError("error: could not delete file",err);
+                        if(r.success)
+                        {
+                            this._manager.removeItem(detailItem.id);
+                        }
+                        else
+                        {
+                            CABLES.UI.notifyError("error: could not delete file",err);
+                            console.log(err);
+                        }
+
                         this._manager.unselectAll();
                     }.bind(this)
                     ,function(r)

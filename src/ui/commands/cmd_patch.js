@@ -16,7 +16,7 @@ CABLES.CMD.PATCH.deleteSelectedOps=function()
 
 CABLES.CMD.PATCH.reload=function()
 {
-	document.location.reload();
+	CABLES.talkerAPI.send("reload");
 };
 
 CABLES.CMD.PATCH.save=function()
@@ -73,16 +73,46 @@ CABLES.CMD.PATCH.createFile=function()
 };
 
 CABLES.CMD.PATCH.uploadFile = function () {
-    var fileElem = document.getElementById("hiddenfileElem");
-    if (fileElem) fileElem.click();
+    // var fileElem = document.getElementById("hiddenfileElem");
+	// if (fileElem) fileElem.click();
+	
+
+	CABLES.talkerAPI.send("uploadFileDialog");
+
 };
 
 CABLES.CMD.PATCH.uploadFileDialog = function () {
 
-    var html = CABLES.UI.getHandleBarHtml('upload');
+	var fileElem = document.getElementById("uploaddialog");
+	
+	if(!fileElem)
+	{
+		var html = CABLES.UI.getHandleBarHtml('upload',{"patchId":gui.patch().getCurrentProject()._id});
+		CABLES.UI.MODAL.show(html,{"title":"Upload File"});
 
-    CABLES.UI.MODAL.show(html,{title:"Upload File"});
-        // CABLES.UI.showUploadDialog
+		var frame=document.getElementById("uploadIframe");
+		var talker=new CABLES.TalkerAPI(frame.contentWindow);
+		
+		talker.addEventListener(
+			"uploadProgress",
+			function(options,next)
+			{
+				if(options.complete==100) $('#uploadprogresscontainer').hide();
+					else $('#uploadprogresscontainer').show();
+				$('#uploadprogress').css({"width":options.complete+'%'});
+				gui.refreshFileManager();
+			});
+
+		talker.addEventListener(
+			"refreshFileManager",
+			function(options,next)
+			{
+				CABLES.UI.MODAL.hide();
+				gui.refreshFileManager();
+			});
+		
+		
+	}
 };
 
 

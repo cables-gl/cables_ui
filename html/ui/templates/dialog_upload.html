@@ -1,10 +1,11 @@
 <script id="upload" type="text/x-handlebars-template">
 
-    <div class="uploadarea" id="uploadarea" onclick="CABLES.CMD.PATCH.uploadFile()">
-        drop files to upload!
-    </div> 
 
-    <a class="bluebutton" onclick="CABLES.CMD.PATCH.uploadFile()">select file</a>
-    <a class="greybutton"onclick="CABLES.UI.MODAL.hide()">cancel</a>
+    <div id="uploaddialog">
+        <iframe id="uploadIframe" src="{{cablesUrl}}/project/{{patchId}}/upload" style="width:100%;height:200px;border-radius:20px;border:none;margin-bottom:20px;"></iframe>
+
+        <a class="bluebutton" onclick="CABLES.CMD.PATCH.uploadFile()">select file</a>
+        <a class="greybutton"onclick="CABLES.UI.MODAL.hide()">cancel</a>
+    </div>
 
 </script>

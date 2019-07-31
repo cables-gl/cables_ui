@@ -700,10 +700,7 @@ CABLES.UI.GUI = function() {
             });
     };
 
-    this.deleteCurrentProject = function()
-    {
-        if(confirm('delete ?')) CABLES.sandbox.deleteProject(self.patch().getCurrentProject()._id);
-    };
+
 
     this.getUserOs = function() {
         var OSName = "Unknown OS";
@@ -1229,7 +1226,7 @@ CABLES.UI.GUI = function() {
             timeout: false,
             buttons: [
                 ['<button>reload</button>', function(instance, toast) {
-                    document.location.reload();
+                    CABLES.CMD.PATCH.reload();
                 }]
             ]
         });
