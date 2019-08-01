@@ -1413,7 +1413,9 @@ CABLES.UI.Patch = function(_gui) {
             self.toggleCenterZoom(e);
         };
 
-        $('#patch').on("mousemove touchmove", function(e) {
+
+
+        $('#patch').on("mousemove", function(e) {
 
             if(CABLES.SPLITPANE.bound)return;
             
@@ -1459,7 +1461,31 @@ CABLES.UI.Patch = function(_gui) {
         this._elPatchSvg.bind("mouseenter", function(event) { gui.setCursor(); }.bind(this));
         this._elPatchSvg.bind("mouseleave", function(event) { gui.setCursor(); }.bind(this));
 
-        this._elPatchSvg.bind("mousemove touchmove", function(e) {
+
+
+
+        this._elPatchSvg.bind("touchstart", (e) =>
+        { 
+            e = mouseEvent(e);
+            this.lastMouseMoveEvent = null;
+        });
+
+        this._elPatchSvg.bind("touchmove", (e) => {
+            e = mouseEvent(e);
+
+            if (this.lastMouseMoveEvent)
+            {
+                const lastMouseCoord=gui.patch().getCanvasCoordsMouse(this.lastMouseMoveEvent)
+                this._viewBox.setXY(
+                    this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
+                    this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
+                callEvent('patch_pan');
+            }
+            this.lastMouseMoveEvent = e;
+        });
+
+            
+        this._elPatchSvg.bind("mousemove", function(e) {
             e = mouseEvent(e);
 
             if (CABLES.UI.MOUSEOVERPORT)return;
@@ -1470,9 +1496,10 @@ CABLES.UI.Patch = function(_gui) {
                 return;
             }
 
-            if (self.lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEDRAGGINGPORT
+            if (self.lastMouseMoveEvent && 
+                (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) )) { // && !CABLES.UI.MOUSEDRAGGINGPORT
                 gui.setCursor("grab");
-                $('#patch').focus();
+                this._elPatch.focus();
                 const lastMouseCoord=gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent)
 
                 this._viewBox.setXY(
@@ -1872,7 +1899,7 @@ CABLES.UI.Patch = function(_gui) {
             function(op)
             {
                 gui.setStateUnsaved();
-                $('#patch').focus();
+                this._elPatch.focus();
                 var width = CABLES.UI.uiConfig.opWidth;
                 if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
 
@@ -1960,7 +1987,7 @@ CABLES.UI.Patch = function(_gui) {
                 this.updateViewBox();
             }
     
-            $('#patch').focus();
+            this._elPatch.focus();
             self.updateSubPatchBreadCrumb();
     
             gui.setWorking(false,'patch');
@@ -3058,7 +3085,6 @@ CABLES.UI.Patch = function(_gui) {
         uupos.x = evt.clientX || 0;
         uupos.y = evt.clientY || 0;
         uupos = uupos.matrixTransform(ctm);
-
         return uupos;
     };
 
