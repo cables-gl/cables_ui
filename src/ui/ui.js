@@ -1665,7 +1665,7 @@ CABLES.UI.GUI = function() {
             {
                 gui.patch().lastMouseMoveEvent=null;
                 gui.showCanvasModal(false);
-                // $('#patch').focus();
+                $('#patch').focus();
                 e.preventDefault();
             });
 
