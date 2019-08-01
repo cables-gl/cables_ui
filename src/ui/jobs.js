@@ -16,12 +16,8 @@ function()
         {
             if(jobs[i].indicator)indicator=jobs[i].indicator;
             str+='<div><i class="fa fa-circle-o-notch fa-spin"></i>&nbsp;&nbsp;'+jobs[i].title+'';
-
-
             str+='<div id="jobprogress'+jobs[i].id+'" style="width:'+(jobs[i].progress||0)+'%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;"></div>';
-
             str+='</div>';
-
         }
 
         if(jobs.length==0)

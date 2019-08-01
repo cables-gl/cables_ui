@@ -70,6 +70,9 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
     this.store();
     CABLES.UI.userSettings.set("editortab", name);
 
+    console.log(CABLES.UI.loaded,'CABLES.UI.loaded',CABLES.UI.userSettings.get("maintabsVisible"));
+
+
     return obj;
 }
 
@@ -89,6 +92,16 @@ CABLES.EditorSession.prototype.open=function()
             console.log('session',sessions[i].name);
         }
 
+    if(sessions.length>0)
+    {
+        if(!CABLES.UI.loaded)
+        {
+            var showMainTabs=CABLES.UI.userSettings.get("maintabsVisible");
+            if(showMainTabs) gui.maintabPanel.show(true);
+        }
+
+    }
+    
     // setTimeout(function()
     // {
         // console.log(sessions,lastTab);
