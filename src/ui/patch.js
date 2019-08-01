@@ -888,7 +888,7 @@ CABLES.UI.Patch = function(_gui) {
     this.saveCurrentProject = function(cb, _id, _name)
     {
         if (this.loadingError) {
-            CABLES.UI.MODAL.showError('project not saved', 'could not save project: had errors while loading!');
+            CABLES.UI.MODAL.showError('Project not saved', 'Could not save project: had errors while loading!');
             return;
         }
 
@@ -995,8 +995,13 @@ CABLES.UI.Patch = function(_gui) {
                     if(this._savedPatchCallback) this._savedPatchCallback();
                     this._savedPatchCallback=null;
                     
-                    if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
-                        else CABLES.UI.notify('patch saved');
+                    if(!r.success)
+                    {
+                        CABLES.UI.MODAL.showError('Patch not saved', 'Could not save patch: '+r.msg);
+                        console.log(r);
+                        return;
+                    }
+                    else CABLES.UI.notify('Patch saved');
                     
                     self._serverDate=r.updated;
                     

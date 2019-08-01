@@ -486,12 +486,16 @@ CABLES.UI.ServerOps = function(gui) {
                         },
                         function(err,res)
                         {
-                            if (!res.success) {
-                                if (res.error) setStatus('Error: Line ' + res.error.line + ' : ' + res.error.message, true);
-                                else setStatus('error: unknown error', true);
-                            } else {
-                                
-                                if (!CABLES.Patch.getOpClass(opname))
+                            if (!res.success)
+                            {
+                                if (res.error && res.error.line!=undefined) setStatus('Error: Line ' + res.error.line + ' : ' + res.error.message, true);
+                                    else setStatus('Error: '+err.msg||"Unknown error");
+
+                                console.log(res);
+                            }
+                            else
+                            {
+                                if(!CABLES.Patch.getOpClass(opname))
                                 {
                                     console.log('execute first time...');
                                     gui.opSelect().reload();

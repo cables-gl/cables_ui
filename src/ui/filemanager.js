@@ -208,13 +208,11 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
             if(delEle)delEle.addEventListener("click",function(e)
             {
                 CABLES.talkerAPI.send("deleteFile",
-                {
-                    "fileid":r.fileDb._id
-                },
+                { "fileid":r.fileDb._id },
                 function(err,r)
                 {
                     if(r.success) this._manager.removeItem(itemId);
-                        else CABLES.UI.notifyError("error: could not delete file");
+                        else CABLES.UI.notifyError("Error: Could not delete file. "+err.msg);
 
                 }.bind(this));
             }.bind(this));
