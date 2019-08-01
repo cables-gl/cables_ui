@@ -20,15 +20,12 @@ CABLES.CMD.UI.userSettings = function() {
 
 
 CABLES.CMD.UI.files = function() {
-    gui.showLibrary();
-};
-
-CABLES.CMD.UI.toggleFiles = function() {
-    // CABLES.UI.fileSelect.toggle();
     gui.showFileManager();
 };
 
-
+CABLES.CMD.UI.toggleFiles = function() {
+    gui.showFileManager();
+};
 
 CABLES.CMD.UI.downloadSVG = function() {
     gui.patch().downloadSVG();
