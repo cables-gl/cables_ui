@@ -129,26 +129,43 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
             gui.refreshFileManager();
         });
 
+    // CABLES.talkerAPI.addEventListener(
+    //     "uploadProgress",
+    //     function(options,next)
+    //     {
+    //         if(options.complete>=100)
+    //         {
+    //             $('#uploadprogresscontainer').hide();
+    //             CABLES.UI.notify("File Uploaded");
+    //         }
+    //         else $('#uploadprogresscontainer').show();
+
+
+    //         console.log("file upl!",options.complete);
+    //         $('#uploadprogress').css({"width":options.complete+'%'});
+    
+    //         gui.refreshFileManager();
+    //     });
+
     CABLES.talkerAPI.addEventListener(
-        "uploadProgress",
+        "jobStart",
         function(options,next)
         {
-            if(options.complete>=100)
-            {
-                $('#uploadprogresscontainer').hide();
-                CABLES.UI.notify("File Uploaded");
-            }
-            else $('#uploadprogresscontainer').show();
-
-
-            console.log("file upl!",options.complete);
-            $('#uploadprogress').css({"width":options.complete+'%'});
-    
-            gui.refreshFileManager();
+            gui.jobs().start({id:options.id,title:options.title});
         });
-
-
-
+    CABLES.talkerAPI.addEventListener(
+        "jobFinish",
+        function(options,next)
+        {
+            gui.jobs().finish(options.id);
+        });
+    CABLES.talkerAPI.addEventListener(
+        "jobProgress",
+        function(options,next)
+        {
+            gui.jobs().setProgress(options.id,options.progress);
+        });
+        
     CABLES.talkerAPI.send("getPatch",{},function(err,r)
     {
         this._cfg.patch=r;
@@ -156,7 +173,6 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
         this.loadUserOps(function()
         {
             console.log("setpatch...");
-            // gui.patch().setProject(this._cfg.patch);
             if(cb)cb();
         }.bind(this));
     }.bind(this));

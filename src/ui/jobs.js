@@ -15,16 +15,20 @@ function()
         for(var i in jobs)
         {
             if(jobs[i].indicator)indicator=jobs[i].indicator;
-            str+='<li><i class="fa fa-circle-o-notch fa-spin"></i>&nbsp;&nbsp;'+jobs[i].title+'</li>';
+            str+='<div><i class="fa fa-circle-o-notch fa-spin"></i>&nbsp;&nbsp;'+jobs[i].title+'';
+
+
+            str+='<div id="jobprogress'+jobs[i].id+'" style="width:'+(jobs[i].progress||0)+'%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;"></div>';
+
+            str+='</div>';
+
         }
-            
 
         if(jobs.length==0)
         {
-            str+='<li>no background jobs...</li>';
+            str+='All server jobs finished...';
             $('.cables-logo .icon-cables').removeClass('blinkanim');
         }
-
 
         if(indicator)
         {
@@ -35,7 +39,6 @@ function()
         {
             if(lastIndicator) gui.setWorking(false,lastIndicator);
         }
-
 
         $('#jobs').html(str);
     }
@@ -55,8 +58,6 @@ function()
 
     this.start=function(job,func)
     {
-
-
         for(var i in jobs)
         {
             if(jobs[i].id==job.id)
@@ -68,7 +69,6 @@ function()
 
         $('.cables-logo .icon-cables').addClass('blinkanim');
 
-        // $('.cables .logo').addClass('fa fa-circle-o-notch fa-spin');
 
         jobs.push(job);
         updateJobListing();
@@ -78,6 +78,25 @@ function()
             setTimeout(func,30);
         }
     };
+
+    this.updateProgressMainBar=function()
+    {
+        $('#uploadprogress').css({"width":options.complete+'%'});        
+    }
+
+    this.setProgress=function(jobId,progress)
+    {
+        for(var i in jobs)
+        {
+            if(jobs[i].id==jobId)
+            {
+                jobs[i].progress=progress;
+
+                document.getElementById('jobprogress'+jobs[i].id).style.width=progress+'%';
+                break;
+            }
+        }
+    }
 
     this.finish=function(jobId)
     {

@@ -74,8 +74,13 @@ CABLES.uploadFile=function(file)
 
 CABLES.uploadFiles=function(files)
 {
+    gui.jobs().start({id:'prepareuploadfiles',title:'preparing files for upload...'});
+
     for(var i=0;i<files.length;i++)
         CABLES.uploadFile(files[i]);
+
+    gui.jobs().finish('prepareuploadfiles');
+
 };
 
 CABLES.uploadDropEvent=null;
@@ -86,7 +91,6 @@ CABLES.uploadDrop=function(event)
     event.stopPropagation();
 
     CABLES.UI.MODAL.hide();
-    gui.jobs().start({id:'uploadingfiles',title:'uploading files...'});
 
     if(event.dataTransfer.files.length===0)
     {
