@@ -1330,6 +1330,13 @@ CABLES.UI.Patch = function(_gui) {
             }
 
             if (proj.ui.renderer) {
+
+                if(proj.ui.renderer.w>document.body.clientWidth/2 || proj.ui.renderer.h>document.body.clientHeight/2)
+                {
+                    proj.ui.renderer.w=640;
+                    proj.ui.renderer.h=360;
+                }
+
                 gui.rendererWidth = proj.ui.renderer.w;
                 gui.rendererHeight = proj.ui.renderer.h;
                 gui.patch().scene.cgl.canvasScale=proj.ui.renderer.s||1;

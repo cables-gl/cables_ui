@@ -653,6 +653,8 @@ CABLES.UI.GUI = function() {
         if(this.fileManager)
         {
             this.fileManager.show();
+            gui.metaTabs.activateTabByName("Files");
+
             if(cb)cb();
             return;
         }
@@ -1202,16 +1204,12 @@ CABLES.UI.GUI = function() {
         }, 200);
         else if ($('.easingselect').is(':visible')) $('.easingselect').hide();
         else if (vueStore.getters['sidebar/sidebarCustomizerVisible']) vueStore.commit('sidebar/setCustomizerVisible', false);
-        else
-        if(this.maintabPanel.isVisible())
-        {
-            this.maintabPanel.hide();
-        }
         else if (CABLES.UI.MODAL._visible) {
             CABLES.UI.MODAL.hide(true)
             CABLES.UI.MODAL.hide();
             if (showingEditor) self.editor().focus();
         } 
+        else if(this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else if(showingEditor && e) this.closeEditor();
         else {
             if (e) gui.opSelect().showOpSelect({
