@@ -809,9 +809,9 @@ CABLES.UI.GUI = function() {
     {
         $('#glcanvas').attr('tabindex', '3');
 
-
-        $('.nav_cables').bind("click", function(event) {
-            var win = window.open('/');
+        $('.nav_cables').bind("click", function(event)
+        {
+            var win = window.open(CABLES.sandbox.getCablesUrl(),'_blank');
             win.focus();
         });
 
@@ -915,8 +915,11 @@ CABLES.UI.GUI = function() {
             self.introduction().showIntroduction();
         });
         $('.nav_help_video').bind("click", function(event) {
-            var html = '<iframe width="800" height="640" src="https://www.youtube.com/embed/videoseries?list=PLYimpE2xWgBveaPOiV_2_42kZEl_1ExB0&showinfo=1" frameborder="0" allowfullscreen></iframe>';
-            CABLES.UI.MODAL.show(html);
+
+            var win = window.open('https://www.youtube.com/cablesgl','_blank');
+            win.focus();
+
+            
         });
 
 
@@ -1266,10 +1269,10 @@ CABLES.UI.GUI = function() {
 
 
 
+        
         if(CABLES.UI.userSettings.get("fileManagerOpened")==true) this.showFileManager();
         if(CABLES.UI.userSettings.get("timelineOpened")==true) this.showTiming();
 
-        setTimeout(function(){ CABLES.editorSession.open(); },100);
         
         if(CABLES.UI.userSettings.get('showTipps') && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 
@@ -1795,7 +1798,6 @@ function startUi(event)
                 gui.showWelcomeNotifications();
                 incrementStartup();
                 gui.showUiElements();
-                gui.maintabPanel.init();
                 gui.setLayout();
                 gui.patch().fixTitlePositions();
                 gui.opSelect().prepare();
@@ -1803,6 +1805,12 @@ function startUi(event)
                 gui.opSelect().search();
                 
                 if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
+
+
+                
+                CABLES.editorSession.open();
+
+                
 
                 logStartup('finished loading cables');
                 CABLES.UI.loaded=true;

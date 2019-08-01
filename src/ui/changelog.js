@@ -43,7 +43,7 @@ CABLES.CHANGELOG.getHtml=function(cb,since)
 CABLES.CHANGELOG.show=function(since)
 {
 
-    gui.mainTabs.addIframeTab('changelog','/changelog',{icon:'book-open',closable:true});
+    gui.mainTabs.addIframeTab('changelog',CABLES.sandbox.getCablesUrl()+'/changelog',{icon:'book-open',closable:true});
 
     // CABLES.CHANGELOG.getHtml(function()
     // {

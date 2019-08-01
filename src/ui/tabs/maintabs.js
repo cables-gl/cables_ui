@@ -40,7 +40,6 @@ CABLES.UI.MainTabPanel=function(tabs)
 
 CABLES.UI.MainTabPanel.prototype.init=function()
 {
-    if(CABLES.UI.userSettings.get("maintabsVisible")) this.show();
 }
 
 CABLES.UI.MainTabPanel.prototype.isVisible=function()
@@ -48,35 +47,35 @@ CABLES.UI.MainTabPanel.prototype.isVisible=function()
     return this._visible;
 }
 
-CABLES.UI.MainTabPanel.prototype.show=function()
+CABLES.UI.MainTabPanel.prototype.show=function(force)
 {
-
-    if(this._tabs.getNumTabs()==0)
+    if(!force && this._tabs.getNumTabs()==0)
     {
-        CABLES.UI.userSettings.set("maintabsVisible",false);
-        this.hide();
+        // if(CABLES.UI.loaded) CABLES.UI.userSettings.set("maintabsVisible",false);
+        this.hide(true);
         return;
     }
     this._visible=true;
     this._ele.style.display="block";
     document.getElementById("editorminimized").style.display="none";
-    CABLES.UI.userSettings.set("maintabsVisible",true);
+    if(CABLES.UI.loaded) CABLES.UI.userSettings.set("maintabsVisible",true);
     gui.setLayout();
 
 
 }
 
-CABLES.UI.MainTabPanel.prototype.hide=function()
+CABLES.UI.MainTabPanel.prototype.hide=function(donotsave)
 {
     this._visible=false;
     document.getElementById("editorminimized").style.display="block";
     this._ele.style.display="none";
     if(window.gui)gui.setLayout();
-    CABLES.UI.userSettings.set("maintabsVisible",false);
+    if(!donotsave && CABLES.UI.loaded) CABLES.UI.userSettings.set("maintabsVisible",false);
 }
 
 CABLES.UI.MainTabPanel.prototype.toggle=function()
 {
+    if(!CABLES.UI.loaded)return;
     if(this._visible) this.hide();
         else this.show();
 }
