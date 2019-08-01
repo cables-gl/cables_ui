@@ -86,28 +86,20 @@ CABLES.EditorSession.prototype.open=function()
     var sessions = CABLES.UI.userSettings.get("openEditors");
 
     if (sessions)
+    {
         for (var i = 0; i < sessions.length; i++)
         {
             if(this._listeners[sessions[i].type]) this._listeners[sessions[i].type]( sessions[i].name, sessions[i].data||{} );
             console.log('session',sessions[i].name);
         }
-
-    if(sessions.length>0)
-    {
-        if(!CABLES.UI.loaded)
-        {
-            var showMainTabs=CABLES.UI.userSettings.get("maintabsVisible");
-            if(showMainTabs) gui.maintabPanel.show(true);
-        }
-
+    
+        if(sessions.length>0)
+            if(!CABLES.UI.loaded)
+            {
+                var showMainTabs=CABLES.UI.userSettings.get("maintabsVisible");
+                if(showMainTabs) gui.maintabPanel.show(true);
+            }
     }
-    
-    // setTimeout(function()
-    // {
-        // console.log(sessions,lastTab);
-    
-    // },100);
-
 }
 
 /**
