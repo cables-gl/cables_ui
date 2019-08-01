@@ -16,7 +16,7 @@ CABLES.CMD.PATCH.deleteSelectedOps=function()
 
 CABLES.CMD.PATCH.reload=function()
 {
-	document.location.reload();
+	CABLES.talkerAPI.send("reload");
 };
 
 CABLES.CMD.PATCH.save=function()
@@ -65,43 +65,29 @@ CABLES.CMD.PATCH.findUserOps = function () {
 
 CABLES.CMD.PATCH.createFile=function()
 {
-    CABLES.UI.MODAL.prompt(
-        "Create new file",
-        "Enter filename",
-        "newfile.txt",
-        function(fn)
-        {
-			CABLES.api.put(
-				'project/' + gui.patch().getCurrentProject()._id + '/'+fn, {
-					content: 'this is an empty file...'
-				},
-				function(res) {
-					CABLES.UI.notify("file created");
-					// CABLES.UI.fileSelect.refresh();
-					gui.refreshFileManager();
-				},
-				function(res) {
-					CABLES.UI.notifyError("error: file not created");
-					// CABLES.UI.fileSelect.refresh();
-					gui.refreshFileManager();
-					console.log('err res', res);
-				}
-			);
-		});
+	gui.showFileManager(function()
+	{
+		gui.fileManager.createFile();
+	});
 
 };
 
-CABLES.CMD.PATCH.uploadFile = function () {
+CABLES.CMD.PATCH.uploadFile = function ()
+{
     var fileElem = document.getElementById("hiddenfileElem");
-    if (fileElem) fileElem.click();
+	if (fileElem) fileElem.click();
 };
 
 CABLES.CMD.PATCH.uploadFileDialog = function () {
 
-    var html = CABLES.UI.getHandleBarHtml('upload');
-
-    CABLES.UI.MODAL.show(html,{title:"Upload File"});
-        // CABLES.UI.showUploadDialog
+	var fileElem = document.getElementById("uploaddialog");
+	jQuery.event.props.push('dataTransfer');
+	
+	if(!fileElem)
+	{
+		var html = CABLES.UI.getHandleBarHtml('upload',{"patchId":gui.patch().getCurrentProject()._id});
+		CABLES.UI.MODAL.show(html,{"title":"Upload File"});
+	}
 };
 
 

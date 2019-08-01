@@ -22,8 +22,8 @@
 <div id="drop-op-cursor"></div>
 
 <div id="suggestionDialog"></div>
-<div id="modalbg" class="modal-bg-look" onclick="CABLES.UI.MODAL.hide(true);gui.pressedEscape();"></div>
-<div id="modalcontainer">
+<div id="modalbg" class="modal-bg-look" onclick="CABLES.UI.MODAL.hide(true);gui.pressedEscape();" style="display:none;"></div>
+<div id="modalcontainer" style="display:none;">
 	<div id="modalclose" class="modalclose">
 		<!-- <a class=" fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a> -->
 		<a class="icon-x icon icon-1_5x" onclick="CABLES.UI.MODAL.hide(true);"></a>
@@ -201,7 +201,7 @@
 
                     <li class="nav_usersettings_showMinimap" onclick="CABLES.CMD.UI.toggleMinimap()"><i class="icon icon-check checked"></i>Show Minimap <span class="shortcut">needs reload</span> </li>
 
-                    <li class="nav_usersettings_straightLines" onclick="CABLES.UI.userSettings.set('straightLines',!CABLES.UI.userSettings.get('straightLines'));document.location.reload();"><i class="icon icon-check checked"></i>Straight Lines <span class="shortcut">needs reload</span> </li>
+                    <li class="nav_usersettings_straightLines" onclick="CABLES.UI.userSettings.set('straightLines',!CABLES.UI.userSettings.get('straightLines'));CABLES.CMD.PATCH.reload();"><i class="icon icon-check checked"></i>Straight Lines <span class="shortcut">needs reload</span> </li>
 
                     <li class="nav_usersettings_helpermode" onclick="CABLES.CMD.UI.toggleHelper()"><i class="icon icon-check checked"></i>Helper Mode</li>
 
@@ -289,27 +289,6 @@
 <div id="meta">
     <div id="metatabpanel" style="width:100%;min-height:400px;"></div>
 
-    <!-- <div id="metatabs">
-        <div class="tabs">
-            <a class="info tab_doc active fa fa-book" data-infotext="tab_doc" onclick="gui.setMetaTab('doc')">  </a>
-            <a class="info tab_code fa fa-code" data-infotext="tab_code" onclick="gui.setMetaTab('code')">  </a>
-            <a class="info tab_profiler fa fa-pie-chart" data-infotext="tab_profiler" onclick="gui.setMetaTab('profiler')"></a>
-            <a class="info tab_preview fa fa-eye" data-infotext="tab_preview" onclick="gui.setMetaTab('preview')"></a>
-            <a class="info tab_keyframes fa fa-clock-o" data-infotext="tab_keyframes" onclick="gui.setMetaTab('keyframes')"></a>
-            <a class="info tab_paco fa fa-youtube-play" data-infotext="tab_patchconnection" onclick="gui.setMetaTab('paco')"></a>
-            <a class="info tab_variables" data-infotext="tab_variables" onclick="gui.setMetaTab('variables')">&nbsp;&nbsp;#&nbsp;&nbsp;</a>
-        </div>
-    </div>
-    <div id="meta_content">
-        <div id="meta_content_doc" class="meta_content doc-panel"></div>
-        <div id="meta_content_preview" class="meta_content"></div>
-        <div id="meta_content_code" class="meta_content"></div>
-        <div id="meta_content_profiler" class="meta_content"></div>
-        <div id="meta_content_screen" class="meta_content"></div>
-        <div id="meta_content_keyframes" class="meta_content"></div>
-        <div id="meta_content_paco" class="meta_content"></div>
-        <div id="meta_content_variables" class="meta_content"></div>
-    </div> -->
     <div id="splitterMeta" class="splitter"></div>
     <div id="infoArea"></div>
 </div>

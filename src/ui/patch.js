@@ -743,7 +743,6 @@ CABLES.UI.Patch = function(_gui) {
         if(window.process && window.process.versions['electron'])
         {
             var electron = require('electron');
-            var ipcRenderer = electron.ipcRenderer;
             var remote = electron.remote; 
             var dialog = remote.dialog;
 
@@ -754,14 +753,10 @@ CABLES.UI.Patch = function(_gui) {
                 "timeLineLength": gui.timeLine().getTimeLineLength()
             };
 
-
             gui.bookmarks.cleanUp();
             data.ui.bookmarks = gui.bookmarks.getBookmarks();
-
             data.ui.viewBox = this._viewBox.serialize();
-
             data.ui.subPatchViewBoxes = subPatchViewBoxes;
-
             data.ui.renderer = {};
             data.ui.renderer.w = gui.rendererWidth;
             data.ui.renderer.h = gui.rendererHeight;
@@ -790,24 +785,26 @@ CABLES.UI.Patch = function(_gui) {
             "Save As...",
             "Enter a name for the copy of this Project ",
             "My new Project",
-            function(name) {
-                CABLES.api.post('project', {
-                    name: name
-                }, function(d) {
+            function(name)
+            {
+                CABLES.talkerAPI.send("newPatch",{"name":name}, 
+                    function(err,d)
+                    {
+                        gui.scene().settings=gui.scene().settings||{};
+                        gui.scene().settings.isPublic = false;
+                        gui.scene().settings.secret = '';
+                        gui.scene().settings.isExample = false;
+                        gui.scene().settings.isTest = false;
+                        gui.scene().settings.isFeatured = false;
+                        gui.scene().settings.opExample = '';
 
-                    gui.scene().settings=gui.scene().settings||{};
-                    gui.scene().settings.isPublic = false;
-                    gui.scene().settings.secret = '';
-                    gui.scene().settings.isExample = false;
-                    gui.scene().settings.isTest = false;
-                    gui.scene().settings.isFeatured = false;
-                    gui.scene().settings.opExample = '';
+                        self.saveCurrentProject(
+                            function()
+                            {
+                                CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
+                            }, d._id, d.name);
 
-                    self.saveCurrentProject(function() {
-                        document.location.href = '#/project/' + d._id;
-                    }, d._id, d.name);
-
-                });
+                    });
             });
     };
 
@@ -867,15 +864,16 @@ CABLES.UI.Patch = function(_gui) {
             indicator:'canvas'
         });
 
+        // todo is this protected ?
         CABLES.api.get('project/' + gui.project()._id+'/updated',
             function(data)
             {
                 if(this._serverDate!=data.updated)
                 {
-                    CABLES.UI.MODAL.showError('meanwhile...', 'this patch was changed. your version is out of date. <br/><br/>last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
+                    CABLES.UI.MODAL.showError('meanwhile...', 'This patch was changed. Your version is out of date. <br/><br/>Last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
                     CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);">close</a>&nbsp;&nbsp;');
                     CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="gui.patch().checkUpdatedSaveForce(\''+data.updated+'\');">save anyway</a>&nbsp;&nbsp;');
-                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
+                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="CABLES.CMD.PATCH.reload();">reload patch</a>&nbsp;&nbsp;');
                 }
                 else
                 {
@@ -890,7 +888,7 @@ CABLES.UI.Patch = function(_gui) {
     this.saveCurrentProject = function(cb, _id, _name)
     {
         if (this.loadingError) {
-            CABLES.UI.MODAL.showError('project not saved', 'could not save project: had errors while loading!');
+            CABLES.UI.MODAL.showError('Project not saved', 'Could not save project: had errors while loading!');
             return;
         }
 
@@ -905,25 +903,17 @@ CABLES.UI.Patch = function(_gui) {
 
     this._saveCurrentProject = function(cb, _id, _name)
     {
-        const doSaveScreenshot=gui.patch().scene.isPlaying();
-
+        this._savedPatchCallback=cb;
+        
         for (var i = 0; i < this.ops.length; i++) {
             this.ops[i].removeDeadLinks();
             if (this.ops[i].op.uiAttribs.error) delete this.ops[i].op.uiAttribs.error;
             if (this.ops[i].op.uiAttribs.warning) delete this.ops[i].op.uiAttribs.warning;
         }
-
+        
         gui.jobs().start({ id: 'projectsave', title: 'saving project',indicator:'canvas' });
         
-
-        var w = $('#glcanvas').attr('width');
-        var h = $('#glcanvas').attr('height');
-
-        if(doSaveScreenshot)
-        {
-            $('#glcanvas').attr('width', 640);
-            $('#glcanvas').attr('height', 360);
-        }
+        
 
         var id = currentProject._id;
         var name = currentProject.name;
@@ -980,60 +970,94 @@ CABLES.UI.Patch = function(_gui) {
 
         CABLES.patch.namespace=currentProject.namespace;
 
-        try {
+        try
+        {
             data = JSON.stringify(data);
             gui.patch().getLargestPort();
 
-            CABLES.api.put(
-                'project/' + id, {
-                    "name": name,
-                    "namespace": currentProject.namespace,
-                    "data": data,
-                },
-                function(r) {
-                    gui.jobs().finish('projectsave');
+            CABLES.sandbox.savePatch(
+                {
+                    "id":id,
+                    "name":name,
+                    "namespace":currentProject.namespace,
+                    "data":data,
+                },   
+                function(err,r)
+                {
+                    if(err)
+                    {
+                        console.warn('[save patch error]',err)
+                    }
 
+                    gui.jobs().finish('projectsave');
+            
                     gui.setStateSaved();
-                    if (cb) cb();
+                    if(this._savedPatchCallback) this._savedPatchCallback();
+                    this._savedPatchCallback=null;
+                    
+                    if(!r.success)
+                    {
+                        CABLES.UI.MODAL.showError('Patch not saved', 'Could not save patch: '+r.msg);
+                        console.log(r);
+                        return;
+                    }
+                    else CABLES.UI.notify('Patch saved');
                     
                     self._serverDate=r.updated;
-                    if(!r.success)CABLES.UI.MODAL.showError('project not saved', 'could not save project: server error');
-                        else CABLES.UI.notify('patch saved');
                     
                     const thePatch=gui.patch().scene;
                     const cgl=thePatch.cgl;
-                    
+            
+                    const doSaveScreenshot=gui.patch().scene.isPlaying();
+                    var w = $('#glcanvas').attr('width');
+                    var h = $('#glcanvas').attr('height');
+            
+                    if(doSaveScreenshot)
+                    {
+                        $('#glcanvas').attr('width', 640);
+                        $('#glcanvas').attr('height', 360);
+                    }
+            
                     if(doSaveScreenshot)
                     {
                         var screenshotTimeout = setTimeout(function() {
-//                             gui.patch().scene.cgl.setSize(w,h);
-//                             gui.patch().scene.resume();
+            //                             gui.patch().scene.cgl.setSize(w,h);
+            //                             gui.patch().scene.resume();
                             cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
                             thePatch.resume();
                             
-                        }, 1000);
-
+                        }, 300);
+            
                         thePatch.pause();
                         cgl.setSize(640,360);
                         thePatch.renderOneFrame();
                         thePatch.renderOneFrame();
                         gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
-
+            
                         cgl.screenShot(function(screenBlob)
                         {
                             clearTimeout(screenshotTimeout);
-
+            
                             cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
                             thePatch.resume();
-
+            
                             var reader = new FileReader();
-
-                            reader.onload = function(event) {
-                                CABLES.api.put(
-                                    'project/' + id + '/screenshot', {
-                                        "screenshot": event.target.result //cgl.screenShotDataURL
+            
+                            reader.onload = function(event)
+                            {
+                                CABLES.talkerAPI.send(
+                                    "saveScreenshot",
+                                    {
+                                        "id":currentProject._id,
+                                        "screenshot":event.target.result
                                     },
-                                    function(r) {
+                                    function(err,r)
+                                    {
+                                        if(err)
+                                        {
+                                            console.warn('[screenshot save error]',err)
+                                        }
+                                        console.log("screenshot saved!");
                                         gui.jobs().finish('screenshotsave');
                                         if (gui.onSaveProject) gui.onSaveProject();
                                     });
@@ -1041,28 +1065,24 @@ CABLES.UI.Patch = function(_gui) {
                             reader.readAsDataURL(screenBlob);
                         });
                     }
-                },
-                function(response,data) // ERROR CALLBACK    
-                {
-                    if(data.status==401)
-                    {
-                        var msg='could not save patch. you do not have the required rights. you can save a copy of this patch.<br/><br/>'
-                        msg+='<a class="bluebutton" onclick="gui.patch().saveCurrentProjectAs();">copy patch</a>&nbsp;&nbsp;';
-                        msg+='<a class="greybutton" onclick="CABLES.UI.MODAL.hide(true);">close</a>';
-                        CABLES.UI.MODAL.showError('Could not save',msg);
-                        console.log('no rights');
-                    }
-                    else
-                    {
-                        CABLES.UI.MODAL.showError('Could not save','unknown error while saving patch. please try again later...');
-                    }
-
-                });
+            
+                }.bind(this)
+                
+                
+                
+                
+                
+                );
         } catch (e) {
             console.log(e);
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
         } finally {}
     };
+
+
+    
+
+
 
     this.getCurrentProject = function() {
 
@@ -1398,7 +1418,9 @@ CABLES.UI.Patch = function(_gui) {
             self.toggleCenterZoom(e);
         };
 
-        $('#patch').on("mousemove touchmove", function(e) {
+
+
+        $('#patch').on("mousemove", function(e) {
 
             if(CABLES.SPLITPANE.bound)return;
             
@@ -1444,7 +1466,31 @@ CABLES.UI.Patch = function(_gui) {
         this._elPatchSvg.bind("mouseenter", function(event) { gui.setCursor(); }.bind(this));
         this._elPatchSvg.bind("mouseleave", function(event) { gui.setCursor(); }.bind(this));
 
-        this._elPatchSvg.bind("mousemove touchmove", function(e) {
+
+
+
+        this._elPatchSvg.bind("touchstart", (e) =>
+        { 
+            e = mouseEvent(e);
+            this.lastMouseMoveEvent = null;
+        });
+
+        this._elPatchSvg.bind("touchmove", (e) => {
+            e = mouseEvent(e);
+
+            if (this.lastMouseMoveEvent)
+            {
+                const lastMouseCoord=gui.patch().getCanvasCoordsMouse(this.lastMouseMoveEvent)
+                this._viewBox.setXY(
+                    this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
+                    this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
+                callEvent('patch_pan');
+            }
+            this.lastMouseMoveEvent = e;
+        });
+
+            
+        this._elPatchSvg.bind("mousemove", function(e) {
             e = mouseEvent(e);
 
             if (CABLES.UI.MOUSEOVERPORT)return;
@@ -1455,9 +1501,10 @@ CABLES.UI.Patch = function(_gui) {
                 return;
             }
 
-            if (self.lastMouseMoveEvent && (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed))) { // && !CABLES.UI.MOUSEDRAGGINGPORT
+            if (self.lastMouseMoveEvent && 
+                (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) )) { // && !CABLES.UI.MOUSEDRAGGINGPORT
                 gui.setCursor("grab");
-                $('#patch').focus();
+                this._elPatch.focus();
                 const lastMouseCoord=gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent)
 
                 this._viewBox.setXY(
@@ -1857,7 +1904,7 @@ CABLES.UI.Patch = function(_gui) {
             function(op)
             {
                 gui.setStateUnsaved();
-                $('#patch').focus();
+                this._elPatch.focus();
                 var width = CABLES.UI.uiConfig.opWidth;
                 if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
 
@@ -1945,7 +1992,7 @@ CABLES.UI.Patch = function(_gui) {
                 this.updateViewBox();
             }
     
-            $('#patch').focus();
+            this._elPatch.focus();
             self.updateSubPatchBreadCrumb();
     
             gui.setWorking(false,'patch');
@@ -3043,7 +3090,6 @@ CABLES.UI.Patch = function(_gui) {
         uupos.x = evt.clientX || 0;
         uupos.y = evt.clientY || 0;
         uupos = uupos.matrixTransform(ctm);
-
         return uupos;
     };
 
@@ -3287,10 +3333,7 @@ CABLES.UI.Patch = function(_gui) {
         items.push(
             {
                 title:'set default values',
-                func:function()
-                {
-                    gui.patch().resetOpValues(opid);
-                }
+                func:function(){ gui.patch().resetOpValues(opid); }
             });
 
         items.push(
@@ -3324,11 +3367,10 @@ CABLES.UI.Patch = function(_gui) {
                 {
                     "title":'rename op ',
                     "iconClass":'fa fa-lock',
-                    // "func":function(){ CABLES.UI.MetaCode.rename(opname); }
-                    "func":function(){ 
-                        window.open("/admin/op/rename?op="+opname+"&new="+opname, "_blank");
-
-                        }
+                    "func":function()
+                    {
+                        window.open(CABLES.sandbox.getCablesUrl()+"/admin/op/rename?op="+opname+"&new="+opname, "_blank");
+                    }
                 });
         }
         CABLES.contextMenu.show({"items":items},ele);

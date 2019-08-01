@@ -3,7 +3,6 @@ CABLES.libLoader=function(libnames,cb)
 {
     this.libsToLoad=libnames;
     this._cb=cb;
-    // console.log('libsToLoad: '+this.libsToLoad.length);
 
     gui.jobs().start({
         id: 'loadlibs',
@@ -11,10 +10,7 @@ CABLES.libLoader=function(libnames,cb)
     });
 
     for(var i in libnames)
-    {
         this.loadLib(libnames[i]);
-    }
-
 };
 
 CABLES.libLoader.prototype.checkAllLoaded=function(name)
@@ -32,8 +28,6 @@ CABLES.libLoader.prototype.loadLib=function(name)
     {
         var i=this.libsToLoad.indexOf(name);
         this.libsToLoad.splice(i, 1);
-
-        console.log("lib already loaded: "+name);
         this.checkAllLoaded();
         return;
     }
@@ -42,22 +36,16 @@ CABLES.libLoader.prototype.loadLib=function(name)
     {
         var i=this.libsToLoad.indexOf(name);
         this.libsToLoad.splice(i, 1);
-        // console.log('libsToLoad: '+this.libsToLoad.length);
         console.log('finished loading lib: '+name);
         CABLES.UI.loadedLibs.push(name);
-
         this.checkAllLoaded();
-        
-        
     }.bind(this);
 
     var newscript = document.createElement('script');
     newscript.type = 'text/javascript';
     newscript.async = true;
-    newscript.src = '/api/lib/'+name;
+    newscript.src = CABLES.sandbox.getCablesUrl()+'/api/lib/'+name;
     (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(newscript);
-
-
 };
 
 CABLES.onLoadedLib={};

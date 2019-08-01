@@ -3,12 +3,12 @@ CABLES.UI=CABLES.UI || {};
 CABLES.UI.Introduction = CABLES.UI.Introduction ||
 
 function() {
-  /* Disables intro.js for the current logged-in user */
-  function disableIntroForUser(){
 
-    if(!CABLES.sandbox.isOffline())
-      CABLES.api.put('user/introCompleted',function(result) { console.log(result); },function(){});
-  }
+    /* Disables intro.js for the current logged-in user */
+    function disableIntroForUser()
+    {
+        CABLES.UI.userSettings.set("introCompleted",true);
+    }
 
   var stepTmp = 1; /* the introjs position when it is explained */
 

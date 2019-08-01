@@ -7,16 +7,12 @@ CABLES.handleFileInputUpload=function(files)
 {
     CABLES.uploadFiles(files);
     gui.showFileManager();
-    // CABLES.UI.fileSelect.load();
-    // CABLES.UI.fileSelect.show();
 };
 
 CABLES.uploadSelectFile=function()
 {
 	CABLES.CMD.PATCH.uploadFile();
 };
-
-
 
 CABLES.uploadDragOver=function(event)
 {
@@ -55,112 +51,35 @@ CABLES.uploadDragLeave=function(event)
     event.stopPropagation();
 };
 
+
+CABLES.uploadFile=function(file)
+{
+    var reader  = new FileReader();
+    reader.addEventListener("load", 
+        () =>
+        {
+            CABLES.talkerAPI.send("fileUploadStr",
+                {
+                    "fileStr":reader.result,
+                    "filename":file.name,
+                }, 
+                function(err,res)
+                {
+                    console.log("file uploaded!");
+                });
+
+        }, false);
+    reader.readAsDataURL(file);
+}
+
 CABLES.uploadFiles=function(files)
 {
-    var url='/api/project/'+gui.patch().getCurrentProject()._id+'/file';
+    gui.jobs().start({id:'prepareuploadfiles',title:'preparing files for upload...'});
 
-    var formData = new FormData();
-    $.each(files, function(key, value)
-    {
-        formData.append(key, value);
-    });
+    for(var i=0;i<files.length;i++)
+        CABLES.uploadFile(files[i]);
 
-    console.log(files);
-
-    // now post a new XHR request
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-
-    xhr.upload.onprogress = function (event)
-    {
-        $('#uploadprogresscontainer').css({"opacity":1.0});
-        $('#uploadprogresscontainer').show();
-        if (event.lengthComputable)
-        {
-            var complete = (event.loaded / event.total * 100 | 0);
-            $('#uploadprogress').css({width:complete+'%'});
-            if(complete==100)
-            {
-                // gui.jobs().start({id:'processingfiles',title:'processing files...'});
-                gui.jobs().finish('uploadingfiles');
-
-                CABLES.UI.notify("File Uploaded");
-                $('#uploadprogresscontainer').css({"opacity":0.5});
-
-                // console.log(files);
-                setTimeout(function()
-                {
-                    for(var i in files)
-                    {
-                        var file=files[i];
-                        if(!file || !file.name || file.name=='item')continue;
-
-                        gui.refreshFileManager();
-
-                        // CABLES.UI.fileSelect.triggerFileUpdate(files[i].name);
-                    }
-                    $('#uploadprogresscontainer').hide();
-
-                },800);
-            }
-            else
-            {
-                gui.jobs().update({id:'uploadingfiles',title:'uploading: '+complete+'%'});
-            }
-        }
-    };
-
-    xhr.onload = function (e,r)
-    {
-        var msg='';
-        var res='';
-
-        // console.log(e.target.response);
-
-        try
-        {
-            res=JSON.parse(e.target.response);
-        }
-        catch(ex)
-        {
-            console.log(ex);
-        }
-
-        // CABLES.UI.fileSelect.load();
-        // CABLES.UI.fileSelect.show();
-        gui.showFileManager();
-
-        gui.patch().addAssetOpAuto('/assets/'+gui.patch().getCurrentProject()._id+'/'+res.filename,CABLES.uploadDropEvent);
-
-        if (xhr.status === 502)
-        {
-            console.log('ajax 502 error ! possibly upload ?');
-            CABLES.UI.MODAL.hide();
-            gui.jobs().finish('uploadingfiles');
-            return;
-        }
-
-        if (xhr.status === 200)
-        {
-            CABLES.UI.MODAL.hide();
-            gui.jobs().finish('uploadingfiles');
-        }
-        else
-        {
-            if(res.msg) msg=res.msg;
-            gui.jobs().finish('uploadingfiles');
-
-            CABLES.UI.MODAL.show('upload error (' + xhr.status +') :'+msg);
-        }
-
-        if(res.hasOwnProperty("success") && !res.success)
-        {
-            CABLES.UI.MODAL.show('upload error: '+res.msg);
-        }
-
-    };
-
-    xhr.send(formData);
+    gui.jobs().finish('prepareuploadfiles');
 
 };
 
@@ -172,7 +91,6 @@ CABLES.uploadDrop=function(event)
     event.stopPropagation();
 
     CABLES.UI.MODAL.hide();
-    gui.jobs().start({id:'uploadingfiles',title:'uploading files...'});
 
     if(event.dataTransfer.files.length===0)
     {
@@ -182,7 +100,6 @@ CABLES.uploadDrop=function(event)
     var files = event.dataTransfer.files;
 
     CABLES.uploadFiles(files);
-
 };
 
 CABLES.bindUploadDragNDrop=function()

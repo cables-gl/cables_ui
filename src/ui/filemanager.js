@@ -12,12 +12,13 @@ CABLES.UI.FileManager=function(cb)
 
     this.reload(cb);
 
-    this._manager.addEventListener("onItemsSelected",function(items)
+    this._manager.addEventListener("onItemsSelected",
+    (items) =>
     {
         this.setDetail(items);
-    }.bind(this));
+    });
 
-    this._manager.addEventListener("onClose",function()
+    this._manager.addEventListener("onClose",() =>
     {
         CABLES.UI.userSettings.set("fileManagerOpened",false);
         gui.fileManager=null;
@@ -70,53 +71,50 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         else if(file.t=='audio') item.icon="headphones";
         else if(file.t=='dir') item.divider=file.n;
         
-        // if(Math.random()>0.5)item.selected=true;
         items.push(item);
         if(file.c) for(var i=0;i<file.c.length;i++) createItem(items,file.c[i]);
     }
 
-
     this._manager.clear();
-    var assetPath = '/assets/library/';
-    var apiPath = 'library/';
-
+    this._fileSource=this._fileSource||'lib';
     if(this._firstTimeOpening)this._fileSource = 'patch';
 
-    if (this._fileSource == 'patch')
+    CABLES.talkerAPI.send("getFilelist",
     {
-        assetPath = '/assets/' + gui.patch().getCurrentProject()._id;
-        apiPath = 'project/' + gui.patch().getCurrentProject()._id + '/files/';
-    }
-
-    CABLES.api.get(apiPath, 
-        function(files)
+        "source":this._fileSource
+    },
+    (err,files) =>
+    {
+        if(err)
         {
-            if(this._firstTimeOpening && files.length==0)
-            {
-                this._firstTimeOpening=false;
-                this._fileSource = 'lib';
-                this.reload();
-                return;
-            }
+            console.err(err);
+            return;
+        }
 
+        if(this._firstTimeOpening && files.length==0)
+        {
             this._firstTimeOpening=false;
+            this._fileSource = 'lib';
+            this.reload();
+            return;
+        }
 
-            var items=[];
+        this._firstTimeOpening=false;
 
-            for(var i=0;i<files.length;i++)
-            {
-                var file=files[i];
+        var items=[];
 
-                createItem(items,file);
-            }
+        for(var i=0;i<files.length;i++)
+        {
+            var file=files[i];
+            createItem(items,file);
+        }
 
-            this._manager.setItems(items);
-            this.updateHeader();
-            if(cb)cb();
+        this._manager.setItems(items);
+        this.updateHeader();
+        if(cb)cb();
 
-        }.bind(this));
+    });
 }
-
 
 CABLES.UI.FileManager.prototype.setSource=function(s,cb)
 {
@@ -133,13 +131,10 @@ CABLES.UI.FileManager.prototype._selectFile=function(filename)
     this._manager.selectItemById(item.id);
     const el=document.getElementById("item"+item.id)
     if(el)el.scrollIntoView();
-
 }
 
 CABLES.UI.FileManager.prototype.selectFile=function(filename)
 {
-    console.log('--------------------',filename.indexOf(gui.patch().getCurrentProject()._id) );
-
     if(this._fileSource!="patch") 
     {
         if(filename.indexOf(gui.patch().getCurrentProject()._id)>-1)
@@ -155,16 +150,13 @@ CABLES.UI.FileManager.prototype.selectFile=function(filename)
     }
 }
 
-
 CABLES.UI.FileManager.prototype.setDisplay=function(type)
 {
     this._manager.setDisplay(type);
 }
 
-
 CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
 {
-    
     const html = CABLES.UI.getHandleBarHtml('filemanager_header', {
         "fileSelectOp": this._filePortOp,
         "source":this._fileSource
@@ -174,7 +166,6 @@ CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
     const elSwitchIcons=document.getElementById("switch-display-icons");
     const elSwitchList=document.getElementById("switch-display-list");
     
-
     if(elSwitchIcons) elSwitchIcons.addEventListener("click",function()
     {
         elSwitchIcons.classList.add("switch-active");
@@ -187,8 +178,6 @@ CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
         elSwitchIcons.classList.remove("switch-active");
         this.setDisplay("list");
     }.bind(this));
-    
-
 }
 
 CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
@@ -199,79 +188,78 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
     if(detailItems.length==1)
     {
         const itemId=detailItems[0].id;
-        CABLES.api.get(
-            'project/' + gui.patch().getCurrentProject()._id + '/file/info/' + itemId,
-            function(r) {
 
-                html = CABLES.UI.getHandleBarHtml('filemanager_details', {
-                    "projectId": gui.patch().getCurrentProject()._id,
-                    "file": r
-                });
-                
-                $('#item_details').html(html);
 
-                document.getElementById("filedelete"+itemId).addEventListener("click",function(e)
+        CABLES.talkerAPI.send("getFileDetails",
+        {
+            "fileid":itemId
+        },
+        function(err,r)
+        {
+            html = CABLES.UI.getHandleBarHtml('filemanager_details', {
+                "projectId": gui.patch().getCurrentProject()._id,
+                "file": r,
+                "source":this._fileSource
+            });
+            
+            $('#item_details').html(html);
+
+            var delEle=document.getElementById("filedelete"+itemId);
+            if(delEle)delEle.addEventListener("click",function(e)
+            {
+                CABLES.talkerAPI.send("deleteFile",
+                { "fileid":r.fileDb._id },
+                function(err,r)
                 {
-                    CABLES.api.delete('project/'+gui.patch().getCurrentProject()._id+'/file/'+r.fileDb._id,null,
-                    function(r)
-                    {
-                        if(r.success) this._manager.removeItem(itemId);
-                            else CABLES.UI.notifyError("error: could not delete file");
+                    if(r.success) this._manager.removeItem(itemId);
+                        else CABLES.UI.notifyError("Error: Could not delete file. "+err.msg);
 
-                    }.bind(this));
                 }.bind(this));
             }.bind(this));
-
+        }.bind(this));
 
         if(this._filePortEle)
         {
-            // console.log("SET port");
             this._filePortEle.value=detailItems[0].p;
             var event = document.createEvent('Event');
             event.initEvent('input', true, true);
             this._filePortEle.dispatchEvent(event);
             gui.patch().showOpParams(this._filePortOp);
         }
-
-        // var highlightBg = "#fff";
-        // var originalBg = $(_id).css("background-color");
-        // $(_id).stop().css("opacity", 0);
-        // $(_id).animate({
-        //     "opacity": 1
-        // }, 1000);
-
-        // if (this.currentOpid) {
-        //     gui.patch().showOpParams(gui.scene().getOpById(this.currentOpid));
-        // }
-
-        // CABLES.UI.fileSelect.showPreview(_url, fileid);
-        
     }
-    
     else if(detailItems.length>1)
     {
         html='<center><br/><br/>'+detailItems.length+' files selected<br/><br/><br/>';
         if(this._fileSource=="patch") html+='<a class="button" id="filesdeletmulti">delete '+detailItems.length+' files</a>';
         html+='</center>';
 
-
         document.getElementById("item_details").innerHTML=html;
 
         const elDelMulti=document.getElementById("filesdeletmulti");
         if(elDelMulti) elDelMulti.addEventListener("click",function(e)
         {
-            console.log(detailItems);
-
             this._manager.unselectAll();
 
             for(var i=0;i<detailItems.length;i++)
             {
                 const detailItem=detailItems[i];
-                CABLES.api.delete('project/'+gui.patch().getCurrentProject()._id+'/file/'+detailItem.id,null,
-                    function(r)
+
+                CABLES.talkerAPI.send(
+                    "deleteFile",
                     {
-                        if(r.success) this._manager.removeItem(detailItem.id);
-                            else CABLES.UI.notifyError("error: could not delete file");
+                        "fileid":detailItem.id
+                    },
+                    function(err,r)
+                    {
+                        if(r.success)
+                        {
+                            this._manager.removeItem(detailItem.id);
+                        }
+                        else
+                        {
+                            CABLES.UI.notifyError("error: could not delete file",err);
+                            console.log(err);
+                        }
 
                         this._manager.unselectAll();
                     }.bind(this)
@@ -282,6 +270,34 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
             }
         }.bind(this));
     }
-
-
 }
+
+CABLES.UI.FileManager.prototype.createFile=function()
+{
+    CABLES.UI.MODAL.prompt(
+        "Create new file",
+        "Enter filename",
+        "newfile.txt",
+        function(fn)
+        {
+            CABLES.talkerAPI.send(
+                "createFile", 
+                { "name":fn },
+                (err,res) =>
+                {
+                    if(err)
+                    {
+                        CABLES.UI.notifyError("Error: "+err.msg);
+                        console.log('[createfile]', res);
+                        gui.refreshFileManager();
+                        return;
+                    }
+                    CABLES.UI.notify("file created");
+                    gui.refreshFileManager();
+                });
+        });
+    
+}
+
+
+

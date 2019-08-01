@@ -45,6 +45,8 @@ CABLES.UI.MODAL._setVisible = function (visible)
 
         CABLES.UI.MODAL.contentElement.show();
 
+        $('#modalcontainer').css({"display":"block"});
+
 		// $('#modalcontainer').show();
 		$('#modalcontainer').css({top:"10%"});
         CABLES.UI.MODAL.contentElement.css({top:"10%"});
@@ -56,7 +58,8 @@ CABLES.UI.MODAL._setVisible = function (visible)
         CABLES.UI.MODAL.contentElement.css({top:"-999100px"});
 
 		// $('#modalcontainer').hide();
-		$('#modalcontainer').css({top:"-999100px"});
+        // $('#modalcontainer').css({top:"-999100px"});
+        $('#modalcontainer').css({"display":"none"});
 	}
 
 };
@@ -105,7 +108,7 @@ CABLES.UI.MODAL.setTitle=function(title)
 CABLES.UI.MODAL.show=function(content,options)
 {
     
-    if(options && !options.ignoreTop)CABLES.UI.MODAL.contentElement.css({"top":"5%"});
+    if(CABLES.UI.MODAL.contentElement && options && !options.ignoreTop)CABLES.UI.MODAL.contentElement.css({"top":"5%"});
 
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init(options);
@@ -114,14 +117,16 @@ CABLES.UI.MODAL.show=function(content,options)
     {
         CABLES.UI.MODAL.setTitle(options.title);
         CABLES.UI.MODAL.onClose=options.onClose;
-
+        
+        
+        
         if(options.transparent)$('#modalcontainer').addClass("transparent");
         if(options.nopadding)
         {
             // CABLES.UI.MODAL.contentElement.css({padding:"0px"});
             $('#modalcontainer').css({padding:"0px"});
             CABLES.UI.MODAL.contentElement.addClass('nopadding');
-
+            
         }
     }
     else
@@ -129,10 +134,11 @@ CABLES.UI.MODAL.show=function(content,options)
         CABLES.UI.MODAL.onClose=null;
         $('#modalcontainer').removeClass("transparent");
     }
-
+    
     if(content)
-        CABLES.UI.MODAL.contentElement.append(content);
-
+    CABLES.UI.MODAL.contentElement.append(content);
+    
+    
     CABLES.UI.MODAL._setVisible(true);
     $('#modalbg').show();
     gui.callEvent("showModal");
@@ -253,8 +259,9 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 
     CABLES.lastError={exception:ex,opName:opName};
 
+    // TODO API?
     CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>&nbsp;&nbsp;');
-    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="document.location.reload();">reload patch</a>&nbsp;&nbsp;');
+    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="CABLES.CMD.PATCH.reload();">reload patch</a>&nbsp;&nbsp;');
 };
 
 CABLES.UI.MODAL.showException=function(ex,op)
@@ -271,7 +278,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
         html+='<div class="startuperror"><b>error</b>\n';
         html+='<br/>';
         html+=ex.message;
-        html+='<br/><br/><a class="button" onclick="document.location.reload();">reload</a>';
+        html+='<br/><br/><a class="button" onclick="CABLES.CMD.PATCH.reload();">reload</a>';
         html+='</div>';
 
 
@@ -285,6 +292,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
     CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+ex.stack+'</div>');
 
     CABLES.lastError={exception:ex};
+    // TODO API
     CABLES.UI.MODAL.contentElement.append('<br/><a class="bluebutton fa fa-bug" onclick="CABLES.api.sendErrorReport();">Send Error Report</a>');
 
 	CABLES.UI.MODAL._setVisible(true);
@@ -316,6 +324,9 @@ CABLES.UI.notifyError=function(title,text)
 CABLES.UI.lastNotify='';
 CABLES.UI.lastText='';
 
+
+
+
 CABLES.UI.notify=function(title,text)
 {
     if(title==CABLES.UI.lastNotify && text==CABLES.UI.lastText)
@@ -324,7 +335,6 @@ CABLES.UI.notify=function(title,text)
         {
             CABLES.UI.lastNotify='';
             CABLES.UI.lastText='';
-            
         },1000);
         return;
     }

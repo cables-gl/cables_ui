@@ -4,16 +4,15 @@ CABLES.undo = new UndoManager();
 
 CABLES.UI.GUI = function() {
     var self = this;
-    var userOpsLoaded = false;
+    // var userOpsLoaded = false;
     var showTiming = false;
     var showingEditor = false;
     
     var showMiniMap = false;
-    var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true}});
+    var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true,prefixAssetPath:CABLES.sandbox.getAssetPrefix()}});
     _scene.gui = true;
     var _patch = null;
-    // var _editor = new CABLES.Editor();
-    var _userOpManager = null;
+
     var _jobs = new CABLES.UI.Jobs();
     var _find = new CABLES.UI.Find();
     this.cmdPallet = new CABLES.UI.CommandPallet();
@@ -24,17 +23,8 @@ CABLES.UI.GUI = function() {
     this.patchConnection = new CABLES.PatchConnectionSender();
     this.opDocs = null;
     
-    
-    
     this.mainTabs=new CABLES.UI.TabPanel('maintabs');
     this.maintabPanel=new CABLES.UI.MainTabPanel(this.mainTabs);
-
-
-    
-    
- 
-
-
 
     this.metaTabs=new CABLES.UI.TabPanel('metatabpanel');
     // var _socket=null;
@@ -540,17 +530,12 @@ CABLES.UI.GUI = function() {
         $('#serialized').val(self.patch().scene.serialize());
     };
 
-    this.userOpManager = function() {
-        _userOpManager = _userOpManager || new CABLES.UI.UserOpManager(self.project()._id);
-        return _userOpManager;
-    };
-
-    this.cycleRendererSize = function() {
+    this.cycleRendererSize = function()
+    {
         this.showCanvasModal(false);
-        if (self.rendererWidth !== 0) {
-            // CABLES.UI.fileSelect.hide();
+        if (self.rendererWidth !== 0)
+        {
             this._elGlCanvas.addClass('maximized');
-
             this._oldCanvasWidth = self.rendererWidth;
             this._oldCanvasHeight = self.rendererHeight;
             this._oldShowingEditor = showingEditor;
@@ -694,10 +679,6 @@ CABLES.UI.GUI = function() {
         }.bind(this));
 
     }
-//     this.showLibrary=function(inputId, filterType, opid)
-//     {
-//         CABLES.UI.fileSelect.show(inputId, filterType, opid);
-    // }
 
     this.setProjectName = function(name) {
         $('#patchname').html(name);
@@ -708,22 +689,18 @@ CABLES.UI.GUI = function() {
             "New Project",
             "Enter a name for your new Project",
             "My new Project",
-            function(name) {
-                if (name) {
-                    CABLES.api.post('project', {
-                        "name": name
-                    }, function(d) {
-                        document.location.href = '?rnd='+Math.round(Math.random()*10000)+'#/project/' + d._id;
+            function(name)
+            {
+                if(name)
+                    CABLES.talkerAPI.send("newPatch",{"name":name}, function(err,d)
+                    {
+                        console.log("newpatch",d);
+                        CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
                     });
-
-                }
             });
     };
 
-    this.deleteCurrentProject = function()
-    {
-        if(confirm('delete ?')) CABLES.sandbox.deleteProject(self.patch().getCurrentProject()._id);
-    };
+
 
     this.getUserOs = function() {
         var OSName = "Unknown OS";
@@ -774,21 +751,28 @@ CABLES.UI.GUI = function() {
     {
         $('#converterprogress').show();
         $('#converterform').hide();
-        
-        CABLES.api.post(
-            'project/'+projectId+'/file/convert/'+fileId+'/'+converterId,
-            {
-                options:CABLES.serializeForm('#converterform')
-            },
-            function(res)
-            {
-                $('#converteroutput').show();
-                console.log(res);
-                $('#converterprogress').hide();
-                if(res.info) $('#converteroutput').html(res.info);
-                    else $('#converteroutput').html('finished!');
 
-                // CABLES.UI.fileSelect.refresh();
+        CABLES.talkerAPI.send("fileConvert",
+            {
+                "fileId":fileId,
+                "converterId":converterId,
+                "options":CABLES.serializeForm('#converterform')
+            }, 
+            function(err,res)
+            {
+                console.log(err,res);
+                $('#converterprogress').hide();
+                $('#converteroutput').show();
+
+                if(err)
+                {
+                    $('#converteroutput').html('Error: something went wrong while converting...'+(err.msg||''));
+                }
+                else
+                {
+                    if(res.info) $('#converteroutput').html(res.info);
+                        else $('#converteroutput').html('finished!');
+                }
             });
     };
 
@@ -821,7 +805,8 @@ CABLES.UI.GUI = function() {
             CABLES.UI.MODAL.show(html);
         };
 
-    this.bind = function(cb) {
+    this.bind = function(cb)
+    {
         $('#glcanvas').attr('tabindex', '3');
 
 
@@ -1155,15 +1140,15 @@ CABLES.UI.GUI = function() {
             }
         });
 
-        if(CABLES.sandbox.initRouting)
-        {
-            CABLES.sandbox.initRouting(cb);
-        }
-        else
-        {
-            userOpsLoaded=true;
+        // if(CABLES.sandbox.initRouting)
+        // {
+            
+        // }
+        // else
+        // {
+        //     // userOpsLoaded=true;
             cb();
-        }
+        // }
 
     };
 
@@ -1247,51 +1232,46 @@ CABLES.UI.GUI = function() {
             timeout: false,
             buttons: [
                 ['<button>reload</button>', function(instance, toast) {
-                    document.location.reload();
+                    CABLES.CMD.PATCH.reload();
                 }]
             ]
         });
     };
 
 
-    this.waitToShowUI = function() {
+    this.showUiElements = function() {
         $('#cablescanvas').show();
         $('#loadingstatus').hide();
         $('#mainContainer').show();
 
-        if (CABLES.UI.userSettings.get("showUIPerf")==true) CABLES.uiperf.show();
-        if (CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
+        if(CABLES.UI.userSettings.get("showUIPerf")==true) CABLES.uiperf.show();
+        if(CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
         self.patch().getViewBox().update();
 
-        // self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
         CABLES.showPacoRenderer();
 
-        this._elGlCanvas.hover(function (e) {
+        this._elGlCanvas.hover(function (e){
             CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
         }, function () {
             CABLES.UI.hideInfo();
         });
 
-        if (CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
+        if(CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
 
-
-        if (_scene.cgl.aborted) {
+        if(_scene.cgl.aborted) {
             console.log('errror...');
             CABLES.UI.MODAL.showError('no webgl', 'your browser does not support webgl');
-            // _scene.pause();
             return;
         }
 
-        logStartup('finished loading cables');
-        CABLES.UI.loaded=true;
 
-        // if(CABLES.UI.userSettings.get("fileViewOpen")==true) this.showLibrary(); //old
+
         if(CABLES.UI.userSettings.get("fileManagerOpened")==true) this.showFileManager();
         if(CABLES.UI.userSettings.get("timelineOpened")==true) this.showTiming();
 
         setTimeout(function(){ CABLES.editorSession.open(); },100);
         
-        if (CABLES.UI.userSettings.get('showTipps')) CABLES.UI.tipps.show();
+        if(CABLES.UI.userSettings.get('showTipps') && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");
@@ -1307,7 +1287,6 @@ CABLES.UI.GUI = function() {
             );
         }
 
-        var html = '';
         if (this.project().users.indexOf(this.user.id) == -1 &&
             this.project().userId+''!=''+this.user.id ){
             iziToast.show({
@@ -1327,15 +1306,14 @@ CABLES.UI.GUI = function() {
     };
 
 
-    this.importJson3D = function(id) {
-        CABLES.api.get('json3dimport/' + id,
-            function(data) {
-                console.log('data', data);
-            }
-        );
-    };
-
-    var infoTimeout = -1;
+    // this.importJson3D = function(id) {
+    //     CABLES.api.get('json3dimport/' + id,
+    //         function(data) {
+    //             console.log('data', data);
+    //         }
+    //     );
+    // };
+    // var infoTimeout = -1;
 
     // this.editOpDoc = function(objName) {
     //     CABLES.api.clearCache();
@@ -1433,7 +1411,9 @@ CABLES.UI.GUI = function() {
         // var html = '<iframe style="border:none;width:100%;height:100%" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
         // // CABLES.UI.MODAL.show(html);
 
-        const url='/patch/' + self.project()._id+'/settingsiframe';
+        const url=CABLES.sandbox.getCablesUrl()+'/patch/' + self.project()._id+'/settingsiframe';
+
+        console.log("settings iframe",url);
 
         // var settingsTab=this.mainTabs.addTab(new CABLES.UI.Tab("Patch Settings",{icon:"settings",closable:true}));
         // settingsTab.contentEle.innerHTML=html;
@@ -1492,11 +1472,6 @@ CABLES.UI.GUI = function() {
         this._cursor=str;
     }
 
-    this.redirectNotLoggedIn = function() {
-        var theUrl = document.location.href;
-        theUrl = theUrl.replace('#', '@HASH@');
-        document.location.href = '/login?redir=' + theUrl;
-    };
 
     this.getSavedState = function() {
         return savedState;
@@ -1589,10 +1564,9 @@ CABLES.UI.GUI = function() {
             savedState = false;
 
             $('#patchname').addClass("warning");
-
     
-            window.onbeforeunload = function(event) {
-    
+            window.onbeforeunload = function(event)
+            {
                 var message = 'unsaved content!';
                 if (typeof event == 'undefined') {
                     event = window.event;
@@ -1609,6 +1583,11 @@ CABLES.UI.GUI = function() {
         this.infoHeight = 0;
         this.setLayout();
     };
+
+    this.reloadDocs=function(cb)
+    {
+        gui.opDocs=new CABLES.UI.OpDocs(cb);
+    }
 
     this.setStateSaved = function() {
         savedState = true;
@@ -1758,13 +1737,14 @@ CABLES.UI.GUI.prototype.updateTheme = function () {
 
 
 
-
+// todo use eventtarget...
 CABLES.UI.GUI.prototype.addEventListener = function(name, cb)
 {
     this._eventListeners[name] = this._eventListeners[name] || [];
     this._eventListeners[name].push(cb);
 };
 
+// todo use eventtarget...
 CABLES.UI.GUI.prototype.callEvent=function(name, params)
 {
     if (this._eventListeners.hasOwnProperty(name)) {
@@ -1781,86 +1761,80 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
 
 function startUi(event)
 {
-    // if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
-    //     else CABLES.sandbox=new CABLES.SandboxBrowser();
-
     logStartup('Init UI');
-    
-
-
 
     window.gui = new CABLES.UI.GUI();
 
+    incrementStartup();
+    gui.serverOps = new CABLES.UI.ServerOps(gui);
 
+    CABLES.UI.initHandleBarsHelper();
 
-    CABLES.sandbox.loadUser(
-        function(user)
+    $("#patch").bind("contextmenu", function(e) {
+        if (e.preventDefault) e.preventDefault();
+    });
+
+    gui.init();
+    gui.checkIdle();
+
+    gui.bind(function()
+    {
+        incrementStartup();
+        CABLES.sandbox.initRouting(function()
         {
-            gui.user = user;
-            $('#loggedout').hide();
-            $('#loggedin').show();
-            $('#username').html(user.usernameLowercase);
             incrementStartup();
-            gui.serverOps = new CABLES.UI.ServerOps(gui);
-            logStartup('User Data loaded');
-            
+            gui.opDocs=new CABLES.UI.OpDocs(function()
+            {
+                incrementStartup();
+                $('#username').html(gui.user.usernameLowercase);
 
-            CABLES.UI.initHandleBarsHelper();
-
-            $("#patch").bind("contextmenu", function(e) {
-                if (e.preventDefault) e.preventDefault();
-            });
-        
-
-
-
-            gui.init();
-            gui.checkIdle();
-
-            gui.bind(function() {
-                gui.opDocs=new CABLES.UI.OpDocs();
                 gui.metaCode().init();
                 gui.metaDoc.init();
                 gui.opSelect().reload();
                 // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
                 gui.showWelcomeNotifications();
-
-                gui.waitToShowUI();
+                incrementStartup();
+                gui.showUiElements();
                 gui.maintabPanel.init();
                 gui.setLayout();
                 gui.patch().fixTitlePositions();
                 gui.opSelect().prepare();
+                incrementStartup();
                 gui.opSelect().search();
-
-                // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
-                if(!gui.user.introCompleted)gui.introduction().showIntroduction();
                 
+                if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
+
+                logStartup('finished loading cables');
+                CABLES.UI.loaded=true;
+
             });
         });
-
-
-    $('#glcanvas').on("focus", function() {
-        gui.showCanvasModal(true);
     });
 
-    $(document).on("click", '.panelhead', function(e) {
-        var panelselector = $(this).data("panelselector");
-        if (panelselector) {
-            $(panelselector).toggle();
+    $('#glcanvas').on("focus",
+        function()
+        {
+            gui.showCanvasModal(true);
+        });
 
-            if ($(panelselector).is(":visible")) {
-                $(this).addClass("opened");
-                $(this).removeClass("closed");
-            } else {
-                $(this).addClass("closed");
-                $(this).removeClass("opened");
+    $(document).on("click", '.panelhead',
+        function(e)
+        {
+            var panelselector = $(this).data("panelselector");
+            if (panelselector) {
+                $(panelselector).toggle();
+
+                if ($(panelselector).is(":visible")) {
+                    $(this).addClass("opened");
+                    $(this).removeClass("closed");
+                } else {
+                    $(this).addClass("closed");
+                    $(this).removeClass("opened");
+                }
             }
-        }
-    });
+        });
 
     CABLES.watchPortVisualize.init();
-
-    
 
     document.addEventListener("visibilitychange", function()
     {
@@ -1871,8 +1845,6 @@ function startUi(event)
         }
     }, false);
 
-    
-    
     logStartup('Init UI done');
 
 }

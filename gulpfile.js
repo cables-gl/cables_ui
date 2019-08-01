@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var jshint = require('gulp-jshint');
 var sass = require('gulp-sass');
 var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
+var uglify = require('gulp-uglify-es').default;
 var rename = require('gulp-rename');
 var sourcemaps = require('gulp-sourcemaps');
 var gutil = require('gulp-util');
@@ -37,6 +37,18 @@ gulp.task('scripts_libs_ui', function()
     return gulp.src(['libs/ui/*.js'])
         .pipe(sourcemaps.init())
         .pipe(concat('libs.ui.js'))
+        .pipe(gulp.dest('dist/js'))
+        .pipe(rename('libs.ui.min.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('scripts_talkerapi', function()
+{
+    return gulp.src(['src-talkerapi/*.js'])
+        .pipe(sourcemaps.init())
+        .pipe(concat('talkerapi.js'))
         .pipe(gulp.dest('dist/js'))
         .pipe(rename('libs.ui.min.js'))
         .pipe(uglify())
@@ -153,6 +165,7 @@ gulp.task('watch', function() {
     gulp.watch('html/**/*.html', ['html_ui']);
     gulp.watch('icons/**/*.svg', ['svgcss']);
     gulp.watch('vue-src/**/*', ['vueify']);
+    gulp.watch('src-talkerapi/**/*', ['scripts_talkerapi']);
     // gulp.watch('src-electron/**/*', ['electron']);
 });
 
@@ -166,6 +179,7 @@ gulp.task('electron-watch', function() {
     gulp.watch('icons/**/*.svg', ['svgcss']);
     gulp.watch('vue-src/**/*', ['vueify']);
     gulp.watch('src-electron/**/*', ['electronapp']);
+    
 });
 
 
@@ -180,7 +194,6 @@ gulp.task('electron-watch', function() {
  * Run "gulp"
  */
 gulp.task('default', [
-    'svgcss',
     'scripts_ui',
     // 'lint',
     'html_ui',
@@ -190,6 +203,8 @@ gulp.task('default', [
     'scripts_ops',
     'sass',
     'vueify',
+    'svgcss',
+    'scripts_talkerapi',
     'watch',
 ]);
 
@@ -205,6 +220,7 @@ gulp.task('build', [
     'scripts_libs_core',
     'scripts_ops',
     'scripts_ui',
+    'scripts_talkerapi',
     'sass',
     'vueify',
 ]);

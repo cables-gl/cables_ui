@@ -21,11 +21,8 @@ CABLES.API=function()
         .done(function(data)
         {
             if(doCache)
-            {
                 cache.push({url:url,method:method,data:data});
-            }
 
-            // console.log( "success "+data );
             if(cbSuccess) cbSuccess(data);
         })
         .fail(function(data)
