@@ -1640,6 +1640,8 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
         var port = new CABLES.UI.Port(thePort);
 
+        console.log("addport",thePort.name);
+
         port.direction = inout;
         port.op = self.op;
         port.opUi = self;

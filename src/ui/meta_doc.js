@@ -36,7 +36,7 @@ CABLES.UI.MetaDoc.prototype.update=function()
 
     gui.getOpDoc(this._op.objName, true, function(html)
     {
-        var doclink = '<div><a href="/op/' + this._op.objName + '" class="button ">view documentation</a>&nbsp;<br/><br/>';
+        var doclink = '<div><a href="'+CABLES.sandbox.getCablesUrl()+'/op/' + this._op.objName + '" class="button ">View documentation</a>&nbsp;<br/><br/>';
         this.html=html+doclink;
     }.bind(this));
 

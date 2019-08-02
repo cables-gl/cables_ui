@@ -43,6 +43,7 @@ CABLES.UI.Port=function(thePort)
     var linkingLine=null;
     var cancelDeleteLink=false;
 
+    console.log("new port!",thePort);
     
     thePort.addEventListener("onUiAttrChange",function(attribs)
     {

@@ -49,10 +49,10 @@
             {{/each}}
         </table>
     {{else}}
-        no attachments...<br/><br/>
+        No attachments...<br/><br/>
     {{/if}}
 
-    <a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">create</a>
+    <a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">Create</a>
 
     <br/><br/>
 
@@ -82,7 +82,7 @@
         <option value="{{.}}">{{.}}</option>
     {{/each}}
     <select>
-    <a class="button fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">add</a>
+    <a class="button fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">Add</a>
 
 
     <br /><br /><br />
