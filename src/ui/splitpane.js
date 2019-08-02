@@ -134,7 +134,6 @@ $( document ).ready(function()
 
     function stopSplit(e)
     {
-        console.log("stop split...");
         if(CABLES.SPLITPANE.listeners.length>0)
         {
             for(var i=0;i<CABLES.SPLITPANE.listeners.length;i++)
