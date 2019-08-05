@@ -101,6 +101,10 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
     if (this.get('helperMode')) $('.nav_usersettings_helpermode i').removeClass('unchecked');
         else $('.nav_usersettings_helpermode i').addClass('unchecked');
 
+    if (this.get('introCompleted')) $('.nav_usersettings_introcompleted i').removeClass('unchecked');
+        else $('.nav_usersettings_introcompleted i').addClass('unchecked');
+
+
     if (this.get('showMinimap'))
     {
         $('.nav_usersettings_showMinimap i').removeClass('unchecked');
