@@ -42,12 +42,15 @@ CABLES.CHANGELOG.getHtml=function(cb,since)
 
 CABLES.CHANGELOG.show=function(since)
 {
-    CABLES.CHANGELOG.getHtml(function()
-    {
-        console.log("HALLO");
-        var win = window.open('https://cables.gl/changelog', '_blank');
 
-        // CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
-    },since);
+    gui.mainTabs.addIframeTab('changelog',CABLES.sandbox.getCablesUrl()+'/changelog',{icon:'book-open',closable:true});
+
+    // CABLES.CHANGELOG.getHtml(function()
+    // {
+    //     console.log("HALLO");
+    //     var win = window.open('https://cables.gl/changelog', '_blank');
+
+    //     // CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
+    // },since);
 
 };

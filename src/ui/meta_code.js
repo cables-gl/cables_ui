@@ -6,9 +6,9 @@ CABLES.UI.OpShowMetaCode=0;
 
 CABLES.UI.MetaCode=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("",{"icon":"code","infotext":"tab_code"});
+    this._tab=new CABLES.UI.Tab("code",{"icon":"code","infotext":"tab_code","showTitle":false,"hideToolbar":true,"padding":true});
     tabs.addTab(this._tab);
-    this._tab.addEventListener("onactivate",function()
+    this._tab.addEventListener("onActivate",function()
     {
         this.show();
     }.bind(this));
@@ -36,6 +36,7 @@ CABLES.UI.MetaCode=function(tabs)
 
     this.show=function()
     {
+        // this._tab.activate();
         if(!op)
         {
             this._tab.html('<h3>Code</h3>Select any Op');
@@ -43,6 +44,7 @@ CABLES.UI.MetaCode=function(tabs)
         }
 
         this._tab.html('<div class="loading" style="width:40px;height:40px;"></div>');
+
 
         if(window.process && window.process.versions['electron']) return;
         if(op)
@@ -87,7 +89,6 @@ CABLES.UI.MetaCode=function(tabs)
                         opserialized:op.getSerialized()
                     });
                     this._tab.html(html);
-
 
                 }.bind(this),function()
             {

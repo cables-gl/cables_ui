@@ -18,10 +18,8 @@ CABLES.UI.Exporter=function(project)
             });
 
         CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
-
         document.getElementById("doExportButton").addEventListener("click",function()
         {
-
             const options={};
             const e = document.getElementById("export_settings_assets");
             options.assets = e.options[e.selectedIndex].value;
@@ -41,18 +39,16 @@ CABLES.UI.Exporter=function(project)
         var ignoreAssets=false;
         CABLES.UI.MODAL.showLoading('exporting project');
 
-        var apiUrl = 'project/' + gui.patch().getCurrentProject()._id + '/export?a=1';
-        
-        if (options.assets=="none") apiUrl += '&ignoreAssets=true';
-        if (options.combine=="single") apiUrl += '&combineJS=true';
-
-console.log(apiUrl);
-        CABLES.api.get(
-            apiUrl,
-            function(r) {
+        CABLES.talkerAPI.send(
+            "exportPatch",
+            {
+                "options":options
+            },
+            function(err,r)
+            {
                 var msg = '';
 
-                if (r.error)
+                if (r.error || err)
                 {
                     msg = "<h2>export error</h2>";
                     msg += '<pre class="shaderErrorCode">' + JSON.stringify(r) + '<pre>';

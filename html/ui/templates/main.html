@@ -22,8 +22,8 @@
 <div id="drop-op-cursor"></div>
 
 <div id="suggestionDialog"></div>
-<div id="modalbg" class="modal-bg-look" onclick="CABLES.UI.MODAL.hide(true);gui.pressedEscape();"></div>
-<div id="modalcontainer">
+<div id="modalbg" class="modal-bg-look" onclick="CABLES.UI.MODAL.hide(true);gui.pressedEscape();" style="display:none;"></div>
+<div id="modalcontainer" style="display:none;">
 	<div id="modalclose" class="modalclose">
 		<!-- <a class=" fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a> -->
 		<a class="icon-x icon icon-1_5x" onclick="CABLES.UI.MODAL.hide(true);"></a>
@@ -56,14 +56,18 @@
 <div id="delayed"><i class="fa fa-clock-o" aria-hidden="true"></i></div>
 
 
+<div id="maintabs"></div>
 
-
-<div id="editor">
+<!-- <div id="editor">
     <div id="editorbar"></div>
     <div id="ace_editors" style="padding:0;height:300px;"></div>
-    <div id="editorfoot" style=""><pre></pre></div>
+    <div id="editorfoot"><pre></pre></div>
+</div> -->
+<div id="editormaximized" class="info" onclick="gui.maintabPanel.toggle();gui.setLayout();" data-info="minimize_tabpanel">
+    <span class="icon icon-chevron-left"></span>
 </div>
-<div id="editorminimized"  onclick="CABLES.CMD.UI.toggleEditor()">
+    
+<div id="editorminimized"  onclick="gui.maintabPanel.toggle();gui.setLayout();">
     <span class="icon icon-chevron-right"></span>
 </div>
 
@@ -82,6 +86,8 @@
 <div id="splitterRenderer" class="splitter"></div>
 <div id="splitterTimeline" class="splitter"></div>
 <div id="splitterEditor" class="splitter"></div>
+<div id="splitterMaintabs" class="splitter"></div>
+
 
 
 <div id="vue-app"></div>
@@ -132,17 +138,10 @@
                     <!-- <li class="nav_patch_export_ignoreAssets">Export without files</li> -->
                     <li class="divide"></li>
 
-                    <li class="nav_patch_settings">Settings</li>
-                    <li class="nav_patch_contributors" >Manage Contributors</li>
+                    <li class="nav_patch_settings">Patch settings</li>
                     <li class="divide"></li>
                     <li class="nav_uploadfile">Upload file</li>
                     <li class="divide"></li>
-
-                    
-
-                    <li class="divide"></li>
-                    <li class="nav_patch_profile">Profiler</li>
-                    <li class="nav_patch_resolve_subpatch">Resolve Subpatch</li>
 
                     <li class="divide"></li>
                     <li class="nav_patch_clear">Clear</li>
@@ -167,12 +166,12 @@
             <li>
                 Views
                 <ul class="nav-submenu">
-                    <li class="nav_files">Files</li>
+                    <!-- <li class="nav_files">Files</li> -->
+                    <li class="nav_filemanager">Files</li>
                     <li class="nav_timeline">Timeline</li>
-                    <li class="nav_editor">Editor</li>
+                    <li class="nav_profiler">Profiler</li>
                 </ul>
             </li>
-
 
             <li class="nav-item-help">
                 Help
@@ -188,6 +187,9 @@
                 </ul>
             </li>
 
+
+
+
             <li >
                 <section id="username">???</section>
                 <ul class="nav-submenu">
@@ -199,7 +201,7 @@
 
                     <li class="nav_usersettings_showMinimap" onclick="CABLES.CMD.UI.toggleMinimap()"><i class="icon icon-check checked"></i>Show Minimap <span class="shortcut">needs reload</span> </li>
 
-                    <li class="nav_usersettings_straightLines" onclick="CABLES.UI.userSettings.set('straightLines',!CABLES.UI.userSettings.get('straightLines'));document.location.reload();"><i class="icon icon-check checked"></i>Straight Lines <span class="shortcut">needs reload</span> </li>
+                    <li class="nav_usersettings_straightLines" onclick="CABLES.UI.userSettings.set('straightLines',!CABLES.UI.userSettings.get('straightLines'));CABLES.CMD.PATCH.reload();"><i class="icon icon-check checked"></i>Straight Lines <span class="shortcut">needs reload</span> </li>
 
                     <li class="nav_usersettings_helpermode" onclick="CABLES.CMD.UI.toggleHelper()"><i class="icon icon-check checked"></i>Helper Mode</li>
 
@@ -221,6 +223,20 @@
 
                     <li class="nav_usersettings" onclick="CABLES.CMD.UI.userSettings()">More User Settings...</li>
 
+                </ul>
+            </li>
+
+
+            <li class="nav-item-help">
+                <b id="patchname">my new patch</b>
+                <ul class="nav-submenu">
+                    <li class="nav_patch_settings">Settings</li>
+                    <li class="nav_viewProjectLink viewProjectLink">Open in new window</li>
+
+                    <li class="divide"></li>
+                    <li class="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li>
+                    <li class="nav_patch_saveas">Save As</li>
+                    <li class="nav_patch_export">Export</li>
                 </ul>
             </li>
 
@@ -258,14 +274,14 @@
     </div> -->
 
 
-    <div id="loggedin">
-        <div class="info button projectname fa fa-cog" onclick="gui.showSettings();" data-infotext="settings"></div>
-        <a target="_blank" class="info viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;" data-infotext="open_new_window"></a>
-    </div>
+    <!-- <div id="loggedin"> -->
+        <!-- <div class="info button projectname fa fa-cog" onclick="gui.showSettings();" data-infotext="settings"></div> -->
+        <!-- <a target="_blank" class="info viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;" data-infotext="open_new_window"></a> -->
+    <!-- </div> -->
 
-    <div id="loggedout">
-        <div id="button username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a>
-    </div>
+    <!-- <div id="loggedout"> -->
+        <!-- <div id="button username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a> -->
+    <!-- </div> -->
 
 </div>
 
@@ -273,27 +289,6 @@
 <div id="meta">
     <div id="metatabpanel" style="width:100%;min-height:400px;"></div>
 
-    <!-- <div id="metatabs">
-        <div class="tabs">
-            <a class="info tab_doc active fa fa-book" data-infotext="tab_doc" onclick="gui.setMetaTab('doc')">  </a>
-            <a class="info tab_code fa fa-code" data-infotext="tab_code" onclick="gui.setMetaTab('code')">  </a>
-            <a class="info tab_profiler fa fa-pie-chart" data-infotext="tab_profiler" onclick="gui.setMetaTab('profiler')"></a>
-            <a class="info tab_preview fa fa-eye" data-infotext="tab_preview" onclick="gui.setMetaTab('preview')"></a>
-            <a class="info tab_keyframes fa fa-clock-o" data-infotext="tab_keyframes" onclick="gui.setMetaTab('keyframes')"></a>
-            <a class="info tab_paco fa fa-youtube-play" data-infotext="tab_patchconnection" onclick="gui.setMetaTab('paco')"></a>
-            <a class="info tab_variables" data-infotext="tab_variables" onclick="gui.setMetaTab('variables')">&nbsp;&nbsp;#&nbsp;&nbsp;</a>
-        </div>
-    </div>
-    <div id="meta_content">
-        <div id="meta_content_doc" class="meta_content doc-panel"></div>
-        <div id="meta_content_preview" class="meta_content"></div>
-        <div id="meta_content_code" class="meta_content"></div>
-        <div id="meta_content_profiler" class="meta_content"></div>
-        <div id="meta_content_screen" class="meta_content"></div>
-        <div id="meta_content_keyframes" class="meta_content"></div>
-        <div id="meta_content_paco" class="meta_content"></div>
-        <div id="meta_content_variables" class="meta_content"></div>
-    </div> -->
     <div id="splitterMeta" class="splitter"></div>
     <div id="infoArea"></div>
 </div>

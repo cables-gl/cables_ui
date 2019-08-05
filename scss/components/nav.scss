@@ -5,25 +5,11 @@
     display: none;
     position: absolute;
     z-index: $z-index-background-jobs;
-    top:20px;
-    background-color: $color-menubar-background;
-
-    ul,li
-    {
-        padding:0;
-        margin:0;
-    }
-
-    li
-    {
-        background-color: $color-menubar-background;
-        color:var(--text-color);
-        font-weight: normal;
-        list-style-type: none;
-        padding:10px;
-    }
+    top:50px;
+    margin-left:20px;
+    background-color: var(--color_op_bg);
+    padding:15px !important;
 }
-
 
 #menubar,#timelineui
 {
@@ -32,6 +18,11 @@
     background-color: $color-menubar-background;
     overflow: hidden;
     display:none;
+
+    .warning
+    {
+        color:var(--color-warning);
+    }
 
 	li
 	{
@@ -113,9 +104,6 @@
     }
 }
 
-
-
-
 // .cables
 // {
 //
@@ -163,9 +151,9 @@ nav
             margin: 0;
             padding: 5px 4px 5px 0;
             list-style: none;
-            -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-            -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            // -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            // -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            // box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
         }
         ul li
         {
@@ -218,7 +206,7 @@ nav
             -moz-transition: opacity 0.1s;
             -ms-transition: opacity 0.1s;
             -o-transition: opacity 0.1s;
-            -transition: opacity 0.1s;
+            transition: opacity 0.1s;
         }
         ul li ul li
         {
@@ -259,9 +247,9 @@ nav
         margin: 0;
         padding: 5px 4px 5px 0;
         list-style: none;
-        -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-        -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        // -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        // -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+        // box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
     }
     ul li
     {
@@ -304,7 +292,7 @@ nav
         -moz-transition: opacity 0.1s;
         -ms-transition: opacity 0.1s;
         -o-transition: opacity 0.1s;
-        -transition: opacity 0.1s;
+        transition: opacity 0.1s;
     }
     ul li ul li
     {

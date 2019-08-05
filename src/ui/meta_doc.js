@@ -3,21 +3,18 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.MetaDoc=function(tabs)
 {
-    this._tab=new CABLES.UI.Tab("",{"icon":"book-open","infotext":"tab_doc"});
+    this._tab=new CABLES.UI.Tab("doc",{"icon":"book-open","infotext":"tab_doc","showTitle":false,"hideToolbar":true,"padding":true});
     tabs.addTab(this._tab);
     
     this._op=null;
     this.html='';
 
 
-    this._tab.addEventListener("onactivate",function()
+    this._tab.addEventListener("onActivate",function()
     {
         this.update();
         this.show();
     }.bind(this));
-
-
-
 };
 
 CABLES.UI.MetaDoc.prototype.init=function()
@@ -39,7 +36,7 @@ CABLES.UI.MetaDoc.prototype.update=function()
 
     gui.getOpDoc(this._op.objName, true, function(html)
     {
-        var doclink = '<div><a href="/op/' + this._op.objName + '" class="button ">view documentation</a>&nbsp;<br/><br/>';
+        var doclink = '<div><a href="'+CABLES.sandbox.getCablesUrl()+'/op/' + this._op.objName + '" class="button ">View documentation</a>&nbsp;<br/><br/>';
         this.html=html+doclink;
     }.bind(this));
 

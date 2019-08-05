@@ -52,10 +52,13 @@ const actions = {
       removedDefaultItems: uniqArr(context.state.removedDefaultItems.filter((cmd) => !context.state.items.some((item) => cmd === item.cmd))), // only add items which are not in the items list right now
     };
     // console.log("wrting to local storage: ", obj);
-    CABLES.UI.userSettings.set('sidebar', obj);
+    CABLES.UI.userSettings.setLS('sidebar', obj);
   },
+
+
+
   loadLocalStorage(context) {
-    const sidebarSettings = CABLES.UI.userSettings.get('sidebar');
+    const sidebarSettings = CABLES.UI.userSettings.getLS('sidebar');
     // console.log("sidebarSettings", sidebarSettings);
     if(sidebarSettings) {
       if(typeof sidebarSettings.visible !== 'undefined') { context.commit('visible', sidebarSettings.visible); }

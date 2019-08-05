@@ -4,9 +4,9 @@ CABLES.UI =CABLES.UI || {};
 CABLES.UI.MetaKeyframes=function(tabs)
 {
     this.anim=null;
-    this._tab=new CABLES.UI.Tab("",{"icon":"clock","infotext":"tab_keyframes"});
+    this._tab=new CABLES.UI.Tab("keyframes",{"icon":"clock","infotext":"tab_keyframes","showTitle":false,"hideToolbar":true,"padding":true});
     tabs.addTab(this._tab);
-    this._tab.addEventListener("onactivate",function()
+    this._tab.addEventListener("onActivate",function()
     {
         this.show();
     }.bind(this));
@@ -18,22 +18,27 @@ CABLES.UI.MetaKeyframes.prototype.show=function()
 {
     var anims=[];
     var i=0;
-    var ops=gui.patch().scene.ops;
-    for(i=0;i<ops.length;i++)
-    {
-        // console.log(gui.patch().scene.ops[i].name);
-        for(var j=0;j<ops[i].portsIn.length;j++)
-        {
-            var p=ops[i].portsIn[j];
 
-            if(p.isAnimated())anims.push(
-                {
-                    opname:ops[i].name,
-                    opid:ops[i].id,
-                    portname:p.name,
-                    colorClass:"op_color_"+CABLES.UI.uiConfig.getNamespaceClassName(ops[i].objName)
-                });
+    if(CABLES.UI && window.gui)
+    {
+        var ops=gui.patch().scene.ops;
+        for(i=0;i<ops.length;i++)
+        {
+            // console.log(gui.patch().scene.ops[i].name);
+            for(var j=0;j<ops[i].portsIn.length;j++)
+            {
+                var p=ops[i].portsIn[j];
+    
+                if(p.isAnimated())anims.push(
+                    {
+                        opname:ops[i].name,
+                        opid:ops[i].id,
+                        portname:p.name,
+                        colorClass:"op_color_"+CABLES.UI.uiConfig.getNamespaceClassName(ops[i].objName)
+                    });
+            }
         }
+    
     }
 
     if(self.anim)

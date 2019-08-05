@@ -9,7 +9,7 @@ CABLES.UI.getHandleBarHtml=function(name,obj)
     var perf = CABLES.uiperf.start('getHandleBarHtml');
 
     var template = CABLES.UI.handleBarsPrecompiled[name];
-    if(!template)
+    if(!template && document.getElementById(name))
     {
         var source = document.getElementById(name).innerHTML;
         if (!source) {
@@ -18,7 +18,9 @@ CABLES.UI.getHandleBarHtml=function(name,obj)
         }
         template = CABLES.UI.handleBarsPrecompiled[name] = Handlebars.compile(source);
     }
-    
+
+    obj=obj||{};
+    obj.cablesUrl=CABLES.sandbox.getCablesUrl();
     var html = template(obj);
     perf.finish();
 

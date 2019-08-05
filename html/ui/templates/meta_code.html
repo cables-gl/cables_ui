@@ -20,7 +20,6 @@
 {{/if}}
 
 
-
 <h3>Code</h3>
 
 <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
@@ -50,18 +49,32 @@
             {{/each}}
         </table>
     {{else}}
-        no attachments...<br/><br/>
+        No attachments...<br/><br/>
     {{/if}}
 
-    <a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">create</a>
+    <a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">Create</a>
 
     <br/><br/>
 
     <h3>Libs</h3>
 
-    {{#each doc.libs}}
-        {{.}}<br/>
-    {{/each}}
+    {{#if doc.libs}}
+        <table class="table">
+            <tr>
+                <th>Filename</th>
+                <th> </th>
+            </tr>
+
+            {{#each doc.libs}}
+                <tr>
+                    <td>{{.}}</td>
+                    <td>
+                        <!-- <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeLib('{{../op.objName}}','{{.}}');"></a> -->
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+    {{/if}}
 
     <select id="addoplib">
         <option value="">---</option>
@@ -69,7 +82,7 @@
         <option value="{{.}}">{{.}}</option>
     {{/each}}
     <select>
-    <a class="button fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">add</a>
+    <a class="button fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">Add</a>
 
 
     <br /><br /><br />

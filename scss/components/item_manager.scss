@@ -1,0 +1,84 @@
+.item_manager
+{
+
+
+    .item-container
+    {
+        width:110px;
+        height:110px;
+        text-align:center;
+        float:left;
+        padding:5px;
+        margin-right:5px;
+        margin-top:5px;
+        border-radius:10px;
+        overflow: hidden;
+        border:2px solid transparent;
+
+        &:hover
+        {
+            background-color: #444;
+            // border:2px solid var(--text-color-textOpselect);
+        }
+        
+        +.selected
+        {
+            border:2px solid var(--color-special);
+        }
+    }
+
+    .preview
+    {
+        background-repeat:no-repeat;
+        background-size:100% auto;
+        width:100px;
+        height:100px;
+        background-position:center center;
+        margin-left: 5%;
+    }
+
+
+    .filemanager-detail-element
+    {
+        float:left;
+        width:33%;
+    }
+
+    .fileManagerSource
+    {
+        padding-left:15px;
+        padding-right:15px;
+        padding:5px;
+        border-bottom:1px solid transparent;
+    }
+    .activeFileManagerSource
+    {
+        border-bottom:1px solid var(--color-special);
+    }
+}
+
+.switch
+{
+    background-color:#444;
+    padding:4px;
+    cursor:pointer;
+}
+
+.switch-active
+{
+    background-color:#888;
+}
+
+.switch-left
+{
+    border-top-left-radius:5px;
+    border-bottom-left-radius:5px;
+}
+.switch-right
+{
+    border-top-right-radius:5px;
+    border-bottom-right-radius:5px;
+}
+
+
+

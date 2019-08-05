@@ -169,8 +169,8 @@
                                 <input autocomplete="off" class="hidden value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:95%;display:block;"/>
                                 <br/><br/>
                             </div>
-                            <div id="portFilename_{{ portnum }}" onclick="$('#fileInputContainer_{{ portnum }}').show();$(this).hide();gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="cursor:pointer;">[???]</div>
-                            <div id="portFileVal_{{ portnum }}_preview" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="padding:0px;"></div>
+                            <div id="portFilename_{{ portnum }}" onclick="$('#fileInputContainer_{{ portnum }}').show();$(this).hide();gui.showFileSelect('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="cursor:pointer;">[???]</div>
+                            <div id="portFileVal_{{ portnum }}_preview" onclick="gui.showFileSelect('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');" style="padding:0px;"></div>
                     {{/compare}}
 
 					{{#compare port.uiAttribs.display '==' 'text' }}

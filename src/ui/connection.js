@@ -71,7 +71,7 @@ CABLES.API.Connection=function(ui)
             {
                 ui.jobs().finish(message.data.data.jobId);
                 // gui.updateProjectFiles();
-                CABLES.UI.fileSelect.load();
+                // CABLES.UI.fileSelect.load();
 
             }
             else

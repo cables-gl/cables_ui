@@ -4,15 +4,15 @@ CABLES.undo = new UndoManager();
 
 CABLES.UI.GUI = function() {
     var self = this;
-    var userOpsLoaded = false;
+    // var userOpsLoaded = false;
     var showTiming = false;
     var showingEditor = false;
+    
     var showMiniMap = false;
-    var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true}});
+    var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true,prefixAssetPath:CABLES.sandbox.getAssetPrefix()}});
     _scene.gui = true;
     var _patch = null;
-    var _editor = new CABLES.Editor();
-    var _userOpManager = null;
+
     var _jobs = new CABLES.UI.Jobs();
     var _find = new CABLES.UI.Find();
     this.cmdPallet = new CABLES.UI.CommandPallet();
@@ -21,16 +21,18 @@ CABLES.UI.GUI = function() {
     this._gizmo=null;
 
     this.patchConnection = new CABLES.PatchConnectionSender();
-    this.opDocs = new CABLES.UI.OpDocs();
+    this.opDocs = null;
     
-    
+    this.mainTabs=new CABLES.UI.TabPanel('maintabs');
+    this.maintabPanel=new CABLES.UI.MainTabPanel(this.mainTabs);
+
     this.metaTabs=new CABLES.UI.TabPanel('metatabpanel');
     // var _socket=null;
     // var _connection = null;
     var savedState = true;
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
     var metaCode = new CABLES.UI.MetaCode(this.metaTabs);
-    this.profiler = new CABLES.UI.Profiler(this.metaTabs);
+    // this.profiler = new CABLES.UI.Profiler(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs);
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.variables = new CABLES.UI.MetaVars(this.metaTabs);
@@ -38,7 +40,11 @@ CABLES.UI.GUI = function() {
     this.bookmarks = new CABLES.UI.Bookmarks();
     // this.preview = new CABLES.UI.Preview();
     // this.hoverPreview = new CABLES.UI.Preview();
-    this.metaTabs.setTabNum(0);
+    
+    // if(!CABLES.UI.userSettings.get("tabsLastTitle"))
+    // {
+    //     this.metaTabs.setTabNum(0);
+    // }
 
     var favIconLink = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(favIconLink);
@@ -75,9 +81,9 @@ CABLES.UI.GUI = function() {
         return _patch;
     };
 
-    this.editor = function() {
-        return _editor;
-    };
+    // this.editor = function() {
+    //     return _editor;
+    // };
 
     this.jobs = function() {
         return _jobs;
@@ -101,40 +107,53 @@ CABLES.UI.GUI = function() {
     this.rendererWidth = 640;
     this.rendererHeight = 360;
 
-    this._ignoreOpenEditor=false;
     
-    this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 400;
+    this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
 
+    // this.toggleMaintabs=function()
+    // {
+    //     if (this.showingMaintabs) this.closeMaintabs();
+    //     else this.showMaintabs();
 
-    this.toggleEditor = function() {
-        if (showingEditor) self.closeEditor();
-        else self.showEditor();
+    //     this.setLayout();
+    // }
 
-        self.setLayout();
-    };
 
-    this.showEditor = function() {
-        if(this._ignoreOpenEditor)
-        {
-            showingEditor = false;
-            return;
-        } 
-        if (!showingEditor) {
-            showingEditor = true;
-            _editor.focus();
-            this.setLayout();
-            CABLES.UI.userSettings.set("editorMinimized",false);
-        }
-    };
 
-    this.closeEditor = function() {
-        if (showingEditor) {
-            showingEditor = false;
-            this.setLayout();
-            CABLES.UI.userSettings.set("editorMinimized",true);
-        }
-    };
+    // 
+
+    
+    // this.toggleEditor = function() {
+    //     if (showingEditor) self.closeEditor();
+    //     else self.showEditor();
+
+    //     self.setLayout();
+    // };
+
+    // todo remove later
+    // this.showEditor = function() {
+    //     if(this._ignoreOpenEditor)
+    //     {
+    //         showingEditor = false;
+    //         return;
+    //     } 
+    //     if (!showingEditor) {
+    //         showingEditor = true;
+    //         _editor.focus();
+    //         this.setLayout();
+    //         CABLES.UI.userSettings.set("editorMinimized",false);
+    //     }
+    // };
+
+    // todo remove later
+    // this.closeEditor = function() {
+    //     if (showingEditor) {
+    //         showingEditor = false;
+    //         this.setLayout();
+    //         CABLES.UI.userSettings.set("editorMinimized",true);
+    //     }
+    // };
 
     this.setLayout = function() {
         var perf = CABLES.uiperf.start('gui.setlayout');
@@ -153,11 +172,14 @@ CABLES.UI.GUI = function() {
         this._elEditorBar = this._elEditorBar || $('#editorbar');
         this._elIconBar = this._elIconBar || $('#icon-bar');
 
+        this._elMaintab = this._elMaintab || document.getElementById("maintabs");
         this._elEditor = this._elEditor || document.getElementById("editor");
         this._elLibrary = this._elLibrary || document.getElementById("library");
         this._elCanvasInfoSize = this._elCanvasInfoSize || document.getElementById("canvasInfoSize");
         this._elSplitterEditor = this._elSplitterEditor || document.getElementById('splitterEditor');
+        this._elSplitterMaintabs = this._elSplitterMaintabs || document.getElementById('splitterMaintabs');
         this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
+        this._elEditorMaximized = this._elEditorMaximized || document.getElementById("editormaximized");
        
         this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
         this._elMiniMap = this._elMiniMap || document.getElementById("minimap");
@@ -200,7 +222,7 @@ CABLES.UI.GUI = function() {
         if (self.timeLine().hidden) timelineUiHeight = 0;
 
         var filesHeight = 0;
-        if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
+        // if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
 
         var timedisplayheight = 25;
 
@@ -234,61 +256,103 @@ CABLES.UI.GUI = function() {
             });
 
         var editorWidth = self.editorWidth;
+        if(editorWidth>patchWidth-50)
+            editorWidth=patchWidth-50;
+
         var patchLeft = iconBarWidth;
 
-        if(showingEditor)
+        if(this.maintabPanel.isVisible())
         {
-            this._elEditorMinimized.style.display = "none";
-            var editWidth=self.editorWidth;
-            
-            if (editWidth > window.innerWidth - self.rendererWidth -iconBarWidth)
-            {
-                self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
-                this.updateCanvasIconBar();
-            }
-
             var editorbarHeight = 76;
+            const editorHeight = patchHeight - 2 - editorbarHeight;
 
-            this._elEditor.style.display = "block";
-            this._elEditor.style.left = iconBarWidth;
-            this._elEditor.style.top = menubarHeight;
-
-            this._elEditorBar.css('height', editorbarHeight);
-            this._elEditorBar.css('top',  1);
-
-            var editorHeight = patchHeight - 2 - editorbarHeight;
+            this._elMaintab.style.left = iconBarWidth+'px';
+            this._elMaintab.style.top = menubarHeight;
+            this._elMaintab.style.height = (editorHeight-2)+"px";
+            this._elMaintab.style.width = editorWidth;
 
             this._elAceEditor.css('height', editorHeight);
-            this._elAceEditor.css('width', editWidth);
-            $('#ace_editors .ace_tab_content').css('top',  1 + editorbarHeight);
-            this._elAceEditor.css('left', 0);
-
-            $('#editorfoot').css('width', editWidth);
-
-            this._elEditorBar.css('width', editWidth);
-
-            this._elSplitterEditor.style.display = "block";
-            this._elSplitterEditor.style.left= editWidth + iconBarWidth;
-            this._elSplitterEditor.style.height= patchHeight - 2;
-            this._elSplitterEditor.style.width= 5;
-            this._elSplitterEditor.style.top= menubarHeight;
-
-            _editor.resize();
+            this._elSplitterMaintabs.style.display = "block";
+            this._elSplitterMaintabs.style.left= editorWidth + iconBarWidth;
+            this._elSplitterMaintabs.style.height= patchHeight - 2;
+            this._elSplitterMaintabs.style.width= 5;
+            this._elSplitterMaintabs.style.top= menubarHeight;
             
+            this._elEditorMinimized.style.display = "none";
+            this._elEditorMinimized.style.left = iconBarWidth;
+            this._elEditorMinimized.style.top = menubarHeight;
+
+            this._elEditorMaximized.style.display = "block";
+            this._elEditorMaximized.style.left = editorWidth + iconBarWidth+3;
+            this._elEditorMaximized.style.top = menubarHeight;
+
+            
+
         } else {
+            this._elEditorMaximized.style.display = "none";
 
-            this._elSplitterEditor.style.display = "none";
-            this._elEditor.style.display = "none";
-            editorWidth = 0;
+            if(this.mainTabs.getNumTabs()>0) this._elEditorMinimized.style.display = "block";
+                else this._elEditorMinimized.style.display = "none";
 
-            if(_editor.getNumTabs()>0)
-            {
-                this._elEditorMinimized.style.display = "block";
-                this._elEditorMinimized.style.left = iconBarWidth;
-                this._elEditorMinimized.style.top = patchHeight / 2 - 100;
-            }
-            else this._elEditorMinimized.style.display = "none";
+            this._elSplitterMaintabs.style.display = "none";
+            this._elEditorMinimized.style.left = iconBarWidth;
+            this._elEditorMinimized.style.top = menubarHeight;
+
         }
+
+        // if(showingEditor)
+        // {
+        //     this._elEditorMinimized.style.display = "none";
+        //     var editWidth=self.editorWidth;
+            
+        //     if (editWidth > window.innerWidth - self.rendererWidth -iconBarWidth)
+        //     {
+        //         self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
+        //         this.updateCanvasIconBar();
+        //     }
+
+        //     var editorbarHeight = 76;
+
+        //     this._elEditor.style.display = "block";
+        //     this._elEditor.style.left = iconBarWidth;
+        //     this._elEditor.style.top = menubarHeight;
+
+        //     this._elEditorBar.css('height', editorbarHeight);
+        //     this._elEditorBar.css('top',  1);
+
+        //     var editorHeight = patchHeight - 2 - editorbarHeight;
+
+        //     this._elAceEditor.css('height', editorHeight);
+        //     this._elAceEditor.css('width', editWidth);
+        //     $('#ace_editors .ace_tab_content').css('top',  1 + editorbarHeight);
+        //     this._elAceEditor.css('left', 0);
+
+        //     $('#editorfoot').css('width', editWidth);
+
+        //     this._elEditorBar.css('width', editWidth);
+
+        //     this._elSplitterEditor.style.display = "block";
+        //     this._elSplitterEditor.style.left= editWidth + iconBarWidth;
+        //     this._elSplitterEditor.style.height= patchHeight - 2;
+        //     this._elSplitterEditor.style.width= 5;
+        //     this._elSplitterEditor.style.top= menubarHeight;
+
+        //     _editor.resize();
+            
+        // } else {
+
+        //     this._elSplitterEditor.style.display = "none";
+        //     this._elEditor.style.display = "none";
+        //     editorWidth = 0;
+
+        //     if(_editor.getNumTabs()>0)
+        //     {
+        //         this._elEditorMinimized.style.display = "block";
+        //         this._elEditorMinimized.style.left = iconBarWidth;
+        //         this._elEditorMinimized.style.top = patchHeight / 2 - 100;
+        //     }
+        //     else this._elEditorMinimized.style.display = "none";
+        // }
 
         this._elIconBar.css('height', window.innerHeight - 60);
         this._elIconBar.css('top', 60);
@@ -466,17 +530,12 @@ CABLES.UI.GUI = function() {
         $('#serialized').val(self.patch().scene.serialize());
     };
 
-    this.userOpManager = function() {
-        _userOpManager = _userOpManager || new CABLES.UI.UserOpManager(self.project()._id);
-        return _userOpManager;
-    };
-
-    this.cycleRendererSize = function() {
+    this.cycleRendererSize = function()
+    {
         this.showCanvasModal(false);
-        if (self.rendererWidth !== 0) {
-            CABLES.UI.fileSelect.hide();
+        if (self.rendererWidth !== 0)
+        {
             this._elGlCanvas.addClass('maximized');
-
             this._oldCanvasWidth = self.rendererWidth;
             this._oldCanvasHeight = self.rendererHeight;
             this._oldShowingEditor = showingEditor;
@@ -583,12 +642,48 @@ CABLES.UI.GUI = function() {
         CABLES.UI.MODAL.show(html);
     };
 
-    this.showLibrary = function(inputId, filterType, opid) {
-        CABLES.UI.fileSelect.show(inputId, filterType, opid);
-    };
+    this.refreshFileManager=function()
+    {
+        if(this.fileManager)this.fileManager.refresh();
+        else this.showFileManager();
+    }
+
+    this.showFileManager=function(cb)
+    {
+        if(this.fileManager)
+        {
+            this.fileManager.show();
+            gui.metaTabs.activateTabByName("Files");
+
+            if(cb)cb();
+            return;
+        }
+        else
+        {
+            this.fileManager=new CABLES.UI.FileManager(cb);
+        }
+    }
+
+    this.showFileSelect=function(inputId, filterType, opid)
+    {
+        console.log("filter:",filterType);
+
+        this.showFileManager(function()
+        {
+            const portInputEle=document.querySelector(inputId);
+            if(!portInputEle)return;
+            var fn=portInputEle.value;
+            console.log("filename",inputId,fn);
+    
+            this.fileManager.setFilePort(portInputEle,gui.scene().getOpById(opid));
+            this.fileManager.selectFile(fn);
+    
+        }.bind(this));
+
+    }
 
     this.setProjectName = function(name) {
-        $('.projectname').html('&nbsp;&nbsp;' + name);
+        $('#patchname').html(name);
     };
 
     this.createProject = function() {
@@ -596,22 +691,18 @@ CABLES.UI.GUI = function() {
             "New Project",
             "Enter a name for your new Project",
             "My new Project",
-            function(name) {
-                if (name) {
-                    CABLES.api.post('project', {
-                        "name": name
-                    }, function(d) {
-                        document.location.href = '?rnd='+Math.round(Math.random()*10000)+'#/project/' + d._id;
+            function(name)
+            {
+                if(name)
+                    CABLES.talkerAPI.send("newPatch",{"name":name}, function(err,d)
+                    {
+                        console.log("newpatch",d);
+                        CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
                     });
-
-                }
             });
     };
 
-    this.deleteCurrentProject = function()
-    {
-        if(confirm('delete ?')) CABLES.sandbox.deleteProject(self.patch().getCurrentProject()._id);
-    };
+
 
     this.getUserOs = function() {
         var OSName = "Unknown OS";
@@ -662,21 +753,28 @@ CABLES.UI.GUI = function() {
     {
         $('#converterprogress').show();
         $('#converterform').hide();
-        
-        CABLES.api.post(
-            'project/'+projectId+'/file/convert/'+fileId+'/'+converterId,
-            {
-                options:CABLES.serializeForm('#converterform')
-            },
-            function(res)
-            {
-                $('#converteroutput').show();
-                console.log(res);
-                $('#converterprogress').hide();
-                if(res.info) $('#converteroutput').html(res.info);
-                    else $('#converteroutput').html('finished!');
 
-                CABLES.UI.fileSelect.refresh();
+        CABLES.talkerAPI.send("fileConvert",
+            {
+                "fileId":fileId,
+                "converterId":converterId,
+                "options":CABLES.serializeForm('#converterform')
+            }, 
+            function(err,res)
+            {
+                console.log(err,res);
+                $('#converterprogress').hide();
+                $('#converteroutput').show();
+
+                if(err)
+                {
+                    $('#converteroutput').html('Error: something went wrong while converting...'+(err.msg||''));
+                }
+                else
+                {
+                    if(res.info) $('#converteroutput').html(res.info);
+                        else $('#converteroutput').html('finished!');
+                }
             });
     };
 
@@ -709,12 +807,13 @@ CABLES.UI.GUI = function() {
             CABLES.UI.MODAL.show(html);
         };
 
-    this.bind = function(cb) {
+    this.bind = function(cb)
+    {
         $('#glcanvas').attr('tabindex', '3');
 
-
-        $('.nav_cables').bind("click", function(event) {
-            var win = window.open('/');
+        $('.nav_cables').bind("click", function(event)
+        {
+            var win = window.open(CABLES.sandbox.getCablesUrl(),'_blank');
             win.focus();
         });
 
@@ -723,6 +822,15 @@ CABLES.UI.GUI = function() {
         });
         $('#button_cycleRenderSize').bind("click", function(event) {
             self.cycleRendererSize();
+        });
+
+        $('.nav_viewProjectLink').bind("click", function(event) {
+            
+            var url=$('.viewProjectLink').attr('href');
+            console.log("url",url);
+            var win = window.open(url, '_blank');
+            win.focus();
+
         });
 
         $('.nav_patch_save').bind("click", function(event) {
@@ -762,9 +870,9 @@ CABLES.UI.GUI = function() {
             var win = window.open('https://cables.gl/projects', '_blank');
             win.focus();
         });
-        $('.nav_patch_resolve_subpatch').bind("click", function(event) {
-            self.patch().resolveSubpatch();
-        });
+        // $('.nav_patch_resolve_subpatch').bind("click", function(event) {
+        //     self.patch().resolveSubpatch();
+        // });
 
         $('.nav_patch_contributors').bind("click", CABLES.CMD.UI.settingsContributors);
         $('.nav_changelog').bind("click", CABLES.CMD.UI.showChangelog);
@@ -809,8 +917,11 @@ CABLES.UI.GUI = function() {
             self.introduction().showIntroduction();
         });
         $('.nav_help_video').bind("click", function(event) {
-            var html = '<iframe width="800" height="640" src="https://www.youtube.com/embed/videoseries?list=PLYimpE2xWgBveaPOiV_2_42kZEl_1ExB0&showinfo=1" frameborder="0" allowfullscreen></iframe>';
-            CABLES.UI.MODAL.show(html);
+
+            var win = window.open('https://www.youtube.com/cablesgl','_blank');
+            win.focus();
+
+            
         });
 
 
@@ -821,11 +932,20 @@ CABLES.UI.GUI = function() {
             self.serverOps.createDialog();
         });
 
+        
         $('.nav_files').bind("click", function(event) {
             CABLES.CMD.UI.toggleFiles();
         });
+        $('.nav_filemanager').bind("click", function(event) {
+            // CABLES.CMD.UI.toggleFiles();
+            gui.showFileManager()
+        });
         $('.nav_timeline').bind("click", function(event) {
             CABLES.CMD.UI.toggleTimeline();
+        });
+        $('.nav_profiler').bind("click", function(event) {
+            new CABLES.UI.Profiler(gui.mainTabs);
+            gui.maintabPanel.show();
         });
         $('.nav_editor').bind("click", function(event) {
             CABLES.CMD.UI.toggleEditor();
@@ -947,14 +1067,19 @@ CABLES.UI.GUI = function() {
                         }
                     break;
                 case 83: // s - save
-                        if (e.metaKey || e.ctrlKey) {
+                        if (e.metaKey || e.ctrlKey)
+                        {
                             e.preventDefault();
                             if (!e.shiftKey) {
                                 if ($('#patch').is(":focus")) {
                                     CABLES.CMD.PATCH.save();
                                 } else
-                                if (showingEditor) {
-                                    self.editor().save();
+                                if (gui.mainTabs.getSaveButton()) {
+                                    // self.editor().save();
+                                    console.log("found savebutton",gui.mainTabs.getSaveButton());
+
+                                    gui.mainTabs.getSaveButton().cb();
+                                    //gui.mainTabs.editorSave();
                                 } else {
                                     CABLES.CMD.PATCH.save();
                                 }
@@ -1020,24 +1145,31 @@ CABLES.UI.GUI = function() {
             }
         });
 
-        if(CABLES.sandbox.initRouting)
-        {
-            CABLES.sandbox.initRouting(cb);
-        }
-        else
-        {
-            userOpsLoaded=true;
+        // if(CABLES.sandbox.initRouting)
+        // {
+            
+        // }
+        // else
+        // {
+        //     // userOpsLoaded=true;
             cb();
-        }
+        // }
 
     };
 
     this.pressedEscape = function(e) {
 
         this.showCanvasModal(false);
-
         this.callEvent("pressedEscape");
+        if(this.fileManager) this.fileManager.setFilePort(null);
         
+        if(e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey))
+        {
+            this.maintabPanel.toggle();
+            this.setLayout();
+            return;
+        }
+
         this.metaTexturePreviewer.pressedEscape();
         $('.tooltip').hide();
 
@@ -1058,8 +1190,7 @@ CABLES.UI.GUI = function() {
             this._elGlCanvas.removeClass('maximized');
             self.setLayout();
             this.showCanvasModal(true);
-        } else
-        if (CABLES.UI.suggestions) {
+        } else if (CABLES.UI.suggestions) {
             console.log(CABLES.UI.suggestions);
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
@@ -1073,12 +1204,12 @@ CABLES.UI.GUI = function() {
         }, 200);
         else if ($('.easingselect').is(':visible')) $('.easingselect').hide();
         else if (vueStore.getters['sidebar/sidebarCustomizerVisible']) vueStore.commit('sidebar/setCustomizerVisible', false);
-        else
-        if (CABLES.UI.MODAL._visible) {
+        else if (CABLES.UI.MODAL._visible) {
             CABLES.UI.MODAL.hide(true)
             CABLES.UI.MODAL.hide();
             if (showingEditor) self.editor().focus();
         } 
+        else if(this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else if(showingEditor && e) this.closeEditor();
         else {
             if (e) gui.opSelect().showOpSelect({
@@ -1102,49 +1233,46 @@ CABLES.UI.GUI = function() {
             timeout: false,
             buttons: [
                 ['<button>reload</button>', function(instance, toast) {
-                    document.location.reload();
+                    CABLES.CMD.PATCH.reload();
                 }]
             ]
         });
     };
 
 
-    this.waitToShowUI = function() {
+    this.showUiElements = function() {
         $('#cablescanvas').show();
         $('#loadingstatus').hide();
         $('#mainContainer').show();
 
-        if (CABLES.UI.userSettings.get("showUIPerf")==true) CABLES.uiperf.show();
-        if (CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
+        if(CABLES.UI.userSettings.get("showUIPerf")==true) CABLES.uiperf.show();
+        if(CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
         self.patch().getViewBox().update();
 
-        // self.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
         CABLES.showPacoRenderer();
 
-        this._elGlCanvas.hover(function (e) {
+        this._elGlCanvas.hover(function (e){
             CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
         }, function () {
             CABLES.UI.hideInfo();
         });
 
-        if (CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
+        if(CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
 
-
-        if (_scene.cgl.aborted) {
+        if(_scene.cgl.aborted) {
             console.log('errror...');
             CABLES.UI.MODAL.showError('no webgl', 'your browser does not support webgl');
-            // _scene.pause();
             return;
         }
 
-        logStartup('finished loading cables');
-        CABLES.UI.loaded=true;
 
-        if(CABLES.UI.userSettings.get("fileViewOpen")==true)this.showLibrary();
-        if(CABLES.UI.userSettings.get("timelineOpened")==true)this.showTiming();
 
-        CABLES.editorSession.open();
-        if (CABLES.UI.userSettings.get('showTipps')) CABLES.UI.tipps.show();
+        
+        if(CABLES.UI.userSettings.get("fileManagerOpened")==true) this.showFileManager();
+        if(CABLES.UI.userSettings.get("timelineOpened")==true) this.showTiming();
+
+        
+        if(CABLES.UI.userSettings.get('showTipps') && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");
@@ -1160,7 +1288,6 @@ CABLES.UI.GUI = function() {
             );
         }
 
-        var html = '';
         if (this.project().users.indexOf(this.user.id) == -1 &&
             this.project().userId+''!=''+this.user.id ){
             iziToast.show({
@@ -1180,15 +1307,14 @@ CABLES.UI.GUI = function() {
     };
 
 
-    this.importJson3D = function(id) {
-        CABLES.api.get('json3dimport/' + id,
-            function(data) {
-                console.log('data', data);
-            }
-        );
-    };
-
-    var infoTimeout = -1;
+    // this.importJson3D = function(id) {
+    //     CABLES.api.get('json3dimport/' + id,
+    //         function(data) {
+    //             console.log('data', data);
+    //         }
+    //     );
+    // };
+    // var infoTimeout = -1;
 
     // this.editOpDoc = function(objName) {
     //     CABLES.api.clearCache();
@@ -1257,10 +1383,10 @@ CABLES.UI.GUI = function() {
     };
 
 
-    this.showProfiler = function() {
-        if (!self.profiler) self.profiler = new CABLES.UI.Profiler();
-        self.profiler.show();
-    };
+    // this.showProfiler = function() {
+    //     if (!self.profiler) self.profiler = new CABLES.UI.Profiler();
+    //     self.profiler.show();
+    // };
 
     this.showMetaPaco = function() {
         this.metaPaco.show();
@@ -1283,9 +1409,19 @@ CABLES.UI.GUI = function() {
             if (c[0] == 'cmd' && c[1] == 'saveproject') this.patch().saveCurrentProject();
         }.bind(this);
 
-        var html = '';
-        html += '<iframe style="border:none;width:100%;height:620px;" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
-        CABLES.UI.MODAL.show(html);
+        // var html = '<iframe style="border:none;width:100%;height:100%" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
+        // // CABLES.UI.MODAL.show(html);
+
+        const url=CABLES.sandbox.getCablesUrl()+'/patch/' + self.project()._id+'/settingsiframe';
+
+        console.log("settings iframe",url);
+
+        // var settingsTab=this.mainTabs.addTab(new CABLES.UI.Tab("Patch Settings",{icon:"settings",closable:true}));
+        // settingsTab.contentEle.innerHTML=html;
+
+        gui.mainTabs.addIframeTab("Patch Settings",url,{"icon":"settings","closable":true,"singleton":true});
+
+
     };
 
     // this.showOpDoc = function(opname) {
@@ -1337,11 +1473,6 @@ CABLES.UI.GUI = function() {
         this._cursor=str;
     }
 
-    this.redirectNotLoggedIn = function() {
-        var theUrl = document.location.href;
-        theUrl = theUrl.replace('#', '@HASH@');
-        document.location.href = '/login?redir=' + theUrl;
-    };
 
     this.getSavedState = function() {
         return savedState;
@@ -1432,9 +1563,11 @@ CABLES.UI.GUI = function() {
             
             favIconLink.href = '/favicon/favicon_orange.ico';
             savedState = false;
+
+            $('#patchname').addClass("warning");
     
-            window.onbeforeunload = function(event) {
-    
+            window.onbeforeunload = function(event)
+            {
                 var message = 'unsaved content!';
                 if (typeof event == 'undefined') {
                     event = window.event;
@@ -1452,9 +1585,15 @@ CABLES.UI.GUI = function() {
         this.setLayout();
     };
 
+    this.reloadDocs=function(cb)
+    {
+        gui.opDocs=new CABLES.UI.OpDocs(cb);
+    }
+
     this.setStateSaved = function() {
         savedState = true;
         favIconLink.href = '/favicon/favicon.ico';
+        $('#patchname').removeClass("warning");
 
         var title='';
         if(CABLES.isDevEnv())title="DEV ";
@@ -1508,9 +1647,9 @@ CABLES.UI.GUI = function() {
         }
     };
 
-    this.init = function()
+    this.init = function(next)
     {
-        if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
+        // if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
         $('#infoArea').show();
 
         $('#infoArea').hover(
@@ -1526,7 +1665,7 @@ CABLES.UI.GUI = function() {
             {
                 gui.patch().lastMouseMoveEvent=null;
                 gui.showCanvasModal(false);
-                // $('#patch').focus();
+                $('#patch').focus();
                 e.preventDefault();
             });
 
@@ -1544,21 +1683,21 @@ CABLES.UI.GUI = function() {
             CABLES.UI.hideInfo();
         });
         /* Tab pane on the right */
-        $('.tab_files').hover(function(e) {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_files);
-        }, function() {
-            CABLES.UI.hideInfo();
-        });
-        $('.tab_profiler').hover(function(e) {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_profiler);
-        }, function() {
-            CABLES.UI.hideInfo();
-        });
-        $('.tab_screen').hover(function(e) {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_screen);
-        }, function() {
-            CABLES.UI.hideInfo();
-        });
+        // $('.tab_files').hover(function(e) {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_files);
+        // }, function() {
+        //     CABLES.UI.hideInfo();
+        // });
+        // $('.tab_profiler').hover(function(e) {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_profiler);
+        // }, function() {
+        //     CABLES.UI.hideInfo();
+        // });
+        // $('.tab_screen').hover(function(e) {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_screen);
+        // }, function() {
+        //     CABLES.UI.hideInfo();
+        // });
         $('.download_screenshot').hover(function(e) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.download_screenshot);
         }, function() {
@@ -1587,17 +1726,7 @@ CABLES.UI.GUI = function() {
         gui.replaceNavShortcuts();
     };
 
-    CABLES.sandbox.loadUser(
-        function(user)
-        {
-            self.user = user;
-            $('#loggedout').hide();
-            $('#loggedin').show();
-            $('#username').html(user.usernameLowercase);
-            incrementStartup();
-            self.serverOps = new CABLES.UI.ServerOps(self);
-            logStartup('User Data loaded');
-        });
+
 };
 
 CABLES.UI.GUI.prototype.updateTheme = function () {
@@ -1609,13 +1738,14 @@ CABLES.UI.GUI.prototype.updateTheme = function () {
 
 
 
-
+// todo use eventtarget...
 CABLES.UI.GUI.prototype.addEventListener = function(name, cb)
 {
     this._eventListeners[name] = this._eventListeners[name] || [];
     this._eventListeners[name].push(cb);
 };
 
+// todo use eventtarget...
 CABLES.UI.GUI.prototype.callEvent=function(name, params)
 {
     if (this._eventListeners.hasOwnProperty(name)) {
@@ -1632,63 +1762,88 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
 
 function startUi(event)
 {
-    // if(window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
-    //     else CABLES.sandbox=new CABLES.SandboxBrowser();
+
 
     logStartup('Init UI');
-    
+
+    window.gui = new CABLES.UI.GUI();
+
+    incrementStartup();
+    gui.serverOps = new CABLES.UI.ServerOps(gui);
+
     CABLES.UI.initHandleBarsHelper();
 
     $("#patch").bind("contextmenu", function(e) {
         if (e.preventDefault) e.preventDefault();
     });
 
-    window.gui = new CABLES.UI.GUI();
-
-    
     gui.init();
     gui.checkIdle();
 
-    gui.bind(function() {
-        gui.metaCode().init();
-        gui.metaDoc.init();
-        gui.opSelect().reload();
-        // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-        gui.showWelcomeNotifications();
+    gui.bind(function()
+    {
+        incrementStartup();
+        CABLES.sandbox.initRouting(function()
+        {
+            incrementStartup();
+            gui.opDocs=new CABLES.UI.OpDocs(function()
+            {
+                CABLES.UI.userSettings.init();
+                incrementStartup();
+                $('#username').html(gui.user.usernameLowercase);
 
-        gui.waitToShowUI();
-        gui.setLayout();
-        gui.patch().fixTitlePositions();
-        gui.opSelect().prepare();
-        gui.opSelect().search();
+                gui.metaCode().init();
+                gui.metaDoc.init();
+                gui.opSelect().reload();
+                // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+                gui.showWelcomeNotifications();
+                incrementStartup();
+                gui.showUiElements();
+                gui.setLayout();
+                gui.patch().fixTitlePositions();
+                gui.opSelect().prepare();
+                incrementStartup();
+                gui.opSelect().search();
+                
+                if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
 
-        // self._socket=new CABLES.SocketConnection(gui.patch().getCurrentProject()._id);
-        if(!gui.user.introCompleted)gui.introduction().showIntroduction();
-        
+
+                
+                CABLES.editorSession.open();
+
+                
+
+                logStartup('finished loading cables');
+                CABLES.UI.loaded=true;
+
+            });
+        });
     });
 
-    $('#glcanvas').on("focus", function() {
-        gui.showCanvasModal(true);
-    });
+    $('#glcanvas').on("focus",
+        function()
+        {
+            gui.showCanvasModal(true);
+        });
 
-    $(document).on("click", '.panelhead', function(e) {
-        var panelselector = $(this).data("panelselector");
-        if (panelselector) {
-            $(panelselector).toggle();
+    $(document).on("click", '.panelhead',
+        function(e)
+        {
+            var panelselector = $(this).data("panelselector");
+            if (panelselector) {
+                $(panelselector).toggle();
 
-            if ($(panelselector).is(":visible")) {
-                $(this).addClass("opened");
-                $(this).removeClass("closed");
-            } else {
-                $(this).addClass("closed");
-                $(this).removeClass("opened");
+                if ($(panelselector).is(":visible")) {
+                    $(this).addClass("opened");
+                    $(this).removeClass("closed");
+                } else {
+                    $(this).addClass("closed");
+                    $(this).removeClass("opened");
+                }
             }
-        }
-    });
+        });
 
     CABLES.watchPortVisualize.init();
-
-    
 
     document.addEventListener("visibilitychange", function()
     {
@@ -1699,8 +1854,6 @@ function startUi(event)
         }
     }, false);
 
-    
-    
     logStartup('Init UI done');
 
 }

@@ -8,11 +8,10 @@
 
         {{#each tabs}}
             <div class="tabcontainer">
-                <div id="editortab{{id}}" data-id="{{id}}" class="tab {{#if active}} active {{/if}}{{#if options.infotext}} info {{/if}}" style="{{#if title}}{{else}} min-width:19px !important;max-width:19px !important;padding-left: 10px; {{/if}}" {{#if options.infotext}} data-infotext="{{options.infotext}}"{{/if}}>
-                    {{#if icon}} <span class="tabicon icon-{{icon}} icon fleft"></span> &nbsp;{{/if}}
-                    {{title}}
-                    {{#if unsaved}} ! {{/if}}
-                    {{#if closable}}&nbsp;<span id="closetab{{id}}" class="icon-x icon fright iconhover" data-closeid="{{id}}"></span>{{/if}}
+                <div id="editortab{{id}}" data-id="{{id}}" class="tab {{#if options.wasChanged}} unsaved {{/if}} {{#if options.closable}} closable {{/if}} {{#if active}} active {{/if}}{{#if options.infotext}} info {{/if}}" style="{{#if options.showTitle}}{{else}} min-width:19px !important;max-width:19px !important;padding-left: 10px; {{/if}}" {{#if options.infotext}} data-infotext="{{options.infotext}}"{{/if}}>
+                    {{#if icon }} <span class="tabicon icon-{{icon}} icon fleft"></span> &nbsp;{{/if}}
+                    {{#if options.showTitle }}{{title}}{{/if}}
+                    {{#if unsaved }} ! {{/if}}
                 </div>
             </div>
         {{/each}}
@@ -21,5 +20,21 @@
         </div>
         <div style="clear:both;"></div>
     </div>
+
+</script>
+
+
+<script id="tabpanel_toolbar" type="text/x-handlebars-template">
+
+    <div class="tabtoolbar" id="toolbarContent{{id}}" style="float:left;"></div>
+
+    {{#if options.closable}}
+        <div 
+            id="closetab{{id}}" 
+            data-id="{{id}}" 
+            style="margin-right:10px;float:right" 
+            class="icon-x icon icon-1_5x fright iconhover" ></div>
+    {{/if}}
+    <div style="clear:both;"></div>
 
 </script>

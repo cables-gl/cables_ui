@@ -494,7 +494,7 @@ body,div
     cursor:ns-resize;
 }
 
-#splitterPatch,#splitterEditor
+#splitterPatch,#splitterEditor,#splitterMaintabs
 {
     width:4px;
     height:100%;
@@ -749,6 +749,11 @@ input[type=range]:focus {
     transform: scale(1, -1);
 }
 
+.draggable
+{
+    cursor: grab;
+}
+
 @import 'libs/jcolorpicker-custom.scss';
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';
@@ -782,3 +787,4 @@ input[type=range]:focus {
 @import 'components/vue/SidebarCustomizer.scss';
 @import 'components/vue/Switch.scss';
 @import 'components/tabpanel.scss';
+@import 'components/item_manager.scss';

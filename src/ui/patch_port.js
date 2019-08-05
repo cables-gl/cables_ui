@@ -42,7 +42,6 @@ CABLES.UI.Port=function(thePort)
     var hovering=false;
     var linkingLine=null;
     var cancelDeleteLink=false;
-
     
     thePort.addEventListener("onUiAttrChange",function(attribs)
     {

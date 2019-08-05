@@ -1220,7 +1220,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
 
     this.toggleLoop=function()
     {
-        anim.loop=!anim.loop;
+        if(anim) anim.loop=!anim.loop;
         updateKeyLine();
     };
 

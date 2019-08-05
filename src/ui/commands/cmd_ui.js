@@ -20,14 +20,12 @@ CABLES.CMD.UI.userSettings = function() {
 
 
 CABLES.CMD.UI.files = function() {
-    gui.showLibrary();
+    gui.showFileManager();
 };
 
 CABLES.CMD.UI.toggleFiles = function() {
-    CABLES.UI.fileSelect.toggle();
+    gui.showFileManager();
 };
-
-
 
 CABLES.CMD.UI.downloadSVG = function() {
     gui.patch().downloadSVG();
@@ -60,7 +58,8 @@ CABLES.CMD.UI.hideEditor = function() {
 };
 
 CABLES.CMD.UI.showEditor = function() {
-    gui.showEditor();
+    // gui.showEditor();
+    console.log("todo: add showeditor for maintabs");
 };
 
 
@@ -104,7 +103,7 @@ CABLES.CMD.UI.showMinimap = function() {
 };
 CABLES.CMD.UI.toggleMinimap = function () {
     CABLES.UI.userSettings.set('showMinimap', !CABLES.UI.userSettings.get('showMinimap'));
-    if (CABLES.UI.userSettings.get('showMinimap'))document.location.reload();
+    if (CABLES.UI.userSettings.get('showMinimap'))CABLES.CMD.PATCH.reload();
         else CABLES.CMD.UI.hideMinimap();
 };
 
