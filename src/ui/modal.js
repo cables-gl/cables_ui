@@ -281,8 +281,7 @@ CABLES.UI.MODAL.showException=function(ex,op)
         html+='<br/><br/><a class="button" onclick="CABLES.CMD.PATCH.reload();">reload</a>';
         html+='</div>';
 
-
-        $('body').append(html);
+        document.body.innerHTML+=html;
     }
     CABLES.UI.MODAL.showClose();
 
