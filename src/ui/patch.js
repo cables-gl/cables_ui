@@ -1101,7 +1101,7 @@ CABLES.UI.Patch = function(_gui) {
             // CABLES.UI.fileSelect.load();
             // gui.showFileManager();
     
-            $('.viewProjectLink').attr('href', '/p/' + proj._id);
+            $('.viewProjectLink').attr('href', CABLES.sandbox.getCablesUrl()+'/p/' + proj._id);
         }
         $('#meta_content_files').hover(function(e) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
