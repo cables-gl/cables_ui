@@ -84,6 +84,7 @@ CABLES.UI.ServerOps = function(gui) {
 
                 self.load(
                     function() {
+                        gui.showFileManager();
                         self.edit(name);
                         gui.serverOps.execute(name);
                         gui.opSelect().reload();
@@ -492,7 +493,7 @@ CABLES.UI.ServerOps = function(gui) {
                                     else setStatus('Error: '+err.msg||"Unknown error");
 
                                 console.log(res);
-                            }
+                                }
                             else
                             {
                                 if(!CABLES.Patch.getOpClass(opname))

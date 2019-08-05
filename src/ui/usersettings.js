@@ -5,22 +5,71 @@ CABLES.UI.LOCALSTORAGE_KEY="cables.usersettings";
 
 CABLES.UI.UserSettings=function()
 {
-    this._settings=JSON.parse(localStorage.getItem(CABLES.UI.LOCALSTORAGE_KEY))||{};
+    this._wasLoaded=false;
+    this._serverDelay=null;
+    this._settings={};//JSON.parse(localStorage.getItem(CABLES.UI.LOCALSTORAGE_KEY))||{};
+    this._lsSettings=JSON.parse(localStorage.getItem(CABLES.UI.LOCALSTORAGE_KEY))||{};
     this.init();
 };
 
 CABLES.UI.UserSettings.prototype.init = function ()
 {
+    if (this.get("snapToGrid") === null) this.set("snapToGrid", true);
     if (this.get("bgpreview") === null) this.set("bgpreview", true);
     if (this.get("showTipps") === null) this.set("showTipps", true);
 
     this.updateNavBar();
 }
 
-CABLES.UI.UserSettings.prototype.set = function (key, value) {
-    this._settings[key] = value||false;
-    localStorage.setItem(CABLES.UI.LOCALSTORAGE_KEY, JSON.stringify(this._settings));
+
+CABLES.UI.UserSettings.prototype.load = function (settings)
+{
+    this._wasLoaded=true;
+
+    for(var i in settings)
+    {
+        this.set(i,settings[i]);
+        // console.log('set ',i,settings[i]);
+    }
     this.updateNavBar();
+
+}
+
+CABLES.UI.UserSettings.prototype.setLS = function (key, value)
+{
+    this._lsSettings[key] = value||false;
+    localStorage.setItem(CABLES.UI.LOCALSTORAGE_KEY, JSON.stringify(this._lsSettings));
+}
+
+CABLES.UI.UserSettings.prototype.getLS = function (key) {
+    if (!this._lsSettings || !this._lsSettings.hasOwnProperty(key)) return null;
+    return this._lsSettings[key];
+};
+
+CABLES.UI.UserSettings.prototype.set = function (key, value)
+{
+    if(value==="true")value=true;
+        else if(value==="false")value=false;
+    
+    if(CABLES.UTILS.isNumeric(value))value=parseFloat(value);
+
+    this._settings[key] = value||false;
+    // localStorage.setItem(CABLES.UI.LOCALSTORAGE_KEY, JSON.stringify(this._settings));
+    this.updateNavBar();
+
+
+    if(this._wasLoaded)
+    {
+        clearTimeout(this._serverDelay);
+        this._serverDelay=setTimeout(
+            ()=>
+            {
+                CABLES.talkerAPI.send("saveUserSettings",{"settings":this._settings})
+            }
+            , 1000);
+
+    }
+
 };
 
 CABLES.UI.UserSettings.prototype.get = function (key) {
@@ -66,4 +115,3 @@ CABLES.UI.UserSettings.prototype.updateNavBar=function()
 }
 
 CABLES.UI.userSettings=new CABLES.UI.UserSettings();
-

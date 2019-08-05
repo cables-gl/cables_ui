@@ -1762,6 +1762,8 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
 
 function startUi(event)
 {
+
+
     logStartup('Init UI');
 
     window.gui = new CABLES.UI.GUI();
@@ -1786,6 +1788,7 @@ function startUi(event)
             incrementStartup();
             gui.opDocs=new CABLES.UI.OpDocs(function()
             {
+                CABLES.UI.userSettings.init();
                 incrementStartup();
                 $('#username').html(gui.user.usernameLowercase);
 

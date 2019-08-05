@@ -5,6 +5,8 @@ CABLES.SandboxBrowser=function(cfg)
 {
     CABLES.EventTarget.apply(this);
     this._cfg=cfg;
+
+    CABLES.UI.userSettings.load(cfg.usersettings.settings);
 };
 
 CABLES.SandboxBrowser.prototype.isOffline=function()
@@ -153,12 +155,14 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
         {
             gui.jobs().start({id:options.id,title:options.title});
         });
+
     CABLES.talkerAPI.addEventListener(
         "jobFinish",
         function(options,next)
         {
             gui.jobs().finish(options.id);
         });
+
     CABLES.talkerAPI.addEventListener(
         "jobProgress",
         function(options,next)

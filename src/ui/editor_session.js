@@ -70,9 +70,6 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
     this.store();
     CABLES.UI.userSettings.set("editortab", name);
 
-    console.log(CABLES.UI.loaded,'CABLES.UI.loaded',CABLES.UI.userSettings.get("maintabsVisible"));
-
-
     return obj;
 }
 
@@ -88,10 +85,8 @@ CABLES.EditorSession.prototype.open=function()
     if (sessions)
     {
         for (var i = 0; i < sessions.length; i++)
-        {
-            if(this._listeners[sessions[i].type]) this._listeners[sessions[i].type]( sessions[i].name, sessions[i].data||{} );
-            console.log('session',sessions[i].name);
-        }
+            if(this._listeners[sessions[i].type])
+                this._listeners[sessions[i].type]( sessions[i].name, sessions[i].data||{} );
     
         if(sessions.length>0)
             if(!CABLES.UI.loaded)
