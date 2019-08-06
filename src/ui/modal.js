@@ -22,7 +22,7 @@ CABLES.UI.MODAL.init=function(options)
 
     if(CABLES.UI.MODAL.contentElement)CABLES.UI.MODAL.contentElement.hide();
     CABLES.UI.MODAL.contentElement=$('#modalcontent');
-    CABLES.UI.MODAL.headerElement = $('#modalheader');
+    CABLES.UI.MODAL.headerElement=$('#modalheader');
     CABLES.UI.MODAL.headerElement.empty();
     if(options && options.element)CABLES.UI.MODAL.contentElement=$(options.element);
         else CABLES.UI.MODAL.contentElement.empty();
@@ -99,9 +99,11 @@ CABLES.UI.MODAL.setTitle=function(title)
 	if(title)
 	{
 		$('#modalheader').html(title);
-		$('#modalheader').show();
+        // $('#modalheader').show();
+        document.getElementById("modalheader").style.display="block";
 	}
-	else $('#modalheader').hide();
+    else document.getElementById("modalheader").style.display="none";
+    //$('#modalheader').hide();
 };
 
 
@@ -158,7 +160,7 @@ CABLES.UI.MODAL.showLoading=function(title,content)
 
 CABLES.UI.MODAL.showClose=function()
 {
-	$('#modalclose').show();
+    document.getElementById("modalclose").style.display="block";
 
 };
 
@@ -169,7 +171,8 @@ CABLES.UI.MODAL.showError=function(title,content)
     CABLES.UI.MODAL.contentElement.append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;'+title+'</h2>');
     CABLES.UI.MODAL.contentElement.append(content);
 	CABLES.UI.MODAL._setVisible(true);
-    $('#modalbg').show();
+    // $('#modalbg').show();
+    document.getElementById("modalbg").style.display="block";
 
     $('.shadererrorcode').each(function(i, block) {
         hljs.highlightBlock(block);
@@ -244,7 +247,9 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
     }
 
 	CABLES.UI.MODAL._setVisible(true);
-    $('#modalbg').show();
+    // $('#modalbg').show();
+    document.getElementById("modalbg").style.display="block";
+    
 
     var ops=gui.patch().scene.getOpsByObjName(opName);
     for(var i=0;i<ops.length;i++)
@@ -296,7 +301,8 @@ CABLES.UI.MODAL.showException=function(ex,op)
 
 	CABLES.UI.MODAL._setVisible(true);
 
-    $('#modalbg').show();
+    // $('#modalbg').show();
+    document.getElementById("modalbg").style.display="block";
 
 };
 
@@ -389,7 +395,8 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
         CABLES.UI.MODAL.contentElement.append('<div class="shaderErrorCode">'+JSON.stringify(thing ,null, 4)+'</div>');
 
         CABLES.UI.MODAL._setVisible(true);
-        $('#modalbg').show();
+        // $('#modalbg').show();
+        document.getElementById("modalbg").style.display="block";
     }
     catch(ex)
     {
@@ -415,7 +422,8 @@ CABLES.UI.MODAL.showCode=function(title,code,type)
     
     CABLES.UI.MODAL.contentElement.append('<pre><code class="'+(type||'javascript')+'">'+code+'</code></pre>');
 	CABLES.UI.MODAL._setVisible(true);
-    $('#modalbg').show();
+    // $('#modalbg').show();
+    document.getElementById("modalbg").style.display="block";
     $('pre code').each(function(i, block) {
         hljs.highlightBlock(block);
       });
@@ -453,7 +461,8 @@ CABLES.UI.MODAL.prompt=function(title,text,value,callback)
 	CABLES.UI.MODAL.contentElement.append('&nbsp;&nbsp;<a class="greybutton" onclick="CABLES.UI.MODAL.hide()">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>');
 	CABLES.UI.MODAL._setVisible(true);
 
-    $('#modalbg').show();
+    // $('#modalbg').show();
+    document.getElementById("modalbg").style.display="block";
 
     setTimeout(function()
     {

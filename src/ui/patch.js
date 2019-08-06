@@ -3154,7 +3154,7 @@ CABLES.UI.Patch = function(_gui) {
             }
         };
         gui.scene().addOp(opname, uiAttr, function(op) {
-            op.getPort(portname).set('/assets/' + currentProject._id + '/' + filename);
+            if(op) op.getPort(portname).set('/assets/' + currentProject._id + '/' + filename);
         });
     };
 

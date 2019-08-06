@@ -6,6 +6,7 @@ CABLES.UI.FileManager=function(cb)
     this._manager=new CABLES.UI.ItemManager("Files",gui.mainTabs);
     this._filePortEle=null;
     this._firstTimeOpening=true;
+    this._refreshDelay=null;
 
     gui.maintabPanel.show();
     CABLES.UI.userSettings.set("fileManagerOpened",true);
@@ -34,7 +35,12 @@ CABLES.UI.FileManager.prototype.show=function()
 
 CABLES.UI.FileManager.prototype.refresh=function()
 {
-    this.setSource("patch");
+    clearTimeout(this._refreshDelay);
+    this._refreshDelay=setTimeout(
+        ()=>
+        {
+            this.setSource("patch");
+        },200);
 }
 
 CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
