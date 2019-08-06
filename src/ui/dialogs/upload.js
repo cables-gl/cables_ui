@@ -58,7 +58,7 @@ CABLES.uploadFile=function(file)
     reader.addEventListener("load", 
         () =>
         {
-            CABLES.talkerAPI.send("fileUploadStr",
+            CABLESUILOADER.talkerAPI.send("fileUploadStr",
                 {
                     "fileStr":reader.result,
                     "filename":file.name,

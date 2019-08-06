@@ -64,7 +64,7 @@ CABLES.UI.UserSettings.prototype.set = function (key, value)
         this._serverDelay=setTimeout(
             ()=>
             {
-                CABLES.talkerAPI.send("saveUserSettings",{"settings":this._settings})
+                CABLESUILOADER.talkerAPI.send("saveUserSettings",{"settings":this._settings})
             }
             , 1000);
 

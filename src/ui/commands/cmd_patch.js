@@ -16,7 +16,7 @@ CABLES.CMD.PATCH.deleteSelectedOps=function()
 
 CABLES.CMD.PATCH.reload=function()
 {
-	CABLES.talkerAPI.send("reload");
+	CABLESUILOADER.talkerAPI.send("reload");
 };
 
 CABLES.CMD.PATCH.save=function()

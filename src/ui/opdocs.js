@@ -86,7 +86,7 @@ CABLES.UI.OpDocs=function(cb)
     }
 
     CABLES.api.get(
-        CABLES.noCacheUrl(CABLES.sandbox.getUrlDocOpsAll()),
+        CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlDocOpsAll()),
         function(res)
         {
             logStartup('Op docs loaded');

@@ -102,7 +102,7 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
 
 CABLES.SandboxBrowser.prototype.savePatch=function(options,cb)
 {
-    CABLES.talkerAPI.send("savePatch",options,cb);
+    CABLESUILOADER.talkerAPI.send("savePatch",options,cb);
 }
 
 CABLES.SandboxBrowser.prototype.initRouting=function(cb)
@@ -110,21 +110,21 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
     gui.user=this._cfg.user;
 
 
-    CABLES.talkerAPI.addEventListener(
+    CABLESUILOADER.talkerAPI.addEventListener(
         "notify",
         function(options,next)
         {
             CABLES.UI.notify(options.msg);
         });
 
-    CABLES.talkerAPI.addEventListener(
+    CABLESUILOADER.talkerAPI.addEventListener(
         "notifyError",
         function(options,next)
         {
             CABLES.UI.notifyError(options.msg);
         });
 
-    CABLES.talkerAPI.addEventListener(
+    CABLESUILOADER.talkerAPI.addEventListener(
         "refreshFileManager",
         function(options,next)
         {
@@ -132,7 +132,7 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
             gui.refreshFileManager();
         });
 
-    // CABLES.talkerAPI.addEventListener(
+    // CABLESUILOADER.talkerAPI.addEventListener(
     //     "uploadProgress",
     //     function(options,next)
     //     {
@@ -150,28 +150,28 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
     //         gui.refreshFileManager();
     //     });
 
-    CABLES.talkerAPI.addEventListener(
+    CABLESUILOADER.talkerAPI.addEventListener(
         "jobStart",
         function(options,next)
         {
             gui.jobs().start({id:options.id,title:options.title});
         });
 
-    CABLES.talkerAPI.addEventListener(
+    CABLESUILOADER.talkerAPI.addEventListener(
         "jobFinish",
         function(options,next)
         {
             gui.jobs().finish(options.id);
         });
 
-    CABLES.talkerAPI.addEventListener(
+    CABLESUILOADER.talkerAPI.addEventListener(
         "jobProgress",
         function(options,next)
         {
             gui.jobs().setProgress(options.id,options.progress);
         });
         
-    CABLES.talkerAPI.send("getPatch",{},function(err,r)
+    CABLESUILOADER.talkerAPI.send("getPatch",{},function(err,r)
     {
         this._cfg.patch=r;
         incrementStartup();

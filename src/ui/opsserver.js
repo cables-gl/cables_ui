@@ -30,7 +30,7 @@ CABLES.UI.ServerOps = function(gui) {
         }.bind(this));
 
     this.load = function(cb) {
-        CABLES.api.get(CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsList()), function(res) {
+        CABLES.api.get(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsList()), function(res) {
             if (res) {
                 ops = res;
 
@@ -74,7 +74,7 @@ CABLES.UI.ServerOps = function(gui) {
     this.create = function(name, cb) {
 
 
-        CABLES.talkerAPI.send(
+        CABLESUILOADER.talkerAPI.send(
             "opCreate",
             {
                 "opname":name            },
@@ -141,7 +141,7 @@ CABLES.UI.ServerOps = function(gui) {
         }
 
 
-        CABLES.talkerAPI.send(
+        CABLESUILOADER.talkerAPI.send(
             "opSaveLayout",
             {
                 "opname":op.objName,
@@ -173,7 +173,7 @@ CABLES.UI.ServerOps = function(gui) {
 
         CABLES.UI.MODAL.showLoading('executing...');
         var s = document.createElement('script');
-        s.setAttribute('src', CABLES.noCacheUrl(CABLES.sandbox.getCablesUrl()+'/api/op/' + name));
+        s.setAttribute('src', CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl()+'/api/op/' + name));
         s.onload = function() {
             gui.patch().scene.reloadOp(name, function(num, ops)
             {
@@ -196,7 +196,7 @@ CABLES.UI.ServerOps = function(gui) {
 
         console.log('clone', name, oldname);
 
-        CABLES.talkerAPI.send(
+        CABLESUILOADER.talkerAPI.send(
             "opClone",
             {
                 "opname":oldname,
@@ -223,7 +223,7 @@ CABLES.UI.ServerOps = function(gui) {
     this.addOpLib = function(opName, libName) {
 
         console.log("opaddlib");
-        CABLES.talkerAPI.send(
+        CABLESUILOADER.talkerAPI.send(
             "opAddLib",
             {
                 "opname":opName,
@@ -245,7 +245,7 @@ CABLES.UI.ServerOps = function(gui) {
     this.deleteAttachment = function(opName, attName) {
         if (confirm("really ?"))
         {
-            CABLES.talkerAPI.send(
+            CABLESUILOADER.talkerAPI.send(
                 "opAttachmentDelete",
                 {
                     "opname":opName,
@@ -261,7 +261,7 @@ CABLES.UI.ServerOps = function(gui) {
     this.addAttachmentDialog = function(opname) {
         var attName = prompt('Attachment name');
 
-        CABLES.talkerAPI.send(
+        CABLESUILOADER.talkerAPI.send(
             "opAttachmentAdd",
             {
                 "opname":opname,
@@ -353,7 +353,7 @@ CABLES.UI.ServerOps = function(gui) {
         
         gui.jobs().start({id:'load_attachment_'+attachmentName,title:'loading attachment '+attachmentName});
 
-        CABLES.talkerAPI.send(
+        CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
             {
                 "opname":opname,
@@ -388,7 +388,7 @@ CABLES.UI.ServerOps = function(gui) {
                             },
                             "onSave":function(setStatus, content)
                             {
-                                CABLES.talkerAPI.send(
+                                CABLESUILOADER.talkerAPI.send(
                                     "opAttachmentSave",
                                     {
                                         "opname":opname,
@@ -463,7 +463,7 @@ CABLES.UI.ServerOps = function(gui) {
 
         gui.jobs().start({id:'load_opcode_'+opname,title:'loading op code '+opname});
 
-        CABLES.talkerAPI.send(
+        CABLESUILOADER.talkerAPI.send(
             "getOpCode",
             {
                 "opname":opname
@@ -479,7 +479,7 @@ CABLES.UI.ServerOps = function(gui) {
                 var save = null;
                 if (!readOnly) save = function(setStatus, content) 
                 {
-                    CABLES.talkerAPI.send(
+                    CABLESUILOADER.talkerAPI.send(
                         "saveOpCode",
                         {
                             "opname":opname,

@@ -787,7 +787,7 @@ CABLES.UI.Patch = function(_gui) {
             "My new Project",
             function(name)
             {
-                CABLES.talkerAPI.send("newPatch",{"name":name}, 
+                CABLESUILOADER.talkerAPI.send("newPatch",{"name":name}, 
                     function(err,d)
                     {
                         gui.scene().settings=gui.scene().settings||{};
@@ -801,7 +801,7 @@ CABLES.UI.Patch = function(_gui) {
                         self.saveCurrentProject(
                             function()
                             {
-                                CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
+                                CABLESUILOADER.talkerAPI.send("gotoPatch",{"id":d._id});
                             }, d._id, d.name);
 
                     });
@@ -1045,7 +1045,7 @@ CABLES.UI.Patch = function(_gui) {
             
                             reader.onload = function(event)
                             {
-                                CABLES.talkerAPI.send(
+                                CABLESUILOADER.talkerAPI.send(
                                     "saveScreenshot",
                                     {
                                         "id":currentProject._id,

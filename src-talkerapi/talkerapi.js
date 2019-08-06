@@ -1,6 +1,6 @@
-var CABLES=CABLES||{};
+var CABLESUILOADER=CABLESUILOADER||{};
 
-CABLES.TalkerAPI=function(target)
+CABLESUILOADER.TalkerAPI=function(target)
 {
     CABLES.EventTarget.apply(this);
 
@@ -23,7 +23,7 @@ CABLES.TalkerAPI=function(target)
     }.bind(this);
 };
 
-CABLES.TalkerAPI.prototype.send=function(cmd,data,cb)
+CABLESUILOADER.TalkerAPI.prototype.send=function(cmd,data,cb)
 {
     var payload={"cmd":cmd,"data":data};
 

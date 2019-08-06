@@ -15,6 +15,9 @@ var vueify = require('vueify');
 var replace = require('gulp-replace');
 var autoprefixer = require('gulp-autoprefixer');
 var merge = require('merge-stream');
+const webpack = require("webpack-stream");
+const compiler = require("webpack");
+
 // var notifier = require('node-notifier');
 
 gulp.task('vueify', function(){
@@ -70,16 +73,40 @@ gulp.task('scripts_libs_core', function()
 
 gulp.task('scripts_core', function()
 {
-    return gulp.src(['../cables/src/core/*.js'])
-        .pipe(sourcemaps.init())
-        .pipe(concat('cables.max.js'))
-        .pipe(gulp.dest('dist/js'))
-        .pipe(rename('cables.min.js'))
-        .pipe(uglify())
-        // .on('error', function(error){ console.log(`gulp error: ${error}`); notifier.notify(error);  })
+    return gulp.src(["../cables/src/index.js"])
+    .pipe(
+        webpack(
+            {
+                config: require("../cables/webpack.config.js"),
+            },
+            compiler,
+            (err, stats) =>
+            {
+                if (err) throw err;
+                if (stats.hasErrors())
+                {
+                    return reject(new Error(stats.compilation.errors.join("\n")));
+                }
+            },
+        ),
+    )
+
+    .pipe(gulp.dest("dist/js"))
+    .on("error", (err) =>
+    {
+        console.error("WEBPACK ERROR", err);
+    });
+
+    // return gulp.src(['../cables/src/core/*.js'])
+    //     .pipe(sourcemaps.init())
+    //     .pipe(concat('cables.max.js'))
+    //     .pipe(gulp.dest('dist/js'))
+    //     .pipe(rename('cables.min.js'))
+    //     .pipe(uglify())
+    //     // .on('error', function(error){ console.log(`gulp error: ${error}`); notifier.notify(error);  })
         
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('dist/js'));
+    //     .pipe(sourcemaps.write('./'))
+    //     .pipe(gulp.dest('dist/js'));
 });
 
 
