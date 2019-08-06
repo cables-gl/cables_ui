@@ -19,13 +19,13 @@ CABLES.UI.FileManager=function(cb)
         this.setDetail(items);
     });
 
-    this._manager.addEventListener("onClose",() =>
-    {
-        CABLES.UI.userSettings.set("fileManagerOpened",false);
-        gui.fileManager=null;
-        console.log("filemanager close!!");
-    });
-
+    this._manager.addEventListener("onClose",
+        ()=>
+        {
+            CABLES.UI.userSettings.set("fileManagerOpened",false);
+            gui.fileManager=null;
+            console.log("filemanager close!!");
+        });
 };
 
 CABLES.UI.FileManager.prototype.show=function()
@@ -56,7 +56,6 @@ CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
     this._filePortOp=op;
     this.updateHeader();
 }
-
 
 CABLES.UI.FileManager.prototype.reload=function(cb)
 {
@@ -101,7 +100,7 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         {
             this._firstTimeOpening=false;
             this._fileSource = 'lib';
-            this.reload();
+            this.reload(cb);
             return;
         }
 

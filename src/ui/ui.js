@@ -670,8 +670,13 @@ CABLES.UI.GUI = function() {
 
         this.showFileManager(function()
         {
+            console.log("file manager show!!!");
             const portInputEle=document.querySelector(inputId);
-            if(!portInputEle)return;
+            if(!portInputEle)
+            {
+                console.log('[showfileselect] no portInputEle');
+                return;
+            }
             var fn=portInputEle.value;
             console.log("filename",inputId,fn);
     
