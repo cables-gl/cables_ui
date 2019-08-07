@@ -228,7 +228,29 @@ CABLES.UI.createEditor=function(id,val)
         {
             content: "op.toWorkPortsNeedToBeLinked(${1:port1},${2:port2});",
             name: "op.toWorkPortsNeedToBeLinked",
+        },
+        {
+            content: "vec3.create();",
+            name: "vec3.create",
+        },
+        {
+            content: "vec3.set(\${1:out}\,\${2:x}\,\${3:y}\,\${4:z}\);",
+            name: "vec3.set(out, x, y, z)",
+        },
+        {
+            content: "mat4.create();",
+            name: "mat4.create",
+        },
+        {
+            content: "mat4.identity();",
+            name: "mat4.identity",
+        },
+        {
+            content: "mat4.translate(\${1:out}\,\${2:a}\,\${3:v}\);",
+            name: "mat4.translate",
         }
+        
+
     );
     snippetManager.register(snippets, "javascript");
 
