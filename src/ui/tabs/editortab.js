@@ -247,7 +247,7 @@ CABLES.UI.createEditor=function(id,val)
         },
         {
             content: "mat4.translate(\${1:out}\,\${2:a}\,\${3:v}\);",
-            name: "mat4.translate",
+            name: "mat4.translate(out,a,v);",
         }
         
 
