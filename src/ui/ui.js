@@ -1,4 +1,4 @@
-CABLES.UI = CABLES.UI || {};
+ŒCABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
 
@@ -268,15 +268,15 @@ CABLES.UI.GUI = function() {
 
             this._elMaintab.style.left = iconBarWidth+'px';
             this._elMaintab.style.top = menubarHeight;
-            this._elMaintab.style.height = (editorHeight-2)+"px";
+            this._elMaintab.style.height = (editorHeight - 2)+"px";
             this._elMaintab.style.width = editorWidth;
 
-            this._elAceEditor.css('height', editorHeight);
+            this._elAceEditor.css("height", editorHeight);
             this._elSplitterMaintabs.style.display = "block";
-            this._elSplitterMaintabs.style.left= editorWidth + iconBarWidth;
-            this._elSplitterMaintabs.style.height= patchHeight - 2;
-            this._elSplitterMaintabs.style.width= 5;
-            this._elSplitterMaintabs.style.top= menubarHeight;
+            this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth;
+            this._elSplitterMaintabs.style.height = patchHeight - 2;
+            this._elSplitterMaintabs.style.width = 5;
+            this._elSplitterMaintabs.style.top = menubarHeight;
             
             this._elEditorMinimized.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
@@ -285,14 +285,17 @@ CABLES.UI.GUI = function() {
             this._elEditorMaximized.style.display = "block";
             this._elEditorMaximized.style.left = editorWidth + iconBarWidth+3;
             this._elEditorMaximized.style.top = menubarHeight;
-
-            
-
         } else {
             this._elEditorMaximized.style.display = "none";
 
-            if(this.mainTabs.getNumTabs()>0) this._elEditorMinimized.style.display = "block";
-                else this._elEditorMinimized.style.display = "none";
+            if(this.mainTabs.getNumTabs() > 0)
+            {
+                this._elEditorMinimized.style.display = "block";
+            }
+            else
+            {
+                this._elEditorMinimized.style.display = "none";
+            }
 
             this._elSplitterMaintabs.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
