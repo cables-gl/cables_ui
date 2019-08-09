@@ -6,7 +6,7 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.ServerOps = function(gui) {
     var ops = [];
     var self = this;
-    
+
     CABLES.editorSession.addListener("op",
         function(name,data)
         {
@@ -108,7 +108,7 @@ CABLES.UI.ServerOps = function(gui) {
                     "type": op.portsIn[i].type,
                     "name": op.portsIn[i].name
                 };
-            
+
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
 
             if (op.portsIn[i].type == CABLES.OP_PORT_TYPE_VALUE)
@@ -127,7 +127,7 @@ CABLES.UI.ServerOps = function(gui) {
                 "type": op.portsOut[i].type,
                 "name": op.portsOut[i].name
             }
-            
+
             if(op.portsOut[i].type==CABLES.OP_PORT_TYPE_VALUE)
             {
                 if(op.portsOut[i].uiAttribs.display=='bool')l.subType="boolean";
@@ -183,13 +183,13 @@ CABLES.UI.ServerOps = function(gui) {
 
                 if (ops.length > 0) this.saveOpLayout(ops[0]);
                 gui.patch().checkCollisionsEdge();
-                
+
             }.bind(this));
 
             CABLES.UI.MODAL.hideLoading();
         }.bind(this);
         document.body.appendChild(s);
-        
+
     };
 
     this.clone = function(oldname, name) {
@@ -237,7 +237,7 @@ CABLES.UI.ServerOps = function(gui) {
                     console.log("docs reloaded");
                     gui.metaTabs.activateTabByName("code")
                 });
-                
+
             });
 
     };
@@ -350,7 +350,7 @@ CABLES.UI.ServerOps = function(gui) {
     {
         var editorObj=CABLES.editorSession.rememberOpenEditor("attachment",attachmentName,{"opname":opname} );
         CABLES.api.clearCache();
-        
+
         gui.jobs().start({id:'load_attachment_'+attachmentName,title:'loading attachment '+attachmentName});
 
         CABLES.talkerAPI.send(
@@ -362,6 +362,13 @@ CABLES.UI.ServerOps = function(gui) {
             function(err,res)
             {
 
+                if(err|| !res)
+                {
+                    console.log("[editAttachment] error ",err);
+                    CABLES.editorSession.remove(attachmentName,editorObj.type );
+                    return;
+                }
+
                 var content = res.content || '';
                 var syntax = "text";
 
@@ -369,7 +376,7 @@ CABLES.UI.ServerOps = function(gui) {
                 if (attachmentName.endsWith(".vert")) syntax = "glsl";
                 if (attachmentName.endsWith(".json")) syntax = "json";
                 if (attachmentName.endsWith(".css")) syntax = "css";
-                
+
                 gui.jobs().finish('load_attachment_'+attachmentName);
 
                 if(editorObj)
@@ -407,12 +414,12 @@ CABLES.UI.ServerOps = function(gui) {
 
                                         setStatus('saved');
                                         gui.serverOps.execute( opname );
-                                    });                        
+                                    });
                         }
                     });
 
                 if(cb)cb();
-                    else gui.maintabPanel.show(); 
+                    else gui.maintabPanel.show();
                 // gui.showEditor();
                 // gui.editor().addTab({
                 //     content: content,
@@ -477,7 +484,7 @@ CABLES.UI.ServerOps = function(gui) {
                 // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
                 var save = null;
-                if (!readOnly) save = function(setStatus, content) 
+                if (!readOnly) save = function(setStatus, content)
                 {
                     CABLES.talkerAPI.send(
                         "saveOpCode",

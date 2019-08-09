@@ -68,14 +68,14 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         };
 
         item.icon="file";
-        
+
         if(file.t=='SVG') item.preview=file.p;
         else if(file.t=='image') item.preview=file.p;
         else if(file.t=='3d json') item.icon="cube";
         else if(file.t=='video') item.icon="film";
         else if(file.t=='audio') item.icon="headphones";
         else if(file.t=='dir') item.divider=file.n;
-        
+
         items.push(item);
         if(file.c) for(var i=0;i<file.c.length;i++) createItem(items,file.c[i]);
     }
@@ -93,6 +93,12 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         if(err)
         {
             console.err(err);
+            return;
+        }
+
+        if(!files)
+        {
+            console.log("no files");
             return;
         }
 
@@ -140,7 +146,7 @@ CABLES.UI.FileManager.prototype._selectFile=function(filename)
 
 CABLES.UI.FileManager.prototype.selectFile=function(filename)
 {
-    if(this._fileSource!="patch") 
+    if(this._fileSource!="patch")
     {
         if(filename.indexOf(gui.patch().getCurrentProject()._id)>-1)
             this.setSource("patch",function()
@@ -148,7 +154,7 @@ CABLES.UI.FileManager.prototype.selectFile=function(filename)
                 this._selectFile(filename);
             }.bind(this));
     }
-    else 
+    else
     {
         console.log("egal");
         this._selectFile(filename);
@@ -170,7 +176,7 @@ CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
 
     const elSwitchIcons=document.getElementById("switch-display-icons");
     const elSwitchList=document.getElementById("switch-display-list");
-    
+
     if(elSwitchIcons) elSwitchIcons.addEventListener("click",function()
     {
         elSwitchIcons.classList.add("switch-active");
@@ -189,7 +195,7 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
 {
     var html = "";
     document.getElementById("item_details").innerHTML='';
-    
+
     if(detailItems.length==1)
     {
         const itemId=detailItems[0].id;
@@ -206,7 +212,7 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
                 "file": r,
                 "source":this._fileSource
             });
-            
+
             $('#item_details').html(html);
 
             var delEle=document.getElementById("filedelete"+itemId);
@@ -286,7 +292,7 @@ CABLES.UI.FileManager.prototype.createFile=function()
         function(fn)
         {
             CABLES.talkerAPI.send(
-                "createFile", 
+                "createFile",
                 { "name":fn },
                 (err,res) =>
                 {
@@ -301,7 +307,7 @@ CABLES.UI.FileManager.prototype.createFile=function()
                     gui.refreshFileManager();
                 });
         });
-    
+
 }
 
 
