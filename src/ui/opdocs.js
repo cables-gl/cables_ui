@@ -223,7 +223,7 @@ CABLES.UI.OpDocs=function(cb)
     {
         var opDoc = this.getOpDocByName(opName);
 
-        console.log(opDoc);
+        // console.log(opDoc);
 
         if(!opDoc)
         {

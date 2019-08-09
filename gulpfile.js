@@ -54,6 +54,13 @@ gulp.task("scripts_talkerapi", () =>
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("dist/js")));
 
+gulp.task("scripts_core", () =>
+{
+    gulp
+        .src("../cables/build/**/*.*").pipe(gulp.dest("dist/js/"));
+});
+
+
 // gulp.task('scripts_libs_core', function()
 // {
 //     return gulp.src(['libs/core/*.js'])
@@ -181,7 +188,7 @@ gulp.task("electronapp", () =>
 
 gulp.task("watch", () =>
 {
-    gulp.watch("../cables/src/core/**/*.js", ["scripts_core"]);
+    gulp.watch("../cables/src/core/build/**/*.js", ["scripts_core"]);
     gulp.watch("src/ops/**/*.js", ["scripts_ops"]);
     gulp.watch("src/ui/**/*.js", ["scripts_ui"]); // ,'electron' // electron broke the watch SOMEHOW
     gulp.watch("scss/**/*.scss", ["sass"]);
@@ -189,12 +196,12 @@ gulp.task("watch", () =>
     gulp.watch("icons/**/*.svg", ["svgcss"]);
     gulp.watch("vue-src/**/*", ["vueify"]);
     gulp.watch("src-talkerapi/**/*", ["scripts_talkerapi"]);
-    // gulp.watch('src-electron/**/*', ['electron']);
+    
 });
 
 gulp.task("electron-watch", () =>
 {
-    gulp.watch("../cables/src/core/**/*.js", ["scripts_core"]);
+    gulp.watch("../cables/src/core/build/**/*.js", ["scripts_core"]);
     gulp.watch("src/ops/**/*.js", ["scripts_ops"]);
     gulp.watch("src/ui/**/*.js", ["scripts_ui", "electronapp"]);
     gulp.watch("scss/**/*.scss", ["sass", "electronapp"]);

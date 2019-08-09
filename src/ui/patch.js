@@ -1057,7 +1057,7 @@ CABLES.UI.Patch = function(_gui) {
                                         {
                                             console.warn('[screenshot save error]',err)
                                         }
-                                        console.log("screenshot saved!");
+                                        // console.log("screenshot saved!");
                                         gui.jobs().finish('screenshotsave');
                                         if (gui.onSaveProject) gui.onSaveProject();
                                     });
