@@ -227,7 +227,6 @@ gulp.task("default", [
     "html_ui",
     "scripts_core",
     "scripts_libs_ui",
-    "scripts_libs_core",
     "scripts_ops",
     "sass",
     "vueify",
@@ -240,10 +239,10 @@ gulp.task("default", [
  * Is this still used?
  * Run "gulp build"
  */
-gulp.task("build", ["svgcss", "html_ui", "scripts_core", "scripts_libs_ui", "scripts_libs_core", "scripts_ops", "scripts_ui", "scripts_talkerapi", "sass", "vueify"]);
+gulp.task("build", ["svgcss", "html_ui", "scripts_core", "scripts_libs_ui", "scripts_ops", "scripts_ui", "scripts_talkerapi", "sass", "vueify"]);
 
 /**
  * Electron development
  * Run "gulp electron"
  */
-gulp.task("electron", ["svgcss", "scripts_ui", "lint", "html_ui", "scripts_core", "scripts_libs_ui", "scripts_libs_core", "scripts_ops", "sass", "vueify", "electron", "electronapp", "electron-watch"]);
+gulp.task("electron", ["svgcss", "scripts_ui", "lint", "html_ui", "scripts_core", "scripts_libs_ui", "scripts_ops", "sass", "vueify", "electron", "electronapp", "electron-watch"]);

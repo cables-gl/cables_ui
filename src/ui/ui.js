@@ -1,4 +1,4 @@
-ŒCABLES.UI = CABLES.UI || {};
+CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
 
