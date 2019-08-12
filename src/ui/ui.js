@@ -119,10 +119,6 @@ CABLES.UI.GUI = function() {
     //     this.setLayout();
     // }
 
-
-
-    // 
-
     
     // this.toggleEditor = function() {
     //     if (showingEditor) self.closeEditor();
@@ -1215,7 +1211,12 @@ CABLES.UI.GUI = function() {
         else if (CABLES.UI.MODAL._visible) {
             CABLES.UI.MODAL.hide(true)
             CABLES.UI.MODAL.hide();
-            if (showingEditor) self.editor().focus();
+            if (showingEditor)
+            {
+                console.log("focus editor ");
+                self.editor().focus();
+            }
+            return;
         } 
         else if(this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else if(showingEditor && e) this.closeEditor();

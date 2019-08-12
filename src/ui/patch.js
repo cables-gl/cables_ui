@@ -2710,14 +2710,23 @@ CABLES.UI.Patch = function(_gui) {
             console.log('paramedit port not found');
             return;
         }
-        var name=opid+portname;
-        var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname} );
+        var name=op.name+' '+port.name;
 
+        var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
+        if(!editorObj && gui.mainTabs.getTabByTitle(name))
+        {
+            CABLES.editorSession.remove(name,"param");
+            var tab=gui.mainTabs.getTabByTitle(name);
+            gui.mainTabs.closeTab(tab.id);
+
+            editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
+        }
 
         if(editorObj)
+        {
             new CABLES.UI.EditorTab(
                 {
-                    "title":'' + port.name,
+                    "title":name,
                     "content":port.get() + '',
                     "name":editorObj.name,
                     "syntax": port.uiAttribs.editorSyntax,
@@ -2734,7 +2743,11 @@ CABLES.UI.Patch = function(_gui) {
                                 port.set(content);
                             }
                 });
-            else gui.mainTabs.activateTabByName(name);
+        }
+        else 
+        {
+            gui.mainTabs.activateTabByName(name);
+        }
 
             
 

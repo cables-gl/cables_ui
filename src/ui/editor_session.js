@@ -60,7 +60,7 @@ CABLES.EditorSession.prototype.rememberOpenEditor=function(type,name,data)
 {
     for (var i = 0; i < this._openEditors.length; i++)
     {
-        if (this._openEditors[i].name == name && this._openEditors[i].type == type)
+        if (this._openEditors[i].name == name && this._openEditors[i].type == type ) //&& this._openEditors[i].uuid == uuid 
         {
             return;
         }
