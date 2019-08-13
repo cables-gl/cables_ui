@@ -129,8 +129,10 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
         gui.refreshFileManager();
     });
 
-    CABLESUILOADER.talkerAPI.addEventListener("fileUploaded", (options, next) =>
+    CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>
     {
+        console.log("file Updated: "+options.filename);
+
         for (var j = 0; j < gui.patch().ops.length; j++)
         {
             if (gui.patch().ops[j].op)
