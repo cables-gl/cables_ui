@@ -766,7 +766,6 @@ CABLES.UI.GUI = function() {
             }, 
             function(err,res)
             {
-                console.log(err,res);
                 $('#converterprogress').hide();
                 $('#converteroutput').show();
 
@@ -776,9 +775,15 @@ CABLES.UI.GUI = function() {
                 }
                 else
                 {
-                    if(res.info) $('#converteroutput').html(res.info);
-                        else $('#converteroutput').html('finished!');
+                    var html='';
+
+                    if(res.info) html = res.info;
+                        else html='Finished!';
+
+                    html+='<br/><a class="button" onclick="CABLES.UI.MODAL.hide()">ok</a>'
+                    $('#converteroutput').html(html);
                 }
+                gui.refreshFileManager();
             });
     };
 
