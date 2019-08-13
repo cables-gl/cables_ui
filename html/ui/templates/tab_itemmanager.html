@@ -100,7 +100,6 @@
         <i class="icon icon-menu"></i>
     </span> -->
 
-
     {{#if fileSelectOp}}
         <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;" onclick="gui.fileManager.setFilePort(null);">
             Selection mode for: {{fileSelectOp.objName}} 
@@ -115,7 +114,7 @@
     <div class="filemanager-detail-element">
 
         {{#if file.imgPreview}}
-            <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}" style="height:100%;max-width:100%;"/>
+            <img src="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}" style="height:auto;max-width:100%;"/>
         {{else}}
             No preview!!
         {{/if}}
