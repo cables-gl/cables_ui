@@ -21,7 +21,7 @@
             // border:2px solid var(--text-color-textOpselect);
         }
         
-        +.selected
+        &.selected
         {
             border:2px solid var(--color-special);
         }
