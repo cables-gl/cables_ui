@@ -8,9 +8,9 @@
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script>
 
-        var CABLES = CABLES || {};
+        var CABLESUILOADER = CABLESUILOADER || {};
 
-        CABLES.GlobalVarTester = (function(){
+        CABLESUILOADER.GlobalVarTester = (function(){
             var fields = {};
             var before = function(w){
                 for(var field in w){
@@ -22,63 +22,63 @@
                 for(var field in w){
                     if(!fields[field]){
                         console.log(field + " has been added");
-                    }            
+                    }
                 };
 
             };
             return {before: before, after:after};
         }());
 
-        CABLES.GlobalVarTester.before(window);
+        CABLESUILOADER.GlobalVarTester.before(window);
 
-        CABLES.uiLoadStart=performance.now();
-        CABLES.startup={};
-        CABLES.startup.log=[];
-        CABLES.startup.maxEvents=16-1;
-        CABLES.startup.numEvents=0;
+        CABLESUILOADER.uiLoadStart=performance.now();
+        CABLESUILOADER.startup={};
+        CABLESUILOADER.startup.log=[];
+        CABLESUILOADER.startup.maxEvents=16-1;
+        CABLESUILOADER.startup.numEvents=0;
 
         function incrementStartup()
         {
-            CABLES.startup.numEvents++;
-            document.getElementById("loadingstatusBar").style.width=(CABLES.startup.numEvents/CABLES.startup.maxEvents)*100+'%';
-            // console.log('startup',CABLES.startup.numEvents);
+            CABLESUILOADER.startup.numEvents++;
+            document.getElementById("loadingstatusBar").style.width=(CABLESUILOADER.startup.numEvents/CABLESUILOADER.startup.maxEvents)*100+'%';
+            // console.log('startup',CABLESUILOADER.startup.numEvents);
         }
 
         function logStartup(title)
         {
             //console.log('[startup] ',title);
-            const timeUsed=Math.round((performance.now()-CABLES.uiLoadStart)/1000*100)/100;
-            CABLES.startup.log.push(
+            const timeUsed=Math.round((performance.now()-CABLESUILOADER.uiLoadStart)/1000*100)/100;
+            CABLESUILOADER.startup.log.push(
             {
                 "title":title,
                 "time":timeUsed
             })
         }
 
-        CABLES.noCacheUrl=function(url)
+        CABLESUILOADER.noCacheUrl=function(url)
         {
             return url+'?nc='+(Date.now()+'').substr(-6);
         };
 
         /*
         var scriptTag = document.createElement('script');
-        scriptTag.setAttribute('src',CABLES.noCacheUrl('js/libs.core.min.js'));
+        scriptTag.setAttribute('src',CABLESUILOADER.noCacheUrl('js/libs.core.min.js'));
         document.body.appendChild(scriptTag);
         */
 
         incrementStartup();
         logStartup("Start");
 
-        CABLES.isDevEnv=function()
+        CABLESUILOADER.isDevEnv=function()
         {
             return (document.location.href.indexOf('https://cables.gl')==-1);
         };
 
-        CABLES.loadAll=function(cfg)
+        CABLESUILOADER.loadAll=function(cfg)
         {
             if(!window.hasOwnProperty('loadjs'))
             {
-                setTimeout(CABLES.loadAll,100);
+                setTimeout(CABLESUILOADER.loadAll,100);
                 console.log("wait for loadjs...");
                 return;
             }
@@ -88,11 +88,11 @@
             incrementStartup();
 
             loadjs([
-                CABLES.noCacheUrl('js/libs.core.min.js'),
+                CABLESUILOADER.noCacheUrl('js/libs.core.min.js'),
                 'js/ace/ace.js'
             ], 'libs');
 
-            if(!CABLES.isDevEnv()) jsType='min';
+            if(!CABLESUILOADER.isDevEnv()) jsType='min';
                 else jsType='max';
 
             loadjs.ready('libs', function()
@@ -106,7 +106,7 @@
                 {
                     logStartup('loaded ace');
                     incrementStartup();
-                    loadjs([CABLES.noCacheUrl('js/cables.'+jsType+'.js')],'cables_core');
+                    loadjs([CABLESUILOADER.noCacheUrl('js/cables.'+jsType+'.js')],'cables_core');
 
                     loadjs.ready('cables_core', function()
                     {
@@ -114,7 +114,7 @@
 
                         incrementStartup();
 
-                        loadjs([CABLES.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');
+                        loadjs([CABLESUILOADER.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');
 
                         loadjs.ready('cablesui', function()
                         {
@@ -123,7 +123,7 @@
 
                             try
                             {
-                                loadjs([CABLES.noCacheUrl('js/bundle.js')],'cables_vue');
+                                loadjs([CABLESUILOADER.noCacheUrl('js/bundle.js')],'cables_vue');
                             if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
                                 else CABLES.sandbox=new CABLES.SandboxBrowser(cfg);
 
@@ -135,8 +135,8 @@
 
                             // local ops are only available in electron version
                             var localOpCode = CABLES.sandbox.getLocalOpCode();
-                            // var opPathsToLoad = [CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
-                            
+                            // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
+
                             // if(localOpPaths && localOpPaths.length > 0) {
                             //     localOpPaths = localOpPaths.concat(opPathsToLoad);
                             // }
@@ -152,7 +152,7 @@
 
                             addJS(localOpCode);
 
-                            loadjs([CABLES.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
+                            loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
 
                             loadjs.ready('cables_ops', function()
                             {
@@ -189,20 +189,18 @@
                 });
             });
         };
-        
-        var CABLES=CABLES||{};
 
 
         document.addEventListener('DOMContentLoaded', function(event)
         {
-            CABLES.talkerAPI=new CABLES.TalkerAPI(window.parent);
-            
-            CABLES.talkerAPI.send("requestPatchData",{},function(response)
+            CABLESUILOADER.talkerAPI=new CABLESUILOADER.TalkerAPI(window.parent);
+
+            CABLESUILOADER.talkerAPI.send("requestPatchData",{},function(response)
             {
-                CABLES.loadAll(response);
+                CABLESUILOADER.loadAll(response);
             });
         });
-            
+
         /*
         CABLES.UI.talker.onMessage=function(msg)
         {
@@ -211,7 +209,7 @@
             {
                 console.log(msg.data,msg.data.urlCables);
                 CABLES.loadAll(msg.data);
-                
+
             }
         };
         CABLES.UI.talker.send('cables', {"cmd":"sendConfig"} );

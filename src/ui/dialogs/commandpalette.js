@@ -5,9 +5,8 @@ CABLES.UI.CommandPallet=function()
 {
     var lastSearch='';
     var findTimeoutId=0;
-
-	this._cursorIndex=0;
-	this._numResults=0;
+    this._cursorIndex=0;
+    this._numResults=0;
     this._bookmarkActiveIcon = 'icon-pin-filled';
     this._bookmarkInactiveIcon = 'icon-pin-outline';
     this._defaultIcon = 'square';
@@ -19,16 +18,16 @@ CABLES.UI.CommandPallet=function()
 
     this.initVueSidebarCustomizer();
 
-	this.isVisible=function()
-	{
-		return $("#cmdpalette").is(":visible");
-	};
+    this.isVisible=function()
+    {
+      return $("#cmdpalette").is(":visible");
+    };
 
     this.show=function()
     {
-		this._cursorIndex=0;
+		    this._cursorIndex=0;
         CABLES.UI.MODAL.hide(true);
-		$('#modalbg').show();
+		    $('#modalbg').show();
         $('#cmdpalette').show();
         $('#cmdinput').focus();
 
@@ -126,10 +125,10 @@ CABLES.UI.CommandPallet=function()
 
         var bookmarkIcon = getBookmarkIconForCmd(cmd.cmd);
         html+='<span class="icon ' + bookmarkIcon + ' bookmark" onclick=gui.cmdPallet.onBookmarkIconClick(event)></span>';
-		if(cmd.hotkey)
-		{
-			html+='<span class="hotkey">[ '+cmd.hotkey+' ]</span>';
-		}
+        if(cmd.hotkey)
+        {
+          html+='<span class="hotkey">[ '+cmd.hotkey+' ]</span>';
+        }
         html+='</div>';
 
         setTimeout(
@@ -211,11 +210,10 @@ CABLES.UI.CommandPallet=function()
 
     this.close=function()
     {
-		$('body').off( "keydown", this.keyDown);
-
-        $('#searchresult_cmd').html('');
-        $('#cmdpalette').hide();
-		$('#modalbg').hide();
+      $('body').off( "keydown", this.keyDown);
+      $('#searchresult_cmd').html('');
+      $('#cmdpalette').hide();
+      $('#modalbg').hide();
     };
 
 };

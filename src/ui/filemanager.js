@@ -84,7 +84,7 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
     this._fileSource=this._fileSource||'lib';
     if(this._firstTimeOpening)this._fileSource = 'patch';
 
-    CABLES.talkerAPI.send("getFilelist",
+    CABLESUILOADER.talkerAPI.send("getFilelist",
     {
         "source":this._fileSource
     },
@@ -195,7 +195,7 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
         const itemId=detailItems[0].id;
 
 
-        CABLES.talkerAPI.send("getFileDetails",
+        CABLESUILOADER.talkerAPI.send("getFileDetails",
         {
             "fileid":itemId
         },
@@ -212,7 +212,7 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
             var delEle=document.getElementById("filedelete"+itemId);
             if(delEle)delEle.addEventListener("click",function(e)
             {
-                CABLES.talkerAPI.send("deleteFile",
+                CABLESUILOADER.talkerAPI.send("deleteFile",
                 { "fileid":r.fileDb._id },
                 function(err,r)
                 {
@@ -249,7 +249,7 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
             {
                 const detailItem=detailItems[i];
 
-                CABLES.talkerAPI.send(
+                CABLESUILOADER.talkerAPI.send(
                     "deleteFile",
                     {
                         "fileid":detailItem.id
@@ -285,7 +285,7 @@ CABLES.UI.FileManager.prototype.createFile=function()
         "newfile.txt",
         function(fn)
         {
-            CABLES.talkerAPI.send(
+            CABLESUILOADER.talkerAPI.send(
                 "createFile", 
                 { "name":fn },
                 (err,res) =>

@@ -119,10 +119,6 @@ CABLES.UI.GUI = function() {
     //     this.setLayout();
     // }
 
-
-
-    // 
-
     
     // this.toggleEditor = function() {
     //     if (showingEditor) self.closeEditor();
@@ -268,15 +264,15 @@ CABLES.UI.GUI = function() {
 
             this._elMaintab.style.left = iconBarWidth+'px';
             this._elMaintab.style.top = menubarHeight;
-            this._elMaintab.style.height = (editorHeight-2)+"px";
+            this._elMaintab.style.height = (editorHeight - 2)+"px";
             this._elMaintab.style.width = editorWidth;
 
-            this._elAceEditor.css('height', editorHeight);
+            this._elAceEditor.css("height", editorHeight);
             this._elSplitterMaintabs.style.display = "block";
-            this._elSplitterMaintabs.style.left= editorWidth + iconBarWidth;
-            this._elSplitterMaintabs.style.height= patchHeight - 2;
-            this._elSplitterMaintabs.style.width= 5;
-            this._elSplitterMaintabs.style.top= menubarHeight;
+            this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth;
+            this._elSplitterMaintabs.style.height = patchHeight - 2;
+            this._elSplitterMaintabs.style.width = 5;
+            this._elSplitterMaintabs.style.top = menubarHeight;
             
             this._elEditorMinimized.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
@@ -285,14 +281,17 @@ CABLES.UI.GUI = function() {
             this._elEditorMaximized.style.display = "block";
             this._elEditorMaximized.style.left = editorWidth + iconBarWidth+3;
             this._elEditorMaximized.style.top = menubarHeight;
-
-            
-
         } else {
             this._elEditorMaximized.style.display = "none";
 
-            if(this.mainTabs.getNumTabs()>0) this._elEditorMinimized.style.display = "block";
-                else this._elEditorMinimized.style.display = "none";
+            if(this.mainTabs.getNumTabs() > 0)
+            {
+                this._elEditorMinimized.style.display = "block";
+            }
+            else
+            {
+                this._elEditorMinimized.style.display = "none";
+            }
 
             this._elSplitterMaintabs.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
@@ -699,10 +698,10 @@ CABLES.UI.GUI = function() {
             function(name)
             {
                 if(name)
-                    CABLES.talkerAPI.send("newPatch",{"name":name}, function(err,d)
+                    CABLESUILOADER.talkerAPI.send("newPatch",{"name":name}, function(err,d)
                     {
                         console.log("newpatch",d);
-                        CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
+                        CABLESUILOADER.talkerAPI.send("gotoPatch",{"id":d._id});
                     });
             });
     };
@@ -759,7 +758,7 @@ CABLES.UI.GUI = function() {
         $('#converterprogress').show();
         $('#converterform').hide();
 
-        CABLES.talkerAPI.send("fileConvert",
+        CABLESUILOADER.talkerAPI.send("fileConvert",
             {
                 "fileId":fileId,
                 "converterId":converterId,
@@ -767,7 +766,6 @@ CABLES.UI.GUI = function() {
             }, 
             function(err,res)
             {
-                console.log(err,res);
                 $('#converterprogress').hide();
                 $('#converteroutput').show();
 
@@ -777,9 +775,15 @@ CABLES.UI.GUI = function() {
                 }
                 else
                 {
-                    if(res.info) $('#converteroutput').html(res.info);
-                        else $('#converteroutput').html('finished!');
+                    var html='';
+
+                    if(res.info) html = res.info;
+                        else html='Finished!';
+
+                    html+='<br/><a class="button" onclick="CABLES.UI.MODAL.hide()">ok</a>'
+                    $('#converteroutput').html(html);
                 }
+                gui.refreshFileManager();
             });
     };
 
@@ -1212,7 +1216,12 @@ CABLES.UI.GUI = function() {
         else if (CABLES.UI.MODAL._visible) {
             CABLES.UI.MODAL.hide(true)
             CABLES.UI.MODAL.hide();
-            if (showingEditor) self.editor().focus();
+            if (showingEditor)
+            {
+                console.log("focus editor ");
+                self.editor().focus();
+            }
+            return;
         } 
         else if(this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else if(showingEditor && e) this.closeEditor();
@@ -1281,7 +1290,7 @@ CABLES.UI.GUI = function() {
 
         console.groupCollapsed('welcome to cables!');
         console.log("start up times:");
-        console.table(CABLES.startup.log);
+        console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
     };
 
@@ -1562,7 +1571,7 @@ CABLES.UI.GUI = function() {
         if(savedState)
         {
             var title='';
-            if(CABLES.isDevEnv())title="DEV ";
+            if(CABLESUILOADER.isDevEnv())title="DEV ";
             title+=gui.patch().getCurrentProject().name + ' *';
             document.title = title;
             
@@ -1601,7 +1610,7 @@ CABLES.UI.GUI = function() {
         $('#patchname').removeClass("warning");
 
         var title='';
-        if(CABLES.isDevEnv())title="DEV ";
+        if(CABLESUILOADER.isDevEnv())title="DEV ";
         title+=gui.patch().getCurrentProject().name;
         document.title = title;;
         window.onbeforeunload = function() {

@@ -787,7 +787,7 @@ CABLES.UI.Patch = function(_gui) {
             "My new Project",
             function(name)
             {
-                CABLES.talkerAPI.send("newPatch",{"name":name}, 
+                CABLESUILOADER.talkerAPI.send("newPatch",{"name":name}, 
                     function(err,d)
                     {
                         gui.scene().settings=gui.scene().settings||{};
@@ -801,7 +801,7 @@ CABLES.UI.Patch = function(_gui) {
                         self.saveCurrentProject(
                             function()
                             {
-                                CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
+                                CABLESUILOADER.talkerAPI.send("gotoPatch",{"id":d._id});
                             }, d._id, d.name);
 
                     });
@@ -1045,7 +1045,7 @@ CABLES.UI.Patch = function(_gui) {
             
                             reader.onload = function(event)
                             {
-                                CABLES.talkerAPI.send(
+                                CABLESUILOADER.talkerAPI.send(
                                     "saveScreenshot",
                                     {
                                         "id":currentProject._id,
@@ -1057,7 +1057,7 @@ CABLES.UI.Patch = function(_gui) {
                                         {
                                             console.warn('[screenshot save error]',err)
                                         }
-                                        console.log("screenshot saved!");
+                                        // console.log("screenshot saved!");
                                         gui.jobs().finish('screenshotsave');
                                         if (gui.onSaveProject) gui.onSaveProject();
                                     });
@@ -2710,14 +2710,23 @@ CABLES.UI.Patch = function(_gui) {
             console.log('paramedit port not found');
             return;
         }
-        var name=opid+portname;
-        var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname} );
+        var name=op.name+' '+port.name;
 
+        var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
+        if(!editorObj && gui.mainTabs.getTabByTitle(name))
+        {
+            CABLES.editorSession.remove(name,"param");
+            var tab=gui.mainTabs.getTabByTitle(name);
+            gui.mainTabs.closeTab(tab.id);
+
+            editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
+        }
 
         if(editorObj)
+        {
             new CABLES.UI.EditorTab(
                 {
-                    "title":'' + port.name,
+                    "title":name,
                     "content":port.get() + '',
                     "name":editorObj.name,
                     "syntax": port.uiAttribs.editorSyntax,
@@ -2734,7 +2743,11 @@ CABLES.UI.Patch = function(_gui) {
                                 port.set(content);
                             }
                 });
-            else gui.mainTabs.activateTabByName(name);
+        }
+        else 
+        {
+            gui.mainTabs.activateTabByName(name);
+        }
 
             
 
