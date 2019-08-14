@@ -71,7 +71,7 @@
 
         CABLES.isDevEnv=function()
         {
-            return (document.location.href.indexOf('https://cables.gl')==-1);
+            return (document.location.href.indexOf('https://cables.gl')==-1 || document.location.href.indexOf('https://sandbox.cables.gl')==-1);
         };
 
         CABLES.loadAll=function(cfg)
