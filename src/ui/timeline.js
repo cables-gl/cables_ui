@@ -1092,6 +1092,14 @@ CABLES.ANIM.UI.TimeLineUI=function()
                 self.scaleWidth();
             break;
 
+
+            case 74: // j
+                self.jumpKey(-1);
+                break;
+            case 75: // k
+                self.jumpKey(1);
+                break;
+                
             case 77: // m move key
                 var frame=window.prompt("move keys",Math.round(cursorTime*gui.timeLine().getFPS()));
                 if(frame!==null)
@@ -1663,7 +1671,6 @@ CABLES.ANIM.UI.TimeLineUI=function()
             self.updateViewBox();
             updateTimeDisplay();
             self.updateOverviewLine();
-
         }
 
         panX=self.getCanvasCoordsMouse(e).x;
