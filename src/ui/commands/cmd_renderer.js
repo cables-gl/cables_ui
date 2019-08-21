@@ -73,7 +73,7 @@ CABLES.CMD.RENDERER.scaleCanvas = function()
 CABLES.CMD.RENDERER.changeSize = function()
 {
     CABLES.UI.MODAL.prompt(
-        "Change Renderersize",
+        "Change Canvas size",
         "Enter a new size",
         Math.round(gui.rendererWidth) + ' x ' + Math.round(gui.rendererHeight),
         function(r)
@@ -125,6 +125,6 @@ CABLES.CMD.commands.push({
         func: CABLES.CMD.RENDERER.scaleCanvas,
         icon: 'image'
     }
-    
+
 
 );
