@@ -10,8 +10,8 @@ CABLES.UI.TEXTS=
 
     save_screenshot:"## save screenshot\n\ndownload renderer output as an image file",
     toggle_sound:"## toggle sound\n\nturn sound on or off",
-    renderer_maximize:"## maximize_renderer",
-    renderer_setsize:"## Renderer Size \n\n* click to et renderer size",
+    renderer_maximize:"## toggle fullscreen",
+    renderer_setsize:"## Canvas Size \n\n* click to set canvas size",
     infoarea:"## infoarea\n\nlook here for contextual information",
 
     nav_patch_new: "## New Patch\n\nCreates a new patch",
@@ -46,7 +46,7 @@ CABLES.UI.TEXTS=
 
     editor: "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
     patch: "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `[esc]: Quick-add op` \n* `[space] + mouse drag:`: Scroll \n* `[right click] + mouse drag:`: Scroll \n* `[mod] + s`: Save patch \n* `[mod] + v`: Paste \n* `[mod] + a`: Select all ops",
-    canvas: "## Renderer \n\nHere you can see the visual output of your patch.\n\n[CMD] + [ENTER] - Maximize renderer",
+    canvas: "## Canvas \n\nHere you can see the visual output of your patch.\n\n[CMD] + [ENTER] - Maximize canvas",
     projectFiles: "## Project Files \n\nOverview over your uploaded files",
     undevLogo: "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
 
@@ -177,6 +177,6 @@ CABLES.UI.TIPS =
     ];
 
     // todo tipps: create variable command
-    // todo tipps: c for centering / shift/alt mods for input fields / up/down in input fields 
+    // todo tipps: c for centering / shift/alt mods for input fields / up/down in input fields
     // todo tipps: attached comments
     // todo tipps: youtube channel

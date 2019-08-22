@@ -7,7 +7,7 @@ CABLES.UI.GUI = function() {
     // var userOpsLoaded = false;
     var showTiming = false;
     var showingEditor = false;
-    
+
     var showMiniMap = false;
     var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true,prefixAssetPath:CABLES.sandbox.getAssetPrefix()}});
     _scene.gui = true;
@@ -22,7 +22,7 @@ CABLES.UI.GUI = function() {
 
     this.patchConnection = new CABLES.PatchConnectionSender();
     this.opDocs = null;
-    
+
     this.mainTabs=new CABLES.UI.TabPanel('maintabs');
     this.maintabPanel=new CABLES.UI.MainTabPanel(this.mainTabs);
 
@@ -40,7 +40,7 @@ CABLES.UI.GUI = function() {
     this.bookmarks = new CABLES.UI.Bookmarks();
     // this.preview = new CABLES.UI.Preview();
     // this.hoverPreview = new CABLES.UI.Preview();
-    
+
     // if(!CABLES.UI.userSettings.get("tabsLastTitle"))
     // {
     //     this.metaTabs.setTabNum(0);
@@ -107,7 +107,7 @@ CABLES.UI.GUI = function() {
     this.rendererWidth = 640;
     this.rendererHeight = 360;
 
-    
+
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
 
@@ -119,7 +119,7 @@ CABLES.UI.GUI = function() {
     //     this.setLayout();
     // }
 
-    
+
     // this.toggleEditor = function() {
     //     if (showingEditor) self.closeEditor();
     //     else self.showEditor();
@@ -133,7 +133,7 @@ CABLES.UI.GUI = function() {
     //     {
     //         showingEditor = false;
     //         return;
-    //     } 
+    //     }
     //     if (!showingEditor) {
     //         showingEditor = true;
     //         _editor.focus();
@@ -176,7 +176,7 @@ CABLES.UI.GUI = function() {
         this._elSplitterMaintabs = this._elSplitterMaintabs || document.getElementById('splitterMaintabs');
         this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
         this._elEditorMaximized = this._elEditorMaximized || document.getElementById("editormaximized");
-       
+
         this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
         this._elMiniMap = this._elMiniMap || document.getElementById("minimap");
         this._elTLoverviewtimeline = this._elTLoverviewtimeline || document.getElementById('overviewtimeline');
@@ -273,7 +273,7 @@ CABLES.UI.GUI = function() {
             this._elSplitterMaintabs.style.height = patchHeight - 2;
             this._elSplitterMaintabs.style.width = 5;
             this._elSplitterMaintabs.style.top = menubarHeight;
-            
+
             this._elEditorMinimized.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
             this._elEditorMinimized.style.top = menubarHeight;
@@ -303,7 +303,7 @@ CABLES.UI.GUI = function() {
         // {
         //     this._elEditorMinimized.style.display = "none";
         //     var editWidth=self.editorWidth;
-            
+
         //     if (editWidth > window.innerWidth - self.rendererWidth -iconBarWidth)
         //     {
         //         self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
@@ -337,7 +337,7 @@ CABLES.UI.GUI = function() {
         //     this._elSplitterEditor.style.top= menubarHeight;
 
         //     _editor.resize();
-            
+
         // } else {
 
         //     this._elSplitterEditor.style.display = "none";
@@ -385,7 +385,7 @@ CABLES.UI.GUI = function() {
 
             this._elMiniMapContainer.style.left= patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4;
             this._elMiniMapContainer.style.top= menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24;
-            
+
             $('#minimapContainer .title_closed').hide();
             $('#minimapContainer .title_opened').show();
         } else {
@@ -398,7 +398,7 @@ CABLES.UI.GUI = function() {
         this._elLibrary.style.bottom= 0;
 
         var timelineWidth= window.innerWidth - self.rendererWidthScaled - 2 - iconBarWidth;
-        
+
 
         if (showTiming)
         {
@@ -490,7 +490,7 @@ CABLES.UI.GUI = function() {
         else
         {
             var density=gui.patch().scene.cgl.pixelDensity;
-            
+
             this._elGlCanvas.attr('width', self.rendererWidth*density);
             this._elGlCanvas.attr('height', self.rendererHeight*density);
             this._elGlCanvas.css('width', self.rendererWidth);
@@ -678,10 +678,10 @@ CABLES.UI.GUI = function() {
             }
             var fn=portInputEle.value;
             console.log("filename",inputId,fn);
-    
+
             this.fileManager.setFilePort(portInputEle,gui.scene().getOpById(opid));
             this.fileManager.selectFile(fn);
-    
+
         }.bind(this));
 
     }
@@ -763,7 +763,7 @@ CABLES.UI.GUI = function() {
                 "fileId":fileId,
                 "converterId":converterId,
                 "options":CABLES.serializeForm('#converterform')
-            }, 
+            },
             function(err,res)
             {
                 $('#converterprogress').hide();
@@ -793,11 +793,11 @@ CABLES.UI.GUI = function() {
             {items:
                 [
                     {
-                        title:'set renderer size',
+                        title:'set canvas size',
                         func:CABLES.CMD.RENDERER.changeSize
                     },
                     {
-                        title:'set renderer scale',
+                        title:'set canvas scale',
                         func:CABLES.CMD.RENDERER.scaleCanvas
                     }
                 ]},ele);
@@ -834,7 +834,7 @@ CABLES.UI.GUI = function() {
         });
 
         $('.nav_viewProjectLink').bind("click", function(event) {
-            
+
             var url=$('.viewProjectLink').attr('href');
             console.log("url",url);
             var win = window.open(url, '_blank');
@@ -919,7 +919,7 @@ CABLES.UI.GUI = function() {
         $('.nav_help_tipps').bind("click", function (event) {
             CABLES.UI.tipps.show();
         });
-        
+
 
         // Introduction
         $('.nav_help_introduction').bind("click", function(event) {
@@ -930,7 +930,7 @@ CABLES.UI.GUI = function() {
             var win = window.open('https://www.youtube.com/cablesgl','_blank');
             win.focus();
 
-            
+
         });
 
 
@@ -941,7 +941,7 @@ CABLES.UI.GUI = function() {
             self.serverOps.createDialog();
         });
 
-        
+
         $('.nav_files').bind("click", function(event) {
             CABLES.CMD.UI.toggleFiles();
         });
@@ -1030,7 +1030,7 @@ CABLES.UI.GUI = function() {
 
                 case 67: //c center
                         if ($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey) {
-                            
+
                             if(self.patch().getSelectedOps().length>0) self.patch().centerViewBoxOps();
                             else self.patch().toggleCenterZoom();
                         }
@@ -1044,7 +1044,7 @@ CABLES.UI.GUI = function() {
                         else CABLES.undo.undo();
                     }
                 break;
-    
+
 
                 case 80:
                         if (e.ctrlKey || e.metaKey) {
@@ -1156,7 +1156,7 @@ CABLES.UI.GUI = function() {
 
         // if(CABLES.sandbox.initRouting)
         // {
-            
+
         // }
         // else
         // {
@@ -1171,7 +1171,7 @@ CABLES.UI.GUI = function() {
         this.showCanvasModal(false);
         this.callEvent("pressedEscape");
         if(this.fileManager) this.fileManager.setFilePort(null);
-        
+
         if(e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey))
         {
             this.maintabPanel.toggle();
@@ -1204,7 +1204,7 @@ CABLES.UI.GUI = function() {
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         } else if ($('#cmdpalette').is(':visible')) gui.cmdPallet.close();
-        
+
         else if($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
         // else if(gui.find().isVisible()) gui.find().close();
         // else if($('#library').is(':visible')) CABLES.UI.fileSelect.hide();
@@ -1222,7 +1222,7 @@ CABLES.UI.GUI = function() {
                 self.editor().focus();
             }
             return;
-        } 
+        }
         else if(this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else if(showingEditor && e) this.closeEditor();
         else {
@@ -1281,11 +1281,11 @@ CABLES.UI.GUI = function() {
 
 
 
-        
+
         if(CABLES.UI.userSettings.get("fileManagerOpened")==true) this.showFileManager();
         if(CABLES.UI.userSettings.get("timelineOpened")==true) this.showTiming();
 
-        
+
         if(CABLES.UI.userSettings.get('showTipps') && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 
         console.groupCollapsed('welcome to cables!');
@@ -1574,12 +1574,12 @@ CABLES.UI.GUI = function() {
             if(CABLESUILOADER.isDevEnv())title="DEV ";
             title+=gui.patch().getCurrentProject().name + ' *';
             document.title = title;
-            
+
             favIconLink.href = '/favicon/favicon_orange.ico';
             savedState = false;
 
             $('#patchname').addClass("warning");
-    
+
             window.onbeforeunload = function(event)
             {
                 var message = 'unsaved content!';
@@ -1593,7 +1593,7 @@ CABLES.UI.GUI = function() {
             };
         }
     };
-    
+
     this.closeInfo = function() {
         this.infoHeight = 0;
         this.setLayout();
@@ -1818,14 +1818,14 @@ function startUi(event)
                 gui.opSelect().prepare();
                 incrementStartup();
                 gui.opSelect().search();
-                
+
                 if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
 
 
-                
+
                 CABLES.editorSession.open();
 
-                
+
 
                 logStartup('finished loading cables');
                 CABLES.UI.loaded=true;
