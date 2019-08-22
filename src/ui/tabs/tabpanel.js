@@ -297,14 +297,28 @@ CABLES.UI.TabPanel.prototype.addIframeTab=function(title,url,options)
 {
     var iframeTab=this.addTab(new CABLES.UI.Tab(title,options));
     // iframeTab.initHtml(this._eleContentContainer);
+    const id=CABLES.uuid();
 
-    var html = '<iframe style="border:none;width:100%;height:100%" src="'+url+'"></iframe';
+    var html = '<div class="loading" id="loading'+id+'" style="position:absolute;left:45%;top:35%"></div><iframe id="iframe'+id+'"  style="border:none;width:100%;height:100%" src="'+url+'" onload=\"document.getElementById(\'loading'+id+'\').style.display=\'none\';"></iframe';
     // CABLES.UI.MODAL.show(html);
     iframeTab.contentEle.innerHTML=html;
     iframeTab.contentEle.style.padding="0px";
     // window.open('https://www.codexworld.com', '_blank');
 
     iframeTab.toolbarEle.innerHTML='<a href="'+url+'" target="_blank">open this in a new browser window</a>';
+
+    var frame=document.getElementById("iframe"+id);
+    var talkerAPI=new CABLESUILOADER.TalkerAPI(frame.contentWindow);
+
+    talkerAPI.addEventListener("notify", (options, next) =>
+    {
+        CABLES.UI.notify(options.msg);
+    });
+
+    talkerAPI.addEventListener("notify", (options, next) =>
+    {
+        CABLES.UI.notify(options.msg);
+    });
 
     this.activateTab(iframeTab.id);
     gui.maintabPanel.show();
