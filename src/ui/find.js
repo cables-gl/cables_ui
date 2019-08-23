@@ -9,6 +9,30 @@ CABLES.UI.Find = function ()
     var boundEscape = false;
     this._lastClicked=-1;
     this._lastSelected=-1;
+    this._maxIdx=-1;
+
+
+    document.getElementById("findinput").addEventListener("keydown",function(e)
+    {
+        if(e.keyCode==38)
+        {
+            var c=this._lastClicked-1;
+            if(c<0)c=0;
+            this.setClicked(c);
+            document.getElementById("findresult"+c).click();
+            document.getElementById("findinput").focus();
+        }
+        else if(e.keyCode==40)
+        {
+            var c=this._lastClicked+1;
+            if(c>this._maxIdx-1)c=this._maxIdx;
+            this.setClicked(c);
+            document.getElementById("findresult"+c).click();
+            document.getElementById("findinput").focus();
+        }
+
+    }.bind(this));
+
 
     this.isVisible = function ()
     {
@@ -53,15 +77,15 @@ CABLES.UI.Find = function ()
         }
     };
 
-    function addResultOp(op, result,idx)
+    this._addResultOp=function(op, result, idx)
     {
         var html = "";
         var info = "";
+        this._maxIdx=idx;
+        console.log('this._maxIdx',this._maxIdx,this);
 
         info += "* score : " + result.score + "\n";
         // info += "* id : " + op.id + "\n";
-
-console.log(op);
 
         var colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.op.objName);
         html
@@ -299,13 +323,14 @@ console.log(op);
             });
             for (var i = 0; i < results.length; i++)
             {
-                addResultOp(results[i].op, results[i],i);
+                this._addResultOp(results[i].op, results[i],i);
             }
         }
     };
 
     this.search = function (str)
     {
+        this._maxIdx=-1;
         this.setSelectedOp(null);
         this.setClicked(-1);
         this.doSearch(str);
@@ -320,14 +345,12 @@ console.log(op);
             el.classList.remove("lastClicked");
         }
 
-
         var el=document.getElementById('findresult'+num);
 
         if(el)
         {
             el.classList.add("lastClicked");
         }
-
         this._lastClicked=num;
     };
 
@@ -339,7 +362,6 @@ console.log(op);
         els=document.getElementsByClassName("findresultop"+opid);
         if (els && els.length==1) els[0].classList.add("selected");
         this._lastSelected=opid;
-
     };
 
 

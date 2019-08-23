@@ -47,7 +47,7 @@ CABLES.UI.inputIncrement=function(v,dir,e)
 
     if(e && e.shiftKey&& e.metaKey)add=0.001;
         else if(e && e.altKey && e.shiftKey) add=10;
-        else if(e && e.shiftKey)add=0.01;
+        else if(e && e.shiftKey) add=0.01;
         else if(e && e.altKey) add=1;
 
     var r=val+add*dir;
@@ -177,7 +177,6 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
         }
     }
 
-
     function down(e)
     {
         if(elem.is(":focus")) return;
@@ -190,7 +189,7 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
 
         mouseDownTime=performance.now();
         isDown=true;
-        
+
         var isString= elem.data("valuetype")=="string";
 
         if(!isString && usePointerLock)
@@ -198,9 +197,9 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
             document.addEventListener('pointerlockchange', lockChange, false);
             document.addEventListener('mozpointerlockchange', lockChange, false);
             document.addEventListener('webkitpointerlockchange', lockChange, false);
-    
+
             if (el.classList.contains('inc_int')) incMode=1;
-    
+
             el.requestPointerLock = el.requestPointerLock || el.mozRequestPointerLock || el.webkitRequestPointerLock;
             if(el.requestPointerLock) el.requestPointerLock();
         }
@@ -277,7 +276,7 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
             return;
         }
         if(elem.is(":focus")) return;
-        
+
         gui.setStateUnsaved();
         var v=parseFloat( elem.val() ,10);
         var inc=0;
@@ -340,15 +339,11 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
     elem.bind( "blur", 
         function()
         {
-
             // value changed after blur
             if(startVal!=elem.val())
             {
                 console.log("value changed after blur!",startVal,elem.val());
-
                 console.log(portName,opid);
-
-
 
                 if(opid && portName)
                 {
