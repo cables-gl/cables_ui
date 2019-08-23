@@ -1,68 +1,120 @@
 
+<script id="filemanager_header" type="text/x-handlebars-template">
+
+    <div class="filemanager_header">
+
+
+        <span class="divider"></span>
+
+        <a class="fileManagerSource {{#compare source '==' 'patch' }}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('patch');" class="info" data-info="file_source_patch">Patch Files</a>
+        <a class="fileManagerSource {{#compare source '==' 'patch' }}{{else}}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('lib');" class="info" data-info="file_source_lib">Library Files</a>
+
+        <span class="divider"></span>
+
+        <span class="iconbutton info" data-info="file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
+            <i class="icon icon-upload"></i>
+        </span>
+        
+        <span class="iconbutton info" data-info="file_create" onclick="CABLES.CMD.PATCH.createFile();" >
+            <i class="icon icon-file-plus"></i>
+        </span>
+        
+        {{#compare source '==' 'patch' }}
+
+        <!-- / sort [type][data][size][name] -->
+        <!-- / display [icons][list] -->
+
+
+        {{/compare}}
+
+        <span class="divider"></span>
+
+
+        <span id="switch-display-icons" class="switch switch-left {{#compare display '==' 'icons' }}switch-active{{/compare}}">
+            <i class="icon icon-grid"></i>
+        </span>
+        <span id="switch-display-list" class="switch switch-right {{#compare display '==' 'list' }}switch-active{{/compare}}">
+            <i class="icon icon-menu"></i>
+        </span>
+
+        {{#if fileSelectOp}}
+            <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;" onclick="gui.fileManager.setFilePort(null);">
+                Selection mode for: {{fileSelectOp.objName}} 
+                <span class="icon icon-x"></span>
+            </span>
+        {{/if}}
+
+    </div>
+</script>
+
+
+
+
 <script id="tab_itemmanager" type="text/x-handlebars-template">
     <div id="filemanagercontainer" style="height:99%">
 
         <div id="itemmanager_header" style="width:100%;height:50px;"></div>
 
-        <div class="filelistcontainer" style="height:calc(100% - 260px);overflow-y:auto;">
+        <div class="filelistcontainer">
             {{#each items}}
-
-            {{#if divider}}
-                <div style="clear:both"></div>
-                <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
-                    <h1>{{divider}}</h1>
-                </div>
-            {{else}}
-                <div class="info item-container {{#if selected}} selected {{/if}} draggable" id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="Drag this File to the patchfield to create op!">
-                    <div style="">
-                        {{#if preview}}
-                        <div class="preview" style="width:90%;height:90%;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
-                            <div style="background-image:url({{preview}}?rnd={{file.cachebuster}});width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center center;">
-                            </div>
-                        </div>
-                        {{else}}
-                        <div class="preview text-center" style="width:90%;height:90%;background-color:#555;" >
-                            <br/>
-                            <span class="icon icon-{{icon}} icon-4x"></span>
-                        </div>
-                        {{/if}}
+                {{#if divider}}
+                    <div style="clear:both"></div>
+                    <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
+                        <h1>{{divider}}</h1>
                     </div>
-                    <span>{{title}}</span>
-                </div>
+                {{else}}
+                    <div class="info item item-container {{#if selected}} selected {{/if}} draggable" id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="Drag this File to the patchfield to create op!">
+                        <div>
+                            {{#if preview}}
+                            <div class="preview" style="width:90%;height:calc(90% - 22px);;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
+                                <div style="background-image:url({{preview}}?rnd={{file.cachebuster}});width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center center;">
+                                </div>
+                            </div>
+                            {{else}}
+                            <div class="preview text-center" style="width:90%;height:calc(90% - 22px);;background-color:#555;" >
+                                <br/>
+                                <span class="icon icon-{{icon}} icon-4x"></span>
+                            </div>
+                            {{/if}}
+                        </div>
+                        <div class="filename">{{title}}</div>
+                    </div>
                 {{/if}}
             {{/each}}
             <div style="clear:both"></div>
         </div>
 
-        <div id="item_details" style="width:100%;height:200px;overflow-y:auto;padding:10px;background-color:var(--color-03)"></div>
+        <div id="item_details"></div>
     </div>
-
 </script>
-
 
 
 <script id="tab_itemmanager_list" type="text/x-handlebars-template">
 
+    <div id="itemmanager_header" style="width:100%;height:50px;"></div>
 
-    <table>
-        {{#each items}}
-
-            {{#if divider}}
-            <tr>
-                <td colspan="100">
-                    <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
-                        <h1>{{divider}}</h1>
-                    </div>
-                </td>
-            </tr>
-            {{else}}
-            <tr>
-                <td>{{title}}</td>
-                <td></td>
-            </tr>
-            {{/if}}
-        {{/each}}
-    </table>
+    <div class="filelistcontainer">
+        <table>
+            {{#each items}}
+                {{#if divider}}
+                    <tr>
+                        <td colspan="100">
+                            <div style="border-bottom:1px solid var(--color-07);margin-bottom:5px;" class="text-center">
+                                <h1>{{divider}}</h1>
+                            </div>
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr >
+                        <td><span class="icon icon-{{icon}} "></span></td>
+                        <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}}" >{{title}}</div></td>
+                        <td></td>
+                    </tr>
+                {{/if}}
+            {{/each}}
+        </table>
+    </div>
+    <div id="item_details"></div>
 
 
 </script>
@@ -72,42 +124,10 @@
 
 
 
-<script id="filemanager_header" type="text/x-handlebars-template">
-
-    <a class="fileManagerSource {{#compare source '==' 'patch' }}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('patch');" class="info" data-info="file_source_patch">Patch Files</a>
-    <a class="fileManagerSource {{#compare source '==' 'patch' }}{{else}}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('lib');" class="info" data-info="file_source_lib">Library Files</a>
 
 
-    <span class="iconbutton info" data-info="file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
-        <i class="icon icon-upload"></i>
-    </span>
-    <span class="iconbutton info" data-info="file_create" onclick="CABLES.CMD.PATCH.createFile();" >
-        <i class="icon icon-file-plus"></i>
-    </span>
-    
-    {{#compare source '==' 'patch' }}
-
-    <!-- / sort [type][data][size][name] -->
-    <!-- / display [icons][list] -->
 
 
-    {{/compare}}
-
-    <!-- <span id="switch-display-icons" class="switch switch-left switch-active">
-        <i class="icon icon-grid"></i>
-    </span>
-    <span id="switch-display-list" class="switch switch-right">
-        <i class="icon icon-menu"></i>
-    </span> -->
-
-    {{#if fileSelectOp}}
-        <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;" onclick="gui.fileManager.setFilePort(null);">
-            Selection mode for: {{fileSelectOp.objName}} 
-            <span class="icon icon-x"></span>
-        </span>
-    {{/if}}
-
-</script>
 
 <script id="filemanager_details" type="text/x-handlebars-template">
 

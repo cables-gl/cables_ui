@@ -27,10 +27,16 @@ CABLES.UI.ItemManager.prototype.clear=function()
     this._items.length=0;
 }
 
+
 CABLES.UI.ItemManager.prototype.setDisplay=function(t)
 {
     this._display=t;
     this.updateHtml();
+}
+
+CABLES.UI.ItemManager.prototype.getDisplay=function(t)
+{
+    return this._display;
 }
 
 CABLES.UI.ItemManager.prototype.removeItem=function(id)
@@ -130,6 +136,7 @@ CABLES.UI.ItemManager.prototype.updateDetailHtml=function(items)
 
 CABLES.UI.ItemManager.prototype.setItems=function(items)
 {
+    if(!items)items=this._items;
     this._items=items;
     this.updateHtml();
 

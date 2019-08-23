@@ -3,10 +3,10 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.FileManager=function(cb)
 {
-    this._manager=new CABLES.UI.ItemManager("Files",gui.mainTabs);
-    this._filePortEle=null;
-    this._firstTimeOpening=true;
-    this._refreshDelay=null;
+    this._manager = new CABLES.UI.ItemManager("Files",gui.mainTabs);
+    this._filePortEle = null;
+    this._firstTimeOpening = true;
+    this._refreshDelay = null;
 
     gui.maintabPanel.show();
     CABLES.UI.userSettings.set("fileManagerOpened",true);
@@ -70,7 +70,11 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         item.icon="file";
         
         if(file.t=='SVG') item.preview=file.p;
-        else if(file.t=='image') item.preview=file.p;
+        else if(file.t=='image')
+        {
+            item.preview=file.p;
+            item.icon="image";
+        }
         else if(file.t=='3d json') item.icon="cube";
         else if(file.t=='video') item.icon="film";
         else if(file.t=='audio') item.icon="headphones";
@@ -158,13 +162,16 @@ CABLES.UI.FileManager.prototype.selectFile=function(filename)
 CABLES.UI.FileManager.prototype.setDisplay=function(type)
 {
     this._manager.setDisplay(type);
+    this._manager.setItems();
+    this.updateHeader();
 }
 
 CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
 {
     const html = CABLES.UI.getHandleBarHtml('filemanager_header', {
         "fileSelectOp": this._filePortOp,
-        "source":this._fileSource
+        "source":this._fileSource,
+        "display":this._manager.getDisplay()
     });
     $('#itemmanager_header').html(html);
 
@@ -173,14 +180,14 @@ CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
     
     if(elSwitchIcons) elSwitchIcons.addEventListener("click",function()
     {
-        elSwitchIcons.classList.add("switch-active");
-        elSwitchList.classList.remove("switch-active");
+        // elSwitchIcons.classList.add("switch-active");
+        // elSwitchList.classList.remove("switch-active");
         this.setDisplay("icons");
     }.bind(this));
     if(elSwitchList) elSwitchList.addEventListener("click",function()
     {
-        elSwitchList.classList.add("switch-active");
-        elSwitchIcons.classList.remove("switch-active");
+        // elSwitchList.classList.add("switch-active");
+        // elSwitchIcons.classList.remove("switch-active");
         this.setDisplay("list");
     }.bind(this));
 }

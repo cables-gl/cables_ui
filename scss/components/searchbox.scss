@@ -94,7 +94,7 @@
             cursor:pointer;
 			background-color: var(--color_op_bg_active);
         }
-        border-right:2px solid transparent;
+        border-left:2px solid transparent;
     }
 
     .lastClicked
@@ -104,7 +104,7 @@
 
     .selected
     {
-        border-right:2px solid var(--color-07);
+        border-left:2px solid var(--color-07);
     }
 }
 
