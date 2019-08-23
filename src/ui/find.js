@@ -6,8 +6,9 @@ CABLES.UI.Find = function ()
     var lastSearch = "";
     var findTimeoutId = 0;
     var canceledSearch = 0;
-    var idSearch = 1;
     var boundEscape = false;
+    this._lastClicked=-1;
+    this._lastSelected=-1;
 
     this.isVisible = function ()
     {
@@ -52,16 +53,19 @@ CABLES.UI.Find = function ()
         }
     };
 
-    function addResultOp(op, result)
+    function addResultOp(op, result,idx)
     {
         var html = "";
         var info = "";
 
         info += "* score : " + result.score + "\n";
+        // info += "* id : " + op.id + "\n";
+
+console.log(op);
 
         var colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.op.objName);
         html
-            += "<div class=\"info\" data-info=\""
+            += "<div id=\"findresult"+idx+"\" class=\"info findresultop"+op.op.id+"\" data-info=\""
             + info
             + "\" onclick=\"gui.patch().setCurrentSubPatch('"
             + op.getSubPatch()
@@ -73,7 +77,7 @@ CABLES.UI.Find = function ()
             + op.op.uiAttribs.translate.y
             + ");gui.patch().setSelectedOpById('"
             + op.op.id
-            + "');$('#patch').focus();\">";
+            + "');$('#patch').focus();gui.find().setClicked("+idx+")\">";
 
         var colorHandle = "";
         if (op.op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
@@ -115,7 +119,7 @@ CABLES.UI.Find = function ()
         }
         if (cut) str += "...";
 
-        str = str.replace(stringReg, "<span style=\"font-weight:bold;text-decoration:underline\">" + word + "</span>");
+        str = str.replace(stringReg, '<span class="highlight">' + word + "</span>");
         return str;
     };
 
@@ -295,13 +299,48 @@ CABLES.UI.Find = function ()
             });
             for (var i = 0; i < results.length; i++)
             {
-                addResultOp(results[i].op, results[i]);
+                addResultOp(results[i].op, results[i],i);
             }
         }
     };
 
     this.search = function (str)
     {
+        this.setSelectedOp(null);
+        this.setClicked(-1);
         this.doSearch(str);
     };
+
+
+    this.setClicked=function(num)
+    {
+        var el=document.getElementById('findresult'+this._lastClicked);
+        if(el)
+        {
+            el.classList.remove("lastClicked");
+        }
+
+
+        var el=document.getElementById('findresult'+num);
+
+        if(el)
+        {
+            el.classList.add("lastClicked");
+        }
+
+        this._lastClicked=num;
+    };
+
+    this.setSelectedOp=function(opid)
+    {
+        var els=document.getElementsByClassName("findresultop"+this._lastSelected);
+        if (els && els.length==1) els[0].classList.remove("selected");
+
+        els=document.getElementsByClassName("findresultop"+opid);
+        if (els && els.length==1) els[0].classList.add("selected");
+        this._lastSelected=opid;
+
+    };
+
+
 };
