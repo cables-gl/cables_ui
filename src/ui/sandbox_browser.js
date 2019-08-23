@@ -94,14 +94,16 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning = function (id)
         iziToast.error({
             position: "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             theme: "dark",
-            title: "oops!", // yikes!
-            message: "cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange",
+            title: CABLES.UI.TEXTS.notOptimizedBrowser_title, 
+            message: CABLES.UI.TEXTS.notOptimizedBrowser_text,
             progressBar: false,
             animateInside: false,
             close: true,
             timeout: false,
         });
     }
+
+    console.log(gui.patch().scene.cgl);
 };
 
 CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)
