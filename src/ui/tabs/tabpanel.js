@@ -315,9 +315,14 @@ CABLES.UI.TabPanel.prototype.addIframeTab=function(title,url,options)
         CABLES.UI.notify(options.msg);
     });
 
-    talkerAPI.addEventListener("notify", (options, next) =>
+    talkerAPI.addEventListener("notifyError", (options, next) =>
     {
-        CABLES.UI.notify(options.msg);
+        CABLES.UI.notifyError(options.msg);
+    });
+
+    talkerAPI.addEventListener("updatePatchName", (options, next) =>
+    {
+        gui.setProjectName(options.name);
     });
 
     this.activateTab(iframeTab.id);
