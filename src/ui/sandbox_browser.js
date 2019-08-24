@@ -7,11 +7,21 @@ CABLES.SandboxBrowser = function (cfg)
 
     if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
     else CABLES.UI.userSettings.load({});
+
+    window.addEventListener('online',  this.updateOnlineIndicator.bind(this));
+    window.addEventListener('offline', this.updateOnlineIndicator.bind(this));
+    this.updateOnlineIndicator();
 };
+
+CABLES.SandboxBrowser.prototype.updateOnlineIndicator = function ()
+{
+    if(this.isOffline()) document.getElementById('offlineIndicator').style.display='block';
+    else document.getElementById('offlineIndicator').style.display='none';
+}
 
 CABLES.SandboxBrowser.prototype.isOffline = function ()
 {
-    return false;
+    return !navigator.onLine;
 };
 
 CABLES.SandboxBrowser.prototype.getCablesUrl = function ()
