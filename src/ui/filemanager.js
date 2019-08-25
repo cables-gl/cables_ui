@@ -143,7 +143,7 @@ CABLES.UI.FileManager.prototype._buildHtml=function(o)
     var items=[];
 
     if(this._order=='size') this._files.sort(function(a, b) { return a.s - b.s; });
-    if(this._order=='date') this._files.sort(function(a, b) { return a.d - b.d; });
+    if(this._order=='date') this._files.sort(function(a, b) { return b.d - a.d; });
     if(this._order=='name') this._files.sort(function(a, b) { return (a.name||'').toLowerCase().localeCompare((b.name||'').toLowerCase()); });
     if(this._order=='type') this._files.sort(function(a, b) { return a.t.toLowerCase().localeCompare(b.t.toLowerCase()); });
 
@@ -155,7 +155,9 @@ CABLES.UI.FileManager.prototype._buildHtml=function(o)
         createItem(items,this._files[i]);
     }
 
-    this._manager.showListHeader=this._fileSource != 'lib';
+    this._manager.listHtmlOptions.showHeader=this._fileSource != 'lib';
+    this._manager.listHtmlOptions.order=this._order;
+    this._manager.listHtmlOptions.orderReverse=this._orderReverse;
     this._manager.setItems(items);
     this.updateHeader();
 }

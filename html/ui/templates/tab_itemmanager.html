@@ -95,13 +95,27 @@
     <div id="itemmanager_header" style="width:100%;height:50px;"></div>
 
     <div class="filelistcontainer">
+
+
+
+
+
         <table class="table">
             {{#if showHeader}}
             <tr>
                 <th onclick="gui.fileManager.setOrder('type');" style="cursor:pointer;"><span class="icon icon-file"></span></th>
-                <th onclick="gui.fileManager.setOrder('name');" style="cursor:pointer;">Filename</th>
-                <th onclick="gui.fileManager.setOrder('size');" style="cursor:pointer;">Size</th>
-                <th onclick="gui.fileManager.setOrder('date');" style="cursor:pointer;">Changed</th>
+                <th onclick="gui.fileManager.setOrder('name');" style="cursor:pointer;">
+                    Filename
+                    {{#compare order '==' 'name' }}{{#if orderReverse}}<span class="icon icon-arrow-up "></span>{{else}}<span class="icon icon-arrow-down "></span>{{/if}}{{/compare}}
+                </th>
+                <th onclick="gui.fileManager.setOrder('size');" style="cursor:pointer;">
+                    Size
+                    {{#compare order '==' 'size' }}{{#if orderReverse}}<span class="icon icon-arrow-up "></span>{{else}}<span class="icon icon-arrow-down "></span>{{/if}}{{/compare}}
+                    </th>
+                <th onclick="gui.fileManager.setOrder('date');" style="cursor:pointer;">
+                    Changed
+                    {{#compare order '==' 'date' }}{{#if orderReverse}}<span class="icon icon-arrow-up "></span>{{else}}<span class="icon icon-arrow-down "></span>{{/if}}{{/compare}}
+                    </th>
             </tr>
             {{/if}}
             {{#each items}}
