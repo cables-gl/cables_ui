@@ -384,6 +384,7 @@ CABLES.UI.ServerOps = function (gui)
             },
             function (err, res)
             {
+                if(res.content==undefined)return;
                 var content = res.content || "";
                 var syntax = "text";
 
