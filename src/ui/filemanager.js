@@ -118,6 +118,7 @@ CABLES.UI.FileManager.prototype._buildHtml=function(o)
             "date":file.d,
             "dateFromNow":file.dfr,
             "sizeKb":size,
+            "size":file.s,
         };
 
         item.icon="file";
@@ -298,7 +299,21 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
     }
     else if(detailItems.length>1)
     {
-        html='<center><br/><br/>'+detailItems.length+' files selected<br/><br/><br/>';
+        console.log(detailItems);
+
+        var allSize=0;
+        for(var i=0;i<detailItems.length;i++)
+        {
+            allSize+=detailItems[i].size;
+        }
+                
+        if(allSize)allSize=Math.ceil(allSize/1024);
+
+        html='<center><br/><br/>'+detailItems.length+' files selected<br/>';
+        if(allSize) html+='Size: '+allSize+' kb<br/>';
+
+        html+='<br/>';
+
         if(this._fileSource=="patch") html+='<a class="button" id="filesdeletmulti">delete '+detailItems.length+' files</a>';
         html+='</center>';
 
