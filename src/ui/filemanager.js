@@ -7,10 +7,13 @@ CABLES.UI.FileManager=function(cb)
     this._filePortEle = null;
     this._firstTimeOpening = true;
     this._refreshDelay = null;
+    this._order="name";
+    this._files=[];
 
     gui.maintabPanel.show();
     CABLES.UI.userSettings.set("fileManagerOpened",true);
 
+    this._manager.setDisplay(CABLES.UI.userSettings.get("filemanager.display")||"icons");
     this.reload(cb);
 
     this._manager.addEventListener("onItemsSelected",
@@ -59,34 +62,13 @@ CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
 
 CABLES.UI.FileManager.prototype.reload=function(cb)
 {
-    function createItem(items,file)
-    {
-        var item={
-            "title":file.n,
-            "id":file._id||'lib'+CABLES.uuid(),
-            "p":file.p
-        };
 
-        item.icon="file";
-        
-        if(file.t=='SVG') item.preview=file.p;
-        else if(file.t=='image')
-        {
-            item.preview=file.p;
-            item.icon="image";
-        }
-        else if(file.t=='3d json') item.icon="cube";
-        else if(file.t=='video') item.icon="film";
-        else if(file.t=='audio') item.icon="headphones";
-        else if(file.t=='dir') item.divider=file.n;
-        
-        items.push(item);
-        if(file.c) for(var i=0;i<file.c.length;i++) createItem(items,file.c[i]);
-    }
 
     this._manager.clear();
     this._fileSource=this._fileSource||'lib';
     if(this._firstTimeOpening)this._fileSource = 'patch';
+
+    gui.jobs().start({id:'getFileList',title:'Loading file list'});
 
     CABLESUILOADER.talkerAPI.send("getFilelist",
     {
@@ -109,21 +91,72 @@ CABLES.UI.FileManager.prototype.reload=function(cb)
         }
 
         this._firstTimeOpening=false;
+        this._files=files;
+        this._buildHtml();
 
-        var items=[];
-
-        for(var i=0;i<files.length;i++)
-        {
-            var file=files[i];
-            createItem(items,file);
-        }
-
-        this._manager.setItems(items);
-        this.updateHeader();
         if(cb)cb();
+
+        gui.jobs().finish('getFileList');
 
     });
 }
+
+CABLES.UI.FileManager.prototype._buildHtml=function(o)
+{
+    function createItem(items,file)
+    {
+        var size='';
+
+        if(file.s)size=Math.ceil(file.s/1024)+' kb';
+
+        var item={
+            "title":file.n,
+            "id":file._id||'lib'+CABLES.uuid(),
+            "p":file.p,
+            "date":file.d,
+            "dateFromNow":file.dfr,
+            "sizeKb":size,
+        };
+
+        item.icon="file";
+        
+        if(file.t=='SVG') item.preview=file.p;
+        else if(file.t=='image')
+        {
+            item.preview=file.p;
+            item.icon="image";
+        }
+        else if(file.t=='3d json') item.icon="cube";
+        else if(file.t=='video') item.icon="film";
+        else if(file.t=='audio') item.icon="headphones";
+        else if(file.t=='dir') item.divider=file.n;
+        
+        items.push(item);
+        if(file.c) for(var i=0;i<file.c.length;i++) createItem(items,file.c[i]);
+    }
+
+    var items=[];
+
+    if(this._order=='size') this._files.sort(function(a, b) { return a.s - b.s; });
+    if(this._order=='type') this._files.sort(function(a, b) { return a.type - b.type; });
+    if(this._order=='date') this._files.sort(function(a, b) { return a.d - b.d; });
+    if(this._order=='name') this._files.sort(function(a, b) { return a.name.toLowerCase().localeCompare(b.name.toLowerCase() ); });
+
+    for(var i=0;i<this._files.length;i++)
+    {
+        createItem(items,this._files[i]);
+    }
+
+    this._manager.setItems(items);
+    this.updateHeader();
+}
+
+CABLES.UI.FileManager.prototype.setOrder=function(o)
+{
+    this._order=o;
+    this._buildHtml();
+}
+
 
 CABLES.UI.FileManager.prototype.setSource=function(s,cb)
 {
@@ -161,6 +194,7 @@ CABLES.UI.FileManager.prototype.selectFile=function(filename)
 
 CABLES.UI.FileManager.prototype.setDisplay=function(type)
 {
+    CABLES.UI.userSettings.set("filemanager.display",type);
     this._manager.setDisplay(type);
     this._manager.setItems();
     this.updateHeader();

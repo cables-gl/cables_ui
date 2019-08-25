@@ -3,13 +3,16 @@
 
     <div class="filemanager_header">
 
-
         <span class="divider"></span>
 
         <a class="fileManagerSource {{#compare source '==' 'patch' }}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('patch');" class="info" data-info="file_source_patch">Patch Files</a>
         <a class="fileManagerSource {{#compare source '==' 'patch' }}{{else}}activeFileManagerSource{{/compare}}" onclick="gui.fileManager.setSource('lib');" class="info" data-info="file_source_lib">Library Files</a>
 
         <span class="divider"></span>
+
+        <span class="iconbutton info" data-info="file_refresh" onclick="gui.refreshFileManager();" >
+            <i class="icon icon-refresh"></i>
+        </span>
 
         <span class="iconbutton info" data-info="file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
             <i class="icon icon-upload"></i>
@@ -94,7 +97,13 @@
     <div id="itemmanager_header" style="width:100%;height:50px;"></div>
 
     <div class="filelistcontainer">
-        <table>
+        <table class="table">
+            <tr>
+                <th></th>
+                <th onclick="gui.fileManager.setOrder('name');" style="cursor:pointer;">Filename</th>
+                <th onclick="gui.fileManager.setOrder('size');" style="cursor:pointer;">Size</th>
+                <th onclick="gui.fileManager.setOrder('date');" style="cursor:pointer;">Changed</th>
+            </tr>
             {{#each items}}
                 {{#if divider}}
                     <tr>
@@ -105,10 +114,11 @@
                         </td>
                     </tr>
                 {{else}}
-                    <tr >
+                    <tr>
                         <td><span class="icon icon-{{icon}} "></span></td>
                         <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}}" >{{title}}</div></td>
-                        <td></td>
+                        <td>{{sizeKb}}</td>
+                        <td>{{dateFromNow}}</td>
                     </tr>
                 {{/if}}
             {{/each}}
