@@ -384,7 +384,12 @@ CABLES.UI.ServerOps = function (gui)
             },
             function (err, res)
             {
-                if(!res || res.content==undefined)return;
+                if(err || !res || res.content==undefined)
+                {
+                    if(err)console.log('[opattachmentget] err',err);
+                    if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
+                    return;
+                }
                 var content = res.content || "";
                 var syntax = "text";
 
