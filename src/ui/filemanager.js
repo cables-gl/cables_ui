@@ -299,8 +299,6 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
     }
     else if(detailItems.length>1)
     {
-        console.log(detailItems);
-
         var allSize=0;
         for(var i=0;i<detailItems.length;i++)
         {
