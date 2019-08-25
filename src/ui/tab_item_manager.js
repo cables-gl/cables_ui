@@ -68,7 +68,7 @@ CABLES.UI.ItemManager.prototype.updateHtml=function()
     var html = '';
     
     if(this._display=='icons') html=CABLES.UI.getHandleBarHtml('tab_itemmanager',{"items":this._items});
-        else html=CABLES.UI.getHandleBarHtml('tab_itemmanager_list',{"items":this._items});
+        else html=CABLES.UI.getHandleBarHtml('tab_itemmanager_list',{"items":this._items,"showHeader":this.showListHeader});
 
 
     this._tab.html('<div id="item_manager" class="item_manager">'+html+'</div>');

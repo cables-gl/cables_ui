@@ -51,8 +51,6 @@
 </script>
 
 
-
-
 <script id="tab_itemmanager" type="text/x-handlebars-template">
     <div id="filemanagercontainer" style="height:99%">
 
@@ -98,12 +96,14 @@
 
     <div class="filelistcontainer">
         <table class="table">
+            {{#if showHeader}}
             <tr>
                 <th onclick="gui.fileManager.setOrder('type');" style="cursor:pointer;"><span class="icon icon-file"></span></th>
                 <th onclick="gui.fileManager.setOrder('name');" style="cursor:pointer;">Filename</th>
                 <th onclick="gui.fileManager.setOrder('size');" style="cursor:pointer;">Size</th>
                 <th onclick="gui.fileManager.setOrder('date');" style="cursor:pointer;">Changed</th>
             </tr>
+            {{/if}}
             {{#each items}}
                 {{#if divider}}
                     <tr>
