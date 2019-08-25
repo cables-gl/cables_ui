@@ -64,6 +64,7 @@ CABLES.UI.ItemManager.prototype.removeItem=function(id)
     this.updateDetailHtml();
 };
 
+
 CABLES.UI.ItemManager.prototype.updateHtml=function()
 {
     var html = '';
@@ -71,12 +72,8 @@ CABLES.UI.ItemManager.prototype.updateHtml=function()
     for(var i in this.listHtmlOptions)
         options[i]=this.listHtmlOptions[i];
 
-    if(this._display=='icons')
-    {
-        html=CABLES.UI.getHandleBarHtml('tab_itemmanager',options);
-    }
-        else html=CABLES.UI.getHandleBarHtml('tab_itemmanager_list',options);
-
+    if(this._display=='icons') html=CABLES.UI.getHandleBarHtml('tab_itemmanager',options);
+    else html=CABLES.UI.getHandleBarHtml('tab_itemmanager_list',options);
 
     this._tab.html('<div id="item_manager" class="item_manager">'+html+'</div>');
 }
@@ -141,6 +138,31 @@ CABLES.UI.ItemManager.prototype.updateDetailHtml=function(items)
     this.emitEvent("onItemsSelected",detailItems);
 }
 
+CABLES.UI.ItemManager.prototype.setTitleFilter=function(f)
+{
+    this.titleFilter=f;
+    this.filterItems();
+}
+
+CABLES.UI.ItemManager.prototype.filterItems=function()
+{
+    var els=document.getElementsByClassName("fileFilterable");
+
+    if(this.titleFilter)
+    {
+        for(var i=0;i<els.length;i++)
+        {
+            if(els[i].dataset.searchable.toLowerCase().indexOf(this.titleFilter)==-1)els[i].style.display="none";
+            else els[i].style.display="";
+        }
+    }
+    else
+    {
+        for(var i=0;i<els.length;i++) els[i].style.display="";
+    }
+}
+
+
 CABLES.UI.ItemManager.prototype.setItems=function(items)
 {
     if(!items)items=this._items;
@@ -170,4 +192,5 @@ CABLES.UI.ItemManager.prototype.setItems=function(items)
                 
             }.bind(this));
     }
+    this.filterItems();
 };

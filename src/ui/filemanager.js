@@ -162,6 +162,12 @@ CABLES.UI.FileManager.prototype._buildHtml=function(o)
     this.updateHeader();
 }
 
+CABLES.UI.FileManager.prototype.setFilter=function(f)
+{
+
+    this._manager.setTitleFilter(f);
+}
+
 CABLES.UI.FileManager.prototype.setOrder=function(o)
 {
 
@@ -221,7 +227,8 @@ CABLES.UI.FileManager.prototype.updateHeader=function(detailItems)
     const html = CABLES.UI.getHandleBarHtml('filemanager_header', {
         "fileSelectOp": this._filePortOp,
         "source":this._fileSource,
-        "display":this._manager.getDisplay()
+        "display":this._manager.getDisplay(),
+        "filter":this._manager.titleFilter
     });
     $('#itemmanager_header').html(html);
 

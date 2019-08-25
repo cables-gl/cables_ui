@@ -104,9 +104,18 @@
 
 #item_details
 {
-width:100%;height:200px;overflow-y:auto;padding:10px;background-color:var(--color-03);
+    width:100%;
+    height:200px;
+    overflow-y:auto;
+    padding:10px;
+    background-color:var(--color-03);
 }
 
+#itemmanager_header
+{
+    width:100%;
+    margin-bottom:10px;
+}
 
 .filelistcontainer
 {
@@ -117,7 +126,7 @@ width:100%;height:200px;overflow-y:auto;padding:10px;background-color:var(--colo
 {
     .divider
     {
-        padding:20px;
+        padding:13px;
         padding-top:0px;
         padding-bottom:2px;
     }
