@@ -7,13 +7,16 @@ CABLES.UI.FileManager=function(cb)
     this._filePortEle = null;
     this._firstTimeOpening = true;
     this._refreshDelay = null;
-    this._order="name";
+    this._orderReverse=false;
+    this._order=CABLES.UI.userSettings.get("filemanager.order")||"name";
     this._files=[];
 
     gui.maintabPanel.show();
     CABLES.UI.userSettings.set("fileManagerOpened",true);
 
     this._manager.setDisplay(CABLES.UI.userSettings.get("filemanager.display")||"icons");
+    
+
     this.reload(cb);
 
     this._manager.addEventListener("onItemsSelected",
@@ -120,7 +123,11 @@ CABLES.UI.FileManager.prototype._buildHtml=function(o)
 
         item.icon="file";
         
-        if(file.t=='SVG') item.preview=file.p;
+        if(file.t=='SVG')
+        {
+            item.preview=file.p;
+            item.icon="pen-tool";
+        }
         else if(file.t=='image')
         {
             item.preview=file.p;
@@ -130,7 +137,6 @@ CABLES.UI.FileManager.prototype._buildHtml=function(o)
         else if(file.t=='video') item.icon="film";
         else if(file.t=='audio') item.icon="headphones";
         else if(file.t=='dir') item.divider=file.n;
-        
         items.push(item);
         if(file.c) for(var i=0;i<file.c.length;i++) createItem(items,file.c[i]);
     }
@@ -138,9 +144,12 @@ CABLES.UI.FileManager.prototype._buildHtml=function(o)
     var items=[];
 
     if(this._order=='size') this._files.sort(function(a, b) { return a.s - b.s; });
-    if(this._order=='type') this._files.sort(function(a, b) { return a.type - b.type; });
     if(this._order=='date') this._files.sort(function(a, b) { return a.d - b.d; });
-    if(this._order=='name') this._files.sort(function(a, b) { return a.name.toLowerCase().localeCompare(b.name.toLowerCase() ); });
+    if(this._order=='name') this._files.sort(function(a, b) { return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); });
+    if(this._order=='type') this._files.sort(function(a, b) { return a.t.toLowerCase().localeCompare(b.t.toLowerCase()); });
+
+    if(this._orderReverse)this._files.reverse();
+
 
     for(var i=0;i<this._files.length;i++)
     {
@@ -153,7 +162,12 @@ CABLES.UI.FileManager.prototype._buildHtml=function(o)
 
 CABLES.UI.FileManager.prototype.setOrder=function(o)
 {
+
+    if(this._order!=o) this._orderReverse=false;
+    else this._orderReverse=!this._orderReverse;
+
     this._order=o;
+    CABLES.UI.userSettings.set("filemanager.order",this._order);
     this._buildHtml();
 }
 
