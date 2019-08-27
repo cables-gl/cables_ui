@@ -105,6 +105,8 @@
 
 .contentcontainer
 {
+    overflow-y:scroll;
+
     .tabcontent
     {
         background-color:$background-color-dark;

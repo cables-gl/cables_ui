@@ -254,11 +254,10 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
 {
     var html = "";
     document.getElementById("item_details").innerHTML='';
-    
+
     if(detailItems.length==1)
     {
         const itemId=detailItems[0].id;
-
 
         CABLESUILOADER.talkerAPI.send("getFileDetails",
         {
@@ -266,24 +265,27 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
         },
         function(err,r)
         {
-            html = CABLES.UI.getHandleBarHtml('filemanager_details', {
-                "projectId": gui.patch().getCurrentProject()._id,
-                "file": r,
-                "source":this._fileSource
-            });
+
+
+            if(this._fileSource!='lib')
+                html = CABLES.UI.getHandleBarHtml('filemanager_details', {
+                        "projectId": gui.patch().getCurrentProject()._id,
+                        "file": r,
+                        "source":this._fileSource
+                    });
+                else html = '';
             
             $('#item_details').html(html);
 
-            var delEle=document.getElementById("filedelete"+itemId);
-            if(delEle)delEle.addEventListener("click",function(e)
+            var delEle = document.getElementById("filedelete"+itemId);
+            if(delEle) delEle.addEventListener("click",function(e)
             {
                 CABLESUILOADER.talkerAPI.send("deleteFile",
                 { "fileid":r.fileDb._id },
                 function(err,r)
                 {
                     if(r.success) this._manager.removeItem(itemId);
-                        else CABLES.UI.notifyError("Error: Could not delete file. "+err.msg);
-
+                    else CABLES.UI.notifyError("Error: Could not delete file. "+err.msg);
                 }.bind(this));
             }.bind(this));
         }.bind(this));
