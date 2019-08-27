@@ -1331,7 +1331,7 @@ CABLES.UI.Patch = function(_gui) {
 
             if (proj.ui.renderer) {
 
-                if(proj.ui.renderer.w>document.body.clientWidth/2 || proj.ui.renderer.h>document.body.clientHeight/2)
+                if(proj.ui.renderer.w>document.body.clientWidth*0.9 || proj.ui.renderer.h>document.body.clientHeight*0.9)
                 {
                     proj.ui.renderer.w=640;
                     proj.ui.renderer.h=360;
