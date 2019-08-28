@@ -163,8 +163,12 @@ CABLES.UI.createEditor = function (id, val)
             name: "op.inFloat",
         },
         {
-            content: "op.inDropDown(\"${1:name}\",\"${2:['option a','option b']}\")",
+            content: "op.inDropDown(\"${1:name}\",\${2:['option a','option b']}\)",
             name: "op.inDropDown",
+        },
+        {
+            content: "op.inSwitch(\"${1:name}\",\${2:['option a','option b']}\,\${3:'default'}\)",
+            name: "op.inSwitch",
         },
         {
             content: "op.inStringEditor(\"${1:name}\",\"${2:default}\")",
