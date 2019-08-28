@@ -126,6 +126,7 @@ CABLES.UI.Find = function ()
     this.highlightWord = function (word, str)
     {
         var stringReg = new RegExp(word, "gi");
+        str+='';
 
         var cut = false;
         while (str.indexOf(word) > 10)
