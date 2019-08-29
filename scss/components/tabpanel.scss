@@ -31,13 +31,16 @@
     {
         width:100%;
         margin-bottom: 3px;
-        height:32px;
-        overflow: hidden;
+        // height:32px;
+        // overflow: hidden;
+        overflow-x: auto;
+        overflow-y: none;
         background-color: var(--color-03);
+        white-space: nowrap;
 
         .tabcontainer
         {
-            display:inline;
+            display:inline-block;
         }
 
         .taboptions

@@ -288,8 +288,14 @@ CABLES.UI.TabPanel.prototype.addTab=function(tab,activate)
         }
     }
 
+
+// var tabEl=document.getElementById("editortab"+tab.id)
+
+
     this.updateHtml();
     this.emitEvent("onTabAdded",tab);
+
+    tab.toolbarEle.scrollIntoView({block: "end"});
 
     return tab;
 }
