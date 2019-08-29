@@ -151,9 +151,9 @@ CABLES.UI.TabPanel.prototype.updateHtml=function()
                 }.bind(this));
         }
     }
+
+    this.scrollToActiveTab();
 }
-
-
 
 CABLES.UI.TabPanel.prototype.activateTabByName=function(name)
 {
@@ -169,6 +169,26 @@ CABLES.UI.TabPanel.prototype.activateTabByName=function(name)
     this.updateHtml();
 };
 
+
+
+CABLES.UI.TabPanel.prototype.scrollToActiveTab=function()
+{
+
+    var tab=this.getActiveTab();
+    if(!tab)return;
+    var left=document.getElementById("editortab"+tab.id).offsetLeft;
+    left+=document.getElementById("editortab"+tab.id).clientWidth;
+    left+=25;
+
+    var w=this._eleTabPanel.clientWidth;
+
+const tabContainer=document.querySelector("#maintabs .tabs")
+    if(tabContainer && left>w)
+        tabContainer.scrollLeft=left;
+}
+
+
+
 CABLES.UI.TabPanel.prototype.activateTab=function(id)
 {
     for(var i=0;i<this._tabs.length;i++)
@@ -176,8 +196,6 @@ CABLES.UI.TabPanel.prototype.activateTab=function(id)
 
         if(this._tabs[i].id===id)
         {
-            
-
             this.emitEvent("onTabActivated",this._tabs[i]);
             this._tabs[i].activate();
             CABLES.UI.userSettings.set("tabsLastTitle_"+this._eleId,this._tabs[i].title);
@@ -185,6 +203,7 @@ CABLES.UI.TabPanel.prototype.activateTab=function(id)
         else this._tabs[i].deactivate();
     }
     this.updateHtml();
+
 };
 
 CABLES.UI.TabPanel.prototype.getTabByTitle=function(title)
@@ -294,8 +313,6 @@ CABLES.UI.TabPanel.prototype.addTab=function(tab,activate)
 
     this.updateHtml();
     this.emitEvent("onTabAdded",tab);
-
-    tab.toolbarEle.scrollIntoView({block: "end"});
 
     return tab;
 }
