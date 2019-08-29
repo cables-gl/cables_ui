@@ -1,8 +1,6 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-// -----------------
-
 CABLES.UI.EditorTab = function (options)
 {
     this._editor = null;

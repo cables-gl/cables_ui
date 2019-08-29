@@ -1814,6 +1814,8 @@ function startUi(event)
                 incrementStartup();
                 gui.opSelect().search();
 
+
+
                 if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
 
 
