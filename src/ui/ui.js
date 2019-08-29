@@ -1814,19 +1814,12 @@ function startUi(event)
                 incrementStartup();
                 gui.opSelect().search();
 
-
-
                 if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
-
-
 
                 CABLES.editorSession.open();
 
-
-
                 logStartup('finished loading cables');
                 CABLES.UI.loaded=true;
-
             });
         });
     });
