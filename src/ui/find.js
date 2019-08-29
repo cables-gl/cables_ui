@@ -82,7 +82,6 @@ CABLES.UI.Find = function ()
         var html = "";
         var info = "";
         this._maxIdx=idx;
-        console.log('this._maxIdx',this._maxIdx,this);
 
         info += "* score : " + result.score + "\n";
         // info += "* id : " + op.id + "\n";
@@ -155,7 +154,6 @@ CABLES.UI.Find = function ()
         if (str.length < 2) return;
 
         str = str.toLowerCase();
-        // console.log('--- ',str);
 
         var foundNum = 0;
         var results = [];

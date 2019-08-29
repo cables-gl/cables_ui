@@ -8,13 +8,13 @@ CABLES.UI.FileManager=function(cb)
     this._firstTimeOpening = true;
     this._refreshDelay = null;
     this._orderReverse=false;
-    this._order=CABLES.UI.userSettings.get("filemanager.order")||"name";
+    this._order=CABLES.UI.userSettings.get("filemanager_order")||"name";
     this._files=[];
 
     gui.maintabPanel.show();
     CABLES.UI.userSettings.set("fileManagerOpened",true);
 
-    this._manager.setDisplay(CABLES.UI.userSettings.get("filemanager.display")||"icons");
+    this._manager.setDisplay(CABLES.UI.userSettings.get("filemanager_display")||"icons");
 
     this.reload(cb);
 
@@ -171,12 +171,11 @@ CABLES.UI.FileManager.prototype.setFilter=function(f)
 
 CABLES.UI.FileManager.prototype.setOrder=function(o)
 {
-
     if(this._order!=o) this._orderReverse=false;
     else this._orderReverse=!this._orderReverse;
 
     this._order=o;
-    CABLES.UI.userSettings.set("filemanager.order",this._order);
+    CABLES.UI.userSettings.set("filemanager_order",this._order);
     this._buildHtml();
 }
 
@@ -210,14 +209,13 @@ CABLES.UI.FileManager.prototype.selectFile=function(filename)
     }
     else 
     {
-        console.log("egal");
         this._selectFile(filename);
     }
 }
 
 CABLES.UI.FileManager.prototype.setDisplay=function(type)
 {
-    CABLES.UI.userSettings.set("filemanager.display",type);
+    CABLES.UI.userSettings.set("filemanager_display",type);
     this._manager.setDisplay(type);
     this._manager.setItems();
     this.updateHeader();

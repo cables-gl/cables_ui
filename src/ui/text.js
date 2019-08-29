@@ -91,8 +91,15 @@ CABLES.UI.TEXTS = {
     working_connected_needs_connections_to: "this op can not do anything without at least connecting those ports: ",
 
     notOptimizedBrowser_title: "oops!",
-    notOptimizedBrowser_text: "cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange"
+    notOptimizedBrowser_text: "cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange",
 
+    filemanager_delete_file: "Delete file",
+    filemanager_file_search: "Search for ops that use this file",
+    filemanager_file_open: "Open file in new window",
+    filemanager_file_download: "Download file",
+    filemanager_file_refresh: "Reload file list",
+    filemanager_file_upload: "Upload new file",
+    filemanager_file_create: "Create a file"
 };
 
 CABLES.UI.TIPS = [

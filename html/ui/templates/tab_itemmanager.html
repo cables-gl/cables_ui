@@ -10,15 +10,15 @@
 
             <span class="divider"></span>
 
-            <span class="iconbutton info" data-info="file_refresh" onclick="gui.refreshFileManager();" >
+            <span class="iconbutton info" data-infotext="filemanager_file_refresh" onclick="gui.refreshFileManager();" >
                 <i class="icon icon-refresh"></i>
             </span>
 
-            <span class="iconbutton info" data-info="file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
+            <span class="iconbutton info" data-infotext="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
                 <i class="icon icon-upload"></i>
             </span>
             
-            <span class="iconbutton info" data-info="file_create" onclick="CABLES.CMD.PATCH.createFile();" >
+            <span class="iconbutton info" data-infotext="filemanager_file_create" onclick="CABLES.CMD.PATCH.createFile();" >
                 <i class="icon icon-file-plus"></i>
             </span>
             
@@ -170,26 +170,26 @@
     <div class="filemanager-detail-element">
         <div style="padding:10px;">
 
-            <a class="iconbutton info" data-tt="download file" data-infotext="file_download" download href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
-                <span class="tt icon icon-1x icon-download" ></span>
+            <a class="iconbutton info" data-infotext="filemanager_file_download" download href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
+                <span class="icon icon-1x icon-download" ></span>
             </a>
-            <a class="iconbutton info" data-tt="open in new window" data-infotext="file_open" target="_blank" href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
-                <span class="tt icon icon-1x icon-external"></span>
+            <a class="iconbutton info" data-infotext="filemanager_file_open" target="_blank" href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
+                <span class="icon icon-1x icon-external"></span>
             </a>
-            <span class="iconbutton info" data-tt="search in patch" data-infotext="file_search" onclick="gui.find().show('{{file.fileDb.fileName}}')">
-                <a class="tt icon icon-1x icon-search"></a>
+            <span class="iconbutton info" data-infotext="filemanager_file_search" onclick="gui.find().show('{{file.fileDb.fileName}}')">
+                <a class="icon icon-1x icon-search"></a>
             </span>
 
             {{#compare source '==' 'patch' }}
-                <span class="iconbutton info" data-tt="delete file" id="filedelete{{file.fileDb._id}}" data-infotext="file_delete">
-                    <a class="tt icon icon-1x icon-trash" ></a>
+                <span class="iconbutton info" data-infotext="filemanager_delete_file" id="filedelete{{file.fileDb._id}}" >
+                    <a class="info icon icon-1x icon-trash" ></a>
                 </span>
             {{/compare}}
                 
             <!-- &nbsp;&nbsp;<a class="tt icon icon-1x icon-editbox" data-tt="edit file" data-infotext="file_edit"></a> -->
             <br/><br/>
 
-            <b>{{file.fileDb.fileName}}</b>
+            <b style="word-break: break-all;">{{file.fileDb.fileName}}</b>
             
             {{#compare source '==' 'patch' }}
                 <br/><br/>
