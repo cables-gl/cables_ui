@@ -652,10 +652,9 @@ CABLES.UI.GUI = function() {
         if(this.fileManager)
         {
             this.fileManager.show();
-            gui.metaTabs.activateTabByName("Files");
+            gui.mainTabs.activateTabByName("Files");
 
             if(cb)cb();
-            return;
         }
         else
         {
@@ -665,11 +664,8 @@ CABLES.UI.GUI = function() {
 
     this.showFileSelect=function(inputId, filterType, opid)
     {
-        console.log("filter:",filterType);
-
         this.showFileManager(function()
         {
-            console.log("file manager show!!!");
             const portInputEle=document.querySelector(inputId);
             if(!portInputEle)
             {
@@ -677,7 +673,6 @@ CABLES.UI.GUI = function() {
                 return;
             }
             var fn=portInputEle.value;
-            console.log("filename",inputId,fn);
 
             this.fileManager.setFilePort(portInputEle,gui.scene().getOpById(opid));
             this.fileManager.selectFile(fn);

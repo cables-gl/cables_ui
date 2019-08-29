@@ -157,46 +157,47 @@ CABLES.UI.TabPanel.prototype.updateHtml=function()
 
 CABLES.UI.TabPanel.prototype.activateTabByName=function(name)
 {
-    for(var i=0;i<this._tabs.length;i++)
-        if(this._tabs[i].options.name==name)
+    for (var i=0;i<this._tabs.length;i++)
+    {
+        if (this._tabs[i].options.name == name)
         {
             this.activateTab(this._tabs[i].id);
         }
         else this._tabs[i].deactivate();
+    }
 
     this.updateHtml();
-}
-
-
+};
 
 CABLES.UI.TabPanel.prototype.activateTab=function(id)
 {
     for(var i=0;i<this._tabs.length;i++)
     {
-        if(this._tabs[i].id==id)
-        {
-            this.emitEvent("onTabActivated",this._tabs[i]);
 
+        if(this._tabs[i].id===id)
+        {
+            
+
+            this.emitEvent("onTabActivated",this._tabs[i]);
             this._tabs[i].activate();
             CABLES.UI.userSettings.set("tabsLastTitle_"+this._eleId,this._tabs[i].title);
         }
         else this._tabs[i].deactivate();
     }
     this.updateHtml();
-}
+};
 
 CABLES.UI.TabPanel.prototype.getTabByTitle=function(title)
 {
     for(var i=0;i<this._tabs.length;i++)
         if(this._tabs[i].title==title) return this._tabs[i];
+};
 
-}
 CABLES.UI.TabPanel.prototype.getTabById=function(id)
 {
     for(var i=0;i<this._tabs.length;i++)
         if(this._tabs[i].id==id) return this._tabs[i];
-
-}
+};
 
 CABLES.UI.TabPanel.prototype.closeTab=function(id)
 {
@@ -219,7 +220,7 @@ CABLES.UI.TabPanel.prototype.closeTab=function(id)
 
     if(idx>this._tabs.length-1)idx=this._tabs.length-1;
     if(this._tabs[idx])this.activateTab(this._tabs[idx].id);
-    
+
     this.updateHtml();
 }
 
@@ -296,14 +297,11 @@ CABLES.UI.TabPanel.prototype.addTab=function(tab,activate)
 CABLES.UI.TabPanel.prototype.addIframeTab=function(title,url,options)
 {
     var iframeTab=this.addTab(new CABLES.UI.Tab(title,options));
-    // iframeTab.initHtml(this._eleContentContainer);
     const id=CABLES.uuid();
 
     var html = '<div class="loading" id="loading'+id+'" style="position:absolute;left:45%;top:35%"></div><iframe id="iframe'+id+'"  style="border:none;width:100%;height:100%" src="'+url+'" onload=\"document.getElementById(\'loading'+id+'\').style.display=\'none\';"></iframe';
-    // CABLES.UI.MODAL.show(html);
     iframeTab.contentEle.innerHTML=html;
     iframeTab.contentEle.style.padding="0px";
-    // window.open('https://www.codexworld.com', '_blank');
 
     iframeTab.toolbarEle.innerHTML='<a href="'+url+'" target="_blank">open this in a new browser window</a>';
 

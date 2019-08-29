@@ -7,32 +7,32 @@ CABLES.UI.Find = function ()
     var findTimeoutId = 0;
     var canceledSearch = 0;
     var boundEscape = false;
-    this._lastClicked=-1;
-    this._lastSelected=-1;
-    this._maxIdx=-1;
+    this._lastClicked = -1;
+    this._lastSelected = -1;
+    this._maxIdx = -1;
 
-
-    document.getElementById("findinput").addEventListener("keydown",function(e)
-    {
-        if(e.keyCode==38)
+    document.getElementById("findinput").addEventListener(
+        "keydown",
+        function (e)
         {
-            var c=this._lastClicked-1;
-            if(c<0)c=0;
-            this.setClicked(c);
-            document.getElementById("findresult"+c).click();
-            document.getElementById("findinput").focus();
-        }
-        else if(e.keyCode==40)
-        {
-            var c=this._lastClicked+1;
-            if(c>this._maxIdx-1)c=this._maxIdx;
-            this.setClicked(c);
-            document.getElementById("findresult"+c).click();
-            document.getElementById("findinput").focus();
-        }
-
-    }.bind(this));
-
+            if (e.keyCode == 38)
+            {
+                var c = this._lastClicked - 1;
+                if (c < 0) c = 0;
+                this.setClicked(c);
+                document.getElementById("findresult" + c).click();
+                document.getElementById("findinput").focus();
+            }
+            else if (e.keyCode == 40)
+            {
+                var c = this._lastClicked + 1;
+                if (c > this._maxIdx - 1) c = this._maxIdx;
+                this.setClicked(c);
+                document.getElementById("findresult" + c).click();
+                document.getElementById("findinput").focus();
+            }
+        }.bind(this),
+    );
 
     this.isVisible = function ()
     {
@@ -77,18 +77,22 @@ CABLES.UI.Find = function ()
         }
     };
 
-    this._addResultOp=function(op, result, idx)
+    this._addResultOp = function (op, result, idx)
     {
         var html = "";
         var info = "";
-        this._maxIdx=idx;
+        this._maxIdx = idx;
 
         info += "* score : " + result.score + "\n";
         // info += "* id : " + op.id + "\n";
 
         var colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.op.objName);
         html
-            += "<div id=\"findresult"+idx+"\" class=\"info findresultop"+op.op.id+"\" data-info=\""
+            += "<div id=\"findresult"
+            + idx
+            + "\" class=\"info findresultop"
+            + op.op.id
+            + "\" data-info=\""
             + info
             + "\" onclick=\"gui.patch().setCurrentSubPatch('"
             + op.getSubPatch()
@@ -100,7 +104,9 @@ CABLES.UI.Find = function ()
             + op.op.uiAttribs.translate.y
             + ");gui.patch().setSelectedOpById('"
             + op.op.id
-            + "');$('#patch').focus();gui.find().setClicked("+idx+")\">";
+            + "');$('#patch').focus();gui.find().setClicked("
+            + idx
+            + ")\">";
 
         var colorHandle = "";
         if (op.op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
@@ -120,12 +126,12 @@ CABLES.UI.Find = function ()
         {
             $("#searchresult").append(html);
         }, 1);
-    }
+    };
 
     this.highlightWord = function (word, str)
     {
         var stringReg = new RegExp(word, "gi");
-        str+='';
+        str += "";
 
         var cut = false;
         while (str.indexOf(word) > 10)
@@ -143,7 +149,7 @@ CABLES.UI.Find = function ()
         }
         if (cut) str += "...";
 
-        str = str.replace(stringReg, '<span class="highlight">' + word + "</span>");
+        str = str.replace(stringReg, "<span class=\"highlight\">" + word + "</span>");
         return str;
     };
 
@@ -292,8 +298,8 @@ CABLES.UI.Find = function ()
                     {
                         if ((op.portsIn[j].get() + "").toLowerCase().indexOf(str) > -1)
                         {
-                            where = '<span style="color:var(--color_port_'+op.portsIn[j].getTypeString().toLowerCase()+');">▩</span> ';
-                            where += op.portsIn[j].name+": " + this.highlightWord(str, op.portsIn[j].get());
+                            where = "<span style=\"color:var(--color_port_" + op.portsIn[j].getTypeString().toLowerCase() + ");\">▩</span> ";
+                            where += op.portsIn[j].name + ": " + this.highlightWord(str, op.portsIn[j].get());
 
                             score += 2;
                         }
@@ -322,46 +328,43 @@ CABLES.UI.Find = function ()
             });
             for (var i = 0; i < results.length; i++)
             {
-                this._addResultOp(results[i].op, results[i],i);
+                this._addResultOp(results[i].op, results[i], i);
             }
         }
     };
 
     this.search = function (str)
     {
-        this._maxIdx=-1;
+        this._maxIdx = -1;
         this.setSelectedOp(null);
         this.setClicked(-1);
         this.doSearch(str);
     };
 
-
-    this.setClicked=function(num)
+    this.setClicked = function (num)
     {
-        var el=document.getElementById('findresult'+this._lastClicked);
-        if(el)
+        var el = document.getElementById("findresult" + this._lastClicked);
+        if (el)
         {
             el.classList.remove("lastClicked");
         }
 
-        var el=document.getElementById('findresult'+num);
+        var el = document.getElementById("findresult" + num);
 
-        if(el)
+        if (el)
         {
             el.classList.add("lastClicked");
         }
-        this._lastClicked=num;
+        this._lastClicked = num;
     };
 
-    this.setSelectedOp=function(opid)
+    this.setSelectedOp = function (opid)
     {
-        var els=document.getElementsByClassName("findresultop"+this._lastSelected);
-        if (els && els.length==1) els[0].classList.remove("selected");
+        var els = document.getElementsByClassName("findresultop" + this._lastSelected);
+        if (els && els.length == 1) els[0].classList.remove("selected");
 
-        els=document.getElementsByClassName("findresultop"+opid);
-        if (els && els.length==1) els[0].classList.add("selected");
-        this._lastSelected=opid;
+        els = document.getElementsByClassName("findresultop" + opid);
+        if (els && els.length == 1) els[0].classList.add("selected");
+        this._lastSelected = opid;
     };
-
-
 };

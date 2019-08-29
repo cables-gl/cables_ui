@@ -29,7 +29,6 @@ CABLES.UI.FileManager=function(cb)
         {
             CABLES.UI.userSettings.set("fileManagerOpened",false);
             gui.fileManager=null;
-            console.log("filemanager close!!");
         });
 };
 
@@ -301,7 +300,7 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
     {
         var allSize=0;
         for(var i=0;i<detailItems.length;i++) allSize+=detailItems[i].size;
-                
+
         if(allSize)allSize=Math.ceil(allSize/1024);
 
         html='<center><br/><br/>'+detailItems.length+' files selected<br/>';
