@@ -28,6 +28,12 @@ CABLES.UI.TexturePreviewer=function(tabs)
         gui.patch().focusOp(this._lastClicked.opid,true);
     }.bind(this));
 
+    CABLES.UI.userSettings.addEventListener("onChange",(key,v) =>
+    {
+        if(key=="texpreviewSize") this.setSize(v);
+        if(key=="bgpreview") this.enableBgPreview(v);
+
+    });
 
 };
 

@@ -89,14 +89,7 @@ CABLES.CMD.UI.showTimeline = function ()
 CABLES.CMD.UI.toggleBgTexturePreview = function ()
 {
     CABLES.UI.userSettings.set("bgpreview", !CABLES.UI.userSettings.get("bgpreview"));
-    if (CABLES.UI.userSettings.get("bgpreview"))
-    {
-        gui.texturePreview().enableBgPreview(true);
-    }
-    else
-    {
-        gui.texturePreview().enableBgPreview(false);
-    }
+
 };
 
 CABLES.CMD.UI.hideMinimap = function ()

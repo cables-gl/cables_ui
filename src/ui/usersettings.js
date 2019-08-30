@@ -49,10 +49,13 @@ CABLES.UI.UserSettings.prototype.getLS = function (key)
 
 CABLES.UI.UserSettings.prototype.set = function (key, value)
 {
+
     if (value === "true") value = true;
     else if (value === "false") value = false;
 
     if (CABLES.UTILS.isNumeric(value)) value = parseFloat(value);
+
+    var wasChanged=this._settings[key]!=value;
 
     this._settings[key] = value || false;
     // localStorage.setItem(CABLES.UI.LOCALSTORAGE_KEY, JSON.stringify(this._settings));
@@ -66,7 +69,8 @@ CABLES.UI.UserSettings.prototype.set = function (key, value)
         CABLESUILOADER.talkerAPI.send("saveUserSettings", { settings: this._settings });
         // }, 1000);
 
-        this.emitEvent("onChange", key, value);
+
+        if(wasChanged) this.emitEvent("onChange", key, value);
     }
 };
 

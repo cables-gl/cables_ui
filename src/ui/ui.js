@@ -1848,6 +1848,26 @@ function startUi(event)
                 incrementStartup();
                 gui.opSelect().search();
 
+
+                CABLES.UI.userSettings.addEventListener("onChange",function(key,v)
+                {
+                    if(key=='theme-bright')
+                    {
+                        gui.updateTheme();
+                    }
+
+                    if(key=='straightLines')
+                    {
+                        // gui.patch().setCurrentSubPatch(0);
+                        // gui.patch().setCurrentSubPatch(1);
+                        // gui.patch().setCurrentSubPatch(0);
+                        gui.patch().updateSubPatches();
+
+                    }
+                    
+
+                });
+
                 if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
 
                 CABLES.editorSession.open();
