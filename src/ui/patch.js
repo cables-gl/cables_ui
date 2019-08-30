@@ -3112,7 +3112,7 @@ CABLES.UI.Patch = function(_gui) {
             opname = "Ops.WebAudio.AudioPlayer";
             title = "Audio: " + title;
         } else if (filename.endsWith(".3d.json")) {
-            opname = "Ops.Json3d.Json3dMesh";
+            opname = "Ops.Json3d.Mesh3d";
             title = "Json: " + title;
         } else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) {
             opname = "Ops.Gl.Textures.VideoTexture";
