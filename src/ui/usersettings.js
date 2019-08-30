@@ -5,6 +5,8 @@ CABLES.UI.LOCALSTORAGE_KEY = "cables.usersettings";
 
 CABLES.UI.UserSettings = function ()
 {
+    CABLES.EventTarget.apply(this);
+
     this._wasLoaded = false;
     this._serverDelay = null;
     this._settings = {}; // JSON.parse(localStorage.getItem(CABLES.UI.LOCALSTORAGE_KEY))||{};
@@ -61,8 +63,10 @@ CABLES.UI.UserSettings.prototype.set = function (key, value)
         clearTimeout(this._serverDelay);
         // this._serverDelay = setTimeout(() =>
         // {
-            CABLESUILOADER.talkerAPI.send("saveUserSettings", { settings: this._settings });
+        CABLESUILOADER.talkerAPI.send("saveUserSettings", { settings: this._settings });
         // }, 1000);
+
+        this.emitEvent("onChange", key, value);
     }
 };
 

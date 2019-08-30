@@ -27,7 +27,6 @@ CABLES.CMD.RENDERER.screenshotUpload = function() {
             // console.log('filetype',file.type);
             // console.log('blobtype',blob.type);
 
-
             var fd = new FormData();
             // fd.append('fname', 'screenshot.png');
             fd.append(0, file);

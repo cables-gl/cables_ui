@@ -86,9 +86,15 @@
     padding-top:10px;
 }
 
+.switch-text
+{
+    padding-top:4px;
+}
+
 .switch-active
 {
     background-color:#888;
+    color:white;
 }
 
 .switch-left
@@ -100,6 +106,9 @@
 {
     border-top-right-radius:5px;
     border-bottom-right-radius:5px;
+}
+.switch-middle
+{
 }
 
 #item_details

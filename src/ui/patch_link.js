@@ -265,7 +265,7 @@ function UiLink(port1, port2)
         if ((Math.abs(fromY - toY) < 60 && Math.abs(fromX - toX) < 60) || fromX == toX) str = "M " + fromX + " " + fromY + " L " + toX + " " + toY;
         else if (CABLES.UI.userSettings.straightLines)
         {
-            const edge = 20;
+            const edge = 15;
             var edgeAY = fromY - edge;
             var edgeAX = fromX;
             // if(fromY < toY) edgeAY=fromY+edge;
@@ -278,6 +278,7 @@ function UiLink(port1, port2)
             if (port2.direction == CABLES.PORT_DIR_OUT) edgeBY = toY + edge;
 
             str = "M " + fromX + " " + fromY + " L " + edgeAX + " " + edgeAY + " L " + edgeBX + " " + edgeBY + " L " + toX + " " + toY;
+            // str = "M " + fromX + " " + fromY + " L " + cp1X + " " + cp1Y + " " + cp2X + " " + cp2Y + " " + toX + " " + toY;
         }
         else
         {

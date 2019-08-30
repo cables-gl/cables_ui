@@ -815,11 +815,19 @@ CABLES.UI.GUI = function() {
     {
         $('#glcanvas').attr('tabindex', '3');
 
-        $('.nav_cables').bind("click", function(event)
+        $('.nav_cablesweb').bind("click", function(event)
         {
             var win = window.open(CABLES.sandbox.getCablesUrl(),'_blank');
             win.focus();
         });
+
+        $('.nav_preferences').bind("click", function(event)
+        {
+            CABLES.CMD.UI.showPreferences();
+        });
+
+        
+
 
         $('#button_toggleTiming').bind("click", function(event) {
             self.toggleTiming();
@@ -827,6 +835,8 @@ CABLES.UI.GUI = function() {
         $('#button_cycleRenderSize').bind("click", function(event) {
             self.cycleRendererSize();
         });
+
+        
 
         $('.nav_viewProjectLink').bind("click", function(event) {
 
@@ -1767,6 +1777,10 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
 
 CABLES.UI.GUI.prototype.initCoreListeners=function()
 {
+
+    this._corePatch.addEventListener("exception", function(ex,op){
+        CABLES.UI.MODAL.showException(ex, op);
+    });
 
     this._corePatch.addEventListener("exceptionOp", function(e,objName){
         CABLES.UI.MODAL.showOpException(e, objName);
