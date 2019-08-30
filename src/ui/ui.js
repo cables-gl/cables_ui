@@ -9,7 +9,7 @@ CABLES.UI.GUI = function() {
     var showingEditor = false;
 
     var showMiniMap = false;
-    var _scene = CABLES.patch=new CABLES.Patch({canvas:{alpha:true,premultiplied:true,prefixAssetPath:CABLES.sandbox.getAssetPrefix()}});
+    var _scene = this._corePatch = CABLES.patch = new CABLES.Patch({editorMode:true,canvas:{alpha:true,premultiplied:true,prefixAssetPath:CABLES.sandbox.getAssetPrefix()}});
     _scene.gui = true;
     var _patch = null;
 
@@ -1364,32 +1364,32 @@ CABLES.UI.GUI = function() {
 
 
 
-    this.liveRecord = function() {
-        $('#glcanvas').attr('width', parseFloat($('#render_width').val()));
-        $('#glcanvas').attr('height', parseFloat($('#render_height').val()));
+    // this.liveRecord = function() {
+    //     $('#glcanvas').attr('width', parseFloat($('#render_width').val()));
+    //     $('#glcanvas').attr('height', parseFloat($('#render_height').val()));
 
-        if (!CABLES.UI.capturer) {
-            $('#liveRecordButton').html("Stop Live Recording");
-            CABLES.UI.capturer = new CCapture({
-                format: 'gif',
-                // format: 'webm',
-                // quality:77,
-                workersPath: '/ui/js/gifjs/',
-                framerate: parseFloat($('#render_fps').val()),
-                display: true,
-                verbose: true
-            });
+    //     if (!CABLES.UI.capturer) {
+    //         $('#liveRecordButton').html("Stop Live Recording");
+    //         CABLES.UI.capturer = new CCapture({
+    //             format: 'gif',
+    //             // format: 'webm',
+    //             // quality:77,
+    //             workersPath: '/ui/js/gifjs/',
+    //             framerate: parseFloat($('#render_fps').val()),
+    //             display: true,
+    //             verbose: true
+    //         });
 
-            CABLES.UI.capturer.start(gui.patch().scene.cgl.canvas);
-        } else {
-            $('#liveRecordButton').html("Start Live Recording");
-            CABLES.UI.capturer.stop();
-            CABLES.UI.capturer.save();
-            var oldCap = CABLES.UI.capturer;
-            CABLES.UI.capturer = null;
-        }
+    //         CABLES.UI.capturer.start(gui.patch().scene.cgl.canvas);
+    //     } else {
+    //         $('#liveRecordButton').html("Start Live Recording");
+    //         CABLES.UI.capturer.stop();
+    //         CABLES.UI.capturer.save();
+    //         var oldCap = CABLES.UI.capturer;
+    //         CABLES.UI.capturer = null;
+    //     }
 
-    };
+    // };
 
 
     // this.showProfiler = function() {
@@ -1765,14 +1765,32 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
 }
 
 
+CABLES.UI.GUI.prototype.initCoreListeners=function()
+{
 
+    this._corePatch.addEventListener("exceptionOp", function(e,objName){
+        CABLES.UI.MODAL.showOpException(e, objName);
+    });
 
+    this._corePatch.addEventListener("criticalError", function(title,msg){
+        CABLES.UI.MODAL.showError(title,msg);
+    });
 
+    this._corePatch.addEventListener("renderDelayStart", function(){
+        $("#delayed").show();
+    });
+
+    this._corePatch.addEventListener("renderDelayEnd", function(){
+        $("#delayed").hide();
+    });
+
+    this._corePatch.addEventListener("performance", function(perf){
+        $("#canvasInfoFPS").html("| fps: " + perf.fps + " | ms: " + perf.ms );
+    });
+}
 
 function startUi(event)
 {
-
-
     logStartup('Init UI');
 
     window.gui = new CABLES.UI.GUI();
@@ -1788,6 +1806,7 @@ function startUi(event)
 
     gui.init();
     gui.checkIdle();
+    gui.initCoreListeners();
 
     gui.bind(function()
     {
@@ -1800,6 +1819,7 @@ function startUi(event)
                 CABLES.UI.userSettings.init();
                 incrementStartup();
                 $('#username').html(gui.user.usernameLowercase);
+                $("#delayed").hide();
 
                 gui.metaCode().init();
                 gui.metaDoc.init();

@@ -1,1 +1,1917 @@
 {
+  "errors": [
+  ],
+  "warnings": [
+  ],
+  "version": "4.39.1",
+  "hash": "585436cc958c3306bd7a",
+  "time": 2225,
+  "builtAt": 1567155099161,
+  "publicPath": "",
+  "outputPath": "/Users/tom/dev/cables_dev/cables/build",
+  "assetsByChunkName": {
+    "main": [
+      "cables.min.js",
+      "cables.min.js.map"
+    ]
+  },
+  "assets": [
+    {
+      "name": "cables.min.js",
+      "size": 182730,
+      "chunks": [
+        0
+      ],
+      "chunkNames": [
+        "main"
+      ],
+      "emitted": true
+    },
+    {
+      "name": "cables.min.js.map",
+      "size": 602360,
+      "chunks": [
+        0
+      ],
+      "chunkNames": [
+        "main"
+      ],
+      "emitted": true
+    }
+  ],
+  "filteredAssets": 0,
+  "entrypoints": {
+    "main": {
+      "chunks": [
+        0
+      ],
+      "assets": [
+        "cables.min.js",
+        "cables.min.js.map"
+      ],
+      "children": {
+      },
+      "childAssets": {
+      }
+    }
+  },
+  "namedChunkGroups": {
+    "main": {
+      "chunks": [
+        0
+      ],
+      "assets": [
+        "cables.min.js",
+        "cables.min.js.map"
+      ],
+      "children": {
+      },
+      "childAssets": {
+      }
+    }
+  },
+  "chunks": [
+    {
+      "id": 0,
+      "rendered": true,
+      "initial": true,
+      "entry": true,
+      "size": 362604,
+      "names": [
+        "main"
+      ],
+      "files": [
+        "cables.min.js",
+        "cables.min.js.map"
+      ],
+      "hash": "53b1990a89457eabf212",
+      "siblings": [
+      ],
+      "parents": [
+      ],
+      "children": [
+      ],
+      "childrenByOrder": {
+      },
+      "modules": [
+        {
+          "id": 0,
+          "identifier": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+          "name": "multi ./src/core/index.js",
+          "index": 0,
+          "index2": 38,
+          "size": 28,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            0
+          ],
+          "issuer": null,
+          "issuerId": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [
+          ],
+          "reasons": [
+            {
+              "moduleId": null,
+              "moduleIdentifier": null,
+              "module": null,
+              "moduleName": null,
+              "type": "multi entry"
+            }
+          ],
+          "usedExports": true,
+          "providedExports": null,
+          "optimizationBailout": [
+            "ModuleConcatenation bailout: Module is not an ECMAScript module"
+          ],
+          "depth": 0
+        },
+        {
+          "id": 1,
+          "identifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js cda0718b149cfc72a3a728e3255f7277",
+          "name": "./src/core/index.js + 37 modules",
+          "index": 1,
+          "index2": 37,
+          "size": 362576,
+          "cacheable": true,
+          "built": true,
+          "optional": false,
+          "prefetched": false,
+          "chunks": [
+            0
+          ],
+          "issuer": null,
+          "issuerId": null,
+          "issuerName": null,
+          "issuerPath": null,
+          "failed": false,
+          "errors": 0,
+          "warnings": 0,
+          "assets": [
+          ],
+          "reasons": [
+            {
+              "moduleId": 0,
+              "moduleIdentifier": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+              "module": "multi ./src/core/index.js",
+              "moduleName": "multi ./src/core/index.js",
+              "type": "single entry",
+              "userRequest": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+              "loc": "main[0]"
+            }
+          ],
+          "usedExports": true,
+          "providedExports": [
+            "default"
+          ],
+          "optimizationBailout": [
+          ],
+          "depth": 1,
+          "modules": [
+            {
+              "id": null,
+              "identifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+              "name": "./src/core/index.js",
+              "index": 1,
+              "index2": 37,
+              "size": 1334,
+              "cacheable": true,
+              "built": true,
+              "optional": false,
+              "prefetched": false,
+              "chunks": [
+              ],
+              "issuer": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+              "issuerId": 0,
+              "issuerName": "multi ./src/core/index.js",
+              "issuerPath": [
+                {
+                  "id": 0,
+                  "identifier": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "multi ./src/core/index.js"
+                }
+              ],
+              "failed": false,
+              "errors": 0,
+              "warnings": 0,
+              "assets": [
+              ],
+              "reasons": [
+                {
+                  "moduleId": 0,
+                  "moduleIdentifier": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "multi ./src/core/index.js",
+                  "moduleName": "multi ./src/core/index.js",
+                  "type": "single entry",
+                  "userRequest": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "loc": "main[0]"
+                }
+              ],
+              "usedExports": true,
+              "providedExports": [
+                "default"
+              ],
+              "optimizationBailout": [
+                "ModuleConcatenation bailout: Module is referenced from these modules with unsupported syntax: multi ./src/core/index.js (referenced with single entry)"
+              ],
+              "depth": 1,
+              "source": "import * as base64 from \"./base64\";\nimport { EventTarget } from \"./eventtarget\";\nimport * as utils from \"./utils\";\nimport * as anim from \"./anim\";\nimport { Link } from \"./core_link\";\nimport { Port } from \"./core_port\";\nimport { Op } from \"./core_op\";\nimport { EMBED } from \"./embedding\";\nimport { Profiler } from \"./core_profiler\";\nimport Patch from \"./core_patch\";\nimport { Requirements } from \"./requirements\";\nimport { GLGUI } from \"./glpatch\";\nimport { Instancing } from \"./instancing\";\nimport { LoadingStatus } from \"./loadingstatus\";\nimport { WEBAUDIO } from \"./webaudio\";\nimport { Variable } from \"./sessionvar\";\nimport { Timer, now, internalNow } from \"./timer\";\nimport * as PatchConnections from \"./patchConnection\";\n// import { Gizmo, htmlLine } from \"./mod_gizmo\";\nimport { CONSTANTS } from \"./constants\";\n\nconst CABLES = Object.assign(\n    {\n        EventTarget,\n        EMBED,\n        Link,\n        Port,\n        Op,\n        Profiler,\n        Requirements,\n        Patch,\n        GLGUI,\n        // Gizmo,\n        // htmlLine,\n        Instancing,\n        Timer,\n        WEBAUDIO,\n        Variable,\n        LoadingStatus,\n        now,\n        internalNow,\n    },\n    base64,\n    utils,\n    anim,\n    PatchConnections,\n    CONSTANTS.PORT,\n    CONSTANTS.PACO,\n    CONSTANTS.ANIM,\n    CONSTANTS.OP,\n);\n\nexport default CABLES;\n"
+            },
+            {
+              "id": null,
+              "identifier": "/Users/tom/dev/cables_dev/cables/src/core/base64.js",
+              "name": "./src/core/base64.js",
+              "index": 2,
+              "index2": 0,
+              "size": 1980,
+              "cacheable": true,
+              "built": true,
+              "optional": false,
+              "prefetched": false,
+              "chunks": [
+              ],
+              "issuer": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+              "issuerId": null,
+              "issuerName": "./src/core/index.js",
+              "issuerPath": [
+                {
+                  "id": 0,
+                  "identifier": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "multi ./src/core/index.js"
+                },
+                {
+                  "id": null,
+                  "identifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "./src/core/index.js"
+                }
+              ],
+              "failed": false,
+              "errors": 0,
+              "warnings": 0,
+              "assets": [
+              ],
+              "reasons": [
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./base64",
+                  "loc": "1:0-35"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "../base64",
+                  "loc": "3:0-45"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./base64",
+                  "loc": "43:4-10"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../base64",
+                  "loc": "773:64-80"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../base64",
+                  "loc": "774:68-84"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../base64",
+                  "loc": "775:64-80"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../base64",
+                  "loc": "776:68-84"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../base64",
+                  "loc": "777:71-87"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../base64",
+                  "loc": "781:47-63"
+                }
+              ],
+              "usedExports": true,
+              "providedExports": [
+                "base64Chars",
+                "base64lookup",
+                "b64encTypesArray",
+                "b64decTypedArray"
+              ],
+              "optimizationBailout": [
+              ],
+              "depth": 2,
+              "source": "export const base64Chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/\";\n\n// Use a lookup table to find the index.\nconst _base64lookup = new Uint8Array(256);\nfor (var i = 0; i < base64Chars.length; i++) _base64lookup[base64Chars.charCodeAt(i)] = i;\n\nexport const base64lookup = _base64lookup;\n\nexport const b64encTypesArray = function (arraybuffer)\n{\n    if (arraybuffer.buffer) arraybuffer = arraybuffer.buffer;\n    var bytes = new Uint8Array(arraybuffer),\n        i,\n        len = bytes.length,\n        base64 = \"\";\n\n    for (i = 0; i < len; i += 3)\n    {\n        base64 += base64Chars[bytes[i] >> 2];\n        base64 += base64Chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];\n        base64 += base64Chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];\n        base64 += base64Chars[bytes[i + 2] & 63];\n    }\n\n    if (len % 3 === 2) base64 = base64.substring(0, base64.length - 1) + \"=\";\n    else if (len % 3 === 1) base64 = base64.substring(0, base64.length - 2) + \"==\";\n\n    return base64;\n};\n\nexport const b64decTypedArray = function (base64)\n{\n    var bufferLength = base64.length * 0.75,\n        len = base64.length,\n        i,\n        p = 0,\n        encoded1,\n        encoded2,\n        encoded3,\n        encoded4;\n\n    if (base64[base64.length - 1] === \"=\")\n    {\n        bufferLength--;\n        if (base64[base64.length - 2] === \"=\") bufferLength--;\n    }\n\n    var arraybuffer = new ArrayBuffer(bufferLength),\n        bytes = new Uint8Array(arraybuffer);\n\n    for (i = 0; i < len; i += 4)\n    {\n        encoded1 = base64lookup[base64.charCodeAt(i)];\n        encoded2 = base64lookup[base64.charCodeAt(i + 1)];\n        encoded3 = base64lookup[base64.charCodeAt(i + 2)];\n        encoded4 = base64lookup[base64.charCodeAt(i + 3)];\n\n        bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);\n        bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);\n        bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);\n    }\n\n    return arraybuffer;\n};\n"
+            },
+            {
+              "id": null,
+              "identifier": "/Users/tom/dev/cables_dev/cables/src/core/eventtarget.js",
+              "name": "./src/core/eventtarget.js",
+              "index": 3,
+              "index2": 1,
+              "size": 1594,
+              "cacheable": true,
+              "built": true,
+              "optional": false,
+              "prefetched": false,
+              "chunks": [
+              ],
+              "issuer": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+              "issuerId": null,
+              "issuerName": "./src/core/index.js",
+              "issuerPath": [
+                {
+                  "id": 0,
+                  "identifier": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "multi ./src/core/index.js"
+                },
+                {
+                  "id": null,
+                  "identifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "./src/core/index.js"
+                }
+              ],
+              "failed": false,
+              "errors": 0,
+              "warnings": 0,
+              "assets": [
+              ],
+              "reasons": [
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./eventtarget",
+                  "loc": "1:0-44"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_patch.js",
+                  "module": "./src/core/core_patch.js",
+                  "moduleName": "./src/core/core_patch.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./eventtarget",
+                  "loc": "1:0-44"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./eventtarget",
+                  "loc": "2:0-44"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./eventtarget",
+                  "loc": "18:4-15"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./eventtarget",
+                  "loc": "24:8-19"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_patch.js",
+                  "module": "./src/core/core_patch.js",
+                  "moduleName": "./src/core/core_patch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./eventtarget",
+                  "loc": "38:4-15"
+                }
+              ],
+              "usedExports": [
+                "EventTarget"
+              ],
+              "providedExports": [
+                "EventTarget"
+              ],
+              "optimizationBailout": [
+              ],
+              "depth": 2,
+              "source": "const EventTarget = function ()\n{\n    this._eventCallbacks = {};\n\n    this.addEventListener = function (which, cb)\n    {\n        if (!this._eventCallbacks[which]) this._eventCallbacks[which] = [cb];\n        else this._eventCallbacks[which].push(cb);\n    };\n\n    this.hasEventListener = function (which, cb)\n    {\n        if (which && cb)\n        {\n            if (this._eventCallbacks[which])\n            {\n                var idx = this._eventCallbacks[which].indexOf(cb);\n                if (idx == -1) return false;\n                return true;\n            }\n        }\n        else\n        {\n            console.log(\"hasListener: missing parameters\");\n        }\n    };\n\n    this.removeEventListener = function (which, cb)\n    {\n        if (this._eventCallbacks[which])\n        {\n            var idx = this._eventCallbacks[which].indexOf(cb);\n            if (idx == -1) console.log(\"eventlistener \" + which + \" not found...\");\n            else this._eventCallbacks[which].splice(idx);\n        }\n    };\n\n    this.emitEvent = function (which, param1, param2, param3, param4, param5, param6)\n    {\n        if (this._eventCallbacks[which])\n        {\n            for (var i = 0; i < this._eventCallbacks[which].length; i++)\n            {\n                if (this._eventCallbacks[which][i])\n                {\n                    this._eventCallbacks[which][i](param1, param2, param3, param4, param5, param6);\n                }\n            }\n        }\n        else\n        {\n            // console.log(\"has no event callback\",which,this._eventCallbacks);\n        }\n    };\n};\nexport { EventTarget };\n"
+            },
+            {
+              "id": null,
+              "identifier": "/Users/tom/dev/cables_dev/cables/src/core/utils.js",
+              "name": "./src/core/utils.js",
+              "index": 4,
+              "index2": 2,
+              "size": 9381,
+              "cacheable": true,
+              "built": true,
+              "optional": false,
+              "prefetched": false,
+              "chunks": [
+              ],
+              "issuer": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+              "issuerId": null,
+              "issuerName": "./src/core/index.js",
+              "issuerPath": [
+                {
+                  "id": 0,
+                  "identifier": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "multi ./src/core/index.js"
+                },
+                {
+                  "id": null,
+                  "identifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "./src/core/index.js"
+                }
+              ],
+              "failed": false,
+              "errors": 0,
+              "warnings": 0,
+              "assets": [
+              ],
+              "reasons": [
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/loadingstatus.js",
+                  "module": "./src/core/loadingstatus.js",
+                  "moduleName": "./src/core/loadingstatus.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./utils",
+                  "loc": "1:0-39"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./utils",
+                  "loc": "1:0-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./utils",
+                  "loc": "2:0-39"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_texture.js",
+                  "module": "./src/core/cgl/cgl_texture.js",
+                  "moduleName": "./src/core/cgl/cgl_texture.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "../utils",
+                  "loc": "2:0-32"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "../utils",
+                  "loc": "2:0-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/embedding.js",
+                  "module": "./src/core/embedding.js",
+                  "moduleName": "./src/core/embedding.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./utils",
+                  "loc": "2:0-39"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_patch.js",
+                  "module": "./src/core/core_patch.js",
+                  "moduleName": "./src/core/core_patch.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./utils",
+                  "loc": "2:0-47"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./utils",
+                  "loc": "3:0-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_shader.js",
+                  "module": "./src/core/cgl/cgl_shader.js",
+                  "moduleName": "./src/core/cgl/cgl_shader.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "../utils",
+                  "loc": "3:0-50"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/embedding.js",
+                  "module": "./src/core/embedding.js",
+                  "moduleName": "./src/core/embedding.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "16:13-25"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "29:14-26"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_texture.js",
+                  "module": "./src/core/cgl/cgl_texture.js",
+                  "moduleName": "./src/core/cgl/cgl_texture.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../utils",
+                  "loc": "35:14-18"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "44:4-9"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_shader.js",
+                  "module": "./src/core/cgl/cgl_shader.js",
+                  "moduleName": "./src/core/cgl/cgl_shader.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../utils",
+                  "loc": "50:12-20"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "67:30-34"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/loadingstatus.js",
+                  "module": "./src/core/loadingstatus.js",
+                  "moduleName": "./src/core/loadingstatus.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "103:13-25"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_patch.js",
+                  "module": "./src/core/core_patch.js",
+                  "moduleName": "./src/core/core_patch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "122:12-16"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../utils",
+                  "loc": "225:20-25"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../utils",
+                  "loc": "226:21-26"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../utils",
+                  "loc": "227:25-30"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../utils",
+                  "loc": "228:20-25"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_geom.js",
+                  "module": "./src/core/cgl/cgl_geom.js",
+                  "moduleName": "./src/core/cgl/cgl_geom.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../utils",
+                  "loc": "229:22-27"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/cgl/cgl_shader.js",
+                  "module": "./src/core/cgl/cgl_shader.js",
+                  "moduleName": "./src/core/cgl/cgl_shader.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "../utils",
+                  "loc": "624:25-37"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "662:26-31"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_patch.js",
+                  "module": "./src/core/core_patch.js",
+                  "moduleName": "./src/core/core_patch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "690:4-12"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_patch.js",
+                  "module": "./src/core/core_patch.js",
+                  "moduleName": "./src/core/core_patch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./utils",
+                  "loc": "855:32-36"
+                }
+              ],
+              "usedExports": true,
+              "providedExports": [
+                "shuffleArray",
+                "uuid",
+                "generateUUID",
+                "simpleId",
+                "smoothStep",
+                "smootherStep",
+                "map",
+                "cacheBust",
+                "jsonp",
+                "ajaxSync",
+                "ajax",
+                "request",
+                "UTILS"
+              ],
+              "optimizationBailout": [
+              ],
+              "depth": 2,
+              "source": "/**\n * @external CABLES\n * @namespace Utils\n */\n\nconst UTILS = {};\n/**\n * Merge two Float32Arrays.\n * @function float32Concat\n * @memberof Utils\n * @param {Float32Array} first Left-hand side array\n * @param {Float32Array} second Right-hand side array\n * @return {Float32Array}\n * @static\n */\nUTILS.float32Concat = function (first, second)\n{\n    if (!(first instanceof Float32Array)) first = new Float32Array(first);\n    if (!(second instanceof Float32Array)) second = new Float32Array(second);\n\n    var firstLength = first.length,\n        result = new Float32Array(firstLength + second.length);\n\n    result.set(first);\n    result.set(second, firstLength);\n\n    return result;\n};\n\n/**\n * randomize order of an array\n * @function shuffleArray\n * @memberof Utils\n * @param {Array|Float32Array} array {Array} original\n * @return {Array|Float32Array} shuffled array\n * @static\n */\nexport const shuffleArray = function (array)\n{\n    for (var i = array.length - 1; i > 0; i--)\n    {\n        var j = Math.floor(Math.seededRandom() * (i + 1));\n        var temp = array[i];\n        array[i] = array[j];\n        array[j] = temp;\n    }\n    return array;\n};\n\nconst _uuid = function ()\n{\n    var d = new Date().getTime();\n    var uuid = \"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx\".replace(/[xy]/g, (c) =>\n    {\n        var r = (d + Math.random() * 16) % 16 | 0;\n        d = Math.floor(d / 16);\n        return (c == \"x\" ? r : (r & 0x3) | 0x8).toString(16);\n    });\n    return uuid;\n};\n/**\n * generate a UUID\n * @function uuid\n * @memberof Utils\n * @return {String} generated UUID\n * @static\n */\nexport const uuid = _uuid;\nexport const generateUUID = _uuid;\n\n/**\n * generate a simple ID\n * @function simpleId\n * @memberof Utils\n * @return {Number} new id\n * @static\n */\nvar simpleIdCounter = 0;\nexport const simpleId = function ()\n{\n    simpleIdCounter++;\n    return simpleIdCounter;\n};\n\n/**\n * smoothStep a value\n * @function smoothStep\n * @memberof Utils\n * @function\n * @param {Number} value value to be smoothed [0-1]\n * @return {Number} smoothed value\n * @static\n */\nexport const smoothStep = function (perc)\n{\n    var x = Math.max(0, Math.min(1, (perc - 0) / (1 - 0)));\n    perc = x * x * (3 - 2 * x); // smoothstep\n    return perc;\n};\n\n/**\n * smootherstep a value\n * @function smootherStep\n * @memberof Utils\n * @param value {Number} value to be smoothed [0-1]\n * @return {Number} smoothed value\n * @static\n */\nexport const smootherStep = function (perc)\n{\n    var x = Math.max(0, Math.min(1, (perc - 0) / (1 - 0)));\n    perc = x * x * x * (x * (x * 6 - 15) + 10); // smootherstep\n    return perc;\n};\n\n/**\n * map a value in a range to a value in another range\n * @function map\n * @memberof Utils\n * @param {Number} value value to be mapped\n * @param {Number} oldMin old range minimum value\n * @param {Number} oldMax old range maximum value\n * @param {Number} newMin new range minimum value\n * @param {Number} newMax new range maximum value\n * @return {Number} mapped value\n * @static\n */\nexport const map = function (x, _oldMin, _oldMax, _newMin, _newMax, _easing)\n{\n    if (x >= _oldMax) return _newMax;\n    if (x <= _oldMin) return _newMin;\n\n    var reverseInput = false;\n    var oldMin = Math.min(_oldMin, _oldMax);\n    var oldMax = Math.max(_oldMin, _oldMax);\n    if (oldMin != _oldMin) reverseInput = true;\n\n    var reverseOutput = false;\n    var newMin = Math.min(_newMin, _newMax);\n    var newMax = Math.max(_newMin, _newMax);\n    if (newMin != _newMin) reverseOutput = true;\n\n    var portion = 0;\n    var r = 0;\n\n    if (reverseInput) portion = ((oldMax - x) * (newMax - newMin)) / (oldMax - oldMin);\n    else portion = ((x - oldMin) * (newMax - newMin)) / (oldMax - oldMin);\n\n    if (reverseOutput) r = newMax - portion;\n    else r = portion + newMin;\n\n    if (!_easing) return r;\n    if (_easing == 1)\n    {\n        // smoothstep\n        x = Math.max(0, Math.min(1, (r - _newMin) / (_newMax - _newMin)));\n        return _newMin + x * x * (3 - 2 * x) * (_newMax - _newMin);\n    }\n    if (_easing == 2)\n    {\n        // smootherstep\n        x = Math.max(0, Math.min(1, (r - _newMin) / (_newMax - _newMin)));\n        return _newMin + x * x * x * (x * (x * 6 - 15) + 10) * (_newMax - _newMin);\n    }\n\n    return r;\n};\n\n/**\n * @namespace Math\n */\n/**\n * set random seed for seededRandom()\n * @memberof Math\n * @type Number\n * @static\n */\nMath.randomSeed = 1;\n\n/**\n * generate a seeded random number\n * @function seededRandom\n * @memberof Math\n * @param {Number} max minimum possible random number\n * @param {Number} min maximum possible random number\n * @return {Number} random value\n * @static\n */\nMath.seededRandom = function (max, min)\n{\n    if (Math.randomSeed === 0) Math.randomSeed = Math.random() * 999;\n    max = max || 1;\n    min = min || 0;\n\n    Math.randomSeed = (Math.randomSeed * 9301 + 49297) % 233280;\n    var rnd = Math.randomSeed / 233280.0;\n\n    return min + rnd * (max - min);\n};\n\n// ----------------------------------------------------------------\n\nUTILS.arrayWriteToEnd = function (arr, v)\n{\n    for (var i = 1; i < arr.length; i++) arr[i - 1] = arr[i];\n    arr[arr.length - 1] = v;\n};\n\n// ----------------------------------------------------------------\n\n/**\n * returns true if parameter is a number\n * @function isNumeric\n * @memberof Utils\n * @param {Any} value The value to check.\n * @return {Boolean}\n * @static\n */\nUTILS.isNumeric = function (n)\n{\n    return !isNaN(parseFloat(n)) && isFinite(n);\n};\n\n/**\n * returns true if parameter is array\n * @function isArray\n * @param {Any} value Value to check\n * @memberof Utils\n * @return {Boolean}\n * @static\n */\nUTILS.isArray = function (v)\n{\n    return Object.prototype.toString.call(v) === \"[object Array]\";\n};\n\n/**\n * @namespace String\n */\n\n/**\n * append a linebreak to a string\n * @function endl\n * @memberof String\n * @return {String} string with newline break appended ('\\n')\n */\nString.prototype.endl = function ()\n{\n    return this + \"\\n\";\n};\n\n/**\n * return true if string starts with prefix\n * @function startsWith\n * @memberof String\n * @param {String} prefix The prefix to check.\n * @return {Boolean}\n */\nString.prototype.startsWith = function (prefix)\n{\n    return this.indexOf(prefix) === 0;\n};\n\n/**\n * return true if string ends with suffix\n * @function endsWith\n * @memberof String\n * @param {String} suffix\n * @return {Boolean}\n */\nString.prototype.endsWith = function (suffix)\n{\n    return this.match(suffix + \"$\") == suffix;\n};\n\n// ----------------------------------------------------------------\n\n/**\n * append a unique/random parameter to a url, so the browser is forced to reload the file, even if its cached\n * @function cacheBust\n * @static\n * @memberof Utils\n * @param {String} url The url to append the cachebuster parameter to.\n * @return {String} url with cachebuster parameter\n */\nexport const cacheBust = function (url)\n{\n    if (url.indexOf(\"?\") > -1) url += \"&\";\n    else url += \"?\";\n    return url + \"cb=\" + CABLES.uuid();\n};\n\nvar jsonpCounter = null;\nexport const jsonp = function (url, cb)\n{\n    jsonpCounter = jsonpCounter || 0;\n    jsonpCounter++;\n    var jsonPID = jsonpCounter;\n\n    console.log(\"making jsonp request...\");\n\n    CABLES[\"jsonpFunc\" + jsonPID] = function (data)\n    {\n        console.log(data);\n        cb(false, data);\n    };\n\n    var paramChar = \"?\";\n    if (url.indexOf(paramChar) > -1) paramChar = \"&\";\n\n    var s = document.createElement(\"script\");\n    s.setAttribute(\"src\", url + paramChar + \"callback=CABLES.jsonpFunc\" + jsonPID);\n    // s.onload=function()\n    // {\n    // };\n    document.body.appendChild(s);\n};\n\nexport const ajaxSync = function (url, cb, method, post, contenttype)\n{\n    request({\n        url,\n        cb,\n        method,\n        data: post,\n        contenttype,\n        sync: true,\n    });\n};\n\nexport const ajax = function (url, cb, method, post, contenttype, jsonp)\n{\n    request({\n        url,\n        cb,\n        method,\n        \"data:\": post,\n        contenttype,\n        sync: false,\n        jsonp,\n    });\n};\n\nexport const request = function (options)\n{\n    if (!options.hasOwnProperty(\"asynch\")) options.asynch = true;\n\n    var xhr;\n    try\n    {\n        xhr = new XMLHttpRequest();\n    }\n    catch (e) {}\n\n    xhr.onreadystatechange = function ()\n    {\n        if (xhr.readyState != 4) return;\n\n        if (options.cb)\n        {\n            if (xhr.status == 200 || xhr.status == 0) options.cb(false, xhr.responseText, xhr);\n            else options.cb(true, xhr.responseText, xhr);\n        }\n    };\n\n    xhr.addEventListener(\"progress\", (ev) =>\n    {\n        // console.log('progress',ev.loaded/1024+' kb');\n        // if (ev.lengthComputable)\n        // {\n        //     var percentComplete = ev.loaded / ev.total;\n        //     console.log(url,percentComplete);\n        // }\n    });\n\n    xhr.open(options.method ? options.method.toUpperCase() : \"GET\", options.url, !options.sync);\n\n    if (!options.post && !options.data)\n    {\n        xhr.send();\n    }\n    else\n    {\n        xhr.setRequestHeader(\n            \"Content-type\",\n            options.contenttype ? options.contenttype : \"application/x-www-form-urlencoded\",\n        );\n        xhr.send(options.data || options.post);\n    }\n};\n\n// ----------------------------------------------------------------\n\nwindow.performance = window.performance || {\n    offset: Date.now(),\n    now: function now()\n    {\n        return Date.now() - this.offset;\n    },\n};\n\nexport { UTILS };\n"
+            },
+            {
+              "id": null,
+              "identifier": "/Users/tom/dev/cables_dev/cables/src/core/constants.js",
+              "name": "./src/core/constants.js",
+              "index": 7,
+              "index2": 3,
+              "size": 2162,
+              "cacheable": true,
+              "built": true,
+              "optional": false,
+              "prefetched": false,
+              "chunks": [
+              ],
+              "issuer": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+              "issuerId": null,
+              "issuerName": "./src/core/index.js",
+              "issuerPath": [
+                {
+                  "id": 0,
+                  "identifier": "multi /Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "multi ./src/core/index.js"
+                },
+                {
+                  "id": null,
+                  "identifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "name": "./src/core/index.js"
+                }
+              ],
+              "failed": false,
+              "errors": 0,
+              "warnings": 0,
+              "assets": [
+              ],
+              "reasons": [
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "1:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "1:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/webaudio.js",
+                  "module": "./src/core/webaudio.js",
+                  "moduleName": "./src/core/webaudio.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "1:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "2:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "4:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "4:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/glpatch.js",
+                  "module": "./src/core/glpatch.js",
+                  "moduleName": "./src/core/glpatch.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "8:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_patch.js",
+                  "module": "./src/core/core_patch.js",
+                  "moduleName": "./src/core/core_patch.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "10:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony side effect evaluation",
+                  "userRequest": "./constants",
+                  "loc": "20:0-40"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "26:19-28"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "28:21-30"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "42:24-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "43:22-31"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "47:4-13"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "48:4-13"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "49:4-13"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "49:27-36"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/index.js",
+                  "module": "./src/core/index.js",
+                  "moduleName": "./src/core/index.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "50:4-13"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "50:32-41"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "55:27-36"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "58:38-47"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "60:27-36"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "60:44-53"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "61:91-100"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "65:27-36"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "70:27-36"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "75:27-36"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "83:27-36"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "88:43-52"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/patchConnection.js",
+                  "module": "./src/core/patchConnection.js",
+                  "moduleName": "./src/core/patchConnection.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "89:27-36"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "118:24-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "151:22-31"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "168:28-37"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "170:40-49"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "172:19-28"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "172:67-76"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "175:41-50"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "180:24-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "181:24-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "188:22-31"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "190:66-75"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "190:116-125"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "205:24-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "206:24-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "208:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "214:42-51"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "214:90-99"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "215:19-28"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_link.js",
+                  "module": "./src/core/core_link.js",
+                  "moduleName": "./src/core/core_link.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "215:67-76"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "218:46-55"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "224:34-43"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "224:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/webaudio.js",
+                  "module": "./src/core/webaudio.js",
+                  "moduleName": "./src/core/webaudio.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "243:9-18"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/webaudio.js",
+                  "module": "./src/core/webaudio.js",
+                  "moduleName": "./src/core/webaudio.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "243:42-51"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "243:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/glpatch.js",
+                  "module": "./src/core/glpatch.js",
+                  "moduleName": "./src/core/glpatch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "245:17-26"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/glpatch.js",
+                  "module": "./src/core/glpatch.js",
+                  "moduleName": "./src/core/glpatch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "246:26-35"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/glpatch.js",
+                  "module": "./src/core/glpatch.js",
+                  "moduleName": "./src/core/glpatch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "247:26-35"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/glpatch.js",
+                  "module": "./src/core/glpatch.js",
+                  "moduleName": "./src/core/glpatch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "248:26-35"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/glpatch.js",
+                  "module": "./src/core/glpatch.js",
+                  "moduleName": "./src/core/glpatch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "249:26-35"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/glpatch.js",
+                  "module": "./src/core/glpatch.js",
+                  "moduleName": "./src/core/glpatch.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "250:26-35"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "265:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "279:21-30"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "280:21-30"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "281:21-30"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "282:21-30"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "283:21-30"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "284:21-30"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "285:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "295:25-34"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "298:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "303:26-35"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "312:24-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "313:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "314:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "315:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "316:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "317:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "317:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "318:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "319:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "320:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "321:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "322:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "323:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "324:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "325:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "326:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "327:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "328:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "329:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "330:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "331:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "332:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "333:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "334:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "335:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "336:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "337:29-38"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "339:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "344:23-32"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "352:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "358:26-35"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "360:25-34"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "375:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "396:24-33"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "397:33-42"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "424:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "443:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "454:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "473:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/anim.js",
+                  "module": "./src/core/anim.js",
+                  "moduleName": "./src/core/anim.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "475:25-34"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "488:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "495:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "510:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "527:52-61"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "547:53-62"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "564:53-62"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "580:53-62"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "596:53-62"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "602:53-62"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_op.js",
+                  "module": "./src/core/core_op.js",
+                  "moduleName": "./src/core/core_op.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "618:53-62"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "623:16-25"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "624:16-25"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "625:16-25"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier",
+                  "userRequest": "./constants",
+                  "loc": "626:16-25"
+                },
+                {
+                  "moduleId": null,
+                  "moduleIdentifier": "/Users/tom/dev/cables_dev/cables/src/core/core_port.js",
+                  "module": "./src/core/core_port.js",
+                  "moduleName": "./src/core/core_port.js",
+                  "type": "harmony import specifier"
