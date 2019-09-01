@@ -36,23 +36,18 @@ CABLES.UI.Preferences.prototype.setSwitchValue = function (name, value)
 CABLES.UI.Preferences.prototype.updateValues = function ()
 {
     this.setSwitchValue("snapToGrid", CABLES.UI.userSettings.get("snapToGrid"));
-
     this.setSwitchValue("theme-bright", CABLES.UI.userSettings.get("theme-bright"));
-
     this.setSwitchValue("bgpreview", CABLES.UI.userSettings.get("bgpreview"));
-
     this.setSwitchValue("texpreviewSize", CABLES.UI.userSettings.get("texpreviewSize"));
-
     this.setSwitchValue("straightLines", CABLES.UI.userSettings.get("straightLines"));
-
     this.setSwitchValue("touchpadmode", CABLES.UI.userSettings.get("touchpadmode"));
-
     this.setSwitchValue("presentationmode", CABLES.UI.userSettings.get("presentationmode"));
-
     this.setSwitchValue("nobrowserWarning", CABLES.UI.userSettings.get("nobrowserWarning"));
-        
+    this.setSwitchValue("introCompleted", CABLES.UI.userSettings.get("introCompleted"));
+    this.setSwitchValue("showTipps", CABLES.UI.userSettings.get("showTipps"));
+    this.setSwitchValue("showMinimap", CABLES.UI.userSettings.get("showMinimap"));
+    this.setSwitchValue("helpermode", CABLES.UI.userSettings.get("helpermode"));
     
-
 };
 
 CABLES.UI.Preferences.prototype.show = function ()

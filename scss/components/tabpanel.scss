@@ -96,7 +96,6 @@
             {
                 pointer-events: none !important;
             }
-
         }
 
         .unsaved
@@ -109,6 +108,7 @@
 .contentcontainer
 {
     overflow-y:scroll;
+    height: 100%;
 
     .tabcontent
     {

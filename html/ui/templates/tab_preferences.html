@@ -1,104 +1,145 @@
 
 <script id="tab_preferences" type="text/x-handlebars-template">
 
-<h1>Preferences</h1>
 
-<style>
-    h3
-    {
-        margin-bottom: 3px;
-    }
-</style>
+<div style="overflow: scroll-y;">
+    <h1>Preferences</h1>
+
+    <style>
+        h3
+        {
+            margin-bottom: 3px;
+        }
+    </style>
 
 
 
-<h2>Patch</h2>
+    <h2>Patch</h2>
 
-<div style="margin-left:15px;padding-bottom:10px;">
-    <h3>Snap To Grid</h3>
-    Ops snap to an invisible grid, makes patches look much cleaner
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Snap To Grid</h3>
+        Ops snap to an invisible grid, makes patches look much cleaner
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left"  data-setting="snapToGrid" data-value="true">On</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="snapToGrid" data-value="false">Off</span>
+        <br/><br/>
+    </div>
+
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Theme</h3>
+        Select a theme, bright theme works better when you work in bright environments.
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left"  data-setting="theme-bright" data-value="false">Dark</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="theme-bright" data-value="true">Bright</span>
+        <br/><br/>
+    </div>
+
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Cables</h3>
+        Switch between straight cables and curved ones.
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left"  data-setting="straightLines" data-value="false">Curved</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="straightLines" data-value="true">Straight</span>
+        <br/><br/>
+    </div>
+
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Mini Map</h3>
+        Shows a minimap of all ops in current subpatch (needs reload)
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left"  data-setting="showMinimap" data-value="false">Hide</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="showMinimap" data-value="true">Show</span>
+        <br/><br/>
+    </div>
+
+    
+
     <br/><br/>
-    <span class="prefswitch switch switch-text switch-left"  data-setting="snapToGrid" data-value="true">On</span>
-    <span class="prefswitch switch switch-text switch-right" data-setting="snapToGrid" data-value="false">Off</span>
+
+    <h2>Texture Preview</h2>
+
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Texture Preview</h3>
+        After clicking an op that outputs an image, it will be shown next to the canvas. Select the preview size, or turn it off.
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left" data-setting="bgpreview" data-value="true">On</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="bgpreview" data-value="false">Off</span>
+
+        &nbsp;&nbsp;&nbsp;Preview Size:&nbsp;&nbsp;&nbsp;
+
+        <span data-value="25" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-left">25%</span>
+        <span data-value="33" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-middle">33%</span>
+        <span data-value="50" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-middle">50%</span>
+        <span data-value="100" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-right">100%</span>
+        <br/><br/>
+    </div>
+
+
     <br/><br/>
+
+    <h2>Input</h2>
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Input Device</h3>
+        Without a mouse you can switch to touchpad mode. But you should really buy a mouse :)
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left" data-setting="touchpadmode" data-value="false">Mouse</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="touchpadmode" data-value="true">Touchpad</span>
+        <br/><br/>
+    </div>
+
+    <br/><br/>
+
+    <h2>Misc</h2>
+
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Tips</h3>
+        Show tips when opening editor
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left" data-setting="showTipps" data-value="true">Show</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="showTipps" data-value="false">Hide</span>
+        <br/><br/>
+    </div>
+
+
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Presentationmode</h3>
+        Show all key presses on the screen
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left" data-setting="presentationmode" data-value="false">Off</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="presentationmode" data-value="true">On</span>
+        <br/><br/>
+    </div>
+
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Hide "unsupported browser" warning</h3>
+        Hide that red warning notification
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left" data-setting="nobrowserWarning" data-value="false">Off</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="nobrowserWarning" data-value="true">On</span>
+        <br/><br/>
+    </div>
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Intro tour</h3>
+        Show Intro tour again (needs reload)
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left" data-setting="introCompleted" data-value="true">Hide</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="introCompleted" data-value="false">Show Again</span>
+        <br/><br/>
+    </div>
+    <div style="margin-left:15px;padding-bottom:10px;">
+        <h3>Show Helper Meshes</h3>
+        Show helper, directions/boundaries etc, as in e.g. randomCluster
+        <br/><br/>
+        <span class="prefswitch switch switch-text switch-left" data-setting="helpermode" data-value="true">Show</span>
+        <span class="prefswitch switch switch-text switch-right" data-setting="helpermode" data-value="false">Hide</span>
+        <br/><br/>
+    </div>
+
+    
 </div>
 
-<div style="margin-left:15px;padding-bottom:10px;">
-    <h3>Theme</h3>
-    Select a theme, bright theme works better when you work in bright environments.
-    <br/><br/>
-    <span class="prefswitch switch switch-text switch-left"  data-setting="theme-bright" data-value="false">Dark</span>
-    <span class="prefswitch switch switch-text switch-right" data-setting="theme-bright" data-value="true">Bright</span>
-    <br/><br/>
-</div>
 
-<div style="margin-left:15px;padding-bottom:10px;">
-    <h3>Cables</h3>
-    Switch between straight cables and curved ones.
-    <br/><br/>
-    <span class="prefswitch switch switch-text switch-left"  data-setting="straightLines" data-value="false">Curved</span>
-    <span class="prefswitch switch switch-text switch-right" data-setting="straightLines" data-value="true">Straight</span>
-    <br/><br/>
-</div>
-
-
-
-<br/><br/>
-
-<h2>Texture Preview</h2>
-
-<div style="margin-left:15px;padding-bottom:10px;">
-    <h3>Texture Preview</h3>
-    After clicking an op that outputs an image, it will be shown next to the canvas. Select the preview size, or turn it off.
-    <br/><br/>
-    <span class="prefswitch switch switch-text switch-left" data-setting="bgpreview" data-value="true">On</span>
-    <span class="prefswitch switch switch-text switch-right" data-setting="bgpreview" data-value="false">Off</span>
-
-    &nbsp;&nbsp;&nbsp;Preview Size:&nbsp;&nbsp;&nbsp;
-
-    <span data-value="25" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-left">25%</span>
-    <span data-value="33" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-middle">33%</span>
-    <span data-value="50" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-middle">50%</span>
-    <span data-value="100" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-right">100%</span>
-    <br/><br/>
-</div>
-
-
-<br/><br/>
-
-<h2>Input</h2>
-<div style="margin-left:15px;padding-bottom:10px;">
-    <h3>Input Device</h3>
-    Without a mouse you can switch to touchpad mode. But you should really buy a mouse :)
-    <br/><br/>
-    <span class="prefswitch switch switch-text switch-left" data-setting="touchpadmode" data-value="false">Mouse</span>
-    <span class="prefswitch switch switch-text switch-right" data-setting="touchpadmode" data-value="true">Touchpad</span>
-    <br/><br/>
-</div>
-
-
-
-<h2>Misc</h2>
-<div style="margin-left:15px;padding-bottom:10px;">
-    <h3>Presentationmode</h3>
-    Show all key presses on the screen
-    <br/><br/>
-    <span class="prefswitch switch switch-text switch-left" data-setting="presentationmode" data-value="false">Off</span>
-    <span class="prefswitch switch switch-text switch-right" data-setting="presentationmode" data-value="true">On</span>
-    <br/><br/>
-</div>
-
-<div style="margin-left:15px;padding-bottom:10px;">
-    <h3>Hide "unsupported browser" warning</h3>
-    <span class="prefswitch switch switch-text switch-left" data-setting="nobrowserWarning" data-value="false">Off</span>
-    <span class="prefswitch switch switch-text switch-right" data-setting="nobrowserWarning" data-value="true">On</span>
-    <br/><br/>
-</div>
-
-
-
-
-
+<br/><br/><br/><br/><br/><br/>
 
 </script>
 
