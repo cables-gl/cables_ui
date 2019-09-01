@@ -21,7 +21,7 @@
 
         &:hover
         {
-            background-color: #444;
+            background-color: var(--color-05);
             // border:2px solid var(--text-color-textOpselect);
         }
 
@@ -78,7 +78,7 @@
 
 .switch
 {
-    background-color:#444;
+    background-color:var(--color-05);
     padding:4px;
     padding-left:8px;
     padding-right:8px;
@@ -93,8 +93,8 @@
 
 .switch-active
 {
-    background-color:#888;
-    color:white;
+    background-color:var(--color-07);
+    color:var(--color-13);
 }
 
 .switch-left
@@ -102,11 +102,13 @@
     border-top-left-radius:5px;
     border-bottom-left-radius:5px;
 }
+
 .switch-right
 {
     border-top-right-radius:5px;
     border-bottom-right-radius:5px;
 }
+
 .switch-middle
 {
 }

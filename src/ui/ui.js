@@ -481,6 +481,9 @@ CABLES.UI.GUI = function() {
         }
 
         $('#metatabpanel .contentcontainer').css('height', window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
+        $('#maintabs').css('height', window.innerHeight - menubarHeight);
+        $('#maintabs .contentcontainer').css('height', window.innerHeight - menubarHeight -50);
+        
 
         if (self.rendererWidth === 0) {
             this._elGlCanvas.attr('width', window.innerWidth);
