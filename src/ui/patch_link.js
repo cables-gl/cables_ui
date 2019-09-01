@@ -263,7 +263,7 @@ function UiLink(port1, port2)
         toY = Math.round(toY);
 
         if ((Math.abs(fromY - toY) < 60 && Math.abs(fromX - toX) < 60) || fromX == toX) str = "M " + fromX + " " + fromY + " L " + toX + " " + toY;
-        else if (CABLES.UI.userSettings.straightLines)
+        else if (CABLES.UI.userSettings.get("straightLines"))
         {
             const edge = 15;
             var edgeAY = fromY - edge;

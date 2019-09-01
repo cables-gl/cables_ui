@@ -20,6 +20,7 @@ CABLES.UI.Preferences = function (tabs)
 
 CABLES.UI.Preferences.prototype.setSwitchValue = function (name, value)
 {
+    console.log("setSwitchValue",name,value);
     var elements = document.getElementsByClassName("prefswitch");
     for (var i = 0; i < elements.length; i++)
     {
@@ -42,7 +43,6 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("texpreviewSize", CABLES.UI.userSettings.get("texpreviewSize"));
 
     this.setSwitchValue("straightLines", CABLES.UI.userSettings.get("straightLines"));
-    
 
 };
 

@@ -87,20 +87,20 @@ CABLES.UI.UserSettings.prototype.getAll = function ()
 
 CABLES.UI.UserSettings.prototype.updateNavBar = function ()
 {
-    if (this.get("snapToGrid")) $(".nav_usersettings_snaptogrid i").removeClass("unchecked");
-    else $(".nav_usersettings_snaptogrid i").addClass("unchecked");
+    // if (this.get("snapToGrid")) $(".nav_usersettings_snaptogrid i").removeClass("unchecked");
+    // else $(".nav_usersettings_snaptogrid i").addClass("unchecked");
 
     if (this.get("touchpadmode")) $(".nav_usersettings_touchpadmode i").removeClass("unchecked");
     else $(".nav_usersettings_touchpadmode i").addClass("unchecked");
 
-    if (this.get("theme-bright")) $(".nav_usersettings_theme-bright i").removeClass("unchecked");
-    else $(".nav_usersettings_theme-bright i").addClass("unchecked");
+    // if (this.get("theme-bright")) $(".nav_usersettings_theme-bright i").removeClass("unchecked");
+    // else $(".nav_usersettings_theme-bright i").addClass("unchecked");
 
-    if (this.get("straightLines")) $(".nav_usersettings_straightLines i").removeClass("unchecked");
-    else $(".nav_usersettings_straightLines i").addClass("unchecked");
+    // if (this.get("straightLines")) $(".nav_usersettings_straightLines i").removeClass("unchecked");
+    // else $(".nav_usersettings_straightLines i").addClass("unchecked");
 
-    if (this.get("bgpreview")) $(".nav_usersettings_bgpreview i").removeClass("unchecked");
-    else $(".nav_usersettings_bgpreview i").addClass("unchecked");
+    // if (this.get("bgpreview")) $(".nav_usersettings_bgpreview i").removeClass("unchecked");
+    // else $(".nav_usersettings_bgpreview i").addClass("unchecked");
 
     if (this.get("helperMode")) $(".nav_usersettings_helpermode i").removeClass("unchecked");
     else $(".nav_usersettings_helpermode i").addClass("unchecked");
@@ -117,8 +117,8 @@ CABLES.UI.UserSettings.prototype.updateNavBar = function ()
         $(".nav_usersettings_showMinimap i").addClass("unchecked");
     }
 
-    this.straightLines = this.get("straightLines");
-    this.snapToGrid = this.get("snapToGrid");
+    // this.straightLines = this.get("straightLines");
+    // this.snapToGrid = this.get("snapToGrid");
 };
 
 CABLES.UI.userSettings = new CABLES.UI.UserSettings();
