@@ -5,8 +5,8 @@
   ],
   "version": "4.39.3",
   "hash": "0ff41be3c17e4e7d4429",
-  "time": 3587,
-  "builtAt": 1567335766182,
+  "time": 3540,
+  "builtAt": 1567337923353,
   "publicPath": "",
   "outputPath": "/home/tom/cables_dev/cables/build",
   "assetsByChunkName": {
