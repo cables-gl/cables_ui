@@ -6,11 +6,38 @@
 * Free to use under the MIT Licence
 * http://www.opensource.org/licenses/mit-license.php
 *
+
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+WARNING: CONTAINS SLIGHT MODIFICATIONS
+
 */
 
-*,
-*:after,
-*:before {
+
+[class*='cute-'],
+[class*='cute-']:after,
+[class*='cute-']:before,
+.row:after,
+.row:before 
+{
   margin: 0;
   padding: 0;
   -webkit-box-sizing: border-box;
@@ -52,15 +79,15 @@
   display: table;
   clear: both
 }
-.container:before,
-.container:after {
-  display: table;
-  content: " ";
-}
+// .container:before,
+// .container:after {
+//   display: table;
+//   content: " ";
+// }
 
-.container:after {
-  clear: both;
-}
+// .container:after {
+//   clear: both;
+// }
 
 .left {
   float: left !important;
