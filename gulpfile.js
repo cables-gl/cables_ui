@@ -153,7 +153,7 @@ gulp.task("sass", () =>
             autoprefixer({
                 browsers: ["last 2 versions"],
                 cascade: false,
-            }),
+            })
         )
         .pipe(gulp.dest("dist/css")));
 
@@ -166,14 +166,14 @@ gulp.task("svgcss", () =>
                 fileName: "icons",
                 cssPrefix: "icon-",
                 addSize: false,
-            }),
+            })
         )
         .pipe(replace("background-image", "mask"))
         .pipe(
             autoprefixer({
                 browsers: ["last 2 versions"],
                 cascade: false,
-            }),
+            })
         )
         .pipe(rename("svgicons.scss"))
         .pipe(gulp.dest("scss/")));
