@@ -188,7 +188,7 @@ gulp.task("electronapp", () =>
 
 gulp.task("watch", () =>
 {
-    // gulp.watch("../cables/build/**/*.js", ["scripts_core"]);
+    gulp.watch("../cables/build/**/*.js", ["scripts_core"]);
     gulp.watch("src/ops/**/*.js", ["scripts_ops"]);
     gulp.watch("src/ui/**/*.js", ["scripts_ui"]); // ,'electron' // electron broke the watch SOMEHOW
     gulp.watch("scss/**/*.scss", ["sass"]);
@@ -201,7 +201,7 @@ gulp.task("watch", () =>
 
 gulp.task("electron-watch", () =>
 {
-    // gulp.watch("../cables/src/core/build/**/*.js", ["scripts_core"]);
+    gulp.watch("../cables/src/core/build/**/*.js", ["scripts_core"]);
     gulp.watch("src/ops/**/*.js", ["scripts_ops"]);
     gulp.watch("src/ui/**/*.js", ["scripts_ui", "electronapp"]);
     gulp.watch("scss/**/*.scss", ["sass", "electronapp"]);
@@ -225,7 +225,7 @@ gulp.task("default", [
     "scripts_ui",
     // 'lint',
     "html_ui",
-    // "scripts_core",
+    "scripts_core",
     "scripts_libs_ui",
     "scripts_ops",
     "sass",
@@ -239,7 +239,7 @@ gulp.task("default", [
  * Is this still used?
  * Run "gulp build"
  */
-gulp.task("build", ["svgcss", "html_ui", "scripts_libs_ui", "scripts_ops", "scripts_ui", "scripts_talkerapi", "sass", "vueify"]);
+gulp.task("build", ["svgcss", "html_ui", "scripts_libs_ui", "scripts_ops", "scripts_core","scripts_ui", "scripts_talkerapi", "sass", "vueify"]);
 
 /**
  * Electron development
