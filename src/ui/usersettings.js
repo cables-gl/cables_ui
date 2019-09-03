@@ -64,11 +64,10 @@ CABLES.UI.UserSettings.prototype.set = function (key, value)
     if (this._wasLoaded)
     {
         clearTimeout(this._serverDelay);
-        // this._serverDelay = setTimeout(() =>
-        // {
-        CABLESUILOADER.talkerAPI.send("saveUserSettings", { settings: this._settings });
-        // }, 1000);
-
+        this._serverDelay = setTimeout(() =>
+        {
+            CABLESUILOADER.talkerAPI.send("saveUserSettings", { settings: this._settings });
+        }, 250);
 
         if(wasChanged) this.emitEvent("onChange", key, value);
     }
