@@ -118,18 +118,12 @@ CABLES.UI.ServerOps = function (gui)
 
         for (i = 0; i < op.portsIn.length; i++)
         {
-<<<<<<< HEAD
             var l=
                 {
                     "type": op.portsIn[i].type,
                     "name": op.portsIn[i].name
                 };
-=======
-            var l = {
-                type: op.portsIn[i].type,
-                name: op.portsIn[i].name,
-            };
->>>>>>> develop
+
 
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
 
@@ -144,15 +138,7 @@ CABLES.UI.ServerOps = function (gui)
 
             opObj.portsIn.push(l);
         }
-<<<<<<< HEAD
-        for (i = 0; i < op.portsOut.length; i++) {
-            var l={
-                "type": op.portsOut[i].type,
-                "name": op.portsOut[i].name
-            }
 
-            if(op.portsOut[i].type==CABLES.OP_PORT_TYPE_VALUE)
-=======
         for (i = 0; i < op.portsOut.length; i++)
         {
             var l = {
@@ -161,7 +147,6 @@ CABLES.UI.ServerOps = function (gui)
             };
 
             if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
->>>>>>> develop
             {
                 if (op.portsOut[i].uiAttribs.display == "bool") l.subType = "boolean";
                 else if (op.portsOut[i].uiAttribs.type == "string") l.subType = "string";
@@ -215,26 +200,16 @@ CABLES.UI.ServerOps = function (gui)
 
                     for (var i = 0; i < ops.length; i++) gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
 
-<<<<<<< HEAD
-                if (ops.length > 0) this.saveOpLayout(ops[0]);
-                gui.patch().checkCollisionsEdge();
 
-            }.bind(this));
-=======
                     if (ops.length > 0) this.saveOpLayout(ops[0]);
                     gui.patch().checkCollisionsEdge();
                     if(next)next();
                 }.bind(this),
             );
->>>>>>> develop
 
             CABLES.UI.MODAL.hideLoading();
         }.bind(this);
         document.body.appendChild(s);
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
     };
 
     this.clone = function (oldname, name)
@@ -282,14 +257,8 @@ CABLES.UI.ServerOps = function (gui)
                     console.log("docs reloaded");
                     gui.metaTabs.activateTabByName("code");
                 });
-<<<<<<< HEAD
-
-            });
-
-=======
             },
         );
->>>>>>> develop
     };
 
     this.deleteAttachment = function (opName, attName)
@@ -407,11 +376,6 @@ CABLES.UI.ServerOps = function (gui)
     {
         var editorObj = CABLES.editorSession.rememberOpenEditor("attachment", attachmentName, { opname });
         CABLES.api.clearCache();
-<<<<<<< HEAD
-
-        gui.jobs().start({id:'load_attachment_'+attachmentName,title:'loading attachment '+attachmentName});
-=======
->>>>>>> develop
 
         gui.jobs().start({ id: "load_attachment_" + attachmentName, title: "loading attachment " + attachmentName });
 
@@ -423,17 +387,6 @@ CABLES.UI.ServerOps = function (gui)
             },
             function (err, res)
             {
-<<<<<<< HEAD
-
-                if(err|| !res)
-                {
-                    console.log("[editAttachment] error ",err);
-                    CABLES.editorSession.remove(attachmentName,editorObj.type );
-                    return;
-                }
-
-                var content = res.content || '';
-=======
                 if(err || !res || res.content==undefined)
                 {
                     if(err)console.log('[opattachmentget] err',err);
@@ -441,18 +394,12 @@ CABLES.UI.ServerOps = function (gui)
                     return;
                 }
                 var content = res.content || "";
->>>>>>> develop
                 var syntax = "text";
 
                 if (attachmentName.endsWith(".frag")) syntax = "glsl";
                 if (attachmentName.endsWith(".vert")) syntax = "glsl";
                 if (attachmentName.endsWith(".json")) syntax = "json";
                 if (attachmentName.endsWith(".css")) syntax = "css";
-<<<<<<< HEAD
-
-                gui.jobs().finish('load_attachment_'+attachmentName);
-=======
->>>>>>> develop
 
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
@@ -482,20 +429,6 @@ CABLES.UI.ServerOps = function (gui)
                                 {
                                     if (err)
                                     {
-<<<<<<< HEAD
-                                        if(err)
-                                        {
-                                            CABLES.UI.notifyError("error: op not saved");
-                                            // setStatus('ERROR: not saved - '+res.msg);
-                                            console.warn('[opAttachmentSave]', err);
-                                            return;
-                                        }
-
-                                        setStatus('saved');
-                                        gui.serverOps.execute( opname );
-                                    });
-                        }
-=======
                                         CABLES.UI.notifyError("error: op not saved");
                                         // setStatus('ERROR: not saved - '+res.msg);
                                         console.warn("[opAttachmentSave]", err);
@@ -507,17 +440,11 @@ CABLES.UI.ServerOps = function (gui)
                                 },
                             );
                         },
->>>>>>> develop
                     });
                 }
 
-<<<<<<< HEAD
-                if(cb)cb();
-                    else gui.maintabPanel.show();
-=======
                 if (cb) cb();
                 else gui.maintabPanel.show();
->>>>>>> develop
                 // gui.showEditor();
                 // gui.editor().addTab({
                 //     content: content,
@@ -583,11 +510,7 @@ CABLES.UI.ServerOps = function (gui)
                 // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
                 var save = null;
-<<<<<<< HEAD
-                if (!readOnly) save = function(setStatus, content)
-=======
                 if (!readOnly)
->>>>>>> develop
                 {
                     save = function (setStatus, content,editor)
                     {

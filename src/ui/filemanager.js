@@ -64,18 +64,17 @@ CABLES.UI.FileManager.prototype.setFilePort=function(portEle,op)
 CABLES.UI.FileManager.prototype.reload=function(cb)
 {
 
-        item.icon="file";
+    item.icon="file";
 
-        if(file.t=='SVG') item.preview=file.p;
-        else if(file.t=='image') item.preview=file.p;
-        else if(file.t=='3d json') item.icon="cube";
-        else if(file.t=='video') item.icon="film";
-        else if(file.t=='audio') item.icon="headphones";
-        else if(file.t=='dir') item.divider=file.n;
+    if(file.t=='SVG') item.preview=file.p;
+    else if(file.t=='image') item.preview=file.p;
+    else if(file.t=='3d json') item.icon="cube";
+    else if(file.t=='video') item.icon="film";
+    else if(file.t=='audio') item.icon="headphones";
+    else if(file.t=='dir') item.divider=file.n;
 
-        items.push(item);
-        if(file.c) for(var i=0;i<file.c.length;i++) createItem(items,file.c[i]);
-    }
+    items.push(item);
+    if(file.c) for(var i=0;i<file.c.length;i++) createItem(items,file.c[i]);
 
     this._manager.clear();
     this._fileSource=this._fileSource||'lib';
@@ -280,15 +279,6 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
         },
         function(err,r)
         {
-<<<<<<< HEAD
-            html = CABLES.UI.getHandleBarHtml('filemanager_details', {
-                "projectId": gui.patch().getCurrentProject()._id,
-                "file": r,
-                "source":this._fileSource
-            });
-
-=======
-
 
             if(this._fileSource!='lib')
                 html = CABLES.UI.getHandleBarHtml('filemanager_details', {
@@ -298,7 +288,6 @@ CABLES.UI.FileManager.prototype.setDetail=function(detailItems)
                     });
                 else html = '';
             
->>>>>>> develop
             $('#item_details').html(html);
 
             var delEle = document.getElementById("filedelete"+itemId);
@@ -385,13 +374,8 @@ CABLES.UI.FileManager.prototype.createFile=function()
         "newfile.txt",
         function(fn)
         {
-<<<<<<< HEAD
-            CABLES.talkerAPI.send(
-                "createFile",
-=======
             CABLESUILOADER.talkerAPI.send(
                 "createFile", 
->>>>>>> develop
                 { "name":fn },
                 (err,res) =>
                 {
