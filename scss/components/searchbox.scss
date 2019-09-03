@@ -94,5 +94,22 @@
             cursor:pointer;
 			background-color: var(--color_op_bg_active);
         }
+        border-left:2px solid transparent;
     }
+
+    .lastClicked
+    {
+        background-color: var(--color-05);
+    }
+
+    .selected
+    {
+        border-left:2px solid var(--color-07);
+    }
+}
+
+#searchresult .highlight
+{
+    font-weight:bold;
+    text-decoration:underline
 }

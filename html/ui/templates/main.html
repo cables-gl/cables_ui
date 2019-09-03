@@ -22,11 +22,11 @@
 <div id="drop-op-cursor"></div>
 
 <div id="suggestionDialog"></div>
-<div id="modalbg" class="modal-bg-look" onclick="CABLES.UI.MODAL.hide(true);gui.pressedEscape();" style="display:none;"></div>
+<div id="modalbg" class="modal-bg-look" onclick="gui.pressedEscape();" style="display:none;"></div>
 <div id="modalcontainer" style="display:none;">
 	<div id="modalclose" class="modalclose">
 		<!-- <a class=" fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a> -->
-		<a class="icon-x icon icon-1_5x" onclick="CABLES.UI.MODAL.hide(true);"></a>
+		<a class="icon-x icon icon-1_5x" onclick="gui.pressedEscape();"></a>
 	</div>
 
 	<div id="modalheader"></div>
@@ -38,7 +38,7 @@
 <div id="canvasmodal"></div>
 <div id="canvasicons">
     <a class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></a>
-    <a class="tt info icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize renderer" data-infotext="renderer_maximize"></a>
+    <a class="tt info icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-infotext="renderer_maximize"></a>
     <a class="tt info icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></a>
     <a class="tt info icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound" data-infotext="toggle_sound"></a>
     <a class="tt icon icon-command iconhover" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper" data-infotext="toggle_helper"></a>
@@ -66,7 +66,7 @@
 <div id="editormaximized" class="info" onclick="gui.maintabPanel.toggle();gui.setLayout();" data-info="minimize_tabpanel">
     <span class="icon icon-chevron-left"></span>
 </div>
-    
+
 <div id="editorminimized"  onclick="gui.maintabPanel.toggle();gui.setLayout();">
     <span class="icon icon-chevron-right"></span>
 </div>
@@ -95,6 +95,8 @@
 <div class="cables-logo cables">
     <div class="icon icon-cables"></div>
 </div>
+<div id="offlineIndicator"><span class="icon icon-x icon-1x" style="background-color:red;"></span></div>
+
 <div id="uploadprogresscontainer">
     <div id="uploadprogress"></div>
 </div>
@@ -103,11 +105,15 @@
 
 <div id="menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
 
-
     <!-- <a class="button" href="/" target="_blankk">cables</a> -->
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
         <ul>
-            <li class="nav_cables">cables
+            <li class="nav_cables"><b>cables - <b id="username">???</b></b>
+                <ul class="nav-submenu">
+                    <li class="nav_cablesweb">Open cables.gl</span></li>
+                    <li class="divide"></li>
+                    <li class="nav_preferences">Preferences</span></li>
+                </ul>
             </li>
             <li>
                 Patch
@@ -118,7 +124,8 @@
                         <span class="icon icon-chevron-right"></span>
                         <ul>
                             <li><a href="/api/clone_edit/5970cef9b2ec9ab5683a94e7">2D Template</a></li>
-                            <li><a href="/api/clone_edit/5970cab6eda3049368b0089f">3D Template</a></li>
+                            <li><a href="/api/clone_edit/5970cab6eda3049368b0089f/">3D Template</a></li>
+                            <li><a href="/api/clone_edit/5d11db7709e2d354aa33d8f8/">Simple particles</a></li>
                         </ul>
                     </li>
 
@@ -145,7 +152,7 @@
 
                     <li class="divide"></li>
                     <li class="nav_patch_clear">Clear</li>
-                    
+
 
                 </ul>
             </li>
@@ -180,7 +187,7 @@
                     <li class="nav_help_introduction">Introduction</li>
                     <li class="nav_help_video">Video Tutorials</li>
                     <li class="nav_help_tipps">Tips</li>
-                    
+
                     <li class="divide"></li>
                     <li class="nav_help_forum">Forum</li>
                     <li class="nav_changelog">View Changelog</li>
@@ -190,43 +197,6 @@
 
 
 
-            <li >
-                <section id="username">???</section>
-                <ul class="nav-submenu">
-                        <li class="nav_usersettings_snaptogrid" onclick="CABLES.CMD.UI.toggleSnapToGrid()"><i class="icon icon-check checked"></i>Snap to Grid</li>
-
-                    <li class="nav_usersettings_theme-bright" onclick="CABLES.CMD.UI.toggleTheme()"><i class="icon icon-check checked "></i>High Contrast Theme</li>
-
-                    <li class="nav_usersettings_bgpreview" onclick="CABLES.CMD.UI.toggleBgTexturePreview()"><i class="icon icon-check checked "></i>Show Preview Texture</li>
-
-                    <li class="nav_usersettings_showMinimap" onclick="CABLES.CMD.UI.toggleMinimap()"><i class="icon icon-check checked"></i>Show Minimap <span class="shortcut">needs reload</span> </li>
-
-                    <li class="nav_usersettings_straightLines" onclick="CABLES.UI.userSettings.set('straightLines',!CABLES.UI.userSettings.get('straightLines'));CABLES.CMD.PATCH.reload();"><i class="icon icon-check checked"></i>Straight Lines <span class="shortcut">needs reload</span> </li>
-
-                    <li class="nav_usersettings_helpermode" onclick="CABLES.CMD.UI.toggleHelper()"><i class="icon icon-check checked"></i>Helper Mode</li>
-
-                    <li class="nav_usersettings_touchpadmode" onclick="CABLES.CMD.UI.toggleTouchpadMode()"><i class="icon icon-check checked"></i>Touchpad mode </li>
-
-                    <li class="nav_usersettings_introcompleted" onclick="CABLES.CMD.UI.toggleIntroCompleted()"><i class="icon icon-check checked"></i>Hide Introduction Tour</li>
-
-                    <li class="nav-sub-submenu">
-                        Texture Preview Size
-                        <span class="icon icon-chevron-right"></span>
-                        <ul>
-                            <li><a onClick="gui.texturePreview().setSize(25);">25%</a></li>
-                            <li><a onClick="gui.texturePreview().setSize(33);">33%</a></li>
-                            <li><a onClick="gui.texturePreview().setSize(50);">50%</a></li>
-                            <li><a onClick="gui.texturePreview().setSize(100);">100%</a></li>
-                        </ul>
-                    </li>
-
-                    
-                    
-
-                    <li class="nav_usersettings" onclick="CABLES.CMD.UI.userSettings()">More User Settings...</li>
-
-                </ul>
-            </li>
 
 
             <li class="nav-item-help">

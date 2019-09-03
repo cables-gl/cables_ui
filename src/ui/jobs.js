@@ -12,6 +12,9 @@ function()
         var str='';
         var indicator=null;
 
+        if(CABLES.sandbox.isOffline()) str+='<b>Offline! No internet connection.</b><br/><br/>';
+
+
         for(var i in jobs)
         {
             if(jobs[i].indicator)indicator=jobs[i].indicator;
@@ -20,11 +23,15 @@ function()
             str+='</div>';
         }
 
+        
+
         if(jobs.length==0)
         {
             str+='All server jobs finished...';
             $('.cables-logo .icon-cables').removeClass('blinkanim');
         }
+
+        
 
         if(indicator)
         {

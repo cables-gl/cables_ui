@@ -13,7 +13,7 @@
     --color-04: #333333; // 04
     --color-03: #222222;  // 03
     --color-02: #1A1A1A; // 02
-    --color-01: #111111;  // 01
+    --color-01: #010101;  // 111111
 
     --text-color: var(--color-10);
 
@@ -83,6 +83,7 @@ $color-searchInputContainer: var(--color-02);
 
     --color_port_function: #F0D165;
     --color_port_value: #5CB59E;
+    --color_port_number: var(--color_port_value);
     --color_port_object: #AB5A94;
     --color_port_array: #8084D4;
     --color_port_dynamic: #FFF6E5;
@@ -137,8 +138,8 @@ body.bright
     --color-09: #444444;
     --color-08: #555555;
     --color-07: #888888;
-    --color-06: #969696;
-    --color-05: #AAAAAA;
+    --color-06: #888888;
+    --color-05: #BBBBBB;
     --color-04: #BBBBBB;
     --color-03: #CCCCCC;
     --color-02: #EEEEEE;

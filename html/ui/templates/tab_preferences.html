@@ -1,0 +1,199 @@
+
+<script id="tab_preferences" type="text/x-handlebars-template">
+
+<div class="tabcontent-scroll padding">
+    <h1>Preferences</h1>
+
+    <style>
+        h3
+        {
+            margin-bottom: 3px;
+        }
+
+        .prefRow
+        {
+            border-bottom: 1px solid var(--color-04);
+        }
+
+        .prefRow:hover
+        {
+            background-color: var(--color-03);
+        }
+
+        .prefRow div
+        {
+            padding-bottom: 15px;
+        }
+
+        .prefRight
+        {
+            padding-top:30px;
+            text-align: right
+        }
+    </style>
+
+    <br/><br/>
+
+    <h2 class="text-center">Patch</h2>
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Snap To Grid</h3>
+            Ops snap to an invisible grid, makes patches look much cleaner
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left"  data-setting="snapToGrid" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="snapToGrid" data-value="false">Off</span>
+        </div>
+    </div>
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Theme</h3>
+            Select a theme, bright theme works better when you work in bright environments.
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left"  data-setting="theme-bright" data-value="false">Dark</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="theme-bright" data-value="true">Bright</span>
+        </div>
+    </div>
+
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Cables</h3>
+            Switch between straight cables and curved ones.
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left"  data-setting="straightLines" data-value="false">Curved</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="straightLines" data-value="true">Straight</span>
+        </div>
+    </div>
+    
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Mini Map</h3>
+            Shows a minimap of all ops in current subpatch (needs reload)
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left"  data-setting="showMinimap" data-value="false">Hide</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="showMinimap" data-value="true">Show</span>
+        </div>
+    </div>
+
+    <div class="row prefRow">
+        <div class="cute-6-phone">
+            <h3>Texture Preview</h3>
+            After clicking an op that outputs an image, it will be shown next to the canvas. 
+        </div>
+        <div class="cute-6-phone prefRight ">
+            <span class="prefswitch switch switch-text switch-left" data-setting="bgpreview" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="bgpreview" data-value="false">Off</span>
+
+            <br/><br/><br/>       
+            <span data-value="25" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-left">25%</span>
+            <span data-value="33" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-middle">33%</span>
+            <span data-value="50" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-middle">50%</span>
+            <span data-value="100" data-setting="texpreviewSize" class="prefswitch switch switch-text switch-right">100%</span>
+        </div>
+    </div>
+
+    <br/><br/>
+
+    <h2 class="text-center">Input</h2>
+
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Input</h3>
+            Without a mouse you can switch to touchpad mode. But you should really buy a mouse :)
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left" data-setting="touchpadmode" data-value="false">Mouse</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="touchpadmode" data-value="true">Touchpad</span>
+        </div>
+    </div>
+
+
+    <br/><br/>
+
+    <h2 class="text-center">Misc</h2>
+
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Tips</h3>
+            Show tips when opening editor
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left" data-setting="showTipps" data-value="true">Show</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="showTipps" data-value="false">Hide</span>
+        </div>
+    </div>
+    
+
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Presentationmode</h3>
+            Show all key presses on the screen
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left" data-setting="presentationmode" data-value="false">Off</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="presentationmode" data-value="true">On</span>
+        </div>
+    </div>
+
+
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Hide warning</h3>
+            Hide that red "unsupported browser" warning notification
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left" data-setting="nobrowserWarning" data-value="false">Off</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="nobrowserWarning" data-value="true">On</span>
+        </div>
+    </div>
+    
+
+
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Intro Tour</h3>
+            Show Intro tour again (needs reload)
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left" data-setting="introCompleted" data-value="true">Hide</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="introCompleted" data-value="false">Show Again</span>
+        </div>
+    </div>
+
+
+
+
+    <div class="row prefRow">
+        <div class="cute-8-phone">
+            <h3>Show Helper Meshes</h3>
+            Show helper, directions/boundaries etc, as in e.g. randomCluster
+        </div>
+        <div class="cute-4-phone prefRight">
+            <span class="prefswitch switch switch-text switch-left" data-setting="helpermode" data-value="true">Show</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="helpermode" data-value="false">Hide</span>
+        </div>
+    </div>
+
+
+    <br/><br/><br/><br/><br/><br/>
+
+
+    
+</div>
+
+
+
+</script>
+

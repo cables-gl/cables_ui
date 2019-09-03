@@ -897,7 +897,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 var opY = opui.op.uiAttribs.translate.y;
                 var pos = gui.patch().getCanvasCoordsMouse(e);
 
-                if (CABLES.UI.userSettings.snapToGrid) {
+                if (CABLES.UI.userSettings.get("snapToGrid")) {
                     pos.x = CABLES.UI.snapOpPosX(pos.x);
                     pos.y = CABLES.UI.snapOpPosY(pos.y);
                 }
@@ -1370,7 +1370,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         pos.x = pos.x - startMoveX;
         pos.y = pos.y - startMoveY;
 
-        if(CABLES.UI.userSettings.snapToGrid)
+        if(CABLES.UI.userSettings.get("snapToGrid"))
         {
             pos.x=CABLES.UI.snapOpPosX(pos.x);
             pos.y=CABLES.UI.snapOpPosY(pos.y);

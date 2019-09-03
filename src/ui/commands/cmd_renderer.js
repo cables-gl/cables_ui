@@ -27,7 +27,6 @@ CABLES.CMD.RENDERER.screenshotUpload = function() {
             // console.log('filetype',file.type);
             // console.log('blobtype',blob.type);
 
-
             var fd = new FormData();
             // fd.append('fname', 'screenshot.png');
             fd.append(0, file);
@@ -73,7 +72,7 @@ CABLES.CMD.RENDERER.scaleCanvas = function()
 CABLES.CMD.RENDERER.changeSize = function()
 {
     CABLES.UI.MODAL.prompt(
-        "Change Renderersize",
+        "Change Canvas size",
         "Enter a new size",
         Math.round(gui.rendererWidth) + ' x ' + Math.round(gui.rendererHeight),
         function(r)
@@ -125,6 +124,6 @@ CABLES.CMD.commands.push({
         func: CABLES.CMD.RENDERER.scaleCanvas,
         icon: 'image'
     }
-    
+
 
 );

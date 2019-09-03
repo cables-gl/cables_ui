@@ -67,7 +67,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
             //         });
             //     gif.render();
             // }
-            // else 
+            // else
             if(format=='webm')
             {
                 $('.modalScrollContent').html('compiling video...');
@@ -124,7 +124,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         // console.log('time', time);
         gui.patch().scene.timer.setTime(time);
         gui.patch().scene.freeTimer.setTime(time);
-        
+
         CABLES.UI.IMGSEQUENCETIME=time*1000;
         CABLES.internalNow=function()
         {
@@ -133,7 +133,7 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
 
         var str = "" + fileNum;
         var pad = "0000";
-        
+
         var strCurrentNum = '_' + pad.substring(0, pad.length - str.length) + str;
         if(settings)
         {

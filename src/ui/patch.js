@@ -245,7 +245,7 @@ CABLES.UI.Patch = function(_gui) {
 
                                     var x=json.ops[i].uiAttribs.translate.x + mouseX - minx;
                                     var y=json.ops[i].uiAttribs.translate.y + mouseY - miny;
-                                    if(CABLES.UI.userSettings.snapToGrid)
+                                    if(CABLES.UI.userSettings.get("snapToGrid"))
                                     {
                                         x=CABLES.UI.snapOpPosX(x);
                                         y=CABLES.UI.snapOpPosY(y);
@@ -787,7 +787,7 @@ CABLES.UI.Patch = function(_gui) {
             "My new Project",
             function(name)
             {
-                CABLES.talkerAPI.send("newPatch",{"name":name}, 
+                CABLESUILOADER.talkerAPI.send("newPatch",{"name":name}, 
                     function(err,d)
                     {
                         gui.scene().settings=gui.scene().settings||{};
@@ -801,7 +801,7 @@ CABLES.UI.Patch = function(_gui) {
                         self.saveCurrentProject(
                             function()
                             {
-                                CABLES.talkerAPI.send("gotoPatch",{"id":d._id});
+                                CABLESUILOADER.talkerAPI.send("gotoPatch",{"id":d._id});
                             }, d._id, d.name);
 
                     });
@@ -1045,7 +1045,7 @@ CABLES.UI.Patch = function(_gui) {
             
                             reader.onload = function(event)
                             {
-                                CABLES.talkerAPI.send(
+                                CABLESUILOADER.talkerAPI.send(
                                     "saveScreenshot",
                                     {
                                         "id":currentProject._id,
@@ -1057,7 +1057,7 @@ CABLES.UI.Patch = function(_gui) {
                                         {
                                             console.warn('[screenshot save error]',err)
                                         }
-                                        console.log("screenshot saved!");
+                                        // console.log("screenshot saved!");
                                         gui.jobs().finish('screenshotsave');
                                         if (gui.onSaveProject) gui.onSaveProject();
                                     });
@@ -1331,7 +1331,7 @@ CABLES.UI.Patch = function(_gui) {
 
             if (proj.ui.renderer) {
 
-                if(proj.ui.renderer.w>document.body.clientWidth/2 || proj.ui.renderer.h>document.body.clientHeight/2)
+                if(proj.ui.renderer.w>document.body.clientWidth*0.9 || proj.ui.renderer.h>document.body.clientHeight*0.9)
                 {
                     proj.ui.renderer.w=640;
                     proj.ui.renderer.h=360;
@@ -1603,8 +1603,8 @@ CABLES.UI.Patch = function(_gui) {
 
         if (op.uiAttribs.hasOwnProperty('translate'))
         {
-            if(CABLES.UI.userSettings.snapToGrid) op.uiAttribs.translate.x=CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
-            if(CABLES.UI.userSettings.snapToGrid) op.uiAttribs.translate.y=CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
+            if(CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x=CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
+            if(CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y=CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
             uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
         }
 
@@ -2360,7 +2360,7 @@ CABLES.UI.Patch = function(_gui) {
 
             var avg = sum / selectedOps.length;
 
-            if(CABLES.UI.userSettings.snapToGrid) avg=CABLES.UI.snapOpPosX(avg);
+            if(CABLES.UI.userSettings.get("snapToGrid")) avg=CABLES.UI.snapOpPosX(avg);
 
             for (j in selectedOps) selectedOps[j].setPos(avg, selectedOps[j].op.uiAttribs.translate.y);
         }
@@ -2375,7 +2375,7 @@ CABLES.UI.Patch = function(_gui) {
 
             var avg = sum / selectedOps.length;
 
-            if(CABLES.UI.userSettings.snapToGrid) avg=CABLES.UI.snapOpPosY(avg);
+            if(CABLES.UI.userSettings.get("snapToGrid")) avg=CABLES.UI.snapOpPosY(avg);
 
             for (j in selectedOps)
                 selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x, avg);
@@ -2689,6 +2689,7 @@ CABLES.UI.Patch = function(_gui) {
     this.showOpParams = function(op) {
         // self.highlightOpNamespace(op);
         gui.setTransformGizmo(null);
+        if(gui.find().isVisible())gui.find().setSelectedOp(op.id);
         clearTimeout(delayedShowOpParams);
         delayedShowOpParams = setTimeout(function() {
             self._showOpParams(op);
@@ -2710,14 +2711,23 @@ CABLES.UI.Patch = function(_gui) {
             console.log('paramedit port not found');
             return;
         }
-        var name=opid+portname;
-        var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname} );
+        var name=op.name+' '+port.name;
 
+        var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
+        if(!editorObj && gui.mainTabs.getTabByTitle(name))
+        {
+            CABLES.editorSession.remove(name,"param");
+            var tab=gui.mainTabs.getTabByTitle(name);
+            gui.mainTabs.closeTab(tab.id);
+
+            editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
+        }
 
         if(editorObj)
+        {
             new CABLES.UI.EditorTab(
                 {
-                    "title":'' + port.name,
+                    "title":name,
                     "content":port.get() + '',
                     "name":editorObj.name,
                     "syntax": port.uiAttribs.editorSyntax,
@@ -2734,7 +2744,11 @@ CABLES.UI.Patch = function(_gui) {
                                 port.set(content);
                             }
                 });
-            else gui.mainTabs.activateTabByName(name);
+        }
+        else 
+        {
+            gui.mainTabs.activateTabByName(name);
+        }
 
             
 

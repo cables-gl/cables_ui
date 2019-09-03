@@ -1,6 +1,5 @@
 .DS_Store
 node_modules
-dist/js/ace
 dist/js/*.js
 dist/js/*.map
 *.min.js
@@ -11,3 +10,4 @@ dist/css
 dist/index.html
 scss/svgicons.scss
 dist-electron
+dist/js/stats.json

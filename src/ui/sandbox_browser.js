@@ -1,138 +1,161 @@
+var CABLES = CABLES || {};
 
-var CABLES=CABLES||{};
-
-CABLES.SandboxBrowser=function(cfg)
+CABLES.SandboxBrowser = function (cfg)
 {
     CABLES.EventTarget.apply(this);
-    this._cfg=cfg;
+    this._cfg = cfg;
 
-    if(cfg.usersettings && cfg.usersettings.settings)  CABLES.UI.userSettings.load(cfg.usersettings.settings);
-        else CABLES.UI.userSettings.load({});
+    if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
+    else CABLES.UI.userSettings.load({});
+
+    window.addEventListener('online',  this.updateOnlineIndicator.bind(this));
+    window.addEventListener('offline', this.updateOnlineIndicator.bind(this));
+    this.updateOnlineIndicator();
 };
 
-CABLES.SandboxBrowser.prototype.isOffline=function()
+CABLES.SandboxBrowser.prototype.updateOnlineIndicator = function ()
 {
-    return false;
+    if(this.isOffline()) document.getElementById('offlineIndicator').style.display='block';
+    else document.getElementById('offlineIndicator').style.display='none';
 }
 
-CABLES.SandboxBrowser.prototype.getCablesUrl=function()
+CABLES.SandboxBrowser.prototype.isOffline = function ()
+{
+    return !navigator.onLine;
+};
+
+CABLES.SandboxBrowser.prototype.getCablesUrl = function ()
 {
     return this._cfg.urlCables;
 };
 
-CABLES.SandboxBrowser.prototype.getUrlOpsCode=function()
+CABLES.SandboxBrowser.prototype.getUrlOpsCode = function ()
 {
-    return this._cfg.urlCables+'/api/ops/code';
+    return this._cfg.urlCables + "/api/ops/code";
 };
 
-CABLES.SandboxBrowser.prototype.getLocalOpCode = function() {
-    return ''; // no local ops in browser version
+CABLES.SandboxBrowser.prototype.getLocalOpCode = function ()
+{
+    return ""; // no local ops in browser version
 };
 
-CABLES.SandboxBrowser.prototype.getUrlDocOpsAll=function()
+CABLES.SandboxBrowser.prototype.getUrlDocOpsAll = function ()
 {
-    return 'doc/ops/all';
+    return "doc/ops/all";
 };
 
-CABLES.SandboxBrowser.prototype.getAssetPrefix=function()
+CABLES.SandboxBrowser.prototype.getAssetPrefix = function ()
 {
-    const url=this._cfg.urlCables+"/assets/"+this._cfg.patchId;
+    const url = this._cfg.urlCables + "/assets/" + this._cfg.patchId;
     return url;
 };
 
-CABLES.SandboxBrowser.prototype.getUrlApiPrefix=function()
+CABLES.SandboxBrowser.prototype.getUrlApiPrefix = function ()
 {
-    return this._cfg.urlCables+"/api/";
+    return this._cfg.urlCables + "/api/";
 };
 
-CABLES.SandboxBrowser.prototype.getUrlOpsList=function()
+CABLES.SandboxBrowser.prototype.getUrlOpsList = function ()
 {
-    return 'ops/';
+    return "ops/";
 };
 
-CABLES.SandboxBrowser.prototype.showStartupChangelog = function() {
-    var lastView = CABLES.UI.userSettings.get('changelogLastView');
-    
-    CABLES.CHANGELOG.getHtml(function(clhtml) {
+CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
+{
+    var lastView = CABLES.UI.userSettings.get("changelogLastView");
+
+    CABLES.CHANGELOG.getHtml((clhtml) =>
+    {
         if (clhtml !== null)
         {
-            iziToast.show(
-                {
-                    position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-                    theme: 'dark',
-                    title: 'update',
-                    message: 'cables has been updated! ',
-                    progressBar: false,
-                    animateInside: false,
-                    close: true,
-                    timeout: false,
-                    buttons: [
-                        ['<button>read more</button>', function(instance, toast) {
+            iziToast.show({
+                position: "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                theme: "dark",
+                title: "update",
+                message: "cables has been updated! ",
+                progressBar: false,
+                animateInside: false,
+                close: true,
+                timeout: false,
+                buttons: [
+                    [
+                        "<button>read more</button>",
+                        function (instance, toast)
+                        {
                             CABLES.CMD.UI.showChangelog();
                             iziToast.hide({}, toast);
-                        }]
-                    ]
-
-                });
+                        },
+                    ],
+                ],
+            });
             // if(html.length>0)html+='<hr/><br/><br/>';
             // html+=clhtml;
         }
         // show(html);
-    }, CABLES.UI.userSettings.get('changelogLastView'));
+    }, CABLES.UI.userSettings.get("changelogLastView"));
 };
 
-CABLES.SandboxBrowser.prototype.showBrowserWarning=function(id)
+CABLES.SandboxBrowser.prototype.showBrowserWarning = function (id)
 {
-    var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    var isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
-    if(!window.chrome && !isFirefox && !CABLES.UI.userSettings.get('nobrowserWarning'))
+    if (!window.chrome && !isFirefox && !CABLES.UI.userSettings.get("nobrowserWarning"))
     {
         iziToast.error({
-            position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-            theme: 'dark',
-            title: 'oops!', //yikes!
-            message: 'cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange',
+            position: "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            theme: "dark",
+            title: CABLES.UI.TEXTS.notOptimizedBrowser_title, 
+            message: CABLES.UI.TEXTS.notOptimizedBrowser_text,
             progressBar: false,
             animateInside: false,
             close: true,
-            timeout: false
+            timeout: false,
         });
     }
+
+    console.log(gui.patch().scene.cgl);
 };
 
-CABLES.SandboxBrowser.prototype.savePatch=function(options,cb)
+CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)
 {
-    CABLES.talkerAPI.send("savePatch",options,cb);
-}
+    CABLESUILOADER.talkerAPI.send("savePatch", options, cb);
+};
 
-CABLES.SandboxBrowser.prototype.initRouting=function(cb)
+CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 {
-    gui.user=this._cfg.user;
+    gui.user = this._cfg.user;
 
+    CABLESUILOADER.talkerAPI.addEventListener("notify", (options, next) =>
+    {
+        CABLES.UI.notify(options.msg);
+    });
 
-    CABLES.talkerAPI.addEventListener(
-        "notify",
-        function(options,next)
+    CABLESUILOADER.talkerAPI.addEventListener("notifyError", (options, next) =>
+    {
+        CABLES.UI.notifyError(options.msg);
+    });
+
+    CABLESUILOADER.talkerAPI.addEventListener("refreshFileManager", (options, next) =>
+    {
+        CABLES.UI.MODAL.hide();
+        gui.refreshFileManager();
+    });
+
+    CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>
+    {
+        console.log("file Updated: "+options.filename);
+
+        for (var j = 0; j < gui.patch().ops.length; j++)
         {
-            CABLES.UI.notify(options.msg);
-        });
+            if (gui.patch().ops[j].op)
+            {
+                if (gui.patch().ops[j].op.onFileChanged) gui.patch().ops[j].op.onFileChanged(options.filename);
+                else if (gui.patch().ops[j].op.onFileUploaded) gui.patch().ops[j].op.onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
+            }
+        }
+    });
 
-    CABLES.talkerAPI.addEventListener(
-        "notifyError",
-        function(options,next)
-        {
-            CABLES.UI.notifyError(options.msg);
-        });
-
-    CABLES.talkerAPI.addEventListener(
-        "refreshFileManager",
-        function(options,next)
-        {
-            CABLES.UI.MODAL.hide();
-            gui.refreshFileManager();
-        });
-
-    // CABLES.talkerAPI.addEventListener(
+    // CABLESUILOADER.talkerAPI.addEventListener(
     //     "uploadProgress",
     //     function(options,next)
     //     {
@@ -143,76 +166,63 @@ CABLES.SandboxBrowser.prototype.initRouting=function(cb)
     //         }
     //         else $('#uploadprogresscontainer').show();
 
-
     //         console.log("file upl!",options.complete);
     //         $('#uploadprogress').css({"width":options.complete+'%'});
-    
+
     //         gui.refreshFileManager();
     //     });
 
-    CABLES.talkerAPI.addEventListener(
-        "jobStart",
-        function(options,next)
-        {
-            gui.jobs().start({id:options.id,title:options.title});
-        });
-
-    CABLES.talkerAPI.addEventListener(
-        "jobFinish",
-        function(options,next)
-        {
-            gui.jobs().finish(options.id);
-        });
-
-    CABLES.talkerAPI.addEventListener(
-        "jobProgress",
-        function(options,next)
-        {
-            gui.jobs().setProgress(options.id,options.progress);
-        });
-        
-    CABLES.talkerAPI.send("getPatch",{},function(err,r)
+    CABLESUILOADER.talkerAPI.addEventListener("jobStart", (options, next) =>
     {
-        this._cfg.patch=r;
+        gui.jobs().start({ id: options.id, title: options.title });
+    });
+
+    CABLESUILOADER.talkerAPI.addEventListener("jobFinish", (options, next) =>
+    {
+        gui.jobs().finish(options.id);
+    });
+
+    CABLESUILOADER.talkerAPI.addEventListener("jobProgress", (options, next) =>
+    {
+        gui.jobs().setProgress(options.id, options.progress);
+    });
+
+    CABLESUILOADER.talkerAPI.send("getPatch", {}, (err, r) =>
+    {
+        this._cfg.patch = r;
         incrementStartup();
-        this.loadUserOps(function()
+        this.loadUserOps(() =>
         {
             console.log("setpatch...");
-            if(cb)cb();
-        }.bind(this));
-    }.bind(this));
-    
+            if (cb) cb();
+        });
+    });
 };
 
-CABLES.SandboxBrowser.prototype.loadUserOps=function(cb)
+CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
 {
     var userOpsUrls = [];
-    var proj=this._cfg.patch;
+    var proj = this._cfg.patch;
 
-    for (var i in proj.userList)
-        userOpsUrls.push(this.getCablesUrl()+'/api/ops/code/' + CABLES.UI.sanitizeUsername(proj.userList[i]));
+    for (var i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
 
-    var lid = 'userops' + proj._id + CABLES.generateUUID();
-    loadjs.ready(lid, 
-        function()
+    var lid = "userops" + proj._id + CABLES.generateUUID();
+    loadjs.ready(lid, () =>
+    {
+        incrementStartup();
+        logStartup("User Ops loaded");
+
+        gui.patch().setProject(proj);
+
+        if (proj.ui)
         {
-            incrementStartup();
-            logStartup('User Ops loaded');
+            gui.bookmarks.set(proj.ui.bookmarks);
+            $("#options").html(gui.bookmarks.getHtml());
+        }
 
-            gui.patch().setProject(proj);
-
-            if (proj.ui)
-            {
-                gui.bookmarks.set(proj.ui.bookmarks);
-                $('#options').html(gui.bookmarks.getHtml());
-            }
-
-            gui.patch().showProjectParams();
-            cb();
-        }.bind(this));
+        gui.patch().showProjectParams();
+        cb();
+    });
 
     loadjs(userOpsUrls, lid);
-    
-    
-}
-
+};

@@ -39,7 +39,7 @@ CABLES.UI.Exporter=function(project)
         var ignoreAssets=false;
         CABLES.UI.MODAL.showLoading('exporting project');
 
-        CABLES.talkerAPI.send(
+        CABLESUILOADER.talkerAPI.send(
             "exportPatch",
             {
                 "options":options
