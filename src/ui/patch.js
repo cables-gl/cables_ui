@@ -23,8 +23,10 @@ CABLES.UI.Patch = function(_gui) {
 
     // var rubberBandStartPos = null;
     // var rubberBandPos = null;
+
     var mouseRubberBandStartPos = null;
     var mouseRubberBandPos = null;
+    var mouseRubberBandSelectedBefore=[];
     var rubberBandRect = null;
     var isLoading = false;
 
@@ -1289,7 +1291,8 @@ CABLES.UI.Patch = function(_gui) {
                     for (var i in self.ops) {
                         if (!self.ops[i].isHidden()) {
                             var rect = self.ops[i].oprect.getRect();
-                            if (rect && rect.matrix) {
+                            if (rect && rect.matrix)
+                            {
                                 var opX = rect.matrix.e;
                                 var opY = rect.matrix.f;
                                 var opW = rect.attr("width");
@@ -1307,6 +1310,13 @@ CABLES.UI.Patch = function(_gui) {
                                 }
                             }
                         }
+                    }
+
+                    for(var i=0;i<mouseRubberBandSelectedBefore.length;i++)
+                    {
+                        var o=mouseRubberBandSelectedBefore[i];
+                        self.addSelectedOp(o);
+                        o.setSelected(true);
                     }
 
                     if (selectedOps.length !== 0) setStatusSelectedOps();
@@ -1401,19 +1411,25 @@ CABLES.UI.Patch = function(_gui) {
             CABLES.UI.selectedEndOp = null;
         };
 
-        this.background.node.onmousedown = function(ev) {
+        this.background.node.onmousedown = function(ev)
+        {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             this._elPatch.focus();
             CABLES.UI.OPSELECT.linkNewOpToPort=null;
+
+            if(ev.shiftKey)
+            {
+                mouseRubberBandSelectedBefore.length=0;
+                for(var i=0;i<selectedOps.length;i++)
+                    mouseRubberBandSelectedBefore.push(selectedOps[i]);
+            }
             if (!ev.shiftKey && !spacePressed && ev.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
             {
                 gui.patch().setSelectedOp(null);
                 self.showProjectParams();
             }
-            
         }.bind(this);
 
-        var lastZoomDrag = -1;
 
         this.toggleCenterZoom=function(e)
         {
@@ -1427,18 +1443,19 @@ CABLES.UI.Patch = function(_gui) {
 
 
 
-        $('#patch').on("mousemove", function(e) {
+        $('#patch').on("mousemove", function(e)
+        {
+            if (CABLES.SPLITPANE.bound) return;
 
-            if(CABLES.SPLITPANE.bound)return;
-            
             e = mouseEvent(e);
 
-            if (CABLES.UI.MOUSEOVERPORT )return;
+            if (CABLES.UI.MOUSEOVERPORT) return;
             gui.notIdling();
 
-            if (e.metaKey || e.altKey) {
-                if (CABLES.UI.quickAddOpStart) {
-
+            if (e.metaKey || e.altKey)
+            {
+                if (CABLES.UI.quickAddOpStart)
+                {
                     if (!self.quickLinkLine) self.quickLinkLine = new CABLES.UI.SVGLine(
                         CABLES.UI.quickAddOpStart.op.uiAttribs.translate.x + 30,
                         CABLES.UI.quickAddOpStart.op.uiAttribs.translate.y + 15);
@@ -1465,16 +1482,12 @@ CABLES.UI.Patch = function(_gui) {
 
         this._elPatchSvg.bind("mouseup", function(event) {
             rubberBandHide();
-            lastZoomDrag = -1;
+            mouseRubberBandSelectedBefore.length=0;
             gui.setCursor();
-           
         }.bind(this));
 
         this._elPatchSvg.bind("mouseenter", function(event) { gui.setCursor(); }.bind(this));
         this._elPatchSvg.bind("mouseleave", function(event) { gui.setCursor(); }.bind(this));
-
-
-
 
         this._elPatchSvg.bind("touchstart", (e) =>
         { 
@@ -1497,10 +1510,11 @@ CABLES.UI.Patch = function(_gui) {
         });
 
             
-        this._elPatchSvg.bind("mousemove", function(e) {
+        this._elPatchSvg.bind("mousemove", function(e)
+        {
             e = mouseEvent(e);
 
-            if (CABLES.UI.MOUSEOVERPORT)return;
+            if (CABLES.UI.MOUSEOVERPORT) return;
 
             if ((CABLES.UI.MOUSEDRAGGINGPORT && !spacePressed) || (mouseRubberBandStartPos && e.buttons != CABLES.UI.MOUSE_BUTTON_LEFT) ) {
                 rubberBandHide();
@@ -1508,6 +1522,7 @@ CABLES.UI.Patch = function(_gui) {
                 return;
             }
 
+            // panning
             if (self.lastMouseMoveEvent && 
                 (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) )) { // && !CABLES.UI.MOUSEDRAGGINGPORT
                 gui.setCursor("grab");
@@ -2586,8 +2601,7 @@ CABLES.UI.Patch = function(_gui) {
 
         var html='';
 
-        if(!gui.user.isPatchOwner)
-            html += CABLES.UI.getHandleBarHtml('clonepatch', {});
+        if(!gui.user.isPatchOwner) html += CABLES.UI.getHandleBarHtml('clonepatch', {});
 
         html+=gui.bookmarks.getHtml();
 
