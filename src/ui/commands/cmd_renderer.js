@@ -99,12 +99,12 @@ CABLES.CMD.commands.push({
         func: CABLES.CMD.RENDERER.fullscreen,
         icon: 'monitor'
     }, {
-        cmd: "change renderer size",
+        cmd: "change canvas size",
         category: "renderer",
         func: CABLES.CMD.RENDERER.changeSize,
         icon: 'maximize'
     }, {
-        cmd: "reset renderer size",
+        cmd: "reset canvas size",
         category: "renderer",
         func: CABLES.CMD.RENDERER.resetSize,
         icon: 'maximize'
@@ -119,7 +119,7 @@ CABLES.CMD.commands.push({
         func: CABLES.CMD.RENDERER.screenshotUpload,
         icon: 'image'
     }, {
-        cmd: "scale renderer",
+        cmd: "scale canvas",
         category: "renderer",
         func: CABLES.CMD.RENDERER.scaleCanvas,
         icon: 'image'
