@@ -8,6 +8,8 @@
 
         <header>
             <input id="opsearch" placeholder="search for op" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search"/>
+            <br/>
+            <span style="margin-top:6px;position: absolute;font-size: 13px;opacity: 0.75;" id="realsearch"></span>
         </header>
 
         <style id="search_style"></style>
@@ -25,7 +27,6 @@
 
         <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">
             <div class="insertbutton fright" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
-
             <a>
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
                 <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>

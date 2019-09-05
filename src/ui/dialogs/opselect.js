@@ -17,6 +17,7 @@ CABLES.UI.OpSelect=function()
     this.tree=new CABLES.OpTree();
     this._sortTimeout=0;
     this._backspaceDelay=-1;
+    this._wordsDb=null;
 
     this._eleSearchinfo=null
 };
@@ -68,7 +69,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     perf.finish();
 };
 
-CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,list,query,options)
+CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,orig,list,query,options)
 {
     var perf = CABLES.uiperf.start('opselect._searchWord');
 
@@ -100,6 +101,15 @@ CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,list,query,options)
             points+=4;
             scoreDebug+='+4 found in shortname ('+query+')<br/>';
         }
+
+
+if(orig.length>1 && list[i]._lowerCaseName.indexOf(orig)>-1)
+{
+    found=true;
+    points+=2;
+    scoreDebug+='+2 found full namespace ('+query+')<br/>';
+}
+
 
         if(points==0)
         {
@@ -186,6 +196,66 @@ CABLES.UI.OpSelect.prototype._search=function(q)
             options.linkNamespaceIsTextureEffects=true
     }
 
+    var origQuery=query;
+
+    if(this._wordsDb==null && this._list) // build word database by splitting up camelcase 
+    {
+        var buildWordDB={};
+        for(var i=0;i<this._list.length;i++)
+        {
+            var res = this._list[i].name.split(/(?=[A-Z,0-9,/.])/)
+            for(var j=0;j<res.length;j++)
+            {
+                if(res[j][res[j].length-2]=="_")res[j]=res[j].substr(0,res[j].length-2);
+                if(res[j][0]==".") res[j]=res[j].substr(1);
+                if(res[j].length>2) buildWordDB[res[j].toLowerCase()]=1;
+            }
+        }
+
+        this._wordsDb=Object.keys(buildWordDB);
+        this._wordsDb.sort(function(a, b){ return b.length - a.length; });
+    }
+
+    if(this._wordsDb) // search through word db
+    {
+        var q=query;
+        var queryParts=[];
+        var found=false;
+        do
+        {
+            found=false;
+            for(var i=0;i<this._wordsDb.length;i++)
+            {
+                var idx=q.indexOf(this._wordsDb[i]);
+                if(idx>-1 ) //&& queryParts.indexOf(this._wordsDb[i])==-1
+                {
+                    found=true;
+                    queryParts.push(this._wordsDb[i]);
+                    q=q.substr(0,idx)+" "+q.substr(idx+this._wordsDb[i].length,q.length-idx);
+                    break;
+                }
+            }
+        }
+        while(found);
+
+        if(queryParts.length>0)
+        {
+            var nquery=queryParts.join(" ");
+            nquery+=" "+q;
+            // nquery=query+" "+nquery;
+
+            if(nquery!=query) $('#realsearch').html('Searching for: <b>'+nquery+'</b>');
+
+            query=nquery;
+        }
+        else $('#realsearch').html('');
+    }
+
+
+
+
+
+
     if(query.length>1)
     {
         if(query.indexOf(" ")>-1)
@@ -194,12 +264,12 @@ CABLES.UI.OpSelect.prototype._search=function(q)
 
             for(i=0;i<words.length;i++)
             {
-                this._searchWord(i,this._list,words[i],options);
+                this._searchWord(i,origQuery,this._list,words[i],options);
             }
         }
         else
         {
-            this._searchWord(0,this._list,query,options);
+            this._searchWord(i,'',this._list,query,options);
         }
     }
 
