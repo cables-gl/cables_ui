@@ -786,7 +786,7 @@ CABLES.UI.Patch = function(_gui) {
         CABLES.UI.MODAL.prompt(
             "Save As...",
             "Enter a name for the copy of this Project ",
-            "My new Project",
+            gui.scene().name,
             function(name)
             {
                 CABLESUILOADER.talkerAPI.send("newPatch",{"name":name}, 
