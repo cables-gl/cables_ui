@@ -102,13 +102,12 @@ CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,orig,list,query,opti
             scoreDebug+='+4 found in shortname ('+query+')<br/>';
         }
 
-
-if(orig.length>1 && list[i]._lowerCaseName.indexOf(orig)>-1)
-{
-    found=true;
-    points+=2;
-    scoreDebug+='+2 found full namespace ('+query+')<br/>';
-}
+        if(orig.length>1 && list[i]._lowerCaseName.indexOf(orig)>-1)
+        {
+            found=true;
+            points+=2;
+            scoreDebug+='+2 found full namespace ('+query+')<br/>';
+        }
 
 
         if(points==0)
@@ -269,7 +268,7 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         }
         else
         {
-            this._searchWord(i,'',this._list,query,options);
+            this._searchWord(0,query,this._list,query,options);
         }
     }
 

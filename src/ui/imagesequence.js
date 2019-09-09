@@ -29,8 +29,6 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         currentNum++;
         fileNum++;
 
-
-
         gui.patch().scene.pause();
         var time = currentNum * frameDuration;
 
@@ -176,7 +174,11 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
         {
             gui.patch().scene.cgl.saveScreenshot(
                 filename + strCurrentNum,
-                render.bind(this),
+                function()
+                {
+                    console.log('...finished'+strCurrentNum);
+                    render();
+                }.bind(this),
                 $('#render_width').val(),
                 $('#render_height').val()
             );
