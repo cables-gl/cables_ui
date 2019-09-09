@@ -260,11 +260,8 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         if(query.indexOf(" ")>-1)
         {
             var words=query.split(" ");
-
             for(i=0;i<words.length;i++)
-            {
                 this._searchWord(i,origQuery,this._list,words[i],options);
-            }
         }
         else
         {

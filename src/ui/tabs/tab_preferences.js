@@ -13,7 +13,7 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.Preferences = function (tabs)
 {
-    this._tab = new CABLES.UI.Tab("Preferences", { icon: "settings", infotext: "tab_preferences" });
+    this._tab = new CABLES.UI.Tab("Preferences", { icon: "settings", infotext: "tab_preferences",singleton:true });
     tabs.addTab(this._tab, true);
     this.show();
 };

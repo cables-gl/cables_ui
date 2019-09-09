@@ -272,7 +272,11 @@ CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
         if (t)
         {
             this.activateTab(t.id);
-            this.emitEvent("onTabAdded", tab);
+            this.emitEvent("onTabAdded", t);
+
+            if (activate) this.activateTab(t.id);
+
+
             return t;
         }
     }
