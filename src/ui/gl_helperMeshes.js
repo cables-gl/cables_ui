@@ -236,7 +236,7 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
 };
 
 
-CABLES.GL_MARKER.drawArrowSourceDest = function({ op, sourceX, sourceY, sourceZ, destX, destY, destZ })
+CABLES.GL_MARKER.drawLineSourceDest = function({ op, sourceX, sourceY, sourceZ, destX, destY, destZ })
 {
     const cgl = op.patch.cgl;
     if (!CABLES.GL_MARKER.ARROW_SRC_DST)
