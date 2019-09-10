@@ -81,7 +81,7 @@ CABLES.GL_MARKER.drawSphere=function(op,size)
             var segments=80;
             var i=0,degInRad=0;
             var radius=1;
-    
+
             for (i=0; i <= Math.round(segments); i++)
             {
                 degInRad = (360.0/Math.round(segments))*i*CGL.DEG2RAD;
@@ -177,38 +177,38 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
                 0, 0, 0.00001,   0,0,1,
             ]);
         // geom.resetTextureCoords();
-        
+
         CABLES.GL_MARKER.MARKER.mesh=new CGL.Mesh(cgl, geom, cgl.gl.LINES);
         CABLES.GL_MARKER.MARKER.mesh.setGeom(geom);
-       
+
         var frag=''
             .endl()+'IN vec3 axisColor;'
-            
+
             .endl()+'void main()'
             .endl()+'{'
             .endl()+'    vec4 col=vec4(axisColor,1.0);'
             .endl()+'    outColor = col;'
             .endl()+'}';
-        
+
         var vert=''
             .endl()+'IN vec3 vPosition;'
             .endl()+'UNI mat4 projMatrix;'
             .endl()+'UNI mat4 mvMatrix;'
             .endl()+'OUT vec3 axisColor;'
-            
+
             .endl()+'void main()'
             .endl()+'{'
             .endl()+'   vec4 pos=vec4(vPosition, 1.0);'
             .endl()+'   if(pos.x!=0.0)axisColor=vec3(1.0,0.3,0.0);'
             .endl()+'   if(pos.y!=0.0)axisColor=vec3(0.0,1.0,0.2);'
             .endl()+'   if(pos.z!=0.0)axisColor=vec3(0.0,0.5,1.0);'
-            
+
             .endl()+'   gl_Position = projMatrix * mvMatrix * pos;'
             .endl()+'}';
 
         CABLES.GL_MARKER.MARKER.shader=new CGL.Shader(cgl,'markermaterial');
         CABLES.GL_MARKER.MARKER.shader.setSource(vert,frag);
-    
+
         CABLES.GL_MARKER.MARKER.vScale=vec3.create();
     }
 
@@ -216,7 +216,7 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
 
     if(!size)size=2;
     cgl.pushModelMatrix();
-    
+
     cgl.setShader(CABLES.GL_MARKER.MARKER.shader);
 
     vec3.set(CABLES.GL_MARKER.MARKER.vScale, size,size,size);
@@ -236,8 +236,49 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
 };
 
 
+CABLES.GL_MARKER.drawArrowSourceDest = function({ op, sourceX, sourceY, sourceZ, destX, destY, destZ })
+{
+    const cgl = op.patch.cgl;
+    if (!CABLES.GL_MARKER.ARROW_SRC_DST)
+    {
+        CABLES.GL_MARKER.ARROW_SRC_DST = {};
+        function bufferData() { // eslint-disable-line
+            const verts = [];
+            verts.push(sourceX, sourceY, sourceZ);
+            verts.push(destX, destY, destZ);
+            // verts.push(destX - 0.25, destY - 0.75, sourceZ);
+            // verts.push(destX, destY, destZ);
+            // verts.push(destX + 0.25, destY - 0.75, sourceZ);
+            // verts.push(destX, destY, destZ);
 
+            const tc=[0,0,0,0,0,0,0,0,0,0,0,0];
+            const geom=new CGL.Geometry();
+            geom.vertices=verts;
+            geom.setTexCoords(tc);
+            geom.vertexNormals=verts.slice();
+            CABLES.GL_MARKER.ARROW_SRC_DST.geom = geom;
+            CABLES.GL_MARKER.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
+        }
+        bufferData();
+    } else {
+        CABLES.GL_MARKER.ARROW_SRC_DST.geom.setVertices([sourceX, sourceY, sourceZ, destX, destY, destZ]);
+        CABLES.GL_MARKER.ARROW_SRC_DST.cube.updateVertices(CABLES.GL_MARKER.ARROW_SRC_DST.geom);
+    }
 
+    if (cgl.lastMesh) cgl.lastMesh.unBind();
+
+    cgl.pushModelMatrix();
+    CABLES.GL_MARKER.startFramebuffer(cgl);
+
+    let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
+    if (gui.patch().isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+
+    CABLES.GL_MARKER.ARROW_SRC_DST.cube.render(shader);
+    CABLES.GL_MARKER.count++;
+
+    cgl.popModelMatrix();
+    CABLES.GL_MARKER.endFramebuffer(cgl);
+};
 
 CABLES.GL_MARKER.drawArrow=function(op,sizeX,rotX,rotY,rotZ)
 {
@@ -245,7 +286,7 @@ CABLES.GL_MARKER.drawArrow=function(op,sizeX,rotX,rotY,rotZ)
 
     if(!CABLES.GL_MARKER.ARROW)
     {
-        CABLES.GL_MARKER.ARROW={};      
+        CABLES.GL_MARKER.ARROW={};
         CABLES.GL_MARKER.ARROW.vScale=vec3.create();
 
         function bufferData()
@@ -311,9 +352,9 @@ CABLES.GL_MARKER.drawXPlane=function(op,sizeX,rotX,rotY,rotZ)
 
     if(!CABLES.GL_MARKER.XPLANE)
     {
-        CABLES.GL_MARKER.XPLANE={};      
+        CABLES.GL_MARKER.XPLANE={};
         CABLES.GL_MARKER.XPLANE.vScale=vec3.create();
-        
+
 
         function bufferData()
         {
@@ -372,7 +413,7 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 
     if(!CABLES.GL_MARKER.CUBE)
     {
-        CABLES.GL_MARKER.CUBE={};      
+        CABLES.GL_MARKER.CUBE={};
         CABLES.GL_MARKER.CUBE.vScale=vec3.create();
 
         function bufferData()
@@ -423,10 +464,10 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
     if(sizeZ==undefined)sizeZ=sizeX;
     vec3.set(CABLES.GL_MARKER.CUBE.vScale, sizeX,sizeY,sizeZ);
     mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.CUBE.vScale);
-    
+
     var shader=CABLES.GL_MARKER.getDefaultShader(cgl);
     if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
-    
+
     CABLES.GL_MARKER.CUBE.mesh.render(shader);
     CABLES.GL_MARKER.count++;
 
@@ -447,7 +488,7 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     {
         return;
     }
-    
+
     var currentViewPort=cgl.getViewPort();
     var w=currentViewPort[2];
     var h=currentViewPort[3];
@@ -499,7 +540,7 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
             var shader_frag=''
                 .endl()+'UNI sampler2D tex;'
                 .endl()+'IN vec2 texCoord;'
-    
+
                 .endl()+'void main()'
                 .endl()+'{'
                 // .endl()+'   vec3 gray = vec3(dot( vec3(0.2126,0.7152,0.0722),  texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y))).rgb ));'
@@ -510,26 +551,26 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
 
 
                 .endl()+'}';
-    
+
             var shader_vert=''
                 .endl()+'IN vec3 vPosition;'
                 .endl()+'UNI mat4 projMatrix;'
                 .endl()+'UNI mat4 mvMatrix;'
                 .endl()+'OUT vec2 texCoord;'
                 .endl()+'IN vec2 attrTexCoord;'
-    
+
                 .endl()+'void main()'
                 .endl()+'{'
                 .endl()+'   vec4 pos=vec4(vPosition, 1.0);'
                 .endl()+'   texCoord=attrTexCoord;'
                 .endl()+'   gl_Position = projMatrix * mvMatrix * pos;'
                 .endl()+'}';
-    
+
             shader.setSource(shader_vert,shader_frag);
             shader.texUniform=new CGL.Uniform(shader,'t','tex',0);
-    
+
             CABLES.GL_MARKER.fullscreenRectShader=shader;
-    
+
             shader.bindTextures=function()
             {
                 cgl.gl.activeTexture(cgl.gl.TEXTURE0);
