@@ -2,6 +2,8 @@ CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.UTILS = CABLES.UTILS || {};
 
+
+
 CABLES.UI.handleBarsPrecompiled = {};
 CABLES.UI.getHandleBarHtml = function (name, obj)
 {
