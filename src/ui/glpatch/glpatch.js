@@ -1,15 +1,3 @@
-
-// SHOULD BE MOVED TO UI !!
-// import { Shader } from "./cgl/cgl_shader";
-// import { Uniform } from "./cgl/cgl_shader_uniform";
-// import { Geometry } from "./cgl/cgl_geom";
-// import { Mesh } from "./cgl/cgl_mesh";
-
-// import { CONSTANTS } from "./constants";
-
-// const GLGUI = {};
-
-
 var CABLES=CABLES||{};
 CABLES.GLGUI=CABLES.GLGUI||{};
 
@@ -45,6 +33,9 @@ CABLES.GLGUI.RectInstancer=function(cgl,options)
 
         .endl()+'void main()'
         .endl()+'{'
+
+        .endl()+'   float aspect=resX/resY;'
+
         .endl()+'    vec3 pos=vPosition;'
         .endl()+'    pos.xy*=instSize;'
 
@@ -53,6 +44,8 @@ CABLES.GLGUI.RectInstancer=function(cgl,options)
 
         .endl()+'    pos.x+=instPos.x;'
         .endl()+'    pos.y+=instPos.y;'
+
+        .endl()+'    pos.y*=aspect;'
 
         .endl()+'    pos.y=0.0-pos.y;'
 
@@ -63,8 +56,8 @@ CABLES.GLGUI.RectInstancer=function(cgl,options)
         , 'IN vec4 col;void main(){outColor=vec4(col.rgb,1.0);}');
 
     this._uniZoom=new CGL.Uniform(this._shader,'f','zoom',0),
-    this._uniResX=new CGL.Uniform(this._shader,'f','resX',500),
-    this._uniResY=new CGL.Uniform(this._shader,'f','resY',500),
+    this._uniResX=new CGL.Uniform(this._shader,'f','resX',0),
+    this._uniResY=new CGL.Uniform(this._shader,'f','resY',0),
     this._uniscrollX=new CGL.Uniform(this._shader,'f','scrollX',0),
     this._uniscrollY=new CGL.Uniform(this._shader,'f','scrollY',0);
 
@@ -86,6 +79,24 @@ CABLES.GLGUI.RectInstancer.prototype.dispose=function()
 
 }
 
+CABLES.GLGUI.RectInstancer.prototype.mouseMove=function(x,y)
+{
+
+    // var scrollX=this._uniscrollX.getValue();
+    // var scrollY=this._uniscrollY.getValue();
+
+    // for(var i=0;i<this._sizes.length/2;i++)
+    // {
+    //     if(x+scrollX>this._positions[i*3+0] && x+scrollX<this._positions[i*3+0]+100 )
+    //     if(y+scrollY>this._positions[i*3+1] && y+scrollY<this._positions[i*3+1]+100 )
+    //     {
+    //         console.log('posx',this._colors[i*3+0]);
+
+    //     }
+    // }
+
+}
+
 CABLES.GLGUI.RectInstancer.prototype.render=function(resX,resY,scrollX,scrollY,zoom)
 {
     this._uniResX.set(resX);
@@ -101,9 +112,12 @@ CABLES.GLGUI.RectInstancer.prototype.render=function(resX,resY,scrollX,scrollY,z
 
 CABLES.GLGUI.RectInstancer.prototype.rebuild=function()
 {
-    this._mesh.addAttribute('instPos',this._positions,3,{instanced:true});
-    this._mesh.addAttribute('instCol',this._colors,4,{instanced:true});
-    this._mesh.addAttribute('instSize',this._sizes,2,{instanced:true});
+    // todo only update whats needed
+    this._mesh.setAttribute('instPos',this._positions,3,{instanced:true});
+    this._mesh.setAttribute('instCol',this._colors,4,{instanced:true});
+    this._mesh.setAttribute('instSize',this._sizes,2,{instanced:true});
+
+    // console.log('rebuild...');
     this._needsRebuild=false;
 }
 
@@ -149,6 +163,7 @@ CABLES.GLGUI.GlRect=function(instancer,options)
     this._attrIndex=instancer.getIndex();
     this._parent=options.parent||null;
     this.childs=[];
+    this._rectInstancer.setSize(this._attrIndex,100,100);
 }
 
 CABLES.GLGUI.GlRect.prototype.addChild=function(c)
@@ -186,12 +201,9 @@ CABLES.GLGUI.GlRect.prototype.setPosition=function(_x,_y)
 }
 
 
-
-
-
-
-
 // ------------------------------------
+
+
 
 CABLES.GLGUI.OP_MIN_WIDTH=100;
 
@@ -292,10 +304,15 @@ CABLES.GLGUI.GlPatch=function(patch)
     this._patch=patch;
     this._glOps=[];
     this._rectInstancer=new CABLES.GLGUI.RectInstancer(this._patch.cgl);
-    this._rectInstancer.rebuild();
 
     patch.addEventListener("onOpAdd",this.addOp.bind(this));
     patch.addEventListener("onOpDelete",this.deleteOp.bind(this));
+
+
+
+       
+    this._rectInstancer.rebuild();
+
 }
 
 CABLES.GLGUI.GlPatch.prototype.getOpAt=function(x,y)
@@ -326,9 +343,15 @@ CABLES.GLGUI.GlPatch.prototype.addOp=function(op)
     op.addEventListener("onUiAttribsChange",glOp.update.bind(glOp));
 }
 
-CABLES.GLGUI.GlPatch.prototype.render=function(resX,resY,scrollX,scrollY,zoom)
+CABLES.GLGUI.GlPatch.prototype.render=function(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
 {
     this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
+
+    var z=1/(resX/2/zoom);
+    const mouseAbsX=(mouseX-resX/2)*z;
+    const mouseAbsY=(mouseY-resY/2)*z;
+    this._cursor.setPosition(mouseAbsX,mouseAbsY);
+
 }
 
 CABLES.GLGUI.GlPatch.prototype.dispose=function()
@@ -347,7 +370,13 @@ CABLES.GLGUI.GlPatch.prototype.reset=function()
     this._rectInstancer=new CABLES.GLGUI.RectInstancer(this._patch.cgl);
     this._rectInstancer.rebuild();
 
+    console.log('reset');
     this.dispose();
+
+    this._cursor=new CABLES.GLGUI.GlRect(this._rectInstancer);
+    this._cursor.setColor(1,0,0);
+    this._cursor.setPosition(0,0);
+    this._cursor.setSize(30,30);
 
     if(this._glOps.length==0)
     {
@@ -364,6 +393,3 @@ CABLES.GLGUI.GlPatch.prototype.reset=function()
 
     this._rectInstancer.rebuild();
 };
-
-
-// export { GLGUI };

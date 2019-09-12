@@ -27,7 +27,7 @@ CABLES.UI.Preferences.prototype.setSwitchValue = function (name, value)
     {
         if (elements[i].dataset.setting == name)
         {
-            if (elements[i].dataset.value == "" + value) elements[i].classList.add("switch-active");
+            if (elements[i].dataset.value == "" + value || (elements[i].dataset.value == "false" && !value)) elements[i].classList.add("switch-active");
             else elements[i].classList.remove("switch-active");
         }
     }
@@ -47,6 +47,10 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("showTipps", CABLES.UI.userSettings.get("showTipps"));
     this.setSwitchValue("showMinimap", CABLES.UI.userSettings.get("showMinimap"));
     this.setSwitchValue("helpermode", CABLES.UI.userSettings.get("helpermode"));
+
+    this.setSwitchValue("forceWebGl1", CABLES.UI.userSettings.get("forceWebGl1"));
+
+    
     
 };
 
