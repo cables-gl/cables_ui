@@ -112,8 +112,6 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning = function (id)
             timeout: false,
         });
     }
-
-    console.log(gui.patch().scene.cgl);
 };
 
 CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)

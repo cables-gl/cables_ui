@@ -40,7 +40,7 @@ CABLES.UI.Exporter=function(project)
     this.exportStatic = function(options) {
 
         var ignoreAssets=false;
-        CABLES.UI.MODAL.showLoading('exporting project');
+        CABLES.UI.MODAL.showLoading('Exporting Patch...');
 
         CABLESUILOADER.talkerAPI.send(
             "exportPatch",

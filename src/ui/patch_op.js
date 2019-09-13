@@ -578,7 +578,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var dblClick=function(ev)
     {
-        console.log("dblclick");
         gui.patch().setSelectedOp(null);
         if (CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
     };
