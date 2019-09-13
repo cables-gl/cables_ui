@@ -786,7 +786,7 @@ CABLES.UI.Patch = function(_gui) {
         CABLES.UI.MODAL.prompt(
             "Save As...",
             "Enter a name for the copy of this Project ",
-            "My new Project",
+            gui.scene().name,
             function(name)
             {
                 CABLESUILOADER.talkerAPI.send("newPatch",{"name":name}, 
@@ -1823,13 +1823,16 @@ CABLES.UI.Patch = function(_gui) {
             this.checkLinkTimeWarnings();
         }.bind(this));
 
-        scene.addEventListener("onLink",function(p1, p2) {
+        scene.addEventListener("onLink",function(p1, p2)
+        {
             gui.setStateUnsaved();
 
             var uiPort1 = null;
             var uiPort2 = null;
-            for (var i=0;i<self.ops.length;i++) {
-                for (var j=0;j<self.ops[i].portsIn.length;j++) {
+            for (var i=0;i<self.ops.length;i++)
+            {
+                for (var j=0;j<self.ops[i].portsIn.length;j++)
+                {
                     if (this.ops[i].portsIn[j].thePort == p1) 
                     {
                         uiPort1 = this.ops[i].portsIn[j];
@@ -1844,12 +1847,12 @@ CABLES.UI.Patch = function(_gui) {
                 }
             }
 
-            var thelink = new UiLink(uiPort1, uiPort2);
-
-            if (!uiPort1) {
+            if (!uiPort1 || !uiPort2) {
                 console.log('no uiport found');
                 return;
             }
+
+            var thelink = new UiLink(uiPort1, uiPort2);
 
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
@@ -1932,7 +1935,6 @@ CABLES.UI.Patch = function(_gui) {
 
                 var x=CABLES.UI.OPSELECT.newOpPos.x;
                 var y=CABLES.UI.OPSELECT.newOpPos.y;
-
                 var uiOp = new OpUi(self.paper, op, x,y, width, CABLES.UI.uiConfig.opHeight, op.name);
 
                 self.ops.push(uiOp);

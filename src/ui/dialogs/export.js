@@ -27,6 +27,9 @@ CABLES.UI.Exporter=function(project)
             const e2 = document.getElementById("export_settings_combine");
             options.combine = e2.options[e2.selectedIndex].value;
 
+            const e3 = document.getElementById("export_settings_compatibility");
+            options.compatibility = e3.options[e3.selectedIndex].value;
+
             CABLES.UI.MODAL.hide();
 
             this.exportStatic(options);

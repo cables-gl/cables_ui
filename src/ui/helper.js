@@ -11,6 +11,11 @@ CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
 CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
 
+String.prototype.endl = function ()
+{
+    return this + "\n";
+};
+
 CABLES.UI.sanitizeUsername=function(name)
 {
     name=name.toLowerCase();

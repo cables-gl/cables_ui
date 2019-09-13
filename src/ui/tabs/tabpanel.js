@@ -276,7 +276,6 @@ CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
 
             if (activate) this.activateTab(t.id);
 
-
             return t;
         }
     }

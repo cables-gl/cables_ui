@@ -2,14 +2,21 @@ CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
 
-CABLES.UI.GUI = function() {
+CABLES.UI.GUI = function(cfg) {
     var self = this;
-    // var userOpsLoaded = false;
     var showTiming = false;
     var showingEditor = false;
-
     var showMiniMap = false;
-    var _scene = this._corePatch = CABLES.patch = new CABLES.Patch({editorMode:true,canvas:{alpha:true,premultiplied:true,prefixAssetPath:CABLES.sandbox.getAssetPrefix()}});
+
+
+    var _scene = this._corePatch = CABLES.patch = new CABLES.Patch({editorMode:true,canvas:
+        {
+            "forceWebGl1":cfg.usersettings.settings.forceWebGl1=="true",
+            "alpha":true,
+            "premultiplied":true,
+            "prefixAssetPath":CABLES.sandbox.getAssetPrefix()
+        }});
+
     _scene.gui = true;
     var _patch = null;
 
@@ -866,7 +873,7 @@ CABLES.UI.GUI = function() {
             CABLES.CMD.PATCH.export();
         });
         $('.nav_uploadfile').bind("click", function(event) {
-            CABLES.CMD.PATCH.uploadFile();
+            CABLES.CMD.PATCH.uploadFileDialog();sr
         });
         // $('.nav_patch_export_ignoreAssets').bind("click", function(event) {
         //     gui.patch().exportStatic(true);
@@ -1806,11 +1813,11 @@ CABLES.UI.GUI.prototype.initCoreListeners=function()
     });
 }
 
-function startUi(event)
+function startUi(cfg)
 {
     logStartup('Init UI');
 
-    window.gui = new CABLES.UI.GUI();
+    window.gui = new CABLES.UI.GUI(cfg);
 
     incrementStartup();
     gui.serverOps = new CABLES.UI.ServerOps(gui);
