@@ -873,7 +873,7 @@ CABLES.UI.GUI = function(cfg) {
             CABLES.CMD.PATCH.export();
         });
         $('.nav_uploadfile').bind("click", function(event) {
-            CABLES.CMD.PATCH.uploadFile();
+            CABLES.CMD.PATCH.uploadFileDialog();sr
         });
         // $('.nav_patch_export_ignoreAssets').bind("click", function(event) {
         //     gui.patch().exportStatic(true);
