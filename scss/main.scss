@@ -651,11 +651,10 @@ input[type=range]:focus {
     margin-bottom: 20px;
 }
 
-.uploaddisclaimer {
-    margin-bottom: 20px;
-    font-size: 14px;
-    width: 96%;
-    padding-left: 3px;
+
+#uploaddialog
+{
+    max-width:720px;
 }
 
 .uploadareaActive

@@ -86,7 +86,7 @@ CABLES.CMD.PATCH.uploadFileDialog = function () {
 	if(!fileElem)
 	{
 		var html = CABLES.UI.getHandleBarHtml('upload',{"patchId":gui.patch().getCurrentProject()._id});
-		CABLES.UI.MODAL.show(html,{"title":"Upload File"});
+		CABLES.UI.MODAL.show(html,{"title":""});
 	}
 };
 
