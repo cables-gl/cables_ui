@@ -94,8 +94,19 @@ CABLES.UI.FileManager.prototype._buildHtml = function(o) {
 
         if (file.s) size = Math.ceil(file.s / 1024) + " kb";
 
+
+        var shortTitle=file.n;
+        if(shortTitle.length>13)
+        {
+            shortTitle=shortTitle.substr(0,13);
+            shortTitle+='...';
+        }
+
+
+
         var item = {
             title: file.n,
+            shortTitle: shortTitle,
             id: file._id || "lib" + CABLES.uuid(),
             p: file.p,
             date: file.d,

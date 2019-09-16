@@ -46,12 +46,12 @@
         </div>
     </div>
 
-        {{#if fileSelectOp}}
-            <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;display: block;margin-top: 20px;margin-bottom: 20px;text-align:center;" onclick="gui.fileManager.setFilePort(null);">
-                Selection mode for: {{fileSelectOp.objName}} 
-                <span class="icon icon-x"></span>
-            </span>
-        {{/if}}
+    {{#if fileSelectOp}}
+        <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;display: block;margin-top: 20px;margin-bottom: 20px;text-align:center;" onclick="gui.fileManager.setFilePort(null);">
+            Selection mode for: {{fileSelectOp.objName}} 
+            <span class="icon icon-x"></span>
+        </span>
+    {{/if}}
 
 
 </script>
@@ -62,7 +62,7 @@
 
         <div id="itemmanager_header"></div>
 
-        <div class="filelistcontainer">
+        <div class="filelistcontainer " >
             {{#each items}}
                 {{#if divider}}
                     <div style="clear:both"></div>
@@ -70,7 +70,7 @@
                         <h1>{{divider}}</h1>
                     </div>
                 {{else}}
-                    <div class="info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable" id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="Drag this File to the patchfield to create op!" data-searchable="{{title}}">
+                    <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable" id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="Drag this File to the patchfield to create op!" data-searchable="{{title}}" data-tt="{{title}}">
                         <div>
                             {{#if preview}}
                             <div class="preview" style="width:90%;height:calc(90% - 22px);;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
@@ -84,7 +84,7 @@
                             </div>
                             {{/if}}
                         </div>
-                        <div class="filename">{{title}}</div>
+                        <div class="filename">{{shortTitle}}</div>
                     </div>
                 {{/if}}
             {{/each}}

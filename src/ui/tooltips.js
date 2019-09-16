@@ -57,7 +57,7 @@ CABLES.UI.hideInfo = function ()
 
 $(document).on("mouseover mousemove", ".info", function (e)
 {
-    clearTimeout(CABLES.UI.tooltipTimeout);
+    // clearTimeout(CABLES.UI.tooltipTimeout);
     var txt = $(this).data("info");
     if ($(this).data("infotext")) txt = CABLES.UI.TEXTS[$(this).data("infotext")];
     if (!txt)
