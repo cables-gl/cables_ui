@@ -98,7 +98,7 @@ CABLES.UI.ServerOps = function (gui)
 
                 self.load(function ()
                 {
-                    gui.showFileManager();
+                    gui.maintabPanel.show(true);
                     self.edit(name);
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();

@@ -104,26 +104,27 @@ CABLES.UI.Port=function(thePort)
                 {
                     var otherPort=otherPorts[ip];
 
-                    for(var o in ops)
-                    {
-                        if(ops[o].op==otherPort.parent)
+                    if(otherPort)
+                        for(var o in ops)
                         {
-                            var xs=ops[o].op.uiAttribs.translate.x;
-                            var ys=ops[o].op.uiAttribs.translate.y;
-    
-                            for(var oo in ops[o].portsOut)
+                            if(ops[o].op==otherPort.parent)
                             {
-                                if(ops[o].portsOut[oo].thePort==otherPort)
+                                var xs=ops[o].op.uiAttribs.translate.x;
+                                var ys=ops[o].op.uiAttribs.translate.y;
+        
+                                for(var oo in ops[o].portsOut)
                                 {
-                                    xs+=ops[o].portsOut[oo].rect.attr('x');
-                                    ys+=ops[o].portsOut[oo].rect.attr('y');
+                                    if(ops[o].portsOut[oo].thePort==otherPort)
+                                    {
+                                        xs+=ops[o].portsOut[oo].rect.attr('x');
+                                        ys+=ops[o].portsOut[oo].rect.attr('y');
+                                    }
                                 }
+        
+                                points.push(xs);
+                                points.push(ys);
                             }
-    
-                            points.push(xs);
-                            points.push(ys);
                         }
-                    }
                 }
 
                 removeLinkingLine();
