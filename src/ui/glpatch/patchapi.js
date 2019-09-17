@@ -19,12 +19,13 @@ CABLES.GLGUI.GlPatchAPI=class
     _onLink(p1,p2,link)
     {
         // console.log("onlink",link);
-        const l=new CABLES.GLGUI.GlLink(this._glPatch,p1.parent.id,p2.parent.id);
+        const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,p1.parent.id,p2.parent.id);
     }
 
-    _onUnLink(link)
+    _onUnLink(a,b,link)
     {
-        console.log("unlink",link);
+        this._glPatch.deleteLink(link.id);
+        console.log("unlink API",link);
         // const l=new CABLES.GLGUI.GlLink(this._glPatch,p1.parent.id,p2.parent.id);
     }
 

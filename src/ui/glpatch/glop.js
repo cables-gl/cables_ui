@@ -69,6 +69,17 @@ CABLES.GLGUI.GlOp=class
         this._instancer=null;
     }
 
+    removeLink(linkId)
+    {
+        const l=this._links[linkId];
+        if(l)
+        {
+            delete this._links[linkId];
+            this.update();
+        }
+        
+    }
+
     _setupPort(i,p)
     {
         var r=new CABLES.GLGUI.GlRect(this._instancer,{"parent":this._glRectBg});

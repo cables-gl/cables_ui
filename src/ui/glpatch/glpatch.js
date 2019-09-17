@@ -27,7 +27,25 @@ CABLES.GLGUI.GlPatch = class
         return this._lines;
     }
 
-    deleteOp(op)
+    deleteLink(linkId)
+    {
+        const l=this.links[linkId];
+
+        if(l)
+        {
+            console.log(Object.keys(this.links));
+            delete this.links[linkId];
+            l.dispose();
+        }
+        else
+        {
+            console.log("this.links",this.links);
+            console.log("could not find link to remove!!",linkId);
+        }
+
+    }
+
+    deleteOp(op) // should work with opid...
     {
         for(var i=0;i<this._glOps.length;i++)
         {
@@ -40,6 +58,11 @@ CABLES.GLGUI.GlPatch = class
                 return;
             }
         }
+    }
+
+    addLink(l)
+    {
+        this.links[l.id]=l;
     }
 
     addOp(op)

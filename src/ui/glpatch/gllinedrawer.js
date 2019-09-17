@@ -23,7 +23,6 @@ CABLES.GLGUI.Linedrawer=class
 
             .endl()+'void main()'
             .endl()+'{'
-
             .endl()+'   float aspect=resX/resY;'
 
             .endl()+'    vec3 pos=vPosition;'
@@ -42,7 +41,7 @@ CABLES.GLGUI.Linedrawer=class
 
             .endl()+'    gl_Position = vec4(pos,1.0);'
             .endl()+'}'
-            , 'IN vec4 col;void main(){outColor=vec4(col.rgb,1.0);}');
+            , 'IN vec4 col;void main(){ if(col.a==0.0){discard;} outColor=vec4(col.rgb,1.0);}');
 
         this._uniZoom=new CGL.Uniform(this._shader,'f','zoom',0),
         this._uniResX=new CGL.Uniform(this._shader,'f','resX',0),
