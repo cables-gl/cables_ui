@@ -2,6 +2,7 @@ CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.FileManager = function(cb) {
+    this._filterType = null;
     this._manager = new CABLES.UI.ItemManager("Files", gui.mainTabs);
     this._filePortEle = null;
     this._firstTimeOpening = true;
@@ -44,12 +45,19 @@ CABLES.UI.FileManager.prototype.setFilePort = function(portEle, op) {
     if (!portEle) {
         this._filePortEle = null;
         this._filePortOp = null;
-        this.updateHeader();
-        return;
+
+        if(this._filterType)
+        {
+            this._filterType = null;
+            this._buildHtml();
+        }
+        
+    } else {
+        this._filePortEle = portEle;
+        this._filePortOp = op;
     }
-    this._filePortEle = portEle;
-    this._filePortOp = op;
     this.updateHeader();
+    
 };
 
 CABLES.UI.FileManager.prototype.reload = function(cb) {
@@ -88,51 +96,63 @@ CABLES.UI.FileManager.prototype.reload = function(cb) {
     );
 };
 
-CABLES.UI.FileManager.prototype._buildHtml = function(o) {
-    function createItem(items, file) {
-        var size = "";
+CABLES.UI.FileManager.prototype._createItem = function(
+    items,
+    file,
+    filterType
+) {
+    var size = "";
 
-        if (file.s) size = Math.ceil(file.s / 1024) + " kb";
+    if (file.s) size = Math.ceil(file.s / 1024) + " kb";
 
-
-        var shortTitle=file.n;
-        if(shortTitle.length>13)
-        {
-            shortTitle=shortTitle.substr(0,13);
-            shortTitle+='...';
-        }
-
-
-
-        var item = {
-            title: file.n,
-            shortTitle: shortTitle,
-            id: file._id || "lib" + CABLES.uuid(),
-            p: file.p,
-            date: file.d,
-            dateFromNow: file.dfr,
-            sizeKb: size,
-            size: file.s
-        };
-
-        item.icon = "file";
-
-        if (file.t == "SVG") {
-            item.preview = file.p;
-            item.icon = "pen-tool";
-        } else if (file.t == "image") {
-            item.preview = file.p;
-            item.icon = "image";
-        } else if (file.t == "3d json") item.icon = "cube";
-        else if (file.t == "video") item.icon = "film";
-        else if (file.t == "audio") item.icon = "headphones";
-        else if (file.t == "dir") item.divider = file.n;
-        items.push(item);
-        if (file.c)
-            for (var i = 0; i < file.c.length; i++)
-                createItem(items, file.c[i]);
+    var shortTitle = file.n;
+    if (shortTitle.length > 24) {
+        shortTitle = shortTitle.substr(0, 24);
+        shortTitle += "...";
     }
 
+    var item = {
+        title: file.n,
+        shortTitle: shortTitle,
+        id: file._id || "lib" + CABLES.uuid(),
+        p: file.p,
+        date: file.d,
+        dateFromNow: file.dfr,
+        sizeKb: size,
+        size: file.s
+    };
+
+    item.icon = "file";
+
+    if (file.t == "SVG") {
+        item.preview = file.p;
+        item.icon = "pen-tool";
+    } else if (file.t == "image") {
+        item.preview = file.p;
+        item.icon = "image";
+    } else if (file.t == "3d json") item.icon = "cube";
+    else if (file.t == "video") item.icon = "film";
+    else if (file.t == "audio") item.icon = "headphones";
+    else if (file.t == "dir") item.divider = file.n;
+
+    if (!filterType || filterType == file.t) items.push(item);
+    if (filterType && file.t == "dir")
+    {
+        // subdir has file with correct file type ??
+        for (var i = 0; i < file.c.length; i++)
+            if(file.c[i].t==filterType) 
+            {
+                items.push(item);
+                break;
+            }
+    }
+
+    if (file.c)
+        for (var i = 0; i < file.c.length; i++)
+            this._createItem(items, file.c[i], filterType);
+};
+
+CABLES.UI.FileManager.prototype._buildHtml = function(o) {
     var items = [];
 
     if (this._order == "size")
@@ -159,13 +179,14 @@ CABLES.UI.FileManager.prototype._buildHtml = function(o) {
     if (this._orderReverse) this._files.reverse();
 
     for (var i = 0; i < this._files.length; i++) {
-        createItem(items, this._files[i]);
+        this._createItem(items, this._files[i], this._filterType);
     }
 
     this._manager.listHtmlOptions.showHeader = this._fileSource != "lib";
     this._manager.listHtmlOptions.order = this._order;
     this._manager.listHtmlOptions.orderReverse = this._orderReverse;
     this._manager.setItems(items);
+
     this.updateHeader();
 };
 
@@ -179,6 +200,11 @@ CABLES.UI.FileManager.prototype.setOrder = function(o) {
 
     this._order = o;
     CABLES.UI.userSettings.set("filemanager_order", this._order);
+    this._buildHtml();
+};
+
+CABLES.UI.FileManager.prototype.setFilterType = function(f) {
+    this._filterType = f;
     this._buildHtml();
 };
 
@@ -221,6 +247,7 @@ CABLES.UI.FileManager.prototype.setDisplay = function(type) {
 CABLES.UI.FileManager.prototype.updateHeader = function(detailItems) {
     const html = CABLES.UI.getHandleBarHtml("filemanager_header", {
         fileSelectOp: this._filePortOp,
+        filterType: this._filterType,
         source: this._fileSource,
         display: this._manager.getDisplay(),
         filter: this._manager.titleFilter

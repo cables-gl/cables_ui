@@ -684,11 +684,11 @@ CABLES.UI.GUI = function(cfg) {
             }
             var fn=portInputEle.value;
 
+            this.fileManager.setFilterType(filterType);
             this.fileManager.setFilePort(portInputEle,gui.scene().getOpById(opid));
             this.fileManager.selectFile(fn);
 
         }.bind(this));
-
     }
 
     this.setProjectName = function(name) {

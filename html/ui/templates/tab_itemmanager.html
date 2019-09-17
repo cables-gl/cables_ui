@@ -48,7 +48,7 @@
 
     {{#if fileSelectOp}}
         <span style="border:2px solid var(--color-special);padding:7px;border-radius:10px;cursor:pointer;display: block;margin-top: 20px;margin-bottom: 20px;text-align:center;" onclick="gui.fileManager.setFilePort(null);">
-            Selection mode for: {{fileSelectOp.objName}} 
+            Selection mode for: <b>{{fileSelectOp.objName}}</b>  {{#if filterType}} / {{filterType}} {{/if}}
             <span class="icon icon-x"></span>
         </span>
     {{/if}}
