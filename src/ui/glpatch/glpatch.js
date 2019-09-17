@@ -11,22 +11,20 @@ CABLES.GLGUI.GlPatch = class
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
 
-        var idx=this._lines.getIndex();
-        this._lines.setLine(idx,0,0,200,200);
-        this._lines.setColor(idx,1,0,0,1);
-
-        var idx2=this._lines.getIndex();
-        this._lines.setLine(idx2,20,20,-200,1500);
-        this._lines.setColor(idx2,1,1,1,1);
-
         this._patch.addEventListener("onOpAdd",this.addOp.bind(this));
         this._patch.addEventListener("onOpDelete",this.deleteOp.bind(this));
 
         this._rectInstancer.rebuild();
+        this.links={}
     }
 
     getOpAt(x,y)
     {
+    }
+
+    get lineDrawer()
+    {
+        return this._lines;
     }
 
     deleteOp(op)
@@ -35,7 +33,7 @@ CABLES.GLGUI.GlPatch = class
         {
             if(this._glOps[i].getOp()==op)
             {
-                var delOp=this._glOps[i];
+                const delOp=this._glOps[i];
                 this._glOps[i].getOp().removeEventListener("onUiAttribsChange",this._glOps[i].update);
                 this._glOps.slice(i,1);
                 delOp.dispose();
@@ -46,11 +44,18 @@ CABLES.GLGUI.GlPatch = class
 
     addOp(op)
     {
+        if(!op)
+        {
+            console.error("no op at addop",op);
+        }
         console.log("OP ADDEDDDDDD");
         const glOp=new CABLES.GLGUI.GlOp(this._rectInstancer,op);
         this._glOps.push(glOp);
 
-        op.addEventListener("onUiAttribsChange",glOp.update.bind(glOp));
+        op.addEventListener("onUiAttribsChange",()=>{
+            glOp.opUiAttribs=op.uiAttribs;
+            glOp.update();
+            });
     }
 
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
@@ -64,8 +69,8 @@ CABLES.GLGUI.GlPatch = class
         const mouseAbsY=(mouseY-(resY/2))*z+(scrollY*z*0.125);
         this._cursor.setPosition(mouseAbsX,mouseAbsY);
 
-        this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
+        this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
     }
 
     dispose()
@@ -106,6 +111,15 @@ CABLES.GLGUI.GlPatch = class
         }
 
         this._rectInstancer.rebuild();
+    }
+
+    getOp(opid)
+    {
+        for(var i=0;i<this._glOps.length;i++)
+        {
+            if(this._glOps[i].id==opid) return this._glOps[i];
+        }
+
     }
 
 

@@ -3,29 +3,51 @@ var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.OP_MIN_WIDTH=100;
+CABLES.GLGUI.OP_HEIGHT=30;
 
 CABLES.GLGUI.GlOp=class
 {
     constructor(instancer,op)
     {
+        this._id=op.id;
+        this.opUiAttribs=op.uiAttribs;
         this._op=op;
         this._instancer=instancer;
         this._glRectBg=new CABLES.GLGUI.GlRect(instancer);
-        this._glRectBg.setSize(100,30);
+        this._glRectBg.setSize(100,CABLES.GLGUI.OP_HEIGHT);
         this._glRectBg.setColor(0.1,0.1,0.1);
         this._portRects=[];
+        this._links={};
 
         this.updatePosition();
 
-        for(var i=0;i<this._op.portsIn.length;i++)
-            this._setupPort(i,this._op.portsIn[i]);
-
-        for(var i=0;i<this._op.portsOut.length;i++)
-            this._setupPort(i,this._op.portsOut[i]);
+        for(var i=0;i<this._op.portsIn.length;i++) this._setupPort(i,this._op.portsIn[i]);
+        for(var i=0;i<this._op.portsOut.length;i++) this._setupPort(i,this._op.portsOut[i]);
 
         const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*10;
 
-        this._glRectBg.setSize(Math.max(CABLES.GLGUI.OP_MIN_WIDTH,portsSize),30);
+        this._glRectBg.setSize(Math.max(CABLES.GLGUI.OP_MIN_WIDTH,portsSize),CABLES.GLGUI.OP_HEIGHT);
+    }
+
+    get id()
+    {
+        return this._id;
+    }
+
+    set uiAttribs(attr)
+    {
+        this.opUiAttribs=attr;
+    }
+
+    get uiAttribs()
+    {
+        return this.opUiAttribs;
+    }
+
+
+    addLink(l)
+    {
+        this._links[l.id]=l;
     }
 
     dispose()
@@ -60,7 +82,7 @@ CABLES.GLGUI.GlOp=class
             else if(p.type == CABLES.OP_PORT_TYPE_DYNAMIC) r.setColor(1,1,1);
 
         var y=0;
-        if(p.direction==1)y=30-5;
+        if(p.direction==1) y=CABLES.GLGUI.OP_HEIGHT-5;
         r.setPosition(i*10,y);
         this._glRectBg.addChild(r);
         this._portRects.push(r);
@@ -70,10 +92,15 @@ CABLES.GLGUI.GlOp=class
     {
         if(!this._glRectBg)
         {
-            console.log("no this._glRectBg");
+            // console.log("no this._glRectBg");
             return;
         }
         this._glRectBg.setPosition(this._op.uiAttribs.translate.x,this._op.uiAttribs.translate.y);
+    }
+
+    getUiAttribs()
+    {
+        return this.opUiAttribs;
     }
 
     getOp()
@@ -81,9 +108,14 @@ CABLES.GLGUI.GlOp=class
         return this._op;
     }
 
+
     update()
     {
         this.updatePosition();
+        for(var i in this._links)
+        {
+            this._links[i].update();
+        }
     }
 
 }
