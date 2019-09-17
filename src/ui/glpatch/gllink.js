@@ -28,19 +28,16 @@ CABLES.GLGUI.GlLink=class
 
     update()
     {
-
         if(!this._op1)
         {
             this._op1=this._glpatch.getOp(this._opidA);
             if(this._op1) this._op1.addLink(this);
-            
         }
         
         if(!this._op2)
         {
             this._op2=this._glpatch.getOp(this._opidB);
             if(this._op2) this._op2.addLink(this);
-
         }
 
         if(!this._op1 || !this._op2)
@@ -57,7 +54,6 @@ CABLES.GLGUI.GlLink=class
 
         this._lineDrawer.setLine(this._lineIdx,pos1x,pos1y,pos2x,pos2y);
         this._lineDrawer.setColor(this._lineIdx,1,1,1,1);
-
     }
 
     dispose()

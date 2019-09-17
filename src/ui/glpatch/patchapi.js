@@ -24,6 +24,7 @@ CABLES.GLGUI.GlPatchAPI=class
 
     _onUnLink(a,b,link)
     {
+        if(!link)return;
         this._glPatch.deleteLink(link.id);
         console.log("unlink API",link);
         // const l=new CABLES.GLGUI.GlLink(this._glPatch,p1.parent.id,p2.parent.id);
