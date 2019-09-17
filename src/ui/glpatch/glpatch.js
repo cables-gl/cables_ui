@@ -42,7 +42,6 @@ CABLES.GLGUI.GlPatch = class
             console.log("this.links",this.links);
             console.log("could not find link to remove!!",linkId);
         }
-
     }
 
     deleteOp(op) // should work with opid...
@@ -142,9 +141,7 @@ CABLES.GLGUI.GlPatch = class
         {
             if(this._glOps[i].id==opid) return this._glOps[i];
         }
-
     }
-
 
 }
 

@@ -1,7 +1,6 @@
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-
 CABLES.GLGUI.GlLink=class 
 {
     constructor(glpatch,id,opidA,opidB)
