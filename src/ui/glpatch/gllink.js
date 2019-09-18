@@ -3,19 +3,28 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.GlLink=class 
 {
-    constructor(glpatch,id,opIdA,opIdB)
+    constructor(glpatch,id,opIdInput,opIdOutput,portIdInput,portIdOutput,type)
     {
         this._id=id;
-        this._glpatch=glpatch;
-        this._opIdA=opIdA;
-        this._opIdB=opIdB;
-        this._lineDrawer=this._glpatch.lineDrawer;
-        this._lineIdx=this._lineDrawer.getIndex();
+        this._glPatch=glpatch;
+        this._type=type;
+        this._opIdInput=opIdInput;
+        this._opIdOutput=opIdOutput;
+        // this._lineDrawer=this._glPatch.lineDrawer;
+        // this._lineIdx=this._lineDrawer.getIndex();
+        this._cable=new CABLES.GLGUI.GlCable(this._glPatch.lineDrawer,this._type);
+        this._glPatch.setDrawableColorByType(this._cable,this._type);
 
-        this._op1=null;
-        this._op2=null;
+        this._portIdInput=portIdInput;
+        this._portIdOutput=portIdOutput;
 
-        this._glpatch.addLink(this);
+        this._opIn=null;
+        this._opOut=null;
+
+        this._offsetXInput=0;
+        this._offsetXOutput=0;
+
+        this._glPatch.addLink(this);
         this.update();
     }
 
@@ -26,39 +35,49 @@ CABLES.GLGUI.GlLink=class
 
     update()
     {
-        if(!this._op1)
+
+
+        if(!this._opIn)
         {
-            this._op1=this._glpatch.getOp(this._opIdA);
-            if(this._op1) this._op1.addLink(this);
+            this._opIn=this._glPatch.getOp(this._opIdInput);
+            if(this._opIn)
+            {
+                this._opIn.addLink(this);
+                this._offsetXInput=this._opIn.getPortPos(this._portIdInput);
+            }
         }
         
-        if(!this._op2)
+        if(!this._opOut)
         {
-            this._op2=this._glpatch.getOp(this._opIdB);
-            if(this._op2) this._op2.addLink(this);
+            this._opOut=this._glPatch.getOp(this._opIdOutput);
+            if(this._opOut)
+            {
+                this._opOut.addLink(this);
+                this._offsetXOutput=this._opOut.getPortPos(this._portIdOutput);
+            }
         }
 
-        if(!this._op1 || !this._op2)
+        if(!this._opIn || !this._opOut)
         {
             console.log('[glLink] unknown ops...');
             return;
         }
 
-        const pos1x=this._op1.getUiAttribs().translate.x;
-        const pos1y=this._op1.getUiAttribs().translate.y;
+        const pos1x=this._opIn.getUiAttribs().translate.x+this._offsetXInput;
+        const pos1y=this._opIn.getUiAttribs().translate.y;
 
-        const pos2x=this._op2.getUiAttribs().translate.x;
-        const pos2y=this._op2.getUiAttribs().translate.y;
+        const pos2x=this._opOut.getUiAttribs().translate.x+this._offsetXOutput;
+        const pos2y=this._opOut.getUiAttribs().translate.y+CABLES.GLGUI.OP_HEIGHT;
 
-        this._lineDrawer.setLine(this._lineIdx,pos1x,pos1y,pos2x,pos2y);
-        this._lineDrawer.setColor(this._lineIdx,1,1,1,1);
+        this._cable.setPosition(pos1x,pos1y,pos2x,pos2y);
+        
     }
 
     dispose()
     {
-        if(this._op2) this._op2.removeLink(this._id);
-        if(this._op1) this._op1.removeLink(this._id);
-        this._lineDrawer.setColor(this._lineIdx,0,0,0,0);
+        if(this._opOut) this._opOut.removeLink(this._id);
+        if(this._opIn) this._opIn.removeLink(this._id);
+        this._cable.setColor(0,0,0,0);
     }
 
 }

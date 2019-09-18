@@ -5,11 +5,16 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 CABLES.GLGUI.OP_MIN_WIDTH=100;
 CABLES.GLGUI.OP_HEIGHT=30;
 
+CABLES.GLGUI.OP_PORT_DISTANCE=10;
+CABLES.GLGUI.OP_PORT_WIDTH=7;
+CABLES.GLGUI.OP_PORT_HEIGHT=7;
+
 CABLES.GLGUI.GlOp=class
 {
-    constructor(instancer,op)
+    constructor(glPatch,instancer,op)
     {
         this._id=op.id;
+        this._glPatch=glPatch;
         this.opUiAttribs=op.uiAttribs;
         this._op=op;
         this._instancer=instancer;
@@ -43,7 +48,6 @@ CABLES.GLGUI.GlOp=class
     {
         return this.opUiAttribs;
     }
-
 
     addLink(l)
     {
@@ -83,18 +87,13 @@ CABLES.GLGUI.GlOp=class
     _setupPort(i,p)
     {
         var r=new CABLES.GLGUI.GlRect(this._instancer,{"parent":this._glRectBg});
-        r.setSize(7,5);
+        r.setSize(CABLES.GLGUI.OP_PORT_WIDTH,CABLES.GLGUI.OP_PORT_HEIGHT);
 
-        if(p.type == CABLES.OP_PORT_TYPE_VALUE) r.setColor(0,1,0.7);
-            else if(p.type == CABLES.OP_PORT_TYPE_FUNCTION) r.setColor(1,1,0);
-            else if(p.type == CABLES.OP_PORT_TYPE_OBJECT) r.setColor(1,0,1);
-            else if(p.type == CABLES.OP_PORT_TYPE_ARRAY) r.setColor(0,0.3,1);
-            else if(p.type == CABLES.OP_PORT_TYPE_STRING) r.setColor(1,0.3,0);
-            else if(p.type == CABLES.OP_PORT_TYPE_DYNAMIC) r.setColor(1,1,1);
+        this._glPatch.setDrawableColorByType(r,p.type);
 
         var y=0;
         if(p.direction==1) y=CABLES.GLGUI.OP_HEIGHT-5;
-        r.setPosition(i*10,y);
+        r.setPosition(i*CABLES.GLGUI.OP_PORT_DISTANCE,y);
         this._glRectBg.addChild(r);
         this._portRects.push(r);
     }
@@ -103,7 +102,6 @@ CABLES.GLGUI.GlOp=class
     {
         if(!this._glRectBg)
         {
-            // console.log("no this._glRectBg");
             return;
         }
         this._glRectBg.setPosition(this.opUiAttribs.translate.x,this.opUiAttribs.translate.y);
@@ -125,9 +123,25 @@ CABLES.GLGUI.GlOp=class
         this.updatePosition();
         for(var i in this._links)
         {
-            console.log(i);
             this._links[i].update();
         }
+    }
+
+    getPortPos(id)
+    {
+        for(var i=0;i<this._op.portsIn.length;i++)
+        {
+            if(this._op.portsIn[i].id==id)
+                return i*CABLES.GLGUI.OP_PORT_DISTANCE+CABLES.GLGUI.OP_PORT_WIDTH*0.5;
+        }
+
+        for(var i=0;i<this._op.portsOut.length;i++)
+        {
+            if(this._op.portsOut[i].id==id)
+                return i*CABLES.GLGUI.OP_PORT_DISTANCE+CABLES.GLGUI.OP_PORT_WIDTH*0.5;
+        }
+
+        return 100;
     }
 
 }

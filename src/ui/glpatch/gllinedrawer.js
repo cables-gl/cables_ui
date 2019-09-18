@@ -56,7 +56,7 @@ CABLES.GLGUI.Linedrawer=class
 
         var i=0;
         for(i=0;i<3*this._num;i++) this._positions[i]=0;//Math.random()*60;
-        for(i=0;i<4*this._num;i++) this._colors[i]=1;//Math.random();
+        for(i=0;i<4*this._num;i++) this._colors[i]=Math.random();
     }
 
     dispose()

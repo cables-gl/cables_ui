@@ -89,7 +89,7 @@ CABLES.GLGUI.GlPatch = class
             console.error("no op at addop",op);
         }
         console.log("OP ADDEDDDDDD");
-        const glOp=new CABLES.GLGUI.GlOp(this._rectInstancer,op);
+        const glOp=new CABLES.GLGUI.GlOp(this,this._rectInstancer,op);
         this._glOpz[op.id]=glOp;
         glOp.updatePosition();
         glOp.update();
@@ -160,6 +160,17 @@ CABLES.GLGUI.GlPatch = class
         // {
         //     if(this._glOps[i].id==opid) return this._glOps[i];
         // }
+    }
+
+    setDrawableColorByType(e,t)
+    {
+        if(t == CABLES.OP_PORT_TYPE_VALUE) e.setColor(0,1,0.7);
+        else if(t == CABLES.OP_PORT_TYPE_FUNCTION) e.setColor(1,1,0);
+        else if(t == CABLES.OP_PORT_TYPE_OBJECT) e.setColor(1,0,1);
+        else if(t == CABLES.OP_PORT_TYPE_ARRAY) e.setColor(0,0.3,1);
+        else if(t == CABLES.OP_PORT_TYPE_STRING) e.setColor(1,0.3,0);
+        else if(t == CABLES.OP_PORT_TYPE_DYNAMIC) e.setColor(1,1,1);
+
     }
 
 }

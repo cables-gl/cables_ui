@@ -29,9 +29,8 @@ CABLES.GLGUI.GlPatchAPI=class
 
     _onLink(p1,p2,link)
     {
-        console.log(
-            "onlink",link        );
-        const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,p1.parent.id,p2.parent.id);
+        // console.log("onlink",p1.direction);
+        const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,p1.parent.id,p2.parent.id,p1.id,p2.id,p1.type);
     }
 
     _onUnLink(a,b,link)
