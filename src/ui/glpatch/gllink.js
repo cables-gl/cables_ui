@@ -70,7 +70,6 @@ CABLES.GLGUI.GlLink=class
         const pos2y=this._opOut.getUiAttribs().translate.y+CABLES.GLGUI.OP_HEIGHT;
 
         this._cable.setPosition(pos1x,pos1y,pos2x,pos2y);
-        
     }
 
     dispose()

@@ -20,9 +20,11 @@ CABLES.GLGUI.GlOp=class
         this._instancer=instancer;
         this._glRectBg=new CABLES.GLGUI.GlRect(instancer);
         this._glRectBg.setSize(100,CABLES.GLGUI.OP_HEIGHT);
-        this._glRectBg.setColor(0.1,0.1,0.1);
+        
         this._portRects=[];
         this._links={};
+        this._width=CABLES.GLGUI.OP_MIN_WIDTH;
+        this._hovering=false;
 
         this.updatePosition();
 
@@ -31,7 +33,8 @@ CABLES.GLGUI.GlOp=class
 
         const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*10;
 
-        this._glRectBg.setSize(Math.max(CABLES.GLGUI.OP_MIN_WIDTH,portsSize),CABLES.GLGUI.OP_HEIGHT);
+        this._glRectBg.setSize(Math.max(this._width,portsSize),CABLES.GLGUI.OP_HEIGHT);
+        this.setHover(false);
     }
 
     get id()
@@ -52,6 +55,25 @@ CABLES.GLGUI.GlOp=class
     addLink(l)
     {
         this._links[l.id]=l;
+    }
+
+    setHover(h)
+    {
+        this._hovering=h;
+        if(h)this._glRectBg.setColor(80/255,80/255,80/255);
+        else this._glRectBg.setColor(51/255,51/255,51/255);
+    }
+
+    testRectXY(x,y)
+    {
+        if(x>this.opUiAttribs.translate.x && 
+            x<this.opUiAttribs.translate.x+this._width && 
+            y>this.opUiAttribs.translate.y && 
+            y<this.opUiAttribs.translate.y+CABLES.GLGUI.OP_HEIGHT)
+            {
+                return true;
+            }
+        return false;
     }
 
     dispose()

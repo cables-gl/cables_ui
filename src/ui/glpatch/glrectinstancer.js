@@ -8,7 +8,7 @@ CABLES.GLGUI.RectInstancer=class
     constructor(cgl,options)
     {
         this._counter=0;
-        this._num=100000;
+        this._num=10000;
         this._needsRebuild=true;
 
         this._positions=new Float32Array(3*this._num);
