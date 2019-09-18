@@ -106,7 +106,7 @@ CABLES.GLGUI.GlOp=class
             // console.log("no this._glRectBg");
             return;
         }
-        this._glRectBg.setPosition(this._op.uiAttribs.translate.x,this._op.uiAttribs.translate.y);
+        this._glRectBg.setPosition(this.opUiAttribs.translate.x,this.opUiAttribs.translate.y);
     }
 
     getUiAttribs()
@@ -125,6 +125,7 @@ CABLES.GLGUI.GlOp=class
         this.updatePosition();
         for(var i in this._links)
         {
+            console.log(i);
             this._links[i].update();
         }
     }

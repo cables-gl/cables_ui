@@ -8,11 +8,18 @@ CABLES.GLGUI.GlPatch = class
         this._patch=patch;
         if(!cgl)cgl=patch.cgl;
         this._glOps=[];
+        this._glOpz={};
+
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
 
-        this._patch.addEventListener("onOpAdd",this.addOp.bind(this));
-        this._patch.addEventListener("onOpDelete",this.deleteOp.bind(this));
+        this._cursor=new CABLES.GLGUI.GlRect(this._rectInstancer);
+        this._cursor.setColor(1,0,0);
+        this._cursor.setPosition(0,0);
+        this._cursor.setSize(30,30);
+
+        // this._patch.addEventListener("onOpAdd",this.addOp.bind(this));
+        // this._patch.addEventListener("onOpDelete",this.deleteOp.bind(this));
 
         this._rectInstancer.rebuild();
         this.links={}
@@ -44,19 +51,30 @@ CABLES.GLGUI.GlPatch = class
         }
     }
 
-    deleteOp(op) // should work with opid...
+    deleteOp(opid) // should work with opid...
     {
-        for(var i=0;i<this._glOps.length;i++)
+        const glop=this._glOpz[opid];
+
+        if(!glop)
         {
-            if(this._glOps[i].getOp()==op)
-            {
-                const delOp=this._glOps[i];
-                this._glOps[i].getOp().removeEventListener("onUiAttribsChange",this._glOps[i].update);
-                this._glOps.slice(i,1);
-                delOp.dispose();
-                return;
-            }
+            console.log("could not find op to delete",opid);
+            return;
         }
+        
+        delete this._glOpz[opid];
+        glop.dispose();
+
+        // for(var i=0;i<this._glOps.length;i++)
+        // {
+        //     if(this._glOps[i].getOp()==op)
+        //     {
+        //         const delOp=this._glOps[i];
+        //         this._glOps[i].getOp().removeEventListener("onUiAttribsChange",this._glOps[i].update);
+        //         this._glOps.slice(i,1);
+        //         delOp.dispose();
+        //         return;
+        //     }
+        // }
     }
 
     addLink(l)
@@ -72,7 +90,9 @@ CABLES.GLGUI.GlPatch = class
         }
         console.log("OP ADDEDDDDDD");
         const glOp=new CABLES.GLGUI.GlOp(this._rectInstancer,op);
-        this._glOps.push(glOp);
+        this._glOpz[op.id]=glOp;
+        glOp.updatePosition();
+        glOp.update();
 
         op.addEventListener("onUiAttribsChange",()=>{
             glOp.opUiAttribs=op.uiAttribs;
@@ -83,13 +103,14 @@ CABLES.GLGUI.GlPatch = class
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
     {
         var z=1/(resX/2/zoom);
+        // console.log("z",z);
+
+        const mouseAbsX=(mouseX-(resX/2))*z+(scrollX/z);
+        const mouseAbsY=(mouseY-(resY/2))*z+(scrollY/z);
+        this._cursor.setPosition(mouseAbsX,mouseAbsY);
 
         scrollX/=zoom;
         scrollY/=zoom;
-
-        const mouseAbsX=(mouseX-(resX/2))*z+(scrollX*z*0.125);
-        const mouseAbsY=(mouseY-(resY/2))*z+(scrollY*z*0.125);
-        this._cursor.setPosition(mouseAbsX,mouseAbsY);
 
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
@@ -104,43 +125,41 @@ CABLES.GLGUI.GlPatch = class
         }
 
         if(this._rectInstancer)this._rectInstancer.dispose();
+        if(this._lines)this._lines.dispose();
     }
 
     reset()
     {
-        this._rectInstancer=new CABLES.GLGUI.RectInstancer(this._patch.cgl);
-        this._rectInstancer.rebuild();
+        // this._rectInstancer=new CABLES.GLGUI.RectInstancer(this._patch.cgl);
+        // this._rectInstancer.rebuild();
 
-        console.log('reset');
-        this.dispose();
+        // console.log('reset');
+        // this.dispose();
 
-        this._cursor=new CABLES.GLGUI.GlRect(this._rectInstancer);
-        this._cursor.setColor(1,0,0);
-        this._cursor.setPosition(0,0);
-        this._cursor.setSize(30,30);
 
-        if(this._glOps.length==0)
-        {
-            for(var i=0;i<this._patch.ops.length;i++)
-            {
-                this.addOp(this._patch.ops[i]);
-            }
-        }
+        // if(this._glOps.length==0)
+        // {
+        //     for(var i=0;i<this._patch.ops.length;i++)
+        //     {
+        //         this.addOp(this._patch.ops[i]);
+        //     }
+        // }
 
-        for(var i=0;i<this._glOps.length;i++)
-        {
-            this._glOps[i].updatePosition();
-        }
+        // for(var i=0;i<this._glOps.length;i++)
+        // {
+        //     this._glOps[i].updatePosition();
+        // }
 
-        this._rectInstancer.rebuild();
+        // this._rectInstancer.rebuild();
     }
 
     getOp(opid)
     {
-        for(var i=0;i<this._glOps.length;i++)
-        {
-            if(this._glOps[i].id==opid) return this._glOps[i];
-        }
+        return this._glOpz[opid];
+        // for(var i=0;i<this._glOps.length;i++)
+        // {
+        //     if(this._glOps[i].id==opid) return this._glOps[i];
+        // }
     }
 
 }

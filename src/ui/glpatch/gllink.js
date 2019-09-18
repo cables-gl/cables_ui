@@ -3,12 +3,12 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.GlLink=class 
 {
-    constructor(glpatch,id,opidA,opidB)
+    constructor(glpatch,id,opIdA,opIdB)
     {
         this._id=id;
         this._glpatch=glpatch;
-        this._opidA=opidA;
-        this._opidB=opidB;
+        this._opIdA=opIdA;
+        this._opIdB=opIdB;
         this._lineDrawer=this._glpatch.lineDrawer;
         this._lineIdx=this._lineDrawer.getIndex();
 
@@ -16,7 +16,6 @@ CABLES.GLGUI.GlLink=class
         this._op2=null;
 
         this._glpatch.addLink(this);
-
         this.update();
     }
 
@@ -29,13 +28,13 @@ CABLES.GLGUI.GlLink=class
     {
         if(!this._op1)
         {
-            this._op1=this._glpatch.getOp(this._opidA);
+            this._op1=this._glpatch.getOp(this._opIdA);
             if(this._op1) this._op1.addLink(this);
         }
         
         if(!this._op2)
         {
-            this._op2=this._glpatch.getOp(this._opidB);
+            this._op2=this._glpatch.getOp(this._opIdB);
             if(this._op2) this._op2.addLink(this);
         }
 

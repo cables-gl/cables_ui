@@ -61,7 +61,8 @@ CABLES.GLGUI.Linedrawer=class
 
     dispose()
     {
-
+        this._mesh.dispose();
+        this._shader.dispose();
     }
 
     render(resX,resY,scrollX,scrollY,zoom)

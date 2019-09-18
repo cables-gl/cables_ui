@@ -1,13 +1,14 @@
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-
 CABLES.GLGUI.GlPatchAPI=class
 {
     constructor(patch,glpatch)
     {
         this._patch=patch;
         this._glPatch=glpatch;
+
+        this._initPatch();
 
         this._patch.addEventListener("onOpAdd",this._onAddOp.bind(this));
         this._patch.addEventListener("onOpDelete",this._onDeleteOp.bind(this));
@@ -16,9 +17,20 @@ CABLES.GLGUI.GlPatchAPI=class
         this._patch.addEventListener("onUnLink",this._onUnLink.bind(this));
     }
 
+    _initPatch()
+    {
+        console.log("patch.ops.length",this._patch.ops.length);
+        for(var i=0;i<this._patch.ops.length;i++)
+        {
+            console.log("init patch",this._patch.ops[i].objname);
+            this._glPatch.addOp(this._patch.ops[i]);
+        }
+    }
+
     _onLink(p1,p2,link)
     {
-        // console.log("onlink",link);
+        console.log(
+            "onlink",link        );
         const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,p1.parent.id,p2.parent.id);
     }
 
@@ -26,15 +38,20 @@ CABLES.GLGUI.GlPatchAPI=class
     {
         if(!link)return;
         this._glPatch.deleteLink(link.id);
-        console.log("unlink API",link);
-        // const l=new CABLES.GLGUI.GlLink(this._glPatch,p1.parent.id,p2.parent.id);
     }
 
-    _onAddOp()
+    _onAddOp(op)
     {
+        this._glPatch.addOp(op);
     }
 
-    _onDeleteOp()
+    _onDeleteOp(op)
     {
+        this._glPatch.deleteOp(op.id);
+    }
+
+    _watchOp(op)
+    {
+
     }
 }
