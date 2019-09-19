@@ -57,10 +57,21 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
         optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit(\''+opname+'\');">edit op</a>';
     }
 
-    var score=Math.round(100*$('.selected').data('score'))/100;
+    var score=0;
+    var selected=document.getElementsByClassName('selected');//.data('scoreDebug')
+    // var score=Math.round(100*$('.selected').data('score'))/100;
+    if(selected.length>0)score=Math.round(100*selected[0].dataset.score)/100;
+
     if(score && score==score)
     {
-        optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<span class="tt" data-tt="'+$('.selected').data('scoreDebug')+'">';
+        var scoredebug='';
+        
+        if(selected.length>0)
+        {
+            scoredebug=selected[0].dataset.scoreDebug;
+        }
+
+        optionsHtml+='&nbsp;&nbsp;|&nbsp;&nbsp;<span class="tt" data-tt="'+scoredebug+'">';
         optionsHtml+='score: '+score;
         optionsHtml+='</span>';
     }
@@ -71,13 +82,15 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
 
 CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,orig,list,query,options)
 {
+    if( !query  || query==" " || query=="")return;
+
     var perf = CABLES.uiperf.start('opselect._searchWord');
 
     for(var i=0;i<list.length;i++)
     {
         if(wordIndex>0 && list[i].score==0 )continue; // when second word was found, but first was not
 
-        var scoreDebug=query+' - '+list[i]._shortName+'<br/><br/>';
+        var scoreDebug='<b>Query: '+query+' </b><br/>';
         var found=false;
         var points=0;
 
@@ -102,13 +115,19 @@ CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,orig,list,query,opti
             scoreDebug+='+4 found in shortname ('+query+')<br/>';
         }
 
+        if(list[i]._shortName==query)
+        {
+            found=true;
+            points+=5;
+            scoreDebug+='+5 query quals shortname<br/>';
+        }
+
         if(orig.length>1 && list[i]._lowerCaseName.indexOf(orig)>-1)
         {
             found=true;
             points+=2;
             scoreDebug+='+2 found full namespace ('+query+')<br/>';
         }
-
 
         if(points==0)
         {
@@ -139,6 +158,7 @@ CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,orig,list,query,opti
                 points+=0.5;
                 scoreDebug+='+0.5 has summary ('+query+')<br/>';
             }
+
             if(list[i]._nameSpace.indexOf("ops.math")>-1)
             {
                 points+=1;
@@ -162,9 +182,8 @@ CABLES.UI.OpSelect.prototype._searchWord=function(wordIndex,orig,list,query,opti
         if(points===0 && list[i].score>0) list[i].score=0;
             else list[i].score+=points;
 
-        list[i].scoreDebug=(list[i].scoreDebug||'')+scoreDebug;
+        list[i].scoreDebug=(list[i].scoreDebug||'')+scoreDebug+"("+Math.round(points*100)/100+' points)<br/><br/>';
     }
-
 
     perf.finish();
 };
@@ -178,11 +197,7 @@ CABLES.UI.OpSelect.prototype._search=function(q)
     var query=q.toLowerCase();
 
     var i=0;
-    for(i=0;i<this._list.length;i++)
-    {
-        this._list[i].score=0;
-        this._list[i].scoreDebug='';
-    }
+
     var result=null;
     var options=
     {
@@ -241,7 +256,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         {
             var nquery=queryParts.join(" ");
             nquery+=" "+q;
-            // nquery=query+" "+nquery;
 
             if(nquery!=query) $('#realsearch').html('Searching for: <b>'+nquery+'</b>');
 
@@ -250,13 +264,14 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         else $('#realsearch').html('');
     }
 
-
-
-
-
-
     if(query.length>1)
     {
+        for(i=0;i<this._list.length;i++)
+        {
+            this._list[i].score=0;
+            this._list[i].scoreDebug='';
+        }
+        
         if(query.indexOf(" ")>-1)
         {
             var words=query.split(" ");
@@ -269,8 +284,6 @@ CABLES.UI.OpSelect.prototype._search=function(q)
         }
     }
 
-
-    // return result;
 };
 
 CABLES.UI.OpSelect.prototype.updateInfo=function()
@@ -362,14 +375,14 @@ CABLES.UI.OpSelect.prototype.search=function()
 
     tinysort.defaults.order = 'desc';
 
-    clearTimeout(this._sortTimeout);
-    this._sortTimeout=setTimeout(
-        function()
-        {
+    // clearTimeout(this._sortTimeout);
+    // this._sortTimeout=setTimeout(
+    //     function()
+    //     {
             tinysort('.searchresult', { data: 'score' });
             this.Navigate(0);
             this.updateOptions();
-        }.bind(this),150);
+        // }.bind(this),150);
 
 
     perf.finish();

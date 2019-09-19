@@ -10,8 +10,7 @@ CABLES.GLGUI.GlLink=class
         this._type=type;
         this._opIdInput=opIdInput;
         this._opIdOutput=opIdOutput;
-        // this._lineDrawer=this._glPatch.lineDrawer;
-        // this._lineIdx=this._lineDrawer.getIndex();
+
         this._cable=new CABLES.GLGUI.GlCable(this._glPatch.lineDrawer,this._type);
         this._glPatch.setDrawableColorByType(this._cable,this._type);
 
@@ -35,8 +34,6 @@ CABLES.GLGUI.GlLink=class
 
     update()
     {
-
-
         if(!this._opIn)
         {
             this._opIn=this._glPatch.getOp(this._opIdInput);

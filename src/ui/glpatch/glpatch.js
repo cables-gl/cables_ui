@@ -40,7 +40,6 @@ CABLES.GLGUI.GlPatch = class
 
         if(l)
         {
-            console.log(Object.keys(this.links));
             delete this.links[linkId];
             l.dispose();
         }

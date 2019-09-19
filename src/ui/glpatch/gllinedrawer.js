@@ -19,6 +19,7 @@ CABLES.GLGUI.Linedrawer=class
             // .endl()+'IN vec3 pos;'
             .endl()+'IN vec4 color;'
             .endl()+'OUT vec4 col;'
+            .endl()+'OUT vec2 pos2d;'
             .endl()+'UNI float zoom,resX,resY,scrollX,scrollY;'
 
             .endl()+'void main()'
@@ -33,21 +34,43 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'    pos.y*=aspect;'
             .endl()+'    pos.y=0.0-pos.y;'
 
+            .endl()+'    pos2d=pos.xy;'
+
             .endl()+'    col=color;'
             .endl()+'    pos*=zoom;'
+            
 
             .endl()+'    pos.x+=scrollX;'
             .endl()+'    pos.y+=scrollY;'
 
             .endl()+'    gl_Position = vec4(pos,1.0);'
             .endl()+'}'
-            , 'IN vec4 col;void main(){ if(col.a==0.0){discard;} outColor=vec4(col.rgb,1.0);}');
+
+            ,''
+            .endl()+'UNI float time;'
+            .endl()+'IN vec2 pos2d;'
+            .endl()+'IN vec4 col;'
+            .endl()+'void main()'
+            .endl()+'{'
+            .endl()+'  if(col.a==0.0) discard;'
+            // .endl()+'float a=mod(gl_FragCoord.x,10.0);'// )+1.0)/2.0+0.5);'
+            .endl()+'  float a=length(gl_FragCoord.xy);'// )+1.0)/2.0+0.5);'
+            .endl()+'  a=sin(a);'
+            .endl()+'  a=(a+1.0)/2.0;'
+            // .endl()+'  a=floor(a);'
+            
+            .endl()+'  outColor=vec4(col.rgb, a );'
+            .endl()+'}'
+            );
+
+            //floor((sin( distance(vec4(0.,0.,0.,1.0),gl_FragCoord
 
         this._uniZoom=new CGL.Uniform(this._shader,'f','zoom',0),
         this._uniResX=new CGL.Uniform(this._shader,'f','resX',0),
         this._uniResY=new CGL.Uniform(this._shader,'f','resY',0),
         this._uniscrollX=new CGL.Uniform(this._shader,'f','scrollX',0),
         this._uniscrollY=new CGL.Uniform(this._shader,'f','scrollY',0);
+        this._uniTime=new CGL.Uniform(this._shader,'f','time',0);
 
         this._geom=new CGL.Geometry("glpatchLineDrawer");
         this._geom.vertices = new Float32Array([10,10,0, 60,60,0, 10,0,0, 0,0,0]);
