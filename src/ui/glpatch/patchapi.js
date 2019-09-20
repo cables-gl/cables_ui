@@ -7,6 +7,7 @@ CABLES.GLGUI.GlPatchAPI=class
     {
         this._patch=patch;
         this._glPatch=glpatch;
+        this._glPatch.patchAPI=this;
 
         this._initPatch();
 
@@ -55,8 +56,22 @@ CABLES.GLGUI.GlPatchAPI=class
         this._glPatch.deleteOp(op.id);
     }
 
+    showOpParams(opid)
+    {
+        const op=gui.scene().getOpById(opid);
+        gui.patch().showOpParams(op);
+    }
+    
+    unlinkPort(opid,portid)
+    {
+        console.log("unlink port",portid);
+
+        const op=gui.scene().getOpById(opid);
+        const p= op.getPortById(portid);
+        p.removeLinks();
+    }
+
     _watchOp(op)
     {
-
     }
 }

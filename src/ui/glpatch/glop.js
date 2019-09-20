@@ -5,9 +5,9 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 CABLES.GLGUI.OP_MIN_WIDTH=100;
 CABLES.GLGUI.OP_HEIGHT=30;
 
-CABLES.GLGUI.OP_PORT_DISTANCE=10;
-CABLES.GLGUI.OP_PORT_WIDTH=7;
-CABLES.GLGUI.OP_PORT_HEIGHT=7;
+CABLES.GLGUI.OP_PORT_DISTANCE=13; //13
+CABLES.GLGUI.OP_PORT_WIDTH=10;
+CABLES.GLGUI.OP_PORT_HEIGHT=6;
 
 CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 {
@@ -17,28 +17,46 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this._id=op.id;
         this._glPatch=glPatch;
+     
         this.opUiAttribs=op.uiAttribs;
         this._op=op;
         this._instancer=instancer;
-        this._glRectBg=new CABLES.GLGUI.GlRect(instancer);
+        this._glRectBg=instancer.createRect({});
         this._glRectBg.setSize(100,CABLES.GLGUI.OP_HEIGHT);
         this._glRectBg.setColor(51/255,51/255,51/255,1)
-        
+
+        this._glRectBg.addEventListener("hover",() =>
+        {
+            this._glRectBg.setOutline(true);
+        });
+        this._glRectBg.addEventListener("unhover",() =>
+        {
+            this._glRectBg.setOutline(false);
+        });
+
         this._portRects=[];
         this._links={};
         this._width=CABLES.GLGUI.OP_MIN_WIDTH;
-        this._hovering=false;
+        this._isHovering=false;
 
         this.updatePosition();
 
         for(var i=0;i<this._op.portsIn.length;i++) this._setupPort(i,this._op.portsIn[i]);
         for(var i=0;i<this._op.portsOut.length;i++) this._setupPort(i,this._op.portsOut[i]);
 
-        const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*10;
+        const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*CABLES.GLGUI.OP_PORT_DISTANCE;
 
         this._glRectBg.setSize(Math.max(this._width,portsSize),CABLES.GLGUI.OP_HEIGHT );
         this.setHover(false);
+
+        glPatch.addEventListener("mousedown",(e) =>
+        {
+            this.mouseDown(e);
+
+        });
     }
+
+
 
     get id()
     {
@@ -60,43 +78,47 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._links[l.id]=l;
     }
 
-    setMousePos(x,y)
+    mouseDown(e)
     {
-        const wasHovering=this._hovering;
+        if(this._isHovering) this._glPatch.patchAPI.showOpParams(this._id);
+    }
 
-        this.setHover(this._glRectBg.isPointInside(x,y));
+    mouseMove(x,y)
+    {
 
-        if(this._hovering)
-        {
-            for(var i=0;i<this._portRects.length;i++)
-            {
-                this._portRects[i].setOutline(this._portRects[i].isPointInside(x,y));
-                // if( this._portRects[i].isPointInside(x,y) ) this._portRects[i].setColor(1,0,0,1);
-                // else this._portRects[i].setColor(0,0,0,1);
-            }
-        }
+        const wasHovering=this._isHovering;
 
-        if(wasHovering && !this._hovering)
-        {
-            for(var i=0;i<this._portRects.length;i++)
-                this._portRects[i].setOutline(false);
+        // this.setHover(this._glRectBg.isPointInside(x,y));
 
-        }
+        // if(this._isHovering)
+        // {
+        //     for(var i=0;i<this._portRects.length;i++)
+        //     {
+        //         this._portRects[i].setOutline(this._portRects[i].isPointInside(x,y));
+        //         // if( this._portRects[i].isPointInside(x,y) ) this._portRects[i].setColor(1,0,0,1);
+        //         // else this._portRects[i].setColor(0,0,0,1);
+        //     }
+        // }
+
+        // if(wasHovering && !this._isHovering)
+        // {
+        //     for(var i=0;i<this._portRects.length;i++)
+        //         this._portRects[i].setOutline(false);
+
+        // }
     }
 
     setHover(h)
     {
-        if(!this._hovering && h) this.emitEvent("hoverStart");
-        if(this._hovering && !h) this.emitEvent("hoverEnd");
+        if(!this._isHovering && h) this.emitEvent("hoverStart");
+        if(this._isHovering && !h) this.emitEvent("hoverEnd");
 
-        this._hovering=h;
-        this._glRectBg.setOutline(this._hovering);
+        this._isHovering=h;
+        this._glRectBg.setOutline(this._isHovering);
 
         // if(h) this._glRectBg.setColor(80/255,80/255,80/255,0.3);
         // else this._glRectBg.setColor(51/255,51/255,51/255,0.3);
     }
-
-
 
     dispose()
     {
@@ -125,7 +147,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
             delete this._links[linkId];
             this.update();
         }
-        
     }
 
     _setupPort(i,p)
@@ -136,18 +157,36 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glPatch.setDrawableColorByType(r,p.type);
 
         var y=0;
-        if(p.direction==1) y=CABLES.GLGUI.OP_HEIGHT-5;
+        if(p.direction==1) y=CABLES.GLGUI.OP_HEIGHT-CABLES.GLGUI.OP_PORT_HEIGHT;
         r.setPosition(i*CABLES.GLGUI.OP_PORT_DISTANCE,y);
         this._glRectBg.addChild(r);
         this._portRects.push(r);
+        r.data.portId=p.id;
+        r.data.opId=p.parent.id;
+
+        r.addEventListener("mousedown",(e,rect) =>
+        {
+            if(e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT)
+            {
+                this._glPatch.patchAPI.unlinkPort(rect.data.opId,rect.data.portId);
+            }
+        });
+
+        r.addEventListener("hover",(rect) =>
+        {
+            rect.setOutline(true);
+        });
+
+        r.addEventListener("unhover",(rect) =>
+        {
+            rect.setOutline(false);
+        });
+
     }
 
     updatePosition()
     {
-        if(!this._glRectBg)
-        {
-            return;
-        }
+        if(!this._glRectBg) return;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x,this.opUiAttribs.translate.y);
     }
 
@@ -164,10 +203,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     update()
     {
         this.updatePosition();
-        for(var i in this._links)
-        {
-            this._links[i].update();
-        }
+        for(var i in this._links) this._links[i].update();
     }
 
     getPortPos(id)

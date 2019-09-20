@@ -1,14 +1,16 @@
 var CABLES=CABLES||{};
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-CABLES.GLGUI.GlPatch = class 
+CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 {
     constructor(patch,cgl)
     {
+        super();
         this._patch=patch;
         if(!cgl)cgl=patch.cgl;
         // this._glOps=[];
         this._glOpz={};
+        this._patchAPI=null;
 
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
@@ -17,13 +19,24 @@ CABLES.GLGUI.GlPatch = class
         this._cursor2.setColor(0,0,1);
         this._cursor2.setPosition(0,0);
         this._cursor2.setSize(40,40);
+        
 
         // this._patch.addEventListener("onOpAdd",this.addOp.bind(this));
         // this._patch.addEventListener("onOpDelete",this.deleteOp.bind(this));
 
         this._rectInstancer.rebuild();
         this.links={}
+
+        cgl.canvas.addEventListener("mousedown",(e) =>
+        {
+            console.log("MOUSEDOWN ",e);
+            this.emitEvent("mousedown",e);
+            this._rectInstancer.mouseDown(e);
+        });
     }
+
+    set patchAPI(api) { this._patchAPI=api; }
+    get patchAPI() { return this._patchAPI; }
 
     getOpAt(x,y)
     {
@@ -62,18 +75,6 @@ CABLES.GLGUI.GlPatch = class
         
         delete this._glOpz[opid];
         glop.dispose();
-
-        // for(var i=0;i<this._glOps.length;i++)
-        // {
-        //     if(this._glOps[i].getOp()==op)
-        //     {
-        //         const delOp=this._glOps[i];
-        //         this._glOps[i].getOp().removeEventListener("onUiAttribsChange",this._glOps[i].update);
-        //         this._glOps.slice(i,1);
-        //         delOp.dispose();
-        //         return;
-        //     }
-        // }
     }
 
     addLink(l)
@@ -84,10 +85,8 @@ CABLES.GLGUI.GlPatch = class
     addOp(op)
     {
         if(!op)
-        {
             console.error("no op at addop",op);
-        }
-        console.log("OP ADDEDDDDDD");
+
         const glOp=new CABLES.GLGUI.GlOp(this,this._rectInstancer,op);
         this._glOpz[op.id]=glOp;
         glOp.updatePosition();
@@ -102,10 +101,6 @@ CABLES.GLGUI.GlPatch = class
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
     {
         var z=1/(resX/2/zoom);
-        // console.log("z",z);
-        // var scx=1/(resX/z);
-        // console.log(scrollX,z)
-
         var asp=resY/resX;
 
         const mouseAbsX=(mouseX-(resX/2))*z-(scrollX);
@@ -118,19 +113,21 @@ CABLES.GLGUI.GlPatch = class
         scrollX/=zoom;
         scrollY/=zoom;
 
-
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
     }
 
+    
+
     hoverMouse(x,y)
     {
-        for(var i in this._glOpz)
-        {
-            // this._glOpz[i].setHover(this._glOpz[i].testRectXY(x,y));
-            this._glOpz[i].setMousePos(x,y);
-        }
+        this._rectInstancer.mouseMove(x,y);
 
+        // for(var i in this._glOpz)
+        // {
+        //     // this._glOpz[i].setHover(this._glOpz[i].testRectXY(x,y));
+        //     this._glOpz[i].mouseMove(x,y);
+        // }
     }
 
 
@@ -182,11 +179,13 @@ CABLES.GLGUI.GlPatch = class
 
     setDrawableColorByType(e,t)
     {
-        if(t == CABLES.OP_PORT_TYPE_VALUE) e.setColor(92/255,181/255,158/255,1);
-        else if(t == CABLES.OP_PORT_TYPE_FUNCTION) e.setColor(240/255,209/255,101/255,1);
-        else if(t == CABLES.OP_PORT_TYPE_OBJECT) e.setColor(171/255,90/255,148/255,1);
-        else if(t == CABLES.OP_PORT_TYPE_ARRAY) e.setColor(128/255,132/255,212/255,1);
-        else if(t == CABLES.OP_PORT_TYPE_STRING) e.setColor(213/255,114/255,114/255,1);
+        var diff=1;
+
+        if(t == CABLES.OP_PORT_TYPE_VALUE) e.setColor(92/255*diff,181/255*diff,158/255*diff,1);
+        else if(t == CABLES.OP_PORT_TYPE_FUNCTION) e.setColor(240/255*diff,209/255*diff,101/255*diff,1);
+        else if(t == CABLES.OP_PORT_TYPE_OBJECT) e.setColor(171/255*diff,90/255*diff,148/255*diff,1);
+        else if(t == CABLES.OP_PORT_TYPE_ARRAY) e.setColor(128/255*diff,132/255*diff,212/255*diff,1);
+        else if(t == CABLES.OP_PORT_TYPE_STRING) e.setColor(213/255*diff,114/255*diff,114/255*diff,1);
         else if(t == CABLES.OP_PORT_TYPE_DYNAMIC) e.setColor(1,1,1);
     }
 

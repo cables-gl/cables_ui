@@ -10,6 +10,7 @@ CABLES.GLGUI.RectInstancer=class
         this._counter=0;
         this._num=10000;
         this._needsRebuild=true;
+        this._rects=[];
 
         this._positions=new Float32Array(3*this._num);
         this._colors=new Float32Array(4*this._num);
@@ -35,16 +36,13 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'{'
             .endl()+'    float aspect=resX/resY;'
 
-
             .endl()+'    outlinefrag=outline/resY*aspect;'
 
             .endl()+'    vec3 pos=vPosition;'
             .endl()+'    pos.xy*=instSize;'
 
-
             .endl()+'    posSize=vec4(pos.xy*zoom,instSize*zoom-pos.xy*zoom);'
             
-
             .endl()+'    pos.x+=instPos.x;'
             .endl()+'    pos.y+=instPos.y;'
 
@@ -54,13 +52,10 @@ CABLES.GLGUI.RectInstancer=class
 
             .endl()+'    col=instCol;'
 
-
             .endl()+'    pos*=zoom;'
-
 
             .endl()+'    pos.x+=scrollX;'
             .endl()+'    pos.y+=scrollY;'
-
 
             .endl()+'    gl_Position = vec4(pos,1.0);'
             .endl()+'}'
@@ -77,16 +72,11 @@ CABLES.GLGUI.RectInstancer=class
 
             // outlines
             .endl()+'   if(outlinefrag>0.0){'
-            .endl()+'       outColor+=1.0-step(outlinefrag,posSize.x);'
-            .endl()+'       outColor+=1.0-step(outlinefrag,posSize.y);'
-            .endl()+'       outColor+=1.0-step(outlinefrag,posSize.z);'
-            .endl()+'       outColor+=1.0-step(outlinefrag,posSize.w);'
+            .endl()+'       outColor+=1.0-smoothstep(0.0,outlinefrag,posSize.x);'
+            .endl()+'       outColor+=1.0-smoothstep(0.0,outlinefrag,posSize.y);'
+            .endl()+'       outColor+=1.0-smoothstep(0.0,outlinefrag,posSize.z);'
+            .endl()+'       outColor+=1.0-smoothstep(0.0,outlinefrag,posSize.w);'
             .endl()+'   }'
-
-            // .endl()+'   outColor.rgb=vec3(posSize.w/posSize.x);'
-
-            // .endl()+'   outColor.rgb=vec3(outlinefrag);'
-
             
             .endl()+'}');
 
@@ -115,21 +105,21 @@ CABLES.GLGUI.RectInstancer=class
 
     }
 
-    mouseMove(x,y)
-    {
-        // var scrollX=this._uniscrollX.getValue();
-        // var scrollY=this._uniscrollY.getValue();
+    // mouseMove(x,y)
+    // {
+    //     // var scrollX=this._uniscrollX.getValue();
+    //     // var scrollY=this._uniscrollY.getValue();
 
-        // for(var i=0;i<this._sizes.length/2;i++)
-        // {
-        //     if(x+scrollX>this._positions[i*3+0] && x+scrollX<this._positions[i*3+0]+100 )
-        //     if(y+scrollY>this._positions[i*3+1] && y+scrollY<this._positions[i*3+1]+100 )
-        //     {
-        //         console.log('posx',this._colors[i*3+0]);
+    //     // for(var i=0;i<this._sizes.length/2;i++)
+    //     // {
+    //     //     if(x+scrollX>this._positions[i*3+0] && x+scrollX<this._positions[i*3+0]+100 )
+    //     //     if(y+scrollY>this._positions[i*3+1] && y+scrollY<this._positions[i*3+1]+100 )
+    //     //     {
+    //     //         console.log('posx',this._colors[i*3+0]);
 
-        //     }
-        // }
-    }
+    //     //     }
+    //     // }
+    // }
 
     render(resX,resY,scrollX,scrollY,zoom)
     {
@@ -192,6 +182,27 @@ CABLES.GLGUI.RectInstancer=class
         this._needsRebuild=true;
     }
 
-    
+    createRect(options)
+    {
+        var r=new CABLES.GLGUI.GlRect(this);
+        this._rects.push(r);
+        return r;
+    }
+
+    mouseMove(x,y)
+    {
+        for(var i=0;i<this._rects.length;i++)
+        {
+            this._rects[i].mouseMove(x,y);
+        }
+    }
+
+    mouseDown(e)
+    {
+        for(var i=0;i<this._rects.length;i++)
+        {
+            this._rects[i].mouseDown(e);
+        }
+    }
 
 }

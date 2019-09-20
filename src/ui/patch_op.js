@@ -79,9 +79,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     this._errorIndicator = null;
     this._colorHandle=null;
 
-
-
-
     this.getHeight = function() {
         return h;
     };

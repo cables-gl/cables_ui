@@ -20,10 +20,15 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._w=110;
         this._h=110;
         this._rectInstancer.setSize(this._attrIndex,this._w,this._h);
+        this._data={};
+
     }
 
     get x() { return this._x; }
     get y() { return this._y; }
+
+    get data() { return this._data; }
+    set data(r) { this._data=r; }
 
     addChild(c)
     {
@@ -68,10 +73,57 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     setOutline(o)
     {
-        if(o===true) o=1.0;
-        if(!o) o=0.0;
+        if(!o) o=0;
+        else if(o===true) o=1;
+        
 
         this._rectInstancer.setOutline(this._attrIndex,o);
+    }
+
+    mouseDown(e)
+    {
+        if(this._hovering)
+        {
+            this.emitEvent("mousedown",e,this);
+
+            for(var i=0;i<this.childs.length;i++)
+                this.childs[i].mouseDown(e);
+        }
+
+
+    }
+
+    mouseMove(x,y)
+    {
+        const hovering=this.isPointInside(x,y)
+
+        if(hovering && !this._hovering) this.emitEvent("hover",this);
+        else if(!hovering && this._hovering) this.emitEvent("unhover",this);
+
+        this._hovering=hovering;
+
+        for(var i=0;i<this.childs.length;i++)
+        {
+            this.childs[i].mouseMove(x,y);
+        }
+
+        // this.setHover(this._glRectBg.isPointInside(x,y));
+        // if(this._isHovering)
+        // {
+        //     for(var i=0;i<this._portRects.length;i++)
+        //     {
+        //         this._portRects[i].setOutline(this._portRects[i].isPointInside(x,y));
+        //         // if( this._portRects[i].isPointInside(x,y) ) this._portRects[i].setColor(1,0,0,1);
+        //         // else this._portRects[i].setColor(0,0,0,1);
+        //     }
+        // }
+
+        // if(wasHovering && !this._isHovering)
+        // {
+        //     for(var i=0;i<this._portRects.length;i++)
+        //         this._portRects[i].setOutline(false);
+        // }
+
     }
 
 }
