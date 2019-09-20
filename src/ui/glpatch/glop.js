@@ -9,10 +9,12 @@ CABLES.GLGUI.OP_PORT_DISTANCE=10;
 CABLES.GLGUI.OP_PORT_WIDTH=7;
 CABLES.GLGUI.OP_PORT_HEIGHT=7;
 
-CABLES.GLGUI.GlOp=class
+CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 {
     constructor(glPatch,instancer,op)
     {
+        super();
+
         this._id=op.id;
         this._glPatch=glPatch;
         this.opUiAttribs=op.uiAttribs;
@@ -20,6 +22,7 @@ CABLES.GLGUI.GlOp=class
         this._instancer=instancer;
         this._glRectBg=new CABLES.GLGUI.GlRect(instancer);
         this._glRectBg.setSize(100,CABLES.GLGUI.OP_HEIGHT);
+        this._glRectBg.setColor(51/255,51/255,51/255,1)
         
         this._portRects=[];
         this._links={};
@@ -33,7 +36,7 @@ CABLES.GLGUI.GlOp=class
 
         const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*10;
 
-        this._glRectBg.setSize(Math.max(this._width,portsSize),CABLES.GLGUI.OP_HEIGHT);
+        this._glRectBg.setSize(Math.max(this._width,portsSize),CABLES.GLGUI.OP_HEIGHT );
         this.setHover(false);
     }
 
@@ -57,25 +60,43 @@ CABLES.GLGUI.GlOp=class
         this._links[l.id]=l;
     }
 
-    setHover(h)
+    setMousePos(x,y)
     {
-        this._hovering=h;
-        if(h)this._glRectBg.setColor(80/255,80/255,80/255);
-        else this._glRectBg.setColor(51/255,51/255,51/255);
+        const wasHovering=this._hovering;
+
+        this.setHover(this._glRectBg.isPointInside(x,y));
+
+        if(this._hovering)
+        {
+            for(var i=0;i<this._portRects.length;i++)
+            {
+                this._portRects[i].setOutline(this._portRects[i].isPointInside(x,y));
+                // if( this._portRects[i].isPointInside(x,y) ) this._portRects[i].setColor(1,0,0,1);
+                // else this._portRects[i].setColor(0,0,0,1);
+            }
+        }
+
+        if(wasHovering && !this._hovering)
+        {
+            for(var i=0;i<this._portRects.length;i++)
+                this._portRects[i].setOutline(false);
+
+        }
     }
 
-    testRectXY(x,y)
+    setHover(h)
     {
-        // todo: move test to rect 
-        if(x>this.opUiAttribs.translate.x && 
-            x<this.opUiAttribs.translate.x+this._width && 
-            y>this.opUiAttribs.translate.y && 
-            y<this.opUiAttribs.translate.y+CABLES.GLGUI.OP_HEIGHT)
-            {
-                return true;
-            }
-        return false;
+        if(!this._hovering && h) this.emitEvent("hoverStart");
+        if(this._hovering && !h) this.emitEvent("hoverEnd");
+
+        this._hovering=h;
+        this._glRectBg.setOutline(this._hovering);
+
+        // if(h) this._glRectBg.setColor(80/255,80/255,80/255,0.3);
+        // else this._glRectBg.setColor(51/255,51/255,51/255,0.3);
     }
+
+
 
     dispose()
     {

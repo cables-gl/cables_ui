@@ -14,6 +14,8 @@ CABLES.GLGUI.RectInstancer=class
         this._positions=new Float32Array(3*this._num);
         this._colors=new Float32Array(4*this._num);
         this._sizes=new Float32Array(2*this._num);
+        this._outlines=new Float32Array(this._num);
+        
 
         this._shader=new CGL.Shader(cgl,'rectinstancer');
         this._shader.setSource(''
@@ -21,6 +23,11 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'IN vec3 instPos;'
             .endl()+'IN vec4 instCol;'
             .endl()+'IN vec2 instSize;'
+            .endl()+'IN float outline;'
+            .endl()+'OUT float outlinefrag;'
+            
+            .endl()+'out vec4 posSize;'
+
             .endl()+'OUT vec4 col;'
             .endl()+'UNI float zoom,resX,resY,scrollX,scrollY;'
 
@@ -28,8 +35,15 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'{'
             .endl()+'    float aspect=resX/resY;'
 
+
+            .endl()+'    outlinefrag=outline/resY*aspect;'
+
             .endl()+'    vec3 pos=vPosition;'
             .endl()+'    pos.xy*=instSize;'
+
+
+            .endl()+'    posSize=vec4(pos.xy*zoom,instSize*zoom-pos.xy*zoom);'
+            
 
             .endl()+'    pos.x+=instPos.x;'
             .endl()+'    pos.y+=instPos.y;'
@@ -50,7 +64,31 @@ CABLES.GLGUI.RectInstancer=class
 
             .endl()+'    gl_Position = vec4(pos,1.0);'
             .endl()+'}'
-            , 'IN vec4 col;void main(){outColor=vec4(col.rgb,1.0);}');
+            , ''
+            .endl()+'IN vec4 col;'
+            .endl()+'IN vec4 posSize;'
+            .endl()+'IN float outlinefrag;'
+            
+
+            .endl()+'void main()'
+            .endl()+'{'
+
+            .endl()+'   outColor=col;'
+
+            // outlines
+            .endl()+'   if(outlinefrag>0.0){'
+            .endl()+'       outColor+=1.0-step(outlinefrag,posSize.x);'
+            .endl()+'       outColor+=1.0-step(outlinefrag,posSize.y);'
+            .endl()+'       outColor+=1.0-step(outlinefrag,posSize.z);'
+            .endl()+'       outColor+=1.0-step(outlinefrag,posSize.w);'
+            .endl()+'   }'
+
+            // .endl()+'   outColor.rgb=vec3(posSize.w/posSize.x);'
+
+            // .endl()+'   outColor.rgb=vec3(outlinefrag);'
+
+            
+            .endl()+'}');
 
         this._uniZoom=new CGL.Uniform(this._shader,'f','zoom',0),
         this._uniResX=new CGL.Uniform(this._shader,'f','resX',0),
@@ -69,6 +107,7 @@ CABLES.GLGUI.RectInstancer=class
         for(i=0;i<2*this._num;i++) this._sizes[i]=0;//Math.random()*61;
         for(i=0;i<3*this._num;i++) this._positions[i]=0;//Math.random()*60;
         for(i=0;i<4*this._num;i++) this._colors[i]=1;//Math.random();
+        for(i=0;i<this._num;i++) this._outlines[i]=0;//Math.random();
     }
 
     dispose()
@@ -111,6 +150,7 @@ CABLES.GLGUI.RectInstancer=class
         this._mesh.setAttribute('instPos',this._positions,3,{instanced:true});
         this._mesh.setAttribute('instCol',this._colors,4,{instanced:true});
         this._mesh.setAttribute('instSize',this._sizes,2,{instanced:true});
+        this._mesh.setAttribute('outline',this._outlines,1,{instanced:true});
 
         // console.log('rebuild...');
         this._needsRebuild=false;
@@ -145,5 +185,13 @@ CABLES.GLGUI.RectInstancer=class
         this._colors[idx*4+3]=1;
         this._needsRebuild=true;
     }
+
+    setOutline(idx,o)
+    {
+        this._outlines[idx]=o;
+        this._needsRebuild=true;
+    }
+
+    
 
 }

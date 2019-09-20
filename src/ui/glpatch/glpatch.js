@@ -127,7 +127,8 @@ CABLES.GLGUI.GlPatch = class
     {
         for(var i in this._glOpz)
         {
-            this._glOpz[i].setHover(this._glOpz[i].testRectXY(x,y));
+            // this._glOpz[i].setHover(this._glOpz[i].testRectXY(x,y));
+            this._glOpz[i].setMousePos(x,y);
         }
 
     }
