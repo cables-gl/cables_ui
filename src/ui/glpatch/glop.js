@@ -37,7 +37,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._portRects=[];
         this._links={};
         this._width=CABLES.GLGUI.OP_MIN_WIDTH;
-        this._isHovering=false;
+        // this._isHovering=false;
 
         this.updatePosition();
 
@@ -78,15 +78,20 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._links[l.id]=l;
     }
 
+    isHovering()
+    {
+        return this._glRectBg.isHovering();
+    }
+
     mouseDown(e)
     {
-        if(this._isHovering) this._glPatch.patchAPI.showOpParams(this._id);
+        if(this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
     }
 
     mouseMove(x,y)
     {
 
-        const wasHovering=this._isHovering;
+        // const wasHovering=this._isHovering;
 
         // this.setHover(this._glRectBg.isPointInside(x,y));
 

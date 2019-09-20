@@ -89,8 +89,11 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
             for(var i=0;i<this.childs.length;i++)
                 this.childs[i].mouseDown(e);
         }
+    }
 
-
+    isHovering()
+    {
+        return this._hovering;
     }
 
     mouseMove(x,y)
