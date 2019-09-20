@@ -5,12 +5,14 @@ CABLES.GLGUI.Linedrawer=class
 {
     constructor(cgl,options)
     {
+        this._startTime=performance.now();
         this._counter=0;
         this._num=10000;
-        this._needsRebuild=true;
+        this._needsUpload=true;
 
         this._positions=new Float32Array(3*this._num);
         this._colors=new Float32Array(4*this._num);
+        this._dists=new Float32Array(this._num);
 
         this._shader=new CGL.Shader(cgl,'Linedrawer');
         this._shader.glPrimitive=cgl.gl.LINES;
@@ -18,6 +20,8 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'IN vec3 vPosition;'
             // .endl()+'IN vec3 pos;'
             .endl()+'IN vec4 color;'
+            .endl()+'IN float vdist;'
+            .endl()+'OUT float dist;'
             .endl()+'OUT vec4 col;'
             .endl()+'OUT vec2 pos2d;'
             .endl()+'UNI float zoom,resX,resY,scrollX,scrollY;'
@@ -26,7 +30,9 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'{'
             .endl()+'   float aspect=resX/resY;'
 
-            .endl()+'    vec3 pos=vPosition;'
+            .endl()+'   dist=vdist;'
+
+            .endl()+'   vec3 pos=vPosition;'
 
             // .endl()+'    pos.x+=pos.x;'
             // .endl()+'    pos.y+=pos.y;'
@@ -50,16 +56,22 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'UNI float time;'
             .endl()+'IN vec2 pos2d;'
             .endl()+'IN vec4 col;'
+            .endl()+'IN float dist;'
             .endl()+'void main()'
             .endl()+'{'
-            .endl()+'  if(col.a==0.0) discard;'
-            // .endl()+'float a=mod(gl_FragCoord.x,10.0);'// )+1.0)/2.0+0.5);'
-            .endl()+'  float a=length(gl_FragCoord.xy);'// )+1.0)/2.0+0.5);'
-            .endl()+'  a=sin(a);'
-            .endl()+'  a=(a+1.0)/2.0;'
+            .endl()+'   vec4 color=col;'
+            .endl()+'   if(color.a==0.0) discard;'
+            .endl()+'   float stepLength=10.0;'
+
+            .endl()+'   float colmul=step(stepLength*0.5,mod(dist+time,stepLength))+0.7;'
+            .endl()+'   color.rgb*=clamp(colmul,0.0,1.0);'
+            
+            // .endl()+'  float a=length(gl_FragCoord.xy);'// )+1.0)/2.0+0.5);'
+            // .endl()+'  a=sin(a);'
+            // .endl()+'  a=(a+1.0)/2.0;'
             // .endl()+'  a=floor(a);'
             
-            .endl()+'  outColor=vec4(col.rgb, a );'
+            .endl()+'   outColor=color;'
             .endl()+'}'
             );
 
@@ -95,10 +107,9 @@ CABLES.GLGUI.Linedrawer=class
         this._uniscrollX.set(scrollX);
         this._uniscrollY.set(scrollY);
         this._uniZoom.set(1.0/zoom);
+        this._uniTime.set( ((performance.now()-this._startTime)/1000)*20.0);
 
-        // console.log(this._positions);
-
-        if(this._needsRebuild)this.rebuild();
+        if(this._needsUpload)this.rebuild();
 
         this._mesh.render(this._shader);
     }
@@ -108,8 +119,9 @@ CABLES.GLGUI.Linedrawer=class
         // todo only update whats needed
         this._mesh.setAttribute(CGL.SHADERVAR_VERTEX_POSITION,this._positions,3);
         this._mesh.setAttribute('color',this._colors,4);
+        this._mesh.setAttribute('vdist',this._dists,1);
 
-        this._needsRebuild=false;
+        this._needsUpload=false;
     }
 
     getIndex()
@@ -118,15 +130,26 @@ CABLES.GLGUI.Linedrawer=class
         return this._counter;
     }
 
+    _distance(x1, y1, x2, y2)
+    {
+        var xd = x2 - x1;
+        var yd = y2 - y1;
+        return Math.sqrt(xd * xd + yd * yd);
+    }
+
+
     setLine(idx,x,y,x2,y2)
     {
+        this._dists[idx*2]=0;
+        this._dists[idx*2+1]=this._distance(x,y,x2,y2);
+        
         this._positions[idx*6+0]=x;
         this._positions[idx*6+1]=y;
         this._positions[idx*6+2]=0;
         this._positions[idx*6+3]=x2;
         this._positions[idx*6+4]=y2;
         this._positions[idx*6+5]=0;
-        this._needsRebuild=true;
+        this._needsUpload=true;
     }
 
     setColor(idx,r,g,b,a)
@@ -139,6 +162,6 @@ CABLES.GLGUI.Linedrawer=class
         this._colors[idx*8+5]=g;
         this._colors[idx*8+6]=b;
         this._colors[idx*8+7]=a;
-        this._needsRebuild=true;
+        this._needsUpload=true;
     }
 }

@@ -66,6 +66,7 @@ CABLES.GLGUI.GlOp=class
 
     testRectXY(x,y)
     {
+        // todo: move test to rect 
         if(x>this.opUiAttribs.translate.x && 
             x<this.opUiAttribs.translate.x+this._width && 
             y>this.opUiAttribs.translate.y && 
@@ -138,7 +139,6 @@ CABLES.GLGUI.GlOp=class
     {
         return this._op;
     }
-
 
     update()
     {

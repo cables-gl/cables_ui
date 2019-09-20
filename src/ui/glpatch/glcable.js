@@ -21,11 +21,11 @@ CABLES.GLGUI.GlCable=class
         this._lineDrawer.setLine(this._lineIdx2,x2,y2+h,x2,y2);
     }
 
-    setColor(r,g,b)
+    setColor(r,g,b,a)
     {
-        this._lineDrawer.setColor(this._lineIdx0,r,g,b,1);
-        this._lineDrawer.setColor(this._lineIdx1,r,g,b,1);
-        this._lineDrawer.setColor(this._lineIdx2,r,g,b,1);
+        this._lineDrawer.setColor(this._lineIdx0,r,g,b,a);
+        this._lineDrawer.setColor(this._lineIdx1,r,g,b,a);
+        this._lineDrawer.setColor(this._lineIdx2,r,g,b,a);
     }
 
 }

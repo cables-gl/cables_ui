@@ -181,11 +181,11 @@ CABLES.GLGUI.GlPatch = class
 
     setDrawableColorByType(e,t)
     {
-        if(t == CABLES.OP_PORT_TYPE_VALUE) e.setColor(92/255,181/255,158/255);
-        else if(t == CABLES.OP_PORT_TYPE_FUNCTION) e.setColor(240/255,209/255,101/255);
-        else if(t == CABLES.OP_PORT_TYPE_OBJECT) e.setColor(171/255,90/255,148/255);
-        else if(t == CABLES.OP_PORT_TYPE_ARRAY) e.setColor(128/255,132/255,212/255);
-        else if(t == CABLES.OP_PORT_TYPE_STRING) e.setColor(213/255,114/255,114/255);
+        if(t == CABLES.OP_PORT_TYPE_VALUE) e.setColor(92/255,181/255,158/255,1);
+        else if(t == CABLES.OP_PORT_TYPE_FUNCTION) e.setColor(240/255,209/255,101/255,1);
+        else if(t == CABLES.OP_PORT_TYPE_OBJECT) e.setColor(171/255,90/255,148/255,1);
+        else if(t == CABLES.OP_PORT_TYPE_ARRAY) e.setColor(128/255,132/255,212/255,1);
+        else if(t == CABLES.OP_PORT_TYPE_STRING) e.setColor(213/255,114/255,114/255,1);
         else if(t == CABLES.OP_PORT_TYPE_DYNAMIC) e.setColor(1,1,1);
     }
 
