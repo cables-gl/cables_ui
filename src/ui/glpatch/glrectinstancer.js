@@ -1,10 +1,8 @@
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-
 CABLES.GLGUI.RectInstancer=class
 {
-
     constructor(cgl,options)
     {
         this._counter=0;
@@ -16,7 +14,6 @@ CABLES.GLGUI.RectInstancer=class
         this._colors=new Float32Array(4*this._num);
         this._sizes=new Float32Array(2*this._num);
         this._outlines=new Float32Array(this._num);
-        
 
         this._shader=new CGL.Shader(cgl,'rectinstancer');
         this._shader.setSource(''
@@ -105,22 +102,6 @@ CABLES.GLGUI.RectInstancer=class
 
     }
 
-    // mouseMove(x,y)
-    // {
-    //     // var scrollX=this._uniscrollX.getValue();
-    //     // var scrollY=this._uniscrollY.getValue();
-
-    //     // for(var i=0;i<this._sizes.length/2;i++)
-    //     // {
-    //     //     if(x+scrollX>this._positions[i*3+0] && x+scrollX<this._positions[i*3+0]+100 )
-    //     //     if(y+scrollY>this._positions[i*3+1] && y+scrollY<this._positions[i*3+1]+100 )
-    //     //     {
-    //     //         console.log('posx',this._colors[i*3+0]);
-
-    //     //     }
-    //     // }
-    // }
-
     render(resX,resY,scrollX,scrollY,zoom)
     {
         this._uniResX.set(resX);
@@ -142,7 +123,6 @@ CABLES.GLGUI.RectInstancer=class
         this._mesh.setAttribute('instSize',this._sizes,2,{instanced:true});
         this._mesh.setAttribute('outline',this._outlines,1,{instanced:true});
 
-        // console.log('rebuild...');
         this._needsRebuild=false;
     }
 
@@ -184,7 +164,7 @@ CABLES.GLGUI.RectInstancer=class
 
     createRect(options)
     {
-        var r=new CABLES.GLGUI.GlRect(this);
+        var r=new CABLES.GLGUI.GlRect(this,options||{});
         this._rects.push(r);
         return r;
     }

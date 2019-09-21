@@ -8,7 +8,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         super();
         this._patch=patch;
         if(!cgl)cgl=patch.cgl;
-        // this._glOps=[];
         this._glOpz={};
         this._patchAPI=null;
 
@@ -19,10 +18,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor2.setColor(0,0,1);
         this._cursor2.setPosition(0,0);
         this._cursor2.setSize(40,40);
-        
 
-        // this._patch.addEventListener("onOpAdd",this.addOp.bind(this));
-        // this._patch.addEventListener("onOpDelete",this.deleteOp.bind(this));
+        this._selectRect=this._rectInstancer.createRect();
+        this._selectRect.setColor(0,0.5,0.7,0.5);
+        this._selectRect.setPosition(0,0,1000);
+        this._selectRect.setSize(0,0);
 
         this._rectInstancer.rebuild();
         this.links={}
@@ -33,6 +33,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.emitEvent("mousedown",e);
             this._rectInstancer.mouseDown(e);
         });
+
     }
 
     set patchAPI(api) { this._patchAPI=api; }
@@ -98,7 +99,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             });
     }
 
-    render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
+    render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
     {
         var z=1/(resX/2/zoom);
         var asp=resY/resX;
@@ -106,7 +107,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const mouseAbsX=(mouseX-(resX/2))*z-(scrollX);
         const mouseAbsY=(mouseY-(resY/2))*z+(scrollY*asp);
 
-        this.hoverMouse(mouseAbsX,mouseAbsY);
+        this.mouseMove(mouseAbsX,mouseAbsY,mouseButton);
 
         this._cursor2.setPosition(mouseAbsX,mouseAbsY);
 
@@ -117,19 +118,56 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
     }
 
-    
-
-    hoverMouse(x,y)
+    mouseMove(x,y,button)
     {
         this._rectInstancer.mouseMove(x,y);
 
-        // for(var i in this._glOpz)
-        // {
-        //     // this._glOpz[i].setHover(this._glOpz[i].testRectXY(x,y));
-        //     this._glOpz[i].mouseMove(x,y);
-        // }
+        if(this._lastButton==1 && button!=1)
+            this._selectRect.setSize(0,0);
+
+        if(button==1)
+        {
+            this._selectRect.setPosition(this._lastMouseX,this._lastMouseY,1000);
+            this._selectRect.setSize(
+                (x-this._lastMouseX),
+                (y-this._lastMouseY));
+
+            this._selectOpsInRect(
+                x,
+                y,
+                this._lastMouseX,
+                this._lastMouseY);
+
+        }
+        else
+        {
+            this._lastMouseX=x;
+            this._lastMouseY=y;
+        }
+        this._lastButton=button;
     }
 
+    _selectOpsInRect(xa,ya,xb,yb)
+    {
+        const x=Math.min(xa,xb);
+        const y=Math.min(ya,yb);
+        const x2=Math.max(xa,xb);
+        const y2=Math.max(ya,yb);
+
+        for(var i in this._glOpz)
+        {
+            const glop=this._glOpz[i];
+            glop.selected=false;
+
+            if( glop.x + glop.w >= x &&     // glop. right edge past r2 left
+                glop.x <= x2 &&       // glop. left edge past r2 right
+                glop.y + glop.h >= y &&       // glop. top edge past r2 bottom
+                glop.y <= y2)  // r1 bottom edge past r2 top
+            {
+                glop.selected=true;
+            }
+        }
+    }
 
     dispose()
     {
@@ -145,36 +183,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     reset()
     {
-        // this._rectInstancer=new CABLES.GLGUI.RectInstancer(this._patch.cgl);
-        // this._rectInstancer.rebuild();
-
-        // console.log('reset');
-        // this.dispose();
-
-
-        // if(this._glOps.length==0)
-        // {
-        //     for(var i=0;i<this._patch.ops.length;i++)
-        //     {
-        //         this.addOp(this._patch.ops[i]);
-        //     }
-        // }
-
-        // for(var i=0;i<this._glOps.length;i++)
-        // {
-        //     this._glOps[i].updatePosition();
-        // }
-
-        // this._rectInstancer.rebuild();
     }
 
     getOp(opid)
     {
         return this._glOpz[opid];
-        // for(var i=0;i<this._glOps.length;i++)
-        // {
-        //     if(this._glOps[i].id==opid) return this._glOps[i];
-        // }
     }
 
     setDrawableColorByType(e,t)
