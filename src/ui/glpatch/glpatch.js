@@ -14,22 +14,20 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
 
-        this._cursor2=new CABLES.GLGUI.GlRect(this._rectInstancer);
-        this._cursor2.setColor(0,0,1);
-        this._cursor2.setPosition(0,0);
-        this._cursor2.setSize(40,40);
+        // this._cursor2=new CABLES.GLGUI.GlRect(this._rectInstancer);
+        // this._cursor2.setColor(0,0,1);
+        // this._cursor2.setPosition(0,0);
+        // this._cursor2.setSize(40,40);
 
         this._selectRect=this._rectInstancer.createRect();
         this._selectRect.setColor(0,0.5,0.7,0.5);
         this._selectRect.setPosition(0,0,1000);
         this._selectRect.setSize(0,0);
 
-        this._rectInstancer.rebuild();
         this.links={}
 
         cgl.canvas.addEventListener("mousedown",(e) =>
         {
-            console.log("MOUSEDOWN ",e);
             this.emitEvent("mousedown",e);
             this._rectInstancer.mouseDown(e);
         });
@@ -109,7 +107,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.mouseMove(mouseAbsX,mouseAbsY,mouseButton);
 
-        this._cursor2.setPosition(mouseAbsX,mouseAbsY);
+        // this._cursor2.setPosition(mouseAbsX,mouseAbsY);
 
         scrollX/=zoom;
         scrollY/=zoom;

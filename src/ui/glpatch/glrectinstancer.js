@@ -117,6 +117,7 @@ CABLES.GLGUI.RectInstancer=class
 
     rebuild()
     {
+        console.log("rebuild!");
         // todo only update whats needed
         this._mesh.setAttribute('instPos',this._positions,3,{instanced:true});
         this._mesh.setAttribute('instCol',this._colors,4,{instanced:true});
@@ -133,33 +134,49 @@ CABLES.GLGUI.RectInstancer=class
         return this._counter;
     }
 
+    _float32Diff(a,b)
+    {
+        return Math.abs(a-b)>0.0001;
+    }
+
     setPosition(idx,x,y)
     {
+
+        if( this._float32Diff(this._positions[idx*3+0],x) || this._float32Diff(this._positions[idx*3+1],y)) { this._needsRebuild=true; }
+
         this._positions[idx*3+0]=x;
         this._positions[idx*3+1]=y;
-        this._needsRebuild=true;
     }
 
     setSize(idx,x,y)
     {
+        if( this._float32Diff(this._sizes[idx*2+0],x) || this._float32Diff(this._sizes[idx*2+1],y)) { this._needsRebuild=true; }
+
         this._sizes[idx*2+0]=x;
         this._sizes[idx*2+1]=y;
-        this._needsRebuild=true;
     }
 
-    setColor(idx,r,g,b)
+    setColor(idx,r,g,b,a)
     {
+        if(
+            this._float32Diff(this._colors[idx*4+0],r) ||
+            this._float32Diff(this._colors[idx*4+1],g) ||
+            this._float32Diff(this._colors[idx*4+2],b) ||
+            this._float32Diff(this._colors[idx*4+3],a) ) { this._needsRebuild=true; }
+
+
         this._colors[idx*4+0]=r;
         this._colors[idx*4+1]=g;
         this._colors[idx*4+2]=b;
-        this._colors[idx*4+3]=1;
-        this._needsRebuild=true;
+        this._colors[idx*4+3]=a;
+        
     }
 
     setOutline(idx,o)
     {
+        if(this._outlines[idx]!=o) { this._needsRebuild=true; }
+
         this._outlines[idx]=o;
-        this._needsRebuild=true;
     }
 
     createRect(options)
