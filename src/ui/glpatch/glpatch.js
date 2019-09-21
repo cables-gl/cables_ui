@@ -14,22 +14,37 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
 
-        // this._cursor2=new CABLES.GLGUI.GlRect(this._rectInstancer);
-        // this._cursor2.setColor(0,0,1);
-        // this._cursor2.setPosition(0,0);
-        // this._cursor2.setSize(40,40);
+        this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
 
-        this._selectRect=this._rectInstancer.createRect();
-        this._selectRect.setColor(0,0.5,0.7,0.5);
+        this._selectRect=this._overLayRects.createRect();
+        this._selectRect.setColor(0,0.5,0.7,0.25);
         this._selectRect.setPosition(0,0,1000);
         this._selectRect.setSize(0,0);
+        this._mouseOverCancas=false;
 
         this.links={}
 
         cgl.canvas.addEventListener("mousedown",(e) =>
         {
+            this._mouseOverCancas=true;
             this.emitEvent("mousedown",e);
             this._rectInstancer.mouseDown(e);
+        });
+
+        cgl.canvas.addEventListener("mouseenter",(e) =>
+        {
+            this._mouseOverCancas=true;
+        });
+
+        cgl.canvas.addEventListener("mouseleave",(e) =>
+        {
+            this._mouseOverCancas=false;
+            console.log("leave!!!!");
+            this.removeSelectionArea();
+            this._lastButton=0;
+            this.emitEvent("mouseleave",e);
+            this.emitEvent("mouseup",e);
+
         });
 
     }
@@ -114,35 +129,45 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
+        this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
+    }
+
+    removeSelectionArea()
+    {
+        this._selectRect.setSize(0,0);
     }
 
     mouseMove(x,y,button)
     {
         this._rectInstancer.mouseMove(x,y);
 
-        if(this._lastButton==1 && button!=1)
-            this._selectRect.setSize(0,0);
+        if(this._lastButton==1 && button!=1) this.removeSelectionArea();
 
-        if(button==1)
+        if(this._mouseOverCancas)
         {
-            this._selectRect.setPosition(this._lastMouseX,this._lastMouseY,1000);
-            this._selectRect.setSize(
-                (x-this._lastMouseX),
-                (y-this._lastMouseY));
+            if(button==1)
+            {
+                this._selectRect.setPosition(this._lastMouseX,this._lastMouseY,1000);
+                this._selectRect.setSize(
+                    (x-this._lastMouseX),
+                    (y-this._lastMouseY));
 
-            this._selectOpsInRect(
-                x,
-                y,
-                this._lastMouseX,
-                this._lastMouseY);
+                this._selectOpsInRect(
+                    x,
+                    y,
+                    this._lastMouseX,
+                    this._lastMouseY);
+            }
+            else
+            {
+                this.removeSelectionArea();
+                this._lastMouseX=x;
+                this._lastMouseY=y;
+            }
+        }
 
-        }
-        else
-        {
-            this._lastMouseX=x;
-            this._lastMouseY=y;
-        }
         this._lastButton=button;
+
     }
 
     _selectOpsInRect(xa,ya,xb,yb)

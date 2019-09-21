@@ -21,7 +21,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._h=110;
         this._rectInstancer.setSize(this._attrIndex,this._w,this._h);
         this._data={};
-
     }
 
     get x() { return this._x; }
@@ -44,7 +43,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     setColor(r,g,b,a)
     {
-        this._rectInstancer.setColor(this._attrIndex,r,g,b,1);
+        this._rectInstancer.setColor(this._attrIndex,r,g,b,a);
     }
 
     setPosition(_x,_y)
@@ -109,24 +108,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         {
             this.childs[i].mouseMove(x,y);
         }
-
-        // this.setHover(this._glRectBg.isPointInside(x,y));
-        // if(this._isHovering)
-        // {
-        //     for(var i=0;i<this._portRects.length;i++)
-        //     {
-        //         this._portRects[i].setOutline(this._portRects[i].isPointInside(x,y));
-        //         // if( this._portRects[i].isPointInside(x,y) ) this._portRects[i].setColor(1,0,0,1);
-        //         // else this._portRects[i].setColor(0,0,0,1);
-        //     }
-        // }
-
-        // if(wasHovering && !this._isHovering)
-        // {
-        //     for(var i=0;i<this._portRects.length;i++)
-        //         this._portRects[i].setOutline(false);
-        // }
-
     }
 
 }

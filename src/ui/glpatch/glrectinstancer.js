@@ -23,9 +23,7 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'IN vec2 instSize;'
             .endl()+'IN float outline;'
             .endl()+'OUT float outlinefrag;'
-            
-            .endl()+'out vec4 posSize;'
-
+            .endl()+'OUT vec4 posSize;'
             .endl()+'OUT vec4 col;'
             .endl()+'UNI float zoom,resX,resY,scrollX,scrollY;'
 
@@ -60,8 +58,6 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'IN vec4 col;'
             .endl()+'IN vec4 posSize;'
             .endl()+'IN float outlinefrag;'
-            
-
             .endl()+'void main()'
             .endl()+'{'
 
@@ -69,12 +65,12 @@ CABLES.GLGUI.RectInstancer=class
 
             // outlines
             .endl()+'   if(outlinefrag>0.0){'
-            .endl()+'       outColor+=1.0-smoothstep(0.0,outlinefrag,posSize.x);'
-            .endl()+'       outColor+=1.0-smoothstep(0.0,outlinefrag,posSize.y);'
-            .endl()+'       outColor+=1.0-smoothstep(0.0,outlinefrag,posSize.z);'
-            .endl()+'       outColor+=1.0-smoothstep(0.0,outlinefrag,posSize.w);'
+            .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.x);'
+            .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.y);'
+            .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.z);'
+            .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.w);'
             .endl()+'   }'
-            
+
             .endl()+'}');
 
         this._uniZoom=new CGL.Uniform(this._shader,'f','zoom',0),
