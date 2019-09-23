@@ -74,7 +74,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
     {
         if(!o) o=0;
         else if(o===true) o=1;
-        
 
         this._rectInstancer.setOutline(this._attrIndex,o);
     }

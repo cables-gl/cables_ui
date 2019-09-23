@@ -24,6 +24,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.links={}
 
+        
+
         cgl.canvas.addEventListener("mousedown",(e) =>
         {
             this._mouseOverCancas=true;
@@ -39,12 +41,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("mouseleave",(e) =>
         {
             this._mouseOverCancas=false;
-            console.log("leave!!!!");
             this.removeSelectionArea();
             this._lastButton=0;
             this.emitEvent("mouseleave",e);
             this.emitEvent("mouseup",e);
-
         });
 
     }
@@ -130,6 +130,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
+
     }
 
     removeSelectionArea()
