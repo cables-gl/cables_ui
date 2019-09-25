@@ -8,30 +8,45 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         super();
         this._patch=patch;
         if(!cgl)cgl=patch.cgl;
-        // this._glOps=[];
         this._glOpz={};
         this._patchAPI=null;
 
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
 
-        this._cursor2=new CABLES.GLGUI.GlRect(this._rectInstancer);
-        this._cursor2.setColor(0,0,1);
-        this._cursor2.setPosition(0,0);
-        this._cursor2.setSize(40,40);
-        
+        this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
 
-        // this._patch.addEventListener("onOpAdd",this.addOp.bind(this));
-        // this._patch.addEventListener("onOpDelete",this.deleteOp.bind(this));
+        this._selectRect=this._overLayRects.createRect();
+        this._selectRect.setColor(0,0.5,0.7,0.25);
+        this._selectRect.setPosition(0,0,1000);
+        this._selectRect.setSize(0,0);
+        this._mouseOverCancas=false;
 
-        this._rectInstancer.rebuild();
         this.links={}
+
+        
 
         cgl.canvas.addEventListener("mousedown",(e) =>
         {
+            this._mouseOverCancas=true;
             this.emitEvent("mousedown",e);
             this._rectInstancer.mouseDown(e);
         });
+
+        cgl.canvas.addEventListener("mouseenter",(e) =>
+        {
+            this._mouseOverCancas=true;
+        });
+
+        cgl.canvas.addEventListener("mouseleave",(e) =>
+        {
+            this._mouseOverCancas=false;
+            this.removeSelectionArea();
+            this._lastButton=0;
+            this.emitEvent("mouseleave",e);
+            this.emitEvent("mouseup",e);
+        });
+
     }
 
     set patchAPI(api) { this._patchAPI=api; }
@@ -97,7 +112,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             });
     }
 
-    render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
+    render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
     {
         var z=1/(resX/2/zoom);
         var asp=resY/resX;
@@ -105,30 +120,78 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const mouseAbsX=(mouseX-(resX/2))*z-(scrollX);
         const mouseAbsY=(mouseY-(resY/2))*z+(scrollY*asp);
 
-        this.hoverMouse(mouseAbsX,mouseAbsY);
+        this.mouseMove(mouseAbsX,mouseAbsY,mouseButton);
 
-        this._cursor2.setPosition(mouseAbsX,mouseAbsY);
+        // this._cursor2.setPosition(mouseAbsX,mouseAbsY);
 
         scrollX/=zoom;
         scrollY/=zoom;
 
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
+        this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
+
     }
 
-    
+    removeSelectionArea()
+    {
+        this._selectRect.setSize(0,0);
+    }
 
-    hoverMouse(x,y)
+    mouseMove(x,y,button)
     {
         this._rectInstancer.mouseMove(x,y);
 
-        // for(var i in this._glOpz)
-        // {
-        //     // this._glOpz[i].setHover(this._glOpz[i].testRectXY(x,y));
-        //     this._glOpz[i].mouseMove(x,y);
-        // }
+        if(this._lastButton==1 && button!=1) this.removeSelectionArea();
+
+        if(this._mouseOverCancas)
+        {
+            if(button==1)
+            {
+                this._selectRect.setPosition(this._lastMouseX,this._lastMouseY,1000);
+                this._selectRect.setSize(
+                    (x-this._lastMouseX),
+                    (y-this._lastMouseY));
+
+                this._selectOpsInRect(
+                    x,
+                    y,
+                    this._lastMouseX,
+                    this._lastMouseY);
+            }
+            else
+            {
+                this.removeSelectionArea();
+                this._lastMouseX=x;
+                this._lastMouseY=y;
+            }
+        }
+
+        this._lastButton=button;
+
     }
 
+    _selectOpsInRect(xa,ya,xb,yb)
+    {
+        const x=Math.min(xa,xb);
+        const y=Math.min(ya,yb);
+        const x2=Math.max(xa,xb);
+        const y2=Math.max(ya,yb);
+
+        for(var i in this._glOpz)
+        {
+            const glop=this._glOpz[i];
+            glop.selected=false;
+
+            if( glop.x + glop.w >= x &&     // glop. right edge past r2 left
+                glop.x <= x2 &&       // glop. left edge past r2 right
+                glop.y + glop.h >= y &&       // glop. top edge past r2 bottom
+                glop.y <= y2)  // r1 bottom edge past r2 top
+            {
+                glop.selected=true;
+            }
+        }
+    }
 
     dispose()
     {
@@ -144,36 +207,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     reset()
     {
-        // this._rectInstancer=new CABLES.GLGUI.RectInstancer(this._patch.cgl);
-        // this._rectInstancer.rebuild();
-
-        // console.log('reset');
-        // this.dispose();
-
-
-        // if(this._glOps.length==0)
-        // {
-        //     for(var i=0;i<this._patch.ops.length;i++)
-        //     {
-        //         this.addOp(this._patch.ops[i]);
-        //     }
-        // }
-
-        // for(var i=0;i<this._glOps.length;i++)
-        // {
-        //     this._glOps[i].updatePosition();
-        // }
-
-        // this._rectInstancer.rebuild();
     }
 
     getOp(opid)
     {
         return this._glOpz[opid];
-        // for(var i=0;i<this._glOps.length;i++)
-        // {
-        //     if(this._glOps[i].id==opid) return this._glOps[i];
-        // }
     }
 
     setDrawableColorByType(e,t)

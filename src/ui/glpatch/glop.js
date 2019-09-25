@@ -21,8 +21,11 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this.opUiAttribs=op.uiAttribs;
         this._op=op;
         this._instancer=instancer;
+        this._width=CABLES.GLGUI.OP_MIN_WIDTH;
+        this._height=CABLES.GLGUI.OP_HEIGHT;
+
         this._glRectBg=instancer.createRect({});
-        this._glRectBg.setSize(100,CABLES.GLGUI.OP_HEIGHT);
+        this._glRectBg.setSize(this._width,this._height);
         this._glRectBg.setColor(51/255,51/255,51/255,1)
 
         this._glRectBg.addEventListener("hover",() =>
@@ -36,7 +39,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this._portRects=[];
         this._links={};
-        this._width=CABLES.GLGUI.OP_MIN_WIDTH;
         // this._isHovering=false;
 
         this.updatePosition();
@@ -46,7 +48,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*CABLES.GLGUI.OP_PORT_DISTANCE;
 
-        this._glRectBg.setSize(Math.max(this._width,portsSize),CABLES.GLGUI.OP_HEIGHT );
+        this._width=Math.max(this._width,portsSize);
+        this._glRectBg.setSize(this._width,this._height );
         this.setHover(false);
 
         glPatch.addEventListener("mousedown",(e) =>
@@ -80,7 +83,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
     isHovering()
     {
-        return this._glRectBg.isHovering();
+        if(this._glRectBg) return this._glRectBg.isHovering();
     }
 
     mouseDown(e)
@@ -195,6 +198,11 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glRectBg.setPosition(this.opUiAttribs.translate.x,this.opUiAttribs.translate.y);
     }
 
+    get x() { return this.opUiAttribs.translate.x; }
+    get y() { return this.opUiAttribs.translate.y; }
+    get w() { return this._width; }
+    get h() { return this._height; }
+
     getUiAttribs()
     {
         return this.opUiAttribs;
@@ -209,6 +217,13 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         this.updatePosition();
         for(var i in this._links) this._links[i].update();
+    }
+
+    set selected(s)
+    {
+        this.opUiAttribs.selected=s;
+        if(s) this._glRectBg.setColor(90/255,90/255,90/255,1)
+        else this._glRectBg.setColor(51/255,51/255,51/255,1)
     }
 
     getPortPos(id)
