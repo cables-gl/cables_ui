@@ -5,6 +5,7 @@ CABLES.UI.DRAGGINGOPS_STARTX=0;
 CABLES.UI.DRAGGINGOPS_STARTY=0;
 CABLES.UI.DRAGGINGOPS=false;
 CABLES.UI.DRAGGINGOPSDIR=-1;
+CABLES.UI.LONGPRESS=false;
 
 CABLES.UI.cleanRaphael = function(el) {
     el.node.removeAttribute('font-family');
@@ -244,11 +245,14 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var lastShakeDir = false;
 
     var down = function(x, y, e) {
+        // CABLES.UI.LONGPRESS=false;
+        // setTimeout(longPressStart,500);
         shakeCountP = 0;
         shakeCountN = 0;
 
-        if (e.metaKey || e.altKey || e.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL) {
+        if (e.metaKey || e.altKey || e.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL || CABLES.UI.LONGPRESS) {
             CABLES.UI.quickAddOpStart = opui;
+            gui.setCursor("copy");
             return;
         }
 
@@ -282,6 +286,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     var move = function(dx, dy, a, b, e) {
+        if(CABLES.UI.LONGPRESS) return;
+        else longPressCancel();
+
         if((e.metaKey || e.altKey) && gui.patch().getSelectedOps().length == 1) {
             return;
         }
@@ -574,6 +581,44 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     };
 
+    var longPressTimeout=null;
+
+
+
+
+    function longPressStart()
+    {
+        // clearTimeout(longPressTimeout);
+        // CABLES.UI.LONGPRESS=true;
+        // console.log("long press!");
+        // // gui.setCursor("copy");
+    }
+
+    function longPressPrepare()
+    {
+        // longPressCancel();
+        // console.log("long press prepare");
+        // longPressTimeout=setTimeout(longPressStart,500);
+    }
+
+    function longPressCancel()
+    {
+        // if(CABLES.UI.LONGPRESS)gui.setCursor();
+        // clearTimeout(longPressTimeout);
+        // CABLES.UI.LONGPRESS=false;
+        // // console.log("long press cancel!!!");
+    }
+
+    function longPressEnd()
+    {
+        // CABLES.UI.LONGPRESS=false;
+        // clearTimeout(longPressTimeout);
+        // console.log("long press END");
+    }
+
+
+
+
     var dblClick=function(ev)
     {
         gui.patch().setSelectedOp(null);
@@ -583,11 +628,20 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var mouseUp=function(ev) {
         opui.isDragging = false;
         CABLES.UI.DRAGGINGOPS=false;
+        longPressEnd();
     };
 
     var lastMouseDown=0;
 
     var mouseDown=function(ev) {
+
+        if (ev.metaKey || ev.altKey || ev.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL || CABLES.UI.LONGPRESS) {
+            CABLES.UI.quickAddOpStart = opui;
+            gui.setCursor("copy");
+            return;
+        }
+
+        longPressPrepare();
         const diff=performance.now()-lastMouseDown;
         if(diff<400) dblClick();
         lastMouseDown=performance.now();
@@ -599,8 +653,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if(!background)return;
 
         var perf = CABLES.uiperf.start('_updateElementOrder');
-
-
 
         if(reverse)
         {

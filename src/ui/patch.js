@@ -1453,10 +1453,12 @@ CABLES.UI.Patch = function(_gui) {
             gui.notIdling();
 
 
-            if (e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL)
+            if (e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL || CABLES.UI.LONGPRESS)
             {
                 if (CABLES.UI.quickAddOpStart)
                 {
+                    gui.setCursor("copy");
+
                     if (!self.quickLinkLine) self.quickLinkLine = new CABLES.UI.SVGLine(
                         CABLES.UI.quickAddOpStart.op.uiAttribs.translate.x + 30,
                         CABLES.UI.quickAddOpStart.op.uiAttribs.translate.y + 15);
@@ -1470,6 +1472,7 @@ CABLES.UI.Patch = function(_gui) {
 
             } else if (self.quickLinkLine) {
                 self.removeQuickLinkLine();
+                gui.setCursor();
             }
 
             if (CABLES.UI.MOUSEDRAGGINGPORT) return; // cancel when dragging port...
@@ -1482,6 +1485,7 @@ CABLES.UI.Patch = function(_gui) {
         });
 
         this._elPatchSvg.bind("mouseup", function(event) {
+            // CABLES.UI.LONGPRESS=false;
             rubberBandHide();
             mouseRubberBandSelectedBefore.length=0;
             gui.setCursor();
