@@ -331,6 +331,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var up = function(e)
     {
+        longPressCancel();
+
         this._updateElementOrder(false);
 
         // if((e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL) && CABLES.UI.quickAddOpStart)
@@ -588,36 +590,36 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     function longPressStart()
     {
-        // clearTimeout(longPressTimeout);
-        // CABLES.UI.LONGPRESS=true;
+        clearTimeout(longPressTimeout);
+        CABLES.UI.LONGPRESS=true;
+        CABLES.UI.quickAddOpStart=CABLES.UI.longPressOp;
         // console.log("long press!");
-        // // gui.setCursor("copy");
+        gui.setCursor("copy");
     }
 
-    function longPressPrepare()
+    function longPressPrepare(opui)
     {
-        // longPressCancel();
+        longPressCancel();
         // console.log("long press prepare");
-        // longPressTimeout=setTimeout(longPressStart,500);
+        CABLES.UI.longPressOp = opui;
+        longPressTimeout=setTimeout(longPressStart,500);
     }
 
     function longPressCancel()
     {
-        // if(CABLES.UI.LONGPRESS)gui.setCursor();
-        // clearTimeout(longPressTimeout);
-        // CABLES.UI.LONGPRESS=false;
-        // // console.log("long press cancel!!!");
+        CABLES.UI.longPressOp=null;
+        if(CABLES.UI.LONGPRESS)gui.setCursor();
+        clearTimeout(longPressTimeout);
+        CABLES.UI.LONGPRESS=false;
+        // console.log("long press cancel!!!");
     }
 
-    function longPressEnd()
-    {
-        // CABLES.UI.LONGPRESS=false;
-        // clearTimeout(longPressTimeout);
-        // console.log("long press END");
-    }
-
-
-
+    // function longPressEnd()
+    // {
+    //     CABLES.UI.LONGPRESS=false;
+    //     clearTimeout(longPressTimeout);
+    //     console.log("long press END");
+    // }
 
     var dblClick=function(ev)
     {
@@ -626,9 +628,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     var mouseUp=function(ev) {
+        longPressCancel();
         opui.isDragging = false;
         CABLES.UI.DRAGGINGOPS=false;
-        longPressEnd();
+        
     };
 
     var lastMouseDown=0;
@@ -641,7 +644,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             return;
         }
 
-        longPressPrepare();
+        
+        longPressPrepare(opui);
         const diff=performance.now()-lastMouseDown;
         if(diff<400) dblClick();
         lastMouseDown=performance.now();

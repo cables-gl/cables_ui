@@ -1242,6 +1242,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     function rubberBandMove(e) {
+        if(CABLES.UI.LONGPRESS)return;
         if(CABLES.SPLITPANE.bound)return;
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
             gui.setTransformGizmo(null);
@@ -1441,8 +1442,6 @@ CABLES.UI.Patch = function(_gui) {
             self.toggleCenterZoom(e);
         };
 
-
-
         $('#patch').on("mousemove", function(e)
         {
             if (CABLES.SPLITPANE.bound) return;
@@ -1451,7 +1450,6 @@ CABLES.UI.Patch = function(_gui) {
 
             if (CABLES.UI.MOUSEOVERPORT) return;
             gui.notIdling();
-
 
             if (e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL || CABLES.UI.LONGPRESS)
             {
