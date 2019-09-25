@@ -3295,21 +3295,18 @@ CABLES.UI.Patch = function(_gui) {
         console.log('op1', op1.op.name);
         console.log('op2', op2.op.name);
 
-        for (var j = 0; j < op1.portsOut.length; j++) {
+        for (var j = 0; j < op1.portsOut.length; j++)
+        {
             var p = op1.portsOut[j].thePort;
 
+            // console.log(p.name,'num:',op2.op.countFittingPorts(p));
 
-console.log(p.name,'num:',op2.op.countFittingPorts(p));
-
-            if (op2.op.countFittingPorts(p) > 0) {
-
-
-
-
+            if (op2.op.countFittingPorts(p) > 0)
+            {
                 suggestions.push({
                     p: p,
                     name: p.name + '<span class="icon icon-arrow-right"></span>',
-                    classname: "port_text_color_" + p.getTypeString()
+                    classname: "port_text_color_" + p.getTypeString().toLowerCase()
                 });
             }
         }
@@ -3332,16 +3329,14 @@ console.log(p.name,'num:',op2.op.countFittingPorts(p));
             var p = suggestions[id].p;
             var sugIn = [];
 
-            for (var i = 0; i < op2.portsIn.length; i++) {
-
-
-
-
-                if (CABLES.Link.canLink(op2.portsIn[i].thePort, p)) {
+            for (var i = 0; i < op2.portsIn.length; i++)
+            {
+                if (CABLES.Link.canLink(op2.portsIn[i].thePort, p))
+                {
                     sugIn.push({
                         p: op2.portsIn[i].thePort,
                         name: '<span class="icon icon-arrow-right"></span>' + op2.portsIn[i].thePort.name,
-                        classname: "port_text_color_" + op2.portsIn[i].thePort.getTypeString()
+                        classname: "port_text_color_" + op2.portsIn[i].thePort.getTypeString().toLowerCase()
                     });
                 }
             }

@@ -138,7 +138,7 @@ CABLES.UI.SuggestionDialog=function(suggestions,op,mouseEvent,cb,_action,showSel
     CABLES.UI.suggestions=this;
 
     var sugDegree=6;
-    var sugHeight=20;
+    var sugHeight=23;
     var i=0;
 
     for(i=0;i<suggestions.length;i++)
@@ -170,7 +170,12 @@ CABLES.UI.SuggestionDialog=function(suggestions,op,mouseEvent,cb,_action,showSel
         });
 
 
-    $( ".opSelect" ).css({width:5,height:5,  "margin-left":2.5,"margin-top":-2.5});
+    $( ".opSelect" ).css({
+            width:5,
+            height:5,
+            "margin-left":2.5,
+            "margin-top":-2.5
+            });
     $( ".opSelect" ).animate(
         {
           width:30,

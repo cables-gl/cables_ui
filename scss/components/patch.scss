@@ -78,8 +78,8 @@
 }
 
 
-.port_text_color_function { color::var(--color_port_function);}
-.port_text_color_value { color::var(--color_port_value); }
+.port_text_color_trigger, .port_text_color_function { color::var(--color_port_function);}
+.port_text_color_value,.port_text_color_number { color::var(--color_port_value); }
 .port_text_color_object { color::var(--color_port_object);}
 .port_text_color_array { color::var(--color_port_array);  }
 .port_text_color_dynamic { color::var(--color_port_dynamic);}
@@ -348,21 +348,23 @@
     .suggestion
     {
         margin-bottom: 10px;
-        padding:5px;
+        padding:3px;
+        padding-top:1px;
+        padding-left:5px;
+        padding-right:5px;
         text-overflow: ellipsis;
         position: absolute;
-        font-size: 13px;
+        font-size: 14px;
         min-width: 50px;
         white-space: nowrap;
         background-color:var(--color-01);// rgba(20,20,20,0.7);
-        color: var(--color-13);
         border-radius: 4px;
 
         &:hover
         {
             cursor:pointer !important;
             background-color: $highlight-color-dark;
-            color: var(--color-13);
+            color: var(--color-13); 
         }
 
 		.icon
@@ -370,6 +372,7 @@
 			margin-left:5px;
 			margin-right:5px;
 		    mask-position-y: 2px;
+            vertical-align: bottom;
 		}
     }
 

@@ -24,7 +24,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.links={}
 
-        
 
         cgl.canvas.addEventListener("mousedown",(e) =>
         {
