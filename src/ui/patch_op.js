@@ -287,7 +287,15 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var move = function(dx, dy, a, b, e) {
         if(CABLES.UI.LONGPRESS) return;
-        else longPressCancel();
+        else 
+        {
+            if( CABLES.UI.longPressOp )
+            {
+                if(Math.abs(dx) > 3 || Math.abs(dy) > 3) longPressCancel();
+                else return;
+            }
+        }
+
 
         if((e.metaKey || e.altKey) && gui.patch().getSelectedOps().length == 1) {
             return;
@@ -602,7 +610,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         longPressCancel();
         // console.log("long press prepare");
         CABLES.UI.longPressOp = opui;
-        longPressTimeout=setTimeout(longPressStart,500);
+        longPressTimeout=setTimeout(longPressStart,300);
     }
 
     function longPressCancel()

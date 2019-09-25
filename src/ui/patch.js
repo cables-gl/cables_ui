@@ -1457,9 +1457,13 @@ CABLES.UI.Patch = function(_gui) {
                 {
                     gui.setCursor("copy");
 
-                    if (!self.quickLinkLine) self.quickLinkLine = new CABLES.UI.SVGLine(
+                    if (!self.quickLinkLine)
+                    {
+                        self.quickLinkLine = new CABLES.UI.SVGLine(
                         CABLES.UI.quickAddOpStart.op.uiAttribs.translate.x + 30,
-                        CABLES.UI.quickAddOpStart.op.uiAttribs.translate.y + 15);
+                        CABLES.UI.quickAddOpStart.op.uiAttribs.translate.y + 28);
+
+                    }
                     self.quickLinkLine.updateEnd(
                         gui.patch().getCanvasCoordsMouse(e).x,
                         gui.patch().getCanvasCoordsMouse(e).y
@@ -3303,11 +3307,19 @@ CABLES.UI.Patch = function(_gui) {
 
             // console.log(p.name,'num:',op2.op.countFittingPorts(p));
 
-            if (op2.op.countFittingPorts(p) > 0)
+            const numFitting=op2.op.countFittingPorts(p);
+            var addText="...";
+            if (numFitting > 0)
             {
+                if(numFitting==1)
+                {
+                    const p2=op2.op.findFittingPort(p);
+                    addText+=p2.name;
+                }
+
                 suggestions.push({
                     p: p,
-                    name: p.name + '<span class="icon icon-arrow-right"></span>',
+                    name: p.name + '<span class="icon icon-arrow-right"></span>'+addText,
                     classname: "port_text_color_" + p.getTypeString().toLowerCase()
                 });
             }
