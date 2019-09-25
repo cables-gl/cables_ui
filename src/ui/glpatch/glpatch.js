@@ -29,7 +29,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         cgl.canvas.addEventListener("mousedown",(e) =>
         {
-            console.log("MOUSEDOWN ",e);
             this.emitEvent("mousedown",e);
             this._rectInstancer.mouseDown(e);
         });

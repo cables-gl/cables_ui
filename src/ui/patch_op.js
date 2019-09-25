@@ -247,7 +247,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         shakeCountP = 0;
         shakeCountN = 0;
 
-        if (e.metaKey || e.altKey) {
+        if (e.metaKey || e.altKey || e.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL) {
             CABLES.UI.quickAddOpStart = opui;
             return;
         }
@@ -326,7 +326,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     {
         this._updateElementOrder(false);
 
-        if((e.metaKey || e.altKey) && CABLES.UI.quickAddOpStart)
+        // if((e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL) && CABLES.UI.quickAddOpStart)
+        if( CABLES.UI.quickAddOpStart)
         {
             gui.patch().linkTwoOps(CABLES.UI.quickAddOpStart,CABLES.UI.selectedEndOp);
 

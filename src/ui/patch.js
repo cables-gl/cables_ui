@@ -1452,7 +1452,8 @@ CABLES.UI.Patch = function(_gui) {
             if (CABLES.UI.MOUSEOVERPORT) return;
             gui.notIdling();
 
-            if (e.metaKey || e.altKey)
+
+            if (e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL)
             {
                 if (CABLES.UI.quickAddOpStart)
                 {
@@ -3297,7 +3298,14 @@ CABLES.UI.Patch = function(_gui) {
         for (var j = 0; j < op1.portsOut.length; j++) {
             var p = op1.portsOut[j].thePort;
 
+
+console.log(p.name,'num:',op2.op.countFittingPorts(p));
+
             if (op2.op.countFittingPorts(p) > 0) {
+
+
+
+
                 suggestions.push({
                     p: p,
                     name: p.name + '<span class="icon icon-arrow-right"></span>',
@@ -3318,42 +3326,50 @@ CABLES.UI.Patch = function(_gui) {
             clientY: self.lastMouseMoveEvent.clientY
         };
 
-        new CABLES.UI.SuggestionDialog(suggestions, op1, fakeMouseEvent, null,
-            function(id) {
-                var p = suggestions[id].p;
-                var sugIn = [];
 
-                for (var i = 0; i < op2.portsIn.length; i++) {
-                    if (CABLES.Link.canLink(op2.portsIn[i].thePort, p)) {
-                        sugIn.push({
-                            p: op2.portsIn[i].thePort,
-                            name: '<span class="icon icon-arrow-right"></span>' + op2.portsIn[i].thePort.name,
-                            classname: "port_text_color_" + op2.portsIn[i].thePort.getTypeString()
-                        });
-                    }
+        function showSuggestions2(id)
+        {
+            var p = suggestions[id].p;
+            var sugIn = [];
+
+            for (var i = 0; i < op2.portsIn.length; i++) {
+
+
+
+
+                if (CABLES.Link.canLink(op2.portsIn[i].thePort, p)) {
+                    sugIn.push({
+                        p: op2.portsIn[i].thePort,
+                        name: '<span class="icon icon-arrow-right"></span>' + op2.portsIn[i].thePort.name,
+                        classname: "port_text_color_" + op2.portsIn[i].thePort.getTypeString()
+                    });
                 }
+            }
 
-                if (sugIn.length == 1) {
+            if (sugIn.length == 1) {
+                gui.patch().scene.link(
+                    p.parent,
+                    p.name,
+                    sugIn[0].p.parent,
+                    sugIn[0].p.name);
+                return;
+            }
+
+            op2.oprect.showFocus();
+
+            new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
+                function(id) {
                     gui.patch().scene.link(
                         p.parent,
                         p.name,
-                        sugIn[0].p.parent,
-                        sugIn[0].p.name);
+                        sugIn[id].p.parent,
+                        sugIn[id].p.name);
                     return;
-                }
+                });
+        }
 
-                op2.oprect.showFocus();
-
-                new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
-                    function(id) {
-                        gui.patch().scene.link(
-                            p.parent,
-                            p.name,
-                            sugIn[id].p.parent,
-                            sugIn[id].p.name);
-                        return;
-                    });
-            }, false);
+        if(suggestions.length==1) showSuggestions2(0);
+        else new CABLES.UI.SuggestionDialog(suggestions, op1, fakeMouseEvent, null, showSuggestions2, false);
     };
 
     this.opContextMenu=function(ele)
