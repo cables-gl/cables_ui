@@ -27,15 +27,16 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glRectBg=instancer.createRect({});
         this._glRectBg.setSize(this._width,this._height);
         this._glRectBg.setColor(51/255,51/255,51/255,1)
+        this._glRectBg.setColorHover(61/255,61/255,61/255,1)
 
-        this._glRectBg.addEventListener("hover",() =>
-        {
-            this._glRectBg.setOutline(true);
-        });
-        this._glRectBg.addEventListener("unhover",() =>
-        {
-            this._glRectBg.setOutline(false);
-        });
+        // this._glRectBg.addEventListener("hover",() =>
+        // {
+        //     // this._glRectBg.setOutline(true);
+        // });
+        // this._glRectBg.addEventListener("unhover",() =>
+        // {
+        //     this._glRectBg.setOutline(false);
+        // });
 
         this._portRects=[];
         this._links={};
@@ -122,7 +123,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         if(this._isHovering && !h) this.emitEvent("hoverEnd");
 
         this._isHovering=h;
-        this._glRectBg.setOutline(this._isHovering);
+        // this._glRectBg.setOutline(this._isHovering);
 
         // if(h) this._glRectBg.setColor(80/255,80/255,80/255,0.3);
         // else this._glRectBg.setColor(51/255,51/255,51/255,0.3);
@@ -189,7 +190,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         {
             rect.setOutline(false);
         });
-
     }
 
     updatePosition()
