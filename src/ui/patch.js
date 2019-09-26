@@ -3314,7 +3314,7 @@ CABLES.UI.Patch = function(_gui) {
                 if(numFitting==1)
                 {
                     const p2=op2.op.findFittingPort(p);
-                    addText+=p2.name;
+                    addText=p2.name;
                 }
 
                 suggestions.push({
