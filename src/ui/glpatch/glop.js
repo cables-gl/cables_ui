@@ -63,13 +63,18 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glRectBg.on("mousedown", (e) =>
         {
             console.log("GLOP MOUSE DOWNNNNNNN!");
-            glPatch.quickLinkSuggestion.longPressPrepare(this._op.id,this.x+this.w/2,this.y+this.h);
+            glPatch.quickLinkSuggestion.longPressPrepare(this._op,this.x+this.w/2,this.y+this.h);
         });
 
         
         this._glRectBg.on("mouseup", (e) =>
         {
             console.log("GLOP MOUSE UP!");
+
+            if(this._glPatch.quickLinkSuggestion.isActive())
+            {
+                this._glPatch.quickLinkSuggestion.finish(e,this._op);
+            }
         });
     }
 
