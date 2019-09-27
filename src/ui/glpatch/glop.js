@@ -53,14 +53,25 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glRectBg.setSize(this._width,this._height );
         this.setHover(false);
 
-        glPatch.addEventListener("mousedown",(e) =>
+        glPatch.on("mousedown",(e) =>
         {
-            this.mouseDown(e);
+            if(this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
 
         });
+
+
+        this._glRectBg.on("mousedown", (e) =>
+        {
+            console.log("GLOP MOUSE DOWNNNNNNN!");
+            glPatch.quickLinkSuggestion.longPressPrepare(this._op.id,this.x+this.w/2,this.y+this.h);
+        });
+
+        
+        this._glRectBg.on("mouseup", (e) =>
+        {
+            console.log("GLOP MOUSE UP!");
+        });
     }
-
-
 
     get id()
     {
@@ -87,10 +98,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         if(this._glRectBg) return this._glRectBg.isHovering();
     }
 
-    mouseDown(e)
-    {
-        if(this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
-    }
 
     mouseMove(x,y)
     {

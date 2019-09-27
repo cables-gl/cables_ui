@@ -87,6 +87,18 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._rectInstancer.setOutline(this._attrIndex,o);
     }
 
+    mouseUp(e)
+    {
+        if(this._hovering)
+        {
+            this.emitEvent("mouseup",e,this);
+
+            for(var i=0;i<this.childs.length;i++)
+                this.childs[i].mouseUp(e);
+        }
+
+    }
+
     mouseDown(e)
     {
         if(this._hovering)

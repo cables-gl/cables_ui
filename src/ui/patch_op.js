@@ -592,10 +592,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     var longPressTimeout=null;
-
-
-
-
     function longPressStart()
     {
         clearTimeout(longPressTimeout);
@@ -622,12 +618,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         // console.log("long press cancel!!!");
     }
 
-    // function longPressEnd()
-    // {
-    //     CABLES.UI.LONGPRESS=false;
-    //     clearTimeout(longPressTimeout);
-    //     console.log("long press END");
-    // }
 
     var dblClick=function(ev)
     {

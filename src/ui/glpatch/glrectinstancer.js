@@ -198,4 +198,12 @@ CABLES.GLGUI.RectInstancer=class
         }
     }
 
+    mouseUp(e)
+    {
+        for(var i=0;i<this._rects.length;i++)
+        {
+            this._rects[i].mouseUp(e);
+        }
+    }
+
 }
