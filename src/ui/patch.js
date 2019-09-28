@@ -1460,7 +1460,7 @@ CABLES.UI.Patch = function(_gui) {
                     if (!self.quickLinkLine)
                     {
                         self.quickLinkLine = new CABLES.UI.SVGLine(
-                        CABLES.UI.quickAddOpStart.op.uiAttribs.translate.x + 30,
+                        gui.patch().getCanvasCoordsMouse(e).x,// CABLES.UI.quickAddOpStart.op.uiAttribs.translate.x + 30,
                         CABLES.UI.quickAddOpStart.op.uiAttribs.translate.y + 28);
 
                     }

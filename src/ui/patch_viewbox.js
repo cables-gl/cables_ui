@@ -327,7 +327,7 @@ CABLES.UI.PatchViewBox.prototype.animate = function (x, y, w, h)
 
     this._zoom = null;
     this._viewBoxAnim.start = performance.now();
-    this._viewBoxAnim.x.defaultEasing = this._viewBoxAnim.y.defaultEasing = this._viewBoxAnim.w.defaultEasing = this._viewBoxAnim.h.defaultEasing = CABLES.TL.EASING_CUBIC_OUT;
+    this._viewBoxAnim.x.defaultEasing = this._viewBoxAnim.y.defaultEasing = this._viewBoxAnim.w.defaultEasing = this._viewBoxAnim.h.defaultEasing = CABLES.EASING_CUBIC_OUT;
 
     this._viewBoxAnim.x.clear();
     this._viewBoxAnim.y.clear();
