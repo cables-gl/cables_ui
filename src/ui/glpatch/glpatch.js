@@ -13,37 +13,44 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
-
         this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
 
         this._selectRect=this._overLayRects.createRect();
         this._selectRect.setColor(0,0.5,0.7,0.25);
         this._selectRect.setPosition(0,0,1000);
         this._selectRect.setSize(0,0);
-        this._mouseOverCancas=false;
+        this._mouseOverCanvas=false;
 
+        this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
+        
         this.links={}
-
 
         cgl.canvas.addEventListener("mousedown",(e) =>
         {
-            this._mouseOverCancas=true;
+            this._mouseOverCanvas=true;
             this.emitEvent("mousedown",e);
             this._rectInstancer.mouseDown(e);
         });
 
         cgl.canvas.addEventListener("mouseenter",(e) =>
         {
-            this._mouseOverCancas=true;
+            this._mouseOverCanvas=true;
         });
 
         cgl.canvas.addEventListener("mouseleave",(e) =>
         {
-            this._mouseOverCancas=false;
+            this._mouseOverCanvas=false;
             this.removeSelectionArea();
             this._lastButton=0;
             this.emitEvent("mouseleave",e);
             this.emitEvent("mouseup",e);
+        });
+
+        cgl.canvas.addEventListener("mouseup",(e) =>
+        {
+            this._rectInstancer.mouseUp(e);
+            this.quickLinkSuggestion.longPressCancel();
+
         });
 
     }
@@ -97,8 +104,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     addOp(op)
     {
-        if(!op)
-            console.error("no op at addop",op);
+        if(!op) console.error("no op at addop",op);
 
         const glOp=new CABLES.GLGUI.GlOp(this,this._rectInstancer,op);
         this._glOpz[op.id]=glOp;
@@ -111,7 +117,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             });
     }
 
-    render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
+    screenCoord(resX,resY,zoom,mouseX,mouseY)
     {
         var z=1/(resX/2/zoom);
         var asp=resY/resX;
@@ -119,8 +125,23 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const mouseAbsX=(mouseX-(resX/2))*z-(scrollX);
         const mouseAbsY=(mouseY-(resY/2))*z+(scrollY*asp);
 
-        this.mouseMove(mouseAbsX,mouseAbsY,mouseButton);
+        return [mouseAbsX,mouseAbsY];
+    }
 
+    render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
+    {
+        // var z=1/(resX/2/zoom);
+        // var asp=resY/resX;
+
+        // const mouseAbsX=(mouseX-(resX/2))*z-(scrollX);
+        // const mouseAbsY=(mouseY-(resY/2))*z+(scrollY*asp);
+        const coord=this.screenCoord(resX,resY,zoom,mouseX,mouseY);
+        const mouseAbsX=coord[0];
+        const mouseAbsY=coord[1];
+        
+
+
+        this.mouseMove(mouseAbsX,mouseAbsY,mouseButton);
         // this._cursor2.setPosition(mouseAbsX,mouseAbsY);
 
         scrollX/=zoom;
@@ -129,6 +150,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
+
+        this.quickLinkSuggestion.glRender(this._patch.cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
 
     }
 
@@ -139,13 +162,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     mouseMove(x,y,button)
     {
+        const allowSelectionArea= !this.quickLinkSuggestion.isActive();
+
         this._rectInstancer.mouseMove(x,y);
 
         if(this._lastButton==1 && button!=1) this.removeSelectionArea();
 
-        if(this._mouseOverCancas)
+        if(this._mouseOverCanvas)
         {
-            if(button==1)
+            if(button==1 && allowSelectionArea)
             {
                 this._selectRect.setPosition(this._lastMouseX,this._lastMouseY,1000);
                 this._selectRect.setSize(
@@ -167,7 +192,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
 
         this._lastButton=button;
-
     }
 
     _selectOpsInRect(xa,ya,xb,yb)
