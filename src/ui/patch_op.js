@@ -605,8 +605,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     {
         longPressCancel();
         // console.log("long press prepare");
-        CABLES.UI.longPressOp = opui;
-        longPressTimeout=setTimeout(longPressStart,300);
+        // CABLES.UI.longPressOp = opui;
+        // longPressTimeout=setTimeout(longPressStart,300);
     }
 
     function longPressCancel()
@@ -621,6 +621,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var dblClick=function(ev)
     {
+        longPressCancel();
         gui.patch().setSelectedOp(null);
         if (CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
     };
