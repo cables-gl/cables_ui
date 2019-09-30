@@ -1242,7 +1242,6 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     function rubberBandMove(e) {
-        if(CABLES.UI.LONGPRESS)return;
         if(CABLES.SPLITPANE.bound)return;
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
             gui.setTransformGizmo(null);
@@ -1451,7 +1450,7 @@ CABLES.UI.Patch = function(_gui) {
             if (CABLES.UI.MOUSEOVERPORT) return;
             gui.notIdling();
 
-            if (e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL || CABLES.UI.LONGPRESS)
+            if (e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL)
             {
                 if (CABLES.UI.quickAddOpStart)
                 {
@@ -1487,7 +1486,6 @@ CABLES.UI.Patch = function(_gui) {
         });
 
         this._elPatchSvg.bind("mouseup", function(event) {
-            // CABLES.UI.LONGPRESS=false;
             rubberBandHide();
             mouseRubberBandSelectedBefore.length=0;
             gui.setCursor();

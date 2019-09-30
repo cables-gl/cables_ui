@@ -1,3 +1,4 @@
+
 var CABLES=CABLES||{};
 CABLES.GLGUI=CABLES.GLGUI||{};
 
@@ -21,7 +22,17 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectRect.setSize(0,0);
         this._mouseOverCanvas=false;
 
+        this._cursor2=this._overLayRects.createRect();
+        this._cursor2.setSize(4,4);
+        this._cursor2.setColor(0,0,1,1);
+
         this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
+
+        this._viewZoom=0;
+        this._viewScrollX=0;
+        this._viewScrollY=0;
+        this._viewResX=0;
+        this._viewResY=0;
         
         this.links={}
 
@@ -35,6 +46,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("mouseenter",(e) =>
         {
             this._mouseOverCanvas=true;
+        });
+
+        cgl.canvas.addEventListener("mousemove",(e) =>
+        {
+            if(!this.quickLinkSuggestion.isActive())this.quickLinkSuggestion.longPressCancel();
         });
 
         cgl.canvas.addEventListener("mouseleave",(e) =>
@@ -117,32 +133,31 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             });
     }
 
-    screenCoord(resX,resY,zoom,mouseX,mouseY)
+    screenCoord(mouseX,mouseY)
     {
-        var z=1/(resX/2/zoom);
-        var asp=resY/resX;
+        var z=1/(this._viewResX/2/this._viewZoom);
+        var asp=this._viewResY/this._viewResX;
 
-        const mouseAbsX=(mouseX-(resX/2))*z-(scrollX);
-        const mouseAbsY=(mouseY-(resY/2))*z+(scrollY*asp);
+        const mouseAbsX=(mouseX-(this._viewResX/2))*z-(this._viewScrollX);
+        const mouseAbsY=(mouseY-(this._viewResY/2))*z+(this._viewScrollY*asp);
 
         return [mouseAbsX,mouseAbsY];
     }
 
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
     {
-        // var z=1/(resX/2/zoom);
-        // var asp=resY/resX;
+        this._viewResX=resX;
+        this._viewResY=resY;
+        this._viewZoom=zoom;
+        this._viewScrollX=scrollX;
+        this._viewScrollY=scrollY;
 
-        // const mouseAbsX=(mouseX-(resX/2))*z-(scrollX);
-        // const mouseAbsY=(mouseY-(resY/2))*z+(scrollY*asp);
-        const coord=this.screenCoord(resX,resY,zoom,mouseX,mouseY);
+        const coord=this.screenCoord(mouseX,mouseY);
         const mouseAbsX=coord[0];
         const mouseAbsY=coord[1];
-        
-
 
         this.mouseMove(mouseAbsX,mouseAbsY,mouseButton);
-        // this._cursor2.setPosition(mouseAbsX,mouseAbsY);
+        this._cursor2.setPosition(mouseAbsX-2,mouseAbsY-2);
 
         scrollX/=zoom;
         scrollY/=zoom;
@@ -152,7 +167,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
 
         this.quickLinkSuggestion.glRender(this._patch.cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
-
     }
 
     removeSelectionArea()
@@ -162,7 +176,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     mouseMove(x,y,button)
     {
-        const allowSelectionArea= !this.quickLinkSuggestion.isActive();
+        if( (this._lastMouseX!=x || this._lastMouseY!=y) && !this.quickLinkSuggestion.isActive() ) this.quickLinkSuggestion.longPressCancel();
+
+        var allowSelectionArea= !this.quickLinkSuggestion.isActive();
+
+        const hoverops=this._getGlOpsInRect(x,y,x+1,y+1);
+        if(hoverops.length>0) this._hoverOp=hoverops[0];
+        else this._hoverOp=null;
+
+        if( this._selectRect.h==0 && this._hoverOp ) allowSelectionArea = false;
 
         this._rectInstancer.mouseMove(x,y);
 
@@ -194,25 +216,59 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lastButton=button;
     }
 
-    _selectOpsInRect(xa,ya,xb,yb)
+    _getGlOpsInRect(xa,ya,xb,yb)
     {
         const x=Math.min(xa,xb);
         const y=Math.min(ya,yb);
         const x2=Math.max(xa,xb);
         const y2=Math.max(ya,yb);
+        const ops=[];
 
         for(var i in this._glOpz)
         {
             const glop=this._glOpz[i];
-            glop.selected=false;
 
             if( glop.x + glop.w >= x &&     // glop. right edge past r2 left
                 glop.x <= x2 &&       // glop. left edge past r2 right
                 glop.y + glop.h >= y &&       // glop. top edge past r2 bottom
                 glop.y <= y2)  // r1 bottom edge past r2 top
             {
-                glop.selected=true;
+                ops.push(glop)
             }
+        }
+        return ops;
+    }
+
+
+    _selectOpsInRect(xa,ya,xb,yb)
+    {
+        // const x=Math.min(xa,xb);
+        // const y=Math.min(ya,yb);
+        // const x2=Math.max(xa,xb);
+        // const y2=Math.max(ya,yb);
+
+        // for(var i in this._glOpz)
+        // {
+        //     const glop=this._glOpz[i];
+        //     glop.selected=false;
+
+        //     if( glop.x + glop.w >= x &&     // glop. right edge past r2 left
+        //         glop.x <= x2 &&       // glop. left edge past r2 right
+        //         glop.y + glop.h >= y &&       // glop. top edge past r2 bottom
+        //         glop.y <= y2)  // r1 bottom edge past r2 top
+        //     {
+        //         glop.selected=true;
+        //     }
+        // }
+        var ops=this._getGlOpsInRect(xa,ya,xb,yb);
+
+        for(var i in this._glOpz)
+        {
+            this._glOpz[i].selected=false;
+        }
+        for(var i=0;i<ops.length;i++)
+        {
+            ops[i].selected=true;
         }
     }
 

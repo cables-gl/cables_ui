@@ -27,6 +27,8 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     get x() { return this._x; }
     get y() { return this._y; }
+    get w() { return this._w; }
+    get h() { return this._h; }
 
     get data() { return this._data; }
     set data(r) { this._data=r; }
@@ -93,8 +95,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         {
             this.emitEvent("mouseup",e,this);
 
-            for(var i=0;i<this.childs.length;i++)
-                this.childs[i].mouseUp(e);
+            for(var i=0;i<this.childs.length;i++) this.childs[i].mouseUp(e);
         }
 
     }
@@ -105,8 +106,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         {
             this.emitEvent("mousedown",e,this);
 
-            for(var i=0;i<this.childs.length;i++)
-                this.childs[i].mouseDown(e);
+            for(var i=0;i<this.childs.length;i++) this.childs[i].mouseDown(e);
         }
     }
 
