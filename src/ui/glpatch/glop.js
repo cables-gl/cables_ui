@@ -26,7 +26,20 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this._glRectBg=instancer.createRect({});
         this._glRectBg.setSize(this._width,this._height);
-        this._glRectBg.setColor(51/255,51/255,51/255,1)
+        this._glRectBg.setColor(51/255,51/255,51/255,1);
+        this._glRectBg.draggable=true;
+        this._glRectBg.on("drag",
+            (rect)=>
+            {
+                console.log("glop is draggin!");
+                this._glPatch.patchAPI.setOpUiAttribs(this._id,
+                    "translate",
+                    {
+                        "x":rect.x,
+                        "y":rect.y
+                    });
+
+            });
         // this._glRectBg.setColorHover(61/255,61/255,61/255,1)
 
         this._glRectBg.addEventListener("hover",() =>

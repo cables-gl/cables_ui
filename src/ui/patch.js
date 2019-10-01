@@ -1697,7 +1697,7 @@ CABLES.UI.Patch = function(_gui) {
         }
 
         // var dir=null;
-        if(CABLES.UI.OPSELECT.linkNewOpToPort)dir=CABLES.UI.OPSELECT.linkNewOpToPort.direction;
+        // if(CABLES.UI.OPSELECT.linkNewOpToPort)dir=CABLES.UI.OPSELECT.linkNewOpToPort.direction;
 
         CABLES.UI.OPSELECT.linkNewOpToOp = null;
         CABLES.UI.OPSELECT.linkNewLink = null;

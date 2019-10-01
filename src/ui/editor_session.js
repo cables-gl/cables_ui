@@ -36,12 +36,12 @@ CABLES.EditorSession.prototype.remove=function(name,type)
     var found=true;
     while (found) {
         found = false;
-        for (var i = 0; i < this._openEditors.length; i++) {
+        for (var i = 0; i < this._openEditors.length; i++)
+        {
             if (this._openEditors[i].name == name && this._openEditors[i].type == type)
             {
-                index = i;
                 found = true;
-                this._openEditors.splice(index, 1);
+                this._openEditors.splice(i, 1);
                 break;
             }
         }

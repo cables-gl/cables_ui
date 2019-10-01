@@ -26,7 +26,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor2.setSize(4,4);
         this._cursor2.setColor(0,0,1,1);
 
-        this._hoverDragOp=null;
+        // this._hoverDragOp=null;
 
         this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
 
@@ -36,8 +36,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._viewResX=0;
         this._viewResY=0;
         
-        this._dragOpStartX=0;
-        this._dragOpStartY=0;
 
 
         this.links={}
@@ -72,6 +70,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             this._rectInstancer.mouseUp(e);
             this.quickLinkSuggestion.longPressCancel();
+            this._rectInstancer.interactive=true;
 
         });
 
@@ -182,58 +181,65 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     mouseMove(x,y,button)
     {
+
         if( (this._lastMouseX!=x || this._lastMouseY!=y) && !this.quickLinkSuggestion.isActive() ) this.quickLinkSuggestion.longPressCancel();
 
         var allowSelectionArea= !this.quickLinkSuggestion.isActive();
+
+        this._rectInstancer.mouseMove(x,y,button);
+
+        if(this._rectInstancer.isDragging())
+        {
+            console.log("dragging,.,..");
+            return;
+        }
 
 
 
 
         const hoverops=this._getGlOpsInRect(x,y,x+1,y+1);
 
-        console.log('aaa',hoverops.length ,!this._hoverDragOp,button);
-
         if(button==1)
         {
-
             // remmeber start coordinates when start dragging hovered op
-            if(hoverops.length>0 && !this._hoverDragOp)
-            {
-                console.log("START drag coords!!!");
-                this._dragOpStartX=x;
-                this._dragOpStartY=y;
-                this._dragOpOffsetX=x-hoverops[0].x;
-                this._dragOpOffsetY=y-hoverops[0].y;
-            }
+            // if(hoverops.length>0 && !this._hoverDragOp)
+            // {
+            //     console.log("START drag coords!!!");
+            //     this._dragOpStartX=x;
+            //     this._dragOpStartY=y;
+            //     this._dragOpOffsetX=x-hoverops[0].x;
+            //     this._dragOpOffsetY=y-hoverops[0].y;
+            // }
             
-            if(hoverops.length>0) this._hoverDragOp=hoverops[0];
-            else this._hoverDragOp=null;
+            // if(hoverops.length>0) this._hoverDragOp=hoverops[0];
+            // else this._hoverDragOp=null;
 
             // drag hoverered op
-            if(this._hoverDragOp)
-            {
-                console.log('this._dragOpStartX',this._dragOpStartX,this._dragOpStartY);
-                if(this._dragOpStartX)
-                    this._patchAPI.setOpUiAttribs(this._hoverDragOp.id,
-                        "translate",
-                        {
-                            "x":x-this._dragOpOffsetX,
-                            "y":y-this._dragOpOffsetY
-                        });
-            }
+            // if(this._hoverDragOp)
+            // {
+            //     console.log('this._dragOpStartX',this._dragOpStartX,this._dragOpStartY);
+            //     if(this._dragOpStartX)
+            //         this._patchAPI.setOpUiAttribs(this._hoverDragOp.id,
+            //             "translate",
+            //             {
+            //                 "x":x-this._dragOpOffsetX,
+            //                 "y":y-this._dragOpOffsetY
+            //             });
+            // }
         }
         else
         {
             this._hoverDragOp=null;
         }
 
-        if( this._selectRect.h==0 && this._hoverDragOp ) allowSelectionArea = false;
+        if( this._selectRect.h==0 && hoverops.length>0 ) allowSelectionArea = false;
 
 
 
 
 
-        this._rectInstancer.mouseMove(x,y);
+
+
 
         if(this._lastButton==1 && button!=1) this.removeSelectionArea();
 
@@ -241,6 +247,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             if(button==1 && allowSelectionArea)
             {
+                this._rectInstancer.interactive=false;
                 this._selectRect.setPosition(this._lastMouseX,this._lastMouseY,1000);
                 this._selectRect.setSize(
                     (x-this._lastMouseX),
