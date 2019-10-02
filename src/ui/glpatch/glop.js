@@ -3,10 +3,9 @@ var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.OP_MIN_WIDTH=100;
-CABLES.GLGUI.OP_HEIGHT=30;
 
 CABLES.GLGUI.OP_PORT_DISTANCE=13; //13
-CABLES.GLGUI.OP_PORT_WIDTH=10;
+// CABLES.UI.uiConfig.portSize=10;
 CABLES.GLGUI.OP_PORT_HEIGHT=6;
 
 CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
@@ -15,14 +14,16 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         super();
 
+        console.log('CABLES.UI.uiConfig.opHeight',CABLES.UI.uiConfig.opHeight);
+
         this._id=op.id;
         this._glPatch=glPatch;
-     
+
         this.opUiAttribs=op.uiAttribs;
         this._op=op;
         this._instancer=instancer;
         this._width=CABLES.GLGUI.OP_MIN_WIDTH;
-        this._height=CABLES.GLGUI.OP_HEIGHT;
+        this._height=CABLES.UI.uiConfig.opHeight;
 
         this._glRectBg=instancer.createRect({});
         this._glRectBg.setSize(this._width,this._height);
@@ -31,21 +32,31 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glRectBg.on("drag",
             (rect)=>
             {
-                console.log("glop is draggin!");
-                this._glPatch.patchAPI.setOpUiAttribs(this._id,
+
+                var x=rect.x;
+                var y=rect.y;
+
+                if(CABLES.UI.userSettings.get("snapToGrid"))
+                {
+                    x=CABLES.UI.snapOpPosX(x);
+                    y=CABLES.UI.snapOpPosY(y);
+                }
+
+                // console.log("glop is draggin!");
+                this._glPatch.patchAPI.setOpUiAttribs(
+                    this._id,
                     "translate",
                     {
-                        "x":rect.x,
-                        "y":rect.y
+                        "x":x,
+                        "y":y
                     });
-
             });
-        // this._glRectBg.setColorHover(61/255,61/255,61/255,1)
 
         this._glRectBg.addEventListener("hover",() =>
         {
             this._glRectBg.setOutline(true);
         });
+
         this._glRectBg.addEventListener("unhover",() =>
         {
             this._glRectBg.setOutline(false);
@@ -184,12 +195,12 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     _setupPort(i,p)
     {
         var r=new CABLES.GLGUI.GlRect(this._instancer,{"parent":this._glRectBg});
-        r.setSize(CABLES.GLGUI.OP_PORT_WIDTH,CABLES.GLGUI.OP_PORT_HEIGHT);
+        r.setSize(CABLES.UI.uiConfig.portSize,CABLES.GLGUI.OP_PORT_HEIGHT);
 
         this._glPatch.setDrawableColorByType(r,p.type);
 
         var y=0;
-        if(p.direction==1) y=CABLES.GLGUI.OP_HEIGHT-CABLES.GLGUI.OP_PORT_HEIGHT;
+        if(p.direction==1) y=CABLES.UI.uiConfig.opHeight-CABLES.GLGUI.OP_PORT_HEIGHT;
         r.setPosition(i*CABLES.GLGUI.OP_PORT_DISTANCE,y);
         this._glRectBg.addChild(r);
         this._portRects.push(r);
@@ -254,13 +265,13 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         for(var i=0;i<this._op.portsIn.length;i++)
         {
             if(this._op.portsIn[i].id==id)
-                return i*CABLES.GLGUI.OP_PORT_DISTANCE+CABLES.GLGUI.OP_PORT_WIDTH*0.5;
+                return i*CABLES.GLGUI.OP_PORT_DISTANCE+CABLES.UI.uiConfig.portSize*0.5;
         }
 
         for(var i=0;i<this._op.portsOut.length;i++)
         {
             if(this._op.portsOut[i].id==id)
-                return i*CABLES.GLGUI.OP_PORT_DISTANCE+CABLES.GLGUI.OP_PORT_WIDTH*0.5;
+                return i*CABLES.GLGUI.OP_PORT_DISTANCE+CABLES.UI.uiConfig.portSize*0.5;
         }
 
         return 100;

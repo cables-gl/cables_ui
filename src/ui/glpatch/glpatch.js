@@ -73,7 +73,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._rectInstancer.interactive=true;
 
         });
-
     }
 
     set patchAPI(api) { this._patchAPI=api; }
@@ -358,6 +357,17 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         else if(t == CABLES.OP_PORT_TYPE_STRING) e.setColor(213/255*diff,114/255*diff,114/255*diff,1);
         else if(t == CABLES.OP_PORT_TYPE_DYNAMIC) e.setColor(1,1,1);
     }
+
+    snapOpPosX(posX)
+    {
+        return Math.round(posX/CABLES.UI.uiConfig.snapX)*CABLES.UI.uiConfig.snapX;
+    }
+
+    snapOpPosY(posY)
+    {
+        return Math.round(posY/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
+    }
+
 
 }
 
