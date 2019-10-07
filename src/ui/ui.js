@@ -274,6 +274,14 @@ CABLES.UI.GUI = function(cfg) {
             this._elMaintab.style.height = (editorHeight - 2)+"px";
             this._elMaintab.style.width = editorWidth;
 
+
+            // var editEls=document.getElementsByClassName("tabcontent");
+            // for(var i=0;i<editEls.length;i++)
+            // {
+            //     editEls[i].style.height=(editorHeight-10)+"px";
+            //     console.log(editorHeight);
+            // }
+
             this._elAceEditor.css("height", editorHeight);
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth;

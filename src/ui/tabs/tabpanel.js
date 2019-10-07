@@ -74,8 +74,8 @@ CABLES.UI.Tab.prototype.isVisible = function ()
 CABLES.UI.Tab.prototype.activate = function ()
 {
     this.active = true;
-    this.contentEle.style.display = "block";
-    this.toolbarContainerEle.style.display = "block";
+    this.contentEle.style.display = "flex";
+    this.toolbarContainerEle.style.display = "flex";
     this.emitEvent("onActivate");
 };
 
