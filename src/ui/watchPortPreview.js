@@ -145,6 +145,30 @@ CABLES.WatchPortVisualizer=function()
                 self._visible=false;
                 self._lastId="xxx";
             });
+
+        $(document).on("click", ".watchPort",
+            function(e)
+            {
+                console.log(this);
+                console.log(this.innerHTML);
+                
+                if(!navigator.clipboard)
+                {
+                    console.log("no clipbopard found...");
+                    return;
+                }
+
+                navigator.clipboard.writeText(this.innerHTML)
+                    .then(() => {
+                        CABLES.UI.notify('Copied value to clipboard ');
+                    })
+                    .catch(err => {
+                        console.log("copy failed",err);
+                    });
+                
+                e.preventDefault();
+            });
+
     };
 };
 
