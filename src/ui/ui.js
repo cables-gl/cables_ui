@@ -701,6 +701,7 @@ CABLES.UI.GUI = function(cfg) {
 
     this.setProjectName = function(name) {
         $('#patchname').html(name);
+        gui.scene().name=name;
     };
 
     this.createProject = function() {

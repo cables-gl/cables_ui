@@ -140,7 +140,7 @@ CABLES.WatchPortVisualizer=function()
                 self._lastId="xxx";
             });
 
-        $(document).on("click", ".watchPort",
+        $(document).on("click", ".linkedValue",
             function(e)
             {
                 // console.log(this);
