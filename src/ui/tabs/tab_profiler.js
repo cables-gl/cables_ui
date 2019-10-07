@@ -48,7 +48,7 @@ CABLES.UI.Profiler.prototype.update=function()
     }
     var colorCounter=0;
 
-    if(allPortTriggers-this.lastPortTriggers>0) htmlData='port triggers/s: '+(allPortTriggers-this.lastPortTriggers);
+    if(allPortTriggers-this.lastPortTriggers>0) htmlData='Port triggers/s: '+(allPortTriggers-this.lastPortTriggers)+"<br/>";
     this.lastPortTriggers=allPortTriggers;
 
     sortedItems.sort(function(a, b) {return b.percent - a.percent; });
@@ -58,12 +58,20 @@ CABLES.UI.Profiler.prototype.update=function()
     var item=null;
     var pad='';
 
+    html+='<table>';
+
     for(i in sortedItems)
     {
         item=sortedItems[i];
         pad='';
-        if(sortedItems.length>0)for(i=0;i<2-(item.percent+'').length;i++)pad+='&nbsp;';
-        html+=pad+item.percent+'% '+item.title+': '+item.numTriggers+' / '+Math.round(item.timeUsed)+'ms <br/>';
+
+        html+='<tr><td>';
+        if(sortedItems.length>0)
+            for(i=0;i<2-(item.percent+'').length;i++)
+                pad+='&nbsp;';
+
+
+        html+=pad+item.percent+'% </td><td>'+item.title+'</td><td> '+item.numTriggers+' </td><td> '+Math.round(item.timeUsed)+'ms </td></tr>';
 
         if(item.percent>0)
         {
@@ -72,6 +80,8 @@ CABLES.UI.Profiler.prototype.update=function()
             if(colorCounter>this.colors.length-1)colorCounter=0;
         }
     }
+
+    html+='</table>';
 
     // peak list
     var htmlPeaks='';
