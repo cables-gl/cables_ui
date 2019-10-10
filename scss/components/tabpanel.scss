@@ -23,6 +23,12 @@
     }
 }
 
+.toolbar
+{
+    border:1px solid green;
+}
+
+
 .tabpanel
 {
     background-color: var(--color-02);
@@ -109,10 +115,11 @@
 
 .contentcontainer
 {
-    // overflow-y:scroll;
-    // height: 100%;
-    display: flex;
-    flex-flow: column;
+    // outer container for tabs. can not scroll. scrolling must be handles in container childs!
+
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: 100%;
 
     .tabcontent-scroll
     {
@@ -124,13 +131,8 @@
     .tabcontent
     {
         background-color:$background-color-dark;
-        // max-height:100%;
-        // height:auto;
-        flex-grow: 1;
-        display:flex;
-        flex-flow: column;
-        // overflow-x:hidden;
-        // overflow-y:scroll;
+        max-height:100%;
+        height:auto;
     }
 
     .padding

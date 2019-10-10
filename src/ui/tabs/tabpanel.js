@@ -74,8 +74,21 @@ CABLES.UI.Tab.prototype.isVisible = function ()
 CABLES.UI.Tab.prototype.activate = function ()
 {
     this.active = true;
-    this.contentEle.style.display = "flex";
-    this.toolbarContainerEle.style.display = "flex";
+    this.contentEle.style.display = "block";
+    this.toolbarContainerEle.style.display = "block";
+
+    
+    // var h=this.contentEle.parentElement.clientHeight;
+    // console.log("parentElement.clientHeight",h);
+    // var h=this.toolbarContainerEle.clientHeight;
+    // console.log("toolbarContainerEle.clientHeight",h);
+
+    
+
+    this.contentEle.style.height=(this.contentEle.parentElement.clientHeight-this.toolbarContainerEle.clientHeight-3)+"px";
+    console.log(this.contentEle);
+
+
     this.emitEvent("onActivate");
 };
 
