@@ -26,7 +26,8 @@ CABLES.UI.Tab.prototype.initHtml = function (eleContainer)
     {
         this.toolbarContainerEle.id = "toolbar" + this.id;
         this.toolbarContainerEle.classList.add("toolbar");
-        this.toolbarContainerEle.innerHTML = CABLES.UI.getHandleBarHtml("tabpanel_toolbar", {
+        this.toolbarContainerEle.innerHTML = CABLES.UI.getHandleBarHtml("tabpanel_toolbar", 
+        {
             options: this.options, id: this.id, title: this.title, hideToolbar: true,
         });
         eleContainer.appendChild(this.toolbarContainerEle);
@@ -76,19 +77,7 @@ CABLES.UI.Tab.prototype.activate = function ()
     this.active = true;
     this.contentEle.style.display = "block";
     this.toolbarContainerEle.style.display = "block";
-
-    
-    // var h=this.contentEle.parentElement.clientHeight;
-    // console.log("parentElement.clientHeight",h);
-    // var h=this.toolbarContainerEle.clientHeight;
-    // console.log("toolbarContainerEle.clientHeight",h);
-
-    
-
     this.contentEle.style.height=(this.contentEle.parentElement.clientHeight-this.toolbarContainerEle.clientHeight-3)+"px";
-    console.log(this.contentEle);
-
-
     this.emitEvent("onActivate");
 };
 
