@@ -112,6 +112,8 @@
     }
 }
 
+
+
 .contentcontainer
 {
     // outer container for tabs. can not scroll. scrolling must be handles in container childs!
@@ -138,6 +140,11 @@
     {
         padding:10px;
     }
+}
+
+#metatabpanel .contentcontainer
+{
+    overflow-y: scroll;
 }
 
 #maintabs
