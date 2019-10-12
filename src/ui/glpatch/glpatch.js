@@ -130,6 +130,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const glOp=new CABLES.GLGUI.GlOp(this,this._rectInstancer,op);
         this._glOpz[op.id]=glOp;
         glOp.updatePosition();
+        glOp.setTitle(this._textWriter,op.name);
         glOp.update();
 
         op.addEventListener("onUiAttribsChange",()=>{

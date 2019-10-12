@@ -15,26 +15,12 @@ CABLES.GLGUI.TextWriter=class
         r.setColor(1,0,0,1);
         r.setPosition(0,0);
 
-        const font=CABLES.GLGUI.SDF_FONT_ARIAL;
-
-        var string="Hallo!";
-
-        var posX=-100;
-        for(var i=0;i<string.length;i++)
-        {
-            const ch=font.characters[string.charAt(i)];
-            var rect=this._rectDrawer.createRect();
-            rect.setSize(ch.width,ch.height);
-            rect.setColor(1,0,0,1);
-            rect.setPosition(posX,font.size-ch.originY);
-            rect.setTexRect(
-                ch.x/font.width,ch.y/font.height,
-                ch.width/font.width,ch.height/font.height);
-            
-            posX+=ch.width-ch.originX;
-        }
+        var txt=new CABLES.GLGUI.Text(this,"HunD");
 
     }
+
+    get rectDrawer() { return this._rectDrawer; } 
+
 
     render(resX,resY,scrollX,scrollY,zoom)
     {

@@ -115,6 +115,17 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         return this.opUiAttribs;
     }
 
+
+    setTitle(textWriter,title)
+    {
+        console.log("textWriter",textWriter);
+        this._glTitle=new CABLES.GLGUI.Text(textWriter,title);
+        if(this._glTitle) this._glTitle.setPosition(this.x,this.y);
+
+        // this._textWriter,op.name
+    }
+
+
     addLink(l)
     {
         this._links[l.id]=l;
@@ -230,6 +241,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         if(!this._glRectBg) return;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x,this.opUiAttribs.translate.y);
+        if(this._glTitle) this._glTitle.setPosition(this.x,this.y);
+        // console.log('updatepos!!!');
+
     }
 
     get x() { return this.opUiAttribs.translate.x; }
