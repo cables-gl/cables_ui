@@ -11,11 +11,9 @@ CABLES.GLGUI.TextWriter=class
         this._font=CABLES.GLGUI.SDF_FONT_ARIAL;
 
         var r=this._rectDrawer.createRect();
-        r.setSize(1010,1010);
+        r.setSize(214,68);
         r.setColor(1,0,0,1);
         r.setPosition(0,0);
-
-
     }
 
     render(resX,resY,scrollX,scrollY,zoom)
@@ -23,6 +21,11 @@ CABLES.GLGUI.TextWriter=class
         // console.log("render sdf font...");
 
         this._rectDrawer.render(resX,resY,scrollX,scrollY,zoom)
+    }
+
+    setFont(tex)
+    {
+        this._rectDrawer.setTexture(tex)
     }
 
 }

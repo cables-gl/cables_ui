@@ -16,6 +16,7 @@ CABLES.GLGUI.RectInstancer=class
         this._needsRebuild=true;
         this._rects=[];
         this._interactive=true;
+        this._cgl=cgl;
 
         this._draggingRect=null;
 
@@ -23,7 +24,7 @@ CABLES.GLGUI.RectInstancer=class
         this._colors=new Float32Array(4*this._num);
         this._sizes=new Float32Array(2*this._num);
         this._outlines=new Float32Array(this._num);
-        this._texRect=new Float32Array(this._num);
+        this._texRect=new Float32Array(4*this._num);
 
         this._shader=new CGL.Shader(cgl,'rectinstancer');
         this._shader.setSource(''
@@ -49,6 +50,7 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'    float aspect=resX/resY;'
 
             .endl()+'    uv=attrTexCoord*texRect.zw+texRect.xy;'
+            .endl()+'    uv.y=1.0-uv.y;'
 
             .endl()+'    outlinefrag=outline/resY*aspect;'
 
@@ -80,6 +82,10 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'IN float outlinefrag;'
             .endl()+'IN vec2 uv;'
 
+            .endl()+'#ifdef USE_TEXTURE'
+            .endl()+'UNI sampler2D tex;'
+            .endl()+'#endif'
+
             .endl()+'void main()'
             .endl()+'{'
 
@@ -93,8 +99,17 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.w);'
             .endl()+'   }'
 
-            // .endl()+'   outColor.r=uv.x;'
-            // .endl()+'   outColor.g=uv.y;'
+            .endl()+'#ifdef USE_TEXTURE'
+            .endl()+'   float smpl=texture(tex,uv).r;'
+            
+            .endl()+'float scale = 1.0 / fwidth(smpl);'
+            .endl()+'float signedDistance = (smpl - 0.5) * scale;'
+      
+            .endl()+'float color = clamp(signedDistance + 0.5, 0.0, 1.0);'
+            .endl()+'float alpha = clamp(signedDistance + 0.5 + scale * 0.125, 0.0, 1.0);'
+            
+            .endl()+'   outColor=vec4(color, color, color, 1.);'
+            .endl()+'#endif'
 
             .endl()+'}');
 
@@ -103,6 +118,8 @@ CABLES.GLGUI.RectInstancer=class
         this._uniResY=new CGL.Uniform(this._shader,'f','resY',0),
         this._uniscrollX=new CGL.Uniform(this._shader,'f','scrollX',0),
         this._uniscrollY=new CGL.Uniform(this._shader,'f','scrollY',0);
+
+        this._texture=new CGL.Uniform(this._shader,'t','tex',0),
 
         this._geom=new CGL.Geometry("rectinstancer");
         this._geom.vertices = new Float32Array([ 1,1,0, 0,1,0, 1,0,0, 0,0,0 ]);
@@ -123,7 +140,7 @@ CABLES.GLGUI.RectInstancer=class
             this._texRect[i+0]=0;
             this._texRect[i+1]=0;
             this._texRect[i+2]=1;
-            this._texRect[i+2]=1;
+            this._texRect[i+3]=1;
         }
     }
 
@@ -150,7 +167,20 @@ CABLES.GLGUI.RectInstancer=class
 
         if(this._needsRebuild)this.rebuild();
 
+        if(this._texture && this._texture.tex)
+        {
+            this._cgl.setTexture(0, this._texture.tex);
+        }
+
+
         this._mesh.render(this._shader);
+
+
+        if(this._texture && this._texture.tex)
+        {
+            this._cgl.setTexture(0, null);
+        }
+
     }
 
     rebuild()
@@ -161,6 +191,8 @@ CABLES.GLGUI.RectInstancer=class
         this._mesh.setAttribute('instCol',this._colors,4,{instanced:true});
         this._mesh.setAttribute('instSize',this._sizes,2,{instanced:true});
         this._mesh.setAttribute('outline',this._outlines,1,{instanced:true});
+        this._mesh.setAttribute('texRect',this._texRect,4,{instanced:true});
+        
 
         this._needsRebuild=false;
     }
@@ -193,7 +225,11 @@ CABLES.GLGUI.RectInstancer=class
         this._sizes[idx*2+1]=y;
     }
 
-
+    setTexture(tex)
+    {
+        this._texture=tex;
+        this._shader.toggleDefine("USE_TEXTURE",!!tex);
+    }
 
     setColor(idx,r,g,b,a)
     {

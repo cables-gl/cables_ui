@@ -149,6 +149,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         return [mouseAbsX,mouseAbsY];
     }
 
+    setFont(f)
+    {
+        console.log(f);
+
+        this._textWriter.setFont(f);
+    }
+
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
     {
         this._viewResX=resX;
