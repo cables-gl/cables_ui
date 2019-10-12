@@ -68,6 +68,11 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._rectInstancer.setColor(this._attrIndex,r,g,b,a);
     }
 
+    setTexRect(x,y,w,h)
+    {
+        this._rectInstancer.setTexRect(this._attrIndex,x,y,w,h);
+    }
+
     setPosition(_x,_y)
     {
         this._x=Math.floor(_x);

@@ -102,13 +102,13 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'#ifdef USE_TEXTURE'
             .endl()+'   float smpl=texture(tex,uv).r;'
             
-            .endl()+'float scale = 1.0 / fwidth(smpl);'
-            .endl()+'float signedDistance = (smpl - 0.5) * scale;'
-      
-            .endl()+'float color = clamp(signedDistance + 0.5, 0.0, 1.0);'
-            .endl()+'float alpha = clamp(signedDistance + 0.5 + scale * 0.125, 0.0, 1.0);'
-            
-            .endl()+'   outColor=vec4(color, color, color, 1.);'
+            .endl()+'   float scale = 1.0 / fwidth(smpl);'
+            .endl()+'   float signedDistance = (smpl - 0.5) * scale;'
+
+            .endl()+'   float color = clamp(signedDistance + 0.5, 0.0, 1.0);'
+            .endl()+'   float alpha = clamp(signedDistance + 0.5 + scale * 0.125, 0.0, 1.0);'
+
+            .endl()+'   outColor=vec4(color, color, color, 1.)*alpha;'
             .endl()+'#endif'
 
             .endl()+'}');
@@ -229,6 +229,20 @@ CABLES.GLGUI.RectInstancer=class
     {
         this._texture=tex;
         this._shader.toggleDefine("USE_TEXTURE",!!tex);
+    }
+
+    setTexRect(idx,x,y,w,h)
+    {
+        if(
+            this._float32Diff(this._texRect[idx*4+0],x) ||
+            this._float32Diff(this._texRect[idx*4+1],y) ||
+            this._float32Diff(this._texRect[idx*4+2],w) ||
+            this._float32Diff(this._texRect[idx*4+3],h) ) { this._needsRebuild=true; }
+
+        this._texRect[idx*4+0]=x;
+        this._texRect[idx*4+1]=y;
+        this._texRect[idx*4+2]=w;
+        this._texRect[idx*4+3]=h;
     }
 
     setColor(idx,r,g,b,a)

@@ -14,12 +14,30 @@ CABLES.GLGUI.TextWriter=class
         r.setSize(214,68);
         r.setColor(1,0,0,1);
         r.setPosition(0,0);
+
+        const font=CABLES.GLGUI.SDF_FONT_ARIAL;
+
+        var string="Hallo!";
+
+        var posX=-100;
+        for(var i=0;i<string.length;i++)
+        {
+            const ch=font.characters[string.charAt(i)];
+            var rect=this._rectDrawer.createRect();
+            rect.setSize(ch.width,ch.height);
+            rect.setColor(1,0,0,1);
+            rect.setPosition(posX,font.size-ch.originY);
+            rect.setTexRect(
+                ch.x/font.width,ch.y/font.height,
+                ch.width/font.width,ch.height/font.height);
+            
+            posX+=ch.width-ch.originX;
+        }
+
     }
 
     render(resX,resY,scrollX,scrollY,zoom)
     {
-        // console.log("render sdf font...");
-
         this._rectDrawer.render(resX,resY,scrollX,scrollY,zoom)
     }
 
