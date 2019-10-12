@@ -192,6 +192,8 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 {
     ele.bind("mousewheel", function (event, delta, nbr)
     {
+        const wheelMultiplier=CABLES.UI.userSettings.get("wheelmultiplier")||1;
+
         var touchpadMode = CABLES.UI.userSettings.get("touchpadmode");
         if (touchpadMode && !event.metaKey && !event.altKey && !event.ctrlKey) 
         {
@@ -214,6 +216,8 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 
         if(event.altKey)
         {
+            delta*=wheelMultiplier;
+
             this.set(
                 this._viewBox.x,
                 this._viewBox.y-delta,
@@ -224,6 +228,8 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
         else
         if(event.shiftKey)
         {
+            delta*=wheelMultiplier;
+
             this.set(
                 this._viewBox.x-delta,
                 this._viewBox.y,
@@ -233,8 +239,10 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
         }
         else
         {
-            if (delta < 0) delta = 0.8;
-            else delta = 1.2;
+            if (delta < 0) delta = 1.0-0.2*wheelMultiplier;
+            else delta = 1+0.2*wheelMultiplier;
+            
+            // delta*=wheelMultiplier;
             
             var patchWidth = this._elePatch.offsetWidth;
             var patchHeight = this._elePatch.offsetHeight;

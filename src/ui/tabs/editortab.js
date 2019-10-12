@@ -28,7 +28,7 @@ CABLES.UI.EditorTab = function (options)
 
     this._tab.editorObj = options.editorObj;
 
-    var html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%\"></div>";
+    var html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;\"></div>";
     this._tab.html(html);
 
     this._editor = CABLES.UI.createEditor("editorcontent" + this._tab.id, options.content || "");

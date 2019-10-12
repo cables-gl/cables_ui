@@ -53,13 +53,9 @@ CABLES.WatchPortVisualizer=function()
         this._buff[this._position%this._num]=value;
         this._position++;
 
-
         this.ctx.fillStyle="#1b1b1b";
         this.ctx.fillRect(0,0,this._canvasWidth,this._canvasHeight);
-
         this.ctx.strokeStyle="#aaa";
-
-
         this.ctx.font = "12px monospace";
 
         var h=Math.max(Math.abs(this._max),Math.abs(this._min));
@@ -94,9 +90,7 @@ CABLES.WatchPortVisualizer=function()
                     first=false;
                 }
 
-                this.ctx.lineTo(
-                    i*2,
-                    pos);
+                this.ctx.lineTo(i*2, pos);
             }
         }
         this.ctx.stroke();
@@ -109,12 +103,12 @@ CABLES.WatchPortVisualizer=function()
     this.create=function()
     {
         this.canvas = document.createElement('canvas');
-        this.canvas.id     = "watchportpreview";
+        this.canvas.id = "watchportpreview";
         this.canvas.width  = this._canvasWidth;
         this.canvas.height = this._canvasHeight;
-        this.canvas.style.display   = "block";
-        this.canvas.style.position   = "absolute";
-        this.canvas.style['z-index']   = 9999999;
+        this.canvas.style.display = "block";
+        this.canvas.style.position = "absolute";
+        this.canvas.style['z-index'] = 9999999;
         var body = document.getElementsByTagName("body")[0];
         body.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
@@ -144,6 +138,29 @@ CABLES.WatchPortVisualizer=function()
                 self.canvas.style.display   = "none";
                 self._visible=false;
                 self._lastId="xxx";
+            });
+
+        $(document).on("click", ".linkedValue",
+            function(e)
+            {
+                // console.log(this);
+                // console.log(this.innerHTML);
+
+                if(!navigator.clipboard)
+                {
+                    console.log("no clipbopard found...");
+                    return;
+                }
+
+                navigator.clipboard.writeText(this.innerHTML)
+                    .then(() => {
+                        CABLES.UI.notify('Copied value to clipboard');
+                    })
+                    .catch(err => {
+                        console.log("copy failed",err);
+                    });
+
+                e.preventDefault();
             });
     };
 };

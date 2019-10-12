@@ -61,17 +61,27 @@ CABLES.GLGUI.GlPatchAPI=class
         const op=gui.scene().getOpById(opid);
         gui.patch().showOpParams(op);
     }
-    
+
     unlinkPort(opid,portid)
     {
-        console.log("unlink port",portid);
-
+        // console.log("unlink port",portid);
         const op=gui.scene().getOpById(opid);
         const p= op.getPortById(portid);
         p.removeLinks();
     }
 
+    setOpUiAttribs(opid,attrName,val)
+    {
+        const op=gui.scene().getOpById(opid);
+        var attr={};
+        attr[attrName]=val;
+        op.setUiAttrib(attr);
+        console.log("uiat",attrName,val);
+    }
+
     _watchOp(op)
     {
     }
+
+
 }

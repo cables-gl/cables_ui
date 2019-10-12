@@ -23,14 +23,22 @@
     }
 }
 
+.toolbar
+{
+    // border:1px solid green;
+    background-color: var(--color-01);
+}
+
+
 .tabpanel
 {
     background-color: var(--color-02);
 
     .tabs
     {
+        height: 32px;
         width:100%;
-        margin-bottom: 3px;
+        // margin-bottom: 3px;
         // height:32px;
         // overflow: hidden;
         overflow-x: auto;
@@ -55,9 +63,7 @@
             background-color: var(--color-03);
             z-index: 2;
         }
-
         
-
         .tab
         {
             float:left;
@@ -69,9 +75,9 @@
             padding-right: 8px;
             margin-top: 7px;
             min-width: 70px !important;
-            opacity:0.5;
+            opacity:0.8;
             color: var(--color-13);
-            background-color: var(--color-01);
+            background-color: var(--color-02);
             border-bottom: 1px solid transparent;
 
             &:hover
@@ -82,9 +88,9 @@
 
             &.active
             {
-                
                 opacity:1;
                 font-weight: bold;
+                background-color: var(--color-01);
                 border-bottom: 1px solid var(--color-special);
                 
                 &:hover
@@ -92,7 +98,6 @@
                     opacity:1;
                 }
             }
-
 
             .tabicon
             {
@@ -107,9 +112,14 @@
     }
 }
 
+
+
 .contentcontainer
 {
-    // overflow-y:scroll;
+    // outer container for tabs. can not scroll. scrolling must be handles in container childs!
+
+    overflow-y: hidden;
+    overflow-x: hidden;
     height: 100%;
 
     .tabcontent-scroll
@@ -122,16 +132,19 @@
     .tabcontent
     {
         background-color:$background-color-dark;
-        // max-height:100%;
+        max-height:100%;
         height:auto;
-        // overflow-x:hidden;
-        // overflow-y:scroll;
     }
 
     .padding
     {
         padding:10px;
     }
+}
+
+#metatabpanel .contentcontainer
+{
+    overflow-y: scroll;
 }
 
 #maintabs

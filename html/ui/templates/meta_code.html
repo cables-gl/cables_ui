@@ -1,97 +1,95 @@
 
 <script id="meta_code" type="text/x-handlebars-template">
 
-<h4>{{op.objName}}</h4>
+    <div>
+        <h4>{{op.objName}}</h4>
 
+        {{#if user.isAdmin}}
+            <h3>Admin</h3>
 
+            <br/>
+            <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
+            <br/>
+            
+            {{#if op.github}}
+                <a class="button fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
+            {{/if}}
 
-{{#if user.isAdmin}}
-    <h3>Admin</h3>
+            <br/><br/>
+        {{/if}}
 
-    <br/>
-    <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
-    <br/>
-    {{#if op.github}}
-    <a class="button fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
-    {{/if}}
+        <h3>Code</h3>
 
-    <br/><br/>
+        <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
+        <br/>
+        <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
+        <br/><br/>
 
-{{/if}}
+        <h3>Attachments</h3>
 
-
-<h3>Code</h3>
-
-<span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
-<br/>
-<span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
-<br/>
-
-<br/>
-    <h3>Attachments</h3>
-
-    {{#if doc.attachmentFiles}}
-        <table class="table">
-            <tr>
-                <th>Filename</th>
-                <th> </th>
-            </tr>
-            {{#each doc.attachmentFiles}}
+        {{#if doc.attachmentFiles}}
+            <table class="table">
                 <tr>
-                    <td onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{original}}');" style="cursor:pointer">
-                        <a class="icon icon-edit iconhover" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{original}}');"></a>
-                        {{readable}}
-                    </td>
-                    <td>
-                        <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{original}}');"></a>
-                    </td>
+                    <th>Filename</th>
+                    <th> </th>
                 </tr>
-            {{/each}}
-        </table>
-    {{else}}
-        No attachments...<br/><br/>
-    {{/if}}
+                {{#each doc.attachmentFiles}}
+                    <tr>
+                        <td onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{original}}');" style="cursor:pointer">
+                            <a class="icon icon-edit iconhover" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{original}}');"></a>
+                            {{readable}}
+                        </td>
+                        <td>
+                            <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{original}}');"></a>
+                        </td>
+                    </tr>
+                {{/each}}
+            </table>
+        {{else}}
+            No attachments...<br/><br/>
+        {{/if}}
 
-    <a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">Create</a>
+        <a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">Create</a>
 
-    <br/><br/>
+        <br/><br/>
 
-    <h3>Libs</h3>
+        <h3>Libs</h3>
 
-    {{#if doc.libs}}
-        <table class="table">
-            <tr>
-                <th>Filename</th>
-                <th> </th>
-            </tr>
-
-            {{#each doc.libs}}
+        {{#if doc.libs}}
+            <table class="table">
                 <tr>
-                    <td>{{.}}</td>
-                    <td>
-                        <!-- <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeLib('{{../op.objName}}','{{.}}');"></a> -->
-                    </td>
+                    <th>Filename</th>
+                    <th> </th>
                 </tr>
-            {{/each}}
-        </table>
-    {{/if}}
 
-    <select id="addoplib">
-        <option value="">---</option>
-    {{#each libs}}
-        <option value="{{.}}">{{.}}</option>
-    {{/each}}
-    <select>
-    <a class="button fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">Add</a>
+                {{#each doc.libs}}
+                    <tr>
+                        <td>{{.}}</td>
+                        <td>
+                            <!-- <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeLib('{{../op.objName}}','{{.}}');"></a> -->
+                        </td>
+                    </tr>
+                {{/each}}
+            </table>
+        {{/if}}
+
+        <select id="addoplib">
+            <option value="">---</option>
+        {{#each libs}}
+            <option value="{{.}}">{{.}}</option>
+        {{/each}}
+        <select>
+        <a class="button fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">Add</a>
 
 
-    <br /><br /><br />
-    <div class="panelhead " data-panelselector="#opdebug">Serialized</div>
-    <div id="opdebug" class="panel selectable" style="overflow:auto">
-        <!-- op id: {{{op.opIid}}}<br /> -->
-        <!-- op instance id:{{{op.id}}}<br /> -->
-        <pre class="selectable">{{{ json opserialized }}}</pre>
+        <br /><br /><br />
+        <div class="panelhead " data-panelselector="#opdebug">Serialized</div>
+        <div id="opdebug" class="panel selectable" style="overflow:auto">
+            <!-- op id: {{{op.opIid}}}<br /> -->
+            <!-- op instance id:{{{op.id}}}<br /> -->
+            <pre class="selectable">{{{ json opserialized }}}</pre>
+        </div>
+
     </div>
-
 
 </script>

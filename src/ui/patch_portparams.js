@@ -114,7 +114,7 @@ CABLES.UI.watchColorPickerPort = function (thePort)
                 updateColorPickerButton(id);
             }
 
-            modes = {
+            var modes = {
                 r: Math.round(colors.rgb.r * 255),
                 g: Math.round(colors.rgb.g * 255),
                 b: Math.round(colors.rgb.b * 255),

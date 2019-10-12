@@ -28,7 +28,7 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
         clearTimeout(this._longPressTimeout);
         this._longPress=true;
         this._quickAddOpStart=op;
-        console.log("long press!");
+        // console.log("long press!");
         gui.setCursor("copy");
     }
 
@@ -54,7 +54,7 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
         if(this._longPress)gui.setCursor();
         clearTimeout(this._longPressTimeout);
         this._longPress=false;
-        console.log("long press cancel!!!");
+        // console.log("long press cancel!!!");
     }
 
     glRender(cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
@@ -67,7 +67,7 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
             this._glLineIdx=this._glLineDrawer.getIndex();
         }
 
-        const coord=this._glPatch.screenCoord(resX,resY,zoom,mouseX,mouseY)
+        const coord=this._glPatch.screenCoord(mouseX,mouseY)
         
         this._glLineDrawer.setColor(this._glLineIdx,1,0,0,1);
         this._glLineDrawer.setLine(this._glLineIdx,this._startX,this._startY,coord[0],coord[1]);

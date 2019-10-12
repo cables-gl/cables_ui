@@ -3,7 +3,8 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.IMGSEQUENCETIME=0;
 
-CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings) {
+CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings)
+{
     var currentNum = start * fps;
     var endNum = end * fps;
     var startNum = start * fps;

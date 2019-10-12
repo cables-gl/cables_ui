@@ -5,7 +5,7 @@ CABLES.UI.DRAGGINGOPS_STARTX=0;
 CABLES.UI.DRAGGINGOPS_STARTY=0;
 CABLES.UI.DRAGGINGOPS=false;
 CABLES.UI.DRAGGINGOPSDIR=-1;
-CABLES.UI.LONGPRESS=false;
+
 
 CABLES.UI.cleanRaphael = function(el) {
     el.node.removeAttribute('font-family');
@@ -245,12 +245,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var lastShakeDir = false;
 
     var down = function(x, y, e) {
-        // CABLES.UI.LONGPRESS=false;
-        // setTimeout(longPressStart,500);
         shakeCountP = 0;
         shakeCountN = 0;
 
-        if (e.metaKey || e.altKey || e.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL || CABLES.UI.LONGPRESS) {
+        if (e.metaKey || e.altKey || e.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL) {
             CABLES.UI.quickAddOpStart = opui;
             gui.setCursor("copy");
             return;
@@ -286,16 +284,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     var move = function(dx, dy, a, b, e) {
-        if(CABLES.UI.LONGPRESS) return;
-        else 
-        {
-            if( CABLES.UI.longPressOp )
-            {
-                if(Math.abs(dx) > 3 || Math.abs(dy) > 3) longPressCancel();
-                else return;
-            }
-        }
-
 
         if((e.metaKey || e.altKey) && gui.patch().getSelectedOps().length == 1) {
             return;
@@ -339,8 +327,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var up = function(e)
     {
-        longPressCancel();
-
         this._updateElementOrder(false);
 
         // if((e.metaKey || e.altKey || e.buttons===CABLES.UI.MOUSE_BUTTON_WHEEL) && CABLES.UI.quickAddOpStart)
@@ -591,43 +577,16 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     };
 
-    var longPressTimeout=null;
-    function longPressStart()
-    {
-        clearTimeout(longPressTimeout);
-        CABLES.UI.LONGPRESS=true;
-        CABLES.UI.quickAddOpStart=CABLES.UI.longPressOp;
-        // console.log("long press!");
-        gui.setCursor("copy");
-    }
 
-    function longPressPrepare(opui)
-    {
-        longPressCancel();
-        // console.log("long press prepare");
-        // CABLES.UI.longPressOp = opui;
-        // longPressTimeout=setTimeout(longPressStart,300);
-    }
-
-    function longPressCancel()
-    {
-        CABLES.UI.longPressOp=null;
-        if(CABLES.UI.LONGPRESS)gui.setCursor();
-        clearTimeout(longPressTimeout);
-        CABLES.UI.LONGPRESS=false;
-        // console.log("long press cancel!!!");
-    }
 
 
     var dblClick=function(ev)
     {
-        longPressCancel();
         gui.patch().setSelectedOp(null);
         if (CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
     };
 
     var mouseUp=function(ev) {
-        longPressCancel();
         opui.isDragging = false;
         CABLES.UI.DRAGGINGOPS=false;
         
@@ -637,14 +596,12 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var mouseDown=function(ev) {
 
-        if (ev.metaKey || ev.altKey || ev.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL || CABLES.UI.LONGPRESS) {
+        if (ev.metaKey || ev.altKey || ev.buttons==CABLES.UI.MOUSE_BUTTON_WHEEL) {
             CABLES.UI.quickAddOpStart = opui;
             gui.setCursor("copy");
             return;
         }
 
-        
-        longPressPrepare(opui);
         const diff=performance.now()-lastMouseDown;
         if(diff<400) dblClick();
         lastMouseDown=performance.now();

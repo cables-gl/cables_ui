@@ -1,25 +1,27 @@
 
 
 <script id="meta_profiler" type="text/x-handlebars-template">
-    <h3>profiler</h3>
 
-    <a  class="button fa fa-pie-chart" id="profilerstartbutton">start</a>
-    
+    <div>
+        <h3>Profiler</h3>
 
-    <div id="profilerui" style="display:none">
-        <a onclick="gui.patch().scene.profiler.clear();" class="button fa fa-trash-o">reset</a>
-        <br/>
-        <br/>
-        <div id="profilerdata"></div>
-        <div id="profilerbar"></div>
+        <a  class="button fa fa-pie-chart" id="profilerstartbutton">start</a>
 
-        <br/><br/>
-        <h3 onclick="$('#profilerlist').toggle();">percentages</h3>
-        <div id="profilerlist" style="font-family:monospace;font-size:12px;"></div>
-        <h3 onclick="$('#profilerlistPeaks').toggle();">peaks</h3>
-        <div id="profilerlistPeaks" style="font-family:monospace;font-size:12px;"></div>
+        <div id="profilerui" style="display:none">
+            <a onclick="gui.patch().scene.profiler.clear();" class="button fa fa-trash-o">reset</a>
+            <br/>
+            <br/>
+            <div id="profilerdata"></div>
+            <div id="profilerbar"></div>
 
-        <br/>
+            <br/><br/>
+            <h3 onclick="$('#profilerlist').toggle();">Percentages</h3>
+            <div id="profilerlist" style="font-family:monospace;font-size:12px;"></div>
+            <h3 onclick="$('#profilerlistPeaks').toggle();">Peaks</h3>
+            <div id="profilerlistPeaks" style="font-family:monospace;font-size:12px;"></div>
+
+            <br/>
+        </div>
     </div>
 
 </script>

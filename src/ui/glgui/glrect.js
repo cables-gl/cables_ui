@@ -23,13 +23,26 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._data={};
         this.color=vec4.create();
         this.colorHover=null;
+
+        // draggable stuff
+        this._draggable=false;
+        this._isDragging=false;
+        this._dragStartX=0;
+        this._dragStartY=0;
+        this._dragOffsetX=0;
+        this._dragOffsetY=0;
     }
 
     get x() { return this._x; }
     get y() { return this._y; }
+    get w() { return this._w; }
+    get h() { return this._h; }
 
     get data() { return this._data; }
     set data(r) { this._data=r; }
+
+    set draggable(b) { this._draggable=b; }
+    get draggable() { return this._draggable; }
 
     addChild(c)
     {
@@ -92,9 +105,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         if(this._hovering)
         {
             this.emitEvent("mouseup",e,this);
-
-            for(var i=0;i<this.childs.length;i++)
-                this.childs[i].mouseUp(e);
+            for(var i=0;i<this.childs.length;i++) this.childs[i].mouseUp(e);
         }
     }
 
@@ -104,8 +115,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         {
             this.emitEvent("mousedown",e,this);
 
-            for(var i=0;i<this.childs.length;i++)
-                this.childs[i].mouseDown(e);
+            for(var i=0;i<this.childs.length;i++) this.childs[i].mouseDown(e);
         }
     }
 
@@ -114,7 +124,19 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         return this._hovering;
     }
 
-    mouseMove(x,y)
+    mouseDrag(x,y,button)
+    {
+        this.setPosition( x - this._dragOffsetX, y - this._dragOffsetY);
+        this.emitEvent("drag",this);
+    }
+
+    mouseDragEnd()
+    {
+        this.emitEvent("dragEnd",this);
+        this._isDragging=false;
+    }
+
+    mouseMove(x,y,button)
     {
         const hovering=this.isPointInside(x,y)
 
@@ -132,6 +154,25 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         for(var i=0;i<this.childs.length;i++)
         {
             this.childs[i].mouseMove(x,y);
+        }
+
+        if(hovering)
+        {
+            if(button==1)
+            {
+                if(!this._isDragging)
+                {
+                    this._isDragging=true;
+                    this._dragStartX=x;
+                    this._dragStartY=y;
+                    this._dragOffsetX=x-this._x;
+                    this._dragOffsetY=y-this._y;
+                    this.emitEvent("dragStart",this);
+                }
+
+            }
+
+
         }
     }
 }

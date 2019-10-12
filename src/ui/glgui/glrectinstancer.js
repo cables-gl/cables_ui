@@ -9,6 +9,9 @@ CABLES.GLGUI.RectInstancer=class
         this._num=10000;
         this._needsRebuild=true;
         this._rects=[];
+        this._interactive=true;
+
+        this._draggingRect=null;
 
         this._positions=new Float32Array(3*this._num);
         this._colors=new Float32Array(4*this._num);
@@ -93,9 +96,17 @@ CABLES.GLGUI.RectInstancer=class
         for(i=0;i<this._num;i++) this._outlines[i]=0;//Math.random();
     }
 
+    set interactive(i) { this._interactive=i; }
+    get interactive() { return this._interactive; }
+
     dispose()
     {
 
+    }
+
+    isDragging()
+    {
+        return this._draggingRect!=null;
     }
 
     render(resX,resY,scrollX,scrollY,zoom)
@@ -113,7 +124,7 @@ CABLES.GLGUI.RectInstancer=class
 
     rebuild()
     {
-        console.log("rebuild!");
+        // console.log("rebuild!");
         // todo only update whats needed
         this._mesh.setAttribute('instPos',this._positions,3,{instanced:true});
         this._mesh.setAttribute('instCol',this._colors,4,{instanced:true});
@@ -179,19 +190,42 @@ CABLES.GLGUI.RectInstancer=class
     {
         var r=new CABLES.GLGUI.GlRect(this,options||{});
         this._rects.push(r);
+
+        r.on("dragStart",
+            (rect)=>
+            {
+                this._draggingRect=rect;
+            });
+        r.on("dragEnd",
+            ()=>
+            {
+                this._draggingRect=null;
+            });
+
+
         return r;
     }
 
-    mouseMove(x,y)
+    mouseMove(x,y,button)
     {
+        if(!this._interactive)return;
+        
+        if(this._draggingRect)
+        {
+            this._draggingRect.mouseDrag(x,y,button);
+            return;
+        }
+
         for(var i=0;i<this._rects.length;i++)
         {
-            this._rects[i].mouseMove(x,y);
+            this._rects[i].mouseMove(x,y,button);
         }
     }
 
     mouseDown(e)
     {
+        if(!this._interactive)return;
+
         for(var i=0;i<this._rects.length;i++)
         {
             this._rects[i].mouseDown(e);
@@ -200,6 +234,13 @@ CABLES.GLGUI.RectInstancer=class
 
     mouseUp(e)
     {
+        if(!this._interactive)return;
+
+        if(this._draggingRect)
+        {
+            this._draggingRect.mouseDragEnd();
+        }
+
         for(var i=0;i<this._rects.length;i++)
         {
             this._rects[i].mouseUp(e);
