@@ -5,6 +5,7 @@ CABLES.GLGUI.RectInstancer=class
 {
     constructor(cgl,options)
     {
+
         this._counter=0;
         this._num=10000;
         this._needsRebuild=true;

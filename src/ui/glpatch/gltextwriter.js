@@ -5,7 +5,7 @@ CABLES.GLGUI.TextWriter=class
 {
     constructor(cgl,options)
     {
-        this._rects=new CABLES.GLGUI.RectInstancer();
+        this._rects=new CABLES.GLGUI.RectInstancer(cgl);
         this._font=CABLES.GLGUI.SDF_FONT_ARIAL;
     }
 
