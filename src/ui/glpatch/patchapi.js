@@ -23,7 +23,7 @@ CABLES.GLGUI.GlPatchAPI=class
         console.log("patch.ops.length",this._patch.ops.length);
         for(var i=0;i<this._patch.ops.length;i++)
         {
-            console.log("init patch",this._patch.ops[i].objname);
+            // console.log("init patch",this._patch.ops[i].objname);
             this._glPatch.addOp(this._patch.ops[i]);
         }
     }
