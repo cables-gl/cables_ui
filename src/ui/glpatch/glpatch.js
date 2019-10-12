@@ -15,6 +15,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
 
+        this._textWriter=new CABLES.GLGUI.TextWriter(cgl);
+        
+
         this._selectRect=this._overLayRects.createRect();
         this._selectRect.setColor(0,0.5,0.7,0.25);
         this._selectRect.setPosition(0,0,1000);
@@ -150,6 +153,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
+
+        this._textWriter.render(resX,resY,scrollX,scrollY,zoom);
 
         this.quickLinkSuggestion.glRender(this._patch.cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
 

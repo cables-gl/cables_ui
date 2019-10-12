@@ -997,9 +997,11 @@ CABLES.UI.Patch = function(_gui) {
                     if(this._savedPatchCallback) this._savedPatchCallback();
                     this._savedPatchCallback=null;
                     
-                    if(!r.success)
+                    if(!r || !r.success)
                     {
-                        CABLES.UI.MODAL.showError('Patch not saved', 'Could not save patch: '+r.msg);
+                        var msg="no response";
+                        if(r)msg=r.msg;
+                        CABLES.UI.MODAL.showError('Patch not saved', 'Could not save patch: '+msg);
                         console.log(r);
                         return;
                     }

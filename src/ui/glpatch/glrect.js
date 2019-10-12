@@ -96,7 +96,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
             for(var i=0;i<this.childs.length;i++)
                 this.childs[i].mouseUp(e);
         }
-
     }
 
     mouseDown(e)
