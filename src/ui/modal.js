@@ -211,7 +211,6 @@ CABLES.UI.MODAL.getFileSnippet=function(url,line,cb)
 
 CABLES.UI.MODAL.showOpException=function(ex,opName)
 {
-    console.log(ex.stack);
     CABLES.UI.MODAL.showClose();
 	CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.setTitle('op cablefail :/');
