@@ -15,7 +15,7 @@ CABLES.GLGUI.TextWriter=class
         r.setColor(1,0,0,1);
         r.setPosition(0,0);
 
-        var txt=new CABLES.GLGUI.Text(this,"HunD");
+        var txt=new CABLES.GLGUI.Text(this,"H  u  n  d   e   k   u   c   h   e  n");
 
     }
 

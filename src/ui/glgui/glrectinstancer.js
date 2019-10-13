@@ -108,7 +108,8 @@ CABLES.GLGUI.RectInstancer=class
             .endl()+'   float color = clamp(signedDistance + 0.5, 0.0, 1.0);'
             .endl()+'   float alpha = clamp(signedDistance + 0.5 + scale * 0.125, 0.0, 1.0);'
 
-            .endl()+'   outColor=vec4(color, color, color, 1.)*alpha;'
+            .endl()+'   outColor=vec4(outColor.rgb, color);'
+            // .endl()+'   outColor=vec4(color, color, color, 0.5);'
             .endl()+'#endif'
 
             .endl()+'}');

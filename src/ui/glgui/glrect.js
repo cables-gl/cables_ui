@@ -75,8 +75,8 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     setPosition(_x,_y)
     {
-        this._x=Math.floor(_x);
-        this._y=Math.floor(_y);
+        this._x=(_x);
+        this._y=(_y);
 
         this._absX=this._x;
         this._absY=this._y;
