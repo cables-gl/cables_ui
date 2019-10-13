@@ -180,6 +180,13 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
         }
     }
+
+    dispose()
+    {
+        this.setSize(0,0);
+        this.setPosition(0,0);
+
+    }
 }
 
 

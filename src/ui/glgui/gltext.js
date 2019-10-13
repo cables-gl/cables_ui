@@ -42,14 +42,18 @@ CABLES.GLGUI.Text=class
         
         for(var i=0;i<this._rects.length;i++)
             this._rects[i].setColor(r,g,b,1);
-
     }
 
     rebuild()
     {
         const font=CABLES.GLGUI.SDF_FONT_ARIAL;
         var w=0;
-        for (var i = 0; i < this._string.length; i++) w += font.characters[this._string[i]].advance;
+        for (var i = 0; i < this._string.length; i++)
+        {
+            var ch=font.characters[this._string[i]]||font.characters["?"];
+            // if(!font.characters[ch]) ch="?";
+            w += ch.advance;
+        }
 
         this._width=this._map(w);
 
@@ -61,7 +65,7 @@ CABLES.GLGUI.Text=class
 
         for(var i=0;i<this._string.length;i++)
         {
-            const ch=font.characters[this._string.charAt(i)];
+            var ch=font.characters[this._string.charAt(i)]||font.characters["?"];
             
             var rect=this._rects[i] || this._textWriter.rectDrawer.createRect();
             this._rects[i]=rect;
@@ -77,6 +81,12 @@ CABLES.GLGUI.Text=class
         }
 
         
+
+    }
+
+    dispose()
+    {
+        for(var i=0;i<this._rects.length;i++) this._rects[i].dispose();
 
     }
 }

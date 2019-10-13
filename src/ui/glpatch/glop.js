@@ -14,8 +14,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         super();
 
-        console.log('CABLES.UI.uiConfig.opHeight',CABLES.UI.uiConfig.opHeight);
-
         this._id=op.id;
         this._glPatch=glPatch;
 
@@ -81,13 +79,11 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
             if(this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
         });
 
-
         this._glRectBg.on("mousedown", (e) =>
         {
             console.log("GLOP MOUSE DOWNNNNNNN!");
             glPatch.quickLinkSuggestion.longPressPrepare(this._op,this.x+this.w/2,this.y+this.h);
         });
-
         
         this._glRectBg.on("mouseup", (e) =>
         {
@@ -108,6 +104,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     set uiAttribs(attr)
     {
         this.opUiAttribs=attr;
+
+        // glOp.setTitle(this._textWriter,attr.title);
+
     }
 
     get uiAttribs()
@@ -115,14 +114,13 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         return this.opUiAttribs;
     }
 
-
     setTitle(textWriter,title)
     {
         console.log("textWriter",textWriter);
         this._glTitle=new CABLES.GLGUI.Text(textWriter,title);
         if(this._glTitle) this._glTitle.setPosition(this.x,this.y);
 
-        // this._textWriter,op.name
+        this._glRectBg.setSize(Math.max(this._glTitle.width,this._glRectBg.w),this._glRectBg.h);
     }
 
 
@@ -139,7 +137,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
     mouseMove(x,y)
     {
-
         // const wasHovering=this._isHovering;
 
         // this.setHover(this._glRectBg.isPointInside(x,y));
@@ -168,24 +165,13 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         if(this._isHovering && !h) this.emitEvent("hoverEnd");
 
         this._isHovering=h;
-        // this._glRectBg.setOutline(this._isHovering);
-
-        // if(h) this._glRectBg.setColor(80/255,80/255,80/255,0.3);
-        // else this._glRectBg.setColor(51/255,51/255,51/255,0.3);
     }
 
     dispose()
     {
-        if(this._glRectBg)
-        {
-            this._glRectBg.setSize(0,0);
-            this._glRectBg.setPosition(0,0);
-        }
-        for(var i=0;i<this._portRects.length;i++)
-        {
-            this._portRects[i].setSize(0,0);
-            this._portRects[i].setPosition(0,0);
-        }
+        if(this._glRectBg) this._glRectBg.dispose();
+        if(this._glTitle) this._glTitle.dispose();
+        for(var i=0;i<this._portRects.length;i++) this._portRects[i].dispose();
 
         this._op=null;
         this._portRects.length=0;
