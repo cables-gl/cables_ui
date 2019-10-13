@@ -152,8 +152,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     setFont(f)
     {
-        console.log(f);
-
         this._textWriter.setFont(f);
     }
 
