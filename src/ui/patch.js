@@ -3108,7 +3108,7 @@ CABLES.UI.Patch = function(_gui) {
                 if (el.val() != thePort.get()) el.val(thePort.get());
             }
             else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY) {
-                if (thePort.get()) el.html('length: ' + String(thePort.get().length));
+                if (thePort.get()) el.html('Array (' + String(thePort.get().length)+')');
             }
             else if (thePort.type == CABLES.OP_PORT_TYPE_STRING) {
                 el.html('\"'+thePort.get()+'\"');
