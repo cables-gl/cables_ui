@@ -383,10 +383,11 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
     
         CABLES.UI.MODAL.contentElement.append('<br/><br/>');
         var thing=port.get();
-        CABLES.UI.MODAL.contentElement.append(''+thing.constructor.name+' \n');
-
+        
         if(thing.constructor)
         {
+            CABLES.UI.MODAL.contentElement.append(''+thing.constructor.name+' \n');
+            
             if(thing.constructor.name=="Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
             if(thing.constructor.name=="Float32Array") CABLES.UI.MODAL.contentElement.append( ' - length:'+thing.length +'\n');
         }
