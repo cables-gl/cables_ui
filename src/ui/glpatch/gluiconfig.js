@@ -1,0 +1,9 @@
+var CABLES=CABLES||{};
+CABLES.GLGUI=CABLES.GLGUI||{};
+
+
+CABLES.GLGUI.VISUALCONFIG=
+{
+    "OpTitlePaddingLeftRight":10,
+
+};

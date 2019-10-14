@@ -211,7 +211,6 @@ CABLES.UI.MODAL.getFileSnippet=function(url,line,cb)
 
 CABLES.UI.MODAL.showOpException=function(ex,opName)
 {
-    console.log(ex.stack);
     CABLES.UI.MODAL.showClose();
 	CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.setTitle('op cablefail :/');
@@ -229,10 +228,13 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
 
     if(ex)
     {
-        console.log("ex:",ex);
-        if(info)
+        console.trace();
+        
+        var info = stackinfo(ex);
+        console.log("ex:",ex,info);
+        if(info && info[0].file)
         {
-            var info = stackinfo(ex);
+            
             console.log('This is line '+(info[0].line + 1));
             console.log('This is file '+(info[0].file));
         
@@ -241,9 +243,7 @@ CABLES.UI.MODAL.showOpException=function(ex,opName)
                     $('#stackFileContent').show();
                     $('#stackFileContent').html(html);
                 });
-                
         }
-    
     }
 
 	CABLES.UI.MODAL._setVisible(true);

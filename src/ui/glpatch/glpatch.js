@@ -16,6 +16,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
 
+        this._textWriter=new CABLES.GLGUI.TextWriter(cgl);
+        
+
         this._selectRect=this._overLayRects.createRect();
         this._selectRect.setColor(0,0.5,0.7,0.25);
         this._selectRect.setPosition(0,0,1000);
@@ -36,8 +39,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._viewResX=0;
         this._viewResY=0;
         
-
-
         this.links={}
 
         cgl.canvas.addEventListener("mousedown",(e) =>
@@ -129,6 +130,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const glOp=new CABLES.GLGUI.GlOp(this,this._rectInstancer,op);
         this._glOpz[op.id]=glOp;
         glOp.updatePosition();
+        glOp.setTitle(this._textWriter,op.name);
         glOp.update();
 
         op.addEventListener("onUiAttribsChange",()=>{
@@ -146,6 +148,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const mouseAbsY=(mouseY-(this._viewResY/2))*z+(this._viewScrollY*asp);
 
         return [mouseAbsX,mouseAbsY];
+    }
+
+    setFont(f)
+    {
+        this._textWriter.setFont(f);
     }
 
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
@@ -169,6 +176,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
+
+        this._textWriter.render(resX,resY,scrollX,scrollY,zoom);
 
         this.quickLinkSuggestion.glRender(this._patch.cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
     }

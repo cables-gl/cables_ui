@@ -5,6 +5,8 @@ CABLES.GLGUI.Linedrawer=class
 {
     constructor(cgl,options)
     {
+        if(!cgl) throw new Error("[Linedrawer] no cgl");
+
         this._startTime=performance.now();
         this._counter=0;
         this._num=10000;

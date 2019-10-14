@@ -68,10 +68,15 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._rectInstancer.setColor(this._attrIndex,r,g,b,a);
     }
 
+    setTexRect(x,y,w,h)
+    {
+        this._rectInstancer.setTexRect(this._attrIndex,x,y,w,h);
+    }
+
     setPosition(_x,_y)
     {
-        this._x=Math.floor(_x);
-        this._y=Math.floor(_y);
+        this._x=(_x);
+        this._y=(_y);
 
         this._absX=this._x;
         this._absY=this._y;
@@ -174,6 +179,13 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
 
         }
+    }
+
+    dispose()
+    {
+        this.setSize(0,0);
+        this.setPosition(0,0);
+
     }
 }
 
