@@ -2290,7 +2290,8 @@ CABLES.UI.Patch = function(_gui) {
         for (var j = 0; j < selectedOps.length; j++) {
             var uiop = selectedOps[j];
             var startPort = uiop.op.portsIn[0];
-
+            var otherport=null;
+            
             if (dir > 0)
                 startPort = uiop.op.portsOut[0];
 
@@ -3108,7 +3109,8 @@ CABLES.UI.Patch = function(_gui) {
                 if (el.val() != thePort.get()) el.val(thePort.get());
             }
             else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY) {
-                if (thePort.get()) el.html('length: ' + String(thePort.get().length));
+                if (thePort.get()) el.html('Array (' + String(thePort.get().length)+')');
+                else  el.html('Array (null)');
             }
             else if (thePort.type == CABLES.OP_PORT_TYPE_STRING) {
                 el.html('\"'+thePort.get()+'\"');

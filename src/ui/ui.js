@@ -1659,9 +1659,13 @@ CABLES.UI.GUI = function(cfg) {
 
     this.getCanvasSizeString=function (cgl)
     {
-        var sizeStr='size: '+cgl.canvasWidth+'x'+cgl.canvasHeight;
-        if(cgl.canvasScale!=1)sizeStr+=' (scale '+cgl.canvasScale+')';
-        if(cgl.pixelDensity)sizeStr+=' ('+(cgl.canvasWidth/cgl.pixelDensity)+'x'+(cgl.canvasHeight/cgl.pixelDensity)+'x'+cgl.pixelDensity+')';
+        var sizeStr='Size: '+cgl.canvasWidth+'x'+cgl.canvasHeight;
+        if(cgl.canvasScale!=1)sizeStr+=' Scale '+cgl.canvasScale+' ';
+        if(cgl.pixelDensity!=1)sizeStr+=' ('+(cgl.canvasWidth/cgl.pixelDensity)+'x'+(cgl.canvasHeight/cgl.pixelDensity)+'x'+cgl.pixelDensity+')';
+
+        var zoom=Math.round(window.devicePixelRatio * 100);
+        if(zoom!=100)sizeStr+=' Zoom '+zoom+'%';
+
         return sizeStr;
     }
 
