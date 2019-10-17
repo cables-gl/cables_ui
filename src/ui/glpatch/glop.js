@@ -1,11 +1,8 @@
-
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.OP_MIN_WIDTH=100;
-
-CABLES.GLGUI.OP_PORT_DISTANCE=13; //13
-// CABLES.UI.uiConfig.portSize=10;
+CABLES.GLGUI.OP_PORT_DISTANCE=13;
 CABLES.GLGUI.OP_PORT_HEIGHT=6;
 
 CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
@@ -16,25 +13,25 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this._id=op.id;
         this._glPatch=glPatch;
-
-        this.opUiAttribs=op.uiAttribs;
         this._op=op;
         this._instancer=instancer;
         this._width=CABLES.GLGUI.OP_MIN_WIDTH;
         this._height=CABLES.UI.uiConfig.opHeight;
-
+        this._needsUpdate=true;
         this._textWriter=null;
         this._glTitleExt=null;
         this._glTitle=null;
+        this.uiAttribs=op.uiAttribs;
 
         this._glRectBg=instancer.createRect({});
         this._glRectBg.setSize(this._width,this._height);
         this._glRectBg.setColor(51/255,51/255,51/255,1);
         this._glRectBg.draggable=true;
+
+
         this._glRectBg.on("drag",
             (rect)=>
             {
-
                 var x=rect.x;
                 var y=rect.y;
 
@@ -67,8 +64,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._portRects=[];
         this._links={};
 
-        this.updatePosition();
-
         for(var i=0;i<this._op.portsIn.length;i++) this._setupPort(i,this._op.portsIn[i]);
         for(var i=0;i<this._op.portsOut.length;i++) this._setupPort(i,this._op.portsOut[i]);
 
@@ -93,24 +88,41 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         {
             console.log("GLOP MOUSE UP!");
 
-            if(this._glPatch.quickLinkSuggestion.isActive())
-            {
-                this._glPatch.quickLinkSuggestion.finish(e,this._op);
-            }
+            if(this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e,this._op);
         });
     }
+
+
+    get x() { return this.opUiAttribs.translate.x; }
+    get y() { return this.opUiAttribs.translate.y; }
+    get w() { return this._width; }
+    get h() { return this._height; }
+
 
     get id()
     {
         return this._id;
     }
 
+
+    _updateWhenRendering()
+    {
+        this.update();
+        console.log("update when rendering...");
+        instancer.removeEventListener(this._updateWhenRendering);
+    }
+
+    _updateLater()
+    {
+        instancer.on("render",this._updateWhenRendering);
+    }
+
     set uiAttribs(attr)
     {
         this.opUiAttribs=attr;
+        this._needsUpdate=true;
 
         // glOp.setTitle(this._textWriter,attr.title);
-
     }
 
     get uiAttribs()
@@ -122,12 +134,14 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         this._textWriter=textWriter;
 
-        this._glTitle=new CABLES.GLGUI.Text(this._textWriter,title);
-        if(this._glTitle) this._glTitle.setPosition(this._getTitlePosition(),this.y);
+        if(!this._glTitle)
+        {
+            this._glTitle=new CABLES.GLGUI.Text(this._textWriter,title);
+            this._glTitle.setParentRect(this._glRectBg);
+        }
 
         this._glRectBg.setSize(Math.max(this._getTitleWidth(),this._glRectBg.w),this._glRectBg.h);
     }
-
 
     addLink(l)
     {
@@ -139,11 +153,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         if(this._glRectBg) return this._glRectBg.isHovering();
     }
 
-
     mouseMove(x,y)
     {
         // const wasHovering=this._isHovering;
-
         // this.setHover(this._glRectBg.isPointInside(x,y));
 
         // if(this._isHovering)
@@ -160,7 +172,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         // {
         //     for(var i=0;i<this._portRects.length;i++)
         //         this._portRects[i].setOutline(false);
-
         // }
     }
 
@@ -233,15 +244,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         if(!this._glRectBg) return;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x,this.opUiAttribs.translate.y);
 
-        if(this._glTitle) this._glTitle.setPosition(this._getTitlePosition(),this.y);
-        if(this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(),this.y);
-       
+        if(this._glTitle) this._glTitle.setPosition(this._getTitlePosition(),0);
+        if(this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(),0);
     }
-
-    get x() { return this.opUiAttribs.translate.x; }
-    get y() { return this.opUiAttribs.translate.y; }
-    get w() { return this._width; }
-    get h() { return this._height; }
 
     getUiAttribs()
     {
@@ -266,20 +271,19 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
     _getTitlePosition()
     {
-        console.log('CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight',CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight);
-        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight+this.x;
+        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight;
     }
     _getTitleExtPosition()
     {
-        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight+this.x+this._glTitle.width;
+        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight+this._glTitle.width;
     }
 
     update()
     {
-
         if(this.opUiAttribs.extendTitle && !this._glTitleExt)
         {
             this._glTitleExt=new CABLES.GLGUI.Text(this._textWriter," | "+this.opUiAttribs.extendTitle);
+            this._glTitleExt.setParentRect(this._glRectBg);
             this._glTitleExt.setColor(0.5,0.5,0.5,1.0);
         }
         else if(!this.opUiAttribs.extendTitle && this._glTitleExt)

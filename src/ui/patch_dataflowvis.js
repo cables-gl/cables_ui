@@ -84,7 +84,9 @@ CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
                             patch.ops[i].links[j].linkLine.speedClass=newClass;
                             patch.ops[i].links[j].linkLine.node.classList.add(newClass);
                         }
+                        // link.activityCount=link.activityCounter;
                         link.activityCounter=0;
+                        // link.emitEvent("activity",link,link.activityCount);
                     }
                 }
                 else

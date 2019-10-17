@@ -75,5 +75,11 @@ CABLES.GLGUI.GlLink=class
         this._cable.setColor(0,0,0,0);
     }
 
+    setFlowModeActivity(act)
+    {
+        this._cable.setSpeed(act);
+    }
+
+
 }
 

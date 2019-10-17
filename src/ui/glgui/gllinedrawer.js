@@ -15,6 +15,7 @@ CABLES.GLGUI.Linedrawer=class
         this._positions=new Float32Array(3*this._num);
         this._colors=new Float32Array(4*this._num);
         this._dists=new Float32Array(this._num);
+        this._speeds=new Float32Array(this._num);
 
         this._shader=new CGL.Shader(cgl,'Linedrawer');
         this._shader.glPrimitive=cgl.gl.LINES;
@@ -23,6 +24,8 @@ CABLES.GLGUI.Linedrawer=class
             // .endl()+'IN vec3 pos;'
             .endl()+'IN vec4 color;'
             .endl()+'IN float vdist;'
+            .endl()+'IN float speed;'
+            .endl()+'OUT float speedy;'
             .endl()+'OUT float dist;'
             .endl()+'OUT vec4 col;'
             .endl()+'OUT vec2 pos2d;'
@@ -33,6 +36,7 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'   float aspect=resX/resY;'
 
             .endl()+'   dist=vdist;'
+            .endl()+'   speedy=speed;'
 
             .endl()+'   vec3 pos=vPosition;'
 
@@ -46,7 +50,6 @@ CABLES.GLGUI.Linedrawer=class
 
             .endl()+'    col=color;'
             .endl()+'    pos*=zoom;'
-            
 
             .endl()+'    pos.x+=scrollX;'
             .endl()+'    pos.y+=scrollY;'
@@ -59,14 +62,16 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'IN vec2 pos2d;'
             .endl()+'IN vec4 col;'
             .endl()+'IN float dist;'
+            .endl()+'IN float speedy;'
+
             .endl()+'void main()'
             .endl()+'{'
             .endl()+'   vec4 color=col;'
             .endl()+'   if(color.a==0.0) discard;'
             .endl()+'   float stepLength=10.0;'
 
-            .endl()+'   float colmul=step(stepLength*0.5,mod(dist+time,stepLength))+0.7;'
-            .endl()+'   color.rgb*=clamp(colmul,0.0,1.0);'
+            .endl()+'   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;'
+            .endl()+'   color.rgb *= clamp(speedy,0.5,1.0)*clamp(colmul,0.0,1.0);'
             
             // .endl()+'  float a=length(gl_FragCoord.xy);'// )+1.0)/2.0+0.5);'
             // .endl()+'  a=sin(a);'
@@ -94,6 +99,7 @@ CABLES.GLGUI.Linedrawer=class
         var i=0;
         for(i=0;i<3*this._num;i++) this._positions[i]=0;//Math.random()*60;
         for(i=0;i<4*this._num;i++) this._colors[i]=Math.random();
+        for(i=0;i<1*this._num;i++) this._speeds[i]=0;
     }
 
     dispose()
@@ -122,6 +128,7 @@ CABLES.GLGUI.Linedrawer=class
         this._mesh.setAttribute(CGL.SHADERVAR_VERTEX_POSITION,this._positions,3);
         this._mesh.setAttribute('color',this._colors,4);
         this._mesh.setAttribute('vdist',this._dists,1);
+        this._mesh.setAttribute('speed',this._speeds,1);
 
         this._needsUpload=false;
     }
@@ -138,7 +145,6 @@ CABLES.GLGUI.Linedrawer=class
         var yd = y2 - y1;
         return Math.sqrt(xd * xd + yd * yd);
     }
-
 
     setLine(idx,x,y,x2,y2)
     {
@@ -164,6 +170,13 @@ CABLES.GLGUI.Linedrawer=class
         this._colors[idx*8+5]=g;
         this._colors[idx*8+6]=b;
         this._colors[idx*8+7]=a;
+        this._needsUpload=true;
+    }
+
+    setSpeed(idx,speed)
+    {
+        this._speeds[idx*2]=speed;
+        this._speeds[idx*2+1]=speed;
         this._needsUpload=true;
     }
 }

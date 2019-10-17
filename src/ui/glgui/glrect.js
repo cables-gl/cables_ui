@@ -90,6 +90,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._rectInstancer.setPosition(this._attrIndex,this._absX,this._absY);
 
         for(var i=0;i<this.childs.length;i++) this.childs[i].setPosition(this.childs[i].x,this.childs[i].y);
+        this.emitEvent("positionChanged");
     }
 
     isPointInside(x,y)

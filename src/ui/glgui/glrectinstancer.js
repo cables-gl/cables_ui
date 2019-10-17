@@ -1,10 +1,12 @@
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-CABLES.GLGUI.RectInstancer=class
+CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
 {
     constructor(cgl,options)
     {
+        super();
+
         if(!cgl)
         {
             console.log("[RectInstancer] no cgl");
@@ -131,6 +133,20 @@ CABLES.GLGUI.RectInstancer=class
         this._mesh.numInstances=this._num;
 
 
+        this.clear();
+
+    }
+
+    set interactive(i) { this._interactive=i; }
+    get interactive() { return this._interactive; }
+
+    dispose()
+    {
+
+    }
+
+    clear()
+    {
         var i=0;
         for(i=0;i<2*this._num;i++) this._sizes[i]=0;//Math.random()*61;
         for(i=0;i<3*this._num;i++) this._positions[i]=0;//Math.random()*60;
@@ -143,14 +159,6 @@ CABLES.GLGUI.RectInstancer=class
             this._texRect[i+2]=1;
             this._texRect[i+3]=1;
         }
-    }
-
-    set interactive(i) { this._interactive=i; }
-    get interactive() { return this._interactive; }
-
-    dispose()
-    {
-
     }
 
     isDragging()
@@ -173,6 +181,7 @@ CABLES.GLGUI.RectInstancer=class
             this._cgl.setTexture(0, this._texture.tex);
         }
 
+        this.emitEvent("render");
 
         this._mesh.render(this._shader);
 

@@ -28,6 +28,13 @@ CABLES.GLGUI.GlCable=class
         this._lineDrawer.setColor(this._lineIdx2,r,g,b,a);
     }
 
+    setSpeed(speed)
+    {
+        this._lineDrawer.setSpeed(this._lineIdx0,speed);
+        this._lineDrawer.setSpeed(this._lineIdx1,speed);
+        this._lineDrawer.setSpeed(this._lineIdx2,speed);
+    }
+
 }
 
 

@@ -15,10 +15,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
-
         this._textWriter=new CABLES.GLGUI.TextWriter(cgl);
         
-
         this._selectRect=this._overLayRects.createRect();
         this._selectRect.setColor(0,0.5,0.7,0.25);
         this._selectRect.setPosition(0,0,1000);
@@ -28,8 +26,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor2=this._overLayRects.createRect();
         this._cursor2.setSize(4,4);
         this._cursor2.setColor(0,0,1,1);
-
-        // this._hoverDragOp=null;
 
         this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
 
@@ -72,7 +68,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._rectInstancer.mouseUp(e);
             this.quickLinkSuggestion.longPressCancel();
             this._rectInstancer.interactive=true;
-
         });
     }
 
@@ -120,6 +115,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     addLink(l)
     {
+        if(this.links[l.id]) this.links[l.id].dispose();
         this.links[l.id]=l;
     }
 
@@ -127,8 +123,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         if(!op) console.error("no op at addop",op);
 
-        const glOp=new CABLES.GLGUI.GlOp(this,this._rectInstancer,op);
-        this._glOpz[op.id]=glOp;
+        var glOp = this._glOpz[op.id];
+        if(!glOp)
+        {
+            glOp = new CABLES.GLGUI.GlOp(this,this._rectInstancer,op);
+            this._glOpz[op.id]=glOp;
+        }
+        else
+        {
+            glOp.uiAttribs=op.uiAttribs;
+        }
         glOp.updatePosition();
         glOp.setTitle(this._textWriter,op.name);
         glOp.update();
@@ -157,6 +161,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
     {
+        this._patchAPI.updateFlowModeActivity();
+
+
         this._viewResX=resX;
         this._viewResY=resY;
         this._viewZoom=zoom;
@@ -189,8 +196,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     mouseMove(x,y,button)
     {
-
-        if( (this._lastMouseX!=x || this._lastMouseY!=y) && !this.quickLinkSuggestion.isActive() ) this.quickLinkSuggestion.longPressCancel();
+        if((this._lastMouseX!=x || this._lastMouseY!=y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
         var allowSelectionArea= !this.quickLinkSuggestion.isActive();
 
@@ -201,9 +207,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             console.log("dragging,.,..");
             return;
         }
-
-
-
 
         const hoverops=this._getGlOpsInRect(x,y,x+1,y+1);
 
@@ -240,15 +243,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._hoverDragOp=null;
         }
 
-        if( this._selectRect.h==0 && hoverops.length>0 ) allowSelectionArea = false;
-
-
-
-
-
-
-
-
+        if(this._selectRect.h==0 && hoverops.length>0) allowSelectionArea = false;
         if(this._lastButton==1 && button!=1) this.removeSelectionArea();
 
         if(this._mouseOverCanvas)

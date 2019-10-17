@@ -4,9 +4,14 @@ CABLES.GLGUI.Text=class
 {
     constructor(textWriter,string)
     {
+        if(!textWriter)
+        {
+            throw new Error("glgui text constructor without textwriter");
+            return;
+        }
         this._textWriter=textWriter;
         this._string=string;
-        this._x=-100;
+        this._x=0;
         this._y=0;
         this._rects=[];
         this._width=0;
@@ -34,18 +39,30 @@ CABLES.GLGUI.Text=class
         return x*0.2;
     }
 
+
+
+    setParentRect(r)
+    {
+        if(this._parentRect) this._parentRect.removeEventListener(this.rebuild.bind(this));
+
+        this._parentRect=r;
+        // this._parentRect.on("positionChanged",this.rebuild.bind(this));
+        this._parentRect.on("positionChanged",this.rebuild.bind(this));
+
+    }
+
     setColor(r,g,b)
     {
         this._r=r;
         this._g=g;
-        this._b=b;
-        
-        for(var i=0;i<this._rects.length;i++)
-            this._rects[i].setColor(r,g,b,1);
+        this._b=b;        
+        for(var i=0;i<this._rects.length;i++) this._rects[i].setColor(r,g,b,1);
     }
 
     rebuild()
     {
+        // if(this._string===undefined || this._string===null)return;
+        
         const font=CABLES.GLGUI.SDF_FONT_ARIAL;
         var w=0;
         for (var i = 0; i < this._string.length; i++)
@@ -59,6 +76,12 @@ CABLES.GLGUI.Text=class
 
         var posX=this._x;
         var posY=this._y+this._map(font.size/2)+13;
+
+        if(this._parentRect)
+        {
+            posX+=this._parentRect.x;
+            posY+=this._parentRect.y;
+        }
 
         if(this._align==1) posX-=this._width/2;
         else if(this._align==2) posX-=this._width;
@@ -79,14 +102,10 @@ CABLES.GLGUI.Text=class
             
             posX+=this._map(ch.advance);
         }
-
-        
-
     }
 
     dispose()
     {
         for(var i=0;i<this._rects.length;i++) this._rects[i].dispose();
-
     }
 }

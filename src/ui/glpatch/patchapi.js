@@ -9,7 +9,6 @@ CABLES.GLGUI.GlPatchAPI=class
         this._glPatch=glpatch;
         this._glPatch.patchAPI=this;
 
-        this._initPatch();
 
         this._patch.addEventListener("onOpAdd",this._onAddOp.bind(this));
         this._patch.addEventListener("onOpDelete",this._onDeleteOp.bind(this));
@@ -23,9 +22,51 @@ CABLES.GLGUI.GlPatchAPI=class
         console.log("patch.ops.length",this._patch.ops.length);
         for(var i=0;i<this._patch.ops.length;i++)
         {
-            // console.log("init patch",this._patch.ops[i].objname);
-            this._glPatch.addOp(this._patch.ops[i]);
+            const op=this._patch.ops[i];
+
+            this._glPatch.addOp(op);
+
+            for(var ip=0;ip<op.portsIn.length;ip++)
+            {
+                for(var il=0;il<op.portsIn[ip].links.length;il++)
+                {
+                    const link=op.portsIn[ip].links[il];
+                    const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,link.portIn.parent.id,link.portOut.parent.id,link.portIn.id,link.portOut.id,link.portIn.type);
+                    // this._addLinkFlowModeActivityListener(link,l);
+                }
+            }
         }
+    }
+
+    // _addLinkFlowModeActivityListener(link,glLink)
+    updateFlowModeActivity()
+    {
+        for(var i=0;i<this._patch.ops.length;i++)
+        {
+            const op=this._patch.ops[i];
+
+        for(var ip=0;ip<op.portsIn.length;ip++)
+        {
+            for(var il=0;il<op.portsIn[ip].links.length;il++)
+            {
+                const link=op.portsIn[ip].links[il];
+                this._glPatch.links[link.id].setFlowModeActivity(link.activityCounter);
+                link.activityCounter=0;
+                // const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,link.portIn.parent.id,link.portOut.parent.id,link.portIn.id,link.portOut.id,link.portIn.type);
+                // this._addLinkFlowModeActivityListener(link,l);
+            }
+        }
+    }
+        // link.addEventListener("activity",(link,act)=>
+        // {
+        //     glLink.setFlowModeActivity(act);
+        //     link.activityCounter=0;
+        // });
+    }
+
+    reset()
+    {
+        this._initPatch();
     }
 
     _onLink(p1,p2,link)
@@ -38,6 +79,8 @@ CABLES.GLGUI.GlPatchAPI=class
             p1=t;
         }
         const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,p1.parent.id,p2.parent.id,p1.id,p2.id,p1.type);
+        // this._addLinkFlowModeActivityListener(link,l);
+
     }
 
     _onUnLink(a,b,link)
