@@ -119,7 +119,6 @@ CABLES.GLGUI.GlPatchAPI=class
         var attr={};
         attr[attrName]=val;
         op.setUiAttrib(attr);
-        console.log("uiat",attrName,val);
     }
 
     _watchOp(op)

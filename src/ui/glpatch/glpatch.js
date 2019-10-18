@@ -202,11 +202,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._rectInstancer.mouseMove(x,y,button);
 
-        if(this._rectInstancer.isDragging())
-        {
-            console.log("dragging,.,..");
-            return;
-        }
+        if(this._rectInstancer.isDragging()) return;
 
         const hoverops=this._getGlOpsInRect(x,y,x+1,y+1);
 

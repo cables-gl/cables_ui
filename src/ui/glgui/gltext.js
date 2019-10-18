@@ -39,8 +39,6 @@ CABLES.GLGUI.Text=class
         return x*0.2;
     }
 
-
-
     setParentRect(r)
     {
         if(this._parentRect) this._parentRect.removeEventListener(this.rebuild.bind(this));
@@ -48,7 +46,6 @@ CABLES.GLGUI.Text=class
         this._parentRect=r;
         // this._parentRect.on("positionChanged",this.rebuild.bind(this));
         this._parentRect.on("positionChanged",this.rebuild.bind(this));
-
     }
 
     setColor(r,g,b)
@@ -99,7 +96,8 @@ CABLES.GLGUI.Text=class
             rect.setTexRect(
                 ch.x/font.width, ch.y/font.height,
                 ch.width/font.width, ch.height/font.height);
-            
+
+
             posX+=this._map(ch.advance);
         }
     }

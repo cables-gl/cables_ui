@@ -23,6 +23,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._data={};
         this.color=vec4.create();
         this.colorHover=null;
+        this._texture=null;
 
         // draggable stuff
         this._draggable=false;
@@ -43,6 +44,8 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     set draggable(b) { this._draggable=b; }
     get draggable() { return this._draggable; }
+
+    get idx(){return this._attrIndex;}
 
     addChild(c)
     {
@@ -71,6 +74,26 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
     setTexRect(x,y,w,h)
     {
         this._rectInstancer.setTexRect(this._attrIndex,x,y,w,h);
+    }
+
+    setParent(p)
+    {
+        this._parent=p;
+        p.addChild(this);
+        this.setPosition(this._x,this._y);
+    }
+
+    get texture()
+    {
+        return this._texture;
+    }
+
+    setTexture(t)
+    {
+        if(this._texture==t)return;
+        this._texture=t;
+
+        this.emitEvent("textureChanged");
     }
 
     setPosition(_x,_y)
@@ -175,10 +198,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
                     this._dragOffsetY=y-this._y;
                     this.emitEvent("dragStart",this);
                 }
-
             }
-
-
         }
     }
 

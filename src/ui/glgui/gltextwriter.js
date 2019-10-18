@@ -16,7 +16,6 @@ CABLES.GLGUI.TextWriter=class
         r.setPosition(0,0);
 
         var txt=new CABLES.GLGUI.Text(this,"H  u  n  d   e   k   u   c   h   e  n");
-
     }
 
     get rectDrawer() { return this._rectDrawer; } 
@@ -27,9 +26,14 @@ CABLES.GLGUI.TextWriter=class
         this._rectDrawer.render(resX,resY,scrollX,scrollY,zoom)
     }
 
+    
+    
     setFont(tex)
     {
-        this._rectDrawer.setTexture(tex)
+        this._rectDrawer.setAllTexture(tex,true);
+
+        // this._rectDrawer.setTexture(tex)
+        // rect.setTexture(0,font);
     }
 
 }

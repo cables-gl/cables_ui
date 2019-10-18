@@ -23,6 +23,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glTitle=null;
         this.uiAttribs=op.uiAttribs;
 
+        this._visPort=null;
+        this._glRectContent=null;
+
         this._glRectBg=instancer.createRect({});
         this._glRectBg.setSize(this._width,this._height);
         this._glRectBg.setColor(51/255,51/255,51/255,1);
@@ -278,6 +281,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight+this._glTitle.width;
     }
 
+
     update()
     {
         if(this.opUiAttribs.extendTitle && !this._glTitleExt)
@@ -290,6 +294,38 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         {
             this._glTitleExt=null;
         }
+
+ 
+        if(this.opUiAttribs.glPreviewTexture)
+        {
+            if(!this._glRectContent)
+            {
+                this._glRectContent=this._instancer.createRect();
+                this._glRectContent.setParent(this._glRectBg);
+                this._glRectContent.setPosition(0,this._height);
+                this._glRectContent.setColor(255,0,220,1);
+
+                var p=this._op.getPort("Texture");
+                this._visPort=p;    
+                // this._glRectContent.draggable=false;
+        
+            }
+            if(this._visPort)
+            {
+                // console.log(this._visPort.get());
+                const t=this._visPort.get();
+
+                if(t)
+                {
+                    const asp=this._width/t.width*2.0;
+                    this._glRectContent.setSize(t.width*asp,t.height*asp);
+                    this._glRectContent.setTexture(this._visPort.get());
+                }
+            }
+            
+
+        }
+
 
         this.updatePosition();
         for(var i in this._links) this._links[i].update();

@@ -70,8 +70,16 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'   if(color.a==0.0) discard;'
             .endl()+'   float stepLength=10.0;'
 
+            .endl()+'   float showSpeed=clamp(speedy,0.0,1.0);'
+
+            
+
             .endl()+'   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;'
-            .endl()+'   color.rgb *= clamp(speedy,0.5,1.0)*clamp(colmul,0.0,1.0);'
+            .endl()+'   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0);'
+            .endl()+'   else color.rgb = color.rgb*0.55;'
+            // .endl()+'   color.rgb += (1.0-showSpeed) * col.rgb;'
+
+            // .endl()+'   if(speedy==0)'
             
             // .endl()+'  float a=length(gl_FragCoord.xy);'// )+1.0)/2.0+0.5);'
             // .endl()+'  a=sin(a);'
@@ -124,11 +132,15 @@ CABLES.GLGUI.Linedrawer=class
 
     rebuild()
     {
+        var perf = CABLES.uiperf.start('[glLineDrawer] rebuild');
+
         // todo only update whats needed
         this._mesh.setAttribute(CGL.SHADERVAR_VERTEX_POSITION,this._positions,3);
         this._mesh.setAttribute('color',this._colors,4);
         this._mesh.setAttribute('vdist',this._dists,1);
         this._mesh.setAttribute('speed',this._speeds,1);
+
+        perf.finish();
 
         this._needsUpload=false;
     }
@@ -146,22 +158,43 @@ CABLES.GLGUI.Linedrawer=class
         return Math.sqrt(xd * xd + yd * yd);
     }
 
+    _float32Diff(a,b)
+    {
+        return Math.abs(a-b)>0.0001;
+    }
+
     setLine(idx,x,y,x2,y2)
     {
         this._dists[idx*2]=0;
         this._dists[idx*2+1]=this._distance(x,y,x2,y2);
         
+        if( 
+            this._float32Diff(this._positions[idx*6+0],x) || 
+            this._float32Diff(this._positions[idx*6+1],y) ||
+            this._float32Diff(this._positions[idx*6+3],x2) || 
+            this._float32Diff(this._positions[idx*6+4],y2)) { this._needsUpload=true; }
+
+
         this._positions[idx*6+0]=x;
         this._positions[idx*6+1]=y;
         this._positions[idx*6+2]=0;
         this._positions[idx*6+3]=x2;
         this._positions[idx*6+4]=y2;
         this._positions[idx*6+5]=0;
-        this._needsUpload=true;
     }
 
     setColor(idx,r,g,b,a)
     {
+        if( 
+            this._float32Diff(this._colors[idx*8+0],r) || 
+            this._float32Diff(this._colors[idx*8+1],g) ||
+            this._float32Diff(this._colors[idx*8+2],b) || 
+            this._float32Diff(this._colors[idx*8+3],a) || 
+            this._float32Diff(this._colors[idx*8+4],r) ||
+            this._float32Diff(this._colors[idx*8+5],g) || 
+            this._float32Diff(this._colors[idx*8+6],b) ||
+            this._float32Diff(this._colors[idx*8+7],a)) { this._needsUpload=true; }
+
         this._colors[idx*8+0]=r;
         this._colors[idx*8+1]=g;
         this._colors[idx*8+2]=b;
@@ -170,13 +203,17 @@ CABLES.GLGUI.Linedrawer=class
         this._colors[idx*8+5]=g;
         this._colors[idx*8+6]=b;
         this._colors[idx*8+7]=a;
-        this._needsUpload=true;
     }
 
     setSpeed(idx,speed)
     {
+
+        if( 
+            this._float32Diff(this._speeds[idx*2+0],speed) || 
+            this._float32Diff(this._speeds[idx*2+1],speed)) { this._needsUpload=true; }
+
         this._speeds[idx*2]=speed;
         this._speeds[idx*2+1]=speed;
-        this._needsUpload=true;
+
     }
 }
