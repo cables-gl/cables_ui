@@ -307,12 +307,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
                 var p=this._op.getPort("Texture");
                 this._visPort=p;    
-                // this._glRectContent.draggable=false;
-        
             }
             if(this._visPort)
             {
-                // console.log(this._visPort.get());
                 const t=this._visPort.get();
 
                 if(t)
@@ -322,8 +319,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
                     this._glRectContent.setTexture(this._visPort.get());
                 }
             }
-            
-
         }
 
 

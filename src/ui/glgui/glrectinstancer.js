@@ -120,18 +120,15 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
 
 
             .endl()+'   #ifdef SDF_TEXTURE'
-            
-            // .endl()+'   sampler2D tex=tex0;'
+            // https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817
+            .endl()+'       float smpl=texture(tex[0],uv).r;'
+            .endl()+'       float scale = 1.0 / fwidth(smpl);'
+            .endl()+'       float signedDistance = (smpl - 0.5) * scale;'
 
-            .endl()+'   float smpl=texture(tex[0],uv).r;'
-            
-            .endl()+'   float scale = 1.0 / fwidth(smpl);'
-            .endl()+'   float signedDistance = (smpl - 0.5) * scale;'
+            .endl()+'       float color = clamp(signedDistance + 0.5, 0.0, 1.0);'
+            // .endl()+'       float alpha = clamp(signedDistance + 0.5 + scale * 0.125, 0.0, 1.0);'
 
-            .endl()+'   float color = clamp(signedDistance + 0.5, 0.0, 1.0);'
-            .endl()+'   float alpha = clamp(signedDistance + 0.5 + scale * 0.125, 0.0, 1.0);'
-
-            .endl()+'   outColor=vec4(outColor.rgb, color);'
+            .endl()+'       outColor=vec4(outColor.rgb, color);'
             .endl()+'   #endif'
             .endl()+'   #ifndef SDF_TEXTURE'
 
