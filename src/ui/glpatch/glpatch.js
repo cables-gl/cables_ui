@@ -74,6 +74,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     set patchAPI(api) { this._patchAPI=api; }
     get patchAPI() { return this._patchAPI; }
 
+    get rectDrawer(){return this._rectInstancer;}
+
     getOpAt(x,y)
     {
     }

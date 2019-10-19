@@ -11,7 +11,9 @@ CABLES.GLGUI.GlLink=class
         this._opIdInput=opIdInput;
         this._opIdOutput=opIdOutput;
 
-        this._cable=new CABLES.GLGUI.GlCable(this._glPatch.lineDrawer,this._type);
+        this._buttonRect=this._glPatch.rectDrawer.createRect({});
+
+        this._cable=new CABLES.GLGUI.GlCable(this._glPatch.lineDrawer,this._buttonRect,this._type);
         this._glPatch.setDrawableColorByType(this._cable,this._type);
 
         this._portIdInput=portIdInput;
@@ -60,6 +62,8 @@ CABLES.GLGUI.GlLink=class
             return;
         }
 
+            
+
         const pos1x=this._opIn.getUiAttribs().translate.x+this._offsetXInput;
         const pos1y=this._opIn.getUiAttribs().translate.y;
 
@@ -73,6 +77,7 @@ CABLES.GLGUI.GlLink=class
         if(this._opOut) this._opOut.removeLink(this._id);
         if(this._opIn) this._opIn.removeLink(this._id);
         this._cable.setColor(0,0,0,0);
+        this._buttonRect.dispose();
     }
 
     setFlowModeActivity(act)

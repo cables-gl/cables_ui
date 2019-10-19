@@ -105,7 +105,19 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             .endl()+'void main()'
             .endl()+'{'
 
+            // .endl()+'   if ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5) > 0.25) discard;'
+            // .endl()+'   if ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5) < 0.1) discard;'
+
+
             .endl()+'   outColor=col;'
+
+
+
+
+
+            
+
+
 
             // outlines
             .endl()+'   if(outlinefrag>0.0){'
