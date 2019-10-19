@@ -134,6 +134,10 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
 
             .endl()+'   if(int(useTexture)==0)outColor=texture(tex[0],uv);'
             .endl()+'   if(int(useTexture)==1)outColor=texture(tex[1],uv);'
+            .endl()+'   if(int(useTexture)==2)outColor=texture(tex[2],uv);'
+            .endl()+'   if(int(useTexture)==3)outColor=texture(tex[3],uv);'
+            .endl()+'   if(int(useTexture)==4)outColor=texture(tex[4],uv);'
+            .endl()+'   if(int(useTexture)==5)outColor=texture(tex[5],uv);'
             .endl()+'   #endif'
 
 
@@ -245,9 +249,8 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             else this._attrTextures[this._rects[i].idx]=-1;
         }
 
-console.log(this._attrTextures);
-
-        console.log("this._textures.length",this._textures.length);
+        // console.log(this._attrTextures);
+        // console.log("this._textures.length",this._textures.length);
 
 
     }
@@ -388,17 +391,20 @@ console.log(this._attrTextures);
     setOutline(idx,o)
     {
         if(this._outlines[idx]!=o) { this._needsRebuild=true; }
-
         this._outlines[idx]=o;
     }
 
     createRect(options)
     {
-        var r=new CABLES.GLGUI.GlRect(this,options||{});
+        options=options||{};
+        var r=new CABLES.GLGUI.GlRect(this,options);
         this._rects.push(r);
 
-        r.on("dragStart", (rect)=> { this._draggingRect=rect; });
-        r.on("dragEnd", ()=> { this._draggingRect=null; });
+        if(options.draggable)
+        {
+            r.on("dragStart", (rect)=> { this._draggingRect=rect; });
+            r.on("dragEnd", ()=> { this._draggingRect=null; });
+        }
 
         r.on("textureChanged", ()=>{ this._needsTextureUpdate=true; });
 

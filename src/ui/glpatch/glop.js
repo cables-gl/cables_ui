@@ -26,11 +26,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._visPort=null;
         this._glRectContent=null;
 
-        this._glRectBg=instancer.createRect({});
+        this._glRectBg=instancer.createRect({"draggable":true});
         this._glRectBg.setSize(this._width,this._height);
         this._glRectBg.setColor(51/255,51/255,51/255,1);
-        this._glRectBg.draggable=true;
-
 
         this._glRectBg.on("drag",
             (rect)=>
