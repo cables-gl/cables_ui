@@ -112,6 +112,17 @@ CABLES.GLGUI.GlPatchAPI=class
         const p= op.getPortById(portid);
         p.removeLinks();
     }
+    
+    removeLink(opIdIn,opIdOut,portIdIn,portIdOut)
+    {
+        const opIn=gui.scene().getOpById(opIdIn);
+        const pIn= opIn.getPortById(portIdIn);
+        const opOut=gui.scene().getOpById(opIdOut);
+        const pOut= opOut.getPortById(portIdOut);
+        const l=pOut.getLinkTo(pIn);
+
+        l.remove();
+    }
 
     setOpUiAttribs(opid,attrName,val)
     {

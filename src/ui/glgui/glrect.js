@@ -13,6 +13,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._parent=options.parent||null;
         this.childs=[];
         this._outline=0;
+        this._circle=false;
         this._x=0;
         this._y=0;
         this._absX=0;
@@ -50,6 +51,14 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
     addChild(c)
     {
         this.childs.push(c);
+    }
+
+    setCircle(c)
+    {
+        this._circle=c;
+        if(c)this._rectInstancer.setCircle(this._attrIndex,1);
+        else this._rectInstancer.setCircle(this._attrIndex,0);
+
     }
 
     setSize(w,h)
@@ -206,7 +215,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
     {
         this.setSize(0,0);
         this.setPosition(0,0);
-
     }
 }
 
