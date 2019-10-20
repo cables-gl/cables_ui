@@ -81,6 +81,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this._glRectBg.on("mousedown", (e) =>
         {
+            if(!e.shiftKey) this._glPatch.unselectAll();
+            this.selected=true;
+            
             console.log("GLOP MOUSE DOWNNNNNNN!");
             glPatch.quickLinkSuggestion.longPressPrepare(this._op,this.x+this.w/2,this.y+this.h);
         });

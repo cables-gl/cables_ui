@@ -19,16 +19,12 @@ CABLES.GLGUI.GlLink=class
             {
                 if(e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
                     this._glPatch.patchAPI.removeLink(this._opIdInput,this._opIdOutput,this._portIdInput,this._portIdOutput);
-                
+                else
+                    this._glPatch.patchAPI.addOpIntoLink(this._opIdInput,this._opIdOutput,this._portIdInput,this._portIdOutput);
             });
-
-
-
-
 
         this._cable=new CABLES.GLGUI.GlCable(this._glPatch.lineDrawer,this._buttonRect,this._type);
         this._glPatch.setDrawableColorByType(this._cable,this._type);
-
 
         this._opIn=null;
         this._opOut=null;
@@ -69,11 +65,9 @@ CABLES.GLGUI.GlLink=class
 
         if(!this._opIn || !this._opOut)
         {
-            // console.log('[glLink] unknown ops...');
+            console.log('[glLink] unknown ops...');
             return;
         }
-
-            
 
         const pos1x=this._opIn.getUiAttribs().translate.x+this._offsetXInput;
         const pos1y=this._opIn.getUiAttribs().translate.y;
@@ -96,6 +90,4 @@ CABLES.GLGUI.GlLink=class
         this._cable.setSpeed(act);
     }
 
-
 }
-

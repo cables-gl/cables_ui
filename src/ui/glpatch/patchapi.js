@@ -91,6 +91,7 @@ CABLES.GLGUI.GlPatchAPI=class
 
     _onAddOp(op)
     {
+        console.log("OP ADDED!!");
         this._glPatch.addOp(op);
     }
 
@@ -123,6 +124,23 @@ CABLES.GLGUI.GlPatchAPI=class
 
         l.remove();
     }
+
+    addOpIntoLink(opIdIn,opIdOut,portIdIn,portIdOut)
+    {
+        const opIn=gui.scene().getOpById(opIdIn);
+        const pIn= opIn.getPortById(portIdIn);
+        const opOut=gui.scene().getOpById(opIdOut);
+        const pOut= opOut.getPortById(portIdOut);
+        const link=pOut.getLinkTo(pIn);
+
+console.log("link",link);
+        // l.remove();
+        gui.opSelect().show({x:0,y:0},null,null,link);
+    }
+
+
+
+
 
     setOpUiAttribs(opid,attrName,val)
     {

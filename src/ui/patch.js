@@ -1239,7 +1239,6 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.selectAllOps = function() {
-
         this.selectAllOpsSubPatch(currentSubPatch);
     };
 
@@ -1643,11 +1642,28 @@ CABLES.UI.Patch = function(_gui) {
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName);
         } else
         if (CABLES.UI.OPSELECT.linkNewLink) {
-            var op1 = CABLES.UI.OPSELECT.linkNewLink.p1.op;
-            var port1 = CABLES.UI.OPSELECT.linkNewLink.p1.thePort;
-            var op2 = CABLES.UI.OPSELECT.linkNewLink.p2.op;
-            var port2 = CABLES.UI.OPSELECT.linkNewLink.p2.thePort;
 
+            var op1 = null;
+            var op2 = null;
+            var port1 = null;
+            var port2 = null;
+
+            if(CABLES.UI.OPSELECT.linkNewLink.p1)
+            {
+                // patch_link
+                op1 = CABLES.UI.OPSELECT.linkNewLink.p1.op;
+                op2 = CABLES.UI.OPSELECT.linkNewLink.p2.op;
+                port1 = CABLES.UI.OPSELECT.linkNewLink.p1.thePort;
+                port2 = CABLES.UI.OPSELECT.linkNewLink.p2.thePort;
+            }
+            else
+            {
+                // core link
+                op2 = CABLES.UI.OPSELECT.linkNewLink.portIn.parent;
+                op1 = CABLES.UI.OPSELECT.linkNewLink.portOut.parent;
+                port2 = CABLES.UI.OPSELECT.linkNewLink.portIn;
+                port1 = CABLES.UI.OPSELECT.linkNewLink.portOut;
+            }
 
             var foundPort1 = op.findFittingPort(port1);
             var foundPort2 = op.findFittingPort(port2);
@@ -1658,7 +1674,7 @@ CABLES.UI.Patch = function(_gui) {
                     if (
                         port1.links[il].portIn == port1 && port1.links[il].portOut == port2 ||
                         port1.links[il].portOut == port1 && port1.links[il].portIn == port2) {
-                        port1.links[il].remove();
+                            port1.links[il].remove();
                     }
                 }
     
@@ -1948,9 +1964,13 @@ CABLES.UI.Patch = function(_gui) {
 
                 uiOp.wasAdded = false;
 
-                doAddOp(uiOp);
-                this.opCollisionTest(uiOp);
-                self.checkLinkTimeWarnings();
+                // setTimeout(
+                    // ()=>{
+                        doAddOp(uiOp);
+                        this.opCollisionTest(uiOp);
+                        self.checkLinkTimeWarnings();
+
+                    // },10);
             }.bind(this));
     };
 

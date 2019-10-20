@@ -370,6 +370,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         return Math.round(posY/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
     }
 
+    unselectAll()
+    {
+        for(var i in this._glOpz)
+            this._glOpz[i].selected=false;
+
+    }
 
 }
 

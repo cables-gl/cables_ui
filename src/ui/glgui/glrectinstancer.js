@@ -65,7 +65,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             .endl()+'    uv=attrTexCoord*texRect.zw+texRect.xy;'
             .endl()+'    uv.y=1.0-uv.y;'
 
-            .endl()+'    outlinefrag=outline/resY*aspect;'
+            .endl()+'    outlinefrag=outline/resY*aspect*2.5;'
 
             .endl()+'    vec3 pos=vPosition;'
             .endl()+'    pos.xy*=instSize;'
@@ -103,10 +103,10 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
 
             // outlines
             .endl()+'   if(outlinefrag>0.0){'
-            .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.x);'
-            .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.y);'
-            .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.z);'
-            .endl()+'       outColor.rgb+=1.0-smoothstep(0.0,outlinefrag,posSize.w);'
+            .endl()+'       outColor.rgb+=0.35*(1.0-smoothstep(0.0,outlinefrag,posSize.x));'
+            .endl()+'       outColor.rgb+=0.35*(1.0-smoothstep(0.0,outlinefrag,posSize.y));'
+            .endl()+'       outColor.rgb+=0.35*(1.0-smoothstep(0.0,outlinefrag,posSize.z));'
+            .endl()+'       outColor.rgb+=0.35*(1.0-smoothstep(0.0,outlinefrag,posSize.w));'
             .endl()+'   }'
 
             .endl()+'if(useTexture>=0.0)'
