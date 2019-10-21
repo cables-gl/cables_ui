@@ -13,7 +13,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glPatch=glPatch;
         this._op=op;
         this._instancer=instancer;
-        this._width=CABLES.GLGUI.VISUALCONFIG.portWidth;
+        this._width=CABLES.GLGUI.VISUALCONFIG.opWidth;
         this._height=CABLES.GLGUI.VISUALCONFIG.opHeight;
         this._needsUpdate=true;
         this._textWriter=null;
@@ -209,6 +209,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
     _setupPort(i,p)
     {
+        if (p.uiAttribs.display == 'dropdown')return;
+
         var r=new CABLES.GLGUI.GlRect(this._instancer,{"parent":this._glRectBg});
         r.setSize(CABLES.GLGUI.VISUALCONFIG.portWidth,CABLES.GLGUI.VISUALCONFIG.portHeight);
 
@@ -314,13 +316,12 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
                 if(t)
                 {
-                    const asp=this._width/t.width*2.0;
+                    const asp=this._width/t.width*2.5;
                     this._glRectContent.setSize(t.width*asp,t.height*asp);
                     this._glRectContent.setTexture(this._visPort.get());
                 }
             }
         }
-
 
         this.updatePosition();
         for(var i in this._links) this._links[i].update();
