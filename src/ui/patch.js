@@ -2331,101 +2331,48 @@ CABLES.UI.Patch = function(_gui) {
     };
 
 
-    this.compressSelectedOps = function() {
-        if (!selectedOps || selectedOps.length === 0) return;
-        this.saveUndoSelectedOpsPositions();
-
-        selectedOps.sort(function(a, b) {
-            return a.op.uiAttribs.translate.y - b.op.uiAttribs.translate.y;
-        });
-
-        var y = selectedOps[0].op.uiAttribs.translate.y;
-
-        for (var j = 0; j < selectedOps.length; j++) {
-            if (j > 0) y += selectedOps[j].getHeight() + 10;
-            selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x, y);
-        }
+    this.compressSelectedOps = function()
+    {
+        CABLES.UI.TOOLS.compressSelectedOps(this.getSelectedOpsAsCoreOps());
+        this.updateSelectedOpPositions();
     };
 
-
-    this.alignSelectedOps = function() {
-        var sumX = 0,
-            minX = 9999999,
-            sumY = 0,
-            minY = 9999999,
-            maxX = -9999999,
-            maxY= -9999999
-
-        var j = 0;
-
-        this.saveUndoSelectedOpsPositions();
-
-        for (j in selectedOps) {
-            minX = Math.min(minX, selectedOps[j].op.uiAttribs.translate.x);
-            minY = Math.min(minY, selectedOps[j].op.uiAttribs.translate.y);
-
-            maxX = Math.max(maxX, selectedOps[j].op.uiAttribs.translate.x);
-            maxY = Math.max(maxY, selectedOps[j].op.uiAttribs.translate.y);
+    this.getSelectedOpsAsCoreOps=function()
+    {
+        var ops=[];
+        for(var i=0;i<selectedOps.length;i++)
+        {
+            ops.push(selectedOps[i].op);
         }
+        return ops;
 
-        if (Math.abs(maxX-minX) > Math.abs(maxY-minY)) self.alignSelectedOpsHor();
-            else self.alignSelectedOpsVert();
     };
 
-    this.saveUndoSelectedOpsPositions = function() {
-        var opPositions = [];
-        for (var j = 0; j < selectedOps.length; j++) {
-            var obj = {};
-            obj.id = selectedOps[j].op.id;
-            obj.x = selectedOps[j].op.uiAttribs.translate.x;
-            obj.y = selectedOps[j].op.uiAttribs.translate.y;
-            opPositions.push(obj);
-        }
+    this.alignSelectedOps = function()
+    {
+        CABLES.UI.TOOLS.alignOps(this.getSelectedOpsAsCoreOps());
+        this.updateSelectedOpPositions();
+    };
 
-        CABLES.undo.add({
-            undo: function() {
-                for (var j = 0; j < opPositions.length; j++) {
-                    var obj = opPositions[j];
-                    for (var i in self.ops)
-                        if (self.ops[i].op.id == obj.id)
-                            self.ops[i].setPos(obj.x, obj.y);
-                }
-            },
-            redo: function() {
-                gui.scene().addOp(objName, op.uiAttribs, opid);
+    this.updatedOpPositionsFromUiAttribs=function(ops)
+    {
+        for(var i=0;i<ops.length;i++)
+        {
+            if(ops[i].op) ops[i].setPos(ops[i].op.uiAttribs.translate.x,ops[i].op.uiAttribs.translate.y);
+            else
+            {
+                var uiop=gui.patch().getUiOp(ops[i]);   
+                if(!uiop) console.log('NO UIOP',ops[i],uiop);
+                else uiop.setPos(ops[i].uiAttribs.translate.x,ops[i].uiAttribs.translate.y);
             }
-        });
-    };
-
-    this.alignSelectedOpsVert = function() {
-        if (selectedOps.length > 0) {
-            var j = 0;
-            var sum = 0;
-            for (j in selectedOps) sum += selectedOps[j].op.uiAttribs.translate.x;
-
-            var avg = sum / selectedOps.length;
-
-            if(CABLES.UI.userSettings.get("snapToGrid")) avg=CABLES.UI.snapOpPosX(avg);
-
-            for (j in selectedOps) selectedOps[j].setPos(avg, selectedOps[j].op.uiAttribs.translate.y);
         }
-    };
+    }
 
-    this.alignSelectedOpsHor = function() {
-        if (selectedOps.length > 0) {
-            var j = 0;
-            var sum = 0;
-            for (j in selectedOps)
-                sum += selectedOps[j].op.uiAttribs.translate.y;
+    this.updateSelectedOpPositions=function()
+    {
+        this.updatedOpPositionsFromUiAttribs(selectedOps);
+    }
 
-            var avg = sum / selectedOps.length;
-
-            if(CABLES.UI.userSettings.get("snapToGrid")) avg=CABLES.UI.snapOpPosY(avg);
-
-            for (j in selectedOps)
-                selectedOps[j].setPos(selectedOps[j].op.uiAttribs.translate.x, avg);
-        }
-    };
 
     this.selectChilds = function(id) {
         if (!id) {
