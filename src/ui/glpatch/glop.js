@@ -1,9 +1,7 @@
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-CABLES.GLGUI.OP_MIN_WIDTH=100;
-CABLES.GLGUI.OP_PORT_DISTANCE=13;
-CABLES.GLGUI.OP_PORT_HEIGHT=6;
+
 
 CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 {
@@ -15,8 +13,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glPatch=glPatch;
         this._op=op;
         this._instancer=instancer;
-        this._width=CABLES.GLGUI.OP_MIN_WIDTH;
-        this._height=CABLES.UI.uiConfig.opHeight;
+        this._width=CABLES.GLGUI.VISUALCONFIG.portWidth;
+        this._height=CABLES.GLGUI.VISUALCONFIG.opHeight;
         this._needsUpdate=true;
         this._textWriter=null;
         this._glTitleExt=null;
@@ -68,7 +66,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         for(var i=0;i<this._op.portsIn.length;i++) this._setupPort(i,this._op.portsIn[i]);
         for(var i=0;i<this._op.portsOut.length;i++) this._setupPort(i,this._op.portsOut[i]);
 
-        const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*CABLES.GLGUI.OP_PORT_DISTANCE;
+        const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*(CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portPadding);
 
         this._width=Math.max(this._width,portsSize);
         this._glRectBg.setSize(this._width,this._height );
@@ -212,13 +210,14 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     _setupPort(i,p)
     {
         var r=new CABLES.GLGUI.GlRect(this._instancer,{"parent":this._glRectBg});
-        r.setSize(CABLES.UI.uiConfig.portSize,CABLES.GLGUI.OP_PORT_HEIGHT);
+        r.setSize(CABLES.GLGUI.VISUALCONFIG.portWidth,CABLES.GLGUI.VISUALCONFIG.portHeight);
 
         this._glPatch.setDrawableColorByType(r,p.type);
 
         var y=0;
-        if(p.direction==1) y=CABLES.UI.uiConfig.opHeight-CABLES.GLGUI.OP_PORT_HEIGHT;
-        r.setPosition(i*CABLES.GLGUI.OP_PORT_DISTANCE,y);
+        if(p.direction==1) y=CABLES.UI.uiConfig.opHeight-CABLES.GLGUI.VISUALCONFIG.portHeight;
+        
+        r.setPosition(i*(CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portPadding),y);
         this._glRectBg.addChild(r);
         this._portRects.push(r);
         r.data.portId=p.id;
@@ -339,13 +338,13 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         for(var i=0;i<this._op.portsIn.length;i++)
         {
             if(this._op.portsIn[i].id==id)
-                return i*CABLES.GLGUI.OP_PORT_DISTANCE+CABLES.UI.uiConfig.portSize*0.5;
+                return i*(CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portPadding)+CABLES.UI.uiConfig.portSize*0.5;
         }
 
         for(var i=0;i<this._op.portsOut.length;i++)
         {
             if(this._op.portsOut[i].id==id)
-                return i*CABLES.GLGUI.OP_PORT_DISTANCE+CABLES.UI.uiConfig.portSize*0.5;
+                return i*(CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portPadding)+CABLES.UI.uiConfig.portSize*0.5;
         }
 
         return 100;

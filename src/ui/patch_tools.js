@@ -92,8 +92,6 @@ CABLES.UI.TOOLS.saveUndoSelectedOpsPositions = function(selectedOps)
 
             // update svg patch...
             gui.patch().updatedOpPositionsFromUiAttribs(changedOps);
-
-
         },
         redo: function()
         {

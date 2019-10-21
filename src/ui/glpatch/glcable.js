@@ -16,7 +16,7 @@ CABLES.GLGUI.GlCable=class
 
     setPosition(x,y,x2,y2)
     {
-        const h=CABLES.GLGUI.OP_PORT_HEIGHT;
+        const h=CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portHeight;
         this._lineDrawer.setLine(this._lineIdx0,x,y,x,y-h);
         this._lineDrawer.setLine(this._lineIdx1,x,y-h,x2,y2+h);
         this._lineDrawer.setLine(this._lineIdx2,x2,y2+h,x2,y2);

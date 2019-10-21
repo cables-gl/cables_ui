@@ -101,7 +101,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
     }
 
-    deleteOp(opid) // should work with opid...
+    deleteOp(opid) // should work  th opid...
     {
         const glop=this._glOpz[opid];
 
@@ -372,9 +372,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     unselectAll()
     {
-        for(var i in this._glOpz)
-            this._glOpz[i].selected=false;
-
+        for(var i in this._glOpz) this._glOpz[i].selected=false;
     }
 
 }
