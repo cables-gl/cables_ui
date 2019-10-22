@@ -9,7 +9,9 @@ CABLES.UI.GUI = function(cfg) {
     var showMiniMap = false;
 
 
-    cfg.usersettings.settings=cfg.usersettings.settings||{};
+
+    if(!cfg) cfg={};
+    if(!cfg.usersettings) cfg.usersettings={settings:{}};
 
     var _scene = this._corePatch = CABLES.patch = new CABLES.Patch({editorMode:true,canvas:
         {
