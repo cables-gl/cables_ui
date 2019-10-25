@@ -1,4 +1,3 @@
-
 var CABLES=CABLES||{};
 CABLES.GLGUI=CABLES.GLGUI||{};
 
@@ -34,6 +33,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._viewScrollY=0;
         this._viewResX=0;
         this._viewResY=0;
+
+        this._selectedGlOps=[];
         
         this.links={}
 
@@ -69,12 +70,26 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.quickLinkSuggestion.longPressCancel();
             this._rectInstancer.interactive=true;
         });
+
+        gui.keys.key("Delete","Delete selected ops","down","glcanvas",{},()=>
+        {
+            // console.log('delete ops',this._selectedGlOps.length);
+
+            for(var i in this._selectedGlOps)
+            {
+                console.log("delete id",i);
+                this._patchAPI.deleteOp(i);
+            }
+            this.unselectAll();
+        });
+
     }
 
     set patchAPI(api) { this._patchAPI=api; }
     get patchAPI() { return this._patchAPI; }
 
     get rectDrawer(){return this._rectInstancer;}
+    get selectedGlOps(){return this._selectedGlOps;}
 
     getOpAt(x,y)
     {
@@ -165,7 +180,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         this._patchAPI.updateFlowModeActivity();
 
-
         this._viewResX=resX;
         this._viewResY=resY;
         this._viewZoom=zoom;
@@ -185,7 +199,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
-
         this._textWriter.render(resX,resY,scrollX,scrollY,zoom);
 
         this.quickLinkSuggestion.glRender(this._patch.cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
@@ -250,15 +263,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             {
                 this._rectInstancer.interactive=false;
                 this._selectRect.setPosition(this._lastMouseX,this._lastMouseY,1000);
-                this._selectRect.setSize(
-                    (x-this._lastMouseX),
-                    (y-this._lastMouseY));
-
-                this._selectOpsInRect(
-                    x,
-                    y,
-                    this._lastMouseX,
-                    this._lastMouseY);
+                this._selectRect.setSize((x-this._lastMouseX), (y-this._lastMouseY));
+                this._selectOpsInRect(x,y,this._lastMouseX,this._lastMouseY);
             }
             else
             {
@@ -294,6 +300,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         return ops;
     }
 
+    unselectAll()
+    {
+        for(var i in this._glOpz) this._glOpz[i].selected=false;
+        this._selectedGlOps.length=0;
+    }
+
+    selectOpId(id)
+    {
+        // for(var i in this._glOpz)
+            // if(this._glOpz[i].id==id)
+        this._selectedGlOps[this._glOpz[i].id]=this._glOpz[id];
+    }
 
     _selectOpsInRect(xa,ya,xb,yb)
     {
@@ -320,10 +338,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         for(var i in this._glOpz)
         {
             this._glOpz[i].selected=false;
+            
         }
         for(var i=0;i<ops.length;i++)
         {
             ops[i].selected=true;
+            this._selectedGlOps[ops[i].id]=ops[i];
         }
     }
 
@@ -368,11 +388,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     snapOpPosY(posY)
     {
         return Math.round(posY/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
-    }
-
-    unselectAll()
-    {
-        for(var i in this._glOpz) this._glOpz[i].selected=false;
     }
 
 }

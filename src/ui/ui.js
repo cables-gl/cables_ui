@@ -8,6 +8,7 @@ CABLES.UI.GUI = function(cfg) {
     var showingEditor = false;
     var showMiniMap = false;
 
+    this.keys=new CABLES.UI.KeyManager();
 
 
     if(!cfg) cfg={};
@@ -848,8 +849,6 @@ CABLES.UI.GUI = function(cfg) {
         {
             CABLES.CMD.UI.showPreferences();
         });
-
-        
 
 
         $('#button_toggleTiming').bind("click", function(event) {

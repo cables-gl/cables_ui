@@ -29,7 +29,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glRectBg.setColor(51/255,51/255,51/255,1);
 
         this._glRectBg.on("drag",
-            (rect)=>
+            (rect) =>
             {
                 var x=rect.x;
                 var y=rect.y;
@@ -123,6 +123,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         this.opUiAttribs=attr;
         this._needsUpdate=true;
+        if(attr.selected)this._glPatch.selectOpId(this._id);
 
         // glOp.setTitle(this._textWriter,attr.title);
     }
@@ -329,6 +330,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
     set selected(s)
     {
+
         this.opUiAttribs.selected=s;
         if(s) this._glRectBg.setColor(90/255,90/255,90/255,1)
         else this._glRectBg.setColor(51/255,51/255,51/255,1)

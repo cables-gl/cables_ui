@@ -1,5 +1,4 @@
 
-
 <script id="params_op_head" type="text/x-handlebars-template">
 
     <div class="selectable params">
@@ -16,7 +15,7 @@
         <div class="panel params_op_head">
             <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-infotext="op_title">
 			<br/>
-            <a href="/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
+            <a href="{{cablesUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
             <br/>
 			<div class="summary selectable">
 	            <!-- {{#if op.summary }} -->

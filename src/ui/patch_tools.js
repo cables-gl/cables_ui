@@ -48,7 +48,8 @@ CABLES.UI.TOOLS.alignSelectedOpsHor = function(ops)
 
         if(CABLES.UI.userSettings.get("snapToGrid")) avg=CABLES.UI.snapOpPosY(avg);
 
-        for (j in ops) this.setOpPos(op,x,y);
+        // for (j in ops) this.setOpPos(op,x,y);
+        for (j in ops) this.setOpPos(ops[j],ops[j].uiAttribs.translate.x,avg);
     }
     return ops;
 };

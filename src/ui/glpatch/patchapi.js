@@ -71,7 +71,6 @@ CABLES.GLGUI.GlPatchAPI=class
 
     _onLink(p1,p2,link)
     {
-        console.log("onlink",p1.direction);
         if(p1.direction!=0)
         {
             var t=p2;
@@ -138,7 +137,10 @@ console.log("link",link);
         gui.opSelect().show({x:0,y:0},null,null,link);
     }
 
-
+    deleteOp(id)
+    {
+        gui.scene().deleteOp(id,true);
+    }
 
 
 

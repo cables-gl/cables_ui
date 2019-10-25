@@ -1532,8 +1532,6 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
     //     jQuery.fn.reverse = [].reverse;
     //     $('.opports_in').reverse().each(testSpacers);
-
-
     }
 
     this.initPorts=function()
