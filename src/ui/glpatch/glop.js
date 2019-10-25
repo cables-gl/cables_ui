@@ -3,6 +3,7 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 {
+
     constructor(glPatch,instancer,op)
     {
         super();
@@ -28,26 +29,69 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glRectBg.setSize(this._width,this._height);
         this._glRectBg.setColor(51/255,51/255,51/255,1);
 
+        this._passiveDragStartX=null;
+        this._passiveDragStartY=null;
+        
+        this._glRectBg.on("dragEnd", () =>
+        {
+            var glOps=this._glPatch.selectedGlOps;
+            for(var i in glOps)
+            {
+                glOps[i].endPassiveDrag();
+            }
+
+            console.log("DRAGEND!!!!!");
+            // var glOps=this._glPatch.selectedGlOps;
+
+            // if(!glOps || glOps.length==0)return;
+
+            // for(var i in glOps)
+            // {
+            //     glOps[i].endPassiveDrag();
+            // }
+    
+        });
+
         this._glRectBg.on("drag",
             (rect) =>
             {
-                var x=rect.x;
-                var y=rect.y;
+                var glOps=this._glPatch.selectedGlOps;
+                var ids=Object.keys(glOps);
 
-                if(CABLES.UI.userSettings.get("snapToGrid"))
+                if(!glOps || ids.length==0)return;
+
+                if(!glOps[ids[0]].isPassiveDrag())
                 {
-                    x=CABLES.UI.snapOpPosX(x);
-                    y=CABLES.UI.snapOpPosY(y);
+                    console.log("starting drag!!!!");
+                    for(var i in glOps)
+                    {
+                        glOps[i].startPassiveDrag();
+                    }
                 }
 
-                // console.log("glop is draggin!");
-                this._glPatch.patchAPI.setOpUiAttribs(
-                    this._id,
-                    "translate",
-                    {
-                        "x":x,
-                        "y":y
-                    });
+                var offX=this._glRectBg.dragOffsetX;
+                var offY=this._glRectBg.dragOffsetY;
+
+                for(var i in glOps)
+                    glOps[i].setPassiveDragOffset(offX,offY);
+
+                // var x=rect.x;
+                // var y=rect.y;
+
+                // if(CABLES.UI.userSettings.get("snapToGrid"))
+                // {
+                //     x=CABLES.UI.snapOpPosX(x);
+                //     y=CABLES.UI.snapOpPosY(y);
+                // }
+
+                // // console.log("glop is draggin!");
+                // this._glPatch.patchAPI.setOpUiAttribs(
+                //     this._id,
+                //     "translate",
+                //     {
+                //         "x":x,
+                //         "y":y
+                //     });
             });
 
         this._glRectBg.addEventListener("hover",() =>
@@ -69,29 +113,33 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*(CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portPadding);
 
         this._width=Math.max(this._width,portsSize);
-        this._glRectBg.setSize(this._width,this._height );
+        this._glRectBg.setSize(this._width,this._height);
         this.setHover(false);
 
         glPatch.on("mousedown",(e) =>
-        {
-            if(this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
-        });
+            {
+                if(this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
+            });
 
         this._glRectBg.on("mousedown", (e) =>
-        {
-            if(!e.shiftKey) this._glPatch.unselectAll();
-            this.selected=true;
-            
-            console.log("GLOP MOUSE DOWNNNNNNN!");
-            glPatch.quickLinkSuggestion.longPressPrepare(this._op,this.x+this.w/2,this.y+this.h);
-        });
+            {
+                console.log("GLOP MOUSE DOWNNNNNNN!");
+                glPatch.quickLinkSuggestion.longPressPrepare(this._op,this.x+this.w/2,this.y+this.h);
+            });
         
         this._glRectBg.on("mouseup", (e) =>
-        {
-            console.log("GLOP MOUSE UP!");
+            {
+                if(this.isPassiveDrag())
+                {
+                    console.log("GLOP mouseup canceled!");
+                    return;
+                }
+                console.log("GLOP MOUSE UP!");
+                if(!e.shiftKey) this._glPatch.unselectAll();
+                this.selected=true;
 
-            if(this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e,this._op);
-        });
+                if(this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e,this._op);
+            });
     }
 
     get x() { return this.opUiAttribs.translate.x; }
@@ -350,6 +398,48 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         return 100;
     }
+
+
+
+
+
+    isPassiveDrag()
+    {
+        return !(this._passiveDragStartX==null && this._passiveDragStartY==null);
+    }
+
+    endPassiveDrag()
+    {
+        this._passiveDragStartX=null;
+        this._passiveDragStartY=null;
+    }
+
+    startPassiveDrag()
+    {
+        this._passiveDragStartX=this.x;
+        this._passiveDragStartY=this.y;
+        // console.log("START DRAGGINOP !!!!!!!!!!",this._passiveDragStartX);
+    }
+
+    setPassiveDragOffset(x,y)
+    {
+        if(!this._passiveDragStartX) this.startPassiveDrag();
+
+        // console.log('this._passiveDragStartX', this._passiveDragStartX,x);
+
+        this._glPatch.patchAPI.setOpUiAttribs(
+            this._id,
+            "translate",
+            {
+                "x":this._passiveDragStartX+x,
+                "y":this._passiveDragStartY+y
+            });
+
+        // this.setPosition( this._passiveDragStartX+x, this._passiveDragStartY+y);
+        // updatePosition()
+    }
+
+
 
 }
 

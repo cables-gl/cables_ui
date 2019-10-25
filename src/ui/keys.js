@@ -20,6 +20,9 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
     _onKeyDown(e)
     {
         // console.log("checking keys ",this._keys.length);
+
+        console.log('key ', e.key,e);
+
         for(var i=0;i<this._keys.length;i++)
         {
             const k=this._keys[i];
@@ -30,11 +33,16 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
             // console.log(e.key,k.key,e.target.id,k.target);
 
+            // if (e.ctrlKey || e.metaKey) {
+            if(k.options.cmdCtrl) if(!e.ctrlKey && !e.metaKey) return;
+
             if(!k.target || k.target==e.target.id)
             {
                 // console.log("found key! ",k.target);
-                if(k.cb)k.cb();
+                if(k.cb)k.cb(e);
                 else console.warn("[keys] key event has no callback",k);
+
+                e.preventDefault();
 
                 return;
             }

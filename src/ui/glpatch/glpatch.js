@@ -15,7 +15,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
         this._textWriter=new CABLES.GLGUI.TextWriter(cgl);
-        
+
         this._selectRect=this._overLayRects.createRect();
         this._selectRect.setColor(0,0.5,0.7,0.25);
         this._selectRect.setPosition(0,0,1000);
@@ -34,7 +34,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._viewResX=0;
         this._viewResY=0;
 
-        this._selectedGlOps=[];
+        this._selectedGlOps={};
         
         this.links={}
 
@@ -71,20 +71,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._rectInstancer.interactive=true;
         });
 
-        gui.keys.key("Delete","Delete selected ops","down","glcanvas",{},()=>
+        gui.keys.key("Delete","Delete selected ops","down","glcanvas",{}, () =>
         {
             for(var i in this._selectedGlOps) this._patchAPI.deleteOp(i);
             this.unselectAll();
         });
-        gui.keys.key("a","align selected ops","down","glcanvas",{},()=>
+
+        gui.keys.key("a","Align selected ops","down","glcanvas",{}, () =>
         {
-            console.log("align!");
             var ks=Object.keys(this._selectedGlOps);
             this._patchAPI.alignSelectedOps(ks);
-            
-            // for(var i in this._selectedGlOps) this._patchAPI.deleteOp(i);
-            // this.unselectAll();
         });
+
     }
 
     set patchAPI(api) { this._patchAPI=api; }
@@ -305,7 +303,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     unselectAll()
     {
         for(var i in this._glOpz) this._glOpz[i].selected=false;
-        this._selectedGlOps.length=0;
+        this._selectedGlOps={};//.length=0;
     }
 
     selectOpId(id)
@@ -336,11 +334,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // }
         var ops=this._getGlOpsInRect(xa,ya,xb,yb);
 
-        for(var i in this._glOpz)
-        {
-            this._glOpz[i].selected=false;
-            
-        }
+
+        this.unselectAll();
+
         for(var i=0;i<ops.length;i++)
         {
             ops[i].selected=true;

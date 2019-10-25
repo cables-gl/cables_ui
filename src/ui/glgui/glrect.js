@@ -40,6 +40,9 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
     get w() { return this._w; }
     get h() { return this._h; }
 
+    get dragOffsetX() { return this._dragOffsetX; }
+    get dragOffsetY() { return this._dragOffsetY; }
+
     get data() { return this._data; }
     set data(r) { this._data=r; }
 
@@ -47,6 +50,8 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
     get draggable() { return this._draggable; }
 
     get idx(){return this._attrIndex;}
+
+
 
     addChild(c)
     {
@@ -58,7 +63,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._circle=c;
         if(c)this._rectInstancer.setCircle(this._attrIndex,1);
         else this._rectInstancer.setCircle(this._attrIndex,0);
-
     }
 
     setSize(w,h)
@@ -164,7 +168,10 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     mouseDrag(x,y,button)
     {
-        this.setPosition( x - this._dragOffsetX, y - this._dragOffsetY);
+        this._dragOffsetX=x-this._dragStartX;
+        this._dragOffsetY=y-this._dragStartY;
+
+        // this.setPosition( x - this._dragOffsetX, y - this._dragOffsetY);
         this.emitEvent("drag",this);
     }
 
@@ -203,10 +210,11 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
                     this._isDragging=true;
                     this._dragStartX=x;
                     this._dragStartY=y;
-                    this._dragOffsetX=x-this._x;
-                    this._dragOffsetY=y-this._y;
                     this.emitEvent("dragStart",this);
                 }
+                this._dragOffsetX=x-this._dragStartX;
+                this._dragOffsetY=y-this._dragStartY;
+
             }
         }
     }

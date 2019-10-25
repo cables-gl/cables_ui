@@ -163,6 +163,15 @@ CABLES.UI.GUI = function(cfg) {
     //     }
     // };
 
+    this.bindKeys=function()
+    {
+        this.keys.key("Escape","Open Op Create","down",null,{}, (e) => { this.pressedEscape(e); });
+        this.keys.key("p","Open Command Palette","down",null,{"cmdCtrl":true}, (e) => { this.cmdPallet.show(); });
+        this.keys.key("Enter","Cycle size of renderer between normal and Fullscreen","down",null,{"cmdCtrl":true}, (e) => { this.cycleRendererSize(); });
+
+
+    };
+
     this.setLayout = function() {
         var perf = CABLES.uiperf.start('gui.setlayout');
         this._elCanvasIconbar=this._elCanvasIconbar||$('#canvasicons');
@@ -850,15 +859,13 @@ CABLES.UI.GUI = function(cfg) {
             CABLES.CMD.UI.showPreferences();
         });
 
-
         $('#button_toggleTiming').bind("click", function(event) {
             self.toggleTiming();
         });
+
         $('#button_cycleRenderSize').bind("click", function(event) {
             self.cycleRendererSize();
         });
-
-        
 
         $('.nav_viewProjectLink').bind("click", function(event) {
 
@@ -866,7 +873,6 @@ CABLES.UI.GUI = function(cfg) {
             console.log("url",url);
             var win = window.open(url, '_blank');
             win.focus();
-
         });
 
         $('.nav_patch_save').bind("click", function(event) {
@@ -920,9 +926,6 @@ CABLES.UI.GUI = function(cfg) {
             $('#jobs').hide();
         });
 
-
-
-
         // --- Help menu
         // Documentation
         $('.nav_help_about').bind("click", function(event) {
@@ -947,19 +950,15 @@ CABLES.UI.GUI = function(cfg) {
             CABLES.UI.tipps.show();
         });
 
-
         // Introduction
         $('.nav_help_introduction').bind("click", function(event) {
             self.introduction().showIntroduction();
         });
-        $('.nav_help_video').bind("click", function(event) {
 
+        $('.nav_help_video').bind("click", function(event) {
             var win = window.open('https://www.youtube.com/cablesgl','_blank');
             win.focus();
-
-
         });
-
 
         $('.nav_op_addOp').bind("click", function(event) {
             CABLES.CMD.PATCH.addOp();
@@ -967,7 +966,6 @@ CABLES.UI.GUI = function(cfg) {
         $('.nav_op_createOp').bind("click", function(event) {
             self.serverOps.createDialog();
         });
-
 
         $('.nav_files').bind("click", function(event) {
             CABLES.CMD.UI.toggleFiles();
@@ -1018,6 +1016,9 @@ CABLES.UI.GUI = function(cfg) {
         var spaceBarStart = 0;
 
 
+
+
+
         $(document).keydown(function(e)
         {
             if (CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91)) {
@@ -1041,11 +1042,10 @@ CABLES.UI.GUI = function(cfg) {
                 //         }
                 //     spaceBarStart=0;
                 // break;
-                case 13:
-                        if (e.ctrlKey || e.metaKey) self.cycleRendererSize();
-                    break;
+
                 case 112: // f1
-                        self.toggleEditor();
+                        // self.toggleEditor();
+                        CABLES.CMD.UI.toggleEditor();
                     break;
 
                 case 88: //x unlink
@@ -1073,12 +1073,6 @@ CABLES.UI.GUI = function(cfg) {
                 break;
 
 
-                case 80:
-                        if (e.ctrlKey || e.metaKey) {
-                        e.preventDefault();
-                        self.cmdPallet.show();
-                    }
-                    break;
 
                 case 70:
                         if (e.metaKey || e.ctrlKey) {
@@ -1141,9 +1135,6 @@ CABLES.UI.GUI = function(cfg) {
                     }
 
                     break;
-                case 27:
-                        gui.pressedEscape(e);
-                    break;
             }
         });
 
@@ -1181,15 +1172,7 @@ CABLES.UI.GUI = function(cfg) {
             }
         });
 
-        // if(CABLES.sandbox.initRouting)
-        // {
-
-        // }
-        // else
-        // {
-        //     // userOpsLoaded=true;
-            cb();
-        // }
+        cb();
 
     };
 
@@ -1884,19 +1867,15 @@ function startUi(cfg)
 
                     if(key=='straightLines')
                     {
-                        // gui.patch().setCurrentSubPatch(0);
-                        // gui.patch().setCurrentSubPatch(1);
-                        // gui.patch().setCurrentSubPatch(0);
                         gui.patch().updateSubPatches();
-
                     }
-                    
 
                 });
 
                 if(!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
 
                 CABLES.editorSession.open();
+                gui.bindKeys();
 
                 logStartup('finished loading cables');
                 CABLES.UI.loaded=true;
