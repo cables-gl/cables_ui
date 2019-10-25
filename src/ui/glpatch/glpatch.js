@@ -73,16 +73,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         gui.keys.key("Delete","Delete selected ops","down","glcanvas",{},()=>
         {
-            // console.log('delete ops',this._selectedGlOps.length);
-
-            for(var i in this._selectedGlOps)
-            {
-                console.log("delete id",i);
-                this._patchAPI.deleteOp(i);
-            }
+            for(var i in this._selectedGlOps) this._patchAPI.deleteOp(i);
             this.unselectAll();
         });
-
+        gui.keys.key("a","align selected ops","down","glcanvas",{},()=>
+        {
+            console.log("align!");
+            var ks=Object.keys(this._selectedGlOps);
+            this._patchAPI.alignSelectedOps(ks);
+            
+            // for(var i in this._selectedGlOps) this._patchAPI.deleteOp(i);
+            // this.unselectAll();
+        });
     }
 
     set patchAPI(api) { this._patchAPI=api; }
@@ -308,9 +310,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     selectOpId(id)
     {
-        // for(var i in this._glOpz)
-            // if(this._glOpz[i].id==id)
-        this._selectedGlOps[this._glOpz[i].id]=this._glOpz[id];
+        if(this._glOpz[id]) this._selectedGlOps[id]=this._glOpz[id];
+        else console.warn('[glpatch selectOpId] unknown opid',id);
     }
 
     _selectOpsInRect(xa,ya,xb,yb)

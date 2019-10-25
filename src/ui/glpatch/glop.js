@@ -1,8 +1,6 @@
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-
-
 CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 {
     constructor(glPatch,instancer,op)
@@ -19,6 +17,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._textWriter=null;
         this._glTitleExt=null;
         this._glTitle=null;
+        this.opUiAttribs={};
+
         this.uiAttribs=op.uiAttribs;
 
         this._visPort=null;
@@ -94,18 +94,11 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         });
     }
 
-
     get x() { return this.opUiAttribs.translate.x; }
     get y() { return this.opUiAttribs.translate.y; }
     get w() { return this._width; }
     get h() { return this._height; }
-
-
-    get id()
-    {
-        return this._id;
-    }
-
+    get id() { return this._id; }
 
     _updateWhenRendering()
     {
@@ -121,11 +114,12 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
+        if(attr)
+            if(!this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
+
         this.opUiAttribs=attr;
         this._needsUpdate=true;
-        if(attr.selected)this._glPatch.selectOpId(this._id);
-
-        // glOp.setTitle(this._textWriter,attr.title);
+        
     }
 
     get uiAttribs()
@@ -297,7 +291,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         {
             this._glTitleExt=null;
         }
-
  
         if(this.opUiAttribs.glPreviewTexture)
         {
@@ -309,18 +302,23 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
                 this._glRectContent.setColor(255,0,220,1);
 
                 var p=this._op.getPort("Texture");
-                this._visPort=p;    
+                this._visPort=p;
+
+                this._visPort.onChange = ()=>
+                {
+                    const t=this._visPort.get();
+
+                    if(t)
+                    {
+                        const asp=this._width/t.width*2.5;
+                        this._glRectContent.setSize(t.width*asp,t.height*asp);
+                        this._glRectContent.setTexture(this._visPort.get());
+                    }
+    
+                };
             }
             if(this._visPort)
             {
-                const t=this._visPort.get();
-
-                if(t)
-                {
-                    const asp=this._width/t.width*2.5;
-                    this._glRectContent.setSize(t.width*asp,t.height*asp);
-                    this._glRectContent.setTexture(this._visPort.get());
-                }
             }
         }
 
