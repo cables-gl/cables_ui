@@ -1264,9 +1264,12 @@ CABLES.UI.Patch = function(_gui) {
             rubberBandRect.toFront();
 
             if (timeoutRubberBand == -1)
-                timeoutRubberBand = setTimeout(function() {
-                    for (var i in self.ops) {
-                        if (!self.ops[i].isHidden()) {
+                timeoutRubberBand = setTimeout(function()
+                {
+                    for (var i in self.ops)
+                    {
+                        if (!self.ops[i].isHidden())
+                        {
                             var rect = self.ops[i].oprect.getRect();
                             if (rect && rect.matrix)
                             {
@@ -1275,10 +1278,11 @@ CABLES.UI.Patch = function(_gui) {
                                 var opW = rect.attr("width");
                                 var opH = rect.attr("height");
 
-                                if (
-                                    (opX > start.x && opX < end.x && opY > start.y && opY < end.y) || // left upper corner
-                                    (opX + opW > start.x && opX + opW < end.x && opY + opH > start.y && opY + opH < end.y) // right bottom corner
-                                ) {
+                                if( opX + opW >= start.x &&     // glop. right edge past r2 left
+                                    opX <= end.x &&       // glop. left edge past r2 right
+                                    opY + opH >= start.y &&       // glop. top edge past r2 bottom
+                                    opY <= end.y)  // r1 bottom edge past r2 top
+                                {
                                     self.addSelectedOp(self.ops[i]);
                                     self.ops[i].setSelected(true);
                                 } else {
@@ -1299,7 +1303,7 @@ CABLES.UI.Patch = function(_gui) {
                     if (selectedOps.length !== 0) setStatusSelectedOps();
                     timeoutRubberBand = -1;
 
-                }, 50);
+                }, 10);
 
         }
     }

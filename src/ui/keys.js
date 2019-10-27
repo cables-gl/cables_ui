@@ -50,7 +50,7 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
     {
         if(document.activeElement && document.activeElement.tagName=="INPUT")return;
 
-        console.log('key ', e.key,e);
+        // console.log('key ', e.key,e);
 
         for(var i=0;i<this._keys.length;i++)
         {

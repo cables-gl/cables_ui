@@ -18,6 +18,11 @@
     font-family: "SourceSansPro";
 }
 
+.keyline
+{
+    padding-bottom:7px;
+}
+
 </style>
 
 
@@ -38,15 +43,15 @@
     </tr>
     {{/if}}
     <tr>
-        <td style="text-align: right;">
+        <td class="keyline" style="text-align: right;">
             {{#if options.cmdCtrl}}<code class="key">CMD</code> + {{/if}}
             {{#if options.shiftKey}}<code class="key">SHIFT</code> + {{/if}}
         </td>
-        <td style="padding-bottom:7px;">
+        <td class="keyline">
             <code class="key">{{key}}</code>
             &nbsp;
         </td>
-        <td>{{title}}</td>
+        <td class="keyline">{{title}}</td>
     </tr>
 {{/each}}
 </table>
