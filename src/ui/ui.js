@@ -163,15 +163,6 @@ CABLES.UI.GUI = function(cfg) {
     //     }
     // };
 
-    this.bindKeys=function()
-    {
-        this.keys.key("Escape","Open Op Create","down",null,{}, (e) => { this.pressedEscape(e); });
-        this.keys.key("p","Open Command Palette","down",null,{"cmdCtrl":true}, (e) => { this.cmdPallet.show(); });
-        this.keys.key("Enter","Cycle size of renderer between normal and Fullscreen","down",null,{"cmdCtrl":true}, (e) => { this.cycleRendererSize(); });
-
-
-    };
-
     this.setLayout = function() {
         var perf = CABLES.uiperf.start('gui.setlayout');
         this._elCanvasIconbar=this._elCanvasIconbar||$('#canvasicons');
@@ -928,6 +919,11 @@ CABLES.UI.GUI = function(cfg) {
 
         // --- Help menu
         // Documentation
+        $('.nav_help_keys').bind("click", function(event) {
+            CABLES.CMD.UI.showKeys();
+        });
+        
+
         $('.nav_help_about').bind("click", function(event) {
             // TODO: Show popup which explains what cables is and who develops it
         });
@@ -1034,36 +1030,6 @@ CABLES.UI.GUI = function(cfg) {
                 default:
                     break;
 
-                // case 32:
-                //     if(!$('#timeline').is(":focus"))
-                //         if(gui.scene().timer.isPlaying())
-                //         {
-                //             self.timeLine().togglePlay();
-                //         }
-                //     spaceBarStart=0;
-                // break;
-
-                case 112: // f1
-                        // self.toggleEditor();
-                        CABLES.CMD.UI.toggleEditor();
-                    break;
-
-                case 88: //x unlink
-                        if ($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey) {
-                            self.patch().unlinkSelectedOps();
-                        }
-                    break;
-
-
-                case 67: //c center
-                        if ($('#patch').is(":focus") && !e.metaKey && !e.ctrlKey) {
-
-                            if(self.patch().getSelectedOps().length>0) self.patch().centerViewBoxOps();
-                            else self.patch().toggleCenterZoom();
-                        }
-                    break;
-
-
                 case 90: // z undo
                     if(e.metaKey || e.ctrlKey)
                     {
@@ -1072,23 +1038,6 @@ CABLES.UI.GUI = function(cfg) {
                     }
                 break;
 
-
-
-                case 70:
-                        if (e.metaKey || e.ctrlKey) {
-                        if (!$('#ace_editors textarea').is(":focus")) {
-                            CABLES.CMD.UI.showSearch();
-
-                            e.preventDefault();
-                        }
-                    }
-                    break;
-                // case 79: // o - open
-                //         if (e.metaKey || e.ctrlKey) {
-                //             CABLES.UI.SELECTPROJECT.show();
-                //             e.preventDefault();
-                //         }
-                //     break;
                 case 69: // e - editor save/execute/build
                         if (e.metaKey || e.ctrlKey) {
                             if (showingEditor) {
@@ -1096,29 +1045,7 @@ CABLES.UI.GUI = function(cfg) {
                             }
                         }
                     break;
-                case 83: // s - save
-                        if (e.metaKey || e.ctrlKey)
-                        {
-                            e.preventDefault();
-                            if (!e.shiftKey) {
-                                if ($('#patch').is(":focus")) {
-                                    CABLES.CMD.PATCH.save();
-                                } else
-                                if (gui.mainTabs.getSaveButton()) {
-                                    // self.editor().save();
-                                    console.log("found savebutton",gui.mainTabs.getSaveButton());
 
-                                    gui.mainTabs.getSaveButton().cb();
-                                    //gui.mainTabs.editorSave();
-                                } else {
-                                    CABLES.CMD.PATCH.save();
-                                }
-
-                            } else {
-                                self.patch().saveCurrentProjectAs();
-                            }
-                        }
-                    break;
                 case 78: // n - new project
                         if (e.metaKey || e.ctrlKey) {
                             self.createProject();
@@ -1175,6 +1102,45 @@ CABLES.UI.GUI = function(cfg) {
         cb();
 
     };
+
+    this.bindKeys=function()
+    {
+        this.keys.key("Escape","Open Op Create (or close current dialog)","down",null,{}, (e) => { this.pressedEscape(e); });
+        this.keys.key("p","Open Command Palette","down",null,{"cmdCtrl":true}, (e) => { this.cmdPallet.show(); });
+        this.keys.key("Enter","Cycle size of renderer between normal and Fullscreen","down",null,{"cmdCtrl":true}, (e) => { this.cycleRendererSize(); });
+
+        this.keys.key("c","Center/Zoom to all or selected ops","down",null,{}, (e) =>
+            { 
+                if(self.patch().getSelectedOps().length>0) self.patch().centerViewBoxOps();
+                else self.patch().toggleCenterZoom();
+            });
+
+        this.keys.key("f","Find/Search in patch","down",null,{"cmdCtrl":true}, (e) => 
+        { 
+            if (!$('#ace_editors textarea').is(":focus")) CABLES.CMD.UI.showSearch();
+        });
+
+        this.keys.key("s","Save patch as new patch","down",null,{"cmdCtrl":true,"shiftKey":true}, (e) => { gui.patch().saveCurrentProjectAs(); });
+
+        this.keys.key("s","Save patch","down",null,{"cmdCtrl":true}, (e) => 
+            { 
+                if ($('#patch').is(":focus")) {
+                    CABLES.CMD.PATCH.save();
+                } else
+                if (gui.mainTabs.getSaveButton()) {
+                    console.log("found savebutton",gui.mainTabs.getSaveButton());
+                    gui.mainTabs.getSaveButton().cb();
+                } else {
+                    CABLES.CMD.PATCH.save();
+                }
+
+            });
+
+
+
+    };
+
+
 
     this.pressedEscape = function(e) {
 

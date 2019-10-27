@@ -586,11 +586,31 @@ CABLES.UI.Patch = function(_gui) {
         }
     });
 
+    gui.keys.key("x","Unlink selected ops","down","patch",{}, (e) => { this.unlinkSelectedOps(); });
+    gui.keys.key("f","Toggle data flow visualization","down","patch",{}, (e) => { this.toggleFlowVis(); });
+    gui.keys.key("e","Edit op code","down","patch",{}, (e) => { CABLES.CMD.PATCH.editOp(); });
+
+    gui.keys.key("a","Select all ops in current subpatch","down","patch",{"cmdCtrl":true}, (e) => { this.selectAllOps(); });
+    gui.keys.key("a","Align selected ops vertical or horizontal","down","patch",{}, (e) => { this.alignSelectedOps(); });
+    gui.keys.key("a","Compress selected ops vertically","down","patch",{"shiftKey":true}, (e) => { console.log("COMPRESS!");this.compressSelectedOps(); });
+
+    gui.keys.key(" ","Drag left mouse button to pan patch","down","patch",{}, (e) => { spacePressed = true; gui.setCursor("grab"); });
+
+    gui.keys.key("/","Go to root subpatch","down","patch",{}, (e) => { this.setCurrentSubPatch(0); });
+
+
+    gui.keys.key("t","Change current op title","down","patch",{}, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
+
+    gui.keys.key("PageUp","Snap op below previous op","down","patch",{}, (e) => { this.snapToNextOp(-1); });
+    gui.keys.key("PageDown","Snap op above next op","down","patch",{}, (e) => { this.snapToNextOp(1); });
+
+
+
+
     $('#patch').keydown(function(e)
     {
         switch (e.which)
         {
-
             case 38: // up
             this.cursorNavigate(1);
             break;
@@ -606,34 +626,14 @@ CABLES.UI.Patch = function(_gui) {
 
 
             case 27:
-            gui.setCursor();
+                gui.setCursor();
             break;
-            case 84:
-                CABLES.CMD.PATCH.setOpTitle();
-            break;
-            case 32:
-                spacePressed = true;
-                gui.setCursor("grab");
-                break;
 
-            case 70:
-                if (!e.metaKey && !e.ctrlKey && !e.altKey) gui.patch().toggleFlowVis();
-                break;
 
             case 46:
             case 8: // delete
 
-                if ($("input").is(":focus")) return;
-
-                // if (gui.patch().hoverPort) {
-                //     gui.patch().hoverPort.removeLinks();
-                //     return;
-                // }
-
-                // if (CABLES.UI.LINKHOVER && CABLES.UI.LINKHOVER.p2) {
-                //     CABLES.UI.LINKHOVER.p1.thePort.removeLinkTo(CABLES.UI.LINKHOVER.p2.thePort);
-                //     return;
-                // }
+                if(document.activeElement && document.activeElement.tagName=="INPUT")return;
 
                 self.deleteSelectedOps();
                 if (e.stopPropagation) e.stopPropagation();
@@ -641,9 +641,6 @@ CABLES.UI.Patch = function(_gui) {
                 self.showProjectParams();
                 break;
 
-            case 69: // e - edit
-                CABLES.CMD.PATCH.editOp();
-                break;
 
             case 68: // d - disable
                 if (e.shiftKey) self.tempUnlinkOp();
@@ -657,33 +654,12 @@ CABLES.UI.Patch = function(_gui) {
                 }
                 break;
 
-            case 33: // snapto pageUp
-                self.snapToNextOp(-1);
-                break;
-
-            case 34: // snapto pageDown
-                self.snapToNextOp(1);
-                break;
-
-            case 65: // a - align
-                if (e.metaKey || e.ctrlKey) {
-                    self.selectAllOps();
-                } else
-                if (e.shiftKey) {
-                    self.compressSelectedOps();
-                } else {
-                    self.alignSelectedOps();
-                }
-                break;
-
             case 71: // g show graphs
                 // self.setCurrentSubPatch(0);
                 self.showSelectedOpsGraphs();
                 break;
 
-            case 49: // / - test
-                self.setCurrentSubPatch(0);
-                break;
+
 
             case 187:
                 this._viewBox.zoomStep(-1);

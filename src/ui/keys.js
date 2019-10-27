@@ -9,32 +9,60 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
         super();
         this._keys=[];
 
-        // this.key("a","A key","down","glcanvas",{},()=>
-        // {
-        //     console.log("A WAS PRESSED!!!");
-        // });
-
         document.addEventListener("keydown", this._onKeyDown.bind(this), false);
+    }
+
+    show()
+    {
+        this._tab=new CABLES.UI.Tab("keyboard shortcuts",{"icon":"help","infotext":"tab_keys","padding":true});
+        gui.mainTabs.addTab(this._tab,true);
+
+        var k=JSON.parse(JSON.stringify(this._keys));
+
+        k.sort(function(a,b)
+        {
+            return a.key.localeCompare(b.key);
+        });
+
+        k.sort(function(a,b)
+        {
+            if(!a.target)a.target="global";
+            if(!b.target)b.target="global";
+            return a.target.localeCompare(b.target);
+        });
+
+        var lastTarget='';
+        for(var i=0;i<k.length;i++)
+        {
+            if(k[i].target!=lastTarget) k[i].group=k[i].target;
+            lastTarget=k[i].target;
+
+            if(k[i].key==" ")k[i].key="Space";
+        }
+
+        var html = CABLES.UI.getHandleBarHtml('tab_keys',{keys:k});
+        this._tab.html(html);
+
+        gui.maintabPanel.show();
     }
 
     _onKeyDown(e)
     {
-        // console.log("checking keys ",this._keys.length);
+        if(document.activeElement && document.activeElement.tagName=="INPUT")return;
 
         console.log('key ', e.key,e);
 
         for(var i=0;i<this._keys.length;i++)
         {
             const k=this._keys[i];
-
-            // console.log(i, e.key,k.key);
             
-            if(k.key!=e.key || k.event!="down")continue;
+            if(k.key!=(e.key+"").toLowerCase() || k.event!="down") continue;
+            
+            if(k.options.cmdCtrl) if(!e.ctrlKey && !e.metaKey) continue;
+            if(!k.options.cmdCtrl) if(e.ctrlKey || e.metaKey) continue;
 
-            // console.log(e.key,k.key,e.target.id,k.target);
-
-            // if (e.ctrlKey || e.metaKey) {
-            if(k.options.cmdCtrl) if(!e.ctrlKey && !e.metaKey) return;
+            if(k.options.shiftKey && !e.shiftKey) continue;
+            if(!k.options.shiftKey && e.shiftKey) continue;
 
             if(!k.target || k.target==e.target.id)
             {
@@ -51,9 +79,10 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
     key(key,title,event,target,options,cb)
     {
+
         var k=
         {
-            "key":key,
+            "key":key.toLowerCase(),
             "title":title,
             "event":event,
             "target":target,
@@ -63,7 +92,6 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
         this._keys.push(k);
 
-        // console.log("add key",key,this._keys.length)
     }
     
 }

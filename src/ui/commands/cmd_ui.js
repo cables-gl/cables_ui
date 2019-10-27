@@ -116,6 +116,11 @@ CABLES.CMD.UI.toggleMaxRenderer = function ()
     gui.cycleRendererSize();
 };
 
+CABLES.CMD.UI.showKeys=function()
+{
+    gui.keys.show();
+}
+
 CABLES.CMD.UI.showCommandPallet = function ()
 {
     gui.cmdPallet.show();
@@ -281,6 +286,13 @@ CABLES.CMD.commands.push(
         icon: "maximize",
         hotkey: "CMD + ENTER",
     },
+    {
+        cmd: "show keyboard shortcutds",
+        category: "ui",
+        func: CABLES.CMD.UI.showKeys,
+        icon: "command"
+    },
+
     {
         cmd: "show command pallet",
         category: "ui",
