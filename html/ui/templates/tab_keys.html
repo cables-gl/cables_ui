@@ -1,0 +1,55 @@
+<script id="tab_keys" type="text/x-handlebars-template">
+
+
+<style>
+
+.key
+{
+    text-transform: capitalize;
+    border:1px solid #777;
+    border-radius: 3px;
+    border-bottom: 4px solid #777;
+    padding:0px;
+    padding-bottom:2px;
+    padding-left:6px;
+    padding-right:6px;
+    background-color:#333;
+    color:white;
+    font-family: "SourceSansPro";
+}
+
+</style>
+
+
+<h1>Keyboard shortcuts</h1>
+
+<table>
+
+
+{{#each keys}}
+    {{#if group}}
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <br/><br/>
+            <h2>{{group}}</h2>
+        </td>
+    </tr>
+    {{/if}}
+    <tr>
+        <td style="text-align: right;">
+            {{#if options.cmdCtrl}}<code class="key">CMD</code> + {{/if}}
+            {{#if options.shiftKey}}<code class="key">SHIFT</code> + {{/if}}
+        </td>
+        <td style="padding-bottom:7px;">
+            <code class="key">{{key}}</code>
+            &nbsp;
+        </td>
+        <td>{{title}}</td>
+    </tr>
+{{/each}}
+</table>
+
+
+</script>
