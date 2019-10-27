@@ -125,7 +125,7 @@ CABLES.UI.TabPanel.prototype.updateHtml = function ()
     for (var i = 0; i < this._tabs.length; i++)
     {
         document.getElementById("editortab" + this._tabs[i].id).addEventListener(
-            "click",
+            "mousedown",
             function (e)
             {
                 if (e.target.dataset.id) this.activateTab(e.target.dataset.id);
@@ -146,7 +146,7 @@ CABLES.UI.TabPanel.prototype.updateHtml = function ()
         if (document.getElementById("closetab" + this._tabs[i].id))
         {
             document.getElementById("closetab" + this._tabs[i].id).addEventListener(
-                "click",
+                "mousedown",
                 function (e)
                 {
                     this.closeTab(e.target.dataset.id);
