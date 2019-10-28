@@ -1038,13 +1038,6 @@ CABLES.UI.GUI = function(cfg) {
                     }
                 break;
 
-                case 69: // e - editor save/execute/build
-                        if (e.metaKey || e.ctrlKey) {
-                            if (showingEditor) {
-                                self.editor().save();
-                            }
-                        }
-                    break;
 
                 case 78: // n - new project
                         if (e.metaKey || e.ctrlKey) {
@@ -1122,8 +1115,8 @@ CABLES.UI.GUI = function(cfg) {
 
         this.keys.key("s","Save patch as new patch","down",null,{"cmdCtrl":true,"shiftKey":true}, (e) => { gui.patch().saveCurrentProjectAs(); });
 
-        this.keys.key("s","Save patch","down",null,{"cmdCtrl":true}, (e) => 
-            { 
+        this.keys.key("s","Save patch","down",null,{"cmdCtrl":true,"ignoreInput":true}, (e) => 
+            {
                 if ($('#patch').is(":focus")) {
                     CABLES.CMD.PATCH.save();
                 } else
@@ -1135,6 +1128,14 @@ CABLES.UI.GUI = function(cfg) {
                 }
 
             });
+
+        //     case 69: // e - editor save/execute/build
+        //     if (e.metaKey || e.ctrlKey) {
+        //         if (showingEditor) {
+        //             self.editor().save();
+        //         }
+        //     }
+        // break;
 
 
 
