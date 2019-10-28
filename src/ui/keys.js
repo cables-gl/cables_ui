@@ -48,7 +48,9 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
     _onKeyDown(e)
     {
-        if(document.activeElement && document.activeElement.tagName=="INPUT")return;
+        if(document.activeElement && (document.activeElement.tagName=="INPUT" || document.activeElement.tagName=="TEXTAREA"))return;
+        console.log(document.activeElement.tagName);
+
 
         // console.log('key ', e.key,e);
 
