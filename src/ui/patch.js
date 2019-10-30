@@ -1493,6 +1493,7 @@ CABLES.UI.Patch = function(_gui) {
                 callEvent('patch_pan');
             }
             this.lastMouseMoveEvent = e;
+            e.preventDefault();
         });
 
             
