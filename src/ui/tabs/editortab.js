@@ -33,6 +33,10 @@ CABLES.UI.EditorTab = function (options)
 
     this._editor = CABLES.UI.createEditor("editorcontent" + this._tab.id, options.content || "");
 
+
+
+
+
     // this._editor.setValue(options.content,-1);
     this._editor.resize();
 
@@ -65,6 +69,10 @@ CABLES.UI.EditorTab = function (options)
             CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
         }.bind(this),
     );
+    
+    setTimeout(()=>{
+        CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+    },100);
 
     // }.bind(this),50);
 };
@@ -294,5 +302,9 @@ CABLES.UI.createEditor = function (id, val)
     editor.completers.push(staticWordCompleter);
     editor.resize();
     editor.focus();
+
+
+
+
     return editor;
 };
