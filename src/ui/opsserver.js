@@ -377,6 +377,8 @@ CABLES.UI.ServerOps = function (gui)
         var editorObj = CABLES.editorSession.rememberOpenEditor("attachment", attachmentName, { opname });
         CABLES.api.clearCache();
 
+
+
         gui.jobs().start({ id: "load_attachment_" + attachmentName, title: "loading attachment " + attachmentName });
 
         CABLESUILOADER.talkerAPI.send(
@@ -403,8 +405,12 @@ CABLES.UI.ServerOps = function (gui)
 
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
+                
                 if (editorObj)
                 {
+                    
+                    
+
                     new CABLES.UI.EditorTab({
                         title: attachmentName,
                         name: editorObj.name,
@@ -441,6 +447,12 @@ CABLES.UI.ServerOps = function (gui)
                             );
                         },
                     });
+
+                    // setTimeout(()=>{
+                        console.log("settab!",editorObj.name);
+                        gui.mainTabs.activateTabByName(editorObj.name);
+                    // },200);
+                    
                 }
 
                 if (cb) cb();
@@ -483,6 +495,9 @@ CABLES.UI.ServerOps = function (gui)
                 if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
             },
         );
+
+        if(!editorObj) gui.mainTabs.activateTabByName(attachmentName);
+
     };
 
     // Shows the editor and displays the code of an op in it
@@ -574,7 +589,6 @@ CABLES.UI.ServerOps = function (gui)
                 }
                 else
                 {
-                    console.log("no editorobj!");
                     gui.mainTabs.activateTabByName(opname);
                 }
 

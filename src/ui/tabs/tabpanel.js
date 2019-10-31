@@ -160,14 +160,18 @@ CABLES.UI.TabPanel.prototype.updateHtml = function ()
 
 CABLES.UI.TabPanel.prototype.activateTabByName = function (name)
 {
+    var found=false;
     for (var i = 0; i < this._tabs.length; i++)
     {
         if (this._tabs[i].options.name == name)
         {
             this.activateTab(this._tabs[i].id);
+            found=true;
         }
         else this._tabs[i].deactivate();
     }
+
+    if(!found) console.log("[activateTabByName] could not fine tab",name);
 
     this.updateHtml();
 };
