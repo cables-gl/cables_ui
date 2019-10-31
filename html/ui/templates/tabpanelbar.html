@@ -10,8 +10,19 @@
             <div class="tabcontainer">
                 <div id="editortab{{id}}" data-id="{{id}}" class="tab {{#if options.wasChanged}} unsaved {{/if}} {{#if options.closable}} closable {{/if}} {{#if active}} active {{/if}}{{#if options.infotext}} info {{/if}}" style="{{#if options.showTitle}}{{else}} min-width:19px !important;max-width:19px !important;padding-left: 10px; {{/if}}" {{#if options.infotext}} data-infotext="{{options.infotext}}"{{/if}}>
                     {{#if icon }} <span class="tabicon icon-{{icon}} icon fleft"></span> &nbsp;{{/if}}
+                    {{#if options.showTitle }}{{else}} <span class="tabicon icon-file icon fleft"></span> &nbsp;{{/if}}
+
+                    {{#compare options.type '==' 'glsl' }}<span style="color:var(--color_port_function);">GL</span>&nbsp; {{/compare}}
+                    {{#compare options.type '==' 'js' }}<span style="color:var(--color_port_value);">JS</span>&nbsp; {{/compare}}
+                    {{#compare options.type '==' 'css' }}<span style="color:var(--color_port_array);">CSS</span>&nbsp; {{/compare}}
+                    
+                    
+
                     {{#if options.showTitle }}{{title}}{{/if}}
                     {{#if unsaved }} ! {{/if}}
+
+                    
+
                 </div>
             </div>
         {{/each}}

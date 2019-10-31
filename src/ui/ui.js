@@ -1782,13 +1782,13 @@ CABLES.UI.GUI.prototype.initCoreListeners=function()
 function startUi(cfg)
 {
     logStartup('Init UI');
+    CABLES.UI.initHandleBarsHelper();
 
     window.gui = new CABLES.UI.GUI(cfg);
 
     incrementStartup();
     gui.serverOps = new CABLES.UI.ServerOps(gui);
 
-    CABLES.UI.initHandleBarsHelper();
 
     $("#patch").bind("contextmenu", function(e) {
         if (e.preventDefault) e.preventDefault();

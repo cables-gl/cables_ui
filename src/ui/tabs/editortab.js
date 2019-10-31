@@ -6,13 +6,9 @@ CABLES.UI.EditorTab = function (options)
     this._editor = null;
     this._options = options;
 
-    var icon = "file";
-    if (options.syntax == "js") icon = "code";
-    else if (options.syntax == "glsl") icon = "aperture";
-    // else if(options.syntax=='glsl') icon="sun";
-
     this._tab = new CABLES.UI.Tab(options.title, {
-        icon,
+        icon:null,
+        type:options.syntax,
         name: options.name,
         infotext: "a code editor",
         singleton: options.singleton,

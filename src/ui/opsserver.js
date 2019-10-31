@@ -452,7 +452,6 @@ CABLES.UI.ServerOps = function (gui)
                         console.log("settab!",editorObj.name);
                         gui.mainTabs.activateTabByName(editorObj.name);
                     // },200);
-                    
                 }
 
                 if (cb) cb();
