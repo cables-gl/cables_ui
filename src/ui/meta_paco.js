@@ -13,7 +13,7 @@ CABLES.UI.Paco=function(tabs)
 
 CABLES.UI.Paco.prototype.open=function()
 {
-    var popup=window.open(CABLES.sandbox.getCablesUrl()+"/renderer/","_blank");
+    var popup=window.open("/renderer/","_blank");
     popup.addEventListener('load', function()
     {
         console.log("loaded!");
@@ -21,15 +21,14 @@ CABLES.UI.Paco.prototype.open=function()
         {
             var json={};
             json=gui.patch().scene.serialize(true);
-            gui.patchConnection.send(CABLES.PACO_LOAD, {
-                "patch": JSON.stringify(json),
-            });    
+            gui.patchConnection.send(CABLES.PACO_LOAD,
+            {
+                "patch": JSON.stringify(json)
+            });
             console.log(json);
         },1000);
     }, false);
-    
 }
-
 
 CABLES.UI.Paco.prototype.show=function()
 {
