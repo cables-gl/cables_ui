@@ -3171,21 +3171,48 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     var lastTempOP = null;
-    this.tempUnlinkOp = function() {
-        var j = 0;
+    this.tempUnlinkOp = function()
+    {
 
-        var op = null;
-        if (selectedOps.length === 0 && lastTempOP) op = lastTempOP;
-        else {
-            if (selectedOps.length === 0) return;
-            op = selectedOps[0];
+
+        if(lastTempOP)
+        {
+            lastTempOP.op.undoUnLinkTemporary();
+            lastTempOP.setEnabled(true);
+            lastTempOP=null;
         }
-        lastTempOP = op;
+        else
+        {
 
-        op.setEnabled(!op.op.enabled);
+            const op = selectedOps[0];
+            if(op)
+            {
+                op.setEnabled(false);
+                op.op.unLinkTemporary();
+                lastTempOP=op;
+            }
+        }
 
-        if (!op.op.enabled) op.op.unLinkTemporary();
-        else op.op.undoUnLinkTemporary();
+
+        // var j = 0;
+
+        // var op = null;
+        // // if (selectedOps.length === 0 && lastTempOP) op = lastTempOP;
+        // if (lastTempOP) op = lastTempOP;
+        // else {
+        //     if (selectedOps.length === 0) return;
+        //     op = selectedOps[0];
+        // }
+        // lastTempOP = op;
+
+        // op.setEnabled(!op.op.enabled);
+
+        // if (!op.op.enabled) op.op.unLinkTemporary();
+        // else 
+        // {
+        //     op.op.undoUnLinkTemporary();
+        //     lastTempOP=null;
+        // }
     };
 
     this.downloadSVG=function()
