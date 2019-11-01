@@ -135,6 +135,7 @@ CABLES.UI.showJson=function(opid,which)
 
 function mouseEvent(event)
 {
+    if(!event)return event;
     if(event.buttons===undefined) // safari
     {
         event.buttons=event.which;

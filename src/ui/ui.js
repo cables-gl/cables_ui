@@ -1098,7 +1098,7 @@ CABLES.UI.GUI = function(cfg) {
 
     this.bindKeys=function()
     {
-        this.keys.key("Escape","Open Op Create (or close current dialog)","down",null,{}, (e) => { this.pressedEscape(e); });
+        this.keys.key("Escape","Open Op Create (or close current dialog)","down",null,{"ignoreInput":true}, (e) => { this.pressedEscape(e); });
         this.keys.key("p","Open Command Palette","down",null,{"cmdCtrl":true}, (e) => { this.cmdPallet.show(); });
         this.keys.key("Enter","Cycle size of renderer between normal and Fullscreen","down",null,{"cmdCtrl":true}, (e) => { this.cycleRendererSize(); });
 
@@ -1155,7 +1155,6 @@ CABLES.UI.GUI = function(cfg) {
             this.setLayout();
             return;
         }
-
         this.metaTexturePreviewer.pressedEscape();
         $('.tooltip').hide();
 
@@ -1181,7 +1180,6 @@ CABLES.UI.GUI = function(cfg) {
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         } else if ($('#cmdpalette').is(':visible')) gui.cmdPallet.close();
-
         else if($('.contextmenu').is(':visible')) CABLES.contextMenu.close();
         // else if(gui.find().isVisible()) gui.find().close();
         // else if($('#library').is(':visible')) CABLES.UI.fileSelect.hide();
@@ -1201,7 +1199,7 @@ CABLES.UI.GUI = function(cfg) {
             return;
         }
         else if(this.maintabPanel.isVisible()) this.maintabPanel.hide();
-        else if(showingEditor && e) this.closeEditor();
+        else if(showingEditor) this.closeEditor();
         else {
             if (e) gui.opSelect().showOpSelect({
                 x: 0,

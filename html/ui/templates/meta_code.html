@@ -7,23 +7,18 @@
         {{#if user.isAdmin}}
             <h3>Admin</h3>
 
-            <br/>
             <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
-            <br/>
             
             {{#if op.github}}
                 <a class="button fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
             {{/if}}
 
-            <br/><br/>
         {{/if}}
 
         <h3>Code</h3>
 
         <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
-        <br/>
         <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
-        <br/><br/>
 
         <h3>Attachments</h3>
 

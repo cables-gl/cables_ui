@@ -79,7 +79,6 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
     key(key,title,event,target,options,cb)
     {
-
         var k=
         {
             "key":key.toLowerCase(),
@@ -91,7 +90,6 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
         };
 
         this._keys.push(k);
-
     }
-    
+
 }
