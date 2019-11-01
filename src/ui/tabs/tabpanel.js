@@ -72,12 +72,17 @@ CABLES.UI.Tab.prototype.isVisible = function ()
     return this.active;
 };
 
+CABLES.UI.Tab.prototype.updateSize = function ()
+{
+    this.contentEle.style.height=(this.contentEle.parentElement.clientHeight-this.toolbarContainerEle.clientHeight-3)+"px";
+}
+
 CABLES.UI.Tab.prototype.activate = function ()
 {
     this.active = true;
     this.contentEle.style.display = "block";
     this.toolbarContainerEle.style.display = "block";
-    this.contentEle.style.height=(this.contentEle.parentElement.clientHeight-this.toolbarContainerEle.clientHeight-3)+"px";
+    this.updateSize();
     this.emitEvent("onActivate");
 };
 
@@ -259,6 +264,11 @@ CABLES.UI.TabPanel.prototype.getNumTabs = function ()
 CABLES.UI.TabPanel.prototype.getActiveTab = function ()
 {
     for (var i = 0; i < this._tabs.length; i++) if (this._tabs[i].active) return this._tabs[i];
+};
+
+CABLES.UI.TabPanel.prototype.updateSize = function ()
+{
+    for (var i = 0; i < this._tabs.length; i++) this._tabs[i].updateSize();
 };
 
 CABLES.UI.TabPanel.prototype.getSaveButton = function ()

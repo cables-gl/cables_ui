@@ -3,7 +3,6 @@ var CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 
-
 CABLES.UI.inputListenerCursorKeys = function (e)
 {
     switch (e.which) {
@@ -129,24 +128,23 @@ CABLES.UI.watchColorPickerPort = function (thePort)
             });
 
         },
-        buildCallback: function ($elm) {
-            var colorInstance = this.color,
-                colorPicker = this;
+        buildCallback: function ($elm)
+        {
+            var colorInstance = this.color, colorPicker = this;
 
-                function change(e)
-                {
-                    var value = this.value,
-                        className = this.className,
-                        type = className.split('-')[1],
-                        color = {};
+            function change(e)
+            {
+                var value = this.value,
+                    className = this.className,
+                    type = className.split('-')[1],
+                    color = {};
 
-                    color[type] = value;
-                    colorInstance.setColor(type === 'HEX' ? value : color,
-                        type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
-                    colorPicker.render();
-                    this.blur();
-                }
-
+                color[type] = value;
+                colorInstance.setColor(type === 'HEX' ? value : color,
+                    type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
+                colorPicker.render();
+                this.blur();
+            }
 
             $elm.prepend('<div class="cp-panel">' +
                 'R <input type="text" class="cp-r" /><br>' +
@@ -162,7 +160,6 @@ CABLES.UI.watchColorPickerPort = function (thePort)
             document.getElementById("inputhex").addEventListener("input",function(e){if(this.value.length==6)change.bind(this)(e);});
         }
     });
-
 
 }
 

@@ -6,13 +6,16 @@ CABLES.UI.EditorTab = function (options)
     this._editor = null;
     this._options = options;
 
-    this._tab = new CABLES.UI.Tab(options.title, {
-        icon:null,
-        type:options.syntax,
-        name: options.name,
-        infotext: "a code editor",
-        singleton: options.singleton,
-    });
+    gui.maintabPanel.show();
+
+    this._tab = new CABLES.UI.Tab(options.title,
+        {
+            icon:null,
+            type:options.syntax,
+            name: options.name,
+            infotext: "a code editor",
+            singleton: options.singleton,
+        });
 
     var existing = gui.mainTabs.getTabByTitle(options.title);
     if (existing)
@@ -20,9 +23,12 @@ CABLES.UI.EditorTab = function (options)
         gui.mainTabs.activateTab(existing.id);
         return;
     }
-    gui.mainTabs.addTab(this._tab, CABLES.UI.tabsAutoActivate);
 
+
+    console.log("adding tab...");
+    
     this._tab.editorObj = options.editorObj;
+    gui.mainTabs.addTab(this._tab, CABLES.UI.tabsAutoActivate);
 
     var html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;\"></div>";
     this._tab.html(html);
@@ -70,7 +76,6 @@ CABLES.UI.EditorTab = function (options)
         CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
     },100);
 
-    // }.bind(this),50);
 };
 
 CABLES.UI.EditorTab.prototype.save = function ()

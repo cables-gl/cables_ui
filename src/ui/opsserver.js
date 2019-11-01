@@ -572,7 +572,7 @@ CABLES.UI.ServerOps = function (gui)
 
                 if (editorObj)
                 {
-                    new CABLES.UI.EditorTab({
+                    var t=new CABLES.UI.EditorTab({
                         title,
                         name: editorObj.name,
                         content: res.code,
@@ -591,6 +591,7 @@ CABLES.UI.ServerOps = function (gui)
                     gui.mainTabs.activateTabByName(opname);
                 }
 
+                
                 if (cb) cb();
             },
         );

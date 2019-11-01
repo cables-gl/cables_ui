@@ -55,11 +55,14 @@ CABLES.UI.MainTabPanel.prototype.show=function(force)
         this.hide(true);
         return;
     }
+
     this._visible=true;
     this._ele.style.display="block";
     document.getElementById("editorminimized").style.display="none";
     if(CABLES.UI.loaded) CABLES.UI.userSettings.set("maintabsVisible",true);
     gui.setLayout();
+
+    this._tabs.updateSize();
 
 
 }
