@@ -113,7 +113,7 @@
                         <input class="value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}" style="width:40px;display:inline;"/> -->
 
                         <!-- new value input -->
-                        <div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" onmouseover="CABLES.UI.showInputFieldInfo();">
+                        <div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" ontouchstart="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" onmouseover="CABLES.UI.showInputFieldInfo();">
                             <span class="numberinput-display">{{ port.val }}</span>
                             <input autocomplete="off" class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.val }}"/>
                         </div>

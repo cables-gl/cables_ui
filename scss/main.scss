@@ -776,7 +776,16 @@ input[type=range]:focus {
 }
 
 
+
 @import 'libs/jcolorpicker-custom.scss';
+.cp-panel input
+{
+    padding:1px !important;
+    font-size:11px !important;
+}
+
+
+
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';
 @import 'components/modal.scss';
@@ -810,3 +819,5 @@ input[type=range]:focus {
 @import 'components/vue/Switch.scss';
 @import 'components/tabpanel.scss';
 @import 'components/item_manager.scss';
+
+

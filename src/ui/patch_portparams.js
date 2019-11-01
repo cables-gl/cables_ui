@@ -133,6 +133,21 @@ CABLES.UI.watchColorPickerPort = function (thePort)
             var colorInstance = this.color,
                 colorPicker = this;
 
+                function change(e)
+                {
+                    var value = this.value,
+                        className = this.className,
+                        type = className.split('-')[1],
+                        color = {};
+
+                    color[type] = value;
+                    colorInstance.setColor(type === 'HEX' ? value : color,
+                        type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
+                    colorPicker.render();
+                    this.blur();
+                }
+
+
             $elm.prepend('<div class="cp-panel">' +
                 'R <input type="text" class="cp-r" /><br>' +
                 'G <input type="text" class="cp-g" /><br>' +
@@ -140,21 +155,11 @@ CABLES.UI.watchColorPickerPort = function (thePort)
                 'H <input type="text" class="cp-h" /><br>' +
                 'S <input type="text" class="cp-s" /><br>' +
                 'B <input type="text" class="cp-v" /><hr>' +
-                '<input type="text" class="cp-HEX" />' +
+                '<input id="inputhex" type="text" class="cp-HEX" />' +
                 '</div>')
                 .on('change', 'input',
-                    function (e) {
-                        var value = this.value,
-                            className = this.className,
-                            type = className.split('-')[1],
-                            color = {};
-
-                        color[type] = value;
-                        colorInstance.setColor(type === 'HEX' ? value : color,
-                            type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
-                        colorPicker.render();
-                        this.blur();
-                    });
+                    change);
+            document.getElementById("inputhex").addEventListener("input",function(e){if(this.value.length==6)change.bind(this)(e);});
         }
     });
 

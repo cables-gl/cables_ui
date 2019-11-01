@@ -1484,7 +1484,7 @@ CABLES.UI.Patch = function(_gui) {
         this._elPatchSvg.bind("touchmove", (e) => {
             e = mouseEvent(e);
 
-            if (this.lastMouseMoveEvent)
+            if (this.lastMouseMoveEvent && selectedOps.length==0)
             {
                 const lastMouseCoord=gui.patch().getCanvasCoordsMouse(this.lastMouseMoveEvent)
                 this._viewBox.setXY(

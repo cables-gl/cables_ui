@@ -7,6 +7,7 @@ ace.define("ace/theme/cables",["require","exports","module","ace/lib/dom"],funct
     ".ace-idle-fingers .ace_print-margin {width: 1px;background: #3b3b3b}"+
     ".ace-idle-fingers { background-color: #1c1c1c;color: #FFFFFF}"+
     ".ace-idle-fingers .ace_cursor {color: #e98c41}"+
+    
     ".ace-idle-fingers .ace_marker-layer .ace_selection {background: rgba(60,60,60, 0.88)}"+
     ".ace-idle-fingers.ace_multiselect .ace_selection.ace_start {box-shadow: 0 0 3px 0px #323232;}"+
     ".ace-idle-fingers .ace_marker-layer .ace_step {background: rgb(102, 82, 0)}"+
@@ -22,12 +23,17 @@ ace.define("ace/theme/cables",["require","exports","module","ace/lib/dom"],funct
     ".ace-idle-fingers .ace_fold {background-color: #CC7833;border-color: #FFFFFF}"+
     ".ace-idle-fingers .ace_support.ace_function {color: #eee}"+
     ".ace-idle-fingers .ace_variable.ace_parameter {font-style: italic}"+
-    ".ace-idle-fingers .ace_string {color: #5de941}"+
+    
     ".ace-idle-fingers .ace_string.ace_regexp {color: #CCCC33}"+
-    ".ace-idle-fingers .ace_comment {font-style: italic;color: #BC9458}"+
+    ".ace-idle-fingers .ace_comment {font-style: italic;color: #5CB59E}"+
     ".ace-idle-fingers .ace_meta.ace_tag {color: #FFE5BB}"+
     ".ace-idle-fingers .ace_entity.ace_name {color: #6c9fde}"+
     ".ace-idle-fingers .ace_collab.ace_user1 {color: #323232;background-color: #FFF980}"+
+    
+    ".ace-idle-fingers .ace_numeric {color: #4adab5 !important}"+
+    ".ace-idle-fingers .ace_string {color: #d57272}"+
+
+
     ".ace-idle-fingers .ace_indent-guide {background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMwMjLyZYiPj/8PAAreAwAI1+g0AAAAAElFTkSuQmCC) right repeat-y}";
 var r=e("../lib/dom");
 r.importCssString(t.cssText,t.cssClass)});
