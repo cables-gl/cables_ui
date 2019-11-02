@@ -276,8 +276,54 @@ CABLES.UI.initPortClickListener=function(op,index)
         }
     });
 
-    $('#portanim_in_' + index).on('click', function (e) {
-        if ($('#portanim_in_' + index).hasClass('timingbutton_active')) {
+    $('#portsetvar_'+index).on("input",function(e)
+    {
+        var port=op.getPortById(e.target.dataset["portid"]);
+
+        console.log('val...',e.target.value,e.target.options[e.target.selectedIndex].value);
+        if(port) port.setVariable(e.target.value);
+        else console.log("PORT NOT FOUND!!-=- SET VARRRRR",e.target.dataset["portid"],e);
+    });
+
+
+    $('#portremovevar_' + index).on('click', function (e)
+    {
+        var port=op.getPortById(e.target.dataset["portid"]);
+        if(port) port.setVariable(null);
+        port.parent.refreshParams();
+    });
+
+    $('#port_contextmenu_in_' + index).on('click', function (e)
+    {
+        var port=op.getPortById(e.target.dataset["portid"]);
+
+        CABLES.contextMenu.show(
+            {items:
+                [
+                    {
+                        title:'assign variable',
+                        func:()=>
+                        {
+                            port.setVariable('unknown');
+                            console.log("SET VARIABLE SOURCE!!");
+                            port.parent.refreshParams();
+                        }
+                    },
+                    {
+                        title:'set animated',
+                        func:()=>
+                        {
+                            $('#portanim_in_' + index).click();
+                        }
+                    }
+                ]},e.target);
+
+    });
+
+    $('#portanim_in_' + index).on('click', function (e)
+    {
+        if ($('#portanim_in_' + index).hasClass('timingbutton_active'))
+        {
             var val = gui.patch().timeLine.removeAnim(op.portsIn[index].anim);
             op.portsIn[index].setAnimated(false);
 

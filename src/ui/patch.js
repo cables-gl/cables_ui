@@ -2884,7 +2884,10 @@ CABLES.UI.Patch = function(_gui) {
                     "portnum": i,
                     "isInput": true,
                     "op": op,
-                    "texts": CABLES.UI.TEXTS
+                    "texts": CABLES.UI.TEXTS,
+                    "vars": op.patch.getVars()
+
+
                 });
             }
             perfLoop.finish();
