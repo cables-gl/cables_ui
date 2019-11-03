@@ -81,19 +81,15 @@
             {{else}}
                 {{#if port.uiAttribs.useVariable}}
                     </td><td >
-                        Var  
+                        Var 
                         <select id="portsetvar_{{ portnum }}" data-portid="{{port.id}}">
                             {{#compare 'unknown' '==' port.uiAttribs.variableName }}
                                 <option value="">UNKNOWN</option>
                             {{/compare}}
-
                             {{#each vars}}
-                                <option {{#compare _name '==' ../port.val }} SELECTED="SELECTED" {{/compare}} value="{{ _name }}">#{{_name}}</option>
+                                <option {{#compare _name '==' ../port.uiAttribs.variableName }} SELECTED="SELECTED" {{/compare}} value="{{ _name }}">#{{_name}}</option>
                             {{/each}}
                         </select>
-
-                        <a class="icon-x icon iconhover" id="portremovevar_{{portnum}}" data-portid="{{port.id}}"></a>
-
                     </td>
                 {{else}}
                     {{#if port.uiAttribs.display}}
@@ -262,17 +258,26 @@
                 {{#compare port.type '==' 1 }}
                 {{else}}
 
-                    <div style="{{#if port.uiAttribs.isAnimated}}{{else}}display:none;{{/if}}">
-                        <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
-                    </div>
-
-                    {{#if port.uiAttribs.isAnimated}}
+                    {{#compare port.uiAttribs.display '==' 'switch' }}
                     {{else}}
-                        {{#if port.uiAttribs.useVariable}}
+                    {{#compare port.uiAttribs.display '==' 'dropdown' }}
+                    {{else}}
+                        <div style="{{#if port.uiAttribs.isAnimated}}{{else}}display:none;{{/if}}">
+                            <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
+                        </div>
+
+                        {{#if port.uiAttribs.isAnimated}}
                         {{else}}
-                            <a class="icon-corner-down-left icon iconhover" id="port_contextmenu_{{dirStr}}_{{portnum}}" data-portid="{{port.id}}"></a>
+                            {{#if port.uiAttribs.useVariable}}
+                                <a class="icon-x icon iconhover" id="portremovevar_{{portnum}}" data-portid="{{port.id}}"></a>
+                            {{else}}
+                                <a class="icon-corner-down-left icon iconhover" id="port_contextmenu_{{dirStr}}_{{portnum}}" data-portid="{{port.id}}"></a>
+                            {{/if}}
                         {{/if}}
-                    {{/if}}
+
+                    {{/compare}}
+                    {{/compare}}
+
                 {{/compare}}
             {{/if}}
         {{/if}}
