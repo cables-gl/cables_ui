@@ -333,6 +333,7 @@ CABLES.UI.initPortClickListener=function(op,index)
             $('#portval_' + index).val(val);
             $('#portval_' + index).trigger('input');
             $('#portval_' + index).focus();
+            op.portsIn[index].parent.refreshParams();
             return;
         }
 
@@ -343,6 +344,7 @@ CABLES.UI.initPortClickListener=function(op,index)
             name: op.portsIn[index].name,
             defaultValue: parseFloat($('#portval_' + index).val())
         });
+        op.portsIn[index].parent.refreshParams();
     });
 }
 
