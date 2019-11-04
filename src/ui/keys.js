@@ -8,7 +8,6 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
     {
         super();
         this._keys=[];
-
         document.addEventListener("keydown", this._onKeyDown.bind(this), false);
     }
 
@@ -48,26 +47,20 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
     _onKeyDown(e)
     {
-        // console.log(document.activeElement.tagName);
-
         for(var i=0;i<this._keys.length;i++)
         {
             const k=this._keys[i];
 
             if(!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName=="INPUT" || document.activeElement.tagName=="TEXTAREA"))continue;
-
             if(k.key!=(e.key+"").toLowerCase() || k.event!="down") continue;
-            
             if(k.options.cmdCtrl) if(!e.ctrlKey && !e.metaKey) continue;
             if(!k.options.cmdCtrl) if(e.ctrlKey || e.metaKey) continue;
-
             if(k.options.shiftKey && !e.shiftKey) continue;
             if(!k.options.shiftKey && e.shiftKey) continue;
 
             if(!k.target || k.target==e.target.id)
             {
-                // console.log("found key! ",k.target);
-                if(k.cb)k.cb(e);
+                if(k.cb) k.cb(e);
                 else console.warn("[keys] key event has no callback",k);
 
                 e.preventDefault();
@@ -77,7 +70,7 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
         }
     }
 
-    key(key,title,event,target,options,cb)
+    _addKey(key,title,event,target,options,cb)
     {
         var k=
         {
@@ -92,4 +85,10 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
         this._keys.push(k);
     }
 
+    key(key,title,event,target,options,cb)
+    {
+        if(Array.isArray(key)) for(var i=0;i<key.length;i++) this._addKey(key[i],title,event,target,options,cb)
+        else this._addKey(key,title,event,target,options,cb)
+
+    }
 }

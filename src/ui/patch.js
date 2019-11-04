@@ -604,7 +604,16 @@ CABLES.UI.Patch = function(_gui) {
     gui.keys.key("PageUp","Snap op below previous op","down","patch",{}, (e) => { this.snapToNextOp(-1); });
     gui.keys.key("PageDown","Snap op above next op","down","patch",{}, (e) => { this.snapToNextOp(1); });
 
+    gui.keys.key("d","Temporary unlink op","down","patch",{shiftKey:true}, (e) => { this.tempUnlinkOp(); });
+    gui.keys.key("d","Disable op and all childs","down","patch",{}, (e) => { self.disableEnableOps(); });
 
+    gui.keys.key(["Delete","Backspace"],"Delete selected ops","down","patch",{}, (e) =>
+    { 
+        self.deleteSelectedOps();
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+        self.showProjectParams();
+    });
 
 
     $('#patch').keydown(function(e)
@@ -630,22 +639,18 @@ CABLES.UI.Patch = function(_gui) {
             break;
 
 
-            case 46:
-            case 8: // delete
+            // case 46:
+            // case 8: // delete
 
-                if(document.activeElement && document.activeElement.tagName=="INPUT")return;
+            //     if(document.activeElement && document.activeElement.tagName=="INPUT")return;
 
-                self.deleteSelectedOps();
-                if (e.stopPropagation) e.stopPropagation();
-                if (e.preventDefault) e.preventDefault();
-                self.showProjectParams();
-                break;
+            //     self.deleteSelectedOps();
+            //     if (e.stopPropagation) e.stopPropagation();
+            //     if (e.preventDefault) e.preventDefault();
+            //     self.showProjectParams();
+            //     break;
 
 
-            case 68: // d - disable
-                if (e.shiftKey) self.tempUnlinkOp();
-                else self.disableEnableOps();
-                break;
 
             case 90: // z undo
                 if (e.metaKey || e.ctrlKey) {

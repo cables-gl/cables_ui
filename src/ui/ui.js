@@ -1136,15 +1136,10 @@ CABLES.UI.GUI = function(cfg) {
         //         }
         //     }
         // break;
-
-
-
     };
 
-
-
-    this.pressedEscape = function(e) {
-
+    this.pressedEscape = function(e)
+    {
         this.showCanvasModal(false);
         this.callEvent("pressedEscape");
         if(this.fileManager) this.fileManager.setFilePort(null);
