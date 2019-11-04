@@ -52,6 +52,16 @@ CABLES.UI.Port=function(thePort)
             gui.patch().updateOpParams(self.opUi.op.id);
             self.opUi.setPos();
         }
+
+
+
+
+        if(attribs.hasOwnProperty('useVariable') || attribs.hasOwnProperty('isAnimated'))
+        {
+            updateUI();
+        }
+
+
         if(attribs.hasOwnProperty('greyout'))
         {
             gui.patch().updateOpParams(self.opUi.op.id);
@@ -160,6 +170,7 @@ CABLES.UI.Port=function(thePort)
         if(!CABLES.UI.selectedStartPort) return;
 
         if(self.thePort.direction==CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
+        if(self.thePort.direction==CABLES.PORT_DIR_IN && self.thePort.uiAttribs.useVariable) return;
 
         CABLES.UI.MOUSEDRAGGINGPORT=true;
 
@@ -440,7 +451,8 @@ CABLES.UI.Port=function(thePort)
             self.rect.node.classList.remove('connected');
         }
 
-        if(thePort.isAnimated())
+
+        if(thePort.isAnimated() || self.thePort.uiAttribs.useVariable || self.thePort.uiAttribs.isAnimated)
         {
             self.rect.node.classList.add('animated');
         }
