@@ -301,7 +301,7 @@ CABLES.UI.initPortClickListener=function(op,index)
             {items:
                 [
                     {
-                        title:'assign variable',
+                        title:'Assign variable',
                         func:()=>
                         {
                             port.setVariable('unknown');
@@ -310,7 +310,7 @@ CABLES.UI.initPortClickListener=function(op,index)
                         }
                     },
                     {
-                        title:'set animated',
+                        title:'Set animated',
                         func:()=>
                         {
                             $('#portanim_in_' + index).click();
