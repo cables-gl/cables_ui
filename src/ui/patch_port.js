@@ -192,7 +192,23 @@ CABLES.UI.Port=function(thePort)
         if(window.CABLES.UI.selectedEndOp)
         {
 			$('#drop-op-cursor').hide();
-            gui.setCursor("port_circle");
+
+
+            // console.log("MOVEW!@!!");
+
+            if(CABLES.UI.selectedStartPort)
+            {
+                var fit=CABLES.UI.selectedEndOp.op.findFittingPort(CABLES.UI.selectedStartPort);
+                if(fit)
+                {
+                    // self.hoverFitPort=true;
+                    gui.setCursor("port_check");
+                    console.log("YAAAAA");
+                }
+            }
+            else gui.setCursor("port_circle");
+            
+            
         }
 		else
 		{

@@ -228,13 +228,17 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
     };
 
-    function hover() {
+    function hover(event,a,b) {
         CABLES.UI.selectedEndOp = opui;
         opui.isMouseOver = true;
+
     }
 
     function unhover() {
         opui.isMouseOver = false;
+        self.hoverFitPort=false;
+        // $('#drop-op-canlink').hide();
+        gui.setCursor("default");
     }
 
     var shakeCountP = 0;
@@ -285,9 +289,33 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     var move = function(dx, dy, a, b, e) {
 
+
+console.log("MOVEW!@!!");
+
+        if(CABLES.UI.selectedStartPort)
+        {
+            var fit=CABLES.UI.selectedEndOp.op.findFittingPort(CABLES.UI.selectedStartPort);
+            if(fit)
+            {
+                // self.hoverFitPort=true;
+                gui.setCursor("port_check");
+                console.log("YAAAAA");
+            }
+        }
+        else gui.setCursor("default");
+
+
+
+
         if((e.metaKey || e.altKey) && gui.patch().getSelectedOps().length == 1) {
             return;
         }
+        
+        // if(self.hoverFitPort) gui.setCursor("check");
+
+
+
+
         if (shakeLastX != -1) {
             if (shakeLastX - a > 30 && lastShakeDir) {
                 lastShakeDir = false;
