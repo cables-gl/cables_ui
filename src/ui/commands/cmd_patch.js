@@ -144,6 +144,20 @@ CABLES.CMD.PATCH.createVariable=function(op)
 		});
 };
 
+CABLES.CMD.PATCH.createVarNumber=function()
+{
+    CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "myNewVar",
+        function (str)
+        {
+			const opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetNumber");
+			const opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
+
+			opSetter.varName.set(str);
+			opGetter.varName.set(str);
+		});
+
+};
+
 CABLES.CMD.PATCH.createAutoVariable=function()
 {
     var p = CABLES.UI.OPSELECT.linkNewOpToPort;
@@ -208,8 +222,6 @@ CABLES.CMD.PATCH.createAutoVariable=function()
 					y:y+100
 				}
 			});
-
-
 
             if (p.direction == 0)
             {
@@ -558,7 +570,13 @@ CABLES.CMD.commands.push(
 		cmd:"analyze patch",
 		category:"patch",
 		func:CABLES.CMD.PATCH.analyzePatch
+	},
+	{
+		cmd:"create number variable",
+		category:"patch",
+		func:CABLES.CMD.PATCH.createVarNumber
 	}
+	
 	
 
 
