@@ -160,11 +160,12 @@ CABLES.CMD.PATCH.createVarNumber=function(next)
 };
 
 
-CABLES.CMD.PATCH.createVariable=function(name,p,p2,value)
+CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 {
 	var portName="Value"
 	var opSetter;
 	var opGetter;
+
 
 	if(p.type==CABLES.OP_PORT_TYPE_VALUE)
 	{
@@ -212,9 +213,7 @@ CABLES.CMD.PATCH.createVariable=function(name,p,p2,value)
 			console.log(p2);
 			 
 		}
-
 	}
-
 
 	opSetter.varName.set(name);
 	opGetter.varName.set(name);
@@ -233,7 +232,7 @@ CABLES.CMD.PATCH.replaceLinkVariable=function()
 			console.log(link);
 
 
-			const varops=CABLES.CMD.PATCH.createVariable(str,link.p2.thePort,link.p1.thePort,link.p2.thePort.get());
+			const varops=CABLES.CMD.PATCH._createVariable(str,link.p2.thePort,link.p1.thePort,link.p2.thePort.get());
 
 			var uiop=gui.patch().getUiOp(varops.getter);
 			uiop.setPos(link.p1.thePort.parent.uiAttribs.translate.x,link.p1.thePort.parent.uiAttribs.translate.y-40);
@@ -253,7 +252,7 @@ CABLES.CMD.PATCH.createAutoVariable=function()
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
         function (str)
         {
-			const varops=CABLES.CMD.PATCH.createVariable(str,p,null,p.get());
+			const varops=CABLES.CMD.PATCH._createVariable(str,p,null,p.get());
 
 			var uiop=gui.patch().getUiOp(varops.getter);   
 			uiop.setPos(varops.setter.uiAttribs.translate.x,varops.setter.uiAttribs.translate.y+40);
