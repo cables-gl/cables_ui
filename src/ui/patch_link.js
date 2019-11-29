@@ -34,6 +34,7 @@ function UiLink(port1, port2)
     {
         for (var i = 0; i < this._addCircles.length; i++)
         {
+            if(!this._addCircles[i])continue;
             this._addCircles[i].hide();
             this._addCircleVisible = false;
 
@@ -86,6 +87,7 @@ function UiLink(port1, port2)
                 var coords = gui.patch().getCanvasCoordsMouse(event);
                 coords.x = self.p1.op.uiAttribs.translate.x;
                 gui.opSelect().show(coords, null, null, self);
+
             }
         }
     };

@@ -144,7 +144,7 @@ CABLES.CMD.PATCH.createVariable=function(op)
 		});
 };
 
-CABLES.CMD.PATCH.createVarNumber=function()
+CABLES.CMD.PATCH.createVarNumber=function(next)
 {
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "myNewVar",
         function (str)
@@ -154,9 +154,97 @@ CABLES.CMD.PATCH.createVarNumber=function()
 
 			opSetter.varName.set(str);
 			opGetter.varName.set(str);
+
 		});
 
 };
+
+
+CABLES.CMD.PATCH.createVariable=function(name,p,p2,value)
+{
+	var portName="Value"
+	var opSetter;
+	var opGetter;
+
+	if(p.type==CABLES.OP_PORT_TYPE_VALUE)
+	{
+		opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetNumber");
+		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
+	}
+	else if(p.type==CABLES.OP_PORT_TYPE_OBJECT)
+	{
+		portName="Object";
+		opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetObject");
+		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetObject");
+	}
+	else if(p.type==CABLES.OP_PORT_TYPE_ARRAY)
+	{
+		portName="Array";
+		opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetArray");
+		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetArray");
+	}
+	else if(p.type==CABLES.OP_PORT_TYPE_STRING)
+	{
+		opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetString_v2");
+		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
+	}
+	
+	opSetter.getPort(portName).set(value);
+	if (p.direction == 0)
+	{
+		p.parent.patch.link(opGetter, portName, p.parent, p.name);
+
+		if(p2)
+		{
+			p2.parent.patch.link(opSetter, portName, p2.parent, p2.name);
+			console.log(p2);
+			 
+		}
+		
+	}
+	else
+	{
+		p.parent.patch.link(opSetter, portName, p.parent, p.name);
+
+		if(p2)
+		{
+			p2.parent.patch.link(opGetter, portName, p2.parent, p2.name);
+			console.log(p2);
+			 
+		}
+
+	}
+
+
+	opSetter.varName.set(name);
+	opGetter.varName.set(name);
+
+	return {"setter":opSetter,"getter":opGetter}
+}
+
+
+CABLES.CMD.PATCH.replaceLinkVariable=function()
+{
+
+    CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "",
+        function (str)
+        {
+			var link=CABLES.UI.OPSELECT.linkNewLink;
+			console.log(link);
+
+
+			const varops=CABLES.CMD.PATCH.createVariable(str,link.p2.thePort,link.p1.thePort,link.p2.thePort.get());
+
+			var uiop=gui.patch().getUiOp(varops.getter);
+			uiop.setPos(link.p1.thePort.parent.uiAttribs.translate.x,link.p1.thePort.parent.uiAttribs.translate.y-40);
+
+			uiop=gui.patch().getUiOp(varops.setter);
+			uiop.setPos(link.p2.thePort.parent.uiAttribs.translate.x,link.p2.thePort.parent.uiAttribs.translate.y+40);
+
+			link.remove();
+
+        });
+}
 
 CABLES.CMD.PATCH.createAutoVariable=function()
 {
@@ -165,74 +253,10 @@ CABLES.CMD.PATCH.createAutoVariable=function()
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
         function (str)
         {
-			var opSetter;
-			var opGetter;
+			const varops=CABLES.CMD.PATCH.createVariable(str,p,null,p.get());
 
-			const x = CABLES.UI.OPSELECT.newOpPos.x;
-			const y = CABLES.UI.OPSELECT.newOpPos.y;
-			var portName="Value"
-			if(p.type==CABLES.OP_PORT_TYPE_VALUE)
-			{
-				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetNumber");
-				CABLES.UI.OPSELECT.newOpPos.x=x;
-				CABLES.UI.OPSELECT.newOpPos.y=y+50;
-                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
-            }
-			else if(p.type==CABLES.OP_PORT_TYPE_OBJECT)
-			{
-				portName="Object";
-				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetObject");
-				CABLES.UI.OPSELECT.newOpPos.x=x;
-				CABLES.UI.OPSELECT.newOpPos.y=y+50;
-                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetObject");
-            }
-			else if(p.type==CABLES.OP_PORT_TYPE_ARRAY)
-			{
-				portName="Array";
-				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetArray");
-				CABLES.UI.OPSELECT.newOpPos.x=x;
-				CABLES.UI.OPSELECT.newOpPos.y=y+50;
-                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetArray");
-            }
-			else if(p.type==CABLES.OP_PORT_TYPE_STRING)
-			{
-				opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetString_v2");
-				CABLES.UI.OPSELECT.newOpPos.x=x;
-				CABLES.UI.OPSELECT.newOpPos.y=y+50;
-                opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
-            }
-
-			CABLES.UI.OPSELECT.newOpPos.x=x;
-			CABLES.UI.OPSELECT.newOpPos.y=y;
-
-            opSetter.varName.set(str);
-            opGetter.varName.set(str);
-
-
-			opSetter.uiAttr({
-				translate:{
-					x:x,
-					y:y
-				}
-			});
-
-			opGetter.uiAttr({
-				translate:{
-					x:x,
-					y:y+100
-				}
-			});
-
-            if (p.direction == 0)
-            {
-                opSetter.getPort(portName).set(p.get());
-                p.parent.patch.link(opGetter, portName, p.parent, p.name);
-            }
-            else
-            {
-                opSetter.getPort(portName).set(p.get());
-                p.parent.patch.link(opSetter, portName, p.parent, p.name);
-            }
+			var uiop=gui.patch().getUiOp(varops.getter);   
+			uiop.setPos(varops.setter.uiAttribs.translate.x,varops.setter.uiAttribs.translate.y+40);
         });
 }
 
