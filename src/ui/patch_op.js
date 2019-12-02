@@ -287,10 +287,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     };
 
-    var move = function(dx, dy, a, b, e) {
-
-
-console.log("MOVEW!@!!");
+    var move = function(dx, dy, a, b, e)
+    {
 
         if(CABLES.UI.selectedStartPort)
         {
@@ -299,7 +297,6 @@ console.log("MOVEW!@!!");
             {
                 // self.hoverFitPort=true;
                 gui.setCursor("port_check");
-                console.log("YAAAAA");
             }
         }
         else gui.setCursor("default");

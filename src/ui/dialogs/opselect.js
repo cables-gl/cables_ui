@@ -494,6 +494,9 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     if (CABLES.UI.OPSELECT.linkNewOpToPort) $('#opselect_createVar').show();
         else $('#opselect_createVar').hide();
 
+    if (link) $('#opselect_replaceVar').show();
+        else $('#opselect_replaceVar').hide();
+
     $('#opsearch').select();
     $('#opsearch').focus();
     $('body').on( "keydown", this.keyDown.bind(this));
