@@ -189,7 +189,8 @@ CABLES.UI.initPortInputListener=function(op,index)
             }
         }
 
-        document.getElementById(eleId).onkeypress = parseMath;
+        const ele=document.getElementById(eleId);
+        if(ele)ele.onkeypress = parseMath;
         // document.getElementById(eleId).onblur = parseMath;
     }
 

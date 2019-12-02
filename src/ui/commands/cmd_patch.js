@@ -190,7 +190,11 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
 	}
 	
-	opSetter.getPort(portName).set(value);
+	if(p.type!=CABLES.OP_PORT_TYPE_STRING)
+	{
+		opSetter.getPort(portName).set(value);
+
+	}
 	if (p.direction == 0)
 	{
 		p.parent.patch.link(opGetter, portName, p.parent, p.name);

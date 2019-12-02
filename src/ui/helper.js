@@ -151,8 +151,8 @@ function mouseEvent(event)
         event.clientY=event.originalEvent.touches[0].pageY;
     }
 
-    if(!event.offsetX) event.offsetX = event.layerX;//(event.pageX - $(event.target).offset().left);
-    if(!event.offsetY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
+    // if(!event.offsetX && event.layerX) event.offsetX = event.layerX;//(event.pageX - $(event.target).offset().left);
+    // if(!event.offsetY && event.layerY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
     return event;
 }
 
