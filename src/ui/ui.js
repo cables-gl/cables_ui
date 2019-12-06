@@ -1849,22 +1849,22 @@ function startUi(cfg)
             gui.showCanvasModal(true);
         });
 
-    $(document).on("click", '.panelhead',
-        function(e)
-        {
-            var panelselector = $(this).data("panelselector");
-            if (panelselector) {
-                $(panelselector).toggle();
+    // $(document).on("click", '.panelhead',
+    //     function(e)
+    //     {
+    //         var panelselector = $(this).data("panelselector");
+    //         if (panelselector) {
+    //             $(panelselector).toggle();
 
-                if ($(panelselector).is(":visible")) {
-                    $(this).addClass("opened");
-                    $(this).removeClass("closed");
-                } else {
-                    $(this).addClass("closed");
-                    $(this).removeClass("opened");
-                }
-            }
-        });
+    //             if ($(panelselector).is(":visible")) {
+    //                 $(this).addClass("opened");
+    //                 $(this).removeClass("closed");
+    //             } else {
+    //                 $(this).addClass("closed");
+    //                 $(this).removeClass("opened");
+    //             }
+    //         }
+    //     });
 
     CABLES.watchPortVisualize.init();
 

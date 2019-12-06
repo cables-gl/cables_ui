@@ -9,13 +9,21 @@ CABLES.UI.showToolTip = function (e, txt)
     if (!CABLES.UI.eleTooltip) return;
 
     CABLES.UI.eleTooltip.style.display = "block";
+
     if (e)
+    if (e.style)
+    {
+        CABLES.UI.eleTooltip.style.top = e.getBoundingClientRect().top + 25;
+        CABLES.UI.eleTooltip.style.left = e.getBoundingClientRect().left;
+    }
+    else
     {
         CABLES.UI.eleTooltip.style.top = e.clientY + 12;
         CABLES.UI.eleTooltip.style.left = e.clientX + 25;
     }
 
     CABLES.UI.eleTooltip.innerHTML = txt;
+
 };
 
 CABLES.UI.hideToolTip = function ()

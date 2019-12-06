@@ -537,7 +537,7 @@ CABLES.UI.ServerOps = function (gui)
                             },
                             function (err, res)
                             {
-                                if (!res.success)
+                                if (!res || !res.success)
                                 {
                                     if (res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
                                     else setStatus("Error: " + err.msg || "Unknown error");

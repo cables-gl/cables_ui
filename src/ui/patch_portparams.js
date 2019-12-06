@@ -166,15 +166,53 @@ CABLES.UI.watchColorPickerPort = function (thePort)
 
 CABLES.UI.initPortInputListener=function(op,index)
 {
+    if(!CABLES.UI.mathparser)CABLES.UI.mathparser=new MathParser();
     CABLES.UI.checkDefaultValue(op, index);
-    var ele = $('#portval_' + index);
+
+    const eleId='portval_' + index;
+
+    if(!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number' || op.portsIn[index].uiAttribs.type == 'int')
+    {
+        function parseMath(e)
+        {
+            const keyCode = e.keyCode || e.which;
+            console.log(e);
+            if (keyCode == 13 || keyCode==8)
+            {
+                if (isNaN(e.target.value))
+                {
+                    const mathParsed=CABLES.UI.mathparser.parse(e.target.value);
+                    e.target.value=mathParsed;
+                    op.portsIn[index].set(mathParsed);
+                    CABLES.UI.hideToolTip();
+                }
+            }
+        }
+
+        const ele=document.getElementById(eleId);
+        if(ele)ele.onkeypress = parseMath;
+        // document.getElementById(eleId).onblur = parseMath;
+    }
+
+    var ele = $('#'+eleId);
     ele.on('input', function (e)
     {
         var v = '' + ele.val();
 
         if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number') {
-            if (isNaN(v) || v === '') {
-                ele.addClass('invalid');
+
+            if (isNaN(v) || v === '')
+            {
+                const mathParsed=CABLES.UI.mathparser.parse(v);
+                if(!isNaN(mathParsed))
+                {
+                    CABLES.UI.showToolTip(e.target,' = '+mathParsed);
+                    ele.removeClass('invalid');
+                }
+                else
+                {
+                    ele.addClass('invalid');
+                }
                 return;
             } else {
                 ele.removeClass('invalid');

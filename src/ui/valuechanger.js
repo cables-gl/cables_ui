@@ -347,6 +347,18 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
 
                 if(opid && portName)
                 {
+
+                    if(isNaN(elem.val()))
+                    {
+                        const op=gui.patch().scene.getOpById(opid);
+                        const p=op.getPort(portName);
+
+                        const mathParsed=CABLES.UI.mathparser.parse(elem.val());
+                        elem.val(mathParsed);
+                        p.set(mathParsed);
+                        CABLES.UI.hideToolTip();
+                    }
+
                     var undofunc = function(portName,opId,oldVal,newVal) {
                         CABLES.undo.add({
                             undo: function() {
