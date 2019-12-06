@@ -244,29 +244,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             
             // delta*=wheelMultiplier;
             
-            var patchWidth = this._elePatch.offsetWidth;
-            var patchHeight = this._elePatch.offsetHeight;
-
-            if (this._zoom == null)
-            {
-                this._zoom = patchWidth / this._viewBox.w;
-                this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
-            }
-
-
-            var oldx = (event.clientX - this._elePatch.offsetLeft);
-            var oldy = (event.clientY - this._elePatch.offsetTop);
-            var x = (this._viewBox.x) + Number(oldx / this._zoom);
-            var y = (this._viewBox.y) + Number(oldy / this._zoom);
-    
-            this._zoom = ((this._zoom || 1) * delta) || 1;
-    
-            this.set(
-                x - (oldx / this._zoom),
-                y - (oldy / this._zoom),
-                patchWidth / this._zoom,
-                patchHeight / this._zoom
-                );
+            this.zoom(delta);
         }
         if (event.ctrlKey) // disable chrome pinch/zoom gesture
         {
@@ -277,6 +255,47 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 
     }.bind(this));
 }
+
+CABLES.UI.PatchViewBox.prototype.zoom=function(delta)
+{
+    if(delta==0)return;
+
+    var patchWidth = this._elePatch.offsetWidth;
+    var patchHeight = this._elePatch.offsetHeight;
+
+    if (this._zoom == null)
+    {
+        this._zoom = patchWidth / this._viewBox.w;
+        this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
+    }
+
+    var oldx = (event.clientX - this._elePatch.offsetLeft);
+    var oldy = (event.clientY - this._elePatch.offsetTop);
+    var x = (this._viewBox.x) + Number(oldx / this._zoom);
+    var y = (this._viewBox.y) + Number(oldy / this._zoom);
+
+    this._zoom = ((this._zoom || 1) * delta) || 1;
+
+    this.set(
+        x - (oldx / this._zoom),
+        y - (oldy / this._zoom),
+        patchWidth / this._zoom,
+        patchHeight / this._zoom
+        );
+
+    // if(amount==0)return;
+
+
+    // console.log('amount',amount);
+    // this.set(
+    //     this._viewBox.x-amount,
+    //     this._viewBox.y-amount,
+    //     this._viewBox.w+amount*2,
+    //     this._viewBox.h+amount*2
+    // );
+
+}
+
 
 CABLES.UI.PatchViewBox.prototype.zoomStep=function(dir)
 {

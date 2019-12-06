@@ -1225,7 +1225,21 @@ CABLES.UI.Patch = function(_gui) {
 
     function rubberBandMove(e) {
         if(CABLES.SPLITPANE.bound)return;
-        if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed) {
+
+        if(e.altKey || e.metaKey)
+        {
+            // zoom in for tablets ?
+            var delta=e.originalEvent.movementY;
+
+            if(delta==0)return;
+            if (delta < 0) delta = 0.95;
+            else delta = 1.05;
+
+            self._viewBox.zoom(delta);
+
+        }
+
+        if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed && !e.altKey && !e.metaKey) {
             gui.setTransformGizmo(null);
             
             if(!mouseRubberBandStartPos && !e.shiftKey) gui.patch().setSelectedOp(null);
