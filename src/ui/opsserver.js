@@ -401,6 +401,7 @@ CABLES.UI.ServerOps = function (gui)
                 if (attachmentName.endsWith(".frag")) syntax = "glsl";
                 if (attachmentName.endsWith(".vert")) syntax = "glsl";
                 if (attachmentName.endsWith(".json")) syntax = "json";
+                if (attachmentName.endsWith(".js")) syntax = "js";
                 if (attachmentName.endsWith(".css")) syntax = "css";
 
                 gui.jobs().finish("load_attachment_" + attachmentName);
