@@ -1121,7 +1121,7 @@ CABLES.UI.GUI = function(cfg) {
                     CABLES.CMD.PATCH.save();
                 } else
                 if (gui.mainTabs.getSaveButton()) {
-                    console.log("found savebutton",gui.mainTabs.getSaveButton());
+                    // console.log("found savebutton",gui.mainTabs.getSaveButton());
                     gui.mainTabs.getSaveButton().cb();
                 } else {
                     CABLES.CMD.PATCH.save();
