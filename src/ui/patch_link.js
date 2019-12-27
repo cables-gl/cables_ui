@@ -323,7 +323,7 @@ function UiLink(port1, port2)
 
         for (var i = 0; i < this._addCircles.length; i++)
         {
-            this._addCircles[i].remove();
+            if(this._addCircles[i]) this._addCircles[i].remove();
             this._addCircles[i] = null;
         }
 

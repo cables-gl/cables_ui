@@ -22,6 +22,12 @@ CABLES.CMD.DEBUG.globalVarDump=function()
     CABLES.GlobalVarTester.after(window);
 };
 
+CABLES.CMD.DEBUG.glgui=function()
+{
+	// CABLES.GlobalVarTester.after(window);
+	var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch);
+};
+
 
 
 CABLES.CMD.commands.push(
@@ -36,6 +42,13 @@ CABLES.CMD.commands.push(
 		category:"debug",
 		func:CABLES.CMD.DEBUG.globalVarDump,
         icon:'command'
+	},
+    {
+		cmd:"glgui",
+		category:"debug",
+		func:CABLES.CMD.DEBUG.glgui,
+        icon:'command'
 	}
 
+	
 );

@@ -2680,11 +2680,16 @@ CABLES.UI.Patch = function(_gui) {
     this.showOpParams = function(op) {
         // self.highlightOpNamespace(op);
         gui.setTransformGizmo(null);
-        if(gui.find().isVisible())gui.find().setSelectedOp(op.id);
-        clearTimeout(delayedShowOpParams);
-        delayedShowOpParams = setTimeout(function() {
-            self._showOpParams(op);
-        }, 10);
+
+        if(op)
+        {
+            if(gui.find().isVisible())gui.find().setSelectedOp(op.id);
+            clearTimeout(delayedShowOpParams);
+            delayedShowOpParams = setTimeout(function() {
+                self._showOpParams(op);
+            }, 10);
+                
+        }
     };
 
     this.openParamEditor=function(opid,portname,cb)
