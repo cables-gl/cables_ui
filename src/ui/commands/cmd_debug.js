@@ -24,8 +24,11 @@ CABLES.CMD.DEBUG.globalVarDump=function()
 
 CABLES.CMD.DEBUG.glgui=function()
 {
-	// CABLES.GlobalVarTester.after(window);
-	var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch);
+	// var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch);
+	// a.setSize(640,360);
+
+	var t=new CABLES.GLGUI.GlGuiTab(gui.mainTabs);
+	
 };
 
 

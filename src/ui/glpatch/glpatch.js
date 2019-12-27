@@ -3,13 +3,19 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 {
-    constructor(patch,cgl)
+    constructor(cgl)
     {
         super();
-        this._patch=patch;
+        // this._patch=patch;
+        if(!cgl)
+        {
+            console.error("[glpatch] need cgl");
+        }
+        this._cgl=cgl;
         if(!cgl)cgl=patch.cgl;
         this._glOpz={};
         this._patchAPI=null;
+        this._showRedrawFlash=false;
 
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
@@ -26,6 +32,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor2.setSize(4,4);
         this._cursor2.setColor(0,0,1,1);
 
+
+        this._redrawFlash=this._overLayRects.createRect();
+        this._redrawFlash.setSize(224,224);
+
         this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
 
         this._viewZoom=0;
@@ -33,6 +43,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._viewScrollY=0;
         this._viewResX=0;
         this._viewResY=0;
+
+        this.needsRedraw=false;
 
         this._selectedGlOps={};
         
@@ -157,6 +169,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         op.addEventListener("onUiAttribsChange",()=>{
             glOp.opUiAttribs=op.uiAttribs;
             glOp.update();
+            
             });
     }
 
@@ -178,6 +191,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
     {
+        this._showRedrawFlash=!this._showRedrawFlash;
+        if(this._showRedrawFlash) this._redrawFlash.setColor(0,0,0,1);
+        else this._redrawFlash.setColor(0,1,0,1);
+
+
         this._patchAPI.updateFlowModeActivity();
 
         this._viewResX=resX;
@@ -201,7 +219,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
         this._textWriter.render(resX,resY,scrollX,scrollY,zoom);
 
-        this.quickLinkSuggestion.glRender(this._patch.cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
+        this.quickLinkSuggestion.glRender(this.cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
+
+        this.needsRedraw=false;
     }
 
     removeSelectionArea()

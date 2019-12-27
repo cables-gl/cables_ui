@@ -372,6 +372,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this.updatePosition();
         for(var i in this._links) this._links[i].update();
+        this._glPatch.needsRedraw=true;
     }
 
     set selected(s)
