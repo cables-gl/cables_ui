@@ -31,6 +31,9 @@ CABLES.GLGUI.GlUiCanvas=class
         this.width=0,this.height=0;
         this._mouseX=0,this._mouseY=0;
 
+        this._scrollX=0,this._scrollY=0;
+        this._oldScrollX=0,this._oldScrollY=0;
+
         this.canvas = document.createElement("canvas");
         this.canvas.id="glGuiCanvas-"+CABLES.uuid();
         // this.canvas.style.display='block';
@@ -61,6 +64,11 @@ CABLES.GLGUI.GlUiCanvas=class
 
         this.canvas.addEventListener("mousemove",(e)=>
         {
+            if(this._mouseButton==2)
+            {
+                this._scrollX=this._oldScrollX+this._mouseRightDownStartX-e.offsetX;
+                this._scrollY=this._oldScrollY+this._mouseRightDownStartY-e.offsetY;
+            }
             this._mouseX=e.offsetX;
             this._mouseY=e.offsetY;
             this.glPatch.needsRedraw=true;
@@ -68,6 +76,14 @@ CABLES.GLGUI.GlUiCanvas=class
 
         this.canvas.addEventListener("mousedown",(e)=>
         {
+            if(e.buttons==2)
+            {
+                console.log("down!! right");
+                this._oldScrollX=this._scrollX;
+                this._oldScrollY=this._scrollY;
+                this._mouseRightDownStartX=e.offsetX;
+                this._mouseRightDownStartY=e.offsetY;
+            }
             this.glPatch.needsRedraw=true;
             this._mouseButton=e.buttons;
         });
@@ -76,6 +92,9 @@ CABLES.GLGUI.GlUiCanvas=class
         {
             this.glPatch.needsRedraw=true;
             this._mouseButton=-1;
+
+            this._oldScrollX=this._scrollX;
+            this._oldScrollY=this._scrollY;
         });
 
         this.canvas.addEventListener("mouseleave",(e)=>
@@ -88,12 +107,13 @@ CABLES.GLGUI.GlUiCanvas=class
             this._mouseOver=true;
         });
 
-
         this.parentResized();
 
         this._fontTex=CGL.Texture.load(this.patch.cgl,"/ui/img/sdf_font_arial.png",
             ()=>{
+                this.glPatch.setFont(this._fontTex);
                 this.glPatch.needsRedraw=true;
+
             },{flip:false});
 
     }
@@ -136,7 +156,6 @@ CABLES.GLGUI.GlUiCanvas=class
         }
         
 
-        this.glPatch.setFont(this._fontTex);
         // var identTranslate=vec3.create();
         // vec3.set(identTranslate, 0,0,0);
         // var identTranslateView=vec3.create();
@@ -156,7 +175,7 @@ CABLES.GLGUI.GlUiCanvas=class
 
         this.glPatch.render(
             this.width,this.height,
-            0,0, //scroll
+            -this._scrollX,this._scrollY, //scroll
             333, //zoom
             this._mouseX,this._mouseY, //mouse
             this._mouseButton // mouse button
