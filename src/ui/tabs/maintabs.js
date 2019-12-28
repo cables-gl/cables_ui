@@ -3,6 +3,7 @@ CABLES.UI =CABLES.UI || {};
 
 CABLES.UI.MainTabPanel=function(tabs)
 {
+    CABLES.EventTarget.apply(this);
     this._tabs=tabs;
     this._visible=false;
     this._ele=document.getElementById("maintabs");
@@ -16,26 +17,27 @@ CABLES.UI.MainTabPanel=function(tabs)
 
     // }.bind(this));
 
-    
-    this._tabs.addEventListener("onTabAdded",function(tab)
+
+
+    this._tabs.addEventListener("onTabAdded",(tab)=>
     {
         var wasVisible=this._visible;
         // if(!wasVisible) this.show();
-        
+               
         tabs.activateTab(tab.id);
         
         if(!wasVisible && window.gui) gui.setLayout();
 
-    }.bind(this));
+    });
 
-    this._tabs.addEventListener("onTabRemoved",function(tab)
+    this._tabs.addEventListener("onTabRemoved",(tab)=>
     {
         if(this._tabs.getNumTabs()==0)
         {
             this.hide();
             gui.setLayout();
         }
-    }.bind(this));
+    });
 };
 
 CABLES.UI.MainTabPanel.prototype.init=function()

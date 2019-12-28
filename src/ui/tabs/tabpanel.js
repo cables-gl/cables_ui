@@ -119,6 +119,11 @@ CABLES.UI.TabPanel = function (eleId)
         this._eleContentContainer.innerHTML = "";
         ele.appendChild(this._eleContentContainer);
     }
+
+    this.on("resize",()=>
+    {
+        for(var i=0;i<this._tabs.length;i++) this._tabs[i].emitEvent("resize");
+    });
 };
 
 CABLES.UI.TabPanel.prototype.updateHtml = function ()

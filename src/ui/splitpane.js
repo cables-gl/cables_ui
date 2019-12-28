@@ -38,6 +38,7 @@ $( document ).ready(function()
             if(gui.editorWidth<30)gui.editorWidth=30;
             CABLES.UI.userSettings.set("editorWidth",gui.editorWidth);
             gui.setLayout();
+            gui.mainTabs.emitEvent("resize");
         }
         document.addEventListener("mousemove",mm);
         CABLES.SPLITPANE.listeners.push(mm);

@@ -15,7 +15,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if(!cgl)cgl=patch.cgl;
         this._glOpz={};
         this._patchAPI=null;
-        this._showRedrawFlash=false;
+        this._showRedrawFlash=0;
 
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
@@ -29,12 +29,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._mouseOverCanvas=false;
 
         this._cursor2=this._overLayRects.createRect();
-        this._cursor2.setSize(4,4);
-        this._cursor2.setColor(0,0,1,1);
-
+        this._cursor2.setSize(2,2);
+        // this._cursor2.setColor(0,0,1,1this._cursor2.setSize(2,2%20);
+// 
 
         this._redrawFlash=this._overLayRects.createRect();
-        this._redrawFlash.setSize(224,224);
+        this._redrawFlash.setSize(50,5);
+        this._redrawFlash.setColor(0,1,0,1);
+        this._selectRect.setPosition(0,0,1000);
 
         this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
 
@@ -166,10 +168,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         glOp.setTitle(this._textWriter,op.name);
         glOp.update();
 
-        op.addEventListener("onUiAttribsChange",()=>{
-            glOp.opUiAttribs=op.uiAttribs;
-            glOp.update();
-            
+        op.addEventListener("onUiAttribsChange",
+            ()=>{
+                glOp.opUiAttribs=op.uiAttribs;
+                glOp.update();
             });
     }
 
@@ -191,9 +193,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
     {
-        this._showRedrawFlash=!this._showRedrawFlash;
-        if(this._showRedrawFlash) this._redrawFlash.setColor(0,0,0,1);
-        else this._redrawFlash.setColor(0,1,0,1);
+        this._showRedrawFlash++;
+        // if(this._showRedrawFlash) this._redrawFlash.setColor(0,0,0,1);
+        // else this._redrawFlash.setColor(0,1,0,1);
+        this._redrawFlash.setPosition(0,this._showRedrawFlash%30,1000);
 
 
         this._patchAPI.updateFlowModeActivity();

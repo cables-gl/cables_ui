@@ -986,12 +986,13 @@ CABLES.UI.GUI = function(cfg) {
         });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
-        window.addEventListener('resize', function()
+        window.addEventListener('resize', ()=>
         {
-            self.showCanvasModal(false);
+            this.showCanvasModal(false);
             $('#glcanvas').blur();
-            self.setLayout();
-            self.patch().getViewBox().update();
+            this.setLayout();
+            this.patch().getViewBox().update();
+            this.mainTabs.emitEvent("resize");
         }, false);
 
         document.addEventListener('copy', function(e) {
