@@ -1,8 +1,6 @@
 var CABLES=CABLES||{};
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-
-
 CABLES.GLGUI.VISUALCONFIG=
 {
     "OpTitlePaddingLeftRight":10,
@@ -15,5 +13,8 @@ CABLES.GLGUI.VISUALCONFIG=
     "snapY": 20,
 
     "opHeight": 31,
-    "opWidth": 90
+    "opWidth": 90,
+
+    "minZoom":15,
+    "zoomSmooth":3
 };

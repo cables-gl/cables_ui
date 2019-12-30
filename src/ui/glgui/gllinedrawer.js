@@ -67,7 +67,7 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'void main()'
             .endl()+'{'
             .endl()+'   vec4 color=col;'
-            .endl()+'   if(color.a==0.0) discard;'
+            // .endl()+'   if(color.a==0.0) discard;'
             .endl()+'   float stepLength=10.0;'
 
             .endl()+'   float showSpeed=clamp(speedy,0.0,1.0);'
@@ -79,6 +79,8 @@ CABLES.GLGUI.Linedrawer=class
             // .endl()+'   else color.rgb = color.rgb*0.55;'
 
             .endl()+'   color.rgb = color.rgb;'
+            .endl()+'   color.a = 1.0;'
+            .endl()+'   color.r = 1.0;'
 
 
 
@@ -128,9 +130,10 @@ CABLES.GLGUI.Linedrawer=class
         this._uniscrollX.set(scrollX);
         this._uniscrollY.set(scrollY);
         this._uniZoom.set(1.0/zoom);
-        this._uniTime.set( ((performance.now()-this._startTime)/1000)*20.0);
+        this._uniTime.set(((performance.now()-this._startTime)/1000)*20.0);
 
         if(this._needsUpload)this.rebuild();
+
 
         this._mesh.render(this._shader);
     }
@@ -139,6 +142,7 @@ CABLES.GLGUI.Linedrawer=class
     {
         var perf = CABLES.uiperf.start('[glLineDrawer] rebuild');
 
+        // console.log(this._positions);
         // todo only update whats needed
         this._mesh.setAttribute(CGL.SHADERVAR_VERTEX_POSITION,this._positions,3);
         this._mesh.setAttribute('color',this._colors,4);

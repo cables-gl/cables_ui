@@ -9,6 +9,7 @@ CABLES.GLGUI.GlGuiTab = function (tabs)
     gui.maintabPanel.show();
     this._tab.contentEle.innerHTML="";
     var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch,this._tab.contentEle);
+
     
     a.parentResized();
 
@@ -32,6 +33,8 @@ CABLES.GLGUI.GlUiCanvas=class
         this.width=0,this.height=0;
         this._mouseX=0,this._mouseY=0;
         this._zoom=333;
+        this._smoothedZoom=new CABLES.UI.ValueSmoother(this._zoom,CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
+
 
         this._scrollX=0,this._scrollY=0;
         this._oldScrollX=0,this._oldScrollY=0;
@@ -67,13 +70,9 @@ CABLES.GLGUI.GlUiCanvas=class
         this.patch.cgl.pixelDensity=window.devicePixelRatio;
         this.setSize(100,100);
 
-
-
         this.canvas.addEventListener("mousemove",(e)=>
         {
             this.activityHigh();
-
-
 
             if(this._mouseButton==2)
             {
@@ -135,7 +134,10 @@ CABLES.GLGUI.GlUiCanvas=class
 
             if(event.altKey) this._scrollY-=delta;
             else if(event.shiftKey) this._scrollX-=delta;
-            else this._zoom+=delta;
+            else this._zoom+=delta*(this._zoom/155);
+
+            this._zoom=Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom,this._zoom);
+            this._smoothedZoom.set(this._zoom);
 
             if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
             {
@@ -236,10 +238,12 @@ CABLES.GLGUI.GlUiCanvas=class
         cgl.gl.clearColor(0.23,0.23,0.23,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
+        this._smoothedZoom.update();
+
         this.glPatch.render(
             this.width,this.height,
             -this._scrollX,this._scrollY, //scroll
-            this._zoom, //zoom
+            this._smoothedZoom.value, //zoom
             this._mouseX,this._mouseY, //mouse
             this._mouseButton // mouse button
             );

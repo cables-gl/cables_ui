@@ -19,11 +19,15 @@ CABLES.GLGUI.GlPatchAPI=class
     _initPatch()
     {
         console.log("patch.ops.length",this._patch.ops.length);
-        for(var i=0;i<this._patch.ops.length;i++)
+        var i=0;
+        for(i=0;i<this._patch.ops.length;i++)
         {
             const op=this._patch.ops[i];
-
             this._glPatch.addOp(op);
+        }
+        for(i=0;i<this._patch.ops.length;i++)
+        {
+            const op=this._patch.ops[i];
 
             for(var ip=0;ip<op.portsIn.length;ip++)
             {
