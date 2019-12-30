@@ -246,7 +246,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             
             this.zoom(delta);
         }
-        if (event.ctrlKey) // disable chrome pinch/zoom gesture
+        if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
         {
             event.preventDefault();
             event.stopImmediatePropagation();

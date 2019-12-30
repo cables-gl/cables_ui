@@ -27,9 +27,11 @@ CABLES.GLGUI.GlUiCanvas=class
     constructor(_patch,parentEle)
     {
         this._moveover=true;
+        this._firstTime=true;
         this._lastTime=0;
         this.width=0,this.height=0;
         this._mouseX=0,this._mouseY=0;
+        this._zoom=333;
 
         this._scrollX=0,this._scrollY=0;
         this._oldScrollX=0,this._oldScrollY=0;
@@ -45,29 +47,41 @@ CABLES.GLGUI.GlUiCanvas=class
 
         if(parentEle)parentEle.appendChild(this.canvas);
         else document.body.appendChild(this.canvas);
-        
+
         this.patch=new CABLES.Patch(
             {
                 "glCanvasId":this.canvas.id,
                 "glCanvasResizeToParent":false,
                 "glCanvasResizeToWindow":false
             });
-        
+
+        for(var i=0;i<=8;i++) this.patch.cgl.setTexture(i,CGL.Texture.getEmptyTexture(this.patch.cgl).tex);
+
         this.glPatch=new CABLES.GLGUI.GlPatch(this.patch.cgl);
         this.patchApi=new CABLES.GLGUI.GlPatchAPI(_patch,this.glPatch);
         
         this.patchApi.reset();
         
         this.patch.addEventListener("onRenderFrame",this.render.bind(this));
+
         this.patch.cgl.pixelDensity=window.devicePixelRatio;
         this.setSize(100,100);
 
+
+
         this.canvas.addEventListener("mousemove",(e)=>
         {
+            this.activityHigh();
+
+
+
             if(this._mouseButton==2)
             {
-                this._scrollX=this._oldScrollX+this._mouseRightDownStartX-e.offsetX;
-                this._scrollY=this._oldScrollY+this._mouseRightDownStartY-e.offsetY;
+                const pixelMulX=this.width/this._zoom*0.5;
+                const pixelMulY=this.height/this._zoom*0.5;
+
+                this._scrollX=this._oldScrollX+(this._mouseRightDownStartX-e.offsetX)/pixelMulX;
+                this._scrollY=this._oldScrollY+(this._mouseRightDownStartY-e.offsetY)/pixelMulY;
             }
             this._mouseX=e.offsetX;
             this._mouseY=e.offsetY;
@@ -76,9 +90,9 @@ CABLES.GLGUI.GlUiCanvas=class
 
         this.canvas.addEventListener("mousedown",(e)=>
         {
+            this.activityHigh();
             if(e.buttons==2)
             {
-                console.log("down!! right");
                 this._oldScrollX=this._scrollX;
                 this._oldScrollY=this._scrollY;
                 this._mouseRightDownStartX=e.offsetX;
@@ -90,6 +104,7 @@ CABLES.GLGUI.GlUiCanvas=class
 
         this.canvas.addEventListener("mouseup",(e)=>
         {
+            this.activityHigh();
             this.glPatch.needsRedraw=true;
             this._mouseButton=-1;
 
@@ -99,23 +114,51 @@ CABLES.GLGUI.GlUiCanvas=class
 
         this.canvas.addEventListener("mouseleave",(e)=>
         {
+            this.activityMedium();
             this._mouseOver=false;
         });
 
         this.canvas.addEventListener("mouseenter",(e)=>
         {
+            this.activityHigh();
             this._mouseOver=true;
         });
 
-        this.parentResized();
+        this.canvas.addEventListener("wheel", (event)=>
+        {
+            this.activityHigh();
+            const wheelMultiplier=CABLES.UI.userSettings.get("wheelmultiplier")||1;
+    
+            var delta = CGL.getWheelSpeed(event);
+            event = mouseEvent(event);
+            delta*=wheelMultiplier;
+
+            if(event.altKey) this._scrollY-=delta;
+            else if(event.shiftKey) this._scrollX-=delta;
+            else this._zoom+=delta;
+
+            if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
+            {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                return;
+            }
+    
+        });
+
+
+
+
 
         this._fontTex=CGL.Texture.load(this.patch.cgl,"/ui/img/sdf_font_arial.png",
             ()=>{
                 this.glPatch.setFont(this._fontTex);
                 this.glPatch.needsRedraw=true;
-
             },{flip:false});
 
+        this.parentResized();
+        this.activityHigh();
+    
     }
 
     get element()
@@ -142,41 +185,61 @@ CABLES.GLGUI.GlUiCanvas=class
 
     dispose()
     {
-        this.canvas.remove();
         this.patch.removeEventListener("onRenderFrame",this.render.bind(this));
+        this.patch.pause();
+        this.patch.dispose();
+        this.canvas.remove();
+    }
+
+    activityIdle()
+    {
+        this._targetFps=20;
+    }
+
+    activityHigh()
+    {
+        this._targetFps=0;
+        clearTimeout(this._activityTimeout);
+        this._activityTimeout=setTimeout(()=>{ this.activityMedium(); },1000);
+    }
+
+    activityMedium()
+    {
+        this._targetFps=30;
+        if(!this._mouseOver)this._targetFps=25;
+        clearTimeout(this._activityTimeout);
+        this._activityTimeout=setTimeout(()=>{ this.activityIdle(); },2000);
     }
 
     render()
     {
-        // if(!this.glPatch.needsRedraw)return;
-        if(!this._mouseOver && performance.now()-this._lastTime < 25)
+        if(this._targetFps!=0 && !this._mouseOver && performance.now()-this._lastTime < 1000/this._targetFps)
         {
-            // console.log("skip frame!");
             return;
         }
-        
 
-        // var identTranslate=vec3.create();
-        // vec3.set(identTranslate, 0,0,0);
-        // var identTranslateView=vec3.create();
-        // vec3.set(identTranslateView, 0,0,-2);
-        
-        // console.log("render!");
+        if(this._oldTargetFps!=this._targetFps)
+        {
+            // console.log("target fps:",this._targetFps)
+            this._oldTargetFps=this._targetFps;
+        }
+
         const cgl=this.patch.cgl;
 
-        // this.setSize(800,400);
         cgl.renderStart(cgl);
+
+        if(this._firstTime)
+        {
+            this._firstTime=false;
+        }
 
         cgl.gl.clearColor(0.23,0.23,0.23,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
-        
-        // this.patchApi.reset();
-
         this.glPatch.render(
             this.width,this.height,
             -this._scrollX,this._scrollY, //scroll
-            333, //zoom
+            this._zoom, //zoom
             this._mouseX,this._mouseY, //mouse
             this._mouseButton // mouse button
             );

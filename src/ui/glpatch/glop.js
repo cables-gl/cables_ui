@@ -123,7 +123,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this._glRectBg.on("mousedown", (e) =>
             {
-                console.log("GLOP MOUSE DOWNNNNNNN!");
+                if(!this.selected && !e.shiftKey) this._glPatch.unselectAll();
+                this._glPatch.selectOpId(this.id);
+
                 glPatch.quickLinkSuggestion.longPressPrepare(this._op,this.x+this.w/2,this.y+this.h);
             });
         
@@ -135,8 +137,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
                     return;
                 }
                 console.log("GLOP MOUSE UP!");
-                if(!e.shiftKey) this._glPatch.unselectAll();
-                this.selected=true;
+                
 
                 if(this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e,this._op);
             });

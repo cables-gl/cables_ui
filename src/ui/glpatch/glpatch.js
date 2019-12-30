@@ -28,10 +28,26 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectRect.setSize(0,0);
         this._mouseOverCanvas=false;
 
+
+        for(var i=-100;i<100;i++)
+        {
+            const col=0.3;
+            const size=10000;
+
+            const gridLine=this._overLayRects.createRect();
+            gridLine.setColor(col,col,col,1);
+            gridLine.setPosition(i*100,-0.5*size,-11111);
+            gridLine.setSize(1,size);
+
+            const gridLine2=this._overLayRects.createRect();
+            gridLine2.setColor(col,col,col,1);
+            gridLine2.setPosition(-0.5*size,i*100,-11111);
+            gridLine2.setSize(size,1);            
+        }
+
+
         this._cursor2=this._overLayRects.createRect();
         this._cursor2.setSize(2,2);
-        // this._cursor2.setColor(0,0,1,1this._cursor2.setSize(2,2%20);
-// 
 
         this._redrawFlash=this._overLayRects.createRect();
         this._redrawFlash.setSize(50,5);
@@ -217,12 +233,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         scrollX/=zoom;
         scrollY/=zoom;
 
+        
+
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
         this._rectInstancer.render(resX,resY,scrollX,scrollY,zoom);
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
         this._textWriter.render(resX,resY,scrollX,scrollY,zoom);
 
-        this.quickLinkSuggestion.glRender(this.cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
+        this.quickLinkSuggestion.glRender(this._cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
 
         this.needsRedraw=false;
     }
@@ -331,7 +349,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     selectOpId(id)
     {
-        if(this._glOpz[id]) this._selectedGlOps[id]=this._glOpz[id];
+        if(this._glOpz[id])
+        {
+            this._selectedGlOps[id]=this._glOpz[id];
+            this._glOpz[id].selected=true;
+        }
         else console.warn('[glpatch selectOpId] unknown opid',id);
     }
 
