@@ -27,7 +27,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         this._attrTextures=new Float32Array(this._num);
         this._attrColors=new Float32Array(4*this._num);
         this._attrSizes=new Float32Array(2*this._num);
-        this._attrOutline=new Float32Array(this._num);
+        // this._attrOutline=new Float32Array(this._num);
         this._attrCircle=new Float32Array(this._num);
         this._attrTexRect=new Float32Array(4*this._num);
 
@@ -40,12 +40,12 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             .endl()+'IN vec4 texRect;'
 
             .endl()+'IN vec2 instSize;'
-            .endl()+'IN float outline;'
+            // .endl()+'IN float outline;'
             
             .endl()+'IN float circle;'
             .endl()+'OUT float frCircle;'
             
-            .endl()+'OUT float outlinefrag;'
+            // .endl()+'OUT float outlinefrag;'
             .endl()+'OUT vec4 posSize;'
             .endl()+'OUT vec4 col;'
             .endl()+'OUT vec2 uv;'
@@ -65,7 +65,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             .endl()+'    uv=attrTexCoord*texRect.zw+texRect.xy;'
             .endl()+'    uv.y=1.0-uv.y;'
 
-            .endl()+'    outlinefrag=outline/resY*aspect*1.0;'
+            // .endl()+'    outlinefrag=outline/resY*aspect*1.0;'
 
             .endl()+'    vec3 pos=vPosition;'
             .endl()+'    pos.xy*=instSize;'
@@ -90,7 +90,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             , ''
             .endl()+'IN vec4 col;'
             .endl()+'IN vec4 posSize;'
-            .endl()+'IN float outlinefrag;'
+            // .endl()+'IN float outlinefrag;'
             .endl()+'IN vec2 uv;'
             .endl()+'IN float frCircle;'
             .endl()+'IN float useTexture;'
@@ -102,14 +102,14 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             .endl()+'   outColor=col;'
 
             // outlines
-            .endl()+'   if(outlinefrag>0.0){'
+            // .endl()+'   if(outlinefrag>0.0){'
 
-            .endl()+'       float add=(1.0-step(outlinefrag,posSize.x));'
-            .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));'
-            .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));'
-            .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));'
-            .endl()+'       outColor.rgb+=vec3(add*0.4);'
-            .endl()+'   }'
+            // .endl()+'       float add=(1.0-step(outlinefrag,posSize.x));'
+            // .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));'
+            // .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));'
+            // .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));'
+            // .endl()+'       outColor.rgb+=vec3(add*0.4);'
+            // .endl()+'   }'
 
             .endl()+'if(useTexture>=0.0)'
             .endl()+'{'
@@ -180,7 +180,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         for(i=0;i<2*this._num;i++) this._attrSizes[i]=0;//Math.random()*61;
         for(i=0;i<3*this._num;i++) this._attrPositions[i]=0;//Math.random()*60;
         for(i=0;i<4*this._num;i++) this._attrColors[i]=1;//Math.random();
-        for(i=0;i<this._num;i++) this._attrOutline[i]=0;//Math.random();
+        // for(i=0;i<this._num;i++) this._attrOutline[i]=0;//Math.random();
         for(i=0;i<this._num;i++) this._attrCircle[i]=0;//Math.random();
 
         for(i=0;i<this._num;i++) this._attrTextures[i]=-1;//Math.random();
@@ -294,7 +294,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         this._mesh.setAttribute('instPos',this._attrPositions,3,{instanced:true});
         this._mesh.setAttribute('instCol',this._attrColors,4,{instanced:true});
         this._mesh.setAttribute('instSize',this._attrSizes,2,{instanced:true});
-        this._mesh.setAttribute('outline',this._attrOutline,1,{instanced:true});
+        // this._mesh.setAttribute('outline',this._attrOutline,1,{instanced:true});
         this._mesh.setAttribute('circle',this._attrCircle,1,{instanced:true});
         this._mesh.setAttribute('texRect',this._attrTexRect,4,{instanced:true});
         this._mesh.setAttribute('contentTexture',this._attrTextures,1,{instanced:true});
@@ -384,11 +384,11 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         this._attrCircle[idx]=o;
     }
 
-    setOutline(idx,o)
-    {
-        if(this._attrOutline[idx]!=o) { this._needsRebuild=true; }
-        this._attrOutline[idx]=o;
-    }
+    // setOutline(idx,o)
+    // {
+    //     if(this._attrOutline[idx]!=o) { this._needsRebuild=true; }
+    //     this._attrOutline[idx]=o;
+    // }
 
     createRect(options)
     {

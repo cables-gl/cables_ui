@@ -12,7 +12,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._attrIndex=instancer.getIndex();
         this._parent=options.parent||null;
         this.childs=[];
-        this._outline=0;
         this._circle=false;
         this._x=0;
         this._y=0;
@@ -24,6 +23,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this._data={};
         this.color=vec4.create();
         this.colorHover=null;
+        this.colorHoverMultiply=1.4;
         this._texture=null;
 
         // draggable stuff
@@ -134,21 +134,21 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         return x>this._absX &&  x<this._absX+this._w &&  y>this._absY && y<this._absY+this._h;
     }
 
-    setOutline(o)
-    {
-        if(!o) o=0;
-        else if(o===true) o=1;
+    // setOutline(o)
+    // {
+    //     if(!o) o=0;
+    //     else if(o===true) o=1;
 
-        this._rectInstancer.setOutline(this._attrIndex,o);
-    }
+    //     this._rectInstancer.setOutline(this._attrIndex,o);
+    // }
 
     mouseUp(e)
     {
         if(this._hovering)
         {
             this.emitEvent("mouseup",e,this);
-            for(var i=0;i<this.childs.length;i++) this.childs[i].mouseUp(e);
         }
+        for(var i=0;i<this.childs.length;i++) this.childs[i].mouseUp(e);
     }
 
     mouseDown(e)
@@ -157,8 +157,8 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         {
             this.emitEvent("mousedown",e,this);
 
-            for(var i=0;i<this.childs.length;i++) this.childs[i].mouseDown(e);
         }
+        for(var i=0;i<this.childs.length;i++) this.childs[i].mouseDown(e);
     }
 
     isHovering()
@@ -185,23 +185,35 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
     {
         const hovering=this.isPointInside(x,y)
 
-        if(hovering && !this._hovering) this.emitEvent("hover",this);
-        else if(!hovering && this._hovering) this.emitEvent("unhover",this);
-
+        const isHovered=this._hovering;
         this._hovering=hovering;
+
+        if(hovering && !isHovered) this.emitEvent("hover",this);
+        else if(!hovering && isHovered) this.emitEvent("unhover",this);
+
+        
 
         if(this.colorHover)
         {
             if(!this._hovering) this._rectInstancer.setColor(this._attrIndex,this.color[0],this.color[1],this.color[2],this.color[3]);
             else this._rectInstancer.setColor(this._attrIndex,this.colorHover[0],this.colorHover[1],this.colorHover[2],this.colorHover[3]);
         }
+        if(this.colorHoverMultiply)
+        {
+            if(!this._hovering) this._rectInstancer.setColor(this._attrIndex,this.color[0],this.color[1],this.color[2],this.color[3]);
+            else this._rectInstancer.setColor(this._attrIndex,this.color[0]*this.colorHoverMultiply,this.color[1]*this.colorHoverMultiply,this.color[2]*this.colorHoverMultiply,this.color[3]*this.colorHoverMultiply);
+        }
 
         for(var i=0;i<this.childs.length;i++)
         {
             this.childs[i].mouseMove(x,y);
+            if(this.childs[i].isHovering())
+            {
+                this._hovering=false;
+            }
         }
 
-        if(hovering)
+        if(this._hovering)
         {
             if(button==1)
             {
@@ -214,7 +226,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
                 }
                 this._dragOffsetX=x-this._dragStartX;
                 this._dragOffsetY=y-this._dragStartY;
-
             }
         }
     }

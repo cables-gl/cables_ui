@@ -18,6 +18,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._textWriter=null;
         this._glTitleExt=null;
         this._glTitle=null;
+        this._glPorts=[];
         this.opUiAttribs={};
 
         this.uiAttribs=op.uiAttribs;
@@ -94,17 +95,17 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
                 //     });
             });
 
-        this._glRectBg.addEventListener("hover",() =>
+        this._glRectBg.on("hover",() =>
         {
-            this._glRectBg.setOutline(true);
+            // this._glRectBg.setOutline(true);
         });
 
-        this._glRectBg.addEventListener("unhover",() =>
+        this._glRectBg.on("unhover",() =>
         {
-            this._glRectBg.setOutline(false);
+            // this._glRectBg.setOutline(false);
         });
 
-        this._portRects=[];
+        // this._portRects=[];
         this._links={};
 
         for(var i=0;i<this._op.portsIn.length;i++) this._setupPort(i,this._op.portsIn[i]);
@@ -233,10 +234,10 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         if(this._glRectBg) this._glRectBg.dispose();
         if(this._glTitle) this._glTitle.dispose();
-        for(var i=0;i<this._portRects.length;i++) this._portRects[i].dispose();
+        for(var i=0;i<this._glPorts.length;i++) this._glPorts[i].dispose();
 
         this._op=null;
-        this._portRects.length=0;
+        this._glPorts.length=0;
         this._glRectBg=null;
         this._instancer=null;
     }
@@ -255,37 +256,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         if (p.uiAttribs.display == 'dropdown')return;
 
-        var r=new CABLES.GLGUI.GlRect(this._instancer,{"parent":this._glRectBg});
-        r.setSize(CABLES.GLGUI.VISUALCONFIG.portWidth,CABLES.GLGUI.VISUALCONFIG.portHeight);
-
-        this._glPatch.setDrawableColorByType(r,p.type);
-
-        var y=0;
-        if(p.direction==1) y=CABLES.UI.uiConfig.opHeight-CABLES.GLGUI.VISUALCONFIG.portHeight;
-        
-        r.setPosition(i*(CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portPadding),y);
-        this._glRectBg.addChild(r);
-        this._portRects.push(r);
-        r.data.portId=p.id;
-        r.data.opId=p.parent.id;
-
-        r.addEventListener("mousedown",(e,rect) =>
-        {
-            if(e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT)
-            {
-                this._glPatch.patchAPI.unlinkPort(rect.data.opId,rect.data.portId);
-            }
-        });
-
-        r.addEventListener("hover",(rect) =>
-        {
-            rect.setOutline(true);
-        });
-
-        r.addEventListener("unhover",(rect) =>
-        {
-            rect.setOutline(false);
-        });
+        const glp=new CABLES.GLGUI.GlPort(this._glPatch,this._instancer,p,i,this._glRectBg);
+        this._glPorts.push(glp);
     }
 
     updatePosition()
@@ -380,7 +352,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
 
         this.opUiAttribs.selected=s;
-        if(s) this._glRectBg.setColor(90/255,90/255,90/255,1)
+        if(s) this._glRectBg.setColor(73/255,73/255,73/255,1)
         else this._glRectBg.setColor(51/255,51/255,51/255,1)
     }
 
