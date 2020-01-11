@@ -91,7 +91,6 @@ CABLES.GLGUI.Text=class
             const ch=font.characters[char]||font.characters["?"];
             if(char=='\n')
             {
-                console.log('break');
                 posX=0;
                 posY+=lineHeight;
                 continue;

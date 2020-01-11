@@ -53,6 +53,12 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     
         });
 
+        // this._glRectBg.on("mouseup", (e) =>
+        // {
+        //     console.log("mouse up op!!!");
+
+        // });
+
         this._glRectBg.on("drag",
             (rect) =>
             {
@@ -133,6 +139,9 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         
         this._glRectBg.on("mouseup", (e) =>
             {
+
+                glPatch.emitEvent("mouseUpOverOp",e,this._id);
+
                 if(this.isPassiveDrag())
                 {
                     console.log("GLOP mouseup canceled!");

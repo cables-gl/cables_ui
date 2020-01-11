@@ -104,9 +104,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         cgl.canvas.addEventListener("mouseup",(e) =>
         {
-            this.emitEvent("mouseup",e);
 
             this._rectInstancer.mouseUp(e);
+            this.emitEvent("mouseup",e);
             this.quickLinkSuggestion.longPressCancel();
             this._rectInstancer.interactive=true;
         });

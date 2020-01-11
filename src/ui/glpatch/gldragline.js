@@ -27,6 +27,19 @@ CABLES.GLGUI.GlRectDragLine=class
             this.setPort(p,opid,portName);
         });
 
+        glpatch.on("mouseUpOverOp",(e,opid) =>
+        {
+            if(this.isActive)
+                this._glPatch.patchAPI.linkPortToOp(
+                    e,
+                    this._startPortOpId,
+                    this._startPortName,
+                    opid);
+
+        });
+
+        
+
         glpatch.on("mouseUpOverPort",(opid,portName) =>
         {
             console.log('mouseUpOverPort',
