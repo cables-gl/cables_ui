@@ -12,14 +12,39 @@ CABLES.GLGUI.GlRectDragLine=class
         this._glPatch=glpatch;
         this._patchDragWasAllowed=this._glPatch.allowDragging;
 
+        this._startPortOpId=null;
+        this._startPortName=null;
 
-        glpatch.addEventListener("mouseup",(e) =>
+
+        glpatch.on("mouseup",(e) =>
         {
             this.stop();
         });
+
+        
+        glpatch.on("mouseDownOverPort",(p,opid,portName) =>
+        {
+            this.setPort(p,opid,portName);
+        });
+
+        glpatch.on("mouseUpOverPort",(opid,portName) =>
+        {
+            console.log('mouseUpOverPort',
+            this._startPortOpId,
+            this._startPortName,
+            opid,
+            portName);
+    
+            this._glPatch.patchAPI.linkPorts(this._startPortOpId,
+                this._startPortName,
+                opid,
+                portName);
+        });
+
+        
     }
 
-    setPort(p)
+    setPort(p,opid,portName)
     {
         if(!p)
         {
@@ -27,6 +52,10 @@ CABLES.GLGUI.GlRectDragLine=class
             this._lineDrawer.setLine(this._lineIdx0,0,0,0,0);
             return;
         }
+
+        this._startPortOpId=opid;
+        this._startPortName=portName;
+
         this._rect=p.rect;
         this._port=p;
         this._lineDrawer.setColor(this._lineIdx0,1,1,1,1);

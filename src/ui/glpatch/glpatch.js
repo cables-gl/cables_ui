@@ -442,10 +442,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         return Math.round(posY/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
     }
 
-    setDraggingPort(port)
-    {
-        this._portDragLine.setPort(port);
-    }
 
     isDraggingPort()
     {

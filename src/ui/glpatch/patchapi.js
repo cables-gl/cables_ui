@@ -151,4 +151,13 @@ CABLES.GLGUI.GlPatchAPI=class
 
     }
 
+    linkPorts(opid,pid,op2id,p2id)
+    {
+        const op1=this._patch.getOpById(opid);
+        const op2=this._patch.getOpById(op2id);
+
+
+        this._patch.link(op1,pid,op2,p2id);
+    }
+
 }

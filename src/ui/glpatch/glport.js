@@ -30,8 +30,13 @@ CABLES.GLGUI.GlPort=class
             }
             else 
             {
-                glpatch.setDraggingPort(this);
+                glpatch.emitEvent("mouseDownOverPort",this,this._glop.id,this._port.name);
             }
+        });
+
+        this._rect.on("mouseup",(e,rect) =>
+        {
+            glpatch.emitEvent("mouseUpOverPort",this._glop.id,this._port.name);
         });
 
         this._rect.on("hover",(rect) =>
