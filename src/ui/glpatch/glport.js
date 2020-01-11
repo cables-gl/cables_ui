@@ -3,9 +3,10 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.GlPort=class
 {
-    constructor(glpatch,rectInstancer,p,i,oprect)
+    constructor(glpatch,glop,rectInstancer,p,i,oprect)
     {
         this._port=p;
+        this._glop=glop;
         this._rect=new CABLES.GLGUI.GlRect(rectInstancer,{"parent":oprect,"interactive":true});
         this._rect.setSize(CABLES.GLGUI.VISUALCONFIG.portWidth,CABLES.GLGUI.VISUALCONFIG.portHeight);
 
@@ -48,7 +49,10 @@ CABLES.GLGUI.GlPort=class
 
         
     }
-
+    get glOp()
+    {
+        return this._glop;
+    }
     get rect()
     {
         return this._rect;

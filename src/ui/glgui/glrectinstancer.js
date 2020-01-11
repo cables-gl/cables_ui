@@ -20,6 +20,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         this._rects=[];
         this._textures=[];
         this._interactive=true;
+        this.allowDragging=false;
         this._cgl=cgl;
         this._needsTextureUpdate=false;
         this._draggingRect=null;
@@ -398,7 +399,8 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
 
         if(options.draggable)
         {
-            r.on("dragStart", (rect)=> { this._draggingRect=rect; });
+            this.allowDragging=options.draggable;
+            r.on("dragStart", (rect)=> { if(this.allowDragging) this._draggingRect=rect; });
             r.on("dragEnd", ()=> { this._draggingRect=null; });
         }
 
@@ -411,8 +413,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
     mouseMove(x,y,button)
     {
         if(!this._interactive)return;
-        
-        if(this._draggingRect)
+        if(this.allowDragging && this._draggingRect)
         {
             this._draggingRect.mouseDrag(x,y,button);
             return;

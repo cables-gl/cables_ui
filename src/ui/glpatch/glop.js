@@ -60,6 +60,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
                 var ids=Object.keys(glOps);
 
                 if(!glOps || ids.length==0)return;
+                if(glPatch.isDraggingPort())return;
 
                 if(!glOps[ids[0]].isPassiveDrag())
                 {
@@ -256,7 +257,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         if (p.uiAttribs.display == 'dropdown')return;
 
-        const glp=new CABLES.GLGUI.GlPort(this._glPatch,this._instancer,p,i,this._glRectBg);
+        const glp=new CABLES.GLGUI.GlPort(this._glPatch,this,this._instancer,p,i,this._glRectBg);
         this._glPorts.push(glp);
     }
 

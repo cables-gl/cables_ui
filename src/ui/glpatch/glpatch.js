@@ -12,7 +12,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             console.error("[glpatch] need cgl");
         }
         this._cgl=cgl;
-        if(!cgl)cgl=patch.cgl;
+        // if(!cgl)cgl=patch.cgl;
         this._glOpz={};
         this._patchAPI=null;
         this._showRedrawFlash=0;
@@ -29,9 +29,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectRect.setSize(0,0);
         this._mouseOverCanvas=false;
 
-        this._portDragLine=new CABLES.GLGUI.GlRectDragLine(this._lines);
-        // this._lines.setLine(this._lines.getIndex(),0,0,1000,1000);
-
+        this._portDragLine=new CABLES.GLGUI.GlRectDragLine(this._lines,this);
 
         for(var i=-100;i<100;i++)
         {
@@ -101,20 +99,23 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.emitEvent("mouseup",e);
         });
 
+
         cgl.canvas.addEventListener("mouseup",(e) =>
         {
+            this.emitEvent("mouseup",e);
+
             this._rectInstancer.mouseUp(e);
             this.quickLinkSuggestion.longPressCancel();
             this._rectInstancer.interactive=true;
         });
 
-        gui.keys.key("Delete","Delete selected ops","down","glcanvas",{}, () =>
+        gui.keys.key("Delete","Delete selected ops","down",cgl.canvasId,{}, () =>
         {
             for(var i in this._selectedGlOps) this._patchAPI.deleteOp(i);
             this.unselectAll();
         });
 
-        gui.keys.key("a","Align selected ops","down","glcanvas",{}, () =>
+        gui.keys.key("a","Align selected ops","down",cgl.canvasId,{}, () =>
         {
             var ks=Object.keys(this._selectedGlOps);
             this._patchAPI.alignSelectedOps(ks);
@@ -263,7 +264,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         if((this._lastMouseX!=x || this._lastMouseY!=y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
-        var allowSelectionArea= !this.quickLinkSuggestion.isActive();
+        var allowSelectionArea= !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;
 
         this._rectInstancer.mouseMove(x,y,button);
 
@@ -444,7 +445,20 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     setDraggingPort(port)
     {
         this._portDragLine.setPort(port);
+    }
 
+    isDraggingPort()
+    {
+        return this._portDragLine.isActive;
+    }
+
+    get allowDragging()
+    {
+        return this._rectInstancer.allowDragging;
+    }
+    set allowDragging(b)
+    {
+        this._rectInstancer.allowDragging=b;
     }
 
 }

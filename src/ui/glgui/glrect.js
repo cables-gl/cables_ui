@@ -215,7 +215,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
         if(this._hovering)
         {
-            if(button==1)
+            if(button==1 && this._rectInstancer.allowDragging)
             {
                 if(!this._isDragging)
                 {
