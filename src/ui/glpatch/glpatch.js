@@ -16,7 +16,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._glOpz={};
         this._patchAPI=null;
         this._showRedrawFlash=0;
-
+        this.debugData={};
         this._rectInstancer=new CABLES.GLGUI.RectInstancer(cgl);
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
@@ -59,6 +59,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
 
         
+        this._debugtext=new CABLES.GLGUI.Text(this._textWriter,"hello");
+
 
 
         this._viewZoom=0;
@@ -253,6 +255,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.quickLinkSuggestion.glRender(this._cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
 
         this.needsRedraw=false;
+
+
+        this.debugData['glpatch.allowDragging']=this.allowDragging;
+        this.debugData['jkhjkjk']=5711;
+
+        var str='';
+        for(var n in this.debugData)
+        {
+            str+=n+": "+this.debugData[n]+"\n";
+        }
+        this._debugtext.text=str;
+
     }
 
     removeSelectionArea()

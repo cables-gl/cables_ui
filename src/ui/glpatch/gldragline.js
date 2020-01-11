@@ -18,7 +18,7 @@ CABLES.GLGUI.GlRectDragLine=class
 
         glpatch.on("mouseup",(e) =>
         {
-            this.stop();
+            if(this.isActive) this.stop();
         });
 
         
@@ -68,11 +68,11 @@ CABLES.GLGUI.GlRectDragLine=class
 
     _update()
     {
-        if(this._rect &&this._port)
+        if(this._rect && this._port)
         {
             this._lineDrawer.setLine(this._lineIdx0,
                 this._port.glOp.x+this._rect.x+CABLES.GLGUI.VISUALCONFIG.portWidth/2,
-                this._port.glOp.y+this._rect.y,
+                this._port.glOp.y+this._rect.y+CABLES.GLGUI.VISUALCONFIG.portHeight/2,
                 this._x,
                 this._y);
         }

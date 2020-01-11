@@ -239,6 +239,7 @@ CABLES.GLGUI.GlUiCanvas=class
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         this._smoothedZoom.update();
+        this.glPatch.debugData['targetFps']=this._targetFps;
 
         this.glPatch.render(
             this.width,this.height,

@@ -71,8 +71,9 @@ CABLES.GLGUI.Text=class
 
         this._width=this._map(w);
 
+        const lineHeight=this._map(font.size/2)+13;
         var posX=this._x;
-        var posY=this._y+this._map(font.size/2)+13;
+        var posY=this._y+lineHeight;
 
         if(this._parentRect)
         {
@@ -83,12 +84,21 @@ CABLES.GLGUI.Text=class
         if(this._align==1) posX-=this._width/2;
         else if(this._align==2) posX-=this._width;
 
+        var rectCount=0;
         for(var i=0;i<this._string.length;i++)
         {
-            var ch=font.characters[this._string.charAt(i)]||font.characters["?"];
-            
-            var rect=this._rects[i] || this._textWriter.rectDrawer.createRect();
-            this._rects[i]=rect;
+            const char=this._string.charAt(i);
+            const ch=font.characters[char]||font.characters["?"];
+            if(char=='\n')
+            {
+                console.log('break');
+                posX=0;
+                posY+=lineHeight;
+                continue;
+            }
+            rectCount++;
+            var rect=this._rects[rectCount] || this._textWriter.rectDrawer.createRect();
+            this._rects[rectCount]=rect;
 
             rect.setPosition(posX-this._map(ch.originX), posY-this._map(ch.originY));
             rect.setSize(this._map(ch.width), this._map(ch.height));
@@ -97,9 +107,10 @@ CABLES.GLGUI.Text=class
                 ch.x/font.width, ch.y/font.height,
                 ch.width/font.width, ch.height/font.height);
 
-
             posX+=this._map(ch.advance);
         }
+
+        // for(var i=rectCount+1;i<this._rects.length;i++) this._rects[i].dispose();
     }
 
     dispose()
