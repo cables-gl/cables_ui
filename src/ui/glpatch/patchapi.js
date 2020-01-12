@@ -179,6 +179,30 @@ CABLES.GLGUI.GlPatchAPI=class
         // this._patch.link(op1,pid,op2,p2id);
     }
 
+    linkPortsToOp(e,opid,opids,portnames)
+    {
+        const op1=this._patch.getOpById(opid);
+        var op2=this._patch.getOpById(opids[0]);
+        var p=op2.getPort(portnames[0]);
+
+        new CABLES.UI.SuggestPortDialog(op1,p,e,(suggport)=>
+        {
+            for(let i=0;i<portnames.length;i++)
+            {
+                op2=this._patch.getOpById(opids[i]);
+                const pname=portnames[i];
+
+                // console.log(op2.title,pname,ports);
+        
+                this._patch.link(op2,pname,op1,suggport);
+            }
+
+
+        });
+
+        // this._patch.link(op1,pid,op2,p2id);
+    }
+
     linkPorts(opid,pid,op2id,p2id)
     {
         const op1=this._patch.getOpById(opid);

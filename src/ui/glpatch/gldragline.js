@@ -48,11 +48,31 @@ CABLES.GLGUI.GlRectDragLine=class
         {
             if(!this.isActive) return;
 
-            this._glPatch.patchAPI.linkPortToOp(
-                e,
-                this._startPortOpId,
-                this._startPortName,
-                opid);
+            if(this._startGlPorts.length===0)
+            {
+
+                this._glPatch.patchAPI.linkPortToOp(
+                    e,
+                    this._startPortOpId,
+                    this._startPortName,
+                    opid);
+            }
+            else
+            {
+                const opids=[];
+                const portnames=[];
+                for (let i = 0; i < this._startGlPorts.length; i++)
+                {
+                    opids.push(this._startGlPorts[i].glOp.id);
+                    portnames.push(this._startGlPorts[i].name);
+                }
+
+                this._glPatch.patchAPI.linkPortsToOp(
+                    e,
+                    opid,opids,portnames);
+                
+            }
+            this.stop();
 
         });
 
@@ -82,10 +102,11 @@ CABLES.GLGUI.GlRectDragLine=class
                         this._startGlPorts[i].glOp.id,
                         this._startGlPorts[i].name);
                 }
-
-                this._startGlPorts.length=0;
                 
             }
+
+            this.stop();
+
         });
 
         
@@ -158,6 +179,7 @@ CABLES.GLGUI.GlRectDragLine=class
 
     stop()
     {
+        this._startGlPorts.length=0;
         console.log('stopopopopopop');
         this.setPort(null);
         this._glPatch.allowDragging=this._patchDragWasAllowed;
