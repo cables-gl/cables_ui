@@ -6,6 +6,8 @@ CABLES.GLGUI.GlPort=class
     constructor(glpatch,glop,rectInstancer,p,i,oprect)
     {
         this._port=p;
+        this._name=p.name;
+        this._id=p.id;
         this._glop=glop;
         this._rect=new CABLES.GLGUI.GlRect(rectInstancer,{"parent":oprect,"interactive":true});
         this._rect.setSize(CABLES.GLGUI.VISUALCONFIG.portWidth,CABLES.GLGUI.VISUALCONFIG.portHeight);
@@ -26,7 +28,7 @@ CABLES.GLGUI.GlPort=class
             console.log("PORT DIQB");
             if(e.buttons==CABLES.UI.MOUSE_BUTTON_RIGHT)
             {
-                glpatch.patchAPI.unlinkPort(this._port.parent.id,this._port.id);
+                glpatch.emitEvent("mouseDownRightOverPort",this,this._glop.id,this._port.name);
             }
             else 
             {
@@ -51,9 +53,17 @@ CABLES.GLGUI.GlPort=class
             console.log("port",this._rect.isHovering());
             // rect.setOutline(false);
         });
-
-        
     }
+
+    get id()
+    {
+        return this._id;
+    }
+    get name()
+    {
+        return this._name;
+    }
+
     get glOp()
     {
         return this._glop;

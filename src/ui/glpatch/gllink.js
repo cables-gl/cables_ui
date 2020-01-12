@@ -3,11 +3,15 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.GlLink=class 
 {
-    constructor(glpatch,id,opIdInput,opIdOutput,portIdInput,portIdOutput,type)
+    constructor(glpatch,id,opIdInput,opIdOutput,
+        portNameIn,
+        portNameOut,portIdInput,portIdOutput,type)
     {
         this._id=id;
         this._glPatch=glpatch;
         this._type=type;
+        this._portNameInput=portNameIn;
+        this._portNameOutput=portNameOut;
         this._opIdInput=opIdInput;
         this._opIdOutput=opIdOutput;
         this._portIdInput=portIdInput;
@@ -40,6 +44,19 @@ CABLES.GLGUI.GlLink=class
     {
         return this._id;
     }
+
+    get nameInput()
+    {
+        return this._portNameInput;
+    }
+
+    get nameOutput()
+    {
+        return this._portNameOutput;
+    }
+
+    get opIdOutput(){ return this._opIdOutput};
+    get opIdInput(){ return this._opIdInput};
 
     update()
     {

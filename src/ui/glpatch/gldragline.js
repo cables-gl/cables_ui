@@ -15,6 +15,9 @@ CABLES.GLGUI.GlRectDragLine=class
         this._startPortOpId=null;
         this._startPortName=null;
 
+        this._startGlPorts=[];
+        this._lineIndices=[];
+
 
         glpatch.on("mouseup",(e) =>
         {
@@ -22,19 +25,34 @@ CABLES.GLGUI.GlRectDragLine=class
         });
 
         
-        glpatch.on("mouseDownOverPort",(p,opid,portName) =>
+        glpatch.on("mouseDownOverPort",(glport,opid,portName) =>
         {
-            this.setPort(p,opid,portName);
+            this.setPort(glport,opid,portName);
+        });
+
+        glpatch.on("mouseDownRightOverPort",(glport,opid,portName) =>
+        {
+
+            this.setPort(glport,opid,portName);
+
+            const glports=this._glPatch.getConnectedGlPorts(opid,portName);
+            //this.setPort(p,opid,portName);
+            console.log(glports);
+            glpatch.patchAPI.unlinkPort(opid,glport.id);
+
+
+            this._startGlPorts=glports;
         });
 
         glpatch.on("mouseUpOverOp",(e,opid) =>
         {
-            if(this.isActive)
-                this._glPatch.patchAPI.linkPortToOp(
-                    e,
-                    this._startPortOpId,
-                    this._startPortName,
-                    opid);
+            if(!this.isActive) return;
+
+            this._glPatch.patchAPI.linkPortToOp(
+                e,
+                this._startPortOpId,
+                this._startPortName,
+                opid);
 
         });
 
@@ -48,10 +66,26 @@ CABLES.GLGUI.GlRectDragLine=class
             opid,
             portName);
     
-            this._glPatch.patchAPI.linkPorts(this._startPortOpId,
-                this._startPortName,
-                opid,
-                portName);
+            if(this._startGlPorts.length===0)
+            {
+                this._glPatch.patchAPI.linkPorts(this._startPortOpId,
+                    this._startPortName,
+                    opid,
+                    portName);
+            }
+            else
+            {
+                for(var i=0;i<this._startGlPorts.length;i++)
+                {
+                    this._glPatch.patchAPI.linkPorts(this._startPortOpId,
+                        this._startPortName,
+                        this._startGlPorts[i].glOp.id,
+                        this._startGlPorts[i].name);
+                }
+
+                this._startGlPorts.length=0;
+                
+            }
         });
 
         
@@ -81,14 +115,39 @@ CABLES.GLGUI.GlRectDragLine=class
 
     _update()
     {
-        if(this._rect && this._port)
+
+        var i=0;
+        for(i=0;i<this._lineIndices.length;i++)
         {
-            this._lineDrawer.setLine(this._lineIdx0,
-                this._port.glOp.x+this._rect.x+CABLES.GLGUI.VISUALCONFIG.portWidth/2,
-                this._port.glOp.y+this._rect.y+CABLES.GLGUI.VISUALCONFIG.portHeight/2,
-                this._x,
-                this._y);
+            this._lineDrawer.setLine(this._lineIndices[i],0,0,0,0);
         }
+
+        if(this._startGlPorts.length)
+        {
+            for(i=0;i<this._startGlPorts.length;i++)
+            {
+                if(i>this._lineIndices.length-1) this._lineIndices[i]=this._lineDrawer.getIndex();
+
+                this._lineDrawer.setColor(this._lineIndices[i],0,1,0,1);
+
+                this._lineDrawer.setLine(this._lineIndices[i],
+                    this._startGlPorts[i].glOp.x+this._startGlPorts[i].rect.x+CABLES.GLGUI.VISUALCONFIG.portWidth/2,
+                    this._startGlPorts[i].glOp.y+this._startGlPorts[i].rect.y+CABLES.GLGUI.VISUALCONFIG.portHeight/2,
+                    this._x,
+                    this._y);
+            }
+        }else
+        {
+            if(this._rect && this._port)
+            {
+                this._lineDrawer.setLine(this._lineIdx0,
+                    this._port.glOp.x+this._rect.x+CABLES.GLGUI.VISUALCONFIG.portWidth/2,
+                    this._port.glOp.y+this._rect.y+CABLES.GLGUI.VISUALCONFIG.portHeight/2,
+                    this._x,
+                    this._y);
+            }
+        }
+    
 
     }
 

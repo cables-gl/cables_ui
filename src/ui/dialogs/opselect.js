@@ -45,7 +45,7 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     }
     else $('#search_noresults').hide();
 
-    var optionsHtml='&nbsp;found '+num+' ops. in '+(Math.round(this._timeUsed)||0)+'ms ';
+    var optionsHtml='&nbsp;found '+num+' ops.';// in '+(Math.round(this._timeUsed)||0)+'ms ';
 
     if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
     {

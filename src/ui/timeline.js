@@ -817,7 +817,7 @@ CABLES.ANIM.UI.TimeLineUI=function()
             {
                 "x":(start+width)*($('#timeline').width()-1),
             });
-        this._// ovAreaPosR.toFront();
+        this._ovAreaPosR.toFront();
     
         };
 

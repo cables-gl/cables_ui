@@ -7,7 +7,7 @@
 
 <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script>
-
+"use strict";
         var CABLESUILOADER = CABLESUILOADER || {};
 
         CABLESUILOADER.GlobalVarTester = (function(){
@@ -92,8 +92,8 @@
                 'js/ace/ace.js'
             ], 'libs');
 
+            var jsType='max';
             if(!CABLESUILOADER.isDevEnv()) jsType='min';
-                else jsType='max';
 
             loadjs.ready('libs', function()
             {
@@ -217,6 +217,7 @@
 
 
         console.log("started...");
+        if(! (function() { return !this; })() ) console.log('not in strict mode: footer html' );
 
 
 

@@ -6,11 +6,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     constructor(cgl)
     {
         super();
-        // this._patch=patch;
-        if(!cgl)
-        {
-            console.error("[glpatch] need cgl");
-        }
+
+        if(!cgl) console.error("[glpatch] need cgl");
+        
         this._cgl=cgl;
         // if(!cgl)cgl=patch.cgl;
         this._glOpz={};
@@ -29,6 +27,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectRect.setSize(0,0);
         this._mouseOverCanvas=false;
 
+        this._lastMouseX=this._lastMouseY=-1
         this._portDragLine=new CABLES.GLGUI.GlRectDragLine(this._lines,this);
 
         for(var i=-100;i<100;i++)
@@ -111,13 +110,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._rectInstancer.interactive=true;
         });
 
-        gui.keys.key("Delete","Delete selected ops","down",cgl.canvasId,{}, () =>
+        gui.keys.key("Delete","Delete selected ops","down",cgl.canvas.id,{}, () =>
         {
             for(var i in this._selectedGlOps) this._patchAPI.deleteOp(i);
             this.unselectAll();
         });
 
-        gui.keys.key("a","Align selected ops","down",cgl.canvasId,{}, () =>
+        gui.keys.key("a","Align selected ops","down",cgl.canvas.id,{}, () =>
         {
             var ks=Object.keys(this._selectedGlOps);
             this._patchAPI.alignSelectedOps(ks);
@@ -258,7 +257,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
 
         this.debugData['glpatch.allowDragging']=this.allowDragging;
-        this.debugData['jkhjkjk']=5711;
+        this.debugData['rects']=this._rectInstancer.getNumRects();
+        this.debugData['zzz']=5711;
 
         var str='';
         for(var n in this.debugData)
@@ -469,6 +469,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     set allowDragging(b)
     {
         this._rectInstancer.allowDragging=b;
+    }
+
+    getConnectedGlPorts(opid,portname)
+    {
+        var op=this.getOp(opid);
+        return op.getGlPortsLinkedToPort(opid,portname);
+
     }
 
 }

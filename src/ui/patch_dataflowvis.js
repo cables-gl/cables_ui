@@ -49,7 +49,7 @@ CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
     CABLES.UI.speedCycle=!CABLES.UI.speedCycle;
 
     var count=0;
-    var countInvalid=0;
+    // var countInvalid=0;
     var patch=gui.patch();
 
     for(var i=0;i<patch.ops.length;i++)
@@ -91,7 +91,7 @@ CABLES.UI.Patch.prototype.updateFlowVis=function(time,frame)
                 }
                 else
                 {
-                    countInvalid++;
+                   // countInvalid++;
                 }
             }
         }

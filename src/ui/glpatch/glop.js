@@ -20,6 +20,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glTitle=null;
         this._glPorts=[];
         this.opUiAttribs={};
+        this._links={};
 
         this.uiAttribs=op.uiAttribs;
 
@@ -113,7 +114,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         });
 
         // this._portRects=[];
-        this._links={};
 
         for(var i=0;i<this._op.portsIn.length;i++) this._setupPort(i,this._op.portsIn[i]);
         for(var i=0;i<this._op.portsOut.length;i++) this._setupPort(i,this._op.portsOut[i]);
@@ -159,6 +159,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     get w() { return this._width; }
     get h() { return this._height; }
     get id() { return this._id; }
+    get title() { return this.opUiAttribs.title; }
 
     _updateWhenRendering()
     {
@@ -179,7 +180,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this.opUiAttribs=attr;
         this._needsUpdate=true;
-        
     }
 
     get uiAttribs()
@@ -421,6 +421,38 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         // this.setPosition( this._passiveDragStartX+x, this._passiveDragStartY+y);
         // updatePosition()
+    }
+
+    getGlPort(name)
+    {
+        for(var i =0;i<this._glPorts.length;i++)
+        {
+            console.log(this._glPorts[i].name,name,']]]]]]]]]]]]]]]]');
+
+            if(this._glPorts[i].name==name) return this._glPorts[i];
+        }
+        
+    }
+
+    getGlPortsLinkedToPort(opid,portname)
+    {
+        var ports=[];
+
+        for(var i in this._links)
+        {
+            if(this._links[i].nameInput==portname && this._links[i].opIdInput==opid )
+            {
+                var op=this._glPatch.getOp(this._links[i].opIdOutput);
+                ports.push(op.getGlPort(this._links[i].nameOutput));
+            }
+            if(this._links[i].nameOutput==portname && this._links[i].opIdOutput==opid )
+            {
+                var op=this._glPatch.getOp(this._links[i].opIdInput);
+                ports.push(op.getGlPort(this._links[i].nameInput));
+            }
+        }
+
+        return ports;
     }
 
 

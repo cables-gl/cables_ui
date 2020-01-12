@@ -74,7 +74,7 @@ CABLES.GLGUI.GlUiCanvas=class
         {
             this.activityHigh();
 
-            if(this._mouseButton==2)
+            if(this._mouseButton==2 && this.glPatch.allowDragging)
             {
                 const pixelMulX=this.width/this._zoom*0.5;
                 const pixelMulY=this.height/this._zoom*0.5;

@@ -34,7 +34,17 @@ CABLES.GLGUI.GlPatchAPI=class
                 for(var il=0;il<op.portsIn[ip].links.length;il++)
                 {
                     const link=op.portsIn[ip].links[il];
-                    const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,link.portIn.parent.id,link.portOut.parent.id,link.portIn.id,link.portOut.id,link.portIn.type);
+                    const l=new CABLES.GLGUI.GlLink(
+                        this._glPatch,
+                        link.id,
+                        link.portIn.parent.id,
+                        link.portOut.parent.id,
+                        link.portIn.name,
+                        link.portOut.name,
+
+                        link.portIn.id,
+                        link.portOut.id,
+                        link.portIn.type);
                 }
             }
         }
@@ -71,7 +81,10 @@ CABLES.GLGUI.GlPatchAPI=class
             p2=p1;
             p1=t;
         }
-        const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,p1.parent.id,p2.parent.id,p1.id,p2.id,p1.type);
+        const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,p1.parent.id,p2.parent.id,
+            p1.name,p2.name,
+            p1.id,p2.id,
+            p1.type);
     }
 
     _onUnLink(a,b,link)
@@ -175,4 +188,6 @@ CABLES.GLGUI.GlPatchAPI=class
         this._patch.link(op1,pid,op2,p2id);
     }
 
+
+    
 }

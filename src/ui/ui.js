@@ -3,6 +3,8 @@ CABLES.undo = new UndoManager();
 
 
 CABLES.UI.GUI = function(cfg) {
+
+
     var self = this;
     var showTiming = false;
     var showingEditor = false;
@@ -1879,5 +1881,6 @@ function startUi(cfg)
     }, false);
 
     logStartup('Init UI done');
+
 
 }

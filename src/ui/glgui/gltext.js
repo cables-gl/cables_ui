@@ -105,6 +105,7 @@ CABLES.GLGUI.Text=class
             rect.setTexRect(
                 ch.x/font.width, ch.y/font.height,
                 ch.width/font.width, ch.height/font.height);
+            rect.setTexture(this._textWriter.getFontTexture());
 
             posX+=this._map(ch.advance);
         }
@@ -114,6 +115,6 @@ CABLES.GLGUI.Text=class
 
     dispose()
     {
-        for(var i=0;i<this._rects.length;i++) this._rects[i].dispose();
+        for(var i=0;i<this._rects.length;i++) if(this._rects[i]) this._rects[i].dispose();
     }
 }

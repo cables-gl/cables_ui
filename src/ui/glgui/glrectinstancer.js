@@ -305,6 +305,11 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         this._needsRebuild=false;
     }
 
+    getNumRects()
+    {
+        return this._counter;
+    }
+
     getIndex()
     {
         this._counter++;
