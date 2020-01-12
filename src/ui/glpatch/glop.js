@@ -411,12 +411,21 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         // console.log('this._passiveDragStartX', this._passiveDragStartX,x);
 
+        x=this._passiveDragStartX+x;
+        y=this._passiveDragStartY+y;
+
+        if(CABLES.UI.userSettings.get("snapToGrid"))
+        {
+            x=CABLES.UI.snapOpPosX(x);
+            y=CABLES.UI.snapOpPosY(y);
+        }
+
         this._glPatch.patchAPI.setOpUiAttribs(
             this._id,
             "translate",
             {
-                "x":this._passiveDragStartX+x,
-                "y":this._passiveDragStartY+y
+                "x":x,
+                "y":y
             });
 
         // this.setPosition( this._passiveDragStartX+x, this._passiveDragStartY+y);

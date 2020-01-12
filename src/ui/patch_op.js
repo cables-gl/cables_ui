@@ -1195,7 +1195,12 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         if (attribs && attribs.hasOwnProperty('extendTitle')) {
             this.oprect.setTitle();
         }
-        
+        if(attribs && attribs.hasOwnProperty('translate')) {
+        if(attribs.translate.x!=posx || attribs.translate.y!=posy)
+        {
+            this.setPos(attribs.translate.x,attribs.translate.y);
+        }
+    }    
 
 
     }.bind(this);
