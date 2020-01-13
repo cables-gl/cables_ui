@@ -7,6 +7,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         super();
 
+        this.logEvents(false,"glpatch");
         if(!cgl) console.error("[glpatch] need cgl");
         
         this._cgl=cgl;
@@ -56,11 +57,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectRect.setPosition(0,0,1000);
 
         this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
-
-        
         this._debugtext=new CABLES.GLGUI.Text(this._textWriter,"hello");
-
-
 
         this._viewZoom=0;
         this._viewScrollX=0;
@@ -99,6 +96,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.emitEvent("mouseleave",e);
             this.emitEvent("mouseup",e);
         });
+
+
+
+        
 
 
         cgl.canvas.addEventListener("mouseup",(e) =>
@@ -218,6 +219,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX,resY,scrollX,scrollY,zoom,mouseX,mouseY,mouseButton)
     {
+        const starttime=performance.now();
         this._showRedrawFlash++;
         // if(this._showRedrawFlash) this._redrawFlash.setColor(0,0,0,1);
         // else this._redrawFlash.setColor(0,1,0,1);
@@ -258,7 +260,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.debugData['glpatch.allowDragging']=this.allowDragging;
         this.debugData['rects']=this._rectInstancer.getNumRects();
-        this.debugData['zzz']=5711;
+
+        this.debugData['viewZoom']=this._viewZoom;
+        this.debugData['viewScrollX']=this._viewScrollX;
+        this.debugData['viewScrollY']=this._viewScrollY;
+        this.debugData['viewResX']=this._viewResX;
+        this.debugData['viewResY']=this._viewResY;
 
         var str='';
         for(var n in this.debugData)
@@ -266,6 +273,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             str+=n+": "+this.debugData[n]+"\n";
         }
         this._debugtext.text=str;
+
+        this.debugData["renderMs"] = Math.round(((this.debugData["renderMs"]||0)+performance.now()-starttime)*0.5);
 
     }
 
@@ -411,6 +420,36 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             ops[i].selected=true;
             this._selectedGlOps[ops[i].id]=ops[i];
         }
+    }
+
+    getZoomForAllOps()
+    {
+        console.log(this.getOpBounds());
+        return 1200;
+    }
+
+    getOpBounds()
+    {
+        const ops=this._glOpz;
+
+        const bounds=
+        {
+            minx:9999,
+            maxx:-9999,
+            miny:9999,
+            maxy:-9999,
+    
+        };
+
+        for (let i in ops)
+        {
+            const op = ops[i];
+            bounds.minx=Math.min(bounds.minx,op.x);
+            bounds.maxx=Math.max(bounds.maxx,op.x);
+            bounds.miny=Math.min(bounds.miny,op.y);
+            bounds.maxy=Math.max(bounds.maxy,op.y);
+        }
+        return bounds;
     }
 
     dispose()

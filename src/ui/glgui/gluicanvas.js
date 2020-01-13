@@ -32,7 +32,7 @@ CABLES.GLGUI.GlUiCanvas=class
         this._lastTime=0;
         this.width=0,this.height=0;
         this._mouseX=0,this._mouseY=0;
-        this._zoom=333;
+        this._zoom=CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         this._smoothedZoom=new CABLES.UI.ValueSmoother(this._zoom,CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
 
 
@@ -121,6 +121,13 @@ CABLES.GLGUI.GlUiCanvas=class
         {
             this.activityHigh();
             this._mouseOver=true;
+        });
+
+        this.canvas.addEventListener("dblclick",(e) =>
+        {
+            if(this._zoom==CABLES.GLGUI.VISUALCONFIG.zoomDefault) this._zoom=this.glPatch.getZoomForAllOps();
+            else this._zoom=CABLES.GLGUI.VISUALCONFIG.zoomDefault;
+            this._smoothedZoom.set(this._zoom);
         });
 
         this.canvas.addEventListener("wheel", (event)=>

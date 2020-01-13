@@ -16,5 +16,6 @@ CABLES.GLGUI.VISUALCONFIG=
     "opWidth": 90,
 
     "minZoom":15,
-    "zoomSmooth":3
+    "zoomSmooth":3,
+    "zoomDefault":300
 };
