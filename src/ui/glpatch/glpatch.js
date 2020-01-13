@@ -22,10 +22,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._textWriter=new CABLES.GLGUI.TextWriter(cgl);
         // this._overLayLines=new CABLES.GLGUI.Linedrawer(cgl);
 
-        this._selectRect=this._overLayRects.createRect();
-        this._selectRect.setColor(0,0.5,0.7,0.25);
-        this._selectRect.setPosition(0,0,1000);
-        this._selectRect.setSize(0,0);
+        this._selection=new CABLES.GLGUI.GlSelection(this._overLayRects,this)
+        // this._selectRect=this._overLayRects.createRect();
+        // this._selectRect.setColor(0,0.5,0.7,0.25);
+        // this._selectRect.setPosition(0,0,1000);
+        // this._selectRect.setSize(0,0);
         this._mouseOverCanvas=false;
 
         this._lastMouseX=this._lastMouseY=-1
@@ -54,7 +55,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._redrawFlash=this._overLayRects.createRect();
         this._redrawFlash.setSize(50,5);
         this._redrawFlash.setColor(0,1,0,1);
-        this._selectRect.setPosition(0,0,1000);
 
         this.quickLinkSuggestion=new CABLES.GLGUI.QuickLinkSuggestion(this);
         this._debugtext=new CABLES.GLGUI.Text(this._textWriter,"hello");
@@ -91,7 +91,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("mouseleave",(e) =>
         {
             this._mouseOverCanvas=false;
-            this.removeSelectionArea();
+            this._selection.hideArea();
             this._lastButton=0;
             this.emitEvent("mouseleave",e);
             this.emitEvent("mouseup",e);
@@ -278,10 +278,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     }
 
-    removeSelectionArea()
-    {
-        this._selectRect.setSize(0,0);
-    }
 
     mouseMove(x,y,button)
     {
@@ -328,21 +324,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._hoverDragOp=null;
         }
 
-        if(this._selectRect.h==0 && hoverops.length>0) allowSelectionArea = false;
-        if(this._lastButton==1 && button!=1) this.removeSelectionArea();
+        if(this._selection.h==0 && hoverops.length>0) allowSelectionArea = false;
+        if(this._lastButton==1 && button!=1) this._selection.hideArea();
 
         if(this._mouseOverCanvas)
         {
             if(button==1 && allowSelectionArea)
             {
                 this._rectInstancer.interactive=false;
-                this._selectRect.setPosition(this._lastMouseX,this._lastMouseY,1000);
-                this._selectRect.setSize((x-this._lastMouseX), (y-this._lastMouseY));
+                this._selection.setPos(this._lastMouseX,this._lastMouseY,1000);
+                this._selection.setSize((x-this._lastMouseX), (y-this._lastMouseY));
                 this._selectOpsInRect(x,y,this._lastMouseX,this._lastMouseY);
             }
             else
             {
-                this.removeSelectionArea();
+                this._selection.hideArea();
                 this._lastMouseX=x;
                 this._lastMouseY=y;
             }
@@ -438,7 +434,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             maxx:-9999,
             miny:9999,
             maxy:-9999,
-    
         };
 
         for (let i in ops)
@@ -494,7 +489,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         return Math.round(posY/CABLES.UI.uiConfig.snapY)*CABLES.UI.uiConfig.snapY;
     }
-
 
     isDraggingPort()
     {
