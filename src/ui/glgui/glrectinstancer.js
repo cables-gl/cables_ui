@@ -15,7 +15,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         }
 
         this._counter=0;
-        this._num=10000;
+        this._num=5000;
         this._needsRebuild=true;
         this._rects=[];
         this._textures=[];
@@ -24,13 +24,8 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         this._cgl=cgl;
         this._needsTextureUpdate=false;
         this._draggingRect=null;
-        this._attrPositions=new Float32Array(3*this._num);
-        this._attrTextures=new Float32Array(this._num);
-        this._attrColors=new Float32Array(4*this._num);
-        this._attrSizes=new Float32Array(2*this._num);
-        // this._attrOutline=new Float32Array(this._num);
-        this._attrCircle=new Float32Array(this._num);
-        this._attrTexRect=new Float32Array(4*this._num);
+
+        this._setupAttribBuffers();
 
         this._shader=new CGL.Shader(cgl,'rectinstancer');
         this._shader.setSource(''
@@ -195,6 +190,33 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         }
     }
 
+    _setupAttribBuffers()
+    {
+        const oldAttrPositions = this._attrPositions;
+        const oldAttrTextures = this._attrTextures;
+        const oldAttrColors = this._attrColors;
+        const oldAttrSizes = this._attrSizes;
+        const oldAttrCircle = this._attrCircle;
+        const oldAttrTexRect = this._attrTexRect;
+
+
+        this._attrPositions=new Float32Array(3*this._num);
+        this._attrTextures=new Float32Array(this._num);
+        this._attrColors=new Float32Array(4*this._num);
+        this._attrSizes=new Float32Array(2*this._num);
+        this._attrCircle=new Float32Array(this._num);
+        this._attrTexRect=new Float32Array(4*this._num);
+        this.clear();
+
+        if(oldAttrPositions)this._attrPositions.set(oldAttrPositions);
+        if(oldAttrTextures)this._attrTextures.set(oldAttrTextures);
+        if(oldAttrColors)this._attrColors.set(oldAttrColors);
+        if(oldAttrSizes)this._attrSizes.set(oldAttrSizes);
+        if(oldAttrCircle)this._attrCircle.set(oldAttrCircle);
+        if(oldAttrTexRect)this._attrTexRect.set(oldAttrTexRect);
+
+    }
+
     isDragging()
     {
         return this._draggingRect!=null;
@@ -291,6 +313,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         // todo only update whats needed
 
         var perf = CABLES.uiperf.start('[glRectInstancer] rebuild');
+        this._mesh.numInstances=this._num;
 
         this._mesh.setAttribute('instPos',this._attrPositions,3,{instanced:true});
         this._mesh.setAttribute('instCol',this._attrColors,4,{instanced:true});
@@ -314,6 +337,15 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
     {
         this._counter++;
         // console.log("inst counter",this._counter);
+        if(this._counter>this._num-100)
+        {
+            this._num+=10000;
+            console.log('resize to',this._num)
+            this._setupAttribBuffers();
+            this._needsRebuild=true;
+            this._needsTextureUpdate=false;
+    
+        }
         return this._counter;
     }
 

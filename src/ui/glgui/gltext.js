@@ -53,7 +53,7 @@ CABLES.GLGUI.Text=class
         this._r=r;
         this._g=g;
         this._b=b;        
-        for(var i=0;i<this._rects.length;i++) this._rects[i].setColor(r,g,b,1);
+        for(var i=0;i<this._rects.length;i++) if(this._rects[i]) this._rects[i].setColor(r,g,b,1);
     }
 
     rebuild()

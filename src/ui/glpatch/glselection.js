@@ -1,7 +1,7 @@
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
-CABLES.GLGUI.GlSelection=class
+CABLES.GLGUI.GlSelectionArea=class
 {
     constructor(rectinstancer,glpatch)
     {
@@ -13,13 +13,10 @@ CABLES.GLGUI.GlSelection=class
 
         this._w=0;
         this._h=0;
-
     }
 
     get w(){return this._w;}
     get h(){return this._h;}
-
-
 
     hideArea()
     {

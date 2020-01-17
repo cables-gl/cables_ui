@@ -22,7 +22,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._textWriter=new CABLES.GLGUI.TextWriter(cgl);
         // this._overLayLines=new CABLES.GLGUI.Linedrawer(cgl);
 
-        this._selection=new CABLES.GLGUI.GlSelection(this._overLayRects,this)
+        this._selectionArea=new CABLES.GLGUI.GlSelectionArea(this._overLayRects,this)
         // this._selectRect=this._overLayRects.createRect();
         // this._selectRect.setColor(0,0.5,0.7,0.25);
         // this._selectRect.setPosition(0,0,1000);
@@ -91,7 +91,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("mouseleave",(e) =>
         {
             this._mouseOverCanvas=false;
-            this._selection.hideArea();
+            this._selectionArea.hideArea();
             this._lastButton=0;
             this.emitEvent("mouseleave",e);
             this.emitEvent("mouseup",e);
@@ -260,6 +260,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.debugData['glpatch.allowDragging']=this.allowDragging;
         this.debugData['rects']=this._rectInstancer.getNumRects();
+        this.debugData['text rects']=this._textWriter.rectDrawer.getNumRects();
 
         this.debugData['viewZoom']=this._viewZoom;
         this.debugData['viewScrollX']=this._viewScrollX;
@@ -324,21 +325,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._hoverDragOp=null;
         }
 
-        if(this._selection.h==0 && hoverops.length>0) allowSelectionArea = false;
-        if(this._lastButton==1 && button!=1) this._selection.hideArea();
+        if(this._selectionArea.h==0 && hoverops.length>0) allowSelectionArea = false;
+        if(this._lastButton==1 && button!=1) this._selectionArea.hideArea();
 
         if(this._mouseOverCanvas)
         {
             if(button==1 && allowSelectionArea)
             {
                 this._rectInstancer.interactive=false;
-                this._selection.setPos(this._lastMouseX,this._lastMouseY,1000);
-                this._selection.setSize((x-this._lastMouseX), (y-this._lastMouseY));
+                this._selectionArea.setPos(this._lastMouseX,this._lastMouseY,1000);
+                this._selectionArea.setSize((x-this._lastMouseX), (y-this._lastMouseY));
                 this._selectOpsInRect(x,y,this._lastMouseX,this._lastMouseY);
             }
             else
             {
-                this._selection.hideArea();
+                this._selectionArea.hideArea();
                 this._lastMouseX=x;
                 this._lastMouseY=y;
             }
