@@ -1,4 +1,3 @@
-
 var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
@@ -28,18 +27,14 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
         clearTimeout(this._longPressTimeout);
         this._longPress=true;
         this._quickAddOpStart=op;
-        // console.log("long press!");
         gui.setCursor("copy");
     }
 
     longPressPrepare(op,startX,startY)
     {
-
         this._startX=startX;
         this._startY=startY;
-
         this.longPressCancel();
-        // console.log("long press prepare");
         this._longPressOp = op;
         this._longPressTimeout=setTimeout( 
             ()=>
@@ -54,7 +49,6 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
         if(this._longPress)gui.setCursor();
         clearTimeout(this._longPressTimeout);
         this._longPress=false;
-        // console.log("long press cancel!!!");
     }
 
     glRender(cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
@@ -80,9 +74,6 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
 
         var suggestions = [];
         if (!op1 || !op2) return;
-
-        console.log('op1', op1.name,op1);
-        console.log('op2', op2.name,op2);
 
         for (var j = 0; j < op1.portsOut.length; j++)
         {

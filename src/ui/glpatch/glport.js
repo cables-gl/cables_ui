@@ -19,9 +19,6 @@ CABLES.GLGUI.GlPort=class
         
         this._rect.setPosition(i*(CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portPadding),y);
         oprect.addChild(this._rect);
-        // this._portRects.push(r);
-        // this._rect.data.portId=this._port.id;
-        // this._rect.data.opId=this._port.parent.id; // not needed now as class...
 
         this._rect.on("mousedown",(e,rect) =>
         {
@@ -45,13 +42,12 @@ CABLES.GLGUI.GlPort=class
         {
             console.log("port",this._port.name,this._rect.isHovering());
 
-            // rect.setOutline(true);
         });
 
         this._rect.on("unhover",(rect) =>
         {
             console.log("port",this._rect.isHovering());
-            // rect.setOutline(false);
+
         });
     }
 

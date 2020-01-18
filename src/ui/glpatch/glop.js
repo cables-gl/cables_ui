@@ -3,7 +3,6 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 
 CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 {
-
     constructor(glPatch,instancer,op)
     {
         super();
@@ -22,6 +21,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glPorts=[];
         this.opUiAttribs={};
         this._links={};
+        this._transparent=false;
 
         this.uiAttribs=op.uiAttribs;
 
@@ -34,8 +34,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this._passiveDragStartX=null;
         this._passiveDragStartY=null;
-        
-
 
         this._glRectBg.on("dragEnd", () =>
         {
@@ -44,17 +42,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
             {
                 glOps[i].endPassiveDrag();
             }
-
-            console.log("DRAGEND!!!!!");
-            // var glOps=this._glPatch.selectedGlOps;
-
-            // if(!glOps || glOps.length==0)return;
-
-            // for(var i in glOps)
-            // {
-            //     glOps[i].endPassiveDrag();
-            // }
-    
         });
 
         // this._glRectBg.on("mouseup", (e) =>
@@ -206,7 +193,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
             {
                 this._glTitle.scale=4;
                 this._glTitle.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
-                this._glRectBg.setColor(0,0,0,0);
+                this._transparent=true;
+                this._updateBgRectColor();
             }
         }
 
@@ -386,12 +374,17 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._glPatch.needsRedraw=true;
     }
 
+    _updateBgRectColor()
+    {
+        if(this.opUiAttribs.selected) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRectSelected);
+        else if(this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
+            else this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect)
+    }
+
     set selected(s)
     {
-
         this.opUiAttribs.selected=s;
-        if(s) this._glRectBg.setColor(73/255,73/255,73/255,1)
-        else this._glRectBg.setColor(51/255,51/255,51/255,1)
+        this._updateBgRectColor();
     }
 
     getPortPos(id)
@@ -411,10 +404,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         return 100;
     }
 
-
-
-
-
     isPassiveDrag()
     {
         return !(this._passiveDragStartX==null && this._passiveDragStartY==null);
@@ -430,14 +419,11 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     {
         this._passiveDragStartX=this.x;
         this._passiveDragStartY=this.y;
-        // console.log("START DRAGGINOP !!!!!!!!!!",this._passiveDragStartX);
     }
 
     setPassiveDragOffset(x,y)
     {
         if(!this._passiveDragStartX) this.startPassiveDrag();
-
-        // console.log('this._passiveDragStartX', this._passiveDragStartX,x);
 
         x=this._passiveDragStartX+x;
         y=this._passiveDragStartY+y;
@@ -463,12 +449,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     getGlPort(name)
     {
         for(var i =0;i<this._glPorts.length;i++)
-        {
-            console.log(this._glPorts[i].name,name,']]]]]]]]]]]]]]]]');
-
-            if(this._glPorts[i].name==name) return this._glPorts[i];
-        }
-        
+            if(this._glPorts[i].name==name)
+                return this._glPorts[i];
     }
 
     getGlPortsLinkedToPort(opid,portname)

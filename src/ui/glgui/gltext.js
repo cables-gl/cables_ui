@@ -1,5 +1,3 @@
-
-
 CABLES.GLGUI.Text=class
 {
     constructor(textWriter,string)

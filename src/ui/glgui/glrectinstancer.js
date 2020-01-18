@@ -290,26 +290,13 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         
         if(this._needsRebuild) this.rebuild();
 
-        // if(this._texture && this._texture.tex)
-        // {
-        //     this._cgl.setTexture(0, this._texture.tex);
-        // }
-
         this.emitEvent("render");
 
         this._mesh.render(this._shader);
-
-
-        // if(this._texture && this._texture.tex)
-        // {
-        //     this._cgl.setTexture(0, null);
-        // }
-
     }
 
     rebuild()
     {
-        // console.log("rebuild!");
         // todo only update whats needed
 
         var perf = CABLES.uiperf.start('[glRectInstancer] rebuild');
@@ -362,8 +349,6 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         this._attrPositions[idx*3+1]=y;
     }
 
-
-
     setSize(idx,x,y)
     {
         if( this._float32Diff(this._attrSizes[idx*2+0],x) || this._float32Diff(this._attrSizes[idx*2+1],y)) { this._needsRebuild=true; }
@@ -371,12 +356,6 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         this._attrSizes[idx*2+0]=x;
         this._attrSizes[idx*2+1]=y;
     }
-
-    // setTexture(which,tex)
-    // {
-    //     this._texture=tex;
-    //     this._shader.toggleDefine("USE_TEXTURE",!!tex);
-    // }
 
     setAllTexture(tex,sdf)
     {
@@ -474,28 +453,18 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         if(!this._interactive)return;
 
         for(var i=0;i<this._rects.length;i++)
-        {
             this._rects[i].mouseDown(e);
-        }
     }
 
     mouseUp(e)
     {
         if(!this._interactive)return;
 
-
         for(var i=0;i<this._rects.length;i++)
-        {
             this._rects[i].mouseUp(e);
-        }
 
         if(this._draggingRect)
-        {
             this._draggingRect.mouseDragEnd();
-        }
-
-
-
     }
 
 }
