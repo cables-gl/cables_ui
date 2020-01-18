@@ -18,6 +18,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._textWriter=null;
         this._glTitleExt=null;
         this._glTitle=null;
+        this._glComment=null;
         this._glPorts=[];
         this.opUiAttribs={};
         this._links={};
@@ -34,6 +35,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         this._passiveDragStartX=null;
         this._passiveDragStartY=null;
         
+
+
         this._glRectBg.on("dragEnd", () =>
         {
             var glOps=this._glPatch.selectedGlOps;
@@ -195,6 +198,16 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         {
             this._glTitle=new CABLES.GLGUI.Text(this._textWriter,title);
             this._glTitle.setParentRect(this._glRectBg);
+
+            const opcol=this._glPatch.getOpNamespaceColor(this._op.objName);
+            this._glTitle.setColor(opcol[0],opcol[1],opcol[2]);
+
+            if(this._op.objName.indexOf("Ops.Ui.Comment")===0)
+            {
+                this._glTitle.scale=4;
+                this._glTitle.setColor(1,1,1,1);
+                this._glRectBg.setColor(0,0,0,0);
+            }
         }
 
         this._glRectBg.setSize(Math.max(this._getTitleWidth(),this._glRectBg.w),this._glRectBg.h);
@@ -277,6 +290,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         if(this._glTitle) this._glTitle.setPosition(this._getTitlePosition(),0);
         if(this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(),0);
+        if(this._glComment) this._glComment.setPosition(this.w+10,0);
     }
 
     getUiAttribs()
@@ -322,7 +336,14 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         {
             this._glTitleExt=null;
         }
- 
+
+        if(this.opUiAttribs.comment)
+        {
+            this._glComment=new CABLES.GLGUI.Text(this._textWriter,this.opUiAttribs.comment);
+            this._glComment.setParentRect(this._glRectBg);
+            this._glComment.setColor(1,1,1,1.0);
+        }
+
         if(this.opUiAttribs.glPreviewTexture)
         {
             if(!this._glRectContent)

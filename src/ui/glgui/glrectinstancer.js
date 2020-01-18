@@ -114,7 +114,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             // https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817
             .endl()+'       float smpl=texture(tex[0],uv).r;'
             .endl()+'       float scale = 1.0 / fwidth(smpl);'
-            .endl()+'       float signedDistance = (smpl - 0.5) * scale;'
+            .endl()+'       float signedDistance = (smpl - 0.5) * scale*0.5;'
 
             .endl()+'       float color = clamp(signedDistance + 0.5, 0.0, 1.0);'
 
@@ -339,7 +339,7 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         // console.log("inst counter",this._counter);
         if(this._counter>this._num-100)
         {
-            this._num+=10000;
+            this._num+=1000;
             console.log('resize to',this._num)
             this._setupAttribBuffers();
             this._needsRebuild=true;

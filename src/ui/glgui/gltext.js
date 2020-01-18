@@ -17,6 +17,7 @@ CABLES.GLGUI.Text=class
         this._width=0;
         this._r=this._g=this._b=1;
         this._align=0;
+        this._scale=1;        
 
         this.rebuild();
     }
@@ -34,9 +35,15 @@ CABLES.GLGUI.Text=class
         this.rebuild();
     }
 
+    set scale(s)
+    {
+        this._scale=s;
+        this.rebuild();
+    }
+
     _map(x)
     {
-        return x*0.2;
+        return x*0.2*this._scale;
     }
 
     setParentRect(r)

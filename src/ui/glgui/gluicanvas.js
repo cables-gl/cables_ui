@@ -163,7 +163,7 @@ CABLES.GLGUI.GlUiCanvas=class
             ()=>{
                 this.glPatch.setFont(this._fontTex);
                 this.glPatch.needsRedraw=true;
-            },{flip:false});
+            },{flip:false,filter:CGL.Texture.FILTER_LINEAR});
 
         this.parentResized();
         this.activityHigh();

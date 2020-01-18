@@ -469,6 +469,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         return this._glOpz[opid];
     }
 
+
+    // make static util thing...
+    getOpNamespaceColor(ns)
+    {
+        const parts=ns.split(".");
+        const nss=parts[0]+"."+parts[1];
+        console.log(nss);
+        if(CABLES.GLGUI.VISUALCONFIG.namespaceColors[nss]) return CABLES.GLGUI.VISUALCONFIG.namespaceColors[nss];
+        else return CABLES.GLGUI.VISUALCONFIG.namespaceColors.unknown;
+    }
+
+    // make static util thing...
     setDrawableColorByType(e,t)
     {
         var diff=1;
