@@ -15,6 +15,7 @@ CABLES.GLGUI.Text=class
         this._y=0;
         this._rects=[];
         this._width=0;
+        this._height=0;
         this._r=this._g=this._b=1;
         this._align=0;
         this._scale=1;        
@@ -27,6 +28,7 @@ CABLES.GLGUI.Text=class
     set text(t){this._string=t;this.rebuild();}
 
     get width(){ return this._width; }
+    get height(){ return this._height; }
 
     setPosition(x,y)
     {
@@ -81,6 +83,7 @@ CABLES.GLGUI.Text=class
         const lineHeight=this._map(font.size/2)+13;
         var posX=this._x;
         var posY=this._y+lineHeight;
+        var countLines=1;
 
         if(this._parentRect)
         {
@@ -100,6 +103,7 @@ CABLES.GLGUI.Text=class
             {
                 posX=0;
                 posY+=lineHeight;
+                countLines++;
                 continue;
             }
             rectCount++;
@@ -117,7 +121,8 @@ CABLES.GLGUI.Text=class
             posX+=this._map(ch.advance);
         }
 
-        // for(var i=rectCount+1;i<this._rects.length;i++) this._rects[i].dispose();
+        this._height=countLines*lineHeight;
+
     }
 
     dispose()

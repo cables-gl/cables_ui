@@ -210,7 +210,14 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
             }
         }
 
-        this._glRectBg.setSize(Math.max(this._getTitleWidth(),this._glRectBg.w),this._glRectBg.h);
+        this.updateSize();
+    }
+
+    updateSize()
+    {
+        this._glRectBg.setSize(
+            Math.max(this._getTitleWidth(),this._glRectBg.w),
+            Math.max(this._glTitle.height+5,this._glRectBg.h));
     }
 
     addLink(l)
