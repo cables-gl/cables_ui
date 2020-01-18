@@ -29,5 +29,12 @@ CABLES.GLGUI.VISUALCONFIG=
         // "Ops.Html": [],//#61bbf1';
         "Ops.Math": [68/255,212/255,200/255],//#44d4c8';
         "Ops.User": [1,1,1]//'#ffffff';
+    },
+    "colors":
+    {
+        "opBgRect":[51/255,51/255,51/255,1],
+        "patchComment":[.8,.8,.8,1],
+        "opTitleExt":[0.65,0.65,0.65,1.0],
+        "patchSelectionArea":[0,0.5,0.7,0.25]
     }
 };

@@ -16,7 +16,7 @@ CABLES.GLGUI.Text=class
         this._rects=[];
         this._width=0;
         this._height=0;
-        this._r=this._g=this._b=1;
+        this._color=[1,1,1,1];
         this._align=0;
         this._scale=1;        
 
@@ -59,10 +59,10 @@ CABLES.GLGUI.Text=class
 
     setColor(r,g,b)
     {
-        this._r=r;
-        this._g=g;
-        this._b=b;        
-        for(var i=0;i<this._rects.length;i++) if(this._rects[i]) this._rects[i].setColor(r,g,b,1);
+        if(r.length) vec4.set(this._color,r[0],r[1],r[2],1);
+        else vec4.set(this._color,r,g,b,1);
+
+        for(var i=0;i<this._rects.length;i++) if(this._rects[i]) this._rects[i].setColor(this._color);
     }
 
     rebuild()
@@ -112,7 +112,7 @@ CABLES.GLGUI.Text=class
 
             rect.setPosition(posX-this._map(ch.originX), posY-this._map(ch.originY));
             rect.setSize(this._map(ch.width), this._map(ch.height));
-            rect.setColor(this._r,this._g,this._b,1);
+            rect.setColor(this._color);
             rect.setTexRect(
                 ch.x/font.width, ch.y/font.height,
                 ch.width/font.width, ch.height/font.height);

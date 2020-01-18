@@ -404,6 +404,13 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
 
     setColor(idx,r,g,b,a)
     {
+        if(r.length)
+        {
+            a=r[3];
+            b=r[2];
+            g=r[1];
+            r=r[0];
+        }
         if(
             this._float32Diff(this._attrColors[idx*4+0],r) ||
             this._float32Diff(this._attrColors[idx*4+1],g) ||

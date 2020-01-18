@@ -6,7 +6,7 @@ CABLES.GLGUI.GlSelectionArea=class
     constructor(rectinstancer,glpatch)
     {
         this._selectRect=rectinstancer.createRect();
-        this._selectRect.setColor(0,0.5,0.7,0.25);
+        this._selectRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchSelectionArea);
         this._selectRect.setPosition(0,0,1000);
         this._selectRect.setSize(0,0);
         this._selectRect.setPosition(0,0,1000);

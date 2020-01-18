@@ -30,7 +30,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         this._glRectBg=instancer.createRect({"draggable":true});
         this._glRectBg.setSize(this._width,this._height);
-        this._glRectBg.setColor(51/255,51/255,51/255,1);
+        this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
 
         this._passiveDragStartX=null;
         this._passiveDragStartY=null;
@@ -205,7 +205,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
             if(this._op.objName.indexOf("Ops.Ui.Comment")===0)
             {
                 this._glTitle.scale=4;
-                this._glTitle.setColor(1,1,1,1);
+                this._glTitle.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
                 this._glRectBg.setColor(0,0,0,0);
             }
         }
@@ -337,7 +337,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         {
             this._glTitleExt=new CABLES.GLGUI.Text(this._textWriter," | "+this.opUiAttribs.extendTitle);
             this._glTitleExt.setParentRect(this._glRectBg);
-            this._glTitleExt.setColor(0.5,0.5,0.5,1.0);
+            this._glTitleExt.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opTitleExt);
         }
         else if(!this.opUiAttribs.extendTitle && this._glTitleExt)
         {
@@ -348,7 +348,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         {
             this._glComment=new CABLES.GLGUI.Text(this._textWriter,this.opUiAttribs.comment);
             this._glComment.setParentRect(this._glRectBg);
-            this._glComment.setColor(1,1,1,1.0);
+            this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
         }
 
         if(this.opUiAttribs.glPreviewTexture)

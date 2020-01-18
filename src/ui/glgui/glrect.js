@@ -80,8 +80,9 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     setColor(r,g,b,a)
     {
-        vec4.set(this.color,r,g,b,a);
-        this._rectInstancer.setColor(this._attrIndex,r,g,b,a);
+        if(r.length) vec4.set(this.color,r[0],r[1],r[2],r[3]);
+        else vec4.set(this.color,r,g,b,a);
+        this._rectInstancer.setColor(this._attrIndex,this.color);
     }
 
     setTexRect(x,y,w,h)

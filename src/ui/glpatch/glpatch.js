@@ -224,8 +224,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // if(this._showRedrawFlash) this._redrawFlash.setColor(0,0,0,1);
         // else this._redrawFlash.setColor(0,1,0,1);
         this._redrawFlash.setPosition(0,this._showRedrawFlash%30,1000);
-
-
         this._patchAPI.updateFlowModeActivity();
 
         this._viewResX=resX;
@@ -240,9 +238,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.mouseMove(mouseAbsX,mouseAbsY,mouseButton);
         this._cursor2.setPosition(mouseAbsX-2,mouseAbsY-2);
-
         this._portDragLine.setPosition(mouseAbsX,mouseAbsY);
-
 
         scrollX/=zoom;
         scrollY/=zoom;
@@ -251,7 +247,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._overLayRects.render(resX,resY,scrollX,scrollY,zoom);
         this._textWriter.render(resX,resY,scrollX,scrollY,zoom);
         this._lines.render(resX,resY,scrollX,scrollY,zoom);
-
 
         this.quickLinkSuggestion.glRender(this._cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY);
 
@@ -275,7 +270,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
         this._debugtext.text=str;
 
-        this.debugData["renderMs"] = Math.round(((this.debugData["renderMs"]||0)+performance.now()-starttime)*0.5);
+        this.debugData["renderMs"] = Math.round(((this.debugData["renderMs"]||0)+performance.now()-starttime)*0.5*10)/10;
 
     }
 
@@ -428,7 +423,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     getOpBounds()
     {
         const ops=this._glOpz;
-
         const bounds=
         {
             minx:9999,
@@ -475,7 +469,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         const parts=ns.split(".");
         const nss=parts[0]+"."+parts[1];
-        console.log(nss);
+
         if(CABLES.GLGUI.VISUALCONFIG.namespaceColors[nss]) return CABLES.GLGUI.VISUALCONFIG.namespaceColors[nss];
         else return CABLES.GLGUI.VISUALCONFIG.namespaceColors.unknown;
     }
@@ -484,7 +478,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     setDrawableColorByType(e,t)
     {
         var diff=1;
-
+        // p[ut colors into gluiconfig...]
         if(t == CABLES.OP_PORT_TYPE_VALUE) e.setColor(92/255*diff,181/255*diff,158/255*diff,1);
         else if(t == CABLES.OP_PORT_TYPE_FUNCTION) e.setColor(240/255*diff,209/255*diff,101/255*diff,1);
         else if(t == CABLES.OP_PORT_TYPE_OBJECT) e.setColor(171/255*diff,90/255*diff,148/255*diff,1);
@@ -521,7 +515,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         var op=this.getOp(opid);
         return op.getGlPortsLinkedToPort(opid,portname);
-
     }
 
 }
