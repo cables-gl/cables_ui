@@ -19,9 +19,29 @@ CABLES.CMD.PATCH.reload=function()
 	CABLESUILOADER.talkerAPI.send("reload");
 };
 
-CABLES.CMD.PATCH.save=function()
+CABLES.CMD.PATCH.save=function(force)
 {
-    if(!CABLES.UI.lastSave || Date.now()-CABLES.UI.lastSave>1000)
+	var dosave=true;
+
+
+	if(!force)
+	{
+		if(gui.user.isStaff || gui.user.isAdmin)
+		{
+			if (gui.project().users.indexOf(gui.user.id) == -1)
+			{
+				dosave=false;
+
+				CABLES.UI.MODAL.showError('Not Collaborator', 'You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>' );
+				CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);CABLES.SandboxBrowser.prototype.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});">Add me as collaborator and save</a>&nbsp;&nbsp;');
+				CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);CABLES.CMD.PATCH.save(true);">Save anyway</a>&nbsp;&nbsp;');
+				CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);">Close</a>&nbsp;&nbsp;');
+			}
+		}
+	}
+
+	if(dosave)
+	if(force || !CABLES.UI.lastSave || Date.now()-CABLES.UI.lastSave>1000)
     {
         gui.patch().saveCurrentProject();
         CABLES.UI.lastSave=Date.now();

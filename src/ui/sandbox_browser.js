@@ -114,8 +114,30 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning = function (id)
     }
 };
 
+
+CABLES.SandboxBrowser.prototype.addMeUserlist = function (options, cb)
+{
+
+    CABLESUILOADER.talkerAPI.send("addMeUserlist", {}, (err, r) =>
+    {
+        gui.project().users.push(gui.user.id)
+
+        if(cb)cb();
+
+    });
+};
+
 CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)
 {
+    var proj = this._cfg.patch;
+
+    // const cansave=proj.userList.indexOf(this._cfg.user.username);
+    // console.log("can save",cansave,proj.userList);
+
+    //for (var i in proj.userList) //userOpsUrls.push(this.getablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
+    // console.log(proj.userList[i]1)
+
+
     CABLESUILOADER.talkerAPI.send("savePatch", options, cb);
 };
 
@@ -195,6 +217,8 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
             if (cb) cb();
         });
     });
+
+
 };
 
 CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)

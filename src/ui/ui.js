@@ -1275,19 +1275,19 @@ CABLES.UI.GUI = function(cfg) {
             );
         }
 
-        if (this.project().users.indexOf(this.user.id) == -1 &&
-            this.project().userId+''!=''+this.user.id ){
-            iziToast.show({
-                position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-                theme: 'dark',
-                title: 'Not your patch',
-                message: 'Feel free to play around tho!<br />You cannot overwrite the patch, use «save as» in the menu bar instead.',
-                progressBar: false,
-                animateInside: false,
-                close: true,
-                timeout: false
-            });
-        }
+        // if (this.project().users.indexOf(this.user.id) == -1 &&
+        //     this.project().userId+''!=''+this.user.id ){
+        //     iziToast.show({
+        //         position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+        //         theme: 'dark',
+        //         title: 'Not your patch',
+        //         message: 'Feel free to play around tho!<br />You cannot overwrite the patch, use «save as» in the menu bar instead.',
+        //         progressBar: false,
+        //         animateInside: false,
+        //         close: true,
+        //         timeout: false
+        //     });
+        // }
 
         if(CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
         if(CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
