@@ -39,7 +39,6 @@ CABLES.UI.ServerOps = function (gui)
     this.load = function (cb)
     {
         const that = this;
-        console.log("loading");
         CABLESUILOADER.talkerAPI.send(
             "getAllOps",
             {},
