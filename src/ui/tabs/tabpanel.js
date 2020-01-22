@@ -287,13 +287,14 @@ CABLES.UI.TabPanel.prototype.getSaveButton = function ()
 
 CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
 {
+    console.log("tab.options.singleton",tab.options.singleton );
     if (tab.options.singleton)
     {
         var t = this.getTabByTitle(tab.title);
         if (t)
         {
             this.activateTab(t.id);
-            this.emitEvent("onTabAdded", t);
+            this.emitEvent("onTabAdded", t,true);
 
             if (activate) this.activateTab(t.id);
 
@@ -323,7 +324,7 @@ CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
     // var tabEl=document.getElementById("editortab"+tab.id)
 
     this.updateHtml();
-    this.emitEvent("onTabAdded", tab);
+    this.emitEvent("onTabAdded", tab,false);
 
     return tab;
 };

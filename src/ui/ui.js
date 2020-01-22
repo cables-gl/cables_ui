@@ -1750,27 +1750,36 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
 CABLES.UI.GUI.prototype.initCoreListeners=function()
 {
 
-    this._corePatch.addEventListener("exception", function(ex,op){
+    this._corePatch.on("onOpAdd",
+    function(op)
+    {
+        if(op.objName.indexOf("Ops.User")==0)
+        {
+            console.log("jo shit!");
+        }
+    });
+
+    this._corePatch.on("exception", function(ex,op){
         CABLES.UI.MODAL.showException(ex, op);
     });
 
-    this._corePatch.addEventListener("exceptionOp", function(e,objName){
+    this._corePatch.on("exceptionOp", function(e,objName){
         CABLES.UI.MODAL.showOpException(e, objName);
     });
 
-    this._corePatch.addEventListener("criticalError", function(title,msg){
+    this._corePatch.on("criticalError", function(title,msg){
         CABLES.UI.MODAL.showError(title,msg);
     });
 
-    this._corePatch.addEventListener("renderDelayStart", function(){
+    this._corePatch.on("renderDelayStart", function(){
         $("#delayed").show();
     });
 
-    this._corePatch.addEventListener("renderDelayEnd", function(){
+    this._corePatch.on("renderDelayEnd", function(){
         $("#delayed").hide();
     });
 
-    this._corePatch.addEventListener("performance", function(perf){
+    this._corePatch.on("performance", function(perf){
         $("#canvasInfoFPS").html("| fps: " + perf.fps + " | ms: " + perf.ms );
     });
 }

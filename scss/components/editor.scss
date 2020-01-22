@@ -9,12 +9,20 @@
     left:100px;
     z-index:99;
     cursor:pointer;
-    background-color: $button-background-color;
+    padding: 10px;
+    // background-color: $button-background-color;
     background-color: var(--color-01);
     border-top: 10px solid var(--color-01);
-    padding: 10px;
     border-bottom: 10px solid var(--color-01);
 }
+
+.editorminimized_changed
+{
+    background-color: var(--color-06) !important;
+    border-bottom: 10px solid var(--color-06) !important;
+    border-top: 10px solid var(--color-06) !important;
+}
+
 #editormaximized
 {
     position:absolute;

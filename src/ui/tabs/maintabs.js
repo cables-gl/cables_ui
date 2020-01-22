@@ -17,13 +17,15 @@ CABLES.UI.MainTabPanel=function(tabs)
 
     // }.bind(this));
 
-
-
-    this._tabs.addEventListener("onTabAdded",(tab)=>
+    this._tabs.addEventListener("onTabAdded",(tab,existedBefore)=>
     {
         var wasVisible=this._visible;
-        // if(!wasVisible) this.show();
-               
+        if(!existedBefore) this.show();
+        console.log("existedBefore",existedBefore);
+
+        document.getElementById("editorminimized").classList.add("editorminimized_changed");
+        setTimeout(()=>{document.getElementById("editorminimized").classList.remove("editorminimized_changed");},200);
+
         tabs.activateTab(tab.id);
         
         if(!wasVisible && window.gui) gui.setLayout();
