@@ -1735,7 +1735,6 @@ CABLES.UI.GUI.prototype.setUser = function (u)
     if(!this.user.isPro)
     {
         document.getElementById("nav_createBackup").remove();
-        document.getElementById("nav_viewBackups").remove();
     }
     
 };
