@@ -847,7 +847,10 @@ CABLES.UI.GUI = function(cfg) {
             CABLES.CMD.PATCH.createBackup();
         });
 
-
+        $('.nav_viewBackups').bind("click", function(event)
+        {
+            gui.mainTabs.addIframeTab("Patch Backups",CABLES.sandbox.getCablesUrl()+"/patch/"+self.project()._id+"/settingsiframe#t=versions",{"icon":"settings","closable":true,"singleton":true});
+        });
 
         $('.nav_cablesweb').bind("click", function(event)
         {
@@ -1404,19 +1407,8 @@ CABLES.UI.GUI = function(cfg) {
             if (c[0] == 'cmd' && c[1] == 'saveproject') this.patch().saveCurrentProject();
         }.bind(this);
 
-        // var html = '<iframe style="border:none;width:100%;height:100%" src="/patch/' + self.project()._id+'/settingsiframe"></iframe';
-        // // CABLES.UI.MODAL.show(html);
-
         const url=CABLES.sandbox.getCablesUrl()+'/patch/' + self.project()._id+'/settingsiframe';
-
-        console.log("settings iframe",url);
-
-        // var settingsTab=this.mainTabs.addTab(new CABLES.UI.Tab("Patch Settings",{icon:"settings",closable:true}));
-        // settingsTab.contentEle.innerHTML=html;
-
         gui.mainTabs.addIframeTab("Patch Settings",url,{"icon":"settings","closable":true,"singleton":true});
-
-
     };
 
     // this.showOpDoc = function(opname) {
@@ -1726,29 +1718,21 @@ CABLES.UI.GUI = function(cfg) {
     };
 };
 
-
-
-
 CABLES.UI.GUI.prototype.setUser = function (u)
 {
     gui.user = u;
     if(!this.user.isPro)
     {
         document.getElementById("nav_createBackup").remove();
+        document.getElementById("nav_viewBackups").remove();
+        
     }
-    
 };
-
-
 
 CABLES.UI.GUI.prototype.updateTheme = function () {
     if (CABLES.UI.userSettings.get("theme-bright")) document.body.classList.add("bright");
     else document.body.classList.remove("bright");
 };
-
-
-
-
 
 // todo use eventtarget...
 CABLES.UI.GUI.prototype.addEventListener = function(name, cb)
@@ -1767,10 +1751,8 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
     }
 }
 
-
 CABLES.UI.GUI.prototype.initCoreListeners=function()
 {
-
     this._corePatch.on("onOpAdd",
     function(op)
     {
@@ -1815,7 +1797,6 @@ function startUi(cfg)
     incrementStartup();
     gui.serverOps = new CABLES.UI.ServerOps(gui);
 
-
     $("#patch").bind("contextmenu", function(e) {
         if (e.preventDefault) e.preventDefault();
     });
@@ -1849,7 +1830,6 @@ function startUi(cfg)
                 gui.opSelect().prepare();
                 incrementStartup();
                 gui.opSelect().search();
-
 
                 CABLES.UI.userSettings.addEventListener("onChange",function(key,v)
                 {
