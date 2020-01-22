@@ -143,7 +143,7 @@ CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)
 
 CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 {
-    gui.user = this._cfg.user;
+    gui.setUser(this._cfg.user);
 
     CABLESUILOADER.talkerAPI.addEventListener("notify", (options, next) =>
     {
@@ -220,6 +220,17 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 
 
 };
+
+CABLES.SandboxBrowser.prototype.createBackup=function()
+{
+    CABLESUILOADER.talkerAPI.send("patchCreateBackup", {}, (r) =>
+    {
+        console.log("backup finished",r);
+        if(r.success)
+            CABLES.UI.notify("Backup created!");
+
+    });
+}
 
 CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
 {

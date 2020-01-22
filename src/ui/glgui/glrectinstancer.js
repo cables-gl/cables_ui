@@ -83,6 +83,9 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             .endl()+'    gl_Position = vec4(pos,1.0);'
             .endl()+'}'
 
+
+
+
             , ''
             .endl()+'IN vec4 col;'
             .endl()+'IN vec4 posSize;'

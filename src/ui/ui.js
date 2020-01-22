@@ -841,6 +841,14 @@ CABLES.UI.GUI = function(cfg) {
     {
         $('#glcanvas').attr('tabindex', '3');
 
+
+        $('.nav_createBackup').bind("click", function(event)
+        {
+            CABLES.CMD.PATCH.createBackup();
+        });
+
+
+
         $('.nav_cablesweb').bind("click", function(event)
         {
             var win = window.open(CABLES.sandbox.getCablesUrl(),'_blank');
@@ -1716,9 +1724,23 @@ CABLES.UI.GUI = function(cfg) {
         });
         gui.replaceNavShortcuts();
     };
-
-
 };
+
+
+
+
+CABLES.UI.GUI.prototype.setUser = function (u)
+{
+    gui.user = u;
+    if(!this.user.isPro)
+    {
+        document.getElementById("nav_createBackup").remove();
+        document.getElementById("nav_viewBackups").remove();
+    }
+    
+};
+
+
 
 CABLES.UI.GUI.prototype.updateTheme = function () {
     if (CABLES.UI.userSettings.get("theme-bright")) document.body.classList.add("bright");
