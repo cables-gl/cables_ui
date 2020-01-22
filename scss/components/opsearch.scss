@@ -65,6 +65,15 @@
         border-bottom-left-radius: $border-radius-popups;
         border-bottom-right-radius: $border-radius-popups;
         background-color: $color-searchInputContainer;
+
+        .warning
+        {
+            background-color:var(--color-warning);
+            color:#000;
+            font-weight: bold;
+            padding-left:10px;
+            padding-right:10px;
+        }
     }
 
     .searchbrowserContainer

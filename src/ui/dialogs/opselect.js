@@ -29,7 +29,13 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     var num=$('.searchbrowser .searchable:visible').length;
     var query=$('#opsearch').val();
 
-    if(query.length===0) $('#search_startType').show();
+    if(query.length===0)
+    {
+        $('#search_startType').show();
+
+        for(var i=0;i<this._list.length;i++)
+            if(this._list[i].element)this._list[i].element[0].style.display = "none";
+    }
     else $('#search_startType').hide();
 
     if(query.length==1) $('#search_startTypeMore').show();
@@ -45,7 +51,14 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
     }
     else $('#search_noresults').hide();
 
-    var optionsHtml='&nbsp;found '+num+' ops.';// in '+(Math.round(this._timeUsed)||0)+'ms ';
+    var optionsHtml='';
+
+    if(num==0 && gui.project().users.indexOf(gui.user.id) == -1)
+    {
+        optionsHtml+='<span class="warning">your user ops are hidden, you are not a collaborator of patch </span><br/>';
+    }
+    
+    optionsHtml+='&nbsp;found '+num+' ops.';// in '+(Math.round(this._timeUsed)||0)+'ms ';
 
     if(gui.user.isAdmin && $('#opsearch').val() && ($('#opsearch').val().startsWith('Ops.') || $('#opsearch').val().startsWith('Op.'))   )
     {
@@ -477,6 +490,13 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
         $('#opsearch').val(options.search);
         this.search();
     }
+    
+    if(!options.search)
+    {
+        $('#opsearch').val("");
+
+    }
+    
     if(this.firstTime)this.search();
 
     if(!this._list || !this._html)this.prepare();
@@ -534,6 +554,10 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
     };
 
     $('#optree').html(this.tree.html());
+
+
+    this.updateOptions();
+
     setTimeout(function(){$('#opsearch').focus();},50);
 };
 
