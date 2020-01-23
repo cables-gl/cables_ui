@@ -2876,7 +2876,6 @@ CABLES.UI.Patch = function(_gui) {
             });
 
             var lastGroup=null;
-
             var perfLoop = CABLES.uiperf.start('_showOpParamsLOOP');
 
             for(i=0;i<op.portsIn.length;i++)

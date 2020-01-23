@@ -45,6 +45,7 @@ CABLES.UI.Port=function(thePort)
     
     thePort.addEventListener("onUiAttrChange",function(attribs)
     {
+        console.log("attribs ui ",attribs);
         if(attribs.hasOwnProperty('hidePort'))
         {
             self.thePort.removeLinks();
@@ -53,14 +54,10 @@ CABLES.UI.Port=function(thePort)
             self.opUi.setPos();
         }
 
-
-
-
         if(attribs.hasOwnProperty('useVariable') || attribs.hasOwnProperty('isAnimated'))
         {
             updateUI();
         }
-
 
         if(attribs.hasOwnProperty('greyout'))
         {

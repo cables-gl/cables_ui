@@ -1582,25 +1582,22 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
             if (p.uiAttribs.display != 'readonly' && !p.uiAttribs.hidePort)
             {
-                uiPort=self.addPort(CABLES.PORT_DIR_IN, p);
+                uiPort=this.addPort(CABLES.PORT_DIR_IN, p);
             }
             else
             {
-                p.onUiAttrChange=function()
+                p.addEventListener("onUiAttrChange",function()
                 {
-                    var doit=gui.patch().updateOpParams(self.op.id);
-                    if (doit)
-                    {
-                        self.initPorts();
-                        self.setPos();
-                    }
-                }.bind(self);
+                    gui.patch().updateOpParams(self.op.id);
+                });
             }
 
-            if (p.uiAttribs.hasOwnProperty('display')) {
+            if (p.uiAttribs.hasOwnProperty('display'))
+            {
                 if (p.uiAttribs.display == 'dropdown') p.uiAttribs.type = 'string';
-                if (p.uiAttribs.display == 'file') p.uiAttribs.type = 'string';
-                if (p.uiAttribs.display == 'bool') p.uiAttribs.type = 'bool';
+                else if (p.uiAttribs.display == 'switch') p.uiAttribs.type = 'string';
+                else if (p.uiAttribs.display == 'file') p.uiAttribs.type = 'string';
+                else if (p.uiAttribs.display == 'bool') p.uiAttribs.type = 'bool';
             }
         }
 
