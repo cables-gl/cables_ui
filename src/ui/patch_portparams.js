@@ -199,8 +199,8 @@ CABLES.UI.initPortInputListener=function(op,index)
     {
         var v = '' + ele.val();
 
-        if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number') {
-
+        if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number')
+        {
             if (isNaN(v) || v === '')
             {
                 const mathParsed=CABLES.UI.mathparser.parse(v);
