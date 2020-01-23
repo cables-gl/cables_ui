@@ -2885,13 +2885,17 @@ CABLES.UI.Patch = function(_gui) {
                 var groupSpacer = false;
 
                 var opGroup = op.portsIn[i].uiAttribs.group;
-                if (lastGroup != opGroup && !opGroup) groupSpacer=true;
 
-                if (lastGroup != opGroup)
+                if(!op.portsIn[i].uiAttribs.hideParam)
                 {
-                    groupSpacer = true;
-                    lastGroup = opGroup;
-                    startGroup = lastGroup;
+                    if (lastGroup != opGroup && !opGroup) groupSpacer=true;
+
+                    if (lastGroup != opGroup )
+                    {
+                        groupSpacer = true;
+                        lastGroup = opGroup;
+                        startGroup = lastGroup;
+                    }
                 }
 
                 op.portsIn[i].watchId = 'in_' + i;
@@ -2910,8 +2914,6 @@ CABLES.UI.Patch = function(_gui) {
                     "op": op,
                     "texts": CABLES.UI.TEXTS,
                     "vars": op.patch.getVars()
-
-
                 });
             }
             perfLoop.finish();
