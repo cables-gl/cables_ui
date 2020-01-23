@@ -318,7 +318,6 @@ CABLES.UI.initPortClickListener=function(op,index)
     {
         var port=op.getPortById(e.target.dataset["portid"]);
 
-        console.log('val...',e.target.value,e.target.options[e.target.selectedIndex].value);
         if(port) port.setVariable(e.target.value);
         else console.log("PORT NOT FOUND!!-=- SET VARRRRR",e.target.dataset["portid"],e);
     });
