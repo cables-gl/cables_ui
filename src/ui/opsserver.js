@@ -38,21 +38,19 @@ CABLES.UI.ServerOps = function (gui)
 
     this.load = function (cb)
     {
-        CABLES.api.get(
-            CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsList()),
-            function (res)
+        const that = this;
+        CABLESUILOADER.talkerAPI.send(
+            "getAllOps",
+            {},
+            (err, res) =>
             {
-                if (res)
-                {
-                    ops = res;
+                if (err) console.err(err);
 
-                    logStartup("Ops loaded");
-
-                    if (cb) cb(ops);
-
-                    self.loaded = true;
-                    incrementStartup();
-                }
+                ops = res;
+                logStartup("Ops loaded");
+                if (cb) cb(ops);
+                that.loaded = true;
+                incrementStartup();
             },
         );
     };
@@ -406,11 +404,11 @@ CABLES.UI.ServerOps = function (gui)
 
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
-                
+
                 if (editorObj)
                 {
-                    
-                    
+
+
 
                     new CABLES.UI.EditorTab({
                         title: attachmentName,
@@ -592,7 +590,7 @@ CABLES.UI.ServerOps = function (gui)
                     gui.mainTabs.activateTabByName(opname);
                 }
 
-                
+
                 if (cb) cb();
             },
         );
