@@ -62,6 +62,15 @@
                 <i>Error:</i> {{op.uiAttribs.error}}
             </div>
 
+
+            {{#if op.uiAttribs.errors }}
+            {{#each op.uiAttribs.errors}}
+                    <div class="warning-error" id="options_error" >
+                        {{{.}}}<br/>
+                    </div>
+                {{/each}}
+            {{/if}}
+
             {{#if op.isExperimental }}
                 <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
             {{/if}}

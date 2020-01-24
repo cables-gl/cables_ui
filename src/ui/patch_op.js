@@ -1174,7 +1174,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
     this.isMouseOver = false;
 
-    op.onUiAttrChange = function(attribs) {
+    op.addEventListener("onUiAttribsChange",(attribs)=> {
         if (attribs && attribs.hasOwnProperty('warning')) {
             this.oprect.updateErrorIndicator();
             if(selected) gui.patch().updateUiAttribs();
@@ -1195,15 +1195,17 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         if (attribs && attribs.hasOwnProperty('extendTitle')) {
             this.oprect.setTitle();
         }
-        if(attribs && attribs.hasOwnProperty('translate')) {
-        if(attribs.translate.x!=posx || attribs.translate.y!=posy)
+        if(attribs && attribs.hasOwnProperty('translate'))
+            if(attribs.translate.x!=posx || attribs.translate.y!=posy)
+                this.setPos(attribs.translate.x,attribs.translate.y);
+
+        if(attribs && attribs.hasOwnProperty('errors'))
         {
-            this.setPos(attribs.translate.x,attribs.translate.y);
+            if(selected) gui.patch().updateOpParams(this.op.id);
         }
-    }    
 
 
-    }.bind(this);
+    });
 
     this.fixTitle=function()
     {
