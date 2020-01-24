@@ -28,7 +28,6 @@ CABLES.UI.GUI = function(cfg) {
     var _patch = null;
 
     var _jobs = new CABLES.UI.Jobs();
-    var _find = new CABLES.UI.Find();
     this.cmdPallet = new CABLES.UI.CommandPallet();
     var _opselect = new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
@@ -103,8 +102,15 @@ CABLES.UI.GUI = function(cfg) {
         return _jobs;
     };
 
-    this.find = function() {
-        return _find;
+    this.find = function(str) {
+        if(str==undefined)return this._find;
+
+        if(this._find)
+        {
+            this._find.search(str);
+            this._find.setSearchInputValue(str);
+        }
+        else this._find=new CABLES.UI.FindTab(gui.mainTabs,str);
     };
 
     this.texturePreview=function()
@@ -1595,12 +1601,10 @@ CABLES.UI.GUI = function(cfg) {
     {
         if(!this._elCanvasIconbar)return;
 
-        const posCanvas=this._elGlCanvas.offset();
-
         this._elCanvasIconbar.css({
-            width: this.rendererWidth*gui.patch().scene.cgl.canvasScale,
+            "width":document.body.getBoundingClientRect().width-this._elSplitterPatch.get()[0].getBoundingClientRect().width,
+            "left":this._elSplitterPatch.get()[0].getBoundingClientRect().left,
             top: this.rendererHeight*gui.patch().scene.cgl.canvasScale+1,
-            left: posCanvas.left
         });
     }
 
@@ -1753,14 +1757,14 @@ CABLES.UI.GUI.prototype.callEvent=function(name, params)
 
 CABLES.UI.GUI.prototype.initCoreListeners=function()
 {
-    this._corePatch.on("onOpAdd",
-    function(op)
-    {
-        if(op.objName.indexOf("Ops.User")==0)
-        {
-            console.log("jo shit!");
-        }
-    });
+    // this._corePatch.on("onOpAdd",
+    // function(op)
+    // {
+    //     if(op.objName.indexOf("Ops.User")==0)
+    //     {
+    //         console.log("jo shit!");
+    //     }
+    // });
 
     this._corePatch.on("exception", function(ex,op){
         CABLES.UI.MODAL.showException(ex, op);
@@ -1856,6 +1860,7 @@ function startUi(cfg)
         });
     });
 
+    $('#cablescanvas').on("click", function() { $('#glcanvas').focus(); });
     $('#glcanvas').on("focus",
         function()
         {

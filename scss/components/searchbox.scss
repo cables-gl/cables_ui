@@ -15,7 +15,17 @@
 		padding:10px;
 	}
 
-	input
+
+    #searchresult_cmd
+    {
+		max-height: 30vh;
+	    overflow-y: auto;
+    }
+}
+
+
+
+	#searchbox input,#cmdpalette input,.tabsearchbox input
 	{
         -webkit-appearance: none;
         -webkit-user-select: auto;
@@ -28,14 +38,8 @@
         }
 	}
 
-    #searchresult_cmd
-    {
-		max-height: 30vh;
-	    overflow-y: auto;
-    }
-}
 
-#searchbox {
+#searchbox,.tabSearchResultsContainer {
     -webkit-appearance: none;
 
     .inputcontainer {
@@ -53,27 +57,27 @@
     }
 }
 
-#searchresult {
+#searchresult,.tabSearchResultsContainer {
   $search-result-border-radius: 8px; // TODO: Move to main.scss
 
-  box-shadow: 1px 0px 10px #000;
-  border-bottom-left-radius: $search-result-border-radius;
-  border-bottom-right-radius: $search-result-border-radius;
+//   box-shadow: 1px 0px 10px #000;
+//   border-bottom-left-radius: $search-result-border-radius;
+//   border-bottom-right-radius: $search-result-border-radius;
   max-height: 90vh;
   overflow-y: scroll;
 
   div {
     border-bottom: 1px solid var(--color-05);
 
-    &:last-child {
-      border-bottom: none;
-      border-bottom-left-radius: $search-result-border-radius;
-      border-bottom-right-radius: $search-result-border-radius;
-    }
+    // &:last-child {
+    //   border-bottom: none;
+    // //   border-bottom-left-radius: $search-result-border-radius;
+    // //   border-bottom-right-radius: $search-result-border-radius;
+    // }
   }
 }
 
-#searchresult,#searchresult_cmd,.list
+#searchresult,#searchresult_cmd,.list,.tabSearchResultsContainer
 {
 	background-color: $background-color-brighter;
     padding:0px;

@@ -79,7 +79,7 @@
 
     <div id="mainContainer">
 
-    <div id="searchbox">
+    <!-- <div id="searchbox">
 		<div class="inputcontainer">
 			<div style="width:85%;float:left">
 				<input class="medium info" id="findinput" autocomplete="off" oninput="gui.find().search(this.value);" style="margin:0px;"/>
@@ -90,11 +90,11 @@
 			<div style="clear:both"></div>
 		</div>
         <div id="searchresult"></div>
-    </div>
+    </div> -->
 
     <div id="cmdpalette">
 		<div class="input-container">
-        	<input class="medium info" id="cmdinput" oninput="gui.cmdPallet.doSearch(this.value);" placeholder="search" style="width:90%;float:left;"/>
+        	<input class="medium info" id="cmdinput" autocomplete="off" oninput="gui.cmdPallet.doSearch(this.value);" placeholder="search" style="width:90%;float:left;"/>
 			<div style="width:10%;float:left">
 				<a class="icon-x icon icon-2x" onclick="gui.cmdPallet.close();"></a>
 			</div>

@@ -129,9 +129,9 @@ $( document ).ready(function()
         document.addEventListener("touchmove",mm);
         CABLES.SPLITPANE.listeners.push(mm);
     }
+
     document.getElementById('splitterRendererWH').addEventListener("mousedown",resizeRenderer);
     document.getElementById('splitterRendererWH').addEventListener("touchstart",resizeRenderer);
-
 
     function stopSplit(e)
     {

@@ -108,7 +108,8 @@ CABLES.CMD.UI.toggleMinimap = function ()
 
 CABLES.CMD.UI.showSearch = function (str)
 {
-    gui.find().show(str);
+    // new CABLES.UI.FindTab(gui.mainTabs);
+    gui.find(str||"");
 };
 
 CABLES.CMD.UI.toggleMaxRenderer = function ()

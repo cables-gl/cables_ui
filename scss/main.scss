@@ -579,6 +579,16 @@ input
     }
 }
 
+.underline
+{
+    text-decoration: underline;
+    &:hover
+    {
+        color: var(--color-special);
+    }
+
+}
+
 
 // input[type=range]{
 //     -webkit-appearance: none;
@@ -783,6 +793,17 @@ input
     cursor: grab;
 }
 
+.colorButton
+{
+    // width:20px;
+    // height:20px;
+    // display:block;
+    // border:3px solid black;
+    color:black;
+    // float:left;
+    padding-left:5px;
+    padding-right:5px;
+}
 
 
 @import 'libs/jcolorpicker-custom.scss';

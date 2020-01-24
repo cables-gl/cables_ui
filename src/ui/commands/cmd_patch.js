@@ -75,16 +75,16 @@ CABLES.CMD.PATCH.createSubPatchFromSelection=function()
 
 CABLES.CMD.PATCH.findCommentedOps=function()
 {
-	gui.find().show(':commented');
+	gui.find(':commented');
 };
 
 CABLES.CMD.PATCH.findUnconnectedOps=function()
 {
-	gui.find().show(':unconnected');
+	gui.find(':unconnected');
 };
 
 CABLES.CMD.PATCH.findUserOps = function () {
-    gui.find().show(':user');
+    gui.find(':user');
 };
 
 
