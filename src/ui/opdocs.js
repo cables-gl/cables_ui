@@ -232,6 +232,7 @@ CABLES.UI.OpDocs=function(cb)
                     "name":opName,
                     "summaryHtml":"No Op Documentation found",
                     "summary":"No Op Documentation found"
+                    "userOp":opName.indexOf("Ops.User")==0
                 };
         }
 
