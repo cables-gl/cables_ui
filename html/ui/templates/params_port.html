@@ -28,11 +28,14 @@
 
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
 
-            {{#if port.uiAttribs.title }}
-                {{port.uiAttribs.title}}
+            {{#compare port.uiAttribs.display '==' 'button' }}
             {{else}}
-                {{port.name}} 
-            {{/if}}
+                {{#if port.uiAttribs.title }}
+                    {{port.uiAttribs.title}}
+                {{else}}
+                    {{port.name}} 
+                {{/if}}
+            {{/compare}}
         </span>
     
         {{#if port.uiAttribs.colorPick }}
@@ -100,7 +103,10 @@
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'button' }}
                         </td><td >
-                            <span class="button" id="portbutton_{{ portnum }}" >{{port.name}}</span>
+                            <span class="button {{port.uiAttribs.buttonTitleClass}}" id="portbutton_{{ portnum }}" >
+                                {{#if port.uiAttribs.buttonTitle }}{{port.uiAttribs.buttonTitle}}
+                                {{else}}{{port.name}}{{/if}}
+                            </span>
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'editor' }}
                         </td><td >

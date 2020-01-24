@@ -319,7 +319,7 @@ CABLES.UI.initPortClickListener=function(op,index)
         var port=op.getPortById(e.target.dataset["portid"]);
 
         if(port) port.setVariable(e.target.value);
-        else console.log("PORT NOT FOUND!!-=- SET VARRRRR",e.target.dataset["portid"],e);
+        else console.log("[portsetvar] PORT NOT FOUND!! ",e.target.dataset["portid"],e);
     });
 
 
@@ -365,7 +365,6 @@ CABLES.UI.initPortClickListener=function(op,index)
             op.portsIn[index].setAnimated(false);
 
             gui.patch().timeLine.setAnim(null);
-            // op.portsIn[index].anim=null;
             $('#portanim_in_' + index).removeClass('timingbutton_active');
             $('#portval_' + index).val(val);
             $('#portval_' + index).trigger('input');

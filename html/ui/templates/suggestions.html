@@ -11,7 +11,9 @@
         {{/if}}
 
             {{{shortName}}}
-			{{#if isLinked}}[--]{{/if}}
+            {{#if isLinked}}[--]{{/if}}
+            {{#if isBoundToVar}}[##]{{/if}}
+            {{#if isAnimated}}[/\]{{/if}}
         </div>
     {{/each}}
 

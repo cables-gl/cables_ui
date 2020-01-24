@@ -13,7 +13,9 @@ CABLES.UI.SuggestPortDialog=function(op,port,mouseEvent,cb,cbCancel)
         suggestions.push({
             p:p,
             name:p.name,
-			isLinked:p.isLinked()
+            isLinked:p.isLinked(),
+            isBoundToVar:p.isBoundToVar(),
+            isAnimated:p.isAnimated()
         });
     }
 
