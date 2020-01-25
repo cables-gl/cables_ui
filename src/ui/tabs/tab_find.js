@@ -6,11 +6,9 @@ CABLES.UI.FindTab=function(tabs,str)
     this._tab=new CABLES.UI.Tab("Search",{"icon":"search","infotext":"tab_find","padding":true});
     tabs.addTab(this._tab,true);
 
-
     this._lastSearch = "";
     this._findTimeoutId = 0;
     this._canceledSearch = 0;
-    // var this._boundEscape = false;
     this._lastClicked = -1;
     this._lastSelected = -1;
     this._maxIdx = -1;
@@ -21,18 +19,14 @@ CABLES.UI.FindTab=function(tabs,str)
     for (var i=0;i<gui.scene().ops.length;i++)
     {
         var op=gui.scene().ops[i];
-        // if (!gui.scene().ops[i].isHidden()) numVisibleOps++;
         if (op.uiAttribs.error)
         {
-            // errorOps.push(op);
             if(op.objName.toLowerCase().indexOf("Deprecated")>-1)op.isDeprecated=true;
         }
         if (op.uiAttribs.warning) warnOps.push(op);
         if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
     }
     colors = CABLES.uniqueArray(colors);
-
-    console.log(colors);
 
     var html = CABLES.UI.getHandleBarHtml("tab_find", {colors:colors,inputid:"tabFindInput"+this._inputId});
 
@@ -58,7 +52,6 @@ CABLES.UI.FindTab=function(tabs,str)
         this.search(e.target.value);
     });
 
-
     document.getElementById("tabFindInput"+this._inputId).addEventListener(
         "keydown",
         function (e)
@@ -82,9 +75,6 @@ CABLES.UI.FindTab=function(tabs,str)
         }.bind(this),
     );
 
-    console.log("jojo");
-
-
     $("#tabsearchbox").show();
     $("#tabFindInput").focus();
     $("#tabFindInput").val(this._lastSearch);
@@ -101,8 +91,6 @@ CABLES.UI.FindTab=function(tabs,str)
         $("#tabsearchbox input").val(str);
         this.search(str);
     }
-
-    
 };
 
 CABLES.UI.FindTab.prototype.setSearchInputValue = function (str)
@@ -114,16 +102,12 @@ CABLES.UI.FindTab.prototype.searchAfterPatchUpdate = function ()
 {
     console.log("search after patch update");
     this.search(document.getElementById("tabFindInput"+this._inputId).value);
-
 }
-
 
 CABLES.UI.FindTab.prototype.isVisible = function ()
 {
     return this._tab.isVisible();
-    // return $("#tabsearchbox").is(":visible");
 };
-
 
 CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 {
@@ -132,40 +116,41 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
     this._maxIdx = idx;
 
     info += "* score : " + result.score + "\n";
-    // info += "* id : " + op.id + "\n";
 
-    var colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.op.objName);
+    if(op.op)op=op.op;
+
+    var colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName);
     html
         += "<div id=\"findresult"
         + idx
         + "\" class=\"info findresultop"
-        + op.op.id
+        + op.id
         + "\" data-info=\""
         + info
         + "\" onclick=\"gui.patch().setCurrentSubPatch('"
-        + op.getSubPatch()
+        + op.uiAttribs.subPatch
         + "');gui.patch().focusOp('"
-        + op.op.id
+        + op.id
         + "');gui.patch().getViewBox().center("
-        + op.op.uiAttribs.translate.x
+        + op.uiAttribs.translate.x
         + ","
-        + op.op.uiAttribs.translate.y
+        + op.uiAttribs.translate.y
         + ");gui.patch().setSelectedOpById('"
-        + op.op.id
+        + op.id
         + "');$('#patch').focus();gui.find().setClicked("
         + idx
         + ")\">";
 
     var colorHandle = "";
-    if (op.op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
+    if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
 
-    html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.op.name + "</h3>";
-    // html+=''+op.op.objName;
+    html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.name + "</h3>";
+    // html+=''+op.objName;
     html += result.where||"";
 
-    if (op.op.uiAttribs.subPatch != 0)
+    if (op.uiAttribs.subPatch != 0)
     {
-        html += "<br/> subpatch: " + gui.patch().getSubPatchPathString(op.op.uiAttribs.subPatch);
+        html += "<br/> subpatch: " + gui.patch().getSubPatchPathString(op.uiAttribs.subPatch);
     }
 
     html += "</div>";
@@ -223,16 +208,15 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
     {
         if (str == ":commented")
         {
-            for (var i = 0; i < gui.patch().ops.length; i++)
+            for (var i = 0; i < gui.corePatch().ops.length; i++)
             {
-                var op = gui.patch().ops[i];
+                var op = gui.corePatch().ops[i];
 
-                if (gui.patch().ops[i].op.uiAttribs.comment && gui.patch().ops[i].op.uiAttribs.comment.length > 0)
+                if (op.uiAttribs && op.uiAttribs.comment && op.uiAttribs.comment.length > 0)
                 {
-                    results.push({ op, score: 1 });
+                    results.push({ op, score: 1,where:op.uiAttribs.comment });
                     foundNum++;
                 }
-
                 // if(op.op.objName.indexOf("Ops.User")==0)
                 // {
                 //     results.push({"op":op,"score":1});
@@ -242,12 +226,12 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
         }
         else if (str == ":user")
         {
-            for (var i = 0; i < gui.patch().ops.length; i++)
+            for (var i = 0; i < gui.corePatch().ops.length; i++)
             {
-                var op = gui.patch().ops[i];
-                if (op.op.objName.indexOf("Ops.User") == 0)
+                var op = gui.corePatch().ops[i];
+                if (op.objName.indexOf("Ops.User") == 0)
                 {
-                    results.push({ op, score: 1 });
+                    results.push({ op, score: 1,where:op.objName });
                     foundNum++;
                 }
             }
@@ -256,25 +240,33 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
         {
             var col = str.substr(7).toLowerCase();
 
-            for (var i = 0; i < gui.patch().ops.length; i++)
+            for (var i = 0; i < gui.corePatch().ops.length; i++)
             {
-                var op = gui.patch().ops[i];
-                if (op.op.uiAttribs.color && op.op.uiAttribs.color.toLowerCase() == col)
+                var op = gui.corePatch().ops[i];
+                if (op.uiAttribs.color && op.uiAttribs.color.toLowerCase() == col)
                 {
                     results.push({ op, score: 1 });
                     foundNum++;
                 }
             }
         }
+        else if (str == ":bookmarks")
+        {
+            // for (var i = 0; i < gui.corePatch().ops.length; i++)
+            // {
+            //     var op = gui.corePatch().ops[i];
+            //     var count = 0;
+            // }
+        }
         else if (str == ":unconnected")
         {
-            for (var i = 0; i < gui.patch().ops.length; i++)
+            for (var i = 0; i < gui.corePatch().ops.length; i++)
             {
-                var op = gui.patch().ops[i];
+                var op = gui.corePatch().ops[i];
                 var count = 0;
                 for (var j = 0; j < op.portsIn.length; j++)
                 {
-                    if (op.portsIn[j].thePort.isLinked())
+                    if (op.portsIn[j].isLinked())
                     {
                         count++;
                     }
@@ -283,7 +275,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
                 {
                     for (var j = 0; j < op.portsOut.length; j++)
                     {
-                        if (op.portsOut[j].thePort.isLinked())
+                        if (op.portsOut[j].isLinked())
                         {
                             count++;
                         }
@@ -301,72 +293,69 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
     else
     {
         var where = "";
-        for (var i = 0; i < gui.patch().ops.length; i++)
+        var ops=gui.corePatch().ops;
+        for (var i = 0; i < ops.length; i++)
         {
             if (this._canceledSearch == searchId)
             {
                 console.log("canceled search...");
                 return;
             }
-            if (gui.patch().ops[i].op)
+            var score = 0;
+
+            
+
+            if (
+                gui
+                    .patch()
+                    .ops[i].op.objName.toLowerCase()
+                    .indexOf(str) > -1
+            )
             {
-                var score = 0;
+                where = "name: " + this.highlightWord(str, ops[i].objName);
+                score += 1;
+            }
 
-                if (
-                    gui
-                        .patch()
-                        .ops[i].op.objName.toLowerCase()
-                        .indexOf(str) > -1
-                )
+            if (
+                ops[i].uiAttribs.comment
+                && gui
+                    .patch()
+                    .ops[i].op.uiAttribs.comment.toLowerCase()
+                    .indexOf(str) > -1
+            )
+            {
+                where = "comment: " + this.highlightWord(str, ops[i].uiAttribs.comment);
+                score += 1;
+            }
+
+            if (
+                String(ops[i].name || "").toLowerCase().indexOf(str) > -1
+            )
+            {
+                if (ops[i].objName.indexOf(ops[i].name) == -1) score += 2; // extra points if non default name
+
+                where = "name: " + this.highlightWord(str, ops[i].name);
+                score += 2;
+            }
+
+            var op = ops[i];
+            for (var j = 0; j < op.portsIn.length; j++)
+            {
+                if ((op.portsIn[j].get() + "").toLowerCase().indexOf(str) > -1)
                 {
-                    where = "name: " + this.highlightWord(str, gui.patch().ops[i].op.objName);
-                    score += 1;
-                }
-
-                if (
-                    gui.patch().ops[i].op.uiAttribs.comment
-                    && gui
-                        .patch()
-                        .ops[i].op.uiAttribs.comment.toLowerCase()
-                        .indexOf(str) > -1
-                )
-                {
-                    where = "comment: " + this.highlightWord(str, gui.patch().ops[i].op.uiAttribs.comment);
-                    score += 1;
-                }
-
-                if (
-                    String(gui.patch().ops[i].op.name || "")
-                        .toLowerCase()
-                        .indexOf(str) > -1
-                )
-                {
-                    if (gui.patch().ops[i].op.objName.indexOf(gui.patch().ops[i].op.name) == -1) score += 2; // extra points if non default name
-
-                    where = "name: " + this.highlightWord(str, gui.patch().ops[i].op.name);
+                    where = "<span style=\"color:var(--color_port_" + op.portsIn[j].getTypeString().toLowerCase() + ");\">▩</span> ";
+                    where += op.portsIn[j].name + ": " + this.highlightWord(str, op.portsIn[j].get());
 
                     score += 2;
                 }
+            }
 
-                var op = gui.patch().ops[i].op;
-                for (var j = 0; j < op.portsIn.length; j++)
-                {
-                    if ((op.portsIn[j].get() + "").toLowerCase().indexOf(str) > -1)
-                    {
-                        where = "<span style=\"color:var(--color_port_" + op.portsIn[j].getTypeString().toLowerCase() + ");\">▩</span> ";
-                        where += op.portsIn[j].name + ": " + this.highlightWord(str, op.portsIn[j].get());
+            if (score > 0 && gui.patch().isOpCurrentSubpatch(op)) score++;
 
-                        score += 2;
-                    }
-                }
-
-                if (score > 0 && gui.patch().isOpCurrentSubpatch(op)) score++;
-
-                if (score > 0)
-                {
-                    results.push({ op: gui.patch().ops[i], score, where });
-                    foundNum++;
-                }
+            if (score > 0)
+            {
+                results.push({ op: ops[i], score, where });
+                foundNum++;
             }
         }
     }

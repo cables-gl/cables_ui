@@ -86,7 +86,7 @@ CABLES.UI.GUI = function(cfg) {
         return _patch.timeLine;
     };
 
-    this.scene = function() {
+    this.corePatch=this.scene = function() {
         return _scene;
     };
 
