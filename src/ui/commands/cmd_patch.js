@@ -259,17 +259,23 @@ CABLES.CMD.PATCH.replaceLinkVariable=function()
         {
 			var link=CABLES.UI.OPSELECT.linkNewLink;
 			console.log(link);
-
-
-			const varops=CABLES.CMD.PATCH._createVariable(str,link.p2.thePort,link.p1.thePort,link.p2.thePort.get());
-
-			var uiop=gui.patch().getUiOp(varops.getter);
-			uiop.setPos(link.p1.thePort.parent.uiAttribs.translate.x,link.p1.thePort.parent.uiAttribs.translate.y-40);
-
-			uiop=gui.patch().getUiOp(varops.setter);
-			uiop.setPos(link.p2.thePort.parent.uiAttribs.translate.x,link.p2.thePort.parent.uiAttribs.translate.y+40);
+			const p1=link.p1.thePort;
+			const p2=link.p2.thePort;
+			CABLES.UI.OPSELECT.linkNewLink=null;
 
 			link.remove();
+			p1.removeLinks();
+
+			const varops=CABLES.CMD.PATCH._createVariable(str,p2,p1,p2.get());
+
+			var uiop=gui.patch().getUiOp(varops.getter);
+			uiop.setPos(p1.parent.uiAttribs.translate.x,p1.parent.uiAttribs.translate.y-40);
+
+			uiop=gui.patch().getUiOp(varops.setter);
+			uiop.setPos(p2.parent.uiAttribs.translate.x,p2.parent.uiAttribs.translate.y+40);
+
+			
+
 
         });
 }

@@ -166,7 +166,7 @@ function UiLink(port1, port2)
 
             if (!this._addCircleVisible)
             {
-                this._addCircles[0].show();
+                if(this._addCircles[0])this._addCircles[0].show();
                 this.setElementOrder();
                 this._addCircleVisible = true;
             }

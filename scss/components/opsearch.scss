@@ -103,7 +103,13 @@
         padding: 20px 30px;
 		border-bottom: 1px solid var(--color-07);
         background-color: $background-color-brighter;
+
+        &:hover
+        {
+            background-color: $background-color-hover;
+        }
     }
+
 
     .searchbrowser
     {

@@ -491,11 +491,10 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
         this.search();
     }
     
-    if(!options.search)
-    {
-        $('#opsearch').val("");
-
-    }
+    // if(!options.search)
+    // {
+    //     // $('#opsearch').val("");
+    // }
     
     if(this.firstTime)this.search();
 
@@ -511,11 +510,11 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
             "onClose":this.close
         });
 
-    if (CABLES.UI.OPSELECT.linkNewOpToPort) $('#opselect_createVar').show();
-        else $('#opselect_createVar').hide();
-
-    if (link) $('#opselect_replaceVar').show();
-        else $('#opselect_replaceVar').hide();
+    if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type==CABLES.OP_PORT_TYPE_VALUE) $('#opselect_createVar').show();
+    else $('#opselect_createVar').hide();
+        
+    if (link && link.p1.thePort.type==CABLES.OP_PORT_TYPE_VALUE) $('#opselect_replaceVar').show();
+    else $('#opselect_replaceVar').hide();
 
     $('#opsearch').select();
     $('#opsearch').focus();

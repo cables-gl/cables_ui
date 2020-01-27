@@ -22,7 +22,17 @@
 
 <script id="op_select_ops" type="text/x-handlebars-template">
 
+
     <div class="searchbrowser">
+
+
+        <div style="text-align:center;padding-bottom:10px;background-color:var(--color-02)" id="opselect_createVar">
+            <a class="insertbutton" style="background-color:var(--color-05);"  onclick="CABLES.CMD.PATCH.createAutoVariable();">Create a variable</a>
+        </div>
+
+        <div style="text-align:center;padding-bottom:10px;background-color:var(--color-02)" id="opselect_replaceVar">
+            <a class="insertbutton" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">Replace link with variable</a>
+        </div>
       {{#each ops}}
 
         <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">
@@ -61,12 +71,7 @@
                 <br/><br/>
                 Finally press <span class="icon icon-corner-down-left"></span> to create the selected op
 
-                <div id="opselect_createVar" style="display:none;position:absolute;bottom:40px;width:460px;text-align:center;">
-                    <a class="button" onclick="CABLES.CMD.PATCH.createAutoVariable();">create variable</a>
-                </div>
-                <div id="opselect_replaceVar" style="display:none;position:absolute;bottom:40px;width:460px;text-align:center;">
-                    <a class="button" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">replace with variable</a>
-                </div>
+
           </div>
       </div>
 
