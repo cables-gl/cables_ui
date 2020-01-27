@@ -315,10 +315,6 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
                 score += 1;
             }
 
-
-
-            console.log('opsi',ops[i]);
-            // if ( ops[i].op.uiAttribs ) console.log('.ops[i].op.uiAttribs.comment',ops[i].op.uiAttribs.comment);
             if (
                 ops[i].uiAttribs.comment && 
                 ops[i].uiAttribs.comment.toLowerCase()

@@ -1863,7 +1863,13 @@ function startUi(cfg)
         });
     });
 
-    $('#cablescanvas').on("click", function() { $('#glcanvas').focus(); });
+    // $('#cablescanvas').on("click", function(e)
+    // {
+    //     var isFocused = (document.activeElement === document.getElementById("#cablescanvas"));
+    //     console.log("isFocused???!",isFocused);
+    //     if(!isFocused) $('#glcanvas').focus();
+    // });
+
     $('#glcanvas').on("focus",
         function()
         {
