@@ -206,27 +206,7 @@
         color:var(--text-color);
     }
 
-	.insertbutton
-	{
-		display:inline-block !important;
-		background-size: 50%;
-		padding: 10px;
-		background-position: center;
-        border-radius: 20px;
-        margin-top: 3px;
-        position: relative;
-        right: -7px;
 
-        &:hover
-        {
-            background-color: var(--color-05);
-            color:var(--color-special) !important; 
-            *
-            {
-                background-color:var(--color-special) !important;
-            }
-        }
-	}
 
     .selected
     {

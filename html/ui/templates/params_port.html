@@ -103,7 +103,7 @@
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'button' }}
                         </td><td >
-                            <span class="button {{port.uiAttribs.buttonTitleClass}}" id="portbutton_{{ portnum }}" >
+                            <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}" >
                                 {{#if port.uiAttribs.buttonTitle }}{{port.uiAttribs.buttonTitle}}
                                 {{else}}{{port.name}}{{/if}}
                             </span>

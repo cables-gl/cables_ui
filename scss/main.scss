@@ -165,6 +165,36 @@ input[type="text"]
     border:1px solid var(--color-09);
 }
 
+.button-small
+{
+    display:inline-block !important;
+    background-size: 50%;
+    padding: 10px;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    background-position: center;
+    border-radius: 8px;
+    margin-top: 3px;
+    cursor:pointer;
+    font-size: 13px;
+    background-color: var(--color-04);
+
+    &:hover
+    {
+        background-color: var(--color-05);
+        color:var(--color-special) !important; 
+        *
+        {
+            background-color:var(--color-special) !important;
+        }
+    }
+
+    &.fa:before
+    {
+        margin-right: 5px;
+    }
+}
+
 .button,.bluebutton,.greybutton,.smallbutton
 {
 	display:inline-block;
