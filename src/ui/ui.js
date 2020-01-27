@@ -526,6 +526,9 @@ CABLES.UI.GUI = function(cfg) {
             this._elGlCanvas.attr('height', self.rendererHeight*density);
             this._elGlCanvas.css('width', self.rendererWidth);
             this._elGlCanvas.css('height', self.rendererHeight);
+            // this._elGlCanvas.css('left', window.innerWidth-self.rendererWidth*density);
+            // console.log("!!!",window.innerWidth,self.rendererWidth)
+
 
             this._elCablesCanvas.css('width', self.rendererWidth + 'px');
             this._elCablesCanvas.css('height', self.rendererHeight + 'px');
