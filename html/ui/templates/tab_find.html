@@ -1,23 +1,25 @@
 <script id="tab_find" type="text/x-handlebars-template">
 
-    <div id="tabsearchbox" class="tabsearchbox">
-        <input class="medium info" id="{{inputid}}" autocomplete="off" style="margin:0px;">
+    <div class="tabContentScrollContainer">
+
+        <div id="tabsearchbox" class="tabsearchbox">
+            <input class="medium info" id="{{inputid}}" autocomplete="off" style="margin:0px;">
+        </div>
+
+        <br/>
+        Find:
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':commented';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Ops with comment</a>
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':unconnected';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Unconnected ops</a>
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':user';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">User ops</a>
+
+        {{#each colors}}
+        &nbsp;<a onclick="gui.find(':color={{.}}')" style="background-color:{{.}};color:black;" class="button-small">color</a>
+        {{/each}}
+
+        <br/><br/>
+        
+        <div id="tabsearchresult" class="tabSearchResultsContainer">
+        </div>
     </div>
-
-    <br/>
-    Find:
-    <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':commented';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Ops with comment</a>
-    <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':unconnected';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Unconnected ops</a>
-    <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':user';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">User ops</a>
-
-    {{#each colors}}
-    &nbsp;<a onclick="gui.find(':color={{.}}')" style="background-color:{{.}};color:black;" class="button-small">color</a>
-    {{/each}}
-
-    <br/><br/>
-    
-    <div id="tabsearchresult" class="tabSearchResultsContainer">
-    </div>
-
 
 </script>

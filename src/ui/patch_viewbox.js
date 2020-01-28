@@ -390,7 +390,7 @@ CABLES.UI.PatchViewBox.prototype.center = function (x, y)
 
     offX=p*this._viewBox.w/2;
 
-    this.animate(x - this._viewBox.w / 2 + offX, y - this._viewBox.h / 2, this._viewBox.w, this._viewBox.h);
+    this.animate(x - this._viewBox.w / 2 - offX, y - this._viewBox.h / 2, this._viewBox.w, this._viewBox.h);
 }
 
 CABLES.UI.PatchViewBox.prototype.centerIfNotVisible = function (opui) {
