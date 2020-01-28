@@ -30,7 +30,7 @@ CABLES.UI.FindTab=function(tabs,str)
     }
     colors = CABLES.uniqueArray(colors);
 
-    var html = CABLES.UI.getHandleBarHtml("tab_find", {colors:colors,inputid:"tabFindInput"+this._inputId});
+    var html = CABLES.UI.getHandleBarHtml("tab_find", {colors:colors,inputid:this._inputId});
 
     this._tab.html(html);
 
@@ -47,15 +47,15 @@ CABLES.UI.FindTab=function(tabs,str)
         this._closed=true;
     });
 
-    document.getElementById("tabFindInput"+this._inputId).focus();
+    document.getElementById(this._inputId).focus();
 
-    document.getElementById("tabFindInput"+this._inputId).addEventListener("input",(e)=>
+    document.getElementById(this._inputId).addEventListener("input",(e)=>
     {
         console.log(e);
         this.search(e.target.value);
     });
 
-    document.getElementById("tabFindInput"+this._inputId).addEventListener(
+    document.getElementById(this._inputId).addEventListener(
         "keydown",
         function (e)
         {
@@ -65,7 +65,7 @@ CABLES.UI.FindTab=function(tabs,str)
                 if (c < 0) c = 0;
                 this.setClicked(c);
                 document.getElementById("findresult" + c).click();
-                document.getElementById("tabFindInput"+this._inputId).focus();
+                document.getElementById(this._inputId).focus();
             }
             else if (e.keyCode == 40)
             {
@@ -73,7 +73,7 @@ CABLES.UI.FindTab=function(tabs,str)
                 if (c > this._maxIdx - 1) c = this._maxIdx;
                 this.setClicked(c);
                 document.getElementById("findresult" + c).click();
-                document.getElementById("tabFindInput"+this._inputId).focus();
+                document.getElementById(this._inputId).focus();
             }
         }.bind(this),
     );
@@ -81,7 +81,7 @@ CABLES.UI.FindTab=function(tabs,str)
     $("#tabsearchbox").show();
     $("#tabFindInput").val(this._lastSearch);
     this.focus();
-    document.getElementById("tabFindInput"+this._inputId).setSelectionRange(0, this._lastSearch.length);
+    document.getElementById(this._inputId).setSelectionRange(0, this._lastSearch.length);
 
     clearTimeout(this._findTimeoutId);
     this._findTimeoutId = setTimeout( ()=>
@@ -95,26 +95,17 @@ CABLES.UI.FindTab=function(tabs,str)
         this.search(str);
     }
     this.focus();
-
 };
-
 
 CABLES.UI.FindTab.prototype.focus = function ()
 {
-    $("#tabFindInput").focus();
-    setTimeout( ()=>
-    {
-        $("#tabFindInput").focus();
-    }, 100);
-
-
+    $("#"+this._inputId).focus();
 }
 
 CABLES.UI.FindTab.prototype.isClosed = function ()
 {
     return this._closed;
 }
-
 
 CABLES.UI.FindTab.prototype.setSearchInputValue = function (str)
 {
@@ -128,9 +119,8 @@ CABLES.UI.FindTab.prototype.searchAfterPatchUpdate = function ()
     clearTimeout(this._findTimeoutId);
     this._findTimeoutId = setTimeout( ()=>
     {
-        this.search(document.getElementById("tabFindInput"+this._inputId).value);
+        this.search(document.getElementById(this._inputId).value);
     }, 100);
-
 }
 
 CABLES.UI.FindTab.prototype.isVisible = function ()
@@ -178,9 +168,7 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
     html += result.where||"";
 
     if (op.uiAttribs.subPatch != 0)
-    {
         html += "<br/> subpatch: " + gui.patch().getSubPatchPathString(op.uiAttribs.subPatch);
-    }
 
     html += "</div>";
 
@@ -215,15 +203,11 @@ CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
 
 CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
 {
-
     console.log("dosearch",str);
-
 
     this._lastSearch = str;
     $("#tabsearchresult").html("");
     if (str.length < 2) return;
-
-
 
     str = str.toLowerCase();
 
@@ -243,11 +227,6 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
                     results.push({ op, score: 1,where:op.uiAttribs.comment });
                     foundNum++;
                 }
-                // if(op.op.objName.indexOf("Ops.User")==0)
-                // {
-                //     results.push({"op":op,"score":1});
-                //     foundNum++;
-                // }
             }
         }
         else if (str == ":user")
@@ -300,12 +279,8 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
                 if (count == 0)
                 {
                     for (var j = 0; j < op.portsOut.length; j++)
-                    {
                         if (op.portsOut[j].isLinked())
-                        {
                             count++;
-                        }
-                    }
                 }
 
                 if (count == 0)
@@ -329,8 +304,6 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
             }
             var score = 0;
 
-            
-
             if (ops[i].objName.toLowerCase().indexOf(str) > -1)
             {
                 where = "name: " + this.highlightWord(str, ops[i].objName);
@@ -339,17 +312,13 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
 
             if (
                 ops[i].uiAttribs.comment && 
-                ops[i].uiAttribs.comment.toLowerCase()
-                    .indexOf(str) > -1
-            )
+                ops[i].uiAttribs.comment.toLowerCase().indexOf(str) > -1 )
             {
                 where = "comment: " + this.highlightWord(str, ops[i].uiAttribs.comment);
                 score += 1;
             }
 
-            if (
-                String(ops[i].name || "").toLowerCase().indexOf(str) > -1
-            )
+            if ( String(ops[i].name || "").toLowerCase().indexOf(str) > -1 )
             {
                 if (ops[i].objName.indexOf(ops[i].name) == -1) score += 2; // extra points if non default name
 
@@ -364,7 +333,6 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
                 {
                     where = "<span style=\"color:var(--color_port_" + op.portsIn[j].getTypeString().toLowerCase() + ");\">▩</span> ";
                     where += op.portsIn[j].name + ": " + this.highlightWord(str, op.portsIn[j].get());
-
                     score += 2;
                 }
             }
@@ -391,6 +359,8 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
 
         $("#tabsearchresult").append('<div style="pointer-events:none;">'+results.length+' results.</div>');
     }
+
+    this.focus();
 };
 
 CABLES.UI.FindTab.prototype.search = function (str)

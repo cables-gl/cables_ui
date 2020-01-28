@@ -14,7 +14,6 @@ CABLES.UI.MainTabPanel=function(tabs)
     // {
     //     if(!this.isVisible())this.show();
     //     gui.setLayout();
-
     // }.bind(this));
 
     this._tabs.addEventListener("onTabAdded",(tab,existedBefore)=>
@@ -29,7 +28,6 @@ CABLES.UI.MainTabPanel=function(tabs)
         tabs.activateTab(tab.id);
         
         if(!wasVisible && window.gui) gui.setLayout();
-
     });
 
     this._tabs.addEventListener("onTabRemoved",(tab)=>

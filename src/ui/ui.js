@@ -108,7 +108,7 @@ CABLES.UI.GUI = function(cfg) {
 
         gui.maintabPanel.show();
 
-        if(str==undefined)return this._find;
+        if(str==undefined) return this._find;
 
         if(this._find)
         {
