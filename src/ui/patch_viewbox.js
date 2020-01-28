@@ -379,8 +379,18 @@ CABLES.UI.PatchViewBox.prototype.animate = function (x, y, w, h)
     this._animViewBox();
 };
 
-CABLES.UI.PatchViewBox.prototype.center = function (x, y) {
-    this.animate(x - this._viewBox.w / 2, y - this._viewBox.h / 2, this._viewBox.w, this._viewBox.h);
+CABLES.UI.PatchViewBox.prototype.center = function (x, y)
+{
+
+    var p=document.getElementById("splitterMaintabs").getBoundingClientRect().left/document.getElementById("patch").getBoundingClientRect().width;
+
+    console.log(
+        document.getElementById("splitterMaintabs").getBoundingClientRect().left,
+        document.getElementById("patch").getBoundingClientRect().width);
+
+    offX=p*this._viewBox.w/2;
+
+    this.animate(x - this._viewBox.w / 2 + offX, y - this._viewBox.h / 2, this._viewBox.w, this._viewBox.h);
 }
 
 CABLES.UI.PatchViewBox.prototype.centerIfNotVisible = function (opui) {

@@ -164,7 +164,7 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
     if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
 
     html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.name + "</h3>";
-    // html+=''+op.objName;
+    html+=''+op.objName+'<br/>';
     html += result.where||"";
 
     if (op.uiAttribs.subPatch != 0)
