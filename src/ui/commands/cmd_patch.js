@@ -298,8 +298,11 @@ CABLES.CMD.PATCH.replaceLinkVariable=function()
 			const p2=link.p2.thePort;
 			CABLES.UI.OPSELECT.linkNewLink=null;
 
+			if (p1.direction == CABLES.PORT_DIR_IN)p1.removeLinks();
+			else p2.removeLinks();
+
 			link.remove();
-			p1.removeLinks();
+			
 
 			const varops=CABLES.CMD.PATCH._createVariable(str,p2,p1,p2.get());
 
