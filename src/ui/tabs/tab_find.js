@@ -13,6 +13,7 @@ CABLES.UI.FindTab=function(tabs,str)
     this._lastSelected = -1;
     this._maxIdx = -1;
     this._inputId="tabFindInput"+CABLES.uuid();
+    this._closed=false;
 
     var colors=[];
 
@@ -43,6 +44,7 @@ CABLES.UI.FindTab=function(tabs,str)
     {
         gui.scene().removeEventListener("onOpDelete",updateCb);
         gui.scene().removeEventListener("onOpAdd",updateCb);
+        this._closed=true;
     });
 
     document.getElementById("tabFindInput"+this._inputId).focus();
@@ -77,8 +79,8 @@ CABLES.UI.FindTab=function(tabs,str)
     );
 
     $("#tabsearchbox").show();
-    $("#tabFindInput").focus();
     $("#tabFindInput").val(this._lastSearch);
+    this.focus();
     document.getElementById("tabFindInput"+this._inputId).setSelectionRange(0, this._lastSearch.length);
 
     clearTimeout(this._findTimeoutId);
@@ -92,7 +94,27 @@ CABLES.UI.FindTab=function(tabs,str)
         $("#tabsearchbox input").val(str);
         this.search(str);
     }
+    this.focus();
+
 };
+
+
+CABLES.UI.FindTab.prototype.focus = function ()
+{
+    $("#tabFindInput").focus();
+    setTimeout( ()=>
+    {
+        $("#tabFindInput").focus();
+    }, 100);
+
+
+}
+
+CABLES.UI.FindTab.prototype.isClosed = function ()
+{
+    return this._closed;
+}
+
 
 CABLES.UI.FindTab.prototype.setSearchInputValue = function (str)
 {

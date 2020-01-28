@@ -103,6 +103,11 @@ CABLES.UI.GUI = function(cfg) {
     };
 
     this.find = function(str) {
+
+        if(this._find && this._find.isClosed())this._find=null;
+
+        gui.maintabPanel.show();
+
         if(str==undefined)return this._find;
 
         if(this._find)
@@ -111,6 +116,9 @@ CABLES.UI.GUI = function(cfg) {
             this._find.setSearchInputValue(str);
         }
         else this._find=new CABLES.UI.FindTab(gui.mainTabs,str);
+
+        this._find.focus();
+
     };
 
     this.texturePreview=function()
