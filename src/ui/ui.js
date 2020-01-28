@@ -102,13 +102,12 @@ CABLES.UI.GUI = function(cfg) {
         return _jobs;
     };
 
-    this.find = function(str) {
-
+    this.find = function(str)
+    {
         if(this._find && this._find.isClosed())this._find=null;
 
-        gui.maintabPanel.show();
-
         if(str==undefined) return this._find;
+        gui.maintabPanel.show();
 
         if(this._find)
         {

@@ -370,7 +370,6 @@ CABLES.UI.PatchViewBox.prototype.animate = function (x, y, w, h)
 
     newvb=this._fixAspectRatio(newvb);
 
-
     this._viewBoxAnim.x.setValue(duration, newvb.x);
     this._viewBoxAnim.y.setValue(duration, newvb.y);
     this._viewBoxAnim.w.setValue(duration, newvb.w);
@@ -381,12 +380,11 @@ CABLES.UI.PatchViewBox.prototype.animate = function (x, y, w, h)
 
 CABLES.UI.PatchViewBox.prototype.center = function (x, y)
 {
-
     var p=document.getElementById("splitterMaintabs").getBoundingClientRect().left/document.getElementById("patch").getBoundingClientRect().width;
 
-    console.log(
-        document.getElementById("splitterMaintabs").getBoundingClientRect().left,
-        document.getElementById("patch").getBoundingClientRect().width);
+    // console.log(
+    //     document.getElementById("splitterMaintabs").getBoundingClientRect().left,
+    //     document.getElementById("patch").getBoundingClientRect().width);
 
     offX=p*this._viewBox.w/2;
 
