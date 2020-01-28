@@ -158,7 +158,7 @@ function UiLink(port1, port2)
             {
                 this._lastMiddlePosX = middlePosX;
                 this._lastMiddlePosY = pY;
-                this._addCircles[0].attr({
+                if(this._addCircles[0])this._addCircles[0].attr({
                     cx: middlePosX,
                     cy: pY,
                 });

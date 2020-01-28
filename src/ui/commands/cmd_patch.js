@@ -220,7 +220,7 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 		opSetter.getPort(portName).set(value);
 
 	}
-	if (p.direction == 0)
+	if (p.direction == CABLES.PORT_DIR_IN)
 	{
 		p.parent.patch.link(opGetter, portName, p.parent, p.name);
 
@@ -251,9 +251,44 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 }
 
 
+CABLES.CMD.PATCH.replaceLinkVariableExist=function()
+{
+	var link=CABLES.UI.OPSELECT.linkNewLink;
+	console.log(link);
+	const p=link.p1.thePort;
+	const p2=link.p2.thePort;
+	CABLES.UI.OPSELECT.linkNewLink=null;
+
+	var opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
+
+	link.remove();
+	p.removeLinks();
+
+	const portName="Value";
+
+	var otherPort=p2;
+	if (p.direction == CABLES.PORT_DIR_IN)
+	{
+		p.parent.patch.link(opGetter, portName, p.parent, p.name);
+	}
+	else
+	{
+		otherPort=p;
+		p.parent.patch.link(opGetter, portName, p2.parent, p2.name);
+	}
+
+	if(otherPort.parent.objName.indexOf("Ops.Vars.VarGet")==0)
+	{
+		console.log("otherPort.parent.varName.get()",otherPort.parent.varName.get());
+		opGetter.varName.set(otherPort.parent.varName.get());
+	}
+
+	CABLES.UI.MODAL.hide(true);
+
+}
+
 CABLES.CMD.PATCH.replaceLinkVariable=function()
 {
-
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "",
         function (str)
         {
@@ -273,10 +308,6 @@ CABLES.CMD.PATCH.replaceLinkVariable=function()
 
 			uiop=gui.patch().getUiOp(varops.setter);
 			uiop.setPos(p2.parent.uiAttribs.translate.x,p2.parent.uiAttribs.translate.y+40);
-
-			
-
-
         });
 }
 
