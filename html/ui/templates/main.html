@@ -110,52 +110,40 @@
         <ul>
             <li class="nav_cables"><b>cables - <b id="username">???</b></b>
                 <ul class="nav-submenu">
+                    <li class="nav_preferences">My preferences</span></li>
+                    <li class="divide"></li>
                     <li class="nav_cablesweb">Open cables.gl</span></li>
                     <li class="divide"></li>
-                    <li class="nav_preferences">My preferences</span></li>
-                </ul>
-            </li>
-            <li>
-                Patch
-                <ul class="nav-submenu">
-                    <li class="nav_patch_new">New</li>
                     <li class="nav-sub-submenu">
-                        New from template
+                        New Patch
                         <span class="icon icon-chevron-right"></span>
                         <ul>
+                            <li><a class="nav_patch_new">Empty</a></li>
                             <li><a href="/api/clone_edit/5970cef9b2ec9ab5683a94e7">2D Template</a></li>
                             <li><a href="/api/clone_edit/5970cab6eda3049368b0089f/">3D Template</a></li>
                             <li><a href="/api/clone_edit/5d11db7709e2d354aa33d8f8/">Simple particles</a></li>
                         </ul>
                     </li>
-
-                    <li class="divide"></li>
-                    <!-- <li onclick="CABLES.UI.SELECTPROJECT.show();">Open <span class="shortcut">[cmd + o]</span></li> -->
-                    <!-- <li class="divide"></li> -->
-
-                    <!-- <li class="nav_patch_load_version" onclick="gui.showSettings();gui.projectSettings().setTab('versions');">Load Old Version</li> -->
-                    <!-- <li class="divide"></li> -->
-
-                    <!-- <li class="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li> -->
-                    <!-- <li class="nav_patch_saveas">Save As</li> -->
-                    <!-- <li class="nav_patch_screenshot" onclick="CABLES.CMD.RENDERER.screenshot();">Save Screenshot</li> -->
-                    <!-- <li class="divide"></li> -->
-
-                    <!-- <li class="nav_patch_export">Export</li> -->
-                    <!-- <li class="nav_patch_export_ignoreAssets">Export without files</li> -->
-                    <!-- <li class="divide"></li> -->
-
-                    <!-- <li class="nav_patch_settings">Patch settings</li> -->
-                    <li class="divide"></li>
-                    <li class="nav_uploadfile">Upload file</li>
-                    <li class="divide"></li>
-
-                    <li class="divide"></li>
-                    <li class="nav_patch_clear">Clear</li>
-
-
                 </ul>
             </li>
+
+            <li class="nav-item-help">
+                <b id="patchname">...</b>
+                <ul class="nav-submenu">
+                    <li class="nav_patch_settings">Patch settings</li>
+                    <li class="nav_viewProjectLink viewProjectLink">Open in new window</li>
+
+                    <li class="divide"></li>
+                    <li id="nav_createBackup" class="nav_createBackup viewProjectLink">Create Backup</li>
+                    <li id="nav_viewBackups" class="nav_viewBackups viewProjectLink">Backups</li>
+
+                    <li class="divide"></li>
+                    <li class="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li>
+                    <li class="nav_patch_saveas">Save As<span class="shortcut">[cmd + shift + s]</span></li>
+                    <li class="nav_patch_export">Export</li>
+                </ul>
+            </li>
+
             <li>
                 Op
                 <ul class="nav-submenu">
@@ -165,7 +153,7 @@
                     <li class="nav_op_paste inactive">Paste <span class="shortcut">[mod + v]</span></li>
                     <li class="nav_op_delete inactive">Delete <span class="shortcut">[backspace]</span></li>
                     <li class="divide"></li>
-                    <li class="nav_op_createOp">Create</li>
+                    <li class="nav_op_createOp">Code an new op</li>
 
                 </ul>
             </li>
@@ -177,7 +165,8 @@
                     <li class="nav_filemanager">Files</li>
                     <li class="nav_timeline">Timeline</li>
                     <li class="nav_profiler">Profiler</li>
-                    <li class="nav_search">Search</li>
+                    <li class="nav_uploadfile">Upload file</li>
+                    <li class="nav_search">Search <span class="shortcut">[cmd + f]</span></li>
                 </ul>
             </li>
 
@@ -197,22 +186,6 @@
                 </ul>
             </li>
 
-            <li class="nav-item-help">
-                <b id="patchname">my new patch</b>
-                <ul class="nav-submenu">
-                    <li class="nav_patch_settings">Patch settings</li>
-                    <li class="nav_viewProjectLink viewProjectLink">Open in new window</li>
-
-                    <li class="divide"></li>
-                    <li id="nav_createBackup" class="nav_createBackup viewProjectLink">Create Backup</li>
-                    <li id="nav_viewBackups" class="nav_viewBackups viewProjectLink">Backups</li>
-
-                    <li class="divide"></li>
-                    <li class="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li>
-                    <li class="nav_patch_saveas">Save As</li>
-                    <li class="nav_patch_export">Export</li>
-                </ul>
-            </li>
 
         </ul>
     </nav>

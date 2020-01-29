@@ -302,7 +302,6 @@ CABLES.CMD.PATCH.replaceLinkVariable=function()
 			else p2.removeLinks();
 
 			link.remove();
-			
 
 			const varops=CABLES.CMD.PATCH._createVariable(str,p2,p1,p2.get());
 

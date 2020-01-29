@@ -858,6 +858,11 @@ CABLES.UI.GUI = function(cfg) {
         $('#glcanvas').attr('tabindex', '3');
 
 
+        document.getElementsByClassName("nav_search")[0].addEventListener("click",()=>
+        {
+            gui.find("");
+        });
+
         $('.nav_createBackup').bind("click", function(event)
         {
             CABLES.CMD.PATCH.createBackup();
@@ -1292,6 +1297,8 @@ CABLES.UI.GUI = function(cfg) {
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
+
+        document.getElementById("patch").focus();
     };
 
     this.showWelcomeNotifications = function() {

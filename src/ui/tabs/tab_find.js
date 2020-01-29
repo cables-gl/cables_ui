@@ -257,11 +257,14 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
         }
         else if (str == ":bookmarks")
         {
-            // for (var i = 0; i < gui.corePatch().ops.length; i++)
-            // {
-            //     var op = gui.corePatch().ops[i];
-            //     var count = 0;
-            // }
+            const bms=gui.bookmarks.getBookmarks();
+
+            for(var i=0;i<bms.length;i++)
+            {
+                var op=gui.corePatch().getOpById(bms[i]);
+                results.push({ op, score: 1 });
+                foundNum++;
+            }
         }
         else if (str == ":unconnected")
         {
