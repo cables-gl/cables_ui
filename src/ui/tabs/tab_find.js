@@ -16,6 +16,7 @@ CABLES.UI.FindTab=function(tabs,str)
     this._closed=false;
 
     var colors=[];
+    var warnOps=[];
 
     for (var i=0;i<gui.scene().ops.length;i++)
     {
