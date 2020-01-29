@@ -38,12 +38,14 @@ CABLES.UI.FindTab=function(tabs,str)
 
     gui.scene().addEventListener("onOpDelete",updateCb);
     gui.scene().addEventListener("onOpAdd",updateCb);
-
+    gui.scene().addEventListener("commentChanged",updateCb);
+    
 
     this._tab.addEventListener("onClose",()=>
     {
         gui.scene().removeEventListener("onOpDelete",updateCb);
         gui.scene().removeEventListener("onOpAdd",updateCb);
+        gui.scene().removeEventListener("commentChanged",updateCb);
         this._closed=true;
     });
 
@@ -51,7 +53,6 @@ CABLES.UI.FindTab=function(tabs,str)
 
     document.getElementById(this._inputId).addEventListener("input",(e)=>
     {
-        console.log(e);
         this.search(e.target.value);
     });
 
@@ -119,7 +120,7 @@ CABLES.UI.FindTab.prototype.searchAfterPatchUpdate = function ()
     clearTimeout(this._findTimeoutId);
     this._findTimeoutId = setTimeout( ()=>
     {
-        this.search(document.getElementById(this._inputId).value);
+        this.search(document.getElementById(this._inputId).value,true);
     }, 100);
 }
 
@@ -201,10 +202,10 @@ CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
     return str;
 };
 
-CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
+CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
 {
-    console.log("dosearch",str);
-
+    // console.log("dosearch",str);
+    const startTime=performance.now();
     this._lastSearch = str;
     $("#tabsearchresult").html("");
     if (str.length < 2) return;
@@ -255,7 +256,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
                 }
             }
         }
-        else if (str == ":bookmarks")
+        else if (str == ":bookmarked")
         {
             const bms=gui.bookmarks.getBookmarks();
 
@@ -300,11 +301,11 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
         var ops=gui.corePatch().ops;
         for (var i = 0; i < ops.length; i++)
         {
-            if (this._canceledSearch == searchId)
-            {
-                console.log("canceled search...");
-                return;
-            }
+            // if (this._canceledSearch == searchId)
+            // {
+            //     console.log("canceled search...");
+            //     return;
+            // }
             var score = 0;
 
             if (ops[i].objName.toLowerCase().indexOf(str) > -1)
@@ -351,7 +352,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
 
     if (foundNum === 0)
     {
-        $("#tabsearchresult").html("<br/><center>No ops found</center><br/>");
+        $("#tabsearchresult").html('<div style="pointer-events:none">&nbsp;&nbsp;&nbsp;No ops found</div>');
     }
     else
     {
@@ -359,19 +360,25 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, searchId)
 
         for (var i = 0; i < results.length; i++)
             this._addResultOp(results[i].op, results[i], i);
+        
+        var onclickResults='gui.patch().setSelectedOp(null);';
+        for (var i = 0; i < results.length; i++)
+            onclickResults+='gui.patch().addSelectedOpById(\''+results[i].op.id+'\');';
 
-        $("#tabsearchresult").append('<div style="pointer-events:none;">'+results.length+' results.</div>');
+        $("#tabsearchresult").append('<div style="background-color:var(--color-02);border-bottom:none;"><a class="button-small" onclick="'+onclickResults+'">'+results.length+' results</a></div>');
     }
 
-    this.focus();
+    const timeUsed=performance.now()-startTime;
+
+    if(!userInvoked) this.focus();
 };
 
-CABLES.UI.FindTab.prototype.search = function (str)
+CABLES.UI.FindTab.prototype.search = function (str,userInvoked)
 {
     this._maxIdx = -1;
     this.setSelectedOp(null);
     this.setClicked(-1);
-    this.doSearch(str||"");
+    this.doSearch(str||"",userInvoked);
 };
 
 CABLES.UI.FindTab.prototype.setClicked = function (num)

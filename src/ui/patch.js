@@ -1991,6 +1991,7 @@ CABLES.UI.Patch = function(_gui) {
         {
             currentOp.op.uiAttr({"comment":v});
             if(v.length==0)currentOp.op.uiAttr({"comment":null});
+            currentOp.op.patch.emitEvent("commentChanged");
             currentOp.oprect.updateAttachedComment();
             currentOp.setPos();
         }
