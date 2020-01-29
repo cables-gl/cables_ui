@@ -43,7 +43,7 @@ CABLES.CMD.RENDERER.screenshotUpload = function() {
                     console.log(data);
                 });
                 gui.patch().scene.resume();
-        });
+        },0,0,true);
 };
 
 CABLES.CMD.RENDERER.resetSize = function()

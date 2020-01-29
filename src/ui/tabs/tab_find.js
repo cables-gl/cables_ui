@@ -364,7 +364,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
         var onclickResults='gui.patch().setSelectedOp(null);';
         for (var i = 0; i < results.length; i++)
             onclickResults+='gui.patch().addSelectedOpById(\''+results[i].op.id+'\');';
-
+        onclickResults+='gui.patch().setStatusSelectedOps();';
         $("#tabsearchresult").append('<div style="background-color:var(--color-02);border-bottom:none;"><a class="button-small" onclick="'+onclickResults+'">'+results.length+' results</a></div>');
     }
 
