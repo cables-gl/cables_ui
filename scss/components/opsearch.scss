@@ -35,6 +35,18 @@
         }
     }
 
+    .insertbutton
+    {
+        display: inline-block !important;
+        background-size: 50%;
+        padding: 10px;
+        background-position: center;
+        border-radius: 20px;
+        margin-top: 3px;
+        position: relative;
+        right: -7px;
+    }
+
     // documentation in the op add modal
     .op-doc {
         h3 {
@@ -205,8 +217,6 @@
     {
         color:var(--text-color);
     }
-
-
 
     .selected
     {
