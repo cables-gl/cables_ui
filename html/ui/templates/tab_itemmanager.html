@@ -142,7 +142,29 @@
 
 
 
+<script id="filemanager_details_lib" type="text/x-handlebars-template">
 
+
+    <div class="filemanager-detail-element">
+        <div style="padding:10px;">
+
+            <a class="iconbutton info" data-infotext="filemanager_file_download" download href="{{filename}}">
+                <span class="icon icon-1x icon-download" ></span>
+            </a>
+            <a class="iconbutton info" data-infotext="filemanager_file_open" target="_blank" href="{{filename}}">
+                <span class="icon icon-1x icon-external"></span>
+            </a>
+            <span class="iconbutton info" data-infotext="filemanager_file_search" onclick="gui.find('{{filename}}')">
+                <a class="icon icon-1x icon-search"></a>
+            </span>
+
+        </div>
+    </div>
+
+
+
+
+</script>
 
 
 

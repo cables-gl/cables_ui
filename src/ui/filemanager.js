@@ -280,9 +280,11 @@ CABLES.UI.FileManager.prototype.updateHeader = function(detailItems) {
 CABLES.UI.FileManager.prototype.setDetail = function(detailItems) {
     var html = "";
     document.getElementById("item_details").innerHTML = "";
+console.log("HIERRR");
 
     if (detailItems.length == 1) {
         const itemId = detailItems[0].id;
+
 
         CABLESUILOADER.talkerAPI.send(
             "getFileDetails",
@@ -292,11 +294,12 @@ CABLES.UI.FileManager.prototype.setDetail = function(detailItems) {
             function(err, r) {
                 if (this._fileSource != "lib")
                     html = CABLES.UI.getHandleBarHtml("filemanager_details", {
-                        projectId: gui.patch().getCurrentProject()._id,
-                        file: r,
-                        source: this._fileSource
+                        "projectId": gui.patch().getCurrentProject()._id,
+                        "file": r,
+                        "source": this._fileSource
                     });
-                else html = "";
+                else 
+                    html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { "filename":detailItems[0].p });
 
                 $("#item_details").html(html);
 
@@ -321,6 +324,7 @@ CABLES.UI.FileManager.prototype.setDetail = function(detailItems) {
                         }.bind(this)
                     );
             }.bind(this)
+
         );
 
         if (this._filePortEle) {
