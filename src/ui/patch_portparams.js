@@ -169,6 +169,9 @@ CABLES.UI.initPortInputListener=function(op,index)
     if(!CABLES.UI.mathparser)CABLES.UI.mathparser=new MathParser();
     CABLES.UI.checkDefaultValue(op, index);
 
+    //added missing math constants
+    CABLES.UI.mathparser.add("pi",function(n,m){return Math.PI});
+
     const eleId='portval_' + index;
 
     if(!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number' || op.portsIn[index].uiAttribs.type == 'int')
