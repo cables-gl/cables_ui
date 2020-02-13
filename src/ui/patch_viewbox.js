@@ -190,8 +190,13 @@ CABLES.UI.PatchViewBox.prototype.centerAllOps = function ()
 
 CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 {
-    ele.bind("mousewheel", function (event, delta, nbr)
+    ele.bind("mousewheel",  (event, delta, nbr)=>
     {
+        if(!event)
+        {
+            console.log("mousewheel no event problem 2");
+            return;
+        }
         const wheelMultiplier=CABLES.UI.userSettings.get("wheelmultiplier")||1;
 
         var touchpadMode = CABLES.UI.userSettings.get("touchpadmode");
@@ -213,6 +218,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
         delta = CGL.getWheelSpeed(event);
 
         event = mouseEvent(event);
+        if(!event)console.log("mousewheel event problem");
 
         if(event.altKey)
         {
@@ -253,7 +259,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             return;
         }
 
-    }.bind(this));
+    });
 }
 
 CABLES.UI.PatchViewBox.prototype.zoom=function(delta)
@@ -282,17 +288,6 @@ CABLES.UI.PatchViewBox.prototype.zoom=function(delta)
         patchWidth / this._zoom,
         patchHeight / this._zoom
         );
-
-    // if(amount==0)return;
-
-
-    // console.log('amount',amount);
-    // this.set(
-    //     this._viewBox.x-amount,
-    //     this._viewBox.y-amount,
-    //     this._viewBox.w+amount*2,
-    //     this._viewBox.h+amount*2
-    // );
 
 }
 

@@ -12,17 +12,17 @@
     }
 
     
-
     .warning,.warning-experimental,.warning-error
 	{
 		border: 3px solid;
-        padding: 21px;
+        padding: 6px;
 
 		a {
 			text-decoration: underline;
 		}
 	}
 
+    // old
 	.hint
 	{
 		padding: 10px;
@@ -31,17 +31,39 @@
 		display: none;
 	}
 
+
+    // old
 	.warning ,.warning-experimental, .warning a, .warning-experimental a
 	{
         border-color: var(--color-warning);
         font-size: $font-size-default+2;
 	}
 
+
 	.warning-error, .warning-error a
 	{
-        border-color: var(--color-error);
+        text-align: left;
+        border-color: transparent;
         font-size: $font-size-default+2;
+        border-radius: 5px;
+        margin-bottom: 3px;;
 	}
+
+    .warning-error-level2
+    {
+        background: var(--color-bg-error);
+    }
+
+    .warning-error-level1
+    {
+        background: var(--color-bg-warning);
+    }
+
+    .warning-error-level0
+    {
+        background: var(--color-bg-hint);
+    }
+
 
 	.icon-link {
 		position: relative;

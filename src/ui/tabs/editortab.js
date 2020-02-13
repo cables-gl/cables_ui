@@ -198,8 +198,8 @@ CABLES.UI.createEditor = function (id, val)
             name: "op.inArray",
         },
         {
-            content: "op.inFile(\"${1:name}\")",
-            name: "op.inFile",
+            content: "op.inUrl(\"${1:name}\")",
+            name: "op.inUrl",
         },
         {
             content: "op.outNumber(\"${1:name}\")",

@@ -60,14 +60,27 @@
                 <i>Error:</i> {{op.uiAttribs.error}}
             </div>
 
-
             {{#if op.uiAttribs.errors }}
-            {{#each op.uiAttribs.errors}}
+                {{#each op.uiAttribs.errors}}
                     <div class="warning-error" id="options_error" >
                         {{{.}}}<br/>
                     </div>
                 {{/each}}
             {{/if}}
+
+            {{#if op.uiAttribs.uierrors }}
+                {{#each op.uiAttribs.uierrors}}
+                    <div class="warning-error warning-error-level{{level}}"  >
+
+                        {{#compare level '==' 0 }}Hint:{{/compare}}
+                        {{#compare level '==' 1 }}Warning:{{/compare}}
+                        {{#compare level '==' 2 }}Error:{{/compare}}
+
+                        {{{txt}}}<br/>
+                    </div>
+                {{/each}}
+            {{/if}}
+
 
             {{#if op.isExperimental }}
                 <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
@@ -81,11 +94,11 @@
             	<i>Hint:</i> {{op.uiAttribs.hint}}
             </div>
 
-            {{#if op.uiAttribs.notWorkingMsg }}
+            <!-- {{#if op.uiAttribs.notWorkingMsg }}
                 <div class="warning" id="options_warning" >
                     {{op.uiAttribs.notWorkingMsg}}
                 </div>
-            {{/if}}
+            {{/if}} -->
 
         </div>
     </div>

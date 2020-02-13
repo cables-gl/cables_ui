@@ -88,7 +88,7 @@ CABLES.UI.TEXTS = {
     settings: "## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate",
 
     working_connected_to: "to work, this op needs to be a child of: ",
-    working_connected_needs_connections_to: "this op can not do anything without at least connecting those ports: ",
+    working_connected_needs_connections_to: "This op can not do anything without at least connecting those ports: ",
 
     notOptimizedBrowser_title: "oops!",
     notOptimizedBrowser_text: "cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange",

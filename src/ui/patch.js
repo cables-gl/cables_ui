@@ -50,6 +50,9 @@ CABLES.UI.Patch = function(_gui) {
     
     this._oldOpParamsId=null;
 
+    this._uiAttrFpsLast=0;
+    this._uiAttrFpsCount=0;
+
     var pastedupdateTimeout=null;
 
     CABLES.editorSession.addListener("param",
@@ -2585,7 +2588,17 @@ CABLES.UI.Patch = function(_gui) {
     
     this.updateUiAttribs=function()
     {
- 
+        this._uiAttrFpsLast=this._uiAttrFpsLast||performance.now();
+        this._uiAttrFpsCount++;
+
+        if(performance.now()-this._uiAttrFpsLast>1000)
+        {
+            this._uiAttrFpsLast=performance.now();
+            if(this._uiAttrFpsCount>=10) console.warn("Too many ui attr updates!",this._uiAttrFpsCount,currentOp.op.name)
+            this._uiAttrFpsCount=0;
+        }
+        
+
         if(!currentOp)return;
 
         var perf = CABLES.uiperf.start('updateUiAttribs');
