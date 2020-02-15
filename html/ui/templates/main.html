@@ -41,14 +41,19 @@
     <a class="tt info icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-infotext="renderer_maximize"></a>
     <a class="tt info icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></a>
     <a class="tt info icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound" data-infotext="toggle_sound"></a>
+    
     <a class="tt icon icon-command iconhover" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper" data-infotext="toggle_helper"></a>
+    <a class="tt icon icon-sun iconhover" onclick="CABLES.CMD.UI.toggleTransformOverlay();" data-tt="toggle helper" data-infotext="toggle_helper"></a>
 
+    
     <a class="tt icon icon-triple-dot iconhover" onclick="gui.rendererContextMenu(this)" data-tt="more options"></a>
 
     <div class="canvasInfo">
         <span id="canvasInfoSize" class="info" onclick="CABLES.CMD.RENDERER.changeSize()" data-infotext="renderer_setsize"></span>
         <span id="canvasInfoFPS" class="" ></span>
     </div>
+
+
 
 </div>
 

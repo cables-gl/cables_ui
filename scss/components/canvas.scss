@@ -7,6 +7,20 @@
     border:2px solid red;
 }
 
+.transformSpot
+{
+    border:1px solid var(--color-special);
+    background: rgba(255,255,255,0.3);
+    border-radius: 100%;
+    width:19px;
+    height:19px;
+    position: absolute;
+    margin-left:-10px;
+    margin-top:-10px;
+    z-index: 99999999;
+    cursor:pointer;
+}
+
 .gizmoLine
 {
     z-index: 99999;

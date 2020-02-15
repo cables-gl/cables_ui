@@ -56,13 +56,15 @@
                 </div>
                 <br/><br/>
             {{/if}}
-            <div class="warning-error" id="options_error" >
+            <div class="warning-error warning-error-level2" id="options_error"  >
+                OLD ERROR MSG<br/>
                 <i>Error:</i> {{op.uiAttribs.error}}
             </div>
 
             {{#if op.uiAttribs.errors }}
                 {{#each op.uiAttribs.errors}}
-                    <div class="warning-error" id="options_error" >
+                    <div class="warning-error warning-error-level2" id="options_error"  >
+                        OLD ERROR MSG<br/>
                         {{{.}}}<br/>
                     </div>
                 {{/each}}

@@ -179,9 +179,7 @@ CABLES.CMD.PATCH.createVarNumber=function(next)
 
 			opSetter.varName.set(str);
 			opGetter.varName.set(str);
-
 		});
-
 };
 
 
@@ -190,7 +188,6 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 	var portName="Value"
 	var opSetter;
 	var opGetter;
-
 
 	if(p.type==CABLES.OP_PORT_TYPE_VALUE)
 	{
@@ -215,11 +212,8 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
 	}
 	
-	if(p.type!=CABLES.OP_PORT_TYPE_STRING)
-	{
-		opSetter.getPort(portName).set(value);
+	opSetter.getPort(portName).set(value);
 
-	}
 	if (p.direction == CABLES.PORT_DIR_IN)
 	{
 		p.parent.patch.link(opGetter, portName, p.parent, p.name);
@@ -228,9 +222,7 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 		{
 			p2.parent.patch.link(opSetter, portName, p2.parent, p2.name);
 			console.log(p2);
-			 
 		}
-		
 	}
 	else
 	{
@@ -240,7 +232,6 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 		{
 			p2.parent.patch.link(opGetter, portName, p2.parent, p2.name);
 			console.log(p2);
-			 
 		}
 	}
 
@@ -293,7 +284,7 @@ CABLES.CMD.PATCH.replaceLinkVariable=function()
         function (str)
         {
 			var link=CABLES.UI.OPSELECT.linkNewLink;
-			console.log(link);
+
 			const p1=link.p1.thePort;
 			const p2=link.p2.thePort;
 			CABLES.UI.OPSELECT.linkNewLink=null;

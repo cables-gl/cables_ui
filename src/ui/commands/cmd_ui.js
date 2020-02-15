@@ -158,6 +158,12 @@ CABLES.CMD.UI.toggleHelper = function ()
     console.log("helper", CABLES.UI.userSettings.get("helperMode"));
 };
 
+CABLES.CMD.UI.toggleTransformOverlay = function ()
+{
+    CABLES.UI.showCanvasTransforms=!CABLES.UI.showCanvasTransforms;
+    gui.transformOverlay().setVisible(CABLES.UI.showCanvasTransforms);
+};
+
 CABLES.CMD.UI.gradientTest = function ()
 {
     var ge = new CABLES.GradientEditor();

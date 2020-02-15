@@ -575,28 +575,57 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
         if (opui.op.uiAttribs.error || (opui.op.uiAttribs.uierrors && opui.op.uiAttribs.uierrors.length>0)) // || opui.op.uiAttribs.warning)
         {
-            if (!this._errorIndicator) {
+            if (!this._errorIndicator)
+            {
                 this._errorIndicator = gui.patch().getPaper().circle(w, h / 2, 4);
 
                 if (opui.op.objName.indexOf("Deprecated") > -1) this._errorIndicator.node.classList.add('error-indicator-warning');
                 if (opui.op.uiAttribs.error) isError=true;
-        
-                if(opui.op.uiAttribs.uierrors && opui.op.uiAttribs.uierrors.length>0) isError=true;
+
+                var errMsg="";
+
+                if(opui.op.uiAttribs.uierrors && opui.op.uiAttribs.uierrors.length>0)
+                {
+                    isError=false;
+                    for(var i=0;i<opui.op.uiAttribs.uierrors.length;i++)
+                    {
+                        if(opui.op.uiAttribs.uierrors[i].level>1)
+                        {
+                            var errMsg=opui.op.uiAttribs.uierrors[i].txt;
+                            isError=true;
+                            break;
+                        }
+                    }
+                }
                 
-                if(isError)this._errorIndicator.node.classList.add('error-indicator');
+                if(isError)
+                {
+                    this._errorIndicator.node.classList.add('error-indicator');
+                    this._errorIndicator.node.classList.add('tt');
+                    this._errorIndicator.node.setAttribute("data-tt", opui.op.uiAttribs.error||errMsg);
+                    
+                    group.push(this._errorIndicator);
+                }
+                else
+                {
+                    if (this._errorIndicator)
+                    {
+                        this._errorIndicator.remove();
+                        this._errorIndicator = null;
+                    }
+                }
 
-                this._errorIndicator.node.classList.add('tt');
-                this._errorIndicator.node.setAttribute("data-tt", opui.op.uiAttribs.error);
-
-                group.push(this._errorIndicator);
             }
 
             opui.setPos();
 
-            if (background) this._errorIndicator.attr({
-                cx: background.getBBox().width
-            });
-            this._errorIndicator.toFront();
+            if(this._errorIndicator)
+            {
+                if (background) this._errorIndicator.attr({
+                    cx: background.getBBox().width
+                });
+                this._errorIndicator.toFront();
+            }
         } else {
             if (this._errorIndicator) {
                 this._errorIndicator.remove();
@@ -605,9 +634,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
 
     };
-
-
-
 
     var dblClick=function(ev)
     {
@@ -635,7 +661,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if(diff<400) dblClick();
         lastMouseDown=performance.now();
     };
-
 
     this._updateElementOrder = function (reverse)
     {

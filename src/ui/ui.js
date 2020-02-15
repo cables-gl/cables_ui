@@ -32,6 +32,7 @@ CABLES.UI.GUI = function(cfg) {
     var _opselect = new CABLES.UI.OpSelect();
     var _introduction = new CABLES.UI.Introduction();
     this._gizmo=null;
+    this._transformOverlay=new CABLES.UI.TransformsOverlay();
 
     this.patchConnection = new CABLES.PatchConnectionSender();
     this.opDocs = null;
@@ -1492,6 +1493,18 @@ CABLES.UI.GUI = function(cfg) {
     {
         if(!this._gizmo)this._gizmo=new CABLES.Gizmo(this.scene().cgl);
         this._gizmo.set(params);
+    };
+
+
+    this.transformOverlay=function()
+    {
+        return this._transformOverlay;
+    }
+
+    this.setTransform=function(id,x,y,z)
+    {
+        this._transformOverlay.add(this.scene().cgl,id,x,y,z);
+        
     };
 
     // this.updateProjectFiles=function(proj)

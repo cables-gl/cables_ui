@@ -510,10 +510,10 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
             "onClose":this.close
         });
 
-    if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type==CABLES.OP_PORT_TYPE_VALUE) $('#opselect_createVar').show();
+    if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type==CABLES.OP_PORT_TYPE_VALUE||CABLES.UI.OPSELECT.linkNewOpToPort.type==CABLES.OP_PORT_TYPE_STRING)) $('#opselect_createVar').show();
     else $('#opselect_createVar').hide();
-        
-    if (link && link.p1.thePort.type==CABLES.OP_PORT_TYPE_VALUE) $('#opselect_replaceVar').show();
+
+    if (link && (link.p1.thePort.type==CABLES.OP_PORT_TYPE_VALUE || link.p1.thePort.type==CABLES.OP_PORT_TYPE_STRING)) $('#opselect_replaceVar').show();
     else $('#opselect_replaceVar').hide();
 
     $('#opsearch').select();
