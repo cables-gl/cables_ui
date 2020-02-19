@@ -197,13 +197,16 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             console.log("mousewheel no event problem 2");
             return;
         }
-        const wheelMultiplier=CABLES.UI.userSettings.get("wheelmultiplier")||1;
+
+
+        var wheelMultiplier=CABLES.UI.userSettings.get("wheelmultiplier")||1;
 
         var touchpadMode = CABLES.UI.userSettings.get("touchpadmode");
         if (touchpadMode && !event.metaKey && !event.altKey && !event.ctrlKey) 
         {
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.deltaY *= 0.5;
-                else event.deltaX *= 0.5;
+            else event.deltaX *= 0.5;
+
 
             this._viewBox.x += event.deltaX;
             this._viewBox.y += -1 * event.deltaY;
@@ -220,9 +223,10 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
         event = mouseEvent(event);
         if(!event)console.log("mousewheel event problem");
 
+        if(event.ctrlKey) wheelMultiplier*=0.1;  // pinch zoom gesture!!
+
         if(event.altKey)
         {
-            delta*=wheelMultiplier;
 
             this.set(
                 this._viewBox.x,
@@ -245,11 +249,12 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
         }
         else
         {
+
+
             if (delta < 0) delta = 1.0-0.2*wheelMultiplier;
             else delta = 1+0.2*wheelMultiplier;
             
-            // delta*=wheelMultiplier;
-            
+
             this.zoom(delta);
         }
         if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
