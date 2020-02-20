@@ -64,12 +64,8 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("showMinimap", CABLES.UI.userSettings.get("showMinimap"));
     this.setSwitchValue("helpermode", CABLES.UI.userSettings.get("helpermode"));
 
-    this.setInputValue("wheelmultiplier", CABLES.UI.userSettings.get("wheelmultiplier"));
+    this.setInputValue("wheelmultiplier", CABLES.UI.userSettings.get("wheelmultiplier")||1);
 
-
-    
-
-    
     this.setSwitchValue("forceWebGl1", CABLES.UI.userSettings.get("forceWebGl1"));
 
     
@@ -103,10 +99,13 @@ CABLES.UI.Preferences.prototype.show = function ()
         elements[i].addEventListener("input", (e) =>
         {
             var v=e.target.value;
-
             if(e.target.classList.contains("numberinput")) v=parseFloat(v);
+            if(v==v)
+            {
+                console.log(e.target.dataset.setting,v);
+                CABLES.UI.userSettings.set(e.target.dataset.setting,v);
+            }
 
-            CABLES.UI.userSettings.set(e.target.dataset.setting,v);
         });
     }
 
