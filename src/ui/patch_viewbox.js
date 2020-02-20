@@ -212,15 +212,9 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             else this.touchpadMode=false;
         }
 
-        // if(event.deltaX!=0)
-        // {
-        //     this.touchpadMode=true;
-        //     CABLES.UI.userSettings.set("touchpadmode",true);
-        // }
-
         var wheelMultiplier=CABLES.UI.userSettings.get("wheelmultiplier")||1;
 
-        
+
         if (this.touchpadMode && !event.metaKey && !event.altKey && !event.ctrlKey) 
         {
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.deltaY *= 0.5;
@@ -273,7 +267,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 
             this.zoom(delta);
         }
-        if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
+        if (event.ctrlKey || event.altKey || event.metaKey) // disable chrome pinch/zoom gesture
         {
             event.preventDefault();
             event.stopImmediatePropagation();
