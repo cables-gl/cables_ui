@@ -23,7 +23,9 @@ CABLES.UI.PatchViewBox=function(patch,paper)
     this._showingNavHelperEmpty = false;
 
     this._isFirefox=navigator.userAgent.toLowerCase().indexOf('firefox')!=-1;
-   
+    this._isWindows= window.navigator.userAgent.indexOf("Windows") != -1;
+
+    
     this._init();
     this.update();
 }
@@ -211,6 +213,8 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             if(event.deltaY % 1 ==0) this.touchpadMode=true;
             else this.touchpadMode=false;
         }
+
+        if(this._isWindows) this.touchpadMode=false;
 
         var wheelMultiplier=CABLES.UI.userSettings.get("wheelmultiplier")||1;
 
