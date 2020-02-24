@@ -217,7 +217,7 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
     if(!size)size=2;
     cgl.pushModelMatrix();
 
-    cgl.setShader(CABLES.GL_MARKER.MARKER.shader);
+    cgl.pushShader(CABLES.GL_MARKER.MARKER.shader);
 
     vec3.set(CABLES.GL_MARKER.MARKER.vScale, size,size,size);
     mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.MARKER.vScale);
@@ -229,7 +229,7 @@ CABLES.GL_MARKER.drawAxisMarker=function(op,size)
 
     CABLES.GL_MARKER.count++;
     cgl.popDepthTest();
-    cgl.setPreviousShader();
+    cgl.popShader();
     cgl.popModelMatrix();
 
     CABLES.GL_MARKER.endFramebuffer(cgl);
@@ -591,7 +591,7 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     cgl.pushViewMatrix();
     mat4.identity(cgl.vMatrix);
 
-    cgl.setShader(CABLES.GL_MARKER.fullscreenRectShader);
+    cgl.pushShader(CABLES.GL_MARKER.fullscreenRectShader);
     // CABLES.GL_MARKER.fullscreenRectShader.bind();
     // cgl.getShader().bind
 
@@ -612,7 +612,7 @@ CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
     cgl.popBlend();
 
 
-    cgl.setPreviousShader();
+    cgl.popShader();
 
     cgl.popPMatrix();
     cgl.popModelMatrix();

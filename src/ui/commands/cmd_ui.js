@@ -158,9 +158,6 @@ CABLES.CMD.UI.updateCanvasIcons=function()
 
     if(CABLES.UI.userSettings.get("helperMode")) document.getElementById("canvasIconHelper").classList.add("iconToggleActive");
     else document.getElementById("canvasIconHelper").classList.remove("iconToggleActive");
-
-    if(CABLES.UI.userSettings.get("floorGrid")) document.getElementById("canvasIconFloorGrid").classList.add("iconToggleActive");
-    else document.getElementById("canvasIconFloorGrid").classList.remove("iconToggleActive");
 }
 
 

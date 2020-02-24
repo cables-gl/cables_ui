@@ -10,6 +10,7 @@ CABLES.UI.TransformsIcon=class
         this._pos=vec3.create();
         this._screenPos=vec2.create();
         this._id=id;
+        this.lastUpdate=performance.now();
 
         const container = cgl.canvas.parentElement;
 
@@ -24,22 +25,19 @@ CABLES.UI.TransformsIcon=class
 
         this._eleCenter.addEventListener("click",()=>
         {
-            
-            var op=gui.scene().getOpById(id);
-
-            console.log(op);
-            
+            const op=gui.scene().getOpById(id);
+            if(!op)return;
             gui.patch().setCurrentSubPatch(op.uiAttribs.subPatch||0);
             gui.patch().focusOp(id);
             gui.patch().getViewBox().center(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
             gui.patch().setSelectedOpById(id);
             $('#patch').focus();
-
         });
     }
 
     update()
     {
+        this.lastUpdate=performance.now();
         this._updateScreenPos();
         this._eleCenter.style.left=this._screenPos[0]+"px";
         this._eleCenter.style.top=this._screenPos[1]+"px";
@@ -96,12 +94,27 @@ CABLES.UI.TransformsOverlay=class
     constructor()
     {
         this._transforms={};
+        this._lastCheck=0;
     }
 
     add(cgl,id,x,y,z)
     {
         this._transforms[id]=this._transforms[id]||new CABLES.UI.TransformsIcon(cgl,id);
         this._transforms[id].setPos(x,y,z);
+
+        if(performance.now()-this._lastCheck>50)
+        {
+            for(var i in this._transforms)
+            {
+                if(performance.now()-this._transforms[i].lastUpdate>100)
+                {
+                    this._transforms[i].dispose();
+                    delete this._transforms[i];
+                }
+            }
+
+            this._lastCheck=performance.now();
+        }
     }
 
     setVisible(b)
