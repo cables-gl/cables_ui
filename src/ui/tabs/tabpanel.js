@@ -52,7 +52,7 @@ CABLES.UI.Tab.prototype.addButton = function (title, cb)
 
 CABLES.UI.Tab.prototype.getSaveButton = function ()
 {
-    for (var i = 0; i < this.buttons.length; i++) if (this.buttons[i].title == "save") return this.buttons[i];
+    for (var i = 0; i < this.buttons.length; i++) if (this.buttons[i].title == CABLES.UI.TEXTS.editorSaveButton) return this.buttons[i];
 };
 
 CABLES.UI.Tab.prototype.remove = function ()

@@ -737,5 +737,18 @@ CABLES.UI.ServerOps = function (gui)
         return this.loaded;
     };
 
+    this.canEditOp=function(opname)
+    {
+        // if (gui.user.isAdmin) return true;
+
+        const usernamespace = "Ops.User." + gui.user.usernameLowercase;
+        if(opname.indexOf(usernamespace)==0)return true;
+
+        return false;
+
+
+
+    }
+
     this.load();
 };

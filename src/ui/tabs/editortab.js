@@ -60,7 +60,7 @@ CABLES.UI.EditorTab = function (options)
     else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
     else this._editor.session.setMode("ace/mode/Text");
 
-    this._tab.addButton("save", this.save.bind(this));
+    if(options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
     this._tab.addEventListener("onClose", options.onClose);
     this._tab.addEventListener(
         "onActivate",

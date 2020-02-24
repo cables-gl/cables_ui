@@ -99,7 +99,9 @@ CABLES.UI.TEXTS = {
     filemanager_file_download: "Download file",
     filemanager_file_refresh: "Reload file list",
     filemanager_file_upload: "Upload new file",
-    filemanager_file_create: "Create a file"
+    filemanager_file_create: "Create a file",
+
+    editorSaveButton: "Save"
 };
 
 CABLES.UI.TIPS = [

@@ -151,17 +151,38 @@ CABLES.CMD.UI.showChangelog = function (since)
     CABLES.CHANGELOG.show(since);
 };
 
+CABLES.CMD.UI.updateCanvasIcons=function()
+{
+    if(CABLES.UI.showCanvasTransforms) document.getElementById("canvasIconTransforms").classList.add("iconToggleActive");
+    else document.getElementById("canvasIconTransforms").classList.remove("iconToggleActive");
+
+    if(CABLES.UI.userSettings.get("helperMode")) document.getElementById("canvasIconHelper").classList.add("iconToggleActive");
+    else document.getElementById("canvasIconHelper").classList.remove("iconToggleActive");
+
+    if(CABLES.UI.userSettings.get("floorGrid")) document.getElementById("canvasIconFloorGrid").classList.add("iconToggleActive");
+    else document.getElementById("canvasIconFloorGrid").classList.remove("iconToggleActive");
+}
+
+
 CABLES.CMD.UI.toggleHelper = function ()
 {
-    CABLES.UI.userSettings.set("helperMode", !CABLES.UI.userSettings.get("helperMode"));
-    // CABLES.UI.renderHelper=CABLES.UI.userSettings.get('helperMode');
-    console.log("helper", CABLES.UI.userSettings.get("helperMode"));
+    const mode=!CABLES.UI.userSettings.get("helperMode");
+    CABLES.UI.userSettings.set("helperMode", mode);
+    CABLES.CMD.UI.updateCanvasIcons();
+};
+
+CABLES.CMD.UI.toggleFloorGrid = function ()
+{
+    const mode=!CABLES.UI.userSettings.get("floorGrid");
+    CABLES.UI.userSettings.set("floorGrid", mode);
+    CABLES.CMD.UI.updateCanvasIcons();
 };
 
 CABLES.CMD.UI.toggleTransformOverlay = function ()
 {
     CABLES.UI.showCanvasTransforms=!CABLES.UI.showCanvasTransforms;
     gui.transformOverlay().setVisible(CABLES.UI.showCanvasTransforms);
+    CABLES.CMD.UI.updateCanvasIcons();
 };
 
 CABLES.CMD.UI.gradientTest = function ()

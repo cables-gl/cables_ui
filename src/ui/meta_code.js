@@ -84,6 +84,7 @@ CABLES.UI.MetaCode=function(tabs)
                         op:op,
                         doc:doc,
                         summary:summary,
+                        ownsOp:gui.serverOps.canEditOp(op.objName),
                         libs:gui.opDocs.libs,
                         user:gui.user,
                         opserialized:op.getSerialized()

@@ -4,23 +4,13 @@
     <div>
         <h4>{{op.objName}}</h4>
 
-        {{#if user.isAdmin}}
-            <h3>Admin</h3>
+        <div class="groupSpacer"><h3>Code</h3></div>
 
-            <span class="button-small fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
-            
-            {{#if op.github}}
-                <a class="button-small fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
-            {{/if}}
 
-        {{/if}}
+        <span class="button-small fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}Edit{{else}}View{{/if}} code</span>
+        <span class="button-small fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">Clone op code</span>
 
-        <h3>Code</h3>
-
-        <span class="button-small fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
-        <span class="button-small fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
-
-        <h3>Attachments</h3>
+        <div class="groupSpacer"><h3>Attachments</h3></div>
 
         {{#if doc.attachmentFiles}}
             <table class="table">
@@ -48,7 +38,7 @@
 
         <br/><br/>
 
-        <h3>Libs</h3>
+        <div class="groupSpacer"><h3>Libs</h3></div>
 
         {{#if doc.libs}}
             <table class="table">
@@ -77,8 +67,19 @@
         <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">Add</a>
 
 
+        {{#if user.isAdmin}}
+            <div class="groupSpacer"><h3>Admin</h3></div>
+            
+            {{#if op.github}}
+                <a class="button-small fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
+            {{/if}}
+        {{/if}}
+
+
         <br /><br /><br />
-        <div class="panelhead " data-panelselector="#opdebug">Serialized</div>
+
+        <div class="groupSpacer"><h3>Searialized</h3></div>
+
         <div id="opdebug" class="panel selectable" style="overflow:auto">
             <!-- op id: {{{op.opIid}}}<br /> -->
             <!-- op instance id:{{{op.id}}}<br /> -->

@@ -33,6 +33,7 @@ CABLES.UI.UserSettings.prototype.load = function (settings)
         // console.log('set ',i,settings[i]);
     }
     this.updateNavBar();
+    CABLES.CMD.UI.updateCanvasIcons();
 };
 
 CABLES.UI.UserSettings.prototype.setLS = function (key, value)
