@@ -302,12 +302,17 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
         var ops=gui.corePatch().ops;
         for (var i = 0; i < ops.length; i++)
         {
-            // if (this._canceledSearch == searchId)
-            // {
-            //     console.log("canceled search...");
-            //     return;
-            // }
+
             var score = 0;
+
+            if(str.length>5)
+            {
+                if (ops[i].id.indexOf(str) > -1)
+                {
+                    where = "op id ";
+                    score += 1;
+                }
+            }
 
             if (ops[i].objName.toLowerCase().indexOf(str) > -1)
             {
