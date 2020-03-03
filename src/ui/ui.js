@@ -240,7 +240,7 @@ CABLES.UI.GUI = function(cfg) {
 
         var iconBarWidth=iconBarWidth||80;
         var menubarHeight = 30;
-        var optionsWidth = 400;
+        var optionsWidth = self.rendererWidth / 2;
 
         var timelineUiHeight = 40;
         if (self.timeLine().hidden) timelineUiHeight = 0;
@@ -519,7 +519,7 @@ CABLES.UI.GUI = function(cfg) {
         $('#metatabpanel .contentcontainer').css('height', window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
         $('#maintabs').css('height', window.innerHeight - menubarHeight);
         $('#maintabs .contentcontainer').css('height', window.innerHeight - menubarHeight -50);
-        
+
 
         if (self.rendererWidth === 0) {
             this._elGlCanvas.attr('width', window.innerWidth);
@@ -957,7 +957,7 @@ CABLES.UI.GUI = function(cfg) {
         $('.nav_help_keys').bind("click", function(event) {
             CABLES.CMD.UI.showKeys();
         });
-        
+
 
         $('.nav_help_about').bind("click", function(event) {
             // TODO: Show popup which explains what cables is and who develops it
@@ -1139,19 +1139,19 @@ CABLES.UI.GUI = function(cfg) {
         this.keys.key("Enter","Cycle size of renderer between normal and Fullscreen","down",null,{"cmdCtrl":true}, (e) => { this.cycleRendererSize(); });
 
         this.keys.key("c","Center/Zoom to all or selected ops","down",null,{}, (e) =>
-            { 
+            {
                 if(self.patch().getSelectedOps().length>0) self.patch().centerViewBoxOps();
                 else self.patch().toggleCenterZoom();
             });
 
-        this.keys.key("f","Find/Search in patch","down",null,{"cmdCtrl":true}, (e) => 
-        { 
+        this.keys.key("f","Find/Search in patch","down",null,{"cmdCtrl":true}, (e) =>
+        {
             if (!$('#ace_editors textarea').is(":focus")) CABLES.CMD.UI.showSearch();
         });
 
         this.keys.key("s","Save patch as new patch","down",null,{"cmdCtrl":true,"shiftKey":true}, (e) => { gui.patch().saveCurrentProjectAs(); });
 
-        this.keys.key("s","Save patch","down",null,{"cmdCtrl":true,"ignoreInput":true}, (e) => 
+        this.keys.key("s","Save patch","down",null,{"cmdCtrl":true,"ignoreInput":true}, (e) =>
             {
                 if ($('#patch').is(":focus")) {
                     CABLES.CMD.PATCH.save();
@@ -1504,7 +1504,7 @@ CABLES.UI.GUI = function(cfg) {
     this.setTransform=function(id,x,y,z)
     {
         this._transformOverlay.add(this.scene().cgl,id,x,y,z);
-        
+
     };
 
     // this.updateProjectFiles=function(proj)
@@ -1759,7 +1759,7 @@ CABLES.UI.GUI.prototype.setUser = function (u)
     {
         document.getElementById("nav_createBackup").remove();
         document.getElementById("nav_viewBackups").remove();
-        
+
     }
 };
 
