@@ -22,10 +22,11 @@ CABLES.UI.PatchViewBox=function(patch,paper)
     this._eleNavHelperEmpty = document.getElementById("patchnavhelperEmpty");
     this._showingNavHelperEmpty = false;
 
-    this._isFirefox=navigator.userAgent.toLowerCase().indexOf('firefox')!=-1;
-    this._isWindows= window.navigator.userAgent.indexOf("Windows") != -1;
+    this._isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") != -1;
+    this._isWindows = window.navigator.userAgent.indexOf("Windows") != -1;
+    this._isLinux = window.navigator.userAgent.indexOf("Linux") !== -1;
 
-    
+
     this._init();
     this.update();
 }
@@ -127,7 +128,7 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
             this._eleNavHelperEmpty.style.display = "none";
         }
     }
-    
+
     if (gui.patch().currentPatchBounds) {
         var showHelper = false;
         if (this._viewBox.x < gui.patch().currentPatchBounds.x - this._viewBox.w) showHelper = true;
@@ -171,7 +172,7 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
         this._miniMapRect.attr("width", this._viewBox.w);
         this._miniMapRect.attr("height", this._viewBox.h);
     }
-    
+
     perf.finish();
 };
 
@@ -196,30 +197,34 @@ CABLES.UI.PatchViewBox.prototype.centerAllOps = function ()
 CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 {
 
-    ele[0].addEventListener("wheel",  (event)=>
+    ele[0].addEventListener("wheel", (event) =>
     {
-        if(!event)
+        if (!event)
         {
             console.log("mousewheel no event problem 2");
             return;
         }
-
-        if(this._isFirefox && event.deltaMode!=undefined) // firefox !!
+        if (this._isFirefox && event.deltaMode != undefined) // firefox !!
         {
-            this.touchpadMode=!event.deltaMode;
+            this.touchpadMode = !event.deltaMode;
+        }
+        else if (event.deltaY % 1 === 0)
+        {
+            this.touchpadMode = true;
         }
         else
         {
-            if(event.deltaY % 1 ==0) this.touchpadMode=true;
-            else this.touchpadMode=false;
+            this.touchpadMode = false;
         }
 
-        if(this._isWindows) this.touchpadMode=false;
+        if (this._isWindows || this._isLinux)
+        {
+            this.touchpadMode = false;
+        }
 
-        var wheelMultiplier=CABLES.UI.userSettings.get("wheelmultiplier")||1;
+        var wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
-
-        if (this.touchpadMode && !event.metaKey && !event.altKey && !event.ctrlKey) 
+        if (this.touchpadMode && !event.metaKey && !event.altKey && !event.ctrlKey)
         {
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) event.deltaY *= 0.5;
             else event.deltaX *= 0.5;
@@ -234,40 +239,39 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             return;
         }
 
-        var delta=event.deltaY;
-        if(!event.ctrlKey)delta = CGL.getWheelSpeed(event);
+        var delta = event.deltaY;
+        if (!event.ctrlKey) delta = CGL.getWheelSpeed(event);
 
         event = mouseEvent(event);
-        if(!event)console.log("mousewheel event problem");
+        if (!event) console.log("mousewheel event problem");
 
-        wheelMultiplier*=-1;
-        if(event.ctrlKey) wheelMultiplier*=0.1; // pinch zoom gesture!!
+        wheelMultiplier *= -1;
+        if (event.ctrlKey) wheelMultiplier *= 0.1; // pinch zoom gesture!!
 
-        if(event.altKey)
+        if (event.altKey)
         {
             this.set(
                 this._viewBox.x,
-                this._viewBox.y-delta,
+                this._viewBox.y - delta,
                 this._viewBox.w,
-                this._viewBox.h
-                );
+                this._viewBox.h,
+            );
         }
-        else
-        if(event.shiftKey)
+        else if (event.shiftKey)
         {
-            delta*=wheelMultiplier;
+            delta *= wheelMultiplier;
 
             this.set(
-                this._viewBox.x-delta,
+                this._viewBox.x - delta,
                 this._viewBox.y,
                 this._viewBox.w,
-                this._viewBox.h
-                );
+                this._viewBox.h,
+            );
         }
         else
         {
-            if (delta < 0) delta = 1.0-0.2*wheelMultiplier;
-            else delta = 1+0.2*wheelMultiplier;
+            if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
+            else delta = 1 + 0.2 * wheelMultiplier;
 
             this.zoom(delta);
         }
@@ -275,11 +279,9 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
         {
             event.preventDefault();
             event.stopImmediatePropagation();
-            return;
         }
-
     });
-}
+};
 
 CABLES.UI.PatchViewBox.prototype.zoom=function(delta)
 {
