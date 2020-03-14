@@ -91,9 +91,9 @@ CABLES.UI.UserSettings.prototype.updateNavBar = function ()
 {
 
 
-    if (this.get("helperMode")) $(".nav_usersettings_helpermode i").removeClass("unchecked");
-    else $(".nav_usersettings_helpermode i").addClass("unchecked");
-        
+    if (this.get("helperMode")) $(".nav_usersettings_helperMode i").removeClass("unchecked");
+    else $(".nav_usersettings_helperMode i").addClass("unchecked");
+
     if (this.get("introCompleted")) $(".nav_usersettings_introcompleted i").removeClass("unchecked");
     else $(".nav_usersettings_introcompleted i").addClass("unchecked");
 

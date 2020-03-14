@@ -31,12 +31,12 @@ CABLES.UI.Preferences.prototype.setInputValue=function(name,value)
             // else elements[i].classList.remove("switch-active");
         }
     }
-    
+
 }
 
 CABLES.UI.Preferences.prototype.setSwitchValue = function (name, value)
 {
-    // console.log("setSwitchValue",name,value);
+    //console.log("setSwitchValue",name,value);
     if(value===null)value=false;
     var elements = document.getElementsByClassName("prefswitch");
     for (var i = 0; i < elements.length; i++)
@@ -62,14 +62,14 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("introCompleted", CABLES.UI.userSettings.get("introCompleted"));
     this.setSwitchValue("showTipps", CABLES.UI.userSettings.get("showTipps"));
     this.setSwitchValue("showMinimap", CABLES.UI.userSettings.get("showMinimap"));
-    this.setSwitchValue("helpermode", CABLES.UI.userSettings.get("helpermode"));
+    this.setSwitchValue("helperMode", CABLES.UI.userSettings.get("helperMode"));
 
     this.setInputValue("wheelmultiplier", CABLES.UI.userSettings.get("wheelmultiplier")||1);
 
     this.setSwitchValue("forceWebGl1", CABLES.UI.userSettings.get("forceWebGl1"));
 
-    
-    
+
+
 };
 
 CABLES.UI.Preferences.prototype.show = function ()

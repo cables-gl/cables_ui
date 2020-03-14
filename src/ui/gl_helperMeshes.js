@@ -478,66 +478,67 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 
 
 
-CABLES.GL_MARKER.drawMarkerLayer=function(cgl,size)
+CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
 {
-    CABLES.UI.renderHelper=CABLES.UI.userSettings.get('helperMode');
-    if(CABLES.GL_MARKER.count==0) return;
-    CABLES.GL_MARKER.count=0;
+    CABLES.UI.renderHelper = CABLES.UI.userSettings.get("helperMode");
+    if (!CABLES.UI.renderHelper) return;
+    if (CABLES.GL_MARKER.count == 0) return;
+    CABLES.GL_MARKER.count = 0;
 
-    if(!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
+    if (!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
     {
         return;
     }
 
-    var currentViewPort=cgl.getViewPort();
-    var w=currentViewPort[2];
-    var h=currentViewPort[3];
+    var currentViewPort = cgl.getViewPort();
+    var w = currentViewPort[2];
+    var h = currentViewPort[3];
 
 
-    if(!CABLES.GL_MARKER.fullscreenRectMesh || CABLES.GL_MARKER.FSWIDTH!=w || CABLES.GL_MARKER.FSHEIGHT!=h)
+    if (!CABLES.GL_MARKER.fullscreenRectMesh || CABLES.GL_MARKER.FSWIDTH != w || CABLES.GL_MARKER.FSHEIGHT != h)
     {
-        var fsGeom=new CGL.Geometry("fullscreen rectangle");
+        var fsGeom = new CGL.Geometry("fullscreen rectangle");
 
-        CABLES.GL_MARKER.FSWIDTH=w;
-        CABLES.GL_MARKER.FSHEIGHT=h;
+        CABLES.GL_MARKER.FSWIDTH = w;
+        CABLES.GL_MARKER.FSHEIGHT = h;
 
         fsGeom.vertices = new Float32Array([
             w, h, 0,
             0, h, 0,
             w, 0, 0,
-            0, 0, 0
+            0, 0, 0,
         ]);
 
         fsGeom.texCoords = new Float32Array([
             1.0, 1.0,
             0.0, 1.0,
             1.0, 0.0,
-            0.0, 0.0
+            0.0, 0.0,
         ]);
 
         fsGeom.vertexNormals = new Float32Array([
-            0,0,1,
-            0,0,1,
-            0,0,1,
-            0,0,1
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
         ]);
 
         fsGeom.verticesIndices = new Float32Array([
             0, 1, 2,
-            3, 1, 2
+            3, 1, 2,
         ]);
 
         // CABLES.GL_MARKER.fsGeom=fsGeom;
-        if(!CABLES.GL_MARKER.fullscreenRectMesh) CABLES.GL_MARKER.fullscreenRectMesh=new CGL.Mesh(cgl,fsGeom);
-            else CABLES.GL_MARKER.fullscreenRectMesh.setGeom(fsGeom);
+        if (!CABLES.GL_MARKER.fullscreenRectMesh) CABLES.GL_MARKER.fullscreenRectMesh = new CGL.Mesh(cgl, fsGeom);
+        else CABLES.GL_MARKER.fullscreenRectMesh.setGeom(fsGeom);
 
         // ------------
 
-        if(!CABLES.GL_MARKER.fullscreenRectShader)
+        if (!CABLES.GL_MARKER.fullscreenRectShader)
         {
-            var shader=new CGL.Shader(cgl,'marker overlay');
+            var shader = new CGL.Shader(cgl, "marker overlay");
 
-            var shader_frag=''
+            var shader_frag = ''
                 .endl()+'UNI sampler2D tex;'
                 .endl()+'IN vec2 texCoord;'
 
