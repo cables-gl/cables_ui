@@ -3137,7 +3137,7 @@ CABLES.UI.Patch = function(_gui) {
             opname = "Ops.Gl.Textures.VideoTexture";
             // title = "Video: " + title;
         } 
-        else if (filename.endsWith(".glb") {
+        else if (filename.endsWith(".glb")) {
             opname = "Ops.Gl.GLTF.GltfScene_v2";
             // title = "GLTF : " + title;
         } 
