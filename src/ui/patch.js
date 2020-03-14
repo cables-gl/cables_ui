@@ -3124,18 +3124,26 @@ CABLES.UI.Patch = function(_gui) {
         var title = filename.substr(filename.lastIndexOf('/') + 1);
 
         if (filename.endsWith(".png") || filename.endsWith(".jpg")) {
-            opname = "Ops.Gl.Texture";
-            title = "Texture: " + title;
+            opname = "Ops.Gl.Texture_v2";
+            // title = "Texture: " + title;
         } else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) {
             opname = "Ops.WebAudio.AudioPlayer";
-            title = "Audio: " + title;
+            // title = "Audio: " + title;
         } else if (filename.endsWith(".3d.json")) {
             opname = "Ops.Json3d.Mesh3d";
-            title = "Json: " + title;
-        } else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) {
+            // title = "Json: " + title;
+        }
+        else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) {
             opname = "Ops.Gl.Textures.VideoTexture";
-            title = "Video: " + title;
-        } else {
+            // title = "Video: " + title;
+        } 
+        else if (filename.endsWith(".glb") {
+            opname = "Ops.Gl.GLTF.GltfScene_v2";
+            // title = "GLTF : " + title;
+        } 
+        
+        else
+        {
             CABLES.UI.notify("no known operator found");
             return;
         }
