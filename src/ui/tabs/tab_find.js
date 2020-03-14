@@ -5,6 +5,7 @@ CABLES.UI.FindTab=function(tabs,str)
 {
     this._tab=new CABLES.UI.Tab("Search",{"icon":"search","infotext":"tab_find","padding":true});
     tabs.addTab(this._tab,true);
+    this._tabs=tabs;
 
     this._lastSearch = "";
     this._findTimeoutId = 0;
@@ -101,6 +102,8 @@ CABLES.UI.FindTab=function(tabs,str)
 
 CABLES.UI.FindTab.prototype.focus = function ()
 {
+    this._tabs.activateTab(this._tab.id);
+
     $("#"+this._inputId).focus();
 }
 
