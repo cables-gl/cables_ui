@@ -251,7 +251,7 @@ CABLES.UI.TabPanel.prototype.closeTab = function (id)
 
 CABLES.UI.TabPanel.prototype.setChanged = function (id, changed)
 {
-    this.getTabById(id).options.wasChanged = changed;
+    if(this.getTabById(id)) this.getTabById(id).options.wasChanged = changed;
     this.updateHtml();
 };
 

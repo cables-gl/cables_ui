@@ -856,7 +856,11 @@ CABLES.UI.GUI = function(cfg) {
     this.bind = function(cb)
     {
         $('#glcanvas').attr('tabindex', '3');
-
+        
+        document.getElementsByClassName("nav_cmdplt")[0].addEventListener("click",()=>
+        {
+            this.cmdPallet.show();
+        });
 
         document.getElementsByClassName("nav_search")[0].addEventListener("click",()=>
         {
