@@ -36,6 +36,7 @@ CABLES.UI.GUI = function(cfg) {
 
     this.patchConnection = new CABLES.PatchConnectionSender();
     this.opDocs = null;
+    this.opHistory=new CABLES.UI.OpHistory();
 
     this.mainTabs=new CABLES.UI.TabPanel('maintabs');
     this.maintabPanel=new CABLES.UI.MainTabPanel(this.mainTabs);

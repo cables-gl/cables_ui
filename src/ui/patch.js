@@ -77,6 +77,11 @@ CABLES.UI.Patch = function(_gui) {
         if(!currentOp)return false;
         return currentOp.op==op;
     };
+    this.isCurrentOpId=function(opid)
+    {
+        if(!currentOp)return false;
+        return currentOp.op.id==opid;
+    };
 
     this.getLargestPort = function() {
         var max = 0;
@@ -609,6 +614,10 @@ CABLES.UI.Patch = function(_gui) {
 
     gui.keys.key("d","Temporary unlink op","down","patch",{shiftKey:true}, (e) => { this.tempUnlinkOp(); });
     gui.keys.key("d","Disable op and all childs","down","patch",{}, (e) => { self.disableEnableOps(); });
+
+    gui.keys.key("[","Navigate op history back","down","patch",{}, (e) => { gui.opHistory.back(); });
+    gui.keys.key("]","Navigate op history forward","down","patch",{}, (e) => { gui.opHistory.forward(); });
+
 
     gui.keys.key(["Delete","Backspace"],"Delete selected ops","down","patch",{}, (e) =>
     { 
@@ -2812,6 +2821,7 @@ CABLES.UI.Patch = function(_gui) {
         var perf = CABLES.uiperf.start('_showOpParams');
         var perfHtml = CABLES.uiperf.start('_showOpParamsHTML');
         
+        gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
 
         var i = 0;
