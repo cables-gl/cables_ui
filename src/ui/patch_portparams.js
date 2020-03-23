@@ -184,7 +184,13 @@ CABLES.UI.initPortInputListener=function(op,index)
             {
                 if (isNaN(e.target.value))
                 {
-                    const mathParsed=CABLES.UI.mathparser.parse(e.target.value);
+                    let mathParsed = e.target.value;
+                    try {
+                        mathParsed=CABLES.UI.mathparser.parse(e.target.value);
+                    }catch(e){
+                        // failed to parse math, use unparsed value
+                        mathParsed = e.target.value;
+                    }
                     e.target.value=mathParsed;
                     op.portsIn[index].set(mathParsed);
                     CABLES.UI.hideToolTip();
@@ -206,7 +212,13 @@ CABLES.UI.initPortInputListener=function(op,index)
         {
             if (isNaN(v) || v === '')
             {
-                const mathParsed=CABLES.UI.mathparser.parse(v);
+                let mathParsed = v;
+                try {
+                    mathParsed=CABLES.UI.mathparser.parse(v);
+                }catch(e){
+                    // failed to parse math, use unparsed value
+                    mathParsed = v;
+                }
                 if(!isNaN(mathParsed))
                 {
                     CABLES.UI.showToolTip(e.target,' = '+mathParsed);
