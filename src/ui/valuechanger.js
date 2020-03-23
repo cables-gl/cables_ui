@@ -42,7 +42,7 @@ CABLES.UI.inputIncrement=function(v,dir,e)
     if(val!=val)return v;
 
     var add=0.1;
-    
+
     if(e.target.classList.contains('inc_int'))add=1;
 
     if(e && e.shiftKey&& e.metaKey)add=0.001;
@@ -124,14 +124,14 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
         var portNum=elemContainer.data('portnum');
         var count=0;
         while(count<10)
-        {           
+        {
             var i=(portNum+dir)+count*dir;
             if($('#portval_'+i+'-container').length)
             {
                 setTextEdit(false);
                 elem.unbind("keydown",tabKeyListener);
                 CABLES.valueChanger('portval_'+i,true);
-                
+
                 return;
             }
             count++;
@@ -209,9 +209,9 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
     {
         if(elem.is(":focus")) return;
         var isString= elem.data("valuetype")=="string";
-        
 
-        
+
+
         if(opid && portName)
         {
             var undofunc = function(portName,opId,oldVal,newVal) {
@@ -245,7 +245,7 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
             document.removeEventListener('pointerlockchange', lockChange, false);
             document.removeEventListener('mozpointerlockchange', lockChange, false);
             document.removeEventListener('webkitpointerlockchange', lockChange, false);
-    
+
             if(document.exitPointerLock)document.exitPointerLock();
         }
 
@@ -336,7 +336,7 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
     $(document).bind("mouseup",up);
     $(document).bind("mousedown",down);
 
-    elem.bind( "blur", 
+    elem.bind( "blur",
         function()
         {
             // value changed after blur
@@ -353,7 +353,13 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
                         const op=gui.patch().scene.getOpById(opid);
                         const p=op.getPort(portName);
 
-                        const mathParsed=CABLES.UI.mathparser.parse(elem.val());
+                        let mathParsed = elem.val();
+                        try {
+                            mathParsed=CABLES.UI.mathparser.parse(elem.val());
+                        }catch(e){
+                            // failed to parse math, use unparsed value
+                            mathParsed = elem.val();
+                        }
                         elem.val(mathParsed);
                         p.set(mathParsed);
                         CABLES.UI.hideToolTip();
