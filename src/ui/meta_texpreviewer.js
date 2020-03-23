@@ -103,7 +103,11 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
         {
             var geom=new CGL.Geometry("preview op rect");
             geom.vertices = [1.0,  1.0,  0.0,-1.0,  1.0,  0.0,1.0, -1.0,  0.0,-1.0, -1.0,  0.0];
-            geom.texCoords = [1.0, 0.0,0.0, 0.0,1.0, 1.0,0.0, 1.0 ];
+            geom.texCoords = [
+                1.0, 1.0,
+                0.0, 1.0,
+                1.0, 0.0,
+                0.0, 0.0 ];
             geom.verticesIndices = [ 0, 1, 2, 3, 1, 2 ];
             this._mesh=new CGL.Mesh(cgl,geom);
         }

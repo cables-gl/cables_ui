@@ -615,8 +615,8 @@ CABLES.UI.Patch = function(_gui) {
     gui.keys.key("d","Temporary unlink op","down","patch",{shiftKey:true}, (e) => { this.tempUnlinkOp(); });
     gui.keys.key("d","Disable op and all childs","down","patch",{}, (e) => { self.disableEnableOps(); });
 
-    gui.keys.key("[","Navigate op history back","down","patch",{}, (e) => { gui.opHistory.back(); });
-    gui.keys.key("]","Navigate op history forward","down","patch",{}, (e) => { gui.opHistory.forward(); });
+    gui.keys.key("j","Navigate op history back","down","patch",{}, (e) => { gui.opHistory.back(); });
+    gui.keys.key("k","Navigate op history forward","down","patch",{}, (e) => { gui.opHistory.forward(); });
 
 
     gui.keys.key(["Delete","Backspace"],"Delete selected ops","down","patch",{}, (e) =>
