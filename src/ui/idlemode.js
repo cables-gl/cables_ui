@@ -3,7 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.idling=false;
 CABLES.UI.idleTimeout=null;
-CABLES.UI.idleTime=4;
+CABLES.UI.idleTime=90;
 
 CABLES.UI.startIdleMode=function()
 {
