@@ -3,18 +3,18 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.idling=false;
 CABLES.UI.idleTimeout=null;
-CABLES.UI.idleTime=60;
+CABLES.UI.idleTime=4;
 
 CABLES.UI.startIdleMode=function()
 {
     if(CABLES.UI.idling)return;
 
 
-    if(!document.hidden && CABLES.UI.idleFocus)
-    {
-        console.log("is focussed, not starting idle mode!!");
-        return;
-    }
+    // if( CABLES.UI.idleFocus)
+    // {
+    //     console.log("is focussed, not starting idle mode!!");
+    //     return;
+    // }
 
     // console.log("start idle...");
     // console.log("document.hidden:",document.hidden);
@@ -55,6 +55,20 @@ window.addEventListener('blur', (event) => {
     clearTimeout(CABLES.UI.idleTimeout);
     CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,CABLES.UI.idleTime*1000);
 });
+
+document.addEventListener('mousemove', (event) => {
+    if(CABLES.UI.idleFocus)
+    {
+        if(CABLES.UI.idling) CABLES.UI.stopIdleMode();
+        if(!document.hidden)
+        {
+            clearTimeout(CABLES.UI.idleTimeout);
+            CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,CABLES.UI.idleTime*1000);
+        }
+    }
+});
+
+
 
 CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,CABLES.UI.idleTime*1000);
 
