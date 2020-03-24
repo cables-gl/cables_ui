@@ -27,6 +27,19 @@ CABLES.UI.startIdleMode=function()
     clearTimeout(CABLES.UI.idleTimeout);
 }
 
+CABLES.UI.idleInteractivity=function ()
+{
+    if(CABLES.UI.idleFocus)
+    {
+        if(CABLES.UI.idling) CABLES.UI.stopIdleMode();
+        if(!document.hidden)
+        {
+            clearTimeout(CABLES.UI.idleTimeout);
+            CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,CABLES.UI.idleTime*1000);
+        }
+    }
+}
+
 CABLES.UI.stopIdleMode=function()
 {
     if(!CABLES.UI.idling) return;
@@ -56,19 +69,9 @@ window.addEventListener('blur', (event) => {
     CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,CABLES.UI.idleTime*1000);
 });
 
-document.addEventListener('mousemove', (event) => {
-    if(CABLES.UI.idleFocus)
-    {
-        if(CABLES.UI.idling) CABLES.UI.stopIdleMode();
-        if(!document.hidden)
-        {
-            clearTimeout(CABLES.UI.idleTimeout);
-            CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,CABLES.UI.idleTime*1000);
-        }
-    }
-});
 
-
+document.addEventListener("keydown", CABLES.UI.idleInteractivity, false);
+document.addEventListener('mousemove', CABLES.UI.idleInteractivity );
 
 CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,CABLES.UI.idleTime*1000);
 
