@@ -2871,6 +2871,11 @@ CABLES.UI.Patch = function(_gui) {
         var isBookmarked=false;
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
+
+        var oldversion=false;
+        if(doc && doc.oldVersion)oldversion=doc.oldVersion
+        
+
         var html = CABLES.UI.getHandleBarHtml('params_op_head', {
             "op": op,
             "isBookmarked": isBookmarked,
@@ -2878,7 +2883,7 @@ CABLES.UI.Patch = function(_gui) {
             "texts": CABLES.UI.TEXTS,
             "user": gui.user,
             "ownsOp": ownsOp,
-            "oldVersion":doc.oldVersion,
+            "oldVersion":oldversion,
             "hasExample":hasScreenshot
         });
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
