@@ -2851,6 +2851,7 @@ CABLES.UI.Patch = function(_gui) {
         var doc = gui.opDocs.getOpDocByName(op.objName);
         var hasScreenshot=(doc && doc.hasScreenshot);
 
+
         if (!currentOp) return;
 
         watchPorts = [];
@@ -2877,6 +2878,7 @@ CABLES.UI.Patch = function(_gui) {
             "texts": CABLES.UI.TEXTS,
             "user": gui.user,
             "ownsOp": ownsOp,
+            "oldVersion":doc.oldVersion,
             "hasExample":hasScreenshot
         });
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
