@@ -384,7 +384,7 @@ CABLES.UI.MODAL.showPortValue=function(title,port)
         CABLES.UI.MODAL.contentElement.append('<br/><br/>');
         var thing=port.get();
         
-        if(thing.constructor)
+        if(thing && thing.constructor)
         {
             CABLES.UI.MODAL.contentElement.append(''+thing.constructor.name+' \n');
             

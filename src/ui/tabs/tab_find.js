@@ -183,26 +183,18 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
 {
     if(!str || str=="" )return "";
-    var stringReg = new RegExp(word, "gi");
     str += "";
 
-    var cut = false;
-    while (str.indexOf(word) > 10)
+    var pos=str.indexOf(word);
+    if(pos>=0)
     {
-        str = str.substr(1, str.length - 1);
-        cut = true;
+        const outStrA=str.substring(pos-15, pos);
+        const outStrB=str.substring(pos, pos+word.length);
+        const outStrC=str.substring(pos+word.length, pos+15);
+        // str = str.replace(stringReg, "<span class=\"highlight\">" + word + "</span>");
+        str=outStrA+'<b style="background-color:black;">'+outStrB+"</b>"+outStrC;
     }
-    if (cut) str = "..." + str;
-    cut = false;
 
-    while (str.length - str.lastIndexOf(word) > 16)
-    {
-        str = str.substr(0, str.length - 1);
-        cut = true;
-    }
-    if (cut) str += "...";
-
-    str = str.replace(stringReg, "<span class=\"highlight\">" + word + "</span>");
     return str;
 };
 
@@ -212,7 +204,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
     const startTime=performance.now();
     this._lastSearch = str;
     $("#tabsearchresult").html("");
-    if (str.length < 2) return;
+    if (str.length < 3) return;
 
     str = str.toLowerCase();
 
