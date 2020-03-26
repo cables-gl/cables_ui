@@ -8,7 +8,10 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
     {
         super();
         this._keys=[];
+        this.shiftKey=false;
         document.addEventListener("keydown", this._onKeyDown.bind(this), false);
+        document.addEventListener("keyup", this._onKeyUp.bind(this), false);
+        document.addEventListener("keypress", this._onKeyPress.bind(this), false);
     }
 
     show()
@@ -45,8 +48,19 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
         gui.maintabPanel.show();
     }
 
+    _onKeyUp(e)
+    {
+        this.shiftKey=false;
+    }
+
+    _onKeyPress(e)
+    {
+    }
+
     _onKeyDown(e)
     {
+        this.shiftKey=e.shiftKey || e.keyCode == 16;
+
         for(var i=0;i<this._keys.length;i++)
         {
             const k=this._keys[i];

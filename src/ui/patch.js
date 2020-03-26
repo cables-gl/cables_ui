@@ -618,6 +618,10 @@ CABLES.UI.Patch = function(_gui) {
     gui.keys.key("j","Navigate op history back","down","patch",{}, (e) => { gui.opHistory.back(); });
     gui.keys.key("k","Navigate op history forward","down","patch",{}, (e) => { gui.opHistory.forward(); });
 
+    gui.keys.key("j","Navigate op history back","down","patch",{"shiftKey":true}, (e) => { gui.opHistory.back(); });
+    gui.keys.key("k","Navigate op history forward","down","patch",{"shiftKey":true}, (e) => { gui.opHistory.forward(); });
+
+    
 
     gui.keys.key(["Delete","Backspace"],"Delete selected ops","down","patch",{}, (e) =>
     { 

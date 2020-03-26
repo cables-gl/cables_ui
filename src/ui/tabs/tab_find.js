@@ -133,6 +133,11 @@ CABLES.UI.FindTab.prototype.isVisible = function ()
     return this._tab.isVisible();
 };
 
+// CABLES.UI.FindTab.prototype._addResultOp
+// {
+
+// }
+
 CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 {
     var html = "";
@@ -150,20 +155,24 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
         + "\" class=\"info findresultop"
         + op.id
         + "\" data-info=\""
-        + info
-        + "\" onclick=\"gui.patch().setCurrentSubPatch('"
-        + op.uiAttribs.subPatch
-        + "');gui.patch().focusOp('"
-        + op.id
-        + "');gui.patch().getViewBox().center("
-        + op.uiAttribs.translate.x
-        + ","
-        + op.uiAttribs.translate.y
-        + ");gui.patch().setSelectedOpById('"
-        + op.id
-        + "');$('#patch').focus();gui.find().setClicked("
-        + idx
-        + ")\">";
+        + info + "\" ";
+        
+
+        html+= "onclick=\"gui.focusFindResult('"+String(idx)+"','"+op.id+"','"+op.uiAttribs.subPatch+"',"+op.uiAttribs.translate.x+","+op.uiAttribs.translate.y+");\">";
+        // + "\" onclick=\"gui.patch().setCurrentSubPatch('"
+        // + op.uiAttribs.subPatch
+        // + "');"
+        // + "gui.patch().focusOp('"
+        // + op.id
+        // + "');gui.patch().getViewBox().center("
+        // + op.uiAttribs.translate.x
+        // + ","
+        // + op.uiAttribs.translate.y
+        // + ");gui.patch().setSelectedOpById('"
+        // + op.id
+        // + "');$('#patch').focus();gui.find().setClicked("
+        // + idx
+        // + ")\">";
 
     var colorHandle = "";
     if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";

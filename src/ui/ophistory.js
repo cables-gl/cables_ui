@@ -35,7 +35,7 @@ CABLES.UI.OpHistory=class
     {
         const opid= this._history[this._position];
 
-        gui.patch().focusOp(opid,true);
+        if(!gui.keys.shiftKey) gui.patch().focusOp(opid,true);
         gui.patch().setSelectedOpById(opid);
     }
 

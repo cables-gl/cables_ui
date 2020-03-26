@@ -104,6 +104,29 @@ CABLES.UI.GUI = function(cfg) {
         return _jobs;
     };
 
+    this.focusFindResult=function(idx,opid,subpatch,x,y)
+    {
+
+        console.log("focusFindResult!!!")
+        if(gui.keys.shiftKey)
+        {
+            gui.patch().setSelectedOpById(opid);
+
+        }
+        else
+        {
+            gui.patch().setCurrentSubPatch(subpatch);
+            gui.patch().focusOp( opid);
+            gui.patch().getViewBox().center(x,y);
+            gui.patch().setSelectedOpById(opid);
+            $('#patch').focus();
+    
+        }
+
+        gui.find().setClicked(idx);
+
+    }
+
     this.find = function(str)
     {
         if(this._find && this._find.isClosed())this._find=null;
@@ -1057,6 +1080,7 @@ CABLES.UI.GUI = function(cfg) {
 
         $(document).keydown(function(e)
         {
+
             if (CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91)) {
                 if (CABLES.UI.suggestions) {
                     var suggs = CABLES.UI.suggestions;
@@ -1065,6 +1089,8 @@ CABLES.UI.GUI = function(cfg) {
                 }
                 return;
             }
+
+            
 
             switch (e.which) {
                 default:
