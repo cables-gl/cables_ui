@@ -1,12 +1,14 @@
 
 var CABLES=CABLES||{};
 
-CABLES.UI.OpHistory=class
+CABLES.UI.OpHistory=class extends CABLES.EventTarget
 {
     constructor()
     {
+        super();
         this._history=[];
         this._position=this._history.length-1;
+
     }
 
     push(opid)
@@ -16,6 +18,8 @@ CABLES.UI.OpHistory=class
 
         this._history.push(opid);
         this._position=this._history.length-1;
+
+        this.emitEvent("changed");
     }
 
     back()
@@ -35,8 +39,7 @@ CABLES.UI.OpHistory=class
     {
         const opid= this._history[this._position];
 
-        if(!gui.keys.shiftKey) gui.patch().focusOp(opid,true);
-        gui.patch().setSelectedOpById(opid);
+        if(!gui.keys.shiftKey) gui.patch().focusOp(opid,true); else gui.patch().setSelectedOpById(opid);
     }
 
     forward()
@@ -45,6 +48,29 @@ CABLES.UI.OpHistory=class
         this._position++;
         
         this._focusCurrent();
+    }
+
+    getAsArray(max)
+    {
+        if(max===undefined)max=9999;
+        var h=[];
+
+        var start=Math.max(0,this._history.length-max);
+        var end=this._history.length-1;
+        
+console.log(start,end);
+
+        for(var i=end;i>=start;i--)
+        {
+            const idx=i;
+            var o=
+                {
+                    id:this._history[idx],
+                    title:gui.patch().scene.getOpById(this._history[idx]).uiAttribs.title
+                };
+            h.push(o);
+        }
+        return h;
     }
 }
 

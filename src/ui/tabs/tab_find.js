@@ -32,11 +32,15 @@ CABLES.UI.FindTab=function(tabs,str)
     }
     colors = CABLES.uniqueArray(colors);
 
+
+
     var html = CABLES.UI.getHandleBarHtml("tab_find", {colors:colors,inputid:this._inputId});
 
     this._tab.html(html);
 
     var updateCb=this.searchAfterPatchUpdate.bind(this);
+
+    gui.opHistory.addEventListener("changed",this.updateHistory.bind(this));
 
     gui.scene().addEventListener("onOpDelete",updateCb);
     gui.scene().addEventListener("onOpAdd",updateCb);
@@ -45,6 +49,8 @@ CABLES.UI.FindTab=function(tabs,str)
 
     this._tab.addEventListener("onClose",()=>
     {
+        gui.opHistory.removeEventListener("changed",this.updateHistory.bind(this));
+
         gui.scene().removeEventListener("onOpDelete",updateCb);
         gui.scene().removeEventListener("onOpAdd",updateCb);
         gui.scene().removeEventListener("commentChanged",updateCb);
@@ -79,6 +85,7 @@ CABLES.UI.FindTab=function(tabs,str)
                 document.getElementById(this._inputId).focus();
             }
         }.bind(this),
+        
     );
 
     $("#tabsearchbox").show();
@@ -90,6 +97,8 @@ CABLES.UI.FindTab=function(tabs,str)
     this._findTimeoutId = setTimeout( ()=>
     {
         this.search(this._lastSearch);
+        this.updateHistory();
+
     }, 100);
 
     if(str)
@@ -177,6 +186,7 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
     if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
 
     html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.name + "</h3>";
+    if(op.uiAttribs.comment) html+='<span style="color: var(--color-special);"> // '+op.uiAttribs.comment+'</span><br/>';
     html+=''+op.objName+'<br/>';
     html += result.where||"";
 
@@ -409,3 +419,19 @@ CABLES.UI.FindTab.prototype.setSelectedOp = function (opid)
     if (els && els.length == 1) els[0].classList.add("selected");
     this._lastSelected = opid;
 };
+
+CABLES.UI.FindTab.prototype.updateHistory = function ()
+{
+    console.log("updateHistory");
+    var history=gui.opHistory.getAsArray(5);
+
+    var html='';
+    for(var i=0;i<history.length;i++)
+    {
+        html+='<a class="button-small" onclick="if(!gui.keys.shiftKey){gui.patch().focusOp(\''+history[i].id+'\',true);gui.patch().setSelectedOpById(\''+history[i].id+'\'); } else gui.patch().setSelectedOpById(\''+history[i].id+'\');">'+history[i].title+'</a>&nbsp;'
+    }
+
+    const ele=document.getElementById("ophistory")
+    if(ele) ele.innerHTML=html;
+};
+
