@@ -2604,6 +2604,9 @@ CABLES.UI.Patch = function(_gui) {
     
     this.updateUiAttribs=function()
     {
+        if(!currentOp)return;
+
+
         this._uiAttrFpsLast=this._uiAttrFpsLast||performance.now();
         this._uiAttrFpsCount++;
 
@@ -2615,7 +2618,6 @@ CABLES.UI.Patch = function(_gui) {
         }
         
 
-        if(!currentOp)return;
 
         var perf = CABLES.uiperf.start('updateUiAttribs');
         var el=null;
