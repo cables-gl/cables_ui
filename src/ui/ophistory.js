@@ -62,11 +62,13 @@ console.log(start,end);
 
         for(var i=end;i>=start;i--)
         {
+            var op=gui.patch().scene.getOpById(this._history[idx]);
+            if(!op)continue;
             const idx=i;
             var o=
                 {
                     id:this._history[idx],
-                    title:gui.patch().scene.getOpById(this._history[idx]).uiAttribs.title
+                    title:op.uiAttribs.title
                 };
             h.push(o);
         }
