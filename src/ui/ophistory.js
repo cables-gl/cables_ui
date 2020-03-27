@@ -62,9 +62,9 @@ console.log(start,end);
 
         for(var i=end;i>=start;i--)
         {
+            const idx=i;
             var op=gui.patch().scene.getOpById(this._history[idx]);
             if(!op)continue;
-            const idx=i;
             var o=
                 {
                     id:this._history[idx],
