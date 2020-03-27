@@ -157,7 +157,6 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
         + "\" data-info=\""
         + info + "\" ";
         
-
         html+= "onclick=\"gui.focusFindResult('"+String(idx)+"','"+op.id+"','"+op.uiAttribs.subPatch+"',"+op.uiAttribs.translate.x+","+op.uiAttribs.translate.y+");\">";
         // + "\" onclick=\"gui.patch().setCurrentSubPatch('"
         // + op.uiAttribs.subPatch
@@ -194,14 +193,14 @@ CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
     if(!str || str=="" )return "";
     str += "";
 
-    var pos=str.indexOf(word);
+    var pos=str.toLowerCase().indexOf(word.toLowerCase());
     if(pos>=0)
     {
         const outStrA=str.substring(pos-15, pos);
         const outStrB=str.substring(pos, pos+word.length);
         const outStrC=str.substring(pos+word.length, pos+15);
         // str = str.replace(stringReg, "<span class=\"highlight\">" + word + "</span>");
-        str=outStrA+'<b style="background-color:black;">'+outStrB+"</b>"+outStrC;
+        str=outStrA+'<b style="background-color:#aaa;color:black;">'+outStrB+"</b>"+outStrC;
     }
 
     return str;
