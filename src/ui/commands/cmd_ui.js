@@ -67,6 +67,22 @@ CABLES.CMD.UI.showEditor = function ()
     console.log("todo: add showeditor for maintabs");
 };
 
+CABLES.CMD.UI.TimelinePlay = function ()
+{
+    gui.corePatch().timer.play();
+}
+
+
+CABLES.CMD.UI.TimelinePause = function ()
+{
+    gui.corePatch().timer.pause();
+}
+
+CABLES.CMD.UI.TimelineRewind = function ()
+{
+    gui.corePatch().timer.setTime(0);
+}
+
 CABLES.CMD.UI.toggleTimeline = function ()
 {
     gui.toggleTiming();
@@ -257,6 +273,27 @@ CABLES.CMD.commands.push(
         category: "ui",
         func: CABLES.CMD.UI.toggleMute,
     },
+
+
+
+    {
+        cmd: "timeline play",
+        category: "ui",
+        func: CABLES.CMD.UI.TimelinePlay,
+    },
+    {
+        cmd: "timeline pause",
+        category: "ui",
+        func: CABLES.CMD.UI.TimelinePause,
+    },
+    {
+        cmd: "timeline rewind",
+        category: "ui",
+        func: CABLES.CMD.UI.TimelineRewind,
+    },
+
+
+
     {
         cmd: "toggle timeline",
         category: "ui",

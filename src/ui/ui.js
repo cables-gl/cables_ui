@@ -106,12 +106,9 @@ CABLES.UI.GUI = function(cfg) {
 
     this.focusFindResult=function(idx,opid,subpatch,x,y)
     {
-
-        console.log("focusFindResult!!!")
         if(gui.keys.shiftKey)
         {
             gui.patch().setSelectedOpById(opid);
-
         }
         else
         {
@@ -120,11 +117,9 @@ CABLES.UI.GUI = function(cfg) {
             gui.patch().getViewBox().center(x,y);
             gui.patch().setSelectedOpById(opid);
             $('#patch').focus();
-    
         }
 
         gui.find().setClicked(idx);
-
     }
 
     this.find = function(str)

@@ -38,22 +38,22 @@ CABLES.UI.FindTab=function(tabs,str)
 
     this._tab.html(html);
 
-    var updateCb=this.searchAfterPatchUpdate.bind(this);
+    this._updateCb=this.searchAfterPatchUpdate.bind(this);
 
     gui.opHistory.addEventListener("changed",this.updateHistory.bind(this));
 
-    gui.scene().addEventListener("onOpDelete",updateCb);
-    gui.scene().addEventListener("onOpAdd",updateCb);
-    gui.scene().addEventListener("commentChanged",updateCb);
+    gui.scene().addEventListener("onOpDelete",this._updateCb);
+    gui.scene().addEventListener("onOpAdd",this._updateCb);
+    gui.scene().addEventListener("commentChanged",this._updateCb);
     
 
     this._tab.addEventListener("onClose",()=>
     {
         gui.opHistory.removeEventListener("changed",this.updateHistory.bind(this));
 
-        gui.scene().removeEventListener("onOpDelete",updateCb);
-        gui.scene().removeEventListener("onOpAdd",updateCb);
-        gui.scene().removeEventListener("commentChanged",updateCb);
+        gui.scene().removeEventListener("onOpDelete",this._updateCb);
+        gui.scene().removeEventListener("onOpAdd",this._updateCb);
+        gui.scene().removeEventListener("commentChanged",this._updateCb);
         this._closed=true;
     });
 
@@ -231,6 +231,18 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
 
     if (str.indexOf(":") == 0)
     {
+        if (str == ":recent")
+        {
+            var history=gui.opHistory.getAsArray(99);
+
+            for(var i=0;i<history.length;i++)
+            {
+                var op = gui.corePatch().getOpById(history[i].id);
+                results.push({ op, score: 1 });
+                foundNum++;
+            }
+        }
+
         if (str == ":commented")
         {
             for (var i = 0; i < gui.corePatch().ops.length; i++)
@@ -422,16 +434,10 @@ CABLES.UI.FindTab.prototype.setSelectedOp = function (opid)
 
 CABLES.UI.FindTab.prototype.updateHistory = function ()
 {
-    console.log("updateHistory");
-    var history=gui.opHistory.getAsArray(5);
-
-    var html='';
-    for(var i=0;i<history.length;i++)
+    console.log("this._lastSearch",this._lastSearch);
+    if(this._lastSearch==":recent")
     {
-        html+='<a class="button-small" onclick="if(!gui.keys.shiftKey){gui.patch().focusOp(\''+history[i].id+'\',true);gui.patch().setSelectedOpById(\''+history[i].id+'\'); } else gui.patch().setSelectedOpById(\''+history[i].id+'\');">'+history[i].title+'</a>&nbsp;'
+        this._updateCb();
     }
-
-    const ele=document.getElementById("ophistory")
-    if(ele) ele.innerHTML=html;
 };
 

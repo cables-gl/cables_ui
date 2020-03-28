@@ -8,6 +8,7 @@
 
         <br/>
         Find Ops:&nbsp;
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':recent';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Recently used</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':bookmarked';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Bookmarked</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':commented';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Commented</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':unconnected';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Unconnected</a>

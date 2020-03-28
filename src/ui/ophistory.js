@@ -46,7 +46,6 @@ CABLES.UI.OpHistory=class extends CABLES.EventTarget
     {
         if(this._position+1>this._history.length-1)return;
         this._position++;
-        
         this._focusCurrent();
     }
 
@@ -54,12 +53,9 @@ CABLES.UI.OpHistory=class extends CABLES.EventTarget
     {
         if(max===undefined)max=9999;
         var h=[];
-
         var start=Math.max(0,this._history.length-max);
         var end=this._history.length-1;
         
-console.log(start,end);
-
         for(var i=end;i>=start;i--)
         {
             const idx=i;

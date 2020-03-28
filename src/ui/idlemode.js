@@ -53,7 +53,7 @@ CABLES.UI.stopIdleMode=function()
 CABLES.UI.visibilityChanged=function(e)
 {
     CABLES.UI.idleTimeout=clearTimeout(CABLES.UI.idleTimeout);
-    if(document.hidden) setTimeout(CABLES.UI.startIdleMode,5000);
+    if(document.hidden) CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,5000);
     else CABLES.UI.stopIdleMode();
 }
 
