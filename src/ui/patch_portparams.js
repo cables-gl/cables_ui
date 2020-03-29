@@ -317,6 +317,20 @@ CABLES.UI.initPortClickListener=function(op,index)
         op.portsIn[index]._onTriggered();
     });
 
+    if(op.portsIn[index].uiAttribs.display==="buttons")
+    {
+        for(var i=0;i<op.portsIn[index].value.length;i++)
+        {
+            $('#portbutton_' + index+'_'+i).on('click', function (e) {
+
+                var name=e.target.dataset["title"];
+
+                op.portsIn[index]._onTriggered(name);
+            });
+    
+        }
+    }
+
 
     $('#portgraph_in_' + index).on('click', function (e) {
         if (op.portsIn[index].isAnimated()) {

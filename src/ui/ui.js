@@ -2,16 +2,15 @@ CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
 
-CABLES.UI.GUI = function(cfg) {
-
-
+CABLES.UI.GUI = function(cfg)
+{
     var self = this;
     var showTiming = false;
     var showingEditor = false;
     var showMiniMap = false;
 
     this.keys=new CABLES.UI.KeyManager();
-
+    this.opParams=new CABLES.UI.OpParampanel();
 
     if(!cfg) cfg={};
     if(!cfg.usersettings) cfg.usersettings={settings:{}};
@@ -350,7 +349,6 @@ CABLES.UI.GUI = function(cfg) {
             this._elSplitterMaintabs.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
             this._elEditorMinimized.style.top = menubarHeight;
-
         }
 
         // if(showingEditor)
