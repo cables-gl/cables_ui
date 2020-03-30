@@ -1,9 +1,13 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
+
+CABLES.UI.idleTime=90;
+
+
 CABLES.UI.idling=false;
 CABLES.UI.idleTimeout=null;
-CABLES.UI.idleTime=90;
+CABLES.UI.idleModeStart=0;
 
 CABLES.UI.startIdleMode=function()
 {
@@ -25,6 +29,7 @@ CABLES.UI.startIdleMode=function()
     gui.patch().scene.pause();
     CABLES.UI.idling=true;
     clearTimeout(CABLES.UI.idleTimeout);
+    CABLES.UI.idleModeStart=Date.now();
 }
 
 CABLES.UI.idleInteractivity=function ()
@@ -43,6 +48,8 @@ CABLES.UI.idleInteractivity=function ()
 CABLES.UI.stopIdleMode=function()
 {
     if(!CABLES.UI.idling) return;
+
+    console.log("idled for ",Math.round((Date.now()-CABLES.UI.idleModeStart)/1000)+" seconds");
 
     gui.patch().scene.resume();
     CABLES.UI.MODAL.hide();
