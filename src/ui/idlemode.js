@@ -9,7 +9,6 @@ CABLES.UI.startIdleMode=function()
 {
     if(CABLES.UI.idling)return;
 
-
     // if( CABLES.UI.idleFocus)
     // {
     //     console.log("is focussed, not starting idle mode!!");
@@ -22,6 +21,7 @@ CABLES.UI.startIdleMode=function()
     
     CABLES.UI.MODAL.show('<center><b>cables is paused!</b><br/>click to resume<br/></center>');
 
+    gui.patch().stopFlowVis();
     gui.patch().scene.pause();
     CABLES.UI.idling=true;
     clearTimeout(CABLES.UI.idleTimeout);

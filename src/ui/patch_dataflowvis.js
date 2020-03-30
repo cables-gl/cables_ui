@@ -13,13 +13,14 @@ CABLES.UI.Patch.prototype.toggleFlowVis=function()
     else
     {
         this.stopFlowVis();
-        this.flowvis=false;
     }
 };
 
 CABLES.UI.Patch.prototype.stopFlowVis=function()
 {
     this.scene.removeOnAnimCallback(this.updateFlowVis);
+
+    this.flowvis=false;
 
     for(var i=0;i<this.ops.length;i++)
     {

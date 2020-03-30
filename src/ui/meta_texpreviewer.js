@@ -97,6 +97,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
     if(previewCanvas && port && port.get())
     {
+        var perf = CABLES.uiperf.start('texpreview');
         const cgl=port.parent.patch.cgl;
 
         if(!this._mesh)
@@ -148,6 +149,9 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
         cgl.gl.clearColor(0,0,0,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+        perf.finish();
+
     }
     else
     {
