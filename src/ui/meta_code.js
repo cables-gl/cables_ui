@@ -15,27 +15,35 @@ CABLES.UI.MetaCode=function(tabs)
 
     var initialized=false;
     var op=null;
+    this._lastSelectedOp=null;
 
     this.init=function()
     {
+        
         if(initialized)return;
         initialized=true;
 
-        gui.patch().addEventListener('opSelected',function(_op)
-        {
-            op=_op;
-
-            clearTimeout(CABLES.UI.OpShowMetaCode);
-            CABLES.UI.OpShowMetaCode=setTimeout(function()
-                {
-                    if(this._tab.isVisible()) this.show();
-                }.bind(this),100);
-        }.bind(this));
-
+        gui.opParams.addEventListener('opSelected',this.onOpSelected.bind(this));
     };
+
+    this.onOpSelected=function(_op)
+    {
+        this._lastSelectedOp=_op;
+
+        if(!this._tab.isVisible()) return;
+
+        clearTimeout(CABLES.UI.OpShowMetaCode);
+        CABLES.UI.OpShowMetaCode=setTimeout(function()
+            {
+                op=this._lastSelectedOp;
+                this.show();
+            }.bind(this),100);
+
+    }
 
     this.show=function()
     {
+        if(this._lastSelectedOp!=op) this.onOpSelected(this._lastSelectedOp);
         // this._tab.activate();
         if(!op)
         {
@@ -53,9 +61,11 @@ CABLES.UI.MetaCode=function(tabs)
                 'op/'+op.objName+'/info',
                 function(res)
                 {
+
+                    var perf = CABLES.uiperf.start('showOpCodeMetaPanel');
+
                     var doc={};
                     var summary="";
-                    // doc.attachmentFiles=res.attachmentFiles;
 
                     if(res.attachmentFiles)
                     {
@@ -90,6 +100,8 @@ CABLES.UI.MetaCode=function(tabs)
                         opserialized:op.getSerialized()
                     });
                     this._tab.html(html);
+
+                    perf.finish();
 
                 }.bind(this),function()
             {
