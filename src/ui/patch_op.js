@@ -1206,18 +1206,18 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     op.addEventListener("onUiAttribsChange",(attribs)=> {
         if (attribs && attribs.hasOwnProperty('warning')) {
             this.oprect.updateErrorIndicator();
-            if(selected) gui.patch().updateUiAttribs();
+            if(selected) gui.opParams.updateUiAttribs();
         }
         if (attribs && attribs.hasOwnProperty('error')) {
             this.oprect.updateErrorIndicator();
-            if(selected) gui.patch().updateUiAttribs();
+            if(selected) gui.opParams.updateUiAttribs();
         }
         if (attribs && attribs.hasOwnProperty('uierrors')) {
             this.oprect.updateErrorIndicator();
             
             if(selected)
             {
-                gui.patch().updateUiAttribs();
+                gui.opParams.updateUiAttribs();
                 gui.patch().updateOpParams(this.op.id);
             }
         }
