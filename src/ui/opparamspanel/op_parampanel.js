@@ -404,8 +404,8 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
                     if (el.val() != thePort.get()) el.val(thePort.get());
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY) {
-                    if (thePort.get()) el.html('Array (' + String(thePort.get().length)+')');
-                    else  newValue='Array (null)';
+                    if (thePort.get()) newValue='Array (' + String(thePort.get().length)+')';
+                    else newValue='Array (null)';
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_STRING) {
                     newValue='\"'+thePort.get()+'\"';
