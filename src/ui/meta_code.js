@@ -61,9 +61,7 @@ CABLES.UI.MetaCode=function(tabs)
                 'op/'+op.objName+'/info',
                 function(res)
                 {
-
                     var perf = CABLES.uiperf.start('showOpCodeMetaPanel');
-
                     var doc={};
                     var summary="";
 
@@ -85,9 +83,7 @@ CABLES.UI.MetaCode=function(tabs)
                     summary=gui.opDocs.getSummary(op.objName);
 
                     if(op.objName.indexOf("User.")==-1)
-                    {
                         op.github='https://github.com/pandrr/cables/tree/master/src/ops/base/'+op.objName;
-                    }
 
                     var html = CABLES.UI.getHandleBarHtml('meta_code',
                     {

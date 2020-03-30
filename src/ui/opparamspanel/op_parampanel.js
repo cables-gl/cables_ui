@@ -17,6 +17,10 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
         this._templateHead = Handlebars.compile(this._sourceHead);
 
         this._currentOp=null;
+
+        this._updateWatchPorts();
+
+        // this._cycleWatchPort = false;
     }
 
     show(op)
@@ -373,6 +377,60 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
             this.show(op);
         });
     }
+
+    
+    _updateWatchPorts()
+    {
+        if(this._watchPorts.length)
+        {
+            var perf=CABLES.uiperf.start('watch ports');
+
+            for (var i=0;i<this._watchPorts.length;i++)
+            {
+                const thePort=this._watchPorts[i];
+
+                if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && 
+                    thePort.type != CABLES.OP_PORT_TYPE_STRING && 
+                    thePort.type != CABLES.OP_PORT_TYPE_ARRAY) continue;
+
+
+                var newValue="";
+                const id = '.watchPortValue_' + thePort.watchId;
+                var el=null;
+
+                if (thePort.isAnimated()) {
+                    el = $(id);
+                    thePort._tempLastUiValue=thePort.get();
+                    if (el.val() != thePort.get()) el.val(thePort.get());
+                }
+                else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY) {
+                    if (thePort.get()) el.html('Array (' + String(thePort.get().length)+')');
+                    else  newValue='Array (null)';
+                }
+                else if (thePort.type == CABLES.OP_PORT_TYPE_STRING) {
+                    newValue='\"'+thePort.get()+'\"';
+                } else {
+                    newValue=String(thePort.get());
+                }
+
+                if(thePort._tempLastUiValue!=newValue)
+                {
+                    el = $(id);
+                    el.html(newValue);
+                    thePort._tempLastUiValue=newValue;
+                }
+
+                CABLES.watchPortVisualize.update(id, thePort.watchId, thePort.get());
+            }
+
+            perf.finish();       
+        }
+
+        if (CABLES.UI.uiConfig.watchValuesInterval == 0)return;
+
+         setTimeout(this._updateWatchPorts.bind(this),CABLES.UI.uiConfig.watchValuesInterval);
+    }
+
 
 
 }
