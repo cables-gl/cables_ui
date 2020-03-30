@@ -11,6 +11,8 @@ CABLES.UI.GUI = function(cfg)
 
     this.keys=new CABLES.UI.KeyManager();
     this.opParams=new CABLES.UI.OpParampanel();
+    this.socket=new CABLES.UI.ScConnection();
+    
 
     if(!cfg) cfg={};
     if(!cfg.usersettings) cfg.usersettings={settings:{}};
@@ -39,6 +41,9 @@ CABLES.UI.GUI = function(cfg)
 
     this.mainTabs=new CABLES.UI.TabPanel('maintabs');
     this.maintabPanel=new CABLES.UI.MainTabPanel(this.mainTabs);
+
+    this.chat=new CABLES.UI.Chat(this.mainTabs,this.socket);
+
 
     this.metaTabs=new CABLES.UI.TabPanel('metatabpanel');
     // var _socket=null;

@@ -98,6 +98,12 @@ CABLES.CMD.UI.showTimeline = function ()
     gui.showTiming();
 };
 
+CABLES.CMD.UI.showChat = function ()
+{
+    gui.chat.show();
+};
+
+
 CABLES.CMD.UI.toggleBgTexturePreview = function ()
 {
     CABLES.UI.userSettings.set("bgpreview", !CABLES.UI.userSettings.get("bgpreview"));
@@ -446,4 +452,13 @@ CABLES.CMD.commands.push(
         func: CABLES.CMD.UI.showPreferences,
         icon: "command",
     },
+    {
+        cmd: "chat",
+        category: "ui",
+        func: CABLES.CMD.UI.showChat,
+        icon: "command",
+    },
+
+    
+
 );

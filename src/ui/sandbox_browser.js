@@ -60,6 +60,12 @@ CABLES.SandboxBrowser.prototype.getUrlOpsList = function ()
     return "ops/";
 };
 
+CABLES.SandboxBrowser.prototype.getPatchId = function ()
+{
+    return this._cfg.patchId;
+    
+};
+
 CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
 {
     var lastView = CABLES.UI.userSettings.get("changelogLastView");
@@ -259,3 +265,4 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
 
     loadjs(userOpsUrls, lid);
 };
+
