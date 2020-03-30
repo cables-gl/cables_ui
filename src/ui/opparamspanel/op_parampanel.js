@@ -388,8 +388,6 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
     {
         if(this._watchPorts.length)
         {
-
-            console.log('this._watchPorts.length',this._watchPorts.length);
             var perf=CABLES.uiperf.start('watch ports');
 
             for (var i=0;i<this._watchPorts.length;i++)
