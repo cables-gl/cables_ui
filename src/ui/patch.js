@@ -2567,6 +2567,7 @@ CABLES.UI.Patch = function(_gui) {
 
     this.showProjectParams = function()
     {
+        gui.opParams.dispose();
         if(gui.fileManager)gui.fileManager.setFilePort(null);
         gui.texturePreview().pressedEscape();
         var perf = CABLES.uiperf.start('showProjectParams');
