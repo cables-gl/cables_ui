@@ -6,7 +6,8 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
     constructor(cfg)
     {
         super();
-        this._socket=null;       
+        this.channelName=null;
+        this._socket=null;
         this._scConfig=cfg;
         this._connected=false;
 
@@ -17,7 +18,8 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
     {
         this._socket = socketClusterClient.create(this._scConfig);
         this._socket.channelName = "patchchannel_"+CABLES.sandbox.getPatchId();
-        
+        this.channelName = this._socket.channelName;
+
         console.info("socketcluster clientId", this._socket.clientId);
 
         (async () =>
@@ -53,6 +55,12 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
                 {
                     this.emitEvent("onInfoMessage",obj);
                 }
+                if(obj.type=="pingMembers") {
+                    this.send({type: "pingAnswer", data: {username: gui.user.usernameLowercase }});
+                }
+                if(obj.type=="pingAnswer") {
+                    this.emitEvent("onPingAnswer",obj);
+                }
                 // if (obj.clientId != socket.clientId && obj.topic == inTopic.get())
                 // {
                 //     outData.set(obj.payload);
@@ -73,5 +81,8 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
         if(this._connected) this._socket.transmitPublish(this._socket.channelName, payload);
     }
 
-    
+    updateMembers()
+    {
+        this.send({"type": "pingMembers"});
+    }
 }
