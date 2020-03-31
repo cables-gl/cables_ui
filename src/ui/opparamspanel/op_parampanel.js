@@ -444,9 +444,6 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
             this._currentOp.uiAttr({"comment":v});
             if(v.length==0)this._currentOp.uiAttr({"comment":null});
             this._currentOp.patch.emitEvent("commentChanged");
-
-            // this._currentOp.oprect.updateAttachedComment();
-            // this._currentOp.setPos();
         }
         else
         {
@@ -457,8 +454,6 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
     setCurrentOpTitle(t) {
         if (this._currentOp) this._currentOp.setTitle(t);
     };
-
-
 
 
 }
