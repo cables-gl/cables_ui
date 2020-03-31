@@ -2004,22 +2004,6 @@ CABLES.UI.Patch = function(_gui) {
         uiop.oprect.setTitle(t);
     };
 
-    this.setCurrentOpComment = function(v)
-    {
-        if (currentOp) 
-        {
-            currentOp.op.uiAttr({"comment":v});
-            if(v.length==0)currentOp.op.uiAttr({"comment":null});
-            currentOp.op.patch.emitEvent("commentChanged");
-            currentOp.oprect.updateAttachedComment();
-            currentOp.setPos();
-        }
-    };
-
-    this.setCurrentOpTitle = function(t) {
-        if (currentOp) this.setOpTitle(currentOp, t);
-    };
-
     this.updateSubPatches = function() {
         if (isLoading) return;
         for (var i=0;i<self.ops.length;i++) {

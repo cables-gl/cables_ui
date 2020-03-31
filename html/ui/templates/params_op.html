@@ -11,7 +11,7 @@
         {{/if}}
 
         <div class="panel params_op_head">
-            <input class="medium info" id="opname" oninput="gui.patch().setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-infotext="op_title">
+            <input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle($('#opname').val());" value="{{op.name}}" data-infotext="op_title">
 			<br/>
             <a href="{{cablesUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
             <br/>
@@ -166,7 +166,7 @@
     
     <div class="panel" >
         comment:
-        <textarea id="commentTextarea" spellcheck="false" style="height:60px;width:100%;" onInput="gui.patch().setCurrentOpComment(this.value);" >{{op.uiAttribs.comment}}</textarea>
+        <textarea id="commentTextarea" spellcheck="false" style="height:60px;width:100%;" onInput="gui.opParams.setCurrentOpComment(this.value);" >{{op.uiAttribs.comment}}</textarea>
     </div>
 
     <script>

@@ -25,7 +25,7 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
             for await (const { error } of this._socket.listener("error"))
             {
                 console.error(error);
-                errorOut.set(error);
+                this._connected=false;
             }
         })();
         (async () =>

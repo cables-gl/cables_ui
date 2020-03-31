@@ -1224,6 +1224,14 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         if (attribs && attribs.hasOwnProperty('color')) {
             this.oprect.updateColorHandle();
         }
+
+        if (attribs && attribs.hasOwnProperty('comment')) {
+            this.oprect.updateAttachedComment();
+        }
+        if (attribs && attribs.hasOwnProperty('title')) {
+            this.oprect.setTitle(attribs.title);
+        }
+
         if (attribs && attribs.hasOwnProperty('working')) {
             this.oprect._updateStriked();
         }
