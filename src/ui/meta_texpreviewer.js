@@ -57,7 +57,7 @@ CABLES.UI.TexturePreviewer.FRAGSHADER=''.endl()
     .endl()+'void main()'
     .endl()+'{'
     .endl()+'    vec4 col=vec4(vec3(checkerboard()),1.0);'
-    .endl()+'    vec4 colTex=texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y)));'
+    .endl()+'    vec4 colTex=texture2D(tex,texCoord);'
     .endl()+'    outColor = mix(col,colTex,colTex.a);'
     .endl()+'}';
 
@@ -97,13 +97,18 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
     if(previewCanvas && port && port.get())
     {
+        var perf = CABLES.uiperf.start('texpreview');
         const cgl=port.parent.patch.cgl;
 
         if(!this._mesh)
         {
             var geom=new CGL.Geometry("preview op rect");
             geom.vertices = [1.0,  1.0,  0.0,-1.0,  1.0,  0.0,1.0, -1.0,  0.0,-1.0, -1.0,  0.0];
-            geom.texCoords = [1.0, 0.0,0.0, 0.0,1.0, 1.0,0.0, 1.0 ];
+            geom.texCoords = [
+                1.0, 1.0,
+                0.0, 1.0,
+                1.0, 0.0,
+                0.0, 0.0 ];
             geom.verticesIndices = [ 0, 1, 2, 3, 1, 2 ];
             this._mesh=new CGL.Mesh(cgl,geom);
         }
@@ -112,14 +117,16 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
             this._shader=new CGL.Shader(cgl,'MinimalMaterial');
             this._shader.setModules(['MODULE_VERTEX_POSITION','MODULE_COLOR','MODULE_BEGIN_FRAG']);
             this._shader.setSource(CABLES.UI.TexturePreviewer.VERTSHADER,CABLES.UI.TexturePreviewer.FRAGSHADER);
-            this._shader.add
             this._shaderTexUniform=new CGL.Uniform(this._shader,'t','tex',texSlot);
             this._shaderTexUniformW=new CGL.Uniform(this._shader,'f','width',port.get().width);
             this._shaderTexUniformH=new CGL.Uniform(this._shader,'f','height',port.get().height);
         }
 
         cgl.pushPMatrix();
+
         mat4.ortho(cgl.pMatrix,-1,1,1,-1,0.001,11);
+        // if(port.get().oldTexFlip) mat4.ortho(cgl.pMatrix,-1,1,-1,1,0.001,11);
+
         var oldTex=cgl.getTexture(texSlot);
         cgl.setTexture(texSlot,port.get().tex);
         this._mesh.render(this._shader);
@@ -142,6 +149,9 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
 
         cgl.gl.clearColor(0,0,0,0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+        perf.finish();
+
     }
     else
     {

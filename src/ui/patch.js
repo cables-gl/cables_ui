@@ -77,6 +77,11 @@ CABLES.UI.Patch = function(_gui) {
         if(!currentOp)return false;
         return currentOp.op==op;
     };
+    this.isCurrentOpId=function(opid)
+    {
+        if(!currentOp)return false;
+        return currentOp.op.id==opid;
+    };
 
     this.getLargestPort = function() {
         var max = 0;
@@ -609,6 +614,14 @@ CABLES.UI.Patch = function(_gui) {
 
     gui.keys.key("d","Temporary unlink op","down","patch",{shiftKey:true}, (e) => { this.tempUnlinkOp(); });
     gui.keys.key("d","Disable op and all childs","down","patch",{}, (e) => { self.disableEnableOps(); });
+
+    gui.keys.key("j","Navigate op history back","down","patch",{}, (e) => { gui.opHistory.back(); });
+    gui.keys.key("k","Navigate op history forward","down","patch",{}, (e) => { gui.opHistory.forward(); });
+
+    gui.keys.key("j","Navigate op history back","down","patch",{"shiftKey":true}, (e) => { gui.opHistory.back(); });
+    gui.keys.key("k","Navigate op history forward","down","patch",{"shiftKey":true}, (e) => { gui.opHistory.forward(); });
+
+    
 
     gui.keys.key(["Delete","Backspace"],"Delete selected ops","down","patch",{}, (e) =>
     { 
@@ -1991,22 +2004,6 @@ CABLES.UI.Patch = function(_gui) {
         uiop.oprect.setTitle(t);
     };
 
-    this.setCurrentOpComment = function(v)
-    {
-        if (currentOp) 
-        {
-            currentOp.op.uiAttr({"comment":v});
-            if(v.length==0)currentOp.op.uiAttr({"comment":null});
-            currentOp.op.patch.emitEvent("commentChanged");
-            currentOp.oprect.updateAttachedComment();
-            currentOp.setPos();
-        }
-    };
-
-    this.setCurrentOpTitle = function(t) {
-        if (currentOp) this.setOpTitle(currentOp, t);
-    };
-
     this.updateSubPatches = function() {
         if (isLoading) return;
         for (var i=0;i<self.ops.length;i++) {
@@ -2554,6 +2551,7 @@ CABLES.UI.Patch = function(_gui) {
 
     this.showProjectParams = function()
     {
+        gui.opParams.dispose();
         if(gui.fileManager)gui.fileManager.setFilePort(null);
         gui.texturePreview().pressedEscape();
         var perf = CABLES.uiperf.start('showProjectParams');
@@ -2589,69 +2587,6 @@ CABLES.UI.Patch = function(_gui) {
 
 
     
-    this.updateUiAttribs=function()
-    {
-        this._uiAttrFpsLast=this._uiAttrFpsLast||performance.now();
-        this._uiAttrFpsCount++;
-
-        if(performance.now()-this._uiAttrFpsLast>1000)
-        {
-            this._uiAttrFpsLast=performance.now();
-            if(this._uiAttrFpsCount>=10) console.warn("Too many ui attr updates!",this._uiAttrFpsCount,currentOp.op.name)
-            this._uiAttrFpsCount=0;
-        }
-        
-
-        if(!currentOp)return;
-
-        var perf = CABLES.uiperf.start('updateUiAttribs');
-        var el=null;
-
-        self.setCurrentOpTitle(currentOp.op.name);
-
-        el = document.getElementById('options_warning');
-        if(el)
-        {
-            if (!currentOp.op.uiAttribs.warning || currentOp.op.uiAttribs.warning.length === 0) el.style.display = "none";
-            else {
-                el.style.display = "block";
-                if (el) el.innerHTML = currentOp.op.uiAttribs.warning;
-            }
-        }
-
-        el = document.getElementById('options_hint');
-        if(el)
-        {
-            if (!currentOp.op.uiAttribs.hint || currentOp.op.uiAttribs.hint.length === 0) el.style.display = "none";
-            else {
-                el.style.display = "block";
-                if (el) el.innerHTML = currentOp.op.uiAttribs.hint;
-            }
-        }
-
-        el = document.getElementById('options_error');
-        if(el)
-        {
-            if (!currentOp.op.uiAttribs.error || currentOp.op.uiAttribs.error.length === 0) el.style.display = "none";
-            else {
-                el.style.display = "block";
-                if (el) el.innerHTML = currentOp.op.uiAttribs.error;
-            }
-        }
-
-        el = document.getElementById('options_info');
-        if (el) 
-        {
-            if (!currentOp.op.uiAttribs.info) el.style.display = "none";
-                else
-                {
-                    el.style.display = "block";
-                    el.innerHTML = '<div class="panelhead">info</div><div class="panel">' + currentOp.op.uiAttribs.info + '</div>';
-                }
-        }
-
-        perf.finish();
-    }
 
     this.updateCurrentOpParams = function() {
         if (currentOp) self.showOpParams(currentOp.op);
@@ -2792,317 +2727,10 @@ CABLES.UI.Patch = function(_gui) {
         gui.patch().showOpParams(op);
     }
 
-    this._showOpParamsCbPortDelete=function(index) {
-        $('#portdelete_out_' + index).on('click', function (e) {
-            op.portsOut[index].removeLinks();
-            self.showOpParams(op);
-        });
-    }
-    var sourcePort = $("#params_port").html();
-    var templatePort = Handlebars.compile(sourcePort);
-
-
     this._showOpParams = function(op) {
-        if(!op)return;
-        if(op.id!=self._oldOpParamsId)
-        {
-            if(gui.fileManager)gui.fileManager.setFilePort(null);
-            self._oldOpParamsId=op.id;
-        }
-        var perf = CABLES.uiperf.start('_showOpParams');
-        var perfHtml = CABLES.uiperf.start('_showOpParamsHTML');
-        
-        gui.setTransformGizmo(null);
-
-        var i = 0;
-        callEvent('opSelected', op);
-
-        op.isServerOp=gui.serverOps.isServerOp(op.objName);
-
-        // show first anim in timeline
-        if (self.timeLine) {
-            var foundAnim = false;
-            for (i =0;i<op.portsIn.length;i++) {
-                if (op.portsIn[i].isAnimated()) {
-                        self.timeLine.setAnim(op.portsIn[i].anim, {
-                        name: op.portsIn[i].name
-                    });
-                    foundAnim = true;
-                    continue;
-                }
-            }
-            if (!foundAnim) self.timeLine.setAnim(null);
-        }
-
-        for (var iops =0; iops<this.ops.length;iops++)
-            if (this.ops[iops].op == op)
-                currentOp = this.ops[iops];
-        op.summary = gui.opDocs.getSummary(op.objName);
-        var doc = gui.opDocs.getOpDocByName(op.objName);
-        var hasScreenshot=(doc && doc.hasScreenshot);
-
-        if (!currentOp) return;
-
-        watchPorts = [];
-        watchAnimPorts = [];
-        watchColorPicker = [];
-
-        var ownsOp = false;
-        if (op.objName.startsWith('Ops.User.' + gui.user.username)) ownsOp = true;
-        if (op.objName.startsWith('Ops.Deprecated.')) {
-            op.isDeprecated = true;
-            var notDeprecatedName = op.objName.replace("Deprecated.", '');
-            var alt = CABLES.Patch.getOpClass(notDeprecatedName);
-            if (alt) op.isDeprecatedAlternative = notDeprecatedName;
-        }
-        if (op.objName.startsWith('Ops.Exp.')) op.isExperimental = true;
-
-        var isBookmarked=false;
-        if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
-
-        var html = CABLES.UI.getHandleBarHtml('params_op_head', {
-            "op": op,
-            "isBookmarked": isBookmarked,
-            "colorClass": "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
-            "texts": CABLES.UI.TEXTS,
-            "user": gui.user,
-            "ownsOp": ownsOp,
-            "hasExample":hasScreenshot
-        });
-        CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
-
-        if (op.portsIn.length > 0) {
-            html += CABLES.UI.getHandleBarHtml('params_ports_head', {
-                "dirStr": 'in',
-                "title": 'Input',
-                "texts": CABLES.UI.TEXTS
-            });
-
-            var lastGroup=null;
-            var perfLoop = CABLES.uiperf.start('_showOpParamsLOOP');
-
-            for(i=0;i<op.portsIn.length;i++)
-            {
-                var startGroup = null;
-                var groupSpacer = false;
-
-                var opGroup = op.portsIn[i].uiAttribs.group;
-
-                if(!op.portsIn[i].uiAttribs.hideParam)
-                {
-                    if (lastGroup != opGroup && !opGroup) groupSpacer=true;
-
-                    if (lastGroup != opGroup )
-                    {
-                        groupSpacer = true;
-                        lastGroup = opGroup;
-                        startGroup = lastGroup;
-                    }
-                }
-
-                op.portsIn[i].watchId = 'in_' + i;
-                watchAnimPorts.push(op.portsIn[i]);
-
-                if (op.portsIn[i].uiAttribs.colorPick) watchColorPicker.push(op.portsIn[i]);
-                if (op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) watchPorts.push(op.portsIn[i]);
-
-                html += templatePort({
-                    port: op.portsIn[i],
-                    "startGroup": startGroup,
-                    "groupSpacer": groupSpacer,
-                    "dirStr": "in",
-                    "portnum": i,
-                    "isInput": true,
-                    "op": op,
-                    "texts": CABLES.UI.TEXTS,
-                    "vars": op.patch.getVars()
-                });
-            }
-            perfLoop.finish();
-        }
-
-        if (op.portsOut.length > 0)
-        {
-            html += CABLES.UI.getHandleBarHtml('params_ports_head',
-            {
-                "dirStr": 'out',
-                "title": 'Output',
-                "op": op,
-                texts: CABLES.UI.TEXTS
-            });
-
-            var perfLoopOut = CABLES.uiperf.start('_showOpParamsLOOP OUT');
-
-            var foundPreview = false;
-            for (var i2 in op.portsOut)
-            {
-                if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING)
-                {
-                    op.portsOut[i2].watchId = 'out_' + i2;
-                    watchPorts.push(op.portsOut[i2]);
-                }
-
-                var startGroup = null;
-                var groupSpacer = false;
-
-                var opGroup = op.portsOut[i2].uiAttribs.group;
-                if (lastGroup != opGroup && !opGroup) groupSpacer=true;
-
-                if (lastGroup != opGroup)
-                {
-                    groupSpacer = true;
-                    lastGroup = opGroup;
-                    startGroup = lastGroup;
-                }
-                
-                // set auto preview
-                if (!foundPreview && op.portsOut[i2].uiAttribs.preview) {
-                    foundPreview = true;
-                    gui.texturePreview().selectTexturePort(op.portsOut[i2]);
-                }
-
-                html += templatePort({
-                    "port": op.portsOut[i2],
-                    "dirStr": "out",
-                    "groupSpacer":groupSpacer,
-                    "startGroup":startGroup,
-                    "portnum": i2,
-                    "isInput": false,
-                    "op": op
-                });
-            }
-
-            perfLoopOut.finish();
-        }
-
-        html += CABLES.UI.getHandleBarHtml('params_op_foot', {
-            "op": op,
-            "opserialized":op.getSerialized(),
-            "user": gui.user
-        });
-
-        // $('#options').html(html);
-        document.getElementById("options").innerHTML=html;
-
-        // gui.showOpDoc(op.objName);
-        CABLES.UI.bindInputListeners();
-        perfHtml.finish();
-
-        CABLES.valueChangerInitSliders();
-
-        this.updateUiAttribs();
-        
-
-
-
-
-
-
-        for (i = 0; i < op.portsIn.length; i++)
-        {
-            if (op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display == 'file')
-            {
-                var shortName=String(op.portsIn[i].get()||'none');
-                if(shortName.indexOf("/")>-1) shortName=shortName.substr(shortName.lastIndexOf("/")+1);
-                $('#portFilename_' + i).html('<span class="button fa fa-folder-open-o monospace" style="text-transform:none;font-family:monospace;font-size: 13px;">'+shortName+'</span>');
-
-                if (op.portsIn[i].get() && ((op.portsIn[i].get() + '').endsWith('.jpg') || (op.portsIn[i].get() + '').endsWith('.png'))) {
-                    $('#portFileVal_' + i+'_preview').css('max-width', '100%');
-                    $('#portFileVal_' + i+'_preview').html('<img class="dark" src="' + op.portsIn[i].get() + '" style="max-width:100%;margin-top:10px;"/>');
-                } else {
-                    $('#portFileVal_' + i+'_preview').html('');
-                }
-            }
-        }
-
-
-        for (var ipo in op.portsOut) {
-            this._showOpParamsCbPortDelete(ipo);
-            (function (index) {
-                $('#portTitle_out_' + index).on('click', function (e) {
-                    const p = op.portsOut[index];
-                    if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show(
-                            {
-                                x: p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
-                                y: p.parent.uiAttribs.translate.y + 50,
-                            }, op, p);
-                });
-            }) (ipo);
-
-        }
-
-        for (var ipi =0;ipi<op.portsIn.length;ipi++) CABLES.UI.initPortClickListener(op,ipi);
-
-        for (var ipip = 0; ipip < op.portsIn.length; ipip++) {
-            (function(index) {
-                $('#portdelete_in_' + index).on('click', function(e) {
-                    op.portsIn[index].removeLinks();
-                    self.showOpParams(op);
-                });
-            })(ipip);
-        }
-
-        for (var ipii = 0; ipii < op.portsIn.length; ipii++) CABLES.UI.initPortInputListener(op, ipii);
-
-        for (var iwap in watchAnimPorts) {
-            var thePort = watchAnimPorts[iwap];
-            (function(thePort) {
-                var id = '.watchPortValue_' + thePort.watchId;
-
-                $(id).on("focusin", function() {
-                    if (thePort.isAnimated()) gui.timeLine().setAnim(thePort.anim, {
-                        name: thePort.name
-                    });
-                });
-
-            })(thePort);
-        }
-
-        for (var iwcp in watchColorPicker) {
-            var thePort2 = watchColorPicker[iwcp];
-            CABLES.UI.watchColorPickerPort(thePort2);
-        }
-
-        perf.finish();
+        gui.opParams.show(op);
     };
 
-    var cycleWatchPort = false;
-
-    function doWatchPorts()
-    {
-        cycleWatchPort = !cycleWatchPort;
-
-        for (var i=0;i< watchPorts.length;i++)
-        {
-            const thePort=watchPorts[i];
-
-            if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && 
-                thePort.type != CABLES.OP_PORT_TYPE_STRING && 
-                thePort.type != CABLES.OP_PORT_TYPE_ARRAY) continue;
-
-            var id = '.watchPortValue_' + thePort.watchId;
-            var el = $(id);
-
-            if (thePort.isAnimated()) {
-                if (el.val() != thePort.get()) el.val(thePort.get());
-            }
-            else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY) {
-                if (thePort.get()) el.html('Array (' + String(thePort.get().length)+')');
-                else  el.html('Array (null)');
-            }
-            else if (thePort.type == CABLES.OP_PORT_TYPE_STRING) {
-                el.html('\"'+thePort.get()+'\"');
-            } else {
-                el.html(String(thePort.get()));
-            }
-
-            CABLES.watchPortVisualize.update(id, thePort.watchId, thePort.get());
-        }
-
-        if (CABLES.UI.uiConfig.watchValuesInterval > 0)
-            setTimeout(doWatchPorts, CABLES.UI.uiConfig.watchValuesInterval);
-    }
 
     var uupos = null;
     var ctm;
@@ -3121,21 +2749,15 @@ CABLES.UI.Patch = function(_gui) {
     this.addAssetOpAuto = function(filename, event) {
         if (!event) return;
         var opname = '';
-        var title = filename.substr(filename.lastIndexOf('/') + 1);
 
-        if (filename.endsWith(".png") || filename.endsWith(".jpg")) {
-            opname = "Ops.Gl.Texture";
-            title = "Texture: " + title;
-        } else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) {
-            opname = "Ops.WebAudio.AudioPlayer";
-            title = "Audio: " + title;
-        } else if (filename.endsWith(".3d.json")) {
-            opname = "Ops.Json3d.Mesh3d";
-            title = "Json: " + title;
-        } else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) {
-            opname = "Ops.Gl.Textures.VideoTexture";
-            title = "Video: " + title;
-        } else {
+        if (filename.endsWith(".png") || filename.endsWith(".jpg")) opname = "Ops.Gl.Texture_v2";
+        else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac"))   opname = "Ops.WebAudio.AudioPlayer";
+        else if (filename.endsWith(".3d.json")) opname = "Ops.Json3d.Mesh3d";
+        else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) opname = "Ops.Gl.Textures.VideoTexture";
+        else if (filename.endsWith(".glb")) opname = "Ops.Gl.GLTF.GltfScene_v2";
+        else if (filename.endsWith(".json")) opname = "Ops.Json.AjaxRequest_v2";
+        else
+        {
             CABLES.UI.notify("no known operator found");
             return;
         }
@@ -3144,7 +2766,6 @@ CABLES.UI.Patch = function(_gui) {
         var y = gui.patch().getCanvasCoordsMouse(event).y;
 
         var uiAttr = {
-            'title': title,
             translate: {
                 x: x,
                 y: y
@@ -3178,7 +2799,7 @@ CABLES.UI.Patch = function(_gui) {
         });
     };
 
-    doWatchPorts();
+    // doWatchPorts();
 
     this.disableEnableOps = function() {
         if (!selectedOps.length) return;

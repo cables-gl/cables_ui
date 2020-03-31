@@ -28,6 +28,8 @@
 
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
 
+            {{#compare port.uiAttribs.display '==' 'buttons' }}
+            {{else}}
             {{#compare port.uiAttribs.display '==' 'button' }}
             {{else}}
                 {{#if port.uiAttribs.title }}
@@ -35,6 +37,7 @@
                 {{else}}
                     {{port.name}} 
                 {{/if}}
+            {{/compare}}
             {{/compare}}
         </span>
     
@@ -96,11 +99,20 @@
                     </td>
                 {{else}}
                     {{#if port.uiAttribs.display}}
+
                         {{#compare port.uiAttribs.display '==' 'bool' }}
                             </td><td >
                             <span id="portcheckbox_{{ portnum }}" class="ccheckbox fa {{#compare port.val '==' true }}fa-check-square{{/compare}}{{#compare port.val '==' false }}fa-square{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
                             <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}" value="{{#if port.val }}true{{else}}false{{/if}}" style="display:none;"/>
                         {{/compare}}
+
+                        {{#compare port.uiAttribs.display '==' 'buttons' }}
+                            </td><td >
+                                {{#each port.value}}
+                                    <span class="button-small" id="portbutton_{{ ../portnum }}_{{@key}}" data-title="{{.}}">{{.}}</span>
+                                {{/each}}
+                        {{/compare}}
+
                         {{#compare port.uiAttribs.display '==' 'button' }}
                         </td><td >
                             <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}" >

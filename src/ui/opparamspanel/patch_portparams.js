@@ -184,7 +184,13 @@ CABLES.UI.initPortInputListener=function(op,index)
             {
                 if (isNaN(e.target.value))
                 {
-                    const mathParsed=CABLES.UI.mathparser.parse(e.target.value);
+                    let mathParsed = e.target.value;
+                    try {
+                        mathParsed=CABLES.UI.mathparser.parse(e.target.value);
+                    }catch(e){
+                        // failed to parse math, use unparsed value
+                        mathParsed = e.target.value;
+                    }
                     e.target.value=mathParsed;
                     op.portsIn[index].set(mathParsed);
                     CABLES.UI.hideToolTip();
@@ -206,7 +212,13 @@ CABLES.UI.initPortInputListener=function(op,index)
         {
             if (isNaN(v) || v === '')
             {
-                const mathParsed=CABLES.UI.mathparser.parse(v);
+                let mathParsed = v;
+                try {
+                    mathParsed=CABLES.UI.mathparser.parse(v);
+                }catch(e){
+                    // failed to parse math, use unparsed value
+                    mathParsed = v;
+                }
                 if(!isNaN(mathParsed))
                 {
                     CABLES.UI.showToolTip(e.target,' = '+mathParsed);
@@ -304,6 +316,20 @@ CABLES.UI.initPortClickListener=function(op,index)
     $('#portbutton_' + index).on('click', function (e) {
         op.portsIn[index]._onTriggered();
     });
+
+    if(op.portsIn[index].uiAttribs.display==="buttons")
+    {
+        for(var i=0;i<op.portsIn[index].value.length;i++)
+        {
+            $('#portbutton_' + index+'_'+i).on('click', function (e) {
+
+                var name=e.target.dataset["title"];
+
+                op.portsIn[index]._onTriggered(name);
+            });
+    
+        }
+    }
 
 
     $('#portgraph_in_' + index).on('click', function (e) {

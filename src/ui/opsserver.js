@@ -127,9 +127,7 @@ CABLES.UI.ServerOps = function (gui)
                     "name": op.portsIn[i].name
                 };
 
-
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
-
             if (op.portsIn[i].type == CABLES.OP_PORT_TYPE_VALUE)
             {
                 if (op.portsIn[i].uiAttribs.display == "bool") l.subType = "boolean";
@@ -202,7 +200,6 @@ CABLES.UI.ServerOps = function (gui)
                     CABLES.UI.notify(num + " ops reloaded");
 
                     for (var i = 0; i < ops.length; i++) gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
-
 
                     if (ops.length > 0) this.saveOpLayout(ops[0]);
                     gui.patch().checkCollisionsEdge();

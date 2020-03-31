@@ -109,9 +109,19 @@ CABLES.UI.Bookmarks=function()
 
     this.goto=function(id)
     {
-        gui.patch().setSelectedOpById(id);
-        gui.patch().centerViewBoxOps();
-        gui.patch().focusOp(id);
+        if(gui.keys.shiftKey)
+        {
+            console.log("YES");
+            var op=gui.patch().scene.getOpById(id);
+            gui.patch().showOpParams(op);
+        }
+        else
+        {
+            gui.patch().setSelectedOpById(id);
+            gui.patch().centerViewBoxOps();
+            gui.patch().focusOp(id);
+        }
+        
     };
 
     this.getBookmarks=function()

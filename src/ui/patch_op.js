@@ -290,7 +290,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var move = function(dx, dy, a, b, e)
     {
 
-        if(CABLES.UI.selectedStartPort)
+        if(CABLES.UI.selectedStartPort && CABLES.UI.selectedEndOp)
         {
             var fit=CABLES.UI.selectedEndOp.op.findFittingPort(CABLES.UI.selectedStartPort);
             if(fit)
@@ -1206,24 +1206,32 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     op.addEventListener("onUiAttribsChange",(attribs)=> {
         if (attribs && attribs.hasOwnProperty('warning')) {
             this.oprect.updateErrorIndicator();
-            if(selected) gui.patch().updateUiAttribs();
+            if(selected) gui.opParams.updateUiAttribs();
         }
         if (attribs && attribs.hasOwnProperty('error')) {
             this.oprect.updateErrorIndicator();
-            if(selected) gui.patch().updateUiAttribs();
+            if(selected) gui.opParams.updateUiAttribs();
         }
         if (attribs && attribs.hasOwnProperty('uierrors')) {
             this.oprect.updateErrorIndicator();
             
             if(selected)
             {
-                gui.patch().updateUiAttribs();
+                gui.opParams.updateUiAttribs();
                 gui.patch().updateOpParams(this.op.id);
             }
         }
         if (attribs && attribs.hasOwnProperty('color')) {
             this.oprect.updateColorHandle();
         }
+
+        if (attribs && attribs.hasOwnProperty('comment')) {
+            this.oprect.updateAttachedComment();
+        }
+        if (attribs && attribs.hasOwnProperty('title')) {
+            this.oprect.setTitle(attribs.title);
+        }
+
         if (attribs && attribs.hasOwnProperty('working')) {
             this.oprect._updateStriked();
         }

@@ -11,6 +11,8 @@ CABLES.SandboxBrowser = function (cfg)
     window.addEventListener('online',  this.updateOnlineIndicator.bind(this));
     window.addEventListener('offline', this.updateOnlineIndicator.bind(this));
     this.updateOnlineIndicator();
+
+    console.log(cfg);
 };
 
 CABLES.SandboxBrowser.prototype.updateOnlineIndicator = function ()
@@ -59,6 +61,17 @@ CABLES.SandboxBrowser.prototype.getUrlOpsList = function ()
 {
     return "ops/";
 };
+
+CABLES.SandboxBrowser.prototype.getPatchId = function ()
+{
+    return this._cfg.patchId;
+};
+
+CABLES.SandboxBrowser.prototype.getSocketclusterConfig = function ()
+{
+    return this._cfg.socketcluster;
+};
+
 
 CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
 {
@@ -259,3 +272,4 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
 
     loadjs(userOpsUrls, lid);
 };
+
