@@ -3,27 +3,21 @@ var CABLES=CABLES||{};
 
 CABLES.UI.ScConnection=class extends CABLES.EventTarget
 {
-
-    constructor(id)
+    constructor(cfg)
     {
         super();
         this._socket=null;       
+        this._scConfig=cfg;
+
+        console.log(cfg);
 
         this._init();
     }
 
     _init()
     {
-        this._socket = socketClusterClient.create({
-            hostname: "ws.dev.cables.gl",
-            secure: true,
-            port: 443,
-        });
-
-        
-
+        this._socket = socketClusterClient.create(this._scConfig);
         this._socket.channelName = "patchchannel_"+CABLES.sandbox.getPatchId();
-        
         
         console.info("socketcluster clientId", this._socket.clientId);
 
@@ -51,9 +45,13 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
             {
                 console.log("received ",obj);
 
-                if(obj.type="chatmsg")
+                if(obj.type=="chatmsg")
                 {
                     this.emitEvent("onChatMessage",obj);
+                }
+                if(obj.type=="info")
+                {
+                    this.emitEvent("onInfoMessage",obj);
                 }
                 // if (obj.clientId != socket.clientId && obj.topic == inTopic.get())
                 // {
@@ -63,6 +61,11 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
                 // }
             }
         })();
+    }
+
+    sendInfo(text)
+    {
+        this.send({"type":"info","text":text});
 
     }
 

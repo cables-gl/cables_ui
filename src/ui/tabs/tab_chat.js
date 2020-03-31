@@ -6,11 +6,13 @@ CABLES.UI.Chat=function(tabs,socket)
     this._tabs=tabs;
 
     socket.addEventListener("onChatMessage",this.onChatMsg.bind(this));
-
+    socket.addEventListener("onInfoMessage",this.onChatMsg.bind(this));
+    
     this._msgs=[];
 
     this._socket=socket;
 };
+
 
 CABLES.UI.Chat.prototype.onChatMsg=function(payload)
 {
@@ -37,20 +39,33 @@ CABLES.UI.Chat.prototype._updateText=function()
 {
     var html='';
 
+    var logEle=document.getElementById("chatmsgs");
+    if(!logEle)return;
+
     for(var i=0;i<this._msgs.length;i++)
     {
-        html+='- ';
-        html+=this._msgs[i].username+": ";
-        html+=this._msgs[i].text;
+        if(this._msgs[i].type=="info")
+        {
+            html+='<b>';
+            html+=this._msgs[i].text;
+            html+='</b>';
+        }
+        else
+        {
+            html+='- ';
+            html+=this._msgs[i].username+": ";
+            html+=this._msgs[i].text;
+    
+        }
         html+='<br/>'
     }
 
-    document.getElementById("chatmsgs").innerHTML=html;
+    logEle.innerHTML=html;
 }
 
 
 CABLES.UI.Chat.prototype.send=function(text)
 {
-    this._socket.send({"type":"chatmsg","text":text,"username":gui.user.usernameLowercase});
+    this._socket.send({"type":"chatmsg","text":text,"username":gui.user.username});
 }
 

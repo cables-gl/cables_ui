@@ -11,7 +11,7 @@ CABLES.UI.GUI = function(cfg)
 
     this.keys=new CABLES.UI.KeyManager();
     this.opParams=new CABLES.UI.OpParampanel();
-    this.socket=new CABLES.UI.ScConnection();
+    this.socket=new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
     
 
     if(!cfg) cfg={};
@@ -1913,6 +1913,9 @@ function startUi(cfg)
                 gui.bindKeys();
 
                 logStartup('finished loading cables');
+
+                gui.socket.sendInfo(gui.user.username+" joined");
+
                 CABLES.UI.loaded=true;
             });
         });

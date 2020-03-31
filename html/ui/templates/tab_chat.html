@@ -1,14 +1,9 @@
 <script id="tab_chat" type="text/x-handlebars-template">
 
     <div class="tabContentScrollContainer">
-
         <div id="chatmsgs" ></div>
-
         <input type="text" id="newchatmsg"/>
-        <a onclick="gui.chat.send(document.getElementById('newchatmsg').value)" class="button">send</a>
-
-
-
+        <a onclick="gui.chat.send(document.getElementById('newchatmsg').value);document.getElementById('newchatmsg').value='';" class="button">send</a>
     </div>
 
 </script>
