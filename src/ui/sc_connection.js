@@ -8,10 +8,9 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
         super();
         this._socket=null;       
         this._scConfig=cfg;
+        this._connected=false;
 
-        console.log(cfg);
-
-        this._init();
+        if(cfg)this._init();
     }
 
     _init()
@@ -34,6 +33,7 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
             for await (const event of this._socket.listener("connect"))
             {
                 console.log("socket connected!");
+                this._connected=true;
             }
         })();
 
@@ -65,13 +65,12 @@ CABLES.UI.ScConnection=class extends CABLES.EventTarget
 
     sendInfo(text)
     {
-        this.send({"type":"info","text":text});
-
+        if(this._connected) this.send({"type":"info","text":text});
     }
 
     send(payload)
     {
-        this._socket.transmitPublish(this._socket.channelName, payload);
+        if(this._connected) this._socket.transmitPublish(this._socket.channelName, payload);
     }
 
     
