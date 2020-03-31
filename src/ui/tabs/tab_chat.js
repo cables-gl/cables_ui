@@ -25,8 +25,9 @@ CABLES.UI.Chat.prototype.onChatMsg=function(payload)
 
 CABLES.UI.Chat.prototype.onPingAnswer=function(payload)
 {
-    this._msgs.push(payload);
-    console.log(payload.data.username, " is also here");
+    const msg = {type: "info", text: payload.data.username + " is also here"};
+    this._msgs.push(msg);
+    console.log(msg.text);
     this._updateText();
 };
 
