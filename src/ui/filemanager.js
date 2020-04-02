@@ -155,6 +155,8 @@ CABLES.UI.FileManager.prototype._createItem = function(
 CABLES.UI.FileManager.prototype._buildHtml = function(o) {
     var items = [];
 
+    if(!this._files)this._files=[];
+
     if (this._order == "size")
         this._files.sort(function(a, b) {
             return a.s - b.s;
@@ -280,11 +282,9 @@ CABLES.UI.FileManager.prototype.updateHeader = function(detailItems) {
 CABLES.UI.FileManager.prototype.setDetail = function(detailItems) {
     var html = "";
     document.getElementById("item_details").innerHTML = "";
-console.log("HIERRR");
 
     if (detailItems.length == 1) {
         const itemId = detailItems[0].id;
-
 
         CABLESUILOADER.talkerAPI.send(
             "getFileDetails",
@@ -312,7 +312,7 @@ console.log("HIERRR");
                                 "deleteFile",
                                 { fileid: r.fileDb._id },
                                 function(err, r) {
-                                    if (r.success)
+                                    if (r && r.success)
                                         this._manager.removeItem(itemId);
                                     else
                                         CABLES.UI.notifyError(

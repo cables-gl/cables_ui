@@ -833,11 +833,15 @@ CABLES.UI.GUI = function(cfg)
                     $('#converteroutput').html('Error: something went wrong while converting...'+(err.msg||''));
                 }
                 else
-                {
+                {   
+                    if(res && res.info) html = res.info;
+                    else html='Finished!';
+
+
                     var html='';
 
-                    if(res.info) html = res.info;
-                        else html='Finished!';
+                    if(res && res.info) html = res.info;
+                    else html='Finished!';
 
                     html+='<br/><a class="button" onclick="CABLES.UI.MODAL.hide()">ok</a>'
                     $('#converteroutput').html(html);

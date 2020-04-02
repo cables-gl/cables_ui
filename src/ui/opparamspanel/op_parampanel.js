@@ -96,7 +96,6 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
 
         var oldversion=false;
         if(doc && doc.oldVersion)oldversion=doc.oldVersion
-        
 
         var html=this._templateHead({
             "op": op,
@@ -106,6 +105,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
             "user": gui.user,
             "ownsOp": ownsOp,
             "oldVersion":oldversion,
+            "cablesUrl": CABLES.sandbox.getCablesUrl(),
             "hasExample":hasScreenshot
         });
 
