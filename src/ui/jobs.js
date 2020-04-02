@@ -23,15 +23,11 @@ function()
             str+='</div>';
         }
 
-        
-
         if(jobs.length==0)
         {
             str+='All server jobs finished...';
             $('.cables-logo .icon-cables').removeClass('blinkanim');
         }
-
-        
 
         if(indicator)
         {
