@@ -1,88 +1,129 @@
+var CABLES = CABLES || {};
 
-var CABLES=CABLES||{};
-
-CABLES.UI.ScConnection=class extends CABLES.EventTarget
+CABLES.UI.ScConnection = class extends CABLES.EventTarget
 {
     constructor(cfg)
     {
         super();
-        this.channelName=null;
-        this._socket=null;
-        this._scConfig=cfg;
-        this._connected=false;
+        this.channelName = null;
+        this._socket = null;
+        this._scConfig = cfg;
+        this._connected = false;
 
-        if(cfg)this._init();
+        if (cfg) this._init();
     }
 
     _init()
     {
         this._socket = socketClusterClient.create(this._scConfig);
-        this._socket.channelName = "patchchannel_"+CABLES.sandbox.getPatchId();
+        this._socket.channelName = "patchchannel_" + CABLES.sandbox.getPatchId();
         this.channelName = this._socket.channelName;
-
-        console.info("socketcluster clientId", this._socket.clientId);
 
         (async () =>
         {
             for await (const { error } of this._socket.listener("error"))
             {
                 console.error(error);
-                this._connected=false;
+                this._connected = false;
             }
         })();
         (async () =>
         {
             for await (const event of this._socket.listener("connect"))
             {
-                console.log("socket connected!");
-                this._connected=true;
+                console.info("socketcluster clientId", this._socket.clientId);
+                this._connected = true;
             }
         })();
 
+        (async () =>
+        {
+            const controlChannel = this._socket.subscribe(this._socket.channelName + "/control");
+
+            for await (const msg of controlChannel)
+            {
+                this._handleControlChannelMessage(msg);
+            }
+        })();
 
         (async () =>
         {
-            const channel = this._socket.subscribe(this._socket.channelName );
-            for await (const obj of channel)
+            const infoChannel = this._socket.subscribe(this._socket.channelName + "/info");
+            for await (const msg of infoChannel)
             {
-                console.log("received ",obj);
+                this._handleInfoChannelMsg(msg);
+            }
+        })();
 
-                if(obj.type=="chatmsg")
-                {
-                    this.emitEvent("onChatMessage",obj);
-                }
-                if(obj.type=="info")
-                {
-                    this.emitEvent("onInfoMessage",obj);
-                }
-                if(obj.type=="pingMembers") {
-                    this.send({type: "pingAnswer", data: {username: gui.user.usernameLowercase }});
-                }
-                if(obj.type=="pingAnswer") {
-                    this.emitEvent("onPingAnswer",obj);
-                }
-                // if (obj.clientId != socket.clientId && obj.topic == inTopic.get())
-                // {
-                //     outData.set(obj.payload);
-                //     clientIdOut.set(obj.clientId);
-                //     outTrigger.trigger();
-                // }
+        (async () =>
+        {
+            const chatChannel = this._socket.subscribe(this._socket.channelName + "/chat");
+            for await (const msg of chatChannel)
+            {
+                this._handleChatChannelMsg(msg);
             }
         })();
     }
 
     sendInfo(text)
     {
-        if(this._connected) this.send({"type":"info","text":text});
+        if (this._connected) this._send("info", { type: "info", text });
     }
 
-    send(payload)
+    sendControl(payload)
     {
-        if(this._connected) this._socket.transmitPublish(this._socket.channelName, payload);
+        if (this._connected) this._send("control", payload);
+    }
+
+    sendChat(text)
+    {
+        if (this._connected) this._send("chat", { type: "chatmsg", text, username: gui.user.username });
     }
 
     updateMembers()
     {
-        this.send({"type": "pingMembers"});
+        this.sendControl({ type: "pingMembers" });
     }
-}
+
+    _handleChatChannelMsg(msg)
+    {
+        if (msg.type == "chatmsg")
+        {
+            this.emitEvent("onChatMessage", msg);
+        }
+    }
+
+    _send(topic, payload)
+    {
+        const finalPayload = {
+            clientId: this._socket.clientId,
+            topic,
+            ...payload,
+        };
+        if (this._connected) this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
+    }
+
+    _handleControlChannelMessage(msg)
+    {
+        if (msg.type == "pingMembers")
+        {
+            this.sendControl({
+                type: "pingAnswer",
+                username: gui.user.usernameLowercase,
+            });
+        }
+        if (msg.type == "pingAnswer")
+        {
+            msg.lastSeen = Date.now();
+            this.emitEvent("onPingAnswer", msg);
+        }
+    }
+
+    _handleInfoChannelMsg(msg)
+    {
+        if (msg.type == "info")
+        {
+            this.emitEvent("onInfoMessage", msg);
+        }
+    }
+};
