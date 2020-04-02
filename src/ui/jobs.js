@@ -7,13 +7,12 @@ function()
     var jobs=[];
     var lastIndicator=null;
 
-    function updateJobListing()
+    this.updateJobListing=function()
     {
         var str='';
         var indicator=null;
 
         if(CABLES.sandbox.isOffline()) str+='<b>Offline! No internet connection.</b><br/><br/>';
-
 
         for(var i in jobs)
         {
@@ -28,6 +27,8 @@ function()
             str+='All server jobs finished...';
             $('.cables-logo .icon-cables').removeClass('blinkanim');
         }
+
+        str+=gui.chat.getUserInfoHtml();
 
         if(indicator)
         {
@@ -52,7 +53,7 @@ function()
                 break;
             }
         }
-        updateJobListing();
+        this.updateJobListing();
     };
 
     this.start=function(job,func)
@@ -70,7 +71,7 @@ function()
 
 
         jobs.push(job);
-        updateJobListing();
+        this.updateJobListing();
 
         if(func)
         {
@@ -100,7 +101,7 @@ function()
     this.finish=function(jobId)
     {
 
-        setTimeout(function()
+        setTimeout(()=>
         {
             for(var i in jobs)
             {
@@ -125,7 +126,7 @@ function()
                 $('.cables .logo').addClass('cablesLogo');
                 $('.cables .logo').removeClass('fa fa-circle-o-notch fa-spin');
             }
-            updateJobListing();
+            this.updateJobListing();
 
         },250);
 

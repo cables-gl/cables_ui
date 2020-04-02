@@ -30,6 +30,25 @@ CABLES.UI.Chat.prototype.getNumClients = function ()
     return Object.keys(this._clients).length;
 }
 
+CABLES.UI.Chat.prototype.getUserInfoHtml = function ()
+{
+
+    var numClients=this.getNumClients();
+
+
+    console.log(this._users);
+
+    var html = CABLES.UI.getHandleBarHtml('socketinfo',
+    {
+        "numClients":numClients,
+        "users":this._users,
+        "clients":this._clients
+    });
+    return html;
+
+}
+
+
 CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
 {
     if (!Array.isArray(this._users[payload.username]))
@@ -37,6 +56,7 @@ CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
         this._users[payload.username] = [];
     }
     const client = this._users[payload.username].find(c => c.clientId == payload.clientId);
+
 
     this._clients[payload.clientId]=client;
 
@@ -46,7 +66,7 @@ CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
     }
     else
     {
-        this._users[payload.username].push({ clientId: payload.clientId, lastSeen: payload.lastSeen });
+        this._users[payload.username].push({ username: payload.username,clientId: payload.clientId, lastSeen: payload.lastSeen });
     }
     this._cleanUpUserList();
     console.log("new user list", this._users);

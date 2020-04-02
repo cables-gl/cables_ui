@@ -978,6 +978,8 @@ CABLES.UI.GUI = function(cfg)
         // $('#username').bind("click", CABLES.CMD.UI.userSettings);
 
         $('.cables-logo').hover(function(e) {
+
+            gui.jobs().updateJobListing();
             $('#jobs').show();
         }, function() {
             $('#jobs').hide();
