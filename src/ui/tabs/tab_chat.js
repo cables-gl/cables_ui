@@ -7,7 +7,8 @@ CABLES.UI.Chat=function(tabs,socket)
 
     socket.addEventListener("onChatMessage",this.onChatMsg.bind(this));
     socket.addEventListener("onInfoMessage",this.onChatMsg.bind(this));
-    
+    socket.addEventListener("onPingAnswer",this.onPingAnswer.bind(this));
+
     this._msgs=[];
 
     this._socket=socket;
@@ -22,6 +23,13 @@ CABLES.UI.Chat.prototype.onChatMsg=function(payload)
 
 };
 
+CABLES.UI.Chat.prototype.onPingAnswer=function(payload)
+{
+    const msg = {type: "info", text: payload.data.username + " is also here"};
+    this._msgs.push(msg);
+    console.log(msg.text);
+    this._updateText();
+};
 
 CABLES.UI.Chat.prototype.show=function()
 {
@@ -55,7 +63,7 @@ CABLES.UI.Chat.prototype._updateText=function()
             html+='- ';
             html+=this._msgs[i].username+": ";
             html+=this._msgs[i].text;
-    
+
         }
         html+='<br/>'
     }

@@ -116,6 +116,11 @@ CABLES.UI.ServerOps = function (gui)
 
         for (i = 0; i < op.portsIn.length; i++)
         {
+            if (op.portsIn[i].uiAttribs && op.portsIn[i].uiAttribs.hidePort === true)
+            {
+                // no hidden ports in layout and documentation
+                continue;
+            }
             var l=
                 {
                     "type": op.portsIn[i].type,
