@@ -1,4 +1,4 @@
-// h
+
 var CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
