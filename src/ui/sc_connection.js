@@ -10,8 +10,19 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._scConfig = cfg;
         this._connected = false;
 
+console.log("socket config",cfg);
+
         if (cfg) this._init();
+
+        setTimeout(()=>
+        {
+            this._paco=new CABLES.UI.PacoConnector(this,gui.patchConnection);
+            gui.patchConnection.connectors.push(this._paco);
+    
+        },1000);
     }
+
+
 
     _init()
     {
@@ -105,6 +116,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _handleControlChannelMessage(msg)
     {
+        console.log("CONTROLMSG ",msg);
         if (msg.type == "pingMembers")
         {
             this.sendControl({
@@ -117,6 +129,14 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             msg.lastSeen = Date.now();
             this.emitEvent("onPingAnswer", msg);
         }
+
+        if(msg.type=="paco")
+        {
+            console.log('receive paco',msg);
+            if(msg.clientId!=this._socket.clientId)
+                this._paco.receive(msg.data);
+        }
+
     }
 
     _handleInfoChannelMsg(msg)

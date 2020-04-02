@@ -17,8 +17,8 @@ CABLES.SandboxBrowser = function (cfg)
 
 CABLES.SandboxBrowser.prototype.updateOnlineIndicator = function ()
 {
-    if(this.isOffline()) document.getElementById('offlineIndicator').style.display='block';
-    else document.getElementById('offlineIndicator').style.display='none';
+    if(this.isOffline()) document.getElementById('offlineIndicator').classList.remove('hidden');
+    else document.getElementById('offlineIndicator').classList.add('hidden');
 }
 
 CABLES.SandboxBrowser.prototype.isOffline = function ()

@@ -13,7 +13,7 @@ CABLES.UI.Paco=function(tabs)
 
 CABLES.UI.Paco.prototype.open=function()
 {
-    var popup=window.open("/renderer/","_blank");
+var popup=window.open("/renderer/","_blank");
     popup.addEventListener('load', function()
     {
         console.log("loaded!");

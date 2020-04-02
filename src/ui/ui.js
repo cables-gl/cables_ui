@@ -13,6 +13,8 @@ CABLES.UI.GUI = function(cfg)
     this.opParams=new CABLES.UI.OpParampanel();
     this.socket=new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
 
+    
+
 
     if(!cfg) cfg={};
     if(!cfg.usersettings) cfg.usersettings={settings:{}};
@@ -1917,6 +1919,9 @@ function startUi(cfg)
                 gui.bindKeys();
 
                 logStartup('finished loading cables');
+
+
+                console.log(gui.socket);
 
                 gui.socket.sendInfo(gui.user.username+" joined");
                 const updateMemberInterval = setInterval(function() {

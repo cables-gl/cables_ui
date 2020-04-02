@@ -11,6 +11,7 @@ CABLES.UI.Chat = function (tabs, socket)
 
     this._msgs = [];
     this._users = {};
+    this._clients={};
 
     this._socket = socket;
 };
@@ -24,6 +25,11 @@ CABLES.UI.Chat.prototype.onChatMsg = function (payload)
     this._updateText();
 };
 
+CABLES.UI.Chat.prototype.getNumClients = function ()
+{
+    return Object.keys(this._clients).length;
+}
+
 CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
 {
     if (!Array.isArray(this._users[payload.username]))
@@ -31,6 +37,9 @@ CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
         this._users[payload.username] = [];
     }
     const client = this._users[payload.username].find(c => c.clientId == payload.clientId);
+
+    this._clients[payload.clientId]=client;
+
     if (client)
     {
         client.lastSeen = payload.lastSeen;
@@ -41,6 +50,10 @@ CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
     }
     this._cleanUpUserList();
     console.log("new user list", this._users);
+
+    if(this.getNumClients()>1) document.getElementById("userindicator").classList.remove("hidden");
+    else document.getElementById("userindicator").classList.add("hidden");
+
 };
 
 CABLES.UI.Chat.prototype.show = function ()
@@ -68,6 +81,7 @@ CABLES.UI.Chat.prototype._cleanUpUserList = function ()
             }
             if (user.length === 0)
             {
+                delete this._clients[client.clientId];
                 delete this._users[userName];
             }
         }
