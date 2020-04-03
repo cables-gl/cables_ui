@@ -9,17 +9,26 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._socket = null;
         this._scConfig = cfg;
         this._connected = false;
-
+        this._paco=null;
 console.log("socket config",cfg);
 
         if (cfg) this._init();
 
-        setTimeout(()=>
+        // setTimeout(()=>
+        // {
+    
+        // },1000);
+    }
+
+    setupPaco()
+    {
+        if(!this._paco && gui.chat.getNumClients()>1)
         {
             this._paco=new CABLES.UI.PacoConnector(this,gui.patchConnection);
             gui.patchConnection.connectors.push(this._paco);
     
-        },1000);
+        }
+
     }
 
 
@@ -128,6 +137,7 @@ console.log("socket config",cfg);
         {
             msg.lastSeen = Date.now();
             this.emitEvent("onPingAnswer", msg);
+            this.setupPaco();
         }
 
         if(msg.type=="paco")
