@@ -17,10 +17,8 @@ CABLES.UI.PacoConnector = class extends CABLES.EventTarget
             console.log("NOPE!");
             return;
         }
-        console.log('paco send',event);
-
         var data={"event":event,"vars":vars}
-        this._sccon.sendControl({"type":"paco","data":data});
+        this._sccon.sendPaco({"type":"paco","data":data});
     }
 
     receive(pacoMsg)
@@ -31,7 +29,6 @@ CABLES.UI.PacoConnector = class extends CABLES.EventTarget
                 gui.patch().scene
             );
 
-        console.log("receive scpaco con");
         this._receiver._receive(pacoMsg);
 
     }

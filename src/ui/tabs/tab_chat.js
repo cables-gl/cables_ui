@@ -11,7 +11,7 @@ CABLES.UI.Chat = function (tabs, socket)
 
     this._msgs = [];
     this._users = {};
-    this._clients={};
+    this._clients = {};
 
     this._socket = socket;
 };
@@ -21,33 +21,25 @@ CABLES.UI.Chat.updateIntervalSeconds = 10;
 CABLES.UI.Chat.prototype.onChatMsg = function (payload)
 {
     this._msgs.push(payload);
-    console.log("chatmsg", payload.text);
     this._updateText();
 };
 
 CABLES.UI.Chat.prototype.getNumClients = function ()
 {
     return Object.keys(this._clients).length;
-}
+};
 
 CABLES.UI.Chat.prototype.getUserInfoHtml = function ()
 {
+    var numClients = this.getNumClients();
 
-    var numClients=this.getNumClients();
-
-
-    console.log(this._users);
-
-    var html = CABLES.UI.getHandleBarHtml('socketinfo',
-    {
-        "numClients":numClients,
-        "users":this._users,
-        "clients":this._clients
+    var html = CABLES.UI.getHandleBarHtml("socketinfo", {
+        numClients,
+        users: this._users,
+        clients: this._clients,
     });
     return html;
-
-}
-
+};
 
 CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
 {
@@ -57,8 +49,7 @@ CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
     }
     const client = this._users[payload.username].find(c => c.clientId == payload.clientId);
 
-
-    this._clients[payload.clientId]=client;
+    this._clients[payload.clientId] = client;
 
     if (client)
     {
@@ -66,14 +57,12 @@ CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
     }
     else
     {
-        this._users[payload.username].push({ username: payload.username,clientId: payload.clientId, lastSeen: payload.lastSeen });
+        this._users[payload.username].push({ username: payload.username, clientId: payload.clientId, lastSeen: payload.lastSeen });
     }
     this._cleanUpUserList();
-    console.log("new user list", this._users);
 
-    if(this.getNumClients()>1) document.getElementById("userindicator").classList.remove("hidden");
+    if (this.getNumClients() > 1) document.getElementById("userindicator").classList.remove("hidden");
     else document.getElementById("userindicator").classList.add("hidden");
-
 };
 
 CABLES.UI.Chat.prototype.show = function ()

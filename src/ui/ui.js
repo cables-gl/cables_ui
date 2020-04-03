@@ -13,7 +13,7 @@ CABLES.UI.GUI = function(cfg)
     this.opParams=new CABLES.UI.OpParampanel();
     this.socket=new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
 
-    
+
 
 
     if(!cfg) cfg={};
@@ -835,7 +835,7 @@ CABLES.UI.GUI = function(cfg)
                     $('#converteroutput').html('Error: something went wrong while converting...'+(err.msg||''));
                 }
                 else
-                {   
+                {
                     if(res && res.info) html = res.info;
                     else html='Finished!';
 
@@ -1921,9 +1921,6 @@ function startUi(cfg)
                 gui.bindKeys();
 
                 logStartup('finished loading cables');
-
-
-                console.log(gui.socket);
 
                 gui.socket.sendInfo(gui.user.username+" joined");
                 const updateMemberInterval = setInterval(function() {

@@ -6,35 +6,26 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         super();
         this.channelName = null;
+        this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : true;
         this._socket = null;
         this._scConfig = cfg;
         this._connected = false;
-        this._paco=null;
-console.log("socket config",cfg);
-
+        this._paco = null;
         if (cfg) this._init();
-
-        // setTimeout(()=>
-        // {
-    
-        // },1000);
     }
 
     setupPaco()
     {
-        if(!this._paco && gui.chat.getNumClients()>1)
+        if (!this._paco && gui.chat.getNumClients() > 1)
         {
-            this._paco=new CABLES.UI.PacoConnector(this,gui.patchConnection);
+            this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
             gui.patchConnection.connectors.push(this._paco);
-    
         }
-
     }
-
-
 
     _init()
     {
+        this._token = this._scConfig.token;
         this._socket = socketClusterClient.create(this._scConfig);
         this._socket.channelName = "patchchannel_" + CABLES.sandbox.getPatchId();
         this.channelName = this._socket.channelName;
@@ -51,7 +42,8 @@ console.log("socket config",cfg);
         {
             for await (const event of this._socket.listener("connect"))
             {
-                console.info("socketcluster clientId", this._socket.clientId);
+                console.info("cables-socketcluster clientId", this._socket.clientId);
+                if (!this._active) console.warn("CABLES-SOCKETCLUSTER NOT ACTIVE, WON'T SEND MESSAGES (enable in config)");
                 this._connected = true;
             }
         })();
@@ -83,26 +75,51 @@ console.log("socket config",cfg);
                 this._handleChatChannelMsg(msg);
             }
         })();
+
+        (async () =>
+        {
+            const pacoChannel = this._socket.subscribe(this._socket.channelName + "/paco");
+            for await (const msg of pacoChannel)
+            {
+                this._handlePacoMessage(msg);
+            }
+        })();
     }
 
     sendInfo(text)
     {
-        if (this._connected) this._send("info", { type: "info", text });
+        this._send("info", { type: "info", text });
     }
 
     sendControl(payload)
     {
-        if (this._connected) this._send("control", payload);
+        this._send("control", payload);
     }
 
     sendChat(text)
     {
-        if (this._connected) this._send("chat", { type: "chatmsg", text, username: gui.user.username });
+        this._send("chat", { type: "chatmsg", text, username: gui.user.username });
+    }
+
+    sendPaco(payload)
+    {
+        this._send("paco", payload);
     }
 
     updateMembers()
     {
         this.sendControl({ type: "pingMembers" });
+    }
+
+    _send(topic, payload)
+    {
+        const finalPayload = {
+            token: this._token,
+            clientId: this._socket.clientId,
+            topic,
+            ...payload,
+        };
+        if (this._active && this._connected) this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
     }
 
     _handleChatChannelMsg(msg)
@@ -113,19 +130,16 @@ console.log("socket config",cfg);
         }
     }
 
-    _send(topic, payload)
+    _handlePacoMessage(msg)
     {
-        const finalPayload = {
-            clientId: this._socket.clientId,
-            topic,
-            ...payload,
-        };
-        if (this._connected) this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
+        if (msg.type == "paco")
+        {
+            if (msg.clientId != this._socket.clientId) this._paco.receive(msg.data);
+        }
     }
 
     _handleControlChannelMessage(msg)
     {
-        console.log("CONTROLMSG ",msg);
         if (msg.type == "pingMembers")
         {
             this.sendControl({
@@ -139,14 +153,6 @@ console.log("socket config",cfg);
             this.emitEvent("onPingAnswer", msg);
             this.setupPaco();
         }
-
-        if(msg.type=="paco")
-        {
-            console.log('receive paco',msg);
-            if(msg.clientId!=this._socket.clientId)
-                this._paco.receive(msg.data);
-        }
-
     }
 
     _handleInfoChannelMsg(msg)
