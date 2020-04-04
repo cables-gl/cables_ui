@@ -12,7 +12,6 @@ CABLES.SandboxBrowser = function (cfg)
     window.addEventListener('offline', this.updateOnlineIndicator.bind(this));
     this.updateOnlineIndicator();
 
-    console.log(cfg);
 };
 
 CABLES.SandboxBrowser.prototype.updateOnlineIndicator = function ()
@@ -117,7 +116,7 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning = function (id)
         iziToast.error({
             position: "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             theme: "dark",
-            title: CABLES.UI.TEXTS.notOptimizedBrowser_title, 
+            title: CABLES.UI.TEXTS.notOptimizedBrowser_title,
             message: CABLES.UI.TEXTS.notOptimizedBrowser_text,
             progressBar: false,
             animateInside: false,
