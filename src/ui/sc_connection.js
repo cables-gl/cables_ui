@@ -86,6 +86,11 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         })();
     }
 
+    isConnected()
+    {
+        return this._connected;
+    }
+
     sendInfo(text)
     {
         this._send("info", { type: "info", text });
