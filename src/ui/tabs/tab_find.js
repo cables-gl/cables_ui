@@ -66,14 +66,15 @@ CABLES.UI.FindTab=function(tabs,str)
 
     document.getElementById(this._inputId).addEventListener(
         "keydown",
-        function (e)
+        (e)=>
         {
             if (e.keyCode == 38)
             {
                 var c = this._lastClicked - 1;
                 if (c < 0) c = 0;
                 this.setClicked(c);
-                document.getElementById("findresult" + c).click();
+                const resultEle=document.getElementById("findresult" + c);
+                if(resultEle) resultEle.click();
                 document.getElementById(this._inputId).focus();
             }
             else if (e.keyCode == 40)
@@ -81,10 +82,11 @@ CABLES.UI.FindTab=function(tabs,str)
                 var c = this._lastClicked + 1;
                 if (c > this._maxIdx - 1) c = this._maxIdx;
                 this.setClicked(c);
-                document.getElementById("findresult" + c).click();
+                const resultEle=document.getElementById("findresult" + c);
+                if(resultEle) resultEle.click();
                 document.getElementById(this._inputId).focus();
             }
-        }.bind(this),
+        }
         
     );
 
@@ -128,7 +130,6 @@ CABLES.UI.FindTab.prototype.setSearchInputValue = function (str)
 
 CABLES.UI.FindTab.prototype.searchAfterPatchUpdate = function ()
 {
-    console.log("search after patch update");
     
     clearTimeout(this._findTimeoutId);
     this._findTimeoutId = setTimeout( ()=>
@@ -218,7 +219,6 @@ CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
 
 CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
 {
-    // console.log("dosearch",str);
     const startTime=performance.now();
     this._lastSearch = str;
     $("#tabsearchresult").html("");
@@ -414,6 +414,8 @@ CABLES.UI.FindTab.prototype.search = function (str,userInvoked)
 
 CABLES.UI.FindTab.prototype.setClicked = function (num)
 {
+    num=parseInt(num);
+
     var el = document.getElementById("findresult" + this._lastClicked);
     if (el) el.classList.remove("lastClicked");
 
@@ -434,7 +436,6 @@ CABLES.UI.FindTab.prototype.setSelectedOp = function (opid)
 
 CABLES.UI.FindTab.prototype.updateHistory = function ()
 {
-    console.log("this._lastSearch",this._lastSearch);
     if(this._lastSearch==":recent")
     {
         this._updateCb();

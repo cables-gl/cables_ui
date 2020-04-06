@@ -456,4 +456,69 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
     };
 
 
+<<<<<<< HEAD
 }
+=======
+    opContextMenu(ele)
+    {
+        var items=[];
+
+        var opname=this._currentOp.objName;
+        var opid=this._currentOp.id;
+
+        items.push(
+            {
+                title:'set title',
+                func:CABLES.CMD.PATCH.setOpTitle
+            });
+
+        items.push(
+            {
+                title:'set default values',
+                func:function(){ gui.patch().resetOpValues(opid); }
+            });
+
+        items.push(
+            {
+                title:'bookmark',
+                func:function(){ gui.bookmarks.add(); }
+            });
+
+        items.push(
+            {
+                title:'clone op code',
+                "func":function(){ gui.serverOps.cloneDialog(opname); }
+            });
+
+        items.push(
+            {
+                title:'view op code',
+                "func":function(){ gui.serverOps.edit(opname); }
+            });
+
+        if(gui.user.isAdmin)
+        {
+            items.push(
+                {
+                    "title":'edit op ',
+                    "iconClass":'fa fa-lock',
+                    "func":function(){ gui.serverOps.edit(opname); }
+                });
+
+            items.push(
+                {
+                    "title":'rename op ',
+                    "iconClass":'fa fa-lock',
+                    "func":function()
+                    {
+                        window.open(CABLES.sandbox.getCablesUrl()+"/admin/op/rename?op="+opname+"&new="+opname, "_blank");
+                    }
+                });
+        }
+        CABLES.contextMenu.show({"items":items},ele);
+    };
+
+
+
+}
+>>>>>>> c7cf60b8280fe221b3e5b62c7ef1e1800514a423
