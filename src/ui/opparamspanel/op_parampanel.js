@@ -41,7 +41,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
         // var ops=gui.corePatch().ops;
         var perf = CABLES.uiperf.start('_showOpParams');
         var perfHtml = CABLES.uiperf.start('_showOpParamsHTML');
-        
+
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
 
@@ -194,7 +194,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
                     lastGroup = opGroup;
                     startGroup = lastGroup;
                 }
-                
+
                 // set auto preview
                 if (!foundPreview && op.portsOut[i2].uiAttribs.preview) {
                     foundPreview = true;
@@ -231,7 +231,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
         CABLES.valueChangerInitSliders();
 
         this.updateUiAttribs();
-        
+
 
 
 
@@ -246,7 +246,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
                 if(shortName.indexOf("/")>-1) shortName=shortName.substr(shortName.lastIndexOf("/")+1);
                 $('#portFilename_' + i).html('<span class="button fa fa-folder-open-o monospace" style="text-transform:none;font-family:monospace;font-size: 13px;">'+shortName+'</span>');
 
-                if (op.portsIn[i].get() && ((op.portsIn[i].get() + '').endsWith('.jpg') || (op.portsIn[i].get() + '').endsWith('.png'))) {
+                if (op.portsIn[i].get() && ((op.portsIn[i].get() + '').endsWith('.jpg') || (op.portsIn[i].get() + '').endsWith('.png')) || (op.portsIn[i].get() + '').endsWith('.png')) {
                     $('#portFileVal_' + i+'_preview').css('max-width', '100%');
                     $('#portFileVal_' + i+'_preview').html('<img class="dark" src="' + op.portsIn[i].get() + '" style="max-width:100%;margin-top:10px;"/>');
                 } else {
@@ -322,7 +322,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
             if(this._uiAttrFpsCount>=10) console.warn("Too many ui attr updates!",this._uiAttrFpsCount,this._currentOp.name)
             this._uiAttrFpsCount=0;
         }
-        
+
 
 
         var perf = CABLES.uiperf.start('updateUiAttribs');
@@ -362,7 +362,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
         }
 
         el = document.getElementById('options_info');
-        if (el) 
+        if (el)
         {
             if (!this._currentOp.uiAttribs.info) el.style.display = "none";
                 else
@@ -383,7 +383,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
         });
     }
 
-    
+
     _updateWatchPorts()
     {
         if(this._watchPorts.length)
@@ -394,8 +394,8 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
             {
                 const thePort=this._watchPorts[i];
 
-                if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && 
-                    thePort.type != CABLES.OP_PORT_TYPE_STRING && 
+                if (thePort.type != CABLES.OP_PORT_TYPE_VALUE &&
+                    thePort.type != CABLES.OP_PORT_TYPE_STRING &&
                     thePort.type != CABLES.OP_PORT_TYPE_ARRAY) continue;
 
 
@@ -428,7 +428,7 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
                 CABLES.watchPortVisualize.update(id, thePort.watchId, thePort.get());
             }
 
-            perf.finish();       
+            perf.finish();
         }
 
         if (CABLES.UI.uiConfig.watchValuesInterval == 0)return;
