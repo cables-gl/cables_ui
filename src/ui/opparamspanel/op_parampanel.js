@@ -455,10 +455,6 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
         if (this._currentOp) this._currentOp.setTitle(t);
     };
 
-
-<<<<<<< HEAD
-}
-=======
     opContextMenu(ele)
     {
         var items=[];
@@ -517,8 +513,4 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
         }
         CABLES.contextMenu.show({"items":items},ele);
     };
-
-
-
-}
->>>>>>> c7cf60b8280fe221b3e5b62c7ef1e1800514a423
+};
