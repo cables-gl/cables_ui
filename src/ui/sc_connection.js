@@ -6,7 +6,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         super();
         this.channelName = null;
-        this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : true;
+        this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
         this._socket = null;
         this._scConfig = cfg;
         this._connected = false;
@@ -25,6 +25,11 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _init()
     {
+        if (!this._active)
+        {
+            console.info("CABLES-SOCKETCLUSTER NOT ACTIVE, WON'T SEND MESSAGES (enable in config)");
+            return;
+        }
         this._token = this._scConfig.token;
         this._socket = socketClusterClient.create(this._scConfig);
         this._socket.channelName = "patchchannel_" + CABLES.sandbox.getPatchId();
@@ -43,7 +48,6 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             for await (const event of this._socket.listener("connect"))
             {
                 console.info("cables-socketcluster clientId", this._socket.clientId);
-                if (!this._active) console.warn("CABLES-SOCKETCLUSTER NOT ACTIVE, WON'T SEND MESSAGES (enable in config)");
                 this._connected = true;
             }
         })();
@@ -113,13 +117,16 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _send(topic, payload)
     {
-        const finalPayload = {
-            token: this._token,
-            clientId: this._socket.clientId,
-            topic,
-            ...payload,
-        };
-        if (this._active && this._connected) this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
+        if (this._active && this._connected)
+        {
+            const finalPayload = {
+                token: this._token,
+                clientId: this._socket.clientId,
+                topic,
+                ...payload,
+            };
+            this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
+        }
     }
 
     _handleChatChannelMsg(msg)
