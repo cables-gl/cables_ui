@@ -16,11 +16,11 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     setupPaco()
     {
-        if (!this._paco && gui.chat.getNumClients() > 1)
-        {
-            this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
-            gui.patchConnection.connectors.push(this._paco);
-        }
+        // if (!this._paco && gui.chat.getNumClients() > 1)
+        // {
+        //     this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
+        //     gui.patchConnection.connectors.push(this._paco);
+        // }
     }
 
     _init()
