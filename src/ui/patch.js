@@ -47,7 +47,7 @@ CABLES.UI.Patch = function(_gui) {
     this._viewBox=null;
     this.currentPatchBounds=null;
     // var zoom=null;
-    
+
     this._oldOpParamsId=null;
 
     this._uiAttrFpsLast=0;
@@ -59,7 +59,7 @@ CABLES.UI.Patch = function(_gui) {
         function(name,data)
         {
             var lastTab=CABLES.UI.userSettings.get('editortab');
-            
+
             if(data && data.opid && data.portname) this.openParamEditor(data.opid,data.portname,
                 function()
                 {
@@ -124,7 +124,7 @@ CABLES.UI.Patch = function(_gui) {
             var str = e.clipboardData.getData('text/plain');
             e.preventDefault();
 
-            
+
             str=str.replace("```",'');
             str=str.replace("```",'');
 
@@ -262,19 +262,19 @@ CABLES.UI.Patch = function(_gui) {
                                     }
                                     json.ops[i].uiAttribs.translate.x = x;
                                     json.ops[i].uiAttribs.translate.y = y;
-                                    
+
                                 }
                             }
                         }
 
                         CABLES.UI.notify('Pasted ' + json.ops.length + ' ops');
                         self.setSelectedOp(null);
-                        
+
 
                         gui.patch().scene.deSerialize(json, false);
 
-                        for(var i=0;i<json.ops.length;i++) 
-                        {                            
+                        for(var i=0;i<json.ops.length;i++)
+                        {
                             var uiop=self.addSelectedOpById(json.ops[i].id);
 
                             uiop.setSelected(false);
@@ -416,7 +416,7 @@ CABLES.UI.Patch = function(_gui) {
                                 patchOp,
                                 patchOp.dyn.name
                             );
-                            
+
                             found=patchOp.addSubLink(theOp.portsIn[j], otherPort);
                         }
                     }
@@ -456,7 +456,7 @@ CABLES.UI.Patch = function(_gui) {
         if(xd<0)return 0-d;
         return d;
     }
-    
+
     this.cursorNavigateHor=function(dir)
     {
         if(selectedOps.length==0)return;
@@ -483,7 +483,7 @@ CABLES.UI.Patch = function(_gui) {
                 this.ops[i].getPosY()
 
             );
-            
+
             if(selectedOps[0].getPosX()==this.ops[i].getPosX())continue;
 
             if(dir==0 && dist<0 || dir==1 && dist>0)
@@ -509,7 +509,7 @@ CABLES.UI.Patch = function(_gui) {
     this.cursorNavigate=function(dir)
     {
         if(selectedOps.length==0)return;
-        
+
         var ports=selectedOps[0].op.portsIn;
         if(dir==0)ports=selectedOps[0].op.portsOut;
 
@@ -520,7 +520,7 @@ CABLES.UI.Patch = function(_gui) {
                 var otherPort=ports[i].links[0].getOtherPort(ports[i]);
                 this.setSelectedOpById(otherPort.parent.id);
                 self._viewBox.centerIfNotVisible(selectedOps[0]);
-    
+
                 break;
             }
         }
@@ -621,10 +621,10 @@ CABLES.UI.Patch = function(_gui) {
     gui.keys.key("j","Navigate op history back","down","patch",{"shiftKey":true}, (e) => { gui.opHistory.back(); });
     gui.keys.key("k","Navigate op history forward","down","patch",{"shiftKey":true}, (e) => { gui.opHistory.forward(); });
 
-    
+
 
     gui.keys.key(["Delete","Backspace"],"Delete selected ops","down","patch",{}, (e) =>
-    { 
+    {
         self.deleteSelectedOps();
         if (e.stopPropagation) e.stopPropagation();
         if (e.preventDefault) e.preventDefault();
@@ -698,7 +698,7 @@ CABLES.UI.Patch = function(_gui) {
 
     /**
      * Saves a patch to a file, overwrites the file it exists
-     * 
+     *
      * @param {object} patchData The data-object to be saved
      * @param string} path The file-path to store the patch, e.g. '/Users/ulf/myPatch.cables'
      */
@@ -717,14 +717,14 @@ CABLES.UI.Patch = function(_gui) {
                 CABLES.UI.notify('patch saved');
                 gui.jobs().finish('projectsave');
                 gui.setStateSaved();
-            }); 
+            });
         }
     }
 
 
     /**
      * Extracts the postfix-filename from a full filename
-     * 
+     *
      * @param {string} filename e.g. '/Users/Ulf/foo.cables'
      * @returns {string} filename prefix, e.g. 'foo'
      */
@@ -742,11 +742,11 @@ CABLES.UI.Patch = function(_gui) {
         if(window.process && window.process.versions['electron'])
         {
             var electron = require('electron');
-            var remote = electron.remote; 
+            var remote = electron.remote;
             var dialog = remote.dialog;
 
             var data = gui.patch().scene.serialize(true);
-            
+
             data.ui = {
                 "viewBox": {},
                 "timeLineLength": gui.timeLine().getTimeLineLength()
@@ -786,7 +786,7 @@ CABLES.UI.Patch = function(_gui) {
             gui.scene().name,
             function(name)
             {
-                CABLESUILOADER.talkerAPI.send("newPatch",{"name":name}, 
+                CABLESUILOADER.talkerAPI.send("newPatch",{"name":name},
                     function(err,d)
                     {
                         gui.scene().settings=gui.scene().settings||{};
@@ -879,7 +879,7 @@ CABLES.UI.Patch = function(_gui) {
                     if(cb)cb(null);
                 }
                 gui.jobs().finish('checkupdated');
-                
+
             }.bind(this),function(){/*ignore errors*/}
         );
     };
@@ -895,7 +895,7 @@ CABLES.UI.Patch = function(_gui) {
             function(err)
             {
                 if(!err)this._saveCurrentProject(cb,_id,_name);
-                
+
             }.bind(this)
         );
     }
@@ -903,16 +903,16 @@ CABLES.UI.Patch = function(_gui) {
     this._saveCurrentProject = function(cb, _id, _name)
     {
         this._savedPatchCallback=cb;
-        
+
         for (var i = 0; i < this.ops.length; i++) {
             this.ops[i].removeDeadLinks();
             if (this.ops[i].op.uiAttribs.error) delete this.ops[i].op.uiAttribs.error;
             if (this.ops[i].op.uiAttribs.warning) delete this.ops[i].op.uiAttribs.warning;
         }
-        
+
         gui.jobs().start({ id: 'projectsave', title: 'saving project',indicator:'canvas' });
-        
-        
+
+
 
         var id = currentProject._id;
         var name = currentProject.name;
@@ -938,9 +938,9 @@ CABLES.UI.Patch = function(_gui) {
         if(window.process && window.process.versions['electron']) {
             var electron = require('electron');
             var ipcRenderer = electron.ipcRenderer;
-            var remote = electron.remote; 
+            var remote = electron.remote;
             var dialog = remote.dialog;
-            
+
             console.log('gui.patch().filename before check: ', gui.patch().filename);
             // patch has been saved before, overwrite the patch
             if(gui.patch().filename) {
@@ -980,7 +980,7 @@ CABLES.UI.Patch = function(_gui) {
                     "name":name,
                     "namespace":currentProject.namespace,
                     "data":data,
-                },   
+                },
                 function(err,r)
                 {
                     if(err)
@@ -989,11 +989,11 @@ CABLES.UI.Patch = function(_gui) {
                     }
 
                     gui.jobs().finish('projectsave');
-            
+
                     gui.setStateSaved();
                     if(this._savedPatchCallback) this._savedPatchCallback();
                     this._savedPatchCallback=null;
-                    
+
                     if(!r || !r.success)
                     {
                         var msg="no response";
@@ -1003,22 +1003,22 @@ CABLES.UI.Patch = function(_gui) {
                         return;
                     }
                     else CABLES.UI.notify('Patch saved');
-                    
+
                     self._serverDate=r.updated;
-                    
+
                     const thePatch=gui.patch().scene;
                     const cgl=thePatch.cgl;
-            
+
                     const doSaveScreenshot=gui.patch().scene.isPlaying();
                     var w = $('#glcanvas').attr('width');
                     var h = $('#glcanvas').attr('height');
-            
+
                     if(doSaveScreenshot)
                     {
                         $('#glcanvas').attr('width', 640);
                         $('#glcanvas').attr('height', 360);
                     }
-            
+
                     if(doSaveScreenshot)
                     {
                         var screenshotTimeout = setTimeout(function() {
@@ -1026,24 +1026,24 @@ CABLES.UI.Patch = function(_gui) {
             //                             gui.patch().scene.resume();
                             cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
                             thePatch.resume();
-                            
+
                         }, 300);
-            
+
                         thePatch.pause();
                         cgl.setSize(640,360);
                         thePatch.renderOneFrame();
                         thePatch.renderOneFrame();
                         gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
-            
+
                         cgl.screenShot(function(screenBlob)
                         {
                             clearTimeout(screenshotTimeout);
-            
+
                             cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
                             thePatch.resume();
-            
+
                             var reader = new FileReader();
-            
+
                             reader.onload = function(event)
                             {
                                 CABLESUILOADER.talkerAPI.send(
@@ -1066,13 +1066,13 @@ CABLES.UI.Patch = function(_gui) {
                             reader.readAsDataURL(screenBlob);
                         });
                     }
-            
+
                 }.bind(this)
-                
-                
-                
-                
-                
+
+
+
+
+
                 );
         } catch (e) {
             console.log(e);
@@ -1081,7 +1081,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
 
-    
+
 
 
 
@@ -1101,7 +1101,7 @@ CABLES.UI.Patch = function(_gui) {
 
             // CABLES.UI.fileSelect.load();
             // gui.showFileManager();
-    
+
             $('.viewProjectLink').attr('href', CABLES.sandbox.getCablesUrl()+'/p/' + proj._id);
         }
         $('#meta_content_files').hover(function(e) {
@@ -1121,7 +1121,7 @@ CABLES.UI.Patch = function(_gui) {
     }
 
     this.centerViewBoxOps = function() {
-        
+
         if(selectedOps.length>0) this._viewBox.centerSelectedOps();
         else this._viewBox.centerAllOps();
     };
@@ -1211,7 +1211,7 @@ CABLES.UI.Patch = function(_gui) {
         if (rubberBandRect) rubberBandRect.hide();
     }
 
-    
+
     function setStatusSelectedOps() {
         var html = CABLES.UI.getHandleBarHtml(
             'params_ops', {
@@ -1257,7 +1257,7 @@ CABLES.UI.Patch = function(_gui) {
 
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed && !e.altKey && !e.metaKey) {
             gui.setTransformGizmo(null);
-            
+
             if(!mouseRubberBandStartPos && !e.shiftKey) gui.patch().setSelectedOp(null);
             if(!mouseRubberBandStartPos) mouseRubberBandStartPos = gui.patch().getCanvasCoordsMouse(e); //e.offsetX,e.offsetY);
 
@@ -1370,7 +1370,7 @@ CABLES.UI.Patch = function(_gui) {
             }
 
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
-            
+
         }
 
         self.updateViewBox();
@@ -1412,7 +1412,7 @@ CABLES.UI.Patch = function(_gui) {
         this._elPatchSvg.oncontextmenu =
         this._elPatch.oncontextmenu = function(e){ e.preventDefault(); }
         document.addEventListener("contextmenu", function(e){ e.preventDefault(); }, false);
-        
+
         this._viewBox.bindWheel(this._elPatchSvg);
 
         this.background = this.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
@@ -1511,7 +1511,7 @@ CABLES.UI.Patch = function(_gui) {
         this._elPatchSvg.bind("mouseleave", function(event) { gui.setCursor(); }.bind(this));
 
         this._elPatchSvg.bind("touchstart", (e) =>
-        { 
+        {
             e = mouseEvent(e);
             this.lastMouseMoveEvent = null;
         });
@@ -1531,7 +1531,7 @@ CABLES.UI.Patch = function(_gui) {
             e.preventDefault();
         });
 
-            
+
         this._elPatchSvg.bind("mousemove", function(e)
         {
             e = mouseEvent(e);
@@ -1545,7 +1545,7 @@ CABLES.UI.Patch = function(_gui) {
             }
 
             // panning
-            if (self.lastMouseMoveEvent && 
+            if (self.lastMouseMoveEvent &&
                 (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) )) { // && !CABLES.UI.MOUSEDRAGGINGPORT
                 gui.setCursor("grab");
                 this._elPatch.focus();
@@ -1565,7 +1565,7 @@ CABLES.UI.Patch = function(_gui) {
         this.timeLine = new CABLES.TL.UI.TimeLineUI();
 
         gui.setLayout();
-        
+
     };
 
     function doLink() {}
@@ -1618,7 +1618,7 @@ CABLES.UI.Patch = function(_gui) {
                 "objName": op.objName
             });
         }
-        
+
 
         op.onAddPort = function(p) {
             uiOp.addPort(p.direction, p);
@@ -1696,7 +1696,7 @@ CABLES.UI.Patch = function(_gui) {
                             port1.links[il].remove();
                     }
                 }
-    
+
                 gui.scene().link(
                     op,
                     foundPort1.getName(),
@@ -1741,9 +1741,9 @@ CABLES.UI.Patch = function(_gui) {
         CABLES.UI.OPSELECT.newOpPos = { x: 0, y: 0 };
         CABLES.UI.OPSELECT.linkNewOpToSuggestedPort = null;
         CABLES.UI.OPSELECT.linkNewOpToPort = null;
-        
+
         uiOp.setPos();
-        
+
         // var pos = self.findNonCollidingPosition(uiOp.getPosX(), uiOp.getPosY(), uiOp.op.id,dir);
 
         uiOp.setPos( uiOp.getPosX(), uiOp.getPosY() );
@@ -1780,7 +1780,7 @@ CABLES.UI.Patch = function(_gui) {
                 uiOp.setPos();
                 gui.patch().getViewBox().update();
             }, 30);
-    
+
         }
 
 
@@ -1875,7 +1875,7 @@ CABLES.UI.Patch = function(_gui) {
             {
                 for (var j=0;j<self.ops[i].portsIn.length;j++)
                 {
-                    if (this.ops[i].portsIn[j].thePort == p1) 
+                    if (this.ops[i].portsIn[j].thePort == p1)
                     {
                         uiPort1 = this.ops[i].portsIn[j];
                         break;
@@ -1941,7 +1941,7 @@ CABLES.UI.Patch = function(_gui) {
                 CABLES.undo.add({
                     undo: function() {
                         var newop=gui.scene().addOp(opname, op.uiAttribs, opid);
-                        
+
                         for(var i in oldValues) if(newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
                     },
                     redo: function() {
@@ -2021,7 +2021,7 @@ CABLES.UI.Patch = function(_gui) {
     {
         return op.uiAttribs.subPatch==currentSubPatch;
     }
-            
+
     this.setCurrentSubPatch = function(which) {
         if (currentSubPatch == which) return;
 
@@ -2032,28 +2032,28 @@ CABLES.UI.Patch = function(_gui) {
         setTimeout(function()
         {
             subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
-    
+
             for (var i=0;i<self.ops.length;i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
-    
+
             if (which === 0) $('#subpatch_nav').hide();
                 else $('#subpatch_nav').show();
-    
+
             currentSubPatch = which;
             self.updateSubPatches();
-    
+
             if (subPatchViewBoxes[which]) {
                 // viewBox = subPatchViewBoxes[which];
                 this._viewBox.deSerialize(subPatchViewBoxes[which]);
                 this.updateViewBox();
             }
-    
+
             this._elPatch.focus();
             self.updateSubPatchBreadCrumb();
-    
+
             gui.setWorking(false,'patch');
 
             this.currentPatchBounds = this.getSubPatchBounds();
-            
+
         }.bind(this),10);
     };
 
@@ -2150,8 +2150,8 @@ CABLES.UI.Patch = function(_gui) {
                 if(testOp.op.objName.indexOf("Ui.Comment")!=-1) continue;
 
                 if (!testOp.op.deleted &&
-                    (uiOp.op.objName.indexOf("Comment")==-1) && 
-                    uiOp.op.id != testOp.op.id && 
+                    (uiOp.op.objName.indexOf("Comment")==-1) &&
+                    uiOp.op.id != testOp.op.id &&
                     uiOp.getSubPatch() == testOp.getSubPatch()) {
                     // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
                     // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
@@ -2201,16 +2201,16 @@ CABLES.UI.Patch = function(_gui) {
     this.checkCollisionsEdge = function()
     {
         var perf = CABLES.uiperf.start('checkCollisionsEdge');
-        
+
         for(var i=0;i<this.ops.length;i++)
         {
             for(var j=0;j<this.ops.length;j++)
             {
                 if(i==j)continue;
-                
+
                 var a=this.ops[i].op;
                 var b=this.ops[j].op;
-                
+
                 if(
                     a.uiAttribs.translate.x==b.uiAttribs.translate.x &&
                     a.uiAttribs.translate.y==b.uiAttribs.translate.y
@@ -2222,14 +2222,14 @@ CABLES.UI.Patch = function(_gui) {
                             a.uiAttribs.translate.y+50
                             );
                     }
-                        
+
             }
-                
+
         }
         perf.finish();
     }
-            
-            
+
+
 
     this.testCollisionOpPosition = function(x, y, opid) {
         // for(var i in this.ops)
@@ -2315,7 +2315,7 @@ CABLES.UI.Patch = function(_gui) {
             var uiop = selectedOps[j];
             var startPort = uiop.op.portsIn[0];
             var otherport=null;
-            
+
             if (dir > 0)
                 startPort = uiop.op.portsOut[0];
 
@@ -2365,7 +2365,7 @@ CABLES.UI.Patch = function(_gui) {
             if(ops[i].op) ops[i].setPos(ops[i].op.uiAttribs.translate.x,ops[i].op.uiAttribs.translate.y);
             else
             {
-                var uiop=gui.patch().getUiOp(ops[i]);   
+                var uiop=gui.patch().getUiOp(ops[i]);
                 if(!uiop) console.log('NO UIOP',ops[i],uiop);
                 else uiop.setPos(ops[i].uiAttribs.translate.x,ops[i].uiAttribs.translate.y);
             }
@@ -2586,7 +2586,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
 
-    
+
 
     this.updateCurrentOpParams = function() {
         if (currentOp) self.showOpParams(currentOp.op);
@@ -2626,7 +2626,7 @@ CABLES.UI.Patch = function(_gui) {
             delayedShowOpParams = setTimeout(function() {
                 self._showOpParams(op);
             }, 10);
-                
+
         }
     };
 
@@ -2679,12 +2679,12 @@ CABLES.UI.Patch = function(_gui) {
                             }
                 });
         }
-        else 
+        else
         {
             gui.mainTabs.activateTabByName(name);
         }
 
-            
+
 
         if(cb)cb();
         else gui.maintabPanel.show();
@@ -2750,7 +2750,7 @@ CABLES.UI.Patch = function(_gui) {
         if (!event) return;
         var opname = '';
 
-        if (filename.endsWith(".png") || filename.endsWith(".jpg")) opname = "Ops.Gl.Texture_v2";
+        if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg")) opname = "Ops.Gl.Texture_v2";
         else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac"))   opname = "Ops.WebAudio.AudioPlayer";
         else if (filename.endsWith(".3d.json")) opname = "Ops.Json3d.Mesh3d";
         else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) opname = "Ops.Gl.Textures.VideoTexture";
@@ -2860,7 +2860,7 @@ CABLES.UI.Patch = function(_gui) {
         // op.setEnabled(!op.op.enabled);
 
         // if (!op.op.enabled) op.op.unLinkTemporary();
-        // else 
+        // else
         // {
         //     op.op.undoUnLinkTemporary();
         //     lastTempOP=null;
