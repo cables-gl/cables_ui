@@ -34,9 +34,10 @@ CABLES.UI.Chat.prototype.getUserInfoHtml = function ()
     var numClients = this.getNumClients();
 
     var html = CABLES.UI.getHandleBarHtml("socketinfo", {
-        numClients,
-        users: this._users,
-        clients: this._clients,
+        "numClients":numClients,
+        "users": this._users,
+        "clients": this._clients,
+        "connected": this._socket.isConnected()
     });
     return html;
 };
