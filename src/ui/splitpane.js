@@ -11,6 +11,7 @@ $( document ).ready(function()
         CABLES.SPLITPANE.bound=true;
         function mm(e)
         {
+            gui.pauseProfiling();
             e.preventDefault();
             gui.rendererWidth=(window.innerWidth - e.clientX)*(1/gui.patch().scene.cgl.canvasScale);
             gui.setLayout();
@@ -22,12 +23,14 @@ $( document ).ready(function()
     
     document.getElementById('splitterMaintabs').addEventListener('mouseup',function (e)
     {
+        
         $( "iframe" ).each(function() { $('iframe').css("pointer-events","initial"); });
     });
 
 
     document.getElementById('splitterMaintabs').addEventListener("mousedown",function (e)
     {
+        gui.pauseProfiling();
         e.preventDefault();
         CABLES.SPLITPANE.bound=true;
         function mm(e)

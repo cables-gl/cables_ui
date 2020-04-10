@@ -1240,6 +1240,9 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     function rubberBandMove(e) {
+
+        gui.pauseProfiling();
+
         if(CABLES.SPLITPANE.bound)return;
 
         if(e.altKey || e.metaKey)
@@ -1429,6 +1432,8 @@ CABLES.UI.Patch = function(_gui) {
 
         this.background.node.onmousedown = function(ev)
         {
+            gui.pauseProfiling();
+            
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             this._elPatch.focus();
             CABLES.UI.OPSELECT.linkNewOpToPort=null;
@@ -1547,6 +1552,9 @@ CABLES.UI.Patch = function(_gui) {
             // panning
             if (self.lastMouseMoveEvent &&
                 (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed) )) { // && !CABLES.UI.MOUSEDRAGGINGPORT
+
+                gui.pauseProfiling();
+
                 gui.setCursor("grab");
                 this._elPatch.focus();
                 const lastMouseCoord=gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent)

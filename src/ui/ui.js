@@ -204,6 +204,7 @@ CABLES.UI.GUI = function(cfg)
     // };
 
     this.setLayout = function() {
+        gui.pauseProfiling();
         var perf = CABLES.uiperf.start('gui.setlayout');
         this._elCanvasIconbar=this._elCanvasIconbar||$('#canvasicons');
         this._elAceEditor = this._elAceEditor || $('#ace_editors');
@@ -1662,6 +1663,20 @@ CABLES.UI.GUI = function(cfg)
             gui.patchConnection.send(CABLES.PACO_CLEAR);
         };
     };
+
+
+    this._timeoutPauseProfiler=null;
+
+    this.pauseProfiling=function()
+    {
+        CGL.profileData.pause=true;
+
+        clearTimeout(this._timeoutPauseProfiler);
+        this._timeoutPauseProfiler=setTimeout(function()
+        {
+            CGL.profileData.pause=false;
+        },200);
+    }
 
     this.updateCanvasIconBar=function()
     {
