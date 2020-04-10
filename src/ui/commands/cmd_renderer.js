@@ -56,20 +56,42 @@ CABLES.CMD.RENDERER.resetSize = function()
 
 CABLES.CMD.RENDERER.aspect = function(a)
 {
+    if(!a)
+    {
+        CABLES.UI.MODAL.prompt(
+            "Change Aspect Ratio of Renderer ",
+            "Enter an aspect ratio, e.g.: 16:9 or 0.22",
+            gui.patch().scene.cgl.canvasScale,
+            function(r)
+            {
+                if(r.indexOf(":"))
+                {
+                    var parts=r.split(":");
+                    var s=parseInt(parts[0])/parseInt(parts[1]);
+                    CABLES.CMD.RENDERER.aspect(s);
+                }
+                else
+                {
+                    var s=parseFloat(r);
+                    CABLES.CMD.RENDERER.aspect(s);
+                }
+            });
+        return;
+    }
     var nh= gui.rendererWidth*1/a;
 
-    if(nh<window.innerHeight*0.75) 
+    if(nh<window.innerHeight*0.6) 
     {
         gui.rendererHeight=nh;
     }
     else
     {
+        gui.rendererHeight=window.innerHeight*0.6;
         gui.rendererWidth=gui.rendererHeight*a;
     }
 
     gui.setLayout();
     gui.updateCanvasIconBar();
-
 };
 
 CABLES.CMD.RENDERER.scaleCanvas = function()
@@ -84,7 +106,6 @@ CABLES.CMD.RENDERER.scaleCanvas = function()
             gui.patch().scene.cgl.canvasScale = s;
             gui.setLayout();
         });
-
 };
 
 CABLES.CMD.RENDERER.changeSize = function()
@@ -126,6 +147,11 @@ CABLES.CMD.commands.push({
         category: "renderer",
         func: CABLES.CMD.RENDERER.resetSize,
         icon: 'maximize'
+    }, {
+        cmd: "set canvas aspect ratio",
+        category: "renderer",
+        func: CABLES.CMD.RENDERER.aspect,
+        icon: 'monitor'
     }, {
         cmd: "animation renderer",
         category: "renderer",

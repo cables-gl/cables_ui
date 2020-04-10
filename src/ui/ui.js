@@ -891,12 +891,12 @@ CABLES.UI.GUI = function(cfg)
                         func:function(){CABLES.CMD.RENDERER.aspect(16/10);}
                     },
                     {
-                        title:'5:4',
-                        func:function(){CABLES.CMD.RENDERER.aspect(5/4);}
-                    },
-                    {
                         title:'4:3',
                         func:function(){CABLES.CMD.RENDERER.aspect(4/3);}
+                    },
+                    {
+                        title:'5:4',
+                        func:function(){CABLES.CMD.RENDERER.aspect(5/4);}
                     },
                     {
                         title:'1:1',
@@ -905,6 +905,10 @@ CABLES.UI.GUI = function(cfg)
                     {
                         title:'1:2',
                         func:function(){CABLES.CMD.RENDERER.aspect(1/2);}
+                    },
+                    {
+                        title:'9:16',
+                        func:function(){CABLES.CMD.RENDERER.aspect(9/16);}
                     }
                 ]},ele);
     }
