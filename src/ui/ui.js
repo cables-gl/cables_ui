@@ -869,6 +869,46 @@ CABLES.UI.GUI = function(cfg)
                 ]},ele);
     }
 
+    this.rendererAspectMenu=function(ele)
+    {
+        CABLES.contextMenu.show(
+            {items:
+                [
+                    {
+                        title:'32:9',
+                        func:function(){CABLES.CMD.RENDERER.aspect(32/9);}
+                    },
+                    {
+                        title:'21:9',
+                        func:function(){CABLES.CMD.RENDERER.aspect(21/9);}
+                    },
+                    {
+                        title:'16:9',
+                        func:function(){CABLES.CMD.RENDERER.aspect(16/9);}
+                    },
+                    {
+                        title:'16:10',
+                        func:function(){CABLES.CMD.RENDERER.aspect(16/10);}
+                    },
+                    {
+                        title:'5:4',
+                        func:function(){CABLES.CMD.RENDERER.aspect(5/4);}
+                    },
+                    {
+                        title:'4:3',
+                        func:function(){CABLES.CMD.RENDERER.aspect(4/3);}
+                    },
+                    {
+                        title:'1:1',
+                        func:function(){CABLES.CMD.RENDERER.aspect(1);}
+                    },
+                    {
+                        title:'1:2',
+                        func:function(){CABLES.CMD.RENDERER.aspect(1/2);}
+                    }
+                ]},ele);
+    }
+
     this.showConverter = function(converterId, projectId, fileId, converterName)
         {
             var html = CABLES.UI.getHandleBarHtml(
@@ -1691,7 +1731,8 @@ CABLES.UI.GUI = function(cfg)
 
     this.getCanvasSizeString=function (cgl)
     {
-        var sizeStr='Size: '+cgl.canvasWidth+'x'+cgl.canvasHeight;
+        var sizeStr='<a class="button-small" onclick="CABLES.CMD.RENDERER.changeSize()" > Size '+cgl.canvasWidth+'x'+cgl.canvasHeight+'</a>';
+        sizeStr+='<a class="button-small" onclick="gui.rendererAspectMenu(this)">Aspect</a>';
         if(cgl.canvasScale!=1)sizeStr+=' Scale '+cgl.canvasScale+' ';
         if(cgl.pixelDensity!=1)sizeStr+=' ('+(cgl.canvasWidth/cgl.pixelDensity)+'x'+(cgl.canvasHeight/cgl.pixelDensity)+'x'+cgl.pixelDensity+')';
 
@@ -1868,7 +1909,7 @@ CABLES.UI.GUI.prototype.initCoreListeners=function()
     });
 
     this._corePatch.on("performance", function(perf){
-        $("#canvasInfoFPS").html("| fps: " + perf.fps + " | ms: " + perf.ms );
+        $("#canvasInfoFPS").html(" " + perf.fps + " FPS | " + perf.ms +" MS");
     });
 }
 

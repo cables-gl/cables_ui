@@ -54,6 +54,24 @@ CABLES.CMD.RENDERER.resetSize = function()
 
 };
 
+CABLES.CMD.RENDERER.aspect = function(a)
+{
+    var nh= gui.rendererWidth*1/a;
+
+    if(nh<window.innerHeight*0.75) 
+    {
+        gui.rendererHeight=nh;
+    }
+    else
+    {
+        gui.rendererWidth=gui.rendererHeight*a;
+    }
+
+    gui.setLayout();
+    gui.updateCanvasIconBar();
+
+};
+
 CABLES.CMD.RENDERER.scaleCanvas = function()
 {
     CABLES.UI.MODAL.prompt(

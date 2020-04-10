@@ -167,6 +167,7 @@ input[type="text"]
 
 .button-small
 {
+    user-select: none;
     display:inline-block !important;
     background-size: 50%;
     padding: 10px;
