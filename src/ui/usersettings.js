@@ -20,6 +20,9 @@ CABLES.UI.UserSettings.prototype.init = function ()
     if (this.get("bgpreview") === null) this.set("bgpreview", true);
     if (this.get("showTipps") === null) this.set("showTipps", true);
 
+    if (this.get("toggleHelperCurrent") === null) this.set("toggleHelperCurrent", true);
+    if (this.get("toggleHelperCurrentTransforms") === null) this.set("toggleHelperCurrentTransforms", true);
+
     this.updateNavBar();
 };
 
@@ -33,7 +36,7 @@ CABLES.UI.UserSettings.prototype.load = function (settings)
         // console.log('set ',i,settings[i]);
     }
     this.updateNavBar();
-    CABLES.CMD.UI.updateCanvasIcons();
+    // CABLES.CMD.UI.updateCanvasIcons();
 };
 
 CABLES.UI.UserSettings.prototype.setLS = function (key, value)

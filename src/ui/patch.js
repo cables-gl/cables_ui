@@ -74,13 +74,16 @@ CABLES.UI.Patch = function(_gui) {
 
     this.isCurrentOp=function(op)
     {
-        if(!currentOp)return false;
-        return currentOp.op==op;
+        if(op.op)return gui.opParams.isCurrentOp(op.op); // if is uiop
+        return gui.opParams.isCurrentOp(op);
+        // if(!currentOp)return false;
+        // return currentOp.op==op;
     };
     this.isCurrentOpId=function(opid)
     {
-        if(!currentOp)return false;
-        return currentOp.op.id==opid;
+        return gui.opParams.isCurrentOpId(opid);
+        // if(!currentOp)return false;
+        // return currentOp.op.id==opid;
     };
 
     this.getLargestPort = function() {

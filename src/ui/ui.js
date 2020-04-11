@@ -853,6 +853,54 @@ CABLES.UI.GUI = function(cfg)
             });
     };
 
+    this.helperContextMenu=function(ele)
+    {
+        console.log("CABLES.UI.showCanvasTransforms",CABLES.UI.showCanvasTransforms);
+
+        var iconTransforms='fa fa-check fa-hide';
+        if(CABLES.UI.showCanvasTransforms) iconTransforms='fa fa-check';
+
+        var iconShowAllHelpers='fa fa-check fa-hide';
+        if(CABLES.UI.userSettings.get("helperMode")) iconShowAllHelpers='fa fa-check';
+
+
+        var iconShowCurrentOpHelper='fa fa-check fa-hide';
+        if(CABLES.UI.userSettings.get("helperModeCurrentOp")) iconShowCurrentOpHelper='fa fa-check';
+
+        var iconCurrentOpTransform='fa fa-check fa-hide';
+        if(CABLES.UI.userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform='fa fa-check';
+
+        
+
+        CABLES.contextMenu.show(
+            {
+                "refresh":gui.helperContextMenu,
+                "items":
+                [
+                    {
+                        "title":'show selected op helpger',
+                        "func":CABLES.CMD.UI.toggleHelperCurrent,
+                        "iconClass":iconShowCurrentOpHelper,
+                    },
+                    {
+                        "title":'show all helper',
+                        "func":CABLES.CMD.UI.toggleHelper,
+                        "iconClass":iconShowAllHelpers,
+                    },
+                    {
+                        "title":'show selected op transform gizmo',
+                        "func":CABLES.CMD.UI.toggleHelperCurrentTransform,
+                        "iconClass":iconCurrentOpTransform,
+                    },
+                    {
+                        "title":'show all transforms',
+                        "func":CABLES.CMD.UI.toggleTransformOverlay,
+                        "iconClass":iconTransforms,
+                    }
+                ]},ele);
+
+    };
+
     this.rendererContextMenu=function(ele)
     {
         CABLES.contextMenu.show(
@@ -1573,6 +1621,12 @@ CABLES.UI.GUI = function(cfg)
     this.setTransformGizmo=function(params)
     {
         if(!this._gizmo)this._gizmo=new CABLES.Gizmo(this.scene().cgl);
+        if(!CABLES.UI.userSettings.get("toggleHelperCurrentTransforms"))
+        {
+            this._gizmo.set(null);
+            return;
+        }
+
         this._gizmo.set(params);
     };
 

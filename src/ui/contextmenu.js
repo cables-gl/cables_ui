@@ -61,11 +61,26 @@ CABLES.ContextMenu.prototype.show=function(obj,parent)
                 item.appendChild(icon);
             }
 
-
             this._element.appendChild(item);
+
+            var ctx=this;
             item.addEventListener("click", function()
             {
-                CABLES.contextMenu.close();
+                if(obj.refresh)
+                {
+                    
+                    setTimeout(function()
+                    {
+                        CABLES.contextMenu.close();
+                        obj.refresh(parent);
+                    },
+                        100);
+
+                    console.log("refreshing...");
+                    // ctx.show(obj,parent);
+                    // return;
+                }
+                
                 setTimeout(this.func.bind(this),20);
             }.bind(obj.items[i]));
         }

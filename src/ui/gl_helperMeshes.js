@@ -147,9 +147,9 @@ CABLES.GL_MARKER.drawSphere=function(op,size)
     mat4.scale(cgl.mvMatrix,cgl.mvMatrix, CABLES.GL_MARKER.SPHERE.vScale);
 
     var shader=CABLES.GL_MARKER.getDefaultShader(cgl);
+
     if(gui.patch().isCurrentOp(op))shader=CABLES.GL_MARKER.getSelectedShader(cgl);
     shader.glPrimitive=cgl.gl.LINE_STRIP;
-
     CABLES.GL_MARKER.SPHERE.mesh.render(shader);
     CABLES.GL_MARKER.SPHERE.mesh2.render(shader);
     CABLES.GL_MARKER.SPHERE.mesh3.render(shader);
@@ -480,15 +480,25 @@ CABLES.GL_MARKER.drawCube=function(op,sizeX,sizeY,sizeZ)
 
 CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
 {
+
+
     CABLES.UI.renderHelper = CABLES.UI.userSettings.get("helperMode");
-    if (!CABLES.UI.renderHelper) return;
+
+    CABLES.UI.renderHelperCurrent = CABLES.UI.userSettings.get("helperModeCurrentOp");
+
+    
+    if(!CABLES.UI.renderHelperCurrent && !CABLES.UI.renderHelper)return;
+
+    // if (!CABLES.UI.renderHelper) return;
     if (CABLES.GL_MARKER.count == 0) return;
     CABLES.GL_MARKER.count = 0;
+
 
     if (!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
     {
         return;
     }
+
 
     var currentViewPort = cgl.getViewPort();
     var w = currentViewPort[2];

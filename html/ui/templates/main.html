@@ -42,8 +42,11 @@
     <a class="tt info icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></a>
     <a class="tt info icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound" data-infotext="toggle_sound"></a>
     
-    <a class="tt icon icon-cube iconhover" id="canvasIconHelper" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper" data-infotext="toggle_helper"></a>
-    <a class="tt icon icon-gizmo iconhover" id="canvasIconTransforms" onclick="CABLES.CMD.UI.toggleTransformOverlay();" data-tt="toggle helper" data-infotext="toggle_helper"></a>
+
+    <a class="tt icon icon-gizmo iconhover" onclick="gui.helperContextMenu(this);" data-tt="toggle helper" data-infotext="toggle_helper"></a>
+
+    <!-- <a class="tt icon icon-cube iconhover" id="canvasIconHelper" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper" data-infotext="toggle_helper"></a> -->
+    <!-- <a class="tt icon icon-gizmo iconhover" id="canvasIconTransforms" onclick="CABLES.CMD.UI.toggleTransformOverlay();" data-tt="toggle helper" data-infotext="toggle_helper"></a> -->
 
     <a class="tt icon icon-triple-dot iconhover" onclick="gui.rendererContextMenu(this)" data-tt="more options"></a>
 

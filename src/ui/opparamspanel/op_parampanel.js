@@ -455,6 +455,16 @@ CABLES.UI.OpParampanel=class extends CABLES.EventTarget
         if (this._currentOp) this._currentOp.setTitle(t);
     };
 
+    isCurrentOp(op)
+    {
+        return this._currentOp==op;
+    }
+
+    isCurrentOpId(opid)
+    {
+        return this._currentOp.id==opid;
+    }
+
     opContextMenu(ele)
     {
         var items=[];
