@@ -376,7 +376,7 @@ CABLES.UI.Port=function(thePort)
                 if(event.which!=3)
                 {
                     event=mouseEvent(event);
-                    if(!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort || !linkingLine)
+                    if(CABLES.UI.selectedStartPort && (!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort || !linkingLine))
                     {
                         var links=self.opUi.getPortLinks(CABLES.UI.selectedStartPort.id);
                         var coords=gui.patch().getCanvasCoordsMouse(event);

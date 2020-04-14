@@ -73,8 +73,7 @@ CABLES.ContextMenu.prototype.show=function(obj,parent)
                     {
                         CABLES.contextMenu.close();
                         obj.refresh(parent);
-                    },
-                        100);
+                    }, 100);
 
                     console.log("refreshing...");
                     // ctx.show(obj,parent);

@@ -130,11 +130,11 @@ CABLES.UI.FindTab.prototype.setSearchInputValue = function (str)
 
 CABLES.UI.FindTab.prototype.searchAfterPatchUpdate = function ()
 {
-    
     clearTimeout(this._findTimeoutId);
     this._findTimeoutId = setTimeout( ()=>
     {
-        this.search(document.getElementById(this._inputId).value,true);
+        const el=document.getElementById(this._inputId);
+        if(el) this.search(el.value,true);
     }, 100);
 }
 

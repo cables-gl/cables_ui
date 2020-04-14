@@ -5,6 +5,8 @@ CABLES.SandboxBrowser = function (cfg)
     CABLES.EventTarget.apply(this);
     this._cfg = cfg;
 
+console.log(cfg);
+
     if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
     else CABLES.UI.userSettings.load({});
 
