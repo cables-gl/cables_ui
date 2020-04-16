@@ -871,7 +871,7 @@ CABLES.UI.GUI = function(cfg)
         var iconCurrentOpTransform='fa fa-check fa-hide';
         if(CABLES.UI.userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform='fa fa-check';
 
-        
+
 
         CABLES.contextMenu.show(
             {
@@ -879,7 +879,7 @@ CABLES.UI.GUI = function(cfg)
                 "items":
                 [
                     {
-                        "title":'show selected op helpger',
+                        "title":'show selected op helper',
                         "func":CABLES.CMD.UI.toggleHelperCurrent,
                         "iconClass":iconShowCurrentOpHelper,
                     },
