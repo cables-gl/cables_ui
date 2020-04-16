@@ -8,10 +8,9 @@ CABLES.GL_MARKER.startFramebuffer = function (cgl)
     if (!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
     {
         // console.log("CREATE FB!");
-        const IS_WEBGL_1 = cgl.glVersion == 1;
         CABLES.GL_MARKER.FB = {};
 
-        if (IS_WEBGL_1)
+        if (cgl.glVersion == 1)
         {
             CABLES.GL_MARKER.FB.fb = new CGL.Framebuffer(cgl, 8, 8, {
                 isFloatingPointTexture: false,
