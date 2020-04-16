@@ -240,7 +240,8 @@ CABLES.UI.GUI = function(cfg) {
 
         var iconBarWidth=iconBarWidth||80;
         var menubarHeight = 30;
-        var optionsWidth = self.rendererWidth / 2;
+        var optionsWidth = Math.max(400,self.rendererWidth / 2);
+
 
         var timelineUiHeight = 40;
         if (self.timeLine().hidden) timelineUiHeight = 0;
