@@ -78,7 +78,7 @@ CABLES.ContextMenu.prototype.show=function(obj,parent)
                     console.log("refreshing...");
                     // ctx.show(obj,parent);
                     // return;
-                }
+                } else CABLES.contextMenu.close();
                 
                 setTimeout(this.func.bind(this),20);
             }.bind(obj.items[i]));
