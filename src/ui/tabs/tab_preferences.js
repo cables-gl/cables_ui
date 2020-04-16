@@ -63,6 +63,7 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("showTipps", CABLES.UI.userSettings.get("showTipps"));
     this.setSwitchValue("showMinimap", CABLES.UI.userSettings.get("showMinimap"));
     this.setSwitchValue("helperMode", CABLES.UI.userSettings.get("helperMode"));
+    this.setSwitchValue("noidlemode", CABLES.UI.userSettings.get("noidlemode"));
 
     this.setInputValue("wheelmultiplier", CABLES.UI.userSettings.get("wheelmultiplier")||1);
 

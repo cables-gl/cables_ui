@@ -2,7 +2,7 @@ CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 
-CABLES.UI.idleTime=90;
+CABLES.UI.idleTime=180;
 
 
 CABLES.UI.idling=false;
@@ -23,6 +23,8 @@ CABLES.UI.startIdleMode=function()
     // console.log("document.hidden:",document.hidden);
     // console.log("CABLES.UI.idleFocus:",CABLES.UI.idleFocus);
     
+    if(CABLES.UI.userSettings.get("noidlemode"))return;
+
     CABLES.UI.MODAL.show('<center><b>cables is paused!</b><br/>click to resume<br/></center>');
 
     gui.patch().stopFlowVis();
