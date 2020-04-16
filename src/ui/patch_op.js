@@ -444,6 +444,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 y:y,
                 text:opui.op.uiAttribs.comment
             });
+
+        opui.setPos();
     }
 
     this.updateComment = function() {
