@@ -28,7 +28,7 @@ CABLES.CMD.DEBUG.glgui=function()
 	// a.setSize(640,360);
 
 	var t=new CABLES.GLGUI.GlGuiTab(gui.mainTabs);
-	
+
 };
 
 
@@ -53,5 +53,5 @@ CABLES.CMD.commands.push(
         icon:'command'
 	}
 
-	
+
 );

@@ -1,49 +1,45 @@
+var CABLES = CABLES || {};
+CABLES.CHANGELOG = {};
 
-var CABLES=CABLES||{};
-CABLES.CHANGELOG={};
-
-CABLES.CHANGELOG.getHtml=function(cb,since)
+CABLES.CHANGELOG.getHtml = function (cb, since)
 {
-    CABLES.api.get('changelog',function(obj)
+    CABLES.api.get("changelog", function (obj)
     {
-        if(since)
+        if (since)
         {
-            for(var i=0;i<obj.items.length;i++)
-                if(obj.items[i].date<since)obj.items.length=i;
+            for (let i = 0; i < obj.items.length; i++) if (obj.items[i].date < since) obj.items.length = i;
 
-            obj.onlyLatest=true;
+            obj.onlyLatest = true;
         }
 
-        var firstTime=false;
+        let firstTime = false;
 
-        if(!CABLES.UI.userSettings.get('changelogLastView'))
+        if (!CABLES.UI.userSettings.get("changelogLastView"))
         {
-            firstTime=true;
-            console.log('first time changelog!');
+            firstTime = true;
+            console.log("first time changelog!");
         }
 
-        CABLES.UI.userSettings.set('changelogLastView',obj.ts);
+        CABLES.UI.userSettings.set("changelogLastView", obj.ts);
 
-        if(obj.items.length===0)
+        if (obj.items.length === 0)
         {
             cb(null);
             return;
         }
 
-        if(firstTime)
+        if (firstTime)
         {
             cb(null);
             return;
         }
         cb();
     });
-
 };
 
-CABLES.CHANGELOG.show=function(since)
+CABLES.CHANGELOG.show = function (since)
 {
-
-    gui.mainTabs.addIframeTab('changelog',CABLES.sandbox.getCablesUrl()+'/changelog',{icon:'book-open',closable:true});
+    gui.mainTabs.addIframeTab("changelog", CABLES.sandbox.getCablesUrl() + "/changelog", { icon: "book-open", closable: true });
 
     // CABLES.CHANGELOG.getHtml(function()
     // {
@@ -52,5 +48,4 @@ CABLES.CHANGELOG.show=function(since)
 
     //     // CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
     // },since);
-
 };

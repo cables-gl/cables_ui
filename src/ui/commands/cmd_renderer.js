@@ -80,7 +80,7 @@ CABLES.CMD.RENDERER.aspect = function(a)
     }
     var nh= gui.rendererWidth*1/a;
 
-    if(nh<window.innerHeight*0.6) 
+    if(nh<window.innerHeight*0.6)
     {
         gui.rendererHeight=nh;
     }

@@ -147,7 +147,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if(this._striked2)this._striked2.remove();
 
 
-        
+
         this._attachedComment = label = background = commentText = null;
     };
 
@@ -280,7 +280,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
 
         gui.patch().prepareMovingOps();
-        
+
         opui.showAddButtons();
 
         if (!e.shiftKey) {
@@ -313,7 +313,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if((e.metaKey || e.altKey) && gui.patch().getSelectedOps().length == 1) {
             return;
         }
-        
+
         // if(self.hoverFitPort) gui.setCursor("check");
 
 
@@ -437,7 +437,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         const y=h/2-0.8;
         const x=w+10;
 
-        if(!this._attachedComment) 
+        if(!this._attachedComment)
         {
             this._attachedComment=gui.patch().getPaper().text(x, y, '...');
             group.push(this._attachedComment);
@@ -575,7 +575,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
 
-    
+
     this.updateErrorIndicator = function()
     {
         if(!gui.patch().isOpCurrentSubpatch(opui.op))
@@ -608,13 +608,13 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                         }
                     }
                 }
-                
+
                 if(isError)
                 {
                     this._errorIndicator.node.classList.add('error-indicator');
                     this._errorIndicator.node.classList.add('tt');
                     this._errorIndicator.node.setAttribute("data-tt", opui.op.uiAttribs.error||errMsg);
-                    
+
                     group.push(this._errorIndicator);
                 }
                 else
@@ -655,7 +655,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     var mouseUp=function(ev) {
         opui.isDragging = false;
         CABLES.UI.DRAGGINGOPS=false;
-        
+
     };
 
     var lastMouseDown=0;
@@ -736,10 +736,10 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         {
             this._striked = gui.patch().getPaper().path( "M0,0 L20,20" );
             this._striked.node.classList.add('op_striked');
-            
+
             this._striked2 = gui.patch().getPaper().path( "M0,0 L20,20" );
             this._striked2.node.classList.add('op_striked');
-            
+
             group.push(this._striked,this._striked2);
         }
 
@@ -749,7 +749,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if(background)bb=background.getBBox();
         var strX=bb.width;
         var strY=bb.height/2+3;
-        
+
         this._striked.attr("path","M"+(strX-5)+","+(strY-5)+" L"+(strX+5)+","+(strY+5) );
         this._striked2.attr("path","M"+(strX+5)+","+(strY-5)+" L"+(strX-5)+","+(strY+5) );
     }
@@ -766,7 +766,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         }
 
 
-        
+
 
         var mmPaper=gui.patch().getViewBox().getMiniMapPaper();
         if (mmPaper)
@@ -777,7 +777,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 "height": 32,
                 "fill-opacity": 1
             });
-    
+
             miniRect.node.classList.add(CABLES.UI.uiConfig.getOpMiniRectClassName(opui.op.objName));
             CABLES.UI.cleanRaphael(miniRect);
         }
@@ -917,7 +917,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             // gui.patch().background.toBack();
             // // backgroundResize.toFront();
-            
+
             // background.toFront();
             // label.toFront();
 
@@ -1000,7 +1000,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
                 _opui.updateHeight();
 
-                
+
                 group.toBack();
                 this.updateColorHandle();
                 // this._updateElementOrder();
@@ -1010,7 +1010,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             backgroundResize.drag(resizeCommentMove.bind(this), resizeCommentStart,resizeCommentEnd);
 
-            
+
 
             group.push(backgroundResize,commentText);
             // group.push(commentText);
@@ -1049,7 +1049,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this.setSelected = function(sel) {
         if (isSelected == sel) return;
-        
+
 
         // if (this._errorIndicator) this._errorIndicator.toFront();
         isSelected = sel;
@@ -1080,7 +1080,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         // if (backgroundResize) {
             // backgroundResize.toFront();
         // }
-        
+
         // gui.patch().background.toBack();
         // group.toFront();
         this._updateElementOrder();
@@ -1114,9 +1114,9 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 else { title = t; }
             }
 
-            if (label && 
+            if (label &&
                 (
-                    !opui.op.uiAttribs.hasOwnProperty("comment_title") && 
+                    !opui.op.uiAttribs.hasOwnProperty("comment_title") &&
                     !opui.op.uiAttribs.hasOwnProperty("comment_text")
                 ))
                 {
@@ -1239,7 +1239,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         }
         if(attribs.hasOwnProperty('uierrors')) {
             this.oprect.updateErrorIndicator();
-            
+
             if(selected)
             {
                 gui.opParams.updateUiAttribs();
@@ -1280,7 +1280,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
             this.oprect.updateComment();
 
         }
-        
+
 
 
 
@@ -1594,7 +1594,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
                     //     $(this).data('hasAfter',true);
                     // }
                     ports[i].setUiAttribs({"spaceBefore":true});
-                    
+
                     console.log("----");
                 }
             }
@@ -1628,7 +1628,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     //                     $(this).after("<tr><td></td></tr>");
     //                     $(this).data('hasAfter',true);
     //                 }
-                    
+
     //                 console.log("----");
     //             }
     //         }
@@ -1727,7 +1727,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     };
 
     this.addPort = function(_inout, thePort) {
-        
+
         var inout = _inout;
         // var portIndex = this.portsIn.length;
         // if (inout == CABLES.PORT_DIR_OUT) portIndex = this.portsOut.length;
@@ -1739,7 +1739,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
         var portPosX=0;
 
-        if (inout == CABLES.PORT_DIR_OUT) 
+        if (inout == CABLES.PORT_DIR_OUT)
         {
             portPosX = (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding) * portIndex;
         }

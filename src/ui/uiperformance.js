@@ -82,7 +82,7 @@ CABLES.UiPerformance.prototype.update = function ()
 
     this._ignore = true;
     var html = CABLES.UI.getHandleBarHtml('uiperformance', { measures: data});
-    
+
     this._ele.innerHTML=html;
     this._ele.style.display="block";
     this._ignore = false;

@@ -1436,7 +1436,7 @@ CABLES.UI.Patch = function(_gui) {
         this.background.node.onmousedown = function(ev)
         {
             gui.pauseProfiling();
-            
+
             CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
             this._elPatch.focus();
             CABLES.UI.OPSELECT.linkNewOpToPort=null;

@@ -204,7 +204,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             console.log("mousewheel no event problem 2");
             return;
         }
-        
+
         gui.pauseProfiling();
 
         if (this._isFirefox && event.deltaMode != undefined) // firefox !!

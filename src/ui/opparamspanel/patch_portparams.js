@@ -327,7 +327,7 @@ CABLES.UI.initPortClickListener=function(op,index)
 
                 op.portsIn[index]._onTriggered(name);
             });
-    
+
         }
     }
 
