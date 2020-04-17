@@ -95,6 +95,8 @@ CABLES.UI.showInputFieldInfo=function()
 
 CABLES.valueChanger=function(ele,focus,portName,opid)
 {
+
+    console.log("valuechjanger",ele,focus,portName,opid);
     CABLES.UI.showInputFieldInfo();
 
     const elem=$ ('#'+ele);
@@ -105,7 +107,11 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
     var el=document.getElementById(ele);
     var incMode=0;
     var mouseDownTime=0;
-    if(focus)setTextEdit(true);
+    if(focus)
+    {
+        setTextEdit(true);
+        elem.keydown(CABLES.UI.inputListenerCursorKeys);
+    }
 
     var usePointerLock=true;
 
@@ -126,11 +132,16 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
         while(count<10)
         {
             var i=(portNum+dir)+count*dir;
-            if($('#portval_'+i+'-container').length)
+            const pEle=document.getElementById('portval_'+i+'-container');
+
+            // if($('#portval_'+i+'-container').length)
+            if(pEle)
             {
+                const portname=pEle.dataset.portname;
+
                 setTextEdit(false);
                 elem.unbind("keydown",tabKeyListener);
-                CABLES.valueChanger('portval_'+i,true);
+                CABLES.valueChanger('portval_'+i,true,portname,opid);
 
                 return;
             }
@@ -144,7 +155,8 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
         {
             event.preventDefault();
             if(event.shiftKey)switchToNextInput(-1);
-                else switchToNextInput(1);
+            else switchToNextInput(1);
+
             return;
         }
     }
@@ -180,6 +192,7 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
     function down(e)
     {
         if(elem.is(":focus")) return;
+
 
         elem.unbind("mousewheel");
         elem.unbind("keydown");
