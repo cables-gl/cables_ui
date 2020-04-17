@@ -21,6 +21,11 @@ CABLES.UI.cleanRaphael = function(el) {
     el.node.style.removeProperty('text-anchor'); // set as: "text-anchor: middle"
 };
 
+CABLES.UI.isComment=function(objname)
+{
+    return objname.indexOf('Ops.Ui.Comment')==0;
+}
+
 CABLES.UI.snapOpPosX = function(posX)
 {
     return Math.round(posX/CABLES.UI.uiConfig.snapX)*CABLES.UI.uiConfig.snapX;
@@ -102,6 +107,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             // this.getGroup().rotate(-1*lastRotation,w/2,h/2);
             // if(this.getGroup()) this.getGroup().node.style.transform='rotate('+opui.op.uiAttribs.rotate+'deg)';
             this.getGroup().rotate(opui.op.uiAttribs.rotate,0,0);
+
             // lastRotation=opui.op.uiAttribs.rotate;
         }
     }
@@ -198,7 +204,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             // }
         } else {
 
-            if (commentText || backgroundResize)return;
+            if (commentText || backgroundResize) return;
 
             var labelWidth = label.getBBox().width + 20;
             // if(Math.abs(labelWidth-w)>15) labelWidth+=Math.abs(labelWidth-w);
@@ -449,11 +455,12 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     }
 
     this.updateComment = function() {
-        if (objName == 'Ops.Ui.Comment') {
+        if (CABLES.UI.isComment(objName)) {
             if (commentText)
             {
+                console.log("has commenttexrt!!!",opui.op.uiAttribs.comment_text);
                 commentText.attr({
-                    'text': opui.op.text.get(),
+                    'text': opui.op.uiAttribs.comment_text || opui.op.text.get(),
                     'text-anchor': 'start',
                     'fill':"#eee",
                     'x': 0
@@ -462,13 +469,15 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             var color=opui.op.uiAttribs.color||"#eee";
 
-            if (label) {
+            if (label)
+            {
+                console.log("has commentlbel!!!",opui.op.uiAttribs.comment_title);
                 label.attr({
-                    'text': opui.op.inTitle.get(),
-                    'x': 0,
+                    'text': opui.op.uiAttribs.comment_title || opui.op.inTitle.get(),
+                    'text-anchor': 'start',
                     'stroke':color,
                     'fill':color,
-                    'text-anchor': 'start'
+                    'x': 0
                 });
 
             }
@@ -478,7 +487,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
     };
 
     this.updateSize = function() {
-        if (objName == 'Ops.Ui.Comment') {
+        if (CABLES.UI.isComment(objName)) {
             var sw = 150;
             var sh = 100;
             var resizeSize = 0;
@@ -529,7 +538,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             return;
         }
 
-        if(objName == 'Ops.Ui.Comment')
+        if(CABLES.UI.isComment(objName))
         {
             this.updateComment();
             return;
@@ -806,7 +815,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if (opui.op.objName == "Ops.Ui.PatchInput") background.node.classList.add('op_subpatch_in');
         if (opui.op.objName == "Ops.Ui.PatchOutput") background.node.classList.add('op_subpatch_out');
 
-        if (objName == 'Ops.Ui.Comment') {
+        if (CABLES.UI.isComment(objName)) {
             var sw = 150;
             var sh = 100;
             var resizeSize = 20;
@@ -822,7 +831,7 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             CABLES.UI.cleanRaphael(label);
 
-            commentText = gui.patch().getPaper().text(0, 0, "opui.op.text.get()" + opui.op.text.get());
+            commentText = gui.patch().getPaper().text(0, 0, "opui.op.text.get()" + (opui.op.uiAttribs.comment_text || opui.op.text.get()));
             commentText.attr({
                 "width": sw
             });
@@ -1088,6 +1097,8 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
     this.setTitle = function(t) {
 
+
+
         title=t||title;
 
         var suffix='';
@@ -1103,10 +1114,18 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
                 else { title = t; }
             }
 
-            if (label) {
-                label.attr({ text: title+suffix });
+            if (label && 
+                (
+                    !opui.op.uiAttribs.hasOwnProperty("comment_title") && 
+                    !opui.op.uiAttribs.hasOwnProperty("comment_text")
+                ))
+                {
+                    label.attr({ text: title+suffix });
                 // if(objName.indexOf("Ops.User") == 0) label.attr({ text: '• '+title });
+                }
 
+            if(label)
+            {
                 this.setWidth();
                 this.addUi();
                 // label = gui.patch().getPaper().text(0+w/2,0+h/2+0, title);
@@ -1206,15 +1225,19 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     this.isMouseOver = false;
 
     op.addEventListener("onUiAttribsChange",(attribs)=> {
-        if (attribs && attribs.hasOwnProperty('warning')) {
+
+
+        if(!attribs)return;
+
+        if(attribs.hasOwnProperty('warning')) {
             this.oprect.updateErrorIndicator();
             if(selected) gui.opParams.updateUiAttribs();
         }
-        if (attribs && attribs.hasOwnProperty('error')) {
+        if(attribs.hasOwnProperty('error')) {
             this.oprect.updateErrorIndicator();
             if(selected) gui.opParams.updateUiAttribs();
         }
-        if (attribs && attribs.hasOwnProperty('uierrors')) {
+        if(attribs.hasOwnProperty('uierrors')) {
             this.oprect.updateErrorIndicator();
             
             if(selected)
@@ -1223,34 +1246,43 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
                 gui.patch().updateOpParams(this.op.id);
             }
         }
-        if (attribs && attribs.hasOwnProperty('color')) {
+        if(attribs.hasOwnProperty('color')) {
             this.oprect.updateColorHandle();
         }
 
-        if (attribs && attribs.hasOwnProperty('comment')) {
+        if(attribs.hasOwnProperty('comment')) {
             this.oprect.updateAttachedComment();
         }
-        if (attribs && attribs.hasOwnProperty('title')) {
+        if(attribs.hasOwnProperty('title')) {
             this.oprect.setTitle(attribs.title);
         }
 
-        if (attribs && attribs.hasOwnProperty('working')) {
+        if(attribs.hasOwnProperty('working')) {
             this.oprect._updateStriked();
         }
         if (typeof attribs.title !== 'undefined' && attribs.title !== null) {
             this.oprect.setTitle(attribs.title);
         }
-        if (attribs && attribs.hasOwnProperty('extendTitle')) {
+        if(attribs.hasOwnProperty('extendTitle')) {
             this.oprect.setTitle();
         }
         if(attribs && attribs.hasOwnProperty('translate'))
             if(attribs.translate.x!=posx || attribs.translate.y!=posy)
                 this.setPos(attribs.translate.x,attribs.translate.y);
 
-        if(attribs && attribs.hasOwnProperty('errors'))
+        if(attribs.hasOwnProperty('errors'))
         {
             if(selected) gui.patch().updateOpParams(this.op.id);
         }
+
+        if(attribs.hasOwnProperty('comment_title') || attribs.hasOwnProperty('comment_text'))
+        {
+            this.oprect.updateComment();
+
+        }
+        
+
+
 
 
     });
@@ -1311,7 +1343,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         this.oprect.getGroup().show();
 
         var j = 0;
-        if (op.objName != 'Ops.Ui.Comment') {
+        if (!CABLES.UI.isComment(op.objName)) {
             for (j in self.portsIn) self.portsIn[j].addUi(this.oprect.getGroup());
             for (j in self.portsOut) self.portsOut[j].addUi(this.oprect.getGroup());
         }

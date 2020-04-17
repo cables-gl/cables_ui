@@ -10,6 +10,24 @@ CABLES.UI.MOUSE_BUTTON_LEFT = 1;
 CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
 CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
+CABLES.UI.DEFAULTOPNAMES=
+{
+    "defaultOpImage":"Ops.Gl.Texture_v2",
+    "defaultOpAudio":"Ops.WebAudio.AudioPlayer",
+    "defaultOpJson3d":"Ops.Json3d.Mesh3d",
+    "defaultOpVideo":"Ops.Gl.Textures.VideoTexture",
+    "defaultOpGltf":"Ops.Gl.GLTF.GltfScene_v2",
+    "defaultOpJson":"Ops.Json.AjaxRequest_v2",
+
+    "VarSetNumber" : "Ops.Vars.VarSetNumber_v2",
+    "VarGetNumber" : "Ops.Vars.VarGetNumber",
+    "VarSetObject" : "Ops.Vars.VarSetObject",
+    "VarGetObject" : "Ops.Vars.VarGetObject",
+    "VarSetArray"  : "Ops.Vars.VarSetArray",
+    "VarGetArray"  : "Ops.Vars.VarGetArray",
+    "VarSetString" : "Ops.Vars.VarSetString_v2",
+    "VarGetString" : "Ops.Vars.VarGetString"
+};
 
 String.prototype.endl = function ()
 {

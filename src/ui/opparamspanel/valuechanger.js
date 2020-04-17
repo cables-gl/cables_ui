@@ -81,7 +81,7 @@ CABLES.valueChangerGetSliderCss=function(v)
 CABLES.UI.showInputFieldInfo=function()
 {
     if(document.activeElement.tagName=='INPUT') CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerInput);
-        else CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerHover);
+    else CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerHover);
 }
 
 

@@ -174,13 +174,15 @@ CABLES.CMD.PATCH.createVarNumber=function(next)
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "myNewVar",
         function (str)
         {
-			const opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetNumber");
-			const opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
+			const opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
+			const opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
 
 			opSetter.varName.set(str);
 			opGetter.varName.set(str);
 		});
 };
+
+
 
 
 CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
@@ -191,25 +193,25 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 
 	if(p.type==CABLES.OP_PORT_TYPE_VALUE)
 	{
-		opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetNumber");
-		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
+		opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
+		opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
 	}
 	else if(p.type==CABLES.OP_PORT_TYPE_OBJECT)
 	{
 		portName="Object";
-		opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetObject");
-		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetObject");
+		opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetObject);
+		opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetObject);
 	}
 	else if(p.type==CABLES.OP_PORT_TYPE_ARRAY)
 	{
 		portName="Array";
-		opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetArray");
-		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetArray");
+		opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetArray);
+		opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetArray);
 	}
 	else if(p.type==CABLES.OP_PORT_TYPE_STRING)
 	{
-		opSetter = gui.patch().scene.addOp("Ops.Vars.VarSetString_v2");
-		opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetString");
+		opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetString);
+		opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetString);
 	}
 	
 	opSetter.getPort(portName).set(value);

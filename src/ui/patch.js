@@ -2761,12 +2761,12 @@ CABLES.UI.Patch = function(_gui) {
         if (!event) return;
         var opname = '';
 
-        if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg")) opname = "Ops.Gl.Texture_v2";
-        else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac"))   opname = "Ops.WebAudio.AudioPlayer";
-        else if (filename.endsWith(".3d.json")) opname = "Ops.Json3d.Mesh3d";
-        else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) opname = "Ops.Gl.Textures.VideoTexture";
-        else if (filename.endsWith(".glb")) opname = "Ops.Gl.GLTF.GltfScene_v2";
-        else if (filename.endsWith(".json")) opname = "Ops.Json.AjaxRequest_v2";
+        if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpImage;
+        else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac"))   opname = CABLES.UI.DEFAULTOPNAMES.defaultOpAudio;
+        else if (filename.endsWith(".3d.json")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpJson3d;
+        else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpVideo;
+        else if (filename.endsWith(".glb")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpGltf;
+        else if (filename.endsWith(".json")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpJson;
         else
         {
             CABLES.UI.notify("no known operator found");
