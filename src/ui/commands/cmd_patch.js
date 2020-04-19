@@ -107,7 +107,7 @@ CABLES.CMD.PATCH.uploadFileDialog = function () {
 
 	var fileElem = document.getElementById("uploaddialog");
 	jQuery.event.props.push('dataTransfer');
-	
+
 	if(!fileElem)
 	{
 		var html = CABLES.UI.getHandleBarHtml('upload',{"patchId":gui.patch().getCurrentProject()._id});
@@ -213,7 +213,7 @@ CABLES.CMD.PATCH._createVariable=function(name,p,p2,value)
 		opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetString);
 		opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetString);
 	}
-	
+
 	opSetter.getPort(portName).set(value);
 
 	if (p.direction == CABLES.PORT_DIR_IN)
@@ -315,7 +315,7 @@ CABLES.CMD.PATCH.createAutoVariable=function()
         {
 			const varops=CABLES.CMD.PATCH._createVariable(str,p,null,p.get());
 
-			var uiop=gui.patch().getUiOp(varops.getter);   
+			var uiop=gui.patch().getUiOp(varops.getter);
 			uiop.setPos(varops.setter.uiAttribs.translate.x,varops.setter.uiAttribs.translate.y+40);
         });
 }
@@ -355,7 +355,7 @@ CABLES.CMD.PATCH.setOpTitle=function()
 		"Enter a title for this op",
 		ops[0].op.name,
 		function(name) {
-			gui.patch().setCurrentOpTitle(name); 
+			gui.patch().setCurrentOpTitle(name);
 		});
 }
 
@@ -415,12 +415,12 @@ CABLES.CMD.PATCH.tidyChildOps=function()
 			var op=selops[i].op;
 			var y=op.uiAttribs.translate.y;
 			var x=op.uiAttribs.translate.x;
-	
+
 			tidyChilds(op,x,y);
 
         }
     }
-	
+
 	for(i=0;i<gui.patch().ops.length;i++)
 	{
 		gui.patch().ops[i].setPosFromUiAttr();
@@ -666,9 +666,9 @@ CABLES.CMD.commands.push(
 		func:CABLES.CMD.PATCH.createBackup
 	}
 
-	
-	
-	
+
+
+
 
 
 );
