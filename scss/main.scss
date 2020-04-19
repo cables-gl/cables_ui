@@ -148,6 +148,7 @@ input[type="text"]
     overflow: hidden;
     text-overflow: ellipsis;
     float:left;
+    width:auto;
 }
 
 .button_colorpick
@@ -156,7 +157,7 @@ input[type="text"]
     height: 8px;
     padding: 5px !important;
     border-radius: 4px;
-    
+
     // position: absolute;
     // right: 0px;
     // margin-top: -17px;
@@ -183,7 +184,7 @@ input[type="text"]
     &:hover
     {
         background-color: var(--color-05);
-        color:var(--color-special) !important; 
+        color:var(--color-special) !important;
         *
         {
             background-color:var(--color-special) !important;
@@ -205,7 +206,7 @@ input[type="text"]
     color: $button-text-color;
 	background-color: var(--color-02);
     border-radius: 29px;
-    
+
     border:2px solid $button-background-color;
 
 	padding: 5px 16px;
@@ -721,14 +722,14 @@ input
     {
         line-height:25px;
     }
-    
+
     code
     {
         background-color: var(--color-04);
         border: 1px solid var(--color-06);
         // margin-left:3px;
         // margin-right:3px;
-        border-radius: 4px;        
+        border-radius: 4px;
         padding:2px;
         padding-left: 4px;
         padding-right: 4px;
