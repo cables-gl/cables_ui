@@ -142,7 +142,7 @@ CABLES.UI.FileManager.prototype._createItem = function (items, file, filterType)
         item.preview = file.p;
         item.icon = "image";
     }
-    else if (file.t == "3d json") item.icon = "cube";
+    else if (file.t == "gltf" || file.t == "3d json") item.icon = "cube";
     else if (file.t == "video") item.icon = "film";
     else if (file.t == "font") item.icon = "type";
     else if (file.t == "JSON") item.icon = "code";
