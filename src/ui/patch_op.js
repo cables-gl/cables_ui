@@ -458,7 +458,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if (CABLES.UI.isComment(objName)) {
             if (commentText)
             {
-                console.log("has commenttexrt!!!",opui.op.uiAttribs.comment_text);
                 commentText.attr({
                     'text': opui.op.uiAttribs.comment_text || opui.op.text.get(),
                     'text-anchor': 'start',
