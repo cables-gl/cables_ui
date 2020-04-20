@@ -458,8 +458,12 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
         if (CABLES.UI.isComment(objName)) {
             if (commentText)
             {
+
+                var cmtStr=opui.op.uiAttribs.comment_text;
+                if(!cmtStr && opui.op.text) cmtStr=opui.op.text.get();
+
                 commentText.attr({
-                    'text': opui.op.uiAttribs.comment_text || opui.op.text.get(),
+                    'text': cmtStr,
                     'text-anchor': 'start',
                     'fill':"#eee",
                     'x': 0
@@ -471,8 +475,12 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
             if (label)
             {
                 console.log("has commentlbel!!!",opui.op.uiAttribs.comment_title);
+
+                var cmtTitleStr=opui.op.uiAttribs.comment_title;
+                if(!cmtTitleStr && opui.op.inTitle) cmtTitleStr=opui.op.inTitle.get();
+
                 label.attr({
-                    'text': opui.op.uiAttribs.comment_title || opui.op.inTitle.get(),
+                    'text': cmtTitleStr,
                     'text-anchor': 'start',
                     'stroke':color,
                     'fill':color,
