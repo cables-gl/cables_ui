@@ -114,7 +114,7 @@ CABLES.UI.GUI = function(cfg)
     {
         if(gui.keys.shiftKey)
         {
-            gui.patch().setSelectedOpById(opid);
+            gui.opParams.show(opid);
         }
         else
         {
