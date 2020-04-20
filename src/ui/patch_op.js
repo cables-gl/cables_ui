@@ -830,7 +830,11 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             CABLES.UI.cleanRaphael(label);
 
-            commentText = gui.patch().getPaper().text(0, 0, "opui.op.text.get()" + (opui.op.uiAttribs.comment_text || opui.op.text.get()));
+            var cmtStr="";
+            cmtStr=opui.op.uiAttribs.comment_text;
+            if(!cmtStr && opui.op.text)cmtStr=opui.op.text.get();
+
+            commentText = gui.patch().getPaper().text(0, 0, "opui.op.text.get()" + cmtStr);
             commentText.attr({
                 "width": sw
             });
