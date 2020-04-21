@@ -428,7 +428,6 @@ CABLES.GL_MARKER.drawCube = function (op, sizeX, sizeY, sizeZ)
 CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
 {
     CABLES.UI.renderHelper = CABLES.UI.userSettings.get("helperMode");
-
     CABLES.UI.renderHelperCurrent = CABLES.UI.userSettings.get("helperModeCurrentOp");
 
     if (!CABLES.UI.renderHelperCurrent && !CABLES.UI.renderHelper) return;
@@ -480,7 +479,7 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
                 // .endl()+'   gl_FragColor = vec4(gray,1.0);'
 
                     .endl()
-                + "   gl_FragColor = texture2D(tex,vec2(texCoord.x,(1.0-texCoord.y)));"
+                + "   gl_FragColor = texture2D(tex,texCoord);"
                 // .endl()+'   if(gl_FragColor.a<0.5)gl_FragColor.a=0.7;'
 
                     .endl()
@@ -495,7 +494,7 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
                 + "void main()".endl()
                 + "{".endl()
                 + "   vec4 pos=vec4(vPosition, 1.0);".endl()
-                + "   texCoord=attrTexCoord;".endl()
+                + "   texCoord=vec2(attrTexCoord.x,1.0-attrTexCoord.y);".endl()
                 + "   gl_Position = projMatrix * mvMatrix * pos;".endl()
                 + "}";
 
@@ -504,11 +503,12 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
 
             CABLES.GL_MARKER.fullscreenRectShader = shader;
 
-            shader.bindTextures = function ()
-            {
-                cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-                cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, CABLES.GL_MARKER.FB.fb.getTextureColor().tex);
-            };
+
+            // shader.bindTextures = function ()
+            // {
+            //     cgl.gl.activeTexture(cgl.gl.TEXTURE0);
+            //     cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, CABLES.GL_MARKER.FB.fb.getTextureColor().tex);
+            // };
         }
     }
 
@@ -522,6 +522,9 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
 
     cgl.pushViewMatrix();
     mat4.identity(cgl.vMatrix);
+
+    CABLES.GL_MARKER.fullscreenRectShader.popTextures();
+    CABLES.GL_MARKER.fullscreenRectShader.pushTexture(CABLES.GL_MARKER.fullscreenRectShader.texUniform, CABLES.GL_MARKER.FB.fb.getTextureColor().tex);
 
     cgl.pushShader(CABLES.GL_MARKER.fullscreenRectShader);
     // CABLES.GL_MARKER.fullscreenRectShader.bind();

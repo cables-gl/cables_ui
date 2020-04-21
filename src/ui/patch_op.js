@@ -474,8 +474,6 @@ var OpRect = function(_opui, _x, _y, _w, _h, _text, objName) {
 
             if (label)
             {
-                console.log("has commentlbel!!!",opui.op.uiAttribs.comment_title);
-
                 var cmtTitleStr=opui.op.uiAttribs.comment_title;
                 if(!cmtTitleStr && opui.op.inTitle) cmtTitleStr=opui.op.inTitle.get();
 
