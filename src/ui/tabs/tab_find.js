@@ -191,8 +191,10 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
     html+=''+op.objName+'<br/>';
     html += result.where||"";
 
-    if (op.uiAttribs.subPatch != 0)
-        html += "<br/> subpatch: " + gui.patch().getSubPatchPathString(op.uiAttribs.subPatch);
+    var highlightsubpatch='';
+    if(op.uiAttribs.subPatch==gui.patch().getCurrentSubPatch()) highlightsubpatch='highlight';
+
+    if (op.uiAttribs.subPatch != 0) html += '<br/> subpatch: <span class="'+highlightsubpatch+'">' + gui.patch().getSubPatchPathString(op.uiAttribs.subPatch)+"</span>";
 
     html += "</div>";
 

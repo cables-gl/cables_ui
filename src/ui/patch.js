@@ -2889,45 +2889,48 @@ CABLES.UI.Patch = function(_gui) {
         document.body.removeChild(element);
     }
 
-    this.getSubPatches = function() {
+    this.getSubPatches = function(sort) {
         var foundPatchIds = [];
         var subPatches = [];
         var i = 0;
 
-        for (i = 0; i < this.ops.length; i++) {
-            if (this.ops[i].op.patchId && this.ops[i].op.patchId.get() !== 0) {
+        for (i = 0; i < this.ops.length; i++)
+            if (this.ops[i].op.patchId && this.ops[i].op.patchId.get() !== 0)
                 foundPatchIds.push(this.ops[i].op.patchId.get());
-            }
-        }
 
         // find lost ops, which are in subpoatches, but no subpatch op exists for that subpatch..... :(
-        for (i = 0; i < this.ops.length; i++) {
+        for (i = 0; i < this.ops.length; i++) 
             if (this.ops[i].op.uiAttribs && this.ops[i].op.uiAttribs.subPatch)
                 if (foundPatchIds.indexOf(this.ops[i].op.uiAttribs.subPatch) == -1)
                     foundPatchIds.push(this.ops[i].op.uiAttribs.subPatch);
-        }
 
         foundPatchIds = CABLES.uniqueArray(foundPatchIds);
 
-        for (i = 0; i < foundPatchIds.length; i++) {
+        for (i = 0; i < foundPatchIds.length; i++)
+        {
             var found = false;
-            for (var j = 0; j < this.ops.length; j++) {
-                if (this.ops[j].op.patchId!=0 && this.ops[j].op.patchId && this.ops[j].op.patchId.get() == foundPatchIds[i]) {
+            for (var j = 0; j < this.ops.length; j++)
+                if (this.ops[j].op.patchId!=0 && this.ops[j].op.patchId && this.ops[j].op.patchId.get() == foundPatchIds[i])
+                {
                     subPatches.push({
                         "name": this.ops[j].op.name,
                         "id": foundPatchIds[i]
                     });
                     found = true;
                 }
-            }
 
-            if (!found) {
+            if (!found) 
                 subPatches.push({
                     "name": "lost patch " + foundPatchIds[i],
                     "id": foundPatchIds[i]
                 });
-            }
         }
+
+        if(sort)
+            subPatches.sort(function(a,b)
+            {
+                return a.name.localeCompare(b.name);
+            });
 
         return subPatches;
     };

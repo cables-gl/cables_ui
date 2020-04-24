@@ -75,6 +75,11 @@
     // //   border-bottom-right-radius: $search-result-border-radius;
     // }
   }
+
+    .highlight
+    {
+        color:var(--color-special);
+    }
 }
 
 #searchresult,#searchresult_cmd,.list,.tabSearchResultsContainer
