@@ -177,7 +177,11 @@ CABLES.GL_MARKER.drawAxisMarker = function (op, size)
         CABLES.GL_MARKER.MARKER = {};
 
         const geom = new CGL.Geometry("marker");
-        geom.setPointVertices([0.00001, 0, 0, 1, 0, 0, 0, 0.00001, 0, 0, 1, 0, 0, 0, 0.00001, 0, 0, 1]);
+        geom.setPointVertices([
+            0.00001, 0, 0,      1, 0, 0,
+            0, 0.00001, 0,      0, 1, 0,
+            0, 0, 0.00001,      0, 0, 1
+        ]);
         // geom.resetTextureCoords();
 
         CABLES.GL_MARKER.MARKER.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
@@ -344,7 +348,16 @@ CABLES.GL_MARKER.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
 
         function bufferData()
         {
-            const verts = [-1, -1, 0, 1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0, -1, -1, 0, 1, -1, 0];
+            const verts = [
+                -1, -1, 0,
+                1, 1, 0,
+                -1, 1, 0,
+                1, -1, 0,
+                1, 1, 0,
+                -1, 1, 0,
+                -1, -1, 0,
+                1, -1, 0
+            ];
 
             const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -391,7 +404,31 @@ CABLES.GL_MARKER.drawCube = function (op, sizeX, sizeY, sizeZ)
 
         function bufferData()
         {
-            const verts = new Float32Array([-1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, -1, -1]);
+            const verts = new Float32Array([
+                -1, -1, 1,
+                1, -1, 1,
+                1, 1, 1,
+                -1, 1, 1,
+                -1, -1, 1,
+
+                -1, -1, -1,
+                1, -1, -1,
+                1, 1, -1,
+                -1, 1, -1,
+                -1, -1, -1,
+
+                -1, -1, -1,
+                -1, 1, -1,
+                -1, 1, 1,
+                -1, -1, 1,
+                -1, -1, -1,
+
+                1, -1, -1,
+                1, 1, -1,
+                1, 1, 1,
+                1, -1, 1,
+                1, -1, -1
+            ]);
 
             const tc = new Float32Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
@@ -452,13 +489,31 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
         CABLES.GL_MARKER.FSWIDTH = w;
         CABLES.GL_MARKER.FSHEIGHT = h;
 
-        fsGeom.vertices = new Float32Array([w, h, 0, 0, h, 0, w, 0, 0, 0, 0, 0]);
+        fsGeom.vertices = new Float32Array([
+            w, h, 0,
+            0, h, 0,
+            w, 0, 0,
+            0, 0, 0
+        ]);
 
-        fsGeom.texCoords = new Float32Array([1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0]);
+        fsGeom.texCoords = new Float32Array([
+            1.0, 1.0,
+            0.0, 1.0,
+            1.0, 0.0,
+            0.0, 0.0,
+        ]);
 
-        fsGeom.vertexNormals = new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]);
+        fsGeom.vertexNormals = new Float32Array([
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1
+        ]);
 
-        fsGeom.verticesIndices = new Float32Array([0, 1, 2, 3, 1, 2]);
+        fsGeom.verticesIndices = new Float32Array([
+            0, 1, 2,
+            3, 1, 2,
+        ]);
 
         // CABLES.GL_MARKER.fsGeom=fsGeom;
         if (!CABLES.GL_MARKER.fullscreenRectMesh) CABLES.GL_MARKER.fullscreenRectMesh = new CGL.Mesh(cgl, fsGeom);
