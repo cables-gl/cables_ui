@@ -95,8 +95,6 @@ CABLES.UI.showInputFieldInfo=function()
 
 CABLES.valueChanger=function(ele,focus,portName,opid)
 {
-
-    console.log("valuechjanger",ele,focus,portName,opid);
     CABLES.UI.showInputFieldInfo();
 
     const elem=$ ('#'+ele);
@@ -355,8 +353,8 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
             // value changed after blur
             if(startVal!=elem.val())
             {
-                console.log("value changed after blur!",startVal,elem.val());
-                console.log(portName,opid);
+                // console.log("value changed after blur!",startVal,elem.val());
+                // console.log(portName,opid);
 
                 if(opid && portName)
                 {
