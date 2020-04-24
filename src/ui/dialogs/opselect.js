@@ -34,7 +34,8 @@ CABLES.UI.OpSelect.prototype.updateOptions=function(opname)
         $('#search_startType').show();
 
         for(var i=0;i<this._list.length;i++)
-            if(this._list[i].element)this._list[i].element[0].style.display = "none";
+            if(this._list[i].element)
+                this._list[i].element[0].style.display = "none";
     }
     else $('#search_startType').hide();
 
@@ -388,14 +389,14 @@ CABLES.UI.OpSelect.prototype.search=function()
 
     tinysort.defaults.order = 'desc';
 
-    // clearTimeout(this._sortTimeout);
-    // this._sortTimeout=setTimeout(
-    //     function()
-    //     {
+    clearTimeout(this._sortTimeout);
+    this._sortTimeout=setTimeout(
+        function()
+        {
             tinysort('.searchresult', { data: 'score' });
             this.Navigate(0);
             this.updateOptions();
-        // }.bind(this),150);
+        }.bind(this),150);
 
 
     perf.finish();
