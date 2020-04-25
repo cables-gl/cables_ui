@@ -23,6 +23,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         // }
     }
 
+    get clientId(){return this._socket.clientId};
+
     _init()
     {
         if (!this._active)

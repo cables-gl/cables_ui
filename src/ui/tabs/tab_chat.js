@@ -29,9 +29,30 @@ CABLES.UI.Chat.prototype.getNumClients = function ()
     return Object.keys(this._clients).length;
 };
 
+CABLES.UI.Chat.prototype._updateClientTimeouts = function ()
+{
+
+    for(var i in this._clients)
+    {
+        var client=this._clients[i];
+        if(!client)continue;
+
+        client.timeout=(Date.now() - client.lastSeen);
+        client.lost=client.timeout>10000;
+
+        if(client.clientId==this._socket.clientId) client.isMe=true;
+
+    }
+
+    console.log("_updateClientTimeouts",this._clients);
+
+}
+
 CABLES.UI.Chat.prototype.getUserInfoHtml = function ()
 {
     var numClients = this.getNumClients();
+
+    this._updateClientTimeouts();
 
     var html = CABLES.UI.getHandleBarHtml("socketinfo", {
         "numClients":numClients,
@@ -49,18 +70,24 @@ CABLES.UI.Chat.prototype.onPingAnswer = function (payload)
         this._users[payload.username] = [];
     }
     const client = this._users[payload.username].find(c => c.clientId == payload.clientId);
-
-    this._clients[payload.clientId] = client;
-
     if (client)
     {
+
+
+        this._clients[payload.clientId] = client;
+
+
         client.lastSeen = payload.lastSeen;
     }
     else
     {
         this._users[payload.username].push({ username: payload.username, clientId: payload.clientId, lastSeen: payload.lastSeen });
     }
+
+    this._updateClientTimeouts();
     this._cleanUpUserList();
+
+console.log("this.getNumClients",this.getNumClients());
 
     if (this.getNumClients() > 1) document.getElementById("userindicator").classList.remove("hidden");
     else document.getElementById("userindicator").classList.add("hidden");
@@ -101,7 +128,6 @@ CABLES.UI.Chat.prototype._cleanUpUserList = function ()
 CABLES.UI.Chat.prototype._updateText = function ()
 {
     var html = "";
-
     var logEle = document.getElementById("chatmsgs");
     if (!logEle) return;
 

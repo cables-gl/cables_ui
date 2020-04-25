@@ -6,8 +6,12 @@
     <br/>
     Num clients: {{numClients}}
     <br/>
-    {{#each users}}
-        - {{0.username}} <br/>
+    {{#each clients}}
+        - {{username}} 
+        {{#if isMe}} (me) {{/if}}
+        - {{#if lost}}timeout??{{/if}}
+    <br/>
+
     {{/each}}
 
 </script>

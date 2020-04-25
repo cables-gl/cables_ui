@@ -96,11 +96,11 @@
 
 <div id="vue-app"></div>
 
-<div class="cables-logo cables">
+<div class="cables-logo cables" onclick="CABLES.CMD.UI.showChat();">
     <div class="icon icon-cables"></div>
 </div>
 <div id="offlineIndicator"><span class="icon icon-x icon-1x" style="background-color:red;"></span></div>
-<div id="userindicator"><span class="icon icon-users icon-1x hidden" style="background-color:white;"></span></div>
+<div id="userindicatorcontainer"><span id="userindicator" class="icon icon-users icon-1x hidden" style="background-color:white;"></span></div>
 
 <div id="uploadprogresscontainer">
     <div id="uploadprogress"></div>

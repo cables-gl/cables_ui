@@ -153,39 +153,45 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
 
 CABLES.UI.PatchViewBox.prototype._update = function ()
 {
-    var perf = CABLES.uiperf.start('PatchViewBox.update');
+    this._isUpdating=true;
+    setTimeout(()=>{
+        var perf = CABLES.uiperf.start('PatchViewBox.update');
+        
+        if (isNaN(this._viewBox.x)) console.warn("viewbox x NaN");
+        if (isNaN(this._viewBox.y)) console.warn("viewbox y NaN");
+        if (isNaN(this._viewBox.w)) console.warn("viewbox w NaN");
+        if (isNaN(this._viewBox.h)) console.warn("viewbox h NaN");
 
-    if (isNaN(this._viewBox.x)) console.warn("viewbox x NaN");
-    if (isNaN(this._viewBox.y)) console.warn("viewbox y NaN");
-    if (isNaN(this._viewBox.w)) console.warn("viewbox w NaN");
-    if (isNaN(this._viewBox.h)) console.warn("viewbox h NaN");
+        this._paperPatch.setViewBox(this._viewBox.x, this._viewBox.y, this._viewBox.w, this._viewBox.h);
 
-    this._paperPatch.setViewBox(this._viewBox.x, this._viewBox.y, this._viewBox.w, this._viewBox.h);
+        this._updateNavHelper();
 
-    this._updateNavHelper();
-
-    if (this._miniMapRect)
-    {
-        this._miniMapRect.attr("x", this._viewBox.x);
-        this._miniMapRect.attr("y", this._viewBox.y);
-        this._miniMapRect.attr("width", this._viewBox.w);
-        this._miniMapRect.attr("height", this._viewBox.h);
-    }
-
-    
-    this._lastUpdate=performance.now();
-    this._updateTimeout=null;
-    perf.finish();
+        if (this._miniMapRect)
+        {
+            this._miniMapRect.attr("x", this._viewBox.x);
+            this._miniMapRect.attr("y", this._viewBox.y);
+            this._miniMapRect.attr("width", this._viewBox.w);
+            this._miniMapRect.attr("height", this._viewBox.h);
+        }
+        
+        this._lastUpdate=performance.now();
+        this._updateTimeout=null;
+        this._isUpdating=false;
+        perf.finish();
+    },2);
 }
 
 CABLES.UI.PatchViewBox.prototype.update = function ()
 {
     const diff=performance.now()-this._lastUpdate;
 
-    if(diff<50)
+    const delay=50;
+    // if(this._isUpdating)console.log("is still updating");
+
+    if(diff<delay || this._isUpdating)
     {
-        console.log("update delayed...")
-        if(!this._updateTimeout) this._updateTimeout=setTimeout(this._update.bind(this),10);
+        // console.log("update delayed...")
+        if(!this._updateTimeout) this._updateTimeout=setTimeout(this._update.bind(this),delay/2);
         return;
     }
 
