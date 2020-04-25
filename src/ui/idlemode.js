@@ -1,10 +1,7 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-
 CABLES.UI.idleTime=180;
-
-
 CABLES.UI.idling=false;
 CABLES.UI.idleTimeout=null;
 CABLES.UI.idleModeStart=0;
@@ -28,7 +25,7 @@ CABLES.UI.startIdleMode=function()
     CABLES.UI.MODAL.show('<center><b>cables is paused!</b><br/>click to resume<br/></center>');
 
     gui.patch().stopFlowVis();
-    gui.patch().scene.pause();
+    gui.corePatch().pause();
     CABLES.UI.idling=true;
     clearTimeout(CABLES.UI.idleTimeout);
     CABLES.UI.idleModeStart=Date.now();
@@ -53,7 +50,7 @@ CABLES.UI.stopIdleMode=function()
 
     console.log("idled for ",Math.round((Date.now()-CABLES.UI.idleModeStart)/1000)+" seconds");
 
-    gui.patch().scene.resume();
+    gui.corePatch().resume();
     CABLES.UI.MODAL.hide();
     CABLES.UI.idling=false;
     clearTimeout(CABLES.UI.idleTimeout);
@@ -62,7 +59,7 @@ CABLES.UI.stopIdleMode=function()
 CABLES.UI.visibilityChanged=function(e)
 {
     CABLES.UI.idleTimeout=clearTimeout(CABLES.UI.idleTimeout);
-    if(document.hidden) CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,5000);
+    if(document.hidden) CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,1000);
     else CABLES.UI.stopIdleMode();
 }
 
@@ -81,8 +78,8 @@ window.addEventListener('blur', (event) => {
 
 document.addEventListener("keydown", CABLES.UI.idleInteractivity, false);
 document.addEventListener('mousemove', CABLES.UI.idleInteractivity );
+document.addEventListener("visibilitychange", CABLES.UI.visibilityChanged);
 
 CABLES.UI.idleTimeout=setTimeout(CABLES.UI.startIdleMode,CABLES.UI.idleTime*1000);
 
-document.addEventListener("visibilitychange", CABLES.UI.visibilityChanged);
 
