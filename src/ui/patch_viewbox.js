@@ -26,6 +26,7 @@ CABLES.UI.PatchViewBox=function(patch,paper)
     this._isWindows = window.navigator.userAgent.indexOf("Windows") != -1;
     this._isLinux = window.navigator.userAgent.indexOf("Linux") !== -1;
 
+this._lastUpdate=0;
 
     this._init();
     this.update();
@@ -69,7 +70,7 @@ CABLES.UI.PatchViewBox.prototype.setXY = function (x, y) {
     this.update();
 }
 
-CABLES.UI.PatchViewBox.prototype.set= function (x, y, w, h)
+CABLES.UI.PatchViewBox.prototype.set=function (x, y, w, h)
 {
     this._viewBox.x = x;
     this._viewBox.y = y;
@@ -150,7 +151,7 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
     perf.finish();
 }
 
-CABLES.UI.PatchViewBox.prototype.update = function ()
+CABLES.UI.PatchViewBox.prototype._update = function ()
 {
     var perf = CABLES.uiperf.start('PatchViewBox.update');
 
@@ -158,8 +159,6 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
     if (isNaN(this._viewBox.y)) console.warn("viewbox y NaN");
     if (isNaN(this._viewBox.w)) console.warn("viewbox w NaN");
     if (isNaN(this._viewBox.h)) console.warn("viewbox h NaN");
-
-    // this._fixAspectRatio();
 
     this._paperPatch.setViewBox(this._viewBox.x, this._viewBox.y, this._viewBox.w, this._viewBox.h);
 
@@ -173,7 +172,24 @@ CABLES.UI.PatchViewBox.prototype.update = function ()
         this._miniMapRect.attr("height", this._viewBox.h);
     }
 
+    
+    this._lastUpdate=performance.now();
+    this._updateTimeout=null;
     perf.finish();
+}
+
+CABLES.UI.PatchViewBox.prototype.update = function ()
+{
+    const diff=performance.now()-this._lastUpdate;
+
+    if(diff<50)
+    {
+        console.log("update delayed...")
+        if(!this._updateTimeout) this._updateTimeout=setTimeout(this._update.bind(this),10);
+        return;
+    }
+
+    this._update();
 };
 
 CABLES.UI.PatchViewBox.prototype.centerSelectedOps = function ()
