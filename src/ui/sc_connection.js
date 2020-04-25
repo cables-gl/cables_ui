@@ -120,6 +120,10 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     updateMembers()
     {
         this.sendControl({ type: "pingMembers" });
+        setTimeout(()=> {
+            this.updateMembers();
+        }, 10000);
+
     }
 
     _send(topic, payload)

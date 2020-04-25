@@ -6,6 +6,18 @@ function()
 {
     var jobs=[];
     var lastIndicator=null;
+    this._jobsEle=document.getElementById("jobs");
+    this._listenerStarted=false;
+
+    this.startListener=function()
+    {
+        this._listenerStarted=true;
+
+        gui.chat.addEventListener("updated",()=>
+        {
+            if(this._jobsEle.style.display=="block") this.updateJobListing();
+        });
+    }
 
     this.updateJobListing=function()
     {
@@ -39,8 +51,9 @@ function()
         {
             if(lastIndicator) gui.setWorking(false,lastIndicator);
         }
-
+    
         $('#jobs').html(str);
+        if(!this._listenerStarted)this.startListener();
     }
 
     this.update=function(job,func)

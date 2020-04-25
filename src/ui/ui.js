@@ -2038,9 +2038,6 @@ function startUi(cfg)
                 logStartup('finished loading cables');
 
                 gui.socket.sendInfo(gui.user.username+" joined");
-                const updateMemberInterval = setInterval(function() {
-                   gui.socket.updateMembers();
-                }, CABLES.UI.Chat.updateIntervalSeconds * 1000);
                 gui.socket.updateMembers();
 
                 CABLES.UI.loaded=true;
