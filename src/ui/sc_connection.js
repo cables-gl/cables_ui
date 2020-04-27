@@ -14,13 +14,28 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         if (cfg) this._init();
     }
 
-    setupPaco()
+
+    startPacoSend()
     {
-        // if (!this._paco && gui.chat.getNumClients() > 1)
-        // {
-        //     this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
-        //     gui.patchConnection.connectors.push(this._paco);
-        // }
+
+        if(!this._paco)
+        {
+            this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
+            gui.patchConnection.connectors.push(this._paco);
+        }
+        if (gui.chat.getNumClients() > 1)
+        {
+            const json=gui.corePatch().serialize(true);
+            gui.patchConnection.send(CABLES.PACO_LOAD,
+            {
+                "patch": JSON.stringify(json)
+            });
+
+        }
+        else
+        {
+            CABLES.UI.notifyError("could not start paco");
+        }
     }
 
     get clientId(){return this._socket.clientId};
@@ -120,6 +135,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     updateMembers()
     {
         this.sendControl({ type: "pingMembers" });
+
         setTimeout(()=> {
             this.updateMembers();
         }, 10000);
@@ -152,6 +168,12 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         if (msg.type == "paco")
         {
+            if(!this._paco)
+            {
+                this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
+                gui.patchConnection.connectors.push(this._paco);
+            }
+
             if (msg.clientId != this._socket.clientId) this._paco.receive(msg.data);
         }
     }
@@ -169,7 +191,6 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             msg.lastSeen = Date.now();
             this.emitEvent("onPingAnswer", msg);
-            this.setupPaco();
         }
     }
 
