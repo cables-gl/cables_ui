@@ -105,6 +105,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.emitEvent("mouseup",e);
             this.quickLinkSuggestion.longPressCancel();
             this._rectInstancer.interactive=true;
+
+            if(Object.keys(this._selectedGlOps).length==0)gui.showBookmarkParamsPanel();
         });
 
         gui.keys.key("Delete","Delete selected ops","down",cgl.canvas.id,{}, () =>

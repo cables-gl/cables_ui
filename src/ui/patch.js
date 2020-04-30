@@ -2574,24 +2574,7 @@ CABLES.UI.Patch = function(_gui) {
         s.name = currentProject.name;
         s.settings = gui.scene().settings;
 
-        var numVisibleOps = 0;
-        var errorOps=[];
-        var warnOps=[];
-
-        var html='';
-
-        if(!gui.user.isPatchOwner) html += CABLES.UI.getHandleBarHtml('clonepatch', {});
-
-        html+=gui.bookmarks.getHtml();
-
-        if(errorOps.length==0)errorOps=null;
-        if(warnOps.length==0)warnOps=null;
-        // colors = CABLES.uniqueArray(colors);
-
-        html += CABLES.UI.getHandleBarHtml('error_ops', { "errorOps":errorOps, "warnOps":warnOps });
-        // html += CABLES.UI.getHandleBarHtml('filter_colors', { "colors":colors });
-
-        $('#options').html(html);
+        gui.showBookmarkParamsPanel();
 
         perf.finish();
     };

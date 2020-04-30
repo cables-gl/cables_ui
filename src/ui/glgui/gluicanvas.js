@@ -6,22 +6,16 @@ CABLES.GLGUI=CABLES.GLGUI||{};
 CABLES.GLGUI.GlGuiFull = function (tabs)
 {
     const views=document.getElementById("patchviews");
-
-    for(var i=0;i<views.children.length;i++)
-    {
-        views.children[i].style.display="none";
-        views.children[i].classList.remove("visible");
-    }
-
-    var ele=document.createElement("div");
+    const ele=document.createElement("div");
 
     views.appendChild(ele);
-
-    ele.classList.add("visible");
+    ele.id="glpatch"+views.children.length;
     ele.classList.add("glpatchcontainer");
 
-    ele.innerHTML="";
     var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch,ele);
+
+    gui.switchPatchView(ele.id);
+
     a.parentResized();
 
     gui.on("setLayout",()=>
