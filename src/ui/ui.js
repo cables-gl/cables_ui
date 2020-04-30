@@ -214,9 +214,7 @@ CABLES.UI.GUI = function(cfg)
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
         this._elSplitterRenderer = this._elSplitterRenderer || $('#splitterRenderer');
 
-        this._elPatch = $('#patchview .visible');
-
-console.log(this._elPatch);
+        this._elPatch = $('#patchviews .visible');
 
         this._elOptions = this._elOptions || $('#options');
         this._elMeta = this._elMeta || $('#meta');
@@ -443,6 +441,8 @@ console.log(this._elPatch);
         this._elPatch.css('width', patchWidth);
         this._elPatch.css('top', menubarHeight);
         this._elPatch.css('left', patchLeft);
+
+        console.log("elpatch top ",menubarHeight);
 
         $('#searchbox').css('left', patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth + 1);
         $('#searchbox').css('width', CABLES.UI.uiConfig.miniMapWidth);
