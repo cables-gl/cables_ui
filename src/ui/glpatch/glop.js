@@ -362,7 +362,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         if(this.opUiAttribs.comment)
         {
-            this._glComment=new CABLES.GLGUI.Text(this._textWriter,this.opUiAttribs.comment);
+            if(!this._glComment) this._glComment=new CABLES.GLGUI.Text(this._textWriter,this.opUiAttribs.comment);
+            this._glComment.text=this.opUiAttribs.comment;
             this._glComment.setParentRect(this._glRectBg);
             this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
         }
