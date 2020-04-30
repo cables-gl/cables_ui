@@ -114,6 +114,7 @@ CABLES.GLGUI.Text=class
             }
             rectCount++;
             var rect=this._rects[rectCount] || this._textWriter.rectDrawer.createRect();
+            rect.visible=this._visible;
             this._rects[rectCount]=rect;
 
             rect.setPosition(posX-this._map(ch.originX), posY-this._map(ch.originY));
@@ -125,6 +126,15 @@ CABLES.GLGUI.Text=class
             rect.setTexture(this._textWriter.getFontTexture());
 
             posX+=this._map(ch.advance);
+        }
+
+        for(var i=rectCount+1;i<this._rects.length;i++)
+        {   
+            if(this._rects[i])
+            {
+                this._rects[i].setSize(0,0);
+                this._rects[i].visible=false;
+            }
         }
 
         this._height=countLines*lineHeight;
