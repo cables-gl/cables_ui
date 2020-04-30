@@ -76,7 +76,6 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
             .endl()+'    col=instCol;'
 
             .endl()+'    pos*=zoom;'
-
             .endl()+'    pos.x+=scrollX;'
             .endl()+'    pos.y+=scrollY;'
 

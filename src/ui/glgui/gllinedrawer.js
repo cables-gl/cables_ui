@@ -63,19 +63,20 @@ CABLES.GLGUI.Linedrawer=class
             .endl()+'IN vec4 col;'
             .endl()+'IN float dist;'
             .endl()+'IN float speedy;'
+            .endl()+'UNI float zoom;'
 
             .endl()+'void main()'
             .endl()+'{'
             .endl()+'   vec4 color=col;'
             .endl()+'   if(color.a==0.0) discard;'
-            .endl()+'   float stepLength=10.0;'
+            .endl()+'   float stepLength=5.0;'
 
             .endl()+'   float showSpeed=clamp(speedy,0.0,1.0);'
 
 
-            // .endl()+'   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;'
-            // .endl()+'   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0);'
-            // .endl()+'   else color.rgb = color.rgb*0.55;'
+            .endl()+'   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;'
+            .endl()+'   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0);'
+            .endl()+'   else color.rgb = color.rgb*0.55;'
 
             .endl()+'   color.rgb = color.rgb;'
             .endl()+'   color.a = 1.0;'

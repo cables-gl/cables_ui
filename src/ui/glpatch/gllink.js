@@ -8,6 +8,7 @@ CABLES.GLGUI.GlLink=class
         portNameOut,portIdInput,portIdOutput,type)
     {
         this._id=id;
+        this._visible=true;
         this._glPatch=glpatch;
         this._type=type;
         this._portNameInput=portNameIn;
@@ -58,6 +59,31 @@ CABLES.GLGUI.GlLink=class
     get opIdOutput(){ return this._opIdOutput};
     get opIdInput(){ return this._opIdInput};
 
+    set visible(v)
+    {
+console.log("link visible",v);
+        this._visible=v;
+this._updatePosition();
+    }
+
+    _updatePosition()
+    {
+        if(this._visible)
+        {
+            if(this._opOut && this._opIn)
+            {
+                const pos1x=this._opIn.getUiAttribs().translate.x+this._offsetXInput;
+                const pos1y=this._opIn.getUiAttribs().translate.y;
+
+                const pos2x=this._opOut.getUiAttribs().translate.x+this._offsetXOutput;
+                const pos2y=this._opOut.getUiAttribs().translate.y+CABLES.UI.uiConfig.opHeight;
+
+                this._cable.setPosition(pos1x,pos1y,pos2x,pos2y);
+            }
+        }
+        else this._cable.setPosition(0,0,0,0);
+    }
+
     update()
     {
         if(!this._opIn)
@@ -86,12 +112,7 @@ CABLES.GLGUI.GlLink=class
             return;
         }
 
-        const pos1x=this._opIn.getUiAttribs().translate.x+this._offsetXInput;
-        const pos1y=this._opIn.getUiAttribs().translate.y;
-
-        const pos2x=this._opOut.getUiAttribs().translate.x+this._offsetXOutput;
-        const pos2y=this._opOut.getUiAttribs().translate.y+CABLES.UI.uiConfig.opHeight;
-        this._cable.setPosition(pos1x,pos1y,pos2x,pos2y);
+        this._updatePosition();
     }
 
     dispose()

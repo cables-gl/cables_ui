@@ -215,6 +215,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
     addLink(l)
     {
         this._links[l.id]=l;
+        l.visible=this._visible;
     }
 
     isHovering()
@@ -340,6 +341,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         if(this._glTitle) this._glTitle.visible=v;
         if(this._glTitleExt) this._glTitleExt.visible=v;
         if(this._glComment) this._glComment.visible=v;
+
+        for(var i in this._links) this._links.visible=v;
     }
 
     get visible()

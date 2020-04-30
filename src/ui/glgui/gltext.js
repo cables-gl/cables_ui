@@ -45,6 +45,7 @@ CABLES.GLGUI.Text=class
 
     set visible(v)
     {
+        this._visible=v;
         for(var i=0;i<this._rects.length;i++)
             if(this._rects[i])this._rects[i].visible=v;
     }
