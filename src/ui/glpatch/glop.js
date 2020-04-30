@@ -204,9 +204,12 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
     updateSize()
     {
-        this._glRectBg.setSize(
-            Math.max(this._getTitleWidth(),this._glRectBg.w),
-            Math.max(this._glTitle.height+5,this._glRectBg.h));
+        this._width=Math.max(this._getTitleWidth(),this._glRectBg.w);
+        this._height=Math.max(this._glTitle.height+5,this._glRectBg.h);
+
+        this._glRectBg.setSize( this._width, this._height );
+        
+        if(this._glComment)this._glComment.setPosition(this._width,0);
     }
 
     addLink(l)
@@ -344,10 +347,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         return this._visible;
     }
 
-
     update()
     {
-
         if(this.opUiAttribs.extendTitle && !this._glTitleExt)
         {
             this._glTitleExt=new CABLES.GLGUI.Text(this._textWriter," | "+this.opUiAttribs.extendTitle);
@@ -470,9 +471,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
                 "x":x,
                 "y":y
             });
-
-        // this.setPosition( this._passiveDragStartX+x, this._passiveDragStartY+y);
-        // updatePosition()
     }
 
     getGlPort(name)
