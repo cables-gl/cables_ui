@@ -1448,6 +1448,11 @@ console.log(this._elPatch);
         if(CABLES.UI.userSettings.get("showMinimap")==true) CABLES.CMD.UI.showMinimap();
         self.patch().getViewBox().update();
 
+
+        if(CABLES.UI.userSettings.get("glpatchview")==true) CABLES.CMD.DEBUG.glguiFull();
+        
+
+
         CABLES.showPacoRenderer();
 
         this._elGlCanvas.hover(function (e){

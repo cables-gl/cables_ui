@@ -68,6 +68,9 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setInputValue("wheelmultiplier", CABLES.UI.userSettings.get("wheelmultiplier")||1);
 
     this.setSwitchValue("forceWebGl1", CABLES.UI.userSettings.get("forceWebGl1"));
+    
+    this.setSwitchValue("miniopselect", CABLES.UI.userSettings.get("miniopselect"));
+    this.setSwitchValue("glpatchview", CABLES.UI.userSettings.get("glpatchview"));
 
 
 

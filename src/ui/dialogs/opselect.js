@@ -511,6 +511,9 @@ CABLES.UI.OpSelect.prototype.showOpSelect=function(options,linkOp,linkPort,link)
             "onClose":this.close
         });
 
+    if(CABLES.UI.userSettings.get("miniopselect")==true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
+    else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
+    
     if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type==CABLES.OP_PORT_TYPE_VALUE||CABLES.UI.OPSELECT.linkNewOpToPort.type==CABLES.OP_PORT_TYPE_STRING)) $('#opselect_createVar').show();
     else $('#opselect_createVar').hide();
 

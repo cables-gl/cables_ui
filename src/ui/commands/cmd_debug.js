@@ -24,21 +24,13 @@ CABLES.CMD.DEBUG.globalVarDump=function()
 
 CABLES.CMD.DEBUG.glguiTab=function()
 {
-	// var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch);
-	// a.setSize(640,360);
-
 	var t=new CABLES.GLGUI.GlGuiTab(gui.mainTabs);
-
 };
 
 CABLES.CMD.DEBUG.glguiFull=function()
 {
-	// var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch);
-	// a.setSize(640,360);
-
-	var t=new CABLES.GLGUI.GlGuiFull();
+	new CABLES.GLGUI.GlGuiFull();
 };
-
 
 
 CABLES.CMD.commands.push(
