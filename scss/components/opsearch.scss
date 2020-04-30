@@ -323,6 +323,69 @@
 
 }
 
+.opsearch.minimal
+{
+    opacity: 0.9;
+    width: 428px;
+
+    input
+    {
+        padding:4px !important;
+        padding-left:8px;
+    }
+
+    .searchresult
+    {
+        border:0;
+        border-bottom:1px solid black;
+        white-space: nowrap;
+    }
+
+    #realsearch,
+    .namespace,
+    .insertbutton,
+    .searchinfo
+    {
+        display:none !important;
+    }
+
+    input:focus
+    {
+        border:1px solid black;
+        border-radius: 2px;
+    }
+
+    .summary
+    {
+        display:inline;
+    }
+
+    .searchbrowserContainer
+    {
+        width: 428px;
+    }
+
+    header
+    {
+        padding:4px;
+        border-radius: 0px;
+    }
+
+    .searchable
+    {
+        padding: 5px 10px;
+    }
+
+    .optree
+    {
+        visibility: hidden;
+    }
+
+
+}
+
+
+
 
 .searchbrowser
 {
@@ -337,3 +400,5 @@
     .item_color_math { border-left:15px solid var(--color_op_handle_math); }
     .item_color_user { border-left:15px solid var(--color_op_handle_user); }
 }
+
+

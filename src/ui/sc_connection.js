@@ -170,6 +170,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             if(!this._paco)
             {
+                gui.corePatch().clear();
                 this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
                 gui.patchConnection.connectors.push(this._paco);
             }

@@ -1394,9 +1394,9 @@ CABLES.UI.Patch = function(_gui) {
             self.updateSubPatches();
             gui.patch().updateBounds();
 
-            gui.patchConnection.send(CABLES.PACO_LOAD, {
-                "patch": JSON.stringify(proj),
-            });
+            // gui.patchConnection.send(CABLES.PACO_LOAD, {
+            //     "patch": JSON.stringify(proj),
+            // });
         });
     };
 

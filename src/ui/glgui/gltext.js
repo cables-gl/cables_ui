@@ -7,6 +7,8 @@ CABLES.GLGUI.Text=class
             throw new Error("glgui text constructor without textwriter");
             return;
         }
+        
+        this._visible=true;
         this._textWriter=textWriter;
         this._string=string;
         this._x=0;
@@ -39,6 +41,12 @@ CABLES.GLGUI.Text=class
     {
         this._scale=s;
         this.rebuild();
+    }
+
+    set visible(v)
+    {
+        for(var i=0;i<this._rects.length;i++)
+            if(this._rects[i])this._rects[i].visible=v;
     }
 
     _map(x)

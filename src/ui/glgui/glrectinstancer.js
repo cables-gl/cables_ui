@@ -217,7 +217,6 @@ CABLES.GLGUI.RectInstancer=class extends CABLES.EventTarget
         if(oldAttrSizes)this._attrSizes.set(oldAttrSizes);
         if(oldAttrCircle)this._attrCircle.set(oldAttrCircle);
         if(oldAttrTexRect)this._attrTexRect.set(oldAttrTexRect);
-
     }
 
     isDragging()

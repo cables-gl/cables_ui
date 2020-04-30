@@ -20,6 +20,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines=new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects=new CABLES.GLGUI.RectInstancer(cgl);
         this._textWriter=new CABLES.GLGUI.TextWriter(cgl);
+        this._currentSubpatch=0;
         // this._overLayLines=new CABLES.GLGUI.Linedrawer(cgl);
 
         this._selectionArea=new CABLES.GLGUI.GlSelectionArea(this._overLayRects,this)
@@ -71,6 +72,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         
         this.links={}
 
+
         cgl.canvas.addEventListener("mousedown",(e) =>
         {
             this._mouseOverCanvas=true;
@@ -97,14 +99,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.emitEvent("mouseup",e);
         });
 
-
-
-        
-
-
         cgl.canvas.addEventListener("mouseup",(e) =>
         {
-
             this._rectInstancer.mouseUp(e);
             this.emitEvent("mouseup",e);
             this.quickLinkSuggestion.longPressCancel();
@@ -130,6 +126,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     get rectDrawer(){return this._rectInstancer;}
     get selectedGlOps(){return this._selectedGlOps;}
+
+    get subPatch(){return this._currentSubpatch;};
 
     getOpAt(x,y)
     {
@@ -199,6 +197,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 glOp.opUiAttribs=op.uiAttribs;
                 glOp.update();
             });
+
+
     }
 
     screenCoord(mouseX,mouseY)

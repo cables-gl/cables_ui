@@ -8,6 +8,7 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         super();
 
         options=options||{};
+        this._visible=true;
         this._rectInstancer=instancer;
         this._attrIndex=instancer.getIndex();
         this._parent=options.parent||null;
@@ -25,7 +26,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         this.colorHover=null;
         this.colorHoverMultiply=1.4;
         this._texture=null;
-
         // draggable stuff
         this._draggable=false;
         this._isDragging=false;
@@ -51,8 +51,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     get idx(){return this._attrIndex;}
 
-
-
     addChild(c)
     {
         this.childs.push(c);
@@ -65,11 +63,26 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
         else this._rectInstancer.setCircle(this._attrIndex,0);
     }
 
+    get visible() {return this._visible;}
+    set visible(v)
+    {
+        this._visible=v;
+        this._updateSize();
+
+        for(var i=0;i<this.childs.length;i++) this.childs[i].visible=v;
+    }
+
+    _updateSize()
+    {
+        if(!this._visible) this._rectInstancer.setSize(this._attrIndex,0,0);
+        else this._rectInstancer.setSize(this._attrIndex,this._w,this._h);
+    }
+
     setSize(w,h)
     {
         this._w=w;
         this._h=h;
-        this._rectInstancer.setSize(this._attrIndex,this._w,this._h);
+        this._updateSize();
     }
 
     setColorHover(r,g,b,a)
@@ -184,6 +197,8 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
     mouseMove(x,y,button)
     {
+        if(!this._visible)return;
+
         const hovering=this.isPointInside(x,y)
 
         const isHovered=this._hovering;
@@ -191,8 +206,6 @@ CABLES.GLGUI.GlRect=class extends CABLES.EventTarget
 
         if(hovering && !isHovered) this.emitEvent("hover",this);
         else if(!hovering && isHovered) this.emitEvent("unhover",this);
-
-        
 
         if(this.colorHover)
         {

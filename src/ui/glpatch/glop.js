@@ -8,6 +8,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         super();
 
         this._id=op.id;
+        this._visible=true;
         this._glPatch=glPatch;
         this._op=op;
         this._instancer=instancer;
@@ -318,9 +319,24 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight+this._glTitle.width;
     }
 
+    set visible(v)
+    {
+        this._visible=v;
+        if(this._glRectBg) this._glRectBg.visible=v;
+        if(this._glTitle) this._glTitle.visible=v;
+        if(this._glTitleExt) this._glTitleExt.visible=v;
+        if(this._glComment) this._glComment.visible=v;
+    }
+
+    get visible()
+    {
+        return this._visible;
+    }
+
 
     update()
     {
+
         if(this.opUiAttribs.extendTitle && !this._glTitleExt)
         {
             this._glTitleExt=new CABLES.GLGUI.Text(this._textWriter," | "+this.opUiAttribs.extendTitle);
@@ -367,6 +383,11 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
             if(this._visPort)
             {
             }
+        }
+
+        if(this.opUiAttribs.subPatch != this._glPatch.subPatch)
+        {
+            this.visible=false;
         }
 
         this.updatePosition();

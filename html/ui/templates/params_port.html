@@ -83,6 +83,7 @@
 
         {{#if isInput}}
             {{#if port.links}}
+            {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
             {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}" >{{port.val}}</span>{{/compare}}
             {{else}}
                 {{#if port.uiAttribs.useVariable}}
