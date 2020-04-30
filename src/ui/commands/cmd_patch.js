@@ -11,7 +11,8 @@ CABLES.CMD.PATCH.selectAllOps=function()
 
 CABLES.CMD.PATCH.deleteSelectedOps=function()
 {
-	gui.patch().deleteSelectedOps();
+	// gui.patch().deleteSelectedOps();
+	gui.patchView.deleteSelectedOps();
 };
 
 CABLES.CMD.PATCH.reload=function()
@@ -70,7 +71,7 @@ CABLES.CMD.PATCH.selectChilds=function()
 
 CABLES.CMD.PATCH.createSubPatchFromSelection=function()
 {
-	gui.patch().createSubPatchFromSelection();
+	gui.patchView.createSubPatchFromSelection();
 };
 
 CABLES.CMD.PATCH.findCommentedOps=function()

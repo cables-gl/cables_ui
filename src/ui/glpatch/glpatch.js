@@ -114,10 +114,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             if(Object.keys(this._selectedGlOps).length==0)gui.patchView.showBookmarkParamsPanel();
         });
 
-        gui.keys.key("Delete","Delete selected ops","down",cgl.canvas.id,{}, () =>
+        gui.keys.key(["Delete","Backspace"],"Delete selected ops","down",cgl.canvas.id,{}, (e) =>
         {
-            for(var i in this._selectedGlOps) this._patchAPI.deleteOp(i);
-            this.unselectAll();
+            gui.patchView.deleteSelectedOps();
+            gui.patchView.showDefaultPanel();
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.preventDefault) e.preventDefault();
         });
 
         gui.keys.key("a","Align selected ops","down",cgl.canvas.id,{}, () =>

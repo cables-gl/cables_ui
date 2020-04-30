@@ -403,7 +403,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         if(this.opUiAttribs.subPatch != this._glPatch.subPatch) this.visible=false;
 
         this.updatePosition();
-        for(var i in this._links) this._links[i].update();
+        for(var i in this._links) if(this._links[i]) this._links[i].update();
         this._glPatch.needsRedraw=true;
     }
 

@@ -369,82 +369,82 @@ CABLES.UI.Patch = function(_gui) {
     // };
 
     this.createSubPatchFromSelection = function() {
-        if (selectedOps.length == 1 && selectedOps[0].op.objName == CABLES.UI.OPNAME_SUBPATCH) {
-            this.unPatchSubPatch(selectedOps[0].op.patchId.val);
-            return;
-        }
+        // if (selectedOps.length == 1 && selectedOps[0].op.objName == CABLES.UI.OPNAME_SUBPATCH) {
+        //     this.unPatchSubPatch(selectedOps[0].op.patchId.val);
+        //     return;
+        // }
 
-        var bounds = this.getSelectionBounds();
-        var trans = {
-            x: bounds.minx + (bounds.maxx - bounds.minx) / 2,
-            y: bounds.miny
-        };
-        var patchOp = gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH, { "translate": trans });
-        var patchId = patchOp.patchId.get();
+        // var bounds = this.getSelectionBounds();
+        // var trans = {
+        //     x: bounds.minx + (bounds.maxx - bounds.minx) / 2,
+        //     y: bounds.miny
+        // };
+        // var patchOp = gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH, { "translate": trans });
+        // var patchId = patchOp.patchId.get();
 
-        patchOp.uiAttr({ "translate": trans });
+        // patchOp.uiAttr({ "translate": trans });
 
-        var i, j, k;
-        for (i in selectedOps) selectedOps[i].op.uiAttribs.subPatch = patchId;
+        // var i, j, k;
+        // for (i in selectedOps) selectedOps[i].op.uiAttribs.subPatch = patchId;
 
-        for (i = 0; i < selectedOps.length; i++)
-        {
-            for (j = 0; j < selectedOps[i].op.portsIn.length; j++)
-            {
-                var theOp = selectedOps[i].op;
-                var found=null;
-                for (k = 0; k < theOp.portsIn[j].links.length; k++)
-                {
-                    var otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
-                    var otherOp = otherPort.parent;
-                    if (otherOp.uiAttribs.subPatch != patchId)
-                    {
-                        theOp.portsIn[j].links[k].remove();
-                        k--;
+        // for (i = 0; i < selectedOps.length; i++)
+        // {
+        //     for (j = 0; j < selectedOps[i].op.portsIn.length; j++)
+        //     {
+        //         var theOp = selectedOps[i].op;
+        //         var found=null;
+        //         for (k = 0; k < theOp.portsIn[j].links.length; k++)
+        //         {
+        //             var otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
+        //             var otherOp = otherPort.parent;
+        //             if (otherOp.uiAttribs.subPatch != patchId)
+        //             {
+        //                 theOp.portsIn[j].links[k].remove();
+        //                 k--;
 
-                        if(found)
-                        {
-                            gui.scene().link(
-                                otherPort.parent,
-                                otherPort.getName(),
-                                patchOp,
-                                found
-                            );
-                        }
-                        else
-                        {
-                            gui.scene().link(
-                                otherPort.parent,
-                                otherPort.getName(),
-                                patchOp,
-                                patchOp.dyn.name
-                            );
+        //                 if(found)
+        //                 {
+        //                     gui.scene().link(
+        //                         otherPort.parent,
+        //                         otherPort.getName(),
+        //                         patchOp,
+        //                         found
+        //                     );
+        //                 }
+        //                 else
+        //                 {
+        //                     gui.scene().link(
+        //                         otherPort.parent,
+        //                         otherPort.getName(),
+        //                         patchOp,
+        //                         patchOp.dyn.name
+        //                     );
 
-                            found=patchOp.addSubLink(theOp.portsIn[j], otherPort);
-                        }
-                    }
-                }
+        //                     found=patchOp.addSubLink(theOp.portsIn[j], otherPort);
+        //                 }
+        //             }
+        //         }
 
-                if (theOp.portsOut[j])
-                    for (k = 0; k < theOp.portsOut[j].links.length; k++) {
-                        var otherPortOut = theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
-                        if (otherPortOut) {
-                            var otherOpOut = otherPortOut.parent;
-                            if (otherOpOut.uiAttribs.subPatch != patchId) {
-                                console.log('found outside connection!! ', otherPortOut.name);
-                                theOp.portsOut[j].links[k].remove();
-                                gui.scene().link(
-                                    otherPortOut.parent,
-                                    otherPortOut.getName(),
-                                    patchOp,
-                                    patchOp.dynOut.name
-                                );
-                                patchOp.addSubLink(theOp.portsOut[j], otherPortOut);
-                            }
-                        }
-                    }
-            }
-        }
+        //         if (theOp.portsOut[j])
+        //             for (k = 0; k < theOp.portsOut[j].links.length; k++) {
+        //                 var otherPortOut = theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
+        //                 if (otherPortOut) {
+        //                     var otherOpOut = otherPortOut.parent;
+        //                     if (otherOpOut.uiAttribs.subPatch != patchId) {
+        //                         console.log('found outside connection!! ', otherPortOut.name);
+        //                         theOp.portsOut[j].links[k].remove();
+        //                         gui.scene().link(
+        //                             otherPortOut.parent,
+        //                             otherPortOut.getName(),
+        //                             patchOp,
+        //                             patchOp.dynOut.name
+        //                         );
+        //                         patchOp.addSubLink(theOp.portsOut[j], otherPortOut);
+        //                     }
+        //                 }
+        //             }
+        //     }
+        // }
 
         self.setSelectedOpById(patchOp.id);
         self.updateSubPatches();
@@ -1151,26 +1151,10 @@ CABLES.UI.Patch = function(_gui) {
     }
 
     this.getSelectionBounds = function () {
-        var bounds = {
-            minx: 9999999,
-            maxx: -9999999,
-            miny: 9999999,
-            maxy: -9999999,
-        };
-
-        for (var j = 0; j < selectedOps.length; j++) {
-            if (selectedOps[j].op.uiAttribs && selectedOps[j].op.uiAttribs.translate) {
-                // console.log(selectedOps[j].op.uiAttribs.translate.x);
-                bounds.minx = Math.min(bounds.minx, selectedOps[j].op.uiAttribs.translate.x);
-                bounds.maxx = Math.max(bounds.maxx, selectedOps[j].op.uiAttribs.translate.x);
-                bounds.miny = Math.min(bounds.miny, selectedOps[j].op.uiAttribs.translate.y);
-                bounds.maxy = Math.max(bounds.maxy, selectedOps[j].op.uiAttribs.translate.y);
-            }
-        }
-
-        this._setBoundsXYWH(bounds);
-
+        const bounds= gui.patchView.getSelectionBounds();
+        _setBoundsXYWH(bounds);
         return bounds;
+
     };
 
     this.getSubPatchBounds = function(subPatch) {
@@ -1213,7 +1197,6 @@ CABLES.UI.Patch = function(_gui) {
         mouseRubberBandPos = null;
         if (rubberBandRect) rubberBandRect.hide();
     }
-
 
     function setStatusSelectedOps() {
         gui.patchView.showSelectedOpsPanel(selectedOps);
@@ -1814,6 +1797,11 @@ CABLES.UI.Patch = function(_gui) {
 
             logStartup('Patch loaded');
         };
+
+        
+        scene.addEventListener("subpatchCreated",function() {
+            self.updateSubPatches();
+        });
 
         scene.addEventListener("onUnLink",function(p1, p2) {
             gui.setStateUnsaved();
@@ -2433,9 +2421,9 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.deleteSelectedOps = function() {
-        for (var i in selectedOps)
-            gui.patch().scene.deleteOp(selectedOps[i].op.id, true);
-
+        // for (var i in selectedOps)
+            // gui.patch().scene.deleteOp(selectedOps[i].op.id, true);
+        gui.patchView.deleteSelectedOps();
         this.updateBounds();
     };
 
@@ -2490,6 +2478,7 @@ CABLES.UI.Patch = function(_gui) {
         if (uiop === null) {
             selectedOps.length = 0;
             for (var i in gui.patch().ops) {
+                gui.patch().ops[i].op.setUiAttrib({"selected":false});
                 gui.patch().ops[i].setSelected(false);
                 gui.patch().ops[i].hideAddButtons();
             }
@@ -2501,6 +2490,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.addSelectedOp = function(uiop) {
+        uiop.op.setUiAttrib({"selected":true});
         uiop.oprect.setSelected(true);
         uiop.setSelected(true);
         for (var i in selectedOps)

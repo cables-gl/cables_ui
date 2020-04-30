@@ -1,8 +1,6 @@
 CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
-
-
 CABLES.UI.GUI = function(cfg)
 {
     CABLES.EventTarget.apply(this);
@@ -16,7 +14,7 @@ CABLES.UI.GUI = function(cfg)
     this.opParams=new CABLES.UI.OpParampanel();
     this.socket=new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
 
-    this.patchView=new CABLES.UI.PatchView();
+    
 
     if(!cfg) cfg={};
     if(!cfg.usersettings) cfg.usersettings={settings:{}};
@@ -28,6 +26,8 @@ CABLES.UI.GUI = function(cfg)
             "premultiplied":true,
             "prefixAssetPath":CABLES.sandbox.getAssetPrefix()
         }});
+
+    this.patchView=new CABLES.UI.PatchView(this._corePatch);
 
     _scene.gui = true;
     var _patch = null;
@@ -1206,9 +1206,10 @@ CABLES.UI.GUI = function(cfg)
 
         $(document).keydown(function(e)
         {
-
-            if (CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91)) {
-                if (CABLES.UI.suggestions) {
+            if (CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91))
+            {
+                if (CABLES.UI.suggestions)
+                {
                     var suggs = CABLES.UI.suggestions;
                     CABLES.UI.suggestions.close();
                     suggs.showSelect();
@@ -1216,9 +1217,8 @@ CABLES.UI.GUI = function(cfg)
                 return;
             }
 
-
-
-            switch (e.which) {
+            switch (e.which)
+            {
                 default:
                     break;
 
