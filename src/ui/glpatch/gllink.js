@@ -61,9 +61,9 @@ CABLES.GLGUI.GlLink=class
 
     set visible(v)
     {
-console.log("link visible",v);
         this._visible=v;
-this._updatePosition();
+        this._buttonRect.visible=v;
+        this._updatePosition();
     }
 
     _updatePosition()

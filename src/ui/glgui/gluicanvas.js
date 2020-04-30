@@ -2,6 +2,37 @@ var CABLES=CABLES||{}
 CABLES.GLGUI=CABLES.GLGUI||{};
 
 
+
+CABLES.GLGUI.GlGuiFull = function (tabs)
+{
+    const views=document.getElementById("patchviews");
+
+    for(var i=0;i<views.children.length;i++)
+    {
+        views.children[i].style.display="none";
+        views.children[i].classList.remove("visible");
+    }
+
+    var ele=document.createElement("div");
+
+    views.appendChild(ele);
+
+    ele.classList.add("visible");
+    ele.classList.add("glpatchcontainer");
+
+    ele.innerHTML="";
+    var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch,ele);
+    a.parentResized();
+
+    gui.on("setLayout",()=>
+    {
+        a.parentResized();
+    });
+
+
+};
+
+
 CABLES.GLGUI.GlGuiTab = function (tabs)
 {
     this._tab = new CABLES.UI.Tab("GlGui", { icon: "cube", infotext: "tab_glgui" });
@@ -9,8 +40,6 @@ CABLES.GLGUI.GlGuiTab = function (tabs)
     gui.maintabPanel.show();
     this._tab.contentEle.innerHTML="";
     var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch,this._tab.contentEle);
-
-    
     a.parentResized();
 
     this._tab.on("resize",()=>

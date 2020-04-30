@@ -22,13 +22,21 @@ CABLES.CMD.DEBUG.globalVarDump=function()
     CABLES.GlobalVarTester.after(window);
 };
 
-CABLES.CMD.DEBUG.glgui=function()
+CABLES.CMD.DEBUG.glguiTab=function()
 {
 	// var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch);
 	// a.setSize(640,360);
 
 	var t=new CABLES.GLGUI.GlGuiTab(gui.mainTabs);
 
+};
+
+CABLES.CMD.DEBUG.glguiFull=function()
+{
+	// var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch);
+	// a.setSize(640,360);
+
+	var t=new CABLES.GLGUI.GlGuiFull();
 };
 
 
@@ -47,9 +55,15 @@ CABLES.CMD.commands.push(
         icon:'command'
 	},
     {
-		cmd:"glgui",
+		cmd:"glgui patchfield",
 		category:"debug",
-		func:CABLES.CMD.DEBUG.glgui,
+		func:CABLES.CMD.DEBUG.glguiFull,
+        icon:'command'
+	},
+    {
+		cmd:"glgui tab",
+		category:"debug",
+		func:CABLES.CMD.DEBUG.glguiTab,
         icon:'command'
 	}
 

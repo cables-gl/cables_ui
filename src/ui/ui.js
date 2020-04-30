@@ -2,8 +2,11 @@ CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
 
+
 CABLES.UI.GUI = function(cfg)
 {
+    CABLES.EventTarget.apply(this);
+
     var self = this;
     var showTiming = false;
     var showingEditor = false;
@@ -210,7 +213,11 @@ CABLES.UI.GUI = function(cfg)
         this._elAceEditor = this._elAceEditor || $('#ace_editors');
         this._elSplitterPatch = this._elSplitterPatch || $('#splitterPatch');
         this._elSplitterRenderer = this._elSplitterRenderer || $('#splitterRenderer');
-        this._elPatch = this._elPatch || $('#patch');
+
+        this._elPatch = $('#patchview .visible');
+
+console.log(this._elPatch);
+
         this._elOptions = this._elOptions || $('#options');
         this._elMeta = this._elMeta || $('#meta');
         this._elMenubar = this._elMenubar || $('#menubar');
@@ -574,6 +581,9 @@ CABLES.UI.GUI = function(cfg)
 
         $('#bgpreview').css('right', self.rendererWidth+'px');
         $('#bgpreview').css('top', menubarHeight+'px');
+
+        this.emitEvent("setLayout");
+
 
         perf.finish();
     };

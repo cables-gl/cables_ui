@@ -289,7 +289,6 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
     _setupPort(i,p)
     {
-
         const glp=new CABLES.GLGUI.GlPort(this._glPatch,this,this._instancer,p,i,this._glRectBg);
         this._glPorts.push(glp);
     }

@@ -124,7 +124,8 @@ CABLES.GLGUI.GlPatchAPI=class
         const pOut= opOut.getPortById(portIdOut);
         const l=pOut.getLinkTo(pIn);
 
-        l.remove();
+        if(l) l.remove();
+        else console.error("could not remove link");
     }
 
     addOpIntoLink(opIdIn,opIdOut,portIdIn,portIdOut)
