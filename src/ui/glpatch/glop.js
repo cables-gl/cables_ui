@@ -106,8 +106,8 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
 
         // this._portRects=[];
 
-        for(var i=0;i<this._op.portsIn.length;i++) this._setupPort(i,this._op.portsIn[i]);
-        for(var i=0;i<this._op.portsOut.length;i++) this._setupPort(i,this._op.portsOut[i]);
+        this._setupPorts(this._op.portsIn);
+        this._setupPorts(this._op.portsOut);
 
         const portsSize=Math.max(this._op.portsIn.length,this._op.portsOut.length)*(CABLES.GLGUI.VISUALCONFIG.portWidth+CABLES.GLGUI.VISUALCONFIG.portPadding);
 
@@ -271,9 +271,20 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
         }
     }
 
+    _setupPorts(ports)
+    {
+        var count=0;
+        for(var i=0;i<ports.length;i++)
+        {
+            if (ports[i].uiAttribs.display == 'dropdown')continue;
+
+            this._setupPort(count,ports[i]);
+            count++;
+        }
+    }
+
     _setupPort(i,p)
     {
-        if (p.uiAttribs.display == 'dropdown')return;
 
         const glp=new CABLES.GLGUI.GlPort(this._glPatch,this,this._instancer,p,i,this._glRectBg);
         this._glPorts.push(glp);
@@ -385,10 +396,7 @@ CABLES.GLGUI.GlOp=class extends CABLES.EventTarget
             }
         }
 
-        if(this.opUiAttribs.subPatch != this._glPatch.subPatch)
-        {
-            this.visible=false;
-        }
+        if(this.opUiAttribs.subPatch != this._glPatch.subPatch) this.visible=false;
 
         this.updatePosition();
         for(var i in this._links) this._links[i].update();
