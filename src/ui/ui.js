@@ -16,8 +16,7 @@ CABLES.UI.GUI = function(cfg)
     this.opParams=new CABLES.UI.OpParampanel();
     this.socket=new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
 
-
-
+    this.patchView=new CABLES.UI.PatchView();
 
     if(!cfg) cfg={};
     if(!cfg.usersettings) cfg.usersettings={settings:{}};
@@ -942,28 +941,6 @@ CABLES.UI.GUI = function(cfg)
         ele.classList.add("visible");
         ele.style.display="block";
         this.setLayout();
-    }
-
-    this.showBookmarkParamsPanel=function()
-    {
-        var html='<div class="panel">';
-
-        if(!gui.user.isPatchOwner) html += CABLES.UI.getHandleBarHtml('clonepatch', {});
-        html+=gui.bookmarks.getHtml();
-
-        const views=document.getElementById("patchviews");
-        if(views.children.length>1)
-        {
-            html+='<h3>Patchviews</h3>';
-            for(var i=0;i<views.children.length;i++)
-            {
-                html+='<div class="list" onclick="gui.switchPatchView(\''+views.children[i].id+'\')"><div>'+views.children[i].id+'</div></div>';
-            }
-        }
-
-        html+='</div>';
-
-        $('#options').html(html);
     }
 
 

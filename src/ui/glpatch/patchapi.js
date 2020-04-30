@@ -161,8 +161,6 @@ CABLES.GLGUI.GlPatchAPI=class
         const ops=gui.scene().getOpsById(opids);
         console.log("align ops!",ops.length);
         CABLES.UI.TOOLS.alignOps(ops);
-        
-
     }
 
     linkPortToOp(e,opid,pid,op2id)
@@ -174,7 +172,6 @@ CABLES.GLGUI.GlPatchAPI=class
         new CABLES.UI.SuggestPortDialog(op2,p,e,(p2n)=>
         {
             this._patch.link(op1,pid,op2,p2n);
-
         });
 
         // this._patch.link(op1,pid,op2,p2id);
@@ -192,16 +189,9 @@ CABLES.GLGUI.GlPatchAPI=class
             {
                 op2=this._patch.getOpById(opids[i]);
                 const pname=portnames[i];
-
-                // console.log(op2.title,pname,ports);
-        
                 this._patch.link(op2,pname,op1,suggport);
             }
-
-
         });
-
-        // this._patch.link(op1,pid,op2,p2id);
     }
 
     linkPorts(opid,pid,op2id,p2id)
@@ -211,7 +201,6 @@ CABLES.GLGUI.GlPatchAPI=class
 
         this._patch.link(op1,pid,op2,p2id);
     }
-
 
     
 }

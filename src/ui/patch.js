@@ -1216,16 +1216,9 @@ CABLES.UI.Patch = function(_gui) {
 
 
     function setStatusSelectedOps() {
-        var html = CABLES.UI.getHandleBarHtml(
-            'params_ops', {
-                numOps: selectedOps.length,
-            });
-
-        $('#options').html(html);
-        gui.setTransformGizmo(null);
-
-        CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
+        gui.patchView.showSelectedOpsPanel(selectedOps);
     }
+
     this.setStatusSelectedOps=setStatusSelectedOps;
 
     this.selectAllOpsSubPatch = function(subPatch) {
@@ -2574,7 +2567,7 @@ CABLES.UI.Patch = function(_gui) {
         s.name = currentProject.name;
         s.settings = gui.scene().settings;
 
-        gui.showBookmarkParamsPanel();
+        gui.patchView.showBookmarkParamsPanel();
 
         perf.finish();
     };

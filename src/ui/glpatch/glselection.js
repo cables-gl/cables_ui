@@ -18,6 +18,10 @@ CABLES.GLGUI.GlSelectionArea=class
     get w(){return this._w;}
     get h(){return this._h;}
 
+    get active(){
+        return this._w!=0 || this._h!=0;
+    }
+
     hideArea()
     {
         this._selectRect.setSize(0,0);
@@ -30,6 +34,9 @@ CABLES.GLGUI.GlSelectionArea=class
 
     setSize(w,h)
     {
+        this._w=w;
+        this._h=h;
+
         this._selectRect.setSize(w,h);
     }
 }

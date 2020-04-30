@@ -93,7 +93,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("mouseleave",(e) =>
         {
             this._mouseOverCanvas=false;
-            this._selectionArea.hideArea();
+
+            if(this._selectionArea.active)
+            {
+                console.log("hide area44");
+                this._selectionArea.hideArea();
+            }
             this._lastButton=0;
             this.emitEvent("mouseleave",e);
             this.emitEvent("mouseup",e);
@@ -106,7 +111,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.quickLinkSuggestion.longPressCancel();
             this._rectInstancer.interactive=true;
 
-            if(Object.keys(this._selectedGlOps).length==0)gui.showBookmarkParamsPanel();
+            if(Object.keys(this._selectedGlOps).length==0)gui.patchView.showBookmarkParamsPanel();
         });
 
         gui.keys.key("Delete","Delete selected ops","down",cgl.canvas.id,{}, () =>
@@ -283,6 +288,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         var allowSelectionArea= !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;
 
+
+        // console.log("sel active",this._selectionArea.active);
+
         this._rectInstancer.mouseMove(x,y,button);
 
         if(this._rectInstancer.isDragging()) return;
@@ -323,7 +331,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
 
         if(this._selectionArea.h==0 && hoverops.length>0) allowSelectionArea = false;
-        if(this._lastButton==1 && button!=1) this._selectionArea.hideArea();
+        if(this._lastButton==1 && button!=1) 
+        {
+            if(this._selectionArea.active) console.log("hide area2");
+            this._selectionArea.hideArea();
+        }
 
         if(this._mouseOverCanvas)
         {
@@ -333,6 +345,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 this._selectionArea.setPos(this._lastMouseX,this._lastMouseY,1000);
                 this._selectionArea.setSize((x-this._lastMouseX), (y-this._lastMouseY));
                 this._selectOpsInRect(x,y,this._lastMouseX,this._lastMouseY);
+                gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
             }
             else
             {
