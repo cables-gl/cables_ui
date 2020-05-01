@@ -1432,21 +1432,25 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
 
     this.doMoveFinished = function() {
 
-        var newUiAttr=JSON.stringify(self.op.uiAttribs);
-        CABLES.undo.add({
-            title:"move op",
-            undo: function() {
-                try {
-                    var u = JSON.parse(oldUiAttribs);
+        undoAdd=function()
+        {
+            const newUiAttr=JSON.stringify(self.op.uiAttribs);
+            const oldUiAttr=oldUiAttribs+' ';
+            CABLES.undo.add({
+                title:"Move op",
+                undo: function() {
+                    try {
+                        var u = JSON.parse(oldUiAttr);
+                        self.setPos(u.translate.x, u.translate.y);
+                    } catch (e) {}
+                },
+                redo: function()
+                {
+                    var u = JSON.parse(newUiAttr);
                     self.setPos(u.translate.x, u.translate.y);
-                } catch (e) {}
-            },
-            redo: function()
-            {
-                var u = JSON.parse(newUiAttr);
-                self.setPos(u.translate.x, u.translate.y);
-            }
-        });
+                }
+            });
+        }();
 
         startMoveX = -1;
         startMoveY = -1;

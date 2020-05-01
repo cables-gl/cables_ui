@@ -17,13 +17,13 @@ CABLES.UI.MetaHistory=class
 
     update()
     {
-        console.log("undo update!!!");
+        if(!this._tab.isVisible())return;
+
         this.html='<h3>history</h3>';
 
         this.html+='<span onclick="CABLES.undo.undo();" class="iconbutton"><span class="icon icon-arrow-left" ></span></span>';
         this.html+='<span onclick="CABLES.undo.redo();" class="iconbutton"><span class="icon icon-arrow-right"></span></span>';
-
-        // if(this._tab.isVisible())
+        
         const commands=CABLES.undo.getCommands();
 
         this.html+='&nbsp;&nbsp;&nbsp;'+(CABLES.undo.getIndex()+1)+' / '+(commands.length)+'<br/><br/>';
@@ -46,7 +46,7 @@ CABLES.UI.MetaHistory=class
             if(!cmd.group || i==0 || (i>0 && lastGroup && lastGroup!=cmd.group))
             {
                 style+="margin-top:4px;"
-                groupSummary=[];
+
             }
 
             if(CABLES.undo.getIndex()==i) style+="border-left:4px solid var(--color-08);background-color:var(--color-05);";
@@ -57,32 +57,25 @@ CABLES.UI.MetaHistory=class
 
             if(!cmd.group || cmd.groupName) this.html+='<div style="padding:2px;padding-left:7px;'+style+'">';
 
-            if(!cmd.group) this.html+='<b>'+cmd.title+'</b>';
-
-            // this.html+='--';
-            // this.html+=i;
-            // if(cmd.group)
-            // {
-            //     this.html+='--';
-            //     this.html+=cmd.group;
-            // }
+            if(!cmd.group)
+            {
+                this.html+='<b>'+cmd.title+'</b>';
+                groupSummary=[];
+            }
 
             if(cmd.groupName)
             {
-                if(i!=-1)
+                if(i!=-1 && groupSummary.length>1)
                 {
                     this.html+=groupSummary.join(", ");
                     this.html+='<br/>';
                 }
                 this.html+='<b>'+cmd.groupName+'</b>';
                 lastGroup=cmd.group;
+                groupSummary=[];
             }
-            
-
 
             this.html+='</div>';
-            
-
         }
 
         this._tab.html(this.html);

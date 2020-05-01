@@ -90,7 +90,6 @@ https://github.com/ArthurClemens/Javascript-Undo-Manager
                     callback();
                 }
 
-                console.log(index+' / '+commands.length);
                 return this;
             },
 
