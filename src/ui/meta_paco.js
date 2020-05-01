@@ -32,12 +32,13 @@ CABLES.UI.Paco.prototype.open=function()
 
 CABLES.UI.Paco.prototype.show=function()
 {
+    if(!window.gui)
+    {
+        setTimeout(this.show.bind(this),300);
+        return;
+    }
     var html = CABLES.UI.getHandleBarHtml('meta_paco',
     {
-        // op:op,
-        // doc:doc,
-        // summary:summary,
-        // libs:gui.opDocs.libs,
         user:gui.user
     });
     this._tab.html(html);

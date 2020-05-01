@@ -1458,13 +1458,7 @@ CABLES.UI.Patch = function(_gui) {
                 });
 
             }(op.id, op.objName);
-
-            gui.patchConnection.send(CABLES.PACO_OP_CREATE, {
-                "opId": op.id,
-                "objName": op.objName
-            });
         }
-
 
         op.onAddPort = function(p) {
             uiOp.addPort(p.direction, p);
@@ -1680,13 +1674,6 @@ CABLES.UI.Patch = function(_gui) {
                             this.ops[i].links[j].p2.thePort.parent.id
                         );
 
-                        gui.patchConnection.send(CABLES.PACO_UNLINK, {
-                            "op1": this.ops[i].links[j].p1.thePort.parent.id,
-                            "op2": this.ops[i].links[j].p2.thePort.parent.id,
-                            "port1": this.ops[i].links[j].p1.thePort.getName(),
-                            "port2": this.ops[i].links[j].p2.thePort.getName(),
-                        });
-
                         this.ops[i].links[j].hideAddButton();
 
                         this.ops[i].links[j].p1.updateUI();
@@ -1737,12 +1724,6 @@ CABLES.UI.Patch = function(_gui) {
 
             if(!isLoading && !uiPort1.opUi.isHidden()) thelink.show();
 
-            gui.patchConnection.send(CABLES.PACO_LINK, {
-                "op1": p1.parent.id,
-                "op2": p2.parent.id,
-                "port1": p1.name,
-                "port2": p2.name,
-            });
 
             if (!isLoading)
             {
@@ -1787,10 +1768,6 @@ CABLES.UI.Patch = function(_gui) {
                     }
                 });
             }(op.objName, op.id);
-
-            gui.patchConnection.send(CABLES.PACO_OP_DELETE, {
-                "op": op.id,
-            });
 
             for (var i in self.ops) {
                 if (self.ops[i].op == op) {

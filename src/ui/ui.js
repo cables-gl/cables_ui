@@ -39,7 +39,7 @@ CABLES.UI.GUI = function(cfg)
     this._gizmo=null;
     this._transformOverlay=new CABLES.UI.TransformsOverlay();
 
-    this.patchConnection = new CABLES.PatchConnectionSender();
+    this.patchConnection = new CABLES.PatchConnectionSender(this._corePatch);
     this.opDocs = null;
     this.opHistory=new CABLES.UI.OpHistory();
 
