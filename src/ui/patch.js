@@ -5,6 +5,8 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.OPNAME_SUBPATCH = 'Ops.Ui.SubPatch';
 
 CABLES.UI.Patch = function(_gui) {
+    CABLES.EventTarget.apply(this);
+
     var self = this;
     this.ops = [];
     this.scene = null;
@@ -21,24 +23,16 @@ CABLES.UI.Patch = function(_gui) {
 
     this.lastMouseMoveEvent = null;
 
-    // var rubberBandStartPos = null;
-    // var rubberBandPos = null;
-
     var mouseRubberBandStartPos = null;
     var mouseRubberBandPos = null;
     var mouseRubberBandSelectedBefore=[];
     var rubberBandRect = null;
     var isLoading = false;
 
-    // var timeoutPan = 0;
-    // var timeoutFpsLimit = 0;
-    // var fpsLimitBefore = 0;
     var timeoutRubberBand = -1;
 
     var subPatchViewBoxes = [];
     this._serverDate='';
-
-    // var miniMapBounding = null;
 
     this.background = null;
     this._elPatchSvg = null;
@@ -46,7 +40,6 @@ CABLES.UI.Patch = function(_gui) {
     this._elBody = null;
     this._viewBox=null;
     this.currentPatchBounds=null;
-    // var zoom=null;
 
     this._oldOpParamsId=null;
 
@@ -70,20 +63,15 @@ CABLES.UI.Patch = function(_gui) {
 
     this.isLoading = function() { return isLoading; };
     this.getPaper = function() { return self.paper; };
-    // this.getPaperMap = function() { return self.paperMap; };
 
     this.isCurrentOp=function(op)
     {
         if(op.op)return gui.opParams.isCurrentOp(op.op); // if is uiop
         return gui.opParams.isCurrentOp(op);
-        // if(!currentOp)return false;
-        // return currentOp.op==op;
     };
     this.isCurrentOpId=function(opid)
     {
         return gui.opParams.isCurrentOpId(opid);
-        // if(!currentOp)return false;
-        // return currentOp.op.id==opid;
     };
 
     this.getLargestPort = function() {
@@ -140,10 +128,7 @@ CABLES.UI.Patch = function(_gui) {
                 console.log(exp);
             }
 
-
             var undoGroup = CABLES.undo.startGroup();
-
-            
             var oldSub=currentSubPatch;
             var k = 0;
 
@@ -231,14 +216,9 @@ CABLES.UI.Patch = function(_gui) {
                                 }
                             }
 
-
                             for(i in subpatchIds)
-                            {
                                 gui.patch().setCurrentSubPatch(subpatchIds[i]);
-
-                            }
                         }
-
 
                         { // change position of ops to paste
                             var minx = Number.MAX_VALUE;
@@ -328,9 +308,7 @@ CABLES.UI.Patch = function(_gui) {
                     });
                 }
             }
-
             CABLES.undo.endGroup(undoGroup,"Paste");
-
         }
     };
 
@@ -382,96 +360,10 @@ CABLES.UI.Patch = function(_gui) {
         }
     };
 
-    // this.resolveSubpatch = function() {
-    //     if (currentSubPatch == 0) return;
-    //     for (var i in self.ops)
-    //         self.ops[i].op.uiAttribs.subPatch = 0;
-
-    //     this.setCurrentSubPatch(0);
+    // this.createSubPatchFromSelection = function() {
+    //     self.setSelectedOpById(patchOp.id);
+    //     self.updateSubPatches();
     // };
-
-    this.createSubPatchFromSelection = function() {
-        // if (selectedOps.length == 1 && selectedOps[0].op.objName == CABLES.UI.OPNAME_SUBPATCH) {
-        //     this.unPatchSubPatch(selectedOps[0].op.patchId.val);
-        //     return;
-        // }
-
-        // var bounds = this.getSelectionBounds();
-        // var trans = {
-        //     x: bounds.minx + (bounds.maxx - bounds.minx) / 2,
-        //     y: bounds.miny
-        // };
-        // var patchOp = gui.scene().addOp(CABLES.UI.OPNAME_SUBPATCH, { "translate": trans });
-        // var patchId = patchOp.patchId.get();
-
-        // patchOp.uiAttr({ "translate": trans });
-
-        // var i, j, k;
-        // for (i in selectedOps) selectedOps[i].op.uiAttribs.subPatch = patchId;
-
-        // for (i = 0; i < selectedOps.length; i++)
-        // {
-        //     for (j = 0; j < selectedOps[i].op.portsIn.length; j++)
-        //     {
-        //         var theOp = selectedOps[i].op;
-        //         var found=null;
-        //         for (k = 0; k < theOp.portsIn[j].links.length; k++)
-        //         {
-        //             var otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
-        //             var otherOp = otherPort.parent;
-        //             if (otherOp.uiAttribs.subPatch != patchId)
-        //             {
-        //                 theOp.portsIn[j].links[k].remove();
-        //                 k--;
-
-        //                 if(found)
-        //                 {
-        //                     gui.scene().link(
-        //                         otherPort.parent,
-        //                         otherPort.getName(),
-        //                         patchOp,
-        //                         found
-        //                     );
-        //                 }
-        //                 else
-        //                 {
-        //                     gui.scene().link(
-        //                         otherPort.parent,
-        //                         otherPort.getName(),
-        //                         patchOp,
-        //                         patchOp.dyn.name
-        //                     );
-
-        //                     found=patchOp.addSubLink(theOp.portsIn[j], otherPort);
-        //                 }
-        //             }
-        //         }
-
-        //         if (theOp.portsOut[j])
-        //             for (k = 0; k < theOp.portsOut[j].links.length; k++) {
-        //                 var otherPortOut = theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
-        //                 if (otherPortOut) {
-        //                     var otherOpOut = otherPortOut.parent;
-        //                     if (otherOpOut.uiAttribs.subPatch != patchId) {
-        //                         console.log('found outside connection!! ', otherPortOut.name);
-        //                         theOp.portsOut[j].links[k].remove();
-        //                         gui.scene().link(
-        //                             otherPortOut.parent,
-        //                             otherPortOut.getName(),
-        //                             patchOp,
-        //                             patchOp.dynOut.name
-        //                         );
-        //                         patchOp.addSubLink(theOp.portsOut[j], otherPortOut);
-        //                     }
-        //                 }
-        //             }
-        //     }
-        // }
-
-        self.setSelectedOpById(patchOp.id);
-        self.updateSubPatches();
-    };
-
 
     this._distance2dDir=function (x1,y1,x2,y2)
     {
@@ -528,7 +420,6 @@ CABLES.UI.Patch = function(_gui) {
             this.setSelectedOp(nextOp);
             self._viewBox.centerIfNotVisible(selectedOps[0]);
         }
-
     };
 
     this.cursorNavigate=function(dir)
@@ -619,7 +510,7 @@ CABLES.UI.Patch = function(_gui) {
         }
     });
 
-    gui.keys.key("x","Unlink selected ops","down","patch",{}, (e) => { this.unlinkSelectedOps(); });
+    gui.keys.key("x","Unlink selected ops","down","patch",{}, (e) => { gui.patchView.unlinkSelectedOps(); });
     gui.keys.key("f","Toggle data flow visualization","down","patch",{}, (e) => { this.toggleFlowVis(); });
     gui.keys.key("e","Edit op code","down","patch",{}, (e) => { CABLES.CMD.PATCH.editOp(); });
 
@@ -644,8 +535,6 @@ CABLES.UI.Patch = function(_gui) {
 
     gui.keys.key("j","Navigate op history back","down","patch",{"shiftKey":true}, (e) => { gui.opHistory.back(); });
     gui.keys.key("k","Navigate op history forward","down","patch",{"shiftKey":true}, (e) => { gui.opHistory.forward(); });
-
-
 
     gui.keys.key(["Delete","Backspace"],"Delete selected ops","down","patch",{}, (e) =>
     {
@@ -672,47 +561,18 @@ CABLES.UI.Patch = function(_gui) {
             case 39: // right
             this.cursorNavigateHor(1);
             break;
-
-
             case 27:
                 gui.setCursor();
             break;
-
-
-            // case 46:
-            // case 8: // delete
-
-            //     if(document.activeElement && document.activeElement.tagName=="INPUT")return;
-
-            //     self.deleteSelectedOps();
-            //     if (e.stopPropagation) e.stopPropagation();
-            //     if (e.preventDefault) e.preventDefault();
-            //     self.showProjectParams();
-            //     break;
-
-
-
-            // case 90: // z undo
-            //     if (e.metaKey || e.ctrlKey) {
-            //         if (e.shiftKey) CABLES.undo.redo();
-            //         else CABLES.undo.undo();
-            //     }
-            //     break;
-
             case 71: // g show graphs
-                // self.setCurrentSubPatch(0);
                 self.showSelectedOpsGraphs();
                 break;
-
-
-
             case 187:
                 this._viewBox.zoomStep(-1);
                 break;
             case 189:
                 this._viewBox.zoomStep(1);
                 break;
-
             default:
                 // console.log('key ',e.which,e.key);
                 break;
@@ -729,8 +589,6 @@ CABLES.UI.Patch = function(_gui) {
     this.nativeWritePatchToFile = function(patchData, path) {
         console.log('Saving patch to: ', path);
         var fs = require('fs');
-        // var os = require('os');
-        // var path = require('path');
         if (path) {
             fs.writeFile(path, JSON.stringify(patchData, null, 2), function(err) {
                 if(err) {
@@ -745,10 +603,8 @@ CABLES.UI.Patch = function(_gui) {
         }
     }
 
-
     /**
      * Extracts the postfix-filename from a full filename
-     *
      * @param {string} filename e.g. '/Users/Ulf/foo.cables'
      * @returns {string} filename prefix, e.g. 'foo'
      */
@@ -936,8 +792,6 @@ CABLES.UI.Patch = function(_gui) {
 
         gui.jobs().start({ id: 'projectsave', title: 'saving project',indicator:'canvas' });
 
-
-
         var id = currentProject._id;
         var name = currentProject.name;
         if (_id) id = _id;
@@ -1093,24 +947,14 @@ CABLES.UI.Patch = function(_gui) {
 
                 }.bind(this)
 
-
-
-
-
-                );
+            );
         } catch (e) {
             console.log(e);
             CABLES.UI.notifyError('error saving patch - try to delete disables ops');
         } finally {}
     };
 
-
-
-
-
-
     this.getCurrentProject = function() {
-
         return currentProject;
     };
 
@@ -1135,17 +979,12 @@ CABLES.UI.Patch = function(_gui) {
         });
     };
 
-
     this.fixTitlePositions=function()
     {
-        for(var i in this.ops)
-        {
-            this.ops[i].fixTitle();
-        }
+        for(var i in this.ops) this.ops[i].fixTitle();
     }
 
     this.centerViewBoxOps = function() {
-
         if(selectedOps.length>0) this._viewBox.centerSelectedOps();
         else this._viewBox.centerAllOps();
     };
@@ -1156,7 +995,6 @@ CABLES.UI.Patch = function(_gui) {
             this.scene.getOpById(opid).uiAttribs.translate.x,
             this.scene.getOpById(opid).uiAttribs.translate.y);
     }
-
 
     this._setBoundsXYWH=function(bounds)
     {
@@ -1255,7 +1093,6 @@ CABLES.UI.Patch = function(_gui) {
             else delta = 1.05;
 
             self._viewBox.zoom(delta);
-
         }
 
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed && !e.altKey && !e.metaKey) {
@@ -1530,7 +1367,7 @@ CABLES.UI.Patch = function(_gui) {
                 this._viewBox.setXY(
                     this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
                     this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
-                callEvent('patch_pan');
+                emitEvent('patch_pan');
             }
             this.lastMouseMoveEvent = e;
             e.preventDefault();
@@ -1563,7 +1400,7 @@ CABLES.UI.Patch = function(_gui) {
                     this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
                     this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
 
-                callEvent('patch_pan');
+                emitEvent('patch_pan');
             }
 
             self.lastMouseMoveEvent = e;
@@ -1742,9 +1579,6 @@ CABLES.UI.Patch = function(_gui) {
             }
         }
 
-        // var dir=null;
-        // if(CABLES.UI.OPSELECT.linkNewOpToPort)dir=CABLES.UI.OPSELECT.linkNewOpToPort.direction;
-
         CABLES.UI.OPSELECT.linkNewOpToOp = null;
         CABLES.UI.OPSELECT.linkNewLink = null;
         CABLES.UI.OPSELECT.newOpPos = { x: 0, y: 0 };
@@ -1752,9 +1586,6 @@ CABLES.UI.Patch = function(_gui) {
         CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
         uiOp.setPos();
-
-        // var pos = self.findNonCollidingPosition(uiOp.getPosX(), uiOp.getPosY(), uiOp.op.id,dir);
-
         uiOp.setPos( uiOp.getPosX(), uiOp.getPosY() );
 
         if (!isLoading) {
@@ -1789,14 +1620,9 @@ CABLES.UI.Patch = function(_gui) {
                 uiOp.setPos();
                 gui.patch().getViewBox().update();
             }, 30);
-
         }
 
-
-
-        if (uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({
-            error: "Op is deprecated"
-        });
+        if (uiOp.op.objName.startsWith('Ops.Deprecated.')) uiOp.op.uiAttr({ error: "Op is deprecated" });
         uiOp.wasAdded = true;
     }
 
@@ -1813,13 +1639,8 @@ CABLES.UI.Patch = function(_gui) {
             self.showProjectParams();
             gui.setStateSaved();
 
-            // if (self.ops.length > CABLES.UI.uiConfig.miniMapShowAutomaticallyNumOps) {
-            //     gui.showMiniMap();
-            // }
-
             logStartup('Patch loaded');
         };
-
         
         scene.addEventListener("subpatchCreated",function() {
             self.updateSubPatches();
@@ -2170,16 +1991,10 @@ CABLES.UI.Patch = function(_gui) {
                     (uiOp.op.objName.indexOf("Comment")==-1) &&
                     uiOp.op.id != testOp.op.id &&
                     uiOp.getSubPatch() == testOp.getSubPatch()) {
-                    // if(uiOp.op.uiAttribs.translate.x>=testOp.op.uiAttribs.translate.x-10)result.x=0;
-                    // if(uiOp.op.uiAttribs.translate.x<=testOp.op.uiAttribs.translate.x+200)result.x=1;
                     var spacing = 8;
-
 
                     if ((uiOp.op.uiAttribs.translate.x >= testOp.op.uiAttribs.translate.x &&
                             uiOp.op.uiAttribs.translate.x <= testOp.op.uiAttribs.translate.x + testOp.getWidth())
-                        // ||
-                        // (uiOp.op.uiAttribs.translate.x+uiOp.getWidth()>=testOp.op.uiAttribs.translate.x &&
-                        //     uiOp.op.uiAttribs.translate.x+uiOp.getWidth()<=testOp.op.uiAttribs.translate.x+testOp.getWidth)
                     ) {
 
                         var fixPos = false;
@@ -2189,7 +2004,6 @@ CABLES.UI.Patch = function(_gui) {
                             uiOp.setPos(
                                 testOp.op.uiAttribs.translate.x,
                                 testOp.op.uiAttribs.translate.y + (count*testOp.getHeight()) + spacing);
-                            // return true;
                             found=true;
                             break;
                         }
@@ -2202,7 +2016,6 @@ CABLES.UI.Patch = function(_gui) {
                                 testOp.op.uiAttribs.translate.y - (count*testOp.getHeight()) - spacing);
                             found=true;
                             break;
-                            // return true;
                         }
                     }
                 }
@@ -2228,10 +2041,8 @@ CABLES.UI.Patch = function(_gui) {
                 var a=this.ops[i].op;
                 var b=this.ops[j].op;
 
-                if(
-                    a.uiAttribs.translate.x==b.uiAttribs.translate.x &&
-                    a.uiAttribs.translate.y==b.uiAttribs.translate.y
-                    )
+                if( a.uiAttribs.translate.x==b.uiAttribs.translate.x &&
+                    a.uiAttribs.translate.y==b.uiAttribs.translate.y )
                     {
                         console.log("colliding!");
                         this.ops[j].setPos(
@@ -2239,50 +2050,16 @@ CABLES.UI.Patch = function(_gui) {
                             a.uiAttribs.translate.y+50
                             );
                     }
-
             }
-
         }
         perf.finish();
     }
 
-
-
     this.testCollisionOpPosition = function(x, y, opid) {
-        // for(var i in this.ops)
-        // {
-        //
-        //     var op=this.ops[i].op;
-        //     if(
-        //         !op.deleted &&
-        //         opid!=op.id &&
-        //         x>=op.uiAttribs.translate.x-10 &&
-        //         x<=op.uiAttribs.translate.x+200 &&
-        //         y>=op.uiAttribs.translate.y &&
-        //         y<=op.uiAttribs.translate.y+47)
-        //     {
-        //         // console.log('colliding...',op.id);
-        //         return true;
-        //     }
-        // }
         return false;
     };
 
     this.findNonCollidingPosition = function(x, y, opid,dir) {
-
-        // var ystep=17;
-        // if(dir==PORT_DIR_IN)ystep*=-1;
-
-        // console.log('ystep',ystep);
-
-        // var count = 0;
-        // console.log(y);
-        // while (this.testCollisionOpPosition(x, y, opid) && count < 400) {
-        //     y +=ystep;
-        //     console.log(y);
-        //     count++;
-        // }
-
         var pos = {
             "x": x,
             "y": y
@@ -2290,40 +2067,8 @@ CABLES.UI.Patch = function(_gui) {
         return pos;
     };
 
-
     this.arrangeSelectedOps = function() {
-        // var i=0;
-        // selectedOps.sort(function(a,b)
-        // {
-        //     return a.op.uiAttribs.translate.y-b.op.uiAttribs.translate.y;
-        // });
-        //
-        // for(i=0;i<selectedOps.length;i++)
-        //
-        // for(i=1;i<selectedOps.length;i++)
-        // {
-        //     selectedOps[i].setPos(
-        //         selectedOps[i].op.uiAttribs.translate.x,
-        //         selectedOps[0].op.uiAttribs.translate.y
-        //     );
-        // }
-        //
-        // for(i=1;i<selectedOps.length;i++)
-        // {
-        //     var newpos=self.findNonCollidingPosition(
-        //         selectedOps[i].op.uiAttribs.translate.x,
-        //         selectedOps[i].op.uiAttribs.translate.y,
-        //         selectedOps[i].op.id);
-        //
-        //     if(Math.abs(selectedOps[i].op.uiAttribs.translate.x-selectedOps[0].op.uiAttribs.translate.x)<60)
-        //     {
-        //         newpos.x=selectedOps[0].op.uiAttribs.translate.x;
-        //     }
-        //
-        //     selectedOps[i].setPos(newpos.x,newpos.y);
-        // }
     };
-
 
     this.snapToNextOp = function(dir) {
         if (!selectedOps || selectedOps.length === 0) return;
@@ -2333,8 +2078,7 @@ CABLES.UI.Patch = function(_gui) {
             var startPort = uiop.op.portsIn[0];
             var otherport=null;
 
-            if (dir > 0)
-                startPort = uiop.op.portsOut[0];
+            if (dir > 0) startPort = uiop.op.portsOut[0];
 
             if (startPort.links.length > 0) {
                 otherport = startPort.links[0].getOtherPort(startPort);
@@ -2351,7 +2095,6 @@ CABLES.UI.Patch = function(_gui) {
         }
     };
 
-
     this.compressSelectedOps = function()
     {
         CABLES.UI.TOOLS.compressSelectedOps(this.getSelectedOpsAsCoreOps());
@@ -2361,12 +2104,8 @@ CABLES.UI.Patch = function(_gui) {
     this.getSelectedOpsAsCoreOps=function()
     {
         var ops=[];
-        for(var i=0;i<selectedOps.length;i++)
-        {
-            ops.push(selectedOps[i].op);
-        }
+        for(var i=0;i<selectedOps.length;i++) ops.push(selectedOps[i].op);
         return ops;
-
     };
 
     this.alignSelectedOps = function()
@@ -2393,7 +2132,6 @@ CABLES.UI.Patch = function(_gui) {
     {
         this.updatedOpPositionsFromUiAttribs(selectedOps);
     }
-
 
     this.selectChilds = function(id) {
         if (!id) {
@@ -2441,16 +2179,7 @@ CABLES.UI.Patch = function(_gui) {
         );
     };
 
-    this.unlinkSelectedOps = function() {
-
-        var undoGroup = CABLES.undo.startGroup();
-        for (var i in selectedOps) selectedOps[i].op.unLinkTemporary();
-        CABLES.undo.endGroup(undoGroup,"Unlink selected Ops");
-    };
-
     this.deleteSelectedOps = function() {
-        // for (var i in selectedOps)
-            // gui.patch().scene.deleteOp(selectedOps[i].op.id, true);
         gui.patchView.deleteSelectedOps();
         this.updateBounds();
     };
@@ -2458,6 +2187,7 @@ CABLES.UI.Patch = function(_gui) {
     this.removeSelectedOp = function(uiop) {
         for (var i in selectedOps) {
             if (selectedOps[i] == uiop) {
+                uiop.op.setUiAttrib({"selected":false});
                 selectedOps.splice(i, 1);
                 return;
             }
@@ -2528,7 +2258,6 @@ CABLES.UI.Patch = function(_gui) {
 
     this.moveSelectedOpsFinished = function() {
         var i = 0;
-
         var undoGroup = CABLES.undo.startGroup();
         
         if (selectedOps.length == 1) this.opCollisionTest(selectedOps[0]);
@@ -2548,8 +2277,6 @@ CABLES.UI.Patch = function(_gui) {
     }
 
     this.moveSelectedOps = function (dx, dy, a, b, e) {
-
-
         var i = 0;
         if (selectedOps.length == 1)
             for (i = 0; i < self.ops.length; i++)
@@ -2557,12 +2284,8 @@ CABLES.UI.Patch = function(_gui) {
                     for (var j=0;j< self.ops[i].links.length;j++)
                         self.ops[i].links[j].showAddButton();
 
-
-
         for (i =0;i<selectedOps.length;i++)
             selectedOps[i].doMove(dx, dy, a, b, e);
-
-
     };
 
     this.getUiOp = function(op) {
@@ -2600,38 +2323,17 @@ CABLES.UI.Patch = function(_gui) {
         perf.finish();
     };
 
-
-
-
     this.updateCurrentOpParams = function() {
         if (currentOp) self.showOpParams(currentOp.op);
     };
 
-    var eventListeners = {};
-    this.addEventListener = function(name, cb) {
-        eventListeners[name] = eventListeners[name] || [];
-        eventListeners[name].push(cb);
-    };
-
-    function callEvent(name, params) {
-        if (eventListeners.hasOwnProperty(name)) {
-            for (var i in eventListeners[name]) {
-                eventListeners[name][i](params);
-            }
-        }
-    }
-
     this.refreshOpParams=function(op)
     {
-        if(currentOp && currentOp.op==op)
-        {
-            this.showOpParams(op);
-        }
+        if(currentOp && currentOp.op==op) this.showOpParams(op);
     }
 
     var delayedShowOpParams = 0;
     this.showOpParams = function(op) {
-        // self.highlightOpNamespace(op);
         gui.setTransformGizmo(null);
 
         if(op)
@@ -2641,25 +2343,17 @@ CABLES.UI.Patch = function(_gui) {
             delayedShowOpParams = setTimeout(function() {
                 self._showOpParams(op);
             }, 10);
-
         }
     };
 
     this.openParamEditor=function(opid,portname,cb)
     {
         var op=self.scene.getOpById(opid);
-        if(!op)
-        {
-            console.log('paramedit op not found');
-            return;
-        }
+        if(!op) return console.log('paramedit op not found');
 
         var port=op.getPortByName(portname);
-        if(!port)
-        {
-            console.log('paramedit port not found');
-            return;
-        }
+        if(!port) return console.log('paramedit port not found');
+
         var name=op.name+' '+port.name;
 
         var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
@@ -2699,29 +2393,8 @@ CABLES.UI.Patch = function(_gui) {
             gui.mainTabs.activateTabByName(name);
         }
 
-
-
         if(cb)cb();
         else gui.maintabPanel.show();
-        // gui.showEditor();
-        // gui.editor().addTab({
-        //     content: port.get() + '',
-        //     editorObj:editorObj,
-        //     id:CABLES.Editor.sanitizeId('editparam_'+opid+'_'+port.name),
-        //     title: '' + port.name,
-        //     syntax: port.uiAttribs.editorSyntax,
-        //     onSave: function(setStatus, content) {
-        //         // console.log('setvalue...');
-        //         setStatus('saved');
-        //         gui.setStateUnsaved();
-        //         gui.jobs().finish('saveeditorcontent');
-        //         port.set(content);
-        //     },
-        //     onClose: function(which)
-        //     {
-        //         CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-        //     }
-        // });
     }
 
     this.resetOpValues=function(opid)
@@ -2745,7 +2418,6 @@ CABLES.UI.Patch = function(_gui) {
     this._showOpParams = function(op) {
         gui.opParams.show(op);
     };
-
 
     var uupos = null;
     var ctm;
@@ -2780,22 +2452,13 @@ CABLES.UI.Patch = function(_gui) {
         var x = gui.patch().getCanvasCoordsMouse(event).x;
         var y = gui.patch().getCanvasCoordsMouse(event).y;
 
-        var uiAttr = {
-            translate: {
-                x: x,
-                y: y
-            }
-        };
+        var uiAttr = { translate: { "x": x, "y": y } };
         var op = gui.scene().addOp(opname, uiAttr);
 
         for (var i = 0; i < op.portsIn.length; i++) {
-            if (op.portsIn[i].uiAttribs.display == 'file') {
-
-                op.portsIn[i].set(filename);
-            }
+            if (op.portsIn[i].uiAttribs.display == 'file') op.portsIn[i].set(filename);
         }
     };
-
 
     this.addAssetOp = function(opname, portname, filename, title) {
         if (!title) title = filename;
@@ -2814,14 +2477,10 @@ CABLES.UI.Patch = function(_gui) {
         });
     };
 
-    // doWatchPorts();
-
     this.disableEnableOps = function() {
         if (!selectedOps.length) return;
         var i = 0;
-        for (i = 0; i < self.ops.length; i++) {
-            self.ops[i].op.marked = false;
-        }
+        for (i = 0; i < self.ops.length; i++) self.ops[i].op.marked = false;
 
         var newstate = false;
         if (!selectedOps[0].op.enabled) newstate = true;
@@ -2833,15 +2492,14 @@ CABLES.UI.Patch = function(_gui) {
             op.markChilds();
 
             for (i = 0; i < self.ops.length; i++)
-                if (self.ops[i].op.marked) self.ops[i].setEnabled(newstate);
+                if (self.ops[i].op.marked)
+                    self.ops[i].setEnabled(newstate);
         }
     };
 
     var lastTempOP = null;
     this.tempUnlinkOp = function()
     {
-
-
         if(lastTempOP)
         {
             lastTempOP.op.undoUnLinkTemporary();
@@ -2850,7 +2508,6 @@ CABLES.UI.Patch = function(_gui) {
         }
         else
         {
-
             const op = selectedOps[0];
             if(op)
             {
@@ -2859,27 +2516,6 @@ CABLES.UI.Patch = function(_gui) {
                 lastTempOP=op;
             }
         }
-
-
-        // var j = 0;
-
-        // var op = null;
-        // // if (selectedOps.length === 0 && lastTempOP) op = lastTempOP;
-        // if (lastTempOP) op = lastTempOP;
-        // else {
-        //     if (selectedOps.length === 0) return;
-        //     op = selectedOps[0];
-        // }
-        // lastTempOP = op;
-
-        // op.setEnabled(!op.op.enabled);
-
-        // if (!op.op.enabled) op.op.unLinkTemporary();
-        // else
-        // {
-        //     op.op.undoUnLinkTemporary();
-        //     lastTempOP=null;
-        // }
     };
 
     this.downloadSVG=function()
@@ -2941,12 +2577,8 @@ CABLES.UI.Patch = function(_gui) {
 
     this.linkTwoOps = function(op1, op2) {
         this.removeQuickLinkLine();
-
         var suggestions = [];
         if (!op1 || !op2) return;
-
-        console.log('op1', op1.op.name);
-        console.log('op2', op2.op.name);
 
         for (var j = 0; j < op1.portsOut.length; j++)
         {
@@ -2983,7 +2615,6 @@ CABLES.UI.Patch = function(_gui) {
             clientX: self.lastMouseMoveEvent.clientX,
             clientY: self.lastMouseMoveEvent.clientY
         };
-
 
         function showSuggestions2(id)
         {

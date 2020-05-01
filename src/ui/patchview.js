@@ -110,6 +110,14 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
         return ops;
     }
     
+    unlinkSelectedOps()
+    {
+        var undoGroup = CABLES.undo.startGroup();
+        var ops=this.getSelectedOps();
+        for (var i in ops) ops[i].unLinkTemporary();
+        CABLES.undo.endGroup(undoGroup,"Unlink selected Ops");
+    };
+
     deleteSelectedOps()
     {
         var undoGroup = CABLES.undo.startGroup();
