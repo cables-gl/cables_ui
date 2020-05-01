@@ -256,23 +256,25 @@ CABLES.UI.initPortInputListener=function(op,index)
 
         console.log()
 
-        undoAdd=function(oldv,newv,opid,portname)
-        {
-            CABLES.undo.add({
-                title:"Change parameter",
-                undo: function() {
-                    try{
-                        gui.corePatch().getOpById(opid).getPort(portname).set(oldv);
-                    }catch(e){console.warn("undo failed");}
-                },
-                redo: function()
-                {
-                    try{
-                        gui.corePatch().getOpById(opid).getPort(portname).set(newv);
-                    }catch(e){console.warn("undo failed");}
-                }
-            });
-        }(op.portsIn[index].get(),v,op.id,op.portsIn[index].name);
+        if(!CABLES.mouseDraggingValue)
+            undoAdd=function(oldv,newv,opid,portname)
+            {
+                if(oldv!=newv)
+                    CABLES.undo.add({
+                        title:"Value change "+oldv+" to "+newv,
+                        undo: function() {
+                            try{
+                                gui.corePatch().getOpById(opid).getPort(portname).set(oldv);
+                            }catch(e){console.warn("undo failed");}
+                        },
+                        redo: function()
+                        {
+                            try{
+                                gui.corePatch().getOpById(opid).getPort(portname).set(newv);
+                            }catch(e){console.warn("undo failed");}
+                        }
+                    });
+            }(op.portsIn[index].get(),v,op.id,op.portsIn[index].name);
 
 
         op.portsIn[index].set(v);

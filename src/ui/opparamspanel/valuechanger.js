@@ -214,6 +214,8 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
             el.requestPointerLock = el.requestPointerLock || el.mozRequestPointerLock || el.webkitRequestPointerLock;
             if(el.requestPointerLock) el.requestPointerLock();
         }
+
+        CABLES.mouseDraggingValue=true;
     }
 
     function up(e)
@@ -221,28 +223,29 @@ CABLES.valueChanger=function(ele,focus,portName,opid)
         if(elem.is(":focus")) return;
         var isString= elem.data("valuetype")=="string";
 
-
+        CABLES.mouseDraggingValue=false;
 
         if(opid && portName)
         {
             var undofunc = function(portName,opId,oldVal,newVal) {
-                CABLES.undo.add({
-                    title:"changed value",
-                    undo: function() {
-                        const op=gui.patch().scene.getOpById(opid);
-                        const p=op.getPort(portName);
-                        gui.patch().showProjectParams();
-                        p.set(oldVal);
-                        gui.patch().showOpParams(op);
-                    },
-                    redo: function() {
-                        const op=gui.patch().scene.getOpById(opid);
-                        const p=op.getPort(portName);
-                        gui.patch().showProjectParams();
-                        p.set(newVal);
-                        gui.patch().showOpParams(op);
-                    }
-                });
+                if(oldVal!=newVal)
+                    CABLES.undo.add({
+                        title:"Value mousedrag "+oldVal+" to "+newVal,
+                        undo: function() {
+                            const op=gui.patch().scene.getOpById(opid);
+                            const p=op.getPort(portName);
+                            gui.patch().showProjectParams();
+                            p.set(oldVal);
+                            gui.patch().showOpParams(op);
+                        },
+                        redo: function() {
+                            const op=gui.patch().scene.getOpById(opid);
+                            const p=op.getPort(portName);
+                            gui.patch().showProjectParams();
+                            p.set(newVal);
+                            gui.patch().showOpParams(op);
+                        }
+                    });
             }(portName,opid,startVal,elem.val());
         }
 
