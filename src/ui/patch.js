@@ -1882,42 +1882,17 @@ CABLES.UI.Patch = function(_gui) {
         return str;
     }
 
-    this.findSubpatchOp=function(subId, arr) {
-        arr = arr || [];
-        for (var i=0;i< self.ops.length;i++) {
-            if (self.ops[i].op.objName == CABLES.UI.OPNAME_SUBPATCH && self.ops[i].op.patchId) {
-                if (self.ops[i].op.patchId.get() == subId) {
-                    arr.push({
-                        name: self.ops[i].op.name,
-                        id: self.ops[i].op.patchId.get()
-                    });
-                    if (self.ops[i].op.uiAttribs.subPatch !== 0) {
-                        self.findSubpatchOp(self.ops[i].op.uiAttribs.subPatch, arr);
-                    }
-                }
-            }
-        }
-        return arr;
-    }
 
     this.subpatchBack=function()
     {
-        var names = this.findSubpatchOp(currentSubPatch);
+        const names = gui.patchView.getSubpatchPathArray(currentSubPatch);
         if(names[1]) this.setCurrentSubPatch(names[1].id);
-            else this.setCurrentSubPatch(0);
+        else this.setCurrentSubPatch(0);
     };
 
     this.updateSubPatchBreadCrumb = function()
     {
-        var names = this.findSubpatchOp(currentSubPatch);
-        var str = '<a onclick="gui.patch().setCurrentSubPatch(0)">Main</a> ';
-
-        for (var i = names.length - 1; i >= 0; i--) {
-            if(i>=0) str+='<span class="sparrow">&rsaquo;</span>';
-            str += '<a onclick="gui.patch().setCurrentSubPatch(\'' + names[i].id + '\')">' + names[i].name + '</a>';
-        }
-
-        $('#subpatch_breadcrumb').html(str);
+        gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
     };
 
     this.getSelectedOps = function() {

@@ -214,4 +214,41 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
         this._p.emitEvent("subpatchCreated");
 
     };
+
+
+
+    getSubpatchPathArray(subId, arr)
+    {
+        arr = arr || [];
+        const ops=gui.corePatch().ops;
+        for (var i=0;i< ops.length;i++) {
+            if (ops[i].objName == CABLES.UI.OPNAME_SUBPATCH && ops[i].patchId) {
+                if (ops[i].patchId.get() == subId) {
+                    arr.push({
+                        name: ops[i].name,
+                        id: ops[i].patchId.get()
+                    });
+                    if (ops[i].uiAttribs.subPatch !== 0) this.getSubpatchPathArray(ops[i].uiAttribs.subPatch, arr);
+                }
+            }
+        }
+        return arr;
+    }
+
+    updateSubPatchBreadCrumb(currentSubPatch)
+    {
+        const names = this.getSubpatchPathArray(currentSubPatch);
+        var str = '<a onclick="gui.patch().setCurrentSubPatch(0)">Main</a> ';
+
+        for (var i = names.length - 1; i >= 0; i--)
+        {
+            if(i>=0) str+='<span class="sparrow">&rsaquo;</span>';
+            str += '<a onclick="gui.patch().setCurrentSubPatch(\'' + names[i].id + '\')">' + names[i].name + '</a>';
+        }
+
+        document.getElementById("subpatch_breadcrumb").innerHTML=str;
+    };
+
+    
+
 }
