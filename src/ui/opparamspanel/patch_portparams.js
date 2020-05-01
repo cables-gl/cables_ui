@@ -254,6 +254,27 @@ CABLES.UI.initPortInputListener=function(op,index)
             else v = false;
         }
 
+        console.log()
+
+        undoAdd=function(oldv,newv,opid,portname)
+        {
+            CABLES.undo.add({
+                title:"Change parameter",
+                undo: function() {
+                    try{
+                        gui.corePatch().getOpById(opid).getPort(portname).set(oldv);
+                    }catch(e){console.warn("undo failed");}
+                },
+                redo: function()
+                {
+                    try{
+                        gui.corePatch().getOpById(opid).getPort(portname).set(newv);
+                    }catch(e){console.warn("undo failed");}
+                }
+            });
+        }(op.portsIn[index].get(),v,op.id,op.portsIn[index].name);
+
+
         op.portsIn[index].set(v);
         gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
             "op": op.id,
@@ -347,6 +368,7 @@ CABLES.UI.initPortClickListener=function(op,index)
     {
         var port=op.getPortById(e.target.dataset["portid"]);
 
+        
         if(port) port.setVariable(e.target.value);
         else console.log("[portsetvar] PORT NOT FOUND!! ",e.target.dataset["portid"],e);
     });
