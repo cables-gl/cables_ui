@@ -609,7 +609,6 @@ CABLES.UI.Patch = function(_gui) {
 
     gui.keys.key("/","Go to root subpatch","down","patch",{}, (e) => { this.setCurrentSubPatch(0); });
 
-
     gui.keys.key("t","Change current op title","down","patch",{}, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
 
     gui.keys.key("PageUp","Snap op below previous op","down","patch",{}, (e) => { this.snapToNextOp(-1); });

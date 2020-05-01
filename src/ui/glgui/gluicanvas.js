@@ -14,7 +14,7 @@ CABLES.GLGUI.GlGuiFull = function (tabs)
 
     var a=new CABLES.GLGUI.GlUiCanvas(CABLES.patch,ele);
 
-    gui.switchPatchView(ele.id);
+    gui.patchView.switch(ele.id);
 
     a.parentResized();
 

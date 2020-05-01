@@ -7,8 +7,33 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
     {
         super();
         this._p=corepatch;
+        this._element=null;
     }
 
+    get element(){ return this._element||this.getElement(); }
+
+    getElement()
+    {
+        return $('#patchviews .visible');
+    }
+
+    switch(id)
+    {
+        const views=document.getElementById("patchviews");
+
+        for(var i=0;i<views.children.length;i++)
+        {
+            views.children[i].style.display="none";
+            views.children[i].classList.remove("visible");
+        }
+    
+        const ele=document.getElementById(id);
+        ele.classList.add("visible");
+        ele.style.display="block";
+
+        this._element=this.getElement();
+        gui.setLayout();
+    }
 
     showSelectedOpsPanel()
     {
@@ -41,7 +66,7 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
             html+='<h3>Patchviews</h3>';
             for(var i=0;i<views.children.length;i++)
             {
-                html+='<div class="list" onclick="gui.switchPatchView(\''+views.children[i].id+'\')"><div>'+views.children[i].id+'</div></div>';
+                html+='<div class="list" onclick="gui.patchView.switch(\''+views.children[i].id+'\')"><div>'+views.children[i].id+'</div></div>';
             }
         }
 
@@ -50,17 +75,6 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
         $('#options').html(html);
     }
 
-    deleteSelectedOps()
-    {
-        var ids=[];
-        var ops=this.getSelectedOps();
-        for(var i=0;i<ops.length;i++)
-                ids.push(ops[i].id);
-
-        for(var i=0;i<ids.length;i++) this._p.deleteOp(ids[i], true);
-
-        console.log("deleted ops ",ids.length);
-    }
 
     getSelectionBounds()
     {
@@ -96,7 +110,23 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
         return ops;
     }
     
+    deleteSelectedOps()
+    {
+        var undoGroup = CABLES.undo.startGroup();
+        var ids=[];
+        var ops=this.getSelectedOps();
 
+        for(var i=0;i<ops.length;i++)
+        ids.push(ops[i].id);
+        
+        for(var i=0;i<ids.length;i++) this._p.deleteOp(ids[i], true);
+        
+        CABLES.undo.endGroup(undoGroup);
+
+        console.log("deleted ops ",ids.length);
+    }
+
+    
     createSubPatchFromSelection()
     {
         const selectedOps=this.getSelectedOps();
