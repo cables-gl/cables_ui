@@ -121,7 +121,7 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
         
         for(var i=0;i<ids.length;i++) this._p.deleteOp(ids[i], true);
         
-        CABLES.undo.endGroup(undoGroup);
+        CABLES.undo.endGroup(undoGroup,"Delete selected ops");
 
         console.log("deleted ops ",ids.length);
     }

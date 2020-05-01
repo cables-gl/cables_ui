@@ -140,6 +140,10 @@ CABLES.UI.Patch = function(_gui) {
                 console.log(exp);
             }
 
+
+            var undoGroup = CABLES.undo.startGroup();
+
+            
             var oldSub=currentSubPatch;
             var k = 0;
 
@@ -267,6 +271,21 @@ CABLES.UI.Patch = function(_gui) {
                                     json.ops[i].uiAttribs.translate.y = y;
 
                                 }
+
+                                var undofunc = function(op) {
+                                    const opid=op.id;
+
+                                    CABLES.undo.add({
+                                        title:"paste op",
+                                        undo: function() {
+                                            gui.scene().deleteOp(opid, true);
+                                        },
+                                        redo: function() {
+                                            gui.patch().paste(e);
+                                        }
+                                    });
+                    
+                                }(json.ops[i]);
                             }
                         }
 
@@ -309,6 +328,9 @@ CABLES.UI.Patch = function(_gui) {
                     });
                 }
             }
+
+            CABLES.undo.endGroup(undoGroup,"Paste");
+
         }
     };
 
@@ -670,12 +692,12 @@ CABLES.UI.Patch = function(_gui) {
 
 
 
-            case 90: // z undo
-                if (e.metaKey || e.ctrlKey) {
-                    if (e.shiftKey) CABLES.undo.redo();
-                    else CABLES.undo.undo();
-                }
-                break;
+            // case 90: // z undo
+            //     if (e.metaKey || e.ctrlKey) {
+            //         if (e.shiftKey) CABLES.undo.redo();
+            //         else CABLES.undo.undo();
+            //     }
+            //     break;
 
             case 71: // g show graphs
                 // self.setCurrentSubPatch(0);
@@ -1589,6 +1611,7 @@ CABLES.UI.Patch = function(_gui) {
         if (!isLoading) {
             var undofunc = function(opid, objName) {
                 CABLES.undo.add({
+                    title:"add op",
                     undo: function() {
                         gui.scene().deleteOp(opid, true);
                     },
@@ -1816,6 +1839,7 @@ CABLES.UI.Patch = function(_gui) {
                             (this.ops[i].links[j].p1.thePort == p2 && this.ops[i].links[j].p2.thePort == p1))) {
                         var undofunc = function(p1Name, p2Name, op1Id, op2Id) {
                             CABLES.undo.add({
+                                title:"Unlink port",
                                 undo: function() {
                                     scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
                                 },
@@ -1906,6 +1930,7 @@ CABLES.UI.Patch = function(_gui) {
 
                 var undofunc = function(p1Name, p2Name, op1Id, op2Id) {
                     CABLES.undo.add({
+                        title:"link",
                         undo: function() {
                             var op1 = scene.getOpById(op1Id);
                             var op2 = scene.getOpById(op2Id);
@@ -1930,6 +1955,7 @@ CABLES.UI.Patch = function(_gui) {
                 for(var i=0;i<op.portsIn.length;i++) oldValues[ op.portsIn[i].name ]=op.portsIn[i].get();
 
                 CABLES.undo.add({
+                    title:"delete op",
                     undo: function() {
                         var newop=gui.scene().addOp(opname, op.uiAttribs, opid);
 
@@ -2416,7 +2442,10 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.unlinkSelectedOps = function() {
+
+        var undoGroup = CABLES.undo.startGroup();
         for (var i in selectedOps) selectedOps[i].op.unLinkTemporary();
+        CABLES.undo.endGroup(undoGroup,"Unlink selected Ops");
     };
 
     this.deleteSelectedOps = function() {
@@ -2500,8 +2529,12 @@ CABLES.UI.Patch = function(_gui) {
     this.moveSelectedOpsFinished = function() {
         var i = 0;
 
+        var undoGroup = CABLES.undo.startGroup();
+        
         if (selectedOps.length == 1) this.opCollisionTest(selectedOps[0]);
         for (i in selectedOps) selectedOps[i].doMoveFinished();
+        
+        CABLES.undo.endGroup(undoGroup,"Move selected ops");
     };
 
     this.prepareMovingOps = function ()
@@ -2515,6 +2548,8 @@ CABLES.UI.Patch = function(_gui) {
     }
 
     this.moveSelectedOps = function (dx, dy, a, b, e) {
+
+
         var i = 0;
         if (selectedOps.length == 1)
             for (i = 0; i < self.ops.length; i++)
@@ -2522,8 +2557,12 @@ CABLES.UI.Patch = function(_gui) {
                     for (var j=0;j< self.ops[i].links.length;j++)
                         self.ops[i].links[j].showAddButton();
 
+
+
         for (i =0;i<selectedOps.length;i++)
             selectedOps[i].doMove(dx, dy, a, b, e);
+
+
     };
 
     this.getUiOp = function(op) {

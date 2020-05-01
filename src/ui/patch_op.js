@@ -1431,14 +1431,21 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
     };
 
     this.doMoveFinished = function() {
+
+        var newUiAttr=JSON.stringify(self.op.uiAttribs);
         CABLES.undo.add({
+            title:"move op",
             undo: function() {
                 try {
                     var u = JSON.parse(oldUiAttribs);
                     self.setPos(u.translate.x, u.translate.y);
                 } catch (e) {}
             },
-            redo: function() {}
+            redo: function()
+            {
+                var u = JSON.parse(newUiAttr);
+                self.setPos(u.translate.x, u.translate.y);
+            }
         });
 
         startMoveX = -1;

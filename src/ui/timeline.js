@@ -256,6 +256,7 @@ CABLES.ANIM.Key.prototype.initUI=function()
         gui.timeLine().moveSelectedKeysFinished();
 
         CABLES.undo.add({
+            title:"timeline move keys",
             undo: function()
             {
                 self.set(oldValues);
@@ -384,6 +385,7 @@ CABLES.Anim.prototype.deleteSelectedKeys=function()
     function undofunc(anim,objKey)
     {
         CABLES.undo.add({
+            title:"timeline delete keys",
             undo: function(){
                 anim.addKey(new CABLES.ANIM.Key(objKey));
                 anim.sortKeys();

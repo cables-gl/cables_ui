@@ -61,6 +61,7 @@ CABLES.UI.GUI = function(cfg)
     this.variables = new CABLES.UI.MetaVars(this.metaTabs);
     this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
+    this.history = new CABLES.UI.MetaHistory(this.metaTabs);
     // this.preview = new CABLES.UI.Preview();
     // this.hoverPreview = new CABLES.UI.Preview();
 

@@ -79,6 +79,7 @@ CABLES.UI.TOOLS.saveUndoSelectedOpsPositions = function(selectedOps)
     }
 
     CABLES.undo.add({
+        title:"save op positions",
         undo: function()
         {
 

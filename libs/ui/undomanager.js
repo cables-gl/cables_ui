@@ -15,15 +15,12 @@ https://github.com/ArthurClemens/Javascript-Undo-Manager
     }
 
     var UndoManager = function() {
-
         var commands = [],
             index = -1,
             groupIndex = 0,
             limit = 0,
             isExecuting = false,
             callback,
-
-            // functions
             execute;
 
         execute = function(command, action) {
@@ -63,6 +60,7 @@ https://github.com/ArthurClemens/Javascript-Undo-Manager
                 if (callback) {
                     callback();
                 }
+
                 return this;
             },
 
@@ -91,6 +89,8 @@ https://github.com/ArthurClemens/Javascript-Undo-Manager
                 if (callback) {
                     callback();
                 }
+
+                console.log(index+' / '+commands.length);
                 return this;
             },
 
@@ -115,13 +115,15 @@ https://github.com/ArthurClemens/Javascript-Undo-Manager
                 return this;
             },
 
-          group: function(step, idx){
+          group: function(step, name,idx){
             if(!step) return groupIndex;
             idx = idx || index;
             if(step<1) step = 1;
             groupIndex += 1;
             while(step-- && idx-step>=0)
-              commands[idx-step].group = groupIndex;
+                commands[idx-step].group = groupIndex;
+
+            commands[index].groupName=name;
             return groupIndex;
           },
 
@@ -132,8 +134,8 @@ https://github.com/ArthurClemens/Javascript-Undo-Manager
                 var prev_size = commands.length;
 
                 commands = [];
-              index = -1;
-              groupIndex = 0;
+                index = -1;
+                groupIndex = 0;
 
                 if (callback && (prev_size > 0)) {
                     callback();
@@ -158,9 +160,13 @@ https://github.com/ArthurClemens/Javascript-Undo-Manager
             startGroup: function() {
                 return index;
             },
-            endGroup:function(group)
+            endGroup:function(group,name)
             {
-                this.group(index-group-1);
+                this.group(index-group,name);
+                if (callback) {
+                    callback();
+                }
+
             },
 
           getGroup: function(g) {
