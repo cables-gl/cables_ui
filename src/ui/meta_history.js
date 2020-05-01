@@ -29,46 +29,59 @@ CABLES.UI.MetaHistory=class
         this.html+='&nbsp;&nbsp;&nbsp;'+(CABLES.undo.getIndex()+1)+' / '+(commands.length)+'<br/><br/>';
 
         var groupSummary=[];
+        var lastGroup=null;
 
-        for(var i=0;i<commands.length;i++)
+        for(var i=-1;i<commands.length;i++)
         {
-            console.log(commands[i]);
+            var cmd=null;
+
+            if(i==-1)
+            {
+                cmd={groupName:"Open",group:true};
+            }
+            else cmd=commands[i];
+
 
             var style="";
-            if(!commands[i].group || (i>0 && commands[i-1].group && commands[i-1].group!=commands[i].group))
+            if(!cmd.group || i==0 || (i>0 && lastGroup && lastGroup!=cmd.group))
             {
                 style+="margin-top:4px;"
                 groupSummary=[];
             }
 
-
-            if(CABLES.undo.getIndex()==i) style+="border-left:4px solid var(--color-09);background-color:var(--color-05);";
-            else if(CABLES.undo.getIndex()<i) style+='opacity:0.4;border-left:4px solid var(--color-08);background-color:var(--color-03);';
+            if(CABLES.undo.getIndex()==i) style+="border-left:4px solid var(--color-08);background-color:var(--color-05);";
+            else if(CABLES.undo.getIndex()<i) style+='opacity:0.4;border-left:4px solid var(--color-06);background-color:var(--color-03);';
             else style+='border-left:4px solid var(--color-08);background-color:var(--color-03);';
 
-            this.html+='<div style="padding:2px;padding-left:7px;'+style+'">';
+            groupSummary.push(cmd.title);
 
-            if(!commands[i].group) this.html+='<b>'+commands[i].title+'</b>';
+            if(!cmd.group || cmd.groupName) this.html+='<div style="padding:2px;padding-left:7px;'+style+'">';
 
-            groupSummary.push(commands[i].title);
+            if(!cmd.group) this.html+='<b>'+cmd.title+'</b>';
+
             // this.html+='--';
             // this.html+=i;
-            // if(commands[i].group)
+            // if(cmd.group)
             // {
             //     this.html+='--';
-            //     this.html+=commands[i].group;
+            //     this.html+=cmd.group;
             // }
 
-            if(commands[i].groupName)
+            if(cmd.groupName)
             {
-                this.html+=groupSummary.join(", ");
-                this.html+='<br/>';
-                this.html+='<b>'+commands[i].groupName+'</b>';
+                if(i!=-1)
+                {
+                    this.html+=groupSummary.join(", ");
+                    this.html+='<br/>';
+                }
+                this.html+='<b>'+cmd.groupName+'</b>';
+                lastGroup=cmd.group;
             }
             
 
 
             this.html+='</div>';
+            
 
         }
 
