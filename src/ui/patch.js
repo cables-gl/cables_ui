@@ -1367,7 +1367,7 @@ CABLES.UI.Patch = function(_gui) {
                 this._viewBox.setXY(
                     this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
                     this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
-                emitEvent('patch_pan');
+                self.emitEvent('patch_pan');
             }
             this.lastMouseMoveEvent = e;
             e.preventDefault();
@@ -1400,7 +1400,7 @@ CABLES.UI.Patch = function(_gui) {
                     this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
                     this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
 
-                emitEvent('patch_pan');
+                self.emitEvent('patch_pan');
             }
 
             self.lastMouseMoveEvent = e;
@@ -1877,8 +1877,7 @@ CABLES.UI.Patch = function(_gui) {
         var arr=this.findSubpatchOp(subId);
         var str='';
 
-        for(var i=0;i<arr.length;i++)
-            str+=arr[i].name+' ';
+        for(var i=0;i<arr.length;i++) str+=arr[i].name+' ';
 
         return str;
     }
@@ -1911,9 +1910,10 @@ CABLES.UI.Patch = function(_gui) {
     this.updateSubPatchBreadCrumb = function()
     {
         var names = this.findSubpatchOp(currentSubPatch);
-        var str = '<a onclick="gui.patch().setCurrentSubPatch(0)">root</a>';
+        var str = '<a onclick="gui.patch().setCurrentSubPatch(0)">Main</a> ';
 
         for (var i = names.length - 1; i >= 0; i--) {
+            if(i>=0) str+='<span class="sparrow">&rsaquo;</span>';
             str += '<a onclick="gui.patch().setCurrentSubPatch(\'' + names[i].id + '\')">' + names[i].name + '</a>';
         }
 
@@ -1924,7 +1924,6 @@ CABLES.UI.Patch = function(_gui) {
         return selectedOps;
     };
 
-
     this.showSelectedOpsGraphs = function() {
         gui.timeLine().clear();
 
@@ -1934,9 +1933,7 @@ CABLES.UI.Patch = function(_gui) {
             for (var j = 0; j < selectedOps.length; j++) {
                 for (var i = 0; i < selectedOps[j].portsIn.length; i++) {
                     if (selectedOps[j].portsIn[i].thePort.isAnimated() && selectedOps[j].portsIn[i].thePort.anim) {
-                        if (count === 0) {
-                            doShow = !selectedOps[j].portsIn[i].thePort.anim.stayInTimeline;
-                        }
+                        if (count === 0) doShow = !selectedOps[j].portsIn[i].thePort.anim.stayInTimeline;
 
                         selectedOps[j].portsIn[i].thePort.anim.stayInTimeline = doShow;
                         self.timeLine.setAnim(selectedOps[j].portsIn[i].thePort.anim);
@@ -1952,7 +1949,6 @@ CABLES.UI.Patch = function(_gui) {
     this.opCollisionTest = function(uiOp)
     {
         var perf = CABLES.uiperf.start('opCollisionTest');
-
         var found=false;
         var count=1;
 
@@ -2037,14 +2033,8 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.findNonCollidingPosition = function(x, y, opid,dir) {
-        var pos = {
-            "x": x,
-            "y": y
-        };
+        var pos = { "x": x, "y": y };
         return pos;
-    };
-
-    this.arrangeSelectedOps = function() {
     };
 
     this.snapToNextOp = function(dir) {
@@ -2074,20 +2064,13 @@ CABLES.UI.Patch = function(_gui) {
 
     this.compressSelectedOps = function()
     {
-        CABLES.UI.TOOLS.compressSelectedOps(this.getSelectedOpsAsCoreOps());
+        CABLES.UI.TOOLS.compressSelectedOps(gui.patchView.getSelectedOps());
         this.updateSelectedOpPositions();
-    };
-
-    this.getSelectedOpsAsCoreOps=function()
-    {
-        var ops=[];
-        for(var i=0;i<selectedOps.length;i++) ops.push(selectedOps[i].op);
-        return ops;
     };
 
     this.alignSelectedOps = function()
     {
-        CABLES.UI.TOOLS.alignOps(this.getSelectedOpsAsCoreOps());
+        CABLES.UI.TOOLS.alignOps(gui.patchView.getSelectedOps());
         this.updateSelectedOpPositions();
     };
 
@@ -2333,12 +2316,9 @@ CABLES.UI.Patch = function(_gui) {
             return;
         }
         for(var i=0;i<op.portsIn.length;i++)
-        {
             if(op.portsIn[i].defaultValue!=null)
-            {
                 op.portsIn[i].set(op.portsIn[i].defaultValue);
-            }
-        }
+
         gui.patch().showOpParams(op);
     }
 
@@ -2493,11 +2473,7 @@ CABLES.UI.Patch = function(_gui) {
                 });
         }
 
-        if(sort)
-            subPatches.sort(function(a,b)
-            {
-                return a.name.localeCompare(b.name);
-            });
+        if(sort) subPatches.sort(function(a,b) { return a.name.localeCompare(b.name); });
 
         return subPatches;
     };

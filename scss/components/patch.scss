@@ -425,9 +425,19 @@
 	#subpatch_breadcrumb
 	{
 		float:left;
-		margin-top: 14px;
-        margin-left: 14px;
         color: var(--color_op_text_active);
+        padding:5px;
+        padding-left:10px;
+        padding-right:10px;
+        margin-top: 4px;
+
+        .sparrow
+        {
+            font-size: 32px;
+            font-weight: bold;
+            position: absolute;
+            line-height: 14px;
+        }
 
         a
 		{
@@ -438,7 +448,8 @@
 			padding-left: 8px;
 			padding-right: 8px;
 			border-radius: 4px;
-			margin-right: 10px;
+            margin-right: 8px;
+            margin-left: 20px;
 
 			&:hover
 		    {
@@ -450,6 +461,7 @@
 
 	#button_subPatchBack
 	{
+        display:none;
 		float:left;
 	    background-color: var(--color_op_bg);
 	    padding:10px;
