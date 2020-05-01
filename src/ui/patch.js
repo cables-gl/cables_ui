@@ -53,7 +53,7 @@ CABLES.UI.Patch = function(_gui) {
         {
             var lastTab=CABLES.UI.userSettings.get('editortab');
 
-            if(data && data.opid && data.portname) this.openParamEditor(data.opid,data.portname,
+            if(data && data.opid && data.portname) CABLES.UI.openParamStringEditor(data.opid,data.portname,
                 function()
                 {
                     gui.mainTabs.activateTabByName(lastTab);
@@ -2323,56 +2323,6 @@ CABLES.UI.Patch = function(_gui) {
         }
     };
 
-    this.openParamEditor=function(opid,portname,cb)
-    {
-        var op=self.scene.getOpById(opid);
-        if(!op) return console.log('paramedit op not found');
-
-        var port=op.getPortByName(portname);
-        if(!port) return console.log('paramedit port not found');
-
-        var name=op.name+' '+port.name;
-
-        var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
-        if(!editorObj && gui.mainTabs.getTabByTitle(name))
-        {
-            CABLES.editorSession.remove(name,"param");
-            var tab=gui.mainTabs.getTabByTitle(name);
-            gui.mainTabs.closeTab(tab.id);
-
-            editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
-        }
-
-        if(editorObj)
-        {
-            new CABLES.UI.EditorTab(
-                {
-                    "title":name,
-                    "content":port.get() + '',
-                    "name":editorObj.name,
-                    "syntax": port.uiAttribs.editorSyntax,
-                    "editorObj":editorObj,
-                    "onClose":function(which)
-                    {
-                        console.log('close!!! missing infos...');
-                        CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                    },
-                    "onSave":function(setStatus, content) {
-                                setStatus('saved');
-                                gui.setStateUnsaved();
-                                gui.jobs().finish('saveeditorcontent');
-                                port.set(content);
-                            }
-                });
-        }
-        else
-        {
-            gui.mainTabs.activateTabByName(name);
-        }
-
-        if(cb)cb();
-        else gui.maintabPanel.show();
-    }
 
     this.resetOpValues=function(opid)
     {
