@@ -12,9 +12,6 @@ CABLES.UI.Patch = function(_gui) {
     this.scene = null;
     var gui = _gui;
 
-    var watchPorts = [];
-    var watchAnimPorts=[];
-    var watchColorPicker=[];
     var currentProject = null;
     var currentOp = null;
     var spacePressed = false;
@@ -110,206 +107,57 @@ CABLES.UI.Patch = function(_gui) {
         }
     };
 
-    this.paste = function(e) {
-        if (e.clipboardData.types.indexOf('text/plain') > -1) {
-            var str = e.clipboardData.getData('text/plain');
-            e.preventDefault();
 
+    this.cut = function(e) {
+        gui.patchView.clipboardCutOps(e);
+    };
 
-            str=str.replace("```",'');
-            str=str.replace("```",'');
+    this.copy = function(e) {
+        for (var i in selectedOps) selectedOps[i].oprect.showCopyAnim();
+        gui.patchView.clipboardCopyOps(e);
+    };
 
-            var json = null;
-            try {
-                json = JSON.parse(str);
-            } catch (exp) {
-                CABLES.UI.notifyError("Paste failed");
-                console.log(str);
-                console.log(exp);
-            }
-
-            var undoGroup = CABLES.undo.startGroup();
-            var oldSub=currentSubPatch;
-            var k = 0;
-
-            if (json) {
-                if (json.ops) {
-
-                    var focusSubpatchop=null;
-                    gui.serverOps.loadProjectLibs(json, function() {
-                        var i = 0,
-                            j = 0; { // change ids
-                            for (i in json.ops) {
-                                var searchID = json.ops[i].id;
-                                var newID = json.ops[i].id = CABLES.generateUUID();
-
-                                json.ops[i].uiAttribs.pasted = true;
-
-                                for (j in json.ops)
-                                {
-                                    if (json.ops[j].portsIn)
-                                        for (k in json.ops[j].portsIn) {
-                                            if (json.ops[j].portsIn[k].links) {
-                                                var l = json.ops[j].portsIn[k].links.length;
-                                                while (l--) {
-                                                    if (json.ops[j].portsIn[k].links[l] === null) {
-                                                        console.log('delete null link');
-                                                        json.ops[j].portsIn[k].links.splice(l, 1);
-                                                    }
-                                                }
-
-                                                for (l in json.ops[j].portsIn[k].links) {
-                                                    if (json.ops[j].portsIn[k].links[l].objIn == searchID) json.ops[j].portsIn[k].links[l].objIn = newID;
-                                                    if (json.ops[j].portsIn[k].links[l].objOut == searchID) json.ops[j].portsIn[k].links[l].objOut = newID;
-                                                }
-                                            }
-                                        }
-                                }
-                            }
-                        } { // set correct subpatch
-
-
-                            var subpatchIds = [];
-                            var fixedSubPatches = [];
-                            for (i = 0; i < json.ops.length; i++)
-                            {
-                                if (CABLES.Op.isSubpatchOp(json.ops[i].objName))
-                                {
-                                    for (k in json.ops[i].portsIn)
-                                    {
-                                        if (json.ops[i].portsIn[k].name == 'patchId')
-                                        {
-                                            var oldSubPatchId = json.ops[i].portsIn[k].value;
-                                            var newSubPatchId = json.ops[i].portsIn[k].value = CABLES.generateUUID();
-
-                                            console.log('oldSubPatchId', oldSubPatchId);
-                                            console.log('newSubPatchId', newSubPatchId);
-                                            subpatchIds.push(newSubPatchId);
-
-                                            focusSubpatchop=json.ops[i];
-
-                                            for (j = 0; j < json.ops.length; j++) {
-                                                // console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
-
-                                                if (json.ops[j].uiAttribs.subPatch == oldSubPatchId) {
-                                                    console.log('found child patch');
-
-                                                    json.ops[j].uiAttribs.subPatch = newSubPatchId;
-                                                    fixedSubPatches.push(json.ops[j].id);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            for (i in json.ops) {
-                                var found = false;
-                                for (j = 0; j < fixedSubPatches.length; j++) {
-                                    if (json.ops[i].id == fixedSubPatches[j]) {
-                                        found = true;
-                                        break;
-                                    }
-                                }
-                                if (!found) {
-                                    json.ops[i].uiAttribs.subPatch = currentSubPatch;
-                                }
-                            }
-
-                            for(i in subpatchIds)
-                                gui.patch().setCurrentSubPatch(subpatchIds[i]);
-                        }
-
-                        { // change position of ops to paste
-                            var minx = Number.MAX_VALUE;
-                            var miny = Number.MAX_VALUE;
-
-                            for (i in json.ops) {
-                                if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate) {
-                                    minx = Math.min(minx, json.ops[i].uiAttribs.translate.x);
-                                    miny = Math.min(miny, json.ops[i].uiAttribs.translate.y);
-                                }
-                            }
-
-                            for (i in json.ops) {
-                                if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate) {
-                                    var mouseX = 0,
-                                        mouseY = 0;
-                                    if (self.lastMouseMoveEvent) {
-                                        mouseX = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).x;
-                                        mouseY = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).y;
-                                    }
-
-                                    var x=json.ops[i].uiAttribs.translate.x + mouseX - minx;
-                                    var y=json.ops[i].uiAttribs.translate.y + mouseY - miny;
-                                    if(CABLES.UI.userSettings.get("snapToGrid"))
-                                    {
-                                        x=CABLES.UI.snapOpPosX(x);
-                                        y=CABLES.UI.snapOpPosY(y);
-                                    }
-                                    json.ops[i].uiAttribs.translate.x = x;
-                                    json.ops[i].uiAttribs.translate.y = y;
-
-                                }
-
-                                var undofunc = function(op) {
-                                    const opid=op.id;
-
-                                    CABLES.undo.add({
-                                        title:"paste op",
-                                        undo: function() {
-                                            gui.scene().deleteOp(opid, true);
-                                        },
-                                        redo: function() {
-                                            gui.patch().paste(e);
-                                        }
-                                    });
-                    
-                                }(json.ops[i]);
-                            }
-                        }
-
-                        CABLES.UI.notify('Pasted ' + json.ops.length + ' ops');
-                        self.setSelectedOp(null);
-
-
-                        gui.patch().scene.deSerialize(json, false);
-
-                        for(var i=0;i<json.ops.length;i++)
-                        {
-                            var uiop=self.addSelectedOpById(json.ops[i].id);
-
-                            uiop.setSelected(false);
-                            uiop.setSelected(true);
-                            gui.setStateUnsaved();
-                        }
-
-                        setTimeout(function(){
-                            gui.patch().setCurrentSubPatch(oldSub);
-
-                            if(focusSubpatchop)
-                            {
-                                console.log(focusSubpatchop,mouseX,mouseY);
-                                var op=gui.patch().scene.getOpById(focusSubpatchop.id);
-                                // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
-
-                                var uiop=gui.patch().getUiOp(op);
-                                uiop.setPos(mouseX,mouseY);
-
-                                // gui.patch().focusOp(op.id,true);
-
-                                console.log(op);
-                                // gui.patch().centerViewBoxOps();
-                            }
-
-                        },100);
-
-                        return;
-                    });
-                }
-            }
-            CABLES.undo.endGroup(undoGroup,"Paste");
+    this.paste = function(e)
+    {
+        var mouseX=0;
+        var mouseY=0;
+        if (self.lastMouseMoveEvent)
+        {
+            mouseX = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).x;
+            mouseY = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).y;
         }
+
+        gui.patchView.clipboardPaste(e,currentSubPatch,mouseX,mouseY,
+            (ops,focusSubpatchop)=>
+            {
+                self.setSelectedOp(null);
+                for(var i=0;i<ops.length;i++)
+                {
+                    var uiop=self.addSelectedOpById(ops[i].id);
+        
+                    uiop.setSelected(false);
+                    uiop.setSelected(true);
+                    gui.setStateUnsaved();
+                }
+        
+                setTimeout(function(){
+                    gui.patch().setCurrentSubPatch(currentSubPatch);
+        
+                    if(focusSubpatchop)
+                    {
+                        console.log(focusSubpatchop,mouseX,mouseY);
+                        var op=gui.patch().scene.getOpById(focusSubpatchop.id);
+                        // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+        
+                        var uiop=gui.patch().getUiOp(op);
+                        uiop.setPos(mouseX,mouseY);
+        
+                        // gui.patch().focusOp(op.id,true);
+                        // console.log(op);
+                        // gui.patch().centerViewBoxOps();
+                    }
+                },100);
+            });
     };
 
     this.createCommentFromSelection = function() {
@@ -360,11 +208,6 @@ CABLES.UI.Patch = function(_gui) {
         }
     };
 
-    // this.createSubPatchFromSelection = function() {
-    //     self.setSelectedOpById(patchOp.id);
-    //     self.updateSubPatches();
-    // };
-
     this._distance2dDir=function (x1,y1,x2,y2)
     {
         const xd = x2-x1;
@@ -383,8 +226,6 @@ CABLES.UI.Patch = function(_gui) {
 
         for(var i=0;i<this.ops.length;i++)
         {
-            // var dist=selectedOps[0].getPosX()-this.ops[i].getPosX();
-
             var startx=selectedOps[0].getPosX();
             if(dir==1) startx+=selectedOps[0].getWidth();
             var starty=selectedOps[0].getPosY();
@@ -392,13 +233,11 @@ CABLES.UI.Patch = function(_gui) {
             var endx=this.ops[i].getPosX();
             if(dir==0) endx+=this.ops[i].getWidth();
 
-
             var dist=this._distance2dDir(
                 startx,
                 starty,
                 endx,
                 this.ops[i].getPosY()
-
             );
 
             if(selectedOps[0].getPosX()==this.ops[i].getPosX())continue;
@@ -440,57 +279,6 @@ CABLES.UI.Patch = function(_gui) {
                 break;
             }
         }
-    };
-
-    this.cut = function(e) {
-        self.copy(e);
-        self.deleteSelectedOps();
-    };
-
-    this.copy = function(e) {
-        var ops = [];
-        var opIds = [];
-        var j = 0,
-            i = 0,
-            k = 0,
-            l = 0;
-
-        for (i in selectedOps) {
-            if (selectedOps[i].op.objName == CABLES.UI.OPNAME_SUBPATCH) {
-                console.log('selecting subpatch', selectedOps[i].op.patchId.get());
-                self.selectAllOpsSubPatch(selectedOps[i].op.patchId.get());
-            }
-        }
-
-        for (i in selectedOps) {
-            ops.push(selectedOps[i].op.getSerialized());
-            opIds.push(selectedOps[i].op.id);
-            selectedOps[i].oprect.showCopyAnim();
-        }
-
-        // remove links that are not fully copied...
-        for (i = 0; i < ops.length; i++) {
-            for (j = 0; j < ops[i].portsIn.length; j++) {
-                if (ops[i].portsIn[j].links) {
-                    k = ops[i].portsIn[j].links.length;
-                    while (k--) {
-                        if (ops[i].portsIn[j].links[k] && ops[i].portsIn[j].links[k].objIn && ops[i].portsIn[j].links[k].objOut) {
-                            if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objOut)) {
-                                ops[i].portsIn[j].links[k] = null;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        var objStr = JSON.stringify({
-            "ops": ops
-        });
-        CABLES.UI.notify('Copied ' + selectedOps.length + ' ops');
-
-        e.clipboardData.setData('text/plain', objStr);
-        e.preventDefault();
     };
 
     $('#patch').hover(
@@ -1647,32 +1435,32 @@ CABLES.UI.Patch = function(_gui) {
             self.updateCurrentOpParams();
 
             for (var i in this.ops) {
-
                 for (var j in this.ops[i].links) {
                     if (this.ops[i].links[j].p1 && this.ops[i].links[j].p2 &&
                         ((this.ops[i].links[j].p1.thePort == p1 && this.ops[i].links[j].p2.thePort == p2) ||
-                            (this.ops[i].links[j].p1.thePort == p2 && this.ops[i].links[j].p2.thePort == p1))) {
-                        var undofunc = function(p1Name, p2Name, op1Id, op2Id) {
-                            CABLES.undo.add({
-                                title:"Unlink port",
-                                undo: function() {
-                                    scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
-                                },
-                                redo: function() {
-                                    var op1 = scene.getOpById(op1Id);
-                                    var op2 = scene.getOpById(op2Id);
-                                    if (!op1 || !op2) {
-                                        console.warn('undo: op not found');
-                                        return;
-                                    }
-                                    op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                                }
-                            });
-                        }(this.ops[i].links[j].p1.thePort.getName(),
-                            this.ops[i].links[j].p2.thePort.getName(),
-                            this.ops[i].links[j].p1.thePort.parent.id,
-                            this.ops[i].links[j].p2.thePort.parent.id
-                        );
+                            (this.ops[i].links[j].p1.thePort == p2 && this.ops[i].links[j].p2.thePort == p1)))
+                            {
+                                var undofunc = function(p1Name, p2Name, op1Id, op2Id) {
+                                    CABLES.undo.add({
+                                        title:"Unlink port",
+                                        undo: function() {
+                                            scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
+                                        },
+                                        redo: function() {
+                                            var op1 = scene.getOpById(op1Id);
+                                            var op2 = scene.getOpById(op2Id);
+                                            if (!op1 || !op2) {
+                                                console.warn('undo: op not found');
+                                                return;
+                                            }
+                                            op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+                                        }
+                                    });
+                                }(this.ops[i].links[j].p1.thePort.getName(),
+                                    this.ops[i].links[j].p2.thePort.getName(),
+                                    this.ops[i].links[j].p1.thePort.parent.id,
+                                    this.ops[i].links[j].p2.thePort.parent.id
+                                );
 
                         this.ops[i].links[j].hideAddButton();
 
@@ -1824,7 +1612,7 @@ CABLES.UI.Patch = function(_gui) {
         for (var i=0;i<self.ops.length;i++) {
             if (!self.ops[i].op.uiAttribs.subPatch) self.ops[i].op.uiAttribs.subPatch = 0;
             if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch) self.ops[i].show();
-                else self.ops[i].hide();
+            else self.ops[i].hide();
         }
     };
 
@@ -1881,7 +1669,6 @@ CABLES.UI.Patch = function(_gui) {
 
         return str;
     }
-
 
     this.subpatchBack=function()
     {
@@ -2461,8 +2248,6 @@ CABLES.UI.Patch = function(_gui) {
         for (var j = 0; j < op1.portsOut.length; j++)
         {
             var p = op1.portsOut[j].thePort;
-
-            // console.log(p.name,'num:',op2.op.countFittingPorts(p));
 
             const numFitting=op2.op.countFittingPorts(p);
             var addText="...";
