@@ -2058,7 +2058,7 @@ function startUi(cfg)
         if(!document.hidden)
         {
             gui.setLayout();
-            gui.patch().checkUpdated();
+            gui.patchView.store.checkUpdated();
         }
     }, false);
 
