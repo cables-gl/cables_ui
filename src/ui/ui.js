@@ -166,46 +166,6 @@ CABLES.UI.GUI = function(cfg)
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
 
-    // this.toggleMaintabs=function()
-    // {
-    //     if (this.showingMaintabs) this.closeMaintabs();
-    //     else this.showMaintabs();
-
-    //     this.setLayout();
-    // }
-
-
-    // this.toggleEditor = function() {
-    //     if (showingEditor) self.closeEditor();
-    //     else self.showEditor();
-
-    //     self.setLayout();
-    // };
-
-    // todo remove later
-    // this.showEditor = function() {
-    //     if(this._ignoreOpenEditor)
-    //     {
-    //         showingEditor = false;
-    //         return;
-    //     }
-    //     if (!showingEditor) {
-    //         showingEditor = true;
-    //         _editor.focus();
-    //         this.setLayout();
-    //         CABLES.UI.userSettings.set("editorMinimized",false);
-    //     }
-    // };
-
-    // todo remove later
-    // this.closeEditor = function() {
-    //     if (showingEditor) {
-    //         showingEditor = false;
-    //         this.setLayout();
-    //         CABLES.UI.userSettings.set("editorMinimized",true);
-    //     }
-    // };
-
     this.setLayout = function() {
         gui.pauseProfiling();
         var perf = CABLES.uiperf.start('gui.setlayout');

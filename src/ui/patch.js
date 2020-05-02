@@ -164,7 +164,7 @@ CABLES.UI.Patch = function(_gui) {
         var bounds = this.getSelectionBounds();
         var padding = 100;
 
-        gui.scene().addOp('Ops.Ui.Comment', {
+        gui.corePatch().addOp('Ops.Ui.Comment', {
             size: [
                 (bounds.maxx - bounds.minx) + padding * 3,
                 (bounds.maxy - bounds.miny) + padding * 2
@@ -367,113 +367,17 @@ CABLES.UI.Patch = function(_gui) {
         }
     }.bind(this));
 
-
-    /**
-     * Saves a patch to a file, overwrites the file it exists
-     *
-     * @param {object} patchData The data-object to be saved
-     * @param string} path The file-path to store the patch, e.g. '/Users/ulf/myPatch.cables'
-     */
-    this.nativeWritePatchToFile = function(patchData, path) {
-        console.log('Saving patch to: ', path);
-        var fs = require('fs');
-        if (path) {
-            fs.writeFile(path, JSON.stringify(patchData, null, 2), function(err) {
-                if(err) {
-                    CABLES.UI.notifyError('Error saving patch');
-                    return console.log(err);
-                }
-                console.log('Patch successfully saved');
-                CABLES.UI.notify('patch saved');
-                gui.jobs().finish('projectsave');
-                gui.setStateSaved();
-            });
-        }
+    this.getSubPatchViewBoxes=function()
+    {
+        return subPatchViewBoxes;
     }
-
-    /**
-     * Extracts the postfix-filename from a full filename
-     * @param {string} filename e.g. '/Users/Ulf/foo.cables'
-     * @returns {string} filename prefix, e.g. 'foo'
-     */
-    this.getProjectnameFromFilename = function(filename) {
-        if(!filename) { return ''; }
-        var lastDotIndex = filename.lastIndexOf('.');
-        var separator = filename.indexOf('/') > -1 ? '/' : '\\';
-        var lastSeparatorIndex = filename.lastIndexOf(separator);
-        var name = filename.substring(lastSeparatorIndex + 1, lastDotIndex);
-        return name;
-    };
 
     this.saveCurrentProjectAs = function(cb, _id, _name)
     {
-        if(window.process && window.process.versions['electron'])
-        {
-            var electron = require('electron');
-            var remote = electron.remote;
-            var dialog = remote.dialog;
-
-            var data = gui.patch().scene.serialize(true);
-
-            data.ui = {
-                "viewBox": {},
-                "timeLineLength": gui.timeLine().getTimeLineLength()
-            };
-
-            gui.bookmarks.cleanUp();
-            data.ui.bookmarks = gui.bookmarks.getBookmarks();
-            data.ui.viewBox = this._viewBox.serialize();
-            data.ui.subPatchViewBoxes = subPatchViewBoxes;
-            data.ui.renderer = {};
-            data.ui.renderer.w = gui.rendererWidth;
-            data.ui.renderer.h = gui.rendererHeight;
-            data.ui.renderer.s = gui.patch().scene.cgl.canvasScale||1;
-
-            dialog.showSaveDialog(
-                {
-                    // file filters, only display files with these extensions
-                    filters: [{
-                        name: 'cables',
-                        extensions: ['cables']
-                    }]
-                },
-                function(filePath) {
-                    self.nativeWritePatchToFile(data, filePath);
-                    gui.patch().filename = filePath; // store the path so we don't have to ask on next save
-                    console.log('gui.patch().filename saved: ', gui.patch().filename);
-                    var projectName = self.getProjectnameFromFilename(filePath);
-                    gui.setProjectName(projectName);
-                }
-            );
-            return;
-        }
-
-        CABLES.UI.MODAL.prompt(
-            "Save As...",
-            "Enter a name for the copy of this Project ",
-            gui.scene().name,
-            function(name)
-            {
-                CABLESUILOADER.talkerAPI.send("newPatch",{"name":name},
-                    function(err,d)
-                    {
-                        gui.scene().settings=gui.scene().settings||{};
-                        gui.scene().settings.isPublic = false;
-                        gui.scene().settings.secret = '';
-                        gui.scene().settings.isExample = false;
-                        gui.scene().settings.isTest = false;
-                        gui.scene().settings.isFeatured = false;
-                        gui.scene().settings.opExample = '';
-
-                        self.saveCurrentProject(
-                            function()
-                            {
-                                CABLESUILOADER.talkerAPI.send("gotoPatch",{"id":d._id});
-                            }, d._id, d.name);
-
-                    });
-            });
+        gui.patchView.store.saveAs(cb,_id,_name);
     };
+
+    // -----------------------------------------------
 
     this._timeoutLinkWarnings=null;
     this._checkLinkCounter=-1;
@@ -506,7 +410,6 @@ CABLES.UI.Patch = function(_gui) {
             }
             perf.finish();
         },2);
-
     }
 
     this.checkUpdatedSaveForce=function(updated)
@@ -516,231 +419,13 @@ CABLES.UI.Patch = function(_gui) {
         CABLES.CMD.PATCH.save();
     }
 
-    this.checkUpdated=function(cb)
+    this.saveCurrentProject=function(cb, _id, _name,_force)
     {
-        if(!gui.project())return;
-        if(CABLES.sandbox.isOffline())
-        {
-            if(cb)cb();
-            return;
-        }
-
-        gui.jobs().start({
-            id: 'checkupdated',
-            title: 'check if patch was updated',
-            indicator:'canvas'
-        });
-
-        // todo is this protected ?
-        CABLES.api.get('project/' + gui.project()._id+'/updated',
-            function(data)
-            {
-                if(this._serverDate!=data.updated)
-                {
-                    CABLES.UI.MODAL.showError('meanwhile...', 'This patch was changed. Your version is out of date. <br/><br/>Last update: '+data.updatedReadable+' by '+(data.updatedByUser||'unknown')+'<br/><br/>' );
-                    CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="CABLES.UI.MODAL.hide(true);">close</a>&nbsp;&nbsp;');
-                    CABLES.UI.MODAL.contentElement.append('<a class="button" onclick="gui.patch().checkUpdatedSaveForce(\''+data.updated+'\');">save anyway</a>&nbsp;&nbsp;');
-                    CABLES.UI.MODAL.contentElement.append('<a class="button fa fa-refresh" onclick="CABLES.CMD.PATCH.reload();">reload patch</a>&nbsp;&nbsp;');
-                }
-                else
-                {
-                    if(cb)cb(null);
-                }
-                gui.jobs().finish('checkupdated');
-
-            }.bind(this),function(){/*ignore errors*/}
-        );
-    };
-
-    this.saveCurrentProject = function(cb, _id, _name)
-    {
-        if (this.loadingError) {
-            CABLES.UI.MODAL.showError('Project not saved', 'Could not save project: had errors while loading!');
-            return;
-        }
-
-        this.checkUpdated(
-            function(err)
-            {
-                if(!err)this._saveCurrentProject(cb,_id,_name);
-
-            }.bind(this)
-        );
-    }
-
-    this._saveCurrentProject = function(cb, _id, _name)
-    {
-        this._savedPatchCallback=cb;
-
-        for (var i = 0; i < this.ops.length; i++) {
+        for(var i=0;i<this.ops.length;i++)
             this.ops[i].removeDeadLinks();
-            if (this.ops[i].op.uiAttribs.error) delete this.ops[i].op.uiAttribs.error;
-            if (this.ops[i].op.uiAttribs.warning) delete this.ops[i].op.uiAttribs.warning;
-        }
 
-        gui.jobs().start({ id: 'projectsave', title: 'saving project',indicator:'canvas' });
-
-        var id = currentProject._id;
-        var name = currentProject.name;
-        if (_id) id = _id;
-        if (_name) name = _name;
-        var data = gui.patch().scene.serialize(true);
-
-        data.ui = {
-            "viewBox": {},
-            "timeLineLength": gui.timeLine().getTimeLineLength()
-        };
-
-        data.ui.bookmarks = gui.bookmarks.getBookmarks();
-        data.ui.viewBox=this._viewBox.serialize();
-        data.ui.subPatchViewBoxes = subPatchViewBoxes;
-
-        data.ui.renderer = {};
-        data.ui.renderer.w = gui.rendererWidth;
-        data.ui.renderer.h = gui.rendererHeight;
-        data.ui.renderer.s = data.ui.renderer.s = gui.patch().scene.cgl.canvasScale||1;
-
-        // electron
-        if(window.process && window.process.versions['electron']) {
-            var electron = require('electron');
-            var ipcRenderer = electron.ipcRenderer;
-            var remote = electron.remote;
-            var dialog = remote.dialog;
-
-            console.log('gui.patch().filename before check: ', gui.patch().filename);
-            // patch has been saved before, overwrite the patch
-            if(gui.patch().filename) {
-                self.nativeWritePatchToFile(data, gui.patch().filename);
-            } else {
-                dialog.showSaveDialog(
-                    {
-                        // file filters, only display files with these extensions
-                        filters: [{
-                            name: 'cables',
-                            extensions: ['cables']
-                        }]
-                    },
-                    function(filePath) {
-                        self.nativeWritePatchToFile(data, filePath);
-                        gui.patch().filename = filePath; // store the path so we don't have to ask on next save
-                        console.log('gui.patch().filename saved: ', gui.patch().filename);
-                        var projectName = self.getProjectnameFromFilename(filePath);
-                        gui.setProjectName(projectName);
-                    }
-                );
-            }
-
-            return;
-        }
-
-        CABLES.patch.namespace=currentProject.namespace;
-
-        try
-        {
-            data = JSON.stringify(data);
-            gui.patch().getLargestPort();
-
-            CABLES.sandbox.savePatch(
-                {
-                    "id":id,
-                    "name":name,
-                    "namespace":currentProject.namespace,
-                    "data":data,
-                },
-                function(err,r)
-                {
-                    if(err)
-                    {
-                        console.warn('[save patch error]',err)
-                    }
-
-                    gui.jobs().finish('projectsave');
-
-                    gui.setStateSaved();
-                    if(this._savedPatchCallback) this._savedPatchCallback();
-                    this._savedPatchCallback=null;
-
-                    if(!r || !r.success)
-                    {
-                        var msg="no response";
-                        if(r)msg=r.msg;
-                        CABLES.UI.MODAL.showError('Patch not saved', 'Could not save patch: '+msg);
-                        console.log(r);
-                        return;
-                    }
-                    else CABLES.UI.notify('Patch saved');
-
-                    self._serverDate=r.updated;
-
-                    const thePatch=gui.patch().scene;
-                    const cgl=thePatch.cgl;
-
-                    const doSaveScreenshot=gui.patch().scene.isPlaying();
-                    var w = $('#glcanvas').attr('width');
-                    var h = $('#glcanvas').attr('height');
-
-                    if(doSaveScreenshot)
-                    {
-                        $('#glcanvas').attr('width', 640);
-                        $('#glcanvas').attr('height', 360);
-                    }
-
-                    if(doSaveScreenshot)
-                    {
-                        var screenshotTimeout = setTimeout(function() {
-            //                             gui.patch().scene.cgl.setSize(w,h);
-            //                             gui.patch().scene.resume();
-                            cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
-                            thePatch.resume();
-
-                        }, 300);
-
-                        thePatch.pause();
-                        cgl.setSize(640,360);
-                        thePatch.renderOneFrame();
-                        thePatch.renderOneFrame();
-                        gui.jobs().start({ id: 'screenshotsave', title: 'saving screenshot' });
-
-                        cgl.screenShot(function(screenBlob)
-                        {
-                            clearTimeout(screenshotTimeout);
-
-                            cgl.setSize(w/cgl.pixelDensity,h/cgl.pixelDensity);
-                            thePatch.resume();
-
-                            var reader = new FileReader();
-
-                            reader.onload = function(event)
-                            {
-                                CABLESUILOADER.talkerAPI.send(
-                                    "saveScreenshot",
-                                    {
-                                        "id":currentProject._id,
-                                        "screenshot":event.target.result
-                                    },
-                                    function(err,r)
-                                    {
-                                        if(err)
-                                        {
-                                            console.warn('[screenshot save error]',err)
-                                        }
-                                        // console.log("screenshot saved!");
-                                        gui.jobs().finish('screenshotsave');
-                                        if (gui.onSaveProject) gui.onSaveProject();
-                                    });
-                            };
-                            reader.readAsDataURL(screenBlob);
-                        });
-                    }
-
-                }.bind(this)
-
-            );
-        } catch (e) {
-            console.log(e);
-            CABLES.UI.notifyError('error saving patch - try to delete disables ops');
-        } finally {}
-    };
+        gui.patchView.store.saveCurrentProject(cb,_id,_name,_force);
+    }
 
     this.getCurrentProject = function() {
         return currentProject;
@@ -801,7 +486,6 @@ CABLES.UI.Patch = function(_gui) {
         const bounds= gui.patchView.getSelectionBounds();
         _setBoundsXYWH(bounds);
         return bounds;
-
     };
 
     this.getSubPatchBounds = function(subPatch) {
@@ -1005,12 +689,13 @@ CABLES.UI.Patch = function(_gui) {
         currentSubPatch = 0;
         gui.setProjectName(proj.name);
         self.setCurrentProject(proj);
-        this._serverDate=proj.updated;
-        gui.scene().clear();
+        gui.patchView.store.setServerDate(proj.updated);
+        
+        gui.corePatch().clear();
         gui.patch().updateBounds();
 
         gui.serverOps.loadProjectLibs(proj, function() {
-            gui.scene().deSerialize(proj);
+            gui.corePatch().deSerialize(proj);
             CABLES.undo.clear();
             CABLES.UI.MODAL.hideLoading();
             self.updateSubPatches();
@@ -1238,10 +923,10 @@ CABLES.UI.Patch = function(_gui) {
                 CABLES.undo.add({
                     title:"add op",
                     undo: function() {
-                        gui.scene().deleteOp(opid, true);
+                        gui.corePatch().deleteOp(opid, true);
                     },
                     redo: function() {
-                        gui.scene().addOp(objName, op.uiAttribs, opid);
+                        gui.corePatch().addOp(objName, op.uiAttribs, opid);
                     }
                 });
 
@@ -1325,14 +1010,14 @@ CABLES.UI.Patch = function(_gui) {
                     }
                 }
 
-                gui.scene().link(
+                gui.corePatch().link(
                     op,
                     foundPort1.getName(),
                     op1,
                     port1.getName()
                 );
 
-                gui.scene().link(
+                gui.corePatch().link(
                     op,
                     foundPort2.getName(),
                     op2,
@@ -1547,12 +1232,12 @@ CABLES.UI.Patch = function(_gui) {
                 CABLES.undo.add({
                     title:"delete op",
                     undo: function() {
-                        var newop=gui.scene().addOp(opname, op.uiAttribs, opid);
+                        var newop=gui.corePatch().addOp(opname, op.uiAttribs, opid);
 
                         for(var i in oldValues) if(newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
                     },
                     redo: function() {
-                        gui.scene().deleteOp(opid, false);
+                        gui.corePatch().deleteOp(opid, false);
                     }
                 });
             }(op.objName, op.id);
@@ -1860,7 +1545,7 @@ CABLES.UI.Patch = function(_gui) {
             if (selectedOps.length === 0) return;
             id = selectedOps[0].op.id;
         }
-        var op = gui.scene().getOpById(id);
+        var op = gui.corePatch().getOpById(id);
         gui.jobs().start({
                 id: 'selectchilds',
                 title: 'selecting child ops'
@@ -1889,7 +1574,7 @@ CABLES.UI.Patch = function(_gui) {
     };
 
     this.deleteChilds = function(id) {
-        var op = gui.scene().getOpById(id);
+        var op = gui.corePatch().getOpById(id);
         gui.jobs().start({
                 id: 'deletechilds',
                 title: 'deleting ops'
@@ -2021,7 +1706,7 @@ CABLES.UI.Patch = function(_gui) {
         if(selectedOps.length!=1)return;
         if(selectedOps[0].op.id!=id)return;
         gui.setTransformGizmo(null);
-        var op=gui.scene().getOpById(id);
+        var op=gui.corePatch().getOpById(id);
         self.showOpParams(op);
         return true;
     };
@@ -2038,7 +1723,7 @@ CABLES.UI.Patch = function(_gui) {
         gui.setTransformGizmo(null);
 
         s.name = currentProject.name;
-        s.settings = gui.scene().settings;
+        s.settings = gui.corePatch().settings;
 
         gui.patchView.showBookmarkParamsPanel();
 
@@ -2122,7 +1807,7 @@ CABLES.UI.Patch = function(_gui) {
         var y = gui.patch().getCanvasCoordsMouse(event).y;
 
         var uiAttr = { translate: { "x": x, "y": y } };
-        var op = gui.scene().addOp(opname, uiAttr);
+        var op = gui.corePatch().addOp(opname, uiAttr);
 
         for (var i = 0; i < op.portsIn.length; i++) {
             if (op.portsIn[i].uiAttribs.display == 'file') op.portsIn[i].set(filename);
@@ -2139,7 +1824,7 @@ CABLES.UI.Patch = function(_gui) {
                 y: this._viewBox.getCenterY()
             }
         };
-        gui.scene().addOp(opname, uiAttr, function(op)
+        gui.corePatch().addOp(opname, uiAttr, function(op)
         {
             if(op) op.getPort(portname).set('/assets/' + currentProject._id + '/' + filename);
             console.log("new op",op,opname);
@@ -2324,8 +2009,7 @@ CABLES.UI.Patch = function(_gui) {
 
 };
 
-CABLES.UI.Patch.prototype.getViewBox=function()
-{
+CABLES.UI.Patch.prototype.getViewBox=function(){
     return this._viewBox;
 }
 

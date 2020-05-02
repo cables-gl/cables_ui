@@ -105,22 +105,22 @@ CABLES.GLGUI.GlPatchAPI=class
 
     showOpParams(opid)
     {
-        const op=gui.scene().getOpById(opid);
+        const op=gui.corePatch().getOpById(opid);
         gui.patch().showOpParams(op);
     }
 
     unlinkPort(opid,portid)
     {
-        const op=gui.scene().getOpById(opid);
+        const op=gui.corePatch().getOpById(opid);
         const p= op.getPortById(portid);
         p.removeLinks();
     }
     
     removeLink(opIdIn,opIdOut,portIdIn,portIdOut)
     {
-        const opIn=gui.scene().getOpById(opIdIn);
+        const opIn=gui.corePatch().getOpById(opIdIn);
         const pIn= opIn.getPortById(portIdIn);
-        const opOut=gui.scene().getOpById(opIdOut);
+        const opOut=gui.corePatch().getOpById(opIdOut);
         const pOut= opOut.getPortById(portIdOut);
         const l=pOut.getLinkTo(pIn);
 
@@ -130,9 +130,9 @@ CABLES.GLGUI.GlPatchAPI=class
 
     addOpIntoLink(opIdIn,opIdOut,portIdIn,portIdOut)
     {
-        const opIn=gui.scene().getOpById(opIdIn);
+        const opIn=gui.corePatch().getOpById(opIdIn);
         const pIn= opIn.getPortById(portIdIn);
-        const opOut=gui.scene().getOpById(opIdOut);
+        const opOut=gui.corePatch().getOpById(opIdOut);
         const pOut= opOut.getPortById(portIdOut);
         const link=pOut.getLinkTo(pIn);
 
@@ -141,12 +141,12 @@ CABLES.GLGUI.GlPatchAPI=class
 
     deleteOp(id)
     {
-        gui.scene().deleteOp(id,true);
+        gui.corePatch().deleteOp(id,true);
     }
 
     setOpUiAttribs(opid,attrName,val)
     {
-        const op=gui.scene().getOpById(opid);
+        const op=gui.corePatch().getOpById(opid);
         var attr={};
         attr[attrName]=val;
         op.setUiAttrib(attr);
@@ -158,7 +158,7 @@ CABLES.GLGUI.GlPatchAPI=class
 
     alignSelectedOps(opids)
     {
-        const ops=gui.scene().getOpsById(opids);
+        const ops=gui.corePatch().getOpsById(opids);
         console.log("align ops!",ops.length);
         CABLES.UI.TOOLS.alignOps(ops);
     }

@@ -8,6 +8,8 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
         super();
         this._p=corepatch;
         this._element=null;
+
+        this.store=new CABLES.UI.PatchServer();
     }
 
     get element(){ return this._element||this.getElement(); }
