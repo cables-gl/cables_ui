@@ -72,12 +72,12 @@ CABLES.UI.FileManager.prototype.reload = function (cb)
     this._fileSource = this._fileSource || "lib";
     if (this._firstTimeOpening) this._fileSource = "patch";
 
-    gui.jobs().start({ id: "getFileList", title: "Loading file list" });
+    gui.jobs().start({ "id": "getFileList", "title": "Loading file list" });
 
     CABLESUILOADER.talkerAPI.send(
         "getFilelist",
         {
-            source: this._fileSource,
+            "source": this._fileSource,
         },
         (err, files) =>
         {
@@ -120,14 +120,14 @@ CABLES.UI.FileManager.prototype._createItem = function (items, file, filterType)
     }
 
     const item = {
-        title: file.n,
+        "title": file.n,
         shortTitle,
-        id: file._id || "lib" + CABLES.uuid(),
-        p: file.p,
-        date: file.d,
-        dateFromNow: file.dfr,
-        sizeKb: size,
-        size: file.s,
+        "id": file._id || "lib" + CABLES.uuid(),
+        "p": file.p,
+        "date": file.d,
+        "dateFromNow": file.dfr,
+        "sizeKb": size,
+        "size": file.s,
     };
 
     item.icon = "file";
@@ -153,7 +153,7 @@ CABLES.UI.FileManager.prototype._createItem = function (items, file, filterType)
     if (filterType && file.t == "dir")
     {
         // subdir has file with correct file type ??
-        for (var i = 0; i < file.c.length; i++)
+        for (let i = 0; i < file.c.length; i++)
         {
             if (file.c[i].t == filterType)
             {
@@ -163,7 +163,7 @@ CABLES.UI.FileManager.prototype._createItem = function (items, file, filterType)
         }
     }
 
-    if (file.c) for (var i = 0; i < file.c.length; i++) this._createItem(items, file.c[i], filterType);
+    if (file.c) for (let i = 0; i < file.c.length; i++) this._createItem(items, file.c[i], filterType);
 };
 
 CABLES.UI.FileManager.prototype._buildHtml = function (o)
@@ -286,11 +286,11 @@ CABLES.UI.FileManager.prototype.setDisplay = function (type)
 CABLES.UI.FileManager.prototype.updateHeader = function (detailItems)
 {
     const html = CABLES.UI.getHandleBarHtml("filemanager_header", {
-        fileSelectOp: this._filePortOp,
-        filterType: this._filterType,
-        source: this._fileSource,
-        display: this._manager.getDisplay(),
-        filter: this._manager.titleFilter,
+        "fileSelectOp": this._filePortOp,
+        "filterType": this._filterType,
+        "source": this._fileSource,
+        "display": this._manager.getDisplay(),
+        "filter": this._manager.titleFilter,
     });
     $("#itemmanager_header").html(html);
 
@@ -335,19 +335,19 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
         CABLESUILOADER.talkerAPI.send(
             "getFileDetails",
             {
-                fileid: itemId,
+                "fileid": itemId,
             },
             function (err, r)
             {
                 if (this._fileSource != "lib")
                 {
                     html = CABLES.UI.getHandleBarHtml("filemanager_details", {
-                        projectId: gui.patch().getCurrentProject()._id,
-                        file: r,
-                        source: this._fileSource,
+                        "projectId": gui.patch().getCurrentProject()._id,
+                        "file": r,
+                        "source": this._fileSource,
                     });
                 }
-                else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { filename: detailItems[0].p });
+                else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { "filename": detailItems[0].p });
 
                 $("#item_details").html(html);
 
@@ -360,11 +360,11 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                         {
                             CABLESUILOADER.talkerAPI.send(
                                 "deleteFile",
-                                { fileid: r.fileDb._id },
-                                function (err, r)
+                                { "fileid": r.fileDb._id },
+                                function (errr, rr)
                                 {
-                                    if (r && r.success) this._manager.removeItem(itemId);
-                                    else CABLES.UI.notifyError("Error: Could not delete file. " + err.msg);
+                                    if (rr && rr.success) this._manager.removeItem(itemId);
+                                    else CABLES.UI.notifyError("Error: Could not delete file. " + errr.msg);
                                 }.bind(this),
                             );
                         }.bind(this),
@@ -415,9 +415,9 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                         CABLESUILOADER.talkerAPI.send(
                             "deleteFile",
                             {
-                                fileid: detailItem.id,
+                                "fileid": detailItem.id,
                             },
-                            function (err, r)
+                            (err, r) =>
                             {
                                 if (r.success)
                                 {
@@ -430,7 +430,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                                 }
 
                                 this._manager.unselectAll();
-                            }.bind(this),
+                            },
                             function (r)
                             {
                                 console.log("api err", r);
@@ -447,7 +447,7 @@ CABLES.UI.FileManager.prototype.createFile = function ()
 {
     CABLES.UI.MODAL.prompt("Create new file", "Enter filename", "newfile.txt", function (fn)
     {
-        CABLESUILOADER.talkerAPI.send("createFile", { name: fn }, (err, res) =>
+        CABLESUILOADER.talkerAPI.send("createFile", { "name": fn }, (err, res) =>
         {
             if (err)
             {

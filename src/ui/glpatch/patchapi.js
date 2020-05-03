@@ -1,40 +1,40 @@
-var CABLES=CABLES||{}
-CABLES.GLGUI=CABLES.GLGUI||{};
+var CABLES = CABLES || {};
+CABLES.GLGUI = CABLES.GLGUI || {};
 
-CABLES.GLGUI.GlPatchAPI=class
+CABLES.GLGUI.GlPatchAPI = class
 {
-    constructor(patch,glpatch)
+    constructor(patch, glpatch)
     {
-        this._patch=patch;
-        this._glPatch=glpatch;
-        this._glPatch.patchAPI=this;
+        this._patch = patch;
+        this._glPatch = glpatch;
+        this._glPatch.patchAPI = this;
 
-        this._patch.addEventListener("onOpAdd",this._onAddOp.bind(this));
-        this._patch.addEventListener("onOpDelete",this._onDeleteOp.bind(this));
+        this._patch.addEventListener("onOpAdd", this._onAddOp.bind(this));
+        this._patch.addEventListener("onOpDelete", this._onDeleteOp.bind(this));
 
-        this._patch.addEventListener("onLink",this._onLink.bind(this));
-        this._patch.addEventListener("onUnLink",this._onUnLink.bind(this));
+        this._patch.addEventListener("onLink", this._onLink.bind(this));
+        this._patch.addEventListener("onUnLink", this._onUnLink.bind(this));
     }
 
     _initPatch()
     {
-        console.log("patch.ops.length",this._patch.ops.length);
-        var i=0;
-        for(i=0;i<this._patch.ops.length;i++)
+        console.log("patch.ops.length", this._patch.ops.length);
+        let i = 0;
+        for (i = 0; i < this._patch.ops.length; i++)
         {
-            const op=this._patch.ops[i];
+            const op = this._patch.ops[i];
             this._glPatch.addOp(op);
         }
-        for(i=0;i<this._patch.ops.length;i++)
+        for (i = 0; i < this._patch.ops.length; i++)
         {
-            const op=this._patch.ops[i];
+            const op = this._patch.ops[i];
 
-            for(var ip=0;ip<op.portsIn.length;ip++)
+            for (let ip = 0; ip < op.portsIn.length; ip++)
             {
-                for(var il=0;il<op.portsIn[ip].links.length;il++)
+                for (let il = 0; il < op.portsIn[ip].links.length; il++)
                 {
-                    const link=op.portsIn[ip].links[il];
-                    const l=new CABLES.GLGUI.GlLink(
+                    const link = op.portsIn[ip].links[il];
+                    const l = new CABLES.GLGUI.GlLink(
                         this._glPatch,
                         link.id,
                         link.portIn.parent.id,
@@ -52,17 +52,17 @@ CABLES.GLGUI.GlPatchAPI=class
 
     updateFlowModeActivity()
     {
-        for(var i=0;i<this._patch.ops.length;i++)
+        for (let i = 0; i < this._patch.ops.length; i++)
         {
-            const op=this._patch.ops[i];
+            const op = this._patch.ops[i];
 
-            for(var ip=0;ip<op.portsIn.length;ip++)
+            for (let ip = 0; ip < op.portsIn.length; ip++)
             {
-                for(var il=0;il<op.portsIn[ip].links.length;il++)
+                for (let il = 0; il < op.portsIn[ip].links.length; il++)
                 {
-                    const link=op.portsIn[ip].links[il];
+                    const link = op.portsIn[ip].links[il];
                     this._glPatch.links[link.id].setFlowModeActivity(link.activityCounter);
-                    link.activityCounter=0;
+                    link.activityCounter = 0;
                 }
             }
         }
@@ -73,23 +73,23 @@ CABLES.GLGUI.GlPatchAPI=class
         this._initPatch();
     }
 
-    _onLink(p1,p2,link)
+    _onLink(p1, p2, link)
     {
-        if(p1.direction!=0)
+        if (p1.direction != 0)
         {
-            var t=p2;
-            p2=p1;
-            p1=t;
+            const t = p2;
+            p2 = p1;
+            p1 = t;
         }
-        const l=new CABLES.GLGUI.GlLink(this._glPatch,link.id,p1.parent.id,p2.parent.id,
-            p1.name,p2.name,
-            p1.id,p2.id,
+        const l = new CABLES.GLGUI.GlLink(this._glPatch, link.id, p1.parent.id, p2.parent.id,
+            p1.name, p2.name,
+            p1.id, p2.id,
             p1.type);
     }
 
-    _onUnLink(a,b,link)
+    _onUnLink(a, b, link)
     {
-        if(!link)return;
+        if (!link) return;
         this._glPatch.deleteLink(link.id);
     }
 
@@ -105,50 +105,50 @@ CABLES.GLGUI.GlPatchAPI=class
 
     showOpParams(opid)
     {
-        const op=gui.corePatch().getOpById(opid);
+        const op = gui.corePatch().getOpById(opid);
         gui.patch().showOpParams(op);
     }
 
-    unlinkPort(opid,portid)
+    unlinkPort(opid, portid)
     {
-        const op=gui.corePatch().getOpById(opid);
-        const p= op.getPortById(portid);
+        const op = gui.corePatch().getOpById(opid);
+        const p = op.getPortById(portid);
         p.removeLinks();
     }
-    
-    removeLink(opIdIn,opIdOut,portIdIn,portIdOut)
-    {
-        const opIn=gui.corePatch().getOpById(opIdIn);
-        const pIn= opIn.getPortById(portIdIn);
-        const opOut=gui.corePatch().getOpById(opIdOut);
-        const pOut= opOut.getPortById(portIdOut);
-        const l=pOut.getLinkTo(pIn);
 
-        if(l) l.remove();
+    removeLink(opIdIn, opIdOut, portIdIn, portIdOut)
+    {
+        const opIn = gui.corePatch().getOpById(opIdIn);
+        const pIn = opIn.getPortById(portIdIn);
+        const opOut = gui.corePatch().getOpById(opIdOut);
+        const pOut = opOut.getPortById(portIdOut);
+        const l = pOut.getLinkTo(pIn);
+
+        if (l) l.remove();
         else console.error("could not remove link");
     }
 
-    addOpIntoLink(opIdIn,opIdOut,portIdIn,portIdOut)
+    addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut)
     {
-        const opIn=gui.corePatch().getOpById(opIdIn);
-        const pIn= opIn.getPortById(portIdIn);
-        const opOut=gui.corePatch().getOpById(opIdOut);
-        const pOut= opOut.getPortById(portIdOut);
-        const link=pOut.getLinkTo(pIn);
+        const opIn = gui.corePatch().getOpById(opIdIn);
+        const pIn = opIn.getPortById(portIdIn);
+        const opOut = gui.corePatch().getOpById(opIdOut);
+        const pOut = opOut.getPortById(portIdOut);
+        const link = pOut.getLinkTo(pIn);
 
-        gui.opSelect().show({x:0,y:0},null,null,link);
+        gui.opSelect().show({ "x": 0, "y": 0 }, null, null, link);
     }
 
     deleteOp(id)
     {
-        gui.corePatch().deleteOp(id,true);
+        gui.corePatch().deleteOp(id, true);
     }
 
-    setOpUiAttribs(opid,attrName,val)
+    setOpUiAttribs(opid, attrName, val)
     {
-        const op=gui.corePatch().getOpById(opid);
-        var attr={};
-        attr[attrName]=val;
+        const op = gui.corePatch().getOpById(opid);
+        const attr = {};
+        attr[attrName] = val;
         op.setUiAttrib(attr);
     }
 
@@ -158,49 +158,47 @@ CABLES.GLGUI.GlPatchAPI=class
 
     alignSelectedOps(opids)
     {
-        const ops=gui.corePatch().getOpsById(opids);
-        console.log("align ops!",ops.length);
+        const ops = gui.corePatch().getOpsById(opids);
+        console.log("align ops!", ops.length);
         CABLES.UI.TOOLS.alignOps(ops);
     }
 
-    linkPortToOp(e,opid,pid,op2id)
+    linkPortToOp(e, opid, pid, op2id)
     {
-        const op1=this._patch.getOpById(opid);
-        const op2=this._patch.getOpById(op2id);
-        const p=op1.getPort(pid);
+        const op1 = this._patch.getOpById(opid);
+        const op2 = this._patch.getOpById(op2id);
+        const p = op1.getPort(pid);
 
-        new CABLES.UI.SuggestPortDialog(op2,p,e,(p2n)=>
+        new CABLES.UI.SuggestPortDialog(op2, p, e, (p2n) =>
         {
-            this._patch.link(op1,pid,op2,p2n);
+            this._patch.link(op1, pid, op2, p2n);
         });
 
         // this._patch.link(op1,pid,op2,p2id);
     }
 
-    linkPortsToOp(e,opid,opids,portnames)
+    linkPortsToOp(e, opid, opids, portnames)
     {
-        const op1=this._patch.getOpById(opid);
-        var op2=this._patch.getOpById(opids[0]);
-        var p=op2.getPort(portnames[0]);
+        const op1 = this._patch.getOpById(opid);
+        let op2 = this._patch.getOpById(opids[0]);
+        const p = op2.getPort(portnames[0]);
 
-        new CABLES.UI.SuggestPortDialog(op1,p,e,(suggport)=>
+        new CABLES.UI.SuggestPortDialog(op1, p, e, (suggport) =>
         {
-            for(let i=0;i<portnames.length;i++)
+            for (let i = 0; i < portnames.length; i++)
             {
-                op2=this._patch.getOpById(opids[i]);
-                const pname=portnames[i];
-                this._patch.link(op2,pname,op1,suggport);
+                op2 = this._patch.getOpById(opids[i]);
+                const pname = portnames[i];
+                this._patch.link(op2, pname, op1, suggport);
             }
         });
     }
 
-    linkPorts(opid,pid,op2id,p2id)
+    linkPorts(opid, pid, op2id, p2id)
     {
-        const op1=this._patch.getOpById(opid);
-        const op2=this._patch.getOpById(op2id);
+        const op1 = this._patch.getOpById(opid);
+        const op2 = this._patch.getOpById(op2id);
 
-        this._patch.link(op1,pid,op2,p2id);
+        this._patch.link(op1, pid, op2, p2id);
     }
-
-    
-}
+};

@@ -1,43 +1,43 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.IMGSEQUENCETIME=0;
+CABLES.UI.IMGSEQUENCETIME = 0;
 
-CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings)
+CABLES.UI.ImageSequenceExport = function (filename, start, end, fps, settings)
 {
-    var currentNum = start * fps;
-    var endNum = end * fps;
-    var startNum = start * fps;
-    var frameDuration = 1 / fps;
-    var startTime = window.performance.now();
+    let currentNum = start * fps;
+    const endNum = end * fps;
+    const startNum = start * fps;
+    const frameDuration = 1 / fps;
+    const startTime = window.performance.now();
 
-    $('#progresscontainer').show();
-    var fileNum = 0;
+    $("#progresscontainer").show();
+    let fileNum = 0;
 
     currentNum--;
     fileNum--;
-    var oldInternalNow=null;
-    var frames=[];
+    let oldInternalNow = null;
+    const frames = [];
 
-    var format=settings.format;//=true;
+    const format = settings.format;//= true;
 
     render();
 
     function render()
     {
-        if(!oldInternalNow) oldInternalNow=CABLES.internalNow;
+        if (!oldInternalNow) oldInternalNow = CABLES.internalNow;
 
         currentNum++;
         fileNum++;
 
         gui.patch().scene.pause();
-        var time = currentNum * frameDuration;
+        const time = currentNum * frameDuration;
 
-        console.log(currentNum,time,document.getElementById("glcanvas").width,document.getElementById("glcanvas").height);
+        console.log(currentNum, time, document.getElementById("glcanvas").width, document.getElementById("glcanvas").height);
 
         if (time > end)
         {
-            console.log("FORMAT",format);
+            console.log("FORMAT", format);
             // if(format=='gif')
             // {
             //     $('.modalScrollContent').append('encoding gif...<br/>');
@@ -67,41 +67,41 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings)
             //     gif.render();
             // }
             // else
-            if(format=='webm')
+            if (format == "webm")
             {
-                $('.modalScrollContent').html('compiling video...');
+                $(".modalScrollContent").html("compiling video...");
 
-                console.log("webm frames",frames.length);
+                console.log("webm frames", frames.length);
                 // var video=new Whammy.Video(30);
-                var video = Whammy.fromImageArray( frames, 30 )
-                var url = window.URL.createObjectURL(video);
-                var anchor = document.createElement('a');
+                const video = Whammy.fromImageArray(frames, 30);
+                const url = window.URL.createObjectURL(video);
+                const anchor = document.createElement("a");
 
-                anchor.setAttribute('download', filename);
-                anchor.setAttribute('href', url);
+                anchor.setAttribute("download", filename);
+                anchor.setAttribute("href", url);
                 document.body.appendChild(anchor);
                 anchor.click();
             }
 
-            $('#progresscontainer').hide();
-            $('#animRendererSettings').show();
+            $("#progresscontainer").hide();
+            $("#animRendererSettings").show();
             // gui.patch().scene.freeTimer.play();
 
-            $('.modalScrollContent').html('');
-            $('.modalScrollContent').append('finished!<br/><br/>');
-            $('.modalScrollContent').append('rendered ' + (fileNum) + ' frames - ' + Math.round((window.performance.now() - startTime) / 1000) + ' seconds<br/>');
-            $('.modalScrollContent').append(Math.round((window.performance.now() - startTime) / (fileNum)) / 1000 + ' seconds per frame<br/>');
+            $(".modalScrollContent").html("");
+            $(".modalScrollContent").append("finished!<br/><br/>");
+            $(".modalScrollContent").append("rendered " + (fileNum) + " frames - " + Math.round((window.performance.now() - startTime) / 1000) + " seconds<br/>");
+            $(".modalScrollContent").append(Math.round((window.performance.now() - startTime) / (fileNum)) / 1000 + " seconds per frame<br/>");
 
-            var ffmpgCmd='ffmpeg -y -framerate 30 -f image2 -i "'+filename+'_%04d.png"  -b 9999k -vcodec mpeg4 '+filename+'.mp4<br/>';
+            const ffmpgCmd = "ffmpeg -y -framerate 30 -f image2 -i \"" + filename + "_%04d.png\"  -b 9999k -vcodec mpeg4 " + filename + ".mp4<br/>";
 
-            $('.modalScrollContent').append('<br/><br/>ffmpeg command to convert to mp4:<br/><code class="selectable">'+ffmpgCmd+'</code>');
-            CABLES.internalNow=oldInternalNow;
-            oldInternalNow=null;
+            $(".modalScrollContent").append("<br/><br/>ffmpeg command to convert to mp4:<br/><code class=\"selectable\">" + ffmpgCmd + "</code>");
+            CABLES.internalNow = oldInternalNow;
+            oldInternalNow = null;
             gui.patch().scene.pause();
-            setTimeout(function()
+            setTimeout(function ()
             {
                 gui.patch().scene.resume();
-            },500);
+            }, 500);
 
             return;
         }
@@ -112,11 +112,11 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings)
         // });
         // gui.patch().scene.cgl.updateSize();
 
-        var prog = Math.round(fileNum / (endNum - startNum) * 100);
-        $('#progresscontainer .progress').css({
-            width: prog + '%'
+        const prog = Math.round(fileNum / (endNum - startNum) * 100);
+        $("#progresscontainer .progress").css({
+            "width": prog + "%"
         });
-        if(settings.onProgress) settings.onProgress(prog/100);
+        if (settings.onProgress) settings.onProgress(prog / 100);
 
         gui.patch().scene.timer.pause();
         gui.patch().scene.freeTimer.pause();
@@ -124,22 +124,22 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings)
         gui.patch().scene.timer.setTime(time);
         gui.patch().scene.freeTimer.setTime(time);
 
-        CABLES.UI.IMGSEQUENCETIME=time*1000;
-        CABLES.internalNow=function()
+        CABLES.UI.IMGSEQUENCETIME = time * 1000;
+        CABLES.internalNow = function ()
         {
             return CABLES.UI.IMGSEQUENCETIME;
         };
 
-        var str = "" + fileNum;
-        var pad = "0000";
+        const str = "" + fileNum;
+        const pad = "0000";
 
-        var strCurrentNum = '_' + pad.substring(0, pad.length - str.length) + str;
-        if(settings)
+        let strCurrentNum = "_" + pad.substring(0, pad.length - str.length) + str;
+        if (settings)
         {
             // console.log("has settings",settings);
-            if(!settings.leftpad) 
+            if (!settings.leftpad)
             {
-                strCurrentNum = '_' + str;
+                strCurrentNum = "_" + str;
                 console.log("not leftpad");
             }
         }
@@ -147,8 +147,8 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings)
         // if(time==0)gui.patch().scene.renderOneFrame();
         gui.patch().scene.renderOneFrame();
 
-        var left = Math.ceil((Math.round((window.performance.now() - startTime) / 1000) / (currentNum - 1)) * (endNum - currentNum));
-        $('.modalScrollContent').html('frame ' + (currentNum - startNum) + ' of ' + (endNum - startNum) + '<br/>' + left + ' seconds left...');
+        const left = Math.ceil((Math.round((window.performance.now() - startTime) / 1000) / (currentNum - 1)) * (endNum - currentNum));
+        $(".modalScrollContent").html("frame " + (currentNum - startNum) + " of " + (endNum - startNum) + "<br/>" + left + " seconds left...");
 
         // setTimeout(function() {
         // gui.patch().scene.onOneFrameRendered=function()
@@ -164,24 +164,24 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings)
         //     render();
         // }
 
-        if(format=='webm' || format=='gif')
+        if (format == "webm" || format == "gif")
         {
             gui.patch().scene.renderOneFrame();
-            console.log('strCurrentNum',strCurrentNum);
-            frames.push( gui.patch().scene.cgl.canvas.toDataURL('image/webp', 0.99) );
+            console.log("strCurrentNum", strCurrentNum);
+            frames.push(gui.patch().scene.cgl.canvas.toDataURL("image/webp", 0.99));
             render();
         }
         else
         {
             gui.patch().scene.cgl.saveScreenshot(
                 filename + strCurrentNum,
-                function()
+                function ()
                 {
-                    console.log('...finished'+strCurrentNum);
+                    console.log("...finished" + strCurrentNum);
                     render();
-                }.bind(this),
-                $('#render_width').val(),
-                $('#render_height').val()
+                },
+                $("#render_width").val(),
+                $("#render_height").val()
             );
         }
 
@@ -190,6 +190,6 @@ CABLES.UI.ImageSequenceExport = function(filename, start, end, fps,settings)
         //     render();
         // },100);
         // }.bind(this);
-        //, 100);
+        // , 100);
     }
 };

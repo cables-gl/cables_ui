@@ -1,26 +1,26 @@
 
-var CABLES=CABLES||{};
+var CABLES = CABLES || {};
 
 CABLES.dragImage = new Image();
-CABLES.dragImage.src = '/ui/img/dragicon.png';
+CABLES.dragImage.src = "/ui/img/dragicon.png";
 
-CABLES.DragNDrop=function()
+CABLES.DragNDrop = function ()
 {
-    this.internal=false;
+    this.internal = false;
 };
 
-CABLES.DragNDrop.startDragLibraryFile=function(event,p)
+CABLES.DragNDrop.startDragLibraryFile = function (_event, p)
 {
-    event.dataTransfer.setData("filepath", p);
-    var self=this;
+    _event.dataTransfer.setData("filepath", p);
+    const self = this;
 
-    event.dataTransfer.setDragImage(CABLES.dragImage,10,10);
+    _event.dataTransfer.setDragImage(CABLES.dragImage, 10, 10);
 
     CABLES.unBindUploadDragNDrop();
 
     function dragover(event)
     {
-        self.internal=true;
+        self.internal = true;
         CABLES.unBindUploadDragNDrop();
 
         event.preventDefault();
@@ -29,7 +29,7 @@ CABLES.DragNDrop.startDragLibraryFile=function(event,p)
 
     function dragleave(event)
     {
-        self.internal=false;
+        self.internal = false;
         CABLES.unBindUploadDragNDrop();
 
         event.preventDefault();
@@ -38,7 +38,7 @@ CABLES.DragNDrop.startDragLibraryFile=function(event,p)
 
     function drop(event)
     {
-        if(!self.internal)
+        if (!self.internal)
         {
             console.log("not internal!");
             return;
@@ -47,19 +47,19 @@ CABLES.DragNDrop.startDragLibraryFile=function(event,p)
         event.preventDefault();
         event.stopPropagation();
 
-        var filepath = event.originalEvent.dataTransfer.getData("filepath");
+        const filepath = event.originalEvent.dataTransfer.getData("filepath");
         console.log(filepath);
 
-        gui.patch().addAssetOpAuto(filepath,event.originalEvent);
+        gui.patch().addAssetOpAuto(filepath, event.originalEvent);
 
-        $("#patch").off("drop",drop);
-        $("#patch").off("dragover",dragover);
+        $("#patch").off("drop", drop);
+        $("#patch").off("dragover", dragover);
         $("#patch").off("dragleave", dragleave);
         $("#patch").off("dragend", dragleave);
-        
+
         CABLES.unBindUploadDragNDrop();
         CABLES.bindUploadDragNDrop();
-        self.internal=false;
+        self.internal = false;
     }
 
     $("#patch").on("dragover", dragover);

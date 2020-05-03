@@ -1,63 +1,62 @@
 var CABLES = CABLES || {};
 CABLES.CMD = CABLES.CMD || {};
-CABLES.CMD.commands=CABLES.CMD.commands||[];
+CABLES.CMD.commands = CABLES.CMD.commands || [];
 
 CABLES.CMD.DEBUG = {};
 
-CABLES.CMD.DEBUG.testAllOps=function()
+CABLES.CMD.DEBUG.testAllOps = function ()
 {
-	var tester=new CABLES.UI.OpTester();
+    const tester = new CABLES.UI.OpTester();
 
-	tester.run();
-
+    tester.run();
 };
 
-CABLES.CMD.DEBUG.showUiDebug=function()
+CABLES.CMD.DEBUG.showUiDebug = function ()
 {
     gui.showUiDebug();
 };
 
-CABLES.CMD.DEBUG.globalVarDump=function()
+CABLES.CMD.DEBUG.globalVarDump = function ()
 {
     CABLES.GlobalVarTester.after(window);
 };
 
-CABLES.CMD.DEBUG.glguiTab=function()
+CABLES.CMD.DEBUG.glguiTab = function ()
 {
-	var t=new CABLES.GLGUI.GlGuiTab(gui.mainTabs);
+    const t = new CABLES.GLGUI.GlGuiTab(gui.mainTabs);
 };
 
-CABLES.CMD.DEBUG.glguiFull=function()
+CABLES.CMD.DEBUG.glguiFull = function ()
 {
-	new CABLES.GLGUI.GlGuiFull();
+    new CABLES.GLGUI.GlGuiFull();
 };
 
 
 CABLES.CMD.commands.push(
     {
-		cmd:"test all ops",
-		category:"debug",
-		func:CABLES.CMD.DEBUG.testAllOps,
-        icon:'command'
-	},
+        "cmd": "test all ops",
+        "category": "debug",
+        "func": CABLES.CMD.DEBUG.testAllOps,
+        "icon": "command"
+    },
     {
-		cmd:"dump global vars",
-		category:"debug",
-		func:CABLES.CMD.DEBUG.globalVarDump,
-        icon:'command'
-	},
+        "cmd": "dump global vars",
+        "category": "debug",
+        "func": CABLES.CMD.DEBUG.globalVarDump,
+        "icon": "command"
+    },
     {
-		cmd:"glgui patchfield",
-		category:"debug",
-		func:CABLES.CMD.DEBUG.glguiFull,
-        icon:'command'
-	},
+        "cmd": "glgui patchfield",
+        "category": "debug",
+        "func": CABLES.CMD.DEBUG.glguiFull,
+        "icon": "command"
+    },
     {
-		cmd:"glgui tab",
-		category:"debug",
-		func:CABLES.CMD.DEBUG.glguiTab,
-        icon:'command'
-	}
+        "cmd": "glgui tab",
+        "category": "debug",
+        "func": CABLES.CMD.DEBUG.glguiTab,
+        "icon": "command"
+    }
 
 
 );

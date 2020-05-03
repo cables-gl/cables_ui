@@ -30,7 +30,7 @@ CABLES.UI.UserSettings.prototype.load = function (settings)
 {
     this._wasLoaded = true;
 
-    for (var i in settings)
+    for (const i in settings)
     {
         this.set(i, settings[i]);
         // console.log('set ',i,settings[i]);
@@ -53,13 +53,12 @@ CABLES.UI.UserSettings.prototype.getLS = function (key)
 
 CABLES.UI.UserSettings.prototype.set = function (key, value)
 {
-
     if (value === "true") value = true;
     else if (value === "false") value = false;
 
     if (CABLES.UTILS.isNumeric(value)) value = parseFloat(value);
 
-    var wasChanged=this._settings[key]!=value;
+    const wasChanged = this._settings[key] != value;
 
     this._settings[key] = value || false;
     // localStorage.setItem(CABLES.UI.LOCALSTORAGE_KEY, JSON.stringify(this._settings));
@@ -67,15 +66,15 @@ CABLES.UI.UserSettings.prototype.set = function (key, value)
 
     if (this._wasLoaded)
     {
-        if(wasChanged)
+        if (wasChanged)
         {
             clearTimeout(this._serverDelay);
             this._serverDelay = setTimeout(() =>
             {
-                CABLESUILOADER.talkerAPI.send("saveUserSettings", { settings: this._settings });
+                CABLESUILOADER.talkerAPI.send("saveUserSettings", { "settings": this._settings });
             }, 250);
         }
-        if(wasChanged) this.emitEvent("onChange", key, value);
+        if (wasChanged) this.emitEvent("onChange", key, value);
     }
 };
 
@@ -92,8 +91,6 @@ CABLES.UI.UserSettings.prototype.getAll = function ()
 
 CABLES.UI.UserSettings.prototype.updateNavBar = function ()
 {
-
-
     if (this.get("helperMode")) $(".nav_usersettings_helperMode i").removeClass("unchecked");
     else $(".nav_usersettings_helperMode i").addClass("unchecked");
 

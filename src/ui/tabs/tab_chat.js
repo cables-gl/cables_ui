@@ -19,47 +19,47 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         this._clients = {};
 
         this._socket = socket;
-    };
+    }
 
     onChatMsg(payload)
     {
         this._msgs.push(payload);
         this._updateText();
-    };
+    }
 
     getNumClients()
     {
         return Object.keys(this._clients).length;
-    };
+    }
 
     _updateClientTimeouts()
     {
-        for(var i in this._clients)
+        for (let i in this._clients)
         {
-            var client=this._clients[i];
-            if(!client)continue;
+            let client = this._clients[i];
+            if (!client) continue;
 
-            client.timeout=(Date.now() - client.lastSeen);
-            client.lost=client.timeout>10000;
+            client.timeout = (Date.now() - client.lastSeen);
+            client.lost = client.timeout > 10000;
 
-            if(client.clientId==this._socket.clientId) client.isMe=true;
+            if (client.clientId == this._socket.clientId) client.isMe = true;
         }
     }
 
     getUserInfoHtml()
     {
-        var numClients = this.getNumClients();
+        let numClients = this.getNumClients();
 
         this._updateClientTimeouts();
 
-        var html = CABLES.UI.getHandleBarHtml("socketinfo", {
-            "numClients":numClients,
+        let html = CABLES.UI.getHandleBarHtml("socketinfo", {
+            "numClients": numClients,
             "users": this._users,
             "clients": this._clients,
             "connected": this._socket.isConnected()
         });
         return html;
-    };
+    }
 
     onPingAnswer(payload)
     {
@@ -75,7 +75,7 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         }
         else
         {
-            this._users[payload.username].push({ username: payload.username, clientId: payload.clientId, lastSeen: payload.lastSeen });
+            this._users[payload.username].push({ "username": payload.username, "clientId": payload.clientId, "lastSeen": payload.lastSeen });
         }
 
         this._updateClientTimeouts();
@@ -85,17 +85,17 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         else document.getElementById("userindicator").classList.add("hidden");
 
         this.emitEvent("updated");
-    };
+    }
 
     show()
     {
-        this._tab = new CABLES.UI.Tab("chat", { icon: "pie-chart", infotext: "tab_chat", padding: true });
+        this._tab = new CABLES.UI.Tab("chat", { "icon": "pie-chart", "infotext": "tab_chat", "padding": true });
         this._tabs.addTab(this._tab, true);
 
-        var html = CABLES.UI.getHandleBarHtml("tab_chat", {});
+        let html = CABLES.UI.getHandleBarHtml("tab_chat", {});
         this._tab.html(html);
         this._updateText();
-    };
+    }
 
     _cleanUpUserList()
     {
@@ -103,7 +103,7 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         Object.keys(this._users).forEach((userName) =>
         {
             const user = this._users[userName];
-            for (var j = 0; j < user.length; j++)
+            for (let j = 0; j < user.length; j++)
             {
                 const client = user[j];
                 if (client.lastSeen && Date.now() - client.lastSeen > timeOutSeconds * 1000)
@@ -117,15 +117,15 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
                 }
             }
         });
-    };
+    }
 
     _updateText()
     {
-        var html = "";
-        var logEle = document.getElementById("chatmsgs");
+        let html = "";
+        let logEle = document.getElementById("chatmsgs");
         if (!logEle) return;
 
-        for (var i = 0; i < this._msgs.length; i++)
+        for (let i = 0; i < this._msgs.length; i++)
         {
             if (this._msgs[i].type == "info")
             {
@@ -143,16 +143,13 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         }
 
         logEle.innerHTML = html;
-    };
+    }
 
     send(text)
     {
         this._socket.sendChat(text);
-    };
+    }
 
 
 
-}
-
-
-
+};

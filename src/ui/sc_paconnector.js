@@ -3,36 +3,34 @@ var CABLES = CABLES || {};
 
 CABLES.UI.PacoConnector = class extends CABLES.EventTarget
 {
-    constructor(sccon,paco)
+    constructor(sccon, paco)
     {
         super();
-        this._sccon=sccon;
-        this._paco=paco;
+        this._sccon = sccon;
+        this._paco = paco;
     }
 
-    send(event,vars)
+    send(event, vars)
     {
-        if(!this._sccon)
+        if (!this._sccon)
         {
             console.log("NOPE!");
             return;
         }
-        var data={"event":event,"vars":vars}
-        this._sccon.sendPaco({"type":"paco","data":data});
+        const data = { "event": event, "vars": vars };
+        this._sccon.sendPaco({ "type": "paco", "data": data });
     }
 
     receive(pacoMsg)
     {
-
-        if(!this._receiver)
+        if (!this._receiver)
             this._receiver = new CABLES.PatchConnectionReceiver(
                 gui.patch().scene
             );
 
         this._receiver._receive(pacoMsg);
-
     }
-}
+};
 
 // const PatchConnectorBroadcastChannel = function ()
 // {
@@ -57,4 +55,3 @@ CABLES.UI.PacoConnector = class extends CABLES.EventTarget
 //     this.bc.postMessage(JSON.stringify(data));
 //     // Log.log(data);
 // };
-

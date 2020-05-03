@@ -1,11 +1,11 @@
-CABLES =CABLES || {};
-CABLES.UI =CABLES.UI || {};
+CABLES = CABLES || {};
+CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.FindTab=function(tabs,str)
+CABLES.UI.FindTab = function (tabs, str)
 {
-    this._tab=new CABLES.UI.Tab("Search",{"icon":"search","infotext":"tab_find","padding":true});
-    tabs.addTab(this._tab,true);
-    this._tabs=tabs;
+    this._tab = new CABLES.UI.Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
+    tabs.addTab(this._tab, true);
+    this._tabs = tabs;
 
     this._lastSearch = "";
     this._findTimeoutId = 0;
@@ -13,19 +13,19 @@ CABLES.UI.FindTab=function(tabs,str)
     this._lastClicked = -1;
     this._lastSelected = -1;
     this._maxIdx = -1;
-    this._inputId="tabFindInput"+CABLES.uuid();
-    this._closed=false;
+    this._inputId = "tabFindInput" + CABLES.uuid();
+    this._closed = false;
 
-    var colors=[];
-    var warnOps=[];
+    let colors = [];
+    const warnOps = [];
 
-    for (var i=0;i<gui.corePatch().ops.length;i++)
+    for (let i = 0; i < gui.corePatch().ops.length; i++)
     {
-        var op=gui.corePatch().ops[i];
-        if(!op)continue;
+        const op = gui.corePatch().ops[i];
+        if (!op) continue;
         if (op.uiAttribs.error)
         {
-            if(op.objName.toLowerCase().indexOf("Deprecated")>-1)op.isDeprecated=true;
+            if (op.objName.toLowerCase().indexOf("Deprecated") > -1)op.isDeprecated = true;
         }
         if (op.uiAttribs.warning) warnOps.push(op);
         if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
@@ -33,61 +33,60 @@ CABLES.UI.FindTab=function(tabs,str)
     colors = CABLES.uniqueArray(colors);
 
 
-
-    var html = CABLES.UI.getHandleBarHtml("tab_find", {colors:colors,inputid:this._inputId});
+    const html = CABLES.UI.getHandleBarHtml("tab_find", { colors, "inputid": this._inputId });
 
     this._tab.html(html);
 
-    this._updateCb=this.searchAfterPatchUpdate.bind(this);
+    this._updateCb = this.searchAfterPatchUpdate.bind(this);
 
-    gui.opHistory.addEventListener("changed",this.updateHistory.bind(this));
+    gui.opHistory.addEventListener("changed", this.updateHistory.bind(this));
 
-    gui.corePatch().addEventListener("onOpDelete",this._updateCb);
-    gui.corePatch().addEventListener("onOpAdd",this._updateCb);
-    gui.corePatch().addEventListener("commentChanged",this._updateCb);
-    
+    gui.corePatch().addEventListener("onOpDelete", this._updateCb);
+    gui.corePatch().addEventListener("onOpAdd", this._updateCb);
+    gui.corePatch().addEventListener("commentChanged", this._updateCb);
 
-    this._tab.addEventListener("onClose",()=>
+
+    this._tab.addEventListener("onClose", () =>
     {
-        gui.opHistory.removeEventListener("changed",this.updateHistory.bind(this));
+        gui.opHistory.removeEventListener("changed", this.updateHistory.bind(this));
 
-        gui.corePatch().removeEventListener("onOpDelete",this._updateCb);
-        gui.corePatch().removeEventListener("onOpAdd",this._updateCb);
-        gui.corePatch().removeEventListener("commentChanged",this._updateCb);
-        this._closed=true;
+        gui.corePatch().removeEventListener("onOpDelete", this._updateCb);
+        gui.corePatch().removeEventListener("onOpAdd", this._updateCb);
+        gui.corePatch().removeEventListener("commentChanged", this._updateCb);
+        this._closed = true;
     });
 
     document.getElementById(this._inputId).focus();
 
-    document.getElementById(this._inputId).addEventListener("input",(e)=>
+    document.getElementById(this._inputId).addEventListener("input", (e) =>
     {
         this.search(e.target.value);
     });
 
     document.getElementById(this._inputId).addEventListener(
         "keydown",
-        (e)=>
+        (e) =>
         {
             if (e.keyCode == 38)
             {
-                var c = this._lastClicked - 1;
+                let c = this._lastClicked - 1;
                 if (c < 0) c = 0;
                 this.setClicked(c);
-                const resultEle=document.getElementById("findresult" + c);
-                if(resultEle) resultEle.click();
+                const resultEle = document.getElementById("findresult" + c);
+                if (resultEle) resultEle.click();
                 document.getElementById(this._inputId).focus();
             }
             else if (e.keyCode == 40)
             {
-                var c = this._lastClicked + 1;
+                let c = this._lastClicked + 1;
                 if (c > this._maxIdx - 1) c = this._maxIdx;
                 this.setClicked(c);
-                const resultEle=document.getElementById("findresult" + c);
-                if(resultEle) resultEle.click();
+                const resultEle = document.getElementById("findresult" + c);
+                if (resultEle) resultEle.click();
                 document.getElementById(this._inputId).focus();
             }
         }
-        
+
     );
 
     $("#tabsearchbox").show();
@@ -96,14 +95,13 @@ CABLES.UI.FindTab=function(tabs,str)
     document.getElementById(this._inputId).setSelectionRange(0, this._lastSearch.length);
 
     clearTimeout(this._findTimeoutId);
-    this._findTimeoutId = setTimeout( ()=>
+    this._findTimeoutId = setTimeout(() =>
     {
         this.search(this._lastSearch);
         this.updateHistory();
-
     }, 100);
 
-    if(str)
+    if (str)
     {
         $("#tabsearchbox input").val(str);
         this.search(str);
@@ -115,28 +113,28 @@ CABLES.UI.FindTab.prototype.focus = function ()
 {
     this._tabs.activateTab(this._tab.id);
 
-    $("#"+this._inputId).focus();
-}
+    $("#" + this._inputId).focus();
+};
 
 CABLES.UI.FindTab.prototype.isClosed = function ()
 {
     return this._closed;
-}
+};
 
 CABLES.UI.FindTab.prototype.setSearchInputValue = function (str)
 {
     $("#tabsearchbox input").val(str);
-}
+};
 
 CABLES.UI.FindTab.prototype.searchAfterPatchUpdate = function ()
 {
     clearTimeout(this._findTimeoutId);
-    this._findTimeoutId = setTimeout( ()=>
+    this._findTimeoutId = setTimeout(() =>
     {
-        const el=document.getElementById(this._inputId);
-        if(el) this.search(el.value,true);
+        const el = document.getElementById(this._inputId);
+        if (el) this.search(el.value, true);
     }, 100);
-}
+};
 
 CABLES.UI.FindTab.prototype.isVisible = function ()
 {
@@ -150,15 +148,15 @@ CABLES.UI.FindTab.prototype.isVisible = function ()
 
 CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 {
-    var html = "";
-    var info = "";
+    let html = "";
+    let info = "";
     this._maxIdx = idx;
 
     info += "* score : " + result.score + "\n";
 
-    if(op.op)op=op.op;
+    if (op.op)op = op.op;
 
-    var colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName);
+    const colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName);
     html
         += "<div id=\"findresult"
         + idx
@@ -166,35 +164,35 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
         + op.id
         + "\" data-info=\""
         + info + "\" ";
-        
-        html+= "onclick=\"gui.focusFindResult('"+String(idx)+"','"+op.id+"','"+op.uiAttribs.subPatch+"',"+op.uiAttribs.translate.x+","+op.uiAttribs.translate.y+");\">";
-        // + "\" onclick=\"gui.patch().setCurrentSubPatch('"
-        // + op.uiAttribs.subPatch
-        // + "');"
-        // + "gui.patch().focusOp('"
-        // + op.id
-        // + "');gui.patch().getViewBox().center("
-        // + op.uiAttribs.translate.x
-        // + ","
-        // + op.uiAttribs.translate.y
-        // + ");gui.patch().setSelectedOpById('"
-        // + op.id
-        // + "');$('#patch').focus();gui.find().setClicked("
-        // + idx
-        // + ")\">";
 
-    var colorHandle = "";
+    html += "onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
+    // + "\" onclick=\"gui.patch().setCurrentSubPatch('"
+    // + op.uiAttribs.subPatch
+    // + "');"
+    // + "gui.patch().focusOp('"
+    // + op.id
+    // + "');gui.patch().getViewBox().center("
+    // + op.uiAttribs.translate.x
+    // + ","
+    // + op.uiAttribs.translate.y
+    // + ");gui.patch().setSelectedOpById('"
+    // + op.id
+    // + "');$('#patch').focus();gui.find().setClicked("
+    // + idx
+    // + ")\">";
+
+    let colorHandle = "";
     if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
 
     html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.name + "</h3>";
-    if(op.uiAttribs.comment) html+='<span style="color: var(--color-special);"> // '+op.uiAttribs.comment+'</span><br/>';
-    html+=''+op.objName+'<br/>';
-    html += result.where||"";
+    if (op.uiAttribs.comment) html += "<span style=\"color: var(--color-special);\"> // " + op.uiAttribs.comment + "</span><br/>";
+    html += "" + op.objName + "<br/>";
+    html += result.where || "";
 
-    var highlightsubpatch='';
-    if(op.uiAttribs.subPatch==gui.patch().getCurrentSubPatch()) highlightsubpatch='highlight';
+    let highlightsubpatch = "";
+    if (op.uiAttribs.subPatch == gui.patch().getCurrentSubPatch()) highlightsubpatch = "highlight";
 
-    if (op.uiAttribs.subPatch != 0) html += '<br/> subpatch: <span class="'+highlightsubpatch+'">' + gui.patch().getSubPatchPathString(op.uiAttribs.subPatch)+"</span>";
+    if (op.uiAttribs.subPatch != 0) html += "<br/> subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patch().getSubPatchPathString(op.uiAttribs.subPatch) + "</span>";
 
     html += "</div>";
 
@@ -203,105 +201,105 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 
 CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
 {
-    if(!str || str=="" )return "";
+    if (!str || str == "") return "";
     str += "";
 
-    var pos=str.toLowerCase().indexOf(word.toLowerCase());
-    if(pos>=0)
+    const pos = str.toLowerCase().indexOf(word.toLowerCase());
+    if (pos >= 0)
     {
-        const outStrA=str.substring(pos-15, pos);
-        const outStrB=str.substring(pos, pos+word.length);
-        const outStrC=str.substring(pos+word.length, pos+15);
+        const outStrA = str.substring(pos - 15, pos);
+        const outStrB = str.substring(pos, pos + word.length);
+        const outStrC = str.substring(pos + word.length, pos + 15);
         // str = str.replace(stringReg, "<span class=\"highlight\">" + word + "</span>");
-        str=outStrA+'<b style="background-color:#aaa;color:black;">'+outStrB+"</b>"+outStrC;
+        str = outStrA + "<b style=\"background-color:#aaa;color:black;\">" + outStrB + "</b>" + outStrC;
     }
 
     return str;
 };
 
-CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
+CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 {
-    const startTime=performance.now();
+    const startTime = performance.now();
     this._lastSearch = str;
     $("#tabsearchresult").html("");
     if (str.length < 3) return;
 
     str = str.toLowerCase();
 
-    var foundNum = 0;
-    var results = [];
+    let foundNum = 0;
+    const results = [];
 
     if (str.indexOf(":") == 0)
     {
         if (str == ":recent")
         {
-            var history=gui.opHistory.getAsArray(99);
+            const history = gui.opHistory.getAsArray(99);
 
-            for(var i=0;i<history.length;i++)
+            for (let i = 0; i < history.length; i++)
             {
-                var op = gui.corePatch().getOpById(history[i].id);
-                results.push({ op, score: 1 });
+                const op = gui.corePatch().getOpById(history[i].id);
+                results.push({ op, "score": 1 });
                 foundNum++;
             }
         }
 
         if (str == ":commented")
         {
-            for (var i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < gui.corePatch().ops.length; i++)
             {
-                var op = gui.corePatch().ops[i];
+                const op = gui.corePatch().ops[i];
 
                 if (op.uiAttribs && op.uiAttribs.comment && op.uiAttribs.comment.length > 0)
                 {
-                    results.push({ op, score: 1,where:op.uiAttribs.comment });
+                    results.push({ op, "score": 1, "where": op.uiAttribs.comment });
                     foundNum++;
                 }
             }
         }
         else if (str == ":user")
         {
-            for (var i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < gui.corePatch().ops.length; i++)
             {
-                var op = gui.corePatch().ops[i];
+                const op = gui.corePatch().ops[i];
                 if (op.objName.indexOf("Ops.User") == 0)
                 {
-                    results.push({ op, score: 1,where:op.objName });
+                    results.push({ op, "score": 1, "where": op.objName });
                     foundNum++;
                 }
             }
         }
         else if (str.indexOf(":color=") == 0)
         {
-            var col = str.substr(7).toLowerCase();
+            const col = str.substr(7).toLowerCase();
 
-            for (var i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < gui.corePatch().ops.length; i++)
             {
-                var op = gui.corePatch().ops[i];
+                const op = gui.corePatch().ops[i];
                 if (op.uiAttribs.color && op.uiAttribs.color.toLowerCase() == col)
                 {
-                    results.push({ op, score: 1 });
+                    results.push({ op, "score": 1 });
                     foundNum++;
                 }
             }
         }
         else if (str == ":bookmarked")
         {
-            const bms=gui.bookmarks.getBookmarks();
+            const bms = gui.bookmarks.getBookmarks();
 
-            for(var i=0;i<bms.length;i++)
+            for (let i = 0; i < bms.length; i++)
             {
-                var op=gui.corePatch().getOpById(bms[i]);
-                results.push({ op, score: 1 });
+                const op = gui.corePatch().getOpById(bms[i]);
+                results.push({ op, "score": 1 });
                 foundNum++;
             }
         }
         else if (str == ":unconnected")
         {
-            for (var i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < gui.corePatch().ops.length; i++)
             {
-                var op = gui.corePatch().ops[i];
-                var count = 0;
-                for (var j = 0; j < op.portsIn.length; j++)
+                const op = gui.corePatch().ops[i];
+                let count = 0;
+                for (let j = 0; j < op.portsIn.length; j++)
                 {
                     if (op.portsIn[j].isLinked())
                     {
@@ -310,14 +308,14 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
                 }
                 if (count == 0)
                 {
-                    for (var j = 0; j < op.portsOut.length; j++)
+                    for (let j = 0; j < op.portsOut.length; j++)
                         if (op.portsOut[j].isLinked())
                             count++;
                 }
 
                 if (count == 0)
                 {
-                    results.push({ op, score: 1 });
+                    results.push({ op, "score": 1 });
                     foundNum++;
                 }
             }
@@ -325,14 +323,13 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
     }
     else
     {
-        var where = "";
-        var ops=gui.corePatch().ops;
-        for (var i = 0; i < ops.length; i++)
+        let where = "";
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
         {
+            let score = 0;
 
-            var score = 0;
-
-            if(str.length>5)
+            if (str.length > 5)
             {
                 if (ops[i].id.indexOf(str) > -1)
                 {
@@ -348,14 +345,14 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
             }
 
             if (
-                ops[i].uiAttribs.comment && 
-                ops[i].uiAttribs.comment.toLowerCase().indexOf(str) > -1 )
+                ops[i].uiAttribs.comment &&
+                ops[i].uiAttribs.comment.toLowerCase().indexOf(str) > -1)
             {
                 where = "comment: " + this.highlightWord(str, ops[i].uiAttribs.comment);
                 score += 1;
             }
 
-            if ( String(ops[i].name || "").toLowerCase().indexOf(str) > -1 )
+            if (String(ops[i].name || "").toLowerCase().indexOf(str) > -1)
             {
                 if (ops[i].objName.indexOf(ops[i].name) == -1) score += 2; // extra points if non default name
 
@@ -363,8 +360,8 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
                 score += 2;
             }
 
-            var op = ops[i];
-            for (var j = 0; j < op.portsIn.length; j++)
+            const op = ops[i];
+            for (let j = 0; j < op.portsIn.length; j++)
             {
                 if ((op.portsIn[j].get() + "").toLowerCase().indexOf(str) > -1)
                 {
@@ -377,7 +374,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
             if (score > 0 && gui.patch().isOpCurrentSubpatch(op)) score++;
             if (score > 0)
             {
-                results.push({ op: ops[i], score, where });
+                results.push({ "op": ops[i], score, where });
                 foundNum++;
             }
         }
@@ -385,40 +382,40 @@ CABLES.UI.FindTab.prototype.doSearch = function (str,userInvoked)
 
     if (foundNum === 0)
     {
-        $("#tabsearchresult").html('<div style="pointer-events:none">&nbsp;&nbsp;&nbsp;No ops found</div>');
+        $("#tabsearchresult").html("<div style=\"pointer-events:none\">&nbsp;&nbsp;&nbsp;No ops found</div>");
     }
     else
     {
         results.sort(function (a, b) { return b.score - a.score; });
 
-        for (var i = 0; i < results.length; i++)
+        for (let i = 0; i < results.length; i++)
             this._addResultOp(results[i].op, results[i], i);
-        
-        var onclickResults='gui.patch().setSelectedOp(null);';
-        for (var i = 0; i < results.length; i++)
-            onclickResults+='gui.patch().addSelectedOpById(\''+results[i].op.id+'\');';
-        onclickResults+='gui.patch().setStatusSelectedOps();';
-        $("#tabsearchresult").append('<div style="background-color:var(--color-02);border-bottom:none;"><a class="button-small" onclick="'+onclickResults+'">'+results.length+' results</a></div>');
+
+        let onclickResults = "gui.patch().setSelectedOp(null);";
+        for (let i = 0; i < results.length; i++)
+            onclickResults += "gui.patch().addSelectedOpById('" + results[i].op.id + "');";
+        onclickResults += "gui.patch().setStatusSelectedOps();";
+        $("#tabsearchresult").append("<div style=\"background-color:var(--color-02);border-bottom:none;\"><a class=\"button-small\" onclick=\"" + onclickResults + "\">" + results.length + " results</a></div>");
     }
 
-    const timeUsed=performance.now()-startTime;
+    const timeUsed = performance.now() - startTime;
 
-    if(!userInvoked) this.focus();
+    if (!userInvoked) this.focus();
 };
 
-CABLES.UI.FindTab.prototype.search = function (str,userInvoked)
+CABLES.UI.FindTab.prototype.search = function (str, userInvoked)
 {
     this._maxIdx = -1;
     this.setSelectedOp(null);
     this.setClicked(-1);
-    this.doSearch(str||"",userInvoked);
+    this.doSearch(str || "", userInvoked);
 };
 
 CABLES.UI.FindTab.prototype.setClicked = function (num)
 {
-    num=parseInt(num);
+    num = parseInt(num);
 
-    var el = document.getElementById("findresult" + this._lastClicked);
+    let el = document.getElementById("findresult" + this._lastClicked);
     if (el) el.classList.remove("lastClicked");
 
     el = document.getElementById("findresult" + num);
@@ -428,7 +425,7 @@ CABLES.UI.FindTab.prototype.setClicked = function (num)
 
 CABLES.UI.FindTab.prototype.setSelectedOp = function (opid)
 {
-    var els = document.getElementsByClassName("findresultop" + this._lastSelected);
+    let els = document.getElementsByClassName("findresultop" + this._lastSelected);
     if (els && els.length == 1) els[0].classList.remove("selected");
 
     els = document.getElementsByClassName("findresultop" + opid);
@@ -438,9 +435,8 @@ CABLES.UI.FindTab.prototype.setSelectedOp = function (opid)
 
 CABLES.UI.FindTab.prototype.updateHistory = function ()
 {
-    if(this._lastSearch==":recent")
+    if (this._lastSearch == ":recent")
     {
         this._updateCb();
     }
 };
-

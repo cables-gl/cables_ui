@@ -1,23 +1,26 @@
 
-CABLES =CABLES || {};
-CABLES.UI =CABLES.UI || {};
-CABLES.UI.OpDocs=function(cb)
+CABLES = CABLES || {};
+CABLES.UI = CABLES.UI || {};
+CABLES.UI.OpDocs = function (cb)
 {
-    var self=this;
-    var opDocs=[];
-    this.layoutPaper=null;
-    this.libs=[];
+    const self = this;
+    let opDocs = [];
+    this.layoutPaper = null;
+    this.libs = [];
 
     /**
      * Creates a "typeString" attribute for each port-object in the array (e.g. "Value")
      * @param {array} ports - Array of port objects with a "type" attribute
      */
-    function addTypeStringToPorts(ports) {
-        if(!ports) { console.warn('addTypeStringToPorts(): ports is not defined'); return; }
-        for(var i=0; i<ports.length; i++) {
-            var port = ports[i];
-            if(port && typeof port.type !== 'undefined') {
-                port.typeString = CABLES.Port.portTypeNumberToString(port.type);   
+    function addTypeStringToPorts(ports)
+    {
+        if (!ports) { console.warn("addTypeStringToPorts(): ports is not defined"); return; }
+        for (let i = 0; i < ports.length; i++)
+        {
+            const port = ports[i];
+            if (port && typeof port.type !== "undefined")
+            {
+                port.typeString = CABLES.Port.portTypeNumberToString(port.type);
             }
         }
     }
@@ -28,11 +31,14 @@ CABLES.UI.OpDocs=function(cb)
      * @param {object} opDoc - The doc object of the op
      * @returns {string} - The documeentation for the port as html (markdown parsed)
      */
-    function getPortDocText(port, opDoc) {
-        if(!port || !opDoc || !opDoc.docs || !opDoc.docs.ports) { return; }
-        for(var i=0; i<opDoc.docs.ports.length; i++) {
-            if(opDoc.docs.ports[i].name === port.name) {
-                var html = mmd(opDoc.docs.ports[i].text.trim()); // parse markdown
+    function getPortDocText(port, opDoc)
+    {
+        if (!port || !opDoc || !opDoc.docs || !opDoc.docs.ports) { return; }
+        for (let i = 0; i < opDoc.docs.ports.length; i++)
+        {
+            if (opDoc.docs.ports[i].name === port.name)
+            {
+                const html = mmd(opDoc.docs.ports[i].text.trim()); // parse markdown
                 return html;
             }
         }
@@ -40,24 +46,30 @@ CABLES.UI.OpDocs=function(cb)
 
     /**
      * Sets a `text` property for each port with the documentation
-     * @param {object} ports - Array-like object with ports 
+     * @param {object} ports - Array-like object with ports
      * @param {object} opDoc - The op doc
      */
-    function setPortDocTexts(ports, opDoc) {
-        if(!ports) { console.warn('getPortDocText called with empty argument!'); return; }
-        for(var i=0; i<ports.length; i++) {
-            var port = ports[i];
-            var portDocText = getPortDocText(port, opDoc);
-            if(portDocText) {
+    function setPortDocTexts(ports, opDoc)
+    {
+        if (!ports) { console.warn("getPortDocText called with empty argument!"); return; }
+        for (let i = 0; i < ports.length; i++)
+        {
+            const port = ports[i];
+            const portDocText = getPortDocText(port, opDoc);
+            if (portDocText)
+            {
                 port.text = portDocText;
-            } else {
-                port.text = '';
+            }
+            else
+            {
+                port.text = "";
             }
         }
     }
 
-    function parseMarkdown(mdText) {
-        if(!mdText) { return ''; }
+    function parseMarkdown(mdText)
+    {
+        if (!mdText) { return ""; }
         return mmd(mdText);
     }
 
@@ -65,18 +77,23 @@ CABLES.UI.OpDocs=function(cb)
      * Adds some properties to each doc in the op docs array
      * @param {array} opDocs - The array of op docs
      */
-    function extendOpDocs(opDocs) {
-        if(!opDocs) { console.error('No op docs found!'); return; }
-        for(var i=0; i<opDocs.length; i++) {
-            var opDoc = opDocs[i];
+    function extendOpDocs(opDocs)
+    {
+        if (!opDocs) { console.error("No op docs found!"); return; }
+        for (let i = 0; i < opDocs.length; i++)
+        {
+            const opDoc = opDocs[i];
             opDoc.category = CABLES.Op.getNamespaceClassName(opDoc.name);
-            if(opDoc.layout) {
-                if(opDoc.layout.portsIn) {
+            if (opDoc.layout)
+            {
+                if (opDoc.layout.portsIn)
+                {
                     addTypeStringToPorts(opDoc.layout.portsIn);
                     setPortDocTexts(opDoc.layout.portsIn, opDoc);
                     opDoc.summaryHtml = parseMarkdown(opDoc.summary);
                 }
-                if(opDoc.layout.portsOut) {
+                if (opDoc.layout.portsOut)
+                {
                     addTypeStringToPorts(opDoc.layout.portsOut);
                     setPortDocTexts(opDoc.layout.portsOut, opDoc);
                     opDoc.summaryHtml = parseMarkdown(opDoc.summary);
@@ -87,128 +104,131 @@ CABLES.UI.OpDocs=function(cb)
 
     CABLES.api.get(
         CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlDocOpsAll()),
-        function(res)
+        function (res)
         {
-            logStartup('Op docs loaded');
-            
-            if(window.process && window.process.versions['electron'])  res=JSON.parse(res);
-            
-            opDocs=res.opDocs;
+            logStartup("Op docs loaded");
+
+            if (window.process && window.process.versions.electron) res = JSON.parse(res);
+
+            opDocs = res.opDocs;
             extendOpDocs(opDocs); /* add attributes to the docs / parse markdown, ... */
-            self.libs=res.libs;
+            self.libs = res.libs;
             gui.opSelect().prepare();
 
-            if(cb)cb();
+            if (cb)cb();
         },
-        function(res){ console.log('err',res); }
-        );
+        function (res) { console.log("err", res); }
+    );
 
-    this.getSummary=function(opname)
+    this.getSummary = function (opname)
     {
-        for(var i=0;i<opDocs.length;i++)
-            if(opDocs[i].name==opname)
-                return opDocs[i].summary||'';
+        for (let i = 0; i < opDocs.length; i++)
+            if (opDocs[i].name == opname)
+                return opDocs[i].summary || "";
 
         return 0;
     };
 
-	this.getAll=function()
-	{
-		return opDocs;
-	};
-
-    this.opLayoutSVG=function(opname,elementId)
+    this.getAll = function ()
     {
-        if(this.layoutPaper)this.layoutPaper.clear();
+        return opDocs;
+    };
 
-        for(var i=0;i<opDocs.length;i++)
+    this.opLayoutSVG = function (opname, elementId)
+    {
+        if (this.layoutPaper) this.layoutPaper.clear();
+
+        for (let i = 0; i < opDocs.length; i++)
         {
-            if(opDocs[i].name==opname)
+            if (opDocs[i].name == opname)
             {
-                if(!opDocs[i].layout) return;
+                if (!opDocs[i].layout) return;
 
-                var opHeight=40;
-                var opWidth=250;
-                var ele=document.getElementById(elementId);
-                if(!ele)return;
+                const opHeight = 40;
+                const opWidth = 250;
+                const ele = document.getElementById(elementId);
+                if (!ele) return;
 
-                var p = Raphael(ele, opWidth, opHeight);
+                const p = Raphael(ele, opWidth, opHeight);
 
-                var bg=p.rect(0,0,opWidth,opHeight);
-                bg.attr("fill","#333");
-                var j=0;
+                const bg = p.rect(0, 0, opWidth, opHeight);
+                bg.attr("fill", "#333");
+                let j = 0;
 
-                if(opDocs[i].layout.portsIn)
-	                for(j=0;j<opDocs[i].layout.portsIn.length;j++)
+                if (opDocs[i].layout.portsIn)
+	                for (j = 0; j < opDocs[i].layout.portsIn.length; j++)
 	                {
-	                    var portIn=p.rect(j*(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding*2),0,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
+	                    const portIn = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), 0, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
 	                    portIn.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsIn[j].type));
 	                }
 
-                if(opDocs[i].layout.portsOut)
-	                for(j=0;j<opDocs[i].layout.portsOut.length;j++)
+                if (opDocs[i].layout.portsOut)
+	                for (j = 0; j < opDocs[i].layout.portsOut.length; j++)
 	                {
-	                    var portOut=p.rect(j*(CABLES.UI.uiConfig.portSize+CABLES.UI.uiConfig.portPadding*2),opHeight-CABLES.UI.uiConfig.portHeight,CABLES.UI.uiConfig.portSize,CABLES.UI.uiConfig.portHeight);
+	                    const portOut = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), opHeight - CABLES.UI.uiConfig.portHeight, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
 	                    portOut.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsOut[j].type));
 	                }
 
-                    // label = gui.patch().getPaper().text();
+                // label = gui.patch().getPaper().text();
 
-                var visualYOffset = 2;
-                var label= p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset,opDocs[i].shortNameDisplay);
-                label.node.classList.add("op_handle_"+CABLES.UI.uiConfig.getNamespaceClassName(opname));
-                label.node.classList.add('op-svg-shortname');
+                const visualYOffset = 2;
+                const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, opDocs[i].shortNameDisplay);
+                label.node.classList.add("op_handle_" + CABLES.UI.uiConfig.getNamespaceClassName(opname));
+                label.node.classList.add("op-svg-shortname");
                 CABLES.UI.cleanRaphael(label);
-                this.layoutPaper=p;
+                this.layoutPaper = p;
                 return;
             }
         }
     };
 
-    this.getPopularity=function(opname)
+    this.getPopularity = function (opname)
     {
-        for(var i=0;i<opDocs.length;i++)
-            if(opDocs[i].name==opname)
+        for (let i = 0; i < opDocs.length; i++)
+            if (opDocs[i].name == opname)
                 return opDocs[i].pop;
 
         return 0;
     };
 
-    this.getAttachmentFiles=function(opname)
+    this.getAttachmentFiles = function (opname)
     {
-        for(var i=0;i<opDocs.length;i++)
-            if(opDocs[i].name==opname)
-                return opDocs[i].attachmentFiles||[];
+        for (let i = 0; i < opDocs.length; i++)
+            if (opDocs[i].name == opname)
+                return opDocs[i].attachmentFiles || [];
         return [];
     };
 
 
-    this.getPortDoc=function(op_docs,portname,type)
+    this.getPortDoc = function (op_docs, portname, type)
     {
-        var html='';
-        var className=CABLES.UI.uiConfig.getPortTypeClassHtml(type);
-        html+='<li>';
-        html+='<span class="'+className+'">'+portname+'</span>';
-        
-        for(var j=0;j<op_docs.ports.length;j++)
+        let html = "";
+        const className = CABLES.UI.uiConfig.getPortTypeClassHtml(type);
+        html += "<li>";
+        html += "<span class=\"" + className + "\">" + portname + "</span>";
+
+        for (let j = 0; j < op_docs.ports.length; j++)
         {
-            if(op_docs.ports[j].name==portname)
+            if (op_docs.ports[j].name == portname)
             {
-                html+=':<br/> '+op_docs.ports[j].text;
+                html += ":<br/> " + op_docs.ports[j].text;
             }
         }
-        html+='</li>';
+        html += "</li>";
 
         return html;
-    }
+    };
 
     /**
      * Returns the op documentation object for an op
      * @param {string} opName - Complete op name (long form), e.g. "Ops.Value"
      */
-    this.getOpDocByName = function(opName) {
-        for(var i=0; i<opDocs.length; i++) {
-            if(opDocs[i].name === opName) {
+    this.getOpDocByName = function (opName)
+    {
+        for (let i = 0; i < opDocs.length; i++)
+        {
+            if (opDocs[i].name === opName)
+            {
                 return opDocs[i];
             }
         }
@@ -219,24 +239,24 @@ CABLES.UI.OpDocs=function(cb)
      * Does not render the op-svg (layout).
      * @param {string} opName - The name of the op to get the documantation as Html for
      */
-    this.get2 = function(opName)
+    this.get2 = function (opName)
     {
-        var opDoc = this.getOpDocByName(opName);
+        let opDoc = this.getOpDocByName(opName);
 
         // console.log(opDoc);
 
-        if(!opDoc)
+        if (!opDoc)
         {
-            opDoc=
+            opDoc =
                 {
-                    "name":opName,
-                    "summaryHtml":"No Op Documentation found",
-                    "summary":"No Op Documentation found",
-                    "userOp":opName.indexOf("Ops.User")==0
+                    "name": opName,
+                    "summaryHtml": "No Op Documentation found",
+                    "summary": "No Op Documentation found",
+                    "userOp": opName.indexOf("Ops.User") == 0
                 };
         }
 
-        var html = CABLES.UI.getHandleBarHtml('op-doc-template', {
+        const html = CABLES.UI.getHandleBarHtml("op-doc-template", {
             "opDoc": opDoc
         });
 
@@ -244,59 +264,60 @@ CABLES.UI.OpDocs=function(cb)
     };
 
 
-    this.getSuggestions=function(objName,portName)
+    this.getSuggestions = function (objName, portName)
     {
-        for(var i=0;i<opDocs.length;i++)
+        for (let i = 0; i < opDocs.length; i++)
         {
-            if(opDocs[i].name==objName)
+            if (opDocs[i].name == objName)
             {
-                if(opDocs[i].portSuggestions && opDocs[i].portSuggestions[portName])
+                if (opDocs[i].portSuggestions && opDocs[i].portSuggestions[portName])
                 {
-                    var suggestions=opDocs[i].portSuggestions[portName].ops;
+                    const suggestions = opDocs[i].portSuggestions[portName].ops;
                     return suggestions;
                 }
             }
         }
     };
 
-    this.showPortDoc=function(opname,portname)
+    this.showPortDoc = function (opname, portname)
     {
-        var perf = CABLES.uiperf.start('opdocs.portdoc');
+        const perf = CABLES.uiperf.start("opdocs.portdoc");
 
-        for(var i=0;i<opDocs.length;i++)
+        for (let i = 0; i < opDocs.length; i++)
         {
             if (opDocs[i].name == opname && opDocs[i].layout)
             {
-                if(!opDocs[i].layout)return;
-                
-                var group=null;
+                if (!opDocs[i].layout) return;
+
+                let group = null;
 
                 if (opDocs[i].layout.portsIn)
-                    for (var k = 0; k < opDocs[i].layout.portsIn.length;k++)
+                    for (let k = 0; k < opDocs[i].layout.portsIn.length; k++)
                         if (opDocs[i].layout.portsIn[k].name == portname)
                             group = opDocs[i].layout.portsIn[k].group;
 
-                if (group) group+=' - ';
-                    else group='';
+                if (group) group += " - ";
+                else group = "";
 
                 if (opDocs[i].docs)
                 {
-                    for (var j = 0; j < opDocs[i].docs.ports.length; j++) {
-                        if (opDocs[i].docs.ports[j].name == portname) {
-                            CABLES.UI.showInfo('<b>' + group + portname + '</b>:<br/>' + opDocs[i].docs.ports[j].text);
+                    for (let j = 0; j < opDocs[i].docs.ports.length; j++)
+                    {
+                        if (opDocs[i].docs.ports[j].name == portname)
+                        {
+                            CABLES.UI.showInfo("<b>" + group + portname + "</b>:<br/>" + opDocs[i].docs.ports[j].text);
                             perf.finish();
                             return;
                         }
                     }
                 }
 
-                CABLES.UI.showInfo('<b>' + group+portname + '</b><br/> ');
+                CABLES.UI.showInfo("<b>" + group + portname + "</b><br/> ");
                 perf.finish();
                 return;
             }
         }
 
         perf.finish();
-    }
-
+    };
 };

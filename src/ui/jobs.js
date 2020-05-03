@@ -1,147 +1,142 @@
-CABLES=CABLES || {};
-CABLES.UI=CABLES.UI || {};
-CABLES.UI.Jobs=CABLES.UI.Jobs ||
+CABLES = CABLES || {};
+CABLES.UI = CABLES.UI || {};
+CABLES.UI.Jobs = CABLES.UI.Jobs ||
 
-function()
+function ()
 {
-    var jobs=[];
-    var lastIndicator=null;
-    this._jobsEle=document.getElementById("jobs");
-    this._listenerStarted=false;
+    const jobs = [];
+    let lastIndicator = null;
+    this._jobsEle = document.getElementById("jobs");
+    this._listenerStarted = false;
 
-    this.startListener=function()
+    this.startListener = function ()
     {
-        this._listenerStarted=true;
+        this._listenerStarted = true;
 
-        gui.chat.addEventListener("updated",()=>
+        gui.chat.addEventListener("updated", () =>
         {
-            if(this._jobsEle.style.display=="block") this.updateJobListing();
+            if (this._jobsEle.style.display == "block") this.updateJobListing();
         });
-    }
+    };
 
-    this.updateJobListing=function()
+    this.updateJobListing = function ()
     {
-        var str='';
-        var indicator=null;
+        let str = "";
+        let indicator = null;
 
-        if(CABLES.sandbox.isOffline()) str+='<b>Offline! No internet connection.</b><br/><br/>';
+        if (CABLES.sandbox.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
 
-        for(var i in jobs)
+        for (const i in jobs)
         {
-            if(jobs[i].indicator)indicator=jobs[i].indicator;
-            str+='<div><i class="fa fa-circle-o-notch fa-spin"></i>&nbsp;&nbsp;'+jobs[i].title+'';
-            str+='<div id="jobprogress'+jobs[i].id+'" style="width:'+(jobs[i].progress||0)+'%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;"></div>';
-            str+='</div>';
+            if (jobs[i].indicator)indicator = jobs[i].indicator;
+            str += "<div><i class=\"fa fa-circle-o-notch fa-spin\"></i>&nbsp;&nbsp;" + jobs[i].title + "";
+            str += "<div id=\"jobprogress" + jobs[i].id + "\" style=\"width:" + (jobs[i].progress || 0) + "%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;\"></div>";
+            str += "</div>";
         }
 
-        if(jobs.length==0)
+        if (jobs.length == 0)
         {
-            str+='All server jobs finished...';
-            $('.cables-logo .icon-cables').removeClass('blinkanim');
+            str += "All server jobs finished...";
+            $(".cables-logo .icon-cables").removeClass("blinkanim");
         }
 
-        str+=gui.chat.getUserInfoHtml();
+        str += gui.chat.getUserInfoHtml();
 
-        if(indicator)
+        if (indicator)
         {
-            gui.setWorking(true,indicator);
-            lastIndicator=indicator;
+            gui.setWorking(true, indicator);
+            lastIndicator = indicator;
         }
         else
         {
-            if(lastIndicator) gui.setWorking(false,lastIndicator);
+            if (lastIndicator) gui.setWorking(false, lastIndicator);
         }
-    
-        $('#jobs').html(str);
-        if(!this._listenerStarted)this.startListener();
-    }
 
-    this.update=function(job,func)
+        $("#jobs").html(str);
+        if (!this._listenerStarted) this.startListener();
+    };
+
+    this.update = function (job, func)
     {
-        for(var i in jobs)
+        for (const i in jobs)
         {
-            if(jobs[i].id==job.id)
+            if (jobs[i].id == job.id)
             {
-                jobs[i].title=job.title;
+                jobs[i].title = job.title;
                 break;
             }
         }
         this.updateJobListing();
     };
 
-    this.start=function(job,func)
+    this.start = function (job, func)
     {
-        for(var i in jobs)
+        for (const i in jobs)
         {
-            if(jobs[i].id==job.id)
+            if (jobs[i].id == job.id)
             {
-                jobs.splice(i,1);
+                jobs.splice(i, 1);
                 break;
             }
         }
 
-        $('.cables-logo .icon-cables').addClass('blinkanim');
+        $(".cables-logo .icon-cables").addClass("blinkanim");
 
 
         jobs.push(job);
         this.updateJobListing();
 
-        if(func)
+        if (func)
         {
-            setTimeout(func,30);
+            setTimeout(func, 30);
         }
     };
 
-    this.updateProgressMainBar=function()
+    this.updateProgressMainBar = function ()
     {
-        $('#uploadprogress').css({"width":options.complete+'%'});        
-    }
+        $("#uploadprogress").css({ "width": options.complete + "%" });
+    };
 
-    this.setProgress=function(jobId,progress)
+    this.setProgress = function (jobId, progress)
     {
-        for(var i in jobs)
+        for (const i in jobs)
         {
-            if(jobs[i].id==jobId)
+            if (jobs[i].id == jobId)
             {
-                jobs[i].progress=progress;
+                jobs[i].progress = progress;
 
-                document.getElementById('jobprogress'+jobs[i].id).style.width=progress+'%';
+                document.getElementById("jobprogress" + jobs[i].id).style.width = progress + "%";
                 break;
             }
         }
-    }
+    };
 
-    this.finish=function(jobId)
+    this.finish = function (jobId)
     {
-
-        setTimeout(()=>
+        setTimeout(() =>
         {
-            for(var i in jobs)
+            for (const i in jobs)
             {
-                if(jobs[i].id==jobId)
+                if (jobs[i].id == jobId)
                 {
-                    if(jobs[i].title.indexOf('file')>=0)
+                    if (jobs[i].title.indexOf("file") >= 0)
                     {
                         // gui.updateProjectFiles();
                         // CABLES.UI.fileSelect.load();
                         gui.showFileManager();
-                
                     }
-                    jobs.splice(i,1);
+                    jobs.splice(i, 1);
                     break;
                 }
             }
 
 
-
-            if(jobs.length===0)
+            if (jobs.length === 0)
             {
-                $('.cables .logo').addClass('cablesLogo');
-                $('.cables .logo').removeClass('fa fa-circle-o-notch fa-spin');
+                $(".cables .logo").addClass("cablesLogo");
+                $(".cables .logo").removeClass("fa fa-circle-o-notch fa-spin");
             }
             this.updateJobListing();
-
-        },250);
-
+        }, 250);
     };
 };

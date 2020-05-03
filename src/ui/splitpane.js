@@ -1,49 +1,48 @@
-CABLES=CABLES||{};
-CABLES.SPLITPANE={};
+CABLES = CABLES || {};
+CABLES.SPLITPANE = {};
 
-CABLES.SPLITPANE.listeners=[];
+CABLES.SPLITPANE.listeners = [];
 
-$( document ).ready(function()
+$(document).ready(function ()
 {
-    document.getElementById('splitterPatch').addEventListener("mousedown",function (e)
+    document.getElementById("splitterPatch").addEventListener("mousedown", function (e)
     {
         e.preventDefault();
-        CABLES.SPLITPANE.bound=true;
+        CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
             gui.pauseProfiling();
             e.preventDefault();
-            gui.rendererWidth=(window.innerWidth - e.clientX)*(1/gui.patch().scene.cgl.canvasScale);
+            gui.rendererWidth = (window.innerWidth - e.clientX) * (1 / gui.patch().scene.cgl.canvasScale);
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
-        document.addEventListener("mousemove",mm);
+        document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
-    
-    document.getElementById('splitterMaintabs').addEventListener('mouseup',function (e)
+
+    document.getElementById("splitterMaintabs").addEventListener("mouseup", function (e)
     {
-        
-        $( "iframe" ).each(function() { $('iframe').css("pointer-events","initial"); });
+        $("iframe").each(function () { $("iframe").css("pointer-events", "initial"); });
     });
 
 
-    document.getElementById('splitterMaintabs').addEventListener("mousedown",function (e)
+    document.getElementById("splitterMaintabs").addEventListener("mousedown", function (e)
     {
         gui.pauseProfiling();
         e.preventDefault();
-        CABLES.SPLITPANE.bound=true;
+        CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
-            $( "iframe" ).each(function() { $('iframe').css("pointer-events","none"); });
+            $("iframe").each(function () { $("iframe").css("pointer-events", "none"); });
             e.preventDefault();
-            gui.editorWidth=e.clientX-gui._elIconBar.outerWidth();
-            if(gui.editorWidth<30)gui.editorWidth=30;
-            CABLES.UI.userSettings.set("editorWidth",gui.editorWidth);
+            gui.editorWidth = e.clientX - gui._elIconBar.outerWidth();
+            if (gui.editorWidth < 30)gui.editorWidth = 30;
+            CABLES.UI.userSettings.set("editorWidth", gui.editorWidth);
             gui.setLayout();
             gui.mainTabs.emitEvent("resize");
         }
-        document.addEventListener("mousemove",mm);
+        document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
@@ -63,97 +62,95 @@ $( document ).ready(function()
     //     CABLES.SPLITPANE.listeners.push(mm);
     // });
 
-    document.getElementById('splitterRenderer').addEventListener("mousedown",function (e)
+    document.getElementById("splitterRenderer").addEventListener("mousedown", function (e)
     {
         e.preventDefault();
-        CABLES.SPLITPANE.bound=true;
+        CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
             e.preventDefault();
-            gui.rendererHeight=e.clientY*(1/gui.patch().scene.cgl.canvasScale);
+            gui.rendererHeight = e.clientY * (1 / gui.patch().scene.cgl.canvasScale);
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
-        document.addEventListener("mousemove",mm);
+        document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
-    document.getElementById('splitterTimeline').addEventListener("mousedown",function (e)
+    document.getElementById("splitterTimeline").addEventListener("mousedown", function (e)
     {
         e.preventDefault();
-        CABLES.SPLITPANE.bound=true;
+        CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
             e.preventDefault();
-            gui.timingHeight= window.innerHeight-e.clientY;
+            gui.timingHeight = window.innerHeight - e.clientY;
             gui.setLayout();
         }
-        document.addEventListener("mousemove",mm);
+        document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
-    document.getElementById('splitterMeta').addEventListener("mousedown",function (e)
+    document.getElementById("splitterMeta").addEventListener("mousedown", function (e)
     {
         e.preventDefault();
-        CABLES.SPLITPANE.bound=true;
+        CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
             e.preventDefault();
-            gui.infoHeight= window.innerHeight-e.clientY;
+            gui.infoHeight = window.innerHeight - e.clientY;
             gui.setLayout();
         }
-        document.addEventListener("mousemove",mm);
+        document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
     function resizeRenderer(e)
     {
         e.preventDefault();
-        CABLES.SPLITPANE.bound=true;
+        CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
-            var x=e.clientX;
-            var y=e.clientY;
+            let x = e.clientX;
+            let y = e.clientY;
 
-            if(x===undefined && e.touches && e.touches.length>0)
+            if (x === undefined && e.touches && e.touches.length > 0)
             {
-                x=e.touches[0].clientX;
-                y=e.touches[0].clientY;
+                x = e.touches[0].clientX;
+                y = e.touches[0].clientY;
             }
 
-            gui.rendererWidth=(window.innerWidth - x)*(1/gui.patch().scene.cgl.canvasScale)+3;
-            gui.rendererHeight= y*(1/gui.patch().scene.cgl.canvasScale)-38;
+            gui.rendererWidth = (window.innerWidth - x) * (1 / gui.patch().scene.cgl.canvasScale) + 3;
+            gui.rendererHeight = y * (1 / gui.patch().scene.cgl.canvasScale) - 38;
             gui.setLayout();
             gui.updateCanvasIconBar();
-            document.getElementById('glcanvas').focus();
+            document.getElementById("glcanvas").focus();
             e.preventDefault();
         }
-        document.addEventListener("mousemove",mm);
-        document.addEventListener("touchmove",mm);
+        document.addEventListener("mousemove", mm);
+        document.addEventListener("touchmove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
-    document.getElementById('splitterRendererWH').addEventListener("mousedown",resizeRenderer);
-    document.getElementById('splitterRendererWH').addEventListener("touchstart",resizeRenderer);
+    document.getElementById("splitterRendererWH").addEventListener("mousedown", resizeRenderer);
+    document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer);
 
     function stopSplit(e)
     {
-        if(CABLES.SPLITPANE.listeners.length>0)
+        if (CABLES.SPLITPANE.listeners.length > 0)
         {
-            for(var i=0;i<CABLES.SPLITPANE.listeners.length;i++)
+            for (let i = 0; i < CABLES.SPLITPANE.listeners.length; i++)
             {
-                document.removeEventListener("mousemove",CABLES.SPLITPANE.listeners[i]);
-                document.removeEventListener("touchmove",CABLES.SPLITPANE.listeners[i]);
+                document.removeEventListener("mousemove", CABLES.SPLITPANE.listeners[i]);
+                document.removeEventListener("touchmove", CABLES.SPLITPANE.listeners[i]);
             }
 
-            CABLES.SPLITPANE.listeners.length=0;
-            CABLES.SPLITPANE.bound=false;
+            CABLES.SPLITPANE.listeners.length = 0;
+            CABLES.SPLITPANE.bound = false;
             gui.setLayout();
         }
     }
 
-    document.addEventListener('mouseup',stopSplit);
-    document.addEventListener('touchend',stopSplit);
-
-
+    document.addEventListener("mouseup", stopSplit);
+    document.addEventListener("touchend", stopSplit);
 });

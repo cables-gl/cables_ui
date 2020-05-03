@@ -3,13 +3,13 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.Bookmarks = function ()
 {
-    var bookmarks = [];
+    let bookmarks = [];
 
     this.hasBookmarkWithId = function (id)
     {
-        for (var i = 0; i < bookmarks.length; i++)
+        for (let i = 0; i < bookmarks.length; i++)
         {
-            var bm = bookmarks[i];
+            const bm = bookmarks[i];
             if (bm === id)
             {
                 return true;
@@ -20,31 +20,31 @@ CABLES.UI.Bookmarks = function ()
 
     this.cleanUp = function ()
     {
-        var i;
+        let i;
 
         for (i in bookmarks)
         {
-            var op = gui.patch().scene.getOpById(bookmarks[i]);
+            const op = gui.patch().scene.getOpById(bookmarks[i]);
             if (!op) bookmarks[i] = null;
         }
     };
 
     this.getHtml = function ()
     {
-        var subs = gui.patch().getSubPatches(true);
+        const subs = gui.patch().getSubPatches(true);
 
-        var bm = [];
+        const bm = [];
         for (i in bookmarks)
         {
-            var op = gui.patch().scene.getOpById(bookmarks[i]);
+            const op = gui.patch().scene.getOpById(bookmarks[i]);
 
             if (op)
             {
                 bm.push({
-                    id: bookmarks[i],
-                    name: op.name,
-                    objName: op.objName,
-                    class: CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
+                    "id": bookmarks[i],
+                    "name": op.name,
+                    "objName": op.objName,
+                    "class": CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
                 });
             }
             else
@@ -53,7 +53,7 @@ CABLES.UI.Bookmarks = function ()
             }
         }
 
-        var html = CABLES.UI.getHandleBarHtml("bookmarks", { bookmarks: bm, subPatches: subs });
+        const html = CABLES.UI.getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs });
         // $('#meta_content_bookmarks').html(html);
         return html;
     };
@@ -67,7 +67,7 @@ CABLES.UI.Bookmarks = function ()
     {
         if (id)
         {
-            for (var i in bookmarks)
+            for (const i in bookmarks)
             {
                 if (bookmarks[i] == id) bookmarks[i] = null;
             }
@@ -78,7 +78,7 @@ CABLES.UI.Bookmarks = function ()
 
     this.add = function (id)
     {
-        var ops = gui.patch().getSelectedOps();
+        const ops = gui.patch().getSelectedOps();
         if (!id && ops.length > 0)
         {
             id = ops[0].op.id;
@@ -86,7 +86,7 @@ CABLES.UI.Bookmarks = function ()
 
         if (id)
         {
-            for (var i in bookmarks)
+            for (const i in bookmarks)
             {
                 if (bookmarks[i] == id)
                 {
@@ -113,7 +113,7 @@ CABLES.UI.Bookmarks = function ()
         if (gui.keys.shiftKey)
         {
             console.log("YES");
-            var op = gui.patch().scene.getOpById(id);
+            const op = gui.patch().scene.getOpById(id);
             gui.patch().showOpParams(op);
         }
         else
@@ -126,8 +126,8 @@ CABLES.UI.Bookmarks = function ()
 
     this.getBookmarks = function ()
     {
-        var bm = [];
-        for (var i = 0; i < bookmarks.length; i++)
+        const bm = [];
+        for (let i = 0; i < bookmarks.length; i++)
         {
             if (bookmarks[i] != null) bm.push(bookmarks[i]);
         }

@@ -1,26 +1,27 @@
-CABLES =CABLES || {};
-CABLES.UI =CABLES.UI || {};
+CABLES = CABLES || {};
+CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.Exporter=function(project)
+CABLES.UI.Exporter = function (project)
 {
-    this.show=function()
+    this.show = function ()
     {
-        if (!gui.getSavedState()) {
+        if (!gui.getSavedState())
+        {
             CABLES.UI.MODAL.show(CABLES.UI.TEXTS.projectExportNotSaved);
             return;
         }
 
-        var html = CABLES.UI.getHandleBarHtml(
-            'export',
+        const html = CABLES.UI.getHandleBarHtml(
+            "export",
             {
-                texts:CABLES.UI.TEXTS,
-                user:gui.user,
+                "texts": CABLES.UI.TEXTS,
+                "user": gui.user,
             });
 
-        CABLES.UI.MODAL.show(html,{title:'',nopadding:true});
-        document.getElementById("doExportButton").addEventListener("click",function()
+        CABLES.UI.MODAL.show(html, { "title": "", "nopadding": true });
+        document.getElementById("doExportButton").addEventListener("click", function ()
         {
-            const options={};
+            const options = {};
             const e = document.getElementById("export_settings_assets");
             options.assets = e.options[e.selectedIndex].value;
 
@@ -34,42 +35,40 @@ CABLES.UI.Exporter=function(project)
 
             this.exportStatic(options);
         }.bind(this));
-
     };
 
-    this.exportStatic = function(options) {
-
-        var ignoreAssets=false;
-        CABLES.UI.MODAL.showLoading('Exporting Patch...');
+    this.exportStatic = function (options)
+    {
+        const ignoreAssets = false;
+        CABLES.UI.MODAL.showLoading("Exporting Patch...");
 
         CABLESUILOADER.talkerAPI.send(
             "exportPatch",
             {
-                "options":options
+                "options": options
             },
-            function(err,r)
+            function (err, r)
             {
-                var msg = '';
+                let msg = "";
 
                 if (r.error || err)
                 {
                     msg = "<h2>export error</h2>";
-                    msg += '<pre class="shaderErrorCode">' + JSON.stringify(r) + '<pre>';
+                    msg += "<pre class=\"shaderErrorCode\">" + JSON.stringify(r) + "<pre>";
                 }
                 else
                 {
                     msg = "<h2>export finished</h2>";
-                    msg += '<div style="max-width:800px">Cables has been built by a team of dedicated developers who have invested a huge amount of time and effort. Right now cables is free, so please support us by linking back to cables in any web page or piece work that uses it. Thank you';
-                    msg += '<br/><br/>If this is a copy of another patch then please do the right thing and ask the original author for permission. In general it\'s a good idea to give them credits by mentioning their user name and a link to the original patch</div><br/>';
+                    msg += "<div style=\"max-width:800px\">Cables has been built by a team of dedicated developers who have invested a huge amount of time and effort. Right now cables is free, so please support us by linking back to cables in any web page or piece work that uses it. Thank you";
+                    msg += "<br/><br/>If this is a copy of another patch then please do the right thing and ask the original author for permission. In general it's a good idea to give them credits by mentioning their user name and a link to the original patch</div><br/>";
 
-                    msg += '<br/><br/><br/>';
-                    msg += '<a class="bluebutton" href="' + r.path + '">Download '+ Math.round(r.size*100)/100 + ' mb</a>';
-                    msg += '<br/><br/>';
-                    msg += '<div class="shaderErrorCode">' + r.log + '</div>';
+                    msg += "<br/><br/><br/>";
+                    msg += "<a class=\"bluebutton\" href=\"" + r.path + "\">Download " + Math.round(r.size * 100) / 100 + " mb</a>";
+                    msg += "<br/><br/>";
+                    msg += "<div class=\"shaderErrorCode\">" + r.log + "</div>";
                 }
 
                 CABLES.UI.MODAL.show(msg);
             });
     };
-
 };

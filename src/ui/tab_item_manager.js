@@ -7,9 +7,9 @@ CABLES.UI.ItemManager = function (title, tabs)
     this.listHtmlOptions = {};
     this._display = "icons";
     this._tab = new CABLES.UI.Tab(title, {
-        icon: "folder",
-        singleton: "true",
-        padding: true,
+        "icon": "folder",
+        "singleton": "true",
+        "padding": true,
     });
     tabs.addTab(this._tab);
 
@@ -43,10 +43,10 @@ CABLES.UI.ItemManager.prototype.getDisplay = function (t)
 
 CABLES.UI.ItemManager.prototype.removeItem = function (id)
 {
-    var nextId = null;
+    let nextId = null;
     for (var i = 1; i < this._items.length; i++) if (id === this._items[i - 1].id) nextId = this._items[i].id;
 
-    var idx = -1;
+    let idx = -1;
     for (var i = 0; i < this._items.length; i++)
     {
         if (this._items[i].id == id) idx = i;
@@ -55,7 +55,7 @@ CABLES.UI.ItemManager.prototype.removeItem = function (id)
 
     this._items.splice(idx, 1);
 
-    var ele = document.getElementById("item" + id);
+    const ele = document.getElementById("item" + id);
     if (ele)
     {
         ele.remove();
@@ -66,9 +66,9 @@ CABLES.UI.ItemManager.prototype.removeItem = function (id)
 
 CABLES.UI.ItemManager.prototype.updateHtml = function ()
 {
-    var html = "";
-    var options = { items: this._items };
-    for (var i in this.listHtmlOptions) options[i] = this.listHtmlOptions[i];
+    let html = "";
+    const options = { "items": this._items };
+    for (const i in this.listHtmlOptions) options[i] = this.listHtmlOptions[i];
 
     if (this._display == "icons") html = CABLES.UI.getHandleBarHtml("tab_itemmanager", options);
     else html = CABLES.UI.getHandleBarHtml("tab_itemmanager_list", options);
@@ -78,7 +78,7 @@ CABLES.UI.ItemManager.prototype.updateHtml = function ()
 
 CABLES.UI.ItemManager.prototype.getItemByTitleContains = function (t)
 {
-    for (var i = 0; i < this._items.length; i++)
+    for (let i = 0; i < this._items.length; i++)
     {
         if (t.indexOf(this._items[i].title) > -1)
         {
@@ -89,12 +89,12 @@ CABLES.UI.ItemManager.prototype.getItemByTitleContains = function (t)
 
 CABLES.UI.ItemManager.prototype.getItemById = function (id)
 {
-    for (var i = 0; i < this._items.length; i++) if (id === this._items[i].id) return this._items[i];
+    for (let i = 0; i < this._items.length; i++) if (id === this._items[i].id) return this._items[i];
 };
 
 CABLES.UI.ItemManager.prototype.updateSelectionHtml = function ()
 {
-    for (var i = 0; i < this._items.length; i++)
+    for (let i = 0; i < this._items.length; i++)
     {
         const item = this._items[i];
         const ele = document.getElementById("item" + item.id);
@@ -108,28 +108,28 @@ CABLES.UI.ItemManager.prototype.updateSelectionHtml = function ()
 
 CABLES.UI.ItemManager.prototype.unselectAll = function ()
 {
-    for (var i = 0; i < this._items.length; i++) this._items[i].selected = false;
+    for (let i = 0; i < this._items.length; i++) this._items[i].selected = false;
     this.updateSelectionHtml();
 };
 
 CABLES.UI.ItemManager.prototype.toggleSelection = function (id)
 {
-    var item = this.getItemById(id);
+    const item = this.getItemById(id);
     if (item) item.selected = !item.selected;
     this.updateSelectionHtml();
 };
 
 CABLES.UI.ItemManager.prototype.selectItemById = function (id)
 {
-    var item = this.getItemById(id);
+    const item = this.getItemById(id);
     if (item) item.selected = true;
     this.updateSelectionHtml();
 };
 
 CABLES.UI.ItemManager.prototype.updateDetailHtml = function (items)
 {
-    var detailItems = [];
-    for (var i = 0; i < this._items.length; i++) if (this._items[i].selected) detailItems.push(this._items[i]);
+    const detailItems = [];
+    for (let i = 0; i < this._items.length; i++) if (this._items[i].selected) detailItems.push(this._items[i]);
 
     this.emitEvent("onItemsSelected", detailItems);
 };
@@ -142,8 +142,8 @@ CABLES.UI.ItemManager.prototype.setTitleFilter = function (f)
 
 CABLES.UI.ItemManager.prototype.filterItems = function ()
 {
-    var els = document.getElementsByClassName("fileFilterable");
-    var i=0;
+    const els = document.getElementsByClassName("fileFilterable");
+    let i = 0;
     if (this.titleFilter)
     {
         for (i = 0; i < els.length; i++)
@@ -164,7 +164,7 @@ CABLES.UI.ItemManager.prototype.setItems = function (items)
     this._items = items;
     this.updateHtml();
 
-    for (var i = 0; i < this._items.length; i++)
+    for (let i = 0; i < this._items.length; i++)
     {
         const id = this._items[i].id;
         const item = this._items[i];

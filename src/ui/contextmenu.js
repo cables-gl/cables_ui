@@ -1,75 +1,74 @@
-var CABLES=CABLES||{};
+var CABLES = CABLES || {};
 
-CABLES.ContextMenu=function()
+CABLES.ContextMenu = function ()
 {
-    this._element=null;
-    this._modalBg=null;
+    this._element = null;
+    this._modalBg = null;
 };
 
-CABLES.ContextMenu.prototype.close=function()
+CABLES.ContextMenu.prototype.close = function ()
 {
-    if(this._element)this._element.remove();
-    if(this._modalBg)this._modalBg.remove();
-    this._element=null;
-    this._modalBg=null;
+    if (this._element) this._element.remove();
+    if (this._modalBg) this._modalBg.remove();
+    this._element = null;
+    this._modalBg = null;
 };
 
-CABLES.ContextMenu.prototype.show=function(obj,parent)
+CABLES.ContextMenu.prototype.show = function (obj, parent)
 {
-    if(!this._modalBg)
+    if (!this._modalBg)
     {
-        this._modalBg = document.createElement('div');
+        this._modalBg = document.createElement("div");
         this._modalBg.classList.add("contextmenu_modal");
-        this._modalBg.addEventListener("click", 
-        function()
-        {
-            CABLES.contextMenu.close();
-        });
+        this._modalBg.addEventListener("click",
+            function ()
+            {
+                CABLES.contextMenu.close();
+            });
 
         document.body.appendChild(this._modalBg);
     }
 
-    var rect = parent.getBoundingClientRect();
+    const rect = parent.getBoundingClientRect();
 
-    if(!this._element)
+    if (!this._element)
     {
-        this._element = document.createElement('ul');
+        this._element = document.createElement("ul");
         this._element.classList.add("contextmenu");
         document.body.appendChild(this._element);
     }
 
-    this._element.style.left=rect.left+5;
-    this._element.style.top=rect.top+5;
+    this._element.style.left = rect.left + 5;
+    this._element.style.top = rect.top + 5;
 
-    if(obj && obj.items && obj.items.length>0)
+    if (obj && obj.items && obj.items.length > 0)
     {
-        for(var i=0;i<obj.items.length;i++)
+        for (let i = 0; i < obj.items.length; i++)
         {
-            var item = document.createElement('li');
+            const item = document.createElement("li");
             item.classList.add("cm_item");
-            item.innerText=obj.items[i].title;
+            item.innerText = obj.items[i].title;
 
-            if(obj.items[i].iconClass)
+            if (obj.items[i].iconClass)
             {
-                var icon = document.createElement('span');
+                const icon = document.createElement("span");
                 // icon.classList.add("fa");
                 icon.classList.add("cm_icon");
-                var classes=obj.items[i].iconClass.split(' ');
-                for(var ii in classes) icon.classList.add(classes[ii]);
-                
-                icon.style.float="left";
+                const classes = obj.items[i].iconClass.split(" ");
+                for (const ii in classes) icon.classList.add(classes[ii]);
+
+                icon.style.float = "left";
                 item.appendChild(icon);
             }
 
             this._element.appendChild(item);
 
-            var ctx=this;
-            item.addEventListener("click", function()
+            const ctx = this;
+            item.addEventListener("click", function ()
             {
-                if(obj.refresh)
+                if (obj.refresh)
                 {
-                    
-                    setTimeout(function()
+                    setTimeout(function ()
                     {
                         CABLES.contextMenu.close();
                         obj.refresh(parent);
@@ -78,12 +77,13 @@ CABLES.ContextMenu.prototype.show=function(obj,parent)
                     console.log("refreshing...");
                     // ctx.show(obj,parent);
                     // return;
-                } else CABLES.contextMenu.close();
-                
-                setTimeout(this.func.bind(this),20);
+                }
+                else CABLES.contextMenu.close();
+
+                setTimeout(this.func.bind(this), 20);
             }.bind(obj.items[i]));
         }
     }
-}
+};
 
-CABLES.contextMenu=new CABLES.ContextMenu();
+CABLES.contextMenu = new CABLES.ContextMenu();

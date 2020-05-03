@@ -1,20 +1,20 @@
-var CABLES=CABLES||{}
-CABLES.GLGUI=CABLES.GLGUI||{};
+var CABLES = CABLES || {};
+CABLES.GLGUI = CABLES.GLGUI || {};
 
-CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
+CABLES.GLGUI.QuickLinkSuggestion = class extends CABLES.EventTarget
 {
     constructor(glPatch)
     {
         super();
-        this._glPatch=glPatch;
-        this._longPressTimeout=null;
-        this._quickAddOpStart=null;
-        this._longPressOp=null;
-        this._longPress=false;
-        this._glLineDrawer=null;
-        this._glLineIdx=-1;
-        this._startX=0;
-        this._startY=0;
+        this._glPatch = glPatch;
+        this._longPressTimeout = null;
+        this._quickAddOpStart = null;
+        this._longPressOp = null;
+        this._longPress = false;
+        this._glLineDrawer = null;
+        this._glLineIdx = -1;
+        this._startX = 0;
+        this._startY = 0;
     }
 
     isActive()
@@ -25,81 +25,82 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
     longPressStart(op)
     {
         clearTimeout(this._longPressTimeout);
-        this._longPress=true;
-        this._quickAddOpStart=op;
+        this._longPress = true;
+        this._quickAddOpStart = op;
         gui.setCursor("copy");
     }
 
-    longPressPrepare(op,startX,startY)
+    longPressPrepare(op, startX, startY)
     {
-        this._startX=startX;
-        this._startY=startY;
+        this._startX = startX;
+        this._startY = startY;
         this.longPressCancel();
         this._longPressOp = op;
-        this._longPressTimeout=setTimeout( 
-            ()=>
+        this._longPressTimeout = setTimeout(
+            () =>
             {
                 this.longPressStart(op);
-            },300);
+            }, 300);
     }
 
     longPressCancel()
     {
-        this._longPressOp=null;
-        if(this._longPress)gui.setCursor();
+        this._longPressOp = null;
+        if (this._longPress)gui.setCursor();
         clearTimeout(this._longPressTimeout);
-        this._longPress=false;
+        this._longPress = false;
     }
 
-    glRender(cgl,resX,resY,scrollX,scrollY,zoom,mouseX,mouseY)
+    glRender(cgl, resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
     {
-        if(!this._longPress)return;
+        if (!this._longPress) return;
 
-        if(!this._glLineDrawer)
+        if (!this._glLineDrawer)
         {
-            this._glLineDrawer=new CABLES.GLGUI.Linedrawer(cgl);
-            this._glLineIdx=this._glLineDrawer.getIndex();
+            this._glLineDrawer = new CABLES.GLGUI.Linedrawer(cgl);
+            this._glLineIdx = this._glLineDrawer.getIndex();
         }
 
-        const coord=this._glPatch.screenCoord(mouseX,mouseY)
-        
-        this._glLineDrawer.setColor(this._glLineIdx,1,0,0,1);
-        this._glLineDrawer.setLine(this._glLineIdx,this._startX,this._startY,coord[0],coord[1]);
-        this._glLineDrawer.render(resX,resY,scrollX,scrollY,zoom);
+        const coord = this._glPatch.screenCoord(mouseX, mouseY);
+
+        this._glLineDrawer.setColor(this._glLineIdx, 1, 0, 0, 1);
+        this._glLineDrawer.setLine(this._glLineIdx, this._startX, this._startY, coord[0], coord[1]);
+        this._glLineDrawer.render(resX, resY, scrollX, scrollY, zoom);
     }
 
-    finish(mouseEvent,op2)
+    finish(mouseEvent, op2)
     {
-        var op1=this._longPressOp;
+        const op1 = this._longPressOp;
 
-        var suggestions = [];
+        const suggestions = [];
         if (!op1 || !op2) return;
 
-        for (var j = 0; j < op1.portsOut.length; j++)
+        for (let j = 0; j < op1.portsOut.length; j++)
         {
-            var p = op1.portsOut[j];
+            const p = op1.portsOut[j];
 
-            console.log(p.name,'num:',op2.countFittingPorts(p));
+            console.log(p.name, "num:", op2.countFittingPorts(p));
 
-            const numFitting=op2.countFittingPorts(p);
-            var addText="...";
+            const numFitting = op2.countFittingPorts(p);
+            let addText = "...";
             if (numFitting > 0)
             {
-                if(numFitting==1)
+                if (numFitting == 1)
                 {
-                    const p2=op2.findFittingPort(p);
-                    addText=p2.name;
+                    const p2 = op2.findFittingPort(p);
+                    addText = p2.name;
                 }
 
                 suggestions.push({
-                    p: p,
-                    name: p.name + '<span class="icon icon-arrow-right"></span>'+addText,
-                    classname: "port_text_color_" + p.getTypeString().toLowerCase()
+                    p,
+                    "name": p.name + "<span class=\"icon icon-arrow-right\"></span>" + addText,
+                    "classname": "port_text_color_" + p.getTypeString().toLowerCase()
                 });
             }
         }
 
-        if (suggestions.length === 0) {
+        if (suggestions.length === 0)
+        {
             CABLES.UI.notify("can not link!");
             return;
         }
@@ -114,22 +115,23 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
 
         function showSuggestions2(id)
         {
-            var p = suggestions[id].p;
-            var sugIn = [];
+            const p = suggestions[id].p;
+            const sugIn = [];
 
-            for (var i = 0; i < op2.portsIn.length; i++)
+            for (let i = 0; i < op2.portsIn.length; i++)
             {
                 if (CABLES.Link.canLink(op2.portsIn[i], p))
                 {
                     sugIn.push({
-                        p: op2.portsIn[i],
-                        name: '<span class="icon icon-arrow-right"></span>' + op2.portsIn[i].name,
-                        classname: "port_text_color_" + op2.portsIn[i].getTypeString().toLowerCase()
+                        "p": op2.portsIn[i],
+                        "name": "<span class=\"icon icon-arrow-right\"></span>" + op2.portsIn[i].name,
+                        "classname": "port_text_color_" + op2.portsIn[i].getTypeString().toLowerCase()
                     });
                 }
             }
 
-            if (sugIn.length == 1) {
+            if (sugIn.length == 1)
+            {
                 gui.patch().scene.link(
                     p.parent,
                     p.name,
@@ -141,20 +143,17 @@ CABLES.GLGUI.QuickLinkSuggestion=class extends CABLES.EventTarget
             // op2rect.showFocus();
 
             new CABLES.UI.SuggestionDialog(sugIn, op2, mouseEvent, null,
-                function(id) {
+                function (sid)
+                {
                     gui.patch().scene.link(
                         p.parent,
                         p.name,
-                        sugIn[id].p.parent,
-                        sugIn[id].p.name);
-                    return;
+                        sugIn[sid].p.parent,
+                        sugIn[sid].p.name);
                 });
         }
 
-        if(suggestions.length==1) showSuggestions2(0);
+        if (suggestions.length == 1) showSuggestions2(0);
         else new CABLES.UI.SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
     }
-
-}
-
-
+};

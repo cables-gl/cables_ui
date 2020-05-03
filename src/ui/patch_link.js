@@ -4,10 +4,10 @@ CABLES.UI.LINKHOVER = null;
 
 function UiLink(port1, port2)
 {
-    var self = this;
-    var middlePosX = 30;
-    var middlePosY = 30;
-    var fromX,
+    const self = this;
+    let middlePosX = 30;
+    let middlePosY = 30;
+    let fromX,
         fromY,
         toX,
         toY;
@@ -32,9 +32,9 @@ function UiLink(port1, port2)
 
     this.hideAddButton = function ()
     {
-        for (var i = 0; i < this._addCircles.length; i++)
+        for (let i = 0; i < this._addCircles.length; i++)
         {
-            if(!this._addCircles[i])continue;
+            if (!this._addCircles[i]) continue;
             this._addCircles[i].hide();
             this._addCircleVisible = false;
 
@@ -50,20 +50,20 @@ function UiLink(port1, port2)
         // this._addCircles.length=0;
     };
 
-    var onHover = function (e)
+    const onHover = function (e)
     {
         CABLES.UI.LINKHOVER = self;
 
-        var addCircle = this._addCircles[0];
+        const addCircle = this._addCircles[0];
         addCircle.node.classList.add("active");
         self.linkLine.node.classList.add("link_hover");
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
     };
 
-    var onUnHover = function ()
+    const onUnHover = function ()
     {
-        var addCircle = this._addCircles[0];
+        const addCircle = this._addCircles[0];
         CABLES.UI.LINKHOVER = null;
         addCircle.node.classList.remove("active");
         if (self.linkLine && self.linkLine.node) self.linkLine.node.classList.remove("link_hover");
@@ -71,7 +71,7 @@ function UiLink(port1, port2)
         CABLES.UI.hideInfo();
     };
 
-    var onMouseDown = function (event)
+    const onMouseDown = function (event)
     {
         $("#patch").focus();
 
@@ -84,10 +84,9 @@ function UiLink(port1, port2)
             else
             {
                 event = mouseEvent(event);
-                var coords = gui.patch().getCanvasCoordsMouse(event);
+                const coords = gui.patch().getCanvasCoordsMouse(event);
                 coords.x = self.p1.op.uiAttribs.translate.x;
                 gui.opSelect().show(coords, null, null, self);
-
             }
         }
     };
@@ -105,7 +104,7 @@ function UiLink(port1, port2)
     {
         if (!self.p1) return;
 
-        var addCircle = gui
+        const addCircle = gui
             .patch()
             .getPaper()
             .circle(middlePosX, middlePosY - CABLES.UI.uiConfig.portSize * 0.5 * 0.5, CABLES.UI.uiConfig.portSize * 0.5);
@@ -134,7 +133,7 @@ function UiLink(port1, port2)
         if (!this.linkLine) return;
         // if(!this.isVisible())return;
 
-        var perf = CABLES.uiperf.start("link showadd");
+        const perf = CABLES.uiperf.start("link showadd");
 
         this.linkLine.node.classList.remove("link-thin");
         // const llWidth=1.5;
@@ -153,20 +152,20 @@ function UiLink(port1, port2)
             // for(var i=0;i<this._addCircles.length;i++)
             // {
 
-            var pY = middlePosY - CABLES.UI.uiConfig.portSize * 0.5 * 0.5;
+            const pY = middlePosY - CABLES.UI.uiConfig.portSize * 0.5 * 0.5;
             if (this._lastMiddlePosX != middlePosX || this._lastMiddlePosY != pY)
             {
                 this._lastMiddlePosX = middlePosX;
                 this._lastMiddlePosY = pY;
-                if(this._addCircles[0])this._addCircles[0].attr({
-                    cx: middlePosX,
-                    cy: pY,
+                if (this._addCircles[0]) this._addCircles[0].attr({
+                    "cx": middlePosX,
+                    "cy": pY,
                 });
             }
 
             if (!this._addCircleVisible)
             {
-                if(this._addCircles[0])this._addCircles[0].show();
+                if (this._addCircles[0]) this._addCircles[0].show();
                 this.setElementOrder();
                 this._addCircleVisible = true;
             }
@@ -194,7 +193,7 @@ function UiLink(port1, port2)
 
     this.getPath = function ()
     {
-        var perf = CABLES.uiperf.start("link getpath");
+        const perf = CABLES.uiperf.start("link getpath");
         // if(!port2.rect)return '';
         // if(!port1.rect)return '';
 
@@ -203,7 +202,7 @@ function UiLink(port1, port2)
 
         if (port2.direction == CABLES.PORT_DIR_IN)
         {
-            var temp = port1;
+            const temp = port1;
             port1 = port2;
             port2 = temp;
         }
@@ -216,11 +215,11 @@ function UiLink(port1, port2)
         middlePosX = 0.5 * (fromX + toX);
         middlePosY = 0.5 * (fromY + toY + CABLES.UI.uiConfig.portSize * 0.5);
 
-        var cp1X = 0;
-        var cp1Y = 0;
+        let cp1X = 0;
+        let cp1Y = 0;
 
-        var cp2X = 0;
-        var cp2Y = 0;
+        let cp2X = 0;
+        let cp2Y = 0;
 
         cp1Y = Math.min(fromY, toY) + (Math.max(fromY, toY) - Math.min(fromY, toY)) / 2;
         cp2Y = Math.min(fromY, toY) + (Math.max(fromY, toY) - Math.min(fromY, toY)) / 2;
@@ -237,8 +236,8 @@ function UiLink(port1, port2)
         {
             // "falschrum"
 
-            var dist = Math.max(fromY, toY) - Math.min(fromY, toY);
-            var distX = Math.max(fromY, toY) - Math.min(fromY, toY);
+            const dist = Math.max(fromY, toY) - Math.min(fromY, toY);
+            const distX = Math.max(fromY, toY) - Math.min(fromY, toY);
 
             cp1Y -= dist * 0.75 + 40;
             cp2Y += dist * 0.75 + 40;
@@ -247,12 +246,12 @@ function UiLink(port1, port2)
             cp2X -= distX / 2;
         }
 
-        var difx = Math.min(fromX, toX) + Math.abs(toX - fromX);
+        const difx = Math.min(fromX, toX) + Math.abs(toX - fromX);
 
         cp1X = fromX - 0;
         cp2X = toX + 0;
 
-        var str = "";
+        let str = "";
 
         // round for performane
         fromX = Math.round(fromX);
@@ -268,14 +267,14 @@ function UiLink(port1, port2)
         else if (CABLES.UI.userSettings.get("straightLines"))
         {
             const edge = 15;
-            var edgeAY = fromY - edge;
-            var edgeAX = fromX;
+            let edgeAY = fromY - edge;
+            const edgeAX = fromX;
             // if(fromY < toY) edgeAY=fromY+edge;
 
             if (port1.direction == CABLES.PORT_DIR_OUT) edgeAY = fromY + edge;
 
-            var edgeBY = toY - edge;
-            var edgeBX = toX;
+            let edgeBY = toY - edge;
+            const edgeBX = toX;
             // if(fromY > toY) edgeBY=toY+edge;
             if (port2.direction == CABLES.PORT_DIR_OUT) edgeBY = toY + edge;
 
@@ -321,9 +320,9 @@ function UiLink(port1, port2)
         if (this.linkLine) this.linkLine.remove();
         this.linkLine = null;
 
-        for (var i = 0; i < this._addCircles.length; i++)
+        for (let i = 0; i < this._addCircles.length; i++)
         {
-            if(this._addCircles[i]) this._addCircles[i].remove();
+            if (this._addCircles[i]) this._addCircles[i].remove();
             this._addCircles[i] = null;
         }
 
@@ -332,7 +331,7 @@ function UiLink(port1, port2)
 
     this.redraw = function ()
     {
-        var perf = CABLES.uiperf.start("link redraw");
+        const perf = CABLES.uiperf.start("link redraw");
 
         if (!this.linkLine)
         {
@@ -346,7 +345,7 @@ function UiLink(port1, port2)
             this.linkLine.node.classList.add(CABLES.UI.uiConfig.getLinkClass(port1.thePort));
             this.linkLine.node.classList.add("link-line");
         }
-        this.linkLine.attr({ path: this.getPath() });
+        this.linkLine.attr({ "path": this.getPath() });
         this.linkLine.toFront();
         this.showAddButton();
         this.setElementOrder();
@@ -368,7 +367,7 @@ function UiLink(port1, port2)
 
 CABLES.UI.SVGLine = function (startX, startY)
 {
-    var start = { x: startX, y: startY };
+    const start = { "x": startX, "y": startY };
 
     this.updateEnd = function (x, y)
     {
@@ -377,14 +376,14 @@ CABLES.UI.SVGLine = function (startX, startY)
         this.redraw();
     };
 
-    var end = { x: startX, y: startY };
+    var end = { "x": startX, "y": startY };
     this.getPath = function ()
     {
-        var startX = start.x;
-        var startY = start.y;
-        var endX = end.x;
-        var endY = end.y;
-        var str = "M " + startX + " " + startY + " L" + endX + " " + endY;
+        const startX = start.x;
+        const startY = start.y;
+        const endX = end.x;
+        const endY = end.y;
+        const str = "M " + startX + " " + startY + " L" + endX + " " + endY;
 
         return str;
     };
@@ -393,7 +392,7 @@ CABLES.UI.SVGLine = function (startX, startY)
         .patch()
         .getPaper()
         .path(this.getPath());
-    this.thisLine.attr({ stroke: CABLES.UI.uiConfig.colorLink, "stroke-width": 2 });
+    this.thisLine.attr({ "stroke": CABLES.UI.uiConfig.colorLink, "stroke-width": 2 });
     this.redraw = function ()
     {
         this.thisLine.attr("path", this.getPath());
@@ -414,32 +413,32 @@ CABLES.UI.SVGMultiLine = function (points)
 
     this._getPath = function (x, y, x2, y2)
     {
-        var str = "M " + x + " " + y + " L" + x2 + " " + y2;
+        const str = "M " + x + " " + y + " L" + x2 + " " + y2;
         return str;
     };
 
-    for (var i = 0; i < points.length / 2; i++)
+    for (let i = 0; i < points.length / 2; i++)
     {
-        var l = gui
+        const l = gui
             .patch()
             .getPaper()
             .path(this._getPath(points[i * 2], points[i * 2 + 1], points[i * 2], points[i * 2 + 1]));
-        l.attr({ stroke: CABLES.UI.uiConfig.colorLink, "stroke-width": 2 });
+        l.attr({ "stroke": CABLES.UI.uiConfig.colorLink, "stroke-width": 2 });
         this._svgLines.push(l);
     }
 };
 
 CABLES.UI.SVGMultiLine.prototype.updateEnd = function (x, y)
 {
-    for (var i = 0; i < this._svgLines.length; i++)
+    for (let i = 0; i < this._svgLines.length; i++)
     {
-        this._svgLines[i].attr({ path: this._getPath(this._getPath(this._points[i * 2], this._points[i * 2 + 1], x, y)) });
+        this._svgLines[i].attr({ "path": this._getPath(this._getPath(this._points[i * 2], this._points[i * 2 + 1], x, y)) });
     }
 };
 
 CABLES.UI.SVGMultiLine.prototype.remove = function ()
 {
-    for (var i = 0; i < this._svgLines.length; i++)
+    for (let i = 0; i < this._svgLines.length; i++)
     {
         this._svgLines[i].remove();
     }
@@ -448,10 +447,10 @@ CABLES.UI.SVGMultiLine.prototype.remove = function ()
 
 CABLES.UI.SVGMultiLine.prototype.addClass = function (classname)
 {
-    for (var i = 0; i < this._svgLines.length; i++) this._svgLines[i].node.classList.add(classname);
+    for (let i = 0; i < this._svgLines.length; i++) this._svgLines[i].node.classList.add(classname);
 };
 
 CABLES.UI.SVGMultiLine.prototype.removeClass = function (classname)
 {
-    for (var i = 0; i < this._svgLines.length; i++) this._svgLines[i].node.classList.remove(classname);
+    for (let i = 0; i < this._svgLines.length; i++) this._svgLines[i].node.classList.remove(classname);
 };

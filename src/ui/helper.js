@@ -1,5 +1,5 @@
 
-CABLES.UI=CABLES.UI || {};
+CABLES.UI = CABLES.UI || {};
 
 // CABLES.UI.setStatusText=function(txt)
 // {
@@ -10,23 +10,23 @@ CABLES.UI.MOUSE_BUTTON_LEFT = 1;
 CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
 CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
-CABLES.UI.DEFAULTOPNAMES=
+CABLES.UI.DEFAULTOPNAMES =
 {
-    "defaultOpImage":"Ops.Gl.Texture_v2",
-    "defaultOpAudio":"Ops.WebAudio.AudioPlayer",
-    "defaultOpJson3d":"Ops.Json3d.Mesh3d",
-    "defaultOpVideo":"Ops.Gl.Textures.VideoTexture",
-    "defaultOpGltf":"Ops.Gl.GLTF.GltfScene_v2",
-    "defaultOpJson":"Ops.Json.AjaxRequest_v2",
+    "defaultOpImage": "Ops.Gl.Texture_v2",
+    "defaultOpAudio": "Ops.WebAudio.AudioPlayer",
+    "defaultOpJson3d": "Ops.Json3d.Mesh3d",
+    "defaultOpVideo": "Ops.Gl.Textures.VideoTexture",
+    "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v2",
+    "defaultOpJson": "Ops.Json.AjaxRequest_v2",
 
-    "VarSetNumber" : "Ops.Vars.VarSetNumber_v2",
-    "VarGetNumber" : "Ops.Vars.VarGetNumber",
-    "VarSetObject" : "Ops.Vars.VarSetObject",
-    "VarGetObject" : "Ops.Vars.VarGetObject",
-    "VarSetArray"  : "Ops.Vars.VarSetArray",
-    "VarGetArray"  : "Ops.Vars.VarGetArray",
-    "VarSetString" : "Ops.Vars.VarSetString_v2",
-    "VarGetString" : "Ops.Vars.VarGetString"
+    "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
+    "VarGetNumber": "Ops.Vars.VarGetNumber",
+    "VarSetObject": "Ops.Vars.VarSetObject",
+    "VarGetObject": "Ops.Vars.VarGetObject",
+    "VarSetArray": "Ops.Vars.VarSetArray",
+    "VarGetArray": "Ops.Vars.VarGetArray",
+    "VarSetString": "Ops.Vars.VarSetString_v2",
+    "VarGetString": "Ops.Vars.VarGetString"
 };
 
 String.prototype.endl = function ()
@@ -34,20 +34,22 @@ String.prototype.endl = function ()
     return this + "\n";
 };
 
-CABLES.UI.sanitizeUsername=function(name)
+CABLES.UI.sanitizeUsername = function (name)
 {
-    name=name.toLowerCase();
-    name = name.split(' ').join('_');
-    name=name.replace(/\./g, '_');
-    if (name.match(/^\d/))name='u_'+name; 
+    name = name.toLowerCase();
+    name = name.split(" ").join("_");
+    name = name.replace(/\./g, "_");
+    if (name.match(/^\d/))name = "u_" + name;
     return name;
 };
 
-CABLES.uniqueArray=function(arr)
+CABLES.uniqueArray = function (arr)
 {
-    var u = {}, a = [];
-    for(var i = 0, l = arr.length; i < l; ++i){
-        if(!u.hasOwnProperty(arr[i])) {
+    const u = {}, a = [];
+    for (let i = 0, l = arr.length; i < l; ++i)
+    {
+        if (!u.hasOwnProperty(arr[i]))
+        {
             a.push(arr[i]);
             u[arr[i]] = 1;
         }
@@ -55,12 +57,12 @@ CABLES.uniqueArray=function(arr)
     return a;
 };
 
-CABLES.serializeForm=function(selector)
+CABLES.serializeForm = function (selector)
 {
-    var json={};
-    $(selector).find(':input').each( function()
+    const json = {};
+    $(selector).find(":input").each(function ()
     {
-        json[$(this).attr('name')]=$(this).val();
+        json[$(this).attr("name")] = $(this).val();
         // console.log(,);
     });
     console.log(json);
@@ -68,19 +70,18 @@ CABLES.serializeForm=function(selector)
 };
 
 
-
-CABLES.UI.showJson=function(opid,which)
+CABLES.UI.showJson = function (opid, which)
 {
-    var op=gui.corePatch().getOpById(opid);
-    if(!op)
+    const op = gui.corePatch().getOpById(opid);
+    if (!op)
     {
-        console.log('opid not found:',opid);
+        console.log("opid not found:", opid);
         return;
     }
-    var port=op.getPort(which);
-    if(!port)
+    const port = op.getPort(which);
+    if (!port)
     {
-        console.log('port not found:',which);
+        console.log("port not found:", which);
         return;
     }
 
@@ -88,7 +89,7 @@ CABLES.UI.showJson=function(opid,which)
     // CABLES.UI.MODAL.show( '<pre><code>'+ +'</code></pre>');
 
 
-    CABLES.UI.MODAL.showPortValue(port.name,port);
+    CABLES.UI.MODAL.showPortValue(port.name, port);
 
     // gui.showEditor();
     // gui.editor().addTab(
@@ -100,8 +101,6 @@ CABLES.UI.showJson=function(opid,which)
     //     {
     //     }
     // });
-
-
 };
 
 
@@ -149,24 +148,22 @@ CABLES.UI.showJson=function(opid,which)
 // };
 
 
-
-
 function mouseEvent(event)
 {
-    if(!event)return event;
-    if(event.buttons===undefined) // safari
+    if (!event) return event;
+    if (event.buttons === undefined) // safari
     {
-        event.buttons=event.which;
+        event.buttons = event.which;
 
-        if(event.which==3)event.buttons=CABLES.UI.MOUSE_BUTTON_RIGHT;
-        if(event.which==2)event.buttons=CABLES.UI.MOUSE_BUTTON_WHEEL;
+        if (event.which == 3)event.buttons = CABLES.UI.MOUSE_BUTTON_RIGHT;
+        if (event.which == 2)event.buttons = CABLES.UI.MOUSE_BUTTON_WHEEL;
     }
 
-    if(event.type=="touchmove" && event.originalEvent)
+    if (event.type == "touchmove" && event.originalEvent)
     {
-        event.buttons=3;
-        event.clientX=event.originalEvent.touches[0].pageX;
-        event.clientY=event.originalEvent.touches[0].pageY;
+        event.buttons = 3;
+        event.clientX = event.originalEvent.touches[0].pageX;
+        event.clientY = event.originalEvent.touches[0].pageY;
     }
 
     // if(!event.offsetX && event.layerX) event.offsetX = event.layerX;//(event.pageX - $(event.target).offset().left);
@@ -174,46 +171,50 @@ function mouseEvent(event)
     return event;
 }
 
-CABLES.UI.initHandleBarsHelper=function ()
+CABLES.UI.initHandleBarsHelper = function ()
 {
-    Handlebars.registerHelper('json', function(context) {
-        return JSON.stringify(context,true,4);
+    Handlebars.registerHelper("json", function (context)
+    {
+        return JSON.stringify(context, true, 4);
     });
 
-    Handlebars.registerHelper('console', function(context) {
+    Handlebars.registerHelper("console", function (context)
+    {
         return console.log(context);
     });
 
-    Handlebars.registerHelper('compare', function(left_value, operator, right_value, options) {
-        var operators, result;
-
-        if (arguments.length < 4) {
+    Handlebars.registerHelper("compare", function (left_value, operator, right_value, options)
+    {
+        if (arguments.length < 4)
+        {
             throw new Error("Handlerbars Helper 'compare' needs 3 parameters, left value, operator and right value");
         }
 
-        operators = {
-            '==':       function(l,r) { return l == r; },
-            '===':      function(l,r) { return l === r; },
-            '!=':       function(l,r) { return l != r; },
-            '<':        function(l,r) { return l < r; },
-            '>':        function(l,r) { return l > r; },
-            '<=':       function(l,r) { return l <= r; },
-            '>=':       function(l,r) { return l >= r; },
-            'typeof':   function(l,r) { return typeof l == r; }
+        const operators = {
+            "==": function (l, r) { return l == r; },
+            "===": function (l, r) { return l === r; },
+            "!=": function (l, r) { return l != r; },
+            "<": function (l, r) { return l < r; },
+            ">": function (l, r) { return l > r; },
+            "<=": function (l, r) { return l <= r; },
+            ">=": function (l, r) { return l >= r; },
+            "typeof": function (l, r) { return typeof l == r; }
         };
 
-        if ( ! operators[operator]) {
-            throw new Error("Handlerbars Helper 'compare' doesn't know the operator "+ operator);
+        if (!operators[operator])
+        {
+            throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
         }
 
-        result = operators[operator](left_value, right_value);
+        const result = operators[operator](left_value, right_value);
 
-        if (result === true) {
+        if (result === true)
+        {
             return options.fn(this);
-        } else {
+        }
+        else
+        {
             return options.inverse(this);
         }
     });
-
 };
-

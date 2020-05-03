@@ -1,14 +1,14 @@
 
-var CABLES=CABLES||{};
-CABLES.UI=CABLES.UI||{};
+var CABLES = CABLES || {};
+CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.KeyManager=class extends CABLES.EventTarget
+CABLES.UI.KeyManager = class extends CABLES.EventTarget
 {
     constructor()
     {
         super();
-        this._keys=[];
-        this.shiftKey=false;
+        this._keys = [];
+        this.shiftKey = false;
         document.addEventListener("keydown", this._onKeyDown.bind(this), false);
         document.addEventListener("keyup", this._onKeyUp.bind(this), false);
         document.addEventListener("keypress", this._onKeyPress.bind(this), false);
@@ -16,33 +16,33 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
     show()
     {
-        this._tab=new CABLES.UI.Tab("keyboard shortcuts",{"icon":"help","infotext":"tab_keys","padding":true});
-        gui.mainTabs.addTab(this._tab,true);
+        this._tab = new CABLES.UI.Tab("keyboard shortcuts", { "icon": "help", "infotext": "tab_keys", "padding": true });
+        gui.mainTabs.addTab(this._tab, true);
 
-        var k=JSON.parse(JSON.stringify(this._keys));
+        const k = JSON.parse(JSON.stringify(this._keys));
 
-        k.sort(function(a,b)
+        k.sort(function (a, b)
         {
             return a.key.localeCompare(b.key);
         });
 
-        k.sort(function(a,b)
+        k.sort(function (a, b)
         {
-            if(!a.target)a.target="global";
-            if(!b.target)b.target="global";
+            if (!a.target)a.target = "global";
+            if (!b.target)b.target = "global";
             return a.target.localeCompare(b.target);
         });
 
-        var lastTarget='';
-        for(var i=0;i<k.length;i++)
+        let lastTarget = "";
+        for (let i = 0; i < k.length; i++)
         {
-            if(k[i].target!=lastTarget) k[i].group=k[i].target;
-            lastTarget=k[i].target;
+            if (k[i].target != lastTarget) k[i].group = k[i].target;
+            lastTarget = k[i].target;
 
-            if(k[i].key==" ")k[i].key="Space";
+            if (k[i].key == " ")k[i].key = "Space";
         }
 
-        var html = CABLES.UI.getHandleBarHtml('tab_keys',{keys:k});
+        const html = CABLES.UI.getHandleBarHtml("tab_keys", { "keys": k });
         this._tab.html(html);
 
         gui.maintabPanel.show();
@@ -50,7 +50,7 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
     _onKeyUp(e)
     {
-        this.shiftKey=false;
+        this.shiftKey = false;
     }
 
     _onKeyPress(e)
@@ -59,23 +59,23 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
 
     _onKeyDown(e)
     {
-        this.shiftKey=e.shiftKey || e.keyCode == 16;
+        this.shiftKey = e.shiftKey || e.keyCode == 16;
 
-        for(var i=0;i<this._keys.length;i++)
+        for (let i = 0; i < this._keys.length; i++)
         {
-            const k=this._keys[i];
+            const k = this._keys[i];
 
-            if(!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName=="INPUT" || document.activeElement.tagName=="TEXTAREA"))continue;
-            if(k.key!=(e.key+"").toLowerCase() || k.event!="down") continue;
-            if(k.options.cmdCtrl) if(!e.ctrlKey && !e.metaKey) continue;
-            if(!k.options.cmdCtrl) if(e.ctrlKey || e.metaKey) continue;
-            if(k.options.shiftKey && !e.shiftKey) continue;
-            if(!k.options.shiftKey && e.shiftKey) continue;
+            if (!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
+            if (k.key != (e.key + "").toLowerCase() || k.event != "down") continue;
+            if (k.options.cmdCtrl) if (!e.ctrlKey && !e.metaKey) continue;
+            if (!k.options.cmdCtrl) if (e.ctrlKey || e.metaKey) continue;
+            if (k.options.shiftKey && !e.shiftKey) continue;
+            if (!k.options.shiftKey && e.shiftKey) continue;
 
-            if(!k.target || k.target==e.target.id)
+            if (!k.target || k.target == e.target.id)
             {
-                if(k.cb) k.cb(e);
-                else console.warn("[keys] key event has no callback",k);
+                if (k.cb) k.cb(e);
+                else console.warn("[keys] key event has no callback", k);
 
                 e.preventDefault();
 
@@ -84,25 +84,24 @@ CABLES.UI.KeyManager=class extends CABLES.EventTarget
         }
     }
 
-    _addKey(key,title,event,target,options,cb)
+    _addKey(key, title, event, target, options, cb)
     {
-        var k=
+        const k =
         {
-            "key":key.toLowerCase(),
-            "title":title,
-            "event":event,
-            "target":target,
-            "options":options,
-            "cb":cb,
+            "key": key.toLowerCase(),
+            "title": title,
+            "event": event,
+            "target": target,
+            "options": options,
+            "cb": cb,
         };
 
         this._keys.push(k);
     }
 
-    key(key,title,event,target,options,cb)
+    key(key, title, event, target, options, cb)
     {
-        if(Array.isArray(key)) for(var i=0;i<key.length;i++) this._addKey(key[i],title,event,target,options,cb)
-        else this._addKey(key,title,event,target,options,cb)
-
+        if (Array.isArray(key)) for (let i = 0; i < key.length; i++) this._addKey(key[i], title, event, target, options, cb);
+        else this._addKey(key, title, event, target, options, cb);
     }
-}
+};

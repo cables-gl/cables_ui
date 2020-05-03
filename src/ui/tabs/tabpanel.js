@@ -26,10 +26,10 @@ CABLES.UI.Tab.prototype.initHtml = function (eleContainer)
     {
         this.toolbarContainerEle.id = "toolbar" + this.id;
         this.toolbarContainerEle.classList.add("toolbar");
-        this.toolbarContainerEle.innerHTML = CABLES.UI.getHandleBarHtml("tabpanel_toolbar", 
-        {
-            options: this.options, id: this.id, title: this.title, hideToolbar: true,
-        });
+        this.toolbarContainerEle.innerHTML = CABLES.UI.getHandleBarHtml("tabpanel_toolbar",
+            {
+                "options": this.options, "id": this.id, "title": this.title, "hideToolbar": true,
+            });
         eleContainer.appendChild(this.toolbarContainerEle);
         document.getElementById("toolbarContent" + this.id).appendChild(this.toolbarEle);
     }
@@ -43,16 +43,16 @@ CABLES.UI.Tab.prototype.initHtml = function (eleContainer)
 
 CABLES.UI.Tab.prototype.addButton = function (title, cb)
 {
-    var button = document.createElement("a");
+    const button = document.createElement("a");
     button.innerHTML = title;
     button.addEventListener("click", cb);
     this.toolbarEle.appendChild(button);
-    this.buttons.push({ ele: button, cb, title });
+    this.buttons.push({ "ele": button, cb, title });
 };
 
 CABLES.UI.Tab.prototype.getSaveButton = function ()
 {
-    for (var i = 0; i < this.buttons.length; i++) if (this.buttons[i].title == CABLES.UI.TEXTS.editorSaveButton) return this.buttons[i];
+    for (let i = 0; i < this.buttons.length; i++) if (this.buttons[i].title == CABLES.UI.TEXTS.editorSaveButton) return this.buttons[i];
 };
 
 CABLES.UI.Tab.prototype.remove = function ()
@@ -74,8 +74,8 @@ CABLES.UI.Tab.prototype.isVisible = function ()
 
 CABLES.UI.Tab.prototype.updateSize = function ()
 {
-    this.contentEle.style.height=(this.contentEle.parentElement.clientHeight-this.toolbarContainerEle.clientHeight-3)+"px";
-}
+    this.contentEle.style.height = (this.contentEle.parentElement.clientHeight - this.toolbarContainerEle.clientHeight - 3) + "px";
+};
 
 CABLES.UI.Tab.prototype.activate = function ()
 {
@@ -120,19 +120,19 @@ CABLES.UI.TabPanel = function (eleId)
         ele.appendChild(this._eleContentContainer);
     }
 
-    this.on("resize",()=>
+    this.on("resize", () =>
     {
-        for(var i=0;i<this._tabs.length;i++) this._tabs[i].emitEvent("resize");
+        for (let i = 0; i < this._tabs.length; i++) this._tabs[i].emitEvent("resize");
     });
 };
 
 CABLES.UI.TabPanel.prototype.updateHtml = function ()
 {
-    var html = "";
-    html += CABLES.UI.getHandleBarHtml("tabpanel_bar", { tabs: this._tabs });
+    let html = "";
+    html += CABLES.UI.getHandleBarHtml("tabpanel_bar", { "tabs": this._tabs });
     this._eleTabPanel.innerHTML = html;
 
-    for (var i = 0; i < this._tabs.length; i++)
+    for (let i = 0; i < this._tabs.length; i++)
     {
         document.getElementById("editortab" + this._tabs[i].id).addEventListener(
             "mousedown",
@@ -170,18 +170,18 @@ CABLES.UI.TabPanel.prototype.updateHtml = function ()
 
 CABLES.UI.TabPanel.prototype.activateTabByName = function (name)
 {
-    var found=false;
-    for (var i = 0; i < this._tabs.length; i++)
+    let found = false;
+    for (let i = 0; i < this._tabs.length; i++)
     {
         if (this._tabs[i].options.name == name)
         {
             this.activateTab(this._tabs[i].id);
-            found=true;
+            found = true;
         }
         else this._tabs[i].deactivate();
     }
 
-    if(!found) console.log("[activateTabByName] could not find tab",name);
+    if (!found) console.log("[activateTabByName] could not find tab", name);
 
     this.updateHtml();
 };
@@ -191,7 +191,7 @@ CABLES.UI.TabPanel.prototype.scrollToActiveTab = function ()
     const tab = this.getActiveTab();
     const w = this._eleTabPanel.clientWidth;
     if (!tab) return;
-    var left = document.getElementById("editortab" + tab.id).offsetLeft;
+    let left = document.getElementById("editortab" + tab.id).offsetLeft;
     left += document.getElementById("editortab" + tab.id).clientWidth;
     left += 25;
 
@@ -201,7 +201,7 @@ CABLES.UI.TabPanel.prototype.scrollToActiveTab = function ()
 
 CABLES.UI.TabPanel.prototype.activateTab = function (id)
 {
-    for (var i = 0; i < this._tabs.length; i++)
+    for (let i = 0; i < this._tabs.length; i++)
     {
         if (this._tabs[i].id === id)
         {
@@ -216,19 +216,19 @@ CABLES.UI.TabPanel.prototype.activateTab = function (id)
 
 CABLES.UI.TabPanel.prototype.getTabByTitle = function (title)
 {
-    for (var i = 0; i < this._tabs.length; i++) if (this._tabs[i].title == title) return this._tabs[i];
+    for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].title == title) return this._tabs[i];
 };
 
 CABLES.UI.TabPanel.prototype.getTabById = function (id)
 {
-    for (var i = 0; i < this._tabs.length; i++) if (this._tabs[i].id == id) return this._tabs[i];
+    for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].id == id) return this._tabs[i];
 };
 
 CABLES.UI.TabPanel.prototype.closeTab = function (id)
 {
-    var tab = null;
-    var idx = 0;
-    for (var i = 0; i < this._tabs.length; i++)
+    let tab = null;
+    let idx = 0;
+    for (let i = 0; i < this._tabs.length; i++)
     {
         if (this._tabs[i].id == id)
         {
@@ -251,13 +251,13 @@ CABLES.UI.TabPanel.prototype.closeTab = function (id)
 
 CABLES.UI.TabPanel.prototype.setChanged = function (id, changed)
 {
-    if(this.getTabById(id)) this.getTabById(id).options.wasChanged = changed;
+    if (this.getTabById(id)) this.getTabById(id).options.wasChanged = changed;
     this.updateHtml();
 };
 
 CABLES.UI.TabPanel.prototype.setTabNum = function (num)
 {
-    var tab = this._tabs[Math.min(this._tabs.length, num)];
+    const tab = this._tabs[Math.min(this._tabs.length, num)];
     this.activateTab(tab.id);
 };
 
@@ -268,20 +268,20 @@ CABLES.UI.TabPanel.prototype.getNumTabs = function ()
 
 CABLES.UI.TabPanel.prototype.getActiveTab = function ()
 {
-    for (var i = 0; i < this._tabs.length; i++) if (this._tabs[i].active) return this._tabs[i];
+    for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].active) return this._tabs[i];
 };
 
 CABLES.UI.TabPanel.prototype.updateSize = function ()
 {
-    for (var i = 0; i < this._tabs.length; i++) this._tabs[i].updateSize();
+    for (let i = 0; i < this._tabs.length; i++) this._tabs[i].updateSize();
 };
 
 CABLES.UI.TabPanel.prototype.getSaveButton = function ()
 {
-    var t = this.getActiveTab();
+    const t = this.getActiveTab();
     if (!t) return;
 
-    var b = t.getSaveButton();
+    const b = t.getSaveButton();
     if (b) return b;
 };
 
@@ -293,7 +293,7 @@ CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
         if (t)
         {
             this.activateTab(t.id);
-            this.emitEvent("onTabAdded", t,true);
+            this.emitEvent("onTabAdded", t, true);
 
             if (activate) this.activateTab(t.id);
             return t;
@@ -306,7 +306,7 @@ CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
     if (activate) this.activateTab(tab.id);
     else
     {
-        for (var i = 0; i < this._tabs.length; i++)
+        for (let i = 0; i < this._tabs.length; i++)
         {
             if (CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
             {
@@ -322,37 +322,37 @@ CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
     // var tabEl=document.getElementById("editortab"+tab.id)
 
     this.updateHtml();
-    this.emitEvent("onTabAdded", tab,false);
+    this.emitEvent("onTabAdded", tab, false);
 
     return tab;
 };
 
 CABLES.UI.TabPanel.prototype.addIframeTab = function (title, url, options)
 {
-    var iframeTab = this.addTab(new CABLES.UI.Tab(title, options));
+    const iframeTab = this.addTab(new CABLES.UI.Tab(title, options));
     const id = CABLES.uuid();
 
-    var html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:35%\"></div><iframe id=\"iframe" + id + "\"  style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
+    const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:35%\"></div><iframe id=\"iframe" + id + "\"  style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
     iframeTab.contentEle.innerHTML = html;
     iframeTab.contentEle.style.padding = "0px";
     iframeTab.toolbarEle.innerHTML = "<a href=\"" + url + "\" target=\"_blank\">open this in a new browser window</a>";
 
-    var frame = document.getElementById("iframe" + id);
-    var talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
+    const frame = document.getElementById("iframe" + id);
+    const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
 
-    talkerAPI.addEventListener("notify", (options, next) =>
+    talkerAPI.addEventListener("notify", (opts, next) =>
     {
-        CABLES.UI.notify(options.msg);
+        CABLES.UI.notify(opts.msg);
     });
 
-    talkerAPI.addEventListener("notifyError", (options, next) =>
+    talkerAPI.addEventListener("notifyError", (opts, next) =>
     {
-        CABLES.UI.notifyError(options.msg);
+        CABLES.UI.notifyError(opts.msg);
     });
 
-    talkerAPI.addEventListener("updatePatchName", (options, next) =>
+    talkerAPI.addEventListener("updatePatchName", (opts, next) =>
     {
-        gui.setProjectName(options.name);
+        gui.setProjectName(opts.name);
     });
 
     this.activateTab(iframeTab.id);

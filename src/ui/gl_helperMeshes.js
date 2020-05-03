@@ -13,19 +13,19 @@ CABLES.GL_MARKER.startFramebuffer = function (cgl)
         if (cgl.glVersion == 1)
         {
             CABLES.GL_MARKER.FB.fb = new CGL.Framebuffer(cgl, 8, 8, {
-                isFloatingPointTexture: false,
-                depth: true,
-                clear: false,
+                "isFloatingPointTexture": false,
+                "depth": true,
+                "clear": false,
             });
         }
         else
         {
             CABLES.GL_MARKER.FB.fb = new CGL.Framebuffer2(cgl, 8, 8, {
-                isFloatingPointTexture: false,
-                depth: true,
-                clear: false,
-                multisampling: true,
-                multisamplingSamples: 4,
+                "isFloatingPointTexture": false,
+                "depth": true,
+                "clear": false,
+                "multisampling": true,
+                "multisamplingSamples": 4,
             });
         }
         // console.log("CREATE FB!",CABLES.GL_MARKER.FB.fb);
@@ -178,9 +178,9 @@ CABLES.GL_MARKER.drawAxisMarker = function (op, size)
 
         const geom = new CGL.Geometry("marker");
         geom.setPointVertices([
-            0.00001, 0, 0,      1, 0, 0,
-            0, 0.00001, 0,      0, 1, 0,
-            0, 0, 0.00001,      0, 0, 1
+            0.00001, 0, 0, 1, 0, 0,
+            0, 0.00001, 0, 0, 1, 0,
+            0, 0, 0.00001, 0, 0, 1
         ]);
         // geom.resetTextureCoords();
 
@@ -489,6 +489,7 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
         CABLES.GL_MARKER.FSWIDTH = w;
         CABLES.GL_MARKER.FSHEIGHT = h;
 
+        // prettier-ignore
         fsGeom.vertices = new Float32Array([
             w, h, 0,
             0, h, 0,

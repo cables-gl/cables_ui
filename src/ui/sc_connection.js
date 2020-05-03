@@ -17,20 +17,18 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     startPacoSend()
     {
-
-        if(!this._paco)
+        if (!this._paco)
         {
             this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
             gui.patchConnection.connectors.push(this._paco);
         }
         if (gui.chat.getNumClients() > 1)
         {
-            const json=gui.corePatch().serialize(true);
+            const json = gui.corePatch().serialize(true);
             gui.patchConnection.send(CABLES.PACO_LOAD,
-            {
-                "patch": JSON.stringify(json)
-            });
-
+                {
+                    "patch": JSON.stringify(json)
+                });
         }
         else
         {
@@ -38,7 +36,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         }
     }
 
-    get clientId(){return this._socket.clientId};
+    get clientId() { return this._socket.clientId; }
 
     _init()
     {
@@ -114,7 +112,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     sendInfo(text)
     {
-        this._send("info", { type: "info", text });
+        this._send("info", { "type": "info", text });
     }
 
     sendControl(payload)
@@ -124,7 +122,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     sendChat(text)
     {
-        this._send("chat", { type: "chatmsg", text, username: gui.user.username });
+        this._send("chat", { "type": "chatmsg", text, "username": gui.user.username });
     }
 
     sendPaco(payload)
@@ -134,12 +132,12 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     updateMembers()
     {
-        this.sendControl({ type: "pingMembers" });
+        this.sendControl({ "type": "pingMembers" });
 
-        setTimeout(()=> {
+        setTimeout(() =>
+        {
             this.updateMembers();
         }, 10000);
-
     }
 
     _send(topic, payload)
@@ -147,8 +145,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         if (this._active && this._connected)
         {
             const finalPayload = {
-                token: this._token,
-                clientId: this._socket.clientId,
+                "token": this._token,
+                "clientId": this._socket.clientId,
                 topic,
                 ...payload,
             };
@@ -168,7 +166,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         if (msg.type == "paco")
         {
-            if(!this._paco)
+            if (!this._paco)
             {
                 gui.corePatch().clear();
                 this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
@@ -184,8 +182,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         if (msg.type == "pingMembers")
         {
             this.sendControl({
-                type: "pingAnswer",
-                username: gui.user.usernameLowercase,
+                "type": "pingAnswer",
+                "username": gui.user.usernameLowercase,
             });
         }
         if (msg.type == "pingAnswer")

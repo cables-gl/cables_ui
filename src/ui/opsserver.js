@@ -5,13 +5,13 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.ServerOps = function (gui)
 {
-    var ops = [];
-    var self = this;
+    let ops = [];
+    const self = this;
 
     CABLES.editorSession.addListener("op",
-        function(name,data)
+        function (name, data)
         {
-            var lastTab = CABLES.UI.userSettings.get("editortab");
+            const lastTab = CABLES.UI.userSettings.get("editortab");
             this.edit(name, false, function ()
             {
                 gui.mainTabs.activateTabByName(lastTab);
@@ -24,7 +24,7 @@ CABLES.UI.ServerOps = function (gui)
         "attachment",
         function (name, data)
         {
-            var lastTab = CABLES.UI.userSettings.get("editortab");
+            const lastTab = CABLES.UI.userSettings.get("editortab");
             if (data && data.opname)
             {
                 this.editAttachment(data.opname, name, false, function ()
@@ -61,7 +61,7 @@ CABLES.UI.ServerOps = function (gui)
 
         gui.patch().loadingError = true;
 
-        var msg = "<h2><span class=\"fa fa-exclamation-triangle\"></span> cablefail :/</h2>";
+        let msg = "<h2><span class=\"fa fa-exclamation-triangle\"></span> cablefail :/</h2>";
         msg += "error creating op: " + name;
         msg += "<br/><pre>" + e + "</pre><br/>";
 
@@ -78,7 +78,7 @@ CABLES.UI.ServerOps = function (gui)
 
     this.isServerOp = function (name)
     {
-        for (var i = 0; i < ops.length; i++) if (ops[i].name == name) return true;
+        for (let i = 0; i < ops.length; i++) if (ops[i].name == name) return true;
 
         return false;
     };
@@ -88,7 +88,7 @@ CABLES.UI.ServerOps = function (gui)
         CABLESUILOADER.talkerAPI.send(
             "opCreate",
             {
-                opname: name,
+                "opname": name,
             },
             function (err, res)
             {
@@ -107,11 +107,11 @@ CABLES.UI.ServerOps = function (gui)
 
     this.saveOpLayout = function (op)
     {
-        var i = 0;
-        var opObj = {
-            portsIn: [],
-            portsOut: [],
-            name: op.objName,
+        let i = 0;
+        const opObj = {
+            "portsIn": [],
+            "portsOut": [],
+            "name": op.objName,
         };
 
         for (i = 0; i < op.portsIn.length; i++)
@@ -121,7 +121,7 @@ CABLES.UI.ServerOps = function (gui)
                 // no hidden ports in layout and documentation
                 continue;
             }
-            var l=
+            var l =
                 {
                     "type": op.portsIn[i].type,
                     "name": op.portsIn[i].name
@@ -143,8 +143,8 @@ CABLES.UI.ServerOps = function (gui)
         for (i = 0; i < op.portsOut.length; i++)
         {
             var l = {
-                type: op.portsOut[i].type,
-                name: op.portsOut[i].name,
+                "type": op.portsOut[i].type,
+                "name": op.portsOut[i].name,
             };
 
             if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
@@ -162,8 +162,8 @@ CABLES.UI.ServerOps = function (gui)
         CABLESUILOADER.talkerAPI.send(
             "opSaveLayout",
             {
-                opname: op.objName,
-                layout: opObj,
+                "opname": op.objName,
+                "layout": opObj,
             },
             function (err, res)
             {
@@ -172,7 +172,7 @@ CABLES.UI.ServerOps = function (gui)
         );
     };
 
-    this.execute = function (name,next)
+    this.execute = function (name, next)
     {
         if (gui.patch().scene._crashedOps.indexOf(name) > -1)
         {
@@ -182,14 +182,14 @@ CABLES.UI.ServerOps = function (gui)
             html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
 
             CABLES.UI.MODAL.show(html, {
-                title: "need to reload page",
+                "title": "need to reload page",
             });
 
             return;
         }
 
         CABLES.UI.MODAL.showLoading("executing...");
-        var s = document.createElement("script");
+        const s = document.createElement("script");
         s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
         s.onload = function ()
         {
@@ -199,11 +199,11 @@ CABLES.UI.ServerOps = function (gui)
                 {
                     CABLES.UI.notify(num + " ops reloaded");
 
-                    for (var i = 0; i < ops.length; i++) gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
+                    for (let i = 0; i < ops.length; i++) gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
 
                     if (ops.length > 0) this.saveOpLayout(ops[0]);
                     gui.patch().checkCollisionsEdge();
-                    if(next)next();
+                    if (next)next();
                 }.bind(this),
             );
 
@@ -219,7 +219,7 @@ CABLES.UI.ServerOps = function (gui)
         CABLESUILOADER.talkerAPI.send(
             "opClone",
             {
-                opname: oldname,
+                "opname": oldname,
                 name,
             },
             (err, res) =>
@@ -246,8 +246,8 @@ CABLES.UI.ServerOps = function (gui)
         CABLESUILOADER.talkerAPI.send(
             "opAddLib",
             {
-                opname: opName,
-                name: libName,
+                "opname": opName,
+                "name": libName,
             },
             function (err, res)
             {
@@ -268,8 +268,8 @@ CABLES.UI.ServerOps = function (gui)
             CABLESUILOADER.talkerAPI.send(
                 "opAttachmentDelete",
                 {
-                    opname: opName,
-                    name: attName,
+                    "opname": opName,
+                    "name": attName,
                 },
                 function (err, res)
                 {
@@ -281,13 +281,13 @@ CABLES.UI.ServerOps = function (gui)
 
     this.addAttachmentDialog = function (opname)
     {
-        var attName = prompt("Attachment name");
+        const attName = prompt("Attachment name");
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentAdd",
             {
                 opname,
-                name: attName,
+                "name": attName,
             },
             function (err, res)
             {
@@ -298,12 +298,12 @@ CABLES.UI.ServerOps = function (gui)
 
     this.opNameDialog = function (title, name, cb)
     {
-        var newName = name;
+        let newName = name;
         if (name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
 
-        var usernamespace = "Ops.User." + gui.user.usernameLowercase;
+        const usernamespace = "Ops.User." + gui.user.usernameLowercase;
 
-        var html = "<h2>" + title + "</h2>";
+        let html = "<h2>" + title + "</h2>";
         html += "Your op will be private. Only you can see and use it.<br/><br/>";
         html += "Enter a name:<br/><br/>";
         html += "<div class=\"clone\"><span>" + usernamespace + ".&nbsp;&nbsp;</span><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
@@ -318,15 +318,15 @@ CABLES.UI.ServerOps = function (gui)
         $("#opNameDialogInput").focus();
         $("#opNameDialogInput").bind("input", function ()
         {
-            var v = $("#opNameDialogInput").val();
+            const v = $("#opNameDialogInput").val();
             console.log("INPUT!", v);
             CABLES.api.get("op/checkname/" + usernamespace + "." + v, function (res)
             {
                 console.log(res);
                 if (res.problems.length > 0)
                 {
-                    var html = "<b>your op name has issues:</b><br/><ul>";
-                    for (var i = 0; i < res.problems.length; i++) html += "<li>" + res.problems[i] + "</li>";
+                    let html = "<b>your op name has issues:</b><br/><ul>";
+                    for (let i = 0; i < res.problems.length; i++) html += "<li>" + res.problems[i] + "</li>";
                     html += "</ul><br/><br/>";
                     $("#opcreateerrors").html(html);
                     $("#opNameDialogSubmit").hide();
@@ -374,29 +374,28 @@ CABLES.UI.ServerOps = function (gui)
 
     this.editAttachment = function (opname, attachmentName, readOnly, cb)
     {
-        var editorObj = CABLES.editorSession.rememberOpenEditor("attachment", attachmentName, { opname });
+        const editorObj = CABLES.editorSession.rememberOpenEditor("attachment", attachmentName, { opname });
         CABLES.api.clearCache();
 
 
-
-        gui.jobs().start({ id: "load_attachment_" + attachmentName, title: "loading attachment " + attachmentName });
+        gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
             {
                 opname,
-                name: attachmentName,
+                "name": attachmentName,
             },
             function (err, res)
             {
-                if(err || !res || res.content==undefined)
+                if (err || !res || res.content == undefined)
                 {
-                    if(err)console.log('[opattachmentget] err',err);
+                    if (err)console.log("[opattachmentget] err", err);
                     if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
                     return;
                 }
-                var content = res.content || "";
-                var syntax = "text";
+                const content = res.content || "";
+                let syntax = "text";
 
                 if (attachmentName.endsWith(".frag")) syntax = "glsl";
                 if (attachmentName.endsWith(".vert")) syntax = "glsl";
@@ -409,12 +408,9 @@ CABLES.UI.ServerOps = function (gui)
 
                 if (editorObj)
                 {
-
-
-
                     new CABLES.UI.EditorTab({
-                        title: attachmentName,
-                        name: editorObj.name,
+                        "title": attachmentName,
+                        "name": editorObj.name,
                         content,
                         syntax,
                         editorObj,
@@ -429,7 +425,7 @@ CABLES.UI.ServerOps = function (gui)
                                 "opAttachmentSave",
                                 {
                                     opname,
-                                    name: attachmentName,
+                                    "name": attachmentName,
                                     content,
                                 },
                                 function (err, res)
@@ -450,8 +446,8 @@ CABLES.UI.ServerOps = function (gui)
                     });
 
                     // setTimeout(()=>{
-                        console.log("settab!",editorObj.name);
-                        gui.mainTabs.activateTabByName(editorObj.name);
+                    console.log("settab!", editorObj.name);
+                    gui.mainTabs.activateTabByName(editorObj.name);
                     // },200);
                 }
 
@@ -496,8 +492,7 @@ CABLES.UI.ServerOps = function (gui)
             },
         );
 
-        if(!editorObj) gui.mainTabs.activateTabByName(attachmentName);
-
+        if (!editorObj) gui.mainTabs.activateTabByName(attachmentName);
     };
 
     // Shows the editor and displays the code of an op in it
@@ -509,7 +504,7 @@ CABLES.UI.ServerOps = function (gui)
             return;
         }
 
-        gui.jobs().start({ id: "load_opcode_" + opname, title: "loading op code " + opname });
+        gui.jobs().start({ "id": "load_opcode_" + opname, "title": "loading op code " + opname });
 
         CABLESUILOADER.talkerAPI.send(
             "getOpCode",
@@ -518,22 +513,22 @@ CABLES.UI.ServerOps = function (gui)
             },
             function (err, res)
             {
-                var editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
+                const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
                 gui.jobs().finish("load_opcode_" + opname);
 
                 // var html = '';
                 // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
 
-                var save = null;
+                let save = null;
                 if (!readOnly)
                 {
-                    save = function (setStatus, content,editor)
+                    save = function (setStatus, content, editor)
                     {
                         CABLESUILOADER.talkerAPI.send(
                             "saveOpCode",
                             {
                                 opname,
-                                code: content,
+                                "code": content,
                             },
                             function (err, res)
                             {
@@ -550,12 +545,11 @@ CABLES.UI.ServerOps = function (gui)
                                     }
 
                                     // exec ???
-                                    gui.serverOps.execute(opname,function()
+                                    gui.serverOps.execute(opname, function ()
                                     {
                                         setStatus("saved " + opname);
                                         editor.focus();
                                     });
-
                                 }
                             // console.log('res', res);
                             },
@@ -568,18 +562,18 @@ CABLES.UI.ServerOps = function (gui)
                     };
                 }
 
-                var parts = opname.split(".");
-                var title = "Op " + parts[parts.length - 1];
+                const parts = opname.split(".");
+                const title = "Op " + parts[parts.length - 1];
 
                 if (editorObj)
                 {
-                    var t=new CABLES.UI.EditorTab({
+                    const t = new CABLES.UI.EditorTab({
                         title,
-                        name: editorObj.name,
-                        content: res.code,
-                        singleton: true,
-                        syntax: "js",
-                        onSave: save,
+                        "name": editorObj.name,
+                        "content": res.code,
+                        "singleton": true,
+                        "syntax": "js",
+                        "onSave": save,
                         editorObj,
                         onClose(which)
                         {
@@ -602,16 +596,16 @@ CABLES.UI.ServerOps = function (gui)
 
     this.getOpLibs = function (opname, checkLoaded)
     {
-        for (var i = 0; i < ops.length; i++)
+        for (let i = 0; i < ops.length; i++)
         {
             if (ops[i].name == opname)
             {
                 if (ops[i].libs)
                 {
-                    var libs = [];
-                    for (var j = 0; j < ops[i].libs.length; j++)
+                    const libs = [];
+                    for (let j = 0; j < ops[i].libs.length; j++)
                     {
-                        var libName = ops[i].libs[j];
+                        const libName = ops[i].libs[j];
                         if (!checkLoaded)
                         {
                             libs.push(libName);
@@ -631,8 +625,8 @@ CABLES.UI.ServerOps = function (gui)
 
     this.loadProjectLibs = function (proj, next)
     {
-        var libsToLoad = [];
-        var i = 0;
+        let libsToLoad = [];
+        let i = 0;
 
         for (i = 0; i < proj.ops.length; i++)
         {
@@ -647,7 +641,7 @@ CABLES.UI.ServerOps = function (gui)
             return;
         }
 
-        var loader = new CABLES.libLoader(libsToLoad, function ()
+        const loader = new CABLES.libLoader(libsToLoad, function ()
         {
             next();
         });
@@ -671,7 +665,7 @@ CABLES.UI.ServerOps = function (gui)
     this.isLibLoaded = function (libName)
     {
         // console.log(this._loadedLibs);
-        var isloaded = this._loadedLibs.indexOf(libName) != -1;
+        const isloaded = this._loadedLibs.indexOf(libName) != -1;
         // console.log(libName,isloaded);
         return isloaded;
     };
@@ -683,8 +677,8 @@ CABLES.UI.ServerOps = function (gui)
 
     this.opLibsLoaded = function (opName)
     {
-        var libsToLoad = this.getOpLibs(opName);
-        for (var i = 0; i < libsToLoad.length; i++)
+        const libsToLoad = this.getOpLibs(opName);
+        for (let i = 0; i < libsToLoad.length; i++)
         {
             if (!this.isLibLoaded(libsToLoad[i])) return false;
         }
@@ -697,8 +691,8 @@ CABLES.UI.ServerOps = function (gui)
         {
             console.log("finished loading libs for " + opName);
 
-            var libsToLoad = this.getOpLibs(opName);
-            for (var i = 0; i < libsToLoad.length; i++)
+            const libsToLoad = this.getOpLibs(opName);
+            for (let i = 0; i < libsToLoad.length; i++)
             {
                 this._loadedLibs.push(libsToLoad[i]);
             }
@@ -706,7 +700,7 @@ CABLES.UI.ServerOps = function (gui)
             next();
         }
 
-        var libsToLoad = this.getOpLibs(opName);
+        const libsToLoad = this.getOpLibs(opName);
 
         if (libsToLoad.length === 0)
         {
@@ -714,7 +708,7 @@ CABLES.UI.ServerOps = function (gui)
             return;
         }
 
-        var loader = new CABLES.libLoader(libsToLoad, function ()
+        const loader = new CABLES.libLoader(libsToLoad, function ()
         {
             next();
         });
@@ -739,18 +733,15 @@ CABLES.UI.ServerOps = function (gui)
         return this.loaded;
     };
 
-    this.canEditOp=function(opname)
+    this.canEditOp = function (opname)
     {
         // if (gui.user.isAdmin) return true;
 
         const usernamespace = "Ops.User." + gui.user.usernameLowercase;
-        if(opname.indexOf(usernamespace)==0)return true;
+        if (opname.indexOf(usernamespace) == 0) return true;
 
         return false;
-
-
-
-    }
+    };
 
     this.load();
 };

@@ -11,19 +11,18 @@ CABLES.UI.showToolTip = function (e, txt)
     CABLES.UI.eleTooltip.style.display = "block";
 
     if (e)
-    if (e.style)
-    {
-        CABLES.UI.eleTooltip.style.top = e.getBoundingClientRect().top + 25;
-        CABLES.UI.eleTooltip.style.left = e.getBoundingClientRect().left;
-    }
-    else
-    {
-        CABLES.UI.eleTooltip.style.top = e.clientY + 12;
-        CABLES.UI.eleTooltip.style.left = e.clientX + 25;
-    }
+        if (e.style)
+        {
+            CABLES.UI.eleTooltip.style.top = e.getBoundingClientRect().top + 25;
+            CABLES.UI.eleTooltip.style.left = e.getBoundingClientRect().left;
+        }
+        else
+        {
+            CABLES.UI.eleTooltip.style.top = e.clientY + 12;
+            CABLES.UI.eleTooltip.style.left = e.clientX + 25;
+        }
 
     CABLES.UI.eleTooltip.innerHTML = txt;
-
 };
 
 CABLES.UI.hideToolTip = function ()
@@ -66,7 +65,7 @@ CABLES.UI.hideInfo = function ()
 $(document).on("mouseover mousemove", ".info", function (e)
 {
     // clearTimeout(CABLES.UI.tooltipTimeout);
-    var txt = $(this).data("info");
+    let txt = $(this).data("info");
     if ($(this).data("infotext")) txt = CABLES.UI.TEXTS[$(this).data("infotext")];
     if (!txt)
     {

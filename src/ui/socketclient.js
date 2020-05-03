@@ -1,14 +1,14 @@
- 
-var CABLES=CABLES||{};
 
-CABLES.SocketConnection=function(patchId)
+var CABLES = CABLES || {};
+
+CABLES.SocketConnection = function (patchId)
 {
     // var socket = io(document.location.protocol+'//'+document.location.hostname+':3000');
 
     // socket.on('connect', function()
     // {
     //     console.log("socket connected");
-    
+
     //     socket.emit('subscribe', 'global');
     //     socket.emit('subscribe', 'patch_'+patchId);
     // });
@@ -16,8 +16,8 @@ CABLES.SocketConnection=function(patchId)
     // {
     //     console.log("socket event",data);
     // });
-    
-    
+
+
     // socket.on('message', function(data)
     // {
     //     console.log("message",data);
@@ -37,14 +37,12 @@ CABLES.SocketConnection=function(patchId)
     //     }
 
 
-
     // });
-    
-    
+
+
     // socket.on('disconnect', function()
     // {
     //     console.log("socket disconnect!");
     // });
 
 };
-

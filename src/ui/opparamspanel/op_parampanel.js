@@ -64,7 +64,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 if (op.portsIn[i].isAnimated())
                 {
                     self.timeLine.setAnim(op.portsIn[i].anim, {
-                        name: op.portsIn[i].name,
+                        "name": op.portsIn[i].name,
                     });
                     foundAnim = true;
                     continue;
@@ -107,13 +107,13 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         let html = this._templateHead({
             op,
             isBookmarked,
-            colorClass: "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
-            texts: CABLES.UI.TEXTS,
-            user: gui.user,
+            "colorClass": "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
+            "texts": CABLES.UI.TEXTS,
+            "user": gui.user,
             ownsOp,
-            oldVersion: oldversion,
-            cablesUrl: CABLES.sandbox.getCablesUrl(),
-            hasExample: hasScreenshot,
+            "oldVersion": oldversion,
+            "cablesUrl": CABLES.sandbox.getCablesUrl(),
+            "hasExample": hasScreenshot,
         });
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
@@ -121,9 +121,9 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (op.portsIn.length > 0)
         {
             html += CABLES.UI.getHandleBarHtml("params_ports_head", {
-                dirStr: "in",
-                title: "Input",
-                texts: CABLES.UI.TEXTS,
+                "dirStr": "in",
+                "title": "Input",
+                "texts": CABLES.UI.TEXTS,
             });
 
             var lastGroup = null;
@@ -155,15 +155,15 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 if (op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) this._watchPorts.push(op.portsIn[i]);
 
                 html += this._templatePort({
-                    port: op.portsIn[i],
+                    "port": op.portsIn[i],
                     startGroup,
                     groupSpacer,
-                    dirStr: "in",
-                    portnum: i,
-                    isInput: true,
+                    "dirStr": "in",
+                    "portnum": i,
+                    "isInput": true,
                     op,
-                    texts: CABLES.UI.TEXTS,
-                    vars: op.patch.getVars(),
+                    "texts": CABLES.UI.TEXTS,
+                    "vars": op.patch.getVars(),
                 });
             }
             perfLoop.finish();
@@ -172,10 +172,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (op.portsOut.length > 0)
         {
             html += CABLES.UI.getHandleBarHtml("params_ports_head", {
-                dirStr: "out",
-                title: "Output",
+                "dirStr": "out",
+                "title": "Output",
                 op,
-                texts: CABLES.UI.TEXTS,
+                "texts": CABLES.UI.TEXTS,
             });
 
             const perfLoopOut = CABLES.uiperf.start("_showOpParamsLOOP OUT");
@@ -210,12 +210,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
 
                 html += this._templatePort({
-                    port: op.portsOut[i2],
-                    dirStr: "out",
+                    "port": op.portsOut[i2],
+                    "dirStr": "out",
                     groupSpacer,
                     startGroup,
-                    portnum: i2,
-                    isInput: false,
+                    "portnum": i2,
+                    "isInput": false,
                     op,
                 });
             }
@@ -225,8 +225,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         html += CABLES.UI.getHandleBarHtml("params_op_foot", {
             op,
-            opserialized: op.getSerialized(),
-            user: gui.user,
+            "opserialized": op.getSerialized(),
+            "user": gui.user,
         });
 
         // $('#options').html(html);
@@ -272,8 +272,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     {
                         gui.opSelect().show(
                             {
-                                x: p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding),
-                                y: p.parent.uiAttribs.translate.y + 50,
+                                "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding),
+                                "y": p.parent.uiAttribs.translate.y + 50,
                             },
                             op,
                             p,
@@ -311,7 +311,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     if (thePort.isAnimated())
                     {
                         gui.timeLine().setAnim(thePort.anim, {
-                            name: thePort.name,
+                            "name": thePort.name,
                         });
                     }
                 });
@@ -461,8 +461,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
     {
         if (this._currentOp)
         {
-            this._currentOp.uiAttr({ comment: v });
-            if (v.length == 0) this._currentOp.uiAttr({ comment: null });
+            this._currentOp.uiAttr({ "comment": v });
+            if (v.length == 0) this._currentOp.uiAttr({ "comment": null });
             this._currentOp.patch.emitEvent("commentChanged");
         }
         else
@@ -494,12 +494,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         const opid = this._currentOp.id;
 
         items.push({
-            title: "set title",
-            func: CABLES.CMD.PATCH.setOpTitle,
+            "title": "set title",
+            "func": CABLES.CMD.PATCH.setOpTitle,
         });
 
         items.push({
-            title: "set default values",
+            "title": "set default values",
             func()
             {
                 gui.patch().resetOpValues(opid);
@@ -507,7 +507,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         });
 
         items.push({
-            title: "bookmark",
+            "title": "bookmark",
             func()
             {
                 gui.bookmarks.add();
@@ -515,7 +515,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         });
 
         items.push({
-            title: "clone op code",
+            "title": "clone op code",
             func()
             {
                 gui.serverOps.cloneDialog(opname);
@@ -523,7 +523,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         });
 
         items.push({
-            title: "view op code",
+            "title": "view op code",
             func()
             {
                 gui.serverOps.edit(opname);
@@ -533,8 +533,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (gui.user.isAdmin)
         {
             items.push({
-                title: "edit op ",
-                iconClass: "fa fa-lock",
+                "title": "edit op ",
+                "iconClass": "fa fa-lock",
                 func()
                 {
                     gui.serverOps.edit(opname);
@@ -542,8 +542,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             });
 
             items.push({
-                title: "rename op ",
-                iconClass: "fa fa-lock",
+                "title": "rename op ",
+                "iconClass": "fa fa-lock",
                 func()
                 {
                     window.open(CABLES.sandbox.getCablesUrl() + "/admin/op/rename?op=" + opname + "&new=" + opname, "_blank");

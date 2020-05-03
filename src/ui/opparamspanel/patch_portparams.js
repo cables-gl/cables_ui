@@ -5,41 +5,42 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.inputListenerCursorKeys = function (e)
 {
-    switch (e.which) {
-        case 38: // up
-            this.value = CABLES.UI.inputIncrement(this.value, 1, e);
-            $(this).trigger('input');
-            return false;
-            break;
+    switch (e.which)
+    {
+    case 38: // up
+        this.value = CABLES.UI.inputIncrement(this.value, 1, e);
+        $(this).trigger("input");
+        return false;
 
-        case 40: // down
-            this.value = CABLES.UI.inputIncrement(this.value, -1, e);
-            $(this).trigger('input');
-            return false;
-            break;
+    case 40: // down
+        this.value = CABLES.UI.inputIncrement(this.value, -1, e);
+        $(this).trigger("input");
+        return false;
 
-        default: return; // exit this handler for other keys
+    default: return; // exit this handler for other keys
     }
     e.preventDefault(); // prevent the default action (scroll / move caret)
-}
+};
 
 CABLES.UI.inputListenerMousewheel = function (event, delta)
 {
     if ($(this).is(":focus"))
     {
-        if (delta > 0) {
+        if (delta > 0)
+        {
             if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, 0.1, event);
             else this.value = CABLES.UI.inputIncrement(this.value, 1, event);
         }
-        else {
+        else
+        {
             if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, -0.1, event);
             else this.value = CABLES.UI.inputIncrement(this.value, -1, event);
         }
 
-        $(this).trigger('input');
+        $(this).trigger("input");
         return false;
     }
-}
+};
 
 CABLES.UI.bindInputListeners = function ()
 {
@@ -52,62 +53,62 @@ CABLES.UI.bindInputListeners = function ()
     //     perf.finish();
 
     // },20);
-}
+};
 
 
-CABLES.UI.checkDefaultValue=function (op, index) {
-    if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null) {
-        var titleEl = $('#portTitle_in_' + index);
-        if (op.portsIn[index].val != op.portsIn[index].defaultValue) {
-            if (!titleEl.hasClass('nonDefaultValue')) titleEl.addClass('nonDefaultValue');
-        } else {
-            if (titleEl.hasClass('nonDefaultValue')) titleEl.removeClass('nonDefaultValue');
-        }
-    }
-
-}
-
-
-CABLES.UI.openParamStringEditor=function(opid,portname,cb)
+CABLES.UI.checkDefaultValue = function (op, index)
 {
-    var op=gui.corePatch().getOpById(opid);
-    if(!op) return console.log('paramedit op not found');
-
-    var port=op.getPortByName(portname);
-    if(!port) return console.log('paramedit port not found');
-
-    var name=op.name+' '+port.name;
-
-    var editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
-    if(!editorObj && gui.mainTabs.getTabByTitle(name))
+    if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null)
     {
-        CABLES.editorSession.remove(name,"param");
-        var tab=gui.mainTabs.getTabByTitle(name);
+        const titleEl = $("#portTitle_in_" + index);
+        if (op.portsIn[index].val != op.portsIn[index].defaultValue)
+            if (!titleEl.hasClass("nonDefaultValue")) titleEl.addClass("nonDefaultValue");
+            else if (titleEl.hasClass("nonDefaultValue")) titleEl.removeClass("nonDefaultValue");
+    }
+};
+
+
+CABLES.UI.openParamStringEditor = function (opid, portname, cb)
+{
+    const op = gui.corePatch().getOpById(opid);
+    if (!op) return console.log("paramedit op not found");
+
+    const port = op.getPortByName(portname);
+    if (!port) return console.log("paramedit port not found");
+
+    const name = op.name + " " + port.name;
+
+    let editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
+    if (!editorObj && gui.mainTabs.getTabByTitle(name))
+    {
+        CABLES.editorSession.remove(name, "param");
+        const tab = gui.mainTabs.getTabByTitle(name);
         gui.mainTabs.closeTab(tab.id);
 
-        editorObj=CABLES.editorSession.rememberOpenEditor("param",name,{"opid":opid,"portname":portname});
+        editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
     }
 
-    if(editorObj)
+    if (editorObj)
     {
         new CABLES.UI.EditorTab(
             {
-                "title":name,
-                "content":port.get() + '',
-                "name":editorObj.name,
+                "title": name,
+                "content": port.get() + "",
+                "name": editorObj.name,
                 "syntax": port.uiAttribs.editorSyntax,
-                "editorObj":editorObj,
-                "onClose":function(which)
+                "editorObj": editorObj,
+                "onClose": function (which)
                 {
-                    console.log('close!!! missing infos...');
-                    CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
+                    console.log("close!!! missing infos...");
+                    CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
                 },
-                "onSave":function(setStatus, content) {
-                            setStatus('saved');
-                            gui.setStateUnsaved();
-                            gui.jobs().finish('saveeditorcontent');
-                            port.set(content);
-                        }
+                "onSave": function (setStatus, content)
+                {
+                    setStatus("saved");
+                    gui.setStateUnsaved();
+                    gui.jobs().finish("saveeditorcontent");
+                    port.set(content);
+                }
             });
     }
     else
@@ -115,219 +116,246 @@ CABLES.UI.openParamStringEditor=function(opid,portname,cb)
         gui.mainTabs.activateTabByName(name);
     }
 
-    if(cb)cb();
+    if (cb)cb();
     else gui.maintabPanel.show();
-}
+};
 
 
 CABLES.UI.watchColorPickerPort = function (thePort)
 {
-    var ignoreColorChanges = true;
-    var colors;
+    let ignoreColorChanges = true;
+    let colors;
 
-    function updateColorPickerButton(id) {
-        var splits = id.split('_');
-        var portNum = parseInt(splits[splits.length - 1]);
+    function updateColorPickerButton(id)
+    {
+        const splits = id.split("_");
+        const portNum = parseInt(splits[splits.length - 1]);
 
-        var c1 = Math.round(255 * $('#portval_' + portNum).val());
-        var c2 = Math.round(255 * $('#portval_' + (portNum + 1)).val());
-        var c3 = Math.round(255 * $('#portval_' + (portNum + 2)).val());
+        const c1 = Math.round(255 * $("#portval_" + portNum).val());
+        const c2 = Math.round(255 * $("#portval_" + (portNum + 1)).val());
+        const c3 = Math.round(255 * $("#portval_" + (portNum + 2)).val());
 
-        $(id).css('background-color', 'rgb(' + c1 + ',' + c2 + ',' + c3 + ')');
+        $(id).css("background-color", "rgb(" + c1 + "," + c2 + "," + c3 + ")");
     }
 
-    var id = '#watchcolorpick_' + thePort.watchId;
+    const id = "#watchcolorpick_" + thePort.watchId;
     updateColorPickerButton(id);
 
     $(id).colorPicker({
-        opacity: true,
-        animationSpeed: 0,
-        margin: '-80px -40px 0',
-        doRender: 'div div',
-        renderCallback: function (res, toggled) {
-            var id = res[0].id;
-            var splits = id.split('_');
-            var portNum = parseInt(splits[splits.length - 1]);
+        "opacity": true,
+        "animationSpeed": 0,
+        "margin": "-80px -40px 0",
+        "doRender": "div div",
+        renderCallback(res, toggled)
+        {
+            const rid = res[0].id;
+            const splits = rid.split("_");
+            const portNum = parseInt(splits[splits.length - 1]);
 
-            if (toggled === false) {
+            if (toggled === false)
+            {
                 ignoreColorChanges = true;
             }
-            if (toggled === true) {
-                updateColorPickerButton(id);
+            if (toggled === true)
+            {
+                updateColorPickerButton(rid);
                 colors = this.color.colors;
                 ignoreColorChanges = false;
             }
 
-            if (!ignoreColorChanges) {
-                $('#portval_' + portNum + '').val(colors.rgb.r).trigger('input');
-                $('#portval_' + (portNum + 1) + '').val(colors.rgb.g).trigger('input');
-                $('#portval_' + (portNum + 2) + '').val(colors.rgb.b).trigger('input');
-            } else {
-                updateColorPickerButton(id);
+            if (!ignoreColorChanges)
+            {
+                $("#portval_" + portNum + "").val(colors.rgb.r).trigger("input");
+                $("#portval_" + (portNum + 1) + "").val(colors.rgb.g).trigger("input");
+                $("#portval_" + (portNum + 2) + "").val(colors.rgb.b).trigger("input");
+            }
+            else
+            {
+                updateColorPickerButton(rid);
             }
 
-            var modes = {
-                r: Math.round(colors.rgb.r * 255),
-                g: Math.round(colors.rgb.g * 255),
-                b: Math.round(colors.rgb.b * 255),
-                h: colors.hsv.h,
-                s: colors.hsv.s,
-                v: colors.hsv.v,
-                HEX: this.color.colors.HEX
+            const modes = {
+                "r": Math.round(colors.rgb.r * 255),
+                "g": Math.round(colors.rgb.g * 255),
+                "b": Math.round(colors.rgb.b * 255),
+                "h": colors.hsv.h,
+                "s": colors.hsv.s,
+                "v": colors.hsv.v,
+                "HEX": this.color.colors.HEX
             };
 
-            $('input', '.cp-panel').each(function () {
+            $("input", ".cp-panel").each(function ()
+            {
                 this.value = modes[this.className.substr(3)];
             });
-
         },
-        buildCallback: function ($elm)
+        buildCallback($elm)
         {
-            var colorInstance = this.color, colorPicker = this;
+            let colorInstance = this.color, colorPicker = this;
 
             function change(e)
             {
-                var value = this.value,
+                let value = this.value,
                     className = this.className,
-                    type = className.split('-')[1],
+                    type = className.split("-")[1],
                     color = {};
 
                 color[type] = value;
-                colorInstance.setColor(type === 'HEX' ? value : color,
-                    type === 'HEX' ? 'HEX' : /(?:r|g|b)/.test(type) ? 'rgb' : 'hsv');
+                colorInstance.setColor(type === "HEX" ? value : color,
+                    type === "HEX" ? "HEX" : /(?:r|g|b)/.test(type) ? "rgb" : "hsv");
                 colorPicker.render();
                 this.blur();
             }
 
-            $elm.prepend('<div class="cp-panel">' +
-                'R <input type="text" class="cp-r" /><br>' +
-                'G <input type="text" class="cp-g" /><br>' +
-                'B <input type="text" class="cp-b" /><hr>' +
-                'H <input type="text" class="cp-h" /><br>' +
-                'S <input type="text" class="cp-s" /><br>' +
-                'B <input type="text" class="cp-v" /><hr>' +
-                '<input id="inputhex" type="text" class="cp-HEX" />' +
-                '</div>')
-                .on('change', 'input',
+            $elm.prepend("<div class=\"cp-panel\">" +
+                "R <input type=\"text\" class=\"cp-r\" /><br>" +
+                "G <input type=\"text\" class=\"cp-g\" /><br>" +
+                "B <input type=\"text\" class=\"cp-b\" /><hr>" +
+                "H <input type=\"text\" class=\"cp-h\" /><br>" +
+                "S <input type=\"text\" class=\"cp-s\" /><br>" +
+                "B <input type=\"text\" class=\"cp-v\" /><hr>" +
+                "<input id=\"inputhex\" type=\"text\" class=\"cp-HEX\" />" +
+                "</div>")
+                .on("change", "input",
                     change);
-            document.getElementById("inputhex").addEventListener("input",function(e){if(this.value.length==6)change.bind(this)(e);});
+            document.getElementById("inputhex").addEventListener("input", function (e) { if (this.value.length == 6)change.bind(this)(e); });
         }
     });
+};
 
-}
 
-
-CABLES.UI.initPortInputListener=function(op,index)
+CABLES.UI.initPortInputListener = function (op, index)
 {
-    if(!CABLES.UI.mathparser)CABLES.UI.mathparser=new MathParser();
+    if (!CABLES.UI.mathparser)CABLES.UI.mathparser = new MathParser();
     CABLES.UI.checkDefaultValue(op, index);
 
-    //added missing math constants
-    CABLES.UI.mathparser.add("pi",function(n,m){return Math.PI});
+    // added missing math constants
+    CABLES.UI.mathparser.add("pi", function (n, m) { return Math.PI; });
 
-    const eleId='portval_' + index;
+    const eleId = "portval_" + index;
 
-    if(!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number' || op.portsIn[index].uiAttribs.type == 'int')
+    if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number" || op.portsIn[index].uiAttribs.type == "int")
     {
         function parseMath(e)
         {
             const keyCode = e.keyCode || e.which;
             console.log(e);
-            if (keyCode == 13 || keyCode==8)
+            if (keyCode == 13 || keyCode == 8)
             {
                 if (isNaN(e.target.value))
                 {
                     let mathParsed = e.target.value;
-                    try {
-                        mathParsed=CABLES.UI.mathparser.parse(e.target.value);
-                    }catch(e){
+                    try
+                    {
+                        mathParsed = CABLES.UI.mathparser.parse(e.target.value);
+                    }
+                    catch (e)
+                    {
                         // failed to parse math, use unparsed value
                         mathParsed = e.target.value;
                     }
-                    e.target.value=mathParsed;
+                    e.target.value = mathParsed;
                     op.portsIn[index].set(mathParsed);
                     CABLES.UI.hideToolTip();
                 }
             }
         }
 
-        const ele=document.getElementById(eleId);
-        if(ele)ele.onkeypress = parseMath;
+        const ele = document.getElementById(eleId);
+        if (ele)ele.onkeypress = parseMath;
         // document.getElementById(eleId).onblur = parseMath;
     }
 
-    var ele = $('#'+eleId);
-    ele.on('input', function (e)
+    const ele = $("#" + eleId);
+    ele.on("input", function (e)
     {
-        var v = '' + ele.val();
+        let v = "" + ele.val();
 
-        if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == 'number')
+        if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number")
         {
-            if (isNaN(v) || v === '')
+            if (isNaN(v) || v === "")
             {
                 let mathParsed = v;
-                try {
-                    mathParsed=CABLES.UI.mathparser.parse(v);
-                }catch(e){
+                try
+                {
+                    mathParsed = CABLES.UI.mathparser.parse(v);
+                }
+                catch (ex)
+                {
                     // failed to parse math, use unparsed value
                     mathParsed = v;
                 }
-                if(!isNaN(mathParsed))
+                if (!isNaN(mathParsed))
                 {
-                    CABLES.UI.showToolTip(e.target,' = '+mathParsed);
-                    ele.removeClass('invalid');
+                    CABLES.UI.showToolTip(e.target, " = " + mathParsed);
+                    ele.removeClass("invalid");
                 }
                 else
                 {
-                    ele.addClass('invalid');
+                    ele.addClass("invalid");
                 }
                 return;
-            } else {
-                ele.removeClass('invalid');
+            }
+            else
+            {
+                ele.removeClass("invalid");
                 v = parseFloat(v);
             }
         }
 
-        if (op.portsIn[index].uiAttribs.type == 'int') {
-            if (isNaN(v) || v === '') {
-                ele.addClass('invalid');
+        if (op.portsIn[index].uiAttribs.type == "int")
+        {
+            if (isNaN(v) || v === "")
+            {
+                ele.addClass("invalid");
                 return;
-            } else {
-                ele.removeClass('invalid');
+            }
+            else
+            {
+                ele.removeClass("invalid");
                 v = parseInt(v, 10);
             }
         }
 
-        if (op.portsIn[index].uiAttribs.display == 'bool') {
-            if (v != 'true' && v != 'false') {
+        if (op.portsIn[index].uiAttribs.display == "bool")
+        {
+            if (v != "true" && v != "false")
+            {
                 v = false;
-                ele.val('false');
+                ele.val("false");
             }
-            if (v == 'true') v = true;
+            if (v == "true") v = true;
             else v = false;
         }
 
-        console.log()
+        console.log();
 
-        if(!CABLES.mouseDraggingValue)
-            undoAdd=function(oldv,newv,opid,portname)
+        if (!CABLES.mouseDraggingValue)
+        {
+            const undoAdd = (function (oldv, newv, opid, portname)
             {
-                if(oldv!=newv)
+                if (oldv != newv)
                     CABLES.undo.add({
-                        title:"Value change "+oldv+" to "+newv,
-                        undo: function() {
-                            try{
-                                gui.corePatch().getOpById(opid).getPort(portname).set(oldv);
-                            }catch(e){console.warn("undo failed");}
-                        },
-                        redo: function()
+                        "title": "Value change " + oldv + " to " + newv,
+                        undo()
                         {
-                            try{
+                            try
+                            {
+                                gui.corePatch().getOpById(opid).getPort(portname).set(oldv);
+                            }
+                            catch (ex) { console.warn("undo failed"); }
+                        },
+                        redo()
+                        {
+                            try
+                            {
                                 gui.corePatch().getOpById(opid).getPort(portname).set(newv);
-                            }catch(e){console.warn("undo failed");}
+                            }
+                            catch (ex) { console.warn("undo failed"); }
                         }
                     });
-            }(op.portsIn[index].get(),v,op.id,op.portsIn[index].name);
+            }(op.portsIn[index].get(), v, op.id, op.portsIn[index].name));
+        }
 
 
         op.portsIn[index].set(v);
@@ -341,39 +369,43 @@ CABLES.UI.initPortInputListener=function(op,index)
 
         if (op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
     });
-}
+};
 
 
-CABLES.UI.initPortClickListener=function(op,index)
+CABLES.UI.initPortClickListener = function (op, index)
 {
-    if (op.portsIn[index].isAnimated()) $('#portanim_in_' + index).addClass('timingbutton_active');
-    if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $('#portgraph_in_' + index).addClass('timingbutton_active');
+    if (op.portsIn[index].isAnimated()) $("#portanim_in_" + index).addClass("timingbutton_active");
+    if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $("#portgraph_in_" + index).addClass("timingbutton_active");
 
-    $('#portTitle_in_' + index).on('click', function (e) {
+    $("#portTitle_in_" + index).on("click", function (e)
+    {
         const p = op.portsIn[index];
         if (!p.uiAttribs.hidePort)
             gui.opSelect().show(
                 {
-                    x: p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
-                    y: p.parent.uiAttribs.translate.y - 50,
+                    "x": p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
+                    "y": p.parent.uiAttribs.translate.y - 50,
                 }, op, p);
     });
 
-    $('#portCreateOp_in_' + index).on('click', function (e) {
-        var thePort = op.portsIn[index];
-        if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE) {
-            gui.corePatch().addOp('Ops.Gl.Texture', {}, function (newop) {
+    $("#portCreateOp_in_" + index).on("click", function (e)
+    {
+        const thePort = op.portsIn[index];
+        if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
+        {
+            gui.corePatch().addOp("Ops.Gl.Texture", {}, function (newop)
+            {
                 gui.corePatch().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
             });
-
         }
     });
 
-    $('#portedit_in_' + index).on('click', function (e) {
-        var thePort = op.portsIn[index];
+    $("#portedit_in_" + index).on("click", function (e)
+    {
+        const thePort = op.portsIn[index];
         // console.log('thePort.uiAttribs.editorSyntax',thePort.uiAttribs.editorSyntax);
 
-        CABLES.UI.openParamStringEditor(op.id, op.portsIn[index].name)
+        CABLES.UI.openParamStringEditor(op.id, op.portsIn[index].name);
 
         // gui.showEditor();
         // gui.editor().addTab({
@@ -389,104 +421,104 @@ CABLES.UI.initPortClickListener=function(op,index)
         // });
     });
 
-    $('#portbutton_' + index).on('click', function (e) {
+    $("#portbutton_" + index).on("click", function (e)
+    {
         op.portsIn[index]._onTriggered();
     });
 
-    if(op.portsIn[index].uiAttribs.display==="buttons")
+    if (op.portsIn[index].uiAttribs.display === "buttons")
     {
-        for(var i=0;i<op.portsIn[index].value.length;i++)
+        for (let i = 0; i < op.portsIn[index].value.length; i++)
         {
-            $('#portbutton_' + index+'_'+i).on('click', function (e) {
-
-                var name=e.target.dataset["title"];
+            $("#portbutton_" + index + "_" + i).on("click", function (e)
+            {
+                const name = e.target.dataset.title;
 
                 op.portsIn[index]._onTriggered(name);
             });
-
         }
     }
 
 
-    $('#portgraph_in_' + index).on('click', function (e) {
-        if (op.portsIn[index].isAnimated()) {
+    $("#portgraph_in_" + index).on("click", function (e)
+    {
+        if (op.portsIn[index].isAnimated())
+        {
             op.portsIn[index].anim.stayInTimeline = !op.portsIn[index].anim.stayInTimeline;
-            $('#portgraph_in_' + index).toggleClass('timingbutton_active');
+            $("#portgraph_in_" + index).toggleClass("timingbutton_active");
             gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
-                name: op.portsIn[index].name,
-                defaultValue: parseFloat($('#portval_' + index).val())
+                "name": op.portsIn[index].name,
+                "defaultValue": parseFloat($("#portval_" + index).val())
             });
         }
     });
 
-    $('#portsetvar_'+index).on("input",function(e)
+    $("#portsetvar_" + index).on("input", function (e)
     {
-        var port=op.getPortById(e.target.dataset["portid"]);
+        const port = op.getPortById(e.target.dataset.portid);
 
-        
-        if(port) port.setVariable(e.target.value);
-        else console.log("[portsetvar] PORT NOT FOUND!! ",e.target.dataset["portid"],e);
+
+        if (port) port.setVariable(e.target.value);
+        else console.log("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
     });
 
 
-    $('#portremovevar_' + index).on('click', function (e)
+    $("#portremovevar_" + index).on("click", function (e)
     {
-        var port=op.getPortById(e.target.dataset["portid"]);
-        if(port) port.setVariable(null);
+        const port = op.getPortById(e.target.dataset.portid);
+        if (port) port.setVariable(null);
         port.parent.refreshParams();
     });
 
-    $('#port_contextmenu_in_' + index).on('click', function (e)
+    $("#port_contextmenu_in_" + index).on("click", function (e)
     {
-        var port=op.getPortById(e.target.dataset["portid"]);
+        const port = op.getPortById(e.target.dataset.portid);
 
         CABLES.contextMenu.show(
-            {items:
+            { "items":
                 [
                     {
-                        title:'Assign variable',
-                        func:()=>
+                        "title": "Assign variable",
+                        "func": () =>
                         {
-                            port.setVariable('unknown');
+                            port.setVariable("unknown");
                             console.log("SET VARIABLE SOURCE!!");
                             port.parent.refreshParams();
                         }
                     },
                     {
-                        title:'Set animated',
-                        func:()=>
+                        "title": "Set animated",
+                        "func": () =>
                         {
-                            $('#portanim_in_' + index).click();
+                            $("#portanim_in_" + index).click();
                         }
                     }
-                ]},e.target);
-
+                ] }, e.target);
     });
 
-    $('#portanim_in_' + index).on('click', function (e)
+    $("#portanim_in_" + index).on("click", function (e)
     {
-        if ($('#portanim_in_' + index).hasClass('timingbutton_active'))
+        if ($("#portanim_in_" + index).hasClass("timingbutton_active"))
         {
-            var val = gui.patch().timeLine.removeAnim(op.portsIn[index].anim);
+            const val = gui.patch().timeLine.removeAnim(op.portsIn[index].anim);
             op.portsIn[index].setAnimated(false);
 
             gui.patch().timeLine.setAnim(null);
-            $('#portanim_in_' + index).removeClass('timingbutton_active');
-            $('#portval_' + index).val(val);
-            $('#portval_' + index).trigger('input');
-            $('#portval_' + index).focus();
+            $("#portanim_in_" + index).removeClass("timingbutton_active");
+            $("#portval_" + index).val(val);
+            $("#portval_" + index).trigger("input");
+            $("#portval_" + index).focus();
             op.portsIn[index].parent.refreshParams();
             return;
         }
 
-        $('#portanim_in_' + index).addClass('timingbutton_active');
+        $("#portanim_in_" + index).addClass("timingbutton_active");
 
         op.portsIn[index].toggleAnim();
         gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
-            name: op.portsIn[index].name,
-            defaultValue: parseFloat($('#portval_' + index).val())
+            "name": op.portsIn[index].name,
+            "defaultValue": parseFloat($("#portval_" + index).val())
         });
         op.portsIn[index].parent.refreshParams();
     });
-}
-
+};

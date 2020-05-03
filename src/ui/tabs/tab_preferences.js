@@ -13,33 +13,32 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.Preferences = function (tabs)
 {
-    this._tab = new CABLES.UI.Tab("Preferences", { icon: "settings", infotext: "tab_preferences",singleton:true });
+    this._tab = new CABLES.UI.Tab("Preferences", { "icon": "settings", "infotext": "tab_preferences", "singleton": true });
     tabs.addTab(this._tab, true);
     this.show();
 };
 
-CABLES.UI.Preferences.prototype.setInputValue=function(name,value)
+CABLES.UI.Preferences.prototype.setInputValue = function (name, value)
 {
-    if(value===null)value=false;
-    var elements = document.getElementsByClassName("valinput");
-    for (var i = 0; i < elements.length; i++)
+    if (value === null)value = false;
+    const elements = document.getElementsByClassName("valinput");
+    for (let i = 0; i < elements.length; i++)
     {
         if (elements[i].dataset.setting == name)
         {
-            elements[i].value=value;
+            elements[i].value = value;
             // if (elements[i].dataset.value == "" + value || (elements[i].dataset.value == "false" && !value)) elements[i].classList.add("switch-active");
             // else elements[i].classList.remove("switch-active");
         }
     }
-
-}
+};
 
 CABLES.UI.Preferences.prototype.setSwitchValue = function (name, value)
 {
-    //console.log("setSwitchValue",name,value);
-    if(value===null)value=false;
-    var elements = document.getElementsByClassName("prefswitch");
-    for (var i = 0; i < elements.length; i++)
+    // console.log("setSwitchValue",name,value);
+    if (value === null)value = false;
+    const elements = document.getElementsByClassName("prefswitch");
+    for (let i = 0; i < elements.length; i++)
     {
         if (elements[i].dataset.setting == name)
         {
@@ -65,57 +64,48 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("helperMode", CABLES.UI.userSettings.get("helperMode"));
     this.setSwitchValue("noidlemode", CABLES.UI.userSettings.get("noidlemode"));
 
-    this.setInputValue("wheelmultiplier", CABLES.UI.userSettings.get("wheelmultiplier")||1);
+    this.setInputValue("wheelmultiplier", CABLES.UI.userSettings.get("wheelmultiplier") || 1);
 
     this.setSwitchValue("forceWebGl1", CABLES.UI.userSettings.get("forceWebGl1"));
-    
+
     this.setSwitchValue("miniopselect", CABLES.UI.userSettings.get("miniopselect"));
     this.setSwitchValue("glpatchview", CABLES.UI.userSettings.get("glpatchview"));
-
-
-
 };
 
 CABLES.UI.Preferences.prototype.show = function ()
 {
-    var html = CABLES.UI.getHandleBarHtml("tab_preferences", {});
+    const html = CABLES.UI.getHandleBarHtml("tab_preferences", {});
     this._tab.html(html);
     this.updateValues();
 
-    var elements = document.getElementsByClassName("prefswitch");
-    for (var i = 0; i < elements.length; i++)
+    let elements = document.getElementsByClassName("prefswitch");
+    for (let i = 0; i < elements.length; i++)
     {
         elements[i].addEventListener("click", (e) =>
         {
-            var v=e.target.dataset.value;
-            if(v==="true")v=true;
-            if(v==="false")v=false;
+            let v = e.target.dataset.value;
+            if (v === "true")v = true;
+            if (v === "false")v = false;
 
-            CABLES.UI.userSettings.set(e.target.dataset.setting,v);
+            CABLES.UI.userSettings.set(e.target.dataset.setting, v);
         });
     }
 
 
-
-    var elements = document.getElementsByClassName("valinput");
-    for (var i = 0; i < elements.length; i++)
+    elements = document.getElementsByClassName("valinput");
+    for (let i = 0; i < elements.length; i++)
     {
         elements[i].addEventListener("input", (e) =>
         {
-            var v=e.target.value;
-            if(e.target.classList.contains("numberinput")) v=parseFloat(v);
-            if(v==v)
+            let v = e.target.value;
+            if (e.target.classList.contains("numberinput")) v = parseFloat(v);
+            if (v == v)
             {
-                console.log(e.target.dataset.setting,v);
-                CABLES.UI.userSettings.set(e.target.dataset.setting,v);
+                console.log(e.target.dataset.setting, v);
+                CABLES.UI.userSettings.set(e.target.dataset.setting, v);
             }
-
         });
     }
-
-
-
-
 
 
     CABLES.UI.userSettings.addEventListener("onChange", () =>

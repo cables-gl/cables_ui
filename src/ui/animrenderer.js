@@ -15,7 +15,7 @@ CABLES.AnimRenderer.prototype.start = function ()
     $("#progresscontainer").show();
 
     console.log(this.filename, this.startTime, this.endTime, this.fps, this.format);
-    new CABLES.UI.ImageSequenceExport(this.filename, this.startTime, this.endTime, this.fps, { leftpad: this.leftpad, format: this.format });
+    new CABLES.UI.ImageSequenceExport(this.filename, this.startTime, this.endTime, this.fps, { "leftpad": this.leftpad, "format": this.format });
 };
 
 CABLES.AnimRenderer.prototype.update = function ()
@@ -28,13 +28,13 @@ CABLES.AnimRenderer.prototype.update = function ()
 
     const leftpad = $("#render_leftpad").is(":checked");
 
-    var frames = (this.endTime - this.startTime) * this.fps;
+    const frames = (this.endTime - this.startTime) * this.fps;
 
     $(".modalScrollContent").html("number of frames: " + frames + "<br/>");
 
     $("#glcanvas").css({
-        width: $("#render_width").val(),
-        height: $("#render_height").val(),
+        "width": $("#render_width").val(),
+        "height": $("#render_height").val(),
     });
     gui.patch().scene.cgl.updateSize();
 
@@ -49,11 +49,11 @@ CABLES.AnimRenderer.prototype.update = function ()
 
 CABLES.AnimRenderer.prototype.show = function (since)
 {
-    var html = CABLES.UI.getHandleBarHtml("AnimRenderer", {});
+    const html = CABLES.UI.getHandleBarHtml("AnimRenderer", {});
 
     CABLES.UI.MODAL.show(html, {
-        title: "",
-        nopadding: true,
+        "title": "",
+        "nopadding": true,
     });
 
     $("#render_fps").val(gui.timeLine().getFPS() || 30);

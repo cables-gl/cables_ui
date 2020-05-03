@@ -3,16 +3,15 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UTILS = CABLES.UTILS || {};
 
 
-
 CABLES.UI.handleBarsPrecompiled = {};
 CABLES.UI.getHandleBarHtml = function (name, obj)
 {
-    var perf = CABLES.uiperf.start("getHandleBarHtml");
+    const perf = CABLES.uiperf.start("getHandleBarHtml");
 
-    var template = CABLES.UI.handleBarsPrecompiled[name];
+    let template = CABLES.UI.handleBarsPrecompiled[name];
     if (!template && document.getElementById(name))
     {
-        var source = document.getElementById(name).innerHTML;
+        const source = document.getElementById(name).innerHTML;
         if (!source)
         {
             CABLES.UI.MODAL.showError("template not found", "template " + name + " not found...");
@@ -23,7 +22,7 @@ CABLES.UI.getHandleBarHtml = function (name, obj)
 
     obj = obj || {};
     obj.cablesUrl = CABLES.sandbox.getCablesUrl();
-    var html = template(obj);
+    const html = template(obj);
     perf.finish();
 
     return html;
@@ -31,7 +30,7 @@ CABLES.UI.getHandleBarHtml = function (name, obj)
 
 CABLES.UTILS.arrayContains = function (arr, obj)
 {
-    var i = arr.length;
+    let i = arr.length;
     while (i--)
     {
         if (arr[i] === obj)
@@ -56,19 +55,19 @@ CABLES.UTILS.isNumber = function (o)
  */
 CABLES.UI.SVGParagraph = function (t, width)
 {
-    var content = t.attr("text");
-    var abc = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    t.attr({ "text-anchor": "start", text: abc });
-    var letterWidth = t.getBBox().width / abc.length;
-    t.attr({ text: content });
+    const content = t.attr("text");
+    const abc = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    t.attr({ "text-anchor": "start", "text": abc });
+    const letterWidth = t.getBBox().width / abc.length;
+    t.attr({ "text": content });
     if (content)
     {
-        var words = content.split(" "),
+        let words = content.split(" "),
             x = 0,
             s = [];
-        for (var i = 0; i < words.length; i++)
+        for (let i = 0; i < words.length; i++)
         {
-            var l = words[i].length;
+            const l = words[i].length;
             if (x + l > width)
             {
                 s.push("\n");
@@ -80,6 +79,6 @@ CABLES.UI.SVGParagraph = function (t, width)
             }
             s.push(words[i] + " ");
         }
-        t.attr({ text: s.join("") });
+        t.attr({ "text": s.join("") });
     }
 };

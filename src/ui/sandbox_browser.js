@@ -5,22 +5,21 @@ CABLES.SandboxBrowser = function (cfg)
     CABLES.EventTarget.apply(this);
     this._cfg = cfg;
 
-console.log(cfg);
+    console.log(cfg);
 
     if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
     else CABLES.UI.userSettings.load({});
 
-    window.addEventListener('online',  this.updateOnlineIndicator.bind(this));
-    window.addEventListener('offline', this.updateOnlineIndicator.bind(this));
+    window.addEventListener("online", this.updateOnlineIndicator.bind(this));
+    window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
     this.updateOnlineIndicator();
-
 };
 
 CABLES.SandboxBrowser.prototype.updateOnlineIndicator = function ()
 {
-    if(this.isOffline()) document.getElementById('offlineIndicator').classList.remove('hidden');
-    else document.getElementById('offlineIndicator').classList.add('hidden');
-}
+    if (this.isOffline()) document.getElementById("offlineIndicator").classList.remove("hidden");
+    else document.getElementById("offlineIndicator").classList.add("hidden");
+};
 
 CABLES.SandboxBrowser.prototype.isOffline = function ()
 {
@@ -76,22 +75,22 @@ CABLES.SandboxBrowser.prototype.getSocketclusterConfig = function ()
 
 CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
 {
-    var lastView = CABLES.UI.userSettings.get("changelogLastView");
+    const lastView = CABLES.UI.userSettings.get("changelogLastView");
 
     CABLES.CHANGELOG.getHtml((clhtml) =>
     {
         if (clhtml !== null)
         {
             iziToast.show({
-                position: "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-                theme: "dark",
-                title: "update",
-                message: "cables has been updated! ",
-                progressBar: false,
-                animateInside: false,
-                close: true,
-                timeout: false,
-                buttons: [
+                "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                "theme": "dark",
+                "title": "update",
+                "message": "cables has been updated! ",
+                "progressBar": false,
+                "animateInside": false,
+                "close": true,
+                "timeout": false,
+                "buttons": [
                     [
                         "<button>read more</button>",
                         function (instance, toast)
@@ -111,19 +110,19 @@ CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
 
 CABLES.SandboxBrowser.prototype.showBrowserWarning = function (id)
 {
-    var isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
+    const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
     if (!window.chrome && !isFirefox && !CABLES.UI.userSettings.get("nobrowserWarning"))
     {
         iziToast.error({
-            position: "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-            theme: "dark",
-            title: CABLES.UI.TEXTS.notOptimizedBrowser_title,
-            message: CABLES.UI.TEXTS.notOptimizedBrowser_text,
-            progressBar: false,
-            animateInside: false,
-            close: true,
-            timeout: false,
+            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            "theme": "dark",
+            "title": CABLES.UI.TEXTS.notOptimizedBrowser_title,
+            "message": CABLES.UI.TEXTS.notOptimizedBrowser_text,
+            "progressBar": false,
+            "animateInside": false,
+            "close": true,
+            "timeout": false,
         });
     }
 };
@@ -131,24 +130,22 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning = function (id)
 
 CABLES.SandboxBrowser.prototype.addMeUserlist = function (options, cb)
 {
-
     CABLESUILOADER.talkerAPI.send("addMeUserlist", {}, (err, r) =>
     {
-        gui.project().users.push(gui.user.id)
+        gui.project().users.push(gui.user.id);
 
-        if(cb)cb();
-
+        if (cb)cb();
     });
 };
 
 CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)
 {
-    var proj = this._cfg.patch;
+    const proj = this._cfg.patch;
 
     // const cansave=proj.userList.indexOf(this._cfg.user.username);
     // console.log("can save",cansave,proj.userList);
 
-    //for (var i in proj.userList) //userOpsUrls.push(this.getablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
+    // for (var i in proj.userList) //userOpsUrls.push(this.getablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
     // console.log(proj.userList[i]1)
 
 
@@ -177,9 +174,9 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 
     CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>
     {
-        console.log("file Updated: "+options.filename);
+        console.log("file Updated: " + options.filename);
 
-        for (var j = 0; j < gui.patch().ops.length; j++)
+        for (let j = 0; j < gui.patch().ops.length; j++)
         {
             if (gui.patch().ops[j].op)
             {
@@ -208,7 +205,7 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 
     CABLESUILOADER.talkerAPI.addEventListener("jobStart", (options, next) =>
     {
-        gui.jobs().start({ id: options.id, title: options.title });
+        gui.jobs().start({ "id": options.id, "title": options.title });
     });
 
     CABLESUILOADER.talkerAPI.addEventListener("jobFinish", (options, next) =>
@@ -231,29 +228,26 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
             if (cb) cb();
         });
     });
-
-
 };
 
-CABLES.SandboxBrowser.prototype.createBackup=function()
+CABLES.SandboxBrowser.prototype.createBackup = function ()
 {
     CABLESUILOADER.talkerAPI.send("patchCreateBackup", {}, (r) =>
     {
-        console.log("backup finished",r);
-        if(r.success)
+        console.log("backup finished", r);
+        if (r.success)
             CABLES.UI.notify("Backup created!");
-
     });
-}
+};
 
 CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
 {
-    var userOpsUrls = [];
-    var proj = this._cfg.patch;
+    const userOpsUrls = [];
+    const proj = this._cfg.patch;
 
-    for (var i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
+    for (const i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
 
-    var lid = "userops" + proj._id + CABLES.generateUUID();
+    const lid = "userops" + proj._id + CABLES.generateUUID();
     loadjs.ready(lid, () =>
     {
         incrementStartup();

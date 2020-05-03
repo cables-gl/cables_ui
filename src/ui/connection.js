@@ -1,49 +1,49 @@
 
-var CABLES=CABLES || {};
-CABLES.API=CABLES.API || {};
+var CABLES = CABLES || {};
+CABLES.API = CABLES.API || {};
 
-CABLES.API.Connection=function(ui)
+CABLES.API.Connection = function (ui)
 {
-    ui.jobs().start({id:'connecting',title:'connecting to server'});
+    ui.jobs().start({ "id": "connecting", "title": "connecting to server" });
 
-    var pingStart=0;
-    var simpleio = window.simpleio;
-    var client = simpleio.create(
+    const pingStart = 0;
+    const simpleio = window.simpleio;
+    const client = simpleio.create(
         {
-            ajax: jQuery.ajax
+            "ajax": jQuery.ajax
         });
-    var connected=false;
+    let connected = false;
 
     function ping()
     {
-//        if(connected)
-//        {
-//            pingStart=Date.now();
-//            client.send({"cmd":"ping"});
-//        }
-//        else
-//        setTimeout(ping,3000);
+        //        if(connected)
+        //        {
+        //            pingStart=Date.now();
+        //            client.send({"cmd":"ping"});
+        //        }
+        //        else
+        //        setTimeout(ping,3000);
     }
 
     function checkConnection()
     {
-        if(!connected)
+        if (!connected)
         {
-            console.log('checkConnection');
+            console.log("checkConnection");
         }
     }
 
 
-    client.on('message', function(message)
+    client.on("message", function (message)
     {
-        if(message.data.data.success===true)
+        if (message.data.data.success === true)
         {
-            connected=true;
-            ui.jobs().finish('connecting');
-            setTimeout(ping,3000);
+            connected = true;
+            ui.jobs().finish("connecting");
+            setTimeout(ping, 3000);
         }
         else
-        if(message.data.data.cmd)
+        if (message.data.data.cmd)
         {
             // if(message.data.data.cmd && message.data.data.cmd=='filesprocessed')
             // {
@@ -51,93 +51,90 @@ CABLES.API.Connection=function(ui)
             //     gui.patch().updateProjectFiles();
             // }
             // else
-            if(message.data.data.cmd=='pong')
+            if (message.data.data.cmd == "pong")
             {
-                //if(pingStart!==0)
+                // if(pingStart!==0)
                 // {
                 //     var delay=Date.now()-pingStart;
                 //    // console.log("ping time:",delay);
                 //    pingStart=0;
                 //    setTimeout(ping,60000);
-                //}
+                // }
             }
             else
-            if(message.data.data.cmd=='startJob')
+            if (message.data.data.cmd == "startJob")
             {
-                ui.jobs().start({id:message.data.data.jobId,title:message.data.data.jobTitle});
+                ui.jobs().start({ "id": message.data.data.jobId, "title": message.data.data.jobTitle });
             }
             else
-            if(message.data.data.cmd=='finishJob')
+            if (message.data.data.cmd == "finishJob")
             {
                 ui.jobs().finish(message.data.data.jobId);
                 // gui.updateProjectFiles();
                 // CABLES.UI.fileSelect.load();
-
             }
             else
             {
-                console.log('unknown message',message.data.data);
+                console.log("unknown message", message.data.data);
             }
         }
         else
         {
-            console.log('unknown message',message.data.data);
+            console.log("unknown message", message.data.data);
         }
     });
 
-    var checkTimeout=null;
+    const checkTimeout = null;
 
-    client.on('error', function()
+    client.on("error", function ()
     {
-        connected=false;
-        ui.jobs().start({id:'connecting',title:'reconnecting to server'});
+        connected = false;
+        ui.jobs().start({ "id": "connecting", "title": "reconnecting to server" });
 
         clearTimeout(checkTimeout);
     });
 
-    client.on('success', function()
+    client.on("success", function ()
     {
-        connected=true;
-        ui.jobs().finish('connecting');
+        connected = true;
+        ui.jobs().finish("connecting");
     });
-    client.on('disconnect', function()
+    client.on("disconnect", function ()
     {
-        console.log('disconnect!!!');
+        console.log("disconnect!!!");
     });
 
 
-    window.onbeforeunload = function(e)
+    window.onbeforeunload = function (e)
     {
         client.disconnect();
-        connected=false;
+        connected = false;
     };
 
 
     client.connect();
 
     client.send(
-        {"cmd":"connect"},
-        function()
+        { "cmd": "connect" },
+        function ()
         {
             // console.log('connecting to server...');
         });
 
     // checkTimeout=setTimeout(checkConnection,500);
 
-    this.disconnect=function()
+    this.disconnect = function ()
     {
         client.disconnect();
     };
 
-    this.connect=function()
+    this.connect = function ()
     {
         client.connect();
     };
 
-    this.isConnected=function()
+    this.isConnected = function ()
     {
         return connected;
     };
-
-
 };
