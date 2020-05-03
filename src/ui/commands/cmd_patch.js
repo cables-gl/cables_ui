@@ -61,7 +61,7 @@ CABLES.CMD.PATCH.createBackup=function()
 
 CABLES.CMD.PATCH.clear=function()
 {
-	gui.scene().clear();
+	gui.corePatch().clear();
 };
 
 CABLES.CMD.PATCH.selectChilds=function()

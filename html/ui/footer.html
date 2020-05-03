@@ -111,7 +111,8 @@
                     loadjs.ready('cables_core', function()
                     {
                         logStartup('loaded cables core');
-
+                        // console.log("core loaded",CABLES);
+                        
                         incrementStartup();
 
                         loadjs([CABLESUILOADER.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');
@@ -124,7 +125,7 @@
                             try
                             {
                                 loadjs([CABLESUILOADER.noCacheUrl('js/bundle.js')],'cables_vue');
-                            if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
+                                if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
                                 else CABLES.sandbox=new CABLES.SandboxBrowser(cfg);
 
                             }catch(e)

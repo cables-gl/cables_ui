@@ -25,7 +25,7 @@ CABLES.UI.TransformsIcon=class
 
         this._eleCenter.addEventListener("click",()=>
         {
-            const op=gui.scene().getOpById(id);
+            const op=gui.corePatch().getOpById(id);
             if(!op)return;
             gui.patch().setCurrentSubPatch(op.uiAttribs.subPatch||0);
             gui.patch().focusOp(id);

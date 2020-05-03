@@ -1,4 +1,4 @@
-    // needs to be in UI only
+
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
         function hasParent(op, type, name)
@@ -21,7 +21,7 @@
 
         function hasTriggerInput(op)
         {
-            if (op.portsIn.length > 0 && op.portsIn[0].type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return true;
+            if (op.portsIn.length > 0 && op.portsIn[0].type == CABLES.OP_PORT_TYPE_FUNCTION) return true;
             return false;
         }
 
@@ -30,13 +30,13 @@
 
         if (working && this.objName.indexOf("Ops.Gl.TextureEffects") == 0 && hasTriggerInput(this) && this.objName.indexOf("TextureEffects.ImageCompose") == -1)
         {
-            working = hasParent(this, CONSTANTS.OP.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose");
+            working = hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose");
             if (!working) notWorkingMsg = CABLES.UI.TEXTS.working_connected_to + "ImageCompose";
         }
 
         if (this._needsParentOp && working)
         {
-            working = hasParent(this, CONSTANTS.OP.OP_PORT_TYPE_OBJECT, this._needsParentOp);
+            working = hasParent(this, CABLES.OP_PORT_TYPE_OBJECT, this._needsParentOp);
             if (!working) notWorkingMsg = CABLES.UI.TEXTS.working_connected_to + this._needsParentOp;
         }
 

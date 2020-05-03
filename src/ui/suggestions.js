@@ -94,7 +94,7 @@ CABLES.UI.SuggestOpDialog=function(op,portname,mouseEvent,coords,cb)
                     CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op=op;
                     CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName=portname;
                     CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName=suggestions[i].port;
-                    gui.scene().addOp(suggestions[i].name);
+                    gui.corePatch().addOp(suggestions[i].name);
                 }
             }
         },true);

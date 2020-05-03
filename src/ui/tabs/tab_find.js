@@ -19,9 +19,9 @@ CABLES.UI.FindTab=function(tabs,str)
     var colors=[];
     var warnOps=[];
 
-    for (var i=0;i<gui.scene().ops.length;i++)
+    for (var i=0;i<gui.corePatch().ops.length;i++)
     {
-        var op=gui.scene().ops[i];
+        var op=gui.corePatch().ops[i];
         if(!op)continue;
         if (op.uiAttribs.error)
         {
@@ -42,18 +42,18 @@ CABLES.UI.FindTab=function(tabs,str)
 
     gui.opHistory.addEventListener("changed",this.updateHistory.bind(this));
 
-    gui.scene().addEventListener("onOpDelete",this._updateCb);
-    gui.scene().addEventListener("onOpAdd",this._updateCb);
-    gui.scene().addEventListener("commentChanged",this._updateCb);
+    gui.corePatch().addEventListener("onOpDelete",this._updateCb);
+    gui.corePatch().addEventListener("onOpAdd",this._updateCb);
+    gui.corePatch().addEventListener("commentChanged",this._updateCb);
     
 
     this._tab.addEventListener("onClose",()=>
     {
         gui.opHistory.removeEventListener("changed",this.updateHistory.bind(this));
 
-        gui.scene().removeEventListener("onOpDelete",this._updateCb);
-        gui.scene().removeEventListener("onOpAdd",this._updateCb);
-        gui.scene().removeEventListener("commentChanged",this._updateCb);
+        gui.corePatch().removeEventListener("onOpDelete",this._updateCb);
+        gui.corePatch().removeEventListener("onOpAdd",this._updateCb);
+        gui.corePatch().removeEventListener("commentChanged",this._updateCb);
         this._closed=true;
     });
 

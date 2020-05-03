@@ -594,7 +594,7 @@ CABLES.UI.OpSelect.prototype.keyDown=function(e)
                 CABLES.UI.MODAL.hide();
                 gui.serverOps.loadOpLibs(opname,function()
                 {
-                    gui.scene().addOp(opname);
+                    gui.corePatch().addOp(opname);
                 });
             }
 

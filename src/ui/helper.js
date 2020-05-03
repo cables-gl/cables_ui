@@ -71,7 +71,7 @@ CABLES.serializeForm=function(selector)
 
 CABLES.UI.showJson=function(opid,which)
 {
-    var op=gui.scene().getOpById(opid);
+    var op=gui.corePatch().getOpById(opid);
     if(!op)
     {
         console.log('opid not found:',opid);

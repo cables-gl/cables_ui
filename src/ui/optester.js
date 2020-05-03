@@ -7,7 +7,7 @@ CABLES.UI.OpTester.prototype.run = function() {
 
     function load(opname) {
         gui.serverOps.loadOpLibs(opname, function() {
-            gui.scene().addOp(opname);
+            gui.corePatch().addOp(opname);
         });
     }
 

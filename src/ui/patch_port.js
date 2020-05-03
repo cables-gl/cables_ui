@@ -16,7 +16,7 @@ CABLES.UI.SetPortTitle=function(opId,portId,oldtitle)
         function(name) {
             console.log("jaja!",opId,portId,oldtitle);
 
-            var op = gui.scene().getOpById(opId);
+            var op = gui.corePatch().getOpById(opId);
             var p=op.getPort(portId);
             p.setUiAttribs({"title":name});
 

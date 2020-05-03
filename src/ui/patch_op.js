@@ -1731,7 +1731,7 @@ var OpUi = function(paper, op, x, y, w, h, txt) {
         }
         this.links=[];
 
-        for(var i3=0;i3<ops1.length;i3++) gui.scene().link( ops1[i3],ps1[i3], ops2[i3],ps2[i3] );
+        for(var i3=0;i3<ops1.length;i3++) gui.corePatch().link( ops1[i3],ps1[i3], ops2[i3],ps2[i3] );
     };
 
     this._lastUpdateHeight=-1;

@@ -362,8 +362,8 @@ CABLES.UI.initPortClickListener=function(op,index)
     $('#portCreateOp_in_' + index).on('click', function (e) {
         var thePort = op.portsIn[index];
         if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE) {
-            gui.scene().addOp('Ops.Gl.Texture', {}, function (newop) {
-                gui.scene().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
+            gui.corePatch().addOp('Ops.Gl.Texture', {}, function (newop) {
+                gui.corePatch().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
             });
 
         }

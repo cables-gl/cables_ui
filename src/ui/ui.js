@@ -19,7 +19,7 @@ CABLES.UI.GUI = function(cfg)
     if(!cfg) cfg={};
     if(!cfg.usersettings) cfg.usersettings={settings:{}};
 
-    var _scene = this._corePatch = CABLES.patch = new CABLES.Patch({editorMode:true,canvas:
+    this._corePatch = CABLES.patch = new CABLES.Patch({editorMode:true,canvas:
         {
             "forceWebGl1":cfg.usersettings.settings.forceWebGl1=="true",
             "alpha":true,
@@ -27,9 +27,14 @@ CABLES.UI.GUI = function(cfg)
             "prefixAssetPath":CABLES.sandbox.getAssetPrefix()
         }});
 
+    this._corePatch.on("opcrash",(portTriggered)=>
+    {
+        this.showOpCrash(portTriggered.parent);
+    });
+
     this.patchView=new CABLES.UI.PatchView(this._corePatch);
 
-    _scene.gui = true;
+    this._corePatch.gui = true;
     var _patch = null;
 
     var _jobs = new CABLES.UI.Jobs();
@@ -56,7 +61,7 @@ CABLES.UI.GUI = function(cfg)
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
     var metaCode = new CABLES.UI.MetaCode(this.metaTabs);
     // this.profiler = new CABLES.UI.Profiler(this.metaTabs);
-    this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs);
+    this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs,this._corePatch.cgl);
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.variables = new CABLES.UI.MetaVars(this.metaTabs);
     this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
@@ -98,7 +103,7 @@ CABLES.UI.GUI = function(cfg)
     };
 
     this.corePatch=this.scene = function() {
-        return _scene;
+        return this._corePatch;
     };
 
     this.patch = function() {
@@ -666,7 +671,7 @@ CABLES.UI.GUI = function(cfg)
 
                 "gl_ver": gl.getParameter(gl.VERSION),
                 "gl_renderer": gl_renderer,
-                "numOps": gui.scene().ops.length,
+                "numOps": gui.corePatch().ops.length,
                 "numVisibleOps": numVisibleOps,
                 "canvass": canvass,
                 "numSvgElements": $('#patch svg *').length,
@@ -710,7 +715,7 @@ CABLES.UI.GUI = function(cfg)
             var fn=portInputEle.value;
 
             this.fileManager.setFilterType(filterType);
-            this.fileManager.setFilePort(portInputEle,gui.scene().getOpById(opid));
+            this.fileManager.setFilePort(portInputEle,gui.corePatch().getOpById(opid));
             this.fileManager.selectFile(fn);
 
         }.bind(this));
@@ -718,7 +723,7 @@ CABLES.UI.GUI = function(cfg)
 
     this.setProjectName = function(name) {
         $('#patchname').html(name);
-        gui.scene().name=name;
+        gui.corePatch().name=name;
     };
 
     this.createProject = function() {
@@ -1375,8 +1380,6 @@ CABLES.UI.GUI = function(cfg)
         
 
 
-        CABLES.showPacoRenderer();
-
         this._elGlCanvas.hover(function (e){
             CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
         }, function () {
@@ -1385,14 +1388,11 @@ CABLES.UI.GUI = function(cfg)
 
         if(CABLES.UI.userSettings.get('presentationmode')) CABLES.CMD.UI.startPresentationMode();
 
-        if(_scene.cgl.aborted) {
+        if(this._corePatch.cgl.aborted) {
             console.log('errror...');
             CABLES.UI.MODAL.showError('no webgl', 'your browser does not support webgl');
             return;
         }
-
-
-
 
         if(CABLES.UI.userSettings.get("fileManagerOpened")==true) this.showFileManager();
         if(CABLES.UI.userSettings.get("timelineOpened")==true) this.showTiming();
@@ -1822,7 +1822,7 @@ CABLES.UI.GUI = function(cfg)
             });
 
         _patch = new CABLES.UI.Patch(this);
-        _patch.show(_scene);
+        _patch.show(this._corePatch);
 
         $('#undev').hover(function(e) {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);

@@ -461,7 +461,7 @@ CABLES.UI.PatchView=class extends CABLES.EventTarget
                                 CABLES.undo.add({
                                     title:"paste op",
                                     undo: function() {
-                                        gui.scene().deleteOp(opid, true);
+                                        gui.corePatch().deleteOp(opid, true);
                                     },
                                     redo: function() {
                                         gui.patch().paste(e);

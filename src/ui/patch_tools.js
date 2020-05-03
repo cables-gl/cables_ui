@@ -87,7 +87,7 @@ CABLES.UI.TOOLS.saveUndoSelectedOpsPositions = function(selectedOps)
             for (var j = 0; j < opPositions.length; j++)
             {
                 var obj = opPositions[j];
-                const op=gui.scene().getOpById(obj.id);
+                const op=gui.corePatch().getOpById(obj.id);
                 CABLES.UI.TOOLS.setOpPos(op,obj.x, obj.y);
                 changedOps.push(op);
             }

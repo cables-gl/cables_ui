@@ -37,17 +37,17 @@ CABLES.CMD.UI.windowFullscreen = function ()
 
 CABLES.CMD.UI.toggleMute = function ()
 {
-    if (gui.scene().config.masterVolume > 0.0)
+    if (gui.corePatch().config.masterVolume > 0.0)
     {
         $("#timelineVolume").removeClass("icon-volume-2");
         $("#timelineVolume").addClass("icon-volume-x");
-        gui.scene().setVolume(0.0);
+        gui.corePatch().setVolume(0.0);
     }
     else
     {
         $("#timelineVolume").addClass("icon-volume-2");
         $("#timelineVolume").removeClass("icon-volume-x");
-        gui.scene().setVolume(1.0);
+        gui.corePatch().setVolume(1.0);
     }
 };
 

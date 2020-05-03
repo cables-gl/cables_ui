@@ -19,6 +19,7 @@ CABLES.UI.TexturePreviewer=function(tabs)
     this._shaderTexUniform=null;
     this._tempTexturePort=null;
     this._hoveringTexPort=false;
+    this._listeningFrame=false;
     // this._eleBgPreview=null;
 
     this._ele=document.getElementById('bgpreview');
@@ -34,6 +35,9 @@ CABLES.UI.TexturePreviewer=function(tabs)
         if(key=="bgpreview") this.enableBgPreview(v);
 
     });
+
+
+
 
 };
 
@@ -99,6 +103,8 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture=function(tp,ele)
     {
         var perf = CABLES.uiperf.start('texpreview');
         const cgl=port.parent.patch.cgl;
+
+
 
         if(!this._mesh)
         {
@@ -352,6 +358,8 @@ CABLES.UI.TexturePreviewer.prototype.render=function()
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePortId=function(opid,portid)
 {
+
+
     const op=gui.patch().scene.getOpById(opid);
     if(!op)return;
 
@@ -391,6 +399,18 @@ CABLES.UI.TexturePreviewer.prototype.hoverEnd=function()
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort=function(p)
 {
+
+    if(!this._listeningFrame && p)
+    {
+        this._listeningFrame=true;
+        p.parent.patch.cgl.on("beginFrame",()=>
+        {
+            this.render();
+        });
+    }
+    
+
+
     this._lastClickedP=p;
     this._lastClicked=this.updateTexturePort(p);
 
