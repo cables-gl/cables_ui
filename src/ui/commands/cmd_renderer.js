@@ -69,12 +69,12 @@ CABLES.CMD.RENDERER.aspect = function (a)
                 if (r.indexOf(":"))
                 {
                     const parts = r.split(":");
-                    var s = parseInt(parts[0]) / parseInt(parts[1]);
+                    const s = parseInt(parts[0]) / parseInt(parts[1]);
                     CABLES.CMD.RENDERER.aspect(s);
                 }
                 else
                 {
-                    var s = parseFloat(r);
+                    const s = parseFloat(r);
                     CABLES.CMD.RENDERER.aspect(s);
                 }
             });

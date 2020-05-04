@@ -100,18 +100,18 @@ CABLES.CMD.PATCH.createFile = function ()
 
 CABLES.CMD.PATCH.uploadFile = function ()
 {
-    let fileElem = document.getElementById("hiddenfileElem");
+    const fileElem = document.getElementById("hiddenfileElem");
     if (fileElem) fileElem.click();
 };
 
 CABLES.CMD.PATCH.uploadFileDialog = function ()
 {
-    let fileElem = document.getElementById("uploaddialog");
+    const fileElem = document.getElementById("uploaddialog");
     jQuery.event.props.push("dataTransfer");
 
     if (!fileElem)
     {
-        let html = CABLES.UI.getHandleBarHtml("upload", { "patchId": gui.patch().getCurrentProject()._id });
+        const html = CABLES.UI.getHandleBarHtml("upload", { "patchId": gui.patch().getCurrentProject()._id });
         CABLES.UI.MODAL.show(html, { "title": "" });
     }
 };
@@ -129,7 +129,7 @@ CABLES.CMD.PATCH.opsCompress = function ()
 
 CABLES.CMD.PATCH.export = function ()
 {
-    let exporter = new CABLES.UI.Exporter();
+    const exporter = new CABLES.UI.Exporter();
     exporter.show();
     // gui.patch().exportStatic();
 };
@@ -244,13 +244,13 @@ CABLES.CMD.PATCH._createVariable = function (name, p, p2, value)
 
 CABLES.CMD.PATCH.replaceLinkVariableExist = function ()
 {
-    let link = CABLES.UI.OPSELECT.linkNewLink;
+    const link = CABLES.UI.OPSELECT.linkNewLink;
     console.log(link);
     const p = link.p1.thePort;
     const p2 = link.p2.thePort;
     CABLES.UI.OPSELECT.linkNewLink = null;
 
-    let opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
+    const opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
 
     link.remove();
     p.removeLinks();
@@ -282,7 +282,7 @@ CABLES.CMD.PATCH.replaceLinkVariable = function ()
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "",
         function (str)
         {
-            let link = CABLES.UI.OPSELECT.linkNewLink;
+            const link = CABLES.UI.OPSELECT.linkNewLink;
 
             const p1 = link.p1.thePort;
             const p2 = link.p2.thePort;
@@ -305,21 +305,21 @@ CABLES.CMD.PATCH.replaceLinkVariable = function ()
 
 CABLES.CMD.PATCH.createAutoVariable = function ()
 {
-    let p = CABLES.UI.OPSELECT.linkNewOpToPort;
+    const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
         function (str)
         {
             const varops = CABLES.CMD.PATCH._createVariable(str, p, null, p.get());
 
-            let uiop = gui.patch().getUiOp(varops.getter);
+            const uiop = gui.patch().getUiOp(varops.getter);
             uiop.setPos(varops.setter.uiAttribs.translate.x, varops.setter.uiAttribs.translate.y + 40);
         });
 };
 
 CABLES.CMD.PATCH.editOp = function ()
 {
-    let selops = gui.patch().getSelectedOps();
+    const selops = gui.patch().getSelectedOps();
 
     if (selops && selops.length > 0)
     {
@@ -340,7 +340,7 @@ CABLES.CMD.PATCH.editOp = function ()
 
 CABLES.CMD.PATCH.setOpTitle = function ()
 {
-    let ops = gui.patch().getSelectedOps();
+    const ops = gui.patch().getSelectedOps();
     if (ops.length != 1)
     {
         console.log("rename canceled - select one op!");
@@ -352,7 +352,7 @@ CABLES.CMD.PATCH.setOpTitle = function ()
         "Enter a title for this op",
         ops[0].op.name,
         function (name)
-{
+        {
             gui.patch().setCurrentOpTitle(name);
         });
 };
@@ -360,14 +360,14 @@ CABLES.CMD.PATCH.setOpTitle = function ()
 
 CABLES.CMD.PATCH.tidyChildOps = function ()
 {
-    let selops = gui.patch().getSelectedOps();
-    let opWidth = 150;
-    let opHeight = 40;
+    const selops = gui.patch().getSelectedOps();
+    const opWidth = 150;
+    const opHeight = 40;
 
     function getChildColumns(op, depth)
     {
         depth = depth || 0;
-        let childs = op.getOutChilds();
+        const childs = op.getOutChilds();
         for (let i = 0; i < childs.length; i++)
         {
             depth = getChildColumns(childs[i], depth);
@@ -380,7 +380,7 @@ CABLES.CMD.PATCH.tidyChildOps = function ()
 
     function tidyChilds(op, parentX, parentY)
     {
-        let childs = op.getOutChilds();
+        const childs = op.getOutChilds();
         let addY = 0;
         if (childs.length > 1) addY = opHeight * 0.5;
 
@@ -408,17 +408,17 @@ CABLES.CMD.PATCH.tidyChildOps = function ()
     {
         console.log("tidy!");
 
-        for (i = 0; i < selops.length; i++)
+        for (let i = 0; i < selops.length; i++)
         {
-            let op = selops[i].op;
-            let y = op.uiAttribs.translate.y;
-            let x = op.uiAttribs.translate.x;
+            const op = selops[i].op;
+            const y = op.uiAttribs.translate.y;
+            const x = op.uiAttribs.translate.x;
 
             tidyChilds(op, x, y);
         }
     }
 
-    for (i = 0; i < gui.patch().ops.length; i++)
+    for (let i = 0; i < gui.patch().ops.length; i++)
     {
         gui.patch().ops[i].setPosFromUiAttr();
     }
@@ -454,7 +454,7 @@ CABLES.CMD.PATCH.replaceFilePath = function ()
                 "/assets/" + gui.project()._id + "/",
                 function (rplc)
                 {
-                    let ops = gui.patch().ops;
+                    const ops = gui.patch().ops;
                     for (let i = 0; i < ops.length; i++)
                     {
                         for (let j = 0; j < ops[i].portsIn.length; j++)

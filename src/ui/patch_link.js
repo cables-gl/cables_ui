@@ -83,7 +83,7 @@ function UiLink(port1, port2)
             }
             else
             {
-                event = mouseEvent(event);
+                event = CABLES.mouseEvent(event);
                 const coords = gui.patch().getCanvasCoordsMouse(event);
                 coords.x = self.p1.op.uiAttribs.translate.x;
                 gui.opSelect().show(coords, null, null, self);
@@ -376,7 +376,7 @@ CABLES.UI.SVGLine = function (startX, startY)
         this.redraw();
     };
 
-    var end = { "x": startX, "y": startY };
+    const end = { "x": startX, "y": startY };
     this.getPath = function ()
     {
         const startX = start.x;

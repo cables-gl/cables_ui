@@ -276,7 +276,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
         let delta = event.deltaY;
         if (!event.ctrlKey) delta = CGL.getWheelSpeed(event);
 
-        event = mouseEvent(event);
+        event = CABLES.mouseEvent(event);
         if (!event) console.log("mousewheel event problem");
 
         wheelMultiplier *= -1;
@@ -360,7 +360,7 @@ CABLES.UI.PatchViewBox.prototype.zoomStep = function (dir)
 
 CABLES.UI.PatchViewBox.prototype._dragMiniMap = function (e)
 {
-    e = mouseEvent(e);
+    e = CABLES.mouseEvent(e);
 
     if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
     {

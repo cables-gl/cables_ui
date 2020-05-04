@@ -57,7 +57,7 @@ CABLES.GLGUI.Linedrawer = class
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",
 
-             ""
+        ""
             .endl() + "UNI float time;"
             .endl() + "IN vec2 pos2d;"
             .endl() + "IN vec4 col;"
@@ -98,10 +98,10 @@ CABLES.GLGUI.Linedrawer = class
 
         // floor((sin( distance(vec4(0.,0.,0.,1.0),gl_FragCoord
 
-        this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0),
-        this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0),
-        this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0),
-        this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0),
+        this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
+        this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
+        this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
+        this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
         this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
 
@@ -139,7 +139,7 @@ CABLES.GLGUI.Linedrawer = class
 
     rebuild()
     {
-        let perf = CABLES.uiperf.start("[glLineDrawer] rebuild");
+        const perf = CABLES.uiperf.start("[glLineDrawer] rebuild");
 
         // console.log(this._positions);
         // todo only update whats needed
@@ -161,8 +161,8 @@ CABLES.GLGUI.Linedrawer = class
 
     _distance(x1, y1, x2, y2)
     {
-        let xd = x2 - x1;
-        let yd = y2 - y1;
+        const xd = x2 - x1;
+        const yd = y2 - y1;
         return Math.sqrt(xd * xd + yd * yd);
     }
 

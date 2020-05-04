@@ -37,7 +37,7 @@ CABLES.UI.Tab.prototype.initHtml = function (eleContainer)
     this.contentEle.id = "content" + this.id;
     this.contentEle.classList.add("tabcontent");
     if (this.options.padding) this.contentEle.classList.add("padding");
-    this.contentEle.innerHTML = "hello " + this.title + "<br/><br/>the tab " + this.id;
+    this.contentEle.innerHTML = "";// "hello " + this.title + "<br/><br/>the tab " + this.id;
     eleContainer.appendChild(this.contentEle);
 };
 

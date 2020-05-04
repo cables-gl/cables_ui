@@ -10,6 +10,9 @@ CABLES.UI.CommandPallet = function ()
     this._bookmarkActiveIcon = "icon-pin-filled";
     this._bookmarkInactiveIcon = "icon-pin-outline";
     this._defaultIcon = "square";
+    const self = this;
+    const canceledSearch = 0;
+    const idSearch = 1;
 
     // TODO: Maybe move to sidebar-customizer created function!?
     this.initVueSidebarCustomizer = function ()
@@ -26,15 +29,14 @@ CABLES.UI.CommandPallet = function ()
 
     this.show = function ()
     {
-		    this._cursorIndex = 0;
+        this._cursorIndex = 0;
         CABLES.UI.MODAL.hide(true);
-		    $("#modalbg").show();
+        $("#modalbg").show();
         $("#cmdpalette").show();
         $("#cmdinput").focus();
 
         $("#cmdinput").val(lastSearch);
         document.getElementById("cmdinput").setSelectionRange(0, lastSearch.length);
-        const self = this;
 
         clearTimeout(findTimeoutId);
         findTimeoutId = setTimeout(function ()
@@ -152,8 +154,7 @@ CABLES.UI.CommandPallet = function ()
             }, 1);
     }
 
-    const canceledSearch = 0;
-    const idSearch = 1;
+
     this.doSearch = function (str, searchId)
     {
         lastSearch = str;
@@ -197,26 +198,25 @@ CABLES.UI.CommandPallet = function ()
     };
 
 
-    var self = this;
     this.keyDown = function (e)
     {
-	    switch (e.which)
-	    {
-	        case 13:
-	    		$("#result" + self._cursorIndex).click();
-	        break;
+        switch (e.which)
+        {
+        case 13:
+            $("#result" + self._cursorIndex).click();
+            break;
 
-	        case 38: // up
-	            self.navigate(-1);
-	        break;
+        case 38: // up
+            self.navigate(-1);
+            break;
 
-	        case 40: // down
-	            self.navigate(1);
-	        break;
+        case 40: // down
+            self.navigate(1);
+            break;
 
-	        default: return;
-	    }
-	    e.preventDefault();
+        default: return;
+        }
+        e.preventDefault();
     };
 
 

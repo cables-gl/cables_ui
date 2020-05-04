@@ -1,5 +1,5 @@
 CABLES.UI.loadedLibs = [];
-CABLES.libLoader = function (libnames, cb)
+CABLES.LibLoader = function (libnames, cb)
 {
     this.libsToLoad = libnames;
     this._cb = cb;
@@ -13,7 +13,7 @@ CABLES.libLoader = function (libnames, cb)
         this.loadLib(libnames[i]);
 };
 
-CABLES.libLoader.prototype.checkAllLoaded = function (name)
+CABLES.LibLoader.prototype.checkAllLoaded = function (name)
 {
     if (this.libsToLoad.length == 0)
     {
@@ -22,7 +22,7 @@ CABLES.libLoader.prototype.checkAllLoaded = function (name)
     }
 };
 
-CABLES.libLoader.prototype.loadLib = function (name)
+CABLES.LibLoader.prototype.loadLib = function (name)
 {
     if (CABLES.UI.loadedLibs.indexOf(name) > -1)
     {

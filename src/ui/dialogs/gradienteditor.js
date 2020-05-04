@@ -25,7 +25,7 @@ CABLES.GradientEditor.prototype.updateCanvas = function ()
 {
     if (!this._ctx)
     {
-        let canvas = document.getElementById("gradientEditorCanvas");
+        const canvas = document.getElementById("gradientEditorCanvas");
         if (!canvas)
         {
             console.log("[gradienteditor] no canvas found");
@@ -34,17 +34,17 @@ CABLES.GradientEditor.prototype.updateCanvas = function ()
         this._ctx = canvas.getContext("2d");
     }
 
-    let imageData = this._ctx.createImageData(500, 1);
-    let keys = [{ "pos": 0, "r": this._keys[0].r, "g": this._keys[0].g, "b": this._keys[0].b }].concat(this._keys);
-    let last = keys[keys.length - 1];
+    const imageData = this._ctx.createImageData(500, 1);
+    const keys = [{ "pos": 0, "r": this._keys[0].r, "g": this._keys[0].g, "b": this._keys[0].b }].concat(this._keys);
+    const last = keys[keys.length - 1];
     keys.push({ "pos": 1, "r": last.r, "g": last.g, "b": last.b });
 
-    for (var i = 0; i < keys.length - 1; i++)
+    for (let i = 0; i < keys.length - 1; i++)
     {
         if (keys[i].rect)keys[i].rect.attr({ "fill": "rgba(" + Math.round(keys[i].r * 255) + "," + Math.round(keys[i].g * 255) + "," + Math.round(keys[i].b * 255) + ",1)" });
 
-        let keyA = keys[i];
-        let keyB = keys[i + 1];
+        const keyA = keys[i];
+        const keyB = keys[i + 1];
 
         for (let x = keyA.pos * this._width; x < keyB.pos * this._width; x++)
         {
@@ -59,15 +59,15 @@ CABLES.GradientEditor.prototype.updateCanvas = function ()
         }
     }
 
-    for (var i = 0; i < 50; i++)
+    for (let i = 0; i < 50; i++)
     {
         this._ctx.putImageData(imageData, 0, i);
     }
 
     if (this._opId && this._portName)
     {
-        let keyData = [];
-        for (var i = 0; i < keys.length; i++)
+        const keyData = [];
+        for (let i = 0; i < keys.length; i++)
         {
             keyData[i] =
                 {
@@ -78,7 +78,7 @@ CABLES.GradientEditor.prototype.updateCanvas = function ()
                 };
         }
 
-        let op = gui.patch().scene.getOpById(this._opId);
+        const op = gui.patch().scene.getOpById(this._opId);
         op.getPort(this._portName).set(JSON.stringify({ "keys": keyData }));
     }
 };
@@ -111,7 +111,7 @@ CABLES.GradientEditor.prototype.setCurrentKey = function (key)
 
 CABLES.GradientEditor.prototype.addKey = function (pos, r, g, b)
 {
-    let rect = this._paper.rect(pos * this._width, 0, this._keyWidth, this._keyHeight).attr({ "stroke": "#000" });
+    const rect = this._paper.rect(pos * this._width, 0, this._keyWidth, this._keyHeight).attr({ "stroke": "#000" });
 
     if (r == undefined)
     {
@@ -120,7 +120,7 @@ CABLES.GradientEditor.prototype.addKey = function (pos, r, g, b)
         b = Math.random();
     }
 
-    let key = { pos, rect, r, g, b };
+    const key = { pos, rect, r, g, b };
 
     rect.attr({ "fill": "rgba(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ",1)" });
 
@@ -132,7 +132,7 @@ CABLES.GradientEditor.prototype.addKey = function (pos, r, g, b)
     {
         this.setCurrentKey(key);
         this._movingkey = true;
-        let attribs = {};
+        const attribs = {};
         attribs.stroke = "#000";
 
         if (e.target == key.rect.node || e.target.tagName == "svg")
@@ -186,7 +186,7 @@ CABLES.GradientEditor.prototype.show = function (cb)
 {
     this._callback = cb;
 
-    let html = CABLES.UI.getHandleBarHtml("GradientEditor", {});
+    const html = CABLES.UI.getHandleBarHtml("GradientEditor", {});
 
     CABLES.UI.MODAL.show(html, {
         "title": "",
@@ -204,12 +204,12 @@ CABLES.GradientEditor.prototype.show = function (cb)
 
     if (this._opId && this._portName)
     {
-        let op = gui.patch().scene.getOpById(this._opId);
-        let data = op.getPort(this._portName).get();
+        const op = gui.patch().scene.getOpById(this._opId);
+        const data = op.getPort(this._portName).get();
         try
         {
             this._previousContent = data;
-            let keys = JSON.parse(data).keys;
+            const keys = JSON.parse(data).keys;
             for (let i = 1; i < keys.length - 1; i++)
             {
                 console.log("addddd", keys[i]);
@@ -238,7 +238,7 @@ CABLES.GradientEditor.prototype.show = function (cb)
     });
     $("#gradientCancelButton").click(function ()
     {
-        let op = gui.patch().scene.getOpById(this._opId);
+        const op = gui.patch().scene.getOpById(this._opId);
         op.getPort(this._portName).set(this._previousContent);
         CABLES.UI.MODAL.hide();
     }.bind(this));
@@ -254,51 +254,53 @@ CABLES.GradientEditor.prototype._bindColorPicker = function ()
 
         // margin: '-80px -40px 0',
         // doRender: 'div div',
-        renderCallback(res, toggled) {
-
-            if (toggled === false) {
-                ignoreColorChanges = true;
-            }
-            if (toggled === true) {
-                // updateColorPickerButton(id);
-                // colors = this.color.colors;
-                ignoreColorChanges = false;
-            }
-
+        renderCallback(res, toggled)
+        {
+            const ignoreColorChanges = !toggled;
+            // if (toggled === false)
+            // {
+            //     ignoreColorChanges = true;
+            // }
+            // if (toggled === true)
+            // {
+            //     // updateColorPickerButton(id);
+            //     // colors = this.color.colors;
+            //     ignoreColorChanges = false;
+            // }
 
             if (!ignoreColorChanges && CABLES.currentKey)
             {
                 // console.log(this.color.colors.rgb);
-                CABLES.currentKey.r=this.color.colors.rgb.r;
-                CABLES.currentKey.g=this.color.colors.rgb.g;
-                CABLES.currentKey.b=this.color.colors.rgb.b;
+                CABLES.currentKey.r = this.color.colors.rgb.r;
+                CABLES.currentKey.g = this.color.colors.rgb.g;
+                CABLES.currentKey.b = this.color.colors.rgb.b;
 
                 // console.log(CABLES.currentKey);
                 // console.log(editor._keys.length);
-                CABLES.GradientEditor.editor._ctx=null;
+                CABLES.GradientEditor.editor._ctx = null;
                 CABLES.GradientEditor.editor.onChange();
                 CABLES.GradientEditor.editor.updateCanvas();
-            //     $('#portval_' + portNum + '_range').val(colors.rgb.r).trigger('input');
-            //     $('#portval_' + (portNum + 1) + '_range').val(colors.rgb.g).trigger('input');
-            //     $('#portval_' + (portNum + 2) + '_range').val(colors.rgb.b).trigger('input');
-            // } else {
-            //     updateColorPickerButton(id);
+                //     $('#portval_' + portNum + '_range').val(colors.rgb.r).trigger('input');
+                //     $('#portval_' + (portNum + 1) + '_range').val(colors.rgb.g).trigger('input');
+                //     $('#portval_' + (portNum + 2) + '_range').val(colors.rgb.b).trigger('input');
+                // } else {
+                //     updateColorPickerButton(id);
 
                 // $('#gradientColorInput').css({"color":"transparent !important"});;
             }
         },
-        buildCallback($elm) {
+        buildCallback($elm)
+        {
         }
     });
 };
 
 
-function rgbToHex(R, G, B) { return toHex(R) + toHex(G) + toHex(B);}
+function rgbToHex(R, G, B) { return toHex(R) + toHex(G) + toHex(B); }
 function toHex(n)
 {
     n = parseInt(n, 10);
     if (isNaN(n)) return "00";
     n = Math.max(0, Math.min(n, 255));
-    return "0123456789ABCDEF".charAt((n-n % 16) / 16)
-      + "0123456789ABCDEF".charAt(n % 16);
+    return "0123456789ABCDEF".charAt((n-n % 16) / 16) + "0123456789ABCDEF".charAt(n % 16);
 }

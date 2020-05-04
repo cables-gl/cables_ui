@@ -49,14 +49,17 @@ CABLES.GLGUI.GlUiCanvas = class
         this._moveover = true;
         this._firstTime = true;
         this._lastTime = 0;
-        this.width = 0, this.height = 0;
-        this._mouseX = 0, this._mouseY = 0;
+        this.width = 0;
+        this.height = 0;
+        this._mouseX = 0;
+        this._mouseY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
 
-
-        this._scrollX = 0, this._scrollY = 0;
-        this._oldScrollX = 0, this._oldScrollY = 0;
+        this._scrollX = 0;
+        this._scrollY = 0;
+        this._oldScrollX = 0;
+        this._oldScrollY = 0;
 
         this.canvas = document.createElement("canvas");
         this.canvas.id = "glGuiCanvas-" + CABLES.uuid();
@@ -155,7 +158,7 @@ CABLES.GLGUI.GlUiCanvas = class
             const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
             let delta = CGL.getWheelSpeed(event);
-            event = mouseEvent(event);
+            event = CABLES.mouseEvent(event);
             delta *= wheelMultiplier;
 
             if (event.altKey) this._scrollY -= delta;

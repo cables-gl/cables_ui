@@ -1427,7 +1427,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         if (e.which == 3) return;
         if (e.which == 2) return;
 
-        e = mouseEvent(e);
+        e = CABLES.mouseEvent(e);
 
         const pos = gui.patch().getCanvasCoordsMouse(e);
 

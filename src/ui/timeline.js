@@ -1558,7 +1558,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     {
         $(document).bind("mousemove", mousemoveTime);
         $("#timeline").focus();
-        e = mouseEvent(e);
+        e = CABLES.mouseEvent(e);
         scrollTime(e);
     });
 
@@ -1634,7 +1634,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     $("#timeline").bind("mousemove", function (e)
     {
         if (isScrollingTime) return;
-        e = mouseEvent(e);
+        e = CABLES.mouseEvent(e);
 
         if (e.buttons == 2 || e.buttons == 3 || (e.buttons == 1 && spacePressed))
         {

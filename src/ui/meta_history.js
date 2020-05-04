@@ -37,7 +37,7 @@ CABLES.UI.MetaHistory = class
 
             if (i == -1)
             {
-                cmd = { "groupName": "Open", "group": true };
+                cmd = { "groupName": "Open patch", "group": true };
             }
             else cmd = commands[i];
 
@@ -48,7 +48,7 @@ CABLES.UI.MetaHistory = class
                 style += "margin-top:4px;";
             }
 
-            if (CABLES.undo.getIndex() == i) style += "border-left:4px solid var(--color-08);background-color:var(--color-05);";
+            if (CABLES.undo.getIndex() == i) style += "border-left:4px solid var(--color-10);background-color:var(--color-04);";
             else if (CABLES.undo.getIndex() < i) style += "opacity:0.4;border-left:4px solid var(--color-06);background-color:var(--color-03);";
             else style += "border-left:4px solid var(--color-08);background-color:var(--color-03);";
 
@@ -82,6 +82,7 @@ CABLES.UI.MetaHistory = class
 
     show()
     {
-        this._tab.html(this.html);
+        this.update();
+        // this._tab.html(this.html);
     }
 };

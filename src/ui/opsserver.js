@@ -121,7 +121,7 @@ CABLES.UI.ServerOps = function (gui)
                 // no hidden ports in layout and documentation
                 continue;
             }
-            var l =
+            const l =
                 {
                     "type": op.portsIn[i].type,
                     "name": op.portsIn[i].name
@@ -142,7 +142,7 @@ CABLES.UI.ServerOps = function (gui)
 
         for (i = 0; i < op.portsOut.length; i++)
         {
-            var l = {
+            const l = {
                 "type": op.portsOut[i].type,
                 "name": op.portsOut[i].name,
             };
@@ -176,7 +176,7 @@ CABLES.UI.ServerOps = function (gui)
     {
         if (gui.patch().scene._crashedOps.indexOf(name) > -1)
         {
-            html = "";
+            let html = "";
             html += "<h1>can not execute op</h1>";
             html += "this op crashed before, you should reload the page.<br/><br/>";
             html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
@@ -641,7 +641,7 @@ CABLES.UI.ServerOps = function (gui)
             return;
         }
 
-        const loader = new CABLES.libLoader(libsToLoad, function ()
+        const loader = new CABLES.LibLoader(libsToLoad, function ()
         {
             next();
         });
@@ -708,7 +708,7 @@ CABLES.UI.ServerOps = function (gui)
             return;
         }
 
-        const loader = new CABLES.libLoader(libsToLoad, function ()
+        const loader = new CABLES.LibLoader(libsToLoad, function ()
         {
             next();
         });

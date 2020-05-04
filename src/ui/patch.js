@@ -820,7 +820,7 @@ CABLES.UI.Patch = function (_gui)
 
         this.background.node.ondblclick = function (e)
         {
-            e = mouseEvent(e);
+            e = CABLES.mouseEvent(e);
             self.toggleCenterZoom(e);
         };
 
@@ -828,7 +828,7 @@ CABLES.UI.Patch = function (_gui)
         {
             if (CABLES.SPLITPANE.bound) return;
 
-            e = mouseEvent(e);
+            e = CABLES.mouseEvent(e);
 
             if (CABLES.UI.MOUSEOVERPORT) return;
             gui.notIdling();
@@ -881,13 +881,13 @@ CABLES.UI.Patch = function (_gui)
 
         this._elPatchSvg.bind("touchstart", (e) =>
         {
-            e = mouseEvent(e);
+            e = CABLES.mouseEvent(e);
             this.lastMouseMoveEvent = null;
         });
 
         this._elPatchSvg.bind("touchmove", (e) =>
         {
-            e = mouseEvent(e);
+            e = CABLES.mouseEvent(e);
 
             if (this.lastMouseMoveEvent && selectedOps.length == 0)
             {
@@ -904,7 +904,7 @@ CABLES.UI.Patch = function (_gui)
 
         this._elPatchSvg.bind("mousemove", function (e)
         {
-            e = mouseEvent(e);
+            e = CABLES.mouseEvent(e);
 
             if (CABLES.UI.MOUSEOVERPORT) return;
 
@@ -1166,7 +1166,7 @@ CABLES.UI.Patch = function (_gui)
         uiOp.wasAdded = true;
     }
 
-    var showAddedOpTimeout = -1;
+    let showAddedOpTimeout = -1;
 
 
     this.bindScene = function (scene)

@@ -139,13 +139,13 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
             .endl() + "}");
 
-        this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0),
-        this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0),
-        this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0),
-        this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0),
+        this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
+        this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
+        this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
+        this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
 
-        this._uniTexture = new CGL.Uniform(this._shader, "t[]", "tex", [0, 1, 2, 3, 4, 5, 6, 7, 8]),
+        this._uniTexture = new CGL.Uniform(this._shader, "t[]", "tex", [0, 1, 2, 3, 4, 5, 6, 7, 8]);
 
         this._geom = new CGL.Geometry("rectinstancer");
         this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
@@ -156,7 +156,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._mesh = new CGL.Mesh(cgl, this._geom);
         this._mesh.numInstances = this._num;
 
-
         this.clear();
     }
 
@@ -166,7 +165,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     dispose()
     {
-
     }
 
     clear()
@@ -177,7 +175,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         for (i = 0; i < 4 * this._num; i++) this._attrColors[i] = 1;// Math.random();
         // for(i=0;i<this._num;i++) this._attrOutline[i]=0;//Math.random();
         for (i = 0; i < this._num; i++) this._attrCircle[i] = 0;// Math.random();
-
         for (i = 0; i < this._num; i++) this._attrTextures[i] = -1;// Math.random();
 
         for (i = 0; i < 4 * this._num; i += 4)
