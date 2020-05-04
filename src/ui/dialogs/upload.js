@@ -1,6 +1,6 @@
 // http://html5doctor.com/drag-and-drop-to-server/
 
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 CABLES.handleFileInputUpload = function (files)

@@ -34,7 +34,7 @@ CABLES.UI.Bookmarks = function ()
         const subs = gui.patch().getSubPatches(true);
 
         const bm = [];
-        for (i in bookmarks)
+        for (const i in bookmarks)
         {
             const op = gui.patch().scene.getOpById(bookmarks[i]);
 

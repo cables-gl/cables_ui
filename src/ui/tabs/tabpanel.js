@@ -308,14 +308,8 @@ CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
     {
         for (let i = 0; i < this._tabs.length; i++)
         {
-            if (CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
-            {
-                this.activateTab(this._tabs[i].id);
-            }
-            else
-            {
-                this._tabs[i].deactivate();
-            }
+            if (CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title) this.activateTab(this._tabs[i].id);
+            else this._tabs[i].deactivate();
         }
     }
 

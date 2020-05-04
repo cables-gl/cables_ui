@@ -244,10 +244,9 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
 
-        var iconBarWidth = iconBarWidth || 80;
+        const iconBarWidth = iconBarWidth || 80;
         const menubarHeight = 30;
         const optionsWidth = Math.max(400, self.rendererWidth / 2);
-
 
         let timelineUiHeight = 40;
         if (self.timeLine().hidden) timelineUiHeight = 0;
@@ -860,11 +859,7 @@ CABLES.UI.GUI = function (cfg)
                 }
                 else
                 {
-                    if (res && res.info) html = res.info;
-                    else html = "Finished!";
-
-
-                    var html = "";
+                    let html = "";
 
                     if (res && res.info) html = res.info;
                     else html = "Finished!";
@@ -886,13 +881,11 @@ CABLES.UI.GUI = function (cfg)
         let iconShowAllHelpers = "fa fa-check fa-hide";
         if (CABLES.UI.userSettings.get("helperMode")) iconShowAllHelpers = "fa fa-check";
 
-
         let iconShowCurrentOpHelper = "fa fa-check fa-hide";
         if (CABLES.UI.userSettings.get("helperModeCurrentOp")) iconShowCurrentOpHelper = "fa fa-check";
 
         let iconCurrentOpTransform = "fa fa-check fa-hide";
         if (CABLES.UI.userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform = "fa fa-check";
-
 
         CABLES.contextMenu.show(
             {

@@ -1,7 +1,5 @@
-
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
-
 
 CABLES.UI.inputListenerCursorKeys = function (e)
 {
@@ -17,9 +15,9 @@ CABLES.UI.inputListenerCursorKeys = function (e)
         $(this).trigger("input");
         return false;
 
-    default: return; // exit this handler for other keys
+    default: // exit this handler for other keys
     }
-    e.preventDefault(); // prevent the default action (scroll / move caret)
+    // e.preventDefault(); // prevent the default action (scroll / move caret)
 };
 
 CABLES.UI.inputListenerMousewheel = function (event, delta)
@@ -191,7 +189,8 @@ CABLES.UI.watchColorPickerPort = function (thePort)
         },
         buildCallback($elm)
         {
-            let colorInstance = this.color, colorPicker = this;
+            const colorInstance = this.color;
+            const colorPicker = this;
 
             function change(e)
             {
@@ -249,7 +248,7 @@ CABLES.UI.initPortInputListener = function (op, index)
                     {
                         mathParsed = CABLES.UI.mathparser.parse(e.target.value);
                     }
-                    catch (e)
+                    catch (ex)
                     {
                         // failed to parse math, use unparsed value
                         mathParsed = e.target.value;

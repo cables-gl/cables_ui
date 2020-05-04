@@ -1,5 +1,4 @@
-
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.API = CABLES.API || {};
 
 CABLES.API.Connection = function (ui)

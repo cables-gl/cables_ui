@@ -186,10 +186,10 @@ CABLES.UI.TexturePreviewer.prototype._getCanvasSize = function (port, tex, meta)
         maxWidth = Math.min($("#patch").width(), port.parent.patch.cgl.canvas.width);
         maxHeight = Math.min($("#patch").height(), port.parent.patch.cgl.canvas.height);
     }
-    else
-    {
-        document.getElementById("meta_preview_textures").offsetWidth - 30;
-    }
+    // else
+    // {
+    //     document.getElementById("meta_preview_textures").offsetWidth - 30;
+    // }
 
     const aspect = tex.height / tex.width;
     let w = tex.width;
@@ -223,7 +223,7 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml = function ()
 
     if (!containerEle)
     {
-        var html = CABLES.UI.getHandleBarHtml("meta_preview", {});
+        const html = CABLES.UI.getHandleBarHtml("meta_preview", {});
         this._tab.html(html);
 
         containerEle = document.getElementById("meta_preview_textures");
@@ -233,7 +233,7 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml = function ()
     {
         if (this._texturePorts[i].doShow && !document.getElementById("preview" + this._texturePorts[i].id))
         {
-            var html = CABLES.UI.getHandleBarHtml("meta_preview_texture", { "tex": this._htmlDataObject(this._texturePorts[i]) });
+            const html = CABLES.UI.getHandleBarHtml("meta_preview_texture", { "tex": this._htmlDataObject(this._texturePorts[i]) });
             $("#meta_preview_textures").append(html);
             this._texturePorts[i].element = document.getElementById("preview" + this._texturePorts[i].id);
         }
@@ -436,20 +436,16 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort = function (port)
     // console.log(port);
     let doUpdateHtml = false;
     const p = port;
-
+    let idx = -1;
 
     if (p && p.get() && p.get().tex && port.direction == CABLES.PORT_DIR_OUT)
     {
         const id = port.parent.id + port.name;
 
-        var idx = -1;
+        idx = -1;
         for (let i = 0; i < this._texturePorts.length; i++)
-        {
             if (this._texturePorts[i].id == id)
-            {
                 idx = i;
-            }
-        }
 
         if (idx == -1)
         {

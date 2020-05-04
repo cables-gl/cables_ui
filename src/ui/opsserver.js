@@ -325,10 +325,10 @@ CABLES.UI.ServerOps = function (gui)
                 console.log(res);
                 if (res.problems.length > 0)
                 {
-                    let html = "<b>your op name has issues:</b><br/><ul>";
-                    for (let i = 0; i < res.problems.length; i++) html += "<li>" + res.problems[i] + "</li>";
-                    html += "</ul><br/><br/>";
-                    $("#opcreateerrors").html(html);
+                    let htmlIssue = "<b>your op name has issues:</b><br/><ul>";
+                    for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
+                    htmlIssue += "</ul><br/><br/>";
+                    $("#opcreateerrors").html(htmlIssue);
                     $("#opNameDialogSubmit").hide();
                 }
                 else
@@ -419,26 +419,26 @@ CABLES.UI.ServerOps = function (gui)
                             console.log("close!!! missing infos...");
                             if (which.editorObj && which.editorObj.name) CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
                         },
-                        onSave(setStatus, content)
+                        onSave(_setStatus, _content)
                         {
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
                                     opname,
                                     "name": attachmentName,
-                                    content,
+                                    _content,
                                 },
-                                function (err, res)
+                                function (errr, re)
                                 {
-                                    if (err)
+                                    if (errr)
                                     {
                                         CABLES.UI.notifyError("error: op not saved");
-                                        // setStatus('ERROR: not saved - '+res.msg);
-                                        console.warn("[opAttachmentSave]", err);
+                                        // _setStatus('ERROR: not saved - '+res.msg);
+                                        console.warn("[opAttachmentSave]", errr);
                                         return;
                                     }
 
-                                    setStatus("saved");
+                                    _setStatus("saved");
                                     gui.serverOps.execute(opname);
                                 },
                             );
@@ -511,7 +511,7 @@ CABLES.UI.ServerOps = function (gui)
             {
                 opname,
             },
-            function (err, res)
+            function (er, rslt)
             {
                 const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
                 gui.jobs().finish("load_opcode_" + opname);
@@ -551,12 +551,11 @@ CABLES.UI.ServerOps = function (gui)
                                         editor.focus();
                                     });
                                 }
-                            // console.log('res', res);
                             },
-                            function (res)
+                            function (result)
                             {
-                                setStatus("ERROR: not saved - " + res.msg);
-                                console.log("err res", res);
+                                setStatus("ERROR: not saved - " + result.msg);
+                                console.log("err result", result);
                             },
                         );
                     };
@@ -570,7 +569,7 @@ CABLES.UI.ServerOps = function (gui)
                     const t = new CABLES.UI.EditorTab({
                         title,
                         "name": editorObj.name,
-                        "content": res.code,
+                        "content": rslt.code,
                         "singleton": true,
                         "syntax": "js",
                         "onSave": save,

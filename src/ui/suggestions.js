@@ -5,7 +5,6 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.SuggestPortDialog = function (op, port, mouseEvent, cb, cbCancel)
 {
     const suggestions = [];
-    let i = 0;
 
     function addPort(p)
     {
@@ -20,24 +19,13 @@ CABLES.UI.SuggestPortDialog = function (op, port, mouseEvent, cb, cbCancel)
     }
 
     // linkRecommendations
-
-    for (i = 0; i < op.portsIn.length; i++)
-    {
+    for (let i = 0; i < op.portsIn.length; i++)
         if (CABLES.Link.canLink(op.portsIn[i], port))
-        {
             addPort(op.portsIn[i]);
-            // console.log('  - ',op.portsIn[i].name);
-        }
-    }
 
-    for (i = 0; i < op.portsOut.length; i++)
-    {
+    for (let i = 0; i < op.portsOut.length; i++)
         if (CABLES.Link.canLink(op.portsOut[i], port))
-        {
-            //  console.log('  - ',op.portsOut[i].name);
             addPort(op.portsOut[i]);
-        }
-    }
 
     new CABLES.UI.SuggestionDialog(suggestions, op, mouseEvent, cb,
         function (id)
@@ -54,7 +42,6 @@ CABLES.UI.SuggestPortDialog = function (op, port, mouseEvent, cb, cbCancel)
 
 CABLES.UI.SuggestOpDialog = function (op, portname, mouseEvent, coords, cb)
 {
-    let i = 0;
     let suggestions = gui.opDocs.getSuggestions(op.objName, portname);
 
     if (op && op.getPort(portname) && op.getPort(portname).uiAttribs && op.getPort(portname).uiAttribs.linkRecommendations)
@@ -64,7 +51,7 @@ CABLES.UI.SuggestOpDialog = function (op, portname, mouseEvent, coords, cb)
         {
             suggestions = suggestions || [];
 
-            for (i = 0; i < recs.length; i++)
+            for (let i = 0; i < recs.length; i++)
             {
                 suggestions.push(
                     {
@@ -78,7 +65,7 @@ CABLES.UI.SuggestOpDialog = function (op, portname, mouseEvent, coords, cb)
     }
 
     if (suggestions)
-        for (i = 0; i < suggestions.length; i++)
+        for (let i = 0; i < suggestions.length; i++)
             suggestions[i].classname = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(suggestions[i].name || "");
 
     CABLES.UI.OPSELECT.newOpPos = coords;
@@ -139,9 +126,8 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
 
     const sugDegree = 6;
     const sugHeight = 23;
-    let i = 0;
 
-    for (i = 0; i < suggestions.length; i++)
+    for (let i = 0; i < suggestions.length; i++)
     {
         suggestions[i].id = i;
         suggestions[i].rot = (((i) - (suggestions.length / 2)) * sugDegree);
@@ -183,7 +169,7 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
             "margin-top": -15
         }, 100);
 
-    for (i = 0; i < suggestions.length; i++)
+    for (let i = 0; i < suggestions.length; i++)
     {
         suggestions[i].rot = (((i) - (suggestions.length / 2)) * sugDegree);
         const left = 15 - Math.abs(((i) - ((suggestions.length - 1) / 2)) * 3);

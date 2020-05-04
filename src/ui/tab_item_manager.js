@@ -44,10 +44,10 @@ CABLES.UI.ItemManager.prototype.getDisplay = function (t)
 CABLES.UI.ItemManager.prototype.removeItem = function (id)
 {
     let nextId = null;
-    for (var i = 1; i < this._items.length; i++) if (id === this._items[i - 1].id) nextId = this._items[i].id;
+    for (let i = 1; i < this._items.length; i++) if (id === this._items[i - 1].id) nextId = this._items[i].id;
 
     let idx = -1;
-    for (var i = 0; i < this._items.length; i++)
+    for (let i = 0; i < this._items.length; i++)
     {
         if (this._items[i].id == id) idx = i;
     }

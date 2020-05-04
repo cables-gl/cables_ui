@@ -173,7 +173,7 @@ CABLES.UI.TIPS = [
     },
     {
         "descr": "Disable ops and its children by pressing `d`",
-        "img": "p_disable_ops_with_d_key.gif	",
+        "img": "p_disable_ops_with_d_key.gif",
     },
     {
         "descr": "Temporarily disconnect/bypass a selected op by pressing `shift+d`, pressing `shift+d` again reconnects the cable",

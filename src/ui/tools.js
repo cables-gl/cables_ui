@@ -62,9 +62,10 @@ CABLES.UI.SVGParagraph = function (t, width)
     t.attr({ "text": content });
     if (content)
     {
-        let words = content.split(" "),
-            x = 0,
-            s = [];
+        const words = content.split(" ");
+        const s = [];
+        let x = 0;
+
         for (let i = 0; i < words.length; i++)
         {
             const l = words[i].length;

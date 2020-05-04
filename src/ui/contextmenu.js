@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 
 CABLES.ContextMenu = function ()
 {

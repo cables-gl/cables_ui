@@ -1,5 +1,4 @@
-
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 
 CABLES.UI.PacoConnector = class extends CABLES.EventTarget
 {

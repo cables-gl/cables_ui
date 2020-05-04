@@ -478,24 +478,24 @@ CABLES.UI.Port = function (thePort)
 
     function updateHoverToolTip(event)
     {
-        const thePort = gui.patch().hoverPort;
+        const port = gui.patch().hoverPort;
 
-        if (!thePort) return;
+        if (!port) return;
 
-        let txt = CABLES.UI.getPortDescription(thePort);
+        let txt = CABLES.UI.getPortDescription(port);
         let val = null;
-        if (thePort)
+        if (port)
         {
-            if (thePort.type == CABLES.OP_PORT_TYPE_VALUE || thePort.type == CABLES.OP_PORT_TYPE_STRING)
+            if (port.type == CABLES.OP_PORT_TYPE_VALUE || port.type == CABLES.OP_PORT_TYPE_STRING)
             {
-                val = thePort.get();
+                val = port.get();
                 if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
                 else val = "\"" + val + "\"";
                 txt += ": <span class=\"code\">" + val + "</span>";
             }
-            else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY)
+            else if (port.type == CABLES.OP_PORT_TYPE_ARRAY)
             {
-                val = thePort.get();
+                val = port.get();
                 if (val)
                 {
                     txt += " (total:" + val.length + ") <span class=\"\"> [";
@@ -515,12 +515,9 @@ CABLES.UI.Port = function (thePort)
             }
         }
 
-
         CABLES.UI.showToolTip(event, txt);
         if (CABLES.UI.hoverInterval == -1)
-        {
             CABLES.UI.hoverInterval = setInterval(updateHoverToolTip, 50);
-        }
     }
 
     function hover(event)

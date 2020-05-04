@@ -34,9 +34,9 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
 
     _updateClientTimeouts()
     {
-        for (let i in this._clients)
+        for (const i in this._clients)
         {
-            let client = this._clients[i];
+            const client = this._clients[i];
             if (!client) continue;
 
             client.timeout = (Date.now() - client.lastSeen);
@@ -48,11 +48,11 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
 
     getUserInfoHtml()
     {
-        let numClients = this.getNumClients();
+        const numClients = this.getNumClients();
 
         this._updateClientTimeouts();
 
-        let html = CABLES.UI.getHandleBarHtml("socketinfo", {
+        const html = CABLES.UI.getHandleBarHtml("socketinfo", {
             "numClients": numClients,
             "users": this._users,
             "clients": this._clients,
@@ -92,7 +92,7 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         this._tab = new CABLES.UI.Tab("chat", { "icon": "pie-chart", "infotext": "tab_chat", "padding": true });
         this._tabs.addTab(this._tab, true);
 
-        let html = CABLES.UI.getHandleBarHtml("tab_chat", {});
+        const html = CABLES.UI.getHandleBarHtml("tab_chat", {});
         this._tab.html(html);
         this._updateText();
     }
@@ -122,7 +122,7 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
     _updateText()
     {
         let html = "";
-        let logEle = document.getElementById("chatmsgs");
+        const logEle = document.getElementById("chatmsgs");
         if (!logEle) return;
 
         for (let i = 0; i < this._msgs.length; i++)
@@ -149,7 +149,4 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
     {
         this._socket.sendChat(text);
     }
-
-
-
 };

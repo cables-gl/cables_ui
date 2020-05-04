@@ -1,5 +1,4 @@
-
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 
 CABLES.dragImage = new Image();
 CABLES.dragImage.src = "/ui/img/dragicon.png";

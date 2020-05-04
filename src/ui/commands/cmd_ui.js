@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.CMD = CABLES.CMD || {};
 CABLES.CMD.UI = {};
 CABLES.CMD.commands = CABLES.CMD.commands || [];

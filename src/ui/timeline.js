@@ -1,4 +1,4 @@
-
+CABLES = CABLES || {};
 CABLES.ANIM.UI = CABLES.ANIM.UI || {};
 
 CABLES.ANIM.Key.prototype.isUI = true;
@@ -12,7 +12,6 @@ CABLES.ANIM.MultiGraphKeyDisplayMode = true;
 CABLES.ANIM.MoveMode = 0;
 CABLES.ANIM.TIMESCALE = 100;
 CABLES.ANIM.VALUESCALE = 100;
-
 
 CABLES.ANIM.Key.prototype.setAttribs = function (sel)
 {
@@ -471,7 +470,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         function (dx, dy, x, y, e)
         {
             let time = (oldPos + dx) / $("#timeline").width();
-            time = projectLength * time;
+            time *= projectLength;
 
             viewBox.x = time * CABLES.ANIM.TIMESCALE;
 
@@ -527,7 +526,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         function (dx, dy, x, y, e)
         {
             let time = e.offsetX / $("#timeline").width();
-            time = projectLength * time;
+            time *= projectLength;
 
             CABLES.ANIM.TIMESCALE = $("#timeline").width() / (time - oldStartSeconds);
             viewBox.x = oldStartSeconds * CABLES.ANIM.TIMESCALE;
@@ -1084,7 +1083,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             break;
 
         case 77: // m move key
-            var frame = window.prompt("move keys", Math.round(cursorTime * gui.timeLine().getFPS()));
+            const frame = window.prompt("move keys", Math.round(cursorTime * gui.timeLine().getFPS()));
             if (frame !== null)
             {
                 console.log(frame);
@@ -1122,9 +1121,9 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
 
         case 37: // left
-            var num = 1;
+            let num = 1;
             if (e.shiftKey)num = 10;
-            var newTime = getFrame((self.getTime() - 1.0 / fps * num) + 0.001);
+            const newTime = getFrame((self.getTime() - 1.0 / fps * num) + 0.001);
             gui.scene().timer.setTime(newTime / fps);
             setCursor(newTime / fps);
             updateTimeDisplay();
@@ -1133,9 +1132,9 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             break;
 
         case 39: // right
-            var numr = 1;
+            let numr = 1;
             if (e.shiftKey)numr = 10;
-            var rNewTime = getFrame((self.getTime() + 1.0 / fps * numr) + 0.001);
+            const rNewTime = getFrame((self.getTime() + 1.0 / fps * numr) + 0.001);
             gui.scene().timer.setTime(rNewTime / fps);
             setCursor(rNewTime / fps);
             updateTimeDisplay();
@@ -1694,7 +1693,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             {
                 const frame = i;
                 if (frame < 0) continue;
-                var t, l;
+                let t, l;
                 const textIndex = (i - startFrame);
 
                 if (count > timeDisplayTexts.length - 1)
@@ -1707,7 +1706,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
                 }
 
                 const txt = i;
-                var time = (i / fps) * CABLES.ANIM.TIMESCALE;
+                const time = (i / fps) * CABLES.ANIM.TIMESCALE;
 
                 t = timeDisplayTexts[count];
                 l = timeDisplayLines[count];
@@ -1729,7 +1728,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
         if (self._loopBegin != -1)
         {
-            var time = self._loopBegin * CABLES.ANIM.TIMESCALE;
+            const time = self._loopBegin * CABLES.ANIM.TIMESCALE;
             const w = (self._loopEnd - self._loopBegin) * CABLES.ANIM.TIMESCALE;
 
             self._loopAreaRect.attr({
@@ -2091,14 +2090,8 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     this.clear = function ()
     {
         for (const i in anims)
-        {
-            // if(anims[i])
-            {
-                // anims[i].keyLine.hide();
-                anims[i].removeUi();
-                found = true;
-            }
-        }
+            anims[i].removeUi();
+
         anims.length = 0;
     };
 

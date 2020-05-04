@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 
 CABLES.UI.ScConnection = class extends CABLES.EventTarget
 {

@@ -5,9 +5,9 @@ CABLES.SPLITPANE.listeners = [];
 
 $(document).ready(function ()
 {
-    document.getElementById("splitterPatch").addEventListener("mousedown", function (e)
+    document.getElementById("splitterPatch").addEventListener("mousedown", function (ev)
     {
-        e.preventDefault();
+        ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
@@ -27,10 +27,10 @@ $(document).ready(function ()
     });
 
 
-    document.getElementById("splitterMaintabs").addEventListener("mousedown", function (e)
+    document.getElementById("splitterMaintabs").addEventListener("mousedown", function (ev)
     {
         gui.pauseProfiling();
-        e.preventDefault();
+        ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
@@ -62,9 +62,9 @@ $(document).ready(function ()
     //     CABLES.SPLITPANE.listeners.push(mm);
     // });
 
-    document.getElementById("splitterRenderer").addEventListener("mousedown", function (e)
+    document.getElementById("splitterRenderer").addEventListener("mousedown", function (ev)
     {
-        e.preventDefault();
+        ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
@@ -77,9 +77,9 @@ $(document).ready(function ()
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
-    document.getElementById("splitterTimeline").addEventListener("mousedown", function (e)
+    document.getElementById("splitterTimeline").addEventListener("mousedown", function (ev)
     {
-        e.preventDefault();
+        ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
@@ -91,9 +91,9 @@ $(document).ready(function ()
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
-    document.getElementById("splitterMeta").addEventListener("mousedown", function (e)
+    document.getElementById("splitterMeta").addEventListener("mousedown", function (ev)
     {
-        e.preventDefault();
+        ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
@@ -105,9 +105,9 @@ $(document).ready(function ()
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
-    function resizeRenderer(e)
+    function resizeRenderer(ev)
     {
-        e.preventDefault();
+        ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {

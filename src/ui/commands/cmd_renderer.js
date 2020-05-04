@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.CMD = CABLES.CMD || {};
 CABLES.CMD.RENDERER = {};
 

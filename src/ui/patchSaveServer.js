@@ -1,5 +1,4 @@
-
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.PatchServer = class extends CABLES.EventTarget
@@ -300,11 +299,11 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                                         "id": currentProject._id,
                                         "screenshot": event.target.result
                                     },
-                                    function (err, r)
+                                    function (error, re)
                                     {
-                                        if (err)
+                                        if (error)
                                         {
-                                            console.warn("[screenshot save error]", err);
+                                            console.warn("[screenshot save error]", error);
                                         }
                                         // console.log("screenshot saved!");
                                         gui.jobs().finish("screenshotsave");

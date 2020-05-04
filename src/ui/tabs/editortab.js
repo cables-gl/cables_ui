@@ -24,9 +24,6 @@ CABLES.UI.EditorTab = function (options)
         return;
     }
 
-
-    console.log("adding tab...");
-
     this._tab.editorObj = options.editorObj;
     gui.mainTabs.addTab(this._tab, CABLES.UI.tabsAutoActivate);
 
@@ -266,7 +263,7 @@ CABLES.UI.createEditor = function (id, val)
     snippetManager.register(snippets, "javascript");
 
     const staticWordCompleter = {
-        getCompletions(editor, session, pos, prefix, callback)
+        getCompletions(_editor, session, pos, prefix, callback)
         {
             const wordList = [
                 "op.log",

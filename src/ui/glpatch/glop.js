@@ -63,7 +63,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 if (!glOps[ids[0]].isPassiveDrag())
                 {
                     console.log("starting drag!!!!");
-                    for (var i in glOps)
+                    for (const i in glOps)
                     {
                         glOps[i].startPassiveDrag();
                     }
@@ -72,7 +72,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 const offX = this._glRectBg.dragOffsetX;
                 const offY = this._glRectBg.dragOffsetY;
 
-                for (var i in glOps)
+                for (const i in glOps)
                     glOps[i].setPassiveDragOffset(offX, offY);
 
                 // var x=rect.x;
@@ -156,17 +156,17 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     get title() { return this.opUiAttribs.title; }
 
-    _updateWhenRendering()
-    {
-        this.update();
-        console.log("update when rendering...");
-        instancer.removeEventListener(this._updateWhenRendering);
-    }
+    // _updateWhenRendering()
+    // {
+    //     this.update();
+    //     console.log("update when rendering...");
+    //     instancer.removeEventListener(this._updateWhenRendering);
+    // }
 
-    _updateLater()
-    {
-        instancer.on("render", this._updateWhenRendering);
-    }
+    // _updateLater()
+    // {
+    //     instancer.on("render", this._updateWhenRendering);
+    // }
 
     set uiAttribs(attr)
     {
@@ -426,13 +426,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     getPortPos(id)
     {
-        for (var i = 0; i < this._op.portsIn.length; i++)
+        for (let i = 0; i < this._op.portsIn.length; i++)
         {
             if (this._op.portsIn[i].id == id)
                 return i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
         }
 
-        for (var i = 0; i < this._op.portsOut.length; i++)
+        for (let i = 0; i < this._op.portsOut.length; i++)
         {
             if (this._op.portsOut[i].id == id)
                 return i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
@@ -495,12 +495,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         {
             if (this._links[i].nameInput == portname && this._links[i].opIdInput == opid)
             {
-                var op = this._glPatch.getOp(this._links[i].opIdOutput);
+                const op = this._glPatch.getOp(this._links[i].opIdOutput);
                 ports.push(op.getGlPort(this._links[i].nameOutput));
             }
             if (this._links[i].nameOutput == portname && this._links[i].opIdOutput == opid)
             {
-                var op = this._glPatch.getOp(this._links[i].opIdInput);
+                const op = this._glPatch.getOp(this._links[i].opIdInput);
                 ports.push(op.getGlPort(this._links[i].nameInput));
             }
         }

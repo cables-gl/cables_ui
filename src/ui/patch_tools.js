@@ -82,10 +82,10 @@ CABLES.UI.TOOLS.saveUndoSelectedOpsPositions = function (selectedOps)
         "title": "save op positions",
         undo()
         {
-            let changedOps = [];
+            const changedOps = [];
             for (let j = 0; j < opPositions.length; j++)
             {
-                let obj = opPositions[j];
+                const obj = opPositions[j];
                 const op = gui.corePatch().getOpById(obj.id);
                 CABLES.UI.TOOLS.setOpPos(op, obj.x, obj.y);
                 changedOps.push(op);

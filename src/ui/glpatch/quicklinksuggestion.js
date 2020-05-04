@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
 CABLES.GLGUI.QuickLinkSuggestion = class extends CABLES.EventTarget

@@ -209,7 +209,7 @@ CABLES.UI.Patch = function (_gui)
     this.unPatchSubPatch = function (patchId)
     {
         const toSelect = [];
-        for (var i in this.ops)
+        for (const i in this.ops)
         {
             if (this.ops[i].op.uiAttribs.subPatch == patchId)
             {
@@ -223,7 +223,7 @@ CABLES.UI.Patch = function (_gui)
         for (const j in toSelect)
         {
             this.addSelectedOp(toSelect[j]);
-            this.ops[i].setSelected(true);
+            // this.ops[i].setSelected(true);
         }
     };
 
@@ -261,7 +261,7 @@ CABLES.UI.Patch = function (_gui)
 
             if (selectedOps[0].getPosX() == this.ops[i].getPosX()) continue;
 
-            if (dir == 0 && dist < 0 || dir == 1 && dist > 0)
+            if ((dir == 0 && dist < 0) || (dir == 1 && dist > 0))
             {
                 dist = Math.abs(dist);
                 if (dist < nextOpDist)
@@ -517,7 +517,7 @@ CABLES.UI.Patch = function (_gui)
     this.getSelectionBounds = function ()
     {
         const bounds = gui.patchView.getSelectionBounds();
-        _setBoundsXYWH(bounds);
+        this._setBoundsXYWH(bounds);
         return bounds;
     };
 
@@ -659,7 +659,7 @@ CABLES.UI.Patch = function (_gui)
             if (timeoutRubberBand == -1)
                 timeoutRubberBand = setTimeout(function ()
                 {
-                    for (var i in self.ops)
+                    for (const i in self.ops)
                     {
                         if (!self.ops[i].isHidden())
                         {
@@ -688,7 +688,7 @@ CABLES.UI.Patch = function (_gui)
                         }
                     }
 
-                    for (var i = 0; i < mouseRubberBandSelectedBefore.length; i++)
+                    for (let i = 0; i < mouseRubberBandSelectedBefore.length; i++)
                     {
                         const o = mouseRubberBandSelectedBefore[i];
                         self.addSelectedOp(o);
@@ -1070,8 +1070,8 @@ CABLES.UI.Patch = function (_gui)
                 for (const il in port1.links)
                 {
                     if (
-                        port1.links[il].portIn == port1 && port1.links[il].portOut == port2 ||
-                        port1.links[il].portOut == port1 && port1.links[il].portIn == port2)
+                        (port1.links[il].portIn == port1 && port1.links[il].portOut == port2) ||
+                        (port1.links[il].portOut == port1 && port1.links[il].portIn == port2))
                     {
                         port1.links[il].remove();
                     }
@@ -2150,13 +2150,13 @@ CABLES.UI.Patch = function (_gui)
             op2.oprect.showFocus();
 
             new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
-                function (id)
+                function (sugId)
                 {
                     gui.patch().scene.link(
                         p.parent,
                         p.name,
-                        sugIn[id].p.parent,
-                        sugIn[id].p.name);
+                        sugIn[sugId].p.parent,
+                        sugIn[sugId].p.name);
                 });
         }
 

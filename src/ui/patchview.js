@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.PatchView = class extends CABLES.EventTarget
@@ -488,12 +488,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                             }(json.ops[i]));
                         }
                     }
-
                     CABLES.UI.notify("Pasted " + json.ops.length + " ops");
-
-
                     gui.patch().scene.deSerialize(json, false);
-
                     next(json.ops, focusSubpatchop);
                 });
             }
