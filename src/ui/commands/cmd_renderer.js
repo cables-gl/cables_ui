@@ -24,14 +24,8 @@ CABLES.CMD.RENDERER.screenshotUpload = function ()
         function (blob)
         {
             const file = new File([blob], "screenshot.png", { "type": "image/png" });
-
-
-            // file.type='hund';
-            // console.log('filetype',file.type);
-            // console.log('blobtype',blob.type);
-
             const fd = new FormData();
-            // fd.append('fname', 'screenshot.png');
+
             fd.append(0, file);
             $.ajax({
                 "type": "POST",

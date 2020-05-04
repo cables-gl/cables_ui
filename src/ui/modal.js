@@ -359,14 +359,9 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         CABLES.UI.MODAL.showClose();
         CABLES.UI.MODAL.init();
         CABLES.UI.MODAL.contentElement.append("<h2><span class=\"fa fa-search\"></span>&nbsp;inspect</h2>");
-
         CABLES.UI.MODAL.contentElement.append("port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ");
-
-
         CABLES.UI.MODAL.contentElement.append("<br/><br/>");
-
         CABLES.UI.MODAL.contentElement.append("<a class=\"button fa fa-refresh\" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\">update</a>");
-
         CABLES.UI.MODAL.contentElement.append("<br/><br/>");
         const thing = port.get();
 

@@ -18,12 +18,10 @@ CABLES.GLGUI.GlRectDragLine = class
         this._startGlPorts = [];
         this._lineIndices = [];
 
-
         glpatch.on("mouseup", (e) =>
         {
             if (this.isActive) this.stop();
         });
-
 
         glpatch.on("mouseDownOverPort", (glport, opid, portName) =>
         {
@@ -33,12 +31,9 @@ CABLES.GLGUI.GlRectDragLine = class
         glpatch.on("mouseDownRightOverPort", (glport, opid, portName) =>
         {
             this.setPort(glport, opid, portName);
-
             const glports = this._glPatch.getConnectedGlPorts(opid, portName);
-            // this.setPort(p,opid,portName);
             console.log(glports);
             glpatch.patchAPI.unlinkPort(opid, glport.id);
-
 
             this._startGlPorts = glports;
         });
@@ -65,9 +60,7 @@ CABLES.GLGUI.GlRectDragLine = class
                     portnames.push(this._startGlPorts[i].name);
                 }
 
-                this._glPatch.patchAPI.linkPortsToOp(
-                    e,
-                    opid, opids, portnames);
+                this._glPatch.patchAPI.linkPortsToOp(e, opid, opids, portnames);
             }
             this.stop();
         });
@@ -83,10 +76,7 @@ CABLES.GLGUI.GlRectDragLine = class
 
             if (this._startGlPorts.length === 0)
             {
-                this._glPatch.patchAPI.linkPorts(this._startPortOpId,
-                    this._startPortName,
-                    opid,
-                    portName);
+                this._glPatch.patchAPI.linkPorts(this._startPortOpId, this._startPortName, opid, portName);
             }
             else
             {
@@ -137,7 +127,7 @@ CABLES.GLGUI.GlRectDragLine = class
         {
             for (i = 0; i < this._startGlPorts.length; i++)
             {
-                if (i >  this._lineIndices.length - 1) this._lineIndices[i] = this._lineDrawer.getIndex();
+                if (i > this._lineIndices.length - 1) this._lineIndices[i] = this._lineDrawer.getIndex();
 
                 this._lineDrawer.setColor(this._lineIndices[i], 0, 1, 0, 1);
 
@@ -148,7 +138,7 @@ CABLES.GLGUI.GlRectDragLine = class
                     this._y);
             }
         }
- else
+        else
         {
             if (this._rect && this._port)
             {

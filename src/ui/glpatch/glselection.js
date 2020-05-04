@@ -20,7 +20,7 @@ CABLES.GLGUI.GlSelectionArea = class
     get h() { return this._h; }
 
     get active()
- {
+    {
         return this._w != 0 || this._h != 0;
     }
 

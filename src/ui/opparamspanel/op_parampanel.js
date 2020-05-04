@@ -126,15 +126,15 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 "texts": CABLES.UI.TEXTS,
             });
 
-            var lastGroup = null;
+            let lastGroup = null;
             const perfLoop = CABLES.uiperf.start("_showOpParamsLOOP");
 
             for (i = 0; i < op.portsIn.length; i++)
             {
-                var startGroup = null;
-                var groupSpacer = false;
+                let startGroup = null;
+                let groupSpacer = false;
 
-                var opGroup = op.portsIn[i].uiAttribs.group;
+                const opGroup = op.portsIn[i].uiAttribs.group;
 
                 if (!op.portsIn[i].uiAttribs.hideParam)
                 {
@@ -181,6 +181,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             const perfLoopOut = CABLES.uiperf.start("_showOpParamsLOOP OUT");
 
             let foundPreview = false;
+            let lastGroup = null;
             for (const i2 in op.portsOut)
             {
                 if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING)
@@ -189,10 +190,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     this._watchPorts.push(op.portsOut[i2]);
                 }
 
-                var startGroup = null;
-                var groupSpacer = false;
+                let startGroup = null;
+                let groupSpacer = false;
 
-                var opGroup = op.portsOut[i2].uiAttribs.group;
+                const opGroup = op.portsOut[i2].uiAttribs.group;
                 if (lastGroup != opGroup && !opGroup) groupSpacer = true;
 
                 if (lastGroup != opGroup)

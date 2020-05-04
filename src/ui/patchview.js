@@ -33,7 +33,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         ele.classList.add("visible");
         ele.style.display = "block";
 
-        this._element = this.getElement();
+        this._element = CABLES.UI.PatchView.getElement();
         gui.setLayout();
     }
 
