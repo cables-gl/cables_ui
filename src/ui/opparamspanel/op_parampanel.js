@@ -77,9 +77,15 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         //     if (this.ops[iops].op == op)
         //         currentOp = this.ops[iops];
 
-        op.summary = gui.opDocs.getSummary(op.objName);
-        const doc = gui.opDocs.getOpDocByName(op.objName);
-        const hasScreenshot = doc && doc.hasScreenshot;
+        let doc = null;
+        let hasScreenshot = false;
+        if (gui.opDocs)
+        {
+            op.summary = gui.opDocs.getSummary(op.objName);
+            doc = gui.opDocs.getOpDocByName(op.objName);
+            hasScreenshot = doc && doc.hasScreenshot;
+        }
+
 
         // if (!currentOp) return;
 
