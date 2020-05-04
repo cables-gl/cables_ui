@@ -244,7 +244,7 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
 
-        const iconBarWidth = iconBarWidth || 80;
+        const iconBarWidth = 80;
         const menubarHeight = 30;
         const optionsWidth = Math.max(400, self.rendererWidth / 2);
 
