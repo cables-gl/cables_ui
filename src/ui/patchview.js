@@ -314,7 +314,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     }
 
 
-    static clipboardPaste(e, oldSub, mouseX, mouseY, next)
+    clipboardPaste(e, oldSub, mouseX, mouseY, next)
     {
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
