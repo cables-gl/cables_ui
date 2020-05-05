@@ -426,7 +426,7 @@ CABLES.UI.ServerOps = function (gui)
                                 {
                                     opname,
                                     "name": attachmentName,
-                                    _content,
+                                    "content": _content,
                                 },
                                 function (errr, re)
                                 {
