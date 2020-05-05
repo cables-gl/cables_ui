@@ -235,15 +235,13 @@ CABLES.UI.OpDocs = function (cb)
     };
 
     /**
-     * Returns the documentation for an op as Html, replaces `get` function.
+     * Returns the documentation for an op as Html
      * Does not render the op-svg (layout).
      * @param {string} opName - The name of the op to get the documantation as Html for
      */
     this.get2 = function (opName)
     {
         let opDoc = this.getOpDocByName(opName);
-
-        // console.log(opDoc);
 
         if (!opDoc)
         {

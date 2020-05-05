@@ -231,6 +231,20 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 
     if (str.indexOf(":") == 0)
     {
+        if (str == ":outdated")
+        {
+            const ops = gui.corePatch().ops;
+            for (let i = 0; i < ops.length; i++)
+            {
+                const doc = gui.opDocs.getOpDocByName(ops[i].objName);
+                if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("Deprecated") > -1)
+                {
+                    results.push({ "op": ops[i], "score": 1 });
+                    foundNum++;
+                }
+            }
+        }
+
         if (str == ":recent")
         {
             const history = gui.opHistory.getAsArray(99);

@@ -97,14 +97,8 @@ CABLES.UI.UserSettings.prototype.updateNavBar = function ()
     if (this.get("introCompleted")) $(".nav_usersettings_introcompleted i").removeClass("unchecked");
     else $(".nav_usersettings_introcompleted i").addClass("unchecked");
 
-    if (this.get("showMinimap"))
-    {
-        $(".nav_usersettings_showMinimap i").removeClass("unchecked");
-    }
-    else
-    {
-        $(".nav_usersettings_showMinimap i").addClass("unchecked");
-    }
+    if (this.get("showMinimap")) $(".nav_usersettings_showMinimap i").removeClass("unchecked");
+    else $(".nav_usersettings_showMinimap i").addClass("unchecked");
 };
 
 CABLES.UI.userSettings = new CABLES.UI.UserSettings();

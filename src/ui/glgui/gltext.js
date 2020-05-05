@@ -80,7 +80,7 @@ CABLES.GLGUI.Text = class
 
         const font = CABLES.GLGUI.SDF_FONT_ARIAL;
         let w = 0;
-        for (var i = 0; i < this._string.length; i++)
+        for (let i = 0; i < this._string.length; i++)
         {
             const ch = font.characters[this._string[i]] || font.characters["?"];
             // if(!font.characters[ch]) ch="?";
@@ -104,7 +104,7 @@ CABLES.GLGUI.Text = class
         else if (this._align == 2) posX -= this._width;
 
         let rectCount = 0;
-        for (var i = 0; i < this._string.length; i++)
+        for (let i = 0; i < this._string.length; i++)
         {
             const char = this._string.charAt(i);
             const ch = font.characters[char] || font.characters["?"];
@@ -131,7 +131,7 @@ CABLES.GLGUI.Text = class
             posX += this._map(ch.advance);
         }
 
-        for (var i = rectCount + 1; i < this._rects.length; i++)
+        for (let i = rectCount + 1; i < this._rects.length; i++)
         {
             if (this._rects[i])
             {
