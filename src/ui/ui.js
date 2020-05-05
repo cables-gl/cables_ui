@@ -1192,10 +1192,10 @@ CABLES.UI.GUI = function (cfg)
             CABLES.CMD.UI.toggleEditor();
         });
 
-        $("#button_subPatchBack").bind("click", function (event)
-        {
-            self.patch().subpatchBack();
-        });
+        // $("#button_subPatchBack").bind("click", function (event)
+        // {
+        //     self.patch().subpatchBack();
+        // });
         // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
 
         window.addEventListener("resize", () =>

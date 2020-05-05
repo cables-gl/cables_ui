@@ -149,7 +149,7 @@
 	.Ops_Ui_Comment
 	{
         fill:var(--color_op_bg_active) !important;
-        
+
 	}
 
     svg
@@ -375,7 +375,7 @@
         {
             cursor:pointer !important;
             background-color: $highlight-color-dark;
-            color: var(--color-13); 
+            color: var(--color-13);
         }
 
 		.icon
@@ -459,24 +459,24 @@
 		}
 	}
 
-	#button_subPatchBack
-	{
-        display:none;
-		float:left;
-	    background-color: var(--color_op_bg);
-	    padding:10px;
-	    border-radius: 100px;
+	// #button_subPatchBack
+	// {
+    //     display:none;
+	// 	float:left;
+	//     background-color: var(--color_op_bg);
+	//     padding:10px;
+	//     border-radius: 100px;
 
-	    cursor: pointer;
+	//     cursor: pointer;
 
-	    width:30px;
-	    height:30px;
+	//     width:30px;
+	//     height:30px;
 
-	    &:hover
-	    {
-			background-color: var(--color_op_bg_active);
-	    }
-	}
+	//     &:hover
+	//     {
+	// 		background-color: var(--color_op_bg_active);
+	//     }
+	// }
 
 }
 
@@ -563,5 +563,5 @@ rect
     pointer-events: none;
     cursor:pointer;
     margin-left: 120px;
-    text-align: center; 
+    text-align: center;
 }

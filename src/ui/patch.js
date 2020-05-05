@@ -1446,6 +1446,30 @@ CABLES.UI.Patch = function (_gui)
         }.bind(this), 10);
     };
 
+
+    this.findSubpatchOp = function (subId, arr)
+    {
+        arr = arr || [];
+        for (let i = 0; i < self.ops.length; i++)
+        {
+            if (self.ops[i].op.objName == CABLES.UI.OPNAME_SUBPATCH && self.ops[i].op.patchId)
+            {
+                if (self.ops[i].op.patchId.get() == subId)
+                {
+                    arr.push({
+                        "name": self.ops[i].op.name,
+                        "id": self.ops[i].op.patchId.get()
+                    });
+                    if (self.ops[i].op.uiAttribs.subPatch !== 0)
+                    {
+                        self.findSubpatchOp(self.ops[i].op.uiAttribs.subPatch, arr);
+                    }
+                }
+            }
+        }
+        return arr;
+    };
+
     this.getSubPatchPathString = function (subId)
     {
         const arr = this.findSubpatchOp(subId);
@@ -1456,12 +1480,12 @@ CABLES.UI.Patch = function (_gui)
         return str;
     };
 
-    this.subpatchBack = function ()
-    {
-        const names = gui.patchView.getSubpatchPathArray(currentSubPatch);
-        if (names[1]) this.setCurrentSubPatch(names[1].id);
-        else this.setCurrentSubPatch(0);
-    };
+    // this.subpatchBack = function ()
+    // {
+    //     const names = gui.patchView.getSubpatchPathArray(currentSubPatch);
+    //     if (names[1]) this.setCurrentSubPatch(names[1].id);
+    //     else this.setCurrentSubPatch(0);
+    // };
 
     this.updateSubPatchBreadCrumb = function ()
     {
