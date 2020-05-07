@@ -586,10 +586,8 @@ CABLES.UI.OpSelect.prototype.keyDown = function (e)
         if (opname && opname.length > 2)
         {
             CABLES.UI.MODAL.hide();
-            gui.serverOps.loadOpLibs(opname, function ()
-            {
-                gui.corePatch().addOp(opname);
-            });
+
+            gui.patchView.addOp(opname);
         }
 
         e.preventDefault();

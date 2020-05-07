@@ -5,10 +5,9 @@ CABLES.UI.MetaHistory = class
 {
     constructor(tabs)
     {
+        this.html = "";
         this._tab = new CABLES.UI.Tab("doc", { "icon": "list", "infotext": "tab_history", "showTitle": false, "hideToolbar": true, "padding": true });
         tabs.addTab(this._tab);
-
-        this.html = "";
 
         CABLES.undo.setCallback(this.update.bind(this));
 
@@ -19,7 +18,7 @@ CABLES.UI.MetaHistory = class
     {
         if (!this._tab.isVisible()) return;
 
-        this.html = "<h3>history</h3>";
+        this.html = "<h3>History</h3>";
 
         this.html += "<span onclick=\"CABLES.undo.undo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-left\" ></span></span>";
         this.html += "<span onclick=\"CABLES.undo.redo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-right\"></span></span>";
@@ -35,18 +34,11 @@ CABLES.UI.MetaHistory = class
         {
             let cmd = null;
 
-            if (i == -1)
-            {
-                cmd = { "groupName": "Open patch", "group": true };
-            }
+            if (i == -1) cmd = { "groupName": "Open patch", "group": true };
             else cmd = commands[i];
 
-
             let style = "";
-            if (!cmd.group || i == 0 || (i > 0 && lastGroup && lastGroup != cmd.group))
-            {
-                style += "margin-top:4px;";
-            }
+            if (!cmd.group || i == 0 || (i > 0 && lastGroup && lastGroup != cmd.group)) style += "margin-top:4px;";
 
             if (CABLES.undo.getIndex() == i) style += "border-left:4px solid var(--color-10);background-color:var(--color-04);";
             else if (CABLES.undo.getIndex() < i) style += "opacity:0.4;border-left:4px solid var(--color-06);background-color:var(--color-03);";
@@ -83,6 +75,5 @@ CABLES.UI.MetaHistory = class
     show()
     {
         this.update();
-        // this._tab.html(this.html);
     }
 };

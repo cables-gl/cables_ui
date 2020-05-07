@@ -174,8 +174,8 @@ CABLES.CMD.PATCH.createVarNumber = function (next)
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "myNewVar",
         function (str)
         {
-            const opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
-            const opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
+            const opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
+            const opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
 
             opSetter.varName.set(str);
             opGetter.varName.set(str);
@@ -191,25 +191,25 @@ CABLES.CMD.PATCH._createVariable = function (name, p, p2, value)
 
     if (p.type == CABLES.OP_PORT_TYPE_VALUE)
     {
-        opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
-        opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
+        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
+        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
     }
     else if (p.type == CABLES.OP_PORT_TYPE_OBJECT)
     {
         portName = "Object";
-        opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetObject);
-        opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetObject);
+        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetObject);
+        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetObject);
     }
     else if (p.type == CABLES.OP_PORT_TYPE_ARRAY)
     {
         portName = "Array";
-        opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetArray);
-        opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetArray);
+        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetArray);
+        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetArray);
     }
     else if (p.type == CABLES.OP_PORT_TYPE_STRING)
     {
-        opSetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetString);
-        opGetter = gui.patch().scene.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetString);
+        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetString);
+        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetString);
     }
 
     opSetter.getPort(portName).set(value);
@@ -250,7 +250,7 @@ CABLES.CMD.PATCH.replaceLinkVariableExist = function ()
     const p2 = link.p2.thePort;
     CABLES.UI.OPSELECT.linkNewLink = null;
 
-    const opGetter = gui.patch().scene.addOp("Ops.Vars.VarGetNumber");
+    const opGetter = gui.patchView.addOp("Ops.Vars.VarGetNumber");
 
     link.remove();
     p.removeLinks();
@@ -432,12 +432,12 @@ CABLES.CMD.TIMELINE.setLength = function ()
 
 CABLES.CMD.PATCH.resume = function ()
 {
-    gui.patch().scene.resume();
+    gui.patchView.resume();
 };
 
 CABLES.CMD.PATCH.pause = function ()
 {
-    gui.patch().scene.pause();
+    gui.patchView.pause();
 };
 
 CABLES.CMD.PATCH.replaceFilePath = function ()

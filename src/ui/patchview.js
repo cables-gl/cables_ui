@@ -37,6 +37,14 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         gui.setLayout();
     }
 
+    addOp(opname)
+    {
+        gui.serverOps.loadOpLibs(opname, () =>
+        {
+            this._p.addOp(opname);
+        });
+    }
+
     showSelectedOpsPanel()
     {
         const html = CABLES.UI.getHandleBarHtml(

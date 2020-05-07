@@ -981,7 +981,7 @@ CABLES.UI.Patch = function (_gui)
             const undofunc = (function (opid, objName)
             {
                 CABLES.undo.add({
-                    "title": "add op",
+                    "title": "Add op",
                     undo()
                     {
                         gui.corePatch().deleteOp(opid, true);
@@ -2206,7 +2206,7 @@ CABLES.UI.Patch.prototype.getNumOps = function ()
 
 CABLES.UI.Patch.prototype.createOpAndLink = function (opname, opid, portname)
 {
-    const oldOp = this.scene.getOpById(opid);
+    const oldOp = gui.corePatch.getOpById(opid);
     const trans = {
         "translate": {
             "x": oldOp.uiAttribs.translate.x,
@@ -2214,9 +2214,9 @@ CABLES.UI.Patch.prototype.createOpAndLink = function (opname, opid, portname)
         }
     };
 
-    const newOp = this.scene.addOp(opname, trans);
+    const newOp = gui.patchView.addOp(opname, trans);
     const newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
-    this.scene.link(oldOp, portname, newOp, newPort.name);
+    gui.corePatch.link(oldOp, portname, newOp, newPort.name);
 
     newOp.setUiAttrib({ "translate": trans });
 };

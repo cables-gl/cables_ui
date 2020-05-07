@@ -70,7 +70,6 @@ CABLES.UI.Profiler.prototype.update = function ()
             for (i = 0; i < 2 - (item.percent + "").length; i++)
                 pad += "&nbsp;";
 
-
         html += pad + item.percent + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " </td><td> " + Math.round(item.timeUsed) + "ms </td></tr>";
 
         if (item.percent > 0)

@@ -31,14 +31,14 @@
         </div>
 
         <div style="text-align:center;padding-bottom:10px;background-color:var(--color-02)" id="opselect_replaceVar">
-            Replace link with: 
+            Replace link with:
             <a class="button-small" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">new variable</a>
             <a class="button-small" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariableExist();">existing variable</a>
         </div>
       {{#each ops}}
 
-        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">
-            <div class="insertbutton fright" onclick="gui.scene().addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
+        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.patchView.addOp('{{name}}');CABLES.UI.MODAL.hide();">
+            <div class="insertbutton fright" onclick="gui.patchView.addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
             <a>
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
                 <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
@@ -62,10 +62,10 @@
                 <br/>
 
                 You can search for multiple words at once, e.g.: "interpolate array"
-                
+
                 <br/><br/>
-                
-                Add spaces between words for better search results 
+
+                Add spaces between words for better search results
 
                 <br/><br/>
 
