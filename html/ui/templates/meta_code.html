@@ -38,6 +38,38 @@
 
         <br/><br/>
 
+        {{#if user.isAdmin}}
+        <div class="groupSpacer"><h3>Core-Libs</h3></div>
+
+        {{#if doc.coreLibs}}
+            <table class="table">
+                <tr>
+                    <th>Filename</th>
+                    <th> </th>
+                </tr>
+
+                {{#each doc.coreLibs}}
+                    <tr>
+                        <td>{{.}}</td>
+                        <td>
+                            <!-- <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeCoreLib('{{../op.objName}}','{{.}}');"></a> -->
+                        </td>
+                    </tr>
+                {{/each}}
+            </table>
+        {{/if}}
+
+        <select id="addcorelib">
+            <option value="">---</option>
+        {{#each coreLibs}}
+            <option value="{{.}}">{{.}}</option>
+        {{/each}}
+        <select>
+        <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addCoreLib('{{op.objName}}', $('#addcorelib').val() );">Add</a>
+        {{/if}}
+
+        <br/><br/>
+
         <div class="groupSpacer"><h3>Libs</h3></div>
 
         {{#if doc.libs}}

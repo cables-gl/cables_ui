@@ -78,6 +78,7 @@ CABLES.UI.MetaCode = function (tabs)
                     }
 
                     doc.libs = gui.serverOps.getOpLibs(op.objName, false);
+                    doc.coreLibs = gui.serverOps.getCoreLibs(op.objName, false);
                     summary = gui.opDocs.getSummary(op.objName);
 
                     if (op.objName.indexOf("User.") == -1)
@@ -90,6 +91,7 @@ CABLES.UI.MetaCode = function (tabs)
                             summary,
                             "ownsOp": gui.serverOps.canEditOp(op.objName),
                             "libs": gui.opDocs.libs,
+                            "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,
                             "opserialized": op.getSerialized()
                         });

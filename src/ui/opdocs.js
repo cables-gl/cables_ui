@@ -7,6 +7,7 @@ CABLES.UI.OpDocs = function (cb)
     let opDocs = [];
     this.layoutPaper = null;
     this.libs = [];
+    this.coreLibs = [];
 
     /**
      * Creates a "typeString" attribute for each port-object in the array (e.g. "Value")
@@ -113,6 +114,7 @@ CABLES.UI.OpDocs = function (cb)
             opDocs = res.opDocs;
             extendOpDocs(opDocs); /* add attributes to the docs / parse markdown, ... */
             self.libs = res.libs;
+            self.coreLibs = res.coreLibs;
             gui.opSelect().prepare();
 
             if (cb)cb();

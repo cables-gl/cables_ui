@@ -1,5 +1,5 @@
-CABLES.UI.loadedLibs = [];
-class LibLoader
+CABLES.UI.loadedCoreLibs = [];
+class CoreLibLoader
 {
     constructor(libnames, cb)
     {
@@ -8,8 +8,8 @@ class LibLoader
         if (libnames.length > 0)
         {
             gui.jobs().start({
-                "id": "loadlibs",
-                "title": "loading libs"
+                "id": "loadcorelibs",
+                "title": "loading core libs"
             });
 
             for (const i in libnames)
@@ -28,27 +28,27 @@ class LibLoader
         if (this.libsToLoad.length == 0)
         {
             if (this._cb) this._cb();
-            gui.jobs().finish("loadlibs");
+            gui.jobs().finish("loadcorelibs");
         }
     }
 
     loadLib(name)
     {
-        if (CABLES.UI.loadedLibs.indexOf(name) === -1)
+        if (CABLES.UI.loadedCoreLibs.indexOf(name) === -1)
         {
-            CABLES.onLoadedLib[name] = function (libName)
+            CABLES.onLoadedCoreLib[name] = function (libName)
             {
                 const i = this.libsToLoad.indexOf(libName);
                 this.libsToLoad.splice(i, 1);
-                console.log("finished loading lib: " + libName);
-                CABLES.UI.loadedLibs.push(libName);
+                console.log("finished loading core lib: " + libName);
+                CABLES.UI.loadedCoreLibs.push(libName);
                 this.checkAllLoaded();
             }.bind(this);
 
             const newscript = document.createElement("script");
             newscript.type = "text/javascript";
             newscript.async = true;
-            newscript.src = CABLES.sandbox.getCablesUrl() + "/api/lib/" + name;
+            newscript.src = CABLES.sandbox.getCablesUrl() + "/api/corelib/" + name;
             (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(newscript);
         }
         else
@@ -60,14 +60,14 @@ class LibLoader
     }
 }
 
-CABLES.onLoadedLib = {};
+CABLES.onLoadedCoreLib = {};
 
-CABLES.loadedLib = function (name)
+CABLES.loadedCoreLib = function (name)
 {
-    if (CABLES.onLoadedLib[name])
+    if (CABLES.onLoadedCoreLib[name])
     {
-        CABLES.onLoadedLib[name](name);
+        CABLES.onLoadedCoreLib[name](name);
     }
 };
 
-CABLES.LibLoader = LibLoader;
+CABLES.CoreLibLoader = CoreLibLoader;
