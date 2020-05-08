@@ -11,7 +11,6 @@ class CoreLibLoader
                 "id": "loadcorelibs",
                 "title": "loading core libs"
             });
-
             for (const i in libnames)
             {
                 this.loadLib(libnames[i]);
