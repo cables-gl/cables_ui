@@ -117,7 +117,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, {}, () => { gui.patchView.alignOps(gui.patchView.getSelectedOps()); });
-        gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { console.log("compress0r"); gui.patchView.compressSelectedOps(); });
+        gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { console.log("compress0r"); gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
     }
 
     set patchAPI(api) { this._patchAPI = api; }
@@ -194,10 +194,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         glOp.update();
 
         op.addEventListener("onUiAttribsChange",
-            () =>
+            (newAttribs) =>
             {
                 glOp.opUiAttribs = op.uiAttribs;
                 glOp.update();
+                // if (newAttribs.hasOwnProperty("translate"))
+                // {
+                //     glOp.updatePosition();
+                // }
             });
     }
 
