@@ -9,7 +9,7 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
         this._mouseOverCanvas = false;
         this._x = 0;
         this._y = 0;
-        this._buttonStates = [false, false, false, false];
+        this._buttonStates = [false, false, false, false, false];
 
         canvas.addEventListener("mouseenter", (e) =>
         {
@@ -47,6 +47,8 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
     get buttonLeft() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_LEFT]; }
 
     get buttonRight() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_RIGHT]; }
+
+    get buttonMiddle() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_MIDDLE]; }
 
     isButtonDown(button)
     {

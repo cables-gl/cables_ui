@@ -159,7 +159,6 @@ CABLES.GLGUI.GlRectDragLine = class
     stop()
     {
         this._startGlPorts.length = 0;
-        console.log("stopopopopopop");
         this.setPort(null);
         this._glPatch.allowDragging = this._patchDragWasAllowed;
     }

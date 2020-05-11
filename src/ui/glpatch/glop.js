@@ -36,6 +36,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
 
+
         this._glRectBg.on("dragEnd", () =>
         {
             const glOps = this._glPatch.selectedGlOps;
@@ -122,8 +123,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         this._glRectBg.on("mousedown", (e) =>
         {
-            if (!this.selected && !e.shiftKey) this._glPatch.unselectAll();
-            this._glPatch.selectOpId(this.id);
+            if (!this.selected)
+            {
+                console.log("not selected!+!");
+                if (!e.shiftKey) this._glPatch.unselectAll();
+                this._glPatch.selectOpId(this.id);
+            }
 
             glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
         });
@@ -144,6 +149,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         });
     }
 
+    get selected() { return this.opUiAttribs.selected; }
+
     get x() { return this.opUiAttribs.translate.x; }
 
     get y() { return this.opUiAttribs.translate.y; }
@@ -156,17 +163,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     get title() { return this.opUiAttribs.title; }
 
-    // _updateWhenRendering()
-    // {
-    //     this.update();
-    //     console.log("update when rendering...");
-    //     instancer.removeEventListener(this._updateWhenRendering);
-    // }
-
-    // _updateLater()
-    // {
-    //     instancer.on("render", this._updateWhenRendering);
-    // }
 
     set uiAttribs(attr)
     {
