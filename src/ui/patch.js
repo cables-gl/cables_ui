@@ -220,11 +220,7 @@ CABLES.UI.Patch = function (_gui)
 
         this.setCurrentSubPatch(currentSubPatch);
 
-        for (const j in toSelect)
-        {
-            this.addSelectedOp(toSelect[j]);
-            // this.ops[i].setSelected(true);
-        }
+        for (const j in toSelect) this.addSelectedOp(toSelect[j]);
     };
 
     this._distance2dDir = function (x1, y1, x2, y2)

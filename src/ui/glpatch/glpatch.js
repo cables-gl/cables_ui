@@ -28,7 +28,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // this._selectRect.setColor(0,0.5,0.7,0.25);
         // this._selectRect.setPosition(0,0,1000);
         // this._selectRect.setSize(0,0);
-        this._mouseOverCanvas = false;
 
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._lines, this);
@@ -72,17 +71,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.links = {};
 
+        this.mouseState = new CABLES.GLGUI.MouseState(cgl.canvas);
+
 
         cgl.canvas.addEventListener("mousedown", (e) =>
         {
-            this._mouseOverCanvas = true;
             this.emitEvent("mousedown", e);
             this._rectInstancer.mouseDown(e);
-        });
-
-        cgl.canvas.addEventListener("mouseenter", (e) =>
-        {
-            this._mouseOverCanvas = true;
         });
 
         cgl.canvas.addEventListener("mousemove", (e) =>
@@ -92,8 +87,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         cgl.canvas.addEventListener("mouseleave", (e) =>
         {
-            this._mouseOverCanvas = false;
-
             if (this._selectionArea.active)
             {
                 console.log("hide area44");
@@ -280,6 +273,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._debugtext.text = str;
 
         this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
+
+        this.mouseState.debug(this.debugData);
     }
 
 
@@ -338,22 +333,19 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectionArea.hideArea();
         }
 
-        if (this._mouseOverCanvas)
+        if (this.mouseState.buttonLeft && allowSelectionArea)
         {
-            if (button == 1 && allowSelectionArea)
-            {
-                this._rectInstancer.interactive = false;
-                this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
-                this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
-                this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
-                gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
-            }
-            else
-            {
-                this._selectionArea.hideArea();
-                this._lastMouseX = x;
-                this._lastMouseY = y;
-            }
+            this._rectInstancer.interactive = false;
+            this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
+            this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
+            this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
+            gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
+        }
+        else
+        {
+            this._selectionArea.hideArea();
+            this._lastMouseX = x;
+            this._lastMouseY = y;
         }
 
         this._lastButton = button;

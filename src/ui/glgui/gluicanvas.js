@@ -95,8 +95,8 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.addEventListener("mousemove", (e) =>
         {
             this.activityHigh();
-
-            if (this._mouseButton == 2 && this.glPatch.allowDragging)
+            // this._mouseButton == 2
+            if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
             {
                 const pixelMulX = this.width / this._zoom * 0.5;
                 const pixelMulY = this.height / this._zoom * 0.5;
@@ -112,7 +112,7 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.addEventListener("mousedown", (e) =>
         {
             this.activityHigh();
-            if (e.buttons == 2)
+            if (this.glPatch.mouseState.buttonRight)
             {
                 this._oldScrollX = this._scrollX;
                 this._oldScrollY = this._scrollY;
@@ -136,13 +136,11 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.addEventListener("mouseleave", (e) =>
         {
             this.activityMedium();
-            this._mouseOver = false;
         });
 
         this.canvas.addEventListener("mouseenter", (e) =>
         {
             this.activityHigh();
-            this._mouseOver = true;
         });
 
         this.canvas.addEventListener("dblclick", (e) =>
@@ -232,14 +230,14 @@ CABLES.GLGUI.GlUiCanvas = class
     activityMedium()
     {
         this._targetFps = 30;
-        if (!this._mouseOver) this._targetFps = 25;
+        if (!this.glPatch.mouseOverCanvas) this._targetFps = 25;
         clearTimeout(this._activityTimeout);
         this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 2000);
     }
 
     render()
     {
-        if (this._targetFps != 0 && !this._mouseOver && performance.now() - this._lastTime < 1000 / this._targetFps)
+        if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps)
         {
             return;
         }
