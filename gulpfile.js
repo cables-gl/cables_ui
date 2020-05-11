@@ -189,6 +189,7 @@ gulp.task("electronapp", () =>
 gulp.task("watch", () =>
 {
     gulp.watch("../cables/build/**/*.js", ["scripts_core"]);
+    gulp.watch("../cables/build/libs/**/*.js", ["scripts_core_libs"]);
     gulp.watch("src/ops/**/*.js", ["scripts_ops"]);
     gulp.watch("src/ui/**/*.js", ["scripts_ui"]); // ,'electron' // electron broke the watch SOMEHOW
     gulp.watch("scss/**/*.scss", ["sass"]);
@@ -196,7 +197,7 @@ gulp.task("watch", () =>
     gulp.watch("icons/**/*.svg", ["svgcss"]);
     gulp.watch("vue-src/**/*", ["vueify"]);
     gulp.watch("src-talkerapi/**/*", ["scripts_talkerapi"]);
-    
+
 });
 
 gulp.task("electron-watch", () =>
