@@ -63,6 +63,15 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.showBookmarkParamsPanel();
     }
 
+    selectAllOpsSubPatch(subPatch)
+    {
+        for (let i = 0; i < this._p.ops.length; i++)
+        {
+            if ((this._p.ops[i].uiAttribs.subPatch || 0) == subPatch) this._p.ops[i].uiAttr({ "selected": true });
+            else this._p.ops[i].uiAttr({ "selected": false });
+        }
+    }
+
     showBookmarkParamsPanel()
     {
         let html = "<div class=\"panel\">";
@@ -497,5 +506,125 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             next(json.ops, focusSubpatchop);
         });
         CABLES.undo.endGroup(undoGroup, "Paste");
+    }
+
+
+    compressSelectedOps(ops)
+    {
+        if (!ops || ops.length === 0) return;
+
+        this.saveUndoSelectedOpsPositions(ops);
+
+        ops.sort(function (a, b) { return a.uiAttribs.translate.y - b.uiAttribs.translate.y; });
+
+        let y = ops[0].uiAttribs.translate.y;
+
+        for (let j = 0; j < ops.length; j++)
+        {
+            if (j > 0) y += (ops[j].uiAttribs.height || CABLES.UI.uiConfig.opHeight) + 10;
+            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
+        }
+    }
+
+    alignSelectedOpsVert(ops)
+    {
+        if (ops.length > 0)
+        {
+            let j = 0;
+            let sum = 0;
+            for (j in ops) sum += ops[j].uiAttribs.translate.x;
+
+            let avg = sum / ops.length;
+
+            if (CABLES.UI.userSettings.get("snapToGrid")) avg = CABLES.UI.snapOpPosX(avg);
+
+            for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
+        }
+        return ops;
+    }
+
+    alignSelectedOpsHor(ops)
+    {
+        if (ops.length > 0)
+        {
+            let j = 0, sum = 0;
+            for (j in ops) sum += ops[j].uiAttribs.translate.y;
+
+            let avg = sum / ops.length;
+
+            if (CABLES.UI.userSettings.get("snapToGrid")) avg = CABLES.UI.snapOpPosY(avg);
+
+            for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
+        }
+        return ops;
+    }
+
+    setOpPos(op, x, y)
+    {
+        op.uiAttr("translate",
+            {
+                "x": x,
+                "y": y
+            });
+    }
+
+    saveUndoSelectedOpsPositions(selectedOps)
+    {
+        const opPositions = [];
+        for (let j = 0; j < selectedOps.length; j++)
+        {
+            const obj = {};
+            obj.id = selectedOps[j].id;
+            obj.x = selectedOps[j].uiAttribs.translate.x;
+            obj.y = selectedOps[j].uiAttribs.translate.y;
+            opPositions.push(obj);
+        }
+
+        CABLES.undo.add({
+            "title": "save op positions",
+            undo()
+            {
+                const changedOps = [];
+                for (let j = 0; j < opPositions.length; j++)
+                {
+                    const obj = opPositions[j];
+                    const op = gui.corePatch().getOpById(obj.id);
+                    gui.patchView.setOpPos(op, obj.x, obj.y);
+                    changedOps.push(op);
+                }
+
+                // update svg patch...
+                gui.patch().updatedOpPositionsFromUiAttribs(changedOps);
+            },
+            redo()
+            {
+                // gui.scene().addOp(objName, op.uiAttribs, opid);
+            }
+        });
+    }
+
+    alignOps(selectedOps)
+    {
+        let minX = 9999999,
+            minY = 9999999,
+            maxX = -9999999,
+            maxY = -9999999,
+            j = 0;
+
+        this.saveUndoSelectedOpsPositions(selectedOps);
+
+        for (j in selectedOps)
+        {
+            minX = Math.min(minX, selectedOps[j].uiAttribs.translate.x);
+            minY = Math.min(minY, selectedOps[j].uiAttribs.translate.y);
+
+            maxX = Math.max(maxX, selectedOps[j].uiAttribs.translate.x);
+            maxY = Math.max(maxY, selectedOps[j].uiAttribs.translate.y);
+        }
+
+        if (Math.abs(maxX - minX) > Math.abs(maxY - minY)) this.alignSelectedOpsHor(selectedOps);
+        else this.alignSelectedOpsVert(selectedOps);
+
+        return selectedOps;
     }
 };

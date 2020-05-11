@@ -156,13 +156,6 @@ CABLES.GLGUI.GlPatchAPI = class
     {
     }
 
-    alignSelectedOps(opids)
-    {
-        const ops = gui.corePatch().getOpsById(opids);
-        console.log("align ops!", ops.length);
-        CABLES.UI.TOOLS.alignOps(ops);
-    }
-
     linkPortToOp(e, opid, pid, op2id)
     {
         const op1 = this._patch.getOpById(opid);

@@ -68,6 +68,8 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.style.border = "0px solid white";
         // this.canvas.style.cursor='none';
         // this.canvas.style['z-index']=9999999991;
+        this.canvas.setAttribute("tabindex", 10);
+
         this._parentEle = parentEle;
 
         if (parentEle)parentEle.appendChild(this.canvas);

@@ -571,15 +571,16 @@ CABLES.UI.Patch = function (_gui)
 
     this.selectAllOpsSubPatch = function (subPatch)
     {
-        for (const i in self.ops)
-        {
-            if (self.ops[i].getSubPatch() == subPatch)
-            {
-                self.addSelectedOp(self.ops[i]);
-                self.ops[i].setSelected(true);
-            }
-        }
-        setStatusSelectedOps();
+        gui.patchView.selectAllOpsSubPatch(subPatch);
+        // for (const i in self.ops)
+        // {
+        //     if (self.ops[i].getSubPatch() == subPatch)
+        //     {
+        //         self.addSelectedOp(self.ops[i]);
+        //         self.ops[i].setSelected(true);
+        //     }
+        // }
+        // setStatusSelectedOps();
     };
 
     this.selectAllOps = function ()
@@ -1647,13 +1648,13 @@ CABLES.UI.Patch = function (_gui)
 
     this.compressSelectedOps = function ()
     {
-        CABLES.UI.TOOLS.compressSelectedOps(gui.patchView.getSelectedOps());
+        gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps());
         this.updateSelectedOpPositions();
     };
 
     this.alignSelectedOps = function ()
     {
-        CABLES.UI.TOOLS.alignOps(gui.patchView.getSelectedOps());
+        gui.patchView.alignOps(gui.patchView.getSelectedOps());
         this.updateSelectedOpPositions();
     };
 
