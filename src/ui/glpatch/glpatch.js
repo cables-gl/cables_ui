@@ -115,7 +115,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, {}, () => { gui.patchView.alignOps(gui.patchView.getSelectedOps()); });
         gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { console.log("compress0r"); gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
 
-
         gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, {}, (e) => { gui.opHistory.back(); });
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, {}, (e) => { gui.opHistory.forward(); });
 
@@ -237,7 +236,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // else this._redrawFlash.setColor(0,1,0,1);
 
         this.viewBox.update();
-        this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
+        // this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this._patchAPI.updateFlowModeActivity();
 
         this._viewResX = resX;
@@ -277,8 +276,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         this.debugData.viewResX = this._viewResX;
         this.debugData.viewResY = this._viewResY;
-        this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
         this.mouseState.debug(this.debugData);
+
+        this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
 
         let str = "";
         for (const n in this.debugData)

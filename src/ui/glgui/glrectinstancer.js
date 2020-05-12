@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
 CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
@@ -16,6 +16,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._counter = 0;
         this._num = 5000;
         this._needsRebuild = true;
+        this._needsRebuildReason = "";
         this._rects = [];
         this._textures = [];
         this._interactive = true;
@@ -23,8 +24,19 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._cgl = cgl;
         this._needsTextureUpdate = false;
         this._draggingRect = null;
+        this._reUploadAttribs = true;
+        this._updateRangesMin = {};
+        this._updateRangesMax = {};
 
         this._setupAttribBuffers();
+
+        this.ATTR_TEXRECT = "texRect";
+        this.ATTR_CONTENT_TEX = "contentTexture";
+        this.ATTR_POS = "instPos";
+        this.ATTR_COLOR = "instCol";
+        this.ATTR_SIZE = "instSize";
+        this.ATTR_CIRCLE = "circle";
+
 
         this._shader = new CGL.Shader(cgl, "rectinstancer");
         this._shader.setSource(""
@@ -81,7 +93,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",
 
-
         ""
             .endl() + "IN vec4 col;"
             .endl() + "IN vec4 posSize;"
@@ -136,6 +147,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "   float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   outColor.a=smoothstep(0.22,0.2,outer) * 1.0-smoothstep(0.12,0.1,inner);"
             .endl() + "}"
+
+        // .endl() + "   outColor.rg=uv;"
 
             .endl() + "}");
 
@@ -254,6 +267,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             else this._attrTextures[this._rects[i].idx] = -1;
         }
 
+        this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrTextures, 1, { "instanced": true });
+
         // console.log(this._attrTextures);
         // console.log("this._textures.length",this._textures.length);
     }
@@ -290,20 +305,63 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     rebuild()
     {
+        // console.log("rebuild!", this._needsRebuildReason);
+        this._needsRebuildReason = "";
         // todo only update whats needed
 
         const perf = CABLES.uiperf.start("[glRectInstancer] rebuild");
         this._mesh.numInstances = this._num;
 
-        this._mesh.setAttribute("instPos", this._attrPositions, 3, { "instanced": true });
-        this._mesh.setAttribute("instCol", this._attrColors, 4, { "instanced": true });
-        this._mesh.setAttribute("instSize", this._attrSizes, 2, { "instanced": true });
-        // this._mesh.setAttribute('outline',this._attrOutline,1,{instanced:true});
-        this._mesh.setAttribute("circle", this._attrCircle, 1, { "instanced": true });
-        this._mesh.setAttribute("texRect", this._attrTexRect, 4, { "instanced": true });
-        this._mesh.setAttribute("contentTexture", this._attrTextures, 1, { "instanced": true });
+        if (this._reUploadAttribs)
+        {
+            console.log("reupload all attribs");
+            this._mesh.setAttribute(this.ATTR_POS, this._attrPositions, 3, { "instanced": true });
+            this._mesh.setAttribute(this.ATTR_COLOR, this._attrColors, 4, { "instanced": true });
+            this._mesh.setAttribute(this.ATTR_SIZE, this._attrSizes, 2, { "instanced": true });
+            this._mesh.setAttribute(this.ATTR_CIRCLE, this._attrCircle, 1, { "instanced": true });
+            this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrTexRect, 4, { "instanced": true });
+            this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrTextures, 1, { "instanced": true });
+            this._reUploadAttribs = false;
+        }
+
+        if (this._updateRangesMin[this.ATTR_POS] != 9999)
+        {
+            this._mesh.setAttributeRange(this.ATTR_POS, this._attrPositions, this._updateRangesMin[this.ATTR_POS], this._updateRangesMax[this.ATTR_POS]);
+            this._resetAttrRange(this.ATTR_POS);
+        }
+
+        if (this._updateRangesMin[this.ATTR_COLOR] != 9999)
+        {
+            this._mesh.setAttributeRange(this.ATTR_COLOR, this._attrColors, this._updateRangesMin[this.ATTR_COLOR], this._updateRangesMax[this.ATTR_COLOR]);
+            this._resetAttrRange(this.ATTR_COLOR);
+        }
+
+        if (this._updateRangesMin[this.ATTR_SIZE] != 9999)
+        {
+            this._mesh.setAttributeRange(this.ATTR_SIZE, this._attrSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
+            this._resetAttrRange(this.ATTR_SIZE);
+        }
+
+        if (this._updateRangesMin[this.ATTR_CIRCLE] != 9999)
+        {
+            this._mesh.setAttributeRange(this.ATTR_CIRCLE, this._attrCircle, this._updateRangesMin[this.ATTR_CIRCLE], this._updateRangesMax[this.ATTR_CIRCLE]);
+            this._resetAttrRange(this.ATTR_CIRCLE);
+        }
+
+        if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
+        {
+            this._mesh.setAttributeRange(this.ATTR_TEXRECT, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
+            this._resetAttrRange(this.ATTR_TEXRECT);
+        }
+
+        // if (this._updateRangesMin[this.ATTR_CONTENT_TEX] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_CONTENT_TEX, this._attrTextures, this._updateRangesMin[this.ATTR_CONTENT_TEX], this._updateRangesMax[this.ATTR_CONTENT_TEX]);
+        //     this._resetAttrRange(this.ATTR_CONTENT_TEX);
+        // }
 
         perf.finish();
+
 
         this._needsRebuild = false;
     }
@@ -323,7 +381,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             console.log("resize to", this._num);
             this._setupAttribBuffers();
             this._needsRebuild = true;
-            this._needsTextureUpdate = false;
+            this._needsRebuildReason = "resize";
+            this._needsTextureUpdate = true;
+            this._reUploadAttribs = true;
         }
         return this._counter;
     }
@@ -335,7 +395,12 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     setPosition(idx, x, y)
     {
-        if (this._float32Diff(this._attrPositions[idx * 3 + 0], x) || this._float32Diff(this._attrPositions[idx * 3 + 1], y)) { this._needsRebuild = true; }
+        if (this._float32Diff(this._attrPositions[idx * 3 + 0], x) || this._float32Diff(this._attrPositions[idx * 3 + 1], y))
+        {
+            this._needsRebuild = true;
+            this._needsRebuildReason = "pos change";
+            this._setAttrRange(this.ATTR_POS, idx * 3, idx * 3 + 3);
+        }
 
         this._attrPositions[idx * 3 + 0] = x;
         this._attrPositions[idx * 3 + 1] = y;
@@ -343,20 +408,15 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     setSize(idx, x, y)
     {
-        if (this._float32Diff(this._attrSizes[idx * 2 + 0], x) || this._float32Diff(this._attrSizes[idx * 2 + 1], y)) { this._needsRebuild = true; }
+        if (this._float32Diff(this._attrSizes[idx * 2 + 0], x) || this._float32Diff(this._attrSizes[idx * 2 + 1], y))
+        {
+            this._needsRebuild = true;
+            this._needsRebuildReason = "size change";
+            this._setAttrRange(this.ATTR_SIZE, idx * 2, (idx + 1) * 2);
+        }
 
         this._attrSizes[idx * 2 + 0] = x;
         this._attrSizes[idx * 2 + 1] = y;
-    }
-
-    setAllTexture(tex, sdf)
-    {
-        this._shader.toggleDefine("SDF_TEXTURE", sdf);
-
-        for (let i = 0; i < this._rects.length; i++)
-        {
-            this._rects[i].setTexture(tex);
-        }
     }
 
     setTexRect(idx, x, y, w, h)
@@ -365,7 +425,12 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             this._float32Diff(this._attrTexRect[idx * 4 + 0], x) ||
             this._float32Diff(this._attrTexRect[idx * 4 + 1], y) ||
             this._float32Diff(this._attrTexRect[idx * 4 + 2], w) ||
-            this._float32Diff(this._attrTexRect[idx * 4 + 3], h)) { this._needsRebuild = true; }
+            this._float32Diff(this._attrTexRect[idx * 4 + 3], h))
+        {
+            this._needsRebuild = true;
+            this._needsRebuildReason = "texrect";
+            this._setAttrRange(this.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
+        }
 
         this._attrTexRect[idx * 4 + 0] = x;
         this._attrTexRect[idx * 4 + 1] = y;
@@ -386,7 +451,12 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             this._float32Diff(this._attrColors[idx * 4 + 0], r) ||
             this._float32Diff(this._attrColors[idx * 4 + 1], g) ||
             this._float32Diff(this._attrColors[idx * 4 + 2], b) ||
-            this._float32Diff(this._attrColors[idx * 4 + 3], a)) { this._needsRebuild = true; }
+            this._float32Diff(this._attrColors[idx * 4 + 3], a))
+        {
+            this._needsRebuild = true;
+            this._needsRebuildReason = "setcolor";
+            this._setAttrRange(this.ATTR_COLOR, idx * 4, idx * 4 + 4);
+        }
 
         this._attrColors[idx * 4 + 0] = r;
         this._attrColors[idx * 4 + 1] = g;
@@ -396,9 +466,37 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     setCircle(idx, o)
     {
-        if (this._attrCircle[idx] != o) { this._needsRebuild = true; }
+        if (this._attrCircle[idx] != o)
+        {
+            this._needsRebuild = true;
+            this._setAttrRange(this.ATTR_CIRCLE, idx, idx + 1);
+        }
         this._attrCircle[idx] = o;
     }
+
+
+    setAllTexture(tex, sdf)
+    {
+        this._shader.toggleDefine("SDF_TEXTURE", sdf);
+
+        for (let i = 0; i < this._rects.length; i++)
+        {
+            this._rects[i].setTexture(tex);
+        }
+    }
+
+    _resetAttrRange(attr)
+    {
+        this._updateRangesMin[attr] = 9999;
+        this._updateRangesMax[attr] = -9999;
+    }
+
+    _setAttrRange(attr, start, end)
+    {
+        this._updateRangesMin[attr] = Math.min(start, this._updateRangesMin[attr]);
+        this._updateRangesMax[attr] = Math.max(end, this._updateRangesMin[attr]);
+    }
+
 
     // setOutline(idx,o)
     // {
@@ -420,7 +518,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         }
 
         r.on("textureChanged", () => { this._needsTextureUpdate = true; });
-
 
         return r;
     }
