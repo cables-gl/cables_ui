@@ -9,7 +9,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._p = corepatch;
         this._element = null;
         this._pvRenderers = {};
-
+        this._patchRenderer = null;
         this.store = new CABLES.UI.PatchServer();
     }
 
@@ -41,6 +41,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     setPatchRenderer(id, pr)
     {
         this._pvRenderers[id] = pr;
+        if (!this._patchRenderer) this._patchRenderer = pr;
     }
 
     addOp(opname)
