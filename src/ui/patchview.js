@@ -631,4 +631,64 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         return selectedOps;
     }
+
+
+    linkPortToOp(e, opid, pid, op2id)
+    {
+        const op1 = this._p.getOpById(opid);
+        const op2 = this._p.getOpById(op2id);
+        const p = op1.getPort(pid);
+        const numFitting = op2.countFittingPorts(p);
+
+        if (numFitting > 1)
+        {
+            new CABLES.UI.SuggestPortDialog(op2, p, e, (p2n) =>
+            {
+                this._p.link(op1, pid, op2, p2n);
+            });
+        }
+        else
+        {
+            const fitp = op2.findFittingPort(p);
+            this._p.link(op1, pid, op2, fitp.name);
+        }
+    }
+
+    linkPortsToOp(e, opid, opids, portnames)
+    {
+        const op1 = this._p.getOpById(opid);
+        let op2 = this._p.getOpById(opids[0]);
+        const p = op2.getPort(portnames[0]);
+        const numFitting = op1.countFittingPorts(p);
+
+        if (numFitting > 1)
+        {
+            new CABLES.UI.SuggestPortDialog(op1, p, e, (suggport) =>
+            {
+                for (let i = 0; i < portnames.length; i++)
+                {
+                    op2 = this._p.getOpById(opids[i]);
+                    this._p.link(op2, portnames[i], op1, suggport);
+                }
+            });
+        }
+        else
+        {
+            const fitp = op1.findFittingPort(p);
+
+            for (let i = 0; i < portnames.length; i++)
+            {
+                op2 = this._p.getOpById(opids[i]);
+                this._p.link(op2, portnames[i], op1, fitp.name);
+            }
+        }
+    }
+
+    linkPorts(opid, pid, op2id, p2id)
+    {
+        const op1 = this._p.getOpById(opid);
+        const op2 = this._p.getOpById(op2id);
+
+        this._p.link(op1, pid, op2, p2id);
+    }
 };

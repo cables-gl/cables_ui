@@ -581,12 +581,11 @@ CABLES.UI.OpSelect.prototype.keyDown = function (e)
         break;
 
     case 13:
-        var opname = $(".selected").data("opname");
+        const opname = $(".selected").data("opname");
 
         if (opname && opname.length > 2)
         {
             CABLES.UI.MODAL.hide();
-
             gui.patchView.addOp(opname);
         }
 

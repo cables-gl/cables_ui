@@ -20,6 +20,7 @@ CABLES.GLGUI.GlLink = class
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
         this._buttonRect.setColorHover(1, 1, 1, 1);
+
         this._buttonRect.on("mousedown", (e) =>
         {
             if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)

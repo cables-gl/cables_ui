@@ -248,9 +248,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         scrollY /= zoom;
 
         this._rectInstancer.render(resX, resY, scrollX, scrollY, zoom);
-        this._overLayRects.render(resX, resY, scrollX, scrollY, zoom);
         this._textWriter.render(resX, resY, scrollX, scrollY, zoom);
         this._lines.render(resX, resY, scrollX, scrollY, zoom);
+
+        this._overLayRects.render(resX, resY, scrollX, scrollY, zoom);
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, scrollX, scrollY, zoom, mouseX, mouseY);
 
@@ -266,17 +267,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.viewScrollY = this._viewScrollY;
         this.debugData.viewResX = this._viewResX;
         this.debugData.viewResY = this._viewResY;
+        this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
+        this.mouseState.debug(this.debugData);
 
         let str = "";
         for (const n in this.debugData)
-        {
             str += n + ": " + this.debugData[n] + "\n";
-        }
+
         this._debugtext.text = str;
-
-        this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
-
-        this.mouseState.debug(this.debugData);
     }
 
 

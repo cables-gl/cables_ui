@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
 CABLES.GLGUI.GlOp = class extends CABLES.EventTarget

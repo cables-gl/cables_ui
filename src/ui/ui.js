@@ -1327,11 +1327,6 @@ CABLES.UI.GUI = function (cfg)
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleRendererSize(); });
 
-        this.keys.key("c", "Center/Zoom to all or selected ops", "down", null, {}, (e) =>
-        {
-            if (self.patch().getSelectedOps().length > 0) self.patch().centerViewBoxOps();
-            else self.patch().toggleCenterZoom();
-        });
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {

@@ -317,6 +317,12 @@ CABLES.UI.Patch = function (_gui)
         }
     });
 
+    this.keys.key("c", "Center/Zoom to all or selected ops", "down", "patch", {}, (e) =>
+    {
+        if (self.getSelectedOps().length > 0) self.centerViewBoxOps();
+        else self.toggleCenterZoom();
+    });
+
     gui.keys.key("x", "Unlink selected ops", "down", "patch", {}, (e) => { gui.patchView.unlinkSelectedOps(); });
     gui.keys.key("f", "Toggle data flow visualization", "down", "patch", {}, (e) => { console.log(this); this.toggleFlowVis(); });
     gui.keys.key("e", "Edit op code", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.editOp(); });

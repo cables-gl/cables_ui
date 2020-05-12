@@ -1,4 +1,4 @@
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
 CABLES.GLGUI.GlRectDragLine = class
@@ -44,7 +44,7 @@ CABLES.GLGUI.GlRectDragLine = class
 
             if (this._startGlPorts.length === 0)
             {
-                this._glPatch.patchAPI.linkPortToOp(
+                gui.patchView.linkPortToOp(
                     e,
                     this._startPortOpId,
                     this._startPortName,
@@ -60,7 +60,7 @@ CABLES.GLGUI.GlRectDragLine = class
                     portnames.push(this._startGlPorts[i].name);
                 }
 
-                this._glPatch.patchAPI.linkPortsToOp(e, opid, opids, portnames);
+                gui.patchView.linkPortsToOp(e, opid, opids, portnames);
             }
             this.stop();
         });
@@ -76,13 +76,13 @@ CABLES.GLGUI.GlRectDragLine = class
 
             if (this._startGlPorts.length === 0)
             {
-                this._glPatch.patchAPI.linkPorts(this._startPortOpId, this._startPortName, opid, portName);
+                gui.patchView.linkPorts(this._startPortOpId, this._startPortName, opid, portName);
             }
             else
             {
                 for (let i = 0; i < this._startGlPorts.length; i++)
                 {
-                    this._glPatch.patchAPI.linkPorts(this._startPortOpId,
+                    gui.patchView.linkPorts(this._startPortOpId,
                         this._startPortName,
                         this._startGlPorts[i].glOp.id,
                         this._startGlPorts[i].name);
