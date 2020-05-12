@@ -8,11 +8,13 @@ CABLES.GLGUI.GlGuiFull = function (tabs)
     const ele = document.createElement("div");
 
     views.appendChild(ele);
-    ele.id = "glpatch" + views.children.length;
+    const id = "glpatch" + views.children.length;
+    ele.id = id;
     ele.classList.add("glpatchcontainer");
 
     const a = new CABLES.GLGUI.GlUiCanvas(CABLES.patch, ele);
 
+    gui.patchView.setPatchRenderer(id, a.glPatch);
     gui.patchView.switch(ele.id);
 
     a.parentResized();
@@ -92,7 +94,6 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.addEventListener("mousemove", (e) =>
         {
             this.activityHigh();
-
 
             this._mouseX = e.offsetX;
             this._mouseY = e.offsetY;
@@ -239,9 +240,9 @@ CABLES.GLGUI.GlUiCanvas = class
 
         this.glPatch.render(
             this.width, this.height,
-            -this._scrollX, this._scrollY, // scroll
-            220,
-            this._mouseX, this._mouseY, // mouse
+            0, 0, // scroll
+            0,
+            0, 0, // mouse
             this._mouseButton // mouse button
         );
 

@@ -125,7 +125,7 @@ CABLES.UI.GUI = function (cfg)
         return _jobs;
     };
 
-    this.focusFindResult = function (idx, opid, subpatch, x, y)
+    this.focusFindResult = (idx, opid, subpatch, x, y) =>
     {
         if (gui.keys.shiftKey)
         {
@@ -133,10 +133,10 @@ CABLES.UI.GUI = function (cfg)
         }
         else
         {
-            gui.patch().setCurrentSubPatch(subpatch);
-            gui.patch().focusOp(opid);
-            gui.patch().getViewBox().center(x, y);
-            gui.patch().setSelectedOpById(opid);
+            this.patchView.setCurrentSubPatch(subpatch);
+            this.patchView.focusOp(opid);
+            this.patchView.centerView(x, y);
+            this.patchView.setSelectedOpById(opid);
             $("#patch").focus();
         }
 
@@ -232,13 +232,13 @@ CABLES.UI.GUI = function (cfg)
             self.rendererHeight = window.innerHeight;
         }
 
-        self.rendererWidthScaled = self.rendererWidth * gui.patch().scene.cgl.canvasScale;
-        self.rendererHeightScaled = self.rendererHeight * gui.patch().scene.cgl.canvasScale;
+        self.rendererWidthScaled = self.rendererWidth * this._corePatch.cgl.canvasScale;
+        self.rendererHeightScaled = self.rendererHeight * this._corePatch.cgl.canvasScale;
 
         self.rendererWidth = Math.floor(self.rendererWidth);
         self.rendererHeight = Math.floor(self.rendererHeight);
 
-        const cgl = gui.patch().scene.cgl;
+        const cgl = this._corePatch.cgl;
         if (cgl.canvasWidth)
         {
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
@@ -550,7 +550,7 @@ CABLES.UI.GUI = function (cfg)
         }
         else
         {
-            const density = gui.patch().scene.cgl.pixelDensity;
+            const density = this._corePatch.cgl.pixelDensity;
 
             this._elGlCanvas.attr("width", self.rendererWidth * density);
             this._elGlCanvas.attr("height", self.rendererHeight * density);
@@ -559,14 +559,13 @@ CABLES.UI.GUI = function (cfg)
             // this._elGlCanvas.css('left', window.innerWidth-self.rendererWidth*density);
             // console.log("!!!",window.innerWidth,self.rendererWidth)
 
-
             this._elCablesCanvas.css("width", self.rendererWidth + "px");
             this._elCablesCanvas.css("height", self.rendererHeight + "px");
 
             this._elCablesCanvas.css("transform-origin", "top right");
-            this._elCablesCanvas.css("transform", "scale(" + gui.patch().scene.cgl.canvasScale + ")");
+            this._elCablesCanvas.css("transform", "scale(" + this._corePatch.cgl.canvasScale + ")");
 
-            gui.patch().scene.cgl.updateSize();
+            this._corePatch.cgl.updateSize();
         }
 
         $("#bgpreview").css("right", self.rendererWidth + "px");
@@ -585,7 +584,7 @@ CABLES.UI.GUI = function (cfg)
         html += "<textarea id=\"serialized\"></textarea>";
         html += "<br/>";
         html += "<br/>";
-        html += "<a class=\"button\" onclick=\"gui.patch().scene.clear();gui.patch().scene.deSerialize($('#serialized').val());CABLES.UI.MODAL.hide();\">import</a>";
+        html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize($('#serialized').val());CABLES.UI.MODAL.hide();\">import</a>";
         CABLES.UI.MODAL.show(html);
     };
 
@@ -705,7 +704,7 @@ CABLES.UI.GUI = function (cfg)
             });
         }
 
-        const gl = gui.patch().scene.cgl.gl;
+        const gl = this._corePatch.cgl.gl;
         const dbgRenderInfo = gl.getExtension("WEBGL_debug_renderer_info");
         let gl_renderer = "unknown";
         if (dbgRenderInfo) gl_renderer = gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
@@ -1377,7 +1376,7 @@ CABLES.UI.GUI = function (cfg)
         this.metaTexturePreviewer.pressedEscape();
         $(".tooltip").hide();
 
-        if (self.rendererWidth * gui.patch().scene.cgl.canvasScale > window.innerWidth * 0.9)
+        if (self.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
             if (this._elGlCanvas.hasClass("maximized"))
             {
@@ -1591,7 +1590,7 @@ CABLES.UI.GUI = function (cfg)
     //             verbose: true
     //         });
 
-    //         CABLES.UI.capturer.start(gui.patch().scene.cgl.canvas);
+    //         CABLES.UI.capturer.start(this._corePatch.cgl.canvas);
     //     } else {
     //         $('#liveRecordButton').html("Start Live Recording");
     //         CABLES.UI.capturer.stop();
@@ -1860,7 +1859,7 @@ CABLES.UI.GUI = function (cfg)
         this._elCanvasIconbar.css({
             "width": document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width,
             "left": this._elSplitterPatch.get()[0].getBoundingClientRect().left,
-            "top": this.rendererHeight * gui.patch().scene.cgl.canvasScale + 1,
+            "top": this.rendererHeight * this._corePatch.cgl.canvasScale + 1,
         });
     };
 
@@ -1885,7 +1884,7 @@ CABLES.UI.GUI = function (cfg)
             $("#canvasmodal").show();
             this._elCanvasIconbar.show();
             this._elCanvasIconbar.css({ "opacity": 1 });
-            const cgl = gui.patch().scene.cgl;
+            const cgl = this._corePatch.cgl;
             this.updateCanvasIconBar();
 
             // var sizeStr='size: '+cgl.canvasWidth+' x '+cgl.canvasHeight;
@@ -1924,6 +1923,7 @@ CABLES.UI.GUI = function (cfg)
 
         _patch = new CABLES.UI.Patch(this);
         _patch.show(this._corePatch);
+        this.patchView.setPatchRenderer("patch", _patch);
 
         $("#undev").hover(function (e)
         {

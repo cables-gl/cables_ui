@@ -490,6 +490,13 @@ CABLES.UI.Patch = function (_gui)
         for (const i in this.ops) this.ops[i].fixTitle();
     };
 
+
+    this.center = function (x, y)
+    {
+        this.getViewBox().center(x, y);
+    };
+
+
     this.centerViewBoxOps = function ()
     {
         if (selectedOps.length > 0) this._viewBox.centerSelectedOps();
@@ -1987,9 +1994,8 @@ CABLES.UI.Patch = function (_gui)
         const op = gui.corePatch().addOp(opname, uiAttr);
 
         for (let i = 0; i < op.portsIn.length; i++)
-        {
-            if (op.portsIn[i].uiAttribs.display == "file") op.portsIn[i].set(filename);
-        }
+            if (op.portsIn[i].uiAttribs.display == "file")
+                op.portsIn[i].set(filename);
     };
 
     this.addAssetOp = function (opname, portname, filename, title)
@@ -2013,8 +2019,7 @@ CABLES.UI.Patch = function (_gui)
     this.disableEnableOps = function ()
     {
         if (!selectedOps.length) return;
-        let i = 0;
-        for (i = 0; i < self.ops.length; i++) self.ops[i].op.marked = false;
+        for (let i = 0; i < self.ops.length; i++) self.ops[i].op.marked = false;
 
         let newstate = false;
         if (!selectedOps[0].op.enabled) newstate = true;
@@ -2025,7 +2030,7 @@ CABLES.UI.Patch = function (_gui)
 
             op.markChilds();
 
-            for (i = 0; i < self.ops.length; i++)
+            for (let i = 0; i < self.ops.length; i++)
                 if (self.ops[i].op.marked)
                     self.ops[i].setEnabled(newstate);
         }
@@ -2115,9 +2120,9 @@ CABLES.UI.Patch = function (_gui)
         for (let j = 0; j < op1.portsOut.length; j++)
         {
             const p = op1.portsOut[j].thePort;
-
             const numFitting = op2.op.countFittingPorts(p);
             let addText = "...";
+
             if (numFitting > 0)
             {
                 if (numFitting == 1)
@@ -2139,8 +2144,7 @@ CABLES.UI.Patch = function (_gui)
             CABLES.UI.notify("can not link!");
             return;
         }
-        if (suggestions.length > 1)
-            op1.oprect.showFocus();
+        if (suggestions.length > 1) op1.oprect.showFocus();
 
         const fakeMouseEvent = {
             "clientX": self.lastMouseMoveEvent.clientX,
@@ -2317,10 +2321,6 @@ CABLES.UI.Patch.prototype.updateFlowVis = function (time, frame)
                         link.activityCounter = 0;
                         // link.emitEvent("activity",link,link.activityCount);
                     }
-                }
-                else
-                {
-                    // countInvalid++;
                 }
             }
         }

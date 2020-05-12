@@ -96,4 +96,22 @@ CABLES.GLGUI.ViewBox = class
     {
         this._smoothedZoom.update();
     }
+
+    scrollTo(x, y)
+    {
+        this._scrollX = x;
+        this._scrollY = y;
+    }
+
+    center()
+    {
+        console.log("center!");
+        const ops = gui.patchView.getSelectedOps();
+        if (ops.length > 0)
+        {
+            const x = ops[0].uiAttribs.translate.x;
+            const y = ops[0].uiAttribs.translate.y;
+            this.scrollTo(x, y);
+        }
+    }
 };

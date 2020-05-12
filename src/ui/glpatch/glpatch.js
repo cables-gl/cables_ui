@@ -11,7 +11,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (!cgl) console.error("[glpatch] need cgl");
 
         this._cgl = cgl;
-        // if(!cgl)cgl=patch.cgl;
+        this.mouseState = new CABLES.GLGUI.MouseState(cgl.canvas);
+
         this._glOpz = {};
         this._patchAPI = null;
         this._showRedrawFlash = 0;
@@ -22,14 +23,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._overLayRects = new CABLES.GLGUI.RectInstancer(cgl);
         this._textWriter = new CABLES.GLGUI.TextWriter(cgl);
         this._currentSubpatch = 0;
-        // this._overLayLines=new CABLES.GLGUI.Linedrawer(cgl);
-
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
-        // this._selectRect=this._overLayRects.createRect();
-        // this._selectRect.setColor(0,0.5,0.7,0.25);
-        // this._selectRect.setPosition(0,0,1000);
-        // this._selectRect.setSize(0,0);
-
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._lines, this);
 
@@ -70,8 +64,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectedGlOps = {};
 
         this.links = {};
-
-        this.mouseState = new CABLES.GLGUI.MouseState(cgl.canvas);
 
 
         cgl.canvas.addEventListener("mousedown", (e) =>
@@ -115,6 +107,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             if (e.preventDefault) e.preventDefault();
         });
 
+        gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { }, (e) => { this.viewBox.center(); });
+
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, {}, () => { gui.patchView.alignOps(gui.patchView.getSelectedOps()); });
         gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { console.log("compress0r"); gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
@@ -132,6 +126,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     getOpAt(x, y)
     {
+    }
+
+    center(x, y)
+    {
+        this.viewBox.scrollTo(x, y);
     }
 
     get lineDrawer()
@@ -207,7 +206,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     screenCoord(mouseX, mouseY)
     {
-        const z = 1 / (this._viewResX / 2 / this._viewZoom);
+        const z = 1 / (this._viewResX / 2 / this.viewBox.zoom);
         const asp = this._viewResY / this._viewResX;
 
         const mouseAbsX = (mouseX - (this._viewResX / 2)) * z - (this.viewBox.scrollX);
@@ -247,7 +246,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // scrollX /= zoom;
         // scrollY /= zoom;
 
-        console.log(this.viewBox.scrollXZoom, this.viewBox.scrollYZoom);
+        // console.log(this.viewBox.scrollXZoom, this.viewBox.scrollYZoom);
 
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);

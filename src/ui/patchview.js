@@ -8,6 +8,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         super();
         this._p = corepatch;
         this._element = null;
+        this._pvRenderers = {};
 
         this.store = new CABLES.UI.PatchServer();
     }
@@ -33,8 +34,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         ele.classList.add("visible");
         ele.style.display = "block";
 
-        this._element = CABLES.UI.PatchView.getElement();
+        this._patchRenderer = this._pvRenderers[id];
         gui.setLayout();
+    }
+
+    setPatchRenderer(id, pr)
+    {
+        this._pvRenderers[id] = pr;
     }
 
     addOp(opname)
@@ -690,5 +696,29 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const op2 = this._p.getOpById(op2id);
 
         this._p.link(op1, pid, op2, p2id);
+    }
+
+    centerView(x, y)
+    {
+        if (this._patchRenderer.center) this._patchRenderer.center(x, y);
+        else console.log("patchRenderer has no function center");
+    }
+
+    setCurrentSubPatch(subpatch)
+    {
+        if (this._patchRenderer.setCurrentSubPatch) this._patchRenderer.setCurrentSubPatch(subpatch);
+        else console.log("patchRenderer has no function center");
+    }
+
+    focusOp(opid)
+    {
+        if (this._patchRenderer.focusOp) this._patchRenderer.focusOp(opid);
+        else console.log("patchRenderer has no function center");
+    }
+
+    setSelectedOpById(opid)
+    {
+        if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
+        else console.log("patchRenderer has no function center");
     }
 };
