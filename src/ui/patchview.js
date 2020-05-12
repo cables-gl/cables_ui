@@ -707,18 +707,18 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     setCurrentSubPatch(subpatch)
     {
         if (this._patchRenderer.setCurrentSubPatch) this._patchRenderer.setCurrentSubPatch(subpatch);
-        else console.log("patchRenderer has no function center");
+        else console.log("patchRenderer has no function setCurrentSubPatch");
     }
 
     focusOp(opid)
     {
         if (this._patchRenderer.focusOp) this._patchRenderer.focusOp(opid);
-        else console.log("patchRenderer has no function center");
+        else console.log("patchRenderer has no function focusOp");
     }
 
     setSelectedOpById(opid)
     {
         if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
-        else console.log("patchRenderer has no function center");
+        else console.log("patchRenderer has no function setSelectedOpById");
     }
 };

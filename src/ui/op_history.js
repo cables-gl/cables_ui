@@ -1,5 +1,4 @@
-
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 
 CABLES.UI.OpHistory = class extends CABLES.EventTarget
 {
@@ -38,7 +37,7 @@ CABLES.UI.OpHistory = class extends CABLES.EventTarget
     {
         const opid = this._history[this._position];
 
-        if (!gui.keys.shiftKey) gui.patch().focusOp(opid, true); else gui.patch().setSelectedOpById(opid);
+        if (!gui.keys.shiftKey) gui.patchView.focusOp(opid, true); else gui.patchView.setSelectedOpById(opid);
     }
 
     forward()
@@ -58,7 +57,7 @@ CABLES.UI.OpHistory = class extends CABLES.EventTarget
         for (let i = end; i >= start; i--)
         {
             const idx = i;
-            const op = gui.patch().scene.getOpById(this._history[idx]);
+            const op = gui.corePatch().getOpById(this._history[idx]);
             if (!op) continue;
             const o =
                 {

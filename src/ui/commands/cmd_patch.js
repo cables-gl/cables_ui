@@ -319,13 +319,13 @@ CABLES.CMD.PATCH.createAutoVariable = function ()
 
 CABLES.CMD.PATCH.editOp = function ()
 {
-    const selops = gui.patch().getSelectedOps();
+    const selops = gui.patchView.getSelectedOps();
 
     if (selops && selops.length > 0)
     {
         for (let i = 0; i < selops.length; i++)
         {
-            gui.serverOps.edit(selops[i].op.objName, false, function ()
+            gui.serverOps.edit(selops[i].objName, false, function ()
             {
                 gui.maintabPanel.show();
             });
