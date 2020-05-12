@@ -158,7 +158,7 @@ CABLES.GL_MARKER.drawSphere = function (op, size)
 
     let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
 
-    if (gui.patch().isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
     shader.glPrimitive = cgl.gl.LINE_STRIP;
     CABLES.GL_MARKER.SPHERE.mesh.render(shader);
     CABLES.GL_MARKER.SPHERE.mesh2.render(shader);
@@ -272,7 +272,7 @@ CABLES.GL_MARKER.drawLineSourceDest = function ({
     CABLES.GL_MARKER.startFramebuffer(cgl);
 
     let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
-    if (gui.patch().isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
 
     CABLES.GL_MARKER.ARROW_SRC_DST.cube.render(shader);
     CABLES.GL_MARKER.count++;
@@ -328,7 +328,7 @@ CABLES.GL_MARKER.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
     if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * CGL.DEG2RAD);
 
     let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
-    if (gui.patch().isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
 
     CABLES.GL_MARKER.ARROW.cube.render(shader);
     CABLES.GL_MARKER.count++;
@@ -384,7 +384,7 @@ CABLES.GL_MARKER.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
     if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * CGL.DEG2RAD);
 
     let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
-    if (gui.patch().isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
 
     CABLES.GL_MARKER.XPLANE.mesh.render(shader);
     CABLES.GL_MARKER.count++;
@@ -453,7 +453,7 @@ CABLES.GL_MARKER.drawCube = function (op, sizeX, sizeY, sizeZ)
     mat4.scale(cgl.mvMatrix, cgl.mvMatrix, CABLES.GL_MARKER.CUBE.vScale);
 
     let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
-    if (gui.patch().isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
 
     CABLES.GL_MARKER.CUBE.mesh.render(shader);
     CABLES.GL_MARKER.count++;

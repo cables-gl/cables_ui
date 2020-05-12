@@ -36,9 +36,6 @@ CABLES.UI.ValueSmoother = class
         if (this._divisor != this._divisor) this._value = 0;
         if (this._value != this._value || this._value == -Infinity || this._value == Infinity) this._value = this._goal;
 
-        if (this._oldVal != this._value)
-        {
-            this._oldVal = this._value;
-        }
+        if (this._oldVal != this._value) this._oldVal = this._value;
     }
 };

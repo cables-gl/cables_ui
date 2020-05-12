@@ -1,5 +1,4 @@
-
-var CABLES = CABLES || {};
+CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.OPNAME_SUBPATCH = "Ops.Ui.SubPatch";
@@ -64,8 +63,8 @@ CABLES.UI.Patch = function (_gui)
 
     this.isCurrentOp = function (op)
     {
-        if (op.op) return gui.opParams.isCurrentOp(op.op); // if is uiop
-        return gui.opParams.isCurrentOp(op);
+        if (op.op) return gui.patchView.isCurrentOp(op.op); // if is uiop
+        return gui.patchView.isCurrentOp(op);
     };
     this.isCurrentOpId = function (opid)
     {

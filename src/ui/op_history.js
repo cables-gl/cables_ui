@@ -25,7 +25,7 @@ CABLES.UI.OpHistory = class extends CABLES.EventTarget
         this._position--;
         let opid = this._history[this._position];
 
-        if (gui.patch().isCurrentOpId(opid))
+        if (gui.patchView.isCurrentOpId(opid))
         {
             this._position--;
             opid = this._history[this._position];
