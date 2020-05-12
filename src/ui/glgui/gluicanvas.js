@@ -53,13 +53,9 @@ CABLES.GLGUI.GlUiCanvas = class
         this.height = 0;
         this._mouseX = 0;
         this._mouseY = 0;
-        this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
-        this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
+        // this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
+        // this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
 
-        this._scrollX = 0;
-        this._scrollY = 0;
-        this._oldScrollX = 0;
-        this._oldScrollY = 0;
 
         this.canvas = document.createElement("canvas");
         this.canvas.id = "glGuiCanvas-" + CABLES.uuid();
@@ -86,7 +82,6 @@ CABLES.GLGUI.GlUiCanvas = class
 
         this.glPatch = new CABLES.GLGUI.GlPatch(this.patch.cgl);
         this.patchApi = new CABLES.GLGUI.GlPatchAPI(_patch, this.glPatch);
-
         this.patchApi.reset();
 
         this.patch.addEventListener("onRenderFrame", this.render.bind(this));
@@ -97,15 +92,8 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.addEventListener("mousemove", (e) =>
         {
             this.activityHigh();
-            // this._mouseButton == 2
-            if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
-            {
-                const pixelMulX = this.width / this._zoom * 0.5;
-                const pixelMulY = this.height / this._zoom * 0.5;
 
-                this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
-                this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
-            }
+
             this._mouseX = e.offsetX;
             this._mouseY = e.offsetY;
             this.glPatch.needsRedraw = true;
@@ -114,13 +102,7 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.addEventListener("mousedown", (e) =>
         {
             this.activityHigh();
-            if (this.glPatch.mouseState.buttonRight)
-            {
-                this._oldScrollX = this._scrollX;
-                this._oldScrollY = this._scrollY;
-                this._mouseRightDownStartX = e.offsetX;
-                this._mouseRightDownStartY = e.offsetY;
-            }
+
             this.glPatch.needsRedraw = true;
             this._mouseButton = e.buttons;
         });
@@ -130,9 +112,6 @@ CABLES.GLGUI.GlUiCanvas = class
             this.activityHigh();
             this.glPatch.needsRedraw = true;
             this._mouseButton = -1;
-
-            this._oldScrollX = this._scrollX;
-            this._oldScrollY = this._scrollY;
         });
 
         this.canvas.addEventListener("mouseleave", (e) =>
@@ -145,34 +124,28 @@ CABLES.GLGUI.GlUiCanvas = class
             this.activityHigh();
         });
 
-        this.canvas.addEventListener("dblclick", (e) =>
-        {
-            if (this._zoom == CABLES.GLGUI.VISUALCONFIG.zoomDefault) this._zoom = this.glPatch.getZoomForAllOps();
-            else this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
-            this._smoothedZoom.set(this._zoom);
-        });
 
         this.canvas.addEventListener("wheel", (event) =>
         {
             this.activityHigh();
-            const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
+            // const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
-            let delta = CGL.getWheelSpeed(event);
-            event = CABLES.mouseEvent(event);
-            delta *= wheelMultiplier;
+            // let delta = CGL.getWheelSpeed(event);
+            // event = CABLES.mouseEvent(event);
+            // delta *= wheelMultiplier;
 
-            if (event.altKey) this._scrollY -= delta;
-            else if (event.shiftKey) this._scrollX -= delta;
-            else this._zoom += delta * (this._zoom / 155);
+            // if (event.altKey) this._scrollY -= delta;
+            // else if (event.shiftKey) this._scrollX -= delta;
+            // else this._zoom += delta * (this._zoom / 155);
 
-            this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
-            this._smoothedZoom.set(this._zoom);
+            // this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
+            // this._smoothedZoom.set(this._zoom);
 
-            if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
-            {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-            }
+            // if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
+            // {
+            //     event.preventDefault();
+            //     event.stopImmediatePropagation();
+            // }
         });
 
 
@@ -262,13 +235,12 @@ CABLES.GLGUI.GlUiCanvas = class
         cgl.gl.clearColor(0.23, 0.23, 0.23, 0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
-        this._smoothedZoom.update();
         this.glPatch.debugData.targetFps = this._targetFps;
 
         this.glPatch.render(
             this.width, this.height,
             -this._scrollX, this._scrollY, // scroll
-            this._smoothedZoom.value, // zoom
+            220,
             this._mouseX, this._mouseY, // mouse
             this._mouseButton // mouse button
         );

@@ -16,6 +16,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
+        this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
         this._rectInstancer = new CABLES.GLGUI.RectInstancer(cgl);
         this._lines = new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects = new CABLES.GLGUI.RectInstancer(cgl);
@@ -60,8 +61,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._debugtext = new CABLES.GLGUI.Text(this._textWriter, "hello");
 
         this._viewZoom = 0;
-        this._viewScrollX = 0;
-        this._viewScrollY = 0;
+
         this._viewResX = 0;
         this._viewResY = 0;
 
@@ -210,8 +210,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const z = 1 / (this._viewResX / 2 / this._viewZoom);
         const asp = this._viewResY / this._viewResX;
 
-        const mouseAbsX = (mouseX - (this._viewResX / 2)) * z - (this._viewScrollX);
-        const mouseAbsY = (mouseY - (this._viewResY / 2)) * z + (this._viewScrollY * asp);
+        const mouseAbsX = (mouseX - (this._viewResX / 2)) * z - (this.viewBox.scrollX);
+        const mouseAbsY = (mouseY - (this._viewResY / 2)) * z + (this.viewBox.scrollY * asp);
 
         return [mouseAbsX, mouseAbsY];
     }
@@ -227,16 +227,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._showRedrawFlash++;
         // if(this._showRedrawFlash) this._redrawFlash.setColor(0,0,0,1);
         // else this._redrawFlash.setColor(0,1,0,1);
+
+        this.viewBox.update();
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this._patchAPI.updateFlowModeActivity();
 
         this._viewResX = resX;
         this._viewResY = resY;
-        this._viewZoom = zoom;
-        this._viewScrollX = scrollX;
-        this._viewScrollY = scrollY;
+        this._viewZoom = this.viewBox.zoom;
 
-        const coord = this.screenCoord(mouseX, mouseY);
+        const coord = this.screenCoord(this.viewBox.mouseX, this.viewBox.mouseY);
         const mouseAbsX = coord[0];
         const mouseAbsY = coord[1];
 
@@ -244,16 +244,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor2.setPosition(mouseAbsX - 2, mouseAbsY - 2);
         this._portDragLine.setPosition(mouseAbsX, mouseAbsY);
 
-        scrollX /= zoom;
-        scrollY /= zoom;
+        // scrollX /= zoom;
+        // scrollY /= zoom;
 
-        this._rectInstancer.render(resX, resY, scrollX, scrollY, zoom);
-        this._textWriter.render(resX, resY, scrollX, scrollY, zoom);
-        this._lines.render(resX, resY, scrollX, scrollY, zoom);
+        console.log(this.viewBox.scrollXZoom, this.viewBox.scrollYZoom);
 
-        this._overLayRects.render(resX, resY, scrollX, scrollY, zoom);
+        this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        this.quickLinkSuggestion.glRender(this._cgl, resX, resY, scrollX, scrollY, zoom, mouseX, mouseY);
+        this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
+        this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
         this.needsRedraw = false;
 
@@ -263,8 +265,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
 
         this.debugData.viewZoom = this._viewZoom;
-        this.debugData.viewScrollX = this._viewScrollX;
-        this.debugData.viewScrollY = this._viewScrollY;
+        this.debugData.viewbox_scrollX = this.viewBox.scrollX;
+        this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         this.debugData.viewResX = this._viewResX;
         this.debugData.viewResY = this._viewResY;
         this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;

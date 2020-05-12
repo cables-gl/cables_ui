@@ -317,7 +317,7 @@ CABLES.UI.Patch = function (_gui)
         }
     });
 
-    this.keys.key("c", "Center/Zoom to all or selected ops", "down", "patch", {}, (e) =>
+    gui.keys.key("c", "Center/Zoom to all or selected ops", "down", "patch", {}, (e) =>
     {
         if (self.getSelectedOps().length > 0) self.centerViewBoxOps();
         else self.toggleCenterZoom();
