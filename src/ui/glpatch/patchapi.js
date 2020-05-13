@@ -41,7 +41,6 @@ CABLES.GLGUI.GlPatchAPI = class
                         link.portOut.parent.id,
                         link.portIn.name,
                         link.portOut.name,
-
                         link.portIn.id,
                         link.portOut.id,
                         link.portIn.type);
@@ -50,8 +49,10 @@ CABLES.GLGUI.GlPatchAPI = class
         }
     }
 
+
     updateFlowModeActivity()
     {
+        const perf = CABLES.uiperf.start("[glpatch] update flow mode");
         for (let i = 0; i < this._patch.ops.length; i++)
         {
             const op = this._patch.ops[i];
@@ -66,6 +67,7 @@ CABLES.GLGUI.GlPatchAPI = class
                 }
             }
         }
+        perf.finish();
     }
 
     reset()

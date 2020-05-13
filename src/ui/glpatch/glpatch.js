@@ -27,6 +27,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._lines, this);
 
+        this.cacheOIRxa = 0;
+        this.cacheOIRya = 0;
+        this.cacheOIRxb = 0;
+        this.cacheOIRyb = 0;
+        this.cacheOIRops = null;
+
         for (let i = -100; i < 100; i++)
         {
             const col = 0.3;
@@ -107,6 +113,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             if (e.preventDefault) e.preventDefault();
         });
 
+        gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) => { CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode")); });
+
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, {}, (e) => { CABLES.CMD.PATCH.editOp(); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { }, (e) => { this.viewBox.center(); });
         gui.keys.key("x", "Unlink selected ops", "down", cgl.canvas.id, {}, (e) => { gui.patchView.unlinkSelectedOps(); });
@@ -186,6 +194,22 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         if (!op) console.error("no op at addop", op);
 
+        if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = 0;
+
+        if (!op.uiAttribs.translate)
+        {
+            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": this.viewBox.scrollX, "y": this.viewBox.scrollY };
+            else op.uiAttribs.translate = { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y };
+        }
+
+        // if (op.uiAttribs.hasOwnProperty("translate"))
+        // {
+        //     if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
+        //     if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
+        //     uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+        // }
+
+
         let glOp = this._glOpz[op.id];
         if (!glOp)
         {
@@ -230,14 +254,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY, mouseButton)
     {
-        const starttime = performance.now();
         this._showRedrawFlash++;
         // if(this._showRedrawFlash) this._redrawFlash.setColor(0,0,0,1);
         // else this._redrawFlash.setColor(0,1,0,1);
 
         this.viewBox.update();
         // this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
-        this._patchAPI.updateFlowModeActivity();
+
+        if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();
 
         this._viewResX = resX;
         this._viewResY = resY;
@@ -247,6 +271,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const mouseAbsX = coord[0];
         const mouseAbsY = coord[1];
 
+
+        const starttime = performance.now();
+
         this.mouseMove(mouseAbsX, mouseAbsY, mouseButton);
         this._cursor2.setPosition(mouseAbsX - 2, mouseAbsY - 2);
         this._portDragLine.setPosition(mouseAbsX, mouseAbsY);
@@ -255,6 +282,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // scrollY /= zoom;
 
         // console.log(this.viewBox.scrollXZoom, this.viewBox.scrollYZoom);
+
+        const perf = CABLES.uiperf.start("[glpatch] render");
 
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
@@ -278,13 +307,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.viewResY = this._viewResY;
         this.mouseState.debug(this.debugData);
 
-        this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
+        // this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
+        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
         let str = "";
         for (const n in this.debugData)
             str += n + ": " + this.debugData[n] + "\n";
 
         this._debugtext.text = str;
+
+        perf.finish();
     }
 
 
@@ -361,8 +393,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lastButton = button;
     }
 
+
     _getGlOpsInRect(xa, ya, xb, yb)
     {
+        if (this.cacheOIRxa == xa && this.cacheOIRya == ya && this.cacheOIRxb == xb && this.cacheOIRyb == yb)
+        {
+            return this.cacheOIRops;
+        }
+
+        const perf = CABLES.uiperf.start("[glpatch] ops in rect");
+
         const x = Math.min(xa, xb);
         const y = Math.min(ya, yb);
         const x2 = Math.max(xa, xb);
@@ -381,6 +421,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 ops.push(glop);
             }
         }
+
+        perf.finish();
+
+        this.cacheOIRxa = xa;
+        this.cacheOIRya = ya;
+        this.cacheOIRxb = xb;
+        this.cacheOIRyb = yb;
+
+
+        this.cacheOIRops = ops;
         return ops;
     }
 

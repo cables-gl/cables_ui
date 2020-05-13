@@ -28,6 +28,15 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._updateRangesMin = {};
         this._updateRangesMax = {};
 
+
+        this._meshAttrPos = null;
+        this._meshAttrCol = null;
+        this._meshAttrSize = null;
+        this._meshAttrCirc = null;
+        this._meshAttrRect = null;
+        this._meshAttrTex = null;
+
+
         this._setupAttribBuffers();
 
         this.ATTR_TEXRECT = "texRect";
@@ -183,12 +192,12 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
     clear()
     {
         let i = 0;
-        for (i = 0; i < 2 * this._num; i++) this._attrSizes[i] = 0;// Math.random()*61;
-        for (i = 0; i < 3 * this._num; i++) this._attrPositions[i] = 0;// Math.random()*60;
-        for (i = 0; i < 4 * this._num; i++) this._attrColors[i] = 1;// Math.random();
+        for (i = 0; i < 2 * this._num; i++) this._attrBuffSizes[i] = 0;// Math.random()*61;
+        for (i = 0; i < 3 * this._num; i++) this._attrBuffPos[i] = 0;// Math.random()*60;
+        for (i = 0; i < 4 * this._num; i++) this._attrBuffCol[i] = 1;// Math.random();
         // for(i=0;i<this._num;i++) this._attrOutline[i]=0;//Math.random();
-        for (i = 0; i < this._num; i++) this._attrCircle[i] = 0;// Math.random();
-        for (i = 0; i < this._num; i++) this._attrTextures[i] = -1;// Math.random();
+        for (i = 0; i < this._num; i++) this._attrBuffCircle[i] = 0;// Math.random();
+        for (i = 0; i < this._num; i++) this._attrBuffTextures[i] = -1;// Math.random();
 
         for (i = 0; i < 4 * this._num; i += 4)
         {
@@ -201,27 +210,26 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     _setupAttribBuffers()
     {
-        const oldAttrPositions = this._attrPositions;
-        const oldAttrTextures = this._attrTextures;
-        const oldAttrColors = this._attrColors;
-        const oldAttrSizes = this._attrSizes;
-        const oldAttrCircle = this._attrCircle;
+        const oldAttrPositions = this._attrBuffPos;
+        const oldAttrTextures = this._attrBuffTextures;
+        const oldAttrColors = this._attrBuffCol;
+        const oldAttrSizes = this._attrBuffSizes;
+        const oldAttrCircle = this._attrBuffCircle;
         const oldAttrTexRect = this._attrTexRect;
 
-
-        this._attrPositions = new Float32Array(3 * this._num);
-        this._attrTextures = new Float32Array(this._num);
-        this._attrColors = new Float32Array(4 * this._num);
-        this._attrSizes = new Float32Array(2 * this._num);
-        this._attrCircle = new Float32Array(this._num);
+        this._attrBuffPos = new Float32Array(3 * this._num);
+        this._attrBuffTextures = new Float32Array(this._num);
+        this._attrBuffCol = new Float32Array(4 * this._num);
+        this._attrBuffSizes = new Float32Array(2 * this._num);
+        this._attrBuffCircle = new Float32Array(this._num);
         this._attrTexRect = new Float32Array(4 * this._num);
         this.clear();
 
-        if (oldAttrPositions) this._attrPositions.set(oldAttrPositions);
-        if (oldAttrTextures) this._attrTextures.set(oldAttrTextures);
-        if (oldAttrColors) this._attrColors.set(oldAttrColors);
-        if (oldAttrSizes) this._attrSizes.set(oldAttrSizes);
-        if (oldAttrCircle) this._attrCircle.set(oldAttrCircle);
+        if (oldAttrPositions) this._attrBuffPos.set(oldAttrPositions);
+        if (oldAttrTextures) this._attrBuffTextures.set(oldAttrTextures);
+        if (oldAttrColors) this._attrBuffCol.set(oldAttrColors);
+        if (oldAttrSizes) this._attrBuffSizes.set(oldAttrSizes);
+        if (oldAttrCircle) this._attrBuffCircle.set(oldAttrCircle);
         if (oldAttrTexRect) this._attrTexRect.set(oldAttrTexRect);
     }
 
@@ -247,14 +255,14 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
                     if (this._textures[j] && this._textures[j].texture == this._rects[i].texture)
                     {
                         found = true;
-                        this._attrTextures[this._rects[i].idx] = this._textures[j].num;
+                        this._attrBuffTextures[this._rects[i].idx] = this._textures[j].num;
                         this._needsRebuild = true;
                     }
                 }
 
                 if (!found)
                 {
-                    this._attrTextures[this._rects[i].idx] = count;
+                    this._attrBuffTextures[this._rects[i].idx] = count;
                     this._textures[count] =
                         {
                             "texture": this._rects[i].texture,
@@ -264,12 +272,12 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
                     this._needsRebuild = true;
                 }
             }
-            else this._attrTextures[this._rects[i].idx] = -1;
+            else this._attrBuffTextures[this._rects[i].idx] = -1;
         }
 
-        this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrTextures, 1, { "instanced": true });
+        this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
 
-        // console.log(this._attrTextures);
+        // console.log(this._attrBuffTextures);
         // console.log("this._textures.length",this._textures.length);
     }
 
@@ -309,58 +317,51 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._needsRebuildReason = "";
         // todo only update whats needed
 
-        const perf = CABLES.uiperf.start("[glRectInstancer] rebuild");
         this._mesh.numInstances = this._num;
 
         if (this._reUploadAttribs)
         {
+            const perf = CABLES.uiperf.start("[glRectInstancer] _reUploadAttribs");
             console.log("reupload all attribs");
-            this._mesh.setAttribute(this.ATTR_POS, this._attrPositions, 3, { "instanced": true });
-            this._mesh.setAttribute(this.ATTR_COLOR, this._attrColors, 4, { "instanced": true });
-            this._mesh.setAttribute(this.ATTR_SIZE, this._attrSizes, 2, { "instanced": true });
-            this._mesh.setAttribute(this.ATTR_CIRCLE, this._attrCircle, 1, { "instanced": true });
-            this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrTexRect, 4, { "instanced": true });
-            this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrTextures, 1, { "instanced": true });
+            this._meshAttrPos = this._mesh.setAttribute(this.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
+            this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
+            this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
+            this._meshAttrCirc = this._mesh.setAttribute(this.ATTR_CIRCLE, this._attrBuffCircle, 1, { "instanced": true });
+            this._meshAttrRect = this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrTexRect, 4, { "instanced": true });
+            this._meshAttrTex = this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
             this._reUploadAttribs = false;
+            perf.finish();
         }
 
-        if (this._updateRangesMin[this.ATTR_POS] != 9999)
-        {
-            this._mesh.setAttributeRange(this.ATTR_POS, this._attrPositions, this._updateRangesMin[this.ATTR_POS], this._updateRangesMax[this.ATTR_POS]);
-            this._resetAttrRange(this.ATTR_POS);
-        }
-
-        if (this._updateRangesMin[this.ATTR_COLOR] != 9999)
-        {
-            this._mesh.setAttributeRange(this.ATTR_COLOR, this._attrColors, this._updateRangesMin[this.ATTR_COLOR], this._updateRangesMax[this.ATTR_COLOR]);
-            this._resetAttrRange(this.ATTR_COLOR);
-        }
-
-        if (this._updateRangesMin[this.ATTR_SIZE] != 9999)
-        {
-            this._mesh.setAttributeRange(this.ATTR_SIZE, this._attrSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
-            this._resetAttrRange(this.ATTR_SIZE);
-        }
-
-        if (this._updateRangesMin[this.ATTR_CIRCLE] != 9999)
-        {
-            this._mesh.setAttributeRange(this.ATTR_CIRCLE, this._attrCircle, this._updateRangesMin[this.ATTR_CIRCLE], this._updateRangesMax[this.ATTR_CIRCLE]);
-            this._resetAttrRange(this.ATTR_CIRCLE);
-        }
-
-        if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
-        {
-            this._mesh.setAttributeRange(this.ATTR_TEXRECT, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
-            this._resetAttrRange(this.ATTR_TEXRECT);
-        }
-
-        // if (this._updateRangesMin[this.ATTR_CONTENT_TEX] != 9999)
+        // if (this._updateRangesMin[this.ATTR_POS] != 9999)
         // {
-        //     this._mesh.setAttributeRange(this.ATTR_CONTENT_TEX, this._attrTextures, this._updateRangesMin[this.ATTR_CONTENT_TEX], this._updateRangesMax[this.ATTR_CONTENT_TEX]);
-        //     this._resetAttrRange(this.ATTR_CONTENT_TEX);
+        //     this._mesh.setAttributeRange(this.ATTR_POS, this._attrBuffPos, this._updateRangesMin[this.ATTR_POS], this._updateRangesMax[this.ATTR_POS]);
+        //     this._resetAttrRange(this.ATTR_POS);
         // }
 
-        perf.finish();
+        // if (this._updateRangesMin[this.ATTR_COLOR] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_COLOR, this._attrBuffCol, this._updateRangesMin[this.ATTR_COLOR], this._updateRangesMax[this.ATTR_COLOR]);
+        //     this._resetAttrRange(this.ATTR_COLOR);
+        // }
+
+        // if (this._updateRangesMin[this.ATTR_SIZE] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_SIZE, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
+        //     this._resetAttrRange(this.ATTR_SIZE);
+        // }
+
+        // if (this._updateRangesMin[this.ATTR_CIRCLE] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_CIRCLE, this._attrBuffCircle, this._updateRangesMin[this.ATTR_CIRCLE], this._updateRangesMax[this.ATTR_CIRCLE]);
+        //     this._resetAttrRange(this.ATTR_CIRCLE);
+        // }
+
+        // if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_TEXRECT, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
+        //     this._resetAttrRange(this.ATTR_TEXRECT);
+        // }
 
 
         this._needsRebuild = false;
@@ -395,28 +396,33 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     setPosition(idx, x, y)
     {
-        if (this._float32Diff(this._attrPositions[idx * 3 + 0], x) || this._float32Diff(this._attrPositions[idx * 3 + 1], y))
+        if (this._float32Diff(this._attrBuffPos[idx * 3 + 0], x) || this._float32Diff(this._attrBuffPos[idx * 3 + 1], y))
         {
             this._needsRebuild = true;
             this._needsRebuildReason = "pos change";
-            this._setAttrRange(this.ATTR_POS, idx * 3, idx * 3 + 3);
+            // this._setAttrRange(this.ATTR_POS, idx * 3, idx * 3 + 3);
         }
+        else return;
 
-        this._attrPositions[idx * 3 + 0] = x;
-        this._attrPositions[idx * 3 + 1] = y;
+        this._attrBuffPos[idx * 3 + 0] = x;
+        this._attrBuffPos[idx * 3 + 1] = y;
+
+        this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, idx * 3, idx * 3 + 3);
     }
 
     setSize(idx, x, y)
     {
-        if (this._float32Diff(this._attrSizes[idx * 2 + 0], x) || this._float32Diff(this._attrSizes[idx * 2 + 1], y))
+        if (this._float32Diff(this._attrBuffSizes[idx * 2 + 0], x) || this._float32Diff(this._attrBuffSizes[idx * 2 + 1], y))
         {
             this._needsRebuild = true;
             this._needsRebuildReason = "size change";
-            this._setAttrRange(this.ATTR_SIZE, idx * 2, (idx + 1) * 2);
+            // this._setAttrRange(this.ATTR_SIZE, idx * 2, (idx + 1) * 2);
         }
+        else return;
 
-        this._attrSizes[idx * 2 + 0] = x;
-        this._attrSizes[idx * 2 + 1] = y;
+        this._attrBuffSizes[idx * 2 + 0] = x;
+        this._attrBuffSizes[idx * 2 + 1] = y;
+        this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
     }
 
     setTexRect(idx, x, y, w, h)
@@ -429,13 +435,15 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         {
             this._needsRebuild = true;
             this._needsRebuildReason = "texrect";
-            this._setAttrRange(this.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
+            // this._setAttrRange(this.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
         }
+        else return;
 
         this._attrTexRect[idx * 4 + 0] = x;
         this._attrTexRect[idx * 4 + 1] = y;
         this._attrTexRect[idx * 4 + 2] = w;
         this._attrTexRect[idx * 4 + 3] = h;
+        this._mesh.setAttributeRange(this._meshAttrRect, this._attrTexRect, idx * 4, idx * 4 + 4);
     }
 
     setColor(idx, r, g, b, a)
@@ -448,30 +456,34 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             r = r[0];
         }
         if (
-            this._float32Diff(this._attrColors[idx * 4 + 0], r) ||
-            this._float32Diff(this._attrColors[idx * 4 + 1], g) ||
-            this._float32Diff(this._attrColors[idx * 4 + 2], b) ||
-            this._float32Diff(this._attrColors[idx * 4 + 3], a))
+            this._float32Diff(this._attrBuffCol[idx * 4 + 0], r) ||
+            this._float32Diff(this._attrBuffCol[idx * 4 + 1], g) ||
+            this._float32Diff(this._attrBuffCol[idx * 4 + 2], b) ||
+            this._float32Diff(this._attrBuffCol[idx * 4 + 3], a))
         {
             this._needsRebuild = true;
             this._needsRebuildReason = "setcolor";
-            this._setAttrRange(this.ATTR_COLOR, idx * 4, idx * 4 + 4);
+            // this._setAttrRange(this._meshAttrCol, idx * 4, idx * 4 + 4);
         }
+        else return;
 
-        this._attrColors[idx * 4 + 0] = r;
-        this._attrColors[idx * 4 + 1] = g;
-        this._attrColors[idx * 4 + 2] = b;
-        this._attrColors[idx * 4 + 3] = a;
+        this._attrBuffCol[idx * 4 + 0] = r;
+        this._attrBuffCol[idx * 4 + 1] = g;
+        this._attrBuffCol[idx * 4 + 2] = b;
+        this._attrBuffCol[idx * 4 + 3] = a;
+
+        this._mesh.setAttributeRange(this._meshAttrCol, this._attrBuffCol, idx * 4, idx * 4 + 4);
     }
 
     setCircle(idx, o)
     {
-        if (this._attrCircle[idx] != o)
+        if (this._attrBuffCircle[idx] != o)
         {
             this._needsRebuild = true;
-            this._setAttrRange(this.ATTR_CIRCLE, idx, idx + 1);
         }
-        this._attrCircle[idx] = o;
+        else return;
+        this._attrBuffCircle[idx] = o;
+        this._setAttrRange(this._meshAttrCirc, idx, idx + 1);
     }
 
 
@@ -524,6 +536,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     mouseMove(x, y, button)
     {
+        const perf = CABLES.uiperf.start("glrectinstancer mousemove");
         if (!this._interactive) return;
         if (this.allowDragging && this._draggingRect)
         {
@@ -535,6 +548,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         {
             this._rects[i].mouseMove(x, y, button);
         }
+        perf.finish();
     }
 
     mouseDown(e)

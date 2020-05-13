@@ -70,6 +70,7 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
 
     this.setSwitchValue("miniopselect", CABLES.UI.userSettings.get("miniopselect"));
     this.setSwitchValue("glpatchview", CABLES.UI.userSettings.get("glpatchview"));
+    this.setSwitchValue("svgpatchviewdisable", CABLES.UI.userSettings.get("svgpatchviewdisable"));
 };
 
 CABLES.UI.Preferences.prototype.show = function ()
@@ -84,8 +85,8 @@ CABLES.UI.Preferences.prototype.show = function ()
         elements[i].addEventListener("click", (e) =>
         {
             let v = e.target.dataset.value;
-            if (v === "true")v = true;
-            if (v === "false")v = false;
+            if (v === "true") v = true;
+            if (v === "false") v = false;
 
             CABLES.UI.userSettings.set(e.target.dataset.setting, v);
         });

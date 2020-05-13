@@ -10,6 +10,7 @@ CABLES.UI.Patch = function (_gui)
     const self = this;
     this.ops = [];
     this.scene = null;
+    this.disabled = CABLES.UI.userSettings.get("svgpatchviewdisable");
     const gui = _gui;
 
     let currentProject = null;
@@ -564,7 +565,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.updateViewBox = function ()
     {
-        this._viewBox.update();
+        if (!this.disabled) this._viewBox.update();
     };
 
     function rubberBandHide()
@@ -1196,11 +1197,13 @@ CABLES.UI.Patch = function (_gui)
 
         scene.addEventListener("subpatchCreated", function ()
         {
+            if (this.disabled) return;
             self.updateSubPatches();
         });
 
         scene.addEventListener("onUnLink", function (p1, p2)
         {
+            if (this.disabled) return;
             gui.setStateUnsaved();
 
             // todo: check if needs to be updated ?
@@ -1256,6 +1259,7 @@ CABLES.UI.Patch = function (_gui)
 
         scene.addEventListener("onLink", function (p1, p2)
         {
+            if (this.disabled) return;
             gui.setStateUnsaved();
 
             let uiPort1 = null;
@@ -1325,6 +1329,7 @@ CABLES.UI.Patch = function (_gui)
 
         scene.addEventListener("onOpDelete", function (op)
         {
+            if (this.disabled) return;
             const undofunc = (function (opname, opid)
             {
                 const oldValues = {};
@@ -1363,6 +1368,7 @@ CABLES.UI.Patch = function (_gui)
         scene.addEventListener("onOpAdd",
             function (op)
             {
+                if (this.disabled) return;
                 gui.setStateUnsaved();
                 this._elPatch.focus();
                 let width = CABLES.UI.uiConfig.opWidth;

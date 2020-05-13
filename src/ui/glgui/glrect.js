@@ -206,7 +206,6 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         if (!this._visible) return;
 
         const hovering = this.isPointInside(x, y);
-
         const isHovered = this._hovering;
         this._hovering = hovering;
 
@@ -227,10 +226,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         for (let i = 0; i < this.childs.length; i++)
         {
             this.childs[i].mouseMove(x, y);
-            if (this.childs[i].isHovering())
-            {
-                this._hovering = false;
-            }
+            if (this.childs[i].isHovering()) this._hovering = false;
         }
 
         if (this._hovering)
