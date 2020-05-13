@@ -38,6 +38,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         gui.setLayout();
     }
 
+    focus()
+    {
+        if (this._patchRenderer.focus) this._patchRenderer.focus();
+    }
+
     setPatchRenderer(id, pr)
     {
         this._pvRenderers[id] = pr;
@@ -720,6 +725,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     setSelectedOpById(opid)
     {
         if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
+        else if (this._patchRenderer.selectOpId) this._patchRenderer.selectOpId(opid);
         else console.log("patchRenderer has no function setSelectedOpById");
     }
 

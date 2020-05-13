@@ -163,6 +163,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     get title() { return this.opUiAttribs.title; }
 
+    get glPatch() { return this._glPatch; }
 
     set uiAttribs(attr)
     {

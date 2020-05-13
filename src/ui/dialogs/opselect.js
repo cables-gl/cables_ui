@@ -423,6 +423,7 @@ CABLES.UI.OpSelect.prototype.close = function ()
 {
     // console.log('opselect close');
     $("body").off("keydown", this.keyDown);
+    gui.patchView.focus();
 };
 
 

@@ -139,7 +139,7 @@ CABLES.CMD.PATCH.newPatch = function ()
     gui.createProject();
 };
 
-CABLES.CMD.PATCH.addOp = function ()
+CABLES.CMD.PATCH.addOp = function (x, y)
 {
     gui.opSelect().showOpSelect({ "x": 0, "y": 0 });
 };

@@ -40,12 +40,22 @@ CABLES.GLGUI.GlPort = class
 
         this._rect.on("hover", (rect) =>
         {
+            const event = {
+                "clientX": this._glop.glPatch.viewBox.mouseX,
+                "clientY": this._glop.glPatch.viewBox.mouseY - 25,
+            };
+
             console.log("port", this._port.name, this._rect.isHovering());
+            CABLES.UI.updateHoverToolTip(event, this._port);
         });
 
         this._rect.on("unhover", (rect) =>
         {
             console.log("port", this._rect.isHovering());
+
+            clearInterval(CABLES.UI.hoverInterval);
+            CABLES.UI.hoverInterval = -1;
+            CABLES.UI.hideToolTip();
         });
     }
 

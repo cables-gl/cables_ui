@@ -16,6 +16,9 @@ CABLES.GLGUI.ViewBox = class
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
+        this._cgl = cgl;
+
+        console.log("CABLES.GLGUI.VISUALCONFIG.zoomSmooth", CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
 
         cgl.canvas.addEventListener("mousedown", (e) =>
         {
@@ -78,15 +81,15 @@ CABLES.GLGUI.ViewBox = class
         });
     }
 
-    get zoom() { return this._zoom; }
+    get zoom() { return this._smoothedZoom.value; }
 
     get scrollX() { return -this._scrollX; }
 
     get scrollY() { return this._scrollY; }
 
-    get scrollXZoom() { return -this._scrollX / this._zoom; }
+    get scrollXZoom() { return -this._scrollX / this._smoothedZoom.value; }
 
-    get scrollYZoom() { return this._scrollY / this._zoom; }
+    get scrollYZoom() { return this._scrollY / this._smoothedZoom.value; }
 
     get mouseX() { return this._mouseX; }
 
@@ -99,14 +102,19 @@ CABLES.GLGUI.ViewBox = class
 
     scrollTo(x, y)
     {
+        // const pixelMulX = cgl.canvas.width / this._zoom * 0.5;
+        // const pixelMulY = cgl.canvas.height / this._zoom * 0.5;
+
         this._scrollX = x;
         this._scrollY = y;
     }
 
     center()
     {
-        console.log("center!");
         const ops = gui.patchView.getSelectedOps();
+
+        console.log("center!", ops.length + " ops...");
+
         if (ops.length > 0)
         {
             const x = ops[0].uiAttribs.translate.x;

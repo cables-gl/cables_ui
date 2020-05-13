@@ -534,7 +534,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         return r;
     }
 
-    mouseMove(x, y, button)
+    mouseMove(x, y, button, event)
     {
         const perf = CABLES.uiperf.start("glrectinstancer mousemove");
         if (!this._interactive) return;

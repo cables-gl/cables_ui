@@ -37,6 +37,52 @@ CABLES.UI.snapOpPosY = function (posY)
     return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
 };
 
+CABLES.UI.updateHoverToolTip = function (event, port)
+{
+    if (!port) return;
+
+    let txt = CABLES.UI.getPortDescription(port);
+    let val = null;
+    if (port)
+    {
+        if (port.type == CABLES.OP_PORT_TYPE_VALUE || port.type == CABLES.OP_PORT_TYPE_STRING)
+        {
+            val = port.get();
+            if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
+            else val = "\"" + val + "\"";
+            txt += ": <span class=\"code\">" + val + "</span>";
+        }
+        else if (port.type == CABLES.OP_PORT_TYPE_ARRAY)
+        {
+            val = port.get();
+            if (val)
+            {
+                txt += " (total:" + val.length + ") <span class=\"\"> [";
+                for (let i = 0; i < Math.min(3, val.length); i++)
+                {
+                    if (i != 0)txt += ", ";
+
+                    if (CABLES.UTILS.isNumeric(val[i]))txt += Math.round(val[i] * 1000) / 1000;
+                    else if (typeof val[i] == "string")txt += "\"" + val[i] + "\"";
+                    else if (typeof val[i] == "object")txt += "[object]";
+                    else JSON.stringify(val[i]);
+                }
+
+                txt += " ...] </span>";
+            }
+            else txt += "no array";
+        }
+    }
+
+    CABLES.UI.showToolTip(event, txt);
+    if (CABLES.UI.hoverInterval == -1)
+        CABLES.UI.hoverInterval = setInterval(function ()
+        {
+            CABLES.UI.updateHoverToolTip(event, port);
+        }, 50);
+};
+
+
 CABLES.UI.getPortDescription = function (thePort)
 {
     let str = "";
