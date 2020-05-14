@@ -12,13 +12,13 @@ CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
 CABLES.UI.DEFAULTOPNAMES =
 {
+    "number": "Ops.Value.Number",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioPlayer",
     "defaultOpJson3d": "Ops.Json3d.Mesh3d",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture",
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v2",
     "defaultOpJson": "Ops.Json.AjaxRequest_v2",
-
     "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
     "VarGetNumber": "Ops.Vars.VarGetNumber",
     "VarSetObject": "Ops.Vars.VarSetObject",

@@ -37,8 +37,8 @@
         </div>
       {{#each ops}}
 
-        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.patchView.addOp('{{name}}');CABLES.UI.MODAL.hide();">
-            <div class="insertbutton fright" onclick="gui.patchView.addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
+        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">
+            <div class="insertbutton fright" onclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
             <a>
 
                 {{#if old }}OLD{{/if}}

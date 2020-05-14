@@ -57,9 +57,83 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
             // todo options:
             // - putIntoLink
-            // - autoLinkToPort
             // ...?
             // positioning ?
+
+
+            if (options.linkNewOpToPort)
+            {
+                const foundPort = op.findFittingPort(options.linkNewOpToPort);
+                if (foundPort)
+                {
+                    // console.log(op.objName,'op.objName');
+                    if (op.objName == CABLES.UI.DEFAULTOPNAMES.number)
+                    {
+                        const oldValue = options.linkNewOpToPort.get();
+                        op.getPort("value").set(oldValue);
+                        op.setTitle(options.linkNewOpToPort.getName());
+                    }
+
+                    gui.patch().scene.link(
+                        options.linkNewOpToOp,
+                        options.linkNewOpToPort.getName(),
+                        op,
+                        foundPort.getName());
+                }
+            }
+            if (options.linkNewLink)
+            {
+                console.log("new op into link!");
+
+                let op1 = null;
+                let op2 = null;
+                let port1 = null;
+                let port2 = null;
+
+                if (options.linkNewLink.p1)
+                {
+                    // patch_link
+                    op1 = options.linkNewLink.p1.op;
+                    op2 = options.linkNewLink.p2.op;
+                    port1 = options.linkNewLink.p1.thePort;
+                    port2 = options.linkNewLink.p2.thePort;
+                }
+                else
+                {
+                    // core link
+                    op2 = options.linkNewLink.portIn.parent;
+                    op1 = options.linkNewLink.portOut.parent;
+                    port2 = options.linkNewLink.portIn;
+                    port1 = options.linkNewLink.portOut;
+                }
+
+                const foundPort1 = op.findFittingPort(port1);
+                const foundPort2 = op.findFittingPort(port2);
+
+                if (foundPort2 && foundPort1)
+                {
+                    for (const il in port1.links)
+                    {
+                        if (
+                            (port1.links[il].portIn == port1 && port1.links[il].portOut == port2) ||
+                            (port1.links[il].portOut == port1 && port1.links[il].portIn == port2)) port1.links[il].remove();
+                    }
+
+                    gui.corePatch().link(
+                        op,
+                        foundPort1.getName(),
+                        op1,
+                        port1.getName()
+                    );
+
+                    gui.corePatch().link(
+                        op,
+                        foundPort2.getName(),
+                        op2,
+                        port2.getName()
+                    );
+                }
+            }
         });
     }
 

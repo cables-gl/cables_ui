@@ -5,7 +5,6 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.OPSELECT = {};
 CABLES.UI.OPSELECT.linkNewLink = null;
 CABLES.UI.OPSELECT.linkNewOpToPort = null;
-CABLES.UI.OPSELECT.linkNewOpToOp = null;
 CABLES.UI.OPSELECT.newOpPos = { "x": 0, "y": 0 };
 CABLES.UI.OPSELECT.maxPop = 0;
 
@@ -22,13 +21,12 @@ CABLES.UI.OpSelect = class
         this._backspaceDelay = -1;
         this._wordsDb = null;
         this._eleSearchinfo = null;
-        this._cbOpSelected = null;
         this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
+        this._newOpOptions = {};
     }
 
     close()
     {
-        this._cbOpSelected = null;
         $("body").off("keydown", this.keyDown);
         gui.patchView.focus();
     }
@@ -44,9 +42,8 @@ CABLES.UI.OpSelect = class
             $("#search_startType").show();
 
             for (let i = 0; i < this._list.length; i++)
-            {
-                if (this._list[i].element) { this._list[i].element[0].style.display = "none"; }
-            }
+                if (this._list[i].element)
+                    this._list[i].element[0].style.display = "none";
         }
         else $("#search_startType").hide();
 
@@ -91,10 +88,7 @@ CABLES.UI.OpSelect = class
         {
             let scoredebug = "";
 
-            if (selected.length > 0)
-            {
-                scoredebug = selected[0].dataset.scoreDebug;
-            }
+            if (selected.length > 0) scoredebug = selected[0].dataset.scoreDebug;
 
             optionsHtml += `&nbsp;&nbsp;|&nbsp;&nbsp;<span class="tt" data-tt="${scoredebug}">`;
             optionsHtml += `score: ${score}`;
@@ -200,7 +194,6 @@ CABLES.UI.OpSelect = class
                 points += (list[i].pop || 2) / CABLES.UI.OPSELECT.maxPop || 1;
             }
 
-
             if (!found) points = 0;
             // if(points && wordIndex>0 && list[i].score==0) points=0; // e.g. when second word was found, but first was not
 
@@ -221,15 +214,11 @@ CABLES.UI.OpSelect = class
         sq = sq || "";
         let query = sq.toLowerCase();
 
-        const result = null;
         const options = {
             "linkNamespaceIsTextureEffects": false,
         };
 
-        if (CABLES.UI.OPSELECT.linkNewOpToOp)
-        {
-            if (CABLES.UI.OPSELECT.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) { options.linkNamespaceIsTextureEffects = true; }
-        }
+        if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
 
         const origQuery = query;
 
@@ -321,12 +310,7 @@ CABLES.UI.OpSelect = class
 
             this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
             this._eleSearchinfo.innerHTML = "";
-            // $('#searchinfo').empty();
-
-            // var content=gui.opDocs.get(opname);
             const opDoc = gui.opDocs.get2(opname);
-
-            // var html = '<div id="opselect-layout"><a target="_blank" href="/op/' + ( opname || '' ) + '" class="open-docs-button button button--with-icon">Open Examples Page <i class="icon icon-link"></i></a></div>'+content+htmlFoot;
 
             let html = "<div id=\"opselect-layout\">";
             html += `<a target="_blank" href="${CABLES.sandbox.getCablesUrl()}/op/${opname || ""}" class="open-docs-button button button--with-icon">View Documentation <i class="icon icon-link"></i></a>`;
@@ -334,7 +318,6 @@ CABLES.UI.OpSelect = class
             html += opDoc;
             html += htmlFoot;
 
-            // $('#searchinfo').html(html);
             this._eleSearchinfo.innerHTML = html;
             setTimeout(() =>
             {
@@ -354,7 +337,6 @@ CABLES.UI.OpSelect = class
         this.lastQuery = q;
         this._search(q);
         let i = 0;
-
 
         const perf = CABLES.uiperf.start("opselect.searchLoop");
 
@@ -429,7 +411,6 @@ CABLES.UI.OpSelect = class
         this.updateInfo();
     }
 
-
     reload()
     {
         this._list = null;
@@ -480,8 +461,14 @@ CABLES.UI.OpSelect = class
     {
         CABLES.UI.OPSELECT.linkNewLink = link;
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;
-        CABLES.UI.OPSELECT.linkNewOpToOp = linkOp;
         CABLES.UI.OPSELECT.newOpPos = options;
+
+        this._newOpOptions =
+        {
+            "linkNewOpToPort": linkPort,
+            "linkNewOpToOp": linkOp,
+            "linkNewLink": link
+        };
 
         this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
         console.log("_forceShowOldOps", this._forceShowOldOps);
@@ -552,7 +539,6 @@ CABLES.UI.OpSelect = class
 
         $("#optree").html(this.tree.html());
 
-
         this.updateOptions();
 
         setTimeout(() => { $("#opsearch").focus(); }, 50);
@@ -571,6 +557,21 @@ CABLES.UI.OpSelect = class
         this.search();
     }
 
+    addOp(opname)
+    {
+        if (opname && opname.length > 2)
+        {
+            CABLES.UI.MODAL.hide();
+            gui.patchView.addOp(opname, this._newOpOptions);
+        }
+    }
+
+    addSelectedOp()
+    {
+        const opname = $(".selected").data("opname");
+        this.addOp(opname);
+    }
+
     keyDown(e)
     {
         switch (e.which)
@@ -581,14 +582,7 @@ CABLES.UI.OpSelect = class
             break;
 
         case 13:
-            const opname = $(".selected").data("opname");
-
-            if (opname && opname.length > 2)
-            {
-                CABLES.UI.MODAL.hide();
-                gui.patchView.addOp(opname);
-            }
-
+            this.addSelectedOp();
             e.preventDefault();
             break;
 
@@ -654,7 +648,6 @@ CABLES.UI.OpSelect = class
                     {
                         if (this._forceShowOldOps) hidden = false;
                         if (opname.indexOf("Ops.Admin") == 0 && gui.user.isAdmin) hidden = false;
-                        console.log("opname", opname, hidden);
                     }
 
                     parts.length -= 1;
