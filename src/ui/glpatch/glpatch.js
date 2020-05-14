@@ -264,11 +264,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY, mouseButton)
     {
         this._showRedrawFlash++;
-        // if(this._showRedrawFlash) this._redrawFlash.setColor(0,0,0,1);
-        // else this._redrawFlash.setColor(0,1,0,1);
-
         this.viewBox.update();
-        // this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
 
         if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();
 
@@ -279,18 +275,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const coord = this.screenCoord(this.viewBox.mouseX, this.viewBox.mouseY);
         const mouseAbsX = coord[0];
         const mouseAbsY = coord[1];
-
-
         const starttime = performance.now();
 
         this.mouseMove(mouseAbsX, mouseAbsY, mouseButton);
         this._cursor2.setPosition(mouseAbsX - 2, mouseAbsY - 2);
         this._portDragLine.setPosition(mouseAbsX, mouseAbsY);
-
-        // scrollX /= zoom;
-        // scrollY /= zoom;
-
-        // console.log(this.viewBox.scrollXZoom, this.viewBox.scrollYZoom);
 
         const perf = CABLES.uiperf.start("[glpatch] render");
 
@@ -390,7 +379,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
             this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
-            gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
+            if (x - this._lastMouseX != 0 && y - this._lastMouseY != 0) gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
         }
         else
         {
