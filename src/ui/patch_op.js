@@ -517,8 +517,8 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
 
         this._attachedComment.attr(
             {
-                xx,
-                yy,
+                "x": xx,
+                "y": yy,
                 "text": opui.op.uiAttribs.comment
             }
         );
