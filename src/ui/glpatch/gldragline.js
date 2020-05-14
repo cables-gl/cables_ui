@@ -20,7 +20,17 @@ CABLES.GLGUI.GlRectDragLine = class
 
         glpatch.on("mouseup", (e) =>
         {
-            if (this.isActive) this.stop();
+            if (!this.isActive) return;
+
+
+            if (this._glPort && this._glPort.port)
+            {
+                console.log("this._startGlPorts", this._glPort.port);
+
+                gui.opSelect().show({}, this._glPort.port.parent, this._glPort.port);
+            }
+
+            this.stop();
         });
 
         glpatch.on("mouseDownOverPort", (glport, opid, portName) =>
@@ -97,7 +107,7 @@ CABLES.GLGUI.GlRectDragLine = class
     {
         if (!p)
         {
-            this._port = this._rect = null;
+            this._glPort = this._rect = null;
             this._lineDrawer.setLine(this._lineIdx0, 0, 0, 0, 0);
             return;
         }
@@ -106,7 +116,7 @@ CABLES.GLGUI.GlRectDragLine = class
         this._startPortName = portName;
 
         this._rect = p.rect;
-        this._port = p;
+        this._glPort = p;
         this._lineDrawer.setColor(this._lineIdx0, 1, 1, 1, 1);
 
         this._patchDragWasAllowed = this._glPatch.allowDragging;
@@ -140,11 +150,11 @@ CABLES.GLGUI.GlRectDragLine = class
         }
         else
         {
-            if (this._rect && this._port)
+            if (this._rect && this._glPort)
             {
                 this._lineDrawer.setLine(this._lineIdx0,
-                    this._port.glOp.x + this._rect.x + CABLES.GLGUI.VISUALCONFIG.portWidth / 2,
-                    this._port.glOp.y + this._rect.y + CABLES.GLGUI.VISUALCONFIG.portHeight / 2,
+                    this._glPort.glOp.x + this._rect.x + CABLES.GLGUI.VISUALCONFIG.portWidth / 2,
+                    this._glPort.glOp.y + this._rect.y + CABLES.GLGUI.VISUALCONFIG.portHeight / 2,
                     this._x,
                     this._y);
             }
@@ -153,7 +163,7 @@ CABLES.GLGUI.GlRectDragLine = class
 
     get isActive()
     {
-        return this._port != null;
+        return this._glPort != null;
     }
 
     stop()

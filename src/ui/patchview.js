@@ -742,7 +742,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         else
         {
             const fitp = op2.findFittingPort(p);
-            this._p.link(op1, pid, op2, fitp.name);
+            if (fitp) this._p.link(op1, pid, op2, fitp.name);
         }
     }
 

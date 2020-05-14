@@ -59,6 +59,11 @@ CABLES.GLGUI.GlPort = class
         });
     }
 
+    get port()
+    {
+        return this._port;
+    }
+
     get id()
     {
         return this._id;
