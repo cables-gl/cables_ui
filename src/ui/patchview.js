@@ -49,11 +49,17 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (!this._patchRenderer) this._patchRenderer = pr;
     }
 
-    addOp(opname)
+    addOp(opname, options)
     {
         gui.serverOps.loadOpLibs(opname, () =>
         {
-            this._p.addOp(opname);
+            const op = this._p.addOp(opname);
+
+            // todo options:
+            // - putIntoLink
+            // - autoLinkToPort
+            // ...?
+            // positioning ?
         });
     }
 

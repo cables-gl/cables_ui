@@ -1266,7 +1266,7 @@ CABLES.UI.GUI = function (cfg)
             case 9:
                 if ($("#patch").is(":focus") && !e.metaKey && !e.ctrlKey)
                 {
-                    gui.opSelect().showOpSelect({
+                    gui.opSelect().show({
                         "x": 0,
                         "y": 0
                     });
@@ -1423,7 +1423,7 @@ CABLES.UI.GUI = function (cfg)
         else if (showingEditor) this.closeEditor();
         else
         {
-            if (e) gui.opSelect().showOpSelect({
+            if (e) gui.opSelect().show({
                 "x": 0,
                 "y": 0
             });

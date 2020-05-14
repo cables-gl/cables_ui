@@ -131,7 +131,6 @@ CABLES.CMD.PATCH.export = function ()
 {
     const exporter = new CABLES.UI.Exporter();
     exporter.show();
-    // gui.patch().exportStatic();
 };
 
 CABLES.CMD.PATCH.newPatch = function ()
@@ -141,7 +140,7 @@ CABLES.CMD.PATCH.newPatch = function ()
 
 CABLES.CMD.PATCH.addOp = function (x, y)
 {
-    gui.opSelect().showOpSelect({ "x": 0, "y": 0 });
+    gui.opSelect().show({ "x": 0, "y": 0 });
 };
 
 CABLES.CMD.PATCH.patchWebsite = function ()
@@ -153,7 +152,6 @@ CABLES.CMD.PATCH.analyzePatch = function ()
 {
     CABLES.UI.AnalyzePatch();
 };
-
 
 CABLES.CMD.PATCH.createVariable = function (op)
 {

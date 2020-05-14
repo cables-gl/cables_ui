@@ -40,6 +40,8 @@
         <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.patchView.addOp('{{name}}');CABLES.UI.MODAL.hide();">
             <div class="insertbutton fright" onclick="gui.patchView.addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
             <a>
+
+                {{#if old }}OLD{{/if}}
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
                 <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
                 - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}

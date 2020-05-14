@@ -71,11 +71,12 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("miniopselect", CABLES.UI.userSettings.get("miniopselect"));
     this.setSwitchValue("glpatchview", CABLES.UI.userSettings.get("glpatchview"));
     this.setSwitchValue("svgpatchviewdisable", CABLES.UI.userSettings.get("svgpatchviewdisable"));
+    this.setSwitchValue("showOldOps", CABLES.UI.userSettings.get("showOldOps"));
 };
 
 CABLES.UI.Preferences.prototype.show = function ()
 {
-    const html = CABLES.UI.getHandleBarHtml("tab_preferences", {});
+    const html = CABLES.UI.getHandleBarHtml("tab_preferences", { "user": gui.user });
     this._tab.html(html);
     this.updateValues();
 
@@ -92,7 +93,6 @@ CABLES.UI.Preferences.prototype.show = function ()
         });
     }
 
-
     elements = document.getElementsByClassName("valinput");
     for (let i = 0; i < elements.length; i++)
     {
@@ -107,7 +107,6 @@ CABLES.UI.Preferences.prototype.show = function ()
             }
         });
     }
-
 
     CABLES.UI.userSettings.addEventListener("onChange", () =>
     {

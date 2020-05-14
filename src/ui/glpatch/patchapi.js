@@ -137,7 +137,8 @@ CABLES.GLGUI.GlPatchAPI = class
         const opOut = gui.corePatch().getOpById(opIdOut);
         const pOut = opOut.getPortById(portIdOut);
         const link = pOut.getLinkTo(pIn);
-
+        // options, linkOp, linkPort, link)
+        console.log("link ", link);
         gui.opSelect().show({ "x": 0, "y": 0 }, null, null, link);
     }
 
