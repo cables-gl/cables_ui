@@ -33,22 +33,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRyb = 0;
         this.cacheOIRops = null;
 
-        for (let i = -100; i < 100; i++)
-        {
-            const col = 0.3;
-            const size = 10000;
+        // for (let i = -100; i < 100; i++)
+        // {
+        //     const col = 0.3;
+        //     const size = 10000;
 
-            const gridLine = this._rectInstancer.createRect();
-            gridLine.setColor(col, col, col, 1);
-            gridLine.setPosition(i * 100, -0.5 * size, -11111);
-            gridLine.setSize(1, size);
+        //     const gridLine = this._rectInstancer.createRect();
+        //     gridLine.setColor(col, col, col, 1);
+        //     gridLine.setPosition(i * 100, -0.5 * size, -11111);
+        //     gridLine.setSize(1, size);
 
-            const gridLine2 = this._rectInstancer.createRect();
-            gridLine2.setColor(col, col, col, 1);
-            gridLine2.setPosition(-0.5 * size, i * 100, -11111);
-            gridLine2.setSize(size, 1);
-        }
-
+        //     const gridLine2 = this._rectInstancer.createRect();
+        //     gridLine2.setColor(col, col, col, 1);
+        //     gridLine2.setPosition(-0.5 * size, i * 100, -11111);
+        //     gridLine2.setSize(size, 1);
+        // }
 
         this._cursor2 = this._overLayRects.createRect();
         this._cursor2.setSize(2, 2);
@@ -71,48 +70,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.links = {};
 
+        cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
+        cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
+        cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
+        cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
 
-        cgl.canvas.addEventListener("mousedown", (e) =>
-        {
-            this.emitEvent("mousedown", e);
-            this._rectInstancer.mouseDown(e);
-        });
-
-        cgl.canvas.addEventListener("mousemove", (e) =>
-        {
-            if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
-        });
-
-        cgl.canvas.addEventListener("mouseleave", (e) =>
-        {
-            if (this._selectionArea.active)
-            {
-                console.log("hide area44");
-                this._selectionArea.hideArea();
-            }
-            this._lastButton = 0;
-            this.emitEvent("mouseleave", e);
-            this.emitEvent("mouseup", e);
-        });
-
-        cgl.canvas.addEventListener("mouseup", (e) =>
-        {
-            this._rectInstancer.mouseUp(e);
-            this.emitEvent("mouseup", e);
-            this.quickLinkSuggestion.longPressCancel();
-            this._rectInstancer.interactive = true;
-
-            if (Object.keys(this._selectedGlOps).length == 0)gui.patchView.showBookmarkParamsPanel();
-        });
-
-        gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, (e) =>
-        {
-            gui.patchView.deleteSelectedOps();
-            gui.patchView.showDefaultPanel();
-            if (e.stopPropagation) e.stopPropagation();
-            if (e.preventDefault) e.preventDefault();
-        });
-
+        gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) => { CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode")); });
 
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, {}, (e) => { CABLES.CMD.PATCH.editOp(); });
@@ -128,6 +91,47 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.back(); });
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
+    }
+
+    _onCanvasMouseDown(e)
+    {
+        this.emitEvent("mousedown", e);
+        this._rectInstancer.mouseDown(e);
+    }
+
+    _onCanvasMouseMove(e)
+    {
+        if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
+    }
+
+    _onCanvasMouseLeave(e)
+    {
+        if (this._selectionArea.active)
+        {
+            console.log("hide area44");
+            this._selectionArea.hideArea();
+        }
+        this._lastButton = 0;
+        this.emitEvent("mouseleave", e);
+        this.emitEvent("mouseup", e);
+    }
+
+    _onCanvasMouseUp(e)
+    {
+        this._rectInstancer.mouseUp(e);
+        this.emitEvent("mouseup", e);
+        this.quickLinkSuggestion.longPressCancel();
+        this._rectInstancer.interactive = true;
+
+        if (Object.keys(this._selectedGlOps).length == 0)gui.patchView.showBookmarkParamsPanel();
+    }
+
+    _onKeyDelete(e)
+    {
+        gui.patchView.deleteSelectedOps();
+        gui.patchView.showDefaultPanel();
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
     }
 
     set patchAPI(api) { this._patchAPI = api; }

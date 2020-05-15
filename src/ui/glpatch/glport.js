@@ -9,6 +9,7 @@ CABLES.GLGUI.GlPort = class
         this._name = p.name;
         this._id = p.id;
         this._glop = glop;
+        this._glPatch = glpatch;
         this._rect = new CABLES.GLGUI.GlRect(rectInstancer, { "parent": oprect, "interactive": true });
         this._rect.setSize(CABLES.GLGUI.VISUALCONFIG.portWidth, CABLES.GLGUI.VISUALCONFIG.portHeight);
 
@@ -20,69 +21,57 @@ CABLES.GLGUI.GlPort = class
         this._rect.setPosition(i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding), y);
         oprect.addChild(this._rect);
 
-        this._rect.on("mousedown", (e, rect) =>
+        this._rect.on("mousedown", this._onMouseDown.bind(this));
+        this._rect.on("mouseup", this._onMouseUp.bind(this));
+        this._rect.on("hover", this._onHover.bind(this));
+        this._rect.on("unhover", this._onUnhover.bind(this));
+    }
+
+    _onMouseDown(e, rect)
+    {
+        console.log("PORT DIQB");
+        if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
         {
-            console.log("PORT DIQB");
-            if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
-            {
-                glpatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
-            }
-            else
-            {
-                glpatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name);
-            }
-        });
-
-        this._rect.on("mouseup", (e, rect) =>
+            this._glpatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
+        }
+        else
         {
-            glpatch.emitEvent("mouseUpOverPort", this._glop.id, this._port.name);
-        });
-
-        this._rect.on("hover", (rect) =>
-        {
-            const event = {
-                "clientX": this._glop.glPatch.viewBox.mouseX,
-                "clientY": this._glop.glPatch.viewBox.mouseY - 25,
-            };
-
-            console.log("port", this._port.name, this._rect.isHovering());
-            CABLES.UI.updateHoverToolTip(event, this._port);
-        });
-
-        this._rect.on("unhover", (rect) =>
-        {
-            console.log("port", this._rect.isHovering());
-
-            clearInterval(CABLES.UI.hoverInterval);
-            CABLES.UI.hoverInterval = -1;
-            CABLES.UI.hideToolTip();
-        });
+            this._glpatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name);
+        }
     }
 
-    get port()
+    _onMouseUp(e, rect)
     {
-        return this._port;
+        this._glpatch.emitEvent("mouseUpOverPort", this._glop.id, this._port.name);
     }
 
-    get id()
+    _onHover(rect)
     {
-        return this._id;
+        const event = {
+            "clientX": this._glPatch.viewBox.mouseX,
+            "clientY": this._glPatch.viewBox.mouseY - 25,
+        };
+
+        console.log("port", this._port.name, this._rect.isHovering());
+        CABLES.UI.updateHoverToolTip(event, this._port);
     }
 
-    get name()
+    _onUnhover(rect)
     {
-        return this._name;
+        clearInterval(CABLES.UI.hoverInterval);
+        CABLES.UI.hoverInterval = -1;
+        CABLES.UI.hideToolTip();
     }
 
-    get glOp()
-    {
-        return this._glop;
-    }
+    get port() { return this._port; }
 
-    get rect()
-    {
-        return this._rect;
-    }
+    get id() { return this._id; }
+
+    get name() { return this._name; }
+
+    get glOp() { return this._glop; }
+
+    get rect() { return this._rect; }
 
     dispose()
     {

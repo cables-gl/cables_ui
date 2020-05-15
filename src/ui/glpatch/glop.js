@@ -23,130 +23,82 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this.opUiAttribs = {};
         this._links = {};
         this._transparent = false;
-
         this.uiAttribs = op.uiAttribs;
-
         this._visPort = null;
         this._glRectContent = null;
-
-        this._glRectBg = instancer.createRect({ "draggable": true });
-        this._glRectBg.setSize(this._width, this._height);
-        this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
-
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
 
-
-        this._glRectBg.on("dragEnd", () =>
-        {
-            const glOps = this._glPatch.selectedGlOps;
-            for (const i in glOps)
-            {
-                glOps[i].endPassiveDrag();
-            }
-        });
-
-        // this._glRectBg.on("mouseup", (e) =>
-        // {
-        //     console.log("mouse up op!!!");
-
-        // });
-
-        this._glRectBg.on("drag",
-            (rect) =>
-            {
-                const glOps = this._glPatch.selectedGlOps;
-                const ids = Object.keys(glOps);
-
-                if (!glOps || ids.length == 0) return;
-                if (glPatch.isDraggingPort()) return;
-
-                if (!glOps[ids[0]].isPassiveDrag())
-                {
-                    console.log("starting drag!!!!");
-                    for (const i in glOps)
-                    {
-                        glOps[i].startPassiveDrag();
-                    }
-                }
-
-                const offX = this._glRectBg.dragOffsetX;
-                const offY = this._glRectBg.dragOffsetY;
-
-                for (const i in glOps)
-                    glOps[i].setPassiveDragOffset(offX, offY);
-
-                // var x=rect.x;
-                // var y=rect.y;
-
-                // if(CABLES.UI.userSettings.get("snapToGrid"))
-                // {
-                //     x=CABLES.UI.snapOpPosX(x);
-                //     y=CABLES.UI.snapOpPosY(y);
-                // }
-
-                // // console.log("glop is draggin!");
-                // this._glPatch.patchAPI.setOpUiAttribs(
-                //     this._id,
-                //     "translate",
-                //     {
-                //         "x":x,
-                //         "y":y
-                //     });
-            });
-
-        this._glRectBg.on("hover", () =>
-        {
-            // this._glRectBg.setOutline(true);
-        });
-
-        this._glRectBg.on("unhover", () =>
-        {
-            // this._glRectBg.setOutline(false);
-        });
-
-        // this._portRects=[];
+        this._glRectBg = instancer.createRect({ "draggable": true });
+        this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
+        this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
 
         this._setupPorts(this._op.portsIn);
         this._setupPorts(this._op.portsOut);
 
-        const portsSize = Math.max(this._op.portsIn.length, this._op.portsOut.length) * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding);
+        this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
+        this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
+        this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
+        this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
 
-        this._width = Math.max(this._width, portsSize);
-        this._glRectBg.setSize(this._width, this._height);
         this.setHover(false);
+    }
 
-        glPatch.on("mousedown", (e) =>
-        {
-            if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
-        });
+    _onBgRectDrag(rect)
+    {
+        const glOps = this._glPatch.selectedGlOps;
+        const ids = Object.keys(glOps);
 
-        this._glRectBg.on("mousedown", (e) =>
+        if (!glOps || ids.length == 0) return;
+        if (this._glPatch.isDraggingPort()) return;
+
+        if (!glOps[ids[0]].isPassiveDrag())
         {
-            if (!this.selected)
+            for (const i in glOps)
             {
-                console.log("not selected!+!");
-                if (!e.shiftKey) this._glPatch.unselectAll();
-                this._glPatch.selectOpId(this.id);
+                glOps[i].startPassiveDrag();
             }
+        }
 
-            glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
-        });
+        const offX = this._glRectBg.dragOffsetX;
+        const offY = this._glRectBg.dragOffsetY;
 
-        this._glRectBg.on("mouseup", (e) =>
+        for (const i in glOps)
+            glOps[i].setPassiveDragOffset(offX, offY);
+    }
+
+    _onBgRectDragEnd(rect)
+    {
+        const glOps = this._glPatch.selectedGlOps;
+        for (const i in glOps)
         {
-            glPatch.emitEvent("mouseUpOverOp", e, this._id);
+            glOps[i].endPassiveDrag();
+        }
+    }
 
-            if (this.isPassiveDrag())
-            {
-                console.log("GLOP mouseup canceled!");
-                return;
-            }
-            console.log("GLOP MOUSE UP!");
+    _onMouseDown(e)
+    {
+        if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
 
+        if (!this.selected)
+        {
+            if (!e.shiftKey) this._glPatch.unselectAll();
+            this._glPatch.selectOpId(this.id);
+        }
 
-            if (this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e, this._op);
-        });
+        this._glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
+    }
+
+    _onMouseUp(e)
+    {
+        this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
+
+        if (this.isPassiveDrag())
+        {
+            return;
+        }
+
+        if (this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e, this._op);
     }
 
     get selected() { return this.opUiAttribs.selected; }
@@ -206,7 +158,10 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     updateSize()
     {
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
+        this._width = Math.max(this._width, Math.max(this._op.portsIn.length, this._op.portsOut.length) * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding));
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
+
+        console.log(this._glTitle.height + 5, this._glRectBg.h);
 
         this._glRectBg.setSize(this._width, this._height);
 
