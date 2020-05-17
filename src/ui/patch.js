@@ -721,10 +721,7 @@ CABLES.UI.Patch = function (_gui)
         if (proj.ui)
         {
             if (proj.ui.subPatchViewBoxes) subPatchViewBoxes = proj.ui.subPatchViewBoxes;
-            if (proj.ui.viewBox)
-            {
-                this._viewBox.deSerialize(proj.ui.viewBox);
-            }
+            if (proj.ui.viewBox) this._viewBox.deSerialize(proj.ui.viewBox);
 
             if (proj.ui.renderer)
             {

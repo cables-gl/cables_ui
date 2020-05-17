@@ -653,8 +653,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     setOpPos(op, x, y)
     {
-        console.log("op,", op, x, y);
-
         op.uiAttr({ "translate":
             {
                 "x": x,

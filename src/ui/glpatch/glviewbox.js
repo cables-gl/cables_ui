@@ -18,67 +18,71 @@ CABLES.GLGUI.ViewBox = class
         this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
         this._cgl = cgl;
 
-        console.log("CABLES.GLGUI.VISUALCONFIG.zoomSmooth", CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
+        cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
+        cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
+        cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
+        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
+        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this));
+    }
 
-        cgl.canvas.addEventListener("mousedown", (e) =>
-        {
-            if (this.glPatch.mouseState.buttonRight)
-            {
-                this._oldScrollX = this._scrollX;
-                this._oldScrollY = this._scrollY;
-                this._mouseRightDownStartX = e.offsetX;
-                this._mouseRightDownStartY = e.offsetY;
-            }
-        });
-
-        cgl.canvas.addEventListener("mousemove", (e) =>
-        {
-            if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
-            {
-                const pixelMulX = cgl.canvas.width / this._zoom * 0.5;
-                const pixelMulY = cgl.canvas.height / this._zoom * 0.5;
-
-                this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
-                this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
-            }
-            this._mouseX = e.offsetX;
-            this._mouseY = e.offsetY;
-        });
-
-        cgl.canvas.addEventListener("mouseup", (e) =>
+    _onCanvasMouseDown(e)
+    {
+        if (this.glPatch.mouseState.buttonRight)
         {
             this._oldScrollX = this._scrollX;
             this._oldScrollY = this._scrollY;
-        });
+            this._mouseRightDownStartX = e.offsetX;
+            this._mouseRightDownStartY = e.offsetY;
+        }
+    }
 
-        cgl.canvas.addEventListener("dblclick", (e) =>
+    _onCanvasMouseMove(e)
+    {
+        if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
         {
-            if (this._zoom == CABLES.GLGUI.VISUALCONFIG.zoomDefault) this._zoom = this.glPatch.getZoomForAllOps();
-            else this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
-            this._smoothedZoom.set(this._zoom);
-        });
+            const pixelMulX = this._cgl.canvas.width / this._zoom * 0.5;
+            const pixelMulY = this._cgl.canvas.height / this._zoom * 0.5;
 
-        cgl.canvas.addEventListener("wheel", (event) =>
+            this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
+            this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
+        }
+        this._mouseX = e.offsetX;
+        this._mouseY = e.offsetY;
+    }
+
+    _onCanvasMouseUp(e)
+    {
+        this._oldScrollX = this._scrollX;
+        this._oldScrollY = this._scrollY;
+    }
+
+    _onCanvasDblClick(e)
+    {
+        if (this._zoom == CABLES.GLGUI.VISUALCONFIG.zoomDefault) this._zoom = this.glPatch.getZoomForAllOps();
+        else this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
+        this._smoothedZoom.set(this._zoom);
+    }
+
+    _onCanvasWheel(event)
+    {
+        const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
+
+        let delta = CGL.getWheelSpeed(event);
+        event = CABLES.mouseEvent(event);
+        delta *= wheelMultiplier;
+
+        if (event.altKey) this._scrollY -= delta;
+        else if (event.shiftKey) this._scrollX -= delta;
+        else this._zoom += delta * (this._zoom / 155);
+
+        this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
+        this._smoothedZoom.set(this._zoom);
+
+        if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
         {
-            const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
-
-            let delta = CGL.getWheelSpeed(event);
-            event = CABLES.mouseEvent(event);
-            delta *= wheelMultiplier;
-
-            if (event.altKey) this._scrollY -= delta;
-            else if (event.shiftKey) this._scrollX -= delta;
-            else this._zoom += delta * (this._zoom / 155);
-
-            this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
-            this._smoothedZoom.set(this._zoom);
-
-            if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
-            {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-            }
-        });
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
     }
 
     get zoom() { return this._smoothedZoom.value; }

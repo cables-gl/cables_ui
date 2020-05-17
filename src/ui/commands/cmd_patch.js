@@ -153,6 +153,16 @@ CABLES.CMD.PATCH.analyzePatch = function ()
     CABLES.UI.AnalyzePatch();
 };
 
+CABLES.CMD.PATCH.renameVariable = function (oldname)
+{
+    CABLES.UI.MODAL.prompt("Rename Variable", "enter a new name for the variable " + oldname, oldname,
+        function (newname)
+        {
+            gui.corePatch().emitEvent("variableRename", oldname, newname);
+            gui.corePatch().deleteVar(oldname);
+        });
+};
+
 CABLES.CMD.PATCH.createVariable = function (op)
 {
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "",

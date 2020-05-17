@@ -33,22 +33,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRyb = 0;
         this.cacheOIRops = null;
 
-        // for (let i = -100; i < 100; i++)
-        // {
-        //     const col = 0.3;
-        //     const size = 10000;
-
-        //     const gridLine = this._rectInstancer.createRect();
-        //     gridLine.setColor(col, col, col, 1);
-        //     gridLine.setPosition(i * 100, -0.5 * size, -11111);
-        //     gridLine.setSize(1, size);
-
-        //     const gridLine2 = this._rectInstancer.createRect();
-        //     gridLine2.setColor(col, col, col, 1);
-        //     gridLine2.setPosition(-0.5 * size, i * 100, -11111);
-        //     gridLine2.setSize(size, 1);
-        // }
-
         this._cursor2 = this._overLayRects.createRect();
         this._cursor2.setSize(2, 2);
 

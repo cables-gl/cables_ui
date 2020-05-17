@@ -53,12 +53,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glPatch.isDraggingPort()) return;
 
         if (!glOps[ids[0]].isPassiveDrag())
-        {
             for (const i in glOps)
-            {
                 glOps[i].startPassiveDrag();
-            }
-        }
 
         const offX = this._glRectBg.dragOffsetX;
         const offY = this._glRectBg.dragOffsetY;
@@ -93,11 +89,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
 
-        if (this.isPassiveDrag())
-        {
-            return;
-        }
-
+        if (this.isPassiveDrag()) return;
         if (this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e, this._op);
     }
 
@@ -423,13 +415,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             y = CABLES.UI.snapOpPosY(y);
         }
 
-        this._glPatch.patchAPI.setOpUiAttribs(
-            this._id,
-            "translate",
-            {
-                "x": x,
-                "y": y
-            });
+        this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
     }
 
     getGlPort(name)
