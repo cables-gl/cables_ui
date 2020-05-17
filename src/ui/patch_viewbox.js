@@ -238,23 +238,30 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
 
         gui.pauseProfiling();
 
-        if (this._isFirefox && event.deltaMode != undefined) // firefox !!
+        const wm = CABLES.UI.userSettings.get("wheelmode");
+        if (!wm)
         {
-            this.touchpadMode = !event.deltaMode;
-        }
-        else if (event.deltaY % 1 === 0)
-        {
-            this.touchpadMode = true;
-        }
-        else
-        {
-            this.touchpadMode = false;
-        }
+            if (this._isFirefox && event.deltaMode != undefined) // firefox !!
+            {
+                this.touchpadMode = !event.deltaMode;
+            }
+            else if (event.deltaY % 1 === 0)
+            {
+                this.touchpadMode = true;
+            }
+            else
+            {
+                this.touchpadMode = false;
+            }
 
-        if (this._isWindows || this._isLinux)
-        {
-            this.touchpadMode = false;
+            if (this._isWindows || this._isLinux)
+            {
+                this.touchpadMode = false;
+            }
         }
+        else if (wm == 1) this.touchpadMode = false;
+        else this.touchpadMode = true;
+
 
         let wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 

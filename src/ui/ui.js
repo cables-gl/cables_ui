@@ -1870,6 +1870,7 @@ CABLES.UI.GUI = function (cfg)
         if (cgl.canvasScale != 1)sizeStr += " Scale " + cgl.canvasScale + " ";
         if (cgl.pixelDensity != 1)sizeStr += " (" + (cgl.canvasWidth / cgl.pixelDensity) + "x" + (cgl.canvasHeight / cgl.pixelDensity) + "x" + cgl.pixelDensity + ")";
 
+
         const zoom = Math.round(window.devicePixelRatio * 100);
         if (zoom != 100)sizeStr += " Zoom " + zoom + "%";
 
@@ -2067,7 +2068,9 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
 
     this._corePatch.on("performance", function (perf)
     {
-        $("#canvasInfoFPS").html(" " + perf.fps + " FPS | " + perf.ms + " MS");
+        let str = " " + perf.fps + " FPS | " + perf.ms + " MS";
+        if (gui.corePatch().cgl.glVersion == 1)str += " | WebGL 1";
+        $("#canvasInfoFPS").html(str);
     });
 };
 

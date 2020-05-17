@@ -3,7 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.Profiler = function (tabs)
 {
-    this._tab = new CABLES.UI.Tab("profiler", { "icon": "pie-chart", "infotext": "tab_profiler", "padding": true });
+    this._tab = new CABLES.UI.Tab("profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
     tabs.addTab(this._tab, true);
     this.show();
 
