@@ -1,19 +1,19 @@
-var gulp = require("gulp");
-var jshint = require("gulp-jshint");
-var sass = require("gulp-sass");
-var concat = require("gulp-concat");
-var uglify = require("gulp-uglify-es").default;
-var rename = require("gulp-rename");
-var sourcemaps = require("gulp-sourcemaps");
-var svgcss = require("gulp-svg-css");
-var svgmin = require("gulp-svgmin");
-var fs = require("fs");
-var browserify = require("browserify");
-var babelify = require("babelify");
-var vueify = require("vueify");
-var replace = require("gulp-replace");
-var autoprefixer = require("gulp-autoprefixer");
-var merge = require("merge-stream");
+const gulp = require("gulp");
+const jshint = require("gulp-jshint");
+const sass = require("gulp-sass");
+const concat = require("gulp-concat");
+const uglify = require("gulp-uglify-es").default;
+const rename = require("gulp-rename");
+const sourcemaps = require("gulp-sourcemaps");
+const svgcss = require("gulp-svg-css");
+const svgmin = require("gulp-svgmin");
+const fs = require("fs");
+const browserify = require("browserify");
+const babelify = require("babelify");
+const vueify = require("vueify");
+const replace = require("gulp-replace");
+const autoprefixer = require("gulp-autoprefixer");
+const merge = require("merge-stream");
 
 // var notifier = require('node-notifier');
 
@@ -57,7 +57,7 @@ gulp.task("scripts_talkerapi", () =>
 gulp.task("scripts_core", () =>
 {
     gulp
-        .src("../cables/build/**/*.*").pipe(gulp.dest("dist/js/"));
+        .src(["../cables/build/**/*.*", "!../cables/build/libs/*"]).pipe(gulp.dest("dist/js/"));
 });
 
 
@@ -151,8 +151,8 @@ gulp.task("sass", () =>
         .pipe(rename("style-dark.css"))
         .pipe(
             autoprefixer({
-                browsers: ["last 2 versions"],
-                cascade: false,
+                "browsers": ["last 2 versions"],
+                "cascade": false,
             })
         )
         .pipe(gulp.dest("dist/css")));
@@ -163,16 +163,16 @@ gulp.task("svgcss", () =>
         .pipe(svgmin())
         .pipe(
             svgcss({
-                fileName: "icons",
-                cssPrefix: "icon-",
-                addSize: false,
+                "fileName": "icons",
+                "cssPrefix": "icon-",
+                "addSize": false,
             })
         )
         .pipe(replace("background-image", "mask"))
         .pipe(
             autoprefixer({
-                browsers: ["last 2 versions"],
-                cascade: false,
+                "browsers": ["last 2 versions"],
+                "cascade": false,
             })
         )
         .pipe(rename("svgicons.scss"))
@@ -180,8 +180,8 @@ gulp.task("svgcss", () =>
 
 gulp.task("electronapp", () =>
 {
-    var copydist = gulp.src("dist/**/*.*").pipe(gulp.dest("dist-electron/"));
-    var electronsrc = gulp.src("src-electron/**/*.*").pipe(gulp.dest("dist-electron/"));
+    const copydist = gulp.src("dist/**/*.*").pipe(gulp.dest("dist-electron/"));
+    const electronsrc = gulp.src("src-electron/**/*.*").pipe(gulp.dest("dist-electron/"));
     // var someOtherOperation = gulp.src('./assets').pipe(gulp.dest('out/assets'));
     return merge(copydist, electronsrc);
 });
@@ -189,7 +189,7 @@ gulp.task("electronapp", () =>
 gulp.task("watch", () =>
 {
     gulp.watch("../cables/build/**/*.js", ["scripts_core"]);
-    gulp.watch("../cables/build/libs/**/*.js", ["scripts_core_libs"]);
+    // gulp.watch("../cables/build/libs/**/*.js", ["scripts_core_libs"]);
     gulp.watch("src/ops/**/*.js", ["scripts_ops"]);
     gulp.watch("src/ui/**/*.js", ["scripts_ui"]); // ,'electron' // electron broke the watch SOMEHOW
     gulp.watch("scss/**/*.scss", ["sass"]);
@@ -197,7 +197,6 @@ gulp.task("watch", () =>
     gulp.watch("icons/**/*.svg", ["svgcss"]);
     gulp.watch("vue-src/**/*", ["vueify"]);
     gulp.watch("src-talkerapi/**/*", ["scripts_talkerapi"]);
-
 });
 
 gulp.task("electron-watch", () =>
@@ -240,7 +239,7 @@ gulp.task("default", [
  * Is this still used?
  * Run "gulp build"
  */
-gulp.task("build", ["svgcss", "html_ui", "scripts_libs_ui", "scripts_ops", "scripts_core","scripts_ui", "scripts_talkerapi", "sass", "vueify"]);
+gulp.task("build", ["svgcss", "html_ui", "scripts_libs_ui", "scripts_ops", "scripts_core", "scripts_ui", "scripts_talkerapi", "sass", "vueify"]);
 
 /**
  * Electron development
