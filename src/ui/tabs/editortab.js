@@ -3,7 +3,6 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.EditorTab = function (options)
 {
-    console.log("editoroptions", options);
     this._editor = null;
     this._options = options;
 
