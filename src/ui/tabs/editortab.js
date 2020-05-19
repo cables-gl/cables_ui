@@ -3,6 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.EditorTab = function (options)
 {
+    console.log("editoroptions", options);
     this._editor = null;
     this._options = options;
 
@@ -32,6 +33,31 @@ CABLES.UI.EditorTab = function (options)
 
     this._editor = CABLES.UI.createEditor("editorcontent" + this._tab.id, options.content || "");
 
+    let showSaveButton = true;
+    if (!CABLESUILOADER.isDevEnv())
+    {
+        if (options.name.startsWith("Ops."))
+        {
+            if (options.name.startsWith("Ops.User."))
+            {
+                if (!(gui.user.isAdmin || options.name.startsWith("Ops.User." + gui.user.usernameLowercase + ".")))
+                {
+                    this._editor.setOptions({ "readOnly": "true" });
+                    showSaveButton = false;
+                }
+            }
+            else
+            {
+                this._editor.setOptions({ "readOnly": "true" });
+                showSaveButton = false;
+            }
+        }
+    }
+
+    if (showSaveButton)
+    {
+        if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
+    }
 
     // this._editor.setValue(options.content,-1);
     this._editor.resize();
@@ -54,7 +80,6 @@ CABLES.UI.EditorTab = function (options)
     else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
     else this._editor.session.setMode("ace/mode/Text");
 
-    if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
     this._tab.addEventListener("onClose", options.onClose);
     this._tab.addEventListener(
         "onActivate",

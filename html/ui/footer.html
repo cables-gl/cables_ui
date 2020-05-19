@@ -71,7 +71,12 @@
 
         CABLESUILOADER.isDevEnv=function()
         {
-            return !(document.location.href.indexOf('https://cables.gl')==-1 || document.location.href.indexOf('https://sandbox.cables.gl')==-1);
+            var notMain = document.location.href.indexOf('https://cables.gl')==-1;
+            var notSandbox = document.location.href.indexOf('https://sandbox.cables.gl')==-1;
+            if(notMain && notSandbox) {
+                return true;
+            }
+            return false;
         };
 
         CABLESUILOADER.loadAll=function(cfg)
@@ -112,7 +117,7 @@
                     {
                         logStartup('loaded cables core');
                         // console.log("core loaded",CABLES);
-                        
+
                         incrementStartup();
 
                         loadjs([CABLESUILOADER.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');
