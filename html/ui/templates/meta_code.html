@@ -38,7 +38,6 @@
 
         <br/><br/>
 
-        {{#if user.isAdmin}}
         <div class="groupSpacer"><h3>Core-Libs</h3></div>
 
         {{#if doc.coreLibs}}
@@ -66,7 +65,6 @@
         {{/each}}
         <select>
         <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addCoreLib('{{op.objName}}', $('#addcorelib').val() );">Add</a>
-        {{/if}}
 
         <br/><br/>
 
