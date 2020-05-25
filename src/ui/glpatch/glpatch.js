@@ -45,9 +45,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._viewZoom = 0;
 
-        this._viewResX = 0;
-        this._viewResY = 0;
-
         this.needsRedraw = false;
 
         this._selectedGlOps = {};
@@ -184,7 +181,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = 0;
 
-
         op.addEventListener("onUiAttribsChange",
             (newAttribs) =>
             {
@@ -198,7 +194,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (!op.uiAttribs.translate)
         {
-            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": this.viewBox.scrollX, "y": this.viewBox.scrollY };
+            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": this.viewBox.mousePatchX, "y": this.viewBox.mousePatchY };
             else op.uiAttribs.translate = { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y };
         }
 
@@ -233,16 +229,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
     }
 
-    screenCoord(mouseX, mouseY)
-    {
-        const z = 1 / (this._viewResX / 2 / this.viewBox.zoom);
-        const asp = this._viewResY / this._viewResX;
-
-        const mouseAbsX = (mouseX - (this._viewResX / 2)) * z - (this.viewBox.scrollX);
-        const mouseAbsY = (mouseY - (this._viewResY / 2)) * z + (this.viewBox.scrollY * asp);
-
-        return [mouseAbsX, mouseAbsY];
-    }
 
     setFont(f)
     {
@@ -256,22 +242,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();
 
-        this._viewResX = resX;
-        this._viewResY = resY;
-        this._viewZoom = this.viewBox.zoom;
+        this.viewBox.setSize(resX, resY);
 
-        const coord = this.screenCoord(this.viewBox.mouseX, this.viewBox.mouseY);
-        const mouseAbsX = coord[0];
-        const mouseAbsY = coord[1];
         const starttime = performance.now();
 
-        this.mouseMove(mouseAbsX, mouseAbsY, mouseButton);
-        this._cursor2.setPosition(mouseAbsX - 2, mouseAbsY - 2);
-        this._portDragLine.setPosition(mouseAbsX, mouseAbsY);
+        this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY, mouseButton);
+        this._cursor2.setPosition(this.viewBox.mousePatchX - 2, this.viewBox.mousePatchY - 2);
+        this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
         const perf = CABLES.uiperf.start("[glpatch] render");
 
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
@@ -281,12 +263,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.needsRedraw = false;
 
-
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
         this.debugData.rects = this._rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
 
-        this.debugData.viewZoom = this._viewZoom;
+        this.debugData.viewZoom = this.viewBox.zoom;
         this.debugData.viewbox_scrollX = this.viewBox.scrollX;
         this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         this.debugData.viewResX = this._viewResX;

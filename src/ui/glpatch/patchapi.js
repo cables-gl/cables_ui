@@ -130,7 +130,7 @@ CABLES.GLGUI.GlPatchAPI = class
         else console.error("could not remove link");
     }
 
-    addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut)
+    addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut, x, y)
     {
         const opIn = gui.corePatch().getOpById(opIdIn);
         const pIn = opIn.getPortById(portIdIn);
@@ -138,8 +138,15 @@ CABLES.GLGUI.GlPatchAPI = class
         const pOut = opOut.getPortById(portIdOut);
         const link = pOut.getLinkTo(pIn);
         // options, linkOp, linkPort, link)
-        console.log("link ", link);
-        gui.opSelect().show({ "x": 0, "y": 0 }, null, null, link);
+        gui.opSelect().show({ "x": 0,
+            "y": 0,
+            "onOpAdd": (op) =>
+            {
+                op.setUiAttrib({ "translate": { "x": x, "y": y } });
+                console.log("ONOPADD!!!", x, y);
+                // op.uiAttribs.translate.x = x;
+                // op.uiAttribs.translate.y = y;
+            } }, null, null, link);
     }
 
     deleteOp(id)

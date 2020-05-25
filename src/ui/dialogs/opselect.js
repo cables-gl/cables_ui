@@ -329,7 +329,6 @@ CABLES.UI.OpSelect = class
         this._currentSearchInfo = opname;
     }
 
-
     search()
     {
         const q = $("#opsearch").val();
@@ -463,8 +462,10 @@ CABLES.UI.OpSelect = class
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;
         CABLES.UI.OPSELECT.newOpPos = options;
 
+
         this._newOpOptions =
         {
+            "onOpAdd": options.onOpAdd,
             "linkNewOpToPort": linkPort,
             "linkNewOpToOp": linkOp,
             "linkNewLink": link
@@ -563,6 +564,10 @@ CABLES.UI.OpSelect = class
         {
             CABLES.UI.MODAL.hide();
             gui.patchView.addOp(opname, this._newOpOptions);
+            if (this._onOpAdd)
+            {
+                this._onOpAdd();
+            }
         }
     }
 

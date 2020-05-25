@@ -12,6 +12,8 @@ CABLES.GLGUI.ViewBox = class
         this._scrollY = 0;
         this._oldScrollX = 0;
         this._oldScrollY = 0;
+        this._viewResX = 0;
+        this._viewResY = 0;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
@@ -23,6 +25,21 @@ CABLES.GLGUI.ViewBox = class
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this));
+    }
+
+    setSize(w, h)
+    {
+        this._viewResX = w;
+        this._viewResY = h;
+    }
+
+    setMousePos(x, y)
+    {
+        const coord = this.screenToPatchCoord(x, y);
+        this._mousePatchX = coord[0];
+        this._mousePatchY = coord[1];
+        this._mouseX = x;
+        this._mouseY = y;
     }
 
     _onCanvasMouseDown(e)
@@ -46,8 +63,8 @@ CABLES.GLGUI.ViewBox = class
             this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
             this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
         }
-        this._mouseX = e.offsetX;
-        this._mouseY = e.offsetY;
+
+        this.setMousePos(e.offsetX, e.offsetY);
     }
 
     _onCanvasMouseUp(e)
@@ -73,7 +90,7 @@ CABLES.GLGUI.ViewBox = class
 
         if (event.altKey) this._scrollY -= delta;
         else if (event.shiftKey) this._scrollX -= delta;
-        else this._zoom += delta * (this._zoom / 155);
+        else this._zoom += delta * (this._zoom / 155) * 2;
 
         this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
         this._smoothedZoom.set(this._zoom);
@@ -98,6 +115,10 @@ CABLES.GLGUI.ViewBox = class
     get mouseX() { return this._mouseX; }
 
     get mouseY() { return this._mouseY; }
+
+    get mousePatchX() { return this._mousePatchX; }
+
+    get mousePatchY() { return this._mousePatchY; }
 
     update()
     {
@@ -125,5 +146,16 @@ CABLES.GLGUI.ViewBox = class
             const y = ops[0].uiAttribs.translate.y;
             this.scrollTo(x, y);
         }
+    }
+
+    screenToPatchCoord(x, y)
+    {
+        const z = 1 / (this._viewResX / 2 / this.zoom);
+        const asp = this._viewResY / this._viewResX;
+
+        const mouseAbsX = (x - (this._viewResX / 2)) * z - (this.scrollX);
+        const mouseAbsY = (y - (this._viewResY / 2)) * z + (this.scrollY * asp);
+
+        return [mouseAbsX, mouseAbsY];
     }
 };

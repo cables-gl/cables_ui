@@ -26,7 +26,11 @@ CABLES.GLGUI.GlLink = class
             if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             else
-                this._glPatch.patchAPI.addOpIntoLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
+            {
+                this._glPatch.patchAPI.addOpIntoLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput,
+                    this._glPatch.viewBox.mousePatchX,
+                    this._glPatch.viewBox.mousePatchY);
+            }
         });
 
         this._cable = new CABLES.GLGUI.GlCable(this._glPatch.lineDrawer, this._buttonRect, this._type);

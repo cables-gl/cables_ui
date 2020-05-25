@@ -134,6 +134,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     );
                 }
             }
+
+            if (options.onOpAdd) options.onOpAdd(op);
         });
     }
 
