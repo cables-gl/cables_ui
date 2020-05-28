@@ -35,12 +35,12 @@
                 {{#if port.uiAttribs.title }}
                     {{port.uiAttribs.title}}
                 {{else}}
-                    {{port.name}} 
+                    {{port.name}}
                 {{/if}}
             {{/compare}}
             {{/compare}}
         </span>
-    
+
         {{#if port.uiAttribs.colorPick }}
         <div class="button_colorpick fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}"></div>
         {{/if}}
@@ -88,7 +88,7 @@
             {{else}}
                 {{#if port.uiAttribs.useVariable}}
                     </td><td >
-                        Var 
+                        Var
                         <select id="portsetvar_{{ portnum }}" data-portid="{{port.id}}">
                             {{#compare 'unknown' '==' port.uiAttribs.variableName }}
                                 <option value="">UNKNOWN</option>
@@ -175,7 +175,8 @@
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'file' }}
                                 <!-- <a class="graphbutton fa fa-folder-open-o" onclick="gui.showLibrary('.portFileVal_{{ portnum }}','{{port.uiAttribs.filter}}','{{ ../port.parent.id }}');"></a> -->
-                                <a class="graphbutton fa fa-external-link" href="{{ port.val }}" target="_blank"></a>
+                                <a class="icon icon-external iconhover" href="{{ port.val }}" target="_blank"></a>
+                                <a class="icon icon-download iconhover" href="{{ port.val }}" target="_blank" download></a>
                             </td>
                             <td >
                                 <div id="fileInputContainer_{{portnum}}" style="display:none">
@@ -249,7 +250,7 @@
                 <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br/>
             </td>
             <td>
-            
+
             {{/compare}}
             {{#compare port.type '==' '2' }}
 
