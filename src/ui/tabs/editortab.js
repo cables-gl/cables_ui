@@ -45,7 +45,7 @@ CABLES.UI.EditorTab = function (options)
                     showSaveButton = false;
                 }
             }
-            else
+            else if (!gui.user.roles.includes("alwaysEditor"))
             {
                 this._editor.setOptions({ "readOnly": "true" });
                 showSaveButton = false;
