@@ -29,7 +29,6 @@ CABLES.GLGUI.GlPort = class
 
     _onMouseDown(e, rect)
     {
-        console.log("PORT DIQB");
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
         {
             this._glPatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);

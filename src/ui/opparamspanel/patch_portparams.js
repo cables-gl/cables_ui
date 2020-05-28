@@ -238,7 +238,6 @@ CABLES.UI.initPortInputListener = function (op, index)
         function parseMath(e)
         {
             const keyCode = e.keyCode || e.which;
-            console.log(e);
             if (keyCode == 13 || keyCode == 8)
             {
                 if (isNaN(e.target.value))

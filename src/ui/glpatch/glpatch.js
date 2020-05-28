@@ -104,7 +104,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.quickLinkSuggestion.longPressCancel();
         this._rectInstancer.interactive = true;
 
-        if (Object.keys(this._selectedGlOps).length == 0)gui.patchView.showBookmarkParamsPanel();
+        if (Object.keys(this._selectedGlOps).length == 0)gui.patchView.showDefaultPanel();
     }
 
     _onKeyDelete(e)
@@ -238,6 +238,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY, mouseButton)
     {
         this._showRedrawFlash++;
+        this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
 
         if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();

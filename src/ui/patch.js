@@ -1818,17 +1818,15 @@ CABLES.UI.Patch = function (_gui)
     {
         gui.opParams.dispose();
         if (gui.fileManager)gui.fileManager.setFilePort(null);
-        gui.texturePreview().pressedEscape();
         const perf = CABLES.uiperf.start("showProjectParams");
 
         const s = {};
         if (currentOp && currentOp)currentOp = null;
-        gui.setTransformGizmo(null);
 
         s.name = currentProject.name;
         s.settings = gui.corePatch().settings;
 
-        gui.patchView.showBookmarkParamsPanel();
+        gui.patchView.showDefaultPanel();
 
         perf.finish();
     };
