@@ -26,20 +26,19 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         document.addEventListener("copy", (e) =>
         {
-            console.log("new copy...", this._patchRenderer);
-            this._patchRenderer.copy(e);
+            if (this._patchRenderer.isFocussed()) this._patchRenderer.copy(e);
             if ($("#timeline").is(":focus")) gui.patch().timeLine.copy(e);
         });
 
         document.addEventListener("paste", (e) =>
         {
-            this._patchRenderer.paste(e);
+            if (this._patchRenderer.isFocussed()) this._patchRenderer.paste(e);
             if ($("#timeline").is(":focus")) gui.patch().timeLine.paste(e);
         });
 
         document.addEventListener("cut", (e) =>
         {
-            this._patchRenderer.cut(e);
+            if (this._patchRenderer.isFocussed()) this._patchRenderer.cut(e);
             if ($("#timeline").is(":focus")) gui.patch().timeLine.cut(e);
         });
     }

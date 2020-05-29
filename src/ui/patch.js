@@ -119,6 +119,11 @@ CABLES.UI.Patch = function (_gui)
         }
     };
 
+    this.isFocussed = function ()
+    {
+        return $("#patch").is(":focus");
+    };
+
 
     this.cut = function (e)
     {
