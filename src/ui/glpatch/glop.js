@@ -295,7 +295,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     _setVisible(v)
     {
         if (v !== undefined) this._visible = v;
-        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) this._visible = false;
+
 
         if (this._glRectBg) this._glRectBg.visible = this._visible;
         if (this._glTitle) this._glTitle.visible = this._visible;
@@ -307,9 +307,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     get visible()
     {
+        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) return false;
         return this._visible;
     }
-
 
     update()
     {
