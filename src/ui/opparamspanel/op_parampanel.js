@@ -30,6 +30,9 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     show(op)
     {
+        console.log("show op params");
+
+
         if (typeof op == "string")
         {
             op = gui.corePatch().getOpById(op);
@@ -336,6 +339,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     updateUiAttribs()
     {
+        if (CABLES.UI.pasting) return;
         if (!this._currentOp) return;
 
         this._uiAttrFpsLast = this._uiAttrFpsLast || performance.now();

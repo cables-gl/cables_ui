@@ -457,6 +457,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     clipboardPaste(e, oldSub, mouseX, mouseY, next)
     {
+        CABLES.UI.pasting = true;
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
             console.error("clipboard not type text");
@@ -508,7 +509,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                                 {
                                     if (json.ops[j].portsIn[k].links[l] === null)
                                     {
-                                        console.log("delete null link");
                                         json.ops[j].portsIn[k].links.splice(l, 1);
                                     }
                                 }
@@ -527,16 +527,12 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             const fixedSubPatches = [];
             for (let i = 0; i < json.ops.length; i++)
             {
-                console.log("jajaja", json.ops[i].objName);
                 if (CABLES.Op.isSubpatchOp(json.ops[i].objName))
                 {
-                    console.log("found subpatchop");
                     for (const k in json.ops[i].portsIn)
                     {
                         if (json.ops[i].portsIn[k].name == "patchId")
                         {
-                            console.log("found subpatchop patchid");
-
                             const oldSubPatchId = json.ops[i].portsIn[k].value;
                             const newSubPatchId = json.ops[i].portsIn[k].value = CABLES.generateUUID();
 
@@ -548,8 +544,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
                             for (let j = 0; j < json.ops.length; j++)
                             {
-                                // console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
-
                                 if (json.ops[j].uiAttribs.subPatch == oldSubPatchId)
                                 {
                                     console.log("found child patch");
@@ -628,7 +622,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }
             CABLES.UI.notify("Pasted " + json.ops.length + " ops");
+            console.log("deserialize. now...");
             gui.corePatch().deSerialize(json, false);
+            console.log("finish deserialize...");
+            CABLES.UI.pasting = false;
             next(json.ops, focusSubpatchop);
         });
         CABLES.undo.endGroup(undoGroup, "Paste");

@@ -144,6 +144,9 @@ CABLES.UI.Patch = function (_gui)
         gui.patchView.clipboardPaste(e, currentSubPatch, mouseX, mouseY,
             (ops, focusSubpatchop) =>
             {
+                console.log("svg paste cliup....");
+
+
                 self.setSelectedOp(null);
                 for (let i = 0; i < ops.length; i++)
                 {
@@ -165,7 +168,7 @@ CABLES.UI.Patch = function (_gui)
                         // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
 
                         const uiop = gui.patch().getUiOp(op);
-                        uiop.setPos(mouseX, mouseY);
+                        // uiop.setPos(mouseX, mouseY);
 
                         // gui.patch().focusOp(op.id,true);
                         // console.log(op);
