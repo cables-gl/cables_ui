@@ -67,6 +67,7 @@ CABLES.UI.Patch = function (_gui)
         if (op.op) return gui.patchView.isCurrentOp(op.op); // if is uiop
         return gui.patchView.isCurrentOp(op);
     };
+
     this.isCurrentOpId = function (opid)
     {
         return gui.opParams.isCurrentOpId(opid);

@@ -282,21 +282,34 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight + this._glTitle.width;
     }
 
+    updateVisible()
+    {
+        this._setVisible();
+    }
+
     set visible(v)
     {
-        this._visible = v;
-        if (this._glRectBg) this._glRectBg.visible = v;
-        if (this._glTitle) this._glTitle.visible = v;
-        if (this._glTitleExt) this._glTitleExt.visible = v;
-        if (this._glComment) this._glComment.visible = v;
+        this._setVisible(v);
+    }
 
-        for (const i in this._links) this._links.visible = v;
+    _setVisible(v)
+    {
+        if (v !== undefined) this._visible = v;
+        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) this._visible = false;
+
+        if (this._glRectBg) this._glRectBg.visible = this._visible;
+        if (this._glTitle) this._glTitle.visible = this._visible;
+        if (this._glTitleExt) this._glTitleExt.visible = this._visible;
+        if (this._glComment) this._glComment.visible = this._visible;
+
+        for (const i in this._links) this._links.visible = this._visible;
     }
 
     get visible()
     {
         return this._visible;
     }
+
 
     update()
     {
@@ -348,7 +361,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             }
         }
 
-        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) this.visible = false;
 
         this.updatePosition();
         for (const i in this._links) if (this._links[i]) this._links[i].update();

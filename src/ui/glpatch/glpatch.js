@@ -44,9 +44,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._debugtext = new CABLES.GLGUI.Text(this._textWriter, "hello");
 
         this._viewZoom = 0;
-
         this.needsRedraw = false;
-
         this._selectedGlOps = {};
 
         this.links = {};
@@ -557,5 +555,73 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     focus()
     {
         this._cgl.canvas.focus();
+    }
+
+    cut(e)
+    {
+        gui.patchView.clipboardCutOps(e);
+    }
+
+    copy(e)
+    {
+        // todo play copy indicator anim
+        // for (const i in selectedOps) selectedOps[i].oprect.showCopyAnim();
+        gui.patchView.clipboardCopyOps(e);
+    }
+
+    paste(e)
+    {
+        // let mouseX = 0;
+        // let mouseY = 0;
+        // if (self.lastMouseMoveEvent)
+        // {
+        //     mouseX = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).x;
+        //     mouseY = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).y;
+        // }
+
+        gui.patchView.clipboardPaste(e, this._currentSubpatch, this.viewBox.mousePatchX, this.viewBox.mousePatchY,
+            (ops, focusSubpatchop) =>
+            {
+                // self.setSelectedOp(null);
+                this.unselectAll();
+                for (let i = 0; i < ops.length; i++)
+                {
+                    this.selectOpId(ops[i].id);
+                    // const uiop = self.addSelectedOpById(ops[i].id);
+
+                    // uiop.setSelected(false);
+                    // uiop.setSelected(true);
+                    // gui.setStateUnsaved();
+                }
+
+                // setTimeout(() => // todo timeout still needed in glrenderer?
+                // {
+                //     gui.patch().setCurrentSubPatch(this._currentSubpatch);
+
+                //     if (focusSubpatchop)
+                //     {
+                //         console.log(focusSubpatchop, this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+                //         const op = gui.patch().scene.getOpById(focusSubpatchop.id);
+                //         // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+
+                //         const uiop = gui.patch().getUiOp(op);
+                //         uiop.setPos(this.viewBox.mouseX, this.viewBox.mouseY);
+
+                //         // gui.patch().focusOp(op.id,true);
+                //         // console.log(op);
+                //         // gui.patch().centerViewBoxOps();
+                //     }
+                // }, 100);
+            });
+    }
+
+    setCurrentSubPatch(sub)
+    {
+        this._currentSubpatch = sub;
+
+        for (const i in this._glOpz)
+        {
+            this._glOpz[i].updateVisible();
+        }
     }
 };
