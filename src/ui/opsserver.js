@@ -256,6 +256,13 @@ CABLES.UI.ServerOps = function (gui)
                 {
                     console.log("docs reloaded");
                     gui.metaTabs.activateTabByName("code");
+                    let html = "";
+                    html += "to initialize the new library, you should reload the patch.<br/><br/>";
+                    html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+
+                    CABLES.UI.MODAL.show(html, {
+                        "title": "new library added",
+                    });
                 });
             },
         );
@@ -277,6 +284,13 @@ CABLES.UI.ServerOps = function (gui)
                 {
                     console.log("docs reloaded");
                     gui.metaTabs.activateTabByName("code");
+                    let html = "";
+                    html += "to initialize the new library, you should reload the patch.<br/><br/>";
+                    html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+
+                    CABLES.UI.MODAL.show(html, {
+                        "title": "new library added",
+                    });
                 });
             },
         );
