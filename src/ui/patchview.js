@@ -10,6 +10,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._element = null;
         this._pvRenderers = {};
         this._patchRenderer = null;
+        this.isPasting = false;
         this.store = new CABLES.UI.PatchServer();
         this._initListeners();
     }
@@ -457,7 +458,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     clipboardPaste(e, oldSub, mouseX, mouseY, next)
     {
-        CABLES.UI.pasting = true;
+        this.isPasting = true;
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
             console.error("clipboard not type text");
@@ -625,7 +626,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             console.log("deserialize. now...");
             gui.corePatch().deSerialize(json, false);
             console.log("finish deserialize...");
-            CABLES.UI.pasting = false;
+            this.isPasting = false;
             next(json.ops, focusSubpatchop);
         });
         CABLES.undo.endGroup(undoGroup, "Paste");
