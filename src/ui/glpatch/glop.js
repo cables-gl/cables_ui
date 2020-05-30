@@ -296,13 +296,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         if (v !== undefined) this._visible = v;
 
+        if (this._glRectBg) this._glRectBg.visible = this.visible;
+        if (this._glTitle) this._glTitle.visible = this.visible;
+        if (this._glTitleExt) this._glTitleExt.visible = this.visible;
+        if (this._glComment) this._glComment.visible = this.visible;
 
-        if (this._glRectBg) this._glRectBg.visible = this._visible;
-        if (this._glTitle) this._glTitle.visible = this._visible;
-        if (this._glTitleExt) this._glTitleExt.visible = this._visible;
-        if (this._glComment) this._glComment.visible = this._visible;
-
-        for (const i in this._links) this._links.visible = this._visible;
+        for (const i in this._links) this._links[i].visible = this.visible;
     }
 
     get visible()

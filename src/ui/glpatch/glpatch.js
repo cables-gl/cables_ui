@@ -123,6 +123,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     get subPatch() { return this._currentSubpatch; }
 
+    isFocussed()
+    {
+        return document.activeElement == this._cgl.canvas;
+    }
+
     getOpAt(x, y)
     {
     }
@@ -618,6 +623,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     setCurrentSubPatch(sub)
     {
         this._currentSubpatch = sub;
+        console.log("set subpatch", sub);
 
         for (const i in this._glOpz)
         {

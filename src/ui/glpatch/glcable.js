@@ -12,14 +12,45 @@ CABLES.GLGUI.GlCable = class
         this._lineIdx0 = this._lineDrawer.getIndex();
         this._lineIdx1 = this._lineDrawer.getIndex();
         this._lineIdx2 = this._lineDrawer.getIndex();
+
+        this._x = 0;
+        this._y = 0;
+        this._y2 = 0;
+        this._x2 = 0;
+        this._h = CABLES.GLGUI.VISUALCONFIG.portHeight * 2;
+    }
+
+    set visible(v)
+    {
+        this._visible = v;
+        this._buttonRect.visible = v;
+        this._updateLinePos();
+    }
+
+    _updateLinePos()
+    {
+        if (this._visible)
+        {
+            this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - this._h);
+            this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - this._h, this._x2, this._y2 + this._h);
+            this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + this._h, this._x2, this._y2);
+        }
+        else
+        {
+            this._lineDrawer.setLine(this._lineIdx0, 0, 0, 0, 0);
+            this._lineDrawer.setLine(this._lineIdx1, 0, 0, 0, 0);
+            this._lineDrawer.setLine(this._lineIdx2, 0, 0, 0, 0);
+        }
     }
 
     setPosition(x, y, x2, y2)
     {
-        const h = CABLES.GLGUI.VISUALCONFIG.portHeight * 2;
-        this._lineDrawer.setLine(this._lineIdx0, x, y, x, y - h);
-        this._lineDrawer.setLine(this._lineIdx1, x, y - h, x2, y2 + h);
-        this._lineDrawer.setLine(this._lineIdx2, x2, y2 + h, x2, y2);
+        this._x = x;
+        this._y = y;
+        this._x2 = x2;
+        this._y2 = y2;
+
+        this._updateLinePos();
 
         // circle button
         const buttonSize = 12;
@@ -27,9 +58,10 @@ CABLES.GLGUI.GlCable = class
         this._buttonRect.setSize(buttonSize, buttonSize);
         this._buttonRect.setPosition(
             x + ((x2 - x) / 2) - buttonSize / 2,
-            (y + h) + (((y2 - h) - (y + h)) / 2) - buttonSize / 2
+            (y + this._h) + (((y2 - this._h) - (y + this._h)) / 2) - buttonSize / 2
         );
     }
+
 
     setColor(r, g, b, a)
     {
