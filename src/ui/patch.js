@@ -1368,9 +1368,6 @@ CABLES.UI.Patch = function (_gui)
 
             for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
 
-            if (which === 0) $("#subpatch_nav").hide();
-            else $("#subpatch_nav").show();
-
             currentSubPatch = which;
             self.updateSubPatches();
 
@@ -1382,7 +1379,7 @@ CABLES.UI.Patch = function (_gui)
             }
 
             this._elPatch.focus();
-            self.updateSubPatchBreadCrumb();
+            gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
 
             gui.setWorking(false, "patch");
 
@@ -1431,10 +1428,6 @@ CABLES.UI.Patch = function (_gui)
     //     else this.setCurrentSubPatch(0);
     // };
 
-    this.updateSubPatchBreadCrumb = function ()
-    {
-        gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
-    };
 
     this.getSelectedOps = function ()
     {

@@ -378,13 +378,16 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
+        if (currentSubPatch === 0) $("#subpatch_nav").hide();
+        else $("#subpatch_nav").show();
+
         const names = this.getSubpatchPathArray(currentSubPatch);
-        let str = "<a onclick=\"gui.patch().setCurrentSubPatch(0)\">Main</a> ";
+        let str = "<a onclick=\"gui.patchView.setCurrentSubPatch(0)\">Main</a> ";
 
         for (let i = names.length - 1; i >= 0; i--)
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
-            str += "<a onclick=\"gui.patch().setCurrentSubPatch('" + names[i].id + "')\">" + names[i].name + "</a>";
+            str += "<a onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "')\">" + names[i].name + "</a>";
         }
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;

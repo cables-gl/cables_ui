@@ -53,6 +53,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
+        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) => { CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode")); });
@@ -81,6 +82,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     _onCanvasMouseMove(e)
     {
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
+    }
+
+    _onCanvasDblClick(e)
+    {
+        console.log("dblclick...");
+        const ops = gui.patchView.getSelectedOps();
+        if (ops.length != 1) return;
+        if (CABLES.UI.OPNAME_SUBPATCH == ops[0].objName) gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
+        gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
+        e.preventDefault();
     }
 
     _onCanvasMouseLeave(e)
