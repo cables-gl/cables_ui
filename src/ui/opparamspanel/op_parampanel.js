@@ -30,9 +30,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     show(op)
     {
-        console.log("show op params");
-
-
         if (typeof op == "string")
         {
             op = gui.corePatch().getOpById(op);

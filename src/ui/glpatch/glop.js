@@ -71,7 +71,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             glOps[i].endPassiveDrag();
 
 
-        const undoAdd = (function (scope)
+        const undoAdd = (function (scope, oldUiAttribs)
         {
             const newUiAttr = JSON.stringify(scope._op.uiAttribs);
             CABLES.undo.add({
@@ -80,7 +80,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 {
                     try
                     {
-                        const u = JSON.parse(scope._dragOldUiAttribs);
+                        const u = JSON.parse(oldUiAttribs);
                         // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
 
                         scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
@@ -95,7 +95,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                     // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
                 }
             });
-        }(this));
+        }(this, this._dragOldUiAttribs + ""));
     }
 
     _onMouseDown(e)
@@ -180,8 +180,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = Math.max(this._width, Math.max(this._op.portsIn.length, this._op.portsOut.length) * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding));
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
-
-        console.log(this._glTitle.height + 5, this._glRectBg.h);
 
         this._glRectBg.setSize(this._width, this._height);
 
@@ -363,11 +361,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             }
         }
 
-        console.log("this.opUiAttribs.title", this.opUiAttribs.title);
-        if (this.opUiAttribs.title != this._glTitle.text)
-        {
-            this.setTitle(this.opUiAttribs.title);
-        }
+        if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
         if (this.opUiAttribs.glPreviewTexture)
         {
