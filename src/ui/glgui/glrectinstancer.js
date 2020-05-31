@@ -27,7 +27,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._reUploadAttribs = true;
         this._updateRangesMin = {};
         this._updateRangesMax = {};
-
+        this._bounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999 };
 
         this._meshAttrPos = null;
         this._meshAttrCol = null;
@@ -187,6 +187,36 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     dispose()
     {
+    }
+
+    get bounds()
+    {
+        if (this._needsBoundsRecalc)
+        {
+            this._newBounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999 };
+
+            for (let i = 0; i < this._rects.length; i++)
+            {
+                if (!this._rects[i].visible) continue;
+                if (this._rects[i].x == this._bounds.minX && this._rects[i].y == this._bounds.minY && this._rects[i].w == this._bounds.maxX - this._bounds.minX && this._rects[i].h == this._bounds.maxY - this._bounds.minY) continue;
+
+                const x = this._rects[i].x;
+                const y = this._rects[i].y;
+                const x2 = x + this._rects[i].w;
+                const y2 = y + this._rects[i].h;
+
+
+                this._newBounds.minX = Math.min(x, this._newBounds.minX);
+                this._newBounds.minY = Math.min(y, this._newBounds.minY);
+                this._newBounds.maxX = Math.max(x2, this._newBounds.maxX);
+                this._newBounds.maxY = Math.max(y2, this._newBounds.maxY);
+            }
+
+            // this._needsBoundsRecalc = false;
+        }
+
+        this._bounds = this._newBounds;
+        return this._bounds;
     }
 
     clear()
@@ -394,20 +424,48 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         return Math.abs(a - b) > 0.0001;
     }
 
-    setPosition(idx, x, y)
+    setPosition(idx, x, y, z)
     {
-        if (this._float32Diff(this._attrBuffPos[idx * 3 + 0], x) || this._float32Diff(this._attrBuffPos[idx * 3 + 1], y))
+        const i = idx * 3;
+        if (this._float32Diff(this._attrBuffPos[i + 0], x) || this._float32Diff(this._attrBuffPos[i + 1], y) || this._float32Diff(this._attrBuffPos[i + 2], z))
         {
             this._needsRebuild = true;
             this._needsRebuildReason = "pos change";
-            // this._setAttrRange(this.ATTR_POS, idx * 3, idx * 3 + 3);
+            // this._setAttrRange(this.ATTR_POS, i, i + 3);
         }
         else return;
 
-        this._attrBuffPos[idx * 3 + 0] = x;
-        this._attrBuffPos[idx * 3 + 1] = y;
+        // if (
+        //     this._attrBuffPos[i + 0] >= this._bounds.maxX || this._attrBuffPos[i + 0] <= this._bounds.minX ||
+        //     this._attrBuffPos[i + 1] >= this._bounds.maxY || this._attrBuffPos[i + 1] <= this._bounds.minY)
+        // {
+        //     this._needsBoundsRecalc = true;
+        // }
 
-        this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, idx * 3, idx * 3 + 3);
+
+        this._attrBuffPos[i + 0] = x;
+        this._attrBuffPos[i + 1] = y;
+        this._attrBuffPos[i + 2] = z;
+
+        // if (
+        //     this._attrBuffPos[i + 0] >= this._bounds.maxX || this._attrBuffPos[i + 0] <= this._bounds.minX ||
+        //     this._attrBuffPos[i + 1] >= this._bounds.maxY || this._attrBuffPos[i + 1] <= this._bounds.minY)
+        // {
+        // this._needsBoundsRecalc = true;
+        // }
+
+        // if (!this._needsBoundsRecalc)
+        // {
+        //     this._bounds.minX = Math.min(this._attrBuffPos[i + 0], this._bounds.minX);
+        //     this._bounds.maxX = Math.max(this._attrBuffPos[i + 0], this._bounds.maxX);
+
+        //     this._bounds.minY = Math.min(this._attrBuffPos[i + 1], this._bounds.minY);
+        //     this._bounds.maxY = Math.max(this._attrBuffPos[i + 1], this._bounds.maxY);
+        // }
+
+
+        this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, i, i + 3);
+        this._needsBoundsRecalc = true;
     }
 
     setSize(idx, x, y)

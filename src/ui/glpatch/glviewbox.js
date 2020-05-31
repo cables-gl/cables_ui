@@ -5,7 +5,9 @@ CABLES.GLGUI.ViewBox = class
 {
     constructor(cgl, glPatch)
     {
+        this._cgl = cgl;
         this.glPatch = glPatch;
+
         this._mouseX = 0;
         this._mouseY = 0;
         this._scrollX = 0;
@@ -14,17 +16,17 @@ CABLES.GLGUI.ViewBox = class
         this._oldScrollY = 0;
         this._viewResX = 0;
         this._viewResY = 0;
+        this._boundingRect = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
-        this._cgl = cgl;
 
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
-        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this));
+        this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
     }
 
     setSize(w, h)
@@ -123,6 +125,19 @@ CABLES.GLGUI.ViewBox = class
     update()
     {
         this._smoothedZoom.update();
+
+        if (!this._boundingRect)
+        {
+            this._boundingRect = this.glPatch.rectDrawer.createRect();
+            this._boundingRect.interactive = false;
+            this._boundingRect.setPosition(0, 0);
+            this._boundingRect.setSize(110, 110);
+            this._boundingRect.setColor(0, 0, 0, 0.1);
+        }
+
+        const bounds = this.glPatch.rectDrawer.bounds;
+        this._boundingRect.setPosition(bounds.minX, bounds.minY);
+        this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
     }
 
     scrollTo(x, y)

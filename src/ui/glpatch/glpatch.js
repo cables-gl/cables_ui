@@ -14,6 +14,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.mouseState = new CABLES.GLGUI.MouseState(cgl.canvas);
 
         this._glOpz = {};
+        this._hoverOps = [];
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
@@ -86,11 +87,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasDblClick(e)
     {
-        console.log("dblclick...");
-        const ops = gui.patchView.getSelectedOps();
-        if (ops.length != 1) return;
-        if (CABLES.UI.OPNAME_SUBPATCH == ops[0].objName) gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
-        gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
+        if (this._hoverOps.length > 0)
+        {
+            console.log("dblclick...");
+            const ops = gui.patchView.getSelectedOps();
+            if (ops.length != 1) return;
+            if (CABLES.UI.OPNAME_SUBPATCH == ops[0].objName) gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
+            gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
+        }
+        else
+        {
+            this.emitEvent("dblclick", e);
+        }
         e.preventDefault();
     }
 
@@ -315,7 +323,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (this._rectInstancer.isDragging()) return;
 
-        const hoverops = this._getGlOpsInRect(x, y, x + 1, y + 1);
+        this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
 
         if (button == 1)
         {
@@ -350,7 +358,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._hoverDragOp = null;
         }
 
-        if (this._selectionArea.h == 0 && hoverops.length > 0) allowSelectionArea = false;
+        if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && button != 1)
         {
             if (this._selectionArea.active) console.log("hide area2");
@@ -489,6 +497,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             bounds.miny = Math.min(bounds.miny, op.y);
             bounds.maxy = Math.max(bounds.maxy, op.y);
         }
+
+        bounds.minx -= CABLES.GLGUI.VISUALCONFIG.opWidth;
+        bounds.maxx += CABLES.GLGUI.VISUALCONFIG.opWidth * 2;
+
+        bounds.miny -= CABLES.GLGUI.VISUALCONFIG.opHeight;
+        bounds.maxy += CABLES.GLGUI.VISUALCONFIG.opHeight * 2;
+
         return bounds;
     }
 

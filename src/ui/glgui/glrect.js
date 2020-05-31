@@ -33,6 +33,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this._dragStartY = 0;
         this._dragOffsetX = 0;
         this._dragOffsetY = 0;
+        this.interactive = true;
     }
 
     get x() { return this._x; }
@@ -188,6 +189,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
     mouseDrag(x, y, button)
     {
+        if (!this.interactive) return;
         this._dragOffsetX = x - this._dragStartX;
         this._dragOffsetY = y - this._dragStartY;
 
@@ -197,12 +199,14 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
     mouseDragEnd()
     {
+        if (!this.interactive) return;
         this.emitEvent("dragEnd", this);
         this._isDragging = false;
     }
 
     mouseMove(x, y, button)
     {
+        if (!this.interactive) return;
         if (!this._visible) return;
 
         const hovering = this.isPointInside(x, y);
