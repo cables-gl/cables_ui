@@ -169,7 +169,7 @@ CABLES.UI.Patch = function (_gui)
                     if (focusSubpatchop)
                     {
                         console.log(focusSubpatchop, mouseX, mouseY);
-                        const op = gui.patch().scene.getOpById(focusSubpatchop.id);
+                        const op = gui.corePatch().getOpById(focusSubpatchop.id);
                         // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
 
                         const uiop = gui.patch().getUiOp(op);
@@ -742,7 +742,7 @@ CABLES.UI.Patch = function (_gui)
 
                 gui.rendererWidth = proj.ui.renderer.w;
                 gui.rendererHeight = proj.ui.renderer.h;
-                gui.patch().scene.cgl.canvasScale = proj.ui.renderer.s || 1;
+                gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
                 gui.setLayout();
             }
 
@@ -1047,7 +1047,7 @@ CABLES.UI.Patch = function (_gui)
         if (CABLES.UI.OPSELECT.linkNewOpToSuggestedPort)
         {
             console.log("CABLES.UI.OPSELECT.linkNewOpToSuggestedPort");
-            const link = gui.patch().scene.link(
+            const link = gui.corePatch().link(
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op,
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName,
                 op,
@@ -1073,7 +1073,7 @@ CABLES.UI.Patch = function (_gui)
                 {
                     gui.patch().setSelectedOp(null);
                     gui.patch().setSelectedOp(uiOp);
-                    gui.patch().showOpParams(op);
+                    gui.opParams.show(op);
                     gui.patch().updateBounds();
                     gui.patch().getViewBox().update();
                     uiOp.oprect.showFocus();
@@ -1718,7 +1718,7 @@ CABLES.UI.Patch = function (_gui)
 
                 gui.patch().setSelectedOp(null);
                 gui.patch().setSelectedOp(gui.patch().ops[i]);
-                gui.patch().showOpParams(gui.patch().ops[i].op);
+                gui.opParams.show(gui.patch().ops[i].op);
                 return;
             }
         }
@@ -1872,7 +1872,7 @@ CABLES.UI.Patch = function (_gui)
             if (op.portsIn[i].defaultValue != null)
                 op.portsIn[i].set(op.portsIn[i].defaultValue);
 
-        gui.patch().showOpParams(op);
+        gui.opParams.show(op);
     };
 
     this._showOpParams = function (op)
@@ -2095,7 +2095,7 @@ CABLES.UI.Patch = function (_gui)
 
             if (sugIn.length == 1)
             {
-                gui.patch().scene.link(
+                gui.corePatch().link(
                     p.parent,
                     p.name,
                     sugIn[0].p.parent,
@@ -2108,7 +2108,7 @@ CABLES.UI.Patch = function (_gui)
             new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
                 function (sugId)
                 {
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         p.parent,
                         p.name,
                         sugIn[sugId].p.parent,

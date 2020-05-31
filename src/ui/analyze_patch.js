@@ -3,7 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.AnalyzePatch = function ()
 {
-    const patch = gui.patch().scene;
+    const patch = gui.corePatch();
     const ops = patch.ops;
 
     let htmlWarnings = "";

@@ -108,7 +108,7 @@ CABLES.GLGUI.GlPatchAPI = class
     showOpParams(opid)
     {
         const op = gui.corePatch().getOpById(opid);
-        gui.patch().showOpParams(op);
+        gui.opParams.show(op);
     }
 
     unlinkPort(opid, portid)

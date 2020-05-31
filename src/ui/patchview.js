@@ -97,7 +97,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
 
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         options.linkNewOpToOp,
                         options.linkNewOpToPort.getName(),
                         op,

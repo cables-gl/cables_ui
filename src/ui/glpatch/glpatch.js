@@ -637,7 +637,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 //     if (focusSubpatchop)
                 //     {
                 //         console.log(focusSubpatchop, this.viewBox.mousePatchX, this.viewBox.mousePatchY);
-                //         const op = gui.patch().scene.getOpById(focusSubpatchop.id);
+                //         const op = gui.corePatch().getOpById(focusSubpatchop.id);
                 //         // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
 
                 //         const uiop = gui.patch().getUiOp(op);

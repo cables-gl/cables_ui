@@ -132,7 +132,7 @@ CABLES.GLGUI.QuickLinkSuggestion = class extends CABLES.EventTarget
 
             if (sugIn.length == 1)
             {
-                gui.patch().scene.link(
+                gui.corePatch().link(
                     p.parent,
                     p.name,
                     sugIn[0].p.parent,
@@ -145,7 +145,7 @@ CABLES.GLGUI.QuickLinkSuggestion = class extends CABLES.EventTarget
             new CABLES.UI.SuggestionDialog(sugIn, op2, mouseEvent, null,
                 function (sid)
                 {
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         p.parent,
                         p.name,
                         sugIn[sid].p.parent,

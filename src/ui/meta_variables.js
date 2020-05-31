@@ -26,7 +26,7 @@ CABLES.UI.MetaVars.prototype.update = function ()
     clearTimeout(this._lastTimeout);
 
     let vars = {};
-    if (CABLES.UI && window.gui) vars = gui.patch().scene.getVars();
+    if (CABLES.UI && window.gui) vars = gui.corePatch().getVars();
 
     for (const i in vars)
     {
@@ -39,7 +39,7 @@ CABLES.UI.MetaVars.prototype.update = function ()
 CABLES.UI.MetaVars.prototype.show = function ()
 {
     let vars = {};
-    if (CABLES.UI && window.gui) vars = gui.patch().scene.getVars();
+    if (CABLES.UI && window.gui) vars = gui.corePatch().getVars();
     if (Object.keys(vars).length == 0) vars = null;
     const html = CABLES.UI.getHandleBarHtml("meta_variables", {
         vars,

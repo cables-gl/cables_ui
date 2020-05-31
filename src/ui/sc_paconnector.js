@@ -24,7 +24,7 @@ CABLES.UI.PacoConnector = class extends CABLES.EventTarget
     {
         if (!this._receiver)
             this._receiver = new CABLES.PatchConnectionReceiver(
-                gui.patch().scene
+                gui.corePatch()
             );
 
         this._receiver._receive(pacoMsg);

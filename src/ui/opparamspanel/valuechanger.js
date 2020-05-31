@@ -221,19 +221,19 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                         "title": "Value mousedrag " + oldVal + " to " + newVal,
                         undo()
                         {
-                            const op = gui.patch().scene.getOpById(opid);
+                            const op = gui.corePatch().getOpById(opid);
                             const p = op.getPort(_portName);
                             gui.patch().showProjectParams();
                             p.set(oldVal);
-                            gui.patch().showOpParams(op);
+                            gui.opParams.show(op);
                         },
                         redo()
                         {
-                            const op = gui.patch().scene.getOpById(opid);
+                            const op = gui.corePatch().getOpById(opid);
                             const p = op.getPort(_portName);
                             gui.patch().showProjectParams();
                             p.set(newVal);
-                            gui.patch().showOpParams(op);
+                            gui.opParams.show(op);
                         }
                     });
             }(portName, opid, startVal, elem.val()));
@@ -350,7 +350,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                 {
                     if (isNaN(elem.val()))
                     {
-                        const op = gui.patch().scene.getOpById(opid);
+                        const op = gui.corePatch().getOpById(opid);
                         const p = op.getPort(portName);
 
                         let mathParsed = elem.val();
@@ -372,18 +372,18 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                     //     CABLES.undo.add({
                     //         title:"value blur",
                     //         undo: function() {
-                    //             const op=gui.patch().scene.getOpById(opid);
+                    //             const op=gui.corePatch().getOpById(opid);
                     //             const p=op.getPort(portName);
                     //             gui.patch().showProjectParams();
                     //             p.set(oldVal);
-                    //             gui.patch().showOpParams(op);
+                    //             gui.opParams.show(op);
                     //         },
                     //         redo: function() {
-                    //             const op=gui.patch().scene.getOpById(opid);
+                    //             const op=gui.corePatch().getOpById(opid);
                     //             const p=op.getPort(portName);
                     //             gui.patch().showProjectParams();
                     //             p.set(newVal);
-                    //             gui.patch().showOpParams(op);
+                    //             gui.opParams.show(op);
                     //         }
                     //     });
                     // }(portName,opid,startVal,elem.val());

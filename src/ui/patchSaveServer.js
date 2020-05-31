@@ -57,7 +57,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             const electron = require("electron");
             const remote = electron.remote;
             const dialog = remote.dialog;
-            const data = gui.patch().scene.serialize(true);
+            const data = gui.corePatch().serialize(true);
 
             data.ui = {
                 "viewBox": {},
@@ -71,7 +71,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             data.ui.renderer = {};
             data.ui.renderer.w = gui.rendererWidth;
             data.ui.renderer.h = gui.rendererHeight;
-            data.ui.renderer.s = gui.patch().scene.cgl.canvasScale || 1;
+            data.ui.renderer.s = gui.corePatch().cgl.canvasScale || 1;
 
             dialog.showSaveDialog(
                 {
@@ -160,7 +160,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         let name = currentProject.name;
         if (_id) id = _id;
         if (_name) name = _name;
-        let data = gui.patch().scene.serialize(true);
+        let data = gui.corePatch().serialize(true);
 
         data.ui = {
             "viewBox": {},
@@ -174,7 +174,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         data.ui.renderer = {};
         data.ui.renderer.w = gui.rendererWidth;
         data.ui.renderer.h = gui.rendererHeight;
-        data.ui.renderer.s = data.ui.renderer.s = gui.patch().scene.cgl.canvasScale || 1;
+        data.ui.renderer.s = data.ui.renderer.s = gui.corePatch().cgl.canvasScale || 1;
 
         // electron
         if (window.process && window.process.versions.electron)
@@ -253,10 +253,10 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
                     this._serverDate = r.updated;
 
-                    const thePatch = gui.patch().scene;
+                    const thePatch = gui.corePatch();
                     const cgl = thePatch.cgl;
 
-                    const doSaveScreenshot = gui.patch().scene.isPlaying();
+                    const doSaveScreenshot = gui.corePatch().isPlaying();
                     const w = $("#glcanvas").attr("width");
                     const h = $("#glcanvas").attr("height");
 
@@ -270,8 +270,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     {
                         const screenshotTimeout = setTimeout(function ()
                         {
-                            //                             gui.patch().scene.cgl.setSize(w,h);
-                            //                             gui.patch().scene.resume();
+                            //                             gui.corePatch().cgl.setSize(w,h);
+                            //                             gui.corePatch().resume();
                             cgl.setSize(w / cgl.pixelDensity, h / cgl.pixelDensity);
                             thePatch.resume();
                         }, 300);

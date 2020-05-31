@@ -258,7 +258,7 @@ CABLES.UI.FileManager.prototype.selectFile = function (filename)
 {
     if (this._fileSource != "patch")
     {
-        if (filename.indexOf(gui.patch().getCurrentProject()._id) > -1)
+        if (filename.indexOf(gui.project()._id) > -1)
         {
             this.setSource(
                 "patch",
@@ -342,7 +342,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 if (this._fileSource != "lib")
                 {
                     html = CABLES.UI.getHandleBarHtml("filemanager_details", {
-                        "projectId": gui.patch().getCurrentProject()._id,
+                        "projectId": gui.project()._id,
                         "file": r,
                         "source": this._fileSource,
                     });
@@ -379,7 +379,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
             const event = document.createEvent("Event");
             event.initEvent("input", true, true);
             this._filePortEle.dispatchEvent(event);
-            gui.patch().showOpParams(this._filePortOp);
+            gui.opParams.show(this._filePortOp);
         }
     }
     else if (detailItems.length > 1)

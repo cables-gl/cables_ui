@@ -93,7 +93,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.project = function ()
     {
-        return self.patch().getCurrentProject();
+        return this.patch().getCurrentProject();
     };
 
     this.opSelect = function ()
