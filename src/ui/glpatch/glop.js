@@ -28,6 +28,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glRectContent = null;
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
+        this._dragOldUiAttribs = null;
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
@@ -67,9 +68,34 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         const glOps = this._glPatch.selectedGlOps;
         for (const i in glOps)
-        {
             glOps[i].endPassiveDrag();
-        }
+
+
+        const undoAdd = (function (scope)
+        {
+            const newUiAttr = JSON.stringify(scope._op.uiAttribs);
+            CABLES.undo.add({
+                "title": "Move op",
+                undo()
+                {
+                    try
+                    {
+                        const u = JSON.parse(scope._dragOldUiAttribs);
+                        // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
+
+                        scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
+                    }
+                    catch (e) {}
+                },
+                redo()
+                {
+                    const u = JSON.parse(newUiAttr);
+                    scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
+                    // scope.op.uiAttribs.translate = { "x": u.translate.x, "y": u.translate.y };
+                    // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
+                }
+            });
+        }(this));
     }
 
     _onMouseDown(e)
@@ -82,6 +108,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glPatch.selectOpId(this.id);
         }
 
+        this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
         this._glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
     }
 
@@ -123,9 +150,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         return this.opUiAttribs;
     }
 
-    setTitle(textWriter, title)
+    setTitle(title, textWriter)
     {
-        this._textWriter = textWriter;
+        if (textWriter) this._textWriter = textWriter;
 
         if (!this._glTitle)
         {
@@ -143,6 +170,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 this._updateBgRectColor();
             }
         }
+        else this._glTitle.text = title;
 
         this.updateSize();
     }
@@ -326,9 +354,19 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this.opUiAttribs.comment)
         {
             if (!this._glComment) this._glComment = new CABLES.GLGUI.Text(this._textWriter, this.opUiAttribs.comment);
-            this._glComment.text = this.opUiAttribs.comment;
-            this._glComment.setParentRect(this._glRectBg);
-            this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
+
+            if (this.opUiAttribs.comment != this._glComment.text)
+            {
+                this._glComment.text = this.opUiAttribs.comment;
+                this._glComment.setParentRect(this._glRectBg);
+                this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
+            }
+        }
+
+        console.log("this.opUiAttribs.title", this.opUiAttribs.title);
+        if (this.opUiAttribs.title != this._glTitle.text)
+        {
+            this.setTitle(this.opUiAttribs.title);
         }
 
         if (this.opUiAttribs.glPreviewTexture)

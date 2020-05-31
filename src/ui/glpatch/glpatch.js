@@ -92,8 +92,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             console.log("dblclick...");
             const ops = gui.patchView.getSelectedOps();
             if (ops.length != 1) return;
-            if (CABLES.UI.OPNAME_SUBPATCH == ops[0].objName) gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
-            gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
+            if (CABLES.UI.OPNAME_SUBPATCH == ops[0].objName)
+            {
+                gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
+                gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
+            }
         }
         else
         {
@@ -220,14 +223,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             else op.uiAttribs.translate = { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y };
         }
 
-        // if (op.uiAttribs.hasOwnProperty("translate"))
-        // {
-        //     if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
-        //     if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
-        //     uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-        // }
-
-
         let glOp = this._glOpz[op.id];
         if (!glOp)
         {
@@ -238,8 +233,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             glOp.uiAttribs = op.uiAttribs;
         }
+
         glOp.updatePosition();
-        glOp.setTitle(this._textWriter, op.name);
+        glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
         glOp.update();
 
         if (CABLES.UI.loaded)
@@ -410,6 +406,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         for (const i in this._glOpz)
         {
             const glop = this._glOpz[i];
+            if (!glop.visible) continue;
 
             if (glop.x + glop.w >= x && // glop. right edge past r2 left
                 glop.x <= x2 && // glop. left edge past r2 right
