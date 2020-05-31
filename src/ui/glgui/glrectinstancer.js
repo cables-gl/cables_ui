@@ -27,7 +27,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._reUploadAttribs = true;
         this._updateRangesMin = {};
         this._updateRangesMax = {};
-        this._bounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999 };
+        this._bounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999, "minZ": 99999, "maxZ": -999999 };
 
         this._meshAttrPos = null;
         this._meshAttrCol = null;
@@ -68,6 +68,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
             .endl() + "IN float contentTexture;"
             .endl() + "OUT float useTexture;"
+            .endl() + "OUT float zz;"
 
             .endl() + "UNI float zoom,resX,resY,scrollX,scrollY;"
 
@@ -90,14 +91,19 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
             .endl() + "    pos.x+=instPos.x;"
             .endl() + "    pos.y+=instPos.y;"
+            .endl() + "    pos.z+=instPos.z;"
+
             .endl() + "    pos.y*=aspect;"
             .endl() + "    pos.y=0.0-pos.y;"
 
             .endl() + "    col=instCol;"
 
-            .endl() + "    pos*=zoom;"
+            .endl() + "    pos.xy*=zoom;"
             .endl() + "    pos.x+=scrollX;"
             .endl() + "    pos.y+=scrollY;"
+
+            .endl() + "    zz=instPos.z;"
+
 
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",
@@ -105,6 +111,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         ""
             .endl() + "IN vec4 col;"
             .endl() + "IN vec4 posSize;"
+            .endl() + "IN float zz;"
             // .endl()+'IN float outlinefrag;'
             .endl() + "IN vec2 uv;"
             .endl() + "IN float frCircle;"
@@ -157,6 +164,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "   outColor.a=smoothstep(0.22,0.2,outer) * 1.0-smoothstep(0.12,0.1,inner);"
             .endl() + "}"
 
+        // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
+
         // .endl() + "   outColor.rg=uv;"
 
             .endl() + "}");
@@ -193,7 +202,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
     {
         if (this._needsBoundsRecalc)
         {
-            this._newBounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999 };
+            const perf = CABLES.uiperf.start("[glRectInstancer] recalcBounds");
+
+            this._newBounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999, "minZ": 99999, "maxZ": -999999 };
 
             for (let i = 0; i < this._rects.length; i++)
             {
@@ -202,17 +213,21 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
                 const x = this._rects[i].x;
                 const y = this._rects[i].y;
+                const z = this._rects[i].z;
                 const x2 = x + this._rects[i].w;
                 const y2 = y + this._rects[i].h;
 
-
                 this._newBounds.minX = Math.min(x, this._newBounds.minX);
-                this._newBounds.minY = Math.min(y, this._newBounds.minY);
                 this._newBounds.maxX = Math.max(x2, this._newBounds.maxX);
+                this._newBounds.minY = Math.min(y, this._newBounds.minY);
                 this._newBounds.maxY = Math.max(y2, this._newBounds.maxY);
+
+                this._newBounds.minZ = Math.min(z, this._newBounds.minZ);
+                this._newBounds.maxZ = Math.max(z, this._newBounds.maxZ);
             }
 
-            // this._needsBoundsRecalc = false;
+            this._needsBoundsRecalc = false;
+            perf.finish();
         }
 
         this._bounds = this._newBounds;
@@ -435,33 +450,36 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         }
         else return;
 
-        // if (
-        //     this._attrBuffPos[i + 0] >= this._bounds.maxX || this._attrBuffPos[i + 0] <= this._bounds.minX ||
-        //     this._attrBuffPos[i + 1] >= this._bounds.maxY || this._attrBuffPos[i + 1] <= this._bounds.minY)
-        // {
-        //     this._needsBoundsRecalc = true;
-        // }
+        if (
+            this._attrBuffPos[i + 0] >= this._bounds.maxX || this._attrBuffPos[i + 0] <= this._bounds.minX ||
+            this._attrBuffPos[i + 1] >= this._bounds.maxY || this._attrBuffPos[i + 1] <= this._bounds.minY)
+        {
+            this._needsBoundsRecalc = true;
+        }
 
 
         this._attrBuffPos[i + 0] = x;
         this._attrBuffPos[i + 1] = y;
         this._attrBuffPos[i + 2] = z;
 
-        // if (
-        //     this._attrBuffPos[i + 0] >= this._bounds.maxX || this._attrBuffPos[i + 0] <= this._bounds.minX ||
-        //     this._attrBuffPos[i + 1] >= this._bounds.maxY || this._attrBuffPos[i + 1] <= this._bounds.minY)
-        // {
-        // this._needsBoundsRecalc = true;
-        // }
+        if (
+            this._attrBuffPos[i + 0] >= this._bounds.maxX || this._attrBuffPos[i + 0] <= this._bounds.minX ||
+            this._attrBuffPos[i + 1] >= this._bounds.maxY || this._attrBuffPos[i + 1] <= this._bounds.minY)
+        {
+            this._needsBoundsRecalc = true;
+        }
 
-        // if (!this._needsBoundsRecalc)
-        // {
-        //     this._bounds.minX = Math.min(this._attrBuffPos[i + 0], this._bounds.minX);
-        //     this._bounds.maxX = Math.max(this._attrBuffPos[i + 0], this._bounds.maxX);
+        if (!this._needsBoundsRecalc)
+        {
+            this._bounds.minX = Math.min(this._attrBuffPos[i + 0], this._bounds.minX);
+            this._bounds.maxX = Math.max(this._attrBuffPos[i + 0], this._bounds.maxX);
 
-        //     this._bounds.minY = Math.min(this._attrBuffPos[i + 1], this._bounds.minY);
-        //     this._bounds.maxY = Math.max(this._attrBuffPos[i + 1], this._bounds.maxY);
-        // }
+            this._bounds.minY = Math.min(this._attrBuffPos[i + 1], this._bounds.minY);
+            this._bounds.maxY = Math.max(this._attrBuffPos[i + 1], this._bounds.maxY);
+
+            this._bounds.minZ = Math.min(this._attrBuffPos[i + 2], this._bounds.minZ);
+            this._bounds.maxZ = Math.max(this._attrBuffPos[i + 2], this._bounds.maxZ);
+        }
 
 
         this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, i, i + 3);

@@ -130,13 +130,13 @@ CABLES.GLGUI.ViewBox = class
         {
             this._boundingRect = this.glPatch.rectDrawer.createRect();
             this._boundingRect.interactive = false;
-            this._boundingRect.setPosition(0, 0);
+            this._boundingRect.setPosition(0, 0, 1);
             this._boundingRect.setSize(110, 110);
-            this._boundingRect.setColor(0, 0, 0, 0.1);
+            this._boundingRect.setColor(0, 0, 110, 0.1);
         }
 
         const bounds = this.glPatch.rectDrawer.bounds;
-        this._boundingRect.setPosition(bounds.minX, bounds.minY);
+        this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.1);
         this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
     }
 

@@ -16,6 +16,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this._circle = false;
         this._x = 0;
         this._y = 0;
+        this._z = 0;
         this._absX = 0;
         this._absY = 0;
         this._w = 110;
@@ -39,6 +40,8 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
     get x() { return this._x; }
 
     get y() { return this._y; }
+
+    get z() { return this._z; }
 
     get w() { return this._w; }
 
@@ -115,7 +118,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
     {
         this._parent = p;
         p.addChild(this);
-        this.setPosition(this._x, this._y);
+        this.setPosition(this._x, this._y, this._z);
     }
 
     get texture()
@@ -131,10 +134,11 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this.emitEvent("textureChanged");
     }
 
-    setPosition(_x, _y)
+    setPosition(_x, _y, _z)
     {
-        this._x = (_x);
-        this._y = (_y);
+        this._x = _x;
+        this._y = _y;
+        this._z = _z || 0;
 
         this._absX = this._x;
         this._absY = this._y;
@@ -145,7 +149,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
             this._absY += this._parent.y;
         }
 
-        this._rectInstancer.setPosition(this._attrIndex, this._absX, this._absY);
+        this._rectInstancer.setPosition(this._attrIndex, this._absX, this._absY, this._z);
 
         for (let i = 0; i < this.childs.length; i++) this.childs[i].setPosition(this.childs[i].x, this.childs[i].y);
         this.emitEvent("positionChanged");

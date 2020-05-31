@@ -259,6 +259,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY, mouseButton)
     {
+        this._cgl.pushDepthTest(true);
+        this._cgl.pushDepthWrite(true);
+        // cgl.pushDepthFunc(compareMethod);
+
+
         this._showRedrawFlash++;
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
@@ -305,6 +310,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             str += n + ": " + this.debugData[n] + "\n";
 
         this._debugtext.text = str;
+
+        this._cgl.popDepthTest();
+        this._cgl.popDepthWrite();
 
         perf.finish();
     }
