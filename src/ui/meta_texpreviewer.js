@@ -348,7 +348,7 @@ CABLES.UI.TexturePreviewer.prototype.render = function ()
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePortId = function (opid, portid)
 {
-    const op = gui.patch().scene.getOpById(opid);
+    const op = gui.corePatch().getOpById(opid);
     if (!op) return;
 
     const p = op.getPortById(portid);

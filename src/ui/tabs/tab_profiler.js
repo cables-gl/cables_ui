@@ -25,7 +25,7 @@ CABLES.UI.Profiler.prototype.show = function ()
 
 CABLES.UI.Profiler.prototype.update = function ()
 {
-    const profiler = gui.patch().scene.profiler;
+    const profiler = gui.corePatch().profiler;
     const items = profiler.getItems();
     let html = "";
     let htmlBar = "";
@@ -103,6 +103,6 @@ CABLES.UI.Profiler.prototype.update = function ()
 
 CABLES.UI.Profiler.prototype.start = function ()
 {
-    gui.patch().scene.profile(true);
+    gui.corePatch().profile(true);
     if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 1000);
 };

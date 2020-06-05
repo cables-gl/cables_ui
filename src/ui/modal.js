@@ -244,7 +244,7 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
     document.getElementById("modalbg").style.display = "block";
 
 
-    const ops = gui.patch().scene.getOpsByObjName(opName);
+    const ops = gui.corePatch().getOpsByObjName(opName);
     for (let i = 0; i < ops.length; i++)
     {
         ops[i].uiAttr({ "error": "exception occured - op stopped - reload to run again" });

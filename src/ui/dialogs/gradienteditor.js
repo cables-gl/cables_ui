@@ -77,7 +77,7 @@ CABLES.GradientEditor.prototype.updateCanvas = function ()
                 };
         }
 
-        const op = gui.patch().scene.getOpById(this._opId);
+        const op = gui.corePatch().getOpById(this._opId);
         op.getPort(this._portName).set(JSON.stringify({ "keys": keyData }));
     }
 };
@@ -203,7 +203,7 @@ CABLES.GradientEditor.prototype.show = function (cb)
 
     if (this._opId && this._portName)
     {
-        const op = gui.patch().scene.getOpById(this._opId);
+        const op = gui.corePatch().getOpById(this._opId);
         const data = op.getPort(this._portName).get();
         try
         {
@@ -237,7 +237,7 @@ CABLES.GradientEditor.prototype.show = function (cb)
     });
     $("#gradientCancelButton").click(function ()
     {
-        const op = gui.patch().scene.getOpById(this._opId);
+        const op = gui.corePatch().getOpById(this._opId);
         op.getPort(this._portName).set(this._previousContent);
         CABLES.UI.MODAL.hide();
     }.bind(this));

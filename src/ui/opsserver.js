@@ -174,7 +174,7 @@ CABLES.UI.ServerOps = function (gui)
 
     this.execute = function (name, next)
     {
-        if (gui.patch().scene._crashedOps.indexOf(name) > -1)
+        if (gui.corePatch()._crashedOps.indexOf(name) > -1)
         {
             let html = "";
             html += "<h1>can not execute op</h1>";
@@ -193,7 +193,7 @@ CABLES.UI.ServerOps = function (gui)
         s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
         s.onload = function ()
         {
-            gui.patch().scene.reloadOp(
+            gui.corePatch().reloadOp(
                 name,
                 function (num, ops)
                 {

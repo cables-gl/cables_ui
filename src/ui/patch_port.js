@@ -278,7 +278,7 @@ CABLES.UI.Port = function (thePort)
             {
                 const p = CABLES.UI.selectedEndOp.op.findFittingPort(CABLES.UI.selectedStartPort);
 
-                gui.patch().scene.link(
+                gui.corePatch().link(
                     CABLES.UI.selectedEndOp.op,
                     p.name,
                     CABLES.UI.selectedStartPort.parent,
@@ -287,7 +287,7 @@ CABLES.UI.Port = function (thePort)
 
                 for (let j = 0; j < CABLES.UI.selectedStartPortMulti.length; j++)
                 {
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         CABLES.UI.selectedEndOp.op,
                         p.name,
                         CABLES.UI.selectedStartPortMulti[j].parent,
@@ -306,7 +306,7 @@ CABLES.UI.Port = function (thePort)
                     {
                         if (CABLES.UI.selectedEndOp)
                         {
-                            gui.patch().scene.link(
+                            gui.corePatch().link(
                                 CABLES.UI.selectedEndOp.op,
                                 portName,
                                 CABLES.UI.selectedStartPort.parent,
@@ -315,7 +315,7 @@ CABLES.UI.Port = function (thePort)
 
                             for (let j = 0; j < CABLES.UI.selectedStartPortMulti.length; j++)
                             {
-                                gui.patch().scene.link(
+                                gui.corePatch().link(
                                     CABLES.UI.selectedEndOp.op,
                                     portName,
                                     CABLES.UI.selectedStartPortMulti[j].parent,
@@ -344,11 +344,11 @@ CABLES.UI.Port = function (thePort)
 
             if (CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort))
             {
-                const link = gui.patch().scene.link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName(), CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
+                const link = gui.corePatch().link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName(), CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
 
                 for (let j = 0; j < CABLES.UI.selectedStartPortMulti.length; j++)
                 {
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         CABLES.UI.selectedEndPort.op,
                         CABLES.UI.selectedEndPort.thePort.getName(),
                         CABLES.UI.selectedStartPortMulti[j].parent,

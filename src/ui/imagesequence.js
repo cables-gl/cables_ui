@@ -30,7 +30,7 @@ CABLES.UI.ImageSequenceExport = function (filename, start, end, fps, settings)
         currentNum++;
         fileNum++;
 
-        gui.patch().scene.pause();
+        gui.corePatch().pause();
         const time = currentNum * frameDuration;
 
         console.log(currentNum, time, document.getElementById("glcanvas").width, document.getElementById("glcanvas").height);
@@ -85,7 +85,7 @@ CABLES.UI.ImageSequenceExport = function (filename, start, end, fps, settings)
 
             $("#progresscontainer").hide();
             $("#animRendererSettings").show();
-            // gui.patch().scene.freeTimer.play();
+            // gui.corePatch().freeTimer.play();
 
             $(".modalScrollContent").html("");
             $(".modalScrollContent").append("finished!<br/><br/>");
@@ -97,10 +97,10 @@ CABLES.UI.ImageSequenceExport = function (filename, start, end, fps, settings)
             $(".modalScrollContent").append("<br/><br/>ffmpeg command to convert to mp4:<br/><code class=\"selectable\">" + ffmpgCmd + "</code>");
             CABLES.internalNow = oldInternalNow;
             oldInternalNow = null;
-            gui.patch().scene.pause();
+            gui.corePatch().pause();
             setTimeout(function ()
             {
-                gui.patch().scene.resume();
+                gui.corePatch().resume();
             }, 500);
 
             return;
@@ -110,7 +110,7 @@ CABLES.UI.ImageSequenceExport = function (filename, start, end, fps, settings)
         //     width:$('#render_width').val(),
         //     height:$('#render_height').val()
         // });
-        // gui.patch().scene.cgl.updateSize();
+        // gui.corePatch().cgl.updateSize();
 
         const prog = Math.round(fileNum / (endNum - startNum) * 100);
         $("#progresscontainer .progress").css({
@@ -118,11 +118,11 @@ CABLES.UI.ImageSequenceExport = function (filename, start, end, fps, settings)
         });
         if (settings.onProgress) settings.onProgress(prog / 100);
 
-        gui.patch().scene.timer.pause();
-        gui.patch().scene.freeTimer.pause();
+        gui.corePatch().timer.pause();
+        gui.corePatch().freeTimer.pause();
         // console.log('time', time);
-        gui.patch().scene.timer.setTime(time);
-        gui.patch().scene.freeTimer.setTime(time);
+        gui.corePatch().timer.setTime(time);
+        gui.corePatch().freeTimer.setTime(time);
 
         CABLES.UI.IMGSEQUENCETIME = time * 1000;
         CABLES.internalNow = function ()
@@ -144,36 +144,36 @@ CABLES.UI.ImageSequenceExport = function (filename, start, end, fps, settings)
             }
         }
 
-        // if(time==0)gui.patch().scene.renderOneFrame();
-        gui.patch().scene.renderOneFrame();
+        // if(time==0)gui.corePatch().renderOneFrame();
+        gui.corePatch().renderOneFrame();
 
         const left = Math.ceil((Math.round((window.performance.now() - startTime) / 1000) / (currentNum - 1)) * (endNum - currentNum));
         $(".modalScrollContent").html("frame " + (currentNum - startNum) + " of " + (endNum - startNum) + "<br/>" + left + " seconds left...");
 
         // setTimeout(function() {
-        // gui.patch().scene.onOneFrameRendered=function()
+        // gui.corePatch().onOneFrameRendered=function()
         // {
-        //     console.log(''+filename + strCurrentNum+' . '+CABLES.now()+'  '+gui.patch().scene.timer.getTime() );
+        //     console.log(''+filename + strCurrentNum+' . '+CABLES.now()+'  '+gui.corePatch().timer.getTime() );
 
         // if(format=='gif')
         // {
         //     console.log("add gif frame...");
         //     // gif.addFrame(ctx, {copy: true});
 
-        //     gif.addFrame(gui.patch().scene.cgl.canvas, {delay: 200,copy:true});
+        //     gif.addFrame(gui.corePatch().cgl.canvas, {delay: 200,copy:true});
         //     render();
         // }
 
         if (format == "webm" || format == "gif")
         {
-            gui.patch().scene.renderOneFrame();
+            gui.corePatch().renderOneFrame();
             console.log("strCurrentNum", strCurrentNum);
-            frames.push(gui.patch().scene.cgl.canvas.toDataURL("image/webp", 0.99));
+            frames.push(gui.corePatch().cgl.canvas.toDataURL("image/webp", 0.99));
             render();
         }
         else
         {
-            gui.patch().scene.cgl.saveScreenshot(
+            gui.corePatch().cgl.saveScreenshot(
                 filename + strCurrentNum,
                 function ()
                 {

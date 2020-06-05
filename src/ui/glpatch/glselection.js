@@ -31,7 +31,7 @@ CABLES.GLGUI.GlSelectionArea = class
 
     setPos(x, y)
     {
-        this._selectRect.setPosition(x, y, 1000);
+        this._selectRect.setPosition(x, y, 0.1);
     }
 
     setSize(w, h)

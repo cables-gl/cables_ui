@@ -29,20 +29,19 @@ CABLES.GLGUI.GlPort = class
 
     _onMouseDown(e, rect)
     {
-        console.log("PORT DIQB");
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
         {
-            this._glpatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
+            this._glPatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
         }
         else
         {
-            this._glpatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name);
+            this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name);
         }
     }
 
     _onMouseUp(e, rect)
     {
-        this._glpatch.emitEvent("mouseUpOverPort", this._glop.id, this._port.name);
+        this._glPatch.emitEvent("mouseUpOverPort", this._glop.id, this._port.name);
     }
 
     _onHover(rect)

@@ -14,6 +14,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.mouseState = new CABLES.GLGUI.MouseState(cgl.canvas);
 
         this._glOpz = {};
+        this._hoverOps = [];
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
@@ -44,12 +45,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._debugtext = new CABLES.GLGUI.Text(this._textWriter, "hello");
 
         this._viewZoom = 0;
-
-        this._viewResX = 0;
-        this._viewResY = 0;
-
         this.needsRedraw = false;
-
         this._selectedGlOps = {};
 
         this.links = {};
@@ -58,6 +54,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
+        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) => { CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode")); });
@@ -88,6 +85,26 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }
 
+    _onCanvasDblClick(e)
+    {
+        if (this._hoverOps.length > 0)
+        {
+            console.log("dblclick...");
+            const ops = gui.patchView.getSelectedOps();
+            if (ops.length != 1) return;
+            if (CABLES.UI.OPNAME_SUBPATCH == ops[0].objName)
+            {
+                gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
+                gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
+            }
+        }
+        else
+        {
+            this.emitEvent("dblclick", e);
+        }
+        e.preventDefault();
+    }
+
     _onCanvasMouseLeave(e)
     {
         if (this._selectionArea.active)
@@ -107,7 +124,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.quickLinkSuggestion.longPressCancel();
         this._rectInstancer.interactive = true;
 
-        if (Object.keys(this._selectedGlOps).length == 0)gui.patchView.showBookmarkParamsPanel();
+        if (Object.keys(this._selectedGlOps).length == 0)gui.patchView.showDefaultPanel();
     }
 
     _onKeyDelete(e)
@@ -127,6 +144,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     get selectedGlOps() { return this._selectedGlOps; }
 
     get subPatch() { return this._currentSubpatch; }
+
+    isFocussed()
+    {
+        return document.activeElement == this._cgl.canvas;
+    }
 
     getOpAt(x, y)
     {
@@ -184,7 +206,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = 0;
 
-
         op.addEventListener("onUiAttribsChange",
             (newAttribs) =>
             {
@@ -198,17 +219,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (!op.uiAttribs.translate)
         {
-            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": this.viewBox.scrollX, "y": this.viewBox.scrollY };
+            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": this.viewBox.mousePatchX, "y": this.viewBox.mousePatchY };
             else op.uiAttribs.translate = { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y };
         }
-
-        // if (op.uiAttribs.hasOwnProperty("translate"))
-        // {
-        //     if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
-        //     if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
-        //     uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-        // }
-
 
         let glOp = this._glOpz[op.id];
         if (!glOp)
@@ -220,8 +233,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             glOp.uiAttribs = op.uiAttribs;
         }
+
         glOp.updatePosition();
-        glOp.setTitle(this._textWriter, op.name);
+        glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
         glOp.update();
 
         if (CABLES.UI.loaded)
@@ -233,16 +247,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
     }
 
-    screenCoord(mouseX, mouseY)
-    {
-        const z = 1 / (this._viewResX / 2 / this.viewBox.zoom);
-        const asp = this._viewResY / this._viewResX;
-
-        const mouseAbsX = (mouseX - (this._viewResX / 2)) * z - (this.viewBox.scrollX);
-        const mouseAbsY = (mouseY - (this._viewResY / 2)) * z + (this.viewBox.scrollY * asp);
-
-        return [mouseAbsX, mouseAbsY];
-    }
 
     setFont(f)
     {
@@ -251,27 +255,29 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY, mouseButton)
     {
+        this._cgl.pushDepthTest(true);
+        this._cgl.pushDepthWrite(true);
+        // cgl.pushDepthFunc(compareMethod);
+
+
         this._showRedrawFlash++;
+        this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
 
         if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();
 
-        this._viewResX = resX;
-        this._viewResY = resY;
-        this._viewZoom = this.viewBox.zoom;
+        this.viewBox.setSize(resX, resY);
 
-        const coord = this.screenCoord(this.viewBox.mouseX, this.viewBox.mouseY);
-        const mouseAbsX = coord[0];
-        const mouseAbsY = coord[1];
         const starttime = performance.now();
 
-        this.mouseMove(mouseAbsX, mouseAbsY, mouseButton);
-        this._cursor2.setPosition(mouseAbsX - 2, mouseAbsY - 2);
-        this._portDragLine.setPosition(mouseAbsX, mouseAbsY);
+        this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY, mouseButton);
+        this._cursor2.setPosition(this.viewBox.mousePatchX - 2, this.viewBox.mousePatchY - 2);
+        this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
         const perf = CABLES.uiperf.start("[glpatch] render");
 
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
@@ -281,12 +287,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.needsRedraw = false;
 
-
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
         this.debugData.rects = this._rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
 
-        this.debugData.viewZoom = this._viewZoom;
+        this.debugData.viewZoom = this.viewBox.zoom;
         this.debugData.viewbox_scrollX = this.viewBox.scrollX;
         this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         this.debugData.viewResX = this._viewResX;
@@ -301,6 +306,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             str += n + ": " + this.debugData[n] + "\n";
 
         this._debugtext.text = str;
+
+        this._cgl.popDepthTest();
+        this._cgl.popDepthWrite();
 
         perf.finish();
     }
@@ -319,7 +327,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (this._rectInstancer.isDragging()) return;
 
-        const hoverops = this._getGlOpsInRect(x, y, x + 1, y + 1);
+        this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
 
         if (button == 1)
         {
@@ -354,7 +362,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._hoverDragOp = null;
         }
 
-        if (this._selectionArea.h == 0 && hoverops.length > 0) allowSelectionArea = false;
+        if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && button != 1)
         {
             if (this._selectionArea.active) console.log("hide area2");
@@ -398,6 +406,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         for (const i in this._glOpz)
         {
             const glop = this._glOpz[i];
+            if (!glop.visible) continue;
 
             if (glop.x + glop.w >= x && // glop. right edge past r2 left
                 glop.x <= x2 && // glop. left edge past r2 right
@@ -493,6 +502,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             bounds.miny = Math.min(bounds.miny, op.y);
             bounds.maxy = Math.max(bounds.maxy, op.y);
         }
+
+        bounds.minx -= CABLES.GLGUI.VISUALCONFIG.opWidth;
+        bounds.maxx += CABLES.GLGUI.VISUALCONFIG.opWidth * 2;
+
+        bounds.miny -= CABLES.GLGUI.VISUALCONFIG.opHeight;
+        bounds.maxy += CABLES.GLGUI.VISUALCONFIG.opHeight * 2;
+
         return bounds;
     }
 
@@ -575,5 +591,74 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     focus()
     {
         this._cgl.canvas.focus();
+    }
+
+    cut(e)
+    {
+        gui.patchView.clipboardCutOps(e);
+    }
+
+    copy(e)
+    {
+        // todo play copy indicator anim
+        // for (const i in selectedOps) selectedOps[i].oprect.showCopyAnim();
+        gui.patchView.clipboardCopyOps(e);
+    }
+
+    paste(e)
+    {
+        // let mouseX = 0;
+        // let mouseY = 0;
+        // if (self.lastMouseMoveEvent)
+        // {
+        //     mouseX = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).x;
+        //     mouseY = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).y;
+        // }
+
+        gui.patchView.clipboardPaste(e, this._currentSubpatch, this.viewBox.mousePatchX, this.viewBox.mousePatchY,
+            (ops, focusSubpatchop) =>
+            {
+                // self.setSelectedOp(null);
+                this.unselectAll();
+                for (let i = 0; i < ops.length; i++)
+                {
+                    this.selectOpId(ops[i].id);
+                    // const uiop = self.addSelectedOpById(ops[i].id);
+
+                    // uiop.setSelected(false);
+                    // uiop.setSelected(true);
+                    // gui.setStateUnsaved();
+                }
+
+                // setTimeout(() => // todo timeout still needed in glrenderer?
+                // {
+                //     gui.patch().setCurrentSubPatch(this._currentSubpatch);
+
+                //     if (focusSubpatchop)
+                //     {
+                //         console.log(focusSubpatchop, this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+                //         const op = gui.corePatch().getOpById(focusSubpatchop.id);
+                //         // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+
+                //         const uiop = gui.patch().getUiOp(op);
+                //         uiop.setPos(this.viewBox.mouseX, this.viewBox.mouseY);
+
+                //         // gui.patch().focusOp(op.id,true);
+                //         // console.log(op);
+                //         // gui.patch().centerViewBoxOps();
+                //     }
+                // }, 100);
+            });
+    }
+
+    setCurrentSubPatch(sub)
+    {
+        this._currentSubpatch = sub;
+        console.log("set subpatch", sub);
+
+        for (const i in this._glOpz)
+        {
+            this._glOpz[i].updateVisible();
+        }
     }
 };

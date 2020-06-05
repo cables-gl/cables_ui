@@ -10,7 +10,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._element = null;
         this._pvRenderers = {};
         this._patchRenderer = null;
+        this.isPasting = false;
         this.store = new CABLES.UI.PatchServer();
+        this._initListeners();
     }
 
     get element() { return this._element || CABLES.UI.PatchView.getElement(); }
@@ -18,6 +20,27 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     static getElement()
     {
         return $("#patchviews .visible");
+    }
+
+    _initListeners()
+    {
+        document.addEventListener("copy", (e) =>
+        {
+            if (this._patchRenderer.isFocussed()) this._patchRenderer.copy(e);
+            if ($("#timeline").is(":focus")) gui.patch().timeLine.copy(e);
+        });
+
+        document.addEventListener("paste", (e) =>
+        {
+            if (this._patchRenderer.isFocussed()) this._patchRenderer.paste(e);
+            if ($("#timeline").is(":focus")) gui.patch().timeLine.paste(e);
+        });
+
+        document.addEventListener("cut", (e) =>
+        {
+            if (this._patchRenderer.isFocussed()) this._patchRenderer.cut(e);
+            if ($("#timeline").is(":focus")) gui.patch().timeLine.cut(e);
+        });
     }
 
     switch(id)
@@ -74,7 +97,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
 
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         options.linkNewOpToOp,
                         options.linkNewOpToPort.getName(),
                         op,
@@ -134,7 +157,29 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     );
                 }
             }
+
+            if (options.onOpAdd) options.onOpAdd(op);
         });
+    }
+
+    addOpAndLink(opname, opid, portname)
+    {
+        const oldOp = gui.corePatch().getOpById(opid);
+        const trans = {
+            "translate": {
+                "x": oldOp.uiAttribs.translate.x,
+                "y": oldOp.uiAttribs.translate.y - 100
+            }
+        };
+
+        gui.patchView.addOp(opname, {
+            "onOpAdd": (newOp) =>
+            {
+                const newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
+                gui.corePatch().link(oldOp, portname, newOp, newPort.name);
+
+                newOp.setUiAttrib({ "translate": trans });
+            } });
     }
 
     showSelectedOpsPanel()
@@ -152,15 +197,18 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     showDefaultPanel()
     {
+        gui.texturePreview().pressedEscape();
+        gui.setTransformGizmo(null);
+
         this.showBookmarkParamsPanel();
     }
 
-    selectAllOpsSubPatch(subPatch)
+    selectAllOpsSubPatch(subPatch, noUnselect)
     {
         for (let i = 0; i < this._p.ops.length; i++)
         {
             if ((this._p.ops[i].uiAttribs.subPatch || 0) == subPatch) this._p.ops[i].uiAttr({ "selected": true });
-            else this._p.ops[i].uiAttr({ "selected": false });
+            else if (!noUnselect) this._p.ops[i].uiAttr({ "selected": false });
         }
     }
 
@@ -350,13 +398,16 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
+        if (currentSubPatch === 0) $("#subpatch_nav").hide();
+        else $("#subpatch_nav").show();
+
         const names = this.getSubpatchPathArray(currentSubPatch);
-        let str = "<a onclick=\"gui.patch().setCurrentSubPatch(0)\">Main</a> ";
+        let str = "<a onclick=\"gui.patchView.setCurrentSubPatch(0)\">Main</a> ";
 
         for (let i = names.length - 1; i >= 0; i--)
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
-            str += "<a onclick=\"gui.patch().setCurrentSubPatch('" + names[i].id + "')\">" + names[i].name + "</a>";
+            str += "<a onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "')\">" + names[i].name + "</a>";
         }
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
@@ -370,29 +421,34 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     clipboardCopyOps(e)
     {
-        const selectedOps = this.getSelectedOps();
+        let selectedOps = this.getSelectedOps();
         const ops = [];
         const opIds = [];
-        let j = 0, i = 0, k = 0;
+        let j = 0, k = 0;
 
-        for (i in selectedOps)
+        for (const i in selectedOps)
         {
             if (selectedOps[i].objName == CABLES.UI.OPNAME_SUBPATCH)
             {
                 console.log("selecting subpatch", selectedOps[i].patchId.get());
-                self.selectAllOpsSubPatch(selectedOps[i].patchId.get());
+                this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
+                // if (this._patchRenderer.selectAllOpsSubPatch) this.selectAllOpsSubPatch(selectedOps[i].patchId.get());
+                // else console.log("this._patchRenderer.selectAllOpsSubPatch missin!");
             }
         }
 
-        for (i in selectedOps)
+        selectedOps = this.getSelectedOps();
+
+        for (const i in selectedOps)
         {
+            console.log(selectedOps[i].objName);
             ops.push(selectedOps[i].getSerialized());
             opIds.push(selectedOps[i].id);
             // selectedOps[i].oprect.showCopyAnim();
         }
 
         // remove links that are not fully copied...
-        for (i = 0; i < ops.length; i++)
+        for (let i = 0; i < ops.length; i++)
         {
             for (j = 0; j < ops[i].portsIn.length; j++)
             {
@@ -422,9 +478,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         e.preventDefault();
     }
 
-
     clipboardPaste(e, oldSub, mouseX, mouseY, next)
     {
+        this.isPasting = true;
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
             console.error("clipboard not type text");
@@ -450,26 +506,24 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         }
 
         const undoGroup = CABLES.undo.startGroup();
-        let k = 0;
 
         if (!json || !json.ops) return;
 
         let focusSubpatchop = null;
-        gui.serverOps.loadProjectLibs(json, function ()
+        gui.serverOps.loadProjectLibs(json, () =>
         {
-            let i = 0, j = 0;
             // change ids
-            for (i in json.ops)
+            for (const i in json.ops)
             {
                 const searchID = json.ops[i].id;
                 const newID = json.ops[i].id = CABLES.generateUUID();
 
                 json.ops[i].uiAttribs.pasted = true;
 
-                for (j in json.ops)
+                for (const j in json.ops)
                 {
                     if (json.ops[j].portsIn)
-                        for (k in json.ops[j].portsIn)
+                        for (const k in json.ops[j].portsIn)
                         {
                             if (json.ops[j].portsIn[k].links)
                             {
@@ -478,7 +532,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                                 {
                                     if (json.ops[j].portsIn[k].links[l] === null)
                                     {
-                                        console.log("delete null link");
                                         json.ops[j].portsIn[k].links.splice(l, 1);
                                     }
                                 }
@@ -495,11 +548,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             // set correct subpatch
             const subpatchIds = [];
             const fixedSubPatches = [];
-            for (i = 0; i < json.ops.length; i++)
+            for (let i = 0; i < json.ops.length; i++)
             {
                 if (CABLES.Op.isSubpatchOp(json.ops[i].objName))
                 {
-                    for (k in json.ops[i].portsIn)
+                    for (const k in json.ops[i].portsIn)
                     {
                         if (json.ops[i].portsIn[k].name == "patchId")
                         {
@@ -512,10 +565,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
                             focusSubpatchop = json.ops[i];
 
-                            for (j = 0; j < json.ops.length; j++)
+                            for (let j = 0; j < json.ops.length; j++)
                             {
-                                // console.log('json.ops[j].uiAttribs.subPatch',json.ops[j].uiAttribs.subPatch);
-
                                 if (json.ops[j].uiAttribs.subPatch == oldSubPatchId)
                                 {
                                     console.log("found child patch");
@@ -527,33 +578,33 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         }
                     }
                 }
+            }
 
-                for (i in json.ops)
+            for (const kk in json.ops)
+            {
+                let found = false;
+                for (let j = 0; j < fixedSubPatches.length; j++)
                 {
-                    let found = false;
-                    for (j = 0; j < fixedSubPatches.length; j++)
+                    if (json.ops[kk].id == fixedSubPatches[j])
                     {
-                        if (json.ops[i].id == fixedSubPatches[j])
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found)
-                    {
-                        json.ops[i].uiAttribs.subPatch = oldSub;
+                        found = true;
+                        break;
                     }
                 }
-
-                for (i in subpatchIds)
-                    gui.patch().setCurrentSubPatch(subpatchIds[i]);
+                if (!found)
+                {
+                    json.ops[kk].uiAttribs.subPatch = oldSub;
+                }
             }
+
+            for (const i in subpatchIds) this.setCurrentSubPatch(subpatchIds[i]);
+            // gui.patch().setCurrentSubPatch(subpatchIds[i]);
 
             { // change position of ops to paste
                 let minx = Number.MAX_VALUE;
                 let miny = Number.MAX_VALUE;
 
-                for (i in json.ops)
+                for (const i in json.ops)
                 {
                     if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
                     {
@@ -562,7 +613,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     }
                 }
 
-                for (i in json.ops)
+                for (const i in json.ops)
                 {
                     if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
                     {
@@ -594,7 +645,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }
             CABLES.UI.notify("Pasted " + json.ops.length + " ops");
+            console.log("deserialize. now...");
             gui.corePatch().deSerialize(json, false);
+            console.log("finish deserialize...");
+            this.isPasting = false;
             next(json.ops, focusSubpatchop);
         });
         CABLES.undo.endGroup(undoGroup, "Paste");

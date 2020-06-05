@@ -20,7 +20,7 @@ CABLES.UI.Paco.prototype.open = function ()
         setTimeout(function () // kinda sucks... better create client send event and then send patch data....
         {
             let json = {};
-            json = gui.patch().scene.serialize(true);
+            json = gui.corePatch().serialize(true);
             gui.patchConnection.send(CABLES.PACO_LOAD,
                 {
                     "patch": JSON.stringify(json)

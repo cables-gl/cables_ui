@@ -170,7 +170,7 @@
                         {{#compare port.uiAttribs.display '==' 'texture' }}
                             </td>
                             <td >
-                                <a class="info graphbutton fa fa-plus-circle" onclick="gui.patch().createOpAndLink('Ops.Gl.Texture','{{op.id}}','{{port.name}}');"></a>
+                                <a class="info graphbutton fa fa-plus-circle" onclick="gui.patchView.addOpAndLink('Ops.Gl.Texture','{{op.id}}','{{port.name}}');"></a>
                             </td>
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'file' }}
@@ -209,6 +209,7 @@
                         {{/compare}}
                         {{#compare port.type '==' 4}}
                             <!-- dynamic port? -->
+                            <!--
                             {{#if port.uiAttribs.type }}
                             {{else}}
                                 <a class="info timingbutton fa fa-clock-o" data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" ></a>
@@ -219,6 +220,7 @@
                             {{else}}
                                 <a class="valueDragger graphbutton fa fa-sort info" onmousedown="valueChanger('portval_{{ portnum }}');"  data-info="{{ texts.portFloatDrag }}"></a>
                             {{/if}}
+                             -->
                         {{/compare}}
                     {{/if}}
                 {{/if}}

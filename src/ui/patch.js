@@ -67,6 +67,7 @@ CABLES.UI.Patch = function (_gui)
         if (op.op) return gui.patchView.isCurrentOp(op.op); // if is uiop
         return gui.patchView.isCurrentOp(op);
     };
+
     this.isCurrentOpId = function (opid)
     {
         return gui.opParams.isCurrentOpId(opid);
@@ -118,6 +119,11 @@ CABLES.UI.Patch = function (_gui)
         }
     };
 
+    this.isFocussed = function ()
+    {
+        return $("#patch").is(":focus");
+    };
+
 
     this.cut = function (e)
     {
@@ -143,6 +149,9 @@ CABLES.UI.Patch = function (_gui)
         gui.patchView.clipboardPaste(e, currentSubPatch, mouseX, mouseY,
             (ops, focusSubpatchop) =>
             {
+                console.log("svg paste cliup....");
+
+
                 self.setSelectedOp(null);
                 for (let i = 0; i < ops.length; i++)
                 {
@@ -160,11 +169,11 @@ CABLES.UI.Patch = function (_gui)
                     if (focusSubpatchop)
                     {
                         console.log(focusSubpatchop, mouseX, mouseY);
-                        const op = gui.patch().scene.getOpById(focusSubpatchop.id);
+                        const op = gui.corePatch().getOpById(focusSubpatchop.id);
                         // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
 
                         const uiop = gui.patch().getUiOp(op);
-                        uiop.setPos(mouseX, mouseY);
+                        // uiop.setPos(mouseX, mouseY);
 
                         // gui.patch().focusOp(op.id,true);
                         // console.log(op);
@@ -733,7 +742,7 @@ CABLES.UI.Patch = function (_gui)
 
                 gui.rendererWidth = proj.ui.renderer.w;
                 gui.rendererHeight = proj.ui.renderer.h;
-                gui.patch().scene.cgl.canvasScale = proj.ui.renderer.s || 1;
+                gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
                 gui.setLayout();
             }
 
@@ -1038,7 +1047,7 @@ CABLES.UI.Patch = function (_gui)
         if (CABLES.UI.OPSELECT.linkNewOpToSuggestedPort)
         {
             console.log("CABLES.UI.OPSELECT.linkNewOpToSuggestedPort");
-            const link = gui.patch().scene.link(
+            const link = gui.corePatch().link(
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op,
                 CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName,
                 op,
@@ -1064,7 +1073,7 @@ CABLES.UI.Patch = function (_gui)
                 {
                     gui.patch().setSelectedOp(null);
                     gui.patch().setSelectedOp(uiOp);
-                    gui.patch().showOpParams(op);
+                    gui.opParams.show(op);
                     gui.patch().updateBounds();
                     gui.patch().getViewBox().update();
                     uiOp.oprect.showFocus();
@@ -1359,9 +1368,6 @@ CABLES.UI.Patch = function (_gui)
 
             for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
 
-            if (which === 0) $("#subpatch_nav").hide();
-            else $("#subpatch_nav").show();
-
             currentSubPatch = which;
             self.updateSubPatches();
 
@@ -1373,7 +1379,7 @@ CABLES.UI.Patch = function (_gui)
             }
 
             this._elPatch.focus();
-            self.updateSubPatchBreadCrumb();
+            gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
 
             gui.setWorking(false, "patch");
 
@@ -1422,10 +1428,6 @@ CABLES.UI.Patch = function (_gui)
     //     else this.setCurrentSubPatch(0);
     // };
 
-    this.updateSubPatchBreadCrumb = function ()
-    {
-        gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
-    };
 
     this.getSelectedOps = function ()
     {
@@ -1716,7 +1718,7 @@ CABLES.UI.Patch = function (_gui)
 
                 gui.patch().setSelectedOp(null);
                 gui.patch().setSelectedOp(gui.patch().ops[i]);
-                gui.patch().showOpParams(gui.patch().ops[i].op);
+                gui.opParams.show(gui.patch().ops[i].op);
                 return;
             }
         }
@@ -1818,17 +1820,15 @@ CABLES.UI.Patch = function (_gui)
     {
         gui.opParams.dispose();
         if (gui.fileManager)gui.fileManager.setFilePort(null);
-        gui.texturePreview().pressedEscape();
         const perf = CABLES.uiperf.start("showProjectParams");
 
         const s = {};
         if (currentOp && currentOp)currentOp = null;
-        gui.setTransformGizmo(null);
 
         s.name = currentProject.name;
         s.settings = gui.corePatch().settings;
 
-        gui.patchView.showBookmarkParamsPanel();
+        gui.patchView.showDefaultPanel();
 
         perf.finish();
     };
@@ -1872,7 +1872,7 @@ CABLES.UI.Patch = function (_gui)
             if (op.portsIn[i].defaultValue != null)
                 op.portsIn[i].set(op.portsIn[i].defaultValue);
 
-        gui.patch().showOpParams(op);
+        gui.opParams.show(op);
     };
 
     this._showOpParams = function (op)
@@ -2095,7 +2095,7 @@ CABLES.UI.Patch = function (_gui)
 
             if (sugIn.length == 1)
             {
-                gui.patch().scene.link(
+                gui.corePatch().link(
                     p.parent,
                     p.name,
                     sugIn[0].p.parent,
@@ -2108,7 +2108,7 @@ CABLES.UI.Patch = function (_gui)
             new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
                 function (sugId)
                 {
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         p.parent,
                         p.name,
                         sugIn[sugId].p.parent,
@@ -2136,22 +2136,6 @@ CABLES.UI.Patch.prototype.getNumOps = function ()
     return this.ops.length;
 };
 
-CABLES.UI.Patch.prototype.createOpAndLink = function (opname, opid, portname)
-{
-    const oldOp = gui.corePatch.getOpById(opid);
-    const trans = {
-        "translate": {
-            "x": oldOp.uiAttribs.translate.x,
-            "y": oldOp.uiAttribs.translate.y - 100
-        }
-    };
-
-    const newOp = gui.patchView.addOp(opname, trans);
-    const newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
-    gui.corePatch.link(oldOp, portname, newOp, newPort.name);
-
-    newOp.setUiAttrib({ "translate": trans });
-};
 
 // ---------------------
 

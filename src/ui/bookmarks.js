@@ -24,7 +24,7 @@ CABLES.UI.Bookmarks = function ()
 
         for (i in bookmarks)
         {
-            const op = gui.patch().scene.getOpById(bookmarks[i]);
+            const op = gui.corePatch().getOpById(bookmarks[i]);
             if (!op) bookmarks[i] = null;
         }
     };
@@ -36,7 +36,7 @@ CABLES.UI.Bookmarks = function ()
         const bm = [];
         for (const i in bookmarks)
         {
-            const op = gui.patch().scene.getOpById(bookmarks[i]);
+            const op = gui.corePatch().getOpById(bookmarks[i]);
 
             if (op)
             {
@@ -113,8 +113,8 @@ CABLES.UI.Bookmarks = function ()
         if (gui.keys.shiftKey)
         {
             console.log("YES");
-            const op = gui.patch().scene.getOpById(id);
-            gui.patch().showOpParams(op);
+            const op = gui.corePatch().getOpById(id);
+            gui.opParams.show(op);
         }
         else
         {

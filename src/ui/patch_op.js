@@ -455,12 +455,12 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
 
                 if (CABLES.Link.canLink(opui.op.portsIn[0], portOut.thePort))
                 {
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         opui.op,
                         opui.op.portsIn[0].getName(), portOut.thePort.parent, portOut.thePort.getName()
                     );
 
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         opui.op,
                         opui.op.portsOut[0].getName(), portIn.thePort.parent, portIn.thePort.getName()
                     );
@@ -472,7 +472,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
                 }
                 else
                 {
-                    gui.patch().scene.link(
+                    gui.corePatch().link(
                         portIn.thePort.parent, portIn.thePort.getName(),
                         portOut.thePort.parent, portOut.thePort.getName()
                     );
@@ -481,7 +481,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         }
 
         gui.patch().moveSelectedOpsFinished();
-        gui.patch().showOpParams(opui.op);
+        gui.opParams.show(opui.op);
         CABLES.UI.LINKHOVER = null;
     };
 

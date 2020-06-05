@@ -36,7 +36,7 @@ CABLES.AnimRenderer.prototype.update = function ()
         "width": $("#render_width").val(),
         "height": $("#render_height").val(),
     });
-    gui.patch().scene.cgl.updateSize();
+    gui.corePatch().cgl.updateSize();
 
     // for(var i in gui.patch().ops)
     // {

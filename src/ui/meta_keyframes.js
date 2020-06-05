@@ -20,10 +20,10 @@ CABLES.UI.MetaKeyframes.prototype.show = function ()
 
     if (CABLES.UI && window.gui)
     {
-        const ops = gui.patch().scene.ops;
+        const ops = gui.corePatch().ops;
         for (i = 0; i < ops.length; i++)
         {
-            // console.log(gui.patch().scene.ops[i].name);
+            // console.log(gui.corePatch().ops[i].name);
             for (let j = 0; j < ops[i].portsIn.length; j++)
             {
                 const p = ops[i].portsIn[j];
@@ -60,7 +60,7 @@ CABLES.UI.MetaKeyframes.prototype.showAnim = function (opid, portname)
 {
     CABLES.CMD.UI.showTimeline();
     gui.patch().focusOp(opid, true);
-    const op = gui.patch().scene.getOpById(opid);
+    const op = gui.corePatch().getOpById(opid);
     const p = op.getPort(portname);
     console.log(p);
     if (p.anim)

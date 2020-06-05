@@ -4,8 +4,8 @@ CABLES.CMD.RENDERER = {};
 
 CABLES.CMD.RENDERER.screenshot = function ()
 {
-    gui.patch().scene.cgl.saveScreenshot();
-    gui.patch().scene.resume();
+    gui.corePatch().cgl.saveScreenshot();
+    gui.corePatch().resume();
 };
 
 CABLES.CMD.RENDERER.fullscreen = function ()
@@ -20,7 +20,7 @@ CABLES.CMD.RENDERER.animRenderer = function ()
 
 CABLES.CMD.RENDERER.screenshotUpload = function ()
 {
-    gui.patch().scene.cgl.saveScreenshot(null,
+    gui.corePatch().cgl.saveScreenshot(null,
         function (blob)
         {
             const file = new File([blob], "screenshot.png", { "type": "image/png" });
@@ -29,7 +29,7 @@ CABLES.CMD.RENDERER.screenshotUpload = function ()
             fd.append(0, file);
             $.ajax({
                 "type": "POST",
-                "url": "/api/project/" + gui.patch().getCurrentProject()._id + "/file",
+                "url": "/api/project/" + gui.project()._id + "/file",
                 "data": fd,
                 "processData": false,
                 "contentType": false
@@ -39,7 +39,7 @@ CABLES.CMD.RENDERER.screenshotUpload = function ()
                     console.log("upload DONE!");
                     console.log(data);
                 });
-            gui.patch().scene.resume();
+            gui.corePatch().resume();
         }, 0, 0, true);
 };
 
@@ -57,7 +57,7 @@ CABLES.CMD.RENDERER.aspect = function (a)
         CABLES.UI.MODAL.prompt(
             "Change Aspect Ratio of Renderer ",
             "Enter an aspect ratio, e.g.: 16:9 or 0.22",
-            gui.patch().scene.cgl.canvasScale,
+            gui.corePatch().cgl.canvasScale,
             function (r)
             {
                 if (r.indexOf(":"))
@@ -95,11 +95,11 @@ CABLES.CMD.RENDERER.scaleCanvas = function ()
     CABLES.UI.MODAL.prompt(
         "Change Scale of Renderer ",
         "Enter a new scale",
-        gui.patch().scene.cgl.canvasScale,
+        gui.corePatch().cgl.canvasScale,
         function (r)
         {
             const s = parseFloat(r);
-            gui.patch().scene.cgl.canvasScale = s;
+            gui.corePatch().cgl.canvasScale = s;
             gui.setLayout();
         });
 };

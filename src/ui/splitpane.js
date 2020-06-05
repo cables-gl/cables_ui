@@ -13,7 +13,7 @@ $(document).ready(function ()
         {
             gui.pauseProfiling();
             e.preventDefault();
-            gui.rendererWidth = (window.innerWidth - e.clientX) * (1 / gui.patch().scene.cgl.canvasScale);
+            gui.rendererWidth = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
@@ -69,7 +69,7 @@ $(document).ready(function ()
         function mm(e)
         {
             e.preventDefault();
-            gui.rendererHeight = e.clientY * (1 / gui.patch().scene.cgl.canvasScale);
+            gui.rendererHeight = e.clientY * (1 / gui.corePatch().cgl.canvasScale);
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
@@ -120,8 +120,8 @@ $(document).ready(function ()
                 y = e.touches[0].clientY;
             }
 
-            gui.rendererWidth = (window.innerWidth - x) * (1 / gui.patch().scene.cgl.canvasScale) + 3;
-            gui.rendererHeight = y * (1 / gui.patch().scene.cgl.canvasScale) - 38;
+            gui.rendererWidth = (window.innerWidth - x) * (1 / gui.corePatch().cgl.canvasScale) + 3;
+            gui.rendererHeight = y * (1 / gui.corePatch().cgl.canvasScale) - 38;
             gui.setLayout();
             gui.updateCanvasIconBar();
             document.getElementById("glcanvas").focus();

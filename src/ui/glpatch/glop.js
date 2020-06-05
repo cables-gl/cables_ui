@@ -28,6 +28,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glRectContent = null;
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
+        this._dragOldUiAttribs = null;
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
@@ -67,9 +68,34 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         const glOps = this._glPatch.selectedGlOps;
         for (const i in glOps)
-        {
             glOps[i].endPassiveDrag();
-        }
+
+
+        const undoAdd = (function (scope, oldUiAttribs)
+        {
+            const newUiAttr = JSON.stringify(scope._op.uiAttribs);
+            CABLES.undo.add({
+                "title": "Move op",
+                undo()
+                {
+                    try
+                    {
+                        const u = JSON.parse(oldUiAttribs);
+                        // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
+
+                        scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
+                    }
+                    catch (e) {}
+                },
+                redo()
+                {
+                    const u = JSON.parse(newUiAttr);
+                    scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
+                    // scope.op.uiAttribs.translate = { "x": u.translate.x, "y": u.translate.y };
+                    // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
+                }
+            });
+        }(this, this._dragOldUiAttribs + ""));
     }
 
     _onMouseDown(e)
@@ -82,6 +108,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glPatch.selectOpId(this.id);
         }
 
+        this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
         this._glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
     }
 
@@ -123,9 +150,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         return this.opUiAttribs;
     }
 
-    setTitle(textWriter, title)
+    setTitle(title, textWriter)
     {
-        this._textWriter = textWriter;
+        if (textWriter) this._textWriter = textWriter;
 
         if (!this._glTitle)
         {
@@ -143,6 +170,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 this._updateBgRectColor();
             }
         }
+        else this._glTitle.text = title;
 
         this.updateSize();
     }
@@ -152,8 +180,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = Math.max(this._width, Math.max(this._op.portsIn.length, this._op.portsOut.length) * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding));
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
-
-        console.log(this._glTitle.height + 5, this._glRectBg.h);
 
         this._glRectBg.setSize(this._width, this._height);
 
@@ -282,19 +308,31 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight + this._glTitle.width;
     }
 
+    updateVisible()
+    {
+        this._setVisible();
+    }
+
     set visible(v)
     {
-        this._visible = v;
-        if (this._glRectBg) this._glRectBg.visible = v;
-        if (this._glTitle) this._glTitle.visible = v;
-        if (this._glTitleExt) this._glTitleExt.visible = v;
-        if (this._glComment) this._glComment.visible = v;
+        this._setVisible(v);
+    }
 
-        for (const i in this._links) this._links.visible = v;
+    _setVisible(v)
+    {
+        if (v !== undefined) this._visible = v;
+
+        if (this._glRectBg) this._glRectBg.visible = this.visible;
+        if (this._glTitle) this._glTitle.visible = this.visible;
+        if (this._glTitleExt) this._glTitleExt.visible = this.visible;
+        if (this._glComment) this._glComment.visible = this.visible;
+
+        for (const i in this._links) this._links[i].visible = this.visible;
     }
 
     get visible()
     {
+        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) return false;
         return this._visible;
     }
 
@@ -314,10 +352,16 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this.opUiAttribs.comment)
         {
             if (!this._glComment) this._glComment = new CABLES.GLGUI.Text(this._textWriter, this.opUiAttribs.comment);
-            this._glComment.text = this.opUiAttribs.comment;
-            this._glComment.setParentRect(this._glRectBg);
-            this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
+
+            if (this.opUiAttribs.comment != this._glComment.text)
+            {
+                this._glComment.text = this.opUiAttribs.comment;
+                this._glComment.setParentRect(this._glRectBg);
+                this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
+            }
         }
+
+        if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
         if (this.opUiAttribs.glPreviewTexture)
         {
@@ -348,7 +392,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             }
         }
 
-        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) this.visible = false;
 
         this.updatePosition();
         for (const i in this._links) if (this._links[i]) this._links[i].update();

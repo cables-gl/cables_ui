@@ -75,8 +75,8 @@ CABLES.GLGUI.Linedrawer = class
 
 
             .endl() + "   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;"
-            .endl() + "   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0);"
-            .endl() + "   else color.rgb = color.rgb*0.55;"
+            .endl() + "   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
+            .endl() + "   else color.rgb = color.rgb;"
 
             .endl() + "   color.rgb = color.rgb;"
             .endl() + "   color.a = 1.0;"

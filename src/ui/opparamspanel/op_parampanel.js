@@ -336,6 +336,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     updateUiAttribs()
     {
+        if (gui.patchView.isPasting) return;
         if (!this._currentOp) return;
 
         this._uiAttrFpsLast = this._uiAttrFpsLast || performance.now();

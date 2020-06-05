@@ -93,7 +93,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.project = function ()
     {
-        return self.patch().getCurrentProject();
+        return this.patch().getCurrentProject();
     };
 
     this.opSelect = function ()
@@ -1207,24 +1207,6 @@ CABLES.UI.GUI = function (cfg)
             this.patch().getViewBox().update();
             this.mainTabs.emitEvent("resize");
         }, false);
-
-        document.addEventListener("copy", function (e)
-        {
-            if ($("#patch").is(":focus")) self.patch().copy(e);
-            if ($("#timeline").is(":focus")) self.patch().timeLine.copy(e);
-        });
-
-        document.addEventListener("paste", function (e)
-        {
-            if ($("#patch").is(":focus")) self.patch().paste(e);
-            if ($("#timeline").is(":focus")) self.patch().timeLine.paste(e);
-        });
-
-        document.addEventListener("cut", function (e)
-        {
-            if ($("#patch").is(":focus")) self.patch().cut(e);
-            if ($("#timeline").is(":focus")) self.patch().timeLine.cut(e);
-        });
 
         let spaceBarStart = 0;
 
