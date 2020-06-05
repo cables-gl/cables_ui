@@ -11,16 +11,19 @@
         <a class="button fa fa-step-backward" onclick="gui.timeLine().gotoZero();"></a>
         <a class="button fa fa-backward" onclick="gui.timeLine().gotoOffset(-2);"></a>
         <a class="button fa fa-play " id="timelineplay" onclick="gui.timeLine().togglePlay()"></a>
+
+
+
+
         <a class="button fa fa-forward" onclick="gui.timeLine().gotoOffset(2);"></a>
 
-        
+
 
 
         <div id="keycontrols">
             <span class="button timeLineInsert fa fa-plus-square-o"></span>
 
             <!-- <input type ="range" min="20" max="2000" value="" step ="1" oninput="gui.timeLine().setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/> -->
-
 
             <a id="keymovemode" class="button fa fa-arrows-h tt" data-tt="key move mode" ></a>
             <a id="keyscaleheight" class="button fa fa-ellipsis-v tt" data-tt="scale value display"></a>
@@ -29,13 +32,23 @@
             <a id="loop" class="button fa fa-retweet tt" data-tt="toggle loop"></a>
             <a id="toggleMultiGraphKeyDisplay" class="button fa fa-line-chart tt" data-tt="toggle key display of multiple graphs / right click - remove all graphs"></a>
 
-
             <div class="fright clickable" style="padding:10px;" onclick="CABLES.CMD.UI.hideTimeline()">
                 <a class=" icon icon-x" style=""></a>
             </div>
             <a id="keyscaleheight" class="fright button fa fa-ellipsis-h " onclick="CABLES.contextMenu.show({items:[{'title':'set timeline length',func:CABLES.CMD.TIMELINE.setLength}]},this);"></a>
 
         </div>
+
+        <!--
+
+        new icon style
+        <div style="margin-top: 7px;">
+            <a class="iconbutton" onclick="gui.timeLine().togglePlay()"><span class="icon icon-rewind"></span></a>
+            <a class="iconbutton" onclick="gui.timeLine().togglePlay()"><span class="icon icon-play"></span></a>
+            <a class="iconbutton" onclick="gui.timeLine().togglePlay()"><span class="icon icon-fast-forward"></span></a>
+            <a class="iconbutton" onclick="gui.timeLine().togglePlay()"><span class="icon icon-skip-forward"></span></a>
+
+        </div> -->
 
     </div>
 
