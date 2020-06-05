@@ -40,9 +40,6 @@ CABLES.GLGUI.Linedrawer = class
 
             .endl() + "   vec3 pos=vPosition;"
 
-        // .endl()+'    pos.x+=pos.x;'
-        // .endl()+'    pos.y+=pos.y;'
-
             .endl() + "    pos.y*=aspect;"
             .endl() + "    pos.y=0.0-pos.y;"
 

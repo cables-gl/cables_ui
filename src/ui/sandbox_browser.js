@@ -72,6 +72,11 @@ CABLES.SandboxBrowser.prototype.getSocketclusterConfig = function ()
     return this._cfg.socketcluster;
 };
 
+CABLES.SandboxBrowser.prototype.isDevEnv = function ()
+{
+    return this._cfg.isDevEnv;
+};
+
 
 CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
 {
