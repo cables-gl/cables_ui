@@ -33,7 +33,7 @@ CABLES.UI.EditorTab = function (options)
     this._editor = CABLES.UI.createEditor("editorcontent" + this._tab.id, options.content || "");
 
     let showSaveButton = true;
-    if (!CABLESUILOADER.isDevEnv())
+    if (!CABLES.sandbox.isDevEnv())
     {
         if (options.name.startsWith("Ops."))
         {
