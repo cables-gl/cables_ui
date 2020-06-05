@@ -170,7 +170,7 @@
                         {{#compare port.uiAttribs.display '==' 'texture' }}
                             </td>
                             <td >
-                                <a class="info graphbutton fa fa-plus-circle" onclick="gui.patch().createOpAndLink('Ops.Gl.Texture','{{op.id}}','{{port.name}}');"></a>
+                                <a class="info graphbutton fa fa-plus-circle" onclick="gui.patchView.addOpAndLink('Ops.Gl.Texture','{{op.id}}','{{port.name}}');"></a>
                             </td>
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'file' }}

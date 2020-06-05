@@ -48,11 +48,17 @@ CABLES.UI.EditorTab = function (options)
         }.bind(this),
     );
 
+    this._editor.getSession().setUseWorker(true);
+
     if (options.syntax == "md") this._editor.session.setMode("ace/mode/Markdown");
     else if (options.syntax == "js") this._editor.session.setMode("ace/mode/javascript");
     else if (options.syntax == "glsl") this._editor.session.setMode("ace/mode/glsl");
     else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
-    else this._editor.session.setMode("ace/mode/Text");
+    else
+    {
+        this._editor.session.setMode("ace/mode/plain_text");
+        this._editor.getSession().setUseWorker(false);
+    }
 
     if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
     this._tab.addEventListener("onClose", options.onClose);

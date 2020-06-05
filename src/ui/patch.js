@@ -2136,22 +2136,6 @@ CABLES.UI.Patch.prototype.getNumOps = function ()
     return this.ops.length;
 };
 
-CABLES.UI.Patch.prototype.createOpAndLink = function (opname, opid, portname)
-{
-    const oldOp = gui.corePatch.getOpById(opid);
-    const trans = {
-        "translate": {
-            "x": oldOp.uiAttribs.translate.x,
-            "y": oldOp.uiAttribs.translate.y - 100
-        }
-    };
-
-    const newOp = gui.patchView.addOp(opname, trans);
-    const newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
-    gui.corePatch.link(oldOp, portname, newOp, newPort.name);
-
-    newOp.setUiAttrib({ "translate": trans });
-};
 
 // ---------------------
 

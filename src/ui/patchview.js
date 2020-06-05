@@ -162,6 +162,26 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         });
     }
 
+    addOpAndLink(opname, opid, portname)
+    {
+        const oldOp = gui.corePatch().getOpById(opid);
+        const trans = {
+            "translate": {
+                "x": oldOp.uiAttribs.translate.x,
+                "y": oldOp.uiAttribs.translate.y - 100
+            }
+        };
+
+        gui.patchView.addOp(opname, {
+            "onOpAdd": (newOp) =>
+            {
+                const newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
+                gui.corePatch().link(oldOp, portname, newOp, newPort.name);
+
+                newOp.setUiAttrib({ "translate": trans });
+            } });
+    }
+
     showSelectedOpsPanel()
     {
         const html = CABLES.UI.getHandleBarHtml(
