@@ -32,6 +32,31 @@ CABLES.UI.EditorTab = function (options)
 
     this._editor = CABLES.UI.createEditor("editorcontent" + this._tab.id, options.content || "");
 
+    let showSaveButton = true;
+    if (!CABLES.sandbox.isDevEnv())
+    {
+        if (options.name.startsWith("Ops."))
+        {
+            if (options.name.startsWith("Ops.User."))
+            {
+                if (!(gui.user.isAdmin || options.name.startsWith("Ops.User." + gui.user.usernameLowercase + ".")))
+                {
+                    this._editor.setOptions({ "readOnly": "true" });
+                    showSaveButton = false;
+                }
+            }
+            else if (!gui.user.roles.includes("alwaysEditor"))
+            {
+                this._editor.setOptions({ "readOnly": "true" });
+                showSaveButton = false;
+            }
+        }
+    }
+
+    if (showSaveButton)
+    {
+        if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
+    }
 
     // this._editor.setValue(options.content,-1);
     this._editor.resize();
@@ -60,7 +85,6 @@ CABLES.UI.EditorTab = function (options)
         this._editor.getSession().setUseWorker(false);
     }
 
-    if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
     this._tab.addEventListener("onClose", options.onClose);
     this._tab.addEventListener(
         "onActivate",

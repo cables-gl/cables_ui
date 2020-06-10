@@ -46,7 +46,7 @@
 
         function logStartup(title)
         {
-            //console.log('[startup] ',title);
+            console.log('[startup] ',title);
             const timeUsed=Math.round((performance.now()-CABLESUILOADER.uiLoadStart)/1000*100)/100;
             CABLESUILOADER.startup.log.push(
             {
@@ -60,19 +60,8 @@
             return url+'?nc='+(Date.now()+'').substr(-6);
         };
 
-        /*
-        var scriptTag = document.createElement('script');
-        scriptTag.setAttribute('src',CABLESUILOADER.noCacheUrl('js/libs.core.min.js'));
-        document.body.appendChild(scriptTag);
-        */
-
         incrementStartup();
         logStartup("Start");
-
-        CABLESUILOADER.isDevEnv=function()
-        {
-            return !(document.location.href.indexOf('https://cables.gl')==-1 || document.location.href.indexOf('https://sandbox.cables.gl')==-1);
-        };
 
         CABLESUILOADER.loadAll=function(cfg)
         {
@@ -93,7 +82,7 @@
             ], 'libs');
 
             var jsType='max';
-            if(!CABLESUILOADER.isDevEnv()) jsType='min';
+            if(!cfg.isDevEnv) jsType='min';
 
             loadjs.ready('libs', function()
             {
@@ -112,7 +101,7 @@
                     {
                         logStartup('loaded cables core');
                         // console.log("core loaded",CABLES);
-                        
+
                         incrementStartup();
 
                         loadjs([CABLESUILOADER.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');
