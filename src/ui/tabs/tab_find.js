@@ -222,7 +222,11 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
     const startTime = performance.now();
     this._lastSearch = str;
     $("#tabsearchresult").html("");
-    if (str.length < 3) return;
+    if (str.length < 2)
+    {
+        $("#tabsearchresult").html("Type some more!");
+        return;
+    }
 
     str = str.toLowerCase();
 

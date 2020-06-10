@@ -20,7 +20,6 @@ CABLES.UI.TexturePreviewer = function (tabs)
     this._tempTexturePort = null;
     this._hoveringTexPort = false;
     this._listeningFrame = false;
-    // this._eleBgPreview=null;
 
     this._ele = document.getElementById("bgpreview");
     this.setSize();
