@@ -77,7 +77,8 @@ CABLES.UI.TexturePreviewer.VERTSHADER = "".endl()
 
 CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
 {
-    const port = tp.port;
+    let port = tp.port;
+    if (!tp.port)port = tp;
     const id = tp.id;
     const texSlot = 5;
 
@@ -139,6 +140,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         // const h=w*(port.get().height/port.get().width);
 
         const s = this._getCanvasSize(port, port.get(), meta);
+        if (s[0] == 0 || s[1] == 0) return;
 
         previewCanvasEle.width = s[0];
         previewCanvasEle.height = s[1];
@@ -153,7 +155,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
     }
     else
     {
-        console.log("NOPE ");
+        // console.log("NOPE ", previewCanvas, port, port.get());
     }
 };
 

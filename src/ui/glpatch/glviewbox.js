@@ -102,6 +102,7 @@ CABLES.GLGUI.ViewBox = class
             event.preventDefault();
             event.stopImmediatePropagation();
         }
+        gui.patchView.emitEvent("viewBoxChange");
     }
 
     get zoom() { return this._smoothedZoom.value; }
@@ -147,6 +148,8 @@ CABLES.GLGUI.ViewBox = class
 
         this._scrollX = x;
         this._scrollY = y;
+
+        gui.patchView.emitEvent("viewBoxChange");
     }
 
     center()

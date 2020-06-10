@@ -321,6 +321,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             event.preventDefault();
             event.stopImmediatePropagation();
         }
+        gui.patchView.emitEvent("viewBoxChange");
     });
 };
 
@@ -350,6 +351,7 @@ CABLES.UI.PatchViewBox.prototype.zoom = function (delta)
         patchWidth / this._zoom,
         patchHeight / this._zoom
     );
+    gui.patchView.emitEvent("viewBoxChange");
 };
 
 
@@ -399,6 +401,8 @@ CABLES.UI.PatchViewBox.prototype._animViewBox = function ()
 {
     const t = (performance.now() - this._viewBoxAnim.start) / 1000;
     this.set(this._viewBoxAnim.x.getValue(t), this._viewBoxAnim.y.getValue(t), this._viewBoxAnim.w.getValue(t), this._viewBoxAnim.h.getValue(t));
+
+    gui.patchView.emitEvent("viewBoxChange");
 
     if (!this._viewBoxAnim.x.isFinished(t)) setTimeout(this._animViewBox.bind(this), 30);
 };

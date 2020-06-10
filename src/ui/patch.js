@@ -946,6 +946,7 @@ CABLES.UI.Patch = function (_gui)
                     this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
 
                 self.emitEvent("patch_pan");
+                gui.patchView.emitEvent("viewBoxChange");
             }
 
             self.lastMouseMoveEvent = e;
