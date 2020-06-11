@@ -11,6 +11,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._pvRenderers = {};
         this._patchRenderer = null;
         this.isPasting = false;
+        this.boundingRect = null;
         this.store = new CABLES.UI.PatchServer();
         this._initListeners();
     }
@@ -59,6 +60,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         this._patchRenderer = this._pvRenderers[id];
         gui.setLayout();
+    }
+
+    updateBoundingRect()
+    {
+        this.boundingRect = CABLES.UI.PatchView.getElement()[0].getBoundingClientRect();
     }
 
     focus()

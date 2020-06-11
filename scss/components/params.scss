@@ -370,7 +370,8 @@ select
     position:absolute;
     overflow: auto;
     overflow-x: hidden;
-	background-color: $background-color-dark;
+    background-color: $background-color-dark;
+    z-index: 10;
 
     &:focus {
       border: 1px solid $highlight-color;

@@ -188,6 +188,7 @@ CABLES.UI.PatchViewBox.prototype._update = function ()
         this._updateTimeout = null;
         this._isUpdating = false;
         perf.finish();
+        gui.patchView.emitEvent("viewBoxChange");
     }, 2);
 };
 

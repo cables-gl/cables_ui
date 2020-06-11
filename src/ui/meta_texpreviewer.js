@@ -99,6 +99,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         const perf = CABLES.uiperf.start("texpreview");
         const cgl = port.parent.patch.cgl;
 
+        CGL.profileData.profileTexPreviews++;
 
         if (!this._mesh)
         {

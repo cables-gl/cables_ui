@@ -188,6 +188,8 @@ CABLES.UI.GUI = function (cfg)
         this._elSplitterPatch = this._elSplitterPatch || $("#splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || $("#splitterRenderer");
 
+        this.patchView.updateBoundingRect();
+
         this._elPatch = this.patchView.element;
 
         this._elOptions = this._elOptions || $("#options");
