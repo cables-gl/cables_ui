@@ -114,14 +114,24 @@
     position: absolute;
 }
 
+#patchviews
+{
+    background-color:var(--patch-bg-color);
+    width:100%;
+    height:100%;
+
+}
+
 #patch
 {
     outline:none;
     position:absolute;
     border:1px solid rgb(26, 26, 26);
     overflow: hidden;
-    background-color:var(--patch-bg-color);
+    z-index: 10;
+    // background-color:var(--patch-bg-color);
     user-select: none;
+
 
     &:focus
     {
