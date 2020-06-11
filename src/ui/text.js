@@ -101,7 +101,8 @@ CABLES.UI.TEXTS = {
     "filemanager_file_upload": "Upload new file",
     "filemanager_file_create": "Create a file",
 
-    "editorSaveButton": "Save"
+    "editorSaveButton": "Save",
+    "editorFormatButton": "Format"
 };
 
 CABLES.UI.TIPS = [

@@ -56,6 +56,7 @@ CABLES.UI.EditorTab = function (options)
     if (showSaveButton)
     {
         if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
+        if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
     }
 
     // this._editor.setValue(options.content,-1);
@@ -100,6 +101,34 @@ CABLES.UI.EditorTab = function (options)
     {
         CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
     }, 100);
+};
+
+CABLES.UI.EditorTab.prototype.format = function ()
+{
+    CABLESUILOADER.talkerAPI.send(
+        "formatOpCode",
+        {
+            "code": this._editor.getValue(),
+        },
+        (err, res) =>
+        {
+            if (!res || !res.success)
+            {
+                CABLES.UI.notifyError("failed to format code, keeping old version");
+                console.log("code formating error", err);
+            }
+            else
+            {
+                this._editor.setValue(res.opFullCode, 1);
+                this._editor.focus();
+            }
+        },
+        (result) =>
+        {
+            CABLES.UI.notifyError("failed to format code, keeping old version");
+            console.log("code formating http error", result);
+        },
+    );
 };
 
 CABLES.UI.EditorTab.prototype.save = function ()
