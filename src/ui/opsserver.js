@@ -574,6 +574,8 @@ CABLES.UI.ServerOps = function (gui)
                                 }
                                 else
                                 {
+                                    editor.setValue(res.opFullCode, 1);
+
                                     if (!CABLES.Patch.getOpClass(opname))
                                     {
                                         gui.opSelect().reload();
@@ -583,7 +585,6 @@ CABLES.UI.ServerOps = function (gui)
                                     gui.serverOps.execute(opname, function ()
                                     {
                                         setStatus("saved " + opname);
-                                        editor.setValue(res.opFullCode, 1);
                                         editor.focus();
                                     });
                                 }
