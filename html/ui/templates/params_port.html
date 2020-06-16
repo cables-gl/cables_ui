@@ -239,6 +239,8 @@
 
             {{#compare port.type '==' 5 }}
                 <span class="value valuetext watchPort linkedValue monospace watchPortValue_{{ port.watchId }}">{{port.val}}</span>
+
+
                 <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br />
             {{/compare}}
 

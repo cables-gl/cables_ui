@@ -190,7 +190,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             let lastGroup = null;
             for (const i2 in op.portsOut)
             {
-                if (op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY || op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING)
+                if (
+                    op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE ||
+                    op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY ||
+                    op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING ||
+                    op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_OBJECT
+                )
                 {
                     op.portsOut[i2].watchId = "out_" + i2;
                     this._watchPorts.push(op.portsOut[i2]);
@@ -421,7 +426,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             {
                 const thePort = this._watchPorts[i];
 
-                if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && thePort.type != CABLES.OP_PORT_TYPE_STRING && thePort.type != CABLES.OP_PORT_TYPE_ARRAY) continue;
+                if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && thePort.type != CABLES.OP_PORT_TYPE_STRING && thePort.type != CABLES.OP_PORT_TYPE_ARRAY && thePort.type != CABLES.OP_PORT_TYPE_OBJECT) continue;
 
                 let newValue = "";
                 const id = ".watchPortValue_" + thePort.watchId;
@@ -441,6 +446,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 else if (thePort.type == CABLES.OP_PORT_TYPE_STRING)
                 {
                     newValue = "\"" + thePort.get() + "\"";
+                }
+                else if (thePort.type == CABLES.OP_PORT_TYPE_OBJECT)
+                {
+                    if (thePort.get()) newValue = "Object";
+                    else newValue = "Object (null)";
                 }
                 else
                 {

@@ -44,6 +44,7 @@ CABLES.UI.Tab.prototype.initHtml = function (eleContainer)
 CABLES.UI.Tab.prototype.addButton = function (title, cb)
 {
     const button = document.createElement("a");
+    button.classList.add("button-small");
     button.innerHTML = title;
     button.addEventListener("click", cb);
     this.toolbarEle.appendChild(button);

@@ -574,7 +574,7 @@ CABLES.UI.ServerOps = function (gui)
                                 }
                                 else
                                 {
-                                    editor.setValue(res.opFullCode, 1);
+                                    // editor.setValue(res.opFullCode, 1);
 
                                     if (!CABLES.Patch.getOpClass(opname))
                                     {
