@@ -19,11 +19,13 @@ CABLES.UI.MetaDoc = function (tabs)
 
 CABLES.UI.MetaDoc.prototype.init = function ()
 {
-    gui.patch().addEventListener("opSelected", function (_op)
+    gui.opParams.addEventListener("opSelected", function (_op)
     {
+        console.log("op selected!");
         this._op = _op;
         if (this._tab.isVisible())
         {
+            console.log("op ssss!");
             this.update();
             this.show();
         }
