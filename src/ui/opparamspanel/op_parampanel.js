@@ -35,6 +35,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             op = gui.corePatch().getOpById(op);
         }
 
+        op.emitEvent("uiParamPanel");
+
         this._currentOp = op;
         if (!op) return;
         if (op.id != self._oldOpParamsId)

@@ -87,6 +87,8 @@ CABLES.UI.FileManager.prototype.reload = function (cb)
                 return;
             }
 
+            if (!files)files = [];
+
             if (this._firstTimeOpening && files.length == 0)
             {
                 this._firstTimeOpening = false;
