@@ -35,10 +35,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             op = gui.corePatch().getOpById(op);
         }
 
-        op.emitEvent("uiParamPanel");
 
         this._currentOp = op;
         if (!op) return;
+        op.emitEvent("uiParamPanel");
         if (op.id != self._oldOpParamsId)
         {
             if (gui.fileManager) gui.fileManager.setFilePort(null);
@@ -316,16 +316,16 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         for (const iwap in this._watchAnimPorts)
         {
             const thePort = this._watchAnimPorts[iwap];
-            (function (thePort)
+            (function (_thePort)
             {
-                const id = ".watchPortValue_" + thePort.watchId;
+                const id = ".watchPortValue_" + _thePort.watchId;
 
                 $(id).on("focusin", function ()
                 {
-                    if (thePort.isAnimated())
+                    if (_thePort.isAnimated())
                     {
-                        gui.timeLine().setAnim(thePort.anim, {
-                            "name": thePort.name,
+                        gui.timeLine().setAnim(_thePort.anim, {
+                            "name": _thePort.name,
                         });
                     }
                 });
@@ -418,6 +418,13 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         });
     }
 
+    _formatNumber(n)
+    {
+        const options = { "useGrouping": false, "maximumSignificantDigits": 16 };
+        n = n || 0;
+        return n.toLocaleString("fullwide", options);
+    }
+
     _updateWatchPorts()
     {
         if (this._watchPorts.length)
@@ -439,6 +446,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     el = $(id);
                     thePort._tempLastUiValue = thePort.get();
                     if (el.val() != thePort.get()) el.val(thePort.get());
+                }
+                if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
+                {
+                    newValue = this._formatNumber(thePort.get());
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY)
                 {
@@ -465,6 +476,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     el.html(newValue);
                     thePort._tempLastUiValue = newValue;
                 }
+
 
                 CABLES.watchPortVisualize.update(id, thePort.watchId, thePort.get());
             }

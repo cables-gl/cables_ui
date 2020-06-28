@@ -5,8 +5,8 @@ CABLES.GradientEditor = function (opid, portname)
     this._opId = opid;
     this._portName = portname;
 
-    this._keyWidth = 15;
-    this._keyHeight = 25;
+    this._keyWidth =
+    this._keyHeight = 15;
     this._dragDownDeleteThreshold = 40;
     this._width = 500;
 
@@ -134,11 +134,14 @@ CABLES.GradientEditor.prototype.addKey = function (pos, r, g, b)
         const attribs = {};
         attribs.stroke = "#000";
 
-        if (e.target == key.rect.node || e.target.tagName == "svg")
+
+        if (e.target.tagName == "svg") // e.target == key.rect.node ||
         {
+            console.log(e.target);
             attribs.x = e.offsetX - (this._keyWidth / 2);
             key.pos = (attribs.x + this._keyWidth / 2) / this._width;
         }
+
 
         if (Math.abs(this._startMouseY - y) > this._dragDownDeleteThreshold)
         {
@@ -151,6 +154,7 @@ CABLES.GradientEditor.prototype.addKey = function (pos, r, g, b)
             attribs["fill-opacity"] = 1.0;
             shouldDelete = false;
         }
+
 
         rect.attr(attribs);
         this.onChange();
@@ -255,6 +259,7 @@ CABLES.GradientEditor.prototype._bindColorPicker = function ()
         // doRender: 'div div',
         renderCallback(res, toggled)
         {
+            console.log("rendercallback?");
             const ignoreColorChanges = !toggled;
             // if (toggled === false)
             // {
@@ -267,7 +272,7 @@ CABLES.GradientEditor.prototype._bindColorPicker = function ()
             //     ignoreColorChanges = false;
             // }
 
-            if (!ignoreColorChanges && CABLES.currentKey)
+            if (CABLES.currentKey) // !ignoreColorChanges &&
             {
                 // console.log(this.color.colors.rgb);
                 CABLES.currentKey.r = this.color.colors.rgb.r;

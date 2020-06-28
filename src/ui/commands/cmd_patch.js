@@ -348,7 +348,7 @@ CABLES.CMD.PATCH.editOp = function ()
 
 CABLES.CMD.PATCH.setOpTitle = function ()
 {
-    const ops = gui.patch().getSelectedOps();
+    const ops = gui.patchView.getSelectedOps();
     if (ops.length != 1)
     {
         console.log("rename canceled - select one op!");
@@ -358,10 +358,10 @@ CABLES.CMD.PATCH.setOpTitle = function ()
     CABLES.UI.MODAL.prompt(
         "Set Title",
         "Enter a title for this op",
-        ops[0].op.name,
+        ops[0].name,
         function (name)
         {
-            gui.patch().setCurrentOpTitle(name);
+            gui.opParams.setCurrentOpTitle(name);
         });
 };
 
