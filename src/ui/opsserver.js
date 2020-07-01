@@ -3,7 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 // todo: merge serverops and opdocs.js ....
 
-CABLES.UI.ServerOps = function (gui)
+CABLES.UI.ServerOps = function (gui, patchId)
 {
     let ops = [];
     const self = this;
@@ -18,6 +18,7 @@ CABLES.UI.ServerOps = function (gui)
                 CABLES.UI.userSettings.set("editortab", lastTab);
             });
         }.bind(this),
+
     );
 
     CABLES.editorSession.addListener(
@@ -40,8 +41,8 @@ CABLES.UI.ServerOps = function (gui)
     {
         const that = this;
         CABLESUILOADER.talkerAPI.send(
-            "getAllOps",
-            {},
+            "getAllProjectOps",
+            { "projectId": patchId },
             (err, res) =>
             {
                 if (err) console.err(err);
@@ -705,7 +706,6 @@ CABLES.UI.ServerOps = function (gui)
 
         libsToLoad = CABLES.uniqueArray(libsToLoad);
         coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
-
 
         if (libsToLoad.length === 0 && coreLibsToLoad.length === 0)
         {
