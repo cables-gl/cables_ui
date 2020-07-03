@@ -546,6 +546,7 @@ CABLES.UI.ServerOps = function (gui, patchId)
             "getOpCode",
             {
                 opname,
+                "projectId": patchId
             },
             function (er, rslt)
             {
