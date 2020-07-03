@@ -93,13 +93,20 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             return;
         }
 
+        console.log("core settings", gui.project()._id);
+
         CABLES.UI.MODAL.prompt(
             "Save As...",
-            "Enter a name for the copy of this Project ",
+            "Enter a name for the copy of this Project.<br/>The collaborators of this project will also have access to the copy.",
             gui.corePatch().name,
             (name) =>
             {
-                CABLESUILOADER.talkerAPI.send("newPatch", { "name": name },
+                CABLESUILOADER.talkerAPI.send("saveProjectAs",
+                    {
+                        "name": name,
+                        "originalId": gui.project()._id,
+                        "copyCollaborators": true
+                    },
                     (err, d) =>
                     {
                         gui.corePatch().settings = gui.corePatch().settings || {};
