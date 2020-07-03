@@ -93,8 +93,6 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             return;
         }
 
-        console.log("core settings", gui.project()._id);
-
         CABLES.UI.MODAL.prompt(
             "Save As...",
             "Enter a name for the copy of this Project.<br/>The collaborators of this project will also have access to the copy.",
