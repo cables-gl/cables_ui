@@ -1770,7 +1770,7 @@ CABLES.UI.GUI = function (cfg)
         if (savedState)
         {
             let title = "";
-            if (CABLES.sandbox.isDevEnv())title = CABLES.sandbox.getEnv() + " ";
+            if (CABLES.sandbox.isDevEnv())title = CABLES.sandbox.getEnv().toUpperCase() + " ";
             title += gui.patch().getCurrentProject().name + " *";
             document.title = title;
 
@@ -1813,7 +1813,7 @@ CABLES.UI.GUI = function (cfg)
         $("#patchname").removeClass("warning");
 
         let title = "";
-        if (CABLES.sandbox.isDevEnv())title = CABLES.sandbox.getEnv() + " ";
+        if (CABLES.sandbox.isDevEnv())title = CABLES.sandbox.getEnv().toUpperCase() + " ";
         title += gui.patch().getCurrentProject().name;
         document.title = title;
         window.onbeforeunload = function ()
