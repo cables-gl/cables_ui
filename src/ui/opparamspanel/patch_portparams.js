@@ -252,6 +252,9 @@ CABLES.UI.initPortInputListener = function (op, index)
                         // failed to parse math, use unparsed value
                         mathParsed = e.target.value;
                     }
+
+                    if(mathParsed==undefined)mathParsed=e.srcElement.dataset["lastValid"]
+
                     e.target.value = mathParsed;
                     op.portsIn[index].set(mathParsed);
                     CABLES.UI.hideToolTip();
@@ -295,6 +298,7 @@ CABLES.UI.initPortInputListener = function (op, index)
 
         if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number")
         {
+
             if (isNaN(v) || v === "")
             {
                 let mathParsed = v;
