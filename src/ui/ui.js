@@ -1770,7 +1770,7 @@ CABLES.UI.GUI = function (cfg)
         if (savedState)
         {
             let title = "";
-            if (CABLES.sandbox.isDevEnv())title = "DEV ";
+            if (CABLES.sandbox.isDevEnv())title = CABLES.sandbox.getEnv() + " ";
             title += gui.patch().getCurrentProject().name + " *";
             document.title = title;
 
