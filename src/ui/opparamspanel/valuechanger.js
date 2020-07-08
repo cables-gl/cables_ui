@@ -27,7 +27,6 @@ CABLES.UI.togglePortValBool = function (which, checkbox)
     inputEle.trigger("input");
 };
 
-
 CABLES.UI.inputIncrement = function (v, dir, e)
 {
     // console.log(e.target.type=="search");

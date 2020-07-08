@@ -147,7 +147,7 @@ CABLES.GLGUI.GlUiCanvas = class
             //     event.preventDefault();
             //     event.stopImmediatePropagation();
             // }
-        });
+        }, { "passive": true });
 
 
         this._fontTex = CGL.Texture.load(this.patch.cgl, "/ui/img/sdf_font_arial.png",

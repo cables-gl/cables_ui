@@ -264,14 +264,9 @@ CABLES.UI.initPortInputListener = function (op, index)
 
         const ele = document.getElementById(eleId);
         if (ele)ele.onkeypress = parseMath;
-        // document.getElementById(eleId).onblur = parseMath;
     }
 
     const domEle = document.getElementById(eleId);
-
-
-
-    console.log(eleId,domEle);
 
     if(domEle) domEle.addEventListener("focus", function(e)
     {
@@ -282,11 +277,9 @@ CABLES.UI.initPortInputListener = function (op, index)
     {
         if(e.srcElement.parentElement.classList.contains("invalid"))
         {
-            e.srcElement.value=e.srcElement.dataset["lastValid"];
+            e.srcElement.value=e.srcElement.dataset['lastValid'];
             e.srcElement.dataset["lastValid"]=null;
-
             e.srcElement.dispatchEvent(new Event('input', {}));
-
         }
     });
 
