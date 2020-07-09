@@ -6,9 +6,7 @@ on:
 
 jobs:
   nightly-merge:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout
       uses: actions/checkout@v1
