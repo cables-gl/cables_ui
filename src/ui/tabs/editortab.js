@@ -80,8 +80,6 @@ CABLES.UI.EditorTab = function (options)
     else if (options.syntax == "js") this._editor.session.setMode("ace/mode/javascript");
     else if (options.syntax == "glsl") this._editor.session.setMode("ace/mode/glsl");
     else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
-    else if (options.syntax == "html") this._editor.session.setMode("ace/mode/html");
-    else if (options.syntax == "xml") this._editor.session.setMode("ace/mode/xml");
     else
     {
         this._editor.session.setMode("ace/mode/plain_text");
