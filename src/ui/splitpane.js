@@ -17,6 +17,7 @@ $(document).ready(function ()
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -42,6 +43,7 @@ $(document).ready(function ()
             gui.setLayout();
             gui.mainTabs.emitEvent("resize");
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -73,6 +75,7 @@ $(document).ready(function ()
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -87,6 +90,7 @@ $(document).ready(function ()
             gui.timingHeight = window.innerHeight - e.clientY;
             gui.setLayout();
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -101,6 +105,7 @@ $(document).ready(function ()
             gui.infoHeight = window.innerHeight - e.clientY;
             gui.setLayout();
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -127,13 +132,14 @@ $(document).ready(function ()
             document.getElementById("glcanvas").focus();
             e.preventDefault();
         }
+
         document.addEventListener("mousemove", mm);
-        document.addEventListener("touchmove", mm);
+        document.addEventListener("touchmove", mm, { "passive": true });
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
     document.getElementById("splitterRendererWH").addEventListener("mousedown", resizeRenderer);
-    document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer);
+    document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer, { "passive": true });
 
     function stopSplit(e)
     {

@@ -323,7 +323,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             event.stopImmediatePropagation();
         }
         gui.patchView.emitEvent("viewBoxChange");
-    });
+    }, { "passive": true });
 };
 
 CABLES.UI.PatchViewBox.prototype.zoom = function (delta)

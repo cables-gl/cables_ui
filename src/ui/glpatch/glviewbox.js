@@ -25,7 +25,7 @@ CABLES.GLGUI.ViewBox = class
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
-        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this));
+        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
         this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
     }
 

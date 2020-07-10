@@ -252,6 +252,9 @@ CABLES.UI.initPortInputListener = function (op, index)
                         // failed to parse math, use unparsed value
                         mathParsed = e.target.value;
                     }
+
+                    if(mathParsed==undefined)mathParsed=e.srcElement.dataset["lastValid"]
+
                     e.target.value = mathParsed;
                     op.portsIn[index].set(mathParsed);
                     CABLES.UI.hideToolTip();
@@ -261,16 +264,34 @@ CABLES.UI.initPortInputListener = function (op, index)
 
         const ele = document.getElementById(eleId);
         if (ele)ele.onkeypress = parseMath;
-        // document.getElementById(eleId).onblur = parseMath;
     }
 
+    const domEle = document.getElementById(eleId);
+
+    if(domEle) domEle.addEventListener("focus", function(e)
+    {
+        e.srcElement.dataset["lastValid"]=e.srcElement.value;
+    });
+
+    if(domEle) domEle.addEventListener("blur", function(e)
+    {
+        if(e.srcElement.parentElement.classList.contains("invalid"))
+        {
+            e.srcElement.value=e.srcElement.dataset['lastValid'];
+            e.srcElement.dataset["lastValid"]=null;
+            e.srcElement.dispatchEvent(new Event('input', {}));
+        }
+    });
+
     const ele = $("#" + eleId);
+
     ele.on("input", function (e)
     {
         let v = "" + ele.val();
 
         if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number")
         {
+
             if (isNaN(v) || v === "")
             {
                 let mathParsed = v;
@@ -286,18 +307,18 @@ CABLES.UI.initPortInputListener = function (op, index)
                 if (!isNaN(mathParsed))
                 {
                     CABLES.UI.showToolTip(e.target, " = " + mathParsed);
-                    ele.removeClass("invalid");
+                    ele[0].parentElement.classList.remove("invalid");
                 }
                 else
                 {
-                    ele.addClass("invalid");
+                    ele[0].parentElement.classList.add("invalid");
                     console.log("invalid number", op.portsIn[index]);
                 }
                 return;
             }
             else
             {
-                ele.removeClass("invalid");
+                ele[0].parentElement.classList.remove("invalid");
                 v = parseFloat(v);
             }
         }
@@ -306,12 +327,12 @@ CABLES.UI.initPortInputListener = function (op, index)
         {
             if (isNaN(v) || v === "")
             {
-                ele.addClass("invalid");
+                ele[0].parentElement.classList.add("invalid");
                 return;
             }
             else
             {
-                ele.removeClass("invalid");
+                ele[0].parentElement.classList.remove("invalid");
                 v = parseInt(v, 10);
                 console.log("invalid int");
             }
@@ -328,7 +349,6 @@ CABLES.UI.initPortInputListener = function (op, index)
             else v = false;
         }
 
-        console.log();
 
         if (!CABLES.mouseDraggingValue)
         {
@@ -456,7 +476,6 @@ CABLES.UI.initPortClickListener = function (op, index)
     $("#portsetvar_" + index).on("input", function (e)
     {
         const port = op.getPortById(e.target.dataset.portid);
-
 
         if (port) port.setVariable(e.target.value);
         else console.log("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);

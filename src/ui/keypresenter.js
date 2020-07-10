@@ -104,5 +104,5 @@ CABLES.UI.Keypresenter.prototype.start = function ()
             this.showAction("[mousewheel]");
             this._lastWheel = Date.now();
         }
-    }.bind(this));
+    }.bind(this), { "passive": true });
 };
