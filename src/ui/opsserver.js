@@ -44,7 +44,7 @@ CABLES.UI.ServerOps = function (gui)
             {},
             (err, res) =>
             {
-                if (err) console.err(err);
+                if (err) console.error(err);
 
                 ops = res;
                 logStartup("Ops loaded");
@@ -92,7 +92,7 @@ CABLES.UI.ServerOps = function (gui)
             },
             function (err, res)
             {
-                if (err) console.err(err);
+                if (err) console.error(err);
 
                 self.load(function ()
                 {
@@ -116,8 +116,9 @@ CABLES.UI.ServerOps = function (gui)
 
         for (i = 0; i < op.portsIn.length; i++)
         {
-            if (op.portsIn[i].uiAttribs && op.portsIn[i].uiAttribs.hidePort === true)
+            if (op.portsIn[i].uiAttribs && op.portsIn[i].uiAttribs.hideParams === true)
             {
+                console.log("no hidden params in layout and doc");
                 // no hidden ports in layout and documentation
                 continue;
             }
@@ -167,7 +168,7 @@ CABLES.UI.ServerOps = function (gui)
             },
             function (err, res)
             {
-                if (err) console.err(err);
+                if (err) console.error(err);
             },
         );
     };
@@ -521,7 +522,7 @@ CABLES.UI.ServerOps = function (gui)
             function (err)
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
-                console.error("error opening attachment " + attachmentName);
+                console.erroror("error opening attachment " + attachmentName);
                 console.log(err);
                 if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
             },
