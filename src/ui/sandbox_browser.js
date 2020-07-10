@@ -78,11 +78,6 @@ CABLES.SandboxBrowser.prototype.isDevEnv = function ()
 };
 
 
-CABLES.SandboxBrowser.prototype.getEnv = function ()
-{
-    return this._cfg.env;
-};
-
 CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
 {
     const lastView = CABLES.UI.userSettings.get("changelogLastView");
