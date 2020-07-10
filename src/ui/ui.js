@@ -2066,7 +2066,7 @@ function startUi(cfg)
     window.gui = new CABLES.UI.GUI(cfg);
 
     incrementStartup();
-    gui.serverOps = new CABLES.UI.ServerOps(gui);
+    gui.serverOps = new CABLES.UI.ServerOps(gui, cfg.patchId);
 
     $("#patch").bind("contextmenu", function (e)
     {
