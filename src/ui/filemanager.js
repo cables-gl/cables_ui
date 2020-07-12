@@ -83,7 +83,7 @@ CABLES.UI.FileManager.prototype.reload = function (cb)
         {
             if (err)
             {
-                console.err(err);
+                console.error(err);
                 return;
             }
 

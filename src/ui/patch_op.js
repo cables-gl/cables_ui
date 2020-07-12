@@ -865,6 +865,15 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         background = gui.patch().getPaper().rect(0, 3, w, h - 6);
         CABLES.UI.cleanRaphael(background);
         background.node.classList.add("op_background");
+        if (opui.op.objName.startsWith("Ops.User"))
+        {
+            background.node.classList.add("userop");
+            const myOpName = "Ops.User." + gui.user.usernameLowercase + ".";
+            if (opui.op.objName.startsWith(myOpName))
+            {
+                background.node.classList.add("mine");
+            }
+        }
         const objNameClassNameified = opui.op.objName.replace(/[\W_]+/g, "_");
         background.node.classList.add(objNameClassNameified);
         background.node.setAttribute("data-info", CABLES.UI.TEXTS.op_background);
