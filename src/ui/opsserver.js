@@ -3,7 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 // todo: merge serverops and opdocs.js ....
 
-CABLES.UI.ServerOps = function (gui)
+CABLES.UI.ServerOps = function (gui, patchId)
 {
     let ops = [];
     const self = this;
@@ -18,6 +18,7 @@ CABLES.UI.ServerOps = function (gui)
                 CABLES.UI.userSettings.set("editortab", lastTab);
             });
         }.bind(this),
+
     );
 
     CABLES.editorSession.addListener(
@@ -40,11 +41,11 @@ CABLES.UI.ServerOps = function (gui)
     {
         const that = this;
         CABLESUILOADER.talkerAPI.send(
-            "getAllOps",
-            {},
+            "getAllProjectOps",
+            { "projectId": patchId },
             (err, res) =>
             {
-                if (err) console.err(err);
+                if (err) console.error(err);
 
                 ops = res;
                 logStartup("Ops loaded");
@@ -92,7 +93,7 @@ CABLES.UI.ServerOps = function (gui)
             },
             function (err, res)
             {
-                if (err) console.err(err);
+                if (err) console.error(err);
 
                 self.load(function ()
                 {
@@ -116,8 +117,9 @@ CABLES.UI.ServerOps = function (gui)
 
         for (i = 0; i < op.portsIn.length; i++)
         {
-            if (op.portsIn[i].uiAttribs && op.portsIn[i].uiAttribs.hidePort === true)
+            if (op.portsIn[i].uiAttribs && op.portsIn[i].uiAttribs.hideParams === true)
             {
+                console.log("no hidden params in layout and doc");
                 // no hidden ports in layout and documentation
                 continue;
             }
@@ -167,7 +169,7 @@ CABLES.UI.ServerOps = function (gui)
             },
             function (err, res)
             {
-                if (err) console.err(err);
+                if (err) console.error(err);
             },
         );
     };
@@ -521,7 +523,7 @@ CABLES.UI.ServerOps = function (gui)
             function (err)
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
-                console.error("error opening attachment " + attachmentName);
+                console.erroror("error opening attachment " + attachmentName);
                 console.log(err);
                 if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
             },
@@ -545,6 +547,7 @@ CABLES.UI.ServerOps = function (gui)
             "getOpCode",
             {
                 opname,
+                "projectId": patchId
             },
             function (er, rslt)
             {
@@ -705,7 +708,6 @@ CABLES.UI.ServerOps = function (gui)
 
         libsToLoad = CABLES.uniqueArray(libsToLoad);
         coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
-
 
         if (libsToLoad.length === 0 && coreLibsToLoad.length === 0)
         {

@@ -1770,7 +1770,7 @@ CABLES.UI.GUI = function (cfg)
         if (savedState)
         {
             let title = "";
-            if (CABLES.sandbox.isDevEnv())title = CABLES.sandbox.getEnv().toUpperCase() + " ";
+            if (CABLES.sandbox.isDevEnv())title = "DEV ";
             title += gui.patch().getCurrentProject().name + " *";
             document.title = title;
 
@@ -1813,7 +1813,7 @@ CABLES.UI.GUI = function (cfg)
         $("#patchname").removeClass("warning");
 
         let title = "";
-        if (CABLES.sandbox.isDevEnv())title = CABLES.sandbox.getEnv().toUpperCase() + " ";
+        if (CABLES.sandbox.isDevEnv())title = "DEV ";
         title += gui.patch().getCurrentProject().name;
         document.title = title;
         window.onbeforeunload = function ()
@@ -2066,7 +2066,7 @@ function startUi(cfg)
     window.gui = new CABLES.UI.GUI(cfg);
 
     incrementStartup();
-    gui.serverOps = new CABLES.UI.ServerOps(gui);
+    gui.serverOps = new CABLES.UI.ServerOps(gui, cfg.patchId);
 
     $("#patch").bind("contextmenu", function (e)
     {

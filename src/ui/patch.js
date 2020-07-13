@@ -790,7 +790,7 @@ CABLES.UI.Patch = function (_gui)
         this._elBody.oncontextmenu =
         this._elPatchSvg.oncontextmenu =
         this._elPatch.oncontextmenu = function (e) { e.preventDefault(); };
-        document.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+        document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false);
 
         this._viewBox.bindWheel(this._elPatchSvg);
 
@@ -899,7 +899,7 @@ CABLES.UI.Patch = function (_gui)
         {
             e = CABLES.mouseEvent(e);
             this.lastMouseMoveEvent = null;
-        }, { "passive": true });
+        });
 
         this._elPatchSvg.bind("touchmove", (e) =>
         {
@@ -915,7 +915,7 @@ CABLES.UI.Patch = function (_gui)
             }
             this.lastMouseMoveEvent = e;
             e.preventDefault();
-        }, { "passive": true });
+        });
 
 
         this._elPatchSvg.bind("mousemove", function (e)
@@ -991,7 +991,6 @@ CABLES.UI.Patch = function (_gui)
                             CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
                         }
         }
-
         const op = uiOp.op;
 
         if (!isLoading)
