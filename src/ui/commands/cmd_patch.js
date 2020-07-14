@@ -190,6 +190,37 @@ CABLES.CMD.PATCH.createVarNumber = function (next)
         });
 };
 
+CABLES.CMD.PATCH.stats = function (force)
+{
+    let report = "";
+    const patch = gui.corePatch();
+    report += patch.ops.length + " Ops<br/>";
+
+    const opsCount = {};
+    for (let i = 0; i < patch.ops.length; i++)
+    {
+        opsCount[patch.ops[i].objName] = opsCount[patch.ops[i].objName] || 0;
+        opsCount[patch.ops[i].objName]++;
+    }
+
+    report += Object.keys(opsCount).length + " unique ops<br/>";
+    report += "<br/>";
+
+    for (const i in opsCount) report += opsCount[i] + "x " + i + " <br/>";
+
+    // const subpatchNumOps = {};
+    // for (let i = 0; i < patch.ops.length; i++)
+    // {
+    //     const key = patch.ops[i].uiAttribs.subPatch || "UNKNOWN?";
+
+    //     subpatchNumOps[key] = subpatchNumOps[key] || 0;
+    //     subpatchNumOps[key]++;
+    // }
+    // console.log(subpatchNumOps);
+
+    CABLES.UI.MODAL.show(report, { "title": "stats" });
+};
+
 
 CABLES.CMD.PATCH._createVariable = function (name, p, p2, value)
 {
@@ -651,6 +682,11 @@ CABLES.CMD.commands.push(
         "cmd": "find commented ops",
         "category": "patch",
         "func": CABLES.CMD.PATCH.findCommentedOps
+    },
+    {
+        "cmd": "patch statistics",
+        "category": "patch",
+        "func": CABLES.CMD.PATCH.stats
     },
     {
         "cmd": "analyze patch",
