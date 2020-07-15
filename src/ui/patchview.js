@@ -467,7 +467,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         {
                             if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objOut))
                             {
+                                console.log(ops[i].portsIn[j].links[k]);
+                                const v = selectedOps[0].patch.getOpById(ops[i].portsIn[j].links[k].objOut).getPort(ops[i].portsIn[j].links[k].portOut).get();
+                                // ops[i].portsIn[j].links[k].portOut.get();
                                 ops[i].portsIn[j].links[k] = null;
+                                ops[i].portsIn[j].value = v;
                             }
                         }
                     }
