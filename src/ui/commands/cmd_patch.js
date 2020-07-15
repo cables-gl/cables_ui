@@ -194,7 +194,8 @@ CABLES.CMD.PATCH.stats = function (force)
 {
     let report = "";
     const patch = gui.corePatch();
-    report += patch.ops.length + " Ops<br/>";
+
+    report += "<h3>Ops</h3>";
 
     const opsCount = {};
     for (let i = 0; i < patch.ops.length; i++)
@@ -203,20 +204,28 @@ CABLES.CMD.PATCH.stats = function (force)
         opsCount[patch.ops[i].objName]++;
     }
 
+    report += patch.ops.length + " Ops total<br/>";
     report += Object.keys(opsCount).length + " unique ops<br/>";
     report += "<br/>";
 
     for (const i in opsCount) report += opsCount[i] + "x " + i + " <br/>";
 
-    // const subpatchNumOps = {};
-    // for (let i = 0; i < patch.ops.length; i++)
-    // {
-    //     const key = patch.ops[i].uiAttribs.subPatch || "UNKNOWN?";
+    // ---
+    report += "<hr/>";
 
-    //     subpatchNumOps[key] = subpatchNumOps[key] || 0;
-    //     subpatchNumOps[key]++;
-    // }
-    // console.log(subpatchNumOps);
+    report += "<h3>Subpatches</h3>";
+
+    const subpatchNumOps = {};
+    for (let i = 0; i < patch.ops.length; i++)
+    {
+        const key = patch.ops[i].uiAttribs.subPatch || "root";
+
+        subpatchNumOps[key] = subpatchNumOps[key] || 0;
+        subpatchNumOps[key]++;
+    }
+
+    for (const i in subpatchNumOps) report += subpatchNumOps[i] + " ops in " + i + " <br/>";
+
 
     CABLES.UI.MODAL.show(report, { "title": "stats" });
 };
