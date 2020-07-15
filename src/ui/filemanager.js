@@ -187,7 +187,7 @@ CABLES.UI.FileManager.prototype._compareFilter = function (file, filterType)
         {
             for (let i = 0; i < filterType.length; i++)
             {
-                if (file.n..toLowerCase().indexOf(filterType[i].toLowerCase()) > 0) return true;
+                if (file.n.toLowerCase().indexOf(filterType[i].toLowerCase()) > 0) return true;
             }
         }
     }
