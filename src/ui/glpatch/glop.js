@@ -50,6 +50,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
 
+
         if (!glOps || ids.length == 0) return;
         if (this._glPatch.isDraggingPort()) return;
 
@@ -67,9 +68,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     _onBgRectDragEnd(rect)
     {
         const glOps = this._glPatch.selectedGlOps;
-        for (const i in glOps)
-            glOps[i].endPassiveDrag();
-
+        for (const i in glOps) glOps[i].endPassiveDrag();
 
         const undoAdd = (function (scope, oldUiAttribs)
         {
@@ -138,8 +137,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
-        if (attr)
-            if (!this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
+        if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
 
         this.opUiAttribs = attr;
         this._needsUpdate = true;
@@ -340,6 +338,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glComment) this._glComment.visible = visi;
 
         for (const i in this._links) this._links[i].visible = visi;
+
+        if (!visi) this._isHovering = false;
     }
 
     get visible()
@@ -470,7 +470,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             y = CABLES.UI.snapOpPosY(y);
         }
 
+
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
+        this.updatePosition();
     }
 
     getGlPort(name)

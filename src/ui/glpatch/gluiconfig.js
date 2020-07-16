@@ -37,6 +37,9 @@ CABLES.GLGUI.VISUALCONFIG =
         "opBgRectSelected": [73 / 255, 73 / 255, 73 / 255, 1],
         "patchComment": [0.8, 0.8, 0.8, 1],
         "opTitleExt": [0.65, 0.65, 0.65, 1.0],
-        "patchSelectionArea": [0, 0.5, 0.7, 0.25]
+        "patchSelectionArea": [0, 0.5, 0.7, 0.25],
+        "opBoundsRect": [0.23, 0.23, 0.23, 1],
+        "background": [0.21, 0.21, 0.21, 1]
+
     }
 };

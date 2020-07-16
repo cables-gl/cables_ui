@@ -156,6 +156,7 @@ CABLES.GLGUI.GlPatchAPI = class
 
     setOpUiAttribs(opid, attrName, val)
     {
+        // debugger;
         const op = gui.corePatch().getOpById(opid);
         const attr = {};
         attr[attrName] = val;

@@ -233,7 +233,12 @@ CABLES.GLGUI.GlUiCanvas = class
             this._firstTime = false;
         }
 
-        cgl.gl.clearColor(0.23, 0.23, 0.23, 0);
+        cgl.gl.clearColor(
+            CABLES.GLGUI.VISUALCONFIG.colors.background[0],
+            CABLES.GLGUI.VISUALCONFIG.colors.background[1],
+            CABLES.GLGUI.VISUALCONFIG.colors.background[2],
+            CABLES.GLGUI.VISUALCONFIG.colors.background[3]);
+
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         this.glPatch.debugData.targetFps = this._targetFps;
