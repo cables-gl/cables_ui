@@ -133,7 +133,7 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect.interactive = false;
             this._boundingRect.setPosition(0, 0, 1);
             this._boundingRect.setSize(110, 110);
-            this._boundingRect.setColor(0, 0, 110, 0.1);
+            this._boundingRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect);
         }
 
         const bounds = this.glPatch.rectDrawer.bounds;
