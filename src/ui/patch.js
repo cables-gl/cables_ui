@@ -991,6 +991,7 @@ CABLES.UI.Patch = function (_gui)
                             CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
                         }
         }
+
         const op = uiOp.op;
 
         if (!isLoading)
@@ -1901,7 +1902,7 @@ CABLES.UI.Patch = function (_gui)
         if (!event) return;
         let opname = "";
 
-        if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpImage;
+        if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".webp")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpImage;
         else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpAudio;
         else if (filename.endsWith(".3d.json")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpJson3d;
         else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpVideo;
