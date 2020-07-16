@@ -25,8 +25,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._needsTextureUpdate = false;
         this._draggingRect = null;
         this._reUploadAttribs = true;
-        this._updateRangesMin = {};
-        this._updateRangesMax = {};
+        // this._updateRangesMin = {};
+        // this._updateRangesMax = {};
         this._bounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999, "minZ": 99999, "maxZ": -999999 };
 
         this._meshAttrPos = null;
@@ -162,13 +162,14 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   outColor.a=smoothstep(0.22,0.2,outer) * 1.0-smoothstep(0.12,0.1,inner);"
+
             .endl() + "}"
 
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
-
         // .endl() + "   outColor.rg=uv;"
 
             .endl() + "}");
+
 
         this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
         this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
@@ -481,7 +482,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             this._bounds.maxZ = Math.max(this._attrBuffPos[i + 2], this._bounds.maxZ);
         }
 
-
         this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, i, i + 3);
         this._needsBoundsRecalc = true;
     }
@@ -553,15 +553,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     setCircle(idx, o)
     {
-        if (this._attrBuffCircle[idx] != o)
-        {
-            this._needsRebuild = true;
-        }
-        else return;
         this._attrBuffCircle[idx] = o;
-        this._setAttrRange(this._meshAttrCirc, idx, idx + 1);
+        this._mesh.setAttributeRange(this._meshAttrCirc, this._attrBuffCircle, idx, idx + 1);
     }
-
 
     setAllTexture(tex, sdf)
     {
@@ -573,17 +567,17 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         }
     }
 
-    _resetAttrRange(attr)
-    {
-        this._updateRangesMin[attr] = 9999;
-        this._updateRangesMax[attr] = -9999;
-    }
+    // _resetAttrRange(attr)
+    // {
+    //     this._updateRangesMin[attr] = 9999;
+    //     this._updateRangesMax[attr] = -9999;
+    // }
 
-    _setAttrRange(attr, start, end)
-    {
-        this._updateRangesMin[attr] = Math.min(start, this._updateRangesMin[attr]);
-        this._updateRangesMax[attr] = Math.max(end, this._updateRangesMin[attr]);
-    }
+    // _setAttrRange(attr, start, end)
+    // {
+    //     this._updateRangesMin[attr] = Math.min(start, this._updateRangesMin[attr]);
+    //     this._updateRangesMax[attr] = Math.max(end, this._updateRangesMin[attr]);
+    // }
 
 
     // setOutline(idx,o)

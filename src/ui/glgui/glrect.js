@@ -260,6 +260,8 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
     dispose()
     {
+        console.log("rect dispose!!!");
+        this.setCircle(0);
         this.setSize(0, 0);
         this.setPosition(0, 0);
     }
