@@ -65,6 +65,12 @@ CABLES.GLGUI.GlLink = class
 
     get opIdInput() { return this._opIdInput; }
 
+
+    updateVisible()
+    {
+
+    }
+
     set visible(v)
     {
         this._cable.visible = v;
@@ -90,6 +96,7 @@ CABLES.GLGUI.GlLink = class
         }
         else this._cable.setPosition(0, 0, 0, 0);
     }
+
 
     update()
     {

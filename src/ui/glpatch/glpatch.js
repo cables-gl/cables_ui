@@ -23,6 +23,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines = new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects = new CABLES.GLGUI.RectInstancer(cgl);
         this._textWriter = new CABLES.GLGUI.TextWriter(cgl);
+        this._textWriterOverlay = new CABLES.GLGUI.TextWriter(cgl);
         this._currentSubpatch = 0;
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
@@ -42,7 +43,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._redrawFlash.setColor(0, 1, 0, 1);
 
         this.quickLinkSuggestion = new CABLES.GLGUI.QuickLinkSuggestion(this);
-        this._debugtext = new CABLES.GLGUI.Text(this._textWriter, "hello");
+        this._debugtext = new CABLES.GLGUI.Text(this._textWriterOverlay, "hello");
 
         this._viewZoom = 0;
         this.needsRedraw = false;
@@ -236,6 +237,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         glOp.updatePosition();
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
+        glOp.updateVisible();
         glOp.update();
 
         if (CABLES.UI.loaded)
@@ -251,6 +253,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     setFont(f)
     {
         this._textWriter.setFont(f);
+        this._textWriterOverlay.setFont(f);
     }
 
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY, mouseButton)
@@ -279,9 +282,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 

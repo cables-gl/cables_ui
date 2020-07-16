@@ -189,7 +189,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     addLink(l)
     {
         this._links[l.id] = l;
-        l.visible = this._visible;
+        l.visible = this.visible;
     }
 
     isHovering()
@@ -318,21 +318,33 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._setVisible(v);
     }
 
+    isInCurrentSubPatch()
+    {
+        return this.opUiAttribs.subPatch == this._glPatch.subPatch;
+    }
+
     _setVisible(v)
     {
         if (v !== undefined) this._visible = v;
 
-        if (this._glRectBg) this._glRectBg.visible = this.visible;
-        if (this._glTitle) this._glTitle.visible = this.visible;
-        if (this._glTitleExt) this._glTitleExt.visible = this.visible;
-        if (this._glComment) this._glComment.visible = this.visible;
+        let visi = this._visible;
 
-        for (const i in this._links) this._links[i].visible = this.visible;
+        if (!this.isInCurrentSubPatch())
+        {
+            visi = false;
+        }
+
+        if (this._glRectBg) this._glRectBg.visible = visi;
+        if (this._glTitle) this._glTitle.visible = visi;
+        if (this._glTitleExt) this._glTitleExt.visible = visi;
+        if (this._glComment) this._glComment.visible = visi;
+
+        for (const i in this._links) this._links[i].visible = visi;
     }
 
     get visible()
     {
-        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) return false;
+        if (!this.isInCurrentSubPatch()) return false;
         return this._visible;
     }
 
