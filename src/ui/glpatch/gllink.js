@@ -18,7 +18,9 @@ CABLES.GLGUI.GlLink = class
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
 
+        console.log("new gllink!!!");
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
+        this._buttonRect.setCircle(1);
         this._buttonRect.setColorHover(1, 1, 1, 1);
 
         this._buttonRect.on("mousedown", (e) =>
@@ -44,6 +46,8 @@ CABLES.GLGUI.GlLink = class
 
         this._glPatch.addLink(this);
         this.update();
+
+        console.log("this._buttonRect", this._buttonRect);
     }
 
     get id()
@@ -135,6 +139,7 @@ CABLES.GLGUI.GlLink = class
         if (this._opIn) this._opIn.removeLink(this._id);
         this._cable.setColor(0, 0, 0, 0);
         this._buttonRect.dispose();
+        this._buttonRect = null;
     }
 
     setFlowModeActivity(act)
