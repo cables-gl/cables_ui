@@ -114,6 +114,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "IN vec2 uv;"
             .endl() + "IN float decoration;"
             .endl() + "IN float useTexture;"
+            .endl() + "UNI float time;"
             .endl() + "UNI sampler2D tex[8];"
 
             .endl() + "void main()"
@@ -163,6 +164,12 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "       outColor.rgb+=vec3(add*0.4);"
             .endl() + "   }"
 
+            .endl() + "if(decoration==3.0)" // border
+            .endl() + "{"
+            .endl() + "    float w=0.03;"
+            .endl() + "    outColor.rgb+=0.12*vec3( step(w/2.0,mod( time*0.04+posSize.x+posSize.y,w )));"
+            .endl() + "}"
+
         // .endl() + "   float sc = 1.0 / fwidth(uv.x);"
         // .endl() + "   if(posSize.x>3.0)outColor.rgb=vec3(1.0);"
 
@@ -172,6 +179,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "}");
 
 
+        this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
         this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
         this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
         this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
@@ -347,6 +355,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._uniscrollX.set(scrollX);
         this._uniscrollY.set(scrollY);
         this._uniZoom.set(1.0 / zoom);
+        this._uniTime.set(performance.now() / 1000);
 
         if (this._needsTextureUpdate) this._setupTextures();
         this._bindTextures();

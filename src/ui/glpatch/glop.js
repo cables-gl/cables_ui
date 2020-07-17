@@ -29,6 +29,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
         this._dragOldUiAttribs = null;
+        this._rectDecoration = 0;
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
@@ -162,8 +163,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
             if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0)
             {
-                this._glRectBg.setDecoration(2);
-                console.log("BORDER!!!");
+                this._rectDecoration = 2;
+                // this._glRectBg.setDecoration(2);
+                // console.log("BORDER!!!");
             }
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
@@ -418,9 +420,19 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     _updateBgRectColor()
     {
-        if (this.opUiAttribs.selected) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRectSelected);
-        else if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
-        else this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+        if (this.opUiAttribs.selected)
+        {
+            this._glRectBg.setDecoration(3);
+        }
+        else
+        {
+            this._glRectBg.setDecoration(this._rectDecoration);
+            if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
+            else
+            {
+                this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+            }
+        }
     }
 
     set selected(s)
