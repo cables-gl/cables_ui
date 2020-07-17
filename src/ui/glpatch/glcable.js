@@ -13,7 +13,7 @@ CABLES.GLGUI.GlCable = class
         this._lineIdx1 = this._lineDrawer.getIndex();
         this._lineIdx2 = this._lineDrawer.getIndex();
 
-        this._buttonRect.setCircle(1);
+        this._buttonRect.setDecoration(1);
 
         this._x = 0;
         this._y = 0;
@@ -56,7 +56,7 @@ CABLES.GLGUI.GlCable = class
 
         // circle button
         const buttonSize = 12;
-        this._buttonRect.setCircle(1);
+        this._buttonRect.setDecoration(1);
         this._buttonRect.setSize(buttonSize, buttonSize);
         this._buttonRect.setPosition(
             x + ((x2 - x) / 2) - buttonSize / 2,

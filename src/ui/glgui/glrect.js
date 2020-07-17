@@ -14,7 +14,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this._attrIndex = instancer.getIndex();
         this._parent = options.parent || null;
         this.childs = [];
-        this._circle = false;
+        this._decoration = false;
         this._x = 0;
         this._y = 0;
         this._z = 0;
@@ -67,11 +67,11 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this.childs.push(c);
     }
 
-    setCircle(c)
+    setDecoration(c)
     {
-        this._circle = c;
-        if (c) this._rectInstancer.setCircle(this._attrIndex, 1);
-        else this._rectInstancer.setCircle(this._attrIndex, 0);
+        this._decoration = c;
+        this._rectInstancer.setDecoration(this._attrIndex, c);
+        // else this._rectInstancer.setDecoration(this._attrIndex, 0);
     }
 
     get visible() { return this._visible; }
@@ -261,7 +261,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
     dispose()
     {
         console.log("rect dispose!!!");
-        this.setCircle(0);
+        this.setDecoration(0);
         this.setSize(0, 0);
         this.setPosition(0, 0);
     }
