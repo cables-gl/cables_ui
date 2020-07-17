@@ -61,7 +61,7 @@ CABLES.GLGUI.QuickLinkSuggestion = class extends CABLES.EventTarget
             this._glLineIdx = this._glLineDrawer.getIndex();
         }
 
-        const coord = this._glPatch.screenCoord(mouseX, mouseY);
+        const coord = this._glPatch.viewBox.screenToPatchCoord(mouseX, mouseY);
 
         this._glLineDrawer.setColor(this._glLineIdx, 1, 0, 0, 1);
         this._glLineDrawer.setLine(this._glLineIdx, this._startX, this._startY, coord[0], coord[1]);

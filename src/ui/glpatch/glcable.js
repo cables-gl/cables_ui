@@ -13,6 +13,8 @@ CABLES.GLGUI.GlCable = class
         this._lineIdx1 = this._lineDrawer.getIndex();
         this._lineIdx2 = this._lineDrawer.getIndex();
 
+        this._buttonRect.setCircle(1);
+
         this._x = 0;
         this._y = 0;
         this._y2 = 0;

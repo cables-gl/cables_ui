@@ -9,6 +9,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
         options = options || {};
         this._visible = true;
+        this._hovering = false;
         this._rectInstancer = instancer;
         this._attrIndex = instancer.getIndex();
         this._parent = options.parent || null;
@@ -80,6 +81,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this._visible = v;
         this._updateSize();
 
+        if (!this.visible) this._hovering = false;
         for (let i = 0; i < this.childs.length; i++) this.childs[i].visible = v;
     }
 
@@ -215,6 +217,8 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
         const hovering = this.isPointInside(x, y);
         const isHovered = this._hovering;
+
+        if (hovering && !this._hovering) console.log(this);
         this._hovering = hovering;
 
         if (hovering && !isHovered) this.emitEvent("hover", this);
@@ -256,6 +260,8 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
     dispose()
     {
+        console.log("rect dispose!!!");
+        this.setCircle(0);
         this.setSize(0, 0);
         this.setPosition(0, 0);
     }

@@ -50,6 +50,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
 
+
         if (!glOps || ids.length == 0) return;
         if (this._glPatch.isDraggingPort()) return;
 
@@ -67,9 +68,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     _onBgRectDragEnd(rect)
     {
         const glOps = this._glPatch.selectedGlOps;
-        for (const i in glOps)
-            glOps[i].endPassiveDrag();
-
+        for (const i in glOps) glOps[i].endPassiveDrag();
 
         const undoAdd = (function (scope, oldUiAttribs)
         {
@@ -138,8 +137,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
-        if (attr)
-            if (!this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
+        if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
 
         this.opUiAttribs = attr;
         this._needsUpdate = true;
@@ -189,7 +187,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     addLink(l)
     {
         this._links[l.id] = l;
-        l.visible = this._visible;
+        l.visible = this.visible;
     }
 
     isHovering()
@@ -318,21 +316,35 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._setVisible(v);
     }
 
+    isInCurrentSubPatch()
+    {
+        return this.opUiAttribs.subPatch == this._glPatch.subPatch;
+    }
+
     _setVisible(v)
     {
         if (v !== undefined) this._visible = v;
 
-        if (this._glRectBg) this._glRectBg.visible = this.visible;
-        if (this._glTitle) this._glTitle.visible = this.visible;
-        if (this._glTitleExt) this._glTitleExt.visible = this.visible;
-        if (this._glComment) this._glComment.visible = this.visible;
+        let visi = this._visible;
 
-        for (const i in this._links) this._links[i].visible = this.visible;
+        if (!this.isInCurrentSubPatch())
+        {
+            visi = false;
+        }
+
+        if (this._glRectBg) this._glRectBg.visible = visi;
+        if (this._glTitle) this._glTitle.visible = visi;
+        if (this._glTitleExt) this._glTitleExt.visible = visi;
+        if (this._glComment) this._glComment.visible = visi;
+
+        for (const i in this._links) this._links[i].visible = visi;
+
+        if (!visi) this._isHovering = false;
     }
 
     get visible()
     {
-        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) return false;
+        if (!this.isInCurrentSubPatch()) return false;
         return this._visible;
     }
 
@@ -458,7 +470,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             y = CABLES.UI.snapOpPosY(y);
         }
 
+
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
+        this.updatePosition();
     }
 
     getGlPort(name)
