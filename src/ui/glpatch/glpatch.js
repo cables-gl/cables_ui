@@ -83,6 +83,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
+        this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
+        this.debugData._onCanvasMouseMove++;
+
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }
 
