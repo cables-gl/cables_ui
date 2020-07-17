@@ -45,8 +45,6 @@ CABLES.GLGUI.GlLink = class
 
         this._glPatch.addLink(this);
         this.update();
-
-        console.log("this._buttonRect", this._buttonRect);
     }
 
     get id()

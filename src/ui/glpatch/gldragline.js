@@ -22,7 +22,6 @@ CABLES.GLGUI.GlRectDragLine = class
         {
             if (!this.isActive) return;
 
-
             if (this._glPort && this._glPort.port)
             {
                 console.log("this._startGlPorts", this._glPort.port);
