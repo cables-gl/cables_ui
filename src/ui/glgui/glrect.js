@@ -218,7 +218,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         const hovering = this.isPointInside(x, y);
         const isHovered = this._hovering;
 
-        if (hovering && !this._hovering) console.log(this);
+        // if (hovering && !this._hovering) console.log(this);
         this._hovering = hovering;
 
         if (hovering && !isHovered) this.emitEvent("hover", this);

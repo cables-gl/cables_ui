@@ -7,7 +7,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         super();
 
-        this.logEvents(false, "glpatch");
+        this.logEvents(true, "glpatch");
         if (!cgl) console.error("[glpatch] need cgl");
 
         this._cgl = cgl;
@@ -113,16 +113,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         if (this._selectionArea.active)
         {
-            console.log("hide area44");
             this._selectionArea.hideArea();
         }
         this._lastButton = 0;
         this.emitEvent("mouseleave", e);
-        this.emitEvent("mouseup", e);
+        // this.emitEvent("mouseup", e);
     }
 
     _onCanvasMouseUp(e)
     {
+        console.log("_onCanvasMouseUp");
         this._rectInstancer.mouseUp(e);
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
