@@ -465,6 +465,7 @@ CABLES.UI.OpSelect = class
 
         this._newOpOptions =
         {
+            "subPatch": options.subPatch,
             "onOpAdd": options.onOpAdd,
             "linkNewOpToPort": linkPort,
             "linkNewOpToOp": linkOp,

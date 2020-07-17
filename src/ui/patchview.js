@@ -82,13 +82,16 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         gui.serverOps.loadOpLibs(opname, () =>
         {
-            const op = this._p.addOp(opname);
+            const uiAttribs = {};
+
+            if (options.subPatch) uiAttribs.subPatch = options.subPatch;
+
+            const op = this._p.addOp(opname, uiAttribs);
 
             // todo options:
             // - putIntoLink
             // ...?
             // positioning ?
-
 
             if (options.linkNewOpToPort)
             {
