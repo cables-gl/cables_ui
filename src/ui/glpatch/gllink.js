@@ -18,9 +18,8 @@ CABLES.GLGUI.GlLink = class
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
 
-        console.log("new gllink!!!");
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
-        this._buttonRect.setCircle(1);
+        this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 1, 1, 1);
 
         this._buttonRect.on("mousedown", (e) =>

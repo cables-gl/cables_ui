@@ -160,6 +160,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             const opcol = this._glPatch.getOpNamespaceColor(this._op.objName);
             this._glTitle.setColor(opcol[0], opcol[1], opcol[2]);
 
+            if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0)
+            {
+                this._glRectBg.setDecoration(2);
+                console.log("BORDER!!!");
+            }
+
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
                 this._glTitle.scale = 4;
