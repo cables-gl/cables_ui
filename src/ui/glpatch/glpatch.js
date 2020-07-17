@@ -239,11 +239,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
         glOp.updateVisible();
         glOp.update();
+        this.unselectAll();
 
         if (CABLES.UI.loaded)
         {
             console.log("op added by hand...");
-            this.unselectAll();
+
             this.selectOpId(op.id);
             gui.opParams.show(op.id);
         }
