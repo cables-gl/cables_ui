@@ -7,7 +7,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         super();
 
-        this.logEvents(true, "glpatch");
+        this.logEvents(false, "glpatch");
         if (!cgl) console.error("[glpatch] need cgl");
 
         this._cgl = cgl;
