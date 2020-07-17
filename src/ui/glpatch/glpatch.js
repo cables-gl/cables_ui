@@ -83,6 +83,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
+        this.emitEvent("mousemove", e);
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
 
