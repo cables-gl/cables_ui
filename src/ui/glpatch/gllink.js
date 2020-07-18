@@ -18,9 +18,8 @@ CABLES.GLGUI.GlLink = class
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
 
-        console.log("new gllink!!!");
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
-        this._buttonRect.setCircle(1);
+        this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 1, 1, 1);
 
         this._buttonRect.on("mousedown", (e) =>
@@ -35,7 +34,7 @@ CABLES.GLGUI.GlLink = class
             }
         });
 
-        this._cable = new CABLES.GLGUI.GlCable(this._glPatch.lineDrawer, this._buttonRect, this._type);
+        this._cable = new CABLES.GLGUI.GlCable(this._glPatch, this._glPatch.lineDrawer, this._buttonRect, this._type);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         this._opIn = null;
@@ -46,8 +45,6 @@ CABLES.GLGUI.GlLink = class
 
         this._glPatch.addLink(this);
         this.update();
-
-        console.log("this._buttonRect", this._buttonRect);
     }
 
     get id()
@@ -79,7 +76,7 @@ CABLES.GLGUI.GlLink = class
     {
         this._cable.visible = v;
         this._visible = v;
-        this._buttonRect.visible = v;
+        // this._buttonRect.visible = v;
         this._updatePosition();
     }
 

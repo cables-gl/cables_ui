@@ -29,6 +29,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
         this._dragOldUiAttribs = null;
+        this._rectDecoration = 0;
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
@@ -157,16 +158,21 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glTitle = new CABLES.GLGUI.Text(this._textWriter, title);
             this._glTitle.setParentRect(this._glRectBg);
 
-            const opcol = this._glPatch.getOpNamespaceColor(this._op.objName);
-            this._glTitle.setColor(opcol[0], opcol[1], opcol[2]);
+            this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
+
+
+            if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0)
+            {
+                this._rectDecoration = 2;
+            }
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
                 this._glTitle.scale = 4;
                 this._glTitle.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
                 this._transparent = true;
-                this._updateBgRectColor();
             }
+            this._updateColors();
         }
         else this._glTitle.text = title;
 
@@ -410,17 +416,29 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glPatch.needsRedraw = true;
     }
 
-    _updateBgRectColor()
+    _updateColors()
     {
-        if (this.opUiAttribs.selected) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRectSelected);
-        else if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
-        else this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+        if (this.opUiAttribs.selected)
+        {
+            this._glRectBg.setDecoration(3);
+            this._glTitle.setColor(1, 1, 1);
+        }
+        else
+        {
+            this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+            this._glRectBg.setDecoration(this._rectDecoration);
+            if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
+            else
+            {
+                this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+            }
+        }
     }
 
     set selected(s)
     {
         this.opUiAttribs.selected = s;
-        this._updateBgRectColor();
+        this._updateColors();
     }
 
     getPortPos(id)

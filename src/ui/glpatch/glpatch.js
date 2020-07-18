@@ -83,6 +83,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
+        this.emitEvent("mousemove", e);
+        this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
+        this.debugData._onCanvasMouseMove++;
+
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }
 
@@ -110,16 +114,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         if (this._selectionArea.active)
         {
-            console.log("hide area44");
             this._selectionArea.hideArea();
         }
         this._lastButton = 0;
         this.emitEvent("mouseleave", e);
-        this.emitEvent("mouseup", e);
+        // this.emitEvent("mouseup", e);
     }
 
     _onCanvasMouseUp(e)
     {
+        console.log("_onCanvasMouseUp");
         this._rectInstancer.mouseUp(e);
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
@@ -239,11 +243,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
         glOp.updateVisible();
         glOp.update();
+        this.unselectAll();
 
         if (CABLES.UI.loaded)
         {
             console.log("op added by hand...");
-            this.unselectAll();
+
             this.selectOpId(op.id);
             gui.opParams.show(op.id);
         }

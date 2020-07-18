@@ -22,12 +22,16 @@ CABLES.GLGUI.GlRectDragLine = class
         {
             if (!this.isActive) return;
 
-
             if (this._glPort && this._glPort.port)
             {
                 console.log("this._startGlPorts", this._glPort.port);
 
-                gui.opSelect().show({ "x": this._glPatch.viewBox.mousePatchX, "y": this._glPatch.viewBox.mousePatchY }, this._glPort.port.parent, this._glPort.port);
+                gui.opSelect().show(
+                    {
+                        "subPatch": this._glPatch.subPatch,
+                        "x": this._glPatch.viewBox.mousePatchX,
+                        "y": this._glPatch.viewBox.mousePatchY
+                    }, this._glPort.port.parent, this._glPort.port);
             }
 
             this.stop();

@@ -3,8 +3,11 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 
 CABLES.GLGUI.GlCable = class
 {
-    constructor(linedrawer, buttonRect, type)
+    constructor(glPatch, linedrawer, buttonRect, type)
     {
+        this._buttonSize = 12;
+
+        this._glPatch = glPatch;
         this._buttonRect = buttonRect;
         this._type = type;
         this._lineDrawer = linedrawer;
@@ -13,19 +16,25 @@ CABLES.GLGUI.GlCable = class
         this._lineIdx1 = this._lineDrawer.getIndex();
         this._lineIdx2 = this._lineDrawer.getIndex();
 
-        this._buttonRect.setCircle(1);
+        this._buttonRect.setDecoration(1);
+        this._buttonRect.visible = false;
 
         this._x = 0;
         this._y = 0;
         this._y2 = 0;
         this._x2 = 0;
         this._h = CABLES.GLGUI.VISUALCONFIG.portHeight * 2;
+
+        this._glPatch.on("mousemove", (e) =>
+        {
+            this.collideMouse(this._x, this._y - this._h, this._x2, this._y2 + this._h, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+        });
     }
 
     set visible(v)
     {
         this._visible = v;
-        this._buttonRect.visible = v;
+        // this._buttonRect.visible = v;
         this._updateLinePos();
     }
 
@@ -55,12 +64,12 @@ CABLES.GLGUI.GlCable = class
         this._updateLinePos();
 
         // circle button
-        const buttonSize = 12;
-        this._buttonRect.setCircle(1);
-        this._buttonRect.setSize(buttonSize, buttonSize);
+
+        this._buttonRect.setDecoration(1);
+        this._buttonRect.setSize(this._buttonSize, this._buttonSize);
         this._buttonRect.setPosition(
-            x + ((x2 - x) / 2) - buttonSize / 2,
-            (y + this._h) + (((y2 - this._h) - (y + this._h)) / 2) - buttonSize / 2
+            x + ((x2 - x) / 2) - this._buttonSize / 2,
+            (y + this._h) + (((y2 - this._h) - (y + this._h)) / 2) - this._buttonSize / 2
         );
     }
 
@@ -79,5 +88,112 @@ CABLES.GLGUI.GlCable = class
         this._lineDrawer.setSpeed(this._lineIdx0, speed);
         this._lineDrawer.setSpeed(this._lineIdx1, speed);
         this._lineDrawer.setSpeed(this._lineIdx2, speed);
+    }
+
+
+    collideMouse(x1, y1, x2, y2, cx, cy, r)
+    {
+        // is either end INSIDE the circle?
+        // if so, return true immediately
+        const inside1 = this._collidePointCircle(x1, y1, cx, cy, r);
+        const inside2 = this._collidePointCircle(x2, y2, cx, cy, r);
+        if (inside1 || inside2) return true;
+
+        // get length of the line
+        let distX = x1 - x2;
+        let distY = y1 - y2;
+        const len = Math.sqrt((distX * distX) + (distY * distY));
+
+        // get dot product of the line and circle
+        const dot = (((cx - x1) * (x2 - x1)) + ((cy - y1) * (y2 - y1))) / Math.pow(len, 2);
+
+        // find the closest point on the line
+        const closestX = x1 + (dot * (x2 - x1));
+        const closestY = y1 + (dot * (y2 - y1));
+
+        // is this point actually on the line segment?
+        // if so keep going, but if not, return false
+        const onSegment = this._collideLinePoint(x1, y1, x2, y2, closestX, closestY);
+        if (!onSegment) return false;
+
+        // optionally, draw a circle at the closest
+        // point on the line
+        // fill(255, 0, 0);
+        // noStroke();
+        // ellipse(closestX, closestY, 20, 20);
+
+        // get distance to closest point
+        distX = closestX - cx;
+        distY = closestY - cy;
+        const distance = Math.sqrt((distX * distX) + (distY * distY));
+
+        if (distance <= r)
+        {
+            console.log("HIT!!!!!!!");
+
+            this._buttonRect.setPosition(
+                closestX - this._buttonSize / 2, closestY - this._buttonSize / 2
+            );
+            this._buttonRect.visible = true;
+
+            return true;
+        }
+        else
+        {
+            this._buttonRect.visible = false;
+            return false;
+        }
+    }
+
+    _dist(x, y, x2, y2)
+    {
+        const distX = x - x2;
+        const distY = y - y2;
+        return Math.sqrt((distX * distX) + (distY * distY));
+    }
+
+    // POINT/CIRCLE
+    _collidePointCircle(px, py, cx, cy, r)
+    {
+        // get distance between the point and circle's center
+        // using the Pythagorean Theorem
+        // const distX = px - cx;
+        // const distY = py - cy;
+        // const distance = Math.sqrt((distX * distX) + (distY * distY));
+        const distance = this._dist(px, py, cx, cy);
+
+        // if the distance is less than the circle's
+        // radius the point is inside!
+        if (distance <= r)
+        {
+            return true;
+        }
+        return false;
+    }
+
+
+    // LINE/POINT
+    _collideLinePoint(x1, y1, x2, y2, px, py)
+    {
+        // get distance from the point to the two ends of the line
+        const d1 = this._dist(px, py, x1, y1);
+        const d2 = this._dist(px, py, x2, y2);
+
+        // get the length of the line
+        const lineLen = this._dist(x1, y1, x2, y2);
+
+        // since  are so minutely accurate, add
+        // a little buffer zone that will give collision
+        const buffer = 0.1; // higher # = less accurate
+
+        // if the two distances are equal to the line's
+        // length, the point is on the line!
+        // note we use the buffer here to give a range,
+        // rather than one #
+        if (d1 + d2 >= lineLen - buffer && d1 + d2 <= lineLen + buffer)
+        {
+            return true;
+        }
+        return false;
     }
 };
