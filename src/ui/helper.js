@@ -170,6 +170,7 @@ function mouseEvent(event)
     // if(!event.offsetY && event.layerY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
     return event;
 }
+
 CABLES.mouseEvent = mouseEvent;
 
 CABLES.UI.initHandleBarsHelper = function ()
