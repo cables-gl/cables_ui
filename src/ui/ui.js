@@ -1313,7 +1313,8 @@ CABLES.UI.GUI = function (cfg)
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
-            if (!$("#ace_editors textarea").is(":focus")) CABLES.CMD.UI.showSearch();
+            if (!$("#ace_editors textarea").is(":focus") && !CABLES.UI.MODAL.isVisible()) CABLES.CMD.UI.showSearch();
+            else e.dontPreventDefault = true;
         });
 
         this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patch().saveCurrentProjectAs(); });
