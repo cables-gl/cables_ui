@@ -353,6 +353,21 @@ CABLES.UI.MODAL.updatePortValuePreview = function (title)
 
 CABLES.UI.MODAL.showPortValue = function (title, port)
 {
+    function convertHTML(str)
+    {
+        const regex = /[&|<|>|"|']/g;
+        const htmlString = str.replace(regex, function (match)
+        {
+            if (match === "&") return "&amp;";
+            else if (match === "<") return "&lt;";
+            else if (match === ">") return "&gt;";
+            else if (match === "\"") return "&quot;";
+            else return "&apos;";
+        });
+        return htmlString;
+    }
+
+
     try
     {
         CABLES.UI.MODAL.PORTPREVIEW = port;
@@ -374,11 +389,13 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         }
 
         CABLES.UI.MODAL.contentElement.append("<br/><br/>");
-        CABLES.UI.MODAL.contentElement.append("<div class=\"shaderErrorCode\">" + JSON.stringify(thing, null, 4) + "</div>");
+        CABLES.UI.MODAL.contentElement.append("<pre id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</pre>");
 
         CABLES.UI.MODAL._setVisible(true);
-        // $('#modalbg').show();
+
         document.getElementById("modalbg").style.display = "block";
+
+        hljs.highlightBlock(document.getElementById("portvalue"));
     }
     catch (ex)
     {
