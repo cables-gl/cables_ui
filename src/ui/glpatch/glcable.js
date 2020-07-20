@@ -19,7 +19,6 @@ CABLES.GLGUI.GlCable = class
         this._buttonRect.setDecoration(1);
         this._buttonRect.visible = false;
 
-
         this._x = 0;
         this._y = 0;
         this._y2 = 0;
