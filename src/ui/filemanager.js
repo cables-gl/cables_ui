@@ -367,8 +367,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
             },
             function (err, r)
             {
-                r.ops = CABLES.UI.getOpsForFilename(r.fileDb.suffix);
-                console.log(r);
+                if (r.fileDb)r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
                 if (this._fileSource != "lib")
                 {
                     html = CABLES.UI.getHandleBarHtml("filemanager_details", {
