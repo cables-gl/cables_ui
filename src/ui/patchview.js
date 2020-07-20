@@ -83,6 +83,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         gui.serverOps.loadOpLibs(opname, () =>
         {
             const uiAttribs = {};
+            options = options || {};
 
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
 
