@@ -664,8 +664,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         let y = json.ops[i].uiAttribs.translate.y + mouseY - miny;
                         if (CABLES.UI.userSettings.get("snapToGrid"))
                         {
-                            x = CABLES.UI.snapOpPosX(x);
-                            y = CABLES.UI.snapOpPosY(y);
+                            x = gui.patchView.snapOpPosX(x);
+                            y = gui.patchView.snapOpPosY(y);
                         }
                         json.ops[i].uiAttribs.translate.x = x;
                         json.ops[i].uiAttribs.translate.y = y;
@@ -725,7 +725,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid")) avg = CABLES.UI.snapOpPosX(avg);
+            if (CABLES.UI.userSettings.get("snapToGrid")) avg = gui.patchViewX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -912,5 +912,15 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     isCurrentOpId(opid)
     {
         return gui.opParams.isCurrentOpId(opid);
+    }
+
+    snapOpPosX(posX)
+    {
+        return Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX;
+    }
+
+    snapOpPosY(posY)
+    {
+        return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
     }
 };
