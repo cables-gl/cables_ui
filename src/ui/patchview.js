@@ -78,6 +78,33 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (!this._patchRenderer) this._patchRenderer = pr;
     }
 
+    addAssetOpAuto(filename, event)
+    {
+        const ops = CABLES.UI.getOpsForFilename(filename);
+
+        if (ops.length == 0)
+        {
+            CABLES.UI.notify("no known operator found");
+            return;
+        }
+
+        const opname = ops[0];
+
+        const uiAttr = {};
+        if (event)
+        {
+            const x = gui.patch().getCanvasCoordsMouse(event).x;
+            const y = gui.patch().getCanvasCoordsMouse(event).y;
+
+            uiAttr.translate = { "x": x, "y": y };
+        }
+        const op = gui.corePatch().addOp(opname, uiAttr);
+
+        for (let i = 0; i < op.portsIn.length; i++)
+            if (op.portsIn[i].uiAttribs.display == "file")
+                op.portsIn[i].set(filename);
+    }
+
     addOp(opname, options)
     {
         gui.serverOps.loadOpLibs(opname, () =>
