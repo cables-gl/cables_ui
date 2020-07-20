@@ -1037,8 +1037,8 @@ CABLES.UI.Patch = function (_gui)
 
         if (op.uiAttribs.hasOwnProperty("translate"))
         {
-            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
-            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
+            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = gui.patchViewX(op.uiAttribs.translate.x);
+            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = gui.patchViewY(op.uiAttribs.translate.y);
             uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
         }
 

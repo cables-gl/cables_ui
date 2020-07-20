@@ -259,6 +259,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         for (let i = 0; i < ports.length; i++)
         {
             if (ports[i].uiAttribs.display == "dropdown") continue;
+            if (ports[i].uiAttribs.hidePort) continue;
 
             this._setupPort(count, ports[i]);
             count++;
@@ -484,10 +485,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         if (CABLES.UI.userSettings.get("snapToGrid"))
         {
-            x = CABLES.UI.snapOpPosX(x);
-            y = CABLES.UI.snapOpPosY(y);
+            x = gui.patchView.snapOpPosX(x);
+            y = gui.patchView.snapOpPosY(y);
         }
-
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
         this.updatePosition();
