@@ -661,6 +661,11 @@ CABLES.UI.OpSelect = class
 
                     if (isFunction && !hidden)
                     {
+                        let oldState = "";
+                        if (hidden)oldState = "OLD";
+                        if (opname.indexOf("Deprecated") > -1)oldState = "DEPREC";
+                        if (opname.indexOf("Ops.Admin") > -1)oldState = "ADMIN";
+
                         const op = {
                             "nscolor": CABLES.UI.uiConfig.getNamespaceClassName(opname),
                             "isOp": isOp,
@@ -668,7 +673,7 @@ CABLES.UI.OpSelect = class
                             "userOp": opname.startsWith("Ops.User"),
                             "shortName": shortName,
                             "nameSpace": nameSpace,
-                            "old": opdocHidden,
+                            "oldState": oldState,
                             "lowercasename": lowercasename,
                         };
                         op.pop = gui.opDocs.getPopularity(opname);
