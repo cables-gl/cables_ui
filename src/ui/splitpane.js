@@ -17,6 +17,7 @@ $(document).ready(function ()
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -42,6 +43,7 @@ $(document).ready(function ()
             gui.setLayout();
             gui.mainTabs.emitEvent("resize");
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -73,6 +75,7 @@ $(document).ready(function ()
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -87,6 +90,7 @@ $(document).ready(function ()
             gui.timingHeight = window.innerHeight - e.clientY;
             gui.setLayout();
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
@@ -101,12 +105,23 @@ $(document).ready(function ()
             gui.infoHeight = window.innerHeight - e.clientY;
             gui.setLayout();
         }
+
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
+
     function resizeRenderer(ev)
     {
+        if (ev.shiftKey)
+        {
+            if (CABLES.SPLITPANE.rendererAspect == 0)
+                CABLES.SPLITPANE.rendererAspect = gui.rendererWidth / gui.rendererHeight;
+        }
+        else CABLES.SPLITPANE.rendererAspect = 0.0;
+
+        console.log(CABLES.SPLITPANE.rendererAspect);
+
         ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
@@ -121,12 +136,17 @@ $(document).ready(function ()
             }
 
             gui.rendererWidth = (window.innerWidth - x) * (1 / gui.corePatch().cgl.canvasScale) + 3;
-            gui.rendererHeight = y * (1 / gui.corePatch().cgl.canvasScale) - 38;
+
+            if (CABLES.SPLITPANE.rendererAspect) gui.rendererHeight = 1 / CABLES.SPLITPANE.rendererAspect * gui.rendererWidth;
+            else gui.rendererHeight = y * (1 / gui.corePatch().cgl.canvasScale) - 38;
+
+
             gui.setLayout();
             gui.updateCanvasIconBar();
             document.getElementById("glcanvas").focus();
             e.preventDefault();
         }
+
         document.addEventListener("mousemove", mm);
         document.addEventListener("touchmove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
@@ -134,6 +154,7 @@ $(document).ready(function ()
 
     document.getElementById("splitterRendererWH").addEventListener("mousedown", resizeRenderer);
     document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer);
+
 
     function stopSplit(e)
     {
