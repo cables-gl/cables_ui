@@ -23,7 +23,7 @@ CABLES.GLGUI.GlCable = class
         this._y = 0;
         this._y2 = 0;
         this._x2 = 0;
-        this._h = CABLES.GLGUI.VISUALCONFIG.portHeight * 2;
+        this._h = CABLES.GLGUI.VISUALCONFIG.portHeight * 1.5;
 
         this._glPatch.on("mousemove", (e) =>
         {
@@ -40,11 +40,12 @@ CABLES.GLGUI.GlCable = class
 
     _updateLinePos()
     {
+        const dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
         if (this._visible)
         {
-            this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - this._h);
-            this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - this._h, this._x2, this._y2 + this._h);
-            this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + this._h, this._x2, this._y2);
+            this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - dist);
+            this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - dist, this._x2, this._y2 + dist);
+            this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + dist, this._x2, this._y2);
         }
         else
         {

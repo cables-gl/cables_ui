@@ -9,8 +9,8 @@ CABLES.GLGUI.VISUALCONFIG =
     "portHeight": 6,
     "portPadding": 2,
 
-    "snapX": 12,
-    "snapY": 20,
+    // "snapX": 12,
+    // "snapY": 20,
 
     "opHeight": 31,
     "opWidth": 90,

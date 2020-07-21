@@ -367,6 +367,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
             },
             function (err, r)
             {
+                if (r.fileDb)r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
                 if (this._fileSource != "lib")
                 {
                     html = CABLES.UI.getHandleBarHtml("filemanager_details", {
@@ -378,6 +379,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { "filename": detailItems[0].p });
 
                 $("#item_details").html(html);
+
 
                 const delEle = document.getElementById("filedelete" + itemId);
                 if (delEle)

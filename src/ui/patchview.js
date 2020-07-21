@@ -78,11 +78,39 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (!this._patchRenderer) this._patchRenderer = pr;
     }
 
+    addAssetOpAuto(filename, event)
+    {
+        const ops = CABLES.UI.getOpsForFilename(filename);
+
+        if (ops.length == 0)
+        {
+            CABLES.UI.notify("no known operator found");
+            return;
+        }
+
+        const opname = ops[0];
+
+        const uiAttr = {};
+        if (event)
+        {
+            const x = gui.patch().getCanvasCoordsMouse(event).x;
+            const y = gui.patch().getCanvasCoordsMouse(event).y;
+
+            uiAttr.translate = { "x": x, "y": y };
+        }
+        const op = gui.corePatch().addOp(opname, uiAttr);
+
+        for (let i = 0; i < op.portsIn.length; i++)
+            if (op.portsIn[i].uiAttribs.display == "file")
+                op.portsIn[i].set(filename);
+    }
+
     addOp(opname, options)
     {
         gui.serverOps.loadOpLibs(opname, () =>
         {
             const uiAttribs = {};
+            options = options || {};
 
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
 
@@ -636,8 +664,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         let y = json.ops[i].uiAttribs.translate.y + mouseY - miny;
                         if (CABLES.UI.userSettings.get("snapToGrid"))
                         {
-                            x = CABLES.UI.snapOpPosX(x);
-                            y = CABLES.UI.snapOpPosY(y);
+                            x = gui.patchView.snapOpPosX(x);
+                            y = gui.patchView.snapOpPosY(y);
                         }
                         json.ops[i].uiAttribs.translate.x = x;
                         json.ops[i].uiAttribs.translate.y = y;
@@ -697,7 +725,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid")) avg = CABLES.UI.snapOpPosX(avg);
+            if (CABLES.UI.userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -884,5 +912,15 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     isCurrentOpId(opid)
     {
         return gui.opParams.isCurrentOpId(opid);
+    }
+
+    snapOpPosX(posX)
+    {
+        return Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX;
+    }
+
+    snapOpPosY(posY)
+    {
+        return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
     }
 };
