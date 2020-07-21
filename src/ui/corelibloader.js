@@ -63,11 +63,7 @@ CABLES.onLoadedCoreLib = {};
 
 CABLES.loadedCoreLib = function (name)
 {
-    if (CABLES.onLoadedCoreLib[name])
-    {
-        console.log("onLoadedCoreLib!");
-        CABLES.onLoadedCoreLib[name](name);
-    }
+    if (CABLES.onLoadedCoreLib[name]) CABLES.onLoadedCoreLib[name](name);
 };
 
 CABLES.CoreLibLoader = CoreLibLoader;
