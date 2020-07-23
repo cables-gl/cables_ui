@@ -21,7 +21,6 @@ CABLES.UI.MetaDoc.prototype.init = function ()
 {
     gui.opParams.addEventListener("opSelected", function (_op)
     {
-        console.log("op selected!");
         this._op = _op;
         if (this._tab.isVisible())
         {

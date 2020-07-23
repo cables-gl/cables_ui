@@ -647,7 +647,7 @@ CABLES.UI.OpSelect = class
                     {
                         opdocHidden = opdoc.hidden;
                         hidden = opdoc.hidden;
-                        shortName = opdoc.shortNameDisplay;
+                        if (!this._forceShowOldOps) shortName = opdoc.shortNameDisplay;
                     }
 
                     if (hidden)
@@ -665,6 +665,7 @@ CABLES.UI.OpSelect = class
                         if (hidden)oldState = "OLD";
                         if (opname.indexOf("Deprecated") > -1)oldState = "DEPREC";
                         if (opname.indexOf("Ops.Admin") > -1)oldState = "ADMIN";
+
 
                         const op = {
                             "nscolor": CABLES.UI.uiConfig.getNamespaceClassName(opname),
