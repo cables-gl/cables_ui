@@ -18,6 +18,7 @@ CABLES.UI.MODAL.hideLoading = function ()
 
 CABLES.UI.MODAL.init = function (options)
 {
+    options = options || {};
     if (window.gui)gui.showCanvasModal(false);
 
     if (CABLES.UI.MODAL.contentElement)CABLES.UI.MODAL.contentElement.hide();
@@ -28,9 +29,8 @@ CABLES.UI.MODAL.init = function (options)
     else CABLES.UI.MODAL.contentElement.empty();
 
     $("#modalcontainer").removeClass("transparent");
-    CABLES.UI.MODAL.contentElement.css({ "padding": "15px" });
+    if (!options.nopadding)CABLES.UI.MODAL.contentElement.css({ "padding": "15px" });
 };
-
 
 CABLES.UI.MODAL.isVisible = function ()
 {
