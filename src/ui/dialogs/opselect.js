@@ -492,6 +492,7 @@ CABLES.UI.OpSelect = class
                 "element": "#opsearchmodal",
                 "transparent": true,
                 "onClose": this.close,
+                "nopadding": true
             });
 
         if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
