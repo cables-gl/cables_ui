@@ -492,6 +492,7 @@ CABLES.UI.OpSelect = class
                 "element": "#opsearchmodal",
                 "transparent": true,
                 "onClose": this.close,
+                "nopadding": true
             });
 
         if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
@@ -665,7 +666,7 @@ CABLES.UI.OpSelect = class
                         if (hidden)oldState = "OLD";
                         if (opname.indexOf("Deprecated") > -1)oldState = "DEPREC";
                         if (opname.indexOf("Ops.Admin") > -1)oldState = "ADMIN";
-
+                        if (opdocHidden)oldState = "OLD";
 
                         const op = {
                             "nscolor": CABLES.UI.uiConfig.getNamespaceClassName(opname),

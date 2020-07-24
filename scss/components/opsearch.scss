@@ -261,7 +261,7 @@
         .namespace
         {
             color:var(--text-color-textOpselectSelected);
-            
+
             i
             {
                 text-decoration: underline;
@@ -313,7 +313,7 @@
         text-overflow: ellipsis;
         max-width: 100%;
         overflow: hidden;
-        
+
         i
         {
             text-decoration: underline;
@@ -327,6 +327,7 @@
 {
     opacity: 0.9;
     width: 428px;
+    height: 590px;
 
     input
     {
