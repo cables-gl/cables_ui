@@ -411,9 +411,12 @@ CABLES.UI.ServerOps = function (gui, patchId)
 
     this.editAttachment = function (opname, attachmentName, readOnly, cb)
     {
-        const editorObj = CABLES.editorSession.rememberOpenEditor("attachment", opname + "/" + attachmentName, { opname });
-        CABLES.api.clearCache();
+        const parts = opname.split(".");
+        const shortname = parts[parts.length - 1];
+        const title = shortname + " / " + attachmentName;
 
+        const editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname });
+        CABLES.api.clearCache();
 
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
 
@@ -444,11 +447,8 @@ CABLES.UI.ServerOps = function (gui, patchId)
 
                 if (editorObj)
                 {
-                    const parts = opname.split(".");
-                    const shortname = parts[parts.length - 1];
-
                     new CABLES.UI.EditorTab({
-                        "title": shortname + " / " + attachmentName,
+                        "title": title,
                         "name": editorObj.name,
                         content,
                         syntax,
@@ -486,7 +486,7 @@ CABLES.UI.ServerOps = function (gui, patchId)
 
                     // setTimeout(()=>{
                     console.log("settab!", editorObj.name);
-                    gui.mainTabs.activateTabByName(editorObj.name);
+                    gui.mainTabs.activateTabByName(title);
                     // },200);
                 }
 
@@ -522,16 +522,16 @@ CABLES.UI.ServerOps = function (gui, patchId)
 
                 // });
             },
-            function (err)
+            (err) =>
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
                 console.erroror("error opening attachment " + attachmentName);
                 console.log(err);
                 if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
-            },
+            }
         );
 
-        if (!editorObj) gui.mainTabs.activateTabByName(attachmentName);
+        if (!editorObj) gui.mainTabs.activateTabByName(title);
     };
 
     // Shows the editor and displays the code of an op in it

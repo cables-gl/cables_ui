@@ -203,7 +203,11 @@ CABLES.UI.TabPanel.prototype.activateTabByName = function (name)
         else this._tabs[i].deactivate();
     }
 
-    if (!found) console.log("[activateTabByName] could not find tab", name);
+    if (!found)
+    {
+        console.log("[activateTabByName] could not find tab", name);
+        console.log(new Error().stack);
+    }
 
     this.updateHtml();
 };
