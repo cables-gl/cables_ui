@@ -110,7 +110,13 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
         let oldversion = false;
-        if (doc && doc.oldVersion) oldversion = doc.oldVersion;
+        let newestVersion = false;
+        if (doc && doc.oldVersion)
+        {
+            oldversion = doc.oldVersion;
+            console.log(doc);
+            newestVersion = doc.newestVersion;
+        }
 
         let html = this._templateHead({
             op,
@@ -120,6 +126,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "user": gui.user,
             ownsOp,
             "oldVersion": oldversion,
+            "newestVersion": newestVersion,
             "cablesUrl": CABLES.sandbox.getCablesUrl(),
             "hasExample": hasScreenshot,
         });
