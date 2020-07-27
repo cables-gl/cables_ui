@@ -133,6 +133,27 @@ CABLES.UI.TabPanel.prototype.updateHtml = function ()
     html += CABLES.UI.getHandleBarHtml("tabpanel_bar", { "tabs": this._tabs });
     this._eleTabPanel.innerHTML = html;
 
+    document.getElementById("editortabList").addEventListener(
+        "mousedown",
+        (e) =>
+        {
+            const items = [];
+            for (let i = 0; i < this._tabs.length; i++)
+            {
+                const tab = this._tabs[i];
+                items.push({
+                    "title": tab.options.name,
+                    "func": () => { console.log(tab); this.activateTab(tab.id); }
+                });
+            }
+            CABLES.contextMenu.show(
+                {
+                    "items": items
+                }, e.target);
+        },
+    );
+
+
     for (let i = 0; i < this._tabs.length; i++)
     {
         document.getElementById("editortab" + this._tabs[i].id).addEventListener(
