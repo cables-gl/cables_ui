@@ -411,7 +411,7 @@ CABLES.UI.ServerOps = function (gui, patchId)
 
     this.editAttachment = function (opname, attachmentName, readOnly, cb)
     {
-        const editorObj = CABLES.editorSession.rememberOpenEditor("attachment", attachmentName, { opname });
+        const editorObj = CABLES.editorSession.rememberOpenEditor("attachment", opname + "/" + attachmentName, { opname });
         CABLES.api.clearCache();
 
 
@@ -442,11 +442,13 @@ CABLES.UI.ServerOps = function (gui, patchId)
 
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
-
                 if (editorObj)
                 {
+                    const parts = opname.split(".");
+                    const shortname = parts[parts.length - 1];
+
                     new CABLES.UI.EditorTab({
-                        "title": attachmentName,
+                        "title": shortname + " / " + attachmentName,
                         "name": editorObj.name,
                         content,
                         syntax,
