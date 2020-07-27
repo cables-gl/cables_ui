@@ -53,9 +53,11 @@
         overflow-y: none;
         background-color: var(--color-03);
         white-space: nowrap;
+        padding-left:34px;
 
         .tabcontainer
         {
+            user-select: none;
             display:inline-block;
         }
 

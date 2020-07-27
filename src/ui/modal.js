@@ -264,12 +264,18 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
 
 CABLES.UI.MODAL.showException = function (ex, op)
 {
+    if (String(ex.stack).indexOf("file:blob:") == 0)
+    {
+        console.log("ignore file blob exception...");
+        return;
+    }
     if (op)
     {
         CABLES.UI.MODAL.showOpException(ex, op.objName);
         return;
     }
     console.log(ex.stack);
+    // console.log(new Error().stack);
     if (!CABLES.UI.loaded)
     {
         let html = "";
