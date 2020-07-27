@@ -100,6 +100,7 @@ CABLES.UI.EditorTab = function (options)
     setTimeout(() =>
     {
         CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+        gui.mainTabs.activateTab(this._tab.id);
     }, 100);
 };
 

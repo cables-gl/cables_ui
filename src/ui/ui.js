@@ -308,7 +308,6 @@ CABLES.UI.GUI = function (cfg)
             this._elMaintab.style.height = (editorHeight - 2) + "px";
             this._elMaintab.style.width = editorWidth;
 
-
             // var editEls=document.getElementsByClassName("tabcontent");
             // for(var i=0;i<editEls.length;i++)
             // {
@@ -337,14 +336,8 @@ CABLES.UI.GUI = function (cfg)
         {
             this._elEditorMaximized.style.display = "none";
 
-            if (this.mainTabs.getNumTabs() > 0)
-            {
-                this._elEditorMinimized.style.display = "block";
-            }
-            else
-            {
-                this._elEditorMinimized.style.display = "none";
-            }
+            if (this.mainTabs.getNumTabs() > 0) this._elEditorMinimized.style.display = "block";
+            else this._elEditorMinimized.style.display = "none";
 
             this._elSplitterMaintabs.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
