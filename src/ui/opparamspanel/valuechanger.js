@@ -60,18 +60,33 @@ CABLES.valueChangerInitSliders = function ()
 {
     $(".valuesliderinput input").each(function (e)
     {
-        const grad = CABLES.valueChangerGetSliderCss($(this).val());
-        $(this).parent().css({ "background": grad });
+        const v = $(this).val();
+        CABLES.valueChangerSetSliderCSS(v, $(this).parent());
+        // const grad = CABLES.valueChangerGetSliderCss(v);
+        // $(this).parent().css({ "background": grad });
     });
 };
 
-CABLES.valueChangerGetSliderCss = function (v)
+CABLES.valueChangerSetSliderCSS = function (v, el)
 {
+    if (el.data("min") || el.data("max"))
+        v = CABLES.map(v, parseFloat(el.data("min")), parseFloat(el.data("max")), 0, 1);
+
     v = Math.max(0, v);
     v = Math.min(1, v);
     const cssv = v * 100;
-    return "linear-gradient(0.25turn,#5a5a5a, #5a5a5a " + cssv + "%, #444 " + cssv + "%)";
+
+    const grad = "linear-gradient(0.25turn,#5a5a5a, #5a5a5a " + cssv + "%, #444 " + cssv + "%)";
+    el.css({ "background": grad });
 };
+
+// CABLES.valueChangerGetSliderCss = function (v, el)
+// {
+//     v = Math.max(0, v);
+//     v = Math.min(1, v);
+//     const cssv = v * 100;
+//     return "linear-gradient(0.25turn,#5a5a5a, #5a5a5a " + cssv + "%, #444 " + cssv + "%)";
+// };
 
 // CABLES.UI.lastValueChanger=null;
 
@@ -88,6 +103,10 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 
     const elem = $("#" + ele);
     const elemContainer = $("#" + ele + "-container");
+
+    const theOp = gui.corePatch().getOpById(opid);
+    const thePort = theOp.getPort(portName);
+
 
     let isDown = false;
     const startVal = elem.val();
@@ -106,8 +125,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
     {
         if (elemContainer.hasClass("valuesliderinput"))
         {
-            const grad = CABLES.valueChangerGetSliderCss(elem.val());
-            elemContainer.css({ "background": grad });
+            CABLES.valueChangerSetSliderCSS(elem.val(), elemContainer);
         }
         return true;
     }
@@ -265,8 +283,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 
     function setProgress(v)
     {
-        const grad = CABLES.valueChangerGetSliderCss(v);
-        elemContainer.css({ "background": grad });
+        CABLES.valueChangerSetSliderCSS(elem.val(), elemContainer);
         return v;
     }
 
@@ -282,6 +299,9 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
         gui.setStateUnsaved();
         let v = parseFloat(elem.val(), 10);
         let inc = 0;
+
+        if (thePort.uiAttribs.min != undefined)
+            v = CABLES.map(v, thePort.uiAttribs.min, thePort.uiAttribs.max, 0, 1);
 
         if (Math.abs(e.movementX) > 5) mouseDownTime = 0;
 
@@ -306,11 +326,15 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
         else
         {
             inc = e.movementX * 1;
-            if (e.shiftKey || e.which == 3)inc = e.movementX * 5;
+            if (e.shiftKey || e.which == 3)inc = e.CABLES.mapmentX * 5;
 
             v += inc;
             v = Math.floor(v);
         }
+
+        if (thePort.uiAttribs.min != undefined)
+            v = CABLES.map(v, 0, 1, thePort.uiAttribs.min, thePort.uiAttribs.max);
+
 
         elem.val(v);
         $("#" + ele + "-container .numberinput-display").html(v);
@@ -343,9 +367,6 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
             // value changed after blur
             if (startVal != elem.val())
             {
-                // console.log("value changed after blur!",startVal,elem.val());
-                // console.log(portName,opid);
-
                 if (opid && portName)
                 {
                     if (isNaN(elem.val()))
@@ -367,26 +388,6 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                         p.set(mathParsed);
                         CABLES.UI.hideToolTip();
                     }
-
-                    // var undofunc = function(portName,opId,oldVal,newVal) {
-                    //     CABLES.undo.add({
-                    //         title:"value blur",
-                    //         undo: function() {
-                    //             const op=gui.corePatch().getOpById(opid);
-                    //             const p=op.getPort(portName);
-                    //             gui.patch().showProjectParams();
-                    //             p.set(oldVal);
-                    //             gui.opParams.show(op);
-                    //         },
-                    //         redo: function() {
-                    //             const op=gui.corePatch().getOpById(opid);
-                    //             const p=op.getPort(portName);
-                    //             gui.patch().showProjectParams();
-                    //             p.set(newVal);
-                    //             gui.opParams.show(op);
-                    //         }
-                    //     });
-                    // }(portName,opid,startVal,elem.val());
                 }
             }
 
