@@ -923,4 +923,114 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
     }
+
+    copyOpInputPorts(origOp, newOp)
+    {
+        for (let i = 0; i < origOp.portsIn.length; i++)
+        {
+            for (let j = 0; j < newOp.portsIn.length; j++)
+            {
+                // console.log("new ", newOp.portsIn[j].name);
+                if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                    newOp.portsIn[j].set(origOp.portsIn[i].get());
+            }
+        }
+    }
+
+    replaceOpCheck(opid, newOpObjName)
+    {
+        this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
+        {
+            const origOp = this._p.getOpById(opid);
+
+            let allFine = true;
+            let html = "<h3>warning warning danger danger!!</h3><br/>";
+
+            html += "<table>";
+            for (let i = 0; i < origOp.portsIn.length; i++)
+            {
+                let found = false;
+
+                html += "<tr>";
+                html += "<td>Port " + origOp.portsIn[i].name + "</td>";
+
+                for (let j = 0; j < newOp.portsIn.length; j++)
+                {
+                    if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                html += "<td>";
+                if (!found)
+                {
+                    html += "NOT FOUND in new version!";
+                    allFine = false;
+                }
+                else html += "found in new version";
+
+                html += "</td>";
+                html += "</tr>";
+            }
+
+            this._p.deleteOp(newOp.id);
+            html += "</table>";
+            html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');CABLES.UI.MODAL.hide();\" class=\"bluebutton\">Really Upgrade</a>";
+            html += "<a onClick=\"CABLES.UI.MODAL.hide();\" class=\"button\">Cancel</a>";
+
+            setTimeout(() =>
+            {
+                this.setSelectedOpById(origOp.id);
+            }, 100);
+
+
+            CABLES.UI.MODAL.show(html);
+        } });
+    }
+
+    replaceOp(opid, newOpObjName)
+    {
+        this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
+        {
+            const origOp = this._p.getOpById(opid);
+
+            this.copyOpInputPorts(origOp, newOp);
+
+            for (let i = 0; i < origOp.portsIn.length; i++)
+            {
+                for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                {
+                    const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
+                    this._p.link(otherPort.parent, otherPort.name, newOp, origOp.portsIn[i].name);
+                }
+            }
+
+            for (let i = 0; i < origOp.portsOut.length; i++)
+            {
+                for (let j = 0; j < origOp.portsOut[i].links.length; j++)
+                {
+                    const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
+                    this._p.link(otherPort.parent, otherPort.name, newOp, origOp.portsOut[i].name);
+                }
+            }
+
+            const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
+            console.log("oldUiAttr", oldUiAttribs);
+            this._p.deleteOp(origOp.id);
+
+
+            setTimeout(() =>
+            {
+                for (const i in oldUiAttribs)
+                {
+                    console.log(i, oldUiAttribs[i]);
+                    const a = {};
+                    a[i] = oldUiAttribs[i];
+                    newOp.setUiAttrib(a);
+                }
+            }, 100);
+        } });
+    }
 };
