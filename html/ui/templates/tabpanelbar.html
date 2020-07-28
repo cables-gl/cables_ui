@@ -1,6 +1,6 @@
 
 <script id="tabpanel_bar" type="text/x-handlebars-template">
-    
+
     <div class="tabs" style="position:relative;">
         <!-- <div class="taboptions" > -->
             <!-- <div class="tt icon icon-triple-dot iconhover" data-tt="more options" style=""></div> -->
@@ -21,10 +21,11 @@
                 </div>
             </div>
         {{/each}}
-        <div class="fright">
-            <!-- <div class="tt icon icon-chevron-left iconhover" style="margin:7px;margin-right:12px;" onclick="CABLES.CMD.UI.toggleEditor()" data-tt="minimize editor"></div> -->
-        </div>
         <div style="clear:both;"></div>
+    </div>
+
+    <div id="editortabList" style="position: absolute;z-index: 9999999;width: 30px;height: 34px;left: 0px;top: 0px;background-color:var(--color-02);cursor:pointer;">
+        <div class="tt icon icon-menu" style="margin-top:10px;margin:7px;margin-right:12px;" onclick="" data-tt=""></div>
     </div>
 
 </script>
@@ -35,9 +36,9 @@
     <div class="tabtoolbar" id="toolbarContent{{id}}" style="float:left;"></div>
 
     {{#if options.closable}}
-        <div 
-            id="closetab{{id}}" 
-            data-id="{{id}}" 
+        <div
+            id="closetab{{id}}"
+            data-id="{{id}}"
             style="margin-top: 8px;margin-right:10px;float:right;position: absolute;right: 0px;"
             class="icon-x icon icon-1_5x fright iconhover" ></div>
     {{/if}}

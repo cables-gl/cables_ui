@@ -25,6 +25,7 @@ CABLES.UI.MainTabPanel = function (tabs)
         document.getElementById("editorminimized").classList.add("editorminimized_changed");
         setTimeout(() => { document.getElementById("editorminimized").classList.remove("editorminimized_changed"); }, 200);
 
+        tabs.activateTab("");
         tabs.activateTab(tab.id);
 
         if (!wasVisible && window.gui) gui.setLayout();

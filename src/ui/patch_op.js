@@ -251,6 +251,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         }
         else
         {
+            if (!label) return;
             if (commentText || backgroundResize) return;
             const labelWidth = label.getBBox().width + 20;
             let setw = w;

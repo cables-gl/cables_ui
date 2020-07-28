@@ -17,7 +17,8 @@
             <br/>
 
             {{#if oldVersion}}
-            <a href="{{cablesUrl}}/op/{{op.objName}}"><b>NEWER VERSION AVAILABLE</b></a>
+                <a href="{{cablesUrl}}/op/{{op.objName}}"><b>NEWER VERSION AVAILABLE</b></a>
+                <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">upgrade</a>
             {{/if}}
 
 			<div class="summary selectable">
@@ -38,10 +39,10 @@
                 <a class="button tt" data-tt="[e] - edit op " onclick="gui.serverOps.edit('{{op.objName}}');">edit op</a>
                 <br/><br/>
             {{/if}}
-            
+
 
             <!-- href="/op/{{op.objName}}"  -->
-            
+
             <!-- <a onclick="gui.mainTabs.addIframeTab('doc {{op.objName}}','/op/{{op.objName}}?dark=1&hdl=1',{'icon':'settings','closable':true,'singleton':true});" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i> -->
             <a href="{{cablesUrl}}/op/{{op.objName}}" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
             {{#if hasExample}}
@@ -136,7 +137,7 @@
                 <a onclick="CABLES.contextMenu.show({items:[{title:'hund'},{title:'elefant'},{title:'katze'},{title:'maus'}]},this);" class="button">test...</a>
                 <br/><br/>
 
-                {{/if}} 
+                {{/if}}
                 <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
                 <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
             {{/if}}
@@ -163,7 +164,7 @@
     <div class="panel" >
         <a onclick="gui.patch().resetOpValues('{{{op.id}}}');" class="button-small">reset input parameters</a>
     </div>
-    
+
     <div class="panel" >
         comment:
         <textarea id="commentTextarea" spellcheck="false" style="height:60px;width:100%;" onInput="gui.opParams.setCurrentOpComment(this.value);" >{{op.uiAttribs.comment}}</textarea>

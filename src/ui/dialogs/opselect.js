@@ -664,9 +664,9 @@ CABLES.UI.OpSelect = class
                     {
                         let oldState = "";
                         if (hidden)oldState = "OLD";
+                        if (opdocHidden)oldState = "OLD";
                         if (opname.indexOf("Deprecated") > -1)oldState = "DEPREC";
                         if (opname.indexOf("Ops.Admin") > -1)oldState = "ADMIN";
-                        if (opdocHidden)oldState = "OLD";
 
                         const op = {
                             "nscolor": CABLES.UI.uiConfig.getNamespaceClassName(opname),
