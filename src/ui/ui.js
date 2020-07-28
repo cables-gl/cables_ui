@@ -248,7 +248,7 @@ CABLES.UI.GUI = function (cfg)
 
         const iconBarWidth = 80;
         const menubarHeight = 30;
-        const optionsWidth = Math.max(400, self.rendererWidth / 2);
+        const optionsWidth = Math.max(400, self.rendererWidthScaled / 2);
 
         let timelineUiHeight = 40;
         if (self.timeLine().hidden) timelineUiHeight = 0;
@@ -308,7 +308,6 @@ CABLES.UI.GUI = function (cfg)
             this._elMaintab.style.height = (editorHeight - 2) + "px";
             this._elMaintab.style.width = editorWidth;
 
-
             // var editEls=document.getElementsByClassName("tabcontent");
             // for(var i=0;i<editEls.length;i++)
             // {
@@ -337,14 +336,8 @@ CABLES.UI.GUI = function (cfg)
         {
             this._elEditorMaximized.style.display = "none";
 
-            if (this.mainTabs.getNumTabs() > 0)
-            {
-                this._elEditorMinimized.style.display = "block";
-            }
-            else
-            {
-                this._elEditorMinimized.style.display = "none";
-            }
+            if (this.mainTabs.getNumTabs() > 0) this._elEditorMinimized.style.display = "block";
+            else this._elEditorMinimized.style.display = "none";
 
             this._elSplitterMaintabs.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth;
@@ -1313,7 +1306,8 @@ CABLES.UI.GUI = function (cfg)
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
-            if (!$("#ace_editors textarea").is(":focus")) CABLES.CMD.UI.showSearch();
+            if (!$("#ace_editors textarea").is(":focus") && !CABLES.UI.MODAL.isVisible()) CABLES.CMD.UI.showSearch();
+            else e.dontPreventDefault = true;
         });
 
         this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patch().saveCurrentProjectAs(); });

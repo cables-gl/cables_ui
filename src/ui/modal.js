@@ -18,6 +18,7 @@ CABLES.UI.MODAL.hideLoading = function ()
 
 CABLES.UI.MODAL.init = function (options)
 {
+    options = options || {};
     if (window.gui)gui.showCanvasModal(false);
 
     if (CABLES.UI.MODAL.contentElement)CABLES.UI.MODAL.contentElement.hide();
@@ -28,9 +29,8 @@ CABLES.UI.MODAL.init = function (options)
     else CABLES.UI.MODAL.contentElement.empty();
 
     $("#modalcontainer").removeClass("transparent");
-    CABLES.UI.MODAL.contentElement.css({ "padding": "15px" });
+    if (!options.nopadding)CABLES.UI.MODAL.contentElement.css({ "padding": "15px" });
 };
-
 
 CABLES.UI.MODAL.isVisible = function ()
 {
@@ -264,12 +264,18 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
 
 CABLES.UI.MODAL.showException = function (ex, op)
 {
+    if (String(ex.stack).indexOf("file:blob:") == 0)
+    {
+        console.log("ignore file blob exception...");
+        return;
+    }
     if (op)
     {
         CABLES.UI.MODAL.showOpException(ex, op.objName);
         return;
     }
     console.log(ex.stack);
+    // console.log(new Error().stack);
     if (!CABLES.UI.loaded)
     {
         let html = "";
@@ -353,6 +359,21 @@ CABLES.UI.MODAL.updatePortValuePreview = function (title)
 
 CABLES.UI.MODAL.showPortValue = function (title, port)
 {
+    function convertHTML(str)
+    {
+        const regex = /[&|<|>|"|']/g;
+        const htmlString = str.replace(regex, function (match)
+        {
+            if (match === "&") return "&amp;";
+            else if (match === "<") return "&lt;";
+            else if (match === ">") return "&gt;";
+            else if (match === "\"") return "&quot;";
+            else return "&apos;";
+        });
+        return htmlString;
+    }
+
+
     try
     {
         CABLES.UI.MODAL.PORTPREVIEW = port;
@@ -374,11 +395,13 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         }
 
         CABLES.UI.MODAL.contentElement.append("<br/><br/>");
-        CABLES.UI.MODAL.contentElement.append("<div class=\"shaderErrorCode\">" + JSON.stringify(thing, null, 4) + "</div>");
+        CABLES.UI.MODAL.contentElement.append("<pre id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</pre>");
 
         CABLES.UI.MODAL._setVisible(true);
-        // $('#modalbg').show();
+
         document.getElementById("modalbg").style.display = "block";
+
+        hljs.highlightBlock(document.getElementById("portvalue"));
     }
     catch (ex)
     {

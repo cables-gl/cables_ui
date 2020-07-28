@@ -23,6 +23,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines = new CABLES.GLGUI.Linedrawer(cgl);
         this._overLayRects = new CABLES.GLGUI.RectInstancer(cgl);
         this._textWriter = new CABLES.GLGUI.TextWriter(cgl);
+        this._textWriterOverlay = new CABLES.GLGUI.TextWriter(cgl);
         this._currentSubpatch = 0;
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
@@ -42,7 +43,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._redrawFlash.setColor(0, 1, 0, 1);
 
         this.quickLinkSuggestion = new CABLES.GLGUI.QuickLinkSuggestion(this);
-        this._debugtext = new CABLES.GLGUI.Text(this._textWriter, "hello");
+        this._debugtext = new CABLES.GLGUI.Text(this._textWriterOverlay, "hello");
 
         this._viewZoom = 0;
         this.needsRedraw = false;
@@ -82,6 +83,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
+        this.emitEvent("mousemove", e);
+        this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
+        this.debugData._onCanvasMouseMove++;
+
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }
 
@@ -109,22 +114,22 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         if (this._selectionArea.active)
         {
-            console.log("hide area44");
             this._selectionArea.hideArea();
         }
         this._lastButton = 0;
         this.emitEvent("mouseleave", e);
-        this.emitEvent("mouseup", e);
+        // this.emitEvent("mouseup", e);
     }
 
     _onCanvasMouseUp(e)
     {
+        console.log("_onCanvasMouseUp");
         this._rectInstancer.mouseUp(e);
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
         this._rectInstancer.interactive = true;
 
-        if (Object.keys(this._selectedGlOps).length == 0)gui.patchView.showDefaultPanel();
+        if (Object.keys(this._selectedGlOps).length == 0) gui.patchView.showDefaultPanel();
     }
 
     _onKeyDelete(e)
@@ -236,12 +241,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         glOp.updatePosition();
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
+        glOp.updateVisible();
         glOp.update();
+        this.unselectAll();
 
         if (CABLES.UI.loaded)
         {
             console.log("op added by hand...");
-            this.unselectAll();
+
             this.selectOpId(op.id);
             gui.opParams.show(op.id);
         }
@@ -251,6 +258,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     setFont(f)
     {
         this._textWriter.setFont(f);
+        this._textWriterOverlay.setFont(f);
     }
 
     render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY, mouseButton)
@@ -279,9 +287,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
@@ -555,16 +565,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         else if (t == CABLES.OP_PORT_TYPE_ARRAY) e.setColor(128 / 255 * diff, 132 / 255 * diff, 212 / 255 * diff, 1);
         else if (t == CABLES.OP_PORT_TYPE_STRING) e.setColor(213 / 255 * diff, 114 / 255 * diff, 114 / 255 * diff, 1);
         else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) e.setColor(1, 1, 1, 1);
-    }
-
-    snapOpPosX(posX)
-    {
-        return Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX;
-    }
-
-    snapOpPosY(posY)
-    {
-        return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
     }
 
     isDraggingPort()

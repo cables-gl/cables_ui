@@ -465,6 +465,7 @@ CABLES.UI.OpSelect = class
 
         this._newOpOptions =
         {
+            "subPatch": options.subPatch,
             "onOpAdd": options.onOpAdd,
             "linkNewOpToPort": linkPort,
             "linkNewOpToOp": linkOp,
@@ -491,6 +492,7 @@ CABLES.UI.OpSelect = class
                 "element": "#opsearchmodal",
                 "transparent": true,
                 "onClose": this.close,
+                "nopadding": true
             });
 
         if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
@@ -646,7 +648,7 @@ CABLES.UI.OpSelect = class
                     {
                         opdocHidden = opdoc.hidden;
                         hidden = opdoc.hidden;
-                        shortName = opdoc.shortNameDisplay;
+                        if (!this._forceShowOldOps) shortName = opdoc.shortNameDisplay;
                     }
 
                     if (hidden)
@@ -660,6 +662,12 @@ CABLES.UI.OpSelect = class
 
                     if (isFunction && !hidden)
                     {
+                        let oldState = "";
+                        if (hidden)oldState = "OLD";
+                        if (opdocHidden)oldState = "OLD";
+                        if (opname.indexOf("Deprecated") > -1)oldState = "DEPREC";
+                        if (opname.indexOf("Ops.Admin") > -1)oldState = "ADMIN";
+
                         const op = {
                             "nscolor": CABLES.UI.uiConfig.getNamespaceClassName(opname),
                             "isOp": isOp,
@@ -667,7 +675,7 @@ CABLES.UI.OpSelect = class
                             "userOp": opname.startsWith("Ops.User"),
                             "shortName": shortName,
                             "nameSpace": nameSpace,
-                            "old": opdocHidden,
+                            "oldState": oldState,
                             "lowercasename": lowercasename,
                         };
                         op.pop = gui.opDocs.getPopularity(opname);

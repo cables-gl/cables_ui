@@ -151,21 +151,47 @@ CABLES.UI.FileManager.prototype._createItem = function (items, file, filterType)
     else if (file.t == "audio") item.icon = "headphones";
     else if (file.t == "dir") item.divider = file.n;
 
-    if (!filterType || filterType == file.t) items.push(item);
-    if (filterType && file.t == "dir")
+    if (!filterType)items.push(item);
+    else
     {
-        // subdir has file with correct file type ??
-        for (let i = 0; i < file.c.length; i++)
+        if (this._compareFilter(file, filterType)) items.push(item);
+
+        if (file.t == "dir")
         {
-            if (file.c[i].t == filterType)
+            // subdir has file with correct file type ??
+            for (let i = 0; i < file.c.length; i++)
             {
-                items.push(item);
-                break;
+                if (this._compareFilter(file.c[i], filterType))
+                // if (file.c[i].t == filterType) //sss
+                {
+                    items.push(item);
+                    break;
+                }
             }
         }
     }
 
+
     if (file.c) for (let i = 0; i < file.c.length; i++) this._createItem(items, file.c[i], filterType);
+};
+
+CABLES.UI.FileManager.prototype._compareFilter = function (file, filterType)
+{
+    if (typeof filterType == "string")
+    {
+        if (filterType === file.t) return true;
+    }
+    else
+    {
+        if (Array.isArray(filterType))
+        {
+            for (let i = 0; i < filterType.length; i++)
+            {
+                if (file.n.toLowerCase().indexOf(filterType[i].toLowerCase()) > 0) return true;
+            }
+        }
+    }
+    return false;
 };
 
 CABLES.UI.FileManager.prototype._buildHtml = function (o)
@@ -341,6 +367,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
             },
             function (err, r)
             {
+                if (r.fileDb)r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
                 if (this._fileSource != "lib")
                 {
                     html = CABLES.UI.getHandleBarHtml("filemanager_details", {
@@ -352,6 +379,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { "filename": detailItems[0].p });
 
                 $("#item_details").html(html);
+
 
                 const delEle = document.getElementById("filedelete" + itemId);
                 if (delEle)

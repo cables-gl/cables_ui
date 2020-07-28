@@ -194,7 +194,8 @@ CABLES.CMD.PATCH.stats = function (force)
 {
     let report = "";
     const patch = gui.corePatch();
-    report += patch.ops.length + " Ops<br/>";
+
+    report += "<h3>Ops</h3>";
 
     const opsCount = {};
     for (let i = 0; i < patch.ops.length; i++)
@@ -203,81 +204,96 @@ CABLES.CMD.PATCH.stats = function (force)
         opsCount[patch.ops[i].objName]++;
     }
 
+    report += patch.ops.length + " Ops total<br/>";
     report += Object.keys(opsCount).length + " unique ops<br/>";
     report += "<br/>";
 
     for (const i in opsCount) report += opsCount[i] + "x " + i + " <br/>";
 
-    // const subpatchNumOps = {};
-    // for (let i = 0; i < patch.ops.length; i++)
-    // {
-    //     const key = patch.ops[i].uiAttribs.subPatch || "UNKNOWN?";
+    // ---
+    report += "<hr/>";
 
-    //     subpatchNumOps[key] = subpatchNumOps[key] || 0;
-    //     subpatchNumOps[key]++;
-    // }
-    // console.log(subpatchNumOps);
+    report += "<h3>Subpatches</h3>";
+
+    const subpatchNumOps = {};
+    for (let i = 0; i < patch.ops.length; i++)
+    {
+        const key = patch.ops[i].uiAttribs.subPatch || "root";
+
+        subpatchNumOps[key] = subpatchNumOps[key] || 0;
+        subpatchNumOps[key]++;
+    }
+
+    for (const i in subpatchNumOps) report += subpatchNumOps[i] + " ops in " + i + " <br/>";
+
 
     CABLES.UI.MODAL.show(report, { "title": "stats" });
 };
 
 
-CABLES.CMD.PATCH._createVariable = function (name, p, p2, value)
+CABLES.CMD.PATCH._createVariable = function (name, p, p2, value, next)
 {
     let portName = "Value";
-    let opSetter;
-    let opGetter;
+    let opSetterName;
+    let opGetterName;
 
     if (p.type == CABLES.OP_PORT_TYPE_VALUE)
     {
-        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
-        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetNumber;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetNumber;
     }
     else if (p.type == CABLES.OP_PORT_TYPE_OBJECT)
     {
         portName = "Object";
-        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetObject);
-        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetObject);
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
     }
     else if (p.type == CABLES.OP_PORT_TYPE_ARRAY)
     {
         portName = "Array";
-        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetArray);
-        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetArray);
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetArray;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetArray;
     }
     else if (p.type == CABLES.OP_PORT_TYPE_STRING)
     {
-        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetString);
-        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetString);
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetString;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetString;
     }
 
-    opSetter.getPort(portName).set(value);
-
-    if (p.direction == CABLES.PORT_DIR_IN)
+    gui.patchView.addOp(opSetterName, { "onOpAdd": (opSetter) =>
     {
-        p.parent.patch.link(opGetter, portName, p.parent, p.name);
-
-        if (p2)
+        gui.patchView.addOp(opGetterName, { "onOpAdd": (opGetter) =>
         {
-            p2.parent.patch.link(opSetter, portName, p2.parent, p2.name);
-            console.log(p2);
-        }
-    }
-    else
-    {
-        p.parent.patch.link(opSetter, portName, p.parent, p.name);
+            console.log(p, p.type, CABLES.OP_PORT_TYPE_VALUE, opGetter, opSetter);
+            opSetter.getPort(portName).set(value);
 
-        if (p2)
-        {
-            p2.parent.patch.link(opGetter, portName, p2.parent, p2.name);
-            console.log(p2);
-        }
-    }
+            if (p.direction == CABLES.PORT_DIR_IN)
+            {
+                p.parent.patch.link(opGetter, portName, p.parent, p.name);
 
-    opSetter.varName.set(name);
-    opGetter.varName.set(name);
+                if (p2)
+                {
+                    p2.parent.patch.link(opSetter, portName, p2.parent, p2.name);
+                    console.log(p2);
+                }
+            }
+            else
+            {
+                p.parent.patch.link(opSetter, portName, p.parent, p.name);
 
-    return { "setter": opSetter, "getter": opGetter };
+                if (p2)
+                {
+                    p2.parent.patch.link(opGetter, portName, p2.parent, p2.name);
+                    console.log(p2);
+                }
+            }
+
+            opSetter.varName.set(name);
+            opGetter.varName.set(name);
+
+            if (next)next(opSetter, opGetter);
+        } });
+    } });
 };
 
 
@@ -332,13 +348,14 @@ CABLES.CMD.PATCH.replaceLinkVariable = function ()
 
             link.remove();
 
-            const varops = CABLES.CMD.PATCH._createVariable(str, p2, p1, p2.get());
+            CABLES.CMD.PATCH._createVariable(str, p2, p1, p2.get(), (setter, getter) =>
+            {
+                let uiop = gui.patch().getUiOp(getter);
+                uiop.setPos(p1.parent.uiAttribs.translate.x, p1.parent.uiAttribs.translate.y - 40);
 
-            let uiop = gui.patch().getUiOp(varops.getter);
-            uiop.setPos(p1.parent.uiAttribs.translate.x, p1.parent.uiAttribs.translate.y - 40);
-
-            uiop = gui.patch().getUiOp(varops.setter);
-            uiop.setPos(p2.parent.uiAttribs.translate.x, p2.parent.uiAttribs.translate.y + 40);
+                uiop = gui.patch().getUiOp(setter);
+                uiop.setPos(p2.parent.uiAttribs.translate.x, p2.parent.uiAttribs.translate.y + 40);
+            });
         });
 };
 
@@ -349,10 +366,12 @@ CABLES.CMD.PATCH.createAutoVariable = function ()
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
         function (str)
         {
-            const varops = CABLES.CMD.PATCH._createVariable(str, p, null, p.get());
-
-            const uiop = gui.patch().getUiOp(varops.getter);
-            uiop.setPos(varops.setter.uiAttribs.translate.x, varops.setter.uiAttribs.translate.y + 40);
+            CABLES.CMD.PATCH._createVariable(str, p, null, p.get(), (setter, getter) =>
+            {
+                getter.uiAttr({ "translate": { "x": setter.uiAttribs.translate.x, "y": setter.uiAttribs.translate.y + 40 } });
+                // const uiop = gui.patch().getUiOp(getter);
+                // uiop.setPos(setter.uiAttribs.translate.x, setter.uiAttribs.translate.y + 40);
+            });
         });
 };
 

@@ -27,15 +27,6 @@ CABLES.UI.isComment = function (objname)
     return objname.indexOf("Ops.Ui.Comment") == 0;
 };
 
-CABLES.UI.snapOpPosX = function (posX)
-{
-    return Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX;
-};
-
-CABLES.UI.snapOpPosY = function (posY)
-{
-    return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
-};
 
 CABLES.UI.updateHoverToolTip = function (event, port)
 {
@@ -260,6 +251,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         }
         else
         {
+            if (!label) return;
             if (commentText || backgroundResize) return;
             const labelWidth = label.getBBox().width + 20;
             let setw = w;
@@ -978,8 +970,8 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
 
                 if (CABLES.UI.userSettings.get("snapToGrid"))
                 {
-                    pos.x = CABLES.UI.snapOpPosX(pos.x);
-                    pos.y = CABLES.UI.snapOpPosY(pos.y);
+                    pos.x = gui.patchView.snapOpPosX(pos.x);
+                    pos.y = gui.patchView.snapOpPosY(pos.y);
                 }
 
                 let width = pos.x - opX;
@@ -1507,8 +1499,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
         if (CABLES.UI.userSettings.get("snapToGrid"))
         {
-            pos.x = CABLES.UI.snapOpPosX(pos.x);
-            pos.y = CABLES.UI.snapOpPosY(pos.y);
+            pos.x = gui.patchView.snapOpPosX(pos.x);
+            pos.y = gui.patchView.snapOpPosY(pos.y);
         }
 
         if (e.shiftKey)

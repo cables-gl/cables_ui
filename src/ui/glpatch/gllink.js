@@ -19,6 +19,7 @@ CABLES.GLGUI.GlLink = class
         this._portIdOutput = portIdOutput;
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
+        this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 1, 1, 1);
 
         this._buttonRect.on("mousedown", (e) =>
@@ -33,7 +34,7 @@ CABLES.GLGUI.GlLink = class
             }
         });
 
-        this._cable = new CABLES.GLGUI.GlCable(this._glPatch.lineDrawer, this._buttonRect, this._type);
+        this._cable = new CABLES.GLGUI.GlCable(this._glPatch, this._glPatch.lineDrawer, this._buttonRect, this._type);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         this._opIn = null;
@@ -65,11 +66,17 @@ CABLES.GLGUI.GlLink = class
 
     get opIdInput() { return this._opIdInput; }
 
+
+    updateVisible()
+    {
+
+    }
+
     set visible(v)
     {
         this._cable.visible = v;
         this._visible = v;
-        this._buttonRect.visible = v;
+        // this._buttonRect.visible = v;
         this._updatePosition();
     }
 
@@ -90,6 +97,7 @@ CABLES.GLGUI.GlLink = class
         }
         else this._cable.setPosition(0, 0, 0, 0);
     }
+
 
     update()
     {
@@ -128,6 +136,7 @@ CABLES.GLGUI.GlLink = class
         if (this._opIn) this._opIn.removeLink(this._id);
         this._cable.setColor(0, 0, 0, 0);
         this._buttonRect.dispose();
+        this._buttonRect = null;
     }
 
     setFlowModeActivity(act)

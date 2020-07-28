@@ -78,17 +78,48 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (!this._patchRenderer) this._patchRenderer = pr;
     }
 
+    addAssetOpAuto(filename, event)
+    {
+        const ops = CABLES.UI.getOpsForFilename(filename);
+
+        if (ops.length == 0)
+        {
+            CABLES.UI.notify("no known operator found");
+            return;
+        }
+
+        const opname = ops[0];
+
+        const uiAttr = {};
+        if (event)
+        {
+            const x = gui.patch().getCanvasCoordsMouse(event).x;
+            const y = gui.patch().getCanvasCoordsMouse(event).y;
+
+            uiAttr.translate = { "x": x, "y": y };
+        }
+        const op = gui.corePatch().addOp(opname, uiAttr);
+
+        for (let i = 0; i < op.portsIn.length; i++)
+            if (op.portsIn[i].uiAttribs.display == "file")
+                op.portsIn[i].set(filename);
+    }
+
     addOp(opname, options)
     {
         gui.serverOps.loadOpLibs(opname, () =>
         {
-            const op = this._p.addOp(opname);
+            const uiAttribs = {};
+            options = options || {};
+
+            if (options.subPatch) uiAttribs.subPatch = options.subPatch;
+
+            const op = this._p.addOp(opname, uiAttribs);
 
             // todo options:
             // - putIntoLink
             // ...?
             // positioning ?
-
 
             if (options.linkNewOpToPort)
             {
@@ -467,7 +498,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         {
                             if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objOut))
                             {
+                                // console.log(ops[i].portsIn[j].links[k]);
+                                const p = selectedOps[0].patch.getOpById(ops[i].portsIn[j].links[k].objOut).getPort(ops[i].portsIn[j].links[k].portOut);
                                 ops[i].portsIn[j].links[k] = null;
+                                if (p && (p.type === CABLES.OP_PORT_TYPE_STRING || p.type === CABLES.OP_PORT_TYPE_VALUE))
+                                {
+                                    ops[i].portsIn[j].value = p.get();
+                                }
                             }
                         }
                     }
@@ -627,8 +664,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         let y = json.ops[i].uiAttribs.translate.y + mouseY - miny;
                         if (CABLES.UI.userSettings.get("snapToGrid"))
                         {
-                            x = CABLES.UI.snapOpPosX(x);
-                            y = CABLES.UI.snapOpPosY(y);
+                            x = gui.patchView.snapOpPosX(x);
+                            y = gui.patchView.snapOpPosY(y);
                         }
                         json.ops[i].uiAttribs.translate.x = x;
                         json.ops[i].uiAttribs.translate.y = y;
@@ -688,7 +725,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid")) avg = CABLES.UI.snapOpPosX(avg);
+            if (CABLES.UI.userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -875,5 +912,125 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     isCurrentOpId(opid)
     {
         return gui.opParams.isCurrentOpId(opid);
+    }
+
+    snapOpPosX(posX)
+    {
+        return Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX;
+    }
+
+    snapOpPosY(posY)
+    {
+        return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
+    }
+
+    copyOpInputPorts(origOp, newOp)
+    {
+        for (let i = 0; i < origOp.portsIn.length; i++)
+        {
+            for (let j = 0; j < newOp.portsIn.length; j++)
+            {
+                // console.log("new ", newOp.portsIn[j].name);
+                if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                    newOp.portsIn[j].set(origOp.portsIn[i].get());
+            }
+        }
+    }
+
+    replaceOpCheck(opid, newOpObjName)
+    {
+        this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
+        {
+            const origOp = this._p.getOpById(opid);
+
+            let allFine = true;
+            let html = "<h3>warning warning danger danger!!</h3><br/>";
+
+            html += "<table>";
+            for (let i = 0; i < origOp.portsIn.length; i++)
+            {
+                let found = false;
+
+                html += "<tr>";
+                html += "<td>Port " + origOp.portsIn[i].name + "</td>";
+
+                for (let j = 0; j < newOp.portsIn.length; j++)
+                {
+                    if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                html += "<td>";
+                if (!found)
+                {
+                    html += "NOT FOUND in new version!";
+                    allFine = false;
+                }
+                else html += "found in new version";
+
+                html += "</td>";
+                html += "</tr>";
+            }
+
+            this._p.deleteOp(newOp.id);
+            html += "</table>";
+            html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');CABLES.UI.MODAL.hide();\" class=\"bluebutton\">Really Upgrade</a>";
+            html += "<a onClick=\"CABLES.UI.MODAL.hide();\" class=\"button\">Cancel</a>";
+
+            setTimeout(() =>
+            {
+                this.setSelectedOpById(origOp.id);
+            }, 100);
+
+
+            CABLES.UI.MODAL.show(html);
+        } });
+    }
+
+    replaceOp(opid, newOpObjName)
+    {
+        this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
+        {
+            const origOp = this._p.getOpById(opid);
+
+            this.copyOpInputPorts(origOp, newOp);
+
+            for (let i = 0; i < origOp.portsIn.length; i++)
+            {
+                for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                {
+                    const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
+                    this._p.link(otherPort.parent, otherPort.name, newOp, origOp.portsIn[i].name);
+                }
+            }
+
+            for (let i = 0; i < origOp.portsOut.length; i++)
+            {
+                for (let j = 0; j < origOp.portsOut[i].links.length; j++)
+                {
+                    const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
+                    this._p.link(otherPort.parent, otherPort.name, newOp, origOp.portsOut[i].name);
+                }
+            }
+
+            const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
+            console.log("oldUiAttr", oldUiAttribs);
+            this._p.deleteOp(origOp.id);
+
+
+            setTimeout(() =>
+            {
+                for (const i in oldUiAttribs)
+                {
+                    console.log(i, oldUiAttribs[i]);
+                    const a = {};
+                    a[i] = oldUiAttribs[i];
+                    newOp.setUiAttrib(a);
+                }
+            }, 100);
+        } });
     }
 };

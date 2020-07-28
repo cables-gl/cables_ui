@@ -29,6 +29,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
         this._dragOldUiAttribs = null;
+        this._rectDecoration = 0;
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
@@ -50,6 +51,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
 
+
         if (!glOps || ids.length == 0) return;
         if (this._glPatch.isDraggingPort()) return;
 
@@ -67,9 +69,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     _onBgRectDragEnd(rect)
     {
         const glOps = this._glPatch.selectedGlOps;
-        for (const i in glOps)
-            glOps[i].endPassiveDrag();
-
+        for (const i in glOps) glOps[i].endPassiveDrag();
 
         const undoAdd = (function (scope, oldUiAttribs)
         {
@@ -138,8 +138,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
-        if (attr)
-            if (!this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
+        if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
 
         this.opUiAttribs = attr;
         this._needsUpdate = true;
@@ -159,16 +158,21 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glTitle = new CABLES.GLGUI.Text(this._textWriter, title);
             this._glTitle.setParentRect(this._glRectBg);
 
-            const opcol = this._glPatch.getOpNamespaceColor(this._op.objName);
-            this._glTitle.setColor(opcol[0], opcol[1], opcol[2]);
+            this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
+
+
+            if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0)
+            {
+                this._rectDecoration = 2;
+            }
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
                 this._glTitle.scale = 4;
                 this._glTitle.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
                 this._transparent = true;
-                this._updateBgRectColor();
             }
+            this._updateColors();
         }
         else this._glTitle.text = title;
 
@@ -189,7 +193,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     addLink(l)
     {
         this._links[l.id] = l;
-        l.visible = this._visible;
+        l.visible = this.visible;
     }
 
     isHovering()
@@ -255,6 +259,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         for (let i = 0; i < ports.length; i++)
         {
             if (ports[i].uiAttribs.display == "dropdown") continue;
+            if (ports[i].uiAttribs.hidePort) continue;
 
             this._setupPort(count, ports[i]);
             count++;
@@ -318,21 +323,35 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._setVisible(v);
     }
 
+    isInCurrentSubPatch()
+    {
+        return this.opUiAttribs.subPatch == this._glPatch.subPatch;
+    }
+
     _setVisible(v)
     {
         if (v !== undefined) this._visible = v;
 
-        if (this._glRectBg) this._glRectBg.visible = this.visible;
-        if (this._glTitle) this._glTitle.visible = this.visible;
-        if (this._glTitleExt) this._glTitleExt.visible = this.visible;
-        if (this._glComment) this._glComment.visible = this.visible;
+        let visi = this._visible;
 
-        for (const i in this._links) this._links[i].visible = this.visible;
+        if (!this.isInCurrentSubPatch())
+        {
+            visi = false;
+        }
+
+        if (this._glRectBg) this._glRectBg.visible = visi;
+        if (this._glTitle) this._glTitle.visible = visi;
+        if (this._glTitleExt) this._glTitleExt.visible = visi;
+        if (this._glComment) this._glComment.visible = visi;
+
+        for (const i in this._links) this._links[i].visible = visi;
+
+        if (!visi) this._isHovering = false;
     }
 
     get visible()
     {
-        if (this.opUiAttribs.subPatch != this._glPatch.subPatch) return false;
+        if (!this.isInCurrentSubPatch()) return false;
         return this._visible;
     }
 
@@ -398,17 +417,29 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glPatch.needsRedraw = true;
     }
 
-    _updateBgRectColor()
+    _updateColors()
     {
-        if (this.opUiAttribs.selected) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRectSelected);
-        else if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
-        else this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+        if (this.opUiAttribs.selected)
+        {
+            this._glRectBg.setDecoration(3);
+            this._glTitle.setColor(1, 1, 1);
+        }
+        else
+        {
+            this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+            this._glRectBg.setDecoration(this._rectDecoration);
+            if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
+            else
+            {
+                this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+            }
+        }
     }
 
     set selected(s)
     {
         this.opUiAttribs.selected = s;
-        this._updateBgRectColor();
+        this._updateColors();
     }
 
     getPortPos(id)
@@ -454,11 +485,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         if (CABLES.UI.userSettings.get("snapToGrid"))
         {
-            x = CABLES.UI.snapOpPosX(x);
-            y = CABLES.UI.snapOpPosY(y);
+            x = gui.patchView.snapOpPosX(x);
+            y = gui.patchView.snapOpPosY(y);
         }
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
+        this.updatePosition();
     }
 
     getGlPort(name)

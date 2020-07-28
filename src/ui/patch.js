@@ -991,6 +991,7 @@ CABLES.UI.Patch = function (_gui)
                             CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
                         }
         }
+
         const op = uiOp.op;
 
         if (!isLoading)
@@ -1036,8 +1037,8 @@ CABLES.UI.Patch = function (_gui)
 
         if (op.uiAttribs.hasOwnProperty("translate"))
         {
-            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
-            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
+            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = gui.patchView.snapOpPosX(op.uiAttribs.translate.x);
+            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = gui.patchView.snapOpPosY(op.uiAttribs.translate.y);
             uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
         }
 
@@ -1898,49 +1899,49 @@ CABLES.UI.Patch = function (_gui)
 
     this.addAssetOpAuto = function (filename, event)
     {
-        if (!event) return;
-        let opname = "";
-
-        if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpImage;
-        else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpAudio;
-        else if (filename.endsWith(".3d.json")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpJson3d;
-        else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpVideo;
-        else if (filename.endsWith(".glb")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpGltf;
-        else if (filename.endsWith(".json")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpJson;
-        else
-        {
-            CABLES.UI.notify("no known operator found");
-            return;
-        }
-
-        const x = gui.patch().getCanvasCoordsMouse(event).x;
-        const y = gui.patch().getCanvasCoordsMouse(event).y;
-
-        const uiAttr = { "translate": { "x": x, "y": y } };
-        const op = gui.corePatch().addOp(opname, uiAttr);
-
-        for (let i = 0; i < op.portsIn.length; i++)
-            if (op.portsIn[i].uiAttribs.display == "file")
-                op.portsIn[i].set(filename);
+        gui.patchView.addAssetOpAuto(filename, event);
     };
+    // {
+    //     if (!event) return;
 
-    this.addAssetOp = function (opname, portname, filename, title)
-    {
-        if (!title) title = filename;
+    //     const ops = CABLES.UI.getOpsForFilename(filename);
 
-        const uiAttr = {
-            "title": title,
-            "translate": {
-                "x": this._viewBox.getCenterX(),
-                "y": this._viewBox.getCenterY()
-            }
-        };
-        gui.corePatch().addOp(opname, uiAttr, function (op)
-        {
-            if (op) op.getPort(portname).set("/assets/" + currentProject._id + "/" + filename);
-            console.log("new op", op, opname);
-        });
-    };
+    //     if (ops.length == 0)
+    //     {
+    //         CABLES.UI.notify("no known operator found");
+    //         return;
+    //     }
+
+    //     const opname = ops[0];
+
+    //     const x = gui.patch().getCanvasCoordsMouse(event).x;
+    //     const y = gui.patch().getCanvasCoordsMouse(event).y;
+
+    //     const uiAttr = { "translate": { "x": x, "y": y } };
+    //     const op = gui.corePatch().addOp(opname, uiAttr);
+
+    //     for (let i = 0; i < op.portsIn.length; i++)
+    //         if (op.portsIn[i].uiAttribs.display == "file")
+    //             op.portsIn[i].set(filename);
+    // };
+
+    // this.addAssetOp = function (opname, portname, filename, title)
+    // {
+    //     if (!title) title = filename;
+
+    //     const uiAttr = {
+    //         "title": title,
+    //         "translate": {
+    //             "x": this._viewBox.getCenterX(),
+    //             "y": this._viewBox.getCenterY()
+    //         }
+    //     };
+    //     gui.corePatch().addOp(opname, uiAttr, function (op)
+    //     {
+    //         if (op) op.getPort(portname).set("/assets/" + currentProject._id + "/" + filename);
+    //         console.log("new op", op, opname);
+    //     });
+    // };
 
     this.disableEnableOps = function ()
     {

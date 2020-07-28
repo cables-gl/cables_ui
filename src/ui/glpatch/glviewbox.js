@@ -57,6 +57,7 @@ CABLES.GLGUI.ViewBox = class
 
     _onCanvasMouseMove(e)
     {
+        this.setMousePos(e.offsetX, e.offsetY);
         if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
         {
             const pixelMulX = this._cgl.canvas.width / this._zoom * 0.5;
@@ -65,8 +66,6 @@ CABLES.GLGUI.ViewBox = class
             this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
             this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
         }
-
-        this.setMousePos(e.offsetX, e.offsetY);
     }
 
     _onCanvasMouseUp(e)
@@ -133,7 +132,7 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect.interactive = false;
             this._boundingRect.setPosition(0, 0, 1);
             this._boundingRect.setSize(110, 110);
-            this._boundingRect.setColor(0, 0, 110, 0.1);
+            this._boundingRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect);
         }
 
         const bounds = this.glPatch.rectDrawer.bounds;

@@ -26,7 +26,25 @@ CABLES.UI.DEFAULTOPNAMES =
     "VarSetArray": "Ops.Vars.VarSetArray",
     "VarGetArray": "Ops.Vars.VarGetArray",
     "VarSetString": "Ops.Vars.VarSetString_v2",
-    "VarGetString": "Ops.Vars.VarGetString"
+    "VarGetString": "Ops.Vars.VarGetString",
+    "defaultFont": "Ops.Html.FontFile_v2"
+
+
+};
+
+CABLES.UI.getOpsForFilename = function (filename)
+{
+    const ops = [];
+
+    if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".webp")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpImage);
+    else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpAudio);
+    else if (filename.endsWith(".3d.json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson3d);
+    else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpVideo);
+    else if (filename.endsWith(".glb")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpGltf);
+    else if (filename.endsWith(".json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson);
+    else if (filename.endsWith(".ttf") || filename.endsWith(".woff") || filename.endsWith(".woff2") || filename.endsWith(".otf")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultFont);
+
+    return ops;
 };
 
 String.prototype.endl = function ()
@@ -170,6 +188,7 @@ function mouseEvent(event)
     // if(!event.offsetY && event.layerY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
     return event;
 }
+
 CABLES.mouseEvent = mouseEvent;
 
 CABLES.UI.initHandleBarsHelper = function ()
