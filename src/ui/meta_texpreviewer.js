@@ -94,7 +94,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
     }
     const previewCanvas = previewCanvasEle.getContext("2d");
 
-    if (previewCanvas && port && port.get())
+    if (previewCanvas && port && port.get() && !port.get().cubemap)
     {
         const perf = CABLES.uiperf.start("texpreview");
         const cgl = port.parent.patch.cgl;
