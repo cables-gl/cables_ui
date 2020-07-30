@@ -55,7 +55,7 @@ CABLES.UI.EditorTab = function (options)
         }
         else
         {
-            if (!options.name.startsWith("Ops"))
+            if (!options.name.startsWith("Ops."))
             {
                 allowEdit = true;
             }
