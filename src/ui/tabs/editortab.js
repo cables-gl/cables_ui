@@ -53,6 +53,13 @@ CABLES.UI.EditorTab = function (options)
             // admins are only allowed to edit everything on dev
             allowEdit = true;
         }
+        else
+        {
+            if (!options.name.startsWith("Ops"))
+            {
+                allowEdit = true;
+            }
+        }
     }
     else if (options.name.startsWith("Ops."))
     {
