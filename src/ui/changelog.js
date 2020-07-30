@@ -3,7 +3,7 @@ CABLES.CHANGELOG = {};
 
 CABLES.CHANGELOG.getHtml = function (cb, since)
 {
-    CABLES.api.get("changelog?num=0", function (obj)
+    CABLES.api.get("changelog?num=1", function (obj)
     {
         if (since)
         {
