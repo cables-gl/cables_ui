@@ -5,26 +5,26 @@ CABLES.UI.CanvasLens = class
 {
     constructor(ele)
     {
+        this._scale = 7;
+        this._size = this._scale * 15;
+        this._size2 = this._size / 2;
+        this._origPixels = this._size / this._scale;
+        this._origPixels2 = this._size / this._scale / 2;
+
         this._origCanvas = ele || document.getElementById("glcanvas");
         this._lensCanvas = document.createElement("canvas");
         this._lensCanvas.id = "canvaslens";
-        this._lensCanvas.width = 100;
-        this._lensCanvas.height = 100;
+        this._lensCanvas.width = this._size;
+        this._lensCanvas.height = this._size;
         this._lensCanvas.style["z-index"] = 999999999;
-        this._lensCanvas.style.width = "100px";
-        this._lensCanvas.style.height = "100px";
+        this._lensCanvas.style.width = this._size + "px";
+        this._lensCanvas.style.height = this._size + "px";
         this._lensCanvas.style.left = "-1111px";
         this._lensCanvas.style.top = "-1111px";
         this._lensCanvas.style.position = "absolute";
         this._lensCanvas.style["pointer-events"] = "none";
-        this._lensCanvas.style.border = "2px solid white";
+        this._lensCanvas.style.border = "1px solid black";
         this._lensCanvas.style.background = "black";
-
-        this._scale = 5;
-        this._size = 100;
-        this._size2 = this._size / 2;
-        this._origPixels = this._size / this._scale;
-        this._origPixels2 = this._size / this._scale / 2;
 
         this._ctx = this._lensCanvas.getContext("2d");
         this._ctx.imageSmoothingEnabled = false;
@@ -46,6 +46,7 @@ CABLES.UI.CanvasLens = class
 
     _onCopy(e)
     {
+        CABLES.UI.notify("Color copied");
         e.clipboardData.setData("text/plain", this._hex);
         e.preventDefault();
     }
@@ -77,7 +78,7 @@ CABLES.UI.CanvasLens = class
 
         this._ctx.strokeStyle = "white";
         this._ctx.beginPath();
-        this._ctx.rect((this._origPixels2 - 1) * this._scale, (this._origPixels2 - 1) * this._scale, this._scale, this._scale);
+        this._ctx.rect((this._origPixels2 - 1) * this._scale + 1, (this._origPixels2 - 1) * this._scale + 1, this._scale, this._scale);
         this._ctx.stroke();
 
         this._color = this._ctx.getImageData((this._origPixels2 - 1) * this._scale + 3, (this._origPixels2 - 1) * this._scale + 3, 1, 1).data;
