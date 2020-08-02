@@ -97,6 +97,8 @@ CABLES.UI.CanvasLens = class
         gui.corePatch().cgl.off("endFrame", this._endFrameListener);
         this._origCanvas.removeEventListener("mousemove", this._moveListener);
         this._origCanvas.removeEventListener("mouseleave", this._moveLeaveListener);
+        document.removeEventListener("copy", this._copyListener);
+
         this._lensCanvas.remove();
     }
 
