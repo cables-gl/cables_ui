@@ -1465,6 +1465,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.opCollisionTest = function (uiOp)
     {
+        if (!uiOp) return;
         const perf = CABLES.uiperf.start("opCollisionTest");
         let found = false;
         let count = 1;
