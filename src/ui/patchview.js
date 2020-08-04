@@ -944,15 +944,19 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             const origOp = this._p.getOpById(opid);
 
             let allFine = true;
-            let html = "<h3>warning warning danger danger!!</h3><br/>";
+            let html = "<h3>Replacing Op</h3>";
 
-            html += "<table>";
+            html += "Replacing <b>" + origOp.objName + "</b> with <b>" + newOp.objName + "</b><br/><br/>";
+
+
+            let htmlList = "";
+            htmlList += "<table>";
             for (let i = 0; i < origOp.portsIn.length; i++)
             {
                 let found = false;
 
-                html += "<tr>";
-                html += "<td>Port " + origOp.portsIn[i].name + "</td>";
+                htmlList += "<tr>";
+                htmlList += "<td>Port " + origOp.portsIn[i].name + "</td>";
 
                 for (let j = 0; j < newOp.portsIn.length; j++)
                 {
@@ -963,20 +967,31 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     }
                 }
 
-                html += "<td>";
+                htmlList += "<td>";
                 if (!found)
                 {
-                    html += "NOT FOUND in new version!";
+                    htmlList += "NOT FOUND in new version!";
                     allFine = false;
                 }
-                else html += "found in new version";
+                else htmlList += "found in new version";
 
-                html += "</td>";
-                html += "</tr>";
+                htmlList += "</td>";
+                htmlList += "</tr>";
             }
 
             this._p.deleteOp(newOp.id);
-            html += "</table>";
+            htmlList += "</table>";
+
+            if (allFine)
+            {
+                html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
+            }
+            else
+            {
+                html += "Not all old Ports are available in never version of the op. Make sure you test if it behaves the same, very accurately.<br/><br/>";
+                html += htmlList;
+            }
+
             html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');CABLES.UI.MODAL.hide();\" class=\"bluebutton\">Really Upgrade</a>";
             html += "<a onClick=\"CABLES.UI.MODAL.hide();\" class=\"button\">Cancel</a>";
 
@@ -1017,9 +1032,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             }
 
             const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
-            console.log("oldUiAttr", oldUiAttribs);
             this._p.deleteOp(origOp.id);
-
 
             setTimeout(() =>
             {

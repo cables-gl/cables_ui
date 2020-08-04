@@ -39,7 +39,7 @@ class CoreLibLoader
             {
                 const i = this.libsToLoad.indexOf(libName);
                 this.libsToLoad.splice(i, 1);
-                console.log("finished loading core lib: " + libName);
+                // console.log("finished loading core lib: " + libName);
                 CABLES.UI.loadedCoreLibs.push(libName);
                 this.checkAllLoaded();
             }.bind(this);

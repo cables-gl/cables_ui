@@ -149,9 +149,6 @@ CABLES.UI.Patch = function (_gui)
         gui.patchView.clipboardPaste(e, currentSubPatch, mouseX, mouseY,
             (ops, focusSubpatchop) =>
             {
-                console.log("svg paste cliup....");
-
-
                 self.setSelectedOp(null);
                 for (let i = 0; i < ops.length; i++)
                 {
