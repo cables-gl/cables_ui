@@ -5,8 +5,6 @@ CABLES.SandboxBrowser = function (cfg)
     CABLES.EventTarget.apply(this);
     this._cfg = cfg;
 
-    console.log(cfg);
-
     if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
     else CABLES.UI.userSettings.load({});
 
@@ -229,7 +227,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
         incrementStartup();
         this.loadUserOps(() =>
         {
-            console.log("setpatch...");
             if (cb) cb();
         });
     });

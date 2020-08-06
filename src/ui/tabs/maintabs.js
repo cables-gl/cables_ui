@@ -23,7 +23,6 @@ CABLES.UI.MainTabPanel = function (tabs)
     {
         const wasVisible = this._visible;
         if (!existedBefore) this.show();
-        console.log("existedBefore", existedBefore);
 
         document.getElementById("editorminimized").classList.add("editorminimized_changed");
         setTimeout(() => { document.getElementById("editorminimized").classList.remove("editorminimized_changed"); }, 200);

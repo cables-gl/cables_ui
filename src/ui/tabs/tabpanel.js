@@ -220,7 +220,7 @@ CABLES.UI.TabPanel.prototype.activateTabByName = function (name)
     if (!found)
     {
         console.log("[activateTabByName] could not find tab", name);
-        console.log(new Error().stack);
+        // console.log(new Error().stack);
     }
 
     this.updateHtml();

@@ -3,9 +3,10 @@ CABLES.UI = CABLES.UI || {};
 
 // todo: merge serverops and opdocs.js ....
 
-CABLES.UI.ServerOps = function (gui, patchId)
+CABLES.UI.ServerOps = function (gui, patchId, next)
 {
     let ops = [];
+
     const self = this;
 
     CABLES.editorSession.addListener("op",
@@ -798,5 +799,5 @@ CABLES.UI.ServerOps = function (gui, patchId)
         return false;
     };
 
-    this.load();
+    this.load(next);
 };

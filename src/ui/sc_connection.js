@@ -62,7 +62,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             for await (const event of this._socket.listener("connect"))
             {
-                console.info("cables-socketcluster clientId", this._socket.clientId);
+                // console.info("cables-socketcluster clientId", this._socket.clientId);
                 this._connected = true;
             }
         })();

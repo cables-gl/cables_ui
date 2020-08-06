@@ -2060,70 +2060,72 @@ function startUi(cfg)
     window.gui = new CABLES.UI.GUI(cfg);
 
     incrementStartup();
-    gui.serverOps = new CABLES.UI.ServerOps(gui, cfg.patchId);
-
-    $("#patch").bind("contextmenu", function (e)
+    gui.serverOps = new CABLES.UI.ServerOps(gui, cfg.patchId, () =>
     {
-        if (e.preventDefault) e.preventDefault();
-    });
+        $("#patch").bind("contextmenu", function (e)
+        {
+            if (e.preventDefault) e.preventDefault();
+        });
 
-    gui.init();
-    gui.checkIdle();
-    gui.initCoreListeners();
+        gui.init();
+        gui.checkIdle();
+        gui.initCoreListeners();
 
-    gui.bind(function ()
-    {
-        incrementStartup();
-        CABLES.sandbox.initRouting(function ()
+        gui.bind(function ()
         {
             incrementStartup();
-            gui.opDocs = new CABLES.UI.OpDocs(function ()
+            CABLES.sandbox.initRouting(function ()
             {
-                CABLES.UI.userSettings.init();
                 incrementStartup();
-                $("#username").html(gui.user.usernameLowercase);
-                $("#delayed").hide();
-
-                gui.metaCode().init();
-                gui.metaDoc.init();
-                gui.opSelect().reload();
-                // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-                gui.showWelcomeNotifications();
-                incrementStartup();
-                gui.showUiElements();
-                gui.setLayout();
-                gui.patch().fixTitlePositions();
-                gui.opSelect().prepare();
-                incrementStartup();
-                gui.opSelect().search();
-
-                CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
+                gui.opDocs = new CABLES.UI.OpDocs(function ()
                 {
-                    if (key == "theme-bright")
-                    {
-                        gui.updateTheme();
-                    }
+                    CABLES.UI.userSettings.init();
+                    incrementStartup();
+                    $("#username").html(gui.user.usernameLowercase);
+                    $("#delayed").hide();
 
-                    if (key == "straightLines")
+                    gui.metaCode().init();
+                    gui.metaDoc.init();
+                    gui.opSelect().reload();
+                    // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+                    gui.showWelcomeNotifications();
+                    incrementStartup();
+                    gui.showUiElements();
+                    gui.setLayout();
+                    gui.patch().fixTitlePositions();
+                    gui.opSelect().prepare();
+                    incrementStartup();
+                    gui.opSelect().search();
+
+                    CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
                     {
-                        gui.patch().updateSubPatches();
-                    }
+                        if (key == "theme-bright")
+                        {
+                            gui.updateTheme();
+                        }
+
+                        if (key == "straightLines")
+                        {
+                            gui.patch().updateSubPatches();
+                        }
+                    });
+
+                    if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
+
+                    CABLES.editorSession.open();
+                    gui.bindKeys();
+
+                    logStartup("finished loading cables");
+
+                    gui.socket.sendInfo(gui.user.username + " joined");
+                    gui.socket.updateMembers();
+
+                    CABLES.UI.loaded = true;
                 });
-
-                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
-
-                CABLES.editorSession.open();
-                gui.bindKeys();
-
-                logStartup("finished loading cables");
-
-                gui.socket.sendInfo(gui.user.username + " joined");
-                gui.socket.updateMembers();
-
-                CABLES.UI.loaded = true;
             });
         });
     });
+
 
     // $('#cablescanvas').on("click", function(e)
     // {

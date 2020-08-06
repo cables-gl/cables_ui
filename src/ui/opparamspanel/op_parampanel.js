@@ -310,10 +310,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         {
             (function (index)
             {
-                $("#portdelete_in_" + index).on("click", function (e)
+                $("#portdelete_in_" + index).on("click", (e) =>
                 {
                     op.portsIn[index].removeLinks();
-                    self.showOpParams(op);
+                    // gui.patchView.showOpParams(op);
+                    gui.opParams.show(op);
                 });
             }(ipip));
         }
