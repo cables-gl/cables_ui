@@ -449,7 +449,7 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
         html += key;
         html += "</td>";
 
-        html += "<td>";
+        html += "<td style='max-width: 100px; overflow: hidden; text-overflow: ellipsis;'>";
         if (!Array.isArray(node) && !(typeof node === "object"))
         {
             html += node;
@@ -457,14 +457,28 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
         html += "</td>";
 
         html += "<td>";
-        if (level > 1)
+        // if (!(Array.isArray(node) && level == 1))
         {
+            let dataType = "Array";
+            if (!Array.isArray(node))
+            {
+                switch (typeof node)
+                {
+                case "string":
+                    dataType = "String";
+                    break;
+                case "number":
+                    dataType = "Number";
+                    break;
+                default:
+                    dataType = "Object";
+                    break;
+                }
+            }
             const hideclass = "";
-            // if (node.hidden)hideclass = "node-hidden";
-
             html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeArray('" + op.id + "', '" + portName + "', '" + path + "')\" class=\"treebutton\">Array</a>";
             html += "&nbsp;";
-            html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeNode('" + op.id + "', '" + portName + "', '" + path + "')\" class=\"treebutton\">Value</a>";
+            html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeNode('" + op.id + "', '" + portName + "', '" + path + "', '" + dataType + "')\" class=\"treebutton\">Value</a>";
         }
         html += "</td>";
 
@@ -571,10 +585,10 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
     }
 };
 CABLES.UI.MODAL.showPortStructureHelpers = {};
-CABLES.UI.MODAL.showPortStructureHelpers.exposeNode = function (opId, portName, path)
+CABLES.UI.MODAL.showPortStructureHelpers.exposeNode = function (opId, portName, path, dataType)
 {
     const op = gui.corePatch().getOpById(opId);
-    const newop = gui.corePatch().addOp("Ops.Json.ObjectGetByPath");
+    const newop = gui.corePatch().addOp(`Ops.Json.${dataType}GetByPath`);
     newop.getPort("Path").set(path);
     op.patch.link(op, portName, newop, "Object");
     gui.patch().focusOp(newop.id, true);
