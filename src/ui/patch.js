@@ -150,17 +150,23 @@ CABLES.UI.Patch = function (_gui)
             (ops, focusSubpatchop) =>
             {
                 self.setSelectedOp(null);
-                for (let i = 0; i < ops.length; i++)
-                {
-                    const uiop = self.addSelectedOpById(ops[i].id);
 
-                    uiop.setSelected(false);
-                    uiop.setSelected(true);
-                    gui.setStateUnsaved();
-                }
 
                 setTimeout(function ()
                 {
+                    for (let i = 0; i < ops.length; i++)
+                    {
+                        const uiop = self.addSelectedOpById(ops[i].id);
+
+                        if (uiop)
+                        {
+                            uiop.setSelected(false);
+                            uiop.setSelected(true);
+                        }
+                        else console.log("paste: cant find uiop");
+                        gui.setStateUnsaved();
+                    }
+
                     gui.patch().setCurrentSubPatch(currentSubPatch);
 
                     if (focusSubpatchop)

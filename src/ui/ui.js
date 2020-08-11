@@ -251,7 +251,7 @@ CABLES.UI.GUI = function (cfg)
         const optionsWidth = Math.max(400, self.rendererWidthScaled / 2);
 
         let timelineUiHeight = 40;
-        if (self.timeLine().hidden) timelineUiHeight = 0;
+        if (self.timeLine() && self.timeLine().hidden) timelineUiHeight = 0;
 
         const filesHeight = 0;
         // if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
