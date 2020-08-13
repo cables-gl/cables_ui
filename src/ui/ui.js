@@ -2117,6 +2117,8 @@ function startUi(cfg)
 
                     logStartup("finished loading cables");
 
+                    if (window.module) module = window.module; // electronn workaround/fix
+
                     gui.socket.sendInfo(gui.user.username + " joined");
                     gui.socket.updateMembers();
 
