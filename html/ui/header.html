@@ -3,7 +3,14 @@
         <title>| cables</title>
         <!-- <link rel="manifest" href="/manifest_ui.json"> -->
 
-        <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script><!-- electron module workaround/fix -->
+        <script>if (typeof module === 'object') {window.module = module; module = undefined;}
+
+window.nodeRequire = require;
+delete window.require;
+delete window.exports;
+delete window.module;
+
+        </script><!-- electron module workaround/fix -->
 
         <script src="/ui/js/libs.ui.min.js"></script>
         <script src="/ui/js/talkerapi.js"></script>
