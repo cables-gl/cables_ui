@@ -2,10 +2,21 @@
     <head>
         <title>| cables</title>
         <!-- <link rel="manifest" href="/manifest_ui.json"> -->
+
+        <script>if (typeof module === 'object') {window.module = module; module = undefined;}
+
+window.nodeRequire = require;
+delete window.require;
+delete window.exports;
+delete window.module;
+
+        </script><!-- electron module workaround/fix -->
+
         <script src="/ui/js/libs.ui.min.js"></script>
-        <!-- <script src="/ui/js/libs.core.min.js"></script> -->
         <script src="/ui/js/talkerapi.js"></script>
-        
+
+        <script>if (window.module) module = window.module;</script><!-- electron module workaround/fix -->
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
         <style media="screen">
             body { background-color: #282828; color:#aaa; position:fixed;overflow: hidden;}

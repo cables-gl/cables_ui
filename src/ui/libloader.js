@@ -38,12 +38,18 @@ class LibLoader
         {
             CABLES.onLoadedLib[name] = function (libName)
             {
+                if (window.module) module = window.module; // electron module workaround/fix
+
                 const i = this.libsToLoad.indexOf(libName);
                 this.libsToLoad.splice(i, 1);
                 console.log("finished loading lib: " + libName);
                 CABLES.UI.loadedLibs.push(libName);
                 this.checkAllLoaded();
             }.bind(this);
+
+
+            if (typeof module === "object") { window.module = module; module = undefined; } // electron module workaround/fix
+
 
             const newscript = document.createElement("script");
             newscript.type = "text/javascript";
