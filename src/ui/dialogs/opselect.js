@@ -375,15 +375,15 @@ CABLES.UI.OpSelect = class
 
         tinysort.defaults.order = "desc";
 
-        clearTimeout(this._sortTimeout);
-        this._sortTimeout = setTimeout(
-            () =>
-            {
-                tinysort(".searchresult", { "data": "score" });
-                this.Navigate(0);
-                this.updateOptions();
-            }, 150,
-        );
+        // clearTimeout(this._sortTimeout);
+        // this._sortTimeout = setTimeout(
+        //     () =>
+        //     {
+        tinysort(".searchresult", { "data": "score" });
+        this.Navigate(0);
+        this.updateOptions();
+        // }, 150,
+        // );
 
 
         perf.finish();
@@ -555,9 +555,20 @@ CABLES.UI.OpSelect = class
 
     onInput(e)
     {
-        this.displayBoxIndex = 0;
-        this.updateInfo();
-        this.search();
+        // if (this._keyTimeout)console.log("cancled on input...");
+        clearTimeout(this._keyTimeout);
+
+        document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
+
+        this._keyTimeout = setTimeout(() =>
+        {
+            // console.log("input!!!");
+            this._keyTimeout = null;
+            this.displayBoxIndex = 0;
+            this.updateInfo();
+            this.search();
+            document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
+        }, 200);
     }
 
     addOp(opname)
