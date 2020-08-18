@@ -30,7 +30,7 @@ CABLES.UI.MODAL.init = function (options)
     CABLES.UI.MODAL.headerElement.innerHTML = "";
     if (options && options.element)
     {
-        CABLES.UI.MODAL.contentElement = options.element;
+        CABLES.UI.MODAL.contentElement = document.querySelector(options.element);
     }
     else
     {
@@ -127,7 +127,7 @@ CABLES.UI.MODAL.show = function (content, options)
         if (options.nopadding)
         {
             document.getElementById("modalcontainer").style.padding = "0px";
-            CABLES.UI.MODAL.contentElement.addClass("nopadding");
+            CABLES.UI.MODAL.contentElement.classList.add("nopadding");
         }
     }
     else
@@ -137,7 +137,7 @@ CABLES.UI.MODAL.show = function (content, options)
     }
 
     if (content)
-        CABLES.UI.MODAL.contentElement.append(content);
+        CABLES.UI.MODAL.contentElement.innerHTML += content;
 
     CABLES.UI.MODAL._setVisible(true);
     document.getElementById("modalbg").style.display = "block";
