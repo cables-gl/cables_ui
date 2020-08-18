@@ -53,7 +53,7 @@ CABLES.UI.Profiler.prototype.update = function ()
 
     sortedItems.sort(function (a, b) { return b.percent - a.percent; });
 
-    $("#profilerdata").html(htmlData);
+    document.getElementById("profilerdata").innerHTML = htmlData;
 
     let item = null;
     let pad = "";
@@ -94,11 +94,11 @@ CABLES.UI.Profiler.prototype.update = function ()
         htmlPeaks += pad + (Math.round(96 * item.peak) / 100) + "ms " + item.title + "<br/>";
     }
 
-    $("#profilerui").show();
-    $("#profilerlistPeaks").html(htmlPeaks);
-    $("#profilerbar").html(htmlBar);
-    $("#profilerlist").html(html);
-    $("#profilerstartbutton").hide();
+    document.getElementById("profilerui").style.display = "block";
+    document.getElementById("profilerlistPeaks").innerHTML = htmlPeaks;
+    document.getElementById("profilerbar").innerHTML = htmlBar;
+    document.getElementById("profilerlist").innerHTML = html;
+    document.getElementById("profilerstartbutton").style.display = "none";
 };
 
 CABLES.UI.Profiler.prototype.start = function ()
