@@ -10,7 +10,7 @@ CABLES.UI.MODAL.headerElement = null; // the (small) header shown in the title b
 
 CABLES.UI.MODAL.hideLoading = function ()
 {
-    if (document.querySelectorAll(".modalLoading").length > 0)
+    if ($(".modalLoading").length > 0)
     {
         CABLES.UI.MODAL.hide();
     }
@@ -21,27 +21,15 @@ CABLES.UI.MODAL.init = function (options)
     options = options || {};
     if (window.gui)gui.showCanvasModal(false);
 
-    if (CABLES.UI.MODAL.contentElement)
-    {
-        CABLES.UI.MODAL.contentElement.style.display = "none";
-    }
-    CABLES.UI.MODAL.contentElement = document.getElementById("modalcontent");
-    CABLES.UI.MODAL.headerElement = document.getElementById("modalheader");
-    CABLES.UI.MODAL.headerElement.innerHTML = "";
-    if (options && options.element)
-    {
-        CABLES.UI.MODAL.contentElement = options.element;
-    }
-    else
-    {
-        CABLES.UI.MODAL.contentElement.innerHTML = "";
-    }
+    if (CABLES.UI.MODAL.contentElement)CABLES.UI.MODAL.contentElement.hide();
+    CABLES.UI.MODAL.contentElement = $("#modalcontent");
+    CABLES.UI.MODAL.headerElement = $("#modalheader");
+    CABLES.UI.MODAL.headerElement.empty();
+    if (options && options.element)CABLES.UI.MODAL.contentElement = $(options.element);
+    else CABLES.UI.MODAL.contentElement.empty();
 
-    document.getElementById("modalcontainer").classList.remove("transparent");
-    if (!options.nopadding)
-    {
-        CABLES.UI.MODAL.contentElement.style.padding = "15px";
-    }
+    $("#modalcontainer").removeClass("transparent");
+    if (!options.nopadding)CABLES.UI.MODAL.contentElement.css({ "padding": "15px" });
 };
 
 CABLES.UI.MODAL.isVisible = function ()
@@ -55,18 +43,23 @@ CABLES.UI.MODAL._setVisible = function (visible)
     {
         CABLES.UI.MODAL._visible = true;
 
-        CABLES.UI.MODAL.contentElement.style.display = "block";
+        CABLES.UI.MODAL.contentElement.show();
 
-        document.getElementById("modalcontainer").style.display = "block";
-        document.getElementById("modalcontainer").style.top = "10%";
-        CABLES.UI.MODAL.contentElement.style.top = "10%";
+        $("#modalcontainer").css({ "display": "block" });
+
+        // $('#modalcontainer').show();
+        $("#modalcontainer").css({ "top": "10%" });
+        CABLES.UI.MODAL.contentElement.css({ "top": "10%" });
     }
     else
     {
         CABLES.UI.MODAL._visible = false;
-        CABLES.UI.MODAL.contentElement.style.display = "none";
-        CABLES.UI.MODAL.contentElement.style.top = "-999100px";
-        document.getElementById("modalcontainer").style.display = "none";
+        CABLES.UI.MODAL.contentElement.hide();
+        CABLES.UI.MODAL.contentElement.css({ "top": "-999100px" });
+
+        // $('#modalcontainer').hide();
+        // $('#modalcontainer').css({top:"-999100px"});
+        $("#modalcontainer").css({ "display": "none" });
     }
 };
 
@@ -74,25 +67,29 @@ CABLES.UI.MODAL.hide = function (force)
 {
     if (CABLES.UI.MODAL.onClose)CABLES.UI.MODAL.onClose();
 
-    if (!force && document.querySelectorAll(".modalerror").length > 0)
+    if (!force && $(".modalerror").length > 0)
     {
         console.log("not forcing close");
         return;
     }
 
-    document.getElementById("modalclose").style.display = "block";
+    // console.log('modal hide ',$('.modalLoading').length);
+    // mouseNewOPX=0;
+    // mouseNewOPY=0;
+
+    $("#modalclose").hide();
     CABLES.UI.MODAL.init();
     CABLES.UI.MODAL._setVisible(false);
-    CABLES.UI.MODAL.contentElement.classList.remove("nopadding");
-    document.getElementById("modalbg").style.display = "none";
-    Array.from(document.querySelectorAll(".tooltip")).forEach((e) =>
-    {
-        e.style.display = "none";
-    });
+    CABLES.UI.MODAL.contentElement.removeClass("nopadding");
+    $("#modalbg").hide();
+    $(".tooltip").hide();
 };
 
 CABLES.UI.MODAL.showTop = function (content, options)
 {
+    // $('#modalcontainer').css({"top":0});
+    // options=options||{};
+    // options.ignoreTop=true;
     CABLES.UI.MODAL.show(content, options);
 };
 
@@ -100,19 +97,18 @@ CABLES.UI.MODAL.setTitle = function (title)
 {
     if (title)
     {
-        document.getElementById("modalheader").innerHTML = title;
+        $("#modalheader").html(title);
+        // $('#modalheader').show();
         document.getElementById("modalheader").style.display = "block";
     }
-    else
-    {
-        document.getElementById("modalheader").style.display = "none";
-    }
+    else document.getElementById("modalheader").style.display = "none";
+    // $('#modalheader').hide();
 };
 
 
 CABLES.UI.MODAL.show = function (content, options)
 {
-    if (CABLES.UI.MODAL.contentElement && options && !options.ignoreTop) CABLES.UI.MODAL.contentElement.style.top = "5%";
+    if (CABLES.UI.MODAL.contentElement && options && !options.ignoreTop)CABLES.UI.MODAL.contentElement.css({ "top": "5%" });
 
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init(options);
@@ -123,34 +119,37 @@ CABLES.UI.MODAL.show = function (content, options)
         CABLES.UI.MODAL.onClose = options.onClose;
 
 
-        if (options.transparent) document.getElementById("modalcontainer").classList.add("transparent");
+        if (options.transparent)$("#modalcontainer").addClass("transparent");
         if (options.nopadding)
         {
-            document.getElementById("modalcontainer").style.padding = "0px";
+            // CABLES.UI.MODAL.contentElement.css({padding:"0px"});
+            $("#modalcontainer").css({ "padding": "0px" });
             CABLES.UI.MODAL.contentElement.addClass("nopadding");
         }
     }
     else
     {
         CABLES.UI.MODAL.onClose = null;
-        document.getElementById("modalcontainer").classList.remove("transparent");
+        $("#modalcontainer").removeClass("transparent");
     }
 
     if (content)
         CABLES.UI.MODAL.contentElement.append(content);
 
+
     CABLES.UI.MODAL._setVisible(true);
-    document.getElementById("modalbg").style.display = "block";
+    $("#modalbg").show();
     gui.callEvent("showModal");
 };
 
 CABLES.UI.MODAL.showLoading = function (title, content)
 {
     CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML = "<div class=\"modalLoading\" style=\"text-align:center;\"><h3>" + title + "</h3><div class=\"loading\" style=\"margin-top:0px;\"><br/><br/><div>";
-    CABLES.UI.MODAL.contentElement.innerHTML += content;
+    CABLES.UI.MODAL.contentElement.html("<div class=\"modalLoading\" style=\"text-align:center;\"><h3>" + title + "</h3><div class=\"loading\" style=\"margin-top:0px;\"><br/><br/><div>");
+    CABLES.UI.MODAL.contentElement.append(content);
+    // $('#modalcontainer').show();
     CABLES.UI.MODAL._setVisible(true);
-    document.getElementById("modalbg").style.display = "block";
+    $("#modalbg").show();
 };
 
 
@@ -163,12 +162,18 @@ CABLES.UI.MODAL.showError = function (title, content)
 {
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
+<<<<<<< HEAD
     CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa modalerror fa-exclamation-triangle\"></span>&nbsp;" + title + "</h2>";
     CABLES.UI.MODAL.contentElement.innerHTML += content;
+=======
+    CABLES.UI.MODAL.contentElement.append("<h2><span class=\"fa modalerror fa-exclamation-triangle\"></span>&nbsp;" + title + "</h2>");
+    CABLES.UI.MODAL.contentElement.append(content);
+>>>>>>> parent of e62d2a30... remove jquery from modal
     CABLES.UI.MODAL._setVisible(true);
+    // $('#modalbg').show();
     document.getElementById("modalbg").style.display = "block";
 
-    Array.from(document.querySelectorAll(".shadererrorcode")).forEach(function (block)
+    $(".shadererrorcode").each(function (i, block)
     {
         hljs.highlightBlock(block);
     });
@@ -209,14 +214,16 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
     CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.setTitle("op cablefail :/");
 
-    CABLES.UI.MODAL.contentElement.innerHTML += "Error in op: <b>" + opName + "</b><br/><br/>";
+    // CABLES.UI.MODAL.contentElement.append('<h2><span class="fa modalerror fa-exclamation-triangle"></span>&nbsp;</h2>');
+
+    CABLES.UI.MODAL.contentElement.append("Error in op: <b>" + opName + "</b><br/><br/>");
 
     if (ex)
     {
-        CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div><br/>";
+        CABLES.UI.MODAL.contentElement.append("<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>");
+        CABLES.UI.MODAL.contentElement.append("<div class=\"shaderErrorCode\">" + ex.stack + "</div><br/>");
     }
-    CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
+    CABLES.UI.MODAL.contentElement.append("<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>");
 
     if (ex)
     {
@@ -231,14 +238,16 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
 
             CABLES.UI.MODAL.getFileSnippet(info[0].file, info[0].line, function (html)
             {
-                document.getElementById("stackFileContent").style.display = "block";
-                document.getElementById("stackFileContent").innerHTML = html;
+                $("#stackFileContent").show();
+                $("#stackFileContent").html(html);
             });
         }
     }
 
     CABLES.UI.MODAL._setVisible(true);
+    // $('#modalbg').show();
     document.getElementById("modalbg").style.display = "block";
+
 
     const ops = gui.corePatch().getOpsByObjName(opName);
     for (let i = 0; i < ops.length; i++)
@@ -248,14 +257,14 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
 
     if (gui.user.isAdmin || opName.startsWith("Op.User." + gui.user.usernameLowercase))
     {
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-edit\" onclick=\"gui.serverOps.edit('" + opName + "');CABLES.UI.MODAL.hide(true);\">Edit op</a> &nbsp;&nbsp;";
+        CABLES.UI.MODAL.contentElement.append("<a class=\"button fa fa-edit\" onclick=\"gui.serverOps.edit('" + opName + "');CABLES.UI.MODAL.hide(true);\">Edit op</a> &nbsp;&nbsp;");
     }
 
     CABLES.lastError = { "exception": ex, opName };
 
     // TODO API?
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+    CABLES.UI.MODAL.contentElement.append("<a class=\"button fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;");
+    CABLES.UI.MODAL.contentElement.append("<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;");
 };
 
 CABLES.UI.MODAL.showException = function (ex, op)
@@ -285,16 +294,17 @@ CABLES.UI.MODAL.showException = function (ex, op)
     CABLES.UI.MODAL.showClose();
 
     CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-exclamation-triangle\"></span>&nbsp;cablefail :/</h2>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div>";
+    CABLES.UI.MODAL.contentElement.append("<h2><span class=\"fa fa-exclamation-triangle\"></span>&nbsp;cablefail :/</h2>");
+    CABLES.UI.MODAL.contentElement.append("<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>");
+    CABLES.UI.MODAL.contentElement.append("<div class=\"shaderErrorCode\">" + ex.stack + "</div>");
 
     CABLES.lastError = { "exception": ex };
     // TODO API
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><a class=\"bluebutton fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>";
+    CABLES.UI.MODAL.contentElement.append("<br/><a class=\"bluebutton fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>");
 
     CABLES.UI.MODAL._setVisible(true);
 
+    // $('#modalbg').show();
     document.getElementById("modalbg").style.display = "block";
 };
 
@@ -373,23 +383,23 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         CABLES.UI.MODAL.PORTPREVIEW = port;
         CABLES.UI.MODAL.showClose();
         CABLES.UI.MODAL.init();
-        CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-search\"></span>&nbsp;inspect</h2>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\">update</a>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
+        CABLES.UI.MODAL.contentElement.append("<h2><span class=\"fa fa-search\"></span>&nbsp;inspect</h2>");
+        CABLES.UI.MODAL.contentElement.append("port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ");
+        CABLES.UI.MODAL.contentElement.append("<br/><br/>");
+        CABLES.UI.MODAL.contentElement.append("<a class=\"button fa fa-refresh\" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\">update</a>");
+        CABLES.UI.MODAL.contentElement.append("<br/><br/>");
         const thing = port.get();
 
         if (thing && thing.constructor)
         {
-            CABLES.UI.MODAL.contentElement.innerHTML += "" + thing.constructor.name + " \n";
+            CABLES.UI.MODAL.contentElement.append("" + thing.constructor.name + " \n");
 
-            if (thing.constructor.name == "Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length:" + thing.length + "\n";
-            if (thing.constructor.name == "Float32Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length:" + thing.length + "\n";
+            if (thing.constructor.name == "Array") CABLES.UI.MODAL.contentElement.append(" - length:" + thing.length + "\n");
+            if (thing.constructor.name == "Float32Array") CABLES.UI.MODAL.contentElement.append(" - length:" + thing.length + "\n");
         }
 
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</pre>";
+        CABLES.UI.MODAL.contentElement.append("<br/><br/>");
+        CABLES.UI.MODAL.contentElement.append("<pre id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</pre>");
 
         CABLES.UI.MODAL._setVisible(true);
 
@@ -408,19 +418,20 @@ CABLES.UI.MODAL.showCode = function (title, code, type)
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
 
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-search\"></span>&nbsp;inspect</h2>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<b>" + title + "</b> ";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
+    CABLES.UI.MODAL.contentElement.append("<h2><span class=\"fa fa-search\"></span>&nbsp;inspect</h2>");
+    CABLES.UI.MODAL.contentElement.append("<b>" + title + "</b> ");
+    CABLES.UI.MODAL.contentElement.append("<br/><br/>");
+    CABLES.UI.MODAL.contentElement.append("<br/><br/>");
 
     code = code || "";
     code = code.replace(/\</g, "&lt;"); // for <
     code = code.replace(/\>/g, "&gt;"); // for >
 
-    CABLES.UI.MODAL.contentElement.innerHTML += "<pre><code class=\"" + (type || "javascript") + "\">" + code + "</code></pre>";
+    CABLES.UI.MODAL.contentElement.append("<pre><code class=\"" + (type || "javascript") + "\">" + code + "</code></pre>");
     CABLES.UI.MODAL._setVisible(true);
+    // $('#modalbg').show();
     document.getElementById("modalbg").style.display = "block";
-    Array.from(document.querySelectorAll("pre code")).forEach(function (block)
+    $("pre code").each(function (i, block)
     {
         hljs.highlightBlock(block);
     });
@@ -430,7 +441,7 @@ CABLES.UI.MODAL.promptCallbackExec = function ()
 {
     if (CABLES.UI.MODAL.promptCallback)
     {
-        const v = document.getElementById("modalpromptinput").value;
+        const v = $("#modalpromptinput").val();
         CABLES.UI.MODAL.hide();
         CABLES.UI.MODAL.promptCallback(v);
     }
@@ -447,24 +458,25 @@ CABLES.UI.MODAL.prompt = function (title, text, value, callback)
 
     CABLES.UI.MODAL.promptCallback = callback;
 
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2>" + title + "</h2>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<b>" + text + "</b> ";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<input id=\"modalpromptinput\" class=\"medium\" value=\"" + (value || "") + "\"/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"bluebutton\" onclick=\"CABLES.UI.MODAL.promptCallbackExec()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"CABLES.UI.MODAL.hide()\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
+    CABLES.UI.MODAL.contentElement.append("<h2>" + title + "</h2>");
+    CABLES.UI.MODAL.contentElement.append("<b>" + text + "</b> ");
+    CABLES.UI.MODAL.contentElement.append("<br/><br/>");
+    CABLES.UI.MODAL.contentElement.append("<input id=\"modalpromptinput\" class=\"medium\" value=\"" + (value || "") + "\"/>");
+    CABLES.UI.MODAL.contentElement.append("<br/><br/>");
+    CABLES.UI.MODAL.contentElement.append("<a class=\"bluebutton\" onclick=\"CABLES.UI.MODAL.promptCallbackExec()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>");
+    CABLES.UI.MODAL.contentElement.append("&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"CABLES.UI.MODAL.hide()\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>");
     CABLES.UI.MODAL._setVisible(true);
 
+    // $('#modalbg').show();
     document.getElementById("modalbg").style.display = "block";
 
     setTimeout(function ()
     {
-        document.getElementById("modalpromptinput").focus();
-        document.getElementById("modalpromptinput").select();
+        $("#modalpromptinput").focus();
+        $("#modalpromptinput").select();
     }, 100);
 
-    document.getElementById("modalpromptinput").addEventListener("keydown",
+    $("#modalpromptinput").on("keydown",
         function (e)
         {
             if (e.which == 13)
