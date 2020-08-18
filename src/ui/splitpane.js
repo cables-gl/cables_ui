@@ -113,14 +113,12 @@ $(document).ready(function ()
 
     function resizeRenderer(ev)
     {
+        console.log("ev.shiftKey", ev.shiftKey);
         if (ev.shiftKey)
         {
-            if (CABLES.SPLITPANE.rendererAspect == 0)
-                CABLES.SPLITPANE.rendererAspect = gui.rendererWidth / gui.rendererHeight;
+            if (!CABLES.SPLITPANE.rendererAspect) CABLES.SPLITPANE.rendererAspect = gui.rendererWidth / gui.rendererHeight;
         }
         else CABLES.SPLITPANE.rendererAspect = 0.0;
-
-        console.log(CABLES.SPLITPANE.rendererAspect);
 
         ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
