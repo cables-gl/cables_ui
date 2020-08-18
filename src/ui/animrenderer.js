@@ -11,8 +11,8 @@ CABLES.AnimRenderer = function ()
 
 CABLES.AnimRenderer.prototype.start = function ()
 {
-    $("#animRendererSettings").hide();
-    $("#progresscontainer").show();
+    document.getElementById("animRendererSettings").style.display = "none";
+    document.getElementById("progresscontainer").style.display = "block";
 
     console.log(this.filename, this.startTime, this.endTime, this.fps, this.format);
     new CABLES.UI.ImageSequenceExport(this.filename, this.startTime, this.endTime, this.fps, { "leftpad": this.leftpad, "format": this.format });
@@ -20,31 +20,21 @@ CABLES.AnimRenderer.prototype.start = function ()
 
 CABLES.AnimRenderer.prototype.update = function ()
 {
-    this.startTime = parseFloat($("#render_start").val());
-    this.endTime = parseFloat($("#render_end").val());
-    this.fps = parseFloat($("#render_fps").val());
-    this.filename = $("#render_filename").val();
-    this.format = $("#render_format").val();
+    this.startTime = parseFloat(document.getElementById("render_start").value);
+    this.endTime = parseFloat(document.getElementById("render_end").value);
+    this.fps = parseFloat(document.getElementById("render_fps").value);
+    this.filename = document.getElementById("render_filename").value;
+    this.format = document.getElementById("render_format").value;
 
-    const leftpad = $("#render_leftpad").is(":checked");
+    const leftpad = document.getElementById("render_leftpad").checked;
 
     const frames = (this.endTime - this.startTime) * this.fps;
 
-    $(".modalScrollContent").html("number of frames: " + frames + "<br/>");
+    document.querySelector(".modalScrollContent").innerHTML = "number of frames: " + frames + "<br/>";
 
-    $("#glcanvas").css({
-        "width": $("#render_width").val(),
-        "height": $("#render_height").val(),
-    });
+    document.getElementById("glcanvas").style.width = document.getElementById("render_width").value;
+    document.getElementById("glcanvas").style.height = document.getElementById("render_height").value;
     gui.corePatch().cgl.updateSize();
-
-    // for(var i in gui.patch().ops)
-    // {
-    //     if(gui.patch().ops[i].op.objName=='Ops.Anim.Timer' || gui.patch().ops[i].op.objName=='Ops.Anim.RelativeTime ')
-    //     {
-    //         $('.modalScrollContent').html( 'WARNING: you are using timing Ops that are not bound to the timeline (e.g. Ops.Anim.Timer or Ops.Anim.RelativeTime ). To render an animation, you should only use time from Ops.TimeLineTime ');
-    //     }
-    // }
 };
 
 CABLES.AnimRenderer.prototype.show = function (since)
@@ -56,11 +46,11 @@ CABLES.AnimRenderer.prototype.show = function (since)
         "nopadding": true,
     });
 
-    $("#render_fps").val(gui.timeLine().getFPS() || 30);
-    $("#render_end").val(gui.timeLine().getTimeLineLength() || 5);
+    document.getElementById("render_fps").value = gui.timeLine().getFPS() || 30;
+    document.getElementById("render_end").value = gui.timeLine().getTimeLineLength() || 5;
 
-    $("#animRendererSettings").show();
-    $("#progresscontainer").hide();
+    document.getElementById("animRendererSettings").style.display = "block";
+    document.getElementById("progresscontainer").style.display = "none";
 
     this.update();
 };
