@@ -162,13 +162,8 @@ CABLES.UI.MODAL.showError = function (title, content)
 {
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
-<<<<<<< HEAD
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa modalerror fa-exclamation-triangle\"></span>&nbsp;" + title + "</h2>";
-    CABLES.UI.MODAL.contentElement.innerHTML += content;
-=======
     CABLES.UI.MODAL.contentElement.append("<h2><span class=\"fa modalerror fa-exclamation-triangle\"></span>&nbsp;" + title + "</h2>");
     CABLES.UI.MODAL.contentElement.append(content);
->>>>>>> parent of e62d2a30... remove jquery from modal
     CABLES.UI.MODAL._setVisible(true);
     // $('#modalbg').show();
     document.getElementById("modalbg").style.display = "block";
