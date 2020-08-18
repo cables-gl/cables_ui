@@ -163,7 +163,7 @@ CABLES.UI.MODAL.showError = function (title, content)
 {
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML = "<h2><span class=\"fa modalerror fa-exclamation-triangle\"></span>&nbsp;" + title + "</h2>";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa modalerror fa-exclamation-triangle\"></span>&nbsp;" + title + "</h2>";
     CABLES.UI.MODAL.contentElement.innerHTML += content;
     CABLES.UI.MODAL._setVisible(true);
     document.getElementById("modalbg").style.display = "block";
@@ -271,7 +271,6 @@ CABLES.UI.MODAL.showException = function (ex, op)
         return;
     }
     console.log(ex.stack);
-    // console.log(new Error().stack);
     if (!CABLES.UI.loaded)
     {
         let html = "";
