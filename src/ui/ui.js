@@ -1302,10 +1302,8 @@ CABLES.UI.GUI = function (cfg)
         //opens editor for string on shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
         {
-            //if op is not selected or op has no input ports return
-            if(gui.patch().getSelectedOps().length == 0 || !gui.patch().getSelectedOps()[0].portsIn.length)
+            if(gui.patch().getSelectedOps().length !== 1 || !gui.patch().getSelectedOps()[0].portsIn.length)
             {
-                console.log("op has no string editor!")
                 return;
             }
             var selectedOp = gui.patch().getSelectedOps();
