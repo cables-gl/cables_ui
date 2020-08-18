@@ -32,7 +32,6 @@ CABLES.UI.TransformsIcon = class
             gui.patch().getViewBox().center(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
             gui.patch().setSelectedOpById(id);
 
-            // $("#patch").focus();
             gui.patchView.focus();
         });
     }

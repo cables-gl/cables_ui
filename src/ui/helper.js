@@ -1,10 +1,6 @@
 
 CABLES.UI = CABLES.UI || {};
 
-// CABLES.UI.setStatusText=function(txt)
-// {
-//     // $('#statusbar .text').html('&nbsp;'+txt);
-// };
 CABLES.UI.MOUSE_BUTTON_NONE = 0;
 CABLES.UI.MOUSE_BUTTON_LEFT = 1;
 CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
@@ -184,8 +180,6 @@ function mouseEvent(event)
         event.clientY = event.originalEvent.touches[0].pageY;
     }
 
-    // if(!event.offsetX && event.layerX) event.offsetX = event.layerX;//(event.pageX - $(event.target).offset().left);
-    // if(!event.offsetY && event.layerY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
     return event;
 }
 

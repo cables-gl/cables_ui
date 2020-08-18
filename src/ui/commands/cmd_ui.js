@@ -38,14 +38,14 @@ CABLES.CMD.UI.toggleMute = function ()
 {
     if (gui.corePatch().config.masterVolume > 0.0)
     {
-        $("#timelineVolume").removeClass("icon-volume-2");
-        $("#timelineVolume").addClass("icon-volume-x");
+        document.getElementById("timelineVolume").classList.remove("icon-volume-2");
+        document.getElementById("timelineVolume").classList.add("icon-volume-x");
         gui.corePatch().setVolume(0.0);
     }
     else
     {
-        $("#timelineVolume").addClass("icon-volume-2");
-        $("#timelineVolume").removeClass("icon-volume-x");
+        document.getElementById("timelineVolume").classList.add("icon-volume-2");
+        document.getElementById("timelineVolume").classList.remove("icon-volume-x");
         gui.corePatch().setVolume(1.0);
     }
 };
