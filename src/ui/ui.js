@@ -1299,10 +1299,29 @@ CABLES.UI.GUI = function (cfg)
 
     this.bindKeys = function ()
     {
+        //opens editor for string on shift+e
+        this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
+        {
+            //if op is not selected or op has no input ports return
+            if(gui.patch().getSelectedOps().length == 0 || !gui.patch().getSelectedOps()[0].portsIn.length)
+            {
+                console.log("op has no string editor!")
+                return;
+            }
+            var selectedOp = gui.patch().getSelectedOps();
+            var selectedOpId = selectedOp[0].op.id;
+            var portName = selectedOp[0].portsIn[0].thePort.name;
+            var portType = selectedOp[0].portsIn[0].thePort.getTypeString(selectedOp[0].portsIn[0].thePort);
+
+            if(selectedOpId && portName && portType == "String")
+            {
+                CABLES.UI.openParamStringEditor(selectedOpId, portName);
+            };
+        });
+
         this.keys.key("Escape", "Open Op Create (or close current dialog)", "down", null, { "ignoreInput": true }, (e) => { this.pressedEscape(e); });
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleRendererSize(); });
-
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
@@ -1328,6 +1347,8 @@ CABLES.UI.GUI = function (cfg)
             {
                 CABLES.CMD.PATCH.save();
             }
+
+
         });
 
         //     case 69: // e - editor save/execute/build
