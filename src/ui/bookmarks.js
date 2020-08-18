@@ -54,7 +54,6 @@ CABLES.UI.Bookmarks = function ()
         }
 
         const html = CABLES.UI.getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs });
-        // $('#meta_content_bookmarks').html(html);
         return html;
     };
 

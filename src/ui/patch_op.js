@@ -1595,16 +1595,6 @@ const OpUi = function (paper, op, x, y, w, h, txt)
                 if (groupCount > 0)
                 {
                     groupCount = 0;
-                    // if(dir==0)
-                    // {
-                    //     $(this).before("<tr><td></td></tr>");
-                    //     $(this).data('hasBefore',true);
-                    // }
-                    // else
-                    // {
-                    //     $(this).after("<tr><td></td></tr>");
-                    //     $(this).data('hasAfter',true);
-                    // }
                     ports[i].setUiAttribs({ "spaceBefore": true });
 
                     console.log("----");
