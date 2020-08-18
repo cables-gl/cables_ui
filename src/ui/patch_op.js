@@ -1242,6 +1242,12 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         {
             this.oprect.updateComment();
         }
+        if (attribs.hasOwnProperty("selected"))
+        {
+            this.setSelected(attribs.selected);
+
+            // gui.patch().updateOpParams(this.op.id);
+        }
     });
 
     this.fixTitle = function ()
