@@ -148,7 +148,10 @@ CABLES.UI.MODAL.showLoading = function (title, content)
 {
     CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.contentElement.innerHTML = "<div class=\"modalLoading\" style=\"text-align:center;\"><h3>" + title + "</h3><div class=\"loading\" style=\"margin-top:0px;\"><br/><br/><div>";
-    CABLES.UI.MODAL.contentElement.innerHTML += content;
+    if (content)
+    {
+        CABLES.UI.MODAL.contentElement.innerHTML += content;
+    }
     CABLES.UI.MODAL._setVisible(true);
     document.getElementById("modalbg").style.display = "block";
 };
@@ -164,7 +167,10 @@ CABLES.UI.MODAL.showError = function (title, content)
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.contentElement.innerHTML = "<h2><span class=\"fa modalerror fa-exclamation-triangle\"></span>&nbsp;" + title + "</h2>";
-    CABLES.UI.MODAL.contentElement.innerHTML += content;
+    if (content)
+    {
+        CABLES.UI.MODAL.contentElement.innerHTML += content;
+    }
     CABLES.UI.MODAL._setVisible(true);
     document.getElementById("modalbg").style.display = "block";
 
