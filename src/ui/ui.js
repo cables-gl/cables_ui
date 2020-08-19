@@ -1309,7 +1309,7 @@ CABLES.UI.GUI = function (cfg)
             var selectedOp = gui.patch().getSelectedOps();
             var selectedOpId = selectedOp[0].op.id;
             var portName = selectedOp[0].portsIn[0].thePort.name;
-            var portType = selectedOp[0].portsIn[0].thePort.getTypeString(selectedOp[0].portsIn[0].thePort);
+            var portType = selectedOp[0].portsIn[0].thePort.getTypeString();
 
             if(selectedOpId && portName && portType == "String")
             {
