@@ -1299,19 +1299,32 @@ CABLES.UI.GUI = function (cfg)
 
     this.bindKeys = function ()
     {
-        //opens editor for string on shift+e
+        //opens editor for 1st string port found on an op with shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
         {
             if(gui.patch().getSelectedOps().length !== 1 || !gui.patch().getSelectedOps()[0].portsIn.length)
             {
                 return;
-            }
-            var selectedOp = gui.patch().getSelectedOps();
-            var selectedOpId = selectedOp[0].op.id;
-            var portName = selectedOp[0].portsIn[0].thePort.name;
-            var portType = selectedOp[0].portsIn[0].thePort.getTypeString();
+            };
 
-            if(selectedOpId && portName && portType == "String")
+            const selectedOp = gui.patch().getSelectedOps();
+            const selectedOpId = selectedOp[0].op.id;
+
+            let portName = null;
+
+            for (let i = 0; i < selectedOp[0].portsIn.length; i++)
+            {
+                const port = selectedOp[0].portsIn[i].thePort;
+                const type = port.getTypeString();
+
+                if(type === "String")
+                {
+                    portName = port.name;
+                    break;
+                };
+            };
+
+            if(portName)
             {
                 CABLES.UI.openParamStringEditor(selectedOpId, portName);
             };
