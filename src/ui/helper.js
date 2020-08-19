@@ -74,12 +74,10 @@ CABLES.uniqueArray = function (arr)
 CABLES.serializeForm = function (selector)
 {
     const json = {};
-    $(selector).find(":input").each(function ()
+    Array.from(document.querySelector(selector).elements).forEach((e) =>
     {
-        json[$(this).attr("name")] = $(this).val();
-        // console.log(,);
+        json[e.getAttribute("name")] = e.value;
     });
-    console.log(json);
     return json;
 };
 
