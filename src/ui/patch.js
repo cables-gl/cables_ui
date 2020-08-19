@@ -339,8 +339,8 @@ CABLES.UI.Patch = function (_gui)
     gui.keys.key("f", "Toggle data flow visualization", "down", "patch", {}, (e) => { console.log(this); this.toggleFlowVis(); });
     gui.keys.key("e", "Edit op code", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.editOp(); });
 
-    gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { this.selectAllOps(); });
     gui.keys.key("a", "Align selected ops vertical or horizontal", "down", "patch", {}, (e) => { this.alignSelectedOps(); });
+    gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { this.selectAllOps(); });
     gui.keys.key("a", "Compress selected ops vertically", "down", "patch", { "shiftKey": true }, (e) => { console.log("COMPRESS!"); this.compressSelectedOps(); });
 
     gui.keys.key(" ", "Drag left mouse button to pan patch", "down", "patch", {}, (e) => { spacePressed = true; gui.setCursor("grab"); });

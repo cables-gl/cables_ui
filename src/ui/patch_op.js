@@ -287,7 +287,6 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
     {
         opui.isMouseOver = false;
         self.hoverFitPort = false;
-        // $('#drop-op-canlink').hide();
         gui.setCursor("default");
     }
 
@@ -310,7 +309,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
             return;
         }
 
-        $("#patch").focus();
+        document.getElementById("patch").focus();
 
         if (e.buttos == 2)
         {
@@ -1242,6 +1241,12 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         {
             this.oprect.updateComment();
         }
+        if (attribs.hasOwnProperty("selected"))
+        {
+            this.setSelected(attribs.selected);
+
+            // gui.patch().updateOpParams(this.op.id);
+        }
     });
 
     this.fixTitle = function ()
@@ -1590,16 +1595,6 @@ const OpUi = function (paper, op, x, y, w, h, txt)
                 if (groupCount > 0)
                 {
                     groupCount = 0;
-                    // if(dir==0)
-                    // {
-                    //     $(this).before("<tr><td></td></tr>");
-                    //     $(this).data('hasBefore',true);
-                    // }
-                    // else
-                    // {
-                    //     $(this).after("<tr><td></td></tr>");
-                    //     $(this).data('hasAfter',true);
-                    // }
                     ports[i].setUiAttribs({ "spaceBefore": true });
 
                     console.log("----");
@@ -1608,48 +1603,6 @@ const OpUi = function (paper, op, x, y, w, h, txt)
             console.log(name);
             lastName = name;
         }
-
-
-        //     function testSpacers()
-        //     {
-        //         var name=$(this).data("portname");
-        //         if(name.substring(0,3) == lastName.substring(0,3))
-        //         {
-        //             groupCount++;
-        //         }
-        //         else
-        //         {
-        //             if(groupCount>0)
-        //             {
-        //                 groupCount=0;
-        //                 // $(this).css({"background-color":"red"});
-        //                 // $(this).addClass("paramGroupSpacer");
-        //                 if(dir==0)
-        //                 {
-        //                     $(this).before("<tr><td></td></tr>");
-        //                     $(this).data('hasBefore',true);
-        //                 }
-        //                 else
-        //                 {
-        //                     $(this).after("<tr><td></td></tr>");
-        //                     $(this).data('hasAfter',true);
-        //                 }
-
-        //                 console.log("----");
-        //             }
-        //         }
-        //         console.log(name);
-        //         lastName=name;
-        //     }
-
-        //     $('.opports_in').each(testSpacers);
-
-        //     lastName='';
-        //     groupCount=0;
-        //     dir=1;
-
-    //     jQuery.fn.reverse = [].reverse;
-    //     $('.opports_in').reverse().each(testSpacers);
     };
 
     this.initPorts = function ()

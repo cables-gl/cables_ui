@@ -320,7 +320,7 @@ CABLES.UI.FileManager.prototype.updateHeader = function (detailItems)
         "display": this._manager.getDisplay(),
         "filter": this._manager.titleFilter,
     });
-    $("#itemmanager_header").html(html);
+    document.getElementById("itemmanager_header").innerHTML = (html);
 
     const elSwitchIcons = document.getElementById("switch-display-icons");
     const elSwitchList = document.getElementById("switch-display-list");
@@ -378,8 +378,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 }
                 else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { "filename": detailItems[0].p });
 
-                $("#item_details").html(html);
-
+                document.getElementById("item_details").innerHTML = html;
 
                 const delEle = document.getElementById("filedelete" + itemId);
                 if (delEle)

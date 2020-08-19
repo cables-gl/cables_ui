@@ -45,8 +45,9 @@ CABLES.UI.PatchViewBox.prototype._init = function ()
             "stroke-width": 1
         });
 
-        $("#minimap svg").on("mousemove touchmove", this._dragMiniMap.bind(this));
-        $("#minimap svg").on("mousedown", this._dragMiniMap.bind(this));
+        document.querySelector("#minimap svg").addEventListener("mousemove", this._dragMiniMap.bind(this));
+        document.querySelector("#minimap svg").addEventListener("touchmove", this._dragMiniMap.bind(this));
+        document.querySelector("#minimap svg").addEventListener("mousedown", this._dragMiniMap.bind(this));
     }
 };
 

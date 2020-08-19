@@ -247,6 +247,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             if ((this._p.ops[i].uiAttribs.subPatch || 0) == subPatch) this._p.ops[i].uiAttr({ "selected": true });
             else if (!noUnselect) this._p.ops[i].uiAttr({ "selected": false });
         }
+        this.showSelectedOpsPanel();
     }
 
     showBookmarkParamsPanel()
