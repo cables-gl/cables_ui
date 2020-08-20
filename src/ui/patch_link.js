@@ -73,7 +73,7 @@ function UiLink(port1, port2)
 
     const onMouseDown = function (event)
     {
-        $("#patch").focus();
+        document.getElementById("patch").focus();
 
         if (self.p1 !== null)
         {

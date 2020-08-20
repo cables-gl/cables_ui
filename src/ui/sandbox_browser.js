@@ -189,23 +189,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
         }
     });
 
-    // CABLESUILOADER.talkerAPI.addEventListener(
-    //     "uploadProgress",
-    //     function(options,next)
-    //     {
-    //         if(options.complete>=100)
-    //         {
-    //             $('#uploadprogresscontainer').hide();
-    //             CABLES.UI.notify("File Uploaded");
-    //         }
-    //         else $('#uploadprogresscontainer').show();
-
-    //         console.log("file upl!",options.complete);
-    //         $('#uploadprogress').css({"width":options.complete+'%'});
-
-    //         gui.refreshFileManager();
-    //     });
-
     CABLESUILOADER.talkerAPI.addEventListener("jobStart", (options, next) =>
     {
         gui.jobs().start({ "id": options.id, "title": options.title });
@@ -260,7 +243,7 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
         if (proj.ui)
         {
             gui.bookmarks.set(proj.ui.bookmarks);
-            $("#options").html(gui.bookmarks.getHtml());
+            document.getElementById("options").innerHTML = gui.bookmarks.getHtml();
         }
 
         gui.patch().showProjectParams();

@@ -15,6 +15,7 @@ CABLES.UI.FindTab = function (tabs, str)
     this._maxIdx = -1;
     this._inputId = "tabFindInput" + CABLES.uuid();
     this._closed = false;
+    this._eleInput = null;
 
     let colors = [];
     const warnOps = [];
@@ -89,8 +90,10 @@ CABLES.UI.FindTab = function (tabs, str)
 
     );
 
-    $("#tabsearchbox").show();
-    $("#tabFindInput").val(this._lastSearch);
+    this._eleInput = document.querySelector("#tabsearchbox input");
+    this._eleInput.value = this._lastSearch;
+    this._eleResults = document.getElementById("tabsearchresult");
+
     this.focus();
     document.getElementById(this._inputId).setSelectionRange(0, this._lastSearch.length);
 
@@ -103,7 +106,7 @@ CABLES.UI.FindTab = function (tabs, str)
 
     if (str)
     {
-        $("#tabsearchbox input").val(str);
+        this._eleInput.value = str;
         this.search(str);
     }
     this.focus();
@@ -112,8 +115,7 @@ CABLES.UI.FindTab = function (tabs, str)
 CABLES.UI.FindTab.prototype.focus = function ()
 {
     this._tabs.activateTab(this._tab.id);
-
-    $("#" + this._inputId).focus();
+    document.getElementById(this._inputId).focus();
 };
 
 CABLES.UI.FindTab.prototype.isClosed = function ()
@@ -123,7 +125,7 @@ CABLES.UI.FindTab.prototype.isClosed = function ()
 
 CABLES.UI.FindTab.prototype.setSearchInputValue = function (str)
 {
-    $("#tabsearchbox input").val(str);
+    this._eleInput.value = str;
 };
 
 CABLES.UI.FindTab.prototype.searchAfterPatchUpdate = function ()
@@ -157,29 +159,8 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
     if (op.op)op = op.op;
 
     const colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName);
-    html
-        += "<div id=\"findresult"
-        + idx
-        + "\" class=\"info findresultop"
-        + op.id
-        + "\" data-info=\""
-        + info + "\" ";
-
+    html += "<div id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + "\" data-info=\"" + info + "\" ";
     html += "onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
-    // + "\" onclick=\"gui.patch().setCurrentSubPatch('"
-    // + op.uiAttribs.subPatch
-    // + "');"
-    // + "gui.patch().focusOp('"
-    // + op.id
-    // + "');gui.patch().getViewBox().center("
-    // + op.uiAttribs.translate.x
-    // + ","
-    // + op.uiAttribs.translate.y
-    // + ");gui.patch().setSelectedOpById('"
-    // + op.id
-    // + "');$('#patch').focus();gui.find().setClicked("
-    // + idx
-    // + ")\">";
 
     let colorHandle = "";
     if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
@@ -196,7 +177,7 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 
     html += "</div>";
 
-    $("#tabsearchresult").append(html);
+    this._eleResults.innerHTML += html;
 };
 
 CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
@@ -221,10 +202,10 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 {
     const startTime = performance.now();
     this._lastSearch = str;
-    $("#tabsearchresult").html("");
+    this._eleResults.innerHTML = "";
     if (str.length < 2)
     {
-        $("#tabsearchresult").html("Type some more!");
+        this._eleResults.innerHTML = "Type some more!";
         return;
     }
 
@@ -400,7 +381,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 
     if (foundNum === 0)
     {
-        $("#tabsearchresult").html("<div style=\"pointer-events:none\">&nbsp;&nbsp;&nbsp;No ops found</div>");
+        this._eleResults.innerHTML = "<div style=\"pointer-events:none\">&nbsp;&nbsp;&nbsp;No ops found</div>";
     }
     else
     {
@@ -413,7 +394,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
         for (let i = 0; i < results.length; i++)
             onclickResults += "gui.patch().addSelectedOpById('" + results[i].op.id + "');";
         onclickResults += "gui.patch().setStatusSelectedOps();";
-        $("#tabsearchresult").append("<div style=\"background-color:var(--color-02);border-bottom:none;\"><a class=\"button-small\" onclick=\"" + onclickResults + "\">" + results.length + " results</a></div>");
+        this._eleResults.innerHTML += "<div style=\"background-color:var(--color-02);border-bottom:none;\"><a class=\"button-small\" onclick=\"" + onclickResults + "\">" + results.length + " results</a></div>";
     }
 
     const timeUsed = performance.now() - startTime;

@@ -150,33 +150,39 @@ CABLES.UI.Patch = function (_gui)
             (ops, focusSubpatchop) =>
             {
                 self.setSelectedOp(null);
+
+
+                // setTimeout(function ()
+                // {
                 for (let i = 0; i < ops.length; i++)
                 {
                     const uiop = self.addSelectedOpById(ops[i].id);
 
-                    uiop.setSelected(false);
-                    uiop.setSelected(true);
+                    if (uiop)
+                    {
+                        uiop.setSelected(false);
+                        uiop.setSelected(true);
+                    }
+                    else console.log("paste: cant find uiop");
                     gui.setStateUnsaved();
                 }
 
-                setTimeout(function ()
+                gui.patch().setCurrentSubPatch(currentSubPatch);
+
+                if (focusSubpatchop)
                 {
-                    gui.patch().setCurrentSubPatch(currentSubPatch);
+                    console.log(focusSubpatchop, mouseX, mouseY);
+                    const op = gui.corePatch().getOpById(focusSubpatchop.id);
+                    // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
 
-                    if (focusSubpatchop)
-                    {
-                        console.log(focusSubpatchop, mouseX, mouseY);
-                        const op = gui.corePatch().getOpById(focusSubpatchop.id);
-                        // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+                    const uiop = gui.patch().getUiOp(op);
+                    // uiop.setPos(mouseX, mouseY);
 
-                        const uiop = gui.patch().getUiOp(op);
-                        // uiop.setPos(mouseX, mouseY);
-
-                        // gui.patch().focusOp(op.id,true);
-                        // console.log(op);
-                        // gui.patch().centerViewBoxOps();
-                    }
-                }, 100);
+                    // gui.patch().focusOp(op.id,true);
+                    // console.log(op);
+                    // gui.patch().centerViewBoxOps();
+                }
+                // }, 100);
             });
     };
 
@@ -333,8 +339,8 @@ CABLES.UI.Patch = function (_gui)
     gui.keys.key("f", "Toggle data flow visualization", "down", "patch", {}, (e) => { console.log(this); this.toggleFlowVis(); });
     gui.keys.key("e", "Edit op code", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.editOp(); });
 
-    gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { this.selectAllOps(); });
     gui.keys.key("a", "Align selected ops vertical or horizontal", "down", "patch", {}, (e) => { this.alignSelectedOps(); });
+    gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { this.selectAllOps(); });
     gui.keys.key("a", "Compress selected ops vertically", "down", "patch", { "shiftKey": true }, (e) => { console.log("COMPRESS!"); this.compressSelectedOps(); });
 
     gui.keys.key(" ", "Drag left mouse button to pan patch", "down", "patch", {}, (e) => { spacePressed = true; gui.setCursor("grab"); });

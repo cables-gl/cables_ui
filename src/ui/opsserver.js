@@ -353,10 +353,10 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
         CABLES.UI.MODAL.show(html);
 
-        $("#opNameDialogInput").focus();
-        $("#opNameDialogInput").bind("input", function ()
+        document.getElementById("opNameDialogInput").focus();
+        document.getElementById("opNameDialogInput").addEventListener("input", function ()
         {
-            const v = $("#opNameDialogInput").val();
+            const v = document.getElementById("opNameDialogInput").value;
             console.log("INPUT!", v);
             CABLES.api.get("op/checkname/" + usernamespace + "." + v, function (res)
             {
@@ -366,25 +366,25 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                     let htmlIssue = "<b>your op name has issues:</b><br/><ul>";
                     for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
                     htmlIssue += "</ul><br/><br/>";
-                    $("#opcreateerrors").html(htmlIssue);
-                    $("#opNameDialogSubmit").hide();
+                    document.getElementById("opcreateerrors").innerHTML = htmlIssue;
+                    document.getElementById("opNameDialogSubmit").style.display = "none";
                 }
                 else
                 {
-                    $("#opcreateerrors").html("");
-                    $("#opNameDialogSubmit").show();
+                    document.getElementById("opcreateerrors").innerHTML = "";
+                    document.getElementById("opNameDialogSubmit").style.display = "block";
                 }
             });
         });
 
-        $("#opNameDialogSubmit").bind("click", function (event)
+        document.getElementById("opNameDialogSubmit").addEventListener("click", function (event)
         {
-            if ($("#opNameDialogInput").val() == "")
+            if (document.getElementById("opNameDialogInput").value == "")
             {
                 alert("please enter a name for your op!");
                 return;
             }
-            cb($("#opNameDialogInput").val());
+            cb(document.getElementById("opNameDialogInput").value);
         });
     };
 
