@@ -31,21 +31,27 @@ CABLES.UI.hideToolTip = function ()
     CABLES.UI.eleTooltip.style.display = "none";
 };
 
-$(document).on("mouseover mousemove", ".tt", function (e)
+Array.from(document.querySelectorAll(".tt")).forEach((tt) =>
 {
-    clearTimeout(CABLES.UI.tooltipTimeout);
-    const txt = $(this).data("tt");
-    CABLES.UI.tooltipTimeout = setTimeout(() =>
+    const over = function (e)
     {
-        CABLES.UI.showToolTip(e, txt);
-    }, 300);
+        clearTimeout(CABLES.UI.tooltipTimeout);
+        const txt = e.target.dataset.tt;
+        CABLES.UI.tooltipTimeout = setTimeout(() =>
+        {
+            CABLES.UI.showToolTip(e, txt);
+        }, 300);
+    };
+    const out = function (e)
+    {
+        clearTimeout(CABLES.UI.tooltipTimeout);
+        CABLES.UI.hideToolTip();
+    };
+    tt.addEventListener("mouseover", over);
+    tt.addEventListener("mouseleave", over);
+    tt.addEventListener("mouseout", out);
 });
 
-$(document).on("mouseout", ".tt", () =>
-{
-    clearTimeout(CABLES.UI.tooltipTimeout);
-    CABLES.UI.hideToolTip();
-});
 
 // --------------------------
 
@@ -62,20 +68,25 @@ CABLES.UI.hideInfo = function ()
     CABLES.UI.eleInfoArea.innerHTML = "";
 };
 
-$(document).on("mouseover mousemove", ".info", function (e)
+Array.from(document.querySelectorAll(".info")).forEach((tt) =>
 {
-    // clearTimeout(CABLES.UI.tooltipTimeout);
-    let txt = $(this).data("info");
-    if ($(this).data("infotext")) txt = CABLES.UI.TEXTS[$(this).data("infotext")];
-    if (!txt)
+    const over = function (e)
     {
-        txt = $("infoArea").data("info");
-    }
-    CABLES.UI.showInfo(txt);
-});
+        let txt = e.target.dataset.info;
+        if (e.target.dataset.infotext) txt = CABLES.UI.TEXTS[e.target.dataset.infotext];
+        if (!txt)
+        {
+            txt = document.getElementById("infoArea").dataset.info;
+        }
+        CABLES.UI.showInfo(txt);
+    };
 
-$(document).on("mouseout", ".info", () =>
-{
-    clearTimeout(CABLES.UI.tooltipTimeout);
-    CABLES.UI.hideInfo();
+    const out = function (e)
+    {
+        clearTimeout(CABLES.UI.tooltipTimeout);
+        CABLES.UI.hideInfo();
+    };
+    tt.addEventListener("mouseover", over);
+    tt.addEventListener("mousemove", over);
+    tt.addEventListener("mouseout", out);
 });

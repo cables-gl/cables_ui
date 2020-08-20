@@ -38,7 +38,7 @@ CABLES.UI.updateHoverToolTip = function (event, port)
     {
         if (port.type == CABLES.OP_PORT_TYPE_VALUE || port.type == CABLES.OP_PORT_TYPE_STRING)
         {
-            val = port.get();
+            val = port.getValueForDisplay();
             if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
             else val = "\"" + val + "\"";
             txt += ": <span class=\"code\">" + val + "</span>";

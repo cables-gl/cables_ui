@@ -453,11 +453,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 {
                     el = $(id);
                     thePort._tempLastUiValue = thePort.get();
-                    if (el.val() != thePort.get()) el.val(thePort.get());
+                    if (el.val() != thePort.getValueForDisplay()) el.val(thePort.getValueForDisplay());
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                 {
-                    newValue = this._formatNumber(thePort.get());
+                    newValue = this._formatNumber(thePort.getValueForDisplay());
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY)
                 {
@@ -466,7 +466,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_STRING)
                 {
-                    newValue = "\"" + thePort.get() + "\"";
+                    newValue = "\"" + thePort.getValueForDisplay() + "\"";
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_OBJECT)
                 {

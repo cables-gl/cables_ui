@@ -37,7 +37,7 @@ function ()
         if (jobs.length == 0)
         {
             str += "All server jobs finished...";
-            $(".cables-logo .icon-cables").removeClass("blinkanim");
+            document.querySelector(".cables-logo .icon-cables").classList.remove("blinkanim");
         }
 
         str += gui.chat.getUserInfoHtml();
@@ -52,7 +52,7 @@ function ()
             if (lastIndicator) gui.setWorking(false, lastIndicator);
         }
 
-        $("#jobs").html(str);
+        document.getElementById("jobs").innerHTML = str;
         if (!this._listenerStarted) this.startListener();
     };
 
@@ -80,7 +80,7 @@ function ()
             }
         }
 
-        $(".cables-logo .icon-cables").addClass("blinkanim");
+        document.querySelector(".cables-logo .icon-cables").classList.add("blinkanim");
 
 
         jobs.push(job);
@@ -94,7 +94,7 @@ function ()
 
     this.updateProgressMainBar = function ()
     {
-        $("#uploadprogress").css({ "width": options.complete + "%" });
+        document.getElementById("uploadprogress").style.width = options.complete + "%";
     };
 
     this.setProgress = function (jobId, progress)
@@ -133,8 +133,14 @@ function ()
 
             if (jobs.length === 0)
             {
-                $(".cables .logo").addClass("cablesLogo");
-                $(".cables .logo").removeClass("fa fa-circle-o-notch fa-spin");
+                const logo = document.querySelector(".cables .logo");
+                if (logo)
+                {
+                    logo.classList.add("cablesLogo");
+                    logo.classList.remove("fa");
+                    logo.classList.remove("fa-circle-o-notch");
+                    logo.classList.remove("fa-spin");
+                }
             }
             this.updateJobListing();
         }, 250);
