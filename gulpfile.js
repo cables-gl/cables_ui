@@ -10,30 +10,39 @@ const svgmin = require("gulp-svgmin");
 const fs = require("fs");
 const browserify = require("browserify");
 const babelify = require("babelify");
-const vueify = require("vueify");
+const vueify = require("vueify-babel-7-support");
 const replace = require("gulp-replace");
 const autoprefixer = require("gulp-autoprefixer");
 const merge = require("merge-stream");
 
-// var notifier = require('node-notifier');
-
-gulp.task("vueify", () =>
+function _vueify()
 {
-    browserify("vue-src/main.js")
+    return browserify("vue-src/main.js")
         .transform(vueify)
-        .transform(babelify)
+        .transform(babelify.configure({
+            "presets": [
+                "@babel/preset-env"
+            ],
+            "plugins": [
+                "@babel/plugin-transform-runtime",
+                "@babel/plugin-proposal-object-rest-spread"
+            ]
+        }))
         .bundle()
         .pipe(fs.createWriteStream("dist/js/bundle.js"));
-});
+}
 
-gulp.task("lint", () =>
-    gulp
+function _lint()
+{
+    return gulp
         .src("src/**/*.js")
         .pipe(jshint())
-        .pipe(jshint.reporter("default")));
+        .pipe(jshint.reporter("default"));
+}
 
-gulp.task("scripts_libs_ui", () =>
-    gulp
+function _scripts_libs_ui()
+{
+    return gulp
         .src(["libs/ui/*.js"])
         .pipe(sourcemaps.init())
         .pipe(concat("libs.ui.js"))
@@ -41,78 +50,32 @@ gulp.task("scripts_libs_ui", () =>
         .pipe(rename("libs.ui.min.js"))
         .pipe(uglify())
         .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js")));
+        .pipe(gulp.dest("dist/js"));
+}
 
-gulp.task("scripts_talkerapi", () =>
-    gulp
+function _scripts_talkerapi()
+{
+    return gulp
         .src(["src-talkerapi/*.js"])
         .pipe(sourcemaps.init())
         .pipe(concat("talkerapi.js"))
         .pipe(gulp.dest("dist/js"))
-        .pipe(rename("libs.ui.min.js"))
+        .pipe(rename("talkerapi.js"))
         .pipe(uglify())
         .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js")));
+        .pipe(gulp.dest("dist/js"));
+}
 
-gulp.task("scripts_core", () =>
+function _scripts_core()
 {
-    gulp
-        .src(["../cables/build/**/*.*", "!../cables/build/libs/*"]).pipe(gulp.dest("dist/js/"));
-});
+    return gulp
+        .src(["../cables/build/**/*.*", "!../cables/build/libs/*"])
+        .pipe(gulp.dest("dist/js/"));
+}
 
-
-// gulp.task('scripts_libs_core', function()
-// {
-//     return gulp.src(['libs/core/*.js'])
-//         .pipe(sourcemaps.init())
-//         .pipe(concat('libs.core.js'))
-//         .pipe(gulp.dest('dist/js'))
-//         .pipe(rename('libs.core.min.js'))
-//         .pipe(uglify())
-//         .pipe(sourcemaps.write('./'))
-//         .pipe(gulp.dest('dist/js'));
-// });
-
-// gulp.task('scripts_core', function()
-// {
-//     return gulp.src(["../cables/src/index.js"])
-//     .pipe(
-//         webpack(
-//             {
-//                 config: require("../cables/webpack.config.js"),
-//             },
-//             compiler,
-//             (err, stats) =>
-//             {
-//                 if (err) throw err;
-//                 if (stats.hasErrors())
-//                 {
-//                     return reject(new Error(stats.compilation.errors.join("\n")));
-//                 }
-//             },
-//         ),
-//     )
-
-//     .pipe(gulp.dest("dist/js"))
-//     .on("error", (err) =>
-//     {
-//         console.error("WEBPACK ERROR", err);
-//     });
-
-//     // return gulp.src(['../cables/src/core/*.js'])
-//     //     .pipe(sourcemaps.init())
-//     //     .pipe(concat('cables.max.js'))
-//     //     .pipe(gulp.dest('dist/js'))
-//     //     .pipe(rename('cables.min.js'))
-//     //     .pipe(uglify())
-//     //     // .on('error', function(error){ console.log(`gulp error: ${error}`); notifier.notify(error);  })
-
-//     //     .pipe(sourcemaps.write('./'))
-//     //     .pipe(gulp.dest('dist/js'));
-// });
-
-gulp.task("scripts_ops", () =>
-    gulp
+function _scripts_ops()
+{
+    return gulp
         .src(["src/ops/*.js"])
         .pipe(sourcemaps.init())
         .pipe(concat("cables.ops.max.js"))
@@ -125,10 +88,12 @@ gulp.task("scripts_ops", () =>
         })
 
         .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js")));
+        .pipe(gulp.dest("dist/js"));
+}
 
-gulp.task("scripts_ui", () =>
-    gulp
+function _scripts_ui()
+{
+    return gulp
         .src(["src/ui/**/*.js"])
         .pipe(sourcemaps.init())
         .pipe(concat("cablesui.max.js"))
@@ -136,29 +101,34 @@ gulp.task("scripts_ui", () =>
         .pipe(rename("cablesui.min.js"))
         .pipe(uglify())
         .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js")));
+        .pipe(gulp.dest("dist/js"));
+}
 
-gulp.task("html_ui", () =>
-    gulp
+function _html_ui()
+{
+    return gulp
         .src(["html/ui/header.html", "html/ui/templates/*.html", "html/ui/footer.html"])
         .pipe(concat("index.html"))
-        .pipe(gulp.dest("dist/")));
+        .pipe(gulp.dest("dist/"));
+}
 
-gulp.task("sass", () =>
-    gulp
+function _sass()
+{
+    return gulp
         .src("scss/style-dark.scss")
         .pipe(sass())
         .pipe(rename("style-dark.css"))
         .pipe(
             autoprefixer({
-                "browsers": ["last 2 versions"],
                 "cascade": false,
             })
         )
-        .pipe(gulp.dest("dist/css")));
+        .pipe(gulp.dest("dist/css"));
+}
 
-gulp.task("svgcss", () =>
-    gulp
+function _svgcss()
+{
+    return gulp
         .src("icons/**/*.svg")
         .pipe(svgmin())
         .pipe(
@@ -171,45 +141,47 @@ gulp.task("svgcss", () =>
         .pipe(replace("background-image", "mask"))
         .pipe(
             autoprefixer({
-                "browsers": ["last 2 versions"],
                 "cascade": false,
             })
         )
         .pipe(rename("svgicons.scss"))
-        .pipe(gulp.dest("scss/")));
+        .pipe(gulp.dest("scss/"));
+}
 
-gulp.task("electronapp", () =>
+function _electronapp()
 {
     const copydist = gulp.src("dist/**/*.*").pipe(gulp.dest("dist-electron/"));
     const electronsrc = gulp.src("src-electron/**/*.*").pipe(gulp.dest("dist-electron/"));
     // var someOtherOperation = gulp.src('./assets').pipe(gulp.dest('out/assets'));
     return merge(copydist, electronsrc);
-});
+}
 
-gulp.task("watch", () =>
+function _watch(cb)
 {
-    gulp.watch("../cables/build/**/*.js", ["scripts_core"]);
+    gulp.watch("../cables/build/**/*.js", gulp.series(_scripts_core));
     // gulp.watch("../cables/build/libs/**/*.js", ["scripts_core_libs"]);
-    gulp.watch("src/ops/**/*.js", ["scripts_ops"]);
-    gulp.watch("src/ui/**/*.js", ["scripts_ui"]); // ,'electron' // electron broke the watch SOMEHOW
-    gulp.watch("scss/**/*.scss", ["sass"]);
-    gulp.watch("html/**/*.html", ["html_ui"]);
-    gulp.watch("icons/**/*.svg", ["svgcss"]);
-    gulp.watch("vue-src/**/*", ["vueify"]);
-    gulp.watch("src-talkerapi/**/*", ["scripts_talkerapi"]);
-});
+    gulp.watch("src/ops/**/*.js", gulp.series(_scripts_ops));
+    gulp.watch("src/ui/**/*.js", gulp.series(_scripts_ui)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch("scss/**/*.scss", gulp.series(_sass));
+    gulp.watch("html/**/*.html", gulp.series(_html_ui));
+    gulp.watch("icons/**/*.svg", gulp.series(_svgcss));
+    gulp.watch("vue-src/**/*", gulp.series(_vueify));
+    gulp.watch("src-talkerapi/**/*", gulp.series(_scripts_talkerapi));
+    cb();
+}
 
-gulp.task("electron-watch", () =>
+function _electron_watch(cb)
 {
-    gulp.watch("../cables/src/core/build/**/*.js", ["scripts_core"]);
-    gulp.watch("src/ops/**/*.js", ["scripts_ops"]);
-    gulp.watch("src/ui/**/*.js", ["scripts_ui", "electronapp"]);
-    gulp.watch("scss/**/*.scss", ["sass", "electronapp"]);
-    gulp.watch("html/**/*.html", ["html_ui"]);
-    gulp.watch("icons/**/*.svg", ["svgcss"]);
-    gulp.watch("vue-src/**/*", ["vueify"]);
-    gulp.watch("src-electron/**/*", ["electronapp"]);
-});
+    gulp.watch("../cables/src/core/build/**/*.js", gulp.series(_scripts_core));
+    gulp.watch("src/ops/**/*.js", gulp.series(_scripts_ops));
+    gulp.watch("src/ui/**/*.js", gulp.series(_scripts_ui, _electronapp));
+    gulp.watch("scss/**/*.scss", gulp.series(_sass, _electronapp));
+    gulp.watch("html/**/*.html", gulp.series(_html_ui));
+    gulp.watch("icons/**/*.svg", gulp.series(_svgcss));
+    gulp.watch("vue-src/**/*", gulp.series(_vueify));
+    gulp.watch("src-electron/**/*", gulp.series(_electronapp));
+    cb();
+}
 
 /*
  * -------------------------------------------------------------------------------------------
@@ -221,28 +193,48 @@ gulp.task("electron-watch", () =>
  * Default Task, for development
  * Run "gulp"
  */
-gulp.task("default", [
-    "scripts_ui",
-    // 'lint',
-    "html_ui",
-    "scripts_core",
-    "scripts_libs_ui",
-    "scripts_ops",
-    "sass",
-    "vueify",
-    "svgcss",
-    "scripts_talkerapi",
-    "watch",
-]);
+gulp.task("default", gulp.series(
+    _scripts_ui,
+    _html_ui,
+    _scripts_core,
+    _scripts_libs_ui,
+    _scripts_ops,
+    _sass,
+    _vueify,
+    _svgcss,
+    _scripts_talkerapi,
+    _watch,
+));
 
 /**
  * Is this still used?
  * Run "gulp build"
  */
-gulp.task("build", ["svgcss", "html_ui", "scripts_libs_ui", "scripts_ops", "scripts_core", "scripts_ui", "scripts_talkerapi", "sass", "vueify"]);
+gulp.task("build", gulp.series(
+    _svgcss,
+    _html_ui,
+    _scripts_libs_ui,
+    _scripts_ops,
+    _scripts_core,
+    _scripts_ui,
+    _scripts_talkerapi,
+    _sass,
+    _vueify
+));
 
 /**
  * Electron development
  * Run "gulp electron"
  */
-gulp.task("electron", ["svgcss", "scripts_ui", "lint", "html_ui", "scripts_libs_ui", "scripts_ops", "sass", "vueify", "electron", "electronapp", "electron-watch"]);
+gulp.task("electron", gulp.series(
+    _svgcss,
+    _scripts_ui,
+    _lint,
+    _html_ui,
+    _scripts_libs_ui,
+    _scripts_ops,
+    _sass,
+    _vueify,
+    _electronapp,
+    _electron_watch
+));
