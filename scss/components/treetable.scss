@@ -15,6 +15,26 @@
         {
             color:var(--color-special);
         }
+
+        &.object {
+            background-color:var(--color_port_object);
+            color: black;
+        }
+
+        &.string {
+            background-color:var(--color_port_string);
+            color: black;
+        }
+
+        &.number {
+            background-color:var(--color_port_number);
+            color: black;
+        }
+
+        &.array {
+            background-color:var(--color_port_array);
+            color: black;
+        }
     }
 
     .node-hidden

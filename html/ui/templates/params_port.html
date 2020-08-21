@@ -251,9 +251,9 @@
                 {{else}}
             <!-- </td><td> -->
                 {{/if}}
-
                 <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}" >Array {{port.val.length}}</span>
-                <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br/>
+                <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span>
+                <span class="button smallbutton fa fa-gear info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"></span><br/>
             </td>
             <td>
 
@@ -268,8 +268,9 @@
                 {{#if port.uiAttribs.preview}}
                     <!-- <span class="button fa fa-eye" onclick="gui.setMetaTab('preview');gui.patch().updateOpParams('{{op.id}}');">preview</span> -->
                 {{else}}
-                <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}" >Object</span>
-                    <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br/>
+                    <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}" >Object</span>
+                    <span class="button smallbutton fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span>
+                    <span class="button smallbutton fa fa-gear info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"></span><br/>
                 {{/if}}
             {{/compare}}
         {{/if}}

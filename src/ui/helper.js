@@ -115,6 +115,24 @@ CABLES.UI.showJson = function (opid, which)
     // });
 };
 
+CABLES.UI.showJsonStructure = function (opid, which)
+{
+    const op = gui.corePatch().getOpById(opid);
+    if (!op)
+    {
+        console.log("opid not found:", opid);
+        return;
+    }
+    const port = op.getPort(which);
+    if (!port)
+    {
+        console.log("port not found:", which);
+        return;
+    }
+
+    CABLES.UI.MODAL.showPortStructure(port.name, port);
+};
+
 
 // CABLES.UI.togglePreview=function(opid,which)
 // {
