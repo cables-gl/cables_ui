@@ -51,8 +51,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git@bitbucket.org:undev/cables.git"
+        "url": "git@github.com:undev-studio/cables_ui.git"
     },
-    "author": "",
-    "license": "BSD-2-Clause"
+    "author": ""
 }
