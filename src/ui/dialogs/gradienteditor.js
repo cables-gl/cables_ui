@@ -136,7 +136,7 @@ CABLES.GradientEditor.prototype.addKey = function (pos, r, g, b)
 
         if (e.target.tagName == "svg") // e.target == key.rect.node ||
         {
-            console.log(e.target);
+            // console.log(e.target);
             attribs.x = e.offsetX - (this._keyWidth / 2);
             key.pos = (attribs.x + this._keyWidth / 2) / this._width;
         }
@@ -289,6 +289,10 @@ CABLES.GradientEditor.prototype._bindColorPicker = function ()
                 //     updateColorPickerButton(id);
 
                 // $('#gradientColorInput').css({"color":"transparent !important"});;
+            }
+            else
+            {
+                console.log("no key selected...");
             }
         },
         buildCallback($elm)
