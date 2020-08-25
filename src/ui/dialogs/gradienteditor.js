@@ -301,6 +301,7 @@ CABLES.GradientEditor.prototype._bindColorPicker = function ()
 
 
 function rgbToHex(R, G, B) { return toHex(R) + toHex(G) + toHex(B); }
+
 function toHex(n)
 {
     n = parseInt(n, 10);
