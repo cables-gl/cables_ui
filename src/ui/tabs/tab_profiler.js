@@ -53,6 +53,13 @@ CABLES.UI.Profiler.prototype.update = function ()
 
     sortedItems.sort(function (a, b) { return b.percent - a.percent; });
 
+    if (!document.getElementById("profilerdata"))
+    {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        console.log("stopping interval...");
+        return;
+    }
     document.getElementById("profilerdata").innerHTML = htmlData;
 
     let item = null;
