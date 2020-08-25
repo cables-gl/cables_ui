@@ -94,7 +94,6 @@ CABLES.GradientEditor.prototype.onChange = function ()
 CABLES.GradientEditor.prototype.deleteKey = function (k)
 {
     this._keys.splice(this._keys.indexOf(k), 1);
-    // console.log(this._keys.length+' keys');
     this.onChange();
 };
 
@@ -215,7 +214,6 @@ CABLES.GradientEditor.prototype.show = function (cb)
             const keys = JSON.parse(data).keys;
             for (let i = 1; i < keys.length - 1; i++)
             {
-                console.log("addddd", keys[i]);
                 this.addKey(keys[i].pos, keys[i].r, keys[i].g, keys[i].b);
             }
         }
@@ -301,6 +299,7 @@ CABLES.GradientEditor.prototype._bindColorPicker = function ()
 
 
 function rgbToHex(R, G, B) { return toHex(R) + toHex(G) + toHex(B); }
+
 function toHex(n)
 {
     n = parseInt(n, 10);
