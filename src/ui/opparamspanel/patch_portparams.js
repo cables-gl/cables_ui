@@ -293,7 +293,7 @@ CABLES.UI.initPortInputListener = function (op, index)
                     ele.addClass("invalid");
                     console.log("invalid number", op.portsIn[index]);
                 }
-                return;
+                // return;
             }
             else
             {
