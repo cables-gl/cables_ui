@@ -1191,10 +1191,12 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         if (attribs.hasOwnProperty("warning"))
         {
             this.oprect.updateErrorIndicator();
+            console.log("uiattr warning");
             if (selected) gui.opParams.updateUiAttribs();
         }
         if (attribs.hasOwnProperty("error"))
         {
+            console.log("uiattr error");
             this.oprect.updateErrorIndicator();
             if (selected) gui.opParams.updateUiAttribs();
         }
@@ -1204,6 +1206,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
             if (selected)
             {
+                console.log("uiattr uierror");
                 gui.opParams.updateUiAttribs();
                 gui.patch().updateOpParams(this.op.id);
             }

@@ -1818,6 +1818,7 @@ CABLES.UI.Patch = function (_gui)
         if (selectedOps[0].op.id != id) return;
         gui.setTransformGizmo(null);
         const op = gui.corePatch().getOpById(id);
+        console.log("update op params");
         self.showOpParams(op);
         return true;
     };
