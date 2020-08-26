@@ -34,10 +34,33 @@ CABLES.UI.Profiler.prototype.update = function ()
     const sortedItems = [];
     let htmlData = "";
 
+    const cumulate = true;
+    const cumulated = {};
+
     for (i in items)
     {
-        allTimes += items[i].timeUsed;
-        sortedItems.push(items[i]);
+        const item = items[i];
+        allTimes += item.timeUsed;
+
+
+        if (cumulate)
+        {
+            if (cumulated[item.title])
+            {
+                cumulated[item.title].timeUsed += item.timeUsed;
+                cumulated[item.title].numCumulated++;
+            }
+            else
+            {
+                cumulated[item.title] = item;
+                cumulated[item.title].numCumulated = 1;
+                sortedItems.push(item);
+            }
+        }
+        else
+        {
+            sortedItems.push(item);
+        }
     }
 
     let allPortTriggers = 0;
@@ -50,6 +73,7 @@ CABLES.UI.Profiler.prototype.update = function ()
 
     if (allPortTriggers - this.lastPortTriggers > 0) htmlData = "Port triggers/s: " + (allPortTriggers - this.lastPortTriggers) + "<br/>";
     this.lastPortTriggers = allPortTriggers;
+
 
     sortedItems.sort(function (a, b) { return b.percent - a.percent; });
 
@@ -77,7 +101,9 @@ CABLES.UI.Profiler.prototype.update = function ()
             for (i = 0; i < 2 - (item.percent + "").length; i++)
                 pad += "&nbsp;";
 
-        html += pad + item.percent + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " </td><td> " + Math.round(item.timeUsed) + "ms </td></tr>";
+        html += pad + item.percent + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " </td><td> " + Math.round(item.timeUsed) + "ms </td>";
+        if (item.numCumulated)html += "<td>" + item.numCumulated + " ops</td>";
+        html += "</tr>";
 
         if (item.percent > 0)
         {

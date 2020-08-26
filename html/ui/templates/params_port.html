@@ -48,9 +48,9 @@
         {{#if port.links}}
             {{#compare port.type '==' '2' }}
                 {{#if port.uiAttribs.preview}}
-                <div class="fright" >
-                    <span class="button-small fa fa-eye port2previewbutton" onclick="gui.texturePreview().selectTexturePortId('{{op.id}}','{{port.id}}');" ></span>
-                </div>
+                    <div class="fright" >
+                        <span class="button-small fa fa-eye port2previewbutton" onclick="gui.texturePreview().selectTexturePortId('{{op.id}}','{{port.id}}');" ></span>
+                    </div>
                 {{/if}}
             {{/compare}}
         {{/if}}
