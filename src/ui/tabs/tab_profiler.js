@@ -55,7 +55,7 @@ CABLES.UI.Profiler.prototype.update = function ()
             {
                 cumulated[item.title] = item;
                 cumulated[item.title].numCumulated = 1;
-                sortedItems.push(item);
+                sortedItems.push(cumulated[item.title]);
             }
         }
         else
@@ -67,7 +67,7 @@ CABLES.UI.Profiler.prototype.update = function ()
     let allPortTriggers = 0;
     for (i in sortedItems)
     {
-        sortedItems[i].percent = Math.floor(sortedItems[i].timeUsed / allTimes * 100);
+        sortedItems[i].percent = sortedItems[i].timeUsed / allTimes * 100;
         allPortTriggers += sortedItems[i].numTriggers;
     }
     let colorCounter = 0;
@@ -102,7 +102,7 @@ CABLES.UI.Profiler.prototype.update = function ()
             for (i = 0; i < 2 - (item.percent + "").length; i++)
                 pad += "&nbsp;";
 
-        html += pad + item.percent + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " triggers</td><td> " + Math.round(item.timeUsed) + "ms </td>";
+        html += pad + Math.floor(item.percent * 100) / 100 + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " triggers</td><td> " + Math.round(item.timeUsed) + "ms </td>";
         if (item.numCumulated)html += "<td>" + item.numCumulated + " ops</td>";
         html += "</tr>";
 
@@ -120,10 +120,12 @@ CABLES.UI.Profiler.prototype.update = function ()
     let htmlPeaks = "";
     sortedItems.sort(function (a, b) { return b.peak - a.peak; });
 
+
     for (i in sortedItems)
     {
         item = sortedItems[i];
         pad = "";
+
         if (sortedItems.length > 0) for (i = 0; i < 2 - (item.peak + "").length; i++)pad += "&nbsp;";
         htmlPeaks += pad + (Math.round(96 * item.peak) / 100) + "ms " + item.title + "<br/>";
     }
