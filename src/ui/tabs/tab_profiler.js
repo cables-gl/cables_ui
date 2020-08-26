@@ -48,6 +48,7 @@ CABLES.UI.Profiler.prototype.update = function ()
             if (cumulated[item.title])
             {
                 cumulated[item.title].timeUsed += item.timeUsed;
+                cumulated[item.title].numTriggers += item.numTriggers;
                 cumulated[item.title].numCumulated++;
             }
             else
@@ -101,7 +102,7 @@ CABLES.UI.Profiler.prototype.update = function ()
             for (i = 0; i < 2 - (item.percent + "").length; i++)
                 pad += "&nbsp;";
 
-        html += pad + item.percent + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " </td><td> " + Math.round(item.timeUsed) + "ms </td>";
+        html += pad + item.percent + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " triggers</td><td> " + Math.round(item.timeUsed) + "ms </td>";
         if (item.numCumulated)html += "<td>" + item.numCumulated + " ops</td>";
         html += "</tr>";
 
