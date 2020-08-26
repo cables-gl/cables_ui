@@ -361,9 +361,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         {
             this._uiAttrFpsLast = performance.now();
             if (this._uiAttrFpsCount >= 10) console.warn("Too many ui attr updates! ", this._uiAttrFpsCount, this._currentOp.name);
-
-            console.log(new Error().stack);
-
             this._uiAttrFpsCount = 0;
         }
 
