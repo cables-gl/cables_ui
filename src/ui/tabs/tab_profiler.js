@@ -65,10 +65,10 @@ CABLES.UI.Profiler.prototype.update = function ()
     }
 
     let allPortTriggers = 0;
-    for (i in items)
+    for (i in sortedItems)
     {
-        items[i].percent = Math.floor(items[i].timeUsed / allTimes * 100);
-        allPortTriggers += items[i].numTriggers;
+        sortedItems[i].percent = Math.floor(sortedItems[i].timeUsed / allTimes * 100);
+        allPortTriggers += sortedItems[i].numTriggers;
     }
     let colorCounter = 0;
 
