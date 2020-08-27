@@ -36,12 +36,14 @@ CABLES.UI.Profiler.prototype.update = function ()
     const cumulate = true;
     const cumulated = {};
     const cumulatedSubPatches = {};
+    const opids = {};
 
     for (const i in items)
     {
         const item = items[i];
         allTimes += item.timeUsed;
 
+        opids[item.opid] = 1;
 
         if (cumulatedSubPatches[item.subPatch])
         {
@@ -84,8 +86,10 @@ CABLES.UI.Profiler.prototype.update = function ()
     }
     let colorCounter = 0;
 
-    if (allPortTriggers - this.lastPortTriggers > 0) htmlData = "Port triggers/s: " + (allPortTriggers - this.lastPortTriggers) + "<br/>";
+    // if (allPortTriggers - this.lastPortTriggers > 0) htmlData = "Port triggers/s: " + (allPortTriggers - this.lastPortTriggers) + "<br/>";
     this.lastPortTriggers = allPortTriggers;
+
+    htmlData += "Active Ops: " + Object.keys(opids).length + "<br/><br/>";
 
 
     sortedItems.sort(function (a, b) { return b.percent - a.percent; });
@@ -169,11 +173,13 @@ CABLES.UI.Profiler.prototype.update = function ()
         htmlPeaks += pad + (Math.round(96 * item.peak) / 100) + "ms " + item.title + "<br/>";
     }
 
+
     document.getElementById("profilerui").style.display = "block";
     document.getElementById("profilerlistPeaks").innerHTML = htmlPeaks;
     document.getElementById("profilerbar").innerHTML = htmlBar;
     document.getElementById("profilerlist").innerHTML = html;
     document.getElementById("profilerstartbutton").style.display = "none";
+
 
     console.log(cumulatedSubPatches);
 };
