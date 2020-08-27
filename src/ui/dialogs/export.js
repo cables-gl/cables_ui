@@ -31,12 +31,6 @@ CABLES.UI.Exporter = function (project)
             const e3 = document.getElementById("export_settings_compatibility");
             options.compatibility = e3.options[e3.selectedIndex].value;
 
-            const e4 = document.getElementById("export_settings_backups");
-            if (e4)
-            {
-                options.skipBackups = !e4.checked;
-            }
-
             CABLES.UI.MODAL.hide();
 
             this.exportStatic(options);

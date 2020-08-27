@@ -55,7 +55,10 @@ CABLES.UI.updateHoverToolTip = function (event, port)
 
                     if (CABLES.UTILS.isNumeric(val[i]))txt += Math.round(val[i] * 1000) / 1000;
                     else if (typeof val[i] == "string")txt += "\"" + val[i] + "\"";
-                    else if (typeof val[i] == "object")txt += "[object]";
+                    else if (typeof val[i] == "object")
+                    {
+                        txt += "[object]";
+                    }
                     else JSON.stringify(val[i]);
                 }
 
@@ -78,7 +81,10 @@ CABLES.UI.getPortDescription = function (thePort)
 {
     let str = "";
 
-    str += "[" + thePort.getTypeString() + "] ";
+    let objType = thePort.uiAttribs.objType || "";
+    if (objType)objType += " ";
+
+    str += "[" + objType + thePort.getTypeString() + "] ";
 
     if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
     else str += " <b>" + thePort.getName() + "</b> ";
