@@ -145,17 +145,19 @@ CABLES.UI.Profiler.prototype.update = function ()
             allTimesUsed += cumulatedSubPatches[i].timeUsed;
             subPatches.push(cumulatedSubPatches[i]);
         }
-
+        for (let i = 0; i < subPatches.length; i++)
+        {
+            subPatches[i].name = gui.patchView.getSubPatchName(subPatches[i].subPatch);
+            subPatches[i].percent = subPatches[i].timeUsed / allTimesUsed * 100;
+        }
         subPatches.sort(function (a, b) { return b.percent - a.percent; });
 
         html += "<h3>Subpatches</h3>";
         html += "<table>";
         for (let i = 0; i < subPatches.length; i++)
         {
-            subPatches[i].name = gui.patchView.getSubPatchName(subPatches[i].subPatch);
-
             html += "<tr>";
-            html += "<td>" + Math.floor(subPatches[i].timeUsed / allTimesUsed * 10000) / 100 + "%</td>";
+            html += "<td>" + Math.floor(subPatches[i].percent * 100) / 100 + "%</td>";
             html += "<td>" + subPatches[i].name + "</td>";
             html += "</tr>";
         }
