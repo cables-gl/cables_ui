@@ -172,15 +172,11 @@ CABLES.UI.Profiler.prototype.update = function ()
         htmlPeaks += pad + (Math.round(96 * item.peak) / 100) + "ms " + item.title + "<br/>";
     }
 
-
     document.getElementById("profilerui").style.display = "block";
     document.getElementById("profilerlistPeaks").innerHTML = htmlPeaks;
     document.getElementById("profilerbar").innerHTML = htmlBar;
     document.getElementById("profilerlist").innerHTML = html;
     document.getElementById("profilerstartbutton").style.display = "none";
-
-
-    console.log(cumulatedSubPatches);
 };
 
 CABLES.UI.Profiler.prototype.start = function ()
