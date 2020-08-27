@@ -91,7 +91,6 @@ CABLES.UI.Profiler.prototype.update = function ()
 
     htmlData += "Active Ops: " + Object.keys(opids).length + "<br/><br/>";
 
-
     sortedItems.sort(function (a, b) { return b.percent - a.percent; });
 
     if (!document.getElementById("profilerdata"))
