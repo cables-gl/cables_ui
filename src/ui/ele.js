@@ -1,5 +1,4 @@
 
-window.ele = new CABLES.Ele();
 
 CABLES.Ele = class
 {
@@ -13,3 +12,5 @@ CABLES.Ele = class
         return document.getElementById(id);
     }
 };
+
+window.ele = new CABLES.Ele();
