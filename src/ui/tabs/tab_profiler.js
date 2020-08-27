@@ -12,7 +12,6 @@ CABLES.UI.Profiler = function (tabs)
     this.lastPortTriggers = 0;
     this._subTab = 0;
 
-
     gui.corePatch().on("onLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
     gui.corePatch().on("onOpAdd", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
     gui.corePatch().on("onOpDelete", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
@@ -21,12 +20,12 @@ CABLES.UI.Profiler = function (tabs)
 
 CABLES.UI.Profiler.prototype.setTab = function (which)
 {
-    document.getElementById("profilerTabOps").classList.remove("tabActiveSubtab");
-    document.getElementById("profilerTabSubpatches").classList.remove("tabActiveSubtab");
-    document.getElementById("profilerTabPeaks").classList.remove("tabActiveSubtab");
-    if (which == 0) document.getElementById("profilerTabOps").classList.add("tabActiveSubtab");
-    if (which == 1) document.getElementById("profilerTabSubpatches").classList.add("tabActiveSubtab");
-    if (which == 2) document.getElementById("profilerTabPeaks").classList.add("tabActiveSubtab");
+    ele.byId("profilerTabOps").classList.remove("tabActiveSubtab");
+    ele.byId("profilerTabSubpatches").classList.remove("tabActiveSubtab");
+    ele.byId("profilerTabPeaks").classList.remove("tabActiveSubtab");
+    if (which == 0) ele.byId("profilerTabOps").classList.add("tabActiveSubtab");
+    if (which == 1) ele.byId("profilerTabSubpatches").classList.add("tabActiveSubtab");
+    if (which == 2) ele.byId("profilerTabPeaks").classList.add("tabActiveSubtab");
 
     gui.corePatch().profiler.clear();
     this._subTab = which;
@@ -39,7 +38,7 @@ CABLES.UI.Profiler.prototype.show = function ()
     const html = CABLES.UI.getHandleBarHtml("meta_profiler", {});
     this._tab.html(html);
 
-    document.getElementById("profilerstartbutton").addEventListener("click", function ()
+    ele.byId("profilerstartbutton").addEventListener("click", function ()
     {
         this.start();
     }.bind(this));
@@ -115,14 +114,14 @@ CABLES.UI.Profiler.prototype.update = function ()
 
     sortedItems.sort(function (a, b) { return b.percent - a.percent; });
 
-    if (!document.getElementById("profilerdata"))
+    if (!ele.byId("profilerdata"))
     {
         clearInterval(this.intervalId);
         this.intervalId = null;
         console.log("stopping interval...");
         return;
     }
-    document.getElementById("profilerdata").innerHTML = htmlData;
+    ele.byId("profilerdata").innerHTML = htmlData;
 
     let item = null;
     let pad = "";
@@ -205,20 +204,20 @@ CABLES.UI.Profiler.prototype.update = function ()
         }
     }
 
-    document.getElementById("profilerui").style.display = "block";
-    // document.getElementById("profilerlistPeaks").innerHTML = htmlPeaks;
-    document.getElementById("profilerbar").innerHTML = htmlBar;
-    document.getElementById("profilerlist").innerHTML = html;
-    document.getElementById("profilerstartbutton").style.display = "none";
+    ele.byId("profilerui").style.display = "block";
+    // ele.byId("profilerlistPeaks").innerHTML = htmlPeaks;
+    ele.byId("profilerbar").innerHTML = htmlBar;
+    ele.byId("profilerlist").innerHTML = html;
+    ele.byId("profilerstartbutton").style.display = "none";
 };
 
 CABLES.UI.Profiler.prototype.start = function ()
 {
     gui.corePatch().profile(true);
     this.update();
-    document.getElementById("profilerTabOps").addEventListener("click", () => { this.setTab(0); });
-    document.getElementById("profilerTabSubpatches").addEventListener("click", () => { this.setTab(1); });
-    document.getElementById("profilerTabPeaks").addEventListener("click", () => { this.setTab(2); });
+    ele.byId("profilerTabOps").addEventListener("click", () => { this.setTab(0); });
+    ele.byId("profilerTabSubpatches").addEventListener("click", () => { this.setTab(1); });
+    ele.byId("profilerTabPeaks").addEventListener("click", () => { this.setTab(2); });
 
     if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 1000);
 };
