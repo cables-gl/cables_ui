@@ -142,7 +142,7 @@ CABLES.UI.Profiler.prototype.update = function ()
                 for (i = 0; i < 2 - (item.percent + "").length; i++)
                     pad += "&nbsp;";
 
-            html += pad + Math.floor(item.percent * 100) / 100 + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " triggers</td><td> " + Math.round(item.timeUsed) + "ms </td>";
+            html += pad + Math.floor(item.percent * 100) / 100 + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " times</td><td> " + Math.round(item.timeUsed) + "ms </td>";
             if (item.numCumulated)html += "<td>" + item.numCumulated + " ops</td>";
             html += "</tr>";
 
@@ -185,7 +185,7 @@ CABLES.UI.Profiler.prototype.update = function ()
         {
             html += "<tr>";
             html += "<td>" + Math.floor(subPatches[i].percent * 100) / 100 + "%</td>";
-            html += "<td>" + subPatches[i].name + "</td>";
+            html += "<td><a onclick=\"gui.patchView.setCurrentSubPatch('" + subPatches[i].subPatch + "')\">" + subPatches[i].name + "</td>";
             html += "</tr>";
         }
         html += "</table>";
