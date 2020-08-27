@@ -6,18 +6,23 @@
 
             <a  class="button fa fa-pie-chart" id="profilerstartbutton">start</a>
 
+
             <div id="profilerui" style="display:none">
+
                 <a onclick="gui.corePatch().profiler.clear();" class="button fa fa-trash-o">reset</a>
                 <br/>
                 <br/>
+                <div class="text-center">
+                    <a id="profilerTabOps" class="tabActiveSubtab" data-info="file_source_patch">Ops</a>
+                    <a id="profilerTabSubpatches"class="tabSubtab" data-info="file_source_patch">Subpatches</a>
+                    <a id="profilerTabPeaks"class="tabSubtab" data-info="file_source_patch">Peaks</a>
+                </div>
+                <br/><br/>
+
                 <div id="profilerdata"></div>
                 <div id="profilerbar"></div>
 
-                <br/><br/>
-                <h3>Percentages</h3>
                 <div id="profilerlist" style="font-family:monospace;font-size:12px;"></div>
-                <h3>Peaks</h3>
-                <div id="profilerlistPeaks" style="font-family:monospace;font-size:12px;"></div>
 
                 <br/>
             </div>
