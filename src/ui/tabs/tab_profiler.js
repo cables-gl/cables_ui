@@ -30,17 +30,29 @@ CABLES.UI.Profiler.prototype.update = function ()
     let html = "";
     let htmlBar = "";
     let allTimes = 0;
-    let i = 0;
     const sortedItems = [];
     let htmlData = "";
 
     const cumulate = true;
     const cumulated = {};
+    const cumulatedSubPatches = {};
 
-    for (i in items)
+    for (const i in items)
     {
         const item = items[i];
         allTimes += item.timeUsed;
+
+
+        if (cumulatedSubPatches[item.subPatch])
+        {
+            cumulatedSubPatches[item.subPatch].timeUsed += item.timeUsed;
+        }
+        else
+        {
+            cumulatedSubPatches[item.subPatch] = {};
+            cumulatedSubPatches[item.subPatch].timeUsed = item.timeUsed;
+            cumulatedSubPatches[item.subPatch].subPatch = item.subPatch;
+        }
 
 
         if (cumulate)
@@ -65,7 +77,7 @@ CABLES.UI.Profiler.prototype.update = function ()
     }
 
     let allPortTriggers = 0;
-    for (i in sortedItems)
+    for (const i in sortedItems)
     {
         sortedItems[i].percent = sortedItems[i].timeUsed / allTimes * 100;
         allPortTriggers += sortedItems[i].numTriggers;
@@ -92,7 +104,7 @@ CABLES.UI.Profiler.prototype.update = function ()
 
     html += "<table>";
 
-    for (i in sortedItems)
+    for (let i in sortedItems)
     {
         item = sortedItems[i];
         pad = "";
@@ -121,7 +133,34 @@ CABLES.UI.Profiler.prototype.update = function ()
     sortedItems.sort(function (a, b) { return b.peak - a.peak; });
 
 
-    for (i in sortedItems)
+    if (Object.keys(cumulatedSubPatches).length > 1)
+    {
+        const subPatches = [];
+        let allTimesUsed = 0;
+        for (const i in cumulatedSubPatches)
+        {
+            allTimesUsed += cumulatedSubPatches[i].timeUsed;
+            subPatches.push(cumulatedSubPatches[i]);
+        }
+
+        subPatches.sort(function (a, b) { return b.percent - a.percent; });
+
+        html += "<h3>Subpatches</h3>";
+        html += "<table>";
+        for (let i = 0; i < subPatches.length; i++)
+        {
+            subPatches[i].name = gui.patchView.getSubPatchName(subPatches[i].subPatch);
+
+            html += "<tr>";
+            html += "<td>" + Math.floor(subPatches[i].timeUsed / allTimesUsed * 10000) / 100 + "%</td>";
+            html += "<td>" + subPatches[i].name + "</td>";
+            html += "</tr>";
+        }
+        html += "</table>";
+    }
+
+
+    for (let i in sortedItems)
     {
         item = sortedItems[i];
         pad = "";
@@ -135,6 +174,8 @@ CABLES.UI.Profiler.prototype.update = function ()
     document.getElementById("profilerbar").innerHTML = htmlBar;
     document.getElementById("profilerlist").innerHTML = html;
     document.getElementById("profilerstartbutton").style.display = "none";
+
+    console.log(cumulatedSubPatches);
 };
 
 CABLES.UI.Profiler.prototype.start = function ()
