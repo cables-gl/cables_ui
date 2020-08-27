@@ -34,22 +34,47 @@ CABLES.UI.Profiler.prototype.update = function ()
     const sortedItems = [];
     let htmlData = "";
 
+    const cumulate = true;
+    const cumulated = {};
+
     for (i in items)
     {
-        allTimes += items[i].timeUsed;
-        sortedItems.push(items[i]);
+        const item = items[i];
+        allTimes += item.timeUsed;
+
+
+        if (cumulate)
+        {
+            if (cumulated[item.title])
+            {
+                cumulated[item.title].timeUsed += item.timeUsed;
+                cumulated[item.title].numTriggers += item.numTriggers;
+                cumulated[item.title].numCumulated++;
+            }
+            else
+            {
+                cumulated[item.title] = item;
+                cumulated[item.title].numCumulated = 1;
+                sortedItems.push(cumulated[item.title]);
+            }
+        }
+        else
+        {
+            sortedItems.push(item);
+        }
     }
 
     let allPortTriggers = 0;
-    for (i in items)
+    for (i in sortedItems)
     {
-        items[i].percent = Math.floor(items[i].timeUsed / allTimes * 100);
-        allPortTriggers += items[i].numTriggers;
+        sortedItems[i].percent = sortedItems[i].timeUsed / allTimes * 100;
+        allPortTriggers += sortedItems[i].numTriggers;
     }
     let colorCounter = 0;
 
     if (allPortTriggers - this.lastPortTriggers > 0) htmlData = "Port triggers/s: " + (allPortTriggers - this.lastPortTriggers) + "<br/>";
     this.lastPortTriggers = allPortTriggers;
+
 
     sortedItems.sort(function (a, b) { return b.percent - a.percent; });
 
@@ -77,7 +102,9 @@ CABLES.UI.Profiler.prototype.update = function ()
             for (i = 0; i < 2 - (item.percent + "").length; i++)
                 pad += "&nbsp;";
 
-        html += pad + item.percent + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " </td><td> " + Math.round(item.timeUsed) + "ms </td></tr>";
+        html += pad + Math.floor(item.percent * 100) / 100 + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " triggers</td><td> " + Math.round(item.timeUsed) + "ms </td>";
+        if (item.numCumulated)html += "<td>" + item.numCumulated + " ops</td>";
+        html += "</tr>";
 
         if (item.percent > 0)
         {
@@ -93,10 +120,12 @@ CABLES.UI.Profiler.prototype.update = function ()
     let htmlPeaks = "";
     sortedItems.sort(function (a, b) { return b.peak - a.peak; });
 
+
     for (i in sortedItems)
     {
         item = sortedItems[i];
         pad = "";
+
         if (sortedItems.length > 0) for (i = 0; i < 2 - (item.peak + "").length; i++)pad += "&nbsp;";
         htmlPeaks += pad + (Math.round(96 * item.peak) / 100) + "ms " + item.title + "<br/>";
     }

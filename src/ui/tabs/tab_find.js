@@ -177,7 +177,8 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 
     html += "</div>";
 
-    this._eleResults.innerHTML += html;
+    // this._eleResults.innerHTML += html;
+    return html;
 };
 
 CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
@@ -202,7 +203,9 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 {
     const startTime = performance.now();
     this._lastSearch = str;
+    let html = "";
     this._eleResults.innerHTML = "";
+
     if (str.length < 2)
     {
         this._eleResults.innerHTML = "Type some more!";
@@ -381,21 +384,24 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 
     if (foundNum === 0)
     {
-        this._eleResults.innerHTML = "<div style=\"pointer-events:none\">&nbsp;&nbsp;&nbsp;No ops found</div>";
+        html = "<div style=\"pointer-events:none\">&nbsp;&nbsp;&nbsp;No ops found</div>";
     }
     else
     {
         results.sort(function (a, b) { return b.score - a.score; });
 
         for (let i = 0; i < results.length; i++)
-            this._addResultOp(results[i].op, results[i], i);
+            html += this._addResultOp(results[i].op, results[i], i);
 
         let onclickResults = "gui.patch().setSelectedOp(null);";
         for (let i = 0; i < results.length; i++)
             onclickResults += "gui.patch().addSelectedOpById('" + results[i].op.id + "');";
         onclickResults += "gui.patch().setStatusSelectedOps();";
-        this._eleResults.innerHTML += "<div style=\"background-color:var(--color-02);border-bottom:none;\"><a class=\"button-small\" onclick=\"" + onclickResults + "\">" + results.length + " results</a></div>";
+        html += "<div style=\"background-color:var(--color-02);border-bottom:none;\"><a class=\"button-small\" onclick=\"" + onclickResults + "\">" + results.length + " results</a></div>";
     }
+
+    this._eleResults.innerHTML = html;
+
 
     const timeUsed = performance.now() - startTime;
 
