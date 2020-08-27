@@ -11,6 +11,12 @@ CABLES.UI.Profiler = function (tabs)
     this.intervalId = null;
     this.lastPortTriggers = 0;
     this._subTab = 0;
+
+
+    gui.corePatch().on("onLink", () => { gui.corePatch().profiler.clear(); this.update(); });
+    gui.corePatch().on("onOpAdd", () => { gui.corePatch().profiler.clear(); this.update(); });
+    gui.corePatch().on("onOpDelete", () => { gui.corePatch().profiler.clear(); this.update(); });
+    gui.corePatch().on("onUnLink", () => { gui.corePatch().profiler.clear(); this.update(); });
 };
 
 CABLES.UI.Profiler.prototype.setTab = function (which)
