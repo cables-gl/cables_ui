@@ -13,10 +13,10 @@ CABLES.UI.Profiler = function (tabs)
     this._subTab = 0;
 
 
-    gui.corePatch().on("onLink", () => { gui.corePatch().profiler.clear(); this.update(); });
-    gui.corePatch().on("onOpAdd", () => { gui.corePatch().profiler.clear(); this.update(); });
-    gui.corePatch().on("onOpDelete", () => { gui.corePatch().profiler.clear(); this.update(); });
-    gui.corePatch().on("onUnLink", () => { gui.corePatch().profiler.clear(); this.update(); });
+    gui.corePatch().on("onLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
+    gui.corePatch().on("onOpAdd", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
+    gui.corePatch().on("onOpDelete", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
+    gui.corePatch().on("onUnLink", () => { if (gui.corePatch().profiler) gui.corePatch().profiler.clear(); this.update(); });
 };
 
 CABLES.UI.Profiler.prototype.setTab = function (which)
