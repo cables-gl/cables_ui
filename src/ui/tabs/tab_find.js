@@ -33,7 +33,6 @@ CABLES.UI.FindTab = function (tabs, str)
     }
     colors = CABLES.uniqueArray(colors);
 
-
     const html = CABLES.UI.getHandleBarHtml("tab_find", { colors, "inputid": this._inputId });
 
     this._tab.html(html);
@@ -46,7 +45,6 @@ CABLES.UI.FindTab = function (tabs, str)
     gui.corePatch().addEventListener("onOpAdd", this._updateCb);
     gui.corePatch().addEventListener("commentChanged", this._updateCb);
 
-
     this._tab.addEventListener("onClose", () =>
     {
         gui.opHistory.removeEventListener("changed", this.updateHistory.bind(this));
@@ -57,14 +55,14 @@ CABLES.UI.FindTab = function (tabs, str)
         this._closed = true;
     });
 
-    document.getElementById(this._inputId).focus();
+    if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
 
-    document.getElementById(this._inputId).addEventListener("input", (e) =>
+    ele.byId(this._inputId).addEventListener("input", (e) =>
     {
         this.search(e.target.value);
     });
 
-    document.getElementById(this._inputId).addEventListener(
+    ele.byId(this._inputId).addEventListener(
         "keydown",
         (e) =>
         {
@@ -73,18 +71,18 @@ CABLES.UI.FindTab = function (tabs, str)
                 let c = this._lastClicked - 1;
                 if (c < 0) c = 0;
                 this.setClicked(c);
-                const resultEle = document.getElementById("findresult" + c);
+                const resultEle = ele.byId("findresult" + c);
                 if (resultEle) resultEle.click();
-                document.getElementById(this._inputId).focus();
+                if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
             }
             else if (e.keyCode == 40)
             {
                 let c = this._lastClicked + 1;
                 if (c > this._maxIdx - 1) c = this._maxIdx;
                 this.setClicked(c);
-                const resultEle = document.getElementById("findresult" + c);
+                const resultEle = ele.byId("findresult" + c);
                 if (resultEle) resultEle.click();
-                document.getElementById(this._inputId).focus();
+                if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
             }
         }
 
@@ -92,10 +90,10 @@ CABLES.UI.FindTab = function (tabs, str)
 
     this._eleInput = document.querySelector("#tabsearchbox input");
     this._eleInput.value = this._lastSearch;
-    this._eleResults = document.getElementById("tabsearchresult");
+    this._eleResults = ele.byId("tabsearchresult");
 
     this.focus();
-    document.getElementById(this._inputId).setSelectionRange(0, this._lastSearch.length);
+    ele.byId(this._inputId).setSelectionRange(0, this._lastSearch.length);
 
     clearTimeout(this._findTimeoutId);
     this._findTimeoutId = setTimeout(() =>
@@ -115,7 +113,7 @@ CABLES.UI.FindTab = function (tabs, str)
 CABLES.UI.FindTab.prototype.focus = function ()
 {
     this._tabs.activateTab(this._tab.id);
-    document.getElementById(this._inputId).focus();
+    if (ele.byId(this._inputId)) ele.byId(this._inputId).focus();
 };
 
 CABLES.UI.FindTab.prototype.isClosed = function ()
@@ -133,7 +131,7 @@ CABLES.UI.FindTab.prototype.searchAfterPatchUpdate = function ()
     clearTimeout(this._findTimeoutId);
     this._findTimeoutId = setTimeout(() =>
     {
-        const el = document.getElementById(this._inputId);
+        const el = ele.byId(this._inputId);
         if (el) this.search(el.value, true);
     }, 100);
 };
@@ -420,10 +418,10 @@ CABLES.UI.FindTab.prototype.setClicked = function (num)
 {
     num = parseInt(num);
 
-    let el = document.getElementById("findresult" + this._lastClicked);
+    let el = ele.byId("findresult" + this._lastClicked);
     if (el) el.classList.remove("lastClicked");
 
-    el = document.getElementById("findresult" + num);
+    el = ele.byId("findresult" + num);
     if (el) el.classList.add("lastClicked");
     this._lastClicked = num;
 };
