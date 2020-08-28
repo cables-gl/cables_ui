@@ -73,6 +73,8 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("svgpatchviewdisable", CABLES.UI.userSettings.get("svgpatchviewdisable"));
     this.setSwitchValue("showOldOps", CABLES.UI.userSettings.get("showOldOps"));
     this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
+
+    this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
 };
 
 CABLES.UI.Preferences.prototype.show = function ()

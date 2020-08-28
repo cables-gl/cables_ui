@@ -63,6 +63,8 @@ CABLES.UI.GUI = function (cfg)
     const metaCode = new CABLES.UI.MetaCode(this.metaTabs);
     // this.profiler = new CABLES.UI.Profiler(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
+
+
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.variables = new CABLES.UI.MetaVars(this.metaTabs);
     this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
@@ -1299,13 +1301,13 @@ CABLES.UI.GUI = function (cfg)
 
     this.bindKeys = function ()
     {
-        //opens editor for 1st string port found on an op with shift+e
+        // opens editor for 1st string port found on an op with shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
         {
-            if(gui.patch().getSelectedOps().length !== 1 || !gui.patch().getSelectedOps()[0].portsIn.length)
+            if (gui.patch().getSelectedOps().length !== 1 || !gui.patch().getSelectedOps()[0].portsIn.length)
             {
                 return;
-            };
+            }
 
             const selectedOp = gui.patch().getSelectedOps();
             const selectedOpId = selectedOp[0].op.id;
@@ -1317,17 +1319,17 @@ CABLES.UI.GUI = function (cfg)
                 const port = selectedOp[0].portsIn[i].thePort;
                 const type = port.getTypeString();
 
-                if(type === "String")
+                if (type === "String")
                 {
                     portName = port.name;
                     break;
-                };
-            };
+                }
+            }
 
-            if(portName)
+            if (portName)
             {
                 CABLES.UI.openParamStringEditor(selectedOpId, portName);
-            };
+            }
         });
 
         this.keys.key("Escape", "Open Op Create (or close current dialog)", "down", null, { "ignoreInput": true }, (e) => { this.pressedEscape(e); });
@@ -1358,8 +1360,6 @@ CABLES.UI.GUI = function (cfg)
             {
                 CABLES.CMD.PATCH.save();
             }
-
-
         });
 
         //     case 69: // e - editor save/execute/build
@@ -1719,6 +1719,21 @@ CABLES.UI.GUI = function (cfg)
     this.setTransform = function (id, x, y, z)
     {
         this._transformOverlay.add(this.scene().cgl, id, x, y, z);
+    };
+
+
+    this.setElementBgPattern = function (ele)
+    {
+        if (!ele) return;
+        ele.classList.remove("bgPatternDark");
+        ele.classList.remove("bgPatternBright");
+        ele.classList.remove("bgPatternBlack");
+        ele.classList.remove("bgPatternWhite");
+        ele.classList.remove("bgPatternRed");
+        ele.classList.remove("bgPatternGrey");
+        ele.classList.remove("bgPatternBlue");
+
+        ele.classList.add(CABLES.UI.userSettings.get("bgpattern"));
     };
 
     // this.updateProjectFiles=function(proj)
@@ -2128,9 +2143,17 @@ function startUi(cfg)
                     gui.opSelect().prepare();
                     incrementStartup();
                     gui.opSelect().search();
+                    gui.setElementBgPattern(ele.byId("cablescanvas"));
+
 
                     CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
                     {
+                        if (key == "bgpattern")
+                        {
+                            gui.setElementBgPattern(ele.byId("cablescanvas"));
+                            gui.setElementBgPattern(ele.byId("bgpreview"));
+                        }
+
                         if (key == "theme-bright")
                         {
                             gui.updateTheme();
