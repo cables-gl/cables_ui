@@ -487,8 +487,6 @@ CABLES.UI.OpSelect = class
         };
 
         this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
-        console.log("_forceShowOldOps", this._forceShowOldOps);
-
         this._searchInputEle = document.getElementById("opsearch");
 
         if (options.search)

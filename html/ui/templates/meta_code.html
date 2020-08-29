@@ -64,7 +64,10 @@
             <option value="{{.}}">{{.}}</option>
         {{/each}}
         <select>
-        <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addCoreLib('{{op.objName}}', $('#addcorelib').val() );">Add</a>
+
+
+
+        <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addCoreLib('{{op.objName}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
 
         <br/><br/>
 
@@ -94,7 +97,7 @@
             <option value="{{.}}">{{.}}</option>
         {{/each}}
         <select>
-        <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', $('#addoplib').val() );">Add</a>
+        <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
 
 
         {{#if user.isAdmin}}
