@@ -1733,7 +1733,7 @@ CABLES.UI.GUI = function (cfg)
         ele.classList.remove("bgPatternGrey");
         ele.classList.remove("bgPatternBlue");
 
-        ele.classList.add(CABLES.UI.userSettings.get("bgpattern"));
+        ele.classList.add(CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
     };
 
     // this.updateProjectFiles=function(proj)
