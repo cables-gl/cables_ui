@@ -248,7 +248,19 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
 
-        const iconBarWidth = 80;
+        let iconBarWidth = 80;
+        if (CABLES.UI.userSettings.get("hideSizeBar"))
+        {
+            iconBarWidth = 0;
+            this._elIconBar.hide();
+            document.getElementsByTagName("nav")[0].style["margin-left"] = "0px";
+        }
+        else
+        {
+            this._elIconBar.show();
+            document.getElementsByTagName("nav")[0].style["margin-left"] = "80px";
+        }
+
         const menubarHeight = 30;
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
 
@@ -2177,6 +2189,11 @@ function startUi(cfg)
                         if (key == "straightLines")
                         {
                             gui.patch().updateSubPatches();
+                        }
+
+                        if (key == "hideSizeBar")
+                        {
+                            gui.setLayout();
                         }
                     });
 

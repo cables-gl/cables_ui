@@ -41,8 +41,6 @@ function ()
             gui.showLoadingProgress(false);
         }
 
-        str += gui.chat.getUserInfoHtml();
-
         if (indicator)
         {
             gui.setWorking(true, indicator);
@@ -54,6 +52,7 @@ function ()
         }
 
         document.getElementById("jobs").innerHTML = str;
+        document.getElementById("navsocketinfo").innerHTML = gui.chat.getUserInfoHtml();
         if (!this._listenerStarted) this.startListener();
     };
 

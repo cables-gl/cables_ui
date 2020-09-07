@@ -3,10 +3,8 @@
 {
     position: absolute;
     display:block;
-    top:6px;
+    top:8px;
 }
-
-
 
 #jobs
 {
@@ -114,7 +112,7 @@
 
 nav
 {
-    margin-left: 80px;
+
     float:left;
     z-index: $z-index-nav;
     $nav-li-padding: 7px 14px;
