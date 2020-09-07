@@ -253,7 +253,7 @@ CABLES.UI.GUI = function (cfg)
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
 
         let timelineUiHeight = 40;
-        if (this.timeLine() && this.timeLine().hidden) timelineUiHeight = 0;
+        if (gui.timeLine() && gui.timeLine().hidden) timelineUiHeight = 0;
 
         const filesHeight = 0;
         // if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
@@ -402,10 +402,11 @@ CABLES.UI.GUI = function (cfg)
         //     else this._elEditorMinimized.style.display = "none";
         // }
 
-        this._elIconBar.css("height", window.innerHeight - 60);
-        this._elIconBar.css("top", 60);
+        const elIconBarMargin = 30;
+        this._elIconBar.css("height", window.innerHeight - elIconBarMargin);
+        this._elIconBar.css("top", elIconBarMargin);
 
-        $("#jobs").css("left", iconBarWidth);
+        // $("#jobs").css("left", iconBarWidth);
 
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
@@ -496,7 +497,7 @@ CABLES.UI.GUI = function (cfg)
             $("#splitterTimeline").hide();
         }
 
-        if (this.timeLine()) this.timeLine().updateViewBox();
+        if (gui.timeLine()) gui.timeLine().updateViewBox();
 
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
@@ -653,16 +654,30 @@ CABLES.UI.GUI = function (cfg)
 
     this.showTiming = function ()
     {
-        this.timeLine().hidden = false;
+        gui.timeLine().hidden = false;
         showTiming = true;
         $("#timing").show();
         gui.setLayout();
         CABLES.UI.userSettings.set("timelineOpened", showTiming);
     };
 
+    this.showLoadingProgress = function (show)
+    {
+        if (show)
+        {
+            document.getElementById("nav-logo").classList.add("hidden");
+            document.getElementById("nav-loading").classList.remove("hidden");
+        }
+        else
+        {
+            document.getElementById("nav-logo").classList.remove("hidden");
+            document.getElementById("nav-loading").classList.add("hidden");
+        }
+    };
+
     this.hideTiming = function ()
     {
-        this.timeLine().hidden = true;
+        gui.timeLine().hidden = true;
         showTiming = false;
         $("#timing").hide();
         gui.setLayout();
@@ -671,14 +686,14 @@ CABLES.UI.GUI = function (cfg)
 
     this.toggleTiming = function ()
     {
-        this.timeLine().hidden = false;
+        gui.timeLine().hidden = false;
         $("#timing").show();
         CABLES.UI.userSettings.set("timelineOpened", true);
 
         showTiming = !showTiming;
         updateTimingIcon();
         this.setLayout();
-        this.timeLine().redraw();
+        gui.timeLine().redraw();
     };
 
     this.showUiDebug = function ()
@@ -1100,14 +1115,14 @@ CABLES.UI.GUI = function (cfg)
         $(".nav_changelog").bind("click", CABLES.CMD.UI.showChangelog);
         // $('#username').bind("click", CABLES.CMD.UI.userSettings);
 
-        $(".cables-logo").hover(function (e)
-        {
-            gui.jobs().updateJobListing();
-            $("#jobs").show();
-        }, function ()
-        {
-            $("#jobs").hide();
-        });
+        // $(".cables-logo").hover(function (e)
+        // {
+        //     gui.jobs().updateJobListing();
+        //     $("#jobs").show();
+        // }, function ()
+        // {
+        //     $("#jobs").hide();
+        // });
 
         // --- Help menu
         // Documentation
@@ -1265,10 +1280,10 @@ CABLES.UI.GUI = function (cfg)
                 break;
 
             case 74: // j
-                this.timeLine().jumpKey(-1);
+                gui.timeLine().jumpKey(-1);
                 break;
             case 75: // k
-                this.timeLine().jumpKey(1);
+                gui.timeLine().jumpKey(1);
                 break;
             }
         });
@@ -1280,7 +1295,7 @@ CABLES.UI.GUI = function (cfg)
             {
             case 32: // space play
                 const timeused = Date.now() - spaceBarStart;
-                if (timeused < 500) this.timeLine().togglePlay();
+                if (timeused < 500) gui.timeLine().togglePlay();
                 spaceBarStart = 0;
                 break;
             }
@@ -1291,7 +1306,7 @@ CABLES.UI.GUI = function (cfg)
             switch (e.which)
             {
             case 32: // space play
-                this.timeLine().togglePlay();
+                gui.timeLine().togglePlay();
                 break;
             }
         });
@@ -2169,6 +2184,7 @@ function startUi(cfg)
 
                     CABLES.editorSession.open();
                     gui.bindKeys();
+                    gui.jobs().updateJobListing();
 
                     logStartup("finished loading cables");
 

@@ -37,7 +37,8 @@ function ()
         if (jobs.length == 0)
         {
             str += "All server jobs finished...";
-            document.querySelector(".cables-logo .icon-cables").classList.remove("blinkanim");
+            // document.querySelector(".cables-logo .icon-cables").classList.remove("blinkanim");
+            gui.showLoadingProgress(false);
         }
 
         str += gui.chat.getUserInfoHtml();
@@ -80,8 +81,8 @@ function ()
             }
         }
 
-        document.querySelector(".cables-logo .icon-cables").classList.add("blinkanim");
-
+        // document.querySelector(".cables-logo .icon-cables").classList.add("blinkanim");
+        gui.showLoadingProgress(true);
 
         jobs.push(job);
         this.updateJobListing();
@@ -92,22 +93,36 @@ function ()
         }
     };
 
-    this.updateProgressMainBar = function ()
-    {
-        document.getElementById("uploadprogress").style.width = options.complete + "%";
-    };
+    // this.updateProgressMainBar = function (prog)
+    // {
+
+    // };
 
     this.setProgress = function (jobId, progress)
     {
+        let avg = 0;
+        let avgCount = 0;
         for (const i in jobs)
         {
             if (jobs[i].id == jobId)
             {
                 jobs[i].progress = progress;
-
                 document.getElementById("jobprogress" + jobs[i].id).style.width = progress + "%";
-                break;
             }
+
+            if (jobs[i].progress)
+            {
+                avgCount++;
+                avg += jobs[i].progress;
+            }
+        }
+        if (avgCount)
+        {
+            const prog = avg / avgCount;
+            document.getElementById("uploadprogress").style.width = prog + "%";
+
+            if (prog === 100) document.getElementById("uploadprogresscontainer").classList.add("hidden");
+            else document.getElementById("uploadprogresscontainer").classList.remove("hidden");
         }
     };
 

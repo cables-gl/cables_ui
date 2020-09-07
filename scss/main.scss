@@ -85,7 +85,7 @@ hr
 }
 
 .clickable {cursor:pointer;}
-.hidden { display:none;}
+.hidden { display:none !important;}
 .clear { clear:both; }
 .fleft { float:left; }
 .fright { float:right !important; }
@@ -806,8 +806,20 @@ input
     transform: scale(1, -1);
 }
 
+#offlineIndicator
+{
+    border:2px solid red;
+    background-color: red;
+    position: ansolute;
+    width:1px;
+    height:1px;
+    border-radius: 10px;
+    margin-left:-10px;
+    margin-top:-4px;
+}
 
-#offlineIndicator,#userindicatorcontainer
+
+#userindicatorcontainer
 {
     width:30px;
     height:30px;

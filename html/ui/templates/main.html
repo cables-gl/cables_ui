@@ -99,23 +99,38 @@
 
 <div id="vue-app"></div>
 
-<div class="cables-logo cables" onclick="CABLES.CMD.UI.showChat();">
+<!-- <div class="cables-logo cables" onclick="CABLES.CMD.UI.showChat();">
     <div class="icon icon-cables"></div>
-</div>
-<div id="offlineIndicator"><span class="icon icon-x icon-1x" style="background-color:red;"></span></div>
+</div> -->
 <div id="userindicatorcontainer"><span id="userindicator" class="icon icon-users icon-1x hidden" style="background-color:white;"></span></div>
 
-<div id="uploadprogresscontainer">
-    <div id="uploadprogress"></div>
-</div>
 
-<ul id="jobs"></ul>
+
 
 <div id="menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
 
     <!-- <a class="button" href="/" target="_blankk">cables</a> -->
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
         <ul>
+            <li class="nav_logo" >
+                <div id="offlineIndicator" style="background-color:red;"></span></div>
+
+                <div id="nav-logo" class="icon icon-cables"></div>
+                <div id="nav-loading" class="fa fa-circle-o-notch fa-spin"></div>&nbsp;
+
+                <div id="uploadprogresscontainer" class="hidden">
+                    <div id="uploadprogress"></div>
+                </div>
+
+                <ul class="nav-submenu">
+
+                    <li class="nav_preferences">
+                        <div id="jobs"></div>
+                    </li>
+
+                </ul>
+            </li>
+
             <li class="nav_cables"><b>cables - <b id="username">???</b></b>
                 <ul class="nav-submenu">
                     <li class="nav_preferences">My preferences</span></li>

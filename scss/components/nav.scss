@@ -1,14 +1,22 @@
 
+#nav-loading, #nav-logo
+{
+    position: absolute;
+    display:block;
+    top:6px;
+}
+
+
 
 #jobs
 {
-    display: none;
-    position: absolute;
-    z-index: $z-index-background-jobs;
-    top:50px;
-    margin-left:20px;
-    background-color: var(--color_op_bg);
-    padding:15px !important;
+    // display: none;
+    // position: absolute;
+    // z-index: $z-index-background-jobs;
+    // top:50px;
+    // margin-left:20px;
+    // background-color: var(--color_op_bg);
+    // padding:15px !important;
 }
 
 #menubar,#timelineui
@@ -110,6 +118,12 @@ nav
     float:left;
     z-index: $z-index-nav;
     $nav-li-padding: 7px 14px;
+
+    .nav_logo
+    {
+        width:15px;
+    }
+
 
         li
         {
