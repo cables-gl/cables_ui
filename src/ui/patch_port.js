@@ -201,9 +201,16 @@ CABLES.UI.Port = function (thePort)
         }
         else
         {
-            if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
+            if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == false)
             {
+                console.log("right button only");
                 gui.setCursor("port_remove");
+            }
+            else if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == true)
+            {
+                $("#drop-op-cursor").css({ "top": b - 12, "left": a - 37 });
+                gui.setCursor("port_add");
+                $("#drop-op-cursor").show();
             }
             else
             {
