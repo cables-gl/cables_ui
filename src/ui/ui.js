@@ -24,7 +24,7 @@ CABLES.UI.GUI = function (cfg)
         {
             "forceWebGl1": cfg.usersettings.settings.forceWebGl1 == "true",
             "alpha": true,
-            "premultiplied": true,
+            "premultipliedAlpha": true,
             "prefixAssetPath": CABLES.sandbox.getAssetPrefix()
         }
     });
