@@ -100,12 +100,14 @@ CABLES.CMD.PATCH.createFile = function ()
 
 CABLES.CMD.PATCH.uploadFile = function ()
 {
+    if (!window.gui) return;
     const fileElem = document.getElementById("hiddenfileElem");
     if (fileElem) fileElem.click();
 };
 
 CABLES.CMD.PATCH.uploadFileDialog = function ()
 {
+    if (!window.gui) return;
     const fileElem = document.getElementById("uploaddialog");
     jQuery.event.props.push("dataTransfer");
 

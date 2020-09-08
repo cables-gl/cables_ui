@@ -61,6 +61,8 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("introCompleted", CABLES.UI.userSettings.get("introCompleted"));
     this.setSwitchValue("showTipps", CABLES.UI.userSettings.get("showTipps"));
     this.setSwitchValue("showMinimap", CABLES.UI.userSettings.get("showMinimap"));
+    this.setSwitchValue("hideSizeBar", CABLES.UI.userSettings.get("hideSizeBar"));
+
     this.setSwitchValue("helperMode", CABLES.UI.userSettings.get("helperMode"));
     this.setSwitchValue("noidlemode", CABLES.UI.userSettings.get("noidlemode"));
 
