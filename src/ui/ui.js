@@ -1,6 +1,7 @@
 CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
+
 CABLES.UI.GUI = function (cfg)
 {
     CABLES.EventTarget.apply(this);
@@ -208,7 +209,7 @@ CABLES.UI.GUI = function (cfg)
         this._elEditor = this._elEditor || document.getElementById("editor");
         this._elLibrary = this._elLibrary || document.getElementById("library");
         this._elCanvasInfoSize = this._elCanvasInfoSize || document.getElementById("canvasInfoSize");
-        this._elSplitterEditor = this._elSplitterEditor || document.getElementById("splitterEditor");
+        // this._elSplitterEditor = this._elSplitterEditor || document.getElementById("splitterEditor");
         this._elSplitterMaintabs = this._elSplitterMaintabs || document.getElementById("splitterMaintabs");
         this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
         this._elEditorMaximized = this._elEditorMaximized || document.getElementById("editormaximized");
@@ -2145,13 +2146,13 @@ function startUi(cfg)
         gui.checkIdle();
         gui.initCoreListeners();
 
-        gui.bind(function ()
+        gui.bind(() =>
         {
             incrementStartup();
-            CABLES.sandbox.initRouting(function ()
+            CABLES.sandbox.initRouting(() =>
             {
                 incrementStartup();
-                gui.opDocs = new CABLES.UI.OpDocs(function ()
+                gui.opDocs = new CABLES.UI.OpDocs(() =>
                 {
                     CABLES.UI.userSettings.init();
                     incrementStartup();
@@ -2211,6 +2212,7 @@ function startUi(cfg)
                     gui.socket.updateMembers();
 
                     CABLES.UI.loaded = true;
+                    setTimeout(() => { window.gui.emitEvent("uiloaded"); }, 100);
                 });
             });
         });

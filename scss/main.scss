@@ -810,7 +810,7 @@ input
 {
     border:2px solid red;
     background-color: red;
-    position: ansolute;
+    position: absolute;
     width:1px;
     height:1px;
     border-radius: 10px;
@@ -824,8 +824,8 @@ input
     width:30px;
     height:30px;
     position:absolute;
-    top:10px;
-    left:12px;
+    top:5px;
+    left:5px;
     z-index:999;
     overflow:hidden;
     pointer-events: none;
