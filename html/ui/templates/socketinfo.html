@@ -1,13 +1,12 @@
 
 <script id="socketinfo" type="text/x-handlebars-template">
 
-    <hr/>
     Connected: {{connected}}
     <br/>
     Num clients: {{numClients}}
     <br/>
     {{#each clients}}
-        - {{username}} 
+        - {{username}}
         {{#if isMe}} (me) {{/if}}
         - {{#if lost}}timeout??{{/if}}
         <!-- - {{timeout}} -->

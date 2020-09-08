@@ -33,8 +33,15 @@ CABLES.OpTree = function (config)
 
 CABLES.OpTree.prototype.searchFor = function (txt)
 {
-    $("#opsearch").val(txt);
-    $("#opsearch").trigger("input");
+    const opSearch = document.getElementById("opsearch");
+    opSearch.value = txt;
+
+    const event = new Event("input", {
+        "bubbles": true,
+        "cancelable": true,
+    });
+
+    opSearch.dispatchEvent(event);
 };
 
 CABLES.OpTree.prototype.itemHtml = function (item, html, level)

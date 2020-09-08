@@ -61,6 +61,8 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("introCompleted", CABLES.UI.userSettings.get("introCompleted"));
     this.setSwitchValue("showTipps", CABLES.UI.userSettings.get("showTipps"));
     this.setSwitchValue("showMinimap", CABLES.UI.userSettings.get("showMinimap"));
+    this.setSwitchValue("hideSizeBar", CABLES.UI.userSettings.get("hideSizeBar"));
+
     this.setSwitchValue("helperMode", CABLES.UI.userSettings.get("helperMode"));
     this.setSwitchValue("noidlemode", CABLES.UI.userSettings.get("noidlemode"));
 
@@ -73,6 +75,8 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("svgpatchviewdisable", CABLES.UI.userSettings.get("svgpatchviewdisable"));
     this.setSwitchValue("showOldOps", CABLES.UI.userSettings.get("showOldOps"));
     this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
+
+    this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
 };
 
 CABLES.UI.Preferences.prototype.show = function ()

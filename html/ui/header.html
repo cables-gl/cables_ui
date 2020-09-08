@@ -2,10 +2,15 @@
     <head>
         <title>| cables</title>
         <!-- <link rel="manifest" href="/manifest_ui.json"> -->
+
+        <script>if (typeof module === 'object') {window.module = module; module = undefined;}
+        </script><!-- electron module workaround/fix -->
+
         <script src="/ui/js/libs.ui.min.js"></script>
-        <!-- <script src="/ui/js/libs.core.min.js"></script> -->
         <script src="/ui/js/talkerapi.js"></script>
-        
+
+        <script>if (window.module) module = window.module;</script><!-- electron module workaround/fix -->
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
         <style media="screen">
             body { background-color: #282828; color:#aaa; position:fixed;overflow: hidden;}
@@ -73,24 +78,11 @@
 
     <div class="workingindicator" style="margin-top:50px;"></div>
 
-    <div id="cablescanvas" style="overflow:hidden;width:640px;height:300px;position:absolute;right:0px;">
+    <div id="cablescanvas" class="bgpatternDark" style="overflow:hidden;width:640px;height:300px;position:absolute;right:0px;">
         <canvas id="glcanvas" width="0" height="0"></canvas>
     </div>
 
     <div id="mainContainer">
-
-    <!-- <div id="searchbox">
-		<div class="inputcontainer">
-			<div style="width:85%;float:left">
-				<input class="medium info" id="findinput" autocomplete="off" oninput="gui.find().search(this.value);" style="margin:0px;"/>
-			</div>
-			<div style="width:15%;float:left">
-				<a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
-			</div>
-			<div style="clear:both"></div>
-		</div>
-        <div id="searchresult"></div>
-    </div> -->
 
     <div id="cmdpalette">
 		<div class="input-container">

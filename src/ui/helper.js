@@ -1,10 +1,6 @@
 
 CABLES.UI = CABLES.UI || {};
 
-// CABLES.UI.setStatusText=function(txt)
-// {
-//     // $('#statusbar .text').html('&nbsp;'+txt);
-// };
 CABLES.UI.MOUSE_BUTTON_NONE = 0;
 CABLES.UI.MOUSE_BUTTON_LEFT = 1;
 CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
@@ -20,11 +16,11 @@ CABLES.UI.DEFAULTOPNAMES =
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v2",
     "defaultOpJson": "Ops.Json.AjaxRequest_v2",
     "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
-    "VarGetNumber": "Ops.Vars.VarGetNumber",
-    "VarSetObject": "Ops.Vars.VarSetObject",
-    "VarGetObject": "Ops.Vars.VarGetObject",
-    "VarSetArray": "Ops.Vars.VarSetArray",
-    "VarGetArray": "Ops.Vars.VarGetArray",
+    "VarGetNumber": "Ops.Vars.VarGetNumber_v2",
+    "VarSetObject": "Ops.Vars.VarSetObject_v2",
+    "VarGetObject": "Ops.Vars.VarGetObject_v2",
+    "VarSetArray": "Ops.Vars.VarSetArray_v2",
+    "VarGetArray": "Ops.Vars.VarGetArray_v2",
     "VarSetString": "Ops.Vars.VarSetString_v2",
     "VarGetString": "Ops.Vars.VarGetString",
     "defaultFont": "Ops.Html.FontFile_v2"
@@ -78,12 +74,10 @@ CABLES.uniqueArray = function (arr)
 CABLES.serializeForm = function (selector)
 {
     const json = {};
-    $(selector).find(":input").each(function ()
+    Array.from(document.querySelector(selector).elements).forEach((e) =>
     {
-        json[$(this).attr("name")] = $(this).val();
-        // console.log(,);
+        json[e.getAttribute("name")] = e.value;
     });
-    console.log(json);
     return json;
 };
 
@@ -119,6 +113,24 @@ CABLES.UI.showJson = function (opid, which)
     //     {
     //     }
     // });
+};
+
+CABLES.UI.showJsonStructure = function (opid, which)
+{
+    const op = gui.corePatch().getOpById(opid);
+    if (!op)
+    {
+        console.log("opid not found:", opid);
+        return;
+    }
+    const port = op.getPort(which);
+    if (!port)
+    {
+        console.log("port not found:", which);
+        return;
+    }
+
+    CABLES.UI.MODAL.showPortStructure(port.name, port);
 };
 
 
@@ -184,8 +196,6 @@ function mouseEvent(event)
         event.clientY = event.originalEvent.touches[0].pageY;
     }
 
-    // if(!event.offsetX && event.layerX) event.offsetX = event.layerX;//(event.pageX - $(event.target).offset().left);
-    // if(!event.offsetY && event.layerY) event.offsetY = event.layerY;//(event.pageY - $(event.target).offset().top);
     return event;
 }
 

@@ -156,16 +156,11 @@ CABLES.API = function ()
             html += "<h2>thank you</h2>";
             html += "we will look into it<br/>";
             html += "<br/>";
-        	html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"CABLES.UI.MODAL.hide()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"CABLES.UI.MODAL.hide()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
             html += "</center>";
 
             CABLES.UI.MODAL.show(html, { "title": "" });
             CABLES.lastError = null;
-
-            $("#modalbg").on("click", function ()
-            {
-                CABLES.UI.MODAL.hide(true);
-            });
         });
     };
 };

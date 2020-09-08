@@ -36,9 +36,9 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                 if (this._serverDate != data.updated)
                 {
                     CABLES.UI.MODAL.showError("meanwhile...", "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>");
-                    CABLES.UI.MODAL.contentElement.append("<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;");
-                    CABLES.UI.MODAL.contentElement.append("<a class=\"button\" onclick=\"gui.patch().checkUpdatedSaveForce('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;");
-                    CABLES.UI.MODAL.contentElement.append("<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;");
+                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
+                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patch().checkUpdatedSaveForce('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;";
+                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
                 }
                 else
                 {
@@ -259,27 +259,23 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     else CABLES.UI.notify("Patch saved");
 
                     this._serverDate = r.updated;
-
                     const thePatch = gui.corePatch();
                     const cgl = thePatch.cgl;
-
                     const doSaveScreenshot = gui.corePatch().isPlaying();
-                    const w = $("#glcanvas").attr("width");
-                    const h = $("#glcanvas").attr("height");
+                    const w = cgl.canvas.width / cgl.pixelDensity;
+                    const h = cgl.canvas.height / cgl.pixelDensity;
 
                     if (doSaveScreenshot)
                     {
-                        $("#glcanvas").attr("width", 640);
-                        $("#glcanvas").attr("height", 360);
+                        cgl.canvas.width = "640px";
+                        cgl.canvas.height = "360px";
                     }
 
                     if (doSaveScreenshot)
                     {
                         const screenshotTimeout = setTimeout(function ()
                         {
-                            //                             gui.corePatch().cgl.setSize(w,h);
-                            //                             gui.corePatch().resume();
-                            cgl.setSize(w / cgl.pixelDensity, h / cgl.pixelDensity);
+                            cgl.setSize(w, h);
                             thePatch.resume();
                         }, 300);
 
@@ -293,7 +289,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                         {
                             clearTimeout(screenshotTimeout);
 
-                            cgl.setSize(w / cgl.pixelDensity, h / cgl.pixelDensity);
+                            cgl.setSize(w, h);
                             thePatch.resume();
 
                             const reader = new FileReader();

@@ -37,10 +37,9 @@ function ()
         if (jobs.length == 0)
         {
             str += "All server jobs finished...";
-            $(".cables-logo .icon-cables").removeClass("blinkanim");
+            // document.querySelector(".cables-logo .icon-cables").classList.remove("blinkanim");
+            gui.showLoadingProgress(false);
         }
-
-        str += gui.chat.getUserInfoHtml();
 
         if (indicator)
         {
@@ -52,7 +51,8 @@ function ()
             if (lastIndicator) gui.setWorking(false, lastIndicator);
         }
 
-        $("#jobs").html(str);
+        document.getElementById("jobs").innerHTML = str;
+        document.getElementById("navsocketinfo").innerHTML = gui.chat.getUserInfoHtml();
         if (!this._listenerStarted) this.startListener();
     };
 
@@ -80,8 +80,8 @@ function ()
             }
         }
 
-        $(".cables-logo .icon-cables").addClass("blinkanim");
-
+        // document.querySelector(".cables-logo .icon-cables").classList.add("blinkanim");
+        gui.showLoadingProgress(true);
 
         jobs.push(job);
         this.updateJobListing();
@@ -92,22 +92,36 @@ function ()
         }
     };
 
-    this.updateProgressMainBar = function ()
-    {
-        $("#uploadprogress").css({ "width": options.complete + "%" });
-    };
+    // this.updateProgressMainBar = function (prog)
+    // {
+
+    // };
 
     this.setProgress = function (jobId, progress)
     {
+        let avg = 0;
+        let avgCount = 0;
         for (const i in jobs)
         {
             if (jobs[i].id == jobId)
             {
                 jobs[i].progress = progress;
-
                 document.getElementById("jobprogress" + jobs[i].id).style.width = progress + "%";
-                break;
             }
+
+            if (jobs[i].progress)
+            {
+                avgCount++;
+                avg += jobs[i].progress;
+            }
+        }
+        if (avgCount)
+        {
+            const prog = avg / avgCount;
+            document.getElementById("uploadprogress").style.width = prog + "%";
+
+            if (prog === 100) document.getElementById("uploadprogresscontainer").classList.add("hidden");
+            else document.getElementById("uploadprogresscontainer").classList.remove("hidden");
         }
     };
 
@@ -133,8 +147,14 @@ function ()
 
             if (jobs.length === 0)
             {
-                $(".cables .logo").addClass("cablesLogo");
-                $(".cables .logo").removeClass("fa fa-circle-o-notch fa-spin");
+                const logo = document.querySelector(".cables .logo");
+                if (logo)
+                {
+                    logo.classList.add("cablesLogo");
+                    logo.classList.remove("fa");
+                    logo.classList.remove("fa-circle-o-notch");
+                    logo.classList.remove("fa-spin");
+                }
             }
             this.updateJobListing();
         }, 250);

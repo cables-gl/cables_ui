@@ -44,17 +44,17 @@ CABLES.UI.TexturePreviewer.FRAGSHADER = "".endl()
     .endl() + "UNI float width;"
     .endl() + "UNI float height;"
 
-    .endl() + "float checkerboard()"
-    .endl() + "{"
-    .endl() + "    float num=40.0;"
-    .endl() + "    float h=(height/width)*num;"
-    .endl() + "    float total = floor(texCoord.x*num) +floor(texCoord.y*h);"
-    .endl() + "    return mod(total,2.0)*0.1+0.05;"
-    .endl() + "}"
+// .endl() + "float checkerboard()"
+// .endl() + "{"
+// .endl() + "    float num=40.0;"
+// .endl() + "    float h=(height/width)*num;"
+// .endl() + "    float total = floor(texCoord.x*num) +floor(texCoord.y*h);"
+// .endl() + "    return mod(total,2.0)*0.1+0.05;"
+// .endl() + "}"
 
     .endl() + "void main()"
     .endl() + "{"
-    .endl() + "    vec4 col=vec4(vec3(checkerboard()),1.0);"
+    .endl() + "    vec4 col=vec4(0.0);"
     .endl() + "    vec4 colTex=texture2D(tex,texCoord);"
     .endl() + "    outColor = mix(col,colTex,colTex.a);"
     .endl() + "}";
@@ -305,6 +305,7 @@ CABLES.UI.TexturePreviewer.prototype.render = function ()
     if (this._lastClicked)
     {
         // this._ele=document.getElementById('bgpreview');
+        gui.setElementBgPattern(this._ele);
         this._ele.style.display = "block";
         this._renderTexture(this._lastClicked, this._ele);
 

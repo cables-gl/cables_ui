@@ -30,7 +30,7 @@ CABLES.UI.MetaVars.prototype.update = function ()
 
     for (const i in vars)
     {
-        $("#varval" + i).html(vars[i].getValue());
+        if (ele.byId("varval" + i)) ele.byId("varval" + i).innerHTML = vars[i].getValue();
     }
 
     this._lastTimeout = setTimeout(this.update.bind(this), 250);

@@ -15,7 +15,7 @@ CABLES.UI.SetPortTitle = function (opId, portId, oldtitle)
         oldtitle,
         function (name)
         {
-            console.log("jaja!", opId, portId, oldtitle);
+            // console.log("jaja!", opId, portId, oldtitle);
 
             const op = gui.corePatch().getOpById(opId);
             const p = op.getPort(portId);
@@ -187,7 +187,6 @@ CABLES.UI.Port = function (thePort)
         if (window.CABLES.UI.selectedEndOp)
         {
             $("#drop-op-cursor").hide();
-
 
             if (CABLES.UI.selectedStartPort)
             {
@@ -474,6 +473,7 @@ CABLES.UI.Port = function (thePort)
 
         perf.finish();
     }
+
     this.updateUI = updateUI;
 
     function updateHoverToolTip(event)

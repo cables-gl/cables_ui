@@ -360,7 +360,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (performance.now() - this._uiAttrFpsLast > 1000)
         {
             this._uiAttrFpsLast = performance.now();
-            if (this._uiAttrFpsCount >= 10) console.warn("Too many ui attr updates!", this._uiAttrFpsCount, this._currentOp.name);
+            if (this._uiAttrFpsCount >= 10) console.warn("Too many ui attr updates! ", this._uiAttrFpsCount, this._currentOp.name);
             this._uiAttrFpsCount = 0;
         }
 
@@ -453,11 +453,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 {
                     el = $(id);
                     thePort._tempLastUiValue = thePort.get();
-                    if (el.val() != thePort.get()) el.val(thePort.get());
+                    if (el.val() != thePort.getValueForDisplay()) el.val(thePort.getValueForDisplay());
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                 {
-                    newValue = this._formatNumber(thePort.get());
+                    newValue = this._formatNumber(thePort.getValueForDisplay());
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY)
                 {
@@ -466,7 +466,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_STRING)
                 {
-                    newValue = "\"" + thePort.get() + "\"";
+                    newValue = "\"" + thePort.getValueForDisplay() + "\"";
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_OBJECT)
                 {

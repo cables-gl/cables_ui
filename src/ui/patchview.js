@@ -10,6 +10,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._element = null;
         this._pvRenderers = {};
         this._patchRenderer = null;
+        this._cachedSubpatchNames = {};
         this.isPasting = false;
         this.boundingRect = null;
         this.store = new CABLES.UI.PatchServer();
@@ -247,6 +248,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             if ((this._p.ops[i].uiAttribs.subPatch || 0) == subPatch) this._p.ops[i].uiAttr({ "selected": true });
             else if (!noUnselect) this._p.ops[i].uiAttr({ "selected": false });
         }
+        this.showSelectedOpsPanel();
     }
 
     showBookmarkParamsPanel()
@@ -410,6 +412,20 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             }
         }
         this._p.emitEvent("subpatchCreated");
+    }
+
+
+    getSubPatchName(subpatch)
+    {
+        if (!subpatch) return "Main";
+        if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
+
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+            if (ops[i].objName == CABLES.UI.OPNAME_SUBPATCH && ops[i].patchId)
+                this._cachedSubpatchNames[ops[i].patchId.get()] = ops[i].name;
+
+        if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
     }
 
     getSubpatchPathArray(subId, arr)
