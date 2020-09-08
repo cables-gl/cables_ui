@@ -77,17 +77,24 @@ CABLES.UI.Port = function (thePort)
 
     function dragStart(x, y, event)
     {
+        console.log("drag start");
+        // console.log(event);
+
         cancelDeleteLink = false;
 
+        // if (event.which == 1 && event.ctrlKey)
         if (event.which == 3 || (event.which == 1 && event.ctrlKey))
         {
             if (thePort.isLinked && self.thePort.links.length > 0) // && thePort.links.length===1
             {
+                console.log("port is linked AND link length > 0");
+                console.log();
                 CABLES.UI.MOUSEDRAGGINGPORT = true;
 
                 const otherPorts = [];
                 if (thePort.links.length > 1)
                 {
+                    console.log("otherports A");
                     for (let i = 0; i < thePort.links.length; i++)
                     {
                         const other = thePort.links[i].getOtherPort(thePort);
@@ -98,6 +105,9 @@ CABLES.UI.Port = function (thePort)
                 else
                 {
                     otherPorts.push(self.thePort.links[0].getOtherPort(self.thePort));
+
+                    console.log("dragstart ELSE");
+                    console.log("PARENT OP IS " + self.thePort.links[0].portOut.parent.name);
                 }
 
                 CABLES.UI.selectedStartPort = otherPorts[0];
@@ -136,7 +146,8 @@ CABLES.UI.Port = function (thePort)
                 linkingLine = new CABLES.UI.SVGMultiLine(points);
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x + 2, gui.patch().getCanvasCoordsMouse(event).y - 2);
                 linkingLine.addClass("link");
-
+                //mod
+                //clears the link when the right mouse button is dragged and released
                 if (!event.altKey) self.thePort.removeLinks();
                 updateUI();
             }
@@ -160,6 +171,7 @@ CABLES.UI.Port = function (thePort)
 
     function dragMove(dx, dy, a, b, event)
     {
+        // console.log(event);
         cancelDeleteLink = true;
         if (event.which == 2) return;
         if (!CABLES.UI.selectedStartPort) return;
@@ -203,7 +215,6 @@ CABLES.UI.Port = function (thePort)
         {
             if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == false)
             {
-                console.log("right button only");
                 gui.setCursor("port_remove");
             }
             else if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == true)
@@ -227,6 +238,8 @@ CABLES.UI.Port = function (thePort)
         }
         else
         {
+            //mod
+            //this updates when the mouse is dragged AND held over a port
             gui.setCursor();
             $("#drop-op-cursor").hide();
 
@@ -270,6 +283,9 @@ CABLES.UI.Port = function (thePort)
     function dragEnd(event)
     {
         console.log("Drag link released");
+        // console.log(CABLES.UI);
+
+
         CABLES.UI.MOUSEDRAGGINGPORT = false;
         removeLinkingLine();
         if (event.stopPropagation)event.stopPropagation();
@@ -286,6 +302,7 @@ CABLES.UI.Port = function (thePort)
             if (numFitting == 1)
             {
                 console.log("auto connecting on single matching port");
+                console.log("dRAG END PARENT op IS " + CABLES.UI.selectedStartPort.parent);
                 const p = CABLES.UI.selectedEndOp.op.findFittingPort(CABLES.UI.selectedStartPort);
 
                 gui.corePatch().link(
@@ -344,17 +361,18 @@ CABLES.UI.Port = function (thePort)
 
         if (!foundAutoOp)
         {
+            console.log("NO FOUND AUTO OP");
             // if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
             //drag is released over nothing, remove line reset
-            if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink) || (event.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
+            if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink && event.altKey) || (event.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
                 removeLinkingLine();
                 self.thePort.removeLinks();
                 CABLES.UI.selectedStartPortMulti.length = 0;
                 return;
             }
-
+            //HERE!!!?!!!
             //right mouse drag moves link to another port
             if (CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort))
             {
@@ -378,101 +396,62 @@ CABLES.UI.Port = function (thePort)
             {
                 console.log("disconnected link, released over nothing");
 
-                event = CABLES.mouseEvent(event);
-
-                const links = self.opUi.getPortLinks(CABLES.UI.selectedStartPort.id);
-                const coords = gui.patch().getCanvasCoordsMouse(event);
-                const isDragging = self.opUi.isDragging;
-                const selectedStartPort = CABLES.UI.selectedStartPort;
-
-                const dist = Math.abs(coords.x - self.op.uiAttribs.translate.x) + Math.abs(coords.y - self.op.uiAttribs.translate.y);
-
-                if (Math.abs(coords.x - self.op.uiAttribs.translate.x) < 50) coords.x = self.op.uiAttribs.translate.x;
-                if (Math.abs(coords.y - self.op.uiAttribs.translate.y) < 40)
-                {
-                    if (CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction == CABLES.PORT_DIR_IN) coords.y = self.op.uiAttribs.translate.y - 40;
-                    else coords.y = self.op.uiAttribs.translate.y + 40;
-                }
-
-                const showSelect = function ()
-                {
-                    if (dist < 10)
-                    {
-                        gui.opSelect().show(coords, null, selectedStartPort, links[0]);
-                    }
-                    else
-                    {
-                        gui.opSelect().show(coords, self.op, selectedStartPort);
-                    }
-                };
-
-                //horrible as its duplicate code but it works, now theres no link made
-                if (event.which == 3 && event.altKey)
-                {
-                    console.log("right mouse button + alt");
-
-                    gui.setCursor("port_add");
-                    if (CABLES.UI.selectedStartPort && (!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort || !linkingLine))
-                    {
-                        if (dist > 30)
-                        {
-                            console.log("greater than 30 ?");
-                            new CABLES.UI.SuggestOpDialog(self.op, CABLES.UI.selectedStartPort.name, event, coords, showSelect,
-                                function ()
-                                {
-                                    console.log("cancval");
-                                });
-                        }
-                        else
-                        {
-                            showSelect();
-                        }
-                    }
-                }
-
-                else if (event.which != 3)//if not right mouse button
+                if ((event.which == 3 && event.altKey) || event.which != 3)
+                // if (event.which != 3)//if not right mouse button
                 {
                     event = CABLES.mouseEvent(event);
                     if (CABLES.UI.selectedStartPort && (!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort || !linkingLine))
                     {
-                        // const links = self.opUi.getPortLinks(CABLES.UI.selectedStartPort.id);
-                        // const coords = gui.patch().getCanvasCoordsMouse(event);
-                        // const isDragging = self.opUi.isDragging;
-                        // const selectedStartPort = CABLES.UI.selectedStartPort;
+                        const links = self.opUi.getPortLinks(CABLES.UI.selectedStartPort.id);
+                        const coords = gui.patch().getCanvasCoordsMouse(event);
+                        const isDragging = self.opUi.isDragging;
+                        const selectedStartPort = CABLES.UI.selectedStartPort;
 
-                        // const dist = Math.abs(coords.x - self.op.uiAttribs.translate.x) + Math.abs(coords.y - self.op.uiAttribs.translate.y);
+                        const dist = Math.abs(coords.x - self.op.uiAttribs.translate.x) + Math.abs(coords.y - self.op.uiAttribs.translate.y);
 
-                        // if (Math.abs(coords.x - self.op.uiAttribs.translate.x) < 50) coords.x = self.op.uiAttribs.translate.x;
-                        // if (Math.abs(coords.y - self.op.uiAttribs.translate.y) < 40)
-                        // {
-                        //     if (CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction == CABLES.PORT_DIR_IN) coords.y = self.op.uiAttribs.translate.y - 40;
-                        //     else coords.y = self.op.uiAttribs.translate.y + 40;
-                        // }
-
-                        // const showSelect = function ()
-                        // {
-                        //     if (dist < 10)
-                        //     {
-                        //         // port was clicked, not dragged, insert op directly into link
-
-                        //         // if(event.which==1 && event.ctrlKey)
-                        //         // {
-                        //         //  self.thePort.removeLinks();
-                        //         //  removeLinkingLine();
-                        //         //  console.log('remove!!!');
-                        //         //  return;
-                        //         // }
-                        //         // else
-                        //         gui.opSelect().show(coords, null, selectedStartPort, links[0]);
-                        //     }
-                        //     else
-                        //     {
-                        //         gui.opSelect().show(coords, self.op, selectedStartPort);
-                        //     }
-                        // };
-
-                        if (dist > 30)
+                        if (Math.abs(coords.x - self.op.uiAttribs.translate.x) < 50) coords.x = self.op.uiAttribs.translate.x;
+                        if (Math.abs(coords.y - self.op.uiAttribs.translate.y) < 40)
                         {
+                            if (CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction == CABLES.PORT_DIR_IN) coords.y = self.op.uiAttribs.translate.y - 40;
+                            else coords.y = self.op.uiAttribs.translate.y + 40;
+                        }
+
+                        const showSelect = function ()
+                        {
+                            if (dist < 10)
+                            {
+                                // port was clicked, not dragged, insert op directly into link
+
+                                // if(event.which==1 && event.ctrlKey)
+                                // {
+                                //  self.thePort.removeLinks();
+                                //  removeLinkingLine();
+                                //  console.log('remove!!!');
+                                //  return;
+                                // }
+                                // else
+                                console.log("showselect less than 10");
+                                gui.opSelect().show(coords, null, selectedStartPort, links[0]);
+                            }
+                            else
+                            {
+                                console.log("showselect ELSE");
+                                if(event.altKey)
+                                {
+                                    console.log("RAWWW 1000");
+                                    gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                }
+                                else
+                                {
+                                    gui.opSelect().show(coords, self.op, selectedStartPort);
+                                }
+                            }
+                        };
+                        //OP CREATED HERE WITH LEFT MOUSE OR RIGHT CLICK DRAG + ALT
+                        if (dist > 30 && event.which == 1 )
+                        {
+                            console.log("RAWWW 9000");
+                            // self.thePort.links[0].portOut.parent.name
                             new CABLES.UI.SuggestOpDialog(self.op, CABLES.UI.selectedStartPort.name, event, coords, showSelect,
                                 function ()
                                 {
