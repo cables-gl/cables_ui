@@ -225,22 +225,22 @@ CABLES.UI.GUI = function (cfg)
 
         this._elMenubar.show();
 
-        if (self.rendererWidth === undefined || self.rendererHeight === undefined)
+        if (this.rendererWidth === undefined || self.rendererHeight === undefined)
         {
-            self.rendererWidth = window.innerWidth * 0.4;
+            this.rendererWidth = window.innerWidth * 0.4;
             self.rendererHeight = window.innerHeight * 0.25;
         }
-        if (self.rendererWidth === 0)
+        if (this.rendererWidth === 0)
         {
-            self.rendererWidth = window.innerWidth;
+            this.rendererWidth = window.innerWidth;
             self.rendererHeight = window.innerHeight;
         }
 
-        self.rendererWidthScaled = self.rendererWidth * this._corePatch.cgl.canvasScale;
-        self.rendererHeightScaled = self.rendererHeight * this._corePatch.cgl.canvasScale;
+        this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
+        this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
 
-        self.rendererWidth = Math.floor(self.rendererWidth);
-        self.rendererHeight = Math.floor(self.rendererHeight);
+        this.rendererWidth = Math.floor(this.rendererWidth);
+        this.rendererHeight = Math.floor(this.rendererHeight);
 
         const cgl = this._corePatch.cgl;
         if (cgl.canvasWidth)
@@ -250,10 +250,10 @@ CABLES.UI.GUI = function (cfg)
 
         const iconBarWidth = 80;
         const menubarHeight = 30;
-        const optionsWidth = Math.max(400, self.rendererWidthScaled / 2);
+        const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
 
         let timelineUiHeight = 40;
-        if (self.timeLine() && self.timeLine().hidden) timelineUiHeight = 0;
+        if (this.timeLine() && this.timeLine().hidden) timelineUiHeight = 0;
 
         const filesHeight = 0;
         // if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
@@ -261,7 +261,7 @@ CABLES.UI.GUI = function (cfg)
         const timedisplayheight = 25;
 
         let patchHeight = window.innerHeight - menubarHeight - 2;
-        const patchWidth = window.innerWidth - self.rendererWidthScaled - 6 - iconBarWidth;
+        const patchWidth = window.innerWidth - this.rendererWidthScaled - 6 - iconBarWidth;
 
         if (showTiming)
         {
@@ -353,9 +353,9 @@ CABLES.UI.GUI = function (cfg)
         //     this._elEditorMinimized.style.display = "none";
         //     var editWidth=self.editorWidth;
 
-        //     if (editWidth > window.innerWidth - self.rendererWidth -iconBarWidth)
+        //     if (editWidth > window.innerWidth - this.rendererWidth -iconBarWidth)
         //     {
-        //         self.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
+        //         this.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
         //         this.updateCanvasIconBar();
         //     }
 
@@ -407,16 +407,16 @@ CABLES.UI.GUI = function (cfg)
 
         $("#jobs").css("left", iconBarWidth);
 
-        if (self.rendererWidth < 100) self.rendererWidth = 100;
+        if (this.rendererWidth < 100) this.rendererWidth = 100;
 
         $("#patch svg").css("height", patchHeight);
         $("#patch svg").css("width", patchWidth);
 
-        this._elSplitterPatch.css("left", window.innerWidth - self.rendererWidthScaled - 4);
+        this._elSplitterPatch.css("left", window.innerWidth - this.rendererWidthScaled - 4);
         this._elSplitterPatch.css("height", patchHeight + timelineUiHeight + 2);
         this._elSplitterPatch.css("top", menubarHeight);
-        this._elSplitterRenderer.css("top", self.rendererHeightScaled);
-        this._elSplitterRenderer.css("width", self.rendererWidthScaled);
+        this._elSplitterRenderer.css("top", this.rendererHeightScaled);
+        this._elSplitterRenderer.css("width", this.rendererWidthScaled);
 
 
         this._elPatch.css("height", patchHeight);
@@ -445,10 +445,10 @@ CABLES.UI.GUI = function (cfg)
         }
 
         this._elLibrary.style.left = iconBarWidth;
-        this._elLibrary.style.width = window.innerWidth - self.rendererWidthScaled - iconBarWidth;
+        this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth;
         this._elLibrary.style.bottom = 0;
 
-        const timelineWidth = window.innerWidth - self.rendererWidthScaled - 2 - iconBarWidth;
+        const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
 
 
         if (showTiming)
@@ -496,27 +496,27 @@ CABLES.UI.GUI = function (cfg)
             $("#splitterTimeline").hide();
         }
 
-        if (self.timeLine()) self.timeLine().updateViewBox();
+        if (this.timeLine()) this.timeLine().updateViewBox();
 
         $("#splitterTimeline").css("width", timelineWidth);
-        $("#delayed").css("left", window.innerWidth - self.rendererWidth + 10);
+        $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
 
-        this._elOptions.css("left", window.innerWidth - self.rendererWidthScaled - 1);
+        this._elOptions.css("left", window.innerWidth - this.rendererWidthScaled - 1);
         this._elOptions.css("top", self.rendererHeightScaled);
         this._elOptions.css("width", optionsWidth);
         this._elOptions.css("height", window.innerHeight - self.rendererHeightScaled);
 
-        const metaWidth = self.rendererWidthScaled - optionsWidth + 1;
+        const metaWidth = this.rendererWidthScaled - optionsWidth + 1;
         this._elMeta.css("right", 0);
         this._elMeta.css("top", self.rendererHeightScaled);
         this._elMeta.css("width", metaWidth);
         this._elMeta.css("height", window.innerHeight - self.rendererHeightScaled);
 
         $("#performance_glcanvas").css("bottom", 0);
-        $("#performance_glcanvas").css("right", self.rendererWidthScaled - optionsWidth - $("#performance_glcanvas").width() + 1);
+        $("#performance_glcanvas").css("right", this.rendererWidthScaled - optionsWidth - $("#performance_glcanvas").width() + 1);
 
         this._elMenubar.css("top", 0);
-        this._elMenubar.css("width", window.innerWidth - self.rendererWidthScaled - 10);
+        this._elMenubar.css("width", window.innerWidth - this.rendererWidthScaled - 10);
         this._elMenubar.css("height", menubarHeight);
 
         this._elSplitterMeta.css("bottom", self.infoHeight + "px");
@@ -539,7 +539,7 @@ CABLES.UI.GUI = function (cfg)
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - 50);
 
 
-        if (self.rendererWidth === 0)
+        if (this.rendererWidth === 0)
         {
             this._elGlCanvas.attr("width", window.innerWidth);
             this._elGlCanvas.attr("height", window.innerHeight);
@@ -549,14 +549,14 @@ CABLES.UI.GUI = function (cfg)
         {
             const density = this._corePatch.cgl.pixelDensity;
 
-            this._elGlCanvas.attr("width", self.rendererWidth * density);
+            this._elGlCanvas.attr("width", this.rendererWidth * density);
             this._elGlCanvas.attr("height", self.rendererHeight * density);
-            this._elGlCanvas.css("width", self.rendererWidth);
+            this._elGlCanvas.css("width", this.rendererWidth);
             this._elGlCanvas.css("height", self.rendererHeight);
-            // this._elGlCanvas.css('left', window.innerWidth-self.rendererWidth*density);
-            // console.log("!!!",window.innerWidth,self.rendererWidth)
+            // this._elGlCanvas.css('left', window.innerWidth-this.rendererWidth*density);
+            // console.log("!!!",window.innerWidth,this.rendererWidth)
 
-            this._elCablesCanvas.css("width", self.rendererWidth + "px");
+            this._elCablesCanvas.css("width", this.rendererWidth + "px");
             this._elCablesCanvas.css("height", self.rendererHeight + "px");
 
             this._elCablesCanvas.css("transform-origin", "top right");
@@ -565,7 +565,7 @@ CABLES.UI.GUI = function (cfg)
             this._corePatch.cgl.updateSize();
         }
 
-        $("#bgpreview").css("right", self.rendererWidth + "px");
+        $("#bgpreview").css("right", this.rendererWidth + "px");
         $("#bgpreview").css("top", menubarHeight + "px");
 
         this.emitEvent("setLayout");
@@ -597,20 +597,20 @@ CABLES.UI.GUI = function (cfg)
     this.cycleRendererSize = function ()
     {
         this.showCanvasModal(false);
-        if (self.rendererWidth !== 0)
+        if (this.rendererWidth !== 0)
         {
             this._elGlCanvas.addClass("maximized");
-            this._oldCanvasWidth = self.rendererWidth;
+            this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = self.rendererHeight;
             this._oldShowingEditor = showingEditor;
 
-            self.rendererWidth = 0;
+            this.rendererWidth = 0;
             showingEditor = false;
         }
         else
         {
             this._elGlCanvas.removeClass("maximized");
-            self.rendererWidth = this._oldCanvasWidth;
+            this.rendererWidth = this._oldCanvasWidth;
             self.rendererHeight = this._oldCanvasHeight;
             showingEditor = this._oldShowingEditor;
             this.showCanvasModal(true);
@@ -653,7 +653,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.showTiming = function ()
     {
-        self.timeLine().hidden = false;
+        this.timeLine().hidden = false;
         showTiming = true;
         $("#timing").show();
         gui.setLayout();
@@ -662,7 +662,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.hideTiming = function ()
     {
-        self.timeLine().hidden = true;
+        this.timeLine().hidden = true;
         showTiming = false;
         $("#timing").hide();
         gui.setLayout();
@@ -671,14 +671,14 @@ CABLES.UI.GUI = function (cfg)
 
     this.toggleTiming = function ()
     {
-        self.timeLine().hidden = false;
+        this.timeLine().hidden = false;
         $("#timing").show();
         CABLES.UI.userSettings.set("timelineOpened", true);
 
         showTiming = !showTiming;
         updateTimingIcon();
-        self.setLayout();
-        self.timeLine().redraw();
+        this.setLayout();
+        this.timeLine().redraw();
     };
 
     this.showUiDebug = function ()
@@ -1265,10 +1265,10 @@ CABLES.UI.GUI = function (cfg)
                 break;
 
             case 74: // j
-                self.timeLine().jumpKey(-1);
+                this.timeLine().jumpKey(-1);
                 break;
             case 75: // k
-                self.timeLine().jumpKey(1);
+                this.timeLine().jumpKey(1);
                 break;
             }
         });
@@ -1280,7 +1280,7 @@ CABLES.UI.GUI = function (cfg)
             {
             case 32: // space play
                 const timeused = Date.now() - spaceBarStart;
-                if (timeused < 500) self.timeLine().togglePlay();
+                if (timeused < 500) this.timeLine().togglePlay();
                 spaceBarStart = 0;
                 break;
             }
@@ -1291,7 +1291,7 @@ CABLES.UI.GUI = function (cfg)
             switch (e.which)
             {
             case 32: // space play
-                self.timeLine().togglePlay();
+                this.timeLine().togglePlay();
                 break;
             }
         });
@@ -1386,7 +1386,7 @@ CABLES.UI.GUI = function (cfg)
         this.metaTexturePreviewer.pressedEscape();
         $(".tooltip").hide();
 
-        if (self.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
+        if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
             if (this._elGlCanvas.hasClass("maximized"))
             {
@@ -1733,7 +1733,7 @@ CABLES.UI.GUI = function (cfg)
         ele.classList.remove("bgPatternGrey");
         ele.classList.remove("bgPatternBlue");
 
-        ele.classList.add(CABLES.UI.userSettings.get("bgpattern"));
+        ele.classList.add(CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
     };
 
     // this.updateProjectFiles=function(proj)
