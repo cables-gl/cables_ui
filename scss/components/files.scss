@@ -1,29 +1,23 @@
 
-
-
-
-
-
 #uploadprogresscontainer
 {
-    display:none;
-    border:1px solid var(--color-13);
-    background-color:var(--color-03);
-    width:50px;
-    height:5px;
+    background-color:var(--color-07);
     position:absolute;
-    top:70px;
-    left:12px;
     z-index:99999;
     overflow:hidden;
+
+    left:2px;
+    top:27px;
+    width:40px;
+    height:3px;
 }
+
 #uploadprogress
 {
-    background-color:var(--color-09);
+    background-color:var(--color-special);
     width:50%;
     height:100%;
 }
-
 
 #library
 {
@@ -41,7 +35,7 @@
         padding-left: 0px;
         padding-right: 4px;
         font-family: monospace;
-    }    
+    }
 
     .file-icon-container
     {
@@ -227,7 +221,7 @@
         padding-left: 5px;
         padding-top: 5px;
         position: relative;
-        
+
         .lvl0{}
         .lvl1{ margin-left: 20px;}
         .lvl2{ margin-left: 40px;}

@@ -64,7 +64,7 @@
                     <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable" id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="Drag this File to the patchfield to create op!" data-searchable="{{title}}" data-tt="{{title}}">
                         <div>
                             {{#if preview}}
-                            <div class="preview" style="width:90%;height:calc(90% - 22px);;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
+                            <div class="preview bgPatternDark" style="width:90%;height:calc(90% - 22px);;background-color:#777;">
                                 <div style="background-image:url({{preview}}?rnd={{file.cachebuster}});width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center center;">
                                 </div>
                             </div>

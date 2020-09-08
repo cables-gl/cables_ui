@@ -320,7 +320,7 @@ CABLES.UI.FileManager.prototype.updateHeader = function (detailItems)
         "display": this._manager.getDisplay(),
         "filter": this._manager.titleFilter,
     });
-    document.getElementById("itemmanager_header").innerHTML = (html);
+    if (ele.byId("itemmanager_header"))ele.byId("itemmanager_header").innerHTML = (html);
 
     const elSwitchIcons = document.getElementById("switch-display-icons");
     const elSwitchList = document.getElementById("switch-display-list");

@@ -414,7 +414,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
     {
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
-        const title = shortname + " / " + attachmentName;
+        const title = shortname + "/" + attachmentName;
 
         const editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname });
         CABLES.api.clearCache();
@@ -429,6 +429,8 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
             },
             function (err, res)
             {
+                gui.jobs().finish("load_attachment_" + attachmentName);
+
                 if (err || !res || res.content == undefined)
                 {
                     if (err)console.log("[opattachmentget] err", err);
@@ -444,7 +446,6 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 if (attachmentName.endsWith(".js")) syntax = "js";
                 if (attachmentName.endsWith(".css")) syntax = "css";
 
-                gui.jobs().finish("load_attachment_" + attachmentName);
 
                 if (editorObj)
                 {

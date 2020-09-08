@@ -183,3 +183,17 @@
 
     }
 }
+
+
+.tabSubtab
+{
+    padding-left:15px;
+    padding-right:15px;
+    padding:5px;
+    border-bottom:1px solid transparent;
+}
+.tabActiveSubtab
+{
+    border-bottom:1px solid var(--color-special);
+}
+

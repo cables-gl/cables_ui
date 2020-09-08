@@ -188,7 +188,6 @@ CABLES.UI.Port = function (thePort)
         {
             $("#drop-op-cursor").hide();
 
-
             if (CABLES.UI.selectedStartPort)
             {
                 const fit = CABLES.UI.selectedEndOp.op.findFittingPort(CABLES.UI.selectedStartPort);

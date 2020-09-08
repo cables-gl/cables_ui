@@ -1,22 +1,22 @@
 
-@keyframes blinke {
-    0% {
-        background-color: white
-    }
-    50% {
-        background-color: var(--color-special);
-    }
-    100% {
-        background-color: white;
-    }
-}
+// @keyframes blinke {
+//     0% {
+//         background-color: white
+//     }
+//     50% {
+//         background-color: var(--color-special);
+//     }
+//     100% {
+//         background-color: white;
+//     }
+// }
 
 
-.blinkanim
-{
-    transition:all 0.5s ease-in-out;
-    animation:blinke normal 0.5s infinite ease-in-out;
-}
+// .blinkanim
+// {
+//     transition:all 0.5s ease-in-out;
+//     animation:blinke normal 0.5s infinite ease-in-out;
+// }
 
 
 .changelog
