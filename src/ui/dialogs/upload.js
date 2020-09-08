@@ -72,6 +72,7 @@ CABLES.uploadFile = function (file)
 
 CABLES.uploadFiles = function (files)
 {
+    if (!window.gui) return;
     gui.jobs().start({ "id": "prepareuploadfiles", "title": "preparing files for upload..." });
 
     for (let i = 0; i < files.length; i++)
