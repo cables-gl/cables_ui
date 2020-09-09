@@ -414,7 +414,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
     {
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
-        const title = shortname + " / " + attachmentName;
+        const title = shortname + "/" + attachmentName;
 
         const editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname });
         CABLES.api.clearCache();
