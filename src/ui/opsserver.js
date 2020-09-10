@@ -723,6 +723,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         {
             new CABLES.CoreLibLoader(coreLibsToLoad, function ()
             {
+                console.log("all op libs loaded!");
                 next();
             });
         });

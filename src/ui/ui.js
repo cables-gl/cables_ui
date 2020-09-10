@@ -254,13 +254,14 @@ CABLES.UI.GUI = function (cfg)
         {
             iconBarWidth = 0;
             this._elIconBar.hide();
-            document.getElementsByTagName("nav")[0].style["margin-left"] = "0px";
         }
         else
         {
             this._elIconBar.show();
-            document.getElementsByTagName("nav")[0].style["margin-left"] = "80px";
         }
+
+        document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
+        this._elIconBar[0].style.width = iconBarWidth + "px";
 
         const menubarHeight = 30;
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
@@ -1462,6 +1463,7 @@ CABLES.UI.GUI = function (cfg)
         else
         {
             if (e) gui.opSelect().show({
+                "subPatch": this.patchView.getCurrentSubPatch(),
                 "x": 0,
                 "y": 0
             });

@@ -115,6 +115,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
 
+            console.log("adding op. uiAttribs: ", uiAttribs);
             const op = this._p.addOp(opname, uiAttribs);
 
             // todo options:
@@ -204,10 +205,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         const oldOp = gui.corePatch().getOpById(opid);
         const trans = {
-            "translate": {
-                "x": oldOp.uiAttribs.translate.x,
-                "y": oldOp.uiAttribs.translate.y - 100
-            }
+            "x": oldOp.uiAttribs.translate.x,
+            "y": oldOp.uiAttribs.translate.y - 100
         };
 
         gui.patchView.addOp(opname, {
@@ -216,7 +215,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 const newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
                 gui.corePatch().link(oldOp, portname, newOp, newPort.name);
 
-                newOp.setUiAttrib({ "translate": trans });
+                newOp.setUiAttrib({
+                    "translate": trans,
+                    "subPatch": this.patchView.getCurrentSubPatch()
+                });
             } });
     }
 
@@ -899,6 +901,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (this._patchRenderer.center) this._patchRenderer.center(x, y);
         else console.log("patchRenderer has no function center");
+    }
+
+    getCurrentSubPatch()
+    {
+        return this._patchRenderer.getCurrentSubPatch();
     }
 
     setCurrentSubPatch(subpatch)
