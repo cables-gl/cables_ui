@@ -1457,11 +1457,16 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         return posy;
     };
 
+    this.redrawLinks = function ()
+    {
+        for (const j in this.links) this.links[j].redraw();
+    };
+
     this.setPosFromUiAttr = function ()
     {
         this.setPos(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
         // console.log(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
-        for (const j in self.links) self.links[j].redraw();
+        this.redrawLinks();
     };
 
     this.setPos = function (_x, _y)
@@ -1476,8 +1481,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         if (!self.op.uiAttribs.translate || self.op.uiAttribs.translate.x != posx || self.op.uiAttribs.translate.y != posy)
             self.op.uiAttr({ "translate": { "x": posx, "y": posy } });
 
-        for (const j in self.links)
-            self.links[j].redraw();
+        this.redrawLinks();
     };
 
     this.doMove = function (dx, dy, a, b, e)
