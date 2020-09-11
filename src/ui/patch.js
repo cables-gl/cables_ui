@@ -1206,7 +1206,7 @@ CABLES.UI.Patch = function (_gui)
             if (this.disabled) return;
             gui.setStateUnsaved();
 
-            console.log("link!");
+            // console.log("link!");
 
             let uiPort1 = null;
             let uiPort2 = null;
@@ -1336,7 +1336,7 @@ CABLES.UI.Patch = function (_gui)
                 self.checkLinkTimeWarnings();
 
 
-                console.log("added op!");
+                // console.log("added op!");
 
                 // },10);
             }.bind(this));
