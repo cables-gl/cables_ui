@@ -148,6 +148,7 @@ CABLES.UI.FindTab.prototype.isVisible = function ()
 
 CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 {
+    if (!op.uiAttribs || !op.uiAttribs.translate) return;
     let html = "";
     let info = "";
     this._maxIdx = idx;
