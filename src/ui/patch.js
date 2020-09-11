@@ -136,49 +136,6 @@ CABLES.UI.Patch = function (_gui)
         gui.patchView.clipboardCopyOps(e);
     };
 
-    this._finishPaste = function (ops, focusSubpatchop, mouseX, mouseY)
-    {
-        self.setSelectedOp(null);
-
-        // setTimeout(function ()
-        // {
-        for (let i = 0; i < ops.length; i++)
-        {
-            const uiop = self.addSelectedOpById(ops[i].id);
-
-            if (uiop)
-            {
-                uiop.setSelected(false);
-                uiop.setSelected(true);
-            }
-            else
-            {
-                console.log("bug... paste: cant find uiop", ops[i].id);
-                setTimeout(() =>
-                {
-                    this._finishPaste(ops, focusSubpatchop, mouseX, mouseY);
-                }, 200);
-            }
-            gui.setStateUnsaved();
-        }
-
-        gui.patch().setCurrentSubPatch(currentSubPatch);
-
-        if (focusSubpatchop)
-        {
-            console.log(focusSubpatchop, mouseX, mouseY);
-            const op = gui.corePatch().getOpById(focusSubpatchop.id);
-            // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
-
-            const uiop = gui.patch().getUiOp(op);
-            // uiop.setPos(mouseX, mouseY);
-
-            // gui.patch().focusOp(op.id,true);
-            // console.log(op);
-            // gui.patch().centerViewBoxOps();
-        }
-        // }, 100);
-    };
     this.paste = function (e)
     {
         let mouseX = 0;
@@ -192,7 +149,39 @@ CABLES.UI.Patch = function (_gui)
         gui.patchView.clipboardPaste(e, currentSubPatch, mouseX, mouseY,
             (ops, focusSubpatchop) =>
             {
-                this._finishPaste(ops, focusSubpatchop, mouseX, mouseY);
+                self.setSelectedOp(null);
+
+                // setTimeout(function ()
+                // {
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const uiop = self.addSelectedOpById(ops[i].id);
+
+                    if (uiop)
+                    {
+                        uiop.setSelected(false);
+                        uiop.setSelected(true);
+                    }
+                    else console.log("paste: cant find uiop", ops[i].id);
+                    gui.setStateUnsaved();
+                }
+
+                gui.patch().setCurrentSubPatch(currentSubPatch);
+
+                if (focusSubpatchop)
+                {
+                    console.log(focusSubpatchop, mouseX, mouseY);
+                    const op = gui.corePatch().getOpById(focusSubpatchop.id);
+                    // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+
+                    const uiop = gui.patch().getUiOp(op);
+                    // uiop.setPos(mouseX, mouseY);
+
+                    // gui.patch().focusOp(op.id,true);
+                    // console.log(op);
+                    // gui.patch().centerViewBoxOps();
+                }
+                // }, 100);
             });
     };
 
@@ -1206,8 +1195,6 @@ CABLES.UI.Patch = function (_gui)
             if (this.disabled) return;
             gui.setStateUnsaved();
 
-            // console.log("link!");
-
             let uiPort1 = null;
             let uiPort2 = null;
             for (let i = 0; i < self.ops.length; i++)
@@ -1231,7 +1218,18 @@ CABLES.UI.Patch = function (_gui)
 
             if (!uiPort1 || !uiPort2)
             {
-                console.log("no uiport found");
+                console.warn("no uiport found");
+
+
+                for (let i = 0; i < this.ops.length; i++)
+                {
+                    if (this.ops[i].portsIn.length + this.ops[i].portsOut.length)
+                        console.log("THIS ONE?!?!?!??!?!???", this.ops[i].portsIn.length + this.ops[i].portsOut.length, this.ops[i]);
+                }
+
+                console.log(uiPort1, uiPort1.opUi);
+                console.log(uiPort2, uiPort2.opUi);
+
                 return;
             }
 
@@ -1334,9 +1332,6 @@ CABLES.UI.Patch = function (_gui)
                 doAddOp(uiOp);
                 this.opCollisionTest(uiOp);
                 self.checkLinkTimeWarnings();
-
-
-                // console.log("added op!");
 
                 // },10);
             }.bind(this));

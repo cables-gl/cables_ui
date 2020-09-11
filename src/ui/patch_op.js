@@ -1184,7 +1184,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
     this.isMouseOver = false;
 
-    op.addEventListener("onUiAttribsChange", (attribs) =>
+
+    this._uiAttrChanged = function (attribs)
     {
         if (!attribs) return;
 
@@ -1253,7 +1254,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
             // gui.patch().updateOpParams(this.op.id);
         }
-    });
+    };
 
     this.fixTitle = function ()
     {
@@ -1744,4 +1745,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
     {
         this.initPorts();
     }.bind(this));
+
+    op.addEventListener("onUiAttribsChange", this._uiAttrChanged.bind(this));
+    // this.initPorts();
+    this._uiAttrChanged();
 };
