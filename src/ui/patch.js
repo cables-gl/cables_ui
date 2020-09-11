@@ -151,7 +151,6 @@ CABLES.UI.Patch = function (_gui)
             {
                 self.setSelectedOp(null);
 
-
                 // setTimeout(function ()
                 // {
                 for (let i = 0; i < ops.length; i++)
@@ -1069,21 +1068,21 @@ CABLES.UI.Patch = function (_gui)
 
         if (!isLoading)
         {
-            setTimeout(function ()
-            {
-                if (currentSubPatch == uiOp.getSubPatch()) uiOp.show();
+            // setTimeout(function ()
+            // {
+            if (currentSubPatch == uiOp.getSubPatch()) uiOp.show();
 
-                if (showAddedOpTimeout != -1) clearTimeout(showAddedOpTimeout);
-                showAddedOpTimeout = setTimeout(function ()
-                {
-                    gui.patch().setSelectedOp(null);
-                    gui.patch().setSelectedOp(uiOp);
-                    gui.opParams.show(op);
-                    gui.patch().updateBounds();
-                    gui.patch().getViewBox().update();
-                    uiOp.oprect.showFocus();
-                }, 30);
+            if (showAddedOpTimeout != -1) clearTimeout(showAddedOpTimeout);
+            showAddedOpTimeout = setTimeout(function ()
+            {
+                gui.patch().setSelectedOp(null);
+                gui.patch().setSelectedOp(uiOp);
+                gui.opParams.show(op);
+                gui.patch().updateBounds();
+                gui.patch().getViewBox().update();
+                uiOp.oprect.showFocus();
             }, 30);
+            // }, 30);
         }
 
         // select ops after pasting...
@@ -1098,12 +1097,12 @@ CABLES.UI.Patch = function (_gui)
             uiOp.oprect.showFocus();
             gui.patch().updateBounds();
 
-            setTimeout(function ()
-            {
-                // this fixes links not showing up after pasting
-                uiOp.setPos();
-                gui.patch().getViewBox().update();
-            }, 30);
+            // setTimeout(function ()
+            // {
+            // this fixes links not showing up after pasting
+            uiOp.setPos();
+            // gui.patch().getViewBox().update();
+            // }, 30);
         }
 
         if (uiOp.op.objName.startsWith("Ops.Deprecated.")) uiOp.op.uiAttr({ "error": "Op is deprecated" });
@@ -1196,6 +1195,8 @@ CABLES.UI.Patch = function (_gui)
             if (this.disabled) return;
             gui.setStateUnsaved();
 
+            console.log("link!");
+
             let uiPort1 = null;
             let uiPort2 = null;
             for (let i = 0; i < self.ops.length; i++)
@@ -1227,12 +1228,13 @@ CABLES.UI.Patch = function (_gui)
 
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
-
-            if (!isLoading && !uiPort1.opUi.isHidden()) thelink.show();
-
+            uiPort1.opUi.redrawLinks();
+            uiPort2.opUi.redrawLinks();
 
             if (!isLoading)
             {
+                if (!uiPort1.opUi.isHidden()) thelink.show();
+
                 // todo: update is too often ?? check if current op is linked else do not update!!!
                 this.updateCurrentOpParams();
 
@@ -1322,6 +1324,9 @@ CABLES.UI.Patch = function (_gui)
                 this.opCollisionTest(uiOp);
                 self.checkLinkTimeWarnings();
 
+
+                console.log("added op!");
+
                 // },10);
             }.bind(this));
     };
@@ -1367,29 +1372,29 @@ CABLES.UI.Patch = function (_gui)
 
         gui.setWorking(true, "patch");
 
-        setTimeout(function ()
+        // setTimeout(function ()
+        // {
+        subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
+
+        for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+
+        currentSubPatch = which;
+        self.updateSubPatches();
+
+        if (subPatchViewBoxes[which])
         {
-            subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
+            // viewBox = subPatchViewBoxes[which];
+            this._viewBox.deSerialize(subPatchViewBoxes[which]);
+            this.updateViewBox();
+        }
 
-            for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+        this._elPatch.focus();
+        gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
 
-            currentSubPatch = which;
-            self.updateSubPatches();
+        gui.setWorking(false, "patch");
 
-            if (subPatchViewBoxes[which])
-            {
-                // viewBox = subPatchViewBoxes[which];
-                this._viewBox.deSerialize(subPatchViewBoxes[which]);
-                this.updateViewBox();
-            }
-
-            this._elPatch.focus();
-            gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
-
-            gui.setWorking(false, "patch");
-
-            this.currentPatchBounds = this.getSubPatchBounds();
-        }.bind(this), 10);
+        this.currentPatchBounds = this.getSubPatchBounds();
+        // }.bind(this), 10);
     };
 
 

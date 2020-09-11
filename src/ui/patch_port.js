@@ -42,6 +42,11 @@ CABLES.UI.Port = function (thePort)
     let linkingLine = null;
     let cancelDeleteLink = false;
 
+    thePort.on("onLinkChanged", () =>
+    {
+        this.opUi.redrawLinks();
+    });
+
     thePort.addEventListener("onUiAttrChange", function (attribs)
     {
         if (attribs.hasOwnProperty("hidePort"))
