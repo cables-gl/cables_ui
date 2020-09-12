@@ -162,7 +162,7 @@ CABLES.UI.Patch = function (_gui)
                         uiop.setSelected(false);
                         uiop.setSelected(true);
                     }
-                    else console.log("paste: cant find uiop");
+                    else console.log("paste: cant find uiop", ops[i].id);
                     gui.setStateUnsaved();
                 }
 
@@ -1195,8 +1195,6 @@ CABLES.UI.Patch = function (_gui)
             if (this.disabled) return;
             gui.setStateUnsaved();
 
-            console.log("link!");
-
             let uiPort1 = null;
             let uiPort2 = null;
             for (let i = 0; i < self.ops.length; i++)
@@ -1220,7 +1218,18 @@ CABLES.UI.Patch = function (_gui)
 
             if (!uiPort1 || !uiPort2)
             {
-                console.log("no uiport found");
+                console.warn("no uiport found");
+
+
+                for (let i = 0; i < this.ops.length; i++)
+                {
+                    if (this.ops[i].portsIn.length + this.ops[i].portsOut.length)
+                        console.log("THIS ONE?!?!?!??!?!???", this.ops[i].portsIn.length + this.ops[i].portsOut.length, this.ops[i]);
+                }
+
+                console.log(uiPort1, uiPort1.opUi);
+                console.log(uiPort2, uiPort2.opUi);
+
                 return;
             }
 
@@ -1323,9 +1332,6 @@ CABLES.UI.Patch = function (_gui)
                 doAddOp(uiOp);
                 this.opCollisionTest(uiOp);
                 self.checkLinkTimeWarnings();
-
-
-                console.log("added op!");
 
                 // },10);
             }.bind(this));
