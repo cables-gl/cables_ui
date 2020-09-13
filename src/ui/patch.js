@@ -1226,10 +1226,15 @@ CABLES.UI.Patch = function (_gui)
                     if (this.ops[i].portsIn.length + this.ops[i].portsOut.length == 0)
                         console.log("THIS ONE has no ui ports?!", this.ops[i].portsIn.length + this.ops[i].portsOut.length, this.ops[i]);
                 }
-
-                console.log(uiPort1, uiPort1.opUi);
-                console.log(uiPort2, uiPort2.opUi);
-
+                try
+                {
+                    console.log(uiPort1, uiPort1.opUi);
+                    console.log(uiPort2, uiPort2.opUi);
+                }
+                catch (e)
+                {
+                    console.log(e);
+                }
                 return;
             }
 
