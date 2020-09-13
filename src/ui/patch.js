@@ -1223,8 +1223,8 @@ CABLES.UI.Patch = function (_gui)
 
                 for (let i = 0; i < this.ops.length; i++)
                 {
-                    if (this.ops[i].portsIn.length + this.ops[i].portsOut.length)
-                        console.log("THIS ONE?!?!?!??!?!???", this.ops[i].portsIn.length + this.ops[i].portsOut.length, this.ops[i]);
+                    if (this.ops[i].portsIn.length + this.ops[i].portsOut.length == 0)
+                        console.log("THIS ONE has no ui ports?!", this.ops[i].portsIn.length + this.ops[i].portsOut.length, this.ops[i]);
                 }
 
                 console.log(uiPort1, uiPort1.opUi);
