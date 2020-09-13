@@ -1192,6 +1192,9 @@ CABLES.UI.Patch = function (_gui)
 
         scene.addEventListener("onLink", function (p1, p2)
         {
+            if (!isLoading)
+                console.log("onlink event!", p1.parent.name, p1.name);
+
             if (this.disabled) return;
             gui.setStateUnsaved();
 
@@ -1218,14 +1221,15 @@ CABLES.UI.Patch = function (_gui)
 
             if (!uiPort1 || !uiPort2)
             {
-                console.warn("no uiport found");
+                if (!isLoading)
+                    console.warn("no uiport found");
 
 
-                for (let i = 0; i < this.ops.length; i++)
-                {
-                    if (this.ops[i].portsIn.length + this.ops[i].portsOut.length == 0)
-                        console.log("THIS ONE has no ui ports?!", this.ops[i].portsIn.length + this.ops[i].portsOut.length, this.ops[i]);
-                }
+                // for (let i = 0; i < this.ops.length; i++)
+                // {
+                //     // if (this.ops[i].portsIn.length + this.ops[i].portsOut.length == 0)
+                //     //     console.log("THIS ONE has no ui ports?!", this.ops[i].op.name, this.ops[i].op, this.ops[i].op);
+                // }
                 try
                 {
                     console.log(uiPort1, uiPort1.opUi);
@@ -1242,11 +1246,12 @@ CABLES.UI.Patch = function (_gui)
 
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
-            uiPort1.opUi.redrawLinks();
-            uiPort2.opUi.redrawLinks();
 
             if (!isLoading)
             {
+                uiPort1.opUi.redrawLinks();
+                uiPort2.opUi.redrawLinks();
+
                 if (!uiPort1.opUi.isHidden()) thelink.show();
 
                 // todo: update is too often ?? check if current op is linked else do not update!!!
@@ -1319,6 +1324,10 @@ CABLES.UI.Patch = function (_gui)
             function (op)
             {
                 if (this.disabled) return;
+
+                if (!isLoading)
+                    console.log("onop add event!", op.name);
+
                 gui.setStateUnsaved();
                 this._elPatch.focus();
                 let width = CABLES.UI.uiConfig.opWidth;
@@ -1379,7 +1388,8 @@ CABLES.UI.Patch = function (_gui)
     {
         if (currentSubPatch == which) return;
 
-        console.log("switch subpatch:", which);
+        // console.log("switch subpatch:", which);
+        gui.log.userInteraction("switch subpatch " + which);
 
         gui.setWorking(true, "patch");
 

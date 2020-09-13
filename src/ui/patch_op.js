@@ -411,6 +411,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         }
         shakeLastX = a;
 
+        gui.log.userInteraction("moves op");
         gui.patch().moveSelectedOps(dx, dy, a, b, e);
         this._updateElementOrder(true);
         gui.setStateUnsaved();

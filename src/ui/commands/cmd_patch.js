@@ -505,13 +505,13 @@ CABLES.CMD.PATCH.replaceFilePath = function ()
     CABLES.UI.MODAL.prompt(
         "Replace String Values",
         "Search for...",
-        "assets/",
+        "/assets/",
         function (srch)
         {
             CABLES.UI.MODAL.prompt(
                 "Replace String Values",
                 "...replace with",
-                "/assets/" + gui.project()._id + "/",
+                "/assets/" + gui.project()._id,
                 function (rplc)
                 {
                     const ops = gui.patch().ops;
@@ -522,13 +522,14 @@ CABLES.CMD.PATCH.replaceFilePath = function ()
                             if (ops[i].portsIn[j].thePort.uiAttribs && ops[i].portsIn[j].thePort.uiAttribs.display && ops[i].portsIn[j].thePort.uiAttribs.display == "file")
                             {
                                 console.log("filename:", ops[i].portsIn[j].thePort.get());
-                                console.log("srch", srch);
-                                console.log("rplc", rplc);
+                                // console.log("srch", srch);
+                                // console.log("rplc", rplc);
                                 let v = ops[i].portsIn[j].thePort.get();
 
                                 if (v) console.log("srch index", v.indexOf(srch));
                                 if (v && v.indexOf(srch) == 0)
                                 {
+                                    console.log("found str!");
                                     v = rplc + v.substring(srch.length);
                                     ops[i].portsIn[j].thePort.set(v);
                                     console.log("result filename:", v);

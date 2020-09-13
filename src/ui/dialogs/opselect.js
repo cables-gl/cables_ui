@@ -587,6 +587,8 @@ CABLES.UI.OpSelect = class
     {
         if (opname && opname.length > 2)
         {
+            gui.log.userInteraction("adds op " + opname);
+
             CABLES.UI.MODAL.hide();
             gui.patchView.addOp(opname, this._newOpOptions);
             if (this._onOpAdd)
