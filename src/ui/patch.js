@@ -150,6 +150,7 @@ CABLES.UI.Patch = function (_gui)
             (ops, focusSubpatchop) =>
             {
                 self.setSelectedOp(null);
+                gui.patch().checkOpsInSync();
 
                 // setTimeout(function ()
                 // {
@@ -163,6 +164,7 @@ CABLES.UI.Patch = function (_gui)
                         uiop.setSelected(true);
                     }
                     else console.log("paste: cant find uiop", ops[i].id);
+
                     gui.setStateUnsaved();
                 }
 
@@ -961,6 +963,32 @@ CABLES.UI.Patch = function (_gui)
 
     function doLink() {}
 
+    this.checkOpsInSync = function ()
+    {
+        console.log("core ops / ui ops: ", gui.corePatch().ops.length, this.ops.length);
+
+        let notFound = 0;
+        for (let i = 0; i < gui.corePatch().ops.length; i++)
+        {
+            let found = false;
+            for (let j = 0; j < this.ops.length; j++)
+            {
+                if (gui.corePatch().ops[i] == this.ops[j].op)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                notFound++;
+                console.log("no uiop found of op: ", gui.corePatch().ops[i]);
+            }
+        }
+        if (notFound)console.log("num unfound ops:", notFound);
+    };
+
+
     this.removeQuickLinkLine = function ()
     {
         if (self.quickLinkLine)
@@ -1632,6 +1660,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.updatedOpPositionsFromUiAttribs = function (ops)
     {
+        self.checkOpsInSync();
         for (let i = 0; i < ops.length; i++)
         {
             if (ops[i].op) ops[i].setPos(ops[i].op.uiAttribs.translate.x, ops[i].op.uiAttribs.translate.y);
