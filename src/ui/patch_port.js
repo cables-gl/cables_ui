@@ -372,7 +372,7 @@ CABLES.UI.Port = function (thePort)
             }
             else
             {
-                onsole.log("B3");
+                console.log("B3");
                 if ((event.which == 3 && event.altKey) || event.which != 3)
                 {
                     event = CABLES.mouseEvent(event);
@@ -419,10 +419,25 @@ CABLES.UI.Port = function (thePort)
 
                                     if(self.thePort.links[0].portIn == selectedStartPort)
                                     {
-                                        console.log("ports multi total is " + CABLES.UI.selectedStartPortMulti.length);
+                                        // console.log("ports multi total is " + CABLES.UI.selectedStartPortMulti.length);
                                         // console.log(CABLES.UI.selectedStartPortMulti.length);
 
                                         gui.opSelect().show(coords, self.thePort.links[0].portIn.parent, selectedStartPort);
+                                        //op errors below
+                                        // const link = gui.corePatch().link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName(), CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
+                                        //console.log(CABLES.UI.selectedEndPort.op);//error
+                                        console.log(CABLES.UI.selectedStartPortMulti[1].parent);//gives ops below
+                                        //HERE
+                                        // for (let j = 0; j < CABLES.UI.selectedStartPortMulti.length; j++)
+                                        // {
+                                        //     gui.corePatch().link(
+                                        //         CABLES.UI.selectedStartPort.op,
+                                        //         CABLES.UI.selectedStartPort.name,
+                                        //         CABLES.UI.selectedStartPortMulti[j].parent,
+                                        //         CABLES.UI.selectedStartPortMulti[j].name
+                                        //     );
+                                        // }
+                                        // CABLES.UI.selectedEndPort.updateUI();
                                     }
                                     else
                                     {
