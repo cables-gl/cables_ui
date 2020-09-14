@@ -152,37 +152,37 @@ CABLES.UI.Patch = function (_gui)
                 self.setSelectedOp(null);
 
 
-                // setTimeout(function ()
-                // {
-                for (let i = 0; i < ops.length; i++)
+                setTimeout(function ()
                 {
-                    const uiop = self.addSelectedOpById(ops[i].id);
-
-                    if (uiop)
+                    for (let i = 0; i < ops.length; i++)
                     {
-                        uiop.setSelected(false);
-                        uiop.setSelected(true);
+                        const uiop = self.addSelectedOpById(ops[i].id);
+
+                        if (uiop)
+                        {
+                            uiop.setSelected(false);
+                            uiop.setSelected(true);
+                        }
+                        else console.log("paste: cant find uiop");
+                        gui.setStateUnsaved();
                     }
-                    else console.log("paste: cant find uiop");
-                    gui.setStateUnsaved();
-                }
 
-                gui.patch().setCurrentSubPatch(currentSubPatch);
+                    gui.patch().setCurrentSubPatch(currentSubPatch);
 
-                if (focusSubpatchop)
-                {
-                    console.log(focusSubpatchop, mouseX, mouseY);
-                    const op = gui.corePatch().getOpById(focusSubpatchop.id);
-                    // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+                    if (focusSubpatchop)
+                    {
+                        console.log(focusSubpatchop, mouseX, mouseY);
+                        const op = gui.corePatch().getOpById(focusSubpatchop.id);
+                        // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
 
-                    const uiop = gui.patch().getUiOp(op);
-                    // uiop.setPos(mouseX, mouseY);
+                        const uiop = gui.patch().getUiOp(op);
+                        // uiop.setPos(mouseX, mouseY);
 
                     // gui.patch().focusOp(op.id,true);
                     // console.log(op);
                     // gui.patch().centerViewBoxOps();
-                }
-                // }, 100);
+                    }
+                }, 100);
             });
     };
 

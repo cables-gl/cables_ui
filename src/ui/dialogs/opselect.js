@@ -569,14 +569,12 @@ CABLES.UI.OpSelect = class
 
     onInput(e)
     {
-        if (this._keyTimeout)console.log("cancled on input...");
         clearTimeout(this._keyTimeout);
 
         document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
 
         this._keyTimeout = setTimeout(() =>
         {
-            console.log("input!!!");
             this._keyTimeout = null;
             this.displayBoxIndex = 0;
             this.updateInfo();
