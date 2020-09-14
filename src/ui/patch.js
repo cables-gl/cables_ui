@@ -1024,6 +1024,8 @@ CABLES.UI.Patch = function (_gui)
 
         const op = uiOp.op;
 
+        console.log("doaddop!", op.objName);
+
         if (!isLoading)
         {
             const undofunc = (function (opid, objName)
@@ -1220,10 +1222,11 @@ CABLES.UI.Patch = function (_gui)
 
         scene.addEventListener("onLink", function (p1, p2)
         {
+            if (this.disabled) return;
+
             if (!isLoading)
                 console.log("onlink event!", p1.parent.name, p1.name);
 
-            if (this.disabled) return;
             gui.setStateUnsaved();
 
             let uiPort1 = null;
@@ -1252,6 +1255,7 @@ CABLES.UI.Patch = function (_gui)
                 if (!isLoading)
                     console.warn("no uiport found");
 
+                gui.patch().checkOpsInSync();
 
                 // for (let i = 0; i < this.ops.length; i++)
                 // {
@@ -1353,6 +1357,7 @@ CABLES.UI.Patch = function (_gui)
             {
                 if (this.disabled) return;
 
+                console.log("onopadd 2");
                 if (!isLoading)
                     console.log("onop add event!", op.name);
 
@@ -1360,6 +1365,8 @@ CABLES.UI.Patch = function (_gui)
                 this._elPatch.focus();
                 let width = CABLES.UI.uiConfig.opWidth;
                 if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
+
+                console.log("onopadd 3");
 
                 const x = CABLES.UI.OPSELECT.newOpPos.x;
                 const y = CABLES.UI.OPSELECT.newOpPos.y;
