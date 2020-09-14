@@ -172,6 +172,8 @@ CABLES.UI.Port = function (thePort)
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.uiAttribs.useVariable) return;
 
+        gui.log.userInteraction("drag move port " + self.thePort.name);
+
         CABLES.UI.MOUSEDRAGGINGPORT = true;
 
         if (!linkingLine)
@@ -401,7 +403,7 @@ CABLES.UI.Port = function (thePort)
                             }
                             else
                             {
-                                if(event.altKey && event.which ==3)
+                                if (event.altKey && event.which == 3)
                                 {
                                     gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
                                 }
@@ -412,7 +414,7 @@ CABLES.UI.Port = function (thePort)
                             }
                         };
 
-                        if (dist > 30 && event.which == 1 )
+                        if (dist > 30 && event.which == 1)
                         {
                             new CABLES.UI.SuggestOpDialog(self.op, CABLES.UI.selectedStartPort.name, event, coords, showSelect,
                                 function ()

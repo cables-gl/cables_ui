@@ -7,6 +7,7 @@ CABLES.UI.GUI = function (cfg)
     CABLES.EventTarget.apply(this);
 
     const self = this;
+    this.log = new CABLES.UI.Logger();
     let showTiming = false;
     let showingEditor = false;
     let showMiniMap = false;
@@ -20,12 +21,12 @@ CABLES.UI.GUI = function (cfg)
 
     this._corePatch = CABLES.patch = new CABLES.Patch({
         "editorMode": true,
+        // "prefixAssetPath": CABLES.sandbox.getAssetPrefix(),
         "canvas":
         {
             "forceWebGl1": cfg.usersettings.settings.forceWebGl1 == "true",
             "alpha": true,
             "premultipliedAlpha": true,
-            "prefixAssetPath": CABLES.sandbox.getAssetPrefix()
         }
     });
 
