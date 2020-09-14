@@ -275,9 +275,11 @@ CABLES.UI.Port = function (thePort)
         if (event.stopPropagation)event.stopPropagation();
         if (event.preventDefault)event.preventDefault();
 
+        // console.log(CABLES.UI.selectedStartPortMulti);
         let foundAutoOp = false;
         if (CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
         {
+            console.log("A");
             const numFitting = CABLES.UI.selectedEndOp.op.countFittingPorts(CABLES.UI.selectedStartPort);
 
             if (numFitting == 1)
@@ -338,10 +340,12 @@ CABLES.UI.Port = function (thePort)
 
         if (!foundAutoOp)
         {
+            console.log("B");
             // if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
             if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink && event.altKey) || (event.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
+                console.log("B1");
                 removeLinkingLine();
                 self.thePort.removeLinks();
                 CABLES.UI.selectedStartPortMulti.length = 0;
@@ -350,6 +354,8 @@ CABLES.UI.Port = function (thePort)
 
             if (CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort))
             {
+                console.log("B2");
+                //multi ports here
                 const link = gui.corePatch().link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName(), CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
 
                 for (let j = 0; j < CABLES.UI.selectedStartPortMulti.length; j++)
@@ -366,6 +372,7 @@ CABLES.UI.Port = function (thePort)
             }
             else
             {
+                onsole.log("B3");
                 if ((event.which == 3 && event.altKey) || event.which != 3)
                 {
                     event = CABLES.mouseEvent(event);
@@ -384,7 +391,9 @@ CABLES.UI.Port = function (thePort)
                             if (CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction == CABLES.PORT_DIR_IN) coords.y = self.op.uiAttribs.translate.y - 40;
                             else coords.y = self.op.uiAttribs.translate.y + 40;
                         }
+                        console.log(" ");
 
+                        // console.log(self.thePort.links[0].portOut)
                         const showSelect = function ()
                         {
                             if (dist < 10)
@@ -405,11 +414,26 @@ CABLES.UI.Port = function (thePort)
                             {
                                 if (event.altKey && event.which == 3)
                                 {
-                                    gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                    console.log(self.thePort.links[0].portOut);
+                                    console.log(CABLES.UI.selectedStartPortMulti);
+
+                                    if(self.thePort.links[0].portIn == selectedStartPort)
+                                    {
+                                        console.log("ports multi total is " + CABLES.UI.selectedStartPortMulti.length);
+                                        // console.log(CABLES.UI.selectedStartPortMulti.length);
+
+                                        gui.opSelect().show(coords, self.thePort.links[0].portIn.parent, selectedStartPort);
+                                    }
+                                    else
+                                    {
+                                        gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                    }
+                                    console.log("ONE");
                                 }
                                 else
                                 {
                                     gui.opSelect().show(coords, self.op, selectedStartPort);
+                                    console.log("TWO");
                                 }
                             }
                         };
