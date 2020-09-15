@@ -120,7 +120,7 @@ CABLES.UI.OpDocs = function (cb)
 
             if (cb)cb();
         },
-        function (res) { console.log("err", res); }
+        function (res, e) { console.error("err", res, e); if (cb)cb(); }
     );
 
     this.getSummary = function (opname)

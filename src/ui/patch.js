@@ -150,39 +150,40 @@ CABLES.UI.Patch = function (_gui)
             (ops, focusSubpatchop) =>
             {
                 self.setSelectedOp(null);
+                gui.patch().checkOpsInSync();
 
-
-                setTimeout(function ()
+                // setTimeout(function ()
+                // {
+                for (let i = 0; i < ops.length; i++)
                 {
-                    for (let i = 0; i < ops.length; i++)
-                    {
-                        const uiop = self.addSelectedOpById(ops[i].id);
+                    const uiop = self.addSelectedOpById(ops[i].id);
 
-                        if (uiop)
-                        {
-                            uiop.setSelected(false);
-                            uiop.setSelected(true);
-                        }
-                        else console.log("paste: cant find uiop");
-                        gui.setStateUnsaved();
+                    if (uiop)
+                    {
+                        uiop.setSelected(false);
+                        uiop.setSelected(true);
                     }
+                    else console.log("paste: cant find uiop", ops[i].id);
 
-                    gui.patch().setCurrentSubPatch(currentSubPatch);
+                    gui.setStateUnsaved();
+                }
 
-                    if (focusSubpatchop)
-                    {
-                        console.log(focusSubpatchop, mouseX, mouseY);
-                        const op = gui.corePatch().getOpById(focusSubpatchop.id);
-                        // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+                gui.patch().setCurrentSubPatch(currentSubPatch);
 
-                        const uiop = gui.patch().getUiOp(op);
-                        // uiop.setPos(mouseX, mouseY);
+                if (focusSubpatchop)
+                {
+                    console.log(focusSubpatchop, mouseX, mouseY);
+                    const op = gui.corePatch().getOpById(focusSubpatchop.id);
+                    // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+
+                    const uiop = gui.patch().getUiOp(op);
+                    // uiop.setPos(mouseX, mouseY);
 
                     // gui.patch().focusOp(op.id,true);
                     // console.log(op);
                     // gui.patch().centerViewBoxOps();
-                    }
-                }, 100);
+                }
+                // }, 100);
             });
     };
 
@@ -962,6 +963,32 @@ CABLES.UI.Patch = function (_gui)
 
     function doLink() {}
 
+    this.checkOpsInSync = function ()
+    {
+        console.log("core ops / ui ops: ", gui.corePatch().ops.length, this.ops.length);
+
+        let notFound = 0;
+        for (let i = 0; i < gui.corePatch().ops.length; i++)
+        {
+            let found = false;
+            for (let j = 0; j < this.ops.length; j++)
+            {
+                if (gui.corePatch().ops[i] == this.ops[j].op)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                notFound++;
+                console.log("no uiop found of op: ", gui.corePatch().ops[i]);
+            }
+        }
+        if (notFound)console.log("num unfound ops:", notFound);
+    };
+
+
     this.removeQuickLinkLine = function ()
     {
         if (self.quickLinkLine)
@@ -996,6 +1023,8 @@ CABLES.UI.Patch = function (_gui)
         }
 
         const op = uiOp.op;
+
+        console.log("doaddop!", op.objName);
 
         if (!isLoading)
         {
@@ -1069,21 +1098,21 @@ CABLES.UI.Patch = function (_gui)
 
         if (!isLoading)
         {
-            setTimeout(function ()
-            {
-                if (currentSubPatch == uiOp.getSubPatch()) uiOp.show();
+            // setTimeout(function ()
+            // {
+            if (currentSubPatch == uiOp.getSubPatch()) uiOp.show();
 
-                if (showAddedOpTimeout != -1) clearTimeout(showAddedOpTimeout);
-                showAddedOpTimeout = setTimeout(function ()
-                {
-                    gui.patch().setSelectedOp(null);
-                    gui.patch().setSelectedOp(uiOp);
-                    gui.opParams.show(op);
-                    gui.patch().updateBounds();
-                    gui.patch().getViewBox().update();
-                    uiOp.oprect.showFocus();
-                }, 30);
+            if (showAddedOpTimeout != -1) clearTimeout(showAddedOpTimeout);
+            showAddedOpTimeout = setTimeout(function ()
+            {
+                gui.patch().setSelectedOp(null);
+                gui.patch().setSelectedOp(uiOp);
+                gui.opParams.show(op);
+                gui.patch().updateBounds();
+                gui.patch().getViewBox().update();
+                uiOp.oprect.showFocus();
             }, 30);
+            // }, 30);
         }
 
         // select ops after pasting...
@@ -1098,12 +1127,12 @@ CABLES.UI.Patch = function (_gui)
             uiOp.oprect.showFocus();
             gui.patch().updateBounds();
 
-            setTimeout(function ()
-            {
-                // this fixes links not showing up after pasting
-                uiOp.setPos();
-                gui.patch().getViewBox().update();
-            }, 30);
+            // setTimeout(function ()
+            // {
+            // this fixes links not showing up after pasting
+            uiOp.setPos();
+            // gui.patch().getViewBox().update();
+            // }, 30);
         }
 
         if (uiOp.op.objName.startsWith("Ops.Deprecated.")) uiOp.op.uiAttr({ "error": "Op is deprecated" });
@@ -1194,6 +1223,10 @@ CABLES.UI.Patch = function (_gui)
         scene.addEventListener("onLink", function (p1, p2)
         {
             if (this.disabled) return;
+
+            if (!isLoading)
+                console.log("onlink event!", p1.parent.name, p1.name);
+
             gui.setStateUnsaved();
 
             let uiPort1 = null;
@@ -1219,7 +1252,25 @@ CABLES.UI.Patch = function (_gui)
 
             if (!uiPort1 || !uiPort2)
             {
-                console.log("no uiport found");
+                if (!isLoading)
+                    console.warn("no uiport found");
+
+                gui.patch().checkOpsInSync();
+
+                // for (let i = 0; i < this.ops.length; i++)
+                // {
+                //     // if (this.ops[i].portsIn.length + this.ops[i].portsOut.length == 0)
+                //     //     console.log("THIS ONE has no ui ports?!", this.ops[i].op.name, this.ops[i].op, this.ops[i].op);
+                // }
+                try
+                {
+                    console.log(uiPort1, uiPort1.opUi);
+                    console.log(uiPort2, uiPort2.opUi);
+                }
+                catch (e)
+                {
+                    console.log(e);
+                }
                 return;
             }
 
@@ -1228,11 +1279,13 @@ CABLES.UI.Patch = function (_gui)
             uiPort1.opUi.links.push(thelink);
             uiPort2.opUi.links.push(thelink);
 
-            if (!isLoading && !uiPort1.opUi.isHidden()) thelink.show();
-
-
             if (!isLoading)
             {
+                uiPort1.opUi.redrawLinks();
+                uiPort2.opUi.redrawLinks();
+
+                if (!uiPort1.opUi.isHidden()) thelink.show();
+
                 // todo: update is too often ?? check if current op is linked else do not update!!!
                 this.updateCurrentOpParams();
 
@@ -1303,10 +1356,17 @@ CABLES.UI.Patch = function (_gui)
             function (op)
             {
                 if (this.disabled) return;
+
+                console.log("onopadd 2");
+                if (!isLoading)
+                    console.log("onop add event!", op.name);
+
                 gui.setStateUnsaved();
                 this._elPatch.focus();
                 let width = CABLES.UI.uiConfig.opWidth;
                 if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
+
+                console.log("onopadd 3");
 
                 const x = CABLES.UI.OPSELECT.newOpPos.x;
                 const y = CABLES.UI.OPSELECT.newOpPos.y;
@@ -1363,33 +1423,34 @@ CABLES.UI.Patch = function (_gui)
     {
         if (currentSubPatch == which) return;
 
-        console.log("switch subpatch:", which);
+        // console.log("switch subpatch:", which);
+        gui.log.userInteraction("switch subpatch " + which);
 
         gui.setWorking(true, "patch");
 
-        setTimeout(function ()
+        // setTimeout(function ()
+        // {
+        subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
+
+        for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+
+        currentSubPatch = which;
+        self.updateSubPatches();
+
+        if (subPatchViewBoxes[which])
         {
-            subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
+            // viewBox = subPatchViewBoxes[which];
+            this._viewBox.deSerialize(subPatchViewBoxes[which]);
+            this.updateViewBox();
+        }
 
-            for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+        this._elPatch.focus();
+        gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
 
-            currentSubPatch = which;
-            self.updateSubPatches();
+        gui.setWorking(false, "patch");
 
-            if (subPatchViewBoxes[which])
-            {
-                // viewBox = subPatchViewBoxes[which];
-                this._viewBox.deSerialize(subPatchViewBoxes[which]);
-                this.updateViewBox();
-            }
-
-            this._elPatch.focus();
-            gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
-
-            gui.setWorking(false, "patch");
-
-            this.currentPatchBounds = this.getSubPatchBounds();
-        }.bind(this), 10);
+        this.currentPatchBounds = this.getSubPatchBounds();
+        // }.bind(this), 10);
     };
 
 
@@ -1606,6 +1667,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.updatedOpPositionsFromUiAttribs = function (ops)
     {
+        self.checkOpsInSync();
         for (let i = 0; i < ops.length; i++)
         {
             if (ops[i].op) ops[i].setPos(ops[i].op.uiAttribs.translate.x, ops[i].op.uiAttribs.translate.y);

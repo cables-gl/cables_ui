@@ -7,6 +7,7 @@ CABLES.UI.GUI = function (cfg)
     CABLES.EventTarget.apply(this);
 
     const self = this;
+    this.log = new CABLES.UI.Logger();
     let showTiming = false;
     let showingEditor = false;
     let showMiniMap = false;
@@ -20,12 +21,12 @@ CABLES.UI.GUI = function (cfg)
 
     this._corePatch = CABLES.patch = new CABLES.Patch({
         "editorMode": true,
+        // "prefixAssetPath": CABLES.sandbox.getAssetPrefix(),
         "canvas":
         {
             "forceWebGl1": cfg.usersettings.settings.forceWebGl1 == "true",
             "alpha": true,
             "premultipliedAlpha": true,
-            "prefixAssetPath": CABLES.sandbox.getAssetPrefix()
         }
     });
 
@@ -1403,7 +1404,8 @@ CABLES.UI.GUI = function (cfg)
     this.pressedEscape = function (e)
     {
         this.showCanvasModal(false);
-        this.callEvent("pressedEscape");
+        this.emitEvent("pressedEscape");
+
         if (this.fileManager) this.fileManager.setFilePort(null);
 
         if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey))
@@ -1959,14 +1961,14 @@ CABLES.UI.GUI = function (cfg)
         // if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
         $("#infoArea").show();
 
-        $("#infoArea").hover(
-            function (e)
-            {
-                CABLES.UI.showInfo();
-            }, function ()
-            {
-                CABLES.UI.hideInfo();
-            });
+        // $("#infoArea").hover(
+        //     function (e)
+        //     {
+        //         CABLES.UI.showInfo();
+        //     }, function ()
+        //     {
+        //         CABLES.UI.hideInfo();
+        //     });
 
         $("#canvasmodal").on("mousedown",
             function (e)
@@ -2066,9 +2068,12 @@ CABLES.UI.GUI.prototype.updateTheme = function ()
     else document.body.classList.remove("bright");
 };
 
+
 // todo use eventtarget...
 CABLES.UI.GUI.prototype.addEventListener = function (name, cb)
 {
+    console.warn("deprecated eventlistener:", name);
+    console.log((new Error()).stack);
     this._eventListeners[name] = this._eventListeners[name] || [];
     this._eventListeners[name].push(cb);
 };
@@ -2076,6 +2081,7 @@ CABLES.UI.GUI.prototype.addEventListener = function (name, cb)
 // todo use eventtarget...
 CABLES.UI.GUI.prototype.callEvent = function (name, params)
 {
+    console.warn("gui old callEvent / replace...");
     if (this._eventListeners.hasOwnProperty(name))
     {
         for (const i in this._eventListeners[name])
@@ -2084,6 +2090,7 @@ CABLES.UI.GUI.prototype.callEvent = function (name, params)
         }
     }
 };
+
 
 CABLES.UI.GUI.prototype.initCoreListeners = function ()
 {

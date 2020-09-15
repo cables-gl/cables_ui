@@ -42,6 +42,11 @@ CABLES.UI.Port = function (thePort)
     let linkingLine = null;
     let cancelDeleteLink = false;
 
+    thePort.on("onLinkChanged", () =>
+    {
+        this.opUi.redrawLinks();
+    });
+
     thePort.addEventListener("onUiAttrChange", function (attribs)
     {
         if (attribs.hasOwnProperty("hidePort"))
@@ -81,7 +86,7 @@ CABLES.UI.Port = function (thePort)
 
         if (event.which == 3 || (event.which == 1 && event.ctrlKey))
         {
-            if (thePort.isLinked && self.thePort.links.length > 0) // && thePort.links.length===1
+            if (thePort.isLinked && self.thePort.links.length > 0)
             {
                 CABLES.UI.MOUSEDRAGGINGPORT = true;
 
@@ -167,6 +172,8 @@ CABLES.UI.Port = function (thePort)
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.uiAttribs.useVariable) return;
 
+        gui.log.userInteraction("drag move port " + self.thePort.name);
+
         CABLES.UI.MOUSEDRAGGINGPORT = true;
 
         if (!linkingLine)
@@ -201,11 +208,12 @@ CABLES.UI.Port = function (thePort)
         }
         else
         {
-            if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
+            if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == false)
             {
                 gui.setCursor("port_remove");
+                $("#drop-op-cursor").hide();
             }
-            else
+            else if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == true || event.which == 1)
             {
                 $("#drop-op-cursor").css({ "top": b - 12, "left": a - 37 });
                 gui.setCursor("port_add");
@@ -266,7 +274,6 @@ CABLES.UI.Port = function (thePort)
         removeLinkingLine();
         if (event.stopPropagation)event.stopPropagation();
         if (event.preventDefault)event.preventDefault();
-
 
         let foundAutoOp = false;
         if (CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
@@ -333,7 +340,7 @@ CABLES.UI.Port = function (thePort)
         {
             // if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
-            if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink) || (event.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
+            if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink && event.altKey) || (event.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
                 removeLinkingLine();
                 self.thePort.removeLinks();
@@ -359,7 +366,7 @@ CABLES.UI.Port = function (thePort)
             }
             else
             {
-                if (event.which != 3)
+                if ((event.which == 3 && event.altKey) || event.which != 3)
                 {
                     event = CABLES.mouseEvent(event);
                     if (CABLES.UI.selectedStartPort && (!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort || !linkingLine))
@@ -396,11 +403,18 @@ CABLES.UI.Port = function (thePort)
                             }
                             else
                             {
-                                gui.opSelect().show(coords, self.op, selectedStartPort);
+                                if (event.altKey && event.which == 3)
+                                {
+                                    gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                }
+                                else
+                                {
+                                    gui.opSelect().show(coords, self.op, selectedStartPort);
+                                }
                             }
                         };
 
-                        if (dist > 30)
+                        if (dist > 30 && event.which == 1)
                         {
                             new CABLES.UI.SuggestOpDialog(self.op, CABLES.UI.selectedStartPort.name, event, coords, showSelect,
                                 function ()
@@ -539,7 +553,6 @@ CABLES.UI.Port = function (thePort)
             if (self.opUi.links[i].p1 && self.opUi.links[i].p2)
                 if (self.opUi.links[i].p1.thePort == self.thePort || self.opUi.links[i].p2.thePort == self.thePort)
                 {
-                    // console.log(self.opUi.links[i]);
                     if (!self.opUi.links[i].p2.thePort.isLinked() || !self.opUi.links[i].p1.thePort.isLinked())
                         self.opUi.links[i].hide();
                     else

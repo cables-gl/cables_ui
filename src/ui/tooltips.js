@@ -59,7 +59,7 @@ CABLES.UI.showInfo = function (txt)
 {
     txt = txt || CABLES.UI.TEXTS.infoArea;
     CABLES.UI.eleInfoArea = CABLES.UI.eleInfoArea || document.getElementById("infoArea");
-    CABLES.UI.eleInfoArea.innerHTML = "<div class=\"infoareaContent\"><a class=\"icon-x icon fright\" style=\"margin-right:10px;\" onclick=\"gui.closeInfo();\">sss</a>" + mmd(txt || "") + "</div>";
+    CABLES.UI.eleInfoArea.innerHTML = "<div class=\"infoareaContent\">" + mmd(txt || "") + "</div>";
 };
 
 CABLES.UI.hideInfo = function ()

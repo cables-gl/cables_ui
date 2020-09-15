@@ -129,6 +129,7 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.addEventListener("wheel", (event) =>
         {
             this.activityHigh();
+            event.preventDefault();
             // const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
             // let delta = CGL.getWheelSpeed(event);
