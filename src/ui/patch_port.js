@@ -386,10 +386,6 @@ CABLES.UI.Port = function (thePort)
                             {
                                 if ((mouseEvent.altKey && mouseEvent.which == 3) && self.thePort.links.length > 0)
                                 {
-                                    console.log("the port", self.thePort);
-                                    console.log("multi", CABLES.UI.selectedStartPortMulti);
-                                    console.log("links", self.thePort.links);
-
                                     // drag from top
                                     if (self.thePort.links[0].portIn == selectedStartPort)
                                     {
