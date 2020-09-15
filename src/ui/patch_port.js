@@ -271,6 +271,7 @@ CABLES.UI.Port = function (thePort)
         let foundAutoOp = false;
         if (CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
         {
+            console.log("A1");
             const numFitting = CABLES.UI.selectedEndOp.op.countFittingPorts(CABLES.UI.selectedStartPort);
 
             if (numFitting == 1)
@@ -331,10 +332,12 @@ CABLES.UI.Port = function (thePort)
 
         if (!foundAutoOp)
         {
+            console.log("B");
             // if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
             if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink && event.altKey) || (event.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
+                console.log("B1");
                 removeLinkingLine();
                 self.thePort.removeLinks();
                 CABLES.UI.selectedStartPortMulti.length = 0;
@@ -343,6 +346,7 @@ CABLES.UI.Port = function (thePort)
 
             if (CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort))
             {
+                console.log("B2-multi links moved and plugged in");
                 const link = gui.corePatch().link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName(), CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
 
                 for (let j = 0; j < CABLES.UI.selectedStartPortMulti.length; j++)
@@ -396,14 +400,44 @@ CABLES.UI.Port = function (thePort)
                             }
                             else
                             {
+                                // gui.opSelect().show is in opselect.js
+
                                 if(event.altKey && event.which ==3)
                                 {
-                                    if(self.thePort.links[0].portIn == selectedStartPort)//drag from top
+                                    console.log(self.thePort.links[0].portIn);
+                                    console.log(CABLES.UI.selectedStartPortMulti);
+
+                                    //drag from top
+                                    if(self.thePort.links[0].portIn == selectedStartPort)
                                     {
-                                        gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                        for(var i = 0; i < CABLES.UI.selectedStartPortMulti.length;i++)
+                                        {
+                                            //returns multi connections other than start port
+                                            console.log(CABLES.UI.selectedStartPortMulti[i].parent);
+                                            console.log(CABLES.UI.selectedStartPortMulti[i].parent.thePort);
+                                        }
+                                        gui.opSelect().show(coords, self.thePort.links[0].portIn.parent, selectedStartPort);
                                     }
-                                    else//drag from bottom
+                                    //drag from bottom
+                                    else
                                     {
+                                        //1 get all linked ops, ports, startop and startport
+                                        //2 pick a new op with gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                        // somehow link all those connected ports with the result from showSelect
+                                        //how to get the gui.opSelect() function to work with an array of ops and their ports???
+                                        for(var i = 0; i < CABLES.UI.selectedStartPortMulti.length;i++)
+                                        {
+                                            //returns multi connections other than start port
+                                            console.log(CABLES.UI.selectedStartPortMulti[i].parent);
+                                            console.log(CABLES.UI.selectedStartPortMulti[i].parent.thePort);
+
+                                            gui.corePatch().link(
+                                                self.op,
+                                                self.thePort.links[0].portIn.name,
+                                                CABLES.UI.selectedStartPortMulti[i].parent,
+                                                CABLES.UI.selectedStartPortMulti[i].name
+                                            );
+                                        }
                                         gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
                                     }
                                 }
