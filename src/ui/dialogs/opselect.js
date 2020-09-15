@@ -26,7 +26,6 @@ CABLES.UI.OpSelect = class
         this._searchInputEle = null;
     }
 
-
     close()
     {
         $("body").off("keydown", this.keyDown);
@@ -38,35 +37,44 @@ CABLES.UI.OpSelect = class
         return document.getElementById("opsearch").value;
     }
 
-
     updateOptions(opname)
     {
         const perf = CABLES.uiperf.start("opselect.udpateOptions");
         const num = $(".searchbrowser .searchable:visible").length;
         const query = this._getQuery();
 
+        const eleTypeStart = ele.byId("search_startType");
+        const eleTypeMore = ele.byId("search_startTypeMore");
+        const eleNoResults = ele.byId("search_noresults");
+
         if (query.length === 0)
         {
-            $("#search_startType").show();
+            eleTypeStart.classList.remove("hidden");
 
             for (let i = 0; i < this._list.length; i++)
                 if (this._list[i].element)
                     this._list[i].element[0].style.display = "none";
         }
-        else $("#search_startType").hide();
+        else eleTypeStart.classList.add("hidden");
 
-        if (query.length == 1) $("#search_startTypeMore").show();
-        else $("#search_startTypeMore").hide();
+        if (query.length == 1) eleTypeMore.classList.remove("hidden");
+        else eleTypeMore.classList.add("hidden");
 
-        if (num === 0 && query.length > 1)
+
+        if (num == 0 && query.length > 1)
         {
-            $("#search_noresults").show();
-            $("#searchinfo").empty();
+            eleNoResults.classList.remove("hidden");
+            ele.byId("searchinfo").innerHMTL = "";
+            console.log("HIOHIHIO");
             const userOpName = "Ops.User." + gui.user.usernameLowercase + "." + this._getQuery();
             $(".userCreateOpName").html(userOpName);
             $("#createuserop").attr("onclick", `gui.serverOps.create('${userOpName}');`);
         }
-        else $("#search_noresults").hide();
+        else
+        {
+            console.log("remove no results");
+            eleNoResults.classList.add("hidden");
+        }
 
         let optionsHtml = "";
 
@@ -498,7 +506,7 @@ CABLES.UI.OpSelect = class
         if (this.firstTime) this.search();
         if (!this._list || !this._html) this.prepare();
 
-        $("#search_noresults").hide();
+        ele.byId("search_noresults").classList.add("hidden");
 
         CABLES.UI.MODAL.show(null,
             {
