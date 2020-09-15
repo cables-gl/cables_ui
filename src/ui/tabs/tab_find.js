@@ -148,6 +148,7 @@ CABLES.UI.FindTab.prototype.isVisible = function ()
 
 CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 {
+    if (!op.uiAttribs || !op.uiAttribs.translate) return;
     let html = "";
     let info = "";
     this._maxIdx = idx;
@@ -214,6 +215,8 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 
     let foundNum = 0;
     const results = [];
+
+    gui.log.userInteraction("searches " + str);
 
     if (str.indexOf(":") == 0)
     {
@@ -391,7 +394,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
         for (let i = 0; i < results.length; i++)
             html += this._addResultOp(results[i].op, results[i], i);
 
-        let onclickResults = "gui.patch().setSelectedOp(null);";
+        let onclickResults = "gui.log.userInteraction('searchresult click');gui.patch().setSelectedOp(null);";
         for (let i = 0; i < results.length; i++)
             onclickResults += "gui.patch().addSelectedOpById('" + results[i].op.id + "');";
         onclickResults += "gui.patch().setStatusSelectedOps();";

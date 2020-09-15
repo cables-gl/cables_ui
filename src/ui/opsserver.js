@@ -703,12 +703,9 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         for (let i = 0; i < proj.ops.length; i++)
         {
             libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
-        }
-
-        for (let i = 0; i < proj.ops.length; i++)
-        {
             coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
         }
+
 
         libsToLoad = CABLES.uniqueArray(libsToLoad);
         coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
@@ -723,6 +720,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         {
             new CABLES.CoreLibLoader(coreLibsToLoad, function ()
             {
+                console.log("all op libs loaded!");
                 next();
             });
         });
@@ -751,7 +749,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         return true;
     };
 
-    this.loadOpLibs = function (opName, next)
+    this.loadOpLibs = function (opName, finishedCb)
     {
         function libReady()
         {
@@ -763,7 +761,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 this._loadedLibs.push(libsToLoad[i]);
             }
 
-            next();
+            finishedCb();
         }
 
         const libsToLoad = this.getOpLibs(opName);
@@ -771,7 +769,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
         if (libsToLoad.length === 0 && coreLibsToLoad.length === 0)
         {
-            next();
+            finishedCb();
             return;
         }
 
@@ -779,7 +777,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         {
             new CABLES.CoreLibLoader(coreLibsToLoad, function ()
             {
-                next();
+                finishedCb();
             });
         });
     };

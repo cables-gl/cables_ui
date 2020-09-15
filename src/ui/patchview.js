@@ -15,6 +15,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.boundingRect = null;
         this.store = new CABLES.UI.PatchServer();
         this._initListeners();
+        this._eleSubpatchNav = ele.byId("subpatch_nav");
     }
 
     get element() { return this._element || CABLES.UI.PatchView.getElement(); }
@@ -115,6 +116,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
 
+            console.log("adding op. uiAttribs: ", uiAttribs);
             const op = this._p.addOp(opname, uiAttribs);
 
             // todo options:
@@ -204,10 +206,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         const oldOp = gui.corePatch().getOpById(opid);
         const trans = {
-            "translate": {
-                "x": oldOp.uiAttribs.translate.x,
-                "y": oldOp.uiAttribs.translate.y - 100
-            }
+            "x": oldOp.uiAttribs.translate.x,
+            "y": oldOp.uiAttribs.translate.y - 100
         };
 
         gui.patchView.addOp(opname, {
@@ -216,7 +216,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 const newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
                 gui.corePatch().link(oldOp, portname, newOp, newPort.name);
 
-                newOp.setUiAttrib({ "translate": trans });
+                newOp.setUiAttrib({
+                    "translate": trans,
+                    "subPatch": this.patchView.getCurrentSubPatch()
+                });
             } });
     }
 
@@ -227,7 +230,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 "numOps": this.getSelectedOps().length,
             });
 
-        $("#options").html(html);
+        ele.byId("options").innerHTML = html;
         gui.setTransformGizmo(null);
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
@@ -270,7 +273,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         html += "</div>";
 
-        $("#options").html(html);
+        ele.byId("options").innerHTML = html;
     }
 
     getSelectionBounds()
@@ -451,8 +454,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
-        if (currentSubPatch === 0) $("#subpatch_nav").hide();
-        else $("#subpatch_nav").show();
+        if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);
+        else ele.show(this._eleSubpatchNav);
 
         const names = this.getSubpatchPathArray(currentSubPatch);
         let str = "<a onclick=\"gui.patchView.setCurrentSubPatch(0)\">Main</a> ";
@@ -899,6 +902,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (this._patchRenderer.center) this._patchRenderer.center(x, y);
         else console.log("patchRenderer has no function center");
+    }
+
+    getCurrentSubPatch()
+    {
+        return this._patchRenderer.getCurrentSubPatch();
     }
 
     setCurrentSubPatch(subpatch)

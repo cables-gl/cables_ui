@@ -10,6 +10,13 @@
         <span class="button-small fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}Edit{{else}}View{{/if}} code</span>
         <span class="button-small fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">Clone op code</span>
 
+        {{#if user.isStaff}}
+            {{#if op.github}}
+                <a class="button-small fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
+            {{/if}}
+        {{/if}}
+
+
         <div class="groupSpacer"><h3>Attachments</h3></div>
 
         {{#if doc.attachmentFiles}}
@@ -34,7 +41,7 @@
             No attachments...<br/><br/>
         {{/if}}
 
-        <a class="button fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">Create</a>
+        <a class="button-small fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">Create</a>
 
         <br/><br/>
 
@@ -65,12 +72,8 @@
         {{/each}}
         <select>
 
-
-
         <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addCoreLib('{{op.objName}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
-
         <br/><br/>
-
         <div class="groupSpacer"><h3>Libs</h3></div>
 
         {{#if doc.libs}}
@@ -79,7 +82,6 @@
                     <th>Filename</th>
                     <th> </th>
                 </tr>
-
                 {{#each doc.libs}}
                     <tr>
                         <td>{{.}}</td>
@@ -93,21 +95,11 @@
 
         <select id="addoplib">
             <option value="">---</option>
-        {{#each libs}}
-            <option value="{{.}}">{{.}}</option>
-        {{/each}}
+            {{#each libs}}
+                <option value="{{.}}">{{.}}</option>
+            {{/each}}
         <select>
         <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
-
-
-        {{#if user.isAdmin}}
-            <div class="groupSpacer"><h3>Admin</h3></div>
-
-            {{#if op.github}}
-                <a class="button-small fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
-            {{/if}}
-        {{/if}}
-
 
         <br /><br /><br />
 

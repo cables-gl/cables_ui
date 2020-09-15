@@ -411,6 +411,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         }
         shakeLastX = a;
 
+        gui.log.userInteraction("moves op");
         gui.patch().moveSelectedOps(dx, dy, a, b, e);
         this._updateElementOrder(true);
         gui.setStateUnsaved();
@@ -1184,7 +1185,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
     this.isMouseOver = false;
 
-    op.addEventListener("onUiAttribsChange", (attribs) =>
+
+    this._uiAttrChanged = function (attribs)
     {
         if (!attribs) return;
 
@@ -1253,7 +1255,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
             // gui.patch().updateOpParams(this.op.id);
         }
-    });
+    };
 
     this.fixTitle = function ()
     {
@@ -1457,11 +1459,16 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         return posy;
     };
 
+    this.redrawLinks = function ()
+    {
+        for (const j in this.links) this.links[j].redraw();
+    };
+
     this.setPosFromUiAttr = function ()
     {
         this.setPos(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
         // console.log(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
-        for (const j in self.links) self.links[j].redraw();
+        this.redrawLinks();
     };
 
     this.setPos = function (_x, _y)
@@ -1476,8 +1483,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         if (!self.op.uiAttribs.translate || self.op.uiAttribs.translate.x != posx || self.op.uiAttribs.translate.y != posy)
             self.op.uiAttr({ "translate": { "x": posx, "y": posy } });
 
-        for (const j in self.links)
-            self.links[j].redraw();
+        this.redrawLinks();
     };
 
     this.doMove = function (dx, dy, a, b, e)
@@ -1740,4 +1746,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
     {
         this.initPorts();
     }.bind(this));
+
+    op.addEventListener("onUiAttribsChange", this._uiAttrChanged.bind(this));
+    // this.initPorts();
+    this._uiAttrChanged();
 };
