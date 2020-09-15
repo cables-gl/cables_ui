@@ -4,7 +4,7 @@
     "description": "",
     "main": "gulpfile.js",
     "engines": {
-        "node": "14.8.0"
+        "node": "14.10.1"
     },
     "browserslist": [
         "last 2 versions"
