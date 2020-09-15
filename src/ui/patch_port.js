@@ -37,16 +37,10 @@ CABLES.UI.Port = function (thePort)
     this.opUi = null;
     this._posX = 0;
     this._posY = 0;
-    this._eleDropOp = ele.byId("drop-op-cursor");
 
     let hovering = false;
     let linkingLine = null;
     let cancelDeleteLink = false;
-
-    thePort.on("onLinkChanged", () =>
-    {
-        this.opUi.redrawLinks();
-    });
 
     thePort.addEventListener("onUiAttrChange", function (attribs)
     {
@@ -156,7 +150,7 @@ CABLES.UI.Port = function (thePort)
             CABLES.UI.selectedStartPort = self.thePort;
         }
 
-        ele.byId("patch").focus();
+        $("#patch").focus();
         if (!linkingLine)
         {
             this.startx = this.matrix.e + this.attrs.x;
@@ -172,8 +166,6 @@ CABLES.UI.Port = function (thePort)
 
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.uiAttribs.useVariable) return;
-
-        gui.log.userInteraction("drag move port " + self.thePort.name);
 
         CABLES.UI.MOUSEDRAGGINGPORT = true;
 
@@ -194,7 +186,7 @@ CABLES.UI.Port = function (thePort)
 
         if (window.CABLES.UI.selectedEndOp)
         {
-            ele.hide(self._eleDropOp);
+            $("#drop-op-cursor").hide();
 
             if (CABLES.UI.selectedStartPort)
             {
@@ -212,14 +204,13 @@ CABLES.UI.Port = function (thePort)
             if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == false)
             {
                 gui.setCursor("port_remove");
-                ele.hide(self._eleDropOp);
+                $("#drop-op-cursor").hide();
             }
             else if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == true || event.which == 1)
             {
-                self._eleDropOp.style.top = b - 12 + "px";
-                self._eleDropOp.style.left = a - 37 + "px";
+                $("#drop-op-cursor").css({ "top": b - 12, "left": a - 37 });
                 gui.setCursor("port_add");
-                ele.show(self._eleDropOp);
+                $("#drop-op-cursor").show();
             }
         }
 
@@ -231,7 +222,7 @@ CABLES.UI.Port = function (thePort)
         else
         {
             gui.setCursor();
-            ele.hide(self._eleDropOp);
+            $("#drop-op-cursor").hide();
 
             let txt = CABLES.Link.canLinkText(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort);
             if (txt == "can link") CABLES.UI.getPortDescription(CABLES.UI.selectedEndPort.thePort);
@@ -256,12 +247,12 @@ CABLES.UI.Port = function (thePort)
     {
         if (linkingLine) linkingLine.remove();
         linkingLine = null;
-        ele.hide(self._eleDropOp);
+        $("#drop-op-cursor").hide();
     }
 
     function finishDragUI()
     {
-        ele.hide(self._eleDropOp);
+        $("#drop-op-cursor").hide();
         CABLES.UI.selectedEndOp = null;
         removeLinkingLine();
         self.opUi.isDragging = false;
@@ -277,11 +268,9 @@ CABLES.UI.Port = function (thePort)
         if (event.stopPropagation)event.stopPropagation();
         if (event.preventDefault)event.preventDefault();
 
-        // console.log(CABLES.UI.selectedStartPortMulti);
         let foundAutoOp = false;
         if (CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
         {
-            console.log("A");
             const numFitting = CABLES.UI.selectedEndOp.op.countFittingPorts(CABLES.UI.selectedStartPort);
 
             if (numFitting == 1)
@@ -342,12 +331,10 @@ CABLES.UI.Port = function (thePort)
 
         if (!foundAutoOp)
         {
-            console.log("B");
             // if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
 
             if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink && event.altKey) || (event.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
-                console.log("B1");
                 removeLinkingLine();
                 self.thePort.removeLinks();
                 CABLES.UI.selectedStartPortMulti.length = 0;
@@ -356,8 +343,6 @@ CABLES.UI.Port = function (thePort)
 
             if (CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort && CABLES.Link.canLink(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort))
             {
-                console.log("B2");
-                //multi ports here
                 const link = gui.corePatch().link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName(), CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
 
                 for (let j = 0; j < CABLES.UI.selectedStartPortMulti.length; j++)
@@ -374,7 +359,6 @@ CABLES.UI.Port = function (thePort)
             }
             else
             {
-                console.log("B3");
                 if ((event.which == 3 && event.altKey) || event.which != 3)
                 {
                     event = CABLES.mouseEvent(event);
@@ -393,9 +377,7 @@ CABLES.UI.Port = function (thePort)
                             if (CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction == CABLES.PORT_DIR_IN) coords.y = self.op.uiAttribs.translate.y - 40;
                             else coords.y = self.op.uiAttribs.translate.y + 40;
                         }
-                        console.log(" ");
 
-                        // console.log(self.thePort.links[0].portOut)
                         const showSelect = function ()
                         {
                             if (dist < 10)
@@ -414,48 +396,25 @@ CABLES.UI.Port = function (thePort)
                             }
                             else
                             {
-                                if (event.altKey && event.which == 3)
+                                if(event.altKey && event.which ==3)
                                 {
-                                    console.log(self.thePort.links[0].portOut);
-                                    console.log(CABLES.UI.selectedStartPortMulti);
-
-                                    if(self.thePort.links[0].portIn == selectedStartPort)
-                                    {
-                                        // console.log("ports multi total is " + CABLES.UI.selectedStartPortMulti.length);
-                                        // console.log(CABLES.UI.selectedStartPortMulti.length);
-
-                                        gui.opSelect().show(coords, self.thePort.links[0].portIn.parent, selectedStartPort);
-                                        //op errors below
-                                        // const link = gui.corePatch().link(CABLES.UI.selectedEndPort.op, CABLES.UI.selectedEndPort.thePort.getName(), CABLES.UI.selectedStartPort.parent, CABLES.UI.selectedStartPort.getName());
-                                        //console.log(CABLES.UI.selectedEndPort.op);//error
-                                        console.log(CABLES.UI.selectedStartPortMulti[1].parent);//gives ops below
-                                        //HERE
-                                        // for (let j = 0; j < CABLES.UI.selectedStartPortMulti.length; j++)
-                                        // {
-                                        //     gui.corePatch().link(
-                                        //         CABLES.UI.selectedStartPort.op,
-                                        //         CABLES.UI.selectedStartPort.name,
-                                        //         CABLES.UI.selectedStartPortMulti[j].parent,
-                                        //         CABLES.UI.selectedStartPortMulti[j].name
-                                        //     );
-                                        // }
-                                        // CABLES.UI.selectedEndPort.updateUI();
-                                    }
-                                    else
+                                    if(self.thePort.links[0].portIn == selectedStartPort)//drag from top
                                     {
                                         gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
                                     }
-                                    console.log("ONE");
+                                    else//drag from bottom
+                                    {
+                                        gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                    }
                                 }
                                 else
                                 {
                                     gui.opSelect().show(coords, self.op, selectedStartPort);
-                                    console.log("TWO");
                                 }
                             }
                         };
 
-                        if (dist > 30 && event.which == 1)
+                        if (dist > 30 && event.which == 1 )
                         {
                             new CABLES.UI.SuggestOpDialog(self.op, CABLES.UI.selectedStartPort.name, event, coords, showSelect,
                                 function ()
@@ -689,9 +648,10 @@ CABLES.UI.Port = function (thePort)
         this.rect.attr({ "width": 10, "height": 6, }); // for firefox compatibility: ff seems to ignore css width/height of svg rect?!
         this.rect.node.classList.add(CABLES.UI.uiConfig.getPortClass(self.thePort));
         this.rect.node.classList.add("port");
-        self.rect.node.addEventListener("contextmenu", contextMenu);
 
         group.push(this.rect);
+
+        $(self.rect.node).bind("contextmenu", contextMenu);
 
         self.rect.hover(hover, hoverOut);
         self.rect.drag(dragMove, dragStart, dragEnd);
