@@ -16,6 +16,16 @@ CABLES.Ele = class
     {
         return el.options[el.selectedIndex].text;
     }
+
+    show(el)
+    {
+        if (el)el.classList.remove("hidden");
+    }
+
+    hide(el)
+    {
+        if (el)el.classList.add("hidden");
+    }
 };
 
 window.ele = new CABLES.Ele();
