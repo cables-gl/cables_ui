@@ -262,7 +262,14 @@ CABLES.UI.Port = function (thePort)
 
     function dragEnd(event)
     {
-        if (!event.altKey) self.thePort.removeLinks();
+        if (event.which == 3)
+        {
+            if (!event.altKey)
+            {
+                self.thePort.removeLinks();
+            }
+        }
+
         CABLES.UI.MOUSEDRAGGINGPORT = false;
         removeLinkingLine();
         if (event.stopPropagation)event.stopPropagation();
@@ -405,7 +412,6 @@ CABLES.UI.Port = function (thePort)
                                                     );
                                                 }
                                             }
-                                            self.thePort.removeLinks();
                                         };
                                         gui.opSelect().show(options, self.thePort.links[0].portIn.parent);
                                     }
@@ -429,7 +435,6 @@ CABLES.UI.Port = function (thePort)
                                                     );
                                                 }
                                             }
-                                            self.thePort.removeLinks();
                                         };
                                         gui.opSelect().show(options, self.thePort.links[0].portOut.parent);
                                     }
