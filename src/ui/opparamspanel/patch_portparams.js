@@ -94,6 +94,7 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
                 "content": port.get() + "",
                 "name": editorObj.name,
                 "syntax": port.uiAttribs.editorSyntax,
+                "hideFormatButton": port.uiAttribs.hideFormatButton,
                 "editorObj": editorObj,
                 "onClose": function (which)
                 {
