@@ -49,23 +49,22 @@ CABLES.UI.OpSelect = class
 
         if (query.length === 0)
         {
-            eleTypeStart.classList.remove("hidden");
+            ele.show(eleTypeStart);// .classList.remove("hidden");
 
             for (let i = 0; i < this._list.length; i++)
                 if (this._list[i].element)
                     this._list[i].element[0].style.display = "none";
         }
-        else eleTypeStart.classList.add("hidden");
+        else ele.hide(eleTypeStart);// .classList.add("hidden");
 
-        if (query.length == 1) eleTypeMore.classList.remove("hidden");
-        else eleTypeMore.classList.add("hidden");
+        if (query.length == 1) ele.show(eleTypeMore);// .classList.remove("hidden");
+        else ele.hide(eleTypeMore);// .classList.add("hidden");
 
 
         if (num == 0 && query.length > 1)
         {
-            eleNoResults.classList.remove("hidden");
+            ele.show(eleNoResults);// .classList.remove("hidden");
             ele.byId("searchinfo").innerHMTL = "";
-            console.log("HIOHIHIO");
             const userOpName = "Ops.User." + gui.user.usernameLowercase + "." + this._getQuery();
             $(".userCreateOpName").html(userOpName);
             $("#createuserop").attr("onclick", `gui.serverOps.create('${userOpName}');`);
@@ -73,7 +72,7 @@ CABLES.UI.OpSelect = class
         else
         {
             console.log("remove no results");
-            eleNoResults.classList.add("hidden");
+            ele.hide(eleNoResults);// .classList.add("hidden");
         }
 
         let optionsHtml = "";
@@ -506,7 +505,7 @@ CABLES.UI.OpSelect = class
         if (this.firstTime) this.search();
         if (!this._list || !this._html) this.prepare();
 
-        ele.byId("search_noresults").classList.add("hidden");
+        ele.hide(ele.byId("search_noresults"));
 
         CABLES.UI.MODAL.show(null,
             {

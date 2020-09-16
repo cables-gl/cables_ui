@@ -15,6 +15,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.boundingRect = null;
         this.store = new CABLES.UI.PatchServer();
         this._initListeners();
+        this._eleSubpatchNav = ele.byId("subpatch_nav");
     }
 
     get element() { return this._element || CABLES.UI.PatchView.getElement(); }
@@ -229,7 +230,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 "numOps": this.getSelectedOps().length,
             });
 
-        $("#options").html(html);
+        ele.byId("options").innerHTML = html;
         gui.setTransformGizmo(null);
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
@@ -272,7 +273,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         html += "</div>";
 
-        $("#options").html(html);
+        ele.byId("options").innerHTML = html;
     }
 
     getSelectionBounds()
@@ -453,8 +454,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
-        if (currentSubPatch === 0) $("#subpatch_nav").hide();
-        else $("#subpatch_nav").show();
+        if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);
+        else ele.show(this._eleSubpatchNav);
 
         const names = this.getSubpatchPathArray(currentSubPatch);
         let str = "<a onclick=\"gui.patchView.setCurrentSubPatch(0)\">Main</a> ";
