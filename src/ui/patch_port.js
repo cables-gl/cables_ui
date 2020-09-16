@@ -407,7 +407,7 @@ CABLES.UI.Port = function (thePort)
                                             }
                                             self.thePort.removeLinks();
                                         };
-                                        gui.opSelect().show(options, self.thePort.links[0].portIn.parent, selectedStartPort);
+                                        gui.opSelect().show(options, self.thePort.links[0].portIn.parent);
                                     }
                                     // drag from bottom
                                     else
@@ -431,7 +431,7 @@ CABLES.UI.Port = function (thePort)
                                             }
                                             self.thePort.removeLinks();
                                         };
-                                        gui.opSelect().show(options, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                        gui.opSelect().show(options, self.thePort.links[0].portOut.parent);
                                     }
                                 }
                                 else
