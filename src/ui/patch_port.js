@@ -37,16 +37,10 @@ CABLES.UI.Port = function (thePort)
     this.opUi = null;
     this._posX = 0;
     this._posY = 0;
-    this._eleDropOp = ele.byId("drop-op-cursor");
 
     let hovering = false;
     let linkingLine = null;
     let cancelDeleteLink = false;
-
-    thePort.on("onLinkChanged", () =>
-    {
-        this.opUi.redrawLinks();
-    });
 
     thePort.addEventListener("onUiAttrChange", function (attribs)
     {
@@ -143,7 +137,6 @@ CABLES.UI.Port = function (thePort)
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x + 2, gui.patch().getCanvasCoordsMouse(event).y - 2);
                 linkingLine.addClass("link");
 
-                if (!event.altKey) self.thePort.removeLinks();
                 updateUI();
             }
             else
@@ -156,7 +149,7 @@ CABLES.UI.Port = function (thePort)
             CABLES.UI.selectedStartPort = self.thePort;
         }
 
-        ele.byId("patch").focus();
+        $("#patch").focus();
         if (!linkingLine)
         {
             this.startx = this.matrix.e + this.attrs.x;
@@ -172,8 +165,6 @@ CABLES.UI.Port = function (thePort)
 
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.uiAttribs.useVariable) return;
-
-        gui.log.userInteraction("drag move port " + self.thePort.name);
 
         CABLES.UI.MOUSEDRAGGINGPORT = true;
 
@@ -194,7 +185,7 @@ CABLES.UI.Port = function (thePort)
 
         if (window.CABLES.UI.selectedEndOp)
         {
-            ele.hide(self._eleDropOp);
+            $("#drop-op-cursor").hide();
 
             if (CABLES.UI.selectedStartPort)
             {
@@ -212,14 +203,13 @@ CABLES.UI.Port = function (thePort)
             if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == false)
             {
                 gui.setCursor("port_remove");
-                ele.hide(self._eleDropOp);
+                $("#drop-op-cursor").hide();
             }
-            else if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == true || event.which == 1)
+            else if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == true) || event.which == 1)
             {
-                self._eleDropOp.style.top = b - 12 + "px";
-                self._eleDropOp.style.left = a - 37 + "px";
+                $("#drop-op-cursor").css({ "top": b - 12, "left": a - 37 });
                 gui.setCursor("port_add");
-                ele.show(self._eleDropOp);
+                $("#drop-op-cursor").show();
             }
         }
 
@@ -231,7 +221,7 @@ CABLES.UI.Port = function (thePort)
         else
         {
             gui.setCursor();
-            ele.hide(self._eleDropOp);
+            $("#drop-op-cursor").hide();
 
             let txt = CABLES.Link.canLinkText(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort);
             if (txt == "can link") CABLES.UI.getPortDescription(CABLES.UI.selectedEndPort.thePort);
@@ -256,12 +246,12 @@ CABLES.UI.Port = function (thePort)
     {
         if (linkingLine) linkingLine.remove();
         linkingLine = null;
-        ele.hide(self._eleDropOp);
+        $("#drop-op-cursor").hide();
     }
 
     function finishDragUI()
     {
-        ele.hide(self._eleDropOp);
+        $("#drop-op-cursor").hide();
         CABLES.UI.selectedEndOp = null;
         removeLinkingLine();
         self.opUi.isDragging = false;
@@ -272,6 +262,14 @@ CABLES.UI.Port = function (thePort)
 
     function dragEnd(event)
     {
+        if (event.which == 3)
+        {
+            if (!event.altKey)
+            {
+                self.thePort.removeLinks();
+            }
+        }
+
         CABLES.UI.MOUSEDRAGGINGPORT = false;
         removeLinkingLine();
         if (event.stopPropagation)event.stopPropagation();
@@ -340,8 +338,6 @@ CABLES.UI.Port = function (thePort)
 
         if (!foundAutoOp)
         {
-            // if(CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.type==CABLES.OP_PORT_TYPE_DYNAMIC)return;
-
             if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && !cancelDeleteLink && event.altKey) || (event.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && event.ctrlKey))
             {
                 removeLinkingLine();
@@ -370,21 +366,20 @@ CABLES.UI.Port = function (thePort)
             {
                 if ((event.which == 3 && event.altKey) || event.which != 3)
                 {
-                    event = CABLES.mouseEvent(event);
+                    const mouseEvent = CABLES.mouseEvent(event);
                     if (CABLES.UI.selectedStartPort && (!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort || !linkingLine))
                     {
                         const links = self.opUi.getPortLinks(CABLES.UI.selectedStartPort.id);
-                        const coords = gui.patch().getCanvasCoordsMouse(event);
-                        const isDragging = self.opUi.isDragging;
+                        const options = gui.patch().getCanvasCoordsMouse(mouseEvent);
                         const selectedStartPort = CABLES.UI.selectedStartPort;
 
-                        const dist = Math.abs(coords.x - self.op.uiAttribs.translate.x) + Math.abs(coords.y - self.op.uiAttribs.translate.y);
+                        const dist = Math.abs(options.x - self.op.uiAttribs.translate.x) + Math.abs(options.y - self.op.uiAttribs.translate.y);
 
-                        if (Math.abs(coords.x - self.op.uiAttribs.translate.x) < 50) coords.x = self.op.uiAttribs.translate.x;
-                        if (Math.abs(coords.y - self.op.uiAttribs.translate.y) < 40)
+                        if (Math.abs(options.x - self.op.uiAttribs.translate.x) < 50) options.x = self.op.uiAttribs.translate.x;
+                        if (Math.abs(options.y - self.op.uiAttribs.translate.y) < 40)
                         {
-                            if (CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction == CABLES.PORT_DIR_IN) coords.y = self.op.uiAttribs.translate.y - 40;
-                            else coords.y = self.op.uiAttribs.translate.y + 40;
+                            if (CABLES.UI.selectedStartPort && CABLES.UI.selectedStartPort.direction == CABLES.PORT_DIR_IN) options.y = self.op.uiAttribs.translate.y - 40;
+                            else options.y = self.op.uiAttribs.translate.y + 40;
                         }
 
                         const showSelect = function ()
@@ -392,33 +387,68 @@ CABLES.UI.Port = function (thePort)
                             if (dist < 10)
                             {
                                 // port was clicked, not dragged, insert op directly into link
-
-                                // if(event.which==1 && event.ctrlKey)
-                                // {
-                                //  self.thePort.removeLinks();
-                                //  removeLinkingLine();
-                                //  console.log('remove!!!');
-                                //  return;
-                                // }
-                                // else
-                                gui.opSelect().show(coords, null, selectedStartPort, links[0]);
+                                gui.opSelect().show(options, null, selectedStartPort, links[0]);
                             }
                             else
                             {
-                                if (event.altKey && event.which == 3)
+                                if ((mouseEvent.altKey && mouseEvent.which == 3) && self.thePort.links.length > 0)
                                 {
-                                    gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                    // drag from top
+                                    if (self.thePort.links[0].portIn == selectedStartPort)
+                                    {
+                                        options.onOpAdd = (newOp) =>
+                                        {
+                                            for (let i = 0; i < self.thePort.links.length; i++)
+                                            {
+                                                const link = self.thePort.links[i];
+                                                const p = newOp.findFittingPort(link.portIn);
+                                                if (p)
+                                                {
+                                                    gui.corePatch().link(
+                                                        link.portIn.parent,
+                                                        link.portIn.name,
+                                                        newOp,
+                                                        p.name
+                                                    );
+                                                }
+                                            }
+                                        };
+                                        gui.opSelect().show(options, self.thePort.links[0].portIn.parent);
+                                    }
+                                    // drag from bottom
+                                    else
+                                    {
+                                        options.onOpAdd = (newOp) =>
+                                        {
+                                            for (let i = 0; i < self.thePort.links.length; i++)
+                                            {
+                                                const link = self.thePort.links[i];
+                                                const p = newOp.findFittingPort(link.portOut, true);
+
+                                                if (p)
+                                                {
+                                                    gui.corePatch().link(
+                                                        newOp,
+                                                        p.name,
+                                                        link.portOut.parent,
+                                                        link.portOut.name,
+                                                    );
+                                                }
+                                            }
+                                        };
+                                        gui.opSelect().show(options, self.thePort.links[0].portOut.parent);
+                                    }
                                 }
                                 else
                                 {
-                                    gui.opSelect().show(coords, self.op, selectedStartPort);
+                                    gui.opSelect().show(options, self.op, selectedStartPort);
                                 }
                             }
                         };
 
-                        if (dist > 30 && event.which == 1)
+                        if (dist > 30 && mouseEvent.which == 1)
                         {
-                            new CABLES.UI.SuggestOpDialog(self.op, CABLES.UI.selectedStartPort.name, event, coords, showSelect,
+                            new CABLES.UI.SuggestOpDialog(self.op, CABLES.UI.selectedStartPort.name, mouseEvent, options, showSelect,
                                 function ()
                                 {
                                     console.log("cancval");
@@ -650,9 +680,10 @@ CABLES.UI.Port = function (thePort)
         this.rect.attr({ "width": 10, "height": 6, }); // for firefox compatibility: ff seems to ignore css width/height of svg rect?!
         this.rect.node.classList.add(CABLES.UI.uiConfig.getPortClass(self.thePort));
         this.rect.node.classList.add("port");
-        self.rect.node.addEventListener("contextmenu", contextMenu);
 
         group.push(this.rect);
+
+        $(self.rect.node).bind("contextmenu", contextMenu);
 
         self.rect.hover(hover, hoverOut);
         self.rect.drag(dragMove, dragStart, dragEnd);
