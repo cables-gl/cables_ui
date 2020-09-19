@@ -37,10 +37,16 @@ CABLES.UI.Port = function (thePort)
     this.opUi = null;
     this._posX = 0;
     this._posY = 0;
+    this._eleDropOp = ele.byId("drop-op-cursor");
 
     let hovering = false;
     let linkingLine = null;
     let cancelDeleteLink = false;
+
+    thePort.on("onLinkChanged", () =>
+    {
+        this.opUi.redrawLinks();
+    });
 
     thePort.addEventListener("onUiAttrChange", function (attribs)
     {
@@ -137,6 +143,13 @@ CABLES.UI.Port = function (thePort)
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x + 2, gui.patch().getCanvasCoordsMouse(event).y - 2);
                 linkingLine.addClass("link");
 
+                if (!event.altKey)
+                {
+                    for (let i = 0; i < self.opUi.links.length; i++)
+                    {
+                        self.opUi.links[i].hide();
+                    }
+                }
                 updateUI();
             }
             else
@@ -149,7 +162,7 @@ CABLES.UI.Port = function (thePort)
             CABLES.UI.selectedStartPort = self.thePort;
         }
 
-        $("#patch").focus();
+        ele.byId("patch").focus();
         if (!linkingLine)
         {
             this.startx = this.matrix.e + this.attrs.x;
@@ -165,6 +178,8 @@ CABLES.UI.Port = function (thePort)
 
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.uiAttribs.useVariable) return;
+
+        gui.log.userInteraction("drag move port " + self.thePort.name);
 
         CABLES.UI.MOUSEDRAGGINGPORT = true;
 
@@ -185,7 +200,7 @@ CABLES.UI.Port = function (thePort)
 
         if (window.CABLES.UI.selectedEndOp)
         {
-            $("#drop-op-cursor").hide();
+            ele.hide(self._eleDropOp);
 
             if (CABLES.UI.selectedStartPort)
             {
@@ -203,25 +218,20 @@ CABLES.UI.Port = function (thePort)
             if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == false)
             {
                 gui.setCursor("port_remove");
-                $("#drop-op-cursor").hide();
+                ele.hide(self._eleDropOp);
             }
             else if ((event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && event.altKey == true) || event.which == 1)
             {
-                $("#drop-op-cursor").css({ "top": b - 12, "left": a - 37 });
+                self._eleDropOp.style.top = b - 12 + "px";
+                self._eleDropOp.style.left = a - 37 + "px";
                 gui.setCursor("port_add");
-                $("#drop-op-cursor").show();
+                ele.show(self._eleDropOp);
             }
         }
-
-        if (!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort)
-        {
-            // CABLES.UI.selectedStartPortMulti.length=0;
-            // CABLES.UI.setStatusText('select a port to link...');
-        }
-        else
+        if (CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort)
         {
             gui.setCursor();
-            $("#drop-op-cursor").hide();
+            ele.hide(self._eleDropOp);
 
             let txt = CABLES.Link.canLinkText(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort);
             if (txt == "can link") CABLES.UI.getPortDescription(CABLES.UI.selectedEndPort.thePort);
@@ -238,7 +248,9 @@ CABLES.UI.Port = function (thePort)
                 linkingLine.removeClass("link_color_error");
             }
             else
+            {
                 linkingLine.addClass("link_color_error");
+            }
         }
     }
 
@@ -246,12 +258,12 @@ CABLES.UI.Port = function (thePort)
     {
         if (linkingLine) linkingLine.remove();
         linkingLine = null;
-        $("#drop-op-cursor").hide();
+        ele.hide(self._eleDropOp);
     }
 
     function finishDragUI()
     {
-        $("#drop-op-cursor").hide();
+        ele.hide(self._eleDropOp);
         CABLES.UI.selectedEndOp = null;
         removeLinkingLine();
         self.opUi.isDragging = false;
@@ -268,8 +280,14 @@ CABLES.UI.Port = function (thePort)
             {
                 self.thePort.removeLinks();
             }
+            else
+            {
+                for (let i = 0; i < self.opUi.links.length; i++)
+                {
+                    self.opUi.links[i].show();
+                }
+            }
         }
-
         CABLES.UI.MOUSEDRAGGINGPORT = false;
         removeLinkingLine();
         if (event.stopPropagation)event.stopPropagation();
@@ -680,10 +698,9 @@ CABLES.UI.Port = function (thePort)
         this.rect.attr({ "width": 10, "height": 6, }); // for firefox compatibility: ff seems to ignore css width/height of svg rect?!
         this.rect.node.classList.add(CABLES.UI.uiConfig.getPortClass(self.thePort));
         this.rect.node.classList.add("port");
+        self.rect.node.addEventListener("contextmenu", contextMenu);
 
         group.push(this.rect);
-
-        $(self.rect.node).bind("contextmenu", contextMenu);
 
         self.rect.hover(hover, hoverOut);
         self.rect.drag(dragMove, dragStart, dragEnd);
