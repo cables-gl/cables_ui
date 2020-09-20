@@ -142,6 +142,8 @@ CABLES.UI.Port = function (thePort)
                 linkingLine = new CABLES.UI.SVGMultiLine(points);
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x + 2, gui.patch().getCanvasCoordsMouse(event).y - 2);
                 linkingLine.addClass("link");
+
+                if (!event.altKey) self.thePort.removeLinks();
                 updateUI();
             }
             else
@@ -220,7 +222,13 @@ CABLES.UI.Port = function (thePort)
                 ele.show(self._eleDropOp);
             }
         }
-        if (CABLES.UI.selectedEndPort && CABLES.UI.selectedEndPort.thePort)
+
+        if (!CABLES.UI.selectedEndPort || !CABLES.UI.selectedEndPort.thePort)
+        {
+            // CABLES.UI.selectedStartPortMulti.length=0;
+            // CABLES.UI.setStatusText('select a port to link...');
+        }
+        else
         {
             gui.setCursor();
             ele.hide(self._eleDropOp);
@@ -266,6 +274,7 @@ CABLES.UI.Port = function (thePort)
 
     function dragEnd(event)
     {
+        /*
         if (event.which == 3)
         {
             if (!event.altKey)
@@ -273,6 +282,7 @@ CABLES.UI.Port = function (thePort)
                 self.thePort.removeLinks();
             }
         }
+        */
         CABLES.UI.MOUSEDRAGGINGPORT = false;
         removeLinkingLine();
         if (event.stopPropagation)event.stopPropagation();
@@ -394,6 +404,15 @@ CABLES.UI.Port = function (thePort)
                             }
                             else
                             {
+                                if (event.altKey && event.which == 3)
+                                {
+                                    gui.opSelect().show(coords, self.thePort.links[0].portOut.parent, selectedStartPort);
+                                }
+                                else
+                                {
+                                    gui.opSelect().show(coords, self.op, selectedStartPort);
+                                }
+                                /*
                                 if ((mouseEvent.altKey && mouseEvent.which == 3) && self.thePort.links.length > 0)
                                 {
                                     // drag from top
@@ -447,6 +466,7 @@ CABLES.UI.Port = function (thePort)
                                     gui.opSelect().show(options, self.op, selectedStartPort);
                                 }
                             }
+                            */
                         };
 
                         if (dist > 30 && mouseEvent.which == 1)
