@@ -142,14 +142,6 @@ CABLES.UI.Port = function (thePort)
                 linkingLine = new CABLES.UI.SVGMultiLine(points);
                 linkingLine.updateEnd(gui.patch().getCanvasCoordsMouse(event).x + 2, gui.patch().getCanvasCoordsMouse(event).y - 2);
                 linkingLine.addClass("link");
-
-                if (!event.altKey)
-                {
-                    for (let i = 0; i < self.opUi.links.length; i++)
-                    {
-                        self.opUi.links[i].hide();
-                    }
-                }
                 updateUI();
             }
             else
@@ -279,13 +271,6 @@ CABLES.UI.Port = function (thePort)
             if (!event.altKey)
             {
                 self.thePort.removeLinks();
-            }
-            else
-            {
-                for (let i = 0; i < self.opUi.links.length; i++)
-                {
-                    self.opUi.links[i].show();
-                }
             }
         }
         CABLES.UI.MOUSEDRAGGINGPORT = false;
