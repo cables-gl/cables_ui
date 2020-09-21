@@ -75,7 +75,10 @@ CABLES.UI.EditorTab = function (options)
     if (allowEdit)
     {
         if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
-        if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
+        if (!options.hideFormatButton)
+        {
+            if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
+        }
     }
     else
     {
@@ -103,6 +106,7 @@ CABLES.UI.EditorTab = function (options)
     else if (options.syntax == "js") this._editor.session.setMode("ace/mode/javascript");
     else if (options.syntax == "glsl") this._editor.session.setMode("ace/mode/glsl");
     else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
+    else if (options.syntax == "json") this._editor.session.setMode("ace/mode/json");
     else
     {
         this._editor.session.setMode("ace/mode/plain_text");

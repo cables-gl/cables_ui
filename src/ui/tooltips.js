@@ -48,7 +48,7 @@ Array.from(document.querySelectorAll(".tt")).forEach((tt) =>
         CABLES.UI.hideToolTip();
     };
     tt.addEventListener("mouseover", over);
-    tt.addEventListener("mouseleave", over);
+    tt.addEventListener("mouseleave", out);
     tt.addEventListener("mouseout", out);
 });
 
