@@ -495,18 +495,18 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     newValue = String(thePort.get());
                 }
 
-                if (thePort._tempLastUiValue != newValue)
+                // if (thePort._tempLastUiValue != newValue)
                 {
                     let ele = thePort._tempLastUiEle;
-                    if (!ele || thePort._tempLastUiEleId != id)
+                    // if (!ele || thePort._tempLastUiEleId != id)
+                    // {
+                    ele = document.getElementsByClassName(id);
+                    if (ele.length > 0)
                     {
-                        ele = document.getElementsByClassName(id);
-                        if (ele.length > 0)
-                        {
-                            ele = thePort._tempLastUiEle = ele[0];
-                            thePort._tempLastUiEleId = id;
-                        }
+                        ele = thePort._tempLastUiEle = ele[0];
+                        thePort._tempLastUiEleId = id;
                     }
+                    // }
 
                     if (ele)
                     {
