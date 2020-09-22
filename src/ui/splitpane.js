@@ -113,7 +113,6 @@ $(document).ready(function ()
 
     function resizeRenderer(ev)
     {
-        console.log("ev.shiftKey", ev.shiftKey);
         if (ev.shiftKey)
         {
             if (!CABLES.SPLITPANE.rendererAspect) CABLES.SPLITPANE.rendererAspect = gui.rendererWidth / gui.rendererHeight;
