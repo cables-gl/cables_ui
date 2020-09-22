@@ -71,7 +71,6 @@ CABLES.UI.OpSelect = class
         }
         else
         {
-            console.log("remove no results");
             ele.hide(eleNoResults);// .classList.add("hidden");
         }
 

@@ -30,7 +30,6 @@ CABLES.UI.togglePortValBool = function (which, checkbox)
 
 CABLES.UI.inputIncrement = function (v, dir, e)
 {
-    // console.log(e.target.type=="search");
     if (e.target.type == "search") return v;
     gui.setStateUnsaved();
     if (v == "true") return "false";
@@ -103,23 +102,23 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 
     const elem = $("#" + ele);
     const elemContainer = $("#" + ele + "-container");
+    const eleNumInputDisplay = $("#" + ele + "-container .numberinput-display");
 
     const theOp = gui.corePatch().getOpById(opid);
     const thePort = theOp.getPort(portName);
-
 
     let isDown = false;
     const startVal = elem.val();
     const el = document.getElementById(ele);
     let incMode = 0;
     let mouseDownTime = 0;
+    const usePointerLock = true;
+
     if (focus)
     {
         setTextEdit(true);
         elem.keydown(CABLES.UI.inputListenerCursorKeys);
     }
-
-    const usePointerLock = true;
 
     function onInput(e)
     {
@@ -169,7 +168,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
         if (enabled)
         {
             elem.bind("input", onInput);
-            $("#" + ele + "-container .numberinput-display").hide();
+            eleNumInputDisplay.hide();
             $(".numberinput").removeClass("numberinputFocussed");
             elemContainer.addClass("numberinputFocussed");
             elem.show();
@@ -177,18 +176,17 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 
             const vv = elem.val();
             elem[0].setSelectionRange(0, vv.length);
-
             elem.bind("keydown", tabKeyListener);
         }
         else
         {
             elem.unbind("input", onInput);
             $(".numberinput").removeClass("numberinputFocussed");
-            $("#" + ele + "-container .numberinput-display").show();
+            eleNumInputDisplay.show();
             elem.hide();
             elem.blur();
-            $(document).unbind("mouseup", up);
-            $(document).unbind("mousedown", down);
+            document.removeEventListener("mouseup", up);
+            document.removeEventListener("mousedown", down);
         }
     }
 
@@ -196,12 +194,10 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
     {
         if (elem.is(":focus")) return;
 
-
         elem.unbind("mousewheel");
         elem.unbind("keydown");
         elem.bind("mousewheel", CABLES.UI.inputListenerMousewheel);
         elem.keydown(CABLES.UI.inputListenerCursorKeys);
-
 
         mouseDownTime = performance.now();
         isDown = true;
@@ -210,6 +206,8 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 
         if (!isString && usePointerLock)
         {
+            document.addEventListener("pointerlockerror", lockError, false);
+
             document.addEventListener("pointerlockchange", lockChange, false);
             document.addEventListener("mozpointerlockchange", lockChange, false);
             document.addEventListener("webkitpointerlockchange", lockChange, false);
@@ -257,12 +255,12 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
             }(portName, opid, startVal, elem.val()));
         }
 
-
         gui.setStateUnsaved();
         isDown = false;
 
         if (usePointerLock)
         {
+            document.removeEventListener("pointerlockerror", lockError, false);
             document.removeEventListener("pointerlockchange", lockChange, false);
             document.removeEventListener("mozpointerlockchange", lockChange, false);
             document.removeEventListener("webkitpointerlockchange", lockChange, false);
@@ -270,15 +268,11 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
             if (document.exitPointerLock)document.exitPointerLock();
         }
 
-        $(document).unbind("mouseup", up);
-        $(document).unbind("mousedown", down);
+        document.removeEventListener("mouseup", up);
+        document.removeEventListener("mousedown", down);
 
         document.removeEventListener("mousemove", move, false);
-
-        if (performance.now() - mouseDownTime < 200)
-        {
-            setTextEdit(true);
-        }
+        if (performance.now() - mouseDownTime < 200) setTextEdit(true);
     }
 
     function setProgress(v)
@@ -294,7 +288,10 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
             CABLES.UI.pointerLockFirstTime = false;
             return;
         }
-        if (elem.is(":focus")) return;
+        if (elem.is(":focus"))
+        {
+            return;
+        }
 
         gui.setStateUnsaved();
         let v = parseFloat(elem.val(), 10);
@@ -335,10 +332,14 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
         if (thePort.uiAttribs.min != undefined)
             v = CABLES.map(v, 0, 1, thePort.uiAttribs.min, thePort.uiAttribs.max);
 
-
         elem.val(v);
-        $("#" + ele + "-container .numberinput-display").html(v);
+        eleNumInputDisplay.html(v);
         elem.trigger("input");
+    }
+
+    function lockError(e)
+    {
+        // console.log("pointer lock error...", e);
     }
 
     function lockChange(e)
@@ -352,48 +353,48 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
         {
             // propably cancled by escape key / reset value
             elem.val(startVal);
-            $("#" + ele + "-container .numberinput-display").html(startVal);
+            eleNumInputDisplay.html(startVal);
             elem.trigger("input");
             up();
         }
     }
 
-    $(document).bind("mouseup", up);
-    $(document).bind("mousedown", down);
-
-    elem.bind("blur",
-        function ()
+    function blur(e)
+    {
+        // value changed after blur
+        if (startVal != elem.val())
         {
-            // value changed after blur
-            if (startVal != elem.val())
+            if (opid && portName)
             {
-                if (opid && portName)
+                if (isNaN(elem.val()))
                 {
-                    if (isNaN(elem.val()))
-                    {
-                        const op = gui.corePatch().getOpById(opid);
-                        const p = op.getPort(portName);
+                    const op = gui.corePatch().getOpById(opid);
+                    const p = op.getPort(portName);
 
-                        let mathParsed = elem.val();
-                        try
-                        {
-                            mathParsed = CABLES.UI.mathparser.parse(elem.val());
-                        }
-                        catch (e)
-                        {
-                            // failed to parse math, use unparsed value
-                            mathParsed = elem.val();
-                        }
-                        elem.val(mathParsed);
-                        p.set(mathParsed);
-                        CABLES.UI.hideToolTip();
+                    let mathParsed = elem.val();
+                    try
+                    {
+                        mathParsed = CABLES.UI.mathparser.parse(elem.val());
                     }
+                    catch (ex)
+                    {
+                        // failed to parse math, use unparsed value
+                        mathParsed = elem.val();
+                    }
+                    elem.val(mathParsed);
+                    p.set(mathParsed);
+                    CABLES.UI.hideToolTip();
                 }
             }
+        }
 
-            elem.unbind("blur");
-            $("#" + ele + "-container .numberinput-display").html(elem.val());
-            setTextEdit(false);
-            if (elem.hasClass("valuesliderinput"))setProgress();
-        });
+        elem.unbind("blur");
+        eleNumInputDisplay.html(elem.val());
+        setTextEdit(false);
+        if (elem.hasClass("valuesliderinput"))setProgress();
+    }
+
+    document.addEventListener("mouseup", up);
+    document.addEventListener("mousedown", down);
+    elem.bind("blur", blur);
 };
