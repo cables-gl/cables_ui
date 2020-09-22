@@ -1357,16 +1357,16 @@ CABLES.UI.Patch = function (_gui)
             {
                 if (this.disabled) return;
 
-                console.log("onopadd 2");
+                // console.log("onopadd 2");
                 if (!isLoading)
-                    console.log("onop add event!", op.name);
+                    // console.log("onop add event!", op.name);
 
                 gui.setStateUnsaved();
                 this._elPatch.focus();
                 let width = CABLES.UI.uiConfig.opWidth;
                 if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
 
-                console.log("onopadd 3");
+                // console.log("onopadd 3");
 
                 const x = CABLES.UI.OPSELECT.newOpPos.x;
                 const y = CABLES.UI.OPSELECT.newOpPos.y;

@@ -94,6 +94,7 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
                 "content": port.get() + "",
                 "name": editorObj.name,
                 "syntax": port.uiAttribs.editorSyntax,
+                "hideFormatButton": port.uiAttribs.hideFormatButton,
                 "editorObj": editorObj,
                 "onClose": function (which)
                 {
@@ -357,7 +358,6 @@ CABLES.UI.initPortInputListener = function (op, index)
             }(op.portsIn[index].get(), v, op.id, op.portsIn[index].name));
         }
 
-
         op.portsIn[index].set(v);
         gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
             "op": op.id,
@@ -439,7 +439,6 @@ CABLES.UI.initPortClickListener = function (op, index)
         }
     }
 
-
     $("#portgraph_in_" + index).on("click", function (e)
     {
         if (op.portsIn[index].isAnimated())
@@ -461,7 +460,6 @@ CABLES.UI.initPortClickListener = function (op, index)
         if (port) port.setVariable(e.target.value);
         else console.log("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
     });
-
 
     $("#portremovevar_" + index).on("click", function (e)
     {

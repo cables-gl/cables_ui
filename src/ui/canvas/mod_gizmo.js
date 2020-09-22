@@ -6,9 +6,9 @@ const htmlLine = function (parentElement, color)
     let line = null;
 
     function createLineElement(x, y, length, angle)
-{
+    {
         line = document.createElement("div");
-        let styles = "border: 1px solid " + color + "; " +
+        const styles = "border: 1px solid " + color + "; " +
                    "width: " + length + "px; " +
                    "height: 0px; " +
                    "-moz-transform: rotate(" + angle + "rad); " +
@@ -24,7 +24,7 @@ const htmlLine = function (parentElement, color)
     }
 
     function setPos(x, y, length, angle)
-{
+    {
         line.style.width = length + "px";
         line.style.top = y + "px";
         line.style.left = x + "px";
@@ -47,7 +47,7 @@ const htmlLine = function (parentElement, color)
         let x = sx - c / 2,
             y = sy;
 
-        let alpha = Math.PI - Math.atan2(-b, a);
+        const alpha = Math.PI - Math.atan2(-b, a);
 
         setPos(x, y, c, alpha);
     };
@@ -89,9 +89,9 @@ CABLES.Gizmo = function (cgl)
 
 CABLES.Gizmo.prototype.getDir = function (x2, y2)
 {
-    let xd = this._params.x - x2;
-    let yd = this._params.y - y2;
-    let dist = (xd + yd) / 2;
+    const xd = this._params.x - x2;
+    const yd = this._params.y - y2;
+    const dist = (xd + yd) / 2;
 
     // console.log('dist',dist);
     if (dist < 0) return 1;
@@ -104,56 +104,56 @@ CABLES.Gizmo.prototype.set = function (params)
 {
     if (!params) return this.setParams(params);
 
-    let cgl = this._cgl;
+    const cgl = this._cgl;
     cgl.pushModelMatrix();
     function toScreen(trans)
     {
-        let vp = cgl.getViewPort();
-        let x = vp[2] - (vp[2] * 0.5 - (trans[0] * vp[2] * 0.5) / trans[2]);
-        let y = vp[3] - (vp[3] * 0.5 + (trans[1] * vp[3] * 0.5) / trans[2]);
+        const vp = cgl.getViewPort();
+        const x = vp[2] - (vp[2] * 0.5 - (trans[0] * vp[2] * 0.5) / trans[2]);
+        const y = vp[3] - (vp[3] * 0.5 + (trans[1] * vp[3] * 0.5) / trans[2]);
 
         return { x, y };
     }
 
     function distance(x1, y1, x2, y2)
     {
-        let xd = x2 - x1;
-        let yd = y2 - y1;
+        const xd = x2 - x1;
+        const yd = y2 - y1;
         return Math.sqrt(xd * xd + yd * yd);
     }
 
-    let m = mat4.create();
-    let pos = vec3.create();
-    let trans = vec3.create();
-    let transX = vec3.create();
-    let transY = vec3.create();
-    let transZ = vec3.create();
+    const m = mat4.create();
+    const pos = vec3.create();
+    const trans = vec3.create();
+    const transX = vec3.create();
+    const transY = vec3.create();
+    const transZ = vec3.create();
 
     mat4.translate(cgl.mvMatrix, cgl.mvMatrix, [params.posX.get(), params.posY.get(), params.posZ.get()]);
     mat4.multiply(m, cgl.vMatrix, cgl.mvMatrix);
 
     vec3.transformMat4(pos, [0, 0, 0], m);
     vec3.transformMat4(trans, pos, cgl.pMatrix);
-    let zero = toScreen(trans);
+    const zero = toScreen(trans);
 
     // normalize distance to gizmo handles
     vec3.transformMat4(pos, [1, 0, 0], m);
     vec3.transformMat4(transX, pos, cgl.pMatrix);
     let screenDist = toScreen(transX);
-    let d1 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
+    const d1 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
 
     vec3.transformMat4(pos, [0, 1, 0], m);
     vec3.transformMat4(transX, pos, cgl.pMatrix);
     screenDist = toScreen(transX);
-    let d2 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
+    const d2 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
 
     vec3.transformMat4(pos, [0, 0, 1], m);
     vec3.transformMat4(transX, pos, cgl.pMatrix);
     screenDist = toScreen(transX);
-    let d3 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
+    const d3 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
 
-    let d = Math.max(d3, Math.max(d1, d2));
-    let w = (1 / (d + 0.00000001)) * 50;
+    const d = Math.max(d3, Math.max(d1, d2));
+    const w = (1 / (d + 0.00000001)) * 50;
     this._multi = w;
 
     vec3.transformMat4(pos, [w, 0, 0], m);
@@ -165,9 +165,9 @@ CABLES.Gizmo.prototype.set = function (params)
     vec3.transformMat4(pos, [0, 0, w], m);
     vec3.transformMat4(transZ, pos, cgl.pMatrix);
 
-    let screenX = toScreen(transX);
-    let screenY = toScreen(transY);
-    let screenZ = toScreen(transZ);
+    const screenX = toScreen(transX);
+    const screenY = toScreen(transY);
+    const screenZ = toScreen(transZ);
 
     cgl.popModelMatrix();
 
@@ -199,7 +199,7 @@ CABLES.Gizmo.prototype.setParams = function (params)
 
     if (!this._eleCenter)
     {
-        let container = this._cgl.canvas.parentElement;
+        const container = this._cgl.canvas.parentElement;
 
         this._eleCenter = document.createElement("div");
         this._eleCenter.id = "gizmo";
@@ -277,7 +277,7 @@ CABLES.Gizmo.prototype.setParams = function (params)
 
     if (!params)
     {
-        let self = this;
+        const self = this;
         setTimeout(() =>
         {
             self._eleCenter.style.display = "none";
@@ -320,8 +320,8 @@ CABLES.Gizmo.prototype.setParams = function (params)
 CABLES.Gizmo.prototype.dragger = function (el)
 {
     let isDown = false;
-    let self = this;
-    let incMode = 0;
+    const self = this;
+    const incMode = 0;
 
     function keydown(e) {}
 
@@ -348,8 +348,8 @@ CABLES.Gizmo.prototype.dragger = function (el)
 
         if (document.exitPointerLock) document.exitPointerLock();
 
-        $(document).unbind("mouseup", up);
-        $(document).unbind("mousedown", down);
+        document.removeEventListener("mouseup", up);
+        document.removeEventListener("mousedown", down);
 
         document.removeEventListener("mousemove", move, false);
 
@@ -379,8 +379,8 @@ CABLES.Gizmo.prototype.dragger = function (el)
         }
     }
 
-    $(document).bind("mouseup", up);
-    $(document).bind("mousedown", down);
+    document.addEventListener("mouseup", up);
+    document.addEventListener("mousedown", down);
 };
 
 // export { Gizmo, htmlLine };
