@@ -27,6 +27,10 @@ CABLES.UI.isComment = function (objname)
     return objname.indexOf("Ops.Ui.Comment") == 0;
 };
 
+CABLES.UI.isMultilineString = function (str)
+{
+    return ((str.match(/\n/g) || []).length > 0);
+};
 
 CABLES.UI.updateHoverToolTip = function (event, port)
 {
@@ -36,12 +40,26 @@ CABLES.UI.updateHoverToolTip = function (event, port)
     let val = null;
     if (port)
     {
-        if (port.type == CABLES.OP_PORT_TYPE_VALUE || port.type == CABLES.OP_PORT_TYPE_STRING)
+        if (port.type == CABLES.OP_PORT_TYPE_VALUE)
         {
             val = port.getValueForDisplay();
             if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
             else val = "\"" + val + "\"";
             txt += ": <span class=\"code\">" + val + "</span>";
+        }
+        else if (port.type == CABLES.OP_PORT_TYPE_STRING)
+        {
+            val = port.getValueForDisplay();
+            if (CABLES.UI.isMultilineString(val))
+            {
+                val = "\"" + val + "\"";
+                txt += ": <span class=\"code multiline-string-port\">" + val + "</span>";
+            }
+            else
+            {
+                val = "\"" + val + "\"";
+                txt += ": <span class=\"code\">" + val + "</span>";
+            }
         }
         else if (port.type == CABLES.OP_PORT_TYPE_ARRAY)
         {
