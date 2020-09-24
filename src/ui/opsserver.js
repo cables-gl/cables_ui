@@ -26,14 +26,19 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         "attachment",
         function (name, data)
         {
-            const lastTab = CABLES.UI.userSettings.get("editortab");
-            if (data && data.opname)
+            // usersettings stores editortab as basename/att_example.inc
+            // editAttachment demands att_example.inc plus the opname to then store
+            // stuff in session
+            const opBasename = data.opname.substr(data.opname.lastIndexOf(".") + 1);
+            const attName = name.replace(opBasename + "/", "");
+            if (name.includes("att_") && data && data.opname)
             {
-                this.editAttachment(data.opname, name, false, function ()
+                const lastTab = CABLES.UI.userSettings.get("editortab");
+                this.editAttachment(data.opname, attName, false, function ()
                 {
                     gui.mainTabs.activateTabByName(lastTab);
                     CABLES.UI.userSettings.set("editortab", lastTab);
-                });
+                }, true);
             }
         }.bind(this),
     );
@@ -410,15 +415,14 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         });
     };
 
-    this.editAttachment = function (opname, attachmentName, readOnly, cb)
+    this.editAttachment = function (opname, attachmentName, readOnly, cb, fromListener = false)
     {
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
 
-        CABLES.api.clearCache();
-
         let editorObj = null;
+        CABLES.api.clearCache();
 
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
 
@@ -430,8 +434,9 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
             },
             function (err, res)
             {
-                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", attachmentName, { opname });
                 gui.jobs().finish("load_attachment_" + attachmentName);
+
+                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname }, true);
 
                 if (err || !res || res.content == undefined)
                 {
@@ -451,12 +456,23 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
                 if (editorObj)
                 {
+                    const lastTab = CABLES.UI.userSettings.get("editortab");
+                    let inactive = false;
+                    if (fromListener)
+                    {
+                        if (lastTab !== title)
+                        {
+                            inactive = true;
+                        }
+                    }
+
                     new CABLES.UI.EditorTab({
                         "title": title,
                         "name": editorObj.name,
                         content,
                         syntax,
                         editorObj,
+                        "inactive": inactive,
                         onClose(which)
                         {
                             console.log("close!!! missing infos...");
@@ -487,12 +503,14 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                             );
                         },
                     });
+                    // this is done in the callback now
 
                     // setTimeout(()=>{
-                    console.log("settab!", editorObj.name);
-                    gui.mainTabs.activateTabByName(title);
+                    // console.log("settab!", editorObj.name);
+                    // gui.mainTabs.activateTabByName(title);
                     // },200);
                 }
+
 
                 if (cb) cb();
                 else gui.maintabPanel.show();
@@ -535,7 +553,10 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
             }
         );
 
-        if (!editorObj) gui.mainTabs.activateTabByName(title);
+        if (!editorObj)
+        {
+            gui.mainTabs.activateTabByName(title);
+        }
     };
 
     // Shows the editor and displays the code of an op in it
