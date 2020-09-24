@@ -416,8 +416,9 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
 
-        const editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname });
         CABLES.api.clearCache();
+
+        let editorObj = null;
 
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
 
@@ -429,6 +430,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
             },
             function (err, res)
             {
+                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", attachmentName, { opname });
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
                 if (err || !res || res.content == undefined)
