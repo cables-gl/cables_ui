@@ -14,6 +14,8 @@ const vueify = require("vueify");
 const replace = require("gulp-replace");
 const autoprefixer = require("gulp-autoprefixer");
 const merge = require("merge-stream");
+const footer = require("gulp-footer");
+const getRepoInfo = require("git-repo-info");
 
 // var notifier = require('node-notifier');
 
@@ -128,15 +130,29 @@ gulp.task("scripts_ops", () =>
         .pipe(gulp.dest("dist/js")));
 
 gulp.task("scripts_ui", () =>
-    gulp
+{
+    const git = getRepoInfo();
+    const date = new Date();
+    const buildInfo = {
+        "timestamp": date.getTime(),
+        "created": date.toISOString(),
+        "git": {
+            "branch": git.branch,
+            "commit": git.sha,
+            "date": git.committerDate,
+        }
+    };
+    return gulp
         .src(["src/ui/**/*.js"])
         .pipe(sourcemaps.init())
         .pipe(concat("cablesui.max.js"))
+        .pipe(footer("CABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
         .pipe(gulp.dest("dist/js"))
         .pipe(rename("cablesui.min.js"))
         .pipe(uglify())
         .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js")));
+        .pipe(gulp.dest("dist/js"));
+});
 
 gulp.task("html_ui", () =>
     gulp
