@@ -27,6 +27,11 @@ CABLES.UI.GUI = function (cfg)
             "forceWebGl1": cfg.usersettings.settings.forceWebGl1 == "true",
             "alpha": true,
             "premultipliedAlpha": true,
+        },
+        "variables":
+        {
+            "katze": 1,
+            "hund": 2323
         }
     });
 

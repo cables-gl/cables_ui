@@ -1024,7 +1024,6 @@ CABLES.UI.Patch = function (_gui)
 
         const op = uiOp.op;
 
-        console.log("doaddop!", op.objName);
 
         if (!isLoading)
         {
@@ -1359,9 +1358,9 @@ CABLES.UI.Patch = function (_gui)
 
                 // console.log("onopadd 2");
                 if (!isLoading)
-                    // console.log("onop add event!", op.name);
+                // console.log("onop add event!", op.name);
 
-                gui.setStateUnsaved();
+                    gui.setStateUnsaved();
                 this._elPatch.focus();
                 let width = CABLES.UI.uiConfig.opWidth;
                 if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
