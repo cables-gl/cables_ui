@@ -266,6 +266,7 @@ CABLES.ANIM.Key.prototype.initUI = function ()
 
         self.isDragging = false;
     }
+
     this.circle.drag(move, down, up);
 
     // --------
@@ -704,12 +705,26 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
         removeDots();
 
+        const elTimelineTitle = ele.byId("timelineTitle");
+
+        elTimelineTitle.addEventListener("click", () =>
+        {
+            if (config.opid)
+            {
+                gui.patchView.focusOp(config.opid);
+            }
+            else
+            {
+                console.log("no opid!");
+            }
+        });
+
         if (!newanim || newanim === null)
         {
             anim = tlEmpty;
             removeDots();
             updateKeyLine();
-            $("#timelineTitle").html("");
+            ele.hide(elTimelineTitle);
             enabled = false;
             return;
         }
@@ -719,8 +734,15 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         enabled = true;
         this.addAnim(anim);
 
-        if (config && config.name) $("#timelineTitle").html(config.name);
-        else $("#timelineTitle").html("");
+        if (config && config.name)
+        {
+            ele.show(elTimelineTitle);
+            elTimelineTitle.innerHTML = config.name;
+        }
+        else
+        {
+            ele.hide(elTimelineTitle);
+        }
 
         if (config && config.hasOwnProperty("defaultValue") && anim.keys.length === 0)
         {
@@ -1521,6 +1543,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             $("#timeline").focus();
         }
     }
+
     $("#timelineui").bind("mousedown", function (e)
     {
         $("#timeline").focus();
