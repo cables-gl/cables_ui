@@ -238,13 +238,12 @@
 
 .easingselect
 {
-    padding:10px;
-    position: absolute;
+    // padding:10px;
     right:0px;
-    width:240px;
+    min-width:240px;
     // height:260px;
-    background-color: var(--color-01);
-    z-index: $z-index-timeline-easing;
+    // background-color: var(--color-01);
+    // z-index: $z-index-timeline-easing;
 
     .title
     {

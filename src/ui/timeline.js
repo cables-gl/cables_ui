@@ -1971,8 +1971,8 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             for (const i in anims[j].keys)
                 if (anims[j].keys[i].selected) count++;
 
-        if (count > 0) $(".easingselect").show();
-        else $(".easingselect").hide();
+        // if (count > 0) $(".easingselect").show();
+        // else $(".easingselect").hide();
     };
 
     // ---------------------------------
