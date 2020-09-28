@@ -323,7 +323,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
         else
         {
             inc = e.movementX * 1;
-            if (e.shiftKey || e.which == 3)inc = e.CABLES.mapmentX * 5;
+            if (e.shiftKey || e.which == 3)inc = e.movementX * 5;
 
             v += inc;
             v = Math.floor(v);
