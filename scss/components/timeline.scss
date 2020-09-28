@@ -1,9 +1,22 @@
 
+
 #timing
 {
     font-family: SourceCodePro,monospace;
     position: absolute;
     overflow: hidden;
+
+
+    .breadcrumb
+    {
+        color: var(--color_op_text_active);
+        padding:5px;
+        padding-left:10px;
+        padding-right:10px;
+        margin-top: 4px;
+        background-color: var(--color_op_bg);
+    }
+
 
 }
 
@@ -43,7 +56,7 @@
 {
     fill:var(--color-05);
     stroke:var(--color-05);
-    cursor:grab;   
+    cursor:grab;
 }
 
 .timeline-overview-area-resize
@@ -51,7 +64,7 @@
     fill:var(--color-04);
     stroke:var(--color-04);
     stroke-width: 0;
-    cursor:col-resize; 
+    cursor:col-resize;
 }
 
 
@@ -170,7 +183,7 @@
 #timelineTitle
 {
     position: absolute;
-    z-index: $z-index-timeline-title;
+    z-index: 9999999;
     bottom:10px;
     left:10px;
 }
@@ -225,13 +238,12 @@
 
 .easingselect
 {
-    padding:10px;
-    position: absolute;
+    // padding:10px;
     right:0px;
-    width:240px;
+    min-width:240px;
     // height:260px;
-    background-color: var(--color-01);
-    z-index: $z-index-timeline-easing;
+    // background-color: var(--color-01);
+    // z-index: $z-index-timeline-easing;
 
     .title
     {

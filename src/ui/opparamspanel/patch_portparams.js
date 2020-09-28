@@ -446,7 +446,8 @@ CABLES.UI.initPortClickListener = function (op, index)
             op.portsIn[index].anim.stayInTimeline = !op.portsIn[index].anim.stayInTimeline;
             $("#portgraph_in_" + index).toggleClass("timingbutton_active");
             gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
-                "name": op.portsIn[index].name,
+                "name": op.getTitle() + ": " + op.portsIn[index].name,
+                "opid": op.id,
                 "defaultValue": parseFloat($("#portval_" + index).val())
             });
         }
@@ -514,7 +515,8 @@ CABLES.UI.initPortClickListener = function (op, index)
 
         op.portsIn[index].toggleAnim();
         gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
-            "name": op.portsIn[index].name,
+            "opid": op.id,
+            "name": op.getTitle() + ": " + op.portsIn[index].name,
             "defaultValue": parseFloat($("#portval_" + index).val())
         });
         op.portsIn[index].parent.refreshParams();

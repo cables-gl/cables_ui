@@ -349,7 +349,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     if (_thePort.isAnimated())
                     {
                         gui.timeLine().setAnim(_thePort.anim, {
-                            "name": _thePort.name,
+                            "opid": _thePort.parent.id,
+                            "name": _thePort.parent.getTitle() + ": " + _thePort.name,
                         });
                     }
                 });
