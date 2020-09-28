@@ -71,7 +71,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
 
-        let i = 0;
         this.emitEvent("opSelected", op);
 
         op.isServerOp = gui.serverOps.isServerOp(op.objName);
@@ -80,7 +79,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (self.timeLine)
         {
             let foundAnim = false;
-            for (i = 0; i < op.portsIn.length; i++)
+            for (let i = 0; i < op.portsIn.length; i++)
             {
                 if (op.portsIn[i].isAnimated())
                 {
@@ -161,7 +160,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             let lastGroup = null;
             const perfLoop = CABLES.uiperf.start("_showOpParamsLOOP");
 
-            for (i = 0; i < op.portsIn.length; i++)
+            for (let i = 0; i < op.portsIn.length; i++)
             {
                 let startGroup = null;
                 let groupSpacer = false;
@@ -277,7 +276,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         this.updateUiAttribs();
 
-        for (i = 0; i < op.portsIn.length; i++)
+        for (let i = 0; i < op.portsIn.length; i++)
         {
             if (op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display == "file")
             {
@@ -350,7 +349,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     if (_thePort.isAnimated())
                     {
                         gui.timeLine().setAnim(_thePort.anim, {
-                            "name": _thePort.name,
+                            "opid": _thePort.parent.id,
+                            "name": _thePort.parent.getTitle() + ": " + _thePort.name,
                         });
                     }
                 });

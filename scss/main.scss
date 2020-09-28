@@ -205,7 +205,7 @@ input[type="text"]
     // text-transform: capitalize;
 	text-align: center;
 	margin-bottom: 2px;
-    color: $button-text-color;
+    color: var(--color-12);
 	background-color: var(--color-02);
     border-radius: 29px;
 

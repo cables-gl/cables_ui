@@ -27,6 +27,11 @@ CABLES.UI.GUI = function (cfg)
             "forceWebGl1": cfg.usersettings.settings.forceWebGl1 == "true",
             "alpha": true,
             "premultipliedAlpha": true,
+        },
+        "variables":
+        {
+            "katze": 1,
+            "hund": 2323
         }
     });
 
@@ -282,8 +287,8 @@ CABLES.UI.GUI = function (cfg)
         {
             patchHeight = patchHeight - this.timingHeight - 2;
 
-            $(".easingselect").css("bottom", 0);
-            $(".easingselect").css("left", patchWidth + iconBarWidth);
+            // $(".easingselect").css("bottom", 0);
+            // $(".easingselect").css("left", patchWidth + iconBarWidth);
         }
         else
         {
@@ -1448,7 +1453,7 @@ CABLES.UI.GUI = function (cfg)
         else if ($("#sidebar").is(":visible")) $("#sidebar").animate({
             "width": "toggle"
         }, 200);
-        else if ($(".easingselect").is(":visible")) $(".easingselect").hide();
+        // else if ($(".easingselect").is(":visible")) $(".easingselect").hide();
         else if (vueStore.getters["sidebar/sidebarCustomizerVisible"]) vueStore.commit("sidebar/setCustomizerVisible", false);
         else if (CABLES.UI.MODAL._visible)
         {

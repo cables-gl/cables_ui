@@ -14,6 +14,8 @@ const vueify = require("vueify-babel-7-support");
 const replace = require("gulp-replace");
 const autoprefixer = require("gulp-autoprefixer");
 const merge = require("merge-stream");
+const footer = require("gulp-footer");
+const getRepoInfo = require("git-repo-info");
 
 function _vueify()
 {
@@ -93,10 +95,22 @@ function _scripts_ops()
 
 function _scripts_ui()
 {
+    const git = getRepoInfo();
+    const date = new Date();
+    const buildInfo = {
+        "timestamp": date.getTime(),
+        "created": date.toISOString(),
+        "git": {
+            "branch": git.branch,
+            "commit": git.sha,
+            "date": git.committerDate,
+        }
+    };
     return gulp
         .src(["src/ui/**/*.js"])
         .pipe(sourcemaps.init())
         .pipe(concat("cablesui.max.js"))
+        .pipe(footer("CABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
         .pipe(gulp.dest("dist/js"))
         .pipe(rename("cablesui.min.js"))
         .pipe(uglify())

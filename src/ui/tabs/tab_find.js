@@ -164,7 +164,12 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
     let colorHandle = "";
     if (op.uiAttribs.color) colorHandle = "<span style=\"background-color:" + op.uiAttribs.color + ";\">&nbsp;&nbsp;</span>&nbsp;&nbsp;";
 
-    html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.name + "</h3>";
+    html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.name;
+    if (op.uiAttribs.extendTitle) html += " <span style=\"color: var(--color-13);\"> | " + op.uiAttribs.extendTitle + "</span>";
+
+    html += "</h3>";
+
+
     if (op.uiAttribs.comment) html += "<span style=\"color: var(--color-special);\"> // " + op.uiAttribs.comment + "</span><br/>";
     html += "" + op.objName + "<br/>";
     html += result.where || "";

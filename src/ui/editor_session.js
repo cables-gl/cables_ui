@@ -54,7 +54,7 @@ CABLES.EditorSession.prototype.remove = function (name, type)
  * @param {string} name
  * @function
  */
-CABLES.EditorSession.prototype.rememberOpenEditor = function (type, name, data)
+CABLES.EditorSession.prototype.rememberOpenEditor = function (type, name, data, skipSetEditorTab)
 {
     for (let i = 0; i < this._openEditors.length; i++)
     {
@@ -66,7 +66,10 @@ CABLES.EditorSession.prototype.rememberOpenEditor = function (type, name, data)
     const obj = { "name": name, "type": type, "data": data || {} };
     this._openEditors.push(obj);
     this.store();
-    CABLES.UI.userSettings.set("editortab", name);
+    if (!skipSetEditorTab)
+    {
+        CABLES.UI.userSettings.set("editortab", name);
+    }
 
     return obj;
 };
