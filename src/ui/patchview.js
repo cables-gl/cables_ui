@@ -984,6 +984,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
                 for (let j = 0; j < newOp.portsIn.length; j++)
                 {
+                    console.log(newOp.portsIn[j].name, newOp.portsIn[i].name);
                     if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
                     {
                         found = true;
@@ -997,7 +998,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     htmlList += "NOT FOUND in new version!";
                     allFine = false;
                 }
-                else htmlList += "found in new version";
+                // else htmlList += "found in new version";
 
                 htmlList += "</td>";
                 htmlList += "</tr>";
@@ -1042,7 +1043,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 for (let j = 0; j < origOp.portsIn[i].links.length; j++)
                 {
                     const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
-                    this._p.link(otherPort.parent, otherPort.name, newOp, origOp.portsIn[i].name);
+
+                    console.log("link", otherPort.name.toLowerCase(), origOp.portsIn[i].name.toLowerCase());
+
+
+                    this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
                 }
             }
 
@@ -1051,7 +1056,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 for (let j = 0; j < origOp.portsOut[i].links.length; j++)
                 {
                     const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
-                    this._p.link(otherPort.parent, otherPort.name, newOp, origOp.portsOut[i].name);
+                    this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
                 }
             }
 
