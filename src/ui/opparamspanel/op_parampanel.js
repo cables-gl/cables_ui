@@ -19,13 +19,16 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._currentOp = null;
 
         this._updateWatchPorts();
-
-        // this._cycleWatchPort = false;
     }
 
     dispose()
     {
         this._watchPorts.length = 0;
+    }
+
+    clear()
+    {
+        this._currentOp = null;
     }
 
     removePorts()
@@ -49,7 +52,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         {
             op = gui.corePatch().getOpById(op);
         }
-
 
         this._currentOp = op;
         if (!op)

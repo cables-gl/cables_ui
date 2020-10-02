@@ -24,6 +24,8 @@ CABLES.UI.OpSelect = class
         this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
         this._newOpOptions = {};
         this._searchInputEle = null;
+        this._enterPressedEarly = false;
+        this._searching = false;
     }
 
     close()
@@ -479,6 +481,7 @@ CABLES.UI.OpSelect = class
 
     show(options, linkOp, linkPort, link)
     {
+        this._enterPressedEarly = false;
         CABLES.UI.OPSELECT.linkNewLink = link;
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;
         CABLES.UI.OPSELECT.newOpPos = options;
@@ -578,6 +581,7 @@ CABLES.UI.OpSelect = class
         clearTimeout(this._keyTimeout);
 
         document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
+        this._searching = true;
 
         this._keyTimeout = setTimeout(() =>
         {
@@ -586,6 +590,8 @@ CABLES.UI.OpSelect = class
             this.updateInfo();
             this.search();
             document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
+            this._searching = false;
+            if (this._enterPressedEarly) this.addSelectedOp();
         }, 250);
     }
 
@@ -597,10 +603,7 @@ CABLES.UI.OpSelect = class
 
             CABLES.UI.MODAL.hide();
             gui.patchView.addOp(opname, this._newOpOptions);
-            if (this._onOpAdd)
-            {
-                this._onOpAdd();
-            }
+            if (this._onOpAdd) this._onOpAdd();
         }
     }
 
@@ -620,7 +623,13 @@ CABLES.UI.OpSelect = class
             break;
 
         case 13:
-            this.addSelectedOp();
+            if (this._searching)
+            {
+                this._enterPressedEarly = true;
+                return;
+            }
+            else this.addSelectedOp();
+
             e.preventDefault();
             break;
 
