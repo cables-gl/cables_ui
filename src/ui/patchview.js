@@ -230,6 +230,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 "numOps": this.getSelectedOps().length,
             });
 
+        gui.opParams.clear();
+
         ele.byId("options").innerHTML = html;
         gui.setTransformGizmo(null);
 
@@ -240,7 +242,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         gui.texturePreview().pressedEscape();
         gui.setTransformGizmo(null);
-
+        gui.opParams.clear();
         this.showBookmarkParamsPanel();
     }
 
