@@ -10,7 +10,7 @@ CABLES.UI.DEFAULTOPNAMES =
 {
     "number": "Ops.Value.Number",
     "defaultOpImage": "Ops.Gl.Texture_v2",
-    "defaultOpAudio": "Ops.WebAudio.AudioPlayer",
+    "defaultOpAudio": "Ops.WebAudio.AudioPlayer_v2",
     "defaultOpJson3d": "Ops.Json3d.Mesh3d",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture",
     "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v2",
