@@ -230,6 +230,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 "numOps": this.getSelectedOps().length,
             });
 
+        gui.opParams.clear();
+
         ele.byId("options").innerHTML = html;
         gui.setTransformGizmo(null);
 
@@ -240,7 +242,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         gui.texturePreview().pressedEscape();
         gui.setTransformGizmo(null);
-
+        gui.opParams.clear();
         this.showBookmarkParamsPanel();
     }
 
@@ -258,7 +260,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         let html = "<div class=\"panel\">";
 
-        if (!gui.user.isPatchOwner) html += CABLES.UI.getHandleBarHtml("clonepatch", {});
+
+        const project = gui.project();
+        if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id)) html += CABLES.UI.getHandleBarHtml("clonepatch", {});
         html += gui.bookmarks.getHtml();
 
         const views = document.getElementById("patchviews");
