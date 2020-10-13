@@ -93,11 +93,18 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             return;
         }
 
-        console.log("core settings", gui.project()._id);
+        const project = gui.project();
+        console.log("core settings", project._id);
+        let prompt = "Enter a name for the copy of this Project.<br/><br/>The following users will have access to the copy: ";
+        project.userList.forEach((name, i) =>
+        {
+            if (i > 0) prompt += ", ";
+            prompt += name;
+        });
 
         CABLES.UI.MODAL.prompt(
             "Save As...",
-            "Enter a name for the copy of this Project.<br/>The collaborators of this project will also have access to the copy.",
+            prompt,
             gui.corePatch().name,
             (name) =>
             {
