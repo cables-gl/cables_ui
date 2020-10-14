@@ -1012,14 +1012,34 @@ CABLES.UI.Patch = function (_gui)
     {
         function checkDuplicatePorts(op)
         {
-            for (let j = 0; j < op.portsIn.length; j++)
-                for (let i = 0; i < op.portsIn.length; i++)
-                    if (i != j)
-                        if (op.portsIn[i].name == op.portsIn[j].name)
+            let objName = null;
+            let portName = null;
+
+            for (let k = 0; k < op.portsOut.length; k++)
+            {
+                for (let j = 0; j < op.portsIn.length; j++)
+                {
+                    if (op.portsIn[j].name == op.portsOut[k].name)
+                    {
+                        objName = op.objName;
+                        portName = op.portsIn[j].name;
+                    }
+                    for (let i = 0; i < op.portsIn.length; i++)
+                    {
+                        if ((i != j && op.portsIn[i].name == op.portsIn[j].name))
                         {
-                            console.error("op " + op.objName + " has duplicate port names (" + op.portsIn[j].name + "), they must be unique. ");
-                            CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
+                            objName = op.objName;
+                            portName = op.portsIn[j].name;
                         }
+                    }
+                }
+            }
+
+            if (portName)
+            {
+                console.error("op " + objName + " has duplicate port names (" + portName + "), they must be unique. ");
+                CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
+            }
         }
 
         const op = uiOp.op;
