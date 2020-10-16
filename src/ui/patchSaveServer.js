@@ -241,6 +241,10 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     "name": name,
                     "namespace": currentProject.namespace,
                     "data": data,
+                    "buildInfo": {
+                        "core": CABLES.build,
+                        "ui": CABLES.UI.build
+                    }
                 },
                 function (err, r)
                 {

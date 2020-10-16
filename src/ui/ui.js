@@ -1536,7 +1536,16 @@ CABLES.UI.GUI = function (cfg)
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 
+        const buildInfo = this.project().buildInfo;
         console.groupCollapsed("welcome to cables!");
+        console.log("build info:");
+        const buildInfoTable = [];
+        buildInfoTable.push({ "title": "cables", "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+        if (buildInfo)
+        {
+            buildInfoTable.push({ "title": "project", "core": buildInfo.core.created, "ui": buildInfo.ui.created, "core_branch": CABLES.build.git.branch, "core_git": buildInfo.core.git.commit, "ui_branch": buildInfo.ui.git.branch, "ui_git": buildInfo.ui.git.commit });
+        }
+        console.table(buildInfoTable);
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
