@@ -982,12 +982,11 @@ CABLES.UI.Patch = function (_gui)
             if (!found)
             {
                 notFound++;
-                console.log("no uiop found of op: ", gui.corePatch().ops[i]);
+                console.log("creating unfound uiop..... ", gui.corePatch().ops[i]);
+                this.initUiOp(gui.corePatch().ops[i], true);
             }
         }
-        if (notFound)console.log("num unfound ops:", notFound);
     };
-
 
     this.removeQuickLinkLine = function ()
     {
@@ -1239,99 +1238,7 @@ CABLES.UI.Patch = function (_gui)
             this.checkLinkTimeWarnings();
         }.bind(this));
 
-        scene.addEventListener("onLink", function (p1, p2)
-        {
-            if (this.disabled) return;
-
-            if (!isLoading)
-                console.log("onlink event!", p1.parent.name, p1.name);
-
-            gui.setStateUnsaved();
-
-            let uiPort1 = null;
-            let uiPort2 = null;
-            for (let i = 0; i < self.ops.length; i++)
-            {
-                for (let j = 0; j < self.ops[i].portsIn.length; j++)
-                {
-                    if (this.ops[i].portsIn[j].thePort == p1)
-                    {
-                        uiPort1 = this.ops[i].portsIn[j];
-                        break;
-                    }
-                    if (this.ops[i].portsIn[j].thePort == p2) uiPort2 = this.ops[i].portsIn[j];
-                }
-                // for (var jo in this.ops[i].portsOut) {
-                for (let jo = 0; jo < this.ops[i].portsOut.length; jo++)
-                {
-                    if (this.ops[i].portsOut[jo].thePort == p1) uiPort1 = this.ops[i].portsOut[jo];
-                    if (this.ops[i].portsOut[jo].thePort == p2) uiPort2 = this.ops[i].portsOut[jo];
-                }
-            }
-
-            if (!uiPort1 || !uiPort2)
-            {
-                if (!isLoading)
-                    console.warn("no uiport found");
-
-                gui.patch().checkOpsInSync();
-
-                // for (let i = 0; i < this.ops.length; i++)
-                // {
-                //     // if (this.ops[i].portsIn.length + this.ops[i].portsOut.length == 0)
-                //     //     console.log("THIS ONE has no ui ports?!", this.ops[i].op.name, this.ops[i].op, this.ops[i].op);
-                // }
-                try
-                {
-                    console.log(uiPort1, uiPort1.opUi);
-                    console.log(uiPort2, uiPort2.opUi);
-                }
-                catch (e)
-                {
-                    console.log(e);
-                }
-                return;
-            }
-
-            const thelink = new UiLink(uiPort1, uiPort2);
-
-            uiPort1.opUi.links.push(thelink);
-            uiPort2.opUi.links.push(thelink);
-
-            if (!isLoading)
-            {
-                uiPort1.opUi.redrawLinks();
-                uiPort2.opUi.redrawLinks();
-
-                if (!uiPort1.opUi.isHidden()) thelink.show();
-
-                // todo: update is too often ?? check if current op is linked else do not update!!!
-                this.updateCurrentOpParams();
-
-                const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
-                {
-                    CABLES.undo.add({
-                        "title": "link",
-                        undo()
-                        {
-                            const op1 = scene.getOpById(op1Id);
-                            const op2 = scene.getOpById(op2Id);
-                            if (!op1 || !op2)
-                            {
-                                console.warn("undo: op not found");
-                                return;
-                            }
-                            op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                        },
-                        redo()
-                        {
-                            scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
-                        }
-                    });
-                }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id));
-            }
-            this.checkLinkTimeWarnings();
-        }.bind(this));
+        scene.addEventListener("onLink", this.onLinkEvent.bind(this));
 
         scene.addEventListener("onOpDelete", function (op)
         {
@@ -1371,39 +1278,123 @@ CABLES.UI.Patch = function (_gui)
             self.checkLinkTimeWarnings();
         });
 
-        scene.addEventListener("onOpAdd",
-            function (op)
-            {
-                if (this.disabled) return;
-
-                // console.log("onopadd 2");
-                if (!isLoading)
-                // console.log("onop add event!", op.name);
-
-                    gui.setStateUnsaved();
-                this._elPatch.focus();
-                let width = CABLES.UI.uiConfig.opWidth;
-                if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
-
-                // console.log("onopadd 3");
-
-                const x = CABLES.UI.OPSELECT.newOpPos.x;
-                const y = CABLES.UI.OPSELECT.newOpPos.y;
-                const uiOp = new OpUi(self.paper, op, x, y, width, CABLES.UI.uiConfig.opHeight, op.name);
-
-                self.ops.push(uiOp);
-
-                uiOp.wasAdded = false;
-
-                // setTimeout(
-                // ()=>{
-                doAddOp(uiOp);
-                this.opCollisionTest(uiOp);
-                self.checkLinkTimeWarnings();
-
-                // },10);
-            }.bind(this));
+        scene.addEventListener("onOpAdd", this.initUiOp.bind(this));
     };
+
+    this.onLinkEvent = function (p1, p2)
+    {
+        if (this.disabled) return;
+
+        if (!isLoading)
+            console.log("onlink event!", p1.parent.name, p1.name);
+
+        gui.setStateUnsaved();
+
+        let uiPort1 = null;
+        let uiPort2 = null;
+        for (let i = 0; i < self.ops.length; i++)
+        {
+            for (let j = 0; j < self.ops[i].portsIn.length; j++)
+            {
+                if (this.ops[i].portsIn[j].thePort == p1)
+                {
+                    uiPort1 = this.ops[i].portsIn[j];
+                    break;
+                }
+                if (this.ops[i].portsIn[j].thePort == p2) uiPort2 = this.ops[i].portsIn[j];
+            }
+            // for (var jo in this.ops[i].portsOut) {
+            for (let jo = 0; jo < this.ops[i].portsOut.length; jo++)
+            {
+                if (this.ops[i].portsOut[jo].thePort == p1) uiPort1 = this.ops[i].portsOut[jo];
+                if (this.ops[i].portsOut[jo].thePort == p2) uiPort2 = this.ops[i].portsOut[jo];
+            }
+        }
+
+        if (!uiPort1 || !uiPort2)
+        {
+            if (!isLoading)
+                console.warn("no uiport found");
+
+            gui.patch().checkOpsInSync();
+
+            this.onLinkEvent(p1, p2);
+            return;
+        }
+
+        const thelink = new UiLink(uiPort1, uiPort2);
+
+        uiPort1.opUi.links.push(thelink);
+        uiPort2.opUi.links.push(thelink);
+
+        if (!isLoading)
+        {
+            uiPort1.opUi.redrawLinks();
+            uiPort2.opUi.redrawLinks();
+
+            if (!uiPort1.opUi.isHidden()) thelink.show();
+
+            // todo: update is too often ?? check if current op is linked else do not update!!!
+            this.updateCurrentOpParams();
+
+            const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
+            {
+                CABLES.undo.add({
+                    "title": "link",
+                    undo()
+                    {
+                        const op1 = scene.getOpById(op1Id);
+                        const op2 = scene.getOpById(op2Id);
+                        if (!op1 || !op2)
+                        {
+                            console.warn("undo: op not found");
+                            return;
+                        }
+                        op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+                    },
+                    redo()
+                    {
+                        scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
+                    }
+                });
+            }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id));
+        }
+        this.checkLinkTimeWarnings();
+    };
+
+    this.initUiOp = function (op, norandom)
+    {
+        // if (!norandom && Math.random() > 0.9) return;
+        if (this.disabled) return;
+
+        // console.log("onopadd 2");
+        if (!isLoading)
+        // console.log("onop add event!", op.name);
+
+            gui.setStateUnsaved();
+        this._elPatch.focus();
+        let width = CABLES.UI.uiConfig.opWidth;
+        if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
+
+        // console.log("onopadd 3");
+
+        const x = CABLES.UI.OPSELECT.newOpPos.x;
+        const y = CABLES.UI.OPSELECT.newOpPos.y;
+        const uiOp = new OpUi(self.paper, op, x, y, width, CABLES.UI.uiConfig.opHeight, op.name);
+
+        self.ops.push(uiOp);
+
+        uiOp.wasAdded = false;
+
+        // setTimeout(
+        // ()=>{
+        doAddOp(uiOp);
+        this.opCollisionTest(uiOp);
+        self.checkLinkTimeWarnings();
+
+        // },10);
+    };
+
 
     this.setOpColor = function (col)
     {
