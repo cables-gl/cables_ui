@@ -1566,8 +1566,8 @@ CABLES.UI.GUI = function (cfg)
                 }
                 if (buildInfo.ui.git)
                 {
-                    infoRow.ui_branch = buildInfo.core.git.branch;
-                    infoRow.ui_git = buildInfo.core.git.commit;
+                    infoRow.ui_branch = buildInfo.ui.git.branch;
+                    infoRow.ui_git = buildInfo.ui.git.commit;
                 }
             }
             buildInfoTable.push(infoRow);
