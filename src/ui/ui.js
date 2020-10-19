@@ -1543,7 +1543,34 @@ CABLES.UI.GUI = function (cfg)
         buildInfoTable.push({ "title": "cables", "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
         if (buildInfo)
         {
-            buildInfoTable.push({ "title": "project", "core": buildInfo.core.created, "ui": buildInfo.ui.created, "core_branch": CABLES.build.git.branch, "core_git": buildInfo.core.git.commit, "ui_branch": buildInfo.ui.git.branch, "ui_git": buildInfo.ui.git.commit });
+            const infoRow = {
+                "title": "project"
+            };
+            if (buildInfo.core)
+            {
+                if (buildInfo.core.created)
+                {
+                    infoRow.core = buildInfo.core.created;
+                }
+                if (buildInfo.core.git)
+                {
+                    infoRow.core_branch = buildInfo.core.git.branch;
+                    infoRow.core_git = buildInfo.core.git.commit;
+                }
+            }
+            if (buildInfo.ui)
+            {
+                if (buildInfo.ui.created)
+                {
+                    infoRow.ui = buildInfo.ui.created;
+                }
+                if (buildInfo.ui.git)
+                {
+                    infoRow.ui_branch = buildInfo.ui.git.branch;
+                    infoRow.ui_git = buildInfo.ui.git.commit;
+                }
+            }
+            buildInfoTable.push(infoRow);
         }
         console.table(buildInfoTable);
         console.log("start up times:");
