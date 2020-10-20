@@ -651,6 +651,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             });
     }
 
+    getCurrentSubPatch()
+    {
+        return this._currentSubpatch;
+    }
+
     setCurrentSubPatch(sub)
     {
         this._currentSubpatch = sub;
