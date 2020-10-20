@@ -53,7 +53,7 @@ CABLES.UI.Bookmarks = function ()
             }
         }
 
-        const html = CABLES.UI.getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs });
+        const html = CABLES.UI.getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         return html;
     };
 

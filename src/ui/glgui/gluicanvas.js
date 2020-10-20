@@ -64,9 +64,11 @@ CABLES.GLGUI.GlUiCanvas = class
         // this.canvas.style.display='block';
         // this.canvas.style.position='absolute';
         this.canvas.style.border = "0px solid white";
+        this.canvas.style.outline = "0";
         // this.canvas.style.cursor='none';
         // this.canvas.style['z-index']=9999999991;
         this.canvas.setAttribute("tabindex", 10);
+
 
         this._parentEle = parentEle;
 
@@ -201,7 +203,7 @@ CABLES.GLGUI.GlUiCanvas = class
     {
         this._targetFps = 0;
         clearTimeout(this._activityTimeout);
-        this._activityTimeout = setTimeout(() => { this.activityMedium(); }, 1000);
+        this._activityTimeout = setTimeout(() => { this.activityMedium(); }, 4000);
     }
 
     activityMedium()

@@ -85,13 +85,20 @@ CABLES.GLGUI.ViewBox = class
     {
         const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
-        let delta = CGL.getWheelSpeed(event);
-        event = CABLES.mouseEvent(event);
+        // let delta = CGL.getWheelSpeed(event);
+        // event = CABLES.mouseEvent(event);
+
+        // console.log(event.deltaY);
+
+        let delta = 5;
+        if (event.deltaY < 0)delta *= -1;
+
         delta *= wheelMultiplier;
 
         if (event.altKey) this._scrollY -= delta;
         else if (event.shiftKey) this._scrollX -= delta;
         else this._zoom += delta * (this._zoom / 155) * 2;
+
 
         this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
         this._smoothedZoom.set(this._zoom);

@@ -1399,7 +1399,6 @@ CABLES.UI.Patch = function (_gui)
         // },10);
     };
 
-
     this.setOpColor = function (col)
     {
         for (let i = 0; i < selectedOps.length; i++)
