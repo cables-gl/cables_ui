@@ -1419,7 +1419,7 @@ CABLES.UI.GUI = function (cfg)
             this.setLayout();
             return;
         }
-        this.metaTexturePreviewer.pressedEscape();
+        // this.metaTexturePreviewer.pressedEscape();
         $(".tooltip").hide();
 
         if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)

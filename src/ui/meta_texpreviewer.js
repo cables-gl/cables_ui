@@ -241,6 +241,8 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml = function ()
         }
         this._texturePorts[i].updated = CABLES.now();
     }
+
+    gui.setElementBgPattern(this._ele);
 };
 
 CABLES.UI.TexturePreviewer.prototype.show = function ()
@@ -305,7 +307,6 @@ CABLES.UI.TexturePreviewer.prototype.render = function ()
     if (this._lastClicked)
     {
         // this._ele=document.getElementById('bgpreview');
-        gui.setElementBgPattern(this._ele);
         this._ele.style.display = "block";
         this._renderTexture(this._lastClicked, this._ele);
 
@@ -398,7 +399,6 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
             this.render();
         });
     }
-
 
     this._lastClickedP = p;
     this._lastClicked = this.updateTexturePort(p);

@@ -240,7 +240,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     showDefaultPanel()
     {
-        gui.texturePreview().pressedEscape();
+        // gui.texturePreview().pressedEscape();
         gui.setTransformGizmo(null);
         gui.opParams.clear();
         this.showBookmarkParamsPanel();
