@@ -77,7 +77,15 @@
     <span class="icon icon-chevron-right"></span>
 </div>
 
-<canvas id="bgpreview" data-infotext="texpreview" class="info"></canvas>
+<canvas id="bgpreview" data-infotext="texpreview" class="info">
+</canvas>
+
+<div id="bgpreviewButtonsContainer" class="hidden">
+    <div id="bgpreviewButtons">
+        <a class="icon-x icon fright" onclick="gui.metaTexturePreviewer.pressedEscape();"></a>
+    </div>
+</div>
+
 
 <div id="patchviews">
     <div id="patch" tabindex="1" class="visible"></div>

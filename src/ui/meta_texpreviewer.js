@@ -254,6 +254,7 @@ CABLES.UI.TexturePreviewer.prototype.show = function ()
 
 CABLES.UI.TexturePreviewer.prototype.hide = function ()
 {
+    ele.byId("bgpreviewButtonsContainer").classList.add("hidden");
     this._paused = true;
 };
 
@@ -300,6 +301,7 @@ CABLES.UI.TexturePreviewer.prototype.pressedEscape = function ()
     this._lastClicked = null;
     const ele = document.getElementById("bgpreview");
     if (ele)ele.style.display = "none";
+    this.hide();
 };
 
 CABLES.UI.TexturePreviewer.prototype.render = function ()
@@ -391,6 +393,8 @@ CABLES.UI.TexturePreviewer.prototype.hoverEnd = function ()
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
 {
+    ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
+
     if (!this._listeningFrame && p)
     {
         this._listeningFrame = true;
