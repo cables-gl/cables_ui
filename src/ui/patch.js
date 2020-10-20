@@ -1239,6 +1239,7 @@ CABLES.UI.Patch = function (_gui)
         }.bind(this));
 
         scene.addEventListener("onLink", this.onLinkEvent.bind(this));
+        scene.addEventListener("onOpAdd", this.initUiOp.bind(this));
 
         scene.addEventListener("onOpDelete", function (op)
         {
@@ -1263,22 +1264,25 @@ CABLES.UI.Patch = function (_gui)
                 });
             }(op.objName, op.id));
 
+            let found = false;
             for (const i in self.ops)
             {
                 if (self.ops[i].op == op)
                 {
                     const theUi = self.ops[i];
+                    found = true;
+                    console.log("found op to delete!!!");
 
                     theUi.hideAddButtons();
                     theUi.remove();
                     self.ops.splice(i, 1);
                 }
             }
+
+            if (!found)console.log("delete ops NOT FOUND!!!");
             gui.setStateUnsaved();
             self.checkLinkTimeWarnings();
         });
-
-        scene.addEventListener("onOpAdd", this.initUiOp.bind(this));
     };
 
     this.onLinkEvent = function (p1, p2)
@@ -1337,7 +1341,7 @@ CABLES.UI.Patch = function (_gui)
             // todo: update is too often ?? check if current op is linked else do not update!!!
             this.updateCurrentOpParams();
 
-            const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
+            const undofunc = (function (scene, p1Name, p2Name, op1Id, op2Id)
             {
                 CABLES.undo.add({
                     "title": "link",
@@ -1357,7 +1361,7 @@ CABLES.UI.Patch = function (_gui)
                         scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
                     }
                 });
-            }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id));
+            }(this.scene, p1.getName(), p2.getName(), p1.parent.id, p2.parent.id));
         }
         this.checkLinkTimeWarnings();
     };
