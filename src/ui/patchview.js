@@ -240,7 +240,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     showDefaultPanel()
     {
-        gui.texturePreview().pressedEscape();
+        // gui.texturePreview().pressedEscape();
         gui.setTransformGizmo(null);
         gui.opParams.clear();
         this.showBookmarkParamsPanel();
@@ -259,7 +259,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     showBookmarkParamsPanel()
     {
         let html = "<div class=\"panel\">";
-
 
         const project = gui.project();
         if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id)) html += CABLES.UI.getHandleBarHtml("clonepatch", {});
@@ -917,6 +916,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (this._patchRenderer.setCurrentSubPatch) this._patchRenderer.setCurrentSubPatch(subpatch);
         else console.log("patchRenderer has no function setCurrentSubPatch");
+
+        if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
     }
 
     focusOp(opid)

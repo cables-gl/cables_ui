@@ -200,6 +200,9 @@ CABLES.UI.GUI = function (cfg)
         this.patchView.updateBoundingRect();
 
         this._elPatch = this.patchView.element;
+        this._elBgPreview = ele.byId("bgpreview");
+        this._elBgPreviewButtonContainer = ele.byId("bgpreviewButtonsContainer");
+
 
         this._elOptions = this._elOptions || $("#options");
         this._elMeta = this._elMeta || $("#meta");
@@ -586,8 +589,13 @@ CABLES.UI.GUI = function (cfg)
             this._corePatch.cgl.updateSize();
         }
 
-        $("#bgpreview").css("right", this.rendererWidth + "px");
-        $("#bgpreview").css("top", menubarHeight + "px");
+
+        this._elBgPreview.style.right = this.rendererWidth + "px";
+        this._elBgPreview.style.top = menubarHeight + "px";
+
+        this._elBgPreviewButtonContainer.style.right = this.rendererWidth + "px";
+        this._elBgPreviewButtonContainer.style.top = -1 + "px";
+
 
         this.emitEvent("setLayout");
 
@@ -1419,7 +1427,7 @@ CABLES.UI.GUI = function (cfg)
             this.setLayout();
             return;
         }
-        this.metaTexturePreviewer.pressedEscape();
+        // this.metaTexturePreviewer.pressedEscape();
         $(".tooltip").hide();
 
         if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
