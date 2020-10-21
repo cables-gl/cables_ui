@@ -28,6 +28,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._lines, this);
+        this._fpsStartTime = 0;
 
         this.cacheOIRxa = 0;
         this.cacheOIRya = 0;
@@ -86,6 +87,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.emitEvent("mousemove", e);
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
+
+
+        this.profileMouseEvents = this.profileMouseEvents || 0;
+        this.profileMouseEvents++;
 
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }
@@ -296,6 +301,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
         this.needsRedraw = false;
+
+        if (performance.now() - this._fpsStartTime > 1000)
+        {
+            this._fpsStartTime = performance.now();
+            this.debugData.mouseMovePS = this.profileMouseEvents;
+            this.profileMouseEvents = 0;
+        }
 
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
         this.debugData.rects = this._rectInstancer.getNumRects();
