@@ -1243,7 +1243,11 @@ CABLES.UI.Patch = function (_gui)
 
         scene.addEventListener("onOpDelete", function (op)
         {
-            if (this.disabled) return;
+            if (this.disabled)
+            {
+                console.log("wont delete, patch is disabled");
+                return;
+            }
             const undofunc = (function (opname, opid)
             {
                 const oldValues = {};
