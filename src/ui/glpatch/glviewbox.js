@@ -83,8 +83,6 @@ CABLES.GLGUI.ViewBox = class
 
     _onCanvasWheel(event)
     {
-        const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
-
         // let delta = CGL.getWheelSpeed(event);
         // event = CABLES.mouseEvent(event);
 
@@ -93,21 +91,77 @@ CABLES.GLGUI.ViewBox = class
         let delta = 5;
         if (event.deltaY < 0)delta *= -1;
 
-        delta *= wheelMultiplier;
+        // delta *= wheelMultiplier;
 
         if (event.altKey) this._scrollY -= delta;
         else if (event.shiftKey) this._scrollX -= delta;
-        else this._zoom += delta * (this._zoom / 155) * 2;
 
 
-        this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
+        this.wheelZoom(delta);
+
+        // this.wheelZoom(delta * (this._zoom / 155) * 2);
+        // else this._zoom += delta * (this._zoom / 155) * 2;
+
+        // this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
+        // this._smoothedZoom.set(this._zoom);
+
+        // if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
+        // {
+        //     event.preventDefault();
+        //     event.stopImmediatePropagation();
+        // }
+        // gui.patchView.emitEvent("viewBoxChange");
+    }
+
+    wheelZoom(delta)
+    {
+        if (delta == 0) return;
+
+        const patchWidth = this._viewResX;
+        const patchHeight = this._viewResY;
+
+        const z = this._smoothedZoom.value;
+
+        const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
+
+        if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
+        else delta = 1 + 0.2 * wheelMultiplier;
+
+        // if (this._zoom == null)
+        // {
+        //     this._zoom = patchWidth / this._viewBox.w;
+        //     // this._viewBox.h = this._viewBox.w * (this._viewResY / this._viewResX);
+        // }
+        // const oldx = this._mouseX;// (event.clientX - this._elePatch.offsetLeft);
+        // const oldy = this._mouseY;// (event.clientY - this._elePatch.offsetTop);
+        const x = this._scrollX + (this._mouseX / z);
+        const y = this._scrollY + (this._mouseY / z);
+
+        this._zoom *= delta;
+
+        const nx = (this._mouseX - this._viewResX / 2) / this._zoom;
+        const ny = (this._mouseY - this._viewResY / 2) / this._zoom;
+
+        // this.set(
+
+        console.log(delta, x - nx, this._zoom);
+
+
+        this.scrollTo(
+            x - ((nx)),
+            y - ((ny)));
+
+        // this._smoothedZoom.set(this._zoom);
+
+        // this._viewResX = patchWidth / this._zoom;
+        // this._viewResY = patchHeight / this._zoom;
+
+
+        //     patchHeight / this._zoom
+        // );
+
         this._smoothedZoom.set(this._zoom);
 
-        if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
-        {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-        }
         gui.patchView.emitEvent("viewBoxChange");
     }
 

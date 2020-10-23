@@ -316,8 +316,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.viewZoom = this.viewBox.zoom;
         this.debugData.viewbox_scrollX = this.viewBox.scrollX;
         this.debugData.viewbox_scrollY = this.viewBox.scrollY;
-        this.debugData.viewResX = this._viewResX;
-        this.debugData.viewResY = this._viewResY;
+        this.debugData.viewResX = this.viewBox._viewResX;
+        this.debugData.viewResY = this.viewBox._viewResY;
         this.mouseState.debug(this.debugData);
 
         // this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
