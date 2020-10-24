@@ -455,6 +455,51 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         return arr;
     }
 
+    getSubPatches(sort)
+    {
+        let foundPatchIds = [];
+        const subPatches = [];
+        const ops = gui.corePatch().ops;
+
+        let i = 0;
+
+        for (i = 0; i < ops.length; i++)
+            if (ops[i].patchId && ops[i].patchId.get() !== 0)
+                foundPatchIds.push(ops[i].patchId.get());
+
+        // find lost ops, which are in subpoatches, but no subpatch op exists for that subpatch..... :(
+        for (i = 0; i < ops.length; i++)
+            if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch)
+                if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1)
+                    foundPatchIds.push(ops[i].uiAttribs.subPatch);
+
+        foundPatchIds = CABLES.uniqueArray(foundPatchIds);
+
+        for (i = 0; i < foundPatchIds.length; i++)
+        {
+            let found = false;
+            for (let j = 0; j < ops.length; j++)
+                if (ops[j].patchId != 0 && ops[j].patchId && ops[j].patchId.get() == foundPatchIds[i])
+                {
+                    subPatches.push({
+                        "name": ops[j].name,
+                        "id": foundPatchIds[i]
+                    });
+                    found = true;
+                }
+
+            if (!found)
+                subPatches.push({
+                    "name": "lost patch " + foundPatchIds[i],
+                    "id": foundPatchIds[i]
+                });
+        }
+
+        if (sort) subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });
+
+        return subPatches;
+    }
+
     updateSubPatchBreadCrumb(currentSubPatch)
     {
         if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);

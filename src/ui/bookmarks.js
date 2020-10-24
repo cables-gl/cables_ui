@@ -31,7 +31,7 @@ CABLES.UI.Bookmarks = function ()
 
     this.getHtml = function ()
     {
-        const subs = gui.patch().getSubPatches(true);
+        const subs = gui.patchView.getSubPatches(true);
 
         const bm = [];
         for (const i in bookmarks)

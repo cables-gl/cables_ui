@@ -25,36 +25,37 @@
 
 </style>
 
+<div class="tabcontent-scroll padding">
 
-<h1>Keyboard shortcuts</h1>
+    <h1>Keyboard shortcuts</h1>
 
-<table>
+    <table>
+        {{#each keys}}
+            {{#if group}}
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <br/><br/>
+                    <h2 style="text-transform:capitalize;">{{group}}</h2>
+                </td>
+            </tr>
+            {{/if}}
+            <tr>
+                <td class="keyline" style="text-align: right;">
+                    {{#if options.cmdCtrl}}<code class="key">CMD</code> + {{/if}}
+                    {{#if options.shiftKey}}<code class="key">SHIFT</code> + {{/if}}
+                </td>
+                <td class="keyline">
+                    <code class="key">{{key}}</code>
+                    &nbsp;
+                </td>
+                <td class="keyline">{{title}}</td>
+            </tr>
+        {{/each}}
+    </table>
 
 
-{{#each keys}}
-    {{#if group}}
-    <tr>
-        <td></td>
-        <td></td>
-        <td>
-            <br/><br/>
-            <h2 style="text-transform:capitalize;">{{group}}</h2>
-        </td>
-    </tr>
-    {{/if}}
-    <tr>
-        <td class="keyline" style="text-align: right;">
-            {{#if options.cmdCtrl}}<code class="key">CMD</code> + {{/if}}
-            {{#if options.shiftKey}}<code class="key">SHIFT</code> + {{/if}}
-        </td>
-        <td class="keyline">
-            <code class="key">{{key}}</code>
-            &nbsp;
-        </td>
-        <td class="keyline">{{title}}</td>
-    </tr>
-{{/each}}
-</table>
-
+</div>
 
 </script>

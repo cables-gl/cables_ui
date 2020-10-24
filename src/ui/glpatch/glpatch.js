@@ -28,6 +28,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._lines, this);
+        this._fpsStartTime = 0;
 
         this.cacheOIRxa = 0;
         this.cacheOIRya = 0;
@@ -86,6 +87,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.emitEvent("mousemove", e);
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
+
+
+        this.profileMouseEvents = this.profileMouseEvents || 0;
+        this.profileMouseEvents++;
 
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }
@@ -297,6 +302,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.needsRedraw = false;
 
+        if (performance.now() - this._fpsStartTime > 1000)
+        {
+            this._fpsStartTime = performance.now();
+            this.debugData.mouseMovePS = this.profileMouseEvents;
+            this.profileMouseEvents = 0;
+        }
+
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
         this.debugData.rects = this._rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
@@ -304,8 +316,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.viewZoom = this.viewBox.zoom;
         this.debugData.viewbox_scrollX = this.viewBox.scrollX;
         this.debugData.viewbox_scrollY = this.viewBox.scrollY;
-        this.debugData.viewResX = this._viewResX;
-        this.debugData.viewResY = this._viewResY;
+        this.debugData.viewResX = this.viewBox._viewResX;
+        this.debugData.viewResY = this.viewBox._viewResY;
         this.mouseState.debug(this.debugData);
 
         // this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
@@ -649,6 +661,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 //     }
                 // }, 100);
             });
+    }
+
+    getCurrentSubPatch()
+    {
+        return this._currentSubpatch;
     }
 
     setCurrentSubPatch(sub)

@@ -19,7 +19,6 @@ CABLES.GLGUI.VISUALCONFIG =
     "zoomSmooth": 2,
     "zoomDefault": 300,
 
-
     "namespaceColors":
     {
         "unknown": [93 / 255, 192 / 255, 253 / 255], // '#5dc0fd';

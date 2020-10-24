@@ -23,7 +23,7 @@
             <h3>Subpatches</h3>
 
             <div class="list">
-                <div class="{{#compare currentSubPatch '==' 0 }}lastClicked{{/compare}}" onclick="gui.patch().setCurrentSubPatch(0);CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
+                <div class="{{#compare currentSubPatch '==' 0 }}lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch(0);CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
                     <h3 class="op_color_default">Main</h3>
 
                 </div>
@@ -31,7 +31,7 @@
 
             {{#each subPatches}}
                 <div class="list">
-                    <div class="{{#compare ../currentSubPatch '==' id }}lastClicked{{/compare}}" onclick="gui.patch().setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
+                    <div class="{{#compare ../currentSubPatch '==' id }}lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
                         <h3 class="op_color_default">{{name}}</h3>
                     </div>
                 </div>

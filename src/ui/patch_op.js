@@ -1286,6 +1286,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         this.hide();
         this.oprect.getGroup().remove();
         this.oprect.deleteUi();
+        console.log("op ui removed", op.getTitle());
     };
 
     this.getHeight = function ()
