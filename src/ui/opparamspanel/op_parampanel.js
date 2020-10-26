@@ -31,6 +31,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._currentOp = null;
     }
 
+    refresh()
+    {
+        this.show(this._currentOp);
+    }
+
     removePorts()
     {
         console.log("remove watchports!");

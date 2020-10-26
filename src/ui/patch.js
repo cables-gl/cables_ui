@@ -1343,7 +1343,6 @@ CABLES.UI.Patch = function (_gui)
             if (!uiPort1.opUi.isHidden()) thelink.show();
 
             // todo: update is too often ?? check if current op is linked else do not update!!!
-            this.updateCurrentOpParams();
 
             const undofunc = (function (scene, p1Name, p2Name, op1Id, op2Id)
             {
