@@ -18,6 +18,7 @@ CABLES.GLGUI.ViewBox = class
         this._viewResX = 0;
         this._viewResY = 0;
         this._boundingRect = null;
+        this._boundingRectSelection = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
@@ -160,6 +161,15 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect);
         }
 
+        if (!this._boundingRect2)
+        {
+            this._boundingRect2 = this.glPatch.rectDrawer.createRect();
+            this._boundingRect2.interactive = false;
+            this._boundingRect2.setPosition(0, 0, 1);
+            this._boundingRect2.setSize(110, 110);
+            this._boundingRect2.setColor([0,0,0,1]);
+        }
+
         const bounds = this.glPatch.rectDrawer.bounds;
         this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.1);
         this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
@@ -178,16 +188,57 @@ CABLES.GLGUI.ViewBox = class
 
     center()
     {
-        const ops = gui.patchView.getSelectedOps();
+        let ops = gui.patchView.getSelectedOps();
 
+        if(ops.length == 0)ops=gui.corePatch().ops;
         console.log("center!", ops.length + " ops...");
 
-        if (ops.length > 0)
+        const bb=new CGL.BoundingBox();
+
+        for(let i=0;i<ops.length;i++)
         {
-            const x = ops[0].uiAttribs.translate.x;
-            const y = ops[0].uiAttribs.translate.y;
-            this.scrollTo(x, y);
+            bb.applyPos(
+                ops[i].uiAttribs.translate.x,
+                ops[i].uiAttribs.translate.y,
+                0);
+
+            bb.applyPos(
+                ops[i].uiAttribs.translate.x+this.glPatch.getGlOp(ops[i]).w,
+                ops[i].uiAttribs.translate.y+this.glPatch.getGlOp(ops[i]).h,
+                0);
         }
+        bb.calcCenterSize();
+
+
+        const padding=1.1;
+
+        console.log("bb size",bb.size[0],bb.size[1]);
+
+
+        let z=0;
+        if(bb.size[0]>bb.size[1]) z=bb.size[0]/2*padding; // zoom on x
+        else z=(bb.size[1]/(this._viewResY/this._viewResX))/2*padding;
+
+        // console.log("ZOOM",zoomX,zoomY);
+
+        if(z<300)z=300;
+
+        this._smoothedZoom.set(z);
+        this._smoothedZoomValue=z;
+
+        let cy=bb.center[1];
+
+        this.scrollTo(bb.center[0],cy);
+
+
+
+        this._boundingRect2.setPosition(
+            bb.center[0]-(bb.size[0]/2),
+            bb.center[1]-(bb.size[1]/2),
+            0.1);
+        this._boundingRect2.setSize(bb.size[0],bb.size[1]);
+
+
     }
 
     screenToPatchCoord(x, y,aspect)

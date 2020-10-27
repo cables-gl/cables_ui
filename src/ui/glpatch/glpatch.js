@@ -56,13 +56,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // for(let i=-5000;i<5000;i+=100)
         // {
         //     let idx = this._lines.getIndex();
-        //     this._lines.setLine(idx,0,i,1000,i);
-        //     this._lines.setColor(idx, 1,1,1,1);
+        //     this._lines.setLine(idx,-1000,i,1000,i);
+        //     this._lines.setColor(idx, 0.1,0.1,0.1,1);
 
         //     idx = this._lines.getIndex();
-        //     this._lines.setLine(idx,i,0,i,1000);
-        //     this._lines.setColor(idx, 1,1,1,1);
-
+        //     this._lines.setLine(idx,i,-1000,i,1000);
+        //     this._lines.setColor(idx, 0.1,0.1,0.1,1);
         // }
 
 
@@ -471,6 +470,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         for (const i in this._glOpz) this._glOpz[i].selected = false;
         this._selectedGlOps = {};// .length=0;
+    }
+
+    getGlOp(op)
+    {
+        return this._glOpz[op.id];
     }
 
     selectOpId(id)

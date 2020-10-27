@@ -41,9 +41,12 @@ CABLES.GLGUI.GlCable = class
 
     _updateLinePos()
     {
-        const dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
+        let dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
         if (this._visible)
         {
+
+            if(Math.abs(this._y-this._y2)<CABLES.GLGUI.VISUALCONFIG.portHeight*2)dist=CABLES.GLGUI.VISUALCONFIG.portHeight*0.5;
+
             this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - dist);
             this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - dist, this._x2, this._y2 + dist);
             this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + dist, this._x2, this._y2);
