@@ -87,113 +87,44 @@ CABLES.GLGUI.ViewBox = class
     _onCanvasWheel(event)
     {
         this.setMousePos(event.offsetX, event.offsetY);
-        // let delta = CGL.getWheelSpeed(event);
-        // event = CABLES.mouseEvent(event);
-
-        // console.log(event.deltaY);
 
         let delta = 5;
         if (event.deltaY < 0)delta *= -1;
 
-        // delta *= wheelMultiplier;
-
         if (event.altKey) this._scrollY -= delta;
         else if (event.shiftKey) this._scrollX -= delta;
-// console.log(event);
-
 
         this.wheelZoom(delta);
-
-        // this.wheelZoom(delta * (this._zoom / 155) * 2);
-        // else this._zoom += delta * (this._zoom / 155) * 2;
-
-        // this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
-        // this._smoothedZoom.set(this._zoom);
-
-        // if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
-        // {
-        //     event.preventDefault();
-        //     event.stopImmediatePropagation();
-        // }
-        // gui.patchView.emitEvent("viewBoxChange");
-        this.setMousePos(event.offsetX, event.offsetY);
+        this.setMousePos(this._mouseX,this._mouseY);
     }
 
     wheelZoom(delta)
     {
         if (delta == 0) return;
 
-        const patchWidth = this._viewResX;
-        const patchHeight = this._viewResY;
-
-        const z = this._zoom;
-
         const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
         if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
         else delta = 1 + 0.2 * wheelMultiplier;
 
-        // if (this._zoom == null)
-        // {
-        //     this._zoom = patchWidth / this._viewBox.w;
-        //     // this._viewBox.h = this._viewBox.w * (this._viewResY / this._viewResX);
-        // }
-        // const oldx = this._mouseX;// (event.clientX - this._elePatch.offsetLeft);
-        // const oldy = this._mouseY;// (event.clientY - this._elePatch.offsetTop);
-
-        const pixelMulX = (this._cgl.canvas.width / this._zoom) *0.5;
-        const pixelMulY = (this._cgl.canvas.height / this._zoom) *0.5;
-
-
-        const mousePixelX = this._mouseX;
-        const mousePixelY = this._mouseY;
-
-        // void zoomAt(float changeAmmount, Vector2D focus) {
-        //     float newZoom = thisZoom + changeAmmount;
-        //     offset = focus - ((focus - offset) * newZoom / thisZoom);
-        //     thisZoom = newZoom;
-        // }
-
-        const  mouse = this.screenToPatchCoord(this._mouseX,this._mouseY);
+        const mouse = this.screenToPatchCoord(this._mouseX,this._mouseY,true);
 
         let newZoom= this._smoothedZoomValue * delta;
 
-        let mulZ=Math.min(this._zoom,newZoom)/Math.max(this._zoom,newZoom);
+        const x = (this._scrollX) + mouse[0];
+        const y = (this._scrollY) + mouse[1];
 
-        let offsetX=this._scrollX+0.25*(( (mouse[0]) - this._scrollX) * mulZ);
-        let offsetY=this._scrollY-0.25*(( (mouse[1]) - this._scrollY) * mulZ);
-
-
-        // const x = (this._scrollX ) + (mousePixelX / z);
-        // const y = (this._scrollY ) + (mousePixelY / z);
-
-        // this.set(
-
-this._zoom=newZoom;
-        // console.log(this._scrollX);
-
-        // console.log("wzoom",patchWidth/this._zoom);
-
-
-        // console.log(x - (mousePixelX/this._zoom));
-
-        console.log(offsetX);
-
-        this.scrollTo(
-            offsetX,
-            offsetY);
-
-        // this._smoothedZoom.set(this._zoom);
-
-        // this._viewResX = patchWidth / this._zoom;
-        // this._viewResY = patchHeight / this._zoom;
-
-
-        //     patchHeight / this._zoom
-        // );
-
+        this._zoom=newZoom;
         this._smoothedZoom.set(this._zoom);
         this._smoothedZoomValue=this._zoom;
+
+        const mouseAfterZoom = this.screenToPatchCoord(this._mouseX,this._mouseY,true);
+
+
+        this.scrollTo(
+            x-mouseAfterZoom[0],
+            y-mouseAfterZoom[1]);
+
 
         gui.patchView.emitEvent("viewBoxChange");
     }
@@ -259,10 +190,11 @@ this._zoom=newZoom;
         }
     }
 
-    screenToPatchCoord(x, y)
+    screenToPatchCoord(x, y,aspect)
     {
         const z = 1 / (this._viewResX / 2 / this.zoom);
-        const zy = z;//1 / (this._viewResY / 2 / this.zoom);
+        let zy = z;
+        if(aspect)zy=1 / (this._viewResY / 2 / this.zoom);
         const asp = this._viewResY / this._viewResX;
 
         const mouseAbsX = (x - (this._viewResX / 2)) * z - (this.scrollX);
