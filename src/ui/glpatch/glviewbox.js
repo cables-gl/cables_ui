@@ -60,8 +60,8 @@ CABLES.GLGUI.ViewBox = class
         this.setMousePos(e.offsetX, e.offsetY);
         if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
         {
-            const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.25;
-            const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.25;
+            const pixelMulX = (this._cgl.canvas.width / this._zoom) *0.5;
+            const pixelMulY = (this._cgl.canvas.height / this._zoom) *0.5;
 
             this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
             this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
@@ -120,7 +120,7 @@ CABLES.GLGUI.ViewBox = class
         const patchWidth = this._viewResX;
         const patchHeight = this._viewResY;
 
-        const z = this._smoothedZoom.value;
+        const z = this._zoom;
 
         const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
@@ -136,23 +136,27 @@ CABLES.GLGUI.ViewBox = class
         // const oldy = this._mouseY;// (event.clientY - this._elePatch.offsetTop);
 
 
-        const oldx = this._mouseX;
-        const oldy = this._mouseY;
+        const mousePixelX = this._mouseX;
+        const mousePixelY = this._mouseY;
 
 
-        const x = this._scrollX / z + (oldx / z);
-        const y = this._scrollY / z + (oldy / z);
+        const x = (this._scrollX ) + (mousePixelX / z);
+        const y = (this._scrollY ) + (mousePixelY / z);
 
         this._zoom *= delta;
         // this.set(
 
 
         // console.log(this._scrollX);
+        console.log("wzoom",patchWidth/this._zoom);
+
+
+        console.log(x - (mousePixelX/this._zoom));
 
 
         this.scrollTo(
-            x * z - (oldx),
-            y * z - (oldy));
+            x + (mousePixelX/this._zoom),
+            y + (mousePixelY/this._zoom));
 
         // this._smoothedZoom.set(this._zoom);
 

@@ -128,8 +128,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
-        console.log("_onCanvasMouseUp");
         this._rectInstancer.mouseUp(e);
+
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
         this._rectInstancer.interactive = true;
@@ -270,8 +270,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
-        // cgl.pushDepthFunc(compareMethod);
-
 
         this._showRedrawFlash++;
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);

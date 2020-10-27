@@ -111,15 +111,18 @@ CABLES.GLGUI.GlPatchAPI = class
         gui.opParams.show(op);
     }
 
-    unlinkPort(opid, portid)
-    {
-        const op = gui.corePatch().getOpById(opid);
-        const p = op.getPortById(portid);
-        p.removeLinks();
-    }
+    // unlinkPort(opid, portid)
+    // {
+    //     const op = gui.corePatch().getOpById(opid);
+    //     const p = op.getPortById(portid);
+    //     p.removeLinks();
+    // }
 
     removeLink(opIdIn, opIdOut, portIdIn, portIdOut)
     {
+
+        console.log("patchapi removeLink!");
+
         const opIn = gui.corePatch().getOpById(opIdIn);
         const pIn = opIn.getPortById(portIdIn);
         const opOut = gui.corePatch().getOpById(opIdOut);

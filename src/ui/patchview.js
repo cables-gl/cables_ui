@@ -891,6 +891,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     }
 
 
+    unlinkPort(opid, portid)
+    {
+        const op = gui.corePatch().getOpById(opid);
+        const p = op.getPortById(portid);
+        p.removeLinks();
+    }
+
     linkPortToOp(e, opid, pid, op2id)
     {
         const op1 = this._p.getOpById(opid);

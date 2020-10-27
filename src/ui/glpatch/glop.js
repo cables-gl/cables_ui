@@ -51,7 +51,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
 
-
         if (!glOps || ids.length == 0) return;
         if (this._glPatch.isDraggingPort()) return;
 
