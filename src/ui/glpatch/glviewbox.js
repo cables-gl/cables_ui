@@ -8,6 +8,7 @@ CABLES.GLGUI.ViewBox = class
         this._cgl = cgl;
         this.glPatch = glPatch;
 
+
         this._mouseX = 0;
         this._mouseY = 0;
         this._mousePatchX=this._mousePatchY=0;
@@ -63,8 +64,8 @@ CABLES.GLGUI.ViewBox = class
         this.setMousePos(e.offsetX, e.offsetY);
         if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
         {
-            const pixelMulX = (this._cgl.canvas.width / this._zoom) *0.5;
-            const pixelMulY = (this._cgl.canvas.height / this._zoom) *0.5;
+            const pixelMulX = (this._cgl.canvas.width / this._zoom) *0.5/this._cgl.pixelDensity;
+            const pixelMulY = (this._cgl.canvas.height / this._zoom) *0.5/this._cgl.pixelDensity;
 
             this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
             this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
@@ -229,8 +230,6 @@ CABLES.GLGUI.ViewBox = class
         let cy=bb.center[1];
 
         this.scrollTo(bb.center[0],cy);
-
-
 
         this._boundingRect2.setPosition(
             bb.center[0]-(bb.size[0]/2),
