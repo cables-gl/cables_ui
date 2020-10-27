@@ -52,6 +52,20 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.links = {};
 
+
+        // for(let i=-5000;i<5000;i+=100)
+        // {
+        //     let idx = this._lines.getIndex();
+        //     this._lines.setLine(idx,0,i,1000,i);
+        //     this._lines.setColor(idx, 1,1,1,1);
+
+        //     idx = this._lines.getIndex();
+        //     this._lines.setLine(idx,i,0,i,1000);
+        //     this._lines.setColor(idx, 1,1,1,1);
+
+        // }
+
+
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
@@ -316,6 +330,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         this.debugData.viewResX = this.viewBox._viewResX;
         this.debugData.viewResY = this.viewBox._viewResY;
+
+        this.debugData._mousePatchX = this.viewBox._mousePatchX;
+        this.debugData._mousePatchY = this.viewBox._mousePatchY;
+
         this.mouseState.debug(this.debugData);
 
         // this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;

@@ -23,6 +23,11 @@ CABLES.GLGUI.GlRectDragLine = class
             if (!this.isActive) return;
 
 
+            if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT)
+            {
+                console.log("undo rightclick...");
+            }
+
             if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT && this._glPort && this._glPort.port)
             {
                 gui.opSelect().show(
@@ -44,12 +49,12 @@ CABLES.GLGUI.GlRectDragLine = class
             {
                 this.setPort(glport, opid, portName);
             }
-
+            else
             if(button==CABLES.UI.MOUSE_BUTTON_RIGHT)
             {
                 this.setPort(glport, opid, portName);
                 const glports = this._glPatch.getConnectedGlPorts(opid, portName);
-                console.log(glports);
+
                 gui.patchView.unlinkPort(opid, glport.id);
 
                 this._startGlPorts = glports;
