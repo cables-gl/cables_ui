@@ -134,22 +134,25 @@ CABLES.GLGUI.ViewBox = class
         // }
         // const oldx = this._mouseX;// (event.clientX - this._elePatch.offsetLeft);
         // const oldy = this._mouseY;// (event.clientY - this._elePatch.offsetTop);
-        const x = this._scrollX + (this._mouseX / z);
-        const y = this._scrollY + (this._mouseY / z);
+
+
+        const oldx = this._mouseX;
+        const oldy = this._mouseY;
+
+
+        const x = this._scrollX / z + (oldx / z);
+        const y = this._scrollY / z + (oldy / z);
 
         this._zoom *= delta;
-
-        const nx = (this._mouseX - this._viewResX / 2) / this._zoom;
-        const ny = (this._mouseY - this._viewResY / 2) / this._zoom;
-
         // this.set(
 
-        console.log(delta, x - nx, this._zoom);
+
+        // console.log(this._scrollX);
 
 
         this.scrollTo(
-            x - ((nx)),
-            y - ((ny)));
+            x * z - (oldx),
+            y * z - (oldy));
 
         // this._smoothedZoom.set(this._zoom);
 

@@ -316,7 +316,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
             else delta = 1 + 0.2 * wheelMultiplier;
 
-            this.zoom(delta);
+            this.zoom(delta, event);
         }
         if (event.ctrlKey || event.altKey || event.metaKey) // disable chrome pinch/zoom gesture
         {
@@ -327,7 +327,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
     });
 };
 
-CABLES.UI.PatchViewBox.prototype.zoom = function (delta)
+CABLES.UI.PatchViewBox.prototype.zoom = function (delta, event)
 {
     if (delta == 0) return;
 
@@ -340,8 +340,11 @@ CABLES.UI.PatchViewBox.prototype.zoom = function (delta)
         this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
     }
 
+    console.log("event", event);
+
     const oldx = (event.clientX - this._elePatch.offsetLeft);
     const oldy = (event.clientY - this._elePatch.offsetTop);
+
     const x = (this._viewBox.x) + Number(oldx / this._zoom);
     const y = (this._viewBox.y) + Number(oldy / this._zoom);
 

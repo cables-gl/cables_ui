@@ -408,7 +408,6 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 
     this._eleResults.innerHTML = html;
 
-
     const timeUsed = performance.now() - startTime;
 
     if (!userInvoked) this.focus();

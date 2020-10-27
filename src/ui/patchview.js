@@ -16,6 +16,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.store = new CABLES.UI.PatchServer();
         this._initListeners();
         this._eleSubpatchNav = ele.byId("subpatch_nav");
+
+        corepatch.addEventListener("onLink", this.refreshCurrentOpParamsByPort.bind(this));
+        corepatch.addEventListener("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
+
     }
 
     get element() { return this._element || CABLES.UI.PatchView.getElement(); }
@@ -976,6 +980,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
         else if (this._patchRenderer.selectOpId) this._patchRenderer.selectOpId(opid);
         else console.log("patchRenderer has no function setSelectedOpById");
+    }
+
+    refreshCurrentOpParamsByPort(p1,p2)
+    {
+        if(this.isCurrentOp(p2.parent) || this.isCurrentOp(p1.parent)) gui.opParams.refresh();
     }
 
     isCurrentOp(op)
