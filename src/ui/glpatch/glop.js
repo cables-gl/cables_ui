@@ -43,6 +43,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
         this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
 
+
         this.setHover(false);
     }
 
@@ -139,8 +140,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
 
+        console.log(attr.title);
+
+
         this.opUiAttribs = attr;
         this._needsUpdate = true;
+
+
     }
 
     get uiAttribs()
@@ -173,7 +179,10 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             }
             this._updateColors();
         }
-        else this._glTitle.text = title;
+        else
+        {
+            this._glTitle.text = String(title);
+        }
 
         this.updateSize();
     }
@@ -361,6 +370,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glTitleExt = new CABLES.GLGUI.Text(this._textWriter, " | " + this.opUiAttribs.extendTitle);
             this._glTitleExt.setParentRect(this._glRectBg);
             this._glTitleExt.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opTitleExt);
+            this.updatePosition();
         }
         else if (!this.opUiAttribs.extendTitle && this._glTitleExt)
         {
@@ -380,6 +390,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         }
 
         if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
+
+        if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text)
+        {
+            this._glTitleExt.text=this.opUiAttribs.extendTitle;
+        }
+
 
         if (this.opUiAttribs.glPreviewTexture)
         {
