@@ -166,7 +166,7 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect2.interactive = false;
             this._boundingRect2.setPosition(0, 0, 1);
             this._boundingRect2.setSize(110, 110);
-            this._boundingRect2.setColor([0.4,0,0,0.3]);
+            this._boundingRect2.setColor([0,0,0,0.05]);
         }
 
         const bounds = this.glPatch.rectDrawer.bounds;
@@ -176,9 +176,6 @@ CABLES.GLGUI.ViewBox = class
 
     scrollTo(x, y)
     {
-        // const pixelMulX = cgl.canvas.width / this._zoom * 0.5;
-        // const pixelMulY = cgl.canvas.height / this._zoom * 0.5;
-
         this._scrollX = x;
         this._scrollY = y;
 
@@ -229,6 +226,7 @@ CABLES.GLGUI.ViewBox = class
             bb.center[1]-(bb.size[1]/2),
             0.1);
         this._boundingRect2.setSize(bb.size[0],bb.size[1]);
+        this._boundingRect2.setDecoration(2);
 
 
     }

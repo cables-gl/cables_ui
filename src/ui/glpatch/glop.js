@@ -318,7 +318,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     _getTitleExtPosition()
     {
-        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight + this._glTitle.width;
+        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight + this._glTitle.width+CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight/2;
     }
 
     updateVisible()
