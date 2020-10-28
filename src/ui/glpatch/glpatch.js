@@ -697,5 +697,22 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             this._glOpz[i].updateVisible();
         }
+
+    }
+
+    deSerialize(dataUi)
+    {
+        this.viewBox.deSerialize(dataUi);
+    }
+
+    serialize(dataUi)
+    {
+        this.viewBox.serialize(dataUi);
+    }
+
+    setProject(proj)
+    {
+        console.log("SET PROJECT GLPATCH!!!");
+
     }
 };

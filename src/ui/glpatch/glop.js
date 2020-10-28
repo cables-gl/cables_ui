@@ -140,13 +140,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
 
-        console.log(attr.title);
-
-
         this.opUiAttribs = attr;
         this._needsUpdate = true;
-
-
     }
 
     get uiAttribs()
@@ -387,6 +382,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 this._glComment.setParentRect(this._glRectBg);
                 this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
             }
+
+            this._glComment.visible = this._visible;
         }
 
         if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);

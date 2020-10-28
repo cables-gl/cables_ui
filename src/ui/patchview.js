@@ -19,7 +19,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         corepatch.addEventListener("onLink", this.refreshCurrentOpParamsByPort.bind(this));
         corepatch.addEventListener("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
-
     }
 
     get element() { return this._element || CABLES.UI.PatchView.getElement(); }
@@ -28,6 +27,40 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         return $("#patchviews .visible");
     }
+
+    setProject(proj)
+    {
+        if (proj.ui.renderer)
+        {
+            if (proj.ui.renderer.w > document.body.clientWidth * 0.9 || proj.ui.renderer.h > document.body.clientHeight * 0.9)
+            {
+                proj.ui.renderer.w = 640;
+                proj.ui.renderer.h = 360;
+            }
+
+            gui.rendererWidth = proj.ui.renderer.w;
+            gui.rendererHeight = proj.ui.renderer.h;
+            gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
+            gui.setLayout();
+        }
+
+        gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
+
+        this._patchRenderer.setProject(proj);
+
+        this.store.setServerDate(proj.updated);
+
+        gui.serverOps.loadProjectLibs(proj, () =>
+        {
+            gui.corePatch().deSerialize(proj);
+            CABLES.undo.clear();
+            CABLES.UI.MODAL.hideLoading();
+            gui.patch().updateSubPatches();
+            gui.patch().updateBounds();
+            this._patchRenderer.setCurrentSubPatch(0);
+        });
+    }
+
 
     _initListeners()
     {
@@ -968,10 +1001,17 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         return this._patchRenderer.getCurrentSubPatch();
     }
 
+    serialize(dataUi)
+    {
+        this._patchRenderer.serialize(dataUi);
+    }
+
     setCurrentSubPatch(subpatch)
     {
         if (this._patchRenderer.setCurrentSubPatch) this._patchRenderer.setCurrentSubPatch(subpatch);
         else console.log("patchRenderer has no function setCurrentSubPatch");
+
+        gui.patchView.updateSubPatchBreadCrumb(subpatch);
 
         if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
     }
@@ -989,9 +1029,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         else console.log("patchRenderer has no function setSelectedOpById");
     }
 
-    refreshCurrentOpParamsByPort(p1,p2)
+    refreshCurrentOpParamsByPort(p1, p2)
     {
-        if(this.isCurrentOp(p2.parent) || this.isCurrentOp(p1.parent)) gui.opParams.refresh();
+        if (this.isCurrentOp(p2.parent) || this.isCurrentOp(p1.parent)) gui.opParams.refresh();
     }
 
     isCurrentOp(op)

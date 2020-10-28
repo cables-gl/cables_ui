@@ -38,7 +38,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     removePorts()
     {
-        console.log("remove watchports!");
         for (let i = 0; i < this._watchPorts.length; i++)
         {
             delete this._watchPorts[i]._tempLastUiValue;

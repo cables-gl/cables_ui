@@ -238,7 +238,7 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
         incrementStartup();
         logStartup("User Ops loaded");
 
-        gui.patch().setProject(proj);
+        gui.patchView.setProject(proj);
 
         if (proj.ui)
         {
