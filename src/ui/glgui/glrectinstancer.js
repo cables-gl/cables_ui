@@ -647,18 +647,16 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
     {
         if (!this._interactive) return;
 
-        for (let i = 0; i < this._rects.length; i++)
-            this._rects[i].mouseDown(e);
+
+        for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseDown(e);
     }
 
     mouseUp(e)
     {
         if (!this._interactive) return;
 
-        for (let i = 0; i < this._rects.length; i++)
-            this._rects[i].mouseUp(e);
+        for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseUp(e);
 
-        if (this._draggingRect)
-            this._draggingRect.mouseDragEnd();
+        if (this._draggingRect) this._draggingRect.mouseDragEnd();
     }
 };

@@ -1190,4 +1190,49 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             }, 100);
         } });
     }
+
+
+    insertOpInLink(oldLink, op, x, y)
+    {
+        let portIn = oldLink.portIn;
+        let portOut = oldLink.portOut;
+
+        if (oldLink.p1 && oldLink.p2)
+        {
+            portIn = oldLink.p1.thePort;
+            portOut = oldLink.p2.thePort;
+
+            if (oldLink.p2.thePort.direction == CABLES.PORT_DIR_IN)
+            {
+                portIn = oldLink.p2.thePort;
+                portOut = oldLink.p1.thePort;
+            }
+            oldLink.unlink();
+        }
+        else
+        {
+            oldLink.remove();
+        }
+
+        if (CABLES.Link.canLink(op.portsIn[0], portOut))
+        {
+            gui.corePatch().link(
+                op,
+                op.portsIn[0].getName(), portOut.parent, portOut.getName()
+            );
+
+            gui.corePatch().link(
+                op,
+                op.portsOut[0].getName(), portIn.parent, portIn.getName()
+            );
+
+            op.setUiAttrib({ "translate": { "x": x, "y": y } });
+        }
+        else
+        {
+            gui.corePatch().link(
+                portIn.parent, portIn.getName(),
+                portOut.parent, portOut.getName());
+        }
+    }
 };

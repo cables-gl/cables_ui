@@ -332,14 +332,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.rects = this._rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
 
-        this.debugData.viewZoom = this.viewBox.zoom;
-        this.debugData.viewbox_scrollX = this.viewBox.scrollX;
-        this.debugData.viewbox_scrollY = this.viewBox.scrollY;
-        this.debugData.viewResX = this.viewBox._viewResX;
-        this.debugData.viewResY = this.viewBox._viewResY;
+        // this.debugData.viewZoom = this.viewBox.zoom;
+        // this.debugData.viewbox_scrollX = this.viewBox.scrollX;
+        // this.debugData.viewbox_scrollY = this.viewBox.scrollY;
+        // this.debugData.viewResX = this.viewBox._viewResX;
+        // this.debugData.viewResY = this.viewBox._viewResY;
 
         this.debugData._mousePatchX = this.viewBox._mousePatchX;
         this.debugData._mousePatchY = this.viewBox._mousePatchY;
+        this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
         this.mouseState.debug(this.debugData);
 
@@ -414,7 +415,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectionArea.hideArea();
         }
 
-        if (this.mouseState.buttonLeft && allowSelectionArea)
+        if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging)
         {
             this._rectInstancer.interactive = false;
             this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
@@ -431,7 +432,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._lastButton = this.mouseState.getButton();
     }
-
 
     _getGlOpsInRect(xa, ya, xb, yb)
     {
@@ -707,6 +707,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
     }
 
+    mouseToPatchCoords(x, y)
+    {
+        return this.viewBox.screenToPatchCoord(x, y);
+    }
 
     serialize(dataUi)
     {

@@ -47,6 +47,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this.setHover(false);
     }
 
+    get isDragging() { return this._glRectBg.isDragging; }
+
     _onBgRectDrag(rect)
     {
         const glOps = this._glPatch.selectedGlOps;
@@ -135,6 +137,11 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     get title() { return this.opUiAttribs.title; }
 
     get glPatch() { return this._glPatch; }
+
+    get op()
+    {
+        return this._op;
+    }
 
     set uiAttribs(attr)
     {
@@ -290,10 +297,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         return this.opUiAttribs;
     }
 
-    getOp()
-    {
-        return this._op;
-    }
 
     _getTitleWidth()
     {
@@ -313,7 +316,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     _getTitleExtPosition()
     {
-        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight + this._glTitle.width+CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight/2;
+        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight + this._glTitle.width + CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight / 2;
     }
 
     updateVisible()
@@ -390,7 +393,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text)
         {
-            this._glTitleExt.text=this.opUiAttribs.extendTitle;
+            this._glTitleExt.text = this.opUiAttribs.extendTitle;
         }
 
 

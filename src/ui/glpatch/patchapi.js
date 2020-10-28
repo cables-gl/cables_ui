@@ -36,6 +36,7 @@ CABLES.GLGUI.GlPatchAPI = class
                     const link = op.portsIn[ip].links[il];
                     const l = new CABLES.GLGUI.GlLink(
                         this._glPatch,
+                        link,
                         link.id,
                         link.portIn.parent.id,
                         link.portOut.parent.id,
@@ -83,7 +84,7 @@ CABLES.GLGUI.GlPatchAPI = class
             p2 = p1;
             p1 = t;
         }
-        const l = new CABLES.GLGUI.GlLink(this._glPatch, link.id, p1.parent.id, p2.parent.id,
+        const l = new CABLES.GLGUI.GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
             p1.name, p2.name,
             p1.id, p2.id,
             p1.type);
@@ -120,7 +121,6 @@ CABLES.GLGUI.GlPatchAPI = class
 
     removeLink(opIdIn, opIdOut, portIdIn, portIdOut)
     {
-
         console.log("patchapi removeLink!");
 
         const opIn = gui.corePatch().getOpById(opIdIn);
