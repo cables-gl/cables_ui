@@ -50,8 +50,20 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
 
     get buttonMiddle() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_MIDDLE]; }
 
+    getButton()
+    {
+        if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_LEFT]) return CABLES.UI.MOUSE_BUTTON_LEFT;
+        if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_RIGHT]) return CABLES.UI.MOUSE_BUTTON_RIGHT;
+        if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_MIDDLE]) return CABLES.UI.MOUSE_BUTTON_MIDDLE;
+        return CABLES.UI.MOUSE_BUTTON_NONE;
+    }
+
     isButtonDown(button)
     {
+        if (button === undefined)
+        {
+            return this._buttonStates[0] || this._buttonStates[1] || this._buttonStates[2] || this._buttonStates[3];
+        }
         return this._buttonStates[button];
     }
 

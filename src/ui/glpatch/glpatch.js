@@ -68,6 +68,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
+        cgl.canvas.addEventListener("mouseenter", this._onCanvasMouseEnter.bind(this));
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
@@ -101,7 +102,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
 
-
         this.profileMouseEvents = this.profileMouseEvents || 0;
         this.profileMouseEvents++;
 
@@ -112,7 +112,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         if (this._hoverOps.length > 0)
         {
-            console.log("dblclick...");
             const ops = gui.patchView.getSelectedOps();
             if (ops.length != 1) return;
             if (CABLES.UI.OPNAME_SUBPATCH == ops[0].objName)
@@ -135,8 +134,20 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectionArea.hideArea();
         }
         this._lastButton = 0;
+        this._mouseLeaveButtons = e.buttons;
         this.emitEvent("mouseleave", e);
-        // this.emitEvent("mouseup", e);
+    }
+
+    _onCanvasMouseEnter(e)
+    {
+        this.emitEvent("mouseenter", e);
+
+        if (e.buttons == 0 && this._mouseLeaveButtons != e.buttons)
+        {
+            // when left while button down but re-entering button up...
+            this._lastButton = 0;
+            this._onCanvasMouseUp(e);
+        }
     }
 
     _onCanvasMouseUp(e)
@@ -277,7 +288,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._textWriterOverlay.setFont(f);
     }
 
-    render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY, mouseButton)
+    render(resX, resY)
     {
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
@@ -291,8 +302,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.viewBox.setSize(resX, resY);
 
         const starttime = performance.now();
-
-        this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY, mouseButton);
+        this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
         this._cursor2.setPosition(this.viewBox.mousePatchX - 2, this.viewBox.mousePatchY - 2);
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
@@ -349,7 +359,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     }
 
 
-    mouseMove(x, y, button)
+    mouseMove(x, y)
     {
         if ((this._lastMouseX != x || this._lastMouseY != y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
@@ -358,13 +368,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         // console.log("sel active",this._selectionArea.active);
 
-        this._rectInstancer.mouseMove(x, y, button);
+        this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 
         if (this._rectInstancer.isDragging()) return;
 
         this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
 
-        if (button == 1)
+        if (this.mouseState.isButtonDown())
         {
             // remmeber start coordinates when start dragging hovered op
             // if(hoverops.length>0 && !this._hoverDragOp)
@@ -398,7 +408,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
 
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
-        if (this._lastButton == 1 && button != 1)
+        if (this._lastButton == 1 && this.mouseState.buttonLeft)
         {
             if (this._selectionArea.active) console.log("hide area2");
             this._selectionArea.hideArea();
@@ -419,7 +429,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._lastMouseY = y;
         }
 
-        this._lastButton = button;
+        this._lastButton = this.mouseState.getButton();
     }
 
 

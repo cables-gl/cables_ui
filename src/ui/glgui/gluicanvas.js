@@ -107,14 +107,14 @@ CABLES.GLGUI.GlUiCanvas = class
             this.activityHigh();
 
             this.glPatch.needsRedraw = true;
-            this._mouseButton = e.buttons;
+            // this._mouseButton = e.buttons;
         });
 
         this.canvas.addEventListener("mouseup", (e) =>
         {
             this.activityHigh();
             this.glPatch.needsRedraw = true;
-            this._mouseButton = -1;
+            // this._mouseButton = -1;
         });
 
         this.canvas.addEventListener("mouseleave", (e) =>

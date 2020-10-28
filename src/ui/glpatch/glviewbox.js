@@ -166,7 +166,7 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect2.interactive = false;
             this._boundingRect2.setPosition(0, 0, 1);
             this._boundingRect2.setSize(110, 110);
-            this._boundingRect2.setColor([0.5, 0, 0, 0.05]);
+            this._boundingRect2.setColor([1, 1, 1, 0.1]);
         }
 
         const bounds = this.glPatch.rectDrawer.bounds;
@@ -227,7 +227,7 @@ CABLES.GLGUI.ViewBox = class
             bb.center[1] - (bb.size[1] / 2),
             0.1);
         this._boundingRect2.setSize(bb.size[0], bb.size[1]);
-        this._boundingRect2.setDecoration(2);
+        this._boundingRect2.setDecoration(4);
     }
 
     screenToPatchCoord(x, y, aspect)
@@ -246,13 +246,15 @@ CABLES.GLGUI.ViewBox = class
     serialize(dataui)
     {
         dataui.viewBoxGl = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+        console.log("serialize glviewbox!!!");
     }
 
     deSerialize(dataui)
     {
+        console.log(dataui.viewBoxGl);
         const data = dataui.viewBoxGl;
         this._scrollX = data.x;
         this._scrollY = data.y;
-        this._zoom = data.z;
+        this._smoothedZoomValue = this._zoom = data.z;
     }
 };

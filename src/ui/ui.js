@@ -2269,6 +2269,8 @@ function startUi(cfg)
                     gui.socket.sendInfo(gui.user.username + " joined");
                     gui.socket.updateMembers();
 
+                    gui.patchView.setCurrentSubPatch(0);
+
                     CABLES.UI.loaded = true;
                     setTimeout(() => { window.gui.emitEvent("uiloaded"); }, 100);
                 });

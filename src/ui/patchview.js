@@ -30,9 +30,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     setProject(proj, cb)
     {
-        console.log("SET PROJECT!!!!!!!!!!!!");
         if (proj && proj.ui)
         {
+            this._projUI = proj.ui;
+
             if (proj.ui.renderer)
             {
                 if (proj.ui.renderer.w > document.body.clientWidth * 0.9 || proj.ui.renderer.h > document.body.clientHeight * 0.9)
@@ -50,6 +51,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
 
+        console.log(this._patchRenderer);
         this._patchRenderer.setProject(proj);
 
         this.store.setServerDate(proj.updated);
@@ -62,7 +64,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.patch().updateSubPatches();
             gui.patch().updateBounds();
 
-            this._patchRenderer.setCurrentSubPatch(0);
 
             if (cb)cb();
         });
@@ -121,6 +122,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     setPatchRenderer(id, pr)
     {
         this._pvRenderers[id] = pr;
+        pr.setProject({ "ui": this._projUI });
         if (!this._patchRenderer) this._patchRenderer = pr;
     }
 

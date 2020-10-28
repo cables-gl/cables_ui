@@ -106,7 +106,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",
 
-            ""
+        ""
             .endl() + "IN vec4 col;"
             .endl() + "IN vec4 posSize;"
             .endl() + "IN float zz;"
@@ -164,10 +164,22 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "       outColor.rgb+=vec3(add*0.4);"
             .endl() + "   }"
 
-            .endl() + "if(decoration==3.0)" // border
+            .endl() + "if(decoration==3.0)" // stripes
             .endl() + "{"
             .endl() + "    float w=0.03;"
             .endl() + "    outColor.rgb+=0.12*vec3( step(w/2.0,mod( time*0.04+posSize.x+posSize.y,w )));"
+            .endl() + "}"
+
+            .endl() + "if(decoration==4.0)" // border no content
+            .endl() + "{"
+            .endl() + "   float outlinefrag=0.003;"
+            .endl() + "       float add=(1.0-step(outlinefrag,posSize.x));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));"
+            // .endl() + "       outColor.rgb=vec3(add*0.4);"
+            .endl() + "       if(add==0.0)outColor.a=0.0;"
+
             .endl() + "}"
 
         // .endl() + "   float sc = 1.0 / fwidth(uv.x);"
