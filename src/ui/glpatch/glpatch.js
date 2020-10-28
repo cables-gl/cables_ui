@@ -265,8 +265,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (CABLES.UI.loaded)
         {
-            console.log("op added by hand...");
-
             this.selectOpId(op.id);
             gui.opParams.show(op.id);
         }
@@ -697,13 +695,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             this._glOpz[i].updateVisible();
         }
-
     }
 
-    deSerialize(dataUi)
-    {
-        this.viewBox.deSerialize(dataUi);
-    }
 
     serialize(dataUi)
     {
@@ -714,5 +707,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         console.log("SET PROJECT GLPATCH!!!");
 
+        this.viewBox.deSerialize(proj.ui);
     }
 };

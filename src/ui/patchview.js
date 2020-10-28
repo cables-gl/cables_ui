@@ -28,23 +28,27 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         return $("#patchviews .visible");
     }
 
-    setProject(proj)
+    setProject(proj, cb)
     {
-        if (proj.ui.renderer)
+        console.log("SET PROJECT!!!!!!!!!!!!");
+        if (proj && proj.ui)
         {
-            if (proj.ui.renderer.w > document.body.clientWidth * 0.9 || proj.ui.renderer.h > document.body.clientHeight * 0.9)
+            if (proj.ui.renderer)
             {
-                proj.ui.renderer.w = 640;
-                proj.ui.renderer.h = 360;
+                if (proj.ui.renderer.w > document.body.clientWidth * 0.9 || proj.ui.renderer.h > document.body.clientHeight * 0.9)
+                {
+                    proj.ui.renderer.w = 640;
+                    proj.ui.renderer.h = 360;
+                }
+
+                gui.rendererWidth = proj.ui.renderer.w;
+                gui.rendererHeight = proj.ui.renderer.h;
+                gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
+                gui.setLayout();
             }
 
-            gui.rendererWidth = proj.ui.renderer.w;
-            gui.rendererHeight = proj.ui.renderer.h;
-            gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
-            gui.setLayout();
+            gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
-
-        gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
 
         this._patchRenderer.setProject(proj);
 
@@ -57,7 +61,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             CABLES.UI.MODAL.hideLoading();
             gui.patch().updateSubPatches();
             gui.patch().updateBounds();
+
             this._patchRenderer.setCurrentSubPatch(0);
+
+            if (cb)cb();
         });
     }
 

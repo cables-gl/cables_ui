@@ -238,7 +238,7 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
         incrementStartup();
         logStartup("User Ops loaded");
 
-        gui.patchView.setProject(proj);
+        gui.patchView.setProject(proj, cb);
 
         if (proj.ui)
         {
@@ -246,8 +246,7 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
             document.getElementById("options").innerHTML = gui.bookmarks.getHtml();
         }
 
-        gui.patch().showProjectParams();
-        cb();
+        // gui.patch().showProjectParams();
     });
 
     loadjs(userOpsUrls, lid);
