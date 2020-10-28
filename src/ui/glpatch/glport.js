@@ -48,14 +48,14 @@ CABLES.GLGUI.GlPort = class
 
     _onMouseDown(e, rect)
     {
-        if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
-        {
-            this._glPatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
-        }
-        else
-        {
-            this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name);
-        }
+        // if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
+        // {
+        //     this._glPatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
+        // }
+        // else
+        // {
+            this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name,e.buttons);
+        // }
     }
 
     _onMouseUp(e, rect)

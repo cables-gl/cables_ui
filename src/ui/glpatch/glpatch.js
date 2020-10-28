@@ -52,6 +52,19 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.links = {};
 
+
+        // for(let i=-5000;i<5000;i+=100)
+        // {
+        //     let idx = this._lines.getIndex();
+        //     this._lines.setLine(idx,-1000,i,1000,i);
+        //     this._lines.setColor(idx, 0.1,0.1,0.1,1);
+
+        //     idx = this._lines.getIndex();
+        //     this._lines.setLine(idx,i,-1000,i,1000);
+        //     this._lines.setColor(idx, 0.1,0.1,0.1,1);
+        // }
+
+
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
@@ -128,8 +141,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
-        console.log("_onCanvasMouseUp");
         this._rectInstancer.mouseUp(e);
+
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
         this._rectInstancer.interactive = true;
@@ -270,8 +283,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
-        // cgl.pushDepthFunc(compareMethod);
-
 
         this._showRedrawFlash++;
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
@@ -318,6 +329,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         this.debugData.viewResX = this.viewBox._viewResX;
         this.debugData.viewResY = this.viewBox._viewResY;
+
+        this.debugData._mousePatchX = this.viewBox._mousePatchX;
+        this.debugData._mousePatchY = this.viewBox._mousePatchY;
+
         this.mouseState.debug(this.debugData);
 
         // this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
@@ -455,6 +470,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         for (const i in this._glOpz) this._glOpz[i].selected = false;
         this._selectedGlOps = {};// .length=0;
+    }
+
+    getGlOp(op)
+    {
+        return this._glOpz[op.id];
     }
 
     selectOpId(id)

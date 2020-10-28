@@ -27,7 +27,8 @@ CABLES.GLGUI.GlCable = class
 
         this._glPatch.on("mousemove", (e) =>
         {
-            this.collideMouse(this._x, this._y - this._h, this._x2, this._y2 + this._h, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+            if (this._visible)
+                this.collideMouse(this._x, this._y - this._h, this._x2, this._y2 + this._h, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
         });
     }
 
@@ -40,9 +41,12 @@ CABLES.GLGUI.GlCable = class
 
     _updateLinePos()
     {
-        const dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
+        let dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
         if (this._visible)
         {
+
+            if(Math.abs(this._y-this._y2)<CABLES.GLGUI.VISUALCONFIG.portHeight*2)dist=CABLES.GLGUI.VISUALCONFIG.portHeight*0.5;
+
             this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - dist);
             this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - dist, this._x2, this._y2 + dist);
             this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + dist, this._x2, this._y2);
@@ -130,8 +134,6 @@ CABLES.GLGUI.GlCable = class
 
         if (distance <= r)
         {
-            console.log("HIT!!!!!!!");
-
             this._buttonRect.setPosition(
                 closestX - this._buttonSize / 2, closestY - this._buttonSize / 2
             );

@@ -22,10 +22,14 @@ CABLES.GLGUI.GlRectDragLine = class
         {
             if (!this.isActive) return;
 
-            if (this._glPort && this._glPort.port)
-            {
-                console.log("this._startGlPorts", this._glPort.port);
 
+            if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT)
+            {
+                console.log("undo rightclick...");
+            }
+
+            if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT && this._glPort && this._glPort.port)
+            {
                 gui.opSelect().show(
                     {
                         "subPatch": this._glPatch.subPatch,
@@ -37,20 +41,26 @@ CABLES.GLGUI.GlRectDragLine = class
             this.stop();
         });
 
-        glpatch.on("mouseDownOverPort", (glport, opid, portName) =>
+        glpatch.on("mouseDownOverPort", (glport, opid, portName,button) =>
         {
-            this.setPort(glport, opid, portName);
+            this._button=button;
+
+            if(button==CABLES.UI.MOUSE_BUTTON_LEFT)
+            {
+                this.setPort(glport, opid, portName);
+            }
+            else
+            if(button==CABLES.UI.MOUSE_BUTTON_RIGHT)
+            {
+                this.setPort(glport, opid, portName);
+                const glports = this._glPatch.getConnectedGlPorts(opid, portName);
+
+                gui.patchView.unlinkPort(opid, glport.id);
+
+                this._startGlPorts = glports;
+            }
         });
 
-        glpatch.on("mouseDownRightOverPort", (glport, opid, portName) =>
-        {
-            this.setPort(glport, opid, portName);
-            const glports = this._glPatch.getConnectedGlPorts(opid, portName);
-            console.log(glports);
-            glpatch.patchAPI.unlinkPort(opid, glport.id);
-
-            this._startGlPorts = glports;
-        });
 
         glpatch.on("mouseUpOverOp", (e, opid) =>
         {

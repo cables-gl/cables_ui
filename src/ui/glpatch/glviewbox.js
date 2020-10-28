@@ -8,8 +8,10 @@ CABLES.GLGUI.ViewBox = class
         this._cgl = cgl;
         this.glPatch = glPatch;
 
+
         this._mouseX = 0;
         this._mouseY = 0;
+        this._mousePatchX=this._mousePatchY=0;
         this._scrollX = 0;
         this._scrollY = 0;
         this._oldScrollX = 0;
@@ -17,10 +19,12 @@ CABLES.GLGUI.ViewBox = class
         this._viewResX = 0;
         this._viewResY = 0;
         this._boundingRect = null;
+        this._boundingRectSelection = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
+        this._smoothedZoomValue= this._zoom;
 
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
@@ -32,7 +36,7 @@ CABLES.GLGUI.ViewBox = class
     setSize(w, h)
     {
         this._viewResX = w;
-        this._viewResY = h;
+        this._viewResY=h;
     }
 
     setMousePos(x, y)
@@ -60,8 +64,8 @@ CABLES.GLGUI.ViewBox = class
         this.setMousePos(e.offsetX, e.offsetY);
         if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
         {
-            const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.25;
-            const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.25;
+            const pixelMulX = (this._cgl.canvas.width / this._zoom) *0.5/this._cgl.pixelDensity;
+            const pixelMulY = (this._cgl.canvas.height / this._zoom)*0.5/this._cgl.pixelDensity;
 
             this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
             this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
@@ -79,104 +83,61 @@ CABLES.GLGUI.ViewBox = class
         if (this._zoom == CABLES.GLGUI.VISUALCONFIG.zoomDefault) this._zoom = this.glPatch.getZoomForAllOps();
         else this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         this._smoothedZoom.set(this._zoom);
+        this._smoothedZoomValue=this._zoom;
     }
 
     _onCanvasWheel(event)
     {
-        // let delta = CGL.getWheelSpeed(event);
-        // event = CABLES.mouseEvent(event);
-
-        // console.log(event.deltaY);
+        this.setMousePos(event.offsetX, event.offsetY);
 
         let delta = 5;
         if (event.deltaY < 0)delta *= -1;
 
-        // delta *= wheelMultiplier;
-
         if (event.altKey) this._scrollY -= delta;
         else if (event.shiftKey) this._scrollX -= delta;
 
-
         this.wheelZoom(delta);
-
-        // this.wheelZoom(delta * (this._zoom / 155) * 2);
-        // else this._zoom += delta * (this._zoom / 155) * 2;
-
-        // this._zoom = Math.max(CABLES.GLGUI.VISUALCONFIG.minZoom, this._zoom);
-        // this._smoothedZoom.set(this._zoom);
-
-        // if (event.ctrlKey || event.altKey) // disable chrome pinch/zoom gesture
-        // {
-        //     event.preventDefault();
-        //     event.stopImmediatePropagation();
-        // }
-        // gui.patchView.emitEvent("viewBoxChange");
+        this.setMousePos(this._mouseX,this._mouseY);
     }
 
     wheelZoom(delta)
     {
         if (delta == 0) return;
 
-        const patchWidth = this._viewResX;
-        const patchHeight = this._viewResY;
-
-        const z = this._smoothedZoom.value;
-
         const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
         if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
         else delta = 1 + 0.2 * wheelMultiplier;
 
-        // if (this._zoom == null)
-        // {
-        //     this._zoom = patchWidth / this._viewBox.w;
-        //     // this._viewBox.h = this._viewBox.w * (this._viewResY / this._viewResX);
-        // }
-        // const oldx = this._mouseX;// (event.clientX - this._elePatch.offsetLeft);
-        // const oldy = this._mouseY;// (event.clientY - this._elePatch.offsetTop);
+        const mouse = this.screenToPatchCoord(this._mouseX,this._mouseY,true);
 
+        let newZoom= this._smoothedZoomValue * delta;
 
-        const oldx = this._mouseX;
-        const oldy = this._mouseY;
+        const x = this._scrollX + mouse[0];
+        const y = this._scrollY + mouse[1];
 
+        this._zoom=newZoom;
+        this._smoothedZoom.set(this._zoom);
+        this._smoothedZoomValue=this._zoom;
 
-        const x = this._scrollX / z + (oldx / z);
-        const y = this._scrollY / z + (oldy / z);
-
-        this._zoom *= delta;
-        // this.set(
-
-
-        // console.log(this._scrollX);
-
+        const mouseAfterZoom = this.screenToPatchCoord(this._mouseX,this._mouseY,true);
 
         this.scrollTo(
-            x * z - (oldx),
-            y * z - (oldy));
-
-        // this._smoothedZoom.set(this._zoom);
-
-        // this._viewResX = patchWidth / this._zoom;
-        // this._viewResY = patchHeight / this._zoom;
-
-
-        //     patchHeight / this._zoom
-        // );
-
-        this._smoothedZoom.set(this._zoom);
+            x-mouseAfterZoom[0],
+            y-mouseAfterZoom[1]);
 
         gui.patchView.emitEvent("viewBoxChange");
     }
 
-    get zoom() { return this._smoothedZoom.value; }
+    get zoom() { return this._smoothedZoomValue; }
 
     get scrollX() { return -this._scrollX; }
 
     get scrollY() { return this._scrollY; }
 
-    get scrollXZoom() { return -this._scrollX / this._smoothedZoom.value; }
+    get scrollXZoom() { return -this._scrollX / this._smoothedZoomValue; }
 
-    get scrollYZoom() { return this._scrollY / this._smoothedZoom.value; }
+    get scrollYZoom() { return this._scrollY / this._smoothedZoomValue; }
 
     get mouseX() { return this._mouseX; }
 
@@ -199,6 +160,15 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect);
         }
 
+        if (!this._boundingRect2)
+        {
+            this._boundingRect2 = this.glPatch.rectDrawer.createRect();
+            this._boundingRect2.interactive = false;
+            this._boundingRect2.setPosition(0, 0, 1);
+            this._boundingRect2.setSize(110, 110);
+            this._boundingRect2.setColor([0.4,0,0,0.3]);
+        }
+
         const bounds = this.glPatch.rectDrawer.bounds;
         this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.1);
         this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
@@ -217,25 +187,61 @@ CABLES.GLGUI.ViewBox = class
 
     center()
     {
-        const ops = gui.patchView.getSelectedOps();
+        let ops = gui.patchView.getSelectedOps();
 
+        if(ops.length == 0)ops=gui.corePatch().ops;
         console.log("center!", ops.length + " ops...");
 
-        if (ops.length > 0)
+        const bb=new CGL.BoundingBox();
+
+        for(let i=0;i<ops.length;i++)
         {
-            const x = ops[0].uiAttribs.translate.x;
-            const y = ops[0].uiAttribs.translate.y;
-            this.scrollTo(x, y);
+            bb.applyPos(
+                ops[i].uiAttribs.translate.x,
+                ops[i].uiAttribs.translate.y,
+                0);
+
+            bb.applyPos(
+                ops[i].uiAttribs.translate.x+this.glPatch.getGlOp(ops[i]).w,
+                ops[i].uiAttribs.translate.y+this.glPatch.getGlOp(ops[i]).h,
+                0);
         }
+
+        bb.calcCenterSize();
+        const padding=1.05;
+        console.log("bb size",bb.size[0],bb.size[1]);
+        bb.size[0]*=padding;
+        bb.size[1]*=padding;
+
+        const zx=bb.size[0]/2; // zoom on x
+        const zy=(bb.size[1])/2*(this._viewResX/this._viewResY);
+        const z=Math.max(300,Math.max(zy,zx));
+
+        this._smoothedZoom.set(z);
+        this._smoothedZoomValue=z;
+
+        let cy=bb.center[1]*(this._viewResX/this._viewResY);
+
+        this.scrollTo(bb.center[0],cy);
+
+        this._boundingRect2.setPosition(
+            bb.center[0]-(bb.size[0]/2),
+            bb.center[1]-(bb.size[1]/2),
+            0.1);
+        this._boundingRect2.setSize(bb.size[0],bb.size[1]);
+
+
     }
 
-    screenToPatchCoord(x, y)
+    screenToPatchCoord(x, y,aspect)
     {
         const z = 1 / (this._viewResX / 2 / this.zoom);
+        let zy = z;
+        if(aspect)zy=1 / (this._viewResY / 2 / this.zoom);
         const asp = this._viewResY / this._viewResX;
 
         const mouseAbsX = (x - (this._viewResX / 2)) * z - (this.scrollX);
-        const mouseAbsY = (y - (this._viewResY / 2)) * z + (this.scrollY * asp);
+        const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
 
         return [mouseAbsX, mouseAbsY];
     }
