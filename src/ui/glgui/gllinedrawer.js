@@ -12,13 +12,13 @@ CABLES.GLGUI.Linedrawer = class
         this._counter = 0;
 
         this._name = options.name || "unknown";
-        this._num = options.initNum || 5000;
+        this._num = options.initNum || 100;
         this._needsUpload = true;
 
-        this._positions = new Float32Array(3 * this._num);
-        this._colors = new Float32Array(4 * this._num);
-        this._dists = new Float32Array(this._num);
-        this._speeds = new Float32Array(this._num);
+        this._positions = new Float32Array(3 *2* this._num);
+        this._colors = new Float32Array(4 * 2*this._num);
+        this._dists = new Float32Array(2*this._num);
+        this._speeds = new Float32Array(2*this._num);
 
         this._shader = new CGL.Shader(cgl, "Linedrawer");
         this._shader.glPrimitive = cgl.gl.LINES;
@@ -111,9 +111,7 @@ CABLES.GLGUI.Linedrawer = class
         this._mesh = new CGL.Mesh(cgl, this._geom);
 
         let i = 0;
-        for (i = 0; i < 3 * this._num; i++) this._positions[i] = 0;// Math.random()*60;
-        for (i = 0; i < 4 * this._num; i++) this._colors[i] = Math.random();
-        for (i = 0; i < 1 * this._num; i++) this._speeds[i] = 0;
+        this.clear();
     }
 
     dispose()
@@ -137,11 +135,23 @@ CABLES.GLGUI.Linedrawer = class
         this._mesh.render(this._shader);
     }
 
+    clear()
+    {
+
+        for (let i = 0; i < 2*3 * this._num; i++) this._positions[i] = 0;// Math.random()*60;
+        for (let i = 0; i < 2*4 * this._num; i++) this._colors[i] = 1.0;
+        for (let i = 0; i < 2*1 * this._num; i++) this._dists[i] = 0;
+        for (let i = 0; i < 2*1 * this._num; i++) this._speeds[i] = 0;
+    }
+
     rebuild()
     {
         const perf = CABLES.uiperf.start("[glLineDrawer] rebuild");
 
-        // console.log(this._positions);
+        // console.log("reupload lines...",this._num);
+
+        // todo: this is basically ALWAYS! could be optimized
+
         // todo only update whats needed
         this._mesh.setAttribute(CGL.SHADERVAR_VERTEX_POSITION, this._positions, 3);
         this._mesh.setAttribute("color", this._colors, 4);
@@ -153,6 +163,26 @@ CABLES.GLGUI.Linedrawer = class
         this._needsUpload = false;
     }
 
+    _setupAttribBuffers()
+    {
+        const oldAttrPositions = this._positions;
+        const oldAttrColors = this._colors;
+        const oldAttrDists = this._dists;
+        const oldAttrSpeeds = this._speeds;
+
+        this._positions = new Float32Array(2*3 * this._num);
+        this._colors = new Float32Array(2*4 * this._num);
+        this._dists = new Float32Array(2*this._num);
+        this._speeds = new Float32Array(2*this._num);
+        this.clear();
+
+        if (oldAttrPositions) this._positions.set(oldAttrPositions);
+        if (oldAttrColors) this._colors.set(oldAttrColors);
+        if (oldAttrDists) this._dists.set(oldAttrDists);
+        if (oldAttrSpeeds) this._speeds.set(oldAttrSpeeds);
+        this._needsUpload = true;
+    }
+
     getIndex()
     {
         this._counter++;
@@ -162,10 +192,11 @@ CABLES.GLGUI.Linedrawer = class
             this._num += 1000;
             console.log("linedrawer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
-            this._needsRebuild = true;
-            this._needsRebuildReason = "resize";
-            this._needsTextureUpdate = true;
-            this._reUploadAttribs = true;
+            this._needsUpload = true;
+            // this._needsRebuild = true;
+            // this._needsRebuildReason = "resize";
+            // this._needsTextureUpdate = true;
+            // this._reUploadAttribs = true;
         }
 
 

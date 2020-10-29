@@ -17,7 +17,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
         this._name = options.name || "unknown";
         this._counter = 0;
-        this._num = options.initNum || 5000;
+        this._num = options.initNum || 1000;
         this._needsRebuild = true;
         this._needsRebuildReason = "";
         this._rects = [];
