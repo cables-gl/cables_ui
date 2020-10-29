@@ -456,44 +456,9 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         if (CABLES.UI.LINKHOVER)
         {
             const oldLink = CABLES.UI.LINKHOVER;
-            if (oldLink.p1 && oldLink.p2)
-            {
-                let portIn = oldLink.p1;
-                let portOut = oldLink.p2;
 
-                if (oldLink.p2.thePort.direction == CABLES.PORT_DIR_IN)
-                {
-                    portIn = oldLink.p2;
-                    portOut = oldLink.p1;
-                }
-
-                oldLink.unlink();
-
-                if (CABLES.Link.canLink(opui.op.portsIn[0], portOut.thePort))
-                {
-                    gui.corePatch().link(
-                        opui.op,
-                        opui.op.portsIn[0].getName(), portOut.thePort.parent, portOut.thePort.getName()
-                    );
-
-                    gui.corePatch().link(
-                        opui.op,
-                        opui.op.portsOut[0].getName(), portIn.thePort.parent, portIn.thePort.getName()
-                    );
-
-                    const pos = gui.patch().getCanvasCoordsMouse(e);
-
-                    // opui.setPos(portOut.thePort.parent.uiAttribs.translate.x,opui.op.uiAttribs.translate.y);
-                    opui.setPos(pos.x, opui.op.uiAttribs.translate.y);
-                }
-                else
-                {
-                    gui.corePatch().link(
-                        portIn.thePort.parent, portIn.thePort.getName(),
-                        portOut.thePort.parent, portOut.thePort.getName()
-                    );
-                }
-            }
+            const pos = gui.patch().getCanvasCoordsMouse(e);
+            gui.patchView.insertOpInLink(oldLink, opui.op, pos.x, pos.y);
         }
 
         gui.patch().moveSelectedOpsFinished();

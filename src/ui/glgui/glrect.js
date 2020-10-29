@@ -60,6 +60,8 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
     get draggable() { return this._draggable; }
 
+    get isDragging() { return this._isDragging; }
+
     get idx() { return this._attrIndex; }
 
     addChild(c)
@@ -257,6 +259,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
             }
         }
     }
+
 
     dispose()
     {

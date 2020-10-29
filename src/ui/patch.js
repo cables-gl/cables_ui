@@ -124,6 +124,11 @@ CABLES.UI.Patch = function (_gui)
         return $("#patch").is(":focus");
     };
 
+    this.serialize = function (dataUi)
+    {
+        dataUi.viewBox = this._viewBox.serialize();
+    };
+
 
     this.cut = function (e)
     {
@@ -735,45 +740,15 @@ CABLES.UI.Patch = function (_gui)
         {
             if (proj.ui.subPatchViewBoxes) subPatchViewBoxes = proj.ui.subPatchViewBoxes;
             if (proj.ui.viewBox) this._viewBox.deSerialize(proj.ui.viewBox);
-
-            if (proj.ui.renderer)
-            {
-                if (proj.ui.renderer.w > document.body.clientWidth * 0.9 || proj.ui.renderer.h > document.body.clientHeight * 0.9)
-                {
-                    proj.ui.renderer.w = 640;
-                    proj.ui.renderer.h = 360;
-                }
-
-                gui.rendererWidth = proj.ui.renderer.w;
-                gui.rendererHeight = proj.ui.renderer.h;
-                gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
-                gui.setLayout();
-            }
-
-            gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
 
         self.updateViewBox();
         currentSubPatch = 0;
         gui.setProjectName(proj.name);
         self.setCurrentProject(proj);
-        gui.patchView.store.setServerDate(proj.updated);
 
         gui.corePatch().clear();
         gui.patch().updateBounds();
-
-        gui.serverOps.loadProjectLibs(proj, function ()
-        {
-            gui.corePatch().deSerialize(proj);
-            CABLES.undo.clear();
-            CABLES.UI.MODAL.hideLoading();
-            self.updateSubPatches();
-            gui.patch().updateBounds();
-
-            // gui.patchConnection.send(CABLES.PACO_LOAD, {
-            //     "patch": JSON.stringify(proj),
-            // });
-        });
     };
 
     this.show = function (_scene)
@@ -1461,7 +1436,6 @@ CABLES.UI.Patch = function (_gui)
         }
 
         this._elPatch.focus();
-        gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
 
         gui.setWorking(false, "patch");
 

@@ -42,7 +42,6 @@ CABLES.GLGUI.GlPort = class
 
     _onLinkChanged()
     {
-        console.log("isConnected", this._port.isConnected);
         this._updateSize();
     }
 

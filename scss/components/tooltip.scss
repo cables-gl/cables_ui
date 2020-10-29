@@ -60,6 +60,7 @@
 
 .tooltip {
     position: absolute;
+    pointer-events: none;
     z-index: $z-index-tooltip;
     background-color: var(--color-01);
     color: var(--color-13);

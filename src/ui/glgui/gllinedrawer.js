@@ -21,7 +21,6 @@ CABLES.GLGUI.Linedrawer = class
         this._shader.glPrimitive = cgl.gl.LINES;
         this._shader.setSource(""
             .endl() + "IN vec3 vPosition;"
-            // .endl()+'IN vec3 pos;'
             .endl() + "IN vec4 color;"
             .endl() + "IN float vdist;"
             .endl() + "IN float speed;"
@@ -33,12 +32,12 @@ CABLES.GLGUI.Linedrawer = class
 
             .endl() + "void main()"
             .endl() + "{"
-            .endl() + "   float aspect=resX/resY;"
+            .endl() + "    float aspect=resX/resY;"
 
-            .endl() + "   dist=vdist;"
-            .endl() + "   speedy=speed;"
+            .endl() + "    dist=vdist;"
+            .endl() + "    speedy=speed;"
 
-            .endl() + "   vec3 pos=vPosition;"
+            .endl() + "    vec3 pos=vPosition;"
 
             .endl() + "    pos.y*=aspect;"
             .endl() + "    pos.y=0.0-pos.y;"
@@ -68,15 +67,16 @@ CABLES.GLGUI.Linedrawer = class
             .endl() + "   if(color.a==0.0) discard;"
             .endl() + "   float stepLength=5.0;"
 
-            .endl() + "   float showSpeed=clamp(speedy,0.0,1.0);"
+            .endl() + "   float showSpeed=clamp(speedy,0.4,1.0);"
 
 
-            .endl() + "   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;"
-            .endl() + "   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
-            .endl() + "   else color.rgb = color.rgb;"
+            // .endl() + "   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;"
+            // .endl() + "   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
+            // .endl() + "   else color.rgb = color.rgb;"
+            // .endl() + "   else color.rgb = color.rgb;"
 
             .endl() + "   color.rgb = color.rgb;"
-            .endl() + "   color.a = 1.0;"
+            .endl() + "   color.a = showSpeed;"
         // .endl()+'   color.r = 1.0;'
 
 

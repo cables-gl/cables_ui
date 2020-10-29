@@ -340,8 +340,6 @@ CABLES.UI.PatchViewBox.prototype.zoom = function (delta, event)
         this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
     }
 
-    console.log("event", event);
-
     const mousePixelX = (event.clientX - this._elePatch.offsetLeft);
     const mousePixelY = (event.clientY - this._elePatch.offsetTop);
 

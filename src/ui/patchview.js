@@ -19,7 +19,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         corepatch.addEventListener("onLink", this.refreshCurrentOpParamsByPort.bind(this));
         corepatch.addEventListener("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
-
     }
 
     get element() { return this._element || CABLES.UI.PatchView.getElement(); }
@@ -28,6 +27,48 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         return $("#patchviews .visible");
     }
+
+    setProject(proj, cb)
+    {
+        if (proj && proj.ui)
+        {
+            this._projUI = proj.ui;
+
+            if (proj.ui.renderer)
+            {
+                if (proj.ui.renderer.w > document.body.clientWidth * 0.9 || proj.ui.renderer.h > document.body.clientHeight * 0.9)
+                {
+                    proj.ui.renderer.w = 640;
+                    proj.ui.renderer.h = 360;
+                }
+
+                gui.rendererWidth = proj.ui.renderer.w;
+                gui.rendererHeight = proj.ui.renderer.h;
+                gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
+                gui.setLayout();
+            }
+
+            gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
+        }
+
+        console.log(this._patchRenderer);
+        this._patchRenderer.setProject(proj);
+
+        this.store.setServerDate(proj.updated);
+
+        gui.serverOps.loadProjectLibs(proj, () =>
+        {
+            gui.corePatch().deSerialize(proj);
+            CABLES.undo.clear();
+            CABLES.UI.MODAL.hideLoading();
+            gui.patch().updateSubPatches();
+            gui.patch().updateBounds();
+
+
+            if (cb)cb();
+        });
+    }
+
 
     _initListeners()
     {
@@ -81,6 +122,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     setPatchRenderer(id, pr)
     {
         this._pvRenderers[id] = pr;
+        pr.setProject({ "ui": this._projUI });
         if (!this._patchRenderer) this._patchRenderer = pr;
     }
 
@@ -968,10 +1010,17 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         return this._patchRenderer.getCurrentSubPatch();
     }
 
+    serialize(dataUi)
+    {
+        this._patchRenderer.serialize(dataUi);
+    }
+
     setCurrentSubPatch(subpatch)
     {
         if (this._patchRenderer.setCurrentSubPatch) this._patchRenderer.setCurrentSubPatch(subpatch);
         else console.log("patchRenderer has no function setCurrentSubPatch");
+
+        gui.patchView.updateSubPatchBreadCrumb(subpatch);
 
         if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
     }
@@ -989,9 +1038,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         else console.log("patchRenderer has no function setSelectedOpById");
     }
 
-    refreshCurrentOpParamsByPort(p1,p2)
+    refreshCurrentOpParamsByPort(p1, p2)
     {
-        if(this.isCurrentOp(p2.parent) || this.isCurrentOp(p1.parent)) gui.opParams.refresh();
+        if (this.isCurrentOp(p2.parent) || this.isCurrentOp(p1.parent)) gui.opParams.refresh();
     }
 
     isCurrentOp(op)
@@ -1140,5 +1189,50 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }, 100);
         } });
+    }
+
+
+    insertOpInLink(oldLink, op, x, y)
+    {
+        let portIn = oldLink.portIn;
+        let portOut = oldLink.portOut;
+
+        if (oldLink.p1 && oldLink.p2)
+        {
+            portIn = oldLink.p1.thePort;
+            portOut = oldLink.p2.thePort;
+
+            if (oldLink.p2.thePort.direction == CABLES.PORT_DIR_IN)
+            {
+                portIn = oldLink.p2.thePort;
+                portOut = oldLink.p1.thePort;
+            }
+            oldLink.unlink();
+        }
+        else
+        {
+            oldLink.remove();
+        }
+
+        if (CABLES.Link.canLink(op.portsIn[0], portOut))
+        {
+            gui.corePatch().link(
+                op,
+                op.portsIn[0].getName(), portOut.parent, portOut.getName()
+            );
+
+            gui.corePatch().link(
+                op,
+                op.portsOut[0].getName(), portIn.parent, portIn.getName()
+            );
+
+            op.setUiAttrib({ "translate": { "x": x, "y": y } });
+        }
+        else
+        {
+            gui.corePatch().link(
+                portIn.parent, portIn.getName(),
+                portOut.parent, portOut.getName());
+        }
     }
 };
