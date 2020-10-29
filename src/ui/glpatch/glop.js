@@ -301,7 +301,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     _getTitleWidth()
     {
         let w = 0;
-        if (this._glTitleExt)w += this._glTitleExt.width;
+        if (this._glTitleExt)w += this._glTitleExt.width + CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingExtTitle;
         if (this._glTitle)w += this._glTitle.width;
 
         w += CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight * 2.0;
@@ -316,7 +316,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     _getTitleExtPosition()
     {
-        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight + this._glTitle.width + CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight / 2;
+        return CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight + this._glTitle.width + CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingExtTitle;
     }
 
     updateVisible()
@@ -363,12 +363,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     update()
     {
+        let doUpdateSize = false;
+
         if (this.opUiAttribs.extendTitle && !this._glTitleExt)
         {
             this._glTitleExt = new CABLES.GLGUI.Text(this._textWriter, " | " + this.opUiAttribs.extendTitle);
             this._glTitleExt.setParentRect(this._glRectBg);
             this._glTitleExt.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opTitleExt);
-            this.updatePosition();
         }
         else if (!this.opUiAttribs.extendTitle && this._glTitleExt)
         {
@@ -389,7 +390,11 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         }
 
         if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
-        if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text) this._glTitleExt.text = this.opUiAttribs.extendTitle;
+        if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text)
+        {
+            this._glTitleExt.text = this.opUiAttribs.extendTitle;
+            doUpdateSize = true;
+        }
 
         if (this.opUiAttribs.glPreviewTexture)
         {
@@ -415,12 +420,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                     }
                 };
             }
-            if (this._visPort)
-            {
-            }
         }
 
-
+        if (doUpdateSize) this.updateSize();
         this.updatePosition();
         this._updateColors();
         for (const i in this._links) if (this._links[i]) this._links[i].update();

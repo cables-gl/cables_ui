@@ -1,3 +1,5 @@
+
+
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
@@ -12,6 +14,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._cgl = cgl;
         this.mouseState = new CABLES.GLGUI.MouseState(cgl.canvas);
+
+        this._time = 0;
+        this._timeStart = performance.now();
+        this.isAnimated = false;
 
         this._glOpz = {};
         this._hoverOps = [];
@@ -36,6 +42,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRxb = 0;
         this.cacheOIRyb = 0;
         this.cacheOIRops = null;
+
+        this._focusRectAnim = new CABLES.TL.Anim();
+        this._focusRectAnim.defaultEasing = CABLES.EASING_CUBIC_OUT;
+
+        this._focusRect = this._overLayRects.createRect();
+        this._focusRect.setSize(101, 110);
+        this._focusRect.setColor(0, 1, 1, 1);
+        this._focusRect.visible = false;
+
 
         this._cursor2 = this._overLayRects.createRect();
         this._cursor2.setSize(10, 10);
@@ -241,6 +256,19 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.links[l.id] = l;
     }
 
+    focusOp(opid)
+    {
+        const glop = this._glOpz[opid];
+
+        this._focusRectAnim.clear();
+
+        this._focusRectOp = glop;
+
+
+        this._focusRectAnim.setValue(this._time, 0);
+        this._focusRectAnim.setValue(this._time + 0.5, 1);
+    }
+
     addOp(op)
     {
         if (!op) console.error("no op at addop", op);
@@ -297,6 +325,23 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX, resY)
     {
+        this.isAnimated = false;
+        this._time = (performance.now() - this._timeStart) / 1000;
+
+        this._focusRect.visible = !this._focusRectAnim.isFinished(this._time);
+        if (this._focusRect.visible)
+        {
+            this.isAnimated = true;
+            const v = 1.0 - this._focusRectAnim.getValue(this._time);
+
+            const dist = 20;
+
+            this._focusRect.setPosition(this._focusRectOp.x - v * dist, this._focusRectOp.y - v * dist);
+            this._focusRect.setSize(this._focusRectOp.w + v * 2 * dist, this._focusRectOp.h + v * 2 * dist);
+
+            this._focusRect.setColor(1, 1, 1, v);
+        }
+
         this._cgl.setCursor("none");
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
@@ -315,7 +360,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor2.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
         this._cursorUnPredicted.setPosition(this.viewBox.mousePatchNotPredicted[0], this.viewBox.mousePatchNotPredicted[1]);
 
-        const z = this.viewBox.zoom / 70;
+        const z = this.viewBox.zoom / (50 / 1);
         this._cursor2.setSize(z, z);
         this._cursorUnPredicted.setSize(z / 2, z / 2);
 
@@ -428,7 +473,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft)
         {
-            if (this._selectionArea.active) console.log("hide area2");
+            // if (this._selectionArea.active) console.log("hide area2");
             this._selectionArea.hideArea();
         }
 

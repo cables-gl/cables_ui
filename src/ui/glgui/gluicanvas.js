@@ -254,6 +254,11 @@ CABLES.GLGUI.GlUiCanvas = class
             0, 0, // mouse
             this._mouseButton // mouse button
         );
+        if (this.glPatch.isAnimated)
+        {
+            this.activityHigh();
+            // this._targetFps = 0;
+        }
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
