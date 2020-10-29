@@ -179,6 +179,12 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));"
             // .endl() + "       outColor.rgb=vec3(add*0.4);"
             .endl() + "       if(add==0.0)outColor.a=0.0;"
+            .endl() + "}"
+
+            .endl() + "if(decoration==5.0)" // cursor
+            .endl() + "{"
+            .endl() + "     if(1.0-uv.x > uv.y)outColor.a=1.0;"
+            .endl() + "     else outColor.a=0.0;"
 
             .endl() + "}"
 

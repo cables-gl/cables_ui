@@ -1230,6 +1230,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         }
         else
         {
+            console.log(oldLink, portIn, portOut);
             gui.corePatch().link(
                 portIn.parent, portIn.getName(),
                 portOut.parent, portOut.getName());

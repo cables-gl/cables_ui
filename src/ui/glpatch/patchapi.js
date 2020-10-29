@@ -84,6 +84,8 @@ CABLES.GLGUI.GlPatchAPI = class
             p2 = p1;
             p1 = t;
         }
+
+        console.log("ONLINK!", link);
         const l = new CABLES.GLGUI.GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
             p1.name, p2.name,
             p1.id, p2.id,

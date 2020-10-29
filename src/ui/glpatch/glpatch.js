@@ -37,7 +37,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRops = null;
 
         this._cursor2 = this._overLayRects.createRect();
-        this._cursor2.setSize(2, 2);
+        this._cursor2.setSize(10, 10);
+        this._cursor2.setDecoration(5);
+
+        this._cursorUnPredicted = this._overLayRects.createRect();
+        this._cursorUnPredicted.setSize(5, 5);
+        this._cursorUnPredicted.setDecoration(5);
+        this._cursorUnPredicted.setColor(1, 1, 1, 1);
 
         this._redrawFlash = this._overLayRects.createRect();
         this._redrawFlash.setSize(50, 5);
@@ -290,6 +296,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX, resY)
     {
+        this._cgl.setCursor("none");
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
 
@@ -303,7 +310,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         const starttime = performance.now();
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
-        this._cursor2.setPosition(this.viewBox.mousePatchX - 2, this.viewBox.mousePatchY - 2);
+
+        this._cursor2.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+        this._cursorUnPredicted.setPosition(this.viewBox.mousePatchNotPredicted[0], this.viewBox.mousePatchNotPredicted[1]);
+
+        const z = this.viewBox.zoom / 70;
+        this._cursor2.setSize(z, z);
+        this._cursorUnPredicted.setSize(z / 2, z / 2);
+
+
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
         const perf = CABLES.uiperf.start("[glpatch] render");
@@ -315,6 +330,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
