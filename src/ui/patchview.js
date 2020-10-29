@@ -109,6 +109,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         gui.setLayout();
     }
 
+
     updateBoundingRect()
     {
         this.boundingRect = CABLES.UI.PatchView.getElement()[0].getBoundingClientRect();

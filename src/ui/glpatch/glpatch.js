@@ -390,7 +390,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (this._rectInstancer.isDragging()) return;
 
-        this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
+        if (!this.mouseState.isDragging) this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
 
         if (this.mouseState.isButtonDown())
         {
@@ -438,10 +438,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
             this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
-            if (x - this._lastMouseX != 0 && y - this._lastMouseY != 0) gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
+
+            const numSelectedOps = Object.keys(this._selectedGlOps).length;
+            if (this._numSelectedGlOps != numSelectedOps) gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
+            this._numSelectedGlOps = numSelectedOps;
         }
         else
         {
+            this._numSelectedGlOps = -1;
             this._selectionArea.hideArea();
             this._lastMouseX = x;
             this._lastMouseY = y;
@@ -453,9 +457,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     _getGlOpsInRect(xa, ya, xb, yb)
     {
         if (this.cacheOIRxa == xa && this.cacheOIRya == ya && this.cacheOIRxb == xb && this.cacheOIRyb == yb)
-        {
             return this.cacheOIRops;
-        }
 
         const perf = CABLES.uiperf.start("[glpatch] ops in rect");
 

@@ -146,7 +146,7 @@ CABLES.UI.GUI = function (cfg)
             this.patchView.focusOp(opid);
             this.patchView.centerView(x, y);
             this.patchView.setSelectedOpById(opid);
-            $("#patch").focus();
+            this.patchView.focus();
         }
 
         gui.find().setClicked(idx);
@@ -1585,7 +1585,7 @@ CABLES.UI.GUI = function (cfg)
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
 
-        document.getElementById("patch").focus();
+        gui.patchView.focus();
     };
 
     this.showWelcomeNotifications = function ()
@@ -2024,7 +2024,8 @@ CABLES.UI.GUI = function (cfg)
             {
                 gui.patch().lastMouseMoveEvent = null;
                 gui.showCanvasModal(false);
-                $("#patch").focus();
+                gui.patchView.focus();
+
                 e.preventDefault();
             });
 

@@ -30,6 +30,8 @@ CABLES.GLGUI.ViewBox = class
         this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
         this._smoothedZoomValue = this._zoom;
 
+        cgl.canvas.addEventListener("mouseenter", this._onCanvasMouseEnter.bind(this));
+        cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
@@ -80,6 +82,16 @@ CABLES.GLGUI.ViewBox = class
         this._mousePatchY = coord[1];
         this._mouseX = x;
         this._mouseY = y;
+    }
+
+    _onCanvasMouseEnter(e)
+    {
+        this.setMousePos(e.offsetX, e.offsetY);
+    }
+
+    _onCanvasMouseLeave(e)
+    {
+        this.setMousePos(e.offsetX, e.offsetY);
     }
 
     _onCanvasMouseDown(e)

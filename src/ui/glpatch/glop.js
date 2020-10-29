@@ -385,7 +385,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             }
 
             if (this.opUiAttribs.comment != this._glComment.text) this._glComment.text = this.opUiAttribs.comment;
-            this._glComment.visible = this._visible;
+            this._glComment.visible = this.visible;
         }
 
         if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
@@ -422,6 +422,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
 
         this.updatePosition();
+        this._updateColors();
         for (const i in this._links) if (this._links[i]) this._links[i].update();
         this._glPatch.needsRedraw = true;
     }
