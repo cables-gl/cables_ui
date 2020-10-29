@@ -19,11 +19,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._showRedrawFlash = 0;
         this.debugData = {};
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
-        this._rectInstancer = new CABLES.GLGUI.RectInstancer(cgl);
-        this._lines = new CABLES.GLGUI.Linedrawer(cgl);
-        this._overLayRects = new CABLES.GLGUI.RectInstancer(cgl);
-        this._textWriter = new CABLES.GLGUI.TextWriter(cgl);
-        this._textWriterOverlay = new CABLES.GLGUI.TextWriter(cgl);
+
+        this._rectInstancer = new CABLES.GLGUI.RectInstancer(cgl, { "name": "mainrects", "initNum": gui.corePatch().ops.length * 12 });
+        this._lines = new CABLES.GLGUI.Linedrawer(cgl, { "name": "links", "initNum": gui.corePatch().ops.length * 5 });
+        this._overLayRects = new CABLES.GLGUI.RectInstancer(cgl, { "name": "overlayrects" });
+        this._textWriter = new CABLES.GLGUI.TextWriter(cgl, { "name": "mainText", "initNum": gui.corePatch().ops.length * 15 });
+        this._textWriterOverlay = new CABLES.GLGUI.TextWriter(cgl, { "name": "textoverlay" });
         this._currentSubpatch = 0;
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;

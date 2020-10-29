@@ -6,10 +6,13 @@ CABLES.GLGUI.Linedrawer = class
     constructor(cgl, options)
     {
         if (!cgl) throw new Error("[Linedrawer] no cgl");
+        options = options || {};
 
         this._startTime = performance.now();
         this._counter = 0;
-        this._num = 10000;
+
+        this._name = options.name || "unknown";
+        this._num = options.initNum || 5000;
         this._needsUpload = true;
 
         this._positions = new Float32Array(3 * this._num);
@@ -70,10 +73,10 @@ CABLES.GLGUI.Linedrawer = class
             .endl() + "   float showSpeed=clamp(speedy,0.4,1.0);"
 
 
-            // .endl() + "   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;"
-            // .endl() + "   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
-            // .endl() + "   else color.rgb = color.rgb;"
-            // .endl() + "   else color.rgb = color.rgb;"
+        // .endl() + "   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;"
+        // .endl() + "   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
+        // .endl() + "   else color.rgb = color.rgb;"
+        // .endl() + "   else color.rgb = color.rgb;"
 
             .endl() + "   color.rgb = color.rgb;"
             .endl() + "   color.a = showSpeed;"
@@ -153,6 +156,19 @@ CABLES.GLGUI.Linedrawer = class
     getIndex()
     {
         this._counter++;
+
+        if (this._counter > this._num - 100)
+        {
+            this._num += 1000;
+            console.log("linedrawer " + this._name + " resize to", this._num);
+            this._setupAttribBuffers();
+            this._needsRebuild = true;
+            this._needsRebuildReason = "resize";
+            this._needsTextureUpdate = true;
+            this._reUploadAttribs = true;
+        }
+
+
         return this._counter;
     }
 

@@ -6,6 +6,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
     constructor(cgl, options)
     {
         super();
+        options = options || {};
+        console.log("options.initNumRects", options.initNum);
 
         if (!cgl)
         {
@@ -13,8 +15,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             throw new Error("[RectInstancer] no cgl");
         }
 
+        this._name = options.name || "unknown";
         this._counter = 0;
-        this._num = 5000;
+        this._num = options.initNum || 5000;
         this._needsRebuild = true;
         this._needsRebuildReason = "";
         this._rects = [];
@@ -453,7 +456,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         if (this._counter > this._num - 100)
         {
             this._num += 1000;
-            console.log("resize to", this._num);
+            console.log("rectinstancer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
             this._needsRebuild = true;
             this._needsRebuildReason = "resize";

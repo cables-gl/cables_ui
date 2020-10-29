@@ -289,7 +289,7 @@ CABLES.GLGUI.ViewBox = class
     deSerialize(dataui)
     {
         console.log(dataui.viewBoxGl);
-        const data = dataui.viewBoxGl;
+        const data = dataui.viewBoxGl || { "x": 0, "y": 0, "z": CABLES.GLGUI.VISUALCONFIG.zoomDefault };
         this._scrollX = data.x;
         this._scrollY = data.y;
         this._smoothedZoomValue = this._zoom = data.z;

@@ -19,6 +19,8 @@ CABLES.GLGUI.GlPatchAPI = class
     _initPatch()
     {
         console.log("patch.ops.length", this._patch.ops.length);
+
+
         let i = 0;
         for (i = 0; i < this._patch.ops.length; i++)
         {
