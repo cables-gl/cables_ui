@@ -28,6 +28,8 @@ CABLES.GLGUI.Text = class
 
     set text(t) { this._string = t; this.rebuild(); }
 
+    get text() { return this._string; }
+
     get width() { return this._width; }
 
     get height() { return this._height; }

@@ -361,13 +361,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.mouseState.debug(this.debugData);
 
         // this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
-        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
         let str = "";
         for (const n in this.debugData)
             str += n + ": " + this.debugData[n] + "\n";
 
         this._debugtext.text = str;
+        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();

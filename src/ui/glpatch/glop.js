@@ -377,25 +377,19 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         if (this.opUiAttribs.comment)
         {
-            if (!this._glComment) this._glComment = new CABLES.GLGUI.Text(this._textWriter, this.opUiAttribs.comment);
-
-            if (this.opUiAttribs.comment != this._glComment.text)
+            if (!this._glComment)
             {
-                this._glComment.text = this.opUiAttribs.comment;
+                this._glComment = new CABLES.GLGUI.Text(this._textWriter, this.opUiAttribs.comment);
                 this._glComment.setParentRect(this._glRectBg);
                 this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
             }
 
+            if (this.opUiAttribs.comment != this._glComment.text) this._glComment.text = this.opUiAttribs.comment;
             this._glComment.visible = this._visible;
         }
 
         if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
-
-        if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text)
-        {
-            this._glTitleExt.text = this.opUiAttribs.extendTitle;
-        }
-
+        if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text) this._glTitleExt.text = this.opUiAttribs.extendTitle;
 
         if (this.opUiAttribs.glPreviewTexture)
         {
