@@ -28,7 +28,13 @@ CABLES.GLGUI.SplineDrawer = class
         this._splineIndex = null;
 
         this._splines =
-            [[0, 100, 0, 100, 200, 0, 300, 100, 0, 0, 0, 0]];
+            [[
+                0, -100, 0,
+                100, 200, 0,
+                300, 100, 0,
+                0, 0, 0,
+                0, 0, 0
+            ]];
 
         this._shader = new CGL.Shader(cgl, "Linedrawer");
         this._shader.setSource(""
@@ -48,7 +54,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "float sizeAtt=0.0;"
 
             .endl() + "#define PI 3.1415926538"
-            .endl() + "float aspect=1.7777;"
+        // .endl() + "float aspect=1.7777;"
 
             .endl() + "vec2 rotate(vec2 v, float a)"
             .endl() + "{"
@@ -61,7 +67,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "vec2 fix( vec4 i )"
             .endl() + "{"
             .endl() + "    vec2 res = i.xy / i.w;"
-            .endl() + "    res.x *= aspect;"
+            // .endl() + "    res.x *= aspect;"
             .endl() + "    return res;"
             .endl() + "}"
             .endl() + ""
@@ -100,13 +106,15 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    finalPosition = mix(finalPosition,finalPosition2,pos.x);"
             .endl() + "    finalPosition.xy += offset.xy;"
 
+            .endl() + "    float aspect=resX/resY;"
+            .endl() + "    finalPosition.y*=aspect;"
+
             .endl() + "    finalPosition.xy*=zoom;"
             .endl() + "    finalPosition.x+=scrollX;"
             .endl() + "    finalPosition.y+=scrollY;"
 
             .endl() + "    gl_Position = finalPosition;"
             .endl() + "}"
-
 
             .endl() + "", ""
 
@@ -267,7 +275,7 @@ CABLES.GLGUI.SplineDrawer = class
     tessEdges(oldArr)
     {
         let count = 0;
-        const step = 0.001;
+        const step = 0.003;
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
         this._arrEdges.length = l;
