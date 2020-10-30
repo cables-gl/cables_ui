@@ -24,6 +24,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
+
+        this.splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
         this._rectInstancer = new CABLES.GLGUI.RectInstancer(cgl, { "name": "mainrects", "initNum": gui.corePatch().ops.length * 12 });
@@ -410,6 +412,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._debugtext.text = str;
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
+
+
+        this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();
