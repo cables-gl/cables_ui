@@ -133,6 +133,10 @@ CABLES.GLGUI.GlLink = class
 
                 this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
             }
+            else
+            {
+                console.log("gllink no op in/out");
+            }
         }
         else this._cable.setPosition(0, 0, 0, 0);
     }

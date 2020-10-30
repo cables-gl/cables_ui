@@ -109,6 +109,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         gui.setLayout();
     }
 
+
     updateBoundingRect()
     {
         this.boundingRect = CABLES.UI.PatchView.getElement()[0].getBoundingClientRect();
@@ -1230,6 +1231,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         }
         else
         {
+            console.log(oldLink, portIn, portOut);
             gui.corePatch().link(
                 portIn.parent, portIn.getName(),
                 portOut.parent, portOut.getName());

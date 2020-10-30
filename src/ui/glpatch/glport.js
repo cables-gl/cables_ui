@@ -53,7 +53,7 @@ CABLES.GLGUI.GlPort = class
         // }
         // else
         // {
-            this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name,e.buttons);
+        this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e.buttons);
         // }
     }
 
@@ -68,6 +68,9 @@ CABLES.GLGUI.GlPort = class
             "clientX": this._glPatch.viewBox.mouseX,
             "clientY": this._glPatch.viewBox.mouseY - 25,
         };
+
+        console.log(this._glop._links);
+
 
         console.log("port", this._port.name, this._rect.isHovering());
         CABLES.UI.updateHoverToolTip(event, this._port);

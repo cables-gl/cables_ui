@@ -8,6 +8,10 @@ CABLES.GLGUI.ViewBox = class
         this._cgl = cgl;
         this.glPatch = glPatch;
 
+        this.mousePatchNotPredicted = vec2.create();
+        this._lastPosPixel = vec2.create();
+        this._mouseSmooth = [];
+        this._mouseSmoothCount = 0;
 
         this._mouseX = 0;
         this._mouseY = 0;
@@ -26,6 +30,8 @@ CABLES.GLGUI.ViewBox = class
         this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
         this._smoothedZoomValue = this._zoom;
 
+        cgl.canvas.addEventListener("mouseenter", this._onCanvasMouseEnter.bind(this));
+        cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
@@ -41,11 +47,51 @@ CABLES.GLGUI.ViewBox = class
 
     setMousePos(x, y)
     {
-        const coord = this.screenToPatchCoord(x, y);
+        // const frames = 3;
+        // let dx = (x - this._lastPosPixel[0]);
+        // const dy = (y - this._lastPosPixel[1]);
+
+
+        // this._mouseSmoothCount = this._mouseSmoothCount++ % frames;
+
+        // this._mouseSmooth[this._mouseSmoothCount++] = dx;
+        // dx = 0;
+        // for (let i = 0; i < frames; i++)
+        // {
+        //     dx += this._mouseSmooth[i];
+        //     this._mouseSmooth[i] *= 0.33333;
+        // }
+
+        // dx /= frames;
+        // // console.log(dx);
+        // dx *= Math.abs(dx * 0.333);
+
+        const dx = 0;
+        const dy = 0;
+        // console.log(dx);
+
+        // dx *= dx;
+        // console.log(this._mouseSmooth);
+
+        // console.log(this._lastPosPixel, dx, dy);
+
+        const coord = this.screenToPatchCoord(x + dx, y + dy);
+        this.mousePatchNotPredicted = this.screenToPatchCoord(x, y);
+
         this._mousePatchX = coord[0];
         this._mousePatchY = coord[1];
         this._mouseX = x;
         this._mouseY = y;
+    }
+
+    _onCanvasMouseEnter(e)
+    {
+        this.setMousePos(e.offsetX, e.offsetY);
+    }
+
+    _onCanvasMouseLeave(e)
+    {
+        this.setMousePos(e.offsetX, e.offsetY);
     }
 
     _onCanvasMouseDown(e)
@@ -62,6 +108,9 @@ CABLES.GLGUI.ViewBox = class
     _onCanvasMouseMove(e)
     {
         this.setMousePos(e.offsetX, e.offsetY);
+        this._lastPosPixel[0] = e.offsetX;
+        this._lastPosPixel[1] = e.offsetY;
+
         if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
         {
             const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.5 / this._cgl.pixelDensity;
@@ -252,7 +301,7 @@ CABLES.GLGUI.ViewBox = class
     deSerialize(dataui)
     {
         console.log(dataui.viewBoxGl);
-        const data = dataui.viewBoxGl;
+        const data = dataui.viewBoxGl || { "x": 0, "y": 0, "z": CABLES.GLGUI.VISUALCONFIG.zoomDefault };
         this._scrollX = data.x;
         this._scrollY = data.y;
         this._smoothedZoomValue = this._zoom = data.z;

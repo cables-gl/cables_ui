@@ -4,6 +4,7 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLGUI.VISUALCONFIG =
 {
     "OpTitlePaddingLeftRight": 10,
+    "OpTitlePaddingExtTitle": 5,
 
     "portWidth": 10,
     "portHeight": 6,

@@ -270,7 +270,10 @@ CABLES.UI.initPortInputListener = function (op, index)
     {
         let v = "" + ele.val();
 
-        if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number")
+
+        if (
+            op.portsIn[index].uiAttribs.display != "bool" &&
+            (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number"))
         {
             if (isNaN(v) || v === "")
             {
@@ -292,7 +295,7 @@ CABLES.UI.initPortInputListener = function (op, index)
                 else
                 {
                     ele.addClass("invalid");
-                    console.log("invalid number", op.portsIn[index]);
+                    console.log("invalid number", op.portsIn[index], mathParsed);
                 }
                 return;
             }

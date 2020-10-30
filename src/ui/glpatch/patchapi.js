@@ -19,6 +19,8 @@ CABLES.GLGUI.GlPatchAPI = class
     _initPatch()
     {
         console.log("patch.ops.length", this._patch.ops.length);
+
+
         let i = 0;
         for (i = 0; i < this._patch.ops.length; i++)
         {
@@ -84,6 +86,8 @@ CABLES.GLGUI.GlPatchAPI = class
             p2 = p1;
             p1 = t;
         }
+
+        console.log("ONLINK!", link);
         const l = new CABLES.GLGUI.GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
             p1.name, p2.name,
             p1.id, p2.id,

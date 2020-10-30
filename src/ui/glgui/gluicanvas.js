@@ -65,6 +65,7 @@ CABLES.GLGUI.GlUiCanvas = class
         // this.canvas.style.position='absolute';
         this.canvas.style.border = "0px solid white";
         this.canvas.style.outline = "0";
+
         // this.canvas.style.cursor='none';
         // this.canvas.style['z-index']=9999999991;
         this.canvas.setAttribute("tabindex", 10);
@@ -253,6 +254,11 @@ CABLES.GLGUI.GlUiCanvas = class
             0, 0, // mouse
             this._mouseButton // mouse button
         );
+        if (this.glPatch.isAnimated)
+        {
+            this.activityHigh();
+            // this._targetFps = 0;
+        }
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
