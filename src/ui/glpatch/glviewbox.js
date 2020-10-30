@@ -139,8 +139,18 @@ CABLES.GLGUI.ViewBox = class
 
     _onCanvasDblClick(e)
     {
-        if (this._zoom == CABLES.GLGUI.VISUALCONFIG.zoomDefault) this._zoom = this.glPatch.getZoomForAllOps();
-        else this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
+        const z = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
+        if (Math.abs(this._zoom - CABLES.GLGUI.VISUALCONFIG.zoomDefault) < 200)
+        {
+            // z = this.glPatch.getZoomForAllOps();
+            this.glPatch.unselectAll();
+            this.center();
+        }
+        else
+        {
+            this.animateZoom(z);
+            this.animateScrollTo(this.mousePatchX, this.mousePatchY);
+        }
     }
 
     _onCanvasWheel(event)
@@ -294,13 +304,13 @@ CABLES.GLGUI.ViewBox = class
 
         bb.calcCenterSize();
         const padding = 1.05;
-        console.log("bb size", bb.size[0], bb.size[1]);
+        // console.log("bb size", bb.size[0], bb.size[1]);
         bb.size[0] *= padding;
         bb.size[1] *= padding;
 
         const zx = bb.size[0] / 2; // zoom on x
         const zy = (bb.size[1]) / 2 * (this._viewResX / this._viewResY);
-        const z = Math.max(300, Math.max(zy, zx));
+        const z = Math.max(400, Math.max(zy, zx));
 
         // this._zoom = z;
         this.animateZoom(z);

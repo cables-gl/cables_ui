@@ -18,7 +18,7 @@ CABLES.GLGUI.VISUALCONFIG =
 
     "minZoom": 15,
     "zoomSmooth": 2,
-    "zoomDefault": 300,
+    "zoomDefault": 500,
 
     "clickMaxDuration": 300,
 
