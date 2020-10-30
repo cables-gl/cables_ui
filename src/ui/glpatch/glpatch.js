@@ -46,8 +46,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
 
         this._focusRect = this._overLayRects.createRect();
-        this._focusRect.setSize(101, 110);
+        this._focusRect.setSize(1, 1);
         this._focusRect.setColor(0, 1, 1, 1);
+
+        // this._focusRect.setDecoration(4);
         this._focusRect.visible = false;
 
 
@@ -74,15 +76,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.links = {};
 
 
-        // for(let i=-5000;i<5000;i+=100)
+        // for (let i = -5000; i < 5000; i += 100)
         // {
         //     let idx = this._lines.getIndex();
-        //     this._lines.setLine(idx,-1000,i,1000,i);
-        //     this._lines.setColor(idx, 0.1,0.1,0.1,1);
+        //     this._lines.setLine(idx, -1000, i, 1000, i);
+        //     this._lines.setColor(idx, 0.1, 0.1, 0.1, 1);
 
         //     idx = this._lines.getIndex();
-        //     this._lines.setLine(idx,i,-1000,i,1000);
-        //     this._lines.setColor(idx, 0.1,0.1,0.1,1);
+        //     this._lines.setLine(idx, i, -1000, i, 1000);
+        //     this._lines.setColor(idx, 0.1, 0.1, 0.1, 1);
         // }
 
 
@@ -422,9 +424,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         let allowSelectionArea = !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;
 
-
-        // console.log("sel active",this._selectionArea.active);
-
         this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 
         if (this._rectInstancer.isDragging()) return;
@@ -465,11 +464,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
 
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
-        if (this._lastButton == 1 && this.mouseState.buttonLeft)
-        {
-            // if (this._selectionArea.active) console.log("hide area2");
-            this._selectionArea.hideArea();
-        }
+        if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
         if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging)
         {
@@ -479,7 +474,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
 
             const numSelectedOps = Object.keys(this._selectedGlOps).length;
-            if (this._numSelectedGlOps != numSelectedOps) gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
+
+            if (this._numSelectedGlOps > 0 && this._numSelectedGlOps != numSelectedOps) gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
             this._numSelectedGlOps = numSelectedOps;
         }
         else
@@ -526,7 +522,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRya = ya;
         this.cacheOIRxb = xb;
         this.cacheOIRyb = yb;
-
 
         this.cacheOIRops = ops;
         return ops;

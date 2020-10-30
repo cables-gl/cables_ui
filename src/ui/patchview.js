@@ -12,6 +12,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._patchRenderer = null;
         this._cachedSubpatchNames = {};
         this.isPasting = false;
+        this._showingNavHelperEmpty = false;
+
         this.boundingRect = null;
         this.store = new CABLES.UI.PatchServer();
         this._initListeners();
@@ -64,6 +66,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.patch().updateSubPatches();
             gui.patch().updateBounds();
 
+            if (!this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
+            {
+                this._showingNavHelperEmpty = true;
+                document.getElementById("patchnavhelperEmpty").style.display = "block";
+            }
 
             if (cb)cb();
         });
@@ -165,6 +172,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
             console.log("adding op. uiAttribs: ", uiAttribs);
             const op = this._p.addOp(opname, uiAttribs);
+
+            if (this._showingNavHelperEmpty)
+            {
+                document.getElementById("patchnavhelperEmpty").style.display = "none";
+            }
 
             // todo options:
             // - putIntoLink

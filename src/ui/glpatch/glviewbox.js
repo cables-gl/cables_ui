@@ -142,15 +142,19 @@ CABLES.GLGUI.ViewBox = class
         const z = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         if (Math.abs(this._zoom - CABLES.GLGUI.VISUALCONFIG.zoomDefault) < 200)
         {
-            // z = this.glPatch.getZoomForAllOps();
             this.glPatch.unselectAll();
             this.center();
         }
         else
         {
             this.animateZoom(z);
-            this.animateScrollTo(this.mousePatchX, this.mousePatchY);
+            this.animateToCenterAtMouseCoords();
         }
+    }
+
+    animateToCenterAtMouseCoords()
+    {
+        this.animateScrollTo(this.mousePatchX, this.mousePatchY * (this._viewResX / this._viewResY));
     }
 
     _onCanvasWheel(event)
@@ -320,6 +324,13 @@ CABLES.GLGUI.ViewBox = class
         // this.scrollTo(bb.center[0], cy);
         this.animateScrollTo(bb.center[0], cy);
 
+
+        // if (glop.x + glop.w >= x && // glop. right edge past r2 left
+        //     glop.x <= x2 && // glop. left edge past r2 right
+        //     glop.y + glop.h >= y && // glop. top edge past r2 bottom
+        //     glop.y <= y2) // r1 bottom edge past r2 top
+
+
         // this._boundingRect2.setPosition(
         //     bb.center[0] - (bb.size[0] / 2),
         //     bb.center[1] - (bb.size[1] / 2),
@@ -350,7 +361,7 @@ CABLES.GLGUI.ViewBox = class
 
     deSerialize(dataui)
     {
-        console.log(dataui.viewBoxGl);
+        dataui = dataui || {};
         const data = dataui.viewBoxGl || { "x": 0, "y": 0, "z": CABLES.GLGUI.VISUALCONFIG.zoomDefault };
         this._scrollX = data.x;
         this._scrollY = data.y;
