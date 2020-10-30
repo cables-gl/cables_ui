@@ -13,6 +13,8 @@ CABLES.GLGUI.SplineDrawer = class
     {
         this._cgl = cgl;
 
+        this._count = 1;
+
         this._rebuildLater = true;
         this._mesh = null;
         this._verts = [];
@@ -25,16 +27,26 @@ CABLES.GLGUI.SplineDrawer = class
         this._doDraw = new Float32Array();
         this._thePoints = [];
         this._arrEdges = [];
+        this._fr = 0;
+
         this._splineIndex = null;
 
         this._splines =
-            [[
-                0, -100, 0,
-                100, 200, 0,
-                300, 100, 0,
-                0, 0, 0,
-                0, 0, 0
-            ]];
+            [
+                [
+                    0, -100, 0,
+                    100, 200, 0,
+                    300, 100, 0,
+                    0, 0, 0,
+                    0, 0, 0],
+                [
+                    -30, -20, 0,
+                    10, 20, 0,
+                    30, 10, 0,
+                    0, 0, 0,
+                    0, 0, 0]
+
+            ];
 
         this._shader = new CGL.Shader(cgl, "Linedrawer");
         this._shader.setSource(""
@@ -141,7 +153,9 @@ CABLES.GLGUI.SplineDrawer = class
 
     render(resX, resY, scrollX, scrollY, zoom)
     {
-        if (this._rebuildLater) this.rebuild();
+        this._fr++;
+        if (this._rebuildLater && this._fr < 100) this.rebuild();
+
 
         this._uniResX.set(resX);
         this._uniResY.set(resY);
@@ -151,6 +165,23 @@ CABLES.GLGUI.SplineDrawer = class
         this._uniTime.set(performance.now() / 1000);
 
         this._mesh.render(this._shader);
+    }
+
+
+    getSplineIndex()
+    {
+        this._count++;
+        this._splines[this._count] = [0, 0, 0, 2110, 0, 0, 2110, 0, 0];
+
+        return this._count;
+    }
+
+    setSpline(idx, points)
+    {
+        // console.log(idx, points);
+        this._splines[idx] = this.tessEdges(points);
+
+        this._rebuildLater = true;
     }
 
     buildMesh()
@@ -184,8 +215,10 @@ CABLES.GLGUI.SplineDrawer = class
         if (!inpoints || inpoints.length === 0)
         {
             this._mesh = null;
+            console.log("spline no inpoints");
             return;
         }
+
 
         if (inpoints[0].length)
         {
@@ -195,14 +228,15 @@ CABLES.GLGUI.SplineDrawer = class
 
             for (let i = 0; i < inpoints.length; i++)
             {
-                for (let j = 0; j < inpoints[i].length / 3; j++)
-                {
-                    this._splineIndex[(count - 3) / 3] = i;// (i) / inpoints.length;
+                if (inpoints[i])
+                    for (let j = 0; j < inpoints[i].length / 3; j++)
+                    {
+                        this._splineIndex[(count - 3) / 3] = i;// (i) / inpoints.length;
 
-                    arr[count++] = inpoints[i][j * 3 + 0];
-                    arr[count++] = inpoints[i][j * 3 + 1];
-                    arr[count++] = inpoints[i][j * 3 + 2];
-                }
+                        arr[count++] = inpoints[i][j * 3 + 0];
+                        arr[count++] = inpoints[i][j * 3 + 1];
+                        arr[count++] = inpoints[i][j * 3 + 2];
+                    }
             }
             this._thePoints = arr;
         }
@@ -213,11 +247,12 @@ CABLES.GLGUI.SplineDrawer = class
         }
 
         // if (inHardEdges.get())
-        this._thePoints = this.tessEdges(this._thePoints);
+        // this._thePoints = this.tessEdges(this._thePoints);
 
         this.buildMesh();
 
         const newLength = this._thePoints.length * 6;
+        console.log("newLength", newLength);
         let count = 0;
         let lastIndex = 0;
         let drawable = 0;

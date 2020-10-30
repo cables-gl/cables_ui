@@ -1227,26 +1227,29 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             oldLink.remove();
         }
 
-        if (CABLES.Link.canLink(op.portsIn[0], portOut))
+        if (portIn && portOut)
         {
-            gui.corePatch().link(
-                op,
-                op.portsIn[0].getName(), portOut.parent, portOut.getName()
-            );
+            if (CABLES.Link.canLink(op.portsIn[0], portOut))
+            {
+                gui.corePatch().link(
+                    op,
+                    op.portsIn[0].getName(), portOut.parent, portOut.getName()
+                );
 
-            gui.corePatch().link(
-                op,
-                op.portsOut[0].getName(), portIn.parent, portIn.getName()
-            );
+                gui.corePatch().link(
+                    op,
+                    op.portsOut[0].getName(), portIn.parent, portIn.getName()
+                );
 
-            op.setUiAttrib({ "translate": { "x": x, "y": y } });
-        }
-        else
-        {
-            console.log(oldLink, portIn, portOut);
-            gui.corePatch().link(
-                portIn.parent, portIn.getName(),
-                portOut.parent, portOut.getName());
+                op.setUiAttrib({ "translate": { "x": x, "y": y } });
+            }
+            else
+            {
+                console.log(oldLink, portIn, portOut);
+                gui.corePatch().link(
+                    portIn.parent, portIn.getName(),
+                    portOut.parent, portOut.getName());
+            }
         }
     }
 };

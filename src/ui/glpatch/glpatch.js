@@ -402,6 +402,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData._mousePatchY = this.viewBox._mousePatchY;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
+        this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
         this.mouseState.debug(this.debugData);
 
         // this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
@@ -413,8 +415,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._debugtext.text = str;
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
-
-        this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();
