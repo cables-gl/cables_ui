@@ -43,8 +43,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRyb = 0;
         this.cacheOIRops = null;
 
-        this._focusRectAnim = new CABLES.TL.Anim();
-        this._focusRectAnim.defaultEasing = CABLES.EASING_CUBIC_OUT;
+        this._focusRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
 
         this._focusRect = this._overLayRects.createRect();
         this._focusRect.setSize(101, 110);
@@ -191,6 +190,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (e.preventDefault) e.preventDefault();
     }
 
+    get time() { return this._time; }
+
     set patchAPI(api) { this._patchAPI = api; }
 
     get patchAPI() { return this._patchAPI; }
@@ -212,7 +213,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     center(x, y)
     {
-        this.viewBox.scrollTo(x, y);
+        this.viewBox.animateScrollTo(x, y);
     }
 
     get lineDrawer()
@@ -258,13 +259,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     focusOp(opid)
     {
-        const glop = this._glOpz[opid];
-
+        this._focusRectOp = this._glOpz[opid];
         this._focusRectAnim.clear();
-
-        this._focusRectOp = glop;
-
-
         this._focusRectAnim.setValue(this._time, 0);
         this._focusRectAnim.setValue(this._time + 0.5, 1);
     }
@@ -333,12 +329,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             this.isAnimated = true;
             const v = 1.0 - this._focusRectAnim.getValue(this._time);
-
             const dist = 20;
 
             this._focusRect.setPosition(this._focusRectOp.x - v * dist, this._focusRectOp.y - v * dist);
             this._focusRect.setSize(this._focusRectOp.w + v * 2 * dist, this._focusRectOp.h + v * 2 * dist);
-
             this._focusRect.setColor(1, 1, 1, v);
         }
 
@@ -394,7 +388,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.rects = this._rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
 
-        // this.debugData.viewZoom = this.viewBox.zoom;
+        this.debugData.viewZoom = this.viewBox.zoom;
         // this.debugData.viewbox_scrollX = this.viewBox.scrollX;
         // this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         // this.debugData.viewResX = this.viewBox._viewResX;
@@ -547,6 +541,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     getGlOp(op)
     {
         return this._glOpz[op.id];
+    }
+
+    setSelectedOpById(id)
+    {
+        this.unselectAll();
+        this.selectOpId(id);
     }
 
     selectOpId(id)

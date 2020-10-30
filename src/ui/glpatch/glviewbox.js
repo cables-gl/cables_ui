@@ -23,12 +23,14 @@ CABLES.GLGUI.ViewBox = class
         this._viewResX = 0;
         this._viewResY = 0;
         this._boundingRect = null;
-        this._boundingRectSelection = null;
+        // this._boundingRectSelection = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
-        this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
-        this._smoothedZoomValue = this._zoom;
+
+        this._animScrollX = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_EXPO_OUT });
+        this._animScrollY = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_EXPO_OUT });
+        this._animZoom = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_EXPO_OUT });
 
         cgl.canvas.addEventListener("mouseenter", this._onCanvasMouseEnter.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
@@ -107,6 +109,14 @@ CABLES.GLGUI.ViewBox = class
 
     _onCanvasMouseMove(e)
     {
+        // const isFocused = (document.activeElement === this._cgl.canvas);
+        // if (!isFocused && document.activeElement.tagName != "INPUT")
+        // {
+        //     console.log(document.activeElement.tagName);
+        //     console.log("not focussed");
+        //     this._cgl.canvas.focus();
+        // }
+
         this.setMousePos(e.offsetX, e.offsetY);
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
@@ -131,8 +141,6 @@ CABLES.GLGUI.ViewBox = class
     {
         if (this._zoom == CABLES.GLGUI.VISUALCONFIG.zoomDefault) this._zoom = this.glPatch.getZoomForAllOps();
         else this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
-        this._smoothedZoom.set(this._zoom);
-        this._smoothedZoomValue = this._zoom;
     }
 
     _onCanvasWheel(event)
@@ -160,16 +168,19 @@ CABLES.GLGUI.ViewBox = class
 
         const mouse = this.screenToPatchCoord(this._mouseX, this._mouseY, true);
 
-        const newZoom = this._smoothedZoomValue * delta;
+        const newZoom = this._zoom * delta;
 
         const x = this._scrollX + mouse[0];
         const y = this._scrollY + mouse[1];
 
+        // const oldZoom = this._zoom;
         this._zoom = newZoom;
-        this._smoothedZoom.set(this._zoom);
-        this._smoothedZoomValue = this._zoom;
 
         const mouseAfterZoom = this.screenToPatchCoord(this._mouseX, this._mouseY, true);
+
+        // this._zoom = oldZoom;
+
+        // this.animateZoom(newZoom, 0.1);
 
         this.scrollTo(
             x - mouseAfterZoom[0],
@@ -178,15 +189,15 @@ CABLES.GLGUI.ViewBox = class
         gui.patchView.emitEvent("viewBoxChange");
     }
 
-    get zoom() { return this._smoothedZoomValue; }
+    get zoom() { return this._zoom; }
 
     get scrollX() { return -this._scrollX; }
 
     get scrollY() { return this._scrollY; }
 
-    get scrollXZoom() { return -this._scrollX / this._smoothedZoomValue; }
+    get scrollXZoom() { return -this._scrollX / this._zoom; }
 
-    get scrollYZoom() { return this._scrollY / this._smoothedZoomValue; }
+    get scrollYZoom() { return this._scrollY / this._zoom; }
 
     get mouseX() { return this._mouseX; }
 
@@ -198,7 +209,12 @@ CABLES.GLGUI.ViewBox = class
 
     update()
     {
-        this._smoothedZoom.update();
+        const time = this.glPatch.time;
+        if (!this._animZoom.isFinished(time)) this._zoom = this._animZoom.getValue(time);
+        if (!this._animScrollX.isFinished(time)) this._scrollX = this._animScrollX.getValue(time);
+        if (!this._animScrollY.isFinished(time)) this._scrollY = this._animScrollY.getValue(time);
+
+        this.setMousePos(this._mouseX, this._mouseY);
 
         if (!this._boundingRect)
         {
@@ -209,18 +225,40 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect);
         }
 
-        if (!this._boundingRect2)
-        {
-            this._boundingRect2 = this.glPatch.rectDrawer.createRect();
-            this._boundingRect2.interactive = false;
-            this._boundingRect2.setPosition(0, 0, 1);
-            this._boundingRect2.setSize(110, 110);
-            this._boundingRect2.setColor([1, 1, 1, 0.1]);
-        }
+        // if (!this._boundingRect2)
+        // {
+        //     this._boundingRect2 = this.glPatch.rectDrawer.createRect();
+        //     this._boundingRect2.interactive = false;
+        //     this._boundingRect2.setPosition(0, 0, 1);
+        //     this._boundingRect2.setSize(110, 110);
+        //     this._boundingRect2.setColor([1, 1, 1, 0.1]);
+        // }
 
         const bounds = this.glPatch.rectDrawer.bounds;
         this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.1);
         this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+    }
+
+    animateZoom(z, dur)
+    {
+        dur = dur || 0.25;
+        // console.log(this.glPatch.time, this._zoom, z);
+        this._animZoom.clear();
+        this._animZoom.setValue(this.glPatch.time, this._zoom);
+        this._animZoom.setValue(this.glPatch.time + dur, z);
+    }
+
+    animateScrollTo(x, y, dur)
+    {
+        dur = dur || 0.25;
+
+        this._animScrollX.clear();
+        this._animScrollX.setValue(this.glPatch.time, this._scrollX);
+        this._animScrollX.setValue(this.glPatch.time + dur, x);
+
+        this._animScrollY.clear();
+        this._animScrollY.setValue(this.glPatch.time, this._scrollY);
+        this._animScrollY.setValue(this.glPatch.time + dur, y);
     }
 
     scrollTo(x, y)
@@ -264,20 +302,22 @@ CABLES.GLGUI.ViewBox = class
         const zy = (bb.size[1]) / 2 * (this._viewResX / this._viewResY);
         const z = Math.max(300, Math.max(zy, zx));
 
-        this._smoothedZoom.set(z);
-        this._smoothedZoomValue = z;
+        // this._zoom = z;
+        this.animateZoom(z);
 
         const cy = bb.center[1] * (this._viewResX / this._viewResY);
 
-        this.scrollTo(bb.center[0], cy);
+        // this.scrollTo(bb.center[0], cy);
+        this.animateScrollTo(bb.center[0], cy);
 
-        this._boundingRect2.setPosition(
-            bb.center[0] - (bb.size[0] / 2),
-            bb.center[1] - (bb.size[1] / 2),
-            0.1);
-        this._boundingRect2.setSize(bb.size[0], bb.size[1]);
-        this._boundingRect2.setDecoration(4);
+        // this._boundingRect2.setPosition(
+        //     bb.center[0] - (bb.size[0] / 2),
+        //     bb.center[1] - (bb.size[1] / 2),
+        //     0.1);
+        // this._boundingRect2.setSize(bb.size[0], bb.size[1]);
+        // this._boundingRect2.setDecoration(4);
     }
+
 
     screenToPatchCoord(x, y, aspect)
     {
@@ -304,6 +344,6 @@ CABLES.GLGUI.ViewBox = class
         const data = dataui.viewBoxGl || { "x": 0, "y": 0, "z": CABLES.GLGUI.VISUALCONFIG.zoomDefault };
         this._scrollX = data.x;
         this._scrollY = data.y;
-        this._smoothedZoomValue = this._zoom = data.z;
+        this._zoom = data.z;
     }
 };

@@ -1035,7 +1035,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     setSelectedOpById(opid)
     {
         if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
-        else if (this._patchRenderer.selectOpId) this._patchRenderer.selectOpId(opid);
+        // else if (this._patchRenderer.selectOpId) this._patchRenderer.selectOpId(opid);
         else console.log("patchRenderer has no function setSelectedOpById");
     }
 
