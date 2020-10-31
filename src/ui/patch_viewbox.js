@@ -105,12 +105,7 @@ CABLES.UI.PatchViewBox.prototype._fixAspectRatio = function (vb)
 
 CABLES.UI.PatchViewBox.prototype._setDefaultViewbox = function ()
 {
-    if (!this._showingNavHelperEmpty)
-    {
-        this._showingNavHelperEmpty = true;
-        this._eleNavHelperEmpty.style.display = "block";
-        this.set(-200, -200, 400, 400);
-    }
+    this.set(-200, -200, 400, 400);
 };
 
 CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()

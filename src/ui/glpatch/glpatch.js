@@ -24,6 +24,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
+
+        this.splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
         this._rectInstancer = new CABLES.GLGUI.RectInstancer(cgl, { "name": "mainrects", "initNum": gui.corePatch().ops.length * 12 });
@@ -43,12 +45,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRyb = 0;
         this.cacheOIRops = null;
 
-        this._focusRectAnim = new CABLES.TL.Anim();
-        this._focusRectAnim.defaultEasing = CABLES.EASING_CUBIC_OUT;
+        this._focusRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
 
         this._focusRect = this._overLayRects.createRect();
-        this._focusRect.setSize(101, 110);
+        this._focusRect.setSize(1, 1);
         this._focusRect.setColor(0, 1, 1, 1);
+
+        // this._focusRect.setDecoration(4);
         this._focusRect.visible = false;
 
 
@@ -75,15 +78,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.links = {};
 
 
-        // for(let i=-5000;i<5000;i+=100)
+        // for (let i = -5000; i < 5000; i += 100)
         // {
         //     let idx = this._lines.getIndex();
-        //     this._lines.setLine(idx,-1000,i,1000,i);
-        //     this._lines.setColor(idx, 0.1,0.1,0.1,1);
+        //     this._lines.setLine(idx, -1000, i, 1000, i);
+        //     this._lines.setColor(idx, 0.1, 0.1, 0.1, 1);
 
         //     idx = this._lines.getIndex();
-        //     this._lines.setLine(idx,i,-1000,i,1000);
-        //     this._lines.setColor(idx, 0.1,0.1,0.1,1);
+        //     this._lines.setLine(idx, i, -1000, i, 1000);
+        //     this._lines.setColor(idx, 0.1, 0.1, 0.1, 1);
         // }
 
 
@@ -191,6 +194,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (e.preventDefault) e.preventDefault();
     }
 
+    get time() { return this._time; }
+
     set patchAPI(api) { this._patchAPI = api; }
 
     get patchAPI() { return this._patchAPI; }
@@ -212,7 +217,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     center(x, y)
     {
-        this.viewBox.scrollTo(x, y);
+        this.viewBox.animateScrollTo(x, y);
     }
 
     get lineDrawer()
@@ -258,13 +263,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     focusOp(opid)
     {
-        const glop = this._glOpz[opid];
-
+        this._focusRectOp = this._glOpz[opid];
         this._focusRectAnim.clear();
-
-        this._focusRectOp = glop;
-
-
         this._focusRectAnim.setValue(this._time, 0);
         this._focusRectAnim.setValue(this._time + 0.5, 1);
     }
@@ -333,12 +333,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             this.isAnimated = true;
             const v = 1.0 - this._focusRectAnim.getValue(this._time);
-
             const dist = 20;
 
             this._focusRect.setPosition(this._focusRectOp.x - v * dist, this._focusRectOp.y - v * dist);
             this._focusRect.setSize(this._focusRectOp.w + v * 2 * dist, this._focusRectOp.h + v * 2 * dist);
-
             this._focusRect.setColor(1, 1, 1, v);
         }
 
@@ -394,7 +392,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.rects = this._rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
 
-        // this.debugData.viewZoom = this.viewBox.zoom;
+        this.debugData.viewZoom = this.viewBox.zoom;
         // this.debugData.viewbox_scrollX = this.viewBox.scrollX;
         // this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         // this.debugData.viewResX = this.viewBox._viewResX;
@@ -403,6 +401,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData._mousePatchX = this.viewBox._mousePatchX;
         this.debugData._mousePatchY = this.viewBox._mousePatchY;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
+
+        this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this.mouseState.debug(this.debugData);
 
@@ -414,6 +414,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._debugtext.text = str;
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
+
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();
@@ -427,9 +428,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if ((this._lastMouseX != x || this._lastMouseY != y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
         let allowSelectionArea = !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;
-
-
-        // console.log("sel active",this._selectionArea.active);
 
         this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 
@@ -471,11 +469,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
 
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
-        if (this._lastButton == 1 && this.mouseState.buttonLeft)
-        {
-            // if (this._selectionArea.active) console.log("hide area2");
-            this._selectionArea.hideArea();
-        }
+        if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
         if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging)
         {
@@ -485,7 +479,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
 
             const numSelectedOps = Object.keys(this._selectedGlOps).length;
-            if (this._numSelectedGlOps != numSelectedOps) gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
+
+            if (this._numSelectedGlOps > 0 && this._numSelectedGlOps != numSelectedOps) gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
             this._numSelectedGlOps = numSelectedOps;
         }
         else
@@ -533,7 +528,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRxb = xb;
         this.cacheOIRyb = yb;
 
-
         this.cacheOIRops = ops;
         return ops;
     }
@@ -547,6 +541,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     getGlOp(op)
     {
         return this._glOpz[op.id];
+    }
+
+    setSelectedOpById(id)
+    {
+        this.unselectAll();
+        this.selectOpId(id);
     }
 
     selectOpId(id)

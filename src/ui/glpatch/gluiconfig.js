@@ -18,7 +18,7 @@ CABLES.GLGUI.VISUALCONFIG =
 
     "minZoom": 15,
     "zoomSmooth": 2,
-    "zoomDefault": 300,
+    "zoomDefault": 500,
 
     "clickMaxDuration": 300,
 
@@ -40,8 +40,8 @@ CABLES.GLGUI.VISUALCONFIG =
         "patchComment": [0.8, 0.8, 0.8, 1],
         "opTitleExt": [0.8, 0.8, 0.8, 1.0],
         "patchSelectionArea": [0, 0.5, 0.7, 0.25],
-        "opBoundsRect": [0.23, 0.23, 0.23, 1],
-        "background": [0.21, 0.21, 0.21, 1]
 
+        "opBoundsRect": [0.26, 0.26, 0.26, 1],
+        "background": [0.24, 0.24, 0.24, 1]
     }
 };
