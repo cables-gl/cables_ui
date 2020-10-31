@@ -26,7 +26,7 @@ CABLES.GLGUI.SplineDrawer = class
         this._points3 = new Float32Array();
         this._doDraw = new Float32Array();
         this._thePoints = [];
-        this._arrEdges = [];
+
         this._fr = 0;
 
         this._splineIndex = null;
@@ -119,7 +119,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    finalPosition.xy += offset.xy;"
 
             .endl() + "    float aspect=resX/resY;"
-            .endl() + "    finalPosition.y*=aspect;"
+            .endl() + "    finalPosition.y*=-aspect;"
 
             .endl() + "    finalPosition.xy*=zoom;"
             .endl() + "    finalPosition.x+=scrollX;"
@@ -154,9 +154,16 @@ CABLES.GLGUI.SplineDrawer = class
     render(resX, resY, scrollX, scrollY, zoom)
     {
         this._fr++;
-        if (this._rebuildLater && this._fr < 100) this.rebuild();
+        if (this._fr % 3 == 0)
+            if (this._rebuildLater)
+            {
+                this.rebuild();
+                // this.rebuild();
+                // this.rebuild();
+                this._mesh.unBind();
+            }
 
-
+        if (!this._mesh) return;
         this._uniResX.set(resX);
         this._uniResY.set(resY);
         this._uniscrollX.set(scrollX);
@@ -252,13 +259,13 @@ CABLES.GLGUI.SplineDrawer = class
         this.buildMesh();
 
         const newLength = this._thePoints.length * 6;
-        console.log("newLength", newLength);
         let count = 0;
         let lastIndex = 0;
         let drawable = 0;
 
         if (this._points.length != newLength)
         {
+            console.log("newLength", newLength);
             this._points = new Float32Array(newLength);
             this._points2 = new Float32Array(newLength);
             this._points3 = new Float32Array(newLength);
@@ -313,31 +320,32 @@ CABLES.GLGUI.SplineDrawer = class
         const step = 0.003;
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
+        this._arrEdges = [];
         this._arrEdges.length = l;
 
         const tessSplineIndex = [];
 
-        if (this._splineIndex) tessSplineIndex[0] = this._splineIndex[1];
+        // if (this._splineIndex) tessSplineIndex[0] = this._splineIndex[1];
 
         for (let i = 0; i < oldArr.length - 3; i += 3)
         {
             this._arrEdges[count++] = oldArr[i + 0];
             this._arrEdges[count++] = oldArr[i + 1];
             this._arrEdges[count++] = oldArr[i + 2];
-            if (this._splineIndex) tessSplineIndex[count / 3] = this._splineIndex[i / 3];
+            // if (this._splineIndex) tessSplineIndex[count / 3] = this._splineIndex[i / 3];
 
             this._arrEdges[count++] = this.ip(oldArr[i + 0], oldArr[i + 3], step);
             this._arrEdges[count++] = this.ip(oldArr[i + 1], oldArr[i + 4], step);
             this._arrEdges[count++] = this.ip(oldArr[i + 2], oldArr[i + 5], step);
-            if (this._splineIndex) tessSplineIndex[count / 3] = this._splineIndex[i / 3];
+            // if (this._splineIndex) tessSplineIndex[count / 3] = this._splineIndex[i / 3];
 
             this._arrEdges[count++] = this.ip(oldArr[i + 0], oldArr[i + 3], oneMinusStep);
             this._arrEdges[count++] = this.ip(oldArr[i + 1], oldArr[i + 4], oneMinusStep);
             this._arrEdges[count++] = this.ip(oldArr[i + 2], oldArr[i + 5], oneMinusStep);
-            if (this._splineIndex) tessSplineIndex[count / 3] = this._splineIndex[i / 3];
+            // if (this._splineIndex) tessSplineIndex[count / 3] = this._splineIndex[i / 3];
         }
 
-        if (this._splineIndex) this._splineIndex = tessSplineIndex;
+        // if (this._splineIndex) this._splineIndex = tessSplineIndex;
 
         return this._arrEdges;
     }
