@@ -47,6 +47,7 @@ CABLES.GLGUI.GlCable = class
 
         if (Math.abs(this._y - this._y2) < CABLES.GLGUI.VISUALCONFIG.portHeight * 2)dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
 
+
         this._glPatch.splineDrawer.setSpline(this.splineIdx,
             [
                 this._x, this._y, 0,
@@ -94,6 +95,7 @@ CABLES.GLGUI.GlCable = class
 
     setColor(r, g, b, a)
     {
+        this._glPatch.splineDrawer.setSplineColor(this.splineIdx, [r, g, b, a]);
         this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
         this._lineDrawer.setColor(this._lineIdx1, r, g, b, a);
         this._lineDrawer.setColor(this._lineIdx2, r, g, b, a);

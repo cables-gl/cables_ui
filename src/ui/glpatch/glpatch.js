@@ -367,9 +367,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         const perf = CABLES.uiperf.start("[glpatch] render");
 
+
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
 
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
@@ -402,7 +405,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData._mousePatchY = this.viewBox._mousePatchY;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
-        this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this.mouseState.debug(this.debugData);
 
