@@ -20,8 +20,6 @@ CABLES.GLGUI.SplineDrawer = class
         this._doDraw = new Float32Array();
         this._thePoints = [];
 
-        this._fr = 0;
-
         this._splineIndex = null;
 
         this._splineColors = [];
@@ -41,6 +39,9 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "IN float attrVertIndex;"
             .endl() + "IN vec4 vcolor;"
             .endl() + "OUT vec4 fcolor;"
+
+            .endl() + "IN float speed;"
+            .endl() + "OUT float fspeed;"
 
             .endl() + "IN float splineProgress;"
             .endl() + "OUT float fProgress;"
@@ -77,7 +78,10 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "void main()"
             .endl() + "{"
 
+            .endl() + "    float aspect=resX/resY;"
             .endl() + "    fcolor=vcolor;"
+            .endl() + "    fspeed=speed;"
+
             .endl() + "    texCoord=vPosition.xy;"
             .endl() + "    texCoord.y=texCoord.y*0.5+0.5;"
             .endl() + "    texCoord.x+=texOffset;"
@@ -106,16 +110,12 @@ CABLES.GLGUI.SplineDrawer = class
 
             .endl() + "    float m=pos.x;"
             .endl() + "    vec4 offset = vec4( mix(normal,normal2,m) * (pos.y), 0.0, 1.0 );"
-            .endl() + ""
-
 
             .endl() + "    finalPosition = mix(finalPosition,finalPosition2,pos.x);"
-            .endl() + "    fProgress=distance(finalPosition.xy,finalPosition2.xy);"
+            .endl() + "    fProgress=distance(finalPosition.xy+offset.xy+vec2(0.0,pos.y)+vec2(scrollX,scrollY)*-aspect,finalPosition2.xy+offset.xy+vec2(0.0,pos.y)+vec2(scrollX,scrollY)*-aspect);"
 
             .endl() + "    finalPosition.xy += offset.xy;"
 
-
-            .endl() + "    float aspect=resX/resY;"
             .endl() + "    finalPosition.y*=-aspect;"
 
             .endl() + "    finalPosition.xy*=zoom;"
@@ -130,6 +130,8 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "IN vec2 texCoord;"
             .endl() + "IN vec4 fcolor;"
             .endl() + "IN float fProgress;"
+            .endl() + "IN float fspeed;"
+
 
             .endl() + "UNI float a;"
             .endl() + "UNI float time;"
@@ -141,7 +143,9 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    vec4 col=fcolor;"
             .endl() + "    col.a=1.0;"
             // .endl() + "    col.r=mod(1.0,time+fProgress); "
-            .endl() + "    col.a=step(0.5,mod(time+fProgress*0.1,1.0))+0.3; "
+            .endl() + "    col.a=step(0.5,mod(-time*2.0+fProgress*0.1*(fspeed*0.5),1.0))+0.3; "
+            .endl() + "    col.a*=clamp(fspeed,0.3,1.0);"
+
         // .endl() + "    col.r=texCoord.x; "
 
 
@@ -159,9 +163,6 @@ CABLES.GLGUI.SplineDrawer = class
 
     render(resX, resY, scrollX, scrollY, zoom)
     {
-        this._fr++;
-
-
         if (this._mesh)
         {
             this._cgl.pushShader(this._shader);
@@ -172,15 +173,12 @@ CABLES.GLGUI.SplineDrawer = class
             this._uniZoom.set(1.0 / zoom);
             this._uniTime.set(performance.now() / 1000);
 
-
             this._cgl.pushDepthTest(false);
             this._cgl.pushDepthWrite(false);
             this._cgl.pushDepthFunc(this._cgl.gl.GREATER);
 
-
             this._mesh.render(this._shader);
             this._cgl.popShader();
-
 
             this._cgl.popDepthTest();
             this._cgl.popDepthWrite();
@@ -202,7 +200,8 @@ CABLES.GLGUI.SplineDrawer = class
         this._splines[this._count] =
         {
             "points": [],
-            "color": [1, 1, 1, 1]
+            "color": [1, 1, 1, 1],
+            "speed": 0
         };
 
         return this._count;
@@ -213,6 +212,16 @@ CABLES.GLGUI.SplineDrawer = class
     {
         return Math.abs(a - b) > 0.0001;
     }
+
+    setSplineSpeed(idx, speed)
+    {
+        if (this._splines[idx].speed != speed)
+        {
+            this._splines[idx].speed = speed;
+            this._rebuildLater = true;
+        }
+    }
+
 
     setSplineColor(idx, rgba)
     {
@@ -303,7 +312,7 @@ CABLES.GLGUI.SplineDrawer = class
         let count = 0;
 
         console.log("this._splines.length", this._splines.length);
-
+        let numPoints = 0;
 
         for (let i = 0; i < this._splines.length; i++)
         {
@@ -314,10 +323,12 @@ CABLES.GLGUI.SplineDrawer = class
                 arr[count++] = this._splines[i].points[j * 3 + 0];
                 arr[count++] = this._splines[i].points[j * 3 + 1];
                 arr[count++] = this._splines[i].points[j * 3 + 2];
+                numPoints++;
             }
         }
         this._thePoints = arr;
 
+        console.log("numpoints", numPoints);
 
         this.buildMesh();
 
@@ -331,7 +342,7 @@ CABLES.GLGUI.SplineDrawer = class
 
         if (this._points.length != newLength)
         {
-            console.log("newLength", newLength);
+            console.log("spline buffer length changed!!!!", newLength);
             this._colors = new Float32Array(newLength / 3 * 4);
 
             this._points = new Float32Array(newLength);
@@ -340,6 +351,7 @@ CABLES.GLGUI.SplineDrawer = class
 
             this._doDraw = new Float32Array(newLength / 3);
             this._pointsProgress = new Float32Array(newLength / 3);
+            this._speeds = new Float32Array(newLength / 3);
 
             for (let i = 0; i < newLength / 3; i++) this._pointsProgress[i] = i / (newLength / 3);
         }
@@ -361,6 +373,8 @@ CABLES.GLGUI.SplineDrawer = class
 
                 if (this._splines[this._splineIndex[i]])
                 {
+                    this._speeds[count / 3] = this._splines[this._splineIndex[i]].speed;
+
                     this._colors[count / 3 * 4 + 0] = this._splines[this._splineIndex[i]].color[0];
                     this._colors[count / 3 * 4 + 1] = this._splines[this._splineIndex[i]].color[1];
                     this._colors[count / 3 * 4 + 2] = this._splines[this._splineIndex[i]].color[2];
@@ -377,8 +391,11 @@ CABLES.GLGUI.SplineDrawer = class
             }
         }
 
-        this._mesh.setAttribute("vcolor", this._colors, 4);
+
+        this._mesh.setAttribute("speed", this._speeds, 1);
         this._mesh.setAttribute("splineDoDraw", this._doDraw, 1);
+
+        this._mesh.setAttribute("vcolor", this._colors, 4);
 
         this._mesh.setAttribute("spline", this._points, 3);
         this._mesh.setAttribute("spline2", this._points2, 3);
