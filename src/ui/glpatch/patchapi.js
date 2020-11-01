@@ -52,6 +52,22 @@ CABLES.GLGUI.GlPatchAPI = class
         }
     }
 
+    stopFlowModeActivity()
+    {
+        for (let i = 0; i < this._patch.ops.length; i++)
+        {
+            const op = this._patch.ops[i];
+
+            for (let ip = 0; ip < op.portsIn.length; ip++)
+            {
+                for (let il = 0; il < op.portsIn[ip].links.length; il++)
+                {
+                    const link = op.portsIn[ip].links[il];
+                    this._glPatch.links[link.id].setFlowModeActivity(0);
+                }
+            }
+        }
+    }
 
     updateFlowModeActivity()
     {

@@ -145,6 +145,8 @@ CABLES.GLGUI.SplineDrawer = class
             // .endl() + "    col.r=mod(1.0,time+fProgress); "
             .endl() + "    col.a=step(0.5,mod(-time*2.0+fProgress*0.1*(fspeed*0.5),1.0))+0.3; "
             .endl() + "    col.a*=clamp(fspeed,0.3,1.0);"
+            .endl() + "    if(fspeed==0.0)col.a=1.0;"
+
 
         // .endl() + "    col.r=texCoord.x; "
 
@@ -304,14 +306,14 @@ CABLES.GLGUI.SplineDrawer = class
 
     rebuild()
     {
-        console.log("rebuild spline");
+        // console.log("rebuild spline");
 
         const arr = [];
 
         this._splineIndex = [];
         let count = 0;
 
-        console.log("this._splines.length", this._splines.length);
+        // console.log("this._splines.length", this._splines.length);
         let numPoints = 0;
 
         for (let i = 0; i < this._splines.length; i++)
@@ -328,7 +330,7 @@ CABLES.GLGUI.SplineDrawer = class
         }
         this._thePoints = arr;
 
-        console.log("numpoints", numPoints);
+        // console.log("numpoints", numPoints);
 
         this.buildMesh();
 
