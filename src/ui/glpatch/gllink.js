@@ -177,7 +177,8 @@ CABLES.GLGUI.GlLink = class
     {
         if (this._opOut) this._opOut.removeLink(this._id);
         if (this._opIn) this._opIn.removeLink(this._id);
-        this._cable.setColor(0, 0, 0, 0);
+        this._cable.dispose();
+
         this._buttonRect.dispose();
         this._buttonRect = null;
     }

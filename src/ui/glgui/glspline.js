@@ -73,12 +73,13 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "vec2 fix( vec4 i )"
             .endl() + "{"
             .endl() + "    vec2 res = i.xy / i.w;"
-            // .endl() + "    res.x *= aspect;"
             .endl() + "    return res;"
             .endl() + "}"
             .endl() + ""
             .endl() + "void main()"
             .endl() + "{"
+
+            .endl() + "    if(vcolor.a == 0.0)return; "
 
             .endl() + "    float aspect=resX/resY;"
             .endl() + "    fcolor=vcolor;"
@@ -241,42 +242,63 @@ CABLES.GLGUI.SplineDrawer = class
         }
     }
 
+    deleteSpline(idx)
+    {
+        const sp = this._splines[idx];
+
+        this.setSplineColor(idx, 0, 0, 0, 0);
+
+        for (let i = 0; i < this._splines[idx].origPoints.length; i += 3)
+        {
+            this._splines[idx].origPoints[i + 0] =
+            this._splines[idx].origPoints[i + 1] =
+            this._splines[idx].origPoints[i + 2] = 0;
+        }
+        this.setSpline(idx, this._splines[idx].origPoints);
+    }
+
     setSpline(idx, points)
     {
         let isDifferent = true;
-        if (this._splines[idx] && this._splines[idx].origPoints)
+        let isDifferentLength = false;
+
+        if (!this._rebuildLater)
         {
-            isDifferent = false;
-            if (points.length != this._splines[idx].origPoints.length)
+            if (this._splines[idx] && this._splines[idx].origPoints)
             {
-                isDifferent = true;
-            }
-            else
-            {
-                for (let i = 0; i < this._splines[idx].origPoints.length; i++)
+                isDifferent = false;
+                if (points.length != this._splines[idx].origPoints.length)
                 {
-                    if (this._splines[idx].origPoints[i] != points[i])
+                // length of spline changed, we need to rebuild the whole buffer....
+                    isDifferent = true;
+                    isDifferentLength = true;
+                    this._rebuildLater = true;
+                }
+                else
+                {
+                    for (let i = 0; i < this._splines[idx].origPoints.length; i++)
                     {
-                        isDifferent = true;
-                        break;
+                        if (this._splines[idx].origPoints[i] != points[i])
+                        {
+                            isDifferent = true;
+                            break;
+                        }
                     }
                 }
             }
         }
 
-        if (!isDifferent)
-        {
-            // console.log("not differenrt");
-            return;
-        }
-        // console.log("differenrt!!!!");
+        if (!isDifferent) return; // nothing has changed...
 
         this._splines[idx].origPoints = points;
-
         this._splines[idx].points = this.tessEdges(points);
-        // if (tess) this._splines[idx].points = this.tessEdges(points);
-        // else this._splines[idx].points = points;
-        this._rebuildLater = true;
+
+        if (!isDifferentLength) // length is the same, update vertices only
+        {
+            this._rebuildLater = true;
+
+            // setAttributeRange(attr, array, start, end)
+        }
     }
 
     setWidth(w)

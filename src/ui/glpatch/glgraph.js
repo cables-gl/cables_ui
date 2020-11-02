@@ -47,6 +47,8 @@ CABLES.GLGUI.GlGraph = class
                     this._height * this._scaleY - this._anim.getValue(i) * this._scaleY, 0);
         }
 
+        this._anim.clearBefore(time - 10);
+
         this._splineRenderer.setSpline(this._idx, points);
         this._anim.setValue(time, value);
     }
