@@ -12,7 +12,8 @@ CABLES.GLGUI.ViewBox = class
         this._lastPosPixel = vec2.create();
         this._mouseSmooth = [];
         this._mouseSmoothCount = 0;
-
+        this._subPatchViewBoxes = {};
+        this._currentSubPatchId = 0;
         this._mouseX = 0;
         this._mouseY = 0;
         this._mousePatchX = this._mousePatchY = 0;
@@ -28,9 +29,11 @@ CABLES.GLGUI.ViewBox = class
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
 
-        this._animScrollX = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_EXPO_OUT });
-        this._animScrollY = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_EXPO_OUT });
-        this._animZoom = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_EXPO_OUT });
+        this._defaultEasing = CABLES.EASING_EXPO_OUT;
+
+        this._animScrollX = new CABLES.TL.Anim({ "defaultEasing": this._defaultEasing });
+        this._animScrollY = new CABLES.TL.Anim({ "defaultEasing": this._defaultEasing });
+        this._animZoom = new CABLES.TL.Anim({ "defaultEasing": this._defaultEasing });
 
         cgl.canvas.addEventListener("mouseenter", this._onCanvasMouseEnter.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
@@ -368,13 +371,53 @@ CABLES.GLGUI.ViewBox = class
         this._zoom = data.z;
     }
 
-    animSwitchSubPatch(dur)
+
+    _storeCurrentSubPatch()
     {
+        this._subPatchViewBoxes[this._currentSubPatchId] = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+    }
+
+    _restoreSubPatch(sub)
+    {
+        // this._subPatchViewBoxes[this._currentSubPatchId] = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+
+        this._currentSubPatchId = sub;
+
+        console.log("restore!", this._subPatchViewBoxes[sub]);
+
+
+        if (this._subPatchViewBoxes[sub])
+        {
+            this.scrollTo(this._subPatchViewBoxes[sub].x, this._subPatchViewBoxes[sub].y);
+            this._zoom = this._subPatchViewBoxes[sub].z;
+        }
+        else
+        {
+            this._storeCurrentSubPatch();
+        }
+    }
+
+    animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain)
+    {
+        this._storeCurrentSubPatch();
+
+        const zoomFactor = 0.03;
+        const _timeVisibleagain = this.glPatch.time + timeVisibleAgain + dur * 2;
+
         this._animZoom.clear();
+        this._animZoom.defaultEasing = CABLES.EASING_LINEAR;
         this._animZoom.setValue(this.glPatch.time, this._zoom);
-        this._animZoom.setValue(this.glPatch.time + dur * 1.5, this._zoom - 50);
-        this._animZoom.setValue(this.glPatch.time + dur * 2 + 0.01, this._zoom + 50);
-        this._animZoom.setValue(this.glPatch.time + dur * 2, this._zoom + 50);
-        this._animZoom.setValue(this.glPatch.time + dur * 3.5, this._zoom);
+        this._animZoom.setValue(this.glPatch.time + timeGrey, this._zoom - (this._zoom * zoomFactor));
+
+        setTimeout(
+            () =>
+            {
+                this._animZoom.defaultEasing = this._defaultEasing;
+                this._restoreSubPatch(sub);
+
+                this._animZoom.clear();
+                this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
+                this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
+            }, timeGrey * 1000 + 10);
     }
 };

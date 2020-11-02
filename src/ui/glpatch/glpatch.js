@@ -802,19 +802,24 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         const dur = 0.1;
 
+        const timeGrey = dur * 1.5;
+        const timeVisibleAgain = dur * 3.0;
+
         this._fadeOutRectAnim.clear();
-        this._fadeOutRectAnim.setValue(this._time + dur * 0.5, 0);
-        this._fadeOutRectAnim.setValue(this._time + dur, 1.5, () =>
+        this._fadeOutRectAnim.setValue(this._time, 0);
+        this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
+        this._fadeOutRectAnim.setValue(this._time + timeGrey + 0.1, 1);
+        this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
+
+        setTimeout(() =>
         {
             for (const i in this._glOpz)
             {
                 this._glOpz[i].updateVisible();
             }
-        });
-        this._fadeOutRectAnim.setValue(this._time + dur * 2 + 0.02, 1);
-        this._fadeOutRectAnim.setValue(this._time + dur * 3, 0);
+        }, timeGrey * 1000);
 
-        this.viewBox.animSwitchSubPatch(dur);
+        this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain);
     }
 
     mouseToPatchCoords(x, y)
