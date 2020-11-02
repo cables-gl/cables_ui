@@ -124,6 +124,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    finalPosition.xy*=zoom;"
             .endl() + "    finalPosition.x+=scrollX;"
             .endl() + "    finalPosition.y+=scrollY;"
+            .endl() + "    finalPosition.z=0.96;"
 
             .endl() + "    gl_Position = finalPosition;"
             .endl() + "}"
@@ -183,23 +184,23 @@ CABLES.GLGUI.SplineDrawer = class
             this._uniZoom.set(1.0 / zoom);
             this._uniTime.set(performance.now() / 1000);
 
-            this._cgl.pushDepthTest(false);
-            this._cgl.pushDepthWrite(false);
-            this._cgl.pushDepthFunc(this._cgl.gl.GREATER);
+            // this._cgl.pushDepthTest(true);
+            // this._cgl.pushDepthWrite(true);
+            // this._cgl.pushDepthFunc(this._cgl.gl.GREATER);
 
             this._mesh.render(this._shader);
             this._cgl.popShader();
 
-            this._cgl.popDepthTest();
-            this._cgl.popDepthWrite();
-            this._cgl.popDepthFunc();
+            // this._cgl.popDepthTest();
+            // this._cgl.popDepthWrite();
+            // this._cgl.popDepthFunc();
         }
 
         // todo move before rendering but will not draw when rebuilding...
         if (this._rebuildLater)
         {
             this.rebuild();
-            this._mesh.unBind();
+            // this._mesh.unBind();
         }
     }
 

@@ -251,7 +251,7 @@ CABLES.GLGUI.ViewBox = class
         // }
 
         const bounds = this.glPatch.rectDrawer.bounds;
-        this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.1);
+        this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
         this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
     }
 
@@ -285,7 +285,7 @@ CABLES.GLGUI.ViewBox = class
         gui.patchView.emitEvent("viewBoxChange");
     }
 
-    center()
+    center(noAnim)
     {
         let ops = gui.patchView.getSelectedOps();
         if (ops.length == 0)ops = gui.corePatch().ops;
@@ -324,8 +324,8 @@ CABLES.GLGUI.ViewBox = class
         const zy = (bb.size[1]) / 2 * (this._viewResX / this._viewResY);
         const z = Math.max(400, Math.max(zy, zx));
 
-        // this._zoom = z;
-        this.animateZoom(z);
+        if (noAnim) this._zoom = z;
+        else this.animateZoom(z);
 
         const cy = bb.center[1] * (this._viewResX / this._viewResY);
 
@@ -399,6 +399,7 @@ CABLES.GLGUI.ViewBox = class
         else
         {
             this._storeCurrentSubPatch();
+            this.center(true);
         }
     }
 
