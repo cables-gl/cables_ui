@@ -367,4 +367,14 @@ CABLES.GLGUI.ViewBox = class
         this._scrollY = data.y;
         this._zoom = data.z;
     }
+
+    animSwitchSubPatch(dur)
+    {
+        this._animZoom.clear();
+        this._animZoom.setValue(this.glPatch.time, this._zoom);
+        this._animZoom.setValue(this.glPatch.time + dur * 1.5, this._zoom - 50);
+        this._animZoom.setValue(this.glPatch.time + dur * 2 + 0.01, this._zoom + 50);
+        this._animZoom.setValue(this.glPatch.time + dur * 2, this._zoom + 50);
+        this._animZoom.setValue(this.glPatch.time + dur * 3.5, this._zoom);
+    }
 };
