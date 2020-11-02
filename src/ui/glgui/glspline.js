@@ -145,14 +145,16 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "{"
             .endl() + "    vec4 col=fcolor;"
             .endl() + "    col.a=1.0;"
-            // .endl() + "    col.r=mod(1.0,time+fProgress); "
-            .endl() + "    col.a=step(0.5,mod(-time*2.0+fProgress*0.1*(fspeed*0.5),1.0))+0.3; "
-            .endl() + "    col.a*=clamp(fspeed,0.3,1.0);"
-            .endl() + "    if(fspeed==0.0)col.a=1.0;"
 
+            .endl() + "    float minOpacity=0.5;"
 
-        // .endl() + "    col.r=texCoord.x; "
-
+            .endl() + "    if(fspeed==0.0)col.a=minOpacity;"
+            .endl() + "    if(fspeed==1.0)col.a=1.0;"
+            .endl() + "    if(fspeed>=2.0)"
+            .endl() + "    {"
+            .endl() + "        col.a=step(0.5,mod((-time*fspeed/2.0)+fProgress*0.1*(fspeed*0.1),1.0))+minOpacity; "
+            .endl() + "        col.a*=clamp(fspeed,minOpacity,1.0);"
+            .endl() + "    }"
 
             .endl() + "    {{MODULE_COLOR}}"
             .endl() + "    outColor = col;"
@@ -169,6 +171,8 @@ CABLES.GLGUI.SplineDrawer = class
 
     render(resX, resY, scrollX, scrollY, zoom)
     {
+        if (this._count < 2) return;
+
         if (this._mesh)
         {
             this._cgl.pushShader(this._shader);
@@ -199,7 +203,6 @@ CABLES.GLGUI.SplineDrawer = class
         }
     }
 
-
     getSplineIndex()
     {
         this._count++;
@@ -212,7 +215,6 @@ CABLES.GLGUI.SplineDrawer = class
 
         return this._count;
     }
-
 
     _float32Diff(a, b)
     {
@@ -227,7 +229,6 @@ CABLES.GLGUI.SplineDrawer = class
             this._rebuildLater = true;
         }
     }
-
 
     setSplineColor(idx, rgba)
     {

@@ -8,6 +8,7 @@ CABLES.GLGUI.GlPatchAPI = class
         this._patch = patch;
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
+        this._flowvisStartFrame = 0;
 
         this._patch.addEventListener("onOpAdd", this._onAddOp.bind(this));
         this._patch.addEventListener("onOpDelete", this._onDeleteOp.bind(this));
@@ -63,7 +64,7 @@ CABLES.GLGUI.GlPatchAPI = class
                 for (let il = 0; il < op.portsIn[ip].links.length; il++)
                 {
                     const link = op.portsIn[ip].links[il];
-                    this._glPatch.links[link.id].setFlowModeActivity(0);
+                    this._glPatch.links[link.id].setFlowModeActivity(1);
                 }
             }
         }
@@ -71,6 +72,11 @@ CABLES.GLGUI.GlPatchAPI = class
 
     updateFlowModeActivity()
     {
+        if (this._flowvisStartFrame == 0) this._flowvisStartFrame = this._glPatch.frameCount;
+        if (this._glPatch.frameCount - this._flowvisStartFrame < 5) return;
+        if (this._glPatch.frameCount % 5 != 0) return;
+
+
         const perf = CABLES.uiperf.start("[glpatch] update flow mode");
         for (let i = 0; i < this._patch.ops.length; i++)
         {
@@ -81,7 +87,13 @@ CABLES.GLGUI.GlPatchAPI = class
                 for (let il = 0; il < op.portsIn[ip].links.length; il++)
                 {
                     const link = op.portsIn[ip].links[il];
-                    this._glPatch.links[link.id].setFlowModeActivity(link.activityCounter);
+                    let newClass = 0;
+
+                    if (link.activityCounter >= 1) newClass = 1;
+                    if (link.activityCounter >= 5) newClass = 2;
+                    if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 2;
+
+                    this._glPatch.links[link.id].setFlowModeActivity(newClass);
                     link.activityCounter = 0;
                 }
             }

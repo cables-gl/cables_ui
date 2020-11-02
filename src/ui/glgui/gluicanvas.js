@@ -197,22 +197,22 @@ CABLES.GLGUI.GlUiCanvas = class
 
     activityIdle()
     {
-        this._targetFps = 20;
+        this._targetFps = 10;
     }
 
     activityHigh()
     {
         this._targetFps = 0;
         clearTimeout(this._activityTimeout);
-        this._activityTimeout = setTimeout(() => { this.activityMedium(); }, 4000);
+        this._activityTimeout = setTimeout(() => { this.activityMedium(); }, 40000);
     }
 
     activityMedium()
     {
         this._targetFps = 30;
-        if (!this.glPatch.mouseOverCanvas) this._targetFps = 25;
+        if (!this.glPatch.mouseOverCanvas) this._targetFps = 0;
         clearTimeout(this._activityTimeout);
-        this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 2000);
+        this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
     }
 
     render()

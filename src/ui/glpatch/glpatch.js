@@ -25,6 +25,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._showRedrawFlash = 0;
         this.debugData = {};
 
+        this.frameCount = 0;
+
         this.graphSplines = new CABLES.GLGUI.SplineDrawer(cgl);
         this.performanceGraph = new CABLES.GLGUI.GlGraph(this.graphSplines);
 
@@ -341,6 +343,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX, resY)
     {
+        this.frameCount++;
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;
 

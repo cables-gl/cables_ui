@@ -311,8 +311,14 @@ CABLES.GLGUI.ViewBox = class
         bb.calcCenterSize();
         const padding = 1.05;
         // console.log("bb size", bb.size[0], bb.size[1]);
+
+        bb.size[0] = Math.max(bb.size[0], 200);
+        bb.size[1] = Math.max(bb.size[1], 200);
+
         bb.size[0] *= padding;
         bb.size[1] *= padding;
+
+        console.log(bb);
 
         const zx = bb.size[0] / 2; // zoom on x
         const zy = (bb.size[1]) / 2 * (this._viewResX / this._viewResY);
