@@ -25,6 +25,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._showRedrawFlash = 0;
         this.debugData = {};
 
+        this.graphSplines = new CABLES.GLGUI.SplineDrawer(cgl);
+        this.performanceGraph = new CABLES.GLGUI.GlGraph(this.graphSplines);
+
         this.splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
@@ -82,7 +85,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectedGlOps = {};
 
         this.links = {};
-
 
         // for (let i = -5000; i < 5000; i += 100)
         // {
@@ -401,6 +403,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
+
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
 
@@ -409,6 +412,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
+
+
+        this.performanceGraph.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
@@ -420,6 +427,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.debugData.mouseMovePS = this.profileMouseEvents;
             this.profileMouseEvents = 0;
         }
+
 
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
         this.debugData.rects = this._rectInstancer.getNumRects();
@@ -435,6 +443,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData._mousePatchY = this.viewBox._mousePatchY;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
+        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
+        this.performanceGraph.set(this.time, this.debugData.renderMs);
 
         this.mouseState.debug(this.debugData);
 
@@ -445,7 +455,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             str += n + ": " + this.debugData[n] + "\n";
 
         this._debugtext.text = str;
-        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
 
         this._cgl.popDepthTest();

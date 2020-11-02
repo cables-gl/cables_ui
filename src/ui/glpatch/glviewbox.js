@@ -24,7 +24,6 @@ CABLES.GLGUI.ViewBox = class
         this._viewResX = 0;
         this._viewResY = 0;
         this._boundingRect = null;
-        // this._boundingRectSelection = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
@@ -360,7 +359,7 @@ CABLES.GLGUI.ViewBox = class
     {
         this._storeCurrentSubPatch();
 
-        dataui.viewBoxesGl = this._subPatchViewBoxes;// { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+        dataui.viewBoxesGl = this._subPatchViewBoxes;
 
         console.log("serialize glviewbox!!!");
     }
@@ -373,7 +372,7 @@ CABLES.GLGUI.ViewBox = class
             this.center();
             this._storeCurrentSubPatch();
         }
-        this._subPatchViewBoxes = dataui.viewBoxesGl;
+        else this._subPatchViewBoxes = dataui.viewBoxesGl;
         this._restoreSubPatch(this._currentSubPatchId);
     }
 
@@ -384,12 +383,7 @@ CABLES.GLGUI.ViewBox = class
 
     _restoreSubPatch(sub)
     {
-        // this._subPatchViewBoxes[this._currentSubPatchId] = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
-
         this._currentSubPatchId = sub;
-
-        console.log("restore!", this._subPatchViewBoxes[sub]);
-
 
         if (this._subPatchViewBoxes[sub])
         {

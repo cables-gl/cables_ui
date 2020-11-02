@@ -46,6 +46,8 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "IN float splineProgress;"
             .endl() + "OUT float fProgress;"
 
+            .endl() + "UNI float width;"
+
             .endl() + "IN vec3 spline,spline2,spline3;"
 
             .endl() + "OUT vec2 texCoord;"
@@ -53,7 +55,7 @@ CABLES.GLGUI.SplineDrawer = class
 
             .endl() + "UNI float zoom,resX,resY,scrollX,scrollY;"
 
-            .endl() + "float width=0.3;"
+
             .endl() + "float texOffset=0.0;"
             .endl() + "float sizeAtt=0.0;"
 
@@ -161,6 +163,7 @@ CABLES.GLGUI.SplineDrawer = class
         this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
+        this._uniWidth = new CGL.Uniform(this._shader, "f", "width", 0.3);
     }
 
     render(resX, resY, scrollX, scrollY, zoom)
@@ -269,8 +272,16 @@ CABLES.GLGUI.SplineDrawer = class
         // console.log("differenrt!!!!");
 
         this._splines[idx].origPoints = points;
+
         this._splines[idx].points = this.tessEdges(points);
+        // if (tess) this._splines[idx].points = this.tessEdges(points);
+        // else this._splines[idx].points = points;
         this._rebuildLater = true;
+    }
+
+    setWidth(w)
+    {
+        this._uniWidth.set(w);
     }
 
     buildMesh()
@@ -279,7 +290,7 @@ CABLES.GLGUI.SplineDrawer = class
         if (this._verts.length != num * 18)
         {
             this._verts = new Float32Array(num * 18);
-            console.log("resize spline!");
+            // console.log("resize spline!");
         }
 
         const max = 1;
@@ -302,6 +313,11 @@ CABLES.GLGUI.SplineDrawer = class
 
         this._mesh.addVertexNumbers = false;
         this._mesh.setGeom(this._geom);
+    }
+
+    reUploadSpeed()
+    {
+
     }
 
     rebuild()
@@ -344,7 +360,7 @@ CABLES.GLGUI.SplineDrawer = class
 
         if (this._points.length != newLength)
         {
-            console.log("spline buffer length changed!!!!", newLength);
+            // console.log("spline buffer length changed!!!!", newLength);
             this._colors = new Float32Array(newLength / 3 * 4);
 
             this._points = new Float32Array(newLength);
