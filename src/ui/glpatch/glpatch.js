@@ -98,7 +98,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
-        gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) => { CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode")); });
+        gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
+        {
+            CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
+
+            console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
+
+
+            this._patchAPI.stopFlowModeActivity();
+        });
 
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, {}, (e) => { CABLES.CMD.PATCH.editOp(); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { }, (e) => { this.viewBox.center(); });
@@ -349,6 +357,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.viewBox.update();
 
         if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();
+
 
         this.viewBox.setSize(resX, resY);
 

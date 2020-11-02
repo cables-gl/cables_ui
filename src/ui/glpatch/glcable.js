@@ -56,20 +56,20 @@ CABLES.GLGUI.GlCable = class
                 this._x2, this._y2 + dist, 0,
                 // this._x2, this._y2 + dist, 0,
                 this._x2, this._y2, 0,
-                this._x2, this._y2, 0
+                // this._x2, this._y2, 0
             ]);
 
         if (this._visible)
         {
-            this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - dist);
-            this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - dist, this._x2, this._y2 + dist);
-            this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + dist, this._x2, this._y2);
+            // this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - dist);
+            // this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - dist, this._x2, this._y2 + dist);
+            // this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + dist, this._x2, this._y2);
         }
         else
         {
-            this._lineDrawer.setLine(this._lineIdx0, 0, 0, 0, 0);
-            this._lineDrawer.setLine(this._lineIdx1, 0, 0, 0, 0);
-            this._lineDrawer.setLine(this._lineIdx2, 0, 0, 0, 0);
+            // this._lineDrawer.setLine(this._lineIdx0, 0, 0, 0, 0);
+            // this._lineDrawer.setLine(this._lineIdx1, 0, 0, 0, 0);
+            // this._lineDrawer.setLine(this._lineIdx2, 0, 0, 0, 0);
         }
     }
 
@@ -96,18 +96,19 @@ CABLES.GLGUI.GlCable = class
     setColor(r, g, b, a)
     {
         this._glPatch.splineDrawer.setSplineColor(this.splineIdx, [r, g, b, a]);
-        this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
-        this._lineDrawer.setColor(this._lineIdx1, r, g, b, a);
-        this._lineDrawer.setColor(this._lineIdx2, r, g, b, a);
+        // this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
+        // this._lineDrawer.setColor(this._lineIdx1, r, g, b, a);
+        // this._lineDrawer.setColor(this._lineIdx2, r, g, b, a);
 
         this._buttonRect.setColor(r, g, b, a);
     }
 
     setSpeed(speed)
     {
-        this._lineDrawer.setSpeed(this._lineIdx0, speed);
-        this._lineDrawer.setSpeed(this._lineIdx1, speed);
-        this._lineDrawer.setSpeed(this._lineIdx2, speed);
+        this._glPatch.splineDrawer.setSplineSpeed(this.splineIdx, speed);
+        // this._lineDrawer.setSpeed(this._lineIdx0, speed);
+        // this._lineDrawer.setSpeed(this._lineIdx1, speed);
+        // this._lineDrawer.setSpeed(this._lineIdx2, speed);
     }
 
 
