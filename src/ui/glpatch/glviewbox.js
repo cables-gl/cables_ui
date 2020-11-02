@@ -358,19 +358,24 @@ CABLES.GLGUI.ViewBox = class
 
     serialize(dataui)
     {
-        dataui.viewBoxGl = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+        this._storeCurrentSubPatch();
+
+        dataui.viewBoxesGl = this._subPatchViewBoxes;// { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+
         console.log("serialize glviewbox!!!");
     }
 
     deSerialize(dataui)
     {
         dataui = dataui || {};
-        const data = dataui.viewBoxGl || { "x": 0, "y": 0, "z": CABLES.GLGUI.VISUALCONFIG.zoomDefault };
-        this._scrollX = data.x;
-        this._scrollY = data.y;
-        this._zoom = data.z;
+        if (!dataui.viewBoxesGl)
+        {
+            this.center();
+            this._storeCurrentSubPatch();
+        }
+        this._subPatchViewBoxes = dataui.viewBoxesGl;
+        this._restoreSubPatch(this._currentSubPatchId);
     }
-
 
     _storeCurrentSubPatch()
     {
