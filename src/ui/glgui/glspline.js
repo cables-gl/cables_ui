@@ -46,6 +46,8 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "IN float splineProgress;"
             .endl() + "OUT float fProgress;"
 
+            .endl() + "UNI float width;"
+
             .endl() + "IN vec3 spline,spline2,spline3;"
 
             .endl() + "OUT vec2 texCoord;"
@@ -53,7 +55,7 @@ CABLES.GLGUI.SplineDrawer = class
 
             .endl() + "UNI float zoom,resX,resY,scrollX,scrollY;"
 
-            .endl() + "float width=0.3;"
+
             .endl() + "float texOffset=0.0;"
             .endl() + "float sizeAtt=0.0;"
 
@@ -71,12 +73,13 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "vec2 fix( vec4 i )"
             .endl() + "{"
             .endl() + "    vec2 res = i.xy / i.w;"
-            // .endl() + "    res.x *= aspect;"
             .endl() + "    return res;"
             .endl() + "}"
             .endl() + ""
             .endl() + "void main()"
             .endl() + "{"
+
+            .endl() + "    if(vcolor.a == 0.0)return; "
 
             .endl() + "    float aspect=resX/resY;"
             .endl() + "    fcolor=vcolor;"
@@ -121,6 +124,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    finalPosition.xy*=zoom;"
             .endl() + "    finalPosition.x+=scrollX;"
             .endl() + "    finalPosition.y+=scrollY;"
+            .endl() + "    finalPosition.z=0.96;"
 
             .endl() + "    gl_Position = finalPosition;"
             .endl() + "}"
@@ -142,14 +146,16 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "{"
             .endl() + "    vec4 col=fcolor;"
             .endl() + "    col.a=1.0;"
-            // .endl() + "    col.r=mod(1.0,time+fProgress); "
-            .endl() + "    col.a=step(0.5,mod(-time*2.0+fProgress*0.1*(fspeed*0.5),1.0))+0.3; "
-            .endl() + "    col.a*=clamp(fspeed,0.3,1.0);"
-            .endl() + "    if(fspeed==0.0)col.a=1.0;"
 
+            .endl() + "    float minOpacity=0.5;"
 
-        // .endl() + "    col.r=texCoord.x; "
-
+            .endl() + "    if(fspeed==0.0)col.a=minOpacity;"
+            .endl() + "    if(fspeed==1.0)col.a=1.0;"
+            .endl() + "    if(fspeed>=2.0)"
+            .endl() + "    {"
+            .endl() + "        col.a=step(0.5,mod((-time*fspeed/2.0)+fProgress*0.1*(fspeed*0.1),1.0))+minOpacity; "
+            .endl() + "        col.a*=clamp(fspeed,minOpacity,1.0);"
+            .endl() + "    }"
 
             .endl() + "    {{MODULE_COLOR}}"
             .endl() + "    outColor = col;"
@@ -161,10 +167,13 @@ CABLES.GLGUI.SplineDrawer = class
         this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
+        this._uniWidth = new CGL.Uniform(this._shader, "f", "width", 0.3);
     }
 
     render(resX, resY, scrollX, scrollY, zoom)
     {
+        if (this._count < 2) return;
+
         if (this._mesh)
         {
             this._cgl.pushShader(this._shader);
@@ -175,26 +184,25 @@ CABLES.GLGUI.SplineDrawer = class
             this._uniZoom.set(1.0 / zoom);
             this._uniTime.set(performance.now() / 1000);
 
-            this._cgl.pushDepthTest(false);
-            this._cgl.pushDepthWrite(false);
-            this._cgl.pushDepthFunc(this._cgl.gl.GREATER);
+            // this._cgl.pushDepthTest(true);
+            // this._cgl.pushDepthWrite(true);
+            // this._cgl.pushDepthFunc(this._cgl.gl.GREATER);
 
             this._mesh.render(this._shader);
             this._cgl.popShader();
 
-            this._cgl.popDepthTest();
-            this._cgl.popDepthWrite();
-            this._cgl.popDepthFunc();
+            // this._cgl.popDepthTest();
+            // this._cgl.popDepthWrite();
+            // this._cgl.popDepthFunc();
         }
 
         // todo move before rendering but will not draw when rebuilding...
         if (this._rebuildLater)
         {
             this.rebuild();
-            this._mesh.unBind();
+            // this._mesh.unBind();
         }
     }
-
 
     getSplineIndex()
     {
@@ -208,7 +216,6 @@ CABLES.GLGUI.SplineDrawer = class
 
         return this._count;
     }
-
 
     _float32Diff(a, b)
     {
@@ -224,7 +231,6 @@ CABLES.GLGUI.SplineDrawer = class
         }
     }
 
-
     setSplineColor(idx, rgba)
     {
         if (
@@ -238,39 +244,68 @@ CABLES.GLGUI.SplineDrawer = class
         }
     }
 
+    deleteSpline(idx)
+    {
+        const sp = this._splines[idx];
+
+        this.setSplineColor(idx, 0, 0, 0, 0);
+
+        for (let i = 0; i < this._splines[idx].origPoints.length; i += 3)
+        {
+            this._splines[idx].origPoints[i + 0] =
+            this._splines[idx].origPoints[i + 1] =
+            this._splines[idx].origPoints[i + 2] = 0;
+        }
+        this.setSpline(idx, this._splines[idx].origPoints);
+    }
+
     setSpline(idx, points)
     {
         let isDifferent = true;
-        if (this._splines[idx] && this._splines[idx].origPoints)
+        let isDifferentLength = false;
+
+        if (!this._rebuildLater)
         {
-            isDifferent = false;
-            if (points.length != this._splines[idx].origPoints.length)
+            if (this._splines[idx] && this._splines[idx].origPoints)
             {
-                isDifferent = true;
-            }
-            else
-            {
-                for (let i = 0; i < this._splines[idx].origPoints.length; i++)
+                isDifferent = false;
+                if (points.length != this._splines[idx].origPoints.length)
                 {
-                    if (this._splines[idx].origPoints[i] != points[i])
+                // length of spline changed, we need to rebuild the whole buffer....
+                    isDifferent = true;
+                    isDifferentLength = true;
+                    this._rebuildLater = true;
+                }
+                else
+                {
+                    for (let i = 0; i < this._splines[idx].origPoints.length; i++)
                     {
-                        isDifferent = true;
-                        break;
+                        if (this._splines[idx].origPoints[i] != points[i])
+                        {
+                            isDifferent = true;
+                            break;
+                        }
                     }
                 }
             }
         }
 
-        if (!isDifferent)
-        {
-            // console.log("not differenrt");
-            return;
-        }
-        // console.log("differenrt!!!!");
+        if (!isDifferent) return; // nothing has changed...
 
         this._splines[idx].origPoints = points;
         this._splines[idx].points = this.tessEdges(points);
-        this._rebuildLater = true;
+
+        if (!isDifferentLength) // length is the same, update vertices only
+        {
+            this._rebuildLater = true;
+
+            // setAttributeRange(attr, array, start, end)
+        }
+    }
+
+    setWidth(w)
+    {
+        this._uniWidth.set(w);
     }
 
     buildMesh()
@@ -279,7 +314,7 @@ CABLES.GLGUI.SplineDrawer = class
         if (this._verts.length != num * 18)
         {
             this._verts = new Float32Array(num * 18);
-            console.log("resize spline!");
+            // console.log("resize spline!");
         }
 
         const max = 1;
@@ -302,6 +337,11 @@ CABLES.GLGUI.SplineDrawer = class
 
         this._mesh.addVertexNumbers = false;
         this._mesh.setGeom(this._geom);
+    }
+
+    reUploadSpeed()
+    {
+
     }
 
     rebuild()
@@ -344,7 +384,7 @@ CABLES.GLGUI.SplineDrawer = class
 
         if (this._points.length != newLength)
         {
-            console.log("spline buffer length changed!!!!", newLength);
+            // console.log("spline buffer length changed!!!!", newLength);
             this._colors = new Float32Array(newLength / 3 * 4);
 
             this._points = new Float32Array(newLength);

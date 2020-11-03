@@ -285,11 +285,11 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     updatePosition()
     {
         if (!this._glRectBg) return;
-        this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y);
+        this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, 0.8);
 
-        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0);
-        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0);
-        if (this._glComment) this._glComment.setPosition(this.w + 10, 0);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0.8);
+        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0.8);
+        if (this._glComment) this._glComment.setPosition(this.w + 10, 0.8);
     }
 
     getUiAttribs()

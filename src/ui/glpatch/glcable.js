@@ -16,7 +16,8 @@ CABLES.GLGUI.GlCable = class
         this._lineIdx1 = this._lineDrawer.getIndex();
         this._lineIdx2 = this._lineDrawer.getIndex();
 
-        this.splineIdx = this._glPatch.splineDrawer.getSplineIndex();
+        this._splineDrawer = this._glPatch.splineDrawer;
+        this._splineIdx = this._splineDrawer.getSplineIndex();
 
         this._buttonRect.setDecoration(1);
         this._buttonRect.visible = false;
@@ -37,8 +38,13 @@ CABLES.GLGUI.GlCable = class
     set visible(v)
     {
         this._visible = v;
-        // this._buttonRect.visible = v;
         this._updateLinePos();
+    }
+
+    dispose()
+    {
+        this.setColor(0, 0, 0, 0);
+        this._splineDrawer.deleteSpline(this._splineIdx);
     }
 
     _updateLinePos()
@@ -48,7 +54,7 @@ CABLES.GLGUI.GlCable = class
         if (Math.abs(this._y - this._y2) < CABLES.GLGUI.VISUALCONFIG.portHeight * 2)dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
 
 
-        this._glPatch.splineDrawer.setSpline(this.splineIdx,
+        this._glPatch.splineDrawer.setSpline(this._splineIdx,
             [
                 this._x, this._y, 0,
                 this._x, this._y - dist, 0,
@@ -95,7 +101,7 @@ CABLES.GLGUI.GlCable = class
 
     setColor(r, g, b, a)
     {
-        this._glPatch.splineDrawer.setSplineColor(this.splineIdx, [r, g, b, a]);
+        this._glPatch.splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
         // this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
         // this._lineDrawer.setColor(this._lineIdx1, r, g, b, a);
         // this._lineDrawer.setColor(this._lineIdx2, r, g, b, a);
@@ -105,7 +111,7 @@ CABLES.GLGUI.GlCable = class
 
     setSpeed(speed)
     {
-        this._glPatch.splineDrawer.setSplineSpeed(this.splineIdx, speed);
+        this._glPatch.splineDrawer.setSplineSpeed(this._splineIdx, speed);
         // this._lineDrawer.setSpeed(this._lineIdx0, speed);
         // this._lineDrawer.setSpeed(this._lineIdx1, speed);
         // this._lineDrawer.setSpeed(this._lineIdx2, speed);

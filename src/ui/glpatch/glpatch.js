@@ -25,6 +25,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._showRedrawFlash = 0;
         this.debugData = {};
 
+        this.frameCount = 0;
+
+        this.graphSplines = new CABLES.GLGUI.SplineDrawer(cgl);
+        this.performanceGraph = new CABLES.GLGUI.GlGraph(this.graphSplines);
+
         this.splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
@@ -46,12 +51,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cacheOIRops = null;
 
         this._focusRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
-
         this._focusRect = this._overLayRects.createRect();
         this._focusRect.setSize(1, 1);
         this._focusRect.setColor(0, 1, 1, 1);
-
-        // this._focusRect.setDecoration(4);
         this._focusRect.visible = false;
 
 
@@ -68,6 +70,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
 
+
+        this._fadeOutRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._fadeOutRect = this._overLayRects.createRect();
+        this._fadeOutRect.setSize(100000000, 100000000);
+        this._fadeOutRect.setPosition(-50000000, -50000000);
+        this._fadeOutRect.setColor(0, 0, 0, 0.0);
+        this._fadeOutRect.visible = true;
+
+
         this.quickLinkSuggestion = new CABLES.GLGUI.QuickLinkSuggestion(this);
         this._debugtext = new CABLES.GLGUI.Text(this._textWriterOverlay, "hello");
 
@@ -76,7 +87,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectedGlOps = {};
 
         this.links = {};
-
 
         // for (let i = -5000; i < 5000; i += 100)
         // {
@@ -333,8 +343,24 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX, resY)
     {
+        this.frameCount++;
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;
+
+
+        this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
+        if (this._fadeOutRect.visible)
+        {
+            this.isAnimated = true;
+            const v = this._fadeOutRectAnim.getValue(this._time);
+
+            this._fadeOutRect.setColor(
+                CABLES.GLGUI.VISUALCONFIG.colors.background[0],
+                CABLES.GLGUI.VISUALCONFIG.colors.background[1],
+                CABLES.GLGUI.VISUALCONFIG.colors.background[2],
+                v);
+        }
+
 
         this._focusRect.visible = !this._focusRectAnim.isFinished(this._time);
         if (this._focusRect.visible)
@@ -378,6 +404,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
 
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
         this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
@@ -385,9 +412,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
+        this.performanceGraph.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
+
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
@@ -399,6 +429,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.debugData.mouseMovePS = this.profileMouseEvents;
             this.profileMouseEvents = 0;
         }
+
 
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
         this.debugData.rects = this._rectInstancer.getNumRects();
@@ -414,6 +445,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData._mousePatchY = this.viewBox._mousePatchY;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
+        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
+        this.performanceGraph.set(this.time, this.debugData.renderMs);
 
         this.mouseState.debug(this.debugData);
 
@@ -424,11 +457,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             str += n + ": " + this.debugData[n] + "\n";
 
         this._debugtext.text = str;
-        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();
+
 
         perf.finish();
     }
@@ -773,13 +806,31 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     setCurrentSubPatch(sub)
     {
+        if (this._currentSubpatch == sub) return;
+
         this._currentSubpatch = sub;
         console.log("set subpatch", sub);
 
-        for (const i in this._glOpz)
+        const dur = 0.1;
+
+        const timeGrey = dur * 1.5;
+        const timeVisibleAgain = dur * 3.0;
+
+        this._fadeOutRectAnim.clear();
+        this._fadeOutRectAnim.setValue(this._time, 0);
+        this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
+        this._fadeOutRectAnim.setValue(this._time + timeGrey + 0.1, 1);
+        this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
+
+        setTimeout(() =>
         {
-            this._glOpz[i].updateVisible();
-        }
+            for (const i in this._glOpz)
+            {
+                this._glOpz[i].updateVisible();
+            }
+        }, timeGrey * 1000);
+
+        this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain);
     }
 
     mouseToPatchCoords(x, y)
