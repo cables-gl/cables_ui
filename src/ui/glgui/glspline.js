@@ -297,7 +297,9 @@ CABLES.GLGUI.SplineDrawer = class
 
         if (!isDifferentLength) // length is the same, update vertices only
         {
-            this._rebuildLater = true;
+            // this._rebuildLater = true;
+
+            this.updateSplineCoordinates(idx);
 
             // setAttributeRange(attr, array, start, end)
         }
@@ -336,7 +338,7 @@ CABLES.GLGUI.SplineDrawer = class
         if (!this._mesh) this._mesh = new CGL.Mesh(this._cgl, this._geom);
 
         this._mesh.addVertexNumbers = false;
-        this._mesh.setGeom(this._geom);
+        this._mesh.updateVertices(this._geom);
     }
 
     reUploadSpeed()
@@ -344,33 +346,61 @@ CABLES.GLGUI.SplineDrawer = class
 
     }
 
+    updateSplineCoordinates(idx)
+    {
+        if (!this._mesh)
+        {
+            this._rebuildLater = true;
+            return;
+        }
+
+        let count = 0;
+
+        const off = this._splines[idx].startOffset;
+        const points = this._splines[idx].points;
+
+        for (let i = 0; i < points.length / 3; i++)
+        {
+            for (let j = 0; j < 6; j++)
+            {
+                for (let k = 0; k < 3; k++)
+                {
+                    this._points[off + count] = points[(Math.max(0, i - 1)) * 3 + k];
+                    this._points2[off + count] = points[(i + 0) * 3 + k];
+                    this._points3[off + count] = points[(i + 1) * 3 + k];
+                    count++;
+                }
+            }
+        }
+
+        this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
+        this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
+        this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
+    }
+
     rebuild()
     {
-        // console.log("rebuild spline");
-
-        const arr = [];
+        this._thePoints = [];
 
         this._splineIndex = [];
         let count = 0;
-
-        // console.log("this._splines.length", this._splines.length);
         let numPoints = 0;
 
         for (let i = 0; i < this._splines.length; i++)
         {
-            for (let j = 0; j < this._splines[i].points.length / 3; j++)
-            {
-                this._splineIndex[(count - 3) / 3] = i;// (i) / this._splines[k].length;
+            if (this._splines[i].points)
+                for (let j = 0; j < this._splines[i].points.length / 3; j++)
+                {
+                    this._splineIndex[(count - 3) / 3] = i;
 
-                arr[count++] = this._splines[i].points[j * 3 + 0];
-                arr[count++] = this._splines[i].points[j * 3 + 1];
-                arr[count++] = this._splines[i].points[j * 3 + 2];
-                numPoints++;
-            }
+                    this._thePoints[count++] = this._splines[i].points[j * 3 + 0];
+                    this._thePoints[count++] = this._splines[i].points[j * 3 + 1];
+                    this._thePoints[count++] = this._splines[i].points[j * 3 + 2];
+                    numPoints++;
+                }
         }
-        this._thePoints = arr;
 
-        // console.log("numpoints", numPoints);
+        console.log("numpoints", numPoints);
 
         this.buildMesh();
 
@@ -403,11 +433,16 @@ CABLES.GLGUI.SplineDrawer = class
         {
             if (this._splineIndex)
             {
+                if (lastIndex != this._splineIndex[i])
+                    if (this._splines[this._splineIndex[i]])
+                        this._splines[this._splineIndex[i]].startOffset = count;
+
                 if (i > 1 && lastIndex != this._splineIndex[i]) drawable = 0.0;
                 else drawable = 1.0;
                 lastIndex = this._splineIndex[i];
             }
             else drawable = 1.0;
+
 
             for (let j = 0; j < 6; j++)
             {
@@ -458,6 +493,9 @@ CABLES.GLGUI.SplineDrawer = class
         const step = 0.003;
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
+
+
+        if (!l || l < 0) return;
         this._arrEdges = [];
         this._arrEdges.length = l;
 
