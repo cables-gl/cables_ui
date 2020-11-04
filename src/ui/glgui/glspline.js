@@ -47,6 +47,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "OUT float fProgress;"
 
             .endl() + "UNI float width;"
+            .endl() + "UNI float zpos;"
 
             .endl() + "IN vec3 spline,spline2,spline3;"
 
@@ -124,7 +125,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    finalPosition.xy*=zoom;"
             .endl() + "    finalPosition.x+=scrollX;"
             .endl() + "    finalPosition.y+=scrollY;"
-            .endl() + "    finalPosition.z=0.96;"
+            .endl() + "    finalPosition.z=zpos;"
 
             .endl() + "    gl_Position = finalPosition;"
             .endl() + "}"
@@ -165,9 +166,15 @@ CABLES.GLGUI.SplineDrawer = class
         this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
         this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
         this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
+        this._uniZpos = new CGL.Uniform(this._shader, "f", "zpos", 0.96);
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
         this._uniWidth = new CGL.Uniform(this._shader, "f", "width", 0.3);
+    }
+
+    set zPos(v)
+    {
+        this._uniZpos.setValue(v);
     }
 
     render(resX, resY, scrollX, scrollY, zoom)
@@ -361,7 +368,7 @@ CABLES.GLGUI.SplineDrawer = class
 
         const off = this._splines[idx].startOffset || 0;
         const points = this._splines[idx].points;
-
+        if (!points) return;
 
         for (let i = 0; i < points.length / 3; i++)
         {
@@ -394,6 +401,7 @@ CABLES.GLGUI.SplineDrawer = class
 
         // if (!off)console.log(idx, this._splines[idx]);
         // console.log(points.length, off);
+        if (!points) return;
 
         for (let i = 0; i < points.length / 3; i++)
         {

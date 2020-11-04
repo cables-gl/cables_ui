@@ -33,7 +33,7 @@ CABLES.GLGUI.GlGraph = class
         this._splineRenderer.setSpline(rightLine, [this._width * this._scaleX, 0, 0, this._width * this._scaleX, 10 * this._scaleY, 0]);
         this._splineRenderer.setSplineColor(rightLine, [0.5, 0.5, 0.5, 1]);
 
-        this._splineRenderer.setWidth(0.05);
+        this._splineRenderer.setWidth(0.15);
     }
 
 

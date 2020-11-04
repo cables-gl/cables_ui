@@ -712,7 +712,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
     const dblClick = function (ev)
     {
         gui.patch().setSelectedOp(null);
-        if (CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patch().setCurrentSubPatch(opui.op.patchId.val);
+        if (CABLES.Op.isSubpatchOp(opui.op.objName)) gui.patchView.setCurrentSubPatch(opui.op.patchId.val);
     };
 
     const mouseUp = function (ev)

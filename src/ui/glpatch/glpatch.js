@@ -27,10 +27,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.frameCount = 0;
 
-        this.graphSplines = new CABLES.GLGUI.SplineDrawer(cgl);
-        this.performanceGraph = new CABLES.GLGUI.GlGraph(this.graphSplines);
+        this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._overlaySplines.zPos = 0.5;
+        this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
 
-        this.splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
         this._rectInstancer = new CABLES.GLGUI.RectInstancer(cgl, { "name": "mainrects", "initNum": gui.corePatch().ops.length * 12 });
@@ -41,7 +42,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._currentSubpatch = 0;
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
-        this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._lines, this);
+        this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
         this._fpsStartTime = 0;
 
         this.cacheOIRxa = 0;
@@ -395,29 +396,26 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor2.visible = drawGlCursor;
         if (drawGlCursor)
         {
-            this._cursor2.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
-            // this._cursorUnPredicted.setPosition(this.viewBox.mousePatchNotPredicted[0], this.viewBox.mousePatchNotPredicted[1]);
-
-            const z = this.viewBox.zoom / (50 / 1);
+            const a = this.viewBox.screenToPatchCoord(0, 0);
+            const b = this.viewBox.screenToPatchCoord(20, 20);
+            const z = (b[0] - a[0]);
             this._cursor2.setSize(z, z);
-            // this._cursorUnPredicted.setSize(z / 2, z / 2);
+            this._cursor2.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
         }
-
 
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
         const perf = CABLES.uiperf.start("[glpatch] render");
 
-
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        // this.performanceGraph.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
